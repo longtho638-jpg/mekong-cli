@@ -1,3 +1,13 @@
+## [1.1.0](https://github.com/mrgoonie/claudekit-engineer/compare/v1.0.0...v1.1.0) (2025-10-09)
+
+
+### 🚀 Features
+
+* add Claude command content files ([a21de9b](https://github.com/mrgoonie/claudekit-engineer/commit/a21de9bf5faec2c3cf7b1d6f0775323f9eb7ea86))
+* add copywriter agent and update init documentation ([8a2611a](https://github.com/mrgoonie/claudekit-engineer/commit/8a2611a0deee69ea7a826dc46c58cc0fadde838e))
+* add journal-writer and scout agents ([2693cbc](https://github.com/mrgoonie/claudekit-engineer/commit/2693cbc46c9f74acf2dc28038ef19d6ddc6870e0))
+* add scout command for parallel codebase search using multiple agents ([0de0e1a](https://github.com/mrgoonie/claudekit-engineer/commit/0de0e1a1eecbaa6fd64c88e6aa8ddca24ce3e842))
+
 ## 1.0.0 (2025-10-08)
 
 
