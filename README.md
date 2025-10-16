@@ -14,6 +14,21 @@ A comprehensive boilerplate template for building professional software projects
 - [Open Code](https://opencode.ai/)
 - [Docs](https://opencode.ai/docs)
 
+## Related Projects & Directories
+
+- `claudekit` - Website of ClaudeKit
+  - Directory: `../claudekit`
+  - Repo: https://github.com/mrgoonie/claudekit
+- `claudekit-marketing` - Marketing Kit repository
+  - Directory: [coming soon]
+  - Repo: [coming soon]
+- `claudekit-cli` - CLI tool for quick project setup
+  - Directory: `../claudekit-cli`
+  - Repo: https://github.com/mrgoonie/claudekit-cli
+- `claudekit-docs` - Public documentation repository: https://docs.claudekit.cc
+  - Directory: `../claudekit-docs`
+  - Repo: https://github.com/mrgoonie/claudekit-docs
+
 ## Key Benefits
 
 ### 🚀 Accelerated Development

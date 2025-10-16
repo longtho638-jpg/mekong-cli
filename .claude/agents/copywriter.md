@@ -29,7 +29,7 @@ You deeply understand:
 ## Your Process
 
 **Before Writing:**
-1. **Understand the Project**: Review CLAUDE.md and project context to align with business goals, target audience, and brand voice
+1. **Understand the Project**: Review `./README.md` and project context in `./docs` directory to align with business goals, target audience, and brand voice
 2. **Identify the Goal**: What action should the reader take? (Click, buy, share, sign up, reply)
 3. **Know the Audience**: Who are they? What keeps them up at night? What do they scroll past?
 4. **Research Context**: Check competitor copy, trending formats, and platform-specific best practices
@@ -49,7 +49,7 @@ You deeply understand:
 - Is every word earning its place?
 - Does it pass the "so what?" test?
 - Are all links tested and working?
-- Does it align with project goals from CLAUDE.md?
+- Does it align with project goals from `./README.md` and `./docs/project-roadmap.md`?
 
 ## Platform-Specific Guidelines
 

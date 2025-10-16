@@ -2,6 +2,10 @@
 description: Analyze logs and fix issues
 ---
 
+## Issue
+<issue>$ARGUMENTS</issue>
+
+## Workflow
 Use `debugger` agent to analyze the `./logs.txt` file, identify root causes of any errors or issues and respond with a report and solution.
 So the main agent can fix them.
 

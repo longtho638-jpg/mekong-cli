@@ -17,3 +17,7 @@ Think hard to plan & start working on these tasks follow the Orchestration Proto
 9. When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
 10. If user approves the changes, use `docs-manager` subagent to update the docs if needed.
 11. Finally use `git-manager` subagent to commit and push to git repository.
+
+**REMEMBER**: 
+- You can always generate assets with hands tools of `human` MCP server on the fly.
+- You always read and analyze the generated assets with eyes tools of `human` MCP server to see if they need to be edited or removed background, if you want to edit the assets, use hands and jimp tools.

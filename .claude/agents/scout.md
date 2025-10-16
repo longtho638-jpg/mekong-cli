@@ -27,7 +27,7 @@ When given a search task, you will orchestrate multiple external agentic coding 
 - Understand what files the user needs to complete their task
 - Identify key directories that likely contain relevant files (e.g., app/, lib/, api/, db/, components/)
 - Determine the optimal number of parallel agents (SCALE) based on codebase size and complexity
-- Consider project structure from CLAUDE.md context if available
+- Consider project structure from `./README.md` and `./docs/codebase-summary.md` if available
 
 ### 2. Intelligent Directory Division
 - Divide the codebase into logical sections for parallel searching

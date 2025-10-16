@@ -18,8 +18,9 @@ RELEVANT_FILE_OUTPUT_DIR: `plans/scouts/`
 
 ## Workflow:
 - Write a prompt for 'SCALE' number of agents to the Task tool that will immediately call the Bash tool to run these commands to kick off your agents to conduct the search:
-  - `gemini -p "[prompt]" --model gemini-2.5-flash-preview-09-2025`
-  - `opencode run "[prompt]" --model opencode/grok-code` (if count > 3)
+  - `gemini -p "[prompt]" --model gemini-2.5-flash-preview-09-2025` (if count <= 3)
+  - `opencode run "[prompt]" --model opencode/grok-code` (if count > 3 and count < 6)
+  - if count >= 6, spawn `Explore` subagents to search the codebase in parallel
 
 **How to prompt the agents:**
 - IMPORTANT: Kick these agents off in parallel using the Task tool, analyze and divide folders for each agent to scout intelligently and quickly.
