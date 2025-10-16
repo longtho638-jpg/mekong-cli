@@ -1,0 +1,4 @@
+{"login":"bnqtoan","permissions":{"admin":false,"maintain":false,"pull":true,"push":false,"triage":false},"role_name":"read"}
+{"login":"mrgoonie","permissions":{"admin":true,"maintain":true,"pull":true,"push":true,"triage":true},"role_name":"admin"}
+{"login":"blacklogos","permissions":{"admin":false,"maintain":false,"pull":true,"push":false,"triage":false},"role_name":"read"}
+{"login":"tam-hopee","permissions":{"admin":false,"maintain":false,"pull":true,"push":false,"triage":false},"role_name":"read"}

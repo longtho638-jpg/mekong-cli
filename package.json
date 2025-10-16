@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrgoonie/claudekit-engineer.git"
+    "url": "https://github.com/claudekit/claudekit-engineer.git"
   },
   "keywords": [
     "claude-code",
@@ -24,9 +24,9 @@
   "author": "Duy Nguyen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mrgoonie/claudekit-engineer/issues"
+    "url": "https://github.com/claudekit/claudekit-engineer/issues"
   },
-  "homepage": "https://github.com/mrgoonie/claudekit-engineer#readme",
+  "homepage": "https://github.com/claudekit/claudekit-engineer#readme",
   "files": [
     ".claude/",
     ".opencode/",

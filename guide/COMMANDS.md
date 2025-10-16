@@ -1350,7 +1350,7 @@ Commands can leverage MCP servers for enhanced capabilities:
 - [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code/overview)
 - [ClaudeKit Official Site](https://claudekit.cc/)
 - [Slash Commands Guide](https://docs.claude.com/en/docs/claude-code/slash-commands)
-- [GitHub Repository](https://github.com/mrgoonie/claudekit-engineer)
+- [GitHub Repository](https://github.com/claudekit/claudekit-engineer)
 
 ---
 
