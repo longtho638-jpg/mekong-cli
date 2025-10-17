@@ -18,16 +18,16 @@ A comprehensive boilerplate template for building professional software projects
 
 - `claudekit` - Website of ClaudeKit
   - Directory: `../claudekit`
-  - Repo: https://github.com/mrgoonie/claudekit
+  - Repo: https://github.com/claudekit/claudekit
 - `claudekit-marketing` - Marketing Kit repository
-  - Directory: [coming soon]
-  - Repo: [coming soon]
+  - Directory: `../claudekit-marketing`
+  - Repo: https://github.com/claudekit/claudekit-marketing
 - `claudekit-cli` - CLI tool for quick project setup
   - Directory: `../claudekit-cli`
   - Repo: https://github.com/mrgoonie/claudekit-cli
 - `claudekit-docs` - Public documentation repository: https://docs.claudekit.cc
   - Directory: `../claudekit-docs`
-  - Repo: https://github.com/mrgoonie/claudekit-docs
+  - Repo: https://github.com/claudekit/claudekit-docs
 
 ## Key Benefits
 
