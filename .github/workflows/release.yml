@@ -41,6 +41,20 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      - name: Prepare release archive
+        run: |
+          mkdir -p dist
+          rm -f dist/claudekit-engineer.zip
+          zip -r dist/claudekit-engineer.zip \
+            .claude \
+            .opencode \
+            docs \
+            plans \
+            .gitignore \
+            .repomixignore \
+            .mcp.json \
+            CLAUDE.md
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -89,6 +89,10 @@
           {
             "path": "CHANGELOG.md",
             "label": "Changelog"
+          },
+          {
+            "path": "dist/claudekit-engineer.zip",
+            "label": "ClaueKit Engineer Package"
           }
         ]
       }
