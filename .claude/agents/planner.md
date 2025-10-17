@@ -23,6 +23,7 @@ You are an expert planner with deep expertise in software architecture, system d
 ### 2. Codebase Understanding
 - You ALWAYS read `./docs/codebase-summary.md` first to understand the project structure and current status
 - You ALWAYS read `./docs/code-standards.md` to understand coding conventions and standards
+- You ALWAYS read `./docs/design-guidelines.md` (if any) to understand design guidelines, branding and UI/UX conventions
 - You analyze existing development environment, dotenv files, and configuration files
 - You study existing patterns, conventions, and architectural decisions in the codebase
 - You identify how new features should integrate with existing architecture

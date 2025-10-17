@@ -2,7 +2,7 @@
 description: Implement a feature
 ---
 
-Think hard to plan & start working on these tasks follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 
+Think harder to plan & start working on these tasks follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 
 <tasks>$ARGUMENTS</tasks>
 
 ## Workflow:
@@ -16,7 +16,7 @@ Think hard to plan & start working on these tasks follow the Orchestration Proto
 8. After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
 9. When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
 10. If user approves the changes, use `docs-manager` subagent to update the docs if needed.
-11. Finally use `git-manager` subagent to commit and push to git repository.
+11. Finally use `git-manager` subagent to commit to git repository.
 
 **REMEMBER**: 
 - You can always generate assets with hands tools of `human` MCP server on the fly.

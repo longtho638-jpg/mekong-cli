@@ -487,7 +487,7 @@ Commands are stored in `.claude/commands/` directory and can be customized for y
 2. Implementation (ui-ux-designer)
 3. Create design in HTML/CSS/JS
 4. Review and approval
-5. Update `./docs/design-guideline.md`
+5. Update `./docs/design-guidelines.md`
 
 **Examples**:
 ```bash
@@ -907,7 +907,7 @@ Commands are stored in `.claude/commands/` directory and can be customized for y
 ```
 
 **What it does**:
-- Reads `./docs/design-guideline.md`
+- Reads `./docs/design-guidelines.md`
 - Analyzes screenshots/videos
 - Implements fixes with ui-ux-designer agent
 - Takes screenshots to verify fixes
