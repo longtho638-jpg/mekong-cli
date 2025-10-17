@@ -1,5 +1,6 @@
 ---
 description: Create a CRO plan for the given content
+argument-hint: [issues]
 ---
 
 You are an expert in conversion optimization. Analyze the content based on the given issues:

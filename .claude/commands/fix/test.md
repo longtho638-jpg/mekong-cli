@@ -1,5 +1,6 @@
 ---
 description: Run test suite and fix issues
+argument-hint: [issue]
 ---
 
 ## Reported Issues:

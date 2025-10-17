@@ -1,5 +1,6 @@
 ---
 description: Debugging technical issues and providing solutions.
+argument-hint: [issues]
 ---
  
 **Reported Issues**:

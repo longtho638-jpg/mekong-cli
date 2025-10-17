@@ -1,5 +1,6 @@
 ---
 description: Implement a feature
+argument-hint: [tasks]
 ---
 
 Think harder to plan & start working on these tasks follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 

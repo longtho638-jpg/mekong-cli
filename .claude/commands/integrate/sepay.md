@@ -1,5 +1,6 @@
 ---
 description: Implement payment integration with SePay.vn
+argument-hint: [tasks]
 ---
 
 Think harder to plan & start implementing payment integration with [https://docs.sepay.vn/](https://raw.githubusercontent.com/mrgoonie/sepay-llms/refs/heads/main/llms.txt) follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 

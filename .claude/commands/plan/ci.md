@@ -1,5 +1,6 @@
 ---
 description: Analyze Github Actions logs and provide a plan to fix the issues
+argument-hint: [github-actions-url]
 ---
 ## Github Actions URL
  $ARGUMENTS

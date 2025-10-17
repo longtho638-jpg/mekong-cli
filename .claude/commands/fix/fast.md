@@ -1,5 +1,6 @@
 ---
 description: Analyze and fix the issue [FAST]
+argument-hint: [issue]
 ---
 
 Analyze and fix this issue:

@@ -1,5 +1,6 @@
 ---
 description: Write good creative & smart copy [GOOD]
+argument-hint: [user-request]
 ---
 
 Write good creative & smart copy for this user request:

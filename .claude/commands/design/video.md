@@ -1,5 +1,6 @@
 ---
 description: Create a design based on video
+argument-hint: [video]
 ---
 
 Think hard to plan & start designing follow exactly this video: 
