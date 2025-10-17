@@ -1,8 +1,8 @@
 ---
-description: Implement payment integration with Polar.sh
+description: Implement payment integration with SePay.vn
 ---
 
-Think harder to plan & start implementing payment integration with [Polar.sh](https://polar.sh/docs/llms-full.txt) follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 
+Think harder to plan & start implementing payment integration with [https://docs.sepay.vn/](https://raw.githubusercontent.com/mrgoonie/sepay-llms/refs/heads/main/llms.txt) follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 
 <tasks>$ARGUMENTS</tasks>
 
 ## Workflow:
