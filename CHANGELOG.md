@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/claudekit/claudekit-engineer/compare/v1.3.0...v1.3.1) (2025-10-17)
+
+
+### ⚡ Performance Improvements
+
+* add argument-hint to command files for better CLI argument display ([d856c69](https://github.com/claudekit/claudekit-engineer/commit/d856c69beefa2a594481481947eff7683532db25))
+
 ## [1.3.0](https://github.com/claudekit/claudekit-engineer/compare/v1.2.0...v1.3.0) (2025-10-17)
 
 
