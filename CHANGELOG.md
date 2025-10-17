@@ -1,4 +1,17 @@
-## [1.1.0](https://github.com/claudekit/claudekit-engineer/compare/v1.0.0...v1.1.0) (2025-10-09)
+## [1.1.1](https://github.com/mrgoonie/claudekit-engineer/compare/v1.1.0...v1.1.1) (2025-10-16)
+
+
+### 🐛 Bug Fixes
+
+* improve "bootstrap" command ([3cc1be7](https://github.com/mrgoonie/claudekit-engineer/commit/3cc1be74a404f83626b7ec19f47ee54a610fbe28))
+
+
+### 📚 Documentation
+
+* add comprehensive command reference guide for ClaudeKit ([9e6b032](https://github.com/mrgoonie/claudekit-engineer/commit/9e6b0324d72a23ca4cff9acd17b7942def89c05e))
+* update UI/UX designer agent tools and workflow documentation ([ccc4ebb](https://github.com/mrgoonie/claudekit-engineer/commit/ccc4ebbb51b60adb608a359e2414b336de084a78))
+
+## [1.1.0](https://github.com/mrgoonie/claudekit-engineer/compare/v1.0.0...v1.1.0) (2025-10-09)
 
 
 ### 🚀 Features
