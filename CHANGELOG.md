@@ -1,3 +1,22 @@
+## [1.2.0](https://github.com/claudekit/claudekit-engineer/compare/v1.1.2...v1.2.0) (2025-10-17)
+
+
+### 🚀 Features
+
+* add UI fix command ([356ce49](https://github.com/claudekit/claudekit-engineer/commit/356ce49294023aa19418c0cd2550156a35046093))
+
+
+### 🐛 Bug Fixes
+
+* correct typo in ClaudeKit package label ([e16955b](https://github.com/claudekit/claudekit-engineer/commit/e16955b1c088d0e6e43961ac1a953bc4631a7361))
+
+
+### ⚡ Performance Improvements
+
+* remove layout fix command ([265b9ed](https://github.com/claudekit/claudekit-engineer/commit/265b9edf28c5ec99b8f3e657ee455723b1da32d2))
+* update design guideline references ([0ef871d](https://github.com/claudekit/claudekit-engineer/commit/0ef871d47fca3cf1f5e1a7b446ba9d0f3773ebe6))
+* update polar and add sepay command ([16c7ee0](https://github.com/claudekit/claudekit-engineer/commit/16c7ee09d80e225200e7b907c0013e162c1aac53))
+
 ## [1.1.2](https://github.com/claudekit/claudekit-engineer/compare/v1.1.1...v1.1.2) (2025-10-17)
 
 
