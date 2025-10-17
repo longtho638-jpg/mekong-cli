@@ -1,3 +1,19 @@
+## [1.1.2](https://github.com/claudekit/claudekit-engineer/compare/v1.1.1...v1.1.2) (2025-10-17)
+
+
+### 🐛 Bug Fixes
+
+* enforce concise reporting ([775757d](https://github.com/claudekit/claudekit-engineer/commit/775757d39a263cd301c69fb58469852a2bb20a53))
+* update bootstrap command guidelines ([d5eb6fb](https://github.com/claudekit/claudekit-engineer/commit/d5eb6fbd826068c2c16161eada52534af9c422e0))
+* update claude guidelines (CLAUDE.md) ([1916093](https://github.com/claudekit/claudekit-engineer/commit/1916093c217b21ff03278aac52e0783e187819c7))
+
+
+### 📚 Documentation
+
+* enforce concise reporting ([8f08867](https://github.com/claudekit/claudekit-engineer/commit/8f08867f051d7f1d5c75bbdd4eec59699913e6fb))
+* update claude guidelines ([252115b](https://github.com/claudekit/claudekit-engineer/commit/252115bca0b704f5c0a47e44a3e04ee541fbd382))
+* update repository URLs after transfer to claudekit organization ([4cc7dba](https://github.com/claudekit/claudekit-engineer/commit/4cc7dba5fcb212a3ee36487901319fbd02f96789))
+
 ## [1.1.1](https://github.com/mrgoonie/claudekit-engineer/compare/v1.1.0...v1.1.1) (2025-10-16)
 
 
