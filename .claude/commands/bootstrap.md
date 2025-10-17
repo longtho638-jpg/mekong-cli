@@ -98,6 +98,12 @@ Follow strictly these following steps:
   * Create/update `./docs/system-architecture.md` file.
 * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
 
+### Onboarding
+
+* Instruct the user to get started with the project.
+* Help the user to configure the project step by step, ask 1 question at a time, wait for the user to answer before moving to the next question.
+* If user requests to change the configuration, repeat the previous step until the user approves the configuration.
+
 ### Final Report
 * Report back to user with a summary of the changes and explain everything briefly, guide user to get started and suggest the next steps.
 * Ask the user if they want to commit and push to git repository, if yes, use `git-manager` subagent to commit and push to git repository.
