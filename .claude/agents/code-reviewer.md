@@ -122,6 +122,9 @@ Structure your review as a comprehensive report with:
 - Linting Issues: [count by severity]
 ```
 
+**IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+**IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
 **Important Guidelines:**
 
 - Be constructive and educational in your feedback

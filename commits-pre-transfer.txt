@@ -1,0 +1,25 @@
+*   857c350 Merge branch 'main' into dev
+|\  
+| * 6a61525 chore(release): 1.1.0 [skip ci]
+| *   b3f1052 Merge pull request #2 from mrgoonie/dev
+| |\  
+* | | 9e6b032 docs: add comprehensive command reference guide for ClaudeKit
+* | | 60e1e7a chore: update claude command docs
+* | | 3cc1be7 fix: improve "bootstrap" command
+* | | ccc4ebb docs: update UI/UX designer agent tools and workflow documentation
+* | | 39a77bb chore: update claude workflows and docs
+| |/  
+|/|   
+* | 8a2611a feat: add copywriter agent and update init documentation
+* | 80c8bcd chore: add mcp config file with human server settings
+* | 0de0e1a feat: add scout command for parallel codebase search using multiple agents
+* | 2693cbc feat: add journal-writer and scout agents
+* | a21de9b feat: add Claude command content files
+|/  
+* bb79ac3 chore(release): 1.0.0 [skip ci]
+* b1332f5 fix: skip Husky commit hooks in CI environment
+* ab7775e fix: disable NPM publishing by default in semantic-release
+* 26cf848 fix: remove npm cache dependency from GitHub Actions workflow
+* 00121c5 feat: add automated release system with semantic versioning
+* 7951821 fix: update agent configurations and documentation
+* 8569da4 fix: update CI and command configurations

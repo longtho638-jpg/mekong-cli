@@ -30,6 +30,8 @@ Delegate detailed tasks to these subagents according to their roles & expertises
 - Use `project-manager` agent for project's progress tracking, completion verification & TODO status management.
 - **[IMPORTANT]** Always delegate to `project-manager` agent after completing significant features, major milestones, or when requested to update project documentation.
 - **IMPORTANT:** You can intelligently spawn multiple subagents **in parallel** or **chain them sequentially** to handle the tasks efficiently.
+- **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+- **IMPORTANT:** In reports, list any unresolved questions at the end, if any
 
 ## Code Quality Guidelines
 - Read and follow codebase structure and code standards in `./docs`
@@ -51,7 +53,6 @@ Delegate detailed tasks to these subagents according to their roles & expertises
 - Create clean, professional commit messages without AI references. Use conventional commit format.
 
 ## Code Implementation
-
 - Before you start, delegate to `planner` agent to create a implementation plan with TODO tasks in `./plans` directory.
 - When in planning phase, use multiple `researcher` agents in parallel to conduct research on different relevant technical topics and report back to `planner` agent to create implementation plan.
 - Write clean, readable, and maintainable code

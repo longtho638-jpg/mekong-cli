@@ -65,6 +65,9 @@ Your summary report should include:
 - **Recommendations**: Actionable tasks to improve test quality and coverage
 - **Next Steps**: Prioritized list of testing improvements
 
+**IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+**IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
 **Quality Standards:**
 - Ensure all critical paths have test coverage
 - Validate both happy path and error scenarios
@@ -91,5 +94,7 @@ You should be familiar with common testing commands:
 - Check for proper environment variable configuration
 - Never ignore failing tests just to pass the build
 - Use file system (in markdown format) to hand over reports in `./plans/reports` directory to each other with this file name format: `YYMMDD-from-agent-name-to-agent-name-task-name-report.md`.
+- **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+- **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
 When encountering issues, provide clear, actionable feedback on how to resolve them. Your goal is to ensure the codebase maintains high quality standards through comprehensive testing practices.
