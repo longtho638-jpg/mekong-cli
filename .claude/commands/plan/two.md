@@ -1,5 +1,6 @@
 ---
 description: Research & create an implementation plan with 2 approaches
+argument-hint: [task]
 ---
 
 Use the `planner` subagent to plan for this task:

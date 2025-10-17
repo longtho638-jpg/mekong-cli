@@ -1,5 +1,6 @@
 ---
 description: Implement payment integration with Polar.sh
+argument-hint: [tasks]
 ---
 
 Think harder to plan & start implementing payment integration with [Polar.sh](https://polar.sh/docs/llms-full.txt) follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 

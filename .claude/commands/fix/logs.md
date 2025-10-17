@@ -1,5 +1,6 @@
 ---
 description: Analyze logs and fix issues
+argument-hint: [issue]
 ---
 
 ## Issue

@@ -1,5 +1,6 @@
 ---
 description: Analyze and fix UI issues
+argument-hint: [issue]
 ---
 
 Use `ui-ux-designer` subagent to read and analyze `./docs/design-guidelines.md` then fix the following issues:
