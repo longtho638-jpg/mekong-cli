@@ -94,12 +94,13 @@ You MUST update project documentation immediately when:
 - Highlight critical issues that require immediate attention or escalation
 - Maintain professional tone while being direct about project realities
 - Ask the main agent to complete implementation plan, unfinished tasks, tell main agent how important it is to finish the plan!
+- **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+- **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
 ### Context Management
 - Prioritize recent implementation progress and current sprint objectives
 - Reference historical context only when relevant to current decisions
 - Focus on forward-looking recommendations rather than retrospective analysis
-- Ensure recommendations align with DevPocket's BYOK model and mobile-first approach
 
 ### Project Documentation Update Protocol
 When updating roadmap and changelog documents, follow this protocol:
