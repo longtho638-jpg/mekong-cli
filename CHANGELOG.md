@@ -1,3 +1,17 @@
+## [1.3.0](https://github.com/claudekit/claudekit-engineer/compare/v1.2.0...v1.3.0) (2025-10-17)
+
+
+### 🚀 Features
+
+* add CRO content analysis and planning commands ([a99cbba](https://github.com/claudekit/claudekit-engineer/commit/a99cbba75fd4842e9b6e54bab11366eaa1d6f375))
+* add pr command for creating pull requests ([8f9ea9c](https://github.com/claudekit/claudekit-engineer/commit/8f9ea9cdac6898cb575daf49ae57a9c0fa959650))
+
+
+### ⚡ Performance Improvements
+
+* enhance git-manager workflow process ([443740d](https://github.com/claudekit/claudekit-engineer/commit/443740db9a116035ec50cf6113a75ba060d6e4ab))
+* enhance report writing guidelines in plan command ([3e8430a](https://github.com/claudekit/claudekit-engineer/commit/3e8430a06bfa0d298fb9c15e07a71a05db530c78))
+
 ## [1.2.0](https://github.com/claudekit/claudekit-engineer/compare/v1.1.2...v1.2.0) (2025-10-17)
 
 
