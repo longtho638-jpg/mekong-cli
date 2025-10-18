@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/claudekit/claudekit-engineer/compare/v1.3.1...v1.4.0) (2025-10-18)
+
+
+### 🚀 Features
+
+* add Claude skills directory with document processing and MCP tools ([563f0ce](https://github.com/claudekit/claudekit-engineer/commit/563f0ce90d37918c09039218e83ca80dd5d237ab))
+
 ## [1.3.1](https://github.com/claudekit/claudekit-engineer/compare/v1.3.0...v1.3.1) (2025-10-17)
 
 
