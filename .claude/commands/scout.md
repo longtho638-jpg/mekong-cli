@@ -7,9 +7,6 @@ argument-hint: [user-prompt] [scale]
 
 Search the codebase for files needed to complete the task using a fast, token efficient agent.
 
-## User's requests & target directories
-<user_requests>$ARGUMENTS</user_requests>
-
 ## Variables
 
 USER_PROMPT: $1
