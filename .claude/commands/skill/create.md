@@ -3,8 +3,11 @@ description: Create a new agent skill
 argument-hint: [prompt]
 ---
 
+Think harder.
 Create a new [Agent Skill](https://docs.claude.com/en/docs/claude-code/skills.md) based on the given prompt:
 <prompt>$ARGUMENTS</prompt>
+
+**Skills location:** `./.claude/skills`
 
 ## References:
 - [Agent Skills Overview](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)

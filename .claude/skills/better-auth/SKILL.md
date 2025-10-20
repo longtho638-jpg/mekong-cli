@@ -2,6 +2,7 @@
 name: better-auth
 description: Guide for implementing Better Auth - a framework-agnostic authentication and authorization framework for TypeScript. Use when adding authentication features like email/password, OAuth, 2FA, passkeys, or advanced auth functionality to applications.
 license: MIT
+version: 1.0.0
 ---
 
 # Better Auth Skill
