@@ -55,6 +55,10 @@ build
 GoogleService-Info.plist
 
 .serena/cache
-plans/reports/*
-# screenshots/*
+plans/**/*
+!plans/templates/*
+screenshots/*
+docs/screenshots/*
+docs/journals
 logs.txt
+test-ck

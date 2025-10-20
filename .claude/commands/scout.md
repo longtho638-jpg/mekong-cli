@@ -7,9 +7,6 @@ argument-hint: [user-prompt] [scale]
 
 Search the codebase for files needed to complete the task using a fast, token efficient agent.
 
-## User's requests & target directories
-<user_requests>$ARGUMENTS</user_requests>
-
 ## Variables
 
 USER_PROMPT: $1
@@ -23,6 +20,7 @@ RELEVANT_FILE_OUTPUT_DIR: `plans/scouts/`
   - if count >= 6, spawn `Explore` subagents to search the codebase in parallel
 
 **How to prompt the agents:**
+- If `gemini` or `opencode` is not available, use the default `Explore` subagents.
 - IMPORTANT: Kick these agents off in parallel using the Task tool, analyze and divide folders for each agent to scout intelligently and quickly.
 - IMPORTANT: These agents are calling OTHER agentic coding tools to search the codebase. DO NOT call any search tools yourself.
 - IMPORTANT: That means with the Task tool, you'll immediately call the Bash tool to run the respective agentic coding tool (gemini, opencode, claude, etc.)

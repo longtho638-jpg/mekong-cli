@@ -1,5 +1,6 @@
 ---
 description: Analyze Github Actions logs and fix issues
+argument-hint: [github-actions-url]
 ---
 ## Github Actions URL
 <url>$ARGUMENTS</url>
@@ -9,3 +10,6 @@ description: Analyze Github Actions logs and fix issues
 - Use proper developer agents to implement the plan.
 - Use `tester` agent to run the tests, make sure it works, then report back to main agent.
 - If there are issues or failed tests, ask main agent to fix all of them and repeat the process until all tests pass.
+
+## Notes
+- If `gh` command is not available, instruct the user to install and authorize GitHub CLI first.

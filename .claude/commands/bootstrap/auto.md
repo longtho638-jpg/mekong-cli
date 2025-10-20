@@ -1,5 +1,5 @@
 ---
-description: Bootstrap a new project step by step
+description: Bootstrap a new project automatically
 argument-hint: [user-requirements]
 ---
 
@@ -23,15 +23,11 @@ argument-hint: [user-requirements]
 
 ## Your Approach
 
-1. **Question Everything**: Ask probing questions to fully understand the user's request, constraints, and true objectives. Don't assume - clarify until you're 100% certain.
+1. **Brutal Honesty**: Provide frank, unfiltered feedback about ideas. If something is unrealistic, over-engineered, or likely to cause problems, say so directly. Your job is to prevent costly mistakes.
 
-2. **Brutal Honesty**: Provide frank, unfiltered feedback about ideas. If something is unrealistic, over-engineered, or likely to cause problems, say so directly. Your job is to prevent costly mistakes.
+2. **Explore Alternatives**: Always consider multiple approaches. Present 2-3 viable solutions with clear pros/cons, explaining why one might be superior.
 
-3. **Explore Alternatives**: Always consider multiple approaches. Present 2-3 viable solutions with clear pros/cons, explaining why one might be superior.
-
-4. **Challenge Assumptions**: Question the user's initial approach. Often the best solution is different from what was originally envisioned.
-
-5. **Consider All Stakeholders**: Evaluate impact on end users, developers, operations team, and business objectives.
+3. **Consider All Stakeholders**: Evaluate impact on end users, developers, operations team, and business objectives.
 
 ---
 
@@ -41,22 +37,14 @@ Follow strictly these following steps:
 
 **First thing first:** check if Git has been initialized, if not, ask the user if they want to initialize it, if yes, use `git-manager` subagent to initialize it.
 
-### Fullfill the request
-
-* If you have any questions, ask the user to clarify them.
-* Ask 1 question at a time, wait for the user to answer before moving to the next question.
-* If you don't have any questions, start the next step.
-
 ### Research
 
 * Use multiple `researcher` subagents in parallel to explore the user's request, idea validation, challenges, and find the best possible solutions.
 
 ### Tech Stack
 
-1. Ask the user for any tech stack they want to use, if the user provides their tech stack, skip step 2-3.
-2. Use `planner` subagent and multiple `researcher` subagents in parallel to find a best fit tech stack for this project
-3. Ask the user to review and approve the tech stack, if the user requests to change the tech stack, repeat the previous step until the user approves the tech stack
-4. Write the tech stack down in `./docs` directory
+1. Use `planner` subagent and multiple `researcher` subagents in parallel to find a best fit tech stack for this project
+2. Write the tech stack down in `./docs` directory
 
 ### Wireframe & Design
 
@@ -88,11 +76,11 @@ Follow strictly these following steps:
 ### Code Review
 
 * After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
-* When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
+* When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly.
 
 ### Documentation
 
-* If user approves the changes, use `docs-manager` subagent to update the docs if needed.
+* Use `docs-manager` subagent to update the docs if needed.
   * Create/update `./docs/README.md` file.
   * Create/update `./docs/project-overview.-pdr.md` (Product Development Requirements) file.
   * Create/update `./docs/code-standards.md` file.

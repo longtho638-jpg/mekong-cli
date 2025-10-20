@@ -67,6 +67,8 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
   # usage: repomix --remote <github-repo-url>
   # example: repomix --remote https://github.com/mrgoonie/human-mcp
   ```
+- You can use multiple `scout` agents in parallel to search the codebase for files needed to complete the task
+- You wait for all scout agents to report back before proceeding with analysis
 
 ## Your Process
 1. **Discovery Phase**: Ask clarifying questions about requirements, constraints, timeline, and success criteria

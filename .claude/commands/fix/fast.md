@@ -1,10 +1,10 @@
 ---
-description: Analyze and fix the issue [FAST]
-argument-hint: [issue]
+description: Analyze and fix small issues [FAST]
+argument-hint: [issues]
 ---
 
-Analyze and fix this issue:
-<issue>$ARGUMENTS</issue>
+Analyze and fix these issues:
+<issues>$ARGUMENTS</issues>
 
 ## Workflow
 

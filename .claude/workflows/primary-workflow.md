@@ -38,4 +38,4 @@
 - When a user report bugs or issues on the server or a CI/CD pipeline, delegate to `debugger` agent to run tests and analyze the summary report.
 - Read the summary report from `debugger` agent and implement the fix.
 - Delegate to `tester` agent to run tests and analyze the summary report.
-- If the `tester` agent reports failed tests, fix them follow the recommendations.
+- If the `tester` agent reports failed tests, fix them follow the recommendations and repeat from the **Step 2**.
