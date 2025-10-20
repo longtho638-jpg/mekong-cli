@@ -41,6 +41,29 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      - name: Generate metadata
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+          const metadata = {
+            version: packageJson.version,
+            name: packageJson.name,
+            description: packageJson.description,
+            buildDate: new Date().toISOString(),
+            repository: packageJson.repository,
+            download: {
+              lastDownloadedAt: null,
+              downloadedBy: null,
+              installCount: 0
+            }
+          };
+
+          fs.writeFileSync('.claude/metadata.json', JSON.stringify(metadata, null, 2) + '\n');
+          console.log(`Generated metadata.json with version ${metadata.version}`);
+          EOF
+
       - name: Prepare release archive
         run: |
           mkdir -p dist
