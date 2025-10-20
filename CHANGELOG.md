@@ -1,3 +1,25 @@
+## [1.5.0](https://github.com/claudekit/claudekit-engineer/compare/v1.4.0...v1.5.0) (2025-10-20)
+
+
+### 🚀 Features
+
+* add debugging skill framework ([98401fe](https://github.com/claudekit/claudekit-engineer/commit/98401fe637f3b9c7b6b9c10d4a7aff4bcba672de))
+* add imagemagick skill for image processing operations ([fa7b1e6](https://github.com/claudekit/claudekit-engineer/commit/fa7b1e6804f2dbf87c7efcf2f4ea63541cb1c68d))
+* add new bootstrap auto command, skill create command, and better-auth skill ([10810ba](https://github.com/claudekit/claudekit-engineer/commit/10810bac6aa73b3f43789421ea7e996e1c0c2c15))
+* add problem-solving skill framework ([fe63314](https://github.com/claudekit/claudekit-engineer/commit/fe63314c51f27eb164511929c66b07dbb1481271))
+
+
+### ♻️ Code Refactoring
+
+* update scout command and gitignore patterns ([d73d29b](https://github.com/claudekit/claudekit-engineer/commit/d73d29b7099364fd18c69cb2e25e20444b9ce02b))
+
+
+### ⚡ Performance Improvements
+
+* refine command descriptions and workflow processes ([3ac572d](https://github.com/claudekit/claudekit-engineer/commit/3ac572d06cf7e9776de17f3d52fe4f7bb207375e))
+* update agent and command configurations ([18a211a](https://github.com/claudekit/claudekit-engineer/commit/18a211a950a77cae1a0ec114effff70bdb5ff782))
+* update skill creation command and better-auth skill documentation ([4de0de1](https://github.com/claudekit/claudekit-engineer/commit/4de0de1a974a2c633f04b9445edeee43b8da7777))
+
 ## [1.4.0](https://github.com/claudekit/claudekit-engineer/compare/v1.3.1...v1.4.0) (2025-10-18)
 
 
