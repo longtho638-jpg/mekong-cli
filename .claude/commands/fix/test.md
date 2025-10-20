@@ -1,12 +1,10 @@
 ---
 description: Run test suite and fix issues
-argument-hint: [issue]
+argument-hint: [issues]
 ---
 
 ## Reported Issues:
-<issue>
- $ARGUMENTS
-</issue>
+<issues>$ARGUMENTS</issues>
 
 ## Workflow:
 1. First use `tester` subagent to compile the code and fix all syntax errors if any.
