@@ -73,6 +73,8 @@ gemini -p "[your focused search prompt]" --model gemini-2.5-flash-preview-09-202
 opencode run "[your focused search prompt]" --model opencode/grok-code
 ```
 
+**NOTE:** If `gemini` or `opencode` is not available, use the default `Explore` subagents.
+
 ## Example Execution Flow
 
 **User Request**: "Find all files related to email sending functionality"
