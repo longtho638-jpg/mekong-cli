@@ -1,3 +1,20 @@
+## [1.6.0](https://github.com/claudekit/claudekit-engineer/compare/v1.5.0...v1.6.0) (2025-10-21)
+
+
+### 🚀 Features
+
+* add auto command and metadata.json for project tracking ([c1bcd89](https://github.com/claudekit/claudekit-engineer/commit/c1bcd89c8b6c15ffe41b46772b5bfd6358af74d9))
+
+
+### ⚡ Performance Improvements
+
+* enhance cook command workflow and add metadata generation to release pipeline ([c4fab44](https://github.com/claudekit/claudekit-engineer/commit/c4fab44bae7b415c88ba36d15c2c3df9ad3cc288))
+
+
+### 👷 CI
+
+* setup automated release workflow with metadata generation ([413e6be](https://github.com/claudekit/claudekit-engineer/commit/413e6be4a49fd8be76c79fbfeee1e84c39dadbaf))
+
 ## [1.5.0](https://github.com/claudekit/claudekit-engineer/compare/v1.4.0...v1.5.0) (2025-10-20)
 
 
