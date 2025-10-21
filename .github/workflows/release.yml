@@ -41,6 +41,59 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      - name: Generate metadata
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const path = require('path');
+
+          try {
+            // Validate package.json exists and is readable
+            if (!fs.existsSync('package.json')) {
+              throw new Error('package.json not found');
+            }
+
+            const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+            // Validate required fields
+            const requiredFields = ['version', 'name', 'description', 'repository'];
+            const missingFields = requiredFields.filter(field => !packageJson[field]);
+            if (missingFields.length > 0) {
+              throw new Error(`Missing required fields in package.json: ${missingFields.join(', ')}`);
+            }
+
+            // Create metadata object
+            const metadata = {
+              version: packageJson.version,
+              name: packageJson.name,
+              description: packageJson.description,
+              buildDate: new Date().toISOString(),
+              repository: packageJson.repository,
+              download: {
+                lastDownloadedAt: null,
+                downloadedBy: null,
+                installCount: 0
+              }
+            };
+
+            // Ensure .claude directory exists
+            const claudeDir = '.claude';
+            if (!fs.existsSync(claudeDir)) {
+              fs.mkdirSync(claudeDir, { recursive: true });
+            }
+
+            // Write metadata file
+            const metadataPath = path.join(claudeDir, 'metadata.json');
+            fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2) + '\n');
+
+            console.log(`✓ Generated metadata.json with version ${metadata.version}`);
+            console.log(`✓ Build date: ${metadata.buildDate}`);
+          } catch (error) {
+            console.error('✗ Failed to generate metadata.json:', error.message);
+            process.exit(1);
+          }
+          EOF
+
       - name: Prepare release archive
         run: |
           mkdir -p dist
