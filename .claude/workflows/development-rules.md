@@ -7,7 +7,7 @@
   - Extract utility functions into separate modules
   - Create dedicated service classes for business logic
 - You ALWAYS follow these principles: **YANGI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)**
-- Use `context7` mcp tools for exploring latest docs of plugins/packages
+- Use `docs-seeker` skill for exploring latest docs of plugins/packages
 - Use `gh` bash command to interact with Github features.
 - Use `psql` bash command to query database for debugging.
 - Use `eyes` mcp tools for describing details of images, videos, documents, etc.
