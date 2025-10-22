@@ -1,3 +1,18 @@
+## [1.7.0](https://github.com/claudekit/claudekit-engineer/compare/v1.6.0...v1.7.0) (2025-10-22)
+
+
+### 🚀 Features
+
+* add claude-code skill for enhanced code assistance ([7848ae4](https://github.com/claudekit/claudekit-engineer/commit/7848ae4f491d135fd7eea7599cce26ea5692757d))
+* add comprehensive repomix skill documentation ([f7c6475](https://github.com/claudekit/claudekit-engineer/commit/f7c64755f2f65676d7cf2145489214793294ea17))
+* add docs-seeker skill for documentation discovery and analysis ([05cbbc8](https://github.com/claudekit/claudekit-engineer/commit/05cbbc891146cd06cba04a9cab32eade6608b0b3))
+
+
+### ⚡ Performance Improvements
+
+* enhance create skill command documentation ([559fad8](https://github.com/claudekit/claudekit-engineer/commit/559fad89fa5db855bf59ec4a04ef39f19846af2f))
+* improve skill creation command with better parallel exploration guidance ([5e25fbd](https://github.com/claudekit/claudekit-engineer/commit/5e25fbdcd4776c8bcf35a0a0e3fa603ffe3d826b))
+
 ## [1.6.0](https://github.com/claudekit/claudekit-engineer/compare/v1.5.0...v1.6.0) (2025-10-21)
 
 
