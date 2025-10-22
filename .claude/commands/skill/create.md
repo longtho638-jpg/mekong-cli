@@ -12,3 +12,6 @@ Create a new [Agent Skill](https://docs.claude.com/en/docs/claude-code/skills.md
 ## References:
 - [Agent Skills Overview](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
 - [Best Practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices.md)
+
+## Important Notes:
+- If you receive a lot of URLs, use multiple `Explorer` subagents to explore them in parallel, then report back to main agent.
