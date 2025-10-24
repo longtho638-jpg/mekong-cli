@@ -46,10 +46,6 @@ Delegate detailed tasks to these subagents according to their roles & expertises
 - Run tests before push (DO NOT ignore failed tests just to pass the build or github actions)
 - Keep commits focused on the actual code changes
 - **DO NOT** commit and push any confidential information (such as dotenv files, API keys, database credentials, etc.) to git repository!
-- NEVER automatically add AI attribution signatures like:
-  "🤖 Generated with [Claude Code]"
-  "Co-Authored-By: Claude noreply@anthropic.com"
-  Any AI tool attribution or signature
 - Create clean, professional commit messages without AI references. Use conventional commit format.
 
 ## Code Implementation
