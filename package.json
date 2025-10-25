@@ -1,6 +1,6 @@
 {
   "name": "claudekit-engineer",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "A comprehensive boilerplate template for building professional software projects with CLI Coding Agents (Claude Code and Open Code).",
   "main": "index.js",
   "scripts": {

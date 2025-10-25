@@ -1,3 +1,38 @@
+## [1.8.0](https://github.com/claudekit/claudekit-engineer/compare/v1.7.1...v1.8.0) (2025-10-25)
+
+
+### 🚀 Features
+
+* add ffmpeg skill documentation ([4fbed9a](https://github.com/claudekit/claudekit-engineer/commit/4fbed9a3f5e977131fcc08cd22da4fb5831a03dc))
+* add shadcn-ui skill documentation ([63e6a13](https://github.com/claudekit/claudekit-engineer/commit/63e6a133a70b32ab865f6a88e9d0cccb3d3ad6b4))
+* new skill - Google ADK (Python) ([6833158](https://github.com/claudekit/claudekit-engineer/commit/683315838bb6d6bbf65ad718b1b0777b2c0313fb))
+* new skill - NextJS ([51f7c43](https://github.com/claudekit/claudekit-engineer/commit/51f7c4388778721ce66f6a4f795c5e60c4f98ce6))
+* new skill - Remix Icon ([d762c70](https://github.com/claudekit/claudekit-engineer/commit/d762c70da86643ec70f821acf92e159985a42709))
+* new skill - Shopify ([299fcb4](https://github.com/claudekit/claudekit-engineer/commit/299fcb4945efbe951f756f8168014fd2832c816f))
+* new skill - Tailwind V4 ([9c911df](https://github.com/claudekit/claudekit-engineer/commit/9c911df8ea2152adfe73b4458669164f7ace72a2))
+* new skill - Turborepo ([efe4224](https://github.com/claudekit/claudekit-engineer/commit/efe42245b01604a402a18c2a787233fad965f940))
+
+
+### 🐛 Bug Fixes
+
+* exclude co-author by claude and update gitignore ([511c85a](https://github.com/claudekit/claudekit-engineer/commit/511c85af4d17bd0ea4b49563b0566c144c7037d9))
+
+
+### 📚 Documentation
+
+* readme and research of shopify skill ([2cadeb8](https://github.com/claudekit/claudekit-engineer/commit/2cadeb84e07edefbd74fda52413ce0c8cd7b0cc7))
+
+
+### ♻️ Code Refactoring
+
+* replace context7 MCP tool with docs-seeker skill ([e7b13b4](https://github.com/claudekit/claudekit-engineer/commit/e7b13b42e6ef327b1bffa74be848f70e21cab30f))
+
+
+### ⚡ Performance Improvements
+
+* enhance skill creation command ([4abd785](https://github.com/claudekit/claudekit-engineer/commit/4abd7856ea35959819fbab708bb30d567b68ef6c))
+* improve docs seeking skill ([2486c0a](https://github.com/claudekit/claudekit-engineer/commit/2486c0ad304a429c789b5db3f3f1376b75b81da0))
+
 ## [1.7.1](https://github.com/claudekit/claudekit-engineer/compare/v1.7.0...v1.7.1) (2025-10-24)
 
 
