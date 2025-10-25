@@ -49,6 +49,19 @@ A comprehensive boilerplate template for building professional software projects
 - **Documentation Sync**: Always up-to-date technical documentation
 - **Clean Git Workflow**: Professional commit messages and branch management
 
+## Documentation
+
+### 📚 Core Documentation
+- **[Project Overview & PDR](./docs/project-overview-pdr.md)** - Comprehensive project overview, goals, features, and product development requirements
+- **[Codebase Summary](./docs/codebase-summary.md)** - High-level overview of project structure, technologies, and components
+- **[Code Standards](./docs/code-standards.md)** - Coding standards, naming conventions, and best practices
+- **[System Architecture](./docs/system-architecture.md)** - Detailed architecture documentation, component interactions, and data flow
+- **[Commands Reference](./guide/COMMANDS.md)** - Complete guide to all available slash commands
+
+### 📖 Additional Resources
+- **[CLAUDE.md](./CLAUDE.md)** - Development instructions and workflows for AI agents
+- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
+
 ## Quick Start
 
 ### Prerequisites
