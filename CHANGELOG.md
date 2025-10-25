@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/claudekit/claudekit-engineer/compare/v1.7.0...v1.7.1) (2025-10-24)
+
+
+### 🐛 Bug Fixes
+
+* exclude co-author by claude and update gitignore ([be0b1d9](https://github.com/claudekit/claudekit-engineer/commit/be0b1d9872b783fbb0c9a5c94c80b14def4c6920))
+
 ## [1.7.0](https://github.com/claudekit/claudekit-engineer/compare/v1.6.0...v1.7.0) (2025-10-22)
 
 
