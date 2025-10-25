@@ -24,5 +24,6 @@ Create a new **Agent Skill** for Claude Code based on the given prompt:
 - [Best Practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices.md)
 
 ## Important Notes:
+- If you're given an URL, it's documentation page, use `Explorer` subagent to explore every internal link and report back to main agent, don't skip any link.
 - If you receive a lot of URLs, use multiple `Explorer` subagents to explore them in parallel, then report back to main agent.
 - If you receive a lot of files, use multiple `Explorer` subagents to explore them in parallel, then report back to main agent.
