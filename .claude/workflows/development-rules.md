@@ -14,7 +14,7 @@
 - Use `hands` mcp tools for generating images, videos, documents, etc.
 - Use `brain` mcp tools for sequential thinking, analyzing code, debugging, etc.
 - **[IMPORTANT]** Follow the codebase structure and code standards in `./docs` during implementation
-- **[IMPORTANT]** When you finish the implementation, send a full summary report to Discord channel with `./.claude/send-discord.sh 'Your message here'` script (remember to escape the string).
+- **[IMPORTANT]** When you finish the implementation, send a full summary report to Discord channel with `./.claude/hooks/send-discord.sh 'Your message here'` script (remember to escape the string).
 - **[IMPORTANT]** Do not just simulate the implementation or mocking them, always implement the real code.
 
 ## Subagents
