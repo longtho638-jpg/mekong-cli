@@ -54,7 +54,7 @@ async function monitorConsole() {
 
     // Wait for additional time if specified
     if (args.duration) {
-      await page.waitForTimeout(parseInt(args.duration));
+      await new Promise(resolve => setTimeout(resolve, parseInt(args.duration)));
     }
 
     outputJSON({
