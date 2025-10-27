@@ -8,7 +8,7 @@ Ultrathink to plan & start fixing these issues follow the Orchestration Protocol
 
 ## Workflow:
 
-If the user provides a screenshots or videos, use `eyes_analyze` tool from Human MCP to describe as detailed as possible the issue, make sure developers can predict the root causes easily based on the description.
+If the user provides a screenshots or videos, use `gemini-vision` skill to describe as detailed as possible the issue, make sure developers can predict the root causes easily based on the description.
 
 1. Use `planner` subagent and `researcher` subagent to create a implementation plan with TODO tasks in `./plans` directory.
 2. Then use general agent (main agent) to implement the plan step by step.

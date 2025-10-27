@@ -50,11 +50,9 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 
 * Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
 * Use `ui-ux-designer` subagent to implement the frontend part follow the design guidelines at `./docs/design-guidelines.md` file.
-  * Use `gemini_gen_image` tool to generate the assets.
-  * Use `eyes_analyze` tool to analyze the generated assets.
-  * Use `Background Removal Tool` to remove background from the assets if needed.
-  * Use `Gemini Image Editing` tool to edit the assets if needed.
-  * Use `Jimp Image` tools to crop or resize the assets if needed.
+  * Use `gemini-image-gen` skill to generate image assets.
+  * Use `gemini-vision` skill to analyze and verify generated assets.
+  * Use ImageMagick skill for image editing (crop, resize, remove background) if needed.
 * Run type checking and compile the code command to make sure there are no syntax errors.
 
 ### Testing
@@ -87,6 +85,7 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 - **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
-**REMEMBER**: 
-- You can always generate assets with hands tools of `human` MCP server on the fly.
-- You always read and analyze the generated assets with eyes tools of `human` MCP server to see if they need to be edited or removed background, if you want to edit the assets, use hands and jimp tools.
+**REMEMBER**:
+- You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
+- You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
+- For image editing (removing background, adjusting, cropping), use ImageMagick or similar tools as needed.
