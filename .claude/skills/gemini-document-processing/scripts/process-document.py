@@ -27,8 +27,10 @@ def find_api_key() -> Optional[str]:
     """
     Find GEMINI_API_KEY from multiple sources in priority order:
     1. Process environment variable
-    2. .env file in skill directory
-    3. .env file in project root
+    2. Project root .env
+    3. ./.claude/.env
+    4. ./.claude/skills/.env
+    5. Skill directory .env
 
     Returns:
         API key string or None if not found
@@ -39,24 +41,44 @@ def find_api_key() -> Optional[str]:
         print("✓ API key found in environment variable", file=sys.stderr)
         return api_key
 
-    # Priority 2: Check skill directory .env
+    # Determine paths
     skill_dir = Path(__file__).parent.parent
-    skill_env = skill_dir / '.env'
-    if skill_env.exists():
-        load_dotenv(skill_env)
-        api_key = os.getenv('GEMINI_API_KEY')
-        if api_key:
-            print(f"✓ API key found in skill directory: {skill_env}", file=sys.stderr)
-            return api_key
-
-    # Priority 3: Check project root .env
     project_root = skill_dir.parent.parent.parent  # Go up from .claude/skills/gemini-document-processing
+
+    # Priority 2: Check project root .env
     project_env = project_root / '.env'
     if project_env.exists():
         load_dotenv(project_env)
         api_key = os.getenv('GEMINI_API_KEY')
         if api_key:
             print(f"✓ API key found in project root: {project_env}", file=sys.stderr)
+            return api_key
+
+    # Priority 3: Check ./.claude/.env
+    claude_env = project_root / '.claude' / '.env'
+    if claude_env.exists():
+        load_dotenv(claude_env)
+        api_key = os.getenv('GEMINI_API_KEY')
+        if api_key:
+            print(f"✓ API key found in .claude/.env: {claude_env}", file=sys.stderr)
+            return api_key
+
+    # Priority 4: Check ./.claude/skills/.env
+    claude_skills_env = project_root / '.claude' / 'skills' / '.env'
+    if claude_skills_env.exists():
+        load_dotenv(claude_skills_env)
+        api_key = os.getenv('GEMINI_API_KEY')
+        if api_key:
+            print(f"✓ API key found in .claude/skills/.env: {claude_skills_env}", file=sys.stderr)
+            return api_key
+
+    # Priority 5: Check skill directory .env
+    skill_env = skill_dir / '.env'
+    if skill_env.exists():
+        load_dotenv(skill_env)
+        api_key = os.getenv('GEMINI_API_KEY')
+        if api_key:
+            print(f"✓ API key found in skill directory: {skill_env}", file=sys.stderr)
             return api_key
 
     return None
@@ -86,10 +108,12 @@ def process_document(
     api_key = find_api_key()
     if not api_key:
         print("\nError: GEMINI_API_KEY not found", file=sys.stderr)
-        print("\nPlease set API key using one of these methods:", file=sys.stderr)
+        print("\nPlease set API key using one of these methods (in priority order):", file=sys.stderr)
         print("1. Environment variable: export GEMINI_API_KEY='your-key'", file=sys.stderr)
-        print("2. Skill directory: echo 'GEMINI_API_KEY=your-key' > .claude/skills/gemini-document-processing/.env", file=sys.stderr)
-        print("3. Project root: echo 'GEMINI_API_KEY=your-key' > .env", file=sys.stderr)
+        print("2. Project root: echo 'GEMINI_API_KEY=your-key' > .env", file=sys.stderr)
+        print("3. .claude/.env: echo 'GEMINI_API_KEY=your-key' > .claude/.env", file=sys.stderr)
+        print("4. .claude/skills/.env: echo 'GEMINI_API_KEY=your-key' > .claude/skills/.env", file=sys.stderr)
+        print("5. Skill directory: echo 'GEMINI_API_KEY=your-key' > .claude/skills/gemini-document-processing/.env", file=sys.stderr)
         print("\nGet API key at: https://aistudio.google.com/apikey", file=sys.stderr)
         sys.exit(1)
 

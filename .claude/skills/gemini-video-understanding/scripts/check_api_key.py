@@ -4,8 +4,10 @@ Check GEMINI_API_KEY configuration and availability.
 
 Checks in priority order:
 1. Process environment variable
-2. Skill directory .env file
-3. Project root .env file
+2. Project root .env
+3. ./.claude/.env
+4. ./.claude/skills/.env
+5. Skill directory .env file
 """
 
 import os
@@ -30,9 +32,63 @@ def check_api_key():
     else:
         print("    ✗ Not found")
 
-    # 2. Check skill directory .env
-    print("\n[2] Skill Directory .env File")
+    # Determine paths
     skill_dir = Path(__file__).parent.parent
+    project_dir = skill_dir.parent.parent.parent
+
+    # 2. Check project root .env
+    print("\n[2] Project Root .env File")
+    project_env = project_dir / '.env'
+    print(f"    Path: {project_env}")
+
+    if project_env.exists():
+        project_key = load_env_file(project_env)
+        if project_key:
+            masked = project_key[:8] + '...' + project_key[-4:] if len(project_key) > 12 else '***'
+            print(f"    ✓ Found: {masked}")
+            if not found:
+                found = True
+        else:
+            print("    ✗ File exists but GEMINI_API_KEY not found")
+    else:
+        print("    ✗ File does not exist")
+
+    # 3. Check ./.claude/.env
+    print("\n[3] .claude/.env File")
+    claude_env = project_dir / '.claude' / '.env'
+    print(f"    Path: {claude_env}")
+
+    if claude_env.exists():
+        claude_key = load_env_file(claude_env)
+        if claude_key:
+            masked = claude_key[:8] + '...' + claude_key[-4:] if len(claude_key) > 12 else '***'
+            print(f"    ✓ Found: {masked}")
+            if not found:
+                found = True
+        else:
+            print("    ✗ File exists but GEMINI_API_KEY not found")
+    else:
+        print("    ✗ File does not exist")
+
+    # 4. Check ./.claude/skills/.env
+    print("\n[4] .claude/skills/.env File")
+    claude_skills_env = project_dir / '.claude' / 'skills' / '.env'
+    print(f"    Path: {claude_skills_env}")
+
+    if claude_skills_env.exists():
+        claude_skills_key = load_env_file(claude_skills_env)
+        if claude_skills_key:
+            masked = claude_skills_key[:8] + '...' + claude_skills_key[-4:] if len(claude_skills_key) > 12 else '***'
+            print(f"    ✓ Found: {masked}")
+            if not found:
+                found = True
+        else:
+            print("    ✗ File exists but GEMINI_API_KEY not found")
+    else:
+        print("    ✗ File does not exist")
+
+    # 5. Check skill directory .env
+    print("\n[5] Skill Directory .env File")
     skill_env = skill_dir / '.env'
     print(f"    Path: {skill_env}")
 
@@ -48,36 +104,6 @@ def check_api_key():
     else:
         print("    ✗ File does not exist")
 
-    # 3. Check project root .env
-    print("\n[3] Project Root .env File")
-    current = Path.cwd()
-    project_root = None
-
-    # Find project root
-    while current != current.parent:
-        if (current / '.git').exists() or (current / '.claude').exists():
-            project_root = current
-            break
-        current = current.parent
-
-    if project_root:
-        project_env = project_root / '.env'
-        print(f"    Path: {project_env}")
-
-        if project_env.exists():
-            project_key = load_env_file(project_env)
-            if project_key:
-                masked = project_key[:8] + '...' + project_key[-4:] if len(project_key) > 12 else '***'
-                print(f"    ✓ Found: {masked}")
-                if not found:
-                    found = True
-            else:
-                print("    ✗ File exists but GEMINI_API_KEY not found")
-        else:
-            print("    ✗ File does not exist")
-    else:
-        print("    ✗ Project root not found")
-
     # Summary
     print("\n" + "="*60)
     if found:
@@ -86,16 +112,17 @@ def check_api_key():
         return 0
     else:
         print("✗ GEMINI_API_KEY not found")
-        print("\nTo configure:")
+        print("\nTo configure (in priority order):")
         print("\n  Option 1 (Recommended): Environment Variable")
         print("    export GEMINI_API_KEY='your-api-key-here'")
-        print("\n  Option 2: Skill Directory .env")
+        print("\n  Option 2: Project Root .env")
+        print(f"    echo 'GEMINI_API_KEY=your-api-key-here' > {project_env}")
+        print("\n  Option 3: .claude/.env")
+        print(f"    echo 'GEMINI_API_KEY=your-api-key-here' > {claude_env}")
+        print("\n  Option 4: .claude/skills/.env")
+        print(f"    echo 'GEMINI_API_KEY=your-api-key-here' > {claude_skills_env}")
+        print("\n  Option 5: Skill Directory .env")
         print(f"    echo 'GEMINI_API_KEY=your-api-key-here' > {skill_env}")
-        print("\n  Option 3: Project Root .env")
-        if project_root:
-            print(f"    echo 'GEMINI_API_KEY=your-api-key-here' > {project_root}/.env")
-        else:
-            print("    echo 'GEMINI_API_KEY=your-api-key-here' > .env")
         print("\nGet your API key at: https://aistudio.google.com/apikey")
         return 1
 

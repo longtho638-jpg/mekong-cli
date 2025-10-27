@@ -22,32 +22,23 @@ from typing import List, Optional
 
 def find_api_key() -> Optional[str]:
     """
-    Find GEMINI_API_KEY using 3-step lookup:
+    Find GEMINI_API_KEY using 5-step lookup:
     1. Process environment variable
-    2. Skill directory (.env)
-    3. Project directory (.env or .gemini_api_key)
+    2. Project root .env
+    3. ./.claude/.env
+    4. ./.claude/skills/.env
+    5. Skill directory .env
     """
     # Step 1: Check process environment
     api_key = os.environ.get('GEMINI_API_KEY')
     if api_key:
         return api_key
 
-    # Step 2: Check skill directory
+    # Determine paths
     skill_dir = Path(__file__).parent.parent  # .claude/skills/gemini-vision/
-    skill_env = skill_dir / '.env'
-
-    if skill_env.exists():
-        with open(skill_env, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith('GEMINI_API_KEY='):
-                    return line.split('=', 1)[1].strip().strip('"\'')
-
-    # Step 3: Check project directory
-    # Try to find project root (go up from skill dir)
     project_dir = skill_dir.parent.parent.parent  # Back to project root
 
-    # Check .env in project root
+    # Step 2: Check project root .env
     project_env = project_dir / '.env'
     if project_env.exists():
         with open(project_env, 'r') as f:
@@ -56,11 +47,32 @@ def find_api_key() -> Optional[str]:
                 if line.startswith('GEMINI_API_KEY='):
                     return line.split('=', 1)[1].strip().strip('"\'')
 
-    # Check .gemini_api_key in project root
-    api_key_file = project_dir / '.gemini_api_key'
-    if api_key_file.exists():
-        with open(api_key_file, 'r') as f:
-            return f.read().strip()
+    # Step 3: Check ./.claude/.env
+    claude_env = project_dir / '.claude' / '.env'
+    if claude_env.exists():
+        with open(claude_env, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('GEMINI_API_KEY='):
+                    return line.split('=', 1)[1].strip().strip('"\'')
+
+    # Step 4: Check ./.claude/skills/.env
+    claude_skills_env = project_dir / '.claude' / 'skills' / '.env'
+    if claude_skills_env.exists():
+        with open(claude_skills_env, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('GEMINI_API_KEY='):
+                    return line.split('=', 1)[1].strip().strip('"\'')
+
+    # Step 5: Check skill directory .env
+    skill_env = skill_dir / '.env'
+    if skill_env.exists():
+        with open(skill_env, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('GEMINI_API_KEY='):
+                    return line.split('=', 1)[1].strip().strip('"\'')
 
     return None
 
@@ -95,10 +107,12 @@ def analyze_image(
     api_key = find_api_key()
     if not api_key:
         print("Error: GEMINI_API_KEY not found.", file=sys.stderr)
-        print("Set it using one of these methods:", file=sys.stderr)
+        print("Set it using one of these methods (in priority order):", file=sys.stderr)
         print("  1. export GEMINI_API_KEY='your-key'", file=sys.stderr)
-        print("  2. Create .claude/skills/gemini-vision/.env", file=sys.stderr)
-        print("  3. Create .env or .gemini_api_key in project root", file=sys.stderr)
+        print("  2. Create project root .env file", file=sys.stderr)
+        print("  3. Create .claude/.env file", file=sys.stderr)
+        print("  4. Create .claude/skills/.env file", file=sys.stderr)
+        print("  5. Create .claude/skills/gemini-vision/.env", file=sys.stderr)
         sys.exit(1)
 
     # Initialize client

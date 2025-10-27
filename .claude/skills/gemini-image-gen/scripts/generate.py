@@ -34,8 +34,10 @@ def find_api_key() -> Optional[str]:
     """
     Find GEMINI_API_KEY in this order:
     1. Process environment
-    2. Skill directory .env file
-    3. Project directory .env file
+    2. Project root .env
+    3. ./.claude/.env
+    4. ./.claude/skills/.env
+    5. Skill directory .env file
 
     Returns:
         API key string or None if not found
@@ -46,22 +48,40 @@ def find_api_key() -> Optional[str]:
         print("✓ API key found in process environment")
         return api_key
 
-    # 2. Check skill directory .env
+    # Determine paths
     skill_dir = Path(__file__).parent.parent
+    project_dir = skill_dir.parent.parent.parent  # Go up to project root
+
+    # 2. Check project root .env
+    project_env = project_dir / '.env'
+    if project_env.exists():
+        api_key = load_env_file(project_env)
+        if api_key:
+            print(f"✓ API key found in project root: {project_env}")
+            return api_key
+
+    # 3. Check ./.claude/.env
+    claude_env = project_dir / '.claude' / '.env'
+    if claude_env.exists():
+        api_key = load_env_file(claude_env)
+        if api_key:
+            print(f"✓ API key found in .claude/.env: {claude_env}")
+            return api_key
+
+    # 4. Check ./.claude/skills/.env
+    claude_skills_env = project_dir / '.claude' / 'skills' / '.env'
+    if claude_skills_env.exists():
+        api_key = load_env_file(claude_skills_env)
+        if api_key:
+            print(f"✓ API key found in .claude/skills/.env: {claude_skills_env}")
+            return api_key
+
+    # 5. Check skill directory .env
     skill_env = skill_dir / '.env'
     if skill_env.exists():
         api_key = load_env_file(skill_env)
         if api_key:
             print(f"✓ API key found in skill directory: {skill_env}")
-            return api_key
-
-    # 3. Check project directory .env
-    project_dir = skill_dir.parent.parent.parent  # Go up to project root
-    project_env = project_dir / '.env'
-    if project_env.exists():
-        api_key = load_env_file(project_env)
-        if api_key:
-            print(f"✓ API key found in project directory: {project_env}")
             return api_key
 
     return None

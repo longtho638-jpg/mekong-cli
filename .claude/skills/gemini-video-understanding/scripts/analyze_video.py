@@ -29,34 +29,47 @@ def find_api_key() -> Optional[str]:
     """
     Search for GEMINI_API_KEY in priority order:
     1. Process environment variable
-    2. Skill directory .env file
-    3. Project root .env file
+    2. Project root .env
+    3. ./.claude/.env
+    4. ./.claude/skills/.env
+    5. Skill directory .env file
     """
     # 1. Check process environment
     api_key = os.environ.get('GEMINI_API_KEY')
     if api_key:
         return api_key
 
-    # 2. Check skill directory .env
+    # Determine paths
     skill_dir = Path(__file__).parent.parent
+    project_dir = skill_dir.parent.parent.parent  # 3 levels up from skill dir
+
+    # 2. Check project root .env
+    project_env = project_dir / '.env'
+    if project_env.exists():
+        api_key = load_env_file(project_env, 'GEMINI_API_KEY')
+        if api_key:
+            return api_key
+
+    # 3. Check ./.claude/.env
+    claude_env = project_dir / '.claude' / '.env'
+    if claude_env.exists():
+        api_key = load_env_file(claude_env, 'GEMINI_API_KEY')
+        if api_key:
+            return api_key
+
+    # 4. Check ./.claude/skills/.env
+    claude_skills_env = project_dir / '.claude' / 'skills' / '.env'
+    if claude_skills_env.exists():
+        api_key = load_env_file(claude_skills_env, 'GEMINI_API_KEY')
+        if api_key:
+            return api_key
+
+    # 5. Check skill directory .env
     skill_env = skill_dir / '.env'
     if skill_env.exists():
         api_key = load_env_file(skill_env, 'GEMINI_API_KEY')
         if api_key:
             return api_key
-
-    # 3. Check project root .env
-    # Traverse up to find project root (where .git or .claude exists)
-    current = Path.cwd()
-    while current != current.parent:
-        if (current / '.git').exists() or (current / '.claude').exists():
-            project_env = current / '.env'
-            if project_env.exists():
-                api_key = load_env_file(project_env, 'GEMINI_API_KEY')
-                if api_key:
-                    return api_key
-            break
-        current = current.parent
 
     return None
 
