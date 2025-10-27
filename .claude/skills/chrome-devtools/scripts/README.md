@@ -38,13 +38,23 @@ node navigate.js --url https://example.com [--wait-until networkidle2] [--timeou
 ```
 
 ### screenshot.js
-Take a screenshot.
+Take a screenshot with automatic compression.
 
 **Important**: Always save screenshots to `./docs/screenshots` directory.
 
 ```bash
-node screenshot.js --output screenshot.png [--url https://example.com] [--full-page true] [--selector .element]
+node screenshot.js --output screenshot.png [--url https://example.com] [--full-page true] [--selector .element] [--max-size 5] [--no-compress]
 ```
+
+**Automatic Compression**: Screenshots >5MB are automatically compressed using ImageMagick to ensure compatibility with Gemini API and Claude Code. Install ImageMagick for this feature:
+- macOS: `brew install imagemagick`
+- Linux: `sudo apt-get install imagemagick`
+
+Options:
+- `--max-size N` - Custom size threshold in MB (default: 5)
+- `--no-compress` - Disable automatic compression
+- `--format png|jpeg` - Output format (default: png)
+- `--quality N` - JPEG quality 0-100 (default: auto)
 
 ### click.js
 Click an element.
