@@ -11,8 +11,8 @@
 - Use `gh` bash command to interact with Github features.
 - Use `psql` bash command to query database for debugging.
 - Use `eyes` mcp tools for describing details of images, videos, documents, etc.
-- Use `hands` mcp tools for generating images, videos, documents, etc.
-- Use `brain` mcp tools for sequential thinking, analyzing code, debugging, etc.
+- Use `gemini-image-gen` skills and `imagemagick` skills for generating and editing images, videos, documents, etc.
+- Use `sequential-thinking` skill for sequential thinking, analyzing code, debugging, etc.
 - **[IMPORTANT]** Follow the codebase structure and code standards in `./docs` during implementation
 - **[IMPORTANT]** When you finish the implementation, send a full summary report to Discord channel with `./.claude/hooks/send-discord.sh 'Your message here'` script (remember to escape the string).
 - **[IMPORTANT]** Do not just simulate the implementation or mocking them, always implement the real code.

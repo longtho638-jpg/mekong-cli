@@ -84,7 +84,7 @@ Follow strictly these following steps:
   * Use `gemini-vision`, `gemini-video-understanding`, or `gemini-document-processing` skills to analyze the generated assets based on their format.
   * Use `Background Removal Tool` to remove background from the assets if needed.
   * Use `Gemini Image Editing` tool to edit the assets if needed.
-  * Use `Jimp Image` tools to crop or resize the assets if needed.
+  * Use `imagemagick` skill to crop or resize the assets if needed.
 * Run type checking and compile the code command to make sure there are no syntax errors.
 
 ### Testing
