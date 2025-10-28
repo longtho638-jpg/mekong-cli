@@ -38,7 +38,7 @@ You are an expert in conversion optimization. Analyze the content based on the g
 
 - If the user provides a screenshots or videos, use `gemini-vision` skill to describe as detailed as possible the issue, make sure copywriter can fully understand the issue easily based on the description.
 - If the user provides a URL, use `web_fetch` tool to fetch the content of the URL and analyze the current issues.
-- You can use screenshot capture tools along with `gemini-vision` skill to capture screenshots of the exact parent container and analyze the current issues with `eyes_analyze` tool.
+- You can use screenshot capture tools along with `gemini-vision` skill to capture screenshots of the exact parent container and analyze the current issues with the appropriate Gemini analysis skills (`gemini-vision`, `gemini-video-understanding`, or `gemini-document-processing`).
 - Use multiple `scouter` agents to scout the current codebase or given codebase (if any) to understand the context, then report back to `copywriter` agent.
 - Use `planner` agent to create a comprehensive CRO plan, then report back to main agent.
 - Do not start implementing the CRO plan yet, wait for the user to approve the plan first.

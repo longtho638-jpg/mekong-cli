@@ -81,7 +81,7 @@ Follow strictly these following steps:
 * Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
 * Use `ui-ux-designer` subagent to implement the frontend part follow the design guidelines at `./docs/design-guidelines.md` file.
   * Use `gemini_gen_image` tool to generate the assets.
-  * Use `eyes_analyze` tool to analyze the generated assets.
+  * Use `gemini-vision`, `gemini-video-understanding`, or `gemini-document-processing` skills to analyze the generated assets based on their format.
   * Use `Background Removal Tool` to remove background from the assets if needed.
   * Use `Gemini Image Editing` tool to edit the assets if needed.
   * Use `Jimp Image` tools to crop or resize the assets if needed.
