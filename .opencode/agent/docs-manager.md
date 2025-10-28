@@ -1,5 +1,6 @@
 ---
-description: >-
+description: |
+  >-
   Use this agent when documentation needs to be updated, reviewed, or
   maintained. Examples:
 

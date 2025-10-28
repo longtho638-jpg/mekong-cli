@@ -1,5 +1,6 @@
 ---
-description: >-
+description: |
+  >-
   Use this agent when you need to transform visual designs into functional user
   interfaces, including converting wireframes, mockups, screenshots, or design
   blueprints into actual UI code. Examples: <example>Context: User has uploaded
