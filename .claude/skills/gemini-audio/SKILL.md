@@ -27,17 +27,41 @@ Use this skill when you need to:
 
 ### API Key Setup
 
+The skill supports both **Google AI Studio** and **Vertex AI** endpoints.
+
+#### Option 1: Google AI Studio (Default)
+
 The skill automatically detects your `GEMINI_API_KEY` in this order:
 
 1. **Process environment**: `export GEMINI_API_KEY="your-key"`
-2. **Skill directory**: `.claude/skills/gemini-audio/.env`
-3. **Project directory**: `./.env` (project root)
+2. **Project root**: `.env`
+3. **.claude directory**: `.claude/.env`
+4. **.claude/skills directory**: `.claude/skills/.env`
+5. **Skill directory**: `.claude/skills/gemini-audio/.env`
 
 **Get your API key**: Visit [Google AI Studio](https://aistudio.google.com/apikey)
 
 Create `.env` file with:
 ```bash
 GEMINI_API_KEY=your_api_key_here
+```
+
+#### Option 2: Vertex AI
+
+To use Vertex AI instead:
+
+```bash
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```bash
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
 ```
 
 ### Python Setup
