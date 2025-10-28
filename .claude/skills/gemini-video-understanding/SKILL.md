@@ -49,25 +49,46 @@ This skill enables comprehensive video analysis using Google's Gemini API, inclu
 
 ## API Key Configuration
 
+The skill supports both **Google AI Studio** and **Vertex AI** endpoints.
+
+### Option 1: Google AI Studio (Default)
+
 The skill checks for `GEMINI_API_KEY` in this order:
 1. **Process environment**: `process.env.GEMINI_API_KEY` or `$GEMINI_API_KEY`
-2. **Skill directory**: `.claude/skills/gemini-video-understanding/.env`
-3. **Project root**: `.env` file in project root
+2. **Project root**: `.env`
+3. **.claude directory**: `.claude/.env`
+4. **.claude/skills directory**: `.claude/skills/.env`
+5. **Skill directory**: `.claude/skills/gemini-video-understanding/.env`
+
+**Get your API key:** https://aistudio.google.com/apikey
 
 To set up:
 
 ```bash
-# Option 1: Environment variable (recommended)
+# Environment variable (recommended)
 export GEMINI_API_KEY="your-api-key-here"
 
-# Option 2: Skill directory .env file
-echo "GEMINI_API_KEY=your-api-key-here" > .claude/skills/gemini-video-understanding/.env
-
-# Option 3: Project root .env file
+# Or in .env file
 echo "GEMINI_API_KEY=your-api-key-here" > .env
 ```
 
-Get your API key at: https://aistudio.google.com/apikey
+### Option 2: Vertex AI
+
+To use Vertex AI instead:
+
+```bash
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```bash
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
+```
 
 ## Usage Instructions
 
