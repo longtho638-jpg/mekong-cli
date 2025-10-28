@@ -22,19 +22,37 @@ This skill enables Claude to use Google's Gemini API for advanced image understa
 
 ### API Key Configuration
 
+The skill supports both **Google AI Studio** and **Vertex AI** endpoints.
+
+#### Option 1: Google AI Studio (Default)
+
 The skill checks for `GEMINI_API_KEY` in this order:
 
-1. **Process environment variable** (recommended)
-   ```bash
-   export GEMINI_API_KEY="your-api-key"
-   ```
+1. **Process environment**: `export GEMINI_API_KEY="your-key"`
+2. **Project root**: `.env`
+3. **.claude directory**: `.claude/.env`
+4. **.claude/skills directory**: `.claude/skills/.env`
+5. **Skill directory**: `.claude/skills/gemini-vision/.env`
 
-2. **Skill directory**: `.claude/skills/gemini-vision/.env`
-   ```
-   GEMINI_API_KEY=your-api-key
-   ```
+**Get your API key**: Visit [Google AI Studio](https://aistudio.google.com/apikey)
 
-3. **Project directory**: `.env` or `.gemini_api_key` in project root
+#### Option 2: Vertex AI
+
+To use Vertex AI instead:
+
+```bash
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```bash
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
+```
 
 **Security**: Never commit API keys to version control. Add `.env` to `.gitignore`.
 
