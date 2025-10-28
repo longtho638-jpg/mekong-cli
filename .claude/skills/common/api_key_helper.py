@@ -2,18 +2,25 @@
 """
 Common API Key Detection Helper for Gemini Skills
 
-Checks for GEMINI_API_KEY in this order:
+Supports both Google AI Studio and Vertex AI endpoints.
+
+API Key Detection Order:
 1. Process environment variable
 2. Project root .env file
 3. ./.claude/.env
 4. ./.claude/skills/.env
 5. Skill directory .env file
+
+Vertex AI Configuration:
+- GEMINI_USE_VERTEX: Set to "true" to use Vertex AI endpoint
+- VERTEX_PROJECT_ID: GCP project ID (required for Vertex AI)
+- VERTEX_LOCATION: GCP region (default: us-central1)
 """
 
 import os
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 
 
 def find_api_key(skill_dir: Optional[Path] = None) -> Optional[str]:
@@ -103,6 +110,97 @@ def load_env_file(env_path: Path) -> Optional[str]:
     return None
 
 
+def load_env_var(env_path: Path, var_name: str) -> Optional[str]:
+    """
+    Load a specific environment variable from .env file
+
+    Args:
+        env_path: Path to .env file
+        var_name: Name of the environment variable
+
+    Returns:
+        Variable value or None
+    """
+    try:
+        with open(env_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith(f'{var_name}='):
+                    value = line.split('=', 1)[1].strip()
+                    value = value.strip('"').strip("'")
+                    if value:
+                        return value
+    except Exception as e:
+        print(f"Warning: Error reading {env_path}: {e}", file=sys.stderr)
+
+    return None
+
+
+def find_env_var(var_name: str, skill_dir: Optional[Path] = None) -> Optional[str]:
+    """
+    Find environment variable using 5-step lookup (same as API key)
+
+    Args:
+        var_name: Name of environment variable
+        skill_dir: Path to skill directory (optional)
+
+    Returns:
+        Variable value or None
+    """
+    # Step 1: Check process environment
+    value = os.getenv(var_name)
+    if value:
+        return value
+
+    # Determine paths
+    if skill_dir is None:
+        skill_dir = Path(__file__).parent.parent
+    project_dir = skill_dir.parent.parent.parent
+
+    # Step 2-5: Check .env files in order
+    env_files = [
+        project_dir / '.env',
+        project_dir / '.claude' / '.env',
+        project_dir / '.claude' / 'skills' / '.env',
+        skill_dir / '.env'
+    ]
+
+    for env_path in env_files:
+        if env_path.exists():
+            value = load_env_var(env_path, var_name)
+            if value:
+                return value
+
+    return None
+
+
+def get_vertex_config(skill_dir: Optional[Path] = None) -> Dict[str, Any]:
+    """
+    Get Vertex AI configuration from environment variables
+
+    Args:
+        skill_dir: Path to skill directory (optional)
+
+    Returns:
+        Dictionary with Vertex AI configuration:
+        {
+            'use_vertex': bool,
+            'project_id': str or None,
+            'location': str (default: 'us-central1')
+        }
+    """
+    use_vertex_str = find_env_var('GEMINI_USE_VERTEX', skill_dir)
+    use_vertex = use_vertex_str and use_vertex_str.lower() in ('true', '1', 'yes')
+
+    config = {
+        'use_vertex': use_vertex,
+        'project_id': find_env_var('VERTEX_PROJECT_ID', skill_dir) if use_vertex else None,
+        'location': find_env_var('VERTEX_LOCATION', skill_dir) or 'us-central1'
+    }
+
+    return config
+
+
 def get_api_key_or_exit(skill_dir: Optional[Path] = None) -> str:
     """
     Get API key or exit with helpful error message
@@ -145,7 +243,58 @@ def get_api_key_or_exit(skill_dir: Optional[Path] = None) -> str:
     return api_key
 
 
+def get_client(skill_dir: Optional[Path] = None):
+    """
+    Get appropriate Gemini client (AI Studio or Vertex AI)
+
+    Args:
+        skill_dir: Path to skill directory (optional)
+
+    Returns:
+        genai.Client or vertexai client
+    """
+    vertex_config = get_vertex_config(skill_dir)
+
+    if vertex_config['use_vertex']:
+        # Use Vertex AI
+        import vertexai
+        from vertexai.generative_models import GenerativeModel
+
+        if not vertex_config['project_id']:
+            print("\n❌ Error: VERTEX_PROJECT_ID required when GEMINI_USE_VERTEX=true!", file=sys.stderr)
+            print("\n📋 Set your GCP project ID:", file=sys.stderr)
+            print("   export VERTEX_PROJECT_ID='your-project-id'", file=sys.stderr)
+            print("   Or add to .env file: VERTEX_PROJECT_ID=your-project-id", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"✓ Using Vertex AI endpoint", file=sys.stderr)
+        print(f"  Project: {vertex_config['project_id']}", file=sys.stderr)
+        print(f"  Location: {vertex_config['location']}", file=sys.stderr)
+
+        vertexai.init(
+            project=vertex_config['project_id'],
+            location=vertex_config['location']
+        )
+
+        return {'type': 'vertex', 'config': vertex_config}
+    else:
+        # Use AI Studio
+        from google import genai
+
+        api_key = get_api_key_or_exit(skill_dir)
+        client = genai.Client(api_key=api_key)
+
+        return {'type': 'aistudio', 'client': client}
+
+
 if __name__ == '__main__':
     # Test the API key detection
     api_key = get_api_key_or_exit()
     print(f"✓ Found API key: {api_key[:8]}..." + "*" * (len(api_key) - 8))
+
+    # Test Vertex AI config
+    vertex_config = get_vertex_config()
+    if vertex_config['use_vertex']:
+        print(f"\n✓ Vertex AI enabled:")
+        print(f"  Project: {vertex_config['project_id']}")
+        print(f"  Location: {vertex_config['location']}")
