@@ -31,27 +31,45 @@ Use this skill when you need to:
 
 ### 1. API Key Configuration
 
+The skill supports both **Google AI Studio** and **Vertex AI** endpoints.
+
+#### Option 1: Google AI Studio (Default)
+
 The skill checks for `GEMINI_API_KEY` in this priority order:
 1. Process environment variable
-2. `.env` file in skill directory (`.claude/skills/gemini-document-processing/.env`)
-3. `.env` file in project root
+2. Project root `.env`
+3. `.claude/.env`
+4. `.claude/skills/.env`
+5. `.env` file in skill directory (`.claude/skills/gemini-document-processing/.env`)
 
 **Get your API key:** https://aistudio.google.com/apikey
 
-**Option A: Environment Variable (Recommended)**
+**Environment Variable (Recommended)**
 ```bash
 export GEMINI_API_KEY="your-api-key-here"
 ```
 
-**Option B: Skill Directory**
+**Or in .env file:**
 ```bash
-cd .claude/skills/gemini-document-processing
 echo "GEMINI_API_KEY=your-api-key-here" > .env
 ```
 
-**Option C: Project Root**
+#### Option 2: Vertex AI
+
+To use Vertex AI instead:
+
 ```bash
-echo "GEMINI_API_KEY=your-api-key-here" > .env
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```bash
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
 ```
 
 ### 2. Install Dependencies
