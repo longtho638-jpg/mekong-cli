@@ -380,6 +380,24 @@ The Gemini skills check for `GEMINI_API_KEY` in the following order (priority fr
 
 Get your free Gemini API key at: https://aistudio.google.com/apikey
 
+### Vertex AI Support
+
+To use Vertex AI instead of Google AI Studio:
+
+```bash
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
+```
+
 ### Usage Examples
 
 ```bash
