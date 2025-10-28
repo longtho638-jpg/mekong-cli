@@ -350,9 +350,9 @@ Planner incorporates into plan
 - Describe images, videos, documents
 - UI/UX analysis from screenshots
 
-**hands** (Generation):
-- Generate images, videos, documents
-- Design asset creation
+**gemini-image-gen & imagemagick skills** (Generation & Processing):
+- Generate images, videos, and documents via gemini-image-gen skills
+- Perform design asset creation and edits with imagemagick skill workflows
 
 **brain** (Advanced Reasoning):
 - Sequential thinking
@@ -536,7 +536,7 @@ plans/reports/251026-from-tester-to-main-test-results-report.md
 **Review-Website**: Content extraction
 **VidCap**: Video analysis
 **Eyes**: Visual understanding
-**Hands**: Content generation
+**gemini-image-gen & imagemagick skills**: Content generation and processing
 **Brain**: Advanced reasoning
 
 ## Data Flow Diagrams

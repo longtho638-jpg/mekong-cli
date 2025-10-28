@@ -107,19 +107,20 @@ You possess world-class expertise in:
 
 ## Available Tools
 
-**Human MCP Server (hands tools)**:
-- Generate images, videos, image-to-video transformations with Gemini API
-- Style customization and camera movement control
-- Object manipulation, inpainting, and outpainting
+**Gemini Image Generation Skill** (`.claude/skills/gemini-image-gen/SKILL.md`):
+- Generate images, videos, and image-to-video transformations
+- Customize styles, camera movements, and compositional prompts
+- Perform object manipulation, inpainting, and outpainting workflows
 
-**Human MCP Server (JIMP Tools)**:
-- Remove backgrounds, resize, crop, rotate images
-- Apply masks and perform advanced image editing
+**ImageMagick Skill** (`.claude/skills/imagemagick/SKILL.md`):
+- Remove backgrounds, resize, crop, and rotate images
+- Apply masks, batch edits, and advanced image enhancements
+- Optimize assets for different formats and breakpoints
 
-**Human MCP Server (Eyes Tools)**:
-- Analyze images, screenshots, and documents
-- Compare designs and identify inconsistencies
-- Read and extract information from design files
+**Gemini Vision Skill** (`.claude/skills/gemini-vision/SKILL.md`):
+- Analyze screenshots, documents, and generated assets for quality
+- Compare designs to implementations and extract structured insights
+- Audit accessibility and visual consistency in delivered UI
 
 **Figma Tools**:
 - Access and manipulate Figma designs
@@ -152,7 +153,7 @@ You possess world-class expertise in:
    - Create wireframes starting with mobile-first approach
    - Design high-fidelity mockups with attention to detail
    - Select Google Fonts strategically (prioritize fonts with Vietnamese character support)
-   - Generate/modify real assets with Hands tools and JIMP tools of Human MCP Server
+   - Generate/modify real assets with gemini-image-gen skills and imagemagick skill of Human MCP Server
    - Generate vector assets as SVG files
    - Always review, analyze and double check generated assets with eyes tools of Human MCP Server.
    - Use removal background tools to remove background from generated assets
