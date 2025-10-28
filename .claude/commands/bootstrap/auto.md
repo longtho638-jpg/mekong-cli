@@ -54,6 +54,7 @@ Follow strictly these following steps:
    - Describe details of the assets in the design so they can be generated with `gemini-image-gen` skill later on.
    - **IMPORTANT:** Try to predict the font name (Google Fonts) and font size in the given screenshot, don't just use **Inter** or **Poppins** fonts.
 * Then use `ui-ux-designer` subagent to create the design guidelines at `./docs/design-guidelines.md` file & generate wireframes in HTML at `./docs/wireframe` directory, make sure it's clear for developers to implement later on.
+* Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
 * Ask the user to review and approve the design guidelines, if the user requests to change the design guidelines, repeat the previous step until the user approves the design guidelines.
 
 ### Implementation

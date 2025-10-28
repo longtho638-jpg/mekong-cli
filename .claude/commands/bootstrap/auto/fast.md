@@ -51,13 +51,14 @@ Follow strictly these following steps:
 
 2. **Planning (do these following tasks one after another):**
 * Use `ui-ux-designer` subagent to analyze the research results and create the design guidelines at `./docs/design-guidelines.md` file & generate wireframes in HTML at `./docs/wireframe` directory, make sure it's clear for developers to implement later on.
+* Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
 * Use `planner` subagent to analyze all reports and create the detailed step by step implementation plan at `./plans` directory.
 
 ### Implementation
 
 * Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
 * Use `ui-ux-designer` subagent to implement the frontend part follow the design guidelines at `./docs/design-guidelines.md` file.
-  * Use `gemini_gen_image` tool to generate the assets.
+  * Use `gemini-image-gen` skill to generate the assets.
   * Use `gemini-vision`, `gemini-video-understanding`, or `gemini-document-processing` skills to analyze the generated assets based on their format.
   * Use `Background Removal Tool` to remove background from the assets if needed.
   * Use `Gemini Image Editing` tool to edit the assets if needed.
