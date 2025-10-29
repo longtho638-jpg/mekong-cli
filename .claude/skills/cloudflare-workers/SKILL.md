@@ -126,6 +126,34 @@ export default {
 };
 ```
 
+## API Key Configuration
+
+Cloudflare Workers require API credentials for CLI operations. The system searches for API keys in this order:
+
+1. `process.env` - Runtime environment variables
+2. `<project-root>/.env` - Project-level environment file
+3. `.claude/.env` - Claude configuration directory
+4. `.claude/skills/.env` - Skills shared configuration
+5. `.claude/skills/cloudflare-workers/.env` - Skill-specific configuration
+
+**Required Environment Variables:**
+```bash
+CLOUDFLARE_API_TOKEN=your_api_token_here
+CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+```
+
+**Where to Get Credentials:**
+- API Token: Cloudflare Dashboard → My Profile → API Tokens → Create Token
+  - Use "Edit Cloudflare Workers" template for Workers-specific permissions
+- Account ID: Cloudflare Dashboard → Overview → Account ID (right sidebar)
+
+**Example .env File:**
+```bash
+# See .claude/skills/.env.example for complete configuration
+CLOUDFLARE_API_TOKEN=abc123...
+CLOUDFLARE_ACCOUNT_ID=def456...
+```
+
 ## Wrangler CLI
 
 ### Installation & Setup

@@ -34,6 +34,42 @@ npm install -g wrangler
 wrangler login
 ```
 
+## API Key Configuration
+
+R2 requires specific credentials for S3-compatible API access. The system searches for API keys in this order:
+
+1. `process.env` - Runtime environment variables
+2. `<project-root>/.env` - Project-level environment file
+3. `.claude/.env` - Claude configuration directory
+4. `.claude/skills/.env` - Skills shared configuration
+5. `.claude/skills/cloudflare-r2/.env` - Skill-specific configuration
+
+**Required Environment Variables:**
+```bash
+# R2-specific credentials
+R2_ACCESS_KEY_ID=your_r2_access_key_id_here
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key_here
+R2_ACCOUNT_ID=your_account_id_here
+
+# Or use general Cloudflare credentials
+CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+CLOUDFLARE_API_TOKEN=your_api_token_here  # For Wrangler CLI
+```
+
+**Where to Get Credentials:**
+- R2 Access Keys: Cloudflare Dashboard → R2 → Manage R2 API Tokens → Create API Token
+  - Generates both Access Key ID and Secret Access Key (S3-compatible)
+- Account ID: Cloudflare Dashboard → Overview → Account ID (right sidebar)
+- API Token (for Wrangler): Cloudflare Dashboard → My Profile → API Tokens
+
+**Example .env File:**
+```bash
+# See .claude/skills/.env.example for complete configuration
+R2_ACCESS_KEY_ID=abc123...
+R2_SECRET_ACCESS_KEY=xyz789...
+R2_ACCOUNT_ID=def456...
+```
+
 ## Core Concepts
 
 ### Architecture
