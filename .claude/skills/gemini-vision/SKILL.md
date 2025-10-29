@@ -205,6 +205,8 @@ See the `references/` directory for:
 When implementing Gemini vision features:
 
 1. **Check API key availability** using the 3-step lookup
+   - If no key is found, fall back to the workspace **default vision model**.
+   - If the default model is missing or unavailable, surface a clear message to the user explaining the absence and next steps to configure either an API key or model.
 2. **Choose appropriate model** based on requirements:
    - Need segmentation? Use 2.5+ models
    - Need detection? Use 2.0+ models
