@@ -1,3 +1,12 @@
+## [1.8.1](https://github.com/claudekit/claudekit-engineer/compare/v1.8.0...v1.8.1) (2025-10-29)
+
+
+### ⚡ Performance Improvements
+
+* **skill:** optimize git-manager agent token efficiency ([e8aa189](https://github.com/claudekit/claudekit-engineer/commit/e8aa189facbd9782623d046f12eb30da953e74d3))
+* **skill:** optimize git-manager agent token efficiency ([ae4ddf2](https://github.com/claudekit/claudekit-engineer/commit/ae4ddf24fc101b94b7fd0e617d8d935a8e0755a2))
+* **skill:** optimize git-manager token efficiency ([5c874aa](https://github.com/claudekit/claudekit-engineer/commit/5c874aaa46efd8e5716609b747977ea81ba20000))
+
 ## [1.8.0](https://github.com/claudekit/claudekit-engineer/compare/v1.7.1...v1.8.0) (2025-10-25)
 
 
