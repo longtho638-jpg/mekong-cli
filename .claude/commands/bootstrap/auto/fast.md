@@ -51,6 +51,7 @@ Follow strictly these following steps:
 
 2. **Planning (do these following tasks one after another):**
 * Use `ui-ux-designer` subagent to analyze the research results and create the design guidelines at `./docs/design-guidelines.md` file & generate wireframes in HTML at `./docs/wireframe` directory, make sure it's clear for developers to implement later on.
+* If there are no logo provided, use `gemini-image-gen` skill to generate a logo.
 * Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
 * Use `planner` subagent to analyze all reports and create the detailed step by step implementation plan at `./plans` directory.
 
