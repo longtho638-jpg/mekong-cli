@@ -5,6 +5,28 @@
 
 set -euo pipefail
 
+# Load environment variables with priority: process.env > .claude/.env > .claude/hooks/.env
+load_env() {
+    # 1. Start with lowest priority: .claude/hooks/.env
+    if [[ -f "$(dirname "$0")/.env" ]]; then
+        set -a
+        source "$(dirname "$0")/.env"
+        set +a
+    fi
+
+    # 2. Override with .claude/.env
+    if [[ -f .claude/.env ]]; then
+        set -a
+        source .claude/.env
+        set +a
+    fi
+
+    # 3. Process env (already loaded) has highest priority - no action needed
+    # Variables already in process.env will not be overwritten by 'source'
+}
+
+load_env
+
 # Read JSON input from stdin
 INPUT=$(cat)
 

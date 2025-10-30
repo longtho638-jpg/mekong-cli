@@ -4,19 +4,31 @@ This directory contains notification hooks for Claude Code sessions. These hooks
 
 ## Overview
 
-Claude Code hooks automate notifications and actions at specific points in your development workflow. This project includes two notification systems:
+Claude Code hooks automate notifications and actions at specific points in your development workflow. This project includes notification systems for Discord and Telegram:
 
 | Hook | File | Type | Description |
 |------|------|------|-------------|
-| **Discord** | `send-discord.sh` | Manual | Sends rich embedded completion summaries to Discord channel |
+| **Discord (Auto)** | `discord_notify.sh` | Automated | Auto-sends rich embeds on session/subagent completion |
+| **Discord (Manual)** | `send-discord.sh` | Manual | Sends custom messages to Discord channel |
 | **Telegram** | `telegram_notify.sh` | Automated | Auto-sends detailed notifications on session/subagent completion |
 
 ## Quick Start
 
-### Discord Hook
-Send manual notifications to Discord with custom messages.
+### Current Setup
+Check **[SETUP-SUMMARY.md](./SETUP-SUMMARY.md)** for current configuration and quick reference.
+
+### Discord Hook (Automated)
+Automatic notifications on Claude Code session events with rich embeds.
 
 **Setup:** [discord-hook-setup.md](./discord-hook-setup.md)
+
+**Quick Test:**
+```bash
+echo '{"hookType":"Stop","projectDir":"'$(pwd)'","sessionId":"test","toolsUsed":[{"tool":"Read","parameters":{"file_path":"test.ts"}}]}' | ./.claude/hooks/discord_notify.sh
+```
+
+### Discord Hook (Manual)
+Send custom notifications to Discord with your own messages.
 
 **Quick Test:**
 ```bash
@@ -34,6 +46,9 @@ echo '{"hookType":"Stop","projectDir":"'$(pwd)'","sessionId":"test","toolsUsed":
 ```
 
 ## Documentation
+
+### Quick Reference
+- **[Setup Summary](./SETUP-SUMMARY.md)** - Current configuration, testing, and troubleshooting
 
 ### Detailed Setup Guides
 
@@ -60,17 +75,33 @@ echo '{"hookType":"Stop","projectDir":"'$(pwd)'","sessionId":"test","toolsUsed":
 
 ## Features Comparison
 
-| Feature | Discord Hook | Telegram Hook |
-|---------|--------------|---------------|
-| **Trigger Type** | Manual invocation | Automatic on events |
-| **Message Style** | Rich embeds | Markdown formatted |
-| **Setup Complexity** | Simple (webhook only) | Medium (bot + chat ID) |
-| **Use Case** | Custom summaries | Session monitoring |
-| **Events** | On-demand | Stop, SubagentStop |
-| **Tool Tracking** | No | Yes |
-| **File Tracking** | No | Yes |
+| Feature | Discord (Auto) | Discord (Manual) | Telegram |
+|---------|----------------|------------------|----------|
+| **Trigger Type** | Automatic on events | Manual invocation | Automatic on events |
+| **Message Style** | Rich embeds | Rich embeds | Markdown formatted |
+| **Setup Complexity** | Simple (webhook only) | Simple (webhook only) | Medium (bot + chat ID) |
+| **Use Case** | Session monitoring | Custom messages | Session monitoring |
+| **Events** | Stop, SubagentStop | On-demand | Stop, SubagentStop |
+| **Tool Tracking** | Yes | No | Yes |
+| **File Tracking** | Yes | No | Yes |
 
 ## Scripts
+
+### discord_notify.sh
+Automated Discord notification hook for Claude Code events with rich embeds.
+
+**Triggers:**
+- `Stop` - Main session completion
+- `SubagentStop` - Subagent task completion
+
+**Required:** `DISCORD_WEBHOOK_URL` environment variable
+
+**Features:**
+- Rich embeds with session details
+- Tool usage statistics (with counts)
+- File modification tracking
+- Session ID and timestamps
+- Color-coded by event type
 
 ### send-discord.sh
 Manual Discord notification script with rich embed formatting.
@@ -95,8 +126,14 @@ Automated Telegram notification hook for Claude Code events.
 
 ### Environment Variables
 
-Create `.env` file in project root:
+Environment variables are loaded with the following priority (highest to lowest):
+1. **process.env** - System/shell environment variables
+2. **.claude/.env** - Project-level Claude configuration
+3. **.claude/hooks/.env** - Hook-specific configuration
 
+Create environment files based on your needs:
+
+**Project Root `.env`** (recommended for general use):
 ```bash
 # Discord
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_TOKEN
@@ -106,21 +143,37 @@ TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
 TELEGRAM_CHAT_ID=987654321
 ```
 
+**OR `.claude/.env`** (for project-specific overrides):
+```bash
+# Same variables as above
+```
+
+**OR `.claude/hooks/.env`** (for hook-only configuration):
+```bash
+# Same variables as above
+```
+
+See `.env.example` files in each location for templates.
+
 ### Claude Code Hooks Config
 
-Create or update `.claude/config.json`:
+Hooks are configured in `.claude/settings.local.json`:
 
 ```json
 {
   "hooks": {
-    "Stop": {
-      "command": "./.claude/hooks/telegram_notify.sh",
-      "background": true
-    },
-    "SubagentStop": {
-      "command": "./.claude/hooks/telegram_notify.sh",
-      "background": true
-    }
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/telegram_notify.sh"
+      }]
+    }],
+    "SubagentStop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/telegram_notify.sh"
+      }]
+    }]
   }
 }
 ```

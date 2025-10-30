@@ -27,8 +27,22 @@ The Discord hook (`send-discord.sh`) sends rich embedded messages to a Discord c
 
 ### 2. Configure Environment Variables
 
-Create or update `.env` file in your project root:
+Environment variables are loaded with this priority (highest to lowest):
+1. **process.env** - System/shell environment variables
+2. **.claude/.env** - Project-level Claude configuration
+3. **.claude/hooks/.env** - Hook-specific configuration
 
+**Option A: Project Root `.env`** (recommended):
+```bash
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+```
+
+**Option B: `.claude/.env`** (project-level override):
+```bash
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+```
+
+**Option C: `.claude/hooks/.env`** (hook-specific):
 ```bash
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
 ```
@@ -37,6 +51,8 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOO
 ```bash
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1234567890/AbCdEfGhIjKlMnOpQrStUvWxYz
 ```
+
+See `.env.example` files for templates.
 
 ### 3. Secure Your Configuration
 

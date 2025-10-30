@@ -104,6 +104,11 @@ curl -s "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates" | jq '.result[
 
 ### 3. Configure Environment Variables
 
+Environment variables are loaded with this priority (highest to lowest):
+1. **process.env** - System/shell environment variables
+2. **.claude/.env** - Project-level Claude configuration
+3. **.claude/hooks/.env** - Hook-specific configuration
+
 Choose one configuration method:
 
 #### Option A: Global Configuration (All Projects)
@@ -128,7 +133,7 @@ echo $TELEGRAM_BOT_TOKEN
 echo $TELEGRAM_CHAT_ID
 ```
 
-#### Option B: Project-Specific Configuration
+#### Option B: Project Root `.env` (Recommended)
 
 Best for team projects or different notification channels per project.
 
@@ -146,21 +151,45 @@ echo ".env" >> .gitignore
 echo ".env.*" >> .gitignore
 ```
 
+#### Option C: `.claude/.env` (Project-Level Override)
+
+For project-specific Claude configuration:
+
+```bash
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=987654321
+```
+
+#### Option D: `.claude/hooks/.env` (Hook-Specific)
+
+For hook-only configuration:
+
+```bash
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=987654321
+```
+
+See `.env.example` files in each location for templates.
+
 ### 4. Configure Claude Code Hook
 
-Create or update `.claude/config.json`:
+Hooks are configured in `.claude/settings.local.json`:
 
 ```json
 {
   "hooks": {
-    "Stop": {
-      "command": "./.claude/hooks/telegram_notify.sh",
-      "background": true
-    },
-    "SubagentStop": {
-      "command": "./.claude/hooks/telegram_notify.sh",
-      "background": true
-    }
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/telegram_notify.sh"
+      }]
+    }],
+    "SubagentStop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/telegram_notify.sh"
+      }]
+    }]
   }
 }
 ```
@@ -169,7 +198,7 @@ Create or update `.claude/config.json`:
 
 - `"Stop"`: Triggers when main Claude Code session ends
 - `"SubagentStop"`: Triggers when specialized subagents complete (planner, tester, etc.)
-- `"background": true`: Runs hook asynchronously without blocking Claude
+- `${CLAUDE_PROJECT_DIR}`: Environment variable for project directory path
 
 ### 5. Make Script Executable
 
