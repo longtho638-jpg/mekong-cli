@@ -1,3 +1,72 @@
+## [1.9.0](https://github.com/claudekit/claudekit-engineer/compare/v1.8.1...v1.9.0) (2025-10-30)
+
+
+### 🚀 Features
+
+* add /code command with comprehensive development workflow ([3199cb2](https://github.com/claudekit/claudekit-engineer/commit/3199cb2fdc3029c8e044a38b6da3c11224b210d5))
+* add API key helper to gemini-audio skill ([57370b9](https://github.com/claudekit/claudekit-engineer/commit/57370b9692140de14906d3ea3eb2163e1c3aa853))
+* add API key helper to gemini-document-processing skill ([91bd816](https://github.com/claudekit/claudekit-engineer/commit/91bd816049d44c7fe3a3a78cc7c14f6f0aa46455))
+* add API key helper to gemini-image-gen skill ([b55104c](https://github.com/claudekit/claudekit-engineer/commit/b55104cd3c07918834c908559f7af3c1df3482f2))
+* add API key helper to gemini-video-understanding skill ([a763e01](https://github.com/claudekit/claudekit-engineer/commit/a763e01427196387a11a5a5a55aebb8677a91b62))
+* add API key helper to gemini-vision skill ([bab4bac](https://github.com/claudekit/claudekit-engineer/commit/bab4bacf3e6eea0a644cac6937a5e1225dc7b280))
+* add bootstrap auto command and sequential thinking skill ([2dea7bb](https://github.com/claudekit/claudekit-engineer/commit/2dea7bb0a4b98ec5c25618453225b73bc79f42fd))
+* add Chrome DevTools Protocol skill ([bae8023](https://github.com/claudekit/claudekit-engineer/commit/bae80232f8f49d7736b869a1c251c8306de7807b))
+* add chrome-devtools screenshot step for wireframe generation ([a37780a](https://github.com/claudekit/claudekit-engineer/commit/a37780a2e374531abac7ea9af23c60e886a62c23))
+* add Cloudflare and Google Cloud Platform skills ([dcca9d2](https://github.com/claudekit/claudekit-engineer/commit/dcca9d27002444f7c143f7ad5a157658824addd7))
+* add comprehensive project documentation ([9424206](https://github.com/claudekit/claudekit-engineer/commit/94242063d84a18ecf9fb81a327ec5ee270360f9e))
+* add Discord notification hook and environment templates ([fbb84cc](https://github.com/claudekit/claudekit-engineer/commit/fbb84ccd034d092ba6d3ff78b8e084c5b58bf73c))
+* add Docker, MongoDB, and PostgreSQL psql skills ([606a788](https://github.com/claudekit/claudekit-engineer/commit/606a788802d65fce83af82ef23743f100030d0cd))
+* add environment config examples and skills documentation ([8b05b6e](https://github.com/claudekit/claudekit-engineer/commit/8b05b6e172b97e6e5dde1118f9c6c1a1c7bbed8f))
+* add fast cooking command ([6dafef1](https://github.com/claudekit/claudekit-engineer/commit/6dafef195197ae61ad2b9dcb8bb0db1d70094366))
+* add Gemini Audio skill for speech generation ([95616e4](https://github.com/claudekit/claudekit-engineer/commit/95616e42c887c6842686030cecacc885f2f87025))
+* add Gemini Document Processing skill ([95af4bf](https://github.com/claudekit/claudekit-engineer/commit/95af4bf4181c0b65c864c93cb86ba95af70091e4))
+* add Gemini Image Generation skill ([256e9d0](https://github.com/claudekit/claudekit-engineer/commit/256e9d0af8fa2fef27434471058a2f5db58e7656))
+* add Gemini Video Understanding skill ([aa82e8b](https://github.com/claudekit/claudekit-engineer/commit/aa82e8b5054329f312cab2334b8ea78e3120e529))
+* add Gemini Vision skill ([8bbd682](https://github.com/claudekit/claudekit-engineer/commit/8bbd682ce40104be0d65e91a767d136159307b4c))
+* add shared API key helper for Gemini skills ([8e768c7](https://github.com/claudekit/claudekit-engineer/commit/8e768c702cf8659fb19f7208b87fa0f02d77be47))
+* add skill fix-logs command and enhance create command ([c77525c](https://github.com/claudekit/claudekit-engineer/commit/c77525c06376119163896c406af9c3d31ff28908))
+* add Vertex AI configuration options ([bbae64f](https://github.com/claudekit/claudekit-engineer/commit/bbae64f8a59457cc549dada0e2330995e28be39e))
+* **chrome-devtools:** add automatic image compression to screenshot ([661ff27](https://github.com/claudekit/claudekit-engineer/commit/661ff277aabde6cf97d0ceb6498784e2456a8036))
+
+
+### 🐛 Bug Fixes
+
+* chrome devtools - console.js timeout ([803783a](https://github.com/claudekit/claudekit-engineer/commit/803783a6157e75f70d23b7f2f82f9a38f6d77cad))
+* correct agent name in CI planning command ([4d718fe](https://github.com/claudekit/claudekit-engineer/commit/4d718fe81199fba3900cfc0ac7645695615569d5))
+* resolve YAML parsing errors in opencode agent descriptions ([18db16b](https://github.com/claudekit/claudekit-engineer/commit/18db16bd8bbb0f9c8a3d91289f8c13839764e63e))
+* standardize GEMINI_API_KEY loading order across Gemini skills ([1b60d63](https://github.com/claudekit/claudekit-engineer/commit/1b60d639d542d017555eccb86bcd1c46148a110a))
+* update .gitignore patterns for docs directories ([3a12c3e](https://github.com/claudekit/claudekit-engineer/commit/3a12c3eb66fd6235ecac47b8862864c8b0039d50))
+* update git-manager agent tools configuration ([e28bfb9](https://github.com/claudekit/claudekit-engineer/commit/e28bfb9d515b5ccec9425812f3a39d9b72d131b9))
+
+
+### 📚 Documentation
+
+* add Discord and Telegram notification hook documentation ([2a26e4e](https://github.com/claudekit/claudekit-engineer/commit/2a26e4eaac34d25402135c4c65e8b69ab56bf94f))
+* add documentation section to README ([08afdb2](https://github.com/claudekit/claudekit-engineer/commit/08afdb22026a9c93f0e7af52cbb75f39fc2c35db))
+* add environment configuration examples ([be7eb26](https://github.com/claudekit/claudekit-engineer/commit/be7eb26ff81a87c0de700c8612f49d4818837ff2))
+* generating YYMMDD dates across platforms instead of model knowledge ([fd6f9cf](https://github.com/claudekit/claudekit-engineer/commit/fd6f9cf285b45787235bffd001342c42ac0f399f))
+* update project documentation for Gemini API key helpers ([557e722](https://github.com/claudekit/claudekit-engineer/commit/557e722a284356bf1676339478a82962c0d7de05))
+
+
+### ♻️ Code Refactoring
+
+* migrate from Human MCP to Gemini skills across commands and agents ([91996b2](https://github.com/claudekit/claudekit-engineer/commit/91996b288d46aa8d644dbfc2ec5a3656105f7f56))
+* removed human mcp, replaced with gemini skills ([15f3074](https://github.com/claudekit/claudekit-engineer/commit/15f3074f9ac25b22dfa88a9e7a1ad4efef371f3f))
+* simplify scout agent to use default Explore subagents ([62d2eda](https://github.com/claudekit/claudekit-engineer/commit/62d2eda86a791d095f2478d43426582ffc412d8e))
+
+
+### ⚡ Performance Improvements
+
+* add logo generation step to bootstrap process ([27ef839](https://github.com/claudekit/claudekit-engineer/commit/27ef839a712bb3f933dc9cb283f321534cef1994))
+* enhance bootstrap command with planning phase and docs ([59b12cd](https://github.com/claudekit/claudekit-engineer/commit/59b12cdb8720da9f0f9654437d97f102bff27ab2))
+* enhance common API key helper with Vertex AI support ([193270e](https://github.com/claudekit/claudekit-engineer/commit/193270ef4616961c9629b29a572b3e714f805073))
+* improve Gemini vision error handling and fallback behavior ([9783f17](https://github.com/claudekit/claudekit-engineer/commit/9783f172efb6702c9dba422269a77d47fcaf67b7))
+* improve URL exploration in skill creation ([715fbf9](https://github.com/claudekit/claudekit-engineer/commit/715fbf90df9338ecc6a846edd8350990db21f4a1))
+* refactor docs-seeker skill with enhanced structure ([c468b66](https://github.com/claudekit/claudekit-engineer/commit/c468b66f0e0d3b13c2f7d026385f3f1d3f98c1bd))
+* replace eyes analyze references ([9bf194f](https://github.com/claudekit/claudekit-engineer/commit/9bf194ffa09bf54718ecf2ecd7200888d014f21e))
+* update .claude/ markdown files ([be3a1aa](https://github.com/claudekit/claudekit-engineer/commit/be3a1aaa99dad56988357e80dcb0162bc81be35a))
+* update hook environment variable handling and documentation ([7634e7a](https://github.com/claudekit/claudekit-engineer/commit/7634e7a9b02ef757e9110cc3d1ff81c2b5154804))
+
 ## [1.8.1](https://github.com/claudekit/claudekit-engineer/compare/v1.8.0...v1.8.1) (2025-10-29)
 
 
