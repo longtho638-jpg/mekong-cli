@@ -55,6 +55,33 @@ Use this skill when:
 - `email`: Email handling
 - `alarm`: Durable Object timers
 
+## API Key Configuration
+
+Cloudflare skills require API credentials for authentication. The system searches for API keys in this order:
+
+1. `process.env` - Runtime environment variables
+2. `<project-root>/.env` - Project-level environment file
+3. `.claude/.env` - Claude configuration directory
+4. `.claude/skills/.env` - Skills shared configuration
+5. `.claude/skills/cloudflare*/.env` - Skill-specific configuration
+
+**Required Environment Variables:**
+```bash
+CLOUDFLARE_API_TOKEN=your_api_token_here
+CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+```
+
+**Where to Get Credentials:**
+- API Token: Cloudflare Dashboard → My Profile → API Tokens → Create Token
+- Account ID: Cloudflare Dashboard → Overview → Account ID (right sidebar)
+
+**Example .env File:**
+```bash
+# See .claude/skills/.env.example for complete configuration
+CLOUDFLARE_API_TOKEN=abc123...
+CLOUDFLARE_ACCOUNT_ID=def456...
+```
+
 ## Getting Started with Workers
 
 ### Installation

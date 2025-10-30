@@ -23,6 +23,35 @@ All SDKs require:
 - **Endpoint:** `https://<account-id>.r2.cloudflarestorage.com`
 - **Region:** `auto` (or specific: `wnam`, `enam`, `weur`, `eeur`, `apac`)
 
+## API Key Configuration
+
+R2 credentials are loaded from environment variables in this order:
+
+1. `process.env` - Runtime environment variables
+2. `<project-root>/.env` - Project-level environment file
+3. `.claude/.env` - Claude configuration directory
+4. `.claude/skills/.env` - Skills shared configuration
+5. `.claude/skills/cloudflare-r2/.env` - Skill-specific configuration
+
+**Required Environment Variables:**
+```bash
+R2_ACCESS_KEY_ID=your_r2_access_key_id_here
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key_here
+R2_ACCOUNT_ID=your_account_id_here
+```
+
+**Where to Get Credentials:**
+- R2 Access Keys: Cloudflare Dashboard → R2 → Manage R2 API Tokens → Create API Token
+- Account ID: Cloudflare Dashboard → Overview → Account ID
+
+**Example .env File:**
+```bash
+# See .claude/skills/.env.example for complete configuration
+R2_ACCESS_KEY_ID=abc123...
+R2_SECRET_ACCESS_KEY=xyz789...
+R2_ACCOUNT_ID=def456...
+```
+
 ---
 
 ## AWS CLI
@@ -132,10 +161,37 @@ npm install @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 
 ```javascript
 import { S3Client } from "@aws-sdk/client-s3";
+import fs from "fs";
+import path from "path";
 
-const ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
-const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
+// Helper function to load environment variables from multiple locations
+function loadEnvVariable(key) {
+  // 1. Check process.env first
+  if (process.env[key]) return process.env[key];
+
+  // 2-5. Check .env files in order of precedence
+  const envPaths = [
+    path.join(process.cwd(), '.env'),
+    path.join(process.cwd(), '.claude', '.env'),
+    path.join(process.cwd(), '.claude', 'skills', '.env'),
+    path.join(process.cwd(), '.claude', 'skills', 'cloudflare-r2', '.env'),
+  ];
+
+  for (const envPath of envPaths) {
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf-8');
+      const match = content.match(new RegExp(`^${key}=(.*)$`, 'm'));
+      if (match) return match[1].trim();
+    }
+  }
+
+  throw new Error(`Missing required environment variable: ${key}`);
+}
+
+// Load credentials from environment with fallback chain
+const ACCOUNT_ID = loadEnvVariable('R2_ACCOUNT_ID') || loadEnvVariable('CLOUDFLARE_ACCOUNT_ID');
+const ACCESS_KEY_ID = loadEnvVariable('R2_ACCESS_KEY_ID');
+const SECRET_ACCESS_KEY = loadEnvVariable('R2_SECRET_ACCESS_KEY');
 
 const s3 = new S3Client({
   region: "auto",
@@ -143,6 +199,27 @@ const s3 = new S3Client({
   credentials: {
     accessKeyId: ACCESS_KEY_ID,
     secretAccessKey: SECRET_ACCESS_KEY,
+  },
+});
+```
+
+**Simplified Configuration (if using dotenv):**
+```javascript
+import { S3Client } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
+
+// Load from all .env locations (order matters)
+dotenv.config({ path: '.claude/skills/cloudflare-r2/.env' });
+dotenv.config({ path: '.claude/skills/.env' });
+dotenv.config({ path: '.claude/.env' });
+dotenv.config({ path: '.env' });
+
+const s3 = new S3Client({
+  region: "auto",
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
 });
 ```

@@ -21,6 +21,37 @@ Use Cloudflare Browser Rendering when you need to:
 - Deploy MCP servers for LLM agent browser control
 - Create web crawlers with Queues integration
 
+## API Key Configuration
+
+Browser Rendering requires Cloudflare API credentials. The system searches for API keys in this order:
+
+1. `process.env` - Runtime environment variables
+2. `<project-root>/.env` - Project-level environment file
+3. `.claude/.env` - Claude configuration directory
+4. `.claude/skills/.env` - Skills shared configuration
+5. `.claude/skills/cloudflare-browser-rendering/.env` - Skill-specific configuration
+
+**Required Environment Variables:**
+```bash
+CLOUDFLARE_API_TOKEN=your_api_token_here
+CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+
+# Optional: specific token for Browser Rendering
+CLOUDFLARE_BROWSER_API_TOKEN=your_browser_api_token_here
+```
+
+**Where to Get Credentials:**
+- API Token: Cloudflare Dashboard → My Profile → API Tokens → Create Token
+  - Use "Browser Rendering" template or custom token with Browser Rendering permissions
+- Account ID: Cloudflare Dashboard → Overview → Account ID (right sidebar)
+
+**Example .env File:**
+```bash
+# See .claude/skills/.env.example for complete configuration
+CLOUDFLARE_API_TOKEN=abc123...
+CLOUDFLARE_ACCOUNT_ID=def456...
+```
+
 ## Integration Approaches
 
 ### 1. REST API (Simple, No Worker Required)
@@ -39,8 +70,12 @@ Quick integration using HTTP endpoints. Ideal for one-off tasks or external serv
 
 **Authentication:**
 ```bash
-curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/browser-rendering/screenshot" \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
+# API token is loaded from environment variables (see API Key Configuration section)
+ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+API_TOKEN=${CLOUDFLARE_BROWSER_API_TOKEN:-$CLOUDFLARE_API_TOKEN}
+
+curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/browser-rendering/screenshot" \
+  -H "Authorization: Bearer ${API_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}'
 ```
