@@ -15,6 +15,6 @@ Think hard to plan & start working on these tasks follow the Orchestration Proto
 5. If user approves the changes, update the `./docs/design-guidelines.md` docs if needed.
 
 ## Notes:
-- Remember that you have the capability to generate images, videos, edit images, etc. with Human MCP Server tools. Use them to create the design and real assets.
-- Always review, analyze and double check generated assets with eyes tools of Human MCP Server.
+- Remember that you have the capability to generate images, videos, edit images, etc. with gemini-image-gen skill for image generation. Use them to create the design and real assets.
+- Always review, analyze and double check generated assets with gemini-vision skill to verify quality.
 - Maintain and update `./docs/design-guidelines.md` docs if needed.

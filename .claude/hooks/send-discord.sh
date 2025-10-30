@@ -3,16 +3,27 @@
 # Usage: ./send-discord.sh 'Your message here'
 # Note: Remember to escape the string
 
-# Load environment variables from .env file
-if [[ -f .env ]]; then
-    echo "Loading .env file..."
-    set -a  # automatically export all variables
-    source .env
-    set +a  # turn off automatic export
-    echo "✅ Environment loaded, DISCORD_WEBHOOK_URL=$(echo ${DISCORD_WEBHOOK_URL:0:50}...)"
-else
-    echo "Warning: .env file not found"
-fi
+# Load environment variables with priority: process.env > .claude/.env > .claude/hooks/.env
+load_env() {
+    # 1. Start with lowest priority: .claude/hooks/.env
+    if [[ -f "$(dirname "$0")/.env" ]]; then
+        set -a
+        source "$(dirname "$0")/.env"
+        set +a
+    fi
+
+    # 2. Override with .claude/.env
+    if [[ -f .claude/.env ]]; then
+        set -a
+        source .claude/.env
+        set +a
+    fi
+
+    # 3. Process env (already loaded) has highest priority - no action needed
+    # Variables already in process.env will not be overwritten by 'source'
+}
+
+load_env
 
 message="$1"
     

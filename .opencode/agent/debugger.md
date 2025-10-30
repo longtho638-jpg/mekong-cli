@@ -1,5 +1,6 @@
 ---
-description: >-
+description: |
+  >-
   Use this agent when you need to investigate complex system issues, analyze
   performance bottlenecks, debug CI/CD pipeline failures, or conduct
   comprehensive system analysis. Examples: <example>Context: A production system

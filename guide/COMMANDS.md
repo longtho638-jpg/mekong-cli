@@ -573,21 +573,12 @@ Commands are stored in `.claude/commands/` directory and can be customized for y
 
 **Human MCP Integration**:
 
-**Hands Tools**:
-- Generate textures, skyboxes, environment maps
-- Create particle sprites and effect assets
-- Generate 3D object textures
-- Create video backgrounds
-- Camera movements for effects
-- Inpainting/outpainting for textures
-
-**JIMP Tools**:
-- Process textures for WebGL
-- Create normal and height maps
-- Generate sprite sheets
-- Remove backgrounds
-- Resize and optimize assets
-- Apply masks for effects
+**Gemini-Image-Gen Skills & ImageMagick Skill**:
+- Generate textures, skyboxes, environment maps via gemini-image-gen prompts
+- Create particle sprites, effect assets, and stylized 3D object textures using gemini-image-gen skills
+- Produce video backgrounds and control camera movements or inpainting/outpainting workflows through gemini-image-gen
+- Process textures for WebGL, create normal/height maps, and generate sprite sheets with imagemagick skill pipelines
+- Remove backgrounds, resize, optimize assets, and apply masks using imagemagick skill commands
 
 **Eyes Tools**:
 - Analyze reference images

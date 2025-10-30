@@ -19,6 +19,7 @@ argument-hint: [tasks]
 10. If user approves the changes, use `docs-manager` subagent to update the docs if needed.
 11. Finally use `git-manager` subagent to commit to git repository.
 
-**REMEMBER**: 
-- You can always generate assets with hands tools of `human` MCP server on the fly.
-- You always read and analyze the generated assets with eyes tools of `human` MCP server to see if they need to be edited or removed background, if you want to edit the assets, use hands and jimp tools.
+**REMEMBER**:
+- You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
+- You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
+- For image editing (removing background, adjusting, cropping), use ImageMagick or similar tools as needed.

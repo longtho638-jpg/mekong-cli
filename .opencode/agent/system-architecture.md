@@ -1,5 +1,6 @@
 ---
-description: >-
+description: |
+  >-
   Use this agent when you need comprehensive technical architecture planning,
   system design analysis, or deep technical research. Examples include:
   designing scalable microservices architectures, evaluating technology stacks

@@ -49,6 +49,19 @@ A comprehensive boilerplate template for building professional software projects
 - **Documentation Sync**: Always up-to-date technical documentation
 - **Clean Git Workflow**: Professional commit messages and branch management
 
+## Documentation
+
+### 📚 Core Documentation
+- **[Project Overview & PDR](./docs/project-overview-pdr.md)** - Comprehensive project overview, goals, features, and product development requirements
+- **[Codebase Summary](./docs/codebase-summary.md)** - High-level overview of project structure, technologies, and components
+- **[Code Standards](./docs/code-standards.md)** - Coding standards, naming conventions, and best practices
+- **[System Architecture](./docs/system-architecture.md)** - Detailed architecture documentation, component interactions, and data flow
+- **[Commands Reference](./guide/COMMANDS.md)** - Complete guide to all available slash commands
+
+### 📖 Additional Resources
+- **[CLAUDE.md](./CLAUDE.md)** - Development instructions and workflows for AI agents
+- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
+
 ## Quick Start
 
 ### Prerequisites
@@ -316,6 +329,93 @@ Reusable templates for:
 - Bug fix procedures
 - Refactoring strategies
 - Architecture decisions
+
+## Gemini Skills Configuration
+
+This project includes several Gemini-powered skills that require a Google Gemini API key:
+
+- **gemini-audio** - Audio analysis and speech generation
+- **gemini-video-understanding** - Video analysis and understanding
+- **gemini-document-processing** - PDF document processing
+- **gemini-image-gen** - AI image generation
+- **gemini-vision** - Image analysis and vision capabilities
+
+### API Key Setup
+
+The Gemini skills check for `GEMINI_API_KEY` in the following order (priority from highest to lowest):
+
+1. **Environment Variable** (Recommended for development)
+   ```bash
+   export GEMINI_API_KEY='your-api-key-here'
+   ```
+
+2. **Project Root `.env`** (Recommended for project-specific keys)
+   ```bash
+   # Create .env in project root
+   echo 'GEMINI_API_KEY=your-api-key-here' > .env
+   ```
+
+3. **`.claude/.env`** (For Claude-specific configuration)
+   ```bash
+   # Copy example and edit
+   cp .claude/.env.example .claude/.env
+   # Then edit .claude/.env and set your API key
+   ```
+
+4. **`.claude/skills/.env`** (For shared skills configuration)
+   ```bash
+   # Copy example and edit
+   cp .claude/skills/.env.example .claude/skills/.env
+   # Then edit .claude/skills/.env and set your API key
+   ```
+
+5. **Individual Skill Directory `.env`** (For skill-specific keys)
+   ```bash
+   # Example for gemini-audio skill
+   cp .claude/skills/gemini-audio/.env.example .claude/skills/gemini-audio/.env
+   # Then edit and set your API key
+   ```
+
+### Getting Your API Key
+
+Get your free Gemini API key at: https://aistudio.google.com/apikey
+
+### Vertex AI Support
+
+To use Vertex AI instead of Google AI Studio:
+
+```bash
+# Enable Vertex AI
+export GEMINI_USE_VERTEX=true
+export VERTEX_PROJECT_ID=your-gcp-project-id
+export VERTEX_LOCATION=us-central1  # Optional, defaults to us-central1
+```
+
+Or in `.env` file:
+```
+GEMINI_USE_VERTEX=true
+VERTEX_PROJECT_ID=your-gcp-project-id
+VERTEX_LOCATION=us-central1
+```
+
+### Usage Examples
+
+```bash
+# Audio analysis
+claude "Analyze this audio file and summarize the key points: audio.mp3"
+
+# Video understanding
+claude "Describe what happens in this video: video.mp4"
+
+# Document processing
+claude "Extract all tables from this PDF: document.pdf"
+
+# Image generation
+claude "Generate an image of a serene mountain landscape"
+
+# Image analysis
+claude "What objects are in this image: photo.jpg"
+```
 
 ## Model Context Protocol (MCP)
 
