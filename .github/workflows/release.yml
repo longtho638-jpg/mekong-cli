@@ -41,6 +41,12 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm run semantic-release
+
       - name: Generate metadata
         run: |
           node <<'EOF'
@@ -107,12 +113,6 @@ jobs:
             .repomixignore \
             .mcp.json \
             CLAUDE.md
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run semantic-release
 
       - name: Capture release notes
         id: release_notes
