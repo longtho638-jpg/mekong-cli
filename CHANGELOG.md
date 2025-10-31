@@ -1,3 +1,15 @@
+## [1.10.1](https://github.com/claudekit/claudekit-engineer/compare/v1.10.0...v1.10.1) (2025-10-31)
+
+
+### 🐛 Bug Fixes
+
+* issue of release package ([6a13152](https://github.com/claudekit/claudekit-engineer/commit/6a131522e961acbb48e443069bfaac2a572632d1))
+
+
+### 👷 CI
+
+* fix semantic release ([2f391b7](https://github.com/claudekit/claudekit-engineer/commit/2f391b7893a3b774d5a248c774bcf915d3b9c00a))
+
 ## [1.10.0](https://github.com/claudekit/claudekit-engineer/compare/v1.9.0...v1.10.0) (2025-10-31)
 
 
