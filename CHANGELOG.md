@@ -1,3 +1,21 @@
+## [1.10.0](https://github.com/claudekit/claudekit-engineer/compare/v1.9.0...v1.10.0) (2025-10-31)
+
+
+### 🚀 Features
+
+* add pre-hook to block access to sensitive directories ([7520b00](https://github.com/claudekit/claudekit-engineer/commit/7520b001fbf0fc31f70777b3761b800fa0a1c3b0))
+* add scout with external agentic tools back ([22ab412](https://github.com/claudekit/claudekit-engineer/commit/22ab412b801ab15bd707c7a6a17efb49d0938c3e))
+
+
+### ⚡ Performance Improvements
+
+* fix ui uses chrome devtools ([7c52520](https://github.com/claudekit/claudekit-engineer/commit/7c5252044ef8a12e48c907c99ed371a382a914db))
+
+
+### 👷 CI
+
+* update metadata ([0d45194](https://github.com/claudekit/claudekit-engineer/commit/0d45194e1af91289c3393a4149398e09ae6f765a))
+
 ## [1.9.0](https://github.com/claudekit/claudekit-engineer/compare/v1.8.1...v1.9.0) (2025-10-30)
 
 
