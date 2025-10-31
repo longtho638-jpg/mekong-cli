@@ -325,28 +325,16 @@ Planner incorporates into plan
 
 **Available MCP Servers**:
 
-**context7** (Documentation):
+**docs-seeker** skill (Documentation):
 - Read latest docs for packages/plugins
 - Access up-to-date technical information
 
-**sequential-thinking** (Problem Solving):
+**sequential-thinking** skill (Problem Solving):
 - Structured thinking process
 - Break down complex problems
 - Reflective analysis
 
-**SearchAPI** (Web Search):
-- `search_google` - Google search integration
-- `search_youtube` - YouTube search integration
-
-**review-website** (Web Scraping):
-- `Convert to markdown` - Extract web content
-- Analyze websites and documentation
-
-**VidCap** (Video Analysis):
-- `getCaption` - Extract video transcripts
-- Analyze technical tutorials
-
-**eyes** (Visual Analysis):
+**gemini-vision** skill (Visual Analysis):
 - Describe images, videos, documents
 - UI/UX analysis from screenshots
 
@@ -528,16 +516,13 @@ plans/reports/251026-from-tester-to-main-test-results-report.md
 - Conventional Commits
 - Semantic Versioning
 
-### MCP Tools Ecosystem
+### Agent Skills Ecosystem
 
 **Sequential Thinking**: Problem decomposition
-**Context7**: Documentation access
-**SearchAPI**: Web research
-**Review-Website**: Content extraction
-**VidCap**: Video analysis
-**Eyes**: Visual understanding
+**brain**: Advanced reasoning
+**docs-seeker**: Documentation access
+**gemini-vision**: Visual understanding
 **gemini-image-gen & imagemagick skills**: Content generation and processing
-**Brain**: Advanced reasoning
 
 ## Data Flow Diagrams
 
