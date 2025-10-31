@@ -275,12 +275,11 @@ Purpose: Send project updates to Discord channels
 Workflow: `.github/workflows/release.yml`
 Features: Automated releases, changelog generation
 
-### MCP Tools
-- **context7**: Documentation reading
-- **sequential-thinking**: Structured problem solving
-- **SearchAPI**: Google and YouTube search
-- **review-website**: Web content extraction
-- **VidCap**: Video transcript extraction
+### Agent Skills
+- **brain**: Advanced reasoning
+- **docs-seeker**: Documentation reading
+- **gemini-vision**: Visual understanding
+- **gemini-image-gen & imagemagick skills**: Content generation and processing
 
 ## Critical Files
 

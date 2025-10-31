@@ -1303,15 +1303,6 @@ Organize commands in subdirectories:
 
 Usage: `/design:fast`, `/fix:hard`, `/custom:your-command`
 
-### MCP Server Integration
-
-Commands can leverage MCP servers for enhanced capabilities:
-
-- **Human MCP**: Image/video generation, analysis, editing
-- **Context7 MCP**: Latest library documentation
-- **Search MCP**: Web search for research
-- **Brain MCP**: Complex reasoning and analysis
-
 ---
 
 ## Troubleshooting
