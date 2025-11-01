@@ -6,7 +6,8 @@ Google Gemini API skill for advanced image understanding tasks.
 
 1. **Get API Key**: https://aistudio.google.com/apikey
 2. **Install SDK**: `pip install google-genai`
-3. **Set API Key**:
+  - If `pip` is not installed, instructs user to install it first.
+3. **Set API Key**: (or refer to the [API Key Configuration](#api-key-configuration) section)
    ```bash
    export GEMINI_API_KEY="your-api-key"
    ```

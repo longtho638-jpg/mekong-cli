@@ -2,11 +2,6 @@
 name: gemini-vision
 description: Guide for implementing Google Gemini API image understanding - analyze images with captioning, classification, visual QA, object detection, segmentation, and multi-image comparison. Use when analyzing images, answering visual questions, detecting objects, or processing documents with vision.
 license: MIT
-allowed-tools:
-  - Bash
-  - Read
-  - Write
-  - Edit
 ---
 
 # Gemini Vision API Skill
@@ -19,6 +14,7 @@ This skill enables Claude to use Google's Gemini API for advanced image understa
 
 1. **Get API Key**: Obtain from [Google AI Studio](https://aistudio.google.com/apikey)
 2. **Install SDK**: `pip install google-genai` (Python 3.9+)
+  - If `pip` is not installed, instructs user to install it first.
 
 ### API Key Configuration
 
