@@ -46,8 +46,7 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 ### Code Review
 
 * After finishing, use multiple `code-reviewer` subagents in parallel to review code. 
-* If there are critical issues, duplicate code, or security vulnerabilities, ask main agent to improve the code and tell `tester` agent to run the tests again. 
-* Repeat the "Testing" process until all tests pass.
+* If there are any issues, duplicate code, or security vulnerabilities, ask main agent to improve the code and repeat the "Testing" process until all tests pass. 
 * When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
 
 ### Documentation

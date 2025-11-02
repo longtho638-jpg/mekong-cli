@@ -14,7 +14,7 @@ argument-hint: [tasks]
 5. Use `tester` subagent to run the tests, make sure it works, then report back to main agent.
 6. If there are issues or failed tests, use `debugger` subagent to find the root cause of the issues, then ask main agent to fix all of them and 
 7. Repeat the process until all tests pass or no more issues are reported. Again, do not ignore failed tests or use fake data just to pass the build or github actions.
-8. After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
+8. After finishing, delegate to `code-reviewer` subagent to review code. If there are any issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
 9. When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
 10. If user approves the changes, use `docs-manager` subagent to update the docs if needed.
 11. Finally use `git-manager` subagent to commit to git repository.
