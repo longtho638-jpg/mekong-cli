@@ -10,10 +10,12 @@
       { 
         "matcher": "Bash", 
         "hooks": [
-          { "command":"bash .claude/hooks/scout-block.sh" }
+          { 
+            "type": "command",
+            "command":"bash .claude/hooks/scout-block.sh" 
+          }
         ]
       }
     ]
   }
-
 }
