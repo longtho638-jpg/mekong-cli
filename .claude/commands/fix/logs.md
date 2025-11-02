@@ -18,3 +18,4 @@ So the main agent can fix them.
 - Verify fixes by running appropriate commands
 - Re-analyze logs after fixes to ensure issues are resolved
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.

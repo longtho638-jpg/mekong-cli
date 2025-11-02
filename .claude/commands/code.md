@@ -36,6 +36,7 @@ Think harder to start working on the following plan follow the Orchestration Pro
 ### Analysis
 
 * Read every step of the plan, map dependencies, and list ambiguities.
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
 
 ### Implementation
 

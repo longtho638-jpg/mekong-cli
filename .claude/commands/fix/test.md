@@ -15,3 +15,5 @@ argument-hint: [issues]
 6. Use `tester` subagent to run the tests after implementing the plan, make sure it works, then report back to main agent.
 7. After finishing, delegate to `code-reviewer` agent to review code. If there are critical issues, ask main agent to improve the code and test everything again.
 8. Repeat this process until all tests pass and no more errors are reported.
+
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.

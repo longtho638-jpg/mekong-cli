@@ -31,3 +31,4 @@ If the user provides a screenshots or videos, use `gemini-vision` skill to descr
 - You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
 - You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
 - For image editing (removing background, adjusting, cropping), use `ImageMagick` skill or similar tools as needed.
+- **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.

@@ -6,6 +6,8 @@ argument-hint: [tasks]
 **Ultrathink** to plan & start working on these tasks follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules: 
 <tasks>$ARGUMENTS</tasks>
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ## Workflow:
 1. Use `planner` subagent and `researcher` subagent to create a implementation plan with TODO tasks in `./plans` directory.
 2. Then use general agent (main agent) to implement the plan step by step.
