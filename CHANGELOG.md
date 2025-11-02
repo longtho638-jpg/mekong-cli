@@ -1,3 +1,15 @@
+## [1.10.3](https://github.com/claudekit/claudekit-engineer/compare/v1.10.2...v1.10.3) (2025-11-02)
+
+
+### ⚡ Performance Improvements
+
+* activate skills before processing workflows ([cf4254b](https://github.com/claudekit/claudekit-engineer/commit/cf4254b75f0de365455bc73806055efbc85ee145))
+
+
+### 👷 CI
+
+* exclude docs on release ([1b2ea5b](https://github.com/claudekit/claudekit-engineer/commit/1b2ea5ba6611fe770a3d4b121a0a09c27c665594))
+
 ## [1.10.2](https://github.com/claudekit/claudekit-engineer/compare/v1.10.1...v1.10.2) (2025-11-02)
 
 
