@@ -1,3 +1,25 @@
+## [1.10.2](https://github.com/claudekit/claudekit-engineer/compare/v1.10.1...v1.10.2) (2025-11-02)
+
+
+### 🐛 Bug Fixes
+
+* block scout hook should allow .env.example files ([35ca2c3](https://github.com/claudekit/claudekit-engineer/commit/35ca2c371ddb414baebdeb87a68fa8581cba5d48))
+* correct scout-block settings.json ([c345232](https://github.com/claudekit/claudekit-engineer/commit/c3452321f61f34000345ee5d99c90c5bb8ef8cc6))
+* improve test workflow ([3abc48c](https://github.com/claudekit/claudekit-engineer/commit/3abc48c1a4fb055307c4b3f36f4c61287b0fd08f))
+* update .env.example in skill ([a1243bc](https://github.com/claudekit/claudekit-engineer/commit/a1243bcd85edcb9428845bad2e7e0b44cebf1cf9))
+
+
+### 💄 Styles
+
+* format ([86a1bca](https://github.com/claudekit/claudekit-engineer/commit/86a1bca9e5e9edc0d1f2724b0e677205e8d65e26))
+
+
+### ⚡ Performance Improvements
+
+* gemini skill should instruct user to install `pip` if not existed ([5bd3466](https://github.com/claudekit/claudekit-engineer/commit/5bd3466d9bb04e7effb6e301604fb95ae1457376))
+* improve code/cook workflow with better review ([c5ac95d](https://github.com/claudekit/claudekit-engineer/commit/c5ac95d3e99d46ce939ac733c1a481b04b01ee10))
+* improve docs-seeker skill speed and accuracy ([c8054c7](https://github.com/claudekit/claudekit-engineer/commit/c8054c7f4060f581a8ae3d3d8db92ef6e897be1b))
+
 ## [1.10.1](https://github.com/claudekit/claudekit-engineer/compare/v1.10.0...v1.10.1) (2025-10-31)
 
 
