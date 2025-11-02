@@ -16,4 +16,20 @@ If the user provides a screenshots or videos, use `gemini-vision` skill to descr
 4. If there are issues or failed tests, use `debugger` subagent to find the root cause of the issues, then ask main agent to fix all of them and 
 5. Repeat the process until all tests pass or no more issues are reported.
 6. After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and test everything again.
-7. Report back to user with a summary of the changes and explain everything briefly.
+7. Report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
+8. Project Management & Documentation:
+  **If user approves the changes:** Use `project-manager` and `docs-manager` subagents in parallel to update the project progress and documentation:
+  * Use `project-manager` subagent to update the project progress and task status in the given plan file.
+  * Use `docs-manager` subagent to update the docs in `./docs` directory if needed.
+  * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+  **If user rejects the changes:** Ask user to explain the issues and ask main agent to fix all of them and repeat the process.
+9. Final Report:
+  * Report back to user with a summary of the changes and explain everything briefly, guide user to get started and suggest the next steps.
+  * Ask the user if they want to commit and push to git repository, if yes, use `git-manager` subagent to commit and push to git repository.
+  - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+  - **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
+**REMEMBER**:
+- You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
+- You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
+- For image editing (removing background, adjusting, cropping), use `ImageMagick` skill or similar tools as needed.

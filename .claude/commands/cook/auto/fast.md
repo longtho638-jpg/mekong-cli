@@ -38,7 +38,7 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 
 ### Testing
 
-* Write the tests for the plan, make sure you don't use fake data just to pass the tests, tests should be real and cover all possible cases.
+* Write the tests for the plan, **make sure you don't use fake data, mocks, cheats, tricks, temporary solutions, just to pass the build or github actions**.
 * Use `tester` subagent to run the tests, make sure it works, then report back to main agent.
 * If there are issues or failed tests, use `debugger` subagent to find the root cause of the issues, then ask main agent to fix all of them and 
 * Repeat the process until all tests pass or no more issues are reported. Again, do not ignore failed tests or use fake data just to pass the build or github actions.
@@ -46,14 +46,19 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 ### Code Review
 
 * After finishing, use multiple `code-reviewer` subagents in parallel to review code. 
-* If there are critical issues, duplicate code, or security vulnerabilities, ask main agent to improve the code and tell `tester` agent to run the tests again. 
-* Repeat the "Testing" process until all tests pass.
+* If there are any issues, duplicate code, or security vulnerabilities, ask main agent to improve the code and repeat the "Testing" process until all tests pass. 
 * When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
 
-### Documentation
+### Project Management & Documentation
 
-* If user approves the changes, use `docs-manager` subagent to update the docs in `./docs` directory if needed.
-* Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+**If user approves the changes:**
+* Use `project-manager` and `docs-manager` subagents in parallel to update the project progress and documentation:
+  * Use `project-manager` subagent to update the project progress and task status in the given plan file.
+  * Use `docs-manager` subagent to update the docs in `./docs` directory if needed.
+  * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+
+**If user rejects the changes:**
+* Ask user to explain the issues and ask main agent to fix all of them and repeat the process.
 
 ### Onboarding
 
