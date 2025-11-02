@@ -13,13 +13,18 @@ argument-hint: [tasks]
 4. Write the tests for the plan, make sure you don't use fake data just to pass the tests, tests should be real and cover all possible cases.
 5. Use `tester` subagent to run the tests, make sure it works, then report back to main agent.
 6. If there are issues or failed tests, use `debugger` subagent to find the root cause of the issues, then ask main agent to fix all of them and 
-7. Repeat the process until all tests pass or no more issues are reported. Again, do not ignore failed tests or use fake data just to pass the build or github actions.
+7. Repeat the process until all tests pass or no more issues are reported. 
+    **Again, do not ignore failed tests or use fake data, mocks, cheats, tricks, temporary solutions, just to pass the build or github actions.**
 8. After finishing, delegate to `code-reviewer` subagent to review code. If there are any issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
 9. When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
-10. If user approves the changes, use `docs-manager` subagent to update the docs if needed.
-11. Finally use `git-manager` subagent to commit to git repository.
+10. User review process:
+  - **If user approves the changes:** use these subagents in parallel: 
+    - Give the implementation plan to `project-manage` subagent to update the progress and task status.
+    - Use `docs-manager` subagent to update the docs if needed.
+  - **If user rejects the changes:** ask user to explain the issues and ask main agent to fix all of them and repeat the process.
+11. Finally ask user if he wants to commit to git repository, if yes use `git-manager` subagent to commit to git repository.
 
 **REMEMBER**:
 - You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
 - You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
-- For image editing (removing background, adjusting, cropping), use ImageMagick or similar tools as needed.
+- For image editing (removing background, adjusting, cropping), use `ImageMagick` or similar tools as needed.

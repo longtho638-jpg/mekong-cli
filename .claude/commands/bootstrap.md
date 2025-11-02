@@ -78,6 +78,11 @@ Follow strictly these following steps:
 * Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
 * Ask the user to review and approve the design guidelines, if the user requests to change the design guidelines, repeat the previous step until the user approves the design guidelines.
 
+**REMEMBER**:
+- You can always generate images with `gemini-image-gen` skill on the fly for visual assets.
+- You always read and analyze the generated assets with `gemini-vision` skill to verify they meet requirements.
+- For image editing (removing background, adjusting, cropping), use `ImageMagick` skill or similar tools as needed.
+
 ### Implementation
 
 * Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
@@ -109,7 +114,7 @@ Follow strictly these following steps:
   * Create/update `./docs/project-overview.-pdr.md` (Product Development Requirements) file.
   * Create/update `./docs/code-standards.md` file.
   * Create/update `./docs/system-architecture.md` file.
-* Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+* Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file & project progress and task status in the given plan file.
 
 ### Onboarding
 

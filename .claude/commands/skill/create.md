@@ -4,7 +4,7 @@ argument-hint: [prompt-or-llms-or-github-url]
 ---
 
 Ultrathink.
-
+Use `skill-creator` skill.
 Create a new **Agent Skill** for Claude Code based on the given prompt:
 <prompt>$ARGUMENTS</prompt>
 
