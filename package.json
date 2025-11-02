@@ -30,7 +30,6 @@
   "files": [
     ".claude/",
     ".opencode/",
-    "docs/",
     "plans/",
     "AGENTS.md",
     "CLAUDE.md",
