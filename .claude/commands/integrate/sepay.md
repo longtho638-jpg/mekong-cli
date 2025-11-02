@@ -8,6 +8,8 @@ Think harder to plan & start implementing payment integration with [https://docs
 
 ## Workflow:
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ### Fullfill the request
 
 * If you don't have any questions, skip this step and go to `Planning` step.

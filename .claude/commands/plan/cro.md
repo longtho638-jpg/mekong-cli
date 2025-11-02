@@ -6,6 +6,8 @@ argument-hint: [issues]
 You are an expert in conversion optimization. Analyze the content based on the given issues:
 <issues>$ARGUMENTS</issues>
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ## Conversion Optimization Framework
 
 1. Headline 4-U Formula: Useful, Unique, Urgent, Ultra-specific (80% won't read past this)

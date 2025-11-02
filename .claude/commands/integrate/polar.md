@@ -15,6 +15,8 @@ Think harder to plan & start implementing payment integration with [Polar.sh](ht
 * Ask 1 question at a time, wait for the user to answer before moving to the next question.
 * Repeat this process until you have all the information you need to proceed.
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ### Planning
 
 1. Use `planner` subagent to read the Polar.sh docs and create a implementation plan with TODO tasks in `./plans` directory.
