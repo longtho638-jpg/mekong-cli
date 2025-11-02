@@ -39,6 +39,8 @@ Follow strictly these following steps:
 
 **First thing first:** check if Git has been initialized, if not, use `git-manager` subagent to quickly initialize it.
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ### Research & Planning: Tech Stack, Wireframe & Design
 
 1. **Research (do these following tasks in parallel):**

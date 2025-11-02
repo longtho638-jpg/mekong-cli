@@ -37,6 +37,8 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 * Ask 1 question at a time, wait for the user to answer before moving to the next question.
 * If you don't have any questions, start the next step.
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ### Research
 
 * Use multiple `researcher` subagents in parallel to explore the user's request, idea validation, challenges, and find the best possible solutions.

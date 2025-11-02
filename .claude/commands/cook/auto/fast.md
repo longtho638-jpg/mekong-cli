@@ -18,6 +18,8 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 
 ## Workflow:
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ### Research
 
 * Use 2 `researcher` subagents in parallel to search up to max 5 sources for the user's request, idea validation, best practices, challenges, and find the best possible solutions.

@@ -5,6 +5,8 @@ argument-hint: [user-requirements]
 
 **Ultrathink** to plan & bootstrap a new project follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules in your `CLAUDE.md` file: 
 
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+
 ---
 
 ## User's Objectives & Requirements
