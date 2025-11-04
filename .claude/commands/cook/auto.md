@@ -23,6 +23,7 @@ argument-hint: [tasks]
   - **If user approves the changes:** use these subagents in parallel: 
     - Give the implementation plan to `project-manage` subagent to update the progress and task status.
     - Use `docs-manager` subagent to update the docs if needed.
+    - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
   - **If user rejects the changes:** ask user to explain the issues and ask main agent to fix all of them and repeat the process.
 11. Finally ask user if he wants to commit to git repository, if yes use `git-manager` subagent to commit to git repository.
 

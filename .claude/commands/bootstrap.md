@@ -107,16 +107,18 @@ Follow strictly these following steps:
 
 * After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
 * When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Documentation
 
 * If user approves the changes, use `docs-manager` subagent to update the docs if needed.
-  * Create/update `./docs/README.md` file.
+  * Create/update `./docs/README.md` file (keep it concise, under 500 lines).
   * Create/update `./docs/codebase-summary.md` file.
   * Create/update `./docs/project-overview.-pdr.md` (Product Development Requirements) file.
   * Create/update `./docs/code-standards.md` file.
   * Create/update `./docs/system-architecture.md` file.
 * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file & project progress and task status in the given plan file.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Onboarding
 

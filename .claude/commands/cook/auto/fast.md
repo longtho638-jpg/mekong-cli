@@ -50,6 +50,7 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 * After finishing, use multiple `code-reviewer` subagents in parallel to review code. 
 * If there are any issues, duplicate code, or security vulnerabilities, ask main agent to improve the code and repeat the "Testing" process until all tests pass. 
 * When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly, ask user to review the changes and approve them.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Project Management & Documentation
 
@@ -58,6 +59,7 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
   * Use `project-manager` subagent to update the project progress and task status in the given plan file.
   * Use `docs-manager` subagent to update the docs in `./docs` directory if needed.
   * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 **If user rejects the changes:**
 * Ask user to explain the issues and ask main agent to fix all of them and repeat the process.
