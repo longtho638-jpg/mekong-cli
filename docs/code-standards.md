@@ -691,6 +691,62 @@ Mistakes to avoid
 - References
 ```
 
+## Hook Implementation Standards
+
+### Scout Block Hook Architecture
+
+**Cross-Platform Design Pattern**:
+- **Dispatcher Pattern**: Single Node.js entry point delegates to platform-specific implementations
+- **Platform Detection**: Use `process.platform` for automatic selection
+- **Security-First**: Input validation, sanitized errors, safe execution
+
+**File Organization**:
+```
+.claude/hooks/
+├── scout-block.js        # Node.js dispatcher (cross-platform entry)
+├── scout-block.sh        # Bash implementation (Unix)
+├── scout-block.ps1       # PowerShell implementation (Windows)
+├── test-scout-block.sh   # Unix test suite
+└── test-scout-block.ps1  # Windows test suite
+```
+
+**Implementation Requirements**:
+- **Node.js Dispatcher**:
+  - Read stdin synchronously
+  - Validate JSON structure before parsing
+  - Check platform via `process.platform`
+  - Execute platform-specific script with piped input
+  - Handle errors with exit codes (0 = success, 2 = error)
+
+- **Platform-Specific Scripts**:
+  - Parse JSON input (use Node.js for consistency, avoid jq dependency)
+  - Validate command structure and content
+  - Apply pattern matching for blocked paths
+  - Return appropriate exit codes
+  - Provide clear error messages
+
+**Security Standards**:
+```javascript
+// Input validation
+if (!hookInput || hookInput.trim().length === 0) {
+  console.error('ERROR: Empty input');
+  process.exit(2);
+}
+
+// JSON structure validation
+const data = JSON.parse(hookInput);
+if (!data.tool_input || typeof data.tool_input.command !== 'string') {
+  console.error('ERROR: Invalid JSON structure');
+  process.exit(2);
+}
+```
+
+**Testing Standards**:
+- Test both allowed and blocked patterns
+- Validate error handling (invalid JSON, empty input, missing fields)
+- Cross-platform test coverage
+- Clear pass/fail indicators
+
 ## Configuration File Standards
 
 ### package.json
@@ -699,7 +755,7 @@ Mistakes to avoid
 - name, version, description
 - repository (with URL)
 - author, license
-- engines (Node version)
+- engines (Node version >= 18.0.0)
 - scripts (test, lint, etc.)
 
 **Best Practices**:
@@ -707,6 +763,7 @@ Mistakes to avoid
 - Specify exact dependency versions for stability
 - Include keywords for discoverability
 - Use `files` field to control published content
+- Specify minimum Node.js version (18.0.0+)
 
 ### .gitignore
 

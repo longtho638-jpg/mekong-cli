@@ -72,6 +72,13 @@ Provide a production-ready template that:
 - **Parallel Execution**: Multiple researchers exploring different approaches
 - **Query Fan-Out**: Simultaneous investigation of technical solutions
 
+**Performance Optimization**:
+- **Scout Block Hook**: Cross-platform hook system blocking heavy directories
+  - Automatic platform detection (Windows/Unix/WSL)
+  - Zero-configuration setup
+  - Blocks: node_modules, __pycache__, .git/, dist/, build/
+  - Improves AI agent response time and token efficiency
+
 ### 2. Comprehensive Slash Commands (50+)
 
 **Core Development**:
@@ -320,7 +327,9 @@ Provide a production-ready template that:
 
 **Runtime**:
 - Node.js >= 18.0.0
-- Bash scripting for hooks
+- Bash scripting (Unix hooks)
+- PowerShell scripting (Windows hooks)
+- Cross-platform hook dispatcher (Node.js)
 
 **AI Platforms**:
 - Anthropic Claude (Sonnet 4, Opus 4)
@@ -333,6 +342,7 @@ Provide a production-ready template that:
 - Commitlint
 - Husky (git hooks)
 - Repomix (codebase compaction)
+- Scout Block Hook (performance optimization)
 
 **CI/CD**:
 - GitHub Actions

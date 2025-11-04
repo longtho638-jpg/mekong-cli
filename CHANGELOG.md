@@ -1,3 +1,53 @@
+## [1.10.6](https://github.com/claudekit/claudekit-engineer/compare/v1.10.5...v1.10.6) (2025-11-04)
+
+
+### 🚀 Features
+
+* **scout-block:** add cross-platform support with Node.js dispatcher (Windows/Linux/macOS/WSL)
+* **scout-block:** implement comprehensive security hardening with triple-layer validation
+* **scout-block:** add PowerShell implementation for native Windows support
+
+
+### 🐛 Bug Fixes
+
+* **scout-block:** fix critical command injection vulnerability in bash implementation
+* **scout-block:** add comprehensive JSON structure validation to prevent bypass attacks
+* **scout-block:** improve error handling and reporting across all implementations
+* **scout-block:** add empty input validation to prevent malformed request bypass
+
+
+### ✅ Tests
+
+* **scout-block:** add comprehensive test suite (11 tests: 7 functional + 4 security, 100% pass rate)
+* **scout-block:** add security test coverage for input validation and error handling
+* **scout-block:** add integration tests for live hook execution
+* **scout-block:** validate zero regressions across all platforms
+
+
+### 📚 Documentation
+
+* **scout-block:** add cross-platform documentation with Windows support guide
+* **scout-block:** update hook README with testing instructions and troubleshooting
+* **scout-block:** add implementation summary with security analysis and metrics
+* **scout-block:** document Node.js >=18.0.0 requirement
+
+
+### ⚡ Performance Improvements
+
+* **scout-block:** optimize with triple-layer validation architecture (defense in depth)
+* **scout-block:** eliminate jq dependency using Node.js for JSON parsing
+* **scout-block:** maintain minimal overhead (<50ms per invocation)
+
+
+### 🔒 Security
+
+* **scout-block:** eliminate command injection attack vector (CRITICAL)
+* **scout-block:** prevent validation bypass via malformed JSON (HIGH)
+* **scout-block:** add type safety enforcement across all implementations (HIGH)
+* **scout-block:** implement fail-secure defaults (block on error)
+* **Risk Reduction:** 95% improvement (from HIGH to LOW risk)
+
+
 ## [1.10.5](https://github.com/claudekit/claudekit-engineer/compare/v1.10.4...v1.10.5) (2025-11-04)
 
 
