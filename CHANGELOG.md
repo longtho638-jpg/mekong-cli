@@ -57,6 +57,19 @@
 ## [1.10.6](https://github.com/claudekit/claudekit-engineer/compare/v1.10.5...v1.10.6) (2025-11-04)
 
 
+### 🐞 Bug Fixes
+
+* /ask will respond concisely and brutal honestly ([a1b2482](https://github.com/claudekit/claudekit-engineer/commit/a1b2482c3d386a748166e92fc45efa6f6f2104cc))
+* **hooks:** add cross-platform scout-block with windows support ([2c0d6de](https://github.com/claudekit/claudekit-engineer/commit/2c0d6de61f46c27c783736f0ec73b86977de9647))
+
+
+### ⚡ Performance Improvements
+
+* optimize command workflows with progressive disclosure planning ([9b76f0d](https://github.com/claudekit/claudekit-engineer/commit/9b76f0d23c4c55dbae7fe664b6c314827c58820a))
+
+## [1.10.6](https://github.com/claudekit/claudekit-engineer/compare/v1.10.5...v1.10.6) (2025-11-04)
+
+
 ### 🚀 Features
 
 * **scout-block:** add cross-platform support with Node.js dispatcher (Windows/Linux/macOS/WSL)
