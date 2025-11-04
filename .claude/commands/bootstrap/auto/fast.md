@@ -46,7 +46,11 @@ Follow strictly these following steps:
 1. **Research (do these following tasks in parallel):**
 * Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to explore the user's request, idea validation, challenges, and find the best possible solutions.
 * Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to find a best fit tech stack for this project.
-* Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to create a design plan with TODO tasks in `./plans` directory.
+* Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to create a design plan that follows the progressive disclosure structure:
+  - Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
+  - Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
+  - For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
+* Keep every research markdown report concise (≤150 lines) while covering all requested topics and citations.
    - **Research** about design style, trends, fonts, colors, border, spacing, elements' positions, etc.
    - Describe details of the assets in the design so they can be generated with `gemini-image-gen` skill later on.
    - **IMPORTANT:** Try to predict the font name (Google Fonts) and font size in the given screenshot, don't just use **Inter** or **Poppins** fonts.
@@ -56,7 +60,7 @@ Follow strictly these following steps:
 * Use `ui-ux-designer` subagent to analyze the research results and create the design guidelines at `./docs/design-guidelines.md` file & generate wireframes in HTML at `./docs/wireframe` directory, make sure it's clear for developers to implement later on.
 * If there are no logo provided, use `gemini-image-gen` skill to generate a logo.
 * Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
-* Use `planner` subagent to analyze all reports and create the detailed step by step implementation plan at `./plans` directory.
+* Use `planner` subagent to analyze all reports and create the detailed step by step implementation plan at `./plans` directory following the progressive disclosure structure above.
 * **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Implementation

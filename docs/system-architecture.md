@@ -321,7 +321,45 @@ Planner incorporates into plan
 
 ### 6. Integration Layer
 
-#### 6.1 MCP (Model Context Protocol) Integration
+#### 6.1 Hook System
+
+**Purpose**: Intercept and control Claude Code operations for performance and security
+
+**Scout Block Hook** (Cross-Platform):
+- **Architecture**: Node.js dispatcher with platform-specific implementations
+- **Windows**: PowerShell implementation (`scout-block.ps1`)
+- **Unix (Linux/macOS/WSL)**: Bash implementation (`scout-block.sh`)
+- **Platform Detection**: Automatic via `process.platform` in dispatcher
+- **Configuration**: Zero-config - automatic platform selection
+
+**Functionality**:
+- Blocks access to heavy directories (node_modules, __pycache__, .git/, dist/, build/)
+- Input validation (JSON structure, command presence)
+- Error handling with exit codes (0 = allow, 2 = block/error)
+- Security features: sanitized error messages, input validation
+
+**Requirements**:
+- Node.js >= 18.0.0 (already required by project)
+- No additional dependencies
+
+**Testing**:
+- Cross-platform test suites (`test-scout-block.sh`, `test-scout-block.ps1`)
+- Comprehensive test coverage (11+ test cases)
+- Validates blocked/allowed patterns, error handling, edge cases
+
+**Hook Configuration** (`.claude/settings.json`):
+```json
+{
+  "hooks": {
+    "BeforeBash": [{
+      "type": "command",
+      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.js"
+    }]
+  }
+}
+```
+
+#### 6.2 MCP (Model Context Protocol) Integration
 
 **Available MCP Servers**:
 
@@ -347,7 +385,7 @@ Planner incorporates into plan
 - Code analysis
 - Debugging assistance
 
-#### 6.2 External Service Integration
+#### 6.3 External Service Integration
 
 **GitHub**:
 - Actions (CI/CD automation)
