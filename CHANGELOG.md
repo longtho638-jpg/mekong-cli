@@ -1,3 +1,10 @@
+## [1.10.4](https://github.com/claudekit/claudekit-engineer/compare/v1.10.3...v1.10.4) (2025-11-02)
+
+
+### ⚡ Performance Improvements
+
+* activate skills while planning ([254cf11](https://github.com/claudekit/claudekit-engineer/commit/254cf118b9df672c15db309241fd71dd13705d4d))
+
 ## [1.10.3](https://github.com/claudekit/claudekit-engineer/compare/v1.10.2...v1.10.3) (2025-11-02)
 
 
