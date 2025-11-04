@@ -43,11 +43,13 @@ Follow strictly these following steps:
 ### Research
 
 * Use multiple `researcher` subagents in parallel to explore the user's request, idea validation, challenges, and find the best possible solutions.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Tech Stack
 
 1. Use `planner` subagent and multiple `researcher` subagents in parallel to find a best fit tech stack for this project
 2. Write the tech stack down in `./docs` directory
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Wireframe & Design
 
@@ -59,6 +61,7 @@ Follow strictly these following steps:
 * If there are no logo provided, use `gemini-image-gen` skill to generate a logo.
 * Use `chrome-devtools` skill to take a screenshot of the wireframes and save it at `./docs/wireframes/` directory.
 * Ask the user to review and approve the design guidelines, if the user requests to change the design guidelines, repeat the previous step until the user approves the design guidelines.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Implementation
 
@@ -82,15 +85,17 @@ Follow strictly these following steps:
 
 * After finishing, delegate to `code-reviewer` subagent to review code. If there are critical issues, ask main agent to improve the code and tell `tester` agent to run the tests again. Repeat the process until all tests pass.
 * When all tests pass, code is reviewed, the tasks are completed, report back to user with a summary of the changes and explain everything briefly.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Documentation
 
 * Use `docs-manager` subagent to update the docs if needed.
-  * Create/update `./docs/README.md` file.
+  * Create/update `./docs/README.md` file (keep it concise and under 500 lines).
   * Create/update `./docs/project-overview.-pdr.md` (Product Development Requirements) file.
   * Create/update `./docs/code-standards.md` file.
   * Create/update `./docs/system-architecture.md` file.
 * Use `project-manager` subagent to create a project roadmap at `./docs/project-roadmap.md` file.
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 
 ### Onboarding
 
@@ -102,4 +107,4 @@ Follow strictly these following steps:
 ### Final Report
 * Report back to user with a summary of the changes and explain everything briefly, guide user to get started and suggest the next steps.
 * Ask the user if they want to commit and push to git repository, if yes, use `git-manager` subagent to commit and push to git repository.
-
+* **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
