@@ -1,3 +1,18 @@
+## [1.10.5](https://github.com/claudekit/claudekit-engineer/compare/v1.10.4...v1.10.5) (2025-11-04)
+
+
+### 🐞 Bug Fixes
+
+* remove mcp mentioning ([9e8fd79](https://github.com/claudekit/claudekit-engineer/commit/9e8fd79e0baccef62b35c39bde868736eebf83d6))
+* removing .env restrictions in scout-block.sh ([9204b72](https://github.com/claudekit/claudekit-engineer/commit/9204b7275b835cc16135bc8768290ba7f3650390))
+* scout-external agent use official gemini-2.5-flash ([0341b3c](https://github.com/claudekit/claudekit-engineer/commit/0341b3cd3be2bae1a4f4b0343b746c031f4bf843))
+
+
+### ⚡ Performance Improvements
+
+* add skill activation requirements to workflows ([4d805d2](https://github.com/claudekit/claudekit-engineer/commit/4d805d2517a7ba926d4b3865daad448646d010b3))
+* optimize commands for token saving ([40d7c50](https://github.com/claudekit/claudekit-engineer/commit/40d7c5059772ed4fa056fe5c63e84d3f1ee24dd8))
+
 ## [1.10.4](https://github.com/claudekit/claudekit-engineer/compare/v1.10.3...v1.10.4) (2025-11-02)
 
 
