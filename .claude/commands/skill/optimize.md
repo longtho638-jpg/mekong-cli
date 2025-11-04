@@ -1,17 +1,18 @@
 ---
-description: Create a new agent skill
-argument-hint: [prompt-or-llms-or-github-url]
+description: Optimize an existing agent skill
+argument-hint: [skill-name] [prompt]
 ---
 
-Ultrathink.
+Ultrathink. 
 Use `skill-creator` and `claude-code` skills.
 
-## Requirements
-<prompt>$ARGUMENTS</prompt>
+## Arguments
+SKILL: $1 (default: `*`)
+PROMPT: $2 (default: empty)
 
 ## Your mission
-Create a new skill in `.claude/skills/` directory follow these instructions:
-- Skills should be combined into specific topics, for example: `cloudflare`, `cloudflare-r2`, `cloudflare-workers`, `docker`, `gcloud` should be combined into `devops`
+Propose a plan to optimize an existing skill in `.claude/skills/$1` directory follow these instructions:
+- Skill should be combined into specific topics, for example: `cloudflare`, `cloudflare-r2`, `cloudflare-workers`, `docker`, `gcloud` should be combined into `devops`
 - `SKILL.md` should be less than 200 lines and include references of markdown files and scripts.
 - Each script or referenced markdown file should be also less than 250 lines, remember that you can always split them into multiple files.
 - Descriptions in metadata of `SKILL.md` files should be both concise and still contains enough usecases of the references and scripts, this will help skills can be activated automatically during the implementation process of Claude Code.
@@ -29,6 +30,12 @@ Create a new skill in `.claude/skills/` directory follow these instructions:
 ## Why?
 - Better **context engineering**, inspired from **progressive disclosure** technique of Agent Skills, when skills are activated, Claude Code will consider to load only relevant files into the context, instead of reading all long `SKILL.md` as before.
 
+## Output Requirements
+An output implementation plan must also follow the progressive disclosure structure:
+- Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
+- Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
+- For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
+
 ## Before Starting:
 - Read this skill documentation carefully before starting: https://docs.claude.com/en/docs/claude-code/skills.md
 - Read the **Agent Skills Spec** carefully before starting: `.claude/skills/agent_skills_spec.md`
@@ -44,10 +51,4 @@ Create a new skill in `.claude/skills/` directory follow these instructions:
 - Skill folder name (hyphen-case): `<skill-name>`
 - Skill full path: `./.claude/skills/<skill-name>/SKILL.md`
 - Script files (if any): `./.claude/skills/<skill-name>/scripts/my-script.py` or `./.claude/skills/<skill-name>/scripts/my-script.sh`
-- Reference files (if any): `./.claude/skills/<skill-name>/references/ref-0.md`
-
-## Rules of Skill Creation:
-- If you're given an URL, it's documentation page, use `Explorer` subagent to explore every internal link and report back to main agent, don't skip any link.
-- If you receive a lot of URLs, use multiple `Explorer` subagents to explore them in parallel, then report back to main agent.
-- If you receive a lot of files, use multiple `Explorer` subagents to explore them in parallel, then report back to main agent.
-- If you're given a Github URL, use [`repomix`](https://repomix.com/guide/usage) command to summarize ([install it](https://repomix.com/guide/installation) if needed) and spawn multiple `Explorer` subagents to explore it in parallel, then report back to main agent.
+- Reference files (if any): `./.claude/skills/<skill-name>/references/ref-0.md` (each file should be less than 250 lines)
