@@ -9,7 +9,11 @@ argument-hint: [tasks]
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
 
 ## Workflow:
-1. Use `planner` subagent and `researcher` subagent to create a implementation plan with TODO tasks in `./plans` directory.
+1. Use `planner` subagent and `researcher` subagent to create an implementation plan following the progressive disclosure structure:
+   - Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
+   - Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
+   - For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
+   - Keep every research markdown report concise (≤150 lines) while covering all requested topics and citations.
 2. Then use general agent (main agent) to implement the plan step by step.
 3. Run type checking and compile the code to make sure there are no syntax errors.
 4. Write the tests for the plan, make sure you don't use fake data just to pass the tests, tests should be real and cover all possible cases.

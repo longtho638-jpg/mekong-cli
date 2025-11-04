@@ -23,11 +23,15 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 ### Research
 
 * Use 2 `researcher` subagents in parallel to search up to max 5 sources for the user's request, idea validation, best practices, challenges, and find the best possible solutions.
+* Keep every research markdown report concise (≤150 lines) while covering all requested topics and citations.
 * Use multiple `scout` subagents in parallel to find related resources, documents, and code snippets in the current codebase.
 
 ### Plan
 
-* Use `planner` subagent to analyze reports from `researcher` and `scout` subagents to create a implementation plan with TODO tasks in `./plans` directory.
+* Use `planner` subagent to analyze reports from `researcher` and `scout` subagents to create an implementation plan following the progressive disclosure structure:
+  - Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
+  - Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
+  - For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
 
 ### Implementation
 
