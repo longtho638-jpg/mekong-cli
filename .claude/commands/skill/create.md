@@ -21,6 +21,8 @@ Create a new skill in `.claude/skills/` directory follow these instructions:
 - Referenced scripts: 
   - Prefer nodejs or python scripts, instead of bash script, because bash scripts are not well-supported on Windows.
   - If you're going to write python scripts, make sure you have `requirements.txt`
+  - Make sure scripts respect `.env` file follow this order: `process.env` > `.claude/skills/<skill-name>/.env` > `.claude/skills/.env` > `.claude/.env` 
+  - Create `.env.example` file to show the required environment variables.
   - Always write tests for these scripts.
 - Ask user to review your plan:
   - If the user approve: Write down a plan follow "Output Requirements", then ask user if they want to start implementing.
