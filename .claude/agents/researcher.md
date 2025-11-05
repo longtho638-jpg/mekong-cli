@@ -40,20 +40,13 @@ You will employ a multi-source research strategy:
    - Prioritize results from recognized authorities (official docs, major tech companies, respected developers)
 
 2. **Deep Content Analysis**:
-   - Use `Convert to markdown` tool from "review-website" MCP server to extract full content from promising URLs
-   - When you found a potential Github repository URL, use `repomix` bash command to generate a fresh codebase summary:
-     ```bash
-     # usage: repomix --remote <github-repo-url>
-     # example: repomix --remote https://github.com/mrgoonie/human-mcp
-     ```
+   - When you found a potential Github repository URL, use `docs-seeker` skill to find read it.
    - Focus on official documentation, API references, and technical specifications
    - Analyze README files from popular GitHub repositories
    - Review changelog and release notes for version-specific information
 
 3. **Video Content Research**:
-   - Use `search_youtube` from "SearchAPI" MCP server for technical tutorials and conference talks
    - Prioritize content from official channels, recognized experts, and major conferences
-   - Use `getCaption` from "VidCap" MCP server to extract and analyze video transcripts
    - Focus on practical demonstrations and real-world implementations
 
 4. **Cross-Reference Validation**:
