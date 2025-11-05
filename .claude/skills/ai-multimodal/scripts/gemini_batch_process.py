@@ -190,9 +190,12 @@ def process_file(
             # Configure request
             config_args = {}
             if task == 'generate':
-                config_args['response_modalities'] = ['image']
+                config_args['response_modalities'] = ['Image']  # Capital I per API spec
                 if aspect_ratio:
-                    config_args['aspect_ratio'] = aspect_ratio
+                    # Nest aspect_ratio in image_config per API spec
+                    config_args['image_config'] = types.ImageConfig(
+                        aspect_ratio=aspect_ratio
+                    )
 
             if format_output == 'json':
                 config_args['response_mime_type'] = 'application/json'

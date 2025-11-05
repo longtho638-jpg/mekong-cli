@@ -213,6 +213,44 @@ class TestProcessFile:
         assert result['status'] == 'error'
         assert 'API Error' in result['error']
 
+    @patch('gemini_batch_process.genai.Client')
+    @patch('builtins.open', create=True)
+    @patch('pathlib.Path.stat')
+    def test_image_generation_with_aspect_ratio(self, mock_stat, mock_open, mock_client_class):
+        """Test image generation with aspect ratio config."""
+        mock_stat.return_value.st_size = 1024
+
+        # Mock file read
+        mock_file = MagicMock()
+        mock_file.__enter__.return_value.read.return_value = b'test'
+        mock_open.return_value = mock_file
+
+        mock_client = Mock()
+        mock_response = Mock()
+        mock_response.candidates = [Mock()]
+        mock_response.candidates[0].content.parts = [
+            Mock(inline_data=Mock(data=b'fake_image_data'))
+        ]
+        mock_client.models.generate_content.return_value = mock_response
+
+        result = gbp.process_file(
+            client=mock_client,
+            file_path='test.txt',
+            prompt='Generate mountain landscape',
+            model='gemini-2.5-flash-image',
+            task='generate',
+            format_output='text',
+            aspect_ratio='16:9',
+            verbose=False
+        )
+
+        # Verify config was called with correct structure
+        call_args = mock_client.models.generate_content.call_args
+        config = call_args.kwargs.get('config')
+        assert config is not None
+        assert result['status'] == 'success'
+        assert 'generated_image' in result
+
 
 class TestBatchProcessing:
     """Test batch processing functionality."""

@@ -522,3 +522,37 @@ if len(prompt) > 1000:
 - Optimal language support: English, Spanish (Mexico), Japanese, Mandarin, Hindi
 - No real-time generation
 - Cannot perfectly replicate specific people or copyrighted characters
+
+## Troubleshooting
+
+### aspect_ratio Parameter Error
+
+**Error**: `Extra inputs are not permitted [type=extra_forbidden, input_value='1:1', input_type=str]`
+
+**Cause**: The `aspect_ratio` parameter must be nested inside an `image_config` object, not passed directly to `GenerateContentConfig`.
+
+**Incorrect Usage**:
+```python
+# ❌ This will fail
+config = types.GenerateContentConfig(
+    response_modalities=['image'],
+    aspect_ratio='16:9'  # Wrong - not a direct parameter
+)
+```
+
+**Correct Usage**:
+```python
+# ✅ Correct implementation
+config = types.GenerateContentConfig(
+    response_modalities=['Image'],  # Note: Capital 'I'
+    image_config=types.ImageConfig(
+        aspect_ratio='16:9'
+    )
+)
+```
+
+### Response Modality Case Sensitivity
+
+The `response_modalities` parameter expects capital case values:
+- ✅ Correct: `['Image']`, `['Text']`, `['Image', 'Text']`
+- ❌ Wrong: `['image']`, `['text']`
