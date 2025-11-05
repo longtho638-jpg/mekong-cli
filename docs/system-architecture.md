@@ -120,7 +120,7 @@ temperature: 0.1
 #### 2.3 Agent Communication Protocol
 
 **Communication Medium**: File system (markdown files)
-**Report Location**: `./plans/reports/`
+**Report Location**: `./plans/<plan-name>/reports/`
 **Naming Convention**: `YYMMDD-from-[source]-to-[dest]-[task]-report.md`
 
 **Report Structure**:
@@ -414,8 +414,8 @@ Planner incorporates into plan
 
 **Runtime Data**:
 - `plans/` - Implementation plans
-- `plans/reports/` - Agent communication
-- `plans/research/` - Research reports
+- `plans/<plan-name>/reports/` - Agent communication
+- `plans/<plan-name>/research/` - Research reports
 - `docs/` - Project documentation
 - `repomix-output.xml` - Codebase compaction
 
@@ -514,19 +514,19 @@ Remote Repository (GitHub)
 ### Agent Communication Example
 
 ```
-plans/reports/251026-from-planner-to-main-auth-plan-report.md
+plans/<plan-name>/reports/251026-from-planner-to-main-auth-plan-report.md
     ↓
 Main Agent reads plan
     ↓
 Implements features
     ↓
-plans/reports/251026-from-main-to-tester-auth-impl-report.md
+plans/<plan-name>/reports/251026-from-main-to-tester-auth-impl-report.md
     ↓
 Tester reads implementation details
     ↓
 Runs tests
     ↓
-plans/reports/251026-from-tester-to-main-test-results-report.md
+plans/<plan-name>/reports/251026-from-tester-to-main-test-results-report.md
 ```
 
 ## Technology Stack
@@ -587,19 +587,19 @@ User → CLI → Parser → Command Def → Agent Workflow
 ```
 Agent A (Planner)
     ↓ Writes
-./plans/251026-auth-implementation-plan.md
+./plans/<plan-name>/plan.md
     ↓ Reads
 Main Agent
     ↓ Implements
 Code Changes
     ↓ Writes
-./plans/reports/251026-from-main-to-tester-impl-report.md
+./plans/<plan-name>/reports/251026-from-main-to-tester-impl-report.md
     ↓ Reads
 Tester Agent
     ↓ Executes
 Tests
     ↓ Writes
-./plans/reports/251026-from-tester-to-main-results-report.md
+./plans/<plan-name>/reports/251026-from-tester-to-main-results-report.md
     ↓ Reads
 Main Agent (next steps)
 ```

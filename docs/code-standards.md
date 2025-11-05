@@ -103,7 +103,7 @@ project-root/
   - `code-standards.md`
   - `system-architecture.md`
 
-**Reports** (`plans/reports/`):
+**Reports** (`plans/<plan-name>/reports/`):
 - Format: `YYMMDD-from-[agent]-to-[agent]-[task]-report.md`
 - Use date prefix for chronological sorting
 - Clear source and destination agents
@@ -119,7 +119,7 @@ project-root/
   - `251026-user-authentication-plan.md`
   - `251026-database-migration-plan.md`
 
-**Research Reports** (`plans/research/`):
+**Research Reports** (`plans/<plan-name>/research/`):
 - Format: `YYMMDD-[research-topic].md`
 - Date prefix for tracking
 - Clear topic description

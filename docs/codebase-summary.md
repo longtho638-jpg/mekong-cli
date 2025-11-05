@@ -1,7 +1,7 @@
 # Codebase Summary
 
-**Last Updated**: 2025-10-26
-**Version**: 1.8.0
+**Last Updated**: 2025-11-05
+**Version**: 1.10.5
 **Repository**: [claudekit/claudekit-engineer](https://github.com/claudekit/claudekit-engineer)
 
 ## Overview
@@ -94,22 +94,41 @@ claudekit-engineer/
 
 ### 3. Skills Library
 
-**Skill Categories** (`.claude/skills/`):
+**Skills Organization** (`.claude/skills/`):
+
+**Phase 1 Skill Groups** (Progressive Disclosure Pattern):
+- **DevOps** (`devops/`) - Cloudflare edge platform, Docker containerization, Google Cloud Platform
+  - 11 reference files (<250 lines each), 2 Python utilities, 45 tests
+  - Consolidates: Cloudflare (5 skills), Docker, GCloud
+- **Databases** (`databases/`) - MongoDB document database, PostgreSQL relational database
+  - 8 reference files, 3 Python utilities
+  - Consolidates: MongoDB, PostgreSQL
+- **Web Frameworks** (`web-frameworks/`) - Next.js, Turborepo monorepos, RemixIcon
+  - 7 reference files, 2 Python utilities
+  - Consolidates: Next.js, Turborepo, RemixIcon
+- **UI Styling** (`ui-styling/`) - shadcn/ui components, Tailwind CSS, canvas-design
+  - 7 reference files, 2 Python utilities
+  - Consolidates: shadcn/ui, Tailwind CSS, canvas-design
+
+**Individual Skills** (Original Pattern):
 - **Authentication**: `better-auth/`
-- **Cloud Platforms**: `cloudflare/`, `gcloud/`, `cloudflare-workers/`, `cloudflare-r2/`
-- **Databases**: `mongodb/`, `postgresql-psql/`
-- **Design**: `canvas-design/`
-- **Debugging**: `systematic-debugging/`, `root-cause-tracing/`, `defense-in-depth/`
+- **Browser Automation**: `chrome-devtools/`
+- **Debugging**: `systematic-debugging/`, `root-cause-tracing/`, `defense-in-depth/`, `verification-before-completion/`
 - **Documentation**: `docs-seeker/`, `repomix/`
 - **Document Processing**: `document-skills/` (docx, pdf, pptx, xlsx)
-- **Frameworks**: `nextjs/`, `shadcn-ui/`, `tailwindcss/`, `turborepo/`
 - **Media**: `ffmpeg/`, `imagemagick/`
+- **Gemini AI**: `gemini-audio/`, `gemini-document-processing/`, `gemini-image-gen/`, `gemini-video-understanding/`, `gemini-vision/`
 - **MCP**: `mcp-builder/`
-- **Problem Solving**: `collision-zone-thinking/`, `meta-pattern-recognition/`, `scale-game/`
+- **Problem Solving**: `collision-zone-thinking/`, `meta-pattern-recognition/`, `scale-game/`, `inversion-exercise/`, `simplification-cascades/`, `when-stuck/`
 - **Ecommerce**: `shopify/`
-- **Infrastructure**: `docker/`
-- **Icons**: `remix-icon/`
-- **Development**: `claude-code/`, `skill-creator/`
+- **Development**: `sequential-thinking/`, `skill-creator/`, `google-adk-python/`
+
+**Archived Skills** (`.claude/skills/_archive/20251104-*/`):
+- 14 original skills consolidated into Phase 1 groups
+- Full preservation of original content
+- Available for reference or rollback
+
+**See:** `docs/skills-migration-guide-phase1.md` for migration details
 
 ### 4. Workflows
 
@@ -178,7 +197,7 @@ Eliminate code duplication
 
 ## Agent Communication Protocol
 
-**Report Format**: Markdown files in `./plans/reports/`
+**Report Format**: Markdown files in `./plans/<plan-name>/reports/`
 **Naming Convention**: `YYMMDD-from-[agent]-to-[agent]-[task]-report.md`
 
 **Communication Patterns**:
