@@ -1,3 +1,46 @@
+## [1.11.0](https://github.com/claudekit/claudekit-engineer/compare/v1.10.6...v1.11.0) (2025-11-06)
+
+
+### 🚀 Features
+
+* **chrome-devtools:** add XPath selector support with security validation ([80ec295](https://github.com/claudekit/claudekit-engineer/commit/80ec295b4a7ea07cfa54c05bbb81bf7d52891931))
+* new skills - code reviewing and problem solving ([9b7472d](https://github.com/claudekit/claudekit-engineer/commit/9b7472dcc9ce282a6285a03f653dbeb0cd14020b))
+* scan and review the codebase with `/review:codebase` ([6f0e881](https://github.com/claudekit/claudekit-engineer/commit/6f0e8819f952417836887b479d5d8b658130ff3e))
+* **skills:** add requirements.txt files and installation guide ([b360ec0](https://github.com/claudekit/claudekit-engineer/commit/b360ec02811a9daed849419e1917b59ce3ab6121))
+* **skills:** complete Phase 4 - standalone skill refactors with progressive disclosure ([9159507](https://github.com/claudekit/claudekit-engineer/commit/91595079df71afa882928e2f8501fb5005c34c98))
+* **skills:** reorganize skills with progressive disclosure (Phase 1 & 2) ([21fb8bd](https://github.com/claudekit/claudekit-engineer/commit/21fb8bd88eb2e81c165295b0785898993e361003))
+
+
+### 🐞 Bug Fixes
+
+* add rules of env var respect order in skill commands ([7e8a856](https://github.com/claudekit/claudekit-engineer/commit/7e8a8566b1cc4e73f27712c9bfc7f6cc8a3463f6))
+* **ai-multimodal:** correct aspect_ratio parameter structure ([241fdfe](https://github.com/claudekit/claudekit-engineer/commit/241fdfe59053594e2cfd5eda3826d21b47a3ac8c)), closes [#27](https://github.com/claudekit/claudekit-engineer/issues/27)
+* removed archived skills ([b7fae05](https://github.com/claudekit/claudekit-engineer/commit/b7fae05db93508cf748b26f21e51ac086aca9d10))
+* update report location of subagents ([4175850](https://github.com/claudekit/claudekit-engineer/commit/4175850029cbdde225b124d330c81dabf3cc5eab))
+
+
+### 📚 Documentation
+
+* add pull request checklist to git manager agent ([11958c3](https://github.com/claudekit/claudekit-engineer/commit/11958c31e15cc6e0e3fc2590654fe064d61e5b5b))
+
+
+### 💄 Styles
+
+* fix typo in code review ([b0f3bf9](https://github.com/claudekit/claudekit-engineer/commit/b0f3bf9bc515fee18c6d3e8b991a268fe68b8bee))
+
+
+### ♻️ Code Refactoring
+
+* **claude-code:** optimize skill with progressive disclosure (79% reduction) ([8b51d5a](https://github.com/claudekit/claudekit-engineer/commit/8b51d5a8e47328315fd0bd0ad6e996a4d17348d6))
+
+
+### ⚡ Performance Improvements
+
+* improve /skill:create and /skill:optimize ([c6a5b32](https://github.com/claudekit/claudekit-engineer/commit/c6a5b32895e372b6119c19300534ec35f1ab5850))
+* improve skills activation of subagents ([c38e0e4](https://github.com/claudekit/claudekit-engineer/commit/c38e0e4d9e6c7c95e7bfedb7b77c2acf206762af))
+* improve skills commands ([da004fc](https://github.com/claudekit/claudekit-engineer/commit/da004fc567c8011d5257c87bd3c4d8cb0a8ac967))
+* optimize token count in README.md ([2bd1ee2](https://github.com/claudekit/claudekit-engineer/commit/2bd1ee26b806b16d5de4558dbca7ecf6494bafce))
+
 ## [1.10.6](https://github.com/claudekit/claudekit-engineer/compare/v1.10.5...v1.10.6) (2025-11-04)
 
 
