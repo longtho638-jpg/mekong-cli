@@ -2,11 +2,14 @@
 
 CLI scripts for browser automation using Puppeteer.
 
+**CRITICAL**: Always check `pwd` before running scripts.
+
 ## Installation
 
 ### Quick Install
 
 ```bash
+pwd  # Should show current working directory
 cd .claude/skills/chrome-devtools/scripts
 ./install.sh  # Auto-checks dependencies and installs
 ```
@@ -29,6 +32,8 @@ npm install
 ```
 
 ## Scripts
+
+**CRITICAL**: Always check `pwd` before running scripts.
 
 ### navigate.js
 Navigate to a URL.
@@ -111,6 +116,78 @@ node performance.js --url https://example.com [--trace trace.json] [--metrics] [
 - `--close false` - Keep browser open
 - `--timeout 30000` - Set timeout in milliseconds
 - `--wait-until networkidle2` - Wait strategy (load, domcontentloaded, networkidle0, networkidle2)
+
+## Selector Support
+
+Scripts that accept `--selector` (click.js, fill.js, screenshot.js) support both **CSS** and **XPath** selectors.
+
+### CSS Selectors (Default)
+
+```bash
+# Element tag
+node click.js --selector "button" --url https://example.com
+
+# Class selector
+node click.js --selector ".btn-submit" --url https://example.com
+
+# ID selector
+node fill.js --selector "#email" --value "user@example.com" --url https://example.com
+
+# Attribute selector
+node click.js --selector 'button[type="submit"]' --url https://example.com
+
+# Complex selector
+node screenshot.js --selector "div.container > button.btn-primary" --output btn.png
+```
+
+### XPath Selectors
+
+XPath selectors start with `/` or `(//` and are automatically detected:
+
+```bash
+# Text matching - exact
+node click.js --selector '//button[text()="Submit"]' --url https://example.com
+
+# Text matching - contains
+node click.js --selector '//button[contains(text(),"Submit")]' --url https://example.com
+
+# Attribute matching
+node fill.js --selector '//input[@type="email"]' --value "user@example.com"
+
+# Multiple conditions
+node click.js --selector '//button[@type="submit" and contains(text(),"Save")]'
+
+# Descendant selection
+node screenshot.js --selector '//div[@class="modal"]//button[@class="close"]' --output modal.png
+
+# Nth element
+node click.js --selector '(//button)[2]'  # Second button on page
+```
+
+### Discovering Selectors
+
+Use `snapshot.js` to discover correct selectors:
+
+```bash
+# Get all interactive elements
+node snapshot.js --url https://example.com | jq '.elements[]'
+
+# Find buttons
+node snapshot.js --url https://example.com | jq '.elements[] | select(.tagName=="BUTTON")'
+
+# Find inputs
+node snapshot.js --url https://example.com | jq '.elements[] | select(.tagName=="INPUT")'
+```
+
+### Security
+
+XPath selectors are validated to prevent injection attacks. The following patterns are blocked:
+- `javascript:`
+- `<script`
+- `onerror=`, `onload=`, `onclick=`
+- `eval(`, `Function(`, `constructor(`
+
+Selectors exceeding 1000 characters are rejected (DoS prevention).
 
 ## Output Format
 

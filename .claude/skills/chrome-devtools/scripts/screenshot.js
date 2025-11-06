@@ -2,8 +2,12 @@
 /**
  * Take a screenshot
  * Usage: node screenshot.js --output screenshot.png [--url https://example.com] [--full-page true] [--selector .element] [--max-size 5] [--no-compress]
+ * Supports both CSS and XPath selectors:
+ *   - CSS: node screenshot.js --selector ".main-content" --output page.png
+ *   - XPath: node screenshot.js --selector "//div[@class='main-content']" --output page.png
  */
 import { getBrowser, getPage, closeBrowser, parseArgs, outputJSON, outputError } from './lib/browser.js';
+import { parseSelector, getElement, enhanceError } from './lib/selector.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -123,7 +127,11 @@ async function screenshot() {
 
     let buffer;
     if (args.selector) {
-      const element = await page.$(args.selector);
+      // Parse and validate selector
+      const parsed = parseSelector(args.selector);
+
+      // Get element based on selector type
+      const element = await getElement(page, parsed);
       if (!element) {
         throw new Error(`Element not found: ${args.selector}`);
       }
@@ -158,7 +166,14 @@ async function screenshot() {
       await closeBrowser();
     }
   } catch (error) {
-    outputError(error);
+    // Enhance error message if selector-related
+    if (args.selector) {
+      const enhanced = enhanceError(error, args.selector);
+      outputError(enhanced);
+    } else {
+      outputError(error);
+    }
+    process.exit(1);
   }
 }
 
