@@ -154,7 +154,7 @@ def upload_file(client: genai.Client, file_path: str, verbose: bool = False) -> 
 
 def process_file(
     client: genai.Client,
-    file_path: str,
+    file_path: Optional[str],
     prompt: str,
     model: str,
     task: str,
@@ -164,28 +164,33 @@ def process_file(
     max_retries: int = 3
 ) -> Dict[str, Any]:
     """Process a single file with retry logic."""
-    file_path = Path(file_path)
 
     for attempt in range(max_retries):
         try:
-            # Determine if we need File API
-            file_size = file_path.stat().st_size
-            use_file_api = file_size > 20 * 1024 * 1024  # >20MB
-
-            if use_file_api:
-                # Upload to File API
-                myfile = upload_file(client, str(file_path), verbose)
-                content = [prompt, myfile]
+            # For generation tasks without input files
+            if task == 'generate' and not file_path:
+                content = [prompt]
             else:
-                # Inline data
-                with open(file_path, 'rb') as f:
-                    file_bytes = f.read()
+                # Process input file
+                file_path = Path(file_path)
+                # Determine if we need File API
+                file_size = file_path.stat().st_size
+                use_file_api = file_size > 20 * 1024 * 1024  # >20MB
 
-                mime_type = get_mime_type(str(file_path))
-                content = [
-                    prompt,
-                    types.Part.from_bytes(data=file_bytes, mime_type=mime_type)
-                ]
+                if use_file_api:
+                    # Upload to File API
+                    myfile = upload_file(client, str(file_path), verbose)
+                    content = [prompt, myfile]
+                else:
+                    # Inline data
+                    with open(file_path, 'rb') as f:
+                        file_bytes = f.read()
+
+                    mime_type = get_mime_type(str(file_path))
+                    content = [
+                        prompt,
+                        types.Part.from_bytes(data=file_bytes, mime_type=mime_type)
+                    ]
 
             # Configure request
             config_args = {}
@@ -211,7 +216,7 @@ def process_file(
 
             # Extract response
             result = {
-                'file': str(file_path),
+                'file': str(file_path) if file_path else 'generated',
                 'status': 'success',
                 'response': response.text if hasattr(response, 'text') else None
             }
@@ -220,17 +225,27 @@ def process_file(
             if task == 'generate' and hasattr(response, 'candidates'):
                 for i, part in enumerate(response.candidates[0].content.parts):
                     if part.inline_data:
-                        output_file = file_path.parent / f"{file_path.stem}_generated_{i}.png"
+                        # Determine output directory
+                        if file_path:
+                            output_dir = Path(file_path).parent
+                            base_name = Path(file_path).stem
+                        else:
+                            output_dir = Path.cwd()
+                            base_name = "generated"
+
+                        output_file = output_dir / f"{base_name}_generated_{i}.png"
                         with open(output_file, 'wb') as f:
                             f.write(part.inline_data.data)
                         result['generated_image'] = str(output_file)
+                        if verbose:
+                            print(f"  Saved image to: {output_file}")
 
             return result
 
         except Exception as e:
             if attempt == max_retries - 1:
                 return {
-                    'file': str(file_path),
+                    'file': str(file_path) if file_path else 'generated',
                     'status': 'error',
                     'error': str(e)
                 }
@@ -271,13 +286,14 @@ def batch_process(
     client = genai.Client(api_key=api_key)
     results = []
 
-    for i, file_path in enumerate(files, 1):
+    # For generation tasks without input files, process once
+    if task == 'generate' and not files:
         if verbose:
-            print(f"\n[{i}/{len(files)}] Processing: {file_path}")
+            print(f"\nGenerating image from prompt...")
 
         result = process_file(
             client=client,
-            file_path=file_path,
+            file_path=None,
             prompt=prompt,
             model=model,
             task=task,
@@ -291,6 +307,28 @@ def batch_process(
         if verbose:
             status = result.get('status', 'unknown')
             print(f"  Status: {status}")
+    else:
+        # Process input files
+        for i, file_path in enumerate(files, 1):
+            if verbose:
+                print(f"\n[{i}/{len(files)}] Processing: {file_path}")
+
+            result = process_file(
+                client=client,
+                file_path=file_path,
+                prompt=prompt,
+                model=model,
+                task=task,
+                format_output=format_output,
+                aspect_ratio=aspect_ratio,
+                verbose=verbose
+            )
+
+            results.append(result)
+
+            if verbose:
+                status = result.get('status', 'unknown')
+                print(f"  Status: {status}")
 
     # Save results
     if output_file:
