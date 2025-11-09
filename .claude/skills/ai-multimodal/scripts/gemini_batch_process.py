@@ -18,6 +18,7 @@ import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import csv
+import shutil
 
 try:
     from google import genai
@@ -349,6 +350,19 @@ def batch_process(
 def save_results(results: List[Dict[str, Any]], output_file: str, format_output: str):
     """Save results to file."""
     output_path = Path(output_file)
+
+    # Special handling for image generation - if output has image extension, copy the generated image
+    image_extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp'}
+    if output_path.suffix.lower() in image_extensions and len(results) == 1:
+        generated_image = results[0].get('generated_image')
+        if generated_image:
+            # Copy the generated image to the specified output location
+            shutil.copy2(generated_image, output_path)
+            return
+        else:
+            # Don't write text reports to image files - save error as .txt instead
+            output_path = output_path.with_suffix('.error.txt')
+            print(f"Warning: Generation failed, saving error report to: {output_path}")
 
     if format_output == 'json':
         with open(output_path, 'w') as f:
