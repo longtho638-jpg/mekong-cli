@@ -10,7 +10,7 @@ Use `ui-ux-designer` subagent to read and analyze `./docs/design-guidelines.md` 
 If the user provides a screenshots or videos, use `ai-multimodal` skill to describe as detailed as possible the issue, make sure developers can predict the root causes easily based on the description.
 
 1. Use `ui-ux-designer` subagent to implement the fix step by step.
-2. Use screenshot capture tools along with `ai-multimodal` skill to take screenshots of the implemented fix (at the exact parent container, don't take screenshot of the whole page) and use the appropriate Gemini analysis skills (`ai-multimodal`, `gemini-video-understanding`, or `gemini-document-processing`) to analyze those outputs so the result matches the design guideline and addresses all issues.
+2. Use screenshot capture tools along with `ai-multimodal` skill to take screenshots of the implemented fix (at the exact parent container, don't take screenshot of the whole page) and use the appropriate Gemini analysis skills (`ai-multimodal`, `video-analysis`, or `document-extraction`) to analyze those outputs so the result matches the design guideline and addresses all issues.
   - If the issues are not addressed, repeat the process until all issues are addressed.
 3. Use `chrome-devtools` skill to analyze the implemented fix and make sure it matches the design guideline.
 4. Use `tester` agent to test the fix and compile the code to make sure it works, then report back to main agent.

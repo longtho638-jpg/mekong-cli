@@ -68,9 +68,9 @@ Follow strictly these following steps:
 * Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
 * Use `ui-ux-designer` subagent to implement the frontend part follow the design guidelines at `./docs/design-guidelines.md` file.
   * Use `ai-multimodal` skill to generate the assets.
-  * Use `ai-multimodal`, `gemini-video-understanding`, or `gemini-document-processing` skills to analyze the generated assets based on their format.
+  * Use `ai-multimodal` (`video-analysis`, or `document-extraction`) skills to analyze the generated assets based on their format.
   * Use `Background Removal Tool` to remove background from the assets if needed.
-  * Use `Gemini Image Editing` tool to edit the assets if needed.
+  * Use `ai-multimodal` (`image-generation`) skill to edit the assets if needed.
   * Use `imagemagick` skill to crop or resize the assets if needed.
 * Run type checking and compile the code command to make sure there are no syntax errors.
 
