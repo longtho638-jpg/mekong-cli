@@ -48,6 +48,7 @@ See: `references/backend-technologies.md` for detailed comparisons
 - `backend-testing.md` - Testing strategies, frameworks, tools, CI/CD testing
 - `backend-code-quality.md` - SOLID principles, design patterns, clean code
 - `backend-devops.md` - Docker, Kubernetes, deployment strategies, monitoring
+- `backend-debugging.md` - Debugging strategies, profiling, logging, production debugging
 - `backend-mindset.md` - Problem-solving, architectural thinking, collaboration
 
 ## Key Best Practices (2025)
