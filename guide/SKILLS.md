@@ -120,7 +120,7 @@ All Gemini skills require a `GEMINI_API_KEY`. See [API Key Setup](#gemini-api-ke
 
 ---
 
-### gemini-image-gen
+### ai-multimodal
 
 **AI image generation using Gemini 2.5 Flash**
 
@@ -142,7 +142,7 @@ All Gemini skills require a `GEMINI_API_KEY`. See [API Key Setup](#gemini-api-ke
 
 ---
 
-### gemini-vision
+### ai-multimodal
 
 **Image analysis and vision capabilities**
 

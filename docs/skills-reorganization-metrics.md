@@ -342,9 +342,9 @@ _archive/
 **Consolidate:**
 - gemini-audio
 - gemini-document-processing
-- gemini-image-gen
+- ai-multimodal
 - gemini-video-understanding
-- gemini-vision
+- ai-multimodal
 - ffmpeg
 - imagemagick
 

@@ -117,7 +117,7 @@ claudekit-engineer/
 - **Documentation**: `docs-seeker/`, `repomix/`
 - **Document Processing**: `document-skills/` (docx, pdf, pptx, xlsx)
 - **Media**: `ffmpeg/`, `imagemagick/`
-- **Gemini AI**: `gemini-audio/`, `gemini-document-processing/`, `gemini-image-gen/`, `gemini-video-understanding/`, `gemini-vision/`
+- **Gemini AI**: `gemini-audio/`, `gemini-document-processing/`, `ai-multimodal/`, `gemini-video-understanding/`, `ai-multimodal/`
 - **MCP**: `mcp-builder/`
 - **Problem Solving**: `collision-zone-thinking/`, `meta-pattern-recognition/`, `scale-game/`, `inversion-exercise/`, `simplification-cascades/`, `when-stuck/`
 - **Ecommerce**: `shopify/`
@@ -297,8 +297,8 @@ Features: Automated releases, changelog generation
 ### Agent Skills
 - **brain**: Advanced reasoning
 - **docs-seeker**: Documentation reading
-- **gemini-vision**: Visual understanding
-- **gemini-image-gen & imagemagick skills**: Content generation and processing
+- **ai-multimodal**: Visual understanding
+- **ai-multimodal & imagemagick skills**: Content generation and processing
 
 ## Critical Files
 
