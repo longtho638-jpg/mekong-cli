@@ -573,10 +573,10 @@ Commands are stored in `.claude/commands/` directory and can be customized for y
 
 **Human MCP Integration**:
 
-**Gemini-Image-Gen Skills & ImageMagick Skill**:
-- Generate textures, skyboxes, environment maps via gemini-image-gen prompts
-- Create particle sprites, effect assets, and stylized 3D object textures using gemini-image-gen skills
-- Produce video backgrounds and control camera movements or inpainting/outpainting workflows through gemini-image-gen
+**ai-multimodal Skills & ImageMagick Skill**:
+- Generate textures, skyboxes, environment maps via ai-multimodal prompts
+- Create particle sprites, effect assets, and stylized 3D object textures using ai-multimodal skills
+- Produce video backgrounds and control camera movements or inpainting/outpainting workflows through ai-multimodal
 - Process textures for WebGL, create normal/height maps, and generate sprite sheets with imagemagick skill pipelines
 - Remove backgrounds, resize, optimize assets, and apply masks using imagemagick skill commands
 

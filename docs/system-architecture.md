@@ -372,12 +372,12 @@ Planner incorporates into plan
 - Break down complex problems
 - Reflective analysis
 
-**gemini-vision** skill (Visual Analysis):
+**ai-multimodal** skill (Visual Analysis):
 - Describe images, videos, documents
 - UI/UX analysis from screenshots
 
-**gemini-image-gen & imagemagick skills** (Generation & Processing):
-- Generate images, videos, and documents via gemini-image-gen skills
+**ai-multimodal & imagemagick skills** (Generation & Processing):
+- Generate images, videos, and documents via ai-multimodal skills
 - Perform design asset creation and edits with imagemagick skill workflows
 
 **brain** (Advanced Reasoning):
@@ -559,8 +559,8 @@ plans/<plan-name>/reports/251026-from-tester-to-main-test-results-report.md
 **Sequential Thinking**: Problem decomposition
 **brain**: Advanced reasoning
 **docs-seeker**: Documentation access
-**gemini-vision**: Visual understanding
-**gemini-image-gen & imagemagick skills**: Content generation and processing
+**ai-multimodal**: Visual understanding
+**ai-multimodal & imagemagick skills**: Content generation and processing
 
 ## Data Flow Diagrams
 
