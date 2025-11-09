@@ -1,3 +1,22 @@
+## [1.12.0](https://github.com/claudekit/claudekit-engineer/compare/v1.11.0...v1.12.0) (2025-11-09)
+
+
+### 🚀 Features
+
+* new skills - `backend-development` ([0c03973](https://github.com/claudekit/claudekit-engineer/commit/0c0397364c9da6141dfc3c4300cb2617183fbc2f))
+* **skill:** add mobile-development with React Native, Flutter, Swift, Kotlin ([7a73b44](https://github.com/claudekit/claudekit-engineer/commit/7a73b441aa6c4085db09db85e26c144990718709))
+* **skills:** add debugging references for backend and mobile development ([970c957](https://github.com/claudekit/claudekit-engineer/commit/970c9573906217a3536620643e68f30d1595824e))
+
+
+### 🐞 Bug Fixes
+
+* add `/fix` as shorthand of `/fix:fast` ([b27f5d8](https://github.com/claudekit/claudekit-engineer/commit/b27f5d8d45c9bd1bcdc6478a648d81c6ef8309c8))
+
+
+### ⚡ Performance Improvements
+
+* add emphasis on mandatory compliance with CLAUDE.md ([fca5cb5](https://github.com/claudekit/claudekit-engineer/commit/fca5cb556124b253a1b386f60efccd93e4a71976))
+
 ## [1.11.0](https://github.com/claudekit/claudekit-engineer/compare/v1.10.6...v1.11.0) (2025-11-06)
 
 
