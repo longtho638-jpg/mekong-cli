@@ -225,12 +225,21 @@ def process_file(
             if task == 'generate' and hasattr(response, 'candidates'):
                 for i, part in enumerate(response.candidates[0].content.parts):
                     if part.inline_data:
-                        # Determine output directory
+                        # Determine output directory - use project root docs/assets
                         if file_path:
                             output_dir = Path(file_path).parent
                             base_name = Path(file_path).stem
                         else:
-                            output_dir = Path.cwd()
+                            # Find project root (look for .git or .claude directory)
+                            script_dir = Path(__file__).parent
+                            project_root = script_dir
+                            for parent in [script_dir] + list(script_dir.parents):
+                                if (parent / '.git').exists() or (parent / '.claude').exists():
+                                    project_root = parent
+                                    break
+
+                            output_dir = project_root / 'docs' / 'assets'
+                            output_dir.mkdir(parents=True, exist_ok=True)
                             base_name = "generated"
 
                         output_file = output_dir / f"{base_name}_generated_{i}.png"
