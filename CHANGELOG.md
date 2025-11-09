@@ -1,3 +1,25 @@
+## [1.13.0](https://github.com/claudekit/claudekit-engineer/compare/v1.12.0...v1.13.0) (2025-11-09)
+
+
+### 🚀 Features
+
+* add `/use-mcp <to-do-something>` command ([e67a4e8](https://github.com/claudekit/claudekit-engineer/commit/e67a4e8fb39e51864e43207fb5477c2328e9a142))
+* **agent:** add mcp-manager subagent ([ba40491](https://github.com/claudekit/claudekit-engineer/commit/ba404913b28b1001f3b3145b0c2fbcb1a81df04c))
+* **skill:** add mcp-management skill ([8f04c03](https://github.com/claudekit/claudekit-engineer/commit/8f04c0399bcf15f67a00fc843e28abde9fb6f357))
+
+
+### 🐞 Bug Fixes
+
+* consolidate image/video processing to use ai-multimodal skill ([26bd5da](https://github.com/claudekit/claudekit-engineer/commit/26bd5da5b1e8259803cc521b2ce43539822b0441))
+* issue of generate images of `ai-multimodal` skills ([c1144e9](https://github.com/claudekit/claudekit-engineer/commit/c1144e938cf59db5f912e444a2861082a80bc7bd))
+* issues of markdown convert in `ai-multimodal` skills ([879561e](https://github.com/claudekit/claudekit-engineer/commit/879561e45c792e9ff27b051f25a62c98d4e36d76))
+* standardize output paths of `ai-multimodal` skills ([716fd25](https://github.com/claudekit/claudekit-engineer/commit/716fd256be2541d5cea4b22965407f6892b60732))
+
+
+### ⚡ Performance Improvements
+
+* planning & research skills with token efficiency ([ed040bc](https://github.com/claudekit/claudekit-engineer/commit/ed040bc5e1160014673824171333b5e290953f1a))
+
 ## [1.12.0](https://github.com/claudekit/claudekit-engineer/compare/v1.11.0...v1.12.0) (2025-11-09)
 
 
