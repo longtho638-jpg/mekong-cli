@@ -419,17 +419,55 @@ claude "What objects are in this image: photo.jpg"
 
 ## Model Context Protocol (MCP)
 
-### Context7
+✍️ Please read [my technical blog article about MCP here](https://faafospecialist.substack.com/p/claude-code-solution-to-use-mcp-servers).
+
+### Pre-requisites
+
+In ClaudeKit, you need to setup the MCP servers in `.claude/.mcp.json` file.
+
+Copy the example file:
 ```bash
-export UPSTASH_API_KEY="..."
-claude mcp add context7 -s user -- npx -y @upstash/context7-mcp --api-key $UPSTASH_API_KEY
+mv .claude/.mcp.json.example .claude/.mcp.json
 ```
 
-### Human
+Then add your MCP servers, below are some examples:
 
-```bash
-export GOOGLE_GEMINI_API_KEY="..."
-claude mcp add-json human -s user '{"command": "npx", "args": ["@goonnguyen/human-mcp@latest", "-e", "GOOGLE_GEMINI_API_KEY"], "env": { "GOOGLE_GEMINI_API_KEY": $GOOGLE_GEMINI_API_KEY }}'
+### [Context7](https://github.com/upstash/context7)
+```json
+{
+   "mcpServers": {
+      "context7": {
+         "command": "npx",
+         "args": ["-y", "@upstash/context7-mcp", "--api-key", "YOUR_API_KEY"],
+      }
+   }
+}
+```
+
+### [Human MCP](https://github.com/mrgoonie/human-mcp/)
+
+```json
+{
+   "mcpServers": {
+      "human": {
+         "command": "npx",
+         "args": ["@goonnguyen/human-mcp@latest"],
+         "env": { "GOOGLE_GEMINI_API_KEY": "YOUR_API_KEY" }
+      }
+   }
+}
+```
+
+### [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)
+```json
+{
+   "mcpServers": {
+      "chrome-devtools": {
+         "command": "npx",
+         "args": ["-y", "chrome-devtools-mcp@latest"]
+      }
+   }
+}
 ```
 
 ## Best Practices
