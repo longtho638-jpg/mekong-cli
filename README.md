@@ -65,81 +65,52 @@ A comprehensive boilerplate template for building professional software projects
 ## Quick Start
 
 ### Prerequisites
-- [Claude Code](https://claude.ai/code) installed and configured
+- [Claude Code](https://code.claude.com/docs/en/setup) installed and configured
 - Git for version control
 - Node.js 18+ (or your preferred runtime)
+- Operating Systems: macOS 10.15+, Ubuntu 20.04+/Debian 10+, or Windows 10+ (with WSL 1, WSL 2, or Git for Windows)
+- Hardware: 4GB+ RAM
 
-## Release Information
+### Setup your new project with ClaudeKit
 
-This project uses automated releases with semantic versioning:
-
-- **Automatic Releases**: Every push to `main` branch triggers a new release if there are releasable changes
-- **Semantic Versioning**: Version numbers follow [SemVer](https://semver.org/) (MAJOR.MINOR.PATCH)
-- **Conventional Commits**: Use [Conventional Commits](https://conventionalcommits.org/) format for automatic changelog generation
-- **GitHub Releases**: Releases are automatically created on GitHub with generated changelogs
-- **NPM Publishing**: Optional - can be enabled by setting `npmPublish: true` in `.releaserc.json` and adding NPM_TOKEN secret
-
-### Commit Message Format
-
-```bash
-# Features (minor version bump)
-feat: add new authentication system
-
-# Bug fixes (patch version bump)
-fix: resolve memory leak in user service
-
-# Breaking changes (major version bump)
-feat!: redesign API endpoints
-# or
-feat: redesign API endpoints
-
-BREAKING CHANGE: API endpoints have been redesigned
-
-# Other types (patch version bump)
-docs: update installation guide
-refactor: simplify database queries
-test: add integration tests
-ci: update GitHub Actions workflow
-```
-
-### Setup
-1. **Use this template**:
+1. **Install ClaudeKit CLI**:
    ```bash
-   # Create new project from this template
-   git clone https://github.com/your-username/claude-code-template.git my-project
-   cd my-project
+   npm install -g @claudekit/cli
    ```
 
-2. **Configure for your repository**:
+2. **Create your new project with ClaudeKit framework**:
    ```bash
-   # Update package.json with your repository URL
-   nano package.json  # Update repository.url field
+   ck new --dir my-project --kit engineer
+   ```
    
-   # Update project details
-   nano CLAUDE.md  # Customize for your project
-   nano README.md  # Update project information
+   **Note:** If you want to use the kit with your existing project:
+   ```bash
+   cd /path/to/project
+   ck update --kit engineer
    ```
-
-3. **Setup GitHub repository secrets** (optional - for NPM publishing):
-   - Go to your GitHub repository → Settings → Secrets and variables → Actions
-   - Add `NPM_TOKEN`: Your NPM authentication token (only if you want to publish to NPM)
-   - Set `npmPublish: true` in `.releaserc.json` to enable NPM publishing
-   - The `GITHUB_TOKEN` is automatically provided by GitHub Actions
 
 3. **Start development**:
    ```bash
    # Begin with Claude Code
    claude
+   # [YOLO mode - not recommended]
+   # claude --dangerously-skip-permissions
 
-   # Or use specific commands
+   # now you can use these specific commands
    /plan "implement user authentication"
    /cook "add database integration"
    ```
+
+📖 **Learn more from our docs:** [https://docs.claudekit.cc](https://docs.claudekit.cc)
 
 ## Project Structure
 
 ```
 ├── .claude/                 # Claude Code configuration
+│   ├── agents/             # Claude Code agents
+│   ├── commands/           # Claude Code commands
+│   ├── hooks/              # Claude Code hooks
+│   ├── skills/             # Claude Code skills
 │   ├── CLAUDE.md           # Global development instructions
 │   └── send-discord.sh     # Notification script
 ├── .opencode/              # Open Code CLI agent definitions
