@@ -1,3 +1,51 @@
+## [1.14.0](https://github.com/claudekit/claudekit-engineer/compare/v1.13.0...v1.14.0) (2025-11-11)
+
+
+### 🚀 Features
+
+* add sequential thinking MCP server to example ([05e51fb](https://github.com/claudekit/claudekit-engineer/commit/05e51fb09a2e518a30ae68b60ebe41e723bd2bc8))
+
+
+### 🐞 Bug Fixes
+
+*  `ai-multimodal` image generation issue ([e774286](https://github.com/claudekit/claudekit-engineer/commit/e774286624c4fee10b980aead9ae6aed2835b3d9))
+* `/fix` will route to `/code` when the plan exists ([b371c5b](https://github.com/claudekit/claudekit-engineer/commit/b371c5be0369512eeb7044bda8a8c12a067c8c5b))
+* `project-manager` subagent should use `haiku` model for token efficiency ([4e94323](https://github.com/claudekit/claudekit-engineer/commit/4e9432300033864c0fbc62bb18092b20480a5994))
+* add ⚡ to `/bootstrap:*` commands ([ead01d6](https://github.com/claudekit/claudekit-engineer/commit/ead01d60630dcfb0e0ec2c738aa242bcf46e3551))
+* add ⚡ to `/fix:*` commands ([5ff1f28](https://github.com/claudekit/claudekit-engineer/commit/5ff1f28aedac6a98051bfc0acfae1091bec8be32))
+* add ⚡ to commands for token consumption level ([2d8fbff](https://github.com/claudekit/claudekit-engineer/commit/2d8fbff6920609abe3b3ce4a97a82bac4b7d367f))
+* add back `scout-block` hook ([255e98b](https://github.com/claudekit/claudekit-engineer/commit/255e98b3c66440d3f72ead1b25082e5149b9a1d7))
+* correct ⚡ in bootstrap commands ([fa47949](https://github.com/claudekit/claudekit-engineer/commit/fa479490b313e3230cd146244cfc10bd47a8c310))
+* remove deprecated Gemini 2.0 model ([00c5783](https://github.com/claudekit/claudekit-engineer/commit/00c57839f7b408a17faab696ac4756e4cf841b98))
+* skill filename should be uppercase ([4984fde](https://github.com/claudekit/claudekit-engineer/commit/4984fdea80601dbb0c509a24debf29616ad2ad2b))
+* support statusline on windows ([1e9351a](https://github.com/claudekit/claudekit-engineer/commit/1e9351a7e887c286b3faa074ec81df3c6345fb51))
+* use haiku in mcp-manager agent for token efficiency ([40832df](https://github.com/claudekit/claudekit-engineer/commit/40832df03d3cb82268d7cef4f823b46dda90c49a))
+
+
+### 📚 Documentation
+
+* add human-mcp server in `.mcp.json.example` ([c06c3f6](https://github.com/claudekit/claudekit-engineer/commit/c06c3f6daf4b564f081ef3a8fc6302e8d3e1dcd5))
+* remove outdated QA test report ([26ce054](https://github.com/claudekit/claudekit-engineer/commit/26ce05429e04db20d1adf83e25769ca4d8beb3f5))
+* update readme ([0a0257f](https://github.com/claudekit/claudekit-engineer/commit/0a0257f0909437e64c354daf6dfd5e1323bd94f7))
+* update readme ([bf5b685](https://github.com/claudekit/claudekit-engineer/commit/bf5b685b8b5ed4467403db149a77f0b8affd2382))
+* update README ([1d34f96](https://github.com/claudekit/claudekit-engineer/commit/1d34f9676e0adc964580a2ea7b160f3709f4c475))
+
+
+### ⚡ Performance Improvements
+
+* all subagents should ensure token consumption efficiency while maintain quality ([3f0e6bd](https://github.com/claudekit/claudekit-engineer/commit/3f0e6bd5bcb0aed032159ab9791e275d8ec0beae))
+* enhance `/fix:*` commands ([d9729eb](https://github.com/claudekit/claudekit-engineer/commit/d9729ebb26213325d664753136888b31675cad8c))
+* enhance `debugging` skills ([8c99078](https://github.com/claudekit/claudekit-engineer/commit/8c9907839ac8bc733e07e561db36278d5397bc39))
+* enhance `plan` and `scout` commands ([ccf078c](https://github.com/claudekit/claudekit-engineer/commit/ccf078c175e84c640b12e47d78f61ffa39471053))
+* enhance `planner`, `researcher`, `scout` subagents ([891915f](https://github.com/claudekit/claudekit-engineer/commit/891915f56fb3e7f0088bda86b238e5462ded5b3f))
+* enhance `planning` & `research` skills ([e939cc3](https://github.com/claudekit/claudekit-engineer/commit/e939cc39d268ad0a4fd85fc7d872ab1ed65e0a75))
+* enhance `problem-solving` skills ([d093cc6](https://github.com/claudekit/claudekit-engineer/commit/d093cc6308f04c7e09e7954c47ce0de62510d0b6))
+* enhance `sequential-thinking` skills ([ea3df40](https://github.com/claudekit/claudekit-engineer/commit/ea3df400e34116efc65d35eaf918d5da12efc70f))
+* enhance `skill-creator` skills ([ce128ef](https://github.com/claudekit/claudekit-engineer/commit/ce128eff7299e4c5545ce283bd60d2ce0ef84a05))
+* ensure token efficiency while maintaining high quality ([966f9ba](https://github.com/claudekit/claudekit-engineer/commit/966f9babff5c3e7e9e84a780a89e170ff14b4d9d))
+* improve scout with more token efficiency ([33675dc](https://github.com/claudekit/claudekit-engineer/commit/33675dc2db676814ed60eade658850010a55b3e3))
+* update scout command prefer extenal tools and fallback to explore agents ([63415be](https://github.com/claudekit/claudekit-engineer/commit/63415bed7b0078cef55717d7a71296bfdf69925b))
+
 ## [1.13.0](https://github.com/claudekit/claudekit-engineer/compare/v1.12.0...v1.13.0) (2025-11-09)
 
 
