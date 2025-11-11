@@ -85,6 +85,11 @@ Executable code (Python/Bash/etc.) for tasks that require deterministic reliabil
 - **Benefits**: Token efficient, deterministic, may be executed without loading into context
 - **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments
 
+**IMPORTANT:**
+- Write tests for scripts.
+- Run tests and make sure it works, if tests fail, fix them and run tests again, repeat until tests pass.
+- Run scripts manually with some usecases to make sure it works.
+
 ##### References (`references/`)
 
 Documentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.
