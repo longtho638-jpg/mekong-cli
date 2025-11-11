@@ -192,6 +192,7 @@ Issues, blockers, or questions
 - `/watzup` - Status review
 - `/journal` - Journaling
 - `/scout` - Codebase exploration
+- `/scout:ext` - Codebase exploration (using external tools)
 
 #### 3.2 Command Workflow Pattern
 

@@ -90,7 +90,7 @@ claudekit-engineer/
 - **Planning**: `/plan:two`, `/plan:ci`, `/plan:cro`
 - **Content**: `/content:fast`, `/content:good`, `/content:enhance`, `/content:cro`
 - **Integration**: `/integrate:polar`, `/integrate:sepay`
-- **Utility**: `/watzup`, `/journal`, `/scout`
+- **Utility**: `/watzup`, `/journal`, `/scout:ext`, `/scout`
 
 ### 3. Skills Library
 
