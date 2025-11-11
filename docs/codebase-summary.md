@@ -245,6 +245,8 @@ Types:
 - `system-architecture.md` - Architecture documentation
 - `project-roadmap.md` - Development roadmap
 - `project-changelog.md` - Detailed changelog
+- `statusline-windows-support.md` - Windows statusline setup guide
+- `statusline-architecture.md` - Technical statusline implementation
 
 **Documentation Triggers**:
 - Feature implementation completion

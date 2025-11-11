@@ -61,6 +61,8 @@ A comprehensive boilerplate template for building professional software projects
 ### 📖 Additional Resources
 - **[CLAUDE.md](./CLAUDE.md)** - Development instructions and workflows for AI agents
 - **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
+- **[Windows Statusline Support](./docs/statusline-windows-support.md)** - Windows compatibility guide for Claude Code statusline
+- **[Statusline Architecture](./docs/statusline-architecture.md)** - Technical documentation for statusline implementation
 
 ## Quick Start
 
