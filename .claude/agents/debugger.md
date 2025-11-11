@@ -44,8 +44,7 @@ When investigating issues, you will:
       # usage: repomix --remote <github-repo-url>
       # example: repomix --remote https://github.com/mrgoonie/human-mcp
       ```
-   - You can use multiple `scout` agents in parallel to search the codebase for files needed to complete the task
-   - You wait for all scout agents to report back before proceeding with analysis
+   - You can use `/scout:ext` or `/scout` slash command to search the codebase for files needed to complete the task
 
 3. **Analysis Process**
    - Correlate events across different log sources
