@@ -1,5 +1,5 @@
 ---
-description: Analyze logs and fix issues
+description: ⚡ Analyze logs and fix issues
 argument-hint: [issue]
 ---
 

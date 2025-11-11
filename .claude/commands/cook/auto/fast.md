@@ -1,5 +1,5 @@
 ---
-description: Quickly implement a feature ["trust me bro"]
+description: ⚡ Quickly implement a feature ["trust me bro"]
 argument-hint: [tasks-or-prompt]
 ---
 

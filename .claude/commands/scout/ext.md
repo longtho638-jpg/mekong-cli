@@ -1,5 +1,5 @@
 ---
-description: Use external agentic tools to scout given directories
+description: ⚡ Use external agentic tools to scout given directories
 argument-hint: [user-prompt] [scale]
 ---
 

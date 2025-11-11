@@ -1,5 +1,5 @@
 ---
-description: Quickly bootstrap a new project automatically
+description: ⚡⚡ Quickly bootstrap a new project automatically
 argument-hint: [user-requirements]
 ---
 

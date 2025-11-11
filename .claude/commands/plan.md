@@ -1,5 +1,5 @@
 ---
-description: Research, analyze, and create an implementation plan
+description: ⚡⚡⚡ Research, analyze, and create an implementation plan
 argument-hint: [task]
 ---
 

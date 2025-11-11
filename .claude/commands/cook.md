@@ -1,5 +1,5 @@
 ---
-description: Implement a feature [step by step]
+description: ⚡⚡⚡ Implement a feature [step by step]
 argument-hint: [tasks]
 ---
 

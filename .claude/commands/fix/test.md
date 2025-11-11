@@ -1,5 +1,5 @@
 ---
-description: Run test suite and fix issues
+description: ⚡⚡ Run test suite and fix issues
 argument-hint: [issues]
 ---
 

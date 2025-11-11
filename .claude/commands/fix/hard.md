@@ -1,5 +1,5 @@
 ---
-description: Use subagents to plan and fix hard issues
+description: ⚡⚡ Use subagents to plan and fix hard issues
 argument-hint: [issues]
 ---
 

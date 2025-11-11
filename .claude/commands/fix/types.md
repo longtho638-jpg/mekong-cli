@@ -1,5 +1,5 @@
 ---
-description: Fix type errors
+description: ⚡ Fix type errors
 ---
 
 Run `bun run typecheck` and fix all type errors.

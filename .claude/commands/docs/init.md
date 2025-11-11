@@ -1,5 +1,5 @@
 ---
-description: Analyze the codebase and create initial documentation
+description: ⚡⚡⚡ Analyze the codebase and create initial documentation
 ---
 
 Use `docs/` directory as the source of truth for documentation.
