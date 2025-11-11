@@ -1,20 +1,12 @@
----
-name: Verification Before Completion
-description: Run verification commands and confirm output before claiming success
-when_to_use: when about to claim work is complete, fixed, or passing, before committing or creating PRs
-version: 1.1.0
-languages: all
----
-
 # Verification Before Completion
 
-## Overview
+Run verification commands and confirm output before claiming success.
 
-Claiming work is complete without verification is dishonesty, not efficiency.
+## Core Principle
 
-**Core principle:** Evidence before claims, always.
+**Evidence before claims, always.**
 
-**Violating the letter of this rule is violating the spirit of this rule.**
+Claiming work complete without verification is dishonesty, not efficiency.
 
 ## The Iron Law
 
@@ -22,7 +14,7 @@ Claiming work is complete without verification is dishonesty, not efficiency.
 NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
-If you haven't run the verification command in this message, you cannot claim it passes.
+If haven't run verification command in this message, cannot claim it passes.
 
 ## The Gate Function
 
@@ -30,12 +22,12 @@ If you haven't run the verification command in this message, you cannot claim it
 BEFORE claiming any status or expressing satisfaction:
 
 1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
+2. RUN: Execute FULL command (fresh, complete)
 3. READ: Full output, check exit code, count failures
-4. VERIFY: Does output confirm the claim?
+4. VERIFY: Does output confirm claim?
    - If NO: State actual status with evidence
    - If YES: State claim WITH evidence
-5. ONLY THEN: Make the claim
+5. ONLY THEN: Make claim
 
 Skip any step = lying, not verifying
 ```
@@ -55,7 +47,7 @@ Skip any step = lying, not verifying
 ## Red Flags - STOP
 
 - Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
+- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!")
 - About to commit/push/PR without verification
 - Trusting agent success reports
 - Relying on partial verification
@@ -67,14 +59,12 @@ Skip any step = lying, not verifying
 
 | Excuse | Reality |
 |--------|---------|
-| "Should work now" | RUN the verification |
+| "Should work now" | RUN verification |
 | "I'm confident" | Confidence ≠ evidence |
 | "Just this once" | No exceptions |
 | "Linter passed" | Linter ≠ compiler |
 | "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
 | "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
 
 ## Key Patterns
 
@@ -87,7 +77,7 @@ Skip any step = lying, not verifying
 **Regression tests (TDD Red-Green):**
 ```
 ✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
-❌ "I've written a regression test" (without red-green verification)
+❌ "I've written regression test" (without red-green verification)
 ```
 
 **Build:**
@@ -107,15 +97,6 @@ Skip any step = lying, not verifying
 ✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
 ❌ Trust agent report
 ```
-
-## Why This Matters
-
-From 24 failure memories:
-- your human partner said "I don't believe you" - trust broken
-- Undefined functions shipped - would crash
-- Missing requirements shipped - incomplete features
-- Time wasted on false completion → redirect → rework
-- Violates: "Honesty is a core value. If you lie, you'll be replaced."
 
 ## When To Apply
 
@@ -137,6 +118,6 @@ From 24 failure memories:
 
 **No shortcuts for verification.**
 
-Run the command. Read the output. THEN claim the result.
+Run command. Read output. THEN claim result.
 
-This is non-negotiable.
+Non-negotiable.

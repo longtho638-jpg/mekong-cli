@@ -1,23 +1,17 @@
----
-name: Defense-in-Depth Validation
-description: Validate at every layer data passes through to make bugs impossible
-when_to_use: when invalid data causes failures deep in execution, requiring validation at multiple system layers
-version: 1.1.0
-languages: all
----
-
 # Defense-in-Depth Validation
 
-## Overview
+Validate at every layer data passes through to make bugs impossible.
 
-When you fix a bug caused by invalid data, adding validation at one place feels sufficient. But that single check can be bypassed by different code paths, refactoring, or mocks.
+## Core Principle
 
-**Core principle:** Validate at EVERY layer data passes through. Make the bug structurally impossible.
+**Validate at EVERY layer data passes through. Make bug structurally impossible.**
+
+When fix bug caused by invalid data, adding validation at one place feels sufficient. But single check can be bypassed by different code paths, refactoring, or mocks.
 
 ## Why Multiple Layers
 
-Single validation: "We fixed the bug"
-Multiple layers: "We made the bug impossible"
+Single validation: "We fixed bug"
+Multiple layers: "We made bug impossible"
 
 Different layers catch different cases:
 - Entry validation catches most bugs
@@ -41,7 +35,7 @@ function createProject(name: string, workingDirectory: string) {
   if (!statSync(workingDirectory).isDirectory()) {
     throw new Error(`workingDirectory is not a directory: ${workingDirectory}`);
   }
-  // ... proceed
+  // proceed
 }
 ```
 
@@ -53,7 +47,7 @@ function initializeWorkspace(projectDir: string, sessionId: string) {
   if (!projectDir) {
     throw new Error('projectDir required for workspace initialization');
   }
-  // ... proceed
+  // proceed
 }
 ```
 
@@ -73,7 +67,7 @@ async function gitInit(directory: string) {
       );
     }
   }
-  // ... proceed
+  // proceed
 }
 ```
 
@@ -88,20 +82,20 @@ async function gitInit(directory: string) {
     cwd: process.cwd(),
     stack,
   });
-  // ... proceed
+  // proceed
 }
 ```
 
 ## Applying the Pattern
 
-When you find a bug:
+When find bug:
 
-1. **Trace the data flow** - Where does bad value originate? Where used?
+1. **Trace data flow** - Where does bad value originate? Where used?
 2. **Map all checkpoints** - List every point data passes through
 3. **Add validation at each layer** - Entry, business, environment, debug
 4. **Test each layer** - Try to bypass layer 1, verify layer 2 catches it
 
-## Example from Session
+## Example from Real Session
 
 Bug: Empty `projectDir` caused `git init` in source code
 
@@ -121,7 +115,7 @@ Bug: Empty `projectDir` caused `git init` in source code
 
 ## Key Insight
 
-All four layers were necessary. During testing, each layer caught bugs the others missed:
+All four layers were necessary. During testing, each layer caught bugs others missed:
 - Different code paths bypassed entry validation
 - Mocks bypassed business logic checks
 - Edge cases on different platforms needed environment guards
