@@ -1,5 +1,5 @@
 ---
-description: ⚡ Analyze and fix small issues [AUTO DETECT COMPLEXITY]
+description: ⚡⚡ Analyze and fix small issues [AUTO DETECT COMPLEXITY]
 argument-hint: [issues]
 ---
 
