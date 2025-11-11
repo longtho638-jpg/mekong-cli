@@ -306,7 +306,7 @@ Commands are stored in `.claude/commands/` directory and can be customized for y
 **What it does**:
 - Spawns multiple agents in parallel to search codebase
 - Finds relevant files quickly and efficiently
-- Saves results to `plans/scouts/`
+- Saves results to `plans/<plan-name>/reports/`
 - Uses different tools based on scale:
   - Scale ≤ 3: Uses `gemini` (fast)
   - Scale 4-5: Uses `opencode` (medium)

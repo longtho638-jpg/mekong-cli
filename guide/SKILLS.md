@@ -733,7 +733,7 @@ claude "Create a skill for [technology/framework]"
 Or manually create a skill:
 
 1. Create directory: `.claude/skills/my-skill/`
-2. Add `skill.md` with frontmatter:
+2. Add `SKILL.md` with frontmatter:
    ```markdown
    ---
    name: my-skill
@@ -767,7 +767,7 @@ Or manually create a skill:
 ## Need Help?
 
 - **List skills:** `ls .claude/skills/`
-- **View skill:** `cat .claude/skills/[skill-name]/skill.md`
+- **View skill:** `cat .claude/skills/[skill-name]/SKILL.md`
 - **Get help:** Ask Claude "How do I use the [skill-name] skill?"
 - **Create skill:** Use the `skill-creator` skill
 
