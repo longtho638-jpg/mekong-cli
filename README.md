@@ -77,7 +77,7 @@ A comprehensive boilerplate template for building professional software projects
 
 1. **Install ClaudeKit CLI**:
    ```bash
-   npm install -g @claudekit/cli
+   npm install -g claudekit-cli
    ```
 
 2. **Create your new project with ClaudeKit framework**:
