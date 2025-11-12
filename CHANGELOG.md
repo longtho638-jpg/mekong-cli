@@ -1,3 +1,17 @@
+## [1.14.1](https://github.com/claudekit/claudekit-engineer/compare/v1.14.0...v1.14.1) (2025-11-12)
+
+
+### 🐞 Bug Fixes
+
+* `/code` should trigger subagents and update plan progress ([47861f5](https://github.com/claudekit/claudekit-engineer/commit/47861f5db7b9b415183925ae284e908ce58f7f70))
+* `/fix` should enhance prompt ([26bb7ae](https://github.com/claudekit/claudekit-engineer/commit/26bb7ae5a778b88e0a55193a842634f334dd5422))
+* `/fix` should enhance user prompt with more details ([551702b](https://github.com/claudekit/claudekit-engineer/commit/551702ba725543311e4e085bc5ed69916492fee2))
+
+
+### 📚 Documentation
+
+* update cli package name in readme ([d486dd8](https://github.com/claudekit/claudekit-engineer/commit/d486dd8bc887bc8d6533b110b382bc9f373f66d2))
+
 ## [1.14.0](https://github.com/claudekit/claudekit-engineer/compare/v1.13.0...v1.14.0) (2025-11-11)
 
 
