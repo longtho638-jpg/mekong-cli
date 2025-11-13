@@ -139,7 +139,11 @@ export class MCPClientManager {
   async callTool(serverName: string, toolName: string, args: any): Promise<any> {
     const client = this.clients.get(serverName);
     if (!client) throw new Error(`Not connected to server: ${serverName}`);
-    return await client.callTool({ name: toolName, arguments: args }, { timeout: 300000 });
+    return await client.callTool(
+      { name: toolName, arguments: args },
+      undefined,
+      { timeout: 300000 }
+    );
   }
 
   async getPrompt(serverName: string, promptName: string, args?: any): Promise<any> {
