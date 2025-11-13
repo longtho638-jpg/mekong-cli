@@ -365,10 +365,10 @@ def save_results(results: List[Dict[str, Any]], output_file: str, format_output:
             print(f"Warning: Generation failed, saving error report to: {output_path}")
 
     if format_output == 'json':
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2)
     elif format_output == 'csv':
-        with open(output_path, 'w', newline='') as f:
+        with open(output_path, 'w', newline='', encoding='utf-8') as f:
             fieldnames = ['file', 'status', 'response', 'error']
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -380,7 +380,7 @@ def save_results(results: List[Dict[str, Any]], output_file: str, format_output:
                     'error': result.get('error', '')
                 })
     else:  # markdown
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write("# Batch Processing Results\n\n")
             for i, result in enumerate(results, 1):
                 f.write(f"## {i}. {result.get('file', 'Unknown')}\n\n")
