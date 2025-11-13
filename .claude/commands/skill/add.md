@@ -1,17 +1,24 @@
 ---
-description: Create a new agent skill
-argument-hint: [prompt-or-llms-or-github-url]
+description: Add new reference files or scripts to a skill
+argument-hint: [skill-name] [reference-or-script-prompt]
 ---
 
-Ultrathink.
+Think harder.
 Use `skill-creator` and `claude-code` skills.
 Use `docs-seeker` skills to search for documentation if needed.
 
+## Arguments
+$1: skill name (required, default: "")
+$2: reference or script prompt (required, default: "")
+If $1 or $2 is not provided, ask the user to provide it.
+
 ## Your mission
-Create a new skill in `.claude/skills/` directory.
+Add new reference files or scripts to a skill at `.claude/skills/$1` directory.
 
 ## Requirements
-<user-prompt>$ARGUMENTS</user-prompt>
+<reference-or-script-prompt>
+$2
+</reference-or-script-prompt>
 
 ## Rules of Skill Creation:
 Base on the requirements:
