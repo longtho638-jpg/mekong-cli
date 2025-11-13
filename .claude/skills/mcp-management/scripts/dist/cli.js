@@ -3,7 +3,11 @@
  * MCP Management CLI - Command-line interface for MCP operations
  */
 import { MCPClientManager } from './mcp-client.js';
-import { analyzeToolsForTask } from './analyze-tools.js';
+import { writeFileSync, mkdirSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 async function main() {
     const args = process.argv.slice(2);
     const command = args[0];
@@ -24,9 +28,6 @@ async function main() {
                 break;
             case 'list-resources':
                 await listResources(manager);
-                break;
-            case 'analyze':
-                await analyzeForTask(manager, args.slice(1).join(' '));
                 break;
             case 'call-tool':
                 await callTool(manager, args[1], args[2], args[3]);
@@ -51,6 +52,17 @@ async function listTools(manager) {
             console.log(`   Parameters: ${Object.keys(tool.inputSchema.properties).join(', ')}`);
         }
         console.log('');
+    }
+    // Save tools to JSON file
+    const assetsDir = join(__dirname, '..', 'assets');
+    const toolsPath = join(assetsDir, 'tools.json');
+    try {
+        mkdirSync(assetsDir, { recursive: true });
+        writeFileSync(toolsPath, JSON.stringify(tools, null, 2));
+        console.log(`\n✓ Tools saved to ${toolsPath}`);
+    }
+    catch (error) {
+        console.error(`\n✗ Failed to save tools: ${error}`);
     }
 }
 async function listPrompts(manager) {
@@ -80,23 +92,6 @@ async function listResources(manager) {
         console.log('');
     }
 }
-async function analyzeForTask(manager, task) {
-    if (!task) {
-        console.error('Please provide a task description');
-        process.exit(1);
-    }
-    console.log(`Analyzing tools for task: "${task}"\n`);
-    const tools = await manager.getAllTools();
-    const analysis = analyzeToolsForTask(tools, task);
-    console.log(`Confidence: ${(analysis.confidence * 100).toFixed(1)}%`);
-    console.log(`\nRelevant tools (${analysis.relevantTools.length}):\n`);
-    for (let i = 0; i < analysis.relevantTools.length; i++) {
-        const tool = analysis.relevantTools[i];
-        console.log(`${i + 1}. ${tool.serverName} / ${tool.name}`);
-        console.log(`   ${analysis.reasoning[i]}`);
-        console.log('');
-    }
-}
 async function callTool(manager, serverName, toolName, argsJson) {
     if (!serverName || !toolName || !argsJson) {
         console.error('Usage: cli.ts call-tool <server> <tool> <json-args>');
@@ -116,16 +111,17 @@ Usage:
   cli.ts <command> [options]
 
 Commands:
-  list-tools              List all tools from all MCP servers
-  list-prompts            List all prompts from all MCP servers
-  list-resources          List all resources from all MCP servers
-  analyze <task>          Analyze which tools are relevant for a task
+  list-tools                        List all tools and save to assets/tools.json
+  list-prompts                      List all prompts from all MCP servers
+  list-resources                    List all resources from all MCP servers
   call-tool <server> <tool> <json>  Call a specific tool
 
 Examples:
   cli.ts list-tools
-  cli.ts analyze "search the web for documentation"
-  cli.ts call-tool memory add '{"key":"name","value":"Alice"}'
+  cli.ts call-tool memory create_entities '{"entities":[{"name":"Alice","entityType":"person"}]}'
+  cli.ts call-tool human-mcp playwright_screenshot_fullpage '{"url":"https://example.com"}'
+
+Note: Tool analysis is done by the LLM reading assets/tools.json directly.
   `);
 }
 main();
