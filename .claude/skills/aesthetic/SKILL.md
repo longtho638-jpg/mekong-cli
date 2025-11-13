@@ -53,6 +53,7 @@ Elevate with narrative elements—parallax effects, particle systems, thematic c
    - Design style (Minimalism, Glassmorphism, Neo-brutalism, etc.)
    - Layout structure & grid systems
    - Typography system & hierarchy
+     **IMPORTANT:** Try to predict the font name (Google Fonts) and font size in the given screenshot, don't just use Inter or Poppins.
    - Color palette with hex codes
    - Visual hierarchy techniques
    - Component patterns & styling
