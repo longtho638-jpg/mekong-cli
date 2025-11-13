@@ -54,6 +54,24 @@ Load: `references/output-standards.md`
 - Include code snippets/pseudocode when clarifying
 - Provide multiple options with trade-offs when appropriate
 
+**Plan Directory Structure**
+```
+plans/
+└── YYYYMMDD-HHmm-plan-name/
+    ├── research/
+    │   ├── researcher-XX-report.md
+    │   └── ...
+    ├── reports/
+    │   ├── XX-report.md
+    │   └── ...
+    ├── scout/
+    │   ├── scout-XX-report.md
+    │   └── ...
+    ├── plan.md
+    ├── phase-XX-phase-name-here.md
+    └── ...
+```
+
 ## Quality Standards
 
 - Be thorough and specific

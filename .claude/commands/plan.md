@@ -3,6 +3,8 @@ description: ⚡⚡⚡ Research, analyze, and create an implementation plan
 argument-hint: [task]
 ---
 
+Activate `planning` skill.
+
 ## Your mission
 <task>$ARGUMENTS</task>
 
@@ -21,6 +23,9 @@ plans/
 └── YYYYMMDD-HHmm-plan-name/
     ├── research/
     │   ├── researcher-XX-report.md
+    │   └── ...
+    ├── reports/
+    │   ├── XX-report.md
     │   └── ...
     ├── scout/
     │   ├── scout-XX-report.md

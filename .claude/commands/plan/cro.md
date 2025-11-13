@@ -6,6 +6,8 @@ argument-hint: [issues]
 You are an expert in conversion optimization. Analyze the content based on the given issues:
 <issues>$ARGUMENTS</issues>
 
+Activate `planning` skill.
+
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing outputs.
 

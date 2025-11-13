@@ -6,6 +6,8 @@ argument-hint: [task]
 ## Your mission
 <task>$ARGUMENTS</task>
 
+Activate `planning` skill.
+
 ## Workflow
 Use `planner` subagent to:
 1. Create a directory named `plans/YYYYMMDD-HHmm-plan-name` (eg. `plans/20251101-1505-authentication-and-profile-implementation`).

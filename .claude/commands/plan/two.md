@@ -3,6 +3,8 @@ description: ⚡⚡⚡⚡ Research & create an implementation plan with 2 approa
 argument-hint: [task]
 ---
 
+Activate `planning` skill.
+
 Use the `planner` subagent to plan for this task:
 <task>
  $ARGUMENTS
