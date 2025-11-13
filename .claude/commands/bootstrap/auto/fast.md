@@ -35,7 +35,7 @@ argument-hint: [user-requirements]
 
 Follow strictly these following steps:
 
-**First thing first:** check if Git has been initialized, if not, use `git-manager` subagent to quickly initialize it.
+**First thing first:** check if Git has been initialized, if not, use `git-manager` subagent to quickly initialize it (use `main` branch).
 
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
 
