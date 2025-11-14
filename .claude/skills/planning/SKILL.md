@@ -18,7 +18,7 @@ Use this skill when:
 - Breaking down complex requirements
 - Assessing technical trade-offs
 
-## Core Responsibilities
+## Core Responsibilities & Rules
 
 ### 1. Research & Analysis
 Load: `references/research-phase.md`

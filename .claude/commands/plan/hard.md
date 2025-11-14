@@ -1,9 +1,9 @@
 ---
-description: ⚡⚡⚡ No research. Only analyze and create an implementation plan
+description: ⚡⚡⚡ Research, analyze, and create an implementation plan
 argument-hint: [task]
 ---
 
-Think.
+Think harder.
 Activate `planning` skill.
 
 ## Your mission
@@ -12,13 +12,13 @@ $ARGUMENTS
 </task>
 
 ## Workflow
-Use `planner` subagent to:
 1. Create a directory named `plans/YYYYMMDD-HHmm-plan-name` (eg. `plans/20251101-1505-authentication-and-profile-implementation`).
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
-3. Use `/scout <instructions>` slash command to search the codebase for files needed to complete the task.
-4. Gathers all report filepaths, and create an implementation plan of this task.
-5. Ask user to review the plan
+3. Use multiple `researcher` agents in parallel to research for this task, each agent research for a different aspect of the task and perform max 5 researches.
+4. Use `scout` agent to search the codebase for files needed to complete the task.
+5. Main agent gathers all research and scout report filepaths, and pass them to `planner` subagent with the prompt to create an implementation plan of this task.
+6. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
 
 ## Output Requirements
 
@@ -26,21 +26,30 @@ Use `planner` subagent to:
 ```
 plans/
 └── YYYYMMDD-HHmm-plan-name/
+    ├── research/
+    │   ├── researcher-XX-report.md
+    │   └── ...
     ├── reports/
     │   ├── XX-report.md
+    │   └── ...
+    ├── scout/
+    │   ├── scout-XX-report.md
     │   └── ...
     ├── plan.md
     ├── phase-XX-phase-name-here.md
     └── ...
 ```
 
+**Research Output Requirements**
+- Ensure every research markdown report remains concise (≤150 lines) while covering all requested topics and citations.
+
 **Plan File Specification**
 - Save the overview access point at `plans/YYYYMMDD-HHmm-plan-name/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status and progress plus links to phase files.
 - For each phase, create `plans/YYYYMMDD-HHmm-plan-name/phase-XX-phase-name-here.md` containing the following sections in order: Context links (reference parent plan, dependencies, docs), Overview (date, description, priority, implementation status, review status), Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps.
 
 ## Important Notes
-- **IMPORTANT:** Ensure token efficiency while maintaining high quality.
-- **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
-- **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
-- **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
-- **IMPORTANT**: **Do not** start implementing.
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+**IMPORTANT:** Ensure token efficiency while maintaining high quality.
+**IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+**IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+**IMPORTANT**: **Do not** start implementing.

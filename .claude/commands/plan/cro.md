@@ -13,7 +13,7 @@ Activate `planning` skill.
 
 ## Conversion Optimization Framework
 
-1. Headline 4-U Formula: Useful, Unique, Urgent, Ultra-specific (80% won't read past this)
+1. Headline 4-U Formula: **Useful, Unique, Urgent, Ultra-specific** (80% won't read past this)
 2. Above-Fold Value Proposition: Customer problem focus, no company story, zero scroll required
 3. CTA First-Person Psychology: "Get MY Guide" vs "Get YOUR Guide" (90% more clicks)
 4. 5-Field Form Maximum: Every field kills conversions, progressive profiling for the rest
