@@ -1,3 +1,31 @@
+## [1.14.2](https://github.com/claudekit/claudekit-engineer/compare/v1.14.1...v1.14.2) (2025-11-13)
+
+
+### 🐞 Bug Fixes
+
+* correct `.mcp.json` path of `mcp-management` skills ([74035a9](https://github.com/claudekit/claudekit-engineer/commit/74035a92204be68dab58ef0bcfe58b3bc4e4d711))
+
+
+### ⚡ Performance Improvements
+
+* enhance speed of `/cook` and scouting process ([f6c02ec](https://github.com/claudekit/claudekit-engineer/commit/f6c02ecc91dba57f6792d7d6b428cc0a0886a2d1))
+* new command: `/cook:fast` -> no research, only plan & code ([38cf7bf](https://github.com/claudekit/claudekit-engineer/commit/38cf7bf791344f7f1abdab14bf2089875e1c5db9))
+* new command: `/plan:fast` -> no research, only scout and generate plans ([8c309b1](https://github.com/claudekit/claudekit-engineer/commit/8c309b149b5bc383f120e09c5d00b5f76b77d15d))
+
+## [1.14.1](https://github.com/claudekit/claudekit-engineer/compare/v1.14.0...v1.14.1) (2025-11-12)
+
+
+### 🐞 Bug Fixes
+
+* `/code` should trigger subagents and update plan progress ([47861f5](https://github.com/claudekit/claudekit-engineer/commit/47861f5db7b9b415183925ae284e908ce58f7f70))
+* `/fix` should enhance prompt ([26bb7ae](https://github.com/claudekit/claudekit-engineer/commit/26bb7ae5a778b88e0a55193a842634f334dd5422))
+* `/fix` should enhance user prompt with more details ([551702b](https://github.com/claudekit/claudekit-engineer/commit/551702ba725543311e4e085bc5ed69916492fee2))
+
+
+### 📚 Documentation
+
+* update cli package name in readme ([d486dd8](https://github.com/claudekit/claudekit-engineer/commit/d486dd8bc887bc8d6533b110b382bc9f373f66d2))
+
 ## [1.14.0](https://github.com/claudekit/claudekit-engineer/compare/v1.13.0...v1.14.0) (2025-11-11)
 
 
