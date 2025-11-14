@@ -20,6 +20,9 @@ Use this skill when:
 
 ## Core Responsibilities & Rules
 
+Always honoring **YAGNI**, **KISS**, and **DRY** principles.
+**Be honest, be brutal, straight to the point, and be concise.**
+
 ### 1. Research & Analysis
 Load: `references/research-phase.md`
 **Skip if:** Provided with researcher reports

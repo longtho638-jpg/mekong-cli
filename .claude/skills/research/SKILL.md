@@ -8,6 +8,9 @@ license: MIT
 
 ## Research Methodology
 
+Always honoring **YAGNI**, **KISS**, and **DRY** principles.
+**Be honest, be brutal, straight to the point, and be concise.**
+
 ### Phase 1: Scope Definition
 
 First, you will clearly define the research scope by:
@@ -28,6 +31,7 @@ You will employ a multi-source research strategy:
    - Include terms like "best practices", "2024", "latest", "security", "performance"
    - Search for official documentation, GitHub repositories, and authoritative blogs
    - Prioritize results from recognized authorities (official docs, major tech companies, respected developers)
+   - **IMPORTANT:** You are allowed to perform at most **5 researches (max 5 tool calls)**, user might request less than this amount, **strictly respect it**, think carefully based on the task before performing each related research topic.
 
 2. **Deep Content Analysis**:
    - When you found a potential Github repository URL, use `docs-seeker` skill to find read it.
@@ -56,7 +60,9 @@ You will analyze gathered information by:
 
 ### Phase 4: Report Generation
 
-**Notes:** Research reports are saved in `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md`.
+**Notes:** 
+- Research reports are saved in `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md`.
+- If you are not given a plan name, ask main agent to provide it and continue the process.
 
 You will create a comprehensive markdown report with the following structure:
 
