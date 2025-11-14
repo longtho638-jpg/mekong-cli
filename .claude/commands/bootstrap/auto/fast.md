@@ -42,9 +42,9 @@ Follow strictly these following steps:
 ### Research & Planning: Tech Stack, Wireframe & Design
 
 1. **Research (do these following tasks in parallel):**
-* Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to explore the user's request, idea validation, challenges, and find the best possible solutions.
-* Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to find a best fit tech stack for this project.
-* Use 2 `researcher` subagents in parallel (only read up to max 10 sources) to create a design plan that follows the progressive disclosure structure:
+* Use 2 `researcher` subagents in parallel (only read up to max 5 sources) to explore the user's request, idea validation, challenges, and find the best possible solutions.
+* Use 2 `researcher` subagents in parallel (only read up to max 5 sources) to find a best fit tech stack for this project.
+* Use 2 `researcher` subagents in parallel (only read up to max 5 sources) to create a design plan that follows the progressive disclosure structure:
   - Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
   - Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
   - For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
