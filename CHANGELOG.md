@@ -1,3 +1,23 @@
+## [1.14.3](https://github.com/claudekit/claudekit-engineer/compare/v1.14.2...v1.14.3) (2025-11-14)
+
+
+### 🐞 Bug Fixes
+
+* git-manager should use `main` branch instead of `master` ([b80c358](https://github.com/claudekit/claudekit-engineer/commit/b80c358e6f3232d2a97f1433493e0632e345e3b2))
+* improve `/plan` output structure ([819cac2](https://github.com/claudekit/claudekit-engineer/commit/819cac240fd6dca75f85d35d4be29a16eb516687))
+* unicode encoding error in gemini_batch_process.py ([14868da](https://github.com/claudekit/claudekit-engineer/commit/14868dac035e9af2520c8e9d97b92c78394f2229))
+
+
+### ⚡ Performance Improvements
+
+* `/plan` now utilize enhanced prompt ([10f6444](https://github.com/claudekit/claudekit-engineer/commit/10f6444cc5fdeee469e4d3a4aa87f125e833bd83))
+* improve design commands ([7478768](https://github.com/claudekit/claudekit-engineer/commit/74787681955a4033f62d354519eb9d3f46168cc5))
+* new skills - `aethetic` with design principles and templates ([7784c9f](https://github.com/claudekit/claudekit-engineer/commit/7784c9f5886bf29e37a3465993b239da5f79566c))
+* new skills - `frontend-development` ([0b22630](https://github.com/claudekit/claudekit-engineer/commit/0b226305f4a588e7dde722256335b46cc501b100))
+* new skills - `payment-integration` with Polar & SePay ([ca87645](https://github.com/claudekit/claudekit-engineer/commit/ca87645582a73214d8b209ea279abdd0406a2718))
+* reduce token usage of `/plan:*` commands ([3cd1254](https://github.com/claudekit/claudekit-engineer/commit/3cd1254953b29d73fb14f2038eed241483097a46))
+* respect core principles of claudekit ([1b33947](https://github.com/claudekit/claudekit-engineer/commit/1b3394797758c476a6368818e316fa2e77f3e707))
+
 ## [1.14.2](https://github.com/claudekit/claudekit-engineer/compare/v1.14.1...v1.14.2) (2025-11-13)
 
 
