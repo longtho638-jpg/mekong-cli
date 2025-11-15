@@ -1,3 +1,16 @@
+## [1.14.4](https://github.com/claudekit/claudekit-engineer/compare/v1.14.3...v1.14.4) (2025-11-15)
+
+
+### 🐞 Bug Fixes
+
+* correct tools of `git-manager` agent ([5ad40eb](https://github.com/claudekit/claudekit-engineer/commit/5ad40eb8cb92563f8ea279d32e26d1fe45607059))
+
+
+### ⚡ Performance Improvements
+
+* new skills - `frontend-design` from Anthropic + animejs ([c1af484](https://github.com/claudekit/claudekit-engineer/commit/c1af484d77fc33aa7cbb13ee2c0a2077dfd13699))
+* new skills - `threejs` fỏ 3D implementation ([b76ef56](https://github.com/claudekit/claudekit-engineer/commit/b76ef5674e25854b815f98c7c1f2da58c0c8e316))
+
 ## [1.14.3](https://github.com/claudekit/claudekit-engineer/compare/v1.14.2...v1.14.3) (2025-11-14)
 
 
