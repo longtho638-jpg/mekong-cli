@@ -12,7 +12,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/scout-block.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scout-block.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Review the modified file in $ARGUMENTS. If it is >200 LOC that would benefit from modularization. Process a best split strategy. Use kebab-case for file names with a meaningful name that describes the purpose of the file, doesn't matter if the file name is long, make sure when LLMs read the file names while using `Grep` or other tools, they can understand the purpose of the file without reading the file content. Automatically decide what to do next and continue with the best strategy."
           }
         ]
       }
