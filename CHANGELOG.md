@@ -1,3 +1,20 @@
+## [1.14.7](https://github.com/claudekit/claudekit-engineer/compare/v1.14.6...v1.14.7) (2025-11-16)
+
+
+### 🐞 Bug Fixes
+
+* **mcp-management:** resolve subprocess hangs and signal handling ([4edb1f8](https://github.com/claudekit/claudekit-engineer/commit/4edb1f8842f41a1b3a58a2edaccc3c6752a04cec))
+
+
+### 📚 Documentation
+
+* **mcp-management:** add GEMINI.md configuration and update skill documentation ([59a1f80](https://github.com/claudekit/claudekit-engineer/commit/59a1f8071fd9bc1fbb16de9b2ea56336f721ad18))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** replace blocking prompt hook with modularization command hook ([6d6d750](https://github.com/claudekit/claudekit-engineer/commit/6d6d750512327d57da22cae82a6b4c1ea4d4a16b))
+
 ## [1.14.6](https://github.com/claudekit/claudekit-engineer/compare/v1.14.5...v1.14.6) (2025-11-16)
 
 
