@@ -9,7 +9,7 @@ Execute MCP operations via **Gemini CLI** to preserve context budget.
 1. **Execute task via Gemini CLI** (using stdin pipe for MCP support):
    ```bash
    # IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
-   echo "Using the MCP tools available to you, $ARGUMENTS. Report results concisely." | gemini -y -m gemini-2.5-flash
+   echo "$ARGUMENTS. Return JSON only per GEMINI.md instructions." | gemini -y -m gemini-2.5-flash
    ```
 
 2. **Fallback to mcp-manager subagent** (if Gemini CLI unavailable):
@@ -23,6 +23,8 @@ Execute MCP operations via **Gemini CLI** to preserve context budget.
 
 - **MUST use stdin piping** - the deprecated `-p` flag skips MCP initialization
 - Use `-y` flag to auto-approve tool execution
+- **GEMINI.md auto-loaded**: Gemini CLI automatically loads `GEMINI.md` from project root, enforcing JSON-only response format
+- **Parseable output**: Responses are structured JSON: `{"server":"name","tool":"name","success":true,"result":<data>,"error":null}`
 
 ## Anti-Pattern (DO NOT USE)
 
