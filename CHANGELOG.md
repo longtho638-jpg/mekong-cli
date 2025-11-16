@@ -1,3 +1,16 @@
+## [1.14.5](https://github.com/claudekit/claudekit-engineer/compare/v1.14.4...v1.14.5) (2025-11-16)
+
+
+### 🐞 Bug Fixes
+
+* add token count to repomix skill ([7fac84f](https://github.com/claudekit/claudekit-engineer/commit/7fac84f9d22b4acdf2b7c64268c6a00dd81ef3dc))
+* get all test suite of skills passed ([6f2fe21](https://github.com/claudekit/claudekit-engineer/commit/6f2fe216df8e522a874e67394cb4e495d79fcbfc))
+
+
+### ⚡ Performance Improvements
+
+* optimize `docs-seeker` skills to be more token efficient ([840dcf3](https://github.com/claudekit/claudekit-engineer/commit/840dcf3ff1db7748d0df669ab16b2443947dd078))
+
 ## [1.14.4](https://github.com/claudekit/claudekit-engineer/compare/v1.14.3...v1.14.4) (2025-11-15)
 
 
