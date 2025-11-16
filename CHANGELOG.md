@@ -1,3 +1,19 @@
+## [1.14.6](https://github.com/claudekit/claudekit-engineer/compare/v1.14.5...v1.14.6) (2025-11-16)
+
+
+### 🐞 Bug Fixes
+
+* `fast` commands should skip code reviewing ([7573bc8](https://github.com/claudekit/claudekit-engineer/commit/7573bc85806cbdba40104a49bf29e0e4822b854b))
+* `planning` skills should respect `development-rules.md` ([b096874](https://github.com/claudekit/claudekit-engineer/commit/b096874fb48a853b71c8cc9d16e196d3d4b9ce53))
+* hook script path resolution fails when Claude changes directories ([a6a0ecd](https://github.com/claudekit/claudekit-engineer/commit/a6a0ecd38b4bfa303aacddb7ad2602fbae6f4857))
+* modular extration hook ([0293c9f](https://github.com/claudekit/claudekit-engineer/commit/0293c9f8b10e72bc5f4325f4f8312c94d85acc42))
+* update development rules with name convention ([9dfcb85](https://github.com/claudekit/claudekit-engineer/commit/9dfcb85f262291471fc925c989abc4bc027895ed))
+
+
+### ⚡ Performance Improvements
+
+* `debugger` subagent should consume less tokens ([abc5635](https://github.com/claudekit/claudekit-engineer/commit/abc5635c4ef708929b5335c2a65f7be71585d0b5))
+
 ## [1.14.5](https://github.com/claudekit/claudekit-engineer/compare/v1.14.4...v1.14.5) (2025-11-16)
 
 
