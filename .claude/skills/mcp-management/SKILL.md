@@ -58,7 +58,8 @@ LLM analyzes `assets/tools.json` directly - better than keyword matching algorit
 
 **Primary: Gemini CLI** (if available)
 ```bash
-gemini -y -m gemini-2.5-flash -p "Take a screenshot of https://example.com"
+# IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
+echo "Take a screenshot of https://example.com" | gemini -y -m gemini-2.5-flash
 ```
 
 **Secondary: Direct Scripts**
@@ -78,7 +79,8 @@ Use Gemini CLI for automatic tool discovery and execution. See [references/gemin
 
 **Quick Example**:
 ```bash
-gemini -y -m gemini-2.5-flash -p "Take a screenshot of https://example.com"
+# IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
+echo "Take a screenshot of https://example.com" | gemini -y -m gemini-2.5-flash
 ```
 
 **Benefits**: Automatic tool discovery, natural language execution, faster than subagent orchestration.
@@ -124,7 +126,8 @@ Command-line interface for MCP operations. Commands:
 ```bash
 npm install -g gemini-cli
 mkdir -p .gemini && ln -sf .claude/.mcp.json .gemini/settings.json
-gemini -y -m gemini-2.5-flash -p "Take a screenshot of https://example.com"
+# IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
+echo "Take a screenshot of https://example.com" | gemini -y -m gemini-2.5-flash
 ```
 
 **Method 2: Scripts**
@@ -153,7 +156,8 @@ See [references/mcp-protocol.md](references/mcp-protocol.md) for:
 
 1. **Gemini CLI** (Primary): Fast, automatic, intelligent tool selection
    - Check: `command -v gemini`
-   - Execute: `gemini -y -m gemini-2.5-flash -p "<task>"`
+   - Execute: `echo "<task>" | gemini -y -m gemini-2.5-flash`
+   - **IMPORTANT**: Use stdin piping, NOT `-p` flag (deprecated, skips MCP init)
    - Best for: All tasks when available
 
 2. **Direct CLI Scripts** (Secondary): Manual tool specification
