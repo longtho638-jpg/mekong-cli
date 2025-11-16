@@ -16,16 +16,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Review all modified files in $ARGUMENTS. Identify files >200 LOC that would benefit from modularization. Suggest specific split strategies. Use kebab-case for file names with a meaningful name that describes the purpose of the file, make sure when LLMs read the file names while using Grep or other tools, they can understand the purpose of the file without reading the file content."
-          }
-        ]
-      }
     ]
   }
 }
