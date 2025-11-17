@@ -16,6 +16,17 @@ const path = require('path');
 
 // Constants
 const LOC_THRESHOLD = 200;
+const DEBUG = process.env.MODULARIZATION_HOOK_DEBUG === 'true';
+
+/**
+ * Conditionally log diagnostic information to stderr without breaking JSON stdout parsing.
+ * Keeping logs opt-in avoids noisy transcripts while still letting us validate hook flow.
+ */
+function debugLog(message) {
+  if (DEBUG) {
+    console.error(`[modularization-hook] ${message}`);
+  }
+}
 
 /**
  * Main hook execution
@@ -31,31 +42,37 @@ async function main() {
     }
 
     const payload = JSON.parse(stdin);
+    debugLog(`Hook triggered for tool: ${payload.tool_name ?? 'unknown'}`);
 
     // Extract file path from tool input
     const filePath = payload.tool_input?.file_path;
 
     if (!filePath) {
+      debugLog('No file path in payload; skipping.');
       // No file path in payload, skip
       process.exit(0);
     }
 
     // Check if file exists and is readable
     if (!fs.existsSync(filePath)) {
+      debugLog(`File not found at path: ${filePath}`);
       process.exit(0);
     }
 
     // Read file and count lines
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     const lines = fileContent.split('\n').length;
+    debugLog(`File ${filePath} has ${lines} LOC.`);
 
     // Check if modularization suggestion is warranted
     if (lines > LOC_THRESHOLD) {
       const fileName = path.basename(filePath);
       const relativePath = path.relative(process.cwd(), filePath);
+      debugLog(`LOC threshold exceeded for ${relativePath}.`);
 
       // Output non-blocking context injection
       const output = {
+        continue: true,
         hookSpecificOutput: {
           hookEventName: "PostToolUse",
           additionalContext: [
