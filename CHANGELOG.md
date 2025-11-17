@@ -1,3 +1,10 @@
+## [1.14.8](https://github.com/claudekit/claudekit-engineer/compare/v1.14.7...v1.14.8) (2025-11-17)
+
+
+### 🐞 Bug Fixes
+
+* modularization hook continuation ([7820f08](https://github.com/claudekit/claudekit-engineer/commit/7820f08c0351221cb9f010d1319eed4620c8b739))
+
 ## [1.14.7](https://github.com/claudekit/claudekit-engineer/compare/v1.14.6...v1.14.7) (2025-11-16)
 
 
