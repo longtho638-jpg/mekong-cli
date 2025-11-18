@@ -1,3 +1,43 @@
+## [1.14.8](https://github.com/claudekit/claudekit-engineer/compare/v1.14.7...v1.14.8) (2025-11-17)
+
+
+### 🐞 Bug Fixes
+
+* modularization hook continuation ([7820f08](https://github.com/claudekit/claudekit-engineer/commit/7820f08c0351221cb9f010d1319eed4620c8b739))
+
+## [1.14.7](https://github.com/claudekit/claudekit-engineer/compare/v1.14.6...v1.14.7) (2025-11-16)
+
+
+### 🐞 Bug Fixes
+
+* **mcp-management:** resolve subprocess hangs and signal handling ([4edb1f8](https://github.com/claudekit/claudekit-engineer/commit/4edb1f8842f41a1b3a58a2edaccc3c6752a04cec))
+
+
+### 📚 Documentation
+
+* **mcp-management:** add GEMINI.md configuration and update skill documentation ([59a1f80](https://github.com/claudekit/claudekit-engineer/commit/59a1f8071fd9bc1fbb16de9b2ea56336f721ad18))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** replace blocking prompt hook with modularization command hook ([6d6d750](https://github.com/claudekit/claudekit-engineer/commit/6d6d750512327d57da22cae82a6b4c1ea4d4a16b))
+
+## [1.14.6](https://github.com/claudekit/claudekit-engineer/compare/v1.14.5...v1.14.6) (2025-11-16)
+
+
+### 🐞 Bug Fixes
+
+* `fast` commands should skip code reviewing ([7573bc8](https://github.com/claudekit/claudekit-engineer/commit/7573bc85806cbdba40104a49bf29e0e4822b854b))
+* `planning` skills should respect `development-rules.md` ([b096874](https://github.com/claudekit/claudekit-engineer/commit/b096874fb48a853b71c8cc9d16e196d3d4b9ce53))
+* hook script path resolution fails when Claude changes directories ([a6a0ecd](https://github.com/claudekit/claudekit-engineer/commit/a6a0ecd38b4bfa303aacddb7ad2602fbae6f4857))
+* modular extration hook ([0293c9f](https://github.com/claudekit/claudekit-engineer/commit/0293c9f8b10e72bc5f4325f4f8312c94d85acc42))
+* update development rules with name convention ([9dfcb85](https://github.com/claudekit/claudekit-engineer/commit/9dfcb85f262291471fc925c989abc4bc027895ed))
+
+
+### ⚡ Performance Improvements
+
+* `debugger` subagent should consume less tokens ([abc5635](https://github.com/claudekit/claudekit-engineer/commit/abc5635c4ef708929b5335c2a65f7be71585d0b5))
+
 ## [1.14.5](https://github.com/claudekit/claudekit-engineer/compare/v1.14.4...v1.14.5) (2025-11-16)
 
 
