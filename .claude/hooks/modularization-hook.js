@@ -16,7 +16,7 @@ const path = require('path');
 
 // Constants
 const LOC_THRESHOLD = 200;
-const DEBUG = process.env.MODULARIZATION_HOOK_DEBUG === 'true';
+const DEBUG = true; // process.env.MODULARIZATION_HOOK_DEBUG === 'true';
 
 /**
  * Conditionally log diagnostic information to stderr without breaking JSON stdout parsing.
@@ -80,7 +80,7 @@ async function main() {
             `Consider modularization:`,
             `- Analyze logical separation boundaries (functions, classes, concerns)`,
             `- Use kebab-case naming with descriptive names (e.g., user-authentication-service.ts, data-validation-helpers.ts)`,
-            `- Ensure file names are self-documenting for LLM tools (Grep, Glob)`,
+            `- Ensure file names are self-documenting for LLM tools (Grep, Glob), no need to group the modules into a file, doesn't matter if file name is long, make sure reading file name is enough to understand what the file does`,
             `- After modularization, continue with main task`
           ].join('\n')
         }
