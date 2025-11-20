@@ -1,0 +1,8 @@
+# Batch Processing Results
+
+## 1. Unknown
+
+**Status**: error
+
+**Error**: Saving remote videos is not supported.
+

@@ -1,0 +1,8 @@
+# Batch Processing Results
+
+## 1. Unknown
+
+**Status**: error
+
+**Error**: 'Image' object has no attribute 'imageBytes'
+

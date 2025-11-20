@@ -1,6 +1,6 @@
 ---
 name: ai-multimodal
-description: Process and generate multimedia content using Google Gemini API. Capabilities include analyze audio files (transcription with timestamps, summarization, speech understanding, music/sound analysis up to 9.5 hours), understand images (captioning, object detection, OCR, visual Q&A, segmentation), process videos (scene detection, Q&A, temporal analysis, YouTube URLs, up to 6 hours), extract from documents (PDF tables, forms, charts, diagrams, multi-page), generate images (text-to-image, editing, composition, refinement). Use when working with audio/video files, analyzing images or screenshots, processing PDF documents, extracting structured data from media, creating images from text prompts, or implementing multimodal AI features. Supports multiple models (Gemini 2.5/2.0) with context windows up to 2M tokens.
+description: Process and generate multimedia content using Google Gemini API. Capabilities include analyze audio files (transcription with timestamps, summarization, speech understanding, music/sound analysis up to 9.5 hours), understand images (captioning, object detection, OCR, visual Q&A, segmentation), process videos (scene detection, Q&A, temporal analysis, YouTube URLs, up to 6 hours), extract from documents (PDF tables, forms, charts, diagrams, multi-page), generate images (text-to-image with Imagen 4, editing, composition, refinement), generate videos (text-to-video with Veo 3, 8-second clips with native audio). Use when working with audio/video files, analyzing images or screenshots, processing PDF documents, extracting structured data from media, creating images/videos from text prompts, or implementing multimodal AI features. Supports Gemini 3/2.5, Imagen 4, and Veo 3 models with context windows up to 2M tokens.
 license: MIT
 allowed-tools:
   - Bash
@@ -47,40 +47,64 @@ Process audio, images, videos, documents, and generate images using Google Gemin
 - Format conversion (PDF to HTML/JSON)
 
 ### Image Generation
-- Text-to-image generation
+- Text-to-image generation (Imagen 4)
 - Image editing and modification
 - Multi-image composition (up to 3 images)
 - Iterative refinement
 - Multiple aspect ratios (1:1, 16:9, 9:16, 4:3, 3:4)
-- Controllable style and quality
+- Quality variants (Standard/Ultra/Fast)
+
+### Video Generation
+- Text-to-video generation (8 seconds)
+- Image-to-video animation
+- Native audio generation
+- Multiple resolutions (720p/1080p)
+- Camera control and framing
+- Video extension capability
 
 ## Capability Matrix
 
-| Task | Audio | Image | Video | Document | Generation |
-|------|:-----:|:-----:|:-----:|:--------:|:----------:|
-| Transcription | ✓ | - | ✓ | - | - |
-| Summarization | ✓ | ✓ | ✓ | ✓ | - |
-| Q&A | ✓ | ✓ | ✓ | ✓ | - |
-| Object Detection | - | ✓ | ✓ | - | - |
-| Text Extraction | - | ✓ | - | ✓ | - |
-| Structured Output | ✓ | ✓ | ✓ | ✓ | - |
-| Creation | TTS | - | - | - | ✓ |
-| Timestamps | ✓ | - | ✓ | - | - |
-| Segmentation | - | ✓ | - | - | - |
+| Task | Audio | Image | Video | Document | Image Gen | Video Gen |
+|------|:-----:|:-----:|:-----:|:--------:|:---------:|:---------:|
+| Transcription | ✓ | - | ✓ | - | - | - |
+| Summarization | ✓ | ✓ | ✓ | ✓ | - | - |
+| Q&A | ✓ | ✓ | ✓ | ✓ | - | - |
+| Object Detection | - | ✓ | ✓ | - | - | - |
+| Text Extraction | - | ✓ | - | ✓ | - | - |
+| Structured Output | ✓ | ✓ | ✓ | ✓ | - | - |
+| Creation | TTS | - | - | - | ✓ | ✓ |
+| Timestamps | ✓ | - | ✓ | - | - | - |
+| Segmentation | - | ✓ | - | - | - | - |
 
 ## Model Selection Guide
 
-### Gemini 2.5 Series (Recommended)
+### Gemini 3 Series (Latest - Advanced Workflows)
+- **gemini-3-pro-preview**: Agentic workflows, 1M context, dynamic thinking
+- **gemini-3-pro-image-preview**: Image generation with conversational editing
+
+### Gemini 2.5 Series (Recommended - General Use)
 - **gemini-2.5-pro**: Highest quality, all features, 1M-2M context
 - **gemini-2.5-flash**: Best balance, all features, 1M-2M context
 - **gemini-2.5-flash-lite**: Lightweight, segmentation support
-- **gemini-2.5-flash-image**: Image generation only
+- **gemini-2.5-flash-image**: Image generation (deprecated - use Imagen 4)
 
-### Feature Requirements
+### Imagen 4 Series (Image Generation)
+- **imagen-4.0-generate-001**: Standard quality, balanced speed
+- **imagen-4.0-ultra-generate-001**: Maximum quality, detailed images
+- **imagen-4.0-fast-generate-001**: Fastest generation (no size option)
+
+### Veo 3 Series (Video Generation) ⏳ SDK Pending
+- **veo-3.1-generate-preview**: Latest, native audio, frame control
+- **veo-3.1-fast-generate-preview**: Speed-optimized, business use
+- **veo-3.0-generate-001**: Stable, native audio, 8s videos
+- **veo-3.0-fast-generate-001**: Stable fast variant
+
+### Model Selection by Use Case
+- **Video Generation**: Veo 3 models only
+- **Image Generation**: Imagen 4 (recommended) or Gemini 3 Pro Image
+- **Multimodal Analysis**: Gemini 2.5/3.0 models
 - **Segmentation**: Requires 2.5+ models
 - **Object Detection**: Requires 2.0+ models
-- **Multi-video**: Requires 2.5+ models
-- **Image Generation**: Requires flash-image model
 
 ### Context Windows
 - **2M tokens**: ~6 hours video (low-res) or ~2 hours (default)
@@ -158,11 +182,38 @@ python scripts/gemini_batch_process.py \
 
 **Generate Image**:
 ```bash
+# Standard quality (recommended)
 python scripts/gemini_batch_process.py \
   --task generate \
   --prompt "A futuristic city at sunset" \
   --output docs/assets/<output-file-name> \
-  --model gemini-2.5-flash-image \
+  --model imagen-4.0-generate-001 \
+  --aspect-ratio 16:9
+
+# Ultra quality (production)
+python scripts/gemini_batch_process.py \
+  --task generate \
+  --prompt "Professional product photography" \
+  --output docs/assets/<output-file-name> \
+  --model imagen-4.0-ultra-generate-001 \
+  --size 2K
+
+# Fast generation (iteration)
+python scripts/gemini_batch_process.py \
+  --task generate \
+  --prompt "Quick concept sketch" \
+  --output docs/assets/<output-file-name> \
+  --model imagen-4.0-fast-generate-001
+```
+
+**Generate Video**:
+```bash
+python scripts/gemini_batch_process.py \
+  --task generate-video \
+  --prompt "A serene beach sunset with gentle waves" \
+  --output docs/assets/<output-file-name>.mp4 \
+  --model veo-3.1-generate-preview \
+  --resolution 1080p \
   --aspect-ratio 16:9
 ```
 
@@ -240,6 +291,13 @@ For detailed implementation guidance, see:
   - Visual question answering
   - Multi-image comparison
 
+### Image Generation
+- `references/image-generation.md` - Text-to-image with Imagen 4
+  - Imagen 4 quality variants (Standard/Ultra/Fast)
+  - Prompt engineering strategies
+  - Image editing and composition
+  - Aspect ratio selection
+
 ### Video Analysis
 - `references/video-analysis.md` - Scene detection, temporal understanding
   - YouTube URL processing
@@ -247,19 +305,19 @@ For detailed implementation guidance, see:
   - Video clipping and FPS control
   - Long video optimization
 
+### Video Generation (New)
+- `references/video-generation.md` - Text-to-video with Veo
+  - Text-to-video generation
+  - Image-to-video animation
+  - Camera control and framing
+  - Native audio generation
+
 ### Document Extraction
 - `references/document-extraction.md` - PDF processing, structured output
   - Table and form extraction
   - Chart and diagram analysis
   - JSON schema validation
   - Multi-page handling
-
-### Image Generation
-- `references/image-generation.md` - Text-to-image, editing
-  - Prompt engineering strategies
-  - Image editing and composition
-  - Aspect ratio selection
-  - Safety settings
 
 ## Cost Optimization
 
