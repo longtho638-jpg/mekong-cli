@@ -1,12 +1,12 @@
 ---
 name: media-processing
-description: Process multimedia files with FFmpeg (video/audio encoding, conversion, streaming, filtering, hardware acceleration) and ImageMagick (image manipulation, format conversion, batch processing, effects, composition). Use when converting media formats, encoding videos with specific codecs (H.264, H.265, VP9), resizing/cropping images, extracting audio from video, applying filters and effects, optimizing file sizes, creating streaming manifests (HLS/DASH), generating thumbnails, batch processing images, creating composite images, or implementing media processing pipelines. Supports 100+ formats, hardware acceleration (NVENC, QSV), and complex filtergraphs.
+description: Process multimedia files with FFmpeg (video/audio encoding, conversion, streaming, filtering, hardware acceleration), ImageMagick (image manipulation, format conversion, batch processing, effects, composition), and RMBG (AI-powered background removal). Use when converting media formats, encoding videos with specific codecs (H.264, H.265, VP9), resizing/cropping images, removing backgrounds from images, extracting audio from video, applying filters and effects, optimizing file sizes, creating streaming manifests (HLS/DASH), generating thumbnails, batch processing images, creating composite images, or implementing media processing pipelines. Supports 100+ formats, hardware acceleration (NVENC, QSV), and complex filtergraphs.
 license: MIT
 ---
 
 # Media Processing Skill
 
-Process video, audio, and images using FFmpeg and ImageMagick command-line tools for conversion, optimization, streaming, and manipulation tasks.
+Process video, audio, and images using FFmpeg, ImageMagick, and RMBG command-line tools for conversion, optimization, streaming, manipulation, and AI-powered background removal.
 
 ## When to Use This Skill
 
@@ -14,6 +14,7 @@ Use when:
 - Converting media formats (video, audio, images)
 - Encoding video with codecs (H.264, H.265, VP9, AV1)
 - Processing images (resize, crop, effects, watermarks)
+- Removing backgrounds from images (AI-powered)
 - Extracting audio from video
 - Creating streaming manifests (HLS/DASH)
 - Generating thumbnails and previews
@@ -46,6 +47,16 @@ Use ImageMagick for:
 - Color adjustments, filters
 - Thumbnail generation
 
+### RMBG: AI Background Removal
+Use RMBG for:
+- Removing backgrounds from images
+- Creating transparent PNG outputs
+- Batch background removal
+- Portrait cutouts and product photography
+- Anime/manga character extraction
+- Fashion/clothing item isolation
+- High-quality background removal (up to 4K)
+
 ### Decision Matrix
 
 | Task | Tool | Why |
@@ -53,6 +64,7 @@ Use ImageMagick for:
 | Video encoding | FFmpeg | Native video codec support |
 | Audio extraction | FFmpeg | Direct stream manipulation |
 | Image resize | ImageMagick | Optimized for still images |
+| Background removal | RMBG | AI-powered, local processing |
 | Batch images | ImageMagick | mogrify for in-place edits |
 | Video thumbnails | FFmpeg | Frame extraction built-in |
 | GIF creation | FFmpeg or ImageMagick | FFmpeg for video source, ImageMagick for images |
@@ -64,11 +76,13 @@ Use ImageMagick for:
 ### macOS
 ```bash
 brew install ffmpeg imagemagick
+npm install -g rmbg-cli
 ```
 
 ### Ubuntu/Debian
 ```bash
 sudo apt-get install ffmpeg imagemagick
+npm install -g rmbg-cli
 ```
 
 ### Windows
@@ -80,6 +94,9 @@ winget install ImageMagick.ImageMagick
 # Or download binaries
 # FFmpeg: https://ffmpeg.org/download.html
 # ImageMagick: https://imagemagick.org/script/download.php
+
+# Install RMBG CLI
+npm install -g rmbg-cli
 ```
 
 ### Verify Installation
@@ -89,6 +106,9 @@ ffprobe -version
 magick -version
 # or
 convert -version
+
+# Verify RMBG
+rmbg --version
 ```
 
 ## Quick Start Examples
@@ -158,6 +178,21 @@ magick input.jpg watermark.png -gravity southeast \
   -geometry +10+10 -composite output.jpg
 ```
 
+### Background Removal
+```bash
+# Basic usage (uses modnet model)
+rmbg input.jpg
+
+# High quality (briaai model)
+rmbg input.jpg -m briaai -o output.png
+
+# Fast processing (u2netp model)
+rmbg input.jpg -m u2netp -o fast-output.png
+
+# 4K resolution output
+rmbg image.jpg -r 4096 -o image-4k.png
+```
+
 ## Common Workflows
 
 ### Optimize Video for Web
@@ -201,6 +236,30 @@ ffmpeg -i input.mp4 -vf "fps=15,scale=640:-1:flags=lanczos,split[s0][s1];[s0]pal
 ```bash
 # Gaussian blur
 magick input.jpg -gaussian-blur 0x8 output.jpg
+```
+
+### Batch Background Removal
+```bash
+# Process all images in a directory
+for img in *.jpg; do
+  rmbg "$img" -m modnet -o "${img%.jpg}-no-bg.png"
+done
+
+# Or use the provided script
+./scripts/batch-remove-background.sh ./photos ./output briaai 4096
+```
+
+### Product Photography Workflow
+```bash
+# 1. Remove background
+rmbg product.jpg -m u2net-cloth -o product-no-bg.png
+
+# 2. Resize to multiple sizes
+magick product-no-bg.png -resize 800x800 product-800.png
+magick product-no-bg.png -resize 400x400 product-400.png
+
+# 3. Add white background if needed
+magick product-no-bg.png -background white -flatten product-white-bg.jpg
 ```
 
 ## Advanced Techniques
@@ -301,6 +360,7 @@ Detailed guides in `references/`:
 - **imagemagick-editing.md** - Format conversion, effects, transformations
 - **imagemagick-batch.md** - Batch processing, mogrify, parallel operations
 - **format-compatibility.md** - Format support, codec recommendations
+- **rmbg-background-removal.md** - AI background removal, models, integration, batch processing
 
 ## Common Parameters
 
