@@ -165,6 +165,44 @@ install_node_deps() {
             print_success "$package installed"
         fi
     done
+
+    # Install local npm packages for skills
+    print_info "Installing local npm packages for skills..."
+
+    # chrome-devtools
+    if [ -d "$SCRIPT_DIR/chrome-devtools/scripts" ] && [ -f "$SCRIPT_DIR/chrome-devtools/scripts/package.json" ]; then
+        print_info "Installing chrome-devtools dependencies..."
+        (cd "$SCRIPT_DIR/chrome-devtools/scripts" && npm install --quiet)
+        print_success "chrome-devtools dependencies installed"
+    fi
+
+    # sequential-thinking
+    if [ -d "$SCRIPT_DIR/sequential-thinking" ] && [ -f "$SCRIPT_DIR/sequential-thinking/package.json" ]; then
+        print_info "Installing sequential-thinking dependencies..."
+        (cd "$SCRIPT_DIR/sequential-thinking" && npm install --quiet)
+        print_success "sequential-thinking dependencies installed"
+    fi
+
+    # mcp-management
+    if [ -d "$SCRIPT_DIR/mcp-management/scripts" ] && [ -f "$SCRIPT_DIR/mcp-management/scripts/package.json" ]; then
+        print_info "Installing mcp-management dependencies..."
+        (cd "$SCRIPT_DIR/mcp-management/scripts" && npm install --quiet)
+        print_success "mcp-management dependencies installed"
+    fi
+
+    # Optional: Shopify CLI (ask user)
+    if [ -d "$SCRIPT_DIR/shopify" ]; then
+        read -p "Install Shopify CLI for Shopify skill? (y/N) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            print_info "Installing Shopify CLI..."
+            npm install -g @shopify/cli @shopify/theme 2>/dev/null || {
+                print_warning "Failed to install Shopify CLI globally. Trying with sudo..."
+                sudo npm install -g @shopify/cli @shopify/theme
+            }
+            print_success "Shopify CLI installed"
+        fi
+    fi
 }
 
 # Setup Python virtual environment
@@ -197,24 +235,42 @@ setup_python_env() {
     print_info "Upgrading pip..."
     pip install --upgrade pip >/dev/null 2>&1
 
-    # Install ai-multimodal dependencies
-    if [ -f "$SCRIPT_DIR/ai-multimodal/scripts/requirements.txt" ]; then
-        print_info "Installing ai-multimodal dependencies..."
-        pip install -r "$SCRIPT_DIR/ai-multimodal/scripts/requirements.txt"
-        print_success "ai-multimodal dependencies installed"
-    fi
+    # Install dependencies from all skills' requirements.txt files
+    print_info "Installing Python dependencies from all skills..."
 
-    # Install media-processing dependencies (if any)
-    if [ -f "$SCRIPT_DIR/media-processing/scripts/requirements.txt" ]; then
-        print_info "Installing media-processing dependencies..."
-        pip install -r "$SCRIPT_DIR/media-processing/scripts/requirements.txt"
-        print_success "media-processing dependencies installed"
-    fi
+    local installed_count=0
+    for skill_dir in "$SCRIPT_DIR"/*; do
+        if [ -d "$skill_dir" ]; then
+            skill_name=$(basename "$skill_dir")
 
-    # Install test dependencies
-    print_info "Installing test dependencies..."
-    pip install pytest pytest-cov pytest-mock
-    print_success "Test dependencies installed"
+            # Skip .venv and document-skills
+            if [ "$skill_name" == ".venv" ] || [ "$skill_name" == "document-skills" ]; then
+                continue
+            fi
+
+            # Install main requirements.txt
+            if [ -f "$skill_dir/scripts/requirements.txt" ]; then
+                print_info "Installing $skill_name dependencies..."
+                pip install -r "$skill_dir/scripts/requirements.txt" --quiet 2>&1 || {
+                    print_warning "Some $skill_name dependencies failed to install (may be optional)"
+                }
+                ((installed_count++))
+            fi
+
+            # Install test requirements.txt
+            if [ -f "$skill_dir/scripts/tests/requirements.txt" ]; then
+                pip install -r "$skill_dir/scripts/tests/requirements.txt" --quiet 2>&1 || {
+                    print_warning "Some $skill_name test dependencies failed to install (may be optional)"
+                }
+            fi
+        fi
+    done
+
+    if [ $installed_count -eq 0 ]; then
+        print_warning "No skill requirements.txt files found"
+    else
+        print_success "Installed Python dependencies from $installed_count skills"
+    fi
 
     deactivate
 }

@@ -179,6 +179,53 @@ function Install-NodeDeps {
             Write-Success "$package installed"
         }
     }
+
+    # Install local npm packages for skills
+    Write-Info "Installing local npm packages for skills..."
+
+    # chrome-devtools
+    $chromeDevToolsPath = Join-Path $ScriptDir "chrome-devtools\scripts"
+    $chromePackageJson = Join-Path $chromeDevToolsPath "package.json"
+    if ((Test-Path $chromeDevToolsPath) -and (Test-Path $chromePackageJson)) {
+        Write-Info "Installing chrome-devtools dependencies..."
+        Push-Location $chromeDevToolsPath
+        npm install --quiet
+        Pop-Location
+        Write-Success "chrome-devtools dependencies installed"
+    }
+
+    # sequential-thinking
+    $seqThinkingPath = Join-Path $ScriptDir "sequential-thinking"
+    $seqPackageJson = Join-Path $seqThinkingPath "package.json"
+    if ((Test-Path $seqThinkingPath) -and (Test-Path $seqPackageJson)) {
+        Write-Info "Installing sequential-thinking dependencies..."
+        Push-Location $seqThinkingPath
+        npm install --quiet
+        Pop-Location
+        Write-Success "sequential-thinking dependencies installed"
+    }
+
+    # mcp-management
+    $mcpManagementPath = Join-Path $ScriptDir "mcp-management\scripts"
+    $mcpPackageJson = Join-Path $mcpManagementPath "package.json"
+    if ((Test-Path $mcpManagementPath) -and (Test-Path $mcpPackageJson)) {
+        Write-Info "Installing mcp-management dependencies..."
+        Push-Location $mcpManagementPath
+        npm install --quiet
+        Pop-Location
+        Write-Success "mcp-management dependencies installed"
+    }
+
+    # Optional: Shopify CLI (ask user)
+    $shopifyPath = Join-Path $ScriptDir "shopify"
+    if (Test-Path $shopifyPath) {
+        $confirmation = Read-Host "Install Shopify CLI for Shopify skill? (y/N)"
+        if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
+            Write-Info "Installing Shopify CLI..."
+            npm install -g @shopify/cli @shopify/theme
+            Write-Success "Shopify CLI installed"
+        }
+    }
 }
 
 # Setup Python virtual environment
@@ -219,26 +266,46 @@ function Setup-PythonEnv {
     Write-Info "Upgrading pip..."
     python -m pip install --upgrade pip --quiet
 
-    # Install ai-multimodal dependencies
-    $aiRequirements = Join-Path $ScriptDir "ai-multimodal\scripts\requirements.txt"
-    if (Test-Path $aiRequirements) {
-        Write-Info "Installing ai-multimodal dependencies..."
-        pip install -r $aiRequirements
-        Write-Success "ai-multimodal dependencies installed"
+    # Install dependencies from all skills' requirements.txt files
+    Write-Info "Installing Python dependencies from all skills..."
+
+    $installedCount = 0
+    Get-ChildItem -Path $ScriptDir -Directory | ForEach-Object {
+        $skillName = $_.Name
+
+        # Skip .venv and document-skills
+        if ($skillName -eq ".venv" -or $skillName -eq "document-skills") {
+            return
+        }
+
+        # Install main requirements.txt
+        $requirementsPath = Join-Path $_.FullName "scripts\requirements.txt"
+        if (Test-Path $requirementsPath) {
+            Write-Info "Installing $skillName dependencies..."
+            try {
+                pip install -r $requirementsPath --quiet 2>$null
+                $installedCount++
+            } catch {
+                Write-Warning "Some $skillName dependencies failed to install (may be optional)"
+            }
+        }
+
+        # Install test requirements.txt
+        $testRequirementsPath = Join-Path $_.FullName "scripts\tests\requirements.txt"
+        if (Test-Path $testRequirementsPath) {
+            try {
+                pip install -r $testRequirementsPath --quiet 2>$null
+            } catch {
+                Write-Warning "Some $skillName test dependencies failed to install (may be optional)"
+            }
+        }
     }
 
-    # Install media-processing dependencies (if any)
-    $mediaRequirements = Join-Path $ScriptDir "media-processing\scripts\requirements.txt"
-    if (Test-Path $mediaRequirements) {
-        Write-Info "Installing media-processing dependencies..."
-        pip install -r $mediaRequirements
-        Write-Success "media-processing dependencies installed"
+    if ($installedCount -eq 0) {
+        Write-Warning "No skill requirements.txt files found"
+    } else {
+        Write-Success "Installed Python dependencies from $installedCount skills"
     }
-
-    # Install test dependencies
-    Write-Info "Installing test dependencies..."
-    pip install pytest pytest-cov pytest-mock
-    Write-Success "Test dependencies installed"
 
     deactivate
 }
