@@ -277,7 +277,7 @@ function Test-Installations {
         & $activateScript
 
         try {
-            python -c "import google.generativeai" 2>$null
+            python -c "import google.genai" 2>$null
             if ($LASTEXITCODE -eq 0) {
                 Write-Success "google-genai Python package is available"
             } else {

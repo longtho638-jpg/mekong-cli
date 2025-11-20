@@ -257,7 +257,7 @@ verify_installations() {
     # Check Python packages
     if [ -d "$VENV_DIR" ]; then
         source "$VENV_DIR/bin/activate"
-        if python -c "import google.generativeai" 2>/dev/null; then
+        if python -c "import google.genai" 2>/dev/null; then
             print_success "google-genai Python package is available"
         else
             print_warning "google-genai Python package is not available"
