@@ -35,7 +35,15 @@ Focus on:
 
 ## Visual Asset Generation
 
-When you need hero images, backgrounds, textures, or decorative elements that match the design aesthetic, use the `ai-multimodal` skill following the practical guide in `./references/ai-multimodal-integration.md`. This ensures generated assets align with the design thinking and aesthetics guidelines rather than producing generic imagery.
+When you need hero images, backgrounds, textures, or decorative elements that match the design aesthetic, use the `ai-multimodal` skill. This ensures generated assets align with the design thinking and aesthetics guidelines rather than producing generic imagery.
+
+**Quick Start**: `./references/ai-multimodal-overview.md`
+
+**Detailed Workflows**:
+- `./references/asset-generation.md` - Generate design-aligned visual assets
+- `./references/visual-analysis.md` - Analyze and verify asset quality
+- `./references/design-extraction.md` - Extract guidelines from inspiration
+- `./references/technical-guide.md` - Optimization and best practices
 
 NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
 
