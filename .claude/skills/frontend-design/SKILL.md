@@ -65,13 +65,13 @@ Focus on:
 
 ## Working with Visual Assets
 
-### Analyzing Provided Screenshots/Images/Designs
-When user provides screenshots, photos, or design references to analyze or replicate, use `./references/design-extraction-overview.md` to extract design guidelines BEFORE implementation. This is MANDATORY for screenshot inputs (see "Input Types & Workflows" above).
+**Quick Start**: `./references/ai-multimodal-overview.md`
 
 ### Generating New Visual Assets
 When you need to GENERATE new hero images, backgrounds, textures, or decorative elements that match the design aesthetic, use the `ai-multimodal` skill. This ensures generated assets align with the design thinking and aesthetics guidelines rather than producing generic imagery.
 
-**Quick Start**: `./references/ai-multimodal-overview.md`
+### Analyzing Provided Screenshots/Images/Designs
+When user provides screenshots, photos, or design references to analyze or replicate, use `./references/design-extraction-overview.md` to extract design guidelines BEFORE implementation. This is MANDATORY for screenshot inputs (see "Input Types & Workflows" above).
 
 **Workflows**:
 - `./references/asset-generation.md` - Generate design-aligned visual assets
