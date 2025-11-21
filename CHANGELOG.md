@@ -1,3 +1,24 @@
+## [1.14.10](https://github.com/claudekit/claudekit-engineer/compare/v1.14.9...v1.14.10) (2025-11-18)
+
+
+### 🐞 Bug Fixes
+
+* disable modularization hook ([3c6bf1e](https://github.com/claudekit/claudekit-engineer/commit/3c6bf1e5a33704626e99557f28a6af463a9e5e62))
+
+## [1.14.9](https://github.com/claudekit/claudekit-engineer/compare/v1.14.8...v1.14.9) (2025-11-18)
+
+
+### 🐞 Bug Fixes
+
+* `modularization-hook` should work properly now ([39d8b9a](https://github.com/claudekit/claudekit-engineer/commit/39d8b9a9a9193824cc499057fff2d613a326b277))
+* completely block node_modules and cache scouting with scout block hook ([ff8fd3a](https://github.com/claudekit/claudekit-engineer/commit/ff8fd3aaa895f1b70a84e158df3d1e6d53c6f425))
+* statusline issue on window ([0f1cf23](https://github.com/claudekit/claudekit-engineer/commit/0f1cf23036f72e05a840d854bd3cbc20f01148c7)), closes [#47](https://github.com/claudekit/claudekit-engineer/issues/47)
+
+
+### ⚡ Performance Improvements
+
+* enhance statusline ([e5b089a](https://github.com/claudekit/claudekit-engineer/commit/e5b089a2f98853117736d6323e6e3aa0837891f4))
+
 ## [1.14.8](https://github.com/claudekit/claudekit-engineer/compare/v1.14.7...v1.14.8) (2025-11-17)
 
 
