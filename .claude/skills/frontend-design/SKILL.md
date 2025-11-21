@@ -1,12 +1,42 @@
 ---
 name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.
+description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications, OR when they provide screenshots/images/designs to replicate or draw inspiration from. For screenshot inputs, extracts design guidelines first using ai-multimodal analysis, then implements code following those guidelines. Generates creative, polished code that avoids generic AI aesthetics.
 license: Complete terms in LICENSE.txt
 ---
 
 This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
 
 The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+
+## Input Types & Workflows
+
+### When User Provides Screenshot/Image/Design Reference
+
+**MANDATORY workflow for screenshot/image/design inputs**:
+
+1. **Extract Design Guidelines** using `./references/design-extraction-overview.md`:
+   - Analyze screenshot/image with ai-multimodal skill
+   - Extract: colors (hex codes), typography (fonts, sizes, weights), spacing scale, layout patterns, visual hierarchy
+   - Document findings in project `docs/design-guidelines/extracted-design.md`
+   - See `./references/extraction-prompts.md` for comprehensive analysis prompts
+
+2. **Implement Code** following extracted guidelines:
+   - Use exact colors from extraction (hex codes)
+   - Match typography specifications (fonts, sizes, weights, line-heights)
+   - Replicate layout structure and spacing system
+   - Maintain visual hierarchy and component patterns
+   - Preserve aesthetic direction and mood
+
+3. **Verify Quality** using `./references/visual-analysis-overview.md`:
+   - Compare implementation to original screenshot
+   - Check color accuracy, spacing consistency, typography matching
+   - Ensure all design elements preserved
+
+**Important**: Do NOT skip to implementation. Extract design guidelines FIRST, then code.
+
+### When Building from Scratch (No Screenshot Provided)
+
+Follow "Design Thinking" process below to create original design.
 
 ## Design Thinking
 
@@ -33,9 +63,13 @@ Focus on:
 - **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
 - **Backgrounds & Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
 
-## Visual Asset Generation
+## Working with Visual Assets
 
-When you need hero images, backgrounds, textures, or decorative elements that match the design aesthetic, use the `ai-multimodal` skill. This ensures generated assets align with the design thinking and aesthetics guidelines rather than producing generic imagery.
+### Analyzing Provided Screenshots/Images/Designs
+When user provides screenshots, photos, or design references to analyze or replicate, use `./references/design-extraction-overview.md` to extract design guidelines BEFORE implementation. This is MANDATORY for screenshot inputs (see "Input Types & Workflows" above).
+
+### Generating New Visual Assets
+When you need to GENERATE new hero images, backgrounds, textures, or decorative elements that match the design aesthetic, use the `ai-multimodal` skill. This ensures generated assets align with the design thinking and aesthetics guidelines rather than producing generic imagery.
 
 **Quick Start**: `./references/ai-multimodal-overview.md`
 
