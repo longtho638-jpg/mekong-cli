@@ -15,6 +15,11 @@ specialized knowledge, workflows, and tools. Think of them as "onboarding guides
 domains or tasks—they transform Claude from a general-purpose agent into a specialized agent
 equipped with procedural knowledge that no model can fully possess.
 
+**IMPORTANT:**
+- Skills are not documentation, they are practical instructions for Claude Code to use the tools, packages, plugins or APIs to achieve the tasks.
+- Each skill teaches Claude how to perform a specific development task, not what a tool does.
+- Claude Code can activate multiple skills automatically to achieve the user's request.
+
 ### What Skills Provide
 
 1. Specialized workflows - Multi-step procedures for specific domains
@@ -71,6 +76,7 @@ Better **context engineering**: leverage **progressive disclosure** technique of
 
 **File name:** `SKILL.md` (uppercase)
 **File size:** Under 100 lines, if you need more, plit it to multiple files in `references` folder.
+`SKILL.md` is always short and concise, straight to the point, treat it as a quick reference guide.
 
 **Metadata Quality:** The `name` and `description` in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
 
