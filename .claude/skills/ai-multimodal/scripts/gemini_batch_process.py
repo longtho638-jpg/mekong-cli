@@ -20,6 +20,19 @@ from typing import List, Dict, Any, Optional
 import csv
 import shutil
 
+# Import centralized environment resolver
+sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+try:
+    from resolve_env import resolve_env
+    CENTRALIZED_RESOLVER_AVAILABLE = True
+except ImportError:
+    # Fallback if centralized resolver not available
+    CENTRALIZED_RESOLVER_AVAILABLE = False
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        load_dotenv = None
+
 try:
     from google import genai
     from google.genai import types
@@ -28,48 +41,47 @@ except ImportError:
     print("Install with: pip install google-genai")
     sys.exit(1)
 
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    load_dotenv = None
-
 
 def find_api_key() -> Optional[str]:
-    """Find Gemini API key using correct priority order.
+    """Find Gemini API key using centralized resolver or fallback.
+
+    Uses ~/.claude/scripts/resolve_env.py for consistent resolution across all skills.
+    Falls back to local resolution if centralized resolver not available.
 
     Priority order (highest to lowest):
     1. process.env (runtime environment variables)
-    2. .claude/skills/ai-multimodal/.env (skill-specific config)
-    3. .claude/skills/.env (shared skills config)
-    4. .claude/.env (Claude global config)
+    2. PROJECT/.claude/skills/ai-multimodal/.env (skill-specific)
+    3. PROJECT/.claude/skills/.env (shared skills)
+    4. PROJECT/.claude/.env (project global)
+    5. ~/.claude/skills/ai-multimodal/.env (user skill-specific)
+    6. ~/.claude/skills/.env (user shared)
+    7. ~/.claude/.env (user global)
     """
-    # Priority 1: Already in process.env (highest)
+    if CENTRALIZED_RESOLVER_AVAILABLE:
+        # Use centralized resolver (recommended)
+        return resolve_env('GEMINI_API_KEY', skill='ai-multimodal')
+
+    # Fallback: Local resolution (legacy)
     api_key = os.getenv('GEMINI_API_KEY')
     if api_key:
         return api_key
 
-    # Load .env files if dotenv available
     if load_dotenv:
-        # Determine base paths
         script_dir = Path(__file__).parent
-        skill_dir = script_dir.parent  # .claude/skills/ai-multimodal
-        skills_dir = skill_dir.parent   # .claude/skills
-        claude_dir = skills_dir.parent  # .claude
+        skill_dir = script_dir.parent
+        skills_dir = skill_dir.parent
+        claude_dir = skills_dir.parent
 
-        # Build list of .env files in priority order (lowest to highest)
-        # Load in reverse order so higher priority overwrites lower priority
         env_files = [
-            claude_dir / '.env',           # Priority 4 (lowest)
-            skills_dir / '.env',           # Priority 3
-            skill_dir / '.env',            # Priority 2
+            claude_dir / '.env',
+            skills_dir / '.env',
+            skill_dir / '.env',
         ]
 
-        # Load all existing .env files in order (lower priority first)
         for env_file in env_files:
             if env_file.exists():
                 load_dotenv(env_file, override=True)
 
-        # Now check if API key was loaded from any of the files
         api_key = os.getenv('GEMINI_API_KEY')
         if api_key:
             return api_key
@@ -534,8 +546,11 @@ def batch_process(
     api_key = find_api_key()
     if not api_key:
         print("Error: GEMINI_API_KEY not found")
-        print("Set via: export GEMINI_API_KEY='your-key'")
-        print("Or create .env file with: GEMINI_API_KEY=your-key")
+        print("\nSetup options:")
+        print("1. Run setup checker: python scripts/check_setup.py")
+        print("2. Show hierarchy: python ~/.claude/scripts/resolve_env.py --show-hierarchy --skill ai-multimodal")
+        print("3. Quick setup: export GEMINI_API_KEY='your-key'")
+        print("4. Create .env: cd ~/.claude/skills/ai-multimodal && cp .env.example .env")
         sys.exit(1)
 
     if dry_run:
