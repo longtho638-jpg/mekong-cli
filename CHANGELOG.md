@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/claudekit/claudekit-engineer/compare/v1.15.0...v1.15.1) (2025-11-21)
+
+
+### 🐞 Bug Fixes
+
+* **scout-block:** use fail-open approach for JSON parsing errors ([9e8e3fc](https://github.com/claudekit/claudekit-engineer/commit/9e8e3fc5f49f1e1f4ed80143144cc43a50ee3fd9))
+
 ## [1.15.0](https://github.com/claudekit/claudekit-engineer/compare/v1.14.10...v1.15.0) (2025-11-21)
 
 
