@@ -39,11 +39,13 @@ When you need hero images, backgrounds, textures, or decorative elements that ma
 
 **Quick Start**: `./references/ai-multimodal-overview.md`
 
-**Detailed Workflows**:
+**Workflows**:
 - `./references/asset-generation.md` - Generate design-aligned visual assets
-- `./references/visual-analysis.md` - Analyze and verify asset quality
-- `./references/design-extraction.md` - Extract guidelines from inspiration
-- `./references/technical-guide.md` - Optimization and best practices
+- `./references/visual-analysis-overview.md` - Analyze and verify asset quality (modular)
+- `./references/design-extraction-overview.md` - Extract guidelines from inspiration (modular)
+- `./references/technical-overview.md` - Optimization and best practices (modular)
+
+Each overview references detailed sub-modules for progressive disclosure.
 
 NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
 
