@@ -1,3 +1,51 @@
+## [1.15.0](https://github.com/claudekit/claudekit-engineer/compare/v1.14.10...v1.15.0) (2025-11-21)
+
+
+### 🚀 Features
+
+* **install:** add comprehensive dependency installation for all skills ([8a8cbc5](https://github.com/claudekit/claudekit-engineer/commit/8a8cbc533411d9366e3ed58efc865a840da7d283))
+* **media-processing:** add comprehensive RMBG integration and automated installation scripts ([f4144f6](https://github.com/claudekit/claudekit-engineer/commit/f4144f60babf1261226f99cb459b299615c3f110))
+* new `modularization` hook with development rules reminders for maintainable codebase ✨ ([dec7715](https://github.com/claudekit/claudekit-engineer/commit/dec771534b1a764439fc6922634d7380d969d946))
+
+
+### 🐞 Bug Fixes
+
+* `scout-block` hook blocks build commands ([920d526](https://github.com/claudekit/claudekit-engineer/commit/920d52645d880e8c603473aa37e592090eeaaa4a))
+* **frontend-design:** add mandatory screenshot-to-code workflow ([d764800](https://github.com/claudekit/claudekit-engineer/commit/d764800164275290568bc5f7244ead98afffde8d))
+* **husky:** resolve PATH issue for npx command in git hooks ([f89d148](https://github.com/claudekit/claudekit-engineer/commit/f89d148650a2ef132abdda36b5368ad0f07a54ac))
+* **install:** correct google-genai import check ([15623cf](https://github.com/claudekit/claudekit-engineer/commit/15623cfe42f80e653f01a4b7b7db274b7e74611d))
+* skills installation issue on windows ([8d3ff8e](https://github.com/claudekit/claudekit-engineer/commit/8d3ff8e4e484a9f308f01bd3e4e54956535fd213))
+
+
+### 📚 Documentation
+
+* **env:** enhance .env.example with hierarchy docs and API key examples ([136b9f5](https://github.com/claudekit/claudekit-engineer/commit/136b9f547f401d236f001fc8ee0093cba03fd874))
+* improve .env.example ([cdf14e7](https://github.com/claudekit/claudekit-engineer/commit/cdf14e736d78a55cf73b1f91c6107184059d2e00))
+* update commands and skills catalogs ([1937363](https://github.com/claudekit/claudekit-engineer/commit/19373635f4d26f50b9fa23aa384a3da1a1148032))
+
+
+### ♻️ Code Refactoring
+
+* **frontend-design:** optimize skill with progressive disclosure ([6c9ab37](https://github.com/claudekit/claudekit-engineer/commit/6c9ab377e617d8a4be9b2ba368433fed27958397))
+* **frontend-design:** split ai-multimodal integration into progressive disclosure modules ([2c83039](https://github.com/claudekit/claudekit-engineer/commit/2c830395debcfddc4c3818fb74d9331bf5e6df65))
+* **media-processing:** optimize skill docs with progressive disclosure pattern ([68e9dcb](https://github.com/claudekit/claudekit-engineer/commit/68e9dcbcdffc361d1d2ca869330541569a4177aa))
+
+
+### ⚡ Performance Improvements
+
+* enhance `skill-creator` skill ([40a663f](https://github.com/claudekit/claudekit-engineer/commit/40a663ff4fa54eb26d4e5a79fd0ca5ac6f41ef0a))
+* enhance env vars resolve in `ai-multimodal` skills ([4e0dbe6](https://github.com/claudekit/claudekit-engineer/commit/4e0dbe6994134a6d8be147b9cda31ed68b3baacd))
+* generate catalogs and resolve env scripts ([24f5a57](https://github.com/claudekit/claudekit-engineer/commit/24f5a576f645af3b556fc582cbd83eadf4e496b0))
+* improve skill commands ([33f4677](https://github.com/claudekit/claudekit-engineer/commit/33f4677bba77a2e057cad702ed6bbc07f4b340d3))
+* **skill:** optimize ai-multimodal docs for token efficiency ([cd090ab](https://github.com/claudekit/claudekit-engineer/commit/cd090ab9466b89023e15082a70e283b71735cbec))
+* **skill:** optimize claude-code skill for token efficiency ([b9068ff](https://github.com/claudekit/claudekit-engineer/commit/b9068ff27a954106927e4a1969ebadc5299574c0))
+* use gemini 3 models in `ai-multimodal` skills ([dac9f0d](https://github.com/claudekit/claudekit-engineer/commit/dac9f0d226a6087384d3277d5a8a5c96fd3b7f84))
+
+
+### ✅ Tests
+
+* add tests for scout block hook ([d2323f3](https://github.com/claudekit/claudekit-engineer/commit/d2323f332c0140d69c432ccb7aa95b528a5f573e))
+
 ## [1.14.10](https://github.com/claudekit/claudekit-engineer/compare/v1.14.9...v1.14.10) (2025-11-18)
 
 
