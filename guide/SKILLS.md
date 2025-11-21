@@ -1,779 +1,240 @@
-# Skills Guide
+# Skills Catalog
 
-This guide documents all available skills in the ClaudeKit Engineer project. Skills extend Claude's capabilities with specialized knowledge, workflows, and tool integrations.
+Auto-generated catalog of all available skills in ClaudeKit Engineer.
 
-## Table of Contents
+**Last Updated**: 2025-11-21
 
-- [What Are Skills?](#what-are-skills)
-- [How to Use Skills](#how-to-use-skills)
-- [Gemini AI Skills](#gemini-ai-skills)
-- [Development Framework Skills](#development-framework-skills)
-- [Infrastructure & DevOps Skills](#infrastructure--devops-skills)
-- [Design & Multimedia Skills](#design--multimedia-skills)
-- [Database & Storage Skills](#database--storage-skills)
-- [Developer Tools Skills](#developer-tools-skills)
-- [Utility Skills](#utility-skills)
+**Total Skills**: 33
 
----
+## Categories
 
-## What Are Skills?
+- [AI & Machine Learning](#ai-ml)
+- [Backend Development](#backend)
+- [Database & Storage](#database)
+- [Development Tools](#dev-tools)
+- [Frameworks & Platforms](#frameworks)
+- [Frontend & Design](#frontend)
+- [Infrastructure & DevOps](#infrastructure)
+- [Multimedia & Processing](#multimedia)
+- [Utilities & Helpers](#utilities)
 
-Skills are specialized knowledge modules that enhance Claude's capabilities in specific domains. Each skill provides:
+## Legend
 
-- **Domain expertise** - Deep knowledge in a specific technology or framework
-- **Best practices** - Industry-standard patterns and approaches
-- **Practical workflows** - Step-by-step implementation guides
-- **Code examples** - Ready-to-use code snippets and templates
+- 📦 Has executable scripts
+- 📚 Has reference documentation
 
-## How to Use Skills
+## AI & Machine Learning
 
-Skills are invoked automatically when Claude detects relevant context in your request. You can also explicitly invoke a skill:
+### 📦 📚 `ai-multimodal`
 
-```bash
-# Automatic invocation
-claude "How do I implement OAuth with Better Auth?"
+Process and generate multimedia content using Google Gemini API. Capabilities include analyze audio files (transcription with timestamps, summarization, speech understanding, music/sound analysis up to 9.5 hours), understand images (captioning, object detection, OCR, visual Q&A, segmentation), process videos (scene detection, Q&A, temporal analysis, YouTube URLs, up to 6 hours), extract from documents (PDF tables, forms, charts, diagrams, multi-page), generate images (text-to-image with Imagen 4, editing, composition, refinement), generate videos (text-to-video with Veo 3, 8-second clips with native audio). Use when working with audio/video files, analyzing images or screenshots, processing PDF documents, extracting structured data from media, creating images/videos from text prompts, or implementing multimodal AI features. Supports Gemini 3/2.5, Imagen 4, and Veo 3 models with context windows up to 2M tokens.
 
-# List all available skills
-ls .claude/skills/
-```
+**Location**: `.claude/skills/ai-multimodal/SKILL.md`
 
-Skills work seamlessly with slash commands:
+### `google-adk-python`
 
-```bash
-/plan "implement authentication with Better Auth"
-/cook "create Docker containers for the app"
-/design "create a landing page with shadcn/ui"
-```
+You are an expert guide for Google's Agent Development Kit (ADK) Python - an open-source, code-first toolkit for building, evaluating, and deploying AI agents.
 
----
+**Location**: `.claude/skills/google-adk-python/SKILL.md`
 
-## Gemini AI Skills
+## Backend Development
 
-Google Gemini-powered skills for AI-driven analysis and generation.
+### 📚 `backend-development`
 
-### Configuration
+Build robust backend systems with modern technologies (Node.js, Python, Go, Rust), frameworks (NestJS, FastAPI, Django), databases (PostgreSQL, MongoDB, Redis), APIs (REST, GraphQL, gRPC), authentication (OAuth 2.1, JWT), testing strategies, security best practices (OWASP Top 10), performance optimization, scalability patterns (microservices, caching, sharding), DevOps practices (Docker, Kubernetes, CI/CD), and monitoring. Use when designing APIs, implementing authentication, optimizing database queries, setting up CI/CD pipelines, handling security vulnerabilities, building microservices, or developing production-ready backend systems.
 
-All Gemini skills require a `GEMINI_API_KEY`. See [API Key Setup](#gemini-api-key-setup) below.
+**Location**: `.claude/skills/backend-development/SKILL.md`
 
-### gemini-audio
+### 📦 📚 `better-auth`
 
-**Audio analysis and speech generation using Gemini API**
+Implement authentication and authorization with Better Auth - a framework-agnostic TypeScript authentication framework. Features include email/password authentication with verification, OAuth providers (Google, GitHub, Discord, etc.), two-factor authentication (TOTP, SMS), passkeys/WebAuthn support, session management, role-based access control (RBAC), rate limiting, and database adapters. Use when adding authentication to applications, implementing OAuth flows, setting up 2FA/MFA, managing user sessions, configuring authorization rules, or building secure authentication systems for web applications.
 
-**Capabilities:**
-- Transcribe audio files (WAV, MP3, AAC, FLAC, OGG, AIFF)
-- Summarize audio content
-- Analyze specific time segments
-- Identify speakers and extract dialogue
-- Describe ambient sounds and music
-- Generate natural speech from text (TTS)
+**Location**: `.claude/skills/better-auth/SKILL.md`
 
-**Use Cases:**
-- "Transcribe this podcast and summarize key points"
-- "What is discussed from 02:30 to 05:15 in this meeting recording?"
-- "Generate speech: 'Welcome to our application'"
-- "Identify all speakers in this interview"
+### 📦 📚 `payment-integration`
 
-**Supported Formats:** Up to 9.5 hours of audio
+Implement payment integrations with SePay (Vietnamese payment gateway with VietQR, bank transfers, cards) and Polar (global SaaS monetization platform with subscriptions, usage-based billing, automated benefits). Use when integrating payment processing, implementing checkout flows, managing subscriptions, handling webhooks, processing bank transfers, generating QR codes, automating benefit delivery, or building billing systems. Supports authentication (API keys, OAuth2), product management, customer portals, tax compliance (Polar as MoR), and comprehensive SDK integrations (Node.js, PHP, Python, Go, Laravel, Next.js).
 
----
+**Location**: `.claude/skills/payment-integration/SKILL.md`
 
-### gemini-video-understanding
+## Database & Storage
 
-**Video analysis and understanding with Gemini API**
+### 📦 📚 `databases`
 
-**Capabilities:**
-- Analyze local video files or YouTube URLs
-- Describe video content with timestamps
-- Answer questions about specific scenes
-- Transcribe audio with visual context
-- Extract structured data from videos
-- Clip videos with start/end offsets
+Work with MongoDB (document database, BSON documents, aggregation pipelines, Atlas cloud) and PostgreSQL (relational database, SQL queries, psql CLI, pgAdmin). Use when designing database schemas, writing queries and aggregations, optimizing indexes for performance, performing database migrations, configuring replication and sharding, implementing backup and restore strategies, managing database users and permissions, analyzing query performance, or administering production databases.
 
-**Use Cases:**
-- "Describe what happens in this product demo video"
-- "What is shown from 01:00 to 02:30?"
-- "Transcribe the tutorial and include visual descriptions"
-- "Extract all product features mentioned in this video"
+**Location**: `.claude/skills/databases/SKILL.md`
 
-**Supported Formats:** 9 video formats, up to 6 hours (2M token context)
+## Development Tools
 
----
+### 📚 `claude-code`
 
-### gemini-document-processing
+Activate when users ask about Claude Code installation, slash commands (/cook, /plan, /fix, /test, /docs, /design, /git), creating/managing Agent Skills, configuring MCP servers, setting up hooks/plugins, IDE integration (VS Code, JetBrains), CI/CD workflows, enterprise deployment (SSO, RBAC, sandboxing), troubleshooting authentication/performance issues, or advanced features (extended thinking, caching, checkpointing).
 
-**PDF document processing with native vision**
+**Location**: `.claude/skills/claude-code/SKILL.md`
 
-**Capabilities:**
-- Extract text, images, diagrams, charts, and tables from PDFs
-- Answer questions about document content
-- Summarize documents
-- Convert PDFs to structured formats (JSON, Markdown)
-- Handle complex layouts and multi-column documents
+### 📦 📚 `docs-seeker`
 
-**Use Cases:**
-- "Extract all tables from this research paper"
-- "Summarize this legal document in bullet points"
-- "What are the main findings in this report?"
-- "Convert this PDF to markdown format"
+Search technical documentation using executable scripts to detect query type, fetch from llms.txt sources (context7.com), and analyze results. Use when user needs: (1) Topic-specific documentation (features/components/concepts), (2) Library/framework documentation, (3) GitHub repository analysis, (4) Documentation discovery with automated agent distribution strategy
 
-**Supported:** Multi-page PDFs with complex layouts
+**Location**: `.claude/skills/docs-seeker/SKILL.md`
 
----
+### 📦 📚 `mcp-management`
 
-### ai-multimodal
+Manage Model Context Protocol (MCP) servers - discover, analyze, and execute tools/prompts/resources from configured MCP servers. Use when working with MCP integrations, need to discover available MCP capabilities, filter MCP tools for specific tasks, execute MCP tools programmatically, access MCP prompts/resources, or implement MCP client functionality. Supports intelligent tool selection, multi-server management, and context-efficient capability discovery.
 
-**AI image generation using Gemini 2.5 Flash**
+**Location**: `.claude/skills/mcp-management/SKILL.md`
 
-**Capabilities:**
-- Generate high-quality images from text prompts
-- Control aspect ratios (1:1, 16:9, 9:16, 4:3, 3:4)
-- Text-to-image generation
-- Image editing and refinement
-- Multi-image composition
-- Iterative image improvement
+### 📦 📚 `repomix`
 
-**Use Cases:**
-- "Generate a serene mountain landscape at sunset"
-- "Create a modern logo for a tech startup"
-- "Design a futuristic city with flying cars"
-- "Generate a product mockup for our app"
+Package entire code repositories into single AI-friendly files using Repomix. Capabilities include pack codebases with customizable include/exclude patterns, generate multiple output formats (XML, Markdown, plain text), preserve file structure and context, optimize for AI consumption with token counting, filter by file types and directories, add custom headers and summaries. Use when packaging codebases for AI analysis, creating repository snapshots for LLM context, analyzing third-party libraries, preparing for security audits, generating documentation context, or evaluating unfamiliar codebases.
 
-**Output:** PNG images saved to `./docs/assets/`
+**Location**: `.claude/skills/repomix/SKILL.md`
 
----
+### 📦 `skill-creator`
 
-### ai-multimodal
+Guide for creating effective skills, adding skill references, skill scripts or optimizing existing skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, frameworks, libraries or plugins usage, or API and tool integrations.
 
-**Image analysis and vision capabilities**
+**Location**: `.claude/skills/skill-creator/SKILL.md`
 
-**Capabilities:**
-- Analyze single or multiple images
-- Object detection and segmentation
-- Visual question answering
-- Scene description and captioning
-- Image comparison and classification
-- OCR and text extraction
+## Frameworks & Platforms
 
-**Use Cases:**
-- "What objects are in this photo?"
-- "Compare these two product images"
-- "Extract text from this screenshot"
-- "Describe the composition of this design"
-- "Identify the brand in this image"
+### 📚 `mobile-development`
 
-**Supported Formats:** PNG, JPEG, WebP, HEIC, HEIF
+Build modern mobile applications with React Native, Flutter, Swift/SwiftUI, and Kotlin/Jetpack Compose. Covers mobile-first design principles, performance optimization (battery, memory, network), offline-first architecture, platform-specific guidelines (iOS HIG, Material Design), testing strategies, security best practices, accessibility, app store deployment, and mobile development mindset. Use when building mobile apps, implementing mobile UX patterns, optimizing for mobile constraints, or making native vs cross-platform decisions.
 
----
+**Location**: `.claude/skills/mobile-development/SKILL.md`
 
-### Gemini API Key Setup
+### 📦 📚 `shopify`
 
-Get your API key at: https://aistudio.google.com/apikey
+Build Shopify applications, extensions, and themes using GraphQL/REST APIs, Shopify CLI, Polaris UI components, and Liquid templating. Capabilities include app development with OAuth authentication, checkout UI extensions for customizing checkout flow, admin UI extensions for dashboard integration, POS extensions for retail, theme development with Liquid, webhook management, billing API integration, product/order/customer management. Use when building Shopify apps, implementing checkout customizations, creating admin interfaces, developing themes, integrating payment processing, managing store data via APIs, or extending Shopify functionality.
 
-Configure using one of these methods (priority from highest to lowest):
+**Location**: `.claude/skills/shopify/SKILL.md`
 
-```bash
-# 1. Environment variable (recommended for development)
-export GEMINI_API_KEY='your-api-key-here'
+### 📦 📚 `web-frameworks`
 
-# 2. Project root .env
-echo 'GEMINI_API_KEY=your-api-key-here' > .env
+Build modern full-stack web applications with Next.js (App Router, Server Components, RSC, PPR, SSR, SSG, ISR), Turborepo (monorepo management, task pipelines, remote caching, parallel execution), and RemixIcon (3100+ SVG icons in outlined/filled styles). Use when creating React applications, implementing server-side rendering, setting up monorepos with multiple packages, optimizing build performance and caching strategies, adding icon libraries, managing shared dependencies, or working with TypeScript full-stack projects.
 
-# 3. Claude configuration
-cp .claude/.env.example .claude/.env
-# Edit .claude/.env and add your key
+**Location**: `.claude/skills/web-frameworks/SKILL.md`
 
-# 4. Shared skills configuration
-cp .claude/skills/.env.example .claude/skills/.env
-# Edit .claude/skills/.env and add your key
+## Frontend & Design
 
-# 5. Individual skill directory
-cp .claude/skills/gemini-audio/.env.example .claude/skills/gemini-audio/.env
-# Edit and add your key
-```
+### 📚 `aesthetic`
 
----
+Create aesthetically beautiful interfaces following proven design principles. Use when building UI/UX, analyzing designs from inspiration sites, generating design images with ai-multimodal, implementing visual hierarchy and color theory, adding micro-interactions, or creating design documentation. Includes workflows for capturing and analyzing inspiration screenshots with chrome-devtools and ai-multimodal, iterative design image generation until aesthetic standards are met, and comprehensive design system guidance covering BEAUTIFUL (aesthetic principles), RIGHT (functionality/accessibility), SATISFYING (micro-interactions), and PEAK (storytelling) stages. Integrates with chrome-devtools, ai-multimodal, media-processing, ui-styling, and web-frameworks skills.
 
-## Development Framework Skills
+**Location**: `.claude/skills/aesthetic/SKILL.md`
 
-### better-auth
+### 📚 `frontend-design`
 
-**Framework-agnostic authentication for TypeScript**
+Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications, OR when they provide screenshots/images/designs to replicate or draw inspiration from. For screenshot inputs, extracts design guidelines first using ai-multimodal analysis, then implements code following those guidelines. Generates creative, polished code that avoids generic AI aesthetics.
 
-**Features:**
-- Email/password and OAuth 2.0 authentication
-- 2FA, passkeys, magic links, email OTP
-- Multi-tenant organization support
-- Session management
-- Works with any framework (Next.js, Nuxt, Svelte, Remix, etc.)
-- Database flexibility (SQLite, PostgreSQL, MySQL, MongoDB)
+**Location**: `.claude/skills/frontend-design/SKILL.md`
 
-**Use Cases:**
-- "Implement OAuth authentication with Google and GitHub"
-- "Add 2FA with authenticator apps"
-- "Set up organization-based multi-tenancy"
-- "Create magic link authentication"
+### `frontend-development`
 
----
+Frontend development guidelines for React/TypeScript applications. Modern patterns including Suspense, lazy loading, useSuspenseQuery, file organization with features directory, MUI v7 styling, TanStack Router, performance optimization, and TypeScript best practices. Use when creating components, pages, features, fetching data, styling, routing, or working with frontend code.
 
-### nextjs
+**Location**: `.claude/skills/frontend-development/SKILL.md`
 
-**Next.js React framework for production**
+### 📦 `mcp-builder`
 
-**Features:**
-- Server-side rendering (SSR) and static generation (SSG)
-- App Router and Pages Router
-- Server components and actions
-- API routes and middleware
-- Image and font optimization
-- Built-in TypeScript support
+Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
 
-**Use Cases:**
-- "Create a Next.js app with App Router"
-- "Implement server-side data fetching"
-- "Set up API routes for authentication"
-- "Optimize images and fonts"
+**Location**: `.claude/skills/mcp-builder/SKILL.md`
 
----
+### 📚 `threejs`
 
-### shadcn-ui
+Build immersive 3D web experiences with Three.js - WebGL/WebGPU library for scenes, cameras, geometries, materials, lights, animations, loaders, post-processing, shaders (including node-based TSL), compute, physics, VR/XR, and advanced rendering. Use when creating 3D visualizations, games, interactive graphics, data viz, product configurators, architectural walkthroughs, or WebGL/WebGPU applications. Covers OrbitControls, GLTF/FBX loading, PBR materials, shadow mapping, post-processing effects (bloom, SSAO, SSR), custom shaders, instancing, LOD, animation systems, and WebXR.
 
-**Beautiful, accessible UI components for React**
+**Location**: `.claude/skills/threejs/SKILL.md`
 
-**Features:**
-- 50+ customizable components
-- Built with Radix UI and Tailwind CSS
-- Dark mode support
-- TypeScript-first
-- Copy-paste component installation
-- Fully accessible (ARIA compliant)
+### 📦 📚 `ui-styling`
 
-**Use Cases:**
-- "Add a data table with sorting and filtering"
-- "Create a form with validation"
-- "Implement a dialog modal"
-- "Build a responsive navigation menu"
+Create beautiful, accessible user interfaces with shadcn/ui components (built on Radix UI + Tailwind), Tailwind CSS utility-first styling, and canvas-based visual designs. Use when building user interfaces, implementing design systems, creating responsive layouts, adding accessible components (dialogs, dropdowns, forms, tables), customizing themes and colors, implementing dark mode, generating visual designs and posters, or establishing consistent styling patterns across applications.
 
----
+**Location**: `.claude/skills/ui-styling/SKILL.md`
 
-### tailwindcss
+## Infrastructure & DevOps
 
-**Utility-first CSS framework**
+### 📦 📚 `devops`
 
-**Features:**
-- Rapid UI development with utility classes
-- Responsive design system
-- Dark mode support
-- Custom theme configuration
-- JIT (Just-In-Time) compilation
-- PurgeCSS for optimized builds
+Deploy and manage cloud infrastructure on Cloudflare (Workers, R2, D1, KV, Pages, Durable Objects, Browser Rendering), Docker containers, and Google Cloud Platform (Compute Engine, GKE, Cloud Run, App Engine, Cloud Storage). Use when deploying serverless functions to the edge, configuring edge computing solutions, managing Docker containers and images, setting up CI/CD pipelines, optimizing cloud infrastructure costs, implementing global caching strategies, working with cloud databases, or building cloud-native applications.
 
-**Use Cases:**
-- "Style this component with Tailwind"
-- "Create a responsive grid layout"
-- "Implement dark mode"
-- "Build a custom design system"
+**Location**: `.claude/skills/devops/SKILL.md`
 
----
+## Multimedia & Processing
 
-### remix-icon
+### 📦 📚 `chrome-devtools`
 
-**3,100+ open-source neutral-style icons**
+Browser automation, debugging, and performance analysis using Puppeteer CLI scripts. Use for automating browsers, taking screenshots, analyzing performance, monitoring network traffic, web scraping, form automation, and JavaScript debugging.
 
-**Features:**
-- Outlined and filled styles
-- Webfonts, SVG, React, Vue support
-- Consistent 24x24 grid system
-- Free for commercial use
-- Regular updates
+**Location**: `.claude/skills/chrome-devtools/SKILL.md`
 
-**Use Cases:**
-- "Add icons to navigation menu"
-- "Use social media icons"
-- "Implement file type icons"
-- "Add UI interaction icons"
+### 📦 `document-skills/docx`
 
----
+Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks
 
-## Infrastructure & DevOps Skills
+**Location**: `.claude/skills/document-skills/docx/SKILL.md`
 
-### docker
+### 📦 `document-skills/pdf`
 
-**Containerization platform**
+Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.
 
-**Features:**
-- Container creation and management
-- Multi-stage builds
-- Docker Compose orchestration
-- Volume and network management
-- Security best practices
-- Multi-platform builds
+**Location**: `.claude/skills/document-skills/pdf/SKILL.md`
 
-**Use Cases:**
-- "Containerize my Node.js application"
-- "Create a Docker Compose setup for dev environment"
-- "Optimize Docker image size"
-- "Set up PostgreSQL container with persistent data"
+### 📦 `document-skills/pptx`
 
----
+Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks
 
-### cloudflare
+**Location**: `.claude/skills/document-skills/pptx/SKILL.md`
 
-**Edge computing platform**
+### `document-skills/xlsx`
 
-**Features:**
-- Cloudflare Workers (serverless functions)
-- D1 (edge database)
-- R2 (object storage)
-- KV (key-value store)
-- Durable Objects
-- Pages (static sites)
+Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas
 
-**Use Cases:**
-- "Deploy a Worker to handle API requests"
-- "Set up D1 database with migrations"
-- "Store files in R2"
-- "Implement rate limiting with KV"
+**Location**: `.claude/skills/document-skills/xlsx/SKILL.md`
 
----
+### 📦 📚 `media-processing`
 
-### cloudflare-workers
+Process multimedia files with FFmpeg (video/audio encoding, conversion, streaming, filtering, hardware acceleration), ImageMagick (image manipulation, format conversion, batch processing, effects, composition), and RMBG (AI-powered background removal). Use when converting media formats, encoding videos with specific codecs (H.264, H.265, VP9), resizing/cropping images, removing backgrounds from images, extracting audio from video, applying filters and effects, optimizing file sizes, creating streaming manifests (HLS/DASH), generating thumbnails, batch processing images, creating composite images, or implementing media processing pipelines. Supports 100+ formats, hardware acceleration (NVENC, QSV), and complex filtergraphs.
 
-**Serverless JavaScript at the edge**
+**Location**: `.claude/skills/media-processing/SKILL.md`
 
-**Features:**
-- Global deployment (300+ cities)
-- Zero cold starts
-- Built-in TypeScript support
-- Wrangler CLI
-- Bindings (KV, D1, R2, Durable Objects)
-- WebSocket support
+## Utilities & Helpers
 
-**Use Cases:**
-- "Create an API endpoint at the edge"
-- "Implement request routing"
-- "Add caching logic"
-- "Handle form submissions"
+### 📚 `code-review`
 
----
+Use when receiving code review feedback (especially if unclear or technically questionable), when completing tasks or major features requiring review before proceeding, or before making any completion/success claims. Covers three practices - receiving feedback with technical rigor over performative agreement, requesting reviews via code-reviewer subagent, and verification gates requiring evidence before any status claims. Essential for subagent-driven development, pull requests, and preventing false completion claims.
 
-### cloudflare-r2
+**Location**: `.claude/skills/code-review/SKILL.md`
 
-**S3-compatible object storage with zero egress fees**
+### 📦 📚 `debugging`
 
-**Features:**
-- S3-compatible API
-- No egress charges
-- Public and private buckets
-- Workers integration
-- Lifecycle policies
-- CORS configuration
+Systematic debugging framework ensuring root cause investigation before fixes. Includes four-phase debugging process, backward call stack tracing, multi-layer validation, and verification protocols. Use when encountering bugs, test failures, unexpected behavior, performance issues, or before claiming work complete. Prevents random fixes, masks over symptoms, and false completion claims.
 
-**Use Cases:**
-- "Upload files to R2 from a Worker"
-- "Migrate from S3 to R2"
-- "Serve images from R2"
-- "Set up bucket CORS policies"
+**Location**: `.claude/skills/debugging/SKILL.md`
 
----
+### 📚 `planning`
 
-### cloudflare-browser-rendering
+Use when you need to plan technical solutions that are scalable, secure, and maintainable.
 
-**Headless browser automation API**
+**Location**: `.claude/skills/planning/SKILL.md`
 
-**Features:**
-- Puppeteer/Playwright support
-- Screenshot and PDF generation
-- Web scraping
-- E2E testing
-- REST API and Workers bindings
-- AI-powered automation
+### 📚 `problem-solving`
 
-**Use Cases:**
-- "Take screenshots of web pages"
-- "Generate PDF reports"
-- "Scrape dynamic websites"
-- "Automate browser testing"
+Apply systematic problem-solving techniques for complexity spirals (simplification cascades), innovation blocks (collision-zone thinking), recurring patterns (meta-pattern recognition), assumption constraints (inversion exercise), scale uncertainty (scale game), and dispatch when stuck. Techniques derived from Microsoft Amplifier project patterns adapted for immediate application.
 
----
+**Location**: `.claude/skills/problem-solving/SKILL.md`
 
-### gcloud
+### `research`
 
-**Google Cloud SDK (gcloud CLI)**
+Use when you need to research, analyze, and plan technical solutions that are scalable, secure, and maintainable.
 
-**Features:**
-- Manage GCP resources
-- Deploy applications
-- Configure services
-- Authenticate and authorize
-- Script automation
-- CI/CD integration
+**Location**: `.claude/skills/research/SKILL.md`
 
-**Use Cases:**
-- "Deploy to Google App Engine"
-- "Manage Compute Engine instances"
-- "Configure Cloud Storage buckets"
-- "Set up Cloud Functions"
+### 📦 📚 `sequential-thinking`
 
----
+Apply structured, reflective problem-solving for complex tasks requiring multi-step analysis, revision capability, and hypothesis verification. Use for complex problem decomposition, adaptive planning, analysis needing course correction, problems with unclear scope, multi-step solutions, and hypothesis-driven work.
 
-## Design & Multimedia Skills
-
-### canvas-design
-
-**Visual art and design creation**
-
-**Features:**
-- Create posters, art, and designs
-- Design philosophy-driven approach
-- PDF and PNG output
-- Original visual designs
-- Aesthetic movements
-- Minimal text, maximum visual impact
-
-**Use Cases:**
-- "Create a poster for a music festival"
-- "Design a minimalist art piece"
-- "Generate a brand style guide"
-- "Create visual branding materials"
-
----
-
-### chrome-devtools
-
-**Browser automation with Puppeteer**
-
-**Features:**
-- Browser automation
-- Screenshot capture
-- Performance analysis
-- Network monitoring
-- Web scraping
-- Form automation
-- JavaScript debugging
-
-**Use Cases:**
-- "Automate login flow testing"
-- "Capture performance metrics"
-- "Monitor network requests"
-- "Extract data from web pages"
-
----
-
-### imagemagick
-
-**Advanced image processing**
-
-**Features:**
-- Format conversion
-- Resize and crop
-- Apply effects and filters
-- Batch processing
-- Composite images
-- Color manipulation
-- Metadata editing
-
-**Use Cases:**
-- "Convert PNG to WebP"
-- "Resize images to 800x600"
-- "Apply watermark to images"
-- "Batch process product photos"
-
----
-
-### ffmpeg
-
-**Multimedia framework**
-
-**Features:**
-- Video/audio encoding and conversion
-- Format transcoding
-- Streaming
-- Filtering and effects
-- Codec optimization
-- Metadata manipulation
-
-**Use Cases:**
-- "Convert video to different formats"
-- "Extract audio from video"
-- "Create video thumbnails"
-- "Compress videos for web"
-
----
-
-## Database & Storage Skills
-
-### mongodb
-
-**Document database platform**
-
-**Features:**
-- CRUD operations
-- Aggregation pipelines
-- Indexing and performance
-- Replication and sharding
-- Atlas cloud database
-- Full-text search
-- 15+ official drivers
-
-**Use Cases:**
-- "Design MongoDB schema"
-- "Write aggregation pipeline"
-- "Optimize query performance"
-- "Set up replica set"
-
----
-
-### postgresql-psql
-
-**PostgreSQL interactive terminal**
-
-**Features:**
-- Execute SQL queries
-- Database and table management
-- Connection configuration
-- Output formatting
-- Script automation
-- Transaction management
-- Advanced psql features
-
-**Use Cases:**
-- "Connect to PostgreSQL database"
-- "Execute complex queries"
-- "Export data to CSV"
-- "Manage database schema"
-
----
-
-## Developer Tools Skills
-
-### mcp-builder
-
-**Build Model Context Protocol servers**
-
-**Features:**
-- Create MCP servers in Python (FastMCP) or Node.js
-- Integrate external APIs and services
-- Tool design patterns
-- Best practices for LLM integration
-- Testing and debugging
-
-**Use Cases:**
-- "Create MCP server for GitHub API"
-- "Build custom tool for data processing"
-- "Integrate external service with Claude"
-- "Design tool interfaces for LLMs"
-
----
-
-### repomix
-
-**Pack repositories into AI-friendly files**
-
-**Features:**
-- Repository packaging
-- AI-optimized output
-- Codebase analysis
-- Security audits
-- Third-party library analysis
-- Git integration
-
-**Use Cases:**
-- "Package codebase for AI analysis"
-- "Create repository snapshot"
-- "Analyze third-party library"
-- "Prepare code for security audit"
-
----
-
-### docs-seeker
-
-**Search technical documentation**
-
-**Features:**
-- Search llms.txt standard docs
-- GitHub repository analysis via Repomix
-- Parallel documentation exploration
-- Multiple source aggregation
-- Latest docs discovery
-
-**Use Cases:**
-- "Find latest React documentation"
-- "Search Next.js API reference"
-- "Analyze GitHub repository structure"
-- "Get docs from multiple sources"
-
----
-
-### skill-creator
-
-**Create new Claude skills**
-
-**Features:**
-- Skill template generation
-- Best practices guidance
-- Documentation structure
-- Testing workflows
-- Publishing guidelines
-
-**Use Cases:**
-- "Create skill for custom framework"
-- "Build domain-specific skill"
-- "Document internal tools"
-- "Package team knowledge"
-
----
-
-## Utility Skills
-
-### debugging
-
-**Issue analysis and debugging**
-
-**Features:**
-- Error analysis
-- Log investigation
-- Performance profiling
-- Root cause analysis
-- Fix recommendations
-
-**Use Cases:**
-- "Debug memory leak"
-- "Analyze crash logs"
-- "Profile slow queries"
-- "Investigate connection errors"
-
----
-
-### problem-solving
-
-**General problem-solving approaches**
-
-**Features:**
-- Structured problem analysis
-- Solution brainstorming
-- Trade-off evaluation
-- Decision frameworks
-- Implementation strategies
-
-**Use Cases:**
-- "Choose between architecture options"
-- "Evaluate technology tradeoffs"
-- "Design solution approach"
-- "Analyze requirements"
-
----
-
-### google-adk-python
-
-**Google AI Development Kit for Python**
-
-**Features:**
-- Access to Google AI models
-- Python SDK integration
-- Model fine-tuning
-- Prompt engineering
-- Multi-modal capabilities
-
-**Use Cases:**
-- "Integrate Google AI models"
-- "Fine-tune models for specific tasks"
-- "Process images with AI"
-- "Build AI-powered features"
-
----
-
-### shopify
-
-**Shopify app and theme development**
-
-**Features:**
-- Shopify app development
-- Theme customization with Liquid
-- GraphQL/REST APIs
-- Checkout extensions
-- Admin UI extensions
-- Polaris design system
-
-**Use Cases:**
-- "Build Shopify app"
-- "Customize theme templates"
-- "Create checkout extension"
-- "Implement admin UI"
-
----
-
-### turborepo
-
-**Monorepo build system**
-
-**Features:**
-- High-performance builds
-- Intelligent caching
-- Task pipelines
-- Remote caching
-- Incremental builds
-- Parallel execution
-
-**Use Cases:**
-- "Set up monorepo structure"
-- "Configure build pipelines"
-- "Optimize build performance"
-- "Share code between packages"
-
----
-
-## Creating Custom Skills
-
-Want to create your own skill? Use the `skill-creator` skill:
-
-```bash
-claude "Create a skill for [technology/framework]"
-```
-
-Or manually create a skill:
-
-1. Create directory: `.claude/skills/my-skill/`
-2. Add `SKILL.md` with frontmatter:
-   ```markdown
-   ---
-   name: my-skill
-   description: What this skill does and when to use it
-   ---
-
-   # My Skill
-
-   [Documentation content...]
-   ```
-3. Add supporting scripts in `scripts/` directory (optional)
-4. Create `.env.example` for configuration (optional)
-
-## Skill Best Practices
-
-### For Users
-- Let Claude auto-detect which skill to use based on context
-- Provide clear, specific requests
-- Combine skills for complex tasks
-- Check skill documentation for advanced features
-
-### For Skill Creators
-- Write clear "When to Use" sections
-- Provide practical examples
-- Include code snippets
-- Document configuration requirements
-- Follow the skill template structure
-
----
-
-## Need Help?
-
-- **List skills:** `ls .claude/skills/`
-- **View skill:** `cat .claude/skills/[skill-name]/SKILL.md`
-- **Get help:** Ask Claude "How do I use the [skill-name] skill?"
-- **Create skill:** Use the `skill-creator` skill
-
----
-
-For more information, see:
-- [Commands Reference](./COMMANDS.md)
-- [Project Documentation](../docs/)
-- [CLAUDE.md](../CLAUDE.md)
+**Location**: `.claude/skills/sequential-thinking/SKILL.md`
