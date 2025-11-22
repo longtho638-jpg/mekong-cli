@@ -1,3 +1,10 @@
+## [1.15.2](https://github.com/claudekit/claudekit-engineer/compare/v1.15.1...v1.15.2) (2025-11-22)
+
+
+### 🐞 Bug Fixes
+
+* disable modularization hook ([5aecea7](https://github.com/claudekit/claudekit-engineer/commit/5aecea7afe509823dc7633e946ae1d0087c271c4))
+
 ## [1.15.1](https://github.com/claudekit/claudekit-engineer/compare/v1.15.0...v1.15.1) (2025-11-21)
 
 
