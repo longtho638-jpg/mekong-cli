@@ -1,17 +1,13 @@
 /**
  * Semantic Release Configuration
  *
- * Dynamically loads configuration based on the current branch:
+ * Dynamically provides configuration based on the current branch:
  * - dev branch: Uses beta release configuration
  * - main branch: Uses production release configuration
  */
 
-const fs = require('fs');
-const path = require('path');
-
 // Determine the current branch
-// GitHub Actions provides: GITHUB_REF (refs/heads/branch-name)
-// We need to extract just the branch name from refs/heads/branch-name
+// GitHub Actions provides: GITHUB_REF_NAME (just the branch name)
 const currentBranch = process.env.GITHUB_REF_NAME ||
                      process.env.GIT_BRANCH ||
                      (process.env.GITHUB_REF && process.env.GITHUB_REF.replace('refs/heads/', '')) ||
@@ -20,21 +16,160 @@ const currentBranch = process.env.GITHUB_REF_NAME ||
                        .toString()
                        .trim();
 
-// Load the appropriate configuration
-let configFile;
-if (currentBranch === 'dev') {
-  configFile = '.releaserc.beta-config.json';
-} else {
-  configFile = '.releaserc.production.json';
-}
-
-const configPath = path.join(__dirname, configFile);
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-
-// Log to stderr so it appears in CI logs
 console.error(`[semantic-release config] Branch: ${currentBranch}`);
-console.error(`[semantic-release config] Config file: ${configFile}`);
-console.error(`[semantic-release config] GITHUB_REF_NAME: ${process.env.GITHUB_REF_NAME}`);
-console.error(`[semantic-release config] GITHUB_REF: ${process.env.GITHUB_REF}`);
+
+// Beta release configuration
+const betaConfig = {
+  branches: [
+    {
+      name: 'dev',
+      prerelease: 'beta'
+    }
+  ],
+  plugins: [
+    [
+      '@semantic-release/commit-analyzer',
+      {
+        preset: 'conventionalcommits',
+        releaseRules: [
+          { type: 'docs', scope: 'README', release: 'patch' },
+          { type: 'refactor', release: 'patch' },
+          { type: 'style', release: 'patch' }
+        ]
+      }
+    ],
+    [
+      '@semantic-release/release-notes-generator',
+      {
+        preset: 'conventionalcommits',
+        presetConfig: {
+          types: [
+            { type: 'feat', section: '🚀 Features' },
+            { type: 'fix', section: '🐞 Bug Fixes' },
+            { type: 'docs', section: '📚 Documentation' },
+            { type: 'style', section: '💄 Styles' },
+            { type: 'refactor', section: '♻️ Code Refactoring' },
+            { type: 'perf', section: '⚡ Performance Improvements' },
+            { type: 'test', section: '✅ Tests' },
+            { type: 'build', section: '🏗️ Build System' },
+            { type: 'ci', section: '👷 CI' }
+          ]
+        }
+      }
+    ],
+    [
+      '@semantic-release/changelog',
+      {
+        changelogFile: 'CHANGELOG.md'
+      }
+    ],
+    [
+      '@semantic-release/npm',
+      {
+        npmPublish: false
+      }
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node scripts/prepare-release-assets.cjs ${nextRelease.version}'
+      }
+    ],
+    [
+      '@semantic-release/github',
+      {
+        assets: [
+          { path: 'CHANGELOG.md', label: 'Changelog' },
+          { path: 'dist/claudekit-engineer.zip', label: 'ClaudeKit Engineer Package (Beta)' }
+        ],
+        prerelease: true
+      }
+    ],
+    [
+      '@semantic-release/git',
+      {
+        assets: ['CHANGELOG.md', 'package.json', 'package-lock.json', '.claude/metadata.json'],
+        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
+      }
+    ]
+  ]
+};
+
+// Production release configuration
+const productionConfig = {
+  branches: ['main'],
+  plugins: [
+    [
+      '@semantic-release/commit-analyzer',
+      {
+        preset: 'conventionalcommits',
+        releaseRules: [
+          { type: 'docs', scope: 'README', release: 'patch' },
+          { type: 'refactor', release: 'patch' },
+          { type: 'style', release: 'patch' }
+        ]
+      }
+    ],
+    [
+      '@semantic-release/release-notes-generator',
+      {
+        preset: 'conventionalcommits',
+        presetConfig: {
+          types: [
+            { type: 'feat', section: '🚀 Features' },
+            { type: 'fix', section: '🐞 Bug Fixes' },
+            { type: 'docs', section: '📚 Documentation' },
+            { type: 'style', section: '💄 Styles' },
+            { type: 'refactor', section: '♻️ Code Refactoring' },
+            { type: 'perf', section: '⚡ Performance Improvements' },
+            { type: 'test', section: '✅ Tests' },
+            { type: 'build', section: '🏗️ Build System' },
+            { type: 'ci', section: '👷 CI' }
+          ]
+        }
+      }
+    ],
+    [
+      '@semantic-release/changelog',
+      {
+        changelogFile: 'CHANGELOG.md'
+      }
+    ],
+    [
+      '@semantic-release/npm',
+      {
+        npmPublish: false
+      }
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node scripts/prepare-release-assets.cjs ${nextRelease.version}'
+      }
+    ],
+    [
+      '@semantic-release/github',
+      {
+        assets: [
+          { path: 'CHANGELOG.md', label: 'Changelog' },
+          { path: 'dist/claudekit-engineer.zip', label: 'ClaudeKit Engineer Package' }
+        ]
+      }
+    ],
+    [
+      '@semantic-release/git',
+      {
+        assets: ['CHANGELOG.md', 'package.json', 'package-lock.json', '.claude/metadata.json'],
+        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
+      }
+    ]
+  ]
+};
+
+// Select and export the appropriate configuration
+const config = currentBranch === 'dev' ? betaConfig : productionConfig;
+
+console.error(`[semantic-release config] Using ${currentBranch === 'dev' ? 'BETA' : 'PRODUCTION'} config`);
+console.error(`[semantic-release config] Branches: ${JSON.stringify(config.branches)}`);
 
 module.exports = config;
