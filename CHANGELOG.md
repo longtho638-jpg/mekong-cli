@@ -1,3 +1,70 @@
+## [1.15.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.14.10...v1.15.0-beta.1) (2025-11-22)
+
+
+### 🚀 Features
+
+* `dev-rules-reminder` hook (fully tested) ([d335aee](https://github.com/claudekit/claudekit-engineer/commit/d335aee82d3163148d0965ca52650201416e46ad))
+* **install:** add comprehensive dependency installation for all skills ([8a8cbc5](https://github.com/claudekit/claudekit-engineer/commit/8a8cbc533411d9366e3ed58efc865a840da7d283))
+* **media-processing:** add comprehensive RMBG integration and automated installation scripts ([f4144f6](https://github.com/claudekit/claudekit-engineer/commit/f4144f60babf1261226f99cb459b299615c3f110))
+* new `modularization` hook with development rules reminders for maintainable codebase ✨ ([dec7715](https://github.com/claudekit/claudekit-engineer/commit/dec771534b1a764439fc6922634d7380d969d946))
+
+
+### 🐞 Bug Fixes
+
+* `scout-block` hook blocks build commands ([920d526](https://github.com/claudekit/claudekit-engineer/commit/920d52645d880e8c603473aa37e592090eeaaa4a))
+* **ci:** correct config file priority for dynamic loading ([fdafbb0](https://github.com/claudekit/claudekit-engineer/commit/fdafbb08ecfbb97aa5509873f8a687c0e232d34f))
+* **ci:** embed config directly in .releaserc.cjs ([6845dc6](https://github.com/claudekit/claudekit-engineer/commit/6845dc63ba2a31e312f879f3210d516a23ad7de4))
+* **ci:** include main branch in beta config ([0dfed73](https://github.com/claudekit/claudekit-engineer/commit/0dfed73f7b3f3bcf5073de91fb02bfdda2072919))
+* **ci:** use dynamic config loader for semantic-release ([ef21662](https://github.com/claudekit/claudekit-engineer/commit/ef216628e32845ecbca7edac4b7c318b0e88054c))
+* disable modularization hook ([5aecea7](https://github.com/claudekit/claudekit-engineer/commit/5aecea7afe509823dc7633e946ae1d0087c271c4))
+* enhance `dev-rules-reminder` hook ([bd0b059](https://github.com/claudekit/claudekit-engineer/commit/bd0b059abc71466a92ed31e5a16bba01d22a3678))
+* **frontend-design:** add mandatory screenshot-to-code workflow ([d764800](https://github.com/claudekit/claudekit-engineer/commit/d764800164275290568bc5f7244ead98afffde8d))
+* **husky:** resolve PATH issue for npx command in git hooks ([f89d148](https://github.com/claudekit/claudekit-engineer/commit/f89d148650a2ef132abdda36b5368ad0f07a54ac))
+* **install:** correct google-genai import check ([15623cf](https://github.com/claudekit/claudekit-engineer/commit/15623cfe42f80e653f01a4b7b7db274b7e74611d))
+* **scout-block:** use fail-open approach for JSON parsing errors ([9e8e3fc](https://github.com/claudekit/claudekit-engineer/commit/9e8e3fc5f49f1e1f4ed80143144cc43a50ee3fd9))
+* skills installation issue on windows ([8d3ff8e](https://github.com/claudekit/claudekit-engineer/commit/8d3ff8e4e484a9f308f01bd3e4e54956535fd213))
+* stop creating random markdown files ([8c8ae60](https://github.com/claudekit/claudekit-engineer/commit/8c8ae60c0d6da46054c042dbbc1f94919f3bd6ff))
+
+
+### 📚 Documentation
+
+* **env:** enhance .env.example with hierarchy docs and API key examples ([136b9f5](https://github.com/claudekit/claudekit-engineer/commit/136b9f547f401d236f001fc8ee0093cba03fd874))
+* improve .env.example ([cdf14e7](https://github.com/claudekit/claudekit-engineer/commit/cdf14e736d78a55cf73b1f91c6107184059d2e00))
+* **release:** add JSON schema to semantic-release configs ([2299428](https://github.com/claudekit/claudekit-engineer/commit/22994285c626aead8f15357eac001b6f5a52f0bb))
+* update commands and skills catalogs ([1937363](https://github.com/claudekit/claudekit-engineer/commit/19373635f4d26f50b9fa23aa384a3da1a1148032))
+
+
+### ♻️ Code Refactoring
+
+* **frontend-design:** optimize skill with progressive disclosure ([6c9ab37](https://github.com/claudekit/claudekit-engineer/commit/6c9ab377e617d8a4be9b2ba368433fed27958397))
+* **frontend-design:** split ai-multimodal integration into progressive disclosure modules ([2c83039](https://github.com/claudekit/claudekit-engineer/commit/2c830395debcfddc4c3818fb74d9331bf5e6df65))
+* **media-processing:** optimize skill docs with progressive disclosure pattern ([68e9dcb](https://github.com/claudekit/claudekit-engineer/commit/68e9dcbcdffc361d1d2ca869330541569a4177aa))
+* migrate command/skill data to YAML format and enhance catalog generation ([5995159](https://github.com/claudekit/claudekit-engineer/commit/5995159943e77dc57988a2ac47ed8718204138a4))
+
+
+### ⚡ Performance Improvements
+
+* enhance `skill-creator` skill ([40a663f](https://github.com/claudekit/claudekit-engineer/commit/40a663ff4fa54eb26d4e5a79fd0ca5ac6f41ef0a))
+* enhance debugging skills ([fa54ca4](https://github.com/claudekit/claudekit-engineer/commit/fa54ca463cf49e0703c2aac9035a39830d4c798b))
+* enhance env vars resolve in `ai-multimodal` skills ([4e0dbe6](https://github.com/claudekit/claudekit-engineer/commit/4e0dbe6994134a6d8be147b9cda31ed68b3baacd))
+* enhance plan organization rules ([dc588a2](https://github.com/claudekit/claudekit-engineer/commit/dc588a2878c34e5e65411625d2f5d0e632b7a021))
+* generate catalogs and resolve env scripts ([24f5a57](https://github.com/claudekit/claudekit-engineer/commit/24f5a576f645af3b556fc582cbd83eadf4e496b0))
+* improve skill commands ([33f4677](https://github.com/claudekit/claudekit-engineer/commit/33f4677bba77a2e057cad702ed6bbc07f4b340d3))
+* **skill:** optimize ai-multimodal docs for token efficiency ([cd090ab](https://github.com/claudekit/claudekit-engineer/commit/cd090ab9466b89023e15082a70e283b71735cbec))
+* **skill:** optimize claude-code skill for token efficiency ([b9068ff](https://github.com/claudekit/claudekit-engineer/commit/b9068ff27a954106927e4a1969ebadc5299574c0))
+* use gemini 3 models in `ai-multimodal` skills ([dac9f0d](https://github.com/claudekit/claudekit-engineer/commit/dac9f0d226a6087384d3277d5a8a5c96fd3b7f84))
+
+
+### ✅ Tests
+
+* add tests for scout block hook ([d2323f3](https://github.com/claudekit/claudekit-engineer/commit/d2323f332c0140d69c432ccb7aa95b528a5f573e))
+
+
+### 👷 CI
+
+* **release:** add beta release workflow with semantic-release ([2efeb6c](https://github.com/claudekit/claudekit-engineer/commit/2efeb6c18a9d7f735b18b71dfed16d246cdbae9d))
+* **release:** add logging to semantic-release config loader ([6313b35](https://github.com/claudekit/claudekit-engineer/commit/6313b35ecbe403245464e0e2b7a78dbf2394d888))
+
 ## [1.14.10](https://github.com/claudekit/claudekit-engineer/compare/v1.14.9...v1.14.10) (2025-11-18)
 
 
