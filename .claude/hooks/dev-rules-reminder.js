@@ -10,7 +10,8 @@
  *   0 - Success (non-blocking, allows continuation)
  */
 
-const fs = require('fs');
+import fs from 'fs';
+import os from 'os';
 
 /**
  * Check if reminder was recently injected by scanning transcript
@@ -58,7 +59,7 @@ async function main() {
     }
 
     const memUsed = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
-    const memTotal = Math.round(require('os').totalmem() / 1024 / 1024);
+    const memTotal = Math.round(os.totalmem() / 1024 / 1024);
     const memPercent = Math.round((memUsed / memTotal) * 100);
 
     const cpuUsage = Math.round((process.cpuUsage().user / 1000000) * 100);
