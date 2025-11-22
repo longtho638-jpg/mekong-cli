@@ -23,9 +23,9 @@ const currentBranch = process.env.GITHUB_REF_NAME ||
 // Load the appropriate configuration
 let configFile;
 if (currentBranch === 'dev') {
-  configFile = '.releaserc.beta.json';
+  configFile = '.releaserc.beta-config.json';
 } else {
-  configFile = '.releaserc.json';
+  configFile = '.releaserc.production.json';
 }
 
 const configPath = path.join(__dirname, configFile);
