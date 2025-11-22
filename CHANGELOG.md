@@ -1,3 +1,17 @@
+## [1.16.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.4...v1.16.0-beta.5) (2025-11-22)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** convert dev-rules-reminder to ES module syntax ([c4b12ad](https://github.com/claudekit/claudekit-engineer/commit/c4b12add0ecdf4ba5ab1da3ca1ff8b37242475cd))
+* **hooks:** convert scout-block to ES module syntax ([27a3d39](https://github.com/claudekit/claudekit-engineer/commit/27a3d39cd6470502868cadc74b14e25ebd8fe79e))
+
+
+### 📚 Documentation
+
+* **agents:** enhance git-manager & add fullstack-developer specs ([4b751aa](https://github.com/claudekit/claudekit-engineer/commit/4b751aa6f4384788c8d9f339c266d4a34b39de6e))
+* **commands:** add parallel execution definitions ([5eff2b2](https://github.com/claudekit/claudekit-engineer/commit/5eff2b2a16f99374d22061afdb157a286414df94))
+
 ## [1.16.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.3...v1.16.0-beta.4) (2025-11-22)
 
 
