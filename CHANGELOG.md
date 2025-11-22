@@ -1,3 +1,10 @@
+## [1.16.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.1...v1.16.0-beta.2) (2025-11-22)
+
+
+### 🚀 Features
+
+* **ci:** use Discord embeds for consistent release notifications ([380d03b](https://github.com/claudekit/claudekit-engineer/commit/380d03beb977def325c4e904294f69561b2c2605))
+
 ## [1.16.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.15.2...v1.16.0-beta.1) (2025-11-22)
 
 
