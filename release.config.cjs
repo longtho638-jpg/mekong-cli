@@ -10,8 +10,11 @@ const fs = require('fs');
 const path = require('path');
 
 // Determine the current branch
+// GitHub Actions provides: GITHUB_REF (refs/heads/branch-name)
+// We need to extract just the branch name from refs/heads/branch-name
 const currentBranch = process.env.GITHUB_REF_NAME ||
                      process.env.GIT_BRANCH ||
+                     (process.env.GITHUB_REF && process.env.GITHUB_REF.replace('refs/heads/', '')) ||
                      require('child_process')
                        .execSync('git rev-parse --abbrev-ref HEAD')
                        .toString()
@@ -28,7 +31,10 @@ if (currentBranch === 'dev') {
 const configPath = path.join(__dirname, configFile);
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
-console.log(`[semantic-release] Loading configuration for branch: ${currentBranch}`);
-console.log(`[semantic-release] Using config file: ${configFile}`);
+// Log to stderr so it appears in CI logs
+console.error(`[semantic-release config] Branch: ${currentBranch}`);
+console.error(`[semantic-release config] Config file: ${configFile}`);
+console.error(`[semantic-release config] GITHUB_REF_NAME: ${process.env.GITHUB_REF_NAME}`);
+console.error(`[semantic-release config] GITHUB_REF: ${process.env.GITHUB_REF}`);
 
 module.exports = config;
