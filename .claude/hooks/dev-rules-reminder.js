@@ -79,6 +79,8 @@ async function main() {
       `## Rules`,
       `- Read and follow development rules: "./.claude/workflows/development-rules.md"`,
       `- Read and follow documentation management: "./.claude/workflows/documentation-management.md"`,
+      `- Markdown files are organized in: Plans → ./plans/, Docs → ./docs/`,
+      `- IMPORTANT: DO NOT create markdown files out of ./plans/ or ./docs/ UNLESS the user explicitly requests it.`,
       `- Activate skills: Run \`python .claude/scripts/generate_catalogs.py --skills\` to generate skills catalog and analyze it, then activate the relevant skills that are needed for the task during the process.`,
       `- When skills' scripts are failed to execute, always fix them and run again, repeat until success.`,
       `- Follow **YANGI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)** principles`,
@@ -93,8 +95,7 @@ async function main() {
       `- Use kebab-case naming with descriptive names, it's fine if the file name is long because this ensures file names are self-documenting for LLM tools (Grep, Glob)`,
       `- Write descriptive code comments`,
       `- After modularization, continue with main task`,
-      `- Markdown files don't need to be modularized`,
-      `- Markdown files are organized in: Plans → ./plans/, Docs → ./docs/`,
+      `- When not to modularize: Markdown files, plain text files, bash scripts, configuration files, environment variables files, etc.`,
       `- IMPORTANT: Include these considerations when prompting subagents to perform tasks.`,
     ].join('\n');
 
