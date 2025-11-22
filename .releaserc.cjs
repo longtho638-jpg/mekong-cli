@@ -19,8 +19,10 @@ const currentBranch = process.env.GITHUB_REF_NAME ||
 console.error(`[semantic-release config] Branch: ${currentBranch}`);
 
 // Beta release configuration
+// NOTE: semantic-release requires at least one non-prerelease branch
 const betaConfig = {
   branches: [
+    'main',  // Regular release branch (required even in beta config)
     {
       name: 'dev',
       prerelease: 'beta'
