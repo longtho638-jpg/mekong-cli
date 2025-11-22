@@ -2,6 +2,14 @@
 
 Centralized utility scripts for Claude Code skills.
 
+## Installation
+
+Install required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## resolve_env.py
 
 Centralized environment variable resolver that follows Claude Code's hierarchy.
@@ -108,3 +116,33 @@ python ~/.claude/scripts/resolve_env.py TEST_VAR --verbose
 # Test with skill context
 python ~/.claude/scripts/resolve_env.py GEMINI_API_KEY --skill ai-multimodal --find-all
 ```
+
+## generate_catalogs.py
+
+Generate YAML catalogs from command and skill data files.
+
+### Usage
+
+```bash
+# Generate both catalogs (default)
+python .claude/scripts/generate_catalogs.py
+
+# Generate only skills catalog
+python .claude/scripts/generate_catalogs.py --skills
+
+# Generate only commands catalog
+python .claude/scripts/generate_catalogs.py --commands
+
+# View help
+python .claude/scripts/generate_catalogs.py --help
+```
+
+### Input Files
+
+- `.claude/scripts/commands_data.yaml` - Source data for commands
+- `.claude/scripts/skills_data.yaml` - Source data for skills
+
+### Output Files
+
+- `guide/COMMANDS.yaml` - Generated commands catalog
+- `guide/SKILLS.yaml` - Generated skills catalog

@@ -57,6 +57,13 @@ async function main() {
       process.exit(0);
     }
 
+    const memUsed = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
+    const memTotal = Math.round(require('os').totalmem() / 1024 / 1024);
+    const memPercent = Math.round((memUsed / memTotal) * 100);
+
+    const cpuUsage = Math.round((process.cpuUsage().user / 1000000) * 100);
+    const cpuSystem = Math.round((process.cpuUsage().system / 1000000) * 100);
+
     const reminder = [
       `## Current environment`,
       `- Date time: ${new Date().toLocaleString()}`,
@@ -65,16 +72,20 @@ async function main() {
       `- OS: ${process.platform}`,
       `- User: ${process.env.USERNAME}`,
       `- Locale: ${process.env.LANG}`,
-      `- Memory usage: ${process.memoryUsage().heapUsed / 1024 / 1024} MB`,
-      `- CPU usage: ${process.cpuUsage().user / 1024 / 1024} MB`,
+      `- Memory usage: ${memUsed}MB/${memTotal}MB (${memPercent}%)`,
+      `- CPU usage: ${cpuUsage}% user / ${cpuSystem}% system`,
+      `- Include these information when delegating tasks to subagents.`,
       ``,
       `## Rules`,
       `- Development rules: "./.claude/workflows/development-rules.md"`,
       `- Documentation management: "./.claude/workflows/documentation-management.md"`,
       `- Ensure token consumption efficiency while maintaining high quality.`,
-      `- Analyze the skills catalog and activate the relevant skills that are needed for the task during the process.`,
+      `- Activate skills: Run \`python .claude/scripts/generate_catalogs.py --skills\` to generate skills catalog and analyze it, then activate the relevant skills that are needed for the task during the process.`,
       `- Check existing modules before creating new`,
       `- YAGNI, KISS, DRY principles`,
+      `- Sacrifice grammar for the sake of concision when writing reports.`,
+      `- In reports, list any unresolved questions at the end, if any.`,
+      `- Include these rules when delegating tasks to subagents.`,
       ``,
       `## **[IMPORTANT] Consider Modularization:**`,
       `- Analyze logical separation boundaries (functions, classes, concerns)`,
@@ -83,6 +94,7 @@ async function main() {
       `- After modularization, continue with main task`,
       `- Markdown files don't need to be modularized`,
       `- Markdown files are organized in: Plans → ./plans/, Docs → ./docs/`,
+      `- Include these reminders when delegating tasks to subagents.`,
     ].join('\n');
 
     console.log(reminder);

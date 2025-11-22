@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """Generate updated command and skill catalogs."""
 
+import argparse
+import sys
 import yaml
 from pathlib import Path
 from datetime import datetime
+
+# Ensure UTF-8 output on Windows
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def load_yaml(path):
     return yaml.safe_load(Path(path).read_text())
@@ -97,13 +104,23 @@ def generate_skills_yaml():
 
     return yaml.dump(catalog, sort_keys=False, allow_unicode=True, default_flow_style=False)
 
-# Generate catalogs
-commands_yaml = generate_commands_yaml()
-skills_yaml = generate_skills_yaml()
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Generate command and skill catalogs')
+    parser.add_argument('--skills', action='store_true', help='Generate only skills catalog')
+    parser.add_argument('--commands', action='store_true', help='Generate only commands catalog')
+    args = parser.parse_args()
 
-# Save
-Path('guide/COMMANDS.yaml').write_text(commands_yaml)
-Path('guide/SKILLS.yaml').write_text(skills_yaml)
+    # If no specific flag, generate both
+    generate_both = not (args.skills or args.commands)
 
-print("✓ Generated guide/COMMANDS.yaml")
-print("✓ Generated guide/SKILLS.yaml")
+    # Generate catalogs based on arguments
+    if args.commands or generate_both:
+        commands_yaml = generate_commands_yaml()
+        Path('guide/COMMANDS.yaml').write_text(commands_yaml, encoding='utf-8')
+        print("✓ Generated guide/COMMANDS.yaml")
+
+    if args.skills or generate_both:
+        skills_yaml = generate_skills_yaml()
+        Path('guide/SKILLS.yaml').write_text(skills_yaml, encoding='utf-8')
+        print("✓ Generated guide/SKILLS.yaml")
