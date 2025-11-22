@@ -55,12 +55,7 @@ plans/
 │   ├── phase-04-implement-ui-components.md    # UI components
 │   ├── phase-05-implement-authentication.md   # Auth & authorization
 │   ├── phase-06-implement-profile.md          # Profile page
-│   ├── phase-07-write-tests.md                # Tests
-│   ├── phase-08-run-tests.md                  # Test execution
-│   ├── phase-09-code-review.md                # Code review
-│   ├── phase-10-project-management.md         # Project management
-│   ├── phase-11-onboarding.md                 # Onboarding
-│   └── phase-12-final-report.md               # Final report
+│   └── phase-07-write-tests.md                # Tests
 └── ...
 ```
 
