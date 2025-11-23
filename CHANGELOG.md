@@ -1,3 +1,16 @@
+## [1.16.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.5...v1.16.0-beta.6) (2025-11-23)
+
+
+### 🐞 Bug Fixes
+
+* organize report files ([bf71157](https://github.com/claudekit/claudekit-engineer/commit/bf71157914732339acc086b75075136f64c05169))
+* skill installation script hanging on windows powershell ([67b0792](https://github.com/claudekit/claudekit-engineer/commit/67b07921528aa8707be667add8bd2e4f7ee92625))
+
+
+### 📚 Documentation
+
+* **commands:** enhance fix command specs and add parallel execution ([9eb7b91](https://github.com/claudekit/claudekit-engineer/commit/9eb7b91eb078df0a5c2d2b2aeece4b57f096dcb3))
+
 ## [1.16.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.4...v1.16.0-beta.5) (2025-11-22)
 
 
