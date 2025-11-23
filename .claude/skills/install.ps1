@@ -60,6 +60,45 @@ function Test-Command {
     return $false
 }
 
+# Get user input with support for redirected stdin
+function Get-UserInput {
+    param(
+        [string]$Prompt,
+        [string]$Default = "N"
+    )
+
+    # Check if stdin is redirected (e.g., from Bash tool or piped input)
+    if ([Console]::IsInputRedirected) {
+        Write-Host "$Prompt " -NoNewline
+
+        # Try to read from stdin without blocking
+        $inputAvailable = $false
+        try {
+            $stdin = [Console]::In
+            # Peek returns -1 if no data available
+            if ($stdin.Peek() -ne -1) {
+                $response = $stdin.ReadLine()
+                $inputAvailable = $true
+                Write-Host $response
+            }
+        } catch {
+            # If peek fails, no input available
+        }
+
+        if ($inputAvailable -and $response) {
+            return $response
+        } else {
+            # No input available, use default
+            Write-Host $Default
+            Write-Warning "No input detected (stdin redirected), using default: $Default"
+            return $Default
+        }
+    } else {
+        # Normal interactive mode - use standard Read-Host
+        return Read-Host $Prompt
+    }
+}
+
 # Install Chocolatey
 function Install-Chocolatey {
     if ($SkipChocolatey) {
@@ -219,7 +258,7 @@ function Install-NodeDeps {
     # Optional: Shopify CLI (ask user)
     $shopifyPath = Join-Path $ScriptDir "shopify"
     if (Test-Path $shopifyPath) {
-        $confirmation = Read-Host "Install Shopify CLI for Shopify skill? (y/N)"
+        $confirmation = Get-UserInput -Prompt "Install Shopify CLI for Shopify skill? (y/N)" -Default "N"
         if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
             Write-Info "Installing Shopify CLI..."
             npm install -g @shopify/cli @shopify/theme
@@ -419,7 +458,7 @@ function Main {
     Write-Host ""
 
     # Confirm installation
-    $confirmation = Read-Host "This will install system packages and Node.js dependencies. Continue? (y/N)"
+    $confirmation = Get-UserInput -Prompt "This will install system packages and Node.js dependencies. Continue? (y/N)" -Default "N"
     if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
         Write-Warning "Installation cancelled"
         exit 0
