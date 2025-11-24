@@ -1,3 +1,10 @@
+## [1.16.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.6...v1.16.0-beta.7) (2025-11-24)
+
+
+### 🐞 Bug Fixes
+
+* skills installation script hanging issue ([ae2b60c](https://github.com/claudekit/claudekit-engineer/commit/ae2b60c2b64a501308bc8a85d8b5e43c273786eb))
+
 ## [1.16.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.5...v1.16.0-beta.6) (2025-11-23)
 
 
