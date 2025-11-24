@@ -3,12 +3,18 @@
 
 param(
     [switch]$SkipChocolatey = $false,
-    [switch]$Help = $false
+    [switch]$Help = $false,
+    [switch]$Y = $false  # Skip all prompts and auto-confirm
 )
 
 # Configuration
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $VenvDir = Join-Path $ScriptDir ".venv"
+
+# Check for NON_INTERACTIVE environment variable
+if ($env:NON_INTERACTIVE -eq "1") {
+    $Y = $true
+}
 
 # Colors for output
 function Write-Header {
@@ -255,14 +261,18 @@ function Install-NodeDeps {
         Write-Success "mcp-management dependencies installed"
     }
 
-    # Optional: Shopify CLI (ask user)
+    # Optional: Shopify CLI (ask user unless auto-confirming)
     $shopifyPath = Join-Path $ScriptDir "shopify"
     if (Test-Path $shopifyPath) {
-        $confirmation = Get-UserInput -Prompt "Install Shopify CLI for Shopify skill? (y/N)" -Default "N"
-        if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
-            Write-Info "Installing Shopify CLI..."
-            npm install -g @shopify/cli @shopify/theme
-            Write-Success "Shopify CLI installed"
+        if ($Y) {
+            Write-Info "Skipping Shopify CLI installation (optional, use -Y to install all)"
+        } else {
+            $confirmation = Get-UserInput -Prompt "Install Shopify CLI for Shopify skill? (y/N)" -Default "N"
+            if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
+                Write-Info "Installing Shopify CLI..."
+                npm install -g @shopify/cli @shopify/theme
+                Write-Success "Shopify CLI installed"
+            }
         }
     }
 }
@@ -432,11 +442,13 @@ function Show-Help {
     Write-Host "  .\install.ps1 [Options]"
     Write-Host ""
     Write-Host "Options:"
+    Write-Host "  -Y                 Skip all prompts and auto-confirm installation"
     Write-Host "  -SkipChocolatey    Skip Chocolatey installation (if already installed or not needed)"
     Write-Host "  -Help              Show this help message"
     Write-Host ""
     Write-Host "Examples:"
     Write-Host "  .\install.ps1"
+    Write-Host "  .\install.ps1 -Y"
     Write-Host "  .\install.ps1 -SkipChocolatey"
     Write-Host ""
     Write-Host "Requirements:"
@@ -457,11 +469,15 @@ function Main {
     Write-Info "Script directory: $ScriptDir"
     Write-Host ""
 
-    # Confirm installation
-    $confirmation = Get-UserInput -Prompt "This will install system packages and Node.js dependencies. Continue? (y/N)" -Default "N"
-    if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-        Write-Warning "Installation cancelled"
-        exit 0
+    # Confirm installation (skip if -Y flag or NON_INTERACTIVE env is set)
+    if (-not $Y) {
+        $confirmation = Get-UserInput -Prompt "This will install system packages and Node.js dependencies. Continue? (y/N)" -Default "N"
+        if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
+            Write-Warning "Installation cancelled"
+            exit 0
+        }
+    } else {
+        Write-Info "Auto-confirming installation (-Y flag or NON_INTERACTIVE mode)"
     }
 
     try {
