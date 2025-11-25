@@ -16,6 +16,7 @@ argument-hint: [plan]
 **IMPORTANT:** Remind these rules with subagents communication:
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
+- Ensure token efficiency while maintaining high quality.
 
 ---
 
