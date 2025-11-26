@@ -1,17 +1,58 @@
-## [1.16.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.9...v1.16.0-beta.10) (2025-11-26)
+## [1.16.0](https://github.com/claudekit/claudekit-engineer/compare/v1.15.2...v1.16.0) (2025-11-26)
+
+
+### 🚀 Features
+
+* `dev-rules-reminder` hook (fully tested) ([d335aee](https://github.com/claudekit/claudekit-engineer/commit/d335aee82d3163148d0965ca52650201416e46ad))
+* **ci:** use Discord embeds for consistent release notifications ([380d03b](https://github.com/claudekit/claudekit-engineer/commit/380d03beb977def325c4e904294f69561b2c2605))
 
 
 ### 🐞 Bug Fixes
 
-* `/code` enhancement ([805c503](https://github.com/claudekit/claudekit-engineer/commit/805c503f068be2b13820db6e3baf0c2a58551187))
-* enhance `/code` command (thanks [@dta](https://github.com/dta).teks) ([f7b1c3c](https://github.com/claudekit/claudekit-engineer/commit/f7b1c3cef87d5523506262413d6e53b6820ae65b))
+* `/code` enhancement ([a301455](https://github.com/claudekit/claudekit-engineer/commit/a3014552f9199f6c32218cc046ccd1782f035698))
+* **ci:** correct config file priority for dynamic loading ([fdafbb0](https://github.com/claudekit/claudekit-engineer/commit/fdafbb08ecfbb97aa5509873f8a687c0e232d34f))
+* **ci:** embed config directly in .releaserc.cjs ([6845dc6](https://github.com/claudekit/claudekit-engineer/commit/6845dc63ba2a31e312f879f3210d516a23ad7de4))
+* **ci:** include main branch in beta config ([0dfed73](https://github.com/claudekit/claudekit-engineer/commit/0dfed73f7b3f3bcf5073de91fb02bfdda2072919))
+* **ci:** use dynamic config loader for semantic-release ([ef21662](https://github.com/claudekit/claudekit-engineer/commit/ef216628e32845ecbca7edac4b7c318b0e88054c))
+* enhance `/code` command (thanks [@dta](https://github.com/dta).teks) ([3b06c00](https://github.com/claudekit/claudekit-engineer/commit/3b06c005ad70624c3ee8bcf232f3af885e28add4))
+* enhance `ai-multimodal` skills with detailed instructions & descriptions ([18cb2f9](https://github.com/claudekit/claudekit-engineer/commit/18cb2f91fb6ec002692b0b7771ed65cf476b2272))
+* enhance `dev-rules-reminder` hook ([bd0b059](https://github.com/claudekit/claudekit-engineer/commit/bd0b059abc71466a92ed31e5a16bba01d22a3678))
+* **hooks:** convert dev-rules-reminder to ES module syntax ([fdc8b12](https://github.com/claudekit/claudekit-engineer/commit/fdc8b120afe7ef829de3acfa2d9baa55e43d5607))
+* **hooks:** convert dev-rules-reminder to ES module syntax ([c4b12ad](https://github.com/claudekit/claudekit-engineer/commit/c4b12add0ecdf4ba5ab1da3ca1ff8b37242475cd))
+* **hooks:** convert scout-block to ES module syntax ([27a3d39](https://github.com/claudekit/claudekit-engineer/commit/27a3d39cd6470502868cadc74b14e25ebd8fe79e))
+* organize report files ([bf71157](https://github.com/claudekit/claudekit-engineer/commit/bf71157914732339acc086b75075136f64c05169))
+* skill installation script hanging on windows powershell ([67b0792](https://github.com/claudekit/claudekit-engineer/commit/67b07921528aa8707be667add8bd2e4f7ee92625))
+* skills installation script hanging issue ([ae2b60c](https://github.com/claudekit/claudekit-engineer/commit/ae2b60c2b64a501308bc8a85d8b5e43c273786eb))
+* stop creating random markdown files ([8c8ae60](https://github.com/claudekit/claudekit-engineer/commit/8c8ae60c0d6da46054c042dbbc1f94919f3bd6ff))
+* use `gemini` command (free) to analyze images first ([0f62fc2](https://github.com/claudekit/claudekit-engineer/commit/0f62fc2bba8d1945a1daf92af9084a2eec6d6fb9))
 
-## [1.16.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.8...v1.16.0-beta.9) (2025-11-26)
+
+### 📚 Documentation
+
+* **agents:** enhance git-manager & add fullstack-developer specs ([e828757](https://github.com/claudekit/claudekit-engineer/commit/e82875799e513b2f4999e8be985fe5b7504546b0))
+* **agents:** enhance git-manager & add fullstack-developer specs ([4b751aa](https://github.com/claudekit/claudekit-engineer/commit/4b751aa6f4384788c8d9f339c266d4a34b39de6e))
+* **commands:** add parallel execution definitions ([c7b6c6a](https://github.com/claudekit/claudekit-engineer/commit/c7b6c6a83dfa28e101f96a705c019c0866550a3b))
+* **commands:** add parallel execution definitions ([5eff2b2](https://github.com/claudekit/claudekit-engineer/commit/5eff2b2a16f99374d22061afdb157a286414df94))
+* **commands:** enhance fix command specs and add parallel execution ([9eb7b91](https://github.com/claudekit/claudekit-engineer/commit/9eb7b91eb078df0a5c2d2b2aeece4b57f096dcb3))
+* **release:** add JSON schema to semantic-release configs ([2299428](https://github.com/claudekit/claudekit-engineer/commit/22994285c626aead8f15357eac001b6f5a52f0bb))
 
 
-### 🐞 Bug Fixes
+### ♻️ Code Refactoring
 
-* use `gemini` command (free) to analyze images first ([40971c1](https://github.com/claudekit/claudekit-engineer/commit/40971c18b3ae1bde95b67c1cc224493e05160dd6))
+* migrate command/skill data to YAML format and enhance catalog generation ([5995159](https://github.com/claudekit/claudekit-engineer/commit/5995159943e77dc57988a2ac47ed8718204138a4))
+
+
+### ⚡ Performance Improvements
+
+* enhance debugging skills ([fa54ca4](https://github.com/claudekit/claudekit-engineer/commit/fa54ca463cf49e0703c2aac9035a39830d4c798b))
+* enhance plan organization rules ([dc588a2](https://github.com/claudekit/claudekit-engineer/commit/dc588a2878c34e5e65411625d2f5d0e632b7a021))
+* improve `ai-multimodal` skill ([cf4bd54](https://github.com/claudekit/claudekit-engineer/commit/cf4bd5471af5cde7297226ffa4e489c3729278e0))
+
+
+### 👷 CI
+
+* **release:** add beta release workflow with semantic-release ([2efeb6c](https://github.com/claudekit/claudekit-engineer/commit/2efeb6c18a9d7f735b18b71dfed16d246cdbae9d))
+* **release:** add logging to semantic-release config loader ([6313b35](https://github.com/claudekit/claudekit-engineer/commit/6313b35ecbe403245464e0e2b7a78dbf2394d888))
 
 ## [1.16.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.7...v1.16.0-beta.8) (2025-11-26)
 
