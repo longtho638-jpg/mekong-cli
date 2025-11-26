@@ -1,3 +1,10 @@
+## [1.16.1-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.2...v1.16.1-beta.3) (2025-11-26)
+
+
+### ⚡ Performance Improvements
+
+* **fix-logs:** optimize log reading with Grep head_limit and permanent piping ([#72](https://github.com/claudekit/claudekit-engineer/issues/72)) ([18d4a24](https://github.com/claudekit/claudekit-engineer/commit/18d4a2425a156ad6f979fcc299585bd4ce615ccd)), closes [#65](https://github.com/claudekit/claudekit-engineer/issues/65)
+
 ## [1.16.1-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.1...v1.16.1-beta.2) (2025-11-26)
 
 
