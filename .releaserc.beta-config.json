@@ -1,6 +1,10 @@
 {
+  "$schema": "https://json.schemastore.org/semantic-release.json",
   "branches": [
-    "main"
+    {
+      "name": "dev",
+      "prerelease": "beta"
+    }
   ],
   "plugins": [
     [
@@ -98,9 +102,10 @@
           },
           {
             "path": "dist/claudekit-engineer.zip",
-            "label": "ClaudeKit Engineer Package"
+            "label": "ClaudeKit Engineer Package (Beta)"
           }
-        ]
+        ],
+        "prerelease": true
       }
     ],
     [

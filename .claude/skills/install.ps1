@@ -3,12 +3,18 @@
 
 param(
     [switch]$SkipChocolatey = $false,
-    [switch]$Help = $false
+    [switch]$Help = $false,
+    [switch]$Y = $false  # Skip all prompts and auto-confirm
 )
 
 # Configuration
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $VenvDir = Join-Path $ScriptDir ".venv"
+
+# Check for NON_INTERACTIVE environment variable
+if ($env:NON_INTERACTIVE -eq "1") {
+    $Y = $true
+}
 
 # Colors for output
 function Write-Header {
@@ -58,6 +64,45 @@ function Test-Command {
         return $false
     }
     return $false
+}
+
+# Get user input with support for redirected stdin
+function Get-UserInput {
+    param(
+        [string]$Prompt,
+        [string]$Default = "N"
+    )
+
+    # Check if stdin is redirected (e.g., from Bash tool or piped input)
+    if ([Console]::IsInputRedirected) {
+        Write-Host "$Prompt " -NoNewline
+
+        # Try to read from stdin without blocking
+        $inputAvailable = $false
+        try {
+            $stdin = [Console]::In
+            # Peek returns -1 if no data available
+            if ($stdin.Peek() -ne -1) {
+                $response = $stdin.ReadLine()
+                $inputAvailable = $true
+                Write-Host $response
+            }
+        } catch {
+            # If peek fails, no input available
+        }
+
+        if ($inputAvailable -and $response) {
+            return $response
+        } else {
+            # No input available, use default
+            Write-Host $Default
+            Write-Warning "No input detected (stdin redirected), using default: $Default"
+            return $Default
+        }
+    } else {
+        # Normal interactive mode - use standard Read-Host
+        return Read-Host $Prompt
+    }
 }
 
 # Install Chocolatey
@@ -216,14 +261,18 @@ function Install-NodeDeps {
         Write-Success "mcp-management dependencies installed"
     }
 
-    # Optional: Shopify CLI (ask user)
+    # Optional: Shopify CLI (ask user unless auto-confirming)
     $shopifyPath = Join-Path $ScriptDir "shopify"
     if (Test-Path $shopifyPath) {
-        $confirmation = Read-Host "Install Shopify CLI for Shopify skill? (y/N)"
-        if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
-            Write-Info "Installing Shopify CLI..."
-            npm install -g @shopify/cli @shopify/theme
-            Write-Success "Shopify CLI installed"
+        if ($Y) {
+            Write-Info "Skipping Shopify CLI installation (optional, use -Y to install all)"
+        } else {
+            $confirmation = Get-UserInput -Prompt "Install Shopify CLI for Shopify skill? (y/N)" -Default "N"
+            if ($confirmation -eq 'y' -or $confirmation -eq 'Y') {
+                Write-Info "Installing Shopify CLI..."
+                npm install -g @shopify/cli @shopify/theme
+                Write-Success "Shopify CLI installed"
+            }
         }
     }
 }
@@ -393,11 +442,13 @@ function Show-Help {
     Write-Host "  .\install.ps1 [Options]"
     Write-Host ""
     Write-Host "Options:"
+    Write-Host "  -Y                 Skip all prompts and auto-confirm installation"
     Write-Host "  -SkipChocolatey    Skip Chocolatey installation (if already installed or not needed)"
     Write-Host "  -Help              Show this help message"
     Write-Host ""
     Write-Host "Examples:"
     Write-Host "  .\install.ps1"
+    Write-Host "  .\install.ps1 -Y"
     Write-Host "  .\install.ps1 -SkipChocolatey"
     Write-Host ""
     Write-Host "Requirements:"
@@ -418,11 +469,15 @@ function Main {
     Write-Info "Script directory: $ScriptDir"
     Write-Host ""
 
-    # Confirm installation
-    $confirmation = Read-Host "This will install system packages and Node.js dependencies. Continue? (y/N)"
-    if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-        Write-Warning "Installation cancelled"
-        exit 0
+    # Confirm installation (skip if -Y flag or NON_INTERACTIVE env is set)
+    if (-not $Y) {
+        $confirmation = Get-UserInput -Prompt "This will install system packages and Node.js dependencies. Continue? (y/N)" -Default "N"
+        if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
+            Write-Warning "Installation cancelled"
+            exit 0
+        }
+    } else {
+        Write-Info "Auto-confirming installation (-Y flag or NON_INTERACTIVE mode)"
     }
 
     try {

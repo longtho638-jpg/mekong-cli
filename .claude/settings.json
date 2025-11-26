@@ -6,13 +6,23 @@
     "padding": 0
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/dev-rules-reminder.js"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash|Glob|Grep|Read|Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scout-block.js"
+            "command": "node .claude/hooks/scout-block.js"
           }
         ]
       }

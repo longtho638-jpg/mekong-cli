@@ -1,9 +1,9 @@
-name: Release
+name: Beta Release
 
 on:
   push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -13,10 +13,10 @@ permissions:
   id-token: write # to enable use of OIDC for npm provenance
 
 jobs:
-  release:
-    name: Release
+  release-beta:
+    name: Beta Release
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,14 +41,14 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-      - name: Release
+      - name: Beta Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run semantic-release
+        run: npx semantic-release
 
-      - name: Send release notification to Discord
+      - name: Send beta release notification to Discord
         if: success()
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: node scripts/send-discord-release.cjs production "$DISCORD_WEBHOOK_URL"
+        run: node scripts/send-discord-release.cjs beta "$DISCORD_WEBHOOK_URL"

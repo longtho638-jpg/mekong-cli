@@ -28,12 +28,7 @@ plans/
 │   ├── phase-04-implement-ui-components.md    # UI components
 │   ├── phase-05-implement-authentication.md   # Auth & authorization
 │   ├── phase-06-implement-profile.md          # Profile page
-│   ├── phase-07-write-tests.md                # Tests
-│   ├── phase-08-run-tests.md                  # Test execution
-│   ├── phase-09-code-review.md                # Code review
-│   ├── phase-10-project-management.md         # Project management
-│   ├── phase-11-onboarding.md                 # Onboarding
-│   └── phase-12-final-report.md               # Final report
+│   └── phase-07-write-tests.md                # Tests
 └── ...
 ```
 
@@ -43,7 +38,6 @@ plans/
 - Keep generic and under 80 lines
 - List each phase with status/progress
 - Link to detailed phase files
-- High-level timeline
 - Key dependencies
 
 ### Phase Files (phase-XX-name.md)
@@ -54,7 +48,7 @@ Each phase file should contain:
 - Links to related reports, files, documentation
 
 **Overview**
-- Date and priority
+- Priority
 - Current status
 - Brief description
 
