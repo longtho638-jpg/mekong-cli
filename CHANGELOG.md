@@ -1,3 +1,11 @@
+## [1.16.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.9...v1.16.0-beta.10) (2025-11-26)
+
+
+### 🐞 Bug Fixes
+
+* `/code` enhancement ([805c503](https://github.com/claudekit/claudekit-engineer/commit/805c503f068be2b13820db6e3baf0c2a58551187))
+* enhance `/code` command (thanks [@dta](https://github.com/dta).teks) ([f7b1c3c](https://github.com/claudekit/claudekit-engineer/commit/f7b1c3cef87d5523506262413d6e53b6820ae65b))
+
 ## [1.16.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.8...v1.16.0-beta.9) (2025-11-26)
 
 
