@@ -1,6 +1,6 @@
 ---
 name: ai-multimodal
-description: Process and generate multimedia content using Google Gemini API for better vision capabilities. Capabilities include analyze audio files (transcription with timestamps, summarization, speech understanding, music/sound analysis up to 9.5 hours), understand images (captioning, object detection, OCR, visual Q&A, segmentation), process videos (scene detection, Q&A, temporal analysis, YouTube URLs, up to 6 hours), extract from documents (PDF tables, forms, charts, diagrams, multi-page), generate images (text-to-image with Imagen 4, editing, composition, refinement), generate videos (text-to-video with Veo 3, 8-second clips with native audio). Use when working with audio/video files, analyzing images or screenshots (instead of default vision capabilities of Claude, only fallback to Claude's vision capabilities if needed), processing PDF documents, extracting structured data from media, creating images/videos from text prompts, or implementing multimodal AI features. Supports Gemini 3/2.5, Imagen 4, and Veo 3 models with context windows up to 2M tokens.
+description: Process and generate multimedia content using Google Gemini API for better vision capabilities. Capabilities include analyze audio files (transcription with timestamps, summarization, speech understanding, music/sound analysis up to 9.5 hours), understand images (better image analysis than Claude models, captioning, reasoning, object detection, design extraction, OCR, visual Q&A, segmentation, handle multiple images), process videos (scene detection, Q&A, temporal analysis, YouTube URLs, up to 6 hours), extract from documents (PDF tables, forms, charts, diagrams, multi-page), generate images (text-to-image with Imagen 4, editing, composition, refinement), generate videos (text-to-video with Veo 3, 8-second clips with native audio). Use when working with audio/video files, analyzing images or screenshots (instead of default vision capabilities of Claude, only fallback to Claude's vision capabilities if needed), processing PDF documents, extracting structured data from media, creating images/videos from text prompts, or implementing multimodal AI features. Supports Gemini 3/2.5, Imagen 4, and Veo 3 models with context windows up to 2M tokens.
 license: MIT
 allowed-tools:
   - Bash
@@ -22,8 +22,8 @@ pip install google-genai python-dotenv pillow
 
 ## Quick Start
 
+**Verify setup**: `python scripts/check_setup.py`
 **Analyze media**: `python scripts/gemini_batch_process.py --files <file> --task <analyze|transcribe|extract>`
-
 **Generate content**: `python scripts/gemini_batch_process.py --task <generate|generate-video> --prompt "description"`
 
 ## Models
@@ -34,9 +34,10 @@ pip install google-genai python-dotenv pillow
 
 ## Scripts
 
-**gemini_batch_process.py**: Process audio/image/video/PDF, generate images/videos
-**media_optimizer.py**: Compress/resize/convert media for API limits
-**document_converter.py**: Convert DOCX/XLSX/PPTX to PDF
+**gemini_batch_process.py**: CLI orchestrator for `transcribe|analyze|extract|generate|generate-video` that auto-resolves API keys, picks sensible default models per task, streams files inline vs File API, and saves structured outputs (text/JSON/CSV/markdown plus generated assets) for Imagen 4 + Veo workflows.
+**media_optimizer.py**: ffmpeg/Pillow-based preflight tool that compresses/resizes/converts audio, image, and video inputs, enforces target sizes/bitrates, splits long clips into hour chunks, and batch-processes directories so media stays within Gemini limits.
+**document_converter.py**: Gemini-powered converter that uploads PDFs/images/Office docs, applies a markdown-preserving prompt, batches multiple files, auto-names outputs under `docs/assets`, and exposes CLI flags for model, prompt, auto-file naming, and verbose logging.
+**check_setup.py**: Interactive readiness checker that verifies directory layout, centralized env resolver, required Python deps, and GEMINI_API_KEY availability/format, then performs a live Gemini API call and prints remediation instructions if anything fails.
 
 Use `--help` for options.
 
@@ -44,13 +45,13 @@ Use `--help` for options.
 
 Load for detailed guidance:
 
-| Topic | File |
-|-------|------|
-| Audio | `references/audio-processing.md` |
-| Images | `references/vision-understanding.md` |
-| Image Gen | `references/image-generation.md` |
-| Video | `references/video-analysis.md` |
-| Video Gen | `references/video-generation.md` |
+| Topic | File | Description |
+|-------|------|-------------|
+| Audio | `references/audio-processing.md` | Audio formats and limits, transcription (timestamps, speakers, segments), non-speech analysis, File API vs inline input, TTS models, best practices, cost and token math, and concrete meeting/podcast/interview recipes. |
+| Images | `references/vision-understanding.md` | Vision capabilities overview, supported formats and models, captioning/classification/VQA, detection and segmentation, OCR and document reading, multi-image workflows, structured JSON output, token costs, best practices, and common product/screenshot/chart/scene use cases. |
+| Image Gen | `references/image-generation.md` | Imagen 4 and Gemini image model overview, generate_images vs generate_content APIs, aspect ratios and costs, text/image/both modalities, editing and composition, style and quality control, safety settings, best practices, troubleshooting, and common marketing/concept-art/UI scenarios. |
+| Video | `references/video-analysis.md` | Video analysis capabilities and supported formats, model/context choices, local/inline/YouTube inputs, clipping and FPS control, multi-video comparison, temporal Q&A and scene detection, transcription with visual context, token and cost guidance, and optimization/best-practice patterns. |
+| Video Gen | `references/video-generation.md` | Veo model matrix, text-to-video and image-to-video quick start, multi-reference and extension flows, camera and timing control, configuration (resolution, aspect, audio, safety), prompt design patterns, performance tips, limitations, troubleshooting, and cost estimates. |
 
 ## Limits
 
