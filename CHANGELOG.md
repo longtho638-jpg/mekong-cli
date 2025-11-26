@@ -1,3 +1,10 @@
+## [1.16.1-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.1...v1.16.1-beta.2) (2025-11-26)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** respect .ckignore patterns in scout-block hook ([#64](https://github.com/claudekit/claudekit-engineer/issues/64)) ([#70](https://github.com/claudekit/claudekit-engineer/issues/70)) ([c0b73d7](https://github.com/claudekit/claudekit-engineer/commit/c0b73d7df0c76fd4e80163a9d51f0bc545c2fd1b))
+
 ## [1.16.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0...v1.16.1-beta.1) (2025-11-26)
 
 
