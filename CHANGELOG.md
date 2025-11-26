@@ -1,3 +1,10 @@
+## [1.16.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.8...v1.16.0-beta.9) (2025-11-26)
+
+
+### 🐞 Bug Fixes
+
+* use `gemini` command (free) to analyze images first ([40971c1](https://github.com/claudekit/claudekit-engineer/commit/40971c18b3ae1bde95b67c1cc224493e05160dd6))
+
 ## [1.16.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.7...v1.16.0-beta.8) (2025-11-26)
 
 
