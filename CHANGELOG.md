@@ -1,3 +1,10 @@
+## [1.16.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.7...v1.16.0-beta.8) (2025-11-26)
+
+
+### 🐞 Bug Fixes
+
+* enhance `ai-multimodal` skills with detailed instructions & descriptions ([a36b2bc](https://github.com/claudekit/claudekit-engineer/commit/a36b2bcd0263f74673f9f616d7a338b317b9e620))
+
 ## [1.16.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0-beta.6...v1.16.0-beta.7) (2025-11-24)
 
 
