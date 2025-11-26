@@ -3,13 +3,17 @@
 /**
  * scout-block.js - Cross-platform hook dispatcher
  *
- * Blocks access to heavy directories: node_modules, __pycache__, .git/, dist/, build/
+ * Blocks access to directories listed in .claude/.ckignore
+ * (defaults: node_modules, __pycache__, .git, dist, build)
  *
  * Blocking Rules:
  * - File paths: Blocks any file_path/path/pattern containing blocked directories
  * - Bash commands: Blocks directory access (cd, ls, cat, etc.) but ALLOWS build commands
  *   - Blocked: cd node_modules, ls build/, cat dist/file.js
  *   - Allowed: npm build, pnpm build, yarn build, npm run build
+ *
+ * Configuration:
+ * - Edit .claude/.ckignore to customize blocked patterns (one per line, # for comments)
  *
  * Platform Detection:
  * - Windows (win32): Uses PowerShell via scout-block.ps1
