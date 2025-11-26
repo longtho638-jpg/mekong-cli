@@ -1,3 +1,13 @@
+## [1.16.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0...v1.16.1-beta.1) (2025-11-26)
+
+
+### 🐞 Bug Fixes
+
+* `/code` enhancement ([805c503](https://github.com/claudekit/claudekit-engineer/commit/805c503f068be2b13820db6e3baf0c2a58551187))
+* enhance `/code` command (thanks [@dta](https://github.com/dta).teks) ([f7b1c3c](https://github.com/claudekit/claudekit-engineer/commit/f7b1c3cef87d5523506262413d6e53b6820ae65b))
+* enhance `ai-multimodal` skills with detailed instructions & descriptions ([a36b2bc](https://github.com/claudekit/claudekit-engineer/commit/a36b2bcd0263f74673f9f616d7a338b317b9e620))
+* use `gemini` command (free) to analyze images first ([40971c1](https://github.com/claudekit/claudekit-engineer/commit/40971c18b3ae1bde95b67c1cc224493e05160dd6))
+
 ## [1.16.0](https://github.com/claudekit/claudekit-engineer/compare/v1.15.2...v1.16.0) (2025-11-26)
 
 
