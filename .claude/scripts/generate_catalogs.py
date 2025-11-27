@@ -12,8 +12,18 @@ if sys.platform == 'win32':
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
+def get_script_dir():
+    """Get the directory where this script is located."""
+    return Path(__file__).parent.resolve()
+
 def load_yaml(path):
-    return yaml.safe_load(Path(path).read_text())
+    """Load YAML file, resolving paths relative to script directory."""
+    # If path starts with .claude/, resolve relative to $HOME
+    if path.startswith('.claude/'):
+        full_path = Path.home() / path
+    else:
+        full_path = Path(path)
+    return yaml.safe_load(full_path.read_text())
 
 def generate_commands_yaml():
     """Generate COMMANDS.yaml catalog."""
