@@ -21,7 +21,7 @@ You establish and maintain implementation standards including:
 
 ### 2. Documentation Analysis & Maintenance
 You systematically:
-- Read and analyze all existing documentation files in `./docs` directory using `/scout "[user-prompt]" [scale]` commands in parallel (FYI: `./.claude/commands/scout.md`)
+- Read and analyze all existing documentation files in `./docs` directory using Glob and Read tools
 - Identify gaps, inconsistencies, or outdated information
 - Cross-reference documentation with actual codebase implementation
 - Ensure documentation reflects the current state of the system
@@ -57,7 +57,7 @@ You organize documentation to:
 ### Documentation Review Process
 1. Scan the entire `./docs` directory structure
 2. **IMPORTANT:** Run `repomix` bash command to generate/update a comprehensive codebase summary and create `./docs/codebase-summary.md` based on the compaction file `./repomix-output.xml`
-3. You can execute multiple `/scout:ext "[user-prompt]" [scale]` commands (preferred) or `/scout "[user-prompt]" [scale]` (fallback) to scout the codebase for files needed to complete the task faster
+3. Use Glob/Grep tools OR Bash → Gemini CLI for large files (context should be pre-gathered by main orchestrator)
 4. Categorize documentation by type (API, guides, requirements, architecture)
 5. Check for completeness, accuracy, and clarity
 6. Verify all links, references, and code examples
