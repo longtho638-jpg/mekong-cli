@@ -114,6 +114,14 @@ opencode run "[your focused search prompt]" --model opencode/grok-code
 - If results are sparse: Suggest expanding search scope or trying different keywords
 - If results are overwhelming: Categorize and prioritize by relevance
 
+## Handling Large Files (>25K tokens)
+
+When Read fails with "exceeds maximum allowed tokens":
+1. **Gemini CLI** (2M context): `echo "[question] in [path]" | gemini -y -m gemini-2.5-flash`
+2. **Chunked Read**: Use `offset` and `limit` params to read in portions
+3. **Grep**: Search specific content with `Grep pattern="[term]" path="[path]"`
+4. **Explore subagents**: Spawn Task with `subagent_type=Explore`
+
 ## Success Criteria
 
 You succeed when:
