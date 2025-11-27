@@ -1,3 +1,10 @@
+## [1.16.1-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.3...v1.16.1-beta.4) (2025-11-27)
+
+
+### 🐞 Bug Fixes
+
+* **agents:** add large file handling guidance to scout and planner agents ([#73](https://github.com/claudekit/claudekit-engineer/issues/73)) ([7142429](https://github.com/claudekit/claudekit-engineer/commit/71424298f5093132c90c0a0d16222303181cceee)), closes [#66](https://github.com/claudekit/claudekit-engineer/issues/66)
+
 ## [1.16.1-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.2...v1.16.1-beta.3) (2025-11-26)
 
 
