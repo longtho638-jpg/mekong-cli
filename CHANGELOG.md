@@ -1,3 +1,10 @@
+## [1.16.1-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.4...v1.16.1-beta.5) (2025-11-27)
+
+
+### 🐞 Bug Fixes
+
+* **agents:** prevent subagents from spawning subagents in docs commands ([7730212](https://github.com/claudekit/claudekit-engineer/commit/7730212345e87668ca0e1853bb5596f63631e37c)), closes [#68](https://github.com/claudekit/claudekit-engineer/issues/68)
+
 ## [1.16.1-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.3...v1.16.1-beta.4) (2025-11-27)
 
 
