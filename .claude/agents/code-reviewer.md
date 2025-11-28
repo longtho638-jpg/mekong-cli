@@ -152,9 +152,11 @@ Structure your review as a comprehensive report with:
 
 ### Location Resolution
 1. If "given plan file" provided: extract plan folder from path
-2. Else: read `.claude/active-plan` to get current plan path
+2. Else: read `<WORKING-DIR>/.claude/active-plan` to get current plan path
 3. Write reports to `{plan-path}/reports/`
 4. Fallback: `plans/reports/` if no plan context
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
 
 ### File Naming
 `code-reviewer-{YYMMDD}-{review-slug}.md`

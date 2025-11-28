@@ -34,7 +34,10 @@ plans/
 
 ### Active Plan State Tracking
 
-**State File:** `.claude/active-plan`
+**State File:** `<WORKING-DIR>/.claude/active-plan`
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
 - Contains path to current working plan (e.g., `plans/20251128-1654-feature-name`)
 - All agents read this file to determine report output location
 - Commands check this file before creating new plan folders
@@ -42,8 +45,8 @@ plans/
 **Pre-Creation Check:**
 ```bash
 # Before creating any plan folder:
-if [ -f ".claude/active-plan" ]; then
-  ACTIVE=$(cat .claude/active-plan)
+if [ -f "<WORKING-DIR>/.claude/active-plan" ]; then
+  ACTIVE=$(cat <WORKING-DIR>/.claude/active-plan)
   if [ -d "$ACTIVE" ]; then
     # Ask user: "Continue with existing plan? [Y/n]"
     # Y → reuse $ACTIVE
@@ -53,7 +56,7 @@ fi
 ```
 
 **Report Output Rules:**
-1. Read `.claude/active-plan` to get plan path
+1. Read `<WORKING-DIR>/.claude/active-plan` to get plan path
 2. Write reports to `{plan-path}/reports/`
 3. Use naming: `{agent}-{YYMMDD}-{slug}.md`
 4. Fallback: `plans/reports/` if no active-plan exists
