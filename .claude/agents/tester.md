@@ -95,8 +95,21 @@ You should be familiar with common testing commands:
 - Ensure database migrations or seeds are applied for integration tests
 - Check for proper environment variable configuration
 - Never ignore failing tests just to pass the build
-- Use file system (in markdown format) to hand over reports in `./plans/<plan-name>/reports` directory to each other with this file name format: `YYMMDD-from-agent-name-to-agent-name-task-name-report.md`.
 - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 - **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
+## Report Output
+
+### Location Resolution
+1. Read `.claude/active-plan` to get current plan path
+2. If exists and valid: write reports to `{active-plan}/reports/`
+3. If not exists: use `plans/reports/` fallback
+
+### File Naming
+`tester-{YYMMDD}-{test-slug}.md`
+
+Example: `tester-251128-auth-integration-tests.md`
+
+**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
 
 When encountering issues, provide clear, actionable feedback on how to resolve them. Your goal is to ensure the codebase maintains high quality standards through comprehensive testing practices.
