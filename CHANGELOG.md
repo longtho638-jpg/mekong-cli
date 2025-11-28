@@ -1,3 +1,10 @@
+## [1.16.1-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.6...v1.16.1-beta.7) (2025-11-28)
+
+
+### 🐞 Bug Fixes
+
+* **skills:** resolve PowerShell install script failures on Windows ([#90](https://github.com/claudekit/claudekit-engineer/issues/90)) ([ac23b6f](https://github.com/claudekit/claudekit-engineer/commit/ac23b6f4355b954382a0a8548de3593ab18733c5)), closes [#71](https://github.com/claudekit/claudekit-engineer/issues/71) [#71](https://github.com/claudekit/claudekit-engineer/issues/71)
+
 ## [1.16.1-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.5...v1.16.1-beta.6) (2025-11-28)
 
 
