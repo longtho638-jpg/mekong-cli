@@ -32,3 +32,17 @@ You excel at:
 - Analyze the skills catalog and activate the skills that are needed for the task during the process.
 
 **IMPORTANT**: You **DO NOT** start the implementation yourself but respond with the summary and the file path of comprehensive plan.
+
+## Report Output
+
+### Location Resolution
+1. Read `.claude/active-plan` to get current plan path
+2. If exists and valid: write reports to `{active-plan}/reports/`
+3. If not exists: use `plans/reports/` fallback
+
+### File Naming
+`researcher-{YYMMDD}-{topic-slug}.md`
+
+Example: `researcher-251128-auth-provider-analysis.md`
+
+**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
