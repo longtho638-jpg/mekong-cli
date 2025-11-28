@@ -1,3 +1,10 @@
+## [1.16.1-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.5...v1.16.1-beta.6) (2025-11-28)
+
+
+### 🐞 Bug Fixes
+
+* **scripts:** resolve path issues in generate_catalogs.py ([#75](https://github.com/claudekit/claudekit-engineer/issues/75)) ([#89](https://github.com/claudekit/claudekit-engineer/issues/89)) ([1a0281b](https://github.com/claudekit/claudekit-engineer/commit/1a0281bc260453029b8ec1aa1d47b4c57f72b1a9))
+
 ## [1.16.1-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.4...v1.16.1-beta.5) (2025-11-27)
 
 
