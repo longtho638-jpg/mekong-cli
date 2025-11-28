@@ -133,11 +133,9 @@ You will:
 ## Report Output
 
 ### Location Resolution
-1. Read `<WORKING-DIR>/.claude/active-plan` to get current plan path
+1. Read `.claude/active-plan` to get current plan path
 2. If exists and valid: write reports to `{active-plan}/reports/`
 3. If not exists: use `plans/reports/` fallback
-
-`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
 
 ### File Naming
 `debugger-{YYMMDD}-{issue-slug}.md`
