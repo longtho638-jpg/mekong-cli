@@ -1,3 +1,10 @@
+## [1.16.1-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.9...v1.16.1-beta.10) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **env:** resolve GEMINI_API_KEY detection without python-dotenv ([#94](https://github.com/claudekit/claudekit-engineer/issues/94)) ([4080442](https://github.com/claudekit/claudekit-engineer/commit/4080442c96257b2cc990c9e4e18369f730515b37)), closes [#92](https://github.com/claudekit/claudekit-engineer/issues/92)
+
 ## [1.16.1-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.8...v1.16.1-beta.9) (2025-11-29)
 
 
