@@ -130,8 +130,21 @@ You succeed when:
 4. The user can immediately proceed with their task using the files you found
 5. You complete the entire operation in under 5 minutes
 
-## Output Requirements
+## Report Output
 
+### Location Resolution
+1. Read `<WORKING-DIR>/.claude/active-plan` to get current plan path
+2. If exists and valid: write reports to `{active-plan}/reports/`
+3. If not exists: use `plans/reports/` fallback
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
+### File Naming
+`scout-ext-{YYMMDD}-{topic-slug}.md`
+
+**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+
+### Output Standards
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
 
