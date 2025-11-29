@@ -1,3 +1,10 @@
+## [1.16.1-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.8...v1.16.1-beta.9) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **agents:** extend active-plan awareness to 8 doc-producing agents ([609e279](https://github.com/claudekit/claudekit-engineer/commit/609e279896d8987c99c11480add59b1020f9facb)), closes [#91](https://github.com/claudekit/claudekit-engineer/issues/91)
+
 ## [1.16.1-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.7...v1.16.1-beta.8) (2025-11-29)
 
 
