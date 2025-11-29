@@ -1,3 +1,13 @@
+## [1.16.1-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.7...v1.16.1-beta.8) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([3875b31](https://github.com/claudekit/claudekit-engineer/commit/3875b31e83a8b497b885d22d5550aa176c118df2))
+* **agents:** add active-plan awareness for report output coordination ([b5d8f9c](https://github.com/claudekit/claudekit-engineer/commit/b5d8f9c997c29e7b28b86ecd40dc873535c0d53f))
+* **commands:** add active-plan state check to prevent duplicate plan folders ([2096047](https://github.com/claudekit/claudekit-engineer/commit/209604760a24178919636731e451193e2b18f611)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **planning:** add active-plan state tracking to prevent version proliferation ([95625ad](https://github.com/claudekit/claudekit-engineer/commit/95625ad3ded678865762f108e804c0110906c626)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+
 ## [1.16.1-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.6...v1.16.1-beta.7) (2025-11-28)
 
 
