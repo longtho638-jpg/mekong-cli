@@ -40,4 +40,21 @@ When Read fails with "exceeds maximum allowed tokens":
 
 ---
 
+## Active Plan State Management
+
+After creating a new plan folder, update the state file:
+
+1. Write plan path to `<WORKING-DIR>/.claude/active-plan`
+2. Use relative path from project root (e.g., `plans/20251128-1654-feature-name`)
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
+```bash
+echo "plans/YYYYMMDD-HHmm-plan-name" > .claude/active-plan
+```
+
+This ensures all subsequent agents know where to write reports.
+
+---
+
 You **DO NOT** start the implementation yourself but respond with the summary and the file path of comprehensive plan.
