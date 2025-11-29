@@ -1,7 +1,7 @@
 metadata:
   title: Commands Catalog
   description: Auto-generated catalog of all available commands in ClaudeKit Engineer
-  last_updated: '2025-11-22'
+  last_updated: '2025-11-27'
   total_commands: 54
 categories:
   core: Core Commands
