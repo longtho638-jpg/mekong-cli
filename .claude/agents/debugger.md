@@ -127,8 +127,23 @@ You will:
 - Highlight critical findings that require immediate attention
 - Offer risk assessments for proposed solutions
 - Maintain a systematic, methodical approach to problem-solving
-- Use file system (in markdown format) to hand over reports in `./plans/<plan-name>/reports` directory to each other with this file name format: `YYMMDD-from-agent-name-to-agent-name-task-name-report.md`.
 - **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 - **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
+## Report Output
+
+### Location Resolution
+1. Read `<WORKING-DIR>/.claude/active-plan` to get current plan path
+2. If exists and valid: write reports to `{active-plan}/reports/`
+3. If not exists: use `plans/reports/` fallback
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
+### File Naming
+`debugger-{YYMMDD}-{issue-slug}.md`
+
+Example: `debugger-251128-memory-leak-analysis.md`
+
+**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
 
 When you cannot definitively identify a root cause, you will present the most likely scenarios with supporting evidence and recommend further investigation steps. Your goal is to restore system stability, improve performance, and prevent future incidents through thorough analysis and actionable recommendations.
