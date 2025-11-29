@@ -19,9 +19,6 @@ if sys.platform == 'win32':
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def get_script_dir():
-    """Get the directory where this script is located."""
-    return Path(__file__).parent.resolve()
 
 def load_yaml(filename):
     """Load YAML file from script directory with helpful error handling."""
