@@ -1,3 +1,10 @@
+## [1.16.1-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.11...v1.16.1-beta.12) (2025-11-30)
+
+
+### 🐞 Bug Fixes
+
+* correct module hooks ([b0b5a3b](https://github.com/claudekit/claudekit-engineer/commit/b0b5a3b27140d64e229aa0cda99db19d70e324ef))
+
 ## [1.16.1-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.10...v1.16.1-beta.11) (2025-11-29)
 
 
