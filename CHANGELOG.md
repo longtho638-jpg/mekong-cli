@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1...v1.16.2) (2025-11-30)
+
+
+### 🐞 Bug Fixes
+
+* correct module hooks ([b0b5a3b](https://github.com/claudekit/claudekit-engineer/commit/b0b5a3b27140d64e229aa0cda99db19d70e324ef))
+
 ## [1.16.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0...v1.16.1) (2025-11-29)
 
 
