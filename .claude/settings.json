@@ -11,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/dev-rules-reminder.js"
+            "command": "node .claude/hooks/dev-rules-reminder.cjs"
           }
         ]
       }
@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/scout-block.js"
+            "command": "node .claude/hooks/scout-block.cjs"
           }
         ]
       }

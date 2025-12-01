@@ -161,16 +161,24 @@ install_node_deps() {
     # Install global npm packages
     print_info "Installing global npm packages..."
 
-    declare -a npm_packages=(
-        "rmbg-cli"
-        "pnpm"
-        "wrangler"
-        "repomix"
+    # Package name to CLI command mapping (some packages have different CLI names)
+    declare -A npm_packages=(
+        ["rmbg-cli"]="rmbg"
+        ["pnpm"]="pnpm"
+        ["wrangler"]="wrangler"
+        ["repomix"]="repomix"
     )
 
-    for package in "${npm_packages[@]}"; do
-        if npm list -g "$package" >/dev/null 2>&1; then
-            print_success "$package already installed"
+    for package in "${!npm_packages[@]}"; do
+        cmd="${npm_packages[$package]}"
+
+        # Check CLI command first (handles standalone installs like brew, curl, etc.)
+        if command_exists "$cmd"; then
+            version=$("$cmd" --version 2>&1 | head -n1 || echo "available")
+            print_success "$package already installed ($version)"
+        # Fallback: check if installed via npm registry
+        elif npm list -g "$package" >/dev/null 2>&1; then
+            print_success "$package already installed via npm"
         else
             print_info "Installing $package..."
             npm install -g "$package" 2>/dev/null || {
