@@ -1,3 +1,11 @@
+## [1.16.3-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.2...v1.16.3-beta.1) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** convert ES6 imports to CommonJS for hook compatibility ([#103](https://github.com/claudekit/claudekit-engineer/issues/103)) ([9cd2e08](https://github.com/claudekit/claudekit-engineer/commit/9cd2e082477328bf175af9b198bb6c66a2af2755)), closes [#86](https://github.com/claudekit/claudekit-engineer/issues/86)
+* **install:** use command-first detection for npm packages ([#101](https://github.com/claudekit/claudekit-engineer/issues/101)) ([e162508](https://github.com/claudekit/claudekit-engineer/commit/e1625087dd832e136ce0f73aff635c9b930454d9))
+
 ## [1.16.2](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1...v1.16.2) (2025-11-30)
 
 
