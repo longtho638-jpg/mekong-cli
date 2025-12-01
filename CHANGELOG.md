@@ -1,3 +1,10 @@
+## [1.18.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.6...v1.18.0-beta.7) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* robust venv creation with ensurepip fallback and validation ([b2b81c5](https://github.com/claudekit/claudekit-engineer/commit/b2b81c5846cdc8d8db140ad09259498cd78973dd))
+
 ## [1.18.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.5...v1.18.0-beta.6) (2025-12-01)
 
 
