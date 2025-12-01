@@ -1,3 +1,10 @@
+## [1.18.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.4...v1.18.0-beta.5) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* handle corrupted venv in skills install script ([b90928f](https://github.com/claudekit/claudekit-engineer/commit/b90928fd71ea0d9038521a358074559d71e53cf0))
+
 ## [1.18.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.3...v1.18.0-beta.4) (2025-12-01)
 
 
