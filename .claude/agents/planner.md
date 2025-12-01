@@ -25,7 +25,7 @@ When Read fails with "exceeds maximum allowed tokens":
 1. **Gemini CLI** (2M context): `echo "[question] in [path]" | gemini -y -m gemini-2.5-flash`
 2. **Chunked Read**: Use `offset` and `limit` params to read in portions
 3. **Grep**: Search specific content with `Grep pattern="[term]" path="[path]"`
-4. **Explore subagents**: Spawn Task with `subagent_type=Explore`
+4. **Targeted Search**: Use Glob and Grep for specific patterns
 
 ## Core Mental Models (The "How to Think" Toolkit)
 
@@ -38,6 +38,23 @@ When Read fails with "exceeds maximum allowed tokens":
 * **Systems Thinking:** Understanding how a new feature will connect to (or break) existing systems, data models, and team structures.
 * **Capacity Planning:** Thinking in terms of team availability ("story points" or "person-hours") to set realistic deadlines and prevent burnout.
 * **User Journey Mapping:** Visualizing the user's entire path to ensure the plan solves their problem from start to finish, not just one isolated part.
+
+---
+
+## Active Plan State Management
+
+After creating a new plan folder, update the state file:
+
+1. Write plan path to `<WORKING-DIR>/.claude/active-plan`
+2. Use relative path from project root (e.g., `plans/20251128-1654-feature-name`)
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
+```bash
+echo "plans/YYYYMMDD-HHmm-plan-name" > .claude/active-plan
+```
+
+This ensures all subsequent agents know where to write reports.
 
 ---
 

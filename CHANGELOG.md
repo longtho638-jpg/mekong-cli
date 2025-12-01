@@ -1,3 +1,126 @@
+## [1.16.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.0...v1.16.1) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* `/code` enhancement ([805c503](https://github.com/claudekit/claudekit-engineer/commit/805c503f068be2b13820db6e3baf0c2a58551187))
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([2cd71c3](https://github.com/claudekit/claudekit-engineer/commit/2cd71c3ff02c30b4efa2e369cc10f5be53e9cb2e))
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([869a3b8](https://github.com/claudekit/claudekit-engineer/commit/869a3b8b94a7e62898851b1b2f03692af43aa3f6))
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([3875b31](https://github.com/claudekit/claudekit-engineer/commit/3875b31e83a8b497b885d22d5550aa176c118df2))
+* **agents:** add active-plan awareness for report output coordination ([95a47f3](https://github.com/claudekit/claudekit-engineer/commit/95a47f340f73094dae015cda703d0d4fdd3f49bd))
+* **agents:** add active-plan awareness for report output coordination ([d46f64e](https://github.com/claudekit/claudekit-engineer/commit/d46f64e32fe006e238fbab47d130637242057da6))
+* **agents:** add active-plan awareness for report output coordination ([b5d8f9c](https://github.com/claudekit/claudekit-engineer/commit/b5d8f9c997c29e7b28b86ecd40dc873535c0d53f))
+* **agents:** add large file handling guidance to scout and planner agents ([#73](https://github.com/claudekit/claudekit-engineer/issues/73)) ([7142429](https://github.com/claudekit/claudekit-engineer/commit/71424298f5093132c90c0a0d16222303181cceee)), closes [#66](https://github.com/claudekit/claudekit-engineer/issues/66)
+* **agents:** extend active-plan awareness to 8 doc-producing agents ([e252544](https://github.com/claudekit/claudekit-engineer/commit/e252544f579d7d19a475c1610f64e11c7094fa50)), closes [#91](https://github.com/claudekit/claudekit-engineer/issues/91)
+* **agents:** extend active-plan awareness to 8 doc-producing agents ([609e279](https://github.com/claudekit/claudekit-engineer/commit/609e279896d8987c99c11480add59b1020f9facb)), closes [#91](https://github.com/claudekit/claudekit-engineer/issues/91)
+* **agents:** prevent subagents from spawning subagents in docs commands ([7af8924](https://github.com/claudekit/claudekit-engineer/commit/7af89249822e6006beb2b5d51692f0e10cd3869f)), closes [#68](https://github.com/claudekit/claudekit-engineer/issues/68)
+* **agents:** prevent subagents from spawning subagents in docs commands ([7730212](https://github.com/claudekit/claudekit-engineer/commit/7730212345e87668ca0e1853bb5596f63631e37c)), closes [#68](https://github.com/claudekit/claudekit-engineer/issues/68)
+* **catalog-generation:** resolve .claude paths relative to home directory ([ae017a8](https://github.com/claudekit/claudekit-engineer/commit/ae017a8d8de10ef736eae60aaf54071d9af0460d))
+* **commands:** add active-plan state check to prevent duplicate plan folders ([c81cc8d](https://github.com/claudekit/claudekit-engineer/commit/c81cc8de33884a11a8c2f60e76160479655b2922)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **commands:** add active-plan state check to prevent duplicate plan folders ([f2a8c22](https://github.com/claudekit/claudekit-engineer/commit/f2a8c22e65b20a108aeef60d691a933f9a5be6dc)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **commands:** add active-plan state check to prevent duplicate plan folders ([2096047](https://github.com/claudekit/claudekit-engineer/commit/209604760a24178919636731e451193e2b18f611)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* enhance `/code` command (thanks [@dta](https://github.com/dta).teks) ([f7b1c3c](https://github.com/claudekit/claudekit-engineer/commit/f7b1c3cef87d5523506262413d6e53b6820ae65b))
+* enhance `ai-multimodal` skills with detailed instructions & descriptions ([a36b2bc](https://github.com/claudekit/claudekit-engineer/commit/a36b2bcd0263f74673f9f616d7a338b317b9e620))
+* **env:** resolve GEMINI_API_KEY detection without python-dotenv ([#94](https://github.com/claudekit/claudekit-engineer/issues/94)) ([bf8ad35](https://github.com/claudekit/claudekit-engineer/commit/bf8ad355c60110c13241ba41cb90a373b9d26753)), closes [#92](https://github.com/claudekit/claudekit-engineer/issues/92)
+* **env:** resolve GEMINI_API_KEY detection without python-dotenv ([#94](https://github.com/claudekit/claudekit-engineer/issues/94)) ([4080442](https://github.com/claudekit/claudekit-engineer/commit/4080442c96257b2cc990c9e4e18369f730515b37)), closes [#92](https://github.com/claudekit/claudekit-engineer/issues/92)
+* **hooks:** respect .ckignore patterns in scout-block hook ([#64](https://github.com/claudekit/claudekit-engineer/issues/64)) ([#70](https://github.com/claudekit/claudekit-engineer/issues/70)) ([c0b73d7](https://github.com/claudekit/claudekit-engineer/commit/c0b73d7df0c76fd4e80163a9d51f0bc545c2fd1b))
+* issue of `ai-multimodal` skill generate video with start/end frame ([e7e74d5](https://github.com/claudekit/claudekit-engineer/commit/e7e74d5c9a90fd1d0d778ed6fe047796983f61bb))
+* **planning:** add active-plan state tracking to prevent version proliferation ([13a19f6](https://github.com/claudekit/claudekit-engineer/commit/13a19f62d74552afb2998ed62e011f1c860d1006)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **planning:** add active-plan state tracking to prevent version proliferation ([572769b](https://github.com/claudekit/claudekit-engineer/commit/572769b82b36b02af19434ca9931f464e146c9e2)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **planning:** add active-plan state tracking to prevent version proliferation ([95625ad](https://github.com/claudekit/claudekit-engineer/commit/95625ad3ded678865762f108e804c0110906c626)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **scripts:** resolve path issues in generate_catalogs.py ([#75](https://github.com/claudekit/claudekit-engineer/issues/75)) ([#89](https://github.com/claudekit/claudekit-engineer/issues/89)) ([adbfc17](https://github.com/claudekit/claudekit-engineer/commit/adbfc17992cbdaf96f7d09e0d9a18957fd090388))
+* **scripts:** resolve path issues in generate_catalogs.py ([#75](https://github.com/claudekit/claudekit-engineer/issues/75)) ([#89](https://github.com/claudekit/claudekit-engineer/issues/89)) ([1a0281b](https://github.com/claudekit/claudekit-engineer/commit/1a0281bc260453029b8ec1aa1d47b4c57f72b1a9))
+* **skills:** resolve PowerShell install script failures on Windows ([#90](https://github.com/claudekit/claudekit-engineer/issues/90)) ([361b947](https://github.com/claudekit/claudekit-engineer/commit/361b9479d19ec0f476bb4ab8fcb539d15dff69a5)), closes [#71](https://github.com/claudekit/claudekit-engineer/issues/71) [#71](https://github.com/claudekit/claudekit-engineer/issues/71)
+* **skills:** resolve PowerShell install script failures on Windows ([#90](https://github.com/claudekit/claudekit-engineer/issues/90)) ([ac23b6f](https://github.com/claudekit/claudekit-engineer/commit/ac23b6f4355b954382a0a8548de3593ab18733c5)), closes [#71](https://github.com/claudekit/claudekit-engineer/issues/71) [#71](https://github.com/claudekit/claudekit-engineer/issues/71)
+* use `gemini` command (free) to analyze images first ([40971c1](https://github.com/claudekit/claudekit-engineer/commit/40971c18b3ae1bde95b67c1cc224493e05160dd6))
+
+
+### ♻️ Code Refactoring
+
+* **.claude:** rename hook files to .cjs extension ([4de71d2](https://github.com/claudekit/claudekit-engineer/commit/4de71d2e93cc4cb911fd892705dc6ccb8a0f1462))
+
+
+### ⚡ Performance Improvements
+
+* **fix-logs:** optimize log reading with Grep head_limit and permanent piping ([#72](https://github.com/claudekit/claudekit-engineer/issues/72)) ([18d4a24](https://github.com/claudekit/claudekit-engineer/commit/18d4a2425a156ad6f979fcc299585bd4ce615ccd)), closes [#65](https://github.com/claudekit/claudekit-engineer/issues/65)
+* use `haiku` for `docs-manager`, `journal`, `tester` and `opus` for `planner` ([e486124](https://github.com/claudekit/claudekit-engineer/commit/e4861243aea1d41acd7d85903eaf5718357e774a))
+
+## [1.16.1-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.10...v1.16.1-beta.11) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([2cd71c3](https://github.com/claudekit/claudekit-engineer/commit/2cd71c3ff02c30b4efa2e369cc10f5be53e9cb2e))
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([869a3b8](https://github.com/claudekit/claudekit-engineer/commit/869a3b8b94a7e62898851b1b2f03692af43aa3f6))
+* **agents:** add active-plan awareness for report output coordination ([95a47f3](https://github.com/claudekit/claudekit-engineer/commit/95a47f340f73094dae015cda703d0d4fdd3f49bd))
+* **agents:** add active-plan awareness for report output coordination ([d46f64e](https://github.com/claudekit/claudekit-engineer/commit/d46f64e32fe006e238fbab47d130637242057da6))
+* **agents:** extend active-plan awareness to 8 doc-producing agents ([e252544](https://github.com/claudekit/claudekit-engineer/commit/e252544f579d7d19a475c1610f64e11c7094fa50)), closes [#91](https://github.com/claudekit/claudekit-engineer/issues/91)
+* **agents:** prevent subagents from spawning subagents in docs commands ([7af8924](https://github.com/claudekit/claudekit-engineer/commit/7af89249822e6006beb2b5d51692f0e10cd3869f)), closes [#68](https://github.com/claudekit/claudekit-engineer/issues/68)
+* **catalog-generation:** resolve .claude paths relative to home directory ([ae017a8](https://github.com/claudekit/claudekit-engineer/commit/ae017a8d8de10ef736eae60aaf54071d9af0460d))
+* **commands:** add active-plan state check to prevent duplicate plan folders ([c81cc8d](https://github.com/claudekit/claudekit-engineer/commit/c81cc8de33884a11a8c2f60e76160479655b2922)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **commands:** add active-plan state check to prevent duplicate plan folders ([f2a8c22](https://github.com/claudekit/claudekit-engineer/commit/f2a8c22e65b20a108aeef60d691a933f9a5be6dc)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **env:** resolve GEMINI_API_KEY detection without python-dotenv ([#94](https://github.com/claudekit/claudekit-engineer/issues/94)) ([bf8ad35](https://github.com/claudekit/claudekit-engineer/commit/bf8ad355c60110c13241ba41cb90a373b9d26753)), closes [#92](https://github.com/claudekit/claudekit-engineer/issues/92)
+* issue of `ai-multimodal` skill generate video with start/end frame ([e7e74d5](https://github.com/claudekit/claudekit-engineer/commit/e7e74d5c9a90fd1d0d778ed6fe047796983f61bb))
+* **planning:** add active-plan state tracking to prevent version proliferation ([13a19f6](https://github.com/claudekit/claudekit-engineer/commit/13a19f62d74552afb2998ed62e011f1c860d1006)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **planning:** add active-plan state tracking to prevent version proliferation ([572769b](https://github.com/claudekit/claudekit-engineer/commit/572769b82b36b02af19434ca9931f464e146c9e2)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **scripts:** resolve path issues in generate_catalogs.py ([#75](https://github.com/claudekit/claudekit-engineer/issues/75)) ([#89](https://github.com/claudekit/claudekit-engineer/issues/89)) ([adbfc17](https://github.com/claudekit/claudekit-engineer/commit/adbfc17992cbdaf96f7d09e0d9a18957fd090388))
+* **skills:** resolve PowerShell install script failures on Windows ([#90](https://github.com/claudekit/claudekit-engineer/issues/90)) ([361b947](https://github.com/claudekit/claudekit-engineer/commit/361b9479d19ec0f476bb4ab8fcb539d15dff69a5)), closes [#71](https://github.com/claudekit/claudekit-engineer/issues/71) [#71](https://github.com/claudekit/claudekit-engineer/issues/71)
+
+
+### ♻️ Code Refactoring
+
+* **.claude:** rename hook files to .cjs extension ([4de71d2](https://github.com/claudekit/claudekit-engineer/commit/4de71d2e93cc4cb911fd892705dc6ccb8a0f1462))
+
+
+### ⚡ Performance Improvements
+
+* use `haiku` for `docs-manager`, `journal`, `tester` and `opus` for `planner` ([e486124](https://github.com/claudekit/claudekit-engineer/commit/e4861243aea1d41acd7d85903eaf5718357e774a))
+
+## [1.16.1-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.9...v1.16.1-beta.10) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **env:** resolve GEMINI_API_KEY detection without python-dotenv ([#94](https://github.com/claudekit/claudekit-engineer/issues/94)) ([4080442](https://github.com/claudekit/claudekit-engineer/commit/4080442c96257b2cc990c9e4e18369f730515b37)), closes [#92](https://github.com/claudekit/claudekit-engineer/issues/92)
+
+## [1.16.1-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.8...v1.16.1-beta.9) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **agents:** extend active-plan awareness to 8 doc-producing agents ([609e279](https://github.com/claudekit/claudekit-engineer/commit/609e279896d8987c99c11480add59b1020f9facb)), closes [#91](https://github.com/claudekit/claudekit-engineer/issues/91)
+
+## [1.16.1-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.7...v1.16.1-beta.8) (2025-11-29)
+
+
+### 🐞 Bug Fixes
+
+* **active-plan:** use WORKING-DIR prefix to bypass CLI transformer ([3875b31](https://github.com/claudekit/claudekit-engineer/commit/3875b31e83a8b497b885d22d5550aa176c118df2))
+* **agents:** add active-plan awareness for report output coordination ([b5d8f9c](https://github.com/claudekit/claudekit-engineer/commit/b5d8f9c997c29e7b28b86ecd40dc873535c0d53f))
+* **commands:** add active-plan state check to prevent duplicate plan folders ([2096047](https://github.com/claudekit/claudekit-engineer/commit/209604760a24178919636731e451193e2b18f611)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+* **planning:** add active-plan state tracking to prevent version proliferation ([95625ad](https://github.com/claudekit/claudekit-engineer/commit/95625ad3ded678865762f108e804c0110906c626)), closes [#74](https://github.com/claudekit/claudekit-engineer/issues/74)
+
+## [1.16.1-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.6...v1.16.1-beta.7) (2025-11-28)
+
+
+### 🐞 Bug Fixes
+
+* **skills:** resolve PowerShell install script failures on Windows ([#90](https://github.com/claudekit/claudekit-engineer/issues/90)) ([ac23b6f](https://github.com/claudekit/claudekit-engineer/commit/ac23b6f4355b954382a0a8548de3593ab18733c5)), closes [#71](https://github.com/claudekit/claudekit-engineer/issues/71) [#71](https://github.com/claudekit/claudekit-engineer/issues/71)
+
+## [1.16.1-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.5...v1.16.1-beta.6) (2025-11-28)
+
+
+### 🐞 Bug Fixes
+
+* **scripts:** resolve path issues in generate_catalogs.py ([#75](https://github.com/claudekit/claudekit-engineer/issues/75)) ([#89](https://github.com/claudekit/claudekit-engineer/issues/89)) ([1a0281b](https://github.com/claudekit/claudekit-engineer/commit/1a0281bc260453029b8ec1aa1d47b4c57f72b1a9))
+
+## [1.16.1-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.4...v1.16.1-beta.5) (2025-11-27)
+
+
+### 🐞 Bug Fixes
+
+* **agents:** prevent subagents from spawning subagents in docs commands ([7730212](https://github.com/claudekit/claudekit-engineer/commit/7730212345e87668ca0e1853bb5596f63631e37c)), closes [#68](https://github.com/claudekit/claudekit-engineer/issues/68)
+
 ## [1.16.1-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.3...v1.16.1-beta.4) (2025-11-27)
 
 

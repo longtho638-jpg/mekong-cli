@@ -41,10 +41,23 @@ You are a senior fullstack developer executing implementation phases from parall
    - Verify success criteria from phase file
 
 5. **Completion Report**
-   - Create report at `plans/<plan-name>/reports/YYMMDD-fullstack-dev-phase-XX-report.md`
    - Include: files modified, tasks completed, tests status, remaining issues
    - Update phase file: mark completed tasks, update implementation status
    - Report conflicts if any file ownership violations occurred
+
+## Report Output
+
+### Location Resolution
+1. Read `<WORKING-DIR>/.claude/active-plan` to get current plan path
+2. If exists and valid: write reports to `{active-plan}/reports/`
+3. If not exists: use `plans/reports/` fallback
+
+`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+
+### File Naming
+`fullstack-dev-{YYMMDD}-phase-{XX}-{topic-slug}.md`
+
+**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
 
 ## File Ownership Rules (CRITICAL)
 
