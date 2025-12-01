@@ -41,7 +41,32 @@ detect_os() {
     fi
 }
 
+# Check Bash version (3.2+ required for compatibility)
+check_bash_version() {
+    # Get major version number
+    bash_major="${BASH_VERSINFO[0]}"
+
+    if [ "$bash_major" -lt 3 ]; then
+        print_error "Bash 3.0+ required (found Bash $BASH_VERSION)"
+        print_info "Please upgrade Bash and re-run this script"
+        exit 1
+    fi
+
+    if [ "$bash_major" -lt 4 ]; then
+        print_warning "Bash 3.x detected (Bash 4+ recommended)"
+
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            print_info "macOS ships with Bash 3.2 by default"
+            print_info "For better compatibility: brew install bash"
+            print_info "Then use: /usr/local/bin/bash install.sh"
+        fi
+
+        print_info "Continuing with compatibility mode..."
+    fi
+}
+
 OS=$(detect_os)
+check_bash_version
 
 # Print functions
 print_header() {
@@ -162,15 +187,17 @@ install_node_deps() {
     print_info "Installing global npm packages..."
 
     # Package name to CLI command mapping (some packages have different CLI names)
-    declare -A npm_packages=(
-        ["rmbg-cli"]="rmbg"
-        ["pnpm"]="pnpm"
-        ["wrangler"]="wrangler"
-        ["repomix"]="repomix"
+    # Using indexed array with colon-separated pairs for Bash 3.2+ compatibility
+    npm_packages=(
+        "rmbg-cli:rmbg"
+        "pnpm:pnpm"
+        "wrangler:wrangler"
+        "repomix:repomix"
     )
 
-    for package in "${!npm_packages[@]}"; do
-        cmd="${npm_packages[$package]}"
+    for package_pair in "${npm_packages[@]}"; do
+        # Split "package:command" on colon
+        IFS=':' read -r package cmd <<< "$package_pair"
 
         # Check CLI command first (handles standalone installs like brew, curl, etc.)
         if command_exists "$cmd"; then
@@ -236,6 +263,10 @@ install_node_deps() {
 setup_python_env() {
     print_header "Setting Up Python Environment"
 
+    # Track successful and failed installations
+    local successful_skills=()
+    local failed_skills=()
+
     # Check Python
     if command_exists python3; then
         PYTHON_VERSION=$(python3 --version)
@@ -258,9 +289,18 @@ setup_python_env() {
     print_info "Activating virtual environment..."
     source "$VENV_DIR/bin/activate"
 
-    # Upgrade pip
+    # Create log directory
+    local LOG_DIR="$VENV_DIR/logs"
+    mkdir -p "$LOG_DIR"
+
+    # Upgrade pip with logging
     print_info "Upgrading pip..."
-    pip install --upgrade pip >/dev/null 2>&1
+    if pip install --upgrade pip 2>&1 | tee "$LOG_DIR/pip-upgrade.log" | tail -n 3; then
+        print_success "pip upgraded successfully"
+    else
+        print_warning "pip upgrade failed (continuing anyway)"
+        print_info "See log: $LOG_DIR/pip-upgrade.log"
+    fi
 
     # Install dependencies from all skills' requirements.txt files
     print_info "Installing Python dependencies from all skills..."
@@ -277,26 +317,83 @@ setup_python_env() {
 
             # Install main requirements.txt
             if [ -f "$skill_dir/scripts/requirements.txt" ]; then
+                local SKILL_LOG="$LOG_DIR/install-${skill_name}.log"
+
                 print_info "Installing $skill_name dependencies..."
-                pip install -r "$skill_dir/scripts/requirements.txt" --quiet 2>&1 || {
-                    print_warning "Some $skill_name dependencies failed to install (may be optional)"
-                }
-                ((installed_count++))
+
+                if pip install -r "$skill_dir/scripts/requirements.txt" 2>&1 | tee "$SKILL_LOG"; then
+                    print_success "$skill_name dependencies installed successfully"
+                    successful_skills+=("$skill_name")
+                    ((installed_count++))
+                else
+                    print_error "$skill_name dependencies FAILED to install"
+                    print_info "Error details saved to: $SKILL_LOG"
+                    print_info "Last 10 lines of error:"
+                    tail -n 10 "$SKILL_LOG" | sed 's/^/  /'
+                    failed_skills+=("$skill_name")
+                    # Do NOT increment installed_count
+                fi
             fi
 
             # Install test requirements.txt
             if [ -f "$skill_dir/scripts/tests/requirements.txt" ]; then
-                pip install -r "$skill_dir/scripts/tests/requirements.txt" --quiet 2>&1 || {
-                    print_warning "Some $skill_name test dependencies failed to install (may be optional)"
-                }
+                local SKILL_TEST_LOG="$LOG_DIR/install-${skill_name}-tests.log"
+
+                print_info "Installing $skill_name test dependencies..."
+
+                if pip install -r "$skill_dir/scripts/tests/requirements.txt" 2>&1 | tee "$SKILL_TEST_LOG"; then
+                    print_success "$skill_name test dependencies installed successfully"
+                else
+                    print_warning "$skill_name test dependencies failed to install"
+                    print_info "Error log: $SKILL_TEST_LOG"
+                    print_info "Last 10 lines:"
+                    tail -n 10 "$SKILL_TEST_LOG" | sed 's/^/  /'
+                    # Don't fail installation if test deps fail (less critical)
+                fi
             fi
         fi
     done
 
-    if [ $installed_count -eq 0 ]; then
+    # Print installation summary
+    print_header "Python Dependencies Installation Summary"
+
+    if [ ${#successful_skills[@]} -gt 0 ]; then
+        print_success "Successfully installed ${#successful_skills[@]} skill(s):"
+        for skill in "${successful_skills[@]}"; do
+            echo "  ✓ $skill"
+        done
+    fi
+
+    if [ ${#failed_skills[@]} -gt 0 ]; then
+        echo ""  # Blank line for separation
+        print_error "Failed to install ${#failed_skills[@]} skill(s):"
+        for skill in "${failed_skills[@]}"; do
+            echo "  ✗ $skill"
+        done
+        echo ""
+        print_info "Review error logs for details:"
+        print_info "  ls $LOG_DIR/install-*.log"
+        echo ""
+        print_info "Common issues:"
+        print_info "  - Missing C compiler (gcc/clang)"
+        print_info "  - Missing Python development headers (python3-dev)"
+        print_info "  - Missing system libraries (libjpeg-dev, libssl-dev, zlib1g-dev)"
+        echo ""
+        if [[ "$OS" == "linux" ]]; then
+            print_info "Install on Debian/Ubuntu:"
+            print_info "  sudo apt-get install gcc python3-dev libjpeg-dev zlib1g-dev libssl-dev"
+        elif [[ "$OS" == "macos" ]]; then
+            print_info "Install on macOS:"
+            print_info "  xcode-select --install"
+            print_info "  brew install jpeg libpng openssl"
+        fi
+        echo ""
+        deactivate
+        exit 1  # Fail if any skills failed
+    elif [ ${#successful_skills[@]} -eq 0 ]; then
         print_warning "No skill requirements.txt files found"
     else
-        print_success "Installed Python dependencies from $installed_count skills"
+        print_success "All Python dependencies installed successfully"
     fi
 
     deactivate
