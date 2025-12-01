@@ -1,3 +1,22 @@
+## [1.18.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.9...v1.18.0-beta.10) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* `/fix:hard` should ask user for clarifications ([605f6b2](https://github.com/claudekit/claudekit-engineer/commit/605f6b28bf0fa22dc267c6bfae1e1437e14a05b4))
+* allow research in `/skill:add` & `/skill:fix` ([3c7d27f](https://github.com/claudekit/claudekit-engineer/commit/3c7d27f19a35060bb554e7c9552c46cb95983c6c))
+
+
+### 📚 Documentation
+
+* fix discord link in readme ([049151f](https://github.com/claudekit/claudekit-engineer/commit/049151f5bba097f8728398aaae72f902598c8fcc)), closes [#112](https://github.com/claudekit/claudekit-engineer/issues/112)
+
+
+### ⚡ Performance Improvements
+
+* `/skill:create` can ask for clarifications ([7f447eb](https://github.com/claudekit/claudekit-engineer/commit/7f447eb267f8115edd0d1b5eb9a1f1c390820ce9))
+* new command: `/code:no-test` 😅 ([0cf49e4](https://github.com/claudekit/claudekit-engineer/commit/0cf49e4a0f6058de274344228bc8372b817e6358))
+
 ## [1.18.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.8...v1.18.0-beta.9) (2025-12-01)
 
 
