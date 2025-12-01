@@ -1,3 +1,10 @@
+## [1.18.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.8...v1.18.0-beta.9) (2025-12-01)
+
+
+### 🚀 Features
+
+* **commands:** add /ck-help command for ClaudeKit usage guide ([#114](https://github.com/claudekit/claudekit-engineer/issues/114)) ([8234cf3](https://github.com/claudekit/claudekit-engineer/commit/8234cf30caf13b1bb012f2aa9d2ff9e7d327d034)), closes [#99](https://github.com/claudekit/claudekit-engineer/issues/99)
+
 ## [1.18.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.7...v1.18.0-beta.8) (2025-12-01)
 
 
