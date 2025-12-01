@@ -1,3 +1,10 @@
+## [1.18.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.2...v1.18.0-beta.3) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* skills installation fails on macOS and hides pip errors ([#110](https://github.com/claudekit/claudekit-engineer/issues/110)) ([c33167b](https://github.com/claudekit/claudekit-engineer/commit/c33167b26ef8220ebded794f57896fd773c5fb53)), closes [#108](https://github.com/claudekit/claudekit-engineer/issues/108)
+
 ## [1.18.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.1...v1.18.0-beta.2) (2025-12-01)
 
 
