@@ -1,3 +1,10 @@
+## [1.16.1-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.13...v1.16.1-beta.14) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** convert ES6 imports to CommonJS for hook compatibility ([#103](https://github.com/claudekit/claudekit-engineer/issues/103)) ([9cd2e08](https://github.com/claudekit/claudekit-engineer/commit/9cd2e082477328bf175af9b198bb6c66a2af2755)), closes [#86](https://github.com/claudekit/claudekit-engineer/issues/86)
+
 ## [1.16.1-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.12...v1.16.1-beta.13) (2025-12-01)
 
 
