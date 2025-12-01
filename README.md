@@ -572,7 +572,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Agent Development Guide](https://docs.opencode.ai/agents)
 
 ### Community
-- [Claude Code Community](https://discord.gg/claude-code)
+- [ClaudeKit Community](https://claudekit.cc/discord)
 - [Discussion Forum](https://github.com/anthropic/claude-code/discussions)
 - [Example Projects](https://github.com/topics/claude-code)
 
