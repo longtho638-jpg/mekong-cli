@@ -1,5 +1,5 @@
 ---
-description: ⚡⚡⚡ Start coding & testing an existing plan
+description: ⚡⚡ Start coding an existing plan (no testing)
 argument-hint: [plan]
 ---
 
@@ -53,8 +53,7 @@ Read plan file completely. Map dependencies between tasks. List ambiguities or b
 - Look for tasks/steps/phases/sections/numbered/bulleted lists
 - MUST convert to TodoWrite tasks:
   - Phase Implementation tasks → Step 2.X (Step 2.1, Step 2.2, etc.)
-  - Phase Testing tasks → Step 3.X (Step 3.1, Step 3.2, etc.)
-  - Phase Code Review tasks → Step 4.X (Step 4.1, Step 4.2, etc.)
+  - Phase Code Review tasks → Step 3.X (Step 3.1, Step 3.2, etc.)
 - Ensure each task has UNIQUE name (increment X for each task)
 - Add tasks to TodoWrite after their corresponding command step
 
@@ -74,53 +73,39 @@ Mark Step 2 complete in TodoWrite, mark Step 3 in_progress.
 
 ---
 
-## Step 3: Testing
-
-Write tests covering happy path, edge cases, and error cases. Call `tester` subagent: "Run test suite for plan phase [phase-name]". If ANY tests fail: STOP, call `debugger` subagent: "Analyze failures: [details]", fix all issues, re-run `tester`. Repeat until 100% pass.
-
-**Testing standards:** Unit tests may use mocks for external dependencies (APIs, DB). Integration tests use test environment. E2E tests use real but isolated data. Forbidden: commenting out tests, changing assertions to pass, TODO/FIXME to defer fixes.
-
-**Output:** `✓ Step 3: Tests [X/X passed] - All requirements met`
-
-**Validation:** If X ≠ total, Step 3 INCOMPLETE - do not proceed.
-
-Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
-
----
-
-## Step 4: Code Review
+## Step 3: Code Review
 
 Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY". If critical issues found: STOP, fix all, re-run `tester` to verify, re-run `code-reviewer`. Repeat until no critical issues.
 
 **Critical issues:** Security vulnerabilities (XSS, SQL injection, OWASP), performance bottlenecks, architectural violations, principle violations.
 
-**Output:** `✓ Step 4: Code reviewed - [0] critical issues`
+**Output:** `✓ Step 3: Code reviewed - [0] critical issues`
 
-**Validation:** If critical issues > 0, Step 4 INCOMPLETE - do not proceed.
+**Validation:** If critical issues > 0, Step 3 INCOMPLETE - do not proceed.
+
+Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
+
+---
+
+## Step 4: User Approval ⏸ BLOCKING GATE
+
+Present summary (3-5 bullets): what implemented, code review outcome.
+
+**Ask user explicitly:** "Phase implementation complete. Code reviewed. Approve changes?"
+
+**Stop and wait** - do not output Step 5 content until user responds.
+
+**Output (while waiting):** `⏸ Step 4: WAITING for user approval`
+
+**Output (after approval):** `✓ Step 4: User approved - Ready to complete`
 
 Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 
 ---
 
-## Step 5: User Approval ⏸ BLOCKING GATE
+## Step 5: Finalize
 
-Present summary (3-5 bullets): what implemented, tests [X/X passed], code review outcome.
-
-**Ask user explicitly:** "Phase implementation complete. All tests pass, code reviewed. Approve changes?"
-
-**Stop and wait** - do not output Step 6 content until user responds.
-
-**Output (while waiting):** `⏸ Step 5: WAITING for user approval`
-
-**Output (after approval):** `✓ Step 5: User approved - Ready to complete`
-
-Mark Step 5 complete in TodoWrite, mark Step 6 in_progress.
-
----
-
-## Step 6: Finalize
-
-**Prerequisites:** User approved in Step 5 (verified above).
+**Prerequisites:** User approved in Step 4 (verified above).
 
 1. **STATUS UPDATE - BOTH MANDATORY - PARALLEL EXECUTION:**
 - **Call** `project-manager` sub-agent: "Update plan status in [plan-path]. Mark plan phase [phase-name] as DONE with timestamp. Update roadmap."
@@ -134,7 +119,7 @@ Mark Step 5 complete in TodoWrite, mark Step 6 in_progress.
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
-Mark Step 6 complete in TodoWrite.
+Mark Step 5 complete in TodoWrite.
 
 **Phase workflow finished. Ready for next plan phase.**
 
@@ -148,29 +133,26 @@ Mark Step 6 complete in TodoWrite.
 - Step 0: `✓ Step 0: [Plan Name] - [Phase Name]`
 - Step 1: `✓ Step 1: Found [N] tasks across [M] phases - Ambiguities: [list]`
 - Step 2: `✓ Step 2: Implemented [N] files - [X/Y] tasks complete`
-- Step 3: `✓ Step 3: Tests [X/X passed] - All requirements met`
-- Step 4: `✓ Step 4: Code reviewed - [0] critical issues`
-- Step 5: `✓ Step 5: User approved - Ready to complete`
-- Step 6: `✓ Step 6: Finalize - Status updated - Git committed`
+- Step 3: `✓ Step 3: Code reviewed - [0] critical issues`
+- Step 4: `✓ Step 4: User approved - Ready to complete`
+- Step 5: `✓ Step 5: Finalize - Status updated - Git committed`
 
 **If any "✓ Step N:" output missing, that step is INCOMPLETE.**
 
 **TodoWrite tracking required:** Initialize at Step 0, mark each step complete before next.
 
 **Mandatory subagent calls:**
-- Step 3: `tester`
-- Step 4: `code-reviewer`
-- Step 6: `project-manager` AND `docs-manager` (when user approves)
+- Step 3: `code-reviewer`
+- Step 4: `project-manager` AND `docs-manager` (when user approves)
 
 **Blocking gates:**
-- Step 3: Tests must be 100% passing
-- Step 4: Critical issues must be 0
-- Step 5: User must explicitly approve
-- Step 6: Both `project-manager` and `docs-manager` must complete successfully
+- Step 3: Critical issues must be 0
+- Step 4: User must explicitly approve
+- Step 5: Both `project-manager` and `docs-manager` must complete successfully
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails. Do not assume approval without user response.
 - One plan phase per command run. Command focuses on single plan phase only.
 - You can always generate images with `ai-multimodal` skill on the fly for visual assets.
 - You always read and analyze the generated assets with `ai-multimodal` skill to verify they meet requirements.
-- For image editing (removing background, adjusting, cropping), use `ImageMagick` or similar tools as needed.
+- For image editing (removing background, adjusting, cropping), use `media-processing` skill or similar tools as needed.

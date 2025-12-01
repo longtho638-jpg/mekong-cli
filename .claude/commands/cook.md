@@ -54,11 +54,11 @@ Think harder to plan & start working on these tasks follow the Orchestration Pro
 
 ### Implementation
 
-* Use `general agent (main agent)` to implement the plan step by step, follow the implementation plan in `./plans` directory.
+* Use `/code` Slash Command to implement the plan step by step, follow the implementation plan in `./plans` directory.
 * Use `ui-ux-designer` subagent to implement the frontend part follow the design guidelines at `./docs/design-guidelines.md` file.
   * Use `ai-multimodal` skill to generate image assets.
   * Use `ai-multimodal` skill to analyze and verify generated assets.
-  * Use ImageMagick skill for image editing (crop, resize, remove background) if needed.
+  * Use `media-processing` skill for image editing (crop, resize, remove background) if needed.
 * Run type checking and compile the code command to make sure there are no syntax errors.
 
 ### Testing
