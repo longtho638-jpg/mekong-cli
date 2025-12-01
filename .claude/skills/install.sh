@@ -277,20 +277,52 @@ setup_python_env() {
     fi
 
     # Create virtual environment (or recreate if corrupted)
+    create_venv() {
+        # Try normal venv creation first
+        if python3 -m venv "$VENV_DIR" 2>/dev/null; then
+            return 0
+        fi
+
+        # If ensurepip fails (common on macOS), create without pip and bootstrap manually
+        print_warning "Standard venv creation failed, trying without ensurepip..."
+        if python3 -m venv --without-pip "$VENV_DIR"; then
+            # Bootstrap pip manually with error handling
+            source "$VENV_DIR/bin/activate"
+            if ! curl -sS https://bootstrap.pypa.io/get-pip.py | python3; then
+                print_error "Failed to bootstrap pip (network issue or get-pip.py failed)"
+                deactivate
+                rm -rf "$VENV_DIR"
+                return 1
+            fi
+            deactivate
+            return 0
+        fi
+
+        return 1
+    }
+
     if [ -d "$VENV_DIR" ]; then
-        # Verify venv is valid by checking for activate script
-        if [ -f "$VENV_DIR/bin/activate" ]; then
+        # Verify venv is valid by checking for activate script AND python executable
+        if [ -f "$VENV_DIR/bin/activate" ] && [ -x "$VENV_DIR/bin/python3" ]; then
             print_success "Virtual environment already exists at $VENV_DIR"
         else
-            print_warning "Virtual environment is corrupted (missing bin/activate). Recreating..."
+            print_warning "Virtual environment is corrupted (missing activate or python3). Recreating..."
             rm -rf "$VENV_DIR"
-            python3 -m venv "$VENV_DIR"
-            print_success "Virtual environment recreated"
+            if create_venv; then
+                print_success "Virtual environment recreated"
+            else
+                print_error "Failed to create virtual environment"
+                exit 1
+            fi
         fi
     else
         print_info "Creating virtual environment at $VENV_DIR..."
-        python3 -m venv "$VENV_DIR"
-        print_success "Virtual environment created"
+        if create_venv; then
+            print_success "Virtual environment created"
+        else
+            print_error "Failed to create virtual environment"
+            exit 1
+        fi
     fi
 
     # Activate and install packages
