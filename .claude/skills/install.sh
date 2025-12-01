@@ -270,7 +270,23 @@ setup_python_env() {
     # Check Python
     if command_exists python3; then
         PYTHON_VERSION=$(python3 --version)
+        PYTHON_PATH=$(which python3)
         print_success "Python3 found ($PYTHON_VERSION)"
+
+        # Check for broken UV Python installation
+        if [[ "$PYTHON_PATH" == *"/.local/share/uv/"* ]]; then
+            # Verify UV Python works by testing venv creation
+            if ! python3 -c "import sys; sys.exit(0 if '/install' not in sys.base_prefix else 1)" 2>/dev/null; then
+                print_error "UV Python installation is broken (corrupted sys.base_prefix)"
+                print_info "Please reinstall Python using Homebrew:"
+                print_info "  brew install python@3.12"
+                print_info "  export PATH=\"/opt/homebrew/bin:\$PATH\""
+                print_info "Or fix UV Python:"
+                print_info "  uv python uninstall 3.12"
+                print_info "  uv python install 3.12"
+                exit 1
+            fi
+        fi
     else
         print_error "Python3 not found. Please install Python 3.7+"
         exit 1
