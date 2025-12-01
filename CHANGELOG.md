@@ -1,3 +1,10 @@
+## [1.18.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.7...v1.18.0-beta.8) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* detect and warn about broken UV Python installation ([7f58766](https://github.com/claudekit/claudekit-engineer/commit/7f5876649189f21a206591af07da022ad6f9d056))
+
 ## [1.18.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.6...v1.18.0-beta.7) (2025-12-01)
 
 
