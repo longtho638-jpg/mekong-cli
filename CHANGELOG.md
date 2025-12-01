@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/claudekit/claudekit-engineer/compare/v1.16.2...v1.16.3) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add dev-rules-reminder and scout-block hooks for improved development workflow ([fe004a0](https://github.com/claudekit/claudekit-engineer/commit/fe004a01168482f9bd44f104909e25cbccd8effd))
+
 ## [1.16.3-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.16.2...v1.16.3-beta.1) (2025-12-01)
 
 
