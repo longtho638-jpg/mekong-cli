@@ -324,7 +324,7 @@ setup_python_env() {
                 if pip install -r "$skill_dir/scripts/requirements.txt" 2>&1 | tee "$SKILL_LOG"; then
                     print_success "$skill_name dependencies installed successfully"
                     successful_skills+=("$skill_name")
-                    ((installed_count++))
+                    installed_count=$((installed_count + 1))
                 else
                     print_error "$skill_name dependencies FAILED to install"
                     print_info "Error details saved to: $SKILL_LOG"
