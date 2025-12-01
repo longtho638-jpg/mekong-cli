@@ -205,11 +205,14 @@ Use when tasks have dependencies:
 # Planning → Implementation → Testing → Review
 /plan "implement user dashboard"
 # Wait for plan completion, then:
-/cook "follow the implementation plan"
+/code  # Executes the plan
 # After implementation:
 /test "validate dashboard functionality"
 # Finally:
 /review "ensure code quality standards"
+
+# Alternative: Use /cook for standalone implementation (plans internally)
+/cook "implement user dashboard"
 ```
 
 ### Parallel Execution
