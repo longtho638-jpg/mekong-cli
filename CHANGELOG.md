@@ -1,3 +1,10 @@
+## [1.18.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.5...v1.18.0-beta.6) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **ai-multimodal:** auto-detect task from file extension ([#102](https://github.com/claudekit/claudekit-engineer/issues/102)) ([#113](https://github.com/claudekit/claudekit-engineer/issues/113)) ([230d04c](https://github.com/claudekit/claudekit-engineer/commit/230d04cb3f5e61a65089fb3c4605c7c1a1aa3699))
+
 ## [1.18.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.4...v1.18.0-beta.5) (2025-12-01)
 
 
