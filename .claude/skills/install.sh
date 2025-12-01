@@ -41,6 +41,29 @@ detect_os() {
     fi
 }
 
+# Print functions (must be defined before check_bash_version)
+print_header() {
+    echo -e "\n${BLUE}===================================================${NC}"
+    echo -e "${BLUE}$1${NC}"
+    echo -e "${BLUE}===================================================${NC}\n"
+}
+
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ${NC} $1"
+}
+
 # Check Bash version (3.2+ required for compatibility)
 check_bash_version() {
     # Get major version number
@@ -67,29 +90,6 @@ check_bash_version() {
 
 OS=$(detect_os)
 check_bash_version
-
-# Print functions
-print_header() {
-    echo -e "\n${BLUE}===================================================${NC}"
-    echo -e "${BLUE}$1${NC}"
-    echo -e "${BLUE}===================================================${NC}\n"
-}
-
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
-
-print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
-}
 
 # Check if command exists
 command_exists() {
