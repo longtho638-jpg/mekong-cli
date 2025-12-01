@@ -276,9 +276,17 @@ setup_python_env() {
         exit 1
     fi
 
-    # Create virtual environment
+    # Create virtual environment (or recreate if corrupted)
     if [ -d "$VENV_DIR" ]; then
-        print_success "Virtual environment already exists at $VENV_DIR"
+        # Verify venv is valid by checking for activate script
+        if [ -f "$VENV_DIR/bin/activate" ]; then
+            print_success "Virtual environment already exists at $VENV_DIR"
+        else
+            print_warning "Virtual environment is corrupted (missing bin/activate). Recreating..."
+            rm -rf "$VENV_DIR"
+            python3 -m venv "$VENV_DIR"
+            print_success "Virtual environment recreated"
+        fi
     else
         print_info "Creating virtual environment at $VENV_DIR..."
         python3 -m venv "$VENV_DIR"
