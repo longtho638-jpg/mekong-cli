@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/claudekit/claudekit-engineer/compare/v1.17.0...v1.17.1) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* correct license ([f260430](https://github.com/claudekit/claudekit-engineer/commit/f2604303037f80d018ea1e0c1890b708c29b0847))
+
 ## [1.17.0](https://github.com/claudekit/claudekit-engineer/compare/v1.16.3...v1.17.0) (2025-12-01)
 
 
