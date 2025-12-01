@@ -1,3 +1,10 @@
+## [1.16.1-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.12...v1.16.1-beta.13) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **install:** use command-first detection for npm packages ([#101](https://github.com/claudekit/claudekit-engineer/issues/101)) ([e162508](https://github.com/claudekit/claudekit-engineer/commit/e1625087dd832e136ce0f73aff635c9b930454d9))
+
 ## [1.16.1-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.16.1-beta.11...v1.16.1-beta.12) (2025-11-30)
 
 
