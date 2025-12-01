@@ -1,3 +1,10 @@
+## [1.17.0](https://github.com/claudekit/claudekit-engineer/compare/v1.16.3...v1.17.0) (2025-12-01)
+
+
+### 🚀 Features
+
+* **skills:** add ui-ux-pro-max design intelligence skill ([01d7ed1](https://github.com/claudekit/claudekit-engineer/commit/01d7ed133071cf040dfbf3faa39566e15cd6d0fe))
+
 ## [1.16.3](https://github.com/claudekit/claudekit-engineer/compare/v1.16.2...v1.16.3) (2025-12-01)
 
 
