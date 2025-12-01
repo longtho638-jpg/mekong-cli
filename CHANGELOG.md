@@ -1,3 +1,10 @@
+## [1.18.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.10...v1.18.0-beta.11) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* `/fix:hard` should utilize `/code` ([b144ad9](https://github.com/claudekit/claudekit-engineer/commit/b144ad91e7a9434b3e4fb29b04f9e69407b30486))
+
 ## [1.18.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.9...v1.18.0-beta.10) (2025-12-01)
 
 
