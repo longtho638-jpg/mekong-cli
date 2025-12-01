@@ -1,3 +1,21 @@
+## [1.18.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.17.1...v1.18.0-beta.1) (2025-12-01)
+
+
+### 🚀 Features
+
+* new command: `/git:merge <to> <from>` ([79e45f4](https://github.com/claudekit/claudekit-engineer/commit/79e45f4f3429b6d6907627a07e2468b9d85023df))
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** convert ES6 imports to CommonJS for hook compatibility ([#103](https://github.com/claudekit/claudekit-engineer/issues/103)) ([9cd2e08](https://github.com/claudekit/claudekit-engineer/commit/9cd2e082477328bf175af9b198bb6c66a2af2755)), closes [#86](https://github.com/claudekit/claudekit-engineer/issues/86)
+* **install:** use command-first detection for npm packages ([#101](https://github.com/claudekit/claudekit-engineer/issues/101)) ([e162508](https://github.com/claudekit/claudekit-engineer/commit/e1625087dd832e136ce0f73aff635c9b930454d9))
+
+
+### ⚡ Performance Improvements
+
+* use native `AskUserQuestion` tool for clarifications ([d342b8b](https://github.com/claudekit/claudekit-engineer/commit/d342b8bfb87c3a162870b4f35c794fafc10edd31))
+
 ## [1.17.1](https://github.com/claudekit/claudekit-engineer/compare/v1.17.0...v1.17.1) (2025-12-01)
 
 
