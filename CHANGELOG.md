@@ -1,3 +1,10 @@
+## [1.18.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.11...v1.18.0-beta.12) (2025-12-02)
+
+
+### 🐞 Bug Fixes
+
+* add proper sudo handling for Linux package installation ([#119](https://github.com/claudekit/claudekit-engineer/issues/119)) ([6453335](https://github.com/claudekit/claudekit-engineer/commit/6453335b80d10dc05e60543b17603296d47fae9b)), closes [#118](https://github.com/claudekit/claudekit-engineer/issues/118)
+
 ## [1.18.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.10...v1.18.0-beta.11) (2025-12-01)
 
 
