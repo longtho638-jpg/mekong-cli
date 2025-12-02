@@ -96,6 +96,124 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Check if user can run sudo (without password prompt in non-interactive mode)
+can_sudo() {
+    # Already root
+    if [[ $EUID -eq 0 ]]; then
+        return 0
+    fi
+    # Check for passwordless sudo
+    if sudo -n true 2>/dev/null; then
+        return 0
+    fi
+    return 1
+}
+
+# Track if we've already asked about sudo elevation
+SUDO_CHECKED=false
+SUDO_AVAILABLE=false
+
+# Check and prompt for sudo if needed (Linux only)
+check_sudo_access() {
+    if [[ "$OS" != "linux" ]]; then
+        return 0
+    fi
+
+    if [[ "$SUDO_CHECKED" == "true" ]]; then
+        return 0
+    fi
+    SUDO_CHECKED=true
+
+    # Already root
+    if [[ $EUID -eq 0 ]]; then
+        SUDO_AVAILABLE=true
+        return 0
+    fi
+
+    # Check for passwordless sudo
+    if sudo -n true 2>/dev/null; then
+        SUDO_AVAILABLE=true
+        return 0
+    fi
+
+    # Need to ask user
+    print_warning "Some packages (FFmpeg, ImageMagick) require sudo to install."
+
+    if [[ "$SKIP_CONFIRM" == "true" ]]; then
+        print_info "Running in non-interactive mode. Skipping packages requiring sudo."
+        print_info "Install manually: sudo apt-get install ffmpeg imagemagick"
+        SUDO_AVAILABLE=false
+        return 1
+    fi
+
+    echo ""
+    read -r -p "Do you want to enter your password to install system packages? [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            # Prompt for sudo password now (caches for subsequent commands)
+            if sudo -v; then
+                SUDO_AVAILABLE=true
+                print_success "Sudo access granted"
+                return 0
+            else
+                print_warning "Sudo authentication failed. Skipping system packages."
+                SUDO_AVAILABLE=false
+                return 1
+            fi
+            ;;
+        *)
+            print_info "Skipping system packages requiring sudo."
+            print_info "Install manually later: sudo apt-get install ffmpeg imagemagick"
+            SUDO_AVAILABLE=false
+            return 1
+            ;;
+    esac
+}
+
+# Install a package with sudo (Linux) or brew (macOS)
+install_system_package() {
+    local package_name="$1"
+    local display_name="$2"
+    local check_commands="$3"  # Comma-separated commands to check
+
+    # Check if already installed (check multiple commands)
+    IFS=',' read -ra cmds <<< "$check_commands"
+    for cmd in "${cmds[@]}"; do
+        if command_exists "$cmd"; then
+            print_success "$display_name already installed"
+            return 0
+        fi
+    done
+
+    print_info "Installing $display_name..."
+
+    if [[ "$OS" == "macos" ]]; then
+        if brew install "$package_name"; then
+            print_success "$display_name installed"
+            return 0
+        else
+            print_warning "$display_name installation failed"
+            return 1
+        fi
+    elif [[ "$OS" == "linux" ]]; then
+        if [[ "$SUDO_AVAILABLE" != "true" ]]; then
+            print_warning "$display_name requires sudo. Skipping..."
+            print_info "Install manually: sudo apt-get install $package_name"
+            return 1
+        fi
+
+        if sudo apt-get install -y "$package_name"; then
+            print_success "$display_name installed"
+            return 0
+        else
+            print_warning "$display_name installation failed"
+            return 1
+        fi
+    fi
+
+    return 1
+}
+
 # Check and install system package manager
 check_package_manager() {
     if [[ "$OS" == "macos" ]]; then
@@ -122,31 +240,21 @@ check_package_manager() {
 install_system_deps() {
     print_header "Installing System Dependencies"
 
-    # FFmpeg
-    if command_exists ffmpeg; then
-        print_success "FFmpeg already installed ($(ffmpeg -version 2>&1 | head -n1))"
-    else
-        print_info "Installing FFmpeg..."
-        if [[ "$OS" == "macos" ]]; then
-            brew install ffmpeg
-        elif [[ "$OS" == "linux" ]]; then
-            sudo apt-get update && sudo apt-get install -y ffmpeg
+    # Check sudo access first (Linux only) - prompts user once
+    if [[ "$OS" == "linux" ]]; then
+        # Update apt cache if we have sudo
+        check_sudo_access
+        if [[ "$SUDO_AVAILABLE" == "true" ]]; then
+            print_info "Updating package lists..."
+            sudo apt-get update -qq
         fi
-        print_success "FFmpeg installed"
     fi
 
-    # ImageMagick
-    if command_exists magick || command_exists convert; then
-        print_success "ImageMagick already installed"
-    else
-        print_info "Installing ImageMagick..."
-        if [[ "$OS" == "macos" ]]; then
-            brew install imagemagick
-        elif [[ "$OS" == "linux" ]]; then
-            sudo apt-get install -y imagemagick
-        fi
-        print_success "ImageMagick installed"
-    fi
+    # FFmpeg (required for media-processing skill)
+    install_system_package "ffmpeg" "FFmpeg" "ffmpeg"
+
+    # ImageMagick (required for media-processing skill)
+    install_system_package "imagemagick" "ImageMagick" "magick,convert"
 
     # PostgreSQL client (optional)
     if command_exists psql; then
@@ -459,21 +567,32 @@ setup_python_env() {
 verify_installations() {
     print_header "Verifying Installations"
 
-    declare -a system_tools=(
-        "ffmpeg:FFmpeg"
-        "magick:ImageMagick"
-        "node:Node.js"
-        "npm:npm"
-    )
+    # FFmpeg
+    if command_exists ffmpeg; then
+        print_success "FFmpeg is available"
+    else
+        print_warning "FFmpeg is not available"
+    fi
 
-    for tool_pair in "${system_tools[@]}"; do
-        IFS=':' read -r cmd name <<< "$tool_pair"
-        if command_exists "$cmd"; then
-            print_success "$name is available"
-        else
-            print_warning "$name is not available"
-        fi
-    done
+    # ImageMagick (check both magick and convert - older versions use convert)
+    if command_exists magick || command_exists convert; then
+        print_success "ImageMagick is available"
+    else
+        print_warning "ImageMagick is not available"
+    fi
+
+    # Node.js & npm
+    if command_exists node; then
+        print_success "Node.js is available"
+    else
+        print_warning "Node.js is not available"
+    fi
+
+    if command_exists npm; then
+        print_success "npm is available"
+    else
+        print_warning "npm is not available"
+    fi
 
     declare -a npm_packages=(
         "rmbg"
@@ -531,7 +650,7 @@ print_usage() {
 
 # Main installation flow
 main() {
-    clear
+    echo ""  # Just add spacing, don't clear terminal
     print_header "Claude Code Skills Installation"
     print_info "OS: $OS"
     print_info "Script directory: $SCRIPT_DIR"
