@@ -1,3 +1,10 @@
+## [1.19.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0-beta.1...v1.19.0-beta.2) (2025-12-03)
+
+
+### 🐞 Bug Fixes
+
+* **ai-multimodal:** print results to stdout and default to free-tier model ([#126](https://github.com/claudekit/claudekit-engineer/issues/126)) ([317c647](https://github.com/claudekit/claudekit-engineer/commit/317c64737690b9115763941e404b7967b0ffc702)), closes [#124](https://github.com/claudekit/claudekit-engineer/issues/124) [#125](https://github.com/claudekit/claudekit-engineer/issues/125)
+
 ## [1.19.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0...v1.19.0-beta.1) (2025-12-03)
 
 
