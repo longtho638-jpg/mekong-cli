@@ -205,11 +205,14 @@ Use when tasks have dependencies:
 # Planning → Implementation → Testing → Review
 /plan "implement user dashboard"
 # Wait for plan completion, then:
-/cook "follow the implementation plan"
+/code  # Executes the plan
 # After implementation:
 /test "validate dashboard functionality"
 # Finally:
 /review "ensure code quality standards"
+
+# Alternative: Use /cook for standalone implementation (plans internally)
+/cook "implement user dashboard"
 ```
 
 ### Parallel Execution
@@ -569,7 +572,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Agent Development Guide](https://docs.opencode.ai/agents)
 
 ### Community
-- [Claude Code Community](https://discord.gg/claude-code)
+- [ClaudeKit Community](https://claudekit.cc/discord)
 - [Discussion Forum](https://github.com/anthropic/claude-code/discussions)
 - [Example Projects](https://github.com/topics/claude-code)
 

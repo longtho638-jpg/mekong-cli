@@ -1,3 +1,110 @@
+## [1.18.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.11...v1.18.0-beta.12) (2025-12-02)
+
+
+### 🐞 Bug Fixes
+
+* add proper sudo handling for Linux package installation ([#119](https://github.com/claudekit/claudekit-engineer/issues/119)) ([6453335](https://github.com/claudekit/claudekit-engineer/commit/6453335b80d10dc05e60543b17603296d47fae9b)), closes [#118](https://github.com/claudekit/claudekit-engineer/issues/118)
+
+## [1.18.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.10...v1.18.0-beta.11) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* `/fix:hard` should utilize `/code` ([b144ad9](https://github.com/claudekit/claudekit-engineer/commit/b144ad91e7a9434b3e4fb29b04f9e69407b30486))
+
+## [1.18.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.9...v1.18.0-beta.10) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* `/fix:hard` should ask user for clarifications ([605f6b2](https://github.com/claudekit/claudekit-engineer/commit/605f6b28bf0fa22dc267c6bfae1e1437e14a05b4))
+* allow research in `/skill:add` & `/skill:fix` ([3c7d27f](https://github.com/claudekit/claudekit-engineer/commit/3c7d27f19a35060bb554e7c9552c46cb95983c6c))
+
+
+### 📚 Documentation
+
+* fix discord link in readme ([049151f](https://github.com/claudekit/claudekit-engineer/commit/049151f5bba097f8728398aaae72f902598c8fcc)), closes [#112](https://github.com/claudekit/claudekit-engineer/issues/112)
+
+
+### ⚡ Performance Improvements
+
+* `/skill:create` can ask for clarifications ([7f447eb](https://github.com/claudekit/claudekit-engineer/commit/7f447eb267f8115edd0d1b5eb9a1f1c390820ce9))
+* new command: `/code:no-test` 😅 ([0cf49e4](https://github.com/claudekit/claudekit-engineer/commit/0cf49e4a0f6058de274344228bc8372b817e6358))
+
+## [1.18.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.8...v1.18.0-beta.9) (2025-12-01)
+
+
+### 🚀 Features
+
+* **commands:** add /ck-help command for ClaudeKit usage guide ([#114](https://github.com/claudekit/claudekit-engineer/issues/114)) ([8234cf3](https://github.com/claudekit/claudekit-engineer/commit/8234cf30caf13b1bb012f2aa9d2ff9e7d327d034)), closes [#99](https://github.com/claudekit/claudekit-engineer/issues/99)
+
+## [1.18.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.7...v1.18.0-beta.8) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* detect and warn about broken UV Python installation ([7f58766](https://github.com/claudekit/claudekit-engineer/commit/7f5876649189f21a206591af07da022ad6f9d056))
+
+## [1.18.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.6...v1.18.0-beta.7) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* robust venv creation with ensurepip fallback and validation ([b2b81c5](https://github.com/claudekit/claudekit-engineer/commit/b2b81c5846cdc8d8db140ad09259498cd78973dd))
+
+## [1.18.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.5...v1.18.0-beta.6) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* **ai-multimodal:** auto-detect task from file extension ([#102](https://github.com/claudekit/claudekit-engineer/issues/102)) ([#113](https://github.com/claudekit/claudekit-engineer/issues/113)) ([230d04c](https://github.com/claudekit/claudekit-engineer/commit/230d04cb3f5e61a65089fb3c4605c7c1a1aa3699))
+
+## [1.18.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.4...v1.18.0-beta.5) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* handle corrupted venv in skills install script ([b90928f](https://github.com/claudekit/claudekit-engineer/commit/b90928fd71ea0d9038521a358074559d71e53cf0))
+
+## [1.18.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.3...v1.18.0-beta.4) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* skills install script fails due to bash arithmetic exit code ([#111](https://github.com/claudekit/claudekit-engineer/issues/111)) ([b498d35](https://github.com/claudekit/claudekit-engineer/commit/b498d35c9f2004388728e77e3c93a80bd5567ed0))
+
+## [1.18.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.2...v1.18.0-beta.3) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* skills installation fails on macOS and hides pip errors ([#110](https://github.com/claudekit/claudekit-engineer/issues/110)) ([c33167b](https://github.com/claudekit/claudekit-engineer/commit/c33167b26ef8220ebded794f57896fd773c5fb53)), closes [#108](https://github.com/claudekit/claudekit-engineer/issues/108)
+
+## [1.18.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.1...v1.18.0-beta.2) (2025-12-01)
+
+
+### 🐞 Bug Fixes
+
+* skills installation fails on macOS and hides pip errors ([#109](https://github.com/claudekit/claudekit-engineer/issues/109)) ([3c83e22](https://github.com/claudekit/claudekit-engineer/commit/3c83e22784ee3c1c9b61f8f82b72144f4192493e)), closes [#108](https://github.com/claudekit/claudekit-engineer/issues/108)
+
+## [1.18.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.17.1...v1.18.0-beta.1) (2025-12-01)
+
+
+### 🚀 Features
+
+* new command: `/git:merge <to> <from>` ([79e45f4](https://github.com/claudekit/claudekit-engineer/commit/79e45f4f3429b6d6907627a07e2468b9d85023df))
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** convert ES6 imports to CommonJS for hook compatibility ([#103](https://github.com/claudekit/claudekit-engineer/issues/103)) ([9cd2e08](https://github.com/claudekit/claudekit-engineer/commit/9cd2e082477328bf175af9b198bb6c66a2af2755)), closes [#86](https://github.com/claudekit/claudekit-engineer/issues/86)
+* **install:** use command-first detection for npm packages ([#101](https://github.com/claudekit/claudekit-engineer/issues/101)) ([e162508](https://github.com/claudekit/claudekit-engineer/commit/e1625087dd832e136ce0f73aff635c9b930454d9))
+
+
+### ⚡ Performance Improvements
+
+* use native `AskUserQuestion` tool for clarifications ([d342b8b](https://github.com/claudekit/claudekit-engineer/commit/d342b8bfb87c3a162870b4f35c794fafc10edd31))
+
 ## [1.17.1](https://github.com/claudekit/claudekit-engineer/compare/v1.17.0...v1.17.1) (2025-12-01)
 
 
