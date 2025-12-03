@@ -846,9 +846,36 @@ Examples:
     except ValueError as e:
         parser.error(str(e))
 
-    # Validate arguments
+    # Validate arguments - support stdin as input
+    stdin_temp_file = None
     if args.task not in ['generate', 'generate-video'] and not args.files:
-        parser.error("--files required for non-generation tasks")
+        # Check if stdin is being piped
+        if not sys.stdin.isatty():
+            import tempfile
+            # Read binary content from stdin and save to temp file
+            stdin_data = sys.stdin.buffer.read()
+            if stdin_data:
+                # Detect file extension from content or use generic
+                ext = '.bin'
+                if stdin_data[:8] == b'\x89PNG\r\n\x1a\n':
+                    ext = '.png'
+                elif stdin_data[:2] == b'\xff\xd8':
+                    ext = '.jpg'
+                elif stdin_data[:4] == b'%PDF':
+                    ext = '.pdf'
+                elif stdin_data[:4] == b'RIFF' or stdin_data[:4] == b'ID3\x03':
+                    ext = '.wav' if stdin_data[:4] == b'RIFF' else '.mp3'
+
+                fd, stdin_temp_file = tempfile.mkstemp(suffix=ext)
+                os.write(fd, stdin_data)
+                os.close(fd)
+                args.files = [stdin_temp_file]
+                if args.verbose:
+                    print(f"Reading from stdin, saved to temp file: {stdin_temp_file}")
+            else:
+                parser.error("--files required (stdin was empty)")
+        else:
+            parser.error("--files required for non-generation tasks")
 
     if args.task in ['generate', 'generate-video'] and not args.prompt:
         parser.error("--prompt required for generation tasks")
@@ -890,6 +917,10 @@ Examples:
         print(f"Failed: {failed}")
         if args.output:
             print(f"Results saved to: {args.output}")
+
+    # Cleanup stdin temp file
+    if stdin_temp_file and os.path.exists(stdin_temp_file):
+        os.unlink(stdin_temp_file)
 
 
 if __name__ == '__main__':
