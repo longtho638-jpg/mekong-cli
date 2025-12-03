@@ -1,3 +1,10 @@
+## [1.18.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.12...v1.18.0-beta.13) (2025-12-03)
+
+
+### 🚀 Features
+
+* **ai-multimodal:** add stdin support for piped file input ([#123](https://github.com/claudekit/claudekit-engineer/issues/123)) ([76c65b4](https://github.com/claudekit/claudekit-engineer/commit/76c65b4d7603d2ecc4259ab777933f3216dddf78)), closes [#122](https://github.com/claudekit/claudekit-engineer/issues/122)
+
 ## [1.18.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0-beta.11...v1.18.0-beta.12) (2025-12-02)
 
 
