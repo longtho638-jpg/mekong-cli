@@ -1,3 +1,13 @@
+## [1.19.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0-beta.2...v1.19.0-beta.3) (2025-12-04)
+
+
+### 🐞 Bug Fixes
+
+* `/fix:hard` should utilize `/code` ([f673977](https://github.com/claudekit/claudekit-engineer/commit/f673977c9548cfe216edf417efa09737909c1820))
+* `aesthetic` skills is deprecated due to inefficiency ([8592d07](https://github.com/claudekit/claudekit-engineer/commit/8592d07bb43b576fbd07b1636fe9ff4d07b3aa98))
+* add proper sudo handling for Linux package installation ([#119](https://github.com/claudekit/claudekit-engineer/issues/119)) ([dac980b](https://github.com/claudekit/claudekit-engineer/commit/dac980b220b4b775048905d07b591f1bca2fd039)), closes [#118](https://github.com/claudekit/claudekit-engineer/issues/118)
+* added more env context to `dev-rules-reminder` hook ([0bd3e06](https://github.com/claudekit/claudekit-engineer/commit/0bd3e067552aec82388b01d2e2609931d7d8d1dc))
+
 ## [1.19.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0-beta.1...v1.19.0-beta.2) (2025-12-03)
 
 
