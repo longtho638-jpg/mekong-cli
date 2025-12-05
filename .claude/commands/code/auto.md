@@ -1,5 +1,5 @@
 ---
-description: ⚡⚡⚡ [AUTO] Start coding & testing an existing plan
+description: ⚡⚡⚡ [AUTO] Start coding & testing an existing plan ("trust me bro")
 argument-hint: [plan]
 ---
 
