@@ -1,3 +1,10 @@
+## [1.20.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.1-beta.1...v1.20.0-beta.1) (2025-12-06)
+
+
+### 🚀 Features
+
+* implement hook consolidation with plan name config ([#134](https://github.com/claudekit/claudekit-engineer/issues/134)) ([764e962](https://github.com/claudekit/claudekit-engineer/commit/764e96220b65554affef83459c98fb64c219518e)), closes [#88](https://github.com/claudekit/claudekit-engineer/issues/88)
+
 ## [1.19.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0...v1.19.1-beta.1) (2025-12-06)
 
 
