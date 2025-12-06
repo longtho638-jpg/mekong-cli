@@ -9,7 +9,11 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const CONFIG_PATH = '.claude/.ck.json';
+const LOCAL_CONFIG_PATH = '.claude/.ck.json';
+const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.claude', '.ck.json');
+
+// Legacy export for backward compatibility
+const CONFIG_PATH = LOCAL_CONFIG_PATH;
 
 const DEFAULT_CONFIG = {
   plan: {
@@ -40,6 +44,52 @@ const DEFAULT_CONFIG = {
   },
   assertions: []
 };
+
+/**
+ * Deep merge objects (source values override target, nested objects merged recursively)
+ * Arrays are replaced entirely (not concatenated) to avoid duplicate entries
+ * @param {Object} target - Base object
+ * @param {Object} source - Object to merge (takes precedence)
+ * @returns {Object} Merged object
+ */
+function deepMerge(target, source) {
+  if (!source || typeof source !== 'object') return target;
+  if (!target || typeof target !== 'object') return source;
+
+  const result = { ...target };
+  for (const key of Object.keys(source)) {
+    const sourceVal = source[key];
+    const targetVal = target[key];
+
+    // Arrays: replace entirely (don't concatenate)
+    if (Array.isArray(sourceVal)) {
+      result[key] = [...sourceVal];
+    }
+    // Objects: recurse (but not null)
+    else if (sourceVal !== null && typeof sourceVal === 'object' && !Array.isArray(sourceVal)) {
+      result[key] = deepMerge(targetVal || {}, sourceVal);
+    }
+    // Primitives: source wins
+    else {
+      result[key] = sourceVal;
+    }
+  }
+  return result;
+}
+
+/**
+ * Load config from a specific file path
+ * @param {string} configPath - Path to config file
+ * @returns {Object|null} Parsed config or null if not found/invalid
+ */
+function loadConfigFromPath(configPath) {
+  try {
+    if (!fs.existsSync(configPath)) return null;
+    return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  } catch (e) {
+    return null;
+  }
+}
 
 /**
  * Get session temp file path
@@ -250,7 +300,13 @@ function sanitizeConfig(config, projectRoot) {
 }
 
 /**
- * Load config from .ck.json
+ * Load config with cascading resolution: DEFAULT → global → local
+ *
+ * Resolution order (each layer overrides the previous):
+ *   1. DEFAULT_CONFIG (hardcoded defaults)
+ *   2. Global config (~/.claude/.ck.json) - user preferences
+ *   3. Local config (./.claude/.ck.json) - project-specific overrides
+ *
  * @param {Object} options - Options for config loading
  * @param {boolean} options.includeProject - Include project section (default: true)
  * @param {boolean} options.includeAssertions - Include assertions (default: true)
@@ -260,27 +316,37 @@ function loadConfig(options = {}) {
   const { includeProject = true, includeAssertions = true, includeLocale = true } = options;
   const projectRoot = process.cwd();
 
-  if (!fs.existsSync(CONFIG_PATH)) {
+  // Load configs from both locations
+  const globalConfig = loadConfigFromPath(GLOBAL_CONFIG_PATH);
+  const localConfig = loadConfigFromPath(LOCAL_CONFIG_PATH);
+
+  // No config files found - use defaults
+  if (!globalConfig && !localConfig) {
     return getDefaultConfig(includeProject, includeAssertions, includeLocale);
   }
 
   try {
-    const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+    // Deep merge: DEFAULT → global → local (local wins)
+    let merged = deepMerge({}, DEFAULT_CONFIG);
+    if (globalConfig) merged = deepMerge(merged, globalConfig);
+    if (localConfig) merged = deepMerge(merged, localConfig);
+
+    // Build result with optional sections
     const result = {
-      plan: { ...DEFAULT_CONFIG.plan, ...config.plan },
-      paths: { ...DEFAULT_CONFIG.paths, ...config.paths }
+      plan: merged.plan || DEFAULT_CONFIG.plan,
+      paths: merged.paths || DEFAULT_CONFIG.paths
     };
 
     if (includeLocale) {
-      result.locale = { ...DEFAULT_CONFIG.locale, ...config.locale };
+      result.locale = merged.locale || DEFAULT_CONFIG.locale;
     }
     // Always include trust config for verification
-    result.trust = { ...DEFAULT_CONFIG.trust, ...config.trust };
+    result.trust = merged.trust || DEFAULT_CONFIG.trust;
     if (includeProject) {
-      result.project = { ...DEFAULT_CONFIG.project, ...config.project };
+      result.project = merged.project || DEFAULT_CONFIG.project;
     }
     if (includeAssertions) {
-      result.assertions = config.assertions || [];
+      result.assertions = merged.assertions || [];
     }
 
     return sanitizeConfig(result, projectRoot);
@@ -364,7 +430,11 @@ function extractIssueFromBranch(branch) {
 
 module.exports = {
   CONFIG_PATH,
+  LOCAL_CONFIG_PATH,
+  GLOBAL_CONFIG_PATH,
   DEFAULT_CONFIG,
+  deepMerge,
+  loadConfigFromPath,
   loadConfig,
   sanitizePath,
   sanitizeConfig,
