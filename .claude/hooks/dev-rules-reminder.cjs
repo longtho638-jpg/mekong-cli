@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-
 /**
- * Development Rules Reminder - PreToolUse Hook
+ * Development Rules Reminder - UserPromptSubmit Hook
  *
- * Injects modularization reminders before Write/Edit operations.
+ * Injects environment info, rules, modularization reminders, and Plan Context.
  * Uses transcript checking to inject only once per ~50 messages for token efficiency.
  *
  * Exit Codes:
@@ -14,7 +13,29 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { execSync } = require('child_process');
+const {
+  CONFIG_PATH,
+  loadConfig,
+  resolvePlanPath,
+  getReportsPath,
+  formatIssueId,
+  extractIssueFromBranch
+} = require('./lib/ck-config-utils.cjs');
 
+/**
+ * Safely execute shell command
+ */
+function execSafe(cmd) {
+  try {
+    return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Get git remote URL
+ */
 function getGitRemoteUrl() {
   try {
     const url = execSync('git config --get remote.origin.url', {
@@ -22,31 +43,86 @@ function getGitRemoteUrl() {
     })
       .toString()
       .trim();
-
     return url || 'Not available';
   } catch (error) {
     return 'Not available';
   }
+}
 
+/**
+ * Get Python version
+ */
 function getPythonVersion() {
   const commands = ['python3 --version', 'python --version'];
-
   for (const cmd of commands) {
     try {
       const output = execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] })
         .toString()
         .trim();
-
-      if (output) {
-        return output;
-      }
+      if (output) return output;
     } catch (error) {
       // Try next command
     }
   }
-
   return 'Not available';
 }
+
+/**
+ * Build Plan Context section using resolvePlanPath
+ */
+function buildPlanContext(sessionId) {
+  const config = loadConfig({ includeProject: false, includeAssertions: false });
+  const { plan, paths } = config;
+
+  const gitBranch = execSafe('git branch --show-current');
+  const issueId = extractIssueFromBranch(gitBranch);
+  const activePlan = resolvePlanPath(sessionId, config);
+  const reportsPath = getReportsPath(activePlan, plan, paths);
+  const formattedIssue = formatIssueId(issueId, plan);
+
+  const lines = [
+    `## Plan Context`,
+    `- Plan Config: ${CONFIG_PATH}`,
+    `- Active Plan: ${activePlan || 'none (create with planner agent)'}`,
+    `- Reports Path: ${reportsPath}`,
+    `- Naming Format: ${plan.namingFormat}`,
+    `- Date Format: ${plan.dateFormat}`
+  ];
+
+  if (formattedIssue) lines.push(`- Issue ID: ${formattedIssue}`);
+  if (gitBranch) lines.push(`- Git Branch: ${gitBranch}`);
+  lines.push(`- IMPORTANT: When spawning subagents, include Plan Context in the prompt.`);
+
+  return { lines, activePlan, reportsPath };
+}
+
+/**
+ * Build response language instruction (placed at start of output)
+ */
+function buildResponseLanguage() {
+  const config = loadConfig({ includeProject: false, includeAssertions: false, includeLocale: true });
+  const lang = config.locale?.responseLanguage;
+  if (!lang) return [];
+  return [
+    `## Response Language`,
+    `Always respond in ${lang}.`,
+    ``
+  ];
+}
+
+/**
+ * Build MANDATORY Output Paths section
+ */
+function buildMandatoryPaths(reportsPath, pathsConfig) {
+  return [
+    ``,
+    `## MANDATORY Output Paths`,
+    `- Reports: ${reportsPath}`,
+    `- Plans: ${pathsConfig?.plans || 'plans'}/`,
+    `- Docs: ${pathsConfig?.docs || 'docs'}/`,
+    `- WARNING: DO NOT write markdown files outside these directories`,
+    ``
+  ];
 }
 
 /**
@@ -54,22 +130,11 @@ function getPythonVersion() {
  */
 function wasRecentlyInjected(transcriptPath) {
   try {
-    if (!transcriptPath || !fs.existsSync(transcriptPath)) {
-      // Transcript doesn't exist - inject reminder
-      return false;
-    }
-
+    if (!transcriptPath || !fs.existsSync(transcriptPath)) return false;
     const transcript = fs.readFileSync(transcriptPath, 'utf-8');
-    const lines = transcript.split('\n');
-
-    // Check last 50 lines for reminder marker
-    const recentLines = lines.slice(-50);
-    const wasInjected = recentLines.some(line => line.includes('**[IMPORTANT]** Consider Modularization'));
-
-    return wasInjected;
-
-  } catch (error) {
-    // If we can't read transcript, assume not injected (fail-open)
+    const recentLines = transcript.split('\n').slice(-50);
+    return recentLines.some(line => line.includes('**[IMPORTANT]** Consider Modularization'));
+  } catch (e) {
     return false;
   }
 }
@@ -79,25 +144,18 @@ function wasRecentlyInjected(transcriptPath) {
  */
 async function main() {
   try {
-    // Read hook payload from stdin
     const stdin = fs.readFileSync(0, 'utf-8').trim();
-
-    if (!stdin) {
-      process.exit(0);
-    }
+    if (!stdin) process.exit(0);
 
     const payload = JSON.parse(stdin);
-    const toolName = payload.tool_name;
+    if (wasRecentlyInjected(payload.transcript_path)) process.exit(0);
 
-    // Check if reminder was recently injected
-    if (wasRecentlyInjected(payload.transcript_path)) {
-      process.exit(0);
-    }
+    const sessionId = process.env.CK_SESSION_ID || null;
+    const config = loadConfig();
 
     const memUsed = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
     const memTotal = Math.round(os.totalmem() / 1024 / 1024);
     const memPercent = Math.round((memUsed / memTotal) * 100);
-
     const cpuUsage = Math.round((process.cpuUsage().user / 1000000) * 100);
     const cpuSystem = Math.round((process.cpuUsage().system / 1000000) * 100);
 
@@ -107,7 +165,14 @@ async function main() {
     const pythonVersion = getPythonVersion();
     const nodeVersion = process.version || 'Not available';
 
-    const reminder = [
+    // Build Plan Context with resolution
+    const planContext = buildPlanContext(sessionId);
+
+    // Build reminder array
+    const reminderParts = [
+      // Response language FIRST (prefix strategy)
+      ...buildResponseLanguage(),
+
       `## Current environment`,
       `- Date time: ${new Date().toLocaleString()}`,
       `- Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
@@ -146,13 +211,17 @@ async function main() {
       `- After modularization, continue with main task`,
       `- When not to modularize: Markdown files, plain text files, bash scripts, configuration files, environment variables files, etc.`,
       `- IMPORTANT: Include these considerations when prompting subagents to perform tasks.`,
-    ].join('\n');
 
-    console.log(reminder);
+      // MANDATORY Output Paths
+      ...buildMandatoryPaths(planContext.reportsPath, config.paths),
+
+      // Plan Context
+      ...planContext.lines,
+    ];
+
+    console.log(reminderParts.join('\n'));
     process.exit(0);
-
   } catch (error) {
-    // Fail-open: log error but allow operation to continue
     console.error(`Dev rules hook error: ${error.message}`);
     process.exit(0);
   }

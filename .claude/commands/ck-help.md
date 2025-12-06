@@ -68,6 +68,11 @@ Which issue are you dealing with?
 [script output]
 Try `/cook add login page` to implement directly, or `/plan add login page` then `/code` for explicit planning first.
 
+**User:** `/ck-help config`
+**You:** Here's how to configure ClaudeKit:
+[script output]
+The `.claude/.ck.json` file is optional - sensible defaults apply if missing.
+
 ## Important: Correct Workflows
 
 - **`/plan` → `/code`**: Plan first, then execute the plan

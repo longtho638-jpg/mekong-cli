@@ -36,6 +36,7 @@ TASK_MAPPINGS = {
     "integrate": ["integrate", "payment", "api", "connect", "webhook", "third-party"],
     "skill": ["skill", "agent", "automate", "workflow"],
     "scout": ["find", "search", "locate", "explore", "scan", "where"],
+    "config": ["config", "configure", "settings", "ck.json", ".ck.json", "setup", "locale", "language", "paths"],
 }
 
 # Category workflows and tips
@@ -148,6 +149,15 @@ CATEGORY_GUIDES = {
             ("External tools", "`/scout:ext` \"query\""),
         ],
         "tip": "Be specific about what you're looking for",
+    },
+    "config": {
+        "title": "ClaudeKit Configuration (.ck.json)",
+        "workflow": [
+            ("Create", "Create `.claude/.ck.json` in project root"),
+            ("Configure", "Set plan naming, paths, locale"),
+            ("Verify", "Hooks auto-load config on session start"),
+        ],
+        "tip": "Config is optional - sensible defaults apply if missing",
     },
 }
 
@@ -453,6 +463,107 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
         print(f"*Tip: {guide['tip']}*")
 
 
+def show_config_guide() -> None:
+    """Display comprehensive .ck.json configuration guide."""
+    print("# ClaudeKit Configuration (.ck.json)")
+    print()
+    print("**Location:** `.claude/.ck.json` in project root")
+    print()
+    print("**Purpose:** Customize plan naming, paths, locale, and hook behavior.")
+    print()
+    print("---")
+    print()
+    print("## Quick Start")
+    print()
+    print("Create `.claude/.ck.json` with minimal config:")
+    print("```json")
+    print('{')
+    print('  "plan": {')
+    print('    "namingFormat": "{date}-{issue}-{slug}",')
+    print('    "dateFormat": "YYMMDD-HHmm",')
+    print('    "issuePrefix": "GH-"')
+    print('  }')
+    print('}')
+    print("```")
+    print()
+    print("---")
+    print()
+    print("## Full Schema")
+    print()
+    print("```json")
+    print('{')
+    print('  "plan": {')
+    print('    "namingFormat": "{date}-{issue}-{slug}",  // Plan folder naming')
+    print('    "dateFormat": "YYMMDD-HHmm",              // Date format in names')
+    print('    "issuePrefix": "GH-",                     // Issue ID prefix (null = #)')
+    print('    "reportsDir": "reports",                  // Reports subfolder')
+    print('    "resolution": {')
+    print('      "order": ["session", "branch", "mostRecent"],  // Resolution chain')
+    print('      "branchPattern": "(?:feat|fix|...)/.+"         // Branch slug regex')
+    print('    }')
+    print('  },')
+    print('  "paths": {')
+    print('    "docs": "docs",     // Documentation directory')
+    print('    "plans": "plans"    // Plans directory')
+    print('  },')
+    print('  "locale": {')
+    print('    "responseLanguage": null  // ISO code: "vi", "en", "fr", etc.')
+    print('  },')
+    print('  "trust": {')
+    print('    "passphrase": null,   // Secret for testing context injection')
+    print('    "enabled": false      // Enable trust verification')
+    print('  },')
+    print('  "project": {')
+    print('    "type": "auto",           // "monorepo", "single-repo", "auto"')
+    print('    "packageManager": "auto", // "npm", "pnpm", "yarn", "auto"')
+    print('    "framework": "auto"       // "next", "react", "vue", "auto"')
+    print('  }')
+    print('}')
+    print("```")
+    print()
+    print("---")
+    print()
+    print("## Key Concepts")
+    print()
+    print("**Plan Resolution Chain:**")
+    print("1. `session` - Check session temp file for active plan")
+    print("2. `branch` - Match git branch slug to plan folder")
+    print("3. `mostRecent` - Use most recently modified plan")
+    print()
+    print("**Naming Format Variables:**")
+    print("- `{date}` - Formatted date (per dateFormat)")
+    print("- `{issue}` - Issue ID with prefix")
+    print("- `{slug}` - Descriptive slug from branch or input")
+    print()
+    print("**Response Language:**")
+    print("Set `locale.responseLanguage` to force agent responses in specific language.")
+    print("Example: `\"vi\"` for Vietnamese, `\"fr\"` for French.")
+    print()
+    print("---")
+    print()
+    print("## Examples")
+    print()
+    print("**Vietnamese team, JIRA issues:**")
+    print("```json")
+    print('{')
+    print('  "plan": { "issuePrefix": "JIRA-" },')
+    print('  "locale": { "responseLanguage": "vi" }')
+    print('}')
+    print("```")
+    print()
+    print("**Custom directories:**")
+    print("```json")
+    print('{')
+    print('  "paths": {')
+    print('    "docs": "documentation",')
+    print('    "plans": "roadmap"')
+    print('  }')
+    print('}')
+    print("```")
+    print()
+    print("*Tip: Config is optional - all fields have sensible defaults.*")
+
+
 def main():
     # Find .claude/commands directory
     script_path = Path(__file__).resolve()
@@ -474,6 +585,11 @@ def main():
     # Parse input
     args = sys.argv[1:]
     input_str = " ".join(args).strip()
+
+    # Special case: config documentation (not a command category)
+    if input_str.lower() in ["config", "configuration", ".ck.json", "ck.json"]:
+        show_config_guide()
+        return
 
     # Detect intent and route
     intent = detect_intent(input_str, list(data["categories"].keys()))
