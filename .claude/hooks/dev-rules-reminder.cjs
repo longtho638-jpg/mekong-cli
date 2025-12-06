@@ -34,6 +34,24 @@ function execSafe(cmd) {
 }
 
 /**
+ * Resolve workflow file path - checks local first, then global
+ * @param {string} filename - The workflow filename (e.g., 'development-rules.md')
+ * @returns {{ path: string, scope: string } | null} - Resolved path and scope, or null if not found
+ */
+function resolveWorkflowPath(filename) {
+  const localPath = path.join(process.cwd(), '.claude', 'workflows', filename);
+  const globalPath = path.join(os.homedir(), '.claude', 'workflows', filename);
+
+  if (fs.existsSync(localPath)) {
+    return { path: `.claude/workflows/${filename}`, scope: 'project' };
+  }
+  if (fs.existsSync(globalPath)) {
+    return { path: `~/.claude/workflows/${filename}`, scope: 'global' };
+  }
+  return null;
+}
+
+/**
  * Get git remote URL
  */
 function getGitRemoteUrl() {
@@ -168,6 +186,10 @@ async function main() {
     // Build Plan Context with resolution
     const planContext = buildPlanContext(sessionId);
 
+    // Resolve workflow paths once (local first, then global)
+    const devRulesPath = resolveWorkflowPath('development-rules.md');
+    const docMgmtPath = resolveWorkflowPath('documentation-management.md');
+
     // Build reminder array
     const reminderParts = [
       // Response language FIRST (prefix strategy)
@@ -189,8 +211,13 @@ async function main() {
       `- IMPORTANT: Include these environment information when prompting subagents to perform tasks.`,
       ``,
       `## Rules`,
-      `- Read and follow development rules in project directory: ".claude/workflows/development-rules.md"`,
-      `- Read and follow documentation management in project directory: ".claude/workflows/documentation-management.md"`,
+      // Include workflow rules only if files exist (local or global)
+      ...(devRulesPath
+        ? [`- Read and follow development rules in ${devRulesPath.scope} directory: "${devRulesPath.path}"`]
+        : []),
+      ...(docMgmtPath
+        ? [`- Read and follow documentation management in ${docMgmtPath.scope} directory: "${docMgmtPath.path}"`]
+        : []),
       `- Markdown files are organized in: Plans → "plans/" directory, Docs → "docs/" directory`,
       `- Report markdown files in the same directory as the plan file in project directory`,
       `- **IMPORTANT:** DO NOT create markdown files out of "plans/" or "docs/" directories UNLESS the user explicitly requests it.`,
