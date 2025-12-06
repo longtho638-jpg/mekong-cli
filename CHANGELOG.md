@@ -1,3 +1,10 @@
+## [1.20.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.1...v1.20.0-beta.2) (2025-12-06)
+
+
+### 🐞 Bug Fixes
+
+* resolve workflow paths from global ~/.claude when local files missing ([9a66e21](https://github.com/claudekit/claudekit-engineer/commit/9a66e21f77375b91ce4e7a8ce5df93245119010b)), closes [#117](https://github.com/claudekit/claudekit-engineer/issues/117)
+
 ## [1.20.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.1-beta.1...v1.20.0-beta.1) (2025-12-06)
 
 
