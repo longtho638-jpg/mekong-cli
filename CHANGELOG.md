@@ -1,3 +1,10 @@
+## [1.20.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.2...v1.20.0-beta.3) (2025-12-06)
+
+
+### 🚀 Features
+
+* implement cascading config resolution (global → local) ([9a826c8](https://github.com/claudekit/claudekit-engineer/commit/9a826c8f3accf54e1a8cbe2c4948999f364a806e))
+
 ## [1.20.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.1...v1.20.0-beta.2) (2025-12-06)
 
 
