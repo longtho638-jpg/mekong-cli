@@ -1,3 +1,10 @@
+## [1.20.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.3...v1.20.0-beta.4) (2025-12-06)
+
+
+### 🚀 Features
+
+* add hybrid output-type detection for /ck-help ([480ec1c](https://github.com/claudekit/claudekit-engineer/commit/480ec1c2e9f5fe4107964d4f48418d9f408d506b))
+
 ## [1.20.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.2...v1.20.0-beta.3) (2025-12-06)
 
 
