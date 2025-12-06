@@ -1,3 +1,10 @@
+## [1.19.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0...v1.19.1-beta.1) (2025-12-06)
+
+
+### ⚡ Performance Improvements
+
+* new command -> `/code:auto` with auto-approval mode activated ([3622168](https://github.com/claudekit/claudekit-engineer/commit/36221682dd0f215b688cb806c7d1172b4b6c3ae7))
+
 ## [1.19.0](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0...v1.19.0) (2025-12-05)
 
 
