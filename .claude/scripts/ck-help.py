@@ -21,6 +21,29 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 
+# Output type markers for LLM presentation guidance
+# Format: @CK_OUTPUT_TYPE:<type>
+# Types:
+#   - comprehensive-docs: Full documentation, show verbatim + add context
+#   - category-guide: Workflow guide, show full + explain workflow
+#   - command-details: Single command, show + offer to run
+#   - search-results: Search matches, show + offer alternatives
+#   - task-recommendations: Task-based suggestions, explain reasoning
+OUTPUT_TYPES = {
+    "comprehensive-docs": "Show FULL output verbatim, then ADD helpful context, examples, and real-world tips",
+    "category-guide": "Show complete workflow, then ENHANCE with practical usage scenarios",
+    "command-details": "Show command info, then ADD usage examples and related commands",
+    "search-results": "Show all matches, then HELP user narrow down or explore",
+    "task-recommendations": "Show recommendations, then EXPLAIN why these fit and offer to start",
+}
+
+
+def emit_output_type(output_type: str) -> None:
+    """Emit output type marker for LLM presentation guidance."""
+    print(f"@CK_OUTPUT_TYPE:{output_type}")
+    print()
+
+
 # Task keyword mappings for intent detection
 TASK_MAPPINGS = {
     "fix": ["fix", "bug", "error", "broken", "issue", "debug", "crash", "fail", "wrong", "not working"],
@@ -153,11 +176,11 @@ CATEGORY_GUIDES = {
     "config": {
         "title": "ClaudeKit Configuration (.ck.json)",
         "workflow": [
-            ("Create", "Create `.claude/.ck.json` in project root"),
-            ("Configure", "Set plan naming, paths, locale"),
-            ("Verify", "Hooks auto-load config on session start"),
+            ("Global", "Set user prefs in `~/.claude/.ck.json`"),
+            ("Local", "Override per-project in `./.claude/.ck.json`"),
+            ("Resolution", "DEFAULT → global → local (deep merge)"),
         ],
-        "tip": "Config is optional - sensible defaults apply if missing",
+        "tip": "Global config works in fresh dirs; local overrides for projects",
     },
 }
 
@@ -279,6 +302,8 @@ def detect_intent(input_str: str, categories: list) -> str:
 
 def show_overview(data: dict, prefix: str) -> None:
     """Display overview with quick start guide."""
+    emit_output_type("category-guide")
+
     commands = data["commands"]
     categories = data["categories"]
     total = sum(len(cmds) for cmds in commands.values())
@@ -307,6 +332,8 @@ def show_overview(data: dict, prefix: str) -> None:
 
 def show_category_guide(data: dict, category: str, prefix: str) -> None:
     """Display category guide with workflow and tips."""
+    emit_output_type("category-guide")
+
     categories = data["categories"]
     commands = data["commands"]
 
@@ -349,6 +376,8 @@ def show_category_guide(data: dict, category: str, prefix: str) -> None:
 
 def show_command(data: dict, command: str, prefix: str) -> None:
     """Display command details."""
+    emit_output_type("command-details")
+
     commands = data["commands"]
 
     # Normalize search term
@@ -391,6 +420,8 @@ def show_command(data: dict, command: str, prefix: str) -> None:
 
 def do_search(data: dict, term: str, prefix: str) -> None:
     """Search commands by keyword."""
+    emit_output_type("search-results")
+
     commands = data["commands"]
     term_lower = term.lower()
     matches = []
@@ -415,6 +446,8 @@ def do_search(data: dict, term: str, prefix: str) -> None:
 
 def recommend_task(data: dict, task: str, prefix: str) -> None:
     """Recommend commands for a task description."""
+    emit_output_type("task-recommendations")
+
     commands = data["commands"]
     task_lower = task.lower()
 
@@ -465,9 +498,18 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
 
 def show_config_guide() -> None:
     """Display comprehensive .ck.json configuration guide."""
+    emit_output_type("comprehensive-docs")
+
     print("# ClaudeKit Configuration (.ck.json)")
     print()
-    print("**Location:** `.claude/.ck.json` in project root")
+    print("**Locations (cascading resolution):**")
+    print("- Global: `~/.claude/.ck.json` (user preferences)")
+    print("- Local: `./.claude/.ck.json` (project overrides)")
+    print()
+    print("**Resolution Order:** `DEFAULT → global → local`")
+    print("- Global config sets user defaults")
+    print("- Local config overrides for specific projects")
+    print("- Deep merge: nested objects merge recursively")
     print()
     print("**Purpose:** Customize plan naming, paths, locale, and hook behavior.")
     print()
@@ -475,14 +517,19 @@ def show_config_guide() -> None:
     print()
     print("## Quick Start")
     print()
-    print("Create `.claude/.ck.json` with minimal config:")
+    print("**Global config** (`~/.claude/.ck.json`) - your preferences:")
     print("```json")
     print('{')
-    print('  "plan": {')
-    print('    "namingFormat": "{date}-{issue}-{slug}",')
-    print('    "dateFormat": "YYMMDD-HHmm",')
-    print('    "issuePrefix": "GH-"')
-    print('  }')
+    print('  "locale": { "responseLanguage": "vi" },')
+    print('  "plan": { "issuePrefix": "GH-" }')
+    print('}')
+    print("```")
+    print()
+    print("**Local override** (`./.claude/.ck.json`) - project-specific:")
+    print("```json")
+    print('{')
+    print('  "plan": { "issuePrefix": "JIRA-" },')
+    print('  "paths": { "docs": "documentation" }')
     print('}')
     print("```")
     print()
@@ -543,22 +590,24 @@ def show_config_guide() -> None:
     print()
     print("## Examples")
     print()
-    print("**Vietnamese team, JIRA issues:**")
-    print("```json")
-    print('{')
-    print('  "plan": { "issuePrefix": "JIRA-" },')
-    print('  "locale": { "responseLanguage": "vi" }')
-    print('}')
+    print("**Global install user (fresh directories work):**")
+    print("```bash")
+    print("# ~/.claude/.ck.json - applies everywhere")
+    print("cd /tmp/new-project && claude  # Uses global config")
     print("```")
     print()
-    print("**Custom directories:**")
-    print("```json")
-    print('{')
-    print('  "paths": {')
-    print('    "docs": "documentation",')
-    print('    "plans": "roadmap"')
-    print('  }')
-    print('}')
+    print("**Project with local override:**")
+    print("```bash")
+    print("# Global: issuePrefix = \"GH-\"")
+    print("# Local (.claude/.ck.json): issuePrefix = \"JIRA-\"")
+    print("# Result: issuePrefix = \"JIRA-\" (local wins)")
+    print("```")
+    print()
+    print("**Deep merge behavior:**")
+    print("```")
+    print("Global: { plan: { issuePrefix: \"GH-\", dateFormat: \"YYMMDD\" } }")
+    print("Local:  { plan: { issuePrefix: \"JIRA-\" } }")
+    print("Result: { plan: { issuePrefix: \"JIRA-\", dateFormat: \"YYMMDD\" } }")
     print("```")
     print()
     print("*Tip: Config is optional - all fields have sensible defaults.*")
