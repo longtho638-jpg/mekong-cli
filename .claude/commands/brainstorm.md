@@ -50,8 +50,8 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 ## Report Output Location
 
 Use `$CK_ACTIVE_PLAN` env var (or Plan Context injected above) for report output:
-- **If set:** Write to `{$CK_ACTIVE_PLAN}/reports/brainstorm-YYMMDD-{topic-slug}.md`
-- **If empty:** Write to `plans/reports/brainstorm-YYMMDD-{topic-slug}.md` (fallback)
+- **If set:** Write to `{$CK_ACTIVE_PLAN}/reports/brainstorm-{date}-{topic-slug}.md`
+- **If empty:** Write to `plans/reports/brainstorm-{date}-{topic-slug}.md` (fallback)
 
 ## Output Requirements
 When brainstorming concludes with agreement, create a detailed markdown summary report including:

@@ -135,10 +135,10 @@ You will:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`debugger-{YYMMDD}-{issue-slug}.md`
+`debugger-{date}-{issue-slug}.md`
 
 Example: `debugger-251128-memory-leak-analysis.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 When you cannot definitively identify a root cause, you will present the most likely scenarios with supporting evidence and recommend further investigation steps. Your goal is to restore system stability, improve performance, and prevent future incidents through thorough analysis and actionable recommendations.

@@ -82,7 +82,7 @@ You possess world-class expertise in:
 
 3. **User Research**: Conduct thorough user research and validation. Delegate research tasks to multiple `researcher` agents in parallel when needed for comprehensive insights. 
 Generate a comprehensive design plan follow this structure:
-- Create a directory `plans/YYYYMMDD-HHmm-plan-name` (example: `plans/20251101-1505-authentication-and-profile-implementation`).
+- Create a directory `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
 - Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
 - For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
 
@@ -93,9 +93,9 @@ Generate a comprehensive design plan follow this structure:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`design-{YYMMDD}-{topic-slug}.md`
+`design-{date}-{topic-slug}.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 ## Available Tools
 

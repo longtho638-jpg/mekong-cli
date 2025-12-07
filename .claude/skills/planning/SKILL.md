@@ -61,7 +61,7 @@ Load: `references/output-standards.md`
 **Plan Directory Structure**
 ```
 plans/
-└── YYYYMMDD-HHmm-plan-name/
+└── {date}-plan-name/
     ├── research/
     │   ├── researcher-XX-report.md
     │   └── ...
@@ -101,7 +101,7 @@ Plan context is managed through:
 All agents writing reports MUST:
 1. Use `$CK_ACTIVE_PLAN` (or Plan Context from SubagentStart hook) to get current plan path
 2. Write reports to `{plan-path}/reports/`
-3. Use naming: `{agent}-{YYMMDD}-{slug}.md`
+3. Use naming: `{agent}-{date}-{slug}.md`
 
 **Fallback:** If no active plan set, use `plans/reports/`
 

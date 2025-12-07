@@ -198,7 +198,7 @@ Eliminate code duplication
 ## Agent Communication Protocol
 
 **Report Format**: Markdown files in `./plans/<plan-name>/reports/`
-**Naming Convention**: `YYMMDD-from-[agent]-to-[agent]-[task]-report.md`
+**Naming Convention**: `{date}-from-[agent]-to-[agent]-[task]-report.md`
 
 **Communication Patterns**:
 - Sequential: Task dependencies require ordered execution
