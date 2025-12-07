@@ -145,7 +145,7 @@ track_skipped() {
 }
 
 # ============================================================================
-# State Persistence Functions (Phase 4)
+# State Persistence Functions
 # ============================================================================
 
 # Initialize or load state
@@ -208,7 +208,7 @@ clean_state() {
 }
 
 # ============================================================================
-# Build Tools Detection (Phase 2)
+# Build Tools Detection
 # ============================================================================
 
 # Check if system has C build tools for compiling Python packages
@@ -265,7 +265,7 @@ try_pip_install() {
 }
 
 # Install system package - no prompts, just install or skip
-# CLI controls sudo via --with-sudo flag (Option B from Phase 3)
+# CLI controls sudo via --with-sudo flag
 install_system_package() {
     local package_name="$1"
     local display_name="$2"
@@ -699,7 +699,7 @@ verify_installations() {
 }
 
 # ============================================================================
-# Final Report Functions (Phase 5)
+# Final Report Functions
 # ============================================================================
 
 generate_remediation_commands() {
