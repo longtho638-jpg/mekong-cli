@@ -49,12 +49,9 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 
 ## Report Output Location
 
-When writing brainstorm reports:
-1. **Check active plan:** Read `<WORKING-DIR>/.claude/active-plan` to get current plan path
-2. **If active plan exists:** Write to `{active-plan}/reports/brainstorm-YYMMDD-{topic-slug}.md`
-3. **If no active plan:** Write to `plans/reports/brainstorm-YYMMDD-{topic-slug}.md` (fallback)
-
-`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+Use `$CK_ACTIVE_PLAN` env var (or Plan Context injected above) for report output:
+- **If set:** Write to `{$CK_ACTIVE_PLAN}/reports/brainstorm-YYMMDD-{topic-slug}.md`
+- **If empty:** Write to `plans/reports/brainstorm-YYMMDD-{topic-slug}.md` (fallback)
 
 ## Output Requirements
 When brainstorming concludes with agreement, create a detailed markdown summary report including:

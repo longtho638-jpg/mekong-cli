@@ -13,25 +13,23 @@ $ARGUMENTS
 
 ## Pre-Creation Check
 
-Before creating plan folder:
+Before creating plan folder, check `$CK_ACTIVE_PLAN` env var:
 
 1. **Check for active plan:**
-   - If `<WORKING-DIR>/.claude/active-plan` exists AND points to valid directory:
+   - If `$CK_ACTIVE_PLAN` is set AND points to valid directory:
      - Ask user: "Active plan found: {path}. Continue with this? [Y/n]"
      - If Y (default): Use existing path, skip folder creation
      - If n: Proceed to create new plan
-   - If not exists or invalid: Proceed to create new
+   - If empty or invalid: Proceed to create new
 
 2. **Create plan folder** (only if creating new):
    - Generate: `plans/YYYYMMDD-HHmm-plan-name`
-   - Write path to `<WORKING-DIR>/.claude/active-plan`
-
-`<WORKING-DIR>` = current project's working directory (where Claude was launched or `pwd`).
+   - Update session state: `node .claude/scripts/set-active-plan.cjs plans/YYYYMMDD-HHmm-plan-name`
 
 ## Workflow
 Use `planner` subagent to:
-1. If creating new plan: Create directory `plans/YYYYMMDD-HHmm-plan-name` and update `<WORKING-DIR>/.claude/active-plan`.
-   If reusing existing: Use the active plan path.
+1. If creating new plan: Create directory `plans/YYYYMMDD-HHmm-plan-name` and run `node .claude/scripts/set-active-plan.cjs plans/...`
+   If reusing existing: Use the active plan path from `$CK_ACTIVE_PLAN`.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Analyze the codebase by reading `codebase-summary.md`, `code-standards.md`, `system-architecture.md` and `project-overview-pdr.md` file.
