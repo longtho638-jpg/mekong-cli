@@ -1,3 +1,15 @@
+## [1.20.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.6...v1.20.0-beta.7) (2025-12-07)
+
+
+### 📚 Documentation
+
+* fix YANGI typo to YAGNI across documentation ([2403f12](https://github.com/claudekit/claudekit-engineer/commit/2403f12c362792084b0d892d29df38752589db7c)), closes [#138](https://github.com/claudekit/claudekit-engineer/issues/138)
+
+
+### ♻️ Code Refactoring
+
+* replace hardcoded date formats with {date} placeholder ([fdf035a](https://github.com/claudekit/claudekit-engineer/commit/fdf035a83d21bac55f9322399d2a853ed93be960)), closes [#140](https://github.com/claudekit/claudekit-engineer/issues/140)
+
 ## [1.20.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.5...v1.20.0-beta.6) (2025-12-07)
 
 
