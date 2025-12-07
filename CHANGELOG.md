@@ -1,3 +1,10 @@
+## [1.20.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.5...v1.20.0-beta.6) (2025-12-07)
+
+
+### ♻️ Code Refactoring
+
+* migrate active-plan storage to session state ([942a074](https://github.com/claudekit/claudekit-engineer/commit/942a074980f21bbbbf0868c303aeb04d68b6239e))
+
 ## [1.20.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.4...v1.20.0-beta.5) (2025-12-07)
 
 
