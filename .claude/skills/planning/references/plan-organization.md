@@ -5,7 +5,7 @@
 ### Plan Location
 Save plans in `./plans` directory with timestamp and descriptive name.
 
-**Format:** `plans/YYYYMMDD-HHmm-your-plan-name/`
+**Format:** `plans/{date}-your-plan-name/` (date format from `$CK_PLAN_DATE_FORMAT`)
 
 **Example:** `plans/20251101-1505-authentication-and-profile-implementation/`
 
@@ -48,13 +48,13 @@ Plan context is managed via env vars and session state:
 **After Creating Plan:**
 ```bash
 # Update session state so subagents get the new plan context:
-node .claude/scripts/set-active-plan.cjs plans/YYMMDD-HHmm-plan-name
+node .claude/scripts/set-active-plan.cjs plans/{date}-plan-name
 ```
 
 **Report Output Rules:**
 1. Use `$CK_ACTIVE_PLAN` (or Plan Context from hook) to get plan path
 2. Write reports to `{plan-path}/reports/`
-3. Use naming: `{agent}-{YYMMDD}-{slug}.md`
+3. Use naming: `{agent}-{date}-{slug}.md`
 4. Fallback: `plans/reports/` if no active plan
 
 ## File Structure

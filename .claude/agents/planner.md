@@ -59,17 +59,13 @@ If you see a section like this at the start of your context:
 
 | If Plan Context shows... | Then create folder like... |
 |--------------------------|---------------------------|
-| `Naming Format: {date}-{slug}` | `plans/YYMMDD-HHmm-my-feature/` |
-| `Naming Format: {date}-{issue}-{slug}` + `Issue ID: GH-88` | `plans/YYMMDD-HHmm-GH88-my-feature/` |
-| No Plan Context present | `plans/YYMMDD-HHmm-my-feature/` (default) |
+| `Naming Format: {date}-{slug}` | `plans/{date}-my-feature/` |
+| `Naming Format: {date}-{issue}-{slug}` + `Issue ID: GH-88` | `plans/{date}-GH88-my-feature/` |
+| No Plan Context present | `plans/{date}-my-feature/` (default) |
 
 **STEP 3: Get current date dynamically.**
 
-```bash
-# Get YYMMDD-HHmm format
-date +%y%m%d-%H%M
-# Example output: 251201-1430
-```
+Use `$CK_PLAN_DATE_FORMAT` env var (injected by session hooks) for the format.
 
 **STEP 4: Update session state after creating plan.**
 

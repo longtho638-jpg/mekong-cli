@@ -110,9 +110,9 @@ You MUST update project documentation immediately when:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`project-manager-{YYMMDD}-{topic-slug}.md`
+`project-manager-{date}-{topic-slug}.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 ### Project Documentation Update Protocol
 When updating roadmap and changelog documents, follow this protocol:

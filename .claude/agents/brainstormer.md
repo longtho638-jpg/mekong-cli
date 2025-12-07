@@ -86,9 +86,9 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`brainstorm-{YYMMDD}-{topic-slug}.md`
+`brainstorm-{date}-{topic-slug}.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 ### Report Content
 When brainstorming concludes with agreement, create a detailed markdown summary report including:

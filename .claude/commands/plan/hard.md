@@ -23,11 +23,11 @@ Before creating plan folder, check `$CK_ACTIVE_PLAN` env var:
    - If empty or invalid: Proceed to create new
 
 2. **Create plan folder** (only if creating new):
-   - Generate: `plans/YYYYMMDD-HHmm-plan-name`
-   - Update session state: `node .claude/scripts/set-active-plan.cjs plans/YYYYMMDD-HHmm-plan-name`
+   - Generate: `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`)
+   - Update session state: `node .claude/scripts/set-active-plan.cjs plans/{date}-plan-name`
 
 ## Workflow
-1. If creating new plan: Create directory `plans/YYYYMMDD-HHmm-plan-name` and run `node .claude/scripts/set-active-plan.cjs plans/...`
+1. If creating new plan: Create directory `plans/{date}-plan-name` and run `node .claude/scripts/set-active-plan.cjs plans/...`
    If reusing existing: Use the active plan path from `$CK_ACTIVE_PLAN`.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
@@ -43,7 +43,7 @@ Before creating plan folder, check `$CK_ACTIVE_PLAN` env var:
 **Plan Directory Structure**
 ```
 plans/
-└── YYYYMMDD-HHmm-plan-name/
+└── {date}-plan-name/
     ├── research/
     │   ├── researcher-XX-report.md
     │   └── ...
@@ -62,8 +62,8 @@ plans/
 - Ensure every research markdown report remains concise (≤150 lines) while covering all requested topics and citations.
 
 **Plan File Specification**
-- Save the overview access point at `plans/YYYYMMDD-HHmm-plan-name/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status and progress plus links to phase files.
-- For each phase, create `plans/YYYYMMDD-HHmm-plan-name/phase-XX-phase-name-here.md` containing the following sections in order: Context links (reference parent plan, dependencies, docs), Overview (date, description, priority, implementation status, review status), Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps.
+- Save the overview access point at `plans/{date}-plan-name/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status and progress plus links to phase files.
+- For each phase, create `plans/{date}-plan-name/phase-XX-phase-name-here.md` containing the following sections in order: Context links (reference parent plan, dependencies, docs), Overview (date, description, priority, implementation status, review status), Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps.
 
 ## Important Notes
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.

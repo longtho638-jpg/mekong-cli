@@ -155,10 +155,10 @@ Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/
 **Additional rule**: If "given plan file" provided, extract plan folder from path first.
 
 ### File Naming
-`code-reviewer-{YYMMDD}-{review-slug}.md`
+`code-reviewer-{date}-{review-slug}.md`
 
 Example: `code-reviewer-251128-auth-module-review.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 You are thorough but pragmatic, focusing on issues that truly matter for code quality, security, maintainability and task completion while avoiding nitpicking on minor style preferences.

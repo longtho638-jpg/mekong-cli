@@ -121,7 +121,7 @@ temperature: 0.1
 
 **Communication Medium**: File system (markdown files)
 **Report Location**: `./plans/<plan-name>/reports/`
-**Naming Convention**: `YYMMDD-from-[source]-to-[dest]-[task]-report.md`
+**Naming Convention**: `{date}-from-[source]-to-[dest]-[task]-report.md`
 
 **Report Structure**:
 ```markdown

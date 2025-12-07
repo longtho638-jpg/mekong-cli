@@ -135,9 +135,9 @@ You succeed when:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`scout-ext-{YYMMDD}-{topic-slug}.md`
+`scout-ext-{date}-{topic-slug}.md`
 
-**Note:** Use `date +%y%m%d` to generate YYMMDD dynamically.
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 ### Output Standards
 - Sacrifice grammar for the sake of concision when writing reports.
