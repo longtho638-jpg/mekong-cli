@@ -10,7 +10,7 @@ This document defines coding standards, file organization patterns, naming conve
 
 ## Core Development Principles
 
-### YANGI (You Aren't Gonna Need It)
+### YAGNI (You Aren't Gonna Need It)
 - Avoid over-engineering and premature optimization
 - Implement features only when needed
 - Don't build infrastructure for hypothetical future requirements

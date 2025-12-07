@@ -224,7 +224,7 @@ async function main() {
       `- Activate skills (auto detect user-scope or project-scope): Run \`python .claude/scripts/generate_catalogs.py --skills\` to generate a skills catalog and analyze it, then activate the relevant skills that are needed for the task during the process.`,
       `- Execute commands (auto detect user-scope or project-scope): Run \`python .claude/scripts/generate_catalogs.py --commands\` to generate a commands catalog and analyze it, then execute the relevant SlashCommands that are needed for the task during the process.`,
       `- When skills' scripts are failed to execute, always fix them and run again, repeat until success.`,
-      `- Follow **YANGI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)** principles`,
+      `- Follow **YAGNI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)** principles`,
       `- Sacrifice grammar for the sake of concision when writing reports.`,
       `- In reports, list any unresolved questions at the end, if any.`,
       `- IMPORTANT: Ensure token consumption efficiency while maintaining high quality.`,
