@@ -1,3 +1,15 @@
+## [1.20.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.4...v1.20.0-beta.5) (2025-12-07)
+
+
+### 🚀 Features
+
+* **install:** implement bulletproof skills installation with error tracking ([6d47df0](https://github.com/claudekit/claudekit-engineer/commit/6d47df017dd2268cdce94e43eb046b5cce40cf3e))
+
+
+### 🐞 Bug Fixes
+
+* **install:** add bulletproof error handling and state persistence ([8b1628d](https://github.com/claudekit/claudekit-engineer/commit/8b1628df9ee09ca2bc3e2288a68dc853ad9e7f68))
+
 ## [1.20.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.3...v1.20.0-beta.4) (2025-12-06)
 
 
