@@ -72,4 +72,3 @@ prompt.md
 # Gemini CLI settings (symlink to .claude/.mcp.json)
 .gemini/settings.json
 .claude/settings.bak.json
-.claude/active-plan

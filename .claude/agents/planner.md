@@ -71,19 +71,19 @@ date +%y%m%d-%H%M
 # Example output: 251201-1430
 ```
 
-**STEP 4: Update active-plan state file.**
+**STEP 4: Update session state after creating plan.**
 
-After creating the plan folder, ALWAYS run:
+After creating the plan folder, update session state so subagents receive the latest context:
 ```bash
-echo "plans/{your-folder-name}" > .claude/active-plan
+node .claude/scripts/set-active-plan.cjs plans/{your-folder-name}
 ```
 
 Example:
 ```bash
-echo "plans/251201-1430-GH88-add-authentication" > .claude/active-plan
+node .claude/scripts/set-active-plan.cjs plans/251201-1430-GH88-add-authentication
 ```
 
-This ensures all subsequent agents know where to write reports.
+This updates the session temp file so all subsequent subagents receive the correct plan context.
 
 ---
 
