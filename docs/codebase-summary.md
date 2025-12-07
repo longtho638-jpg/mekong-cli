@@ -146,7 +146,7 @@ claudekit-engineer/
 
 3. **development-rules.md**: Development standards
    - File size management (<500 lines)
-   - YANGI, KISS, DRY principles
+   - YAGNI, KISS, DRY principles
    - Code quality guidelines
    - Pre-commit/push rules
 
@@ -175,7 +175,7 @@ claudekit-engineer/
 
 ## Development Principles
 
-### YANGI (You Aren't Gonna Need It)
+### YAGNI (You Aren't Gonna Need It)
 Avoid over-engineering and unnecessary features
 
 ### KISS (Keep It Simple, Stupid)

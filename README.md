@@ -449,7 +449,7 @@ Then add your MCP servers, below are some examples:
 ## Best Practices
 
 ### Development Principles
-- **YANGI**: You Aren't Gonna Need It - avoid over-engineering
+- **YAGNI**: You Aren't Gonna Need It - avoid over-engineering
 - **KISS**: Keep It Simple, Stupid - prefer simple solutions
 - **DRY**: Don't Repeat Yourself - eliminate code duplication
 

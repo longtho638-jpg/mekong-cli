@@ -295,7 +295,7 @@ Enterprise-grade features and deployment options.
 ## Compliance & Standards
 
 ### Code Standards
-- YANGI (You Aren't Gonna Need It)
+- YAGNI (You Aren't Gonna Need It)
 - KISS (Keep It Simple, Stupid)
 - DRY (Don't Repeat Yourself)
 - Files < 500 lines

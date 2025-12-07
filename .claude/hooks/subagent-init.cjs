@@ -156,7 +156,7 @@ async function main() {
     contextLines.push(``);
     contextLines.push(`## Subagent Rules`);
     contextLines.push(`- Save reports to the Reports Path shown above`);
-    contextLines.push(`- Follow YANGI/KISS/DRY principles`);
+    contextLines.push(`- Follow YAGNI/KISS/DRY principles`);
     contextLines.push(`- Sacrifice grammar for concision in reports`);
     contextLines.push(`- List unresolved questions at end of reports`);
 
