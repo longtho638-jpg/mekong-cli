@@ -1,3 +1,10 @@
+## [1.20.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.7...v1.20.0-beta.8) (2025-12-08)
+
+
+### 🚀 Features
+
+* **skills:** integrate ui-ux-pro-max as primary frontend skill ([3c3a5c4](https://github.com/claudekit/claudekit-engineer/commit/3c3a5c46a071f5b2b7dd9eab5d8ac946dea71dc4)), closes [#142](https://github.com/claudekit/claudekit-engineer/issues/142)
+
 ## [1.20.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.6...v1.20.0-beta.7) (2025-12-07)
 
 
