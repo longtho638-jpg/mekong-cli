@@ -1,3 +1,10 @@
+## [1.20.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.9...v1.20.0-beta.10) (2025-12-08)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** prevent stale plan pollution on fresh sessions ([bd17c53](https://github.com/claudekit/claudekit-engineer/commit/bd17c53daa2d2de499d6e3d284d2ba5d9c402aba)), closes [#146](https://github.com/claudekit/claudekit-engineer/issues/146)
+
 ## [1.20.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.8...v1.20.0-beta.9) (2025-12-08)
 
 
