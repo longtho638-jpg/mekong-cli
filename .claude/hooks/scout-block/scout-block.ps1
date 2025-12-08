@@ -34,8 +34,10 @@ if (-not $hookData.tool_input) {
 $toolInput = $hookData.tool_input
 
 # Determine script directory and .claude folder for .ckignore lookup
+# Script is at .claude/hooks/scout-block/scout-block.ps1, so go 2 levels up to .claude/
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$claudeDir = Split-Path -Parent $scriptDir
+$hooksDir = Split-Path -Parent $scriptDir
+$claudeDir = Split-Path -Parent $hooksDir
 $ckignoreFile = Join-Path $claudeDir ".ckignore"
 
 # Default blocked patterns
