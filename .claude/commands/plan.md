@@ -8,16 +8,22 @@ argument-hint: [task]
 $ARGUMENTS
 </task>
 
-## Pre-Creation Check (Active Plan Detection)
+## Pre-Creation Check (Active vs Suggested Plan Detection)
 
-Before delegating to plan subcommands, check for existing active plan using `$CK_ACTIVE_PLAN` env var:
+Before delegating to plan subcommands, check plan state:
 
-1. **Check env var:** If `$CK_ACTIVE_PLAN` is set and points to valid directory:
-   - Ask user: "Active plan found: {path}. Continue with this? [Y/n]"
-   - If Y (default): Pass existing plan path to subcommand, skip folder creation
-   - If n: Proceed to create new plan (subcommand handles)
+1. **Check `$CK_ACTIVE_PLAN` env var (explicitly active):**
+   - If set and points to valid directory:
+     - Ask user: "Active plan found: {path}. Continue with this? [Y/n]"
+     - If Y (default): Pass existing plan path to subcommand, skip folder creation
+     - If n: Proceed to create new plan
 
-2. **Pass plan path explicitly** when delegating to `/plan:fast` or `/plan:hard`
+2. **Check `$CK_SUGGESTED_PLAN` env var (branch-matched, NOT active):**
+   - If set: Inform user "Found suggested plan from branch: {path}"
+   - This is a hint only - do NOT auto-use it
+   - Ask user if they want to activate it or create new plan
+
+3. **If neither is set:** Proceed to create new plan (subcommand handles)
 
 ## Workflow
 - Analyze the given task and use `AskUserQuestion` tool to ask for more details if needed.

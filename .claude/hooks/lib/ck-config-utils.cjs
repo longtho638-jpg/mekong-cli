@@ -22,7 +22,9 @@ const DEFAULT_CONFIG = {
     issuePrefix: null,
     reportsDir: 'reports',
     resolution: {
-      order: ['session', 'branch', 'mostRecent'],
+      // CHANGED: Removed 'mostRecent' - only explicit session state activates plans
+      // Branch matching now returns 'suggested' not 'active'
+      order: ['session', 'branch'],
       branchPattern: '(?:feat|fix|chore|refactor|docs)/(?:[^/]+/)?(.+)'
     }
   },
@@ -204,16 +206,21 @@ function execSafe(cmd) {
 }
 
 /**
- * Resolve active plan path using cascading resolution
- * Order: session -> branch -> mostRecent -> fallback
+ * Resolve active plan path using cascading resolution with tracking
+ *
+ * Resolution semantics:
+ * - 'session': Explicitly set via set-active-plan.cjs → ACTIVE (directive)
+ * - 'branch': Matched from git branch name → SUGGESTED (hint only)
+ * - 'mostRecent': REMOVED - was causing stale plan pollution
+ *
  * @param {string} sessionId - Session identifier (optional)
  * @param {Object} config - ClaudeKit config
- * @returns {string|null} Resolved plan path or null
+ * @returns {{ path: string|null, resolvedBy: 'session'|'branch'|null }} Resolution result with tracking
  */
 function resolvePlanPath(sessionId, config) {
   const plansDir = config?.paths?.plans || 'plans';
   const resolution = config?.plan?.resolution || {};
-  const order = resolution.order || ['session', 'branch', 'mostRecent'];
+  const order = resolution.order || ['session', 'branch'];
   const branchPattern = resolution.branchPattern;
 
   for (const method of order) {
@@ -222,34 +229,36 @@ function resolvePlanPath(sessionId, config) {
         const state = readSessionState(sessionId);
         if (state?.activePlan) {
           // Only use session state if CWD matches session origin (monorepo support)
-          // If user cd'd into submodule, skip session and resolve locally
           if (state.sessionOrigin && state.sessionOrigin !== process.cwd()) {
-            break;  // Fall through to branch/mostRecent
+            break;  // Fall through to branch
           }
-          return state.activePlan;
+          return { path: state.activePlan, resolvedBy: 'session' };
         }
         break;
       }
       case 'branch': {
-        const branch = execSafe('git branch --show-current');
-        const slug = extractSlugFromBranch(branch, branchPattern);
-        if (slug) {
-          const entries = fs.readdirSync(plansDir, { withFileTypes: true })
-            .filter(e => e.isDirectory() && e.name.includes(slug));
-          if (entries.length > 0) {
-            return path.join(plansDir, entries[entries.length - 1].name);
+        try {
+          const branch = execSafe('git branch --show-current');
+          const slug = extractSlugFromBranch(branch, branchPattern);
+          if (slug && fs.existsSync(plansDir)) {
+            const entries = fs.readdirSync(plansDir, { withFileTypes: true })
+              .filter(e => e.isDirectory() && e.name.includes(slug));
+            if (entries.length > 0) {
+              return {
+                path: path.join(plansDir, entries[entries.length - 1].name),
+                resolvedBy: 'branch'
+              };
+            }
           }
+        } catch (e) {
+          // Ignore errors reading plans dir
         }
         break;
       }
-      case 'mostRecent': {
-        const recent = findMostRecentPlan(plansDir);
-        if (recent) return recent;
-        break;
-      }
+      // NOTE: 'mostRecent' case intentionally removed - was causing stale plan pollution
     }
   }
-  return null;
+  return { path: null, resolvedBy: null };
 }
 
 /**
@@ -394,12 +403,22 @@ function writeEnv(envFile, key, value) {
 }
 
 /**
- * Get reports path based on active plan
+ * Get reports path based on plan resolution
+ * Only uses plan-specific path for 'session' resolved plans (explicitly active)
+ * Branch-matched (suggested) plans use default path to avoid pollution
+ *
+ * @param {string|null} planPath - The plan path
+ * @param {string|null} resolvedBy - How plan was resolved ('session'|'branch'|null)
+ * @param {Object} planConfig - Plan configuration
+ * @param {Object} pathsConfig - Paths configuration
+ * @returns {string} Reports path
  */
-function getReportsPath(activePlan, planConfig, pathsConfig) {
-  if (activePlan) {
-    return `${activePlan}/${planConfig.reportsDir}/`;
+function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig) {
+  // Only use plan-specific reports path if explicitly active (session state)
+  if (planPath && resolvedBy === 'session') {
+    return `${planPath}/${planConfig.reportsDir}/`;
   }
+  // Default path for no plan or suggested (branch-matched) plans
   return `${pathsConfig.plans}/${planConfig.reportsDir}/`;
 }
 

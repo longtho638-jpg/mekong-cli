@@ -83,13 +83,25 @@ function detectFramework(configOverride) {
 
 /**
  * Build context summary for output
+ * @param {Object} config - Loaded config
+ * @param {Object} detections - Project detections
+ * @param {{ path: string|null, resolvedBy: string|null }} resolved - Plan resolution result
  */
-function buildContextOutput(config, detections, activePlan) {
+function buildContextOutput(config, detections, resolved) {
   const lines = [`Project: ${detections.type || 'unknown'}`];
   if (detections.pm) lines.push(`PM: ${detections.pm}`);
   if (detections.framework) lines.push(`Framework: ${detections.framework}`);
   lines.push(`Plan naming: ${config.plan.namingFormat}`);
-  if (activePlan) lines.push(`Plan: ${activePlan}`);
+
+  // Show plan status with resolution context
+  if (resolved.path) {
+    if (resolved.resolvedBy === 'session') {
+      lines.push(`Plan: ${resolved.path}`);
+    } else {
+      lines.push(`Suggested: ${resolved.path}`);
+    }
+  }
+
   if (config.assertions?.length > 0) {
     lines.push(`Assertions: ${config.assertions.length} rules`);
   }
@@ -115,19 +127,26 @@ async function main() {
       framework: detectFramework(config.project?.framework)
     };
 
-    // Resolve plan using branch/mostRecent (no session state yet)
-    const activePlan = resolvePlanPath(null, config);
-    const reportsPath = getReportsPath(activePlan, config.plan, config.paths);
+    // Resolve plan - now returns { path, resolvedBy }
+    const resolved = resolvePlanPath(null, config);
 
-    // Write session state to temp file
+    // CRITICAL FIX: Only persist explicitly-set plans to session state
+    // Branch-matched plans are "suggested" - stored separately, not as activePlan
+    // This prevents stale plan pollution on fresh sessions
     if (sessionId) {
       writeSessionState(sessionId, {
-        sessionOrigin: process.cwd(),  // Track where session started for monorepo support
-        activePlan,
+        sessionOrigin: process.cwd(),
+        // Only session-resolved plans are truly "active"
+        activePlan: resolved.resolvedBy === 'session' ? resolved.path : null,
+        // Track suggested plan separately (for UI hints, not for report paths)
+        suggestedPlan: resolved.resolvedBy === 'branch' ? resolved.path : null,
         timestamp: Date.now(),
         source
       });
     }
+
+    // Reports path only uses active plans, not suggested ones
+    const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
 
     if (envFile) {
       writeEnv(envFile, 'CK_SESSION_ID', sessionId || '');
@@ -135,7 +154,10 @@ async function main() {
       writeEnv(envFile, 'CK_PLAN_DATE_FORMAT', config.plan.dateFormat);
       writeEnv(envFile, 'CK_PLAN_ISSUE_PREFIX', config.plan.issuePrefix || '');
       writeEnv(envFile, 'CK_PLAN_REPORTS_DIR', config.plan.reportsDir);
-      writeEnv(envFile, 'CK_ACTIVE_PLAN', activePlan || '');
+      // Only set CK_ACTIVE_PLAN for explicitly active plans
+      writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');
+      // Add suggested plan as separate env var (for UI hints)
+      writeEnv(envFile, 'CK_SUGGESTED_PLAN', resolved.resolvedBy === 'branch' ? resolved.path : '');
       writeEnv(envFile, 'CK_REPORTS_PATH', reportsPath);
       writeEnv(envFile, 'CK_DOCS_PATH', config.paths.docs);
       writeEnv(envFile, 'CK_PLANS_PATH', config.paths.plans);
@@ -148,7 +170,7 @@ async function main() {
       }
     }
 
-    console.log(`Session ${source}. ${buildContextOutput(config, detections, activePlan)}`);
+    console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);
 
     if (config.assertions?.length > 0) {
       console.log(`\nUser Assertions:`);

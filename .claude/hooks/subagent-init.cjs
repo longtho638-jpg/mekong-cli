@@ -33,7 +33,12 @@ function execSafe(cmd) {
 }
 
 /**
- * Build Plan Context section using resolvePlanPath
+ * Build Plan Context section with differentiated injection
+ *
+ * Resolution semantics (same as dev-rules-reminder.cjs):
+ * - 'session': Explicitly active → directive language, plan-specific reports
+ * - 'branch': Suggested only → soft hint, default reports path
+ * - null: No plan → default reports path
  */
 function buildPlanContext(sessionId) {
   const config = loadConfig({ includeProject: false, includeAssertions: false });
@@ -41,22 +46,35 @@ function buildPlanContext(sessionId) {
 
   const gitBranch = execSafe('git branch --show-current');
   const issueId = extractIssueFromBranch(gitBranch);
-  const activePlan = resolvePlanPath(sessionId, config);
-  const reportsPath = getReportsPath(activePlan, plan, paths);
+
+  // resolvePlanPath now returns { path, resolvedBy }
+  const resolved = resolvePlanPath(sessionId, config);
+  const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, plan, paths);
   const formattedIssue = formatIssueId(issueId, plan);
 
-  const lines = [
-    `## Plan Context`,
-    `- Active Plan: ${activePlan || 'none'}`,
-    `- Reports Path: ${reportsPath}`,
-    `- Naming Format: ${plan.namingFormat}`,
-    `- Date Format: ${plan.dateFormat}`
-  ];
+  const lines = [`## Plan Context`];
+
+  // DIFFERENTIATED INJECTION based on resolution method
+  if (resolved.resolvedBy === 'session') {
+    // Explicit active plan - directive language
+    lines.push(`- Active Plan: ${resolved.path}`);
+  } else if (resolved.resolvedBy === 'branch') {
+    // Branch-matched - soft hint, NOT directive
+    lines.push(`- Active Plan: none`);
+    lines.push(`- Suggested Plan: ${resolved.path} (from branch, not active)`);
+  } else {
+    // No plan
+    lines.push(`- Active Plan: none`);
+  }
+
+  lines.push(`- Reports Path: ${reportsPath}`);
+  lines.push(`- Naming Format: ${plan.namingFormat}`);
+  lines.push(`- Date Format: ${plan.dateFormat}`);
 
   if (formattedIssue) lines.push(`- Issue ID: ${formattedIssue}`);
   if (gitBranch) lines.push(`- Git Branch: ${gitBranch}`);
 
-  return { lines, activePlan, reportsPath, config };
+  return { lines, resolved, reportsPath, config };
 }
 
 /**
