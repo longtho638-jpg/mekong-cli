@@ -1,3 +1,10 @@
+## [1.20.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.8...v1.20.0-beta.9) (2025-12-08)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** correct .ckignore path calculation in scout-block ([fd09f6f](https://github.com/claudekit/claudekit-engineer/commit/fd09f6f4d33531a0090571d8684c734ddb358760)), closes [#144](https://github.com/claudekit/claudekit-engineer/issues/144)
+
 ## [1.20.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.7...v1.20.0-beta.8) (2025-12-08)
 
 
