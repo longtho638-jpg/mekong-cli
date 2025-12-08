@@ -19,11 +19,12 @@ fi
 
 # Determine script directory for .ckignore lookup
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# Look for .ckignore in .claude/ folder (1 level up from .claude/hooks/)
-CLAUDE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+# Look for .ckignore in .claude/ folder (2 levels up from .claude/hooks/scout-block/)
+CLAUDE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 CKIGNORE_FILE="$CLAUDE_DIR/.ckignore"
 
 # Parse JSON and extract all relevant parameters using Node.js
+# Output format: "ALLOWED" or "BLOCKED:pattern1,pattern2,..."
 CHECK_RESULT=$(echo "$INPUT" | CKIGNORE_FILE="$CKIGNORE_FILE" node -e "
 const fs = require('fs');
 const path = require('path');
@@ -81,7 +82,8 @@ try {
 
   for (const param of fileParams) {
     if (param && typeof param === 'string' && blockedDirPattern.test(param)) {
-      console.log('BLOCKED');
+      // Output blocked with pattern list for dynamic error message
+      console.log('BLOCKED:' + blockedPatterns.join(','));
       process.exit(0);
     }
   }
@@ -89,7 +91,8 @@ try {
   // Check Bash command (selective blocking - only directory access)
   if (toolInput.command && typeof toolInput.command === 'string') {
     if (blockedBashPattern.test(toolInput.command)) {
-      console.log('BLOCKED');
+      // Output blocked with pattern list for dynamic error message
+      console.log('BLOCKED:' + blockedPatterns.join(','));
       process.exit(0);
     }
   }
@@ -109,9 +112,11 @@ if [ $? -ne 0 ]; then
   exit 2
 fi
 
-# Check result
-if [ "$CHECK_RESULT" = "BLOCKED" ]; then
-  echo "ERROR: Blocked directory pattern (node_modules, __pycache__, .git/, dist/, build/)" >&2
+# Check result - now handles "BLOCKED:patterns" format
+if [[ "$CHECK_RESULT" == BLOCKED:* ]]; then
+  # Extract patterns from result (format: "BLOCKED:pattern1,pattern2,...")
+  PATTERNS="${CHECK_RESULT#BLOCKED:}"
+  echo "ERROR: Blocked directory pattern ($PATTERNS)" >&2
   exit 2
 fi
 
