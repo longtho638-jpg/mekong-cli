@@ -6,8 +6,11 @@ argument-hint: [screenshot]
 Think hard to plan & start designing follow exactly this screenshot: 
 <screenshot>$ARGUMENTS</screenshot>
 
-**IMPORTANT**: Activate `aesthetic` and `frontend-design` skills.
-**IMPORTANT**: Analyze the list of skills  at `.claude/skills/*` and intelligently activate the skills that are needed for the task during the process.
+## Required Skills (Priority Order)
+1. **`ui-ux-pro-max`** - Design intelligence database (ALWAYS ACTIVATE FIRST)
+2. **`aesthetic`** - Design principles
+3. **`frontend-design`** - Screenshot analysis and replication
+
 **Ensure token efficiency while maintaining high quality.**
 
 ## Workflow:
