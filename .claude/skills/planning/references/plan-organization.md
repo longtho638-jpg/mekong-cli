@@ -34,16 +34,22 @@ plans/
 
 ### Active Plan State Tracking
 
+#### Active vs Suggested Plans
+
+| Type | Env Var | Meaning |
+|------|---------|---------|
+| **Active** | `$CK_ACTIVE_PLAN` | Explicitly set via `set-active-plan.cjs` - use for reports |
+| **Suggested** | `$CK_SUGGESTED_PLAN` | Branch-matched, hint only - do NOT auto-use |
+
 Plan context is managed via env vars and session state:
-- **`$CK_ACTIVE_PLAN`**: Env var set at session start, provides initial plan context
-- **Session temp file**: Updated when creating new plans, subagents read latest context
+- **`$CK_ACTIVE_PLAN`**: Only set for explicitly activated plans (via session state)
+- **`$CK_SUGGESTED_PLAN`**: Branch-matched plans shown as hints, not directives
+- **Session temp file**: Stores explicit activations only, not auto-resolved plans
 
 **Pre-Creation Check:**
-1. Check `$CK_ACTIVE_PLAN` env var (or Plan Context injected by SubagentStart hook)
-2. If set and valid directory → ask user "Continue with existing plan? [Y/n]"
-   - Y → reuse existing
-   - n → create new
-3. If empty → create new plan
+1. Check `$CK_ACTIVE_PLAN` env var → if set and valid, ask "Continue with existing plan? [Y/n]"
+2. Check `$CK_SUGGESTED_PLAN` env var → if set, inform user (hint only, do NOT auto-use)
+3. If neither set → create new plan
 
 **After Creating Plan:**
 ```bash
@@ -52,10 +58,10 @@ node .claude/scripts/set-active-plan.cjs plans/{date}-plan-name
 ```
 
 **Report Output Rules:**
-1. Use `$CK_ACTIVE_PLAN` (or Plan Context from hook) to get plan path
-2. Write reports to `{plan-path}/reports/`
-3. Use naming: `{agent}-{date}-{slug}.md`
-4. Fallback: `plans/reports/` if no active plan
+1. Check `Plan Context` section injected by hooks for `Reports Path`
+2. Only **active** plans (`$CK_ACTIVE_PLAN`) use plan-specific reports path
+3. **Suggested** plans use default `plans/reports/` to prevent old plan pollution
+4. Use naming: `{agent}-{date}-{slug}.md`
 
 ## File Structure
 

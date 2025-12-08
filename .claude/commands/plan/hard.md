@@ -11,18 +11,24 @@ Activate `planning` skill.
 $ARGUMENTS
 </task>
 
-## Pre-Creation Check
+## Pre-Creation Check (Active vs Suggested Plan)
 
-Before creating plan folder, check `$CK_ACTIVE_PLAN` env var:
+Before creating plan folder, check plan state:
 
-1. **Check for active plan:**
-   - If `$CK_ACTIVE_PLAN` is set AND points to valid directory:
+1. **Check `$CK_ACTIVE_PLAN` (explicitly active):**
+   - If set AND points to valid directory:
      - Ask user: "Active plan found: {path}. Continue with this? [Y/n]"
      - If Y (default): Use existing path, skip folder creation
      - If n: Proceed to create new plan
-   - If empty or invalid: Proceed to create new
 
-2. **Create plan folder** (only if creating new):
+2. **Check `$CK_SUGGESTED_PLAN` (branch-matched, NOT active):**
+   - If set: Inform user "Found suggested plan from branch: {path}"
+   - This is a hint only - do NOT auto-use it
+   - Ask user if they want to activate it or create new plan
+
+3. **If neither is set:** Proceed to create new plan
+
+4. **Create plan folder** (only if creating new):
    - Generate: `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`)
    - Update session state: `node .claude/scripts/set-active-plan.cjs plans/{date}-plan-name`
 

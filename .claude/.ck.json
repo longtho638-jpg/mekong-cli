@@ -5,7 +5,7 @@
     "issuePrefix": "GH-",
     "reportsDir": "reports",
     "resolution": {
-      "order": ["session", "branch", "mostRecent"],
+      "order": ["session", "branch"],
       "branchPattern": "(?:feat|fix|chore|refactor|docs)/(?:[^/]+/)?(.+)"
     }
   },

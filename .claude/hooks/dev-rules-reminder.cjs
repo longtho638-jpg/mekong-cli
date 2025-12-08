@@ -86,7 +86,12 @@ function getPythonVersion() {
 }
 
 /**
- * Build Plan Context section using resolvePlanPath
+ * Build Plan Context section using resolvePlanPath with differentiated injection
+ *
+ * Resolution semantics:
+ * - 'session': Explicitly active → directive language, plan-specific reports path
+ * - 'branch': Suggested only → soft hint, default reports path
+ * - null: No plan → default reports path
  */
 function buildPlanContext(sessionId) {
   const config = loadConfig({ includeProject: false, includeAssertions: false });
@@ -94,24 +99,42 @@ function buildPlanContext(sessionId) {
 
   const gitBranch = execSafe('git branch --show-current');
   const issueId = extractIssueFromBranch(gitBranch);
-  const activePlan = resolvePlanPath(sessionId, config);
-  const reportsPath = getReportsPath(activePlan, plan, paths);
+
+  // resolvePlanPath now returns { path, resolvedBy }
+  const resolved = resolvePlanPath(sessionId, config);
+  const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, plan, paths);
   const formattedIssue = formatIssueId(issueId, plan);
 
   const lines = [
     `## Plan Context`,
-    `- Plan Config: ${CONFIG_PATH}`,
-    `- Active Plan: ${activePlan || 'none (create with planner agent)'}`,
-    `- Reports Path: ${reportsPath}`,
-    `- Naming Format: ${plan.namingFormat}`,
-    `- Date Format: ${plan.dateFormat}`
+    `- Plan Config: ${CONFIG_PATH}`
   ];
+
+  // DIFFERENTIATED INJECTION based on resolution method
+  if (resolved.resolvedBy === 'session') {
+    // Explicit active plan - directive language
+    lines.push(`- Active Plan: ${resolved.path}`);
+    lines.push(`- Reports Path: ${reportsPath}`);
+  } else if (resolved.resolvedBy === 'branch') {
+    // Branch-matched - soft hint, NOT directive
+    lines.push(`- Active Plan: none`);
+    lines.push(`- Suggested Plan: ${resolved.path} (matched from branch, not active)`);
+    lines.push(`- To activate: use \`set-active-plan.cjs\` or run \`/plan\``);
+    lines.push(`- Reports Path: ${reportsPath}`);
+  } else {
+    // No plan at all
+    lines.push(`- Active Plan: none (create with planner agent)`);
+    lines.push(`- Reports Path: ${reportsPath}`);
+  }
+
+  lines.push(`- Naming Format: ${plan.namingFormat}`);
+  lines.push(`- Date Format: ${plan.dateFormat}`);
 
   if (formattedIssue) lines.push(`- Issue ID: ${formattedIssue}`);
   if (gitBranch) lines.push(`- Git Branch: ${gitBranch}`);
   lines.push(`- IMPORTANT: When spawning subagents, include Plan Context in the prompt.`);
 
-  return { lines, activePlan, reportsPath };
+  return { lines, resolved, reportsPath };
 }
 
 /**
