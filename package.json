@@ -29,7 +29,6 @@
   "homepage": "https://github.com/claudekit/claudekit-engineer#readme",
   "files": [
     ".claude/",
-    ".opencode/",
     "plans/",
     "AGENTS.md",
     "CLAUDE.md",
