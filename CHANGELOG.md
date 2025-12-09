@@ -1,3 +1,10 @@
+## [1.20.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.10...v1.20.0-beta.11) (2025-12-09)
+
+
+### 🐞 Bug Fixes
+
+* **install:** resolve Windows PowerShell detection and state errors ([c4b2c10](https://github.com/claudekit/claudekit-engineer/commit/c4b2c10ec0c6e9e29fee973a66761503054c4d14)), closes [#148](https://github.com/claudekit/claudekit-engineer/issues/148)
+
 ## [1.20.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.9...v1.20.0-beta.10) (2025-12-08)
 
 
