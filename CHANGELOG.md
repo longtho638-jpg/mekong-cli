@@ -1,3 +1,10 @@
+## [1.20.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.11...v1.20.0-beta.12) (2025-12-10)
+
+
+### ⚡ Performance Improvements
+
+* **hooks:** optimize token consumption in hook system ([f0007bc](https://github.com/claudekit/claudekit-engineer/commit/f0007bc52b64032c7692576109d7a35a91977f4e)), closes [#150](https://github.com/claudekit/claudekit-engineer/issues/150)
+
 ## [1.20.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.10...v1.20.0-beta.11) (2025-12-09)
 
 
