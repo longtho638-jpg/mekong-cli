@@ -1,7 +1,7 @@
 # System Architecture
 
-**Last Updated**: 2025-10-26
-**Version**: 1.8.0
+**Last Updated**: 2025-12-10
+**Version**: 1.20.0-beta.12
 **Project**: ClaudeKit Engineer
 
 ## Overview
@@ -322,36 +322,76 @@ Planner incorporates into plan
 
 ### 6. Integration Layer
 
-#### 6.1 Hook System
+#### 6.1 Hook System (4 Core Hooks)
 
-**Purpose**: Intercept and control Claude Code operations for performance and security
+**Purpose**: Intercept and control Claude Code operations for performance, context management, and security
 
-**Scout Block Hook** (Cross-Platform):
-- **Architecture**: Node.js dispatcher with platform-specific implementations
-- **Windows**: PowerShell implementation (`scout-block.ps1`)
-- **Unix (Linux/macOS/WSL)**: Bash implementation (`scout-block.sh`)
-- **Platform Detection**: Automatic via `process.platform` in dispatcher
-- **Configuration**: Zero-config - automatic platform selection
+**Hook Architecture**:
+All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit code 0 (non-blocking)
+
+**1. Session-Init Hook** (`session-init.cjs`)
+- **Trigger**: Session startup
+- **Purpose**: Initialize session state and context
+- **Functionality**:
+  - Detects project type (monorepo vs library)
+  - Identifies package manager (pnpm/npm/yarn)
+  - Detects framework (Next.js, React, etc.)
+  - Writes 25+ environment variables for context cascade
+  - Enables efficient context reuse across agents
+
+**2. Dev-Rules-Reminder Hook** (`dev-rules-reminder.cjs`)
+- **Trigger**: Every user prompt
+- **Purpose**: Inject development context and rules
+- **Functionality**:
+  - Injects current development rules from `.claude/workflows/`
+  - Smart deduplication prevents redundant context
+  - Suggests branch-matched workflows
+  - Optimized for minimal token overhead
+  - Enables consistent behavior across team
+
+**3. Subagent-Init Hook** (`subagent-init.cjs`)
+- **Trigger**: When spawning subagents
+- **Purpose**: Provide minimal context to subagents
+- **Functionality**:
+  - Injects ~200 tokens of essential context
+  - Eliminates need for full context retransmission
+  - Enables efficient agent-to-agent communication
+  - Reduces token consumption for delegation patterns
+  - Recent optimization: v1.20.0-beta.12 tuned for token efficiency
+
+**4. Scout-Block Hook** (`scout-block.cjs` - Cross-Platform)
+- **Trigger**: Before bash/command execution
+- **Purpose**: Block access to heavy directories for performance
+- **Architecture**:
+  - Node.js dispatcher with platform-specific implementations
+  - Windows: PowerShell implementation (`scout-block.ps1`)
+  - Unix (Linux/macOS/WSL): Bash implementation (`scout-block.sh`)
+  - Platform Detection: Automatic via `process.platform`
+  - Zero-config setup
 
 **Functionality**:
 - Blocks access to heavy directories (node_modules, __pycache__, .git/, dist/, build/)
 - Input validation (JSON structure, command presence)
 - Error handling with exit codes (0 = allow, 2 = block/error)
-- Security features: sanitized error messages, input validation
-
-**Requirements**:
-- Node.js >= 18.0.0 (already required by project)
-- No additional dependencies
+- Security: sanitized error messages, input validation
+- Performance: Reduces AI token usage and improves response time
 
 **Testing**:
 - Cross-platform test suites (`test-scout-block.sh`, `test-scout-block.ps1`)
-- Comprehensive test coverage (11+ test cases)
-- Validates blocked/allowed patterns, error handling, edge cases
+- Comprehensive coverage (11 Unix tests, 7 Windows tests)
+- Validates: blocked/allowed patterns, error handling, edge cases, JSON validation
 
 **Hook Configuration** (`.claude/settings.json`):
 ```json
 {
   "hooks": {
+    "SubagentStart": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/subagent-init.cjs"
+      }]
+    }],
     "BeforeBash": [{
       "type": "command",
       "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.js"
@@ -359,6 +399,14 @@ Planner incorporates into plan
   }
 }
 ```
+
+**Hook Features Summary**:
+- Fail-Safe: All hooks exit 0 (non-blocking) - graceful degradation
+- Performance: Optimized token consumption
+- Cross-Platform: Windows (PowerShell) & Unix (Bash) support
+- Context Cascade: Environment variables flow from session to agents
+- Smart Dedup: Prevent redundant context injection
+- Comprehensive Testing: Cross-platform test coverage
 
 #### 6.2 MCP (Model Context Protocol) Integration
 
