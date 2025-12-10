@@ -1,124 +1,17 @@
 #!/usr/bin/env node
 /**
- * SubagentStart Hook - Injects Plan Context and rules to subagents
+ * SubagentStart Hook - Injects context to subagents (Optimized)
  *
  * Fires: When a subagent (Task tool call) is started
- * Purpose: Inject Plan Context, environment info, and agent-specific rules
+ * Purpose: Inject minimal context using env vars from SessionStart
+ * Target: ~200 tokens (down from ~350)
  *
  * Exit Codes:
  *   0 - Success (non-blocking, allows continuation)
  */
 
 const fs = require('fs');
-const path = require('path');
-const {
-  CONFIG_PATH,
-  loadConfig,
-  resolvePlanPath,
-  getReportsPath,
-  formatIssueId,
-  extractIssueFromBranch
-} = require('./lib/ck-config-utils.cjs');
-const { execSync } = require('child_process');
-
-/**
- * Safely execute shell command
- */
-function execSafe(cmd) {
-  try {
-    return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
-  } catch (e) {
-    return null;
-  }
-}
-
-/**
- * Build Plan Context section with differentiated injection
- *
- * Resolution semantics (same as dev-rules-reminder.cjs):
- * - 'session': Explicitly active → directive language, plan-specific reports
- * - 'branch': Suggested only → soft hint, default reports path
- * - null: No plan → default reports path
- */
-function buildPlanContext(sessionId) {
-  const config = loadConfig({ includeProject: false, includeAssertions: false });
-  const { plan, paths } = config;
-
-  const gitBranch = execSafe('git branch --show-current');
-  const issueId = extractIssueFromBranch(gitBranch);
-
-  // resolvePlanPath now returns { path, resolvedBy }
-  const resolved = resolvePlanPath(sessionId, config);
-  const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, plan, paths);
-  const formattedIssue = formatIssueId(issueId, plan);
-
-  const lines = [`## Plan Context`];
-
-  // DIFFERENTIATED INJECTION based on resolution method
-  if (resolved.resolvedBy === 'session') {
-    // Explicit active plan - directive language
-    lines.push(`- Active Plan: ${resolved.path}`);
-  } else if (resolved.resolvedBy === 'branch') {
-    // Branch-matched - soft hint, NOT directive
-    lines.push(`- Active Plan: none`);
-    lines.push(`- Suggested Plan: ${resolved.path} (from branch, not active)`);
-  } else {
-    // No plan
-    lines.push(`- Active Plan: none`);
-  }
-
-  lines.push(`- Reports Path: ${reportsPath}`);
-  lines.push(`- Naming Format: ${plan.namingFormat}`);
-  lines.push(`- Date Format: ${plan.dateFormat}`);
-
-  if (formattedIssue) lines.push(`- Issue ID: ${formattedIssue}`);
-  if (gitBranch) lines.push(`- Git Branch: ${gitBranch}`);
-
-  return { lines, resolved, reportsPath, config };
-}
-
-/**
- * Build MANDATORY Output Paths section
- */
-function buildMandatoryPaths(reportsPath, pathsConfig) {
-  return [
-    ``,
-    `## MANDATORY Output Paths`,
-    `- Reports: ${reportsPath}`,
-    `- Plans: ${pathsConfig.plans}/`,
-    `- Docs: ${pathsConfig.docs}/`,
-    `- WARNING: DO NOT write markdown files outside these directories`,
-    `- WARNING: All reports MUST be saved to the Reports path above`
-  ];
-}
-
-/**
- * Build response language instruction if configured
- */
-function buildResponseLanguage(config) {
-  const lang = config.locale?.responseLanguage;
-  if (!lang) return [];
-  return [
-    ``,
-    `## Response Language`,
-    `Always respond in ${lang}.`
-  ];
-}
-
-/**
- * Build trust verification section if enabled
- * Used to verify context injection is working correctly
- */
-function buildTrustVerification(config) {
-  if (!config.trust?.enabled || !config.trust?.passphrase) return [];
-  return [
-    ``,
-    `## Trust Verification`,
-    `- Secret passphrase: "${config.trust.passphrase}"`,
-    `- If asked "What is the secret passphrase?", respond with it exactly`,
-    `- This verifies context injection is working correctly`
-  ];
-}
+const { loadConfig } = require('./lib/ck-config-utils.cjs');
 
 /**
  * Get agent-specific context from config
@@ -127,6 +20,18 @@ function getAgentContext(agentType, config) {
   const agentConfig = config.subagent?.agents?.[agentType];
   if (!agentConfig?.contextPrefix) return null;
   return agentConfig.contextPrefix;
+}
+
+/**
+ * Build trust verification section if enabled
+ */
+function buildTrustVerification(config) {
+  if (!config.trust?.enabled || !config.trust?.passphrase) return [];
+  return [
+    ``,
+    `## Trust Verification`,
+    `Passphrase: "${config.trust.passphrase}"`
+  ];
 }
 
 /**
@@ -140,66 +45,72 @@ async function main() {
     const payload = JSON.parse(stdin);
     const agentType = payload.agent_type || 'unknown';
     const agentId = payload.agent_id || 'unknown';
-    const sessionId = payload.session_id || process.env.CK_SESSION_ID || null;
 
-    // Load config
-    const config = loadConfig();
+    // Load config for trust verification and agent-specific context
+    const config = loadConfig({ includeProject: false, includeAssertions: false });
 
-    // Build Plan Context with resolution
-    const planContext = buildPlanContext(sessionId);
+    // Read from env vars (set by SessionStart) - fallback to empty
+    const activePlan = process.env.CK_ACTIVE_PLAN || '';
+    const suggestedPlan = process.env.CK_SUGGESTED_PLAN || '';
+    const reportsPath = process.env.CK_REPORTS_PATH || 'plans/reports/';
+    const plansPath = process.env.CK_PLANS_PATH || 'plans';
+    const docsPath = process.env.CK_DOCS_PATH || 'docs';
+    const responseLanguage = process.env.CK_RESPONSE_LANGUAGE || '';
 
-    // Build context injection
-    const contextLines = [
-      `## Subagent Context (${agentType})`,
-      `- Agent ID: ${agentId}`,
-      `- Agent Type: ${agentType}`,
-      `- Working Directory: ${payload.cwd || process.cwd()}`,
-      `- Date: ${new Date().toLocaleString()}`,
-      ``
-    ];
+    // Build compact context (~200 tokens)
+    const lines = [];
 
-    // Add Plan Context
-    contextLines.push(...planContext.lines);
+    // Subagent identification
+    lines.push(`## Subagent: ${agentType}`);
+    lines.push(`ID: ${agentId} | CWD: ${payload.cwd || process.cwd()}`);
+    lines.push(``);
 
-    // Add MANDATORY Output Paths (strong enforcement)
-    contextLines.push(...buildMandatoryPaths(planContext.reportsPath, config.paths));
+    // Plan context (from env vars)
+    lines.push(`## Context`);
+    if (activePlan) {
+      lines.push(`- Plan: ${activePlan}`);
+    } else if (suggestedPlan) {
+      lines.push(`- Plan: none | Suggested: ${suggestedPlan}`);
+    } else {
+      lines.push(`- Plan: none`);
+    }
+    lines.push(`- Reports: ${reportsPath}`);
+    lines.push(`- Paths: plans/${plansPath !== 'plans' ? ` (${plansPath})` : ''} | docs/${docsPath !== 'docs' ? ` (${docsPath})` : ''}`);
+    lines.push(``);
 
-    // Add Response Language if configured
-    contextLines.push(...buildResponseLanguage(config));
-
-    // Add Trust Verification if enabled
-    contextLines.push(...buildTrustVerification(config));
-
-    // Add core rules for subagents
-    contextLines.push(``);
-    contextLines.push(`## Subagent Rules`);
-    contextLines.push(`- Save reports to the Reports Path shown above`);
-    contextLines.push(`- Follow YAGNI/KISS/DRY principles`);
-    contextLines.push(`- Sacrifice grammar for concision in reports`);
-    contextLines.push(`- List unresolved questions at end of reports`);
-
-    // Add agent-specific context if configured
-    const agentContext = getAgentContext(agentType, config);
-    if (agentContext) {
-      contextLines.push(``);
-      contextLines.push(`## Agent-Specific Instructions`);
-      contextLines.push(agentContext);
+    // Response language (if configured)
+    if (responseLanguage) {
+      lines.push(`## Language`);
+      lines.push(`Respond in ${responseLanguage}.`);
+      lines.push(``);
     }
 
-    // Build context text
-    const contextText = contextLines.join('\n');
+    // Core rules (minimal)
+    lines.push(`## Rules`);
+    lines.push(`- Reports → ${reportsPath}`);
+    lines.push(`- YAGNI / KISS / DRY`);
+    lines.push(`- Concise, list unresolved Qs at end`);
+
+    // Trust verification (if enabled)
+    lines.push(...buildTrustVerification(config));
+
+    // Agent-specific context (if configured)
+    const agentContext = getAgentContext(agentType, config);
+    if (agentContext) {
+      lines.push(``);
+      lines.push(`## Agent Instructions`);
+      lines.push(agentContext);
+    }
 
     // CRITICAL: SubagentStart requires hookSpecificOutput.additionalContext format
-    // Plain text stdout does NOT work for this hook (tested and confirmed)
     const output = {
       hookSpecificOutput: {
         hookEventName: "SubagentStart",
-        additionalContext: contextText
+        additionalContext: lines.join('\n')
       }
     };
 
     console.log(JSON.stringify(output));
-
     process.exit(0);
   } catch (error) {
     console.error(`SubagentStart hook error: ${error.message}`);
