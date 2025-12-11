@@ -1,7 +1,7 @@
 # ClaudeKit Engineer - Project Roadmap
 
-**Last Updated:** 2025-12-10
-**Current Version:** 1.20.0-beta.12
+**Last Updated:** 2025-12-11
+**Current Version:** 1.20.0-beta.13
 **Repository:** https://github.com/claudekit/claudekit-engineer
 
 ## Executive Summary
@@ -329,6 +329,7 @@ Enterprise-grade features and deployment options.
 
 | Version | Date | Key Changes |
 |---------|------|-------------|
+| v1.20.0-beta.13 | 2025-12-11 | feat(preview-dashboard): add plan-scanner utility for plan discovery |
 | v1.20.0-beta.12 | 2025-12-10 | perf(hooks): optimize token consumption in hook system |
 | v1.20.0-beta.11 | 2025-12-09 | fix(install): Windows PowerShell detection improvements |
 | v1.20.0-beta.10 | 2025-12-08 | fix(hooks): prevent stale plan pollution in dev-rules |
@@ -344,7 +345,25 @@ Enterprise-grade features and deployment options.
 
 ## Changelog
 
-### Version 1.20.0-beta.12 (Current - 2025-12-10)
+### Version 1.20.0-beta.13 (Current - 2025-12-11)
+
+#### Features Added
+- **Plan Scanner Utility**: New `plan-scanner.cjs` for Preview Dashboard
+  - Recursive plan directory discovery with configurable depth
+  - Plan metadata extraction (progress, status, phases)
+  - Path traversal security validation
+  - Smart plan name parsing from directory timestamps
+  - Progress calculation and status derivation from phase data
+  - Sorted output by last modified date (newest first)
+
+#### Preview Dashboard Progress
+- Plan discovery and indexing infrastructure complete
+- Security validation for all file operations
+- Foundation for dashboard plan listing and filtering
+
+---
+
+### Version 1.20.0-beta.12 (2025-12-10)
 
 #### Performance Improvements
 - **Hook Optimization**: Reduced token consumption in hook system

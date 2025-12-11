@@ -1,7 +1,7 @@
 # System Architecture
 
-**Last Updated**: 2025-12-10
-**Version**: 1.20.0-beta.12
+**Last Updated**: 2025-12-11
+**Version**: 1.20.0-beta.13
 **Project**: ClaudeKit Engineer
 
 ## Overview
@@ -434,7 +434,77 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 - Code analysis
 - Debugging assistance
 
-#### 6.3 External Service Integration
+#### 6.3 Preview Dashboard System
+
+**Purpose**: Interactive web-based visualization of implementation plans and project progress
+
+**Architecture**:
+```
+.claude/skills/markdown-novel-viewer/
+├── scripts/
+│   ├── server.cjs              # HTTP server & request handler
+│   ├── lib/
+│   │   ├── plan-scanner.cjs    # Plan discovery & metadata extraction
+│   │   ├── plan-navigator.cjs  # Plan file parsing & traversal
+│   │   ├── markdown-renderer.cjs  # Markdown to HTML conversion
+│   │   ├── http-server.cjs     # HTTP server utilities
+│   │   ├── port-finder.cjs     # Available port detection
+│   │   └── process-mgr.cjs     # Process management
+│   └── tests/                  # Test suites
+└── SKILL.md                    # Skill documentation
+```
+
+**Core Components**:
+
+1. **Plan Scanner** (`plan-scanner.cjs`):
+   - Recursively discovers plan directories in `./plans`
+   - Extracts metadata: name, progress, status, phases, modified time
+   - Implements security validation (path traversal prevention)
+   - Calculates progress statistics from phase data
+   - Provides sorted output by last modified date
+   - Returns plan metadata array for dashboard rendering
+
+2. **Plan Navigator** (`plan-navigator.cjs`):
+   - Parses plan table structures from markdown
+   - Extracts phase information (name, status)
+   - Converts directory names to human-readable plan names
+   - Tracks plan hierarchy and relationships
+
+3. **HTTP Server** (`server.cjs`, `http-server.cjs`):
+   - Serves dashboard UI on available port
+   - Handles API requests for plan data
+   - Manages static assets
+   - Implements request routing and error handling
+
+4. **Markdown Renderer** (`markdown-renderer.cjs`):
+   - Converts markdown to HTML for browser display
+   - Preserves formatting and code blocks
+   - Handles plan metadata display
+
+**Data Flow**:
+```
+User Request
+    ↓
+HTTP Server
+    ↓
+Plan Scanner (discovers plans in ./plans)
+    ↓
+Metadata Extraction (progress, status, phases)
+    ↓
+Sorted Output (by last modified)
+    ↓
+Dashboard Rendering
+```
+
+**Features**:
+- Real-time plan discovery (no manual updates)
+- Progress tracking with percentage calculation
+- Status derivation (pending/in-progress/completed)
+- Phase breakdown with individual status tracking
+- Timestamp tracking for plan modifications
+- Security-validated path traversal
+
+#### 6.4 External Service Integration
 
 **GitHub**:
 - Actions (CI/CD automation)
