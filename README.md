@@ -115,17 +115,6 @@ A comprehensive boilerplate template for building professional software projects
 │   ├── skills/             # Claude Code skills
 │   ├── CLAUDE.md           # Global development instructions
 │   └── send-discord.sh     # Notification script
-├── .opencode/              # Open Code CLI agent definitions
-│   ├── agent/              # Specialized agent configurations
-│   │   ├── planner.md      # Technical planning agent
-│   │   ├── researcher.md   # Research and analysis agent
-│   │   ├── tester.md       # Testing and validation agent
-│   │   ├── debugger.md     # Issue analysis agent
-│   │   ├── code-reviewer.md# Code quality agent
-│   │   ├── docs-manager.md # Documentation agent
-│   │   ├── git-manager.md  # Version control agent
-│   │   └── project-manager.md # Progress tracking agent
-│   └── command/            # Custom command definitions
 ├── docs/                   # Project documentation
 │   ├── codebase-summary.md # Auto-generated codebase overview
 │   ├── code-standards.md   # Development standards
@@ -292,13 +281,6 @@ Project-specific instructions for Claude Code. Customize this file to define:
 - Agent coordination protocols
 - Specific workflows for your project
 
-### .opencode/agent/*.md
-Individual agent configurations defining:
-- Agent expertise and responsibilities
-- Interaction patterns
-- Output formats
-- Quality standards
-
 ### plans/templates/*.md
 Reusable templates for:
 - Feature implementation plans
@@ -449,7 +431,7 @@ Then add your MCP servers, below are some examples:
 ## Best Practices
 
 ### Development Principles
-- **YANGI**: You Aren't Gonna Need It - avoid over-engineering
+- **YAGNI**: You Aren't Gonna Need It - avoid over-engineering
 - **KISS**: Keep It Simple, Stupid - prefer simple solutions
 - **DRY**: Don't Repeat Yourself - eliminate code duplication
 
@@ -539,7 +521,6 @@ claude "Plan the next development phase"
 
 ### 1. Project Setup
 - Update `CLAUDE.md` with your project specifics
-- Modify agent configurations in `.opencode/agent/`
 - Customize plan templates in `plans/templates/`
 
 ### 2. Agent Specialization
@@ -568,8 +549,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Claude Code Resources
 - [Claude Code Documentation](https://claude.ai/code)
-- [Open Code CLI Documentation](https://docs.opencode.ai)
-- [Agent Development Guide](https://docs.opencode.ai/agents)
 
 ### Community
 - [ClaudeKit Community](https://claudekit.cc/discord)

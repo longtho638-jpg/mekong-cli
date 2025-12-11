@@ -10,7 +10,7 @@ This document defines coding standards, file organization patterns, naming conve
 
 ## Core Development Principles
 
-### YANGI (You Aren't Gonna Need It)
+### YAGNI (You Aren't Gonna Need It)
 - Avoid over-engineering and premature optimization
 - Implement features only when needed
 - Don't build infrastructure for hypothetical future requirements
@@ -45,9 +45,6 @@ project-root/
 │   │       ├── SKILL.md      # Skill definition
 │   │       └── references/   # Supporting materials
 │   └── workflows/            # Workflow definitions
-├── .opencode/                 # OpenCode configuration
-│   ├── agent/                # OpenCode agent definitions
-│   └── command/              # OpenCode commands
 ├── .github/                   # GitHub-specific files
 │   └── workflows/            # CI/CD workflows
 ├── docs/                      # Project documentation
@@ -68,13 +65,13 @@ project-root/
 
 ### File Naming Conventions
 
-**Agent Definitions** (`.claude/agents/`, `.opencode/agent/`):
+**Agent Definitions** (`.claude/agents/`):
 - Format: `[agent-name].md`
 - Use kebab-case: `code-reviewer.md`, `docs-manager.md`
 - Descriptive, role-based names
 - Examples: `planner.md`, `tester.md`, `git-manager.md`
 
-**Commands** (`.claude/commands/`, `.opencode/command/`):
+**Commands** (`.claude/commands/`):
 - Format: `[command-name].md` or `[category]/[command-name].md`
 - Use kebab-case for names
 - Group related commands in subdirectories
@@ -104,24 +101,24 @@ project-root/
   - `system-architecture.md`
 
 **Reports** (`plans/<plan-name>/reports/`):
-- Format: `YYMMDD-from-[agent]-to-[agent]-[task]-report.md`
-- Use date prefix for chronological sorting
+- Format: `{date}-from-[agent]-to-[agent]-[task]-report.md`
+- Use date prefix for chronological sorting (format from `$CK_PLAN_DATE_FORMAT`)
 - Clear source and destination agents
 - Examples:
   - `251026-from-planner-to-main-auth-implementation-report.md`
   - `251026-from-tester-to-debugger-test-failures-report.md`
 
 **Plans** (`plans/`):
-- Format: `YYMMDD-[feature-name]-plan.md`
-- Use date prefix for version tracking
+- Format: `{date}-[feature-name]-plan.md`
+- Use date prefix for version tracking (format from `$CK_PLAN_DATE_FORMAT`)
 - Descriptive feature names in kebab-case
 - Examples:
   - `251026-user-authentication-plan.md`
   - `251026-database-migration-plan.md`
 
 **Research Reports** (`plans/<plan-name>/research/`):
-- Format: `YYMMDD-[research-topic].md`
-- Date prefix for tracking
+- Format: `{date}-[research-topic].md`
+- Date prefix for tracking (format from `$CK_PLAN_DATE_FORMAT`)
 - Clear topic description
 - Examples:
   - `251026-oauth2-implementation-strategies.md`

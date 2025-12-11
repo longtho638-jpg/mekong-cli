@@ -1,7 +1,7 @@
 # ClaudeKit Engineer - Project Roadmap
 
-**Last Updated:** 2025-11-11
-**Current Version:** 1.8.0
+**Last Updated:** 2025-12-10
+**Current Version:** 1.20.0-beta.12
 **Repository:** https://github.com/claudekit/claudekit-engineer
 
 ## Executive Summary
@@ -31,9 +31,9 @@ Established core agent orchestration framework, slash command system, automated 
 
 ### Phase 2: Cross-Platform Enhancement (IN PROGRESS)
 **Status:** 🔄 In Progress | **Completion Target:** Dec 2025
-**Progress:** 35%
+**Progress:** 50%+ (Beta releases ramping up)
 
-Expanding platform support and improving developer experience across Windows, macOS, and Linux environments.
+Expanding platform support and improving developer experience across Windows, macOS, and Linux environments. Recent focus on hook optimization and performance improvements.
 
 #### Sub-Task: Windows Statusline Support
 **Status:** ✅ COMPLETE
@@ -295,7 +295,7 @@ Enterprise-grade features and deployment options.
 ## Compliance & Standards
 
 ### Code Standards
-- YANGI (You Aren't Gonna Need It)
+- YAGNI (You Aren't Gonna Need It)
 - KISS (Keep It Simple, Stupid)
 - DRY (Don't Repeat Yourself)
 - Files < 500 lines
@@ -325,9 +325,54 @@ Enterprise-grade features and deployment options.
 
 ---
 
+## Recent Beta Releases (Phase 2 Progress)
+
+| Version | Date | Key Changes |
+|---------|------|-------------|
+| v1.20.0-beta.12 | 2025-12-10 | perf(hooks): optimize token consumption in hook system |
+| v1.20.0-beta.11 | 2025-12-09 | fix(install): Windows PowerShell detection improvements |
+| v1.20.0-beta.10 | 2025-12-08 | fix(hooks): prevent stale plan pollution in dev-rules |
+| v1.20.0-beta.9 | 2025-12-08 | fix(hooks): correct .ckignore path handling |
+| v1.20.0-beta.8 | 2025-12-08 | feat(skills): integrate ui-ux-pro-max skill |
+| v1.20.0-beta.7 | 2025-12-07 | docs: fix YAGNI typo; refactor: placeholder standardization |
+| v1.20.0-beta.6 | 2025-12-07 | refactor: migrate active-plan to session state |
+| v1.20.0-beta.5 | 2025-12-07 | feat(install): bulletproof skills installation |
+| v1.20.0-beta.4 | 2025-12-06 | feat: hybrid output-type detection for /ck-help |
+| v1.20.0-beta.3 | 2025-12-06 | feat: cascading config resolution (global → local) |
+
+---
+
 ## Changelog
 
-### Version 1.8.0 (Current - 2025-11-11)
+### Version 1.20.0-beta.12 (Current - 2025-12-10)
+
+#### Performance Improvements
+- **Hook Optimization**: Reduced token consumption in hook system
+  - Optimized session-init context caching
+  - Improved dev-rules-reminder deduplication
+  - Streamlined subagent-init context injection
+  - Measurable improvement in prompt response times
+
+#### Features Added
+- Cascading configuration resolution
+- Hybrid output-type detection
+- Bulletproof skills installation system
+- Session state plan migration
+
+#### Bug Fixes
+- Windows PowerShell detection improvements
+- Stale plan pollution prevention
+- .ckignore path handling
+- Placeholder standardization across codebase
+
+#### Quality
+- Improved cross-platform compatibility
+- Enhanced error handling patterns
+- Better context management in agent workflows
+
+---
+
+### Version 1.8.0 (Released - 2025-11-11)
 
 #### Features Added
 - **Windows Statusline Support:** Complete cross-platform statusline implementation

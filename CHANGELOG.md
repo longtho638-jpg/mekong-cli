@@ -1,3 +1,104 @@
+## [1.20.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.11...v1.20.0-beta.12) (2025-12-10)
+
+
+### ⚡ Performance Improvements
+
+* **hooks:** optimize token consumption in hook system ([f0007bc](https://github.com/claudekit/claudekit-engineer/commit/f0007bc52b64032c7692576109d7a35a91977f4e)), closes [#150](https://github.com/claudekit/claudekit-engineer/issues/150)
+
+## [1.20.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.10...v1.20.0-beta.11) (2025-12-09)
+
+
+### 🐞 Bug Fixes
+
+* **install:** resolve Windows PowerShell detection and state errors ([c4b2c10](https://github.com/claudekit/claudekit-engineer/commit/c4b2c10ec0c6e9e29fee973a66761503054c4d14)), closes [#148](https://github.com/claudekit/claudekit-engineer/issues/148)
+
+## [1.20.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.9...v1.20.0-beta.10) (2025-12-08)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** prevent stale plan pollution on fresh sessions ([bd17c53](https://github.com/claudekit/claudekit-engineer/commit/bd17c53daa2d2de499d6e3d284d2ba5d9c402aba)), closes [#146](https://github.com/claudekit/claudekit-engineer/issues/146)
+
+## [1.20.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.8...v1.20.0-beta.9) (2025-12-08)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** correct .ckignore path calculation in scout-block ([fd09f6f](https://github.com/claudekit/claudekit-engineer/commit/fd09f6f4d33531a0090571d8684c734ddb358760)), closes [#144](https://github.com/claudekit/claudekit-engineer/issues/144)
+
+## [1.20.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.7...v1.20.0-beta.8) (2025-12-08)
+
+
+### 🚀 Features
+
+* **skills:** integrate ui-ux-pro-max as primary frontend skill ([3c3a5c4](https://github.com/claudekit/claudekit-engineer/commit/3c3a5c46a071f5b2b7dd9eab5d8ac946dea71dc4)), closes [#142](https://github.com/claudekit/claudekit-engineer/issues/142)
+
+## [1.20.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.6...v1.20.0-beta.7) (2025-12-07)
+
+
+### 📚 Documentation
+
+* fix YANGI typo to YAGNI across documentation ([2403f12](https://github.com/claudekit/claudekit-engineer/commit/2403f12c362792084b0d892d29df38752589db7c)), closes [#138](https://github.com/claudekit/claudekit-engineer/issues/138)
+
+
+### ♻️ Code Refactoring
+
+* replace hardcoded date formats with {date} placeholder ([fdf035a](https://github.com/claudekit/claudekit-engineer/commit/fdf035a83d21bac55f9322399d2a853ed93be960)), closes [#140](https://github.com/claudekit/claudekit-engineer/issues/140)
+
+## [1.20.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.5...v1.20.0-beta.6) (2025-12-07)
+
+
+### ♻️ Code Refactoring
+
+* migrate active-plan storage to session state ([942a074](https://github.com/claudekit/claudekit-engineer/commit/942a074980f21bbbbf0868c303aeb04d68b6239e))
+
+## [1.20.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.4...v1.20.0-beta.5) (2025-12-07)
+
+
+### 🚀 Features
+
+* **install:** implement bulletproof skills installation with error tracking ([6d47df0](https://github.com/claudekit/claudekit-engineer/commit/6d47df017dd2268cdce94e43eb046b5cce40cf3e))
+
+
+### 🐞 Bug Fixes
+
+* **install:** add bulletproof error handling and state persistence ([8b1628d](https://github.com/claudekit/claudekit-engineer/commit/8b1628df9ee09ca2bc3e2288a68dc853ad9e7f68))
+
+## [1.20.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.3...v1.20.0-beta.4) (2025-12-06)
+
+
+### 🚀 Features
+
+* add hybrid output-type detection for /ck-help ([480ec1c](https://github.com/claudekit/claudekit-engineer/commit/480ec1c2e9f5fe4107964d4f48418d9f408d506b))
+
+## [1.20.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.2...v1.20.0-beta.3) (2025-12-06)
+
+
+### 🚀 Features
+
+* implement cascading config resolution (global → local) ([9a826c8](https://github.com/claudekit/claudekit-engineer/commit/9a826c8f3accf54e1a8cbe2c4948999f364a806e))
+
+## [1.20.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.1...v1.20.0-beta.2) (2025-12-06)
+
+
+### 🐞 Bug Fixes
+
+* resolve workflow paths from global ~/.claude when local files missing ([9a66e21](https://github.com/claudekit/claudekit-engineer/commit/9a66e21f77375b91ce4e7a8ce5df93245119010b)), closes [#117](https://github.com/claudekit/claudekit-engineer/issues/117)
+
+## [1.20.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.1-beta.1...v1.20.0-beta.1) (2025-12-06)
+
+
+### 🚀 Features
+
+* implement hook consolidation with plan name config ([#134](https://github.com/claudekit/claudekit-engineer/issues/134)) ([764e962](https://github.com/claudekit/claudekit-engineer/commit/764e96220b65554affef83459c98fb64c219518e)), closes [#88](https://github.com/claudekit/claudekit-engineer/issues/88)
+
+## [1.19.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.19.0...v1.19.1-beta.1) (2025-12-06)
+
+
+### ⚡ Performance Improvements
+
+* new command -> `/code:auto` with auto-approval mode activated ([3622168](https://github.com/claudekit/claudekit-engineer/commit/36221682dd0f215b688cb806c7d1172b4b6c3ae7))
+
 ## [1.19.0](https://github.com/claudekit/claudekit-engineer/compare/v1.18.0...v1.19.0) (2025-12-05)
 
 
