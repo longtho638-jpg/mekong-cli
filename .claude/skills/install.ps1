@@ -90,6 +90,7 @@ function Initialize-State {
         started_at = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
         last_updated = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
         phases = @{
+            chocolatey = "pending"
             system_deps = "pending"
             node_deps = "pending"
             python_env = "pending"
@@ -183,6 +184,80 @@ function Test-Command {
         return $false
     }
     return $false
+}
+
+# Find Python executable, handling Windows Store aliases
+# Returns: hashtable with 'Path' and 'Version', or $null if not found
+function Find-Python {
+    # Priority 1: Check py launcher first (most reliable on Windows)
+    $py = Get-Command py -ErrorAction SilentlyContinue
+    if ($py) {
+        try {
+            $version = (& py --version 2>&1)
+            if ($LASTEXITCODE -eq 0 -and $version -match 'Python') {
+                return @{ Path = $py.Source; Version = $version; Command = "py" }
+            }
+        } catch { }
+    }
+
+    # Priority 2: Check common Python install paths
+    $commonPaths = @(
+        "$env:LOCALAPPDATA\Programs\Python\Python3*\python.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python*\python.exe",
+        "C:\Python3*\python.exe",
+        "C:\Python*\python.exe",
+        "$env:ProgramFiles\Python3*\python.exe",
+        "$env:ProgramFiles\Python*\python.exe",
+        "$env:ProgramFiles(x86)\Python3*\python.exe"
+    )
+
+    foreach ($pathPattern in $commonPaths) {
+        $found = Get-Item $pathPattern -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
+        if ($found) {
+            try {
+                $version = (& $found.FullName --version 2>&1)
+                if ($LASTEXITCODE -eq 0 -and $version -match 'Python') {
+                    return @{ Path = $found.FullName; Version = $version; Command = $found.FullName }
+                }
+            } catch { }
+        }
+    }
+
+    # Priority 3: Check PATH but detect Windows Store alias
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if ($python) {
+        # Detect Windows Store alias (points to WindowsApps)
+        if ($python.Source -like "*WindowsApps*") {
+            Write-Warning "Windows Store Python alias detected at: $($python.Source)"
+            Write-Warning "This alias redirects to Microsoft Store instead of running Python."
+            Write-Info "To fix this, either:"
+            Write-Info "  1. Install Python from https://www.python.org/downloads/"
+            Write-Info "  2. Or disable the alias: Settings > Apps > Advanced app settings > App execution aliases"
+            Write-Info "     Then turn off 'python.exe' and 'python3.exe'"
+            return $null
+        }
+
+        # Valid Python in PATH
+        try {
+            $version = (& python --version 2>&1)
+            if ($LASTEXITCODE -eq 0 -and $version -match 'Python') {
+                return @{ Path = $python.Source; Version = $version; Command = "python" }
+            }
+        } catch { }
+    }
+
+    # Priority 4: Try python3 command
+    $python3 = Get-Command python3 -ErrorAction SilentlyContinue
+    if ($python3 -and -not ($python3.Source -like "*WindowsApps*")) {
+        try {
+            $version = (& python3 --version 2>&1)
+            if ($LASTEXITCODE -eq 0 -and $version -match 'Python') {
+                return @{ Path = $python3.Source; Version = $version; Command = "python3" }
+            }
+        } catch { }
+    }
+
+    return $null
 }
 
 # Get available package manager (priority: winget > scoop > choco)
@@ -548,14 +623,17 @@ function Setup-PythonEnv {
     $successfulSkills = [System.Collections.ArrayList]::new()
     $failedSkills = [System.Collections.ArrayList]::new()
 
-    # Check Python
-    if (Test-Command "python") {
-        $pythonVersion = (python --version)
-        Write-Success "Python found ($pythonVersion)"
+    # Find Python using robust detection (handles Windows Store aliases)
+    $pythonInfo = Find-Python
+    if ($pythonInfo) {
+        Write-Success "Python found ($($pythonInfo.Version))"
+        Write-Info "Using: $($pythonInfo.Command)"
+        $pythonCmd = $pythonInfo.Command
     } else {
-        Write-Error "Python not found. Please install Python 3.7+ from: https://www.python.org/downloads/"
+        Write-Error "Python not found or only Windows Store alias detected."
+        Write-Info "Please install Python 3.7+ from: https://www.python.org/downloads/"
         Write-Info "Make sure to check 'Add Python to PATH' during installation"
-        Track-Failure -Category "critical" -Name "Python" -Reason "not installed"
+        Track-Failure -Category "critical" -Name "Python" -Reason "not installed or Store alias"
         return  # Don't exit, return and let final report show
     }
 
@@ -569,12 +647,12 @@ function Setup-PythonEnv {
         } else {
             Write-Warning "Virtual environment is corrupted. Recreating..."
             Remove-Item -Recurse -Force $VenvDir
-            python -m venv $VenvDir
+            & $pythonCmd -m venv $VenvDir
             Write-Success "Virtual environment recreated"
         }
     } else {
         Write-Info "Creating virtual environment at $VenvDir..."
-        python -m venv $VenvDir
+        & $pythonCmd -m venv $VenvDir
         if ($LASTEXITCODE -eq 0) {
             Write-Success "Virtual environment created"
         } else {
@@ -864,7 +942,14 @@ function Write-ErrorSummary {
         }
     }
 
-    $summary | ConvertTo-Json -Depth 5 | Set-Content $ErrorSummaryFile -Encoding UTF8
+    # Use Out-File with UTF8NoBOM for proper JSON encoding (PS 6+) or UTF8 (PS 5)
+    $jsonContent = $summary | ConvertTo-Json -Depth 5
+    if ($PSVersionTable.PSVersion.Major -ge 6) {
+        $jsonContent | Out-File -FilePath $ErrorSummaryFile -Encoding utf8NoBOM -NoNewline
+    } else {
+        # PowerShell 5.x: Use .NET to write UTF-8 without BOM
+        [System.IO.File]::WriteAllText($ErrorSummaryFile, $jsonContent, [System.Text.UTF8Encoding]::new($false))
+    }
     Write-Info "Error summary written to: $ErrorSummaryFile"
 }
 

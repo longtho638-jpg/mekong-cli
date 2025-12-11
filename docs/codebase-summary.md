@@ -1,7 +1,7 @@
 # Codebase Summary
 
-**Last Updated**: 2025-11-05
-**Version**: 1.10.5
+**Last Updated**: 2025-12-10
+**Version**: 1.20.0-beta.12
 **Repository**: [claudekit/claudekit-engineer](https://github.com/claudekit/claudekit-engineer)
 
 ## Overview
@@ -52,36 +52,43 @@ claudekit-engineer/
 
 ## Key Components
 
-### 1. Agent Orchestration System
+### 1. Agent Orchestration System (17 Agents)
 
 **Claude Code Agents** (`.claude/agents/`):
 - `planner.md` - Technical planning and architecture
 - `researcher.md` - Research and analysis
+- `fullstack-developer.md` - Full-stack implementation
+- `code-reviewer.md` - Code quality assessment
 - `tester.md` - Testing and validation
 - `debugger.md` - Issue analysis and debugging
-- `code-reviewer.md` - Code quality assessment
 - `docs-manager.md` - Documentation management
 - `git-manager.md` - Version control operations
-- `project-manager.md` - Project tracking and oversight
-- `database-admin.md` - Database operations
-- `ui-ux-designer.md` - UI/UX design
+- `scout.md` - Parallel codebase exploration
+- `scout-external.md` - External codebase exploration
+- `researcher.md` - Fast research variant
 - `copywriter.md` - Content creation
-- `scout.md` - Codebase exploration
 - `journal-writer.md` - Development journaling
 - `brainstormer.md` - Solution ideation
+- `project-manager.md` - Project tracking
+- `ui-ux-designer.md` - UI/UX design
+- `database-admin.md` - Database operations
 
 ### 2. Slash Commands System
 
-**Categories**:
-- **Core Development**: `/plan`, `/cook`, `/ask`, `/bootstrap`, `/brainstorm`, `/test`
-- **Debugging**: `/debug`, `/fix:fast`, `/fix:hard`, `/fix:ci`, `/fix:logs`, `/fix:test`, `/fix:types`, `/fix:ui`
+**14 Core Commands**:
+- `/plan`, `/cook`, `/test`, `/ask`, `/bootstrap`, `/brainstorm`
+- `/debug`, `/fix:fast`, `/fix:hard`, `/fix:ci`, `/fix:test`, `/fix:types`, `/fix:logs`, `/fix:ui`
+
+**Extended Command Categories**:
+- **Planning Variants**: `/plan:two`, `/plan:ci`, `/plan:cro`, `/plan:hard`, `/plan:fast`, `/plan:parallel`
+- **Code Variants**: `/code`, `/code:auto`, `/code:no-test`, `/code:parallel`
 - **Design**: `/design:fast`, `/design:good`, `/design:3d`, `/design:screenshot`, `/design:video`
-- **Documentation**: `/docs:init`, `/docs:update`, `/docs:summarize`
-- **Git Operations**: `/git:cm`, `/git:cp`, `/git:pr`
-- **Planning**: `/plan:two`, `/plan:ci`, `/plan:cro`
 - **Content**: `/content:fast`, `/content:good`, `/content:enhance`, `/content:cro`
+- **Documentation**: `/docs:init`, `/docs:update`, `/docs:summarize`
+- **Git Operations**: `/git:cm`, `/git:cp`, `/git:pr`, `/git:merge`
 - **Integration**: `/integrate:polar`, `/integrate:sepay`
-- **Utility**: `/watzup`, `/journal`, `/scout:ext`, `/scout`
+- **Exploration**: `/scout`, `/scout:ext`, `/watzup`, `/journal`
+- **Utilities**: `/use-mcp`, `/check-and-commit`, `/ck-help`
 
 ### 3. Skills Library
 
@@ -121,7 +128,44 @@ claudekit-engineer/
 
 **See:** `docs/skills-migration-guide-phase1.md` for migration details
 
-### 4. Workflows
+### 4. Hook System (4 Core Hooks)
+
+**Location**: `.claude/hooks/`
+
+**Core Hooks:**
+
+1. **session-init.cjs** - Session Initialization
+   - Detects project type (monorepo/library)
+   - Identifies package manager (pnpm/npm/yarn)
+   - Detects framework (Next/React/etc)
+   - Writes 25+ environment variables for context cascade
+
+2. **dev-rules-reminder.cjs** - Development Context Injection
+   - Injects dev rules & context on every prompt
+   - Smart deduplication prevents redundancy
+   - Provides branch-matched workflow suggestions
+   - Optimized for token efficiency
+
+3. **subagent-init.cjs** - Subagent Context Injection
+   - Injects compact context (~200 tokens) when spawning subagents
+   - Minimizes token overhead during delegation
+   - Enables efficient agent-to-agent communication
+
+4. **scout-block.cjs** - Cross-Platform Performance Optimization
+   - Blocks access to heavy directories (node_modules, .git, __pycache__, dist/, build/)
+   - Node.js dispatcher with platform-specific implementations
+   - Unix (Bash): scout-block.sh
+   - Windows (PowerShell): scout-block.ps1
+   - Automatic platform detection via `process.platform`
+   - Improves AI response time and token efficiency
+
+**Hook Features:**
+- Fail-Safe: All hooks exit 0 (non-blocking) - graceful degradation
+- Performance: Optimized token consumption (v1.20.0-beta.12)
+- Cross-Platform: Windows (PowerShell) & Unix (Bash) via Node.js dispatcher
+- Comprehensive Test Coverage: test-scout-block.sh (11 tests), test-scout-block.ps1 (7 tests)
+
+### 5. Workflows
 
 **Primary Workflows** (`.claude/workflows/`):
 1. **primary-workflow.md**: Core development cycle
@@ -321,7 +365,7 @@ Features: Automated releases, changelog generation
 
 ## Version History
 
-**Current**: v1.8.0
+**Current**: v1.20.0-beta.12 (released 2025-12-10)
 **License**: MIT
 **Author**: Duy Nguyen
 **Repository**: https://github.com/claudekit/claudekit-engineer
