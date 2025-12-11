@@ -1,3 +1,10 @@
+## [1.20.2-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.2...v1.20.2-beta.3) (2025-12-11)
+
+
+### 🐞 Bug Fixes
+
+* **install:** strip inline comments from requirements.txt lines ([20a2980](https://github.com/claudekit/claudekit-engineer/commit/20a29807b76a0b683a39e401d08e849d1187cf40)), closes [#162](https://github.com/claudekit/claudekit-engineer/issues/162)
+
 ## [1.20.2-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.1...v1.20.2-beta.2) (2025-12-11)
 
 
