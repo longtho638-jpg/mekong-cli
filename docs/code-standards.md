@@ -45,9 +45,6 @@ project-root/
 │   │       ├── SKILL.md      # Skill definition
 │   │       └── references/   # Supporting materials
 │   └── workflows/            # Workflow definitions
-├── .opencode/                 # OpenCode configuration
-│   ├── agent/                # OpenCode agent definitions
-│   └── command/              # OpenCode commands
 ├── .github/                   # GitHub-specific files
 │   └── workflows/            # CI/CD workflows
 ├── docs/                      # Project documentation
@@ -68,13 +65,13 @@ project-root/
 
 ### File Naming Conventions
 
-**Agent Definitions** (`.claude/agents/`, `.opencode/agent/`):
+**Agent Definitions** (`.claude/agents/`):
 - Format: `[agent-name].md`
 - Use kebab-case: `code-reviewer.md`, `docs-manager.md`
 - Descriptive, role-based names
 - Examples: `planner.md`, `tester.md`, `git-manager.md`
 
-**Commands** (`.claude/commands/`, `.opencode/command/`):
+**Commands** (`.claude/commands/`):
 - Format: `[command-name].md` or `[category]/[command-name].md`
 - Use kebab-case for names
 - Group related commands in subdirectories

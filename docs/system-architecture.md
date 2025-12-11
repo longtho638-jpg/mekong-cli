@@ -50,7 +50,7 @@ ClaudeKit Engineer implements a multi-agent AI orchestration architecture where 
 - `$1, $2, $3...` - Individual positional arguments
 
 #### 1.3 Configuration Manager
-**Location**: `.claude/` and `.opencode/` directories
+**Location**: `.claude/` directory
 **Responsibility**: Load agent and command definitions
 **File Types**:
 - Agent definitions (`.md` with YAML frontmatter)
@@ -456,7 +456,6 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 
 **Configuration Data**:
 - `.claude/` - Claude Code config
-- `.opencode/` - OpenCode config
 - `.gitignore` - Git exclusions
 - `package.json` - Node.js config
 - `.releaserc.json` - Release config
@@ -766,9 +765,8 @@ Generate Summary        │
 
 ```
 Developer Machine
-├── Claude Code CLI / Open Code CLI
+├── Claude Code CLI
 ├── .claude/ (configuration)
-├── .opencode/ (configuration)
 ├── Git repository
 └── Node.js runtime
 ```
@@ -794,7 +792,6 @@ Semantic Release
 ```
 User Project
 ├── .claude/ (from template)
-├── .opencode/ (from template)
 ├── docs/ (generated)
 ├── plans/ (generated)
 ├── src/ (user code)

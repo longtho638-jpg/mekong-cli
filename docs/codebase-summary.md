@@ -18,9 +18,6 @@ claudekit-engineer/
 │   ├── hooks/            # Git hooks and scripts
 │   ├── skills/           # Specialized skills library (20+ skills)
 │   └── workflows/        # Development workflow definitions
-├── .opencode/            # Open Code CLI configuration
-│   ├── agent/           # Agent definitions for OpenCode (13 agents)
-│   └── command/         # Command definitions for OpenCode
 ├── .github/             # GitHub Actions workflows
 │   └── workflows/       # CI/CD automation
 ├── docs/                # Project documentation
@@ -76,11 +73,7 @@ claudekit-engineer/
 - `ui-ux-designer.md` - UI/UX design
 - `database-admin.md` - Database operations
 
-**OpenCode Agents** (`.opencode/agent/`):
-- Optimized variants for OpenCode CLI
-- Combined planning-researcher, solution-brainstormer, system-architecture
-
-### 2. Slash Commands System (14 Core + 50+ Extended)
+### 2. Slash Commands System
 
 **14 Core Commands**:
 - `/plan`, `/cook`, `/test`, `/ask`, `/bootstrap`, `/brainstorm`
@@ -325,8 +318,6 @@ None (template project)
 1. `guide/COMMANDS.md` - 7,073 tokens (18.2%)
 2. `CHANGELOG.md` - 4,836 tokens (12.4%)
 3. `README.md` - 3,261 tokens (8.4%)
-4. `.opencode/agent/ui-ux-designer.md` - 2,521 tokens (6.5%)
-5. `.opencode/agent/system-architecture.md` - 1,714 tokens (4.4%)
 
 ## Integration Capabilities
 
