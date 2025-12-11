@@ -1,3 +1,15 @@
+## [1.20.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.12...v1.20.0-beta.13) (2025-12-11)
+
+
+### 🐞 Bug Fixes
+
+* **skill:** improve ui-ux-pro-max activation for frontend work ([0ffc7dc](https://github.com/claudekit/claudekit-engineer/commit/0ffc7dcdbae422ce89145565cc1c75b4e86b2c07)), closes [#153](https://github.com/claudekit/claudekit-engineer/issues/153)
+
+
+### 📚 Documentation
+
+* revert documentation changes and restore original content ([bf114ed](https://github.com/claudekit/claudekit-engineer/commit/bf114ed2ae5b24ce2f956a3ac021dd02e6f5b615))
+
 ## [1.20.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0-beta.11...v1.20.0-beta.12) (2025-12-10)
 
 
