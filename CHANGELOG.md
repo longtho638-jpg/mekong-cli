@@ -1,3 +1,11 @@
+## [1.20.2-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.1...v1.20.2-beta.2) (2025-12-11)
+
+
+### ⚡ Performance Improvements
+
+* add `/preview` command with `novel-markdown-viewer` skill ([ad51d59](https://github.com/claudekit/claudekit-engineer/commit/ad51d599b57b04a8343c7cdcfb6578ff70c1462b))
+* add `/skill:plan` command ([b74b036](https://github.com/claudekit/claudekit-engineer/commit/b74b0365df2eae59b274542e64e87b2904431cec))
+
 ## [1.20.2-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.20.1...v1.20.2-beta.1) (2025-12-11)
 
 
