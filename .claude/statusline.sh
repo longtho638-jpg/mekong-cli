@@ -79,7 +79,7 @@ else
 fi
 
 # ---- session color (dynamic based on time remaining) ----
-session_color() { 
+session_color() {
   rem_pct=$(( 100 - session_pct ))
   if   (( rem_pct <= 10 )); then SCLR='1;31'
   elif (( rem_pct <= 25 )); then SCLR='1;33'
@@ -87,15 +87,38 @@ session_color() {
   if [ "$use_color" -eq 1 ]; then printf '\033[%sm' "$SCLR"; fi
 }
 
+# ---- context color (dynamic based on usage level) ----
+context_color() {
+  if   (( context_pct >= 90 )); then CCLR='1;31'   # red - critical
+  elif (( context_pct >= 75 )); then CCLR='1;33'   # yellow - warning
+  elif (( context_pct >= 50 )); then CCLR='1;36'   # cyan - moderate
+  else                               CCLR='1;32'   # green - healthy
+  fi
+  if [ "$use_color" -eq 1 ]; then printf '\033[%sm' "$CCLR"; fi
+}
+
 # ---- Native Claude Code data integration ----
 session_txt=""; session_pct=0
 cost_usd=""; lines_added=0; lines_removed=0
+context_pct=0; context_txt=""
 BILLING_MODE="${CLAUDE_BILLING_MODE:-api}"
 
 # Extract native cost data from Claude Code
 cost_usd=$(echo "$input" | jq -r '.cost.total_cost_usd // empty' 2>/dev/null)
 lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0' 2>/dev/null)
 lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0' 2>/dev/null)
+
+# Extract context window usage (Claude Code v2.0.65+)
+context_input=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0' 2>/dev/null)
+context_output=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0' 2>/dev/null)
+context_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0' 2>/dev/null)
+
+if [ -n "$context_size" ] && [ "$context_size" -gt 0 ] 2>/dev/null; then
+  context_total=$((context_input + context_output))
+  context_pct=$((context_total * 100 / context_size))
+  # Format: show percentage with color based on usage level
+  context_txt="${context_pct}%"
+fi
 
 # Session timer - parse local transcript JSONL (zero external dependencies)
 transcript_path=$(echo "$input" | jq -r '.transcript_path // empty' 2>/dev/null)
@@ -160,6 +183,10 @@ if [ -n "$lines_added" ] && [ -n "$lines_removed" ] && [[ "$lines_added" =~ ^[0-
   if [ "$lines_added" -gt 0 ] || [ "$lines_removed" -gt 0 ]; then
     printf '  📝 %s+%d -%d%s' "$(C '1;32')" "$lines_added" "$lines_removed" "$(rst)"
   fi
+fi
+# context window usage (Claude Code v2.0.65+)
+if [ -n "$context_txt" ]; then
+  printf '  📊 %s%s%s' "$(context_color)" "$context_txt" "$(rst)"
 fi
 # trailing newline (POSIX compliance)
 printf '\n'
