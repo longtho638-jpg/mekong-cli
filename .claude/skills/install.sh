@@ -586,6 +586,11 @@ setup_python_env() {
                     [[ "$line" =~ ^#.*$ ]] && continue
                     [[ -z "${line// }" ]] && continue
 
+                    # Strip inline comments (e.g., "package>=1.0  # comment" -> "package>=1.0")
+                    line="${line%%#*}"
+                    line="${line%"${line##*[![:space:]]}"}"  # trim trailing whitespace
+                    [[ -z "$line" ]] && continue
+
                     if try_pip_install "$line" "$SKILL_LOG"; then
                         pkg_success=$((pkg_success + 1))
                     else
