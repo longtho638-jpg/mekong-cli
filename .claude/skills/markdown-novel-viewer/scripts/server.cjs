@@ -204,11 +204,29 @@ async function main() {
   const fileDir = path.dirname(filePath);
   const allowedDirs = [fileDir, cwd, assetsDir];
 
+  // Detect plans directory (look in cwd first, then file dir)
+  let plansDir = null;
+  const cwdPlans = path.join(cwd, 'plans');
+  const fileDirPlans = path.join(fileDir, '..'); // Parent of plan.md is often plans/plan-name
+
+  if (fs.existsSync(cwdPlans) && fs.statSync(cwdPlans).isDirectory()) {
+    plansDir = cwdPlans;
+    if (!allowedDirs.includes(plansDir)) {
+      allowedDirs.push(plansDir);
+    }
+  } else if (fs.existsSync(fileDirPlans) && fs.statSync(fileDirPlans).isDirectory()) {
+    plansDir = fileDirPlans;
+    if (!allowedDirs.includes(plansDir)) {
+      allowedDirs.push(plansDir);
+    }
+  }
+
   // Create server with security restrictions
   const server = createHttpServer({
     assetsDir,
     renderMarkdown: (fp) => generateFullPage(fp, assetsDir),
-    allowedDirs
+    allowedDirs,
+    plansDir
   });
 
   // Start server
