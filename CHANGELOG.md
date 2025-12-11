@@ -1,3 +1,15 @@
+## [1.20.2-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.20.1...v1.20.2-beta.1) (2025-12-11)
+
+
+### 🐞 Bug Fixes
+
+* `chrome-devtools` skill should run in headed mode for better debugging ([52cecc6](https://github.com/claudekit/claudekit-engineer/commit/52cecc65c49116646ae1d1d6dd331f7f5d68d312))
+
+
+### 👷 CI
+
+* add branch protection workflow for main branch ([6fb7083](https://github.com/claudekit/claudekit-engineer/commit/6fb70836639e86193020833e22c798676585c8cf))
+
 ## [1.20.1](https://github.com/claudekit/claudekit-engineer/compare/v1.20.0...v1.20.1) (2025-12-11)
 
 
