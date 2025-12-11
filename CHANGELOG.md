@@ -1,3 +1,10 @@
+## [1.20.2-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.3...v1.20.2-beta.4) (2025-12-11)
+
+
+### ⚡ Performance Improvements
+
+* **statusline:** add context window usage percentage display ([20f8ed7](https://github.com/claudekit/claudekit-engineer/commit/20f8ed798572933586ad2a40a975fc37faf98d2a)), closes [#159](https://github.com/claudekit/claudekit-engineer/issues/159)
+
 ## [1.20.2-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.2...v1.20.2-beta.3) (2025-12-11)
 
 
