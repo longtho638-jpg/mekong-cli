@@ -137,6 +137,25 @@ function Get-SessionColor {
     }
 }
 
+function Get-ContextColor {
+    param([int]$ContextPercent)
+
+    if (-not $script:UseColor) { return "" }
+
+    if ($ContextPercent -ge 90) {
+        return "`e[1;31m"  # red - critical
+    }
+    elseif ($ContextPercent -ge 75) {
+        return "`e[1;33m"  # yellow - warning
+    }
+    elseif ($ContextPercent -ge 50) {
+        return "`e[1;36m"  # cyan - moderate
+    }
+    else {
+        return "`e[1;32m"  # green - healthy
+    }
+}
+
 # Read JSON from stdin
 try {
     $inputLines = @()
@@ -198,6 +217,26 @@ try {
 }
 catch {
     # Not in a git repository
+}
+
+# Context window usage (Claude Code v2.0.65+)
+$contextPercent = 0
+$contextText = ""
+
+$contextInput = 0
+$contextOutput = 0
+$contextSize = 0
+
+if ($data.context_window) {
+    $contextInput = [int]($data.context_window.total_input_tokens ?? 0)
+    $contextOutput = [int]($data.context_window.total_output_tokens ?? 0)
+    $contextSize = [int]($data.context_window.context_window_size ?? 0)
+}
+
+if ($contextSize -gt 0) {
+    $contextTotal = $contextInput + $contextOutput
+    $contextPercent = [Math]::Floor($contextTotal * 100 / $contextSize)
+    $contextText = "${contextPercent}%"
 }
 
 # ccusage integration
@@ -313,6 +352,12 @@ if ($costUSD -and $costUSD -match '^\d+(\.\d+)?$') {
 # Tokens
 if ($totalTokens -and $totalTokens -match '^\d+$') {
     $output += "  📊 ${UsageColor}${totalTokens} tok${Reset}"
+}
+
+# Context window usage (Claude Code v2.0.65+)
+if ($contextText) {
+    $contextColorCode = Get-ContextColor $contextPercent
+    $output += "  📊 ${contextColorCode}${contextText}${Reset}"
 }
 
 Write-Host $output

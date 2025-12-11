@@ -86,6 +86,23 @@ function getSessionColor(sessionPercent) {
 }
 
 /**
+ * Get context color based on usage percentage
+ */
+function getContextColor(contextPercent) {
+    if (!USE_COLOR) return '';
+
+    if (contextPercent >= 90) {
+        return '\x1b[1;31m';  // red - critical
+    } else if (contextPercent >= 75) {
+        return '\x1b[1;33m';  // yellow - warning
+    } else if (contextPercent >= 50) {
+        return '\x1b[1;36m';  // cyan - moderate
+    } else {
+        return '\x1b[1;32m';  // green - healthy
+    }
+}
+
+/**
  * Expand home directory to ~
  */
 function expandHome(path) {
@@ -160,12 +177,25 @@ async function main() {
         let costUSD = '';
         let linesAdded = 0;
         let linesRemoved = 0;
+        let contextPercent = 0;
+        let contextText = '';
         const billingMode = env.CLAUDE_BILLING_MODE || 'api';
 
         // Extract native cost data from Claude Code
         costUSD = data.cost?.total_cost_usd || '';
         linesAdded = data.cost?.total_lines_added || 0;
         linesRemoved = data.cost?.total_lines_removed || 0;
+
+        // Extract context window usage (Claude Code v2.0.65+)
+        const contextInput = data.context_window?.total_input_tokens || 0;
+        const contextOutput = data.context_window?.total_output_tokens || 0;
+        const contextSize = data.context_window?.context_window_size || 0;
+
+        if (contextSize > 0) {
+            const contextTotal = contextInput + contextOutput;
+            contextPercent = Math.floor(contextTotal * 100 / contextSize);
+            contextText = `${contextPercent}%`;
+        }
 
         // Session timer - parse local transcript JSONL (zero external dependencies)
         const transcriptPath = data.transcript_path;
@@ -259,6 +289,12 @@ async function main() {
         if ((linesAdded > 0 || linesRemoved > 0)) {
             const linesColor = color('1;32');  // green
             output += `  📝 ${linesColor}+${linesAdded} -${linesRemoved}${Reset}`;
+        }
+
+        // Context window usage (Claude Code v2.0.65+)
+        if (contextText) {
+            const contextColorCode = getContextColor(contextPercent);
+            output += `  📊 ${contextColorCode}${contextText}${Reset}`;
         }
 
         console.log(output);
