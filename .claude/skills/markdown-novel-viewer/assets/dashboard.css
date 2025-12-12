@@ -795,11 +795,19 @@
 
 .timeline-title {
   font-family: var(--dash-font);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--dash-text-secondary);
+  color: var(--dash-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  margin: 0;
+  display: inline;
+}
+
+/* Remove decorative lines from novel-theme h2 */
+.timeline-title::before,
+.timeline-title::after {
+  display: none;
 }
 
 .timeline-controls {
