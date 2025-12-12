@@ -318,8 +318,8 @@ function generateTimelineSection(plans) {
   // Auto-stack plans into layers
   const layeredPlans = assignLayers(plans, rangeStart, rangeEnd);
   const maxLayer = layeredPlans.length > 0 ? Math.max(...layeredPlans.map(p => p.layer), 0) : 0;
-  // Compact layout: 22px per layer (bar 18px + 4px gap)
-  const trackHeight = Math.min(180, Math.max(60, (maxLayer + 1) * 22 + 12));
+  // Compact layout: 22px per layer (bar 18px + 4px gap), no max cap
+  const trackHeight = Math.max(60, (maxLayer + 1) * 22 + 12);
 
   // Generate gantt bars
   const barsHtml = layeredPlans.map(plan => {

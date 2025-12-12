@@ -884,7 +884,9 @@
 .gantt-track {
   position: relative;
   min-height: 60px;
-  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
   background:
     repeating-linear-gradient(
       90deg,
@@ -893,6 +895,15 @@
       var(--dash-border-subtle) calc(100% / 7 - 1px),
       var(--dash-border-subtle) calc(100% / 7)
     );
+}
+
+.gantt-track::-webkit-scrollbar {
+  width: 4px;
+}
+
+.gantt-track::-webkit-scrollbar-thumb {
+  background: var(--dash-border);
+  border-radius: 2px;
 }
 
 /* Gantt Bar - Compact 18px height */
