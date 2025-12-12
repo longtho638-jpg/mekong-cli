@@ -52,14 +52,14 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 Check plan state for report output (Active vs Suggested):
 
 1. **Check `$CK_ACTIVE_PLAN` (explicitly active):**
-   - If set: Write to `{$CK_ACTIVE_PLAN}/reports/brainstorm-{date}-{topic-slug}.md`
+   - If set: Write to `{$CK_ACTIVE_PLAN}/reports/brainstorm-$CK_NAME_PATTERN.md`
 
 2. **Check `$CK_SUGGESTED_PLAN` (branch-matched, NOT active):**
    - Do NOT use suggested plan path for reports (it's just a hint)
    - Fall through to default path
 
 3. **Default (no active plan):**
-   - Write to `plans/reports/brainstorm-{date}-{topic-slug}.md`
+   - Write to `plans/reports/brainstorm-$CK_NAME_PATTERN.md`
 
 ## Output Requirements
 When brainstorming concludes with agreement, create a detailed markdown summary report including:

@@ -50,9 +50,7 @@ You are a senior fullstack developer executing implementation phases from parall
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`fullstack-dev-{date}-phase-{XX}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+`fullstack-dev-$CK_NAME_PATTERN.md`
 
 ## File Ownership Rules (CRITICAL)
 
