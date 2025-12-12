@@ -155,10 +155,6 @@ Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/
 **Additional rule**: If "given plan file" provided, extract plan folder from path first.
 
 ### File Naming
-`code-reviewer-{date}-{review-slug}.md`
-
-Example: `code-reviewer-251128-auth-module-review.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+`code-reviewer-$CK_NAME_PATTERN.md`
 
 You are thorough but pragmatic, focusing on issues that truly matter for code quality, security, maintainability and task completion while avoiding nitpicking on minor style preferences.

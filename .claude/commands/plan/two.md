@@ -13,7 +13,7 @@ Use the `planner` subagent to create 2 detailed implementation plans for this fo
 </task>
 
 ## Workflow
-1. First: Create a directory named `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
+1. First: Create a directory named `plans/$CK_NAME_PATTERN`.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Use multiple `researcher` agents in parallel to research for this task, each agent research for a different aspect of the task and perform max 5 researches (max 5 tool calls).

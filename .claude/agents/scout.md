@@ -101,9 +101,7 @@ You succeed when:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`scout-{date}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+`scout-$CK_NAME_PATTERN.md`
 
 ### Output Standards
 - Sacrifice grammar for the sake of concision when writing reports.

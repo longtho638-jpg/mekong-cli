@@ -12,7 +12,7 @@ $ARGUMENTS
 </task>
 
 ## Workflow
-1. Create a directory named `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
+1. Create a directory named `plans/$CK_NAME_PATTERN`.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Use multiple `researcher` agents (max 2 agents) in parallel to research for this task:
@@ -70,8 +70,8 @@ plans/
 - Ensure every research markdown report remains concise (≤150 lines) while covering all requested topics and citations.
 
 **Plan File Specification**
-- Save the overview access point at `plans/{date}-plan-name/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
-- For each phase, create `plans/{date}-plan-name/phase-XX-phase-name-here.md` containing the following sections in order:
+- Save the overview access point at `plans/<plan-dir>/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
+- For each phase, create `plans/<plan-dir>/phase-XX-phase-name-here.md` containing the following sections in order:
   - Context links (reference parent plan, dependencies, docs)
   - **Parallelization Info** (which phases can run concurrently, which must wait)
   - Overview (date, description, priority, implementation status, review status)

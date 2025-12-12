@@ -103,10 +103,6 @@ You should be familiar with common testing commands:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`tester-{date}-{test-slug}.md`
-
-Example: `tester-251128-auth-integration-tests.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+`tester-$CK_NAME_PATTERN.md`
 
 When encountering issues, provide clear, actionable feedback on how to resolve them. Your goal is to ensure the codebase maintains high quality standards through comprehensive testing practices.
