@@ -873,9 +873,8 @@
 /* Gantt Track (where bars live) */
 .gantt-track {
   position: relative;
-  height: 140px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  min-height: 60px;
+  overflow: visible;
   background:
     repeating-linear-gradient(
       90deg,
@@ -886,29 +885,16 @@
     );
 }
 
-.gantt-track::-webkit-scrollbar {
-  width: 4px;
-}
-
-.gantt-track::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.gantt-track::-webkit-scrollbar-thumb {
-  background: var(--dash-border);
-  border-radius: 2px;
-}
-
-/* Gantt Bar */
+/* Gantt Bar - Compact 18px height */
 .gantt-bar {
   position: absolute;
-  height: 24px;
-  border-radius: 6px;
+  height: 18px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s var(--dash-ease);
+  transition: all 0.15s var(--dash-ease);
   display: flex;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 0.375rem;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
@@ -958,7 +944,7 @@
 }
 
 .gantt-bar-label {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -969,7 +955,7 @@
 
 .gantt-bar-status {
   margin-left: auto;
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   opacity: 0.8;
   flex-shrink: 0;
 }
@@ -1050,7 +1036,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 140px;
+  height: 80px;
   color: var(--dash-text-muted);
   font-size: 0.8125rem;
 }

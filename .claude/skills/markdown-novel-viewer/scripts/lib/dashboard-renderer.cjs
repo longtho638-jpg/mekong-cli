@@ -215,6 +215,7 @@ function generatePlanCard(plan) {
 
 /**
  * Auto-stack plans into layers to avoid overlap (like Google Calendar)
+ * Uses actual plan duration for in-progress items instead of extending to today
  * @param {Array} plans - Plans with createdDate and durationDays
  * @param {Date} rangeStart - Start of visible range
  * @param {Date} rangeEnd - End of visible range
@@ -224,41 +225,59 @@ function assignLayers(plans, rangeStart, rangeEnd) {
   const rangeDays = Math.ceil((rangeEnd - rangeStart) / (1000 * 60 * 60 * 24));
   const layers = []; // Each layer tracks occupied day ranges
 
-  // Sort by start date
+  // Filter to plans with dates, then sort by start date
   const sorted = [...plans]
     .filter(p => p.createdDate)
     .sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
 
-  return sorted.map(plan => {
+  // Filter to plans within visible range
+  const visible = sorted.filter(plan => {
     const startDate = new Date(plan.createdDate);
     const endDate = plan.completedDate
       ? new Date(plan.completedDate)
-      : new Date(Math.min(Date.now(), rangeEnd.getTime()));
+      : new Date(startDate.getTime() + (plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+    return endDate >= rangeStart && startDate <= rangeEnd;
+  });
 
-    // Calculate position as percentage
+  return visible.map(plan => {
+    const startDate = new Date(plan.createdDate);
+    // For in-progress plans: use actual duration instead of extending to today
+    // This prevents all in-progress plans from overlapping
+    const endDate = plan.completedDate
+      ? new Date(plan.completedDate)
+      : new Date(startDate.getTime() + Math.max(1, plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+
+    // Calculate position as percentage (clamp to range)
     const startDay = Math.max(0, Math.ceil((startDate - rangeStart) / (1000 * 60 * 60 * 24)));
     const endDay = Math.min(rangeDays, Math.ceil((endDate - rangeStart) / (1000 * 60 * 60 * 24)));
-    const leftPct = (startDay / rangeDays) * 100;
-    const widthPct = Math.max(5, ((endDay - startDay) / rangeDays) * 100);
 
-    // Find first layer without overlap
+    // Ensure minimum visible width (2 days)
+    const adjustedEndDay = Math.max(startDay + 2, endDay);
+    const leftPct = (startDay / rangeDays) * 100;
+    const widthPct = Math.min(100 - leftPct, Math.max(4, ((adjustedEndDay - startDay) / rangeDays) * 100));
+
+    // Find first layer without overlap (greedy algorithm)
     let layer = 0;
+    let foundSlot = false;
     for (let i = 0; i < layers.length; i++) {
       const hasOverlap = layers[i].some(range =>
-        !(endDay <= range.start || startDay >= range.end)
+        !(adjustedEndDay <= range.start || startDay >= range.end)
       );
       if (!hasOverlap) {
         layer = i;
+        foundSlot = true;
         break;
       }
-      layer = i + 1;
+    }
+    if (!foundSlot) {
+      layer = layers.length;
     }
 
     // Add to layer
     if (!layers[layer]) layers[layer] = [];
-    layers[layer].push({ start: startDay, end: endDay });
+    layers[layer].push({ start: startDay, end: adjustedEndDay });
 
-    return { ...plan, layer, leftPct, widthPct, startDay, endDay };
+    return { ...plan, layer, leftPct, widthPct, startDay, endDay: adjustedEndDay };
   });
 }
 
@@ -298,14 +317,15 @@ function generateTimelineSection(plans) {
 
   // Auto-stack plans into layers
   const layeredPlans = assignLayers(plans, rangeStart, rangeEnd);
-  const maxLayer = Math.max(...layeredPlans.map(p => p.layer), 0);
-  const trackHeight = Math.max(140, (maxLayer + 1) * 32 + 16);
+  const maxLayer = layeredPlans.length > 0 ? Math.max(...layeredPlans.map(p => p.layer), 0) : 0;
+  // Compact layout: 22px per layer (bar 18px + 4px gap)
+  const trackHeight = Math.min(180, Math.max(60, (maxLayer + 1) * 22 + 12));
 
   // Generate gantt bars
   const barsHtml = layeredPlans.map(plan => {
     const statusClass = plan.status === 'completed' ? 'completed'
       : plan.status === 'in-progress' ? 'in-progress' : 'pending';
-    const top = plan.layer * 32 + 8;
+    const top = plan.layer * 22 + 6;
     const statusIcon = plan.status === 'completed' ? '✓' : plan.status === 'in-progress' ? '◐' : '○';
 
     return `
