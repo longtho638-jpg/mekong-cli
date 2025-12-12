@@ -43,8 +43,19 @@ progress_bar() {
   pct="${1:-0}"; width="${2:-10}"
   [[ "$pct" =~ ^[0-9]+$ ]] || pct=0; ((pct<0))&&pct=0; ((pct>100))&&pct=100
   filled=$(( pct * width / 100 )); empty=$(( width - filled ))
-  printf '%*s' "$filled" '' | tr ' ' '='
-  printf '%*s' "$empty" '' | tr ' ' '-'
+  # Use Unicode block characters: ▓ (filled) and ░ (empty)
+  for ((i=0; i<filled; i++)); do printf '▓'; done
+  for ((i=0; i<empty; i++)); do printf '░'; done
+}
+
+# Get context emoji based on usage percentage (works without ANSI colors)
+context_emoji() {
+  local pct="${1:-0}"
+  if   (( pct >= 90 )); then printf '🔴'   # critical
+  elif (( pct >= 75 )); then printf '🟡'   # warning
+  elif (( pct >= 50 )); then printf '🔵'   # moderate
+  else                       printf '🟢'   # healthy
+  fi
 }
 
 # git utilities
@@ -109,6 +120,7 @@ lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0' 2>/dev/null)
 lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0' 2>/dev/null)
 
 # Extract context window usage (Claude Code v2.0.65+)
+# context_window_size = total limit for BOTH input AND output combined
 context_input=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0' 2>/dev/null)
 context_output=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0' 2>/dev/null)
 context_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0' 2>/dev/null)
@@ -116,8 +128,10 @@ context_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0' 
 if [ -n "$context_size" ] && [ "$context_size" -gt 0 ] 2>/dev/null; then
   context_total=$((context_input + context_output))
   context_pct=$((context_total * 100 / context_size))
-  # Format: show percentage with color based on usage level
-  context_txt="${context_pct}%"
+  # Clamp to 100% max to handle edge cases (stale data, extended thinking)
+  ((context_pct > 100)) && context_pct=100
+  # Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
+  context_txt="$(context_emoji "$context_pct") $(progress_bar "$context_pct" 10) ${context_pct}%"
 fi
 
 # Session timer - parse local transcript JSONL (zero external dependencies)
@@ -185,8 +199,9 @@ if [ -n "$lines_added" ] && [ -n "$lines_removed" ] && [[ "$lines_added" =~ ^[0-
   fi
 fi
 # context window usage (Claude Code v2.0.65+)
+# context_txt already contains emoji + bar + percentage
 if [ -n "$context_txt" ]; then
-  printf '  📊 %s%s%s' "$(context_color)" "$context_txt" "$(rst)"
+  printf '  %s' "$context_txt"
 fi
 # trailing newline (POSIX compliance)
 printf '\n'

@@ -113,11 +113,21 @@ function Get-ProgressBar {
     if ($Percent -lt 0) { $Percent = 0 }
     if ($Percent -gt 100) { $Percent = 100 }
 
-    $filled = [Math]::Floor($Percent * $Width / 100)
+    $filled = [Math]::Round($Percent * $Width / 100)
     $empty = $Width - $filled
 
-    $bar = ("=" * $filled) + ("-" * $empty)
+    # Use Unicode block characters: ▓ (filled) and ░ (empty)
+    $bar = ("▓" * $filled) + ("░" * $empty)
     return $bar
+}
+
+function Get-ContextEmoji {
+    param([int]$Percent)
+
+    if ($Percent -ge 90) { return "🔴" }       # critical
+    elseif ($Percent -ge 75) { return "🟡" }  # warning
+    elseif ($Percent -ge 50) { return "🔵" }  # moderate
+    else { return "🟢" }                       # healthy
 }
 
 function Get-SessionColor {
@@ -220,6 +230,7 @@ catch {
 }
 
 # Context window usage (Claude Code v2.0.65+)
+# context_window_size = total limit for BOTH input AND output combined
 $contextPercent = 0
 $contextText = ""
 
@@ -236,7 +247,12 @@ if ($data.context_window) {
 if ($contextSize -gt 0) {
     $contextTotal = $contextInput + $contextOutput
     $contextPercent = [Math]::Floor($contextTotal * 100 / $contextSize)
-    $contextText = "${contextPercent}%"
+    # Clamp to 100% max to handle edge cases (stale data, extended thinking)
+    if ($contextPercent -gt 100) { $contextPercent = 100 }
+    # Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
+    $emoji = Get-ContextEmoji $contextPercent
+    $bar = Get-ProgressBar $contextPercent 10
+    $contextText = "$emoji $bar ${contextPercent}%"
 }
 
 # ccusage integration
@@ -355,9 +371,9 @@ if ($totalTokens -and $totalTokens -match '^\d+$') {
 }
 
 # Context window usage (Claude Code v2.0.65+)
+# contextText already contains emoji + bar + percentage
 if ($contextText) {
-    $contextColorCode = Get-ContextColor $contextPercent
-    $output += "  📊 ${contextColorCode}${contextText}${Reset}"
+    $output += "  $contextText"
 }
 
 Write-Host $output

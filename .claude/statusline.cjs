@@ -86,20 +86,26 @@ function getSessionColor(sessionPercent) {
 }
 
 /**
- * Get context color based on usage percentage
+ * Get context emoji based on usage percentage (works without ANSI colors)
  */
-function getContextColor(contextPercent) {
-    if (!USE_COLOR) return '';
+function getContextEmoji(percent) {
+    if (percent >= 90) return '🔴';  // critical
+    if (percent >= 75) return '🟡';  // warning
+    if (percent >= 50) return '🔵';  // moderate
+    return '🟢';                      // healthy
+}
 
-    if (contextPercent >= 90) {
-        return '\x1b[1;31m';  // red - critical
-    } else if (contextPercent >= 75) {
-        return '\x1b[1;33m';  // yellow - warning
-    } else if (contextPercent >= 50) {
-        return '\x1b[1;36m';  // cyan - moderate
-    } else {
-        return '\x1b[1;32m';  // green - healthy
-    }
+/**
+ * Generate Unicode progress bar
+ * @param {number} percent - 0-100 percentage
+ * @param {number} width - bar width in characters (default 10)
+ * @returns {string} Unicode progress bar like ▓▓▓▓░░░░░░
+ */
+function progressBar(percent, width = 10) {
+    const clamped = Math.max(0, Math.min(100, percent));
+    const filled = Math.round(clamped * width / 100);
+    const empty = width - filled;
+    return '▓'.repeat(filled) + '░'.repeat(empty);
 }
 
 /**
@@ -187,14 +193,19 @@ async function main() {
         linesRemoved = data.cost?.total_lines_removed || 0;
 
         // Extract context window usage (Claude Code v2.0.65+)
+        // context_window_size = total limit for BOTH input AND output combined
         const contextInput = data.context_window?.total_input_tokens || 0;
         const contextOutput = data.context_window?.total_output_tokens || 0;
         const contextSize = data.context_window?.context_window_size || 0;
 
         if (contextSize > 0) {
             const contextTotal = contextInput + contextOutput;
-            contextPercent = Math.floor(contextTotal * 100 / contextSize);
-            contextText = `${contextPercent}%`;
+            // Clamp to 100% max to handle edge cases (stale data, extended thinking)
+            contextPercent = Math.min(100, Math.floor(contextTotal * 100 / contextSize));
+            // Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
+            const emoji = getContextEmoji(contextPercent);
+            const bar = progressBar(contextPercent, 10);
+            contextText = `${emoji} ${bar} ${contextPercent}%`;
         }
 
         // Session timer - parse local transcript JSONL (zero external dependencies)
@@ -292,9 +303,9 @@ async function main() {
         }
 
         // Context window usage (Claude Code v2.0.65+)
+        // contextText already contains emoji + bar + percentage
         if (contextText) {
-            const contextColorCode = getContextColor(contextPercent);
-            output += `  📊 ${contextColorCode}${contextText}${Reset}`;
+            output += `  ${contextText}`;
         }
 
         console.log(output);
