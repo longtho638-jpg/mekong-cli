@@ -55,8 +55,8 @@ function calculateProgress(phases) {
  * @returns {string} - Human readable name like "Feature Name"
  */
 function parsePlanName(dirName) {
-  // Remove date prefix (YYMMDD- or YYMMDD-HHMM-)
-  const withoutDate = dirName.replace(/^\d{6}(-\d{4})?-/, '');
+  // Remove date prefix: YYMMDD-, YYYYMMDD-, YYMMDD-HHMM-, YYYYMMDD-HHMM-
+  const withoutDate = dirName.replace(/^\d{6,8}(-\d{4})?-/, '');
 
   // Convert kebab-case to Title Case
   return withoutDate
