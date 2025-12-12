@@ -109,6 +109,34 @@ function progressBar(percent, width = 10) {
 }
 
 /**
+ * Detect if conversation was compacted by checking session-specific marker file
+ * Supports multiple concurrent conversations
+ * @param {string} sessionId - Current session ID
+ * @returns {boolean} true if this session was just compacted
+ */
+function detectCompact(sessionId) {
+    const fs = require('fs');
+    const path = require('path');
+    const os = require('os');
+
+    try {
+        // Check for session-specific marker: /tmp/claude-compact-markers/{sessionId}.json
+        const markerPath = path.join(os.tmpdir(), 'claude-compact-markers', `${sessionId}.json`);
+
+        if (!fs.existsSync(markerPath)) {
+            return false;
+        }
+
+        // Marker exists - this session was compacted
+        // Delete marker after detection (one-time display)
+        fs.unlinkSync(markerPath);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+/**
  * Expand home directory to ~
  */
 function expandHome(path) {
@@ -202,10 +230,20 @@ async function main() {
             const contextTotal = contextInput + contextOutput;
             // Clamp to 100% max to handle edge cases (stale data, extended thinking)
             contextPercent = Math.min(100, Math.floor(contextTotal * 100 / contextSize));
-            // Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
-            const emoji = getContextEmoji(contextPercent);
-            const bar = progressBar(contextPercent, 10);
-            contextText = `${emoji} ${bar} ${contextPercent}%`;
+
+            // Check if compacted using session-specific marker
+            const sessionId = data.session_id || 'default';
+            const compacted = detectCompact(sessionId);
+
+            if (compacted) {
+                // Show compacted indicator (one-time, cleared after detection)
+                contextText = `🔄 ░░░░░░░░░░ COMPACTED`;
+            } else {
+                // Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
+                const emoji = getContextEmoji(contextPercent);
+                const bar = progressBar(contextPercent, 10);
+                contextText = `${emoji} ${bar} ${contextPercent}%`;
+            }
         }
 
         // Session timer - parse local transcript JSONL (zero external dependencies)
