@@ -1,3 +1,10 @@
+## [1.21.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.2...v1.21.0-beta.3) (2025-12-12)
+
+
+### ♻️ Code Refactoring
+
+* centralize file naming pattern via CK_NAME_PATTERN env var ([e379abe](https://github.com/claudekit/claudekit-engineer/commit/e379abe7d762770379d5318bb104a70824a5335e))
+
 ## [1.21.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.1...v1.21.0-beta.2) (2025-12-12)
 
 
