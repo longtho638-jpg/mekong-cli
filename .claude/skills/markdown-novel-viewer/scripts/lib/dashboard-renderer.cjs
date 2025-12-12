@@ -241,11 +241,17 @@ function assignLayers(plans, rangeStart, rangeEnd) {
 
   return visible.map(plan => {
     const startDate = new Date(plan.createdDate);
-    // For in-progress plans: use actual duration instead of extending to today
-    // This prevents all in-progress plans from overlapping
-    const endDate = plan.completedDate
-      ? new Date(plan.completedDate)
-      : new Date(startDate.getTime() + Math.max(1, plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+    // Determine end date based on plan status:
+    // - Completed: use completedDate, or lastModified as fallback
+    // - In-progress: use createdDate + durationDays (don't extend to today)
+    let endDate;
+    if (plan.status === 'completed') {
+      endDate = plan.completedDate
+        ? new Date(plan.completedDate)
+        : new Date(plan.lastModified); // Use last modified as completion proxy
+    } else {
+      endDate = new Date(startDate.getTime() + Math.max(1, plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+    }
 
     // Calculate position as percentage (clamp to range)
     const startDay = Math.max(0, Math.ceil((startDate - rangeStart) / (1000 * 60 * 60 * 24)));
