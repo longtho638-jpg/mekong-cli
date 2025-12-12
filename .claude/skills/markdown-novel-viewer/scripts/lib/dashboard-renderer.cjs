@@ -223,6 +223,7 @@ function generatePlanCard(plan) {
  */
 function assignLayers(plans, rangeStart, rangeEnd) {
   const rangeDays = Math.ceil((rangeEnd - rangeStart) / (1000 * 60 * 60 * 24));
+  const now = new Date();
   const layers = []; // Each layer tracks occupied day ranges
 
   // Filter to plans with dates, then sort by start date
