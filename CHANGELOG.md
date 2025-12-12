@@ -1,3 +1,20 @@
+## [1.21.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.4...v1.21.0-beta.1) (2025-12-12)
+
+
+### 🚀 Features
+
+* **statusline:** add compact detection with PreCompact hook ([1fd4376](https://github.com/claudekit/claudekit-engineer/commit/1fd4376e8c5e9daddca75f73f61543f58ea569f4))
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** improve context window display with progress bar and emoji ([357d317](https://github.com/claudekit/claudekit-engineer/commit/357d31764454a44c539d8812e6061c77541c6a80)), closes [#159](https://github.com/claudekit/claudekit-engineer/issues/159)
+
+
+### ♻️ Code Refactoring
+
+* **statusline:** simplify context display logic ([5caee57](https://github.com/claudekit/claudekit-engineer/commit/5caee57a41603bf9420e9006398c7fdb364db81c))
+
 ## [1.20.2-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.3...v1.20.2-beta.4) (2025-12-11)
 
 
