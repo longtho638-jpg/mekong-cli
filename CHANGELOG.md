@@ -1,3 +1,39 @@
+## [1.21.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.1...v1.21.0-beta.2) (2025-12-12)
+
+
+### 🚀 Features
+
+* **nav:** add back-to-dashboard link in plan detail header ([3aeac74](https://github.com/claudekit/claudekit-engineer/commit/3aeac743aa54c07a752e71858148b4d5cda36116))
+* **nav:** show planned vs implemented phases in sidebar ([f0362ec](https://github.com/claudekit/claudekit-engineer/commit/f0362ec4305cdee5ae0991c1affa508b5bf72bb2))
+* **preview:** add dashboard UI and plan scanner ([05471af](https://github.com/claudekit/claudekit-engineer/commit/05471af55e0d45ea157e70a29923baac64741680))
+* **preview:** add plan-scanner utility for dashboard ([5beb0d0](https://github.com/claudekit/claudekit-engineer/commit/5beb0d0da64109d062ca78b0fc44ac6cde406c3a))
+* **preview:** add timeline, activity heatmap, and rich metadata ([52dd593](https://github.com/claudekit/claudekit-engineer/commit/52dd593807a9a8bfcfa71c07e215b23844def109))
+* **preview:** redesign dashboard with refined monochrome theme ([0c8c6cb](https://github.com/claudekit/claudekit-engineer/commit/0c8c6cb534be590e28c56e1b45a087ed7ebb846c))
+* **preview:** redesign timeline as Layered Gantt chart ([5e781d9](https://github.com/claudekit/claudekit-engineer/commit/5e781d946f1a7adaa509f63f3ad7ec56e87997ff))
+
+
+### 🐞 Bug Fixes
+
+* **dashboard:** completed plans end at today, add top margin to timeline ([2043272](https://github.com/claudekit/claudekit-engineer/commit/20432722a6eff89532ef2c040bf481d9e1913002))
+* **dashboard:** completed plans now stop at correct date + minimal timeline header ([cb87d7b](https://github.com/claudekit/claudekit-engineer/commit/cb87d7b6dbca675a01c3fdf3e19485cf36439af6))
+* **dashboard:** handle YYYYMMDD date format in plan names ([7b16265](https://github.com/claudekit/claudekit-engineer/commit/7b162655cb212fd51614c20bc8bc24bbef187292))
+* **dashboard:** improve gantt bar contrast and prevent overflow ([f7edc9e](https://github.com/claudekit/claudekit-engineer/commit/f7edc9e159bc089b92fb7ab2700fc829a28805d0))
+* **dashboard:** remove decorative h2 lines from timeline title ([520da09](https://github.com/claudekit/claudekit-engineer/commit/520da097db4f524aa291709dc31c002f8e3d5347))
+* **dashboard:** remove height cap, add scrollbar for many layers ([1c8c718](https://github.com/claudekit/claudekit-engineer/commit/1c8c718829a7ff7e698255b78b9330b9047cfb34))
+* **dashboard:** resolve layered gantt staircase effect ([6fc8576](https://github.com/claudekit/claudekit-engineer/commit/6fc8576e2d7625d80f2d0e3ead1fbdfdf3c29251))
+* **dashboard:** timeline bar now uses durationDays for consistency with card ([17eff55](https://github.com/claudekit/claudekit-engineer/commit/17eff559cbcf0a8be9f70ee0ce65958410ce7a6b))
+* define now variable in assignLayers scope ([b04f01f](https://github.com/claudekit/claudekit-engineer/commit/b04f01fa3c602e63d05a7b21b86766437812ddf1))
+
+
+### 📚 Documentation
+
+* update architecture and roadmap for preview dashboard ([626a1bd](https://github.com/claudekit/claudekit-engineer/commit/626a1bdecc913d5589489f2521a82891639036bb))
+
+
+### ✅ Tests
+
+* **preview:** add comprehensive dashboard test suite ([631b0af](https://github.com/claudekit/claudekit-engineer/commit/631b0af4ad3bdaff6a89ba63657c1b34f943d061))
+
 ## [1.21.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v1.20.2-beta.4...v1.21.0-beta.1) (2025-12-12)
 
 
