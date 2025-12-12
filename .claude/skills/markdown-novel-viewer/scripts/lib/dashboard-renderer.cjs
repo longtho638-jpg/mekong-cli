@@ -241,11 +241,21 @@ function assignLayers(plans, rangeStart, rangeEnd) {
 
   return visible.map(plan => {
     const startDate = new Date(plan.createdDate);
-    // Determine end date: use completedDate if explicit, otherwise createdDate + durationDays
-    // This keeps timeline bar consistent with duration shown on card
-    const endDate = plan.completedDate
-      ? new Date(plan.completedDate)
-      : new Date(startDate.getTime() + Math.max(1, plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+    // Determine end date based on status
+    let endDate;
+    if (plan.completedDate) {
+      endDate = new Date(plan.completedDate);
+    } else if (plan.status === 'completed') {
+      // Completed without explicit date: use lastModified or cap at today
+      endDate = plan.lastModified ? new Date(plan.lastModified) : now;
+    } else {
+      // In-progress/pending: use duration from start
+      endDate = new Date(startDate.getTime() + Math.max(1, plan.durationDays || 1) * 24 * 60 * 60 * 1000);
+    }
+    // Completed plans can't extend past today
+    if (plan.status === 'completed' && endDate > now) {
+      endDate = now;
+    }
 
     // Calculate position as percentage (clamp to range)
     const startDay = Math.max(0, Math.ceil((startDate - rangeStart) / (1000 * 60 * 60 * 24)));

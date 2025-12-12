@@ -780,10 +780,10 @@
 
 .timeline-section {
   padding: 1rem 1.5rem;
-  margin: 0 1.5rem 1rem;
+  margin: 1rem 1.5rem;
   background: var(--dash-surface);
   border-radius: var(--dash-radius);
-  border: 1px solid var(--dash-border-subtle);
+  border: 1px solid var(--dash-border);
 }
 
 .timeline-header {
