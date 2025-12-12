@@ -884,7 +884,7 @@
 .gantt-track {
   position: relative;
   min-height: 60px;
-  overflow: visible;
+  overflow: hidden;
   background:
     repeating-linear-gradient(
       90deg,
@@ -916,14 +916,15 @@
 }
 
 .gantt-bar.completed {
-  background: linear-gradient(135deg, var(--dash-accent) 0%, var(--dash-accent-hover) 100%);
-  color: white;
+  background: var(--dash-accent);
+  color: #fff;
+  font-weight: 600;
 }
 
 .gantt-bar.in-progress {
-  background: linear-gradient(135deg, var(--dash-accent) 0%, var(--dash-accent-hover) 100%);
-  color: white;
-  opacity: 0.75;
+  background: var(--dash-accent);
+  color: #fff;
+  font-weight: 600;
 }
 
 .gantt-bar.in-progress::after {
@@ -936,7 +937,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.2) 50%,
     transparent 100%
   );
   animation: shimmer 2s ease-in-out infinite;
@@ -948,14 +949,15 @@
 }
 
 .gantt-bar.pending {
-  background: var(--dash-surface-hover);
-  border: 1px dashed var(--dash-border);
-  color: var(--dash-text-muted);
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text);
+  font-weight: 500;
 }
 
 .gantt-bar-label {
   font-size: 0.625rem;
-  font-weight: 500;
+  font-weight: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
