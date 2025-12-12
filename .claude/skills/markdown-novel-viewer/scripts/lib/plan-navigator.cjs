@@ -281,6 +281,23 @@ function generateNavSidebar(filePath) {
     const statusClass = phase.status.replace(/\s+/g, '-');
     const href = `/view${phase.file}`;
 
+    // Check if phase file actually exists on disk
+    const fileExists = fs.existsSync(phase.file);
+    const unavailableClass = !fileExists ? 'unavailable' : '';
+
+    // If file doesn't exist, render as non-clickable span with tooltip
+    if (!fileExists) {
+      return `
+        <li class="phase-item ${unavailableClass}" data-status="${statusClass}" title="Phase planned but not yet implemented">
+          <span class="phase-link-disabled">
+            <span class="status-dot ${statusClass}"></span>
+            <span class="phase-name">${phase.name}</span>
+            <span class="unavailable-badge">Planned</span>
+          </span>
+        </li>
+      `;
+    }
+
     return `
       <li class="phase-item ${isActive ? 'active' : ''}" data-status="${statusClass}">
         <a href="${href}">
@@ -316,19 +333,35 @@ function generateNavFooter(filePath) {
     return '';
   }
 
-  const prevHtml = prev ? `
+  // Check if prev/next files exist
+  const prevExists = prev && fs.existsSync(prev.file);
+  const nextExists = next && fs.existsSync(next.file);
+
+  const prevHtml = prev ? (prevExists ? `
     <a href="/view${prev.file}" class="nav-prev">
       <span class="nav-arrow">&larr;</span>
       <span class="nav-label">${prev.name}</span>
     </a>
-  ` : '<span></span>';
+  ` : `
+    <span class="nav-prev nav-unavailable" title="Phase planned but not yet implemented">
+      <span class="nav-arrow">&larr;</span>
+      <span class="nav-label">${prev.name}</span>
+      <span class="nav-badge">Planned</span>
+    </span>
+  `) : '<span></span>';
 
-  const nextHtml = next ? `
+  const nextHtml = next ? (nextExists ? `
     <a href="/view${next.file}" class="nav-next">
       <span class="nav-label">${next.name}</span>
       <span class="nav-arrow">&rarr;</span>
     </a>
-  ` : '<span></span>';
+  ` : `
+    <span class="nav-next nav-unavailable" title="Phase planned but not yet implemented">
+      <span class="nav-label">${next.name}</span>
+      <span class="nav-badge">Planned</span>
+      <span class="nav-arrow">&rarr;</span>
+    </span>
+  `) : '<span></span>';
 
   return `
     <footer class="nav-footer">
