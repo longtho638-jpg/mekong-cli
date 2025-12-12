@@ -7,6 +7,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  generateTimelineStats,
+  generateActivityHeatmap
+} = require('./plan-metadata-extractor.cjs');
 
 /**
  * Escape HTML special characters to prevent XSS
@@ -133,7 +137,43 @@ function generateStatusBadge(status) {
 }
 
 /**
- * Generate HTML for a single plan card (minimal design)
+ * Generate meta tags HTML for plan card (duration, effort, issue)
+ * @param {Object} plan - Plan metadata
+ * @returns {string} - Meta tags HTML
+ */
+function generateCardMeta(plan) {
+  const tags = [];
+
+  // Duration tag
+  if (plan.durationFormatted) {
+    const icon = plan.status === 'completed'
+      ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    tags.push(`<span class="meta-tag duration" title="Duration">${icon} ${escapeHtml(plan.durationFormatted)}</span>`);
+  }
+
+  // Effort tag
+  if (plan.totalEffortFormatted) {
+    tags.push(`<span class="meta-tag effort" title="Estimated effort"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${escapeHtml(plan.totalEffortFormatted)}</span>`);
+  }
+
+  // Priority tag
+  if (plan.priority) {
+    const priorityClass = plan.priority.toLowerCase().replace(/[^a-z0-9]/g, '');
+    tags.push(`<span class="meta-tag priority ${priorityClass}" title="Priority">${escapeHtml(plan.priority)}</span>`);
+  }
+
+  // Issue tag (link to GitHub)
+  if (plan.issue) {
+    tags.push(`<a href="#" class="meta-tag issue" title="Issue #${plan.issue}" data-issue="${plan.issue}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> #${plan.issue}</a>`);
+  }
+
+  if (tags.length === 0) return '';
+  return `<div class="card-meta">${tags.join('')}</div>`;
+}
+
+/**
+ * Generate HTML for a single plan card (minimal design with rich metadata)
  * @param {Object} plan - Plan metadata
  * @returns {string} - Card HTML
  */
@@ -141,9 +181,12 @@ function generatePlanCard(plan) {
   const statusClass = (plan.status || 'pending').replace(/\s+/g, '-');
   const name = escapeHtml(plan.name);
   const relativeTime = formatRelativeTime(plan.lastModified);
+  const cardMeta = generateCardMeta(plan);
 
   return `
-    <article class="plan-card" data-status="${statusClass}" data-id="${escapeHtml(plan.id)}" tabindex="0">
+    <article class="plan-card" data-status="${statusClass}" data-id="${escapeHtml(plan.id)}" tabindex="0"
+             data-created="${plan.createdDate || ''}" data-duration="${plan.durationDays || 0}"
+             data-effort="${plan.totalEffortHours || 0}" data-priority="${plan.priority || ''}">
       <header class="card-header">
         <div class="card-header-content">
           <h2 class="plan-name">${name}</h2>
@@ -155,6 +198,7 @@ function generatePlanCard(plan) {
       </header>
       <div class="card-body">
         ${generateProgressBar(plan.phases)}
+        ${cardMeta}
       </div>
       <footer class="card-footer">
         <div class="phases-summary">${plan.phases.total} phases total</div>
@@ -166,6 +210,81 @@ function generatePlanCard(plan) {
         </a>
       </footer>
     </article>
+  `;
+}
+
+/**
+ * Generate timeline section HTML with activity heatmap and stats
+ * @param {Array} plans - Array of plan metadata objects
+ * @returns {string} - Timeline section HTML
+ */
+function generateTimelineSection(plans) {
+  if (!plans || plans.length === 0) return '';
+
+  const stats = generateTimelineStats(plans);
+  const heatmap = generateActivityHeatmap(plans);
+
+  // Generate heatmap cells
+  const heatmapHtml = heatmap.map(week => {
+    return `<div class="heatmap-day" data-level="${week.level}" title="${week.weekLabel}: ${week.activity} activities"></div>`;
+  }).join('');
+
+  // Generate timeline bars for recent plans (max 5)
+  const recentPlans = plans.slice(0, 5);
+  const maxDuration = Math.max(...recentPlans.map(p => p.durationDays || 1), 1);
+
+  const timelineBarsHtml = recentPlans.map(plan => {
+    const width = Math.max(10, ((plan.durationDays || 1) / maxDuration) * 100);
+    const statusClass = plan.status === 'completed' ? 'completed' : 'in-progress';
+    const dateLabel = plan.createdDate
+      ? new Date(plan.createdDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : '';
+
+    return `
+      <div class="timeline-bar-item">
+        <span class="timeline-bar-label" title="${escapeHtml(plan.name)}">${escapeHtml(plan.name)}</span>
+        <div class="timeline-bar-track">
+          <div class="timeline-bar-fill ${statusClass}" style="width: ${width}%"></div>
+        </div>
+        <span class="timeline-bar-date">${dateLabel}</span>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <section class="timeline-section" aria-label="Activity timeline">
+      <div class="timeline-header">
+        <h2 class="timeline-title">Activity</h2>
+        <div class="timeline-stats">
+          <div class="timeline-stat">
+            <span>Avg duration:</span>
+            <strong>${stats.avgDurationDays} days</strong>
+          </div>
+          <div class="timeline-stat">
+            <span>Total effort:</span>
+            <strong>${stats.totalEffortHours.toFixed(0)}h</strong>
+          </div>
+          <div class="timeline-stat">
+            <span>This week:</span>
+            <strong>${stats.thisWeekCompleted} done</strong>
+          </div>
+        </div>
+      </div>
+      <div class="activity-heatmap" aria-label="Activity heatmap (last 12 weeks)">
+        ${heatmapHtml}
+      </div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="heatmap-legend-item"><span style="background: var(--dash-border-subtle)"></span></div>
+        <div class="heatmap-legend-item"><span style="background: var(--dash-accent-subtle)"></span></div>
+        <div class="heatmap-legend-item"><span style="background: var(--dash-accent); opacity: 0.6"></span></div>
+        <div class="heatmap-legend-item"><span style="background: var(--dash-accent)"></span></div>
+        <span>More</span>
+      </div>
+      <div class="timeline-bars" aria-label="Recent plans timeline">
+        ${timelineBarsHtml}
+      </div>
+    </section>
   `;
 }
 
@@ -260,14 +379,27 @@ function renderDashboard(plans, options = {}) {
   const plansGrid = generatePlansGrid(plans);
   const planCount = plans.length;
 
-  // Generate JSON for client-side filtering
+  // Generate timeline section
+  const timelineSection = generateTimelineSection(plans);
+
+  // Generate JSON for client-side filtering (include rich metadata)
   const plansJson = JSON.stringify(plans.map(p => ({
     id: p.id,
     name: p.name,
     status: p.status,
     progress: p.progress,
     lastModified: p.lastModified,
-    phasesTotal: p.phases.total
+    phasesTotal: p.phases.total,
+    // Rich metadata
+    createdDate: p.createdDate,
+    completedDate: p.completedDate,
+    durationDays: p.durationDays,
+    durationFormatted: p.durationFormatted,
+    totalEffortHours: p.totalEffortHours,
+    totalEffortFormatted: p.totalEffortFormatted,
+    priority: p.priority,
+    issue: p.issue,
+    branch: p.branch
   })));
 
   // Replace placeholders
@@ -276,6 +408,7 @@ function renderDashboard(plans, options = {}) {
     .replace(/\{\{plan-count\}\}/g, String(planCount))
     .replace(/\{\{plans-json\}\}/g, plansJson)
     .replace(/\{\{empty-state\}\}/g, generateEmptyState())
+    .replace(/\{\{timeline-section\}\}/g, timelineSection)
     .replace(/\{\{has-plans\}\}/g, plans.length > 0 ? 'plans-loaded' : '')
     .replace(/\{\{stat-total\}\}/g, String(stats.total))
     .replace(/\{\{stat-completed\}\}/g, String(stats.completed))
@@ -385,10 +518,12 @@ function getInlineTemplate() {
 module.exports = {
   renderDashboard,
   generatePlanCard,
+  generateCardMeta,
   generateProgressRing,
   generateProgressBar,
   generateStatusCounts,
   generateStatusBadge,
+  generateTimelineSection,
   generateEmptyState,
   generatePlansGrid,
   calculateStats,

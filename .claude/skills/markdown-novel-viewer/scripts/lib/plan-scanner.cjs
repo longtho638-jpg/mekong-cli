@@ -8,6 +8,11 @@
 const fs = require('fs');
 const path = require('path');
 const { parsePlanTable } = require('./plan-navigator.cjs');
+const {
+  extractPlanMetadata,
+  generateTimelineStats,
+  generateActivityHeatmap
+} = require('./plan-metadata-extractor.cjs');
 
 /**
  * Calculate progress statistics from phases array
@@ -94,6 +99,9 @@ function getPlanMetadata(planFilePath) {
     const phases = parsePlanTable(planFilePath);
     const progress = calculateProgress(phases);
 
+    // Extract rich metadata (dates, effort, priority, etc.)
+    const richMeta = extractPlanMetadata(planFilePath);
+
     return {
       id: dirName,
       name: parsePlanName(dirName),
@@ -102,7 +110,17 @@ function getPlanMetadata(planFilePath) {
       phases: progress,
       progress: progress.percentage,
       lastModified: stats.mtime.toISOString(),
-      status: deriveStatus(progress)
+      status: deriveStatus(progress),
+      // Rich metadata
+      createdDate: richMeta.createdDate,
+      completedDate: richMeta.completedDate,
+      durationDays: richMeta.durationDays,
+      durationFormatted: richMeta.durationFormatted,
+      totalEffortHours: richMeta.totalEffortHours,
+      totalEffortFormatted: richMeta.totalEffortFormatted,
+      priority: richMeta.priority,
+      issue: richMeta.issue,
+      branch: richMeta.branch
     };
   } catch (err) {
     console.error(`[plan-scanner] Error reading plan: ${planFilePath}`, err.message);
@@ -216,5 +234,8 @@ module.exports = {
   calculateProgress,
   parsePlanName,
   deriveStatus,
-  isPathSafe
+  isPathSafe,
+  // Re-export timeline helpers
+  generateTimelineStats,
+  generateActivityHeatmap
 };

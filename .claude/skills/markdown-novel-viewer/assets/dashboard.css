@@ -700,6 +700,243 @@
 }
 
 /* ========================================
+   Card Meta Tags (Duration, Effort, Priority, Issue)
+   ======================================== */
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--dash-border-subtle);
+}
+
+.meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--dash-text-secondary);
+  background: var(--dash-bg);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all var(--dash-duration) var(--dash-ease);
+}
+
+.meta-tag svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.meta-tag.duration {
+  color: var(--dash-text-secondary);
+}
+
+.meta-tag.effort {
+  color: var(--dash-accent);
+  background: var(--dash-accent-subtle);
+}
+
+.meta-tag.priority {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.meta-tag.priority.p1,
+.meta-tag.priority.high {
+  color: var(--dash-accent);
+  background: var(--dash-accent-subtle);
+}
+
+.meta-tag.priority.p2,
+.meta-tag.priority.medium {
+  color: var(--dash-text-secondary);
+  background: var(--dash-surface-hover);
+}
+
+.meta-tag.priority.p3,
+.meta-tag.priority.low {
+  color: var(--dash-text-muted);
+  background: var(--dash-surface-hover);
+}
+
+.meta-tag.issue {
+  color: var(--dash-text-secondary);
+  cursor: pointer;
+}
+
+.meta-tag.issue:hover {
+  color: var(--dash-accent);
+  background: var(--dash-accent-subtle);
+}
+
+/* ========================================
+   Timeline Section
+   ======================================== */
+
+.timeline-section {
+  padding: 1.5rem;
+  margin: 0 1.5rem 1.5rem;
+  background: var(--dash-surface);
+  border-radius: var(--dash-radius);
+  border: 1px solid var(--dash-border);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.timeline-title {
+  font-family: var(--dash-font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dash-text);
+}
+
+.timeline-stats {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--dash-text-secondary);
+}
+
+.timeline-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.timeline-stat strong {
+  color: var(--dash-text);
+  font-weight: 600;
+}
+
+/* Activity Heatmap */
+.activity-heatmap {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+}
+
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.heatmap-day {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--dash-border-subtle);
+  transition: transform 0.1s ease;
+}
+
+.heatmap-day:hover {
+  transform: scale(1.2);
+}
+
+.heatmap-day[data-level="1"] {
+  background: var(--dash-accent-subtle);
+}
+
+.heatmap-day[data-level="2"] {
+  background: var(--dash-accent);
+  opacity: 0.6;
+}
+
+.heatmap-day[data-level="3"] {
+  background: var(--dash-accent);
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.6875rem;
+  color: var(--dash-text-muted);
+}
+
+.heatmap-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.heatmap-legend-item span {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* Timeline Bars */
+.timeline-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.timeline-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.timeline-bar-label {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--dash-text-secondary);
+}
+
+.timeline-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--dash-border-subtle);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timeline-bar-fill {
+  height: 100%;
+  background: var(--dash-accent);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.timeline-bar-fill.completed {
+  opacity: 1;
+}
+
+.timeline-bar-fill.in-progress {
+  opacity: 0.6;
+  animation: pulse-bar 2s ease-in-out infinite;
+}
+
+@keyframes pulse-bar {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+.timeline-bar-date {
+  width: 80px;
+  text-align: right;
+  color: var(--dash-text-muted);
+  font-size: 0.6875rem;
+}
+
+/* ========================================
    Reduced Motion
    ======================================== */
 
