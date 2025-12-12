@@ -214,7 +214,56 @@ function generatePlanCard(plan) {
 }
 
 /**
- * Generate timeline section HTML with activity heatmap and stats
+ * Auto-stack plans into layers to avoid overlap (like Google Calendar)
+ * @param {Array} plans - Plans with createdDate and durationDays
+ * @param {Date} rangeStart - Start of visible range
+ * @param {Date} rangeEnd - End of visible range
+ * @returns {Array} - Plans with layer assignments
+ */
+function assignLayers(plans, rangeStart, rangeEnd) {
+  const rangeDays = Math.ceil((rangeEnd - rangeStart) / (1000 * 60 * 60 * 24));
+  const layers = []; // Each layer tracks occupied day ranges
+
+  // Sort by start date
+  const sorted = [...plans]
+    .filter(p => p.createdDate)
+    .sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+
+  return sorted.map(plan => {
+    const startDate = new Date(plan.createdDate);
+    const endDate = plan.completedDate
+      ? new Date(plan.completedDate)
+      : new Date(Math.min(Date.now(), rangeEnd.getTime()));
+
+    // Calculate position as percentage
+    const startDay = Math.max(0, Math.ceil((startDate - rangeStart) / (1000 * 60 * 60 * 24)));
+    const endDay = Math.min(rangeDays, Math.ceil((endDate - rangeStart) / (1000 * 60 * 60 * 24)));
+    const leftPct = (startDay / rangeDays) * 100;
+    const widthPct = Math.max(5, ((endDay - startDay) / rangeDays) * 100);
+
+    // Find first layer without overlap
+    let layer = 0;
+    for (let i = 0; i < layers.length; i++) {
+      const hasOverlap = layers[i].some(range =>
+        !(endDay <= range.start || startDay >= range.end)
+      );
+      if (!hasOverlap) {
+        layer = i;
+        break;
+      }
+      layer = i + 1;
+    }
+
+    // Add to layer
+    if (!layers[layer]) layers[layer] = [];
+    layers[layer].push({ start: startDay, end: endDay });
+
+    return { ...plan, layer, leftPct, widthPct, startDay, endDay };
+  });
+}
+
+/**
+ * Generate timeline section HTML with Layered Gantt
  * @param {Array} plans - Array of plan metadata objects
  * @returns {string} - Timeline section HTML
  */
@@ -222,67 +271,101 @@ function generateTimelineSection(plans) {
   if (!plans || plans.length === 0) return '';
 
   const stats = generateTimelineStats(plans);
-  const heatmap = generateActivityHeatmap(plans);
 
-  // Generate heatmap cells
-  const heatmapHtml = heatmap.map(week => {
-    return `<div class="heatmap-day" data-level="${week.level}" title="${week.weekLabel}: ${week.activity} activities"></div>`;
-  }).join('');
+  // Calculate date range (last 3 weeks to now + 1 week)
+  const now = new Date();
+  const rangeStart = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
+  const rangeEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const rangeDays = Math.ceil((rangeEnd - rangeStart) / (1000 * 60 * 60 * 24));
 
-  // Generate timeline bars for recent plans (max 5)
-  const recentPlans = plans.slice(0, 5);
-  const maxDuration = Math.max(...recentPlans.map(p => p.durationDays || 1), 1);
+  // Generate date axis labels (7 markers)
+  const axisLabels = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(rangeStart.getTime() + (i * rangeDays / 6) * 24 * 60 * 60 * 1000);
+    const isToday = date.toDateString() === now.toDateString();
+    axisLabels.push({
+      label: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      isToday
+    });
+  }
 
-  const timelineBarsHtml = recentPlans.map(plan => {
-    const width = Math.max(10, ((plan.durationDays || 1) / maxDuration) * 100);
-    const statusClass = plan.status === 'completed' ? 'completed' : 'in-progress';
-    const dateLabel = plan.createdDate
-      ? new Date(plan.createdDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      : '';
+  const axisHtml = axisLabels.map(a =>
+    `<span class="gantt-axis-label${a.isToday ? ' today' : ''}">${a.label}</span>`
+  ).join('');
+
+  // Calculate today marker position
+  const todayPct = ((now - rangeStart) / (rangeEnd - rangeStart)) * 100;
+
+  // Auto-stack plans into layers
+  const layeredPlans = assignLayers(plans, rangeStart, rangeEnd);
+  const maxLayer = Math.max(...layeredPlans.map(p => p.layer), 0);
+  const trackHeight = Math.max(140, (maxLayer + 1) * 32 + 16);
+
+  // Generate gantt bars
+  const barsHtml = layeredPlans.map(plan => {
+    const statusClass = plan.status === 'completed' ? 'completed'
+      : plan.status === 'in-progress' ? 'in-progress' : 'pending';
+    const top = plan.layer * 32 + 8;
+    const statusIcon = plan.status === 'completed' ? '✓' : plan.status === 'in-progress' ? '◐' : '○';
 
     return `
-      <div class="timeline-bar-item">
-        <span class="timeline-bar-label" title="${escapeHtml(plan.name)}">${escapeHtml(plan.name)}</span>
-        <div class="timeline-bar-track">
-          <div class="timeline-bar-fill ${statusClass}" style="width: ${width}%"></div>
+      <div class="gantt-bar ${statusClass}"
+           style="left: ${plan.leftPct.toFixed(1)}%; width: ${plan.widthPct.toFixed(1)}%; top: ${top}px;"
+           data-id="${escapeHtml(plan.id)}">
+        <span class="gantt-bar-label">${escapeHtml(plan.name)}</span>
+        <span class="gantt-bar-status">${statusIcon}</span>
+        <div class="gantt-tooltip">
+          <div class="gantt-tooltip-title">${escapeHtml(plan.name)}</div>
+          <div class="gantt-tooltip-meta">
+            <span>${plan.durationFormatted || 'Today'}</span>
+            <span>${plan.phases.completed}/${plan.phases.total} phases</span>
+            ${plan.totalEffortFormatted ? `<span>${plan.totalEffortFormatted}</span>` : ''}
+          </div>
         </div>
-        <span class="timeline-bar-date">${dateLabel}</span>
       </div>
     `;
   }).join('');
 
+  // Summary counts
+  const completedCount = plans.filter(p => p.status === 'completed').length;
+  const activeCount = plans.filter(p => p.status === 'in-progress').length;
+  const pendingCount = plans.filter(p => p.status === 'pending').length;
+
   return `
-    <section class="timeline-section" aria-label="Activity timeline">
+    <section class="timeline-section" aria-label="Project timeline">
       <div class="timeline-header">
-        <h2 class="timeline-title">Activity</h2>
+        <h2 class="timeline-title">Timeline</h2>
         <div class="timeline-stats">
           <div class="timeline-stat">
-            <span>Avg duration:</span>
-            <strong>${stats.avgDurationDays} days</strong>
+            <span>Avg:</span>
+            <strong>${stats.avgDurationDays}d</strong>
           </div>
           <div class="timeline-stat">
-            <span>Total effort:</span>
+            <span>Effort:</span>
             <strong>${stats.totalEffortHours.toFixed(0)}h</strong>
-          </div>
-          <div class="timeline-stat">
-            <span>This week:</span>
-            <strong>${stats.thisWeekCompleted} done</strong>
           </div>
         </div>
       </div>
-      <div class="activity-heatmap" aria-label="Activity heatmap (last 12 weeks)">
-        ${heatmapHtml}
+      <div class="gantt-container">
+        <div class="gantt-axis">${axisHtml}</div>
+        <div class="gantt-track" style="height: ${trackHeight}px;">
+          <div class="gantt-today-marker" style="left: ${todayPct.toFixed(1)}%;"></div>
+          ${barsHtml}
+        </div>
       </div>
-      <div class="heatmap-legend">
-        <span>Less</span>
-        <div class="heatmap-legend-item"><span style="background: var(--dash-border-subtle)"></span></div>
-        <div class="heatmap-legend-item"><span style="background: var(--dash-accent-subtle)"></span></div>
-        <div class="heatmap-legend-item"><span style="background: var(--dash-accent); opacity: 0.6"></span></div>
-        <div class="heatmap-legend-item"><span style="background: var(--dash-accent)"></span></div>
-        <span>More</span>
-      </div>
-      <div class="timeline-bars" aria-label="Recent plans timeline">
-        ${timelineBarsHtml}
+      <div class="timeline-summary">
+        <div class="timeline-summary-item">
+          <span class="timeline-summary-dot completed"></span>
+          <span>${completedCount} done</span>
+        </div>
+        <div class="timeline-summary-item">
+          <span class="timeline-summary-dot in-progress"></span>
+          <span>${activeCount} active</span>
+        </div>
+        <div class="timeline-summary-item">
+          <span class="timeline-summary-dot pending"></span>
+          <span>${pendingCount} pending</span>
+        </div>
       </div>
     </section>
   `;
