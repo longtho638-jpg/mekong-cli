@@ -39,30 +39,179 @@ function detectPlan(filePath) {
 }
 
 /**
+ * Normalize status string to standard format
+ * @param {string} raw - Raw status text
+ * @returns {string} - Normalized status (completed, in-progress, pending)
+ */
+function normalizeStatus(raw) {
+  const s = (raw || '').toLowerCase().trim();
+  // Match various completed indicators
+  if (s.includes('complete') || s.includes('done') || s.includes('✓') || s.includes('✅')) {
+    return 'completed';
+  }
+  // Match in-progress indicators
+  if (s.includes('progress') || s.includes('active') || s.includes('wip') || s.includes('🔄')) {
+    return 'in-progress';
+  }
+  return 'pending';
+}
+
+/**
  * Parse plan.md to extract phase metadata from table
+ * Supports multiple table formats:
+ * 1. Standard: | Phase | Name | Status | [Link](path) |
+ * 2. Link-first: | [Phase X](path) | Description | Status | ... |
+ * 3. Heading-based: ### Phase X: Name with - Status: XXX
  * @param {string} planFilePath - Path to plan.md
  * @returns {Array<{phase: number, name: string, status: string, file: string}>}
  */
 function parsePlanTable(planFilePath) {
   const content = fs.readFileSync(planFilePath, 'utf8');
+  const dir = path.dirname(planFilePath);
   const phases = [];
 
-  // Match table rows: | Phase | Name | Status | Link |
-  const tableRegex = /\|\s*(\d+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)/g;
-
+  // Format 1: Standard table | Phase | Name | Status | [Link](path) |
+  const standardRegex = /\|\s*(\d+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)/g;
   let match;
-  while ((match = tableRegex.exec(content)) !== null) {
+  while ((match = standardRegex.exec(content)) !== null) {
     const [, phase, name, status, linkText, linkPath] = match;
-    const dir = path.dirname(planFilePath);
-    const absolutePath = path.resolve(dir, linkPath);
-
     phases.push({
       phase: parseInt(phase, 10),
       name: name.trim(),
-      status: status.trim().toLowerCase(),
-      file: absolutePath,
+      status: normalizeStatus(status),
+      file: path.resolve(dir, linkPath),
       linkText: linkText.trim()
     });
+  }
+
+  // Format 2: Link-first table | [Phase X](path) | Description | Status | ... |
+  // Matches: | [Phase 1](phase-01-xxx.md) | Description | ✓ Complete | 4h |
+  if (phases.length === 0) {
+    const linkFirstRegex = /\|\s*\[(?:Phase\s*)?(\d+)\]\(([^)]+)\)\s*\|\s*([^|]+)\s*\|\s*([^|]+)/g;
+    while ((match = linkFirstRegex.exec(content)) !== null) {
+      const [, phase, linkPath, name, status] = match;
+      phases.push({
+        phase: parseInt(phase, 10),
+        name: name.trim(),
+        status: normalizeStatus(status),
+        file: path.resolve(dir, linkPath),
+        linkText: `Phase ${phase}`
+      });
+    }
+  }
+
+  // Format 2b: Number-first with link in col 2: | 1 | [Name](path) | Status | ... |
+  // Matches: | 1 | [Tab Structure](./phase-01-xxx.md) | Pending | High | 4h |
+  if (phases.length === 0) {
+    const numLinkRegex = /\|\s*(\d+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*([^|]+)/g;
+    while ((match = numLinkRegex.exec(content)) !== null) {
+      const [, phase, name, linkPath, status] = match;
+      phases.push({
+        phase: parseInt(phase, 10),
+        name: name.trim(),
+        status: normalizeStatus(status),
+        file: path.resolve(dir, linkPath),
+        linkText: name.trim()
+      });
+    }
+  }
+
+  // Format 2c: Simple table without links: | Phase | Description | Status |
+  // Matches: | 01 | Backend: Install deps | Completed ✅ |
+  if (phases.length === 0) {
+    const simpleTblRegex = /\|\s*0?(\d+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/g;
+    while ((match = simpleTblRegex.exec(content)) !== null) {
+      const [fullMatch, phase, name, status] = match;
+      // Skip header rows and separator rows
+      if (name.trim().toLowerCase() === 'description' || name.trim().toLowerCase() === 'name') continue;
+      if (name.includes('---') || name.includes('===')) continue;
+      phases.push({
+        phase: parseInt(phase, 10),
+        name: name.trim(),
+        status: normalizeStatus(status),
+        file: planFilePath,
+        linkText: name.trim()
+      });
+    }
+  }
+
+  // Format 3: Heading-based phases (### Phase X: Name with - Status: XXX)
+  if (phases.length === 0) {
+    const contentLines = content.split('\n');
+    let currentPhase = null;
+
+    for (let i = 0; i < contentLines.length; i++) {
+      const line = contentLines[i];
+      const headingMatch = /###\s*Phase\s*(\d+)[:\s]+(.+)/i.exec(line);
+      if (headingMatch) {
+        if (currentPhase) phases.push(currentPhase);
+        const phaseNum = parseInt(headingMatch[1], 10);
+        currentPhase = {
+          phase: phaseNum,
+          name: headingMatch[2].trim(),
+          status: 'pending',
+          file: planFilePath,
+          linkText: `Phase ${phaseNum}`
+        };
+      }
+      // Look for status in subsequent lines
+      if (currentPhase) {
+        const statusMatch = /-\s*Status:\s*(.+)/i.exec(line);
+        if (statusMatch) {
+          currentPhase.status = normalizeStatus(statusMatch[1]);
+        }
+      }
+    }
+    if (currentPhase) phases.push(currentPhase);
+  }
+
+  // Format 4: Numbered list phases with checkbox status
+  // Matches: 1) **Discovery** with status from - [x] Discovery: ...
+  if (phases.length === 0) {
+    // First pass: find numbered phases like "1) **Name**" or "1. **Name**"
+    const numberedPhaseRegex = /^(\d+)[)\.]\s*\*\*([^*]+)\*\*/gm;
+    const phaseMap = new Map();
+    while ((match = numberedPhaseRegex.exec(content)) !== null) {
+      const [, num, name] = match;
+      phaseMap.set(name.trim().toLowerCase(), {
+        phase: parseInt(num, 10),
+        name: name.trim(),
+        status: 'pending',
+        file: planFilePath,
+        linkText: name.trim()
+      });
+    }
+
+    // Second pass: find checkbox status like "- [x] Name:" or "- [ ] Name:"
+    const checkboxRegex = /^-\s*\[(x| )\]\s*([^:]+)/gmi;
+    while ((match = checkboxRegex.exec(content)) !== null) {
+      const [, checked, name] = match;
+      const key = name.trim().toLowerCase();
+      if (phaseMap.has(key)) {
+        phaseMap.get(key).status = checked.toLowerCase() === 'x' ? 'completed' : 'pending';
+      }
+    }
+
+    // Convert map to array sorted by phase number
+    if (phaseMap.size > 0) {
+      phases.push(...Array.from(phaseMap.values()).sort((a, b) => a.phase - b.phase));
+    }
+  }
+
+  // Format 5: Checkbox list with bold links
+  // Matches: - [ ] **[Phase 1: Name](./phase-01-xxx.md)** or - [x] **[Phase 1](path)**
+  if (phases.length === 0) {
+    const checkboxLinkRegex = /^-\s*\[(x| )\]\s*\*\*\[(?:Phase\s*)?(\d+)[:\s]*([^\]]*)\]\(([^)]+)\)\*\*/gmi;
+    while ((match = checkboxLinkRegex.exec(content)) !== null) {
+      const [, checked, phase, name, linkPath] = match;
+      phases.push({
+        phase: parseInt(phase, 10),
+        name: name.trim() || `Phase ${phase}`,
+        status: checked.toLowerCase() === 'x' ? 'completed' : 'pending',
+        file: path.resolve(dir, linkPath),
+        linkText: name.trim() || `Phase ${phase}`
+      });
+    }
   }
 
   return phases;
@@ -132,6 +281,23 @@ function generateNavSidebar(filePath) {
     const statusClass = phase.status.replace(/\s+/g, '-');
     const href = `/view${phase.file}`;
 
+    // Check if phase file actually exists on disk
+    const fileExists = fs.existsSync(phase.file);
+    const unavailableClass = !fileExists ? 'unavailable' : '';
+
+    // If file doesn't exist, render as non-clickable span with tooltip
+    if (!fileExists) {
+      return `
+        <li class="phase-item ${unavailableClass}" data-status="${statusClass}" title="Phase planned but not yet implemented">
+          <span class="phase-link-disabled">
+            <span class="status-dot ${statusClass}"></span>
+            <span class="phase-name">${phase.name}</span>
+            <span class="unavailable-badge">Planned</span>
+          </span>
+        </li>
+      `;
+    }
+
     return `
       <li class="phase-item ${isActive ? 'active' : ''}" data-status="${statusClass}">
         <a href="${href}">
@@ -167,19 +333,35 @@ function generateNavFooter(filePath) {
     return '';
   }
 
-  const prevHtml = prev ? `
+  // Check if prev/next files exist
+  const prevExists = prev && fs.existsSync(prev.file);
+  const nextExists = next && fs.existsSync(next.file);
+
+  const prevHtml = prev ? (prevExists ? `
     <a href="/view${prev.file}" class="nav-prev">
       <span class="nav-arrow">&larr;</span>
       <span class="nav-label">${prev.name}</span>
     </a>
-  ` : '<span></span>';
+  ` : `
+    <span class="nav-prev nav-unavailable" title="Phase planned but not yet implemented">
+      <span class="nav-arrow">&larr;</span>
+      <span class="nav-label">${prev.name}</span>
+      <span class="nav-badge">Planned</span>
+    </span>
+  `) : '<span></span>';
 
-  const nextHtml = next ? `
+  const nextHtml = next ? (nextExists ? `
     <a href="/view${next.file}" class="nav-next">
       <span class="nav-label">${next.name}</span>
       <span class="nav-arrow">&rarr;</span>
     </a>
-  ` : '<span></span>';
+  ` : `
+    <span class="nav-next nav-unavailable" title="Phase planned but not yet implemented">
+      <span class="nav-label">${next.name}</span>
+      <span class="nav-badge">Planned</span>
+      <span class="nav-arrow">&rarr;</span>
+    </span>
+  `) : '<span></span>';
 
   return `
     <footer class="nav-footer">

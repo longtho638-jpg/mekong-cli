@@ -10,6 +10,9 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
+const { scanPlans } = require('./plan-scanner.cjs');
+const { renderDashboard } = require('./dashboard-renderer.cjs');
+
 // Allowed base directories for file access (set at runtime)
 let allowedBaseDirs = [];
 
@@ -143,10 +146,11 @@ function serveFile(res, filePath, skipValidation = false) {
  * @param {string} options.assetsDir - Static assets directory
  * @param {Function} options.renderMarkdown - Markdown render function (filePath) => html
  * @param {string[]} options.allowedDirs - Allowed directories for file access
+ * @param {string} options.plansDir - Plans directory for dashboard
  * @returns {http.Server} - HTTP server instance
  */
 function createHttpServer(options) {
-  const { assetsDir, renderMarkdown, allowedDirs = [] } = options;
+  const { assetsDir, renderMarkdown, allowedDirs = [], plansDir } = options;
 
   // Set allowed directories for path validation
   if (allowedDirs.length > 0) {
@@ -187,6 +191,59 @@ function createHttpServer(options) {
     // Route: /api/files - DISABLED for security (directory listing)
     if (pathname === '/api/files') {
       sendError(res, 403, 'Directory listing disabled');
+      return;
+    }
+
+    // Route: /dashboard - render plans dashboard
+    if (pathname === '/dashboard') {
+      const customDir = parsedUrl.query?.dir;
+      const dir = customDir || plansDir;
+
+      // Security: Validate custom directory
+      if (customDir && !isPathSafe(customDir)) {
+        sendError(res, 403, 'Access denied');
+        return;
+      }
+
+      if (!dir) {
+        sendError(res, 400, 'Plans directory not configured');
+        return;
+      }
+
+      try {
+        const plans = scanPlans(dir);
+        const html = renderDashboard(plans, { assetsDir, plansDir: dir });
+        sendResponse(res, 200, 'text/html', html);
+      } catch (err) {
+        console.error('[http-server] Dashboard error:', err.message);
+        sendError(res, 500, 'Error rendering dashboard');
+      }
+      return;
+    }
+
+    // Route: /api/dashboard - JSON API for plans data
+    if (pathname === '/api/dashboard') {
+      const customDir = parsedUrl.query?.dir;
+      const dir = customDir || plansDir;
+
+      // Security: Validate custom directory
+      if (customDir && !isPathSafe(customDir)) {
+        sendError(res, 403, 'Access denied');
+        return;
+      }
+
+      if (!dir) {
+        sendResponse(res, 200, 'application/json', JSON.stringify({ plans: [], error: 'Plans directory not configured' }));
+        return;
+      }
+
+      try {
+        const plans = scanPlans(dir);
+        sendResponse(res, 200, 'application/json', JSON.stringify({ plans }));
+      } catch (err) {
+        console.error('[http-server] API error:', err.message);
+        sendResponse(res, 500, 'application/json', JSON.stringify({ error: 'Error scanning plans' }));
+      }
       return;
     }
 
