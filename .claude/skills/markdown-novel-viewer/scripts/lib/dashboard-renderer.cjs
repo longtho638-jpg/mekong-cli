@@ -1,6 +1,6 @@
 /**
  * Dashboard Renderer
- * Generates HTML for the plans dashboard view
+ * Generates HTML for the enhanced plans dashboard view with glassmorphism design
  *
  * @module dashboard-renderer
  */
@@ -39,24 +39,52 @@ function formatDate(isoDate) {
 }
 
 /**
- * Generate SVG progress ring
+ * Format relative time (e.g., "2 days ago")
+ * @param {string} isoDate - ISO date string
+ * @returns {string} - Relative time string
+ */
+function formatRelativeTime(isoDate) {
+  if (!isoDate) return '';
+  const date = new Date(isoDate);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+  return `${Math.floor(diffDays / 365)} years ago`;
+}
+
+/**
+ * Get human-readable status label
+ * @param {string} status - Status code
+ * @returns {string} - Human-readable label
+ */
+function getStatusLabel(status) {
+  const labels = {
+    'completed': 'Completed',
+    'complete': 'Completed',
+    'in-progress': 'In Progress',
+    'pending': 'Pending'
+  };
+  return labels[status] || 'Pending';
+}
+
+/**
+ * Generate SVG progress ring (kept for backward compatibility but hidden in new design)
  * @param {number} progress - Progress percentage (0-100)
  * @returns {string} - SVG HTML
  */
 function generateProgressRing(progress) {
-  const dashArray = `${progress}, 100`;
-  return `
-    <svg class="progress-ring" viewBox="0 0 36 36" aria-hidden="true">
-      <circle class="ring-bg" cx="18" cy="18" r="15.9155" />
-      <circle class="ring-progress" cx="18" cy="18" r="15.9155"
-              stroke-dasharray="${dashArray}" />
-      <text class="ring-text" x="18" y="20.5">${progress}%</text>
-    </svg>
-  `;
+  // Hidden in new minimal design - kept for compatibility
+  return '';
 }
 
 /**
- * Generate stacked progress bar
+ * Generate simple progress bar (monochrome design)
  * @param {{total: number, completed: number, inProgress: number, pending: number}} phases
  * @returns {string} - Progress bar HTML
  */
@@ -64,7 +92,6 @@ function generateProgressBar(phases) {
   const total = phases.total || 1;
   const completedPct = ((phases.completed / total) * 100).toFixed(1);
   const inProgressPct = ((phases.inProgress / total) * 100).toFixed(1);
-  const pendingPct = ((phases.pending / total) * 100).toFixed(1);
 
   return `
     <div class="progress-bar" role="progressbar"
@@ -72,72 +99,94 @@ function generateProgressBar(phases) {
          aria-label="Progress: ${phases.completed} of ${total} phases completed">
       <div class="bar-segment completed" style="width: ${completedPct}%"></div>
       <div class="bar-segment in-progress" style="width: ${inProgressPct}%"></div>
-      <div class="bar-segment pending" style="width: ${pendingPct}%"></div>
     </div>
+    <div class="phase-count"><strong>${phases.completed}</strong> of ${total} phases</div>
   `;
 }
 
 /**
- * Generate status counts HTML
+ * Generate status counts HTML (hidden in minimal design)
  * @param {{completed: number, inProgress: number, pending: number}} phases
  * @returns {string} - Status counts HTML
  */
 function generateStatusCounts(phases) {
-  return `
-    <div class="status-counts">
-      <span class="status-count completed" data-tooltip="Completed phases">
-        <span class="visually-hidden">Completed:</span> ${phases.completed}
-      </span>
-      <span class="status-count in-progress" data-tooltip="In progress phases">
-        <span class="visually-hidden">In Progress:</span> ${phases.inProgress}
-      </span>
-      <span class="status-count pending" data-tooltip="Pending phases">
-        <span class="visually-hidden">Pending:</span> ${phases.pending}
-      </span>
-    </div>
-  `;
+  // Hidden in minimal design
+  return '';
 }
 
 /**
- * Generate HTML for a single plan card
+ * Generate status badge HTML (simplified for monochrome design)
+ * @param {string} status - Status string
+ * @returns {string} - Status badge HTML
+ */
+function generateStatusBadge(status) {
+  const statusClass = (status || 'pending').replace(/\s+/g, '-');
+  // Simplified labels for minimal design
+  const labels = {
+    'completed': 'Done',
+    'complete': 'Done',
+    'in-progress': 'Active',
+    'pending': 'Pending'
+  };
+  const label = labels[statusClass] || 'Pending';
+  return `<span class="status-badge ${statusClass}">${label}</span>`;
+}
+
+/**
+ * Generate HTML for a single plan card (minimal design)
  * @param {Object} plan - Plan metadata
  * @returns {string} - Card HTML
  */
 function generatePlanCard(plan) {
   const statusClass = (plan.status || 'pending').replace(/\s+/g, '-');
   const name = escapeHtml(plan.name);
-  const date = formatDate(plan.lastModified);
+  const relativeTime = formatRelativeTime(plan.lastModified);
 
   return `
     <article class="plan-card" data-status="${statusClass}" data-id="${escapeHtml(plan.id)}" tabindex="0">
       <header class="card-header">
-        <h2 class="plan-name">${name}</h2>
-        <time class="plan-date" datetime="${plan.lastModified}">${date}</time>
+        <div class="card-header-content">
+          <h2 class="plan-name">${name}</h2>
+          <div class="plan-date">
+            <time datetime="${plan.lastModified}">${relativeTime}</time>
+          </div>
+        </div>
+        ${generateStatusBadge(statusClass)}
       </header>
       <div class="card-body">
-        <div class="progress-visual">
-          ${generateProgressRing(plan.progress)}
-        </div>
         ${generateProgressBar(plan.phases)}
-        ${generateStatusCounts(plan.phases)}
       </div>
       <footer class="card-footer">
-        <a href="/view${escapeHtml(plan.path)}" class="view-btn">View Plan</a>
+        <div class="phases-summary">${plan.phases.total} phases total</div>
+        <a href="/view${escapeHtml(plan.path)}" class="view-btn">
+          View
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
       </footer>
     </article>
   `;
 }
 
 /**
- * Generate empty state HTML
+ * Generate empty state HTML with animated icon
  * @returns {string} - Empty state HTML
  */
 function generateEmptyState() {
   return `
     <div class="empty-state" hidden>
-      <span class="empty-icon" aria-hidden="true">&#128214;</span>
+      <div class="empty-icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
       <h2>No plans found</h2>
-      <p>Create a plan directory with a plan.md file to get started.</p>
+      <p>Create a plan directory with a plan.md file to get started with tracking your projects.</p>
     </div>
   `;
 }
@@ -153,6 +202,33 @@ function generatePlansGrid(plans) {
   }
 
   return plans.map(generatePlanCard).join('\n');
+}
+
+/**
+ * Calculate statistics from plans array
+ * @param {Array} plans - Array of plan metadata objects
+ * @returns {Object} - Statistics object
+ */
+function calculateStats(plans) {
+  const stats = {
+    total: plans.length,
+    completed: 0,
+    inProgress: 0,
+    pending: 0
+  };
+
+  plans.forEach(plan => {
+    const status = (plan.status || 'pending').replace(/\s+/g, '-');
+    if (status === 'completed' || status === 'complete') {
+      stats.completed++;
+    } else if (status === 'in-progress') {
+      stats.inProgress++;
+    } else {
+      stats.pending++;
+    }
+  });
+
+  return stats;
 }
 
 /**
@@ -177,6 +253,9 @@ function renderDashboard(plans, options = {}) {
     template = getInlineTemplate();
   }
 
+  // Calculate statistics
+  const stats = calculateStats(plans);
+
   // Generate cards
   const plansGrid = generatePlansGrid(plans);
   const planCount = plans.length;
@@ -187,7 +266,8 @@ function renderDashboard(plans, options = {}) {
     name: p.name,
     status: p.status,
     progress: p.progress,
-    lastModified: p.lastModified
+    lastModified: p.lastModified,
+    phasesTotal: p.phases.total
   })));
 
   // Replace placeholders
@@ -196,7 +276,11 @@ function renderDashboard(plans, options = {}) {
     .replace(/\{\{plan-count\}\}/g, String(planCount))
     .replace(/\{\{plans-json\}\}/g, plansJson)
     .replace(/\{\{empty-state\}\}/g, generateEmptyState())
-    .replace(/\{\{has-plans\}\}/g, plans.length > 0 ? 'plans-loaded' : '');
+    .replace(/\{\{has-plans\}\}/g, plans.length > 0 ? 'plans-loaded' : '')
+    .replace(/\{\{stat-total\}\}/g, String(stats.total))
+    .replace(/\{\{stat-completed\}\}/g, String(stats.completed))
+    .replace(/\{\{stat-in-progress\}\}/g, String(stats.inProgress))
+    .replace(/\{\{stat-pending\}\}/g, String(stats.pending));
 
   return template;
 }
@@ -217,8 +301,10 @@ function getInlineTemplate() {
 </head>
 <body class="dashboard-view {{has-plans}}">
   <header class="dashboard-header">
-    <h1>Plans Dashboard</h1>
-    <div class="header-controls">
+    <div class="header-left">
+      <h1>Plans Dashboard</h1>
+    </div>
+    <div class="header-right">
       <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
         <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
@@ -231,6 +317,29 @@ function getInlineTemplate() {
   </header>
 
   <main role="main" aria-label="Plans Dashboard">
+    <section class="stats-hero" aria-label="Plan statistics">
+      <div class="stat-card total">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value">{{stat-total}}</div>
+        <div class="stat-label">Total Plans</div>
+      </div>
+      <div class="stat-card completed">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{stat-completed}}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card in-progress">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-value">{{stat-in-progress}}</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat-card pending">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">{{stat-pending}}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </section>
+
     <div class="dashboard-controls">
       <div class="search-box">
         <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -279,8 +388,12 @@ module.exports = {
   generateProgressRing,
   generateProgressBar,
   generateStatusCounts,
+  generateStatusBadge,
   generateEmptyState,
   generatePlansGrid,
+  calculateStats,
   escapeHtml,
-  formatDate
+  formatDate,
+  formatRelativeTime,
+  getStatusLabel
 };
