@@ -86,26 +86,18 @@ function getSessionColor(sessionPercent) {
 }
 
 /**
- * Get context emoji based on usage percentage (works without ANSI colors)
- */
-function getContextEmoji(percent) {
-    if (percent >= 90) return '🔴';  // critical
-    if (percent >= 75) return '🟡';  // warning
-    if (percent >= 50) return '🔵';  // moderate
-    return '🟢';                      // healthy
-}
-
-/**
- * Generate Unicode progress bar
+ * Generate Unicode progress bar (horizontal rectangles)
+ * Uses smooth block characters for consistent rendering
  * @param {number} percent - 0-100 percentage
- * @param {number} width - bar width in characters (default 10)
- * @returns {string} Unicode progress bar like ▓▓▓▓░░░░░░
+ * @param {number} width - bar width in characters (default 12)
+ * @returns {string} Unicode progress bar like ▰▰▰▰▰▱▱▱▱▱▱▱
  */
-function progressBar(percent, width = 10) {
+function progressBar(percent, width = 12) {
     const clamped = Math.max(0, Math.min(100, percent));
     const filled = Math.round(clamped * width / 100);
     const empty = width - filled;
-    return '▓'.repeat(filled) + '░'.repeat(empty);
+    // ▰ (U+25B0) filled, ▱ (U+25B1) empty - smooth horizontal rectangles
+    return '▰'.repeat(filled) + '▱'.repeat(empty);
 }
 
 /**
@@ -237,12 +229,11 @@ async function main() {
 
             if (compacted) {
                 // Show compacted indicator (one-time, cleared after detection)
-                contextText = `🔄 ░░░░░░░░░░ COMPACTED`;
+                contextText = `▱▱▱▱▱▱▱▱▱▱▱▱ 🔄`;
             } else {
-                // Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
-                const emoji = getContextEmoji(contextPercent);
-                const bar = progressBar(contextPercent, 10);
-                contextText = `${emoji} ${bar} ${contextPercent}%`;
+                // Clean format: ▰▰▰▰▰▱▱▱▱▱▱▱ 48%
+                const bar = progressBar(contextPercent, 12);
+                contextText = `${bar} ${contextPercent}%`;
             }
         }
 

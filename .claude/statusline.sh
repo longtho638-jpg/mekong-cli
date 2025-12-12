@@ -40,22 +40,12 @@ fmt_time_hm() {
 }
 
 progress_bar() {
-  pct="${1:-0}"; width="${2:-10}"
+  pct="${1:-0}"; width="${2:-12}"
   [[ "$pct" =~ ^[0-9]+$ ]] || pct=0; ((pct<0))&&pct=0; ((pct>100))&&pct=100
   filled=$(( pct * width / 100 )); empty=$(( width - filled ))
-  # Use Unicode block characters: ▓ (filled) and ░ (empty)
-  for ((i=0; i<filled; i++)); do printf '▓'; done
-  for ((i=0; i<empty; i++)); do printf '░'; done
-}
-
-# Get context emoji based on usage percentage (works without ANSI colors)
-context_emoji() {
-  local pct="${1:-0}"
-  if   (( pct >= 90 )); then printf '🔴'   # critical
-  elif (( pct >= 75 )); then printf '🟡'   # warning
-  elif (( pct >= 50 )); then printf '🔵'   # moderate
-  else                       printf '🟢'   # healthy
-  fi
+  # ▰ (U+25B0) filled, ▱ (U+25B1) empty - smooth horizontal rectangles
+  for ((i=0; i<filled; i++)); do printf '▰'; done
+  for ((i=0; i<empty; i++)); do printf '▱'; done
 }
 
 # git utilities
@@ -130,8 +120,8 @@ if [ -n "$context_size" ] && [ "$context_size" -gt 0 ] 2>/dev/null; then
   context_pct=$((context_total * 100 / context_size))
   # Clamp to 100% max to handle edge cases (stale data, extended thinking)
   ((context_pct > 100)) && context_pct=100
-  # Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
-  context_txt="$(context_emoji "$context_pct") $(progress_bar "$context_pct" 10) ${context_pct}%"
+  # Clean format: ━━━━━─────── 48%
+  context_txt="$(progress_bar "$context_pct" 12) ${context_pct}%"
 fi
 
 # Session timer - parse local transcript JSONL (zero external dependencies)

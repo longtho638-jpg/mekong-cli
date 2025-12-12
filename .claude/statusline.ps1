@@ -107,7 +107,7 @@ function Format-TimeHM {
 function Get-ProgressBar {
     param(
         [int]$Percent = 0,
-        [int]$Width = 10
+        [int]$Width = 12
     )
 
     if ($Percent -lt 0) { $Percent = 0 }
@@ -116,18 +116,9 @@ function Get-ProgressBar {
     $filled = [Math]::Round($Percent * $Width / 100)
     $empty = $Width - $filled
 
-    # Use Unicode block characters: ▓ (filled) and ░ (empty)
-    $bar = ("▓" * $filled) + ("░" * $empty)
+    # ▰ (U+25B0) filled, ▱ (U+25B1) empty - smooth horizontal rectangles
+    $bar = ("▰" * $filled) + ("▱" * $empty)
     return $bar
-}
-
-function Get-ContextEmoji {
-    param([int]$Percent)
-
-    if ($Percent -ge 90) { return "🔴" }       # critical
-    elseif ($Percent -ge 75) { return "🟡" }  # warning
-    elseif ($Percent -ge 50) { return "🔵" }  # moderate
-    else { return "🟢" }                       # healthy
 }
 
 function Get-SessionColor {
@@ -249,10 +240,9 @@ if ($contextSize -gt 0) {
     $contextPercent = [Math]::Floor($contextTotal * 100 / $contextSize)
     # Clamp to 100% max to handle edge cases (stale data, extended thinking)
     if ($contextPercent -gt 100) { $contextPercent = 100 }
-    # Format: emoji + progress bar + percentage (e.g., 🟢 ▓▓▓░░░░░░░ 30%)
-    $emoji = Get-ContextEmoji $contextPercent
-    $bar = Get-ProgressBar $contextPercent 10
-    $contextText = "$emoji $bar ${contextPercent}%"
+    # Clean format: ━━━━━─────── 48%
+    $bar = Get-ProgressBar $contextPercent 12
+    $contextText = "$bar ${contextPercent}%"
 }
 
 # ccusage integration
