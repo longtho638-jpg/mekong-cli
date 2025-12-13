@@ -56,6 +56,7 @@ async function main() {
     const plansPath = process.env.CK_PLANS_PATH || 'plans';
     const docsPath = process.env.CK_DOCS_PATH || 'docs';
     const responseLanguage = process.env.CK_RESPONSE_LANGUAGE || '';
+    const namePattern = process.env.CK_NAME_PATTERN || '';
 
     // Build compact context (~200 tokens)
     const lines = [];
@@ -90,6 +91,14 @@ async function main() {
     lines.push(`- Reports → ${reportsPath}`);
     lines.push(`- YAGNI / KISS / DRY`);
     lines.push(`- Concise, list unresolved Qs at end`);
+
+    // Naming templates (pre-computed for consistency)
+    if (namePattern) {
+      lines.push(``);
+      lines.push(`## Naming`);
+      lines.push(`- Report: ${agentType}-${namePattern}.md`);
+      lines.push(`- Plan dir: ${namePattern}/`);
+    }
 
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));
