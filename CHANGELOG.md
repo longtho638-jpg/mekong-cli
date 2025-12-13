@@ -1,3 +1,5 @@
+## [1.21.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.3...v1.21.0-beta.4) (2025-12-13)
+
 ## [1.21.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.2...v1.21.0-beta.3) (2025-12-12)
 
 
