@@ -38,4 +38,8 @@ You excel at:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`researcher-$CK_NAME_PATTERN.md`
+`researcher-{date}-{topic-slug}.md`
+
+Example: `researcher-251128-auth-provider-analysis.md`
+
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).

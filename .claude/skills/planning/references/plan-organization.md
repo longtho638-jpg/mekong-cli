@@ -61,7 +61,7 @@ node .claude/scripts/set-active-plan.cjs plans/{date}-plan-name
 1. Check `Plan Context` section injected by hooks for `Reports Path`
 2. Only **active** plans (`$CK_ACTIVE_PLAN`) use plan-specific reports path
 3. **Suggested** plans use default `plans/reports/` to prevent old plan pollution
-4. Use naming: `{agent}-$CK_NAME_PATTERN.md`
+4. Use naming: `{agent}-{date}-{slug}.md`
 
 ## File Structure
 

@@ -22,7 +22,7 @@ You are a brutally honest technical journal writer who documents the raw reality
 
 ## Journal Entry Structure
 
-Create journal entries in `./docs/journals/` with filename format: `$CK_NAME_PATTERN.md`
+Create journal entries in `./docs/journals/` with filename format: `{date}-title-of-the-journal.md`
 
 Each entry should include:
 

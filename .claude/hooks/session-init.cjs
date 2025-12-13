@@ -18,70 +18,8 @@ const {
   writeEnv,
   writeSessionState,
   resolvePlanPath,
-  getReportsPath,
-  extractIssueFromBranch
+  getReportsPath
 } = require('./lib/ck-config-utils.cjs');
-
-/**
- * Format date according to dateFormat config
- * Supports: YYMMDD, YYMMDD-HHmm, YYYYMMDD, etc.
- * @param {string} format - Date format string
- * @returns {string} Formatted date
- */
-function formatDate(format) {
-  const now = new Date();
-  const pad = (n, len = 2) => String(n).padStart(len, '0');
-
-  const tokens = {
-    'YYYY': now.getFullYear(),
-    'YY': String(now.getFullYear()).slice(-2),
-    'MM': pad(now.getMonth() + 1),
-    'DD': pad(now.getDate()),
-    'HH': pad(now.getHours()),
-    'mm': pad(now.getMinutes()),
-    'ss': pad(now.getSeconds())
-  };
-
-  let result = format;
-  for (const [token, value] of Object.entries(tokens)) {
-    result = result.replace(token, value);
-  }
-  return result;
-}
-
-/**
- * Resolve naming pattern with date and optional issue prefix
- * Keeps {slug} as placeholder for agents to substitute
- *
- * Example: namingFormat="{date}-{issue}-{slug}", dateFormat="YYMMDD-HHmm", issue="GH-88"
- * Returns: "251212-1830-GH-88-{slug}" (if issue exists)
- * Returns: "251212-1830-{slug}" (if no issue)
- *
- * @param {Object} planConfig - Plan configuration
- * @param {string|null} gitBranch - Current git branch (for issue extraction)
- * @returns {string} Resolved naming pattern with {slug} placeholder
- */
-function resolveNamingPattern(planConfig, gitBranch) {
-  const { namingFormat, dateFormat, issuePrefix } = planConfig;
-  const formattedDate = formatDate(dateFormat);
-
-  // Try to extract issue ID from branch name
-  const issueId = extractIssueFromBranch(gitBranch);
-  const fullIssue = issueId && issuePrefix ? `${issuePrefix}${issueId}` : null;
-
-  // Build pattern by substituting {date} and {issue}, keep {slug}
-  let pattern = namingFormat;
-  pattern = pattern.replace('{date}', formattedDate);
-
-  if (fullIssue) {
-    pattern = pattern.replace('{issue}', fullIssue);
-  } else {
-    // Remove {issue} and any trailing/leading dash
-    pattern = pattern.replace(/-?\{issue\}-?/, '-').replace(/--+/g, '-');
-  }
-
-  return pattern;
-}
 
 /**
  * Safely execute shell command
@@ -259,9 +197,6 @@ async function main() {
       claudeSettingsDir: path.resolve(__dirname, '..')
     };
 
-    // Compute resolved naming pattern (date + issue resolved, {slug} kept as placeholder)
-    const namePattern = resolveNamingPattern(config.plan, staticEnv.gitBranch);
-
     if (envFile) {
       // Session & plan config
       writeEnv(envFile, 'CK_SESSION_ID', sessionId || '');
@@ -269,11 +204,6 @@ async function main() {
       writeEnv(envFile, 'CK_PLAN_DATE_FORMAT', config.plan.dateFormat);
       writeEnv(envFile, 'CK_PLAN_ISSUE_PREFIX', config.plan.issuePrefix || '');
       writeEnv(envFile, 'CK_PLAN_REPORTS_DIR', config.plan.reportsDir);
-
-      // NEW: Resolved naming pattern for DRY file naming in agents
-      // Example: "251212-1830-GH-88-{slug}" or "251212-1830-{slug}"
-      // Agents use: `{agent-type}-$CK_NAME_PATTERN.md` and substitute {slug}
-      writeEnv(envFile, 'CK_NAME_PATTERN', namePattern);
 
       // Plan resolution
       writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');

@@ -110,7 +110,7 @@ All agents writing reports MUST:
 1. Check `Plan Context` section injected by hooks for `Reports Path`
 2. Only `$CK_ACTIVE_PLAN` plans use plan-specific reports path
 3. `$CK_SUGGESTED_PLAN` plans use default `plans/reports/` (not plan folder)
-4. Use naming: `{agent}-$CK_NAME_PATTERN.md`
+4. Use naming: `{agent}-{date}-{slug}.md`
 
 **Important:** Suggested plans do NOT get plan-specific reports - this prevents pollution of old plan folders.
 

@@ -107,7 +107,9 @@ Generate a comprehensive design plan follow this structure:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`design-$CK_NAME_PATTERN.md`
+`design-{date}-{topic-slug}.md`
+
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 ## Available Tools
 

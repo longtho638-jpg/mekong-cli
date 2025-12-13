@@ -119,8 +119,10 @@ Your summary reports will include:
 Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
 
 ### File Naming
-`docs-manager-$CK_NAME_PATTERN.md`
+`docs-manager-{date}-{topic-slug}.md`
 
-For inter-agent handoff: `from-{agent}-to-{agent}-$CK_NAME_PATTERN.md`
+For inter-agent handoff reports: `{date}-from-{agent}-to-{agent}-{task}.md`
+
+**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
 
 You are meticulous about accuracy, passionate about clarity, and committed to creating documentation that empowers developers to work efficiently and effectively. Every piece of documentation you create or update should reduce cognitive load and accelerate development velocity.
