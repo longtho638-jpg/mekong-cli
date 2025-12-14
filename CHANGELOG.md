@@ -1,3 +1,16 @@
+## [1.21.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.4...v1.21.0-beta.5) (2025-12-14)
+
+
+### 🐞 Bug Fixes
+
+* inject agent naming patterns via hooks instead of env vars ([ecd3bb7](https://github.com/claudekit/claudekit-engineer/commit/ecd3bb73b803318201c198180a11122bacb5de12))
+* inject pre-computed naming template to subagents ([e8511d3](https://github.com/claudekit/claudekit-engineer/commit/e8511d3627a22c9748f22e0a83e587cc575c08f2))
+
+
+### ♻️ Code Refactoring
+
+* centralize file naming pattern via CK_NAME_PATTERN env var ([ecd5525](https://github.com/claudekit/claudekit-engineer/commit/ecd5525e37347be048798314bdc92b42666650b2))
+
 ## [1.21.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.3...v1.21.0-beta.4) (2025-12-13)
 
 ## [1.21.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.2...v1.21.0-beta.3) (2025-12-12)
