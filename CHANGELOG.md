@@ -1,3 +1,10 @@
+## [1.21.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.5...v1.21.0-beta.6) (2025-12-14)
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** calculate context percentage against compact threshold ([#172](https://github.com/claudekit/claudekit-engineer/issues/172)) ([ebf68a0](https://github.com/claudekit/claudekit-engineer/commit/ebf68a0a21bda4f116e53ab77b5a87028ce804a5))
+
 ## [1.21.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.4...v1.21.0-beta.5) (2025-12-14)
 
 
