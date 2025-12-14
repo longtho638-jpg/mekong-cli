@@ -11,7 +11,13 @@
  */
 
 const fs = require('fs');
-const { loadConfig } = require('./lib/ck-config-utils.cjs');
+const {
+  loadConfig,
+  resolveNamingPattern,
+  getGitBranch,
+  resolvePlanPath,
+  getReportsPath
+} = require('./lib/ck-config-utils.cjs');
 
 /**
  * Get agent-specific context from config
@@ -46,17 +52,21 @@ async function main() {
     const agentType = payload.agent_type || 'unknown';
     const agentId = payload.agent_id || 'unknown';
 
-    // Load config for trust verification and agent-specific context
+    // Load config for trust verification, naming, and agent-specific context
     const config = loadConfig({ includeProject: false, includeAssertions: false });
 
-    // Read from env vars (set by SessionStart) - fallback to empty
-    const activePlan = process.env.CK_ACTIVE_PLAN || '';
-    const suggestedPlan = process.env.CK_SUGGESTED_PLAN || '';
-    const reportsPath = process.env.CK_REPORTS_PATH || 'plans/reports/';
-    const plansPath = process.env.CK_PLANS_PATH || 'plans';
-    const docsPath = process.env.CK_DOCS_PATH || 'docs';
-    const responseLanguage = process.env.CK_RESPONSE_LANGUAGE || '';
-    const namePattern = process.env.CK_NAME_PATTERN || '';
+    // Compute naming pattern directly (don't rely on env vars which may not propagate)
+    const gitBranch = getGitBranch();
+    const namePattern = resolveNamingPattern(config.plan, gitBranch);
+
+    // Resolve plan and reports path
+    const resolved = resolvePlanPath(null, config);
+    const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
+    const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
+    const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
+    const plansPath = config.paths?.plans || 'plans';
+    const docsPath = config.paths?.docs || 'docs';
+    const responseLanguage = config.locale?.responseLanguage || '';
 
     // Build compact context (~200 tokens)
     const lines = [];
@@ -92,13 +102,11 @@ async function main() {
     lines.push(`- YAGNI / KISS / DRY`);
     lines.push(`- Concise, list unresolved Qs at end`);
 
-    // Naming templates (pre-computed for consistency)
-    if (namePattern) {
-      lines.push(``);
-      lines.push(`## Naming`);
-      lines.push(`- Report: ${agentType}-${namePattern}.md`);
-      lines.push(`- Plan dir: ${namePattern}/`);
-    }
+    // Naming templates (computed directly for reliable injection)
+    lines.push(``);
+    lines.push(`## Naming`);
+    lines.push(`- Report: ${reportsPath}${agentType}-${namePattern}.md`);
+    lines.push(`- Plan dir: plans/${namePattern}/`);
 
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));

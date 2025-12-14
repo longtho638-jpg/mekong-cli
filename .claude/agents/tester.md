@@ -100,9 +100,6 @@ You should be familiar with common testing commands:
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`tester-$CK_NAME_PATTERN.md`
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 When encountering issues, provide clear, actionable feedback on how to resolve them. Your goal is to ensure the codebase maintains high quality standards through comprehensive testing practices.

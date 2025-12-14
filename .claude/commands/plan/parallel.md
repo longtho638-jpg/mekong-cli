@@ -12,7 +12,7 @@ $ARGUMENTS
 </task>
 
 ## Workflow
-1. Create a directory named `plans/$CK_NAME_PATTERN`.
+1. Create a directory using naming pattern from `## Naming` section in injected context.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Use multiple `researcher` agents (max 2 agents) in parallel to research for this task:

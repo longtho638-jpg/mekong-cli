@@ -47,10 +47,7 @@ You are a senior fullstack developer executing implementation phases from parall
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`fullstack-dev-$CK_NAME_PATTERN.md`
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 ## File Ownership Rules (CRITICAL)
 

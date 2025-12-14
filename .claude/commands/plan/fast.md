@@ -13,29 +13,15 @@ $ARGUMENTS
 
 ## Pre-Creation Check (Active vs Suggested Plan)
 
-Before creating plan folder, check plan state:
-
-1. **Check `$CK_ACTIVE_PLAN` (explicitly active):**
-   - If set AND points to valid directory:
-     - Ask user: "Active plan found: {path}. Continue with this? [Y/n]"
-     - If Y (default): Use existing path, skip folder creation
-     - If n: Proceed to create new plan
-
-2. **Check `$CK_SUGGESTED_PLAN` (branch-matched, NOT active):**
-   - If set: Inform user "Found suggested plan from branch: {path}"
-   - This is a hint only - do NOT auto-use it
-   - Ask user if they want to activate it or create new plan
-
-3. **If neither is set:** Proceed to create new plan
-
-4. **Create plan folder** (only if creating new):
-   - Generate: `plans/$CK_NAME_PATTERN`
-   - Update session state: `node .claude/scripts/set-active-plan.cjs plans/...`
+Check the `## Plan Context` section in the injected context:
+- If "Plan:" shows a path → Active plan exists. Ask user: "Continue with this? [Y/n]"
+- If "Suggested:" shows a path → Branch-matched hint only. Ask if they want to activate or create new.
+- If "Plan: none" → Create new plan using naming from `## Naming` section.
 
 ## Workflow
 Use `planner` subagent to:
-1. If creating new plan: Create directory `plans/$CK_NAME_PATTERN` and run `node .claude/scripts/set-active-plan.cjs plans/...`
-   If reusing existing: Use the active plan path from `$CK_ACTIVE_PLAN`.
+1. If creating new: Create directory using naming pattern from `## Naming` section, then run `node .claude/scripts/set-active-plan.cjs plans/...`
+   If reusing: Use the active plan path from Plan Context.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Analyze the codebase by reading `codebase-summary.md`, `code-standards.md`, `system-architecture.md` and `project-overview-pdr.md` file.

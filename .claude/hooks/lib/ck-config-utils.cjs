@@ -447,6 +447,75 @@ function extractIssueFromBranch(branch) {
   return null;
 }
 
+/**
+ * Format date according to dateFormat config
+ * Supports: YYMMDD, YYMMDD-HHmm, YYYYMMDD, etc.
+ * @param {string} format - Date format string
+ * @returns {string} Formatted date
+ */
+function formatDate(format) {
+  const now = new Date();
+  const pad = (n, len = 2) => String(n).padStart(len, '0');
+
+  const tokens = {
+    'YYYY': now.getFullYear(),
+    'YY': String(now.getFullYear()).slice(-2),
+    'MM': pad(now.getMonth() + 1),
+    'DD': pad(now.getDate()),
+    'HH': pad(now.getHours()),
+    'mm': pad(now.getMinutes()),
+    'ss': pad(now.getSeconds())
+  };
+
+  let result = format;
+  for (const [token, value] of Object.entries(tokens)) {
+    result = result.replace(token, value);
+  }
+  return result;
+}
+
+/**
+ * Resolve naming pattern with date and optional issue prefix
+ * Keeps {slug} as placeholder for agents to substitute
+ *
+ * Example: namingFormat="{date}-{issue}-{slug}", dateFormat="YYMMDD-HHmm", issue="GH-88"
+ * Returns: "251212-1830-GH-88-{slug}" (if issue exists)
+ * Returns: "251212-1830-{slug}" (if no issue)
+ *
+ * @param {Object} planConfig - Plan configuration
+ * @param {string|null} gitBranch - Current git branch (for issue extraction)
+ * @returns {string} Resolved naming pattern with {slug} placeholder
+ */
+function resolveNamingPattern(planConfig, gitBranch) {
+  const { namingFormat, dateFormat, issuePrefix } = planConfig;
+  const formattedDate = formatDate(dateFormat);
+
+  // Try to extract issue ID from branch name
+  const issueId = extractIssueFromBranch(gitBranch);
+  const fullIssue = issueId && issuePrefix ? `${issuePrefix}${issueId}` : null;
+
+  // Build pattern by substituting {date} and {issue}, keep {slug}
+  let pattern = namingFormat;
+  pattern = pattern.replace('{date}', formattedDate);
+
+  if (fullIssue) {
+    pattern = pattern.replace('{issue}', fullIssue);
+  } else {
+    // Remove {issue} and any trailing/leading dash
+    pattern = pattern.replace(/-?\{issue\}-?/, '-').replace(/--+/g, '-');
+  }
+
+  return pattern;
+}
+
+/**
+ * Get current git branch (safe execution)
+ * @returns {string|null} Current branch name or null
+ */
+function getGitBranch() {
+  return execSafe('git branch --show-current');
+}
+
 module.exports = {
   CONFIG_PATH,
   LOCAL_CONFIG_PATH,
@@ -467,5 +536,8 @@ module.exports = {
   findMostRecentPlan,
   getReportsPath,
   formatIssueId,
-  extractIssueFromBranch
+  extractIssueFromBranch,
+  formatDate,
+  resolveNamingPattern,
+  getGitBranch
 };
