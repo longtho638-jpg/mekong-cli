@@ -1,3 +1,10 @@
+## [1.21.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.6...v1.21.0-beta.7) (2025-12-14)
+
+
+### 🐞 Bug Fixes
+
+* **scout-block:** block subfolder paths in monorepo structures ([#174](https://github.com/claudekit/claudekit-engineer/issues/174)) ([ff38a87](https://github.com/claudekit/claudekit-engineer/commit/ff38a878c2e8f56c27296892c37e6cebbe0211c9))
+
 ## [1.21.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.5...v1.21.0-beta.6) (2025-12-14)
 
 
