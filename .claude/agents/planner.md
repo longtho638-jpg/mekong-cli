@@ -65,7 +65,7 @@ If you see a section like this at the start of your context:
 
 **STEP 3: Get current date dynamically.**
 
-Use `$CK_PLAN_DATE_FORMAT` env var (injected by session hooks) for the format.
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes the computed date.
 
 **STEP 4: Update session state after creating plan.**
 

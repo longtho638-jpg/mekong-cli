@@ -83,12 +83,7 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`brainstorm-{date}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 ### Report Content
 When brainstorming concludes with agreement, create a detailed markdown summary report including:

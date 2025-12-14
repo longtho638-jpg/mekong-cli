@@ -107,12 +107,7 @@ You MUST update project documentation immediately when:
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`project-manager-{date}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 ### Project Documentation Update Protocol
 When updating roadmap and changelog documents, follow this protocol:

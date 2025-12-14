@@ -18,7 +18,8 @@ const {
   writeEnv,
   writeSessionState,
   resolvePlanPath,
-  getReportsPath
+  getReportsPath,
+  resolveNamingPattern
 } = require('./lib/ck-config-utils.cjs');
 
 /**
@@ -197,6 +198,9 @@ async function main() {
       claudeSettingsDir: path.resolve(__dirname, '..')
     };
 
+    // Compute resolved naming pattern (date + issue resolved, {slug} kept as placeholder)
+    const namePattern = resolveNamingPattern(config.plan, staticEnv.gitBranch);
+
     if (envFile) {
       // Session & plan config
       writeEnv(envFile, 'CK_SESSION_ID', sessionId || '');
@@ -204,6 +208,11 @@ async function main() {
       writeEnv(envFile, 'CK_PLAN_DATE_FORMAT', config.plan.dateFormat);
       writeEnv(envFile, 'CK_PLAN_ISSUE_PREFIX', config.plan.issuePrefix || '');
       writeEnv(envFile, 'CK_PLAN_REPORTS_DIR', config.plan.reportsDir);
+
+      // NEW: Resolved naming pattern for DRY file naming in agents
+      // Example: "251212-1830-GH-88-{slug}" or "251212-1830-{slug}"
+      // Agents use: `{agent-type}-$CK_NAME_PATTERN.md` and substitute {slug}
+      writeEnv(envFile, 'CK_NAME_PATTERN', namePattern);
 
       // Plan resolution
       writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');

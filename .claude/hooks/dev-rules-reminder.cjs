@@ -16,7 +16,8 @@ const { execSync } = require('child_process');
 const {
   loadConfig,
   resolvePlanPath,
-  getReportsPath
+  getReportsPath,
+  resolveNamingPattern
 } = require('./lib/ck-config-utils.cjs');
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -53,13 +54,16 @@ function buildPlanContext(sessionId, config) {
   const resolved = resolvePlanPath(sessionId, config);
   const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, plan, paths);
 
+  // Compute naming pattern directly for reliable injection
+  const namePattern = resolveNamingPattern(plan, gitBranch);
+
   const planLine = resolved.resolvedBy === 'session'
     ? `- Plan: ${resolved.path}`
     : resolved.resolvedBy === 'branch'
       ? `- Plan: none | Suggested: ${resolved.path}`
       : `- Plan: none`;
 
-  return { reportsPath, gitBranch, planLine };
+  return { reportsPath, gitBranch, planLine, namePattern };
 }
 
 function wasRecentlyInjected(transcriptPath) {
@@ -77,7 +81,7 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch }) {
+function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern }) {
   return [
     // ─────────────────────────────────────────────────────────────────────────
     // RESPONSE LANGUAGE (if configured)
@@ -139,7 +143,17 @@ function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsP
     `## Plan Context`,
     planLine,
     `- Reports: ${reportsPath}`,
-    ...(gitBranch ? [`- Branch: ${gitBranch}`] : [])
+    ...(gitBranch ? [`- Branch: ${gitBranch}`] : []),
+    ``,
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NAMING (computed pattern for consistent file naming)
+    // ─────────────────────────────────────────────────────────────────────────
+    `## Naming`,
+    `- Reports: \`${reportsPath}{type}-${namePattern}.md\``,
+    `- Plans: \`${plansPath}/${namePattern}/\``,
+    `- Replace \`{type}\` with: agent name, report type, or context`,
+    `- Replace \`{slug}\` in pattern with: descriptive-kebab-slug`
   ];
 }
 
@@ -159,7 +173,7 @@ async function main() {
     const config = loadConfig({ includeProject: false, includeAssertions: false });
     const devRulesPath = resolveWorkflowPath('development-rules.md');
     const catalogScript = resolveScriptPath('generate_catalogs.py');
-    const { reportsPath, gitBranch, planLine } = buildPlanContext(sessionId, config);
+    const { reportsPath, gitBranch, planLine, namePattern } = buildPlanContext(sessionId, config);
 
     const output = buildReminder({
       responseLanguage: config.locale?.responseLanguage,
@@ -169,7 +183,8 @@ async function main() {
       plansPath: config.paths?.plans || 'plans',
       docsPath: config.paths?.docs || 'docs',
       planLine,
-      gitBranch
+      gitBranch,
+      namePattern
     });
 
     console.log(output.join('\n'));
