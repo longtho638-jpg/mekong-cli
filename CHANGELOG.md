@@ -1,3 +1,11 @@
+## [1.21.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.7...v1.21.0-beta.8) (2025-12-15)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** improve context-tracker robustness and documentation ([2755030](https://github.com/claudekit/claudekit-engineer/commit/2755030c062b21236c969218e979ee2cbff94f1d)), closes [#179](https://github.com/claudekit/claudekit-engineer/issues/179)
+* implement 3-layer self-healing context reset detection ([503034e](https://github.com/claudekit/claudekit-engineer/commit/503034e78dc7f00187039a160153ec60f17a5692)), closes [#177](https://github.com/claudekit/claudekit-engineer/issues/177)
+
 ## [1.21.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.6...v1.21.0-beta.7) (2025-12-14)
 
 
