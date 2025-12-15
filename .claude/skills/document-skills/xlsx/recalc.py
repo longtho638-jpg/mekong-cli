@@ -10,6 +10,18 @@ import subprocess
 import os
 import platform
 from pathlib import Path
+
+# Windows UTF-8 compatibility
+sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+try:
+    from win_compat import ensure_utf8_stdout
+    ensure_utf8_stdout()
+except ImportError:
+    if sys.platform == 'win32':
+        import io
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 from openpyxl import load_workbook
 
 
