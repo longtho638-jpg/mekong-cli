@@ -153,7 +153,60 @@ def generate_secrets():
 
 
 
+
 from deploy_automation import run_deploy
+from license import LicenseValidator
+
+@app.command(name="activate")
+def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
+    """
+    Activate Mekong-CLI license.
+    """
+    console.print("\n[bold blue]🔐 Activating License...[/bold blue]")
+    
+    validator = LicenseValidator()
+    try:
+        license_data = validator.activate(key)
+        tier = license_data["tier"]
+        
+        console.print(f"\n[bold green]✅ License Activated![/bold green]")
+        console.print(f"   Tier: [cyan]{tier.upper()}[/cyan]")
+        console.print(f"   Activated: {license_data['activated_at']}")
+        
+        # Show tier benefits
+        if tier == "starter":
+            console.print("\n   Benefits: 1 video/day, 1 niche")
+        elif tier == "pro":
+            console.print("\n   Benefits: 10 videos/day, 10 niches, white-label")
+        elif tier == "enterprise":
+            console.print("\n   Benefits: Unlimited everything!")
+            
+    except ValueError as e:
+        console.print(f"\n[bold red]❌ Error:[/bold red] {e}")
+        raise typer.Exit(code=1)
+
+@app.command(name="status")
+def status_cmd():
+    """
+    Show current license status and quota.
+    """
+    validator = LicenseValidator()
+    license = validator.get_license()
+    
+    if not license:
+        console.print("\n[yellow]⚠️  No license activated (using Starter tier)[/yellow]")
+        console.print("   Limits: 1 video/day, 1 niche")
+        console.print("\n   Upgrade: [cyan]mekong activate[/cyan]")
+        return
+    
+    tier = license["tier"]
+    console.print(f"\n[bold green]License Status[/bold green]")
+    console.print(f"   Tier: [cyan]{tier.upper()}[/cyan]")
+    console.print(f"   Activated: {license['activated_at']}")
+    
+    # Check quota
+    video_quota = validator.check_quota("max_daily_video")
+    console.print(f"\n   Daily Videos: {video_quota['used']}/{video_quota['limit']}")
 
 @app.command(name="deploy")
 def deploy_cmd():
