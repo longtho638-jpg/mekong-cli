@@ -11,7 +11,27 @@ const fs = require('fs');
 const path = require('path');
 
 // Default patterns if .ckignore doesn't exist or is empty
-const DEFAULT_PATTERNS = ['node_modules', '__pycache__', '.git', 'dist', 'build'];
+// Only includes directories with HEAVY file counts (1000+ files typical)
+const DEFAULT_PATTERNS = [
+  // JavaScript/TypeScript - package dependencies & build outputs
+  'node_modules',
+  'dist',
+  'build',
+  '.next',
+  '.nuxt',
+  // Python - virtualenvs & cache
+  '__pycache__',
+  '.venv',
+  'venv',
+  // Go/PHP - vendor dependencies
+  'vendor',
+  // Rust/Java - compiled outputs
+  'target',
+  // Version control
+  '.git',
+  // Test coverage (can be large with reports)
+  'coverage',
+];
 
 /**
  * Load patterns from .ckignore file

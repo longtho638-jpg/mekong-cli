@@ -93,7 +93,11 @@ function extractFromCommand(command) {
 
 // Common blocked directory names that should be extracted even if they
 // match command keywords (e.g., "build" is both a subcommand and a dir name)
-const BLOCKED_DIR_NAMES = ['node_modules', '__pycache__', '.git', 'dist', 'build'];
+// Keep in sync with DEFAULT_PATTERNS in pattern-matcher.cjs
+const BLOCKED_DIR_NAMES = [
+  'node_modules', '__pycache__', '.git', 'dist', 'build',
+  '.next', '.nuxt', '.venv', 'venv', 'vendor', 'target', 'coverage'
+];
 
 /**
  * Check if token is exactly a blocked directory name

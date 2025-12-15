@@ -1,11 +1,23 @@
-# ClaudeKit Ignore File
-# Patterns listed here will be blocked by the scout-block hook
-# Syntax similar to .gitignore - one pattern per line
-# Lines starting with # are comments
+# ClaudeKit Ignore File - SIZE-based blocking
+# Blocks directories with heavy file counts that fill LLM context
+# Syntax: gitignore-spec | Use ! prefix to allow (e.g., !src/vendor)
 
-# Default patterns
+# JS/TS
 node_modules
-__pycache__
-.git
 dist
 build
+.next
+.nuxt
+
+# Python
+__pycache__
+.venv
+venv
+
+# Go/PHP/Rust/Java
+vendor
+target
+
+# VCS & Coverage
+.git
+coverage
