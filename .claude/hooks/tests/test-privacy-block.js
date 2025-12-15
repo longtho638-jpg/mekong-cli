@@ -64,6 +64,24 @@ const blockTests = [
     name: 'private.key - should block',
     input: { tool_input: { file_path: 'certs/private.key' } },
     expectBlock: true
+  },
+  // NEW: URL-encoded paths
+  {
+    name: 'URL-encoded .env (%2e%65%6e%76) - should block',
+    input: { tool_input: { file_path: '%2eenv' } },
+    expectBlock: true
+  },
+  // NEW: Bash variable assignments
+  {
+    name: 'bash variable FILE=.env - should block',
+    input: { tool_input: { command: 'FILE=.env cat $FILE' } },
+    expectBlock: true
+  },
+  // NEW: Command substitution
+  {
+    name: 'command substitution $(cat .env) - should block',
+    input: { tool_input: { command: 'echo $(cat .env)' } },
+    expectBlock: true
   }
 ];
 

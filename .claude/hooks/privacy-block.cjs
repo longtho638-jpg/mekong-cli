@@ -38,11 +38,18 @@ function hasApprovalPrefix(testPath) {
 }
 
 /**
- * Strip APPROVED: prefix from path
+ * Strip APPROVED: prefix from path, warn on suspicious paths
  */
 function stripApprovalPrefix(testPath) {
   if (hasApprovalPrefix(testPath)) {
-    return testPath.slice(APPROVED_PREFIX.length);
+    const stripped = testPath.slice(APPROVED_PREFIX.length);
+
+    // Warn on suspicious paths (path traversal or absolute)
+    if (stripped.includes('..') || path.isAbsolute(stripped)) {
+      console.error('\x1b[33mWARN:\x1b[0m Approved path is outside project:', stripped);
+    }
+
+    return stripped;
   }
   return testPath;
 }
@@ -55,7 +62,15 @@ function isPrivacySensitive(testPath) {
 
   // Strip prefix for pattern matching
   const cleanPath = stripApprovalPrefix(testPath);
-  const normalized = cleanPath.replace(/\\/g, '/');
+  let normalized = cleanPath.replace(/\\/g, '/');
+
+  // Decode URI components to catch obfuscated paths (%2e = '.')
+  try {
+    normalized = decodeURIComponent(normalized);
+  } catch (e) {
+    // Invalid encoding, use as-is
+  }
+
   const basename = path.basename(normalized);
 
   for (const pattern of PRIVACY_PATTERNS) {
@@ -87,6 +102,20 @@ function extractPaths(toolInput) {
     if (approvedMatch.length === 0) {
       const envMatch = toolInput.command.match(/\.env[^\s]*/g) || [];
       envMatch.forEach(p => paths.push({ value: p, field: 'command' }));
+
+      // Also check bash variable assignments (FILE=.env, ENV_FILE=.env.local)
+      const varAssignments = toolInput.command.match(/\w+=[^\s]*\.env[^\s]*/g) || [];
+      varAssignments.forEach(a => {
+        const value = a.split('=')[1];
+        if (value) paths.push({ value, field: 'command' });
+      });
+
+      // Check command substitution containing sensitive patterns - extract .env from inside
+      const cmdSubst = toolInput.command.match(/\$\([^)]*?(\.env[^\s)]*)[^)]*\)/g) || [];
+      for (const subst of cmdSubst) {
+        const inner = subst.match(/\.env[^\s)]*/);
+        if (inner) paths.push({ value: inner[0], field: 'command' });
+      }
     }
   }
 
