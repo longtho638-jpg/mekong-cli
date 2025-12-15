@@ -104,9 +104,15 @@ const testCases = [
     expected: 'ALLOWED'
   },
   {
-    name: 'Glob with safe pattern',
-    input: { tool_name: 'Glob', tool_input: { pattern: '**/*.ts' } },
+    name: 'Glob with scoped pattern',
+    input: { tool_name: 'Glob', tool_input: { pattern: 'src/**/*.ts' } },
     expected: 'ALLOWED'
+  },
+  // Broad pattern detection (NEW)
+  {
+    name: '[NEW] Glob with broad pattern (should block)',
+    input: { tool_name: 'Glob', tool_input: { pattern: '**/*.ts' } },
+    expected: 'BLOCKED'
   }
 ];
 
