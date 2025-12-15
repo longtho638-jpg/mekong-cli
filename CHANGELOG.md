@@ -1,3 +1,15 @@
+## [1.21.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.12...v1.21.0-beta.13) (2025-12-15)
+
+
+### 🚀 Features
+
+* add centralized Windows UTF-8 compatibility utility ([a19e157](https://github.com/claudekit/claudekit-engineer/commit/a19e157bf4b1d7e2ed599d0f32acf72145e5a05a)), closes [#187](https://github.com/claudekit/claudekit-engineer/issues/187)
+
+
+### 🐞 Bug Fixes
+
+* resolve UnicodeEncodeError on Windows for ui-ux-pro-max search ([7d86c15](https://github.com/claudekit/claudekit-engineer/commit/7d86c15d810084fb8c0a19f9278b63933d8b8acf)), closes [#187](https://github.com/claudekit/claudekit-engineer/issues/187)
+
 ## [1.21.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.11...v1.21.0-beta.12) (2025-12-15)
 
 
