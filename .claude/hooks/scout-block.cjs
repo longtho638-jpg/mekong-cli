@@ -27,6 +27,7 @@ const path = require('path');
 const { loadPatterns, createMatcher, matchPath } = require('./scout-block/pattern-matcher.cjs');
 const { extractFromToolInput } = require('./scout-block/path-extractor.cjs');
 const { formatBlockedError } = require('./scout-block/error-formatter.cjs');
+const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-block/broad-pattern-detector.cjs');
 
 // Build command allowlist - these are allowed even if they contain blocked paths
 // Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
@@ -78,6 +79,17 @@ try {
   // Check if it's a build command (allowed regardless of paths)
   if (toolInput.command && isBuildCommand(toolInput.command)) {
     process.exit(0);
+  }
+
+  // Check for overly broad glob patterns (Glob tool)
+  // This prevents LLMs from filling context with **/*.ts at project root
+  if (toolName === 'Glob' || toolInput.pattern) {
+    const broadResult = detectBroadPatternIssue(toolInput);
+    if (broadResult.blocked) {
+      const errorMsg = formatBroadPatternError(broadResult, path.dirname(__dirname));
+      console.error(errorMsg);
+      process.exit(2);
+    }
   }
 
   // Load patterns from .ckignore

@@ -33,7 +33,8 @@ const DEFAULT_CONFIG = {
     plans: 'plans'
   },
   locale: {
-    responseLanguage: null
+    thinkingLanguage: null,  // Language for reasoning (e.g., "en" for precision)
+    responseLanguage: null   // Language for user-facing output (e.g., "vi")
   },
   trust: {
     passphrase: null,

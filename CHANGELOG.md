@@ -1,3 +1,34 @@
+## [1.21.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.10...v1.21.0-beta.11) (2025-12-15)
+
+
+### 🚀 Features
+
+* **hooks:** add broad pattern detection and privacy-block hook ([17ef8b4](https://github.com/claudekit/claudekit-engineer/commit/17ef8b4f6574efab08e6ff374d5f53d5d7bfd666)), closes [#184](https://github.com/claudekit/claudekit-engineer/issues/184)
+
+
+### 🐞 Bug Fixes
+
+* **privacy-block:** add URL decoding, bash variable detection, path traversal warning ([6df91cb](https://github.com/claudekit/claudekit-engineer/commit/6df91cbe75e9469ece5acd312e933dbc4d2748d5))
+
+## [1.21.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.9...v1.21.0-beta.10) (2025-12-15)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** resolve context tracker race condition and consolidate temp files ([7c507c8](https://github.com/claudekit/claudekit-engineer/commit/7c507c87e6b78826f45bc5f374a38ec604e5d125)), closes [#177](https://github.com/claudekit/claudekit-engineer/issues/177) [#178](https://github.com/claudekit/claudekit-engineer/issues/178)
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** address code review feedback ([052959a](https://github.com/claudekit/claudekit-engineer/commit/052959a058423175b768151b8017f60c182f1531))
+
+## [1.21.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.8...v1.21.0-beta.9) (2025-12-15)
+
+
+### 🚀 Features
+
+* **locale:** add thinkingLanguage for dual-language support ([90b3eb8](https://github.com/claudekit/claudekit-engineer/commit/90b3eb8f6139f3bd70d646e294005f30ae11a42d)), closes [#180](https://github.com/claudekit/claudekit-engineer/issues/180)
+
 ## [1.21.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.7...v1.21.0-beta.8) (2025-12-15)
 
 

@@ -66,7 +66,10 @@ async function main() {
     const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
     const plansPath = config.paths?.plans || 'plans';
     const docsPath = config.paths?.docs || 'docs';
+    const thinkingLanguage = config.locale?.thinkingLanguage || '';
     const responseLanguage = config.locale?.responseLanguage || '';
+    // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
+    const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : '');
 
     // Build compact context (~200 tokens)
     const lines = [];
@@ -89,10 +92,16 @@ async function main() {
     lines.push(`- Paths: plans/${plansPath !== 'plans' ? ` (${plansPath})` : ''} | docs/${docsPath !== 'docs' ? ` (${docsPath})` : ''}`);
     lines.push(``);
 
-    // Response language (if configured)
-    if (responseLanguage) {
+    // Language (thinking + response, if configured)
+    const hasThinking = effectiveThinking && effectiveThinking !== responseLanguage;
+    if (hasThinking || responseLanguage) {
       lines.push(`## Language`);
-      lines.push(`Respond in ${responseLanguage}.`);
+      if (hasThinking) {
+        lines.push(`- Thinking: Use ${effectiveThinking} for reasoning (logic, precision).`);
+      }
+      if (responseLanguage) {
+        lines.push(`- Response: Respond in ${responseLanguage} (natural, fluent).`);
+      }
       lines.push(``);
     }
 
