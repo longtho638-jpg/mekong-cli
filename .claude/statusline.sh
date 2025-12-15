@@ -10,8 +10,9 @@
 
 input=$(cat)
 
-# Calibration file path
-CALIBRATION_PATH="${TMPDIR:-/tmp}/claude-compact-calibration.json"
+# Calibration file path (now in /tmp/ck/ namespace - fixes #178)
+# IMPORTANT: Path must match ck-paths.cjs CALIBRATION_PATH
+CALIBRATION_PATH="${TMPDIR:-/tmp}/ck/calibration.json"
 
 # ---- time helpers ----
 to_epoch() {
