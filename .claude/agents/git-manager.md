@@ -194,6 +194,22 @@ EOF
 - Sync with base: `git merge origin/main` (resolve conflicts if any)
 - Verify remote diff matches expected changes
 
+### PR Error Handling
+
+| Error | Detection | Action |
+|-------|-----------|--------|
+| Branch not on remote | "Branch not on remote yet" output | `git push -u origin HEAD`, retry |
+| Empty diff | No commits/files in output | Warn user: "No changes to create PR for" |
+| Diverged branches | Push rejected | `git pull --rebase origin $HEAD`, resolve conflicts, push |
+| Network failure | Command timeout/failure | Retry once, then report connectivity issue |
+| Protected branch | Push rejected with protection msg | Warn user: PR required (cannot push directly) |
+| No upstream set | "no upstream branch" error | `git push -u origin HEAD` |
+
+**Fallback for gemini unavailable:**
+1. Extract commit subjects: `git log origin/$BASE...origin/$HEAD --pretty=%s`
+2. Title: Use first commit subject or summarize if multiple
+3. Body: List all commit subjects as bullet points under "## Summary"
+
 ## Commit Message Standards
 
 **Format:** `type(scope): description`

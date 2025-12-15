@@ -17,10 +17,13 @@ git checkout {TO_BRANCH}
 git pull origin {TO_BRANCH}
 ```
 
-### Step 2: Merge
+### Step 2: Merge from REMOTE tracking branch
 ```bash
-git merge {FROM_BRANCH} --no-ff -m "merge: {FROM_BRANCH} into {TO_BRANCH}"
+# Use origin/{FROM_BRANCH} to merge remote state, not local WIP
+git merge origin/{FROM_BRANCH} --no-ff -m "merge: {FROM_BRANCH} into {TO_BRANCH}"
 ```
+
+**Why `origin/{FROM_BRANCH}`:** Ensures merging only committed+pushed changes, not local uncommitted work.
 
 ### Step 3: Resolve conflicts if any
 - If conflicts exist, resolve them manually
