@@ -1,3 +1,15 @@
+## [1.21.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.10...v1.21.0-beta.11) (2025-12-15)
+
+
+### 🚀 Features
+
+* **hooks:** add broad pattern detection and privacy-block hook ([17ef8b4](https://github.com/claudekit/claudekit-engineer/commit/17ef8b4f6574efab08e6ff374d5f53d5d7bfd666)), closes [#184](https://github.com/claudekit/claudekit-engineer/issues/184)
+
+
+### 🐞 Bug Fixes
+
+* **privacy-block:** add URL decoding, bash variable detection, path traversal warning ([6df91cb](https://github.com/claudekit/claudekit-engineer/commit/6df91cbe75e9469ece5acd312e933dbc4d2748d5))
+
 ## [1.21.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.9...v1.21.0-beta.10) (2025-12-15)
 
 
