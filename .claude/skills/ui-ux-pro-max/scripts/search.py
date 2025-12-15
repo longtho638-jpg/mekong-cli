@@ -9,6 +9,21 @@ Stacks: html-tailwind, react, nextjs
 """
 
 import argparse
+import sys
+from pathlib import Path
+
+# Add shared scripts to path for win_compat
+sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+try:
+    from win_compat import ensure_utf8_stdout
+    ensure_utf8_stdout()
+except ImportError:
+    # Fallback if shared utility not available
+    if sys.platform == 'win32':
+        import io
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 from core import CSV_CONFIG, AVAILABLE_STACKS, MAX_RESULTS, search, search_stack
 
 
@@ -38,15 +53,6 @@ def format_output(result):
     return "\n".join(output)
 
 
-def safe_print(text):
-    """Print with Unicode support on Windows (cp1252 fallback)"""
-    import sys
-    try:
-        print(text)
-    except UnicodeEncodeError:
-        print(text.encode(sys.stdout.encoding, errors='replace').decode(sys.stdout.encoding))
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UI Pro Max Search")
     parser.add_argument("query", help="Search query")
@@ -65,6 +71,6 @@ if __name__ == "__main__":
 
     if args.json:
         import json
-        safe_print(json.dumps(result, indent=2, ensure_ascii=False))
+        print(json.dumps(result, indent=2, ensure_ascii=False))
     else:
-        safe_print(format_output(result))
+        print(format_output(result))

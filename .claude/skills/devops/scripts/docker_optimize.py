@@ -18,6 +18,17 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+# Windows UTF-8 compatibility
+sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+try:
+    from win_compat import ensure_utf8_stdout
+    ensure_utf8_stdout()
+except ImportError:
+    if sys.platform == 'win32':
+        import io
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 
 class DockerfileAnalyzer:
     """Analyze Dockerfile for optimization opportunities."""
