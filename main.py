@@ -34,51 +34,95 @@ def init(project_name: str):
         console.print(f"[bold red]Error:[/bold red] Directory {project_name} already exists!")
         raise typer.Exit(code=1)
 
-    # Copy template (Logic switched to git clone for production feeling, but keeping local fallback if handy)
+    # Check license tier to determine which template to use
+    from license import LicenseValidator, LicenseTier
+    validator = LicenseValidator()
+    tier = validator.get_tier()
+    
+    # Determine template repo based on tier
+    if tier in [LicenseTier.PRO, LicenseTier.ENTERPRISE]:
+        # Pro/Enterprise: Clone private repo
+        template_repo = os.getenv("PRO_TEMPLATE_REPO", "https://github.com/longtho638-jpg/mekong-template-pro.git")
+        console.print(f"   🔑 Pro/Enterprise tier detected")
+        console.print(f"   📦 Cloning Pro template (10 niches, white-label)...")
+    else:
+        # Starter: Clone public repo
+        template_repo = os.getenv("TEMPLATE_REPO", "https://github.com/longtho638-jpg/hybrid-agent-template.git")
+        console.print(f"   🆓 Starter tier (Upgrade for Pro features)")
+        console.print(f"   📦 Cloning Starter template (1 niche, basic features)...")
+
     try:
-        if "github.com" in TEMPLATE_REPO:
-            console.print(f"   ⬇️  Cloning template from {TEMPLATE_REPO}...")
-            subprocess.run(["git", "clone", TEMPLATE_REPO, project_name], check=True)
-        else:
-            # Fallback for local template during development
-            local_template = Path(TEMPLATE_REPO).resolve()
-            if not local_template.exists():
-                 # Fallback to sibling directory
-                 local_template = Path("../hybrid-agent-template").resolve()
-            
-            if local_template.exists():
-                console.print(f"   📂 Copying local template from {local_template}...")
-                shutil.copytree(local_template, target_dir)
-            else:
-                raise Exception(f"Template not found at {TEMPLATE_REPO}")
-
+        subprocess.run(["git", "clone", template_repo, project_name], check=True)
         console.print(f"   ✅ Template setup complete")
-
         
-        # Remove template git history if inherited
+        # Remove template git history
         git_dir = target_dir / ".git"
         if git_dir.exists():
             shutil.rmtree(git_dir)
             console.print("   ✅ Removed old git history")
             
         console.print(f"\n[bold green]🚀 Project {project_name} created successfully![/bold green]")
-        console.print(f"Next steps:\n  cd {project_name}\n  mekong setup-vibe")
+        
+        if tier == LicenseTier.STARTER:
+            console.print(f"\n   💡 [yellow]Want 10 niches + white-label? Upgrade to Pro:[/yellow]")
+            console.print(f"      [cyan]mekong activate --key mk_live_pro_xxxxx[/cyan]")
+        
+        console.print(f"\nNext steps:\n  cd {project_name}\n  mekong setup-vibe")
         
     except Exception as e:
         console.print(f"[bold red]Failed:[/bold red] {e}")
         raise typer.Exit(code=1)
 
+        raise typer.Exit(code=1)
+
 
 @app.command(name="setup-vibe")
 def setup_vibe(
-    niche: str = typer.Option(..., prompt="Target Niche (e.g., Rice, Fish)"),
+    niche: str = typer.Option(None, help="Target Niche (or select interactively)"),
     location: str = typer.Option(..., prompt="Location (e.g., Can Tho)"),
     tone: str = typer.Option("Bình dân, Chân thành", prompt="Brand Tone")
 ):
     """
     Customize the Agent's soul (.gemini/GEMINI.md) for a specific niche.
     """
-    console.print(f"\n[bold blue]🎨 Setup Vibe:[/bold blue] Tuning for {niche} in {location}...")
+    console.print(f"\n[bold blue]🎨 Setup Vibe:[/bold blue]")
+    
+    # If niche not provided, show interactive selection
+    if not niche:
+        console.print("\n[cyan]Available Niches (Pro tier required for all):[/cyan]")
+        niches = [
+            "🌾 rice-trading (Lúa Gạo)",
+            "🐟 fish-seafood (Cá Tra)",
+            "🛋️ furniture (Nội Thất)",
+            "🏗️ construction-materials (Vật Liệu XD)",
+            "🚜 agriculture-tools (Máy Nông Nghiệp)",
+            "🏠 real-estate (Bất Động Sản)",
+            "🍜 restaurants (Nhà Hàng)",
+            "💅 beauty-spa (Thẩm Mỹ Viện)",
+            "🚗 automotive (Ô Tô)",
+            "📚 education (Trung Tâm Học)"
+        ]
+        
+        for i, n in enumerate(niches, 1):
+            console.print(f"  {i}. {n}")
+        
+        choice = Prompt.ask("\nSelect niche", choices=[str(i) for i in range(1, 11)])
+        niche_map = {
+            "1": "rice-trading",
+            "2": "fish-seafood",
+            "3": "furniture",
+            "4": "construction-materials",
+            "5": "agriculture-tools",
+            "6": "real-estate",
+            "7": "restaurants",
+            "8": "beauty-spa",
+            "9": "automotive",
+            "10": "education"
+        }
+        niche = niche_map[choice]
+    
+    console.print(f"\nTuning for [cyan]{niche}[/cyan] in [cyan]{location}[/cyan]...")
+
     
     cwd = Path(os.getcwd())
     config_path = cwd / "agent.config.yaml"
