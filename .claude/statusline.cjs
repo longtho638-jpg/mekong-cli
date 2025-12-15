@@ -19,8 +19,8 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
-// Calibration file path
-const CALIBRATION_PATH = path.join(os.tmpdir(), 'claude-compact-calibration.json');
+// Use modularized context tracker with 3-layer self-healing detection
+const { trackContext } = require('./hooks/lib/context-tracker.cjs');
 
 
 /**
@@ -52,72 +52,11 @@ function formatTimeHM(epoch) {
     }
 }
 
-/**
- * Get smart default compact threshold based on context window size
- * Research-based defaults:
- * - 200k window: ~80% (160k) - confirmed from GitHub issues
- * - 500k window: ~60% (300k) - estimated
- * - 1M window: ~33% (330k) - derived from user observations
- *
- * @param {number} contextWindowSize - Model's context window size
- * @returns {number} Estimated compact threshold in tokens
- */
-function getDefaultCompactThreshold(contextWindowSize) {
-    // Known thresholds from research (autocompact buffer = 22.5% for 200k)
-    const KNOWN_THRESHOLDS = {
-        200000: 155000,   // 77.5% - confirmed via /context showing 45k buffer
-        1000000: 330000,  // 33% - 1M beta window
-    };
-
-    // Exact match
-    if (KNOWN_THRESHOLDS[contextWindowSize]) {
-        return KNOWN_THRESHOLDS[contextWindowSize];
-    }
-
-    // Tiered defaults based on window size
-    if (contextWindowSize >= 1000000) {
-        return Math.floor(contextWindowSize * 0.33);
-    } else {
-        // Default: ~77.5% for standard windows (200k confirmed)
-        return Math.floor(contextWindowSize * 0.775);
-    }
-}
-
-/**
- * Read calibration data from file
- * Calibration is recorded by PreCompact hook when compaction occurs
- *
- * @returns {Object} Calibration data keyed by context window size
- */
-function readCalibration() {
-    try {
-        if (fs.existsSync(CALIBRATION_PATH)) {
-            return JSON.parse(fs.readFileSync(CALIBRATION_PATH, 'utf8'));
-        }
-    } catch (err) {
-        // Silent fail - use defaults
-    }
-    return {};
-}
-
-/**
- * Get compact threshold, preferring calibrated value over default
- *
- * @param {number} contextWindowSize - Model's context window size
- * @returns {number} Compact threshold in tokens
- */
-function getCompactThreshold(contextWindowSize) {
-    // Check for calibrated threshold first
-    const calibration = readCalibration();
-    const key = String(contextWindowSize);
-
-    if (calibration[key] && calibration[key].threshold > 0) {
-        return calibration[key].threshold;
-    }
-
-    // Fall back to smart defaults
-    return getDefaultCompactThreshold(contextWindowSize);
-}
+// Context tracking functions moved to ./hooks/lib/context-tracker.cjs
+// Provides 3-layer self-healing detection:
+// - Layer 1: Session ID change detection
+// - Layer 2: Token drop detection (50% threshold)
+// - Layer 3: Hook marker system (SessionStart/SessionEnd)
 
 /**
  * Generate Unicode progress bar (horizontal rectangles)
@@ -145,43 +84,6 @@ function getSeverityEmoji(percent) {
     if (percent >= 90) return '🔴';      // Critical
     if (percent >= 70) return '🟡';      // Warning
     return '🟢';                          // Healthy
-}
-
-/**
- * Get baseline for post-compaction percentage calculation
- *
- * After compaction, we track tokens relative to a baseline (cumulative total at compaction)
- * This allows percentage to reset to ~0% after compaction and grow naturally
- *
- * @param {string} sessionId - Current session ID
- * @param {number} currentTotal - Current cumulative token total
- * @returns {Object} { showCompactIndicator: boolean, baseline: number }
- */
-function getCompactBaseline(sessionId, currentTotal) {
-    try {
-        const markerDir = path.join(os.tmpdir(), 'claude-compact-markers');
-        const sessionMarkerPath = path.join(markerDir, `${sessionId}.json`);
-
-        if (!fs.existsSync(sessionMarkerPath)) {
-            return { showCompactIndicator: false, baseline: 0 };
-        }
-
-        const marker = JSON.parse(fs.readFileSync(sessionMarkerPath, 'utf8'));
-
-        // First read after compaction - record baseline and show indicator
-        if (!marker.baselineRecorded) {
-            marker.baselineRecorded = true;
-            marker.baseline = currentTotal;
-            fs.writeFileSync(sessionMarkerPath, JSON.stringify(marker));
-            return { showCompactIndicator: true, baseline: currentTotal };
-        }
-
-        // Baseline already recorded - return it for percentage calculation
-        return { showCompactIndicator: false, baseline: marker.baseline };
-
-    } catch (err) {
-        return { showCompactIndicator: false, baseline: 0 };
-    }
 }
 
 /**
@@ -268,40 +170,28 @@ async function main() {
         linesRemoved = data.cost?.total_lines_removed || 0;
 
         // Extract context window usage (Claude Code v2.0.65+)
-        // Calculate percentage against COMPACT THRESHOLD, not model limit
-        // 100% = compaction imminent
+        // Uses 3-layer self-healing detection from context-tracker module:
+        // - Layer 1: Session ID change detection
+        // - Layer 2: Token drop detection (50% threshold)
+        // - Layer 3: Hook marker system (SessionStart/SessionEnd)
         const contextInput = data.context_window?.total_input_tokens || 0;
         const contextOutput = data.context_window?.total_output_tokens || 0;
         const contextSize = data.context_window?.context_window_size || 0;
 
         if (contextSize > 0) {
-            const contextTotal = contextInput + contextOutput;
-            const compactThreshold = getCompactThreshold(contextSize);
-            const sessionId = data.session_id || 'default';
+            const result = trackContext({
+                sessionId: data.session_id,
+                contextInput,
+                contextOutput,
+                contextWindowSize: contextSize
+            });
 
-            // Check for compaction baseline
-            // After compaction, we track tokens relative to baseline
-            const { showCompactIndicator, baseline } = getCompactBaseline(sessionId, contextTotal);
+            contextPercent = result.percentage;
 
-            if (showCompactIndicator) {
+            if (result.showCompactIndicator) {
                 // First render after compaction - show indicator once
                 contextText = `🔄 ▱▱▱▱▱▱▱▱▱▱▱▱`;
             } else {
-                // Calculate percentage
-                // If baseline > 0, we're post-compaction: track tokens since compaction
-                // Otherwise, use absolute cumulative total (first session or no compaction yet)
-                let effectiveTotal;
-                if (baseline > 0) {
-                    // Post-compaction: tokens since last compaction
-                    effectiveTotal = contextTotal - baseline;
-                    if (effectiveTotal < 0) effectiveTotal = 0; // Safety check
-                } else {
-                    // No compaction yet: use cumulative total
-                    effectiveTotal = contextTotal;
-                }
-
-                contextPercent = Math.min(100, Math.floor(effectiveTotal * 100 / compactThreshold));
-
                 const emoji = getSeverityEmoji(contextPercent);
                 const bar = progressBar(contextPercent, 12);
                 contextText = `${emoji} ${bar} ${contextPercent}%`;
