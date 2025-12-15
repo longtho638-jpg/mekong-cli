@@ -6,8 +6,22 @@
  *
  * Tracks context window usage with automatic baseline reset via:
  * - Layer 1: Session ID change detection (primary)
- * - Layer 2: Token drop detection (50% threshold backup)
- * - Layer 3: Hook marker system (explicit reset signal)
+ * - Layer 2: Hook marker system (explicit reset signal from PreCompact/SessionStart)
+ * - Layer 3: Token drop detection (50% threshold fallback for hook failures)
+ *
+ * Concurrency assumptions:
+ * - Claude Code hooks run sequentially within a session (no parallel execution)
+ * - Multiple sessions may run concurrently but have separate marker files
+ * - File operations are synchronous and short-lived; no locking needed
+ *
+ * Marker triggers vocabulary:
+ * - session_start_clear: User ran /clear (SessionStart hook)
+ * - manual: User ran /compact (PreCompact hook)
+ * - auto: Auto-compaction triggered (PreCompact hook)
+ * - new_session: Fresh session with no prior state
+ * - session_id_change: Layer 1 detected session switch
+ * - token_drop: Layer 2 detected >50% token reduction
+ * - marker_*: Layer 3 processed explicit reset marker
  *
  * @module context-tracker
  */
@@ -22,6 +36,10 @@ const CALIBRATION_PATH = path.join(os.tmpdir(), 'claude-compact-calibration.json
 const STATE_FILE = path.join(os.tmpdir(), 'claude-context-state.json');
 
 // Token drop threshold for Layer 2 detection (50%)
+// Rationale: /compact typically reduces tokens by 60-80%, so 50% catches
+// context resets while avoiding false positives from normal token accumulation.
+// Layer 2 is a fallback for when PreCompact hooks fail; with working hooks,
+// Layer 1 (session_id_change) and Layer 3 (markers) handle most resets.
 const TOKEN_DROP_THRESHOLD = 0.5;
 
 /**
@@ -109,17 +127,19 @@ function writeState(state) {
 
 /**
  * Read marker file for a session
+ * Defensive: handles missing/empty/corrupt files gracefully
  * @param {string} sessionId - Session ID
  * @returns {Object|null} Marker data or null
  */
 function readMarker(sessionId) {
   try {
     const markerPath = path.join(MARKER_DIR, `${sessionId}.json`);
-    if (fs.existsSync(markerPath)) {
-      return JSON.parse(fs.readFileSync(markerPath, 'utf8'));
-    }
+    if (!fs.existsSync(markerPath)) return null;
+    const data = fs.readFileSync(markerPath, 'utf8');
+    if (!data.trim()) return null; // Catch empty/corrupt files
+    return JSON.parse(data);
   } catch (err) {
-    // Silent fail
+    // Silent fail - corrupt JSON or read error
   }
   return null;
 }
@@ -233,19 +253,22 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
   if (detectSessionIdChange(effectiveSessionId, state)) {
     resetLayer = 'session_id_change';
     baseline = currentTotal;
-    // Clean up old session marker if any
+    // Clean up old session marker and create new one immediately
     if (state.lastSessionId) {
       deleteMarker(state.lastSessionId);
     }
+    writeMarker(effectiveSessionId, {
+      baselineRecorded: true,
+      baseline: currentTotal,
+      sessionId: effectiveSessionId,
+      trigger: 'session_id_change',
+      timestamp: Date.now()
+    });
   }
 
-  // --- Layer 2: Token drop detection (backup) ---
-  if (!resetLayer && detectTokenDrop(currentTotal, state)) {
-    resetLayer = 'token_drop';
-    baseline = currentTotal;
-  }
-
-  // --- Layer 3: Hook marker system ---
+  // --- Layer 2: Hook marker system (check before token drop) ---
+  // Markers from PreCompact/SessionStart hooks are explicit signals, more
+  // reliable than token drop heuristics, so check them first
   if (!resetLayer) {
     const { shouldReset, trigger } = checkResetMarker(effectiveSessionId);
     if (shouldReset) {
@@ -254,6 +277,12 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
       // Delete marker after processing
       deleteMarker(effectiveSessionId);
     }
+  }
+
+  // --- Layer 3: Token drop detection (fallback for hook failures) ---
+  if (!resetLayer && detectTokenDrop(currentTotal, state)) {
+    resetLayer = 'token_drop';
+    baseline = currentTotal;
   }
 
   // --- No reset triggered - use existing marker/baseline ---
@@ -346,6 +375,7 @@ function clearAllState() {
       for (const file of files) {
         fs.unlinkSync(path.join(MARKER_DIR, file));
       }
+      fs.rmdirSync(MARKER_DIR);
     }
   } catch (err) {
     // Silent fail
