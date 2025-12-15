@@ -1,3 +1,10 @@
+## [1.21.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.8...v1.21.0-beta.9) (2025-12-15)
+
+
+### 🚀 Features
+
+* **locale:** add thinkingLanguage for dual-language support ([90b3eb8](https://github.com/claudekit/claudekit-engineer/commit/90b3eb8f6139f3bd70d646e294005f30ae11a42d)), closes [#180](https://github.com/claudekit/claudekit-engineer/issues/180)
+
 ## [1.21.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.7...v1.21.0-beta.8) (2025-12-15)
 
 
