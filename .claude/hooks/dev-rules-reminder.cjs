@@ -81,16 +81,30 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern }) {
+function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern }) {
+  // Build language instructions based on config
+  // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
+  const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : null);
+  const hasThinking = effectiveThinking && effectiveThinking !== responseLanguage;
+  const hasResponse = responseLanguage;
+  const languageLines = [];
+
+  if (hasThinking || hasResponse) {
+    languageLines.push(`## Language`);
+    if (hasThinking) {
+      languageLines.push(`- Thinking: Use ${effectiveThinking} for reasoning (logic, precision).`);
+    }
+    if (hasResponse) {
+      languageLines.push(`- Response: Respond in ${responseLanguage} (natural, fluent).`);
+    }
+    languageLines.push(``);
+  }
+
   return [
     // ─────────────────────────────────────────────────────────────────────────
-    // RESPONSE LANGUAGE (if configured)
+    // LANGUAGE (thinking + response, if configured)
     // ─────────────────────────────────────────────────────────────────────────
-    ...(responseLanguage ? [
-      `## Response Language`,
-      `Respond in ${responseLanguage}.`,
-      ``
-    ] : []),
+    ...languageLines,
 
     // ─────────────────────────────────────────────────────────────────────────
     // SESSION CONTEXT
@@ -176,6 +190,7 @@ async function main() {
     const { reportsPath, gitBranch, planLine, namePattern } = buildPlanContext(sessionId, config);
 
     const output = buildReminder({
+      thinkingLanguage: config.locale?.thinkingLanguage,
       responseLanguage: config.locale?.responseLanguage,
       devRulesPath,
       catalogScript,
