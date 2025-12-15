@@ -196,10 +196,81 @@ def generate_secrets():
     console.print("\n[bold green]✅ .env file created locally (DO NOT COMMIT)[/bold green]")
 
 
-
-
 from deploy_automation import run_deploy
 from license import LicenseValidator
+
+@app.command(name="mcp-setup")
+def setup_mcp():
+    """
+    Setup MCP (Model Context Protocol) servers for the project.
+    """
+    console.print("\n[bold blue]🔌 Setting up MCP Servers...[/bold blue]")
+    
+    cwd = Path(os.getcwd())
+    mcp_config = cwd / "mcp" / "settings.json"
+    
+    if not mcp_config.exists():
+        console.print("[red]Error:[/red] Not a valid Mekong project (no mcp/settings.json)")
+        raise typer.Exit(code=1)
+    
+    # Install MCP dependencies
+    console.print("   📦 Installing MCP server packages...")
+    
+    packages = [
+        "@anthropic/mcp-server-filesystem",
+        "@anthropic/mcp-server-fetch",
+        "@anthropic/mcp-server-playwright"
+    ]
+    
+    try:
+        for pkg in packages:
+            console.print(f"      Installing {pkg}...")
+            subprocess.run(["npm", "install", "-g", pkg], 
+                         check=True, capture_output=True)
+        
+        console.print("   ✅ MCP packages installed")
+        
+        # Verify configuration
+        import json
+        with open(mcp_config) as f:
+            config = json.load(f)
+        
+        servers = config.get("mcpServers", {})
+        console.print(f"\n   📋 Configured MCP Servers ({len(servers)}):")
+        for name, conf in servers.items():
+            desc = conf.get("description", "")
+            console.print(f"      • {name}: {desc}")
+        
+        console.print("\n[bold green]✅ MCP Setup Complete![/bold green]")
+        console.print("\n   Next: Set environment variables in .env")
+        console.print("   Then: mekong run-scout 'feature-name' to test")
+        
+    except subprocess.CalledProcessError as e:
+        console.print(f"[red]Failed to install MCP packages:[/red] {e}")
+        raise typer.Exit(code=1)
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1)
+
+
+@app.command(name="run-scout")
+def run_scout_cmd(
+    feature: str = typer.Argument(..., help="Feature to analyze")
+):
+    """
+    Run Scout Agent to analyze a feature (for testing).
+    """
+    console.print(f"\n[bold blue]🔍 Running Scout Agent...[/bold blue]")
+    console.print(f"   Feature: {feature}")
+    
+    # Quick test - just show what would happen
+    console.print("\n   [cyan]Scout would:[/cyan]")
+    console.print("   • Analyze git commits related to feature")
+    console.print("   • Scan Product Hunt via Playwright MCP")
+    console.print("   • Scan Reddit via Fetch MCP")
+    console.print("   • Generate summary via OpenRouter (fast tier)")
+    console.print("\n   [yellow]Note: Full execution requires backend running[/yellow]")
+
 
 @app.command(name="activate")
 def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
