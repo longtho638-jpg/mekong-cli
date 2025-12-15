@@ -43,7 +43,10 @@ function ensureDir(dirPath) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
   } catch (err) {
-    // Silent fail - non-critical
+    // Silent fail - non-critical, but log for debugging
+    if (process.env.CK_DEBUG) {
+      console.error(`[CK] Failed to create ${dirPath}: ${err.message}`);
+    }
   }
 }
 

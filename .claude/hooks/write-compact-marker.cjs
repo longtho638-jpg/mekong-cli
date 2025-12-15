@@ -65,9 +65,12 @@ function updateCalibration(contextWindowSize, tokensAtCompact) {
   const calibration = readCalibration();
   const key = String(contextWindowSize);
 
+  // EMA alpha: 0.3 gives 70% weight to historical average, 30% to new observation
+  // Chosen to smooth out variations while adapting to pattern changes within ~3-4 observations
+  const CALIBRATION_ALPHA = 0.3;
+
   if (calibration[key]) {
-    // Exponential moving average (EMA) with alpha=0.3 for smooth updates
-    const alpha = 0.3;
+    const alpha = CALIBRATION_ALPHA;
     const oldThreshold = calibration[key].threshold;
     const newThreshold = Math.floor(alpha * tokensAtCompact + (1 - alpha) * oldThreshold);
 

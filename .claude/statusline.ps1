@@ -13,7 +13,8 @@
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Calibration file path (now in ck/ namespace - fixes #178)
-$CalibrationPath = Join-Path $env:TEMP "ck" | ForEach-Object { Join-Path $_ "calibration.json" }
+# IMPORTANT: Path must match ck-paths.cjs CALIBRATION_PATH
+$CalibrationPath = Join-Path (Join-Path $env:TEMP "ck") "calibration.json"
 
 # Time conversion functions
 function ConvertTo-Epoch {

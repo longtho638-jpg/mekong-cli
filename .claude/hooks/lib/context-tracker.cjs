@@ -44,6 +44,7 @@ const {
 // Token drop threshold for Layer 2 detection (50%)
 // Rationale: /compact typically reduces tokens by 60-80%, so 50% catches
 // context resets while avoiding false positives from normal token accumulation.
+// Exclusive: drops below (<) 50% trigger reset
 const TOKEN_DROP_THRESHOLD = 0.5;
 
 /**
@@ -114,7 +115,12 @@ function readMarker(sessionId) {
     if (!fs.existsSync(markerPath)) return null;
     const data = fs.readFileSync(markerPath, 'utf8');
     if (!data.trim()) return null; // Catch empty/corrupt files
-    return JSON.parse(data);
+    const marker = JSON.parse(data);
+    // Basic schema validation
+    if (!marker || typeof marker.sessionId !== 'string') {
+      return null;
+    }
+    return marker;
   } catch (err) {
     // Silent fail - corrupt JSON or read error
   }

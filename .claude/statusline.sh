@@ -11,6 +11,7 @@
 input=$(cat)
 
 # Calibration file path (now in /tmp/ck/ namespace - fixes #178)
+# IMPORTANT: Path must match ck-paths.cjs CALIBRATION_PATH
 CALIBRATION_PATH="${TMPDIR:-/tmp}/ck/calibration.json"
 
 # ---- time helpers ----
