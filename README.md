@@ -1,55 +1,125 @@
-# 🌊 Mekong-CLI: Trình khởi tạo Local Agency tự động
+# 🌊 MEKONG-CLI: Trình Khởi Tạo Local Agency Tự Động
 
-Công cụ dòng lệnh giúp triển khai mô hình "Local Marketing Hub" trong 15 phút, dựa trên kiến trúc Hybrid Agentic (Google Cloud Run + Supabase + Vercel).
+> **"Deploy Your Agency in 15 Minutes"**  
+> Công cụ dòng lệnh giúp triển khai mô hình "Local Marketing Hub" với chi phí tối ưu.
 
-## Tính năng chính
-- **🏗 Auto Scaffold:** Clone cấu trúc chuẩn từ `hybrid-agent-template`.
-- **🎨 Vibe Tuning:** Tự động điều chỉnh giọng văn AI (`GEMINI.md`) theo địa phương (VD: Giọng miền Tây, Giọng Bắc).
-- **🚀 One-Command Deploy:** Tự động inject secrets và deploy lên Google Cloud Run.
+## ✨ Tính Năng Chính
 
-## Cài đặt & Sử dụng
+| Tính năng | Mô tả |
+|-----------|-------|
+| 🏗 **Auto Scaffold** | Clone cấu trúc chuẩn từ Golden Template |
+| 🎨 **Vibe Tuning** | Điều chỉnh giọng văn AI theo địa phương |
+| 🔌 **MCP Integration** | Tích hợp 7 MCP servers (Genmedia, Playwright, Twitter...) |
+| 🚀 **One-Command Deploy** | Tự động inject secrets và deploy lên Cloud Run |
+| 🔐 **License System** | 3 tiers: Starter, Pro, Enterprise |
 
-### 1. Cài đặt
+## 📦 Cài Đặt
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/mekong-cli.git
+# Clone repo
+git clone https://github.com/longtho638-jpg/mekong-cli.git
 cd mekong-cli
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Install globally (optional)
+pip install -e .
 ```
 
-### 2. Khởi tạo Agency mới (Ví dụ: Long Xuyên)
+## 🚀 Quick Start
+
+### 1. Khởi Tạo Project
+
 ```bash
-python3 main.py init long-xuyen-hub
-cd long-xuyen-hub
+mekong init my-agency
+cd my-agency
 ```
 
-### 3. Cấu hình "Linh hồn" (Vibe)
+### 2. Cấu Hình "Linh Hồn" (Vibe)
+
 ```bash
-python3 ../main.py setup-vibe
-# Nhập: Niche="Lúa Gạo", Location="An Giang", Tone="Chân chất"
+mekong setup-vibe
+# Chọn: Niche, Location, Tone
+```
+
+### 3. Setup MCP Servers
+
+```bash
+mekong mcp-setup
 ```
 
 ### 4. Tạo Secrets
+
 ```bash
-python3 ../main.py generate-secrets
+mekong generate-secrets
 ```
 
-### 5. Kích hoạt hệ thống
+### 5. Deploy
+
 ```bash
-python3 ../main.py deploy
+mekong deploy
 ```
+
+## 💰 Pricing
+
+| Tier | Price | Features |
+|------|-------|----------|
+| **Starter** | $0 | 1 video/day, 1 niche |
+| **Pro** | $497 | 10 videos/day, 10 niches, white-label |
+| **Enterprise** | $2,997 | Unlimited, custom training |
+
+```bash
+# Activate license
+mekong activate --key mk_live_pro_xxxxx
+
+# Check status
+mekong status
+```
+
+## 🏗 Kiến Trúc
+
+```
+MEKONG-CLI
+├── Golden Template (hybrid-agent-template)
+│   ├── Backend: Python + FastAPI + Cloud Run
+│   ├── Frontend: Next.js (Mission Control)
+│   └── Agents: Scout, Editor, Director, Community
+├── Hybrid Router
+│   ├── OpenRouter (text/code - cheap)
+│   └── Google Vertex AI (vision/media)
+└── MCP Integration
+    ├── genmedia (Imagen/Veo)
+    ├── playwright (scraping)
+    ├── twitter/reddit (posting)
+    └── gcloud (deploy)
+```
+
+## 📋 CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `mekong init <name>` | Khởi tạo project mới |
+| `mekong setup-vibe` | Cấu hình giọng văn AI |
+| `mekong mcp-setup` | Cài đặt MCP servers |
+| `mekong generate-secrets` | Tạo file .env |
+| `mekong deploy` | Deploy lên Cloud Run |
+| `mekong activate --key` | Kích hoạt license |
+| `mekong status` | Xem trạng thái license |
+| `mekong run-scout <feature>` | Test Scout Agent |
+
+## 🎯 Use Cases
+
+1. **Marketing Agency**: Tự động hóa content cho SMEs địa phương
+2. **Franchise Model**: Nhân bản agency với cấu trúc chuẩn
+3. **AI Content Hub**: Tạo video/blog/post tự động từ code
+
+## 📚 Links
+
+- **Landing Page**: https://mekong-landing.vercel.app
+- **Pro Template**: Private repo (license required)
+- **Documentation**: `/docs` directory
 
 ---
 
-## Kiến trúc
-
-- **Mekong-CLI**: Python (Typer, Rich)
-- **Template**:
-  - Frontend: Next.js (Mission Control)
-  - Backend: Python FastAPI (Agent Core)
-  - Engine: Google Gemini (Vision) + OpenRouter (Text) + ElevenLabs (Voice)
-
-## Chiến lược Nhượng quyền Agency
-
-1. **Chuẩn hóa**: Mọi Agency con đều dùng chung cấu trúc code (Golden Template).
-2. **Tốc độ**: Setup 15 phút thay vì 2 tuần.
-3. **An toàn**: Data Diet & Hybrid Router tích hợp sẵn để tối ưu chi phí.
+© 2024 MEKONG-CLI | Built with ❤️ for Vietnamese SMEs

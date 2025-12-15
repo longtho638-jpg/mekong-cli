@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
 """
-Mekong-CLI: Automation Tool for Hybrid Agent Franchise
+MEKONG-CLI: Local Agency Automation Tool
+
+Deploy Your Agency in 15 Minutes.
+Powered by Hybrid Agentic Architecture 2026.
+
+Commands:
+    mekong init <name>        - Initialize new project
+    mekong setup-vibe         - Configure AI voice/tone
+    mekong mcp-setup          - Setup MCP servers
+    mekong generate-secrets   - Create .env file
+    mekong deploy             - Deploy to Cloud Run
+    mekong activate           - Activate license
+    mekong status             - Show license status
 """
 
 import os
@@ -13,8 +25,9 @@ from rich.console import Console
 from rich.prompt import Prompt
 from rich import print as rprint
 
-app = typer.Typer(help="Mekong-CLI: Build & Deploy Hybrid Agents")
+app = typer.Typer(help="🌊 MEKONG-CLI: Deploy Your Agency in 15 Minutes")
 console = Console()
+
 
 
 # TEMPLATE_REPO = "https://github.com/YOUR_USERNAME/hybrid-agent-template.git"
@@ -26,7 +39,7 @@ def init(project_name: str):
     """
     Initialize a new Hybrid Agent project from the Golden Template.
     """
-    console.print(f"[bold blue]🌊 Mekong-CLI:[/bold blue] Initializing {project_name}...")
+    console.print(f"[bold blue]🌊 MEKONG-CLI:[/bold blue] Initializing {project_name}...")
     
     target_dir = Path(os.getcwd()) / project_name
     
