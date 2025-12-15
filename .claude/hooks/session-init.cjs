@@ -248,6 +248,9 @@ async function main() {
       writeEnv(envFile, 'CK_CLAUDE_SETTINGS_DIR', staticEnv.claudeSettingsDir);
 
       // Locale config
+      if (config.locale?.thinkingLanguage) {
+        writeEnv(envFile, 'CK_THINKING_LANGUAGE', config.locale.thinkingLanguage);
+      }
       if (config.locale?.responseLanguage) {
         writeEnv(envFile, 'CK_RESPONSE_LANGUAGE', config.locale.responseLanguage);
       }
