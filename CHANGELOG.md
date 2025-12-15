@@ -1,3 +1,11 @@
+## [1.21.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.11...v1.21.0-beta.12) (2025-12-15)
+
+
+### 🐞 Bug Fixes
+
+* **ai-multimodal:** transcript output requirements ([e9b9a29](https://github.com/claudekit/claudekit-engineer/commit/e9b9a2945c4c971d1e971d759e4b3a8b5694d534))
+* **ai-multimodal:** truncate when transcripting an audio with length is longer than 15 mins ([754774e](https://github.com/claudekit/claudekit-engineer/commit/754774ebe61064eb8f8c24a2f4e5b6dbf03b3f3f))
+
 ## [1.21.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.10...v1.21.0-beta.11) (2025-12-15)
 
 
