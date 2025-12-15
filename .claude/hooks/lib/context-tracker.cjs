@@ -2,44 +2,48 @@
 'use strict';
 
 /**
- * Context Window Tracker - Self-healing 3-layer context reset detection
+ * Context Window Tracker - Self-healing context reset detection
  *
- * Tracks context window usage with automatic baseline reset via:
- * - Layer 1: Session ID change detection (primary)
- * - Layer 2: Hook marker system (explicit reset signal from PreCompact/SessionStart)
- * - Layer 3: Token drop detection (50% threshold fallback for hook failures)
+ * Fixes #177: Race condition from shared global state file
+ * Fixes #178: Consolidates temp files to /tmp/ck/ namespace
  *
- * Concurrency assumptions:
- * - Claude Code hooks run sequentially within a session (no parallel execution)
- * - Multiple sessions may run concurrently but have separate marker files
- * - File operations are synchronous and short-lived; no locking needed
+ * Architecture:
+ * - NO global state file (was causing race conditions in concurrent sessions)
+ * - All state embedded in session-specific marker files
+ * - Each session is completely isolated (no shared state)
  *
- * Marker triggers vocabulary:
- * - session_start_clear: User ran /clear (SessionStart hook)
- * - manual: User ran /compact (PreCompact hook)
- * - auto: Auto-compaction triggered (PreCompact hook)
- * - new_session: Fresh session with no prior state
- * - session_id_change: Layer 1 detected session switch
- * - token_drop: Layer 2 detected >50% token reduction
- * - marker_*: Layer 3 processed explicit reset marker
+ * Detection layers:
+ * - Layer 1: Hook markers (explicit reset signal from PreCompact/SessionStart)
+ * - Layer 2: Token drop detection (50% threshold fallback for hook failures)
+ *
+ * Removed:
+ * - Old Layer 1 (session ID change detection) - was the BUG source
+ * - Global STATE_FILE - caused race conditions in concurrent sessions
+ *
+ * Marker schema:
+ * {
+ *   sessionId: string,
+ *   trigger: string,           // 'session_start_clear', 'manual', 'auto', 'new_session', 'token_drop'
+ *   baselineRecorded: boolean,
+ *   baseline: number,          // Token count at baseline
+ *   lastTokenTotal: number,    // For token drop detection (replaces global state)
+ *   timestamp: number
+ * }
  *
  * @module context-tracker
  */
 
 const fs = require('fs');
-const path = require('path');
-const os = require('os');
-
-// Paths - consistent with write-compact-marker.cjs
-const MARKER_DIR = path.join(os.tmpdir(), 'claude-compact-markers');
-const CALIBRATION_PATH = path.join(os.tmpdir(), 'claude-compact-calibration.json');
-const STATE_FILE = path.join(os.tmpdir(), 'claude-context-state.json');
+const {
+  MARKERS_DIR,
+  CALIBRATION_PATH,
+  ensureDir,
+  getMarkerPath
+} = require('./ck-paths.cjs');
 
 // Token drop threshold for Layer 2 detection (50%)
 // Rationale: /compact typically reduces tokens by 60-80%, so 50% catches
 // context resets while avoiding false positives from normal token accumulation.
-// Layer 2 is a fallback for when PreCompact hooks fail; with working hooks,
-// Layer 1 (session_id_change) and Layer 3 (markers) handle most resets.
 const TOKEN_DROP_THRESHOLD = 0.5;
 
 /**
@@ -99,33 +103,6 @@ function getCompactThreshold(contextWindowSize) {
 }
 
 /**
- * Read persistent state (session_id, last token count)
- * @returns {Object} { lastSessionId, lastTokenTotal, lastTimestamp }
- */
-function readState() {
-  try {
-    if (fs.existsSync(STATE_FILE)) {
-      return JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
-    }
-  } catch (err) {
-    // Silent fail - return empty state
-  }
-  return { lastSessionId: null, lastTokenTotal: 0, lastTimestamp: 0 };
-}
-
-/**
- * Write persistent state
- * @param {Object} state - State to persist
- */
-function writeState(state) {
-  try {
-    fs.writeFileSync(STATE_FILE, JSON.stringify(state));
-  } catch (err) {
-    // Silent fail - non-critical
-  }
-}
-
-/**
  * Read marker file for a session
  * Defensive: handles missing/empty/corrupt files gracefully
  * @param {string} sessionId - Session ID
@@ -133,7 +110,7 @@ function writeState(state) {
  */
 function readMarker(sessionId) {
   try {
-    const markerPath = path.join(MARKER_DIR, `${sessionId}.json`);
+    const markerPath = getMarkerPath(sessionId);
     if (!fs.existsSync(markerPath)) return null;
     const data = fs.readFileSync(markerPath, 'utf8');
     if (!data.trim()) return null; // Catch empty/corrupt files
@@ -151,10 +128,8 @@ function readMarker(sessionId) {
  */
 function writeMarker(sessionId, marker) {
   try {
-    if (!fs.existsSync(MARKER_DIR)) {
-      fs.mkdirSync(MARKER_DIR, { recursive: true });
-    }
-    const markerPath = path.join(MARKER_DIR, `${sessionId}.json`);
+    ensureDir(MARKERS_DIR);
+    const markerPath = getMarkerPath(sessionId);
     fs.writeFileSync(markerPath, JSON.stringify(marker));
   } catch (err) {
     // Silent fail
@@ -167,7 +142,7 @@ function writeMarker(sessionId, marker) {
  */
 function deleteMarker(sessionId) {
   try {
-    const markerPath = path.join(MARKER_DIR, `${sessionId}.json`);
+    const markerPath = getMarkerPath(sessionId);
     if (fs.existsSync(markerPath)) {
       fs.unlinkSync(markerPath);
     }
@@ -177,49 +152,35 @@ function deleteMarker(sessionId) {
 }
 
 /**
- * Layer 1: Detect session ID change
- * @param {string} currentSessionId - Current session ID
- * @param {Object} state - Persisted state
- * @returns {boolean} True if session changed
- */
-function detectSessionIdChange(currentSessionId, state) {
-  if (!currentSessionId || !state.lastSessionId) {
-    return false;
-  }
-  return currentSessionId !== state.lastSessionId;
-}
-
-/**
  * Layer 2: Detect significant token drop (50%+ reduction)
- * This catches scenarios where hooks failed or session changed silently
+ * Uses session-specific lastTokenTotal from marker (no global state)
  * @param {number} currentTotal - Current cumulative token total
- * @param {Object} state - Persisted state
+ * @param {Object|null} marker - Session marker with lastTokenTotal
  * @returns {boolean} True if token drop detected
  */
-function detectTokenDrop(currentTotal, state) {
-  if (state.lastTokenTotal <= 0 || currentTotal <= 0) {
+function detectTokenDrop(currentTotal, marker) {
+  if (!marker || !marker.lastTokenTotal || marker.lastTokenTotal <= 0 || currentTotal <= 0) {
     return false;
   }
 
   // Token total dropped by more than 50%
-  const dropRatio = currentTotal / state.lastTokenTotal;
+  const dropRatio = currentTotal / marker.lastTokenTotal;
   return dropRatio < TOKEN_DROP_THRESHOLD;
 }
 
 /**
- * Layer 3: Check for explicit reset marker from hooks
- * @param {string} sessionId - Session ID
+ * Layer 1: Check for explicit reset marker from hooks
+ * @param {Object|null} marker - Session marker
  * @returns {{ shouldReset: boolean, trigger: string|null }}
  */
-function checkResetMarker(sessionId) {
-  const marker = readMarker(sessionId);
-
+function checkResetMarker(marker) {
   if (!marker) {
     return { shouldReset: false, trigger: null };
   }
 
   // Check if marker indicates a reset (clear/compact)
-  if (marker.trigger === 'clear' || marker.trigger === 'session_start_clear') {
+  const resetTriggers = ['clear', 'session_start_clear'];
+  if (resetTriggers.includes(marker.trigger)) {
     return { shouldReset: true, trigger: marker.trigger };
   }
 
@@ -227,7 +188,12 @@ function checkResetMarker(sessionId) {
 }
 
 /**
- * Main context tracking function with 3-layer self-healing detection
+ * Main context tracking function with 2-layer self-healing detection
+ *
+ * Layer 1: Hook markers (explicit reset from PreCompact/SessionStart)
+ * Layer 2: Token drop detection (50% threshold fallback)
+ *
+ * NO global state - all state is session-specific in marker files
  *
  * @param {Object} params - Tracking parameters
  * @param {string} params.sessionId - Current session ID
@@ -241,68 +207,38 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
   const compactThreshold = getCompactThreshold(contextWindowSize);
   const effectiveSessionId = sessionId || 'default';
 
-  // Read persisted state
-  const state = readState();
+  // Read session-specific marker (no global state!)
+  let marker = readMarker(effectiveSessionId);
 
   // Track which layer triggered reset (for debugging)
   let resetLayer = null;
   let baseline = 0;
   let showCompactIndicator = false;
 
-  // --- Layer 1: Session ID change detection ---
-  if (detectSessionIdChange(effectiveSessionId, state)) {
-    resetLayer = 'session_id_change';
+  // --- Layer 1: Hook marker system ---
+  // Markers from PreCompact/SessionStart hooks are explicit signals
+  const { shouldReset, trigger } = checkResetMarker(marker);
+  if (shouldReset) {
+    resetLayer = `marker_${trigger}`;
     baseline = currentTotal;
-    // Clean up old session marker and create new one immediately
-    if (state.lastSessionId) {
-      deleteMarker(state.lastSessionId);
-    }
-    writeMarker(effectiveSessionId, {
-      baselineRecorded: true,
-      baseline: currentTotal,
-      sessionId: effectiveSessionId,
-      trigger: 'session_id_change',
-      timestamp: Date.now()
-    });
+    // Clear the reset trigger after processing
+    marker = null; // Force fresh marker creation below
   }
 
-  // --- Layer 2: Hook marker system (check before token drop) ---
-  // Markers from PreCompact/SessionStart hooks are explicit signals, more
-  // reliable than token drop heuristics, so check them first
-  if (!resetLayer) {
-    const { shouldReset, trigger } = checkResetMarker(effectiveSessionId);
-    if (shouldReset) {
-      resetLayer = `marker_${trigger}`;
-      baseline = currentTotal;
-      // Delete marker after processing
-      deleteMarker(effectiveSessionId);
-    }
-  }
-
-  // --- Layer 3: Token drop detection (fallback for hook failures) ---
-  if (!resetLayer && detectTokenDrop(currentTotal, state)) {
+  // --- Layer 2: Token drop detection (fallback for hook failures) ---
+  if (!resetLayer && detectTokenDrop(currentTotal, marker)) {
     resetLayer = 'token_drop';
     baseline = currentTotal;
+    marker = null; // Force fresh marker creation below
   }
 
   // --- No reset triggered - use existing marker/baseline ---
-  if (!resetLayer) {
-    const marker = readMarker(effectiveSessionId);
-
-    if (!marker) {
-      // No marker exists - create fresh one
-      writeMarker(effectiveSessionId, {
-        baselineRecorded: true,
-        baseline: currentTotal,
-        sessionId: effectiveSessionId,
-        trigger: 'new_session',
-        timestamp: Date.now()
-      });
-      baseline = currentTotal;
-    } else if (!marker.baselineRecorded) {
+  if (!resetLayer && marker) {
+    if (!marker.baselineRecorded) {
       // Marker exists but baseline not recorded yet (from PreCompact)
       marker.baselineRecorded = true;
       marker.baseline = currentTotal;
+      marker.lastTokenTotal = currentTotal;
       writeMarker(effectiveSessionId, marker);
       baseline = currentTotal;
       // PreCompact triggers: "manual" (from /compact) or "auto" (from auto-compact)
@@ -311,15 +247,26 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
       // Use stored baseline
       baseline = marker.baseline || 0;
     }
-  } else {
-    // Reset triggered - create fresh marker with new baseline
-    writeMarker(effectiveSessionId, {
+  }
+
+  // --- Create fresh marker if needed ---
+  if (!marker || resetLayer) {
+    const newMarker = {
+      sessionId: effectiveSessionId,
+      trigger: resetLayer || 'new_session',
       baselineRecorded: true,
       baseline: currentTotal,
-      sessionId: effectiveSessionId,
-      trigger: resetLayer,
+      lastTokenTotal: currentTotal,
       timestamp: Date.now()
-    });
+    };
+    writeMarker(effectiveSessionId, newMarker);
+    if (!resetLayer) {
+      baseline = currentTotal;
+    }
+  } else {
+    // Update lastTokenTotal for next token drop detection
+    marker.lastTokenTotal = currentTotal;
+    writeMarker(effectiveSessionId, marker);
   }
 
   // Calculate effective tokens (since baseline)
@@ -328,13 +275,6 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
 
   // Calculate percentage against compact threshold (not model limit)
   const percentage = Math.min(100, Math.floor(effectiveTotal * 100 / compactThreshold));
-
-  // Update persistent state for next call
-  writeState({
-    lastSessionId: effectiveSessionId,
-    lastTokenTotal: currentTotal,
-    lastTimestamp: Date.now()
-  });
 
   return {
     percentage,
@@ -353,33 +293,24 @@ function trackContext({ sessionId, contextInput, contextOutput, contextWindowSiz
  */
 function writeResetMarker(sessionId, trigger = 'clear') {
   const effectiveSessionId = sessionId || 'default';
+  ensureDir(MARKERS_DIR);
   writeMarker(effectiveSessionId, {
-    baselineRecorded: false,
-    baseline: 0,
     sessionId: effectiveSessionId,
     trigger: `session_start_${trigger}`,
+    baselineRecorded: false,
+    baseline: 0,
+    lastTokenTotal: 0,
     timestamp: Date.now()
   });
 }
 
 /**
- * Clear all markers and state (for testing/cleanup)
+ * Clear all markers (for testing/cleanup)
+ * Uses new /tmp/ck/ namespace
  */
 function clearAllState() {
-  try {
-    if (fs.existsSync(STATE_FILE)) {
-      fs.unlinkSync(STATE_FILE);
-    }
-    if (fs.existsSync(MARKER_DIR)) {
-      const files = fs.readdirSync(MARKER_DIR);
-      for (const file of files) {
-        fs.unlinkSync(path.join(MARKER_DIR, file));
-      }
-      fs.rmdirSync(MARKER_DIR);
-    }
-  } catch (err) {
-    // Silent fail
-  }
+  const { cleanAll } = require('./ck-paths.cjs');
+  cleanAll();
 }
 
 module.exports = {
@@ -388,15 +319,11 @@ module.exports = {
   clearAllState,
   getCompactThreshold,
   // Export for testing
-  detectSessionIdChange,
   detectTokenDrop,
   checkResetMarker,
-  readState,
-  writeState,
   readMarker,
   writeMarker,
   deleteMarker,
   TOKEN_DROP_THRESHOLD,
-  MARKER_DIR,
-  STATE_FILE
+  MARKERS_DIR
 };
