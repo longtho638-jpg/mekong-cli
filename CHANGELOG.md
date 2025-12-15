@@ -1,3 +1,15 @@
+## [1.21.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.9...v1.21.0-beta.10) (2025-12-15)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** resolve context tracker race condition and consolidate temp files ([7c507c8](https://github.com/claudekit/claudekit-engineer/commit/7c507c87e6b78826f45bc5f374a38ec604e5d125)), closes [#177](https://github.com/claudekit/claudekit-engineer/issues/177) [#178](https://github.com/claudekit/claudekit-engineer/issues/178)
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** address code review feedback ([052959a](https://github.com/claudekit/claudekit-engineer/commit/052959a058423175b768151b8017f60c182f1531))
+
 ## [1.21.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.8...v1.21.0-beta.9) (2025-12-15)
 
 
