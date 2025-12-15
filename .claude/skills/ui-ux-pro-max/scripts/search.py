@@ -38,6 +38,15 @@ def format_output(result):
     return "\n".join(output)
 
 
+def safe_print(text):
+    """Print with Unicode support on Windows (cp1252 fallback)"""
+    import sys
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        print(text.encode(sys.stdout.encoding, errors='replace').decode(sys.stdout.encoding))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UI Pro Max Search")
     parser.add_argument("query", help="Search query")
@@ -56,6 +65,6 @@ if __name__ == "__main__":
 
     if args.json:
         import json
-        print(json.dumps(result, indent=2, ensure_ascii=False))
+        safe_print(json.dumps(result, indent=2, ensure_ascii=False))
     else:
-        print(format_output(result))
+        safe_print(format_output(result))
