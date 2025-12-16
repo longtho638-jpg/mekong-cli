@@ -24,25 +24,70 @@ const {
 const { writeResetMarker } = require('./lib/context-tracker.cjs');
 
 /**
- * Safely execute shell command
+ * Safely execute shell command with optional timeout
+ * @param {string} cmd - Command to execute
+ * @param {number} timeoutMs - Timeout in milliseconds (default: 5000)
  */
-function execSafe(cmd) {
+function execSafe(cmd, timeoutMs = 5000) {
   try {
-    return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    return execSync(cmd, {
+      encoding: 'utf8',
+      timeout: timeoutMs,
+      stdio: ['pipe', 'pipe', 'pipe']
+    }).trim();
   } catch (e) {
     return null;
   }
 }
 
 /**
- * Get Python version
+ * Common Python binary paths for fast filesystem check
+ * Avoids slow shell initialization (pyenv, conda) by checking paths directly
+ */
+const PYTHON_PATHS = [
+  '/usr/bin/python3',
+  '/usr/local/bin/python3',
+  '/opt/homebrew/bin/python3',      // macOS ARM (Homebrew)
+  '/opt/homebrew/bin/python',       // macOS ARM fallback
+  '/usr/bin/python',
+  '/usr/local/bin/python',
+  process.env.PYTHON_PATH,          // User override via env var
+].filter(Boolean);
+
+/**
+ * Find Python binary using fast filesystem check
+ * Returns first existing path, avoiding slow shell spawns
+ */
+function findPythonBinary() {
+  for (const p of PYTHON_PATHS) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
+
+/**
+ * Get Python version with optimized detection
+ * Layer 0: Fast path pre-check (instant fs lookup)
+ * Layer 1: Timeout protection (2s max per command)
+ * Layer 2: Graceful degradation (returns null on failure)
  */
 function getPythonVersion() {
-  const commands = ['python3 --version', 'python --version'];
-  for (const cmd of commands) {
-    const result = execSafe(cmd);
+  // Layer 0: Fast path pre-check - instant filesystem lookup
+  const pythonPath = findPythonBinary();
+  if (pythonPath) {
+    // Direct path execution bypasses shell initialization (pyenv, conda)
+    const result = execSafe(`${pythonPath} --version`, 2000);
     if (result) return result;
   }
+
+  // Fallback: Try shell resolution with strict timeout
+  // This catches non-standard installations but caps at 2s
+  const commands = ['python3 --version', 'python --version'];
+  for (const cmd of commands) {
+    const result = execSafe(cmd, 2000);
+    if (result) return result;
+  }
+
   return null;
 }
 
