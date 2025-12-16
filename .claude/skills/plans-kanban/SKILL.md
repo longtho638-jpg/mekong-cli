@@ -2,6 +2,23 @@
 
 Plans dashboard server with progress tracking and timeline visualization.
 
+## ⚠️ Installation Required
+
+**This skill requires npm dependencies.** Run one of the following:
+
+```bash
+# Option 1: Install via ClaudeKit CLI (recommended)
+ck init  # Runs install.sh which handles all skills
+
+# Option 2: Manual installation
+cd .claude/skills/plans-kanban
+npm install
+```
+
+**Dependencies:** `gray-matter`
+
+Without installation, you'll get **Error 500** when viewing plan details.
+
 ## Purpose
 
 Visual dashboard for viewing plan directories with:
