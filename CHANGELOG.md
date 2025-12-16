@@ -1,3 +1,15 @@
+## [1.21.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.17...v1.21.0-beta.18) (2025-12-16)
+
+
+### 🐞 Bug Fixes
+
+* **skills:** trigger release for viewer skill install instructions ([220cfcc](https://github.com/claudekit/claudekit-engineer/commit/220cfcc2170910a946bcda5bea66d871d469ef46))
+
+
+### 📚 Documentation
+
+* **skills:** add installation instructions for viewer skills ([a41b2eb](https://github.com/claudekit/claudekit-engineer/commit/a41b2eb86428d352c5268894ecea323421198711))
+
 ## [1.21.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.16...v1.21.0-beta.17) (2025-12-16)
 
 
