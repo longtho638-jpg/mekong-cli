@@ -11,7 +11,8 @@ const { parsePlanTable } = require('./plan-parser.cjs');
 const {
   extractPlanMetadata,
   generateTimelineStats,
-  generateActivityHeatmap
+  generateActivityHeatmap,
+  normalizeStatus
 } = require('./plan-metadata-extractor.cjs');
 
 /**
@@ -132,7 +133,10 @@ function getPlanMetadata(planFilePath) {
       phases: progress,
       progress: progress.percentage,
       lastModified: stats.mtime.toISOString(),
-      status: deriveStatus(progress, richMeta.headerStatus),
+      // Use frontmatter status if hasFrontmatter (already normalized), otherwise derive from phases
+      status: richMeta.hasFrontmatter && richMeta.headerStatus
+        ? normalizeStatus(richMeta.headerStatus)
+        : deriveStatus(progress, richMeta.headerStatus),
       // Rich metadata
       createdDate: richMeta.createdDate,
       completedDate: richMeta.completedDate,
@@ -142,7 +146,12 @@ function getPlanMetadata(planFilePath) {
       totalEffortFormatted: richMeta.totalEffortFormatted,
       priority: richMeta.priority,
       issue: richMeta.issue,
-      branch: richMeta.branch
+      branch: richMeta.branch,
+      // New frontmatter fields
+      description: richMeta.description,
+      tags: richMeta.tags || [],
+      assignee: richMeta.assignee,
+      title: richMeta.title
     };
   } catch (err) {
     console.error(`[plan-scanner] Error reading plan: ${planFilePath}`, err.message);

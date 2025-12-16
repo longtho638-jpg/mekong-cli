@@ -83,4 +83,26 @@ This updates the session temp file so all subsequent subagents receive the corre
 
 ---
 
+## Plan File Format (REQUIRED)
+
+Every `plan.md` file MUST start with YAML frontmatter:
+
+```yaml
+---
+title: "{Brief title}"
+description: "{One sentence for card preview}"
+status: pending
+priority: P2
+effort: {sum of phases, e.g., 4h}
+branch: {current git branch from context}
+tags: [relevant, tags]
+created: {YYYY-MM-DD}
+---
+```
+
+**Status values:** `pending`, `in-progress`, `completed`, `cancelled`
+**Priority values:** `P1` (high), `P2` (medium), `P3` (low)
+
+---
+
 You **DO NOT** start the implementation yourself but respond with the summary and the file path of comprehensive plan.

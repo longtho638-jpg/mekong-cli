@@ -28,6 +28,32 @@ function escapeHtml(str) {
 }
 
 /**
+ * Truncate text to specified length with ellipsis
+ * @param {string} text - Text to truncate
+ * @param {number} maxLen - Maximum length
+ * @returns {string} - Truncated text
+ */
+function truncate(text, maxLen = 100) {
+  if (!text) return '';
+  if (text.length <= maxLen) return text;
+  return text.slice(0, maxLen - 3).trim() + '...';
+}
+
+/**
+ * Get priority color class based on priority level
+ * @param {string} priority - Priority string (P1/P2/P3 or High/Medium/Low)
+ * @returns {string} - CSS class name
+ */
+function getPriorityColorClass(priority) {
+  if (!priority) return '';
+  const p = String(priority).toUpperCase();
+  if (p === 'P1' || p === 'HIGH' || p === 'CRITICAL') return 'priority-high';
+  if (p === 'P2' || p === 'MEDIUM' || p === 'NORMAL') return 'priority-medium';
+  if (p === 'P3' || p === 'LOW') return 'priority-low';
+  return '';
+}
+
+/**
  * Format date for display
  * @param {string} isoDate - ISO date string
  * @returns {string} - Formatted date
@@ -72,6 +98,8 @@ function getStatusLabel(status) {
     'completed': 'Completed',
     'complete': 'Completed',
     'in-progress': 'In Progress',
+    'in-review': 'In Review',
+    'cancelled': 'Cancelled',
     'pending': 'Pending'
   };
   return labels[status] || 'Pending';
@@ -137,39 +165,64 @@ function generateStatusBadge(status) {
 }
 
 /**
- * Generate meta tags HTML for plan card (duration, effort, issue)
+ * Generate meta tags HTML for plan card (duration, effort, priority, issue, tags)
  * @param {Object} plan - Plan metadata
  * @returns {string} - Meta tags HTML
  */
 function generateCardMeta(plan) {
-  const tags = [];
+  const metaTags = [];
 
   // Duration tag
   if (plan.durationFormatted) {
-    const icon = plan.status === 'completed'
-      ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-      : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-    tags.push(`<span class="meta-tag duration" title="Duration">${icon} ${escapeHtml(plan.durationFormatted)}</span>`);
+    const icon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    metaTags.push(`<span class="meta-tag duration" title="Duration">${icon} ${escapeHtml(plan.durationFormatted)}</span>`);
   }
 
   // Effort tag
   if (plan.totalEffortFormatted) {
-    tags.push(`<span class="meta-tag effort" title="Estimated effort"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${escapeHtml(plan.totalEffortFormatted)}</span>`);
+    metaTags.push(`<span class="meta-tag effort" title="Estimated effort"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${escapeHtml(plan.totalEffortFormatted)}</span>`);
   }
 
-  // Priority tag
+  // Priority tag with color class
   if (plan.priority) {
-    const priorityClass = plan.priority.toLowerCase().replace(/[^a-z0-9]/g, '');
-    tags.push(`<span class="meta-tag priority ${priorityClass}" title="Priority">${escapeHtml(plan.priority)}</span>`);
+    const priorityColorClass = getPriorityColorClass(plan.priority);
+    metaTags.push(`<span class="meta-tag priority ${priorityColorClass}" title="Priority">${escapeHtml(plan.priority)}</span>`);
   }
 
-  // Issue tag (link to GitHub)
+  // Issue tag - clickable link to GitHub (uses branch to derive repo, falls back to claudekit)
   if (plan.issue) {
-    tags.push(`<a href="#" class="meta-tag issue" title="Issue #${plan.issue}" data-issue="${plan.issue}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> #${plan.issue}</a>`);
+    // TODO: Make repo configurable via project settings
+    const issueUrl = `https://github.com/claudekit/claudekit/issues/${plan.issue}`;
+    metaTags.push(`<a href="${issueUrl}" target="_blank" rel="noopener" class="meta-tag issue" title="Issue #${plan.issue}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> #${plan.issue}</a>`);
   }
 
-  if (tags.length === 0) return '';
-  return `<div class="card-meta">${tags.join('')}</div>`;
+  if (metaTags.length === 0) return '';
+  return `<div class="card-meta">${metaTags.join('')}</div>`;
+}
+
+/**
+ * Generate tags pills HTML
+ * @param {Array<string>} tags - Array of tag strings
+ * @param {number} maxVisible - Maximum visible tags (default 3)
+ * @returns {string} - Tags HTML
+ */
+function generateTagsPills(tags, maxVisible = 3) {
+  if (!tags || !Array.isArray(tags) || tags.length === 0) return '';
+
+  const visibleTags = tags.slice(0, maxVisible);
+  const hiddenCount = tags.length - maxVisible;
+
+  let html = '<div class="card-tags">';
+  html += visibleTags.map(tag =>
+    `<span class="tag-pill">${escapeHtml(tag)}</span>`
+  ).join('');
+
+  if (hiddenCount > 0) {
+    html += `<span class="tag-pill tag-more">+${hiddenCount}</span>`;
+  }
+  html += '</div>';
+
+  return html;
 }
 
 /**
@@ -182,6 +235,14 @@ function generatePlanCard(plan) {
   const name = escapeHtml(plan.name);
   const relativeTime = formatRelativeTime(plan.lastModified);
   const cardMeta = generateCardMeta(plan);
+
+  // Description section (truncated)
+  const descriptionHtml = plan.description
+    ? `<p class="card-description">${escapeHtml(truncate(plan.description, 100))}</p>`
+    : '';
+
+  // Tags pills
+  const tagsHtml = generateTagsPills(plan.tags);
 
   return `
     <article class="plan-card" data-status="${statusClass}" data-id="${escapeHtml(plan.id)}" tabindex="0"
@@ -197,8 +258,10 @@ function generatePlanCard(plan) {
         ${generateStatusBadge(statusClass)}
       </header>
       <div class="card-body">
+        ${descriptionHtml}
         ${generateProgressBar(plan.phases)}
         ${cardMeta}
+        ${tagsHtml}
       </div>
       <footer class="card-footer">
         <div class="phases-summary">${plan.phases.total} phases total</div>
@@ -628,7 +691,11 @@ function renderDashboard(plans, options = {}) {
     totalEffortFormatted: p.totalEffortFormatted,
     priority: p.priority,
     issue: p.issue,
-    branch: p.branch
+    branch: p.branch,
+    // New frontmatter fields
+    description: p.description,
+    tags: p.tags || [],
+    assignee: p.assignee
   })));
 
   // Replace placeholders
@@ -749,6 +816,7 @@ module.exports = {
   renderDashboard,
   generatePlanCard,
   generateCardMeta,
+  generateTagsPills,
   generateProgressRing,
   generateProgressBar,
   generateStatusCounts,
@@ -760,8 +828,10 @@ module.exports = {
   generateKanbanCard,
   calculateStats,
   escapeHtml,
+  truncate,
   formatDate,
   formatRelativeTime,
   getStatusLabel,
+  getPriorityColorClass,
   STATUS_COLUMNS
 };

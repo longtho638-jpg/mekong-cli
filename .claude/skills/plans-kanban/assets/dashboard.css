@@ -940,31 +940,75 @@
 }
 
 .meta-tag.priority.p1,
-.meta-tag.priority.high {
-  color: var(--dash-accent);
-  background: var(--dash-accent-subtle);
+.meta-tag.priority.high,
+.meta-tag.priority-high {
+  color: #fff;
+  background: #dc2626;
 }
 
 .meta-tag.priority.p2,
-.meta-tag.priority.medium {
-  color: var(--dash-text-secondary);
-  background: var(--dash-surface-hover);
+.meta-tag.priority.medium,
+.meta-tag.priority-medium {
+  color: #000;
+  background: #facc15;
 }
 
 .meta-tag.priority.p3,
-.meta-tag.priority.low {
-  color: var(--dash-text-muted);
-  background: var(--dash-surface-hover);
+.meta-tag.priority.low,
+.meta-tag.priority-low {
+  color: #fff;
+  background: #16a34a;
 }
 
 .meta-tag.issue {
   color: var(--dash-text-secondary);
   cursor: pointer;
+  text-decoration: none;
 }
 
 .meta-tag.issue:hover {
   color: var(--dash-accent);
   background: var(--dash-accent-subtle);
+}
+
+/* Card Description */
+.card-description {
+  font-size: 0.85rem;
+  color: var(--dash-text-secondary);
+  margin: 0.5rem 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Card Tags */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.tag-pill {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--dash-surface-hover);
+  color: var(--dash-text-secondary);
+  font-weight: 500;
+}
+
+.tag-pill:hover {
+  background: var(--dash-accent-subtle);
+  color: var(--dash-accent);
+}
+
+.tag-more {
+  background: var(--dash-border);
+  color: var(--dash-text-muted);
+  font-style: italic;
 }
 
 /* ========================================
