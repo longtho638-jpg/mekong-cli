@@ -214,6 +214,87 @@ function parsePlanTable(planFilePath) {
     }
   }
 
+  // Format 6: Bullet-list phases with nested File: references
+  // Matches:
+  // - Phase 01: Name ✅ (date)
+  //   - File: `phase-01-name.md`
+  //   - Completed: date
+  if (phases.length === 0) {
+    const lines = content.split('\n');
+    let currentPhase = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Match phase line: "- Phase 01: Name ✅" or "- Phase 01: Name (date)"
+      const phaseMatch = /^-\s*Phase\s*0?(\d+)[:\s]+([^✅✓\n]+)/i.exec(line);
+      if (phaseMatch) {
+        // Save previous phase if exists
+        if (currentPhase) phases.push(currentPhase);
+
+        const phaseNum = parseInt(phaseMatch[1], 10);
+        const name = phaseMatch[2].trim().replace(/\s*\([^)]*\)\s*$/, ''); // Remove trailing (date)
+        const hasCheckmark = /[✅✓]/.test(line);
+
+        currentPhase = {
+          phase: phaseNum,
+          name: name,
+          status: hasCheckmark ? 'completed' : 'pending',
+          file: planFilePath, // Default to plan.md, will be updated if File: found
+          linkText: name
+        };
+        continue;
+      }
+
+      // Look for nested File: reference within current phase
+      if (currentPhase) {
+        const fileMatch = /^\s+-\s*File:\s*`?([^`\n]+)`?/i.exec(line);
+        if (fileMatch) {
+          const fileName = fileMatch[1].trim();
+          currentPhase.file = path.resolve(dir, fileName);
+        }
+
+        // Check for status indicators in nested lines
+        const statusMatch = /^\s+-\s*(Completed|Status):\s*(.+)/i.exec(line);
+        if (statusMatch) {
+          currentPhase.status = normalizeStatus(statusMatch[2]);
+        }
+
+        // End current phase when we hit another top-level item or section
+        if (/^[#-]/.test(line) && !/^\s+-/.test(line) && !phaseMatch) {
+          // Don't end if this is a nested item
+          if (!/^\s/.test(line)) {
+            phases.push(currentPhase);
+            currentPhase = null;
+          }
+        }
+      }
+    }
+
+    // Push last phase if exists
+    if (currentPhase) phases.push(currentPhase);
+  }
+
+  // Enhancement: Extract file paths from "Phase Files" section if phases point to plan.md
+  // This handles plans with heading-based phases + separate file links section
+  if (phases.length > 0) {
+    const phaseFilesSection = content.match(/##\s*Phase\s*Files[\s\S]*?(?=##|$)/i);
+    if (phaseFilesSection) {
+      const linkRegex = /\d+\.\s*\[([^\]]+)\]\(([^)]+\.md)\)/g;
+      let linkMatch;
+      while ((linkMatch = linkRegex.exec(phaseFilesSection[0])) !== null) {
+        const [, linkName, linkPath] = linkMatch;
+        // Extract phase number from filename (phase-01-xxx.md -> 1)
+        const phaseNum = parseInt(linkName.match(/phase-0?(\d+)/i)?.[1] || '0', 10);
+        // Update corresponding phase's file path
+        const phase = phases.find(p => p.phase === phaseNum);
+        if (phase && phase.file === planFilePath) {
+          phase.file = path.resolve(dir, linkPath);
+        }
+      }
+    }
+  }
+
   return phases;
 }
 

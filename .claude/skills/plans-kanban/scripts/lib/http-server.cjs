@@ -11,6 +11,42 @@ const url = require('url');
 const { scanPlans } = require('./plan-scanner.cjs');
 const { renderDashboard } = require('./dashboard-renderer.cjs');
 
+// Import full page renderer from markdown-novel-viewer skill
+let generateFullPage = null;
+let mdViewerAssetsDir = null;
+try {
+  const mdViewerDir = path.join(__dirname, '..', '..', '..', 'markdown-novel-viewer');
+  mdViewerAssetsDir = path.join(mdViewerDir, 'assets');
+  // We need to call the server's generateFullPage function
+  // Since it's not exported, we'll create a minimal wrapper
+  const { renderMarkdownFile, renderTOCHtml } = require(path.join(mdViewerDir, 'scripts', 'lib', 'markdown-renderer.cjs'));
+  const { generateNavSidebar, generateNavFooter, detectPlan } = require(path.join(mdViewerDir, 'scripts', 'lib', 'plan-navigator.cjs'));
+
+  generateFullPage = (filePath) => {
+    const { html, toc, frontmatter, title } = renderMarkdownFile(filePath);
+    const tocHtml = renderTOCHtml(toc);
+    const navSidebar = generateNavSidebar(filePath);
+    const navFooter = generateNavFooter(filePath);
+    const planInfo = detectPlan(filePath);
+
+    const templatePath = path.join(mdViewerAssetsDir, 'template.html');
+    let template = fs.readFileSync(templatePath, 'utf8');
+
+    template = template
+      .replace(/\{\{title\}\}/g, title)
+      .replace('{{toc}}', tocHtml)
+      .replace('{{nav-sidebar}}', navSidebar)
+      .replace('{{nav-footer}}', navFooter)
+      .replace('{{content}}', html)
+      .replace('{{has-plan}}', planInfo.isPlan ? 'has-plan' : '')
+      .replace('{{frontmatter}}', JSON.stringify(frontmatter || {}));
+
+    return template;
+  };
+} catch (err) {
+  console.warn('[http-server] Could not load markdown renderer:', err.message);
+}
+
 // Allowed base directories for file access
 let allowedBaseDirs = [];
 
@@ -109,14 +145,19 @@ function createHttpServer(options) {
     const parsedUrl = url.parse(req.url, true);
     const pathname = decodeURIComponent(parsedUrl.pathname);
 
-    // Route: /assets/* - serve static files
+    // Route: /assets/* - serve static files (check kanban assets first, then markdown-viewer assets)
     if (pathname.startsWith('/assets/')) {
       const relativePath = pathname.replace('/assets/', '');
       if (relativePath.includes('..')) {
         sendError(res, 403, 'Access denied');
         return;
       }
-      const assetPath = path.join(assetsDir, relativePath);
+      // Check kanban assets first
+      let assetPath = path.join(assetsDir, relativePath);
+      if (!fs.existsSync(assetPath) && mdViewerAssetsDir) {
+        // Fallback to markdown-novel-viewer assets
+        assetPath = path.join(mdViewerAssetsDir, relativePath);
+      }
       serveFile(res, assetPath, true);
       return;
     }
@@ -179,6 +220,40 @@ function createHttpServer(options) {
       } catch (err) {
         console.error('[http-server] Dashboard error:', err.message);
         sendError(res, 500, 'Error rendering dashboard');
+      }
+      return;
+    }
+
+    // Route: /view?file=<path> - render markdown file
+    if (pathname === '/view') {
+      const filePath = parsedUrl.query?.file;
+
+      if (!filePath) {
+        sendError(res, 400, 'Missing ?file= parameter');
+        return;
+      }
+
+      if (!isPathSafe(filePath)) {
+        sendError(res, 403, 'Access denied');
+        return;
+      }
+
+      if (!fs.existsSync(filePath)) {
+        sendError(res, 404, 'File not found');
+        return;
+      }
+
+      if (!generateFullPage) {
+        sendError(res, 500, 'Markdown renderer not available');
+        return;
+      }
+
+      try {
+        const html = generateFullPage(filePath);
+        sendResponse(res, 200, 'text/html', html);
+      } catch (err) {
+        console.error('[http-server] Render error:', err.message);
+        sendError(res, 500, 'Error rendering markdown');
       }
       return;
     }

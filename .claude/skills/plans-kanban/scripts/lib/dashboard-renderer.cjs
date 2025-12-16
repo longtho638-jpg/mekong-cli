@@ -202,7 +202,7 @@ function generatePlanCard(plan) {
       </div>
       <footer class="card-footer">
         <div class="phases-summary">${plan.phases.total} phases total</div>
-        <a href="/view${escapeHtml(plan.path)}" class="view-btn">
+        <a href="/view?file=${encodeURIComponent(plan.path)}" class="view-btn">
           View
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"/>
