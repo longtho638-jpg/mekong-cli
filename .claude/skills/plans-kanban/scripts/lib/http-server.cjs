@@ -22,15 +22,44 @@ try {
   const { renderMarkdownFile, renderTOCHtml } = require(path.join(mdViewerDir, 'scripts', 'lib', 'markdown-renderer.cjs'));
   const { generateNavSidebar, generateNavFooter, detectPlan } = require(path.join(mdViewerDir, 'scripts', 'lib', 'plan-navigator.cjs'));
 
-  generateFullPage = (filePath) => {
+  generateFullPage = (filePath, options = {}) => {
     const { html, toc, frontmatter, title } = renderMarkdownFile(filePath);
     const tocHtml = renderTOCHtml(toc);
     const navSidebar = generateNavSidebar(filePath);
     const navFooter = generateNavFooter(filePath);
     const planInfo = detectPlan(filePath);
+    const { getNavigationContext } = require(path.join(mdViewerDir, 'scripts', 'lib', 'plan-navigator.cjs'));
+    const navContext = getNavigationContext(filePath);
 
     const templatePath = path.join(mdViewerAssetsDir, 'template.html');
     let template = fs.readFileSync(templatePath, 'utf8');
+
+    // Generate back button for kanban
+    const backUrl = options.dashboardUrl || '/kanban';
+    const backButton = `
+      <a href="${backUrl}" class="icon-btn back-btn" title="Back to Dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </a>`;
+
+    // Generate header nav (prev/next)
+    let headerNav = '';
+    if (navContext.prev || navContext.next) {
+      const prevBtn = navContext.prev && fs.existsSync(navContext.prev.file)
+        ? `<a href="/view?file=${encodeURIComponent(navContext.prev.file)}" class="header-nav-btn prev" title="${navContext.prev.name}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            <span>Prev</span>
+          </a>`
+        : '';
+      const nextBtn = navContext.next && fs.existsSync(navContext.next.file)
+        ? `<a href="/view?file=${encodeURIComponent(navContext.next.file)}" class="header-nav-btn next" title="${navContext.next.name}">
+            <span>Next</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </a>`
+        : '';
+      headerNav = `<div class="header-nav">${prevBtn}${nextBtn}</div>`;
+    }
 
     template = template
       .replace(/\{\{title\}\}/g, title)
@@ -39,7 +68,9 @@ try {
       .replace('{{nav-footer}}', navFooter)
       .replace('{{content}}', html)
       .replace('{{has-plan}}', planInfo.isPlan ? 'has-plan' : '')
-      .replace('{{frontmatter}}', JSON.stringify(frontmatter || {}));
+      .replace('{{frontmatter}}', JSON.stringify(frontmatter || {}))
+      .replace('{{back-button}}', backButton)
+      .replace('{{header-nav}}', headerNav);
 
     return template;
   };
@@ -249,7 +280,9 @@ function createHttpServer(options) {
       }
 
       try {
-        const html = generateFullPage(filePath);
+        // Build dashboard URL with the plans directory
+        const dashboardUrl = `/kanban?dir=${encodeURIComponent(plansDir)}`;
+        const html = generateFullPage(filePath, { dashboardUrl });
         sendResponse(res, 200, 'text/html', html);
       } catch (err) {
         console.error('[http-server] Render error:', err.message);

@@ -165,61 +165,13 @@ function parsePlanTable(planFilePath) {
     if (currentPhase) phases.push(currentPhase);
   }
 
-  // Format 4: Numbered list phases with checkbox status
-  // Matches: 1) **Discovery** with status from - [x] Discovery: ...
-  if (phases.length === 0) {
-    // First pass: find numbered phases like "1) **Name**" or "1. **Name**"
-    const numberedPhaseRegex = /^(\d+)[)\.]\s*\*\*([^*]+)\*\*/gm;
-    const phaseMap = new Map();
-    while ((match = numberedPhaseRegex.exec(content)) !== null) {
-      const [, num, name] = match;
-      phaseMap.set(name.trim().toLowerCase(), {
-        phase: parseInt(num, 10),
-        name: name.trim(),
-        status: 'pending',
-        file: planFilePath,
-        linkText: name.trim()
-      });
-    }
-
-    // Second pass: find checkbox status like "- [x] Name:" or "- [ ] Name:"
-    const checkboxRegex = /^-\s*\[(x| )\]\s*([^:]+)/gmi;
-    while ((match = checkboxRegex.exec(content)) !== null) {
-      const [, checked, name] = match;
-      const key = name.trim().toLowerCase();
-      if (phaseMap.has(key)) {
-        phaseMap.get(key).status = checked.toLowerCase() === 'x' ? 'completed' : 'pending';
-      }
-    }
-
-    // Convert map to array sorted by phase number
-    if (phaseMap.size > 0) {
-      phases.push(...Array.from(phaseMap.values()).sort((a, b) => a.phase - b.phase));
-    }
-  }
-
-  // Format 5: Checkbox list with bold links
-  // Matches: - [ ] **[Phase 1: Name](./phase-01-xxx.md)** or - [x] **[Phase 1](path)**
-  if (phases.length === 0) {
-    const checkboxLinkRegex = /^-\s*\[(x| )\]\s*\*\*\[(?:Phase\s*)?(\d+)[:\s]*([^\]]*)\]\(([^)]+)\)\*\*/gmi;
-    while ((match = checkboxLinkRegex.exec(content)) !== null) {
-      const [, checked, phase, name, linkPath] = match;
-      phases.push({
-        phase: parseInt(phase, 10),
-        name: name.trim() || `Phase ${phase}`,
-        status: checked.toLowerCase() === 'x' ? 'completed' : 'pending',
-        file: path.resolve(dir, linkPath),
-        linkText: name.trim() || `Phase ${phase}`
-      });
-    }
-  }
-
-  // Format 6: Bullet-list phases with nested File: references
+  // Format 4: Bullet-list phases with nested File: references (check early - specific pattern)
   // Matches:
   // - Phase 01: Name ✅ (date)
   //   - File: `phase-01-name.md`
   //   - Completed: date
-  if (phases.length === 0) {
+  // Check if content has this specific pattern before proceeding
+  if (phases.length === 0 && /^-\s*Phase\s*\d+[:\s]/m.test(content)) {
     const lines = content.split('\n');
     let currentPhase = null;
 
@@ -260,19 +212,65 @@ function parsePlanTable(planFilePath) {
           currentPhase.status = normalizeStatus(statusMatch[2]);
         }
 
-        // End current phase when we hit another top-level item or section
-        if (/^[#-]/.test(line) && !/^\s+-/.test(line) && !phaseMatch) {
-          // Don't end if this is a nested item
-          if (!/^\s/.test(line)) {
-            phases.push(currentPhase);
-            currentPhase = null;
-          }
+        // End current phase when we hit another top-level non-phase item or section header
+        if (/^##/.test(line) || (/^-\s/.test(line) && !/^-\s*Phase/i.test(line) && !/^\s+-/.test(line))) {
+          phases.push(currentPhase);
+          currentPhase = null;
         }
       }
     }
 
     // Push last phase if exists
     if (currentPhase) phases.push(currentPhase);
+  }
+
+  // Format 5: Numbered list phases with checkbox status
+  // Matches: 1) **Discovery** with status from - [x] Discovery: ...
+  if (phases.length === 0) {
+    // First pass: find numbered phases like "1) **Name**" or "1. **Name**"
+    const numberedPhaseRegex = /^(\d+)[)\.]\s*\*\*([^*]+)\*\*/gm;
+    const phaseMap = new Map();
+    while ((match = numberedPhaseRegex.exec(content)) !== null) {
+      const [, num, name] = match;
+      phaseMap.set(name.trim().toLowerCase(), {
+        phase: parseInt(num, 10),
+        name: name.trim(),
+        status: 'pending',
+        file: planFilePath,
+        linkText: name.trim()
+      });
+    }
+
+    // Second pass: find checkbox status like "- [x] Name:" or "- [ ] Name:"
+    const checkboxRegex = /^-\s*\[(x| )\]\s*([^:]+)/gmi;
+    while ((match = checkboxRegex.exec(content)) !== null) {
+      const [, checked, name] = match;
+      const key = name.trim().toLowerCase();
+      if (phaseMap.has(key)) {
+        phaseMap.get(key).status = checked.toLowerCase() === 'x' ? 'completed' : 'pending';
+      }
+    }
+
+    // Convert map to array sorted by phase number
+    if (phaseMap.size > 0) {
+      phases.push(...Array.from(phaseMap.values()).sort((a, b) => a.phase - b.phase));
+    }
+  }
+
+  // Format 6: Checkbox list with bold links
+  // Matches: - [ ] **[Phase 1: Name](./phase-01-xxx.md)** or - [x] **[Phase 1](path)**
+  if (phases.length === 0) {
+    const checkboxLinkRegex = /^-\s*\[(x| )\]\s*\*\*\[(?:Phase\s*)?(\d+)[:\s]*([^\]]*)\]\(([^)]+)\)\*\*/gmi;
+    while ((match = checkboxLinkRegex.exec(content)) !== null) {
+      const [, checked, phase, name, linkPath] = match;
+      phases.push({
+        phase: parseInt(phase, 10),
+        name: name.trim() || `Phase ${phase}`,
+        status: checked.toLowerCase() === 'x' ? 'completed' : 'pending',
+        file: path.resolve(dir, linkPath),
+        linkText: name.trim() || `Phase ${phase}`
+      });
+    }
   }
 
   // Enhancement: Extract file paths from "Phase Files" section if phases point to plan.md

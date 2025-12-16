@@ -15,8 +15,8 @@
   const hljsLight = document.getElementById('hljs-light');
   const hljsDark = document.getElementById('hljs-dark');
 
-  // Storage keys
-  const THEME_KEY = 'novel-viewer-theme';
+  // Storage keys (shared with kanban dashboard for theme persistence)
+  const THEME_KEY = 'theme';
   const FONT_KEY = 'novel-viewer-font';
   const SIDEBAR_KEY = 'novel-viewer-sidebar';
 

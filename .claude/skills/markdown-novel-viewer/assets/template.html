@@ -8,7 +8,7 @@
   <script>
     (function(){
       var h=document.documentElement;
-      var t=localStorage.getItem('novel-viewer-theme');
+      var t=localStorage.getItem('theme');
       var f=localStorage.getItem('novel-viewer-font');
       if(t)h.dataset.theme=t;
       else if(window.matchMedia('(prefers-color-scheme:dark)').matches)h.dataset.theme='dark';
@@ -25,11 +25,13 @@
 <body class="{{has-plan}}">
   <header class="reader-header">
     <div class="header-left">
+      {{back-button}}
       <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle sidebar" title="Toggle sidebar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 12h18M3 6h18M3 18h18"/>
         </svg>
       </button>
+      {{header-nav}}
     </div>
     <div class="header-center">
       <span class="doc-title">{{title}}</span>
