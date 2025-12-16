@@ -512,7 +512,7 @@ const STATUS_COLUMNS = [
 ];
 
 /**
- * Generate kanban card HTML for a single plan
+ * Generate kanban card HTML for a single plan (enhanced with details)
  * @param {Object} plan - Plan metadata
  * @returns {string} - Card HTML
  */
@@ -520,9 +520,53 @@ function generateKanbanCard(plan) {
   const progressPct = Math.round(plan.progress || 0);
   const dateStr = formatRelativeTime(plan.lastModified);
 
+  // Priority badge
+  let priorityHtml = '';
+  if (plan.priority) {
+    const priorityColorClass = getPriorityColorClass(plan.priority);
+    if (priorityColorClass) {
+      priorityHtml = `<span class="kanban-card-priority ${priorityColorClass}">${escapeHtml(plan.priority)}</span>`;
+    }
+  }
+
+  // Description (truncated)
+  let descriptionHtml = '';
+  if (plan.description) {
+    descriptionHtml = `<p class="kanban-card-description">${escapeHtml(truncate(plan.description, 80))}</p>`;
+  }
+
+  // Tags (max 3 visible)
+  let tagsHtml = '';
+  if (plan.tags && Array.isArray(plan.tags) && plan.tags.length > 0) {
+    const visibleTags = plan.tags.slice(0, 3);
+    const hiddenCount = plan.tags.length - 3;
+    tagsHtml = '<div class="kanban-card-tags">';
+    tagsHtml += visibleTags.map(tag => `<span class="kanban-card-tag">${escapeHtml(tag)}</span>`).join('');
+    if (hiddenCount > 0) {
+      tagsHtml += `<span class="kanban-card-tag tag-more">+${hiddenCount}</span>`;
+    }
+    tagsHtml += '</div>';
+  }
+
+  // Footer with effort and phases
+  let footerHtml = '';
+  const effortHtml = plan.totalEffortFormatted
+    ? `<span class="kanban-card-effort"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeHtml(plan.totalEffortFormatted)}</span>`
+    : '';
+  const phasesHtml = plan.phases && plan.phases.total
+    ? `<span class="kanban-card-phases">${plan.phases.total} phases</span>`
+    : '';
+  if (effortHtml || phasesHtml) {
+    footerHtml = `<div class="kanban-card-footer">${effortHtml}${phasesHtml}</div>`;
+  }
+
   return `
     <a href="/view?file=${encodeURIComponent(plan.path)}" class="kanban-card" data-id="${escapeHtml(plan.id)}">
-      <h4 class="kanban-card-title">${escapeHtml(plan.name)}</h4>
+      <div class="kanban-card-header">
+        <h4 class="kanban-card-title">${escapeHtml(plan.name)}</h4>
+        ${priorityHtml}
+      </div>
+      ${descriptionHtml}
       <div class="kanban-card-meta">
         <div class="kanban-card-progress">
           <div class="kanban-card-progress-bar">
@@ -532,6 +576,8 @@ function generateKanbanCard(plan) {
         </div>
         <span class="kanban-card-date">${dateStr}</span>
       </div>
+      ${tagsHtml}
+      ${footerHtml}
     </a>
   `;
 }
@@ -726,6 +772,7 @@ function getInlineTemplate() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plans Dashboard</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="stylesheet" href="/assets/novel-theme.css">
   <link rel="stylesheet" href="/assets/dashboard.css">
 </head>
