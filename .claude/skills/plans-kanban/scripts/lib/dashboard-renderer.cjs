@@ -438,6 +438,117 @@ function generatePlansGrid(plans) {
 }
 
 /**
+ * Status column configuration for kanban board
+ */
+const STATUS_COLUMNS = [
+  { id: 'pending', label: 'Pending', color: 'pending' },
+  { id: 'in-progress', label: 'In Progress', color: 'in-progress' },
+  { id: 'in-review', label: 'In Review', color: 'in-review' },
+  { id: 'completed', label: 'Done', color: 'completed' },
+  { id: 'cancelled', label: 'Cancelled', color: 'cancelled' }
+];
+
+/**
+ * Generate kanban card HTML for a single plan
+ * @param {Object} plan - Plan metadata
+ * @returns {string} - Card HTML
+ */
+function generateKanbanCard(plan) {
+  const progressPct = Math.round(plan.progress || 0);
+  const dateStr = formatRelativeTime(plan.lastModified);
+
+  return `
+    <a href="/view?file=${encodeURIComponent(plan.path)}" class="kanban-card" data-id="${escapeHtml(plan.id)}">
+      <h4 class="kanban-card-title">${escapeHtml(plan.name)}</h4>
+      <div class="kanban-card-meta">
+        <div class="kanban-card-progress">
+          <div class="kanban-card-progress-bar">
+            <div class="kanban-card-progress-fill" style="width: ${progressPct}%"></div>
+          </div>
+          <span>${progressPct}%</span>
+        </div>
+        <span class="kanban-card-date">${dateStr}</span>
+      </div>
+    </a>
+  `;
+}
+
+/**
+ * Generate kanban board columns HTML
+ * @param {Array} plans - Array of plan metadata objects
+ * @returns {string} - Kanban columns HTML
+ */
+function generateKanbanColumns(plans) {
+  if (!plans || plans.length === 0) {
+    // Return empty columns structure
+    return STATUS_COLUMNS.map(col => `
+      <div class="kanban-column" data-status="${col.id}">
+        <div class="kanban-column-header">
+          <div class="kanban-column-title">
+            <span class="kanban-status-dot ${col.color}"></span>
+            <span>${col.label}</span>
+          </div>
+          <span class="kanban-column-count">0</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="kanban-empty">
+            <svg class="kanban-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6M9 13h6M9 17h4"/>
+            </svg>
+            <span>No plans</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Group plans by status
+  const grouped = {};
+  STATUS_COLUMNS.forEach(col => {
+    grouped[col.id] = [];
+  });
+
+  plans.forEach(plan => {
+    const status = plan.status || 'pending';
+    if (grouped[status]) {
+      grouped[status].push(plan);
+    } else {
+      grouped['pending'].push(plan);
+    }
+  });
+
+  // Generate column HTML
+  return STATUS_COLUMNS.map(col => {
+    const columnPlans = grouped[col.id];
+    const cardsHtml = columnPlans.length > 0
+      ? columnPlans.map(generateKanbanCard).join('')
+      : `<div class="kanban-empty">
+          <svg class="kanban-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 9h6M9 13h6M9 17h4"/>
+          </svg>
+          <span>No plans</span>
+        </div>`;
+
+    return `
+      <div class="kanban-column" data-status="${col.id}">
+        <div class="kanban-column-header">
+          <div class="kanban-column-title">
+            <span class="kanban-status-dot ${col.color}"></span>
+            <span>${col.label}</span>
+          </div>
+          <span class="kanban-column-count">${columnPlans.length}</span>
+        </div>
+        <div class="kanban-cards">
+          ${cardsHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
  * Calculate statistics from plans array
  * @param {Array} plans - Array of plan metadata objects
  * @returns {Object} - Statistics object
@@ -496,6 +607,9 @@ function renderDashboard(plans, options = {}) {
   // Generate timeline section
   const timelineSection = generateTimelineSection(plans);
 
+  // Generate kanban columns
+  const kanbanColumns = generateKanbanColumns(plans);
+
   // Generate JSON for client-side filtering (include rich metadata)
   const plansJson = JSON.stringify(plans.map(p => ({
     id: p.id,
@@ -504,6 +618,7 @@ function renderDashboard(plans, options = {}) {
     progress: p.progress,
     lastModified: p.lastModified,
     phasesTotal: p.phases.total,
+    path: p.path, // Required for kanban card links
     // Rich metadata
     createdDate: p.createdDate,
     completedDate: p.completedDate,
@@ -519,6 +634,7 @@ function renderDashboard(plans, options = {}) {
   // Replace placeholders
   template = template
     .replace(/\{\{plans-grid\}\}/g, plansGrid)
+    .replace(/\{\{kanban-columns\}\}/g, kanbanColumns)
     .replace(/\{\{plan-count\}\}/g, String(planCount))
     .replace(/\{\{plans-json\}\}/g, plansJson)
     .replace(/\{\{empty-state\}\}/g, generateEmptyState())
@@ -640,9 +756,12 @@ module.exports = {
   generateTimelineSection,
   generateEmptyState,
   generatePlansGrid,
+  generateKanbanColumns,
+  generateKanbanCard,
   calculateStats,
   escapeHtml,
   formatDate,
   formatRelativeTime,
-  getStatusLabel
+  getStatusLabel,
+  STATUS_COLUMNS
 };

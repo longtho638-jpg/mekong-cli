@@ -9,12 +9,23 @@
   const state = {
     sort: 'date-desc',
     filter: 'all',
-    search: ''
+    search: '',
+    view: 'kanban' // 'kanban' or 'grid'
   };
+
+  // Status column config
+  const STATUS_COLUMNS = [
+    { id: 'pending', label: 'Pending', color: 'pending' },
+    { id: 'in-progress', label: 'In Progress', color: 'in-progress' },
+    { id: 'in-review', label: 'In Review', color: 'in-review' },
+    { id: 'completed', label: 'Done', color: 'completed' },
+    { id: 'cancelled', label: 'Cancelled', color: 'cancelled' }
+  ];
 
   // Elements
   let allPlans = [];
   let grid = null;
+  let kanbanBoard = null;
   let resultCount = null;
   let emptyState = null;
   let srAnnounce = null;
@@ -25,6 +36,7 @@
   function init() {
     allPlans = window.__plans || [];
     grid = document.querySelector('.plans-grid');
+    kanbanBoard = document.querySelector('.kanban-board');
     resultCount = document.querySelector('.result-count');
     emptyState = document.querySelector('.empty-state');
     srAnnounce = document.getElementById('sr-announce');
@@ -52,6 +64,9 @@
 
     // Setup theme toggle
     setupThemeToggle();
+
+    // Setup view toggle
+    setupViewToggle();
   }
 
   /**
@@ -155,6 +170,12 @@
     });
 
     renderGrid(filtered);
+
+    // Also update kanban if in kanban view
+    if (state.view === 'kanban') {
+      renderKanbanBoard(allPlans); // Kanban uses all plans grouped by status
+    }
+
     updateURL();
     announce(`Showing ${filtered.length} plan${filtered.length !== 1 ? 's' : ''}`);
   }
@@ -310,6 +331,209 @@
       localStorage.setItem('theme', next);
       announce(`Theme changed to ${next} mode`);
     });
+  }
+
+  /**
+   * Setup view toggle (Kanban/Grid)
+   */
+  function setupViewToggle() {
+    const toggleBtns = document.querySelectorAll('.view-toggle-btn');
+    if (!toggleBtns.length) return;
+
+    // Restore saved view preference
+    const savedView = localStorage.getItem('dashboard-view') || 'kanban';
+    state.view = savedView;
+    updateViewMode();
+
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        if (view === state.view) return;
+
+        state.view = view;
+        localStorage.setItem('dashboard-view', view);
+        updateViewMode();
+        announce(`Switched to ${view} view`);
+      });
+    });
+  }
+
+  /**
+   * Update view mode (toggle between kanban and grid)
+   */
+  function updateViewMode() {
+    const body = document.body;
+
+    // Update toggle buttons
+    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+      const isActive = btn.dataset.view === state.view;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    // Toggle view classes
+    if (state.view === 'grid') {
+      body.classList.add('view-mode-grid');
+    } else {
+      body.classList.remove('view-mode-grid');
+    }
+
+    // Re-render kanban when switching to kanban view
+    if (state.view === 'kanban') {
+      renderKanbanBoard(getFilteredPlans());
+    }
+  }
+
+  /**
+   * Get filtered and sorted plans
+   */
+  function getFilteredPlans() {
+    let filtered = allPlans.slice();
+
+    // Filter by status (only for grid view, kanban shows all columns)
+    if (state.filter !== 'all' && state.view === 'grid') {
+      filtered = filtered.filter(p => p.status === state.filter);
+    }
+
+    // Filter by search
+    if (state.search) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(state.search) ||
+        p.id.toLowerCase().includes(state.search)
+      );
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (state.sort) {
+        case 'date-desc':
+          return new Date(b.lastModified) - new Date(a.lastModified);
+        case 'date-asc':
+          return new Date(a.lastModified) - new Date(b.lastModified);
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'progress-desc':
+          return b.progress - a.progress;
+        case 'progress-asc':
+          return a.progress - b.progress;
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }
+
+  /**
+   * Render kanban board with plans grouped by status
+   */
+  function renderKanbanBoard(plans) {
+    if (!kanbanBoard) return;
+
+    // Group plans by status
+    const grouped = {};
+    STATUS_COLUMNS.forEach(col => {
+      grouped[col.id] = [];
+    });
+
+    // Apply search filter for kanban
+    let filteredPlans = plans;
+    if (state.search) {
+      filteredPlans = plans.filter(p =>
+        p.name.toLowerCase().includes(state.search) ||
+        p.id.toLowerCase().includes(state.search)
+      );
+    }
+
+    filteredPlans.forEach(plan => {
+      const status = plan.status || 'pending';
+      if (grouped[status]) {
+        grouped[status].push(plan);
+      } else {
+        grouped['pending'].push(plan);
+      }
+    });
+
+    // Generate column HTML
+    const columnsHtml = STATUS_COLUMNS.map(col => {
+      const columnPlans = grouped[col.id];
+      const cardsHtml = columnPlans.length > 0
+        ? columnPlans.map(plan => renderKanbanCard(plan)).join('')
+        : `<div class="kanban-empty">
+            <svg class="kanban-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6M9 13h6M9 17h4"/>
+            </svg>
+            <span>No plans</span>
+          </div>`;
+
+      return `
+        <div class="kanban-column" data-status="${col.id}">
+          <div class="kanban-column-header">
+            <div class="kanban-column-title">
+              <span class="kanban-status-dot ${col.color}"></span>
+              <span>${col.label}</span>
+            </div>
+            <span class="kanban-column-count">${columnPlans.length}</span>
+          </div>
+          <div class="kanban-cards">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    kanbanBoard.innerHTML = columnsHtml;
+  }
+
+  /**
+   * Render a single kanban card
+   */
+  function renderKanbanCard(plan) {
+    const progressPct = Math.round(plan.progress || 0);
+    const dateStr = formatDate(plan.lastModified);
+
+    return `
+      <a href="/view?file=${encodeURIComponent(plan.path)}" class="kanban-card" data-id="${plan.id}">
+        <h4 class="kanban-card-title">${escapeHtml(plan.name)}</h4>
+        <div class="kanban-card-meta">
+          <div class="kanban-card-progress">
+            <div class="kanban-card-progress-bar">
+              <div class="kanban-card-progress-fill" style="width: ${progressPct}%"></div>
+            </div>
+            <span>${progressPct}%</span>
+          </div>
+          <span class="kanban-card-date">${dateStr}</span>
+        </div>
+      </a>
+    `;
+  }
+
+  /**
+   * Format date for display
+   */
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  /**
+   * Escape HTML to prevent XSS
+   */
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   // Initialize on DOM ready
