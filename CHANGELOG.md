@@ -1,3 +1,15 @@
+## [1.21.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.13...v1.21.0-beta.14) (2025-12-16)
+
+
+### 🐞 Bug Fixes
+
+* **git:** use remote tracking branch in merge and add PR error handling ([4025a55](https://github.com/claudekit/claudekit-engineer/commit/4025a5593dcf5f999faa63e9556c47d8ce608c25))
+
+
+### 📚 Documentation
+
+* **git-manager:** improve PR workflow with remote diff guidance ([23b99bb](https://github.com/claudekit/claudekit-engineer/commit/23b99bb577b9419e9cd3edbf91ccab6fbfb346f3))
+
 ## [1.21.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.12...v1.21.0-beta.13) (2025-12-15)
 
 
