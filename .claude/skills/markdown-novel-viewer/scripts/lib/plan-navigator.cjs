@@ -279,7 +279,7 @@ function generateNavSidebar(filePath) {
   const items = allPhases.map((phase, index) => {
     const isActive = index === currentIndex;
     const statusClass = phase.status.replace(/\s+/g, '-');
-    const href = `/view${phase.file}`;
+    const href = `/view?file=${encodeURIComponent(phase.file)}`;
 
     // Check if phase file actually exists on disk
     const fileExists = fs.existsSync(phase.file);
@@ -338,7 +338,7 @@ function generateNavFooter(filePath) {
   const nextExists = next && fs.existsSync(next.file);
 
   const prevHtml = prev ? (prevExists ? `
-    <a href="/view${prev.file}" class="nav-prev">
+    <a href="/view?file=${encodeURIComponent(prev.file)}" class="nav-prev">
       <span class="nav-arrow">&larr;</span>
       <span class="nav-label">${prev.name}</span>
     </a>
@@ -351,7 +351,7 @@ function generateNavFooter(filePath) {
   `) : '<span></span>';
 
   const nextHtml = next ? (nextExists ? `
-    <a href="/view${next.file}" class="nav-next">
+    <a href="/view?file=${encodeURIComponent(next.file)}" class="nav-next">
       <span class="nav-label">${next.name}</span>
       <span class="nav-arrow">&rarr;</span>
     </a>

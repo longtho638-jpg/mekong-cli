@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parsePlanTable } = require('./plan-navigator.cjs');
+const { parsePlanTable } = require('./plan-parser.cjs');
 const {
   extractPlanMetadata,
   generateTimelineStats,
