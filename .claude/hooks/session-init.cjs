@@ -12,7 +12,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const {
   loadConfig,
   writeEnv,
@@ -37,6 +37,41 @@ function execSafe(cmd, timeoutMs = 5000) {
     }).trim();
   } catch (e) {
     return null;
+  }
+}
+
+/**
+ * Safely execute a binary with arguments (no shell interpolation)
+ * Prevents command injection and handles paths with spaces correctly
+ * @param {string} binary - Path to the executable
+ * @param {string[]} args - Arguments array
+ * @param {number} timeoutMs - Timeout in milliseconds (default: 2000)
+ */
+function execFileSafe(binary, args, timeoutMs = 2000) {
+  try {
+    return execFileSync(binary, args, {
+      encoding: 'utf8',
+      timeout: timeoutMs,
+      stdio: ['pipe', 'pipe', 'pipe']
+    }).trim();
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Validate that a path is a file (not directory) and doesn't contain shell metacharacters
+ * @param {string} p - Path to validate
+ */
+function isValidPythonPath(p) {
+  if (!p || typeof p !== 'string') return false;
+  // Reject paths with shell metacharacters that could indicate injection attempts
+  if (/[;&|`$(){}[\]<>!#*?]/.test(p)) return false;
+  try {
+    const stat = fs.statSync(p);
+    return stat.isFile();
+  } catch (e) {
+    return false;
   }
 }
 
@@ -95,12 +130,12 @@ function getPythonPaths() {
 
 /**
  * Find Python binary using fast filesystem check
- * Returns first existing path, avoiding slow shell spawns
+ * Returns first existing valid file path, avoiding slow shell spawns
  */
 function findPythonBinary() {
   const paths = getPythonPaths();
   for (const p of paths) {
-    if (fs.existsSync(p)) return p;
+    if (isValidPythonPath(p)) return p;
   }
   return null;
 }
@@ -115,16 +150,18 @@ function getPythonVersion() {
   // Layer 0: Fast path pre-check - instant filesystem lookup
   const pythonPath = findPythonBinary();
   if (pythonPath) {
-    // Direct path execution bypasses shell initialization (pyenv, conda)
-    const result = execSafe(`${pythonPath} --version`, 2000);
+    // Use execFileSafe to prevent command injection and handle paths with spaces
+    // Direct binary execution bypasses shell initialization (pyenv, conda)
+    const result = execFileSafe(pythonPath, ['--version']);
     if (result) return result;
   }
 
   // Fallback: Try shell resolution with strict timeout
   // This catches non-standard installations but caps at 2s
-  const commands = ['python3 --version', 'python --version'];
+  // Note: Shell fallback still needed for pyenv/asdf where binary isn't in standard paths
+  const commands = ['python3', 'python'];
   for (const cmd of commands) {
-    const result = execSafe(cmd, 2000);
+    const result = execFileSafe(cmd, ['--version']);
     if (result) return result;
   }
 
