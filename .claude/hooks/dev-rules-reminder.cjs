@@ -63,7 +63,13 @@ function buildPlanContext(sessionId, config) {
       ? `- Plan: none | Suggested: ${resolved.path}`
       : `- Plan: none`;
 
-  return { reportsPath, gitBranch, planLine, namePattern };
+  // Validation config (injected so LLM can reference it)
+  const validation = plan.validation || {};
+  const validationMode = validation.mode || 'prompt';
+  const validationMin = validation.minQuestions || 3;
+  const validationMax = validation.maxQuestions || 8;
+
+  return { reportsPath, gitBranch, planLine, namePattern, validationMode, validationMin, validationMax };
 }
 
 function wasRecentlyInjected(transcriptPath) {
@@ -81,7 +87,7 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern }) {
+function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
   // Build language instructions based on config
   // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
   const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : null);
@@ -158,6 +164,7 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     planLine,
     `- Reports: ${reportsPath}`,
     ...(gitBranch ? [`- Branch: ${gitBranch}`] : []),
+    `- Validation: mode=${validationMode}, questions=${validationMin}-${validationMax}`,
     ``,
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -187,7 +194,7 @@ async function main() {
     const config = loadConfig({ includeProject: false, includeAssertions: false });
     const devRulesPath = resolveWorkflowPath('development-rules.md');
     const catalogScript = resolveScriptPath('generate_catalogs.py');
-    const { reportsPath, gitBranch, planLine, namePattern } = buildPlanContext(sessionId, config);
+    const { reportsPath, gitBranch, planLine, namePattern, validationMode, validationMin, validationMax } = buildPlanContext(sessionId, config);
 
     const output = buildReminder({
       thinkingLanguage: config.locale?.thinkingLanguage,
@@ -199,7 +206,10 @@ async function main() {
       docsPath: config.paths?.docs || 'docs',
       planLine,
       gitBranch,
-      namePattern
+      namePattern,
+      validationMode,
+      validationMin,
+      validationMax
     });
 
     console.log(output.join('\n'));

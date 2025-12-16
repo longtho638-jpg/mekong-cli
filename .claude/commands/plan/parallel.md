@@ -22,6 +22,21 @@ $ARGUMENTS
 5. Main agent gathers all research and scout report filepaths, and pass them to `planner` subagent with the prompt to create a parallel-optimized implementation plan.
 6. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
 
+## Post-Plan Validation (Optional)
+
+After plan creation, offer validation interview to confirm decisions before implementation.
+
+**Check `## Plan Context` → `Validation: mode=X, questions=MIN-MAX`:**
+
+| Mode | Behavior |
+|------|----------|
+| `prompt` | Ask user: "Validate this plan with a brief interview?" → Yes (Recommended) / No |
+| `auto` | Automatically execute `/plan:validate {plan-path}` |
+| `off` | Skip validation step entirely |
+
+**If mode is `prompt`:** Use `AskUserQuestion` tool with options above.
+**If user chooses validation or mode is `auto`:** Execute `/plan:validate {plan-path}` SlashCommand.
+
 ## Special Requirements for Parallel Execution
 
 **CRITICAL:** The planner subagent must create phases that:

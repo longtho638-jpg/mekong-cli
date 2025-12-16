@@ -376,6 +376,13 @@ async function main() {
       if (config.locale?.responseLanguage) {
         writeEnv(envFile, 'CK_RESPONSE_LANGUAGE', config.locale.responseLanguage);
       }
+
+      // Plan validation config (for /plan:validate, /plan:hard, /plan:parallel)
+      const validation = config.plan?.validation || {};
+      writeEnv(envFile, 'CK_VALIDATION_MODE', validation.mode || 'prompt');
+      writeEnv(envFile, 'CK_VALIDATION_MIN_QUESTIONS', validation.minQuestions || 3);
+      writeEnv(envFile, 'CK_VALIDATION_MAX_QUESTIONS', validation.maxQuestions || 8);
+      writeEnv(envFile, 'CK_VALIDATION_FOCUS_AREAS', (validation.focusAreas || ['assumptions', 'risks', 'tradeoffs', 'architecture']).join(','));
     }
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);

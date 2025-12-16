@@ -78,9 +78,10 @@ CATEGORY_GUIDES = {
         "workflow": [
             ("Quick plan", "`/plan:fast` \"your task\""),
             ("Deep research", "`/plan:hard` \"complex task\""),
+            ("Validate", "`/plan:validate` (interview to confirm decisions)"),
             ("Execute plan", "`/code` (runs the plan)"),
         ],
-        "tip": "After /plan, use /code to execute - NOT /cook",
+        "tip": "Use /plan:validate to confirm assumptions before coding",
     },
     "cook": {
         "title": "Implementation",
@@ -548,8 +549,14 @@ def show_config_guide() -> None:
     print('    "issuePrefix": "GH-",                     // Issue ID prefix (null = #)')
     print('    "reportsDir": "reports",                  // Reports subfolder')
     print('    "resolution": {')
-    print('      "order": ["session", "branch", "mostRecent"],  // Resolution chain')
-    print('      "branchPattern": "(?:feat|fix|...)/.+"         // Branch slug regex')
+    print('      "order": ["session", "branch"],  // Resolution chain')
+    print('      "branchPattern": "(?:feat|fix|...)/.+"  // Branch slug regex')
+    print('    },')
+    print('    "validation": {')
+    print('      "mode": "prompt",       // "auto" | "prompt" | "off"')
+    print('      "minQuestions": 3,      // Min questions to ask')
+    print('      "maxQuestions": 8,      // Max questions to ask')
+    print('      "focusAreas": ["assumptions", "risks", "tradeoffs", "architecture"]')
     print('    }')
     print('  },')
     print('  "paths": {')
@@ -592,6 +599,14 @@ def show_config_guide() -> None:
     print()
     print("When both are set, Claude thinks in one language but responds in another.")
     print("This improves precision (English) while maintaining natural output (your language).")
+    print()
+    print("**Plan Validation:**")
+    print("- `mode: \"prompt\"` - Ask user after plan creation (default)")
+    print("- `mode: \"auto\"` - Always run validation interview")
+    print("- `mode: \"off\"` - Skip; user runs `/plan:validate` manually")
+    print()
+    print("Validation interviews the user with critical questions to confirm")
+    print("assumptions, risks, and architectural decisions before implementation.")
     print()
     print("---")
     print()

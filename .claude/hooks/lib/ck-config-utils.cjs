@@ -26,6 +26,12 @@ const DEFAULT_CONFIG = {
       // Branch matching now returns 'suggested' not 'active'
       order: ['session', 'branch'],
       branchPattern: '(?:feat|fix|chore|refactor|docs)/(?:[^/]+/)?(.+)'
+    },
+    validation: {
+      mode: 'prompt',  // 'auto' | 'prompt' | 'off'
+      minQuestions: 3,
+      maxQuestions: 8,
+      focusAreas: ['assumptions', 'risks', 'tradeoffs', 'architecture']
     }
   },
   paths: {
@@ -289,6 +295,11 @@ function sanitizeConfig(config, projectRoot) {
     result.plan.resolution = {
       ...DEFAULT_CONFIG.plan.resolution,
       ...result.plan.resolution
+    };
+    // Merge validation defaults
+    result.plan.validation = {
+      ...DEFAULT_CONFIG.plan.validation,
+      ...result.plan.validation
     };
   }
 
