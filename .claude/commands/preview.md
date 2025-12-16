@@ -17,12 +17,16 @@ Preview markdown files or plans dashboard in novel-reader UI with warm book-like
 
 ## Execution
 
-Run the markdown-novel-viewer server:
+Check if this script is located in the current workspace or in `$HOME/.claude/skills/markdown-novel-viewer` directory:
+- If in current workspace: `$SKILL_DIR_PATH` = `./.claude/skills/markdown-novel-viewer/`
+- If in home directory: `$SKILL_DIR_PATH` = `$HOME/.claude/skills/markdown-novel-viewer/`
+
+Run the `markdown-novel-viewer` server:
 
 ```bash
 # Check if --stop flag
 if [[ "$ARGUMENTS" == *"--stop"* ]]; then
-  node .claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
+  node $SKILL_DIR_PATH/scripts/server.cjs --stop
   exit 0
 fi
 
@@ -30,14 +34,14 @@ fi
 INPUT_PATH="{{path}}"
 if [[ -d "$INPUT_PATH" ]]; then
   # Directory mode - dashboard or plan navigation
-  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+  node $SKILL_DIR_PATH/scripts/server.cjs \
     --dir "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
     --background
 else
   # File mode - single markdown viewer
-  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+  node $SKILL_DIR_PATH/scripts/server.cjs \
     --file "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
