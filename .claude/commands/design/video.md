@@ -8,8 +8,7 @@ Think hard to plan & start designing follow exactly this video:
 
 ## Required Skills (Priority Order)
 1. **`ui-ux-pro-max`** - Design intelligence database (ALWAYS ACTIVATE FIRST)
-2. **`aesthetic`** - Design principles
-3. **`frontend-design`** - Video analysis and replication
+2. **`frontend-design`** - Video analysis and replication
 
 **Ensure token efficiency while maintaining high quality.**
 
