@@ -1,3 +1,11 @@
+## [1.21.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.14...v1.21.0-beta.15) (2025-12-16)
+
+
+### ⚡ Performance Improvements
+
+* add Windows Python paths for cross-platform support ([89a2a9a](https://github.com/claudekit/claudekit-engineer/commit/89a2a9a2c8efe6c2752376a7166ddc3ba866569c))
+* fix slow Python version detection in session-init hook ([efd9205](https://github.com/claudekit/claudekit-engineer/commit/efd92055eda2cebb313557a2f64afd5e5fb60dfa))
+
 ## [1.21.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.13...v1.21.0-beta.14) (2025-12-16)
 
 
