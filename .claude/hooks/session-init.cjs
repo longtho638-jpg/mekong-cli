@@ -41,25 +41,65 @@ function execSafe(cmd, timeoutMs = 5000) {
 }
 
 /**
- * Common Python binary paths for fast filesystem check
+ * Build platform-specific Python paths for fast filesystem check
  * Avoids slow shell initialization (pyenv, conda) by checking paths directly
  */
-const PYTHON_PATHS = [
-  '/usr/bin/python3',
-  '/usr/local/bin/python3',
-  '/opt/homebrew/bin/python3',      // macOS ARM (Homebrew)
-  '/opt/homebrew/bin/python',       // macOS ARM fallback
-  '/usr/bin/python',
-  '/usr/local/bin/python',
-  process.env.PYTHON_PATH,          // User override via env var
-].filter(Boolean);
+function getPythonPaths() {
+  const paths = [];
+
+  // User override takes priority
+  if (process.env.PYTHON_PATH) {
+    paths.push(process.env.PYTHON_PATH);
+  }
+
+  if (process.platform === 'win32') {
+    // Windows paths
+    const localAppData = process.env.LOCALAPPDATA;
+    const programFiles = process.env.ProgramFiles || 'C:\\Program Files';
+    const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
+
+    // Microsoft Store Python (most common on modern Windows)
+    if (localAppData) {
+      paths.push(path.join(localAppData, 'Microsoft', 'WindowsApps', 'python.exe'));
+      paths.push(path.join(localAppData, 'Microsoft', 'WindowsApps', 'python3.exe'));
+      // User-installed Python (common versions)
+      for (const ver of ['313', '312', '311', '310', '39']) {
+        paths.push(path.join(localAppData, 'Programs', 'Python', `Python${ver}`, 'python.exe'));
+      }
+    }
+
+    // System-wide Python installations
+    for (const ver of ['313', '312', '311', '310', '39']) {
+      paths.push(path.join(programFiles, `Python${ver}`, 'python.exe'));
+      paths.push(path.join(programFilesX86, `Python${ver}`, 'python.exe'));
+    }
+
+    // Legacy paths
+    paths.push('C:\\Python313\\python.exe');
+    paths.push('C:\\Python312\\python.exe');
+    paths.push('C:\\Python311\\python.exe');
+    paths.push('C:\\Python310\\python.exe');
+    paths.push('C:\\Python39\\python.exe');
+  } else {
+    // Unix-like paths (Linux, macOS)
+    paths.push('/usr/bin/python3');
+    paths.push('/usr/local/bin/python3');
+    paths.push('/opt/homebrew/bin/python3');      // macOS ARM (Homebrew)
+    paths.push('/opt/homebrew/bin/python');       // macOS ARM fallback
+    paths.push('/usr/bin/python');
+    paths.push('/usr/local/bin/python');
+  }
+
+  return paths;
+}
 
 /**
  * Find Python binary using fast filesystem check
  * Returns first existing path, avoiding slow shell spawns
  */
 function findPythonBinary() {
-  for (const p of PYTHON_PATHS) {
+  const paths = getPythonPaths();
+  for (const p of paths) {
     if (fs.existsSync(p)) return p;
   }
   return null;
