@@ -1,3 +1,25 @@
+## [1.21.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.16...v1.21.0-beta.17) (2025-12-16)
+
+
+### 🚀 Features
+
+* **markdown-novel-viewer:** add sidebar anchor navigation and inline section styling ([231fc52](https://github.com/claudekit/claudekit-engineer/commit/231fc52c493ddef27b4786b546d0020ffe2e6726))
+* **planning:** add YAML frontmatter support for plan files ([a5c894c](https://github.com/claudekit/claudekit-engineer/commit/a5c894c1603f58ff7da2f05a8c9a2bd3e66b407c))
+* **plans-kanban:** add kanban board view with enhanced dashboard ([fea08a2](https://github.com/claudekit/claudekit-engineer/commit/fea08a22db6b01e7aaadecef78a1493a77185079))
+* **plans-kanban:** enhance kanban cards and add favicon ([873ef6a](https://github.com/claudekit/claudekit-engineer/commit/873ef6af9edf3ddeff2bb168752f8f1003dba281))
+* **skills:** add navigation and theme persistence improvements ([0b9d8fb](https://github.com/claudekit/claudekit-engineer/commit/0b9d8fb793b916a8a4ebdc2a22edfc884d991836))
+
+
+### 🐞 Bug Fixes
+
+* **preview:** hide inline sections from sidebar navigation ([4610369](https://github.com/claudekit/claudekit-engineer/commit/4610369459facfffb65e90ebfc702b192b244b36))
+* **skills:** resolve kanban/preview separation issues ([e2c7832](https://github.com/claudekit/claudekit-engineer/commit/e2c783260f2eea2cc82a13fa2061df6cac804286))
+
+
+### ♻️ Code Refactoring
+
+* separate kanban and preview functionality with enhanced features ([96a1232](https://github.com/claudekit/claudekit-engineer/commit/96a1232e4bbba4d92fa777cf947866d727530545))
+
 ## [1.21.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.15...v1.21.0-beta.16) (2025-12-16)
 
 
