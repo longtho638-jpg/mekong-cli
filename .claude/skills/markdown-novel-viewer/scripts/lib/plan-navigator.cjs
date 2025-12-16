@@ -314,7 +314,9 @@ function parsePlanTable(planFilePath) {
     }
   }
 
-  return phases;
+  // Filter out phases that only point to the plan.md itself (inline sections)
+  // Only keep phases that have separate phase files
+  return phases.filter(p => p.file !== planFilePath);
 }
 
 /**
