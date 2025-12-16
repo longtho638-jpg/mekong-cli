@@ -2,6 +2,23 @@
 
 Background HTTP server rendering markdown files with calm, book-like reading experience.
 
+## ⚠️ Installation Required
+
+**This skill requires npm dependencies.** Run one of the following:
+
+```bash
+# Option 1: Install via ClaudeKit CLI (recommended)
+ck init  # Runs install.sh which handles all skills
+
+# Option 2: Manual installation
+cd .claude/skills/markdown-novel-viewer
+npm install
+```
+
+**Dependencies:** `marked`, `highlight.js`, `gray-matter`
+
+Without installation, you'll get **Error 500: Error rendering markdown**.
+
 ## Purpose
 
 Universal viewer - pass ANY path and view it:
@@ -112,13 +129,7 @@ assets/
 ## Dependencies
 
 - Node.js built-in: `http`, `fs`, `path`, `net`
-- npm: `marked`, `highlight.js`, `gray-matter`
-
-Install dependencies:
-```bash
-cd $HOME/.claude/skills/markdown-novel-viewer
-npm install marked highlight.js gray-matter
-```
+- npm: `marked`, `highlight.js`, `gray-matter` (installed via `npm install`)
 
 ## Customization
 
