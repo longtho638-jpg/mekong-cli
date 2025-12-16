@@ -28,7 +28,7 @@ node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --background
 
 # Stop all running servers
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
+node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
 ```
 
 ## Slash Command
@@ -116,7 +116,7 @@ assets/
 
 Install dependencies:
 ```bash
-cd .claude/skills/markdown-novel-viewer
+cd $HOME/.claude/skills/markdown-novel-viewer
 npm install marked highlight.js gray-matter
 ```
 

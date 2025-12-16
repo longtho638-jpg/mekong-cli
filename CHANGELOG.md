@@ -1,3 +1,37 @@
+## [1.21.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.15...v1.21.0-beta.16) (2025-12-16)
+
+
+### 🐞 Bug Fixes
+
+* `frontend-design-pro` skill deprecated ([b8b6de3](https://github.com/claudekit/claudekit-engineer/commit/b8b6de325c9aa6e2dd5beb6f75251ca9e09fe544))
+* correct design commands after `aesthetic` skill deprecated ([fccf473](https://github.com/claudekit/claudekit-engineer/commit/fccf4738f121fb87438433fa4a2502027671a10d))
+* **preview:** check claude directory for script execution ([71d1853](https://github.com/claudekit/claudekit-engineer/commit/71d18531dc1516d4596244301a7ab5e91ad0f44f))
+
+
+### ⚡ Performance Improvements
+
+* ✨ new command -> `/test:ui` for running UI testing of an input URL ([f0736ff](https://github.com/claudekit/claudekit-engineer/commit/f0736ff94523c8a0c7e89acf678c17cd9012175e))
+
+## [1.21.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.14...v1.21.0-beta.15) (2025-12-16)
+
+
+### ⚡ Performance Improvements
+
+* add Windows Python paths for cross-platform support ([89a2a9a](https://github.com/claudekit/claudekit-engineer/commit/89a2a9a2c8efe6c2752376a7166ddc3ba866569c))
+* fix slow Python version detection in session-init hook ([efd9205](https://github.com/claudekit/claudekit-engineer/commit/efd92055eda2cebb313557a2f64afd5e5fb60dfa))
+
+## [1.21.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.13...v1.21.0-beta.14) (2025-12-16)
+
+
+### 🐞 Bug Fixes
+
+* **git:** use remote tracking branch in merge and add PR error handling ([4025a55](https://github.com/claudekit/claudekit-engineer/commit/4025a5593dcf5f999faa63e9556c47d8ce608c25))
+
+
+### 📚 Documentation
+
+* **git-manager:** improve PR workflow with remote diff guidance ([23b99bb](https://github.com/claudekit/claudekit-engineer/commit/23b99bb577b9419e9cd3edbf91ccab6fbfb346f3))
+
 ## [1.21.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.12...v1.21.0-beta.13) (2025-12-15)
 
 
