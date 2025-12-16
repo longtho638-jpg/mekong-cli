@@ -16,23 +16,23 @@ Preview markdown plans, storyboards, and documentation in a warm novel-reader UI
 
 ```bash
 # Dashboard mode - view all plans in a directory
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --dir ./plans \
   --host 0.0.0.0 \
   --open
 
 # File mode - preview a single markdown file
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --file ./plans/my-plan/plan.md \
   --open
 
 # Background mode
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --dir ./plans \
   --background
 
 # Stop all running servers
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
+node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
 ```
 
 ## Slash Command
@@ -135,7 +135,7 @@ assets/
 
 Install dependencies:
 ```bash
-cd .claude/skills/markdown-novel-viewer
+cd $HOME/.claude/skills/markdown-novel-viewer
 npm install marked highlight.js gray-matter
 ```
 
