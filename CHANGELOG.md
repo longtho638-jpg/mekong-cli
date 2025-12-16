@@ -1,3 +1,10 @@
+## [1.21.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.18...v1.21.0-beta.19) (2025-12-16)
+
+
+### 🐞 Bug Fixes
+
+* **install:** add viewer skills npm deps to install.ps1 ([d65153e](https://github.com/claudekit/claudekit-engineer/commit/d65153e2864761f796c7a9944a0f78a01b069797))
+
 ## [1.21.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.17...v1.21.0-beta.18) (2025-12-16)
 
 
