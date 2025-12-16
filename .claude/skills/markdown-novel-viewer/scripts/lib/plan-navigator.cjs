@@ -57,13 +57,25 @@ function normalizeStatus(raw) {
 }
 
 /**
+ * Generate a slug from text for use as anchor ID
+ * @param {string} text - Text to slugify
+ * @returns {string} - URL-safe slug
+ */
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
  * Parse plan.md to extract phase metadata from table
  * Supports multiple table formats:
  * 1. Standard: | Phase | Name | Status | [Link](path) |
  * 2. Link-first: | [Phase X](path) | Description | Status | ... |
  * 3. Heading-based: ### Phase X: Name with - Status: XXX
  * @param {string} planFilePath - Path to plan.md
- * @returns {Array<{phase: number, name: string, status: string, file: string}>}
+ * @returns {Array<{phase: number, name: string, status: string, file: string, anchor: string}>}
  */
 function parsePlanTable(planFilePath) {
   const content = fs.readFileSync(planFilePath, 'utf8');
@@ -125,12 +137,14 @@ function parsePlanTable(planFilePath) {
       // Skip header rows and separator rows
       if (name.trim().toLowerCase() === 'description' || name.trim().toLowerCase() === 'name') continue;
       if (name.includes('---') || name.includes('===')) continue;
+      const phaseNum = parseInt(phase, 10);
       phases.push({
-        phase: parseInt(phase, 10),
+        phase: phaseNum,
         name: name.trim(),
         status: normalizeStatus(status),
         file: planFilePath,
-        linkText: name.trim()
+        linkText: name.trim(),
+        anchor: `phase-${String(phaseNum).padStart(2, '0')}-${slugify(name.trim())}`
       });
     }
   }
@@ -146,12 +160,14 @@ function parsePlanTable(planFilePath) {
       if (headingMatch) {
         if (currentPhase) phases.push(currentPhase);
         const phaseNum = parseInt(headingMatch[1], 10);
+        const phaseName = headingMatch[2].trim();
         currentPhase = {
           phase: phaseNum,
-          name: headingMatch[2].trim(),
+          name: phaseName,
           status: 'pending',
           file: planFilePath,
-          linkText: `Phase ${phaseNum}`
+          linkText: `Phase ${phaseNum}`,
+          anchor: `phase-${String(phaseNum).padStart(2, '0')}-${slugify(phaseName)}`
         };
       }
       // Look for status in subsequent lines
@@ -193,7 +209,8 @@ function parsePlanTable(planFilePath) {
           name: name,
           status: hasCheckmark ? 'completed' : 'pending',
           file: planFilePath, // Default to plan.md, will be updated if File: found
-          linkText: name
+          linkText: name,
+          anchor: `phase-${String(phaseNum).padStart(2, '0')}-${slugify(name)}`
         };
         continue;
       }
@@ -204,6 +221,8 @@ function parsePlanTable(planFilePath) {
         if (fileMatch) {
           const fileName = fileMatch[1].trim();
           currentPhase.file = path.resolve(dir, fileName);
+          // Clear anchor when separate file exists
+          currentPhase.anchor = null;
         }
 
         // Check for status indicators in nested lines
@@ -232,12 +251,14 @@ function parsePlanTable(planFilePath) {
     const phaseMap = new Map();
     while ((match = numberedPhaseRegex.exec(content)) !== null) {
       const [, num, name] = match;
+      const phaseNum = parseInt(num, 10);
       phaseMap.set(name.trim().toLowerCase(), {
-        phase: parseInt(num, 10),
+        phase: phaseNum,
         name: name.trim(),
         status: 'pending',
         file: planFilePath,
-        linkText: name.trim()
+        linkText: name.trim(),
+        anchor: `phase-${String(phaseNum).padStart(2, '0')}-${slugify(name.trim())}`
       });
     }
 
@@ -354,11 +375,13 @@ function generateNavSidebar(filePath) {
   }
 
   const planName = path.basename(planInfo.planDir);
+  const normalizedCurrentPath = path.normalize(filePath);
 
   const items = allPhases.map((phase, index) => {
     const isActive = index === currentIndex;
     const statusClass = phase.status.replace(/\s+/g, '-');
-    const href = `/view?file=${encodeURIComponent(phase.file)}`;
+    const normalizedPhasePath = path.normalize(phase.file);
+    const isSameFile = normalizedPhasePath === normalizedCurrentPath;
 
     // Check if phase file actually exists on disk
     const fileExists = fs.existsSync(phase.file);
@@ -377,9 +400,34 @@ function generateNavSidebar(filePath) {
       `;
     }
 
+    // Build href: use anchor for same-file phases, full URL for different files
+    let href;
+    let isInlineSection = false;
+    if (isSameFile && phase.anchor) {
+      // Same file with anchor - use hash fragment only for smooth scrolling
+      href = `#${phase.anchor}`;
+      isInlineSection = true;
+    } else if (phase.anchor) {
+      // Different file with anchor
+      href = `/view?file=${encodeURIComponent(phase.file)}#${phase.anchor}`;
+    } else {
+      // No anchor (separate phase file or plan overview)
+      href = `/view?file=${encodeURIComponent(phase.file)}`;
+    }
+
+    // Add data attributes for client-side section tracking
+    const dataAnchor = phase.anchor ? `data-anchor="${phase.anchor}"` : '';
+    const inlineSectionClass = isInlineSection ? 'inline-section' : '';
+
+    // Type icon: hash/anchor for inline sections, file for separate docs
+    const typeIcon = isInlineSection
+      ? `<svg class="phase-type-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-.5 9.45a.75.75 0 01-1.06-1.06l-1.25 1.25a2 2 0 01-2.83-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25z"/></svg>`
+      : `<svg class="phase-type-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 1.5a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25V4.664a.25.25 0 00-.073-.177l-2.914-2.914a.25.25 0 00-.177-.073H3.75zM2 1.75C2 .784 2.784 0 3.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0112.25 16h-8.5A1.75 1.75 0 012 14.25V1.75z"/></svg>`;
+
     return `
-      <li class="phase-item ${isActive ? 'active' : ''}" data-status="${statusClass}">
+      <li class="phase-item ${isActive ? 'active' : ''} ${inlineSectionClass}" data-status="${statusClass}" ${dataAnchor}>
         <a href="${href}">
+          ${typeIcon}
           <span class="status-dot ${statusClass}"></span>
           <span class="phase-name">${phase.name}</span>
         </a>
@@ -388,7 +436,7 @@ function generateNavSidebar(filePath) {
   }).join('');
 
   return `
-    <nav class="plan-nav">
+    <nav class="plan-nav" id="plan-nav">
       <div class="plan-title">
         <span class="plan-icon">&#128214;</span>
         <span>${planName}</span>

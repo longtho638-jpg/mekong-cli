@@ -126,15 +126,82 @@
     }
   }
 
-  // Smooth scroll to anchor
+  // Smooth scroll to anchor with sidebar active state update
   function handleAnchorClick(e) {
-    const href = e.target.closest('a')?.getAttribute('href');
+    const anchor = e.target.closest('a');
+    const href = anchor?.getAttribute('href');
     if (href?.startsWith('#')) {
       e.preventDefault();
-      const target = document.getElementById(href.slice(1));
+      const targetId = href.slice(1);
+      const target = document.getElementById(targetId);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         history.pushState(null, '', href);
+        // Update sidebar active state
+        updateSidebarActiveState(targetId);
+      }
+    }
+  }
+
+  // Update sidebar active state based on anchor
+  function updateSidebarActiveState(anchorId) {
+    const planNav = document.getElementById('plan-nav');
+    if (!planNav) return;
+
+    // Remove active from all items
+    planNav.querySelectorAll('.phase-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    // Add active to matching item
+    const matchingItem = planNav.querySelector(`[data-anchor="${anchorId}"]`);
+    if (matchingItem) {
+      matchingItem.classList.add('active');
+    }
+  }
+
+  // Setup Intersection Observer for section tracking
+  function setupSectionObserver() {
+    const planNav = document.getElementById('plan-nav');
+    if (!planNav) return;
+
+    // Get all anchors from sidebar
+    const anchors = Array.from(planNav.querySelectorAll('[data-anchor]'))
+      .map(item => item.dataset.anchor);
+
+    if (anchors.length === 0) return;
+
+    // Find corresponding elements in content
+    const sections = anchors
+      .map(id => document.getElementById(id))
+      .filter(el => el !== null);
+
+    if (sections.length === 0) return;
+
+    // Create observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          updateSidebarActiveState(entry.target.id);
+        }
+      });
+    }, {
+      rootMargin: '-20% 0px -60% 0px', // Trigger when section is in upper portion of viewport
+      threshold: 0
+    });
+
+    // Observe all sections
+    sections.forEach(section => observer.observe(section));
+  }
+
+  // Handle hash change (browser back/forward)
+  function handleHashChange() {
+    const hash = window.location.hash;
+    if (hash) {
+      const targetId = hash.slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        updateSidebarActiveState(targetId);
       }
     }
   }
@@ -155,6 +222,17 @@
 
     document.addEventListener('keydown', handleKeydown);
     document.addEventListener('click', handleAnchorClick);
+
+    // Handle hash change for sidebar active state
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Setup section observer for auto-highlighting sidebar
+    setupSectionObserver();
+
+    // Handle initial hash on page load
+    if (window.location.hash) {
+      handleHashChange();
+    }
 
     // Handle resize
     let resizeTimeout;

@@ -340,7 +340,7 @@ function generateTimelineSection(plans) {
     const statusIcon = plan.status === 'completed' ? '✓' : plan.status === 'in-progress' ? '◐' : '○';
 
     return `
-      <div class="gantt-bar ${statusClass}"
+      <a href="/view?file=${encodeURIComponent(plan.path)}" class="gantt-bar ${statusClass}"
            style="left: ${plan.leftPct.toFixed(1)}%; width: ${plan.widthPct.toFixed(1)}%; top: ${top}px;"
            data-id="${escapeHtml(plan.id)}">
         <span class="gantt-bar-label">${escapeHtml(plan.name)}</span>
@@ -353,7 +353,7 @@ function generateTimelineSection(plans) {
             ${plan.totalEffortFormatted ? `<span>${plan.totalEffortFormatted}</span>` : ''}
           </div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 
