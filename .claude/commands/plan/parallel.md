@@ -70,6 +70,19 @@ plans/
 - Ensure every research markdown report remains concise (≤150 lines) while covering all requested topics and citations.
 
 **Plan File Specification**
+- Every `plan.md` MUST start with YAML frontmatter:
+  ```yaml
+  ---
+  title: "{Brief title}"
+  description: "{One sentence for card preview}"
+  status: pending
+  priority: P2
+  effort: {sum of phases, e.g., 4h}
+  branch: {current git branch}
+  tags: [relevant, tags]
+  created: {YYYY-MM-DD}
+  ---
+  ```
 - Save the overview access point at `plans/<plan-dir>/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
 - For each phase, create `plans/<plan-dir>/phase-XX-phase-name-here.md` containing the following sections in order:
   - Context links (reference parent plan, dependencies, docs)

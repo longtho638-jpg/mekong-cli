@@ -58,6 +58,43 @@ node .claude/scripts/set-active-plan.cjs plans/{your-plan-name}
 ## File Structure
 
 ### Overview Plan (plan.md)
+
+**IMPORTANT:** All plan.md files MUST include YAML frontmatter. See `output-standards.md` for schema.
+
+**Example plan.md structure:**
+```markdown
+---
+title: "Feature Implementation Plan"
+description: "Add user authentication with OAuth2 support"
+status: pending
+priority: P1
+effort: 8h
+issue: 123
+branch: kai/feat/oauth-auth
+tags: [auth, backend, security]
+created: 2025-12-16
+---
+
+# Feature Implementation Plan
+
+## Overview
+
+Brief description of what this plan accomplishes.
+
+## Phases
+
+| # | Phase | Status | Effort | Link |
+|---|-------|--------|--------|------|
+| 1 | Setup | Pending | 2h | [phase-01](./phase-01-setup.md) |
+| 2 | Implementation | Pending | 4h | [phase-02](./phase-02-impl.md) |
+| 3 | Testing | Pending | 2h | [phase-03](./phase-03-test.md) |
+
+## Dependencies
+
+- List key dependencies here
+```
+
+**Guidelines:**
 - Keep generic and under 80 lines
 - List each phase with status/progress
 - Link to detailed phase files

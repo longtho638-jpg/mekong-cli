@@ -1,19 +1,28 @@
 ---
-description: Preview markdown files or plans dashboard in novel-reader UI
+description: Path to markdown file, plan directory, or plans collection
 arguments:
   - name: path
-    description: Path to markdown file, plan directory, or plans collection
+    description: Path to file or directory to preview
     required: false
 ---
 
-Preview markdown files or plans dashboard in novel-reader UI with warm book-like aesthetic.
+Universal viewer - pass ANY path and see it rendered nicely.
 
 ## Usage
 
-- `/preview <file.md>` - Preview single markdown file
-- `/preview <plan-dir>/` - Preview plan with navigation sidebar
-- `/preview plans/` - Dashboard view of all plans
+- `/preview <file.md>` - View markdown file in novel-reader UI
+- `/preview <directory/>` - Browse directory contents
 - `/preview --stop` - Stop running server
+
+## Examples
+
+```bash
+/preview plans/my-plan/plan.md     # View markdown file
+/preview plans/                    # Browse plans directory
+/preview docs/                     # Browse docs directory
+/preview any/path/to/file.md      # View any markdown file
+/preview any/path/                 # Browse any directory
+```
 
 ## Execution
 
@@ -30,18 +39,18 @@ if [[ "$ARGUMENTS" == *"--stop"* ]]; then
   exit 0
 fi
 
-# Determine mode: --dir for directories, --file for markdown files
+# Determine if path is file or directory
 INPUT_PATH="{{path}}"
 if [[ -d "$INPUT_PATH" ]]; then
-  # Directory mode - dashboard or plan navigation
-  node $SKILL_DIR_PATH/scripts/server.cjs \
+  # Directory mode - browse
+  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
     --dir "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
     --background
 else
-  # File mode - single markdown viewer
-  node $SKILL_DIR_PATH/scripts/server.cjs \
+  # File mode - view markdown
+  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
     --file "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
@@ -49,4 +58,4 @@ else
 fi
 ```
 
-Report the URL to the user. For remote access, use the server's IP address instead of localhost.
+Report the URL to the user. For remote access from other devices, use the `networkUrl` field from the JSON output (auto-detected local IP).

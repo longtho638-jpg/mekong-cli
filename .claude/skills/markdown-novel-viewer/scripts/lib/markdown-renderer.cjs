@@ -86,7 +86,20 @@ function generateTOC(html) {
 }
 
 /**
+ * Generate a slug from text for use as anchor ID (matches plan-navigator.cjs)
+ * @param {string} text - Text to slugify
+ * @returns {string} - URL-safe slug
+ */
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
  * Add IDs to headings for anchor links
+ * Also adds phase-specific IDs for inline phases in plan.md
  * @param {string} html - Rendered HTML
  * @returns {string} - HTML with heading IDs
  */
@@ -94,10 +107,19 @@ function addHeadingIds(html) {
   const usedIds = new Set();
 
   return html.replace(/<h([1-6])>([^<]+)<\/h\1>/gi, (match, level, text) => {
-    let id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+    // Check if this is a phase heading (e.g., "Phase 01: Name" or contains phase table row content)
+    const phaseMatch = text.match(/^Phase\s*(\d+)[:\s]+(.+)/i);
+
+    let id;
+    if (phaseMatch) {
+      // Generate phase-specific anchor ID that matches plan-navigator.cjs format
+      const phaseNum = parseInt(phaseMatch[1], 10);
+      const phaseName = phaseMatch[2].trim();
+      id = `phase-${String(phaseNum).padStart(2, '0')}-${slugify(phaseName)}`;
+    } else {
+      // Standard heading ID generation
+      id = slugify(text);
+    }
 
     // Handle duplicate IDs
     let uniqueId = id;
@@ -109,6 +131,36 @@ function addHeadingIds(html) {
     usedIds.add(uniqueId);
 
     return `<h${level} id="${uniqueId}">${text}</h${level}>`;
+  });
+}
+
+/**
+ * Add anchor IDs to phase table rows
+ * Matches table rows with phase numbers: | 01 | Description | Status |
+ * @param {string} html - Rendered HTML
+ * @returns {string} - HTML with phase anchor IDs in table rows
+ */
+function addPhaseTableAnchors(html) {
+  const usedIds = new Set();
+
+  // Match table rows with phase pattern: <tr><td>01</td><td>Description</td>...
+  // This handles the "Phase Summary" table format
+  return html.replace(/<tr>\s*<td>(\d{2})<\/td>\s*<td>([^<]+)<\/td>/gi, (match, phaseNum, description) => {
+    const num = parseInt(phaseNum, 10);
+    const slug = slugify(description.trim());
+    const id = `phase-${String(num).padStart(2, '0')}-${slug}`;
+
+    // Handle duplicates
+    let uniqueId = id;
+    let counter = 1;
+    while (usedIds.has(uniqueId)) {
+      uniqueId = `${id}-${counter}`;
+      counter++;
+    }
+    usedIds.add(uniqueId);
+
+    // Add anchor span at the start of the row
+    return `<tr id="${uniqueId}"><td>${phaseNum}</td><td>${description}</td>`;
   });
 }
 
@@ -145,6 +197,9 @@ function renderMarkdownFile(filePath, options = {}) {
 
   // Add IDs to headings
   html = addHeadingIds(html);
+
+  // Add anchor IDs to phase table rows (for inline phases in plan.md)
+  html = addPhaseTableAnchors(html);
 
   // Generate TOC
   const toc = generateTOC(html);
@@ -185,6 +240,7 @@ module.exports = {
   resolveImages,
   generateTOC,
   addHeadingIds,
+  addPhaseTableAnchors,
   parseFrontmatter,
   renderTOCHtml,
   initDependencies

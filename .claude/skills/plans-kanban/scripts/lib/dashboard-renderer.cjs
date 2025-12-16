@@ -28,6 +28,32 @@ function escapeHtml(str) {
 }
 
 /**
+ * Truncate text to specified length with ellipsis
+ * @param {string} text - Text to truncate
+ * @param {number} maxLen - Maximum length
+ * @returns {string} - Truncated text
+ */
+function truncate(text, maxLen = 100) {
+  if (!text) return '';
+  if (text.length <= maxLen) return text;
+  return text.slice(0, maxLen - 3).trim() + '...';
+}
+
+/**
+ * Get priority color class based on priority level
+ * @param {string} priority - Priority string (P1/P2/P3 or High/Medium/Low)
+ * @returns {string} - CSS class name
+ */
+function getPriorityColorClass(priority) {
+  if (!priority) return '';
+  const p = String(priority).toUpperCase();
+  if (p === 'P1' || p === 'HIGH' || p === 'CRITICAL') return 'priority-high';
+  if (p === 'P2' || p === 'MEDIUM' || p === 'NORMAL') return 'priority-medium';
+  if (p === 'P3' || p === 'LOW') return 'priority-low';
+  return '';
+}
+
+/**
  * Format date for display
  * @param {string} isoDate - ISO date string
  * @returns {string} - Formatted date
@@ -72,6 +98,8 @@ function getStatusLabel(status) {
     'completed': 'Completed',
     'complete': 'Completed',
     'in-progress': 'In Progress',
+    'in-review': 'In Review',
+    'cancelled': 'Cancelled',
     'pending': 'Pending'
   };
   return labels[status] || 'Pending';
@@ -137,39 +165,64 @@ function generateStatusBadge(status) {
 }
 
 /**
- * Generate meta tags HTML for plan card (duration, effort, issue)
+ * Generate meta tags HTML for plan card (duration, effort, priority, issue, tags)
  * @param {Object} plan - Plan metadata
  * @returns {string} - Meta tags HTML
  */
 function generateCardMeta(plan) {
-  const tags = [];
+  const metaTags = [];
 
   // Duration tag
   if (plan.durationFormatted) {
-    const icon = plan.status === 'completed'
-      ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-      : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-    tags.push(`<span class="meta-tag duration" title="Duration">${icon} ${escapeHtml(plan.durationFormatted)}</span>`);
+    const icon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    metaTags.push(`<span class="meta-tag duration" title="Duration">${icon} ${escapeHtml(plan.durationFormatted)}</span>`);
   }
 
   // Effort tag
   if (plan.totalEffortFormatted) {
-    tags.push(`<span class="meta-tag effort" title="Estimated effort"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${escapeHtml(plan.totalEffortFormatted)}</span>`);
+    metaTags.push(`<span class="meta-tag effort" title="Estimated effort"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${escapeHtml(plan.totalEffortFormatted)}</span>`);
   }
 
-  // Priority tag
+  // Priority tag with color class
   if (plan.priority) {
-    const priorityClass = plan.priority.toLowerCase().replace(/[^a-z0-9]/g, '');
-    tags.push(`<span class="meta-tag priority ${priorityClass}" title="Priority">${escapeHtml(plan.priority)}</span>`);
+    const priorityColorClass = getPriorityColorClass(plan.priority);
+    metaTags.push(`<span class="meta-tag priority ${priorityColorClass}" title="Priority">${escapeHtml(plan.priority)}</span>`);
   }
 
-  // Issue tag (link to GitHub)
+  // Issue tag - clickable link to GitHub (uses branch to derive repo, falls back to claudekit)
   if (plan.issue) {
-    tags.push(`<a href="#" class="meta-tag issue" title="Issue #${plan.issue}" data-issue="${plan.issue}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> #${plan.issue}</a>`);
+    // TODO: Make repo configurable via project settings
+    const issueUrl = `https://github.com/claudekit/claudekit/issues/${plan.issue}`;
+    metaTags.push(`<a href="${issueUrl}" target="_blank" rel="noopener" class="meta-tag issue" title="Issue #${plan.issue}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> #${plan.issue}</a>`);
   }
 
-  if (tags.length === 0) return '';
-  return `<div class="card-meta">${tags.join('')}</div>`;
+  if (metaTags.length === 0) return '';
+  return `<div class="card-meta">${metaTags.join('')}</div>`;
+}
+
+/**
+ * Generate tags pills HTML
+ * @param {Array<string>} tags - Array of tag strings
+ * @param {number} maxVisible - Maximum visible tags (default 3)
+ * @returns {string} - Tags HTML
+ */
+function generateTagsPills(tags, maxVisible = 3) {
+  if (!tags || !Array.isArray(tags) || tags.length === 0) return '';
+
+  const visibleTags = tags.slice(0, maxVisible);
+  const hiddenCount = tags.length - maxVisible;
+
+  let html = '<div class="card-tags">';
+  html += visibleTags.map(tag =>
+    `<span class="tag-pill">${escapeHtml(tag)}</span>`
+  ).join('');
+
+  if (hiddenCount > 0) {
+    html += `<span class="tag-pill tag-more">+${hiddenCount}</span>`;
+  }
+  html += '</div>';
+
+  return html;
 }
 
 /**
@@ -182,6 +235,14 @@ function generatePlanCard(plan) {
   const name = escapeHtml(plan.name);
   const relativeTime = formatRelativeTime(plan.lastModified);
   const cardMeta = generateCardMeta(plan);
+
+  // Description section (truncated)
+  const descriptionHtml = plan.description
+    ? `<p class="card-description">${escapeHtml(truncate(plan.description, 100))}</p>`
+    : '';
+
+  // Tags pills
+  const tagsHtml = generateTagsPills(plan.tags);
 
   return `
     <article class="plan-card" data-status="${statusClass}" data-id="${escapeHtml(plan.id)}" tabindex="0"
@@ -197,12 +258,14 @@ function generatePlanCard(plan) {
         ${generateStatusBadge(statusClass)}
       </header>
       <div class="card-body">
+        ${descriptionHtml}
         ${generateProgressBar(plan.phases)}
         ${cardMeta}
+        ${tagsHtml}
       </div>
       <footer class="card-footer">
         <div class="phases-summary">${plan.phases.total} phases total</div>
-        <a href="/view${escapeHtml(plan.path)}" class="view-btn">
+        <a href="/view?file=${encodeURIComponent(plan.path)}" class="view-btn">
           View
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -340,7 +403,7 @@ function generateTimelineSection(plans) {
     const statusIcon = plan.status === 'completed' ? '✓' : plan.status === 'in-progress' ? '◐' : '○';
 
     return `
-      <div class="gantt-bar ${statusClass}"
+      <a href="/view?file=${encodeURIComponent(plan.path)}" class="gantt-bar ${statusClass}"
            style="left: ${plan.leftPct.toFixed(1)}%; width: ${plan.widthPct.toFixed(1)}%; top: ${top}px;"
            data-id="${escapeHtml(plan.id)}">
         <span class="gantt-bar-label">${escapeHtml(plan.name)}</span>
@@ -353,7 +416,7 @@ function generateTimelineSection(plans) {
             ${plan.totalEffortFormatted ? `<span>${plan.totalEffortFormatted}</span>` : ''}
           </div>
         </div>
-      </div>
+      </a>
     `;
   }).join('');
 
@@ -438,6 +501,163 @@ function generatePlansGrid(plans) {
 }
 
 /**
+ * Status column configuration for kanban board
+ */
+const STATUS_COLUMNS = [
+  { id: 'pending', label: 'Pending', color: 'pending' },
+  { id: 'in-progress', label: 'In Progress', color: 'in-progress' },
+  { id: 'in-review', label: 'In Review', color: 'in-review' },
+  { id: 'completed', label: 'Done', color: 'completed' },
+  { id: 'cancelled', label: 'Cancelled', color: 'cancelled' }
+];
+
+/**
+ * Generate kanban card HTML for a single plan (enhanced with details)
+ * @param {Object} plan - Plan metadata
+ * @returns {string} - Card HTML
+ */
+function generateKanbanCard(plan) {
+  const progressPct = Math.round(plan.progress || 0);
+  const dateStr = formatRelativeTime(plan.lastModified);
+
+  // Priority badge
+  let priorityHtml = '';
+  if (plan.priority) {
+    const priorityColorClass = getPriorityColorClass(plan.priority);
+    if (priorityColorClass) {
+      priorityHtml = `<span class="kanban-card-priority ${priorityColorClass}">${escapeHtml(plan.priority)}</span>`;
+    }
+  }
+
+  // Description (truncated)
+  let descriptionHtml = '';
+  if (plan.description) {
+    descriptionHtml = `<p class="kanban-card-description">${escapeHtml(truncate(plan.description, 80))}</p>`;
+  }
+
+  // Tags (max 3 visible)
+  let tagsHtml = '';
+  if (plan.tags && Array.isArray(plan.tags) && plan.tags.length > 0) {
+    const visibleTags = plan.tags.slice(0, 3);
+    const hiddenCount = plan.tags.length - 3;
+    tagsHtml = '<div class="kanban-card-tags">';
+    tagsHtml += visibleTags.map(tag => `<span class="kanban-card-tag">${escapeHtml(tag)}</span>`).join('');
+    if (hiddenCount > 0) {
+      tagsHtml += `<span class="kanban-card-tag tag-more">+${hiddenCount}</span>`;
+    }
+    tagsHtml += '</div>';
+  }
+
+  // Footer with effort and phases
+  let footerHtml = '';
+  const effortHtml = plan.totalEffortFormatted
+    ? `<span class="kanban-card-effort"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeHtml(plan.totalEffortFormatted)}</span>`
+    : '';
+  const phasesHtml = plan.phases && plan.phases.total
+    ? `<span class="kanban-card-phases">${plan.phases.total} phases</span>`
+    : '';
+  if (effortHtml || phasesHtml) {
+    footerHtml = `<div class="kanban-card-footer">${effortHtml}${phasesHtml}</div>`;
+  }
+
+  return `
+    <a href="/view?file=${encodeURIComponent(plan.path)}" class="kanban-card" data-id="${escapeHtml(plan.id)}">
+      <div class="kanban-card-header">
+        <h4 class="kanban-card-title">${escapeHtml(plan.name)}</h4>
+        ${priorityHtml}
+      </div>
+      ${descriptionHtml}
+      <div class="kanban-card-meta">
+        <div class="kanban-card-progress">
+          <div class="kanban-card-progress-bar">
+            <div class="kanban-card-progress-fill" style="width: ${progressPct}%"></div>
+          </div>
+          <span>${progressPct}%</span>
+        </div>
+        <span class="kanban-card-date">${dateStr}</span>
+      </div>
+      ${tagsHtml}
+      ${footerHtml}
+    </a>
+  `;
+}
+
+/**
+ * Generate kanban board columns HTML
+ * @param {Array} plans - Array of plan metadata objects
+ * @returns {string} - Kanban columns HTML
+ */
+function generateKanbanColumns(plans) {
+  if (!plans || plans.length === 0) {
+    // Return empty columns structure
+    return STATUS_COLUMNS.map(col => `
+      <div class="kanban-column" data-status="${col.id}">
+        <div class="kanban-column-header">
+          <div class="kanban-column-title">
+            <span class="kanban-status-dot ${col.color}"></span>
+            <span>${col.label}</span>
+          </div>
+          <span class="kanban-column-count">0</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="kanban-empty">
+            <svg class="kanban-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6M9 13h6M9 17h4"/>
+            </svg>
+            <span>No plans</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Group plans by status
+  const grouped = {};
+  STATUS_COLUMNS.forEach(col => {
+    grouped[col.id] = [];
+  });
+
+  plans.forEach(plan => {
+    const status = plan.status || 'pending';
+    if (grouped[status]) {
+      grouped[status].push(plan);
+    } else {
+      grouped['pending'].push(plan);
+    }
+  });
+
+  // Generate column HTML
+  return STATUS_COLUMNS.map(col => {
+    const columnPlans = grouped[col.id];
+    const cardsHtml = columnPlans.length > 0
+      ? columnPlans.map(generateKanbanCard).join('')
+      : `<div class="kanban-empty">
+          <svg class="kanban-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 9h6M9 13h6M9 17h4"/>
+          </svg>
+          <span>No plans</span>
+        </div>`;
+
+    return `
+      <div class="kanban-column" data-status="${col.id}">
+        <div class="kanban-column-header">
+          <div class="kanban-column-title">
+            <span class="kanban-status-dot ${col.color}"></span>
+            <span>${col.label}</span>
+          </div>
+          <span class="kanban-column-count">${columnPlans.length}</span>
+        </div>
+        <div class="kanban-cards">
+          ${cardsHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
  * Calculate statistics from plans array
  * @param {Array} plans - Array of plan metadata objects
  * @returns {Object} - Statistics object
@@ -496,6 +716,9 @@ function renderDashboard(plans, options = {}) {
   // Generate timeline section
   const timelineSection = generateTimelineSection(plans);
 
+  // Generate kanban columns
+  const kanbanColumns = generateKanbanColumns(plans);
+
   // Generate JSON for client-side filtering (include rich metadata)
   const plansJson = JSON.stringify(plans.map(p => ({
     id: p.id,
@@ -504,6 +727,7 @@ function renderDashboard(plans, options = {}) {
     progress: p.progress,
     lastModified: p.lastModified,
     phasesTotal: p.phases.total,
+    path: p.path, // Required for kanban card links
     // Rich metadata
     createdDate: p.createdDate,
     completedDate: p.completedDate,
@@ -513,12 +737,17 @@ function renderDashboard(plans, options = {}) {
     totalEffortFormatted: p.totalEffortFormatted,
     priority: p.priority,
     issue: p.issue,
-    branch: p.branch
+    branch: p.branch,
+    // New frontmatter fields
+    description: p.description,
+    tags: p.tags || [],
+    assignee: p.assignee
   })));
 
   // Replace placeholders
   template = template
     .replace(/\{\{plans-grid\}\}/g, plansGrid)
+    .replace(/\{\{kanban-columns\}\}/g, kanbanColumns)
     .replace(/\{\{plan-count\}\}/g, String(planCount))
     .replace(/\{\{plans-json\}\}/g, plansJson)
     .replace(/\{\{empty-state\}\}/g, generateEmptyState())
@@ -543,6 +772,7 @@ function getInlineTemplate() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plans Dashboard</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="stylesheet" href="/assets/novel-theme.css">
   <link rel="stylesheet" href="/assets/dashboard.css">
 </head>
@@ -633,6 +863,7 @@ module.exports = {
   renderDashboard,
   generatePlanCard,
   generateCardMeta,
+  generateTagsPills,
   generateProgressRing,
   generateProgressBar,
   generateStatusCounts,
@@ -640,9 +871,14 @@ module.exports = {
   generateTimelineSection,
   generateEmptyState,
   generatePlansGrid,
+  generateKanbanColumns,
+  generateKanbanCard,
   calculateStats,
   escapeHtml,
+  truncate,
   formatDate,
   formatRelativeTime,
-  getStatusLabel
+  getStatusLabel,
+  getPriorityColorClass,
+  STATUS_COLUMNS
 };

@@ -1,6 +1,12 @@
 /**
  * Core HTTP server for markdown-novel-viewer
- * Handles routing for markdown, static assets, and local files
+ * Handles routing for markdown viewer and directory browser
+ *
+ * Routes:
+ * - /view?file=<path>  - Markdown file viewer
+ * - /browse?dir=<path> - Directory browser
+ * - /assets/*          - Static assets
+ * - /file/*            - Local files (images, etc.)
  *
  * Security: Paths are validated to prevent directory traversal attacks
  */
@@ -9,9 +15,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-
-const { scanPlans } = require('./plan-scanner.cjs');
-const { renderDashboard } = require('./dashboard-renderer.cjs');
 
 // Allowed base directories for file access (set at runtime)
 let allowedBaseDirs = [];
@@ -40,7 +43,7 @@ function isPathSafe(filePath, allowedDirs = allowedBaseDirs) {
 
   // If no allowed dirs set, allow only project paths
   if (allowedDirs.length === 0) {
-    return true; // During initialization, allow all
+    return true;
   }
 
   // Must be within one of the allowed directories
@@ -49,11 +52,8 @@ function isPathSafe(filePath, allowedDirs = allowedBaseDirs) {
 
 /**
  * Sanitize error message to prevent path disclosure
- * @param {string} message - Original error message
- * @returns {string} - Sanitized message
  */
 function sanitizeErrorMessage(message) {
-  // Remove absolute paths from error messages
   return message.replace(/\/[^\s'"<>]+/g, '[path]');
 }
 
@@ -77,8 +77,6 @@ const MIME_TYPES = {
 
 /**
  * Get MIME type for file extension
- * @param {string} filePath - File path
- * @returns {string} - MIME type
  */
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -87,10 +85,6 @@ function getMimeType(filePath) {
 
 /**
  * Send response with content
- * @param {http.ServerResponse} res - Response object
- * @param {number} statusCode - HTTP status code
- * @param {string} contentType - Content type
- * @param {Buffer|string} content - Response content
  */
 function sendResponse(res, statusCode, contentType, content) {
   res.writeHead(statusCode, { 'Content-Type': contentType });
@@ -98,10 +92,7 @@ function sendResponse(res, statusCode, contentType, content) {
 }
 
 /**
- * Send error response (sanitized to prevent information disclosure)
- * @param {http.ServerResponse} res - Response object
- * @param {number} statusCode - HTTP status code
- * @param {string} message - Error message
+ * Send error response (sanitized)
  */
 function sendError(res, statusCode, message) {
   const safeMessage = sanitizeErrorMessage(message);
@@ -119,12 +110,8 @@ function sendError(res, statusCode, message) {
 
 /**
  * Serve static file with path validation
- * @param {http.ServerResponse} res - Response object
- * @param {string} filePath - File path
- * @param {boolean} skipValidation - Skip path validation (for internal assets)
  */
 function serveFile(res, filePath, skipValidation = false) {
-  // Security: Validate path unless explicitly skipped
   if (!skipValidation && !isPathSafe(filePath)) {
     sendError(res, 403, 'Access denied');
     return;
@@ -141,16 +128,164 @@ function serveFile(res, filePath, skipValidation = false) {
 }
 
 /**
+ * Get file icon based on extension
+ */
+function getFileIcon(filename) {
+  const ext = path.extname(filename).toLowerCase();
+  const iconMap = {
+    '.md': '📄',
+    '.txt': '📝',
+    '.json': '📋',
+    '.js': '📜',
+    '.cjs': '📜',
+    '.mjs': '📜',
+    '.ts': '📘',
+    '.css': '🎨',
+    '.html': '🌐',
+    '.png': '🖼️',
+    '.jpg': '🖼️',
+    '.jpeg': '🖼️',
+    '.gif': '🖼️',
+    '.svg': '🖼️',
+    '.pdf': '📕',
+    '.yaml': '⚙️',
+    '.yml': '⚙️',
+    '.toml': '⚙️',
+    '.env': '🔐',
+    '.sh': '💻',
+    '.bash': '💻'
+  };
+  return iconMap[ext] || '📄';
+}
+
+/**
+ * Render directory browser HTML
+ */
+function renderDirectoryBrowser(dirPath, assetsDir) {
+  const items = fs.readdirSync(dirPath);
+  const displayPath = dirPath.length > 50 ? '...' + dirPath.slice(-47) : dirPath;
+
+  // Separate directories and files, sort alphabetically
+  const dirs = [];
+  const files = [];
+
+  for (const item of items) {
+    // Skip hidden files and deprecated folders
+    if (item.startsWith('.') || item === 'deprecated') continue;
+
+    const itemPath = path.join(dirPath, item);
+    try {
+      const stats = fs.statSync(itemPath);
+      if (stats.isDirectory()) {
+        dirs.push(item);
+      } else {
+        files.push(item);
+      }
+    } catch {
+      // Skip items we can't stat
+    }
+  }
+
+  dirs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  files.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+  // Build file list HTML
+  let listHtml = '';
+
+  // Parent directory link (if not root)
+  const parentDir = path.dirname(dirPath);
+  if (parentDir !== dirPath) {
+    listHtml += `<li class="dir-item parent">
+      <a href="/browse?dir=${encodeURIComponent(parentDir)}">
+        <span class="icon">📁</span>
+        <span class="name">..</span>
+      </a>
+    </li>`;
+  }
+
+  // Directories
+  for (const dir of dirs) {
+    const fullPath = path.join(dirPath, dir);
+    listHtml += `<li class="dir-item folder">
+      <a href="/browse?dir=${encodeURIComponent(fullPath)}">
+        <span class="icon">📁</span>
+        <span class="name">${dir}/</span>
+      </a>
+    </li>`;
+  }
+
+  // Files
+  for (const file of files) {
+    const fullPath = path.join(dirPath, file);
+    const icon = getFileIcon(file);
+    const isMarkdown = file.endsWith('.md');
+
+    if (isMarkdown) {
+      listHtml += `<li class="dir-item file markdown">
+        <a href="/view?file=${encodeURIComponent(fullPath)}">
+          <span class="icon">${icon}</span>
+          <span class="name">${file}</span>
+        </a>
+      </li>`;
+    } else {
+      listHtml += `<li class="dir-item file">
+        <a href="/file${fullPath}" target="_blank">
+          <span class="icon">${icon}</span>
+          <span class="name">${file}</span>
+        </a>
+      </li>`;
+    }
+  }
+
+  // Empty directory message
+  if (dirs.length === 0 && files.length === 0) {
+    listHtml = '<li class="empty">This directory is empty</li>';
+  }
+
+  // Read CSS
+  let css = '';
+  const cssPath = path.join(assetsDir, 'directory-browser.css');
+  if (fs.existsSync(cssPath)) {
+    css = fs.readFileSync(cssPath, 'utf8');
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📁 ${path.basename(dirPath)}</title>
+  <style>
+    ${css}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📁 ${path.basename(dirPath)}</h1>
+      <p class="path">${displayPath}</p>
+    </header>
+    <ul class="file-list">
+      ${listHtml}
+    </ul>
+    <footer>
+      <p>${dirs.length} folder${dirs.length !== 1 ? 's' : ''}, ${files.length} file${files.length !== 1 ? 's' : ''}</p>
+    </footer>
+  </div>
+</body>
+</html>`;
+}
+
+/**
  * Create HTTP server with routing
  * @param {Object} options - Server options
  * @param {string} options.assetsDir - Static assets directory
  * @param {Function} options.renderMarkdown - Markdown render function (filePath) => html
  * @param {string[]} options.allowedDirs - Allowed directories for file access
- * @param {string} options.plansDir - Plans directory for dashboard
  * @returns {http.Server} - HTTP server instance
  */
 function createHttpServer(options) {
-  const { assetsDir, renderMarkdown, allowedDirs = [], plansDir } = options;
+  const { assetsDir, renderMarkdown, allowedDirs = [] } = options;
 
   // Set allowed directories for path validation
   if (allowedDirs.length > 0) {
@@ -161,24 +296,22 @@ function createHttpServer(options) {
     const parsedUrl = url.parse(req.url, true);
     const pathname = decodeURIComponent(parsedUrl.pathname);
 
-    // Route: /assets/* - serve static files from assets directory (internal, skip validation)
+    // Route: /assets/* - serve static files from assets directory
     if (pathname.startsWith('/assets/')) {
       const relativePath = pathname.replace('/assets/', '');
-      // Security: Prevent escaping assets directory
       if (relativePath.includes('..')) {
         sendError(res, 403, 'Access denied');
         return;
       }
       const assetPath = path.join(assetsDir, relativePath);
-      serveFile(res, assetPath, true); // Skip validation for internal assets
+      serveFile(res, assetPath, true);
       return;
     }
 
-    // Route: /file/* - serve local files (images, etc.) - validated
+    // Route: /file/* - serve local files (images, etc.)
     if (pathname.startsWith('/file/')) {
       const filePath = pathname.replace('/file', '');
 
-      // Security: Validate file path
       if (!isPathSafe(filePath)) {
         sendError(res, 403, 'Access denied');
         return;
@@ -188,82 +321,22 @@ function createHttpServer(options) {
       return;
     }
 
-    // Route: /api/files - DISABLED for security (directory listing)
-    if (pathname === '/api/files') {
-      sendError(res, 403, 'Directory listing disabled');
-      return;
-    }
-
-    // Route: /dashboard - render plans dashboard
-    if (pathname === '/dashboard') {
-      const customDir = parsedUrl.query?.dir;
-      const dir = customDir || plansDir;
-
-      // Security: Validate custom directory
-      if (customDir && !isPathSafe(customDir)) {
-        sendError(res, 403, 'Access denied');
-        return;
-      }
-
-      if (!dir) {
-        sendError(res, 400, 'Plans directory not configured');
-        return;
-      }
-
-      try {
-        const plans = scanPlans(dir);
-        const html = renderDashboard(plans, { assetsDir, plansDir: dir });
-        sendResponse(res, 200, 'text/html', html);
-      } catch (err) {
-        console.error('[http-server] Dashboard error:', err.message);
-        sendError(res, 500, 'Error rendering dashboard');
-      }
-      return;
-    }
-
-    // Route: /api/dashboard - JSON API for plans data
-    if (pathname === '/api/dashboard') {
-      const customDir = parsedUrl.query?.dir;
-      const dir = customDir || plansDir;
-
-      // Security: Validate custom directory
-      if (customDir && !isPathSafe(customDir)) {
-        sendError(res, 403, 'Access denied');
-        return;
-      }
-
-      if (!dir) {
-        sendResponse(res, 200, 'application/json', JSON.stringify({ plans: [], error: 'Plans directory not configured' }));
-        return;
-      }
-
-      try {
-        const plans = scanPlans(dir);
-        sendResponse(res, 200, 'application/json', JSON.stringify({ plans }));
-      } catch (err) {
-        console.error('[http-server] API error:', err.message);
-        sendResponse(res, 500, 'application/json', JSON.stringify({ error: 'Error scanning plans' }));
-      }
-      return;
-    }
-
-    // Route: / or /view/* - render markdown
-    if (pathname === '/' || pathname.startsWith('/view/')) {
-      const filePath = pathname === '/' ? null : pathname.replace('/view', '');
+    // Route: /view?file=<path> - render markdown (query param)
+    if (pathname === '/view') {
+      const filePath = parsedUrl.query?.file;
 
       if (!filePath) {
-        sendError(res, 400, 'No file specified. Use /view/path/to/file.md');
+        sendError(res, 400, 'Missing ?file= parameter. Use /view?file=/path/to/file.md');
         return;
       }
 
-      // Security: Validate file path
       if (!isPathSafe(filePath)) {
         sendError(res, 403, 'Access denied');
         return;
       }
 
       if (!fs.existsSync(filePath)) {
-        sendError(res, 404, 'Markdown file not found');
+        sendError(res, 404, 'File not found');
         return;
       }
 
@@ -271,8 +344,69 @@ function createHttpServer(options) {
         const html = renderMarkdown(filePath);
         sendResponse(res, 200, 'text/html', html);
       } catch (err) {
+        console.error('[http-server] Render error:', err.message);
         sendError(res, 500, 'Error rendering markdown');
       }
+      return;
+    }
+
+    // Route: /browse?dir=<path> - directory browser (query param)
+    if (pathname === '/browse') {
+      const dirPath = parsedUrl.query?.dir;
+
+      if (!dirPath) {
+        sendError(res, 400, 'Missing ?dir= parameter. Use /browse?dir=/path/to/directory');
+        return;
+      }
+
+      if (!isPathSafe(dirPath)) {
+        sendError(res, 403, 'Access denied');
+        return;
+      }
+
+      if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
+        sendError(res, 404, 'Directory not found');
+        return;
+      }
+
+      try {
+        const html = renderDirectoryBrowser(dirPath, assetsDir);
+        sendResponse(res, 200, 'text/html', html);
+      } catch (err) {
+        console.error('[http-server] Browse error:', err.message);
+        sendError(res, 500, 'Error listing directory');
+      }
+      return;
+    }
+
+    // Route: / - show welcome/usage page
+    if (pathname === '/') {
+      sendResponse(res, 200, 'text/html', `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Markdown Novel Viewer</title>
+          <style>
+            body { font-family: system-ui; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+            h1 { color: #8b4513; }
+            code { background: #f5f5f5; padding: 0.2rem 0.4rem; border-radius: 3px; }
+            .routes { background: #faf8f3; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
+          </style>
+        </head>
+        <body>
+          <h1>📖 Markdown Novel Viewer</h1>
+          <p>A calm, book-like viewer for markdown files.</p>
+          <div class="routes">
+            <h3>Routes</h3>
+            <ul>
+              <li><code>/view?file=/path/to/file.md</code> - View markdown</li>
+              <li><code>/browse?dir=/path/to/dir</code> - Browse directory</li>
+            </ul>
+          </div>
+          <p>Use the <code>/preview</code> command to start viewing files.</p>
+        </body>
+        </html>
+      `);
       return;
     }
 
@@ -292,5 +426,7 @@ module.exports = {
   isPathSafe,
   setAllowedDirs,
   sanitizeErrorMessage,
-  MIME_TYPES
+  MIME_TYPES,
+  renderDirectoryBrowser,
+  getFileIcon
 };

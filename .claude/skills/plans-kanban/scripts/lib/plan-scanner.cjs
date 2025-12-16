@@ -7,11 +7,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parsePlanTable } = require('./plan-navigator.cjs');
+const { parsePlanTable } = require('./plan-parser.cjs');
 const {
   extractPlanMetadata,
   generateTimelineStats,
-  generateActivityHeatmap
+  generateActivityHeatmap,
+  normalizeStatus
 } = require('./plan-metadata-extractor.cjs');
 
 /**
@@ -66,11 +67,33 @@ function parsePlanName(dirName) {
 }
 
 /**
- * Derive overall status from phase statistics
+ * Derive overall status from phase statistics or header status
  * @param {{completed: number, inProgress: number, pending: number, total: number}} stats
- * @returns {'completed' | 'in-progress' | 'pending'}
+ * @param {string} [headerStatus] - Optional status from plan header (e.g., **Status:** completed)
+ * @returns {'completed' | 'in-progress' | 'in-review' | 'cancelled' | 'pending'}
  */
-function deriveStatus(stats) {
+function deriveStatus(stats, headerStatus) {
+  // If header explicitly defines status, use it (normalized)
+  if (headerStatus) {
+    const normalized = headerStatus.toLowerCase().trim();
+    if (normalized.includes('complete') || normalized.includes('done')) {
+      return 'completed';
+    }
+    if (normalized.includes('review')) {
+      return 'in-review';
+    }
+    if (normalized.includes('cancel')) {
+      return 'cancelled';
+    }
+    if (normalized.includes('progress') || normalized.includes('active')) {
+      return 'in-progress';
+    }
+    if (normalized.includes('pending') || normalized.includes('todo') || normalized.includes('planned')) {
+      return 'pending';
+    }
+  }
+
+  // Otherwise derive from phase stats
   if (stats.completed === stats.total && stats.total > 0) {
     return 'completed';
   }
@@ -110,7 +133,10 @@ function getPlanMetadata(planFilePath) {
       phases: progress,
       progress: progress.percentage,
       lastModified: stats.mtime.toISOString(),
-      status: deriveStatus(progress),
+      // Use frontmatter status if hasFrontmatter (already normalized), otherwise derive from phases
+      status: richMeta.hasFrontmatter && richMeta.headerStatus
+        ? normalizeStatus(richMeta.headerStatus)
+        : deriveStatus(progress, richMeta.headerStatus),
       // Rich metadata
       createdDate: richMeta.createdDate,
       completedDate: richMeta.completedDate,
@@ -120,7 +146,12 @@ function getPlanMetadata(planFilePath) {
       totalEffortFormatted: richMeta.totalEffortFormatted,
       priority: richMeta.priority,
       issue: richMeta.issue,
-      branch: richMeta.branch
+      branch: richMeta.branch,
+      // New frontmatter fields
+      description: richMeta.description,
+      tags: richMeta.tags || [],
+      assignee: richMeta.assignee,
+      title: richMeta.title
     };
   } catch (err) {
     console.error(`[plan-scanner] Error reading plan: ${planFilePath}`, err.message);

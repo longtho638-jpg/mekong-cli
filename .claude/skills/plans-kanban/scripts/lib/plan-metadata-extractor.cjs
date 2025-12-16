@@ -1,12 +1,96 @@
 /**
  * Plan Metadata Extractor
  * Extracts rich metadata from plan.md files including dates, effort, priority, issues
+ * Supports YAML frontmatter (primary) with regex fallback for legacy plans
  *
  * @module plan-metadata-extractor
  */
 
 const fs = require('fs');
 const path = require('path');
+const matter = require('gray-matter');
+
+/**
+ * Normalize status string to standard format
+ * @param {string} status - Raw status string
+ * @returns {string} - Normalized status (pending|in-progress|completed|cancelled)
+ */
+function normalizeStatus(status) {
+  if (!status) return 'pending';
+  const s = String(status).toLowerCase().trim();
+  if (s === 'complete' || s === 'completed' || s === 'done') return 'completed';
+  if (s === 'in-progress' || s === 'in_progress' || s === 'active' || s === 'wip') return 'in-progress';
+  if (s === 'cancelled' || s === 'canceled') return 'cancelled';
+  if (s === 'in-review' || s === 'review') return 'in-review';
+  return 'pending';
+}
+
+/**
+ * Normalize priority to P1/P2/P3 format
+ * @param {string} priority - Raw priority string
+ * @returns {string|null} - Normalized priority (P1|P2|P3) or null
+ */
+function normalizePriority(priority) {
+  if (!priority) return null;
+  const p = String(priority).toUpperCase().trim();
+  if (p === 'P1' || p === 'HIGH' || p === 'CRITICAL') return 'P1';
+  if (p === 'P2' || p === 'MEDIUM' || p === 'NORMAL') return 'P2';
+  if (p === 'P3' || p === 'LOW') return 'P3';
+  if (p.match(/^P[0-3]$/)) return p;
+  return null;
+}
+
+/**
+ * Extract metadata from YAML frontmatter (primary method)
+ * @param {string} content - File content
+ * @returns {Object|null} - Extracted metadata or null if no frontmatter
+ */
+function extractFromFrontmatter(content) {
+  if (!content || !content.trim().startsWith('---')) return null;
+
+  try {
+    const { data } = matter(content);
+    if (!data || Object.keys(data).length === 0) return null;
+
+    return {
+      title: data.title || null,
+      description: data.description || null,
+      status: normalizeStatus(data.status),
+      priority: normalizePriority(data.priority),
+      effort: data.effort || null,
+      issue: data.issue ? String(data.issue) : null,
+      branch: data.branch || null,
+      tags: Array.isArray(data.tags) ? data.tags : [],
+      createdDate: data.created ? new Date(data.created) : null,
+      completedDate: data.completed ? new Date(data.completed) : null,
+      assignee: data.assignee || null
+    };
+  } catch (e) {
+    // YAML parse error - fall back to regex
+    return null;
+  }
+}
+
+/**
+ * Extract description from ## Overview section
+ * @param {string} content - File content
+ * @returns {string|null} - First paragraph of Overview section or null
+ */
+function extractDescriptionFromOverview(content) {
+  if (!content) return null;
+
+  // Look for ## Overview section
+  const overviewMatch = content.match(/##\s*Overview\s*\n+([^\n#]+)/i);
+  if (overviewMatch) {
+    const desc = overviewMatch[1].trim();
+    // Return first sentence or first 150 chars
+    const firstSentence = desc.match(/^[^.!?]+[.!?]/);
+    if (firstSentence) return firstSentence[0].trim();
+    return desc.slice(0, 150).trim();
+  }
+
+  return null;
+}
 
 /**
  * Parse date from plan directory name (YYMMDD or YYYYMMDD format)
@@ -195,6 +279,7 @@ function formatDuration(days) {
 
 /**
  * Extract all rich metadata from a plan
+ * Tries YAML frontmatter first, falls back to regex extraction
  * @param {string} planFilePath - Path to plan.md
  * @returns {Object} - Complete metadata object
  */
@@ -204,45 +289,73 @@ function extractPlanMetadata(planFilePath) {
   const dirName = path.basename(dir);
   const stats = fs.statSync(planFilePath);
 
-  // Get header metadata
+  // Try YAML frontmatter first (new format)
+  const frontmatter = extractFromFrontmatter(content);
+
+  // Get header metadata (legacy regex extraction)
   const headerMeta = extractHeaderMetadata(content);
 
   // Get date from directory name as fallback
   const dirDate = parseDateFromDirName(dirName);
 
-  // Determine created date (prefer header, fallback to dir name)
-  const createdDate = headerMeta.createdDate || dirDate || null;
+  // Merge frontmatter with regex fallback
+  // Frontmatter takes priority, regex fills gaps
+  const createdDate = frontmatter?.createdDate || headerMeta.createdDate || dirDate || null;
+  const completedDate = frontmatter?.completedDate || headerMeta.completedDate || null;
+  const priority = frontmatter?.priority || normalizePriority(headerMeta.priority);
+  const issue = frontmatter?.issue || headerMeta.issue;
+  const branch = frontmatter?.branch || headerMeta.branch;
 
-  // Get effort data
+  // Extract description: frontmatter > Overview section
+  const description = frontmatter?.description || extractDescriptionFromOverview(content);
+
+  // Tags from frontmatter only (no regex extraction for tags)
+  const tags = frontmatter?.tags || [];
+
+  // Get effort data from table
   const effortData = extractEffortFromTable(content);
+  // Override with frontmatter effort if present
+  let totalEffort = effortData.totalEffort;
+  if (frontmatter?.effort) {
+    const parsed = parseEffortToHours(frontmatter.effort);
+    if (parsed > 0) totalEffort = parsed;
+  }
 
   // Calculate duration
-  const duration = calculateDuration(createdDate, headerMeta.completedDate);
+  const duration = calculateDuration(createdDate, completedDate);
 
   return {
     // Dates
     createdDate: createdDate ? createdDate.toISOString() : null,
-    completedDate: headerMeta.completedDate ? headerMeta.completedDate.toISOString() : null,
+    completedDate: completedDate ? completedDate.toISOString() : null,
     lastModified: stats.mtime.toISOString(),
 
     // Duration
     durationDays: duration,
     durationFormatted: formatDuration(duration),
-    isCompleted: !!headerMeta.completedDate,
+    isCompleted: !!completedDate,
 
     // Effort
-    totalEffortHours: effortData.totalEffort,
-    totalEffortFormatted: effortData.totalEffort > 0
-      ? `${effortData.totalEffort.toFixed(1)}h`
+    totalEffortHours: totalEffort,
+    totalEffortFormatted: totalEffort > 0
+      ? `${totalEffort.toFixed(1)}h`
       : null,
     phaseEfforts: effortData.phaseEfforts,
 
-    // Metadata
-    priority: headerMeta.priority,
-    issue: headerMeta.issue,
-    branch: headerMeta.branch,
+    // Metadata (merged from frontmatter + regex)
+    title: frontmatter?.title || null,
+    description,
+    priority,
+    issue,
+    branch,
+    tags,
+    assignee: frontmatter?.assignee || null,
     planId: headerMeta.planId,
-    headerStatus: headerMeta.headerStatus
+    // Use frontmatter status if available, otherwise regex-extracted header status
+    headerStatus: frontmatter?.status || headerMeta.headerStatus,
+
+    // Source indicator for debugging
+    hasFrontmatter: !!frontmatter
   };
 }
 
@@ -353,13 +466,24 @@ function generateActivityHeatmap(plans) {
 }
 
 module.exports = {
-  parseDateFromDirName,
+  // Core extraction functions
+  extractPlanMetadata,
+  extractFromFrontmatter,
+  extractDescriptionFromOverview,
   extractHeaderMetadata,
-  parseEffortToHours,
   extractEffortFromTable,
+
+  // Normalization helpers
+  normalizeStatus,
+  normalizePriority,
+
+  // Date/time utilities
+  parseDateFromDirName,
+  parseEffortToHours,
   calculateDuration,
   formatDuration,
-  extractPlanMetadata,
+
+  // Statistics generators
   generateTimelineStats,
   generateActivityHeatmap
 };

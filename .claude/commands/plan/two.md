@@ -22,6 +22,21 @@ Use the `planner` subagent to create 2 detailed implementation plans for this fo
   **Output:** Provide at least 2 implementation approaches with clear trade-offs, and explain the pros and cons of each approach, and provide a recommended approach.
 1. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
 
+## Plan File Specification
+- Every `plan.md` MUST start with YAML frontmatter:
+  ```yaml
+  ---
+  title: "{Brief title}"
+  description: "{One sentence for card preview}"
+  status: pending
+  priority: P2
+  effort: {sum of phases, e.g., 4h}
+  branch: {current git branch}
+  tags: [relevant, tags]
+  created: {YYYY-MM-DD}
+  ---
+  ```
+
 ## Important Notes
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.

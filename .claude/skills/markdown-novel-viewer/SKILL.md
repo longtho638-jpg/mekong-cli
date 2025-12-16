@@ -1,34 +1,30 @@
 # markdown-novel-viewer
 
-Background HTTP server rendering markdown files with calm, book-like reading experience and plans dashboard.
+Background HTTP server rendering markdown files with calm, book-like reading experience.
 
 ## Purpose
 
-Preview markdown plans, storyboards, and documentation in a warm novel-reader UI with:
-- **Dashboard view** showing all plans with progress visualization
-- Serif fonts and centered headings
-- Dark/light theme toggle (persisted)
-- Font size adjustment (S/M/L)
-- Plan navigation sidebar for multi-phase plans
-- Inline image rendering
+Universal viewer - pass ANY path and view it:
+- **Markdown files** → novel-reader UI with serif fonts, warm theme
+- **Directories** → file listing browser with clickable links
 
 ## Quick Start
 
 ```bash
-# Dashboard mode - view all plans in a directory
-node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
+# View a markdown file
+node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+  --file ./plans/my-plan/plan.md \
+  --open
+
+# Browse a directory
+node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --dir ./plans \
   --host 0.0.0.0 \
   --open
 
-# File mode - preview a single markdown file
-node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
-  --file ./plans/my-plan/plan.md \
-  --open
-
 # Background mode
-node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs \
-  --dir ./plans \
+node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+  --file ./README.md \
   --background
 
 # Stop all running servers
@@ -40,23 +36,12 @@ node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
 Use `/preview` for quick access:
 
 ```bash
-/preview plans/my-plan/plan.md    # Preview single plan
-/preview plans/                   # Dashboard view
+/preview plans/my-plan/plan.md    # View markdown file
+/preview plans/                   # Browse directory
 /preview --stop                   # Stop server
 ```
 
 ## Features
-
-### Plans Dashboard
-- **Statistics hero** with total, completed, in-progress, pending counts
-- **Glassmorphism cards** with backdrop blur effects
-- **Progress rings** showing completion percentage
-- **Status badges** with animated indicators
-- **Sorting**: by date, name, or progress
-- **Filtering**: by status (all, completed, in-progress, pending)
-- **Search**: filter plans by name
-- **Keyboard navigation**: Arrow keys, Enter, Home/End
-- **URL state persistence**: filters saved in URL params
 
 ### Novel Theme
 - Warm cream background (light mode)
@@ -64,6 +49,13 @@ Use `/preview` for quick access:
 - Libre Baskerville serif headings
 - Inter body text, JetBrains Mono code
 - Maximum 720px content width
+
+### Directory Browser
+- Clean file listing with emoji icons
+- Markdown files link to viewer
+- Folders link to sub-directories
+- Parent directory navigation (..)
+- Light/dark mode support
 
 ### Plan Navigation
 - Auto-detects plan directory structure
@@ -77,17 +69,12 @@ Use `/preview` for quick access:
 - `Left/Right` - Navigate phases
 - `Escape` - Close sidebar (mobile)
 
-### Dashboard Shortcuts
-- `Arrow keys` - Navigate between cards
-- `Enter/Space` - Open selected plan
-- `Home/End` - Jump to first/last card
-
 ## CLI Options
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--dir <path>` | Plans directory (dashboard mode) | - |
-| `--file <path>` | Markdown file or plan directory | - |
+| `--file <path>` | Markdown file to view | - |
+| `--dir <path>` | Directory to browse | - |
 | `--port <number>` | Server port | 3456 |
 | `--host <addr>` | Host to bind (`0.0.0.0` for remote) | localhost |
 | `--open` | Auto-open browser | false |
@@ -102,29 +89,23 @@ scripts/
 └── lib/
     ├── port-finder.cjs      # Dynamic port allocation
     ├── process-mgr.cjs      # PID file management
-    ├── http-server.cjs      # Core HTTP routing (/view, /dashboard, /api)
+    ├── http-server.cjs      # Core HTTP routing (/view, /browse)
     ├── markdown-renderer.cjs # MD→HTML conversion
-    ├── plan-navigator.cjs   # Plan detection & nav
-    ├── plan-scanner.cjs     # Recursive plan discovery
-    └── dashboard-renderer.cjs # Dashboard HTML generation
+    └── plan-navigator.cjs   # Plan detection & nav
 
 assets/
 ├── template.html            # Markdown viewer template
 ├── novel-theme.css          # Combined light/dark theme
 ├── reader.js                # Client-side interactivity
-├── dashboard-template.html  # Dashboard HTML template
-├── dashboard.css            # Dashboard styles (glassmorphism)
-└── dashboard.js             # Dashboard client-side logic
+├── directory-browser.css    # Directory browser styles
 ```
 
 ## HTTP Routes
 
 | Route | Description |
 |-------|-------------|
-| `/dashboard` | Plans dashboard view |
-| `/dashboard?dir=/path` | Dashboard for custom directory |
-| `/api/dashboard` | JSON API for plans data |
-| `/view/<path>` | Markdown file viewer |
+| `/view?file=<path>` | Markdown file viewer |
+| `/browse?dir=<path>` | Directory browser |
 | `/assets/*` | Static assets |
 | `/file/*` | Local file serving (images) |
 
@@ -155,40 +136,9 @@ Dark mode:
 --accent: #d4a574;          /* Warm gold */
 ```
 
-### Dashboard Status Colors
-```css
---status-completed: #22c55e;   /* Green */
---status-in-progress: #3b82f6; /* Blue */
---status-pending: #f59e0b;     /* Amber */
-```
-
 ### Content Width
 ```css
 --content-width: 720px;
-```
-
-## Plan Directory Structure
-
-For automatic navigation and dashboard detection:
-```
-plans/
-├── 251201-feature-a/
-│   ├── plan.md              # Must contain phase table
-│   ├── phase-01-setup.md
-│   ├── phase-02-impl.md
-│   └── phase-03-test.md
-├── 251202-feature-b/
-│   ├── plan.md
-│   └── ...
-└── reports/                  # Ignored in dashboard
-```
-
-Phase table format in `plan.md`:
-```markdown
-| Phase | Name | Status | Link |
-|-------|------|--------|------|
-| 1 | Setup | Completed | [phase-01-setup.md](./phase-01-setup.md) |
-| 2 | Implementation | In Progress | [phase-02-impl.md](./phase-02-impl.md) |
 ```
 
 ## Remote Access
@@ -197,11 +147,21 @@ To access from another device on your network:
 
 ```bash
 # Start with 0.0.0.0 to bind to all interfaces
-node server.cjs --dir ./plans --host 0.0.0.0 --port 3456
-
-# Access from another device
-http://<server-ip>:3456/dashboard
+node server.cjs --file ./README.md --host 0.0.0.0 --port 3456
 ```
+
+When using `--host 0.0.0.0`, the server auto-detects your local network IP and includes it in the output:
+
+```json
+{
+  "success": true,
+  "url": "http://localhost:3456/view?file=...",
+  "networkUrl": "http://192.168.2.75:3456/view?file=...",
+  "port": 3456
+}
+```
+
+Use `networkUrl` to access from other devices on the same network.
 
 ## Troubleshooting
 
@@ -210,7 +170,5 @@ http://<server-ip>:3456/dashboard
 **Images not loading**: Ensure image paths are relative to markdown file
 
 **Server won't stop**: Check `/tmp/md-novel-viewer-*.pid` for stale PID files
-
-**Dashboard empty**: Ensure plan directories contain `plan.md` files
 
 **Remote access denied**: Use `--host 0.0.0.0` to bind to all interfaces
