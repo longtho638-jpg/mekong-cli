@@ -1,6 +1,21 @@
-typer
-rich
-pyyaml
-python-dotenv
-sh
-cryptography
+# 🏯 Agency OS - Dependencies
+# ============================
+
+# FastAPI & Server
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# HTTP & API
+requests>=2.31.0
+httpx>=0.24.0
+
+# Utilities
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
+
+# Optional: Telegram Bot
+# python-telegram-bot>=20.0
+
+# Optional: Voice Clone (ElevenLabs)
+# elevenlabs>=0.2.0
