@@ -1,3 +1,11 @@
+## [1.21.0-beta.21](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.20...v1.21.0-beta.21) (2025-12-17)
+
+
+### 🚀 Features
+
+* **hooks:** exempt example/sample/template files from privacy-block ([faf6f5f](https://github.com/claudekit/claudekit-engineer/commit/faf6f5f96de8ca3f18ea785a4bf7af3b83cb06e3)), closes [#200](https://github.com/claudekit/claudekit-engineer/issues/200)
+* **privacy-block:** improve robustness and testability of privacy hook ([c399b0c](https://github.com/claudekit/claudekit-engineer/commit/c399b0cf2188267a655f74fb4603e687d8a00186))
+
 ## [1.21.0-beta.20](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.19...v1.21.0-beta.20) (2025-12-17)
 
 
