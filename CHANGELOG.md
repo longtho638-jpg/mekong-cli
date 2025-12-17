@@ -1,3 +1,16 @@
+## [1.21.0-beta.24](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.23...v1.21.0-beta.24) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** normalize paths and handle edge cases in .ck.json config ([018d832](https://github.com/claudekit/claudekit-engineer/commit/018d832bd18a85f0ba2bc1c368e88cb6670810a7))
+* **hooks:** wire up validateNamingPattern and fix docs ([5063d69](https://github.com/claudekit/claudekit-engineer/commit/5063d698b71c03794ae6272102e642060644e9b9))
+
+
+### ✅ Tests
+
+* **hooks:** add unit tests for ck-config edge case handling ([673b400](https://github.com/claudekit/claudekit-engineer/commit/673b4002b115e09a8e91823561389c037839f048))
+
 ## [1.21.0-beta.23](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.22...v1.21.0-beta.23) (2025-12-17)
 
 
