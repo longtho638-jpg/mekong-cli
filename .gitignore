@@ -62,7 +62,6 @@ plans/**/*
 !plans/templates/*
 screenshots/*
 docs/screenshots/*
-docs/journals/*
 docs/research/*
 logs.txt
 test-ck
