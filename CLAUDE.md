@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **126 Core Modules | 75 Commits**
+> **127 Core Modules | 77 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 126 |
-| Commits | 75 |
-| Departments | 16 |
-| Department Hubs | 13 |
+| Core Modules | 127 |
+| Commits | 77 |
+| Departments | 17 |
+| Department Hubs | 14 |
 
 ---
 
@@ -121,6 +121,14 @@
 | `social_media_manager.py` | Social posts, engagement |
 | `email_automation.py` | Email sequences, lists |
 | `content_generator.py` | Content ideas, calendar |
+
+### 14. 👑 Executive Hub (`executive_hub.py`)
+| Feature | Description |
+|---------|-------------|
+| Agency Health | Overall score across departments |
+| Department View | 8 departments with status |
+| Executive KPIs | Revenue, profit, retention |
+| Strategic Priorities | Top company goals |
 
 ---
 
