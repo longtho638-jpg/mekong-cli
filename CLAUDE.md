@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **118 Core Modules | 69 Commits**
+> **122 Core Modules | 71 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 118 |
-| Commits | 69 |
-| Departments | 13 |
-| Department Hubs | 10 |
+| Core Modules | 122 |
+| Commits | 71 |
+| Departments | 14 |
+| Department Hubs | 11 |
 
 ---
 
@@ -99,6 +99,13 @@
 | `career_development.py` | Paths, skills, training |
 | `leadership_coach.py` | Competencies, coaching |
 | `productivity_coach.py` | Habits, focus, performance |
+
+### 11. 🚀 Entrepreneur Hub (`entrepreneur_hub.py`)
+| Module | Role |
+|--------|------|
+| `startup_launcher.py` | Ventures, MVPs, experiments |
+| `strategy_officer.py` | Vision, OKRs, initiatives |
+| `operations_manager.py` | Processes, metrics, resources |
 
 ---
 
