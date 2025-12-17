@@ -45,17 +45,17 @@ const PRIVACY_PATTERNS = [
 function isPrivacyBlockDisabled() {
   try {
     const configPath = path.join(process.cwd(), '.claude', '.ck.json');
-    if (!fs.existsSync(configPath)) return false;
-
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     return config.privacyBlock === false;
-  } catch (e) {
-    return false; // Default to enabled on error
+  } catch {
+    return false; // Default to enabled on error (file not found or invalid JSON)
   }
 }
 
 /**
  * Check if path is a safe file (example/sample/template)
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if file matches safe patterns
  */
 function isSafeFile(testPath) {
   if (!testPath) return false;
@@ -65,6 +65,8 @@ function isSafeFile(testPath) {
 
 /**
  * Check if path has APPROVED: prefix
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if path starts with APPROVED:
  */
 function hasApprovalPrefix(testPath) {
   return testPath && testPath.startsWith(APPROVED_PREFIX);
@@ -72,6 +74,8 @@ function hasApprovalPrefix(testPath) {
 
 /**
  * Strip APPROVED: prefix from path, warn on suspicious paths
+ * @param {string} testPath - Path to process
+ * @returns {string} Path without APPROVED: prefix
  */
 function stripApprovalPrefix(testPath) {
   if (hasApprovalPrefix(testPath)) {
@@ -89,6 +93,8 @@ function stripApprovalPrefix(testPath) {
 
 /**
  * Check if path matches privacy patterns
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if path matches privacy-sensitive patterns
  */
 function isPrivacySensitive(testPath) {
   if (!testPath) return false;
@@ -121,6 +127,8 @@ function isPrivacySensitive(testPath) {
 
 /**
  * Extract paths from tool input
+ * @param {Object} toolInput - Tool input object with file_path, path, pattern, or command
+ * @returns {Array<{value: string, field: string}>} Array of extracted paths with field names
  */
 function extractPaths(toolInput) {
   const paths = [];
@@ -162,6 +170,8 @@ function extractPaths(toolInput) {
 
 /**
  * Format block message with approval instructions
+ * @param {string} filePath - Blocked file path
+ * @returns {string} Formatted block message
  */
 function formatBlockMessage(filePath) {
   const basename = path.basename(filePath);
@@ -182,6 +192,8 @@ function formatBlockMessage(filePath) {
 
 /**
  * Format approval notice
+ * @param {string} filePath - Approved file path
+ * @returns {string} Formatted approval notice
  */
 function formatApprovalNotice(filePath) {
   return `\x1b[32m✓\x1b[0m Privacy: User-approved access to ${path.basename(filePath)}`;
@@ -229,3 +241,15 @@ async function main() {
 }
 
 main().catch(() => process.exit(0));
+
+// Export functions for unit testing
+if (typeof module !== 'undefined') {
+  module.exports = {
+    isSafeFile,
+    isPrivacyBlockDisabled,
+    isPrivacySensitive,
+    hasApprovalPrefix,
+    stripApprovalPrefix,
+    extractPaths,
+  };
+}
