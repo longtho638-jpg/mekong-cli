@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **94 Core Modules | 59 Commits**
+> **99 Core Modules | 61 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 94 |
-| Commits | 59 |
-| Departments | 8 |
-| Department Hubs | 5 |
+| Core Modules | 99 |
+| Commits | 61 |
+| Departments | 9 |
+| Department Hubs | 6 |
 
 ---
 
@@ -60,6 +60,14 @@
 | `devops_engineer.py` | CI/CD, infrastructure |
 | `qa_engineer.py` | Testing, bug tracking |
 | `data_engineer.py` | ETL pipelines |
+
+### 6. 💻 IT Hub (`it_hub.py`)
+| Module | Role |
+|--------|------|
+| `ciso.py` | Security, compliance |
+| `it_manager.py` | Operations, vendors |
+| `cto.py` | Strategy, innovation |
+| `sysadmin.py` | Infrastructure, users |
 
 ---
 
