@@ -43,24 +43,47 @@ function initDependencies() {
 }
 
 /**
+ * Resolve a single image source path to /file/ route
+ * @param {string} src - Image source path
+ * @param {string} basePath - Base directory path
+ * @returns {string} - Resolved path or original if absolute URL
+ */
+function resolveImageSrc(src, basePath) {
+  // Skip absolute URLs
+  if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/file')) {
+    return src;
+  }
+  // Resolve relative path to absolute /file/ route
+  const absolutePath = path.resolve(basePath, src);
+  return `/file${absolutePath}`;
+}
+
+/**
  * Resolve relative image paths to /file/ routes
+ * Supports both inline and reference-style markdown images
  * @param {string} markdown - Markdown content
  * @param {string} basePath - Base directory path
  * @returns {string} - Markdown with resolved image paths
  */
 function resolveImages(markdown, basePath) {
-  const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  let result = markdown;
 
-  return markdown.replace(imgRegex, (match, alt, src) => {
-    // Skip absolute URLs
-    if (src.startsWith('http://') || src.startsWith('https://')) {
-      return match;
-    }
-
-    // Resolve relative path
-    const absolutePath = path.resolve(basePath, src);
-    return `![${alt}](/file${absolutePath})`;
+  // 1. Handle inline images: ![alt](src) or ![alt](src "title")
+  const inlineImgRegex = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+  result = result.replace(inlineImgRegex, (match, alt, src) => {
+    const resolvedSrc = resolveImageSrc(src, basePath);
+    return `![${alt}](${resolvedSrc})`;
   });
+
+  // 2. Handle reference-style image definitions: [label]: src or [label]: src "title"
+  // These appear at the end of the document like: [Step 1 Initial]: ./screenshots/step1.png
+  const refDefRegex = /^\[([^\]]+)\]:\s*(\S+)(?:\s+"[^"]*")?$/gm;
+  result = result.replace(refDefRegex, (match, label, src) => {
+    const resolvedSrc = resolveImageSrc(src, basePath);
+    return `[${label}]: ${resolvedSrc}`;
+  });
+
+  return result;
 }
 
 /**
@@ -238,6 +261,7 @@ function renderTOCHtml(toc) {
 module.exports = {
   renderMarkdownFile,
   resolveImages,
+  resolveImageSrc,
   generateTOC,
   addHeadingIds,
   addPhaseTableAnchors,

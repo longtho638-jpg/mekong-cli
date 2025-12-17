@@ -143,6 +143,25 @@ test('resolveImages preserves absolute URLs', () => {
   assertEqual(resolved, md, 'Should preserve absolute URL');
 });
 
+test('resolveImages handles reference-style definitions', () => {
+  const md = '![Step 1 Initial]\n\n[Step 1 Initial]: ./screenshots/step1.png';
+  const resolved = resolveImages(md, '/base/path');
+  assertIncludes(resolved, '/file/', 'Should include /file/ route in ref definition');
+  assertIncludes(resolved, '/base/path/screenshots/step1.png', 'Should resolve relative path');
+});
+
+test('resolveImages handles reference-style with titles', () => {
+  const md = '[logo]: ./images/logo.png "Company Logo"';
+  const resolved = resolveImages(md, '/project');
+  assertIncludes(resolved, '/file/project/images/logo.png', 'Should resolve path with title');
+});
+
+test('resolveImages handles inline images with titles', () => {
+  const md = '![Alt](./image.png "Title text")';
+  const resolved = resolveImages(md, '/base');
+  assertIncludes(resolved, '/file/base/image.png', 'Should resolve inline with title');
+});
+
 test('addHeadingIds adds id attributes', () => {
   const html = '<h1>Test Heading</h1><h2>Another</h2>';
   const withIds = addHeadingIds(html);
