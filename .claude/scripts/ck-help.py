@@ -586,7 +586,6 @@ def show_config_guide() -> None:
     print("**Plan Resolution Chain:**")
     print("1. `session` - Check session temp file for active plan")
     print("2. `branch` - Match git branch slug to plan folder")
-    print("3. `mostRecent` - Use most recently modified plan")
     print()
     print("**Naming Format Variables:**")
     print("- `{date}` - Formatted date (per dateFormat)")

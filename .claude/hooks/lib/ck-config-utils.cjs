@@ -512,8 +512,8 @@ function writeEnv(envFile, key, value) {
  * @returns {string} Reports path
  */
 function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig) {
-  const reportsDir = normalizePath(planConfig.reportsDir) || 'reports';
-  const plansDir = normalizePath(pathsConfig.plans) || 'plans';
+  const reportsDir = normalizePath(planConfig?.reportsDir) || 'reports';
+  const plansDir = normalizePath(pathsConfig?.plans) || 'plans';
 
   // Only use plan-specific reports path if explicitly active (session state)
   if (planPath && resolvedBy === 'session') {
@@ -648,6 +648,15 @@ function resolveNamingPattern(planConfig, gitBranch) {
     .replace(/-+(\{slug\})/g, '-$1')  // Single hyphen before {slug}
     .replace(/(\{slug\})-+/g, '$1-')  // Single hyphen after {slug}
     .replace(/--+/g, '-');        // Collapse other multiple hyphens
+
+  // Validate the resulting pattern
+  const validation = validateNamingPattern(pattern);
+  if (!validation.valid) {
+    // Log warning but return pattern anyway (fail-safe)
+    if (process.env.CK_DEBUG) {
+      console.error(`[ck-config] Warning: ${validation.error}`);
+    }
+  }
 
   return pattern;
 }
