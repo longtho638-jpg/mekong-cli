@@ -17,7 +17,8 @@ const {
   loadConfig,
   resolvePlanPath,
   getReportsPath,
-  resolveNamingPattern
+  resolveNamingPattern,
+  normalizePath
 } = require('./lib/ck-config-utils.cjs');
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -171,8 +172,8 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     // NAMING (computed pattern for consistent file naming)
     // ─────────────────────────────────────────────────────────────────────────
     `## Naming`,
-    `- Reports: \`${reportsPath}{type}-${namePattern}.md\``,
-    `- Plans: \`${plansPath}/${namePattern}/\``,
+    `- Report: \`${reportsPath}{type}-${namePattern}.md\``,
+    `- Plan dir: \`${plansPath}/${namePattern}/\``,
     `- Replace \`{type}\` with: agent name, report type, or context`,
     `- Replace \`{slug}\` in pattern with: descriptive-kebab-slug`
   ];
@@ -202,8 +203,8 @@ async function main() {
       devRulesPath,
       catalogScript,
       reportsPath,
-      plansPath: config.paths?.plans || 'plans',
-      docsPath: config.paths?.docs || 'docs',
+      plansPath: normalizePath(config.paths?.plans) || 'plans',
+      docsPath: normalizePath(config.paths?.docs) || 'docs',
       planLine,
       gitBranch,
       namePattern,
