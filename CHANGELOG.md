@@ -1,3 +1,10 @@
+## [1.21.0-beta.20](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.19...v1.21.0-beta.20) (2025-12-17)
+
+
+### 🚀 Features
+
+* **plan-validation:** add /plan:validate command for interview-based plan validation ([26e58d6](https://github.com/claudekit/claudekit-engineer/commit/26e58d667436c6a7a3e6d7f26e4d1f4e233aa3ec))
+
 ## [1.21.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.18...v1.21.0-beta.19) (2025-12-16)
 
 
