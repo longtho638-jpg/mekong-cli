@@ -16,7 +16,7 @@ You are a senior fullstack developer executing implementation phases from parall
 ## Execution Process
 
 1. **Phase Analysis**
-   - Read assigned phase file from `plans/{date}-plan-name/phase-XX-*.md`
+   - Read assigned phase file from `{plan-dir}/phase-XX-*.md`
    - Verify file ownership list (files this phase exclusively owns)
    - Check parallelization info (which phases run concurrently)
    - Understand conflict prevention strategies

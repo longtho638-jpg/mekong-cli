@@ -16,7 +16,8 @@ const {
   resolveNamingPattern,
   getGitBranch,
   resolvePlanPath,
-  getReportsPath
+  getReportsPath,
+  normalizePath
 } = require('./lib/ck-config-utils.cjs');
 
 /**
@@ -64,8 +65,8 @@ async function main() {
     const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
     const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
     const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
-    const plansPath = config.paths?.plans || 'plans';
-    const docsPath = config.paths?.docs || 'docs';
+    const plansPath = normalizePath(config.paths?.plans) || 'plans';
+    const docsPath = normalizePath(config.paths?.docs) || 'docs';
     const thinkingLanguage = config.locale?.thinkingLanguage || '';
     const responseLanguage = config.locale?.responseLanguage || '';
     // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
@@ -89,7 +90,7 @@ async function main() {
       lines.push(`- Plan: none`);
     }
     lines.push(`- Reports: ${reportsPath}`);
-    lines.push(`- Paths: plans/${plansPath !== 'plans' ? ` (${plansPath})` : ''} | docs/${docsPath !== 'docs' ? ` (${docsPath})` : ''}`);
+    lines.push(`- Paths: ${plansPath}/ | ${docsPath}/`);
     lines.push(``);
 
     // Language (thinking + response, if configured)
@@ -115,7 +116,7 @@ async function main() {
     lines.push(``);
     lines.push(`## Naming`);
     lines.push(`- Report: ${reportsPath}${agentType}-${namePattern}.md`);
-    lines.push(`- Plan dir: plans/${namePattern}/`);
+    lines.push(`- Plan dir: ${plansPath}/${namePattern}/`);
 
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));
