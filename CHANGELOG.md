@@ -1,3 +1,15 @@
+## [1.21.0-beta.25](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.24...v1.21.0-beta.25) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* `/code:auto` should finish all phases by default ([6c528a8](https://github.com/claudekit/claudekit-engineer/commit/6c528a802832836a36d104d813dc70d3b7c31d06))
+
+
+### ⚡ Performance Improvements
+
+* `/code:auto` should ask for onboarding assist if needed ([809b19a](https://github.com/claudekit/claudekit-engineer/commit/809b19ae2e7be9fb0e65c82a6b4deeda6ac10887))
+
 ## [1.21.0-beta.24](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.23...v1.21.0-beta.24) (2025-12-17)
 
 
