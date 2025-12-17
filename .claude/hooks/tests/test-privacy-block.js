@@ -129,6 +129,45 @@ const safeTests = [
   }
 ];
 
+// Test cases - example/sample/template files (exempt from privacy checks)
+const exemptTests = [
+  {
+    name: '.env.example - should allow (exempt)',
+    input: { tool_input: { file_path: '.env.example' } },
+    expectBlock: false
+  },
+  {
+    name: '.env.local.example - should allow (exempt)',
+    input: { tool_input: { file_path: '.env.local.example' } },
+    expectBlock: false
+  },
+  {
+    name: '.env.sample - should allow (exempt)',
+    input: { tool_input: { file_path: '.env.sample' } },
+    expectBlock: false
+  },
+  {
+    name: '.env.template - should allow (exempt)',
+    input: { tool_input: { file_path: '.env.template' } },
+    expectBlock: false
+  },
+  {
+    name: 'config/.env.example - should allow (exempt)',
+    input: { tool_input: { file_path: 'config/.env.example' } },
+    expectBlock: false
+  },
+  {
+    name: 'credentials.example - should allow (exempt)',
+    input: { tool_input: { file_path: 'credentials.example' } },
+    expectBlock: false
+  },
+  {
+    name: 'cat .env.example in bash - should allow (exempt)',
+    input: { tool_input: { command: 'cat .env.example' } },
+    expectBlock: false
+  }
+];
+
 async function main() {
   console.log('Testing privacy-block hook...\n');
 
@@ -178,6 +217,21 @@ async function main() {
       passed++;
     } else {
       console.log(`\x1b[31m✗\x1b[0m ${test.name}: expected ALLOW, got ${blocked ? 'BLOCK' : 'ALLOW'}`);
+      failed++;
+    }
+  }
+
+  console.log('\n\x1b[1m--- Exempt Files (example/sample/template) ---\x1b[0m');
+  for (const test of exemptTests) {
+    const result = await runHook(test.input);
+    const blocked = result.code === 2;
+    const success = blocked === test.expectBlock;
+
+    if (success) {
+      console.log(`\x1b[32m✓\x1b[0m ${test.name}`);
+      passed++;
+    } else {
+      console.log(`\x1b[31m✗\x1b[0m ${test.name}: expected ALLOW (exempt), got ${blocked ? 'BLOCK' : 'ALLOW'}`);
       failed++;
     }
   }

@@ -13,8 +13,16 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 
 const APPROVED_PREFIX = 'APPROVED:';
+
+// Safe file patterns - exempt from privacy checks (documentation/template files)
+const SAFE_PATTERNS = [
+  /\.example$/i,   // .env.example, config.example
+  /\.sample$/i,    // .env.sample
+  /\.template$/i,  // .env.template
+];
 
 // Privacy-sensitive patterns
 const PRIVACY_PATTERNS = [
@@ -29,6 +37,31 @@ const PRIVACY_PATTERNS = [
   /id_rsa/,               // SSH keys
   /id_ed25519/,           // SSH keys
 ];
+
+/**
+ * Load .ck.json config to check if privacy block is disabled
+ * @returns {boolean} true if privacy block should be skipped
+ */
+function isPrivacyBlockDisabled() {
+  try {
+    const configPath = path.join(process.cwd(), '.claude', '.ck.json');
+    if (!fs.existsSync(configPath)) return false;
+
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    return config.privacyBlock === false;
+  } catch (e) {
+    return false; // Default to enabled on error
+  }
+}
+
+/**
+ * Check if path is a safe file (example/sample/template)
+ */
+function isSafeFile(testPath) {
+  if (!testPath) return false;
+  const basename = path.basename(testPath);
+  return SAFE_PATTERNS.some(p => p.test(basename));
+}
 
 /**
  * Check if path has APPROVED: prefix
@@ -69,6 +102,11 @@ function isPrivacySensitive(testPath) {
     normalized = decodeURIComponent(normalized);
   } catch (e) {
     // Invalid encoding, use as-is
+  }
+
+  // Check safe patterns first - exempt example/sample/template files
+  if (isSafeFile(normalized)) {
+    return false;
   }
 
   const basename = path.basename(normalized);
@@ -151,6 +189,11 @@ function formatApprovalNotice(filePath) {
 
 // Main
 async function main() {
+  // Check if privacy block is disabled via .ck.json
+  if (isPrivacyBlockDisabled()) {
+    process.exit(0); // Disabled, allow all
+  }
+
   let input = '';
   for await (const chunk of process.stdin) {
     input += chunk;
