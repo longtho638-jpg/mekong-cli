@@ -13,8 +13,16 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 
 const APPROVED_PREFIX = 'APPROVED:';
+
+// Safe file patterns - exempt from privacy checks (documentation/template files)
+const SAFE_PATTERNS = [
+  /\.example$/i,   // .env.example, config.example
+  /\.sample$/i,    // .env.sample
+  /\.template$/i,  // .env.template
+];
 
 // Privacy-sensitive patterns
 const PRIVACY_PATTERNS = [
@@ -31,7 +39,34 @@ const PRIVACY_PATTERNS = [
 ];
 
 /**
+ * Load .ck.json config to check if privacy block is disabled
+ * @returns {boolean} true if privacy block should be skipped
+ */
+function isPrivacyBlockDisabled() {
+  try {
+    const configPath = path.join(process.cwd(), '.claude', '.ck.json');
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    return config.privacyBlock === false;
+  } catch {
+    return false; // Default to enabled on error (file not found or invalid JSON)
+  }
+}
+
+/**
+ * Check if path is a safe file (example/sample/template)
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if file matches safe patterns
+ */
+function isSafeFile(testPath) {
+  if (!testPath) return false;
+  const basename = path.basename(testPath);
+  return SAFE_PATTERNS.some(p => p.test(basename));
+}
+
+/**
  * Check if path has APPROVED: prefix
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if path starts with APPROVED:
  */
 function hasApprovalPrefix(testPath) {
   return testPath && testPath.startsWith(APPROVED_PREFIX);
@@ -39,6 +74,8 @@ function hasApprovalPrefix(testPath) {
 
 /**
  * Strip APPROVED: prefix from path, warn on suspicious paths
+ * @param {string} testPath - Path to process
+ * @returns {string} Path without APPROVED: prefix
  */
 function stripApprovalPrefix(testPath) {
   if (hasApprovalPrefix(testPath)) {
@@ -56,6 +93,8 @@ function stripApprovalPrefix(testPath) {
 
 /**
  * Check if path matches privacy patterns
+ * @param {string} testPath - Path to check
+ * @returns {boolean} true if path matches privacy-sensitive patterns
  */
 function isPrivacySensitive(testPath) {
   if (!testPath) return false;
@@ -71,6 +110,11 @@ function isPrivacySensitive(testPath) {
     // Invalid encoding, use as-is
   }
 
+  // Check safe patterns first - exempt example/sample/template files
+  if (isSafeFile(normalized)) {
+    return false;
+  }
+
   const basename = path.basename(normalized);
 
   for (const pattern of PRIVACY_PATTERNS) {
@@ -83,6 +127,8 @@ function isPrivacySensitive(testPath) {
 
 /**
  * Extract paths from tool input
+ * @param {Object} toolInput - Tool input object with file_path, path, pattern, or command
+ * @returns {Array<{value: string, field: string}>} Array of extracted paths with field names
  */
 function extractPaths(toolInput) {
   const paths = [];
@@ -124,6 +170,8 @@ function extractPaths(toolInput) {
 
 /**
  * Format block message with approval instructions
+ * @param {string} filePath - Blocked file path
+ * @returns {string} Formatted block message
  */
 function formatBlockMessage(filePath) {
   const basename = path.basename(filePath);
@@ -144,6 +192,8 @@ function formatBlockMessage(filePath) {
 
 /**
  * Format approval notice
+ * @param {string} filePath - Approved file path
+ * @returns {string} Formatted approval notice
  */
 function formatApprovalNotice(filePath) {
   return `\x1b[32m✓\x1b[0m Privacy: User-approved access to ${path.basename(filePath)}`;
@@ -151,6 +201,11 @@ function formatApprovalNotice(filePath) {
 
 // Main
 async function main() {
+  // Check if privacy block is disabled via .ck.json
+  if (isPrivacyBlockDisabled()) {
+    process.exit(0); // Disabled, allow all
+  }
+
   let input = '';
   for await (const chunk of process.stdin) {
     input += chunk;
@@ -186,3 +241,15 @@ async function main() {
 }
 
 main().catch(() => process.exit(0));
+
+// Export functions for unit testing
+if (typeof module !== 'undefined') {
+  module.exports = {
+    isSafeFile,
+    isPrivacyBlockDisabled,
+    isPrivacySensitive,
+    hasApprovalPrefix,
+    stripApprovalPrefix,
+    extractPaths,
+  };
+}
