@@ -1,7 +1,9 @@
 # 🏯 Agency OS - The One-Person Unicorn Operating System
 
-> **"Win Without Fighting"** | 不戰而勝  
+> **"Win Without Fighting"** | 不戰而勝 | Không đánh mà thắng  
 > Build, scale, and franchise your agency globally.
+
+**🌐 Official Domain: [agencyos.network](https://agencyos.network)**
 
 ## 🌍 Global Franchise Model
 
