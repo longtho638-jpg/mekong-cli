@@ -19,9 +19,13 @@ Read the plan directory:
 - `phase-*.md` - 20 first lines of each phase file to understand the progress and status
 
 ### Step 2: Summarize the plans and document them with `/journal` slash command
-Analyze the information in previous steps and document them with `/journal` slash command.
-Journal entries should be concise and focused on the most important events, key changes, impacts, and decisions.
-Keep journal entries in the `./docs/journal/` directory.
+Use `AskUserQuestion` tool to ask if user wants to document journal entries or not. 
+Skip this step if user selects "No".
+If user selects "Yes":
+- Analyze the information in previous steps and document them with `/journal` slash command.
+- Execute multiple `/journal` slash commands in parallel as `Task` tool to document all plans.
+- Journal entries should be concise and focused on the most important events, key changes, impacts, and decisions.
+- Keep journal entries in the `./docs/journal/` directory.
 
 ### Step 3: Ask user to confirm the action before archiving these plans
 Use `AskUserQuestion` tool to ask if user wants to proceed with archiving these plans, select specific plans to archive or all completed plans only.
