@@ -31,7 +31,7 @@ const { findAvailablePort, DEFAULT_PORT } = require('./lib/port-finder.cjs');
 const { writePidFile, stopAllServers, setupShutdownHandlers, findRunningInstances } = require('./lib/process-mgr.cjs');
 const { createHttpServer } = require('./lib/http-server.cjs');
 const { renderMarkdownFile, renderTOCHtml } = require('./lib/markdown-renderer.cjs');
-const { generateNavSidebar, generateNavFooter, detectPlan } = require('./lib/plan-navigator.cjs');
+const { generateNavSidebar, generateNavFooter, detectPlan, getNavigationContext } = require('./lib/plan-navigator.cjs');
 
 /**
  * Parse command line arguments
@@ -137,10 +137,38 @@ function generateFullPage(filePath, assetsDir) {
   const navSidebar = generateNavSidebar(filePath);
   const navFooter = generateNavFooter(filePath);
   const planInfo = detectPlan(filePath);
+  const navContext = getNavigationContext(filePath);
 
   // Read template
   const templatePath = path.join(assetsDir, 'template.html');
   let template = fs.readFileSync(templatePath, 'utf8');
+
+  // Generate back button (links to parent directory browser)
+  const parentDir = path.dirname(filePath);
+  const backButton = `
+    <a href="/browse?dir=${encodeURIComponent(parentDir)}" class="icon-btn back-btn" title="Back to folder">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </a>`;
+
+  // Generate header nav (prev/next) for plan files
+  let headerNav = '';
+  if (navContext.prev || navContext.next) {
+    const prevBtn = navContext.prev && fs.existsSync(navContext.prev.file)
+      ? `<a href="/view?file=${encodeURIComponent(navContext.prev.file)}" class="header-nav-btn prev" title="${navContext.prev.name}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Prev</span>
+        </a>`
+      : '';
+    const nextBtn = navContext.next && fs.existsSync(navContext.next.file)
+      ? `<a href="/view?file=${encodeURIComponent(navContext.next.file)}" class="header-nav-btn next" title="${navContext.next.name}">
+          <span>Next</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </a>`
+      : '';
+    headerNav = `<div class="header-nav">${prevBtn}${nextBtn}</div>`;
+  }
 
   // Replace placeholders
   template = template
@@ -150,7 +178,9 @@ function generateFullPage(filePath, assetsDir) {
     .replace('{{nav-footer}}', navFooter)
     .replace('{{content}}', html)
     .replace('{{has-plan}}', planInfo.isPlan ? 'has-plan' : '')
-    .replace('{{frontmatter}}', JSON.stringify(frontmatter || {}));
+    .replace('{{frontmatter}}', JSON.stringify(frontmatter || {}))
+    .replace('{{back-button}}', backButton)
+    .replace('{{header-nav}}', headerNav);
 
   return template;
 }
