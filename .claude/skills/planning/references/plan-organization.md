@@ -3,33 +3,29 @@
 ## Directory Structure
 
 ### Plan Location
-Save plans in `./plans` directory with timestamp and descriptive name.
+Use `Plan dir:` from `## Naming` section injected by hooks. This is the full computed path.
 
-**Format:** Use naming pattern from `## Naming` section injected by hooks.
-
-**Example:** `plans/251101-1505-authentication-and-profile-implementation/`
+**Example:** `plans/251101-1505-authentication/` or `ai_docs/feature/MRR-1453/`
 
 ### File Organization
 
 ```
-plans/
-├── 20251101-1505-authentication-and-profile-implementation/
-    ├── research/
-    │   ├── researcher-XX-report.md
-    │   └── ...
-│   ├── reports/
-│   │   ├── scout-report.md
-│   │   ├── researcher-report.md
-│   │   └── ...
-│   ├── plan.md                                # Overview access point
-│   ├── phase-01-setup-environment.md          # Setup environment
-│   ├── phase-02-implement-database.md         # Database models
-│   ├── phase-03-implement-api-endpoints.md    # API endpoints
-│   ├── phase-04-implement-ui-components.md    # UI components
-│   ├── phase-05-implement-authentication.md   # Auth & authorization
-│   ├── phase-06-implement-profile.md          # Profile page
-│   └── phase-07-write-tests.md                # Tests
-└── ...
+{plan-dir}/                                    # From `Plan dir:` in ## Naming
+├── research/
+│   ├── researcher-XX-report.md
+│   └── ...
+├── reports/
+│   ├── scout-report.md
+│   ├── researcher-report.md
+│   └── ...
+├── plan.md                                    # Overview access point
+├── phase-01-setup-environment.md              # Setup environment
+├── phase-02-implement-database.md             # Database models
+├── phase-03-implement-api-endpoints.md        # API endpoints
+├── phase-04-implement-ui-components.md        # UI components
+├── phase-05-implement-authentication.md       # Auth & authorization
+├── phase-06-implement-profile.md              # Profile page
+└── phase-07-write-tests.md                    # Tests
 ```
 
 ### Active Plan State Tracking
@@ -47,13 +43,13 @@ Check the `## Plan Context` section injected by hooks:
 **After Creating Plan:**
 ```bash
 # Update session state so subagents get the new plan context:
-node .claude/scripts/set-active-plan.cjs plans/{your-plan-name}
+node .claude/scripts/set-active-plan.cjs {plan-dir}
 ```
 
 **Report Output Rules:**
-1. Use naming pattern from `## Naming` section injected by hooks
+1. Use `Report:` and `Plan dir:` from `## Naming` section
 2. Active plans use plan-specific reports path
-3. Suggested plans use default `plans/reports/` to prevent old plan pollution
+3. Suggested plans use default reports path to prevent old plan pollution
 
 ## File Structure
 

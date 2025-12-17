@@ -11,7 +11,7 @@ Search the codebase for files needed to complete the task using a fast, token ef
 
 USER_PROMPT: $1
 SCALE: $2 (defaults to 3)
-REPORT_OUTPUT_DIR: `plans/<plan-name>/reports/scout-report.md`
+REPORT_OUTPUT_DIR: Use `Report:` from `## Naming` section
 
 ## Workflow:
 

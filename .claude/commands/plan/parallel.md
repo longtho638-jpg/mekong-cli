@@ -63,22 +63,21 @@ Phase 04: Integration Tests (depends on 01, 02, 03)
 
 ## Output Requirements
 
-**Plan Directory Structure**
+**Plan Directory Structure** (use `Plan dir:` from `## Naming` section)
 ```
-plans/
-└── {date}-plan-name/
-    ├── research/
-    │   ├── researcher-XX-report.md
-    │   └── ...
-    ├── reports/
-    │   ├── XX-report.md
-    │   └── ...
-    ├── scout/
-    │   ├── scout-XX-report.md
-    │   └── ...
-    ├── plan.md
-    ├── phase-XX-phase-name-here.md
-    └── ...
+{plan-dir}/
+├── research/
+│   ├── researcher-XX-report.md
+│   └── ...
+├── reports/
+│   ├── XX-report.md
+│   └── ...
+├── scout/
+│   ├── scout-XX-report.md
+│   └── ...
+├── plan.md
+├── phase-XX-phase-name-here.md
+└── ...
 ```
 
 **Research Output Requirements**
@@ -98,8 +97,8 @@ plans/
   created: {YYYY-MM-DD}
   ---
   ```
-- Save the overview access point at `plans/<plan-dir>/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
-- For each phase, create `plans/<plan-dir>/phase-XX-phase-name-here.md` containing the following sections in order:
+- Save the overview access point at `{plan-dir}/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
+- For each phase, create `{plan-dir}/phase-XX-phase-name-here.md` containing the following sections in order:
   - Context links (reference parent plan, dependencies, docs)
   - **Parallelization Info** (which phases can run concurrently, which must wait)
   - Overview (date, description, priority, implementation status, review status)
