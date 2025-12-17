@@ -1,10 +1,14 @@
 ---
 description: ⚡⚡⚡ [AUTO] Start coding & testing an existing plan ("trust me bro")
-argument-hint: [plan]
+argument-hint: [plan] [all-phases-yes-or-no] (default: yes)
 ---
 
 **MUST READ** `CLAUDE.md` then **THINK HARDER** to start working on the following plan follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules:
 <plan>$ARGUMENTS</plan>
+
+## Arguments
+- $PLAN: $1 (Mention specific plan or auto detected, default: latest plan)
+- $ALL_PHASES: $2 (`Yest` to finish all phases in one run or `No` to implement phase-by-phase and wait for confirmation, default is `Yes`)
 
 ---
 
@@ -117,9 +121,12 @@ Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
-Mark Step 5 complete in TodoWrite.
+Mark Step 5 complete in `TodoWrite`.
 
-**Phase workflow finished. Ready for next plan phase.**
+**Important:**
+If $ALL_PHASES is `Yes`, proceed to the next phase automatically.
+If $ALL_PHASES is `No`, wait for user confirmation before proceeding to the next phase:
+- Use `AskUserQuestion` tool to ask if user wants to proceed to the next phase: "**Phase workflow finished. Ready for next plan phase.**"
 
 ---
 
@@ -147,7 +154,6 @@ Mark Step 5 complete in TodoWrite.
 **Blocking gates:**
 - Step 3: Tests must be 100% passing
 - Step 4: Critical issues must be 0
-- Step 5: Both `project-manager` and `docs-manager` must complete successfully
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails.
