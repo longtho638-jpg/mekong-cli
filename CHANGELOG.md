@@ -1,3 +1,15 @@
+## [1.21.0-beta.23](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.22...v1.21.0-beta.23) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* make writing journal optional in `/plan:archive` command ([50eda56](https://github.com/claudekit/claudekit-engineer/commit/50eda5688027a9000ddbaa43085432be13f9cba5))
+
+
+### ⚡ Performance Improvements
+
+* add more stats to summary of `/plan:archive` ([7365f0c](https://github.com/claudekit/claudekit-engineer/commit/7365f0c2afe266cfcdd50677e3af4e615e8f0e10))
+
 ## [1.21.0-beta.22](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.21...v1.21.0-beta.22) (2025-12-17)
 
 
