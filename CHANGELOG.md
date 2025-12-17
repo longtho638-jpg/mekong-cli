@@ -1,3 +1,10 @@
+## [1.21.0-beta.28](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.27...v1.21.0-beta.28) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* **markdown-viewer:** resolve reference-style image paths in preview ([35cf870](https://github.com/claudekit/claudekit-engineer/commit/35cf870f0e51616c857adbe1471104856d5c33e2)), closes [#210](https://github.com/claudekit/claudekit-engineer/issues/210)
+
 ## [1.21.0-beta.27](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.26...v1.21.0-beta.27) (2025-12-17)
 
 
