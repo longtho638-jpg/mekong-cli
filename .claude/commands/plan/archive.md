@@ -40,10 +40,10 @@ Use `AskUserQuestion` tool to ask if user wants to commit the changes with these
 
 ## Output
 After archiving the plans, provide summary:
-- Number of plans archived
+- Number of plans archived 
 - Number of plans deleted permanently
-- Table of plans that are archived or deleted
-- Table of journal entries that are created
+- Table of plans that are archived or deleted (title, status, created date, LOC)
+- Table of journal entries that are created (title, status, created date, LOC)
 
 ## Important Notes
 
