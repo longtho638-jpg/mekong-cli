@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **99 Core Modules | 61 Commits**
+> **105 Core Modules | 63 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 99 |
-| Commits | 61 |
-| Departments | 9 |
-| Department Hubs | 6 |
+| Core Modules | 105 |
+| Commits | 63 |
+| Departments | 10 |
+| Department Hubs | 7 |
 
 ---
 
@@ -68,6 +68,15 @@
 | `it_manager.py` | Operations, vendors |
 | `cto.py` | Strategy, innovation |
 | `sysadmin.py` | Infrastructure, users |
+
+### 7. 🛒 Retail Hub (`retail_hub.py`)
+| Module | Role |
+|--------|------|
+| `ecommerce_manager.py` | Store management |
+| `product_manager.py` | Catalog & pricing |
+| `inventory_manager.py` | Stock & fulfillment |
+| `digital_merchandiser.py` | Visual displays |
+| `ecommerce_sales.py` | Revenue & recovery |
 
 ---
 
