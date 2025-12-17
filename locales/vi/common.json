@@ -1,0 +1,63 @@
+{
+    "app": {
+        "name": "Agency OS",
+        "tagline": "Hệ điều hành dành cho Agency một người",
+        "description": "Xây dựng, mở rộng và nhượng quyền agency toàn cầu"
+    },
+    "nav": {
+        "home": "Trang chủ",
+        "dashboard": "Bảng điều khiển",
+        "marketing": "Tiếp thị",
+        "sales": "Bán hàng",
+        "analytics": "Phân tích",
+        "settings": "Cài đặt"
+    },
+    "commands": {
+        "market_analysis": "Phân tích thị trường",
+        "customer_profile": "Hồ sơ khách hàng",
+        "sales_strategy": "Chiến lược bán hàng",
+        "marketing_plan": "Kế hoạch tiếp thị",
+        "business_plan": "Kế hoạch kinh doanh",
+        "brand_identity": "Nhận diện thương hiệu",
+        "content_marketing": "Nội dung tiếp thị",
+        "social_media": "Mạng xã hội",
+        "messaging": "Thông điệp",
+        "market_research": "Nghiên cứu thị trường",
+        "pr_strategy": "Chiến lược PR",
+        "growth_strategy": "Chiến lược tăng trưởng",
+        "sales_funnel": "Phễu bán hàng"
+    },
+    "common": {
+        "welcome": "Chào mừng đến với Agency OS",
+        "start": "Bắt đầu",
+        "continue": "Tiếp tục",
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "edit": "Sửa",
+        "loading": "Đang tải...",
+        "success": "Thành công!",
+        "error": "Đã xảy ra lỗi",
+        "confirm": "Bạn có chắc không?"
+    },
+    "auth": {
+        "login": "Đăng nhập",
+        "logout": "Đăng xuất",
+        "signup": "Đăng ký",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "forgot_password": "Quên mật khẩu?"
+    },
+    "franchise": {
+        "title": "Cổng nhượng quyền",
+        "territories": "Lãnh thổ của bạn",
+        "revenue": "Doanh thu",
+        "clients": "Khách hàng",
+        "commission": "Tỷ lệ hoa hồng"
+    },
+    "binh_phap": {
+        "tagline": "Không đánh mà thắng",
+        "short_term": "Ngắn hạn: Thu nhập Affiliate SaaS",
+        "long_term": "Dài hạn: Xây dựng thương hiệu với khách hàng local"
+    }
+}
