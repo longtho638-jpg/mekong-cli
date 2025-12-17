@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **122 Core Modules | 71 Commits**
+> **123 Core Modules | 73 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 122 |
-| Commits | 71 |
-| Departments | 14 |
-| Department Hubs | 11 |
+| Core Modules | 123 |
+| Commits | 73 |
+| Departments | 15 |
+| Department Hubs | 12 |
 
 ---
 
@@ -106,6 +106,13 @@
 | `startup_launcher.py` | Ventures, MVPs, experiments |
 | `strategy_officer.py` | Vision, OKRs, initiatives |
 | `operations_manager.py` | Processes, metrics, resources |
+
+### 12. 💰 Sales Hub (`sales_hub.py`)
+| Module | Role |
+|--------|------|
+| `crm.py` | Contacts, deals, pipeline |
+| `lead_scoring.py` | Score, prioritize, qualify |
+| `proposal_generator.py` | Quotes, pricing, close |
 
 ---
 
