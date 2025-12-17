@@ -125,6 +125,10 @@ async function screenshot() {
       });
     }
 
+    // Ensure output directory exists
+    const outputDir = path.dirname(path.resolve(args.output));
+    await fs.mkdir(outputDir, { recursive: true });
+
     const screenshotOptions = {
       path: args.output,
       type: args.format || 'png',
