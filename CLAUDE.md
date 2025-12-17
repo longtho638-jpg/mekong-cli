@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **105 Core Modules | 63 Commits**
+> **110 Core Modules | 65 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 105 |
-| Commits | 63 |
-| Departments | 10 |
-| Department Hubs | 7 |
+| Core Modules | 110 |
+| Commits | 65 |
+| Departments | 11 |
+| Department Hubs | 8 |
 
 ---
 
@@ -77,6 +77,14 @@
 | `inventory_manager.py` | Stock & fulfillment |
 | `digital_merchandiser.py` | Visual displays |
 | `ecommerce_sales.py` | Revenue & recovery |
+
+### 8. 🏠 Real Estate Hub (`real_estate_hub.py`)
+| Module | Role |
+|--------|------|
+| `listing_manager.py` | Property listings |
+| `re_market_analyst.py` | Market intelligence |
+| `property_portfolio.py` | Asset management |
+| `re_lead_manager.py` | Lead pipeline |
 
 ---
 
