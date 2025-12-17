@@ -1,3 +1,10 @@
+## [1.21.0-beta.27](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.26...v1.21.0-beta.27) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* **markdown-novel-viewer:** add missing template placeholder replacements ([2bee026](https://github.com/claudekit/claudekit-engineer/commit/2bee026165fae2d81f8558c068f83e3653d22626))
+
 ## [1.21.0-beta.26](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.25...v1.21.0-beta.26) (2025-12-17)
 
 
