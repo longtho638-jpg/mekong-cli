@@ -1,3 +1,10 @@
+## [1.21.0-beta.22](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.21...v1.21.0-beta.22) (2025-12-17)
+
+
+### 🚀 Features
+
+* ✨ new command `/plan:archive` to write journals & archive plans ([9fe973c](https://github.com/claudekit/claudekit-engineer/commit/9fe973cd7c0412df7124a057f1c1949f4658db54))
+
 ## [1.21.0-beta.21](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.20...v1.21.0-beta.21) (2025-12-17)
 
 
