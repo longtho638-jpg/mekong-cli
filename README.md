@@ -1,5 +1,12 @@
 # 🏯 Agency OS - The One-Person Unicorn Operating System
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/agencyos-network/agency-os)
+[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
+[![Languages](https://img.shields.io/badge/languages-4-green.svg)](#languages)
+[![Regions](https://img.shields.io/badge/regions-4-purple.svg)](#regions)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-success.svg)](.github/workflows/deploy.yml)
+
 > **"Win Without Fighting"** | 不戰而勝 | Không đánh mà thắng  
 > Build, scale, and franchise your agency globally.
 
