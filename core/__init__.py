@@ -71,6 +71,32 @@ try:
 except ImportError:
     EmpireBuilder = None
 
+# New modules added in Phase 44-48
+try:
+    from .license import LicenseManager
+except ImportError:
+    LicenseManager = None
+
+try:
+    from .invoice import InvoiceSystem
+except ImportError:
+    InvoiceSystem = None
+
+try:
+    from .notifications import NotificationSystem
+except ImportError:
+    NotificationSystem = None
+
+try:
+    from .client_experience import ClientExperience
+except ImportError:
+    ClientExperience = None
+
+try:
+    from .business_plan_generator import BusinessPlanGenerator
+except ImportError:
+    BusinessPlanGenerator = None
+
 __all__ = [
     "VibeTuner",
     "CRM",
@@ -85,4 +111,11 @@ __all__ = [
     "VoiceClone",
     "GamificationEngine",
     "EmpireBuilder",
+    # New modules
+    "LicenseManager",
+    "InvoiceSystem",
+    "NotificationSystem",
+    "ClientExperience",
+    "BusinessPlanGenerator",
 ]
+
