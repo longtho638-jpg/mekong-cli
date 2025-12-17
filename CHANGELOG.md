@@ -1,3 +1,10 @@
+## [1.21.0-beta.26](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.25...v1.21.0-beta.26) (2025-12-17)
+
+
+### 🐞 Bug Fixes
+
+* **chrome-devtools:** auto-create output directory in screenshot.js ([a2a8d53](https://github.com/claudekit/claudekit-engineer/commit/a2a8d535218f82e93c45a38c3abdb7fecf970565)), closes [#206](https://github.com/claudekit/claudekit-engineer/issues/206)
+
 ## [1.21.0-beta.25](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.24...v1.21.0-beta.25) (2025-12-17)
 
 
