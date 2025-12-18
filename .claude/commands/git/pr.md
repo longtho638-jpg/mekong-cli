@@ -34,7 +34,7 @@ git diff origin/{TO_BRANCH}...origin/{FROM_BRANCH}
 
 ### Step 3: Generate PR content from remote diff
 Based on the REMOTE diff analysis:
-- **Title:** Conventional commit format from the primary change
+- **Title:** Conventional commit format from the primary change (no version/release numbers)
 - **Body:** Summary of changes that exist ON REMOTE, not local WIP
 
 ### Step 4: Create PR
