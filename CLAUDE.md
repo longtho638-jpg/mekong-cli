@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **150 Core Modules | 89 Commits**
+> **154 Core Modules | 91 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 150 |
-| Commits | 89 |
-| Departments | 23 |
-| Department Hubs | 20 |
+| Core Modules | 154 |
+| Commits | 91 |
+| Departments | 24 |
+| Department Hubs | 21 |
 
 ---
 
@@ -173,6 +173,13 @@
 | `nonprofit_marketing.py` | Religious/charity clients |
 | `community_manager.py` | Members, volunteers |
 | `event_coordinator.py` | Virtual/hybrid events |
+
+### 21. 💰 VC Hub (`vc_hub.py`)
+| Module | Role |
+|--------|------|
+| `pitch_deck.py` | Deck templates, storytelling |
+| `investor_relations.py` | Pipeline, outreach, DD |
+| `term_sheet.py` | Valuation, dilution, terms |
 
 ---
 
