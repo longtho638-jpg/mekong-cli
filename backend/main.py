@@ -24,6 +24,7 @@ from core.vibe_tuner import VibeTuner, VibeRegion
 
 # Import routes
 from backend.routes.campaigns import router as campaigns_router
+from backend.routes.agentops import router as agentops_router
 
 
 # Initialize FastAPI
@@ -35,6 +36,7 @@ app = FastAPI(
 
 # Mount campaign routes
 app.include_router(campaigns_router)
+app.include_router(agentops_router)
 
 # CORS middleware
 app.add_middleware(
