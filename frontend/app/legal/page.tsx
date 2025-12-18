@@ -3,64 +3,81 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 // Types
-interface ContractItem {
+interface Contract {
     id: string
-    name: string
-    counterparty: string
-    type: string
+    title: string
+    client: string
+    type: 'service' | 'nda' | 'employment' | 'partnership'
     value: number
-    status: 'draft' | 'review' | 'pending_signature' | 'signed'
-    daysToExpiry: number
+    status: 'active' | 'pending' | 'expired'
+    expiryDate: string
 }
 
 interface ComplianceItem {
     id: string
+    requirement: string
+    framework: string
+    status: 'compliant' | 'in_progress' | 'non_compliant'
+    dueDate: string
+}
+
+interface IPAsset {
+    id: string
     name: string
-    regulation: string
-    status: 'compliant' | 'partial' | 'non_compliant'
-    risk: 'low' | 'medium' | 'high' | 'critical'
+    type: 'trademark' | 'patent' | 'copyright'
+    status: 'registered' | 'pending' | 'expired'
+    filingDate: string
 }
 
 // Sample data
-const CONTRACTS: ContractItem[] = [
-    { id: '1', name: 'Enterprise MSA', counterparty: 'BigCorp', type: 'msa', value: 150000, status: 'signed', daysToExpiry: 180 },
-    { id: '2', name: 'NDA - TechCo', counterparty: 'TechCo', type: 'nda', value: 0, status: 'review', daysToExpiry: 0 },
-    { id: '3', name: 'SOW Phase 1', counterparty: 'StartupX', type: 'sow', value: 50000, status: 'pending_signature', daysToExpiry: 0 },
-    { id: '4', name: 'License Agreement', counterparty: 'MediaCo', type: 'license', value: 25000, status: 'signed', daysToExpiry: 45 },
+const CONTRACTS: Contract[] = [
+    { id: 'CTR-001', title: 'Enterprise SLA', client: 'Mekong Corp', type: 'service', value: 120000, status: 'active', expiryDate: 'Dec 2025' },
+    { id: 'CTR-002', title: 'NDA - Tech Partner', client: 'Saigon AI', type: 'nda', value: 0, status: 'active', expiryDate: 'Jun 2024' },
+    { id: 'CTR-003', title: 'Consulting Agreement', client: 'Delta Farms', type: 'partnership', value: 45000, status: 'pending', expiryDate: 'Mar 2025' },
 ]
 
 const COMPLIANCE: ComplianceItem[] = [
-    { id: '1', name: 'Data Processing Agreement', regulation: 'GDPR', status: 'compliant', risk: 'high' },
-    { id: '2', name: 'Access Controls', regulation: 'SOC2', status: 'partial', risk: 'medium' },
-    { id: '3', name: 'Encryption at Rest', regulation: 'SOC2', status: 'compliant', risk: 'high' },
-    { id: '4', name: 'Data Retention Policy', regulation: 'GDPR', status: 'non_compliant', risk: 'critical' },
+    { id: '1', requirement: 'Data Privacy Policy Update', framework: 'GDPR', status: 'compliant', dueDate: 'Completed' },
+    { id: '2', requirement: 'Security Audit', framework: 'SOC 2', status: 'in_progress', dueDate: 'Jan 2025' },
+    { id: '3', requirement: 'Financial Reporting', framework: 'VAS', status: 'compliant', dueDate: 'Q4 2024' },
 ]
 
-const STATUS_COLORS = {
-    draft: '#888',
-    review: '#ffd700',
-    pending_signature: '#ff9500',
-    signed: '#00ff41',
+const IP_ASSETS: IPAsset[] = [
+    { id: '1', name: 'AgencyOS', type: 'trademark', status: 'registered', filingDate: 'Sep 2024' },
+    { id: '2', name: 'Binh Phap Framework', type: 'copyright', status: 'registered', filingDate: 'Oct 2024' },
+    { id: '3', name: 'AI Agent Orchestration', type: 'patent', status: 'pending', filingDate: 'Nov 2024' },
+]
+
+const STATUS_COLORS: Record<string, string> = {
+    active: '#00ff41',
+    pending: '#ffd700',
+    expired: '#ff6347',
     compliant: '#00ff41',
-    partial: '#ffd700',
-    non_compliant: '#ff5f56',
+    in_progress: '#00bfff',
+    non_compliant: '#ff0000',
+    registered: '#00ff41',
 }
 
-const RISK_COLORS = {
-    low: '#888',
-    medium: '#ffd700',
-    high: '#ff9500',
-    critical: '#ff5f56',
+const TYPE_COLORS: Record<string, string> = {
+    service: '#00bfff',
+    nda: '#ffd700',
+    employment: '#8a2be2',
+    partnership: '#00ff41',
+    trademark: '#e4405f',
+    patent: '#ffd700',
+    copyright: '#00bfff',
 }
 
-export default function LegalDashboard() {
-    const [contracts] = useState<ContractItem[]>(CONTRACTS)
-    const [compliance] = useState<ComplianceItem[]>(COMPLIANCE)
+export default function LegalHubPage() {
+    const [contracts] = useState(CONTRACTS)
+    const [compliance] = useState(COMPLIANCE)
+    const [ipAssets] = useState(IP_ASSETS)
 
-    const activeValue = contracts.filter(c => c.status === 'signed').reduce((sum, c) => sum + c.value, 0)
-    const pendingReview = contracts.filter(c => c.status === 'review').length
-    const compliantItems = compliance.filter(c => c.status === 'compliant').length
-    const complianceRate = (compliantItems / compliance.length * 100).toFixed(0)
+    // Metrics
+    const activeContracts = contracts.filter(c => c.status === 'active').length
+    const totalContractValue = contracts.reduce((sum, c) => sum + c.value, 0)
+    const complianceRate = (compliance.filter(c => c.status === 'compliant').length / compliance.length * 100).toFixed(0)
+    const registeredIP = ipAssets.filter(ip => ip.status === 'registered').length
 
     return (
         <div style={{
@@ -70,23 +87,38 @@ export default function LegalDashboard() {
             fontFamily: "'JetBrains Mono', monospace",
             padding: '2rem',
         }}>
-            <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            {/* Ambient */}
+            <div style={{
+                position: 'fixed',
+                top: '-20%',
+                right: '30%',
+                width: '40%',
+                height: '40%',
+                background: 'radial-gradient(circle, rgba(158,158,158,0.06) 0%, transparent 60%)',
+                pointerEvents: 'none',
+            }} />
+
+            <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
                 {/* Header */}
                 <header style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
-                        <span style={{ color: '#8e44ad' }}>⚖️</span> Legal Operations
-                    </h1>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Contracts & Compliance</p>
+                    <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{ fontSize: '2rem', marginBottom: '0.5rem' }}
+                    >
+                        <span style={{ color: '#9e9e9e' }}>⚖️</span> Legal Hub
+                    </motion.h1>
+                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Contracts • Compliance • IP</p>
                 </header>
 
                 {/* Metrics */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
                     {[
-                        { label: 'Active Contracts', value: `$${(activeValue / 1000).toFixed(0)}K`, color: '#00ff41' },
-                        { label: 'Pending Review', value: pendingReview, color: '#ffd700' },
-                        { label: 'Compliance Rate', value: `${complianceRate}%`, color: '#00bfff' },
-                        { label: 'High Risk Items', value: compliance.filter(c => c.risk === 'high' || c.risk === 'critical').length, color: '#ff5f56' },
+                        { label: 'Active Contracts', value: activeContracts, color: '#00ff41' },
+                        { label: 'Contract Value', value: `$${(totalContractValue / 1000).toFixed(0)}K`, color: '#00bfff' },
+                        { label: 'Compliance Rate', value: `${complianceRate}%`, color: parseInt(complianceRate) >= 80 ? '#00ff41' : '#ffd700' },
+                        { label: 'Registered IP', value: registeredIP, color: '#e4405f' },
                     ].map((stat, i) => (
                         <motion.div
                             key={i}
@@ -98,24 +130,26 @@ export default function LegalDashboard() {
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 borderRadius: '12px',
                                 padding: '1.25rem',
+                                textAlign: 'center',
                             }}
                         >
-                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem' }}>{stat.label}</p>
-                            <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
+                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
+                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
                         </motion.div>
                     ))}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
 
                     {/* Contracts */}
                     <div style={{
                         background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(158,158,158,0.2)',
+                        borderTop: '3px solid #9e9e9e',
                         borderRadius: '12px',
                         padding: '1.5rem',
                     }}>
-                        <h3 style={{ fontSize: '0.9rem', color: '#888', marginBottom: '1.5rem' }}>CONTRACT PIPELINE</h3>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#9e9e9e' }}>📄 Contracts</h3>
 
                         {contracts.map((contract, i) => (
                             <motion.div
@@ -124,93 +158,136 @@ export default function LegalDashboard() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: i * 0.1 }}
                                 style={{
-                                    background: 'rgba(255,255,255,0.02)',
-                                    border: `1px solid ${STATUS_COLORS[contract.status]}30`,
-                                    borderRadius: '8px',
+                                    background: 'rgba(0,0,0,0.3)',
+                                    borderLeft: `3px solid ${TYPE_COLORS[contract.type]}`,
+                                    borderRadius: '0 8px 8px 0',
                                     padding: '1rem',
                                     marginBottom: '0.75rem',
                                 }}
                             >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                     <div>
-                                        <span style={{ fontWeight: 600 }}>{contract.name}</span>
-                                        <span style={{ color: '#888', fontSize: '0.8rem', marginLeft: '0.5rem' }}>{contract.counterparty}</span>
+                                        <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{contract.title}</p>
+                                        <p style={{ color: '#888', fontSize: '0.75rem' }}>{contract.client} • {contract.id}</p>
                                     </div>
-                                    <span style={{
-                                        padding: '2px 8px',
-                                        borderRadius: '12px',
-                                        fontSize: '0.65rem',
-                                        background: `${STATUS_COLORS[contract.status]}20`,
-                                        color: STATUS_COLORS[contract.status],
-                                    }}>
-                                        {contract.status.replace('_', ' ')}
-                                    </span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
-                                    <span style={{ color: '#888' }}>{contract.type.toUpperCase()}</span>
-                                    {contract.value > 0 && (
-                                        <span style={{ color: '#00ff41' }}>${contract.value.toLocaleString()}</span>
-                                    )}
-                                    {contract.status === 'signed' && contract.daysToExpiry > 0 && (
-                                        <span style={{ color: contract.daysToExpiry <= 60 ? '#ff5f56' : '#888' }}>
-                                            Expires in {contract.daysToExpiry}d
-                                        </span>
-                                    )}
+                                    <div style={{ textAlign: 'right' }}>
+                                        {contract.value > 0 && <p style={{ color: '#00ff41', fontSize: '0.9rem' }}>${contract.value.toLocaleString()}</p>}
+                                        <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.25rem' }}>
+                                            <span style={{
+                                                padding: '2px 6px',
+                                                borderRadius: '6px',
+                                                fontSize: '0.6rem',
+                                                background: `${TYPE_COLORS[contract.type]}20`,
+                                                color: TYPE_COLORS[contract.type],
+                                            }}>
+                                                {contract.type}
+                                            </span>
+                                            <span style={{
+                                                padding: '2px 6px',
+                                                borderRadius: '6px',
+                                                fontSize: '0.6rem',
+                                                background: `${STATUS_COLORS[contract.status]}20`,
+                                                color: STATUS_COLORS[contract.status],
+                                            }}>
+                                                {contract.status}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
 
-                    {/* Compliance */}
-                    <div style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        borderRadius: '12px',
-                        padding: '1.5rem',
-                    }}>
-                        <h3 style={{ fontSize: '0.9rem', color: '#888', marginBottom: '1.5rem' }}>COMPLIANCE STATUS</h3>
+                    {/* Compliance + IP */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-                        {compliance.map((item, i) => (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                style={{
-                                    background: 'rgba(255,255,255,0.02)',
-                                    border: '1px solid rgba(255,255,255,0.05)',
-                                    borderRadius: '8px',
-                                    padding: '1rem',
-                                    marginBottom: '0.75rem',
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <div style={{
-                                            width: 8, height: 8,
-                                            borderRadius: '50%',
-                                            background: STATUS_COLORS[item.status],
-                                        }} />
-                                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{item.name}</span>
+                        {/* Compliance */}
+                        <div style={{
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(0,255,65,0.2)',
+                            borderTop: '3px solid #00ff41',
+                            borderRadius: '12px',
+                            padding: '1.25rem',
+                        }}>
+                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#00ff41' }}>✅ Compliance</h3>
+
+                            {compliance.map((item, i) => (
+                                <div
+                                    key={item.id}
+                                    style={{
+                                        padding: '0.5rem 0',
+                                        borderBottom: i < compliance.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <p style={{ fontSize: '0.85rem' }}>{item.requirement}</p>
+                                        <span style={{
+                                            padding: '2px 6px',
+                                            borderRadius: '6px',
+                                            fontSize: '0.6rem',
+                                            background: `${STATUS_COLORS[item.status]}20`,
+                                            color: STATUS_COLORS[item.status],
+                                        }}>
+                                            {item.status.replace('_', ' ')}
+                                        </span>
+                                    </div>
+                                    <p style={{ color: '#888', fontSize: '0.7rem' }}>{item.framework} • {item.dueDate}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* IP Assets */}
+                        <div style={{
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(228,64,95,0.2)',
+                            borderTop: '3px solid #e4405f',
+                            borderRadius: '12px',
+                            padding: '1.25rem',
+                        }}>
+                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#e4405f' }}>🛡️ IP Assets</h3>
+
+                            {ipAssets.map((ip, i) => (
+                                <div
+                                    key={ip.id}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '0.5rem 0',
+                                        borderBottom: i < ipAssets.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                                    }}
+                                >
+                                    <div>
+                                        <p style={{ fontSize: '0.85rem' }}>{ip.name}</p>
+                                        <span style={{
+                                            padding: '1px 4px',
+                                            borderRadius: '4px',
+                                            fontSize: '0.55rem',
+                                            background: `${TYPE_COLORS[ip.type]}20`,
+                                            color: TYPE_COLORS[ip.type],
+                                        }}>
+                                            {ip.type}
+                                        </span>
                                     </div>
                                     <span style={{
                                         padding: '2px 6px',
-                                        borderRadius: '4px',
+                                        borderRadius: '6px',
                                         fontSize: '0.6rem',
-                                        background: `${RISK_COLORS[item.risk]}20`,
-                                        color: RISK_COLORS[item.risk],
+                                        background: `${STATUS_COLORS[ip.status]}20`,
+                                        color: STATUS_COLORS[ip.status],
                                     }}>
-                                        {item.risk} risk
+                                        {ip.status}
                                     </span>
                                 </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#888' }}>
-                                    <span>{item.regulation}</span>
-                                    <span style={{ color: STATUS_COLORS[item.status] }}>{item.status.replace('_', ' ')}</span>
-                                </div>
-                            </motion.div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
+
+                {/* Footer */}
+                <footer style={{ marginTop: '2rem', textAlign: 'center', color: '#888', fontSize: '0.8rem' }}>
+                    🏯 agencyos.network - Legal Protection
+                </footer>
             </div>
         </div>
     )
