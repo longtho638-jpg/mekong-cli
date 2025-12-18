@@ -1,3 +1,11 @@
+## [1.21.0-beta.31](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.30...v1.21.0-beta.31) (2025-12-18)
+
+
+### 🐞 Bug Fixes
+
+* **git-manager:** add release number exclusion to fallback and pr.md ([ba28edf](https://github.com/claudekit/claudekit-engineer/commit/ba28edf549464442c52fdea8ffde233083773464))
+* **git-manager:** exclude release numbers from PR titles ([5647218](https://github.com/claudekit/claudekit-engineer/commit/5647218126428044d90c41ac2856c848f3e9c792)), closes [#220](https://github.com/claudekit/claudekit-engineer/issues/220)
+
 ## [1.21.0-beta.30](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.29...v1.21.0-beta.30) (2025-12-18)
 
 
