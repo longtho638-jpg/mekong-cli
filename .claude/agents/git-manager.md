@@ -160,7 +160,7 @@ git diff origin/$BASE...origin/$HEAD --stat 2>/dev/null || echo "No remote diff 
 
 ### PR TOOL 2: Generate PR title and body
 ```bash
-gemini -y -p "Create PR title and body from these commits: $(git log origin/$BASE...origin/$HEAD --oneline). Title: conventional commit format <72 chars. Body: ## Summary with 2-3 bullet points, ## Test plan with checklist. No AI attribution." --model gemini-2.5-flash
+gemini -y -p "Create PR title and body from these commits: $(git log origin/$BASE...origin/$HEAD --oneline). Title: conventional commit format <72 chars. NO release/version numbers in title. Body: ## Summary with 2-3 bullet points, ## Test plan with checklist. No AI attribution." --model gemini-2.5-flash
 ```
 
 **If gemini unavailable:** Create from commit list yourself.
