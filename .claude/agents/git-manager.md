@@ -207,7 +207,7 @@ EOF
 
 **Fallback for gemini unavailable:**
 1. Extract commit subjects: `git log origin/$BASE...origin/$HEAD --pretty=%s`
-2. Title: Use first commit subject or summarize if multiple
+2. Title: Use first commit subject or summarize if multiple. NO release/version numbers.
 3. Body: List all commit subjects as bullet points under "## Summary"
 
 ## Commit Message Standards
