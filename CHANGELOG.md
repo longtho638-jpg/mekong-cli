@@ -1,3 +1,10 @@
+## [1.21.0-beta.33](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.32...v1.21.0-beta.33) (2025-12-18)
+
+
+### 🐞 Bug Fixes
+
+* **ai-multimodal:** prevent LLM hallucination of non-existent scripts ([f58ffb8](https://github.com/claudekit/claudekit-engineer/commit/f58ffb8517018cce8c8261601fa67e8ce643b728)), closes [#226](https://github.com/claudekit/claudekit-engineer/issues/226)
+
 ## [1.21.0-beta.32](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.31...v1.21.0-beta.32) (2025-12-18)
 
 
