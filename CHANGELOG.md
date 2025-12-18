@@ -1,3 +1,15 @@
+## [1.21.0-beta.32](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.31...v1.21.0-beta.32) (2025-12-18)
+
+
+### 🚀 Features
+
+* **chrome-devtools:** add auth session persistence for inject-auth script ([252e1c5](https://github.com/claudekit/claudekit-engineer/commit/252e1c5a15e5221fb02f97729e508d30b76c0b81))
+
+
+### 📚 Documentation
+
+* **chrome-devtools:** document inject-auth script and update gitignore rules ([83d3f0c](https://github.com/claudekit/claudekit-engineer/commit/83d3f0cc9649e6bb4fb208bb5808b51b85b62e9f))
+
 ## [1.21.0-beta.31](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.30...v1.21.0-beta.31) (2025-12-18)
 
 
