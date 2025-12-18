@@ -246,6 +246,47 @@ function detectFramework(configOverride) {
 }
 
 /**
+ * Get coding level style name mapping
+ * @param {number} level - Coding level (0-5)
+ * @returns {string} Style name for /output-style command
+ */
+function getCodingLevelStyleName(level) {
+  const styleMap = {
+    0: 'coding-level-0-eli5',
+    1: 'coding-level-1-junior',
+    2: 'coding-level-2-mid',
+    3: 'coding-level-3-senior',
+    4: 'coding-level-4-lead',
+    5: 'coding-level-5-god'
+  };
+  return styleMap[level] || 'coding-level-5-god';
+}
+
+/**
+ * Get coding level guidelines by reading from output-styles .md files
+ * This ensures single source of truth - users can customize the .md files directly
+ * @param {number} level - Coding level (0-5)
+ * @returns {string|null} Guidelines text (frontmatter stripped) or null for god mode
+ */
+function getCodingLevelGuidelines(level) {
+  if (level === 5) return null; // God mode - no injection
+
+  const styleName = getCodingLevelStyleName(level);
+  const stylePath = path.join(__dirname, '..', 'output-styles', `${styleName}.md`);
+
+  try {
+    if (!fs.existsSync(stylePath)) return null;
+
+    const content = fs.readFileSync(stylePath, 'utf8');
+    // Strip YAML frontmatter (between --- markers at start of file)
+    const withoutFrontmatter = content.replace(/^---[\s\S]*?---\n*/, '').trim();
+    return withoutFrontmatter;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Build context summary for output (compact, single line)
  * @param {Object} config - Loaded config
  * @param {Object} detections - Project detections
@@ -383,9 +424,21 @@ async function main() {
       writeEnv(envFile, 'CK_VALIDATION_MIN_QUESTIONS', validation.minQuestions || 3);
       writeEnv(envFile, 'CK_VALIDATION_MAX_QUESTIONS', validation.maxQuestions || 8);
       writeEnv(envFile, 'CK_VALIDATION_FOCUS_AREAS', (validation.focusAreas || ['assumptions', 'risks', 'tradeoffs', 'architecture']).join(','));
+
+      // Coding level config (for output style selection)
+      const codingLevel = config.codingLevel ?? 5;
+      writeEnv(envFile, 'CK_CODING_LEVEL', codingLevel);
+      writeEnv(envFile, 'CK_CODING_LEVEL_STYLE', getCodingLevelStyleName(codingLevel));
     }
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);
+
+    // Auto-inject coding level guidelines (if not god mode)
+    const codingLevel = config.codingLevel ?? 5;
+    const guidelines = getCodingLevelGuidelines(codingLevel);
+    if (guidelines) {
+      console.log(`\n${guidelines}`);
+    }
 
     if (config.assertions?.length > 0) {
       console.log(`\nUser Assertions:`);

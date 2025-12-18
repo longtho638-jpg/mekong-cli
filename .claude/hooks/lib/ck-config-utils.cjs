@@ -455,6 +455,8 @@ function loadConfig(options = {}) {
     if (includeAssertions) {
       result.assertions = merged.assertions || [];
     }
+    // Coding level for output style selection (0-5, default: 5 = god mode)
+    result.codingLevel = merged.codingLevel ?? 5;
 
     return sanitizeConfig(result, projectRoot);
   } catch (e) {
@@ -468,7 +470,8 @@ function loadConfig(options = {}) {
 function getDefaultConfig(includeProject = true, includeAssertions = true, includeLocale = true) {
   const result = {
     plan: { ...DEFAULT_CONFIG.plan },
-    paths: { ...DEFAULT_CONFIG.paths }
+    paths: { ...DEFAULT_CONFIG.paths },
+    codingLevel: 5  // Default: god mode
   };
   if (includeLocale) {
     result.locale = { ...DEFAULT_CONFIG.locale };
