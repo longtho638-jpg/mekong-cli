@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **131 Core Modules | 79 Commits**
+> **135 Core Modules | 81 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 131 |
-| Commits | 79 |
-| Departments | 18 |
-| Department Hubs | 15 |
+| Core Modules | 135 |
+| Commits | 81 |
+| Departments | 19 |
+| Department Hubs | 16 |
 
 ---
 
@@ -136,6 +136,15 @@
 | `talent_acquisition.py` | Jobs, candidates, interviews |
 | `hr_analytics.py` | eNPS, attrition, metrics |
 | `compensation_manager.py` | Salary bands, benefits, comp |
+
+### 16. 💵 Finance Hub (`finance_hub.py`)
+| Module | Role |
+|--------|------|
+| `budget_manager.py` | Dept budgets, expenses |
+| `cash_flow.py` | Cash in/out, runway |
+| `financial_reports.py` | P&L, ratios, CFO dashboard |
+| `invoice.py` | Client billing |
+| `revenue_forecasting.py` | Projections |
 
 ---
 
