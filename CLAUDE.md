@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **142 Core Modules | 85 Commits**
+> **146 Core Modules | 87 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 142 |
-| Commits | 85 |
-| Departments | 21 |
-| Department Hubs | 18 |
+| Core Modules | 146 |
+| Commits | 87 |
+| Departments | 22 |
+| Department Hubs | 19 |
 
 ---
 
@@ -159,6 +159,13 @@
 | `healthcare_marketing.py` | Medical clients, HIPAA |
 | `wellness_coordinator.py` | Programs, mental health |
 | `benefits_tracker.py` | Insurance, allowances |
+
+### 19. ⚖️ Legal Hub (`legal_hub.py`)
+| Module | Role |
+|--------|------|
+| `contract_manager.py` | MSA, SOW, NDA, e-sign |
+| `ip_manager.py` | Trademarks, copyrights |
+| `compliance_officer.py` | GDPR, privacy, audits |
 
 ---
 
