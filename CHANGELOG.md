@@ -1,3 +1,10 @@
+## [1.21.0-beta.34](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.33...v1.21.0-beta.34) (2025-12-18)
+
+
+### 🚀 Features
+
+* add clarifying notes to hook block messages ([2865124](https://github.com/claudekit/claudekit-engineer/commit/2865124866022aaf8906f5d8e726dfc5e4e9057f)), closes [#228](https://github.com/claudekit/claudekit-engineer/issues/228)
+
 ## [1.21.0-beta.33](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.32...v1.21.0-beta.33) (2025-12-18)
 
 
