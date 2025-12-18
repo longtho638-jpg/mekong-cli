@@ -440,14 +440,17 @@ response = client.models.generate_content(
 
 ## Error Handling
 
+> **NOTE**: This is example code for understanding the API pattern.
+> Use the actual script: `python scripts/gemini_batch_process.py --files <image> --task analyze`
+
 ```python
 import time
 
-def analyze_image_with_retry(image_path, prompt, max_retries=3):
-    """Analyze image with exponential backoff retry"""
+def process_with_retry(file_path, prompt, max_retries=3):
+    """Process file with exponential backoff retry (example pattern)"""
     for attempt in range(max_retries):
         try:
-            with open(image_path, 'rb') as f:
+            with open(file_path, 'rb') as f:
                 img_bytes = f.read()
 
             response = client.models.generate_content(
