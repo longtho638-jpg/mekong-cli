@@ -85,6 +85,8 @@ function formatBlockedError(details) {
 
   const lines = [
     '',
+    colorize('NOTE:', 'cyan') + ' This is not an error - this block is intentional to optimize context.',
+    '',
     colorize('BLOCKED', 'red') + `: Access to '${displayPath}' denied`,
     '',
     `  ${colorize('Pattern:', 'yellow')}  ${pattern}`,

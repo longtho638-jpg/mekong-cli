@@ -232,6 +232,8 @@ function formatBroadPatternError(result, claudeDir) {
 
   const lines = [
     '',
+    '\x1b[36mNOTE:\x1b[0m This is not an error - this block is intentional to optimize context.',
+    '',
     '\x1b[31mBLOCKED\x1b[0m: Overly broad glob pattern detected',
     '',
     `  \x1b[33mPattern:\x1b[0m  ${pattern}`,

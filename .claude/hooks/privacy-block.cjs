@@ -176,6 +176,8 @@ function extractPaths(toolInput) {
 function formatBlockMessage(filePath) {
   const basename = path.basename(filePath);
   return `
+\x1b[36mNOTE:\x1b[0m This is not an error - this block protects sensitive data.
+
 \x1b[33mPRIVACY BLOCK\x1b[0m: Sensitive file access requires user approval
 
   \x1b[33mFile:\x1b[0m ${filePath}
