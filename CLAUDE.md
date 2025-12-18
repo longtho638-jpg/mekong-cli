@@ -324,4 +324,40 @@
 
 ---
 
+## 🏯 AgentOps API (agencyos.network)
+
+### Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/agentops/` | GET | List all 50 AgentOps |
+| `/api/agentops/health` | GET | System health check |
+| `/api/agentops/{category}` | GET | Get specific ops status |
+| `/api/agentops/execute` | POST | Execute ops action |
+| `/api/agentops/categories/summary` | GET | Department summary |
+| `/api/agentops/binh-phap/chapters` | GET | 13 Binh Phap chapters |
+
+### AgentOps Categories (50)
+
+| Department | Ops |
+|------------|-----|
+| Sales | sdrops, aeops, saops, isrops, osrops, bdmops, leadgenops |
+| Marketing | seoops, ppcops, socialmediaops, contentops, emailmarketingops |
+| HR | hrops, recruiterops, ldops, hrisops, hranalystops |
+| Finance | finops, taxops, compbenops |
+| Legal | legalops, ipops |
+| Creative | copywriterops, creativestrategistops, mediaops |
+| Engineering | sweops, seops |
+| Support | csops, serviceops |
+| Admin | adminops, erops |
+| Ecommerce | ecommerceops, amazonfbaops, smops |
+
+### Start Backend
+
+```bash
+cd backend && uvicorn main:app --reload --port 8000
+```
+
+---
+
 **🏯 Agency OS - "Không đánh mà thắng"**
