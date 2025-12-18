@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **138 Core Modules | 83 Commits**
+> **142 Core Modules | 85 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 138 |
-| Commits | 83 |
-| Departments | 20 |
-| Department Hubs | 17 |
+| Core Modules | 142 |
+| Commits | 85 |
+| Departments | 21 |
+| Department Hubs | 18 |
 
 ---
 
@@ -152,6 +152,13 @@
 | `course_manager.py` | LMS, lessons, enrollments |
 | `knowledge_base.py` | Articles, resources, docs |
 | `training_tracker.py` | Paths, certs, progress |
+
+### 18. ❤️ Wellness Hub (`wellness_hub.py`)
+| Module | Role |
+|--------|------|
+| `healthcare_marketing.py` | Medical clients, HIPAA |
+| `wellness_coordinator.py` | Programs, mental health |
+| `benefits_tracker.py` | Insurance, allowances |
 
 ---
 
