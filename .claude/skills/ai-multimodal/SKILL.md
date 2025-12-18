@@ -37,7 +37,18 @@ pip install google-genai python-dotenv pillow
 - **Video generation**: `veo-3.1-generate-preview` (8s clips with audio)
 - **Analysis**: `gemini-2.5-flash` (recommended), `gemini-2.5-pro` (advanced)
 
-## Scripts
+## Available Scripts
+
+> **IMPORTANT**: Only these 4 scripts exist. Do NOT invent or guess script names!
+
+| Script | Purpose | Example |
+|--------|---------|---------|
+| `gemini_batch_process.py` | Main CLI for all tasks | `--files <file> --task analyze` |
+| `media_optimizer.py` | Compress/resize media | `--input <file> --max-size 10M` |
+| `document_converter.py` | Convert docs to markdown | `--files <pdf>` |
+| `check_setup.py` | Verify setup | (no args needed) |
+
+### Script Details
 
 - **`gemini_batch_process.py`**: CLI orchestrator for `transcribe|analyze|extract|generate|generate-video` that auto-resolves API keys, picks sensible default models per task, streams files inline vs File API, and saves structured outputs (text/JSON/CSV/markdown plus generated assets) for Imagen 4 + Veo workflows.
 - **`media_optimizer.py`**: ffmpeg/Pillow-based preflight tool that compresses/resizes/converts audio, image, and video inputs, enforces target sizes/bitrates, splits long clips into hour chunks, and batch-processes directories so media stays within Gemini limits.
