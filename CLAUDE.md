@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **135 Core Modules | 81 Commits**
+> **138 Core Modules | 83 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 135 |
-| Commits | 81 |
-| Departments | 19 |
-| Department Hubs | 16 |
+| Core Modules | 138 |
+| Commits | 83 |
+| Departments | 20 |
+| Department Hubs | 17 |
 
 ---
 
@@ -145,6 +145,13 @@
 | `financial_reports.py` | P&L, ratios, CFO dashboard |
 | `invoice.py` | Client billing |
 | `revenue_forecasting.py` | Projections |
+
+### 17. 🎓 Education Hub (`education_hub.py`)
+| Module | Role |
+|--------|------|
+| `course_manager.py` | LMS, lessons, enrollments |
+| `knowledge_base.py` | Articles, resources, docs |
+| `training_tracker.py` | Paths, certs, progress |
 
 ---
 
