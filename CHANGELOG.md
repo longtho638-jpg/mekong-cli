@@ -1,3 +1,12 @@
+## [1.21.0-beta.29](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.28...v1.21.0-beta.29) (2025-12-18)
+
+
+### 🐞 Bug Fixes
+
+* add local/global venv resolution for skills Python path ([63d9918](https://github.com/claudekit/claudekit-engineer/commit/63d991822da65ecf4f3de3a92f7c73e8abd567c5))
+* add venv Python instruction for skills scripts ([afc045c](https://github.com/claudekit/claudekit-engineer/commit/afc045c5150f688fe246e763b8e6f7614509e045)), closes [#212](https://github.com/claudekit/claudekit-engineer/issues/212)
+* inject venv Python path in dev-rules-reminder hook ([06773f6](https://github.com/claudekit/claudekit-engineer/commit/06773f66c88ae800df228c7faa588769a2c8739a))
+
 ## [1.21.0-beta.28](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.27...v1.21.0-beta.28) (2025-12-17)
 
 
