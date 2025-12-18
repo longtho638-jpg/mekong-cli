@@ -13,6 +13,7 @@ const log = debug('chrome-devtools:browser');
 // Session file stores WebSocket endpoint for browser reuse across processes
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SESSION_FILE = path.join(__dirname, '..', '.browser-session.json');
+const AUTH_SESSION_FILE = path.join(__dirname, '..', '.auth-session.json');
 
 let browserInstance = null;
 let pageInstance = null;
@@ -59,6 +60,106 @@ function clearSession() {
     }
   } catch (e) {
     log('Failed to clear session:', e.message);
+  }
+}
+
+/**
+ * Save auth session (cookies, storage) for persistence
+ * @param {Object} authData - Auth data to save
+ */
+export function saveAuthSession(authData) {
+  try {
+    const existing = readAuthSession() || {};
+    const merged = { ...existing, ...authData, timestamp: Date.now() };
+    fs.writeFileSync(AUTH_SESSION_FILE, JSON.stringify(merged, null, 2));
+    log('Auth session saved');
+  } catch (e) {
+    log('Failed to save auth session:', e.message);
+  }
+}
+
+/**
+ * Read auth session from file
+ * @returns {Object|null} - Auth session data or null
+ */
+export function readAuthSession() {
+  try {
+    if (fs.existsSync(AUTH_SESSION_FILE)) {
+      const data = JSON.parse(fs.readFileSync(AUTH_SESSION_FILE, 'utf8'));
+      // Auth sessions valid for 24 hours
+      if (Date.now() - data.timestamp < 86400000) {
+        return data;
+      }
+    }
+  } catch (e) {
+    log('Failed to read auth session:', e.message);
+  }
+  return null;
+}
+
+/**
+ * Clear auth session file
+ */
+export function clearAuthSession() {
+  try {
+    if (fs.existsSync(AUTH_SESSION_FILE)) {
+      fs.unlinkSync(AUTH_SESSION_FILE);
+      log('Auth session cleared');
+    }
+  } catch (e) {
+    log('Failed to clear auth session:', e.message);
+  }
+}
+
+/**
+ * Apply saved auth session to page
+ * @param {Object} page - Puppeteer page instance
+ * @param {string} url - Target URL for domain context
+ */
+export async function applyAuthSession(page, url) {
+  const authData = readAuthSession();
+  if (!authData) {
+    log('No auth session found');
+    return false;
+  }
+
+  try {
+    // Apply cookies
+    if (authData.cookies && authData.cookies.length > 0) {
+      await page.setCookie(...authData.cookies);
+      log(`Applied ${authData.cookies.length} cookies`);
+    }
+
+    // Apply localStorage (requires navigation first)
+    if (authData.localStorage && Object.keys(authData.localStorage).length > 0) {
+      await page.evaluate((data) => {
+        Object.entries(data).forEach(([key, value]) => {
+          localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        });
+      }, authData.localStorage);
+      log('Applied localStorage data');
+    }
+
+    // Apply sessionStorage
+    if (authData.sessionStorage && Object.keys(authData.sessionStorage).length > 0) {
+      await page.evaluate((data) => {
+        Object.entries(data).forEach(([key, value]) => {
+          sessionStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        });
+      }, authData.sessionStorage);
+      log('Applied sessionStorage data');
+    }
+
+    // Apply extra headers
+    if (authData.headers) {
+      await page.setExtraHTTPHeaders(authData.headers);
+      log('Applied HTTP headers');
+    }
+
+    return true;
+  } catch (e) {
+    log('Failed to apply auth session:', e.message);
+    return false;
   }
 }
 
