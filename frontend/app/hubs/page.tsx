@@ -14,198 +14,46 @@ interface Hub {
 }
 
 const HUBS: Hub[] = [
-    {
-        id: 'warroom',
-        name: 'War Room',
-        icon: '🏯',
-        path: '/warroom',
-        description: 'Strategic Command Center',
-        color: '#ff0000',
-        stats: [
-            { label: 'MRR', value: '$85K' },
-            { label: 'Runway', value: '18mo' },
-        ],
-    },
-    {
-        id: 'agentops',
-        name: 'AgentOps',
-        icon: '🎯',
-        path: '/agentops',
-        description: '50 AI Agents Unified',
-        color: '#00bfff',
-        stats: [
-            { label: 'Agents', value: '156' },
-            { label: 'Active', value: '50' },
-        ],
-    },
-    {
-        id: 'sales',
-        name: 'Sales',
-        icon: '💰',
-        path: '/sales',
-        description: 'Pipeline & Deals',
-        color: '#ffd700',
-        stats: [
-            { label: 'Pipeline', value: '$2.5M' },
-            { label: 'Deals', value: '42' },
-        ],
-    },
-    {
-        id: 'hr',
-        name: 'HR',
-        icon: '👥',
-        path: '/hr',
-        description: 'Team & Recruitment',
-        color: '#8a2be2',
-        stats: [
-            { label: 'Team', value: '28' },
-            { label: 'Open', value: '5' },
-        ],
-    },
-    {
-        id: 'marketing',
-        name: 'Marketing',
-        icon: '📢',
-        path: '/marketing',
-        description: 'Campaigns & Social',
-        color: '#e4405f',
-        stats: [
-            { label: 'Reach', value: '410K' },
-            { label: 'Followers', value: '49K' },
-        ],
-    },
-    {
-        id: 'finops',
-        name: 'FinOps',
-        icon: '💵',
-        path: '/finops',
-        description: 'Budget & Invoices',
-        color: '#00ff41',
-        stats: [
-            { label: 'Budget', value: '$110K' },
-            { label: 'Burn', value: '66%' },
-        ],
-    },
-    {
-        id: 'legal',
-        name: 'Legal',
-        icon: '⚖️',
-        path: '/legal',
-        description: 'Contracts & Compliance',
-        color: '#9e9e9e',
-        stats: [
-            { label: 'Contracts', value: '12' },
-            { label: 'Compliance', value: '67%' },
-        ],
-    },
-    {
-        id: 'security',
-        name: 'Security',
-        icon: '🔐',
-        path: '/security',
-        description: 'CISO Command',
-        color: '#ff6347',
-        stats: [
-            { label: 'Alerts', value: '3' },
-            { label: 'Score', value: '85%' },
-        ],
-    },
-    {
-        id: 'entrepreneur',
-        name: 'Entrepreneur',
-        icon: '🚀',
-        path: '/entrepreneur',
-        description: 'Ventures & OKRs',
-        color: '#ff69b4',
-        stats: [
-            { label: 'Ventures', value: '3' },
-            { label: 'Revenue', value: '$85K' },
-        ],
-    },
-    {
-        id: 'realestate',
-        name: 'Real Estate',
-        icon: '🏠',
-        path: '/realestate',
-        description: 'Property Portfolio',
-        color: '#4caf50',
-        stats: [
-            { label: 'Listings', value: '8' },
-            { label: 'Value', value: '$12M' },
-        ],
-    },
-    {
-        id: 'data',
-        name: 'Data',
-        icon: '🔄',
-        path: '/data',
-        description: 'Automation & ETL',
-        color: '#00bfff',
-        stats: [
-            { label: 'Pipelines', value: '3' },
-            { label: 'Success', value: '99.6%' },
-        ],
-    },
-    {
-        id: 'it',
-        name: 'IT Ops',
-        icon: '🖥️',
-        path: '/it',
-        description: 'Infrastructure',
-        color: '#8a2be2',
-        stats: [
-            { label: 'Servers', value: '4' },
-            { label: 'Uptime', value: '99.9%' },
-        ],
-    },
-    {
-        id: 'retail',
-        name: 'Retail',
-        icon: '🏪',
-        path: '/retail',
-        description: 'E-commerce',
-        color: '#ff69b4',
-        stats: [
-            { label: 'Revenue', value: '$188K' },
-            { label: 'Orders', value: '1K+' },
-        ],
-    },
-    {
-        id: 'analytics',
-        name: 'Analytics',
-        icon: '📊',
-        path: '/analytics',
-        description: 'Business Intelligence',
-        color: '#00ff41',
-        stats: [
-            { label: 'Users', value: '12.5K' },
-            { label: 'Views', value: '85K' },
-        ],
-    },
-    {
-        id: 'admin',
-        name: 'Admin',
-        icon: '📋',
-        path: '/admin',
-        description: 'Operations',
-        color: '#8bc34a',
-        stats: [
-            { label: 'Tasks', value: '15' },
-            { label: 'Meetings', value: '3' },
-        ],
-    },
-    {
-        id: 'shield',
-        name: 'Shield',
-        icon: '🛡️',
-        path: '/shield',
-        description: 'Anti-Dilution Calculator',
-        color: '#ffd700',
-        stats: [
-            { label: 'Protection', value: 'Active' },
-            { label: 'Chapters', value: '13' },
-        ],
-    },
+    // Command Center
+    { id: 'warroom', name: 'War Room', icon: '🏯', path: '/warroom', description: 'Strategic Command Center', color: '#ff0000', stats: [{ label: 'MRR', value: '$85K' }, { label: 'Runway', value: '18mo' }] },
+    { id: 'executive', name: 'Executive', icon: '👑', path: '/executive', description: 'CEO Command', color: '#ffd700', stats: [{ label: 'Depts', value: '6' }, { label: 'Score', value: '87%' }] },
+    { id: 'agentops', name: 'AgentOps', icon: '🎯', path: '/agentops', description: '50 AI Agents Unified', color: '#00bfff', stats: [{ label: 'Agents', value: '156' }, { label: 'Active', value: '50' }] },
+    // Sales & BD
+    { id: 'sales', name: 'Sales', icon: '💰', path: '/sales', description: 'Pipeline & Deals', color: '#ffd700', stats: [{ label: 'Pipeline', value: '$2.5M' }, { label: 'Deals', value: '42' }] },
+    { id: 'crm', name: 'CRM', icon: '💼', path: '/crm', description: 'Contacts & Deals', color: '#ff69b4', stats: [{ label: 'Contacts', value: '4' }, { label: 'Pipeline', value: '$235K' }] },
+    { id: 'realestate', name: 'Real Estate', icon: '🏠', path: '/realestate', description: 'Property Portfolio', color: '#4caf50', stats: [{ label: 'Listings', value: '8' }, { label: 'Value', value: '$12M' }] },
+    // Growth
+    { id: 'marketing', name: 'Marketing', icon: '📢', path: '/marketing', description: 'Campaigns & Social', color: '#e4405f', stats: [{ label: 'Reach', value: '410K' }, { label: 'Followers', value: '49K' }] },
+    { id: 'social', name: 'Social', icon: '📱', path: '/social', description: 'Social Media', color: '#1DA1F2', stats: [{ label: 'Followers', value: '49K' }, { label: 'Eng', value: '5.4%' }] },
+    { id: 'analytics', name: 'Analytics', icon: '📊', path: '/analytics', description: 'Business Intelligence', color: '#00ff41', stats: [{ label: 'Users', value: '12.5K' }, { label: 'Views', value: '85K' }] },
+    // Operations
+    { id: 'operations', name: 'Operations', icon: '⚙️', path: '/operations', description: 'Process Management', color: '#ff9800', stats: [{ label: 'Processes', value: '4' }, { label: 'Efficiency', value: '89%' }] },
+    { id: 'data', name: 'Data', icon: '🔄', path: '/data', description: 'Automation & ETL', color: '#00bfff', stats: [{ label: 'Pipelines', value: '3' }, { label: 'Success', value: '99.6%' }] },
+    { id: 'it', name: 'IT Ops', icon: '🖥️', path: '/it', description: 'Infrastructure', color: '#8a2be2', stats: [{ label: 'Servers', value: '4' }, { label: 'Uptime', value: '99.9%' }] },
+    { id: 'inventory', name: 'Inventory', icon: '📦', path: '/inventory', description: 'Stock Management', color: '#795548', stats: [{ label: 'Items', value: '4' }, { label: 'Value', value: '$283K' }] },
+    // Finance & Legal
+    { id: 'finops', name: 'FinOps', icon: '💵', path: '/finops', description: 'Budget & Invoices', color: '#00ff41', stats: [{ label: 'Budget', value: '$110K' }, { label: 'Burn', value: '66%' }] },
+    { id: 'legal', name: 'Legal', icon: '⚖️', path: '/legal', description: 'Contracts & Compliance', color: '#9e9e9e', stats: [{ label: 'Contracts', value: '12' }, { label: 'Compliance', value: '67%' }] },
+    { id: 'security', name: 'Security', icon: '🔐', path: '/security', description: 'CISO Command', color: '#ff6347', stats: [{ label: 'Alerts', value: '3' }, { label: 'Score', value: '85%' }] },
+    { id: 'shield', name: 'Shield', icon: '🛡️', path: '/shield', description: 'Anti-Dilution', color: '#ffd700', stats: [{ label: 'Protection', value: 'Active' }, { label: 'Chapters', value: '13' }] },
+    // Product
+    { id: 'product', name: 'Product', icon: '🚀', path: '/product', description: 'Roadmap & Features', color: '#00bfff', stats: [{ label: 'Products', value: '4' }, { label: 'MRR', value: '$115K' }] },
+    { id: 'projects', name: 'Projects', icon: '📂', path: '/projects', description: 'Task Management', color: '#00bfff', stats: [{ label: 'Active', value: '3' }, { label: 'Progress', value: '60%' }] },
+    { id: 'startup', name: 'Startup', icon: '🦄', path: '/startup', description: 'Venture Portfolio', color: '#8a2be2', stats: [{ label: 'Ventures', value: '4' }, { label: 'Value', value: '$5.7M' }] },
+    // People & Learning
+    { id: 'hr', name: 'HR', icon: '👥', path: '/hr', description: 'Team & Recruitment', color: '#8a2be2', stats: [{ label: 'Team', value: '28' }, { label: 'Open', value: '5' }] },
+    { id: 'learning', name: 'Learning', icon: '🎓', path: '/learning', description: 'Courses & Skills', color: '#9c27b0', stats: [{ label: 'Courses', value: '4' }, { label: 'Skills', value: '24' }] },
+    // Support & Retail
+    { id: 'support', name: 'Support', icon: '💬', path: '/support', description: 'Customer Service', color: '#00bfff', stats: [{ label: 'Tickets', value: '4' }, { label: 'CSAT', value: '97%' }] },
+    { id: 'retail', name: 'Retail', icon: '🏪', path: '/retail', description: 'E-commerce', color: '#ff69b4', stats: [{ label: 'Revenue', value: '$188K' }, { label: 'Orders', value: '1K+' }] },
+    // Admin & Tools
+    { id: 'admin', name: 'Admin', icon: '📋', path: '/admin', description: 'Operations', color: '#8bc34a', stats: [{ label: 'Tasks', value: '15' }, { label: 'Meetings', value: '3' }] },
+    { id: 'calendar', name: 'Calendar', icon: '📅', path: '/calendar', description: 'Events & Schedule', color: '#ffd700', stats: [{ label: 'Events', value: '5' }, { label: 'Total', value: '49' }] },
+    { id: 'documents', name: 'Documents', icon: '📄', path: '/documents', description: 'Files & Folders', color: '#00bfff', stats: [{ label: 'Files', value: '247' }, { label: 'Storage', value: '24GB' }] },
+    { id: 'assistant', name: 'Assistant', icon: '🤖', path: '/assistant', description: 'AI Commands', color: '#00bfff', stats: [{ label: 'Commands', value: '822' }, { label: 'Success', value: '96%' }] },
+    { id: 'settings', name: 'Settings', icon: '⚙️', path: '/settings', description: 'Configuration', color: '#8a2be2', stats: [{ label: 'Integrations', value: '4/5' }, { label: 'Team', value: '3' }] },
+    // Entrepreneur
+    { id: 'entrepreneur', name: 'Entrepreneur', icon: '🚀', path: '/entrepreneur', description: 'Ventures & OKRs', color: '#ff69b4', stats: [{ label: 'Ventures', value: '3' }, { label: 'Revenue', value: '$85K' }] },
 ]
 
 export default function HubsIndexPage() {
@@ -258,7 +106,7 @@ export default function HubsIndexPage() {
                         transition={{ delay: 0.2 }}
                         style={{ color: '#888', fontSize: '1rem', letterSpacing: '0.2em' }}
                     >
-                        WIN-WIN-WIN COMMAND CENTER • 16 DEPARTMENTS
+                        WIN-WIN-WIN COMMAND CENTER • 30 DEPARTMENTS
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -282,7 +130,7 @@ export default function HubsIndexPage() {
                 {/* Hub Grid */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gridTemplateColumns: 'repeat(5, 1fr)',
                     gap: '1.25rem',
                 }}>
                     {hubs.map((hub, i) => (
