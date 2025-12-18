@@ -132,6 +132,7 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
       `- Activate skills: Run \`python ${catalogScript} --skills\` to generate a skills catalog and analyze it, then activate the relevant skills that are needed for the task during the process.`,
       `- Execute commands: Run \`python ${catalogScript} --commands\` to generate a commands catalog and analyze it, then execute the relevant SlashCommands that are needed for the task during the process.`
     ] : []),
+    `- Python scripts in .claude/skills/: Use \`.claude/skills/.venv/bin/python3\` (Unix) or \`.claude\\skills\\.venv\\Scripts\\python.exe\` (Windows)`,
     `- When skills' scripts are failed to execute, always fix them and run again, repeat until success.`,
     `- Follow **YAGNI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)** principles`,
     `- Sacrifice grammar for the sake of concision when writing reports.`,
