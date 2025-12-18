@@ -1,247 +1,311 @@
-"use client";
-
-import React, { useState, useEffect } from 'react';
-import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
-import { SparklesCore } from '@/components/ui/sparkles';
-import { Meteors } from '@/components/ui/meteors';
-import { Spotlight, SpotlightCard } from '@/components/ui/spotlight';
+'use client'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 
 // Types
-interface ChapterScore {
-    chapter: string;
-    name: string;
-    score: number;
-    description: string;
-    icon: string;
-    link?: string;
+interface Metric {
+    id: string
+    label: string
+    value: string | number
+    change: number
+    trend: 'up' | 'down' | 'stable'
+    icon: string
 }
 
-interface CriticalIssue {
-    id: number;
-    issue: string;
-    severity: 'critical' | 'high' | 'medium';
+interface WarAlert {
+    id: string
+    type: 'critical' | 'warning' | 'success'
+    message: string
+    source: string
+    timestamp: string
 }
 
-// Demo Data
-const chapters: ChapterScore[] = [
-    { chapter: "1", name: "Kế Hoạch", score: 75, description: "Assessment & SWOT", icon: "📋" },
-    { chapter: "2", name: "Tác Chiến", score: 60, description: "Runway & Burn Rate", icon: "⏱️" },
-    { chapter: "3", name: "Mưu Công", score: 85, description: "Win-Without-Fighting", icon: "🎯" },
-    { chapter: "4", name: "Hình Thế", score: 70, description: "Moat Analysis", icon: "🏰" },
-    { chapter: "5", name: "Thế Trận", score: 65, description: "Growth Strategy", icon: "📈" },
-    { chapter: "6", name: "Hư Thực", score: 55, description: "Anti-Dilution Shield", icon: "🛡️", link: "/shield" },
-    { chapter: "7", name: "Quân Tranh", score: 80, description: "Speed & Maneuvering", icon: "⚡" },
-    { chapter: "8", name: "Cửu Biến", score: 90, description: "Pivot Framework", icon: "🔄" },
-    { chapter: "9", name: "Hành Quân", score: 72, description: "Market Expansion", icon: "🗺️" },
-    { chapter: "10", name: "Địa Hình", score: 68, description: "Competitive Intel", icon: "🔭" },
-    { chapter: "11", name: "Cửu Địa", score: 45, description: "Crisis Management", icon: "🚨" },
-    { chapter: "12", name: "Hỏa Công", score: 78, description: "Disruption Strategy", icon: "🔥" },
-    { chapter: "13", name: "Dụng Gián", score: 82, description: "VC Intelligence", icon: "🕵️" },
-];
+interface Campaign {
+    id: string
+    name: string
+    objective: string
+    progress: number
+    status: 'active' | 'planning' | 'completed'
+}
 
-const criticalIssues: CriticalIssue[] = [
-    { id: 1, issue: "Founder does not control board majority", severity: "critical" },
-    { id: 2, issue: "Burn rate exceeds 18-month runway", severity: "high" },
-    { id: 3, issue: "No anti-dilution protection in place", severity: "critical" },
-    { id: 4, issue: "Key-man clause missing in investor agreement", severity: "medium" },
-];
+// Sample data
+const METRICS: Metric[] = [
+    { id: '1', label: 'MRR', value: '$85K', change: 12.5, trend: 'up', icon: '💰' },
+    { id: '2', label: 'Active Clients', value: 42, change: 8.2, trend: 'up', icon: '🏢' },
+    { id: '3', label: 'Pipeline Value', value: '$2.5M', change: -5.3, trend: 'down', icon: '📊' },
+    { id: '4', label: 'Team Velocity', value: '94%', change: 2.1, trend: 'up', icon: '⚡' },
+    { id: '5', label: 'NPS Score', value: 72, change: 5.0, trend: 'up', icon: '❤️' },
+    { id: '6', label: 'Runway', value: '18 mo', change: 0, trend: 'stable', icon: '🛡️' },
+]
 
-const getScoreColor = (score: number) => {
-    if (score >= 80) return 'from-emerald-400 to-green-500';
-    if (score >= 60) return 'from-amber-400 to-yellow-500';
-    if (score >= 40) return 'from-orange-400 to-red-500';
-    return 'from-red-500 to-rose-600';
-};
+const ALERTS: WarAlert[] = [
+    { id: '1', type: 'critical', message: 'High-value deal ($500K) at risk - requires CEO attention', source: 'Sales', timestamp: '10 min ago' },
+    { id: '2', type: 'success', message: 'Series A milestone achieved: $100K MRR within reach', source: 'Finance', timestamp: '1 hour ago' },
+    { id: '3', type: 'warning', message: 'Competitor launched similar product - market response needed', source: 'Scout', timestamp: '2 hours ago' },
+]
 
-const getSeverityStyle = (severity: string) => {
-    switch (severity) {
-        case 'critical': return 'bg-red-500/20 border-l-4 border-red-500';
-        case 'high': return 'bg-orange-500/20 border-l-4 border-orange-500';
-        default: return 'bg-amber-500/20 border-l-4 border-amber-500';
-    }
-};
+const CAMPAIGNS: Campaign[] = [
+    { id: '1', name: 'Q1 Growth Offensive', objective: 'Increase MRR to $100K', progress: 85, status: 'active' },
+    { id: '2', name: 'Series A Preparation', objective: 'Complete fundraising docs', progress: 60, status: 'active' },
+    { id: '3', name: 'Market Expansion - ĐBSCL', objective: 'Launch in 5 new provinces', progress: 40, status: 'planning' },
+]
+
+const BINH_PHAP_QUOTES = [
+    { chapter: 1, quote: "Binh giả, quốc chi đại sự", meaning: "War is a matter of vital importance to the State" },
+    { chapter: 3, quote: "Bất chiến nhi khuất nhân chi binh", meaning: "Win without fighting" },
+    { chapter: 6, quote: "Hư thực", meaning: "Strength and weakness - know thyself, know thy enemy" },
+]
+
+const ALERT_COLORS: Record<string, string> = {
+    critical: '#ff0000',
+    warning: '#ffd700',
+    success: '#00ff41',
+}
 
 export default function WarRoomPage() {
-    const [battleReadiness, setBattleReadiness] = useState(0);
+    const [metrics] = useState(METRICS)
+    const [alerts] = useState(ALERTS)
+    const [campaigns] = useState(CAMPAIGNS)
+    const [currentQuote, setCurrentQuote] = useState(0)
+    const [currentTime, setCurrentTime] = useState(new Date())
 
     useEffect(() => {
-        const avg = Math.round(chapters.reduce((sum, ch) => sum + ch.score, 0) / chapters.length);
-        const timer = setTimeout(() => setBattleReadiness(avg), 500);
-        return () => clearTimeout(timer);
-    }, []);
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+        const quoteTimer = setInterval(() => setCurrentQuote(prev => (prev + 1) % BINH_PHAP_QUOTES.length), 10000)
+        return () => { clearInterval(timer); clearInterval(quoteTimer) }
+    }, [])
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
-            {/* Spotlight Effect */}
-            <Spotlight className="top-0 left-0 md:left-60 md:-top-20" fill="#3b82f6" />
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(135deg, #050505 0%, #0a0a1a 50%, #050510 100%)',
+            color: '#fff',
+            fontFamily: "'JetBrains Mono', monospace",
+            padding: '1.5rem',
+            position: 'relative',
+            overflow: 'hidden',
+        }}>
+            {/* Animated ambient glow */}
+            <div style={{
+                position: 'fixed',
+                top: '10%',
+                left: '20%',
+                width: '60%',
+                height: '30%',
+                background: 'radial-gradient(circle, rgba(0,191,255,0.08) 0%, transparent 70%)',
+                pointerEvents: 'none',
+            }} />
+            <div style={{
+                position: 'fixed',
+                bottom: '10%',
+                right: '10%',
+                width: '40%',
+                height: '40%',
+                background: 'radial-gradient(circle, rgba(255,0,0,0.05) 0%, transparent 60%)',
+                pointerEvents: 'none',
+            }} />
 
-            {/* Animated Background Orbs */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-            </div>
+            <div style={{ maxWidth: 1600, margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
-            <div className="relative z-10 p-8">
                 {/* Header */}
-                <header className="mb-12 text-center">
-                    <h1 className="text-6xl font-bold bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-200 bg-clip-text text-transparent mb-4">
-                        🏯 WAR ROOM
-                    </h1>
-                    <p className="text-slate-400 text-lg">Binh Pháp Command Center • "Không đánh mà thắng"</p>
+                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.25rem', letterSpacing: '0.05em' }}>
+                            <span style={{ color: '#ff0000' }}>🏯</span> WAR ROOM
+                        </h1>
+                        <p style={{ color: '#888', fontSize: '0.85rem', letterSpacing: '0.2em' }}>
+                            BINH PHÁP COMMAND CENTER • agencyos.network
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        style={{ textAlign: 'right' }}
+                    >
+                        <p style={{ fontSize: '2rem', color: '#00bfff', fontWeight: 'bold' }}>
+                            {currentTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        <p style={{ color: '#888', fontSize: '0.75rem' }}>
+                            {currentTime.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                    </motion.div>
                 </header>
 
-                {/* Battle Readiness Gauge with Sparkles */}
-                <section className="mb-16">
-                    <SpotlightCard className="max-w-2xl mx-auto bg-slate-800/30 backdrop-blur-xl border border-slate-700/50">
-                        <div className="relative">
-                            {/* Sparkles Background */}
-                            <div className="absolute inset-0 h-full w-full">
-                                <SparklesCore
-                                    id="battle-sparkles"
-                                    background="transparent"
-                                    minSize={0.4}
-                                    maxSize={1}
-                                    particleDensity={40}
-                                    particleColor="#ffd700"
-                                    speed={0.5}
-                                />
-                            </div>
+                {/* Binh Phap Quote */}
+                <motion.div
+                    key={currentQuote}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    style={{
+                        background: 'rgba(255,0,0,0.05)',
+                        border: '1px solid rgba(255,0,0,0.2)',
+                        borderRadius: '8px',
+                        padding: '1rem 1.5rem',
+                        marginBottom: '1.5rem',
+                        textAlign: 'center',
+                    }}
+                >
+                    <p style={{ color: '#ff6347', fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '0.25rem' }}>
+                        &quot;{BINH_PHAP_QUOTES[currentQuote].quote}&quot;
+                    </p>
+                    <p style={{ color: '#888', fontSize: '0.8rem' }}>
+                        — Chapter {BINH_PHAP_QUOTES[currentQuote].chapter}: {BINH_PHAP_QUOTES[currentQuote].meaning}
+                    </p>
+                </motion.div>
 
-                            <div className="relative z-10 text-center py-8">
-                                <h2 className="text-2xl font-semibold mb-6">⚔️ Battle Readiness</h2>
-                                <div className="relative inline-block">
-                                    <span className={`text-8xl font-bold bg-gradient-to-r ${getScoreColor(battleReadiness)} bg-clip-text text-transparent transition-all duration-1000`}>
-                                        {battleReadiness}
+                {/* Metrics Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                    {metrics.map((metric, i) => (
+                        <motion.div
+                            key={metric.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            style={{
+                                background: 'rgba(255,255,255,0.02)',
+                                border: '1px solid rgba(255,255,255,0.08)',
+                                borderRadius: '12px',
+                                padding: '1rem',
+                                textAlign: 'center',
+                            }}
+                        >
+                            <span style={{ fontSize: '1.5rem' }}>{metric.icon}</span>
+                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0.5rem 0 0.25rem', color: metric.trend === 'up' ? '#00ff41' : metric.trend === 'down' ? '#ff6347' : '#fff' }}>
+                                {metric.value}
+                            </p>
+                            <p style={{ color: '#888', fontSize: '0.7rem', textTransform: 'uppercase' }}>{metric.label}</p>
+                            <p style={{
+                                fontSize: '0.75rem',
+                                color: metric.trend === 'up' ? '#00ff41' : metric.trend === 'down' ? '#ff6347' : '#888',
+                                marginTop: '0.25rem',
+                            }}>
+                                {metric.trend === 'up' ? '↑' : metric.trend === 'down' ? '↓' : '→'} {Math.abs(metric.change)}%
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+
+                    {/* Alerts */}
+                    <div style={{
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,0,0,0.2)',
+                        borderTop: '3px solid #ff0000',
+                        borderRadius: '12px',
+                        padding: '1.5rem',
+                    }}>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#ff0000', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            🚨 SITUATION ALERTS
+                        </h3>
+
+                        {alerts.map((alert, i) => (
+                            <motion.div
+                                key={alert.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                style={{
+                                    background: 'rgba(0,0,0,0.3)',
+                                    borderLeft: `4px solid ${ALERT_COLORS[alert.type]}`,
+                                    borderRadius: '0 8px 8px 0',
+                                    padding: '1rem',
+                                    marginBottom: '0.75rem',
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div style={{ flex: 1 }}>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>{alert.message}</p>
+                                        <p style={{ color: '#888', fontSize: '0.75rem' }}>{alert.source} • {alert.timestamp}</p>
+                                    </div>
+                                    <span style={{
+                                        padding: '2px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.65rem',
+                                        textTransform: 'uppercase',
+                                        background: `${ALERT_COLORS[alert.type]}20`,
+                                        color: ALERT_COLORS[alert.type],
+                                    }}>
+                                        {alert.type}
                                     </span>
-                                    <span className="text-4xl text-slate-400 ml-2">%</span>
                                 </div>
-
-                                {/* Animated Progress Bar */}
-                                <div className="mt-8 h-4 bg-slate-700 rounded-full overflow-hidden max-w-md mx-auto">
-                                    <div
-                                        className={`h-full bg-gradient-to-r ${getScoreColor(battleReadiness)} transition-all duration-1000 ease-out rounded-full`}
-                                        style={{ width: `${battleReadiness}%` }}
-                                    />
-                                </div>
-
-                                <p className="text-sm text-slate-500 mt-4">
-                                    {battleReadiness >= 80 ? "🟢 BATTLE READY" :
-                                        battleReadiness >= 60 ? "🟡 PREPARING" :
-                                            battleReadiness >= 40 ? "🟠 NOT READY" : "🔴 CRITICAL"}
-                                </p>
-                            </div>
-                        </div>
-                    </SpotlightCard>
-                </section>
-
-                {/* 13 Chapters Grid with 3D Cards */}
-                <section className="mb-16">
-                    <h2 className="text-3xl font-semibold mb-8 text-center">📚 13 Chapters of Binh Pháp</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {chapters.map((ch) => (
-                            <CardContainer key={ch.chapter} className="w-full" containerClassName="h-full">
-                                <CardBody className="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 h-full group hover:border-amber-500/50 transition-all duration-300">
-                                    <CardItem translateZ={50} className="w-full">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span className="text-3xl">{ch.icon}</span>
-                                            <CardItem translateZ={80}>
-                                                <span className={`text-2xl font-bold bg-gradient-to-r ${getScoreColor(ch.score)} bg-clip-text text-transparent`}>
-                                                    {ch.score}%
-                                                </span>
-                                            </CardItem>
-                                        </div>
-                                    </CardItem>
-
-                                    <CardItem translateZ={30} className="w-full">
-                                        {ch.link ? (
-                                            <a href={ch.link} className="block hover:text-amber-400 transition-colors">
-                                                <h3 className="font-semibold text-lg mb-1">{ch.chapter}. {ch.name}</h3>
-                                                <p className="text-sm text-slate-400">{ch.description}</p>
-                                            </a>
-                                        ) : (
-                                            <>
-                                                <h3 className="font-semibold text-lg mb-1">{ch.chapter}. {ch.name}</h3>
-                                                <p className="text-sm text-slate-400">{ch.description}</p>
-                                            </>
-                                        )}
-                                    </CardItem>
-
-                                    {/* Progress indicator */}
-                                    <CardItem translateZ={20} className="w-full mt-4">
-                                        <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
-                                            <div
-                                                className={`h-full bg-gradient-to-r ${getScoreColor(ch.score)} rounded-full`}
-                                                style={{ width: `${ch.score}%` }}
-                                            />
-                                        </div>
-                                    </CardItem>
-                                </CardBody>
-                            </CardContainer>
+                            </motion.div>
                         ))}
                     </div>
-                </section>
 
-                {/* Critical Issues with Meteors */}
-                <section className="mb-16">
-                    <div className="relative bg-slate-800/30 backdrop-blur-xl rounded-3xl border border-red-500/20 p-8 overflow-hidden">
-                        {/* Meteors */}
-                        <Meteors number={15} />
+                    {/* Campaigns */}
+                    <div style={{
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(0,191,255,0.2)',
+                        borderTop: '3px solid #00bfff',
+                        borderRadius: '12px',
+                        padding: '1.5rem',
+                    }}>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#00bfff' }}>🎯 ACTIVE CAMPAIGNS</h3>
 
-                        <div className="relative z-10">
-                            <h2 className="text-2xl font-semibold mb-6">🚨 Critical Issues</h2>
-                            <div className="space-y-4">
-                                {criticalIssues.map((issue) => (
-                                    <div
-                                        key={issue.id}
-                                        className={`${getSeverityStyle(issue.severity)} px-6 py-4 rounded-xl flex items-center gap-4 backdrop-blur-sm`}
-                                    >
-                                        <span className="text-xl">
-                                            {issue.severity === 'critical' ? '🚨' : issue.severity === 'high' ? '🔴' : '🟡'}
-                                        </span>
-                                        <span className="flex-1">{issue.issue}</span>
-                                        <span className="text-xs uppercase tracking-wider text-slate-500">{issue.severity}</span>
+                        {campaigns.map((campaign, i) => (
+                            <motion.div
+                                key={campaign.id}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                style={{
+                                    background: 'rgba(0,0,0,0.3)',
+                                    borderRadius: '8px',
+                                    padding: '1rem',
+                                    marginBottom: '0.75rem',
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                                    <div>
+                                        <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{campaign.name}</p>
+                                        <p style={{ color: '#888', fontSize: '0.75rem' }}>{campaign.objective}</p>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
+                                    <span style={{
+                                        padding: '2px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.65rem',
+                                        background: campaign.status === 'active' ? 'rgba(0,255,65,0.1)' : 'rgba(255,215,0,0.1)',
+                                        color: campaign.status === 'active' ? '#00ff41' : '#ffd700',
+                                    }}>
+                                        {campaign.status}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{
+                                        flex: 1,
+                                        height: 8,
+                                        background: '#333',
+                                        borderRadius: 4,
+                                        overflow: 'hidden',
+                                    }}>
+                                        <div style={{
+                                            width: `${campaign.progress}%`,
+                                            height: '100%',
+                                            background: campaign.progress >= 80 ? '#00ff41' : campaign.progress >= 50 ? '#00bfff' : '#ffd700',
+                                            borderRadius: 4,
+                                        }} />
+                                    </div>
+                                    <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' }}>{campaign.progress}%</span>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                </section>
-
-                {/* WIN-WIN-WIN Golden Panel */}
-                <section className="mb-16">
-                    <SpotlightCard className="bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-amber-500/10 border-amber-500/30">
-                        <h2 className="text-3xl font-semibold mb-8 text-center text-amber-200">🏆 WIN-WIN-WIN Architecture</h2>
-                        <div className="grid md:grid-cols-3 gap-8 text-center">
-                            <div className="p-6 bg-slate-800/50 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-colors">
-                                <span className="text-4xl mb-4 block">👑</span>
-                                <h3 className="text-xl font-semibold text-amber-300 mb-2">ANH (Owner)</h3>
-                                <p className="text-slate-400 text-sm">Portfolio equity + Cash flow + Legacy building</p>
-                            </div>
-                            <div className="p-6 bg-slate-800/50 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-colors">
-                                <span className="text-4xl mb-4 block">🏢</span>
-                                <h3 className="text-xl font-semibold text-amber-300 mb-2">AGENCY</h3>
-                                <p className="text-slate-400 text-sm">Deal flow + Knowledge + Infrastructure growth</p>
-                            </div>
-                            <div className="p-6 bg-slate-800/50 rounded-2xl border border-amber-500/20 hover:border-amber-500/50 transition-colors">
-                                <span className="text-4xl mb-4 block">🚀</span>
-                                <h3 className="text-xl font-semibold text-amber-300 mb-2">STARTUP</h3>
-                                <p className="text-slate-400 text-sm">Protection + Strategy + Network access</p>
-                            </div>
-                        </div>
-                        <div className="mt-8 text-center">
-                            <p className="text-amber-400 font-medium">❌ If any party LOSES → STOP</p>
-                            <p className="text-emerald-400 font-medium mt-2">✅ All WIN → PROCEED</p>
-                        </div>
-                    </SpotlightCard>
-                </section>
+                </div>
 
                 {/* Footer */}
-                <footer className="text-center text-slate-500 text-sm">
-                    <p>🏯 Agency OS v2.0 - Binh Pháp Venture Studio</p>
-                    <p className="mt-1">168 Core Modules • 96 Commits • 22 Department Hubs</p>
+                <footer style={{ marginTop: '2rem', textAlign: 'center', color: '#888', fontSize: '0.8rem' }}>
+                    <p style={{ color: '#ff0000', marginBottom: '0.5rem' }}>
+                        🏯 &quot;Bách chiến bách thắng, phi thiện chi thiện giả dã&quot; - Trăm trận trăm thắng không phải hay nhất
+                    </p>
+                    agencyos.network - WIN-WIN-WIN Command Center
                 </footer>
             </div>
         </div>
-    );
+    )
 }
