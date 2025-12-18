@@ -10,7 +10,64 @@ Run comprehensive UI tests on a website and generate a detailed report.
 
 ## Arguments
 - $1: URL - The URL of the website to test
-- $2: OPTIONS - Optional test configuration (e.g., --headless, --mobile)
+- $2: OPTIONS - Optional test configuration (e.g., --headless, --mobile, --auth)
+
+## Testing Protected Routes (Authentication)
+
+For testing protected routes that require authentication, follow this workflow:
+
+### Step 1: User Manual Login
+Instruct the user to:
+1. Open the target site in their browser
+2. Log in manually with their credentials
+3. Open browser DevTools (F12) → Application tab → Cookies/Storage
+
+### Step 2: Extract Auth Credentials
+Ask the user to provide one of:
+- **Cookies**: Copy cookie values (name, value, domain)
+- **Access Token**: Copy JWT/Bearer token from localStorage or cookies
+- **Session Storage**: Copy relevant session keys
+
+### Step 3: Inject Authentication
+Use the `inject-auth.js` script to inject credentials before testing:
+
+```bash
+cd $SKILL_DIR  # .claude/skills/chrome-devtools/scripts
+
+# Option A: Inject cookies
+node inject-auth.js --url https://example.com --cookies '[{"name":"session","value":"abc123","domain":".example.com"}]'
+
+# Option B: Inject Bearer token
+node inject-auth.js --url https://example.com --token "Bearer eyJhbGciOi..." --header Authorization --token-key access_token
+
+# Option C: Inject localStorage
+node inject-auth.js --url https://example.com --local-storage '{"auth_token":"xyz","user_id":"123"}'
+
+# Combined (cookies + localStorage)
+node inject-auth.js --url https://example.com --cookies '[{"name":"session","value":"abc"}]' --local-storage '{"user":"data"}'
+```
+
+### Step 4: Run Tests
+After auth injection, the browser session persists. Run tests normally:
+
+```bash
+# Navigate and screenshot protected pages
+node navigate.js --url https://example.com/dashboard
+node screenshot.js --url https://example.com/profile --output profile.png
+
+# The auth session persists until --close true is used
+node screenshot.js --url https://example.com/settings --output settings.png --close true
+```
+
+### Auth Script Options
+- `--cookies '<json>'` - Inject cookies (JSON array)
+- `--token '<token>'` - Inject Bearer token
+- `--token-key '<key>'` - localStorage key for token (default: access_token)
+- `--header '<name>'` - Set HTTP header with token (e.g., Authorization)
+- `--local-storage '<json>'` - Inject localStorage items
+- `--session-storage '<json>'` - Inject sessionStorage items
+- `--reload true` - Reload page after injection
+- `--clear true` - Clear saved auth session
 
 ## Workflow
 - Use `planning` skill to organize the test plan & report in the current project directory.
