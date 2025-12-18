@@ -1,0 +1,63 @@
+{
+    "app": {
+        "name": "Agency OS",
+        "tagline": "1인 유니콘 운영 시스템",
+        "description": "전 세계적으로 에이전시를 구축, 확장 및 프랜차이즈화"
+    },
+    "nav": {
+        "home": "홈",
+        "dashboard": "대시보드",
+        "marketing": "마케팅",
+        "sales": "영업",
+        "analytics": "분석",
+        "settings": "설정"
+    },
+    "commands": {
+        "market_analysis": "시장 분석",
+        "customer_profile": "고객 프로필",
+        "sales_strategy": "영업 전략",
+        "marketing_plan": "마케팅 계획",
+        "business_plan": "사업 계획",
+        "brand_identity": "브랜드 아이덴티티",
+        "content_marketing": "콘텐츠 마케팅",
+        "social_media": "소셜 미디어",
+        "messaging": "메시징",
+        "market_research": "시장 조사",
+        "pr_strategy": "PR 전략",
+        "growth_strategy": "성장 전략",
+        "sales_funnel": "세일즈 퍼널"
+    },
+    "common": {
+        "welcome": "Agency OS에 오신 것을 환영합니다",
+        "start": "시작하기",
+        "continue": "계속하기",
+        "save": "저장",
+        "cancel": "취소",
+        "delete": "삭제",
+        "edit": "편집",
+        "loading": "로딩 중...",
+        "success": "성공!",
+        "error": "오류가 발생했습니다",
+        "confirm": "확실합니까?"
+    },
+    "auth": {
+        "login": "로그인",
+        "logout": "로그아웃",
+        "signup": "회원가입",
+        "email": "이메일",
+        "password": "비밀번호",
+        "forgot_password": "비밀번호를 잊으셨나요?"
+    },
+    "franchise": {
+        "title": "프랜차이즈 포털",
+        "territories": "귀하의 지역",
+        "revenue": "수익",
+        "clients": "고객",
+        "commission": "커미션 비율"
+    },
+    "binh_phap": {
+        "tagline": "싸우지 않고 이기다",
+        "short_term": "단기: SaaS 제휴 수익",
+        "long_term": "장기: 로컬 클라이언트 브랜드 구축"
+    }
+}

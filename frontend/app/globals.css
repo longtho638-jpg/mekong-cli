@@ -1,8 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --font-mono: "JetBrains Mono", "monospace";
+
+  --color-matrix-green: #00ff41;
+  --color-mekong-gold: #ffd700;
+  --color-mekong-silt: #8b6914;
+
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-meteor-effect: meteor 5s linear infinite;
+
+  @keyframes meteor {
+    0% {
+      transform: rotate(215deg) translateX(0);
+      opacity: 1;
+    }
+
+    70% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: rotate(215deg) translateX(-500px);
+      opacity: 0;
+    }
+  }
+}
 
 :root {
   /* Brand Colors */
@@ -60,6 +83,43 @@ body {
   border-color: var(--matrix-green-glow);
   box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
   transform: translateY(-4px);
+}
+
+/* Base Layout Overrides to solve Tailwind v4 spacing issues */
+body {
+  background: #020617;
+}
+
+.shield-container {
+  padding-top: 2.5rem !important;
+  /* pt-10 */
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .shield-container {
+    padding-left: 2rem !important;
+    /* md:px-8 */
+    padding-right: 2rem !important;
+  }
+}
+
+.shield-input {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  padding-left: 2rem !important;
+  padding-right: 1rem !important;
+  background-color: #020617 !important;
+  border: 1px solid #334155 !important;
+}
+
+.shield-label {
+  display: block !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 
 /* Animations */

@@ -15,57 +15,157 @@ Commands:
     mekong status             - Show license status
 """
 
+import json
 import os
 import shutil
-import typer
-import yaml
 import subprocess
+import sys
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import typer
 from rich.console import Console
 from rich.prompt import Prompt
 from rich import print as rprint
 
-app = typer.Typer(help="🌊 MEKONG-CLI: Deploy Your Agency in 15 Minutes")
+# Local imports
+try:
+    from deploy_automation import run_deploy
+    from license import LicenseTier, LicenseValidator
+except ImportError:
+    # Fallback/Mock for environments where dependencies might be missing during dev
+    run_deploy = None
+    LicenseTier = None
+    LicenseValidator = None
+
+# --- Configuration & Constants ---
+
+APP_NAME = "🌊 MEKONG-CLI"
+TEMPLATE_REPO_STARTER = os.getenv("TEMPLATE_REPO", "https://github.com/longtho638-jpg/hybrid-agent-template.git")
+TEMPLATE_REPO_PRO = os.getenv("PRO_TEMPLATE_REPO", "https://github.com/longtho638-jpg/mekong-template-pro.git")
+
+NICHES: Dict[str, str] = {
+    "1": "rice-trading",
+    "2": "fish-seafood",
+    "3": "furniture",
+    "4": "construction-materials",
+    "5": "agriculture-tools",
+    "6": "real-estate",
+    "7": "restaurants",
+    "8": "beauty-spa",
+    "9": "automotive",
+    "10": "education"
+}
+
+NICHE_DESCRIPTIONS: List[str] = [
+    "🌾 rice-trading (Lúa Gạo)",
+    "🐟 fish-seafood (Cá Tra)",
+    "🛋️ furniture (Nội Thất)",
+    "🏗️ construction-materials (Vật Liệu XD)",
+    "🚜 agriculture-tools (Máy Nông Nghiệp)",
+    "🏠 real-estate (Bất Động Sản)",
+    "🍜 restaurants (Nhà Hàng)",
+    "💅 beauty-spa (Thẩm Mỹ Viện)",
+    "🚗 automotive (Ô Tô)",
+    "📚 education (Trung Tâm Học)"
+]
+
+VIBES: List[Tuple[str, str, str, str]] = [
+    ("mien-tay", "Miền Tây", "Thân thiện, chân thành, ấm áp", "hen, nghen, tui, bà con"),
+    ("mien-bac", "Miền Bắc", "Lịch sự, trang trọng, chỉn chu", "ạ, nhé, vâng, xin phép"),
+    ("mien-trung", "Miền Trung", "Mộc mạc, thật thà, kiên cường", "mô, tê, răng, rứa"),
+    ("gen-z", "Gen Z", "Trendy, năng động, hài hước", "slay, vibe, chill, xịn xò"),
+    ("professional", "Professional", "Chuyên nghiệp, thuyết phục", "chiến lược, tối ưu, giải pháp"),
+]
+
+AGENTS_CORE = [
+    {"name": "Scout", "role": "Thu thập thông tin", "status": "Ready", "icon": "🔍"},
+    {"name": "Editor", "role": "Biên tập nội dung", "status": "Ready", "icon": "✏️"},
+    {"name": "Director", "role": "Đạo diễn video", "status": "Ready", "icon": "🎬"},
+    {"name": "Community", "role": "Đăng bài & tương tác", "status": "Ready", "icon": "🤝"},
+]
+
+AGENTS_MEKONG = [
+    {"name": "Market Analyst", "role": "Phân tích giá nông sản ĐBSCL", "status": "Ready", "icon": "📊"},
+    {"name": "Zalo Integrator", "role": "Tích hợp Zalo OA/Mini App", "status": "Ready", "icon": "💬"},
+    {"name": "Local Copywriter", "role": "Viết content giọng địa phương", "status": "Ready", "icon": "🎤"},
+]
+
+PROVIDERS_COSTS = [
+    ("Llama 3.1 8B", "$0.0001", "Simple text"),
+    ("Llama 3.1 70B", "$0.0006", "Medium tasks"),
+    ("Gemini 2.5 Flash", "$0.0007", "Vision, long context"),
+    ("Gemini 2.5 Pro", "$0.006", "Complex reasoning"),
+    ("Claude Sonnet", "$0.018", "Code, analysis"),
+]
+
+MCP_PACKAGES = [
+    "@anthropic/mcp-server-filesystem",
+    "@anthropic/mcp-server-fetch",
+    "@anthropic/mcp-server-playwright"
+]
+
+# --- App Initialization ---
+
+app = typer.Typer(help=f"{APP_NAME}: Deploy Your Agency in 15 Minutes")
 console = Console()
 
+# --- Helper Functions ---
 
+def _get_license_validator():
+    """Lazy load license validator."""
+    if LicenseValidator is None:
+        console.print("[red]Error: license module not found.[/red]")
+        raise typer.Exit(code=1)
+    return LicenseValidator()
 
-# TEMPLATE_REPO = "https://github.com/YOUR_USERNAME/hybrid-agent-template.git"
-# Support local path for testing, but default to git repo for production
-TEMPLATE_REPO = os.getenv("TEMPLATE_REPO", "https://github.com/YOUR_USERNAME/hybrid-agent-template.git")
+def _update_file_placeholders(file_path: Path, replacements: Dict[str, str]) -> bool:
+    """Updates placeholders in a file with provided values."""
+    if not file_path.exists():
+        return False
+    
+    try:
+        content = file_path.read_text(encoding="utf-8")
+        for key, value in replacements.items():
+            content = content.replace(f"{{{{ {key} }}}}", value)
+        file_path.write_text(content, encoding="utf-8")
+        return True
+    except Exception as e:
+        console.print(f"[red]Failed to update {file_path.name}:[/red] {e}")
+        return False
+
+# --- Commands ---
 
 @app.command()
 def init(project_name: str):
     """
     Initialize a new Hybrid Agent project from the Golden Template.
     """
-    console.print(f"[bold blue]🌊 MEKONG-CLI:[/bold blue] Initializing {project_name}...")
+    console.print(f"[bold blue]{APP_NAME}:[/bold blue] Initializing {project_name}...")
     
-    target_dir = Path(os.getcwd()) / project_name
+    target_dir = Path.cwd() / project_name
     
     if target_dir.exists():
         console.print(f"[bold red]Error:[/bold red] Directory {project_name} already exists!")
         raise typer.Exit(code=1)
 
-    # Check license tier to determine which template to use
-    from license import LicenseValidator, LicenseTier
-    validator = LicenseValidator()
+    # Check license tier
+    validator = _get_license_validator()
     tier = validator.get_tier()
     
-    # Determine template repo based on tier
-    if tier in [LicenseTier.PRO, LicenseTier.ENTERPRISE]:
-        # Pro/Enterprise: Clone private repo
-        template_repo = os.getenv("PRO_TEMPLATE_REPO", "https://github.com/longtho638-jpg/mekong-template-pro.git")
+    # Determine template repo
+    is_pro = tier in [LicenseTier.PRO, LicenseTier.ENTERPRISE]
+    template_repo = TEMPLATE_REPO_PRO if is_pro else TEMPLATE_REPO_STARTER
+    
+    if is_pro:
         console.print(f"   🔑 Pro/Enterprise tier detected")
         console.print(f"   📦 Cloning Pro template (10 niches, white-label)...")
     else:
-        # Starter: Clone public repo
-        template_repo = os.getenv("TEMPLATE_REPO", "https://github.com/longtho638-jpg/hybrid-agent-template.git")
         console.print(f"   🆓 Starter tier (Upgrade for Pro features)")
         console.print(f"   📦 Cloning Starter template (1 niche, basic features)...")
 
     try:
-        subprocess.run(["git", "clone", template_repo, project_name], check=True)
+        subprocess.run(["git", "clone", template_repo, str(project_name)], check=True)
         console.print(f"   ✅ Template setup complete")
         
         # Remove template git history
@@ -82,10 +182,11 @@ def init(project_name: str):
         
         console.print(f"\nNext steps:\n  cd {project_name}\n  mekong setup-vibe")
         
+    except subprocess.CalledProcessError as e:
+        console.print(f"[bold red]Failed to clone template:[/bold red] {e}")
+        raise typer.Exit(code=1)
     except Exception as e:
         console.print(f"[bold red]Failed:[/bold red] {e}")
-        raise typer.Exit(code=1)
-
         raise typer.Exit(code=1)
 
 
@@ -100,44 +201,18 @@ def setup_vibe(
     """
     console.print(f"\n[bold blue]🎨 Setup Vibe:[/bold blue]")
     
-    # If niche not provided, show interactive selection
+    # Interactive niche selection if not provided
     if not niche:
         console.print("\n[cyan]Available Niches (Pro tier required for all):[/cyan]")
-        niches = [
-            "🌾 rice-trading (Lúa Gạo)",
-            "🐟 fish-seafood (Cá Tra)",
-            "🛋️ furniture (Nội Thất)",
-            "🏗️ construction-materials (Vật Liệu XD)",
-            "🚜 agriculture-tools (Máy Nông Nghiệp)",
-            "🏠 real-estate (Bất Động Sản)",
-            "🍜 restaurants (Nhà Hàng)",
-            "💅 beauty-spa (Thẩm Mỹ Viện)",
-            "🚗 automotive (Ô Tô)",
-            "📚 education (Trung Tâm Học)"
-        ]
+        for description in NICHE_DESCRIPTIONS:
+            console.print(f"  {description}")
         
-        for i, n in enumerate(niches, 1):
-            console.print(f"  {i}. {n}")
-        
-        choice = Prompt.ask("\nSelect niche", choices=[str(i) for i in range(1, 11)])
-        niche_map = {
-            "1": "rice-trading",
-            "2": "fish-seafood",
-            "3": "furniture",
-            "4": "construction-materials",
-            "5": "agriculture-tools",
-            "6": "real-estate",
-            "7": "restaurants",
-            "8": "beauty-spa",
-            "9": "automotive",
-            "10": "education"
-        }
-        niche = niche_map[choice]
+        choice = Prompt.ask("\nSelect niche", choices=list(NICHES.keys()))
+        niche = NICHES[choice]
     
     console.print(f"\nTuning for [cyan]{niche}[/cyan] in [cyan]{location}[/cyan]...")
-
     
-    cwd = Path(os.getcwd())
+    cwd = Path.cwd()
     config_path = cwd / "agent.config.yaml"
     gemini_md_path = cwd / ".gemini/GEMINI.md"
     
@@ -145,40 +220,19 @@ def setup_vibe(
         console.print("[bold red]Error:[/bold red] Not a valid Mekong project root.")
         raise typer.Exit(code=1)
 
-    # 1. Update agent.config.yaml
-    try:
-        with open(config_path, "r") as f:
-            content = f.read()
-        
-        # Simple string replacement for config
-        content = content.replace('{{ project_name }}', cwd.name)
-        content = content.replace('{{ niche }}', niche)
-        content = content.replace('{{ location }}', location)
-        content = content.replace('{{ tone }}', tone)
-        
-        with open(config_path, "w") as f:
-            f.write(content)
-        console.print("   ✅ Updated agent.config.yaml")
-        
-    except Exception as e:
-        console.print(f"[red]Failed to update config:[/red] {e}")
+    replacements = {
+        "project_name": cwd.name,
+        "niche": niche,
+        "location": location,
+        "tone": tone
+    }
 
-    # 2. Update GEMINI.md (The Soul)
-    try:
-        with open(gemini_md_path, "r") as f:
-            md_content = f.read()
-            
-        md_content = md_content.replace('{{ project_name }}', cwd.name)
-        md_content = md_content.replace('{{ niche }}', niche)
-        md_content = md_content.replace('{{ location }}', location)
-        md_content = md_content.replace('{{ tone }}', tone)
-        
-        with open(gemini_md_path, "w") as f:
-            f.write(md_content)
+    # Update config files
+    if _update_file_placeholders(config_path, replacements):
+        console.print("   ✅ Updated agent.config.yaml")
+    
+    if _update_file_placeholders(gemini_md_path, replacements):
         console.print("   ✅ Infused local vibe into GEMINI.md")
-        
-    except Exception as e:
-        console.print(f"[red]Failed to update GEMINI.md:[/red] {e}")
 
     console.print("\n[bold green]✨ Vibe Setup Complete![/bold green]")
 
@@ -198,19 +252,17 @@ def generate_secrets():
         "ELEVENLABS_API_KEY"
     ]
     
-    env_content = ""
+    env_content = []
     for secret in secrets:
         value = Prompt.ask(f"Enter {secret}", password=True)
-        env_content += f"{secret}={value}\n"
+        env_content.append(f"{secret}={value}")
     
-    with open(".env", "w") as f:
-        f.write(env_content)
-    
-    console.print("\n[bold green]✅ .env file created locally (DO NOT COMMIT)[/bold green]")
+    try:
+        Path(".env").write_text("\n".join(env_content) + "\n", encoding="utf-8")
+        console.print("\n[bold green]✅ .env file created locally (DO NOT COMMIT)[/bold green]")
+    except Exception as e:
+        console.print(f"[red]Error writing .env file:[/red] {e}")
 
-
-from deploy_automation import run_deploy
-from license import LicenseValidator
 
 @app.command(name="mcp-setup")
 def setup_mcp():
@@ -219,36 +271,25 @@ def setup_mcp():
     """
     console.print("\n[bold blue]🔌 Setting up MCP Servers...[/bold blue]")
     
-    cwd = Path(os.getcwd())
+    cwd = Path.cwd()
     mcp_config = cwd / "mcp" / "settings.json"
     
     if not mcp_config.exists():
         console.print("[red]Error:[/red] Not a valid Mekong project (no mcp/settings.json)")
         raise typer.Exit(code=1)
     
-    # Install MCP dependencies
     console.print("   📦 Installing MCP server packages...")
     
-    packages = [
-        "@anthropic/mcp-server-filesystem",
-        "@anthropic/mcp-server-fetch",
-        "@anthropic/mcp-server-playwright"
-    ]
-    
     try:
-        for pkg in packages:
-            console.print(f"      Installing {pkg}...")
-            subprocess.run(["npm", "install", "-g", pkg], 
-                         check=True, capture_output=True)
-        
+        # Install all packages in one go
+        cmd = ["npm", "install", "-g"] + MCP_PACKAGES
+        subprocess.run(cmd, check=True, capture_output=True)
         console.print("   ✅ MCP packages installed")
         
         # Verify configuration
-        import json
-        with open(mcp_config) as f:
-            config = json.load(f)
-        
+        config = json.loads(mcp_config.read_text(encoding="utf-8"))
         servers = config.get("mcpServers", {})
+        
         console.print(f"\n   📋 Configured MCP Servers ({len(servers)}):")
         for name, conf in servers.items():
             desc = conf.get("description", "")
@@ -267,16 +308,13 @@ def setup_mcp():
 
 
 @app.command(name="run-scout")
-def run_scout_cmd(
-    feature: str = typer.Argument(..., help="Feature to analyze")
-):
+def run_scout_cmd(feature: str = typer.Argument(..., help="Feature to analyze")):
     """
     Run Scout Agent to analyze a feature (for testing).
     """
     console.print(f"\n[bold blue]🔍 Running Scout Agent...[/bold blue]")
     console.print(f"   Feature: {feature}")
     
-    # Quick test - just show what would happen
     console.print("\n   [cyan]Scout would:[/cyan]")
     console.print("   • Analyze git commits related to feature")
     console.print("   • Scan Product Hunt via Playwright MCP")
@@ -292,7 +330,7 @@ def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
     """
     console.print("\n[bold blue]🔐 Activating License...[/bold blue]")
     
-    validator = LicenseValidator()
+    validator = _get_license_validator()
     try:
         license_data = validator.activate(key)
         tier = license_data["tier"]
@@ -318,30 +356,97 @@ def status_cmd():
     """
     Show current license status and quota.
     """
-    validator = LicenseValidator()
-    license = validator.get_license()
+    validator = _get_license_validator()
+    license_data = validator.get_license()
     
-    if not license:
+    if not license_data:
         console.print("\n[yellow]⚠️  No license activated (using Starter tier)[/yellow]")
         console.print("   Limits: 1 video/day, 1 niche")
         console.print("\n   Upgrade: [cyan]mekong activate[/cyan]")
         return
     
-    tier = license["tier"]
+    tier = license_data["tier"]
     console.print(f"\n[bold green]License Status[/bold green]")
     console.print(f"   Tier: [cyan]{tier.upper()}[/cyan]")
-    console.print(f"   Activated: {license['activated_at']}")
+    console.print(f"   Activated: {license_data['activated_at']}")
     
     # Check quota
     video_quota = validator.check_quota("max_daily_video")
     console.print(f"\n   Daily Videos: {video_quota['used']}/{video_quota['limit']}")
+
 
 @app.command(name="deploy")
 def deploy_cmd():
     """
     Deploy the Hybrid Agent to Google Cloud Run.
     """
-    run_deploy()
+    if run_deploy:
+        run_deploy()
+    else:
+        console.print("[red]Deploy module not found.[/red]")
+
+
+@app.command(name="agents")
+def agents_cmd():
+    """
+    Show AI agents status and activity.
+    """
+    console.print(f"\n[bold blue]🤖 {APP_NAME} AI Agents[/bold blue]\n")
+    
+    console.print("   [cyan]Quad-Agent System:[/cyan]")
+    for agent in AGENTS_CORE:
+        console.print(f"      {agent['icon']} {agent['name']}: {agent['role']} [{agent['status']}]")
+    
+    console.print("\n   [cyan]Mekong-Specific Agents:[/cyan]")
+    for agent in AGENTS_MEKONG:
+        console.print(f"      {agent['icon']} {agent['name']}: {agent['role']} [{agent['status']}]")
+    
+    total_agents = len(AGENTS_CORE) + len(AGENTS_MEKONG)
+    console.print(f"\n   [dim]Total: {total_agents} agents ready[/dim]")
+    console.print("   [dim]Tip: Use '/nong-san' or '/tiep-thi' to activate agents[/dim]")
+
+
+@app.command(name="costs")
+def costs_cmd():
+    """
+    Show Hybrid Router cost savings analysis.
+    """
+    console.print("\n[bold blue]💰 Hybrid Router - Cost Savings[/bold blue]\n")
+    
+    console.print("   [cyan]Routing Strategy:[/cyan]")
+    console.print("      GPT-4/Gemini Pro = 'Sếp' (complex tasks)")
+    console.print("      Llama 3.1 = 'Lính' (simple tasks)")
+    
+    # Simulated stats
+    console.print("\n   [cyan]This Month Stats:[/cyan]")
+    console.print("      Tasks routed: 0")
+    console.print("      If using GPT-4 only: $0.00")
+    console.print("      With Hybrid Router: $0.00")
+    console.print("      [green]Savings: $0.00 (0%)[/green]")
+    
+    console.print("\n   [cyan]Provider Pricing (per 1K tokens):[/cyan]")
+    for name, price, use_case in PROVIDERS_COSTS:
+        console.print(f"      {name}: {price} - {use_case}")
+    
+    console.print("\n   [dim]Target: 70% cost reduction vs GPT-4 only[/dim]")
+
+
+@app.command(name="vibes")
+def vibes_cmd():
+    """
+    Show available Vibe Tuning options.
+    """
+    console.print("\n[bold blue]🎤 Vibe Tuning - AI Voice Localization[/bold blue]\n")
+    
+    console.print("   [cyan]Available Vibes:[/cyan]\n")
+    for vibe_id, name, tone, words in VIBES:
+        console.print(f"   • [bold]{name}[/bold] ({vibe_id})")
+        console.print(f"     Tone: {tone}")
+        console.print(f"     Words: {words}")
+        console.print()
+    
+    console.print("   [dim]Set vibe: mekong setup-vibe --location 'Can Tho'[/dim]")
+
 
 if __name__ == "__main__":
     app()
