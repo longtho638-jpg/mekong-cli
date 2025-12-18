@@ -7,57 +7,76 @@ interface Ticket {
     id: string
     subject: string
     customer: string
+    priority: 'urgent' | 'high' | 'normal' | 'low'
+    status: 'new' | 'open' | 'pending' | 'resolved'
     channel: string
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    status: 'open' | 'in_progress' | 'resolved'
-    sla: string
+    created: string
 }
 
-interface Message {
+interface Agent {
     id: string
-    sender: string
-    content: string
-    isBot: boolean
-    time: string
+    name: string
+    status: 'online' | 'busy' | 'away'
+    ticketsHandled: number
+    avgResponseTime: string
+    satisfaction: number
+}
+
+interface KnowledgeArticle {
+    id: string
+    title: string
+    views: number
+    helpful: number
+    category: string
 }
 
 // Sample data
 const TICKETS: Ticket[] = [
-    { id: 'TKT-001', subject: 'Lỗi deploy không hoạt động', customer: 'Nguyễn Văn A', channel: 'zalo', priority: 'high', status: 'in_progress', sla: '2h' },
-    { id: 'TKT-002', subject: 'Hỏi về giá Enterprise', customer: 'Trần B', channel: 'email', priority: 'medium', status: 'open', sla: '24h' },
-    { id: 'TKT-003', subject: 'Đề xuất thêm tính năng', customer: 'Lê C', channel: 'messenger', priority: 'low', status: 'open', sla: '72h' },
-    { id: 'TKT-004', subject: 'Không thể đăng nhập', customer: 'Phạm D', channel: 'website', priority: 'urgent', status: 'in_progress', sla: '30m' },
+    { id: 'TKT-2024-001', subject: 'Login issue after password reset', customer: 'Mekong Corp', priority: 'urgent', status: 'open', channel: 'Email', created: '10 min ago' },
+    { id: 'TKT-2024-002', subject: 'Feature request: Dark mode', customer: 'Saigon Tech', priority: 'normal', status: 'pending', channel: 'Chat', created: '2 hours ago' },
+    { id: 'TKT-2024-003', subject: 'Billing inquiry Q4', customer: 'Delta Farms', priority: 'high', status: 'new', channel: 'Phone', created: '3 hours ago' },
+    { id: 'TKT-2024-004', subject: 'API integration help', customer: 'Tech Startup', priority: 'normal', status: 'open', channel: 'Email', created: 'Yesterday' },
 ]
 
-const MESSAGES: Message[] = [
-    { id: '1', sender: 'Nguyễn Văn A', content: 'Chào shop', isBot: false, time: '10:00' },
-    { id: '2', sender: 'Bot', content: 'Xin chào! 👋 Mình là trợ lý AI của Mekong-CLI. Mình có thể giúp gì cho bạn nghen?', isBot: true, time: '10:00' },
-    { id: '3', sender: 'Nguyễn Văn A', content: 'Lỗi khi deploy, bị timeout', isBot: false, time: '10:01' },
-    { id: '4', sender: 'Bot', content: '🐛 Cảm ơn bạn đã báo lỗi! Mình đã tạo ticket TKT-001. Team sẽ hỗ trợ trong vòng 8 giờ.', isBot: true, time: '10:01' },
+const AGENTS: Agent[] = [
+    { id: '1', name: 'Sarah Chen', status: 'online', ticketsHandled: 45, avgResponseTime: '2m 30s', satisfaction: 98 },
+    { id: '2', name: 'Mike Nguyen', status: 'busy', ticketsHandled: 38, avgResponseTime: '3m 15s', satisfaction: 95 },
+    { id: '3', name: 'Lisa Tran', status: 'online', ticketsHandled: 52, avgResponseTime: '1m 45s', satisfaction: 99 },
 ]
 
-const PRIORITY_COLORS = {
-    low: '#888',
-    medium: '#ffd700',
-    high: '#ff9500',
-    urgent: '#ff5f56',
-}
+const ARTICLES: KnowledgeArticle[] = [
+    { id: '1', title: 'Getting Started with AgencyOS', views: 2450, helpful: 95, category: 'Onboarding' },
+    { id: '2', title: 'Understanding Binh Pháp Strategy', views: 1820, helpful: 92, category: 'Strategy' },
+    { id: '3', title: 'API Documentation Guide', views: 1350, helpful: 88, category: 'Technical' },
+]
 
-const STATUS_COLORS = {
-    open: '#888',
-    in_progress: '#00bfff',
+const STATUS_COLORS: Record<string, string> = {
+    new: '#00bfff',
+    open: '#ffd700',
+    pending: '#8a2be2',
     resolved: '#00ff41',
+    online: '#00ff41',
+    busy: '#ffd700',
+    away: '#888',
 }
 
-export default function SupportDashboard() {
-    const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(TICKETS[0])
+const PRIORITY_COLORS: Record<string, string> = {
+    urgent: '#ff0000',
+    high: '#ff6347',
+    normal: '#ffd700',
+    low: '#00ff41',
+}
 
-    const metrics = {
-        total: TICKETS.length,
-        open: TICKETS.filter(t => t.status === 'open').length,
-        resolved: 12,
-        csat: 4.8,
-    }
+export default function SupportHubPage() {
+    const [tickets] = useState(TICKETS)
+    const [agents] = useState(AGENTS)
+    const [articles] = useState(ARTICLES)
+
+    // Metrics
+    const openTickets = tickets.filter(t => t.status !== 'resolved').length
+    const avgSatisfaction = (agents.reduce((sum, a) => sum + a.satisfaction, 0) / agents.length).toFixed(0)
+    const onlineAgents = agents.filter(a => a.status === 'online').length
+    const totalViews = articles.reduce((sum, a) => sum + a.views, 0)
 
     return (
         <div style={{
@@ -67,23 +86,38 @@ export default function SupportDashboard() {
             fontFamily: "'JetBrains Mono', monospace",
             padding: '2rem',
         }}>
-            <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            {/* Ambient */}
+            <div style={{
+                position: 'fixed',
+                top: '-20%',
+                right: '30%',
+                width: '40%',
+                height: '40%',
+                background: 'radial-gradient(circle, rgba(0,255,65,0.06) 0%, transparent 60%)',
+                pointerEvents: 'none',
+            }} />
+
+            <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
                 {/* Header */}
                 <header style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
-                        <span style={{ color: '#00bfff' }}>🎧</span> Support Dashboard
-                    </h1>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>AI-Powered Customer Service</p>
+                    <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{ fontSize: '2rem', marginBottom: '0.5rem' }}
+                    >
+                        <span style={{ color: '#00ff41' }}>💬</span> Support Hub
+                    </motion.h1>
+                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Tickets • Agents • Knowledge Base</p>
                 </header>
 
                 {/* Metrics */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
                     {[
-                        { label: 'Total Tickets', value: metrics.total, color: '#fff' },
-                        { label: 'Open', value: metrics.open, color: '#ffd700' },
-                        { label: 'Resolved (7d)', value: metrics.resolved, color: '#00ff41' },
-                        { label: 'CSAT', value: `${metrics.csat}/5`, color: '#00bfff' },
+                        { label: 'Open Tickets', value: openTickets, color: openTickets > 5 ? '#ff6347' : '#00ff41' },
+                        { label: 'CSAT Score', value: `${avgSatisfaction}%`, color: '#00bfff' },
+                        { label: 'Agents Online', value: `${onlineAgents}/${agents.length}`, color: '#00ff41' },
+                        { label: 'KB Views', value: totalViews.toLocaleString(), color: '#ffd700' },
                     ].map((stat, i) => (
                         <motion.div
                             key={i}
@@ -95,148 +129,148 @@ export default function SupportDashboard() {
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 borderRadius: '12px',
                                 padding: '1.25rem',
+                                textAlign: 'center',
                             }}
                         >
-                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem' }}>{stat.label}</p>
-                            <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
+                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
+                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
                         </motion.div>
                     ))}
                 </div>
 
-                {/* Main Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
 
-                    {/* Tickets List */}
+                    {/* Tickets */}
                     <div style={{
                         background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(0,255,65,0.2)',
+                        borderTop: '3px solid #00ff41',
                         borderRadius: '12px',
-                        overflow: 'hidden',
+                        padding: '1.5rem',
                     }}>
-                        <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                            <h3 style={{ fontSize: '0.9rem', color: '#888' }}>TICKETS</h3>
-                        </div>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#00ff41' }}>🎫 Active Tickets</h3>
 
-                        <div style={{ maxHeight: 400, overflowY: 'auto' }}>
-                            {TICKETS.map((ticket, i) => (
-                                <motion.div
-                                    key={ticket.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.05 }}
-                                    whileHover={{ background: 'rgba(255,255,255,0.03)' }}
-                                    onClick={() => setSelectedTicket(ticket)}
-                                    style={{
-                                        padding: '1rem',
-                                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                                        cursor: 'pointer',
-                                        background: selectedTicket?.id === ticket.id ? 'rgba(0,191,255,0.05)' : 'transparent',
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                        <span style={{ fontWeight: 600 }}>{ticket.id}</span>
+                        {tickets.map((ticket, i) => (
+                            <motion.div
+                                key={ticket.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                style={{
+                                    background: 'rgba(0,0,0,0.3)',
+                                    borderLeft: `3px solid ${PRIORITY_COLORS[ticket.priority]}`,
+                                    borderRadius: '0 8px 8px 0',
+                                    padding: '1rem',
+                                    marginBottom: '0.75rem',
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div>
+                                        <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{ticket.subject}</p>
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            <span style={{ color: '#888', fontSize: '0.7rem' }}>{ticket.id}</span>
+                                            <span style={{ color: '#888', fontSize: '0.7rem' }}>•</span>
+                                            <span style={{ color: '#888', fontSize: '0.7rem' }}>{ticket.customer}</span>
+                                            <span style={{ color: '#888', fontSize: '0.7rem' }}>•</span>
+                                            <span style={{ color: '#888', fontSize: '0.7rem' }}>{ticket.channel}</span>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
                                         <span style={{
-                                            padding: '2px 8px',
-                                            borderRadius: '12px',
-                                            fontSize: '0.7rem',
+                                            padding: '2px 6px',
+                                            borderRadius: '6px',
+                                            fontSize: '0.6rem',
                                             background: `${PRIORITY_COLORS[ticket.priority]}20`,
                                             color: PRIORITY_COLORS[ticket.priority],
                                         }}>
                                             {ticket.priority}
                                         </span>
+                                        <span style={{
+                                            padding: '2px 6px',
+                                            borderRadius: '6px',
+                                            fontSize: '0.6rem',
+                                            background: `${STATUS_COLORS[ticket.status]}20`,
+                                            color: STATUS_COLORS[ticket.status],
+                                        }}>
+                                            {ticket.status}
+                                        </span>
                                     </div>
-                                    <p style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>{ticket.subject}</p>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#888', fontSize: '0.75rem' }}>
-                                        <span>{ticket.customer}</span>
-                                        <span style={{ color: STATUS_COLORS[ticket.status] }}>{ticket.status}</span>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    {/* Conversation */}
-                    <div style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}>
-                        <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                            <h3 style={{ fontSize: '0.9rem', color: '#888' }}>CONVERSATION</h3>
-                            {selectedTicket && (
-                                <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
-                                    {selectedTicket.customer} • {selectedTicket.channel}
-                                </p>
-                            )}
-                        </div>
+                    {/* Agents + Knowledge Base */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-                        <div style={{ flex: 1, padding: '1rem', maxHeight: 300, overflowY: 'auto' }}>
-                            {MESSAGES.map((msg, i) => (
-                                <motion.div
-                                    key={msg.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.1 }}
+                        {/* Agents */}
+                        <div style={{
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(0,191,255,0.2)',
+                            borderTop: '3px solid #00bfff',
+                            borderRadius: '12px',
+                            padding: '1.25rem',
+                        }}>
+                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#00bfff' }}>👤 Support Team</h3>
+
+                            {agents.map((agent, i) => (
+                                <div
+                                    key={agent.id}
                                     style={{
-                                        marginBottom: '1rem',
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: msg.isBot ? 'flex-start' : 'flex-end',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '0.5rem 0',
+                                        borderBottom: i < agents.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
                                     }}
                                 >
-                                    <div style={{
-                                        maxWidth: '80%',
-                                        padding: '0.75rem 1rem',
-                                        borderRadius: msg.isBot ? '12px 12px 12px 4px' : '12px 12px 4px 12px',
-                                        background: msg.isBot ? 'rgba(0,191,255,0.1)' : 'rgba(255,255,255,0.1)',
-                                        border: msg.isBot ? '1px solid rgba(0,191,255,0.2)' : '1px solid rgba(255,255,255,0.1)',
-                                    }}>
-                                        <p style={{ fontSize: '0.85rem' }}>{msg.content}</p>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span style={{
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: '50%',
+                                            background: STATUS_COLORS[agent.status],
+                                        }} />
+                                        <span style={{ fontSize: '0.85rem' }}>{agent.name}</span>
                                     </div>
-                                    <span style={{ fontSize: '0.7rem', color: '#666', marginTop: '0.25rem' }}>
-                                        {msg.time}
-                                    </span>
-                                </motion.div>
+                                    <span style={{ color: '#00ff41', fontSize: '0.8rem' }}>{agent.satisfaction}%</span>
+                                </div>
                             ))}
                         </div>
 
-                        {/* Reply Input */}
-                        <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                            <div style={{
-                                display: 'flex',
-                                gap: '0.5rem',
-                            }}>
-                                <input
-                                    type="text"
-                                    placeholder="Type a reply..."
+                        {/* Knowledge Base */}
+                        <div style={{
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(255,215,0,0.2)',
+                            borderTop: '3px solid #ffd700',
+                            borderRadius: '12px',
+                            padding: '1.25rem',
+                        }}>
+                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#ffd700' }}>📚 Top Articles</h3>
+
+                            {articles.map((article, i) => (
+                                <div
+                                    key={article.id}
                                     style={{
-                                        flex: 1,
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '8px',
-                                        padding: '0.75rem 1rem',
-                                        color: '#fff',
-                                        fontFamily: 'inherit',
-                                        fontSize: '0.85rem',
+                                        padding: '0.5rem 0',
+                                        borderBottom: i < articles.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
                                     }}
-                                />
-                                <button style={{
-                                    background: '#00bfff',
-                                    color: '#000',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    padding: '0 1.5rem',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                }}>
-                                    Send
-                                </button>
-                            </div>
+                                >
+                                    <p style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>{article.title}</p>
+                                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                        <span style={{ color: '#888', fontSize: '0.65rem' }}>{article.views} views</span>
+                                        <span style={{ color: '#00ff41', fontSize: '0.65rem' }}>{article.helpful}% helpful</span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
+
+                {/* Footer */}
+                <footer style={{ marginTop: '2rem', textAlign: 'center', color: '#888', fontSize: '0.8rem' }}>
+                    🏯 agencyos.network - Customer Excellence
+                </footer>
             </div>
         </div>
     )
