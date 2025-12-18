@@ -1,3 +1,10 @@
+## [1.21.0-beta.30](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.29...v1.21.0-beta.30) (2025-12-18)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** use correct snake_case field names in telegram notification hook ([e07f355](https://github.com/claudekit/claudekit-engineer/commit/e07f35533a13e48eb97a82bcd2234e8e4ab04f25))
+
 ## [1.21.0-beta.29](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.28...v1.21.0-beta.29) (2025-12-18)
 
 
