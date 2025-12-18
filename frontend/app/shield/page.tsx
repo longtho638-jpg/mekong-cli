@@ -1,489 +1,210 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from "react";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { TracingBeam } from "@/components/ui/tracing-beam";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 
 // Types
 interface TermSheetInput {
-    preMoney: number;
+    valuation: number;
     investment: number;
-    liquidationPref: string;
-    antiDilution: string;
-    boardSeats: { founder: number; investor: number; independent: number };
-    optionPool: number;
-    vestingReset: boolean;
-    dragAlong: number;
-    noShopDays: number;
-}
-
-interface RedFlag {
-    term: string;
-    description: string;
-    severity: 'critical' | 'high' | 'medium' | 'low';
-    recommendation: string;
-}
-
-interface AnalysisResult {
-    founderFriendlyScore: number;
-    postMoney: number;
-    dilution: number;
     founderOwnership: number;
-    redFlags: RedFlag[];
-    recommendation: 'PROCEED' | 'NEGOTIATE' | 'WALK_AWAY';
+    optionPool: number;
+    liquidationPref: number;
 }
-
-const defaultInput: TermSheetInput = {
-    preMoney: 5000000,
-    investment: 1000000,
-    liquidationPref: '1x_non_participating',
-    antiDilution: 'weighted_average',
-    boardSeats: { founder: 2, investor: 1, independent: 0 },
-    optionPool: 10,
-    vestingReset: false,
-    dragAlong: 75,
-    noShopDays: 30,
-};
-
-const getSeverityColor = (severity: string) => {
-    switch (severity) {
-        case 'critical': return 'bg-red-500/20 border-red-500 text-red-400';
-        case 'high': return 'bg-orange-500/20 border-orange-500 text-orange-400';
-        case 'medium': return 'bg-amber-500/20 border-amber-500 text-amber-400';
-        default: return 'bg-blue-500/20 border-blue-500 text-blue-400';
-    }
-};
-
-const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-        case 'critical': return '🚨';
-        case 'high': return '🔴';
-        case 'medium': return '🟡';
-        default: return '🔵';
-    }
-};
 
 export default function ShieldPage() {
-    const [input, setInput] = useState<TermSheetInput>(defaultInput);
-    const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [inputs, setInputs] = useState<TermSheetInput>({
+        valuation: 5000000,
+        investment: 1000000,
+        founderOwnership: 80,
+        optionPool: 10,
+        liquidationPref: 1,
+    });
 
-    const analyzeTermSheet = () => {
-        setIsAnalyzing(true);
+    const [result, setResult] = useState({
+        postMoney: 0,
+        founderEquity: 0,
+        investorEquity: 0,
+        shieldScore: 0,
+    });
 
-        setTimeout(() => {
-            const redFlags: RedFlag[] = [];
-            let score = 100;
+    useEffect(() => {
+        // Simple logic for demo
+        const postMoney = inputs.valuation + inputs.investment;
+        const invEquity = (inputs.investment / postMoney) * 100;
+        const poolDilution = inputs.optionPool;
+        const founderEq = 100 - invEquity - poolDilution;
 
-            // Check liquidation preference
-            if (input.liquidationPref === '2x_participating') {
-                redFlags.push({
-                    term: 'Liquidation Preference',
-                    description: '2x participating preferred is extremely aggressive',
-                    severity: 'critical',
-                    recommendation: 'Negotiate to 1x non-participating'
-                });
-                score -= 30;
-            } else if (input.liquidationPref === '1x_participating') {
-                redFlags.push({
-                    term: 'Liquidation Preference',
-                    description: '1x participating can significantly reduce founder returns',
-                    severity: 'high',
-                    recommendation: 'Push for 1x non-participating'
-                });
-                score -= 15;
-            }
+        // Shield score calculation
+        let score = 100;
+        if (invEquity > 25) score -= 10;
+        if (inputs.liquidationPref > 1) score -= 30;
+        score = Math.max(0, score);
 
-            // Check anti-dilution
-            if (input.antiDilution === 'full_ratchet') {
-                redFlags.push({
-                    term: 'Anti-Dilution',
-                    description: 'Full ratchet is extremely punitive in down rounds',
-                    severity: 'critical',
-                    recommendation: 'Insist on broad-based weighted average'
-                });
-                score -= 25;
-            }
-
-            // Check board control
-            const totalSeats = input.boardSeats.founder + input.boardSeats.investor + input.boardSeats.independent;
-            const founderControl = input.boardSeats.founder > totalSeats / 2;
-            if (!founderControl) {
-                redFlags.push({
-                    term: 'Board Control',
-                    description: 'Founders do not have board majority',
-                    severity: 'high',
-                    recommendation: 'Negotiate for founder majority or equal representation with tie-breaker'
-                });
-                score -= 20;
-            }
-
-            // Check vesting reset
-            if (input.vestingReset) {
-                redFlags.push({
-                    term: 'Vesting Reset',
-                    description: 'Founder vesting will restart from zero',
-                    severity: 'high',
-                    recommendation: 'Negotiate for credit for time served'
-                });
-                score -= 15;
-            }
-
-            // Check drag-along
-            if (input.dragAlong < 60) {
-                redFlags.push({
-                    term: 'Drag-Along',
-                    description: `${input.dragAlong}% threshold is too low`,
-                    severity: 'medium',
-                    recommendation: 'Negotiate to 70-80% threshold'
-                });
-                score -= 10;
-            }
-
-            // Check no-shop
-            if (input.noShopDays > 45) {
-                redFlags.push({
-                    term: 'No-Shop Period',
-                    description: `${input.noShopDays} days is too long`,
-                    severity: 'medium',
-                    recommendation: 'Limit to 30-45 days'
-                });
-                score -= 10;
-            }
-
-            // Check option pool
-            if (input.optionPool > 15) {
-                redFlags.push({
-                    term: 'Option Pool',
-                    description: `${input.optionPool}% is larger than typical`,
-                    severity: 'low',
-                    recommendation: 'Negotiate based on actual hiring plan'
-                });
-                score -= 5;
-            }
-
-            // Calculate ownership
-            const postMoney = input.preMoney + input.investment;
-            const dilution = (input.investment / postMoney) * 100;
-            const founderOwnership = 100 - dilution - input.optionPool;
-
-            const recommendation = score >= 70 ? 'PROCEED' : score >= 50 ? 'NEGOTIATE' : 'WALK_AWAY';
-
-            setAnalysis({
-                founderFriendlyScore: Math.max(0, score),
-                postMoney,
-                dilution,
-                founderOwnership,
-                redFlags,
-                recommendation
-            });
-            setIsAnalyzing(false);
-        }, 1500);
-    };
-
-    const getScoreColor = (score: number) => {
-        if (score >= 70) return 'from-emerald-400 to-green-500';
-        if (score >= 50) return 'from-amber-400 to-yellow-500';
-        return 'from-red-400 to-rose-500';
-    };
-
-    const getRecommendationStyle = (rec: string) => {
-        switch (rec) {
-            case 'PROCEED': return 'bg-emerald-500/20 border-emerald-500 text-emerald-400';
-            case 'NEGOTIATE': return 'bg-amber-500/20 border-amber-500 text-amber-400';
-            default: return 'bg-red-500/20 border-red-500 text-red-400';
-        }
-    };
+        setResult({
+            postMoney,
+            founderEquity: Number(founderEq.toFixed(2)),
+            investorEquity: Number(invEquity.toFixed(2)),
+            shieldScore: score,
+        });
+    }, [inputs]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-8">
-            {/* Animated Background */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="min-h-screen bg-slate-950 text-white overflow-hidden font-mono selection:bg-cyan-500/30">
+
+            {/* Background with Beams Collision - The Conflict Field */}
+            <div className="fixed inset-0 z-0">
+                <BackgroundBeamsWithCollision className="h-full">
+                    {/* Empty because we just want the beams in background, content is below */}
+                    <div className="hidden"></div>
+                </BackgroundBeamsWithCollision>
             </div>
 
-            {/* Header */}
-            <header className="relative z-10 mb-12">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-200 via-green-400 to-emerald-200 bg-clip-text text-transparent">
-                            🛡️ Anti-Dilution Shield
+            {/* Main Content with Tracing Beam - The Logical Flow */}
+            <div className="relative z-10 pt-20 pb-20">
+                <TracingBeam className="px-6">
+
+                    {/* Header */}
+                    <div className="mb-20 relative">
+                        <h1 className="text-6xl md:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 text-center">
+                            ANTI-DILUTION <br />
+                            <span className="text-cyan-400">SHIELD 2.0</span>
                         </h1>
-                        <p className="text-slate-400 mt-2 text-lg">Chapter 6: Hư Thực - Attack Weakness, Defend Strength</p>
+                        <p className="text-center text-slate-400 mt-4 text-xl tracking-widest uppercase">
+                            Hệ thống phòng thủ tài chính • Chapter 6 Hư Thực
+                        </p>
                     </div>
-                    <div className="text-right">
-                        <a href="/warroom" className="text-amber-400 hover:text-amber-300 transition-colors">
-                            ← Back to War Room
-                        </a>
-                    </div>
-                </div>
-            </header>
 
-            <div className="relative z-10 grid lg:grid-cols-2 gap-8">
-                {/* Input Form */}
-                <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8 shadow-2xl">
-                    <h2 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-                        📋 Term Sheet Input
-                    </h2>
+                    {/* Defense Core (Score) */}
+                    <div className="mb-20 flex justify-center">
+                        <div className="relative w-64 h-64 flex items-center justify-center">
+                            {/* Rotating Rings */}
+                            <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full animate-[spin_10s_linear_infinite]" />
+                            <div className="absolute inset-4 border-2 border-purple-500/20 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
 
-                    <div className="space-y-6">
-                        {/* Valuation */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm text-slate-400 mb-2">Pre-Money Valuation</label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">$</span>
-                                    <input
-                                        type="number"
-                                        value={input.preMoney}
-                                        onChange={(e) => setInput({ ...input, preMoney: Number(e.target.value) })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-8 py-3 text-white focus:border-emerald-500 focus:outline-none transition-colors"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-sm text-slate-400 mb-2">Investment Amount</label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">$</span>
-                                    <input
-                                        type="number"
-                                        value={input.investment}
-                                        onChange={(e) => setInput({ ...input, investment: Number(e.target.value) })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-8 py-3 text-white focus:border-emerald-500 focus:outline-none transition-colors"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Liquidation Preference */}
-                        <div>
-                            <label className="block text-sm text-slate-400 mb-2">Liquidation Preference</label>
-                            <select
-                                value={input.liquidationPref}
-                                onChange={(e) => setInput({ ...input, liquidationPref: e.target.value })}
-                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition-colors"
-                            >
-                                <option value="1x_non_participating">1x Non-Participating ✅</option>
-                                <option value="1x_participating">1x Participating ⚠️</option>
-                                <option value="2x_participating">2x Participating 🚨</option>
-                            </select>
-                        </div>
-
-                        {/* Anti-Dilution */}
-                        <div>
-                            <label className="block text-sm text-slate-400 mb-2">Anti-Dilution Protection</label>
-                            <select
-                                value={input.antiDilution}
-                                onChange={(e) => setInput({ ...input, antiDilution: e.target.value })}
-                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition-colors"
-                            >
-                                <option value="weighted_average">Broad-Based Weighted Average ✅</option>
-                                <option value="narrow_weighted">Narrow Weighted Average ⚠️</option>
-                                <option value="full_ratchet">Full Ratchet 🚨</option>
-                            </select>
-                        </div>
-
-                        {/* Board Seats */}
-                        <div>
-                            <label className="block text-sm text-slate-400 mb-2">Board Composition</label>
-                            <div className="grid grid-cols-3 gap-4">
-                                <div>
-                                    <label className="block text-xs text-slate-500 mb-1">Founder Seats</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        value={input.boardSeats.founder}
-                                        onChange={(e) => setInput({ ...input, boardSeats: { ...input.boardSeats, founder: Number(e.target.value) } })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-2 text-white text-center focus:border-emerald-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs text-slate-500 mb-1">Investor Seats</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        value={input.boardSeats.investor}
-                                        onChange={(e) => setInput({ ...input, boardSeats: { ...input.boardSeats, investor: Number(e.target.value) } })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-2 text-white text-center focus:border-emerald-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs text-slate-500 mb-1">Independent</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        value={input.boardSeats.independent}
-                                        onChange={(e) => setInput({ ...input, boardSeats: { ...input.boardSeats, independent: Number(e.target.value) } })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-2 text-white text-center focus:border-emerald-500 focus:outline-none"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Other Terms */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm text-slate-400 mb-2">Option Pool (%)</label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="30"
-                                    value={input.optionPool}
-                                    onChange={(e) => setInput({ ...input, optionPool: Number(e.target.value) })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-slate-400 mb-2">Drag-Along Threshold (%)</label>
-                                <input
-                                    type="number"
-                                    min="50"
-                                    max="100"
-                                    value={input.dragAlong}
-                                    onChange={(e) => setInput({ ...input, dragAlong: Number(e.target.value) })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm text-slate-400 mb-2">No-Shop Period (days)</label>
-                                <input
-                                    type="number"
-                                    min="15"
-                                    max="90"
-                                    value={input.noShopDays}
-                                    onChange={(e) => setInput({ ...input, noShopDays: Number(e.target.value) })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
-                                />
-                            </div>
-                            <div className="flex items-end">
-                                <label className="flex items-center gap-3 cursor-pointer bg-slate-700/30 rounded-xl px-4 py-3 w-full border border-slate-600 hover:border-slate-500 transition-colors">
-                                    <input
-                                        type="checkbox"
-                                        checked={input.vestingReset}
-                                        onChange={(e) => setInput({ ...input, vestingReset: e.target.checked })}
-                                        className="w-5 h-5 rounded"
-                                    />
-                                    <span className="text-sm">Vesting Reset</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        {/* Analyze Button */}
-                        <button
-                            onClick={analyzeTermSheet}
-                            disabled={isAnalyzing}
-                            className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-semibold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 disabled:opacity-50"
-                        >
-                            {isAnalyzing ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                    </svg>
-                                    Analyzing Term Sheet...
+                            {/* Score */}
+                            <div className="relative z-10 text-center">
+                                <span className="text-7xl font-bold text-white drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">
+                                    {result.shieldScore}
                                 </span>
-                            ) : (
-                                '🛡️ Analyze & Protect'
-                            )}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Results Panel */}
-                <div className="space-y-6">
-                    {analysis ? (
-                        <>
-                            {/* Score Card */}
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8 shadow-2xl">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-2xl font-semibold">📊 Analysis Result</h2>
-                                    <div className={`px-4 py-2 rounded-xl border ${getRecommendationStyle(analysis.recommendation)}`}>
-                                        {analysis.recommendation === 'PROCEED' && '✅ PROCEED'}
-                                        {analysis.recommendation === 'NEGOTIATE' && '⚠️ NEGOTIATE'}
-                                        {analysis.recommendation === 'WALK_AWAY' && '🚨 WALK AWAY'}
-                                    </div>
-                                </div>
-
-                                {/* Score */}
-                                <div className="text-center mb-8">
-                                    <span className={`text-7xl font-bold bg-gradient-to-r ${getScoreColor(analysis.founderFriendlyScore)} bg-clip-text text-transparent`}>
-                                        {analysis.founderFriendlyScore}
-                                    </span>
-                                    <span className="text-3xl text-slate-400">%</span>
-                                    <p className="text-slate-400 mt-2">Founder-Friendly Score</p>
-                                </div>
-
-                                {/* Key Metrics */}
-                                <div className="grid grid-cols-3 gap-4 text-center">
-                                    <div className="bg-slate-700/30 rounded-xl p-4">
-                                        <p className="text-2xl font-bold text-white">${(analysis.postMoney / 1000000).toFixed(1)}M</p>
-                                        <p className="text-sm text-slate-400">Post-Money</p>
-                                    </div>
-                                    <div className="bg-slate-700/30 rounded-xl p-4">
-                                        <p className="text-2xl font-bold text-amber-400">{analysis.dilution.toFixed(1)}%</p>
-                                        <p className="text-sm text-slate-400">Dilution</p>
-                                    </div>
-                                    <div className="bg-slate-700/30 rounded-xl p-4">
-                                        <p className="text-2xl font-bold text-emerald-400">{analysis.founderOwnership.toFixed(1)}%</p>
-                                        <p className="text-sm text-slate-400">Founder Own</p>
-                                    </div>
-                                </div>
+                                <p className="text-cyan-400 text-sm mt-2 uppercase tracking-widest">Defense Level</p>
                             </div>
 
-                            {/* Red Flags */}
-                            {analysis.redFlags.length > 0 && (
-                                <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8 shadow-2xl">
-                                    <h2 className="text-2xl font-semibold mb-6">🚩 Red Flags Detected</h2>
-                                    <div className="space-y-4">
-                                        {analysis.redFlags.map((flag, idx) => (
-                                            <div key={idx} className={`border rounded-xl p-4 ${getSeverityColor(flag.severity)}`}>
-                                                <div className="flex items-start gap-3">
-                                                    <span className="text-xl">{getSeverityIcon(flag.severity)}</span>
-                                                    <div>
-                                                        <h3 className="font-semibold">{flag.term}</h3>
-                                                        <p className="text-sm opacity-80 mt-1">{flag.description}</p>
-                                                        <p className="text-sm mt-2 text-white/70">
-                                                            💡 <span className="italic">{flag.recommendation}</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8 shadow-2xl text-center">
-                            <div className="text-6xl mb-4">🛡️</div>
-                            <h3 className="text-xl font-semibold mb-2">Enter Term Sheet Details</h3>
-                            <p className="text-slate-400">Fill in the form and click analyze to get your protection score</p>
-
-                            <div className="mt-8 bg-slate-700/30 rounded-xl p-6 text-left">
-                                <h4 className="font-semibold text-amber-300 mb-3">💡 Binh Pháp Wisdom</h4>
-                                <blockquote className="text-slate-400 italic">
-                                    "Đánh vào chỗ trống, tránh chỗ đầy"<br />
-                                    <span className="text-sm">(Attack weakness, avoid strength)</span>
-                                </blockquote>
-                                <p className="text-sm text-slate-500 mt-4">
-                                    Know the common investor tactics and protect yourself before signing.
-                                </p>
+                            {/* Core Sparkles */}
+                            <div className="absolute inset-0 w-full h-full">
+                                <SparklesCore
+                                    id="shield-core"
+                                    background="transparent"
+                                    minSize={0.6}
+                                    maxSize={1.4}
+                                    particleDensity={20}
+                                    className="w-full h-full"
+                                    particleColor="#22d3ee"
+                                />
                             </div>
                         </div>
-                    )}
-                </div>
-            </div>
+                    </div>
 
-            {/* Footer */}
-            <footer className="relative z-10 mt-16 text-center text-slate-500 text-sm">
-                <p>🏯 Agency OS v2.0 - Binh Pháp Venture Studio</p>
-                <p className="mt-1">Chapter 6: Hư Thực - Know Weakness & Strength</p>
-            </footer>
+                    {/* Input Console - 3D Card */}
+                    <CardContainer className="inter-var w-full max-w-4xl mb-16">
+                        <CardBody className="bg-slate-900/60 relative group/card border-slate-800 w-full rounded-xl p-8 border backdrop-blur-2xl">
+                            <CardItem
+                                translateZ="50"
+                                className="text-2xl font-bold text-neutral-200 mb-8 border-b border-slate-700 pb-2 w-full"
+                            >
+                                📥 Term Sheet Input Node
+                            </CardItem>
+
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <CardItem translateZ="60" className="w-full space-y-4">
+                                    <div>
+                                        <label className="text-slate-400 text-sm mb-1 block">Pre-Money Valuation ($)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-3 text-cyan-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none font-mono"
+                                            value={inputs.valuation}
+                                            onChange={(e) => setInputs({ ...inputs, valuation: Number(e.target.value) })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-slate-400 text-sm mb-1 block">Investment Amount ($)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-3 text-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none font-mono"
+                                            value={inputs.investment}
+                                            onChange={(e) => setInputs({ ...inputs, investment: Number(e.target.value) })}
+                                        />
+                                    </div>
+                                </CardItem>
+
+                                <CardItem translateZ="80" className="w-full space-y-4">
+                                    <div>
+                                        <label className="text-slate-400 text-sm mb-1 block">Option Pool (%)</label>
+                                        <input
+                                            type="range"
+                                            min="0" max="30"
+                                            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                                            value={inputs.optionPool}
+                                            onChange={(e) => setInputs({ ...inputs, optionPool: Number(e.target.value) })}
+                                        />
+                                        <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                            <span>0%</span>
+                                            <span className="text-purple-400 text-lg">{inputs.optionPool}%</span>
+                                            <span>30%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-slate-400 text-sm mb-1 block">Liquidation Preference (x)</label>
+                                        <div className="flex gap-2">
+                                            {[1, 1.5, 2, 3].map((val) => (
+                                                <button
+                                                    key={val}
+                                                    onClick={() => setInputs({ ...inputs, liquidationPref: val })}
+                                                    className={cn(
+                                                        "flex-1 py-2 rounded-lg border transition-all text-sm",
+                                                        inputs.liquidationPref === val
+                                                            ? "bg-red-500/20 border-red-500 text-red-200 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                                                            : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500"
+                                                    )}
+                                                >
+                                                    {val}x
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </CardItem>
+                            </div>
+                        </CardBody>
+                    </CardContainer>
+
+                    {/* Simulation Output */}
+                    <div className="grid md:grid-cols-3 gap-6 mb-20">
+                        <div className="bg-slate-900/40 p-6 rounded-2xl border border-dashed border-slate-700 backdrop-blur-sm hover:bg-slate-900/60 transition-colors">
+                            <p className="text-slate-500 text-xs uppercase mb-2">Post-Money Valuation</p>
+                            <p className="text-3xl font-bold text-white">${(result.postMoney / 1000000).toFixed(1)}M</p>
+                        </div>
+                        <div className="bg-slate-900/40 p-6 rounded-2xl border border-dashed border-slate-700 backdrop-blur-sm hover:bg-slate-900/60 transition-colors">
+                            <p className="text-slate-500 text-xs uppercase mb-2">Founder Equity</p>
+                            <div className="flex items-end gap-2">
+                                <p className="text-3xl font-bold text-amber-400">{result.founderEquity}%</p>
+                                <span className="text-slate-500 text-sm mb-1">retained</span>
+                            </div>
+                        </div>
+                        <div className="bg-slate-900/40 p-6 rounded-2xl border border-dashed border-slate-700 backdrop-blur-sm hover:bg-slate-900/60 transition-colors">
+                            <p className="text-slate-500 text-xs uppercase mb-2">Investor Equity</p>
+                            <div className="flex items-end gap-2">
+                                <p className="text-3xl font-bold text-emerald-400">{result.investorEquity}%</p>
+                                <span className="text-slate-500 text-sm mb-1">acquired</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </TracingBeam>
+            </div>
         </div>
     );
 }
