@@ -212,16 +212,13 @@ Test the hook with a mock event:
 
 ```bash
 echo '{
-  "hookType": "Stop",
-  "projectDir": "'"$(pwd)"'",
-  "sessionId": "test-session-123",
-  "toolsUsed": [
-    {"tool": "Read", "parameters": {"file_path": "test.ts"}},
-    {"tool": "Edit", "parameters": {"file_path": "test.ts"}},
-    {"tool": "Bash", "parameters": {"command": "npm test"}}
-  ]
-}' | ./.claude/hooks/telegram_notify.sh
+  "hook_event_name": "Stop",
+  "cwd": "'"$(pwd)"'",
+  "session_id": "test-session-123"
+}' | ./.claude/hooks/notifications/telegram_notify.sh
 ```
+
+> **Note:** Claude Code hooks use snake_case field names. The `Stop` hook does not include tool usage data.
 
 **Expected output:**
 ```
@@ -674,34 +671,26 @@ date +%s > "$RATE_LIMIT_FILE"
 
 Test different hook scenarios:
 
-**Stop event with multiple tools:**
+**Stop event:**
 ```bash
 echo '{
-  "hookType": "Stop",
-  "projectDir": "'"$(pwd)"'",
-  "sessionId": "test-123",
-  "toolsUsed": [
-    {"tool": "Read", "parameters": {"file_path": "file1.ts"}},
-    {"tool": "Read", "parameters": {"file_path": "file2.ts"}},
-    {"tool": "Edit", "parameters": {"file_path": "file1.ts"}},
-    {"tool": "Edit", "parameters": {"file_path": "file2.ts"}},
-    {"tool": "Edit", "parameters": {"file_path": "file3.ts"}},
-    {"tool": "Write", "parameters": {"file_path": "file4.ts"}},
-    {"tool": "Bash", "parameters": {"command": "npm test"}},
-    {"tool": "TodoWrite", "parameters": {}}
-  ]
-}' | ./.claude/hooks/telegram_notify.sh
+  "hook_event_name": "Stop",
+  "cwd": "'"$(pwd)"'",
+  "session_id": "test-123"
+}' | ./.claude/hooks/notifications/telegram_notify.sh
 ```
 
 **SubagentStop event:**
 ```bash
 echo '{
-  "hookType": "SubagentStop",
-  "projectDir": "'"$(pwd)"'",
-  "sessionId": "test-456",
-  "subagentType": "planner"
-}' | ./.claude/hooks/telegram_notify.sh
+  "hook_event_name": "SubagentStop",
+  "cwd": "'"$(pwd)"'",
+  "session_id": "test-456",
+  "agent_type": "planner"
+}' | ./.claude/hooks/notifications/telegram_notify.sh
 ```
+
+> **Note:** Claude Code hooks use snake_case field names per the official API.
 
 ## Security Best Practices
 

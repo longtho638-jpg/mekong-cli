@@ -31,10 +31,11 @@ load_env
 INPUT=$(cat)
 
 # Extract relevant information from the hook input
-HOOK_TYPE=$(echo "$INPUT" | jq -r '.hookType // "unknown"')
-PROJECT_DIR=$(echo "$INPUT" | jq -r '.projectDir // ""')
+# Note: Claude Code hooks use snake_case field names
+HOOK_TYPE=$(echo "$INPUT" | jq -r '.hook_event_name // "unknown"')
+PROJECT_DIR=$(echo "$INPUT" | jq -r '.cwd // ""')
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId // ""')
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // ""')
 PROJECT_NAME=$(basename "$PROJECT_DIR")
 
 # Configuration - these will be set via environment variables
@@ -77,56 +78,21 @@ EOF
 }
 
 # Generate summary based on hook type
+# Note: Stop/SubagentStop hooks do not include tool usage data
 case "$HOOK_TYPE" in
     "Stop")
-        # Extract tool usage summary
-        TOOLS_USED=$(echo "$INPUT" | jq -r '.toolsUsed[]?.tool // empty' | sort | uniq -c | sort -nr)
-        FILES_MODIFIED=$(echo "$INPUT" | jq -r '.toolsUsed[]? | select(.tool == "Edit" or .tool == "Write" or .tool == "MultiEdit") | .parameters.file_path // empty' | sort | uniq)
-        
-        # Count operations
-        TOTAL_TOOLS=$(echo "$INPUT" | jq '.toolsUsed | length')
-        
         # Build summary message
         MESSAGE="🚀 *Project Task Completed*
-        
+
 📅 *Time:* ${TIMESTAMP}
 📁 *Project:* ${PROJECT_NAME}
-🔧 *Total Operations:* ${TOTAL_TOOLS}
 🆔 *Session:* ${SESSION_ID:0:8}...
-
-*Tools Used:*"
-
-        if [[ -n "$TOOLS_USED" ]]; then
-            MESSAGE="${MESSAGE}
-\`\`\`
-${TOOLS_USED}
-\`\`\`"
-        else
-            MESSAGE="${MESSAGE}
-None"
-        fi
-
-        if [[ -n "$FILES_MODIFIED" ]]; then
-            MESSAGE="${MESSAGE}
-
-*Files Modified:*"
-            while IFS= read -r file; do
-                if [[ -n "$file" ]]; then
-                    # Show relative path from project root
-                    relative_file=$(echo "$file" | sed "s|^${PROJECT_DIR}/||")
-                    MESSAGE="${MESSAGE}
-• ${relative_file}"
-                fi
-            done <<< "$FILES_MODIFIED"
-        fi
-        
-        MESSAGE="${MESSAGE}
 
 📍 *Location:* \`${PROJECT_DIR}\`"
         ;;
         
     "SubagentStop")
-        SUBAGENT_TYPE=$(echo "$INPUT" | jq -r '.subagentType // "unknown"')
+        SUBAGENT_TYPE=$(echo "$INPUT" | jq -r '.agent_type // "unknown"')
         MESSAGE="🤖 *Project Subagent Completed*
 
 📅 *Time:* ${TIMESTAMP}
