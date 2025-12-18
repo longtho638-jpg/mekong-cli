@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **154 Core Modules | 91 Commits**
+> **168 Core Modules | 93 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 154 |
-| Commits | 91 |
-| Departments | 24 |
-| Department Hubs | 21 |
+| Core Modules | 168 |
+| Commits | 93 |
+| Departments | 25 |
+| Department Hubs | 22 |
 
 ---
 
@@ -180,6 +180,23 @@
 | `pitch_deck.py` | Deck templates, storytelling |
 | `investor_relations.py` | Pipeline, outreach, DD |
 | `term_sheet.py` | Valuation, dilution, terms |
+
+### 22. 🏯 Binh Pháp Hub (`binh_phap_hub.py`) - 13 Chapters!
+| Module | Chương | Role |
+|--------|-------|------|
+| `chapter_01_planning.py` | Kế Hoạch | SWOT, Ngũ Sự assessment |
+| `chapter_02_resources.py` | Tác Chiến | Runway, burn rate |
+| `chapter_03_strategy.py` | Mưu Công | Win without fighting |
+| `chapter_04_positioning.py` | Hình Thế | Competitive moats |
+| `chapter_05_momentum.py` | Thế Trận | Network effects |
+| `chapter_06_weakness.py` | Hư Thực | 🛡️ Anti-Dilution Shield |
+| `chapter_07_maneuvering.py` | Quân Tranh | Speed, first mover |
+| `chapter_08_adaptation.py` | Cửa Biến | Pivot, exit, walk-away |
+| `chapter_09_operations.py` | Hành Quân | OKRs, execution |
+| `chapter_10_terrain.py` | Địa Hình | TAM/SAM/SOM, timing |
+| `chapter_11_situations.py` | Cửa Địa | Crisis, board control |
+| `chapter_12_disruption.py` | Hỏa Công | Market attack |
+| `chapter_13_intelligence.py` | Dụng Gián | VC database, intel |
 
 ---
 
