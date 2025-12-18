@@ -2,7 +2,7 @@
 
 > 🏯 Agency OS v2.0 - Global Franchise Ready
 > "Không đánh mà thắng" - Binh Pháp Applied
-> **146 Core Modules | 87 Commits**
+> **150 Core Modules | 89 Commits**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Core Modules | 146 |
-| Commits | 87 |
-| Departments | 22 |
-| Department Hubs | 19 |
+| Core Modules | 150 |
+| Commits | 89 |
+| Departments | 23 |
+| Department Hubs | 20 |
 
 ---
 
@@ -166,6 +166,13 @@
 | `contract_manager.py` | MSA, SOW, NDA, e-sign |
 | `ip_manager.py` | Trademarks, copyrights |
 | `compliance_officer.py` | GDPR, privacy, audits |
+
+### 20. 🤝 Community Hub (`community_hub.py`)
+| Module | Role |
+|--------|------|
+| `nonprofit_marketing.py` | Religious/charity clients |
+| `community_manager.py` | Members, volunteers |
+| `event_coordinator.py` | Virtual/hybrid events |
 
 ---
 
