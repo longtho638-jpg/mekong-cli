@@ -16,7 +16,7 @@ interface Pipeline {
 interface Workflow {
     id: string
     name: string
-    type: 'etl' | 'sync' | 'backup' | 'report'
+    type: 'etl' | 'sync' | 'backup' | 'report' | 'stream'
     schedule: string
     successRate: number
 }

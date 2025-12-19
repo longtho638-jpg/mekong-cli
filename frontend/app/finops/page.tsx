@@ -3,32 +3,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 // Types
-interface BudgetItem {
-    id: string
-    category: string
-    allocated: number
-    spent: number
-    remaining: number
-}
+interface BudgetItem { id: string; category: string; allocated: number; spent: number; remaining: number }
+interface Transaction { id: string; description: string; type: 'income' | 'expense'; amount: number; date: string; status: 'completed' | 'pending' }
+interface Invoice { id: string; client: string; amount: number; status: 'paid' | 'pending' | 'overdue'; dueDate: string }
 
-interface Transaction {
-    id: string
-    description: string
-    type: 'income' | 'expense'
-    amount: number
-    date: string
-    status: 'completed' | 'pending'
-}
-
-interface Invoice {
-    id: string
-    client: string
-    amount: number
-    status: 'paid' | 'pending' | 'overdue'
-    dueDate: string
-}
-
-// Sample data
 const BUDGETS: BudgetItem[] = [
     { id: '1', category: 'Engineering', allocated: 50000, spent: 35000, remaining: 15000 },
     { id: '2', category: 'Marketing', allocated: 25000, spent: 18000, remaining: 7000 },
@@ -48,161 +26,75 @@ const INVOICES: Invoice[] = [
     { id: 'INV-003', client: 'Delta Farms', amount: 8500, status: 'overdue', dueDate: 'Dec 5' },
 ]
 
-const STATUS_COLORS: Record<string, string> = {
-    paid: '#00ff41',
-    pending: '#ffd700',
-    overdue: '#ff0000',
-    completed: '#00ff41',
-}
-
 export default function FinOpsHubPage() {
     const [budgets] = useState(BUDGETS)
     const [transactions] = useState(TRANSACTIONS)
     const [invoices] = useState(INVOICES)
 
-    // Metrics
     const totalBudget = budgets.reduce((sum, b) => sum + b.allocated, 0)
     const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0)
     const burnRate = (totalSpent / totalBudget * 100).toFixed(0)
     const totalAR = invoices.filter(i => i.status !== 'paid').reduce((sum, i) => sum + i.amount, 0)
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: '#050505',
-            color: '#fff',
-            fontFamily: "'JetBrains Mono', monospace",
-            padding: '2rem',
-        }}>
-            {/* Ambient */}
-            <div style={{
-                position: 'fixed',
-                top: '-20%',
-                left: '50%',
-                width: '40%',
-                height: '40%',
-                background: 'radial-gradient(circle, rgba(0,255,65,0.06) 0%, transparent 60%)',
-                pointerEvents: 'none',
-                transform: 'translateX(-50%)',
-            }} />
+        <div className="min-h-screen bg-[#050505] text-white font-mono p-8">
+            <div className="fixed -top-[20%] left-1/2 -translate-x-1/2 w-[40%] h-[40%] bg-[radial-gradient(circle,rgba(0,255,65,0.06)_0%,transparent_60%)] pointer-events-none" />
 
-            <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-
-                {/* Header */}
-                <header style={{ marginBottom: '2rem' }}>
-                    <motion.h1
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{ fontSize: '2rem', marginBottom: '0.5rem' }}
-                    >
-                        <span style={{ color: '#00ff41' }}>💵</span> FinOps Hub
+            <div className="max-w-6xl mx-auto relative z-10">
+                <header className="mb-8">
+                    <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl mb-2">
+                        <span className="text-green-400">💵</span> FinOps Hub
                     </motion.h1>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Budget • Transactions • Invoices</p>
+                    <p className="text-gray-500">Budget • Transactions • Invoices</p>
                 </header>
 
                 {/* Metrics */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="grid grid-cols-4 gap-4 mb-8">
                     {[
-                        { label: 'Total Budget', value: `$${(totalBudget / 1000).toFixed(0)}K`, color: '#00bfff' },
-                        { label: 'Total Spent', value: `$${(totalSpent / 1000).toFixed(0)}K`, color: '#ffd700' },
-                        { label: 'Burn Rate', value: `${burnRate}%`, color: parseInt(burnRate) > 80 ? '#ff6347' : '#00ff41' },
-                        { label: 'A/R Outstanding', value: `$${(totalAR / 1000).toFixed(1)}K`, color: '#ff6347' },
+                        { label: 'Total Budget', value: `$${(totalBudget / 1000).toFixed(0)}K`, color: 'text-cyan-400' },
+                        { label: 'Total Spent', value: `$${(totalSpent / 1000).toFixed(0)}K`, color: 'text-yellow-400' },
+                        { label: 'Burn Rate', value: `${burnRate}%`, color: parseInt(burnRate) > 80 ? 'text-red-400' : 'text-green-400' },
+                        { label: 'A/R Outstanding', value: `$${(totalAR / 1000).toFixed(1)}K`, color: 'text-red-400' },
                     ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            style={{
-                                background: 'rgba(255,255,255,0.02)',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                borderRadius: '12px',
-                                padding: '1.25rem',
-                                textAlign: 'center',
-                            }}
-                        >
-                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
-                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
+                        <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                            className="bg-white/[0.02] border border-white/5 rounded-xl p-5 text-center">
+                            <p className="text-gray-500 text-xs mb-2 uppercase">{stat.label}</p>
+                            <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                         </motion.div>
                     ))}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-
+                <div className="grid grid-cols-2 gap-6">
                     {/* Budgets */}
-                    <div style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(0,255,65,0.2)',
-                        borderTop: '3px solid #00ff41',
-                        borderRadius: '12px',
-                        padding: '1.5rem',
-                    }}>
-                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#00ff41' }}>📊 Department Budgets</h3>
-
-                        {budgets.map((budget, i) => (
-                            <motion.div
-                                key={budget.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                style={{ marginBottom: '1rem' }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                                    <span style={{ fontSize: '0.85rem' }}>{budget.category}</span>
-                                    <span style={{ fontSize: '0.85rem' }}>
-                                        <span style={{ color: '#ffd700' }}>${(budget.spent / 1000).toFixed(0)}K</span>
-                                        <span style={{ color: '#888' }}> / ${(budget.allocated / 1000).toFixed(0)}K</span>
-                                    </span>
-                                </div>
-                                <div style={{
-                                    height: 6,
-                                    background: '#333',
-                                    borderRadius: 3,
-                                    overflow: 'hidden',
-                                }}>
-                                    <div style={{
-                                        width: `${(budget.spent / budget.allocated) * 100}%`,
-                                        height: '100%',
-                                        background: (budget.spent / budget.allocated) > 0.9 ? '#ff6347' : (budget.spent / budget.allocated) > 0.7 ? '#ffd700' : '#00ff41',
-                                    }} />
-                                </div>
-                            </motion.div>
-                        ))}
+                    <div className="bg-white/[0.02] border border-green-400/20 border-t-[3px] border-t-green-400 rounded-xl p-6">
+                        <h3 className="text-green-400 mb-6">📊 Department Budgets</h3>
+                        {budgets.map((budget, i) => {
+                            const pct = (budget.spent / budget.allocated) * 100
+                            return (
+                                <motion.div key={budget.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="mb-4">
+                                    <div className="flex justify-between mb-1 text-sm">
+                                        <span>{budget.category}</span>
+                                        <span><span className="text-yellow-400">${(budget.spent / 1000).toFixed(0)}K</span><span className="text-gray-500"> / ${(budget.allocated / 1000).toFixed(0)}K</span></span>
+                                    </div>
+                                    <div className="h-1.5 bg-gray-700 rounded overflow-hidden">
+                                        <div className={`h-full ${pct > 90 ? 'bg-red-400' : pct > 70 ? 'bg-yellow-400' : 'bg-green-400'}`} style={{ width: `${pct}%` }} />
+                                    </div>
+                                </motion.div>
+                            )
+                        })}
                     </div>
 
-                    {/* Transactions + Invoices */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
+                    <div className="flex flex-col gap-6">
                         {/* Transactions */}
-                        <div style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(0,191,255,0.2)',
-                            borderTop: '3px solid #00bfff',
-                            borderRadius: '12px',
-                            padding: '1.25rem',
-                        }}>
-                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#00bfff' }}>💳 Recent Transactions</h3>
-
+                        <div className="bg-white/[0.02] border border-cyan-400/20 border-t-[3px] border-t-cyan-400 rounded-xl p-5">
+                            <h3 className="text-cyan-400 text-sm mb-4">💳 Recent Transactions</h3>
                             {transactions.map((tx, i) => (
-                                <div
-                                    key={tx.id}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '0.5rem 0',
-                                        borderBottom: i < transactions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                                    }}
-                                >
+                                <div key={tx.id} className={`flex justify-between items-center py-2 ${i < transactions.length - 1 ? 'border-b border-white/5' : ''}`}>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem' }}>{tx.description}</p>
-                                        <p style={{ color: '#888', fontSize: '0.7rem' }}>{tx.date}</p>
+                                        <p className="text-sm">{tx.description}</p>
+                                        <p className="text-gray-500 text-xs">{tx.date}</p>
                                     </div>
-                                    <span style={{
-                                        color: tx.type === 'income' ? '#00ff41' : '#ff6347',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 'bold',
-                                    }}>
+                                    <span className={`text-sm font-bold ${tx.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
                                         {tx.type === 'income' ? '+' : '-'}${tx.amount.toLocaleString()}
                                     </span>
                                 </div>
@@ -210,41 +102,17 @@ export default function FinOpsHubPage() {
                         </div>
 
                         {/* Invoices */}
-                        <div style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(255,215,0,0.2)',
-                            borderTop: '3px solid #ffd700',
-                            borderRadius: '12px',
-                            padding: '1.25rem',
-                        }}>
-                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#ffd700' }}>📄 Invoices</h3>
-
+                        <div className="bg-white/[0.02] border border-yellow-400/20 border-t-[3px] border-t-yellow-400 rounded-xl p-5">
+                            <h3 className="text-yellow-400 text-sm mb-4">📄 Invoices</h3>
                             {invoices.map((inv, i) => (
-                                <div
-                                    key={inv.id}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '0.5rem 0',
-                                        borderBottom: i < invoices.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                                    }}
-                                >
+                                <div key={inv.id} className={`flex justify-between items-center py-2 ${i < invoices.length - 1 ? 'border-b border-white/5' : ''}`}>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem' }}>{inv.client}</p>
-                                        <p style={{ color: '#888', fontSize: '0.7rem' }}>{inv.id} • Due: {inv.dueDate}</p>
+                                        <p className="text-sm">{inv.client}</p>
+                                        <p className="text-gray-500 text-xs">{inv.id} • Due: {inv.dueDate}</p>
                                     </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <p style={{ fontSize: '0.85rem' }}>${inv.amount.toLocaleString()}</p>
-                                        <span style={{
-                                            padding: '2px 6px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.6rem',
-                                            background: `${STATUS_COLORS[inv.status]}20`,
-                                            color: STATUS_COLORS[inv.status],
-                                        }}>
-                                            {inv.status}
-                                        </span>
+                                    <div className="text-right">
+                                        <p className="text-sm">${inv.amount.toLocaleString()}</p>
+                                        <span className={`px-2 py-0.5 rounded-md text-[10px] ${inv.status === 'paid' ? 'bg-green-400/10 text-green-400' : inv.status === 'overdue' ? 'bg-red-400/10 text-red-400' : 'bg-yellow-400/10 text-yellow-400'}`}>{inv.status}</span>
                                     </div>
                                 </div>
                             ))}
@@ -252,10 +120,7 @@ export default function FinOpsHubPage() {
                     </div>
                 </div>
 
-                {/* Footer */}
-                <footer style={{ marginTop: '2rem', textAlign: 'center', color: '#888', fontSize: '0.8rem' }}>
-                    🏯 agencyos.network - Financial Excellence
-                </footer>
+                <footer className="mt-8 text-center text-gray-500 text-sm">🏯 agencyos.network - Financial Excellence</footer>
             </div>
         </div>
     )

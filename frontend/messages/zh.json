@@ -1,0 +1,55 @@
+{
+    "Common": {
+        "dashboard": "仪表板",
+        "settings": "设置",
+        "profile": "个人资料",
+        "ai_assistant": "AI 助手"
+    },
+    "Hubs": {
+        "vc_hub": "风险投资中心 (VC)",
+        "strategy_hub": "孙子兵法中心",
+        "admin_hub": "任务控制中心"
+    },
+    "VC": {
+        "portfolio": "投资组合矩阵",
+        "cap_table": "股权结构星系",
+        "dealflow": "交易流程管道",
+        "valuation": "估值",
+        "invested": "已投资金",
+        "runway": "现金流期限",
+        "burn_rate": "烧钱速度",
+        "dilution": "稀释保护",
+        "exit_scenario": "退出场景",
+        "irr": "内部收益率 (IRR)",
+        "equity": "股权所有权",
+        "active_deals": "活跃交易",
+        "sourcing": "寻找项目",
+        "diligence": "尽职调查",
+        "term_sheet": "投资条款",
+        "closed": "已完成",
+        "deal_source": "交易来源",
+        "conversion_rate": "转化率",
+        "avg_deal_size": "平均规模",
+        "time_to_close": "成交时间"
+    },
+    "Strategy": {
+        "chapter_1": "第一篇：始计篇",
+        "chapter_2": "第二篇：作战篇",
+        "chapter_3": "第三篇：谋攻篇",
+        "active_strategies": "活跃计谋",
+        "win_probability": "胜率",
+        "warroom": "作战室"
+    },
+    "AI": {
+        "copilot_active": "副驾驶活跃",
+        "agents_online": "代理在线",
+        "tasks_running": "任务运行中",
+        "cpu_usage": "CPU使用率",
+        "memory": "内存",
+        "cost_today": "今日成本",
+        "revenue": "收入",
+        "agent_health": "代理健康网格",
+        "system_alerts": "系统警报",
+        "command_log": "命令日志"
+    }
+}

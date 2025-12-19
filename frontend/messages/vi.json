@@ -1,0 +1,55 @@
+{
+    "Common": {
+        "dashboard": "Bảng Điều Khiển",
+        "settings": "Cài Đặt",
+        "profile": "Hồ Sơ",
+        "ai_assistant": "Trợ Lý AI"
+    },
+    "Hubs": {
+        "vc_hub": "Trung Tâm Đầu Tư (VC)",
+        "strategy_hub": "Binh Pháp Tôn Tử",
+        "admin_hub": "Trung Tâm Chỉ Huy"
+    },
+    "VC": {
+        "portfolio": "Ma Trận Danh Mục",
+        "cap_table": "Thiên Hà Cổ Đông (Cap Table)",
+        "dealflow": "Dòng Chảy Deal (Deal Flow)",
+        "valuation": "Định Giá",
+        "invested": "Vốn Đã Rót",
+        "runway": "Thời Gian Sống (Runway)",
+        "burn_rate": "Tốc Độ Đốt Tiền",
+        "dilution": "Khiên Chống Pha Loãng",
+        "exit_scenario": "Kịch Bản Thoái Vốn",
+        "irr": "Tỷ Suất Hoàn Vốn (IRR)",
+        "equity": "Sở Hữu Cổ Phần",
+        "active_deals": "Deal Đang Chạy",
+        "sourcing": "Tìm Kiếm",
+        "diligence": "Thẩm Định (DD)",
+        "term_sheet": "Bản Điều Khoản",
+        "closed": "Đã Đóng",
+        "deal_source": "Nguồn Deal",
+        "conversion_rate": "Tỷ Lệ Chuyển Đổi",
+        "avg_deal_size": "Quy Mô TB",
+        "time_to_close": "Thời Gian Chốt"
+    },
+    "Strategy": {
+        "chapter_1": "Thiên 1: Kế Sách",
+        "chapter_2": "Thiên 2: Tác Chiến",
+        "chapter_3": "Thiên 3: Mưu Công",
+        "active_strategies": "Mưu Kế Đang Dùng",
+        "win_probability": "Xác Suất Thắng",
+        "warroom": "Phòng Chiến Lược"
+    },
+    "AI": {
+        "copilot_active": "Phi Công Tự Động Hoạt Động",
+        "agents_online": "Tác Nhân Online",
+        "tasks_running": "Nhiệm Vụ Đang Chạy",
+        "cpu_usage": "Sử Dụng CPU",
+        "memory": "Bộ Nhớ",
+        "cost_today": "Chi Phí Hôm Nay",
+        "revenue": "Doanh Thu",
+        "agent_health": "Lưới Tác Nhân",
+        "system_alerts": "Cảnh Báo Hệ Thống",
+        "command_log": "Lịch Sử Lệnh"
+    }
+}

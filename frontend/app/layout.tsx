@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import ClientLayout from '@/components/ClientLayout'
 
 export const metadata: Metadata = {
     title: 'Mekong-CLI | Mission Control',
@@ -16,7 +17,10 @@ export default function RootLayout({
             <head>
                 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
             </head>
-            <body>{children}</body>
+            <body>
+                <ClientLayout>{children}</ClientLayout>
+            </body>
         </html>
     )
 }
+

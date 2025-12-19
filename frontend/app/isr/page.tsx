@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { MotionDiv } from '@/components/MotionWrapper'
 
 // Types
 interface Prospect {
@@ -101,10 +102,10 @@ export default function ISRDashboard() {
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                     <span>{goal.icon} {goal.label}</span>
-                                    <span style={{ color: '#1abc9c' }}>{goal.current}/{goal.goal}{goal.suffix || ''}</span>
+                                    <span style={{ color: '#1abc9c' }}>{goal.current}/{goal.goal}{'suffix' in goal ? goal.suffix : ''}</span>
                                 </div>
                                 <div style={{ height: 8, background: '#222', borderRadius: 4, overflow: 'hidden' }}>
-                                    <motion.div
+                                    <MotionDiv
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(goal.current / goal.goal) * 100}%` }}
                                         transition={{ delay: i * 0.1, duration: 0.5 }}

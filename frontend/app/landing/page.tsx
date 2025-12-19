@@ -76,7 +76,7 @@ export default function LandingPage() {
             return () => clearInterval(typeInterval)
         } else {
             setTimeout(() => {
-                setLines(prev => [...prev, { text: item.output, isCmd: false }])
+                setLines(prev => [...prev, { text: item.output || '', isCmd: false }])
                 setCurrentIndex(prev => prev + 1)
             }, item.delay)
         }

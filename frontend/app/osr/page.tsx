@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { MotionDiv } from '@/components/MotionWrapper'
 
 // Types
 interface Visit {
@@ -188,7 +189,7 @@ export default function OSRDashboard() {
                                         </span>
                                     </div>
                                     <div style={{ height: 8, background: '#222', borderRadius: 4, overflow: 'hidden' }}>
-                                        <motion.div
+                                        <MotionDiv
                                             initial={{ width: 0 }}
                                             animate={{ width: `${Math.min(attainment, 100)}%` }}
                                             transition={{ delay: i * 0.1, duration: 0.5 }}

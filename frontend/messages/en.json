@@ -1,0 +1,55 @@
+{
+    "Common": {
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "profile": "Profile",
+        "ai_assistant": "AI Assistant"
+    },
+    "AI": {
+        "copilot_active": "Co-Pilot Active",
+        "agents_online": "Agents Online",
+        "tasks_running": "Tasks Running",
+        "cpu_usage": "CPU Usage",
+        "memory": "Memory",
+        "cost_today": "Cost Today",
+        "revenue": "Revenue",
+        "agent_health": "Agent Health Grid",
+        "system_alerts": "System Alerts",
+        "command_log": "Command Log"
+    },
+    "Hubs": {
+        "vc_hub": "Venture Capital Hub",
+        "strategy_hub": "Market Strategy (Sun Tzu)",
+        "admin_hub": "Mission Control"
+    },
+    "VC": {
+        "portfolio": "Portfolio Matrix",
+        "cap_table": "Cap Table Galaxy",
+        "dealflow": "Deal Flow Pipeline",
+        "valuation": "Valuation",
+        "invested": "Invested Capital",
+        "runway": "Runway (Months)",
+        "burn_rate": "Burn Rate",
+        "dilution": "Dilution Shield",
+        "exit_scenario": "Exit Scenarios",
+        "irr": "Internal Rate of Return (IRR)",
+        "equity": "Equity Ownership",
+        "active_deals": "Active Deals",
+        "sourcing": "Sourcing",
+        "diligence": "Due Diligence",
+        "term_sheet": "Term Sheet",
+        "closed": "Closed",
+        "deal_source": "Deal Source",
+        "conversion_rate": "Conversion Rate",
+        "avg_deal_size": "Avg Deal Size",
+        "time_to_close": "Time to Close"
+    },
+    "Strategy": {
+        "chapter_1": "Chapter 1: Laying Plans",
+        "chapter_2": "Chapter 2: Waging War",
+        "chapter_3": "Chapter 3: Attack by Stratagem",
+        "active_strategies": "Active Strategems",
+        "win_probability": "Win Probability",
+        "warroom": "War Room"
+    }
+}

@@ -85,9 +85,10 @@ body {
   transform: translateY(-4px);
 }
 
-/* Base Layout Overrides to solve Tailwind v4 spacing issues */
+/* Base Layout - Theme-aware */
 body {
-  background: #020617;
+  background: var(--bg-primary, #020617);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .shield-container {
@@ -208,4 +209,283 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--matrix-green);
+}
+
+/* ============================================ */
+/* PREMIUM WOW EFFECTS UTILITIES */
+/* ============================================ */
+
+/* Neon Glow Effects */
+.neon-glow-cyan {
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.4),
+    0 0 40px rgba(6, 182, 212, 0.2),
+    0 0 60px rgba(6, 182, 212, 0.1);
+}
+
+.neon-glow-purple {
+  box-shadow:
+    0 0 20px rgba(168, 85, 247, 0.4),
+    0 0 40px rgba(168, 85, 247, 0.2),
+    0 0 60px rgba(168, 85, 247, 0.1);
+}
+
+.neon-glow-pink {
+  box-shadow:
+    0 0 20px rgba(236, 72, 153, 0.4),
+    0 0 40px rgba(236, 72, 153, 0.2),
+    0 0 60px rgba(236, 72, 153, 0.1);
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 50%,
+      transparent 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Ultra Glass Effect */
+.ultra-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(60px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Premium Card */
+.premium-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(48px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animation Utilities */
+.animate-gradient {
+  background-size: 300%;
+  animation: animatedgradient 6s ease infinite alternate;
+}
+
+@keyframes animatedgradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-300\% {
+  background-size: 300% 300%;
+}
+
+/* CSS-based Patterns (No images needed) */
+.bg-grid-white\/10 {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+.bg-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* ============================================ */
+/* CLAUDEKIT UI/UX PRO MAX ENHANCEMENTS */
+/* ============================================ */
+
+/* Ultra-glass Navigation */
+.glass-nav {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Glass Card with Hover */
+.glass-card-pro {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-pro:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Professional Typography Scale */
+.text-hero {
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.text-h1 {
+  font-size: clamp(36px, 6vw, 72px);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-h2 {
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.text-h3 {
+  font-size: clamp(20px, 3vw, 32px);
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.text-body-lg {
+  font-size: clamp(18px, 2vw, 20px);
+  line-height: 1.6;
+}
+
+.text-body {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.text-small {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Spacing Rhythm (8px base) */
+.space-section {
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+.space-container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.space-stack-lg {
+  margin-bottom: 48px;
+}
+
+.space-stack-md {
+  margin-bottom: 32px;
+}
+
+.space-stack-sm {
+  margin-bottom: 16px;
+}
+
+/* Magnetic Hover Effect */
+@keyframes magnetic-hover {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(2px, -2px);
+  }
+
+  50% {
+    transform: translate(0, -4px);
+  }
+
+  75% {
+    transform: translate(-2px, -2px);
+  }
+}
+
+.magnetic-hover:hover {
+  animation: magnetic-hover 0.6s ease-in-out;
+}
+
+/* Stagger Animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stagger-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.stagger-item:nth-child(6) {
+  animation-delay: 0.6s;
 }

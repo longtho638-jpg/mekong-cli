@@ -82,10 +82,11 @@ export default function SettingsHubPage() {
     return (
         <div style={{
             minHeight: '100vh',
-            background: '#050505',
-            color: '#fff',
+            background: 'var(--bg-primary, #050505)',
+            color: 'var(--text-primary, #fff)',
             fontFamily: "'JetBrains Mono', monospace",
             padding: '2rem',
+            transition: 'background 0.3s ease, color 0.3s ease',
         }}>
             <div style={{
                 position: 'fixed',
@@ -93,7 +94,7 @@ export default function SettingsHubPage() {
                 right: '30%',
                 width: '40%',
                 height: '40%',
-                background: 'radial-gradient(circle, rgba(138,43,226,0.06) 0%, transparent 60%)',
+                background: 'var(--glow-primary, radial-gradient(circle, rgba(138,43,226,0.06) 0%, transparent 60%))',
                 pointerEvents: 'none',
             }} />
 
@@ -122,14 +123,15 @@ export default function SettingsHubPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
                             style={{
-                                background: 'rgba(255,255,255,0.02)',
-                                border: '1px solid rgba(255,255,255,0.05)',
+                                background: 'var(--bg-card, rgba(255,255,255,0.02))',
+                                border: '1px solid var(--border-color, rgba(255,255,255,0.05))',
                                 borderRadius: '12px',
                                 padding: '1.25rem',
                                 textAlign: 'center',
+                                transition: 'background 0.3s ease, border-color 0.3s ease',
                             }}
                         >
-                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
+                            <p style={{ color: 'var(--text-secondary, #888)', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
                             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
                         </motion.div>
                     ))}
@@ -137,11 +139,12 @@ export default function SettingsHubPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
                     <div style={{
-                        background: 'rgba(255,255,255,0.02)',
+                        background: 'var(--bg-card, rgba(255,255,255,0.02))',
                         border: '1px solid rgba(138,43,226,0.2)',
                         borderTop: '3px solid #8a2be2',
                         borderRadius: '12px',
                         padding: '1.5rem',
+                        transition: 'background 0.3s ease',
                     }}>
                         <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#8a2be2' }}>🎛️ Preferences</h3>
                         {settings.map((setting, i) => (

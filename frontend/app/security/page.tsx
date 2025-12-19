@@ -3,30 +3,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 // Types
-interface SecurityAlert {
-    id: string
-    type: 'critical' | 'warning' | 'info'
-    title: string
-    source: string
-    timestamp: string
-}
+interface SecurityAlert { id: string; type: 'critical' | 'warning' | 'info'; title: string; source: string; timestamp: string }
+interface Vulnerability { id: string; name: string; severity: 'critical' | 'high' | 'medium' | 'low'; status: 'open' | 'patching' | 'resolved'; asset: string }
+interface Compliance { id: string; framework: string; score: number; status: 'compliant' | 'partial' | 'non_compliant' }
 
-interface Vulnerability {
-    id: string
-    name: string
-    severity: 'critical' | 'high' | 'medium' | 'low'
-    status: 'open' | 'patching' | 'resolved'
-    asset: string
-}
-
-interface Compliance {
-    id: string
-    framework: string
-    score: number
-    status: 'compliant' | 'partial' | 'non_compliant'
-}
-
-// Sample data
 const ALERTS: SecurityAlert[] = [
     { id: '1', type: 'critical', title: 'Unusual login attempt', source: 'Auth System', timestamp: '2 min ago' },
     { id: '2', type: 'warning', title: 'SSL certificate expiring', source: 'Infra Monitor', timestamp: '1 hour ago' },
@@ -45,219 +25,95 @@ const COMPLIANCE: Compliance[] = [
     { id: '3', framework: 'ISO 27001', score: 78, status: 'partial' },
 ]
 
-const SEVERITY_COLORS: Record<string, string> = {
-    critical: '#ff0000',
-    high: '#ff6347',
-    medium: '#ffd700',
-    low: '#00ff41',
-    warning: '#ffd700',
-    info: '#00bfff',
-}
+const SEVERITY_COLORS: Record<string, string> = { critical: '#ff0000', high: '#ff6347', medium: '#ffd700', low: '#00ff41', warning: '#ffd700', info: '#00bfff' }
 
 export default function SecurityHubPage() {
     const [alerts] = useState(ALERTS)
     const [vulnerabilities] = useState(VULNERABILITIES)
     const [compliance] = useState(COMPLIANCE)
 
-    // Metrics
     const criticalAlerts = alerts.filter(a => a.type === 'critical').length
     const openVulns = vulnerabilities.filter(v => v.status !== 'resolved').length
     const avgCompliance = compliance.reduce((sum, c) => sum + c.score, 0) / compliance.length
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: '#050505',
-            color: '#fff',
-            fontFamily: "'JetBrains Mono', monospace",
-            padding: '2rem',
-        }}>
-            {/* Ambient */}
-            <div style={{
-                position: 'fixed',
-                top: '-20%',
-                left: '50%',
-                width: '40%',
-                height: '40%',
-                background: 'radial-gradient(circle, rgba(255,0,0,0.05) 0%, transparent 60%)',
-                pointerEvents: 'none',
-                transform: 'translateX(-50%)',
-            }} />
+        <div className="min-h-screen bg-[#050505] text-white font-mono p-8">
+            <div className="fixed -top-[20%] left-1/2 -translate-x-1/2 w-[40%] h-[40%] bg-[radial-gradient(circle,rgba(255,0,0,0.05)_0%,transparent_60%)] pointer-events-none" />
 
-            <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-
-                {/* Header */}
-                <header style={{ marginBottom: '2rem' }}>
-                    <motion.h1
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{ fontSize: '2rem', marginBottom: '0.5rem' }}
-                    >
-                        <span style={{ color: '#ff0000' }}>🔐</span> Security Hub (CISO)
+            <div className="max-w-6xl mx-auto relative z-10">
+                <header className="mb-8">
+                    <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl mb-2">
+                        <span className="text-red-500">🔐</span> Security Hub (CISO)
                     </motion.h1>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Threats • Vulnerabilities • Compliance</p>
+                    <p className="text-gray-500">Threats • Vulnerabilities • Compliance</p>
                 </header>
 
                 {/* Metrics */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="grid grid-cols-4 gap-4 mb-8">
                     {[
-                        { label: 'Critical Alerts', value: criticalAlerts, color: criticalAlerts > 0 ? '#ff0000' : '#00ff41' },
-                        { label: 'Open Vulns', value: openVulns, color: openVulns > 2 ? '#ff6347' : '#ffd700' },
-                        { label: 'Compliance Score', value: `${avgCompliance.toFixed(0)}%`, color: avgCompliance >= 90 ? '#00ff41' : '#ffd700' },
-                        { label: 'Security Grade', value: 'B+', color: '#00bfff' },
+                        { label: 'Critical Alerts', value: criticalAlerts, color: criticalAlerts > 0 ? 'text-red-500' : 'text-green-400' },
+                        { label: 'Open Vulns', value: openVulns, color: openVulns > 2 ? 'text-red-400' : 'text-yellow-400' },
+                        { label: 'Compliance Score', value: `${avgCompliance.toFixed(0)}%`, color: avgCompliance >= 90 ? 'text-green-400' : 'text-yellow-400' },
+                        { label: 'Security Grade', value: 'B+', color: 'text-cyan-400' },
                     ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            style={{
-                                background: 'rgba(255,255,255,0.02)',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                borderRadius: '12px',
-                                padding: '1.25rem',
-                                textAlign: 'center',
-                            }}
-                        >
-                            <p style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{stat.label}</p>
-                            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: stat.color }}>{stat.value}</p>
+                        <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                            className="bg-white/[0.02] border border-white/5 rounded-xl p-5 text-center">
+                            <p className="text-gray-500 text-xs mb-2 uppercase">{stat.label}</p>
+                            <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                         </motion.div>
                     ))}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-
+                <div className="grid grid-cols-2 gap-6">
                     {/* Alerts */}
-                    <div style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,0,0,0.2)',
-                        borderTop: '3px solid #ff0000',
-                        borderRadius: '12px',
-                        padding: '1.5rem',
-                    }}>
-                        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', color: '#ff0000' }}>🚨 Security Alerts</h3>
-
+                    <div className="bg-white/[0.02] border border-red-500/20 border-t-[3px] border-t-red-500 rounded-xl p-6">
+                        <h3 className="text-red-500 mb-6">🚨 Security Alerts</h3>
                         {alerts.map((alert, i) => (
-                            <motion.div
-                                key={alert.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                style={{
-                                    background: 'rgba(0,0,0,0.3)',
-                                    borderLeft: `3px solid ${SEVERITY_COLORS[alert.type]}`,
-                                    borderRadius: '0 8px 8px 0',
-                                    padding: '1rem',
-                                    marginBottom: '0.75rem',
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <motion.div key={alert.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
+                                className="bg-black/30 border-l-[3px] rounded-r-lg p-4 mb-3" style={{ borderLeftColor: SEVERITY_COLORS[alert.type] }}>
+                                <div className="flex justify-between items-start">
                                     <div>
-                                        <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{alert.title}</p>
-                                        <p style={{ color: '#888', fontSize: '0.75rem' }}>{alert.source}</p>
+                                        <p className="font-semibold mb-1">{alert.title}</p>
+                                        <p className="text-gray-500 text-xs">{alert.source}</p>
                                     </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <span style={{
-                                            padding: '2px 8px',
-                                            borderRadius: '12px',
-                                            fontSize: '0.65rem',
-                                            textTransform: 'uppercase',
-                                            background: `${SEVERITY_COLORS[alert.type]}20`,
-                                            color: SEVERITY_COLORS[alert.type],
-                                        }}>
-                                            {alert.type}
-                                        </span>
-                                        <p style={{ color: '#888', fontSize: '0.7rem', marginTop: '0.25rem' }}>{alert.timestamp}</p>
+                                    <div className="text-right">
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] uppercase" style={{ backgroundColor: `${SEVERITY_COLORS[alert.type]}20`, color: SEVERITY_COLORS[alert.type] }}>{alert.type}</span>
+                                        <p className="text-gray-500 text-xs mt-1">{alert.timestamp}</p>
                                     </div>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
 
-                    {/* Vulnerabilities + Compliance */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
+                    <div className="flex flex-col gap-6">
                         {/* Vulnerabilities */}
-                        <div style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(255,99,71,0.2)',
-                            borderTop: '3px solid #ff6347',
-                            borderRadius: '12px',
-                            padding: '1.25rem',
-                        }}>
-                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#ff6347' }}>🐛 Vulnerabilities</h3>
-
+                        <div className="bg-white/[0.02] border border-red-400/20 border-t-[3px] border-t-red-400 rounded-xl p-5">
+                            <h3 className="text-red-400 text-sm mb-4">🐛 Vulnerabilities</h3>
                             {vulnerabilities.map((vuln, i) => (
-                                <div
-                                    key={vuln.id}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '0.5rem 0',
-                                        borderBottom: i < vulnerabilities.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                                    }}
-                                >
+                                <div key={vuln.id} className={`flex justify-between items-center py-2 ${i < vulnerabilities.length - 1 ? 'border-b border-white/5' : ''}`}>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem' }}>{vuln.name}</p>
-                                        <p style={{ color: '#888', fontSize: '0.7rem' }}>{vuln.asset}</p>
+                                        <p className="text-sm">{vuln.name}</p>
+                                        <p className="text-gray-500 text-xs">{vuln.asset}</p>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                        <span style={{
-                                            padding: '2px 6px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.6rem',
-                                            background: `${SEVERITY_COLORS[vuln.severity]}20`,
-                                            color: SEVERITY_COLORS[vuln.severity],
-                                        }}>
-                                            {vuln.severity}
-                                        </span>
-                                        <span style={{
-                                            padding: '2px 6px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.6rem',
-                                            background: vuln.status === 'resolved' ? 'rgba(0,255,65,0.1)' : 'rgba(0,191,255,0.1)',
-                                            color: vuln.status === 'resolved' ? '#00ff41' : '#00bfff',
-                                        }}>
-                                            {vuln.status}
-                                        </span>
+                                    <div className="flex gap-2 items-center">
+                                        <span className="px-2 py-0.5 rounded-md text-[10px]" style={{ backgroundColor: `${SEVERITY_COLORS[vuln.severity]}20`, color: SEVERITY_COLORS[vuln.severity] }}>{vuln.severity}</span>
+                                        <span className={`px-2 py-0.5 rounded-md text-[10px] ${vuln.status === 'resolved' ? 'bg-green-400/10 text-green-400' : 'bg-cyan-400/10 text-cyan-400'}`}>{vuln.status}</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
                         {/* Compliance */}
-                        <div style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(0,255,65,0.2)',
-                            borderTop: '3px solid #00ff41',
-                            borderRadius: '12px',
-                            padding: '1.25rem',
-                        }}>
-                            <h3 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#00ff41' }}>✅ Compliance</h3>
-
+                        <div className="bg-white/[0.02] border border-green-400/20 border-t-[3px] border-t-green-400 rounded-xl p-5">
+                            <h3 className="text-green-400 text-sm mb-4">✅ Compliance</h3>
                             {compliance.map((comp, i) => (
-                                <div
-                                    key={comp.id}
-                                    style={{
-                                        marginBottom: i < compliance.length - 1 ? '0.75rem' : 0,
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                                        <p style={{ fontSize: '0.85rem' }}>{comp.framework}</p>
-                                        <span style={{ color: comp.score >= 90 ? '#00ff41' : '#ffd700', fontSize: '0.85rem' }}>{comp.score}%</span>
+                                <div key={comp.id} className={`${i < compliance.length - 1 ? 'mb-3' : ''}`}>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <p className="text-sm">{comp.framework}</p>
+                                        <span className={`text-sm ${comp.score >= 90 ? 'text-green-400' : 'text-yellow-400'}`}>{comp.score}%</span>
                                     </div>
-                                    <div style={{
-                                        height: 4,
-                                        background: '#333',
-                                        borderRadius: 2,
-                                        overflow: 'hidden',
-                                    }}>
-                                        <div style={{
-                                            width: `${comp.score}%`,
-                                            height: '100%',
-                                            background: comp.score >= 90 ? '#00ff41' : comp.score >= 80 ? '#ffd700' : '#ff6347',
-                                        }} />
+                                    <div className="h-1 bg-gray-700 rounded overflow-hidden">
+                                        <div className={`h-full ${comp.score >= 90 ? 'bg-green-400' : comp.score >= 80 ? 'bg-yellow-400' : 'bg-red-400'}`} style={{ width: `${comp.score}%` }} />
                                     </div>
                                 </div>
                             ))}
@@ -265,10 +121,7 @@ export default function SecurityHubPage() {
                     </div>
                 </div>
 
-                {/* Footer */}
-                <footer style={{ marginTop: '2rem', textAlign: 'center', color: '#888', fontSize: '0.8rem' }}>
-                    🏯 agencyos.network - Security First
-                </footer>
+                <footer className="mt-8 text-center text-gray-500 text-sm">🏯 agencyos.network - Security First</footer>
             </div>
         </div>
     )

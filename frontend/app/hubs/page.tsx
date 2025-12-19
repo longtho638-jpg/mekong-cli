@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import PremiumHubCard from '@/components/PremiumHubCard'
 
 interface Hub {
     id: string
@@ -54,10 +55,100 @@ const HUBS: Hub[] = [
     { id: 'settings', name: 'Settings', icon: '⚙️', path: '/settings', description: 'Configuration', color: '#8a2be2', stats: [{ label: 'Integrations', value: '4/5' }, { label: 'Team', value: '3' }] },
     // Entrepreneur
     { id: 'entrepreneur', name: 'Entrepreneur', icon: '🚀', path: '/entrepreneur', description: 'Ventures & OKRs', color: '#ff69b4', stats: [{ label: 'Ventures', value: '3' }, { label: 'Revenue', value: '$85K' }] },
+    // VC Studio
+    { id: 'binhphap', name: 'Binh Pháp', icon: '🏯', path: '/binhphap', description: '13 Chapters Wisdom', color: '#ff0000', stats: [{ label: 'Chapters', value: '13' }, { label: 'Services', value: '$85K+' }] },
+    { id: 'dealflow', name: 'Deal Flow', icon: '🎯', path: '/dealflow', description: 'Startup Pipeline', color: '#8a2be2', stats: [{ label: 'Pipeline', value: '$1.5M' }, { label: 'Deals', value: '5' }] },
+    { id: 'portfolio', name: 'Portfolio', icon: '💎', path: '/portfolio', description: 'Venture Metrics', color: '#00ff41', stats: [{ label: 'AUM', value: '$400K' }, { label: 'IRR', value: '85%' }] },
 ]
 
+const COLUMNS = 5 // Approximate grid columns
+
 export default function HubsIndexPage() {
-    const [hubs] = useState(HUBS)
+    const router = useRouter()
+    const [filter, setFilter] = useState('')
+    const [focusIndex, setFocusIndex] = useState(-1)
+    const [showKeyboardHints, setShowKeyboardHints] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    // Filter hubs based on search
+    const filteredHubs = HUBS.filter(hub =>
+        hub.name.toLowerCase().includes(filter.toLowerCase()) ||
+        hub.description.toLowerCase().includes(filter.toLowerCase()) ||
+        hub.id.toLowerCase().includes(filter.toLowerCase())
+    )
+
+    // Handle keyboard navigation
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        // Ignore if typing in input or other elements
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+            if (e.key === 'Escape') {
+                setFilter('')
+                inputRef.current?.blur()
+                setFocusIndex(0)
+            } else if (e.key === 'Enter' && focusIndex >= 0 && focusIndex < filteredHubs.length) {
+                e.preventDefault()
+                router.push(filteredHubs[focusIndex].path)
+            }
+            return
+        }
+
+        const total = filteredHubs.length
+
+        switch (e.key) {
+            case 'ArrowRight':
+                e.preventDefault()
+                setFocusIndex(prev => (prev + 1) % total)
+                break
+            case 'ArrowLeft':
+                e.preventDefault()
+                setFocusIndex(prev => (prev - 1 + total) % total)
+                break
+            case 'ArrowDown':
+                e.preventDefault()
+                setFocusIndex(prev => Math.min(prev + COLUMNS, total - 1))
+                break
+            case 'ArrowUp':
+                e.preventDefault()
+                setFocusIndex(prev => Math.max(prev - COLUMNS, 0))
+                break
+            case 'Enter':
+                if (focusIndex >= 0 && focusIndex < total) {
+                    e.preventDefault()
+                    router.push(filteredHubs[focusIndex].path)
+                }
+                break
+            case 'Escape':
+                setFilter('')
+                setFocusIndex(-1)
+                break
+            case '/':
+                e.preventDefault()
+                inputRef.current?.focus()
+                break
+            default:
+                // Start typing to filter
+                if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                    inputRef.current?.focus()
+                }
+        }
+    }, [filteredHubs, focusIndex, router])
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown)
+        // Show hints after a delay
+        const timer = setTimeout(() => setShowKeyboardHints(true), 2000)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+            clearTimeout(timer)
+        }
+    }, [handleKeyDown])
+
+    // Reset focus when filter changes
+    useEffect(() => {
+        if (filter && focusIndex === -1) {
+            setFocusIndex(0)
+        }
+    }, [filter, focusIndex])
 
     return (
         <div style={{
@@ -92,7 +183,7 @@ export default function HubsIndexPage() {
             <div style={{ maxWidth: 1600, margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
                 {/* Header */}
-                <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                <header style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <motion.h1
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -106,69 +197,155 @@ export default function HubsIndexPage() {
                         transition={{ delay: 0.2 }}
                         style={{ color: '#888', fontSize: '1rem', letterSpacing: '0.2em' }}
                     >
-                        WIN-WIN-WIN COMMAND CENTER • 30 DEPARTMENTS
+                        WIN-WIN-WIN COMMAND CENTER • {filteredHubs.length} DEPARTMENTS
                     </motion.p>
+
+                    {/* Search Filter */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4 }}
-                        style={{
-                            marginTop: '1rem',
-                            display: 'inline-block',
-                            padding: '0.5rem 1.5rem',
-                            background: 'rgba(255,0,0,0.1)',
-                            border: '1px solid rgba(255,0,0,0.3)',
-                            borderRadius: '20px',
-                            fontSize: '0.8rem',
-                            color: '#ff6347',
-                        }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        style={{ marginTop: '1.5rem', display: 'inline-block', position: 'relative' }}
                     >
-                        &quot;Bất chiến nhi khuất nhân chi binh&quot; - Win Without Fighting
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            placeholder="🔍 Type to filter hubs... (or press /)"
+                            style={{
+                                width: 360,
+                                padding: '0.75rem 1.25rem',
+                                background: 'rgba(255,255,255,0.03)',
+                                border: filter ? '1px solid rgba(0,191,255,0.5)' : '1px solid rgba(255,255,255,0.1)',
+                                borderRadius: '12px',
+                                color: '#fff',
+                                fontSize: '0.9rem',
+                                outline: 'none',
+                                transition: 'all 0.3s ease',
+                            }}
+                        />
+                        {filter && (
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                onClick={() => setFilter('')}
+                                style={{
+                                    position: 'absolute',
+                                    right: 12,
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#888',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                }}
+                            >
+                                ESC
+                            </motion.button>
+                        )}
                     </motion.div>
                 </header>
 
-                {/* Hub Grid */}
+                {/* Premium Hub Grid */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 1fr)',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
                     gap: '1.25rem',
                 }}>
-                    {hubs.map((hub, i) => (
-                        <Link href={hub.path} key={hub.id} style={{ textDecoration: 'none' }}>
+                    <AnimatePresence mode="popLayout">
+                        {filteredHubs.map((hub, i) => (
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05 }}
-                                whileHover={{ scale: 1.03, y: -5 }}
-                                style={{
-                                    background: 'rgba(255,255,255,0.02)',
-                                    border: `1px solid ${hub.color}30`,
-                                    borderTop: `3px solid ${hub.color}`,
-                                    borderRadius: '12px',
-                                    padding: '1.25rem',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                }}
+                                key={hub.id}
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                style={{ position: 'relative' }}
                             >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                                    <span style={{ fontSize: '1.75rem' }}>{hub.icon}</span>
-                                    <div>
-                                        <h3 style={{ fontSize: '1rem', color: hub.color, marginBottom: '0.1rem' }}>{hub.name}</h3>
-                                        <p style={{ color: '#888', fontSize: '0.7rem' }}>{hub.description}</p>
-                                    </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '1rem' }}>
-                                    {hub.stats.map((stat, j) => (
-                                        <div key={j}>
-                                            <p style={{ color: '#fff', fontSize: '1rem', fontWeight: 'bold' }}>{stat.value}</p>
-                                            <p style={{ color: '#666', fontSize: '0.6rem', textTransform: 'uppercase' }}>{stat.label}</p>
-                                        </div>
-                                    ))}
-                                </div>
+                                {/* Focus ring */}
+                                {focusIndex === i && (
+                                    <motion.div
+                                        layoutId="focus-ring"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        style={{
+                                            position: 'absolute',
+                                            inset: -4,
+                                            border: `2px solid ${hub.color}`,
+                                            borderRadius: '20px',
+                                            boxShadow: `0 0 20px ${hub.color}50`,
+                                            pointerEvents: 'none',
+                                            zIndex: 10,
+                                        }}
+                                    />
+                                )}
+                                <PremiumHubCard {...hub} index={i} />
                             </motion.div>
-                        </Link>
-                    ))}
+                        ))}
+                    </AnimatePresence>
                 </div>
+
+                {/* Empty state */}
+                {filteredHubs.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        style={{
+                            textAlign: 'center',
+                            padding: '4rem',
+                            color: '#666',
+                        }}
+                    >
+                        <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</p>
+                        <p>No hubs found for &quot;{filter}&quot;</p>
+                        <button
+                            onClick={() => setFilter('')}
+                            style={{
+                                marginTop: '1rem',
+                                padding: '0.5rem 1rem',
+                                background: 'rgba(255,0,0,0.1)',
+                                border: '1px solid rgba(255,0,0,0.3)',
+                                borderRadius: '8px',
+                                color: '#ff6347',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Clear Filter
+                        </button>
+                    </motion.div>
+                )}
+
+                {/* Keyboard Hints */}
+                <AnimatePresence>
+                    {showKeyboardHints && !filter && focusIndex === -1 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            style={{
+                                position: 'fixed',
+                                bottom: '2rem',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                display: 'flex',
+                                gap: '1.5rem',
+                                padding: '0.75rem 1.5rem',
+                                background: 'rgba(0,0,0,0.8)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                borderRadius: '12px',
+                                fontSize: '0.75rem',
+                                color: '#888',
+                            }}
+                        >
+                            <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginRight: '4px' }}>↑↓←→</kbd> Navigate</span>
+                            <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginRight: '4px' }}>Enter</kbd> Open</span>
+                            <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginRight: '4px' }}>/</kbd> Search</span>
+                            <span><kbd style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginRight: '4px' }}>⌘K</kbd> Command</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Footer */}
                 <footer style={{ marginTop: '3rem', textAlign: 'center' }}>

@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
+// @ts-ignore
+const MotionDiv = motion.div
+
+
 // Types
 interface CostData {
     actual: number
@@ -92,7 +96,7 @@ export default function CostsDashboard() {
                 </header>
 
                 {/* Savings Hero */}
-                <motion.div
+                <MotionDiv
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     style={{
@@ -143,7 +147,7 @@ export default function CostsDashboard() {
                             <span style={{ fontSize: '0.7rem', color: '#888' }}>saved</span>
                         </div>
                     </div>
-                </motion.div>
+                </MotionDiv>
 
                 {/* Grid */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
@@ -157,7 +161,7 @@ export default function CostsDashboard() {
                     }}>
                         <h3 style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#888' }}>PROVIDER BREAKDOWN</h3>
                         {providers.map((provider, i) => (
-                            <motion.div
+                            <MotionDiv
                                 key={provider.name}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -172,14 +176,14 @@ export default function CostsDashboard() {
                                     <span style={{ color: '#888' }}>${provider.cost.toFixed(2)} ({provider.percent}%)</span>
                                 </div>
                                 <div style={{ height: 6, background: '#222', borderRadius: 3, overflow: 'hidden' }}>
-                                    <motion.div
+                                    <MotionDiv
                                         initial={{ width: 0 }}
                                         animate={{ width: `${provider.percent}%` }}
                                         transition={{ delay: i * 0.1, duration: 0.5 }}
                                         style={{ height: '100%', background: provider.color }}
                                     />
                                 </div>
-                            </motion.div>
+                            </MotionDiv>
                         ))}
                     </div>
 
@@ -192,7 +196,7 @@ export default function CostsDashboard() {
                     }}>
                         <h3 style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#888' }}>BUDGET PROGRESS</h3>
                         {budgets.map((budget, i) => (
-                            <motion.div
+                            <MotionDiv
                                 key={budget.name}
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -206,7 +210,7 @@ export default function CostsDashboard() {
                                     </span>
                                 </div>
                                 <div style={{ height: 8, background: '#222', borderRadius: 4, overflow: 'hidden' }}>
-                                    <motion.div
+                                    <MotionDiv
                                         initial={{ width: 0 }}
                                         animate={{ width: `${budget.percent}%` }}
                                         transition={{ delay: i * 0.1, duration: 0.5 }}
@@ -216,7 +220,7 @@ export default function CostsDashboard() {
                                         }}
                                     />
                                 </div>
-                            </motion.div>
+                            </MotionDiv>
                         ))}
 
                         <div style={{
@@ -243,7 +247,7 @@ export default function CostsDashboard() {
                         <h3 style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#888' }}>DAILY COST TREND</h3>
                         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem', height: 120 }}>
                             {DAILY_TREND.map((day, i) => (
-                                <motion.div
+                                <MotionDiv
                                     key={day.day}
                                     initial={{ height: 0 }}
                                     animate={{ height: `${(day.cost / maxCost) * 100}%` }}
@@ -275,7 +279,7 @@ export default function CostsDashboard() {
                                     }}>
                                         ${day.cost}
                                     </div>
-                                </motion.div>
+                                </MotionDiv>
                             ))}
                         </div>
                     </div>

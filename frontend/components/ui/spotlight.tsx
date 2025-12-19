@@ -1,6 +1,4 @@
-"use client";
-import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import { cn } from "@/lib/utils";
 
 type SpotlightProps = {
@@ -8,87 +6,51 @@ type SpotlightProps = {
     fill?: string;
 };
 
-export const Spotlight = ({ className, fill = "white" }: SpotlightProps) => {
+export const Spotlight = ({ className, fill }: SpotlightProps) => {
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+        <svg
             className={cn(
-                "pointer-events-none absolute inset-0 z-0 h-full w-full",
+                "animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
                 className
             )}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 3787 2842"
+            fill="none"
         >
-            <svg
-                className="h-full w-full"
-                viewBox="0 0 1000 1000"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <defs>
-                    <radialGradient
-                        id="spotlight-gradient"
-                        cx="50%"
-                        cy="0%"
-                        r="100%"
-                        gradientUnits="userSpaceOnUse"
-                    >
-                        <stop offset="0%" stopColor={fill} stopOpacity="0.3" />
-                        <stop offset="50%" stopColor={fill} stopOpacity="0.1" />
-                        <stop offset="100%" stopColor={fill} stopOpacity="0" />
-                    </radialGradient>
-                </defs>
+            <g filter="url(#filter)">
                 <ellipse
-                    cx="500"
-                    cy="0"
-                    rx="800"
-                    ry="600"
-                    fill="url(#spotlight-gradient)"
+                    cx="1924.71"
+                    cy="273.501"
+                    rx="1924.71"
+                    ry="273.501"
+                    transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
+                    fill={fill || "white"}
+                    fillOpacity="0.21"
                 />
-            </svg>
-        </motion.div>
-    );
-};
-
-export const SpotlightCard = ({
-    children,
-    className,
-}: {
-    children: React.ReactNode;
-    className?: string;
-}) => {
-    const divRef = useRef<HTMLDivElement>(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [opacity, setOpacity] = useState(0);
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!divRef.current) return;
-        const rect = divRef.current.getBoundingClientRect();
-        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-
-    const handleMouseEnter = () => setOpacity(1);
-    const handleMouseLeave = () => setOpacity(0);
-
-    return (
-        <div
-            ref={divRef}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className={cn(
-                "relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50 p-8",
-                className
-            )}
-        >
-            <div
-                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
-                style={{
-                    opacity,
-                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(120,119,198,.1), transparent 40%)`,
-                }}
-            />
-            {children}
-        </div>
+            </g>
+            <defs>
+                <filter
+                    id="filter"
+                    x="0.860352"
+                    y="0.838989"
+                    width="3785.16"
+                    height="2840.26"
+                    filterUnits="userSpaceOnUse"
+                    colorInterpolationFilters="sRGB"
+                >
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                    <feBlend
+                        mode="normal"
+                        in="SourceGraphic"
+                        in2="BackgroundImageFix"
+                        result="shape"
+                    />
+                    <feGaussianBlur
+                        stdDeviation="151"
+                        result="effect1_foregroundBlur_1065_8"
+                    />
+                </filter>
+            </defs>
+        </svg>
     );
 };
