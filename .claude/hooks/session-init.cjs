@@ -265,11 +265,13 @@ function getCodingLevelStyleName(level) {
 /**
  * Get coding level guidelines by reading from output-styles .md files
  * This ensures single source of truth - users can customize the .md files directly
- * @param {number} level - Coding level (0-5)
- * @returns {string|null} Guidelines text (frontmatter stripped) or null for god mode
+ * @param {number} level - Coding level (-1 to 5)
+ * @returns {string|null} Guidelines text (frontmatter stripped) or null if disabled
  */
 function getCodingLevelGuidelines(level) {
-  if (level === 5) return null; // God mode - no injection
+  // -1 = disabled (no injection, saves tokens)
+  // 5 = god mode (still injects minimal guidelines)
+  if (level === -1 || level === null || level === undefined) return null;
 
   const styleName = getCodingLevelStyleName(level);
   const stylePath = path.join(__dirname, '..', 'output-styles', `${styleName}.md`);
@@ -433,8 +435,8 @@ async function main() {
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);
 
-    // Auto-inject coding level guidelines (if not god mode)
-    const codingLevel = config.codingLevel ?? 5;
+    // Auto-inject coding level guidelines (if not disabled)
+    const codingLevel = config.codingLevel ?? -1;
     const guidelines = getCodingLevelGuidelines(codingLevel);
     if (guidelines) {
       console.log(`\n${guidelines}`);
