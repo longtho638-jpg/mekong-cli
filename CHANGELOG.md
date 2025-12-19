@@ -1,3 +1,13 @@
+## [1.21.0-beta.35](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.34...v1.21.0-beta.35) (2025-12-19)
+
+
+### 🚀 Features
+
+* **ck-help:** add codingLevel documentation and brainstorm integration ([5de45fb](https://github.com/claudekit/claudekit-engineer/commit/5de45fbd07af139749246d8ea14705c51524a8a9))
+* **coding-level:** add -1 as disabled default for token efficiency ([d16c889](https://github.com/claudekit/claudekit-engineer/commit/d16c889f886d48d4277d1127ff0a72f1f40d21a3))
+* **hooks:** add codingLevel config for adaptive communication ([35a030f](https://github.com/claudekit/claudekit-engineer/commit/35a030fd7dd515979ffa1f077f7265e738c0f593)), closes [#158](https://github.com/claudekit/claudekit-engineer/issues/158)
+* **output-styles:** comprehensive rewrite with MUST/NEVER rules ([4e2dbf5](https://github.com/claudekit/claudekit-engineer/commit/4e2dbf537ede36cbc29858f666e24ff45254178d))
+
 ## [1.21.0-beta.34](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.33...v1.21.0-beta.34) (2025-12-18)
 
 
