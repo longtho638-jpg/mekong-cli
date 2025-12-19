@@ -455,6 +455,10 @@ function loadConfig(options = {}) {
     if (includeAssertions) {
       result.assertions = merged.assertions || [];
     }
+    // Coding level for output style selection (-1 to 5, default: -1 = disabled)
+    // -1 = disabled (no injection, saves tokens)
+    // 0-5 = inject corresponding level guidelines
+    result.codingLevel = merged.codingLevel ?? -1;
 
     return sanitizeConfig(result, projectRoot);
   } catch (e) {
@@ -468,7 +472,8 @@ function loadConfig(options = {}) {
 function getDefaultConfig(includeProject = true, includeAssertions = true, includeLocale = true) {
   const result = {
     plan: { ...DEFAULT_CONFIG.plan },
-    paths: { ...DEFAULT_CONFIG.paths }
+    paths: { ...DEFAULT_CONFIG.paths },
+    codingLevel: -1  // Default: disabled (no injection, saves tokens)
   };
   if (includeLocale) {
     result.locale = { ...DEFAULT_CONFIG.locale };
