@@ -1,5 +1,5 @@
 {
-  "codingLevel": 5,
+  "codingLevel": -1,
   "privacyBlock": true,
   "plan": {
     "namingFormat": "{date}-{issue}-{slug}",
