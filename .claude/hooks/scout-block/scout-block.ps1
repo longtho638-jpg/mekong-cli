@@ -7,16 +7,17 @@
 #   - Blocked: cd node_modules, ls build/, cat dist/file.js
 #   - Allowed: npm build, pnpm build, yarn build, npm run build
 
-# Read JSON input from stdin
+param()
+
+# 1. Read Input
+# -----------------------------------------------------------------------------
 $inputJson = $input | Out-String
 
-# Validate input not empty
 if ([string]::IsNullOrWhiteSpace($inputJson)) {
     Write-Error "ERROR: Empty input"
     exit 2
 }
 
-# Parse JSON (PowerShell 5.1+ compatible)
 try {
     $hookData = $inputJson | ConvertFrom-Json
 } catch {
@@ -24,53 +25,66 @@ try {
     exit 2
 }
 
-# Validate JSON structure
 if (-not $hookData.tool_input) {
-    Write-Error "ERROR: Invalid JSON structure - missing tool_input"
-    exit 2
+    # Fail-open: if structure is weird, allow it to proceed rather than blocking valid tools
+    Write-Host "ALLOWED"
+    exit 0
 }
 
-# Extract tool input
 $toolInput = $hookData.tool_input
 
-# Determine script directory and .claude folder for .ckignore lookup
-# Script is at .claude/hooks/scout-block/scout-block.ps1, so go 2 levels up to .claude/
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$hooksDir = Split-Path -Parent $scriptDir
-$claudeDir = Split-Path -Parent $hooksDir
-$ckignoreFile = Join-Path $claudeDir ".ckignore"
 
-# Default blocked patterns
-$blockedPatterns = @('node_modules', '__pycache__', '\.git', 'dist', 'build')
-
-# Read patterns from .ckignore if it exists
-if (Test-Path $ckignoreFile) {
-    $patterns = Get-Content $ckignoreFile |
-        ForEach-Object { $_.Trim() } |
-        Where-Object { $_ -and -not $_.StartsWith('#') }
-    if ($patterns.Count -gt 0) {
-        # Escape special regex characters
-        $blockedPatterns = $patterns | ForEach-Object { [regex]::Escape($_) }
+# 2. Configuration Setup
+# -----------------------------------------------------------------------------
+function Get-BlockedPatterns {
+    $defaults = @('node_modules', '__pycache__', '\.git', 'dist', 'build')
+    
+    try {
+        # Script is at .claude/hooks/scout-block/scout-block.ps1
+        $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+        $claudeDir = Split-Path -Parent (Split-Path -Parent $scriptDir)
+        $ckignoreFile = Join-Path $claudeDir ".ckignore"
+        
+        if (Test-Path $ckignoreFile) {
+            $patterns = Get-Content $ckignoreFile -ErrorAction SilentlyContinue |
+                ForEach-Object { $_.Trim() } |
+                Where-Object { $_ -and -not $_.StartsWith('#') }
+            
+            if ($patterns.Count -gt 0) {
+                # Escape special regex characters for usage in regex pattern
+                return $patterns | ForEach-Object { [regex]::Escape($_) }
+            }
+        }
+    } catch {
+        # Ignore errors, fallback to defaults
     }
+    
+    return $defaults
 }
 
-# Build dynamic pattern group
+$blockedPatterns = Get-BlockedPatterns
+
+# 3. Build Regex Patterns
+# -----------------------------------------------------------------------------
 $patternGroup = $blockedPatterns -join '|'
 
 # Pattern for directory paths (used for file_path, path, pattern)
-# Handles both forward slashes (/) and backslashes (\) for cross-platform support
-$blockedDirPattern = "(^|[/\\]|\s)($patternGroup)([/\\]|`$|\s)"
+# Handles both forward slashes (/) and backslashes (\)
+$blockedDirPattern = "(^|[/\]|\s)($patternGroup)([/\]|`$|\s)"
 
-# Pattern for Bash commands - only block directory access, not build commands
-# Blocks: cd node_modules, ls build/, cat dist/file.js
-# Allows: npm build, pnpm build, yarn build, npm run build
-$blockedBashPattern = "(cd\s+|ls\s+|cat\s+|rm\s+|cp\s+|mv\s+|find\s+)($patternGroup)([/\\]|`$|\s)|(\s|^|[/\\])($patternGroup)[/\\]"
+# Pattern for Bash commands - only block directory access
+# Blocks: cd node_modules, ls build/
+$blockedBashPattern = "(cd\s+|ls\s+|cat\s+|rm\s+|cp\s+|mv\s+|find\s+)($patternGroup)([/\]|`$|\s)|(\s|^|[/\])($patternGroup)[/\]"
 
-# Check file path parameters (strict blocking)
+
+# 4. Check Parameters
+# -----------------------------------------------------------------------------
+
+# Check File Parameters
 $fileParams = @(
-    $toolInput.file_path,    # Read, Edit, Write tools
-    $toolInput.path,         # Grep, Glob tools
-    $toolInput.pattern       # Glob, Grep tools
+    $toolInput.file_path,
+    $toolInput.path,
+    $toolInput.pattern
 )
 
 foreach ($param in $fileParams) {
@@ -81,7 +95,7 @@ foreach ($param in $fileParams) {
     }
 }
 
-# Check Bash command (selective blocking - only directory access)
+# Check Command Parameter
 if ($toolInput.command -and ($toolInput.command -is [string])) {
     if ($toolInput.command -match $blockedBashPattern) {
         $patternList = ($blockedPatterns -replace '\\', '') -join ', '
@@ -90,5 +104,5 @@ if ($toolInput.command -and ($toolInput.command -is [string])) {
     }
 }
 
-# Allow command to proceed (exit 0)
+# Explicitly allowed
 exit 0

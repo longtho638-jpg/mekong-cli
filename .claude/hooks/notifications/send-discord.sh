@@ -1,75 +1,117 @@
 #!/bin/bash
 
 # Usage: ./send-discord.sh 'Your message here'
-# Note: Remember to escape the string
+# Sends a formatted embed notification to a Discord Webhook.
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# --- Helper Functions ---
+
+log_info() {
+    echo "ℹ️  $1"
+}
+
+log_error() {
+    echo "❌ $1" >&2
+}
+
+log_warn() {
+    echo "⚠️  $1"
+}
 
 # Load environment variables with priority: process.env > .claude/.env > .claude/hooks/.env
 load_env() {
-    # 1. Start with lowest priority: .claude/hooks/.env
-    if [[ -f "$(dirname "$0")/.env" ]]; then
+    local script_dir="$(dirname "$0")"
+    local project_root="$script_dir/../../.." # Assuming script is in .claude/hooks/notifications
+
+    # 1. Start with lowest priority: .claude/hooks/notifications/.env
+    if [[ -f "$script_dir/.env" ]]; then
         set -a
-        source "$(dirname "$0")/.env"
+        source "$script_dir/.env"
         set +a
     fi
 
     # 2. Override with .claude/.env
-    if [[ -f .claude/.env ]]; then
+    if [[ -f "$project_root/.claude/.env" ]]; then
         set -a
-        source .claude/.env
+        source "$project_root/.claude/.env"
         set +a
     fi
 
-    # 3. Process env (already loaded) has highest priority - no action needed
-    # Variables already in process.env will not be overwritten by 'source'
+    # 3. Process env has highest priority (handled natively by shell)
 }
+
+escape_json_string() {
+    local input="$1"
+    # Basic JSON escaping: backslashes and double quotes
+    # For robust escaping, a tool like 'jq' is preferred if available
+    input="${input//\\/\\\\}"
+    input="${input//"/\"}"
+    # Replace newlines with literal \n
+    input="${input//$'
+'/\\n}"
+    input="${input//$''/}"
+    echo "$input"
+}
+
+# --- Main Logic ---
 
 load_env
 
 message="$1"
-    
+
 if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
-    echo "⚠️  Discord notification skipped: DISCORD_WEBHOOK_URL not set"
+    log_warn "Discord notification skipped: DISCORD_WEBHOOK_URL not set"
+    exit 0 # Exit gracefully so as not to break the hook chain
+fi
+
+if [[ -z "$message" ]]; then
+    log_error "Usage: $0 'Your message here'"
     exit 1
 fi
 
-# Prepare message for Discord (Discord markdown supports \n)
-discord_message="$message"
+project_name="$(basename "$(pwd)")"
+timestamp="$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
+session_time="$(date '+%H:%M:%S')"
+escaped_message="$(escape_json_string "$message")"
 
-# Discord embeds for richer formatting
+# Construct JSON payload
+# Using a Here-Doc for readability
 payload=$(cat <<EOF
 {
-"embeds": [{
+  "embeds": [{
     "title": "🤖 Claude Code Session Complete",
-    "description": "$discord_message",
+    "description": "$escaped_message",
     "color": 5763719,
-    "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
+    "timestamp": "$timestamp",
     "footer": {
-        "text": "Project Name • $(basename "$(pwd)")"
+        "text": "Project Name • $project_name"
     },
     "fields": [
         {
             "name": "⏰ Session Time",
-            "value": "$(date '+%H:%M:%S')",
+            "value": "$session_time",
             "inline": true
         },
         {
             "name": "📂 Project",
-            "value": "$(basename "$(pwd)")",
+            "value": "$project_name",
             "inline": true
         }
     ]
-}]
+  }]
 }
 EOF
 )
 
-curl -s -X POST "$DISCORD_WEBHOOK_URL" \
+# Send request
+response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$DISCORD_WEBHOOK_URL" \
     -H "Content-Type: application/json" \
-    -d "$payload" >/dev/null 2>&1
+    -d "$payload")
 
-if [[ $? -eq 0 ]]; then
-    echo "✅ Discord notification sent"
+if [[ "$response" -ge 200 && "$response" -lt 300 ]]; then
+    log_info "Discord notification sent"
 else
-    echo "❌ Failed to send Discord notification"
+    log_error "Failed to send Discord notification (HTTP $response)"
     exit 1
 fi

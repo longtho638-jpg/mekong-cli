@@ -5,217 +5,212 @@
 
 set -euo pipefail
 
+# --- Helper Functions ---
+
+log_info() {
+    echo "ℹ️  $1" >&2
+}
+
+log_error() {
+    echo "❌ $1" >&2
+}
+
+log_warn() {
+    echo "⚠️  $1" >&2
+}
+
+check_dependency() {
+    if ! command -v "$1" &> /dev/null;
+ then
+        log_warn "Missing dependency: $1. Notification skipped."
+        exit 0
+    fi
+}
+
+escape_json_string() {
+    local input="$1"
+    # jq can handle escaping reliably
+    echo "$input" | jq -R . | sed 's/^"//;s/"$//'
+}
+
+# --- Configuration & Setup ---
+
 # Load environment variables with priority: process.env > .claude/.env > .claude/hooks/.env
 load_env() {
+    local script_dir="$(dirname "$0")"
+    local project_root="$script_dir/../../.." # Assuming script is in .claude/hooks/notifications
+
     # 1. Start with lowest priority: .claude/hooks/.env
-    if [[ -f "$(dirname "$0")/.env" ]]; then
+    if [[ -f "$script_dir/.env" ]]; then
         set -a
-        source "$(dirname "$0")/.env"
+        source "$script_dir/.env"
         set +a
     fi
 
     # 2. Override with .claude/.env
-    if [[ -f .claude/.env ]]; then
+    if [[ -f "$project_root/.claude/.env" ]]; then
         set -a
-        source .claude/.env
+        source "$project_root/.claude/.env"
         set +a
     fi
 
-    # 3. Process env (already loaded) has highest priority - no action needed
-    # Variables already in process.env will not be overwritten by 'source'
+    # 3. Process env (already loaded) has highest priority
 }
+
+# --- Main Logic ---
+
+# Check critical dependencies first
+check_dependency "jq"
+check_dependency "curl"
 
 load_env
 
 # Read JSON input from stdin
+if [ -t 0 ]; then
+    log_error "No input provided on stdin."
+    exit 1
+fi
 INPUT=$(cat)
 
-# Extract relevant information from the hook input
+# Extract basic info
 HOOK_TYPE=$(echo "$INPUT" | jq -r '.hookType // "unknown"')
 PROJECT_DIR=$(echo "$INPUT" | jq -r '.projectDir // ""')
-TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId // ""')
-PROJECT_NAME=$(basename "$PROJECT_DIR")
 
-# Configuration - these will be set via environment variables
+# Default project name if empty
+if [[ -z "$PROJECT_DIR" ]]; then
+    PROJECT_NAME="Unknown Project"
+else
+    PROJECT_NAME=$(basename "$PROJECT_DIR")
+fi
+
+TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+DISPLAY_TIME=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Check configuration
 DISCORD_WEBHOOK_URL="${DISCORD_WEBHOOK_URL:-}"
-
-# Validate required environment variables
 if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
-    echo "⚠️  Discord notification skipped: DISCORD_WEBHOOK_URL not set" >&2
+    log_warn "Discord notification skipped: DISCORD_WEBHOOK_URL not set"
     exit 0
 fi
 
-# Function to send Discord message with embeds
 send_discord_embed() {
     local title="$1"
     local description="$2"
     local color="$3"
     local fields="$4"
 
-    local payload=$(cat <<EOF
-{
-    "embeds": [{
-        "title": "$title",
-        "description": "$description",
-        "color": $color,
-        "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
-        "footer": {
-            "text": "Project Name • ${PROJECT_NAME}"
-        },
-        "fields": $fields
-    }]
-}
-EOF
-)
+    # Use jq to construct the payload safely
+    local payload=$(jq -n \
+        --arg title "$title" \
+        --arg desc "$description" \
+        --argjson color "$color" \
+        --arg time "$TIMESTAMP" \
+        --arg footer "Project Name • $PROJECT_NAME" \
+        --argjson fields "$fields" \
+        '{ 
+            embeds: [{
+                title: $title,
+                description: $desc,
+                color: $color,
+                timestamp: $time,
+                footer: { text: $footer },
+                fields: $fields
+            }]
+        }')
 
-    curl -s -X POST "$DISCORD_WEBHOOK_URL" \
+    local response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$DISCORD_WEBHOOK_URL" \
         -H "Content-Type: application/json" \
-        -d "$payload" > /dev/null 2>&1
+        -d "$payload")
+
+    if [[ "$response" -ge 200 && "$response" -lt 300 ]]; then
+        log_info "Discord notification sent"
+    else
+        log_error "Failed to send Discord notification (HTTP $response)"
+    fi
 }
 
-# Generate summary based on hook type
+# --- Event Handling ---
+
 case "$HOOK_TYPE" in
     "Stop")
-        # Extract tool usage summary
+        # Build Tools Text
         TOOLS_USED=$(echo "$INPUT" | jq -r '.toolsUsed[]?.tool // empty' | sort | uniq -c | sort -nr)
-        FILES_MODIFIED=$(echo "$INPUT" | jq -r '.toolsUsed[]? | select(.tool == "Edit" or .tool == "Write" or .tool == "MultiEdit") | .parameters.file_path // empty' | sort | uniq)
-
-        # Count operations
-        TOTAL_TOOLS=$(echo "$INPUT" | jq '.toolsUsed | length')
-
-        # Build description
-        DESCRIPTION="✅ Claude Code session completed successfully"
-
-        # Build tools used text
-        TOOLS_TEXT=""
         if [[ -n "$TOOLS_USED" ]]; then
-            TOOLS_TEXT=$(echo "$TOOLS_USED" | while read count tool; do
-                echo "• **${count}** ${tool}"
-            done | paste -sd '\n' -)
+            # Format: "**3** ToolName"
+            TOOLS_TEXT=$(echo "$TOOLS_USED" | awk '{print "• **" $1 "** " $2}' | paste -sd '\n' -)
         else
             TOOLS_TEXT="No tools used"
         fi
+        
+        # Build Files Modified Text
+        # Complex jq filter to get unique files from specific tools
+        FILES_MODIFIED=$(echo "$INPUT" | jq -r '
+            .toolsUsed[]? 
+            | select(.tool == "Edit" or .tool == "Write" or .tool == "MultiEdit") 
+            | .parameters.file_path // empty
+        ' | sort | uniq)
 
-        # Build files modified text
-        FILES_TEXT=""
         if [[ -n "$FILES_MODIFIED" ]]; then
-            FILES_TEXT=$(echo "$FILES_MODIFIED" | while IFS= read -r file; do
-                if [[ -n "$file" ]]; then
-                    relative_file=$(echo "$file" | sed "s|^${PROJECT_DIR}/||")
-                    echo "• \`${relative_file}\`"
-                fi
-            done | paste -sd '\n' -)
+             # Remove project dir prefix if present for cleaner display
+             FILES_TEXT=$(echo "$FILES_MODIFIED" | sed "s|^${PROJECT_DIR}/||" | awk '{print "• `" $0 "`"}' | paste -sd '\n' -)
         else
             FILES_TEXT="No files modified"
         fi
 
-        # Build fields JSON
-        FIELDS=$(cat <<EOF
-[
-    {
-        "name": "⏰ Session Time",
-        "value": "${TIMESTAMP}",
-        "inline": true
-    },
-    {
-        "name": "🔧 Total Operations",
-        "value": "${TOTAL_TOOLS}",
-        "inline": true
-    },
-    {
-        "name": "🆔 Session ID",
-        "value": "\`${SESSION_ID:0:8}...\`",
-        "inline": true
-    },
-    {
-        "name": "📦 Tools Used",
-        "value": "${TOOLS_TEXT}",
-        "inline": false
-    },
-    {
-        "name": "📝 Files Modified",
-        "value": "${FILES_TEXT}",
-        "inline": false
-    },
-    {
-        "name": "📍 Location",
-        "value": "\`${PROJECT_DIR}\`",
-        "inline": false
-    }
-]
-EOF
-)
+        TOTAL_TOOLS=$(echo "$INPUT" | jq '.toolsUsed | length')
 
-        send_discord_embed "🤖 Claude Code Session Complete" "$DESCRIPTION" 5763719 "$FIELDS"
+        # Construct Fields JSON using jq for safety
+        FIELDS=$(jq -n \
+            --arg time "$DISPLAY_TIME" \
+            --arg ops "$TOTAL_TOOLS" \
+            --arg sid "${SESSION_ID:0:8}..." \
+            --arg tools "$TOOLS_TEXT" \
+            --arg files "$FILES_TEXT" \
+            --arg loc "$PROJECT_DIR" \
+            '[ 
+                { name: "⏰ Session Time", value: $time, inline: true },
+                { name: "🔧 Total Operations", value: $ops, inline: true },
+                { name: "🆔 Session ID", value: $sid, inline: true },
+                { name: "📦 Tools Used", value: $tools, inline: false },
+                { name: "📝 Files Modified", value: $files, inline: false },
+                { name: "📍 Location", value: ("`" + $loc + "`"), inline: false }
+            ]')
+
+        send_discord_embed "🤖 Claude Code Session Complete" "✅ Claude Code session completed successfully" 5763719 "$FIELDS"
         ;;
 
     "SubagentStop")
         SUBAGENT_TYPE=$(echo "$INPUT" | jq -r '.subagentType // "unknown"')
+        
+        FIELDS=$(jq -n \
+            --arg time "$DISPLAY_TIME" \
+            --arg type "$SUBAGENT_TYPE" \
+            --arg sid "${SESSION_ID:0:8}..." \
+            --arg loc "$PROJECT_DIR" \
+            '[ 
+                { name: "⏰ Time", value: $time, inline: true },
+                { name: "🔧 Agent Type", value: $type, inline: true },
+                { name: "🆔 Session ID", value: $sid, inline: true },
+                { name: "📍 Location", value: ("`" + $loc + "`"), inline: false }
+            ]')
 
-        DESCRIPTION="Specialized agent completed its task"
-
-        FIELDS=$(cat <<EOF
-[
-    {
-        "name": "⏰ Time",
-        "value": "${TIMESTAMP}",
-        "inline": true
-    },
-    {
-        "name": "🔧 Agent Type",
-        "value": "${SUBAGENT_TYPE}",
-        "inline": true
-    },
-    {
-        "name": "🆔 Session ID",
-        "value": "\`${SESSION_ID:0:8}...\`",
-        "inline": true
-    },
-    {
-        "name": "📍 Location",
-        "value": "\`${PROJECT_DIR}\`",
-        "inline": false
-    }
-]
-EOF
-)
-
-        send_discord_embed "🎯 Claude Code Subagent Complete" "$DESCRIPTION" 3447003 "$FIELDS"
+        send_discord_embed "🎯 Claude Code Subagent Complete" "Specialized agent completed its task" 3447003 "$FIELDS"
         ;;
 
     *)
-        DESCRIPTION="Claude Code event triggered"
+        FIELDS=$(jq -n \
+            --arg time "$DISPLAY_TIME" \
+            --arg type "$HOOK_TYPE" \
+            --arg sid "${SESSION_ID:0:8}..." \
+            --arg loc "$PROJECT_DIR" \
+            '[ 
+                { name: "⏰ Time", value: $time, inline: true },
+                { name: "📋 Event Type", value: $type, inline: true },
+                { name: "🆔 Session ID", value: $sid, inline: true },
+                { name: "📍 Location", value: ("`" + $loc + "`"), inline: false }
+            ]')
 
-        FIELDS=$(cat <<EOF
-[
-    {
-        "name": "⏰ Time",
-        "value": "${TIMESTAMP}",
-        "inline": true
-    },
-    {
-        "name": "📋 Event Type",
-        "value": "${HOOK_TYPE}",
-        "inline": true
-    },
-    {
-        "name": "🆔 Session ID",
-        "value": "\`${SESSION_ID:0:8}...\`",
-        "inline": true
-    },
-    {
-        "name": "📍 Location",
-        "value": "\`${PROJECT_DIR}\`",
-        "inline": false
-    }
-]
-EOF
-)
-
-        send_discord_embed "📝 Claude Code Event" "$DESCRIPTION" 10070709 "$FIELDS"
+        send_discord_embed "📝 Claude Code Event" "Claude Code event triggered" 10070709 "$FIELDS"
         ;;
 esac
-
-# Log the notification (optional)
-echo "✅ Discord notification sent for $HOOK_TYPE event in project $PROJECT_NAME" >&2

@@ -28,73 +28,80 @@
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-// __dirname and __filename are already available in CommonJS
+
+// --- Helper Functions ---
+
+function exitWithError(message, status = 2) {
+  if (message) {
+    console.error(`ERROR: ${message}`);
+  }
+  process.exit(status);
+}
+
+function validateInput(input) {
+  if (!input || input.trim().length === 0) {
+    throw new Error('Empty input');
+  }
+
+  try {
+    const data = JSON.parse(input);
+    if (!data.tool_input || typeof data.tool_input !== 'object') {
+      throw new Error('Invalid JSON structure');
+    }
+    return data;
+  } catch (error) {
+    throw new Error(`JSON parse failed: ${error.message}`);
+  }
+}
+
+function getScriptPath(scriptDir, platform) {
+  if (platform === 'win32') {
+    return path.join(scriptDir, 'scout-block', 'scout-block.ps1');
+  }
+  return path.join(scriptDir, 'scout-block', 'scout-block.sh');
+}
+
+function executeScript(scriptPath, input, platform) {
+  if (!fs.existsSync(scriptPath)) {
+    throw new Error(`Script not found: ${scriptPath}`);
+  }
+
+  const options = {
+    input: input,
+    stdio: ['pipe', 'inherit', 'inherit'],
+    encoding: 'utf-8'
+  };
+
+  let command;
+  if (platform === 'win32') {
+    // Windows: Use PowerShell implementation
+    command = `powershell -NoProfile -ExecutionPolicy Bypass -File "${scriptPath}"`;
+  } else {
+    // Unix (Linux, macOS, WSL): Use bash implementation
+    command = `bash "${scriptPath}"`;
+  }
+
+  execSync(command, options);
+}
+
+// --- Main Execution ---
 
 try {
   // Read stdin synchronously
   const hookInput = fs.readFileSync(0, 'utf-8');
 
-  // Validate input not empty
-  if (!hookInput || hookInput.trim().length === 0) {
-    console.error('ERROR: Empty input');
-    process.exit(2);
-  }
+  // Validate input
+  validateInput(hookInput);
 
-  // Validate JSON structure (basic check)
-  try {
-    const data = JSON.parse(hookInput);
-    if (!data.tool_input || typeof data.tool_input !== 'object') {
-      console.error('ERROR: Invalid JSON structure');
-      process.exit(2);
-    }
-  } catch (parseError) {
-    console.error('ERROR: JSON parse failed:', parseError.message);
-    process.exit(2);
-  }
-
-  // Determine platform
+  // Determine platform and script path
   const platform = process.platform;
   const scriptDir = __dirname;
+  const scriptPath = getScriptPath(scriptDir, platform);
 
-  if (platform === 'win32') {
-    // Windows: Use PowerShell implementation
-    const psScript = path.join(scriptDir, 'scout-block', 'scout-block.ps1');
+  // Execute the platform-specific script
+  executeScript(scriptPath, hookInput, platform);
 
-    // Check if PowerShell script exists
-    if (!fs.existsSync(psScript)) {
-      console.error(`ERROR: PowerShell script not found: ${psScript}`);
-      process.exit(2);
-    }
-
-    // Execute PowerShell script with stdin piped
-    execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, {
-      input: hookInput,
-      stdio: ['pipe', 'inherit', 'inherit'],
-      encoding: 'utf-8'
-    });
-  } else {
-    // Unix (Linux, macOS, WSL): Use bash implementation
-    const bashScript = path.join(scriptDir, 'scout-block', 'scout-block.sh');
-
-    // Check if bash script exists
-    if (!fs.existsSync(bashScript)) {
-      console.error(`ERROR: Bash script not found: ${bashScript}`);
-      process.exit(2);
-    }
-
-    // Execute bash script with stdin piped
-    execSync(`bash "${bashScript}"`, {
-      input: hookInput,
-      stdio: ['pipe', 'inherit', 'inherit'],
-      encoding: 'utf-8'
-    });
-  }
 } catch (error) {
-  // Log error details for debugging
-  if (error.message) {
-    console.error('ERROR:', error.message);
-  }
-
-  // Exit with error code from child process, or 2 if undefined
-  process.exit(error.status || 2);
+  // Exit with error code from child process, or 2 if undefined (our error)
+  exitWithError(error.message, error.status || 2);
 }

@@ -5,88 +5,131 @@
 
 set -euo pipefail
 
+# --- Helper Functions ---
+
+log_info() {
+    echo "ℹ️  $1" >&2
+}
+
+log_error() {
+    echo "❌ $1" >&2
+}
+
+log_warn() {
+    echo "⚠️  $1" >&2
+}
+
+check_dependency() {
+    if ! command -v "$1" &> /dev/null;
+    then
+        log_warn "Missing dependency: $1. Notification skipped."
+        exit 0
+    fi
+}
+
+# --- Configuration & Setup ---
+
 # Load environment variables with priority: process.env > .claude/.env > .claude/hooks/.env
 load_env() {
+    local script_dir="$(dirname "$0")"
+    local project_root="$script_dir/../../.." # Assuming script is in .claude/hooks/notifications
+
     # 1. Start with lowest priority: .claude/hooks/.env
-    if [[ -f "$(dirname "$0")/.env" ]]; then
+    if [[ -f "$script_dir/.env" ]]; then
         set -a
-        source "$(dirname "$0")/.env"
+        source "$script_dir/.env"
         set +a
     fi
 
     # 2. Override with .claude/.env
-    if [[ -f .claude/.env ]]; then
+    if [[ -f "$project_root/.claude/.env" ]]; then
         set -a
-        source .claude/.env
+        source "$project_root/.claude/.env"
         set +a
     fi
 
-    # 3. Process env (already loaded) has highest priority - no action needed
-    # Variables already in process.env will not be overwritten by 'source'
+    # 3. Process env (already loaded) has highest priority
 }
+
+# --- Main Logic ---
+
+# Check critical dependencies first
+check_dependency "jq"
+check_dependency "curl"
 
 load_env
 
 # Read JSON input from stdin
+if [ -t 0 ]; then
+    log_error "No input provided on stdin."
+    exit 1
+fi
 INPUT=$(cat)
 
-# Extract relevant information from the hook input
+# Extract basic info
 HOOK_TYPE=$(echo "$INPUT" | jq -r '.hookType // "unknown"')
 PROJECT_DIR=$(echo "$INPUT" | jq -r '.projectDir // ""')
-TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId // ""')
-PROJECT_NAME=$(basename "$PROJECT_DIR")
 
-# Configuration - these will be set via environment variables
+# Default project name if empty
+if [[ -z "$PROJECT_DIR" ]]; then
+    PROJECT_NAME="Unknown Project"
+else
+    PROJECT_NAME=$(basename "$PROJECT_DIR")
+fi
+
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Check configuration
 TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
 TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-}"
 
-# Validate required environment variables
 if [[ -z "$TELEGRAM_BOT_TOKEN" ]]; then
-    echo "Error: TELEGRAM_BOT_TOKEN environment variable not set" >&2
-    exit 1
+    log_warn "Telegram notification skipped: TELEGRAM_BOT_TOKEN not set"
+    exit 0
 fi
 
 if [[ -z "$TELEGRAM_CHAT_ID" ]]; then
-    echo "Error: TELEGRAM_CHAT_ID environment variable not set" >&2
-    exit 1
+    log_warn "Telegram notification skipped: TELEGRAM_CHAT_ID not set"
+    exit 0
 fi
 
-# Function to send Telegram message
 send_telegram_message() {
     local message="$1"
     local url="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
     
-    # Escape special characters for JSON
-    local escaped_message=$(echo "$message" | jq -Rs .)
+    # Use jq to construct the payload safely
+    local payload=$(jq -n \
+        --arg chat_id "$TELEGRAM_CHAT_ID" \
+        --arg text "$message" \
+        '{ 
+            chat_id: $chat_id,
+            text: $text,
+            parse_mode: "Markdown",
+            disable_web_page_preview: true
+        }')
     
-    local payload=$(cat <<EOF
-{
-    "chat_id": "${TELEGRAM_CHAT_ID}",
-    "text": ${escaped_message},
-    "parse_mode": "Markdown",
-    "disable_web_page_preview": true
-}
-EOF
-)
-    
-    curl -s -X POST \
+    local response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
         -H "Content-Type: application/json" \
         -d "$payload" \
-        "$url" > /dev/null
+        "$url")
+
+    if [[ "$response" -ge 200 && "$response" -lt 300 ]]; then
+        log_info "Telegram notification sent"
+    else
+        log_error "Failed to send Telegram notification (HTTP $response)"
+    fi
 }
 
-# Generate summary based on hook type
+# --- Event Handling ---
+
 case "$HOOK_TYPE" in
     "Stop")
-        # Extract tool usage summary
+        # Build Tools Text
         TOOLS_USED=$(echo "$INPUT" | jq -r '.toolsUsed[]?.tool // empty' | sort | uniq -c | sort -nr)
-        FILES_MODIFIED=$(echo "$INPUT" | jq -r '.toolsUsed[]? | select(.tool == "Edit" or .tool == "Write" or .tool == "MultiEdit") | .parameters.file_path // empty' | sort | uniq)
         
-        # Count operations
         TOTAL_TOOLS=$(echo "$INPUT" | jq '.toolsUsed | length')
         
-        # Build summary message
         MESSAGE="🚀 *Project Task Completed*
         
 📅 *Time:* ${TIMESTAMP}
@@ -94,22 +137,30 @@ case "$HOOK_TYPE" in
 🔧 *Total Operations:* ${TOTAL_TOOLS}
 🆔 *Session:* ${SESSION_ID:0:8}...
 
-*Tools Used:*"
+*Tools Used: *"
 
         if [[ -n "$TOOLS_USED" ]]; then
             MESSAGE="${MESSAGE}
-\`\`\`
+```
 ${TOOLS_USED}
-\`\`\`"
+```"
         else
             MESSAGE="${MESSAGE}
 None"
         fi
 
+        # Build Files Modified Text
+        FILES_MODIFIED=$(echo "$INPUT" | jq -r '
+            .toolsUsed[]? 
+            | select(.tool == "Edit" or .tool == "Write" or .tool == "MultiEdit") 
+            | .parameters.file_path // empty
+        ' | sort | uniq)
+
         if [[ -n "$FILES_MODIFIED" ]]; then
             MESSAGE="${MESSAGE}
 
-*Files Modified:*"
+*Files Modified: *"
+            # Process files line by line
             while IFS= read -r file; do
                 if [[ -n "$file" ]]; then
                     # Show relative path from project root
@@ -122,7 +173,8 @@ None"
         
         MESSAGE="${MESSAGE}
 
-📍 *Location:* \`${PROJECT_DIR}\`"
+📍 *Location:* 
+`${PROJECT_DIR}`"
         ;;
         
     "SubagentStop")
@@ -136,7 +188,8 @@ None"
 
 Specialized agent completed its task.
 
-📍 *Location:* \`${PROJECT_DIR}\`"
+📍 *Location:* 
+`${PROJECT_DIR}`"
         ;;
         
     *)
@@ -147,12 +200,10 @@ Specialized agent completed its task.
 📋 *Event:* ${HOOK_TYPE}
 🆔 *Session:* ${SESSION_ID:0:8}...
 
-📍 *Location:* \`${PROJECT_DIR}\`"
+📍 *Location:* 
+`${PROJECT_DIR}`"
         ;;
 esac
 
 # Send the notification
 send_telegram_message "$MESSAGE"
-
-# Log the notification (optional)
-echo "Telegram notification sent for $HOOK_TYPE event in project $PROJECT_NAME" >&2
