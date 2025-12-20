@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic' // Skip build-time rendering
 
 import { useState } from 'react'
 import Link from 'next/link'
