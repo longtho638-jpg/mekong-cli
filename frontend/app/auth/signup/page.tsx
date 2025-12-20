@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -54,11 +53,7 @@ export default function SignupPage() {
     if (success) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 flex items-center justify-center p-4">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="w-full max-w-md text-center"
-                >
+                <div className="w-full max-w-md text-center animate-scale-in">
                     <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8">
                         <div className="text-6xl mb-4">📧</div>
                         <h2 className="text-2xl font-bold text-white mb-2">Check your email!</h2>
@@ -72,18 +67,14 @@ export default function SignupPage() {
                             Back to Login
                         </Link>
                     </div>
-                </motion.div>
+                </div>
             </div>
         )
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
-            >
+            <div className="w-full max-w-md animate-fade-in-up">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">
@@ -189,7 +180,7 @@ export default function SignupPage() {
                         Sign in
                     </Link>
                 </p>
-            </motion.div>
+            </div>
         </div>
     )
 }

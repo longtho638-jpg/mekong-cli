@@ -489,3 +489,39 @@ body {
 .stagger-item:nth-child(6) {
   animation-delay: 0.6s;
 }
+
+/* ============================================ */
+/* AUTH PAGE ANIMATIONS (framer-motion replacement) */
+/* ============================================ */
+
+@keyframes fade-in-up-auth {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up-auth 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out forwards;
+}
