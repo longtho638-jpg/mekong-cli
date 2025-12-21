@@ -1,3 +1,16 @@
+## [1.21.0-beta.36](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.35...v1.21.0-beta.36) (2025-12-21)
+
+
+### 🚀 Features
+
+* **worktree:** add cross-platform worktree workflow command ([cfb6fc9](https://github.com/claudekit/claudekit-engineer/commit/cfb6fc98657eb8e3bcd22447c0bd24611c21c49e))
+* **worktree:** improve workflow with remove command and dry-run ([fc2b2ca](https://github.com/claudekit/claudekit-engineer/commit/fc2b2cae23c0920d82b2bbb458b8006ac70f825a))
+
+
+### ✅ Tests
+
+* **worktree:** add comprehensive test suite ([ed712e9](https://github.com/claudekit/claudekit-engineer/commit/ed712e9b2891add724c11231a093637560bd275d))
+
 ## [1.21.0-beta.35](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.34...v1.21.0-beta.35) (2025-12-19)
 
 
