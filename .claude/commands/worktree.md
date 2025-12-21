@@ -13,74 +13,114 @@ Create an isolated git worktree for parallel feature development.
 node .claude/scripts/worktree.cjs info --json
 ```
 
-Returns: `repoType`, `baseBranch`, `projects` (if monorepo), `envFiles`, `dirtyState`
+**Response fields:**
+- `repoType`: "monorepo" or "standalone"
+- `baseBranch`: detected base branch
+- `projects`: array of {name, path} for monorepo
+- `envFiles`: array of .env* files found
+- `dirtyState`: boolean
 
-### Step 2: Gather Information via AskUserQuestion
+### Step 2: Gather Info via AskUserQuestion
 
-**For MONOREPO (repoType === 'monorepo'):**
-1. If multiple projects match user input → Ask which project
-2. Ask feature description
-3. Ask branch type (feat/fix/refactor/docs/test/chore/perf)
-4. Show found `.env*` files → Ask which to copy
+**Detect branch prefix from user's description:**
+- Keywords "fix", "bug", "error", "issue" → prefix = `fix`
+- Keywords "refactor", "restructure", "rewrite" → prefix = `refactor`
+- Keywords "docs", "documentation", "readme" → prefix = `docs`
+- Keywords "test", "spec", "coverage" → prefix = `test`
+- Keywords "chore", "cleanup", "deps" → prefix = `chore`
+- Keywords "perf", "performance", "optimize" → prefix = `perf`
+- Everything else → prefix = `feat`
 
-**For STANDALONE:**
-1. Ask feature description
-2. Ask branch type
-3. Show found `.env*` files → Ask which to copy
+**For MONOREPO:** Use AskUserQuestion if project not specified:
+```javascript
+// If user said "/worktree add auth" but multiple projects exist
+AskUserQuestion({
+  questions: [{
+    header: "Project",
+    question: "Which project should the worktree be created for?",
+    options: projects.map(p => ({ label: p.name, description: p.path })),
+    multiSelect: false
+  }]
+})
+```
+
+**For env files:** Always ask which to copy:
+```javascript
+AskUserQuestion({
+  questions: [{
+    header: "Env files",
+    question: "Which environment files should be copied to the worktree?",
+    options: envFiles.map(f => ({ label: f, description: "Copy to worktree" })),
+    multiSelect: true
+  }]
+})
+```
 
 ### Step 3: Convert Description to Slug
 
-Convert feature description to kebab-case:
 - "add authentication system" → `add-auth`
-- "fix payment bug" → `payment-bug`
+- "fix login bug" → `login-bug`
+- Remove filler words, kebab-case, max 50 chars
 
-### Step 4: Create Worktree
+### Step 4: Execute Command
 
+**Monorepo:**
 ```bash
-node .claude/scripts/worktree.cjs create "<SLUG>" "<PROJECT>" --prefix <TYPE> --env "<FILES>"
+node .claude/scripts/worktree.cjs create "<PROJECT>" "<SLUG>" --prefix <TYPE> --env "<FILES>"
 ```
 
-Arguments:
-- `<SLUG>` - Kebab-case feature name (required)
-- `<PROJECT>` - Project name for monorepo (optional for standalone)
+**Standalone:**
+```bash
+node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE> --env "<FILES>"
+```
+
+**Options:**
 - `--prefix` - Branch type: feat|fix|refactor|docs|test|chore|perf
 - `--env` - Comma-separated .env files to copy
 - `--json` - Output JSON for parsing
+- `--dry-run` - Preview without executing
 
-### Error Handling
+## Commands
 
-Script returns structured errors with codes:
-- `NOT_GIT_REPO` - Not in a git repository
-- `GIT_VERSION_ERROR` - Git too old (needs 2.5+)
-- `MISSING_FEATURE` - No feature name provided
-- `MISSING_PROJECT` - Monorepo requires project name
-- `PROJECT_NOT_FOUND` - Project not in .gitmodules
-- `MULTIPLE_PROJECTS_MATCH` - Ambiguous project, use AskUserQuestion
-- `BRANCH_CHECKED_OUT` - Branch already in use
-- `WORKTREE_EXISTS` - Worktree path already exists
-- `WORKTREE_CREATE_FAILED` - Git worktree command failed
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `create` | `create [project] <feature>` | Create new worktree |
+| `remove` | `remove <name-or-path>` | Remove worktree and branch |
+| `info` | `info` | Get repo info |
+| `list` | `list` | List existing worktrees |
 
-## Branch Naming
+## Error Codes
 
-Format: `[prefix]/[feature-slug]`
-
-Examples:
-- `feat/add-auth`
-- `fix/payment-bug`
-- `refactor/database-layer`
+| Code | Meaning | Action |
+|------|---------|--------|
+| `MISSING_ARGS` | Missing project/feature for monorepo | Ask for both |
+| `MISSING_FEATURE` | No feature name (standalone) | Ask for feature |
+| `PROJECT_NOT_FOUND` | Project not in .gitmodules | Show available projects |
+| `MULTIPLE_PROJECTS_MATCH` | Ambiguous project name | Use AskUserQuestion |
+| `MULTIPLE_WORKTREES_MATCH` | Ambiguous worktree for remove | Use AskUserQuestion |
+| `BRANCH_CHECKED_OUT` | Branch in use elsewhere | Suggest different name |
+| `WORKTREE_EXISTS` | Path already exists | Suggest use or remove |
+| `WORKTREE_CREATE_FAILED` | Git command failed | Show git error |
+| `WORKTREE_REMOVE_FAILED` | Cannot remove worktree | Check uncommitted changes |
 
 ## Example Session
 
 ```
-User: /worktree add user authentication
+User: /worktree fix the login validation bug
 
-Claude: [Runs info --json, detects standalone repo]
-Claude: [Uses AskUserQuestion for branch type]
-User: feat
+Claude: [Runs: node .claude/scripts/worktree.cjs info --json]
+        [Detects: standalone repo, envFiles: [".env.example"]]
+        [Detects prefix from "fix" keyword: fix]
+        [Converts slug: "login-validation-bug"]
 
-Claude: [Uses AskUserQuestion for env files: .env, .env.local, .env.example]
+Claude: [Uses AskUserQuestion for env files]
+        "Which environment files should be copied?"
+        Options: .env.example
+
 User: .env.example
 
-Claude: [Runs create command]
-node .claude/scripts/worktree.cjs create "add-user-auth" --prefix feat --env ".env.example"
+Claude: [Runs: node .claude/scripts/worktree.cjs create "login-validation-bug" --prefix fix --env ".env.example"]
+
+Output: Worktree created at ../worktrees/myrepo-login-validation-bug
+        Branch: fix/login-validation-bug
 ```

@@ -5,7 +5,8 @@
  *
  * Usage: node worktree.cjs <command> [options]
  * Commands:
- *   create <feature> [project]  Create a new worktree
+ *   create <project> <feature>  Create a new worktree (project optional for standalone)
+ *   remove <name-or-path>       Remove a worktree and its branch
  *   info                        Get repo info (type, projects, env files)
  *   list                        List existing worktrees
  *
@@ -13,6 +14,7 @@
  *   --prefix <type>    Branch prefix (feat|fix|refactor|docs|test|chore|perf)
  *   --json             Output in JSON format for LLM consumption
  *   --env <files>      Comma-separated list of .env files to copy
+ *   --dry-run          Show what would be done without executing
  */
 
 const { execSync, spawnSync } = require('child_process');
@@ -47,9 +49,15 @@ if (envIndex > -1) {
   args.splice(envIndex, 2);
 }
 
+const dryRunIndex = args.indexOf('--dry-run');
+const dryRun = dryRunIndex > -1;
+if (dryRunIndex > -1) args.splice(dryRunIndex, 1);
+
 const command = args[0];
-const feature = args[1];
-const project = args[2];
+// For create: args[1] is project (or feature for standalone), args[2] is feature
+// For remove: args[1] is worktree name or path
+const arg1 = args[1];
+const arg2 = args[2];
 
 // Output helpers
 function output(data) {
@@ -324,18 +332,34 @@ function cmdList() {
 }
 
 function cmdCreate() {
-  if (!feature) {
-    outputError('MISSING_FEATURE', 'Feature name is required', {
-      suggestion: 'Usage: node worktree.cjs create <feature> [project] --prefix <type>'
-    });
-  }
-
   const gitRoot = checkGitRepo();
   checkGitVersion();
 
   const projects = parseGitModules(gitRoot);
   const isMonorepo = projects.length > 0;
   const warnings = [];
+
+  // Parse arguments based on repo type
+  // Monorepo: create <project> <feature>
+  // Standalone: create <feature>
+  let project, feature;
+  if (isMonorepo) {
+    project = arg1;
+    feature = arg2;
+    if (!project || !feature) {
+      outputError('MISSING_ARGS', 'Both project and feature are required for monorepo', {
+        suggestion: 'Usage: node worktree.cjs create <project> <feature> --prefix <type>',
+        availableProjects: projects.map(p => p.name)
+      });
+    }
+  } else {
+    feature = arg1;
+    if (!feature) {
+      outputError('MISSING_FEATURE', 'Feature name is required', {
+        suggestion: 'Usage: node worktree.cjs create <feature> --prefix <type>'
+      });
+    }
+  }
 
   // Check dirty state
   if (checkDirtyState()) {
@@ -349,13 +373,6 @@ function cmdCreate() {
   let projectName = '';
 
   if (isMonorepo) {
-    if (!project) {
-      outputError('MISSING_PROJECT', 'Project name required for monorepo', {
-        suggestion: 'Specify project name as third argument',
-        availableProjects: projects.map(p => p.name)
-      });
-    }
-
     const matches = findMatchingProjects(projects, project);
 
     if (matches.length === 0) {
@@ -422,6 +439,28 @@ function cmdCreate() {
     });
   }
 
+  // Check if branch exists
+  const branchStatus = branchExists(branchName, workDir);
+
+  // Dry-run mode: show what would be done
+  if (dryRun) {
+    output({
+      success: true,
+      dryRun: true,
+      message: 'Dry run - no changes made',
+      wouldCreate: {
+        worktreePath,
+        branch: branchName,
+        baseBranch,
+        branchExists: !!branchStatus,
+        project: isMonorepo ? projectName : null,
+        envFilesToCopy: envFilesToCopy.length > 0 ? envFilesToCopy : undefined
+      },
+      warnings: warnings.length > 0 ? warnings : undefined
+    });
+    return;
+  }
+
   // Create worktrees directory
   try {
     fs.mkdirSync(worktreesDir, { recursive: true });
@@ -430,9 +469,6 @@ function cmdCreate() {
       suggestion: 'Check write permissions'
     });
   }
-
-  // Check if branch exists
-  const branchStatus = branchExists(branchName, workDir);
 
   // Fetch remote branch if needed
   if (branchStatus === 'remote') {
@@ -491,11 +527,119 @@ function cmdCreate() {
   });
 }
 
+function cmdRemove() {
+  if (!arg1) {
+    outputError('MISSING_WORKTREE', 'Worktree name or path is required', {
+      suggestion: 'Usage: node worktree.cjs remove <name-or-path>\nUse "node worktree.cjs list" to see available worktrees'
+    });
+  }
+
+  const gitRoot = checkGitRepo();
+  checkGitVersion();
+
+  // Get list of worktrees
+  const result = git('worktree list --porcelain', { silent: true });
+  if (!result.success) {
+    outputError('WORKTREE_LIST_ERROR', 'Failed to list worktrees');
+  }
+
+  // Parse worktrees
+  const worktrees = [];
+  let current = {};
+  result.output.split('\n').forEach(line => {
+    if (line.startsWith('worktree ')) {
+      if (current.path) worktrees.push(current);
+      current = { path: line.replace('worktree ', '') };
+    } else if (line.startsWith('branch ')) {
+      current.branch = line.replace('branch refs/heads/', '');
+    }
+  });
+  if (current.path) worktrees.push(current);
+
+  // Find matching worktree
+  const searchTerm = arg1.toLowerCase();
+  const matches = worktrees.filter(w => {
+    const name = path.basename(w.path).toLowerCase();
+    const fullPath = w.path.toLowerCase();
+    return name.includes(searchTerm) || fullPath.includes(searchTerm) ||
+           (w.branch && w.branch.toLowerCase().includes(searchTerm));
+  });
+
+  // Exclude main worktree (bare .git or the primary checkout)
+  const removableMatches = matches.filter(w => !w.path.includes('.git/'));
+
+  if (removableMatches.length === 0) {
+    outputError('WORKTREE_NOT_FOUND', `No worktree matching "${arg1}" found`, {
+      suggestion: 'Use "node worktree.cjs list" to see available worktrees',
+      availableWorktrees: worktrees.filter(w => !w.path.includes('.git/')).map(w => path.basename(w.path))
+    });
+  }
+
+  if (removableMatches.length > 1) {
+    outputError('MULTIPLE_WORKTREES_MATCH', `Multiple worktrees match "${arg1}"`, {
+      suggestion: 'Be more specific or use full path',
+      matchingWorktrees: removableMatches.map(w => ({ name: path.basename(w.path), path: w.path, branch: w.branch }))
+    });
+  }
+
+  const worktree = removableMatches[0];
+  const worktreePath = worktree.path;
+  const branchName = worktree.branch;
+
+  // Dry-run mode
+  if (dryRun) {
+    output({
+      success: true,
+      dryRun: true,
+      message: 'Dry run - no changes made',
+      wouldRemove: {
+        worktreePath,
+        branch: branchName,
+        deleteBranch: !!branchName
+      }
+    });
+    return;
+  }
+
+  // Remove worktree
+  const removeResult = git(`worktree remove "${worktreePath}" --force`, { silent: true });
+  if (!removeResult.success) {
+    outputError('WORKTREE_REMOVE_FAILED', `Failed to remove worktree: ${worktreePath}`, {
+      suggestion: removeResult.stderr || 'Check if the worktree has uncommitted changes',
+      gitError: removeResult.stderr
+    });
+  }
+
+  // Delete branch if it exists
+  let branchDeleted = false;
+  if (branchName) {
+    const deleteResult = git(`branch -d "${branchName}"`, { silent: true });
+    if (deleteResult.success) {
+      branchDeleted = true;
+    } else {
+      // Try force delete if normal delete fails
+      const forceDeleteResult = git(`branch -D "${branchName}"`, { silent: true });
+      branchDeleted = forceDeleteResult.success;
+    }
+  }
+
+  output({
+    success: true,
+    message: 'Worktree removed successfully!',
+    removedPath: worktreePath,
+    branchDeleted: branchDeleted ? branchName : null,
+    branchKept: !branchDeleted && branchName ? branchName : null
+  });
+}
+
 // Main
 function main() {
   switch (command) {
     case 'create':
       cmdCreate();
+      break;
+    case 'remove':
+      cmdRemove();
       break;
     case 'info':
       cmdInfo();
@@ -505,7 +649,7 @@ function main() {
       break;
     default:
       outputError('UNKNOWN_COMMAND', `Unknown command: ${command || '(none)'}`, {
-        suggestion: 'Available commands: create, info, list'
+        suggestion: 'Available commands: create, remove, info, list'
       });
   }
 }
