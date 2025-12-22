@@ -17,6 +17,8 @@ This directory contains hooks for Claude Code sessions.
 
 Unified Node.js notification system with multi-provider support, smart throttling, and zero dependencies.
 
+> **Note:** Notification hooks are NOT enabled by default. Follow the setup guide below to enable them.
+
 ### Supported Providers
 
 | Provider | Env Variables Required | Setup Guide |
@@ -25,30 +27,95 @@ Unified Node.js notification system with multi-provider support, smart throttlin
 | **Discord** | `DISCORD_WEBHOOK_URL` | [discord-hook-setup.md](../notifications/docs/discord-hook-setup.md) |
 | **Slack** | `SLACK_WEBHOOK_URL` | [slack-hook-setup.md](../notifications/docs/slack-hook-setup.md) |
 
-### Quick Setup
+### Setup Guide
 
-1. Copy the example env file:
-   ```bash
-   cp .claude/hooks/notifications/.env.example ~/.claude/.env
-   ```
+#### Step 1: Configure Environment Variables
 
-2. Add your credentials to `~/.claude/.env`:
-   ```bash
-   # Telegram
-   TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
-   TELEGRAM_CHAT_ID=987654321
+Copy the example and add your credentials:
 
-   # Discord
-   DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+```bash
+cp .claude/hooks/notifications/.env.example ~/.claude/.env
+```
 
-   # Slack
-   SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
-   ```
+Edit `~/.claude/.env`:
+```bash
+# Telegram (get token from @BotFather, chat_id from getUpdates API)
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=987654321
 
-3. Hooks are pre-configured in `.claude/settings.json` for:
-   - `Stop` - Main session completion
-   - `SubagentStop` - Subagent task completion
-   - `Notification` - Claude notification events
+# Discord (create webhook: Server Settings > Integrations > Webhooks)
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+
+# Slack (create app at api.slack.com/apps, enable Incoming Webhooks)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
+```
+
+Only configure the providers you want to use.
+
+#### Step 2: Enable Notification Hooks
+
+Add to your `.claude/settings.json` or `.claude/settings.local.json`:
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/notifications/notify.cjs"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/notifications/notify.cjs"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/notifications/notify.cjs"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Available Hook Events:**
+- `Stop` - Main session completion
+- `SubagentStop` - Subagent task completion
+- `Notification` - Claude notification events (input prompts, etc.)
+
+Choose only the events you want notifications for.
+
+#### Step 3: Test Your Setup
+
+```bash
+echo '{"hook_event_name":"Stop","cwd":"'$(pwd)'","session_id":"test123"}' | node .claude/hooks/notifications/notify.cjs
+```
+
+Expected output (if Telegram and Discord configured):
+```
+[env-loader] Loaded: /home/user/.claude/.env
+[notify] telegram: sent
+[notify] discord: sent
+[notify] Summary: 2/2 succeeded
+```
 
 ### Features
 
@@ -57,13 +124,7 @@ Unified Node.js notification system with multi-provider support, smart throttlin
 - **Zero Dependencies**: Uses native Node.js fetch (Node 18+)
 - **Cross-Platform**: Uses `path.basename()` for Windows compatibility
 - **Non-Blocking**: Always exits 0 to never block Claude
-
-### Testing
-
-```bash
-# Test with your configured providers
-echo '{"hook_event_name":"Stop","cwd":"'$(pwd)'","session_id":"test123"}' | node .claude/hooks/notifications/notify.cjs
-```
+- **Selective Providers**: Only configured providers receive notifications
 
 ### Architecture
 
@@ -108,6 +169,10 @@ echo '{"tool_input":{"command":"ls node_modules"}}' | node .claude/hooks/scout-b
 
 **Provider throttled:**
 - Wait 5 minutes or delete `/tmp/ck-noti-throttle.json`
+
+**Hooks not triggering:**
+- Verify hooks are added to `.claude/settings.json`
+- Check Claude Code is using correct settings file
 
 ---
 
