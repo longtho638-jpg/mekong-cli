@@ -1,5 +1,37 @@
 # Telegram Notification Hook Setup
 
+## Quick Start (Unified System - Recommended)
+
+The new unified notification system routes to all configured providers automatically.
+
+### 1. Set Environment Variables
+
+Add to `~/.claude/.env` (global) or `.claude/.env` (project):
+
+```env
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+```
+
+### 2. Enable in settings.json
+
+Hooks are already configured in `.claude/settings.json`. The unified system is enabled by default for Stop, SubagentStop, and AskUserPrompt events.
+
+### 3. Test
+
+```bash
+echo '{"hook_event_name":"Stop","cwd":"'"$(pwd)"'","session_id":"test123"}' | \
+  node .claude/hooks/notifications/notify.cjs
+```
+
+---
+
+## Legacy Bash Script Setup
+
+The original `telegram_notify.sh` is still available for backward compatibility. See below for legacy setup.
+
+---
+
 ## Overview
 
 The Telegram hook (`telegram_notify.sh`) automatically sends notifications when Claude Code sessions stop or subagents complete tasks. It provides detailed summaries including tool usage, files modified, and operation counts.
@@ -760,4 +792,4 @@ echo '{
 
 ---
 
-**Last Updated:** 2025-10-22
+**Last Updated:** 2025-12-21
