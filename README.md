@@ -82,13 +82,14 @@ A comprehensive boilerplate template for building professional software projects
 
 2. **Create your new project with ClaudeKit framework**:
    ```bash
+   mkdir my-project
    ck new --dir my-project --kit engineer
    ```
-   
+
    **Note:** If you want to use the kit with your existing project:
    ```bash
    cd /path/to/project
-   ck update --kit engineer
+   ck init --kit engineer
    ```
 
 3. **Start development**:
