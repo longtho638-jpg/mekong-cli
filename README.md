@@ -112,9 +112,9 @@ A comprehensive boilerplate template for building professional software projects
 │   ├── agents/             # Claude Code agents
 │   ├── commands/           # Claude Code commands
 │   ├── hooks/              # Claude Code hooks
+│   │   └── notifications/  # Multi-provider notification system
 │   ├── skills/             # Claude Code skills
-│   ├── CLAUDE.md           # Global development instructions
-│   └── send-discord.sh     # Notification script
+│   └── CLAUDE.md           # Global development instructions
 ├── docs/                   # Project documentation
 │   ├── codebase-summary.md # Auto-generated codebase overview
 │   ├── code-standards.md   # Development standards
@@ -513,9 +513,11 @@ claude "Plan the next development phase"
 - Create domain-specific expertise
 
 ### Integration Capabilities
-- Discord notifications for project updates
+- **Multi-provider notifications** (Telegram, Discord, Slack) with smart throttling
 - GitHub Actions integration
 - CI/CD pipeline enhancement
+
+See `.claude/hooks/notifications/docs/` for setup guides.
 
 ## Customization Guide
 
