@@ -1,5 +1,38 @@
 # Discord Notification Hook Setup
 
+## Quick Start (Unified System - Recommended)
+
+The new unified notification system fixes field name issues and routes to all providers.
+
+**Bug Fix:** The original bash script used incorrect field names (hookType, projectDir, sessionId). The new Node.js provider correctly uses snake_case fields (hook_event_name, cwd, session_id) matching Claude Code's hook input format.
+
+### 1. Set Environment Variables
+
+Add to `~/.claude/.env` (global) or `.claude/.env` (project):
+
+```env
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/xxx/yyy
+```
+
+### 2. Enable in settings.json
+
+Hooks are already configured in `.claude/settings.json`.
+
+### 3. Test
+
+```bash
+echo '{"hook_event_name":"Stop","cwd":"'"$(pwd)"'","session_id":"test123"}' | \
+  node .claude/hooks/notifications/notify.cjs
+```
+
+---
+
+## Legacy Bash Script Setup
+
+The original scripts are still available for backward compatibility.
+
+---
+
 ## Overview
 
 The Discord hook (`send-discord.sh`) sends rich embedded messages to a Discord channel when Claude Code completes implementation tasks. Messages include session time, project info, and task summaries.
@@ -409,4 +442,4 @@ fi
 
 ---
 
-**Last Updated:** 2025-10-22
+**Last Updated:** 2025-12-21
