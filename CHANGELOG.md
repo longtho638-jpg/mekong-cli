@@ -1,3 +1,10 @@
+## [1.21.0-beta.37](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.36...v1.21.0-beta.37) (2025-12-22)
+
+
+### 🚀 Features
+
+* **preview:** run as CC background task with auto-open browser ([7d5dd1a](https://github.com/claudekit/claudekit-engineer/commit/7d5dd1a1cd005f9fc7c6c07d0a18f7915878efbe)), closes [#234](https://github.com/claudekit/claudekit-engineer/issues/234)
+
 ## [1.21.0-beta.36](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.35...v1.21.0-beta.36) (2025-12-21)
 
 
