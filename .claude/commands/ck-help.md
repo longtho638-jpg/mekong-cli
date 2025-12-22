@@ -1,10 +1,10 @@
 ---
-description: ClaudeKit usage guide - just type naturally
+description: AgencyOS usage guide - just type naturally
 argument-hint: [category|command|task description]
 ---
 
 Think harder.
-All-in-one ClaudeKit guide. Run the script and present output based on type markers.
+All-in-one AgencyOS guide. Run the script and present output based on type markers.
 
 ## Pre-Processing
 

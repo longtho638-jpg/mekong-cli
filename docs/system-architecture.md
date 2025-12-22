@@ -2,11 +2,11 @@
 
 **Last Updated**: 2025-12-10
 **Version**: 1.20.0-beta.12
-**Project**: ClaudeKit Engineer
+**Project**: AgencyOS Engine
 
 ## Overview
 
-ClaudeKit Engineer implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol. The system enables developers to leverage AI assistance throughout the entire software development lifecycle - from planning and implementation to testing, review, and deployment.
+AgencyOS Engine implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol. The system enables developers to leverage AI assistance throughout the entire software development lifecycle - from planning and implementation to testing, review, and deployment.
 
 ## Architectural Pattern
 

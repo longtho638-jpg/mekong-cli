@@ -2,7 +2,7 @@
 
 **Date**: November 20, 2025
 **Models Tested**: Veo 3.1 Generate, Veo 3.1 Fast
-**Test Environment**: claudekit-engineer ai-multimodal skill
+**Test Environment**: agencyos-engineer ai-multimodal skill
 **Script Version**: Updated with corrected Veo API implementation
 
 ## Executive Summary

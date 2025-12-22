@@ -114,24 +114,78 @@ Agency OS
     └── Auto-commission tracking
 ```
 
-## 📋 Commands
+## 📋 Commands (85+)
 
+### 🔥 Marketing (Hỏa Công)
 | Command | Description |
 |---------|-------------|
-| `/market-analysis` | Analyze local market trends |
-| `/customer-profile` | Create customer personas |
-| `/sales-strategy` | Build sales playbooks |
-| `/marketing-plan` | Generate marketing plans |
-| `/business-plan` | Create business strategies |
-| `/brand-identity` | Define brand guidelines |
-| `/content-marketing` | Content strategy |
-| `/social-media` | Social post ideas |
+| `/marketing` | Marketing hub dashboard |
+| `/marketing/social` | Generate social posts (FB/TikTok/X) |
+| `/marketing/email` | Email campaigns |
+| `/marketing/ads` | Ad copy generator |
+
+### 💼 Sales (Địa Hình)
+| Command | Description |
+|---------|-------------|
+| `/sales` | Sales pipeline hub |
+| `/sales/lead` | Lead generation |
+| `/sales/proposal` | Proposal generator |
+| `/sales/close` | Closing scripts |
+
+### 🎯 Affiliate (Mưu Công)
+| Command | Description |
+|---------|-------------|
+| `/affiliate` | Affiliate hub |
+| `/affiliate/scout` | Find programs |
+| `/affiliate/compare` | Compare commissions |
+
+### 🎬 Video (Hỏa Công)
+| Command | Description |
+|---------|-------------|
+| `/video` | Video production hub |
+| `/video/script` | Generate scripts |
+| `/video/publish` | Multi-platform publishing |
+
+### 💰 Finance (Hư Thực)
+| Command | Description |
+|---------|-------------|
+| `/finance` | Finance dashboard |
+| `/finance/invoice` | Invoice generator |
+| `/finance/expense` | Expense tracking |
+| `/finance/runway` | Runway calculator |
+
+### 🏯 Strategy (Kế Hoạch)
+| Command | Description |
+|---------|-------------|
+| `/binh-phap` | 13 Binh Pháp advisor |
+| `/okr` | OKR management |
+| `/sprint` | Sprint planning |
+| `/ship` | Deploy to production |
+
+### 🔍 Intelligence (Dụng Gián)
+| Command | Description |
+|---------|-------------|
+| `/intel` | Intelligence hub |
+| `/intel/competitor` | Competitor analysis |
+| `/intel/vc` | VC research |
+| `/fundraise` | Fundraising prep |
+
+### ⚙️ Operations
+| Command | Description |
+|---------|-------------|
+| `/ops` | Operations hub |
+| `/ops/billing` | Billing automation |
+| `/crisis` | Crisis management |
+
+> 📖 Full command reference: See `/help` or [docs.agencyos.network](https://docs.agencyos.network)
 
 ## 🎯 Use Cases
 
 1. **Solo Agency Owner**: Automate your entire agency operations
-2. **Franchise Network**: License to agencies worldwide
-3. **Local Hero**: Dominate your local market with AI
+2. **Marketer**: Generate content, manage campaigns with AI
+3. **Sales Professional**: Close deals faster with AI proposals
+4. **Affiliate Marketer**: Find and promote 50+ PayPal programs
+5. **Franchise Network**: License to agencies worldwide
 
 ## ⚔️ Binh Pháp Strategy
 
@@ -143,4 +197,4 @@ Agency OS
 
 ---
 
-© 2024 Agency OS | Built for Global Agencies
+© 2025 AgencyOS Network | 85+ Commands | 13 Binh Pháp Clusters | Built for Global Agencies

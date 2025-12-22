@@ -1,12 +1,12 @@
-# ClaudeKit Engineer - Project Roadmap
+# AgencyOS Engine - Project Roadmap
 
 **Last Updated:** 2025-12-10
 **Current Version:** 1.20.0-beta.12
-**Repository:** https://github.com/claudekit/claudekit-engineer
+**Repository:** https://github.com/agencyos/agencyos-engineer
 
 ## Executive Summary
 
-ClaudeKit Engineer is an AI-powered development orchestration framework enabling developers to build professional software faster through intelligent agent collaboration, automated workflows, and comprehensive quality management. The project has successfully completed core foundation phases and is advancing cross-platform compatibility and advanced features.
+AgencyOS Engine is an AI-powered development orchestration framework enabling developers to build professional software faster through intelligent agent collaboration, automated workflows, and comprehensive quality management. The project has successfully completed core foundation phases and is advancing cross-platform compatibility and advanced features.
 
 ---
 
@@ -441,6 +441,6 @@ Enterprise-grade features and deployment options.
 
 ---
 
-**Maintained By:** ClaudeKit Engineer Team
+**Maintained By:** AgencyOS Engine Team
 **Last Review:** 2025-11-11
 **Next Review Target:** 2025-12-11

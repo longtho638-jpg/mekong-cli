@@ -3,7 +3,7 @@
 ## Pre-Launch (Complete ✅)
 
 ### Week 1: Foundation
-- [x] DNA Transplant (ClaudeKit → Agency CLI)
+- [x] DNA Transplant (AgencyOS → Agency CLI)
 - [x] Agency Portal (Dashboard, Onboarding, Clients, Billing)
 - [x] Supabase Auth (Login, Signup, OAuth, Middleware)
 - [x] Database Schema (6 tables with RLS)

@@ -1,7 +1,7 @@
 /**
  * Design Tokens - Centralized design system for Agency OS
  * 
- * ClaudeKit Standard: Single source of truth for all UI values
+ * AgencyOS Standard: Single source of truth for all UI values
  */
 
 // ============================================

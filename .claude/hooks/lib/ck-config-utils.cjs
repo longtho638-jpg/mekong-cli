@@ -1,5 +1,5 @@
 /**
- * Shared utilities for ClaudeKit hooks
+ * Shared utilities for AgencyOS hooks
  *
  * Contains config loading, path sanitization, and common constants
  * used by session-init.cjs and dev-rules-reminder.cjs
@@ -214,7 +214,7 @@ function execSafe(cmd) {
  * - 'mostRecent': REMOVED - was causing stale plan pollution
  *
  * @param {string} sessionId - Session identifier (optional)
- * @param {Object} config - ClaudeKit config
+ * @param {Object} config - AgencyOS config
  * @returns {{ path: string|null, resolvedBy: 'session'|'branch'|null }} Resolution result with tracking
  */
 function resolvePlanPath(sessionId, config) {

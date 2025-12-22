@@ -2,16 +2,16 @@
 
 **Last Updated**: 2025-12-10
 **Version**: 1.20.0-beta.12
-**Repository**: [claudekit/claudekit-engineer](https://github.com/claudekit/claudekit-engineer)
+**Repository**: [agencyos/agencyos-engineer](https://github.com/agencyos/agencyos-engineer)
 
 ## Overview
 
-ClaudeKit Engineer is a comprehensive boilerplate template for building professional software projects with CLI Coding Agents (Claude Code and Open Code). It provides a complete development environment with AI-powered agent orchestration, automated workflows, and intelligent project management.
+AgencyOS Engine is a comprehensive boilerplate template for building professional software projects with CLI Coding Agents (Claude Code and Open Code). It provides a complete development environment with AI-powered agent orchestration, automated workflows, and intelligent project management.
 
 ## Project Structure
 
 ```
-claudekit-engineer/
+agencyos-engineer/
 ├── .claude/               # Claude Code configuration
 │   ├── agents/           # Specialized agent definitions (14 agents)
 │   ├── commands/         # Slash command implementations (50+ commands)
@@ -338,37 +338,37 @@ Features: Automated releases, changelog generation
 ## Critical Files
 
 ### Configuration
-- `/mnt/d/www/claudekit/claudekit-engineer/package.json` - Node.js config
-- `/mnt/d/www/claudekit/claudekit-engineer/.releaserc.json` - Release config
-- `/mnt/d/www/claudekit/claudekit-engineer/.commitlintrc.json` - Commit linting
-- `/mnt/d/www/claudekit/claudekit-engineer/.gitignore` - Git exclusions
-- `/mnt/d/www/claudekit/claudekit-engineer/.repomixignore` - Repomix exclusions
+- `/mnt/d/www/agencyos/agencyos-engineer/package.json` - Node.js config
+- `/mnt/d/www/agencyos/agencyos-engineer/.releaserc.json` - Release config
+- `/mnt/d/www/agencyos/agencyos-engineer/.commitlintrc.json` - Commit linting
+- `/mnt/d/www/agencyos/agencyos-engineer/.gitignore` - Git exclusions
+- `/mnt/d/www/agencyos/agencyos-engineer/.repomixignore` - Repomix exclusions
 
 ### Documentation
-- `/mnt/d/www/claudekit/claudekit-engineer/README.md` - Main project docs
-- `/mnt/d/www/claudekit/claudekit-engineer/CLAUDE.md` - Agent instructions
-- `/mnt/d/www/claudekit/claudekit-engineer/CHANGELOG.md` - Version history
-- `/mnt/d/www/claudekit/claudekit-engineer/guide/COMMANDS.md` - Command reference
+- `/mnt/d/www/agencyos/agencyos-engineer/README.md` - Main project docs
+- `/mnt/d/www/agencyos/agencyos-engineer/CLAUDE.md` - Agent instructions
+- `/mnt/d/www/agencyos/agencyos-engineer/CHANGELOG.md` - Version history
+- `/mnt/d/www/agencyos/agencyos-engineer/guide/COMMANDS.md` - Command reference
 
 ### Workflows
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/primary-workflow.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/development-rules.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/orchestration-protocol.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/documentation-management.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/primary-workflow.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/development-rules.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/orchestration-protocol.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/documentation-management.md`
 
 ## Related Projects
 
-- **claudekit** - ClaudeKit website (`../claudekit`)
-- **claudekit-marketing** - Marketing Kit (`../claudekit-marketing`)
-- **claudekit-cli** - CLI setup tool (`../claudekit-cli`)
-- **claudekit-docs** - Public docs (`../claudekit-docs`)
+- **agencyos** - AgencyOS website (`../agencyos`)
+- **agencyos-marketing** - Marketing Kit (`../agencyos-marketing`)
+- **agencyos-cli** - CLI setup tool (`../agencyos-cli`)
+- **agencyos-docs** - Public docs (`../agencyos-docs`)
 
 ## Version History
 
 **Current**: v1.20.0-beta.12 (released 2025-12-10)
 **License**: MIT
 **Author**: Duy Nguyen
-**Repository**: https://github.com/claudekit/claudekit-engineer
+**Repository**: https://github.com/agencyos/agencyos-engineer
 
 ## Unresolved Questions
 
