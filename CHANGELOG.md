@@ -1,3 +1,24 @@
+## [1.21.0-beta.38](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.37...v1.21.0-beta.38) (2025-12-22)
+
+
+### 🚀 Features
+
+* **hooks:** configure notification hooks for Stop, SubagentStop, Notification ([9b8ebf8](https://github.com/claudekit/claudekit-engineer/commit/9b8ebf85678b52642123b320039f527caa3e56f0))
+* **notifications:** add Telegram, Discord, and Slack providers ([be3faab](https://github.com/claudekit/claudekit-engineer/commit/be3faab00c7342e362d12fb7b5527b4ab7a6932c))
+* **notifications:** add unified Node.js notification router ([8948b39](https://github.com/claudekit/claudekit-engineer/commit/8948b395683198446958c4e089937bb482b31e41))
+
+
+### 📚 Documentation
+
+* **notifications:** add provider setup guides and update hooks README ([7be8916](https://github.com/claudekit/claudekit-engineer/commit/7be891623fc59cb01393604324647e1198e650f4))
+* **notifications:** update .env.example with all providers ([b8f22ea](https://github.com/claudekit/claudekit-engineer/commit/b8f22ea658ca4447560b5a0952cb37f1796a58c1))
+* **readme:** update project structure and integration capabilities ([cd47529](https://github.com/claudekit/claudekit-engineer/commit/cd475295b9bc4e1a1b5dbc8a71f2798a92b32892))
+
+
+### ♻️ Code Refactoring
+
+* **notifications:** make hooks opt-in instead of default ([308f6d2](https://github.com/claudekit/claudekit-engineer/commit/308f6d26e21045f4abf75d0f1eadceb37f47f764))
+
 ## [1.21.0-beta.37](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.36...v1.21.0-beta.37) (2025-12-22)
 
 
