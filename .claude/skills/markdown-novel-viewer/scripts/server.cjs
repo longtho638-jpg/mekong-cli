@@ -9,17 +9,18 @@
  * - Directories → file listing browser
  *
  * Usage:
- *   node server.cjs --file ./plan.md [--port 3456] [--open] [--stop] [--host 0.0.0.0]
- *   node server.cjs --dir ./plans [--port 3456] [--open]  # Browse directory
+ *   node server.cjs --file ./plan.md [--port 3456] [--no-open] [--stop] [--host 0.0.0.0]
+ *   node server.cjs --dir ./plans [--port 3456]  # Browse directory
  *
  * Options:
  *   --file <path>   Path to markdown file
  *   --dir <path>    Path to directory (browse mode)
  *   --port <number> Server port (default: 3456, auto-increment if busy)
  *   --host <addr>   Host to bind (default: localhost, use 0.0.0.0 for all interfaces)
- *   --open          Auto-open browser after start
+ *   --no-open       Disable auto-open browser (opens by default)
  *   --stop          Stop all running servers
- *   --background    Run in background (detached)
+ *   --background    Run in background (detached) - legacy mode
+ *   --foreground    Run in foreground (for CC background tasks)
  */
 
 const fs = require('fs');
@@ -42,9 +43,10 @@ function parseArgs(argv) {
     dir: null,
     port: DEFAULT_PORT,
     host: 'localhost',
-    open: false,
+    open: true,  // Auto-open browser by default
     stop: false,
     background: false,
+    foreground: false,
     isChild: false
   };
 
@@ -60,10 +62,14 @@ function parseArgs(argv) {
       args.host = argv[++i];
     } else if (arg === '--open') {
       args.open = true;
+    } else if (arg === '--no-open') {
+      args.open = false;
     } else if (arg === '--stop') {
       args.stop = true;
     } else if (arg === '--background') {
       args.background = true;
+    } else if (arg === '--foreground') {
+      args.foreground = true;
     } else if (arg === '--child') {
       args.isChild = true;
     } else if (!arg.startsWith('--') && !args.file && !args.dir) {
@@ -280,8 +286,9 @@ async function main() {
     process.exit(1);
   }
 
-  // Background mode - spawn child and exit
-  if (args.background && !args.isChild) {
+  // Background mode - spawn child and exit (legacy mode for manual runs)
+  // Skip if --foreground is set (for Claude Code background tasks)
+  if (args.background && !args.foreground && !args.isChild) {
     const childArgs = ['--port', String(args.port), '--host', args.host, '--child'];
     if (resolved.type === 'file') {
       childArgs.unshift('--file', resolved.path);
@@ -357,7 +364,8 @@ async function main() {
     });
 
     // Output for CLI/command integration
-    if (args.isChild || process.env.CLAUDE_COMMAND) {
+    // In foreground mode (CC background task), always output JSON
+    if (args.foreground || args.isChild || process.env.CLAUDE_COMMAND) {
       const result = {
         success: true,
         url,
