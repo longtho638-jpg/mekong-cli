@@ -7,7 +7,10 @@ Supports all Gemini modalities:
 - Image: Captioning, detection, OCR, analysis
 - Video: Summarization, Q&A, scene detection
 - Document: PDF extraction, structured output
-- Generation: Image creation from text prompts
+- Generation: Image creation via Imagen 4 or Nano Banana (Gemini native)
+  - Nano Banana Flash (gemini-2.5-flash-image): Speed/volume
+  - Nano Banana Pro (gemini-3-pro-image-preview): Quality/4K text/reasoning
+  - Imagen 4 (imagen-4.0-*): Production-grade generation
 """
 
 import argparse
@@ -20,17 +23,8 @@ from typing import List, Dict, Any, Optional
 import csv
 import shutil
 
-# Import centralized utilities (environment resolver + Windows compatibility)
+# Import centralized environment resolver
 sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
-try:
-    from win_compat import ensure_utf8_stdout
-    ensure_utf8_stdout()
-except ImportError:
-    if sys.platform == 'win32':
-        import io
-        if hasattr(sys.stdout, 'buffer'):
-            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 try:
     from resolve_env import resolve_env
     CENTRALIZED_RESOLVER_AVAILABLE = True
@@ -51,10 +45,12 @@ except ImportError:
     sys.exit(1)
 
 
-# Image generation model fallback chain (highest quality -> lowest cost)
+# Image generation model configuration
+# Default: gemini-2.5-flash-image (Nano Banana Flash - fast, cost-effective)
+# Alternative: imagen-4.0-generate-001 (production quality)
 # All image generation requires billing - no completely free option exists
-# Fallback order: Imagen 4 -> Gemini 2.5 Flash Image (cheaper, still requires billing)
-IMAGE_MODEL_FALLBACK = 'gemini-2.5-flash-image'  # Cheaper fallback (~$0.039/image vs ~$0.02-0.04)
+IMAGE_MODEL_DEFAULT = 'gemini-2.5-flash-image'  # Nano Banana Flash (~$1/1M tokens)
+IMAGE_MODEL_FALLBACK = 'gemini-2.5-flash-image'  # Fallback if Imagen fails (billing)
 IMAGEN_MODELS = {
     'imagen-4.0-generate-001',
     'imagen-4.0-ultra-generate-001',
@@ -126,8 +122,9 @@ def get_default_model(task: str) -> str:
         model = os.getenv('GEMINI_IMAGE_GEN_MODEL')
         if model:
             return model
-        # Default to best quality (Imagen 4), with auto-fallback on billing error
-        return 'imagen-4.0-generate-001'
+        # Default to Nano Banana Flash (fast, cost-effective)
+        # Alternative: imagen-4.0-generate-001 for production quality
+        return 'gemini-2.5-flash-image'
 
     elif task == 'generate-video':
         model = os.getenv('VIDEO_GEN_MODEL')
@@ -552,10 +549,16 @@ def process_file(
     task: str,
     format_output: str,
     aspect_ratio: Optional[str] = None,
+    image_size: Optional[str] = None,
     verbose: bool = False,
     max_retries: int = 3
 ) -> Dict[str, Any]:
-    """Process a single file with retry logic."""
+    """Process a single file with retry logic.
+
+    Args:
+        image_size: Image size for Nano Banana models (1K, 2K, 4K). Must be uppercase K.
+                    Note: Not all models support image_size - only pass when explicitly needed.
+    """
 
     for attempt in range(max_retries):
         try:
@@ -587,12 +590,17 @@ def process_file(
             # Configure request
             config_args = {}
             if task == 'generate':
-                config_args['response_modalities'] = ['Image']  # Capital I per API spec
+                # Nano Banana requires fully uppercase 'IMAGE' per API spec
+                config_args['response_modalities'] = ['IMAGE']
+                # Build image_config with aspect_ratio and/or image_size
+                image_config_args = {}
                 if aspect_ratio:
-                    # Nest aspect_ratio in image_config per API spec
-                    config_args['image_config'] = types.ImageConfig(
-                        aspect_ratio=aspect_ratio
-                    )
+                    image_config_args['aspect_ratio'] = aspect_ratio
+                if image_size:
+                    # image_size must be uppercase K (1K, 2K, 4K)
+                    image_config_args['image_size'] = image_size
+                if image_config_args:
+                    config_args['image_config'] = types.ImageConfig(**image_config_args)
 
             if format_output == 'json':
                 config_args['response_mime_type'] = 'application/json'
@@ -715,7 +723,7 @@ def batch_process(
                 model=model,
                 num_images=num_images,
                 aspect_ratio=aspect_ratio or '1:1',
-                size=size,
+                size=size or '1K',  # Default to 1K for Imagen models
                 verbose=verbose
             )
 
@@ -731,6 +739,7 @@ def batch_process(
                     task=task,
                     format_output=format_output,
                     aspect_ratio=aspect_ratio,
+                    image_size=size,
                     verbose=verbose
                 )
                 # Check if free tier (zero quota) - stop immediately with clear message
@@ -744,7 +753,7 @@ def batch_process(
                             "https://aistudio.google.com/apikey or use Google Cloud credits."
                         )
         else:
-            # Legacy Flash Image or other models via generate_content API
+            # Nano Banana (Flash/Pro) or other models via generate_content API
             result = process_file(
                 client=client,
                 file_path=None,
@@ -753,6 +762,7 @@ def batch_process(
                 task=task,
                 format_output=format_output,
                 aspect_ratio=aspect_ratio,
+                image_size=size,
                 verbose=verbose
             )
             # Check for free tier error
@@ -806,6 +816,7 @@ def batch_process(
                 task=task,
                 format_output=format_output,
                 aspect_ratio=aspect_ratio,
+                image_size=size,
                 verbose=verbose
             )
 
@@ -964,9 +975,17 @@ Examples:
   %(prog)s --files *.pdf --task extract --prompt "Extract data as JSON" \\
     --format json --output results.json
 
-  # Generate images
-  %(prog)s --task generate --prompt "A mountain landscape" \\
-    --model gemini-2.5-flash-image --aspect-ratio 16:9
+  # Generate images with Nano Banana Flash (fast)
+  %(prog)s --task generate --prompt "A mountain landscape at sunset" \\
+    --model gemini-2.5-flash-image --aspect-ratio 16:9 --size 2K
+
+  # Generate images with Nano Banana Pro (4K text, reasoning)
+  %(prog)s --task generate --prompt "Travel poster with text 'EXPLORE'" \\
+    --model gemini-3-pro-image-preview --aspect-ratio 3:4 --size 4K
+
+  # Generate images with Imagen 4 (production quality)
+  %(prog)s --task generate --prompt "Product photo of coffee mug" \\
+    --model imagen-4.0-ultra-generate-001 --aspect-ratio 1:1 --size 2K
         """
     )
 
@@ -982,12 +1001,16 @@ Examples:
                        help='Output format (default: text)')
 
     # Image generation options
-    parser.add_argument('--aspect-ratio', choices=['1:1', '16:9', '9:16', '4:3', '3:4'],
+    # All 10 aspect ratios supported by Nano Banana / Imagen 4
+    parser.add_argument('--aspect-ratio',
+                       choices=['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
                        help='Aspect ratio for image/video generation')
     parser.add_argument('--num-images', type=int, default=1,
                        help='Number of images to generate (1-4, default: 1)')
-    parser.add_argument('--size', choices=['1K', '2K'], default='1K',
-                       help='Image size for Imagen 4 (default: 1K)')
+    # 4K available for Nano Banana Pro (gemini-3-pro-image-preview)
+    # Note: Not all models support --size, only use when needed
+    parser.add_argument('--size', choices=['1K', '2K', '4K'], default=None,
+                       help='Image size - 1K/2K for Imagen 4, 1K/2K/4K for Nano Banana (optional)')
 
     # Video generation options
     parser.add_argument('--resolution', choices=['720p', '1080p'], default='1080p',

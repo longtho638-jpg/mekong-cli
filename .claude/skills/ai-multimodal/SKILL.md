@@ -37,18 +37,7 @@ pip install google-genai python-dotenv pillow
 - **Video generation**: `veo-3.1-generate-preview` (8s clips with audio)
 - **Analysis**: `gemini-2.5-flash` (recommended), `gemini-2.5-pro` (advanced)
 
-## Available Scripts
-
-> **IMPORTANT**: Only these 4 scripts exist. Do NOT invent or guess script names!
-
-| Script | Purpose | Example |
-|--------|---------|---------|
-| `gemini_batch_process.py` | Main CLI for all tasks | `--files <file> --task analyze` |
-| `media_optimizer.py` | Compress/resize media | `--input <file> --max-size 10M` |
-| `document_converter.py` | Convert docs to markdown | `--files <pdf>` |
-| `check_setup.py` | Verify setup | (no args needed) |
-
-### Script Details
+## Scripts
 
 - **`gemini_batch_process.py`**: CLI orchestrator for `transcribe|analyze|extract|generate|generate-video` that auto-resolves API keys, picks sensible default models per task, streams files inline vs File API, and saves structured outputs (text/JSON/CSV/markdown plus generated assets) for Imagen 4 + Veo workflows.
 - **`media_optimizer.py`**: ffmpeg/Pillow-based preflight tool that compresses/resizes/converts audio, image, and video inputs, enforces target sizes/bitrates, splits long clips into hour chunks, and batch-processes directories so media stays within Gemini limits.
@@ -63,6 +52,7 @@ Load for detailed guidance:
 
 | Topic | File | Description |
 |-------|------|-------------|
+| Music | `references/music-generation.md` | Lyria RealTime API for background music generation, style prompts, real-time control, integration with video production. |
 | Audio | `references/audio-processing.md` | Audio formats and limits, transcription (timestamps, speakers, segments), non-speech analysis, File API vs inline input, TTS models, best practices, cost and token math, and concrete meeting/podcast/interview recipes. |
 | Images | `references/vision-understanding.md` | Vision capabilities overview, supported formats and models, captioning/classification/VQA, detection and segmentation, OCR and document reading, multi-image workflows, structured JSON output, token costs, best practices, and common product/screenshot/chart/scene use cases. |
 | Image Gen | `references/image-generation.md` | Imagen 4 and Gemini image model overview, generate_images vs generate_content APIs, aspect ratios and costs, text/image/both modalities, editing and composition, style and quality control, safety settings, best practices, troubleshooting, and common marketing/concept-art/UI scenarios. |
