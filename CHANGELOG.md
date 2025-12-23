@@ -1,3 +1,15 @@
+## [1.21.0-beta.39](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.38...v1.21.0-beta.39) (2025-12-23)
+
+
+### 🚀 Features
+
+* run /kanban as Claude Code background task for better visibility ([4d79864](https://github.com/claudekit/claudekit-engineer/commit/4d79864874de1a743811d3d86c74ccbc323f94f0)), closes [#240](https://github.com/claudekit/claudekit-engineer/issues/240)
+
+
+### 📚 Documentation
+
+* fix Quick Start CLI commands in README ([382e98d](https://github.com/claudekit/claudekit-engineer/commit/382e98d3196e2d787e385fae900cabf1d62f9898)), closes [#237](https://github.com/claudekit/claudekit-engineer/issues/237)
+
 ## [1.21.0-beta.38](https://github.com/claudekit/claudekit-engineer/compare/v1.21.0-beta.37...v1.21.0-beta.38) (2025-12-22)
 
 
