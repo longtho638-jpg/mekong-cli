@@ -1,3 +1,10 @@
+## [2.1.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2025-12-23)
+
+
+### 🐞 Bug Fixes
+
+* **skill:** improve markdown-novel-viewer Windows path handling ([7b30640](https://github.com/claudekit/claudekit-engineer/commit/7b30640eb32c1dc0af8ab44bb882baaa61747f57))
+
 ## [2.1.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.0.0...v2.1.0-beta.1) (2025-12-23)
 
 
