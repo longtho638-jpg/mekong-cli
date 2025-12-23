@@ -1,3 +1,10 @@
+## [2.1.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.0.0...v2.1.0-beta.1) (2025-12-23)
+
+
+### 🚀 Features
+
+* run /kanban as Claude Code background task for better visibility ([4d79864](https://github.com/claudekit/claudekit-engineer/commit/4d79864874de1a743811d3d86c74ccbc323f94f0)), closes [#240](https://github.com/claudekit/claudekit-engineer/issues/240)
+
 ## [2.0.0](https://github.com/claudekit/claudekit-engineer/compare/v1.20.1...v2.0.0) (2025-12-23)
 
 
