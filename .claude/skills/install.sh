@@ -441,6 +441,20 @@ install_node_deps() {
         print_success "mcp-management dependencies installed"
     fi
 
+    # markdown-novel-viewer (marked, highlight.js, gray-matter)
+    if [ -d "$SCRIPT_DIR/markdown-novel-viewer" ] && [ -f "$SCRIPT_DIR/markdown-novel-viewer/package.json" ]; then
+        print_info "Installing markdown-novel-viewer dependencies..."
+        (cd "$SCRIPT_DIR/markdown-novel-viewer" && npm install --quiet)
+        print_success "markdown-novel-viewer dependencies installed"
+    fi
+
+    # plans-kanban (gray-matter)
+    if [ -d "$SCRIPT_DIR/plans-kanban" ] && [ -f "$SCRIPT_DIR/plans-kanban/package.json" ]; then
+        print_info "Installing plans-kanban dependencies..."
+        (cd "$SCRIPT_DIR/plans-kanban" && npm install --quiet)
+        print_success "plans-kanban dependencies installed"
+    fi
+
     # Optional: Shopify CLI (ask user unless auto-confirming)
     if [ -d "$SCRIPT_DIR/shopify" ]; then
         if [[ "$SKIP_CONFIRM" == "true" ]]; then
@@ -585,6 +599,11 @@ setup_python_env() {
                     # Skip comments and empty lines
                     [[ "$line" =~ ^#.*$ ]] && continue
                     [[ -z "${line// }" ]] && continue
+
+                    # Strip inline comments (e.g., "package>=1.0  # comment" -> "package>=1.0")
+                    line="${line%%#*}"
+                    line="${line%"${line##*[![:space:]]}"}"  # trim trailing whitespace
+                    [[ -z "$line" ]] && continue
 
                     if try_pip_install "$line" "$SKILL_LOG"; then
                         pkg_success=$((pkg_success + 1))

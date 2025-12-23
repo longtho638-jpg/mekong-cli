@@ -60,6 +60,7 @@ TASK_MAPPINGS = {
     "skill": ["skill", "agent", "automate", "workflow"],
     "scout": ["find", "search", "locate", "explore", "scan", "where"],
     "config": ["config", "configure", "settings", "ck.json", ".ck.json", "setup", "locale", "language", "paths"],
+    "coding-level": ["coding", "level", "eli5", "junior", "senior", "lead", "god", "beginner", "expert", "teach", "learn", "explain"],
 }
 
 # Category workflows and tips
@@ -78,9 +79,10 @@ CATEGORY_GUIDES = {
         "workflow": [
             ("Quick plan", "`/plan:fast` \"your task\""),
             ("Deep research", "`/plan:hard` \"complex task\""),
+            ("Validate", "`/plan:validate` (interview to confirm decisions)"),
             ("Execute plan", "`/code` (runs the plan)"),
         ],
-        "tip": "After /plan, use /code to execute - NOT /cook",
+        "tip": "Use /plan:validate to confirm assumptions before coding",
     },
     "cook": {
         "title": "Implementation",
@@ -172,6 +174,19 @@ CATEGORY_GUIDES = {
             ("External tools", "`/scout:ext` \"query\""),
         ],
         "tip": "Be specific about what you're looking for",
+    },
+    "coding-level": {
+        "title": "Coding Level (Adaptive Communication)",
+        "workflow": [
+            ("Disabled", "`codingLevel: -1` (default, no injection)"),
+            ("ELI5", "`codingLevel: 0` (analogies, baby steps)"),
+            ("Junior", "`codingLevel: 1` (WHY before HOW)"),
+            ("Mid-Level", "`codingLevel: 2` (patterns, trade-offs)"),
+            ("Senior", "`codingLevel: 3` (production code, ops)"),
+            ("Tech Lead", "`codingLevel: 4` (risk matrix, strategy)"),
+            ("God Mode", "`codingLevel: 5` (code first, no fluff)"),
+        ],
+        "tip": "Set in .ck.json. Guidelines auto-inject on session start",
     },
     "config": {
         "title": "ClaudeKit Configuration (.ck.json)",
@@ -520,7 +535,10 @@ def show_config_guide() -> None:
     print("**Global config** (`~/.claude/.ck.json`) - your preferences:")
     print("```json")
     print('{')
-    print('  "locale": { "responseLanguage": "vi" },')
+    print('  "locale": {')
+    print('    "thinkingLanguage": "en",')
+    print('    "responseLanguage": "vi"')
+    print('  },')
     print('  "plan": { "issuePrefix": "GH-" }')
     print('}')
     print("```")
@@ -545,8 +563,14 @@ def show_config_guide() -> None:
     print('    "issuePrefix": "GH-",                     // Issue ID prefix (null = #)')
     print('    "reportsDir": "reports",                  // Reports subfolder')
     print('    "resolution": {')
-    print('      "order": ["session", "branch", "mostRecent"],  // Resolution chain')
-    print('      "branchPattern": "(?:feat|fix|...)/.+"         // Branch slug regex')
+    print('      "order": ["session", "branch"],  // Resolution chain')
+    print('      "branchPattern": "(?:feat|fix|...)/.+"  // Branch slug regex')
+    print('    },')
+    print('    "validation": {')
+    print('      "mode": "prompt",       // "auto" | "prompt" | "off"')
+    print('      "minQuestions": 3,      // Min questions to ask')
+    print('      "maxQuestions": 8,      // Max questions to ask')
+    print('      "focusAreas": ["assumptions", "risks", "tradeoffs", "architecture"]')
     print('    }')
     print('  },')
     print('  "paths": {')
@@ -554,7 +578,8 @@ def show_config_guide() -> None:
     print('    "plans": "plans"    // Plans directory')
     print('  },')
     print('  "locale": {')
-    print('    "responseLanguage": null  // ISO code: "vi", "en", "fr", etc.')
+    print('    "thinkingLanguage": null, // Language for reasoning ("en" recommended)')
+    print('    "responseLanguage": null  // Language for output ("vi", "fr", etc.)')
     print('  },')
     print('  "trust": {')
     print('    "passphrase": null,   // Secret for testing context injection')
@@ -564,7 +589,8 @@ def show_config_guide() -> None:
     print('    "type": "auto",           // "monorepo", "single-repo", "auto"')
     print('    "packageManager": "auto", // "npm", "pnpm", "yarn", "auto"')
     print('    "framework": "auto"       // "next", "react", "vue", "auto"')
-    print('  }')
+    print('  },')
+    print('  "codingLevel": -1  // Adaptive communication (-1 to 5)')
     print('}')
     print("```")
     print()
@@ -575,16 +601,71 @@ def show_config_guide() -> None:
     print("**Plan Resolution Chain:**")
     print("1. `session` - Check session temp file for active plan")
     print("2. `branch` - Match git branch slug to plan folder")
-    print("3. `mostRecent` - Use most recently modified plan")
     print()
     print("**Naming Format Variables:**")
     print("- `{date}` - Formatted date (per dateFormat)")
     print("- `{issue}` - Issue ID with prefix")
     print("- `{slug}` - Descriptive slug from branch or input")
     print()
-    print("**Response Language:**")
-    print("Set `locale.responseLanguage` to force agent responses in specific language.")
-    print("Example: `\"vi\"` for Vietnamese, `\"fr\"` for French.")
+    print("**Language Settings:**")
+    print("- `thinkingLanguage` - Language for internal reasoning (\"en\" recommended)")
+    print("- `responseLanguage` - Language for user-facing output (\"vi\", \"fr\", etc.)")
+    print()
+    print("When both are set, Claude thinks in one language but responds in another.")
+    print("This improves precision (English) while maintaining natural output (your language).")
+    print()
+    print("**Plan Validation:**")
+    print("- `mode: \"prompt\"` - Ask user after plan creation (default)")
+    print("- `mode: \"auto\"` - Always run validation interview")
+    print("- `mode: \"off\"` - Skip; user runs `/plan:validate` manually")
+    print()
+    print("Validation interviews the user with critical questions to confirm")
+    print("assumptions, risks, and architectural decisions before implementation.")
+    print()
+    print("**Coding Level (Adaptive Communication):**")
+    print("- `-1` = Disabled (default) - no injection, saves tokens")
+    print("- `0` = ELI5 - analogies, baby steps, check-ins")
+    print("- `1` = Junior - WHY before HOW, pitfalls, takeaways")
+    print("- `2` = Mid-Level - patterns, trade-offs, scalability")
+    print("- `3` = Senior - trade-offs table, production code, ops")
+    print("- `4` = Tech Lead - executive summary, risk matrix, business impact")
+    print("- `5` = God Mode - code first, minimal prose, no hand-holding")
+    print()
+    print("Guidelines auto-inject on session start. Commands like `/brainstorm` respect them.")
+    print()
+    print("---")
+    print()
+    print("## Edge Cases & Validation")
+    print()
+    print("**Path Handling:**")
+    print("- Trailing slashes normalized (`plans/` → `plans`)")
+    print("- Empty/whitespace-only paths fall back to defaults")
+    print("- Absolute paths supported (e.g., `/home/user/all-plans`)")
+    print("- Path traversal (`../`) blocked for relative paths")
+    print("- Null bytes and control chars rejected")
+    print()
+    print("**Slug Sanitization:**")
+    print("- Invalid filename chars removed: `< > : \" / \\ | ? *`")
+    print("- Non-alphanumeric replaced with hyphen")
+    print("- Multiple hyphens collapsed: `foo---bar` → `foo-bar`")
+    print("- Leading/trailing hyphens removed")
+    print("- Max 100 chars to prevent filesystem issues")
+    print()
+    print("**Naming Pattern Validation:**")
+    print("- Pattern must contain `{slug}` placeholder")
+    print("- Result must be non-empty after variable substitution")
+    print("- Unresolved placeholders (except `{slug}`) trigger error")
+    print("- Malformed JSON config falls back to defaults")
+    print()
+    print("**Consolidated Plans (advanced):**")
+    print("```json")
+    print('{')
+    print('  "paths": {')
+    print('    "plans": "/home/user/all-my-plans"')
+    print('  }')
+    print('}')
+    print("```")
+    print("Absolute paths allow storing all plans in one location across projects.")
     print()
     print("---")
     print()
@@ -613,6 +694,115 @@ def show_config_guide() -> None:
     print("*Tip: Config is optional - all fields have sensible defaults.*")
 
 
+def show_coding_level_guide() -> None:
+    """Display comprehensive codingLevel configuration guide."""
+    emit_output_type("comprehensive-docs")
+
+    print("# Coding Level (Adaptive Communication)")
+    print()
+    print("Adjusts Claude's communication style based on user's experience level.")
+    print("Guidelines auto-inject on SessionStart. Commands respect them.")
+    print()
+    print("---")
+    print()
+    print("## Levels")
+    print()
+    print("| Level | Name | Description |")
+    print("|-------|------|-------------|")
+    print("| **-1** | **Disabled** | Default - no injection, saves tokens |")
+    print("| 0 | ELI5 | Zero experience - analogies, baby steps, check-ins |")
+    print("| 1 | Junior | 0-2 years - WHY before HOW, pitfalls, takeaways |")
+    print("| 2 | Mid-Level | 3-5 years - patterns, trade-offs, scalability |")
+    print("| 3 | Senior | 5-8 years - trade-offs table, production code, ops |")
+    print("| 4 | Tech Lead | 8-15 years - executive summary, risk matrix, strategy |")
+    print("| 5 | God Mode | 15+ years - code first, minimal prose, no fluff |")
+    print()
+    print("---")
+    print()
+    print("## Configuration")
+    print()
+    print("**Set in `.ck.json`:**")
+    print("```json")
+    print('{')
+    print('  "codingLevel": 0')
+    print('}')
+    print("```")
+    print()
+    print("**Location (cascading):**")
+    print("- Global: `~/.claude/.ck.json` - personal preference")
+    print("- Local: `./.claude/.ck.json` - project override")
+    print()
+    print("---")
+    print()
+    print("## How It Works")
+    print()
+    print("1. SessionStart hook reads `codingLevel` from `.ck.json`")
+    print("2. If 0-5, injects guidelines from `.claude/output-styles/coding-level-*.md`")
+    print("3. Commands like `/brainstorm` follow the injected guidelines")
+    print()
+    print("**Token Efficiency:**")
+    print("- `-1` (default): Zero injection, zero overhead")
+    print("- `0-5`: Only selected level's guidelines injected (not all)")
+    print()
+    print("---")
+    print()
+    print("## Level Details")
+    print()
+    print("### Level 0 (ELI5)")
+    print("- **MUST** use real-world analogies (labeled boxes, recipes)")
+    print("- **MUST** define every technical term")
+    print("- **MUST** use \"we\" language")
+    print("- **MUST** end with check-in: \"Does this make sense?\"")
+    print("- **MUST** comment every line of code")
+    print("- Structure: Big Picture → Analogy → Baby Steps → Try It → Check-In")
+    print()
+    print("### Level 1 (Junior)")
+    print("- Explain WHY before HOW")
+    print("- Define technical terms on first use")
+    print("- Include common pitfalls section")
+    print("- Add Key Takeaways and Learn More links")
+    print("- Structure: Context → Approach → Implementation → Pitfalls → Takeaways")
+    print()
+    print("### Level 2 (Mid-Level)")
+    print("- Discuss design patterns and when to use them")
+    print("- Highlight trade-offs explicitly")
+    print("- Consider scalability implications")
+    print("- Reference patterns by name")
+    print("- Structure: Approach → Design → Implementation → Edge Cases")
+    print()
+    print("### Level 3 (Senior)")
+    print("- Lead with trade-offs table")
+    print("- Show production-ready code")
+    print("- Discuss operational concerns (monitoring, logging)")
+    print("- Flag security implications")
+    print("- **NEVER** explain basic concepts")
+    print("- Structure: Trade-offs → Implementation → Ops → Security")
+    print()
+    print("### Level 4 (Tech Lead)")
+    print("- Executive summary first (3-4 sentences)")
+    print("- Risk assessment matrix (Likelihood × Impact)")
+    print("- Strategic options comparison")
+    print("- Business impact analysis")
+    print("- Identify decisions needing stakeholder alignment")
+    print("- Structure: Summary → Risks → Options → Approach → Business Impact")
+    print()
+    print("### Level 5 (God Mode)")
+    print("- Answer exactly what was asked, nothing more")
+    print("- Code first, minimal prose")
+    print("- No explanations unless asked")
+    print("- **NEVER** use filler phrases")
+    print("- Trust their judgment completely")
+    print()
+    print("---")
+    print()
+    print("## Customization")
+    print()
+    print("Guidelines live in `.claude/output-styles/coding-level-*.md`")
+    print("Edit these files directly to customize behavior per level.")
+    print()
+    print("*Tip: Use `-1` (disabled) unless you're teaching or want guided explanations.*")
+
+
 def main():
     # Find .claude/commands directory
     script_path = Path(__file__).resolve()
@@ -638,6 +828,11 @@ def main():
     # Special case: config documentation (not a command category)
     if input_str.lower() in ["config", "configuration", ".ck.json", "ck.json"]:
         show_config_guide()
+        return
+
+    # Special case: coding level documentation
+    if input_str.lower() in ["coding-level", "codinglevel", "coding level", "level", "eli5", "god mode"]:
+        show_coding_level_guide()
         return
 
     # Detect intent and route

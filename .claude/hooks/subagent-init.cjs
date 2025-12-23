@@ -11,7 +11,14 @@
  */
 
 const fs = require('fs');
-const { loadConfig } = require('./lib/ck-config-utils.cjs');
+const {
+  loadConfig,
+  resolveNamingPattern,
+  getGitBranch,
+  resolvePlanPath,
+  getReportsPath,
+  normalizePath
+} = require('./lib/ck-config-utils.cjs');
 
 /**
  * Get agent-specific context from config
@@ -46,16 +53,24 @@ async function main() {
     const agentType = payload.agent_type || 'unknown';
     const agentId = payload.agent_id || 'unknown';
 
-    // Load config for trust verification and agent-specific context
+    // Load config for trust verification, naming, and agent-specific context
     const config = loadConfig({ includeProject: false, includeAssertions: false });
 
-    // Read from env vars (set by SessionStart) - fallback to empty
-    const activePlan = process.env.CK_ACTIVE_PLAN || '';
-    const suggestedPlan = process.env.CK_SUGGESTED_PLAN || '';
-    const reportsPath = process.env.CK_REPORTS_PATH || 'plans/reports/';
-    const plansPath = process.env.CK_PLANS_PATH || 'plans';
-    const docsPath = process.env.CK_DOCS_PATH || 'docs';
-    const responseLanguage = process.env.CK_RESPONSE_LANGUAGE || '';
+    // Compute naming pattern directly (don't rely on env vars which may not propagate)
+    const gitBranch = getGitBranch();
+    const namePattern = resolveNamingPattern(config.plan, gitBranch);
+
+    // Resolve plan and reports path
+    const resolved = resolvePlanPath(null, config);
+    const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
+    const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
+    const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
+    const plansPath = normalizePath(config.paths?.plans) || 'plans';
+    const docsPath = normalizePath(config.paths?.docs) || 'docs';
+    const thinkingLanguage = config.locale?.thinkingLanguage || '';
+    const responseLanguage = config.locale?.responseLanguage || '';
+    // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
+    const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : '');
 
     // Build compact context (~200 tokens)
     const lines = [];
@@ -75,13 +90,19 @@ async function main() {
       lines.push(`- Plan: none`);
     }
     lines.push(`- Reports: ${reportsPath}`);
-    lines.push(`- Paths: plans/${plansPath !== 'plans' ? ` (${plansPath})` : ''} | docs/${docsPath !== 'docs' ? ` (${docsPath})` : ''}`);
+    lines.push(`- Paths: ${plansPath}/ | ${docsPath}/`);
     lines.push(``);
 
-    // Response language (if configured)
-    if (responseLanguage) {
+    // Language (thinking + response, if configured)
+    const hasThinking = effectiveThinking && effectiveThinking !== responseLanguage;
+    if (hasThinking || responseLanguage) {
       lines.push(`## Language`);
-      lines.push(`Respond in ${responseLanguage}.`);
+      if (hasThinking) {
+        lines.push(`- Thinking: Use ${effectiveThinking} for reasoning (logic, precision).`);
+      }
+      if (responseLanguage) {
+        lines.push(`- Response: Respond in ${responseLanguage} (natural, fluent).`);
+      }
       lines.push(``);
     }
 
@@ -90,6 +111,12 @@ async function main() {
     lines.push(`- Reports → ${reportsPath}`);
     lines.push(`- YAGNI / KISS / DRY`);
     lines.push(`- Concise, list unresolved Qs at end`);
+
+    // Naming templates (computed directly for reliable injection)
+    lines.push(``);
+    lines.push(`## Naming`);
+    lines.push(`- Report: ${reportsPath}${agentType}-${namePattern}.md`);
+    lines.push(`- Plan dir: ${plansPath}/${namePattern}/`);
 
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));

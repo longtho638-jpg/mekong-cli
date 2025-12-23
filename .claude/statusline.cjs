@@ -4,29 +4,24 @@
 /**
  * Custom Claude Code statusline for Node.js
  * Cross-platform support: Windows, macOS, Linux
- * Theme: detailed | Colors: true | Features: directory, git, model, usage, session, tokens
+ * Theme: detailed | Features: directory, git, model, usage, session, tokens
  * No external dependencies - uses only Node.js built-in modules
+ *
+ * Context Window Calculation:
+ * - 100% = compaction threshold (not model limit)
+ * - Self-calibrates via PreCompact hook
+ * - Falls back to smart defaults based on window size
  */
 
-const { stdin, stdout, env } = require('process');
+const { stdin, env } = require('process');
 const { execSync } = require('child_process');
 const os = require('os');
+const fs = require('fs');
+const path = require('path');
 
-// Configuration
-const USE_COLOR = !env.NO_COLOR && stdout.isTTY;
+// Use modularized context tracker with 3-layer self-healing detection
+const { trackContext } = require('./hooks/lib/context-tracker.cjs');
 
-// Color helpers
-const color = (code) => USE_COLOR ? `\x1b[${code}m` : '';
-const reset = () => USE_COLOR ? '\x1b[0m' : '';
-
-// Color definitions
-const DirColor = color('1;36');      // cyan
-const GitColor = color('1;32');      // green
-const ModelColor = color('1;35');    // magenta
-const VersionColor = color('1;33');  // yellow
-const UsageColor = color('1;35');    // magenta
-const CostColor = color('1;36');     // cyan
-const Reset = reset();
 
 /**
  * Safe command execution wrapper
@@ -44,18 +39,6 @@ function exec(cmd) {
 }
 
 /**
- * Convert ISO8601 timestamp to Unix epoch
- */
-function toEpoch(timestamp) {
-    try {
-        const date = new Date(timestamp);
-        return Math.floor(date.getTime() / 1000);
-    } catch (err) {
-        return 0;
-    }
-}
-
-/**
  * Format epoch timestamp as HH:mm
  */
 function formatTimeHM(epoch) {
@@ -69,31 +52,49 @@ function formatTimeHM(epoch) {
     }
 }
 
-/**
- * Get session color based on remaining percentage
- */
-function getSessionColor(sessionPercent) {
-    if (!USE_COLOR) return '';
+// Context tracking functions moved to ./hooks/lib/context-tracker.cjs
+// Provides 3-layer self-healing detection:
+// - Layer 1: Session ID change detection
+// - Layer 2: Token drop detection (50% threshold)
+// - Layer 3: Hook marker system (SessionStart/SessionEnd)
 
-    const remaining = 100 - sessionPercent;
-    if (remaining <= 10) {
-        return '\x1b[1;31m';  // red
-    } else if (remaining <= 25) {
-        return '\x1b[1;33m';  // yellow
-    } else {
-        return '\x1b[1;32m';  // green
-    }
+/**
+ * Generate Unicode progress bar (horizontal rectangles)
+ * Uses smooth block characters for consistent rendering
+ *
+ * @param {number} percent - 0-100 percentage
+ * @param {number} width - bar width in characters (default 12)
+ * @returns {string} Unicode progress bar like ▰▰▰▰▰▱▱▱▱▱▱▱
+ */
+function progressBar(percent, width = 12) {
+    const clamped = Math.max(0, Math.min(100, percent));
+    const filled = Math.round(clamped * width / 100);
+    const empty = width - filled;
+    // ▰ (U+25B0) filled, ▱ (U+25B1) empty - smooth horizontal rectangles
+    return '▰'.repeat(filled) + '▱'.repeat(empty);
+}
+
+/**
+ * Get severity emoji based on percentage (no color codes)
+ *
+ * @param {number} percent - 0-100 percentage
+ * @returns {string} Emoji indicator
+ */
+function getSeverityEmoji(percent) {
+    if (percent >= 90) return '🔴';      // Critical
+    if (percent >= 70) return '🟡';      // Warning
+    return '🟢';                          // Healthy
 }
 
 /**
  * Expand home directory to ~
  */
-function expandHome(path) {
+function expandHome(filePath) {
     const homeDir = os.homedir();
-    if (path.startsWith(homeDir)) {
-        return path.replace(homeDir, '~');
+    if (filePath.startsWith(homeDir)) {
+        return filePath.replace(homeDir, '~');
     }
-    return path;
+    return filePath;
 }
 
 /**
@@ -156,10 +157,11 @@ async function main() {
 
         // Native Claude Code data integration
         let sessionText = '';
-        let sessionPercent = 0;
         let costUSD = '';
         let linesAdded = 0;
         let linesRemoved = 0;
+        let contextPercent = 0;
+        let contextText = '';
         const billingMode = env.CLAUDE_BILLING_MODE || 'api';
 
         // Extract native cost data from Claude Code
@@ -167,12 +169,40 @@ async function main() {
         linesAdded = data.cost?.total_lines_added || 0;
         linesRemoved = data.cost?.total_lines_removed || 0;
 
+        // Extract context window usage (Claude Code v2.0.65+)
+        // Uses 3-layer self-healing detection from context-tracker module:
+        // - Layer 1: Session ID change detection
+        // - Layer 2: Token drop detection (50% threshold)
+        // - Layer 3: Hook marker system (SessionStart/SessionEnd)
+        const contextInput = data.context_window?.total_input_tokens || 0;
+        const contextOutput = data.context_window?.total_output_tokens || 0;
+        const contextSize = data.context_window?.context_window_size || 0;
+
+        if (contextSize > 0) {
+            const result = trackContext({
+                sessionId: data.session_id,
+                contextInput,
+                contextOutput,
+                contextWindowSize: contextSize
+            });
+
+            contextPercent = result.percentage;
+
+            if (result.showCompactIndicator) {
+                // First render after compaction - show indicator once
+                contextText = `🔄 ▱▱▱▱▱▱▱▱▱▱▱▱`;
+            } else {
+                const emoji = getSeverityEmoji(contextPercent);
+                const bar = progressBar(contextPercent, 12);
+                contextText = `${emoji} ${bar} ${contextPercent}%`;
+            }
+        }
+
         // Session timer - parse local transcript JSONL (zero external dependencies)
         const transcriptPath = data.transcript_path;
 
         if (transcriptPath) {
             try {
-                const fs = require('fs');
                 if (fs.existsSync(transcriptPath)) {
                     const content = fs.readFileSync(transcriptPath, 'utf8');
                     const lines = content.split('\n').filter(l => l.trim());
@@ -215,7 +245,6 @@ async function main() {
                             const rm = Math.floor((remaining % 3600) / 60);
                             const blockEndLocal = formatTimeHM(blockEndSec);
                             sessionText = `${rh}h ${rm}m until reset at ${blockEndLocal}`;
-                            sessionPercent = Math.floor((18000 - remaining) * 100 / 18000);
                         }
                     }
                 }
@@ -224,41 +253,44 @@ async function main() {
             }
         }
 
-        // Render statusline
+        // Render statusline (no ANSI colors - emoji only for indicators)
         let output = '';
 
         // Directory
-        output += `📁 ${DirColor}${currentDir}${Reset}`;
+        output += `📁 ${currentDir}`;
 
         // Git branch
         if (gitBranch) {
-            output += `  🌿 ${GitColor}${gitBranch}${Reset}`;
+            output += `  🌿 ${gitBranch}`;
         }
 
         // Model
-        output += `  🤖 ${ModelColor}${modelName}${Reset}`;
+        output += `  🤖 ${modelName}`;
 
         // Model version
         if (modelVersion) {
-            output += `  🏷️ ${VersionColor}${modelVersion}${Reset}`;
+            output += ` ${modelVersion}`;
         }
 
         // Session time
         if (sessionText) {
-            const sessionColorCode = getSessionColor(sessionPercent);
-            output += `  ⌛ ${sessionColorCode}${sessionText}${Reset}`;
+            output += `  ⌛ ${sessionText}`;
         }
 
         // Cost (only show for API billing mode)
         if (billingMode === 'api' && costUSD && /^\d+(\.\d+)?$/.test(costUSD.toString())) {
             const costUSDNum = parseFloat(costUSD);
-            output += `  💵 ${CostColor}$${costUSDNum.toFixed(4)}${Reset}`;
+            output += `  💵 $${costUSDNum.toFixed(4)}`;
         }
 
         // Lines changed
         if ((linesAdded > 0 || linesRemoved > 0)) {
-            const linesColor = color('1;32');  // green
-            output += `  📝 ${linesColor}+${linesAdded} -${linesRemoved}${Reset}`;
+            output += `  📝 +${linesAdded} -${linesRemoved}`;
+        }
+
+        // Context window usage (Claude Code v2.0.65+)
+        if (contextText) {
+            output += `  ${contextText}`;
         }
 
         console.log(output);

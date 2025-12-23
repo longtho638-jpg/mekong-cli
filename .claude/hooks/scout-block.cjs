@@ -1,34 +1,50 @@
 #!/usr/bin/env node
-
 /**
- * scout-block.js - Cross-platform hook dispatcher
+ * scout-block.cjs - Cross-platform hook for blocking directory access
  *
  * Blocks access to directories listed in .claude/.ckignore
- * (defaults: node_modules, __pycache__, .git, dist, build)
+ * Uses gitignore-spec compliant pattern matching via 'ignore' package
  *
  * Blocking Rules:
  * - File paths: Blocks any file_path/path/pattern containing blocked directories
  * - Bash commands: Blocks directory access (cd, ls, cat, etc.) but ALLOWS build commands
- *   - Blocked: cd node_modules, ls build/, cat dist/file.js
+ *   - Blocked: cd node_modules, ls packages/web/node_modules, cat dist/file.js
  *   - Allowed: npm build, pnpm build, yarn build, npm run build
  *
  * Configuration:
  * - Edit .claude/.ckignore to customize blocked patterns (one per line, # for comments)
- *
- * Platform Detection:
- * - Windows (win32): Uses PowerShell via scout-block.ps1
- * - Unix (linux/darwin): Uses Bash via scout-block.sh
- * - WSL: Automatically detects and uses bash implementation
+ * - Supports negation patterns (!) to allow specific paths
  *
  * Exit Codes:
  * - 0: Command allowed
- * - 2: Command blocked or error occurred
+ * - 2: Command blocked
  */
 
-const { execSync } = require('child_process');
-const path = require('path');
 const fs = require('fs');
-// __dirname and __filename are already available in CommonJS
+const path = require('path');
+
+// Import modules
+const { loadPatterns, createMatcher, matchPath } = require('./scout-block/pattern-matcher.cjs');
+const { extractFromToolInput } = require('./scout-block/path-extractor.cjs');
+const { formatBlockedError } = require('./scout-block/error-formatter.cjs');
+const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-block/broad-pattern-detector.cjs');
+
+// Build command allowlist - these are allowed even if they contain blocked paths
+// Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
+const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
+const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier)/;
+
+/**
+ * Check if a command is a build/tooling command (should be allowed)
+ *
+ * @param {string} command - The command to check
+ * @returns {boolean}
+ */
+function isBuildCommand(command) {
+  if (!command || typeof command !== 'string') return false;
+  const trimmed = command.trim();
+  return BUILD_COMMAND_PATTERN.test(trimmed) || TOOL_COMMAND_PATTERN.test(trimmed);
+}
 
 try {
   // Read stdin synchronously
@@ -40,61 +56,78 @@ try {
     process.exit(2);
   }
 
-  // Validate JSON structure (basic check)
+  // Parse JSON
+  let data;
   try {
-    const data = JSON.parse(hookInput);
-    if (!data.tool_input || typeof data.tool_input !== 'object') {
-      console.error('ERROR: Invalid JSON structure');
-      process.exit(2);
-    }
+    data = JSON.parse(hookInput);
   } catch (parseError) {
-    console.error('ERROR: JSON parse failed:', parseError.message);
-    process.exit(2);
+    // Fail-open for unparseable input
+    console.error('WARN: JSON parse failed, allowing operation');
+    process.exit(0);
   }
 
-  // Determine platform
-  const platform = process.platform;
+  // Validate structure
+  if (!data.tool_input || typeof data.tool_input !== 'object') {
+    // Fail-open for invalid structure
+    console.error('WARN: Invalid JSON structure, allowing operation');
+    process.exit(0);
+  }
+
+  const toolInput = data.tool_input;
+  const toolName = data.tool_name || 'unknown';
+
+  // Check if it's a build command (allowed regardless of paths)
+  if (toolInput.command && isBuildCommand(toolInput.command)) {
+    process.exit(0);
+  }
+
+  // Check for overly broad glob patterns (Glob tool)
+  // This prevents LLMs from filling context with **/*.ts at project root
+  if (toolName === 'Glob' || toolInput.pattern) {
+    const broadResult = detectBroadPatternIssue(toolInput);
+    if (broadResult.blocked) {
+      const errorMsg = formatBroadPatternError(broadResult, path.dirname(__dirname));
+      console.error(errorMsg);
+      process.exit(2);
+    }
+  }
+
+  // Load patterns from .ckignore
   const scriptDir = __dirname;
+  const claudeDir = path.dirname(scriptDir); // Go up from hooks/ to .claude/
+  const ckignorePath = path.join(claudeDir, '.ckignore');
+  const patterns = loadPatterns(ckignorePath);
+  const matcher = createMatcher(patterns);
 
-  if (platform === 'win32') {
-    // Windows: Use PowerShell implementation
-    const psScript = path.join(scriptDir, 'scout-block', 'scout-block.ps1');
+  // Extract paths from tool input
+  const extractedPaths = extractFromToolInput(toolInput);
 
-    // Check if PowerShell script exists
-    if (!fs.existsSync(psScript)) {
-      console.error(`ERROR: PowerShell script not found: ${psScript}`);
-      process.exit(2);
-    }
-
-    // Execute PowerShell script with stdin piped
-    execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, {
-      input: hookInput,
-      stdio: ['pipe', 'inherit', 'inherit'],
-      encoding: 'utf-8'
-    });
-  } else {
-    // Unix (Linux, macOS, WSL): Use bash implementation
-    const bashScript = path.join(scriptDir, 'scout-block', 'scout-block.sh');
-
-    // Check if bash script exists
-    if (!fs.existsSync(bashScript)) {
-      console.error(`ERROR: Bash script not found: ${bashScript}`);
-      process.exit(2);
-    }
-
-    // Execute bash script with stdin piped
-    execSync(`bash "${bashScript}"`, {
-      input: hookInput,
-      stdio: ['pipe', 'inherit', 'inherit'],
-      encoding: 'utf-8'
-    });
+  // If no paths extracted, allow operation
+  if (extractedPaths.length === 0) {
+    process.exit(0);
   }
+
+  // Check each path against patterns
+  for (const extractedPath of extractedPaths) {
+    const result = matchPath(matcher, extractedPath);
+    if (result.blocked) {
+      // Output rich error message
+      const errorMsg = formatBlockedError({
+        path: extractedPath,
+        pattern: result.pattern,
+        tool: toolName,
+        claudeDir: claudeDir
+      });
+      console.error(errorMsg);
+      process.exit(2);
+    }
+  }
+
+  // All paths allowed
+  process.exit(0);
+
 } catch (error) {
-  // Log error details for debugging
-  if (error.message) {
-    console.error('ERROR:', error.message);
-  }
-
-  // Exit with error code from child process, or 2 if undefined
-  process.exit(error.status || 2);
+  // Fail-open for unexpected errors
+  console.error('WARN: Hook error, allowing operation -', error.message);
+  process.exit(0);
 }

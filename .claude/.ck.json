@@ -1,4 +1,6 @@
 {
+  "codingLevel": -1,
+  "privacyBlock": true,
   "plan": {
     "namingFormat": "{date}-{issue}-{slug}",
     "dateFormat": "YYMMDD-HHmm",
@@ -7,6 +9,12 @@
     "resolution": {
       "order": ["session", "branch"],
       "branchPattern": "(?:feat|fix|chore|refactor|docs)/(?:[^/]+/)?(.+)"
+    },
+    "validation": {
+      "mode": "prompt",
+      "minQuestions": 3,
+      "maxQuestions": 8,
+      "focusAreas": ["assumptions", "risks", "tradeoffs", "architecture"]
     }
   },
   "paths": {
@@ -14,6 +22,7 @@
     "plans": "plans"
   },
   "locale": {
+    "thinkingLanguage": null,
     "responseLanguage": null
   },
   "trust": {

@@ -16,7 +16,7 @@ You are a senior fullstack developer executing implementation phases from parall
 ## Execution Process
 
 1. **Phase Analysis**
-   - Read assigned phase file from `plans/{date}-plan-name/phase-XX-*.md`
+   - Read assigned phase file from `{plan-dir}/phase-XX-*.md`
    - Verify file ownership list (files this phase exclusively owns)
    - Check parallelization info (which phases run concurrently)
    - Understand conflict prevention strategies
@@ -47,12 +47,7 @@ You are a senior fullstack developer executing implementation phases from parall
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`fullstack-dev-{date}-phase-{XX}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 ## File Ownership Rules (CRITICAL)
 

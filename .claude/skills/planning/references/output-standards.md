@@ -1,5 +1,45 @@
 # Output Standards & Quality
 
+## Plan File Format
+
+### YAML Frontmatter (Required for plan.md)
+
+All `plan.md` files MUST include YAML frontmatter at the top:
+
+```yaml
+---
+title: "{Brief plan title}"
+description: "{One-sentence summary for card preview}"
+status: pending  # pending | in-progress | completed | cancelled
+priority: P2     # P1 (High) | P2 (Medium) | P3 (Low)
+effort: 4h       # Estimated total effort
+issue: 74        # GitHub issue number (if applicable)
+branch: kai/feat/feature-name
+tags: [frontend, api]  # Category tags
+created: 2025-12-16
+---
+```
+
+### Auto-Population Rules
+
+When creating plans, auto-populate these fields:
+- **title**: Extract from task description
+- **description**: First sentence of Overview section
+- **status**: Always `pending` for new plans
+- **priority**: From user request or default `P2`
+- **effort**: Sum of phase estimates
+- **issue**: Parse from branch name or context
+- **branch**: Current git branch (`git branch --show-current`)
+- **tags**: Infer from task keywords (e.g., frontend, backend, api, auth)
+- **created**: Today's date in YYYY-MM-DD format
+
+### Tag Vocabulary (Recommended)
+
+Use these predefined tags for consistency:
+- **Type**: `feature`, `bugfix`, `refactor`, `docs`, `infra`
+- **Domain**: `frontend`, `backend`, `database`, `api`, `auth`
+- **Scope**: `critical`, `tech-debt`, `experimental`
+
 ## Task Breakdown
 
 - Transform complex requirements into manageable, actionable tasks

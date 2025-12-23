@@ -13,7 +13,7 @@ Use the `planner` subagent to create 2 detailed implementation plans for this fo
 </task>
 
 ## Workflow
-1. First: Create a directory named `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
+1. First: Create a directory using naming pattern from `## Naming` section in injected context.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Use multiple `researcher` agents in parallel to research for this task, each agent research for a different aspect of the task and perform max 5 researches (max 5 tool calls).
@@ -21,6 +21,21 @@ Use the `planner` subagent to create 2 detailed implementation plans for this fo
 5. Main agent gathers all research and scout report filepaths, and pass them to `planner` subagent with the detailed instructions prompt to create an implementation plan of this task.
   **Output:** Provide at least 2 implementation approaches with clear trade-offs, and explain the pros and cons of each approach, and provide a recommended approach.
 1. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
+
+## Plan File Specification
+- Every `plan.md` MUST start with YAML frontmatter:
+  ```yaml
+  ---
+  title: "{Brief title}"
+  description: "{One sentence for card preview}"
+  status: pending
+  priority: P2
+  effort: {sum of phases, e.g., 4h}
+  branch: {current git branch}
+  tags: [relevant, tags]
+  created: {YYYY-MM-DD}
+  ---
+  ```
 
 ## Important Notes
 **IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.

@@ -12,35 +12,159 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const {
   loadConfig,
   writeEnv,
   writeSessionState,
   resolvePlanPath,
-  getReportsPath
+  getReportsPath,
+  resolveNamingPattern
 } = require('./lib/ck-config-utils.cjs');
+const { writeResetMarker } = require('./lib/context-tracker.cjs');
 
 /**
- * Safely execute shell command
+ * Safely execute shell command with optional timeout
+ * @param {string} cmd - Command to execute
+ * @param {number} timeoutMs - Timeout in milliseconds (default: 5000)
  */
-function execSafe(cmd) {
+function execSafe(cmd, timeoutMs = 5000) {
   try {
-    return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    return execSync(cmd, {
+      encoding: 'utf8',
+      timeout: timeoutMs,
+      stdio: ['pipe', 'pipe', 'pipe']
+    }).trim();
   } catch (e) {
     return null;
   }
 }
 
 /**
- * Get Python version
+ * Safely execute a binary with arguments (no shell interpolation)
+ * Prevents command injection and handles paths with spaces correctly
+ * @param {string} binary - Path to the executable
+ * @param {string[]} args - Arguments array
+ * @param {number} timeoutMs - Timeout in milliseconds (default: 2000)
+ */
+function execFileSafe(binary, args, timeoutMs = 2000) {
+  try {
+    return execFileSync(binary, args, {
+      encoding: 'utf8',
+      timeout: timeoutMs,
+      stdio: ['pipe', 'pipe', 'pipe']
+    }).trim();
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Validate that a path is a file (not directory) and doesn't contain shell metacharacters
+ * @param {string} p - Path to validate
+ */
+function isValidPythonPath(p) {
+  if (!p || typeof p !== 'string') return false;
+  // Reject paths with shell metacharacters that could indicate injection attempts
+  if (/[;&|`$(){}[\]<>!#*?]/.test(p)) return false;
+  try {
+    const stat = fs.statSync(p);
+    return stat.isFile();
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Build platform-specific Python paths for fast filesystem check
+ * Avoids slow shell initialization (pyenv, conda) by checking paths directly
+ */
+function getPythonPaths() {
+  const paths = [];
+
+  // User override takes priority
+  if (process.env.PYTHON_PATH) {
+    paths.push(process.env.PYTHON_PATH);
+  }
+
+  if (process.platform === 'win32') {
+    // Windows paths
+    const localAppData = process.env.LOCALAPPDATA;
+    const programFiles = process.env.ProgramFiles || 'C:\\Program Files';
+    const programFilesX86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
+
+    // Microsoft Store Python (most common on modern Windows)
+    if (localAppData) {
+      paths.push(path.join(localAppData, 'Microsoft', 'WindowsApps', 'python.exe'));
+      paths.push(path.join(localAppData, 'Microsoft', 'WindowsApps', 'python3.exe'));
+      // User-installed Python (common versions)
+      for (const ver of ['313', '312', '311', '310', '39']) {
+        paths.push(path.join(localAppData, 'Programs', 'Python', `Python${ver}`, 'python.exe'));
+      }
+    }
+
+    // System-wide Python installations
+    for (const ver of ['313', '312', '311', '310', '39']) {
+      paths.push(path.join(programFiles, `Python${ver}`, 'python.exe'));
+      paths.push(path.join(programFilesX86, `Python${ver}`, 'python.exe'));
+    }
+
+    // Legacy paths
+    paths.push('C:\\Python313\\python.exe');
+    paths.push('C:\\Python312\\python.exe');
+    paths.push('C:\\Python311\\python.exe');
+    paths.push('C:\\Python310\\python.exe');
+    paths.push('C:\\Python39\\python.exe');
+  } else {
+    // Unix-like paths (Linux, macOS)
+    paths.push('/usr/bin/python3');
+    paths.push('/usr/local/bin/python3');
+    paths.push('/opt/homebrew/bin/python3');      // macOS ARM (Homebrew)
+    paths.push('/opt/homebrew/bin/python');       // macOS ARM fallback
+    paths.push('/usr/bin/python');
+    paths.push('/usr/local/bin/python');
+  }
+
+  return paths;
+}
+
+/**
+ * Find Python binary using fast filesystem check
+ * Returns first existing valid file path, avoiding slow shell spawns
+ */
+function findPythonBinary() {
+  const paths = getPythonPaths();
+  for (const p of paths) {
+    if (isValidPythonPath(p)) return p;
+  }
+  return null;
+}
+
+/**
+ * Get Python version with optimized detection
+ * Layer 0: Fast path pre-check (instant fs lookup)
+ * Layer 1: Timeout protection (2s max per command)
+ * Layer 2: Graceful degradation (returns null on failure)
  */
 function getPythonVersion() {
-  const commands = ['python3 --version', 'python --version'];
-  for (const cmd of commands) {
-    const result = execSafe(cmd);
+  // Layer 0: Fast path pre-check - instant filesystem lookup
+  const pythonPath = findPythonBinary();
+  if (pythonPath) {
+    // Use execFileSafe to prevent command injection and handle paths with spaces
+    // Direct binary execution bypasses shell initialization (pyenv, conda)
+    const result = execFileSafe(pythonPath, ['--version']);
     if (result) return result;
   }
+
+  // Fallback: Try shell resolution with strict timeout
+  // This catches non-standard installations but caps at 2s
+  // Note: Shell fallback still needed for pyenv/asdf where binary isn't in standard paths
+  const commands = ['python3', 'python'];
+  for (const cmd of commands) {
+    const result = execFileSafe(cmd, ['--version']);
+    if (result) return result;
+  }
+
   return null;
 }
 
@@ -122,6 +246,49 @@ function detectFramework(configOverride) {
 }
 
 /**
+ * Get coding level style name mapping
+ * @param {number} level - Coding level (0-5)
+ * @returns {string} Style name for /output-style command
+ */
+function getCodingLevelStyleName(level) {
+  const styleMap = {
+    0: 'coding-level-0-eli5',
+    1: 'coding-level-1-junior',
+    2: 'coding-level-2-mid',
+    3: 'coding-level-3-senior',
+    4: 'coding-level-4-lead',
+    5: 'coding-level-5-god'
+  };
+  return styleMap[level] || 'coding-level-5-god';
+}
+
+/**
+ * Get coding level guidelines by reading from output-styles .md files
+ * This ensures single source of truth - users can customize the .md files directly
+ * @param {number} level - Coding level (-1 to 5)
+ * @returns {string|null} Guidelines text (frontmatter stripped) or null if disabled
+ */
+function getCodingLevelGuidelines(level) {
+  // -1 = disabled (no injection, saves tokens)
+  // 5 = god mode (still injects minimal guidelines)
+  if (level === -1 || level === null || level === undefined) return null;
+
+  const styleName = getCodingLevelStyleName(level);
+  const stylePath = path.join(__dirname, '..', 'output-styles', `${styleName}.md`);
+
+  try {
+    if (!fs.existsSync(stylePath)) return null;
+
+    const content = fs.readFileSync(stylePath, 'utf8');
+    // Strip YAML frontmatter (between --- markers at start of file)
+    const withoutFrontmatter = content.replace(/^---[\s\S]*?---\n*/, '').trim();
+    return withoutFrontmatter;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Build context summary for output (compact, single line)
  * @param {Object} config - Loaded config
  * @param {Object} detections - Project detections
@@ -156,6 +323,12 @@ async function main() {
     const sessionId = data.session_id || null;
 
     const config = loadConfig();
+
+    // Layer 3: Write reset marker on /clear to signal statusline to reset baseline
+    // This ensures context window percentage resets to 0% on fresh sessions
+    if (source === 'clear' && sessionId) {
+      writeResetMarker(sessionId, 'clear');
+    }
 
     const detections = {
       type: detectProjectType(config.project?.type),
@@ -197,6 +370,9 @@ async function main() {
       claudeSettingsDir: path.resolve(__dirname, '..')
     };
 
+    // Compute resolved naming pattern (date + issue resolved, {slug} kept as placeholder)
+    const namePattern = resolveNamingPattern(config.plan, staticEnv.gitBranch);
+
     if (envFile) {
       // Session & plan config
       writeEnv(envFile, 'CK_SESSION_ID', sessionId || '');
@@ -204,6 +380,11 @@ async function main() {
       writeEnv(envFile, 'CK_PLAN_DATE_FORMAT', config.plan.dateFormat);
       writeEnv(envFile, 'CK_PLAN_ISSUE_PREFIX', config.plan.issuePrefix || '');
       writeEnv(envFile, 'CK_PLAN_REPORTS_DIR', config.plan.reportsDir);
+
+      // NEW: Resolved naming pattern for DRY file naming in agents
+      // Example: "251212-1830-GH-88-{slug}" or "251212-1830-{slug}"
+      // Agents use: `{agent-type}-$CK_NAME_PATTERN.md` and substitute {slug}
+      writeEnv(envFile, 'CK_NAME_PATTERN', namePattern);
 
       // Plan resolution
       writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');
@@ -232,12 +413,34 @@ async function main() {
       writeEnv(envFile, 'CK_CLAUDE_SETTINGS_DIR', staticEnv.claudeSettingsDir);
 
       // Locale config
+      if (config.locale?.thinkingLanguage) {
+        writeEnv(envFile, 'CK_THINKING_LANGUAGE', config.locale.thinkingLanguage);
+      }
       if (config.locale?.responseLanguage) {
         writeEnv(envFile, 'CK_RESPONSE_LANGUAGE', config.locale.responseLanguage);
       }
+
+      // Plan validation config (for /plan:validate, /plan:hard, /plan:parallel)
+      const validation = config.plan?.validation || {};
+      writeEnv(envFile, 'CK_VALIDATION_MODE', validation.mode || 'prompt');
+      writeEnv(envFile, 'CK_VALIDATION_MIN_QUESTIONS', validation.minQuestions || 3);
+      writeEnv(envFile, 'CK_VALIDATION_MAX_QUESTIONS', validation.maxQuestions || 8);
+      writeEnv(envFile, 'CK_VALIDATION_FOCUS_AREAS', (validation.focusAreas || ['assumptions', 'risks', 'tradeoffs', 'architecture']).join(','));
+
+      // Coding level config (for output style selection)
+      const codingLevel = config.codingLevel ?? 5;
+      writeEnv(envFile, 'CK_CODING_LEVEL', codingLevel);
+      writeEnv(envFile, 'CK_CODING_LEVEL_STYLE', getCodingLevelStyleName(codingLevel));
     }
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);
+
+    // Auto-inject coding level guidelines (if not disabled)
+    const codingLevel = config.codingLevel ?? -1;
+    const guidelines = getCodingLevelGuidelines(codingLevel);
+    if (guidelines) {
+      console.log(`\n${guidelines}`);
+    }
 
     if (config.assertions?.length > 0) {
       console.log(`\nUser Assertions:`);

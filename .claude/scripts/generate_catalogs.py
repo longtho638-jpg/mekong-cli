@@ -14,10 +14,15 @@ from datetime import datetime
 # Script directory for resolving relative paths
 SCRIPT_DIR = Path(__file__).parent
 
-# Ensure UTF-8 output on Windows
-if sys.platform == 'win32':
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+# Windows UTF-8 compatibility (use shared utility)
+try:
+    from win_compat import ensure_utf8_stdout
+    ensure_utf8_stdout()
+except ImportError:
+    if sys.platform == 'win32':
+        import io
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
 def load_yaml(filename):

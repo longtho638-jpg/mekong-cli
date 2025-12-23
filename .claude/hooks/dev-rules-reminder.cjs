@@ -16,7 +16,9 @@ const { execSync } = require('child_process');
 const {
   loadConfig,
   resolvePlanPath,
-  getReportsPath
+  getReportsPath,
+  resolveNamingPattern,
+  normalizePath
 } = require('./lib/ck-config-utils.cjs');
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -47,11 +49,35 @@ function resolveScriptPath(filename) {
   return null;
 }
 
+function resolveSkillsVenv() {
+  const isWindows = process.platform === 'win32';
+  const venvBin = isWindows ? 'Scripts' : 'bin';
+  const pythonExe = isWindows ? 'python.exe' : 'python3';
+
+  const localVenv = path.join(process.cwd(), '.claude', 'skills', '.venv', venvBin, pythonExe);
+  const globalVenv = path.join(os.homedir(), '.claude', 'skills', '.venv', venvBin, pythonExe);
+
+  if (fs.existsSync(localVenv)) {
+    return isWindows
+      ? '.claude\\skills\\.venv\\Scripts\\python.exe'
+      : '.claude/skills/.venv/bin/python3';
+  }
+  if (fs.existsSync(globalVenv)) {
+    return isWindows
+      ? '~\\.claude\\skills\\.venv\\Scripts\\python.exe'
+      : '~/.claude/skills/.venv/bin/python3';
+  }
+  return null;
+}
+
 function buildPlanContext(sessionId, config) {
   const { plan, paths } = config;
   const gitBranch = execSafe('git branch --show-current');
   const resolved = resolvePlanPath(sessionId, config);
   const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, plan, paths);
+
+  // Compute naming pattern directly for reliable injection
+  const namePattern = resolveNamingPattern(plan, gitBranch);
 
   const planLine = resolved.resolvedBy === 'session'
     ? `- Plan: ${resolved.path}`
@@ -59,7 +85,13 @@ function buildPlanContext(sessionId, config) {
       ? `- Plan: none | Suggested: ${resolved.path}`
       : `- Plan: none`;
 
-  return { reportsPath, gitBranch, planLine };
+  // Validation config (injected so LLM can reference it)
+  const validation = plan.validation || {};
+  const validationMode = validation.mode || 'prompt';
+  const validationMin = validation.minQuestions || 3;
+  const validationMax = validation.maxQuestions || 8;
+
+  return { reportsPath, gitBranch, planLine, namePattern, validationMode, validationMin, validationMax };
 }
 
 function wasRecentlyInjected(transcriptPath) {
@@ -77,16 +109,30 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsPath, plansPath, docsPath, planLine, gitBranch }) {
+function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, skillsVenv, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
+  // Build language instructions based on config
+  // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
+  const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : null);
+  const hasThinking = effectiveThinking && effectiveThinking !== responseLanguage;
+  const hasResponse = responseLanguage;
+  const languageLines = [];
+
+  if (hasThinking || hasResponse) {
+    languageLines.push(`## Language`);
+    if (hasThinking) {
+      languageLines.push(`- Thinking: Use ${effectiveThinking} for reasoning (logic, precision).`);
+    }
+    if (hasResponse) {
+      languageLines.push(`- Response: Respond in ${responseLanguage} (natural, fluent).`);
+    }
+    languageLines.push(``);
+  }
+
   return [
     // ─────────────────────────────────────────────────────────────────────────
-    // RESPONSE LANGUAGE (if configured)
+    // LANGUAGE (thinking + response, if configured)
     // ─────────────────────────────────────────────────────────────────────────
-    ...(responseLanguage ? [
-      `## Response Language`,
-      `Respond in ${responseLanguage}.`,
-      ``
-    ] : []),
+    ...languageLines,
 
     // ─────────────────────────────────────────────────────────────────────────
     // SESSION CONTEXT
@@ -107,6 +153,7 @@ function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsP
       `- Activate skills: Run \`python ${catalogScript} --skills\` to generate a skills catalog and analyze it, then activate the relevant skills that are needed for the task during the process.`,
       `- Execute commands: Run \`python ${catalogScript} --commands\` to generate a commands catalog and analyze it, then execute the relevant SlashCommands that are needed for the task during the process.`
     ] : []),
+    ...(skillsVenv ? [`- Python scripts in .claude/skills/: Use \`${skillsVenv}\``] : []),
     `- When skills' scripts are failed to execute, always fix them and run again, repeat until success.`,
     `- Follow **YAGNI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)** principles`,
     `- Sacrifice grammar for the sake of concision when writing reports.`,
@@ -139,7 +186,18 @@ function buildReminder({ responseLanguage, devRulesPath, catalogScript, reportsP
     `## Plan Context`,
     planLine,
     `- Reports: ${reportsPath}`,
-    ...(gitBranch ? [`- Branch: ${gitBranch}`] : [])
+    ...(gitBranch ? [`- Branch: ${gitBranch}`] : []),
+    `- Validation: mode=${validationMode}, questions=${validationMin}-${validationMax}`,
+    ``,
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NAMING (computed pattern for consistent file naming)
+    // ─────────────────────────────────────────────────────────────────────────
+    `## Naming`,
+    `- Report: \`${reportsPath}{type}-${namePattern}.md\``,
+    `- Plan dir: \`${plansPath}/${namePattern}/\``,
+    `- Replace \`{type}\` with: agent name, report type, or context`,
+    `- Replace \`{slug}\` in pattern with: descriptive-kebab-slug`
   ];
 }
 
@@ -159,17 +217,24 @@ async function main() {
     const config = loadConfig({ includeProject: false, includeAssertions: false });
     const devRulesPath = resolveWorkflowPath('development-rules.md');
     const catalogScript = resolveScriptPath('generate_catalogs.py');
-    const { reportsPath, gitBranch, planLine } = buildPlanContext(sessionId, config);
+    const skillsVenv = resolveSkillsVenv();
+    const { reportsPath, gitBranch, planLine, namePattern, validationMode, validationMin, validationMax } = buildPlanContext(sessionId, config);
 
     const output = buildReminder({
+      thinkingLanguage: config.locale?.thinkingLanguage,
       responseLanguage: config.locale?.responseLanguage,
       devRulesPath,
       catalogScript,
+      skillsVenv,
       reportsPath,
-      plansPath: config.paths?.plans || 'plans',
-      docsPath: config.paths?.docs || 'docs',
+      plansPath: normalizePath(config.paths?.plans) || 'plans',
+      docsPath: normalizePath(config.paths?.docs) || 'docs',
       planLine,
-      gitBranch
+      gitBranch,
+      namePattern,
+      validationMode,
+      validationMin,
+      validationMax
     });
 
     console.log(output.join('\n'));

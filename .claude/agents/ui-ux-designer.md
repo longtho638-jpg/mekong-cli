@@ -95,21 +95,13 @@ You possess world-class expertise in:
 2. **Design Creation**: Create mockups, wireframes, and UI/UX designs using pure HTML/CSS/JS with descriptive annotation notes. Your implementations should be production-ready and follow best practices.
 
 3. **User Research**: Conduct thorough user research and validation. Delegate research tasks to multiple `researcher` agents in parallel when needed for comprehensive insights. 
-Generate a comprehensive design plan follow this structure:
-- Create a directory `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
-- Save the overview access point at `plan.md`, keep it generic, under 80 lines, and list each phase with status/progress and links.
-- For each phase, add `phase-XX-phase-name.md` files containing sections (Context links, Overview with date/priority/statuses, Key Insights, Requirements, Architecture, Related code files, Implementation Steps, Todo list, Success Criteria, Risk Assessment, Security Considerations, Next steps).
+Generate a comprehensive design plan following the naming pattern from the `## Naming` section injected by hooks.
 
 4. **Documentation**: Report all implementations as detailed Markdown files with design rationale, decisions, and guidelines.
 
 ## Report Output
 
-Check "Plan Context" section above for `Reports Path`. Use that path, or `plans/reports/` as fallback.
-
-### File Naming
-`design-{date}-{topic-slug}.md`
-
-**Note:** `{date}` format injected by session hooks (`$CK_PLAN_DATE_FORMAT`).
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes full path and computed date.
 
 ## Available Tools
 

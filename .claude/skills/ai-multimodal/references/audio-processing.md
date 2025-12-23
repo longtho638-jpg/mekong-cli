@@ -25,6 +25,7 @@ Comprehensive guide for audio analysis and speech generation using Gemini API.
   - Inline: 20 MB max total request
   - File API: 2 GB per file, 20 GB project quota
   - Retention: 48 hours auto-delete
+- **Important:** if you are going to generate a transcript of the audio, and the audio length is longer than 15 minutes, the transcript often gets truncated due to output token limits in the Gemini API response. To get the full transcript, you need to split the audio into smaller chunks (max 15 minutes per chunk) and transcribe each segment for a complete transcript.
 
 ## Transcription
 
@@ -255,11 +256,14 @@ response = client.models.generate_content(
 
 ### Error Handling
 
+> **NOTE**: This is example code for understanding the API pattern.
+> Use the actual script: `python scripts/gemini_batch_process.py --files <audio> --task transcribe`
+
 ```python
 import time
 
-def transcribe_with_retry(file_path, max_retries=3):
-    """Transcribe audio with exponential backoff retry"""
+def process_with_retry(file_path, max_retries=3):
+    """Process file with exponential backoff retry (example pattern)"""
     for attempt in range(max_retries):
         try:
             myfile = client.files.upload(file=file_path)

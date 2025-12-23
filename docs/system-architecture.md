@@ -1,7 +1,7 @@
 # System Architecture
 
-**Last Updated**: 2025-12-10
-**Version**: 1.20.0-beta.12
+**Last Updated**: 2025-12-11
+**Version**: 1.20.0-beta.13
 **Project**: ClaudeKit Engineer
 
 ## Overview
@@ -434,7 +434,106 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 - Code analysis
 - Debugging assistance
 
-#### 6.3 External Service Integration
+#### 6.3 Preview Dashboard System (COMPLETE - Phase 6)
+
+**Purpose**: Interactive web-based visualization of implementation plans and project progress
+
+**Architecture**:
+```
+.claude/skills/markdown-novel-viewer/
+├── scripts/
+│   ├── server.cjs              # HTTP server & request handler
+│   ├── lib/
+│   │   ├── plan-scanner.cjs    # Plan discovery & metadata extraction
+│   │   ├── dashboard-renderer.cjs  # Plan cards & dashboard rendering
+│   │   ├── plan-navigator.cjs  # Plan file parsing & traversal
+│   │   ├── markdown-renderer.cjs  # Markdown to HTML conversion
+│   │   ├── http-server.cjs     # HTTP server utilities
+│   │   ├── port-finder.cjs     # Available port detection
+│   │   └── process-mgr.cjs     # Process management
+│   ├── tests/                  # Test suites
+│   └── ...                     # Other modules
+├── assets/
+│   ├── dashboard-template.html # Dashboard UI template
+│   ├── dashboard.css           # Dashboard styles + theme
+│   └── dashboard.js            # Interactive dashboard logic
+└── SKILL.md                    # Skill documentation
+```
+
+**Core Components** (All 6 Phases Complete):
+
+**Phase 1-2: Infrastructure**
+- Plan Scanner, HTTP Server, Port detection utilities
+- Real-time plan discovery & metadata extraction
+- Security validation (path traversal prevention)
+
+**Phase 3-4: API & Data**
+- `/dashboard` route with HTML UI
+- `/api/dashboard` JSON API endpoint
+- Comprehensive metadata extraction (name, progress, status, phases, timestamps)
+
+**Phase 5-6: UI & Features** (COMPLETE)
+1. **Dashboard Renderer** (`dashboard-renderer.cjs`):
+   - Generates plan cards with progress visualization
+   - Calculates progress rings and status bars
+   - Supports sorting: by date, alphabetically, by progress
+   - Real-time filtering by status (all/pending/active/completed)
+   - Full-text search across plan names and descriptions
+
+2. **Dashboard Template** (`dashboard-template.html`):
+   - Responsive grid layout (auto-fit cards)
+   - Sticky header with controls
+   - Search bar with debounced input
+   - Sort/filter dropdowns
+   - Plan cards with metadata
+
+3. **Dashboard Styles** (`dashboard.css`):
+   - Dark/light theme support with CSS variables
+   - WCAG 2.1 AA color contrast compliance
+   - Progress ring visualization (SVG-based)
+   - Responsive design (mobile-first)
+   - Smooth transitions and animations
+
+4. **Dashboard Logic** (`dashboard.js`):
+   - Client-side filtering and sorting
+   - Theme toggle (persisted in localStorage)
+   - Real-time search with regex support
+   - Accessibility features (keyboard navigation, ARIA labels)
+   - Plan card interactions and detail views
+
+**Data Flow**:
+```
+User Request (/dashboard)
+    ↓
+HTTP Server
+    ↓
+Plan Scanner (discovers plans in ./plans)
+    ↓
+Dashboard Renderer (generates cards with progress)
+    ↓
+Dashboard Template (renders HTML with cards)
+    ↓
+Dashboard JS (enables interactivity)
+    ↓
+User sees sorted/filtered plan grid
+```
+
+**Features Complete**:
+- Real-time plan discovery (no manual updates)
+- Interactive card-based grid layout
+- Progress tracking with percentage calculation & rings
+- Status derivation (pending/in-progress/completed)
+- Sorting: date (newest first), alphabetical, progress %
+- Filtering: all, pending, active, completed
+- Full-text search with highlighting
+- Dark/light theme toggle with persistence
+- WCAG 2.1 AA accessibility compliance
+- Responsive mobile-friendly design
+- Phase breakdown with status indicators
+- Timestamp tracking for plan modifications
+- Security-validated path traversal
+
+#### 6.4 External Service Integration
 
 **GitHub**:
 - Actions (CI/CD automation)

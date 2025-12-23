@@ -186,6 +186,62 @@ function Test-Command {
     return $false
 }
 
+# Check if Visual Studio Build Tools are installed (not just in PATH)
+# Returns $true if VS Build Tools are available for compilation
+function Test-VSBuildTools {
+    # Quick check: if cl.exe or gcc is in PATH, we're good
+    if ((Test-Command "cl") -or (Test-Command "gcc")) {
+        return $true
+    }
+
+    # Check via vswhere.exe (most reliable method for VS detection)
+    $vswherePaths = @(
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe",
+        "${env:ProgramFiles}\Microsoft Visual Studio\Installer\vswhere.exe"
+    )
+
+    foreach ($vswhere in $vswherePaths) {
+        if (Test-Path $vswhere) {
+            try {
+                # Check for any VS installation with C++ build tools
+                $vsPath = & $vswhere -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath 2>$null
+                if ($vsPath -and (Test-Path $vsPath)) {
+                    return $true
+                }
+                # Fallback: check for any VS installation
+                $vsPath = & $vswhere -latest -property installationPath 2>$null
+                if ($vsPath -and (Test-Path $vsPath)) {
+                    return $true
+                }
+            } catch {
+                # vswhere failed, continue to fallback checks
+            }
+        }
+    }
+
+    # Fallback: check common VS Build Tools installation paths
+    $commonPaths = @(
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\Community",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\Professional",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\Enterprise",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\BuildTools",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Community"
+    )
+
+    foreach ($vsPath in $commonPaths) {
+        if (Test-Path $vsPath) {
+            # Check if VC tools exist in this installation
+            $vcToolsPath = Join-Path $vsPath "VC\Tools\MSVC"
+            if (Test-Path $vcToolsPath) {
+                return $true
+            }
+        }
+    }
+
+    return $false
+}
+
 # Find Python executable, handling Windows Store aliases
 # Returns: hashtable with 'Path' and 'Version', or $null if not found
 function Find-Python {
@@ -561,6 +617,28 @@ function Install-NodeDeps {
         Write-Success "mcp-management dependencies installed"
     }
 
+    # markdown-novel-viewer (marked, highlight.js, gray-matter)
+    $novelViewerPath = Join-Path $ScriptDir "markdown-novel-viewer"
+    $novelViewerPackageJson = Join-Path $novelViewerPath "package.json"
+    if ((Test-Path $novelViewerPath) -and (Test-Path $novelViewerPackageJson)) {
+        Write-Info "Installing markdown-novel-viewer dependencies..."
+        Push-Location $novelViewerPath
+        npm install --quiet
+        Pop-Location
+        Write-Success "markdown-novel-viewer dependencies installed"
+    }
+
+    # plans-kanban (gray-matter)
+    $plansKanbanPath = Join-Path $ScriptDir "plans-kanban"
+    $plansKanbanPackageJson = Join-Path $plansKanbanPath "package.json"
+    if ((Test-Path $plansKanbanPath) -and (Test-Path $plansKanbanPackageJson)) {
+        Write-Info "Installing plans-kanban dependencies..."
+        Push-Location $plansKanbanPath
+        npm install --quiet
+        Pop-Location
+        Write-Success "plans-kanban dependencies installed"
+    }
+
     # Optional: Shopify CLI (ask user unless auto-confirming)
     $shopifyPath = Join-Path $ScriptDir "shopify"
     if (Test-Path $shopifyPath) {
@@ -594,10 +672,9 @@ function Try-PipInstall {
         return $true
     }
 
-    # Phase 2: Check if we can build from source
-    $hasBuildTools = (Test-Command "cl") -or (Test-Command "gcc")
-    if (-not $hasBuildTools) {
-        Write-Warning "${packageName}: No wheel available, no build tools"
+    # Phase 2: Check if we can build from source (uses vswhere for proper VS detection)
+    if (-not (Test-VSBuildTools)) {
+        Write-Warning "${packageName}: No wheel available, no build tools detected"
         Write-Info "Install Visual Studio Build Tools from: https://visualstudio.microsoft.com/visual-cpp-build-tools/"
         return $false
     }
@@ -715,6 +792,12 @@ function Setup-PythonEnv {
                 $line = $_.Trim()
                 # Skip comments and empty lines
                 if ($line -match '^#' -or [string]::IsNullOrWhiteSpace($line)) {
+                    return
+                }
+
+                # Strip inline comments (e.g., "package>=1.0  # comment" -> "package>=1.0")
+                $line = ($line -split '#')[0].Trim()
+                if ([string]::IsNullOrWhiteSpace($line)) {
                     return
                 }
 

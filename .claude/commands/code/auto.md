@@ -1,10 +1,14 @@
 ---
 description: ⚡⚡⚡ [AUTO] Start coding & testing an existing plan ("trust me bro")
-argument-hint: [plan]
+argument-hint: [plan] [all-phases-yes-or-no] (default: yes)
 ---
 
 **MUST READ** `CLAUDE.md` then **THINK HARDER** to start working on the following plan follow the Orchestration Protocol, Core Responsibilities, Subagents Team and Development Rules:
 <plan>$ARGUMENTS</plan>
+
+## Arguments
+- $PLAN: $1 (Mention specific plan or auto detected, default: latest plan)
+- $ALL_PHASES: $2 (`Yest` to finish all phases in one run or `No` to implement phase-by-phase and wait for confirmation, default is `Yes`)
 
 ---
 
@@ -22,11 +26,11 @@ argument-hint: [plan]
 
 ## Step 0: Plan Detection & Phase Selection
 
-**If `$ARGUMENTS` is empty:**
+**If `$PLAN` is empty:**
 1. Find latest `plan.md` in `./plans` | `find ./plans -name "plan.md" -type f -exec stat -f "%m %N" {} \; 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-`
 2. Parse plan for phases and status, auto-select next incomplete (prefer IN_PROGRESS or earliest Planned)
 
-**If `$ARGUMENTS` provided:** Use that plan and detect which phase to work on (auto-detect or use argument like "phase-2").
+**If `$PLAN` provided:** Use that plan and detect which phase to work on (auto-detect or use argument like "phase-2").
 
 **Output:** `✓ Step 0: [Plan Name] - [Phase Name]`
 
@@ -39,38 +43,38 @@ Task(subagent_type="[type]", prompt="[task description]", description="[brief]")
 
 ## Workflow Sequence
 
-**Rules:** Follow steps 1-6 in order. Each step requires output marker starting with "✓ Step N:". Mark each complete in TodoWrite before proceeding. Do not skip steps.
+**Rules:** Follow steps 1-5 in order. Each step requires output marker starting with "✓ Step N:". Mark each complete in `TodoWrite` before proceeding. Do not skip steps.
 
 ---
 
 ## Step 1: Analysis & Task Extraction
-
-Read plan file completely. Map dependencies between tasks. List ambiguities or blockers. Identify required skills/tools and activate from catalog. Parse phase file and extract actionable tasks.
+Use `project-manager` agent to read plan file completely. Map dependencies between tasks. List ambiguities or blockers. Identify required skills/tools and activate from catalog. Parse phase file and extract actionable tasks.
 
 **TodoWrite Initialization & Task Extraction:**
-- Initialize TodoWrite with `Step 0: [Plan Name] - [Phase Name]` and all command steps (Step 1 through Step 6)
+`project-manager` agent must respond back with:
+- Initialize `TodoWrite` with `Step 0: [Plan Name] - [Phase Name]` and all command steps (Step 1 through Step 5)
 - Read phase file (e.g., phase-01-preparation.md)
 - Look for tasks/steps/phases/sections/numbered/bulleted lists
-- MUST convert to TodoWrite tasks:
+- MUST convert to `TodoWrite` tasks:
   - Phase Implementation tasks → Step 2.X (Step 2.1, Step 2.2, etc.)
   - Phase Testing tasks → Step 3.X (Step 3.1, Step 3.2, etc.)
   - Phase Code Review tasks → Step 4.X (Step 4.1, Step 4.2, etc.)
 - Ensure each task has UNIQUE name (increment X for each task)
-- Add tasks to TodoWrite after their corresponding command step
+- Add tasks to `TodoWrite` after their corresponding command step
 
 **Output:** `✓ Step 1: Found [N] tasks across [M] phases - Ambiguities: [list or "none"]`
 
-Mark Step 1 complete in TodoWrite, mark Step 2 in_progress.
+Mark Step 1 complete in `TodoWrite`, mark Step 2 in_progress.
 
 ---
 
 ## Step 2: Implementation
 
-Implement selected plan phase step-by-step following extracted tasks (Step 2.1, Step 2.2, etc.). Mark tasks complete as done. For UI work, call `ui-ux-designer` subagent: "Implement [feature] UI per ./docs/design-guidelines.md". Use `ai-multimodal` skill for image assets, `imagemagick` for editing. Run type checking and compile to verify no syntax errors.
+Implement selected plan phase step-by-step following extracted tasks (Step 2.1, Step 2.2, etc.). Mark tasks complete as done. For UI work, call `ui-ux-designer` subagent: "Implement [feature] UI per ./docs/design-guidelines.md". Use `ai-multimodal` skill for image assets, imagemagick in `media-processing` skill for editing. Run type checking and compile to verify no syntax errors.
 
 **Output:** `✓ Step 2: Implemented [N] files - [X/Y] tasks complete, compilation passed`
 
-Mark Step 2 complete in TodoWrite, mark Step 3 in_progress.
+Mark Step 2 complete in `TodoWrite`, mark Step 3 in_progress.
 
 ---
 
@@ -84,13 +88,13 @@ Write tests covering happy path, edge cases, and error cases. Call `tester` suba
 
 **Validation:** If X ≠ total, Step 3 INCOMPLETE - do not proceed.
 
-Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
+Mark Step 3 complete in `TodoWrite`, mark Step 4 in_progress.
 
 ---
 
 ## Step 4: Code Review
 
-Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY". If critical issues found: STOP, fix all, re-run `tester` to verify, re-run `code-reviewer`. Repeat until no critical issues.
+Call `code-reviewer` subagent: "Review code changes in **Step 2** of plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY". If critical issues found: **STOP**, fix all, re-run `tester` to verify, re-run `code-reviewer`. Repeat until no critical issues.
 
 **Critical issues:** Security vulnerabilities (XSS, SQL injection, OWASP), performance bottlenecks, architectural violations, principle violations.
 
@@ -109,6 +113,7 @@ Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 - **Call** `docs-manager` sub-agent: "Update docs for plan phase [phase-name]. Changed files: [list]."
 
 2. **ONBOARDING CHECK:** Detect onboarding requirements (API keys, env vars, config) + generate summary report with next steps.
+- If this is the last phase: use `AskUserQuestion` tool to ask if user wants to set up onboarding requirements.
 
 3. **AUTO-COMMIT (after steps 1 and 2 completes):**
 - **Call** `git-manager` subagent to handle git operation.
@@ -117,9 +122,18 @@ Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
-Mark Step 5 complete in TodoWrite.
+Mark Step 5 complete in `TodoWrite`.
 
-**Phase workflow finished. Ready for next plan phase.**
+**Important:**
+If $ALL_PHASES is `Yes`, proceed to the next phase automatically.
+If $ALL_PHASES is `No`, wait for user confirmation before proceeding to the next phase:
+- Use `AskUserQuestion` tool to ask if user wants to proceed to the next phase: "**Phase workflow finished. Ready for next plan phase.**"
+
+## Summary report
+If this is the last phase, generate a concise summary report.
+Use `AskUserQuestion` tool to ask these questions:
+- If user wants to preview the report with `/preview` slash command.
+- If user wants to archive the plan with `/plan:archive` slash command.
 
 ---
 
@@ -147,7 +161,6 @@ Mark Step 5 complete in TodoWrite.
 **Blocking gates:**
 - Step 3: Tests must be 100% passing
 - Step 4: Critical issues must be 0
-- Step 5: Both `project-manager` and `docs-manager` must complete successfully
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails.

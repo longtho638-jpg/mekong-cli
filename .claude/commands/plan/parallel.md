@@ -12,7 +12,7 @@ $ARGUMENTS
 </task>
 
 ## Workflow
-1. Create a directory named `plans/{date}-plan-name` (date format from `$CK_PLAN_DATE_FORMAT`).
+1. Create a directory using naming pattern from `## Naming` section in injected context.
    Make sure you pass the directory path to every subagent during the process.
 2. Follow strictly to the "Plan Creation & Organization" rules of `planning` skill.
 3. Use multiple `researcher` agents (max 2 agents) in parallel to research for this task:
@@ -21,6 +21,21 @@ $ARGUMENTS
    **ONLY PERFORM THIS FOLLOWING STEP IF `codebase-summary.md` is not available or older than 3 days**: Use `/scout <instructions>` slash command to search the codebase for files needed to complete the task.
 5. Main agent gathers all research and scout report filepaths, and pass them to `planner` subagent with the prompt to create a parallel-optimized implementation plan.
 6. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
+
+## Post-Plan Validation (Optional)
+
+After plan creation, offer validation interview to confirm decisions before implementation.
+
+**Check `## Plan Context` → `Validation: mode=X, questions=MIN-MAX`:**
+
+| Mode | Behavior |
+|------|----------|
+| `prompt` | Ask user: "Validate this plan with a brief interview?" → Yes (Recommended) / No |
+| `auto` | Automatically execute `/plan:validate {plan-path}` |
+| `off` | Skip validation step entirely |
+
+**If mode is `prompt`:** Use `AskUserQuestion` tool with options above.
+**If user chooses validation or mode is `auto`:** Execute `/plan:validate {plan-path}` SlashCommand.
 
 ## Special Requirements for Parallel Execution
 
@@ -48,30 +63,42 @@ Phase 04: Integration Tests (depends on 01, 02, 03)
 
 ## Output Requirements
 
-**Plan Directory Structure**
+**Plan Directory Structure** (use `Plan dir:` from `## Naming` section)
 ```
-plans/
-└── {date}-plan-name/
-    ├── research/
-    │   ├── researcher-XX-report.md
-    │   └── ...
-    ├── reports/
-    │   ├── XX-report.md
-    │   └── ...
-    ├── scout/
-    │   ├── scout-XX-report.md
-    │   └── ...
-    ├── plan.md
-    ├── phase-XX-phase-name-here.md
-    └── ...
+{plan-dir}/
+├── research/
+│   ├── researcher-XX-report.md
+│   └── ...
+├── reports/
+│   ├── XX-report.md
+│   └── ...
+├── scout/
+│   ├── scout-XX-report.md
+│   └── ...
+├── plan.md
+├── phase-XX-phase-name-here.md
+└── ...
 ```
 
 **Research Output Requirements**
 - Ensure every research markdown report remains concise (≤150 lines) while covering all requested topics and citations.
 
 **Plan File Specification**
-- Save the overview access point at `plans/{date}-plan-name/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
-- For each phase, create `plans/{date}-plan-name/phase-XX-phase-name-here.md` containing the following sections in order:
+- Every `plan.md` MUST start with YAML frontmatter:
+  ```yaml
+  ---
+  title: "{Brief title}"
+  description: "{One sentence for card preview}"
+  status: pending
+  priority: P2
+  effort: {sum of phases, e.g., 4h}
+  branch: {current git branch}
+  tags: [relevant, tags]
+  created: {YYYY-MM-DD}
+  ---
+  ```
+- Save the overview access point at `{plan-dir}/plan.md`. Keep it generic, under 80 lines, and list each implementation phase with status, progress, parallelization group, and links to phase files.
+- For each phase, create `{plan-dir}/phase-XX-phase-name-here.md` containing the following sections in order:
   - Context links (reference parent plan, dependencies, docs)
   - **Parallelization Info** (which phases can run concurrently, which must wait)
   - Overview (date, description, priority, implementation status, review status)

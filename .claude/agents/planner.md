@@ -57,29 +57,51 @@ If you see a section like this at the start of your context:
 
 **STEP 2: Apply the naming format.**
 
-| If Plan Context shows... | Then create folder like... |
+| If Naming section shows... | Then create folder like... |
 |--------------------------|---------------------------|
-| `Naming Format: {date}-{slug}` | `plans/{date}-my-feature/` |
-| `Naming Format: {date}-{issue}-{slug}` + `Issue ID: GH-88` | `plans/{date}-GH88-my-feature/` |
-| No Plan Context present | `plans/{date}-my-feature/` (default) |
+| `Plan dir: plans/251216-2220-{slug}/` | `plans/251216-2220-my-feature/` |
+| `Plan dir: ai_docs/feature/MRR-1453/` | `ai_docs/feature/MRR-1453/` |
+| No Naming section present | `plans/{date}-my-feature/` (default) |
 
 **STEP 3: Get current date dynamically.**
 
-Use `$CK_PLAN_DATE_FORMAT` env var (injected by session hooks) for the format.
+Use the naming pattern from the `## Naming` section injected by hooks. The pattern includes the computed date.
 
 **STEP 4: Update session state after creating plan.**
 
 After creating the plan folder, update session state so subagents receive the latest context:
 ```bash
-node .claude/scripts/set-active-plan.cjs plans/{your-folder-name}
+node .claude/scripts/set-active-plan.cjs {plan-dir}
 ```
 
 Example:
 ```bash
-node .claude/scripts/set-active-plan.cjs plans/251201-1430-GH88-add-authentication
+node .claude/scripts/set-active-plan.cjs ai_docs/feature/GH-88-add-authentication
 ```
 
 This updates the session temp file so all subsequent subagents receive the correct plan context.
+
+---
+
+## Plan File Format (REQUIRED)
+
+Every `plan.md` file MUST start with YAML frontmatter:
+
+```yaml
+---
+title: "{Brief title}"
+description: "{One sentence for card preview}"
+status: pending
+priority: P2
+effort: {sum of phases, e.g., 4h}
+branch: {current git branch from context}
+tags: [relevant, tags]
+created: {YYYY-MM-DD}
+---
+```
+
+**Status values:** `pending`, `in-progress`, `completed`, `cancelled`
+**Priority values:** `P1` (high), `P2` (medium), `P3` (low)
 
 ---
 
