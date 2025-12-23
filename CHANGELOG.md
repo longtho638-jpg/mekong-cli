@@ -1,3 +1,21 @@
+## [2.1.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.2...v2.1.0-beta.3) (2025-12-23)
+
+
+### 🚀 Features
+
+* **skill:** add ai-artist prompt engineering skill ([374eea1](https://github.com/claudekit/claudekit-engineer/commit/374eea1aa2e82aff79836ab48167856a958dc24b))
+* **skill:** add Lyria RealTime music generation reference ([3024a54](https://github.com/claudekit/claudekit-engineer/commit/3024a546eb2e080eeb59fb33ea2a245a6db26b10))
+
+
+### ♻️ Code Refactoring
+
+* **skill:** update ai-multimodal to use Nano Banana Flash default ([2399ad1](https://github.com/claudekit/claudekit-engineer/commit/2399ad1558808824ef8667142da21b72cc68d6ab))
+
+
+### ⚡ Performance Improvements
+
+* **command:** enhance `/brainstorm` command ([1bf26a5](https://github.com/claudekit/claudekit-engineer/commit/1bf26a516a1b60171e12d5ddcfdb32b4b82cc949))
+
 ## [2.1.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2025-12-23)
 
 
