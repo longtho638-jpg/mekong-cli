@@ -1,3 +1,10 @@
+## [2.1.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.6...v2.1.0-beta.7) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* /plan:archive journal creation - correct tool usage and directory path ([c64b24c](https://github.com/claudekit/claudekit-engineer/commit/c64b24c67fdc0c7920f3c801cf879d1a202948fe)), closes [#251](https://github.com/claudekit/claudekit-engineer/issues/251)
+
 ## [2.1.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.5...v2.1.0-beta.6) (2025-12-24)
 
 
