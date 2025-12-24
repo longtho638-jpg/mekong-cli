@@ -1,3 +1,11 @@
+## [2.1.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.8...v2.1.0-beta.9) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add docker/k8s/terraform to build command allowlist ([fe3a24b](https://github.com/claudekit/claudekit-engineer/commit/fe3a24b81624b908daad4a2224163d01a5e919a7))
+* **hooks:** allow go/cargo/make/mvn/gradle/dotnet build commands ([b5f8dbd](https://github.com/claudekit/claudekit-engineer/commit/b5f8dbdcd228e3637675f909bf666faedbaef92d))
+
 ## [2.1.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.7...v2.1.0-beta.8) (2025-12-24)
 
 
