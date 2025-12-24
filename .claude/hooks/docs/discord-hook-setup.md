@@ -178,9 +178,9 @@ Discord messages are sent as rich embeds with the following structure:
 ║ ✅ All tests passing
 ╠═══════════════════════════════╣
 ║ ⏰ Session Time: 14:30:45
-║ 📂 Project: agencyos-engineer
+║ 📂 Project: mekong-engineer
 ╠═══════════════════════════════╣
-║ Project Name • agencyos-engineer
+║ Project Name • mekong-engineer
 ║ Today at 14:30
 ╚═══════════════════════════════╝
 ```

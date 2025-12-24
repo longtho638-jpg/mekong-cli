@@ -1,227 +1,183 @@
-# /y-tuong-social-media - Social Media Content (50 Ý Tưởng - 5 Trụ Cột)
+# /y-tuong-social-media - Social Media Ideas
 
-Spawn agent: `copywriter` + `scout-external` + `researcher`
+Spawn agent: `copywriter` + `scout-external`
 
-## Mục đích
+## Purpose
 
-Tạo 50 ý tưởng nội dung social media được phân loại theo 5 trụ cột content, giúp doanh nghiệp có content calendar đa dạng và cân bằng.
+Generate creative social media content ideas and strategies. For any platform and industry.
 
-## Cách sử dụng
+## Usage
 
 ```
-/y-tuong-social-media "thương hiệu xoài Hòa Lộc"
-/y-tuong-social-media "cửa hàng nông sản online"
-/y-tuong-social-media "dịch vụ logistics ĐBSCL"
+/y-tuong-social-media
+/y-tuong-social-media "fitness brand"
+/y-tuong-social-media "B2B SaaS" --platform=linkedin
 ```
 
-## 5 Trụ Cột Nội Dung (Content Pillars)
+---
 
-| # | Pillar | Mục đích | Tỷ lệ |
-|---|--------|----------|-------|
-| 1 | **Educate** (Giáo dục) | Chia sẻ kiến thức | 20% |
-| 2 | **Entertain** (Giải trí) | Tạo engagement | 20% |
-| 3 | **Inspire** (Truyền cảm hứng) | Build trust | 20% |
-| 4 | **Promote** (Quảng bá) | Drive sales | 20% |
-| 5 | **Connect** (Kết nối) | Build community | 20% |
+## Interactive Mode (7 Questions)
+
+**If `$ARGUMENTS` is empty**, ask the user these 7 questions:
+
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Brand/product?** | Thương hiệu/SP? | "Athletic wear brand" |
+| 2 | **Target audience?** | Đối tượng? | "Fitness enthusiasts 25-40" |
+| 3 | **Main platforms?** | Nền tảng chính? | "Instagram, TikTok" |
+| 4 | **Content goals?** | Mục tiêu? | "Engagement, sales" |
+| 5 | **Posting frequency?** | Tần suất? | "Daily" |
+| 6 | **Brand voice?** | Tone giọng? | "Motivational, bold" |
+| 7 | **Trending topics?** | Trends quan tâm? | "Fitness challenges" |
+
+**After collecting answers** → Generate content ideas.
+
+---
 
 ## Output Format
 
 ```markdown
-# 50 Ý Tưởng Social Media: [Brand/Product]
+# Social Media Ideas: [Brand]
 
-📅 Ngày: [date]
-📱 Platforms: Facebook, Zalo, TikTok
-🎯 Target: [Audience]
-
----
-
-## Tổng Quan 5 Trụ Cột
-
-```
-Educate   ████████████████████ 10 ideas (20%)
-Entertain ████████████████████ 10 ideas (20%)
-Inspire   ████████████████████ 10 ideas (20%)
-Promote   ████████████████████ 10 ideas (20%)
-Connect   ████████████████████ 10 ideas (20%)
-```
+📅 Date: [date]
+📱 Platforms: [List]
+🎯 Goal: [Primary objective]
 
 ---
 
-## 🎓 PILLAR 1: EDUCATE (Giáo dục) - 10 Ý Tưởng
+## 1. Content Pillars
 
-> Mục tiêu: Chia sẻ kiến thức, establish expertise
-
-| # | Ý tưởng | Format | Platform |
-|---|---------|--------|----------|
-| 1 | [Idea title] | Carousel | FB, Zalo |
-| 2 | [Idea title] | Video | TikTok |
-| 3 | [Idea title] | Infographic | FB |
-| 4 | [Idea title] | Tips list | All |
-| 5 | [Idea title] | How-to | TikTok |
-| 6 | [Idea title] | FAQ | FB, Zalo |
-| 7 | [Idea title] | Myth-busting | All |
-| 8 | [Idea title] | Comparison | Carousel |
-| 9 | [Idea title] | Expert tips | Video |
-| 10 | [Idea title] | Behind-the-scenes | All |
-
-### Chi tiết mẫu:
-**Idea #1**: [Title]
-- Hook: [Attention grabber]
-- Content: [Brief description]
-- CTA: [Action]
-- Hashtags: [3-5 hashtags]
+| Pillar | % | Example Topics |
+|--------|---|----------------|
+| Educational | 30% | Tips, how-tos, tutorials |
+| Entertaining | 25% | Memes, trends, behind-scenes |
+| Inspirational | 25% | Stories, transformations |
+| Promotional | 20% | Products, offers, launches |
 
 ---
 
-## 🎭 PILLAR 2: ENTERTAIN (Giải trí) - 10 Ý Tưởng
+## 2. Weekly Content Plan
 
-> Mục tiêu: Tăng engagement, shareability
+### Monday - Motivation
+**Post Idea**: [Specific idea]
+**Format**: [Carousel/Reel/Static]
+**Caption**: [Draft caption]
+**Hashtags**: [Relevant hashtags]
 
-| # | Ý tưởng | Format | Platform |
-|---|---------|--------|----------|
-| 11 | [Idea - Meme/Trend] | Image | FB |
-| 12 | [Idea - Challenge] | Video | TikTok |
-| 13 | [Idea - Quiz] | Poll | FB, Zalo |
-| 14 | [Idea - Relatable] | Reel | TikTok |
-| 15 | [Idea - Humor] | Video | All |
-| 16 | [Idea - Trend jump] | Video | TikTok |
-| 17 | [Idea - Story time] | Video | All |
-| 18 | [Idea - POV] | Reel | TikTok |
-| 19 | [Idea - Reaction] | Video | TikTok |
-| 20 | [Idea - Parody] | Video | All |
+### Tuesday - Tips
+**Post Idea**: [Specific idea]
+**Format**: [Format]
+**Caption**: [Draft caption]
 
----
+### Wednesday - Behind-the-Scenes
+**Post Idea**: [Specific idea]
+**Format**: [Format]
+**Caption**: [Draft caption]
 
-## 💫 PILLAR 3: INSPIRE (Truyền cảm hứng) - 10 Ý Tưởng
+### Thursday - Engagement
+**Post Idea**: [Specific idea]
+**Format**: [Poll/Question/Quiz]
+**Caption**: [Draft caption]
 
-> Mục tiêu: Build emotional connection, trust
+### Friday - Feature
+**Post Idea**: [Specific idea]
+**Format**: [Format]
+**Caption**: [Draft caption]
 
-| # | Ý tưởng | Format | Platform |
-|---|---------|--------|----------|
-| 21 | [Customer story] | Video | All |
-| 22 | [Founder journey] | Carousel | FB |
-| 23 | [Team spotlight] | Image | FB, Zalo |
-| 24 | [Mission/Values] | Video | All |
-| 25 | [Impact story] | Video | FB |
-| 26 | [Milestone] | Image | All |
-| 27 | [Testimonial] | Video | All |
-| 28 | [Quote] | Image | FB |
-| 29 | [Transformation] | Before/After | All |
-| 30 | [Community impact] | Video | FB |
+### Weekend - Lifestyle
+**Post Idea**: [Specific idea]
+**Format**: [Format]
+**Caption**: [Draft caption]
 
 ---
 
-## 🛒 PILLAR 4: PROMOTE (Quảng bá) - 10 Ý Tưởng
+## 3. Trending Content Ideas
 
-> Mục tiêu: Drive sales, conversions
+### 3.1 Current Trends to Join
+| Trend | Our Spin | Platform | Timing |
+|-------|----------|----------|--------|
+| [Trend 1] | [Our version] | TikTok | This week |
+| [Trend 2] | [Our version] | Instagram | This week |
 
-| # | Ý tưởng | Format | Platform |
-|---|---------|--------|----------|
-| 31 | [Product showcase] | Video | All |
-| 32 | [Limited offer] | Image | FB, Zalo |
-| 33 | [Bundle deal] | Carousel | FB |
-| 34 | [New arrival] | Video | TikTok |
-| 35 | [Flash sale] | Story | All |
-| 36 | [Unboxing] | Video | TikTok |
-| 37 | [Demo] | Video | All |
-| 38 | [Price reveal] | Video | TikTok |
-| 39 | [Comparison] | Carousel | FB |
-| 40 | [CTA direct] | Image | All |
+### 3.2 Evergreen Ideas
+1. **[Idea 1]** - [Why it works]
+2. **[Idea 2]** - [Why it works]
+3. **[Idea 3]** - [Why it works]
+4. **[Idea 4]** - [Why it works]
+5. **[Idea 5]** - [Why it works]
 
 ---
 
-## 🤝 PILLAR 5: CONNECT (Kết nối) - 10 Ý Tưởng
+## 4. Platform-Specific
 
-> Mục tiêu: Build community, engagement
+### Instagram
+| Format | Best Time | Content Type |
+|--------|-----------|--------------|
+| Feed | [Time] | [Type] |
+| Stories | [Time] | [Type] |
+| Reels | [Time] | [Type] |
 
-| # | Ý tưởng | Format | Platform |
-|---|---------|--------|----------|
-| 41 | [Question/Poll] | Poll | FB |
-| 42 | [This or That] | Story | All |
-| 43 | [UGC request] | Image | All |
-| 44 | [Comment challenge] | Image | FB |
-| 45 | [Q&A session] | Live | FB, Zalo |
-| 46 | [Giveaway] | Image | All |
-| 47 | [Shoutout] | Story | All |
-| 48 | [Collab] | Video | All |
-| 49 | [Behind scenes] | Video | TikTok |
-| 50 | [Thank you] | Video | All |
+### TikTok
+| Format | Best Time | Content Type |
+|--------|-----------|--------------|
+| Video | [Time] | [Type] |
+| Live | [Time] | [Type] |
 
----
-
-## Content Calendar Template
-
-### Week 1
-| Day | Pillar | Content | Platform |
-|-----|--------|---------|----------|
-| Mon | Educate | Idea #1 | FB |
-| Tue | Entertain | Idea #11 | TikTok |
-| Wed | Inspire | Idea #21 | FB |
-| Thu | Promote | Idea #31 | All |
-| Fri | Connect | Idea #41 | FB |
-
-### Monthly Distribution
-| Week | Focus | Key Ideas |
-|------|-------|-----------|
-| W1 | Awareness | #1, #11, #21 |
-| W2 | Engagement | #12, #22, #42 |
-| W3 | Sales | #31-35 |
-| W4 | Community | #41-50 |
+### LinkedIn
+| Format | Best Time | Content Type |
+|--------|-----------|--------------|
+| Post | [Time] | [Type] |
+| Article | [Time] | [Type] |
 
 ---
 
-## Quick Reference
+## 5. Engagement Tactics
 
-### Best Performing Formats
-| Platform | Top Format | Posting Time |
-|----------|------------|--------------|
-| Facebook | Carousel, Video | 7-9pm |
-| TikTok | Short video | 6-9pm |
-| Zalo | Direct message | 8-10am |
+### 5.1 Conversation Starters
+- [Question 1]
+- [Question 2]
+- [Question 3]
+
+### 5.2 User-Generated Content
+- [UGC campaign idea 1]
+- [UGC campaign idea 2]
+
+### 5.3 Collaboration Ideas
+- [Collab idea 1]
+- [Collab idea 2]
+
+---
+
+## 6. Content Templates
+
+### Caption Templates
+**Educational**: "Did you know [fact]? Here's how to [action]..."
+**Promotional**: "🚨 [Offer] ends [Time]! [Benefit]..."
+**Engagement**: "Tell us: [Question]? 👇"
 
 ### Hashtag Sets
-- Brand: #[Brand] #[Product]
-- Industry: #NôngSảnĐBSCL #TráiCâyViệt
-- Trending: [Research weekly]
+**General**: #[tag1] #[tag2] #[tag3]
+**Niche**: #[industry] #[specific] #[local]
+**Branded**: #[brand] #[campaign]
+
+---
+
+## 7. Monthly Campaign Idea
+
+### [Campaign Name]
+- **Objective**: [Goal]
+- **Duration**: [Timeline]
+- **Mechanic**: [How it works]
+- **Prize/Incentive**: [If applicable]
+- **Posts needed**: [Count]
 ```
 
-## Ví dụ
-
-```
-/y-tuong-social-media "nước mắm truyền thống"
-
-# 50 Ý Tưởng: Nước Mắm Truyền Thống
-
-## 🎓 EDUCATE (10)
-1. "5 cách phân biệt nước mắm thật/giả"
-2. "Quy trình làm nước mắm 12 tháng"
-3. "Độ đạm là gì? Giải thích đơn giản"
-...
-
-## 🎭 ENTERTAIN (10)
-11. "POV: Lần đầu về quê vợ Phú Quốc"
-12. "Reaction bà nội nếm nước mắm công nghiệp"
-...
-
-## 💫 INSPIRE (10)
-21. "3 đời một nghề - Câu chuyện gia đình"
-22. "Từ vựa cá đến thương hiệu quốc gia"
-...
-
-## 🛒 PROMOTE (10)
-31. "Combo Tết - Tiết kiệm 30%"
-32. "Unboxing hộp quà nước mắm premium"
-...
-
-## 🤝 CONNECT (10)
-41. "Bạn thích ăn nước mắm với gì?"
-42. "Chia sẻ công thức gia truyền"
-...
-```
+---
 
 ## Best Practices
 
-1. **Balance pillars** - Không chỉ bán hàng
-2. **Batch create** - Tạo 1 tuần/1 lần
-3. **Repurpose** - 1 idea → nhiều formats
-4. **Engage back** - Reply comments
+1. **Platform-native** - Different content for each platform
+2. **Consistency** - Same time, same quality
+3. **Engage back** - Reply to all comments
+4. **Trend-aware** - Jump on relevant trends fast
+5. **Measure** - Track what resonates

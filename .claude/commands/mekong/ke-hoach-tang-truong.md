@@ -1,306 +1,172 @@
-# /ke-hoach-tang-truong - Growth Plan (Kế hoạch Tăng trưởng)
+# /ke-hoach-tang-truong - Growth Strategy
 
-Spawn agent: `planner` + `researcher` + `scout`
+Spawn agent: `planner` + `researcher`
 
-## Mục đích
+## Purpose
 
-Xây dựng kế hoạch tăng trưởng toàn diện với growth loops, retention strategies, và scaling roadmap cho doanh nghiệp ĐBSCL.
+Create comprehensive growth strategies for businesses. Data-driven, actionable frameworks.
 
-## Cách sử dụng
+## Usage
 
 ```
-/ke-hoach-tang-truong "scale từ 100tr đến 1 tỷ/tháng trong 12 tháng"
-/ke-hoach-tang-truong "mở rộng từ 1 tỉnh ra 13 tỉnh ĐBSCL"
-/ke-hoach-tang-truong "tăng retention rate từ 20% lên 50%"
+/ke-hoach-tang-truong
+/ke-hoach-tang-truong "SaaS product"
+/ke-hoach-tang-truong "e-commerce growth" --lang=en
 ```
 
-## Workflow
+---
 
-1. **Current State Audit**
-   - Revenue metrics
-   - Growth rate
-   - Unit economics
-   - Bottlenecks
+## Interactive Mode (8 Questions)
 
-2. **Growth Modeling**
-   - Growth targets
-   - Scenarios (conservative/aggressive)
-   - Resource requirements
+**If `$ARGUMENTS` is empty**, ask the user these 8 questions:
 
-3. **Growth Levers**
-   - Acquisition channels
-   - Activation optimization
-   - Retention strategies
-   - Revenue expansion
-   - Referral loops
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Business type?** | Loại hình? | "SaaS", "E-commerce", "Service" |
+| 2 | **Current revenue?** | Doanh thu hiện tại? | "$50K MRR" |
+| 3 | **Growth target?** | Mục tiêu tăng trưởng? | "2x in 12 months" |
+| 4 | **Main channels now?** | Kênh chính hiện tại? | "SEO, Paid ads" |
+| 5 | **Customer acquisition cost?** | CAC? | "$50" or "Unknown" |
+| 6 | **Churn rate?** | Tỷ lệ rời bỏ? | "5%/month" |
+| 7 | **Team size?** | Số người? | "5 people" |
+| 8 | **Budget for growth?** | Ngân sách? | "$10K/month" |
 
-4. **Execution Roadmap**
-   - Phase-based plan
-   - Milestones
-   - Team/resource allocation
+**After collecting answers** → Generate growth plan.
 
-5. **Measurement Framework**
-   - North Star metric
-   - Leading indicators
-   - Experimentation plan
+---
 
 ## Output Format
 
 ```markdown
-# Kế Hoạch Tăng Trưởng: [Business]
+# Growth Strategy: [Company/Product]
 
-📅 Timeline: [Period]
-🎯 Target: [Revenue/Users goal]
-📈 Required Growth: [X% MoM]
+📅 Date: [date]
+🎯 Goal: [X]x growth in [Y] months
+📊 Current: [Revenue/Users]
 
 ---
 
-## 1. Current State
+## 1. Current State Analysis
 
-### 1.1 Key Metrics
+### 1.1 Metrics Dashboard
 | Metric | Current | Target | Gap |
 |--------|---------|--------|-----|
-| MRR | X | Y | Z% |
-| Customers | X | Y | Z% |
-| Growth Rate | X%/mo | Y%/mo | - |
-| CAC | X | Y | -Z% |
-| LTV | X | Y | +Z% |
-| LTV:CAC | X:1 | Y:1 | - |
+| MRR | $X | $X | +X% |
+| Users | X | X | +X% |
+| CAC | $X | $X | -X% |
+| LTV | $X | $X | +X% |
+| Churn | X% | X% | -X% |
 
-### 1.2 Unit Economics
+### 1.2 Growth Equation
 ```
-Revenue per customer:     X VNĐ
-Cost to acquire (CAC):    Y VNĐ
-Cost to serve:            Z VNĐ
-Gross margin:             W%
-Payback period:           N months
+Revenue = Users × ARPU × Retention
 ```
 
-### 1.3 Growth Constraints
-| Constraint | Impact | Priority |
-|------------|--------|----------|
-| [Constraint 1] | High | 🔴 |
-| [Constraint 2] | Medium | 🟡 |
+### 1.3 Biggest Levers
+1. [Lever 1] - Potential: +X%
+2. [Lever 2] - Potential: +X%
+3. [Lever 3] - Potential: +X%
 
 ---
 
-## 2. Growth Model
+## 2. Growth Channels
 
-### 2.1 Revenue Projections
-| Month | Revenue | Growth | Customers |
-|-------|---------|--------|-----------|
-| M1 | X | - | X |
-| M3 | X | +Y% | X |
-| M6 | X | +Y% | X |
-| M12 | X | +Y% | X |
+### 2.1 Channel Prioritization
+| Channel | Impact | Effort | ROI | Priority |
+|---------|--------|--------|-----|----------|
+| [Channel 1] | High | Medium | 3x | ⭐⭐⭐ |
+| [Channel 2] | Medium | Low | 5x | ⭐⭐⭐ |
+| [Channel 3] | High | High | 2x | ⭐⭐ |
 
-### 2.2 Scenarios
-| Scenario | M6 Revenue | M12 Revenue | Assumptions |
-|----------|------------|-------------|-------------|
-| Conservative | X | Y | [List] |
-| Base | X | Y | [List] |
-| Aggressive | X | Y | [List] |
+### 2.2 Channel Strategy
 
-### 2.3 Required Resources
-| Resource | Current | Needed | Investment |
-|----------|---------|--------|------------|
-| Team | X | Y | +Z VNĐ |
-| Marketing | X/mo | Y/mo | +Z VNĐ |
-| Tech | X | Y | +Z VNĐ |
+#### [Channel 1]
+- **Tactic**: [Description]
+- **Budget**: $X/month
+- **Expected**: +X users
 
 ---
 
-## 3. AARRR Framework (Growth Levers)
+## 3. Retention Strategy
 
-### 3.1 Acquisition
-**Current**: [X visitors/leads per month]
-**Target**: [Y visitors/leads per month]
+### 3.1 Churn Analysis
+| Reason | % of Churns | Fix |
+|--------|-------------|-----|
+| [Reason 1] | X% | [Action] |
+| [Reason 2] | X% | [Action] |
 
-| Channel | Current | Target | Tactics |
-|---------|---------|--------|---------|
-| Facebook | X | Y | [Tactics] |
-| Referral | X | Y | [Tactics] |
-| SEO | X | Y | [Tactics] |
-| Partnerships | X | Y | [Tactics] |
-
-**Top 3 Acquisition Experiments:**
-1. [Experiment + hypothesis]
-2. [Experiment + hypothesis]
-3. [Experiment + hypothesis]
-
-### 3.2 Activation
-**Current Activation Rate**: X%
-**Target Activation Rate**: Y%
-
-| Step | Drop-off | Optimization |
-|------|----------|--------------|
-| Sign up | X% | [Tactic] |
-| First purchase | X% | [Tactic] |
-| Repeat purchase | X% | [Tactic] |
-
-**Activation Checklist:**
-- [ ] Onboarding optimization
-- [ ] First-time offer
-- [ ] Quick-win experience
-
-### 3.3 Retention
-**Current Retention**: X% (30-day)
-**Target Retention**: Y% (30-day)
-
-| Cohort | D7 | D30 | D90 |
-|--------|-----|------|------|
-| Current | X% | Y% | Z% |
-| Target | X% | Y% | Z% |
-
-**Retention Strategies:**
-1. [Strategy + implementation]
-2. [Strategy + implementation]
-3. [Strategy + implementation]
-
-### 3.4 Revenue (Expansion)
-**Current ARPU**: X VNĐ
-**Target ARPU**: Y VNĐ
-
-| Tactic | Potential | Effort |
-|--------|-----------|--------|
-| Upsell | +X% | Low |
-| Cross-sell | +X% | Medium |
-| Price increase | +X% | Low |
-| New products | +X% | High |
-
-### 3.5 Referral
-**Current Referral Rate**: X%
-**Target Referral Rate**: Y%
-
-**Referral Program:**
-- Incentive: [What referrer gets]
-- Reward: [What referred gets]
-- Mechanism: [How it works]
+### 3.2 Retention Tactics
+- [ ] [Tactic 1]
+- [ ] [Tactic 2]
 
 ---
 
-## 4. Growth Loops
+## 4. Monetization
 
-### 4.1 Primary Loop
-```
-[Trigger] → [Action] → [Reward] → [Investment] → [Trigger]
+### 4.1 Pricing Optimization
+| Tier | Current | Proposed | Impact |
+|------|---------|----------|--------|
+| Basic | $X | $X | +X% |
+| Pro | $X | $X | +X% |
 
-Example:
-Customer buys → Great experience → Shares on social 
-→ Friends see → Friends buy → Repeat
+### 4.2 Upsell Strategy
+[Approach to increase ARPU]
+
+---
+
+## 5. 90-Day Action Plan
+
+| Week | Focus | Action | Owner |
+|------|-------|--------|-------|
+| 1-2 | Foundation | [Action] | [Who] |
+| 3-4 | Channel 1 | [Action] | [Who] |
+| 5-8 | Scale | [Action] | [Who] |
+| 9-12 | Optimize | [Action] | [Who] |
+
+---
+
+## 6. Resources Needed
+
+| Resource | Cost | Timeline |
+|----------|------|----------|
+| [Tool/Hire] | $X | [When] |
+| [Tool/Hire] | $X | [When] |
 ```
 
-### 4.2 Viral Coefficient
-- Current K-factor: X
-- Target K-factor: Y
-- Viral cycle time: Z days
-
-### 4.3 Compounding Effects
-| Loop | Impact | Timeline |
-|------|--------|----------|
-| Content → SEO → Traffic | +X%/mo | 6+ months |
-| Referral → Users → Referral | +X%/mo | 3+ months |
-| Reviews → Trust → Sales | +X%/mo | Ongoing |
-
 ---
 
-## 5. Roadmap
-
-### 5.1 Phase 1: Foundation (M1-3)
-**Goal**: [Specific target]
-**Focus**: [Key area]
-
-| Week | Activity | Owner | KPI |
-|------|----------|-------|-----|
-| W1-2 | [Activity] | [Who] | [Metric] |
-| W3-4 | [Activity] | [Who] | [Metric] |
-| W5-8 | [Activity] | [Who] | [Metric] |
-| W9-12 | [Activity] | [Who] | [Metric] |
-
-### 5.2 Phase 2: Scale (M4-6)
-**Goal**: [Specific target]
-**Focus**: [Key area]
-
-[Similar table]
-
-### 5.3 Phase 3: Optimize (M7-12)
-**Goal**: [Specific target]
-**Focus**: [Key area]
-
-[Similar table]
-
----
-
-## 6. Experimentation Plan
-
-### 6.1 Testing Framework
-| Priority | Hypothesis | Test | Success Metric |
-|----------|------------|------|----------------|
-| P0 | [Hypothesis] | [Test] | [Metric] |
-| P1 | [Hypothesis] | [Test] | [Metric] |
-| P2 | [Hypothesis] | [Test] | [Metric] |
-
-### 6.2 Experiment Velocity
-- Target: [X experiments/month]
-- Win rate target: [Y%]
-- Average impact: [+Z% per win]
-
----
-
-## 7. Measurement
-
-### 7.1 North Star Metric
-> **[Metric Name]**: [Description why it matters]
-
-### 7.2 Dashboard
-| Metric | Frequency | Owner |
-|--------|-----------|-------|
-| [NSM] | Daily | [Who] |
-| Revenue | Daily | [Who] |
-| CAC | Weekly | [Who] |
-| Retention | Weekly | [Who] |
-
-### 7.3 Review Cadence
-- **Daily**: Key metrics check
-- **Weekly**: Growth meeting
-- **Monthly**: Full review + roadmap adjust
-- **Quarterly**: Strategy review
-
----
-
-## 8. Next Steps
-
-- [ ] Finalize growth model assumptions
-- [ ] Prioritize experiments
-- [ ] Setup tracking/dashboards
-- [ ] Kick off Phase 1
-```
-
-## Ví dụ
+## Example
 
 ```
-/ke-hoach-tang-truong "10x revenue trong 12 tháng"
+/ke-hoach-tang-truong "B2B SaaS"
 
-# Growth Plan: 10x Revenue
+# Growth Strategy: B2B SaaS
 
-## Current → Target
-- MRR: 50tr → 500tr
-- Required: +21.5%/month
+## Current: $50K MRR
+## Target: $150K MRR (12 months)
 
-## Top Growth Levers
-1. Facebook Ads scale (+40% budget)
-2. Referral program (+15% organic)
-3. Upsell/bundle (+25% AOV)
+## Top 3 Levers
+1. Reduce churn 8% → 4% = +$12K MRR
+2. Increase pricing 15% = +$9K MRR  
+3. Scale content marketing = +$25K MRR
+
+## Priority Channels
+⭐⭐⭐ Content SEO (ROI: 8x)
+⭐⭐⭐ LinkedIn Outbound (ROI: 5x)
+⭐⭐ Paid Search (ROI: 3x)
 
 ## 90-Day Focus
-- M1: Optimize CAC (target -20%)
-- M2: Launch referral
-- M3: Scale winning channels
+Week 1-4: Fix churn (onboarding)
+Week 5-8: Launch content engine
+Week 9-12: Scale what works
 ```
+
+---
 
 ## Best Practices
 
-1. **Start with unit economics** - Fix before scaling
-2. **Focus on 1-2 levers** - Don't spread thin
-3. **Experiment velocity** - Test fast, learn fast
-4. **Weekly review** - Course correct quickly
+1. **Data first** - Measure before optimizing
+2. **One lever** - Focus on biggest impact
+3. **Experiment** - Test before scaling
+4. **Compound** - Small gains add up
+5. **Retention > Acquisition** - Fix the bucket

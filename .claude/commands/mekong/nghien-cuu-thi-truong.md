@@ -1,134 +1,153 @@
-# /nghien-cuu-thi-truong - Market Research (Nghiên cứu Thị trường)
+# /nghien-cuu-thi-truong - Market Research
 
 Spawn agent: `scout` + `researcher` + `scout-external`
 
-## Mục đích
+## Purpose
 
-Nghiên cứu thị trường toàn diện cho ngành hàng/sản phẩm tại ĐBSCL và Việt Nam.
+Comprehensive market research for any industry/product. Supports global markets with localized insights.
 
-## Cách sử dụng
+## Usage
 
 ```
-/nghien-cuu-thi-truong "thị trường nông sản hữu cơ ĐBSCL"
-/nghien-cuu-thi-truong "ngành logistics nông nghiệp"
-/nghien-cuu-thi-truong "thương mại điện tử nông thôn"
+/nghien-cuu-thi-truong
+/nghien-cuu-thi-truong "organic skincare market USA"
+/nghien-cuu-thi-truong "AI SaaS tools" --lang=en
 ```
+
+---
+
+## Interactive Mode (8 Questions)
+
+**If `$ARGUMENTS` is empty**, ask the user these 8 questions:
+
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Industry/product?** | Ngành/sản phẩm? | "Electric vehicles" |
+| 2 | **Target market?** | Thị trường? | "USA, Europe" |
+| 3 | **Your position?** | Bạn là ai? | "New entrant", "Investor" |
+| 4 | **Budget for research?** | Ngân sách? | "$0 (public data only)" |
+| 5 | **Time horizon?** | Thời gian quan tâm? | "5 years" |
+| 6 | **Key competitors?** | Đối thủ biết? | "Tesla, BYD" |
+| 7 | **Specific questions?** | Câu hỏi cụ thể? | "What's the TAM?" |
+| 8 | **Depth needed?** | Mức độ chi tiết? | "Overview" / "Deep dive" |
+
+**After collecting answers** → Generate market research report.
+
+---
 
 ## Workflow
 
-1. **Thu thập dữ liệu**
-   - Số liệu thống kê ngành
-   - Báo cáo thị trường
-   - Tin tức và xu hướng
+1. **Data Collection**
+   - Industry statistics
+   - Market reports
+   - News and trends
 
-2. **Phân tích Quy mô**
+2. **Market Sizing**
    - TAM (Total Addressable Market)
    - SAM (Serviceable Available Market)
    - SOM (Serviceable Obtainable Market)
 
-3. **Phân tích Cạnh tranh**
-   - Đối thủ trực tiếp
-   - Đối thủ gián tiếp
+3. **Competitive Analysis**
+   - Direct competitors
+   - Indirect competitors
    - Market share estimates
 
-4. **Xu hướng & Dự báo**
+4. **Trends & Forecasts**
    - Industry trends
    - Growth drivers
    - Threats & challenges
 
-5. **Cơ hội Thị trường**
-   - Gaps trong thị trường
+5. **Opportunity Mapping**
+   - Market gaps
    - Unmet needs
    - Entry strategies
+
+---
 
 ## Output Format
 
 ```markdown
-# Nghiên Cứu Thị Trường: [Ngành/Sản phẩm]
+# Market Research: [Industry/Product]
 
-📅 Ngày: [date]
-🎯 Độ tin cậy: [X]%
-📍 Khu vực: ĐBSCL / Việt Nam
+📅 Date: [date]
+🎯 Confidence: [X]%
+🌍 Market: [Region]
 
 ---
 
-## 1. Tổng Quan Thị Trường
+## 1. Market Overview
 
-### 1.1 Định nghĩa Ngành
-[Mô tả ngành, phạm vi nghiên cứu]
+### 1.1 Industry Definition
+[Description of industry scope]
 
-### 1.2 Quy Mô Thị Trường
+### 1.2 Market Size
 
-| Metric | Giá trị | Nguồn |
-|--------|---------|-------|
-| TAM | X tỷ VNĐ | [source] |
-| SAM | X tỷ VNĐ | [source] |
-| SOM | X tỷ VNĐ | Estimate |
+| Metric | Value | Source |
+|--------|-------|--------|
+| TAM | $X billion | [source] |
+| SAM | $X billion | [source] |
+| SOM | $X million | Estimate |
 | CAGR | X% | [source] |
 
-### 1.3 Tăng trưởng Lịch sử
-[Chart/data về growth qua các năm]
+### 1.3 Historical Growth
+[Growth data/trends over past years]
 
 ---
 
-## 2. Phân Tích Cạnh Tranh
+## 2. Competitive Analysis
 
 ### 2.1 Landscape
-| Player | Market Share | Điểm mạnh | Điểm yếu |
-|--------|--------------|-----------|----------|
+| Player | Market Share | Strengths | Weaknesses |
+|--------|--------------|-----------|------------|
 | A | X% | ... | ... |
 | B | X% | ... | ... |
-| C | X% | ... | ... |
 
 ### 2.2 Porter's Five Forces
 - Threat of New Entrants: [High/Medium/Low]
-- Bargaining Power of Suppliers: [High/Medium/Low]
-- Bargaining Power of Buyers: [High/Medium/Low]
+- Supplier Power: [High/Medium/Low]
+- Buyer Power: [High/Medium/Low]
 - Threat of Substitutes: [High/Medium/Low]
 - Industry Rivalry: [High/Medium/Low]
 
-### 2.3 Competitive Advantages
-[Những yếu tố tạo lợi thế cạnh tranh trong ngành]
-
 ---
 
-## 3. Xu Hướng Thị Trường
+## 3. Market Trends
 
 ### 3.1 Macro Trends
 - 📈 [Trend 1]: [Impact]
 - 📈 [Trend 2]: [Impact]
 - 📉 [Decline 1]: [Impact]
 
-### 3.2 Consumer Behavior Shifts
-[Thay đổi trong hành vi người tiêu dùng]
+### 3.2 Consumer Behavior
+[Shifts in consumer preferences]
 
 ### 3.3 Technology Trends
-[Công nghệ ảnh hưởng đến ngành]
+[Technology impacting the industry]
 
 ---
 
-## 4. Cơ Hội & Thách Thức
+## 4. Opportunities & Challenges
 
 ### 4.1 Market Gaps
 | Gap | Size | Difficulty |
 |-----|------|------------|
-| [Gap 1] | X tỷ | Medium |
-| [Gap 2] | X tỷ | Low |
+| [Gap 1] | $X | Medium |
+| [Gap 2] | $X | Low |
 
 ### 4.2 Entry Barriers
 - [Barrier 1]
 - [Barrier 2]
 
-### 4.3 Success Factors
+### 4.3 Key Success Factors
 - [KSF 1]
 - [KSF 2]
 
 ---
 
-## 5. Khuyến Nghị
+## 5. Recommendations
 
-### 5.1 Chiến lược Entry
-> [Recommendation tóm tắt]
+### 5.1 Entry Strategy
+> [Summary recommendation]
 
 ### 5.2 Target Segments
 1. **Primary**: [Segment]
@@ -141,51 +160,46 @@ Nghiên cứu thị trường toàn diện cho ngành hàng/sản phẩm tại �
 
 ---
 
-## Nguồn Tham Khảo
+## Sources
 1. [Source 1]
 2. [Source 2]
-3. [Source 3]
 ```
 
-## Ví dụ
+---
+
+## Example
 
 ```
-/nghien-cuu-thi-truong "thị trường trái cây xuất khẩu ĐBSCL"
+/nghien-cuu-thi-truong "AI productivity tools market"
 
-# Nghiên Cứu: Trái Cây Xuất Khẩu ĐBSCL
+# Market Research: AI Productivity Tools
 
-## Quy Mô
-- TAM: $3.5 tỷ (trái cây VN 2024)
-- SAM: $1.2 tỷ (ĐBSCL)
-- SOM: $50 triệu (premium segment)
+## Market Size
+- TAM: $50 billion (2025)
+- SAM: $15 billion (B2B SaaS)
+- CAGR: 35%/year
 
 ## Top Competitors
-- Vina T&T: 15% market share
-- Chánh Thu: 12%
-- Hoàng Gia: 8%
+- Notion AI: 18%
+- Microsoft Copilot: 25%
+- ChatGPT Enterprise: 15%
 
-## Xu Hướng
-📈 Organic +25%/năm
-📈 E-commerce +40%/năm
-📉 Traditional retail -5%/năm
+## Trends
+📈 AI integration: +100%/year adoption
+📈 Workflow automation: +45%
+📉 Legacy tools: -15%
 
-## Cơ Hội
-- Gap: Truy xuất nguồn gốc (~$100M)
-- Gap: D2C fresh fruit (~$50M)
+## Opportunity
+- Gap: Vertical-specific AI ($5B)
+- Gap: SMB-friendly pricing ($3B)
 ```
 
-## Data Sources
-
-| Nguồn | Loại data |
-|-------|-----------|
-| GSO Vietnam | Thống kê quốc gia |
-| Sở NN&PTNT | Data địa phương |
-| Nielsen | Consumer insights |
-| VIRAC | Industry reports |
+---
 
 ## Best Practices
 
-1. **Primary + Secondary** - Kết hợp nhiều nguồn
-2. **Recent data** - Ưu tiên data < 2 năm
-3. **Local context** - Hiểu rõ đặc thù ĐBSCL
-4. **Validate** - Cross-check với experts
+1. **Multiple sources** - Combine primary + secondary
+2. **Recent data** - Prioritize data < 2 years
+3. **Local context** - Understand regional nuances
+4. **Validate** - Cross-check with experts
+5. **Global lens** - Think international scale

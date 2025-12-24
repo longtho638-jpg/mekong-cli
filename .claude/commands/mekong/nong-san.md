@@ -1,68 +1,129 @@
-# /nong-san - Phân tích giá nông sản ĐBSCL
+# /nong-san - Agricultural Commodity Analysis
 
-Spawn agent: `mekong-market-analyst`
+Spawn agent: `market-analyst`
 
-## Mục đích
+## Purpose
 
-Phân tích giá nông sản real-time cho vùng Đồng Bằng Sông Cửu Long.
+Analyze agricultural commodity prices and market trends. Supports global commodity markets.
 
-## Cách sử dụng
+## Usage
 
 ```
-/nong-san "gạo ST25"
-/nong-san "xoài cát Hòa Lộc"
-/nong-san "cá tra fillet"
+/nong-san
+/nong-san "rice ST25"
+/nong-san "organic avocados" --market=USA
 ```
+
+---
+
+## Interactive Mode (5 Questions)
+
+**If `$ARGUMENTS` is empty**, ask the user these 5 questions:
+
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **What commodity?** | Sản phẩm gì? | "Rice", "Mangoes", "Coffee" |
+| 2 | **Which market/region?** | Thị trường? | "Vietnam", "USA", "Global" |
+| 3 | **Time period?** | Thời gian? | "This week", "Monthly" |
+| 4 | **Buy or sell perspective?** | Mua hay bán? | "Buyer", "Farmer" |
+| 5 | **Volume interest?** | Khối lượng? | "1 ton", "Container" |
+
+**After collecting answers** → Generate price report.
+
+---
 
 ## Workflow
 
-1. **Xác định sản phẩm**
-   - Parse input để xác định loại nông sản
-   - Map đến category (lúa gạo, trái cây, thủy sản, gia súc)
+1. **Identify Commodity**
+   - Parse input to identify commodity
+   - Map to category (grains, fruits, seafood, livestock)
 
-2. **Thu thập dữ liệu**
-   - Query từ sources đã cấu hình
-   - Aggregate prices từ các chợ đầu mối
+2. **Data Collection**
+   - Query from configured sources
+   - Aggregate prices from major markets
 
-3. **Phân tích**
-   - So sánh với tuần trước, tháng trước
-   - Identify trends và anomalies
-   - Dự đoán xu hướng ngắn hạn
+3. **Analysis**
+   - Compare with last week/month
+   - Identify trends and anomalies
+   - Short-term forecast
 
-4. **Báo cáo**
-   ```markdown
-   ## Báo cáo giá: [Sản phẩm]
-   
-   📅 Ngày: [date]
-   📍 Khu vực: ĐBSCL
-   
-   ### Giá hiện tại
-   | Chợ | Giá (VNĐ) | Thay đổi |
-   |-----|-----------|----------|
-   | Bình Điền | xxx | +5% |
-   | Cần Thơ | xxx | +3% |
-   
-   ### Xu hướng
-   [Chart/description]
-   
-   ### Khuyến nghị
-   - [Action item 1]
-   - [Action item 2]
-   ```
+4. **Report Generation**
 
-## Ví dụ Output
+---
+
+## Output Format
+
+```markdown
+## Commodity Report: [Product]
+
+📅 Date: [date]
+📍 Market: [Region]
+💱 Currency: [USD/VND/etc]
+
+### Current Prices
+| Market/Location | Price | Change |
+|-----------------|-------|--------|
+| [Market 1] | $X | +5% |
+| [Market 2] | $X | +3% |
+
+### Price History
+| Period | Price | Change |
+|--------|-------|--------|
+| Today | $X | -- |
+| Last week | $X | +X% |
+| Last month | $X | +X% |
+
+### Trend Analysis
+📈 Trend: [Rising/Falling/Stable]
+📊 Forecast: [Next 2 weeks prediction]
+⚠️ Alert: [Any warnings]
+
+### Recommendations
+- **For Buyers**: [Action]
+- **For Sellers**: [Action]
+```
+
+---
+
+## Example
 
 ```
-🌾 Giá Gạo ST25 - 15/12/2025
+/nong-san "coffee arabica" --market=global
 
-📍 ĐBSCL Average: 28,000 VNĐ/kg
+☕ Coffee Arabica Report - Dec 24, 2024
 
-Chợ Bình Điền: 28,500 VNĐ (+2.1%)
-Chợ Cần Thơ: 27,800 VNĐ (+1.5%)
-Giá thu mua: 25,000 VNĐ
+📍 Global Market
+💱 Prices in USD/lb
 
-📈 Xu hướng: Tăng nhẹ do chuẩn bị Tết
-⚠️ Cảnh báo: Giá có thể đạt đỉnh trong 2 tuần
+ICE Futures: $2.85/lb (+8.2%)
+Vietnam FOB: $2.45/lb (+5.1%)
+Brazil FOB: $2.50/lb (+6.3%)
 
-💡 Khuyến nghị: Cân nhắc mua vào trước kỳ nghỉ lễ
+📈 Trend: Strong upward due to weather concerns
+⚠️ Alert: Supply shortage expected Q1 2025
+
+💡 Recommendation:
+- Buyers: Lock in contracts now
+- Sellers: Hold, prices may rise further
 ```
+
+---
+
+## Supported Commodities
+
+| Category | Examples |
+|----------|----------|
+| **Grains** | Rice, Wheat, Corn, Soybeans |
+| **Fruits** | Mangoes, Avocados, Durian, Citrus |
+| **Seafood** | Shrimp, Pangasius, Tuna, Salmon |
+| **Beverages** | Coffee, Tea, Cocoa |
+| **Other** | Pepper, Cashews, Rubber |
+
+---
+
+## Best Practices
+
+1. **Multiple sources** - Cross-check prices
+2. **Currency aware** - Use local or USD
+3. **Seasonality** - Consider harvest cycles
+4. **Volume sensitive** - Prices vary by quantity

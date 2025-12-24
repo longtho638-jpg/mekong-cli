@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AgencyOS Help Command - All-in-one guide with dynamic command discovery.
+ClaudeKit Help Command - All-in-one guide with dynamic command discovery.
 Scans .claude/commands/ directory to build catalog at runtime.
 
 Usage:
@@ -174,7 +174,7 @@ CATEGORY_GUIDES = {
         "tip": "Be specific about what you're looking for",
     },
     "config": {
-        "title": "AgencyOS Configuration (.ck.json)",
+        "title": "ClaudeKit Configuration (.ck.json)",
         "workflow": [
             ("Global", "Set user prefs in `~/.claude/.ck.json`"),
             ("Local", "Override per-project in `./.claude/.ck.json`"),
@@ -309,7 +309,7 @@ def show_overview(data: dict, prefix: str) -> None:
     total = sum(len(cmds) for cmds in commands.values())
     help_cmd = f"/{prefix}ck-help" if prefix else "/ck-help"
 
-    print("# AgencyOS Commands")
+    print("# ClaudeKit Commands")
     print()
     print(f"{total} commands across {len(categories)} categories.")
     print()
@@ -500,7 +500,7 @@ def show_config_guide() -> None:
     """Display comprehensive .ck.json configuration guide."""
     emit_output_type("comprehensive-docs")
 
-    print("# AgencyOS Configuration (.ck.json)")
+    print("# ClaudeKit Configuration (.ck.json)")
     print()
     print("**Locations (cascading resolution):**")
     print("- Global: `~/.claude/.ck.json` (user preferences)")

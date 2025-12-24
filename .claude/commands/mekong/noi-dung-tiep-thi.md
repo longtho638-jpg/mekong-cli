@@ -1,249 +1,164 @@
-# /noi-dung-tiep-thi - Marketing Content (Nội dung Tiếp thị)
+# /noi-dung-tiep-thi - Content Marketing
 
-Spawn agent: `copywriter` + `ui-ux-designer` + `scout-external`
+Spawn agent: `copywriter` + `scout-external`
 
-## Mục đích
+## Purpose
 
-Tạo nội dung tiếp thị đa dạng cho các kênh digital, từ social posts đến blog articles, video scripts, cho doanh nghiệp ĐBSCL.
+Create comprehensive content marketing strategies and content. For any business and platform.
 
-## Cách sử dụng
+## Usage
 
 ```
-/noi-dung-tiep-thi "5 bài post Facebook cho xoài Hòa Lộc"
-/noi-dung-tiep-thi "video script 30s giới thiệu nước mắm"
-/noi-dung-tiep-thi "blog SEO về lợi ích gạo ST25"
+/noi-dung-tiep-thi
+/noi-dung-tiep-thi "B2B SaaS blog"
+/noi-dung-tiep-thi "e-commerce content" --lang=en
 ```
 
-## Workflow
+---
 
-1. **Content Brief**
-   - Topic/product
-   - Target audience
-   - Platform/format
-   - Tone & style
+## Interactive Mode (8 Questions)
 
-2. **Research**
-   - Trending topics
-   - Competitor content
-   - SEO keywords
+**If `$ARGUMENTS` is empty**, ask the user these 8 questions:
 
-3. **Content Creation**
-   - Headlines/hooks
-   - Body content
-   - CTAs
-   - Hashtags
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Business/product?** | Doanh nghiệp/SP? | "Project management SaaS" |
+| 2 | **Target audience?** | Đối tượng? | "Marketing managers" |
+| 3 | **Content goal?** | Mục tiêu? | "Generate leads" |
+| 4 | **Main channels?** | Kênh chính? | "Blog, LinkedIn" |
+| 5 | **Content frequency?** | Tần suất? | "2x/week" |
+| 6 | **Team/resources?** | Nguồn lực? | "1 writer, AI tools" |
+| 7 | **Competitors' content?** | Content đối thủ? | "HubSpot, Monday.com" |
+| 8 | **Existing content?** | Content có sẵn? | "50 blog posts" |
 
-4. **Visual Direction**
-   - Image suggestions
-   - Video concepts
-   - Design notes
+**After collecting answers** → Generate content strategy.
 
-5. **Optimization**
-   - SEO elements
-   - Platform best practices
-   - Posting recommendations
-
-## Content Types
-
-### Social Media
-- Facebook posts
-- Zalo articles
-- TikTok scripts
-- Instagram captions
-
-### Long-form
-- Blog articles
-- Email newsletters
-- Product descriptions
-- Landing page copy
-
-### Video
-- Short-form scripts (15-60s)
-- YouTube scripts
-- Livestream outlines
-- Ad scripts
+---
 
 ## Output Format
 
 ```markdown
-# Nội Dung Tiếp Thị: [Topic]
+# Content Strategy: [Business]
 
-📅 Ngày: [date]
-📱 Platform: [Facebook/Zalo/TikTok/Blog]
-👥 Audience: [Target segment]
-
----
-
-## Content Package
-
-### 📘 Facebook Posts (5 posts)
+📅 Date: [date]
+🎯 Goal: [Primary objective]
+📝 Frequency: [Publishing rate]
 
 ---
 
-**Post 1: [Theme]**
-Type: [Image/Carousel/Video]
+## 1. Content Audit
 
+### 1.1 Current State
+| Metric | Value |
+|--------|-------|
+| Total pieces | X |
+| Monthly traffic | X |
+| Conversion rate | X% |
+| Top performers | [List] |
+
+### 1.2 Gaps Identified
+- [Gap 1]
+- [Gap 2]
+
+---
+
+## 2. Audience & Topics
+
+### 2.1 Content Personas
+| Persona | Stage | Topics | Format |
+|---------|-------|--------|--------|
+| [Persona 1] | Awareness | [Topics] | Blog |
+| [Persona 1] | Consideration | [Topics] | Guide |
+| [Persona 1] | Decision | [Topics] | Case study |
+
+### 2.2 Pillar Topics
+1. **[Pillar 1]** - [X cluster articles]
+2. **[Pillar 2]** - [X cluster articles]
+3. **[Pillar 3]** - [X cluster articles]
+
+### 2.3 Keyword Targets
+| Topic | Keyword | Volume | Difficulty |
+|-------|---------|--------|------------|
+| [Topic] | [KW] | X/mo | Low |
+| [Topic] | [KW] | X/mo | Medium |
+
+---
+
+## 3. Content Calendar
+
+### Monthly Overview
+| Week | Topic | Format | Channel | Status |
+|------|-------|--------|---------|--------|
+| W1 | [Topic] | Blog | Website | Draft |
+| W2 | [Topic] | Video | YouTube | Idea |
+| W3 | [Topic] | Social | LinkedIn | Idea |
+| W4 | [Topic] | Email | Newsletter | Idea |
+
+### This Month Ideas
+1. [Idea 1] - [Why it matters]
+2. [Idea 2] - [Why it matters]
+3. [Idea 3] - [Why it matters]
+4. [Idea 4] - [Why it matters]
+
+---
+
+## 4. Content Formats
+
+### 4.1 Format Mix
+| Format | % of Content | Purpose |
+|--------|--------------|---------|
+| Blog posts | X% | SEO, education |
+| Videos | X% | Engagement |
+| Case studies | X% | Conversion |
+| Podcasts | X% | Authority |
+
+### 4.2 Templates
+[Links to content templates]
+
+---
+
+## 5. Distribution
+
+### 5.1 Channel Strategy
+| Channel | Frequency | Content Type |
+|---------|-----------|--------------|
+| Website | 2x/week | Long-form |
+| LinkedIn | Daily | Insights |
+| Twitter | 3x/day | Engagement |
+| Email | Weekly | Curated |
+
+### 5.2 Repurposing Plan
 ```
-[Hook - 1-2 lines to grab attention]
-
-[Body - 3-5 lines with value/story]
-
-[CTA - Clear action]
-
-#hashtag1 #hashtag2 #hashtag3
-```
-
-📸 Visual: [Image description/direction]
-⏰ Best time: [Day/Time]
-
----
-
-**Post 2: [Theme]**
-[Same format]
-
----
-
-### 🎵 TikTok Scripts (3 videos)
-
----
-
-**Video 1: [Hook concept]**
-Duration: [15s/30s/60s]
-
-```
-[0-3s] HOOK: [Visual + Text overlay]
-[3-10s] PROBLEM: [Relatable situation]
-[10-20s] SOLUTION: [Your product/service]
-[20-25s] PROOF: [Testimonial/Demo]
-[25-30s] CTA: [What to do next]
-```
-
-🎵 Sound: [Trending sound suggestion]
-📝 Caption: [Caption with hashtags]
-
----
-
-### 📝 Blog Article
-
----
-
-**Title**: [SEO-optimized title]
-**Meta**: [155 char meta description]
-**Keywords**: [primary], [secondary1], [secondary2]
-
-**Outline**:
-1. Introduction (hook + thesis)
-2. [Section 1 heading]
-3. [Section 2 heading]
-4. [Section 3 heading]
-5. Conclusion + CTA
-
-**Full Article**:
-
-[H1] [Title]
-
-[Opening paragraph with hook and keyword]
-
-[H2] [Section 1]
-[Content with subheadings, lists, images]
-
-[H2] [Section 2]
-[Content]
-
-[H2] [Section 3]
-[Content]
-
-[H2] Kết luận
-[Summary + CTA]
-
----
-
-### 📧 Email Newsletter
-
----
-
-**Subject Lines** (A/B test):
-1. [Option A]
-2. [Option B]
-
-**Preview text**: [40-90 chars]
-
-**Email Body**:
-```
-[Greeting]
-
-[Hook paragraph]
-
-[Value content - 2-3 short paragraphs]
-
-[CTA button text]
-
-[Sign-off]
+Blog Post → LinkedIn carousel
+         → Twitter thread
+         → Newsletter section
+         → YouTube script
 ```
 
 ---
 
-## Visual Guidelines
+## 6. Measurement
 
-### Image Suggestions
-| Content | Style | Elements |
-|---------|-------|----------|
-| Post 1 | [Bright/Minimal/...] | [Product, lifestyle] |
-| Post 2 | [Style] | [Elements] |
+### 6.1 KPIs
+| Metric | Current | Target |
+|--------|---------|--------|
+| Organic traffic | X | X |
+| Email subscribers | X | X |
+| Lead gen | X | X |
+| Engagement rate | X% | X% |
 
-### Color Palette
-- Primary: [HEX]
-- Accent: [HEX]
-- Text: [HEX]
+### 6.2 Review Cadence
+- Weekly: Performance check
+- Monthly: Strategy review
+- Quarterly: Major adjustments
+```
 
 ---
-
-## SEO Keywords
-
-| Keyword | Volume | Difficulty | Priority |
-|---------|--------|------------|----------|
-| [Primary] | X | Low | ⭐⭐⭐ |
-| [Secondary] | X | Medium | ⭐⭐ |
-
----
-
-## Content Calendar
-
-| Day | Content | Platform | Status |
-|-----|---------|----------|--------|
-| Mon | Post 1 | Facebook | Ready |
-| Wed | Video 1 | TikTok | Ready |
-| Fri | Post 2 | Facebook | Ready |
-```
-
-## Ví dụ
-
-```
-/noi-dung-tiep-thi "3 TikTok scripts cho xoài Hòa Lộc"
-
-# TikTok Scripts: Xoài Hòa Lộc
-
-## Video 1: "POV: Lần đầu ăn xoài chín cây"
-Duration: 15s
-
-[0-2s] HOOK: Close-up cắt xoài, nước chảy
-[2-6s] "Xoài siêu thị thì ủ, còn đây..."
-[6-12s] Ăn thử, reaction ngon
-[12-15s] CTA: "Link bio, ship 24h"
-
-🎵 Sound: [trending cooking sound]
-📝 #xoaihoaloc #traicaysach #ĐBSCL
-
-## Video 2: "Làm sao phân biệt xoài chín cây?"
-[Educational format...]
-
-## Video 3: "Review 1 tuần ăn xoài Hòa Lộc"
-[Lifestyle format...]
-```
 
 ## Best Practices
 
-1. **Hook first** - 3 giây đầu quyết định
-2. **Value-driven** - Cho trước khi xin
-3. **Platform-native** - Mỗi platform một style
-4. **Consistent** - Giữ brand voice xuyên suốt
+1. **Quality > Quantity** - Better to publish less, better
+2. **SEO + Value** - Both for algorithms and humans
+3. **Repurpose** - One piece, multiple formats
+4. **Consistency** - Stick to the schedule
+5. **Measure & iterate** - Double down on what works

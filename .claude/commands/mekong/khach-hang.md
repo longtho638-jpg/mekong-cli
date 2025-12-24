@@ -1,123 +1,151 @@
-# /khach-hang - Hồ sơ Khách hàng (Customer Profile)
+# /khach-hang - Customer Profile Generator
 
 Spawn agent: `researcher` + `copywriter`
 
-## Mục đích
+## Purpose
 
-Phân tích và tạo Customer Profile cho sản phẩm/dịch vụ, tối ưu cho thị trường ĐBSCL.
+Analyze and create comprehensive Customer Profiles for any product/service. Supports any market worldwide.
 
-## Cách sử dụng
+## Usage
 
 ```
-/khach-hang "nước mắm truyền thống Phú Quốc"
-/khach-hang "dịch vụ chăm sóc cây cảnh"
-/khach-hang "cửa hàng bán lẻ nông sản organic"
+/khach-hang
+/khach-hang "organic skincare products"
+/khach-hang "SaaS project management tool" --lang=en
 ```
+
+---
+
+## Interactive Mode (7 Questions)
+
+**If `$ARGUMENTS` is empty**, ask the user these 7 questions:
+
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **What product/service?** | Sản phẩm/dịch vụ gì? | "Organic face cream" |
+| 2 | **Target market/country?** | Thị trường mục tiêu? | "USA, urban cities" |
+| 3 | **Price range?** | Mức giá? | "$30-80 per product" |
+| 4 | **B2B or B2C?** | B2B hay B2C? | "B2C" |
+| 5 | **Online or offline?** | Online hay offline? | "Online primarily" |
+| 6 | **Problem you solve?** | Vấn đề giải quyết? | "Skin sensitivity issues" |
+| 7 | **Key competitors?** | Đối thủ chính? | "CeraVe, The Ordinary" |
+
+**After collecting answers** → Generate full Customer Profile.
+
+---
 
 ## Workflow
 
-1. **Phân tích ngành**
-   - Xác định industry/niche
-   - Research market size tại ĐBSCL
+1. **Industry Analysis**
+   - Identify industry/niche
+   - Research market size
    - Identify key competitors
 
-2. **Xây dựng Demographics**
-   - Tuổi, giới tính, địa điểm
-   - Thu nhập, nghề nghiệp
-   - Gia đình, lifestyle
+2. **Build Demographics**
+   - Age, gender, location
+   - Income, occupation
+   - Family status, lifestyle
 
-3. **Phân tích Hành vi**
-   - Kênh mua hàng: online/offline
-   - Tần suất, giá trị đơn hàng
+3. **Behavior Analysis**
+   - Purchase channels: online/offline
+   - Frequency, order value
    - Decision factors
 
-4. **Xác định Pain Points**
-   - Vấn đề khách hàng đang gặp
+4. **Identify Pain Points**
+   - Current customer problems
    - Unmet needs
-   - Frustrations với giải pháp hiện tại
+   - Frustrations with existing solutions
 
-5. **Đề xuất Giải pháp**
-   - Cách sản phẩm/dịch vụ giải quyết pain points
+5. **Solution Mapping**
+   - How product solves pain points
    - Unique value proposition
    - Messaging recommendations
+
+---
 
 ## Output Format
 
 ```markdown
-## Hồ Sơ Khách Hàng: [Sản phẩm/Dịch vụ]
+## Customer Profile: [Product/Service]
 
-📅 Ngày tạo: [date]
-🎯 Độ tin cậy: [X]%
+📅 Created: [date]
+🎯 Confidence: [X]%
+🌍 Market: [Location]
 
 ### 👥 Demographics
-| Thuộc tính | Giá trị |
-|------------|---------|
-| Tuổi | 25-45 |
-| Giới tính | 60% Nữ, 40% Nam |
-| Địa điểm | ĐBSCL (Cần Thơ, Long An, Tiền Giang) |
-| Thu nhập | 8-20 triệu/tháng |
-| Nghề nghiệp | Nhân viên văn phòng, tiểu thương |
+| Attribute | Value |
+|-----------|-------|
+| Age | 25-45 |
+| Gender | 60% Female, 40% Male |
+| Location | [Market/Region] |
+| Income | $X-X per month |
+| Occupation | [Job types] |
 
-### 🛒 Hành vi Mua hàng
-| Thuộc tính | Giá trị |
-|------------|---------|
-| Kênh chính | Facebook 45%, Zalo 30%, Chợ 25% |
-| Tần suất | 2-4 lần/tháng |
-| AOV | 200,000-500,000 VNĐ |
-| Decision time | 1-3 ngày |
+### 🛒 Purchase Behavior
+| Attribute | Value |
+|-----------|-------|
+| Primary channels | [Channel 1] 45%, [Channel 2] 30% |
+| Frequency | X times/month |
+| AOV | $X |
+| Decision time | X days |
 
 ### 😰 Pain Points
 1. **[Pain point 1]**
-   - Chi tiết...
+   - Details...
    
 2. **[Pain point 2]**
-   - Chi tiết...
+   - Details...
 
 3. **[Pain point 3]**
-   - Chi tiết...
+   - Details...
 
-### 💡 Giải pháp & Messaging
+### 💡 Solution & Messaging
 
 #### Value Proposition
-> [Một câu mô tả value proposition]
+> [One sentence value proposition]
 
 #### Key Messages
-1. [Message 1] - cho [channel]
-2. [Message 2] - cho [channel]
-3. [Message 3] - cho [channel]
+1. [Message 1] - for [channel]
+2. [Message 2] - for [channel]
+3. [Message 3] - for [channel]
 
 ### 📋 Action Items
-- [ ] Tạo content targeting pain point #1
-- [ ] Setup ads campaign trên [channel]
-- [ ] Develop product feature để giải quyết [problem]
+- [ ] Create content targeting pain point #1
+- [ ] Setup ads campaign on [channel]
+- [ ] Develop feature to solve [problem]
 ```
 
-## Ví dụ
+---
+
+## Example
 
 ```
-/khach-hang "nước mắm truyền thống"
+/khach-hang "premium coffee subscription"
 
-## Hồ Sơ Khách Hàng: Nước mắm truyền thống
+## Customer Profile: Premium Coffee Subscription
 
 ### 👥 Demographics
-- Tuổi: 35-55
-- Giới tính: 80% Nữ (người nội trợ)
-- Địa điểm: ĐBSCL, TP.HCM
-- Thu nhập: 10-25 triệu/tháng
+- Age: 28-45
+- Gender: 55% Male (specialty coffee enthusiasts)
+- Location: USA, major metros
+- Income: $60K-150K/year
 
 ### 😰 Pain Points
-1. Lo ngại về chất lượng nước mắm công nghiệp
-2. Khó phân biệt nước mắm thật/giả
-3. Giá cao hơn nhưng không biết giá trị
+1. Can't find consistently good quality beans
+2. Don't have time to visit specialty shops
+3. Bored with same old supermarket options
 
 ### 💡 Key Message
-> "Nước mắm gia truyền 3 đời - vị ngon từ biển, 
-> không hóa chất, giao tận nhà"
+> "World-class specialty coffee, roasted fresh, 
+> delivered to your door weekly"
 ```
+
+---
 
 ## Best Practices
 
-1. **Cụ thể hóa** - Tránh mô tả chung chung
-2. **Data-driven** - Dựa trên số liệu thực tế
-3. **Actionable** - Mỗi insight phải dẫn đến action
-4. **Update regularly** - Review mỗi quý
+1. **Be Specific** - Avoid generic descriptions
+2. **Data-driven** - Use real market data
+3. **Actionable** - Every insight leads to action
+4. **Update regularly** - Review quarterly
+5. **Global-ready** - Adapt for any market

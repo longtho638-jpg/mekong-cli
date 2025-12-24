@@ -1,247 +1,158 @@
-# /thong-diep-tiep-thi - Marketing Message (Thông điệp Tiếp thị)
+# /thong-diep-tiep-thi - Marketing Messaging
 
-Spawn agent: `copywriter` + `researcher` + `scout-external`
+Spawn agent: `copywriter`
 
-## Mục đích
+## Purpose
 
-Tạo bộ thông điệp tiếp thị hoàn chỉnh cho sản phẩm/dịch vụ/chiến dịch, tối ưu cho các kênh phổ biến tại ĐBSCL.
+Create compelling marketing messages, taglines, and value propositions. For any industry and market.
 
-## Cách sử dụng
+## Usage
 
 ```
-/thong-diep-tiep-thi "ra mắt sản phẩm nước mắm premium"
-/thong-diep-tiep-thi "chiến dịch Tết 2025 cho trái cây"
-/thong-diep-tiep-thi "khuyến mãi mùa thu hoạch lúa"
+/thong-diep-tiep-thi
+/thong-diep-tiep-thi "health app"
+/thong-diep-tiep-thi "B2B software" --lang=en
 ```
 
-## Workflow
+---
 
-1. **Phân tích Context**
-   - Sản phẩm/dịch vụ
-   - Target audience
-   - Campaign objectives
-   - Competitive messages
+## Interactive Mode (7 Questions)
 
-2. **Core Message Development**
-   - Value proposition
-   - Key benefits
-   - Unique selling points
-   - Emotional triggers
+**If `$ARGUMENTS` is empty**, ask the user these 7 questions:
 
-3. **Message Variations**
-   - Headline options
-   - Body copy versions
-   - CTA variations
-   - Hashtag suggestions
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Product/service?** | Sản phẩm/dịch vụ? | "AI writing assistant" |
+| 2 | **Target audience?** | Đối tượng? | "Content marketers" |
+| 3 | **Main benefit?** | Lợi ích chính? | "Write 10x faster" |
+| 4 | **Key differentiator?** | Khác biệt? | "Sounds like you" |
+| 5 | **Competitors?** | Đối thủ? | "Jasper, Copy.ai" |
+| 6 | **Brand tone?** | Tone giọng? | "Friendly, witty" |
+| 7 | **Use channels?** | Kênh sử dụng? | "Ads, landing page" |
 
-4. **Channel Adaptation**
-   - Facebook posts
-   - Zalo OA messages
-   - TikTok scripts
-   - SMS/Notification
+**After collecting answers** → Generate messaging framework.
 
-5. **A/B Testing Framework**
-   - Test variables
-   - Success metrics
-   - Iteration suggestions
+---
 
 ## Output Format
 
 ```markdown
-# Thông Điệp Tiếp Thị: [Campaign/Product]
+# Messaging Framework: [Product]
 
-📅 Ngày: [date]
-🎯 Mục tiêu: [Awareness/Conversion/Retention]
-👥 Target: [Audience segment]
-
----
-
-## 1. Core Message Framework
-
-### 1.1 Value Proposition
-> [1-2 câu mô tả giá trị cốt lõi]
-
-### 1.2 Key Benefits
-| Benefit | Proof Point | Emotion |
-|---------|-------------|---------|
-| [Benefit 1] | [Evidence] | [Feeling] |
-| [Benefit 2] | [Evidence] | [Feeling] |
-| [Benefit 3] | [Evidence] | [Feeling] |
-
-### 1.3 USP (Unique Selling Point)
-> [Điều gì làm bạn khác biệt]
-
-### 1.4 Emotional Triggers
-- 🎯 Pain point: [Problem you solve]
-- 💡 Aspiration: [Dream you enable]
-- 🔥 Urgency: [Why act now]
+📅 Date: [date]
+🎯 Audience: [Target]
+✨ Tone: [Brand voice]
 
 ---
 
-## 2. Headline Options
+## 1. Core Positioning
 
-### Headlines (Attention)
-1. **Direct**: "[Headline A]"
-2. **Question**: "[Headline B]"
-3. **How-to**: "[Headline C]"
-4. **Number**: "[Headline D]"
-5. **Testimonial**: "[Headline E]"
+### 1.1 Positioning Statement
+> For [target audience] who [have this need], [product] is [category] that [key benefit] unlike [competitors] because [unique reason].
 
-### Subheadlines (Interest)
-1. "[Subhead A]"
-2. "[Subhead B]"
+### 1.2 One-Liner
+> "[Short, memorable description]"
 
 ---
 
-## 3. Body Copy Variations
+## 2. Value Proposition
 
-### Version A: Short (Social)
-```
-[2-3 lines copy for quick consumption]
-```
+### 2.1 Main Benefit
+**[Headline benefit]**
+[Supporting explanation]
 
-### Version B: Medium (Ad)
-```
-[4-5 lines with more detail]
-```
-
-### Version C: Long (Landing page)
-```
-[Full persuasive copy with story]
-```
+### 2.2 Supporting Benefits
+| Benefit | Proof | For Who |
+|---------|-------|---------|
+| [Benefit 1] | [Evidence] | [Segment] |
+| [Benefit 2] | [Evidence] | [Segment] |
+| [Benefit 3] | [Evidence] | [Segment] |
 
 ---
 
-## 4. Call-to-Action Options
+## 3. Messaging Hierarchy
 
-### Primary CTAs
-| CTA | Best For | Urgency Level |
-|-----|----------|---------------|
-| "[CTA 1]" | Direct sales | High |
-| "[CTA 2]" | Lead gen | Medium |
-| "[CTA 3]" | Engagement | Low |
+### 3.1 Primary Messages
+| Audience | Message | Channel |
+|----------|---------|---------|
+| [Segment 1] | [Message] | [Where] |
+| [Segment 2] | [Message] | [Where] |
 
-### Button Text Ideas
-- [Button 1]
-- [Button 2]
-- [Button 3]
-
----
-
-## 5. Channel-Specific Content
-
-### 📘 Facebook
-**Post 1:**
-```
-[Opening hook]
-
-[Body with benefits]
-
-[CTA with link]
-
-#hashtag1 #hashtag2 #hashtag3
-```
-
-**Post 2 (Testimonial):**
-```
-[Customer quote format]
-```
-
-### 💬 Zalo OA
-**Message Template:**
-```
-[Greeting + personalization]
-[Offer/Value]
-[CTA button text]
-```
-
-### 🎵 TikTok Script
-```
-Hook (0-3s): [Attention grabber]
-Problem (3-8s): [Pain point]
-Solution (8-15s): [Your product]
-CTA (15-20s): [Action]
-```
-
-### 📱 SMS (160 chars)
-```
-[Concise message with CTA and link]
-```
+### 3.2 Proof Points
+- [Stat/testimonial 1]
+- [Stat/testimonial 2]
+- [Stat/testimonial 3]
 
 ---
 
-## 6. Hashtags
+## 4. Tagline Options
 
-### Primary (Brand)
-#[Brand] #[Product]
+### 4.1 Short (2-4 words)
+1. "[Option 1]"
+2. "[Option 2]"
+3. "[Option 3]"
 
-### Secondary (Category)
-#[Category1] #[Category2]
+### 4.2 Medium (5-8 words)
+1. "[Option 1]"
+2. "[Option 2]"
 
-### Trending (Research)
-#[Trend1] #[Trend2]
-
-### Location
-#ĐBSCL #[Province]
-
----
-
-## 7. A/B Testing Framework
-
-### Test 1: Headlines
-- **Control**: "[Headline A]"
-- **Variant**: "[Headline B]"
-- **Metric**: CTR
-- **Duration**: 3 days
-
-### Test 2: CTA
-- **Control**: "[CTA A]"
-- **Variant**: "[CTA B]"
-- **Metric**: Conversion rate
+### 4.3 Long (Sentence)
+1. "[Full tagline option]"
 
 ---
 
-## Next Steps
-- [ ] Select winning headlines
-- [ ] Create visual assets
-- [ ] Schedule posts
-- [ ] Set up tracking
+## 5. Headlines by Channel
+
+### 5.1 Landing Page
+- **H1**: [Main headline]
+- **H2**: [Supporting subhead]
+
+### 5.2 Ads
+| Platform | Headline | Description |
+|----------|----------|-------------|
+| Google | [25 chars] | [90 chars] |
+| Facebook | [40 chars] | [125 chars] |
+| LinkedIn | [150 chars] | [70 chars] |
+
+### 5.3 Email
+| Type | Subject Line |
+|------|--------------|
+| Welcome | [Subject] |
+| Promo | [Subject] |
+| Re-engagement | [Subject] |
+
+---
+
+## 6. CTA Options
+
+| Context | CTA | Button Text |
+|---------|-----|-------------|
+| Landing page | Sign up | "Get Started Free" |
+| Pricing | Purchase | "Start 14-Day Trial" |
+| Blog | Learn more | "Read the Guide" |
+
+---
+
+## 7. Voice Guidelines
+
+### Do's
+- [Voice characteristic 1]
+- [Voice characteristic 2]
+
+### Don'ts
+- [Avoid 1]
+- [Avoid 2]
+
+### Sample Copy
+[Example paragraph in brand voice]
 ```
 
-## Ví dụ
-
-```
-/thong-diep-tiep-thi "xoài Hòa Lộc mùa hè"
-
-# Thông Điệp: Xoài Hòa Lộc Mùa Hè
-
-## Value Proposition
-> Xoài Hòa Lộc chín cây, ngọt thanh tự nhiên, 
-> ship 24h đến tay - Vị ngon vườn nhà Đồng Tháp
-
-## Headlines
-1. "Xoài Hòa Lộc chín cây - Ngọt từ vườn đến bàn"
-2. "Bạn đã bao giờ ăn xoài chín cây thật sự?"
-3. "100kg xoài - Chỉ 50 hộp cho tuần này"
-
-## Facebook Post
-🥭 XOÀI HÒA LỘC CHÍN CÂY - Mùa ngon nhất năm!
-
-Không phải xoài ủ, đây là xoài CHÍN TỰ NHIÊN trên cây.
-Vị ngọt thanh đặc trưng chỉ có ở Đồng Tháp.
-
-✅ Chín cây 100%
-✅ Ship 24h toàn quốc
-✅ Bảo đảm đổi nếu không ưng
-
-👉 Inbox ngay hoặc gọi 090.xxx.xxx
-
-#XoàiHòaLộc #TráiCâyĐBSCL #XoàiChínCây
-```
+---
 
 ## Best Practices
 
-1. **AIDA** - Attention, Interest, Desire, Action
-2. **Benefits > Features** - Nói về kết quả, không phải tính năng
-3. **One CTA** - Mỗi message chỉ 1 call-to-action chính
-4. **Test everything** - A/B test headlines và CTAs
+1. **Benefits > Features** - What it does for them
+2. **Clear > Clever** - Understand in 3 seconds
+3. **Specific > Generic** - Concrete examples
+4. **Test everything** - A/B headlines
+5. **Voice consistency** - Same tone everywhere

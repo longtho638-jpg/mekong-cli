@@ -1,69 +1,108 @@
-# /ban-hang - Tối ưu hoá bán hàng
+# /ban-hang - Sales Optimization
 
 Spawn agent: `scout` + `researcher`
 
-## Mục đích
+## Purpose
 
-Phân tích và tối ưu hoá quy trình bán hàng cho doanh nghiệp ĐBSCL.
+Analyze and optimize sales processes for any business. Global-ready with currency/market flexibility.
 
-## Cách sử dụng
+## Usage
 
 ```
-/ban-hang "tăng conversion rate"
-/ban-hang "phân tích khách hàng tiềm năng"
-/ban-hang "tối ưu funnel"
+/ban-hang
+/ban-hang "increase conversion rate"
+/ban-hang "optimize sales funnel" --lang=en
 ```
+
+---
+
+## Interactive Mode (6 Questions)
+
+**If `$ARGUMENTS` is empty**, ask the user these 6 questions:
+
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **What do you sell?** | Bạn bán gì? | "Online courses" |
+| 2 | **Current conversion rate?** | Tỷ lệ chuyển đổi? | "2.5%" |
+| 3 | **Average order value?** | Giá trị TB/đơn? | "$97" |
+| 4 | **Main sales channels?** | Kênh bán chính? | "Website, Instagram" |
+| 5 | **Current bottleneck?** | Điểm nghẽn? | "Checkout abandonment" |
+| 6 | **Monthly traffic?** | Traffic hàng tháng? | "10,000 visitors" |
+
+**After collecting answers** → Generate optimization report.
+
+---
 
 ## Workflow
 
-1. **Phân tích hiện trạng**
-   - Review sales funnel hiện tại
-   - Xác định bottlenecks
-   - Benchmark với industry standards
+1. **Current State Analysis**
+   - Review current sales funnel
+   - Identify bottlenecks
+   - Benchmark against industry
 
-2. **Thu thập dữ liệu**
+2. **Data Collection**
    - Customer journey analysis
    - Conversion rates by channel
    - Customer feedback
 
-3. **Đề xuất tối ưu**
+3. **Optimization Recommendations**
    - Quick wins (under 1 week)
    - Medium-term improvements
    - Long-term strategy
 
+---
+
 ## Output Format
 
 ```markdown
-## Báo Cáo Tối Ưu Bán Hàng
+## Sales Optimization Report
 
-### 📊 Hiện Trạng
+### 📊 Current State
 - Conversion rate: X%
-- Average order value: X VNĐ
-- Customer acquisition cost: X VNĐ
+- Average order value: $X
+- Customer acquisition cost: $X
+- Monthly revenue: $X
 
-### 🔍 Vấn Đề Phát Hiện
+### 🔍 Issues Identified
 1. [Issue 1]
 2. [Issue 2]
 
-### 💡 Đề Xuất
+### 💡 Recommendations
 
 #### Quick Wins (This Week)
-- [ ] Cải thiện CTA trên landing page
-- [ ] Thêm social proof
+- [ ] Improve CTA on landing page
+- [ ] Add social proof
+- [ ] Simplify checkout
 
 #### Medium-term (This Month)
 - [ ] Setup email automation
 - [ ] A/B testing pricing
+- [ ] Create urgency elements
 
-### 📈 Dự Kiến Kết Quả
+### 📈 Expected Results
 - Conversion rate: +X%
 - Revenue: +X%
+- ROI: X:1
 ```
 
-## Kênh hỗ trợ
+---
 
-- Facebook Shop
-- Zalo OA
-- TikTok Shop
-- Website
-- Chợ truyền thống
+## Sales Channels
+
+| Channel | Best For | Priority |
+|---------|----------|----------|
+| Website | All businesses | ⭐⭐⭐ |
+| Instagram | B2C, visual products | ⭐⭐⭐ |
+| LinkedIn | B2B, services | ⭐⭐ |
+| TikTok | Gen Z, D2C | ⭐⭐ |
+| Email | All, retention | ⭐⭐⭐ |
+
+---
+
+## Best Practices
+
+1. **Measure first** - Know your baseline
+2. **One change at a time** - Track impact
+3. **Focus on bottlenecks** - Fix the biggest leak
+4. **Test everything** - A/B test assumptions
+5. **Customer-centric** - Listen to feedback

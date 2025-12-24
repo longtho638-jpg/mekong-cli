@@ -1,287 +1,161 @@
-# /chien-luoc-ban-hang - Sales Strategy (Chiến lược Bán hàng)
+# /chien-luoc-ban-hang - Sales Strategy
 
-Spawn agent: `planner` + `researcher` + `copywriter`
+Spawn agent: `planner` + `researcher`
 
-## Mục đích
+## Purpose
 
-Xây dựng chiến lược bán hàng toàn diện bao gồm sales funnel, pricing strategy, channel mix, và sales scripts cho doanh nghiệp ĐBSCL.
+Develop comprehensive sales strategies and playbooks. Applicable to any market or business model.
 
-## Cách sử dụng
+## Usage
 
 ```
-/chien-luoc-ban-hang "tăng gấp đôi doanh thu nước mắm trong 6 tháng"
-/chien-luoc-ban-hang "mở rộng kênh bán xoài ra thị trường TP.HCM"
-/chien-luoc-ban-hang "chuyển đổi từ B2B sang D2C cho gạo ST25"
+/chien-luoc-ban-hang
+/chien-luoc-ban-hang "B2B enterprise sales"
+/chien-luoc-ban-hang "e-commerce optimization" --lang=en
 ```
 
-## Workflow
+---
 
-1. **Current State Analysis**
-   - Revenue breakdown
-   - Customer segments
-   - Channel performance
-   - Sales team capabilities
+## Interactive Mode (8 Questions)
 
-2. **Goal Setting**
-   - Revenue targets
-   - Growth rate
-   - Market expansion
-   - New product launches
+**If `$ARGUMENTS` is empty**, ask the user these 8 questions:
 
-3. **Strategy Development**
-   - Pricing strategy
-   - Channel strategy
-   - Customer acquisition
-   - Retention strategy
+| # | Question (EN) | Câu hỏi (VI) | Example |
+|---|---------------|--------------|---------|
+| 1 | **Sales model?** | Mô hình bán hàng? | "B2B", "B2C", "D2C" |
+| 2 | **Product/service?** | Sản phẩm/dịch vụ? | "SaaS CRM tool" |
+| 3 | **Average deal size?** | Giá trị TB/deal? | "$500", "$50K" |
+| 4 | **Sales cycle length?** | Chu kỳ bán hàng? | "1 week", "6 months" |
+| 5 | **Current team size?** | Số người bán hàng? | "2 sales reps" |
+| 6 | **Current close rate?** | Tỷ lệ chốt? | "20%", "Unknown" |
+| 7 | **Lead sources?** | Nguồn lead? | "Inbound, cold email" |
+| 8 | **Revenue target?** | Mục tiêu doanh thu? | "$500K this year" |
 
-4. **Sales Process Design**
-   - Sales funnel stages
-   - Conversion optimization
-   - Lead qualification
-   - Closing techniques
+**After collecting answers** → Generate sales strategy.
 
-5. **Execution Plan**
-   - Sales scripts
-   - Objection handling
-   - Team training
-   - Tools & automation
+---
 
 ## Output Format
 
 ```markdown
-# Chiến Lược Bán Hàng: [Product/Business]
+# Sales Strategy: [Product/Service]
 
-📅 Timeline: [Period]
+📅 Date: [date]
 🎯 Target: [Revenue goal]
-📈 Growth: [X%]
+📊 Model: [B2B/B2C/D2C]
 
 ---
 
-## 1. Current State Analysis
+## 1. Sales Model Analysis
 
-### 1.1 Revenue Breakdown
-| Channel | Revenue | % | Growth |
-|---------|---------|---|--------|
-| Direct | X | X% | +X% |
-| Online | X | X% | +X% |
-| Wholesale | X | X% | +X% |
+### 1.1 Current State
+| Metric | Value | Benchmark |
+|--------|-------|-----------|
+| Deal size | $X | $X |
+| Close rate | X% | X% |
+| Sales cycle | X days | X days |
+| CAC | $X | $X |
 
-### 1.2 Customer Segments
-| Segment | AOV | LTV | Volume |
-|---------|-----|-----|--------|
-| [A] | X | X | X% |
-| [B] | X | X | X% |
-
-### 1.3 SWOT Sales
-| Strengths | Weaknesses |
-|-----------|------------|
-| [S1] | [W1] |
-
-| Opportunities | Threats |
-|---------------|---------|
-| [O1] | [T1] |
+### 1.2 Revenue Math
+```
+Target Revenue = Deals × Average Deal Size
+Deals Needed = Target / ADS
+Leads Needed = Deals / Close Rate
+```
 
 ---
 
-## 2. Sales Goals
+## 2. Sales Process
 
-### 2.1 Revenue Targets
-| Period | Target | Growth | Strategy |
-|--------|--------|--------|----------|
-| Q1 | X | +X% | [Focus] |
-| Q2 | X | +X% | [Focus] |
-| Q3 | X | +X% | [Focus] |
-| Q4 | X | +X% | [Focus] |
+### 2.1 Pipeline Stages
+| Stage | Actions | Duration | Exit Criteria |
+|-------|---------|----------|---------------|
+| Lead | [Action] | X days | [Criteria] |
+| Qualified | [Action] | X days | [Criteria] |
+| Demo | [Action] | X days | [Criteria] |
+| Proposal | [Action] | X days | [Criteria] |
+| Close | [Action] | X days | [Criteria] |
 
-### 2.2 KPIs
-| KPI | Current | Target |
-|-----|---------|--------|
-| Monthly Revenue | X | Y |
-| Conversion Rate | X% | Y% |
-| AOV | X | Y |
-| Customer Retention | X% | Y% |
-
----
-
-## 3. Pricing Strategy
-
-### 3.1 Pricing Model
-| Product | Cost | Price | Margin |
-|---------|------|-------|--------|
-| [A] | X | Y | Z% |
-| [B] | X | Y | Z% |
-
-### 3.2 Pricing Tactics
-- **Anchor pricing**: [Strategy]
-- **Bundle pricing**: [Bundles]
-- **Seasonal pricing**: [Adjustments]
-- **Volume discounts**: [Tiers]
-
-### 3.3 Competitor Pricing
-| Competitor | Price | Positioning |
-|------------|-------|-------------|
-| [A] | X | [Position] |
-| [B] | X | [Position] |
+### 2.2 Stage Conversion
+| Stage | Conversion | Improve to |
+|-------|------------|------------|
+| Lead → Qualified | X% | X% |
+| Qualified → Demo | X% | X% |
+| Demo → Proposal | X% | X% |
+| Proposal → Close | X% | X% |
 
 ---
 
-## 4. Channel Strategy
+## 3. Ideal Customer Profile
 
-### 4.1 Channel Mix
-| Channel | % Revenue | Focus | Investment |
-|---------|-----------|-------|------------|
-| Facebook Shop | X% | Scale | +X% |
-| Zalo | X% | Maintain | = |
-| Website D2C | X% | Build | +X% |
-| Wholesale | X% | Optimize | -X% |
+### 3.1 ICP Definition
+- **Company Size**: [Range]
+- **Industry**: [Types]
+- **Budget**: [Range]
+- **Pain Point**: [Specific problem]
 
-### 4.2 Channel-Specific Tactics
-
-#### Facebook Shop
-- Product listings: [Strategy]
-- Ads budget: [Amount]
-- Conversion goal: [Target]
-
-#### Zalo OA
-- Broadcast frequency: [X/week]
-- Mini App: [Y/N]
-- Sales automation: [Strategy]
-
-#### Direct Sales
-- Team size: [Current → Target]
-- Commission: [Structure]
-- Territories: [Division]
+### 3.2 Buyer Personas
+| Role | Priority | Pain Point | Objection |
+|------|----------|------------|-----------|
+| [Role 1] | Primary | [Pain] | [Common objection] |
+| [Role 2] | Secondary | [Pain] | [Common objection] |
 
 ---
 
-## 5. Sales Funnel
+## 4. Sales Playbook
 
-### 5.1 Funnel Stages
-```
-Awareness  ████████████████████ 10,000 (100%)
-Interest   ████████████         5,000 (50%)
-Consider   ████████             2,500 (25%)
-Intent     ████                 1,000 (10%)
-Purchase   ██                     500 (5%)
-Loyalty    █                      250 (2.5%)
-```
+### 4.1 Prospecting Scripts
+[Email/call templates]
 
-### 5.2 Stage Optimization
-| Stage | Current | Target | Tactics |
-|-------|---------|--------|---------|
-| Awareness → Interest | 50% | 60% | [Tactic] |
-| Interest → Consider | 50% | 55% | [Tactic] |
-| Consider → Intent | 40% | 50% | [Tactic] |
-| Intent → Purchase | 50% | 60% | [Tactic] |
+### 4.2 Discovery Questions
+1. [Question to understand need]
+2. [Question to qualify budget]
+3. [Question to identify timeline]
 
----
-
-## 6. Sales Scripts
-
-### 6.1 Opening Script
-```
-[Greeting + Hook]
-"Chào [Name], em là [Sales] từ [Brand].
-Em thấy anh/chị quan tâm đến [Product].
-Em có thể hỗ trợ anh/chị thêm thông tin không ạ?"
-```
-
-### 6.2 Qualification Questions
-1. "[Question to understand need]"
-2. "[Question about budget]"
-3. "[Question about timeline]"
-
-### 6.3 Presentation Script
-```
-[Feature] → [Benefit] → [Proof]
-"Sản phẩm của em [Feature],
-giúp anh/chị [Benefit],
-như [Testimonial/Data]."
-```
-
-### 6.4 Objection Handling
+### 4.3 Objection Handling
 | Objection | Response |
 |-----------|----------|
-| "Giá cao quá" | "[Value comparison response]" |
-| "Để suy nghĩ" | "[Urgency + value response]" |
-| "Chưa cần" | "[Problem agitation response]" |
-
-### 6.5 Closing Scripts
-**Direct close:**
-```
-"Em xác nhận đơn cho anh/chị nhé?"
-```
-
-**Alternative close:**
-```
-"Anh/chị muốn nhận hàng thứ 3 hay thứ 5?"
-```
-
-**Urgency close:**
-```
-"Khuyến mãi này chỉ còn đến [Date], 
-em chốt đơn luôn để anh/chị không bị lỡ nhé?"
-```
+| "Too expensive" | [Response] |
+| "Need to think" | [Response] |
+| "Using competitor" | [Response] |
 
 ---
 
-## 7. Sales Tools & Automation
+## 5. Team & Tools
 
-### 7.1 CRM Setup
-- Tool: [Recommendation]
-- Pipeline stages: [Stages]
-- Automation: [Triggers]
+### 5.1 Team Structure
+| Role | Count | Focus |
+|------|-------|-------|
+| SDR | X | Outbound |
+| AE | X | Closing |
+| AM | X | Retention |
 
-### 7.2 Sales Automation
-| Trigger | Action | Tool |
-|---------|--------|------|
-| New lead | Send welcome | Zalo OA |
-| No response 3d | Follow-up | Auto-message |
-| Cart abandon | Reminder | [Tool] |
+### 5.2 Tech Stack
+| Tool | Purpose | Cost |
+|------|---------|------|
+| CRM | [Tool] | $X/mo |
+| Outreach | [Tool] | $X/mo |
+| Analytics | [Tool] | $X/mo |
 
 ---
 
-## 8. Action Plan
+## 6. Action Plan
 
-### Week 1-2: Setup
-- [ ] Finalize pricing
-- [ ] Create sales scripts
-- [ ] Setup CRM
+### Immediate (30 days)
+- [ ] [Action 1]
+- [ ] [Action 2]
 
-### Week 3-4: Launch
-- [ ] Train team
-- [ ] Start outreach
-- [ ] Monitor metrics
-
-### Month 2-3: Optimize
-- [ ] A/B test scripts
-- [ ] Adjust funnel
-- [ ] Scale winning channels
+### This Quarter
+- [ ] [Action 3]
+- [ ] [Action 4]
 ```
 
-## Ví dụ
-
-```
-/chien-luoc-ban-hang "tăng 50% doanh thu online"
-
-# Chiến Lược: Tăng 50% Online Revenue
-
-## Current: 100tr/tháng → Target: 150tr/tháng
-
-## Channel Focus
-- Facebook: 40% → 50% (+25%)
-- Zalo: 30% → 30% (maintain)
-- Website: 10% → 20% (+100%)
-
-## Key Tactics
-1. Launch D2C website
-2. Retargeting campaigns
-3. Zalo automation
-```
+---
 
 ## Best Practices
 
-1. **Data-driven** - Base strategy on actual numbers
-2. **Test first** - Small tests before scaling
-3. **Script variations** - A/B test scripts
-4. **Weekly review** - Adjust based on results
+1. **Know your numbers** - Measure everything
+2. **Script & improvise** - Framework + personality
+3. **Qualify early** - Don't waste time
+4. **Follow up** - 80% of sales need 5+ touches
+5. **Always be helping** - Solve problems, not push

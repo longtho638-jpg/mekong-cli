@@ -50,7 +50,7 @@ def generate_commands_yaml():
     catalog = {
         'metadata': {
             'title': 'Commands Catalog',
-            'description': 'Auto-generated catalog of all available commands in AgencyOS Engineer',
+            'description': 'Auto-generated catalog of all available commands in ClaudeKit Engineer',
             'last_updated': datetime.now().strftime('%Y-%m-%d'),
             'total_commands': len(commands)
         },
@@ -95,7 +95,7 @@ def generate_skills_yaml():
     catalog = {
         'metadata': {
             'title': 'Skills Catalog',
-            'description': 'Auto-generated catalog of all available skills in AgencyOS Engineer',
+            'description': 'Auto-generated catalog of all available skills in ClaudeKit Engineer',
             'last_updated': datetime.now().strftime('%Y-%m-%d'),
             'total_skills': len(skills)
         },
