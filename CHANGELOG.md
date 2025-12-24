@@ -1,3 +1,10 @@
+## [2.1.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.7...v2.1.0-beta.8) (2025-12-24)
+
+
+### 🚀 Features
+
+* add Gemini API key rotation for rate limit handling ([9a4c3f4](https://github.com/claudekit/claudekit-engineer/commit/9a4c3f448bab5c148ceed068c25dfd128b69a8f7)), closes [#253](https://github.com/claudekit/claudekit-engineer/issues/253)
+
 ## [2.1.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.6...v2.1.0-beta.7) (2025-12-24)
 
 
