@@ -1,3 +1,10 @@
+## [2.1.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.4...v2.1.0-beta.5) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* navbar now respects sidebar width in markdown viewer ([2985742](https://github.com/claudekit/claudekit-engineer/commit/298574228299c31108b3ce24220b8bae59b92ee8)), closes [#245](https://github.com/claudekit/claudekit-engineer/issues/245)
+
 ## [2.1.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.3...v2.1.0-beta.4) (2025-12-24)
 
 
