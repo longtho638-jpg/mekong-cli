@@ -835,6 +835,40 @@ function Setup-PythonEnv {
         }
     }
 
+    # Install .claude/scripts requirements (contains pyyaml for generate_catalogs.py)
+    $scriptsReqPath = Join-Path $ScriptDir "..\scripts\requirements.txt"
+    if (Test-Path $scriptsReqPath) {
+        $scriptsLogFile = Join-Path $LogDir "install-scripts.log"
+        Write-Info "Installing .claude/scripts dependencies..."
+
+        $pkgSuccess = 0
+        $pkgFail = 0
+        Get-Content $scriptsReqPath | ForEach-Object {
+            $line = $_.Trim()
+            if ($line -match '^#' -or [string]::IsNullOrWhiteSpace($line)) {
+                return
+            }
+            $line = ($line -split '#')[0].Trim()
+            if ([string]::IsNullOrWhiteSpace($line)) {
+                return
+            }
+
+            if (Try-PipInstall -PackageSpec $line -LogFile $scriptsLogFile) {
+                $pkgSuccess++
+            } else {
+                $pkgFail++
+                Track-Failure -Category "optional" -Name "scripts:${line}" -Reason "Package install failed"
+            }
+        }
+
+        if ($pkgFail -eq 0) {
+            Write-Success ".claude/scripts: all $pkgSuccess packages installed"
+            Track-Success -Category "optional" -Name "scripts"
+        } else {
+            Write-Warning ".claude/scripts: $pkgSuccess installed, $pkgFail failed"
+        }
+    }
+
     # Print installation summary (brief - final report comes later)
     Write-Header "Python Dependencies Installation Summary"
 
