@@ -1,3 +1,10 @@
+## [2.1.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.9...v2.1.0-beta.10) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add wrapper scripts and additional build tools to allowlist ([cfef5d1](https://github.com/claudekit/claudekit-engineer/commit/cfef5d17aa7ec0df2816418cbf2987fba7aaafcb))
+
 ## [2.1.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.8...v2.1.0-beta.9) (2025-12-24)
 
 
