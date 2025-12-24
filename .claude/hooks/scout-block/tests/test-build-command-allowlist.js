@@ -8,7 +8,7 @@
 
 // Replicate the patterns from scout-block.cjs
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
-const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|gradle|dotnet|docker|podman|kubectl|helm|terraform|ansible)/;
+const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson)/;
 
 function isBuildCommand(command) {
   if (!command || typeof command !== 'string') return false;
@@ -62,6 +62,14 @@ const tests = [
   { cmd: 'gradle build', expected: true, desc: 'gradle build' },
   { cmd: 'gradle test', expected: true, desc: 'gradle test' },
 
+  // Maven/Gradle wrappers - should be allowed (NEW)
+  { cmd: './gradlew build', expected: true, desc: './gradlew build' },
+  { cmd: './gradlew clean test', expected: true, desc: './gradlew clean test' },
+  { cmd: 'gradlew build', expected: true, desc: 'gradlew build (no ./)' },
+  { cmd: './mvnw clean install', expected: true, desc: './mvnw clean install' },
+  { cmd: './mvnw package', expected: true, desc: './mvnw package' },
+  { cmd: 'mvnw clean install', expected: true, desc: 'mvnw clean install (no ./)' },
+
   // .NET - should be allowed
   { cmd: 'dotnet build', expected: true, desc: 'dotnet build' },
   { cmd: 'dotnet run', expected: true, desc: 'dotnet run' },
@@ -80,6 +88,24 @@ const tests = [
   { cmd: 'terraform apply', expected: true, desc: 'terraform apply' },
   { cmd: 'terraform plan', expected: true, desc: 'terraform plan' },
   { cmd: 'ansible-playbook site.yml', expected: true, desc: 'ansible playbook' },
+
+  // Additional build systems - should be allowed (NEW)
+  { cmd: 'bazel build //...', expected: true, desc: 'bazel build' },
+  { cmd: 'bazel test //...', expected: true, desc: 'bazel test' },
+  { cmd: 'cmake --build .', expected: true, desc: 'cmake build' },
+  { cmd: 'cmake -B build', expected: true, desc: 'cmake configure' },
+  { cmd: 'sbt compile', expected: true, desc: 'sbt compile' },
+  { cmd: 'sbt test', expected: true, desc: 'sbt test' },
+  { cmd: 'flutter build apk', expected: true, desc: 'flutter build apk' },
+  { cmd: 'flutter run', expected: true, desc: 'flutter run' },
+  { cmd: 'swift build', expected: true, desc: 'swift build' },
+  { cmd: 'swift test', expected: true, desc: 'swift test' },
+  { cmd: 'ant build', expected: true, desc: 'ant build' },
+  { cmd: 'ant clean', expected: true, desc: 'ant clean' },
+  { cmd: 'ninja', expected: true, desc: 'ninja' },
+  { cmd: 'ninja -C build', expected: true, desc: 'ninja -C build' },
+  { cmd: 'meson compile', expected: true, desc: 'meson compile' },
+  { cmd: 'meson setup build', expected: true, desc: 'meson setup' },
 
   // Directory access - should be BLOCKED (not recognized as build commands)
   { cmd: 'cd build', expected: false, desc: 'cd build (blocked)' },

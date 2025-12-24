@@ -31,9 +31,9 @@ const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-bl
 
 // Build command allowlist - these are allowed even if they contain blocked paths
 // Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
-// Also allows: go build, cargo build, make build, mvn build, gradle build, dotnet build, docker build
+// Also allows: go, cargo, make, mvn/mvnw, gradle/gradlew, dotnet, docker, bazel, cmake, sbt, flutter, swift, ant, ninja, meson
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
-const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|gradle|dotnet|docker|podman|kubectl|helm|terraform|ansible)/;
+const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson)/;
 
 /**
  * Check if a command is a build/tooling command (should be allowed)
