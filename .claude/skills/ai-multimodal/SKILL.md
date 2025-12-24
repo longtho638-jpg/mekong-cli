@@ -20,6 +20,32 @@ export GEMINI_API_KEY="your-key"  # Get from https://aistudio.google.com/apikey
 pip install google-genai python-dotenv pillow
 ```
 
+### API Key Rotation (Optional)
+
+For high-volume usage or when hitting rate limits, configure multiple API keys:
+
+```bash
+# Primary key (required)
+export GEMINI_API_KEY="key1"
+
+# Additional keys for rotation (optional)
+export GEMINI_API_KEY_2="key2"
+export GEMINI_API_KEY_3="key3"
+```
+
+Or in your `.env` file:
+```
+GEMINI_API_KEY=key1
+GEMINI_API_KEY_2=key2
+GEMINI_API_KEY_3=key3
+```
+
+**Features:**
+- Auto-rotates on rate limit (429/RESOURCE_EXHAUSTED) errors
+- 60-second cooldown per key after rate limit
+- Logs rotation events with `--verbose` flag
+- Backward compatible: single key still works
+
 ## Quick Start
 
 **Verify setup**: `python scripts/check_setup.py`
