@@ -1,3 +1,10 @@
+## [2.1.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.5...v2.1.0-beta.6) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **skill:** use os.tmpdir() for cross-platform PID file storage ([1105d91](https://github.com/claudekit/claudekit-engineer/commit/1105d9113606df4c263bee2b1aa035dfc554304c))
+
 ## [2.1.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.4...v2.1.0-beta.5) (2025-12-24)
 
 
