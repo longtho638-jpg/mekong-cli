@@ -8,7 +8,7 @@
 
 // Replicate the patterns from scout-block.cjs
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
-const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|gradle|dotnet)/;
+const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|gradle|dotnet|docker|podman|kubectl|helm|terraform|ansible)/;
 
 function isBuildCommand(command) {
   if (!command || typeof command !== 'string') return false;
@@ -66,6 +66,20 @@ const tests = [
   { cmd: 'dotnet build', expected: true, desc: 'dotnet build' },
   { cmd: 'dotnet run', expected: true, desc: 'dotnet run' },
   { cmd: 'dotnet test', expected: true, desc: 'dotnet test' },
+
+  // Docker/Container tools - should be allowed
+  { cmd: 'docker build .', expected: true, desc: 'docker build' },
+  { cmd: 'docker build -t myapp .', expected: true, desc: 'docker build with tag' },
+  { cmd: 'docker compose up', expected: true, desc: 'docker compose' },
+  { cmd: 'podman build .', expected: true, desc: 'podman build' },
+
+  // Kubernetes/Infrastructure - should be allowed
+  { cmd: 'kubectl apply -f deploy/', expected: true, desc: 'kubectl apply' },
+  { cmd: 'kubectl get pods', expected: true, desc: 'kubectl get' },
+  { cmd: 'helm install myapp ./chart', expected: true, desc: 'helm install' },
+  { cmd: 'terraform apply', expected: true, desc: 'terraform apply' },
+  { cmd: 'terraform plan', expected: true, desc: 'terraform plan' },
+  { cmd: 'ansible-playbook site.yml', expected: true, desc: 'ansible playbook' },
 
   // Directory access - should be BLOCKED (not recognized as build commands)
   { cmd: 'cd build', expected: false, desc: 'cd build (blocked)' },
