@@ -1,3 +1,10 @@
+## [2.1.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.3...v2.1.0-beta.4) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* install .claude/scripts/requirements.txt and fix scan_commands output ([67f3738](https://github.com/claudekit/claudekit-engineer/commit/67f373808332606861bfdea241abf72c0443b5a6)), closes [#247](https://github.com/claudekit/claudekit-engineer/issues/247)
+
 ## [2.1.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.2...v2.1.0-beta.3) (2025-12-23)
 
 
