@@ -30,7 +30,7 @@
   }
 
   // Set theme
-  function setTheme(theme) {
+  function setTheme(theme, skipMermaid = false) {
     html.dataset.theme = theme;
     localStorage.setItem(THEME_KEY, theme);
 
@@ -38,6 +38,11 @@
     if (hljsLight && hljsDark) {
       hljsLight.disabled = theme === 'dark';
       hljsDark.disabled = theme === 'light';
+    }
+
+    // Re-render mermaid diagrams with new theme (skip on initial load)
+    if (!skipMermaid && window.mermaidModule) {
+      updateMermaidTheme();
     }
   }
 
@@ -206,11 +211,101 @@
     }
   }
 
+  // Initialize Mermaid diagrams
+  async function initMermaid() {
+    // Wait for mermaid module to load (imported in template.html)
+    let attempts = 0;
+    while (!window.mermaidModule && attempts < 50) {
+      await new Promise(r => setTimeout(r, 100));
+      attempts++;
+    }
+
+    if (!window.mermaidModule) {
+      console.warn('Mermaid module not loaded');
+      return;
+    }
+
+    const mermaid = window.mermaidModule;
+    const isDark = html.dataset.theme === 'dark';
+
+    // Initialize mermaid with theme
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, sans-serif'
+    });
+
+    // Find unprocessed mermaid elements (both pre and div)
+    const diagrams = document.querySelectorAll('.mermaid:not([data-processed="true"])');
+
+    if (diagrams.length === 0) {
+      return; // Nothing to render
+    }
+
+    // Store original source before mermaid replaces content (for theme switching)
+    diagrams.forEach(el => {
+      if (!el.dataset.mermaidSource) {
+        el.dataset.mermaidSource = el.textContent;
+      }
+    });
+
+    // Use mermaid.run() - the preferred API for v10+
+    try {
+      await mermaid.run({
+        nodes: diagrams,
+        suppressErrors: false
+      });
+    } catch (err) {
+      console.error('Mermaid run error:', err);
+      // Show errors inline for diagrams that failed
+      diagrams.forEach(el => {
+        if (!el.querySelector('svg') && !el.hasAttribute('data-processed')) {
+          const code = el.dataset.mermaidSource || el.textContent;
+          el.innerHTML = `<div class="mermaid-error">
+            <strong>Mermaid Error:</strong>
+            <pre>${err.message || err}</pre>
+            <details><summary>Source</summary><pre>${code}</pre></details>
+          </div>`;
+          el.classList.add('mermaid-error-container');
+        }
+      });
+    }
+  }
+
+  // Re-render mermaid on theme change
+  async function updateMermaidTheme() {
+    if (!window.mermaidModule) return;
+
+    const isDark = html.dataset.theme === 'dark';
+
+    // Re-initialize with new theme
+    window.mermaidModule.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, sans-serif'
+    });
+
+    // Restore original source and re-render
+    const diagrams = document.querySelectorAll('.mermaid[data-processed="true"]');
+    diagrams.forEach(el => {
+      const source = el.dataset.mermaidSource;
+      if (source) {
+        el.textContent = source;
+        el.removeAttribute('data-processed');
+      }
+    });
+
+    await initMermaid();
+  }
+
   // Initialize
   function init() {
     initTheme();
     initFontSize();
     initSidebar();
+    initMermaid();
 
     // Event listeners
     themeToggle?.addEventListener('click', toggleTheme);

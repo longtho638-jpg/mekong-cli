@@ -79,7 +79,7 @@ body {
 .reader-header {
   position: fixed;
   top: 0;
-  left: var(--sidebar-width);
+  left: 0;
   right: 0;
   height: var(--header-height);
   background: var(--bg-secondary);
@@ -89,12 +89,6 @@ body {
   justify-content: space-between;
   padding: 0 1rem;
   z-index: 100;
-  transition: left 0.3s ease;
-}
-
-/* When sidebar is hidden, header spans full width */
-body:has(.sidebar.hidden) .reader-header {
-  left: 0;
 }
 
 .header-left,
@@ -728,15 +722,6 @@ hr {
 
 /* Responsive */
 @media (max-width: 900px) {
-  .reader-header {
-    left: 0;
-  }
-
-  /* When sidebar becomes visible on mobile, shift header */
-  body:has(.sidebar.visible) .reader-header {
-    left: var(--sidebar-width);
-  }
-
   .sidebar {
     transform: translateX(-100%);
     box-shadow: 2px 0 8px var(--shadow);
@@ -785,6 +770,75 @@ hr {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* Mermaid Diagrams */
+pre.mermaid,
+.mermaid {
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  overflow-x: auto;
+  /* Reset pre defaults for mermaid */
+  white-space: pre-wrap;
+  font-family: inherit;
+}
+
+pre.mermaid[data-processed="true"],
+.mermaid-rendered {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.mermaid-error-container {
+  background: #fff5f5;
+  border-color: #f5c6cb;
+}
+
+[data-theme="dark"] .mermaid-error-container {
+  background: #3a2020;
+  border-color: #6a3030;
+}
+
+.mermaid-error {
+  text-align: left;
+  color: #842029;
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .mermaid-error {
+  color: #f8d7da;
+}
+
+.mermaid-error strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.mermaid-error pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+[data-theme="dark"] .mermaid-error pre {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mermaid-error details {
+  margin-top: 0.5rem;
+}
+
+.mermaid-error summary {
+  cursor: pointer;
+  color: var(--text-muted);
 }
 
 /* Print styles */
