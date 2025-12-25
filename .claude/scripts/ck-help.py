@@ -364,8 +364,17 @@ def detect_intent(input_str: str, categories: list) -> str:
         return "overview"
 
     input_lower = input_str.lower()
+    words = input_str.split()
 
-    # Check if it's a known category from discovered commands
+    # Multiple words = likely task description (even if first word is a category)
+    # e.g., "test my login" should be task, not category "test"
+    if len(words) >= 2:
+        # Exception: if it looks like a command (has colon), treat as command
+        if ':' in input_str:
+            return "command"
+        return "task"
+
+    # Single word: check if it's a known category from discovered commands
     if input_lower in [c.lower() for c in categories]:
         return "category"
 
@@ -376,10 +385,6 @@ def detect_intent(input_str: str, categories: list) -> str:
     # Check if it looks like a command (has colon)
     if ':' in input_str:
         return "command"
-
-    # Multiple words = task description
-    if len(input_str.split()) >= 2:
-        return "task"
 
     return "search"
 
@@ -403,6 +408,11 @@ def show_overview(data: dict, prefix: str) -> None:
     print(f"- `/{prefix}fix` - Fix bugs intelligently")
     print(f"- `/{prefix}test` - Run and analyze tests")
     print()
+    print("**Common Workflows:**")
+    print(f"- New feature: `/{prefix}plan` → `/{prefix}code` → `/{prefix}test` → `/{prefix}git:pr`")
+    print(f"- Bug fix: `/{prefix}debug` → `/{prefix}fix` → `/{prefix}test` → `/{prefix}git:cm`")
+    print(f"- Review: `/{prefix}scout` → `/{prefix}review` → `/{prefix}watzup`")
+    print()
     print("**Categories:**")
     for cat_key in sorted(categories.keys()):
         count = len(commands.get(cat_key, []))
@@ -412,6 +422,10 @@ def show_overview(data: dict, prefix: str) -> None:
     print(f"- `{help_cmd} <category>` - Category guide with workflow")
     print(f"- `{help_cmd} <command>` - Command details")
     print(f"- `{help_cmd} <task description>` - Recommendations")
+    print()
+    print("**Tips:**")
+    print(f"- Unclear about approach? → `/{prefix}brainstorm` first")
+    print("- Add `ultrathink` for deep analysis (uses more tokens)")
 
 
 def show_category_guide(data: dict, category: str, prefix: str) -> None:
@@ -544,10 +558,20 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
     commands = data["commands"]
     task_lower = task.lower()
 
-    # Score categories by keyword matches
+    # Score categories by keyword matches (use word boundary to avoid substring false positives)
+    # e.g., "git" should not match "digital", "fail" should not match "available"
     scores = {}
     for cat, keywords in TASK_MAPPINGS.items():
-        score = sum(1 for kw in keywords if kw in task_lower)
+        score = 0
+        for kw in keywords:
+            # Multi-word keywords: exact substring match is fine
+            if ' ' in kw:
+                if kw in task_lower:
+                    score += 1
+            # Single-word keywords: require word boundary match
+            else:
+                if re.search(r'\b' + re.escape(kw) + r'\b', task_lower):
+                    score += 1
         if score > 0:
             scores[cat] = score
 
