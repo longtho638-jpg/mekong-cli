@@ -425,7 +425,9 @@ def show_overview(data: dict, prefix: str) -> None:
     print()
     print("**Tips:**")
     print(f"- Unclear about approach? → `/{prefix}brainstorm` first")
-    print("- Add `ultrathink` for deep analysis (uses more tokens)")
+    print(f"- Agent generated report? → `/{prefix}preview` to view")
+    print("- Add `ultrathink` for deep analysis (more tokens)")
+    print("- `:parallel` variants (e.g., `/code:parallel`) = faster but more tokens, check quota")
 
 
 def show_category_guide(data: dict, category: str, prefix: str) -> None:

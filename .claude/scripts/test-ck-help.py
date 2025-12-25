@@ -135,7 +135,7 @@ def main():
     tests.append(test_case(
         "overview shows tips",
         [],
-        ["Tips:", "/brainstorm", "ultrathink", "tokens"]
+        ["Tips:", "/brainstorm", "ultrathink", "tokens", "/preview", ":parallel", "quota"]
     ))
 
     tests.append(test_case(
