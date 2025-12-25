@@ -1,3 +1,21 @@
+## [2.2.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.1...v2.2.0-beta.2) (2025-12-25)
+
+
+### 🚀 Features
+
+* **ck-help:** add 6 missing category workflow guides ([cb8362e](https://github.com/claudekit/claudekit-engineer/commit/cb8362ef5652712969e9f4257014207de9b14e2c))
+* **ck-help:** add tips for preview and parallel commands ([ddf4b14](https://github.com/claudekit/claudekit-engineer/commit/ddf4b14b4b56e35f23fb0c31af3a8ee8728ccb79))
+
+
+### 🐞 Bug Fixes
+
+* **ck-help:** improve intent detection and add workflow guidance ([669d235](https://github.com/claudekit/claudekit-engineer/commit/669d235f826aa5cd928db8b6eade208290e6873e))
+
+
+### ✅ Tests
+
+* **ck-help:** add comprehensive test suite with 19 tests ([2d6ac6a](https://github.com/claudekit/claudekit-engineer/commit/2d6ac6a1e47ba91d9126bfc2e3a05896fa24538a))
+
 ## [2.2.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0...v2.2.0-beta.1) (2025-12-25)
 
 
