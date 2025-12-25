@@ -640,6 +640,37 @@ setup_python_env() {
         fi
     done
 
+    # Install .claude/scripts requirements (contains pyyaml for generate_catalogs.py)
+    local SCRIPTS_REQ="$SCRIPT_DIR/../scripts/requirements.txt"
+    if [ -f "$SCRIPTS_REQ" ]; then
+        local SCRIPTS_LOG="$LOG_DIR/install-scripts.log"
+        print_info "Installing .claude/scripts dependencies..."
+
+        local pkg_success=0
+        local pkg_fail=0
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            [[ "$line" =~ ^#.*$ ]] && continue
+            [[ -z "${line// }" ]] && continue
+            line="${line%%#*}"
+            line="${line%"${line##*[![:space:]]}"}"
+            [[ -z "$line" ]] && continue
+
+            if try_pip_install "$line" "$SCRIPTS_LOG"; then
+                pkg_success=$((pkg_success + 1))
+            else
+                pkg_fail=$((pkg_fail + 1))
+                track_failure "optional" "scripts:$line" "Package install failed"
+            fi
+        done < "$SCRIPTS_REQ"
+
+        if [[ $pkg_fail -eq 0 ]]; then
+            print_success ".claude/scripts: all $pkg_success packages installed"
+            track_success "optional" "scripts"
+        else
+            print_warning ".claude/scripts: $pkg_success installed, $pkg_fail failed"
+        fi
+    fi
+
     # Print installation summary (brief - final report comes later)
     print_header "Python Dependencies Installation Summary"
 

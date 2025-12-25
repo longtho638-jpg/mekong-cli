@@ -310,7 +310,9 @@ function createHttpServer(options) {
 
     // Route: /file/* - serve local files (images, etc.)
     if (pathname.startsWith('/file/')) {
-      const filePath = pathname.replace('/file', '');
+      // Extract path after '/file/' prefix (slice(6) removes '/file/')
+      // Path is already URL-decoded by decodeURIComponent above
+      const filePath = pathname.slice(6);
 
       if (!isPathSafe(filePath)) {
         sendError(res, 403, 'Access denied');

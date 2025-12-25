@@ -54,8 +54,9 @@ function resolveImageSrc(src, basePath) {
     return src;
   }
   // Resolve relative path to absolute /file/ route
+  // Use URL encoding to handle special chars and Windows paths (D:\...)
   const absolutePath = path.resolve(basePath, src);
-  return `/file${absolutePath}`;
+  return `/file/${encodeURIComponent(absolutePath)}`;
 }
 
 /**

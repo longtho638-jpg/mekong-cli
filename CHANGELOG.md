@@ -1,3 +1,85 @@
+## [2.1.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.9...v2.1.0-beta.10) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add wrapper scripts and additional build tools to allowlist ([cfef5d1](https://github.com/claudekit/claudekit-engineer/commit/cfef5d17aa7ec0df2816418cbf2987fba7aaafcb))
+
+## [2.1.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.8...v2.1.0-beta.9) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add docker/k8s/terraform to build command allowlist ([fe3a24b](https://github.com/claudekit/claudekit-engineer/commit/fe3a24b81624b908daad4a2224163d01a5e919a7))
+* **hooks:** allow go/cargo/make/mvn/gradle/dotnet build commands ([b5f8dbd](https://github.com/claudekit/claudekit-engineer/commit/b5f8dbdcd228e3637675f909bf666faedbaef92d))
+
+## [2.1.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.7...v2.1.0-beta.8) (2025-12-24)
+
+
+### 🚀 Features
+
+* add Gemini API key rotation for rate limit handling ([9a4c3f4](https://github.com/claudekit/claudekit-engineer/commit/9a4c3f448bab5c148ceed068c25dfd128b69a8f7)), closes [#253](https://github.com/claudekit/claudekit-engineer/issues/253)
+
+## [2.1.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.6...v2.1.0-beta.7) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* /plan:archive journal creation - correct tool usage and directory path ([c64b24c](https://github.com/claudekit/claudekit-engineer/commit/c64b24c67fdc0c7920f3c801cf879d1a202948fe)), closes [#251](https://github.com/claudekit/claudekit-engineer/issues/251)
+
+## [2.1.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.5...v2.1.0-beta.6) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* **skill:** use os.tmpdir() for cross-platform PID file storage ([1105d91](https://github.com/claudekit/claudekit-engineer/commit/1105d9113606df4c263bee2b1aa035dfc554304c))
+
+## [2.1.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.4...v2.1.0-beta.5) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* navbar now respects sidebar width in markdown viewer ([2985742](https://github.com/claudekit/claudekit-engineer/commit/298574228299c31108b3ce24220b8bae59b92ee8)), closes [#245](https://github.com/claudekit/claudekit-engineer/issues/245)
+
+## [2.1.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.3...v2.1.0-beta.4) (2025-12-24)
+
+
+### 🐞 Bug Fixes
+
+* install .claude/scripts/requirements.txt and fix scan_commands output ([67f3738](https://github.com/claudekit/claudekit-engineer/commit/67f373808332606861bfdea241abf72c0443b5a6)), closes [#247](https://github.com/claudekit/claudekit-engineer/issues/247)
+
+## [2.1.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.2...v2.1.0-beta.3) (2025-12-23)
+
+
+### 🚀 Features
+
+* **skill:** add ai-artist prompt engineering skill ([374eea1](https://github.com/claudekit/claudekit-engineer/commit/374eea1aa2e82aff79836ab48167856a958dc24b))
+* **skill:** add Lyria RealTime music generation reference ([3024a54](https://github.com/claudekit/claudekit-engineer/commit/3024a546eb2e080eeb59fb33ea2a245a6db26b10))
+
+
+### ♻️ Code Refactoring
+
+* **skill:** update ai-multimodal to use Nano Banana Flash default ([2399ad1](https://github.com/claudekit/claudekit-engineer/commit/2399ad1558808824ef8667142da21b72cc68d6ab))
+
+
+### ⚡ Performance Improvements
+
+* **command:** enhance `/brainstorm` command ([1bf26a5](https://github.com/claudekit/claudekit-engineer/commit/1bf26a516a1b60171e12d5ddcfdb32b4b82cc949))
+
+## [2.1.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2025-12-23)
+
+
+### 🐞 Bug Fixes
+
+* **skill:** improve markdown-novel-viewer Windows path handling ([7b30640](https://github.com/claudekit/claudekit-engineer/commit/7b30640eb32c1dc0af8ab44bb882baaa61747f57))
+
+## [2.1.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.0.0...v2.1.0-beta.1) (2025-12-23)
+
+
+### 🚀 Features
+
+* run /kanban as Claude Code background task for better visibility ([4d79864](https://github.com/claudekit/claudekit-engineer/commit/4d79864874de1a743811d3d86c74ccbc323f94f0)), closes [#240](https://github.com/claudekit/claudekit-engineer/issues/240)
+
 ## [2.0.0](https://github.com/claudekit/claudekit-engineer/compare/v1.20.1...v2.0.0) (2025-12-23)
 
 

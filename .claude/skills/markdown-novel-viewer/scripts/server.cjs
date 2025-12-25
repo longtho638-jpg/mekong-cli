@@ -122,7 +122,9 @@ function openBrowser(url) {
   if (platform === 'darwin') {
     cmd = `open "${url}"`;
   } else if (platform === 'win32') {
-    cmd = `start "${url}"`;
+    // On Windows, start command treats first quoted arg as window title
+    // Use empty title "" before the URL to prevent this
+    cmd = `start "" "${url}"`;
   } else {
     cmd = `xdg-open "${url}"`;
   }
