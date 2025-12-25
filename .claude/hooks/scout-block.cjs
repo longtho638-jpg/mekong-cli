@@ -9,7 +9,7 @@
  * - File paths: Blocks any file_path/path/pattern containing blocked directories
  * - Bash commands: Blocks directory access (cd, ls, cat, etc.) but ALLOWS build commands
  *   - Blocked: cd node_modules, ls packages/web/node_modules, cat dist/file.js
- *   - Allowed: npm build, pnpm build, yarn build, npm run build
+ *   - Allowed: npm build, go build, cargo build, make, mvn, gradle, docker build, kubectl, terraform
  *
  * Configuration:
  * - Edit .claude/.ckignore to customize blocked patterns (one per line, # for comments)
@@ -31,8 +31,9 @@ const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-bl
 
 // Build command allowlist - these are allowed even if they contain blocked paths
 // Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
+// Also allows: go, cargo, make, mvn/mvnw, gradle/gradlew, dotnet, docker, bazel, cmake, sbt, flutter, swift, ant, ninja, meson
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
-const TOOL_COMMAND_PATTERN = /^(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier)/;
+const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson)/;
 
 /**
  * Check if a command is a build/tooling command (should be allowed)

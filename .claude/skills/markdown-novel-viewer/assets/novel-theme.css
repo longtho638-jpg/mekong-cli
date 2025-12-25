@@ -79,7 +79,7 @@ body {
 .reader-header {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--sidebar-width);
   right: 0;
   height: var(--header-height);
   background: var(--bg-secondary);
@@ -89,6 +89,12 @@ body {
   justify-content: space-between;
   padding: 0 1rem;
   z-index: 100;
+  transition: left 0.3s ease;
+}
+
+/* When sidebar is hidden, header spans full width */
+body:has(.sidebar.hidden) .reader-header {
+  left: 0;
 }
 
 .header-left,
@@ -722,6 +728,15 @@ hr {
 
 /* Responsive */
 @media (max-width: 900px) {
+  .reader-header {
+    left: 0;
+  }
+
+  /* When sidebar becomes visible on mobile, shift header */
+  body:has(.sidebar.visible) .reader-header {
+    left: var(--sidebar-width);
+  }
+
   .sidebar {
     transform: translateX(-100%);
     box-shadow: 2px 0 8px var(--shadow);
