@@ -1,3 +1,10 @@
+## [2.2.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0...v2.2.0-beta.1) (2025-12-25)
+
+
+### 🚀 Features
+
+* **skill:** improve markdown-novel-viewer with mermaid support and XSS protection ([1a1272e](https://github.com/claudekit/claudekit-engineer/commit/1a1272ee3b0cb5b45e422006b29ead8c08afb07e))
+
 ## [2.1.0](https://github.com/claudekit/claudekit-engineer/compare/v2.0.0...v2.1.0) (2025-12-25)
 
 
