@@ -220,6 +220,8 @@ All in `.claude/skills/chrome-devtools/scripts/`:
 | `console.js` | Monitor console messages/errors |
 | `network.js` | Track HTTP requests/responses |
 | `performance.js` | Measure Core Web Vitals |
+| `ws-debug.js` | Debug WebSocket connections (basic) |
+| `ws-full-debug.js` | Debug WebSocket with full events/frames |
 
 ## Workflow Loop
 

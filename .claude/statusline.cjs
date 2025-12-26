@@ -147,11 +147,17 @@ async function main() {
 
         // Git branch detection
         let gitBranch = '';
+        let gitUnstaged = 0;
         const gitCheck = exec('git rev-parse --git-dir');
         if (gitCheck) {
             gitBranch = exec('git branch --show-current');
             if (!gitBranch) {
                 gitBranch = exec('git rev-parse --short HEAD');
+            }
+            // Count unstaged files (modified, deleted, but not staged)
+            const unstagedOutput = exec('git diff --name-only');
+            if (unstagedOutput) {
+                gitUnstaged = unstagedOutput.split('\n').filter(line => line.trim()).length;
             }
         }
 
@@ -262,6 +268,9 @@ async function main() {
         // Git branch
         if (gitBranch) {
             output += `  🌿 ${gitBranch}`;
+            if (gitUnstaged > 0) {
+                output += ` (${gitUnstaged})`;
+            }
         }
 
         // Model
