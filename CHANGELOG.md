@@ -1,3 +1,10 @@
+## [2.2.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.2...v2.2.0-beta.3) (2025-12-26)
+
+
+### 🐞 Bug Fixes
+
+* ensure plans from /brainstorm have YAML frontmatter with status ([2b74e15](https://github.com/claudekit/claudekit-engineer/commit/2b74e15664dc19eec6eecc820b72a339a1f7ba2d)), closes [#260](https://github.com/claudekit/claudekit-engineer/issues/260)
+
 ## [2.2.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.1...v2.2.0-beta.2) (2025-12-25)
 
 
