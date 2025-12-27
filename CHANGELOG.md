@@ -1,3 +1,10 @@
+## [2.2.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.3...v2.2.0-beta.4) (2025-12-27)
+
+
+### 🚀 Features
+
+* **commands:** add /review:codebase:parallel slash command ([ad09be3](https://github.com/claudekit/claudekit-engineer/commit/ad09be35106cf5d40f61a875b7b08cbaa4db7f44)), closes [#262](https://github.com/claudekit/claudekit-engineer/issues/262)
+
 ## [2.2.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.2...v2.2.0-beta.3) (2025-12-26)
 
 
