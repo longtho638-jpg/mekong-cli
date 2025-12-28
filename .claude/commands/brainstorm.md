@@ -46,8 +46,10 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 5. **Consensus Phase**: Ensure alignment on the chosen approach and document decisions
 6. **Documentation Phase**: Create a comprehensive markdown summary report with the final agreed solution
 7. **Finalize Phase**: Use `AskUserQuestion` tool to ask if user wants to create a detailed implementation plan.
-   If the answer is `Yes`, use `/plan` slash command to create a detailed implementation plan.
-   If the answer is `No`, just end the session.
+   - If `Yes`: Use the **Skill tool** to invoke `/plan:fast` or `/plan:hard` SlashCommand based on complexity.
+     Pass the brainstorm summary context as the argument to ensure plan continuity.
+     **CRITICAL:** The invoked plan command will create `plan.md` with YAML frontmatter including `status: pending`.
+   - If `No`: End the session.
 
 ## Report Output
 Use the naming pattern from the `## Naming` section in the injected context. The pattern includes the full path and computed date.

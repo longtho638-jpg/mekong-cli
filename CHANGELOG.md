@@ -1,3 +1,42 @@
+## [2.2.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.3...v2.2.0-beta.4) (2025-12-27)
+
+
+### 🚀 Features
+
+* **commands:** add /review:codebase:parallel slash command ([ad09be3](https://github.com/claudekit/claudekit-engineer/commit/ad09be35106cf5d40f61a875b7b08cbaa4db7f44)), closes [#262](https://github.com/claudekit/claudekit-engineer/issues/262)
+
+## [2.2.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.2...v2.2.0-beta.3) (2025-12-26)
+
+
+### 🐞 Bug Fixes
+
+* ensure plans from /brainstorm have YAML frontmatter with status ([2b74e15](https://github.com/claudekit/claudekit-engineer/commit/2b74e15664dc19eec6eecc820b72a339a1f7ba2d)), closes [#260](https://github.com/claudekit/claudekit-engineer/issues/260)
+
+## [2.2.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.1...v2.2.0-beta.2) (2025-12-25)
+
+
+### 🚀 Features
+
+* **ck-help:** add 6 missing category workflow guides ([cb8362e](https://github.com/claudekit/claudekit-engineer/commit/cb8362ef5652712969e9f4257014207de9b14e2c))
+* **ck-help:** add tips for preview and parallel commands ([ddf4b14](https://github.com/claudekit/claudekit-engineer/commit/ddf4b14b4b56e35f23fb0c31af3a8ee8728ccb79))
+
+
+### 🐞 Bug Fixes
+
+* **ck-help:** improve intent detection and add workflow guidance ([669d235](https://github.com/claudekit/claudekit-engineer/commit/669d235f826aa5cd928db8b6eade208290e6873e))
+
+
+### ✅ Tests
+
+* **ck-help:** add comprehensive test suite with 19 tests ([2d6ac6a](https://github.com/claudekit/claudekit-engineer/commit/2d6ac6a1e47ba91d9126bfc2e3a05896fa24538a))
+
+## [2.2.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0...v2.2.0-beta.1) (2025-12-25)
+
+
+### 🚀 Features
+
+* **skill:** improve markdown-novel-viewer with mermaid support and XSS protection ([1a1272e](https://github.com/claudekit/claudekit-engineer/commit/1a1272ee3b0cb5b45e422006b29ead8c08afb07e))
+
 ## [2.1.0](https://github.com/claudekit/claudekit-engineer/compare/v2.0.0...v2.1.0) (2025-12-25)
 
 
