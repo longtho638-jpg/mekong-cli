@@ -1,19 +1,13 @@
-# 🏯 Agency OS - CI/CD Pipeline
-# ==============================
-# GitHub Actions for automated testing and deployment
-
-name: Agency OS CI/CD
+name: Deploy to Vercel
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 env:
-  PROJECT_ID: agencyos-network
-  REGION: asia-southeast1
-  SERVICE: agencyos-api
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
   # ═══════════════════════════════════════════════════════════
@@ -43,7 +37,7 @@ jobs:
           python -c "from server import app; print('✅ Server OK')"
 
   # ═══════════════════════════════════════════════════════════
-  # Build & Deploy Job
+  # Deploy to Vercel
   # ═══════════════════════════════════════════════════════════
   deploy:
     needs: test
@@ -52,24 +46,20 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-          
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        
-      - name: Build and push to Cloud Run
-        run: |
-          gcloud run deploy $SERVICE \
-            --source . \
-            --region $REGION \
-            --allow-unauthenticated \
-            --platform managed
-            
-      - name: Show deployment URL
-        run: |
-          echo "🚀 Deployed to: https://$SERVICE-xxxxx-as.a.run.app"
-          echo "🌐 Custom domain: https://api.agencyos.network"
+          node-version: '20'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
