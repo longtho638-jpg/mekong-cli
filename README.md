@@ -131,7 +131,7 @@ A comprehensive boilerplate template for building professional software projects
 
 ## The AI Agent Team
 
-This boilerplate includes specialized AI agents that work together to deliver high-quality software:
+This boilerplate includes 17+ specialized AI agents that work together to deliver high-quality software. Agents coordinate through file-based communication, enabling sequential chaining and parallel execution patterns.
 
 ### 🎯 Core Development Agents
 
@@ -173,7 +173,7 @@ This boilerplate includes specialized AI agents that work together to deliver hi
 - Maintains synchronized technical documentation
 - Updates API documentation automatically
 - Ensures documentation accuracy
-- Manages codebase summaries
+- Manages codebase summaries with repomix
 
 #### **Git Manager Agent**
 - Creates clean, conventional commit messages
@@ -186,6 +186,40 @@ This boilerplate includes specialized AI agents that work together to deliver hi
 - Updates project roadmaps and timelines
 - Manages task completion verification
 - Maintains project health metrics
+
+### 🎨 Design & Content Agents
+
+#### **UI/UX Designer Agent**
+- Creates design specifications and prototypes
+- Develops visual components
+- Ensures design system consistency
+- Performs user experience analysis
+
+#### **Copywriter Agent**
+- Creates marketing and technical content
+- Optimizes copy for conversion
+- Develops documentation narratives
+- Enhances content clarity
+
+### 🔎 Specialized Agents
+
+#### **Scout Agent**
+- Performs parallel codebase exploration
+- Analyzes code patterns and structure
+- Identifies optimization opportunities
+- Maps component relationships
+
+#### **Database Admin Agent**
+- Manages database operations
+- Performs migrations and optimization
+- Ensures data integrity
+- Designs schema patterns
+
+#### **Journal Writer Agent**
+- Documents development decisions
+- Tracks technical explorations
+- Records lessons learned
+- Maintains decision history
 
 ## Agent Orchestration Patterns
 

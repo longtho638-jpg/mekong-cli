@@ -1,7 +1,7 @@
 # System Architecture
 
-**Last Updated**: 2025-12-11
-**Version**: 1.20.0-beta.13
+**Last Updated**: 2025-12-28
+**Version**: 2.2.0-beta.4
 **Project**: ClaudeKit Engineer
 
 ## Overview
@@ -60,33 +60,34 @@ ClaudeKit Engineer implements a multi-agent AI orchestration architecture where 
 
 ### 2. Agent Layer
 
-#### 2.1 Agent Types
+#### 2.1 Agent Types (17+ Agents)
 
 **Planning Agents**:
-- `planner` - Technical planning and architecture
+- `planner` - Technical planning and architecture (Opus)
 - `researcher` - Research and analysis
-- `planner-researcher` - Combined planning and research (Opus model)
 - `brainstormer` - Solution ideation
 
 **Implementation Agents**:
 - Main agent (user interaction) - Implements code
 - `scout` - Parallel codebase exploration
-- `ui-ux-designer` - Design creation
+- `scout-external` - External codebase exploration
+- `ui-ux-designer` - Design creation and UX analysis
 - `ui-ux-developer` - Design implementation
-- `database-admin` - Database operations
+- `database-admin` - Database operations and optimization
+- `fullstack-developer` - Full-stack implementation
 
 **Quality Assurance Agents**:
-- `code-reviewer` - Code quality assessment
+- `code-reviewer` - Code quality assessment and standards
 - `tester` - Test creation and execution
-- `debugger` - Issue analysis and debugging
+- `debugger` - Issue analysis, root-cause diagnosis
 
-**Documentation Agents**:
-- `docs-manager` - Documentation maintenance
-- `copywriter` - Content creation
-- `journal-writer` - Development journaling
+**Documentation & Content Agents**:
+- `docs-manager` - Documentation maintenance (Gemini)
+- `copywriter` - Content creation and copy optimization
+- `journal-writer` - Development decision journaling
 
 **Operations Agents**:
-- `git-manager` - Version control operations
+- `git-manager` - Version control and commit management
 - `project-manager` - Progress tracking and oversight
 
 #### 2.2 Agent Definition Structure
