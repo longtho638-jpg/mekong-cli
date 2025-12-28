@@ -35,6 +35,10 @@ const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-bl
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
 const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson)/;
 
+// Allow execution from .venv/bin/ or venv/bin/ (Unix) and .venv/Scripts/ or venv/Scripts/ (Windows)
+// Blocks exploration (cat, ls, grep) but allows running venv executables
+const VENV_EXECUTABLE_PATTERN = /(^|[\/\\])\.?venv[\/\\](bin|Scripts)[\/\\]/;
+
 /**
  * Check if a command is a build/tooling command (should be allowed)
  *
@@ -45,6 +49,19 @@ function isBuildCommand(command) {
   if (!command || typeof command !== 'string') return false;
   const trimmed = command.trim();
   return BUILD_COMMAND_PATTERN.test(trimmed) || TOOL_COMMAND_PATTERN.test(trimmed);
+}
+
+/**
+ * Check if command executes from a .venv bin directory
+ * Allows: ~/.claude/skills/.venv/bin/python3 script.py
+ * Allows: .venv/Scripts/python.exe script.py
+ *
+ * @param {string} command - The command to check
+ * @returns {boolean}
+ */
+function isVenvExecutable(command) {
+  if (!command || typeof command !== 'string') return false;
+  return VENV_EXECUTABLE_PATTERN.test(command);
 }
 
 try {
@@ -77,8 +94,8 @@ try {
   const toolInput = data.tool_input;
   const toolName = data.tool_name || 'unknown';
 
-  // Check if it's a build command (allowed regardless of paths)
-  if (toolInput.command && isBuildCommand(toolInput.command)) {
+  // Check if it's a build command or venv executable (allowed regardless of paths)
+  if (toolInput.command && (isBuildCommand(toolInput.command) || isVenvExecutable(toolInput.command))) {
     process.exit(0);
   }
 
