@@ -1,3 +1,10 @@
+## [2.2.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.4...v2.2.0-beta.5) (2025-12-28)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** allow venv executable paths in scout-block ([9bfbfb8](https://github.com/claudekit/claudekit-engineer/commit/9bfbfb86bd34b14ac98e85235adc910647ed86a2)), closes [#265](https://github.com/claudekit/claudekit-engineer/issues/265)
+
 ## [2.2.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.3...v2.2.0-beta.4) (2025-12-27)
 
 
