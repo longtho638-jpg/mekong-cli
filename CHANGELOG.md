@@ -1,3 +1,15 @@
+## [2.2.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.9...v2.2.0-beta.10) (2025-12-29)
+
+
+### 🐞 Bug Fixes
+
+* **chrome-devtools:** add process.exit(0) for clean script termination ([7cea5a6](https://github.com/claudekit/claudekit-engineer/commit/7cea5a6e722376039b291c94d4a3eea2e251afba))
+
+
+### ♻️ Code Refactoring
+
+* **chrome-devtools:** remove unnecessary cd, use full paths ([7046363](https://github.com/claudekit/claudekit-engineer/commit/704636347ffa6f59daaaed4d882978463c77bda3)), closes [#275](https://github.com/claudekit/claudekit-engineer/issues/275)
+
 ## [2.2.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.8...v2.2.0-beta.9) (2025-12-29)
 
 
