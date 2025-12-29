@@ -1,3 +1,13 @@
+## [2.2.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.6...v2.2.0-beta.7) (2025-12-29)
+
+
+### 🚀 Features
+
+* **hooks:** add session context info to dev-rules-reminder ([220a602](https://github.com/claudekit/claudekit-engineer/commit/220a6027cce24d101b53b0d1449ebddafeffc96b))
+* **hooks:** add subagent resource management reminders ([62258ee](https://github.com/claudekit/claudekit-engineer/commit/62258eece45a2d40cdb63d7c14465084872341d8))
+* **skill:** add context-engineering skill ([8db3dfa](https://github.com/claudekit/claudekit-engineer/commit/8db3dfa83d7f1aedc5edb3b570c7a1c205d3f01e))
+* **skill:** add mermaidjs-v11 diagram generation skill ([36ba714](https://github.com/claudekit/claudekit-engineer/commit/36ba714cc6d99920ff1c263f92a0392f0867bec1))
+
 ## [2.2.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.5...v2.2.0-beta.6) (2025-12-28)
 
 
