@@ -98,6 +98,7 @@ async function debugWsFull() {
   });
 
   await disconnectBrowser();
+  process.exit(0);
 }
 
 debugWsFull().catch(e => {
