@@ -154,6 +154,8 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     `- Locale: ${process.env.LANG}`,
     `- Memory usage: ${memUsed}MB/${memTotal}MB (${memPercent}%)`,
     `- CPU usage: ${cpuUsage}% user / ${cpuSystem}% system`,
+    `- Spawning multiple subagents can cause performance issues, spawn and delegate tasks intelligently based on the available system resources.`,
+    `- Remember that each subagent only has 200K tokens in context window, spawn and delegate tasks intelligently to make sure their context windows don't get bloated.`,
     `- IMPORTANT: Include these environment information when prompting subagents to perform tasks.`,
     ``,
 
