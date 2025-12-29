@@ -1,8 +1,8 @@
 # Project Overview & Product Development Requirements (PDR)
 
 **Project Name**: ClaudeKit Engineer
-**Version**: 1.8.0
-**Last Updated**: 2025-10-26
+**Version**: 2.2.0-beta.4
+**Last Updated**: 2025-12-28
 **Status**: Active Development
 **Repository**: https://github.com/claudekit/claudekit-engineer
 
@@ -79,69 +79,83 @@ Provide a production-ready template that:
   - Blocks: node_modules, __pycache__, .git/, dist/, build/
   - Improves AI agent response time and token efficiency
 
-### 2. Comprehensive Slash Commands (50+)
+### 2. Comprehensive Slash Commands (75+)
 
 **Core Development**:
-- `/plan [task]` - Research and create implementation plans
-- `/cook [tasks]` - Implement features with full workflow
+- `/plan` - Research and create implementation plans
+- `/cook` - Implement features with full workflow
 - `/test` - Run comprehensive test suites
-- `/ask [question]` - Expert technical consultation
+- `/ask` - Expert technical consultation
 - `/bootstrap` - Initialize new projects end-to-end
-- `/brainstorm [question]` - Solution ideation and evaluation
+- `/brainstorm` - Solution ideation and evaluation
 
-**Debugging & Fixing**:
-- `/debug [issues]` - Deep issue analysis
-- `/fix:fast [issues]` - Quick bug fixes
-- `/fix:hard [issues]` - Complex problem solving with subagents
-- `/fix:ci [url]` - GitHub Actions log analysis
-- `/fix:test [issues]` - Test suite debugging
-- `/fix:types` - Type error resolution
-- `/fix:logs [issue]` - Log analysis and fixes
-- `/fix:ui [issue]` - UI/UX problem solving
+**Planning Variants**:
+- `/plan:two`, `/plan:ci`, `/plan:cro`, `/plan:hard`, `/plan:fast`, `/plan:parallel`
+
+**Code Variants**:
+- `/code`, `/code:auto`, `/code:no-test`, `/code:parallel`
+
+**Debugging & Fixing** (14 variants):
+- `/debug`, `/fix:fast`, `/fix:hard`, `/fix:ci`, `/fix:test`, `/fix:types`, `/fix:logs`, `/fix:ui`
 
 **Design & Content**:
-- `/design:fast [tasks]` - Quick design creation
-- `/design:good [tasks]` - Immersive design development
-- `/design:3d [tasks]` - Interactive 3D designs with Three.js
-- `/design:screenshot [image]` - Design from screenshots
-- `/design:video [video]` - Design from video references
-- `/content:fast [request]` - Quick copywriting
-- `/content:good [request]` - High-quality content creation
-- `/content:enhance [issues]` - Copy improvement
-- `/content:cro [issues]` - Conversion optimization
+- `/design:fast`, `/design:good`, `/design:3d`, `/design:screenshot`, `/design:video`
+- `/content:fast`, `/content:good`, `/content:enhance`, `/content:cro`
 
 **Documentation**:
-- `/docs:init` - Create initial documentation
-- `/docs:update` - Update existing documentation
-- `/docs:summarize` - Generate codebase summaries
+- `/docs:init`, `/docs:update`, `/docs:summarize`
 
 **Git Operations**:
-- `/git:cm` - Stage and commit changes
-- `/git:cp` - Stage, commit, and push
-- `/git:pr [branch]` - Create pull requests
+- `/git:cm`, `/git:cp`, `/git:pr`, `/git:merge`
+
+**Integrations**:
+- `/integrate:polar`, `/integrate:sepay`
 
 **Project Management**:
-- `/watzup` - Review recent changes and status
-- `/journal` - Development journal entries
-- `/scout [prompt] [scale]` - Parallel codebase exploration
+- `/watzup`, `/journal`, `/scout`, `/scout:ext`, `/use-mcp`, `/check-and-commit`, `/ck-help`
 
-### 3. Extensive Skills Library (20+ Skills)
+### 3. Extensive Skills Library (38 Skills)
 
-**Categories**:
-- **Authentication**: better-auth integration
-- **Cloud**: Cloudflare (Workers, R2, Browser Rendering), Google Cloud
-- **Databases**: MongoDB, PostgreSQL
-- **Design**: Canvas-based design generation
-- **Debugging**: Systematic debugging, root-cause tracing, defense-in-depth
-- **Development**: Next.js, Turborepo, Claude Code workflows
-- **Documentation**: Repomix, docs-seeker
-- **Documents**: PDF, DOCX, PPTX, XLSX processing
-- **Infrastructure**: Docker containerization
-- **Media**: FFmpeg, ImageMagick
-- **MCP**: Model Context Protocol server building
-- **Problem Solving**: Meta-pattern recognition, collision-zone thinking
-- **UI**: shadcn/ui, Tailwind CSS, Remix Icon
-- **Ecommerce**: Shopify integrations
+**Phase 1 Organized Groups**:
+- **DevOps** (5 Cloudflare skills, Docker, Google Cloud)
+- **Databases** (MongoDB, PostgreSQL)
+- **Web Frameworks** (Next.js, Turborepo, RemixIcon)
+- **UI Styling** (shadcn/ui, Tailwind CSS, Canvas Design)
+
+**Authentication**:
+- Better Auth integration & OAuth flows
+
+**Debugging & Problem Solving**:
+- Systematic debugging, root-cause tracing, defense-in-depth
+- Verification before completion, meta-pattern recognition
+- Collision-zone thinking, inversion exercises, scale game
+- Simplification cascades, sequential thinking
+
+**Documentation & Exploration**:
+- Repomix (codebase compaction)
+- Docs-seeker (documentation access)
+- Scout parallel exploration
+
+**Document Processing**:
+- PDF, DOCX, PPTX, XLSX processing
+
+**Media Processing**:
+- FFmpeg (video/audio encoding)
+- ImageMagick (image manipulation)
+
+**Development Tools**:
+- Chrome DevTools automation
+- MCP server building
+- Skill creator framework
+
+**Gemini AI Integration**:
+- Audio analysis & speech generation
+- Video understanding
+- Image generation & analysis
+- Document processing
+
+**E-commerce**:
+- Shopify APIs and extensions
 
 ### 4. Automated Release Management
 

@@ -1,7 +1,7 @@
 # ClaudeKit Engineer - Project Roadmap
 
-**Last Updated:** 2025-12-11
-**Current Version:** 1.20.0-beta.13
+**Last Updated:** 2025-12-28
+**Current Version:** 2.2.0-beta.4
 **Repository:** https://github.com/claudekit/claudekit-engineer
 
 ## Executive Summary
@@ -29,9 +29,9 @@ Established core agent orchestration framework, slash command system, automated 
 
 ---
 
-### Phase 2: Cross-Platform Enhancement (IN PROGRESS)
-**Status:** 🔄 In Progress | **Completion Target:** Dec 2025
-**Progress:** 75%+ (Preview Dashboard complete, Skills expansion pending)
+### Phase 2: Cross-Platform Enhancement (NEAR COMPLETE)
+**Status:** 🔄 95% Complete | **Completion Target:** Jan 2026
+**Progress:** 95%+ (Preview Dashboard complete, skills expansion pending)
 
 Expanding platform support and improving developer experience across Windows, macOS, and Linux environments. Recent focus on Preview Dashboard completion and hook optimization.
 
@@ -372,6 +372,7 @@ Enterprise-grade features and deployment options.
 
 | Version | Date | Key Changes |
 |---------|------|-------------|
+| v2.2.0-beta.4 | 2025-12-28 | docs(all): update version, command count (75+), skill count (38), agent count (17+) |
 | v1.20.0-beta.13 | 2025-12-11 | feat(preview-dashboard): complete all 6 phases - UI, filtering, search, theme |
 | v1.20.0-beta.12 | 2025-12-10 | perf(hooks): optimize token consumption in hook system |
 | v1.20.0-beta.11 | 2025-12-09 | fix(install): Windows PowerShell detection improvements |
@@ -381,14 +382,30 @@ Enterprise-grade features and deployment options.
 | v1.20.0-beta.7 | 2025-12-07 | docs: fix YAGNI typo; refactor: placeholder standardization |
 | v1.20.0-beta.6 | 2025-12-07 | refactor: migrate active-plan to session state |
 | v1.20.0-beta.5 | 2025-12-07 | feat(install): bulletproof skills installation |
-| v1.20.0-beta.4 | 2025-12-06 | feat: hybrid output-type detection for /ck-help |
-| v1.20.0-beta.3 | 2025-12-06 | feat: cascading config resolution (global → local) |
 
 ---
 
 ## Changelog
 
-### Version 1.20.0-beta.13 (Current - 2025-12-11)
+### Version 2.2.0-beta.4 (Current - 2025-12-28)
+
+#### Documentation Updates
+- **Version Alignment**: Updated all docs to v2.2.0-beta.4
+- **Command Inventory**: Updated from 50+ to 75+ slash commands
+- **Skills Count**: Updated from 20+ to 38 skills
+- **Agent Count**: Explicitly documented 17+ agents
+- **Architecture**: Enhanced component descriptions
+
+#### Key Metrics
+- 75+ slash commands across 14 categories
+- 38 skills (Phase 1 organized groups + individual skills)
+- 17+ specialized agents
+- 4 core hooks (session-init, dev-rules-reminder, subagent-init, scout-block)
+- 5 MCP integrations (context7, memory, human-mcp, chrome-devtools, sequential-thinking)
+
+---
+
+### Version 1.20.0-beta.13 (Previous - 2025-12-11)
 
 #### Features Added
 - **Preview Dashboard - ALL 6 PHASES COMPLETE**
@@ -513,5 +530,5 @@ Enterprise-grade features and deployment options.
 ---
 
 **Maintained By:** ClaudeKit Engineer Team
-**Last Review:** 2025-11-11
-**Next Review Target:** 2025-12-11
+**Last Review:** 2025-12-28
+**Next Review Target:** 2026-01-31

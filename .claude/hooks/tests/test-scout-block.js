@@ -113,6 +113,72 @@ const testCases = [
     name: '[NEW] Glob with broad pattern (should block)',
     input: { tool_name: 'Glob', tool_input: { pattern: '**/*.ts' } },
     expected: 'BLOCKED'
+  },
+
+  // Venv executable paths - should be ALLOWED (Issue #265)
+  // .venv (with dot)
+  {
+    name: '[#265] Bash: Unix .venv python executable',
+    input: { tool_name: 'Bash', tool_input: { command: '~/.claude/skills/.venv/bin/python3 script.py' } },
+    expected: 'ALLOWED'
+  },
+  {
+    name: '[#265] Bash: Windows .venv python executable',
+    input: { tool_name: 'Bash', tool_input: { command: '.venv/Scripts/python.exe script.py' } },
+    expected: 'ALLOWED'
+  },
+  {
+    name: '[#265] Bash: project .venv pip',
+    input: { tool_name: 'Bash', tool_input: { command: './project/.venv/bin/pip install requests' } },
+    expected: 'ALLOWED'
+  },
+  // venv (without dot)
+  {
+    name: '[#265] Bash: Unix venv python executable',
+    input: { tool_name: 'Bash', tool_input: { command: 'venv/bin/python3 script.py' } },
+    expected: 'ALLOWED'
+  },
+  {
+    name: '[#265] Bash: Windows venv python executable',
+    input: { tool_name: 'Bash', tool_input: { command: 'venv/Scripts/python.exe script.py' } },
+    expected: 'ALLOWED'
+  },
+  {
+    name: '[#265] Bash: project venv pip',
+    input: { tool_name: 'Bash', tool_input: { command: './myproject/venv/bin/pip install flask' } },
+    expected: 'ALLOWED'
+  },
+
+  // Venv exploration - should be BLOCKED
+  {
+    name: '[#265] Bash: cat .venv lib (blocked)',
+    input: { tool_name: 'Bash', tool_input: { command: 'cat .venv/lib/python3.11/site.py' } },
+    expected: 'BLOCKED'
+  },
+  {
+    name: '[#265] Bash: ls .venv (blocked)',
+    input: { tool_name: 'Bash', tool_input: { command: 'ls -la .venv/' } },
+    expected: 'BLOCKED'
+  },
+  {
+    name: '[#265] Read: .venv file (blocked)',
+    input: { tool_name: 'Read', tool_input: { file_path: '.venv/pyvenv.cfg' } },
+    expected: 'BLOCKED'
+  },
+  {
+    name: '[#265] Bash: cat venv lib (blocked)',
+    input: { tool_name: 'Bash', tool_input: { command: 'cat venv/lib/python3.11/site.py' } },
+    expected: 'BLOCKED'
+  },
+  {
+    name: '[#265] Bash: ls venv (blocked)',
+    input: { tool_name: 'Bash', tool_input: { command: 'ls -la venv/' } },
+    expected: 'BLOCKED'
+  },
+  {
+    name: '[#265] Read: venv file (blocked)',
+    input: { tool_name: 'Read', tool_input: { file_path: 'venv/pyvenv.cfg' } },
+    expected: 'BLOCKED'
   }
 ];
 

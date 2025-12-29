@@ -1,7 +1,7 @@
 # Codebase Summary
 
-**Last Updated**: 2025-12-10
-**Version**: 1.20.0-beta.12
+**Last Updated**: 2025-12-28
+**Version**: 2.2.0-beta.4
 **Repository**: [claudekit/claudekit-engineer](https://github.com/claudekit/claudekit-engineer)
 
 ## Overview
@@ -52,81 +52,87 @@ claudekit-engineer/
 
 ## Key Components
 
-### 1. Agent Orchestration System (17 Agents)
+### 1. Agent Orchestration System (17+ Agents)
 
 **Claude Code Agents** (`.claude/agents/`):
-- `planner.md` - Technical planning and architecture
+- `planner.md` - Technical planning and architecture (Opus model)
 - `researcher.md` - Research and analysis
 - `fullstack-developer.md` - Full-stack implementation
 - `code-reviewer.md` - Code quality assessment
 - `tester.md` - Testing and validation
 - `debugger.md` - Issue analysis and debugging
-- `docs-manager.md` - Documentation management
+- `docs-manager.md` - Documentation management (Gemini model)
 - `git-manager.md` - Version control operations
 - `scout.md` - Parallel codebase exploration
 - `scout-external.md` - External codebase exploration
-- `researcher.md` - Fast research variant
 - `copywriter.md` - Content creation
 - `journal-writer.md` - Development journaling
 - `brainstormer.md` - Solution ideation
 - `project-manager.md` - Project tracking
 - `ui-ux-designer.md` - UI/UX design
+- `ui-ux-developer.md` - Design implementation
 - `database-admin.md` - Database operations
 
-### 2. Slash Commands System
+### 2. Slash Commands System (75+ Commands)
 
-**14 Core Commands**:
+**Core Commands** (6):
 - `/plan`, `/cook`, `/test`, `/ask`, `/bootstrap`, `/brainstorm`
+
+**Planning Variants** (6):
+- `/plan:two`, `/plan:ci`, `/plan:cro`, `/plan:hard`, `/plan:fast`, `/plan:parallel`
+
+**Code Variants** (4):
+- `/code`, `/code:auto`, `/code:no-test`, `/code:parallel`
+
+**Debugging & Fixing** (8):
 - `/debug`, `/fix:fast`, `/fix:hard`, `/fix:ci`, `/fix:test`, `/fix:types`, `/fix:logs`, `/fix:ui`
 
-**Extended Command Categories**:
-- **Planning Variants**: `/plan:two`, `/plan:ci`, `/plan:cro`, `/plan:hard`, `/plan:fast`, `/plan:parallel`
-- **Code Variants**: `/code`, `/code:auto`, `/code:no-test`, `/code:parallel`
-- **Design**: `/design:fast`, `/design:good`, `/design:3d`, `/design:screenshot`, `/design:video`
-- **Content**: `/content:fast`, `/content:good`, `/content:enhance`, `/content:cro`
-- **Documentation**: `/docs:init`, `/docs:update`, `/docs:summarize`
-- **Git Operations**: `/git:cm`, `/git:cp`, `/git:pr`, `/git:merge`
-- **Integration**: `/integrate:polar`, `/integrate:sepay`
-- **Exploration**: `/scout`, `/scout:ext`, `/watzup`, `/journal`
-- **Utilities**: `/use-mcp`, `/check-and-commit`, `/ck-help`
+**Design** (5):
+- `/design:fast`, `/design:good`, `/design:3d`, `/design:screenshot`, `/design:video`
 
-### 3. Skills Library
+**Content** (4):
+- `/content:fast`, `/content:good`, `/content:enhance`, `/content:cro`
 
-**Skills Organization** (`.claude/skills/`):
+**Documentation** (3):
+- `/docs:init`, `/docs:update`, `/docs:summarize`
 
-**Phase 1 Skill Groups** (Progressive Disclosure Pattern):
-- **DevOps** (`devops/`) - Cloudflare edge platform, Docker containerization, Google Cloud Platform
-  - 11 reference files (<250 lines each), 2 Python utilities, 45 tests
-  - Consolidates: Cloudflare (5 skills), Docker, GCloud
-- **Databases** (`databases/`) - MongoDB document database, PostgreSQL relational database
-  - 8 reference files, 3 Python utilities
-  - Consolidates: MongoDB, PostgreSQL
-- **Web Frameworks** (`web-frameworks/`) - Next.js, Turborepo monorepos, RemixIcon
-  - 7 reference files, 2 Python utilities
-  - Consolidates: Next.js, Turborepo, RemixIcon
-- **UI Styling** (`ui-styling/`) - shadcn/ui components, Tailwind CSS, canvas-design
-  - 7 reference files, 2 Python utilities
-  - Consolidates: shadcn/ui, Tailwind CSS, canvas-design
+**Git Operations** (4):
+- `/git:cm`, `/git:cp`, `/git:pr`, `/git:merge`
 
-**Individual Skills** (Original Pattern):
-- **Authentication**: `better-auth/`
-- **Browser Automation**: `chrome-devtools/`
-- **Debugging**: `systematic-debugging/`, `root-cause-tracing/`, `defense-in-depth/`, `verification-before-completion/`
-- **Documentation**: `docs-seeker/`, `repomix/`
-- **Document Processing**: `document-skills/` (docx, pdf, pptx, xlsx)
-- **Media**: `ffmpeg/`, `imagemagick/`
-- **Gemini AI**: `gemini-audio/`, `gemini-document-processing/`, `ai-multimodal/`, `gemini-video-understanding/`, `ai-multimodal/`
-- **MCP**: `mcp-builder/`
-- **Problem Solving**: `collision-zone-thinking/`, `meta-pattern-recognition/`, `scale-game/`, `inversion-exercise/`, `simplification-cascades/`, `when-stuck/`
-- **Ecommerce**: `shopify/`
-- **Development**: `sequential-thinking/`, `skill-creator/`, `google-adk-python/`
+**Integration** (2):
+- `/integrate:polar`, `/integrate:sepay`
 
-**Archived Skills** (`.claude/skills/_archive/20251104-*/`):
+**Project Management** (7):
+- `/scout`, `/scout:ext`, `/watzup`, `/journal`, `/use-mcp`, `/check-and-commit`, `/ck-help`
+
+### 3. Skills Library (38 Skills)
+
+**Phase 1 Organized Groups** (Progressive Disclosure):
+- **DevOps** (`devops/`) - Cloudflare (5 skills), Docker, Google Cloud Platform
+  - 11 references, 2 Python utilities, 45 tests
+- **Databases** (`databases/`) - MongoDB, PostgreSQL
+  - 8 references, 3 Python utilities
+- **Web Frameworks** (`web-frameworks/`) - Next.js, Turborepo, RemixIcon
+  - 7 references, 2 Python utilities
+- **UI Styling** (`ui-styling/`) - shadcn/ui, Tailwind CSS, canvas-design
+  - 7 references, 2 Python utilities
+
+**Individual Skills** (38 Total):
+- **Authentication**: better-auth
+- **Browser Automation**: chrome-devtools
+- **Debugging**: systematic-debugging, root-cause-tracing, defense-in-depth, verification-before-completion
+- **Documentation**: docs-seeker, repomix
+- **Document Processing**: document-skills (docx, pdf, pptx, xlsx)
+- **Media**: ffmpeg, imagemagick
+- **Gemini AI**: gemini-audio, gemini-document-processing, ai-multimodal, gemini-video-understanding
+- **MCP**: mcp-builder, mcp-management
+- **Problem Solving**: collision-zone-thinking, meta-pattern-recognition, scale-game, inversion-exercise, simplification-cascades, sequential-thinking, when-stuck
+- **E-commerce**: shopify
+- **Development**: skill-creator, payment-integration (Polar, SePay)
+
+**Archived Skills** (`.claude/skills/_archive/`):
 - 14 original skills consolidated into Phase 1 groups
-- Full preservation of original content
-- Available for reference or rollback
-
-**See:** `docs/skills-migration-guide-phase1.md` for migration details
+- Full preservation for reference or rollback
 
 ### 4. Hook System (4 Core Hooks)
 
