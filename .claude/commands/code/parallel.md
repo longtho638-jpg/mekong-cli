@@ -35,9 +35,54 @@ Follow `./.claude/workflows/primary-workflow.md`:
 - Use `tester` for full suite (NO fake data/mocks)
 - If fail: `debugger` → fix → repeat
 
-### 4. Code Review
-- Use `code-reviewer` for all changes
-- If critical: fix → retest
+### 4. Code Review (Interactive Cycle)
+
+Call `code-reviewer` subagent: "Review all changes from parallel/sequential execution. Check security, performance, architecture, YAGNI/KISS/DRY. Return score (X/10), critical issues list, warnings list, suggestions list."
+
+**Interactive Review-Fix Cycle (max 3 cycles):**
+
+```
+cycle = 0
+LOOP:
+  1. Run code-reviewer → get score, critical_count, warnings, suggestions
+
+  2. DISPLAY FULL FINDINGS TO USER:
+     ┌─────────────────────────────────────────┐
+     │ Code Review Results: [score]/10         │
+     ├─────────────────────────────────────────┤
+     │ Critical Issues ([N]): MUST FIX         │
+     │  - [issue] at [file:line]               │
+     │ Warnings ([N]): SHOULD FIX              │
+     │  - [issue] at [file:line]               │
+     │ Suggestions ([N]): NICE TO HAVE         │
+     │  - [suggestion]                         │
+     └─────────────────────────────────────────┘
+
+  3. Use AskUserQuestion (header: "Review"):
+     IF critical_count > 0:
+       - "Fix critical issues" → implement critical fixes, re-run tester
+       - "Fix all issues" → implement all fixes, re-run tester
+       - "Approve anyway" → proceed with noted issues
+       - "Abort" → stop workflow
+     ELSE:
+       - "Fix warnings/suggestions" → implement selected fixes
+       - "Approve" → proceed
+       - "Abort" → stop workflow
+
+  4. IF user selects fix option AND cycle < 3:
+     → Implement requested fixes
+     → Re-run tester to verify no regressions
+     → cycle++
+     → GOTO LOOP (re-run code-reviewer)
+
+  5. IF cycle >= 3 AND still has issues:
+     → Output: "⚠ 3 review cycles completed. Final decision required."
+     → Use AskUserQuestion:
+       - "Approve with noted issues"
+       - "Abort workflow"
+
+  6. ON APPROVE: PROCEED to Step 5
+```
 
 ### 5. Project Management & Docs
 - If approved: `project-manager` + `docs-manager` in parallel (update plans, docs, roadmap)

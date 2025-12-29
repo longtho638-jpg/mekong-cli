@@ -73,15 +73,62 @@ Mark Step 2 complete in TodoWrite, mark Step 3 in_progress.
 
 ---
 
-## Step 3: Code Review
+## Step 3: Code Review (Interactive Cycle)
 
-Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY". If critical issues found: STOP, fix all, re-run `tester` to verify, re-run `code-reviewer`. Repeat until no critical issues.
+Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY. Return score (X/10), critical issues list, warnings list, suggestions list."
+
+**Interactive Review-Fix Cycle (max 3 cycles):**
+
+```
+cycle = 0
+LOOP:
+  1. Run code-reviewer → get score, critical_count, warnings, suggestions
+
+  2. DISPLAY FULL FINDINGS TO USER:
+     ┌─────────────────────────────────────────┐
+     │ Code Review Results: [score]/10         │
+     ├─────────────────────────────────────────┤
+     │ Critical Issues ([N]): MUST FIX         │
+     │  - [issue] at [file:line]               │
+     │ Warnings ([N]): SHOULD FIX              │
+     │  - [issue] at [file:line]               │
+     │ Suggestions ([N]): NICE TO HAVE         │
+     │  - [suggestion]                         │
+     └─────────────────────────────────────────┘
+
+  3. Use AskUserQuestion (header: "Review"):
+     IF critical_count > 0:
+       - "Fix critical issues" → implement critical fixes only
+       - "Fix all issues" → implement all fixes
+       - "Approve anyway" → proceed with noted issues
+       - "Abort" → stop workflow
+     ELSE:
+       - "Fix warnings/suggestions" → implement selected fixes
+       - "Approve" → proceed
+       - "Abort" → stop workflow
+
+  4. IF user selects fix option AND cycle < 3:
+     → Implement requested fixes
+     → cycle++
+     → GOTO LOOP (re-run code-reviewer)
+
+  5. IF cycle >= 3 AND still has issues:
+     → Output: "⚠ 3 review cycles completed. Final decision required."
+     → Use AskUserQuestion:
+       - "Approve with noted issues"
+       - "Abort workflow"
+
+  6. ON APPROVE: PROCEED to Step 4
+```
 
 **Critical issues:** Security vulnerabilities (XSS, SQL injection, OWASP), performance bottlenecks, architectural violations, principle violations.
 
-**Output:** `✓ Step 3: Code reviewed - [0] critical issues`
+**Output formats:**
+- After review: `✓ Step 3: Code reviewed - [score]/10 - [N] critical, [N] warnings`
+- After fix cycle: `✓ Step 3: Code reviewed - [old]/10 → Fixed [N] issues → [new]/10`
+- User approved: `✓ Step 3: Code reviewed - [score]/10 - User approved`
 
-**Validation:** If critical issues > 0, Step 3 INCOMPLETE - do not proceed.
+**Validation:** Step 3 INCOMPLETE until user explicitly approves.
 
 Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
 
