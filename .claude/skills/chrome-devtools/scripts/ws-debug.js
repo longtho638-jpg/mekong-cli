@@ -35,6 +35,7 @@ async function debugWs() {
   });
 
   await disconnectBrowser();
+  process.exit(0);
 }
 
 debugWs().catch(e => {
