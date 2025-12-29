@@ -1,3 +1,25 @@
+## [2.2.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.5...v2.2.0-beta.6) (2025-12-28)
+
+
+### 🚀 Features
+
+* **skill:** add WebSocket debugging scripts to chrome-devtools ([0dfc628](https://github.com/claudekit/claudekit-engineer/commit/0dfc6283186e5df8b5fe1b37e37c8f35cf42b27c))
+
+
+### 🐞 Bug Fixes
+
+* **command:** add merge step to git:pr workflow ([3e34833](https://github.com/claudekit/claudekit-engineer/commit/3e348339a45c7cbe17277a2ddab43930bcc59aaf))
+* **commands:** update scout subagent spawning logic ([bd9f3af](https://github.com/claudekit/claudekit-engineer/commit/bd9f3af4b50dfa6f6434a7419207dce924ac3598))
+* **env:** add context7 api key to .env.example ([7655a99](https://github.com/claudekit/claudekit-engineer/commit/7655a99b41fa33ee0b4094badfcd24b77d81edc1))
+* **hooks:** allow venv executable paths in scout-block ([8bbc5b2](https://github.com/claudekit/claudekit-engineer/commit/8bbc5b2cba20f4b3207e83915ce284a56b7d3bb1)), closes [#265](https://github.com/claudekit/claudekit-engineer/issues/265)
+
+
+### 📚 Documentation
+
+* **skill:** add Context7 API key URL to env example ([1ef523f](https://github.com/claudekit/claudekit-engineer/commit/1ef523f5e67d4ec9aba858f813b83a7c8a608d46))
+* update documentation and agent descriptions ([0fbe288](https://github.com/claudekit/claudekit-engineer/commit/0fbe28849ce05143e563a7205e634504d2e769d3))
+* **workflow:** clarify docs-seeker and debugging skill usage ([db960f3](https://github.com/claudekit/claudekit-engineer/commit/db960f3089b023264af6131dd6ca2b410338f1e8))
+
 ## [2.2.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.4...v2.2.0-beta.5) (2025-12-28)
 
 
