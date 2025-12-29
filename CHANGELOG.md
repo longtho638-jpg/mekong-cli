@@ -1,3 +1,10 @@
+## [2.2.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.7...v2.2.0-beta.8) (2025-12-29)
+
+
+### 🐞 Bug Fixes
+
+* correct shebang/executable permissions in .claude folder ([53acbfd](https://github.com/claudekit/claudekit-engineer/commit/53acbfd081e34561099faa85e5ae6a58c9c853d4)), closes [#268](https://github.com/claudekit/claudekit-engineer/issues/268)
+
 ## [2.2.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.6...v2.2.0-beta.7) (2025-12-29)
 
 
