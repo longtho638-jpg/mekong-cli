@@ -73,60 +73,47 @@ Mark Step 2 complete in TodoWrite, mark Step 3 in_progress.
 
 ---
 
-## Step 3: Code Review (Interactive Cycle)
+## Step 3: Code Review & Approval ⏸ BLOCKING GATE
 
 Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY. Return score (X/10), critical issues list, warnings list, suggestions list."
 
-**Interactive Review-Fix Cycle (max 3 cycles):**
+**Display + Approve Flow (optimized for speed):**
 
 ```
-cycle = 0
-LOOP:
-  1. Run code-reviewer → get score, critical_count, warnings, suggestions
+1. Run code-reviewer → get score, critical_count, warnings, suggestions
 
-  2. DISPLAY FULL FINDINGS TO USER:
-     ┌─────────────────────────────────────────┐
-     │ Code Review Results: [score]/10         │
-     ├─────────────────────────────────────────┤
-     │ Critical Issues ([N]): MUST FIX         │
-     │  - [issue] at [file:line]               │
-     │ Warnings ([N]): SHOULD FIX              │
-     │  - [issue] at [file:line]               │
-     │ Suggestions ([N]): NICE TO HAVE         │
-     │  - [suggestion]                         │
-     └─────────────────────────────────────────┘
+2. DISPLAY FULL FINDINGS + SUMMARY TO USER:
+   ┌─────────────────────────────────────────┐
+   │ Code Review Results: [score]/10         │
+   ├─────────────────────────────────────────┤
+   │ Summary: [what implemented]             │
+   │ (Tests skipped per user request)        │
+   ├─────────────────────────────────────────┤
+   │ Critical Issues ([N]): MUST FIX         │
+   │  - [issue] at [file:line]               │
+   │ Warnings ([N]): SHOULD FIX              │
+   │  - [issue] at [file:line]               │
+   │ Suggestions ([N]): NICE TO HAVE         │
+   │  - [suggestion]                         │
+   └─────────────────────────────────────────┘
 
-  3. Use AskUserQuestion (header: "Review"):
-     IF critical_count > 0:
-       - "Fix critical issues" → implement critical fixes only
-       - "Fix all issues" → implement all fixes
-       - "Approve anyway" → proceed with noted issues
-       - "Abort" → stop workflow
-     ELSE:
-       - "Fix warnings/suggestions" → implement selected fixes
-       - "Approve" → proceed
-       - "Abort" → stop workflow
-
-  4. IF user selects fix option AND cycle < 3:
-     → Implement requested fixes
-     → cycle++
-     → GOTO LOOP (re-run code-reviewer)
-
-  5. IF cycle >= 3 AND still has issues:
-     → Output: "⚠ 3 review cycles completed. Final decision required."
-     → Use AskUserQuestion:
-       - "Approve with noted issues"
-       - "Abort workflow"
-
-  6. ON APPROVE: PROCEED to Step 4
+3. Use AskUserQuestion (header: "Review & Approve"):
+   IF critical_count > 0:
+     - "Fix critical + approve" → implement critical fixes, PROCEED to Step 4
+     - "Approve anyway" → PROCEED to Step 4
+     - "Abort" → stop workflow
+   ELSE:
+     - "Approve" → PROCEED to Step 4
+     - "Abort" → stop workflow
 ```
+
+**Note:** No fix loop to respect speed intent. If user wants iterative fixes, use `/code` instead.
 
 **Critical issues:** Security vulnerabilities (XSS, SQL injection, OWASP), performance bottlenecks, architectural violations, principle violations.
 
 **Output formats:**
-- After review: `✓ Step 3: Code reviewed - [score]/10 - [N] critical, [N] warnings`
-- After fix cycle: `✓ Step 3: Code reviewed - [old]/10 → Fixed [N] issues → [new]/10`
-- User approved: `✓ Step 3: Code reviewed - [score]/10 - User approved`
+- Waiting: `⏸ Step 3: Code reviewed - [score]/10 - WAITING for user approval`
+- Approved: `✓ Step 3: Code reviewed - [score]/10 - User approved`
 
 **Validation:** Step 3 INCOMPLETE until user explicitly approves.
 
@@ -134,25 +121,9 @@ Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
 
 ---
 
-## Step 4: User Approval ⏸ BLOCKING GATE
+## Step 4: Finalize
 
-Present summary (3-5 bullets): what implemented, code review outcome.
-
-**Ask user explicitly:** "Phase implementation complete. Code reviewed. Approve changes?"
-
-**Stop and wait** - do not output Step 5 content until user responds.
-
-**Output (while waiting):** `⏸ Step 4: WAITING for user approval`
-
-**Output (after approval):** `✓ Step 4: User approved - Ready to complete`
-
-Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
-
----
-
-## Step 5: Finalize
-
-**Prerequisites:** User approved in Step 4 (verified above).
+**Prerequisites:** User approved in Step 3 (verified above).
 
 1. **STATUS UPDATE - BOTH MANDATORY - PARALLEL EXECUTION:**
 - **Call** `project-manager` sub-agent: "Update plan status in [plan-path]. Mark plan phase [phase-name] as DONE with timestamp. Update roadmap."
@@ -166,7 +137,7 @@ Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
-Mark Step 5 complete in TodoWrite.
+Mark Step 4 complete in TodoWrite.
 
 **Phase workflow finished. Ready for next plan phase.**
 
@@ -180,9 +151,8 @@ Mark Step 5 complete in TodoWrite.
 - Step 0: `✓ Step 0: [Plan Name] - [Phase Name]`
 - Step 1: `✓ Step 1: Found [N] tasks across [M] phases - Ambiguities: [list]`
 - Step 2: `✓ Step 2: Implemented [N] files - [X/Y] tasks complete`
-- Step 3: `✓ Step 3: Code reviewed - [0] critical issues`
-- Step 4: `✓ Step 4: User approved - Ready to complete`
-- Step 5: `✓ Step 5: Finalize - Status updated - Git committed`
+- Step 3: `✓ Step 3: Code reviewed - [score]/10 - User approved`
+- Step 4: `✓ Step 4: Finalize - Status updated - Git committed`
 
 **If any "✓ Step N:" output missing, that step is INCOMPLETE.**
 
@@ -193,9 +163,8 @@ Mark Step 5 complete in TodoWrite.
 - Step 4: `project-manager` AND `docs-manager` (when user approves)
 
 **Blocking gates:**
-- Step 3: Critical issues must be 0
-- Step 4: User must explicitly approve
-- Step 5: Both `project-manager` and `docs-manager` must complete successfully
+- Step 3: User must explicitly approve (via AskUserQuestion)
+- Step 4: Both `project-manager` and `docs-manager` must complete successfully
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails. Do not assume approval without user response.
