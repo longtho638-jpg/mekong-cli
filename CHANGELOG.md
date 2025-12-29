@@ -1,3 +1,15 @@
+## [2.2.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.8...v2.2.0-beta.9) (2025-12-29)
+
+
+### 🚀 Features
+
+* **code:** add interactive code review cycle with user confirmation ([69690cc](https://github.com/claudekit/claudekit-engineer/commit/69690ccf7c44dc1a24da9b160e55139bff43e485)), closes [#273](https://github.com/claudekit/claudekit-engineer/issues/273)
+
+
+### ♻️ Code Refactoring
+
+* **code:** merge review+approval steps, optimize no-test UX ([392b5e3](https://github.com/claudekit/claudekit-engineer/commit/392b5e32e288596601d9b6761f9ee6b784dcb90e))
+
 ## [2.2.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.7...v2.2.0-beta.8) (2025-12-29)
 
 
