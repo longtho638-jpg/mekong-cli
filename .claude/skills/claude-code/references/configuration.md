@@ -55,14 +55,20 @@ Settings are applied in order of precedence:
 
 **model**: Claude model to use
 - `claude-sonnet-4-5-20250929` (default, latest Sonnet)
-- `claude-opus-4-20250514` (Opus for complex tasks)
-- `claude-haiku-4-20250408` (Haiku for speed)
+- `claude-opus-4-5-20251101` (Opus 4.5 for complex tasks)
+- `claude-haiku-4-5-20250408` (Haiku 4.5 for speed)
 
 **Model aliases:**
-- `sonnet`: Latest Claude Sonnet
-- `opus`: Latest Claude Opus
-- `haiku`: Latest Claude Haiku
+- `sonnet`: Latest Claude Sonnet 4.5
+- `opus`: Latest Claude Opus 4.5
+- `haiku`: Latest Claude Haiku 4.5
 - `opusplan`: Opus with extended thinking for planning
+
+**All Claude 4.5 models support:**
+- Extended thinking (including Haiku 4.5)
+- Vision (text + image input)
+- 200K context window (Sonnet: 1M beta)
+- 64K max output tokens
 
 ```json
 {
@@ -224,20 +230,23 @@ claude --model opusplan "plan authentication system"
 
 ### Model Selection Guide
 
-**Sonnet** (claude-sonnet-4-5-20250929):
-- Balanced performance and cost
+**Sonnet 4.5** (claude-sonnet-4-5-20250929):
+- Best for coding & agents (SWE-bench SOTA)
+- Balanced performance and cost ($3/$15 per MTok)
+- Extended autonomous operation
 - Default choice for most tasks
-- Good for general development
 
-**Opus** (claude-opus-4-20250514):
-- Highest capability
+**Opus 4.5** (claude-opus-4-5-20251101):
+- Most intelligent, highest capability ($5/$25 per MTok)
 - Complex reasoning and planning
+- Exclusive: Effort parameter, computer use zoom
 - Use for architecture, design, complex debugging
 
-**Haiku** (claude-haiku-4-20250408):
-- Fastest, most cost-effective
-- Simple tasks (typos, formatting)
-- High-volume operations
+**Haiku 4.5** (claude-haiku-4-5-20250408):
+- Fastest, most cost-effective ($1/$5 per MTok)
+- First Haiku with extended thinking
+- Near-Sonnet 4 performance at 1/3 cost + 2x speed
+- Simple tasks, high-volume operations
 
 **opusplan**:
 - Opus + extended thinking

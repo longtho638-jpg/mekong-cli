@@ -2,6 +2,23 @@
 
 API endpoints and programmatic access to Claude Code functionality.
 
+## Current Models (Nov 2025)
+
+| Model | ID | Input/MTok | Output/MTok | Context | Max Output |
+|-------|-----|------------|-------------|---------|------------|
+| Opus 4.5 | claude-opus-4-5-20251101 | $5 | $25 | 200K | 64K |
+| Sonnet 4.5 | claude-sonnet-4-5-20250929 | $3 | $15 | 200K (1M beta) | 64K |
+| Haiku 4.5 | claude-haiku-4-5-20250408 | $1 | $5 | 200K | 64K |
+
+**Model Aliases:** `opus`, `sonnet`, `haiku`, `opusplan`
+
+**New Features:**
+- Extended thinking (all models including Haiku 4.5)
+- Effort parameter (Opus 4.5 only, beta: `effort-2025-11-24`)
+- Programmatic tool calling (beta: `code-execution-2025-08-25`)
+- Tool search tool (beta: `tools-2025-11-19`)
+- Memory tool (beta: `context-management-2025-06-27`)
+
 ## Admin API
 
 ### Usage Reports

@@ -1,10 +1,10 @@
 # Advanced Features
 
-Extended thinking, prompt caching, checkpointing, and memory management in Claude Code.
+Extended thinking, effort parameter, prompt caching, checkpointing, and memory management in Claude Code.
 
 ## Extended Thinking
 
-Deep reasoning for complex problems.
+Deep reasoning for complex problems. Supported in: Sonnet 3.7, Sonnet 4/4.5, Haiku 4.5, Opus 4/4.1/4.5.
 
 ### Enable Extended Thinking
 
@@ -30,21 +30,32 @@ claude config set thinking.budget 15000
 claude --thinking "architect microservices system"
 ```
 
+**API usage:**
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=16000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 10000  # Min 1,024, no strict upper limit
+    },
+    messages=[...]
+)
+```
+
 ### Thinking Modes
 
 **auto**: Claude decides when to use extended thinking
 **manual**: User explicitly requests thinking
 **disabled**: No extended thinking
 
-```json
-{
-  "thinking": {
-    "mode": "auto",
-    "budget": 10000,
-    "minComplexity": 0.7
-  }
-}
-```
+### Summarized Thinking (Claude 4 Models)
+
+Claude 4 models return **summary** of full thinking (billed for full thinking, not summary). Reduces context bloat while preserving reasoning quality.
+
+### Interleaved Thinking (Beta)
+
+Think between tool calls for sophisticated multi-step workflows. Enable with beta header.
 
 ### Budget Control
 
@@ -60,6 +71,8 @@ Set token budget for thinking:
 }
 ```
 
+**Note:** Higher budgets = slower responses but potentially better quality. For budgets >32K, use batch API.
+
 ### Best Use Cases
 
 - Architecture design
@@ -69,100 +82,92 @@ Set token budget for thinking:
 - Security analysis
 - Bug investigation
 
-### Example
+## Effort Parameter (Opus 4.5 Only)
 
-```bash
-claude --thinking "Design a distributed caching system with:
-- High availability
-- Consistency guarantees
-- Horizontal scalability
-- Fault tolerance"
+Control token expenditure across entire response (text, tool calls, thinking).
+
+**Beta header required:** `effort-2025-11-24`
+
+### Effort Levels
+
+| Level | Behavior | Use Case |
+|-------|----------|----------|
+| high | Maximum quality, unrestricted tokens (default) | Complex reasoning, difficult coding |
+| medium | Balanced approach, moderate savings | Agentic tasks needing speed/cost balance |
+| low | Most efficient, significant capability reduction | Simple classification, high-volume automation |
+
+### Implementation
+
+```python
+response = client.beta.messages.create(
+    model="claude-opus-4-5-20251101",
+    betas=["effort-2025-11-24"],
+    max_tokens=4096,
+    messages=[...],
+    output_config={"effort": "medium"}
+)
 ```
+
+### Combining with Extended Thinking
+
+- Use **effort** to control overall token budget
+- Use **thinking budget** to limit thinking specifically
+- High effort + high thinking = best for complex reasoning
 
 ## Prompt Caching
 
-Reduce costs by caching repeated context.
+Reduce costs by caching repeated context. Cache hit = 10% of base input token cost (90% savings).
 
 ### Enable Caching
 
 **API usage:**
-```typescript
-const response = await client.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  system: [
-    {
-      type: 'text',
-      text: 'You are a coding assistant...',
-      cache_control: { type: 'ephemeral' }
-    }
-  ],
-  messages: [...]
-});
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1024,
+    system=[
+        {"type": "text", "text": "Instructions..."},
+        {
+            "type": "text",
+            "text": "[Large cached context/doc]",
+            "cache_control": {"type": "ephemeral"}  # Mark for caching
+        }
+    ],
+    messages=[{"role": "user", "content": "[New query]"}]
+)
 ```
 
-**CLI configuration:**
-```json
-{
-  "caching": {
-    "enabled": true,
-    "ttl": 300,
-    "maxSize": "100MB"
-  }
-}
-```
+### Pricing (per MTok)
 
-### Cache Strategy
+| Operation | Cost Multiplier |
+|-----------|-----------------|
+| Cache write (5-min TTL) | 1.25x base input |
+| Cache write (1-hour TTL) | 2x base input |
+| Cache read | 0.1x base input (90% discount) |
 
-**What to cache:**
-- Large codebases
-- Documentation
-- API specifications
-- System prompts
-- Project context
+Example: 100K cached tokens read = $0.30 (Sonnet 4.5)
 
-**What not to cache:**
-- User queries
-- Dynamic content
-- Temporary data
-- Session-specific info
+### Best Practices
 
-### Cache Control
+- Place static content first (system, tools, context)
+- Set 1 breakpoint at end of static content (system auto-checks up to 20 blocks back)
+- Use 4 breakpoints max for different change frequencies
+- Minimum cacheable: 1024-4096 tokens (model-dependent)
+- TTL: 5 minutes default (auto-refreshed free), 1-hour optional (extra cost)
 
-```typescript
-// Cache large context
-{
-  type: 'text',
-  text: largeCodebase,
-  cache_control: { type: 'ephemeral' }
-}
+### What Invalidates Cache
 
-// Update without invalidating cache
-{
-  type: 'text',
-  text: newUserQuery
-  // No cache_control = not cached
-}
-```
+- Tool definition changes = full reset
+- Web search/citations toggle = system cache only
+- Images added/removed = messages cache only
+- Thinking param changes = messages cache only
 
-### Cost Savings
+### Tracking Cache Usage
 
-With caching:
-- First request: Full cost
-- Subsequent requests: ~90% discount on cached tokens
-- Cache TTL: 5 minutes
-
-Example:
-```
-Without caching:
-Request 1: 10,000 tokens @ $3/M = $0.03
-Request 2: 10,000 tokens @ $3/M = $0.03
-Total: $0.06
-
-With caching (8,000 tokens cached):
-Request 1: 10,000 tokens @ $3/M = $0.03
-Request 2: 2,000 new + 8,000 cached @ $0.30/M = $0.0024
-Total: $0.0324 (46% savings)
-```
+Response includes:
+- `cache_creation_input_tokens`: New content written to cache
+- `cache_read_input_tokens`: Content read from cache
+- `input_tokens`: Uncached content (after last breakpoint)
 
 ## Checkpointing
 

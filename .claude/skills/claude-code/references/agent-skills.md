@@ -183,58 +183,64 @@ assets/
 
 ## Using Skills via API
 
-### TypeScript Example
-```typescript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-const response = await client.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  skills: [
-    {
-      type: 'custom',
-      custom: {
-        name: 'document-creator',
-        description: 'Creates professional documents',
-        instructions: 'Follow corporate style guide...'
-      }
-    }
-  ],
-  messages: [{
-    role: 'user',
-    content: 'Create a project proposal'
-  }]
-});
-```
+**Required beta headers:**
+- `code-execution-2025-08-25` (enables code execution)
+- `skills-2025-10-02` (enables Skills API)
+- `files-api-2025-04-14` (file upload/download)
 
 ### Python Example
 ```python
-from anthropic import Anthropic
-
-client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-
-response = client.messages.create(
+response = client.beta.messages.create(
     model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    skills=[
-        {
-            "type": "custom",
-            "custom": {
-                "name": "code-reviewer",
-                "description": "Reviews code for quality and security",
-                "instructions": "Check for common issues..."
-            }
-        }
-    ],
-    messages=[{
-        "role": "user",
-        "content": "Review this code"
-    }]
+    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
+    container={
+        "skills": [
+            {"type": "anthropic", "skill_id": "pptx", "version": "latest"},
+            {"type": "custom", "skill_id": "skill_01AbCd...", "version": "latest"}
+        ]
+    },
+    messages=[{"role": "user", "content": "..."}],
+    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
 )
+```
+
+### Skill Types
+
+| Type | Config | Description |
+|------|--------|-------------|
+| Anthropic | `type: "anthropic"` | Pre-built: pptx, xlsx, docx, pdf |
+| Custom | `type: "custom"` | Generated IDs, workspace-scoped |
+
+### Skills Management API
+
+```python
+# Create skill (8MB max upload)
+skill = client.beta.skills.create(display_title="My Skill", files=...)
+
+# List skills
+skills = client.beta.skills.list(source="anthropic"|"custom")
+
+# Retrieve skill
+skill = client.beta.skills.retrieve(skill_id="...")
+
+# Create version
+version = client.beta.skills.versions.create(skill_id="...")
+
+# Delete (must delete all versions first)
+client.beta.skills.delete(skill_id="...")
+```
+
+### File Handling
+
+```python
+# Extract file_id from response
+file_id = response.content[0].file_id
+
+# Download via Files API
+content = client.beta.files.download(file_id=file_id)
+
+# Get metadata
+metadata = client.beta.files.retrieve_metadata(file_id=file_id)
 ```
 
 ## Skill Discovery
@@ -350,12 +356,22 @@ See assets/migration-template.sql for standard format.
 
 ## Progressive Disclosure
 
-Keep `SKILL.md` concise (<100 lines) by:
+Three-level token optimization:
+
+| Level | When Loaded | Token Budget | Content |
+|-------|-------------|--------------|---------|
+| Level 1 (Metadata) | Always | ~100 tokens/skill | name, description from frontmatter |
+| Level 2 (Instructions) | When triggered | <5K tokens | Main SKILL.md body |
+| Level 3+ (Resources) | On-demand | Unlimited | References, scripts, assets |
+
+Keep `SKILL.md` concise (<500 lines) by:
 
 1. **Core instructions** in `SKILL.md`
 2. **Detailed docs** in references/
-3. **Executable code** in scripts/
+3. **Executable code** in scripts/ (executed, not loaded into context)
 4. **Templates** in assets/
+
+**Key advantage**: Scripts execute without loading code into context—only output matters.
 
 Example structure:
 ```markdown

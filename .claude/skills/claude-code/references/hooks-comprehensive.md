@@ -12,18 +12,21 @@ Event-driven automation framework for Claude Code with deterministic shell comma
 
 ## Hook Events (10 Total)
 
-| Event | Trigger Point | Common Use Cases |
-|-------|---------------|------------------|
-| **PreToolUse** | Before tool processing | Validation, blocking operations |
-| **PermissionRequest** | Permission dialog display | Custom permission logic |
-| **PostToolUse** | After tool completion | Post-processing, auto-formatting, logging |
-| **Notification** | Notification sent | Desktop alerts, custom notifications |
-| **UserPromptSubmit** | User prompt submission | Input validation, filtering |
-| **Stop** | Main agent response complete | Session cleanup, logging |
-| **SubagentStop** | Subagent completion | Subagent monitoring |
-| **PreCompact** | Before compaction | Pre-compaction validation |
-| **SessionStart** | Session init/resume | Environment setup |
-| **SessionEnd** | Session termination | Cleanup operations |
+| Event | Trigger Point | Common Use Cases | SDK Only |
+|-------|---------------|------------------|----------|
+| **PreToolUse** | Before tool processing | Validation, blocking operations | No |
+| **PermissionRequest** | Permission dialog display | Custom permission logic | TS Only |
+| **PostToolUse** | After tool completion | Post-processing, auto-formatting, logging | No |
+| **PostToolUseFailure** | After tool failure | Error handling, recovery | TS Only |
+| **Notification** | Notification sent | Desktop alerts, custom notifications | TS Only |
+| **UserPromptSubmit** | User prompt submission | Input validation, filtering | No |
+| **Stop** | Main agent response complete | Session cleanup, logging | No |
+| **SubagentStop** | Subagent completion | Subagent monitoring | No |
+| **PreCompact** | Before compaction | Pre-compaction validation | No |
+| **SessionStart** | Session init/resume | Environment setup | TS Only |
+| **SessionEnd** | Session termination | Cleanup operations | TS Only |
+
+**Note:** Events marked "TS Only" are only available in TypeScript Agent SDK.
 
 ## Configuration Structure
 
