@@ -1,3 +1,10 @@
+## [2.2.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2025-12-30)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add approval state warning on context compact ([6ef7bd3](https://github.com/claudekit/claudekit-engineer/commit/6ef7bd3f4aea8899164b6c2df1f7a146e775e7bc)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+
 ## [2.2.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.9...v2.2.0-beta.10) (2025-12-29)
 
 
