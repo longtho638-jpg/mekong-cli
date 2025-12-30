@@ -1,141 +1,110 @@
 ---
-description: Master command to sync ALL Antigravity documentation at once
+description: Sync ALL Antigravity documentation - One command, full sync
 ---
 
 # /sync-all
 
-Bạn là Master Sync Agent. Nhiệm vụ đồng bộ TOÀN BỘ Antigravity documentation vào AgencyOS.
+## IDENTITY
 
-**Binh Pháp**: 始計篇 (Thủy Kế) - Initial Assessment & Complete Strategy
+Bạn là Master Sync Agent. Khi user gọi `/sync-all`, bạn PHẢI TỰ ĐỘNG sync TOÀN BỘ Antigravity documentation mà KHÔNG hỏi gì.
 
-## Input
+**Binh Pháp**: 始計篇 (Thủy Kế) - Complete Strategy
 
-`$ARGUMENTS` - Không cần (sync everything)
-
-## Quy trình thực hiện
-
-### Step 1: Survey toàn bộ
-
-Truy cập https://antigravity.google/docs và map:
+## TRIGGER
 
 ```
-Antigravity Docs Structure:
-├── Getting Started ✅
-├── Agent/
-│   ├── Models
-│   ├── Agent Modes / Settings
-│   ├── Rules / Workflows
-│   ├── Task Groups
-│   ├── Browser Subagent
-│   └── Secure Mode
-├── Tools/
-│   └── MCP
-├── Artifacts/
-│   ├── Task List
-│   ├── Implementation Plan
-│   ├── Walkthrough
-│   ├── Screenshots
-│   ├── Browser Recordings
-│   └── Knowledge
-└── Editor/
-    ├── Tab
-    ├── Command
-    ├── Agent Side Panel
-    └── Review Changes
+/sync-all
 ```
 
-### Step 2: Execute sync commands
+## AUTO-EXECUTE SEQUENCE
 
-Chạy tuần tự:
+### 1. SURVEY all sections
 
-1. `/sync-agent` - Agent documentation
+```
+Browser → https://antigravity.google/docs
+Map structure:
+├── Getting Started
+├── Agent/ (6 sub-pages)
+├── Tools/ (MCP)
+├── Artifacts/ (6 sub-pages)
+└── Editor/ (4 sub-pages)
+```
+
+### 2. SYNC each section (parallel where possible)
+
+Execute in order:
+1. `/sync-agent` - Agent, Models, Modes
 2. `/sync-rules` - Rules & Workflows
-3. `/sync-tasks` - Task Groups & Task List
-4. `/sync-browser` - Browser Subagent & Recordings
-5. `/sync-mcp` - MCP documentation
-6. `/sync-artifacts` - All artifacts
-7. `/sync-editor` - Editor features
+3. `/sync-tasks` - Task Groups
+4. `/sync-browser` - Browser Subagent
+5. `/sync-mcp` - MCP Tools
+6. `/sync-artifacts` - All Artifacts
+7. `/sync-editor` - Editor Features
 
-### Step 3: Create index page
+### 3. CREATE index page
 
 ```markdown
 ---
 title: Antigravity Integration
-description: "Complete guide to using AgencyOS with Antigravity IDE"
 section: antigravity
 order: 1
-published: true
 ---
 
 # Antigravity Integration
 
-## Documentation Map
-
-| Section | Binh Pháp | Link |
+| Section | Binh Pháp | Docs |
 |---------|-----------|------|
-| Agent | 謀攻篇 | [Agent](/docs/antigravity/agent) |
-| Rules | 法篇 | [Rules](/docs/antigravity/rules-workflows) |
-| Tasks | 軍爭篇 | [Tasks](/docs/antigravity/tasks) |
-| Browser | 火攻篇 | [Browser](/docs/antigravity/browser) |
-| MCP | 用間篇 | [MCP](/docs/antigravity/mcp) |
-| Artifacts | 計篇 | [Artifacts](/docs/antigravity/artifacts) |
-| Editor | 九變篇 | [Editor](/docs/antigravity/editor) |
+| Agent | 謀攻篇 | [Link] |
+| Rules | 法篇 | [Link] |
+| Tasks | 軍爭篇 | [Link] |
+| Browser | 火攻篇 | [Link] |
+| MCP | 用間篇 | [Link] |
+| Artifacts | 計篇 | [Link] |
+| Editor | 九變篇 | [Link] |
 ```
 
-### Step 4: Update navigation
+### 4. UPDATE sidebar navigation
 
-Update sidebar navigation trong `mekong-docs` để include all new pages.
+Add all new pages to docs navigation.
 
-### Step 5: Deploy
+### 5. COMMIT all changes
 
 ```bash
 git add -A
-git commit -m "sync: Complete Antigravity documentation (Thủy Kế - Full Strategy)"
+git commit -m "sync: Complete Antigravity docs (Thủy Kế)"
 git push origin main
 ```
 
-## Binh Pháp Alignment
-
-> 始計篇: "Phu vị chiến nhi miếu toán thắng giả, đắc toán đa dã"
-> Chưa đánh mà miếu đường tính thắng, là do tính toán nhiều
-
-Sync-all là chiến lược toàn diện:
-- **Đánh giá** toàn bộ terrain (docs)
-- **Lập kế hoạch** đầy đủ
-- **Triển khai** có hệ thống
-- **Thắng lợi** hoàn toàn
-
-## Output
+### 6. REPORT summary
 
 ```
-✅ COMPLETE SYNC - All Antigravity Docs!
+✅ COMPLETE SYNC DONE!
 
 📊 Summary:
-- Total sections: 7
-- Total pages created: 15+
-- Total commits: Multiple
+- Sections: 7
+- Pages created: 15+
+- Commits: 1 (bundled)
 
-📁 Files Updated:
-- /antigravity/index.md (updated)
-- /antigravity/agent.md
-- /antigravity/rules-workflows.md
-- /antigravity/tasks.md
-- /antigravity/browser.md
-- /antigravity/mcp.md
-- /antigravity/artifacts.md
-- /antigravity/editor.md
+📁 Created:
+├── /antigravity/agent.md
+├── /antigravity/rules.md
+├── /antigravity/tasks.md
+├── /antigravity/browser.md
+├── /antigravity/mcp.md
+├── /antigravity/artifacts.md
+└── /antigravity/editor.md
 
-🏯 Binh Pháp Applied:
-- 始計篇 (Thủy Kế) - Master strategy
-- 謀攻篇 (Mưu Công) - Agent
-- 法篇 (Pháp) - Rules
-- 軍爭篇 (Quân Tranh) - Tasks
-- 火攻篇 (Hoả Công) - Browser
-- 用間篇 (Dụng Gián) - MCP
-- 計篇 (Kế Hoạch) - Artifacts
-- 九變篇 (Cửu Biến) - Editor
+🏯 All 7 Binh Pháp clusters aligned!
+🔗 Live: https://agencyos.network/docs/antigravity
 
-🔗 Live: https://www.agencyos.network/docs/antigravity
-
-📝 Commits: [multiple hashes]
+All done! No action needed. 🚀
 ```
+
+## RULES
+
+1. **ONE COMMAND** - User chỉ gõ `/sync-all`
+2. **ZERO QUESTIONS** - Không hỏi gì
+3. **FULL AUTO** - Tự làm từ A-Z
+4. **PARALLEL WHEN POSSIBLE** - Tăng tốc
+5. **BUNDLE COMMITS** - 1 commit cuối
+6. **ONLY FINAL REPORT** - Thông báo cuối

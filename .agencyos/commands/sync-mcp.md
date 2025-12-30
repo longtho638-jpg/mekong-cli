@@ -1,30 +1,43 @@
 ---
-description: Sync MCP (Model Context Protocol) documentation from Antigravity
+description: Sync MCP documentation from Antigravity - Zero effort auto-sync
 ---
 
 # /sync-mcp
 
-Bạn là MCP Sync Agent. Nhiệm vụ đồng bộ MCP documentation từ Antigravity.
+## IDENTITY
+
+Bạn là MCP Sync Agent. Khi user gọi `/sync-mcp`, bạn PHẢI TỰ ĐỘNG sync toàn bộ MCP documentation từ Antigravity mà KHÔNG hỏi gì.
 
 **Binh Pháp**: 用間篇 (Dụng Gián) - Intelligence & Integration
 
-## Input
+## TRIGGER
 
-`$ARGUMENTS` - URL hoặc để trống
+```
+/sync-mcp
+```
 
-## Quy trình thực hiện
+## AUTO-EXECUTE (User không làm gì)
 
-### Step 1: Đọc source
+### 1. OPEN Antigravity MCP docs
 
-Browser truy cập: https://antigravity.google/docs/tools/mcp
+```
+Browser → https://antigravity.google/docs/tools/mcp
+Wait 3s for SPA to render
+```
 
-Extract:
-- MCP architecture
+### 2. EXTRACT content
+
+```
+- MCP architecture overview
 - Server configuration
-- Tool definitions
-- Integration patterns
+- Available servers list
+- Code examples
+- Best practices
+```
 
-### Step 2: Transform
+### 3. CREATE/UPDATE file
+
+Tạo `mekong-docs/src/content/docs/antigravity/mcp.md`:
 
 ```markdown
 ---
@@ -37,58 +50,57 @@ published: true
 
 # MCP Integration
 
-## What is MCP?
-[Protocol explanation]
-
-## Configuration
-[.agencyos/mcp.json structure]
-
-## Available Servers
-- git-mcp
-- filesystem
-- brave-search
-- puppeteer
-- Custom servers
+[Extracted content here]
 
 ## AgencyOS MCP Servers
-[Link to our MCP setup]
+
+| Server | Purpose |
+|--------|---------|
+| git-mcp | Git operations |
+| filesystem | File access |
+| brave-search | Web search |
+
+## Setup
+
+See: [/setup-mcp command](/docs/commands/setup-mcp)
 ```
 
-### Step 3: Map to AgencyOS
-
-| Antigravity | AgencyOS |
-|-------------|----------|
-| MCP config | `.agencyos/mcp.json` |
-| Tools | `/docs/configuration/mcp-setup` |
-| Servers | Custom MCP implementations |
-
-### Step 4: Update files
-
-- `mekong-docs/src/content/docs/antigravity/mcp.md`
-
-### Step 5: Deploy
+### 4. COMMIT & PUSH
 
 ```bash
+cd mekong-docs
+git add -A
 git commit -m "sync: MCP from Antigravity (Dụng Gián)"
 git push origin main
 ```
 
-## Binh Pháp Alignment
-
-> 用間篇: "Dụng gián giả, nhân chi cực dã" - Dùng gián điệp là cao nhất
-
-MCP là intelligence network:
-- **Thu thập** từ nhiều sources
-- **Tích hợp** external tools
-- **Mở rộng** agent capabilities
-- **Thông tin** là sức mạnh
-
-## Output
+### 5. REPORT
 
 ```
-✅ Synced MCP Documentation!
+✅ MCP Documentation Synced!
 
-📁 Files: /antigravity/mcp.md
+📁 File: /antigravity/mcp.md
 🏯 Binh Pháp: 用間篇 (Dụng Gián)
-🔗 Live: [url]
+🔗 Live: https://agencyos.network/docs/antigravity/mcp
+📝 Commit: [hash]
+
+Done! No action needed. 🚀
+```
+
+## RULES
+
+1. **ZERO QUESTIONS** - Tự động làm hết
+2. **AUTO-BROWSER** - Tự mở và đọc page
+3. **AUTO-EXTRACT** - Tự parse content
+4. **AUTO-CREATE** - Tự tạo markdown
+5. **AUTO-COMMIT** - Tự commit và push
+6. **ONLY REPORT** - Chỉ thông báo cuối
+
+## ERROR HANDLING
+
+```
+Page not loading? → Retry 3 times
+Content changed? → Adapt extraction
+File exists? → Update, don't overwrite
+Git error? → Show and suggest fix
 ```
