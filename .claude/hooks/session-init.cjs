@@ -435,6 +435,17 @@ async function main() {
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved)}`);
 
+    // MITIGATION: Issue #277 - Auto-compact can bypass AskUserQuestion approval gates
+    // When context is compacted mid-workflow, the summarization may lose "pending approval" state.
+    // This warning reminds Claude to verify if user approval was pending before proceeding.
+    // Upstream bug: Claude Code CLI should preserve pending interactive state during compaction.
+    if (source === 'compact') {
+      console.log(`\n⚠️ CONTEXT COMPACTED - APPROVAL STATE CHECK:`);
+      console.log(`If you were waiting for user approval via AskUserQuestion (e.g., Step 4 review gate),`);
+      console.log(`you MUST re-confirm with the user before proceeding. Do NOT assume approval was given.`);
+      console.log(`Use AskUserQuestion to verify: "Context was compacted. Please confirm approval to continue."`);
+    }
+
     // Auto-inject coding level guidelines (if not disabled)
     const codingLevel = config.codingLevel ?? -1;
     const guidelines = getCodingLevelGuidelines(codingLevel);
