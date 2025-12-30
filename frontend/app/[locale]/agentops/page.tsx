@@ -5,9 +5,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Shield, Command, Activity, Zap, TrendingDown, AlertTriangle, Award, Bot, Target, Landmark, Rocket } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import CommandPalette, { useCommandPalette } from '@/components/CommandPalette';
 
-// AgentOps API Base
+// AgentOps API Base (updated to support 135 commands via Agentic backend)
 const API_BASE = 'http://localhost:8000';
+const AGENTIC_API = 'http://localhost:8080';
 
 export default function AgentOpsPage({ params: { locale } }: { params: { locale: string } }) {
     const t = useTranslations('AI');
@@ -38,6 +40,15 @@ export default function AgentOpsPage({ params: { locale } }: { params: { locale:
         dealflow: 'running'
     });
     const [showCommandCenter, setShowCommandCenter] = useState(false);
+
+    // 🏯 Command Palette (135 Commands × Binh Pháp)
+    const { isOpen: commandPaletteOpen, setIsOpen: setCommandPaletteOpen } = useCommandPalette();
+    const handleCommandExecute = (command: string, result: any) => {
+        addActivity(`⚡ Executed ${command} ${result.binh_phap ? `(🏯 ${result.binh_phap})` : ''}`, result.success ? 'success' : 'alert');
+        if (result.success) {
+            playSound('success');
+        }
+    };
 
     // 🔊 Voice Notifications State
     const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -12676,6 +12687,13 @@ export default function AgentOpsPage({ params: { locale } }: { params: { locale:
                     )
                 }
             </main >
+
+            {/* 🏯 Command Palette - 135 Commands × Binh Pháp (Cmd+K) */}
+            <CommandPalette
+                isOpen={commandPaletteOpen}
+                onClose={() => setCommandPaletteOpen(false)}
+                onExecute={handleCommandExecute}
+            />
         </div >
     );
 }
