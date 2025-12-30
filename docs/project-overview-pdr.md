@@ -586,7 +586,7 @@ Provide a production-ready template that:
 - [Commands Reference](../guide/COMMANDS.md)
 
 ### External Resources
-- [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code/overview)
+- [Claude Code Documentation](https://docs.agencyos.com/en/docs/claude-code/overview)
 - [Open Code Documentation](https://opencode.ai/docs)
 - [Conventional Commits](https://conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)

@@ -34,7 +34,7 @@ This document defines coding standards, file organization patterns, naming conve
 
 ```
 project-root/
-├── .claude/                    # Claude Code configuration
+├── .agencyos/                    # Claude Code configuration
 │   ├── agents/                # Agent definitions (*.md)
 │   ├── commands/              # Slash commands (*.md)
 │   │   ├── [category]/       # Nested command categories
@@ -65,13 +65,13 @@ project-root/
 
 ### File Naming Conventions
 
-**Agent Definitions** (`.claude/agents/`):
+**Agent Definitions** (`.agencyos/agents/`):
 - Format: `[agent-name].md`
 - Use kebab-case: `code-reviewer.md`, `docs-manager.md`
 - Descriptive, role-based names
 - Examples: `planner.md`, `tester.md`, `git-manager.md`
 
-**Commands** (`.claude/commands/`):
+**Commands** (`.agencyos/commands/`):
 - Format: `[command-name].md` or `[category]/[command-name].md`
 - Use kebab-case for names
 - Group related commands in subdirectories
@@ -81,7 +81,7 @@ project-root/
   - `design/screenshot.md`
   - `git/cm.md`
 
-**Skills** (`.claude/skills/`):
+**Skills** (`.agencyos/skills/`):
 - Format: `[skill-name]/SKILL.md`
 - Use kebab-case for directory names
 - Main file always named `SKILL.md`
@@ -699,7 +699,7 @@ Mistakes to avoid
 
 **File Organization**:
 ```
-.claude/hooks/
+.agencyos/hooks/
 ├── scout-block.js        # Node.js dispatcher (cross-platform entry)
 ├── scout-block.sh        # Bash implementation (Unix)
 ├── scout-block.ps1       # PowerShell implementation (Windows)
@@ -938,7 +938,7 @@ const expensiveCalculation = memoize((n) => {
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
 ### Related Projects
-- [Claude Code Documentation](https://docs.claude.com/)
+- [Claude Code Documentation](https://docs.agencyos.com/)
 - [Open Code Documentation](https://opencode.ai/docs)
 
 ## Unresolved Questions

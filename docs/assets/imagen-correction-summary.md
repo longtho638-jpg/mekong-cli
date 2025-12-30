@@ -82,7 +82,7 @@ if 'fast' not in model.lower():
 ## Files Updated
 
 ### Code Files
-1. **`.claude/skills/ai-multimodal/scripts/gemini_batch_process.py`**
+1. **`.agencyos/skills/ai-multimodal/scripts/gemini_batch_process.py`**
    - Fixed `generate_image_imagen4()` function:
      - Changed config type to `GenerateImagesConfig`
      - Changed parameters to camelCase
@@ -91,7 +91,7 @@ if 'fast' not in model.lower():
      - Added verbose error output with traceback
 
 ### Documentation Files
-2. **`.claude/skills/ai-multimodal/references/image-generation.md`**
+2. **`.agencyos/skills/ai-multimodal/references/image-generation.md`**
    - Updated all code examples with correct API
    - Added Fast model constraint notes
    - Updated response structure documentation
@@ -101,7 +101,7 @@ if 'fast' not in model.lower():
      - SynthID watermark
      - Text rendering limit
 
-3. **`.claude/skills/ai-multimodal/SKILL.md`**
+3. **`.agencyos/skills/ai-multimodal/SKILL.md`**
    - Removed "SDK Pending" note from Imagen 4
    - Updated Fast model description
 

@@ -45,11 +45,11 @@ Environment variable priority now correctly follows skill-creator guidelines:
 ```
 process.env (highest)
   ↓
-.claude/skills/ai-multimodal/.env
+.agencyos/skills/ai-multimodal/.env
   ↓
-.claude/skills/.env
+.agencyos/skills/.env
   ↓
-.claude/.env (lowest)
+.agencyos/.env (lowest)
 ```
 
 **Code Location**: `scripts/gemini_batch_process.py:37-77`

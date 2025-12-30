@@ -12,7 +12,7 @@ AgencyOS Engine is a comprehensive boilerplate template for building professiona
 
 ```
 agencyos-engineer/
-├── .claude/               # Claude Code configuration
+├── .agencyos/               # Claude Code configuration
 │   ├── agents/           # Specialized agent definitions (14 agents)
 │   ├── commands/         # Slash command implementations (50+ commands)
 │   ├── hooks/            # Git hooks and scripts
@@ -54,7 +54,7 @@ agencyos-engineer/
 
 ### 1. Agent Orchestration System (17 Agents)
 
-**Claude Code Agents** (`.claude/agents/`):
+**Claude Code Agents** (`.agencyos/agents/`):
 - `planner.md` - Technical planning and architecture
 - `researcher.md` - Research and analysis
 - `fullstack-developer.md` - Full-stack implementation
@@ -92,7 +92,7 @@ agencyos-engineer/
 
 ### 3. Skills Library
 
-**Skills Organization** (`.claude/skills/`):
+**Skills Organization** (`.agencyos/skills/`):
 
 **Phase 1 Skill Groups** (Progressive Disclosure Pattern):
 - **DevOps** (`devops/`) - Cloudflare edge platform, Docker containerization, Google Cloud Platform
@@ -121,7 +121,7 @@ agencyos-engineer/
 - **Ecommerce**: `shopify/`
 - **Development**: `sequential-thinking/`, `skill-creator/`, `google-adk-python/`
 
-**Archived Skills** (`.claude/skills/_archive/20251104-*/`):
+**Archived Skills** (`.agencyos/skills/_archive/20251104-*/`):
 - 14 original skills consolidated into Phase 1 groups
 - Full preservation of original content
 - Available for reference or rollback
@@ -130,7 +130,7 @@ agencyos-engineer/
 
 ### 4. Hook System (4 Core Hooks)
 
-**Location**: `.claude/hooks/`
+**Location**: `.agencyos/hooks/`
 
 **Core Hooks:**
 
@@ -167,7 +167,7 @@ agencyos-engineer/
 
 ### 5. Workflows
 
-**Primary Workflows** (`.claude/workflows/`):
+**Primary Workflows** (`.agencyos/workflows/`):
 1. **primary-workflow.md**: Core development cycle
    - Code implementation
    - Testing
@@ -205,7 +205,7 @@ agencyos-engineer/
 
 ### For Agents
 - **CLAUDE.md**: Primary agent instructions
-- **.claude/workflows/**: Workflow definitions
+- **.agencyos/workflows/**: Workflow definitions
 - **plans/templates/**: Implementation plan templates
 
 ## Development Principles
@@ -322,7 +322,7 @@ None (template project)
 ## Integration Capabilities
 
 ### Discord Notifications
-Script: `.claude/hooks/send-discord.sh`
+Script: `.agencyos/hooks/send-discord.sh`
 Purpose: Send project updates to Discord channels
 
 ### GitHub Actions
@@ -351,10 +351,10 @@ Features: Automated releases, changelog generation
 - `/mnt/d/www/agencyos/agencyos-engineer/guide/COMMANDS.md` - Command reference
 
 ### Workflows
-- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/primary-workflow.md`
-- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/development-rules.md`
-- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/orchestration-protocol.md`
-- `/mnt/d/www/agencyos/agencyos-engineer/.claude/workflows/documentation-management.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.agencyos/workflows/primary-workflow.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.agencyos/workflows/development-rules.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.agencyos/workflows/orchestration-protocol.md`
+- `/mnt/d/www/agencyos/agencyos-engineer/.agencyos/workflows/documentation-management.md`
 
 ## Related Projects
 

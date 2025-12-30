@@ -50,7 +50,7 @@ AgencyOS Engine implements a multi-agent AI orchestration architecture where spe
 - `$1, $2, $3...` - Individual positional arguments
 
 #### 1.3 Configuration Manager
-**Location**: `.claude/` directory
+**Location**: `.agencyos/` directory
 **Responsibility**: Load agent and command definitions
 **File Types**:
 - Agent definitions (`.md` with YAML frontmatter)
@@ -280,7 +280,7 @@ Explore different approaches simultaneously
 
 **Structure**:
 ```
-.claude/skills/
+.agencyos/skills/
 └── [skill-name]/
     ├── SKILL.md           # Main skill definition
     ├── references/        # Supporting documentation
@@ -327,7 +327,7 @@ Planner incorporates into plan
 **Purpose**: Intercept and control Claude Code operations for performance, context management, and security
 
 **Hook Architecture**:
-All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit code 0 (non-blocking)
+All hooks located in `.agencyos/hooks/` with consistent patterns - fail-safe exit code 0 (non-blocking)
 
 **1. Session-Init Hook** (`session-init.cjs`)
 - **Trigger**: Session startup
@@ -343,7 +343,7 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 - **Trigger**: Every user prompt
 - **Purpose**: Inject development context and rules
 - **Functionality**:
-  - Injects current development rules from `.claude/workflows/`
+  - Injects current development rules from `.agencyos/workflows/`
   - Smart deduplication prevents redundant context
   - Suggests branch-matched workflows
   - Optimized for minimal token overhead
@@ -381,7 +381,7 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 - Comprehensive coverage (11 Unix tests, 7 Windows tests)
 - Validates: blocked/allowed patterns, error handling, edge cases, JSON validation
 
-**Hook Configuration** (`.claude/settings.json`):
+**Hook Configuration** (`.agencyos/settings.json`):
 ```json
 {
   "hooks": {
@@ -389,12 +389,12 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
       "matcher": "*",
       "hooks": [{
         "type": "command",
-        "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/subagent-init.cjs"
+        "command": "node ${CLAUDE_PROJECT_DIR}/.agencyos/hooks/subagent-init.cjs"
       }]
     }],
     "BeforeBash": [{
       "type": "command",
-      "command": "node ${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-block.js"
+      "command": "node ${CLAUDE_PROJECT_DIR}/.agencyos/hooks/scout-block.js"
     }]
   }
 }
@@ -455,7 +455,7 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 #### 7.1 File-Based Storage
 
 **Configuration Data**:
-- `.claude/` - Claude Code config
+- `.agencyos/` - Claude Code config
 - `.gitignore` - Git exclusions
 - `package.json` - Node.js config
 - `.releaserc.json` - Release config
@@ -766,7 +766,7 @@ Generate Summary        │
 ```
 Developer Machine
 ├── Claude Code CLI
-├── .claude/ (configuration)
+├── .agencyos/ (configuration)
 ├── Git repository
 └── Node.js runtime
 ```
@@ -791,7 +791,7 @@ Semantic Release
 
 ```
 User Project
-├── .claude/ (from template)
+├── .agencyos/ (from template)
 ├── docs/ (generated)
 ├── plans/ (generated)
 ├── src/ (user code)
@@ -860,28 +860,28 @@ User Project
 
 ### Adding New Agents
 
-1. Create agent definition file: `.claude/agents/my-agent.md`
+1. Create agent definition file: `.agencyos/agents/my-agent.md`
 2. Define YAML frontmatter (name, description, mode, model)
 3. Write agent instructions and workflows
 4. Reference in commands or other agents
 
 ### Adding New Commands
 
-1. Create command file: `.claude/commands/my-command.md`
+1. Create command file: `.agencyos/commands/my-command.md`
 2. Define YAML frontmatter
 3. Write command workflow with agent invocations
 4. Use `$ARGUMENTS` or `$1, $2` for parameters
 
 ### Adding New Skills
 
-1. Create skill directory: `.claude/skills/my-skill/`
+1. Create skill directory: `.agencyos/skills/my-skill/`
 2. Write `SKILL.md` with knowledge content
 3. Add references and examples
 4. Reference in agent definitions
 
 ### Custom Workflows
 
-1. Define workflow in `.claude/workflows/`
+1. Define workflow in `.agencyos/workflows/`
 2. Document orchestration patterns
 3. Specify agent handoffs
 4. Provide examples
@@ -938,7 +938,7 @@ User Project
 - [Code Standards](./code-standards.md)
 
 ### External Resources
-- [Claude Code Documentation](https://docs.claude.com/)
+- [Claude Code Documentation](https://docs.agencyos.com/)
 - [Open Code Documentation](https://opencode.ai/docs)
 - [MCP Documentation](https://modelcontextprotocol.io/)
 - [Semantic Versioning](https://semver.org/)

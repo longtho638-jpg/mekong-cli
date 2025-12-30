@@ -317,10 +317,10 @@
 
 ## 📂 Workflows
 
-- `./.claude/workflows/primary-workflow.md`
-- `./.claude/workflows/development-rules.md`
-- `./.claude/workflows/orchestration-protocol.md`
-- `./.claude/workflows/documentation-management.md`
+- `./.agencyos/workflows/primary-workflow.md`
+- `./.agencyos/workflows/development-rules.md`
+- `./.agencyos/workflows/orchestration-protocol.md`
+- `./.agencyos/workflows/documentation-management.md`
 
 ---
 

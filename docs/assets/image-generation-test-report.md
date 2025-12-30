@@ -209,7 +209,7 @@ The skill is **future-ready** with complete implementation of Imagen 4 and Veo 3
 - `docs/assets/generated_generated_0.png` - Logo design (1:1)
 
 **Test Script Location**:
-- `.claude/skills/ai-multimodal/scripts/gemini_batch_process.py`
+- `.agencyos/skills/ai-multimodal/scripts/gemini_batch_process.py`
 
 **Documentation References**:
 - `SKILL.md` - Model selection and quick start
