@@ -22,13 +22,23 @@ const { execSync } = require('child_process');
   const metadataPath = path.join(claudeDir, 'metadata.json');
   const distDir = path.join(projectRoot, 'dist');
   const archivePath = path.join(distDir, 'claudekit-engineer.zip');
+  const manifestPath = path.join(projectRoot, 'release-manifest.json');
+
+  // Critical files that MUST be present in release
+  const CRITICAL_TARGETS = ['.claude', 'release-manifest.json'];
 
   try {
     if (!fs.existsSync(packageJsonPath)) {
       throw new Error('package.json not found');
     }
 
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    // Parse package.json with specific error handling
+    let packageJson;
+    try {
+      packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    } catch (parseErr) {
+      throw new Error(`Invalid JSON in package.json: ${parseErr.message}`);
+    }
 
     if (packageJson.version !== version) {
       console.warn(
@@ -67,12 +77,30 @@ const { execSync } = require('child_process');
     console.log('Generating release manifest with timestamps...');
     execSync(`node scripts/generate-release-manifest.cjs "${version}"`, { stdio: 'inherit' });
 
+    // Validate manifest was created successfully
+    if (!fs.existsSync(manifestPath)) {
+      throw new Error('release-manifest.json was not created by generate-release-manifest.cjs');
+    }
+
+    // Validate manifest is valid JSON
+    try {
+      JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch (parseErr) {
+      throw new Error(`release-manifest.json is not valid JSON: ${parseErr.message}`);
+    }
+    console.log('✓ Validated release-manifest.json');
+
     if (!fs.existsSync(distDir)) {
       fs.mkdirSync(distDir, { recursive: true });
     }
 
+    // Delete existing archive with error handling
     if (fs.existsSync(archivePath)) {
-      fs.unlinkSync(archivePath);
+      try {
+        fs.unlinkSync(archivePath);
+      } catch (unlinkErr) {
+        throw new Error(`Cannot delete existing archive (file locked?): ${unlinkErr.message}`);
+      }
     }
 
     const archiveTargets = [
@@ -86,6 +114,15 @@ const { execSync } = require('child_process');
     ];
 
     const existingTargets = archiveTargets.filter((target) => fs.existsSync(path.join(projectRoot, target)));
+
+    // Validate critical files are present
+    const missingCritical = CRITICAL_TARGETS.filter(
+      (target) => !fs.existsSync(path.join(projectRoot, target))
+    );
+
+    if (missingCritical.length > 0) {
+      throw new Error(`Critical release assets missing: ${missingCritical.join(', ')}`);
+    }
 
     if (existingTargets.length === 0) {
       throw new Error('No release assets found to include in archive.');

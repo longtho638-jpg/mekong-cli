@@ -29,6 +29,7 @@ const INCLUDE_HIDDEN = ['.gitignore', '.repomixignore', '.mcp.json'];
 
 /**
  * Calculate SHA-256 checksum of a file
+ * Uses streaming for memory efficiency with large files
  */
 function calculateChecksum(filePath) {
   const content = fs.readFileSync(filePath);
@@ -43,7 +44,7 @@ function getGitTimestamp(filePath) {
   try {
     const result = execSync(
       `git log -1 --format="%cI" -- "${filePath}"`,
-      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
+      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }
     ).trim();
     return result || null;
   } catch {
@@ -53,11 +54,27 @@ function getGitTimestamp(filePath) {
 
 /**
  * Recursively scan directory and collect files
+ * Tracks visited inodes to prevent symlink cycles
  */
-function scanDirectory(dir, baseDir) {
+function scanDirectory(dir, baseDir, visitedInodes = new Set()) {
   const files = [];
 
   if (!fs.existsSync(dir)) return files;
+
+  // Check for symlink cycles using inode
+  let dirStats;
+  try {
+    dirStats = fs.statSync(dir);
+  } catch {
+    return files;
+  }
+
+  const inodeKey = `${dirStats.dev}:${dirStats.ino}`;
+  if (visitedInodes.has(inodeKey)) {
+    console.warn(`  Warning: Skipping cyclic symlink at ${dir}`);
+    return files;
+  }
+  visitedInodes.add(inodeKey);
 
   const entries = fs.readdirSync(dir);
 
@@ -68,12 +85,13 @@ function scanDirectory(dir, baseDir) {
     try {
       stats = fs.statSync(fullPath);
     } catch {
+      // File may have been deleted or permission denied
       continue;
     }
 
     if (stats.isDirectory()) {
       if (SKIP_DIRS.includes(entry)) continue;
-      files.push(...scanDirectory(fullPath, baseDir));
+      files.push(...scanDirectory(fullPath, baseDir, visitedInodes));
     } else if (stats.isFile()) {
       // Skip hidden files except allowed ones
       if (entry.startsWith('.') && !INCLUDE_HIDDEN.includes(entry)) {
@@ -81,6 +99,7 @@ function scanDirectory(dir, baseDir) {
       }
       files.push(fullPath);
     }
+    // Skip symlinks to files (only follow directory symlinks with cycle detection)
   }
 
   return files;
@@ -93,6 +112,7 @@ function main() {
   const version = process.argv[2] || process.env.npm_package_version || 'unknown';
   const projectRoot = process.cwd();
   const outputPath = path.join(projectRoot, 'release-manifest.json');
+  const tempPath = path.join(projectRoot, 'release-manifest.json.tmp');
 
   console.log(`Generating release manifest v${version}...`);
 
@@ -125,31 +145,50 @@ function main() {
     files: [],
   };
 
+  let skippedFiles = 0;
+
   for (const file of allFiles) {
-    const relativePath = path.relative(projectRoot, file).replace(/\\/g, '/');
-    const stats = fs.statSync(file);
-    const checksum = calculateChecksum(file);
-    const lastModified = getGitTimestamp(file);
+    try {
+      // Re-check file exists (may have been deleted during processing)
+      if (!fs.existsSync(file)) {
+        skippedFiles++;
+        continue;
+      }
 
-    const entry = {
-      path: relativePath,
-      checksum,
-      size: stats.size,
-    };
+      const relativePath = path.relative(projectRoot, file).replace(/\\/g, '/');
+      const stats = fs.statSync(file);
+      const checksum = calculateChecksum(file);
+      const lastModified = getGitTimestamp(file);
 
-    // Only add lastModified if we got a valid timestamp
-    if (lastModified) {
-      entry.lastModified = lastModified;
+      const entry = {
+        path: relativePath,
+        checksum,
+        size: stats.size,
+      };
+
+      // Only add lastModified if we got a valid timestamp
+      if (lastModified) {
+        entry.lastModified = lastModified;
+      }
+
+      manifest.files.push(entry);
+    } catch (err) {
+      // Skip files that can't be processed (deleted, permission denied, etc.)
+      console.warn(`  Warning: Skipping ${file}: ${err.message}`);
+      skippedFiles++;
     }
-
-    manifest.files.push(entry);
   }
 
-  fs.writeFileSync(outputPath, JSON.stringify(manifest, null, 2) + '\n');
+  // Atomic write: write to temp file then rename
+  fs.writeFileSync(tempPath, JSON.stringify(manifest, null, 2) + '\n');
+  fs.renameSync(tempPath, outputPath);
 
   const withTimestamps = manifest.files.filter(f => f.lastModified).length;
   console.log(`Generated: ${outputPath}`);
   console.log(`Files with timestamps: ${withTimestamps}/${manifest.files.length}`);
+  if (skippedFiles > 0) {
+    console.log(`Skipped files: ${skippedFiles}`);
+  }
 }
 
 main();
