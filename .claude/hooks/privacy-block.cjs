@@ -169,12 +169,28 @@ function extractPaths(toolInput) {
 }
 
 /**
- * Format block message with approval instructions
+ * Format block message with approval instructions and JSON marker for AskUserQuestion
  * @param {string} filePath - Blocked file path
- * @returns {string} Formatted block message
+ * @returns {string} Formatted block message with JSON marker
  */
 function formatBlockMessage(filePath) {
   const basename = path.basename(filePath);
+
+  // JSON marker for LLM to parse and use AskUserQuestion tool
+  const promptData = {
+    type: 'PRIVACY_PROMPT',
+    file: filePath,
+    basename: basename,
+    question: {
+      header: 'File Access',
+      text: `I need to read "${basename}" which may contain sensitive data (API keys, passwords, tokens). Do you approve?`,
+      options: [
+        { label: 'Yes, approve access', description: `Allow reading ${basename} this time` },
+        { label: 'No, skip this file', description: 'Continue without accessing this file' }
+      ]
+    }
+  };
+
   return `
 \x1b[36mNOTE:\x1b[0m This is not an error - this block protects sensitive data.
 
@@ -184,11 +200,13 @@ function formatBlockMessage(filePath) {
 
   This file may contain secrets (API keys, passwords, tokens).
 
-  \x1b[34mAction required:\x1b[0m
-  Ask user: "I need to read ${basename} which may contain sensitive data. Approve?"
+\x1b[90m@@PRIVACY_PROMPT_START@@\x1b[0m
+${JSON.stringify(promptData, null, 2)}
+\x1b[90m@@PRIVACY_PROMPT_END@@\x1b[0m
 
-  \x1b[32mIf YES:\x1b[0m Retry with prefix: APPROVED:${filePath}
-  \x1b[31mIf NO:\x1b[0m  Do NOT retry. Continue without this file.
+  \x1b[34mClaude:\x1b[0m Use AskUserQuestion tool with the JSON above, then:
+  \x1b[32mIf "Yes":\x1b[0m Use bash to read: cat "${filePath}"
+  \x1b[31mIf "No":\x1b[0m  Continue without this file.
 `;
 }
 
@@ -220,7 +238,12 @@ async function main() {
     process.exit(0); // Invalid JSON, allow
   }
 
-  const { tool_input: toolInput } = hookData;
+  const { tool_input: toolInput, tool_name: toolName } = hookData;
+
+  // For Bash commands, only warn but don't block - let Claude Code's permission system handle it
+  // This allows the "Yes → bash cat" flow after AskUserQuestion approval
+  const isBashTool = toolName === 'Bash';
+
   const paths = extractPaths(toolInput);
 
   // Check each path
@@ -234,6 +257,12 @@ async function main() {
       continue; // Check other paths
     }
 
+    // For Bash: warn but don't block - allows "Yes → bash cat" flow
+    if (isBashTool) {
+      console.error(`\x1b[33mWARN:\x1b[0m Bash command accesses sensitive file: ${testPath}`);
+      continue; // Warn but allow
+    }
+
     // No approval - block
     console.error(formatBlockMessage(testPath));
     process.exit(2); // Block
@@ -242,7 +271,10 @@ async function main() {
   process.exit(0); // Allow
 }
 
-main().catch(() => process.exit(0));
+// Run main only when executed directly (not when required for testing)
+if (require.main === module) {
+  main().catch(() => process.exit(0));
+}
 
 // Export functions for unit testing
 if (typeof module !== 'undefined') {
