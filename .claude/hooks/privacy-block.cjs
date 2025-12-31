@@ -260,7 +260,10 @@ async function main() {
   process.exit(0); // Allow
 }
 
-main().catch(() => process.exit(0));
+// Run main only when executed directly (not when required for testing)
+if (require.main === module) {
+  main().catch(() => process.exit(0));
+}
 
 // Export functions for unit testing
 if (typeof module !== 'undefined') {
