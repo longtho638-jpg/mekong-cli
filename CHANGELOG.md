@@ -1,3 +1,20 @@
+## [2.2.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2025-12-31)
+
+
+### 🚀 Features
+
+* **release:** add git timestamps to release manifest ([96b2e6e](https://github.com/claudekit/claudekit-engineer/commit/96b2e6e341bc0e10a61c52098b9053a9a99300af))
+
+
+### 🐞 Bug Fixes
+
+* **release:** harden manifest scripts for edge cases ([08dfc61](https://github.com/claudekit/claudekit-engineer/commit/08dfc618659ca49db8833565f32a17bf3cd66edd))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for session-init compact mitigation ([0335b38](https://github.com/claudekit/claudekit-engineer/commit/0335b385c1bae1bed5aedc4f71289973befd33d6)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+
 ## [2.2.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2025-12-31)
 
 
