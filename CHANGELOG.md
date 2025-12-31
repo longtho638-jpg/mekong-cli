@@ -1,3 +1,10 @@
+## [2.2.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2025-12-31)
+
+
+### ♻️ Code Refactoring
+
+* remove auto-push and phase-based commits from /code workflows ([cbfcc0a](https://github.com/claudekit/claudekit-engineer/commit/cbfcc0a759b844cd67ee4437f81a36911d13f2c5)), closes [#283](https://github.com/claudekit/claudekit-engineer/issues/283)
+
 ## [2.2.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2025-12-31)
 
 
