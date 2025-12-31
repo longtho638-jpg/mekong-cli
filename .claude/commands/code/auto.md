@@ -148,7 +148,7 @@ Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 3. **AUTO-COMMIT (after steps 1 and 2 completes):**
 - **Call** `git-manager` subagent to handle git operation.
 - Run only if: Steps 1 and 2 successful + Tests passed
-- Auto-stage, commit with message [phase - plan] and push
+- Auto-stage, commit with conventional commit message based on actual changes
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
