@@ -1,3 +1,20 @@
+## [2.2.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2025-12-31)
+
+
+### 🚀 Features
+
+* **hooks:** add AskUserQuestion JSON marker to privacy-block ([ff1ade8](https://github.com/claudekit/claudekit-engineer/commit/ff1ade8226b4fd14f9d5788a1d4a11096e03d2c9)), closes [#279](https://github.com/claudekit/claudekit-engineer/issues/279)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** allow bash commands for .env after AskUserQuestion approval ([71cb74b](https://github.com/claudekit/claudekit-engineer/commit/71cb74b16b0f594fcc9c8fdc561a5c467e92b1bd))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive test suite for privacy-block ([2d88049](https://github.com/claudekit/claudekit-engineer/commit/2d880494e5e1ad2f84752a5d57a162ffef2b50c7))
+
 ## [2.2.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2025-12-30)
 
 
