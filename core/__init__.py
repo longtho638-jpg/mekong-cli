@@ -97,6 +97,38 @@ try:
 except ImportError:
     BusinessPlanGenerator = None
 
+# Guild Protocol modules (Blue Ocean)
+try:
+    from .guild_hub import GuildHub
+except ImportError:
+    GuildHub = None
+
+try:
+    from .guild_constitution import GuildConstitution
+except ImportError:
+    GuildConstitution = None
+
+try:
+    from .client_dna import ClientDNASystem
+except ImportError:
+    ClientDNASystem = None
+
+try:
+    from .pricing_intel import PricingIntelligence
+except ImportError:
+    PricingIntelligence = None
+
+try:
+    from .mutual_defense import MutualDefenseProtocol
+except ImportError:
+    MutualDefenseProtocol = None
+
+# Newsletter Hub (Blue Ocean)
+try:
+    from .newsletter_hub import NewsletterHub
+except ImportError:
+    NewsletterHub = None
+
 __all__ = [
     "VibeTuner",
     "CRM",
@@ -117,5 +149,14 @@ __all__ = [
     "NotificationSystem",
     "ClientExperience",
     "BusinessPlanGenerator",
+    # Guild Protocol (Blue Ocean)
+    "GuildHub",
+    "GuildConstitution",
+    "ClientDNASystem",
+    "PricingIntelligence",
+    "MutualDefenseProtocol",
+    # Newsletter Hub
+    "NewsletterHub",
 ]
+
 
