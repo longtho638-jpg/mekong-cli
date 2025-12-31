@@ -238,7 +238,12 @@ async function main() {
     process.exit(0); // Invalid JSON, allow
   }
 
-  const { tool_input: toolInput } = hookData;
+  const { tool_input: toolInput, tool_name: toolName } = hookData;
+
+  // For Bash commands, only warn but don't block - let Claude Code's permission system handle it
+  // This allows the "Yes → bash cat" flow after AskUserQuestion approval
+  const isBashTool = toolName === 'Bash';
+
   const paths = extractPaths(toolInput);
 
   // Check each path
@@ -250,6 +255,12 @@ async function main() {
       // User approved - allow with notice
       console.error(formatApprovalNotice(testPath));
       continue; // Check other paths
+    }
+
+    // For Bash: warn but don't block - allows "Yes → bash cat" flow
+    if (isBashTool) {
+      console.error(`\x1b[33mWARN:\x1b[0m Bash command accesses sensitive file: ${testPath}`);
+      continue; // Warn but allow
     }
 
     // No approval - block
