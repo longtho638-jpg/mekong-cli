@@ -245,20 +245,26 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Agency */}
-            <div className="glass rounded-xl p-8">
-              <h3 className="text-xl font-semibold mb-2">Agency</h3>
+            {/* Agency - Funnel to AgencyOS */}
+            <div className="glass rounded-xl p-8 relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-1 rounded-full text-sm font-semibold">
+                🏯 Full Platform
+              </div>
+              <h3 className="text-xl font-semibold mb-2">AgencyOS</h3>
               <div className="text-4xl font-bold mb-1">$99<span className="text-lg text-gray-400">/mo</span></div>
-              <p className="text-gray-500 mb-6">+ $10/newsletter</p>
+              <p className="text-emerald-400 mb-6">Everything you need</p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Unlimited newsletters</li>
-                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Unlimited subscribers</li>
-                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Unlimited sends</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> <strong>143 AI commands</strong></li>
+                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> CRM + Sales pipeline</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Project management</li>
+                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Financial reports</li>
                 <li className="flex items-center gap-2"><span className="text-green-400">✓</span> White-label option</li>
-                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> API access</li>
-                <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Priority support</li>
               </ul>
-              <Link href="/signup?plan=agency" className="btn-secondary w-full block text-center">Contact Sales</Link>
+              <a href="https://agencyos.network" target="_blank" className="btn-primary w-full block text-center">
+                Explore AgencyOS →
+              </a>
+              <p className="text-center text-gray-500 text-xs mt-3">The all-in-one platform for agencies</p>
             </div>
           </div>
         </div>
