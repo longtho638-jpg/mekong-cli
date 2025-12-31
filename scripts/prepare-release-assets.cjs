@@ -63,6 +63,10 @@ const { execSync } = require('child_process');
     fs.writeFileSync(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, 'utf8');
     console.log(`✓ Generated metadata.json with version ${metadata.version}`);
 
+    // Generate release manifest with file timestamps
+    console.log('Generating release manifest with timestamps...');
+    execSync(`node scripts/generate-release-manifest.cjs "${version}"`, { stdio: 'inherit' });
+
     if (!fs.existsSync(distDir)) {
       fs.mkdirSync(distDir, { recursive: true });
     }
@@ -78,6 +82,7 @@ const { execSync } = require('child_process');
       '.repomixignore',
       '.mcp.json',
       'CLAUDE.md',
+      'release-manifest.json',
     ];
 
     const existingTargets = archiveTargets.filter((target) => fs.existsSync(path.join(projectRoot, target)));
