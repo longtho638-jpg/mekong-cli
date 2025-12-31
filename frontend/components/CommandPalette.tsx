@@ -121,6 +121,21 @@ const COMMAND_SUITES = {
             { cmd: '/sync-mcp', desc: 'Sync MCP Servers' },
             { cmd: '/sync-all', desc: 'Sync Everything' },
         ]
+    },
+    newsletter: {
+        name: 'Newsletter',
+        icon: '📧',
+        binh_phap: '火攻篇',
+        commands: [
+            { cmd: '/newsletter', desc: 'Newsletter Dashboard' },
+            { cmd: '/newsletter:create', desc: 'Create New Newsletter' },
+            { cmd: '/newsletter:edit', desc: 'Open Newsletter Editor' },
+            { cmd: '/newsletter:ai-write', desc: 'AI Content Generator' },
+            { cmd: '/newsletter:send', desc: 'Send Newsletter' },
+            { cmd: '/newsletter:analytics', desc: 'View Analytics' },
+            { cmd: '/newsletter:subscribers', desc: 'Manage Subscribers' },
+            { cmd: '/newsletter:automations', desc: 'Email Automations' },
+        ]
     }
 };
 
@@ -256,8 +271,8 @@ export default function CommandPalette({ isOpen, onClose, onExecute }: CommandPa
                         <div
                             key={cmd.cmd}
                             className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-all ${index === selectedIndex
-                                    ? 'bg-emerald-500/20 border-l-2 border-emerald-400'
-                                    : 'hover:bg-gray-800/50'
+                                ? 'bg-emerald-500/20 border-l-2 border-emerald-400'
+                                : 'hover:bg-gray-800/50'
                                 }`}
                             onClick={() => executeCommand(cmd.cmd)}
                         >
@@ -289,7 +304,7 @@ export default function CommandPalette({ isOpen, onClose, onExecute }: CommandPa
                     </div>
                     <div className="flex items-center gap-2">
                         <Zap className="w-3 h-3 text-emerald-400" />
-                        <span>{filteredCommands.length} / 135 commands</span>
+                        <span>{filteredCommands.length} / 143 commands</span>
                     </div>
                 </div>
             </div>
