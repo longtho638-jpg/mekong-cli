@@ -1,10 +1,12 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { Shield, Settings, Bell, Lock, Palette } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function SettingsPage({ params: { locale } }: { params: { locale: string } }) {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('SettingsPage');
 
     return (
         <div className="min-h-screen bg-[#020202] text-white font-mono">
@@ -21,25 +23,25 @@ export default function SettingsPage({ params: { locale } }: { params: { locale:
                 </div>
             </nav>
             <main className="pt-24 px-6 max-w-[1400px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-purple-400">⚙️ Settings</h1>
+                <h1 className="text-4xl font-bold mb-8 text-purple-400">⚙️ {t('title')}</h1>
 
                 <div className="grid grid-cols-2 gap-6">
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Settings className="w-6 h-6 text-purple-400" />
-                            <h2 className="text-xl font-bold">General</h2>
+                            <h2 className="text-xl font-bold">{t('general')}</h2>
                         </div>
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Language</span>
+                                <span className="text-gray-400">{t('language')}</span>
                                 <span className="text-white">{locale.toUpperCase()}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Theme</span>
+                                <span className="text-gray-400">{t('theme')}</span>
                                 <span className="text-white">Fintech Dark</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-400">Timezone</span>
+                                <span className="text-gray-400">{t('timezone')}</span>
                                 <span className="text-white">UTC+7</span>
                             </div>
                         </div>
@@ -48,20 +50,20 @@ export default function SettingsPage({ params: { locale } }: { params: { locale:
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Bell className="w-6 h-6 text-blue-400" />
-                            <h2 className="text-xl font-bold">Notifications</h2>
+                            <h2 className="text-xl font-bold">{t('notifications')}</h2>
                         </div>
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Email Alerts</span>
-                                <span className="text-green-400">Enabled</span>
+                                <span className="text-gray-400">{t('email_alerts')}</span>
+                                <span className="text-green-400">{t('enabled')}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Push Notifications</span>
-                                <span className="text-green-400">Enabled</span>
+                                <span className="text-gray-400">{t('push_notifications')}</span>
+                                <span className="text-green-400">{t('enabled')}</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-400">Slack Integration</span>
-                                <span className="text-gray-500">Disabled</span>
+                                <span className="text-gray-400">{t('slack_integration')}</span>
+                                <span className="text-gray-500">{t('disabled')}</span>
                             </div>
                         </div>
                     </div>
@@ -69,20 +71,20 @@ export default function SettingsPage({ params: { locale } }: { params: { locale:
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Lock className="w-6 h-6 text-red-400" />
-                            <h2 className="text-xl font-bold">Security</h2>
+                            <h2 className="text-xl font-bold">{t('security')}</h2>
                         </div>
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">2FA</span>
-                                <span className="text-green-400">Active</span>
+                                <span className="text-gray-400">{t('twofa')}</span>
+                                <span className="text-green-400">{t('active')}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Last Login</span>
+                                <span className="text-gray-400">{t('last_login')}</span>
                                 <span className="text-white">2 hours ago</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-400">API Keys</span>
-                                <span className="text-white">3 active</span>
+                                <span className="text-gray-400">{t('api_keys')}</span>
+                                <span className="text-white">3 {t('active')}</span>
                             </div>
                         </div>
                     </div>
@@ -90,19 +92,19 @@ export default function SettingsPage({ params: { locale } }: { params: { locale:
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <Palette className="w-6 h-6 text-pink-400" />
-                            <h2 className="text-xl font-bold">Appearance</h2>
+                            <h2 className="text-xl font-bold">{t('appearance')}</h2>
                         </div>
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Color Scheme</span>
+                                <span className="text-gray-400">{t('color_scheme')}</span>
                                 <span className="text-white">Pro Max Dark</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-white/5">
-                                <span className="text-gray-400">Font</span>
+                                <span className="text-gray-400">{t('font')}</span>
                                 <span className="text-white">JetBrains Mono</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-400">Density</span>
+                                <span className="text-gray-400">{t('density')}</span>
                                 <span className="text-white">High</span>
                             </div>
                         </div>
@@ -112,3 +114,4 @@ export default function SettingsPage({ params: { locale } }: { params: { locale:
         </div>
     );
 }
+

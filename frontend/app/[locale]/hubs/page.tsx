@@ -2,25 +2,27 @@
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const HUBS = [
-    { id: 'warroom', name: 'War Room', icon: '🏯', path: '/warroom', color: 'red' },
-    { id: 'executive', name: 'Executive', icon: '👑', path: '/executive', color: 'yellow' },
-    { id: 'agentops', name: 'AgentOps', icon: '🎯', path: '/agentops', color: 'blue' },
-    { id: 'sales', name: 'Sales', icon: '💰', path: '/sales', color: 'yellow' },
-    { id: 'crm', name: 'CRM', icon: '💼', path: '/crm', color: 'pink' },
-    { id: 'marketing', name: 'Marketing', icon: '📢', path: '/marketing', color: 'red' },
-    { id: 'analytics', name: 'Analytics', icon: '📊', path: '/analytics', color: 'green' },
-    { id: 'hr', name: 'HR', icon: '👥', path: '/hr', color: 'purple' },
-    { id: 'operations', name: 'Operations', icon: '⚙️', path: '/operations', color: 'orange' },
-    { id: 'product', name: 'Product', icon: '🚀', path: '/product', color: 'blue' },
-    { id: 'binhphap', name: 'Binh Pháp', icon: '🏯', path: '/binhphap', color: 'red' },
-    { id: 'portfolio', name: 'Portfolio', icon: '💎', path: '/vc/portfolio', color: 'green' },
+    { id: 'warroom', icon: '🏯', path: '/warroom', color: 'red' },
+    { id: 'executive', icon: '👑', path: '/executive', color: 'yellow' },
+    { id: 'agentops', icon: '🎯', path: '/agentops', color: 'blue' },
+    { id: 'sales', icon: '💰', path: '/sales', color: 'yellow' },
+    { id: 'crm', icon: '💼', path: '/crm', color: 'pink' },
+    { id: 'marketing', icon: '📢', path: '/marketing', color: 'red' },
+    { id: 'analytics', icon: '📊', path: '/analytics', color: 'green' },
+    { id: 'hr', icon: '👥', path: '/hr', color: 'purple' },
+    { id: 'operations', icon: '⚙️', path: '/operations', color: 'orange' },
+    { id: 'product', icon: '🚀', path: '/product', color: 'blue' },
+    { id: 'binhphap', icon: '🏯', path: '/binhphap', color: 'red' },
+    { id: 'portfolio', icon: '💎', path: '/vc/portfolio', color: 'green' },
 ];
 
 export default function HubsPage({ params: { locale } }: { params: { locale: string } }) {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('HubsPage');
 
     return (
         <div className="min-h-screen bg-[#020202] text-white font-mono">
@@ -37,7 +39,7 @@ export default function HubsPage({ params: { locale } }: { params: { locale: str
                 </div>
             </nav>
             <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-white">🏯 Hub Directory</h1>
+                <h1 className="text-4xl font-bold mb-8 text-white">🏯 {t('title')}</h1>
                 <div className="grid grid-cols-4 gap-4">
                     {HUBS.map((hub) => (
                         <Link
@@ -46,7 +48,7 @@ export default function HubsPage({ params: { locale } }: { params: { locale: str
                             className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6 hover:border-white/30 transition-all"
                         >
                             <div className="text-4xl mb-3">{hub.icon}</div>
-                            <div className="text-lg font-bold mb-1">{hub.name}</div>
+                            <div className="text-lg font-bold mb-1">{t(hub.id)}</div>
                             <div className="text-xs text-gray-500">{hub.id}</div>
                         </Link>
                     ))}
@@ -55,3 +57,4 @@ export default function HubsPage({ params: { locale } }: { params: { locale: str
         </div>
     );
 }
+

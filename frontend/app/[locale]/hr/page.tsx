@@ -1,10 +1,12 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { Shield, Users } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function HRPage({ params: { locale } }: { params: { locale: string } }) {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('HR');
 
     return (
         <div className="min-h-screen bg-[#020202] text-white font-mono">
@@ -21,18 +23,18 @@ export default function HRPage({ params: { locale } }: { params: { locale: strin
                 </div>
             </nav>
             <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-blue-400">👥 HR Dashboard</h1>
+                <h1 className="text-4xl font-bold mb-8 text-blue-400">👥 {t('dashboard')}</h1>
                 <div className="grid grid-cols-3 gap-4">
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Total Headcount</div>
+                        <div className="text-xs text-gray-500 mb-2">{t('headcount')}</div>
                         <div className="text-2xl font-bold text-blue-400">156</div>
                     </div>
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Open Positions</div>
+                        <div className="text-xs text-gray-500 mb-2">{t('open_positions')}</div>
                         <div className="text-2xl font-bold text-emerald-400">12</div>
                     </div>
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Turnover Rate</div>
+                        <div className="text-xs text-gray-500 mb-2">{t('turnover_rate')}</div>
                         <div className="text-2xl font-bold text-yellow-400">8.5%</div>
                     </div>
                 </div>
@@ -40,3 +42,4 @@ export default function HRPage({ params: { locale } }: { params: { locale: strin
         </div>
     );
 }
+

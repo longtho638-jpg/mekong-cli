@@ -3,47 +3,22 @@
         "dashboard": "仪表板",
         "settings": "设置",
         "profile": "个人资料",
-        "ai_assistant": "AI 助手"
-    },
-    "Hubs": {
-        "vc_hub": "风险投资中心 (VC)",
-        "strategy_hub": "孙子兵法中心",
-        "admin_hub": "任务控制中心"
-    },
-    "VC": {
-        "portfolio": "投资组合矩阵",
-        "cap_table": "股权结构星系",
-        "dealflow": "交易流程管道",
-        "valuation": "估值",
-        "invested": "已投资金",
-        "runway": "现金流期限",
-        "burn_rate": "烧钱速度",
-        "dilution": "稀释保护",
-        "exit_scenario": "退出场景",
-        "irr": "内部收益率 (IRR)",
-        "equity": "股权所有权",
-        "active_deals": "活跃交易",
-        "sourcing": "寻找项目",
-        "diligence": "尽职调查",
-        "term_sheet": "投资条款",
-        "closed": "已完成",
-        "deal_source": "交易来源",
-        "conversion_rate": "转化率",
-        "avg_deal_size": "平均规模",
-        "time_to_close": "成交时间"
-    },
-    "Strategy": {
-        "chapter_1": "第一篇：始计篇",
-        "chapter_2": "第二篇：作战篇",
-        "chapter_3": "第三篇：谋攻篇",
-        "active_strategies": "活跃计谋",
-        "win_probability": "胜率",
-        "warroom": "作战室"
+        "ai_assistant": "AI助手",
+        "save": "保存",
+        "cancel": "取消",
+        "edit": "编辑",
+        "delete": "删除",
+        "view": "查看",
+        "export": "导出",
+        "search": "搜索",
+        "filter": "筛选",
+        "loading": "加载中...",
+        "no_data": "暂无数据"
     },
     "AI": {
-        "copilot_active": "副驾驶活跃",
-        "agents_online": "代理在线",
-        "tasks_running": "任务运行中",
+        "copilot_active": "副驾驶已激活",
+        "agents_online": "在线代理",
+        "tasks_running": "运行中的任务",
         "cpu_usage": "CPU使用率",
         "memory": "内存",
         "cost_today": "今日成本",
@@ -51,5 +26,508 @@
         "agent_health": "代理健康网格",
         "system_alerts": "系统警报",
         "command_log": "命令日志"
+    },
+    "Hubs": {
+        "vc_hub": "风险投资中心",
+        "strategy_hub": "市场战略（孙子兵法）",
+        "admin_hub": "指挥中心",
+        "hr_hub": "人力资源中心",
+        "marketing_hub": "市场营销中心",
+        "sales_hub": "销售中心",
+        "operations_hub": "运营中心",
+        "finance_hub": "财务中心"
+    },
+    "VC": {
+        "portfolio": "投资组合矩阵",
+        "cap_table": "资本表",
+        "dealflow": "交易流程",
+        "valuation": "估值",
+        "invested": "已投资本",
+        "runway": "资金跑道（月）",
+        "burn_rate": "燃烧率",
+        "dilution": "稀释保护",
+        "exit_scenario": "退出场景",
+        "irr": "内部收益率（IRR）",
+        "equity": "股权占比",
+        "active_deals": "活跃交易",
+        "sourcing": "项目挖掘",
+        "diligence": "尽职调查",
+        "term_sheet": "条款清单",
+        "closed": "已完成",
+        "deal_source": "交易来源",
+        "conversion_rate": "转化率",
+        "avg_deal_size": "平均交易规模",
+        "time_to_close": "成交时间"
+    },
+    "Strategy": {
+        "chapter_1": "第一章：计篇",
+        "chapter_2": "第二章：作战篇",
+        "chapter_3": "第三章：谋攻篇",
+        "active_strategies": "活跃策略",
+        "win_probability": "胜率",
+        "warroom": "作战室"
+    },
+    "HR": {
+        "dashboard": "人力资源仪表板",
+        "headcount": "员工总数",
+        "hiring_pipeline": "招聘流程",
+        "turnover_rate": "离职率",
+        "open_positions": "空缺职位",
+        "new_hires": "新员工",
+        "time_to_hire": "招聘周期",
+        "cost_per_hire": "每次招聘成本",
+        "retention_rate": "留存率",
+        "employee_satisfaction": "员工满意度",
+        "performance_reviews": "绩效评估",
+        "training_completion": "培训完成率",
+        "diversity_ratio": "多样性比例"
+    },
+    "HRIS": {
+        "dashboard": "HRIS仪表板",
+        "employee_records": "员工档案",
+        "payroll": "薪资发放",
+        "benefits": "福利",
+        "attendance": "考勤",
+        "leave_management": "请假管理"
+    },
+    "Recruiter": {
+        "dashboard": "招聘仪表板",
+        "active_jobs": "活跃职位",
+        "candidates": "候选人",
+        "interviews": "面试",
+        "offers": "录用",
+        "pipeline": "招聘管道"
+    },
+    "LD": {
+        "dashboard": "学习发展仪表板",
+        "courses": "课程",
+        "completions": "完成数",
+        "certifications": "证书",
+        "skills_gap": "技能差距分析"
+    },
+    "CompBen": {
+        "dashboard": "薪酬福利",
+        "salary_bands": "薪资带",
+        "total_rewards": "总薪酬",
+        "equity_grants": "股权激励",
+        "benefits_cost": "福利成本"
+    },
+    "HRAnalytics": {
+        "dashboard": "人力资源分析",
+        "headcount_trend": "员工趋势",
+        "attrition_analysis": "离职分析",
+        "engagement_score": "敬业度分数"
+    },
+    "ER": {
+        "dashboard": "员工关系",
+        "cases": "案例",
+        "grievances": "申诉",
+        "investigations": "调查"
+    },
+    "Operations": {
+        "dashboard": "运营仪表板",
+        "active_projects": "活跃项目",
+        "on_track": "正常进行",
+        "at_risk": "有风险",
+        "completed": "已完成",
+        "delayed": "延迟",
+        "resources_utilized": "资源利用率",
+        "efficiency_rate": "效率"
+    },
+    "Projects": {
+        "dashboard": "项目仪表板",
+        "total_projects": "项目总数",
+        "in_progress": "进行中",
+        "milestones": "里程碑",
+        "budget_status": "预算状态"
+    },
+    "FinOps": {
+        "dashboard": "FinOps仪表板",
+        "cloud_spend": "云支出",
+        "cost_optimization": "成本优化",
+        "savings": "节省",
+        "forecast": "预测"
+    },
+    "Costs": {
+        "dashboard": "成本管理",
+        "total_costs": "总成本",
+        "by_department": "按部门",
+        "by_category": "按类别",
+        "variance": "差异"
+    },
+    "Marketing": {
+        "dashboard": "市场营销仪表板",
+        "leads": "线索总数",
+        "mql": "营销合格线索",
+        "sql": "销售合格线索",
+        "conversion": "转化率",
+        "campaigns": "营销活动",
+        "reach": "触达",
+        "engagement": "互动",
+        "attribution": "归因",
+        "roi": "营销ROI",
+        "funnel": "营销漏斗",
+        "cac": "客户获取成本"
+    },
+    "DigitalMarketing": {
+        "dashboard": "数字营销",
+        "traffic": "网站流量",
+        "sessions": "会话",
+        "bounce_rate": "跳出率",
+        "conversions": "转化"
+    },
+    "ContentMarketing": {
+        "dashboard": "内容营销",
+        "articles": "文章",
+        "views": "浏览量",
+        "shares": "分享",
+        "engagement_rate": "互动率"
+    },
+    "B2BMarketing": {
+        "dashboard": "B2B营销",
+        "accounts": "目标账户",
+        "pipeline_influence": "管道影响",
+        "deal_velocity": "成交速度"
+    },
+    "PaidSocial": {
+        "dashboard": "付费社交",
+        "spend": "广告支出",
+        "impressions": "展示次数",
+        "clicks": "点击次数",
+        "ctr": "点击率",
+        "cpc": "单次点击成本",
+        "roas": "广告回报率"
+    },
+    "PPC": {
+        "dashboard": "PPC仪表板",
+        "campaigns": "活动",
+        "keywords": "关键词",
+        "quality_score": "质量分数"
+    },
+    "SEO": {
+        "dashboard": "SEO仪表板",
+        "organic_traffic": "自然流量",
+        "rankings": "排名",
+        "backlinks": "外链",
+        "domain_authority": "域名权重"
+    },
+    "Email": {
+        "dashboard": "邮件营销",
+        "subscribers": "订阅者",
+        "open_rate": "打开率",
+        "click_rate": "点击率",
+        "unsubscribes": "退订"
+    },
+    "Social": {
+        "dashboard": "社交媒体",
+        "followers": "粉丝",
+        "posts": "帖子",
+        "engagement": "互动",
+        "mentions": "提及"
+    },
+    "Influencer": {
+        "dashboard": "网红营销",
+        "partners": "合作伙伴",
+        "reach": "总触达",
+        "campaigns": "活动"
+    },
+    "PR": {
+        "dashboard": "公共关系",
+        "press_releases": "新闻稿",
+        "media_mentions": "媒体提及",
+        "sentiment": "情感分析"
+    },
+    "Campaigns": {
+        "dashboard": "活动管理",
+        "active": "活跃活动",
+        "budget": "预算",
+        "performance": "表现"
+    },
+    "Sales": {
+        "dashboard": "销售仪表板",
+        "pipeline": "管道价值",
+        "won": "成交订单",
+        "lost": "失败订单",
+        "win_rate": "成交率",
+        "quota_attainment": "配额完成率",
+        "avg_deal_size": "平均交易规模",
+        "sales_cycle": "销售周期"
+    },
+    "CRM": {
+        "dashboard": "CRM仪表板",
+        "contacts": "联系人",
+        "accounts": "账户",
+        "opportunities": "机会",
+        "activities": "活动"
+    },
+    "LeadGen": {
+        "dashboard": "线索生成",
+        "new_leads": "新线索",
+        "qualified": "已合格",
+        "conversion": "转化率",
+        "sources": "线索来源"
+    },
+    "SDR": {
+        "dashboard": "SDR仪表板",
+        "calls": "拨打电话",
+        "emails": "发送邮件",
+        "meetings": "预约会议",
+        "sqls": "生成SQL"
+    },
+    "AE": {
+        "dashboard": "客户经理",
+        "pipeline": "管道",
+        "forecast": "预测",
+        "quota": "配额进度"
+    },
+    "BDM": {
+        "dashboard": "业务拓展",
+        "partnerships": "合作伙伴",
+        "opportunities": "机会",
+        "revenue_impact": "收入影响"
+    },
+    "ABM": {
+        "dashboard": "账户营销",
+        "target_accounts": "目标账户",
+        "engagement": "互动分数",
+        "pipeline": "ABM管道"
+    },
+    "ISR": {
+        "dashboard": "内部销售",
+        "activities": "活动",
+        "conversion": "转化率",
+        "revenue": "收入"
+    },
+    "Product": {
+        "dashboard": "产品仪表板",
+        "features": "功能",
+        "roadmap": "路线图",
+        "releases": "发布",
+        "nps": "NPS分数"
+    },
+    "ProductMarketing": {
+        "dashboard": "产品营销",
+        "launches": "发布",
+        "positioning": "定位",
+        "competitive": "竞争情报"
+    },
+    "SWE": {
+        "dashboard": "工程仪表板",
+        "velocity": "冲刺速度",
+        "bugs": "待修复Bug",
+        "deployments": "部署",
+        "uptime": "正常运行时间"
+    },
+    "SE": {
+        "dashboard": "解决方案工程",
+        "demos": "演示",
+        "pocs": "概念验证",
+        "win_rate": "技术成交率"
+    },
+    "Data": {
+        "dashboard": "数据仪表板",
+        "pipelines": "数据管道",
+        "quality": "数据质量",
+        "models": "ML模型"
+    },
+    "Research": {
+        "dashboard": "研究仪表板",
+        "studies": "研究",
+        "insights": "洞察",
+        "experiments": "实验"
+    },
+    "Legal": {
+        "dashboard": "法务仪表板",
+        "contracts": "合同",
+        "pending_review": "待审核",
+        "compliance": "合规分数"
+    },
+    "IP": {
+        "dashboard": "知识产权",
+        "patents": "专利",
+        "trademarks": "商标",
+        "filings": "申请中"
+    },
+    "Tax": {
+        "dashboard": "税务仪表板",
+        "liability": "税务责任",
+        "credits": "税收抵免",
+        "filings": "申报"
+    },
+    "Security": {
+        "dashboard": "安全仪表板",
+        "incidents": "事件",
+        "vulnerabilities": "漏洞",
+        "compliance": "合规"
+    },
+    "Support": {
+        "dashboard": "支持仪表板",
+        "tickets": "待处理工单",
+        "response_time": "平均响应时间",
+        "satisfaction": "CSAT分数",
+        "resolution": "解决率"
+    },
+    "IT": {
+        "dashboard": "IT仪表板",
+        "systems": "系统",
+        "uptime": "正常运行时间",
+        "incidents": "事件",
+        "assets": "IT资产"
+    },
+    "Ecommerce": {
+        "dashboard": "电商仪表板",
+        "orders": "订单",
+        "revenue": "收入",
+        "aov": "平均订单价值",
+        "cart_abandonment": "购物车放弃率"
+    },
+    "Retail": {
+        "dashboard": "零售仪表板",
+        "stores": "门店",
+        "sales": "销售额",
+        "inventory": "库存",
+        "footfall": "客流量"
+    },
+    "Inventory": {
+        "dashboard": "库存仪表板",
+        "sku_count": "SKU数量",
+        "stock_value": "库存价值",
+        "turnover": "周转率"
+    },
+    "AmazonFBA": {
+        "dashboard": "亚马逊FBA",
+        "listings": "商品列表",
+        "orders": "订单",
+        "reviews": "评价",
+        "bsr": "畅销排名"
+    },
+    "RealEstate": {
+        "dashboard": "房地产仪表板",
+        "properties": "房产",
+        "portfolio_value": "组合价值",
+        "occupancy": "入住率",
+        "rental_income": "租金收入"
+    },
+    "Entrepreneur": {
+        "dashboard": "创业者中心",
+        "ventures": "创业项目",
+        "revenue": "收入",
+        "runway": "资金跑道"
+    },
+    "Startup": {
+        "dashboard": "创业公司仪表板",
+        "mrr": "月经常性收入",
+        "arr": "年经常性收入",
+        "churn": "流失率",
+        "ltv": "客户终身价值"
+    },
+    "Executive": {
+        "dashboard": "高管仪表板",
+        "revenue": "总收入",
+        "growth": "增长率",
+        "margins": "利润率"
+    },
+    "Calendar": {
+        "dashboard": "日历",
+        "events": "事件",
+        "meetings": "会议",
+        "schedule": "日程"
+    },
+    "Documents": {
+        "dashboard": "文档",
+        "files": "文件",
+        "shared": "已共享",
+        "recent": "最近"
+    },
+    "Events": {
+        "dashboard": "活动",
+        "upcoming": "即将举行",
+        "past": "已结束",
+        "registrations": "报名"
+    },
+    "Learning": {
+        "dashboard": "学习中心",
+        "courses": "课程",
+        "progress": "进度",
+        "certificates": "证书"
+    },
+    "Portfolio": {
+        "dashboard": "投资组合",
+        "investments": "投资",
+        "returns": "回报",
+        "allocation": "配置"
+    },
+    "Shield": {
+        "dashboard": "反稀释保护",
+        "protection": "保护分数",
+        "alerts": "警报",
+        "recommendations": "建议"
+    },
+    "Assistant": {
+        "dashboard": "AI助手",
+        "conversations": "对话",
+        "tasks": "已完成任务",
+        "accuracy": "准确率"
+    },
+    "Landing": {
+        "hubs": "中心",
+        "pricing": "定价",
+        "tagline": "现代代理公司的WIN-WIN-WIN操作系统",
+        "explore_hubs": "探索中心",
+        "view_pricing": "查看定价",
+        "modules": "168个模块",
+        "modules_desc": "完整的代理管理套件",
+        "agents": "156个AI代理",
+        "agents_desc": "自动化工作流和智能",
+        "binh_phap": "13兵法",
+        "binh_phap_desc": "整合战略智慧"
+    },
+    "HubsPage": {
+        "title": "中心目录",
+        "warroom": "作战室",
+        "executive": "高管",
+        "agentops": "代理运营",
+        "sales": "销售",
+        "crm": "CRM",
+        "marketing": "市场营销",
+        "analytics": "分析",
+        "hr": "人力资源",
+        "operations": "运营",
+        "product": "产品",
+        "binhphap": "兵法",
+        "portfolio": "投资组合"
+    },
+    "Pricing": {
+        "title": "定价方案",
+        "subtitle": "与您的成功保持WIN-WIN-WIN一致",
+        "startup": "创业版",
+        "growth": "成长版",
+        "enterprise": "企业版",
+        "popular": "热门",
+        "get_started": "开始使用",
+        "per_month": "/月",
+        "custom": "定制"
+    },
+    "SettingsPage": {
+        "title": "设置",
+        "general": "常规",
+        "language": "语言",
+        "theme": "主题",
+        "timezone": "时区",
+        "notifications": "通知",
+        "email_alerts": "邮件提醒",
+        "push_notifications": "推送通知",
+        "slack_integration": "Slack集成",
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "security": "安全",
+        "twofa": "双重认证",
+        "active": "活跃",
+        "last_login": "上次登录",
+        "api_keys": "API密钥",
+        "appearance": "外观",
+        "color_scheme": "配色方案",
+        "font": "字体",
+        "density": "密度"
     }
 }

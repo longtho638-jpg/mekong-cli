@@ -1,55 +1,533 @@
 {
     "Common": {
-        "dashboard": "Bảng Điều Khiển",
-        "settings": "Cài Đặt",
-        "profile": "Hồ Sơ",
-        "ai_assistant": "Trợ Lý AI"
-    },
-    "Hubs": {
-        "vc_hub": "Trung Tâm Đầu Tư (VC)",
-        "strategy_hub": "Binh Pháp Tôn Tử",
-        "admin_hub": "Trung Tâm Chỉ Huy"
-    },
-    "VC": {
-        "portfolio": "Ma Trận Danh Mục",
-        "cap_table": "Thiên Hà Cổ Đông (Cap Table)",
-        "dealflow": "Dòng Chảy Deal (Deal Flow)",
-        "valuation": "Định Giá",
-        "invested": "Vốn Đã Rót",
-        "runway": "Thời Gian Sống (Runway)",
-        "burn_rate": "Tốc Độ Đốt Tiền",
-        "dilution": "Khiên Chống Pha Loãng",
-        "exit_scenario": "Kịch Bản Thoái Vốn",
-        "irr": "Tỷ Suất Hoàn Vốn (IRR)",
-        "equity": "Sở Hữu Cổ Phần",
-        "active_deals": "Deal Đang Chạy",
-        "sourcing": "Tìm Kiếm",
-        "diligence": "Thẩm Định (DD)",
-        "term_sheet": "Bản Điều Khoản",
-        "closed": "Đã Đóng",
-        "deal_source": "Nguồn Deal",
-        "conversion_rate": "Tỷ Lệ Chuyển Đổi",
-        "avg_deal_size": "Quy Mô TB",
-        "time_to_close": "Thời Gian Chốt"
-    },
-    "Strategy": {
-        "chapter_1": "Thiên 1: Kế Sách",
-        "chapter_2": "Thiên 2: Tác Chiến",
-        "chapter_3": "Thiên 3: Mưu Công",
-        "active_strategies": "Mưu Kế Đang Dùng",
-        "win_probability": "Xác Suất Thắng",
-        "warroom": "Phòng Chiến Lược"
+        "dashboard": "Bảng điều khiển",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ",
+        "ai_assistant": "Trợ lý AI",
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "view": "Xem",
+        "export": "Xuất",
+        "search": "Tìm kiếm",
+        "filter": "Lọc",
+        "loading": "Đang tải...",
+        "no_data": "Không có dữ liệu"
     },
     "AI": {
-        "copilot_active": "Phi Công Tự Động Hoạt Động",
-        "agents_online": "Tác Nhân Online",
-        "tasks_running": "Nhiệm Vụ Đang Chạy",
-        "cpu_usage": "Sử Dụng CPU",
-        "memory": "Bộ Nhớ",
-        "cost_today": "Chi Phí Hôm Nay",
-        "revenue": "Doanh Thu",
-        "agent_health": "Lưới Tác Nhân",
-        "system_alerts": "Cảnh Báo Hệ Thống",
-        "command_log": "Lịch Sử Lệnh"
+        "copilot_active": "Co-Pilot đang hoạt động",
+        "agents_online": "Tác nhân trực tuyến",
+        "tasks_running": "Nhiệm vụ đang chạy",
+        "cpu_usage": "Sử dụng CPU",
+        "memory": "Bộ nhớ",
+        "cost_today": "Chi phí hôm nay",
+        "revenue": "Doanh thu",
+        "agent_health": "Lưới sức khỏe tác nhân",
+        "system_alerts": "Cảnh báo hệ thống",
+        "command_log": "Nhật ký lệnh"
+    },
+    "Hubs": {
+        "vc_hub": "Trung tâm Đầu tư mạo hiểm",
+        "strategy_hub": "Chiến lược thị trường (Tôn Tử)",
+        "admin_hub": "Trung tâm điều khiển",
+        "hr_hub": "Trung tâm Nhân sự",
+        "marketing_hub": "Trung tâm Marketing",
+        "sales_hub": "Trung tâm Bán hàng",
+        "operations_hub": "Trung tâm Vận hành",
+        "finance_hub": "Trung tâm Tài chính"
+    },
+    "VC": {
+        "portfolio": "Ma trận danh mục",
+        "cap_table": "Bảng vốn hóa",
+        "dealflow": "Dòng giao dịch",
+        "valuation": "Định giá",
+        "invested": "Vốn đầu tư",
+        "runway": "Thời gian còn lại (Tháng)",
+        "burn_rate": "Tốc độ đốt tiền",
+        "dilution": "Lá chắn pha loãng",
+        "exit_scenario": "Kịch bản thoái vốn",
+        "irr": "Tỷ suất sinh lời nội bộ (IRR)",
+        "equity": "Sở hữu vốn",
+        "active_deals": "Giao dịch đang hoạt động",
+        "sourcing": "Tìm kiếm",
+        "diligence": "Thẩm định",
+        "term_sheet": "Bản điều khoản",
+        "closed": "Đã đóng",
+        "deal_source": "Nguồn giao dịch",
+        "conversion_rate": "Tỷ lệ chuyển đổi",
+        "avg_deal_size": "Quy mô giao dịch TB",
+        "time_to_close": "Thời gian đóng"
+    },
+    "Strategy": {
+        "chapter_1": "Chương 1: Kế hoạch",
+        "chapter_2": "Chương 2: Tác chiến",
+        "chapter_3": "Chương 3: Mưu công",
+        "active_strategies": "Chiến lược đang hoạt động",
+        "win_probability": "Xác suất thắng",
+        "warroom": "Phòng chiến"
+    },
+    "HR": {
+        "dashboard": "Bảng điều khiển Nhân sự",
+        "headcount": "Tổng nhân sự",
+        "hiring_pipeline": "Quy trình tuyển dụng",
+        "turnover_rate": "Tỷ lệ nghỉ việc",
+        "open_positions": "Vị trí đang tuyển",
+        "new_hires": "Nhân viên mới",
+        "time_to_hire": "Thời gian tuyển dụng",
+        "cost_per_hire": "Chi phí mỗi tuyển dụng",
+        "retention_rate": "Tỷ lệ giữ chân",
+        "employee_satisfaction": "Mức độ hài lòng",
+        "performance_reviews": "Đánh giá hiệu suất",
+        "training_completion": "Hoàn thành đào tạo",
+        "diversity_ratio": "Tỷ lệ đa dạng"
+    },
+    "HRIS": {
+        "dashboard": "Bảng điều khiển HRIS",
+        "employee_records": "Hồ sơ nhân viên",
+        "payroll": "Bảng lương",
+        "benefits": "Phúc lợi",
+        "attendance": "Chấm công",
+        "leave_management": "Quản lý nghỉ phép"
+    },
+    "Recruiter": {
+        "dashboard": "Bảng điều khiển Tuyển dụng",
+        "active_jobs": "Công việc đang tuyển",
+        "candidates": "Ứng viên",
+        "interviews": "Phỏng vấn",
+        "offers": "Đề nghị",
+        "pipeline": "Quy trình tuyển dụng"
+    },
+    "LD": {
+        "dashboard": "Bảng điều khiển L&D",
+        "courses": "Khóa học",
+        "completions": "Hoàn thành",
+        "certifications": "Chứng chỉ",
+        "skills_gap": "Phân tích khoảng cách kỹ năng"
+    },
+    "CompBen": {
+        "dashboard": "Lương thưởng & Phúc lợi",
+        "salary_bands": "Khung lương",
+        "total_rewards": "Tổng phần thưởng",
+        "equity_grants": "Cổ phần ưu đãi",
+        "benefits_cost": "Chi phí phúc lợi"
+    },
+    "HRAnalytics": {
+        "dashboard": "Phân tích Nhân sự",
+        "headcount_trend": "Xu hướng nhân sự",
+        "attrition_analysis": "Phân tích nghỉ việc",
+        "engagement_score": "Điểm gắn kết"
+    },
+    "ER": {
+        "dashboard": "Quan hệ nhân viên",
+        "cases": "Vụ việc",
+        "grievances": "Khiếu nại",
+        "investigations": "Điều tra"
+    },
+    "Operations": {
+        "dashboard": "Bảng điều khiển Vận hành",
+        "active_projects": "Dự án đang chạy",
+        "on_track": "Đúng tiến độ",
+        "at_risk": "Có rủi ro",
+        "completed": "Hoàn thành",
+        "delayed": "Trễ tiến độ",
+        "resources_utilized": "Tài nguyên sử dụng",
+        "efficiency_rate": "Hiệu suất"
+    },
+    "Projects": {
+        "dashboard": "Bảng điều khiển Dự án",
+        "total_projects": "Tổng dự án",
+        "in_progress": "Đang thực hiện",
+        "milestones": "Mốc tiến độ",
+        "budget_status": "Tình trạng ngân sách"
+    },
+    "FinOps": {
+        "dashboard": "Bảng điều khiển FinOps",
+        "cloud_spend": "Chi phí Cloud",
+        "cost_optimization": "Tối ưu chi phí",
+        "savings": "Tiết kiệm",
+        "forecast": "Dự báo"
+    },
+    "Costs": {
+        "dashboard": "Quản lý Chi phí",
+        "total_costs": "Tổng chi phí",
+        "by_department": "Theo phòng ban",
+        "by_category": "Theo danh mục",
+        "variance": "Chênh lệch"
+    },
+    "Marketing": {
+        "dashboard": "Bảng điều khiển Marketing",
+        "leads": "Tổng khách hàng tiềm năng",
+        "mql": "Khách hàng tiềm năng MQL",
+        "sql": "Khách hàng tiềm năng SQL",
+        "conversion": "Tỷ lệ chuyển đổi",
+        "campaigns": "Chiến dịch",
+        "reach": "Tiếp cận",
+        "engagement": "Tương tác",
+        "attribution": "Phân bổ",
+        "roi": "ROI Marketing",
+        "funnel": "Phễu Marketing",
+        "cac": "Chi phí thu hút khách hàng"
+    },
+    "DigitalMarketing": {
+        "dashboard": "Marketing số",
+        "traffic": "Lưu lượng truy cập",
+        "sessions": "Phiên truy cập",
+        "bounce_rate": "Tỷ lệ thoát",
+        "conversions": "Chuyển đổi"
+    },
+    "ContentMarketing": {
+        "dashboard": "Content Marketing",
+        "articles": "Bài viết",
+        "views": "Lượt xem",
+        "shares": "Chia sẻ",
+        "engagement_rate": "Tỷ lệ tương tác"
+    },
+    "B2BMarketing": {
+        "dashboard": "Marketing B2B",
+        "accounts": "Tài khoản mục tiêu",
+        "pipeline_influence": "Ảnh hưởng pipeline",
+        "deal_velocity": "Tốc độ giao dịch"
+    },
+    "PaidSocial": {
+        "dashboard": "Quảng cáo mạng xã hội",
+        "spend": "Chi tiêu quảng cáo",
+        "impressions": "Lượt hiển thị",
+        "clicks": "Lượt nhấp",
+        "ctr": "CTR",
+        "cpc": "CPC",
+        "roas": "ROAS"
+    },
+    "PPC": {
+        "dashboard": "Bảng điều khiển PPC",
+        "campaigns": "Chiến dịch",
+        "keywords": "Từ khóa",
+        "quality_score": "Điểm chất lượng"
+    },
+    "SEO": {
+        "dashboard": "Bảng điều khiển SEO",
+        "organic_traffic": "Lưu lượng tự nhiên",
+        "rankings": "Thứ hạng",
+        "backlinks": "Liên kết ngược",
+        "domain_authority": "Uy tín tên miền"
+    },
+    "Email": {
+        "dashboard": "Email Marketing",
+        "subscribers": "Người đăng ký",
+        "open_rate": "Tỷ lệ mở",
+        "click_rate": "Tỷ lệ nhấp",
+        "unsubscribes": "Hủy đăng ký"
+    },
+    "Social": {
+        "dashboard": "Mạng xã hội",
+        "followers": "Người theo dõi",
+        "posts": "Bài đăng",
+        "engagement": "Tương tác",
+        "mentions": "Đề cập"
+    },
+    "Influencer": {
+        "dashboard": "Influencer Marketing",
+        "partners": "Đối tác",
+        "reach": "Tổng tiếp cận",
+        "campaigns": "Chiến dịch"
+    },
+    "PR": {
+        "dashboard": "Quan hệ công chúng",
+        "press_releases": "Thông cáo báo chí",
+        "media_mentions": "Đề cập truyền thông",
+        "sentiment": "Cảm xúc"
+    },
+    "Campaigns": {
+        "dashboard": "Quản lý chiến dịch",
+        "active": "Chiến dịch đang chạy",
+        "budget": "Ngân sách",
+        "performance": "Hiệu suất"
+    },
+    "Sales": {
+        "dashboard": "Bảng điều khiển Bán hàng",
+        "pipeline": "Giá trị Pipeline",
+        "won": "Giao dịch thắng",
+        "lost": "Giao dịch thua",
+        "win_rate": "Tỷ lệ thắng",
+        "quota_attainment": "Đạt chỉ tiêu",
+        "avg_deal_size": "Quy mô giao dịch TB",
+        "sales_cycle": "Chu kỳ bán hàng"
+    },
+    "CRM": {
+        "dashboard": "Bảng điều khiển CRM",
+        "contacts": "Liên hệ",
+        "accounts": "Tài khoản",
+        "opportunities": "Cơ hội",
+        "activities": "Hoạt động"
+    },
+    "LeadGen": {
+        "dashboard": "Tạo khách hàng tiềm năng",
+        "new_leads": "Khách hàng mới",
+        "qualified": "Đã đủ điều kiện",
+        "conversion": "Tỷ lệ chuyển đổi",
+        "sources": "Nguồn khách hàng"
+    },
+    "SDR": {
+        "dashboard": "Bảng điều khiển SDR",
+        "calls": "Cuộc gọi",
+        "emails": "Email đã gửi",
+        "meetings": "Cuộc họp đã đặt",
+        "sqls": "SQL đã tạo"
+    },
+    "AE": {
+        "dashboard": "Account Executive",
+        "pipeline": "Pipeline",
+        "forecast": "Dự báo",
+        "quota": "Tiến độ chỉ tiêu"
+    },
+    "BDM": {
+        "dashboard": "Phát triển kinh doanh",
+        "partnerships": "Đối tác",
+        "opportunities": "Cơ hội",
+        "revenue_impact": "Tác động doanh thu"
+    },
+    "ABM": {
+        "dashboard": "Account Based Marketing",
+        "target_accounts": "Tài khoản mục tiêu",
+        "engagement": "Điểm tương tác",
+        "pipeline": "Pipeline ABM"
+    },
+    "ISR": {
+        "dashboard": "Bán hàng nội bộ",
+        "activities": "Hoạt động",
+        "conversion": "Tỷ lệ chuyển đổi",
+        "revenue": "Doanh thu"
+    },
+    "Product": {
+        "dashboard": "Bảng điều khiển Sản phẩm",
+        "features": "Tính năng",
+        "roadmap": "Lộ trình",
+        "releases": "Phát hành",
+        "nps": "Điểm NPS"
+    },
+    "ProductMarketing": {
+        "dashboard": "Marketing Sản phẩm",
+        "launches": "Ra mắt",
+        "positioning": "Định vị",
+        "competitive": "Phân tích đối thủ"
+    },
+    "SWE": {
+        "dashboard": "Bảng điều khiển Kỹ thuật",
+        "velocity": "Tốc độ Sprint",
+        "bugs": "Lỗi đang mở",
+        "deployments": "Triển khai",
+        "uptime": "Thời gian hoạt động"
+    },
+    "SE": {
+        "dashboard": "Kỹ sư giải pháp",
+        "demos": "Demo",
+        "pocs": "POC",
+        "win_rate": "Tỷ lệ thắng kỹ thuật"
+    },
+    "Data": {
+        "dashboard": "Bảng điều khiển Dữ liệu",
+        "pipelines": "Luồng dữ liệu",
+        "quality": "Chất lượng dữ liệu",
+        "models": "Mô hình ML"
+    },
+    "Research": {
+        "dashboard": "Bảng điều khiển Nghiên cứu",
+        "studies": "Nghiên cứu",
+        "insights": "Thông tin chi tiết",
+        "experiments": "Thử nghiệm"
+    },
+    "Legal": {
+        "dashboard": "Bảng điều khiển Pháp lý",
+        "contracts": "Hợp đồng",
+        "pending_review": "Đang chờ xem xét",
+        "compliance": "Điểm tuân thủ"
+    },
+    "IP": {
+        "dashboard": "Sở hữu trí tuệ",
+        "patents": "Bằng sáng chế",
+        "trademarks": "Thương hiệu",
+        "filings": "Hồ sơ đang xử lý"
+    },
+    "Tax": {
+        "dashboard": "Bảng điều khiển Thuế",
+        "liability": "Nghĩa vụ thuế",
+        "credits": "Tín dụng thuế",
+        "filings": "Khai thuế"
+    },
+    "Security": {
+        "dashboard": "Bảng điều khiển Bảo mật",
+        "incidents": "Sự cố",
+        "vulnerabilities": "Lỗ hổng",
+        "compliance": "Tuân thủ"
+    },
+    "Support": {
+        "dashboard": "Bảng điều khiển Hỗ trợ",
+        "tickets": "Ticket đang mở",
+        "response_time": "Thời gian phản hồi TB",
+        "satisfaction": "Điểm CSAT",
+        "resolution": "Tỷ lệ giải quyết"
+    },
+    "IT": {
+        "dashboard": "Bảng điều khiển IT",
+        "systems": "Hệ thống",
+        "uptime": "Thời gian hoạt động",
+        "incidents": "Sự cố",
+        "assets": "Tài sản IT"
+    },
+    "Ecommerce": {
+        "dashboard": "Bảng điều khiển TMĐT",
+        "orders": "Đơn hàng",
+        "revenue": "Doanh thu",
+        "aov": "Giá trị đơn hàng TB",
+        "cart_abandonment": "Bỏ giỏ hàng"
+    },
+    "Retail": {
+        "dashboard": "Bảng điều khiển Bán lẻ",
+        "stores": "Cửa hàng",
+        "sales": "Doanh số",
+        "inventory": "Tồn kho",
+        "footfall": "Lượt khách"
+    },
+    "Inventory": {
+        "dashboard": "Bảng điều khiển Tồn kho",
+        "sku_count": "Số lượng SKU",
+        "stock_value": "Giá trị tồn kho",
+        "turnover": "Tỷ lệ quay vòng"
+    },
+    "AmazonFBA": {
+        "dashboard": "Amazon FBA",
+        "listings": "Sản phẩm",
+        "orders": "Đơn hàng",
+        "reviews": "Đánh giá",
+        "bsr": "Thứ hạng bán chạy"
+    },
+    "RealEstate": {
+        "dashboard": "Bảng điều khiển Bất động sản",
+        "properties": "Bất động sản",
+        "portfolio_value": "Giá trị danh mục",
+        "occupancy": "Tỷ lệ lấp đầy",
+        "rental_income": "Thu nhập cho thuê"
+    },
+    "Entrepreneur": {
+        "dashboard": "Trung tâm Doanh nhân",
+        "ventures": "Dự án kinh doanh",
+        "revenue": "Doanh thu",
+        "runway": "Thời gian còn lại"
+    },
+    "Startup": {
+        "dashboard": "Bảng điều khiển Startup",
+        "mrr": "MRR",
+        "arr": "ARR",
+        "churn": "Tỷ lệ rời bỏ",
+        "ltv": "LTV"
+    },
+    "Executive": {
+        "dashboard": "Bảng điều khiển Điều hành",
+        "revenue": "Tổng doanh thu",
+        "growth": "Tỷ lệ tăng trưởng",
+        "margins": "Biên lợi nhuận"
+    },
+    "Calendar": {
+        "dashboard": "Lịch",
+        "events": "Sự kiện",
+        "meetings": "Cuộc họp",
+        "schedule": "Lịch trình"
+    },
+    "Documents": {
+        "dashboard": "Tài liệu",
+        "files": "Tệp",
+        "shared": "Đã chia sẻ",
+        "recent": "Gần đây"
+    },
+    "Events": {
+        "dashboard": "Sự kiện",
+        "upcoming": "Sắp tới",
+        "past": "Đã qua",
+        "registrations": "Đăng ký"
+    },
+    "Learning": {
+        "dashboard": "Trung tâm Học tập",
+        "courses": "Khóa học",
+        "progress": "Tiến độ",
+        "certificates": "Chứng chỉ"
+    },
+    "Portfolio": {
+        "dashboard": "Danh mục đầu tư",
+        "investments": "Đầu tư",
+        "returns": "Lợi nhuận",
+        "allocation": "Phân bổ"
+    },
+    "Shield": {
+        "dashboard": "Lá chắn chống pha loãng",
+        "protection": "Điểm bảo vệ",
+        "alerts": "Cảnh báo",
+        "recommendations": "Khuyến nghị"
+    },
+    "Assistant": {
+        "dashboard": "Trợ lý AI",
+        "conversations": "Hội thoại",
+        "tasks": "Nhiệm vụ hoàn thành",
+        "accuracy": "Độ chính xác"
+    },
+    "Landing": {
+        "hubs": "Trung tâm",
+        "pricing": "Bảng giá",
+        "tagline": "Hệ điều hành WIN-WIN-WIN cho Agency hiện đại",
+        "explore_hubs": "Khám phá Trung tâm",
+        "view_pricing": "Xem Bảng giá",
+        "modules": "168 Module",
+        "modules_desc": "Bộ quản lý agency hoàn chỉnh",
+        "agents": "156 AI Tác nhân",
+        "agents_desc": "Quy trình tự động & trí tuệ",
+        "binh_phap": "13 Binh Pháp",
+        "binh_phap_desc": "Tích hợp trí tuệ chiến lược"
+    },
+    "HubsPage": {
+        "title": "Danh mục Trung tâm",
+        "warroom": "Phòng Chiến",
+        "executive": "Điều hành",
+        "agentops": "Vận hành Tác nhân",
+        "sales": "Bán hàng",
+        "crm": "CRM",
+        "marketing": "Marketing",
+        "analytics": "Phân tích",
+        "hr": "Nhân sự",
+        "operations": "Vận hành",
+        "product": "Sản phẩm",
+        "binhphap": "Binh Pháp",
+        "portfolio": "Danh mục"
+    },
+    "Pricing": {
+        "title": "Gói Giá",
+        "subtitle": "WIN-WIN-WIN gắn kết với thành công của bạn",
+        "startup": "Khởi nghiệp",
+        "growth": "Tăng trưởng",
+        "enterprise": "Doanh nghiệp",
+        "popular": "PHỔ BIẾN",
+        "get_started": "Bắt đầu",
+        "per_month": "/tháng",
+        "custom": "Tùy chỉnh"
+    },
+    "SettingsPage": {
+        "title": "Cài đặt",
+        "general": "Chung",
+        "language": "Ngôn ngữ",
+        "theme": "Giao diện",
+        "timezone": "Múi giờ",
+        "notifications": "Thông báo",
+        "email_alerts": "Cảnh báo Email",
+        "push_notifications": "Thông báo đẩy",
+        "slack_integration": "Tích hợp Slack",
+        "enabled": "Bật",
+        "disabled": "Tắt",
+        "security": "Bảo mật",
+        "twofa": "Xác thực 2 bước",
+        "active": "Hoạt động",
+        "last_login": "Đăng nhập gần nhất",
+        "api_keys": "API Keys",
+        "appearance": "Giao diện",
+        "color_scheme": "Bảng màu",
+        "font": "Phông chữ",
+        "density": "Mật độ"
     }
 }

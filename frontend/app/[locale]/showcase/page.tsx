@@ -1,4 +1,5 @@
 'use client';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, ExternalLink } from 'lucide-react';

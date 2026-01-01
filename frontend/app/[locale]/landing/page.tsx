@@ -2,10 +2,13 @@
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function LandingPage({ params: { locale } }: { params: { locale: string } }) {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('Landing');
+    const c = useTranslations('Common');
 
     return (
         <div className="min-h-screen bg-[#020202] text-white font-mono">
@@ -15,10 +18,10 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
                     <span className="font-bold">AGENCY OS</span>
                 </div>
                 <div className="flex gap-4 items-center">
-                    <Link href={`/${locale}/hubs`} className="text-sm hover:text-blue-400">Hubs</Link>
-                    <Link href={`/${locale}/pricing`} className="text-sm hover:text-blue-400">Pricing</Link>
+                    <Link href={`/${locale}/hubs`} className="text-sm hover:text-blue-400">{t('hubs')}</Link>
+                    <Link href={`/${locale}/pricing`} className="text-sm hover:text-blue-400">{t('pricing')}</Link>
                     {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py -1 text-xs rounded ${locale === l ? 'bg-white/20 text-white' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
+                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-white/20 text-white' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
                     ))}
                 </div>
             </nav>
@@ -27,19 +30,19 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
                     <h1 className="text-6xl font-bold mb-6">
                         🏯 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Agency OS</span>
                     </h1>
-                    <p className="text-2xl text-gray-400 mb-8">WIN-WIN-WIN Operating System for Modern Agencies</p>
+                    <p className="text-2xl text-gray-400 mb-8">{t('tagline')}</p>
                     <div className="flex gap-4 justify-center">
                         <Link
                             href={`/${locale}/hubs`}
                             className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 flex items-center gap-2"
                         >
-                            Explore Hubs <ArrowRight className="w-5 h-5" />
+                            {t('explore_hubs')} <ArrowRight className="w-5 h-5" />
                         </Link>
                         <Link
                             href={`/${locale}/pricing`}
                             className="px-8 py-4 bg-white/10 text-white font-bold rounded-lg hover:bg-white/20"
                         >
-                            View Pricing
+                            {t('view_pricing')}
                         </Link>
                     </div>
                 </div>
@@ -47,21 +50,22 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
                 <div className="grid grid-cols-3 gap-6 mt-20">
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="text-3xl mb-4">🎯</div>
-                        <h3 className="text-xl font-bold mb-2">168 Modules</h3>
-                        <p className="text-gray-400 text-sm">Complete agency management suite</p>
+                        <h3 className="text-xl font-bold mb-2">{t('modules')}</h3>
+                        <p className="text-gray-400 text-sm">{t('modules_desc')}</p>
                     </div>
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="text-3xl mb-4">🤖</div>
-                        <h3 className="text-xl font-bold mb-2">156 AI Agents</h3>
-                        <p className="text-gray-400 text-sm">Automated workflows & intelligence</p>
+                        <h3 className="text-xl font-bold mb-2">{t('agents')}</h3>
+                        <p className="text-gray-400 text-sm">{t('agents_desc')}</p>
                     </div>
                     <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-6">
                         <div className="text-3xl mb-4">🏯</div>
-                        <h3 className="text-xl font-bold mb-2">13 Binh Pháp</h3>
-                        <p className="text-gray-400 text-sm">Strategic wisdom integrated</p>
+                        <h3 className="text-xl font-bold mb-2">{t('binh_phap')}</h3>
+                        <p className="text-gray-400 text-sm">{t('binh_phap_desc')}</p>
                     </div>
                 </div>
             </main>
         </div>
     );
 }
+

@@ -1,10 +1,12 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { Shield, Database } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function HRISPage({ params: { locale } }: { params: { locale: string } }) {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('HR');
 
     return (
         <div className="min-h-screen bg-[#020202] text-white font-mono">

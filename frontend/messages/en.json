@@ -3,7 +3,17 @@
         "dashboard": "Dashboard",
         "settings": "Settings",
         "profile": "Profile",
-        "ai_assistant": "AI Assistant"
+        "ai_assistant": "AI Assistant",
+        "save": "Save",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "export": "Export",
+        "search": "Search",
+        "filter": "Filter",
+        "loading": "Loading...",
+        "no_data": "No data available"
     },
     "AI": {
         "copilot_active": "Co-Pilot Active",
@@ -20,7 +30,12 @@
     "Hubs": {
         "vc_hub": "Venture Capital Hub",
         "strategy_hub": "Market Strategy (Sun Tzu)",
-        "admin_hub": "Mission Control"
+        "admin_hub": "Mission Control",
+        "hr_hub": "HR Hub",
+        "marketing_hub": "Marketing Hub",
+        "sales_hub": "Sales Hub",
+        "operations_hub": "Operations Hub",
+        "finance_hub": "Finance Hub"
     },
     "VC": {
         "portfolio": "Portfolio Matrix",
@@ -51,5 +66,468 @@
         "active_strategies": "Active Strategems",
         "win_probability": "Win Probability",
         "warroom": "War Room"
+    },
+    "HR": {
+        "dashboard": "HR Dashboard",
+        "headcount": "Total Headcount",
+        "hiring_pipeline": "Hiring Pipeline",
+        "turnover_rate": "Turnover Rate",
+        "open_positions": "Open Positions",
+        "new_hires": "New Hires",
+        "time_to_hire": "Time to Hire",
+        "cost_per_hire": "Cost per Hire",
+        "retention_rate": "Retention Rate",
+        "employee_satisfaction": "Employee Satisfaction",
+        "performance_reviews": "Performance Reviews",
+        "training_completion": "Training Completion",
+        "diversity_ratio": "Diversity Ratio"
+    },
+    "HRIS": {
+        "dashboard": "HRIS Dashboard",
+        "employee_records": "Employee Records",
+        "payroll": "Payroll",
+        "benefits": "Benefits",
+        "attendance": "Attendance",
+        "leave_management": "Leave Management"
+    },
+    "Recruiter": {
+        "dashboard": "Recruiter Dashboard",
+        "active_jobs": "Active Jobs",
+        "candidates": "Candidates",
+        "interviews": "Interviews",
+        "offers": "Offers",
+        "pipeline": "Recruitment Pipeline"
+    },
+    "LD": {
+        "dashboard": "L&D Dashboard",
+        "courses": "Courses",
+        "completions": "Completions",
+        "certifications": "Certifications",
+        "skills_gap": "Skills Gap Analysis"
+    },
+    "CompBen": {
+        "dashboard": "Compensation & Benefits",
+        "salary_bands": "Salary Bands",
+        "total_rewards": "Total Rewards",
+        "equity_grants": "Equity Grants",
+        "benefits_cost": "Benefits Cost"
+    },
+    "HRAnalytics": {
+        "dashboard": "HR Analytics",
+        "headcount_trend": "Headcount Trend",
+        "attrition_analysis": "Attrition Analysis",
+        "engagement_score": "Engagement Score"
+    },
+    "ER": {
+        "dashboard": "Employee Relations",
+        "cases": "Cases",
+        "grievances": "Grievances",
+        "investigations": "Investigations"
+    },
+    "Operations": {
+        "dashboard": "Operations Dashboard",
+        "active_projects": "Active Projects",
+        "on_track": "On Track",
+        "at_risk": "At Risk",
+        "completed": "Completed",
+        "delayed": "Delayed",
+        "resources_utilized": "Resources Utilized",
+        "efficiency_rate": "Efficiency Rate"
+    },
+    "Projects": {
+        "dashboard": "Projects Dashboard",
+        "total_projects": "Total Projects",
+        "in_progress": "In Progress",
+        "milestones": "Milestones",
+        "budget_status": "Budget Status"
+    },
+    "FinOps": {
+        "dashboard": "FinOps Dashboard",
+        "cloud_spend": "Cloud Spend",
+        "cost_optimization": "Cost Optimization",
+        "savings": "Savings",
+        "forecast": "Forecast"
+    },
+    "Costs": {
+        "dashboard": "Cost Management",
+        "total_costs": "Total Costs",
+        "by_department": "By Department",
+        "by_category": "By Category",
+        "variance": "Variance"
+    },
+    "Marketing": {
+        "dashboard": "Marketing Dashboard",
+        "leads": "Total Leads",
+        "mql": "Marketing Qualified Leads",
+        "sql": "Sales Qualified Leads",
+        "conversion": "Conversion Rate",
+        "campaigns": "Campaigns",
+        "reach": "Reach",
+        "engagement": "Engagement",
+        "attribution": "Attribution",
+        "roi": "Marketing ROI",
+        "funnel": "Marketing Funnel",
+        "cac": "Customer Acquisition Cost"
+    },
+    "DigitalMarketing": {
+        "dashboard": "Digital Marketing",
+        "traffic": "Website Traffic",
+        "sessions": "Sessions",
+        "bounce_rate": "Bounce Rate",
+        "conversions": "Conversions"
+    },
+    "ContentMarketing": {
+        "dashboard": "Content Marketing",
+        "articles": "Articles",
+        "views": "Views",
+        "shares": "Shares",
+        "engagement_rate": "Engagement Rate"
+    },
+    "B2BMarketing": {
+        "dashboard": "B2B Marketing",
+        "accounts": "Target Accounts",
+        "pipeline_influence": "Pipeline Influence",
+        "deal_velocity": "Deal Velocity"
+    },
+    "PaidSocial": {
+        "dashboard": "Paid Social",
+        "spend": "Ad Spend",
+        "impressions": "Impressions",
+        "clicks": "Clicks",
+        "ctr": "CTR",
+        "cpc": "CPC",
+        "roas": "ROAS"
+    },
+    "PPC": {
+        "dashboard": "PPC Dashboard",
+        "campaigns": "Campaigns",
+        "keywords": "Keywords",
+        "quality_score": "Quality Score"
+    },
+    "SEO": {
+        "dashboard": "SEO Dashboard",
+        "organic_traffic": "Organic Traffic",
+        "rankings": "Rankings",
+        "backlinks": "Backlinks",
+        "domain_authority": "Domain Authority"
+    },
+    "Email": {
+        "dashboard": "Email Marketing",
+        "subscribers": "Subscribers",
+        "open_rate": "Open Rate",
+        "click_rate": "Click Rate",
+        "unsubscribes": "Unsubscribes"
+    },
+    "Social": {
+        "dashboard": "Social Media",
+        "followers": "Followers",
+        "posts": "Posts",
+        "engagement": "Engagement",
+        "mentions": "Mentions"
+    },
+    "Influencer": {
+        "dashboard": "Influencer Marketing",
+        "partners": "Partners",
+        "reach": "Total Reach",
+        "campaigns": "Campaigns"
+    },
+    "PR": {
+        "dashboard": "Public Relations",
+        "press_releases": "Press Releases",
+        "media_mentions": "Media Mentions",
+        "sentiment": "Sentiment"
+    },
+    "Campaigns": {
+        "dashboard": "Campaign Manager",
+        "active": "Active Campaigns",
+        "budget": "Budget",
+        "performance": "Performance"
+    },
+    "Sales": {
+        "dashboard": "Sales Dashboard",
+        "pipeline": "Pipeline Value",
+        "won": "Won Deals",
+        "lost": "Lost Deals",
+        "win_rate": "Win Rate",
+        "quota_attainment": "Quota Attainment",
+        "avg_deal_size": "Avg Deal Size",
+        "sales_cycle": "Sales Cycle"
+    },
+    "CRM": {
+        "dashboard": "CRM Dashboard",
+        "contacts": "Contacts",
+        "accounts": "Accounts",
+        "opportunities": "Opportunities",
+        "activities": "Activities"
+    },
+    "LeadGen": {
+        "dashboard": "Lead Generation",
+        "new_leads": "New Leads",
+        "qualified": "Qualified",
+        "conversion": "Conversion Rate",
+        "sources": "Lead Sources"
+    },
+    "SDR": {
+        "dashboard": "SDR Dashboard",
+        "calls": "Calls Made",
+        "emails": "Emails Sent",
+        "meetings": "Meetings Booked",
+        "sqls": "SQLs Generated"
+    },
+    "AE": {
+        "dashboard": "Account Executive",
+        "pipeline": "Pipeline",
+        "forecast": "Forecast",
+        "quota": "Quota Progress"
+    },
+    "BDM": {
+        "dashboard": "Business Development",
+        "partnerships": "Partnerships",
+        "opportunities": "Opportunities",
+        "revenue_impact": "Revenue Impact"
+    },
+    "ABM": {
+        "dashboard": "Account Based Marketing",
+        "target_accounts": "Target Accounts",
+        "engagement": "Engagement Score",
+        "pipeline": "ABM Pipeline"
+    },
+    "ISR": {
+        "dashboard": "Inside Sales",
+        "activities": "Activities",
+        "conversion": "Conversion Rate",
+        "revenue": "Revenue"
+    },
+    "Product": {
+        "dashboard": "Product Dashboard",
+        "features": "Features",
+        "roadmap": "Roadmap",
+        "releases": "Releases",
+        "nps": "NPS Score"
+    },
+    "ProductMarketing": {
+        "dashboard": "Product Marketing",
+        "launches": "Launches",
+        "positioning": "Positioning",
+        "competitive": "Competitive Intel"
+    },
+    "SWE": {
+        "dashboard": "Engineering Dashboard",
+        "velocity": "Sprint Velocity",
+        "bugs": "Open Bugs",
+        "deployments": "Deployments",
+        "uptime": "Uptime"
+    },
+    "SE": {
+        "dashboard": "Solutions Engineering",
+        "demos": "Demos",
+        "pocs": "POCs",
+        "win_rate": "Technical Win Rate"
+    },
+    "Data": {
+        "dashboard": "Data Dashboard",
+        "pipelines": "Data Pipelines",
+        "quality": "Data Quality",
+        "models": "ML Models"
+    },
+    "Research": {
+        "dashboard": "Research Dashboard",
+        "studies": "Studies",
+        "insights": "Insights",
+        "experiments": "Experiments"
+    },
+    "Legal": {
+        "dashboard": "Legal Dashboard",
+        "contracts": "Contracts",
+        "pending_review": "Pending Review",
+        "compliance": "Compliance Score"
+    },
+    "IP": {
+        "dashboard": "Intellectual Property",
+        "patents": "Patents",
+        "trademarks": "Trademarks",
+        "filings": "Active Filings"
+    },
+    "Tax": {
+        "dashboard": "Tax Dashboard",
+        "liability": "Tax Liability",
+        "credits": "Tax Credits",
+        "filings": "Filings"
+    },
+    "Security": {
+        "dashboard": "Security Dashboard",
+        "incidents": "Incidents",
+        "vulnerabilities": "Vulnerabilities",
+        "compliance": "Compliance"
+    },
+    "Support": {
+        "dashboard": "Support Dashboard",
+        "tickets": "Open Tickets",
+        "response_time": "Avg Response Time",
+        "satisfaction": "CSAT Score",
+        "resolution": "Resolution Rate"
+    },
+    "IT": {
+        "dashboard": "IT Dashboard",
+        "systems": "Systems",
+        "uptime": "Uptime",
+        "incidents": "Incidents",
+        "assets": "IT Assets"
+    },
+    "Ecommerce": {
+        "dashboard": "E-commerce Dashboard",
+        "orders": "Orders",
+        "revenue": "Revenue",
+        "aov": "Avg Order Value",
+        "cart_abandonment": "Cart Abandonment"
+    },
+    "Retail": {
+        "dashboard": "Retail Dashboard",
+        "stores": "Stores",
+        "sales": "Sales",
+        "inventory": "Inventory",
+        "footfall": "Footfall"
+    },
+    "Inventory": {
+        "dashboard": "Inventory Dashboard",
+        "sku_count": "SKU Count",
+        "stock_value": "Stock Value",
+        "turnover": "Turnover Rate"
+    },
+    "AmazonFBA": {
+        "dashboard": "Amazon FBA",
+        "listings": "Listings",
+        "orders": "Orders",
+        "reviews": "Reviews",
+        "bsr": "Best Seller Rank"
+    },
+    "RealEstate": {
+        "dashboard": "Real Estate Dashboard",
+        "properties": "Properties",
+        "portfolio_value": "Portfolio Value",
+        "occupancy": "Occupancy Rate",
+        "rental_income": "Rental Income"
+    },
+    "Entrepreneur": {
+        "dashboard": "Entrepreneur Hub",
+        "ventures": "Ventures",
+        "revenue": "Revenue",
+        "runway": "Runway"
+    },
+    "Startup": {
+        "dashboard": "Startup Dashboard",
+        "mrr": "MRR",
+        "arr": "ARR",
+        "churn": "Churn Rate",
+        "ltv": "LTV"
+    },
+    "Executive": {
+        "dashboard": "Executive Dashboard",
+        "revenue": "Total Revenue",
+        "growth": "Growth Rate",
+        "margins": "Margins"
+    },
+    "Calendar": {
+        "dashboard": "Calendar",
+        "events": "Events",
+        "meetings": "Meetings",
+        "schedule": "Schedule"
+    },
+    "Documents": {
+        "dashboard": "Documents",
+        "files": "Files",
+        "shared": "Shared",
+        "recent": "Recent"
+    },
+    "Events": {
+        "dashboard": "Events",
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "registrations": "Registrations"
+    },
+    "Learning": {
+        "dashboard": "Learning Hub",
+        "courses": "Courses",
+        "progress": "Progress",
+        "certificates": "Certificates"
+    },
+    "Portfolio": {
+        "dashboard": "Portfolio",
+        "investments": "Investments",
+        "returns": "Returns",
+        "allocation": "Allocation"
+    },
+    "Shield": {
+        "dashboard": "Anti-Dilution Shield",
+        "protection": "Protection Score",
+        "alerts": "Alerts",
+        "recommendations": "Recommendations"
+    },
+    "Assistant": {
+        "dashboard": "AI Assistant",
+        "conversations": "Conversations",
+        "tasks": "Tasks Completed",
+        "accuracy": "Accuracy"
+    },
+    "Landing": {
+        "hubs": "Hubs",
+        "pricing": "Pricing",
+        "tagline": "WIN-WIN-WIN Operating System for Modern Agencies",
+        "explore_hubs": "Explore Hubs",
+        "view_pricing": "View Pricing",
+        "modules": "168 Modules",
+        "modules_desc": "Complete agency management suite",
+        "agents": "156 AI Agents",
+        "agents_desc": "Automated workflows & intelligence",
+        "binh_phap": "13 Binh Pháp",
+        "binh_phap_desc": "Strategic wisdom integrated"
+    },
+    "HubsPage": {
+        "title": "Hub Directory",
+        "warroom": "War Room",
+        "executive": "Executive",
+        "agentops": "AgentOps",
+        "sales": "Sales",
+        "crm": "CRM",
+        "marketing": "Marketing",
+        "analytics": "Analytics",
+        "hr": "HR",
+        "operations": "Operations",
+        "product": "Product",
+        "binhphap": "Binh Pháp",
+        "portfolio": "Portfolio"
+    },
+    "Pricing": {
+        "title": "Pricing Plans",
+        "subtitle": "WIN-WIN-WIN aligned with your success",
+        "startup": "Startup",
+        "growth": "Growth",
+        "enterprise": "Enterprise",
+        "popular": "POPULAR",
+        "get_started": "Get Started",
+        "per_month": "/month",
+        "custom": "Custom"
+    },
+    "SettingsPage": {
+        "title": "Settings",
+        "general": "General",
+        "language": "Language",
+        "theme": "Theme",
+        "timezone": "Timezone",
+        "notifications": "Notifications",
+        "email_alerts": "Email Alerts",
+        "push_notifications": "Push Notifications",
+        "slack_integration": "Slack Integration",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "security": "Security",
+        "twofa": "2FA",
+        "active": "Active",
+        "last_login": "Last Login",
+        "api_keys": "API Keys",
+        "appearance": "Appearance",
+        "color_scheme": "Color Scheme",
+        "font": "Font",
+        "density": "Density"
     }
 }
