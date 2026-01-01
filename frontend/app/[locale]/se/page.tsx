@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield } from 'lucide-react';
+
+import { Briefcase, DollarSign, Users, TrendingUp, Award, Target } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const seMetrics = [
+    { label: 'Demos', value: '48', icon: <Briefcase className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+12', direction: 'up' as const } },
+    { label: 'POCs Active', value: '8', icon: <Target className="w-5 h-5" />, color: '#22c55e', trend: { value: '+2', direction: 'up' as const } },
+    { label: 'Win Rate', value: '68%', icon: <Award className="w-5 h-5" />, color: '#a855f7', trend: { value: '+5%', direction: 'up' as const } },
+    { label: 'Pipeline', value: '$1.8M', icon: <DollarSign className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$280K', direction: 'up' as const } },
+];
+
+const demosByProduct = [
+    { name: 'Platform', value: 22, color: '#3b82f6' },
+    { name: 'API', value: 15, color: '#22c55e' },
+    { name: 'Mobile', value: 8, color: '#a855f7' },
+    { name: 'Enterprise', value: 3, color: '#f59e0b' },
+];
+
+const weeklyDemos = [
+    { name: 'Mon', value: 8 }, { name: 'Tue', value: 12 }, { name: 'Wed', value: 10 },
+    { name: 'Thu', value: 14 }, { name: 'Fri', value: 6 },
+];
+
+const seCharts = [
+    { type: 'pie' as const, title: 'Demos by Product', data: demosByProduct },
+    { type: 'bar' as const, title: 'Weekly Demo Schedule', data: weeklyDemos.map(d => ({ ...d, color: '#3b82f6' })) },
+];
+
+const seActions = [
+    { icon: '🎬', label: 'Demo', onClick: () => { } },
+    { icon: '🧪', label: 'POC', onClick: () => { } },
+    { icon: '📋', label: 'Scripts', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '📚', label: 'Library', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function SEPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-orange-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-orange-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-orange-500/20 border border-orange-500/30 rounded">SE</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-orange-500/20 text-orange-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-orange-400">🔧 Sales Engineering</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Active POCs</div>
-                        <div className="text-2xl font-bold text-orange-400">12</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Win Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">72%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Avg Deal Size</div>
-                        <div className="text-2xl font-bold text-blue-400">$85K</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Sales Engineer" subtitle="Demos • POCs • Technical Sales • Solutions" icon="🔧" color="blue"
+            statusLabel="Demos" statusValue="48" metrics={seMetrics} charts={seCharts} quickActions={seActions} locale={locale}
+        />
     );
 }

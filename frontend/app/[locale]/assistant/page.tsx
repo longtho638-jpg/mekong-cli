@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Bot } from 'lucide-react';
+
+import { Bot, MessageSquare, Zap, Clock, CheckCircle, Sparkles } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const assistantMetrics = [
+    { label: 'Queries Today', value: '248', icon: <MessageSquare className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+32', direction: 'up' as const } },
+    { label: 'Avg Response', value: '1.2s', icon: <Zap className="w-5 h-5" />, color: '#22c55e', trend: { value: '-0.3s', direction: 'down' as const } },
+    { label: 'Accuracy', value: '96%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: '+2%', direction: 'up' as const } },
+    { label: 'Tasks Done', value: '1.2K', icon: <Sparkles className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+180', direction: 'up' as const } },
+];
+
+const queryTypes = [
+    { name: 'Research', value: 85, color: '#3b82f6' },
+    { name: 'Writing', value: 62, color: '#22c55e' },
+    { name: 'Analysis', value: 55, color: '#a855f7' },
+    { name: 'Coding', value: 46, color: '#f59e0b' },
+];
+
+const dailyUsage = [
+    { name: 'Mon', value: 180 }, { name: 'Tue', value: 220 }, { name: 'Wed', value: 195 },
+    { name: 'Thu', value: 248 }, { name: 'Fri', value: 210 },
+];
+
+const assistantCharts = [
+    { type: 'bar' as const, title: 'Queries by Type', data: queryTypes },
+    { type: 'area' as const, title: 'Daily Usage', data: dailyUsage },
+];
+
+const assistantActions = [
+    { icon: '💬', label: 'New Chat', onClick: () => { } },
+    { icon: '📝', label: 'Templates', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '🧠', label: 'Train', onClick: () => { } },
+    { icon: '📚', label: 'History', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function AssistantPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-cyan-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-cyan-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-cyan-500/20 border border-cyan-500/30 rounded">ASSISTANT</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-cyan-500/20 text-cyan-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-cyan-400">🤖 Executive Assistant</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Tasks Managed</div>
-                        <div className="text-2xl font-bold text-cyan-400">124</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Time Saved</div>
-                        <div className="text-2xl font-bold text-emerald-400">18h/wk</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Efficiency</div>
-                        <div className="text-2xl font-bold text-blue-400">94%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="AI Assistant" subtitle="Chat • Research • Writing • Analysis" icon="🤖" color="blue"
+            statusLabel="Queries" statusValue="248" metrics={assistantMetrics} charts={assistantCharts} quickActions={assistantActions} locale={locale}
+        />
     );
 }

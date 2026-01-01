@@ -1,44 +1,46 @@
 'use client';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Database } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+
+import { Users, Database, FileText, Clock, CheckCircle, Settings } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const hrisMetrics = [
+    { label: 'Employees', value: '156', icon: <Users className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+12', direction: 'up' as const } },
+    { label: 'Records Updated', value: '89', icon: <FileText className="w-5 h-5" />, color: '#22c55e', trend: { value: '+24', direction: 'up' as const } },
+    { label: 'Compliance', value: '98%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: '+2%', direction: 'up' as const } },
+    { label: 'Pending Tasks', value: '12', icon: <Clock className="w-5 h-5" />, color: '#f59e0b', trend: { value: '-5', direction: 'down' as const } },
+];
+
+const employeesByDept = [
+    { name: 'Engineering', value: 52, color: '#3b82f6' },
+    { name: 'Sales', value: 38, color: '#22c55e' },
+    { name: 'Marketing', value: 28, color: '#ec4899' },
+    { name: 'Operations', value: 24, color: '#f59e0b' },
+    { name: 'HR', value: 14, color: '#a855f7' },
+];
+
+const monthlyChanges = [
+    { name: 'Jul', value: 8 }, { name: 'Aug', value: 12 }, { name: 'Sep', value: 6 },
+    { name: 'Oct', value: 15 }, { name: 'Nov', value: 10 }, { name: 'Dec', value: 12 },
+];
+
+const hrisCharts = [
+    { type: 'bar' as const, title: 'Employees by Department', data: employeesByDept },
+    { type: 'area' as const, title: 'Monthly HR Changes', data: monthlyChanges },
+];
+
+const hrisActions = [
+    { icon: '👤', label: 'Add Employee', onClick: () => { } },
+    { icon: '📋', label: 'Directory', onClick: () => { } },
+    { icon: '📝', label: 'Records', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+    { icon: '🔒', label: 'Compliance', onClick: () => { } },
+];
 
 export default function HRISPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-    const t = useTranslations('HR');
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-indigo-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-indigo-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-indigo-500/20 border border-indigo-500/30 rounded">HRIS</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-indigo-500/20 text-indigo-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-indigo-400">🗂️ HRIS</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Employee Records</div>
-                        <div className="text-2xl font-bold text-indigo-400">156</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Departments</div>
-                        <div className="text-2xl font-bold text-emerald-400">8</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Avg Tenure</div>
-                        <div className="text-2xl font-bold text-blue-400">3.2y</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="HRIS Hub" subtitle="Records • Directory • Compliance • Reporting" icon="📁" color="blue"
+            statusLabel="Employees" statusValue="156" metrics={hrisMetrics} charts={hrisCharts} quickActions={hrisActions} locale={locale}
+        />
     );
 }
