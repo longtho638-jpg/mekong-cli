@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Building } from 'lucide-react';
+
+import { Home, DollarSign, TrendingUp, MapPin, Calendar, Users } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const realEstateMetrics = [
+    { label: 'Portfolio Value', value: '$4.2M', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+8%', direction: 'up' as const } },
+    { label: 'Active Listings', value: '24', icon: <Home className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+3', direction: 'up' as const } },
+    { label: 'Occupancy Rate', value: '92%', icon: <TrendingUp className="w-5 h-5" />, color: '#a855f7', trend: { value: '+2%', direction: 'up' as const } },
+    { label: 'Monthly Revenue', value: '$48K', icon: <Calendar className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$5K', direction: 'up' as const } },
+];
+
+const propertiesByType = [
+    { name: 'Residential', value: 12, color: '#3b82f6' },
+    { name: 'Commercial', value: 6, color: '#22c55e' },
+    { name: 'Industrial', value: 3, color: '#a855f7' },
+    { name: 'Land', value: 3, color: '#f59e0b' },
+];
+
+const monthlyRevenue = [
+    { name: 'Jul', value: 42000 }, { name: 'Aug', value: 44000 }, { name: 'Sep', value: 43000 },
+    { name: 'Oct', value: 45000 }, { name: 'Nov', value: 46000 }, { name: 'Dec', value: 48000 },
+];
+
+const realEstateCharts = [
+    { type: 'bar' as const, title: 'Properties by Type', data: propertiesByType },
+    { type: 'area' as const, title: 'Monthly Rental Revenue', data: monthlyRevenue },
+];
+
+const realEstateActions = [
+    { icon: '🏠', label: 'Add Listing', onClick: () => { } },
+    { icon: '📋', label: 'Manage', onClick: () => { } },
+    { icon: '👥', label: 'Tenants', onClick: () => { } },
+    { icon: '💰', label: 'Finances', onClick: () => { } },
+    { icon: '🔧', label: 'Maintenance', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+];
 
 export default function RealEstatePage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-teal-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-teal-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-teal-500/20 border border-teal-500/30 rounded">REAL ESTATE</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-teal-500/20 text-teal-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-teal-400">🏢 Real Estate</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Properties Listed</div>
-                        <div className="text-2xl font-bold text-teal-400">42</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Deals Closed</div>
-                        <div className="text-2xl font-bold text-emerald-400">18</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Portfolio Value</div>
-                        <div className="text-2xl font-bold text-blue-400">$8.5M</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Real Estate Hub" subtitle="Properties • Tenants • Leases • Valuations" icon="🏠" color="blue"
+            statusLabel="Value" statusValue="$4.2M" metrics={realEstateMetrics} charts={realEstateCharts} quickActions={realEstateActions} locale={locale}
+        />
     );
 }

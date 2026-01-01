@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Package } from 'lucide-react';
+
+import { Package, Truck, BarChart3, AlertTriangle, Clock, DollarSign } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const inventoryMetrics = [
+    { label: 'Total SKUs', value: '2,450', icon: <Package className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+120', direction: 'up' as const } },
+    { label: 'Stock Value', value: '$1.8M', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$150K', direction: 'up' as const } },
+    { label: 'Low Stock', value: '34', icon: <AlertTriangle className="w-5 h-5" />, color: '#f59e0b', trend: { value: '-8', direction: 'down' as const } },
+    { label: 'Turn Rate', value: '4.2x', icon: <Clock className="w-5 h-5" />, color: '#a855f7', trend: { value: '+0.3x', direction: 'up' as const } },
+];
+
+const stockByCategory = [
+    { name: 'Electronics', value: 850, color: '#3b82f6' },
+    { name: 'Apparel', value: 620, color: '#ec4899' },
+    { name: 'Home', value: 480, color: '#22c55e' },
+    { name: 'Beauty', value: 320, color: '#a855f7' },
+    { name: 'Other', value: 180, color: '#f59e0b' },
+];
+
+const monthlyMovement = [
+    { name: 'Jul', value: 12000 }, { name: 'Aug', value: 14500 }, { name: 'Sep', value: 13200 },
+    { name: 'Oct', value: 15800 }, { name: 'Nov', value: 18200 }, { name: 'Dec', value: 22000 },
+];
+
+const inventoryCharts = [
+    { type: 'bar' as const, title: 'Stock by Category', data: stockByCategory },
+    { type: 'area' as const, title: 'Monthly Units Moved', data: monthlyMovement },
+];
+
+const inventoryActions = [
+    { icon: '📦', label: 'Add Stock', onClick: () => { } },
+    { icon: '🔍', label: 'Search', onClick: () => { } },
+    { icon: '🚚', label: 'Orders', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '⚠️', label: 'Alerts', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function InventoryPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-orange-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-orange-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-orange-500/20 border border-orange-500/30 rounded">INVENTORY</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-orange-500/20 text-orange-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-orange-400">📦 Inventory Management</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Stock Level</div>
-                        <div className="text-2xl font-bold text-orange-400">85%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Low Stock Items</div>
-                        <div className="text-2xl font-bold text-red-400">24</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Turnover Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">4.2x</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Inventory Hub" subtitle="Stock • Warehousing • Fulfillment • Reordering" icon="📦" color="orange"
+            statusLabel="SKUs" statusValue="2,450" metrics={inventoryMetrics} charts={inventoryCharts} quickActions={inventoryActions} locale={locale}
+        />
     );
 }

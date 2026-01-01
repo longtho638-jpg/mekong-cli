@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Store } from 'lucide-react';
+
+import { Store, Package, TrendingUp, DollarSign, Users, ShoppingBag } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const retailMetrics = [
+    { label: 'Daily Sales', value: '$28.5K', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+12%', direction: 'up' as const } },
+    { label: 'Transactions', value: '342', icon: <ShoppingBag className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+28', direction: 'up' as const } },
+    { label: 'Avg Basket', value: '$83', icon: <TrendingUp className="w-5 h-5" />, color: '#a855f7', trend: { value: '+$5', direction: 'up' as const } },
+    { label: 'Stock Level', value: '94%', icon: <Package className="w-5 h-5" />, color: '#f59e0b', trend: { value: 'Healthy', direction: 'up' as const } },
+];
+
+const salesByStore = [
+    { name: 'Downtown', value: 12500, color: '#22c55e' },
+    { name: 'Mall', value: 9800, color: '#3b82f6' },
+    { name: 'Airport', value: 4200, color: '#a855f7' },
+    { name: 'Online', value: 2000, color: '#f59e0b' },
+];
+
+const hourlySales = [
+    { name: '9AM', value: 1200 }, { name: '11AM', value: 3500 }, { name: '1PM', value: 4800 },
+    { name: '3PM', value: 3200 }, { name: '5PM', value: 5500 }, { name: '7PM', value: 6200 }, { name: '9PM', value: 4100 },
+];
+
+const retailCharts = [
+    { type: 'bar' as const, title: 'Sales by Location', data: salesByStore },
+    { type: 'area' as const, title: 'Hourly Sales Today', data: hourlySales },
+];
+
+const retailActions = [
+    { icon: '🛒', label: 'POS', onClick: () => { } },
+    { icon: '📦', label: 'Inventory', onClick: () => { } },
+    { icon: '👥', label: 'Staff', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '🎯', label: 'Promos', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function RetailPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-teal-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-teal-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-teal-500/20 border border-teal-500/30 rounded">RETAIL</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-teal-500/20 text-teal-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-teal-400">🏪 Retail Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Store Locations</div>
-                        <div className="text-2xl font-bold text-teal-400">12</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">SKUs</div>
-                        <div className="text-2xl font-bold text-emerald-400">3,450</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Inventory Value</div>
-                        <div className="text-2xl font-bold text-blue-400">$2.4M</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Retail Hub" subtitle="POS • Inventory • Staff • Multi-Location" icon="🏪" color="green"
+            statusLabel="Sales" statusValue="$28.5K" metrics={retailMetrics} charts={retailCharts} quickActions={retailActions} locale={locale}
+        />
     );
 }

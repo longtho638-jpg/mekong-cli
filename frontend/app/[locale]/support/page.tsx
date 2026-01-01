@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Headphones } from 'lucide-react';
+
+import { Users, MessageSquare, Heart, TrendingUp, Star, Calendar } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const supportMetrics = [
+    { label: 'Open Tickets', value: '42', icon: <MessageSquare className="w-5 h-5" />, color: '#3b82f6', trend: { value: '-8', direction: 'down' as const } },
+    { label: 'Avg Response', value: '2.5h', icon: <TrendingUp className="w-5 h-5" />, color: '#22c55e', trend: { value: '-30m', direction: 'down' as const } },
+    { label: 'CSAT Score', value: '4.8', icon: <Star className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+0.2', direction: 'up' as const } },
+    { label: 'Resolution Rate', value: '94%', icon: <Heart className="w-5 h-5" />, color: '#a855f7', trend: { value: '+3%', direction: 'up' as const } },
+];
+
+const ticketsByPriority = [
+    { name: 'Critical', value: 5, color: '#ef4444' },
+    { name: 'High', value: 12, color: '#f59e0b' },
+    { name: 'Medium', value: 15, color: '#3b82f6' },
+    { name: 'Low', value: 10, color: '#22c55e' },
+];
+
+const dailyTickets = [
+    { name: 'Mon', value: 45 }, { name: 'Tue', value: 52 }, { name: 'Wed', value: 38 },
+    { name: 'Thu', value: 42 }, { name: 'Fri', value: 35 }, { name: 'Sat', value: 15 }, { name: 'Sun', value: 12 },
+];
+
+const supportCharts = [
+    { type: 'bar' as const, title: 'Tickets by Priority', data: ticketsByPriority },
+    { type: 'area' as const, title: 'Daily Ticket Volume', data: dailyTickets },
+];
+
+const supportActions = [
+    { icon: '🎫', label: 'New Ticket', onClick: () => { } },
+    { icon: '📋', label: 'Queue', onClick: () => { } },
+    { icon: '💬', label: 'Live Chat', onClick: () => { } },
+    { icon: '📚', label: 'Knowledge', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function SupportPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-blue-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-blue-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-blue-500/20 border border-blue-500/30 rounded">SUPPORT</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-blue-400">🎧 Support Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Open Tickets</div>
-                        <div className="text-2xl font-bold text-blue-400">24</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Avg Response</div>
-                        <div className="text-2xl font-bold text-emerald-400">12min</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">CSAT Score</div>
-                        <div className="text-2xl font-bold text-purple-400">4.8</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Support Hub" subtitle="Tickets • Live Chat • Knowledge Base • CSAT" icon="🎧" color="blue"
+            statusLabel="CSAT" statusValue="4.8" metrics={supportMetrics} charts={supportCharts} quickActions={supportActions} locale={locale}
+        />
     );
 }

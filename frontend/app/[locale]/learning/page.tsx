@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, BookOpen } from 'lucide-react';
+
+import { BookOpen, Users, Trophy, Clock, Target, Star } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const learningMetrics = [
+    { label: 'Courses', value: '48', icon: <BookOpen className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+6', direction: 'up' as const } },
+    { label: 'Enrolled', value: '1.2K', icon: <Users className="w-5 h-5" />, color: '#22c55e', trend: { value: '+180', direction: 'up' as const } },
+    { label: 'Completion', value: '78%', icon: <Trophy className="w-5 h-5" />, color: '#a855f7', trend: { value: '+5%', direction: 'up' as const } },
+    { label: 'Avg Score', value: '85%', icon: <Star className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+3%', direction: 'up' as const } },
+];
+
+const coursesByCategory = [
+    { name: 'Technical', value: 18, color: '#3b82f6' },
+    { name: 'Leadership', value: 12, color: '#a855f7' },
+    { name: 'Sales', value: 8, color: '#22c55e' },
+    { name: 'Compliance', value: 6, color: '#f59e0b' },
+    { name: 'Onboarding', value: 4, color: '#ec4899' },
+];
+
+const monthlyEnrollments = [
+    { name: 'Jul', value: 85 }, { name: 'Aug', value: 120 }, { name: 'Sep', value: 95 },
+    { name: 'Oct', value: 140 }, { name: 'Nov', value: 165 }, { name: 'Dec', value: 180 },
+];
+
+const learningCharts = [
+    { type: 'bar' as const, title: 'Courses by Category', data: coursesByCategory },
+    { type: 'area' as const, title: 'Monthly Enrollments', data: monthlyEnrollments },
+];
+
+const learningActions = [
+    { icon: '📚', label: 'Courses', onClick: () => { } },
+    { icon: '➕', label: 'Create', onClick: () => { } },
+    { icon: '👥', label: 'Learners', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '🏆', label: 'Certs', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function LearningPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-emerald-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-emerald-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-emerald-500/20 border border-emerald-500/30 rounded">LEARNING</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-emerald-400">📚 Learning Hub</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Courses Completed</div>
-                        <div className="text-2xl font-bold text-emerald-400">24</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Learning Hours</div>
-                        <div className="text-2xl font-bold text-emerald-400">148h</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Certification</div>
-                        <div className="text-2xl font-bold text-blue-400">8</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Learning Hub" subtitle="Courses • Training • Certifications • Analytics" icon="📚" color="purple"
+            statusLabel="Courses" statusValue="48" metrics={learningMetrics} charts={learningCharts} quickActions={learningActions} locale={locale}
+        />
     );
 }
