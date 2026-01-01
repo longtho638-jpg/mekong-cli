@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, FileText } from 'lucide-react';
+
+import { FileText, Edit, Eye, TrendingUp, Calendar, Star } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const contentMetrics = [
+    { label: 'Articles', value: '248', icon: <FileText className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+18', direction: 'up' as const } },
+    { label: 'Page Views', value: '420K', icon: <Eye className="w-5 h-5" />, color: '#22c55e', trend: { value: '+85K', direction: 'up' as const } },
+    { label: 'Avg Read Time', value: '4.2m', icon: <TrendingUp className="w-5 h-5" />, color: '#a855f7', trend: { value: '+0.5m', direction: 'up' as const } },
+    { label: 'SEO Score', value: '92', icon: <Star className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+5', direction: 'up' as const } },
+];
+
+const contentByType = [
+    { name: 'Blog', value: 120, color: '#3b82f6' },
+    { name: 'Guides', value: 45, color: '#22c55e' },
+    { name: 'Case Studies', value: 38, color: '#a855f7' },
+    { name: 'Whitepapers', value: 25, color: '#f59e0b' },
+    { name: 'Videos', value: 20, color: '#ef4444' },
+];
+
+const monthlyViews = [
+    { name: 'Jul', value: 52000 }, { name: 'Aug', value: 68000 }, { name: 'Sep', value: 75000 },
+    { name: 'Oct', value: 82000 }, { name: 'Nov', value: 95000 }, { name: 'Dec', value: 108000 },
+];
+
+const contentCharts = [
+    { type: 'bar' as const, title: 'Content by Type', data: contentByType },
+    { type: 'area' as const, title: 'Monthly Page Views', data: monthlyViews },
+];
+
+const contentActions = [
+    { icon: '✍️', label: 'Write', onClick: () => { } },
+    { icon: '📋', label: 'Queue', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '🔍', label: 'SEO', onClick: () => { } },
+    { icon: '📚', label: 'Library', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function ContentPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-blue-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-blue-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-blue-500/20 border border-blue-500/30 rounded">CONTENT</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-blue-400">📝 Content Hub</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Articles Published</div>
-                        <div className="text-2xl font-bold text-blue-400">124</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Avg Engagement</div>
-                        <div className="text-2xl font-bold text-emerald-400">8.2min</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">SEO Score</div>
-                        <div className="text-2xl font-bold text-green-400">92/100</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Content Hub" subtitle="Writing • Publishing • SEO • Analytics" icon="📝" color="blue"
+            statusLabel="Articles" statusValue="248" metrics={contentMetrics} charts={contentCharts} quickActions={contentActions} locale={locale}
+        />
     );
 }

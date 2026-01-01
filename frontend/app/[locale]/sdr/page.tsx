@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Phone, Mail } from 'lucide-react';
+
+import { Phone, Target, TrendingUp, Users, Calendar, Mail } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const sdrMetrics = [
+    { label: 'Calls Made', value: '842', icon: <Phone className="w-5 h-5" />, color: '#22c55e', trend: { value: '+124', direction: 'up' as const } },
+    { label: 'Meetings Booked', value: '48', icon: <Calendar className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+12', direction: 'up' as const } },
+    { label: 'Conversion Rate', value: '5.7%', icon: <Target className="w-5 h-5" />, color: '#a855f7', trend: { value: '+0.8%', direction: 'up' as const } },
+    { label: 'Pipeline Added', value: '$180K', icon: <TrendingUp className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$25K', direction: 'up' as const } },
+];
+
+const activityByType = [
+    { name: 'Calls', value: 450, color: '#22c55e' },
+    { name: 'Emails', value: 280, color: '#3b82f6' },
+    { name: 'LinkedIn', value: 85, color: '#0077b5' },
+    { name: 'Other', value: 27, color: '#f59e0b' },
+];
+
+const weeklyMeetings = [
+    { name: 'Mon', value: 8 }, { name: 'Tue', value: 12 }, { name: 'Wed', value: 10 },
+    { name: 'Thu', value: 14 }, { name: 'Fri', value: 6 },
+];
+
+const sdrCharts = [
+    { type: 'bar' as const, title: 'Activity Distribution', data: activityByType },
+    { type: 'area' as const, title: 'Meetings Booked This Week', data: weeklyMeetings },
+];
+
+const sdrActions = [
+    { icon: '📞', label: 'Call', onClick: () => { } },
+    { icon: '📧', label: 'Email', onClick: () => { } },
+    { icon: '📋', label: 'Sequences', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '🎯', label: 'Leads', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function SDRPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-yellow-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-yellow-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-yellow-500/20 border border-yellow-500/30 rounded">SDR</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-yellow-400">☎️ SDR Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Calls Today</div>
-                        <div className="text-2xl font-bold text-yellow-400">47</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Meetings Set</div>
-                        <div className="text-2xl font-bold text-emerald-400">12</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Connect Rate</div>
-                        <div className="text-2xl font-bold text-blue-400">28%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="SDR Hub" subtitle="Prospecting • Outreach • Meeting Booking • Pipeline" icon="📞" color="green"
+            statusLabel="Meetings" statusValue="48" metrics={sdrMetrics} charts={sdrCharts} quickActions={sdrActions} locale={locale}
+        />
     );
 }

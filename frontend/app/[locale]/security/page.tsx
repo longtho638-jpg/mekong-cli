@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Lock } from 'lucide-react';
+
+import { Shield, Lock, AlertTriangle, Eye, CheckCircle, Activity } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const securityMetrics = [
+    { label: 'Security Score', value: '94/100', icon: <Shield className="w-5 h-5" />, color: '#22c55e', trend: { value: '+5', direction: 'up' as const } },
+    { label: 'Threats Blocked', value: '12.4K', icon: <Lock className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+1.2K', direction: 'up' as const } },
+    { label: 'Open Incidents', value: '3', icon: <AlertTriangle className="w-5 h-5" />, color: '#f59e0b', trend: { value: '-2', direction: 'down' as const } },
+    { label: 'Audit Score', value: '98%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: 'Passed', direction: 'up' as const } },
+];
+
+const threatsByType = [
+    { name: 'Malware', value: 4500, color: '#ef4444' },
+    { name: 'Phishing', value: 5200, color: '#f59e0b' },
+    { name: 'DDoS', value: 1800, color: '#3b82f6' },
+    { name: 'Other', value: 900, color: '#a855f7' },
+];
+
+const dailyEvents = [
+    { name: 'Mon', value: 2400 }, { name: 'Tue', value: 2800 }, { name: 'Wed', value: 2200 },
+    { name: 'Thu', value: 3100 }, { name: 'Fri', value: 2600 }, { name: 'Sat', value: 1200 }, { name: 'Sun', value: 900 },
+];
+
+const securityCharts = [
+    { type: 'bar' as const, title: 'Threats by Type', data: threatsByType },
+    { type: 'area' as const, title: 'Daily Security Events', data: dailyEvents },
+];
+
+const securityActions = [
+    { icon: '🔍', label: 'Scan', onClick: () => { } },
+    { icon: '🛡️', label: 'Policies', onClick: () => { } },
+    { icon: '🚨', label: 'Incidents', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '👥', label: 'Access', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function SecurityPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-red-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-red-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-red-500/20 border border-red-500/30 rounded">SECURITY</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-red-500/20 text-red-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-red-400">🔒 Security Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Threats Blocked</div>
-                        <div className="text-2xl font-bold text-red-400">1,245</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Vulnerability Score</div>
-                        <div className="text-2xl font-bold text-emerald-400">A+</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Incidents</div>
-                        <div className="text-2xl font-bold text-yellow-400">0</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Security Hub" subtitle="Threats • Compliance • Incidents • Access Control" icon="🛡️" color="red"
+            statusLabel="Score" statusValue="94/100" metrics={securityMetrics} charts={securityCharts} quickActions={securityActions} locale={locale}
+        />
     );
 }
