@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Scale } from 'lucide-react';
+
+import { Scale, FileText, Shield as ShieldIcon, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const legalMetrics = [
+    { label: 'Active Contracts', value: '142', icon: <FileText className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+8', direction: 'up' as const } },
+    { label: 'Pending Reviews', value: '18', icon: <Clock className="w-5 h-5" />, color: '#f59e0b', trend: { value: '-3', direction: 'down' as const } },
+    { label: 'Compliance Score', value: '96%', icon: <ShieldIcon className="w-5 h-5" />, color: '#22c55e', trend: { value: '+2%', direction: 'up' as const } },
+    { label: 'Risk Items', value: '4', icon: <AlertTriangle className="w-5 h-5" />, color: '#ef4444', trend: { value: '-2', direction: 'down' as const } },
+];
+
+const contractsByType = [
+    { name: 'Client', value: 52, color: '#3b82f6' },
+    { name: 'Vendor', value: 38, color: '#22c55e' },
+    { name: 'Employment', value: 35, color: '#a855f7' },
+    { name: 'NDA', value: 17, color: '#f59e0b' },
+];
+
+const reviewTrend = [
+    { name: 'Jul', value: 28 }, { name: 'Aug', value: 32 }, { name: 'Sep', value: 25 },
+    { name: 'Oct', value: 22 }, { name: 'Nov', value: 18 }, { name: 'Dec', value: 15 },
+];
+
+const legalCharts = [
+    { type: 'bar' as const, title: 'Contracts by Type', data: contractsByType },
+    { type: 'area' as const, title: 'Review Queue Trend', data: reviewTrend },
+];
+
+const legalActions = [
+    { icon: '📝', label: 'New Contract', onClick: () => { } },
+    { icon: '🔍', label: 'Review Queue', onClick: () => { } },
+    { icon: '⚖️', label: 'Compliance', onClick: () => { } },
+    { icon: '📋', label: 'Templates', onClick: () => { } },
+    { icon: '🔔', label: 'Alerts', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+];
 
 export default function LegalPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-red-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-red-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-red-500/20 border border-red-500/30 rounded">LEGAL</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-red-500/20 text-red-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-red-400">⚖️ Legal Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Active Contracts</div>
-                        <div className="text-2xl font-bold text-red-400">48</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Compliance Score</div>
-                        <div className="text-2xl font-bold text-emerald-400">98%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Risk Level</div>
-                        <div className="text-2xl font-bold text-blue-400">LOW</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Legal Hub" subtitle="Contracts • Compliance • Risk Management" icon="⚖️" color="blue"
+            statusLabel="Compliance" statusValue="96%" metrics={legalMetrics} charts={legalCharts} quickActions={legalActions} locale={locale}
+        />
     );
 }

@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Calendar } from 'lucide-react';
+
+import { Calendar, Clock, Users, CheckCircle, AlertCircle, Target } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const eventsMetrics = [
+    { label: 'Upcoming Events', value: '12', icon: <Calendar className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+3', direction: 'up' as const } },
+    { label: 'Registrations', value: '2.4K', icon: <Users className="w-5 h-5" />, color: '#22c55e', trend: { value: '+420', direction: 'up' as const } },
+    { label: 'Attendance Rate', value: '78%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: '+5%', direction: 'up' as const } },
+    { label: 'NPS Score', value: '+62', icon: <Target className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+8', direction: 'up' as const } },
+];
+
+const eventsByType = [
+    { name: 'Webinars', value: 45, color: '#3b82f6' },
+    { name: 'Conferences', value: 12, color: '#22c55e' },
+    { name: 'Workshops', value: 28, color: '#a855f7' },
+    { name: 'Meetups', value: 18, color: '#f59e0b' },
+];
+
+const monthlyRegistrations = [
+    { name: 'Jul', value: 1800 }, { name: 'Aug', value: 2100 }, { name: 'Sep', value: 1950 },
+    { name: 'Oct', value: 2300 }, { name: 'Nov', value: 2150 }, { name: 'Dec', value: 2400 },
+];
+
+const eventsCharts = [
+    { type: 'bar' as const, title: 'Events by Type', data: eventsByType },
+    { type: 'area' as const, title: 'Monthly Registrations', data: monthlyRegistrations },
+];
+
+const eventsActions = [
+    { icon: '📅', label: 'New Event', onClick: () => { } },
+    { icon: '📋', label: 'Manage', onClick: () => { } },
+    { icon: '📧', label: 'Invites', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '🎫', label: 'Tickets', onClick: () => { } },
+    { icon: '📹', label: 'Recordings', onClick: () => { } },
+];
 
 export default function EventsPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-amber-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-amber-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-amber-500/20 border border-amber-500/30 rounded">EVENTS</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-amber-500/20 text-amber-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-amber-400">📅 Events Management</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Events Hosted</div>
-                        <div className="text-2xl font-bold text-amber-400">18</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Total Attendees</div>
-                        <div className="text-2xl font-bold text-emerald-400">3,240</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Satisfaction</div>
-                        <div className="text-2xl font-bold text-blue-400">4.8/5</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Events Hub" subtitle="Webinars • Conferences • Workshops • Meetups" icon="📅" color="blue"
+            statusLabel="Upcoming" statusValue="12" metrics={eventsMetrics} charts={eventsCharts} quickActions={eventsActions} locale={locale}
+        />
     );
 }

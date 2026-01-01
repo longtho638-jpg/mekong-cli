@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Film } from 'lucide-react';
+
+import { Video, Play, Eye, Heart, Share2, Clock } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const mediaMetrics = [
+    { label: 'Total Views', value: '1.2M', icon: <Eye className="w-5 h-5" />, color: '#ef4444', trend: { value: '+180K', direction: 'up' as const } },
+    { label: 'Engagement', value: '8.5%', icon: <Heart className="w-5 h-5" />, color: '#ec4899', trend: { value: '+1.2%', direction: 'up' as const } },
+    { label: 'Videos Published', value: '156', icon: <Video className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+24', direction: 'up' as const } },
+    { label: 'Watch Time', value: '42K hrs', icon: <Clock className="w-5 h-5" />, color: '#22c55e', trend: { value: '+8K', direction: 'up' as const } },
+];
+
+const viewsByPlatform = [
+    { name: 'YouTube', value: 650000, color: '#ef4444' },
+    { name: 'TikTok', value: 320000, color: '#000000' },
+    { name: 'Instagram', value: 180000, color: '#ec4899' },
+    { name: 'LinkedIn', value: 50000, color: '#3b82f6' },
+];
+
+const weeklyViews = [
+    { name: 'Mon', value: 45000 }, { name: 'Tue', value: 52000 }, { name: 'Wed', value: 48000 },
+    { name: 'Thu', value: 61000 }, { name: 'Fri', value: 55000 }, { name: 'Sat', value: 72000 }, { name: 'Sun', value: 68000 },
+];
+
+const mediaCharts = [
+    { type: 'bar' as const, title: 'Views by Platform', data: viewsByPlatform },
+    { type: 'area' as const, title: 'Weekly Views', data: weeklyViews },
+];
+
+const mediaActions = [
+    { icon: '🎬', label: 'Upload', onClick: () => { } },
+    { icon: '✂️', label: 'Edit', onClick: () => { } },
+    { icon: '📺', label: 'Library', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '📅', label: 'Schedule', onClick: () => { } },
+    { icon: '🎯', label: 'Promote', onClick: () => { } },
+];
 
 export default function MediaPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-violet-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-violet-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-violet-500/20 border border-violet-500/30 rounded">MEDIA</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-violet-500/20 text-violet-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-violet-400">🎬 Media Production</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Videos Produced</div>
-                        <div className="text-2xl font-bold text-violet-400">48</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Total Views</div>
-                        <div className="text-2xl font-bold text-emerald-400">2.8M</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Engagement Rate</div>
-                        <div className="text-2xl font-bold text-blue-400">12.5%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Media Hub" subtitle="Video • Podcasts • Live Streaming • Analytics" icon="🎬" color="red"
+            statusLabel="Views" statusValue="1.2M" metrics={mediaMetrics} charts={mediaCharts} quickActions={mediaActions} locale={locale}
+        />
     );
 }
