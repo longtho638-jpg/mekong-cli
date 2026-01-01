@@ -1,43 +1,44 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Target } from 'lucide-react';
+
+import { Target, Users, DollarSign, TrendingUp, Briefcase, Mail } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const abmMetrics = [
+    { label: 'Target Accounts', value: '124', icon: <Target className="w-5 h-5" />, color: '#a855f7', trend: { value: '+18', direction: 'up' as const } },
+    { label: 'Engaged', value: '68', icon: <Users className="w-5 h-5" />, color: '#22c55e', trend: { value: '+12', direction: 'up' as const } },
+    { label: 'Pipeline', value: '$4.2M', icon: <DollarSign className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+$800K', direction: 'up' as const } },
+    { label: 'Conversion', value: '18%', icon: <TrendingUp className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+3%', direction: 'up' as const } },
+];
+
+const accountsByTier = [
+    { name: 'Tier 1', value: 24, color: '#a855f7' },
+    { name: 'Tier 2', value: 45, color: '#3b82f6' },
+    { name: 'Tier 3', value: 55, color: '#22c55e' },
+];
+
+const engagementTrend = [
+    { name: 'Jul', value: 42 }, { name: 'Aug', value: 48 }, { name: 'Sep', value: 52 },
+    { name: 'Oct', value: 58 }, { name: 'Nov', value: 62 }, { name: 'Dec', value: 68 },
+];
+
+const abmCharts = [
+    { type: 'pie' as const, title: 'Accounts by Tier', data: accountsByTier },
+    { type: 'area' as const, title: 'Engagement Trend', data: engagementTrend },
+];
+
+const abmActions = [
+    { icon: '🎯', label: 'Add Account', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '📧', label: 'Campaigns', onClick: () => { } },
+    { icon: '👥', label: 'Contacts', onClick: () => { } },
+    { icon: '📋', label: 'Plays', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function ABMPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-red-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-red-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-red-500/20 border border-red-500/30 rounded">ABM</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-red-500/20 text-red-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-red-400">🎯 Account-Based Marketing</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Target Accounts</div>
-                        <div className="text-2xl font-bold text-red-400">45</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Engagement Score</div>
-                        <div className="text-2xl font-bold text-emerald-400">78</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Conversion Rate</div>
-                        <div className="text-2xl font-bold text-blue-400">18%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="ABM Hub" subtitle="Account-Based Marketing • Targeting • Engagement" icon="🎯" color="purple"
+            statusLabel="Accounts" statusValue="124" metrics={abmMetrics} charts={abmCharts} quickActions={abmActions} locale={locale}
+        />
     );
 }

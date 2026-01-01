@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Edit } from 'lucide-react';
+
+import { PenTool, FileText, TrendingUp, Eye, Star, Zap } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const copyMetrics = [
+    { label: 'Pieces Written', value: '248', icon: <PenTool className="w-5 h-5" />, color: '#a855f7', trend: { value: '+32', direction: 'up' as const } },
+    { label: 'Approval Rate', value: '92%', icon: <Star className="w-5 h-5" />, color: '#22c55e', trend: { value: '+5%', direction: 'up' as const } },
+    { label: 'Avg CTR', value: '4.8%', icon: <TrendingUp className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+0.6%', direction: 'up' as const } },
+    { label: 'A/B Tests', value: '18', icon: <Zap className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+4', direction: 'up' as const } },
+];
+
+const copyByType = [
+    { name: 'Ads', value: 85, color: '#a855f7' },
+    { name: 'Email', value: 62, color: '#3b82f6' },
+    { name: 'Landing', value: 45, color: '#22c55e' },
+    { name: 'Social', value: 38, color: '#f59e0b' },
+    { name: 'Blog', value: 18, color: '#ec4899' },
+];
+
+const weeklyOutput = [
+    { name: 'Mon', value: 8 }, { name: 'Tue', value: 12 }, { name: 'Wed', value: 10 },
+    { name: 'Thu', value: 15 }, { name: 'Fri', value: 6 },
+];
+
+const copyCharts = [
+    { type: 'bar' as const, title: 'Copy by Type', data: copyByType },
+    { type: 'area' as const, title: 'Weekly Output', data: weeklyOutput },
+];
+
+const copyActions = [
+    { icon: '✍️', label: 'Write', onClick: () => { } },
+    { icon: '📋', label: 'Templates', onClick: () => { } },
+    { icon: '🧪', label: 'A/B Test', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '📚', label: 'Library', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function CopyPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-cyan-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-cyan-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-cyan-500/20 border border-cyan-500/30 rounded">COPY</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-cyan-500/20 text-cyan-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-cyan-400">✍️ Copywriting</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Copy Pieces</div>
-                        <div className="text-2xl font-bold text-cyan-400">186</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Conversion Lift</div>
-                        <div className="text-2xl font-bold text-emerald-400">+32%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">A/B Tests Won</div>
-                        <div className="text-2xl font-bold text-blue-400">24</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Copy Hub" subtitle="Copywriting • A/B Testing • Performance" icon="✍️" color="purple"
+            statusLabel="Pieces" statusValue="248" metrics={copyMetrics} charts={copyCharts} quickActions={copyActions} locale={locale}
+        />
     );
 }

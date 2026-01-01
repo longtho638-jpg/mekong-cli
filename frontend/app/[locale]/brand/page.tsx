@@ -1,43 +1,44 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Sparkles } from 'lucide-react';
+
+import { Palette, Eye, Heart, TrendingUp, Star, Zap } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const brandMetrics = [
+    { label: 'Brand Score', value: '82', icon: <Star className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+8', direction: 'up' as const } },
+    { label: 'Awareness', value: '68%', icon: <Eye className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+12%', direction: 'up' as const } },
+    { label: 'Sentiment', value: '+72', icon: <Heart className="w-5 h-5" />, color: '#ec4899', trend: { value: '+8', direction: 'up' as const } },
+    { label: 'Share of Voice', value: '24%', icon: <TrendingUp className="w-5 h-5" />, color: '#22c55e', trend: { value: '+4%', direction: 'up' as const } },
+];
+
+const sentimentBreakdown = [
+    { name: 'Positive', value: 72, color: '#22c55e' },
+    { name: 'Neutral', value: 20, color: '#f59e0b' },
+    { name: 'Negative', value: 8, color: '#ef4444' },
+];
+
+const awarenessTrend = [
+    { name: 'Jul', value: 52 }, { name: 'Aug', value: 55 }, { name: 'Sep', value: 58 },
+    { name: 'Oct', value: 62 }, { name: 'Nov', value: 65 }, { name: 'Dec', value: 68 },
+];
+
+const brandCharts = [
+    { type: 'pie' as const, title: 'Sentiment Distribution', data: sentimentBreakdown },
+    { type: 'area' as const, title: 'Awareness Trend', data: awarenessTrend },
+];
+
+const brandActions = [
+    { icon: '🎨', label: 'Guidelines', onClick: () => { } },
+    { icon: '📊', label: 'Tracking', onClick: () => { } },
+    { icon: '📋', label: 'Assets', onClick: () => { } },
+    { icon: '💬', label: 'Mentions', onClick: () => { } },
+    { icon: '🏆', label: 'Competitors', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function BrandPage({ params: { locale } }: { params: { locale: string } }) {
-    const pathname = usePathname();
-    const router = useRouter();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-rose-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-rose-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-rose-500/20 border border-rose-500/30 rounded">BRAND</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-rose-500/20 text-rose-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-rose-400">✨ Brand Marketing</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Brand Awareness</div>
-                        <div className="text-2xl font-bold text-rose-400">78%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">NPS Score</div>
-                        <div className="text-2xl font-bold text-emerald-400">+65</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Brand Value</div>
-                        <div className="text-2xl font-bold text-blue-400">$2.5M</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Brand Hub" subtitle="Identity • Awareness • Sentiment • Guidelines" icon="🎨" color="orange"
+            statusLabel="Score" statusValue="82" metrics={brandMetrics} charts={brandCharts} quickActions={brandActions} locale={locale}
+        />
     );
 }

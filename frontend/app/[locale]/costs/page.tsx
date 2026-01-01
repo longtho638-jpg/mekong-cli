@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, TrendingDown } from 'lucide-react';
+
+import { DollarSign, TrendingDown, AlertTriangle, PieChart, Calculator, Target } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const costsMetrics = [
+    { label: 'Total Costs', value: '$285K', icon: <DollarSign className="w-5 h-5" />, color: '#ef4444', trend: { value: '-$12K', direction: 'down' as const } },
+    { label: 'Budget Used', value: '78%', icon: <PieChart className="w-5 h-5" />, color: '#3b82f6', trend: { value: 'On Track', direction: 'up' as const } },
+    { label: 'Savings', value: '$42K', icon: <TrendingDown className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$8K', direction: 'up' as const } },
+    { label: 'Overruns', value: '2', icon: <AlertTriangle className="w-5 h-5" />, color: '#f59e0b', trend: { value: '-1', direction: 'down' as const } },
+];
+
+const costsByCategory = [
+    { name: 'Personnel', value: 145000, color: '#3b82f6' },
+    { name: 'Software', value: 52000, color: '#22c55e' },
+    { name: 'Marketing', value: 48000, color: '#ec4899' },
+    { name: 'Operations', value: 28000, color: '#f59e0b' },
+    { name: 'Other', value: 12000, color: '#a855f7' },
+];
+
+const monthlySpend = [
+    { name: 'Jul', value: 42000 }, { name: 'Aug', value: 45000 }, { name: 'Sep', value: 48000 },
+    { name: 'Oct', value: 50000 }, { name: 'Nov', value: 52000 }, { name: 'Dec', value: 48000 },
+];
+
+const costsCharts = [
+    { type: 'pie' as const, title: 'Costs by Category', data: costsByCategory },
+    { type: 'area' as const, title: 'Monthly Spend', data: monthlySpend },
+];
+
+const costsActions = [
+    { icon: '📊', label: 'Dashboard', onClick: () => { } },
+    { icon: '📋', label: 'Budget', onClick: () => { } },
+    { icon: '💰', label: 'Savings', onClick: () => { } },
+    { icon: '⚠️', label: 'Alerts', onClick: () => { } },
+    { icon: '📈', label: 'Forecast', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function CostsPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-red-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-red-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-red-500/20 border border-red-500/30 rounded">COSTS</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-red-500/20 text-red-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-red-400">💸 Cost Management</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Budget</div>
-                        <div className="text-2xl font-bold text-red-400">$500K</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Actual Spend</div>
-                        <div className="text-2xl font-bold text-yellow-400">$485K</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Variance</div>
-                        <div className="text-2xl font-bold text-emerald-400">$15K</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Costs Hub" subtitle="Budget • Expenses • Savings • Forecasting" icon="💰" color="red"
+            statusLabel="Total" statusValue="$285K" metrics={costsMetrics} charts={costsCharts} quickActions={costsActions} locale={locale}
+        />
     );
 }
