@@ -159,14 +159,14 @@ Trước khi kết thúc mỗi ngày làm việc:
 
 ## 🤖 Antigravity IDE Subagents (100 Files)
 
-> VoltAgent Compatible | Auto-Invoke
+> MekongAgent Compatible | Auto-Invoke
 
 ```
 .agent/subagents/
 ├── hubs/       18  # binh-phap, vc, sales...
 ├── core/        5  # win3-checker, vibe-tuner...
 ├── ops/        34  # sdrops, aeops, seoops...
-├── voltAgent/  42  # python-pro, nextjs...
+├── mekongAgent/  42  # python-pro, nextjs...
 └── README.md    1
 ```
 

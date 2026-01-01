@@ -362,7 +362,7 @@ cd backend && uvicorn main:app --reload --port 8000
 
 ## 🤖 Antigravity IDE Subagents (100 Files)
 
-> VoltAgent Compatible | WIN-WIN-WIN Protocol
+> MekongAgent Compatible | WIN-WIN-WIN Protocol
 
 ### Directory Structure
 
@@ -371,7 +371,7 @@ cd backend && uvicorn main:app --reload --port 8000
 ├── hubs/       18 Hub Subagents
 ├── core/        5 Core Utilities
 ├── ops/        34 AgentOps
-├── voltAgent/  42 VoltAgent Imports
+├── mekongAgent/  42 MekongAgent Imports
 └── README.md    1 Documentation
 ```
 

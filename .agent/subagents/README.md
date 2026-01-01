@@ -1,7 +1,7 @@
 # 🏯 AgencyOS Subagents for Antigravity IDE
 
 > **Version**: 2.0 | **Date**: 2026-01-01
-> **VoltAgent Compatible** | **WIN-WIN-WIN Protocol**
+> **MekongAgent Compatible** | **WIN-WIN-WIN Protocol**
 
 ---
 
@@ -24,7 +24,7 @@
 ├── hubs/       # 18 Department Hubs
 ├── core/       # 4 Core Utilities  
 ├── ops/        # 34 AgentOps
-└── voltAgent/  # 30 VoltAgent Imports
+└── mekongAgent/  # 30 MekongAgent Imports
 ```
 
 ---
@@ -85,9 +85,9 @@
 
 ---
 
-## VoltAgent Imports (30)
+## MekongAgent Imports (30)
 
-From [awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents):
+From [awesome-claude-code-subagents](https://github.com/MekongAgent/awesome-claude-code-subagents):
 
 **Core Dev**: `fullstack-developer`, `nextjs-developer`, `python-pro`, `typescript-pro`
 
