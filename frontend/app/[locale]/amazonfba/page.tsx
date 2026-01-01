@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Package } from 'lucide-react';
+
+import { Package, DollarSign, TrendingUp, Star, Truck, BarChart3 } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const fbaMetrics = [
+    { label: 'Active Listings', value: '248', icon: <Package className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+32', direction: 'up' as const } },
+    { label: 'Monthly Revenue', value: '$42K', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$8K', direction: 'up' as const } },
+    { label: 'BSR Avg', value: '12,450', icon: <TrendingUp className="w-5 h-5" />, color: '#3b82f6', trend: { value: '-2,100', direction: 'down' as const } },
+    { label: 'Rating', value: '4.6', icon: <Star className="w-5 h-5" />, color: '#a855f7', trend: { value: '+0.2', direction: 'up' as const } },
+];
+
+const salesByCategory = [
+    { name: 'Home', value: 18500, color: '#f59e0b' },
+    { name: 'Electronics', value: 12400, color: '#3b82f6' },
+    { name: 'Sports', value: 8200, color: '#22c55e' },
+    { name: 'Beauty', value: 2900, color: '#ec4899' },
+];
+
+const monthlySales = [
+    { name: 'Jul', value: 28000 }, { name: 'Aug', value: 32000 }, { name: 'Sep', value: 35000 },
+    { name: 'Oct', value: 38000 }, { name: 'Nov', value: 40000 }, { name: 'Dec', value: 42000 },
+];
+
+const fbaCharts = [
+    { type: 'bar' as const, title: 'Sales by Category', data: salesByCategory },
+    { type: 'area' as const, title: 'Monthly Revenue', data: monthlySales },
+];
+
+const fbaActions = [
+    { icon: '📦', label: 'Inventory', onClick: () => { } },
+    { icon: '📊', label: 'Analytics', onClick: () => { } },
+    { icon: '🏷️', label: 'Listings', onClick: () => { } },
+    { icon: '🚚', label: 'Shipments', onClick: () => { } },
+    { icon: '💰', label: 'Profits', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function AmazonFBAPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-amber-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-amber-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-amber-500/20 border border-amber-500/30 rounded">AMAZON FBA</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-amber-500/20 text-amber-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-amber-400">📦 Amazon FBA Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Active Listings</div>
-                        <div className="text-2xl font-bold text-amber-400">156</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">FBA Profit</div>
-                        <div className="text-2xl font-bold text-emerald-400">$45K</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">ROI</div>
-                        <div className="text-2xl font-bold text-blue-400">32%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Amazon FBA" subtitle="Listings • Inventory • Sales • Analytics" icon="📦" color="orange"
+            statusLabel="Revenue" statusValue="$42K" metrics={fbaMetrics} charts={fbaCharts} quickActions={fbaActions} locale={locale}
+        />
     );
 }

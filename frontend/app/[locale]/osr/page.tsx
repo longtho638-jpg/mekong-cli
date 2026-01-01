@@ -1,43 +1,44 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, UserCheck } from 'lucide-react';
+
+import { Phone, DollarSign, Users, TrendingUp, Target, Award } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const osrMetrics = [
+    { label: 'Calls Made', value: '1.2K', icon: <Phone className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+180', direction: 'up' as const } },
+    { label: 'Revenue', value: '$85K', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$12K', direction: 'up' as const } },
+    { label: 'Close Rate', value: '18%', icon: <Target className="w-5 h-5" />, color: '#a855f7', trend: { value: '+2%', direction: 'up' as const } },
+    { label: 'Avg Deal', value: '$2.8K', icon: <TrendingUp className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$220', direction: 'up' as const } },
+];
+
+const salesByProduct = [
+    { name: 'Premium', value: 42000, color: '#22c55e' },
+    { name: 'Standard', value: 28000, color: '#3b82f6' },
+    { name: 'Basic', value: 15000, color: '#f59e0b' },
+];
+
+const dailyCalls = [
+    { name: 'Mon', value: 180 }, { name: 'Tue', value: 220 }, { name: 'Wed', value: 195 },
+    { name: 'Thu', value: 240 }, { name: 'Fri', value: 165 },
+];
+
+const osrCharts = [
+    { type: 'pie' as const, title: 'Revenue by Product', data: salesByProduct },
+    { type: 'bar' as const, title: 'Daily Calls', data: dailyCalls.map(d => ({ ...d, color: '#3b82f6' })) },
+];
+
+const osrActions = [
+    { icon: '📞', label: 'Call', onClick: () => { } },
+    { icon: '📋', label: 'Queue', onClick: () => { } },
+    { icon: '📊', label: 'Stats', onClick: () => { } },
+    { icon: '🎯', label: 'Targets', onClick: () => { } },
+    { icon: '📝', label: 'Scripts', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function OSRPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-amber-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-amber-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-amber-500/20 border border-amber-500/30 rounded">OSR</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-amber-500/20 text-amber-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-amber-400">✅ Onboarding</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">New Hires (30d)</div>
-                        <div className="text-2xl font-bold text-amber-400">8</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Completion Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">92%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Avg Time</div>
-                        <div className="text-2xl font-bold text-blue-400">12d</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Outbound Sales" subtitle="Outreach • Pipeline • Closing • Revenue" icon="📞" color="blue"
+            statusLabel="Revenue" statusValue="$85K" metrics={osrMetrics} charts={osrCharts} quickActions={osrActions} locale={locale}
+        />
     );
 }

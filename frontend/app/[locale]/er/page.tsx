@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Heart } from 'lucide-react';
+
+import { Users, Heart, MessageCircle, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const erMetrics = [
+    { label: 'Engagement', value: '78%', icon: <Heart className="w-5 h-5" />, color: '#ec4899', trend: { value: '+5%', direction: 'up' as const } },
+    { label: 'Open Cases', value: '8', icon: <MessageCircle className="w-5 h-5" />, color: '#3b82f6', trend: { value: '-3', direction: 'down' as const } },
+    { label: 'eNPS', value: '+42', icon: <TrendingUp className="w-5 h-5" />, color: '#22c55e', trend: { value: '+8', direction: 'up' as const } },
+    { label: 'Resolved', value: '156', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: '+24', direction: 'up' as const } },
+];
+
+const casesByType = [
+    { name: 'Policy', value: 45, color: '#3b82f6' },
+    { name: 'Conflict', value: 28, color: '#ef4444' },
+    { name: 'Benefits', value: 52, color: '#22c55e' },
+    { name: 'General', value: 31, color: '#f59e0b' },
+];
+
+const monthlyEngagement = [
+    { name: 'Jul', value: 68 }, { name: 'Aug', value: 70 }, { name: 'Sep', value: 72 },
+    { name: 'Oct', value: 74 }, { name: 'Nov', value: 76 }, { name: 'Dec', value: 78 },
+];
+
+const erCharts = [
+    { type: 'bar' as const, title: 'Cases by Category', data: casesByType },
+    { type: 'area' as const, title: 'Engagement Trend', data: monthlyEngagement },
+];
+
+const erActions = [
+    { icon: '📋', label: 'Cases', onClick: () => { } },
+    { icon: '📊', label: 'Surveys', onClick: () => { } },
+    { icon: '💬', label: 'Feedback', onClick: () => { } },
+    { icon: '📝', label: 'Policies', onClick: () => { } },
+    { icon: '🎉', label: 'Events', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function ERPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-pink-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-pink-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-pink-500/20 border border-pink-500/30 rounded">ER</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-pink-500/20 text-pink-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-pink-400">💗 Employee Relations</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Engagement Score</div>
-                        <div className="text-2xl font-bold text-pink-400">82</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">eNPS</div>
-                        <div className="text-2xl font-bold text-emerald-400">+45</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Survey Response</div>
-                        <div className="text-2xl font-bold text-blue-400">87%</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Employee Relations" subtitle="Engagement • Cases • Feedback • Culture" icon="🤝" color="pink"
+            statusLabel="eNPS" statusValue="+42" metrics={erMetrics} charts={erCharts} quickActions={erActions} locale={locale}
+        />
     );
 }

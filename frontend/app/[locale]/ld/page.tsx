@@ -1,43 +1,46 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, GraduationCap } from 'lucide-react';
+
+import { BookOpen, Users, Award, TrendingUp, Clock, Target } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const ldMetrics = [
+    { label: 'Programs', value: '24', icon: <BookOpen className="w-5 h-5" />, color: '#a855f7', trend: { value: '+4', direction: 'up' as const } },
+    { label: 'Participants', value: '186', icon: <Users className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+32', direction: 'up' as const } },
+    { label: 'Completion', value: '82%', icon: <Award className="w-5 h-5" />, color: '#22c55e', trend: { value: '+8%', direction: 'up' as const } },
+    { label: 'Hours', value: '2.4K', icon: <Clock className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+380', direction: 'up' as const } },
+];
+
+const programsByType = [
+    { name: 'Leadership', value: 8, color: '#a855f7' },
+    { name: 'Technical', value: 6, color: '#3b82f6' },
+    { name: 'Soft Skills', value: 5, color: '#22c55e' },
+    { name: 'Compliance', value: 3, color: '#f59e0b' },
+    { name: 'Onboarding', value: 2, color: '#ec4899' },
+];
+
+const monthlyHours = [
+    { name: 'Jul', value: 320 }, { name: 'Aug', value: 380 }, { name: 'Sep', value: 350 },
+    { name: 'Oct', value: 420 }, { name: 'Nov', value: 480 }, { name: 'Dec', value: 450 },
+];
+
+const ldCharts = [
+    { type: 'pie' as const, title: 'Programs by Type', data: programsByType },
+    { type: 'area' as const, title: 'Monthly Training Hours', data: monthlyHours },
+];
+
+const ldActions = [
+    { icon: '📚', label: 'Programs', onClick: () => { } },
+    { icon: '👥', label: 'Cohorts', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '🎯', label: 'Goals', onClick: () => { } },
+    { icon: '🏆', label: 'Certs', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function LDPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-purple-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-purple-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/20 border border-purple-500/30 rounded">L&D</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-purple-500/20 text-purple-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-purple-400">🎓 Learning & Development</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Active Courses</div>
-                        <div className="text-2xl font-bold text-purple-400">24</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Completion Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">78%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Hours/Employee</div>
-                        <div className="text-2xl font-bold text-blue-400">12.5</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="L&D Hub" subtitle="Learning • Development • Training • Growth" icon="🎓" color="purple"
+            statusLabel="Programs" statusValue="24" metrics={ldMetrics} charts={ldCharts} quickActions={ldActions} locale={locale}
+        />
     );
 }
