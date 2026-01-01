@@ -1,43 +1,45 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Receipt } from 'lucide-react';
+
+import { Calculator, FileText, DollarSign, Calendar, AlertTriangle, CheckCircle } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const taxMetrics = [
+    { label: 'Tax Liability', value: '$142K', icon: <DollarSign className="w-5 h-5" />, color: '#ef4444', trend: { value: '-$18K', direction: 'down' as const } },
+    { label: 'Filings Done', value: '24', icon: <FileText className="w-5 h-5" />, color: '#22c55e', trend: { value: '+6', direction: 'up' as const } },
+    { label: 'Savings', value: '$48K', icon: <Calculator className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+$12K', direction: 'up' as const } },
+    { label: 'Compliance', value: '100%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: 'Compliant', direction: 'up' as const } },
+];
+
+const taxByType = [
+    { name: 'Income', value: 85000, color: '#ef4444' },
+    { name: 'Sales', value: 32000, color: '#3b82f6' },
+    { name: 'Payroll', value: 18000, color: '#22c55e' },
+    { name: 'Other', value: 7000, color: '#f59e0b' },
+];
+
+const quarterlyTax = [
+    { name: 'Q1', value: 32000 }, { name: 'Q2', value: 38000 }, { name: 'Q3', value: 35000 },
+    { name: 'Q4', value: 37000 },
+];
+
+const taxCharts = [
+    { type: 'pie' as const, title: 'Tax by Category', data: taxByType },
+    { type: 'bar' as const, title: 'Quarterly Payments', data: quarterlyTax.map(d => ({ ...d, color: '#ef4444' })) },
+];
+
+const taxActions = [
+    { icon: '📋', label: 'Filings', onClick: () => { } },
+    { icon: '💰', label: 'Payments', onClick: () => { } },
+    { icon: '📊', label: 'Planning', onClick: () => { } },
+    { icon: '📅', label: 'Deadlines', onClick: () => { } },
+    { icon: '📝', label: 'Documents', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function TaxPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-yellow-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-yellow-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-yellow-500/20 border border-yellow-500/30 rounded">TAX</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-yellow-400">🧾 Tax Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">YTD Tax Paid</div>
-                        <div className="text-2xl font-bold text-yellow-400">$285K</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Effective Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">21%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Credits Applied</div>
-                        <div className="text-2xl font-bold text-blue-400">$42K</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Tax Hub" subtitle="Filings • Planning • Compliance • Savings" icon="🧾" color="red"
+            statusLabel="Liability" statusValue="$142K" metrics={taxMetrics} charts={taxCharts} quickActions={taxActions} locale={locale}
+        />
     );
 }

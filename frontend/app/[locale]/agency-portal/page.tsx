@@ -1,43 +1,44 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Building } from 'lucide-react';
+
+import { Users, Building, Settings, Shield, Briefcase, Award } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+const agencyPortalMetrics = [
+    { label: 'Active Clients', value: '48', icon: <Building className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+6', direction: 'up' as const } },
+    { label: 'Team Members', value: '24', icon: <Users className="w-5 h-5" />, color: '#22c55e', trend: { value: '+3', direction: 'up' as const } },
+    { label: 'Projects', value: '86', icon: <Briefcase className="w-5 h-5" />, color: '#a855f7', trend: { value: '+12', direction: 'up' as const } },
+    { label: 'MRR', value: '$42K', icon: <Award className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$5K', direction: 'up' as const } },
+];
+
+const clientsByTier = [
+    { name: 'Enterprise', value: 8, color: '#22c55e' },
+    { name: 'Growth', value: 18, color: '#3b82f6' },
+    { name: 'Starter', value: 22, color: '#a855f7' },
+];
+
+const monthlyMRR = [
+    { name: 'Jul', value: 28000 }, { name: 'Aug', value: 32000 }, { name: 'Sep', value: 35000 },
+    { name: 'Oct', value: 38000 }, { name: 'Nov', value: 40000 }, { name: 'Dec', value: 42000 },
+];
+
+const agencyPortalCharts = [
+    { type: 'pie' as const, title: 'Clients by Tier', data: clientsByTier },
+    { type: 'area' as const, title: 'MRR Growth', data: monthlyMRR },
+];
+
+const agencyPortalActions = [
+    { icon: '🏢', label: 'Clients', onClick: () => { } },
+    { icon: '👥', label: 'Team', onClick: () => { } },
+    { icon: '📋', label: 'Projects', onClick: () => { } },
+    { icon: '💰', label: 'Billing', onClick: () => { } },
+    { icon: '📊', label: 'Reports', onClick: () => { } },
+    { icon: '⚙️', label: 'Settings', onClick: () => { } },
+];
 
 export default function AgencyPortalPage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-violet-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-violet-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-violet-500/20 border border-violet-500/30 rounded">AGENCY</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-violet-500/20 text-violet-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
-                    ))}
-                </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-violet-400">🏢 Agency Portal</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Partner Agencies</div>
-                        <div className="text-2xl font-bold text-violet-400">24</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Collab Revenue</div>
-                        <div className="text-2xl font-bold text-emerald-400">$1.2M</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Active Projects</div>
-                        <div className="text-2xl font-bold text-blue-400">18</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <DepartmentDashboard title="Agency Portal" subtitle="Clients • Projects • Team • Revenue" icon="🏢" color="blue"
+            statusLabel="MRR" statusValue="$42K" metrics={agencyPortalMetrics} charts={agencyPortalCharts} quickActions={agencyPortalActions} locale={locale}
+        />
     );
 }
