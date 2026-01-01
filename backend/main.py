@@ -395,6 +395,122 @@ async def cmd_tiep_thi(request: CommandRequest):
     }
 
 
+# ============ Blue Ocean Protocol ============
+
+@app.get("/api/guild/status")
+async def get_guild_status():
+    """Get current member's guild status"""
+    return {
+        "member": "Your Agency",
+        "tier": "worker",
+        "tier_emoji": "🐝",
+        "status": "active",
+        "trust_score": 67,
+        "trust_max": 100,
+        "score_breakdown": {
+            "base": 50,
+            "contributions": 10,
+            "referrals": 5,
+            "tenure": 2
+        },
+        "contributions": {
+            "reports": 5,
+            "verified": 3,
+            "submissions": 8,
+            "referrals": 1
+        },
+        "next_tier": {
+            "name": "Queen Bee",
+            "emoji": "👑",
+            "required": 85,
+            "needed": 18
+        }
+    }
+
+
+@app.get("/api/guild/network")
+async def get_guild_network():
+    """Get network-wide statistics"""
+    return {
+        "members": {
+            "total": 127,
+            "active_30d": 89,
+            "new_this_month": 12
+        },
+        "tiers": [
+            {"name": "Queen Bees", "emoji": "👑", "count": 8, "pct": 6},
+            {"name": "Workers", "emoji": "🐝", "count": 67, "pct": 53},
+            {"name": "Larvae", "emoji": "🥚", "count": 52, "pct": 41}
+        ],
+        "intelligence": {
+            "client_dnas": 1247,
+            "verified_reports": 3892,
+            "blacklisted": 23,
+            "benchmarks": 45
+        },
+        "activity_30d": {
+            "reports": 156,
+            "verifications": 423,
+            "referrals": 34,
+            "defense_cases": 3,
+            "value_protected": 127000
+        }
+    }
+
+
+@app.get("/api/defense/check/{client_name}")
+async def check_client_dna(client_name: str):
+    """Check client DNA passport"""
+    # Demo response - in production would query Supabase
+    return {
+        "client": client_name,
+        "status": "safe",
+        "trust_score": 92,
+        "payment_history": "excellent",
+        "reports": 0,
+        "risk_level": "low",
+        "recommendation": "proceed"
+    }
+
+
+@app.get("/api/defense/blacklist")
+async def get_blacklist():
+    """Get network blacklist"""
+    return {
+        "total": 23,
+        "clients": [
+            {"name": "Fake Startup Co", "risk": "critical", "reason": "Payment fraud", "reports": 8},
+            {"name": "Scope Creeper LLC", "risk": "high", "reason": "Constant scope changes", "reports": 5},
+            {"name": "Ghost Corp", "risk": "high", "reason": "Disappeared mid-project", "reports": 4}
+        ]
+    }
+
+
+@app.get("/api/pricing/benchmarks")
+async def get_pricing_benchmarks():
+    """Get market rate benchmarks"""
+    return {
+        "avg_rate": 125,
+        "rate_floor": 85,
+        "your_rate": 140,
+        "position": "top_25",
+        "services": [
+            {"name": "Web Development", "floor": 85, "avg": 125, "top": 200, "your": 140},
+            {"name": "UI/UX Design", "floor": 75, "avg": 110, "top": 175, "your": 120},
+            {"name": "SEO Services", "floor": 65, "avg": 95, "top": 150, "your": 100},
+            {"name": "Content Writing", "floor": 45, "avg": 70, "top": 120, "your": 80},
+            {"name": "Video Production", "floor": 100, "avg": 150, "top": 250, "your": 160}
+        ],
+        "rate_distribution": [
+            {"range": "$75-100", "pct": 15},
+            {"range": "$100-125", "pct": 35},
+            {"range": "$125-150", "pct": 28},
+            {"range": "$150-200", "pct": 18},
+            {"range": "$200+", "pct": 4}
+        ]
+    }
+
+
 # ============ Run Server ============
 
 if __name__ == "__main__":

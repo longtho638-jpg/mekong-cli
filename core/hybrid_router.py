@@ -1,4 +1,4 @@
-""
+"""
 Hybrid Router - Intelligent AI Task Routing.
 Mekong-CLI Core Module.
 
@@ -7,7 +7,7 @@ Routes tasks to optimal AI provider for up to 70% cost savings:
 - Complex tasks → Google Gemini / Anthropic Claude
 - Vision tasks → Google Gemini Flash/Pro
 - Code tasks → Anthropic Claude
-""
+"""
 
 from dataclasses import dataclass
 from enum import Enum
