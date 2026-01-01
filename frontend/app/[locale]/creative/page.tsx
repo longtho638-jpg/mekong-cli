@@ -1,43 +1,122 @@
 'use client';
+
+import { Palette, Image, Video, Wand2, Eye, Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Palette } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+// Creative Metrics
+const creativeMetrics = [
+    {
+        label: 'Assets Created',
+        value: '248',
+        icon: <Image className="w-5 h-5" />,
+        color: '#ec4899',
+        trend: { value: '+32', direction: 'up' as const },
+    },
+    {
+        label: 'Approval Rate',
+        value: '94%',
+        icon: <Eye className="w-5 h-5" />,
+        color: '#22c55e',
+        trend: { value: '+5%', direction: 'up' as const },
+    },
+    {
+        label: 'Campaigns Live',
+        value: '12',
+        icon: <Wand2 className="w-5 h-5" />,
+        color: '#3b82f6',
+        trend: { value: '+3', direction: 'up' as const },
+    },
+    {
+        label: 'Avg Engagement',
+        value: '4.2%',
+        icon: <Heart className="w-5 h-5" />,
+        color: '#a855f7',
+        trend: { value: '+0.8%', direction: 'up' as const },
+    },
+];
+
+// Assets by Type
+const assetsByType = [
+    { name: 'Social Posts', value: 85, color: '#ec4899' },
+    { name: 'Videos', value: 42, color: '#3b82f6' },
+    { name: 'Banners', value: 65, color: '#22c55e' },
+    { name: 'Emails', value: 38, color: '#f59e0b' },
+    { name: 'Landing Pages', value: 18, color: '#a855f7' },
+];
+
+// Weekly Output
+const weeklyOutput = [
+    { name: 'Mon', value: 12 },
+    { name: 'Tue', value: 18 },
+    { name: 'Wed', value: 15 },
+    { name: 'Thu', value: 22 },
+    { name: 'Fri', value: 8 },
+];
+
+// Brand Performance
+const brandPerformance = [
+    { name: 'On Brand', value: 88, color: '#22c55e' },
+    { name: 'Minor Edits', value: 10, color: '#f59e0b' },
+    { name: 'Major Revision', value: 2, color: '#ef4444' },
+];
+
+const creativeCharts = [
+    { type: 'bar' as const, title: 'Assets by Type', data: assetsByType },
+    { type: 'area' as const, title: 'Weekly Creative Output', data: weeklyOutput },
+    { type: 'pie' as const, title: 'Brand Compliance', data: brandPerformance },
+];
+
+const creativeActions = [
+    { icon: '🎨', label: 'New Design', onClick: () => console.log('New Design') },
+    { icon: '📹', label: 'Create Video', onClick: () => console.log('Create Video') },
+    { icon: '✍️', label: 'Write Copy', onClick: () => console.log('Write Copy') },
+    { icon: '🖼️', label: 'Asset Library', onClick: () => console.log('Asset Library') },
+    { icon: '📊', label: 'Analytics', onClick: () => console.log('Analytics') },
+    { icon: '🎯', label: 'Brand Guide', onClick: () => console.log('Brand Guide') },
+];
 
 export default function CreativePage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-pink-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-pink-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-pink-500/20 border border-pink-500/30 rounded">CREATIVE</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-pink-500/20 text-pink-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
+        <DepartmentDashboard
+            title="Creative Studio"
+            subtitle="Design • Video • Copywriting • Brand Management"
+            icon="🎨"
+            color="pink"
+            statusLabel="Assets"
+            statusValue="248"
+            metrics={creativeMetrics}
+            charts={creativeCharts}
+            quickActions={creativeActions}
+            locale={locale}
+        >
+            {/* Recent Projects */}
+            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 mt-8">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-pink-400" />
+                    Active Creative Projects
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                        { name: 'Q1 Campaign Launch', status: 'In Progress', progress: 75, color: '#ec4899' },
+                        { name: 'Brand Refresh', status: 'Review', progress: 90, color: '#3b82f6' },
+                        { name: 'Product Videos', status: 'Planning', progress: 25, color: '#22c55e' },
+                    ].map((project) => (
+                        <div key={project.name} className="p-4 bg-white/5 border border-white/10 rounded-lg">
+                            <div className="flex justify-between items-start mb-2">
+                                <span className="font-bold text-white">{project.name}</span>
+                                <span className="text-xs px-2 py-1 rounded" style={{ background: `${project.color}20`, color: project.color }}>
+                                    {project.status}
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-700 rounded-full h-2">
+                                <div className="h-2 rounded-full" style={{ width: `${project.progress}%`, background: project.color }} />
+                            </div>
+                            <div className="text-xs text-gray-400 mt-1">{project.progress}% complete</div>
+                        </div>
                     ))}
                 </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-pink-400">🎨 Creative Studio</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Assets Created</div>
-                        <div className="text-2xl font-bold text-pink-400">248</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Approval Rate</div>
-                        <div className="text-2xl font-bold text-emerald-400">94%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Campaigns Live</div>
-                        <div className="text-2xl font-bold text-blue-400">12</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+            </div>
+        </DepartmentDashboard>
     );
 }

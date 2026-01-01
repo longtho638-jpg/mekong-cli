@@ -1,43 +1,116 @@
 'use client';
+
+import { Crown, TrendingUp, Target, Users, Calendar, Award } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Briefcase } from 'lucide-react';
+import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+
+// Executive Metrics
+const execMetrics = [
+    {
+        label: 'Revenue YTD',
+        value: '$2.4M',
+        icon: <TrendingUp className="w-5 h-5" />,
+        color: '#22c55e',
+        trend: { value: '+18%', direction: 'up' as const },
+    },
+    {
+        label: 'Team Size',
+        value: '156',
+        icon: <Users className="w-5 h-5" />,
+        color: '#3b82f6',
+        trend: { value: '+12', direction: 'up' as const },
+    },
+    {
+        label: 'OKR Progress',
+        value: '78%',
+        icon: <Target className="w-5 h-5" />,
+        color: '#a855f7',
+        trend: { value: 'On Track', direction: 'up' as const },
+    },
+    {
+        label: 'NPS Score',
+        value: '+52',
+        icon: <Award className="w-5 h-5" />,
+        color: '#f59e0b',
+        trend: { value: '+8', direction: 'up' as const },
+    },
+];
+
+// Revenue by Quarter
+const revenueByQ = [
+    { name: 'Q1', value: 580000, color: '#22c55e' },
+    { name: 'Q2', value: 620000, color: '#22c55e' },
+    { name: 'Q3', value: 680000, color: '#22c55e' },
+    { name: 'Q4', value: 520000, color: '#22c55e' },
+];
+
+// Department Performance
+const deptPerformance = [
+    { name: 'Engineering', value: 92 },
+    { name: 'Sales', value: 88 },
+    { name: 'Marketing', value: 85 },
+    { name: 'Operations', value: 90 },
+];
+
+// Strategic Initiatives
+const initiatives = [
+    { name: 'Completed', value: 12, color: '#22c55e' },
+    { name: 'In Progress', value: 8, color: '#3b82f6' },
+    { name: 'Planned', value: 5, color: '#f59e0b' },
+];
+
+const execCharts = [
+    { type: 'bar' as const, title: 'Revenue by Quarter', data: revenueByQ },
+    { type: 'bar' as const, title: 'Department OKR Performance', data: deptPerformance.map(d => ({ ...d, color: '#a855f7' })) },
+    { type: 'pie' as const, title: 'Strategic Initiatives', data: initiatives },
+];
+
+const execActions = [
+    { icon: '📊', label: 'Board Deck', onClick: () => console.log('Board Deck') },
+    { icon: '🎯', label: 'OKRs', onClick: () => console.log('OKRs') },
+    { icon: '📅', label: 'Leadership', onClick: () => console.log('Leadership') },
+    { icon: '💰', label: 'Financials', onClick: () => console.log('Financials') },
+    { icon: '👥', label: 'Org Chart', onClick: () => console.log('Org Chart') },
+    { icon: '📈', label: 'Insights', onClick: () => console.log('Insights') },
+];
 
 export default function ExecutivePage({ params: { locale } }: { params: { locale: string } }) {
-    const router = useRouter();
-    const pathname = usePathname();
-
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-purple-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-purple-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/20 border border-purple-500/30 rounded">EXECUTIVE</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-purple-500/20 text-purple-400' : 'text-gray-500'}`}>{l.toUpperCase()}</button>
+        <DepartmentDashboard
+            title="Executive Suite"
+            subtitle="Strategy • Leadership • Performance • Governance"
+            icon="👔"
+            color="purple"
+            statusLabel="Revenue"
+            statusValue="$2.4M"
+            metrics={execMetrics}
+            charts={execCharts}
+            quickActions={execActions}
+            locale={locale}
+        >
+            {/* Key Priorities */}
+            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 mt-8">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-purple-400" />
+                    This Week's Priorities
+                </h3>
+                <div className="space-y-3">
+                    {[
+                        { priority: 'High', item: 'Q1 Board Meeting Prep', due: 'Jan 5', color: '#ef4444' },
+                        { priority: 'High', item: 'Series A Term Sheet Review', due: 'Jan 8', color: '#ef4444' },
+                        { priority: 'Med', item: 'Department Budget Reviews', due: 'Jan 10', color: '#f59e0b' },
+                        { priority: 'Low', item: 'Team All-Hands Planning', due: 'Jan 15', color: '#22c55e' },
+                    ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 bg-white/5 border border-white/10 rounded-lg">
+                            <div className="flex items-center gap-3">
+                                <span className="w-2 h-2 rounded-full" style={{ background: item.color }} />
+                                <span className="text-white">{item.item}</span>
+                            </div>
+                            <span className="text-xs text-gray-400">Due: {item.due}</span>
+                        </div>
                     ))}
                 </div>
-            </nav>
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-purple-400">💼 Executive Dashboard</h1>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Company Revenue</div>
-                        <div className="text-2xl font-bold text-purple-400">$12.5M</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">YoY Growth</div>
-                        <div className="text-2xl font-bold text-emerald-400">+42%</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Team Size</div>
-                        <div className="text-2xl font-bold text-blue-400">124</div>
-                    </div>
-                </div>
-            </main>
-        </div>
+            </div>
+        </DepartmentDashboard>
     );
 }
