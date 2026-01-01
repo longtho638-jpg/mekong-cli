@@ -360,4 +360,62 @@ cd backend && uvicorn main:app --reload --port 8000
 
 ---
 
+## 🤖 Antigravity IDE Subagents (100 Files)
+
+> VoltAgent Compatible | WIN-WIN-WIN Protocol
+
+### Directory Structure
+
+```
+.agent/subagents/
+├── hubs/       18 Hub Subagents
+├── core/        5 Core Utilities
+├── ops/        34 AgentOps
+├── voltAgent/  42 VoltAgent Imports
+└── README.md    1 Documentation
+```
+
+### Hub Subagents (18)
+
+| Hub | Trigger Words |
+|-----|---------------|
+| `binh-phap-hub` | strategy, WIN-WIN-WIN, Binh Pháp |
+| `vc-hub` | fundraising, term sheet, dilution |
+| `sales-hub` | CRM, pipeline, deals |
+| `marketing-hub` | campaigns, SEO, content |
+| `finance-hub` | budget, cash flow, P&L |
+| `hr-hub` | hiring, talent, culture |
+| `legal-hub` | contracts, IP, compliance |
+| `it-hub` | security, infrastructure |
+| `engineering-hub` | DevOps, QA, code |
+| `executive-hub` | KPIs, strategy |
+| `creative-hub` | design, brand, video |
+| `cs-hub` | retention, health score |
+| `retail-hub` | inventory, e-commerce |
+| `real-estate-hub` | listings, property |
+| `education-hub` | courses, training |
+| `wellness-hub` | benefits, healthcare |
+| `community-hub` | events, nonprofit |
+| `entrepreneur-hub` | startup, MVP |
+
+### Core Utilities (5)
+
+| Agent | Purpose |
+|-------|---------|
+| `win3-checker` | WIN-WIN-WIN validation |
+| `vibe-tuner` | Voice & tone management |
+| `multi-agent-coordinator` | Orchestration |
+| `workflow-orchestrator` | Workflow management |
+| `context-manager` | State management |
+
+### Quick Start
+
+```bash
+# Invoke by name
+> Ask the binh-phap-hub for strategic advice
+> Have the win3-checker validate this deal
+```
+
+---
+
 **🏯 Agency OS - "Không đánh mà thắng"**
