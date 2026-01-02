@@ -529,5 +529,48 @@
         "color_scheme": "Color Scheme",
         "font": "Font",
         "density": "Density"
+    },
+    "Guild": {
+        "dashboard": "Agency Guild",
+        "trust_score": "Trust Score",
+        "network_members": "Network Members",
+        "contributions": "Contributions",
+        "protected_value": "Protected Value",
+        "tier_queen": "Queen Bee",
+        "tier_worker": "Worker Bee",
+        "tier_larvae": "Larvae",
+        "constitution": "Guild Constitution",
+        "status": "Your Status",
+        "join": "Join Guild",
+        "contribute": "Contribute",
+        "network": "Network"
+    },
+    "Defense": {
+        "dashboard": "Mutual Defense",
+        "client_dna": "Client DNA Passport",
+        "blacklist": "Network Blacklist",
+        "risk_detection": "Risk Detection",
+        "check_client": "Check Client",
+        "report": "Report",
+        "verify": "Verify",
+        "alerts": "Active Alerts"
+    },
+    "PricingIntel": {
+        "dashboard": "Pricing Intelligence",
+        "avg_rate": "Avg Market Rate",
+        "rate_floor": "Rate Floor",
+        "your_rate": "Your Rate",
+        "benchmarks": "Service Benchmarks",
+        "position": "Market Position"
+    },
+    "Revenue": {
+        "dashboard": "Revenue Dashboard",
+        "annual_target": "Annual Target",
+        "mtd": "MTD Revenue",
+        "active_clients": "Active Clients",
+        "avg_deal": "Avg Deal Size",
+        "progress": "Progress to $1M",
+        "hub_tiers": "Revenue by Hub Tier",
+        "win3": "WIN-WIN-WIN Model"
     }
 }

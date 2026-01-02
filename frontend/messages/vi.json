@@ -529,5 +529,48 @@
         "color_scheme": "Bảng màu",
         "font": "Phông chữ",
         "density": "Mật độ"
+    },
+    "Guild": {
+        "dashboard": "Hiệp Hội Agency",
+        "trust_score": "Điểm Tín Nhiệm",
+        "network_members": "Thành Viên Mạng",
+        "contributions": "Đóng Góp",
+        "protected_value": "Giá Trị Được Bảo Vệ",
+        "tier_queen": "Ong Chúa",
+        "tier_worker": "Ong Thợ",
+        "tier_larvae": "Ấu Trùng",
+        "constitution": "Hiến Pháp Hiệp Hội",
+        "status": "Trạng Thái Của Bạn",
+        "join": "Tham Gia Hiệp Hội",
+        "contribute": "Đóng Góp",
+        "network": "Mạng Lưới"
+    },
+    "Defense": {
+        "dashboard": "Phòng Thủ Chung",
+        "client_dna": "Hộ Chiếu DNA Khách Hàng",
+        "blacklist": "Danh Sách Đen",
+        "risk_detection": "Phát Hiện Rủi Ro",
+        "check_client": "Kiểm Tra Khách",
+        "report": "Báo Cáo",
+        "verify": "Xác Minh",
+        "alerts": "Cảnh Báo Đang Hoạt Động"
+    },
+    "PricingIntel": {
+        "dashboard": "Thông Tin Giá Cả",
+        "avg_rate": "Giá Trung Bình Thị Trường",
+        "rate_floor": "Giá Sàn",
+        "your_rate": "Giá Của Bạn",
+        "benchmarks": "Chuẩn Dịch Vụ",
+        "position": "Vị Thế Thị Trường"
+    },
+    "Revenue": {
+        "dashboard": "Bảng Điều Khiển Doanh Thu",
+        "annual_target": "Mục Tiêu Năm",
+        "mtd": "Doanh Thu Tháng",
+        "active_clients": "Khách Hàng Đang Hoạt Động",
+        "avg_deal": "Quy Mô Giao Dịch TB",
+        "progress": "Tiến Độ Đến $1M",
+        "hub_tiers": "Doanh Thu Theo Cấp Hub",
+        "win3": "Mô Hình WIN-WIN-WIN"
     }
 }
