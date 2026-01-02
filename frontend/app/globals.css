@@ -661,3 +661,236 @@ body {
   backdrop-filter: blur(8px) saturate(180%);
   -webkit-backdrop-filter: blur(8px) saturate(180%);
 }
+
+/* ============================================ */
+/* CLEAN UI/UX SYSTEM (Linear/Vercel Style)    */
+/* ============================================ */
+
+/* Safe Container - prevents edge overflow */
+.safe-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+@media (max-width: 768px) {
+  .safe-container {
+    padding: 16px;
+  }
+}
+
+/* Typography Hierarchy */
+.text-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.text-section {
+  font-size: 14px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.text-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.text-muted {
+  font-size: 13px;
+  color: #475569;
+}
+
+.text-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.text-metric {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+/* Subtle Card - clean, minimal borders */
+.card-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card-subtle:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Clean hover - no transforms, just bg change */
+.hover-subtle {
+  transition: background 0.15s ease;
+}
+
+.hover-subtle:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* 8px Spacing Rhythm */
+.gap-xs {
+  gap: 4px;
+}
+
+.gap-sm {
+  gap: 8px;
+}
+
+.gap-md {
+  gap: 16px;
+}
+
+.gap-lg {
+  gap: 24px;
+}
+
+.gap-xl {
+  gap: 32px;
+}
+
+.p-xs {
+  padding: 4px;
+}
+
+.p-sm {
+  padding: 8px;
+}
+
+.p-md {
+  padding: 16px;
+}
+
+.p-lg {
+  padding: 24px;
+}
+
+.p-xl {
+  padding: 32px;
+}
+
+/* Status Dot - minimal indicator */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-dot-pulse {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Clean Button */
+.btn-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-clean:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Slim Sidebar */
+.sidebar-slim {
+  width: 56px;
+  transition: width 0.2s ease;
+}
+
+.sidebar-slim.expanded {
+  width: 200px;
+}
+
+/* Clean Header */
+.header-clean {
+  height: 48px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+/* Metric Card */
+.metric-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 0;
+}
+
+/* Chart Container */
+.chart-container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 16px;
+  height: 280px;
+}
+
+/* Quick Action Button (Inline) */
+.action-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.action-inline:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Remove excessive effects when clean mode */
+.clean-mode .animate-pulse,
+.clean-mode .animate-float {
+  animation: none;
+}
+
+.clean-mode .neon-glow-cyan,
+.clean-mode .neon-glow-purple,
+.clean-mode .neon-glow-pink {
+  box-shadow: none;
+}

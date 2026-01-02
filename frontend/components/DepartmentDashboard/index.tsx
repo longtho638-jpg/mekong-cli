@@ -22,112 +22,79 @@ export function DepartmentDashboard({
 
     return (
         <DashboardShell locale={locale} accentColor={colors.primary}>
-            <div className="px-6 py-8 max-w-[1920px] mx-auto relative">
-                {/* Department-specific gradient orb */}
-                <div
-                    className="fixed top-[15%] right-[25%] w-[500px] h-[500px] pointer-events-none opacity-30"
-                    style={{
-                        background: `radial-gradient(circle, ${colors.bg} 0%, transparent 70%)`,
-                    }}
-                />
-
-                {/* Header with Status Badge */}
-                <header className="mb-8 flex items-start justify-between">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <span className="text-4xl">{icon}</span>
-                            <h1
-                                className="text-3xl font-bold tracking-tight"
-                                style={{ color: colors.primary }}
-                            >
-                                {title}
-                            </h1>
-                            <span
-                                className="w-2 h-2 rounded-full animate-pulse"
-                                style={{
-                                    background: colors.primary,
-                                    boxShadow: `0 0 10px ${colors.primary}`,
-                                }}
-                            />
+            {/* Safe Container - 32px padding */}
+            <div className="safe-container">
+                {/* Header - Clean Typography */}
+                <header className="mb-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">{icon}</span>
+                            <div>
+                                <h1 className="text-title flex items-center gap-2">
+                                    {title}
+                                    <span className="status-dot status-dot-pulse" style={{ background: colors.primary }} />
+                                </h1>
+                                {subtitle && (
+                                    <p className="text-muted text-sm mt-0.5">{subtitle}</p>
+                                )}
+                            </div>
                         </div>
-                        {subtitle && (
-                            <p className="text-gray-400 text-sm max-w-xl">{subtitle}</p>
+
+                        {/* Status Badge - inline, minimal */}
+                        {statusLabel && statusValue && (
+                            <div className="card-subtle flex items-center gap-2 px-3 py-1.5">
+                                <span className="text-label">{statusLabel}</span>
+                                <span className="text-value text-base" style={{ color: colors.primary }}>{statusValue}</span>
+                            </div>
                         )}
                     </div>
-
-                    {/* Status Badge */}
-                    {statusLabel && statusValue && (
-                        <div
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl ${colors.bgClass} ${colors.borderClass} border backdrop-blur-sm`}
-                        >
-                            <span
-                                className="w-2 h-2 rounded-full animate-pulse"
-                                style={{ background: colors.primary }}
-                            />
-                            <span className="text-xs font-bold" style={{ color: colors.primary }}>
-                                {statusLabel}: {statusValue}
-                            </span>
-                        </div>
-                    )}
                 </header>
 
-                {/* Metrics Grid with 3D Tilt Effect */}
+                {/* Metrics Grid */}
                 {metrics && metrics.length > 0 && (
-                    <div className="mb-8">
+                    <section className="mb-6">
                         <MetricsGrid metrics={metrics} color={color} />
-                    </div>
+                    </section>
                 )}
 
-                {/* Charts with Neon Glow */}
+                {/* Charts */}
                 {charts && charts.length > 0 && (
-                    <div className="mb-8">
+                    <section className="mb-6">
                         <ChartSection charts={charts} color={color} />
-                    </div>
+                    </section>
                 )}
 
-                {/* Quick Actions - Floating Dock Style */}
+                {/* Quick Actions - horizontal row */}
                 {quickActions && quickActions.length > 0 && (
-                    <div className="mb-8">
-                        <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-gray-400">
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: colors.primary }} />
-                            QUICK ACTIONS
-                        </h3>
-                        <div className="flex flex-wrap gap-3">
+                    <section className="mb-6">
+                        <h3 className="text-label mb-3">Quick Actions</h3>
+                        <div className="flex flex-wrap gap-2">
                             {quickActions.map((action, index) => (
                                 <button
                                     key={index}
                                     onClick={action.onClick}
-                                    className="group flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl
-                             hover:bg-white/10 hover:border-white/20 hover:scale-105
-                             transition-all duration-300 backdrop-blur-sm"
-                                    style={{
-                                        '--glow-color': colors.primary,
-                                    } as React.CSSProperties}
+                                    className="action-inline"
                                 >
-                                    <span className="text-lg group-hover:scale-110 transition-transform">
-                                        {action.icon}
-                                    </span>
-                                    <span className="text-xs text-gray-300 group-hover:text-white transition-colors">
-                                        {action.label}
-                                    </span>
+                                    <span className="text-sm">{action.icon}</span>
+                                    <span>{action.label}</span>
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </section>
                 )}
 
-                {/* Custom Children with glass container */}
+                {/* Custom Children */}
                 {children && (
-                    <div className="space-y-6">
+                    <section className="space-y-4">
                         {children}
-                    </div>
+                    </section>
                 )}
             </div>
         </DashboardShell>
     );
 }
 
-// Re-export types and components
+// Re-export
 export * from './types';
 export { MetricsGrid } from './MetricsGrid';
 export { ChartSection } from './ChartSection';
