@@ -20,7 +20,7 @@ export function MetricsGrid({ metrics, color }: MetricsGridProps) {
                 return (
                     <div
                         key={index}
-                        className={`metric-card-catalyst shadow-catalyst hover-lift bento-item ${isLarge ? 'bento-item-large' : isWide ? 'bento-item-wide' : ''
+                        className={`metric-card-catalyst glass-ultra shadow-catalyst hover-lift hover-glow bento-item ${isLarge ? 'bento-item-large' : isWide ? 'bento-item-wide' : ''
                             }`}
                         style={{
                             animationDelay: `${index * 0.1}s`,

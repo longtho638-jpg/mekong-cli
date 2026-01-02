@@ -9,6 +9,11 @@
 
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-meteor-effect: meteor 5s linear infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-radar-sweep: radar-sweep 3s linear infinite;
+  --animate-float-particle: float-particle 6s ease-in-out infinite;
+  --animate-count-up: count-up 1s ease-out forwards;
+  --animate-spin-slow: spin 8s linear infinite;
 
   @keyframes meteor {
     0% {
@@ -23,6 +28,56 @@
     100% {
       transform: rotate(215deg) translateX(-500px);
       opacity: 0;
+    }
+  }
+
+  /* WOW MAX LEVEL: Pulsing Glow */
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    }
+
+    50% {
+      box-shadow: 0 0 0 12px rgba(245, 158, 11, 0), 0 0 20px rgba(245, 158, 11, 0.5);
+    }
+  }
+
+  /* WOW MAX LEVEL: Radar Sweep */
+  @keyframes radar-sweep {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* WOW MAX LEVEL: Floating Particles */
+  @keyframes float-particle {
+
+    0%,
+    100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.3;
+    }
+
+    50% {
+      transform: translateY(-20px) translateX(10px);
+      opacity: 0.7;
+    }
+  }
+
+  /* WOW MAX LEVEL: Progress Bar Fill */
+  @keyframes progress-fill {
+    from {
+      width: 0%;
+    }
+
+    to {
+      width: var(--progress-value, 0%);
     }
   }
 }
@@ -1418,4 +1473,152 @@ body {
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: minmax(140px, auto);
   gap: 16px;
+}
+
+/* ============================================ */
+/* WOW MAX LEVEL UTILITIES */
+/* ============================================ */
+
+/* Glass Ultra - Maximum Depth */
+.glass-ultra {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(60px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(60px) saturate(200%) brightness(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Pulsing Glow Node */
+.pulse-glow-amber {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.pulse-glow-green {
+  animation: pulse-glow-green 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow-green {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0), 0 0 15px rgba(34, 197, 94, 0.4);
+  }
+}
+
+/* Radar Sweep Effect */
+.radar-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.radar-sweep::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(34, 197, 94, 0.3) 60deg, transparent 120deg);
+  transform-origin: center;
+  animation: radar-sweep 3s linear infinite;
+}
+
+/* Floating Particles Container */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+.particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.particle:nth-child(2) {
+  top: 60%;
+  left: 25%;
+  animation-delay: 1s;
+}
+
+.particle:nth-child(3) {
+  top: 35%;
+  left: 50%;
+  animation-delay: 2s;
+}
+
+.particle:nth-child(4) {
+  top: 70%;
+  left: 75%;
+  animation-delay: 3s;
+}
+
+.particle:nth-child(5) {
+  top: 45%;
+  left: 90%;
+  animation-delay: 4s;
+}
+
+/* Progress Bar Animated Fill */
+.progress-animated {
+  animation: progress-fill 1.5s ease-out forwards;
+}
+
+/* Number Count-Up Effect (requires JS) */
+.count-up {
+  display: inline-block;
+}
+
+/* Spin Slow for Icons */
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hover Glow Effect */
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+}
+
+/* Trail Line Effect */
+.trail-line {
+  position: relative;
+}
+
+.trail-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.5), transparent);
+  transform: translateY(-50%);
 }

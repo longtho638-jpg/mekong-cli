@@ -70,12 +70,17 @@ export function CampaignMap() {
                                 {/* Node Circle */}
                                 <motion.div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-300 ${isCurrent
-                                        ? 'bg-amber-500 border-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] scale-110'
+                                        ? 'bg-amber-500 border-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] scale-110 pulse-glow-amber'
                                         : isCompleted
-                                            ? 'bg-green-900/80 border-green-500 text-green-400'
+                                            ? 'bg-green-900/80 border-green-500 text-green-400 pulse-glow-green'
                                             : 'bg-[#0a0a0f] border-white/10 text-gray-600'
                                         }`}
                                     whileHover={{ scale: 1.2 }}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: isCurrent ? [1, 1.1, 1] : 1 }}
+                                    transition={{
+                                        scale: isCurrent ? { repeat: Infinity, duration: 2, ease: "easeInOut" } : { duration: 0.3 }
+                                    }}
                                 >
                                     {isCurrent ? <Target className="w-4 h-4 text-white animate-spin-slow" /> : <span className="text-[10px] font-bold">{chapter.id}</span>}
                                 </motion.div>
