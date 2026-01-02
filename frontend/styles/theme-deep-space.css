@@ -1,0 +1,60 @@
+/* ============================================ */
+/* DEEP SPACE THEME (Shadcn + Binh Phap + SpaceX) */
+/* ============================================ */
+:root {
+    --background: 0 0% 2%;
+    /* #050505 (Deep Space) */
+    --foreground: 0 0% 98%;
+    /* #FAFAFA */
+
+    --card: 0 0% 3%;
+    /* #090909 */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 142 76% 36%;
+    /* Green-600 */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 9%;
+    /* #18181B */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 9%;
+    /* #18181B */
+    --muted-foreground: 0 0% 63%;
+
+    --accent: 0 0% 9%;
+    /* #18181B */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 12%;
+    /* #1F1F1F */
+    --input: 0 0% 12%;
+    --ring: 142 76% 36%;
+
+    --radius: 0.5rem;
+}
+
+.dark {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    /* ... same as above mostly since we are dark-first */
+}
+
+/* Base */
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+}

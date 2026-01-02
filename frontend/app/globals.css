@@ -28,7 +28,50 @@
 }
 
 :root {
-  /* Brand Colors */
+  /* ============================================ */
+  /* SHADCN / DEEP SPACE THEME VARIABLES */
+  /* ============================================ */
+  --background: 0 0% 2%;
+  /* #050505 */
+  --foreground: 0 0% 98%;
+  /* #FAFAFA */
+
+  --card: 0 0% 3%;
+  /* #090909 */
+  --card-foreground: 0 0% 98%;
+
+  --popover: 0 0% 3%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 142 76% 36%;
+  /* #16a34a (Green-600) */
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 0 0% 9%;
+  /* #18181B */
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 0 0% 9%;
+  /* #18181B */
+  --muted-foreground: 0 0% 63%;
+
+  --accent: 0 0% 9%;
+  /* #18181B */
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 0 0% 12%;
+  /* #1F1F1F */
+  --input: 0 0% 12%;
+  --ring: 142 76% 36%;
+
+  --radius: 0.5rem;
+
+  /* ============================================ */
+  /* LEGACY VARIABLES (Keep for backward compat) */
+  /* ============================================ */
   --matrix-green: #00ff41;
   --matrix-green-dim: rgba(0, 255, 65, 0.1);
   --matrix-green-glow: rgba(0, 255, 65, 0.5);
