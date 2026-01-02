@@ -894,3 +894,237 @@ body {
 .clean-mode .neon-glow-pink {
   box-shadow: none;
 }
+
+/* ============================================ */
+/* WOW ENHANCEMENT v2.0 - PREMIUM EFFECTS      */
+/* ============================================ */
+
+/* Gradient Mesh Background */
+.bg-mesh {
+  background:
+    radial-gradient(at 40% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(at 70% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+  animation: mesh-flow 25s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-flow {
+  0% {
+    background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%;
+  }
+
+  50% {
+    background-position: 50% 20%, 50% 50%, 50% 80%, 50% 50%;
+  }
+
+  100% {
+    background-position: 100% 0%, 0% 100%, 100% 100%, 0% 0%;
+  }
+}
+
+/* Cursor Glow Effect */
+.cursor-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+
+.cursor-glow.hidden {
+  opacity: 0;
+}
+
+/* 3D Card Transform */
+.card-3d {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) translateY(-4px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(139, 92, 246, 0.1);
+}
+
+/* Stagger Fade-In Animation */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-in {
+  opacity: 0;
+  animation: stagger-in 0.4s ease-out forwards;
+}
+
+.stagger-in:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger-in:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-in:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger-in:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.stagger-in:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.stagger-in:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.stagger-in:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.stagger-in:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+/* Section Fade-In */
+@keyframes section-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-in {
+  animation: section-in 0.5s ease-out forwards;
+}
+
+.section-in:nth-of-type(1) {
+  animation-delay: 0.1s;
+}
+
+.section-in:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.section-in:nth-of-type(3) {
+  animation-delay: 0.3s;
+}
+
+.section-in:nth-of-type(4) {
+  animation-delay: 0.4s;
+}
+
+/* Magnetic Button Effect */
+.btn-magnetic {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-magnetic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.btn-magnetic:active {
+  transform: translateY(0);
+}
+
+/* Glow Border on Hover */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.2), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.glow-border:hover::after {
+  opacity: 1;
+}
+
+/* Shimmer Text Effect */
+@keyframes shimmer-text {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(139, 92, 246, 1) 25%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(6, 182, 212, 1) 75%,
+      rgba(255, 255, 255, 0.8) 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 4s linear infinite;
+}
+
+/* Premium Metric Card */
+.metric-card-wow {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card-wow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.metric-card-wow:hover::before {
+  opacity: 1;
+}
+
+.metric-card-wow:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border-color: rgba(139, 92, 246, 0.2);
+  transform: translateY(-2px);
+}

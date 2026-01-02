@@ -15,11 +15,12 @@ export function MetricsGrid({ metrics, color }: MetricsGridProps) {
             {metrics.map((metric, index) => (
                 <div
                     key={index}
-                    className="metric-card hover-subtle"
+                    className="metric-card-wow card-3d stagger-in"
+                    style={{ animationDelay: `${index * 0.08}s` }}
                 >
                     {/* Icon + Label */}
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="text-gray-500">
+                    <div className="flex items-center gap-2 mb-3">
+                        <div className="text-gray-400 text-sm">
                             {metric.icon}
                         </div>
                         <span className="text-label">{metric.label}</span>
@@ -32,9 +33,10 @@ export function MetricsGrid({ metrics, color }: MetricsGridProps) {
 
                     {/* Trend - subtle */}
                     {metric.trend && (
-                        <div className={`text-xs mt-1 ${metric.trend.direction === 'up' ? 'text-green-500' : 'text-red-400'
+                        <div className={`text-xs mt-2 flex items-center gap-1 ${metric.trend.direction === 'up' ? 'text-green-400' : 'text-red-400'
                             }`}>
-                            {metric.trend.direction === 'up' ? '↑' : '↓'} {metric.trend.value}
+                            <span>{metric.trend.direction === 'up' ? '↑' : '↓'}</span>
+                            <span>{metric.trend.value}</span>
                         </div>
                     )}
                 </div>
