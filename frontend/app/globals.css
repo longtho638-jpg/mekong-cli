@@ -525,3 +525,139 @@ body {
 .animate-scale-in {
   animation: scale-in 0.5s ease-out forwards;
 }
+
+/* ============================================ */
+/* HOLOGRAPHIC GLASS OS - PREMIUM UTILITIES */
+/* ============================================ */
+
+/* Radial Gradient Background */
+.bg-gradient-radial {
+  background: radial-gradient(var(--tw-gradient-stops));
+}
+
+/* 3D Tilt Card Effect */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.3s ease;
+}
+
+.tilt-card:hover {
+  transform: rotateX(2deg) rotateY(-2deg) scale(1.02);
+}
+
+/* Neon Border Glow */
+.neon-border {
+  position: relative;
+}
+
+.neon-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--neon-color, #22c55e), transparent 50%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.neon-border:hover::before {
+  opacity: 1;
+}
+
+/* Floating Animation */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glass Panel Pro */
+.glass-panel-pro {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Holographic Shine Effect */
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.holographic-shine {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 200%;
+  animation: holographic 3s ease infinite;
+}
+
+/* Glow Text */
+.text-glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+}
+
+/* Meteor Trail Effect */
+.meteor-trail {
+  position: absolute;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
+  border-radius: 100%;
+  animation: meteor 3s linear infinite;
+  opacity: 0;
+}
+
+@keyframes meteor {
+  0% {
+    transform: rotate(215deg) translateX(0);
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(215deg) translateX(-500px);
+    opacity: 0;
+  }
+}
+
+/* Command Palette Backdrop */
+.cmd-backdrop {
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+}
