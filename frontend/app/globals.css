@@ -1406,6 +1406,33 @@ body {
   --text-3xl: 2.25rem;
   /* 36px */
 
+  /* M3 MOTION TOKENS */
+  --motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1.0);
+  --motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+  --motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+  --motion-duration-short2: 100ms;
+  --motion-duration-medium2: 250ms;
+  --motion-duration-long2: 500ms;
+  --motion-duration-extra-long4: 1000ms;
+
+  /* M3 SHAPE TOKENS */
+  --shape-corner-none: 0px;
+  --shape-corner-xs: 4px;
+  --shape-corner-s: 8px;
+  --shape-corner-m: 12px;
+  --shape-corner-l: 16px;
+  --shape-corner-xl: 28px;
+  --shape-corner-full: 9999px;
+
+  /* M3 ELEVATION (Mapped to Crystal Layers) */
+  --elevation-level1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --elevation-level2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --elevation-level3: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  --elevation-level4: 0 2px 3px rgba(0, 0, 0, 0.3), 0 6px 10px 4px rgba(0, 0, 0, 0.15);
+  --elevation-level5: 0 4px 4px rgba(0, 0, 0, 0.3), 0 8px 12px 6px rgba(0, 0, 0, 0.15);
+
   /* Font Weight System */
   --font-normal: 400;
   --font-medium: 500;
