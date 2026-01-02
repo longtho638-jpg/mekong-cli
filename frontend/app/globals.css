@@ -1128,3 +1128,161 @@ body {
   border-color: rgba(139, 92, 246, 0.2);
   transform: translateY(-2px);
 }
+
+/* ============================================ */
+/* WOW MAX LEVEL - 2026 PREMIUM UPGRADE        */
+/* ============================================ */
+
+/* Liquid Glass Surface */
+.glass-liquid {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.glass-refraction {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-refraction::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 50%);
+  transform: rotate(30deg);
+  pointer-events: none;
+}
+
+/* Bento Grid System */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(160px, auto);
+  gap: 20px;
+}
+
+.bento-item {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bento-item-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-item-tall {
+  grid-row: span 2;
+}
+
+.bento-item-wide {
+  grid-column: span 2;
+}
+
+/* Starfield Background */
+.starfield-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #050508;
+}
+
+.star-layer {
+  position: absolute;
+  inset: -100%;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff 100%, transparent),
+    radial-gradient(1px 1px at 40% 70%, #fff 100%, transparent),
+    radial-gradient(2px 2px at 50% 10%, #fff 100%, transparent),
+    radial-gradient(1px 1px at 80% 40%, #fff 100%, transparent),
+    radial-gradient(1.5px 1.5px at 10% 90%, #fff 100%, transparent);
+  background-size: 600px 600px;
+  opacity: 0.3;
+  animation: star-drift 100s linear infinite;
+}
+
+.star-layer-slow {
+  animation-duration: 150s;
+  opacity: 0.2;
+}
+
+.star-layer-fast {
+  animation-duration: 60s;
+  opacity: 0.4;
+  background-size: 400px 400px;
+}
+
+@keyframes star-drift {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(600px);
+  }
+}
+
+/* Spotlight Border Interaction */
+.spotlight-card {
+  --mouse-x: 0px;
+  --mouse-y: 0px;
+  position: relative;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  /* border thickness */
+  background: radial-gradient(400px circle at var(--mouse-x) var(--mouse-y),
+      rgba(139, 92, 246, 0.4),
+      transparent 40%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+/* Fluid Entrance */
+.section-in-fluid {
+  animation: section-in-fluid 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes section-in-fluid {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}

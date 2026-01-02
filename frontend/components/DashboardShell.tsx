@@ -35,14 +35,25 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
     const [commandOpen, setCommandOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const cursorRef = useRef<HTMLDivElement>(null);
+    const shellRef = useRef<HTMLDivElement>(null);
 
-    // Cursor glow tracker
+    // Spotlight & Cursor glow tracker
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (cursorRef.current) {
                 cursorRef.current.style.left = `${e.clientX}px`;
                 cursorRef.current.style.top = `${e.clientY}px`;
             }
+
+            // Update spotlight position on any spotlight-enabled cards
+            const spotlightCards = document.querySelectorAll<HTMLElement>('.spotlight-card');
+            spotlightCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
         };
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
@@ -67,12 +78,19 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white font-mono flex">
+        <div ref={shellRef} className="min-h-screen bg-[#050508] text-white font-mono flex overflow-x-hidden">
+            {/* Starfield Layers */}
+            <div className="starfield-container">
+                <div className="star-layer star-layer-slow" />
+                <div className="star-layer" />
+                <div className="star-layer star-layer-fast" />
+            </div>
+
             {/* Cursor Glow */}
             <div ref={cursorRef} className="cursor-glow" />
 
-            {/* Gradient Mesh Background */}
-            <div className="fixed inset-0 pointer-events-none bg-mesh" />
+            {/* Gradient Mesh Background (Liquid) */}
+            <div className="fixed inset-0 pointer-events-none bg-mesh opacity-40 glass-refraction" />
 
             {/* Subtle Grid */}
             <div className="fixed inset-0 pointer-events-none">
@@ -81,12 +99,12 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
 
             {/* Slim Sidebar */}
             <aside
-                className={`fixed left-0 top-0 h-full z-40 transition-all duration-200 ${sidebarExpanded ? 'w-[200px]' : 'w-14'
+                className={`fixed left-0 top-0 h-full z-40 transition-all duration-300 ease-in-out ${sidebarExpanded ? 'w-[210px]' : 'w-16'
                     }`}
                 onMouseEnter={() => setSidebarExpanded(true)}
                 onMouseLeave={() => setSidebarExpanded(false)}
             >
-                <div className="h-full bg-[#0a0a0f]/90 backdrop-blur-xl border-r border-white/5 flex flex-col">
+                <div className="h-full bg-[#050508]/80 backdrop-blur-2xl border-r border-white/10 flex flex-col glass-liquid">
                     {/* Logo */}
                     <div className="h-12 flex items-center justify-center border-b border-white/5">
                         <Shield className="w-5 h-5" style={{ color: accentColor }} />
@@ -106,8 +124,8 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                                     key={item.href}
                                     href={`/${locale}${item.href}`}
                                     className={`flex items-center gap-3 h-10 mx-1 px-3 rounded-md transition-all stagger-in ${isActive
-                                            ? 'bg-white/8 text-white'
-                                            : 'text-gray-500 hover:text-gray-300 hover:bg-white/4'
+                                        ? 'bg-white/8 text-white'
+                                        : 'text-gray-500 hover:text-gray-300 hover:bg-white/4'
                                         }`}
                                     style={{ animationDelay: `${index * 0.03}s` }}
                                 >
@@ -159,8 +177,8 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                                     key={l}
                                     onClick={() => switchLocale(l)}
                                     className={`px-2 py-1 text-[10px] font-medium rounded transition-colors ${locale === l
-                                            ? 'bg-white/8 text-white'
-                                            : 'text-gray-500 hover:text-gray-300'
+                                        ? 'bg-white/8 text-white'
+                                        : 'text-gray-500 hover:text-gray-300'
                                         }`}
                                 >
                                     {l.toUpperCase()}
