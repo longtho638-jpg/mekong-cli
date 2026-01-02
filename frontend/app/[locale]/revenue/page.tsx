@@ -28,27 +28,26 @@ export default function RevenuePage({ params: { locale } }: { params: { locale: 
 
     return (
         <CommandCenterLayout>
-            {/* NEW LAYOUT: 2-Column Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* DENSE LAYOUT - NO EMPTY SPACE */}
+            <div className="space-y-4">
 
-                {/* LEFT COLUMN: Campaign + Metrics (8 cols) */}
-                <div className="lg:col-span-8 space-y-6">
-                    {/* Campaign Map - Compact */}
-                    <CampaignMap />
-
-                    {/* Metrics Grid */}
-                    <MetricsGrid metrics={revenueMetrics} color="green" />
-                </div>
-
-                {/* RIGHT COLUMN: Radar (4 cols) */}
-                <div className="lg:col-span-4">
-                    <div className="sticky top-20">
+                {/* ROW 1: Campaign Map (Compact) + Radar Side by Side */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                    <div className="lg:col-span-3">
+                        <CampaignMap />
+                    </div>
+                    <div className="lg:col-span-1">
                         <HarmonyRadar />
                     </div>
                 </div>
 
-                {/* FULL WIDTH: The Army */}
-                <div className="lg:col-span-12">
+                {/* ROW 2: Metrics Grid - Full Width */}
+                <div>
+                    <MetricsGrid metrics={revenueMetrics} color="green" />
+                </div>
+
+                {/* ROW 3: The Army - Full Width */}
+                <div>
                     <RevenueRanks />
                 </div>
 

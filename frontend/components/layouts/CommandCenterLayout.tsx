@@ -35,8 +35,8 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
                 </div>
             </header>
 
-            {/* CONTENT - Full Width, No Sidebars */}
-            <main className="w-full max-w-[1400px] mx-auto px-6 py-6">
+            {/* CONTENT - Full Width, Tight Padding */}
+            <main className="w-full px-4 lg:px-8 py-4">
                 {children}
             </main>
 
