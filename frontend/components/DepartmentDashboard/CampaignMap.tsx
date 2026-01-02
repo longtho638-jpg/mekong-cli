@@ -24,7 +24,7 @@ const PROGRESS_PERCENT = 85; // $850k / $1M
 
 export function CampaignMap() {
     return (
-        <div className="relative glass-liquid rounded-2xl p-6 border border-white/10 overflow-hidden section-in-fluid">
+        <div className="relative glass-catalyst rounded-2xl border border-white/8 overflow-hidden section-in-fluid shadow-catalyst-lg">
             {/* Background Map Texture (Abstract) */}
             <div className="absolute inset-0 opacity-[0.03] bg-[url('/map-texture.png')] bg-cover pointer-events-none" />
 
@@ -70,10 +70,10 @@ export function CampaignMap() {
                                 {/* Node Circle */}
                                 <motion.div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-300 ${isCurrent
-                                            ? 'bg-amber-500 border-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] scale-110'
-                                            : isCompleted
-                                                ? 'bg-green-900/80 border-green-500 text-green-400'
-                                                : 'bg-[#0a0a0f] border-white/10 text-gray-600'
+                                        ? 'bg-amber-500 border-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] scale-110'
+                                        : isCompleted
+                                            ? 'bg-green-900/80 border-green-500 text-green-400'
+                                            : 'bg-[#0a0a0f] border-white/10 text-gray-600'
                                         }`}
                                     whileHover={{ scale: 1.2 }}
                                 >

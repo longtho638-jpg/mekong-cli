@@ -1286,3 +1286,93 @@ body {
     filter: blur(0);
   }
 }
+
+/* ============================================ */
+/* CATALYST REFINEMENTS - POLISHED PROFESSIONAL */
+/* ============================================ */
+
+/* Typography Scale (Systematic 8-point scale) */
+:root {
+  --text-xs: 0.6875rem;
+  /* 11px */
+  --text-sm: 0.8125rem;
+  /* 13px */
+  --text-base: 0.9375rem;
+  /* 15px */
+  --text-lg: 1.0625rem;
+  /* 17px */
+  --text-xl: 1.3125rem;
+  /* 21px */
+  --text-2xl: 1.75rem;
+  /* 28px */
+  --text-3xl: 2.25rem;
+  /* 36px */
+
+  /* Font Weight System */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+}
+
+/* Catalyst Shadow System (Subtle Depth) */
+.shadow-catalyst {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-catalyst-lg {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Refined Component Density */
+.metric-card-catalyst {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.metric-card-catalyst:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border-color: rgba(139, 92, 246, 0.15);
+  transform: scale(1.02);
+  box-shadow:
+    0 0 0 1px rgba(139, 92, 246, 0.1),
+    0 4px 12px rgba(139, 92, 246, 0.08);
+}
+
+/* Polished Glass (Tighter Padding) */
+.glass-catalyst {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px) saturate(150%) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Purposeful Motion (Only on Interaction) */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* Refined Bento Spacing */
+.bento-catalyst {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(140px, auto);
+  gap: 16px;
+}
