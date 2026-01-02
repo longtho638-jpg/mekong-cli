@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import CommandCenterLayout from '@/components/layouts/CommandCenterLayout';
-import { AIInsightStrip } from '@/components/DepartmentDashboard/AIInsightStrip';
-import { KPIHeroGrid } from '@/components/DepartmentDashboard/KPIHeroGrid';
+import { NeuralBackground } from '@/components/ui/NeuralBackground';
+import { AgenticCore } from '@/components/DepartmentDashboard/AgenticCore';
+import { HoloCard } from '@/components/ui/HoloCard';
+import { KPIHeroGrid } from '@/components/DepartmentDashboard/KPIHeroGrid'; // Will refactor this next to use HoloCard internally
 import { CampaignMap } from '@/components/DepartmentDashboard/CampaignMap';
 import { RevenueRanks } from '@/components/DepartmentDashboard/RevenueRanks';
 import { HarmonyRadar } from '@/components/DepartmentDashboard/HarmonyRadar';
-import { useTranslations } from 'next-intl';
 
 export default function RevenuePage({ params: { locale } }: { params: { locale: string } }) {
-    const t = useTranslations('Revenue');
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -21,29 +21,36 @@ export default function RevenuePage({ params: { locale } }: { params: { locale: 
 
     return (
         <CommandCenterLayout>
-            {/* 2026 LAYOUT: 4 LAYERS */}
-            <div className="space-y-6">
+            {/* THE NEURAL VOID */}
+            <NeuralBackground />
 
-                {/* LAYER 1: AI INSIGHT STRIP */}
-                <AIInsightStrip
-                    insight="Revenue +12% vs forecast. Recommended: Focus Zone 4 expansion for Q1 $1M target."
-                    type="success"
-                />
+            {/* CONTENT LAYER */}
+            <div className="relative z-10 space-y-8">
 
-                {/* LAYER 2: KPI HERO GRID */}
+                {/* PHASE 1: THE INTELLIGENCE (Center Stage) */}
+                <div className="flex justify-center py-4">
+                    <AgenticCore />
+                </div>
+
+                {/* PHASE 2: THE METRICS (Holographic Grid) */}
+                {/* Note: KPIHeroGrid needs to be updated to use HoloCard, for now wrapping entire sections */}
                 <KPIHeroGrid />
 
-                {/* LAYER 3: COMMAND GRID (Campaign + Radar) */}
+                {/* PHASE 3: COMMAND GRID */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     <div className="lg:col-span-8">
-                        <CampaignMap />
+                        <HoloCard className="h-full">
+                            <CampaignMap />
+                        </HoloCard>
                     </div>
                     <div className="lg:col-span-4">
-                        <HarmonyRadar />
+                        <HoloCard className="h-full">
+                            <HarmonyRadar />
+                        </HoloCard>
                     </div>
                 </div>
 
-                {/* LAYER 4: REVENUE ARMY */}
+                {/* PHASE 4: THE ARMY */}
                 <RevenueRanks />
 
             </div>

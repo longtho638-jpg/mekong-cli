@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Users, Briefcase } from 'lucide-react';
 import { ReactNode } from 'react';
+import { HoloCard } from '@/components/ui/HoloCard';
 
 interface KPIMetric {
     label: string;
@@ -27,12 +28,9 @@ export function KPIHeroGrid({ metrics = defaultMetrics }: KPIHeroGridProps) {
     return (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {metrics.map((metric, index) => (
-                <motion.div
+                <HoloCard
                     key={metric.label}
-                    className="relative p-4 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden group hover:border-green-500/30 transition-colors"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    className="group"
                 >
                     {/* Background Pulse */}
                     <motion.div
@@ -46,12 +44,12 @@ export function KPIHeroGrid({ metrics = defaultMetrics }: KPIHeroGridProps) {
                         <div className="p-1.5 rounded-lg bg-white/5 text-white/60">
                             {metric.icon}
                         </div>
-                        <span className="text-xs text-white/50 uppercase tracking-wider">{metric.label}</span>
+                        <span className="text-xs text-white/50 uppercase tracking-wider font-orbitron">{metric.label}</span>
                     </div>
 
                     {/* Value */}
                     <motion.div
-                        className="text-2xl lg:text-3xl font-bold text-white mb-1"
+                        className="text-2xl lg:text-3xl font-bold text-white mb-1 font-orbitron"
                         animate={{ opacity: [1, 0.8, 1] }}
                         transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
                     >
@@ -71,7 +69,7 @@ export function KPIHeroGrid({ metrics = defaultMetrics }: KPIHeroGridProps) {
                         animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                     />
-                </motion.div>
+                </HoloCard>
             ))}
         </div>
     );
