@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import CommandCenterLayout from '@/components/layouts/CommandCenterLayout';
-import { MetricsGrid } from '@/components/DepartmentDashboard/MetricsGrid';
+import { AIInsightStrip } from '@/components/DepartmentDashboard/AIInsightStrip';
+import { KPIHeroGrid } from '@/components/DepartmentDashboard/KPIHeroGrid';
 import { CampaignMap } from '@/components/DepartmentDashboard/CampaignMap';
 import { RevenueRanks } from '@/components/DepartmentDashboard/RevenueRanks';
 import { HarmonyRadar } from '@/components/DepartmentDashboard/HarmonyRadar';
-import { DollarSign, Briefcase, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 export default function RevenuePage({ params: { locale } }: { params: { locale: string } }) {
@@ -17,39 +17,34 @@ export default function RevenuePage({ params: { locale } }: { params: { locale: 
         setMounted(true);
     }, []);
 
-    const revenueMetrics = [
-        { label: 'Annual Target', value: '$1M', change: '+25%', icon: <DollarSign className="w-5 h-5" />, color: 'green', trend: { value: 'FY2026', direction: 'up' as const } },
-        { label: 'MTD Revenue', value: '$85K', change: '+12%', icon: <DollarSign className="w-5 h-5" />, color: 'blue', trend: { value: '+$12K', direction: 'up' as const } },
-        { label: 'Active Clients', value: '48', change: '+6', icon: <Users className="w-5 h-5" />, color: 'purple', trend: { value: '+6', direction: 'up' as const } },
-        { label: 'Avg Deal Size', value: '$8.5K', change: '+2%', icon: <Briefcase className="w-5 h-5" />, color: 'amber', trend: { value: '+$1.2K', direction: 'up' as const } },
-    ];
-
     if (!mounted) return null;
 
     return (
         <CommandCenterLayout>
-            {/* DENSE LAYOUT - NO EMPTY SPACE */}
-            <div className="space-y-4">
+            {/* 2026 LAYOUT: 4 LAYERS */}
+            <div className="space-y-6">
 
-                {/* ROW 1: Campaign Map (Compact) + Radar Side by Side */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                    <div className="lg:col-span-3">
+                {/* LAYER 1: AI INSIGHT STRIP */}
+                <AIInsightStrip
+                    insight="Revenue +12% vs forecast. Recommended: Focus Zone 4 expansion for Q1 $1M target."
+                    type="success"
+                />
+
+                {/* LAYER 2: KPI HERO GRID */}
+                <KPIHeroGrid />
+
+                {/* LAYER 3: COMMAND GRID (Campaign + Radar) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="lg:col-span-8">
                         <CampaignMap />
                     </div>
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-4">
                         <HarmonyRadar />
                     </div>
                 </div>
 
-                {/* ROW 2: Metrics Grid - Full Width */}
-                <div>
-                    <MetricsGrid metrics={revenueMetrics} color="green" />
-                </div>
-
-                {/* ROW 3: The Army - Full Width */}
-                <div>
-                    <RevenueRanks />
-                </div>
+                {/* LAYER 4: REVENUE ARMY */}
+                <RevenueRanks />
 
             </div>
         </CommandCenterLayout>
