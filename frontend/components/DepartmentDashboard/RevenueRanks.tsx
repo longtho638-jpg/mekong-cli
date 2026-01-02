@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { User, Shield, Crown } from 'lucide-react';
 import { HoloCard } from '@/components/ui/HoloCard';
+import { HyperText } from '@/components/ui/HyperText';
 
 export function RevenueRanks() {
     return (
@@ -21,7 +22,9 @@ export function RevenueRanks() {
                             <User className="w-5 h-5 text-blue-400" />
                             <span className="font-orbitron text-sm text-blue-200">Bộ Binh (Standard)</span>
                         </div>
-                        <span className="text-2xl font-bold text-white font-orbitron">$25K</span>
+                        <span className="text-2xl font-bold text-white font-orbitron">
+                            <HyperText text="$25K" />
+                        </span>
                     </div>
                     <div className="w-full bg-blue-900/20 rounded-full h-1.5 mb-2 overflow-hidden">
                         <motion.div
@@ -44,7 +47,9 @@ export function RevenueRanks() {
                             <Shield className="w-5 h-5 text-purple-400" />
                             <span className="font-orbitron text-sm text-purple-200">Kỵ Binh (Specialized)</span>
                         </div>
-                        <span className="text-2xl font-bold text-white font-orbitron">$85K</span>
+                        <span className="text-2xl font-bold text-white font-orbitron">
+                            <HyperText text="$85K" />
+                        </span>
                     </div>
                     <div className="w-full bg-purple-900/20 rounded-full h-1.5 mb-2 overflow-hidden">
                         <motion.div
@@ -67,7 +72,9 @@ export function RevenueRanks() {
                             <Crown className="w-5 h-5 text-amber-400" />
                             <span className="font-orbitron text-sm text-amber-200">Tướng Quân (Equity)</span>
                         </div>
-                        <span className="text-2xl font-bold text-white font-orbitron">$260K</span>
+                        <span className="text-2xl font-bold text-white font-orbitron">
+                            <HyperText text="$260K" />
+                        </span>
                     </div>
                     <div className="w-full bg-amber-900/20 rounded-full h-1.5 mb-2 overflow-hidden">
                         <motion.div

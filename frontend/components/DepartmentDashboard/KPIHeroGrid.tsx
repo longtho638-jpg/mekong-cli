@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Users, Briefcase } from 'lucide-react';
 import { ReactNode } from 'react';
 import { HoloCard } from '@/components/ui/HoloCard';
+import { HyperText } from '@/components/ui/HyperText';
 
 interface KPIMetric {
     label: string;
@@ -47,13 +48,13 @@ export function KPIHeroGrid({ metrics = defaultMetrics }: KPIHeroGridProps) {
                         <span className="text-xs text-white/50 uppercase tracking-wider font-orbitron">{metric.label}</span>
                     </div>
 
-                    {/* Value */}
+                    {/* Value with HyperText (God Tier) */}
                     <motion.div
                         className="text-2xl lg:text-3xl font-bold text-white mb-1 font-orbitron"
                         animate={{ opacity: [1, 0.8, 1] }}
                         transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
                     >
-                        {metric.value}
+                        <HyperText text={metric.value} />
                     </motion.div>
 
                     {/* Trend */}
