@@ -50,12 +50,21 @@ declare -a FAILED_OPTIONAL=()
 declare -a SKIPPED_SUDO=()
 FINAL_EXIT_CODE=0
 
-# Detect OS
+# Detect OS (including WSL and Windows shells)
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
         echo "macos"
     elif [[ "$OSTYPE" == "linux-gnu"* ]] || [[ "$OSTYPE" == "linux"* ]]; then
-        echo "linux"
+        # Check for WSL
+        if [[ -f /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+            echo "wsl"
+        else
+            echo "linux"
+        fi
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "mingw"* ]]; then
+        echo "msys"  # Git Bash / MSYS2
+    elif [[ "$OSTYPE" == "cygwin" ]]; then
+        echo "cygwin"
     else
         echo "unknown"
     fi
@@ -63,7 +72,8 @@ detect_os() {
 
 # Detect Linux distribution (for package manager selection)
 detect_distro() {
-    if [[ "$OS" != "linux" ]]; then
+    # WSL uses the underlying Linux distro
+    if [[ "$OS" != "linux" ]] && [[ "$OS" != "wsl" ]]; then
         echo "none"
         return
     fi
@@ -71,6 +81,9 @@ detect_distro() {
     # Alpine detection (check first - most specific)
     if [[ -f /etc/alpine-release ]]; then
         echo "alpine"
+    # Arch Linux detection
+    elif [[ -f /etc/arch-release ]] || command_exists pacman; then
+        echo "arch"
     # Debian/Ubuntu detection
     elif command_exists apt-get; then
         echo "debian"
@@ -89,6 +102,9 @@ pkg_update() {
     case "$DISTRO" in
         alpine)
             apk update
+            ;;
+        arch)
+            pacman -Sy
             ;;
         debian)
             apt-get update -qq
@@ -110,6 +126,9 @@ pkg_install() {
     case "$DISTRO" in
         alpine)
             apk add --no-cache "$package_name"
+            ;;
+        arch)
+            pacman -S --noconfirm "$package_name"
             ;;
         debian)
             apt-get install -y "$package_name"
@@ -311,10 +330,13 @@ try_pip_install() {
     # Phase 2: Check if we can build from source
     if ! has_build_tools; then
         print_warning "$package_name: No wheel available, no build tools"
-        if [[ "$OS" == "linux" ]]; then
+        if [[ "$OS" == "linux" ]] || [[ "$OS" == "wsl" ]]; then
             case "$DISTRO" in
                 alpine)
                     print_info "Install build tools: apk add build-base python3-dev"
+                    ;;
+                arch)
+                    print_info "Install build tools: sudo pacman -S base-devel python"
                     ;;
                 debian)
                     print_info "Install build tools: sudo apt-get install gcc python3-dev"
@@ -417,10 +439,13 @@ check_package_manager() {
         else
             print_success "Homebrew found"
         fi
-    elif [[ "$OS" == "linux" ]]; then
+    elif [[ "$OS" == "linux" ]] || [[ "$OS" == "wsl" ]]; then
         case "$DISTRO" in
             alpine)
                 print_success "apk found (Alpine Linux)"
+                ;;
+            arch)
+                print_success "pacman found (Arch Linux)"
                 ;;
             debian)
                 print_success "apt-get found (Debian/Ubuntu)"
@@ -433,10 +458,14 @@ check_package_manager() {
                 fi
                 ;;
             *)
-                print_warning "No supported package manager found (apk, apt-get, dnf, or yum)"
+                print_warning "No supported package manager found (apk, pacman, apt-get, dnf, or yum)"
                 print_info "System packages will be skipped"
                 ;;
         esac
+    elif [[ "$OS" == "msys" ]] || [[ "$OS" == "cygwin" ]]; then
+        print_warning "Windows shell detected ($OS)"
+        print_info "System package installation not supported"
+        print_info "Please install dependencies manually or use WSL"
     fi
 }
 
@@ -485,7 +514,7 @@ install_node_deps() {
         print_info "Installing Node.js..."
         if [[ "$OS" == "macos" ]]; then
             brew install node
-        elif [[ "$OS" == "linux" ]]; then
+        elif [[ "$OS" == "linux" ]] || [[ "$OS" == "wsl" ]]; then
             case "$DISTRO" in
                 alpine)
                     # Alpine: install via apk
@@ -496,6 +525,18 @@ install_node_deps() {
                     else
                         print_warning "Node.js installation requires root or --with-sudo"
                         print_info "Run: apk add nodejs npm"
+                        return 1
+                    fi
+                    ;;
+                arch)
+                    # Arch: install via pacman
+                    if [[ "$(id -u)" == "0" ]]; then
+                        pacman -S --noconfirm nodejs npm
+                    elif [[ "$WITH_SUDO" == "true" ]]; then
+                        sudo pacman -S --noconfirm nodejs npm
+                    else
+                        print_warning "Node.js installation requires root or --with-sudo"
+                        print_info "Run: sudo pacman -S nodejs npm"
                         return 1
                     fi
                     ;;
@@ -519,6 +560,11 @@ install_node_deps() {
                     return 1
                     ;;
             esac
+        elif [[ "$OS" == "msys" ]] || [[ "$OS" == "cygwin" ]]; then
+            print_warning "Cannot install Node.js in $OS environment"
+            print_info "Please install Node.js from https://nodejs.org"
+            print_info "Or use WSL for better compatibility"
+            return 1
         fi
         print_success "Node.js installed"
     fi
@@ -929,6 +975,17 @@ generate_remediation_commands() {
                     esac
                 done
                 ;;
+            arch)
+                echo "sudo pacman -Sy"
+                for item in "${SKIPPED_SUDO[@]}"; do
+                    local pkg="${item%%:*}"
+                    case "$pkg" in
+                        FFmpeg) echo "sudo pacman -S --noconfirm ffmpeg" ;;
+                        ImageMagick) echo "sudo pacman -S --noconfirm imagemagick" ;;
+                        *) echo "# $pkg: see documentation" ;;
+                    esac
+                done
+                ;;
             debian)
                 echo "sudo apt-get update"
                 for item in "${SKIPPED_SUDO[@]}"; do
@@ -967,6 +1024,9 @@ generate_remediation_commands() {
         case "$DISTRO" in
             alpine)
                 echo "apk add build-base python3-dev jpeg-dev zlib-dev"
+                ;;
+            arch)
+                echo "sudo pacman -S --noconfirm base-devel python libjpeg-turbo zlib"
                 ;;
             debian)
                 echo "sudo apt-get install -y gcc python3-dev libjpeg-dev zlib1g-dev"
@@ -1108,6 +1168,10 @@ write_error_summary() {
             sudo_pkg_cmd="apk add ffmpeg imagemagick"
             build_tools_cmd="apk add build-base python3-dev jpeg-dev zlib-dev"
             ;;
+        arch)
+            sudo_pkg_cmd="sudo pacman -S --noconfirm ffmpeg imagemagick"
+            build_tools_cmd="sudo pacman -S --noconfirm base-devel python libjpeg-turbo zlib"
+            ;;
         debian)
             sudo_pkg_cmd="sudo apt-get install -y ffmpeg imagemagick"
             build_tools_cmd="sudo apt-get install -y gcc python3-dev libjpeg-dev zlib1g-dev"
@@ -1161,8 +1225,11 @@ main() {
     echo ""  # Just add spacing, don't clear terminal
     print_header "Claude Code Skills Installation"
     print_info "OS: $OS"
-    if [[ "$OS" == "linux" ]]; then
+    if [[ "$OS" == "linux" ]] || [[ "$OS" == "wsl" ]]; then
         print_info "Distro: $DISTRO"
+    fi
+    if [[ "$OS" == "wsl" ]]; then
+        print_info "Environment: Windows Subsystem for Linux"
     fi
     print_info "Script directory: $SCRIPT_DIR"
     if [[ "$WITH_SUDO" == "true" ]]; then
@@ -1175,9 +1242,19 @@ main() {
     fi
     echo ""
 
+    # Handle unsupported OS
     if [[ "$OS" == "unknown" ]]; then
         print_error "Unsupported operating system"
         exit 1
+    fi
+
+    # Warn about limited Windows shell support
+    if [[ "$OS" == "msys" ]] || [[ "$OS" == "cygwin" ]]; then
+        print_warning "Running in Windows shell environment ($OS)"
+        print_warning "Limited functionality - system packages cannot be installed"
+        print_info "For full support, consider using WSL (Windows Subsystem for Linux)"
+        print_info "Continuing with Python environment setup only..."
+        echo ""
     fi
 
     # Confirm installation (skip if --yes flag or NON_INTERACTIVE env is set)
