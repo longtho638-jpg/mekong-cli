@@ -1,3 +1,16 @@
+## [2.2.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2026-01-03)
+
+
+### 🚀 Features
+
+* **agents:** add accuracy protocol and proactive size management to docs-manager ([0a0a25c](https://github.com/claudekit/claudekit-engineer/commit/0a0a25c2cde060daba7aeee1dbfcad62d4561414)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+* **docs:** add size limits, parallel reading, and validation for /docs:* commands ([d0c65d2](https://github.com/claudekit/claudekit-engineer/commit/d0c65d26390d75648a677eff90fdd42fe5377e5d)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+
+
+### ♻️ Code Refactoring
+
+* **docs:** remove split script, use LLM-driven splitting guidelines ([c61fea0](https://github.com/claudekit/claudekit-engineer/commit/c61fea0483524df8c6f113498a1a6b51be5e3fdd)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+
 ## [2.2.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2025-12-31)
 
 
