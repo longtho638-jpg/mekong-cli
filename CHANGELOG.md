@@ -1,3 +1,16 @@
+## [2.2.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2026-01-03)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** comprehensive edge case handling and monorepo support ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([7991230](https://github.com/claudekit/claudekit-engineer/commit/7991230acd4049d7019fff5b07b300fb11b48bb8))
+* **hooks:** use absolute paths based on git root ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([14e8977](https://github.com/claudekit/claudekit-engineer/commit/14e8977790ff75c8246efe2aa0bd1b40733c6b6d))
+
+
+### ✅ Tests
+
+* **#291:** add comprehensive edge case tests for git root resolution ([c78b111](https://github.com/claudekit/claudekit-engineer/commit/c78b111b01340ec9dea1ca0f6d981b2b873cc557)), closes [#291](https://github.com/claudekit/claudekit-engineer/issues/291)
+
 ## [2.2.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2026-01-03)
 
 
