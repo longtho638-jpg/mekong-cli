@@ -67,16 +67,34 @@ When creating/updating docs:
 - **New large topic** → Create `docs/{topic}/index.md` + part files from start
 - **Existing oversized file** → Refactor into modular structure before adding more
 
-#### Splitting Strategy
+#### Splitting Strategy (LLM-Driven)
+
+When splitting is needed, analyze content and choose split points by:
+1. **Semantic boundaries** - distinct topics that can stand alone
+2. **User journey stages** - getting started → configuration → advanced → troubleshooting
+3. **Domain separation** - API vs architecture vs deployment vs security
+
+Create modular structure:
 ```
-docs/system-architecture.md (1000+ LOC)
-  ↓ Split into:
-docs/system-architecture/
-├── index.md (overview + links)
-├── components.md
-├── data-flow.md
-├── security.md
-└── deployment.md
+docs/{topic}/
+├── index.md        # Overview + navigation links
+├── {subtopic-1}.md # Self-contained, links to related
+├── {subtopic-2}.md
+└── reference.md    # Detailed examples, edge cases
+```
+
+**index.md template:**
+```markdown
+# {Topic}
+
+Brief overview (2-3 sentences).
+
+## Contents
+- [{Subtopic 1}](./{subtopic-1}.md) - one-line description
+- [{Subtopic 2}](./{subtopic-2}.md) - one-line description
+
+## Quick Start
+Link to most common entry point.
 ```
 
 #### Concise Writing Techniques
@@ -84,6 +102,7 @@ docs/system-architecture/
 - Use tables instead of paragraphs for lists
 - Move detailed examples to separate reference files
 - One concept per section, link to related topics
+- Prefer code blocks over prose for configuration
 
 ### 7. Documentation Accuracy Protocol
 

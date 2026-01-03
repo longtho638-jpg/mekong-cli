@@ -26,12 +26,10 @@ Use `docs/` directory as the source of truth for documentation.
 
 After docs-manager completes:
 1. Run `wc -l docs/*.md 2>/dev/null | sort -rn` to check LOC
-2. Use `docs.maxLoc` from session context (injected via Paths section)
-3. For files exceeding limit, warn:
-   ```
-   ⚠️ {file}: {loc} LOC exceeds limit ({maxLoc})
-   Consider: node .claude/scripts/split-large-docs.cjs {file}
-   ```
-4. Continue (non-blocking)
+2. Use `docs.maxLoc` from session context (default: 800)
+3. For files exceeding limit:
+   - Report which files exceed and by how much
+   - docs-manager should have already split proactively per Section 6 guidelines
+   - If still oversized, ask user: split now or accept as-is?
 
 **IMPORTANT**: **Do not** start implementing.
