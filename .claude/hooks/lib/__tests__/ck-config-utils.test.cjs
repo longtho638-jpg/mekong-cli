@@ -4,14 +4,20 @@
  */
 
 const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const { execSync } = require('child_process');
 const {
   normalizePath,
   isAbsolutePath,
   sanitizePath,
   sanitizeSlug,
+  sanitizeConfig,
   validateNamingPattern,
   getGitRoot,
-  getReportsPath
+  getGitBranch,
+  getReportsPath,
+  escapeShellValue
 } = require('../ck-config-utils.cjs');
 
 let passed = 0;
@@ -208,6 +214,164 @@ test('getReportsPath ignores plan path for branch-resolved plans', () => {
 
   const result = getReportsPath('plans/my-plan', 'branch', planConfig, pathsConfig, baseDir);
   assertEquals(result, '/home/user/project/plans/reports');
+});
+
+console.log('\n=== getGitRoot/getGitBranch with cwd parameter (Issue #291) ===\n');
+
+test('getGitRoot accepts cwd parameter', () => {
+  const gitRoot = getGitRoot();
+  if (!gitRoot) {
+    console.log('  → Skipped: not in git repo');
+    return;
+  }
+  // Should work with explicit cwd
+  const result = getGitRoot(gitRoot);
+  assertEquals(result, gitRoot);
+});
+
+test('getGitRoot with subdirectory cwd returns same root', () => {
+  const gitRoot = getGitRoot();
+  if (!gitRoot) {
+    console.log('  → Skipped: not in git repo');
+    return;
+  }
+  // Run from .claude/hooks subdirectory
+  const subdirPath = path.join(gitRoot, '.claude', 'hooks');
+  if (!fs.existsSync(subdirPath)) {
+    console.log('  → Skipped: subdirectory does not exist');
+    return;
+  }
+  const result = getGitRoot(subdirPath);
+  assertEquals(result, gitRoot);
+});
+
+test('getGitRoot returns null for non-git directory', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-no-git-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    const result = getGitRoot(tempDir);
+    assertEquals(result, null);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitBranch accepts cwd parameter', () => {
+  const gitRoot = getGitRoot();
+  if (!gitRoot) {
+    console.log('  → Skipped: not in git repo');
+    return;
+  }
+  const branch1 = getGitBranch();
+  const branch2 = getGitBranch(gitRoot);
+  assertEquals(branch1, branch2);
+});
+
+console.log('\n=== escapeShellValue tests (Security) ===\n');
+
+test('escapeShellValue escapes backslashes', () => {
+  const result = escapeShellValue('path\\with\\backslash');
+  assertEquals(result, 'path\\\\with\\\\backslash');
+});
+
+test('escapeShellValue escapes double quotes', () => {
+  const result = escapeShellValue('path"with"quotes');
+  assertEquals(result, 'path\\"with\\"quotes');
+});
+
+test('escapeShellValue escapes dollar signs', () => {
+  const result = escapeShellValue('path$with$dollar');
+  assertEquals(result, 'path\\$with\\$dollar');
+});
+
+test('escapeShellValue escapes backticks (Issue #291)', () => {
+  const result = escapeShellValue('path`with`backticks');
+  assertEquals(result, 'path\\`with\\`backticks');
+});
+
+test('escapeShellValue handles mixed special chars', () => {
+  const result = escapeShellValue('test\\$`"mixed');
+  assertEquals(result, 'test\\\\\\$\\`\\"mixed');
+});
+
+test('escapeShellValue returns non-string as-is', () => {
+  assertEquals(escapeShellValue(123), 123);
+  assertEquals(escapeShellValue(null), null);
+  assertEquals(escapeShellValue(undefined), undefined);
+});
+
+console.log('\n=== getReportsPath edge cases ===\n');
+
+test('getReportsPath with empty reportsDir falls back to "reports"', () => {
+  const planConfig = { reportsDir: '' };
+  const pathsConfig = { plans: 'plans' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
+});
+
+test('getReportsPath with null reportsDir falls back to "reports"', () => {
+  const planConfig = { reportsDir: null };
+  const pathsConfig = { plans: 'plans' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
+});
+
+test('getReportsPath with empty plansDir falls back to "plans"', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: '' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
+});
+
+test('getReportsPath with null plansDir falls back to "plans"', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: null };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
+});
+
+console.log('\n=== sanitizeConfig tests ===\n');
+
+test('absolute path in config preserved through sanitization', () => {
+  const config = {
+    plan: { reportsDir: 'reports' },
+    paths: { docs: 'docs', plans: '/tmp/all-plans' }
+  };
+  const result = sanitizeConfig(config, '/home/user/project');
+  assertEquals(result.paths.plans, '/tmp/all-plans');
+});
+
+test('mixed absolute/relative paths preserved independently', () => {
+  const config = {
+    plan: { reportsDir: 'reports' },
+    paths: { docs: 'docs', plans: '/tmp/all-plans' }
+  };
+  const result = sanitizeConfig(config, '/home/user/project');
+  assertEquals(result.paths.docs, 'docs');
+  assertEquals(result.paths.plans, '/tmp/all-plans');
+});
+
+console.log('\n=== isAbsolutePath edge cases ===\n');
+
+test('UNC path on Windows: "\\\\\\\\server\\\\share" (platform-conditional)', () => {
+  const expected = process.platform === 'win32';
+  assertEquals(isAbsolutePath('\\\\server\\share'), expected);
+});
+
+test('path.join concatenates paths (does NOT discard baseDir)', () => {
+  // Document Node.js behavior: path.join concatenates, path.resolve would discard
+  // path.join('/base', '/absolute') = '/base/absolute' (concatenates, strips leading /)
+  // path.resolve('/base', '/absolute') = '/absolute' (absolute overrides)
+  const result = path.join('/home/user/project', '/tmp/all-plans');
+  assertEquals(result, '/home/user/project/tmp/all-plans');
 });
 
 // Summary

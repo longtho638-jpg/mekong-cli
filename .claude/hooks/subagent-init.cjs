@@ -58,10 +58,20 @@ async function main() {
     // Load config for trust verification, naming, and agent-specific context
     const config = loadConfig({ includeProject: false, includeAssertions: false });
 
+    // Use payload.cwd if provided for git operations (monorepo support)
+    // This ensures subagent resolves paths relative to its own CWD, not process.cwd()
+    const effectiveCwd = payload.cwd || process.cwd();
+
     // Compute naming pattern directly (don't rely on env vars which may not propagate)
-    const gitBranch = getGitBranch();
-    const gitRoot = getGitRoot();
-    const baseDir = gitRoot || process.cwd();
+    // Pass effectiveCwd to git commands to support monorepo/submodule scenarios
+    const gitBranch = getGitBranch(effectiveCwd);
+    const gitRoot = getGitRoot(effectiveCwd);
+    const baseDir = gitRoot || effectiveCwd;
+
+    // Debug logging for path resolution troubleshooting
+    if (process.env.CK_DEBUG) {
+      console.error(`[subagent-init] effectiveCwd=${effectiveCwd}, gitRoot=${gitRoot}, baseDir=${baseDir}`);
+    }
     const namePattern = resolveNamingPattern(config.plan, gitBranch);
 
     // Resolve plan and reports path - use absolute paths based on git root (Issue #291)
@@ -81,7 +91,7 @@ async function main() {
 
     // Subagent identification
     lines.push(`## Subagent: ${agentType}`);
-    lines.push(`ID: ${agentId} | CWD: ${payload.cwd || process.cwd()}`);
+    lines.push(`ID: ${agentId} | CWD: ${effectiveCwd}`);
     lines.push(``);
 
     // Plan context (from env vars)

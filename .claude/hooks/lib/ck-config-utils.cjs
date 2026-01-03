@@ -218,12 +218,21 @@ function findMostRecentPlan(plansDir) {
 }
 
 /**
+ * Default timeout for git commands (5 seconds)
+ * Prevents indefinite hangs on network mounts or corrupted repos
+ */
+const DEFAULT_EXEC_TIMEOUT_MS = 5000;
+
+/**
  * Safely execute shell command (internal helper)
  * SECURITY: Only accepts whitelisted git read commands
  * @param {string} cmd - Command to execute
+ * @param {Object} options - Execution options
+ * @param {string} options.cwd - Working directory (optional)
+ * @param {number} options.timeout - Timeout in ms (default: 5000)
  * @returns {string|null} Command output or null
  */
-function execSafe(cmd) {
+function execSafe(cmd, options = {}) {
   // Whitelist of safe read-only commands
   const allowedCommands = [
     'git branch --show-current',
@@ -234,9 +243,16 @@ function execSafe(cmd) {
     return null;
   }
 
+  const { cwd = undefined, timeout = DEFAULT_EXEC_TIMEOUT_MS } = options;
+
   try {
     return require('child_process')
-      .execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+      .execSync(cmd, {
+        encoding: 'utf8',
+        timeout,
+        cwd,
+        stdio: ['pipe', 'pipe', 'pipe']
+      })
       .trim();
   } catch (e) {
     return null;
@@ -493,10 +509,15 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
 
 /**
  * Escape shell special characters for env file values
+ * Handles: backslash, double quote, dollar sign, backtick
  */
 function escapeShellValue(str) {
   if (typeof str !== 'string') return str;
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
+  return str
+    .replace(/\\/g, '\\\\')   // Backslash first
+    .replace(/"/g, '\\"')     // Double quotes
+    .replace(/\$/g, '\\$')    // Dollar sign
+    .replace(/`/g, '\\`');    // Backticks (command substitution)
 }
 
 /**
@@ -681,18 +702,20 @@ function resolveNamingPattern(planConfig, gitBranch) {
 
 /**
  * Get current git branch (safe execution)
+ * @param {string|null} cwd - Working directory to run git command from (optional)
  * @returns {string|null} Current branch name or null
  */
-function getGitBranch() {
-  return execSafe('git branch --show-current');
+function getGitBranch(cwd = null) {
+  return execSafe('git branch --show-current', { cwd: cwd || undefined });
 }
 
 /**
  * Get git repository root directory
+ * @param {string|null} cwd - Working directory to run git command from (optional)
  * @returns {string|null} Git root absolute path or null if not in git repo
  */
-function getGitRoot() {
-  return execSafe('git rev-parse --show-toplevel');
+function getGitRoot(cwd = null) {
+  return execSafe('git rev-parse --show-toplevel', { cwd: cwd || undefined });
 }
 
 module.exports = {
