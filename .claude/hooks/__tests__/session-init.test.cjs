@@ -223,4 +223,85 @@ describe('session-init.cjs', () => {
 
   });
 
+  describe('Issue #291: Git Root Path Resolution', () => {
+
+    it('does not show subdirectory warning when CWD equals git root', async () => {
+      // Run from git root to test no warning appears
+      const gitRoot = require('child_process')
+        .execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
+
+      const result = await new Promise((resolve, reject) => {
+        const proc = spawn('node', [HOOK_PATH], {
+          cwd: gitRoot,  // Run from git root
+          env: { ...process.env, CLAUDE_ENV_FILE: '' }
+        });
+        let stdout = '';
+        let stderr = '';
+        proc.stdout.on('data', (data) => { stdout += data.toString(); });
+        proc.stderr.on('data', (data) => { stderr += data.toString(); });
+        proc.stdin.write(JSON.stringify({ source: 'startup' }));
+        proc.stdin.end();
+        proc.on('close', (code) => { resolve({ stdout, stderr, exitCode: code }); });
+        proc.on('error', reject);
+        setTimeout(() => { proc.kill('SIGTERM'); reject(new Error('timeout')); }, 5000);
+      });
+
+      assert.strictEqual(result.exitCode, 0, 'Hook should exit with code 0');
+      assert.ok(
+        !result.stdout.includes('Running from subdirectory'),
+        'Should NOT show subdirectory warning when at git root'
+      );
+    });
+
+    it('shows subdirectory warning when CWD differs from git root', async () => {
+      // Run from a subdirectory to test warning appears
+      const gitRoot = require('child_process')
+        .execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
+
+      // Use .claude/hooks as subdirectory (guaranteed to exist)
+      const subdirPath = require('path').join(gitRoot, '.claude', 'hooks');
+
+      const result = await new Promise((resolve, reject) => {
+        const proc = spawn('node', [HOOK_PATH], {
+          cwd: subdirPath,  // Run from subdirectory
+          env: { ...process.env, CLAUDE_ENV_FILE: '' }
+        });
+        let stdout = '';
+        let stderr = '';
+        proc.stdout.on('data', (data) => { stdout += data.toString(); });
+        proc.stderr.on('data', (data) => { stderr += data.toString(); });
+        proc.stdin.write(JSON.stringify({ source: 'startup' }));
+        proc.stdin.end();
+        proc.on('close', (code) => { resolve({ stdout, stderr, exitCode: code }); });
+        proc.on('error', reject);
+        setTimeout(() => { proc.kill('SIGTERM'); reject(new Error('timeout')); }, 5000);
+      });
+
+      assert.strictEqual(result.exitCode, 0, 'Hook should exit with code 0');
+      assert.ok(
+        result.stdout.includes('Running from subdirectory'),
+        'Should show subdirectory warning when not at git root'
+      );
+      assert.ok(
+        result.stdout.includes('To avoid this'),
+        'Should include actionable guidance'
+      );
+    });
+
+    it('context output includes project info', async () => {
+      const result = await runHook({ source: 'startup' });
+
+      assert.strictEqual(result.exitCode, 0, 'Hook should exit with code 0');
+      assert.ok(
+        result.stdout.includes('Project:'),
+        'Should include Project in context'
+      );
+      assert.ok(
+        result.stdout.includes('Plan naming:'),
+        'Should include Plan naming in context'
+      );
+    });
+
+  });
+
 });
