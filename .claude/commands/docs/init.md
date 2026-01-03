@@ -22,4 +22,16 @@ Pass the gathered file list to `docs-manager` agent to create initial documentat
 
 Use `docs/` directory as the source of truth for documentation.
 
+## Phase 3: Size Check (Post-Generation)
+
+After docs-manager completes:
+1. Run `wc -l docs/*.md 2>/dev/null | sort -rn` to check LOC
+2. Use `docs.maxLoc` from session context (injected via Paths section)
+3. For files exceeding limit, warn:
+   ```
+   ⚠️ {file}: {loc} LOC exceeds limit ({maxLoc})
+   Consider: node .claude/scripts/split-large-docs.cjs {file}
+   ```
+4. Continue (non-blocking)
+
 **IMPORTANT**: **Do not** start implementing.

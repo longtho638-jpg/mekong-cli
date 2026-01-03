@@ -38,6 +38,9 @@ const DEFAULT_CONFIG = {
     docs: 'docs',
     plans: 'plans'
   },
+  docs: {
+    maxLoc: 800  // Maximum lines of code per doc file before warning
+  },
   locale: {
     thinkingLanguage: null,  // Language for reasoning (e.g., "en" for precision)
     responseLanguage: null   // Language for user-facing output (e.g., "vi")
@@ -441,7 +444,8 @@ function loadConfig(options = {}) {
     // Build result with optional sections
     const result = {
       plan: merged.plan || DEFAULT_CONFIG.plan,
-      paths: merged.paths || DEFAULT_CONFIG.paths
+      paths: merged.paths || DEFAULT_CONFIG.paths,
+      docs: merged.docs || DEFAULT_CONFIG.docs
     };
 
     if (includeLocale) {
@@ -473,6 +477,7 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
   const result = {
     plan: { ...DEFAULT_CONFIG.plan },
     paths: { ...DEFAULT_CONFIG.paths },
+    docs: { ...DEFAULT_CONFIG.docs },
     codingLevel: -1  // Default: disabled (no injection, saves tokens)
   };
   if (includeLocale) {

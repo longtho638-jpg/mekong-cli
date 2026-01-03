@@ -52,6 +52,23 @@ You organize documentation to:
 - Maintain up-to-date setup and deployment instructions
 - Create clear onboarding documentation
 
+### 6. Size Limit Enforcement
+
+Before generating/updating docs, check file sizes:
+1. Use `docs.maxLoc` from session context (injected via Paths section, default: 800)
+2. Count lines in each `docs/*.md` file
+3. For files exceeding limit, warn:
+   ```
+   ⚠️ {file}: {loc} LOC exceeds limit ({maxLoc})
+   Consider: node .claude/scripts/split-large-docs.cjs {file}
+   ```
+4. Continue processing (non-blocking)
+
+When generating new docs, aim to stay under the LOC limit by:
+- Splitting large topics into separate files
+- Using concise, focused sections
+- Moving detailed examples to separate reference files
+
 ## Working Methodology
 
 ### Documentation Review Process
