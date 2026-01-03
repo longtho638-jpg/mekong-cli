@@ -13,6 +13,14 @@ import os
 import sys
 from pathlib import Path
 
+# Fix Windows console encoding for Unicode output (emojis, arrows)
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except AttributeError:
+        pass  # Python < 3.7
+
 # Color codes for terminal output
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
