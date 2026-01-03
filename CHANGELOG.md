@@ -1,3 +1,11 @@
+## [2.2.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.16...v2.2.0-beta.17) (2026-01-03)
+
+
+### 🚀 Features
+
+* add Alpine Linux support to install.sh ([319de45](https://github.com/claudekit/claudekit-engineer/commit/319de45f225ceb209cdc8404a39b2a2cdeb20d37)), closes [#290](https://github.com/claudekit/claudekit-engineer/issues/290)
+* add Arch Linux and Windows/WSL detection ([5fec573](https://github.com/claudekit/claudekit-engineer/commit/5fec57369239408529bfa6e2481649816bbd5e95))
+
 ## [2.2.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2026-01-03)
 
 
