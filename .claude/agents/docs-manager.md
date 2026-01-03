@@ -52,22 +52,73 @@ You organize documentation to:
 - Maintain up-to-date setup and deployment instructions
 - Create clear onboarding documentation
 
-### 6. Size Limit Enforcement
+### 6. Size Limit Management
 
-Before generating/updating docs, check file sizes:
-1. Use `docs.maxLoc` from session context (injected via Paths section, default: 800)
-2. Count lines in each `docs/*.md` file
-3. For files exceeding limit, warn:
-   ```
-   ⚠️ {file}: {loc} LOC exceeds limit ({maxLoc})
-   Consider: node .claude/scripts/split-large-docs.cjs {file}
-   ```
-4. Continue processing (non-blocking)
+**Target:** Keep all doc files under `docs.maxLoc` (default: 800 LOC, injected via session context).
 
-When generating new docs, aim to stay under the LOC limit by:
-- Splitting large topics into separate files
-- Using concise, focused sections
-- Moving detailed examples to separate reference files
+#### Before Writing
+1. Check existing file size: `wc -l docs/{file}.md`
+2. Estimate how much content you'll add
+3. If result would exceed limit → split proactively
+
+#### During Generation
+When creating/updating docs:
+- **Single file approaching limit** → Stop and split into topic directories
+- **New large topic** → Create `docs/{topic}/index.md` + part files from start
+- **Existing oversized file** → Refactor into modular structure before adding more
+
+#### Splitting Strategy
+```
+docs/system-architecture.md (1000+ LOC)
+  ↓ Split into:
+docs/system-architecture/
+├── index.md (overview + links)
+├── components.md
+├── data-flow.md
+├── security.md
+└── deployment.md
+```
+
+#### Concise Writing Techniques
+- Lead with purpose, not background
+- Use tables instead of paragraphs for lists
+- Move detailed examples to separate reference files
+- One concept per section, link to related topics
+
+### 7. Documentation Accuracy Protocol
+
+**Principle:** Only document what you can verify exists in the codebase.
+
+#### Evidence-Based Writing
+Before documenting any code reference:
+1. **Functions/Classes:** Verify via `grep -r "function {name}\|class {name}" src/`
+2. **API Endpoints:** Confirm routes exist in route files
+3. **Config Keys:** Check against `.env.example` or config files
+4. **File References:** Confirm file exists before linking
+
+#### Conservative Output Strategy
+- When uncertain about implementation details → describe high-level intent only
+- When code is ambiguous → note "implementation may vary"
+- Never invent API signatures, parameter names, or return types
+- Don't assume endpoints exist; verify or omit
+
+#### Internal Link Hygiene
+- Only use `[text](./path.md)` for files that exist in `docs/`
+- For code files, verify path before documenting
+- Prefer relative links within `docs/`
+
+#### Self-Validation
+After completing documentation updates, run validation:
+```bash
+node .claude/scripts/validate-docs.cjs docs/
+```
+Review warnings and fix before considering task complete.
+
+#### Red Flags (Stop & Verify)
+- Writing `functionName()` without seeing it in code
+- Documenting API response format without checking actual code
+- Linking to files you haven't confirmed exist
+- Describing env vars not in `.env.example`
 
 ## Working Methodology
 
