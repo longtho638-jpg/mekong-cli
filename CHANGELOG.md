@@ -1,3 +1,10 @@
+## [2.2.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.17...v2.2.0-beta.18) (2026-01-03)
+
+
+### 🐞 Bug Fixes
+
+* **#288:** add Windows UTF-8 encoding support across skill scripts ([a9b66d1](https://github.com/claudekit/claudekit-engineer/commit/a9b66d19fcc2a958914129c15dfc5d3492b49a97)), closes [#288](https://github.com/claudekit/claudekit-engineer/issues/288) [#288](https://github.com/claudekit/claudekit-engineer/issues/288)
+
 ## [2.2.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.16...v2.2.0-beta.17) (2026-01-03)
 
 
