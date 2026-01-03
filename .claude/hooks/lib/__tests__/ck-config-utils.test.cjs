@@ -9,7 +9,9 @@ const {
   isAbsolutePath,
   sanitizePath,
   sanitizeSlug,
-  validateNamingPattern
+  validateNamingPattern,
+  getGitRoot,
+  getReportsPath
 } = require('../ck-config-utils.cjs');
 
 let passed = 0;
@@ -156,6 +158,56 @@ test('empty pattern → invalid', () => {
 test('unresolved placeholder → invalid', () => {
   const result = validateNamingPattern('{date}-{slug}');
   assertEquals(result.valid, false);
+});
+
+console.log('\n=== getGitRoot tests (Issue #291) ===\n');
+
+test('getGitRoot returns path when in git repo', () => {
+  const result = getGitRoot();
+  // We're running from within a git repo, so should return a path
+  if (result === null) {
+    throw new Error('Expected git root path but got null');
+  }
+  if (!path.isAbsolute(result)) {
+    throw new Error(`Expected absolute path but got: ${result}`);
+  }
+});
+
+console.log('\n=== getReportsPath with baseDir tests (Issue #291) ===\n');
+
+test('getReportsPath returns absolute path when baseDir provided', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: 'plans' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
+});
+
+test('getReportsPath returns relative path when no baseDir', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: 'plans' };
+
+  const result = getReportsPath(null, null, planConfig, pathsConfig);
+  assertEquals(result, 'plans/reports/');
+});
+
+test('getReportsPath uses plan path for session-resolved plans', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: 'plans' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath('plans/my-plan', 'session', planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/my-plan/reports');
+});
+
+test('getReportsPath ignores plan path for branch-resolved plans', () => {
+  const planConfig = { reportsDir: 'reports' };
+  const pathsConfig = { plans: 'plans' };
+  const baseDir = '/home/user/project';
+
+  const result = getReportsPath('plans/my-plan', 'branch', planConfig, pathsConfig, baseDir);
+  assertEquals(result, '/home/user/project/plans/reports');
 });
 
 // Summary

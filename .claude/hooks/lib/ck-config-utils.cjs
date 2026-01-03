@@ -225,7 +225,11 @@ function findMostRecentPlan(plansDir) {
  */
 function execSafe(cmd) {
   // Whitelist of safe read-only commands
-  const allowedCommands = ['git branch --show-current', 'git rev-parse --abbrev-ref HEAD'];
+  const allowedCommands = [
+    'git branch --show-current',
+    'git rev-parse --abbrev-ref HEAD',
+    'git rev-parse --show-toplevel'
+  ];
   if (!allowedCommands.includes(cmd)) {
     return null;
   }
@@ -514,19 +518,28 @@ function writeEnv(envFile, key, value) {
  * @param {string|null} resolvedBy - How plan was resolved ('session'|'branch'|null)
  * @param {Object} planConfig - Plan configuration
  * @param {Object} pathsConfig - Paths configuration
- * @returns {string} Reports path
+ * @param {string|null} baseDir - Optional base directory for absolute path resolution
+ * @returns {string} Reports path (absolute if baseDir provided, relative otherwise)
  */
-function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig) {
+function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig, baseDir = null) {
   const reportsDir = normalizePath(planConfig?.reportsDir) || 'reports';
   const plansDir = normalizePath(pathsConfig?.plans) || 'plans';
 
+  let reportPath;
   // Only use plan-specific reports path if explicitly active (session state)
   if (planPath && resolvedBy === 'session') {
     const normalizedPlanPath = normalizePath(planPath) || planPath;
-    return `${normalizedPlanPath}/${reportsDir}/`;
+    reportPath = `${normalizedPlanPath}/${reportsDir}`;
+  } else {
+    // Default path for no plan or suggested (branch-matched) plans
+    reportPath = `${plansDir}/${reportsDir}`;
   }
-  // Default path for no plan or suggested (branch-matched) plans
-  return `${plansDir}/${reportsDir}/`;
+
+  // Return absolute path if baseDir provided
+  if (baseDir) {
+    return path.join(baseDir, reportPath);
+  }
+  return reportPath + '/';
 }
 
 /**
@@ -674,6 +687,14 @@ function getGitBranch() {
   return execSafe('git branch --show-current');
 }
 
+/**
+ * Get git repository root directory
+ * @returns {string|null} Git root absolute path or null if not in git repo
+ */
+function getGitRoot() {
+  return execSafe('git rev-parse --show-toplevel');
+}
+
 module.exports = {
   CONFIG_PATH,
   LOCAL_CONFIG_PATH,
@@ -702,5 +723,6 @@ module.exports = {
   formatDate,
   validateNamingPattern,
   resolveNamingPattern,
-  getGitBranch
+  getGitBranch,
+  getGitRoot
 };

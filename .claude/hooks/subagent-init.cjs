@@ -11,10 +11,12 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const {
   loadConfig,
   resolveNamingPattern,
   getGitBranch,
+  getGitRoot,
   resolvePlanPath,
   getReportsPath,
   normalizePath
@@ -58,15 +60,17 @@ async function main() {
 
     // Compute naming pattern directly (don't rely on env vars which may not propagate)
     const gitBranch = getGitBranch();
+    const gitRoot = getGitRoot();
+    const baseDir = gitRoot || process.cwd();
     const namePattern = resolveNamingPattern(config.plan, gitBranch);
 
-    // Resolve plan and reports path
+    // Resolve plan and reports path - use absolute paths based on git root (Issue #291)
     const resolved = resolvePlanPath(null, config);
-    const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
+    const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths, baseDir);
     const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
     const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
-    const plansPath = normalizePath(config.paths?.plans) || 'plans';
-    const docsPath = normalizePath(config.paths?.docs) || 'docs';
+    const plansPath = path.join(baseDir, normalizePath(config.paths?.plans) || 'plans');
+    const docsPath = path.join(baseDir, normalizePath(config.paths?.docs) || 'docs');
     const thinkingLanguage = config.locale?.thinkingLanguage || '';
     const responseLanguage = config.locale?.responseLanguage || '';
     // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
@@ -115,8 +119,8 @@ async function main() {
     // Naming templates (computed directly for reliable injection)
     lines.push(``);
     lines.push(`## Naming`);
-    lines.push(`- Report: ${reportsPath}${agentType}-${namePattern}.md`);
-    lines.push(`- Plan dir: ${plansPath}/${namePattern}/`);
+    lines.push(`- Report: ${path.join(reportsPath, `${agentType}-${namePattern}.md`)}`);
+    lines.push(`- Plan dir: ${path.join(plansPath, namePattern)}/`);
 
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));
