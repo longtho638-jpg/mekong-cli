@@ -1,6 +1,9 @@
 {
   "codingLevel": -1,
   "privacyBlock": true,
+  "docs": {
+    "maxLoc": 800
+  },
   "plan": {
     "namingFormat": "{date}-{issue}-{slug}",
     "dateFormat": "YYMMDD-HHmm",
