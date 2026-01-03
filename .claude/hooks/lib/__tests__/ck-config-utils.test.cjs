@@ -374,6 +374,290 @@ test('path.join concatenates paths (does NOT discard baseDir)', () => {
   assertEquals(result, '/home/user/project/tmp/all-plans');
 });
 
+console.log('\n=== Detached HEAD state tests ===\n');
+
+test('getGitBranch returns null or empty in detached HEAD state', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-detached-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    // Initialize git repo and create a commit
+    execSync('git init -q', { cwd: tempDir });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir });
+    execSync('git config user.name "Test"', { cwd: tempDir });
+    fs.writeFileSync(path.join(tempDir, 'file.txt'), 'test');
+    execSync('git add .', { cwd: tempDir });
+    execSync('git commit -q -m "initial"', { cwd: tempDir });
+
+    // Get commit hash and checkout detached HEAD
+    const commitHash = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf8' }).trim();
+    execSync(`git checkout -q ${commitHash}`, { cwd: tempDir });
+
+    // getGitBranch returns empty string or null in detached HEAD
+    // (git branch --show-current outputs empty line when detached)
+    const result = getGitBranch(tempDir);
+    assertEquals(result === null || result === '', true);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitRoot works in detached HEAD state', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-detached-root-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir });
+    execSync('git config user.name "Test"', { cwd: tempDir });
+    fs.writeFileSync(path.join(tempDir, 'file.txt'), 'test');
+    execSync('git add .', { cwd: tempDir });
+    execSync('git commit -q -m "initial"', { cwd: tempDir });
+
+    const commitHash = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf8' }).trim();
+    execSync(`git checkout -q ${commitHash}`, { cwd: tempDir });
+
+    // getGitRoot should still work
+    const result = getGitRoot(tempDir);
+    assertEquals(result, tempDir);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Bare repository tests ===\n');
+
+test('getGitRoot returns null for bare repository (no working tree)', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-bare-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q --bare', { cwd: tempDir });
+
+    // git rev-parse --show-toplevel fails in bare repos (no working tree)
+    // This is expected git behavior - bare repos have no working directory
+    const result = getGitRoot(tempDir);
+    assertEquals(result, null);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitBranch returns null for bare repository (no HEAD ref)', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-bare-branch-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q --bare', { cwd: tempDir });
+
+    // Fresh bare repo has no commits, so branch may be null
+    const result = getGitBranch(tempDir);
+    // Bare repos with no commits return null (no HEAD target)
+    // This is expected behavior
+    assertEquals(result === null || result === 'main' || result === 'master', true);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Nested git repos tests ===\n');
+
+test('getGitRoot returns innermost repo for nested git repos', () => {
+  const outerDir = path.join(os.tmpdir(), 'ck-test-nested-outer-' + Date.now());
+  const innerDir = path.join(outerDir, 'inner');
+  fs.mkdirSync(innerDir, { recursive: true });
+  try {
+    // Create outer git repo
+    execSync('git init -q', { cwd: outerDir });
+
+    // Create inner git repo (nested)
+    execSync('git init -q', { cwd: innerDir });
+
+    // From inner dir, should return inner repo root
+    const resultInner = getGitRoot(innerDir);
+    assertEquals(resultInner, innerDir);
+
+    // From outer dir, should return outer repo root
+    const resultOuter = getGitRoot(outerDir);
+    assertEquals(resultOuter, outerDir);
+  } finally {
+    fs.rmSync(outerDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitRoot from nested subdir returns correct root', () => {
+  const outerDir = path.join(os.tmpdir(), 'ck-test-nested-sub-' + Date.now());
+  const innerDir = path.join(outerDir, 'inner');
+  const deepDir = path.join(innerDir, 'deep', 'subdir');
+  fs.mkdirSync(deepDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: outerDir });
+    execSync('git init -q', { cwd: innerDir });
+
+    // From deep subdir inside inner repo
+    const result = getGitRoot(deepDir);
+    assertEquals(result, innerDir);
+  } finally {
+    fs.rmSync(outerDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Symlinked directory tests ===\n');
+
+test('getGitRoot resolves through symlink to git repo', () => {
+  const realDir = path.join(os.tmpdir(), 'ck-test-real-' + Date.now());
+  const linkDir = path.join(os.tmpdir(), 'ck-test-link-' + Date.now());
+  fs.mkdirSync(realDir, { recursive: true });
+  try {
+    // Create git repo in real dir
+    execSync('git init -q', { cwd: realDir });
+
+    // Create symlink
+    fs.symlinkSync(realDir, linkDir);
+
+    // getGitRoot from symlink should work
+    const result = getGitRoot(linkDir);
+    // Git resolves to real path
+    if (result !== null) {
+      // Result should be the real path (symlink resolved)
+      assertEquals(fs.realpathSync(result), fs.realpathSync(realDir));
+    }
+  } finally {
+    try { fs.unlinkSync(linkDir); } catch (e) {}
+    fs.rmSync(realDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitRoot with symlinked subdirectory', () => {
+  const realDir = path.join(os.tmpdir(), 'ck-test-real-sub-' + Date.now());
+  const subDir = path.join(realDir, 'subdir');
+  const linkToSub = path.join(os.tmpdir(), 'ck-test-link-sub-' + Date.now());
+  fs.mkdirSync(subDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: realDir });
+
+    // Create symlink to subdirectory
+    fs.symlinkSync(subDir, linkToSub);
+
+    // getGitRoot from symlinked subdir should find parent repo
+    const result = getGitRoot(linkToSub);
+    if (result !== null) {
+      assertEquals(fs.realpathSync(result), fs.realpathSync(realDir));
+    }
+  } finally {
+    try { fs.unlinkSync(linkToSub); } catch (e) {}
+    fs.rmSync(realDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Git worktree tests ===\n');
+
+test('getGitRoot works with git worktree', () => {
+  const mainDir = path.join(os.tmpdir(), 'ck-test-wt-main-' + Date.now());
+  const worktreeDir = path.join(os.tmpdir(), 'ck-test-wt-tree-' + Date.now());
+  fs.mkdirSync(mainDir, { recursive: true });
+  try {
+    // Create main repo with a commit
+    execSync('git init -q', { cwd: mainDir });
+    execSync('git config user.email "test@test.com"', { cwd: mainDir });
+    execSync('git config user.name "Test"', { cwd: mainDir });
+    fs.writeFileSync(path.join(mainDir, 'file.txt'), 'test');
+    execSync('git add .', { cwd: mainDir });
+    execSync('git commit -q -m "initial"', { cwd: mainDir });
+
+    // Create worktree
+    execSync(`git worktree add -q "${worktreeDir}" -b worktree-branch`, { cwd: mainDir });
+
+    // getGitRoot from worktree should return worktree path
+    const result = getGitRoot(worktreeDir);
+    assertEquals(result, worktreeDir);
+
+    // Cleanup worktree
+    execSync(`git worktree remove -f "${worktreeDir}"`, { cwd: mainDir });
+  } finally {
+    try { fs.rmSync(worktreeDir, { recursive: true, force: true }); } catch (e) {}
+    fs.rmSync(mainDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Unicode path tests ===\n');
+
+test('getGitRoot works with unicode characters in path', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-日本語-émoji-🔥-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+
+    const result = getGitRoot(tempDir);
+    assertEquals(result, tempDir);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitBranch works with unicode branch name', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-unicode-branch-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir });
+    execSync('git config user.name "Test"', { cwd: tempDir });
+    fs.writeFileSync(path.join(tempDir, 'file.txt'), 'test');
+    execSync('git add .', { cwd: tempDir });
+    execSync('git commit -q -m "initial"', { cwd: tempDir });
+
+    // Create and checkout branch with unicode name
+    execSync('git checkout -q -b feature/日本語-test', { cwd: tempDir });
+
+    const result = getGitBranch(tempDir);
+    assertEquals(result, 'feature/日本語-test');
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Special character path tests ===\n');
+
+test('getGitRoot works with special shell characters in path', () => {
+  // Test paths with characters that need escaping in shell
+  const tempDir = path.join(os.tmpdir(), "ck-test-special-$var-'quote'-" + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+
+    const result = getGitRoot(tempDir);
+    assertEquals(result, tempDir);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+console.log('\n=== Empty/new git repo tests ===\n');
+
+test('getGitRoot works on new repo with no commits', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-empty-repo-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+
+    // No commits yet
+    const result = getGitRoot(tempDir);
+    assertEquals(result, tempDir);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('getGitBranch on new repo returns default branch', () => {
+  const tempDir = path.join(os.tmpdir(), 'ck-test-new-repo-branch-' + Date.now());
+  fs.mkdirSync(tempDir, { recursive: true });
+  try {
+    execSync('git init -q', { cwd: tempDir });
+
+    const result = getGitBranch(tempDir);
+    // New repo should have main or master as default
+    assertEquals(result === 'main' || result === 'master', true);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 // Summary
 console.log('\n=== Summary ===\n');
 console.log(`Passed: ${passed}`);

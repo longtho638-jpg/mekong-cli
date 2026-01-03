@@ -406,6 +406,174 @@ describe('subagent-init.cjs', () => {
 
   });
 
+  describe('Advanced Git Scenarios', () => {
+
+    it('handles detached HEAD state gracefully', async () => {
+      const tempDir = path.join(os.tmpdir(), 'subagent-detached-' + Date.now());
+      fs.mkdirSync(tempDir, { recursive: true });
+      try {
+        // Create repo with commit and detach HEAD
+        execSync('git init -q', { cwd: tempDir });
+        execSync('git config user.email "test@test.com"', { cwd: tempDir });
+        execSync('git config user.name "Test"', { cwd: tempDir });
+        fs.writeFileSync(path.join(tempDir, 'file.txt'), 'test');
+        execSync('git add .', { cwd: tempDir });
+        execSync('git commit -q -m "initial"', { cwd: tempDir });
+        const hash = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf8' }).trim();
+        execSync(`git checkout -q ${hash}`, { cwd: tempDir });
+
+        const result = await runHook({
+          agent_type: 'test-agent',
+          agent_id: 'detached-test',
+          cwd: tempDir
+        }, { cwd: tempDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle detached HEAD');
+        assert.ok(result.output, 'Should return output');
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+
+    it('handles nested git repos (monorepo parent, submodule child)', async () => {
+      const outerDir = path.join(os.tmpdir(), 'subagent-nested-outer-' + Date.now());
+      const innerDir = path.join(outerDir, 'packages', 'inner');
+      fs.mkdirSync(innerDir, { recursive: true });
+      try {
+        // Create outer (monorepo) git repo
+        execSync('git init -q', { cwd: outerDir });
+        execSync('git config user.email "test@test.com"', { cwd: outerDir });
+        execSync('git config user.name "Test"', { cwd: outerDir });
+
+        // Create inner (package) git repo
+        execSync('git init -q', { cwd: innerDir });
+        execSync('git config user.email "test@test.com"', { cwd: innerDir });
+        execSync('git config user.name "Test"', { cwd: innerDir });
+
+        // Subagent running in inner repo should get inner repo's git root
+        const result = await runHook({
+          agent_type: 'fullstack-developer',
+          agent_id: 'nested-test',
+          cwd: innerDir
+        }, { cwd: innerDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle nested repos');
+        const context = result.output?.hookSpecificOutput?.additionalContext || '';
+        // Should include inner directory path (the submodule root)
+        assert.ok(
+          context.includes(innerDir) || context.includes('/packages/inner'),
+          `Should resolve to inner repo, not outer. Context: ${context.substring(0, 300)}`
+        );
+      } finally {
+        fs.rmSync(outerDir, { recursive: true, force: true });
+      }
+    });
+
+    it('handles bare repository', async () => {
+      const tempDir = path.join(os.tmpdir(), 'subagent-bare-' + Date.now());
+      fs.mkdirSync(tempDir, { recursive: true });
+      try {
+        execSync('git init -q --bare', { cwd: tempDir });
+
+        const result = await runHook({
+          agent_type: 'test-agent',
+          agent_id: 'bare-test',
+          cwd: tempDir
+        }, { cwd: tempDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle bare repo');
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+
+    it('handles symlinked git repository', async () => {
+      const realDir = path.join(os.tmpdir(), 'subagent-real-' + Date.now());
+      const linkDir = path.join(os.tmpdir(), 'subagent-link-' + Date.now());
+      fs.mkdirSync(realDir, { recursive: true });
+      try {
+        execSync('git init -q', { cwd: realDir });
+        fs.symlinkSync(realDir, linkDir);
+
+        const result = await runHook({
+          agent_type: 'test-agent',
+          agent_id: 'symlink-test',
+          cwd: linkDir
+        }, { cwd: linkDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle symlinked repo');
+        // Git resolves symlinks, so path should be resolvable
+        const context = result.output?.hookSpecificOutput?.additionalContext || '';
+        assert.ok(context.length > 0, 'Should produce context output');
+      } finally {
+        try { fs.unlinkSync(linkDir); } catch (e) {}
+        fs.rmSync(realDir, { recursive: true, force: true });
+      }
+    });
+
+    it('handles git worktree', async () => {
+      const mainDir = path.join(os.tmpdir(), 'subagent-wt-main-' + Date.now());
+      const worktreeDir = path.join(os.tmpdir(), 'subagent-wt-tree-' + Date.now());
+      fs.mkdirSync(mainDir, { recursive: true });
+      try {
+        // Create main repo with commit
+        execSync('git init -q', { cwd: mainDir });
+        execSync('git config user.email "test@test.com"', { cwd: mainDir });
+        execSync('git config user.name "Test"', { cwd: mainDir });
+        fs.writeFileSync(path.join(mainDir, 'file.txt'), 'test');
+        execSync('git add .', { cwd: mainDir });
+        execSync('git commit -q -m "initial"', { cwd: mainDir });
+
+        // Create worktree
+        execSync(`git worktree add -q "${worktreeDir}" -b worktree-test`, { cwd: mainDir });
+
+        const result = await runHook({
+          agent_type: 'test-agent',
+          agent_id: 'worktree-test',
+          cwd: worktreeDir
+        }, { cwd: worktreeDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle worktree');
+        const context = result.output?.hookSpecificOutput?.additionalContext || '';
+        // Worktree should be recognized as its own root
+        assert.ok(
+          context.includes(worktreeDir),
+          `Should include worktree path: ${context.substring(0, 200)}`
+        );
+
+        // Cleanup worktree
+        execSync(`git worktree remove -f "${worktreeDir}"`, { cwd: mainDir });
+      } finally {
+        try { fs.rmSync(worktreeDir, { recursive: true, force: true }); } catch (e) {}
+        fs.rmSync(mainDir, { recursive: true, force: true });
+      }
+    });
+
+    it('handles unicode characters in path', async () => {
+      const tempDir = path.join(os.tmpdir(), 'subagent-日本語-émoji-' + Date.now());
+      fs.mkdirSync(tempDir, { recursive: true });
+      try {
+        execSync('git init -q', { cwd: tempDir });
+
+        const result = await runHook({
+          agent_type: 'test-agent',
+          agent_id: 'unicode-test',
+          cwd: tempDir
+        }, { cwd: tempDir });
+
+        assert.strictEqual(result.exitCode, 0, 'Should handle unicode paths');
+        const context = result.output?.hookSpecificOutput?.additionalContext || '';
+        assert.ok(
+          context.includes('日本語') || context.includes('émoji'),
+          'Should preserve unicode in output'
+        );
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+
+  });
+
   describe('Error Handling', () => {
 
     it('exits 0 on JSON parse error (fail-open)', async () => {
