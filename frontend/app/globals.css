@@ -1,3 +1,22 @@
+/* Material Design 3 Token System */
+@import './tokens/md-ref-palette.css';
+@import './tokens/md-sys-color.css';
+@import './tokens/md-sys-motion.css';
+@import './tokens/md-sys-state.css';
+@import './tokens/md-sys-shape.css';
+@import './tokens/md-sys-typescale.css';
+@import './tokens/md-sys-elevation.css';
+@import './tokens/md-sys-surface.css';
+@import './tokens/md-sys-motion-spring.css';
+@import './tokens/md-sys-layout.css';
+@import './tokens/md-sys-spacing.css';
+
+/* NEW: Complete MD3 Design Tokens */
+@import '../styles/md3-tokens.css';
+
+/* WOW Effects - Glassmorphism & Animations */
+@import '../styles/wow-effects.css';
+
 @import "tailwindcss";
 
 @theme {
@@ -150,14 +169,13 @@
 }
 
 body {
-  font-family: 'JetBrains Mono', monospace;
-  background-color: var(--dark-bg);
-  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
   overflow-x: hidden;
-  background-image:
-    radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(139, 105, 20, 0.05) 0%, transparent 40%);
 }
+
+/* Base Layout - Theme-aware */
 
 /* Glassmorphism */
 .glass-panel {
@@ -183,12 +201,7 @@ body {
   transform: translateY(-4px);
 }
 
-/* Base Layout - Theme-aware */
-body {
-  background: var(--bg-primary, #020617);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
+/* Shield Container */
 .shield-container {
   padding-top: 2.5rem !important;
   /* pt-10 */
@@ -820,15 +833,15 @@ body {
 
 /* Subtle Card - clean, minimal borders */
 .card-subtle {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px;
   padding: 16px;
 }
 
 .card-subtle:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-outline);
 }
 
 /* Clean hover - no transforms, just bg change */
@@ -946,18 +959,18 @@ body {
 
 /* Metric Card */
 .metric-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
   padding: 16px;
   min-width: 0;
 }
 
 /* Chart Container */
 .chart-container {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
   padding: 16px;
   height: 280px;
 }
@@ -1293,7 +1306,7 @@ body {
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  background: #050508;
+  background: var(--md-sys-color-surface);
 }
 
 .star-layer {
@@ -1457,21 +1470,21 @@ body {
 
 /* Refined Component Density */
 .metric-card-catalyst {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
   padding: 14px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .metric-card-catalyst:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-  border-color: rgba(139, 92, 246, 0.15);
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-primary);
   transform: scale(1.02);
   box-shadow:
-    0 0 0 1px rgba(139, 92, 246, 0.1),
-    0 4px 12px rgba(139, 92, 246, 0.08);
+    0 0 0 1px var(--md-sys-color-primary),
+    0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Polished Glass (Tighter Padding) */
@@ -1508,12 +1521,12 @@ body {
 
 /* Glass Ultra - Maximum Depth */
 .glass-ultra {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--md-sys-color-surface-container);
   backdrop-filter: blur(60px) saturate(200%) brightness(1.05);
   -webkit-backdrop-filter: blur(60px) saturate(200%) brightness(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--md-sys-color-outline-variant);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 0 1px var(--md-sys-color-outline-variant),
     0 8px 32px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
@@ -1586,11 +1599,7 @@ body {
   animation: beam-travel 3s infinite linear;
 }
 
-/* Font Upgrades */
-.font-orbitron {
-  font-family: 'Orbitron', 'Courier New', sans-serif;
-  /* Fallback for now */
-}
+/* Legacy font-orbitron removed - use .md-typescale-* instead */
 
 /* Pulsing Glow Node */
 .pulse-glow-amber {

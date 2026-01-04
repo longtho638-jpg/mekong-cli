@@ -1,0 +1,394 @@
+/**
+ * 🎨 Material Design 3 Design Tokens
+ * 
+ * Official MD3 color system with:
+ * - Tonal palettes (primary, secondary, tertiary)
+ * - Surface containers with elevation
+ * - Shape scale
+ * - Motion tokens
+ * 
+ * Based on: https://m3.material.io/
+ */
+
+:root {
+    /* ===== PRIMARY TONAL PALETTE ===== */
+    --md-sys-color-primary: #D0BCFF;
+    --md-sys-color-on-primary: #381E72;
+    --md-sys-color-primary-container: #4F378B;
+    --md-sys-color-on-primary-container: #EADDFF;
+
+    /* ===== SECONDARY TONAL PALETTE ===== */
+    --md-sys-color-secondary: #CCC2DC;
+    --md-sys-color-on-secondary: #332D41;
+    --md-sys-color-secondary-container: #4A4458;
+    --md-sys-color-on-secondary-container: #E8DEF8;
+
+    /* ===== TERTIARY TONAL PALETTE ===== */
+    --md-sys-color-tertiary: #EFB8C8;
+    --md-sys-color-on-tertiary: #492532;
+    --md-sys-color-tertiary-container: #633B48;
+    --md-sys-color-on-tertiary-container: #FFD8E4;
+
+    /* ===== ERROR ===== */
+    --md-sys-color-error: #F2B8B5;
+    --md-sys-color-on-error: #601410;
+    --md-sys-color-error-container: #8C1D18;
+    --md-sys-color-on-error-container: #F9DEDC;
+
+    /* ===== SURFACE SYSTEM ===== */
+    --md-sys-color-surface: #141218;
+    --md-sys-color-on-surface: #E6E1E5;
+    --md-sys-color-surface-variant: #49454F;
+    --md-sys-color-on-surface-variant: #CAC4D0;
+
+    /* ===== SURFACE CONTAINERS (Elevation) ===== */
+    --md-sys-color-surface-container-lowest: #0F0D13;
+    --md-sys-color-surface-container-low: #1D1B20;
+    --md-sys-color-surface-container: #211F26;
+    --md-sys-color-surface-container-high: #2B2930;
+    --md-sys-color-surface-container-highest: #36343B;
+
+    /* ===== OUTLINE ===== */
+    --md-sys-color-outline: #938F99;
+    --md-sys-color-outline-variant: #49454F;
+
+    /* ===== INVERSE ===== */
+    --md-sys-color-inverse-surface: #E6E1E5;
+    --md-sys-color-inverse-on-surface: #313033;
+    --md-sys-color-inverse-primary: #6750A4;
+
+    /* ===== BACKGROUND ===== */
+    --md-sys-color-background: #141218;
+    --md-sys-color-on-background: #E6E1E5;
+
+    /* ===== SCRIM & SHADOW ===== */
+    --md-sys-color-scrim: #000000;
+    --md-sys-color-shadow: #000000;
+
+    /* ===== ELEVATION LEVELS ===== */
+    --md-sys-elevation-0: none;
+    --md-sys-elevation-1:
+        0 1px 2px 0 rgba(0, 0, 0, 0.3),
+        0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-2:
+        0 1px 2px 0 rgba(0, 0, 0, 0.3),
+        0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-3:
+        0 1px 3px 0 rgba(0, 0, 0, 0.3),
+        0 4px 8px 3px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-4:
+        0 2px 3px 0 rgba(0, 0, 0, 0.3),
+        0 6px 10px 4px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-5:
+        0 4px 4px 0 rgba(0, 0, 0, 0.3),
+        0 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+    /* ===== SHAPE SCALE ===== */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 9999px;
+
+    /* ===== TYPOGRAPHY SCALE ===== */
+    --md-sys-typescale-display-large: 57px;
+    --md-sys-typescale-display-medium: 45px;
+    --md-sys-typescale-display-small: 36px;
+    --md-sys-typescale-headline-large: 32px;
+    --md-sys-typescale-headline-medium: 28px;
+    --md-sys-typescale-headline-small: 24px;
+    --md-sys-typescale-title-large: 22px;
+    --md-sys-typescale-title-medium: 16px;
+    --md-sys-typescale-title-small: 14px;
+    --md-sys-typescale-body-large: 16px;
+    --md-sys-typescale-body-medium: 14px;
+    --md-sys-typescale-body-small: 12px;
+    --md-sys-typescale-label-large: 14px;
+    --md-sys-typescale-label-medium: 12px;
+    --md-sys-typescale-label-small: 11px;
+
+    /* ===== MOTION TOKENS ===== */
+    --md-sys-motion-duration-short1: 50ms;
+    --md-sys-motion-duration-short2: 100ms;
+    --md-sys-motion-duration-short3: 150ms;
+    --md-sys-motion-duration-short4: 200ms;
+    --md-sys-motion-duration-medium1: 250ms;
+    --md-sys-motion-duration-medium2: 300ms;
+    --md-sys-motion-duration-medium3: 350ms;
+    --md-sys-motion-duration-medium4: 400ms;
+    --md-sys-motion-duration-long1: 450ms;
+    --md-sys-motion-duration-long2: 500ms;
+    --md-sys-motion-duration-long3: 550ms;
+    --md-sys-motion-duration-long4: 600ms;
+
+    /* MD3 Easing */
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+    --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+    /* ===== STATE LAYERS ===== */
+    --md-sys-state-hover-opacity: 0.08;
+    --md-sys-state-focus-opacity: 0.12;
+    --md-sys-state-pressed-opacity: 0.12;
+    --md-sys-state-dragged-opacity: 0.16;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Surface Background */
+.md3-surface {
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+}
+
+.md3-surface-container {
+    background: var(--md-sys-color-surface-container);
+}
+
+.md3-surface-container-low {
+    background: var(--md-sys-color-surface-container-low);
+}
+
+.md3-surface-container-high {
+    background: var(--md-sys-color-surface-container-high);
+}
+
+.md3-surface-container-highest {
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+/* Primary */
+.md3-primary {
+    color: var(--md-sys-color-primary);
+}
+
+.md3-on-primary {
+    color: var(--md-sys-color-on-primary);
+}
+
+.md3-primary-container {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+/* Secondary */
+.md3-secondary {
+    color: var(--md-sys-color-secondary);
+}
+
+.md3-secondary-container {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* Tertiary */
+.md3-tertiary {
+    color: var(--md-sys-color-tertiary);
+}
+
+.md3-tertiary-container {
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+}
+
+/* Elevation */
+.md3-elevation-0 {
+    box-shadow: var(--md-sys-elevation-0);
+}
+
+.md3-elevation-1 {
+    box-shadow: var(--md-sys-elevation-1);
+    background: var(--md-sys-color-surface-container-low);
+}
+
+.md3-elevation-2 {
+    box-shadow: var(--md-sys-elevation-2);
+    background: var(--md-sys-color-surface-container);
+}
+
+.md3-elevation-3 {
+    box-shadow: var(--md-sys-elevation-3);
+    background: var(--md-sys-color-surface-container-high);
+}
+
+.md3-elevation-4 {
+    box-shadow: var(--md-sys-elevation-4);
+    background: var(--md-sys-color-surface-container-high);
+}
+
+.md3-elevation-5 {
+    box-shadow: var(--md-sys-elevation-5);
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+/* Shape */
+.md3-shape-none {
+    border-radius: var(--md-sys-shape-corner-none);
+}
+
+.md3-shape-xs {
+    border-radius: var(--md-sys-shape-corner-extra-small);
+}
+
+.md3-shape-sm {
+    border-radius: var(--md-sys-shape-corner-small);
+}
+
+.md3-shape-md {
+    border-radius: var(--md-sys-shape-corner-medium);
+}
+
+.md3-shape-lg {
+    border-radius: var(--md-sys-shape-corner-large);
+}
+
+.md3-shape-xl {
+    border-radius: var(--md-sys-shape-corner-extra-large);
+}
+
+.md3-shape-full {
+    border-radius: var(--md-sys-shape-corner-full);
+}
+
+/* Typography */
+.md3-display-large {
+    font-size: var(--md-sys-typescale-display-large);
+    line-height: 1.12;
+    font-weight: 400;
+}
+
+.md3-display-medium {
+    font-size: var(--md-sys-typescale-display-medium);
+    line-height: 1.16;
+    font-weight: 400;
+}
+
+.md3-display-small {
+    font-size: var(--md-sys-typescale-display-small);
+    line-height: 1.22;
+    font-weight: 400;
+}
+
+.md3-headline-large {
+    font-size: var(--md-sys-typescale-headline-large);
+    line-height: 1.25;
+    font-weight: 400;
+}
+
+.md3-headline-medium {
+    font-size: var(--md-sys-typescale-headline-medium);
+    line-height: 1.29;
+    font-weight: 400;
+}
+
+.md3-headline-small {
+    font-size: var(--md-sys-typescale-headline-small);
+    line-height: 1.33;
+    font-weight: 400;
+}
+
+.md3-title-large {
+    font-size: var(--md-sys-typescale-title-large);
+    line-height: 1.27;
+    font-weight: 400;
+}
+
+.md3-title-medium {
+    font-size: var(--md-sys-typescale-title-medium);
+    line-height: 1.5;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+}
+
+.md3-title-small {
+    font-size: var(--md-sys-typescale-title-small);
+    line-height: 1.43;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+}
+
+.md3-body-large {
+    font-size: var(--md-sys-typescale-body-large);
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.md3-body-medium {
+    font-size: var(--md-sys-typescale-body-medium);
+    line-height: 1.43;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+}
+
+.md3-body-small {
+    font-size: var(--md-sys-typescale-body-small);
+    line-height: 1.33;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+}
+
+.md3-label-large {
+    font-size: var(--md-sys-typescale-label-large);
+    line-height: 1.43;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+}
+
+.md3-label-medium {
+    font-size: var(--md-sys-typescale-label-medium);
+    line-height: 1.33;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.md3-label-small {
+    font-size: var(--md-sys-typescale-label-small);
+    line-height: 1.45;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* State Layers */
+.md3-state-layer {
+    position: relative;
+    overflow: hidden;
+}
+
+.md3-state-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+    pointer-events: none;
+}
+
+.md3-state-layer:hover::before {
+    opacity: var(--md-sys-state-hover-opacity);
+}
+
+.md3-state-layer:focus-visible::before {
+    opacity: var(--md-sys-state-focus-opacity);
+}
+
+.md3-state-layer:active::before {
+    opacity: var(--md-sys-state-pressed-opacity);
+}
+
+/* Motion */
+.md3-transition-standard {
+    transition-timing-function: var(--md-sys-motion-easing-standard);
+    transition-duration: var(--md-sys-motion-duration-medium2);
+}
+
+.md3-transition-emphasized {
+    transition-timing-function: var(--md-sys-motion-easing-emphasized);
+    transition-duration: var(--md-sys-motion-duration-medium4);
+}
