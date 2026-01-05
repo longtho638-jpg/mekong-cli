@@ -6,7 +6,27 @@ argument-hint: [category|command|task description]
 Think harder.
 All-in-one ClaudeKit guide. Run the script and present output based on type markers.
 
-## Pre-Processing
+## Pre-Processing: Intent Analysis
+
+**BEFORE running the script, analyze user intent:**
+
+1. **Identify the main subject** - What is the user actually asking about?
+   - "setup notifications" → subject is **notifications** (not project setup)
+   - "fix test failures" → subject is **tests** (not generic fixing)
+   - "create discord webhook" → subject is **notifications/discord** (not project creation)
+
+2. **Check for project context** - If current project has relevant files, prefer that context:
+   - User in project with `.claude/hooks/notifications/` → "notifications" likely means hook notifications
+   - User asks about "discord" → check for discord provider files first
+
+3. **Disambiguate compound phrases:**
+   - "setup X" → usually asking how to configure X, not `/bootstrap`
+   - "add X" → usually asking how to integrate X, not always `/cook`
+   - "fix X" → usually about X category, route appropriately
+
+**If script returns wrong category, override with your analysis and show correct docs.**
+
+## Translation
 
 **IMPORTANT: Always translate `$ARGUMENTS` to English before passing to script.**
 

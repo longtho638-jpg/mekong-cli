@@ -68,7 +68,7 @@ TASK_MAPPINGS = {
     "journal": ["journal", "diary", "log", "entry", "reflect", "failure", "lesson"],
     "brainstorm": ["brainstorm", "idea", "ideate", "creative", "explore ideas", "think through"],
     "watzup": ["watzup", "status", "summary", "wrap up", "what's up", "recent", "changes"],
-    "notifications": ["notification", "notify", "discord", "telegram", "slack", "alert", "webhook", "stop hook", "session end"],
+    "notifications": ["notification", "notifications", "notify", "discord", "telegram", "slack", "alert", "webhook", "stop hook", "session end", "setup notification", "setup notifications"],
 }
 
 # Category workflows and tips
@@ -573,21 +573,40 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
 
     commands = data["commands"]
     task_lower = task.lower()
+    words = task_lower.split()
 
-    # Score categories by keyword matches (use word boundary to avoid substring false positives)
-    # e.g., "git" should not match "digital", "fail" should not match "available"
+    # Score categories by keyword matches with positional weighting
+    # Later words (main subject) get higher weight than earlier words (context/verbs)
+    # e.g., "setup notifications" → "notifications" is the subject (weight 2), "setup" is context (weight 1)
     scores = {}
     for cat, keywords in TASK_MAPPINGS.items():
-        score = 0
+        score = 0.0
         for kw in keywords:
-            # Multi-word keywords: exact substring match is fine
+            # Multi-word keywords: exact substring match, high weight
             if ' ' in kw:
                 if kw in task_lower:
-                    score += 1
-            # Single-word keywords: require word boundary match
+                    score += 3.0
+            # Single-word keywords: require word boundary match with positional weight
             else:
-                if re.search(r'\b' + re.escape(kw) + r'\b', task_lower):
-                    score += 1
+                match = re.search(r'\b' + re.escape(kw) + r'\b', task_lower)
+                if match:
+                    # Find which word position this keyword matched
+                    match_start = match.start()
+                    char_count = 0
+                    word_pos = 0
+                    for i, word in enumerate(words):
+                        if char_count <= match_start < char_count + len(word):
+                            word_pos = i
+                            break
+                        char_count += len(word) + 1  # +1 for space
+
+                    # Weight: later words (subjects) get more weight
+                    # First word = 1.0, last word = 2.0, linear interpolation
+                    if len(words) > 1:
+                        weight = 1.0 + (word_pos / (len(words) - 1))
+                    else:
+                        weight = 2.0  # Single word = full weight
+                    score += weight
         if score > 0:
             scores[cat] = score
 
@@ -611,18 +630,12 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
             print(f"- {step}: {cmd}")
         print()
 
-    # Show relevant commands
-    print("**Commands:**")
-    shown = 0
-    for cat, _ in sorted_cats[:2]:
-        if cat in commands:
-            for cmd in commands[cat][:2]:
-                print(f"- `{cmd['name']}` - {cmd['description']}")
-                shown += 1
-                if shown >= 4:
-                    break
-        if shown >= 4:
-            break
+    # Show relevant commands - only from top matched category
+    # Avoid showing unrelated commands from secondary matches
+    if top_cat in commands and commands[top_cat]:
+        print("**Commands:**")
+        for cmd in commands[top_cat][:4]:
+            print(f"- `{cmd['name']}` - {cmd['description']}")
 
     if "tip" in guide:
         print()
