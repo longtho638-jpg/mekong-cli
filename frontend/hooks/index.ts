@@ -7,3 +7,4 @@ export * from './useAccounting';
 export * from './useInventory';
 export * from './useHR';
 export * from './useMRR';
+export * from './useUsageAnalytics';
