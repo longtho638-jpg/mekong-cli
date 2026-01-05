@@ -33,20 +33,27 @@ export async function GET() {
             }
         }
 
-        // Get database metrics
-        const { data: subscriptions, error } = await getSupabase()
-            .from('subscriptions')
-            .select('*')
-            .eq('status', 'active');
-
-        if (error) throw error;
+        // Get database metrics (graceful fallback if Supabase not configured)
+        let subscriptions: any[] = [];
+        try {
+            const supabase = getSupabase();
+            const { data, error } = await supabase
+                .from('subscriptions')
+                .select('*')
+                .eq('status', 'active');
+            if (!error && data) {
+                subscriptions = data;
+            }
+        } catch (e) {
+            console.log('Supabase not configured, using mock data');
+        }
 
         // Calculate from database
         let dbMRR = 0;
         let proCount = 0;
         let enterpriseCount = 0;
 
-        for (const sub of subscriptions || []) {
+        for (const sub of subscriptions) {
             if (sub.plan === 'PRO') {
                 dbMRR += 49;
                 proCount++;

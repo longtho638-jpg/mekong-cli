@@ -9,7 +9,7 @@
 -- Links users to agencies with roles
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.team_members (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   role VARCHAR(50) NOT NULL DEFAULT 'member', -- owner, admin, member, viewer
@@ -66,7 +66,7 @@ CREATE POLICY "Admins can remove members" ON public.team_members
 -- Pending invitations for new team members
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.team_invitations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE NOT NULL,
   email VARCHAR(255) NOT NULL,
   role VARCHAR(50) NOT NULL DEFAULT 'member',

@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- AGENCIES TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.agencies (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE POLICY "Users can update own agency" ON public.agencies
 -- CLIENTS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.clients (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255),
@@ -83,7 +83,7 @@ CREATE POLICY "Users can delete own clients" ON public.clients
 -- PROJECTS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.projects (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
   name VARCHAR(255) NOT NULL,
@@ -119,7 +119,7 @@ CREATE POLICY "Users can update own projects" ON public.projects
 -- INVOICES TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.invoices (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
   project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL,
@@ -160,7 +160,7 @@ CREATE POLICY "Users can update own invoices" ON public.invoices
 -- TASKS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.tasks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   project_id UUID REFERENCES public.projects(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
@@ -185,7 +185,7 @@ CREATE POLICY "Users can manage own tasks" ON public.tasks
 -- ACTIVITY LOG TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.activity_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   action VARCHAR(100) NOT NULL,
