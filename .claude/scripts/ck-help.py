@@ -44,13 +44,103 @@ def emit_output_type(output_type: str) -> None:
     print()
 
 
+# Fuzzy matching for typo tolerance
+def levenshtein_distance(s1: str, s2: str) -> int:
+    """Standard Levenshtein distance algorithm."""
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+
+    prev_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        curr_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = prev_row[j + 1] + 1
+            deletions = curr_row[j] + 1
+            substitutions = prev_row[j] + (c1 != c2)
+            curr_row.append(min(insertions, deletions, substitutions))
+        prev_row = curr_row
+    return prev_row[-1]
+
+
+def fuzzy_match(word: str, target: str, threshold: int = 2) -> bool:
+    """Check if word matches target within edit distance threshold."""
+    if len(word) < 3:  # Skip very short words
+        return word == target
+
+    # Exact match short-circuit
+    if word == target:
+        return True
+
+    # Require similar lengths to avoid false positives (e.g., "create" ≠ "creative")
+    len_diff = abs(len(word) - len(target))
+    if len_diff > 1:
+        return False
+
+    # Allow threshold based on word length (max 1/3 of target length)
+    max_edits = min(threshold, len(target) // 3)
+    if max_edits < 1:
+        return word == target
+
+    return levenshtein_distance(word, target) <= max_edits
+
+
+# Disambiguation threshold - if top 2 scores within this, ask user
+DISAMBIGUATION_THRESHOLD = 0.5
+
+
+# Synonym mappings for normalization (term → canonical)
+SYNONYMS = {
+    # Notifications
+    "alerts": "notifications",
+    "alert": "notification",
+
+    # Git/GitHub
+    "ci": "github actions",
+    "ci/cd": "github actions",
+    "pipeline": "github actions",
+    "actions": "github actions",
+
+    # Common abbreviations
+    "auth": "authentication",
+    "authn": "authentication",
+    "db": "database",
+    "repo": "repository",
+    "deps": "dependencies",
+
+    # Commands
+    "pr": "pull request",
+    "mr": "pull request",  # GitLab users
+
+    # Testing
+    "specs": "tests",
+    "e2e": "integration test",
+}
+
+
+def expand_synonyms(text: str) -> str:
+    """Replace synonyms with canonical terms."""
+    result = text.lower()
+
+    # Sort by length (longest first) to handle multi-word synonyms
+    sorted_synonyms = sorted(SYNONYMS.items(), key=lambda x: -len(x[0]))
+
+    for synonym, canonical in sorted_synonyms:
+        # Word boundary aware replacement
+        pattern = r'\b' + re.escape(synonym) + r'\b'
+        result = re.sub(pattern, canonical, result, flags=re.IGNORECASE)
+
+    return result
+
+
 # Task keyword mappings for intent detection
 TASK_MAPPINGS = {
     "fix": ["fix", "bug", "error", "broken", "issue", "debug", "crash", "fail", "wrong", "not working"],
     "plan": ["plan", "design", "architect", "research", "think", "analyze", "strategy", "how to", "approach"],
     "cook": ["implement", "build", "create", "add", "feature", "code", "develop", "make", "write"],
     "bootstrap": ["start", "new", "init", "setup", "project", "scaffold", "generate", "begin"],
-    "test": ["test", "check", "verify", "validate", "spec", "unit", "integration", "coverage"],
+    "test": ["test", "check", "verify", "validate", "spec", "unit", "integration", "coverage", "login", "auth", "e2e"],
     "docs": ["document", "readme", "docs", "explain", "comment", "documentation"],
     "git": ["commit", "push", "pr", "merge", "branch", "pull", "request", "git"],
     "design": ["ui", "ux", "style", "layout", "visual", "css", "component", "page", "responsive"],
@@ -68,7 +158,7 @@ TASK_MAPPINGS = {
     "journal": ["journal", "diary", "log", "entry", "reflect", "failure", "lesson"],
     "brainstorm": ["brainstorm", "idea", "ideate", "creative", "explore ideas", "think through"],
     "watzup": ["watzup", "status", "summary", "wrap up", "what's up", "recent", "changes"],
-    "notifications": ["notification", "notify", "discord", "telegram", "slack", "alert", "webhook", "stop hook", "session end"],
+    "notifications": ["notification", "notifications", "notify", "discord", "telegram", "slack", "alert", "webhook", "stop hook", "session end", "setup notification", "setup notifications", "configure discord", "configure telegram", "configure slack", "discord webhook", "telegram bot", "slack webhook"],
 }
 
 # Category workflows and tips
@@ -396,6 +486,18 @@ def detect_intent(input_str: str, categories: list) -> str:
     if input_lower in [c.lower() for c in CATEGORY_GUIDES.keys()]:
         return "category"
 
+    # Single word typo tolerance: fuzzy match against categories
+    all_categories = set(c.lower() for c in categories) | set(c.lower() for c in CATEGORY_GUIDES.keys())
+    for cat in all_categories:
+        if fuzzy_match(input_lower, cat):
+            return "category"
+
+    # Single word typo tolerance: fuzzy match against task keywords
+    for cat, keywords in TASK_MAPPINGS.items():
+        for kw in keywords:
+            if ' ' not in kw and fuzzy_match(input_lower, kw):
+                return "task"
+
     # Check if it looks like a command (has colon)
     if ':' in input_str:
         return "command"
@@ -453,15 +555,25 @@ def show_category_guide(data: dict, category: str, prefix: str) -> None:
 
     # Find matching category (case-insensitive) - check both discovered and CATEGORY_GUIDES
     cat_key = None
+    category_lower = category.lower()
+
     for key in categories:
-        if key.lower() == category.lower():
+        if key.lower() == category_lower:
             cat_key = key
             break
 
     # Also check CATEGORY_GUIDES for categories without discovered commands (worktree, kanban, etc.)
     if not cat_key:
         for key in CATEGORY_GUIDES.keys():
-            if key.lower() == category.lower():
+            if key.lower() == category_lower:
+                cat_key = key
+                break
+
+    # Fuzzy match for typos (e.g., "notifcations" → "notifications")
+    if not cat_key:
+        all_categories = list(categories.keys()) + list(CATEGORY_GUIDES.keys())
+        for key in all_categories:
+            if fuzzy_match(category_lower, key.lower()):
                 cat_key = key
                 break
 
@@ -567,27 +679,102 @@ def do_search(data: dict, term: str, prefix: str) -> None:
         print(f"- `{cmd['name']}` - {cmd['description']}")
 
 
+def format_disambiguation(task: str, candidates: list) -> None:
+    """Output disambiguation prompt for close-scoring categories."""
+    emit_output_type("task-recommendations")
+
+    print(f"# Clarify: {task}")
+    print()
+    print("Your query matches multiple categories. Which did you mean?")
+    print()
+
+    for i, (cat, score) in enumerate(candidates[:3], 1):
+        guide = CATEGORY_GUIDES.get(cat, {})
+        title = guide.get("title", cat.title())
+        # Show first workflow step as example
+        example = ""
+        if "workflow" in guide and guide["workflow"]:
+            example = f" (e.g., {guide['workflow'][0][1]})"
+        print(f"{i}. **{title}**{example}")
+
+    print()
+    print("*Reply with the number or rephrase your question.*")
+
+
 def recommend_task(data: dict, task: str, prefix: str) -> None:
     """Recommend commands for a task description."""
     emit_output_type("task-recommendations")
 
     commands = data["commands"]
-    task_lower = task.lower()
 
-    # Score categories by keyword matches (use word boundary to avoid substring false positives)
-    # e.g., "git" should not match "digital", "fail" should not match "available"
+    # Expand synonyms first, then lowercase
+    task_expanded = expand_synonyms(task)
+    task_lower = task_expanded
+    words = task_lower.split()
+
+    # Action verbs that indicate primary intent when at sentence start
+    # These get BONUS weight when they appear first (imperative sentences)
+    # NOTE: Excluded contextual words like "setup", "add" that often precede subjects
+    ACTION_VERBS = {
+        "fix", "debug", "test", "commit", "push", "merge", "pull", "create",
+        "build", "implement", "write", "make", "deploy", "run",
+        "configure", "install", "update", "upgrade", "delete", "remove",
+        "review", "check", "verify", "validate", "find", "search", "locate",
+        "plan", "design", "refactor", "optimize", "document", "explain",
+    }
+
+    # Check if first word is an action verb
+    first_word_is_action = words[0] in ACTION_VERBS if words else False
+
+    # Score categories by keyword matches with smart weighting
     scores = {}
     for cat, keywords in TASK_MAPPINGS.items():
-        score = 0
+        score = 0.0
         for kw in keywords:
-            # Multi-word keywords: exact substring match is fine
+            # Multi-word keywords: exact substring match, high weight
             if ' ' in kw:
                 if kw in task_lower:
-                    score += 1
-            # Single-word keywords: require word boundary match
+                    score += 3.0
+            # Single-word keywords: exact match first, then fuzzy fallback
             else:
-                if re.search(r'\b' + re.escape(kw) + r'\b', task_lower):
-                    score += 1
+                matched_pos = -1
+                is_fuzzy = False
+
+                # Try exact match first
+                match = re.search(r'\b' + re.escape(kw) + r'\b', task_lower)
+                if match:
+                    # Find word position from character position
+                    char_count = 0
+                    for i, word in enumerate(words):
+                        if char_count <= match.start() < char_count + len(word):
+                            matched_pos = i
+                            break
+                        char_count += len(word) + 1
+                else:
+                    # Fuzzy matching fallback for typos
+                    for i, word in enumerate(words):
+                        if fuzzy_match(word, kw):
+                            matched_pos = i
+                            is_fuzzy = True
+                            break
+
+                if matched_pos >= 0:
+                    # Smart weighting based on sentence structure
+                    if len(words) > 1:
+                        if first_word_is_action and matched_pos == 0:
+                            weight = 2.5
+                        elif first_word_is_action:
+                            weight = 1.0
+                        else:
+                            weight = 1.0 + (matched_pos / (len(words) - 1))
+                    else:
+                        weight = 2.0
+
+                    # Slight penalty for fuzzy matches (0.8x)
+                    if is_fuzzy:
+                        weight *= 0.8
+
+                    score += weight
         if score > 0:
             scores[cat] = score
 
@@ -598,6 +785,17 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
         return
 
     sorted_cats = sorted(scores.items(), key=lambda x: -x[1])
+
+    # Check for ambiguity - if top 2 scores are close, ask user to clarify
+    if len(sorted_cats) >= 2:
+        top_score = sorted_cats[0][1]
+        second_score = sorted_cats[1][1]
+
+        # If scores too close, disambiguate
+        if top_score - second_score < DISAMBIGUATION_THRESHOLD and top_score > 0:
+            format_disambiguation(task, sorted_cats[:3])
+            return
+
     top_cat = sorted_cats[0][0]
     guide = CATEGORY_GUIDES.get(top_cat, {})
 
@@ -611,18 +809,12 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
             print(f"- {step}: {cmd}")
         print()
 
-    # Show relevant commands
-    print("**Commands:**")
-    shown = 0
-    for cat, _ in sorted_cats[:2]:
-        if cat in commands:
-            for cmd in commands[cat][:2]:
-                print(f"- `{cmd['name']}` - {cmd['description']}")
-                shown += 1
-                if shown >= 4:
-                    break
-        if shown >= 4:
-            break
+    # Show relevant commands - only from top matched category
+    # Avoid showing unrelated commands from secondary matches
+    if top_cat in commands and commands[top_cat]:
+        print("**Commands:**")
+        for cmd in commands[top_cat][:4]:
+            print(f"- `{cmd['name']}` - {cmd['description']}")
 
     if "tip" in guide:
         print()
