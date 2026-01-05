@@ -2,18 +2,11 @@
 import { useTranslations } from 'next-intl';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
-import { TrendingUp, Activity, DollarSign, Target } from 'lucide-react';
+import { TrendingUp, Activity, DollarSign, Target, Loader2, Zap } from 'lucide-react';
 import { AreaChart, Area, PieChart as RePieChart, Pie, Cell, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from 'recharts';
+import { useMRR, formatCurrency } from '@/hooks/useMRR';
 
-const cashFlowData = [
-    { month: 'Jan', inflow: 420, outflow: 180 },
-    { month: 'Feb', inflow: 530, outflow: 220 },
-    { month: 'Mar', inflow: 780, outflow: 250 },
-    { month: 'Apr', inflow: 850, outflow: 290 },
-    { month: 'May', inflow: 920, outflow: 310 },
-    { month: 'Jun', inflow: 1100, outflow: 340 },
-];
-
+// Portfolio mock data (would come from real portfolio API in production)
 const portfolioHeatmapData = [
     { x: 3, y: 85, z: 2400, name: 'Startup A' },
     { x: 12, y: 62, z: 1800, name: 'Startup B' },
@@ -32,6 +25,13 @@ const equityDistribution = [
 
 export default function PortfolioPage({ params: { locale } }: { params: { locale: string } }) {
     const t = useTranslations('VC');
+    const { metrics, loading, isMock, growthRate } = useMRR(true, 60000);
+
+    // Derive portfolio metrics from MRR data
+    const totalInvested = metrics ? metrics.arr * 0.35 : 4200000; // Example: 35% of ARR
+    const avgRunway = metrics ? Math.round(18.5 + (metrics.netNewMRR / 10000)) : 18.5;
+    const irr = metrics ? Math.min(50, 30 + (growthRate * 0.8)) : 38.2;
+    const portfolioValuation = metrics ? metrics.arr * 3 : 12400000; // 3x ARR multiple
 
     return (
         <MD3AppShell title="💎 Portfolio Galaxy" subtitle="Real-time monitoring of deployed capital and strategic unlock status">
@@ -41,15 +41,17 @@ export default function PortfolioPage({ params: { locale } }: { params: { locale
                         <div className="text-xs text-gray-500">{t('invested')}</div>
                         <DollarSign className="w-4 h-4 text-emerald-400" />
                     </div>
-                    <div className="text-2xl font-bold text-emerald-400">$4.2M</div>
-                    <div className="text-xs text-gray-500">+12% YTD</div>
+                    <div className="text-2xl font-bold text-emerald-400">
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : formatCurrency(totalInvested)}
+                    </div>
+                    <div className="text-xs text-gray-500">{isMock ? 'Demo' : '+12% YTD'}</div>
                 </MD3Surface>
                 <MD3Surface shape="large" className="auto-safe">
                     <div className="flex items-center justify-between mb-2">
                         <div className="text-xs text-gray-500">{t('runway')}</div>
                         <Activity className="w-4 h-4 text-yellow-400" />
                     </div>
-                    <div className="text-2xl font-bold text-yellow-400">18.5</div>
+                    <div className="text-2xl font-bold text-yellow-400">{avgRunway}</div>
                     <div className="text-xs text-gray-500">Avg months</div>
                 </MD3Surface>
                 <MD3Surface shape="large" className="auto-safe">
@@ -57,7 +59,7 @@ export default function PortfolioPage({ params: { locale } }: { params: { locale
                         <div className="text-xs text-gray-500">{t('irr')}</div>
                         <TrendingUp className="w-4 h-4 text-emerald-400" />
                     </div>
-                    <div className="text-2xl font-bold text-emerald-400">38.2%</div>
+                    <div className="text-2xl font-bold text-emerald-400">{irr.toFixed(1)}%</div>
                     <div className="text-xs text-gray-500">Top quartile</div>
                 </MD3Surface>
                 <MD3Surface shape="large" className="auto-safe">
@@ -65,8 +67,10 @@ export default function PortfolioPage({ params: { locale } }: { params: { locale
                         <div className="text-xs text-gray-500">{t('valuation')}</div>
                         <Target className="w-4 h-4 text-purple-400" />
                     </div>
-                    <div className="text-2xl font-bold text-purple-400">$12.4M</div>
-                    <div className="text-xs text-emerald-400">+24.5%</div>
+                    <div className="text-2xl font-bold text-purple-400">
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : formatCurrency(portfolioValuation)}
+                    </div>
+                    <div className="text-xs text-emerald-400">{growthRate >= 0 ? '+' : ''}{growthRate.toFixed(1)}%</div>
                 </MD3Surface>
             </div>
 
@@ -120,16 +124,15 @@ export default function PortfolioPage({ params: { locale } }: { params: { locale
             </div>
 
             <MD3Surface shape="extra-large" className="auto-safe">
-                <h3 className="text-lg font-bold mb-6">Cash Flow Trend</h3>
+                <h3 className="text-lg font-bold mb-6">MRR Growth Trend</h3>
                 <ResponsiveContainer width="100%" height={200}>
-                    <AreaChart data={cashFlowData}>
-                        <Area type="monotone" dataKey="inflow" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-                        <Area type="monotone" dataKey="outflow" stackId="2" stroke="#ef4444" fill="#ef4444" fillOpacity={0.3} />
+                    <AreaChart data={metrics?.growth || []}>
+                        <Area type="monotone" dataKey="mrr" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
                     </AreaChart>
                 </ResponsiveContainer>
                 <div className="flex justify-center gap-8 mt-4 text-xs">
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span>Inflow</span></div>
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span>Outflow</span></div>
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span>MRR</span></div>
+                    {isMock && <span className="text-yellow-400">Demo Data</span>}
                 </div>
             </MD3Surface>
         </MD3AppShell>
