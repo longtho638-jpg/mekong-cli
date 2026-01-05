@@ -9,22 +9,8 @@ const nextConfig = {
     eslint: {
         ignoreDuringBuilds: true,
     },
-    webpack: (config, { isServer }) => {
-        // Fix for Edge Runtime compatibility - polyfill Node.js globals
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                path: false,
-                os: false,
-            };
-        }
-        return config;
-    },
-    experimental: {
-        // Enable Node.js runtime for middleware to fix __dirname error on Vercel
-        nodeMiddleware: true,
-    },
+    // Note: webpack fallbacks removed - middleware runs in Edge Runtime
+    // which doesn't support Node.js modules
 }
 
 module.exports = withNextIntl(nextConfig);

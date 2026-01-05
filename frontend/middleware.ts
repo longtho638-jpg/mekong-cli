@@ -1,10 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-const locales = ['en', 'vi', 'zh'];
-const defaultLocale = 'vi';
+// Simple Edge-compatible locale redirect middleware
+// No external dependencies - pure web APIs only
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    const locales = ['en', 'vi', 'zh'];
+    const defaultLocale = 'vi';
 
     // Check if pathname starts with a locale
     const pathnameHasLocale = locales.some(
@@ -32,6 +34,4 @@ export const config = {
         // - static files
         '/((?!api|_next|.*\\..*).*)'
     ],
-    // Use Node.js runtime to fix __dirname error on Vercel
-    runtime: 'nodejs',
 };
