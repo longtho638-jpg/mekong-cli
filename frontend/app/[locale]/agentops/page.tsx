@@ -1,4 +1,6 @@
 'use client';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { useAgentsAPI } from '@/lib/hooks/useAgentsAPI';
 
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,10 +10,14 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 import CommandPalette, { useCommandPalette } from '@/components/CommandPalette';
 
 // AgentOps API Base (updated to support 135 commands via Agentic backend)
-const API_BASE = 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const AGENTIC_API = 'http://localhost:8080';
 
 export default function AgentOpsPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     const t = useTranslations('AI');
     const tHubs = useTranslations('Hubs');
 

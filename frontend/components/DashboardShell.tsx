@@ -78,7 +78,7 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
     };
 
     return (
-        <div ref={shellRef} className="min-h-screen bg-[#050508] text-white font-mono flex overflow-x-hidden">
+        <div ref={shellRef} className="min-h-screen text-white font-mono flex overflow-x-hidden" style={{ backgroundColor: 'var(--md-sys-color-surface)', color: 'var(--md-sys-color-on-surface)' }}>
             {/* Starfield Layers */}
             <div className="starfield-container">
                 <div className="star-layer star-layer-slow" />
@@ -104,10 +104,10 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                 onMouseEnter={() => setSidebarExpanded(true)}
                 onMouseLeave={() => setSidebarExpanded(false)}
             >
-                <div className="h-full bg-[#050508]/80 backdrop-blur-2xl border-r border-white/10 flex flex-col glass-liquid">
+                <div className="h-full backdrop-blur-2xl flex flex-col glass-liquid" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', borderRight: '1px solid var(--md-sys-color-outline-variant)' }}>
                     {/* Logo */}
                     <div className="h-12 flex items-center justify-center border-b border-white/5">
-                        <Shield className="w-5 h-5" style={{ color: accentColor }} />
+                        <Shield className="w-5 h-5" style={{ color: 'var(--md-sys-color-primary)' }} />
                         {sidebarExpanded && (
                             <span className="ml-2 text-xs font-semibold tracking-tight text-shimmer">
                                 AGENCY OS
@@ -123,11 +123,12 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                                 <Link
                                     key={item.href}
                                     href={`/${locale}${item.href}`}
-                                    className={`flex items-center gap-3 h-10 mx-1 px-3 rounded-md transition-all stagger-in ${isActive
-                                        ? 'bg-white/8 text-white'
-                                        : 'text-gray-500 hover:text-gray-300 hover:bg-white/4'
-                                        }`}
-                                    style={{ animationDelay: `${index * 0.03}s` }}
+                                    className={`flex items-center gap-3 h-10 mx-1 px-3 rounded-md transition-all stagger-in`}
+                                    style={{
+                                        animationDelay: `${index * 0.03}s`,
+                                        backgroundColor: isActive ? 'var(--md-sys-color-primary-container)' : 'transparent',
+                                        color: isActive ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-surface-variant)'
+                                    }}
                                 >
                                     <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
                                     {sidebarExpanded && (
@@ -139,7 +140,7 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                     </nav>
 
                     {/* Collapse indicator */}
-                    <div className="h-10 flex items-center justify-center border-t border-white/5 text-gray-600">
+                    <div className="h-10 flex items-center justify-center" style={{ borderTop: '1px solid var(--md-sys-color-outline-variant)', color: 'var(--md-sys-color-on-surface-variant)' }}>
                         {sidebarExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                     </div>
                 </div>
@@ -149,12 +150,17 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
             <div className={`flex-1 transition-all duration-200 ${sidebarExpanded ? 'ml-[200px]' : 'ml-14'}`}>
                 {/* Clean Header - 48px */}
                 <header
-                    className="fixed top-0 right-0 z-30 h-12 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4"
-                    style={{ left: sidebarExpanded ? '200px' : '56px', transition: 'left 0.2s' }}
+                    className="fixed top-0 right-0 z-30 h-12 backdrop-blur-xl flex items-center justify-between px-4"
+                    style={{
+                        left: sidebarExpanded ? '200px' : '56px',
+                        transition: 'left 0.2s',
+                        backgroundColor: 'var(--md-sys-color-surface-container)',
+                        borderBottom: '1px solid var(--md-sys-color-outline-variant)'
+                    }}
                 >
                     {/* Status - minimal */}
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <span className="status-dot status-dot-pulse" style={{ background: accentColor }} />
+                    <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        <span className="status-dot status-dot-pulse" style={{ background: 'var(--md-sys-color-primary)' }} />
                         <span>Active</span>
                     </div>
 
@@ -176,10 +182,11 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                                 <button
                                     key={l}
                                     onClick={() => switchLocale(l)}
-                                    className={`px-2 py-1 text-[10px] font-medium rounded transition-colors ${locale === l
-                                        ? 'bg-white/8 text-white'
-                                        : 'text-gray-500 hover:text-gray-300'
-                                        }`}
+                                    className={`px-2 py-1 text-[10px] font-medium rounded transition-colors`}
+                                    style={{
+                                        backgroundColor: locale === l ? 'var(--md-sys-color-primary-container)' : 'transparent',
+                                        color: locale === l ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-surface-variant)'
+                                    }}
                                 >
                                     {l.toUpperCase()}
                                 </button>
@@ -201,20 +208,22 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
 
                     <div
                         onClick={(e) => e.stopPropagation()}
-                        className="relative w-full max-w-md bg-[#0f0f14] border border-white/10 rounded-lg shadow-2xl overflow-hidden glow-border"
+                        className="relative w-full max-w-md rounded-lg shadow-2xl overflow-hidden glow-border"
+                        style={{ backgroundColor: 'var(--md-sys-color-surface-container-high)', border: '1px solid var(--md-sys-color-outline-variant)' }}
                     >
                         {/* Search Input */}
-                        <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-                            <Search className="w-4 h-4 text-gray-500" />
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--md-sys-color-outline-variant)' }}>
+                            <Search className="w-4 h-4" style={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="flex-1 bg-transparent text-white placeholder-gray-500 outline-none text-sm"
+                                className="flex-1 bg-transparent placeholder-gray-500 outline-none text-sm"
+                                style={{ color: 'var(--md-sys-color-on-surface)' }}
                                 autoFocus
                             />
-                            <button onClick={() => setCommandOpen(false)} className="text-gray-500 hover:text-white">
+                            <button onClick={() => setCommandOpen(false)} style={{ color: 'var(--md-sys-color-on-surface-variant)' }} className="hover:opacity-80">
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
@@ -237,7 +246,7 @@ export function DashboardShell({ children, locale = 'en', accentColor = '#8b5cf6
                         </div>
 
                         {/* Footer */}
-                        <div className="flex items-center justify-between px-4 py-2 bg-white/2 border-t border-white/5 text-[10px] text-gray-500">
+                        <div className="flex items-center justify-between px-4 py-2 text-[10px]" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', borderTop: '1px solid var(--md-sys-color-outline-variant)', color: 'var(--md-sys-color-on-surface-variant)' }}>
                             <span>↵ select</span>
                             <span>esc close</span>
                         </div>

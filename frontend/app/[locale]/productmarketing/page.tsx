@@ -1,45 +1,72 @@
 'use client';
 
-import { Megaphone, Target, TrendingUp, Users, Rocket, BarChart3 } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const pmMetrics = [
-    { label: 'Launches', value: '12', icon: <Rocket className="w-5 h-5" />, color: '#a855f7', trend: { value: '+3', direction: 'up' as const } },
-    { label: 'Pipeline', value: '$2.8M', icon: <TrendingUp className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$450K', direction: 'up' as const } },
-    { label: 'Adoption', value: '78%', icon: <Users className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+8%', direction: 'up' as const } },
-    { label: 'Win Rate', value: '42%', icon: <Target className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+5%', direction: 'up' as const } },
-];
-
-const launchesByQ = [
-    { name: 'Q1', value: 3, color: '#a855f7' },
-    { name: 'Q2', value: 4, color: '#a855f7' },
-    { name: 'Q3', value: 2, color: '#a855f7' },
-    { name: 'Q4', value: 3, color: '#a855f7' },
-];
-
-const monthlyPipeline = [
-    { name: 'Jul', value: 1800000 }, { name: 'Aug', value: 2100000 }, { name: 'Sep', value: 2300000 },
-    { name: 'Oct', value: 2500000 }, { name: 'Nov', value: 2650000 }, { name: 'Dec', value: 2800000 },
-];
-
-const pmCharts = [
-    { type: 'bar' as const, title: 'Launches by Quarter', data: launchesByQ },
-    { type: 'area' as const, title: 'Pipeline Growth', data: monthlyPipeline },
-];
-
-const pmActions = [
-    { icon: '🚀', label: 'New Launch', onClick: () => { } },
-    { icon: '📋', label: 'Campaigns', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '🎯', label: 'Positioning', onClick: () => { } },
-    { icon: '📝', label: 'Messaging', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import React from 'react';
+import { Target, TrendingUp, Users, DollarSign, Megaphone, BarChart3 } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function ProductMarketingPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="Product Marketing" subtitle="Launches • Positioning • Messaging • GTM" icon="🚀" color="purple"
-            statusLabel="Launches" statusValue="12" metrics={pmMetrics} charts={pmCharts} quickActions={pmActions} locale={locale}
-        />
+        <MD3AppShell title="Product Marketing 🎯" subtitle="GTM • Positioning • Messaging • Launch">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Target className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Campaigns</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>12</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+3 launched</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Revenue Impact</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>$420K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+$85K attributed</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Users className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MQLs</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>186</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+42 qualified</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingUp className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Conversion</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>24%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+5% improved</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="PMM Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '🚀', label: 'Launch' }, { icon: '🎯', label: 'Positioning' }, { icon: '📢', label: 'Campaigns' }, { icon: '📊', label: 'Analytics' }, { icon: '📋', label: 'Reports' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

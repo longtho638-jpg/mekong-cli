@@ -1,45 +1,81 @@
 'use client';
 
+import React from 'react';
 import { Handshake, Users, DollarSign, TrendingUp, Building, Star } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const bdmMetrics = [
-    { label: 'Partners', value: '48', icon: <Handshake className="w-5 h-5" />, color: '#22c55e', trend: { value: '+8', direction: 'up' as const } },
-    { label: 'Opportunities', value: '24', icon: <Building className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+6', direction: 'up' as const } },
-    { label: 'Revenue Share', value: '$180K', icon: <DollarSign className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+$32K', direction: 'up' as const } },
-    { label: 'NPS', value: '+62', icon: <Star className="w-5 h-5" />, color: '#a855f7', trend: { value: '+8', direction: 'up' as const } },
-];
-
-const partnersByType = [
-    { name: 'Strategic', value: 12, color: '#22c55e' },
-    { name: 'Technology', value: 18, color: '#3b82f6' },
-    { name: 'Channel', value: 10, color: '#a855f7' },
-    { name: 'Affiliate', value: 8, color: '#f59e0b' },
-];
-
-const monthlyRevenue = [
-    { name: 'Jul', value: 120000 }, { name: 'Aug', value: 135000 }, { name: 'Sep', value: 145000 },
-    { name: 'Oct', value: 158000 }, { name: 'Nov', value: 165000 }, { name: 'Dec', value: 180000 },
-];
-
-const bdmCharts = [
-    { type: 'pie' as const, title: 'Partners by Type', data: partnersByType },
-    { type: 'area' as const, title: 'Monthly Partner Revenue', data: monthlyRevenue },
-];
-
-const bdmActions = [
-    { icon: '🤝', label: 'Add Partner', onClick: () => { } },
-    { icon: '📋', label: 'Deals', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '📧', label: 'Outreach', onClick: () => { } },
-    { icon: '📝', label: 'Contracts', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function BDMPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading } = useAnalytics();
     return (
-        <DepartmentDashboard title="BDM Hub" subtitle="Business Development • Partnerships • Alliances" icon="🤝" color="green"
-            statusLabel="Partners" statusValue="48" metrics={bdmMetrics} charts={bdmCharts} quickActions={bdmActions} locale={locale}
-        />
+        <MD3AppShell title="BDM Hub 🤝" subtitle="Business Development • Partnerships • Alliances">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Handshake className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Partners</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>48</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+8 new partnerships</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Building className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Opportunities</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>24</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+6 this quarter</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <DollarSign className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Revenue Share</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>$180K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+$32K this month</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>NPS</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>+62</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+8 improvement</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <>
+                        <MD3Card headline="Quick Actions" subhead="Partnership Tools">
+                            <div className="space-y-2">
+                                {[
+                                    { icon: '🤝', label: 'Add Partner' },
+                                    { icon: '📋', label: 'Deals' },
+                                    { icon: '📊', label: 'Analytics' },
+                                    { icon: '📧', label: 'Outreach' },
+                                    { icon: '📝', label: 'Contracts' },
+                                    { icon: '⚙️', label: 'Settings' },
+                                ].map((action) => (
+                                    <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                        <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                        <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </MD3Card>
+                    </>
+                }
+            />
+        </MD3AppShell>
     );
 }

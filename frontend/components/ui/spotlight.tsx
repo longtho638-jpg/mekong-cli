@@ -1,56 +1,57 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+'use client';
 
-type SpotlightProps = {
-    className?: string;
+import * as React from 'react';
+import { clsx } from 'clsx';
+
+/* =====================================================
+   M3 Spotlight Effect - Pure CSS/SVG Implementation
+   Provides a subtle spotlight gradient effect
+   ===================================================== */
+
+interface SpotlightProps extends React.HTMLAttributes<HTMLDivElement> {
     fill?: string;
-};
+}
 
-export const Spotlight = ({ className, fill }: SpotlightProps) => {
+export function Spotlight({
+    className,
+    fill = 'white',
+    ...props
+}: SpotlightProps) {
     return (
-        <svg
-            className={cn(
-                "animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
+        <div
+            className={clsx(
+                'pointer-events-none absolute z-0',
                 className
             )}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 3787 2842"
-            fill="none"
+            {...props}
         >
-            <g filter="url(#filter)">
-                <ellipse
-                    cx="1924.71"
-                    cy="273.501"
-                    rx="1924.71"
-                    ry="273.501"
-                    transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
-                    fill={fill || "white"}
-                    fillOpacity="0.21"
+            <svg
+                className="h-[400px] w-[400px] opacity-20"
+                viewBox="0 0 400 400"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <defs>
+                    <radialGradient
+                        id="spotlight-gradient"
+                        cx="50%"
+                        cy="50%"
+                        r="50%"
+                        fx="50%"
+                        fy="50%"
+                    >
+                        <stop offset="0%" stopColor={fill} stopOpacity="0.3" />
+                        <stop offset="50%" stopColor={fill} stopOpacity="0.1" />
+                        <stop offset="100%" stopColor={fill} stopOpacity="0" />
+                    </radialGradient>
+                </defs>
+                <circle
+                    cx="200"
+                    cy="200"
+                    r="200"
+                    fill="url(#spotlight-gradient)"
                 />
-            </g>
-            <defs>
-                <filter
-                    id="filter"
-                    x="0.860352"
-                    y="0.838989"
-                    width="3785.16"
-                    height="2840.26"
-                    filterUnits="userSpaceOnUse"
-                    colorInterpolationFilters="sRGB"
-                >
-                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                    <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="BackgroundImageFix"
-                        result="shape"
-                    />
-                    <feGaussianBlur
-                        stdDeviation="151"
-                        result="effect1_foregroundBlur_1065_8"
-                    />
-                </filter>
-            </defs>
-        </svg>
+            </svg>
+        </div>
     );
-};
+}

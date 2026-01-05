@@ -136,6 +136,25 @@ const COMMAND_SUITES = {
             { cmd: '/newsletter:subscribers', desc: 'Manage Subscribers' },
             { cmd: '/newsletter:automations', desc: 'Email Automations' },
         ]
+    },
+    navigation: {
+        name: 'Navigate',
+        icon: '🚀',
+        binh_phap: '行軍篇',
+        commands: [
+            { cmd: '/go:dashboard', desc: 'Go to Dashboard', action: 'navigate', path: '/dashboard' },
+            { cmd: '/go:hubs', desc: 'Go to Hubs', action: 'navigate', path: '/hubs' },
+            { cmd: '/go:analytics', desc: 'Go to Analytics', action: 'navigate', path: '/analytics' },
+            { cmd: '/go:clients', desc: 'Go to Clients', action: 'navigate', path: '/clients' },
+            { cmd: '/go:projects', desc: 'Go to Projects', action: 'navigate', path: '/projects' },
+            { cmd: '/go:invoices', desc: 'Go to Invoices', action: 'navigate', path: '/invoices' },
+            { cmd: '/go:marketing', desc: 'Go to Marketing', action: 'navigate', path: '/marketing' },
+            { cmd: '/go:sales', desc: 'Go to Sales', action: 'navigate', path: '/sales' },
+            { cmd: '/go:warroom', desc: 'Go to War Room', action: 'navigate', path: '/warroom' },
+            { cmd: '/go:binhphap', desc: 'Go to Binh Pháp', action: 'navigate', path: '/binhphap' },
+            { cmd: '/go:agents', desc: 'Go to Agents', action: 'navigate', path: '/agents' },
+            { cmd: '/go:settings', desc: 'Go to Settings', action: 'navigate', path: '/settings' },
+        ]
     }
 };
 

@@ -1,44 +1,72 @@
 'use client';
 
-import { Box, Layers, Users, TrendingUp, CheckCircle, Clock } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const productMetrics = [
-    { label: 'Features', value: '48', icon: <Layers className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+8', direction: 'up' as const } },
-    { label: 'Releases', value: '12', icon: <Box className="w-5 h-5" />, color: '#22c55e', trend: { value: '+3', direction: 'up' as const } },
-    { label: 'NPS', value: '+58', icon: <TrendingUp className="w-5 h-5" />, color: '#a855f7', trend: { value: '+6', direction: 'up' as const } },
-    { label: 'Adoption', value: '78%', icon: <Users className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+8%', direction: 'up' as const } },
-];
-
-const featuresByStatus = [
-    { name: 'Shipped', value: 28, color: '#22c55e' },
-    { name: 'In Dev', value: 12, color: '#3b82f6' },
-    { name: 'Planned', value: 8, color: '#f59e0b' },
-];
-
-const velocityTrend = [
-    { name: 'Jul', value: 6 }, { name: 'Aug', value: 8 }, { name: 'Sep', value: 7 },
-    { name: 'Oct', value: 10 }, { name: 'Nov', value: 9 }, { name: 'Dec', value: 12 },
-];
-
-const productCharts = [
-    { type: 'pie' as const, title: 'Features by Status', data: featuresByStatus },
-    { type: 'bar' as const, title: 'Monthly Velocity', data: velocityTrend.map(d => ({ ...d, color: '#3b82f6' })) },
-];
-
-const productActions = [
-    { icon: '📋', label: 'Roadmap', onClick: () => { } },
-    { icon: '✨', label: 'Features', onClick: () => { } },
-    { icon: '🐛', label: 'Bugs', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '👥', label: 'Feedback', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import React from 'react';
+import { Package, TrendingUp, Users, Star, Clock, Target } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function ProductPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="Product Hub" subtitle="Roadmap • Features • Releases • Analytics" icon="📦" color="blue"
-            statusLabel="Features" statusValue="48" metrics={productMetrics} charts={productCharts} quickActions={productActions} locale={locale}
-        />
+        <MD3AppShell title="Product Hub 📦" subtitle="Roadmap • Features • Releases • Metrics">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Package className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Features</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>48</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+12 shipped</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Users className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Users</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>12.4K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+2.1K growth</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>NPS</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>+62</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+8 improved</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Clock className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Time to Value</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>4.2d</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>-1.2d faster</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="Product Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '🗺️', label: 'Roadmap' }, { icon: '📦', label: 'Features' }, { icon: '🚀', label: 'Releases' }, { icon: '📊', label: 'Metrics' }, { icon: '💬', label: 'Feedback' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

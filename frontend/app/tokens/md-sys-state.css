@@ -1,0 +1,12 @@
+:root {
+    /* STATE LAYERS */
+    /* Opacity Only - Colors derived from content */
+
+    --md-sys-state-hover-state-layer-opacity: 0.08;
+    --md-sys-state-focus-state-layer-opacity: 0.12;
+    --md-sys-state-pressed-state-layer-opacity: 0.12;
+    --md-sys-state-dragged-state-layer-opacity: 0.16;
+
+    /* Convenience Mixins (CSS Variables that combine color + opacity usually done in components, 
+     but here we define base alphas for the overlay method) */
+}

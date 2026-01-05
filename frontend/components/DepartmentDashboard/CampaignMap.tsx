@@ -1,7 +1,16 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
+import { MD3Surface, MD3Text } from '@/components/md3-dna';
 import { Target } from 'lucide-react';
+
+/* =====================================================
+   Campaign Map - Built on MD3 DNA
+   
+   Timeline of 13 Chapters with progress tracking
+   Uses MD3Surface for mission brief card
+   ===================================================== */
 
 const CHAPTERS = [
     { id: 1, name: "Kế Hoạch" },
@@ -13,46 +22,52 @@ const CHAPTERS = [
     { id: 7, name: "Quân Tranh" },
     { id: 8, name: "Cửu Biến" },
     { id: 9, name: "Hành Quân" },
-    { id: 10, name: "Địa Hình" }, // Current
+    { id: 10, name: "Địa Hình" },
     { id: 11, name: "Cửu Địa" },
     { id: 12, name: "Hỏa Công" },
     { id: 13, name: "Dụng Gián" },
 ];
 
 const CURRENT_CHAPTER = 10;
-const PROGRESS_PERCENT = 85; // $850k / $1M
 
 export function CampaignMap() {
     return (
-        <div className="relative glass-catalyst rounded-2xl border border-white/8 overflow-hidden section-in-fluid shadow-catalyst-lg">
-            {/* Background Map Texture (Abstract) */}
-            <div className="absolute inset-0 opacity-[0.03] bg-[url('/map-texture.png')] bg-cover pointer-events-none" />
-
+        <div className="w-full">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8 relative z-10">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                 <div>
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                        <span className="text-2xl">🗺️</span>
-                        The Campaign (Chiến Dịch $1M)
-                    </h3>
-                    <p className="text-sm text-gray-400 mt-1">
-                        Current Position: <span className="text-amber-400 font-bold">Chapter {CURRENT_CHAPTER} - {CHAPTERS[CURRENT_CHAPTER - 1].name}</span>
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <span>🗺️</span>
+                        <MD3Text variant="title-small" color="on-surface">
+                            Campaign $1M
+                        </MD3Text>
+                    </div>
+                    <MD3Text variant="label-small" color="on-surface-variant">
+                        Chapter {CURRENT_CHAPTER}: {CHAPTERS[CURRENT_CHAPTER - 1].name}
+                    </MD3Text>
                 </div>
                 <div className="text-right">
-                    <div className="text-3xl font-bold text-green-400 tracking-tight">$850,000</div>
-                    <div className="text-xs text-gray-500 uppercase tracking-widest">War Chest (YTD)</div>
+                    <MD3Text variant="title-medium" color="primary">
+                        $850,000
+                    </MD3Text>
+                    <MD3Text variant="label-small" color="on-surface-variant">
+                        War Chest
+                    </MD3Text>
                 </div>
             </div>
 
-            {/* 13 Chapters Roadmap */}
-            <div className="relative z-10">
-                {/* Progress Line Background */}
-                <div className="absolute top-[15px] left-0 w-full h-1 bg-white/10 rounded-full" />
+            {/* Progress Track */}
+            <div className="relative py-4">
+                {/* Background Track */}
+                <div
+                    className="absolute top-1/2 left-0 w-full h-1 rounded-full -translate-y-1/2"
+                    style={{ backgroundColor: 'var(--md-sys-color-surface-container-highest)' }}
+                />
 
-                {/* Live Progress Line */}
+                {/* Progress */}
                 <motion.div
-                    className="absolute top-[15px] left-0 h-1 bg-gradient-to-r from-green-500 via-emerald-400 to-amber-400 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"
+                    className="absolute top-1/2 left-0 h-1 rounded-full -translate-y-1/2"
+                    style={{ backgroundColor: 'var(--md-sys-color-primary)' }}
                     initial={{ width: 0 }}
                     animate={{ width: `${(CURRENT_CHAPTER / 13) * 100}%` }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
@@ -63,55 +78,78 @@ export function CampaignMap() {
                     {CHAPTERS.map((chapter) => {
                         const isCompleted = chapter.id < CURRENT_CHAPTER;
                         const isCurrent = chapter.id === CURRENT_CHAPTER;
-                        const isLocked = chapter.id > CURRENT_CHAPTER;
 
                         return (
-                            <div key={chapter.id} className="flex flex-col items-center group relative cursor-pointer">
-                                {/* Node Circle */}
+                            <div
+                                key={chapter.id}
+                                className="flex flex-col items-center group"
+                                title={chapter.name}
+                            >
                                 <motion.div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-300 ${isCurrent
-                                        ? 'bg-amber-500 border-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.6)] scale-110 pulse-glow-amber'
-                                        : isCompleted
-                                            ? 'bg-green-900/80 border-green-500 text-green-400 pulse-glow-green'
-                                            : 'bg-[#0a0a0f] border-white/10 text-gray-600'
-                                        }`}
-                                    whileHover={{ scale: 1.2 }}
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: isCurrent ? [1, 1.1, 1] : 1 }}
-                                    transition={{
-                                        scale: isCurrent ? { repeat: Infinity, duration: 2, ease: "easeInOut" } : { duration: 0.3 }
+                                    className="w-6 h-6 rounded-full flex items-center justify-center border-2 z-10 transition-colors"
+                                    style={{
+                                        backgroundColor: isCurrent
+                                            ? 'var(--md-sys-color-tertiary-container)'
+                                            : isCompleted
+                                                ? 'var(--md-sys-color-primary-container)'
+                                                : 'var(--md-sys-color-surface-container)',
+                                        borderColor: isCurrent
+                                            ? 'var(--md-sys-color-tertiary)'
+                                            : isCompleted
+                                                ? 'var(--md-sys-color-primary)'
+                                                : 'var(--md-sys-color-outline-variant)',
                                     }}
+                                    whileHover={{ scale: 1.2 }}
                                 >
-                                    {isCurrent ? <Target className="w-4 h-4 text-white animate-spin-slow" /> : <span className="text-[10px] font-bold">{chapter.id}</span>}
+                                    {isCurrent ? (
+                                        <Target
+                                            size={12}
+                                            style={{ color: 'var(--md-sys-color-on-tertiary-container)' }}
+                                        />
+                                    ) : (
+                                        <span
+                                            className="text-[8px] font-bold"
+                                            style={{
+                                                color: isCompleted
+                                                    ? 'var(--md-sys-color-on-primary-container)'
+                                                    : 'var(--md-sys-color-on-surface-variant)'
+                                            }}
+                                        >
+                                            {chapter.id}
+                                        </span>
+                                    )}
                                 </motion.div>
-
-                                {/* Tooltip on Hover */}
-                                <div className="absolute -bottom-8 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30">
-                                    <div className={`text-[10px] px-2 py-1 rounded bg-black/80 border border-white/10 backdrop-blur-md ${isCurrent ? 'text-amber-400' : isCompleted ? 'text-green-400' : 'text-gray-500'
-                                        }`}>
-                                        {chapter.name}
-                                    </div>
-                                </div>
                             </div>
                         );
                     })}
                 </div>
             </div>
 
-            {/* Current Mission Brief */}
-            <div className="mt-8 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-4 relative z-10">
-                <div className="p-2 bg-amber-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+            {/* Mission Brief */}
+            <MD3Surface
+                shape="medium"
+                color="tertiary-container"
+                className="mt-4"
+            >
+                <div className="flex items-start gap-3">
+                    <div
+                        className="p-1.5 rounded-lg shrink-0"
+                        style={{ backgroundColor: 'var(--md-sys-color-tertiary)' }}
+                    >
+                        <Target size={16} style={{ color: 'var(--md-sys-color-on-tertiary)' }} />
+                    </div>
+                    <div className="min-w-0">
+                        <MD3Text variant="label-medium" color="on-tertiary-container">
+                            Objective: Địa Hình
+                        </MD3Text>
+                        <MD3Text variant="body-small" color="on-tertiary-container" lineClamp={2}>
+                            82 Hub positions. Focus on Specialized Hubs for $150K push.
+                        </MD3Text>
+                    </div>
                 </div>
-                <div>
-                    <h4 className="text-sm font-bold text-amber-300 uppercase tracking-wider mb-1">Current Objective: Market Entry (Địa Hình)</h4>
-                    <p className="text-sm text-gray-300 leading-relaxed">
-                        Establishing 82 fortified positions (Hubs). Key focus on securing high-ground advantages in <span className="text-white font-bold">Specialized Hubs</span> to prepare for the final $150K push.
-                    </p>
-                </div>
-            </div>
+            </MD3Surface>
         </div>
     );
 }
+
+export default CampaignMap;

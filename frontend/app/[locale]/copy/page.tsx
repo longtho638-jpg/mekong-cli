@@ -1,46 +1,81 @@
 'use client';
 
+import React from 'react';
 import { PenTool, FileText, TrendingUp, Eye, Star, Zap } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const copyMetrics = [
-    { label: 'Pieces Written', value: '248', icon: <PenTool className="w-5 h-5" />, color: '#a855f7', trend: { value: '+32', direction: 'up' as const } },
-    { label: 'Approval Rate', value: '92%', icon: <Star className="w-5 h-5" />, color: '#22c55e', trend: { value: '+5%', direction: 'up' as const } },
-    { label: 'Avg CTR', value: '4.8%', icon: <TrendingUp className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+0.6%', direction: 'up' as const } },
-    { label: 'A/B Tests', value: '18', icon: <Zap className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+4', direction: 'up' as const } },
-];
-
-const copyByType = [
-    { name: 'Ads', value: 85, color: '#a855f7' },
-    { name: 'Email', value: 62, color: '#3b82f6' },
-    { name: 'Landing', value: 45, color: '#22c55e' },
-    { name: 'Social', value: 38, color: '#f59e0b' },
-    { name: 'Blog', value: 18, color: '#ec4899' },
-];
-
-const weeklyOutput = [
-    { name: 'Mon', value: 8 }, { name: 'Tue', value: 12 }, { name: 'Wed', value: 10 },
-    { name: 'Thu', value: 15 }, { name: 'Fri', value: 6 },
-];
-
-const copyCharts = [
-    { type: 'bar' as const, title: 'Copy by Type', data: copyByType },
-    { type: 'area' as const, title: 'Weekly Output', data: weeklyOutput },
-];
-
-const copyActions = [
-    { icon: '✍️', label: 'Write', onClick: () => { } },
-    { icon: '📋', label: 'Templates', onClick: () => { } },
-    { icon: '🧪', label: 'A/B Test', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '📚', label: 'Library', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function CopyPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading } = useAnalytics();
     return (
-        <DepartmentDashboard title="Copy Hub" subtitle="Copywriting • A/B Testing • Performance" icon="✍️" color="purple"
-            statusLabel="Pieces" statusValue="248" metrics={copyMetrics} charts={copyCharts} quickActions={copyActions} locale={locale}
-        />
+        <MD3AppShell title="Copy Hub ✍️" subtitle="Copywriting • A/B Testing • Performance">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <PenTool className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pieces Written</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>248</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+32 this period</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approval Rate</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>92%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+5% improvement</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingUp className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Avg CTR</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>4.8%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+0.6% improvement</div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Zap className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>A/B Tests</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>18</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+4 active tests</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <>
+                        <MD3Card headline="Quick Actions" subhead="Copy Tools">
+                            <div className="space-y-2">
+                                {[
+                                    { icon: '✍️', label: 'Write' },
+                                    { icon: '📋', label: 'Templates' },
+                                    { icon: '🧪', label: 'A/B Test' },
+                                    { icon: '📊', label: 'Analytics' },
+                                    { icon: '📚', label: 'Library' },
+                                    { icon: '⚙️', label: 'Settings' },
+                                ].map((action) => (
+                                    <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                        <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                        <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </MD3Card>
+                    </>
+                }
+            />
+        </MD3AppShell>
     );
 }

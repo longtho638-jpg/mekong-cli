@@ -57,7 +57,7 @@ export function HyperText({ text, duration = 800, className = '', animateOnHover
 
     return (
         <span
-            className={`font-orbitron inline-block ${className}`}
+            className={`inline-block font-medium ${className}`}
             onMouseEnter={handleMouseEnter}
         >
             {displayText}

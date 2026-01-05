@@ -1,8 +1,9 @@
 'use client';
-
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, DollarSign, MousePointerClick, Eye } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
+
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const adSpend = Array.from({ length: 12 }, (_, i) => ({
@@ -12,56 +13,36 @@ const adSpend = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function PaidSocialPage({ params: { locale } }: { params: { locale: string } }) {
-    const pathname = usePathname();
-    const router = useRouter();
+    const { analytics } = useAnalytics();
 
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono">
-            <nav className="fixed top-0 w-full z-50 border-b border-pink-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-2 text-pink-400">
-                    <Shield className="w-5 h-5" />
-                    <span className="font-bold">AGENCY OS</span>
-                    <span className="px-1.5 py-0.5 text-[10px] bg-pink-500/20 border border-pink-500/30 rounded">PAID SOCIAL</span>
-                </div>
-                <div className="flex gap-2">
-                    {['en', 'vi', 'zh'].map((l) => (
-                        <button key={l} onClick={() => router.push(pathname.replace(`/${locale}`, `/${l}`))} className={`px-3 py-1 text-xs rounded ${locale === l ? 'bg-pink-500/20 text-pink-400' : 'text-gray-500'}`}>
-                            {l.toUpperCase()}
-                        </button>
-                    ))}
-                </div>
-            </nav>
+        <MD3AppShell title="Paid Social 📱" subtitle="Facebook • Instagram • TikTok Ads">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="text-xs text-gray-500 mb-2">Total Spend</div>
+                    <div className="text-2xl font-bold text-pink-400">$125K</div>
+                </MD3Surface>
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="text-xs text-gray-500 mb-2">ROAS</div>
+                    <div className="text-2xl font-bold text-emerald-400">4.2x</div>
+                </MD3Surface>
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="text-xs text-gray-500 mb-2">Impressions</div>
+                    <div className="text-2xl font-bold text-blue-400">2.5M</div>
+                </MD3Surface>
+            </div>
 
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <h1 className="text-4xl font-bold mb-8 text-pink-400">📱 Paid Social Ads</h1>
-
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Total Spend</div>
-                        <div className="text-2xl font-bold text-pink-400">$125K</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">ROAS</div>
-                        <div className="text-2xl font-bold text-emerald-400">4.2x</div>
-                    </div>
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-                        <div className="text-xs text-gray-500 mb-2">Impressions</div>
-                        <div className="text-2xl font-bold text-blue-400">2.5M</div>
-                    </div>
-                </div>
-
-                <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6">
-                    <h3 className="text-lg font-bold mb-6">Spend & ROAS Trend</h3>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={adSpend}>
-                            <XAxis dataKey="month" stroke="#6b7280" fontSize={10} />
-                            <YAxis stroke="#6b7280" fontSize={10} />
-                            <Tooltip />
-                            <Line type="monotone" dataKey="roas" stroke="#ec4899" strokeWidth={2} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-            </main>
-        </div>
+            <MD3Surface shape="extra-large" className="auto-safe">
+                <h3 className="text-lg font-bold mb-6">Spend & ROAS Trend</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                    <LineChart data={adSpend}>
+                        <XAxis dataKey="month" stroke="#6b7280" fontSize={10} />
+                        <YAxis stroke="#6b7280" fontSize={10} />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="roas" stroke="#ec4899" strokeWidth={2} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </MD3Surface>
+        </MD3AppShell>
     );
 }

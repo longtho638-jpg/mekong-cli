@@ -34,29 +34,40 @@ export function HubLayout({ title, icon, color, subtitle, children }: HubLayoutP
                     maxWidth: '1600px'
                 }}
             >
-                {/* Header */}
+                {/* Header - M3 DNA Compliant */}
                 <header
-                    className="mb-12 pl-4 border-l-4"
-                    style={{ borderColor: color }}
+                    className="mb-12"
+                    style={{ display: 'flex', gap: 'var(--md-sys-spacing-border-inset, 12px)' }}
                 >
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-4 mb-2"
-                    >
-                        <span className="text-5xl filter drop-shadow-lg">{icon}</span>
-                        <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white uppercase font-mono">
-                            {title}
-                        </h1>
-                    </motion.div>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-gray-400 text-xl font-mono tracking-wide pl-2"
-                    >
-                        {subtitle}
-                    </motion.p>
+                    {/* Accent border - properly separated */}
+                    <div
+                        style={{
+                            width: 4,
+                            borderRadius: 4,
+                            backgroundColor: color,
+                            flexShrink: 0,
+                        }}
+                    />
+                    <div>
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--md-sys-spacing-gap-lg, 16px)', marginBottom: 8 }}
+                        >
+                            <span className="text-5xl filter drop-shadow-lg">{icon}</span>
+                            <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white uppercase font-mono">
+                                {title}
+                            </h1>
+                        </motion.div>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-gray-400 text-xl font-mono tracking-wide"
+                        >
+                            {subtitle}
+                        </motion.p>
+                    </div>
                 </header>
 
                 {/* Content */}
@@ -66,9 +77,10 @@ export function HubLayout({ title, icon, color, subtitle, children }: HubLayoutP
 
                 {/* Footer */}
                 <footer
-                    className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm gap-4"
+                    className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm"
+                    style={{ gap: 'var(--md-sys-spacing-gap-lg, 16px)' }}
                 >
-                    <div className="flex items-center gap-2">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--md-sys-spacing-icon-text-default, 12px)' }}>
                         <span>🏯</span>
                         <span className="font-semibold text-gray-400">Agency OS</span>
                         <span className="bg-white/5 px-2 py-0.5 rounded text-xs border border-white/5">v2.0</span>

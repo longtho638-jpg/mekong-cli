@@ -19,11 +19,11 @@ export function ChartSection({ charts, color }: ChartSectionProps) {
                 return (
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chart.data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <XAxis dataKey="name" tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip
-                                contentStyle={{ background: '#050508', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
-                                labelStyle={{ color: '#94a3b8' }}
+                                contentStyle={{ background: 'var(--md-sys-color-surface-container-high)', border: '1px solid var(--md-sys-color-outline-variant)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
+                                labelStyle={{ color: 'var(--md-sys-color-on-surface-variant)' }}
                             />
                             <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                                 {chart.data.map((_, index) => (
@@ -37,10 +37,10 @@ export function ChartSection({ charts, color }: ChartSectionProps) {
                 return (
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={chart.data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <XAxis dataKey="name" tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip
-                                contentStyle={{ background: '#050508', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
+                                contentStyle={{ background: 'var(--md-sys-color-surface-container-high)', border: '1px solid var(--md-sys-color-outline-variant)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
                             />
                             <Line type="monotone" dataKey="value" stroke={colors.primary} strokeWidth={3} dot={{ fill: colors.primary, r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} />
                         </LineChart>
@@ -56,10 +56,10 @@ export function ChartSection({ charts, color }: ChartSectionProps) {
                                     <stop offset="100%" stopColor={colors.primary} stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <XAxis dataKey="name" tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fill: 'var(--md-sys-color-on-surface-variant)', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip
-                                contentStyle={{ background: '#050508', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
+                                contentStyle={{ background: 'var(--md-sys-color-surface-container-high)', border: '1px solid var(--md-sys-color-outline-variant)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
                             />
                             <Area type="monotone" dataKey="value" stroke={colors.primary} strokeWidth={3} fill={`url(#gradient-max-${color})`} />
                         </AreaChart>
@@ -83,12 +83,12 @@ export function ChartSection({ charts, color }: ChartSectionProps) {
                                         key={index}
                                         fill={entry.color || chartColors[index % chartColors.length]}
                                         fillOpacity={0.9}
-                                        stroke="rgba(255,255,255,0.05)"
+                                        stroke="var(--md-sys-color-outline-variant)"
                                     />
                                 ))}
                             </Pie>
                             <Tooltip
-                                contentStyle={{ background: '#050508', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
+                                contentStyle={{ background: 'var(--md-sys-color-surface-container-high)', border: '1px solid var(--md-sys-color-outline-variant)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }}
                             />
                         </PieChart>
                     </ResponsiveContainer>

@@ -1,45 +1,72 @@
 'use client';
 
-import { ShoppingCart, DollarSign, Package, TrendingUp, Star, Users } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const ecommerceMetrics = [
-    { label: 'Revenue Today', value: '$12.4K', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+18%', direction: 'up' as const } },
-    { label: 'Orders', value: '156', icon: <ShoppingCart className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+24', direction: 'up' as const } },
-    { label: 'Avg Order Value', value: '$79', icon: <TrendingUp className="w-5 h-5" />, color: '#a855f7', trend: { value: '+$8', direction: 'up' as const } },
-    { label: 'Conversion Rate', value: '3.2%', icon: <Star className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+0.4%', direction: 'up' as const } },
-];
-
-const salesByCategory = [
-    { name: 'Electronics', value: 45000, color: '#3b82f6' },
-    { name: 'Fashion', value: 32000, color: '#ec4899' },
-    { name: 'Home', value: 28000, color: '#22c55e' },
-    { name: 'Beauty', value: 18000, color: '#a855f7' },
-];
-
-const dailySales = [
-    { name: 'Mon', value: 8500 }, { name: 'Tue', value: 9200 }, { name: 'Wed', value: 11000 },
-    { name: 'Thu', value: 10500 }, { name: 'Fri', value: 12400 }, { name: 'Sat', value: 15000 }, { name: 'Sun', value: 13200 },
-];
-
-const ecommerceCharts = [
-    { type: 'bar' as const, title: 'Sales by Category', data: salesByCategory },
-    { type: 'area' as const, title: 'Daily Revenue', data: dailySales },
-];
-
-const ecommerceActions = [
-    { icon: '📦', label: 'Inventory', onClick: () => { } },
-    { icon: '🛒', label: 'Orders', onClick: () => { } },
-    { icon: '💳', label: 'Payments', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '🎯', label: 'Campaigns', onClick: () => { } },
-    { icon: '⭐', label: 'Reviews', onClick: () => { } },
-];
+import React from 'react';
+import { ShoppingCart, DollarSign, TrendingUp, Star, Package, Users } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function EcommercePage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="E-Commerce Hub" subtitle="Orders • Inventory • Payments • Analytics" icon="🛒" color="green"
-            statusLabel="Revenue" statusValue="$12.4K" metrics={ecommerceMetrics} charts={ecommerceCharts} quickActions={ecommerceActions} locale={locale}
-        />
+        <MD3AppShell title="E-commerce Hub 🛒" subtitle="Orders • Products • Sales • Analytics">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Revenue Today</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>$12.4K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+18% growth</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <ShoppingCart className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Orders</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>156</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+24 today</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingUp className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Avg Order</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>$79</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+$8 increase</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Conversion</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>3.2%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+0.4% improvement</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="E-commerce Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '📦', label: 'Products' }, { icon: '🛒', label: 'Orders' }, { icon: '📊', label: 'Analytics' }, { icon: '👥', label: 'Customers' }, { icon: '💳', label: 'Payments' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

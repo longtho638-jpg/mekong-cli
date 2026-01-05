@@ -1,179 +1,282 @@
 'use client';
 
-import { Shield, Users, TrendingUp, Award, CheckCircle, AlertTriangle, Star, Loader2 } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
+import React from 'react';
+import { Shield, Users, TrendingUp, Award, Star, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useGuildStatus, useGuildNetwork } from '@/hooks/useBlueOcean';
 
 export default function GuildPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading } = useAnalytics();
     const { data: status, isLoading: statusLoading } = useGuildStatus();
     const { data: network, isLoading: networkLoading } = useGuildNetwork();
 
     const isLoading = statusLoading || networkLoading;
-
-    // Build metrics from API data
-    const guildMetrics = [
-        {
-            label: 'Trust Score',
-            value: status ? `${status.trust_score}/${status.trust_max}` : '...',
-            icon: <Star className="w-5 h-5" />,
-            color: '#f59e0b',
-            trend: { value: '+5', direction: 'up' as const }
-        },
-        {
-            label: 'Network Members',
-            value: network ? `${network.members.total}` : '...',
-            icon: <Users className="w-5 h-5" />,
-            color: '#3b82f6',
-            trend: { value: `+${network?.members.new_this_month || 0}`, direction: 'up' as const }
-        },
-        {
-            label: 'Contributions',
-            value: status ? `${status.contributions.reports + status.contributions.verified}` : '...',
-            icon: <TrendingUp className="w-5 h-5" />,
-            color: '#22c55e',
-            trend: { value: '+8', direction: 'up' as const }
-        },
-        {
-            label: 'Protected Value',
-            value: network ? `$${(network.activity_30d.value_protected / 1000).toFixed(0)}K` : '...',
-            icon: <Shield className="w-5 h-5" />,
-            color: '#a855f7',
-            trend: { value: '+$18K', direction: 'up' as const }
-        },
-    ];
-
-    // Build tier distribution from API
-    const tierDistribution = network?.tiers.map(t => ({
-        name: t.name,
-        value: t.count,
-        color: t.name.includes('Queen') ? '#f59e0b' : t.name.includes('Worker') ? '#3b82f6' : '#22c55e'
-    })) || [
-            { name: 'Queen Bees', value: 8, color: '#f59e0b' },
-            { name: 'Workers', value: 67, color: '#3b82f6' },
-            { name: 'Larvae', value: 52, color: '#22c55e' },
-        ];
-
-    // Network Growth (static for now - would come from time-series API)
-    const networkGrowth = [
-        { name: 'Jul', value: 85 }, { name: 'Aug', value: 95 }, { name: 'Sep', value: 102 },
-        { name: 'Oct', value: 110 }, { name: 'Nov', value: 118 }, { name: 'Dec', value: network?.members.total || 127 },
-    ];
-
-    // Activity from API
-    const contributionActivity = network ? [
-        { name: 'Reports', value: network.activity_30d.reports, color: '#3b82f6' },
-        { name: 'Verifications', value: network.activity_30d.verifications, color: '#22c55e' },
-        { name: 'Referrals', value: network.activity_30d.referrals, color: '#a855f7' },
-        { name: 'Defense', value: network.activity_30d.defense_cases, color: '#f59e0b' },
-    ] : [];
-
-    const guildCharts = [
-        { type: 'pie' as const, title: 'Member Tier Distribution', data: tierDistribution },
-        { type: 'area' as const, title: 'Network Growth', data: networkGrowth },
-        { type: 'bar' as const, title: 'Monthly Activity', data: contributionActivity },
-    ];
-
-    const guildActions = [
-        { icon: '📋', label: 'My Status', onClick: () => console.log('Status') },
-        { icon: '🤝', label: 'Join Guild', onClick: () => console.log('Join') },
-        { icon: '📊', label: 'Contribute', onClick: () => console.log('Contribute') },
-        { icon: '🌐', label: 'Network', onClick: () => console.log('Network') },
-        { icon: '👤', label: 'Client DNA', onClick: () => console.log('Client DNA') },
-        { icon: '🛡️', label: 'Defense', onClick: () => console.log('Defense') },
-    ];
-
     const trustScore = status?.trust_score || 67;
     const trustMax = status?.trust_max || 100;
 
     return (
-        <DepartmentDashboard
-            title="Agency Guild"
+        <MD3AppShell
+            title="Agency Guild 🏰"
             subtitle="Blue Ocean Protocol • Collective Intelligence • Mutual Protection"
-            icon="🏰"
-            color="orange"
-            statusLabel="Trust"
-            statusValue={isLoading ? '...' : `${trustScore}/${trustMax}`}
-            metrics={guildMetrics}
-            charts={guildCharts}
-            quickActions={guildActions}
-            locale={locale}
         >
-            {/* Trust Score Progress */}
-            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 mt-8">
-                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-amber-400" />
-                    Your Guild Status
-                    {isLoading && <Loader2 className="w-4 h-4 animate-spin text-gray-500" />}
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Trust Score */}
-                    <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm text-gray-400">Trust Score</span>
-                            <span className="text-2xl font-bold text-amber-400">{trustScore}/{trustMax}</span>
-                        </div>
-                        <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-gradient-to-r from-amber-500 to-amber-300 rounded-full transition-all duration-500"
-                                style={{ width: `${(trustScore / trustMax) * 100}%` }}
-                            />
-                        </div>
-                        <div className="flex justify-between mt-2 text-xs text-gray-500">
-                            <span>Current: {status?.tier_emoji || '🐝'} {status?.tier || 'Worker Bee'}</span>
-                            <span>Next: {status?.next_tier.emoji || '👑'} {status?.next_tier.name || 'Queen'} ({status?.next_tier.required || 85} pts)</span>
-                        </div>
-                    </div>
-
-                    {/* Score Breakdown */}
-                    <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                        <div className="text-sm text-gray-400 mb-3">Score Breakdown</div>
-                        <div className="space-y-2">
-                            {[
-                                { label: 'Base Score', value: `+${status?.score_breakdown.base || 50}`, icon: '📝' },
-                                { label: 'Contributions', value: `+${status?.score_breakdown.contributions || 10}`, icon: '📊' },
-                                { label: 'Referrals', value: `+${status?.score_breakdown.referrals || 5}`, icon: '🤝' },
-                                { label: 'Tenure', value: `+${status?.score_breakdown.tenure || 2}`, icon: '⏰' },
-                            ].map((item) => (
-                                <div key={item.label} className="flex items-center justify-between">
-                                    <span className="flex items-center gap-2 text-sm">
-                                        <span>{item.icon}</span>
-                                        <span className="text-gray-400">{item.label}</span>
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        {/* KPI Hero Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{
+                                        fontSize: 'var(--md-sys-typescale-label-medium-size)',
+                                        color: 'var(--md-sys-color-on-surface-variant)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        Trust Score
                                     </span>
-                                    <span className="text-green-400 font-bold">{item.value}</span>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-display-small-size)',
+                                    fontWeight: 600,
+                                    color: '#f59e0b'
+                                }}>
+                                    {status ? `${status.trust_score}/${status.trust_max}` : '...'}
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-body-small-size)',
+                                    color: 'var(--md-sys-color-tertiary)'
+                                }}>
+                                    +5 vs last period
+                                </div>
+                            </MD3Surface>
 
-            {/* Guild Constitution */}
-            <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 mt-6">
-                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    📜 Guild Constitution
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <div className="text-sm text-gray-400 mb-2">✅ Member Pledges</div>
-                        {['Contribute data to collective', 'Protect network from bad actors', 'Respect rate floor standards', 'Cross-refer when not a fit'].map((pledge) => (
-                            <div key={pledge} className="flex items-center gap-2 text-sm">
-                                <CheckCircle className="w-4 h-4 text-green-400" />
-                                <span className="text-gray-300">{pledge}</span>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Users className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{
+                                        fontSize: 'var(--md-sys-typescale-label-medium-size)',
+                                        color: 'var(--md-sys-color-on-surface-variant)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        Network Members
+                                    </span>
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-display-small-size)',
+                                    fontWeight: 600,
+                                    color: '#3b82f6'
+                                }}>
+                                    {network ? `${network.members.total}` : '...'}
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-body-small-size)',
+                                    color: 'var(--md-sys-color-tertiary)'
+                                }}>
+                                    +{network?.members.new_this_month || 0} this month
+                                </div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingUp className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{
+                                        fontSize: 'var(--md-sys-typescale-label-medium-size)',
+                                        color: 'var(--md-sys-color-on-surface-variant)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        Contributions
+                                    </span>
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-display-small-size)',
+                                    fontWeight: 600,
+                                    color: '#22c55e'
+                                }}>
+                                    {status ? `${status.contributions.reports + status.contributions.verified}` : '...'}
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-body-small-size)',
+                                    color: 'var(--md-sys-color-tertiary)'
+                                }}>
+                                    +8 vs last period
+                                </div>
+                            </MD3Surface>
+
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Shield className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{
+                                        fontSize: 'var(--md-sys-typescale-label-medium-size)',
+                                        color: 'var(--md-sys-color-on-surface-variant)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        Protected Value
+                                    </span>
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-display-small-size)',
+                                    fontWeight: 600,
+                                    color: '#a855f7'
+                                }}>
+                                    {network ? `$${(network.activity_30d.value_protected / 1000).toFixed(0)}K` : '...'}
+                                </div>
+                                <div style={{
+                                    fontSize: 'var(--md-sys-typescale-body-small-size)',
+                                    color: 'var(--md-sys-color-tertiary)'
+                                }}>
+                                    +$18K vs last period
+                                </div>
+                            </MD3Surface>
+                        </div>
+
+                        {/* Guild Status */}
+                        <MD3Card
+                            headline="Your Guild Status"
+                            subhead={isLoading ? 'Loading...' : `${status?.tier || 'Worker Bee'}`}
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Trust Score Progress */}
+                                <MD3Surface shape="medium" className="auto-safe">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span style={{ fontSize: 'var(--md-sys-typescale-body-medium-size)', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                            Trust Score
+                                        </span>
+                                        <span style={{ fontSize: 'var(--md-sys-typescale-title-large-size)', fontWeight: 600, color: '#f59e0b' }}>
+                                            {trustScore}/{trustMax}
+                                        </span>
+                                    </div>
+                                    <div style={{ height: '12px', backgroundColor: 'var(--md-sys-color-surface-container-highest)', borderRadius: '999px', overflow: 'hidden' }}>
+                                        <div
+                                            style={{
+                                                height: '100%',
+                                                width: `${(trustScore / trustMax) * 100}%`,
+                                                background: 'linear-gradient(to right, #f59e0b, #fbbf24)',
+                                                borderRadius: '999px',
+                                                transition: 'width 0.5s'
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between mt-2" style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                        <span>Current: {status?.tier_emoji || '🐝'} {status?.tier || 'Worker Bee'}</span>
+                                        <span>Next: {status?.next_tier.emoji || '👑'} ({status?.next_tier.required || 85} pts)</span>
+                                    </div>
+                                </MD3Surface>
+
+                                {/* Score Breakdown */}
+                                <MD3Surface shape="medium" className="auto-safe">
+                                    <div style={{ fontSize: 'var(--md-sys-typescale-body-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '12px' }}>
+                                        Score Breakdown
+                                    </div>
+                                    <div className="space-y-2">
+                                        {[
+                                            { label: 'Base Score', value: `+${status?.score_breakdown.base || 50}`, icon: '📝' },
+                                            { label: 'Contributions', value: `+${status?.score_breakdown.contributions || 10}`, icon: '📊' },
+                                            { label: 'Referrals', value: `+${status?.score_breakdown.referrals || 5}`, icon: '🤝' },
+                                            { label: 'Tenure', value: `+${status?.score_breakdown.tenure || 2}`, icon: '⏰' },
+                                        ].map((item) => (
+                                            <div key={item.label} className="flex items-center justify-between">
+                                                <span className="flex items-center gap-2" style={{ fontSize: 'var(--md-sys-typescale-body-medium-size)' }}>
+                                                    <span>{item.icon}</span>
+                                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{item.label}</span>
+                                                </span>
+                                                <span style={{ color: 'var(--md-sys-color-tertiary)', fontWeight: 600 }}>{item.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </MD3Surface>
                             </div>
-                        ))}
-                    </div>
-                    <div className="space-y-2">
-                        <div className="text-sm text-gray-400 mb-2">❌ Violations</div>
-                        {['Undercut guild rate floors', 'Share false client info', 'Steal referred clients', 'Break confidentiality'].map((violation) => (
-                            <div key={violation} className="flex items-center gap-2 text-sm">
-                                <AlertTriangle className="w-4 h-4 text-red-400" />
-                                <span className="text-gray-300">{violation}</span>
+                        </MD3Card>
+
+                        {/* Guild Constitution */}
+                        <MD3Card
+                            headline="Guild Constitution"
+                            subhead="Rights & Responsibilities"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <div style={{ fontSize: 'var(--md-sys-typescale-title-small-size)', color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '8px' }}>
+                                        ✅ Member Pledges
+                                    </div>
+                                    {['Contribute data to collective', 'Protect network from bad actors', 'Respect rate floor standards', 'Cross-refer when not a fit'].map((pledge) => (
+                                        <div key={pledge} className="flex items-center gap-2" style={{ fontSize: 'var(--md-sys-typescale-body-medium-size)' }}>
+                                            <CheckCircle className="w-4 h-4" style={{ color: 'var(--md-sys-color-tertiary)' }} />
+                                            <span style={{ color: 'var(--md-sys-color-on-surface)' }}>{pledge}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="space-y-2">
+                                    <div style={{ fontSize: 'var(--md-sys-typescale-title-small-size)', color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '8px' }}>
+                                        ❌ Violations
+                                    </div>
+                                    {['Undercut guild rate floors', 'Share false client info', 'Steal referred clients', 'Break confidentiality'].map((violation) => (
+                                        <div key={violation} className="flex items-center gap-2" style={{ fontSize: 'var(--md-sys-typescale-body-medium-size)' }}>
+                                            <AlertTriangle className="w-4 h-4" style={{ color: 'var(--md-sys-color-error)' }} />
+                                            <span style={{ color: 'var(--md-sys-color-on-surface)' }}>{violation}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </DepartmentDashboard>
+                        </MD3Card>
+                    </>
+                }
+                supportingContent={
+                    <>
+                        <MD3Card
+                            headline="Quick Actions"
+                            subhead="Guild Tools"
+                        >
+                            <div className="space-y-2">
+                                {[
+                                    { icon: '📋', label: 'My Status' },
+                                    { icon: '🤝', label: 'Join Guild' },
+                                    { icon: '📊', label: 'Contribute' },
+                                    { icon: '🌐', label: 'Network' },
+                                    { icon: '👤', label: 'Client DNA' },
+                                    { icon: '🛡️', label: 'Defense' },
+                                ].map((action) => (
+                                    <button
+                                        key={action.label}
+                                        className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors"
+                                        style={{
+                                            backgroundColor: 'var(--md-sys-color-surface-container)',
+                                            border: '1px solid var(--md-sys-color-outline-variant)',
+                                        }}
+                                        onClick={() => console.log(action.label)}
+                                    >
+                                        <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                        <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>
+                                            {action.label}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </MD3Card>
+
+                        <MD3Card
+                            headline="Trust Metric"
+                            subhead={`${trustScore}/${trustMax}`}
+                        >
+                            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                                <div style={{ fontSize: '48px', marginBottom: '8px' }}>
+                                    {status?.tier_emoji || '🐝'}
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-title-medium-size)', color: 'var(--md-sys-color-on-surface)', marginBottom: '4px' }}>
+                                    {status?.tier || 'Worker Bee'}
+                                </div>
+                                {isLoading && <Loader2 className="w-4 h-4 animate-spin mx-auto" style={{ color: 'var(--md-sys-color-on-surface-variant)' }} />}
+                            </div>
+                        </MD3Card>
+                    </>
+                }
+            />
+        </MD3AppShell>
     );
 }

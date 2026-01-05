@@ -1,45 +1,72 @@
 'use client';
 
+import React from 'react';
 import { Package, DollarSign, TrendingUp, Star, Truck, BarChart3 } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const fbaMetrics = [
-    { label: 'Active Listings', value: '248', icon: <Package className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+32', direction: 'up' as const } },
-    { label: 'Monthly Revenue', value: '$42K', icon: <DollarSign className="w-5 h-5" />, color: '#22c55e', trend: { value: '+$8K', direction: 'up' as const } },
-    { label: 'BSR Avg', value: '12,450', icon: <TrendingUp className="w-5 h-5" />, color: '#3b82f6', trend: { value: '-2,100', direction: 'down' as const } },
-    { label: 'Rating', value: '4.6', icon: <Star className="w-5 h-5" />, color: '#a855f7', trend: { value: '+0.2', direction: 'up' as const } },
-];
-
-const salesByCategory = [
-    { name: 'Home', value: 18500, color: '#f59e0b' },
-    { name: 'Electronics', value: 12400, color: '#3b82f6' },
-    { name: 'Sports', value: 8200, color: '#22c55e' },
-    { name: 'Beauty', value: 2900, color: '#ec4899' },
-];
-
-const monthlySales = [
-    { name: 'Jul', value: 28000 }, { name: 'Aug', value: 32000 }, { name: 'Sep', value: 35000 },
-    { name: 'Oct', value: 38000 }, { name: 'Nov', value: 40000 }, { name: 'Dec', value: 42000 },
-];
-
-const fbaCharts = [
-    { type: 'bar' as const, title: 'Sales by Category', data: salesByCategory },
-    { type: 'area' as const, title: 'Monthly Revenue', data: monthlySales },
-];
-
-const fbaActions = [
-    { icon: '📦', label: 'Inventory', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '🏷️', label: 'Listings', onClick: () => { } },
-    { icon: '🚚', label: 'Shipments', onClick: () => { } },
-    { icon: '💰', label: 'Profits', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function AmazonFBAPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="Amazon FBA" subtitle="Listings • Inventory • Sales • Analytics" icon="📦" color="orange"
-            statusLabel="Revenue" statusValue="$42K" metrics={fbaMetrics} charts={fbaCharts} quickActions={fbaActions} locale={locale}
-        />
+        <MD3AppShell title="Amazon FBA 📦" subtitle="Listings • Inventory • Sales • Reviews">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Package className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Listings</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>248</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+32 new</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <DollarSign className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Revenue</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>$42K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+$8K growth</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingUp className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>BSR Avg</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>12,450</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>-2,100 improved</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Star className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rating</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>4.6</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+0.2 stars</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="FBA Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '📦', label: 'Inventory' }, { icon: '📋', label: 'Listings' }, { icon: '📊', label: 'Analytics' }, { icon: '⭐', label: 'Reviews' }, { icon: '🚚', label: 'Shipments' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

@@ -1,275 +1,399 @@
 'use client';
 
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Command, Users, Heart, TrendingUp, DollarSign, Calendar } from 'lucide-react';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { MD3Surface, MD3Text } from '@/components/md3-dna';
+import { useClients } from '@/lib/hooks';
+import {
+    Users, UserPlus, Search, MoreHorizontal, Mail, Phone, Building2,
+    DollarSign, Trash2, Edit, X, Check, AlertCircle
+} from 'lucide-react';
 
-// Customer lifecycle stages
-const lifecycleData = [
-    { stage: 'Lead', count: 450, value: 0, color: '#6b7280' },
-    { stage: 'MQL', count: 280, value: 0, color: '#3b82f6' },
-    { stage: 'SQL', count: 120, value: 0, color: '#8b5cf6' },
-    { stage: 'Customer', count: 85, value: 425000, color: '#10b981' },
-    { stage: 'Champion', count: 24, value: 480000, color: '#22c55e' },
-];
-
-// Cohort retention data
-const cohortRetention = [
-    { cohort: 'Jan 2024', month0: 100, month1: 88, month2: 76, month3: 68, month4: 62, month5: 58 },
-    { cohort: 'Feb 2024', month0: 100, month1: 92, month2: 82, month3: 75, month4: 70, month5: 0 },
-    { cohort: 'Mar 2024', month0: 100, month1: 90, month2: 80, month3: 72, month4: 0, month5: 0 },
-    { cohort: 'Apr 2024', month0: 100, month1: 85, month2: 75, month3: 0, month4: 0, month5: 0 },
-];
-
-// Customer health scores
-const healthScores = [
-    { name: 'Acme Corp', score: 95, arr: 120000, status: 'healthy' },
-    { name: 'TechCo', score: 82, arr: 85000, status: 'healthy' },
-    { name: 'StartupXYZ', score: 68, arr: 45000, status: 'at-risk' },
-    { name: 'Global Inc', score: 45, arr: 150000, status: 'critical' },
-    { name: 'SmallBiz LLC', score: 92, arr: 28000, status: 'healthy' },
-];
+// ═══════════════════════════════════════════════════════════════════════════════
+// 👥 CRM HUB - REAL CRUD with Supabase
+// DNA: MD3AppShell + MD3SupportingPaneLayout + MD3Surface
+// ═══════════════════════════════════════════════════════════════════════════════
 
 export default function CRMPage({ params: { locale } }: { params: { locale: string } }) {
-    const t = useTranslations('Common');
+    const {
+        clients,
+        loading,
+        error,
+        stats,
+        createClient,
+        updateClient,
+        deleteClient,
+    } = useClients();
 
-    const pathname = usePathname();
-    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
 
-    const switchLocale = (newLocale: string) => {
-        const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-        router.push(newPath);
+    // Filter clients by search
+    const filteredClients = clients.filter(client =>
+        client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.email?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Format currency
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
     };
 
-    const totalCustomers = lifecycleData.find((l) => l.stage === 'Customer')?.count || 0;
-    const totalValue = lifecycleData.reduce((sum, l) => sum + l.value, 0);
-    const avgHealth = Math.round(healthScores.reduce((sum, h) => sum + h.score, 0) / healthScores.length);
+    return (
+        <MD3AppShell title="CRM Hub" subtitle="Client Management">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        {/* KPI Cards - Using gap-3 like KPIHeroGrid */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <KPICard
+                                icon={<Users className="w-5 h-5" />}
+                                label="Total Clients"
+                                value={stats.total.toString()}
+                                color="var(--md-sys-color-primary)"
+                            />
+                            <KPICard
+                                icon={<Check className="w-5 h-5" />}
+                                label="Active"
+                                value={stats.active.toString()}
+                                color="var(--md-sys-color-tertiary)"
+                            />
+                            <KPICard
+                                icon={<AlertCircle className="w-5 h-5" />}
+                                label="Pending"
+                                value={stats.pending.toString()}
+                                color="var(--md-sys-color-secondary)"
+                            />
+                            <KPICard
+                                icon={<DollarSign className="w-5 h-5" />}
+                                label="Total MRR"
+                                value={formatCurrency(stats.totalMRR)}
+                                color="var(--md-sys-color-primary)"
+                            />
+                        </div>
+
+                        {/* Search Bar */}
+                        <div
+                            className="flex items-center rounded-xl px-4 py-3"
+                            style={{
+                                backgroundColor: 'var(--md-sys-color-surface-container)',
+                                border: '1px solid var(--md-sys-color-outline-variant)',
+                            }}
+                        >
+                            <Search className="w-5 h-5 mr-3" style={{ color: 'var(--md-sys-color-outline)' }} />
+                            <input
+                                type="text"
+                                placeholder="Search clients by name, company, or email..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="flex-1 bg-transparent outline-none"
+                                style={{
+                                    color: 'var(--md-sys-color-on-surface)',
+                                    fontSize: 'var(--md-sys-typescale-body-large-size)',
+                                }}
+                            />
+                            {searchQuery && (
+                                <button onClick={() => setSearchQuery('')}>
+                                    <X className="w-4 h-4" style={{ color: 'var(--md-sys-color-outline)' }} />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Clients List */}
+                        <MD3Card headline={`Clients (${filteredClients.length})`}>
+                            {loading ? (
+                                <div className="flex items-center justify-center py-8">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent"
+                                        style={{ borderColor: 'var(--md-sys-color-primary)' }} />
+                                </div>
+                            ) : error ? (
+                                <div className="text-center py-8" style={{ color: 'var(--md-sys-color-error)' }}>
+                                    <AlertCircle className="w-8 h-8 mx-auto mb-2" />
+                                    <p>{error}</p>
+                                </div>
+                            ) : filteredClients.length === 0 ? (
+                                <div className="text-center py-8" style={{ color: 'var(--md-sys-color-outline)' }}>
+                                    <Users className="w-8 h-8 mx-auto mb-2" />
+                                    <p>No clients found</p>
+                                    <button
+                                        onClick={() => setShowAddModal(true)}
+                                        className="mt-4 px-4 py-2 rounded-lg transition-all"
+                                        style={{
+                                            backgroundColor: 'var(--md-sys-color-primary)',
+                                            color: 'var(--md-sys-color-on-primary)',
+                                        }}
+                                    >
+                                        Add Your First Client
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col" style={{ gap: '8px' }}>
+                                    {filteredClients.map((client) => (
+                                        <ClientRow
+                                            key={client.id}
+                                            client={client}
+                                            onEdit={() => setEditingId(client.id)}
+                                            onDelete={() => deleteClient(client.id)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </MD3Card>
+                    </>
+                }
+                supportingContent={
+                    <>
+                        {/* Quick Actions */}
+                        <MD3Card headline="Quick Actions">
+                            <div className="flex flex-col" style={{ gap: '8px' }}>
+                                <button
+                                    onClick={() => setShowAddModal(true)}
+                                    className="flex items-center w-full p-3 rounded-lg transition-all hover:opacity-80"
+                                    style={{
+                                        backgroundColor: 'var(--md-sys-color-primary)',
+                                        color: 'var(--md-sys-color-on-primary)',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    <UserPlus className="w-4 h-4" />
+                                    <span>Add New Client</span>
+                                </button>
+                                <button
+                                    className="flex items-center w-full p-3 rounded-lg transition-all hover:opacity-80"
+                                    style={{
+                                        backgroundColor: 'var(--md-sys-color-surface-container)',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    <Mail className="w-4 h-4" style={{ color: 'var(--md-sys-color-primary)' }} />
+                                    <span style={{ color: 'var(--md-sys-color-on-surface)' }}>Send Campaign</span>
+                                </button>
+                            </div>
+                        </MD3Card>
+
+                        {/* Stats Summary */}
+                        <MD3Card headline="Pipeline Stats">
+                            <div className="flex flex-col" style={{ gap: '12px' }}>
+                                <StatRow label="Active Clients" value={stats.active} color="var(--md-sys-color-tertiary)" />
+                                <StatRow label="Pending" value={stats.pending} color="var(--md-sys-color-secondary)" />
+                                <StatRow label="Churned" value={stats.churned} color="var(--md-sys-color-error)" />
+                                <div className="pt-2 mt-2" style={{ borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <StatRow label="Monthly Revenue" value={formatCurrency(stats.totalMRR)} color="var(--md-sys-color-primary)" />
+                                </div>
+                            </div>
+                        </MD3Card>
+
+                        {/* Recent Activity */}
+                        <MD3Card headline="Recent Activity">
+                            <div className="flex flex-col" style={{ gap: '8px' }}>
+                                {clients.slice(0, 3).map((client, i) => (
+                                    <div key={i} className="text-sm" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                        <span style={{ color: 'var(--md-sys-color-primary)' }}>{client.name}</span>
+                                        <span> added on {new Date(client.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                ))}
+                                {clients.length === 0 && (
+                                    <div className="text-sm" style={{ color: 'var(--md-sys-color-outline)' }}>
+                                        No recent activity
+                                    </div>
+                                )}
+                            </div>
+                        </MD3Card>
+                    </>
+                }
+            />
+
+            {/* Add Client Modal */}
+            {showAddModal && (
+                <AddClientModal
+                    onClose={() => setShowAddModal(false)}
+                    onCreate={async (data) => {
+                        await createClient(data);
+                        setShowAddModal(false);
+                    }}
+                />
+            )}
+        </MD3AppShell>
+    );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMPONENTS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function KPICard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
+    return (
+        <MD3Surface shape="large" color="surface-container" interactive={true}>
+            {/* Header Row - Icon + Label */}
+            <div className="flex items-center gap-2 mb-3">
+                <div
+                    className="p-1.5 rounded-lg"
+                    style={{
+                        backgroundColor: 'var(--md-sys-color-primary-container)',
+                        color,
+                    }}
+                >
+                    {icon}
+                </div>
+                <MD3Text variant="label-small" color="on-surface-variant" transform="uppercase">
+                    {label}
+                </MD3Text>
+            </div>
+
+            {/* Value */}
+            <MD3Text variant="headline-small" color="on-surface">
+                {value}
+            </MD3Text>
+
+            {/* Pulse Indicator */}
+            <div
+                className="absolute top-4 right-4 w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: color }}
+            />
+        </MD3Surface>
+    );
+}
+
+function ClientRow({ client, onEdit, onDelete }: { client: any; onEdit: () => void; onDelete: () => void }) {
+    const statusColors: Record<string, string> = {
+        active: 'var(--md-sys-color-tertiary)',
+        pending: 'var(--md-sys-color-secondary)',
+        churned: 'var(--md-sys-color-error)',
+    };
 
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono selection:bg-blue-500/30 selection:text-blue-300">
-            <div className="fixed inset-0 bg-[linear-gradient(rgba(18,18,18,0)_2px,transparent_1px),linear-gradient(90deg,rgba(18,18,18,0)_2px,transparent_1px)] bg-[size:40px_40px] opacity-[0.05] pointer-events-none" />
-            <div className="fixed top-[18%] left-[30%] w-[40%] h-[40%] bg-[radial-gradient(circle,rgba(59,130,246,0.08)_0%,transparent_70%)] pointer-events-none" />
-
-            <nav className="fixed top-0 w-full z-50 border-b border-blue-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-blue-400">
-                        <Shield className="w-5 h-5" />
-                        <span className="font-bold tracking-tighter">AGENCY OS</span>
-                        <span className="px-1.5 py-0.5 text-[10px] bg-blue-500/20 border border-blue-500/30 rounded text-blue-300 animate-pulse">
-                            CRM
-                        </span>
-                    </div>
-                    <div className="h-4 w-px bg-white/10 mx-2" />
-                    <div className="flex items-center gap-2 text-gray-400 text-sm">
-                        <span className="opacity-50">/</span>
-                        <span>Customer Relationship</span>
+        <div
+            className="flex items-center justify-between p-4 rounded-lg transition-all hover:opacity-90"
+            style={{ backgroundColor: 'var(--md-sys-color-surface-container)' }}
+        >
+            <div className="flex items-center" style={{ gap: '16px' }}>
+                <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
+                    style={{ backgroundColor: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)' }}
+                >
+                    {client.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                    <div className="font-medium" style={{ color: 'var(--md-sys-color-on-surface)' }}>{client.name}</div>
+                    <div className="text-sm flex items-center" style={{ gap: '8px', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        {client.company && <span className="flex items-center"><Building2 className="w-3 h-3 mr-1" />{client.company}</span>}
+                        {client.email && <span className="flex items-center"><Mail className="w-3 h-3 mr-1" />{client.email}</span>}
                     </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                        <Users className="w-3 h-3 text-blue-400" />
-                        <span className="text-xs text-blue-300 font-bold">{totalCustomers} Customers</span>
-                    </div>
-
-                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-gray-400">
-                        <Command className="w-3 h-3" />
-                        <span>Search...</span>
-                        <span className="bg-white/10 px-1 rounded text-[10px]">⌘K</span>
-                    </div>
-
-                    <div className="flex items-center bg-white/5 rounded-lg p-1 border border-white/10">
-                        {['en', 'vi', 'zh'].map((l) => (
-                            <button
-                                key={l}
-                                onClick={() => switchLocale(l)}
-                                className={`px-3 py-1 text-xs font-bold rounded transition-all ${locale === l
-                                        ? 'bg-blue-500/20 text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
-                                        : 'text-gray-500 hover:text-white'
-                                    }`}
-                            >
-                                {l.toUpperCase()}
-                            </button>
-                        ))}
-                    </div>
+            </div>
+            <div className="flex items-center" style={{ gap: '16px' }}>
+                <span
+                    className="px-2 py-1 text-xs rounded-full"
+                    style={{ backgroundColor: `${statusColors[client.status]}20`, color: statusColors[client.status] }}
+                >
+                    {client.status}
+                </span>
+                <span className="font-medium" style={{ color: 'var(--md-sys-color-primary)' }}>
+                    ${client.mrr}/mo
+                </span>
+                <div className="flex" style={{ gap: '4px' }}>
+                    <button onClick={onEdit} className="p-2 rounded-lg hover:opacity-70" style={{ color: 'var(--md-sys-color-outline)' }}>
+                        <Edit className="w-4 h-4" />
+                    </button>
+                    <button onClick={onDelete} className="p-2 rounded-lg hover:opacity-70" style={{ color: 'var(--md-sys-color-error)' }}>
+                        <Trash2 className="w-4 h-4" />
+                    </button>
                 </div>
-            </nav>
-
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <header className="mb-8">
-                    <h1 className="text-4xl font-bold mb-2 tracking-tight flex items-center gap-3 text-blue-400">
-                        💙 CRM Dashboard
-                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse box-content border-4 border-blue-500/20" />
-                    </h1>
-                    <p className="text-gray-400 text-sm max-w-xl">
-                        Customer Lifecycle • Retention Cohorts • Health Monitoring
-                    </p>
-                </header>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <StatCard label="Total Customers" value={totalCustomers.toString()} icon={<Users />} color="text-blue-400" />
-                    <StatCard label="Total ARR" value={`$${(totalValue / 1000).toFixed(0)}K`} icon={<DollarSign />} color="text-green-400" />
-                    <StatCard label="Avg Health" value={`${avgHealth}%`} icon={<Heart />} color="text-purple-400" />
-                    <StatCard label="Retention" value="68%" icon={<TrendingUp />} color="text-emerald-400" />
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    {/* Customer Lifecycle */}
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6">
-                        <h3 className="text-lg font-bold mb-6">Customer Lifecycle Distribution</h3>
-
-                        <ResponsiveContainer width="100%" height={250}>
-                            <BarChart data={lifecycleData} layout="vertical">
-                                <XAxis type="number" stroke="#6b7280" fontSize={10} />
-                                <YAxis type="category" dataKey="stage" stroke="#6b7280" fontSize={12} width={80} />
-                                <Tooltip
-                                    content={({ payload }) => {
-                                        if (!payload || !payload[0]) return null;
-                                        const data = payload[0].payload;
-                                        return (
-                                            <div className="bg-black/90 border border-white/20 rounded p-2">
-                                                <div className="text-xs font-bold mb-1">{data.stage}</div>
-                                                <div className="text-sm" style={{ color: data.color }}>
-                                                    {data.count} contacts
-                                                </div>
-                                                {data.value > 0 && <div className="text-xs text-green-400">${(data.value / 1000).toFixed(0)}K ARR</div>}
-                                            </div>
-                                        );
-                                    }}
-                                />
-                                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-                                    {lifecycleData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    {/* Retention Cohorts */}
-                    <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6">
-                        <h3 className="text-lg font-bold mb-6">Cohort Retention Analysis</h3>
-
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-xs">
-                                <thead>
-                                    <tr className="border-b border-white/10">
-                                        <th className="text-left p-2 text-gray-400">Cohort</th>
-                                        <th className="text-center p-2 text-gray-400">M0</th>
-                                        <th className="text-center p-2 text-gray-400">M1</th>
-                                        <th className="text-center p-2 text-gray-400">M2</th>
-                                        <th className="text-center p-2 text-gray-400">M3</th>
-                                        <th className="text-center p-2 text-gray-400">M4</th>
-                                        <th className="text-center p-2 text-gray-400">M5</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {cohortRetention.map((row) => (
-                                        <tr key={row.cohort} className="border-b border-white/5">
-                                            <td className="p-2 font-bold text-blue-300">{row.cohort}</td>
-                                            {['month0', 'month1', 'month2', 'month3', 'month4', 'month5'].map((month) => {
-                                                const value = row[month as keyof typeof row] as number;
-                                                return (
-                                                    <td key={month} className="text-center p-2">
-                                                        {value > 0 ? (
-                                                            <div
-                                                                className={`inline-block px-2 py-1 rounded font-bold ${value >= 90
-                                                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                                                        : value >= 75
-                                                                            ? 'bg-blue-500/20 text-blue-400'
-                                                                            : value >= 60
-                                                                                ? 'bg-yellow-500/20 text-yellow-400'
-                                                                                : 'bg-red-500/20 text-red-400'
-                                                                    }`}
-                                                            >
-                                                                {value}%
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-gray-600">-</span>
-                                                        )}
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Customer Health Monitor */}
-                <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6">
-                    <h3 className="text-lg font-bold mb-6">Customer Health Monitor</h3>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b border-white/10">
-                                    <th className="text-left p-3 text-gray-400">Account</th>
-                                    <th className="text-right p-3 text-gray-400">Health Score</th>
-                                    <th className="text-right p-3 text-gray-400">ARR</th>
-                                    <th className="text-left p-3 text-gray-400">Status</th>
-                                    <th className="text-left p-3 text-gray-400">Health Bar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {healthScores.map((customer, i) => (
-                                    <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                        <td className="p-3 font-bold text-blue-300">{customer.name}</td>
-                                        <td className="p-3 text-right">
-                                            <span
-                                                className={`px-2 py-1 rounded font-bold ${customer.score >= 80
-                                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                                        : customer.score >= 60
-                                                            ? 'bg-yellow-500/20 text-yellow-400'
-                                                            : 'bg-red-500/20 text-red-400'
-                                                    }`}
-                                            >
-                                                {customer.score}
-                                            </span>
-                                        </td>
-                                        <td className="p-3 text-right font-mono text-green-400">${(customer.arr / 1000).toFixed(0)}K</td>
-                                        <td className="p-3">
-                                            <span
-                                                className={`px-2 py-1 rounded text-xs ${customer.status === 'healthy'
-                                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                                        : customer.status === 'at-risk'
-                                                            ? 'bg-yellow-500/20 text-yellow-400'
-                                                            : 'bg-red-500/20 text-red-400'
-                                                    }`}
-                                            >
-                                                {customer.status}
-                                            </span>
-                                        </td>
-                                        <td className="p-3">
-                                            <div className="w-full bg-gray-700 rounded-full h-2">
-                                                <div
-                                                    className={`h-2 rounded-full ${customer.score >= 80 ? 'bg-emerald-500' : customer.score >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                                    style={{ width: `${customer.score}%` }}
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
+            </div>
         </div>
     );
 }
 
-function StatCard({ label, value, icon, color }: any) {
+function StatRow({ label, value, color }: { label: string; value: string | number; color: string }) {
     return (
-        <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-            <div className="flex items-center justify-between mb-2">
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest">{label}</div>
-                <div className={color}>{icon}</div>
+        <div className="flex justify-between items-center">
+            <span style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '14px' }}>{label}</span>
+            <span style={{ color, fontWeight: 600 }}>{value}</span>
+        </div>
+    );
+}
+
+function AddClientModal({ onClose, onCreate }: { onClose: () => void; onCreate: (data: any) => Promise<void> }) {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        mrr: 0,
+        status: 'pending' as const,
+    });
+    const [saving, setSaving] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.name) return;
+
+        setSaving(true);
+        try {
+            await onCreate(formData);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+            <div
+                className="w-full max-w-md rounded-2xl p-6"
+                style={{ backgroundColor: 'var(--md-sys-color-surface-container-high)' }}
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold" style={{ color: 'var(--md-sys-color-on-surface)' }}>Add New Client</h2>
+                    <button onClick={onClose}><X className="w-5 h-5" style={{ color: 'var(--md-sys-color-outline)' }} /></button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '16px' }}>
+                    <InputField label="Name *" value={formData.name} onChange={(v) => setFormData(p => ({ ...p, name: v }))} required />
+                    <InputField label="Email" type="email" value={formData.email} onChange={(v) => setFormData(p => ({ ...p, email: v }))} />
+                    <InputField label="Phone" value={formData.phone} onChange={(v) => setFormData(p => ({ ...p, phone: v }))} />
+                    <InputField label="Company" value={formData.company} onChange={(v) => setFormData(p => ({ ...p, company: v }))} />
+                    <InputField label="MRR ($)" type="number" value={formData.mrr.toString()} onChange={(v) => setFormData(p => ({ ...p, mrr: parseFloat(v) || 0 }))} />
+
+                    <div className="flex justify-end" style={{ gap: '12px', marginTop: '8px' }}>
+                        <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={saving || !formData.name}
+                            className="px-6 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
+                            style={{ backgroundColor: 'var(--md-sys-color-primary)', color: 'var(--md-sys-color-on-primary)' }}
+                        >
+                            {saving ? 'Saving...' : 'Add Client'}
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div className={`text-2xl font-bold font-mono ${color}`}>{value}</div>
+        </div>
+    );
+}
+
+function InputField({ label, value, onChange, type = 'text', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean }) {
+    return (
+        <div>
+            <label className="block text-sm mb-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{label}</label>
+            <input
+                type={type}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                required={required}
+                className="w-full px-4 py-3 rounded-lg outline-none transition-all"
+                style={{
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    color: 'var(--md-sys-color-on-surface)',
+                }}
+            />
         </div>
     );
 }

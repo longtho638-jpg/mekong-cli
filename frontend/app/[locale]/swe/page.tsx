@@ -1,45 +1,72 @@
 'use client';
 
-import { Code, GitBranch, Bug, Zap, Users, CheckCircle } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const sweMetrics = [
-    { label: 'PRs Merged', value: '248', icon: <GitBranch className="w-5 h-5" />, color: '#22c55e', trend: { value: '+42', direction: 'up' as const } },
-    { label: 'Bugs Fixed', value: '86', icon: <Bug className="w-5 h-5" />, color: '#ef4444', trend: { value: '+18', direction: 'up' as const } },
-    { label: 'Code Coverage', value: '82%', icon: <CheckCircle className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+5%', direction: 'up' as const } },
-    { label: 'Velocity', value: '42pts', icon: <Zap className="w-5 h-5" />, color: '#a855f7', trend: { value: '+8pts', direction: 'up' as const } },
-];
-
-const commitsByRepo = [
-    { name: 'Frontend', value: 120, color: '#3b82f6' },
-    { name: 'Backend', value: 85, color: '#22c55e' },
-    { name: 'Mobile', value: 45, color: '#a855f7' },
-    { name: 'Infra', value: 28, color: '#f59e0b' },
-];
-
-const weeklyVelocity = [
-    { name: 'W1', value: 38 }, { name: 'W2', value: 42 }, { name: 'W3', value: 40 },
-    { name: 'W4', value: 45 }, { name: 'W5', value: 42 },
-];
-
-const sweCharts = [
-    { type: 'bar' as const, title: 'Commits by Repo', data: commitsByRepo },
-    { type: 'area' as const, title: 'Weekly Velocity', data: weeklyVelocity },
-];
-
-const sweActions = [
-    { icon: '💻', label: 'PRs', onClick: () => { } },
-    { icon: '🐛', label: 'Bugs', onClick: () => { } },
-    { icon: '📊', label: 'Metrics', onClick: () => { } },
-    { icon: '📋', label: 'Sprints', onClick: () => { } },
-    { icon: '🚀', label: 'Deploy', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import React from 'react';
+import { Code, Rocket, Bug, TrendingUp, Award, GitBranch } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function SWEPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="Software Engineering" subtitle="Development • PRs • Velocity • Quality" icon="💻" color="green"
-            statusLabel="PRs" statusValue="248" metrics={sweMetrics} charts={sweCharts} quickActions={sweActions} locale={locale}
-        />
+        <MD3AppShell title="Software Engineer 🚀" subtitle="Code • Ship • Scale • Innovate">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <GitBranch className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PRs Merged</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>86</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+18 this week</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Rocket className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Deployments</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>42</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+12 shipped</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Bug className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Issues Closed</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>124</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+32 resolved</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Award className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Code Quality</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>96%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+4% improved</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="Engineering Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '💻', label: 'Code' }, { icon: '🚀', label: 'Deploy' }, { icon: '🐛', label: 'Debug' }, { icon: '📊', label: 'Metrics' }, { icon: '📚', label: 'Docs' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

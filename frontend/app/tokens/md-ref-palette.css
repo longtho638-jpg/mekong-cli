@@ -1,0 +1,65 @@
+:root {
+    /* REFERENCE PALETTE - Official Material Design 3 */
+    /* Neutral (Dark Theme) */
+    --md-ref-palette-neutral-0: #000000;
+    --md-ref-palette-neutral-10: #1C1B1F;
+    --md-ref-palette-neutral-20: #313033;
+    --md-ref-palette-neutral-30: #484649;
+    --md-ref-palette-neutral-40: #605D62;
+    --md-ref-palette-neutral-50: #787579;
+    --md-ref-palette-neutral-60: #939094;
+    --md-ref-palette-neutral-70: #AEAAAE;
+    --md-ref-palette-neutral-80: #C9C5CA;
+    --md-ref-palette-neutral-90: #E6E1E5;
+    --md-ref-palette-neutral-95: #F4EFF4;
+    --md-ref-palette-neutral-99: #FFFBFE;
+    --md-ref-palette-neutral-100: #FFFFFF;
+
+    /* Primary (Purple - Official M3) */
+    --md-ref-palette-primary-10: #21005D;
+    --md-ref-palette-primary-20: #381E72;
+    --md-ref-palette-primary-30: #4F378B;
+    --md-ref-palette-primary-40: #6750A4;
+    --md-ref-palette-primary-50: #7F67BE;
+    --md-ref-palette-primary-60: #9A82DB;
+    --md-ref-palette-primary-70: #B69DF8;
+    --md-ref-palette-primary-80: #D0BCFF;
+    --md-ref-palette-primary-90: #EADDFF;
+    --md-ref-palette-primary-100: #FFFFFF;
+
+    /* Secondary (Purple Variant) */
+    --md-ref-palette-secondary-10: #1D192B;
+    --md-ref-palette-secondary-20: #332D41;
+    --md-ref-palette-secondary-30: #4A4458;
+    --md-ref-palette-secondary-40: #625B71;
+    --md-ref-palette-secondary-50: #7A7289;
+    --md-ref-palette-secondary-60: #958DA5;
+    --md-ref-palette-secondary-70: #B0A7C0;
+    --md-ref-palette-secondary-80: #CCC2DC;
+    --md-ref-palette-secondary-90: #E8DEF8;
+    --md-ref-palette-secondary-100: #FFFFFF;
+
+    /* Tertiary (Pink) */
+    --md-ref-palette-tertiary-10: #31111D;
+    --md-ref-palette-tertiary-20: #492532;
+    --md-ref-palette-tertiary-30: #633B48;
+    --md-ref-palette-tertiary-40: #7D5260;
+    --md-ref-palette-tertiary-50: #986977;
+    --md-ref-palette-tertiary-60: #B58392;
+    --md-ref-palette-tertiary-70: #D29DAC;
+    --md-ref-palette-tertiary-80: #EFB8C8;
+    --md-ref-palette-tertiary-90: #FFD8E4;
+    --md-ref-palette-tertiary-100: #FFFFFF;
+
+    /* Error */
+    --md-ref-palette-error-10: #410E0B;
+    --md-ref-palette-error-20: #601410;
+    --md-ref-palette-error-30: #8C1D18;
+    --md-ref-palette-error-40: #B3261E;
+    --md-ref-palette-error-50: #DC362E;
+    --md-ref-palette-error-60: #E46962;
+    --md-ref-palette-error-70: #EC928E;
+    --md-ref-palette-error-80: #F2B8B5;
+    --md-ref-palette-error-90: #F9DEDC;
+    --md-ref-palette-error-100: #FFFFFF;
+}

@@ -1,45 +1,72 @@
 'use client';
 
-import { Calculator, FileText, DollarSign, Calendar, AlertTriangle, CheckCircle } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const taxMetrics = [
-    { label: 'Tax Liability', value: '$142K', icon: <DollarSign className="w-5 h-5" />, color: '#ef4444', trend: { value: '-$18K', direction: 'down' as const } },
-    { label: 'Filings Done', value: '24', icon: <FileText className="w-5 h-5" />, color: '#22c55e', trend: { value: '+6', direction: 'up' as const } },
-    { label: 'Savings', value: '$48K', icon: <Calculator className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+$12K', direction: 'up' as const } },
-    { label: 'Compliance', value: '100%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: 'Compliant', direction: 'up' as const } },
-];
-
-const taxByType = [
-    { name: 'Income', value: 85000, color: '#ef4444' },
-    { name: 'Sales', value: 32000, color: '#3b82f6' },
-    { name: 'Payroll', value: 18000, color: '#22c55e' },
-    { name: 'Other', value: 7000, color: '#f59e0b' },
-];
-
-const quarterlyTax = [
-    { name: 'Q1', value: 32000 }, { name: 'Q2', value: 38000 }, { name: 'Q3', value: 35000 },
-    { name: 'Q4', value: 37000 },
-];
-
-const taxCharts = [
-    { type: 'pie' as const, title: 'Tax by Category', data: taxByType },
-    { type: 'bar' as const, title: 'Quarterly Payments', data: quarterlyTax.map(d => ({ ...d, color: '#ef4444' })) },
-];
-
-const taxActions = [
-    { icon: '📋', label: 'Filings', onClick: () => { } },
-    { icon: '💰', label: 'Payments', onClick: () => { } },
-    { icon: '📊', label: 'Planning', onClick: () => { } },
-    { icon: '📅', label: 'Deadlines', onClick: () => { } },
-    { icon: '📝', label: 'Documents', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import React from 'react';
+import { Calculator, DollarSign, TrendingDown, FileText, Clock, AlertTriangle } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function TaxPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="Tax Hub" subtitle="Filings • Planning • Compliance • Savings" icon="🧾" color="red"
-            statusLabel="Liability" statusValue="$142K" metrics={taxMetrics} charts={taxCharts} quickActions={taxActions} locale={locale}
-        />
+        <MD3AppShell title="Tax Hub 💼" subtitle="Compliance • Filing • Credits • Strategy">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <DollarSign className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Liability</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>$85K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>This quarter</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <TrendingDown className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Credits</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>$12K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+$3K saved</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <FileText className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Filings</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>18</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+4 completed</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Clock className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Next Deadline</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>18d</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>Q4 filing</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="Tax Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '🧾', label: 'Filings' }, { icon: '💰', label: 'Credits' }, { icon: '📊', label: 'Reports' }, { icon: '📅', label: 'Calendar' }, { icon: '📋', label: 'Documents' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }

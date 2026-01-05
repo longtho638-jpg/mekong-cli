@@ -1,8 +1,10 @@
 'use client';
-
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Shield, Command, FileText, Eye, Heart, Share2 } from 'lucide-react';
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
+
+import { Eye, Heart, Share2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const contentPerformance = [
@@ -14,97 +16,51 @@ const contentPerformance = [
 ];
 
 export default function ContentMarketingPage({ params: { locale } }: { params: { locale: string } }) {
-    const t = useTranslations('Common');
-    const pathname = usePathname();
-    const router = useRouter();
-
-    const switchLocale = (newLocale: string) => {
-        const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-        router.push(newPath);
-    };
-
+    const { analytics } = useAnalytics();
     const totalViews = contentPerformance.reduce((sum, c) => sum + c.views, 0);
     const avgEngagement = (contentPerformance.reduce((sum, c) => sum + c.engagement, 0) / contentPerformance.length).toFixed(1);
 
     return (
-        <div className="min-h-screen bg-[#020202] text-white font-mono selection:bg-amber-500/30">
-            <div className="fixed inset-0 bg-[linear-gradient(rgba(18,18,18,0)_2px,transparent_1px),linear-gradient(90deg,rgba(18,18,18,0)_2px,transparent_1px)] bg-[size:40px_40px] opacity-[0.05] pointer-events-none" />
-
-            <nav className="fixed top-0 w-full z-50 border-b border-amber-500/20 bg-black/50 backdrop-blur-xl h-14 flex items-center px-6 justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-amber-400">
-                        <Shield className="w-5 h-5" />
-                        <span className="font-bold tracking-tighter">AGENCY OS</span>
-                        <span className="px-1.5 py-0.5 text-[10px] bg-amber-500/20 border border-amber-500/30 rounded text-amber-300 animate-pulse">
-                            CONTENT
-                        </span>
+        <MD3AppShell title="Content Marketing 📝" subtitle="Content Performance • Engagement • Distribution">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="text-xs text-gray-500">Total Views</div>
+                        <Eye className="w-4 h-4 text-amber-400" />
                     </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                        <FileText className="w-3 h-3 text-amber-400" />
-                        <span className="text-xs text-amber-300 font-bold">{contentPerformance.length} Articles</span>
+                    <div className="text-2xl font-bold text-amber-400">{(totalViews / 1000).toFixed(1)}K</div>
+                </MD3Surface>
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="text-xs text-gray-500">Avg Engagement</div>
+                        <Heart className="w-4 h-4 text-pink-400" />
                     </div>
-
-                    <div className="flex items-center bg-white/5 rounded-lg p-1 border border-white/10">
-                        {['en', 'vi', 'zh'].map((l) => (
-                            <button
-                                key={l}
-                                onClick={() => switchLocale(l)}
-                                className={`px-3 py-1 text-xs font-bold rounded transition-all ${locale === l ? 'bg-amber-500/20 text-amber-400' : 'text-gray-500 hover:text-white'
-                                    }`}
-                            >
-                                {l.toUpperCase()}
-                            </button>
-                        ))}
+                    <div className="text-2xl font-bold text-pink-400">{avgEngagement}%</div>
+                </MD3Surface>
+                <MD3Surface shape="large" className="auto-safe">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="text-xs text-gray-500">Total Shares</div>
+                        <Share2 className="w-4 h-4 text-blue-400" />
                     </div>
-                </div>
-            </nav>
-
-            <main className="pt-24 px-6 max-w-[1920px] mx-auto pb-20">
-                <header className="mb-8">
-                    <h1 className="text-4xl font-bold mb-2 tracking-tight flex items-center gap-3 text-amber-400">
-                        📝 Content Marketing Dashboard
-                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse box-content border-4 border-amber-500/20" />
-                    </h1>
-                    <p className="text-gray-400 text-sm">Content Performance • Engagement Metrics • Distribution</p>
-                </header>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <StatCard label="Total Views" value={`${(totalViews / 1000).toFixed(1)}K`} icon={<Eye />} color="text-amber-400" />
-                    <StatCard label="Avg Engagement" value={`${avgEngagement}%`} icon={<Heart />} color="text-pink-400" />
-                    <StatCard label="Total Shares" value={contentPerformance.reduce((sum, c) => sum + c.shares, 0).toString()} icon={<Share2 />} color="text-blue-400" />
-                </div>
-
-                <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6">
-                    <h3 className="text-lg font-bold mb-6">Top Content Performance</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={contentPerformance} layout="vertical">
-                            <XAxis type="number" stroke="#6b7280" fontSize={10} />
-                            <YAxis type="category" dataKey="title" stroke="#6b7280" fontSize={10} width={120} />
-                            <Tooltip />
-                            <Bar dataKey="views" radius={[0, 4, 4, 0]}>
-                                {contentPerformance.map((entry, i) => (
-                                    <Cell key={i} fill={entry.color} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            </main>
-        </div>
-    );
-}
-
-function StatCard({ label, value, icon, color }: any) {
-    return (
-        <div className="bg-[#0A0A0A] border border-white/10 rounded-lg p-5">
-            <div className="flex items-center justify-between mb-2">
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest">{label}</div>
-                <div className={color}>{icon}</div>
+                    <div className="text-2xl font-bold text-blue-400">{contentPerformance.reduce((sum, c) => sum + c.shares, 0)}</div>
+                </MD3Surface>
             </div>
-            <div className={`text-2xl font-bold font-mono ${color}`}>{value}</div>
-        </div>
+
+            <MD3Surface shape="extra-large" className="auto-safe">
+                <h3 className="text-lg font-bold mb-6">Top Content Performance</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={contentPerformance} layout="vertical">
+                        <XAxis type="number" stroke="#6b7280" fontSize={10} />
+                        <YAxis type="category" dataKey="title" stroke="#6b7280" fontSize={10} width={120} />
+                        <Tooltip />
+                        <Bar dataKey="views" radius={[0, 4, 4, 0]}>
+                            {contentPerformance.map((entry, i) => (
+                                <Cell key={i} fill={entry.color} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </MD3Surface>
+        </MD3AppShell>
     );
 }

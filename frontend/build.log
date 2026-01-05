@@ -1,0 +1,25 @@
+
+> mekong-dashboard@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+ ⨯ ESLint must be installed in order to run during builds: npm install --save-dev eslint
+Failed to compile.
+
+./app/[locale]/defense/page.tsx:230:104
+Type error: Type '{ children: Element; key: string; shape: "medium"; className: string; style: { borderColor: string; }; }' is not assignable to type 'IntrinsicAttributes & MD3SurfaceProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & MD3SurfaceProps'.
+
+[0m [90m 228 |[39m                             [33m<[39m[33mdiv[39m className[33m=[39m[32m"space-y-3"[39m[33m>[39m[0m
+[0m [90m 229 |[39m                                 {blacklistedClients[33m.[39mmap((client) [33m=>[39m ([0m
+[0m[31m[1m>[22m[39m[90m 230 |[39m                                     [33m<[39m[33mMD3Surface[39m key[33m=[39m{client[33m.[39mname} shape[33m=[39m[32m"medium"[39m className[33m=[39m[32m"auto-safe"[39m style[33m=[39m{{ borderColor[33m:[39m [32m'rgba(239, 68, 68, 0.3)'[39m }}[33m>[39m[0m
+[0m [90m     |[39m                                                                                                        [31m[1m^[22m[39m[0m
+[0m [90m 231 |[39m                                         [33m<[39m[33mdiv[39m className[33m=[39m[32m"flex items-center justify-between"[39m[33m>[39m[0m
+[0m [90m 232 |[39m                                             [33m<[39m[33mdiv[39m className[33m=[39m[32m"flex items-center gap-4"[39m[33m>[39m[0m
+[0m [90m 233 |[39m                                                 [33m<[39m[33mdiv[39m className[33m=[39m{[32m`px-2 py-1 rounded text-xs font-bold`[39m} style[33m=[39m{{[0m
+Next.js build worker exited with code: 1 and signal: null

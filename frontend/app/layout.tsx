@@ -1,6 +1,13 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { Outfit } from 'next/font/google'
 import ClientLayout from '@/components/ClientLayout'
+
+const outfit = Outfit({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-outfit',
+})
 
 export const metadata: Metadata = {
     title: 'Mekong-CLI | Mission Control',
@@ -13,9 +20,9 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="vi">
+        <html lang="vi" className={outfit.variable}>
             <head>
-                <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+                {/* Removed JetBrains Mono manual link in favor of next/font */}
             </head>
             <body>
                 <ClientLayout>{children}</ClientLayout>

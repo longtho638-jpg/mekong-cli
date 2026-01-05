@@ -1,45 +1,72 @@
 'use client';
 
+import React from 'react';
 import { Bot, MessageSquare, Zap, Clock, CheckCircle, Sparkles } from 'lucide-react';
-import { DepartmentDashboard } from '@/components/DepartmentDashboard';
-
-const assistantMetrics = [
-    { label: 'Queries Today', value: '248', icon: <MessageSquare className="w-5 h-5" />, color: '#3b82f6', trend: { value: '+32', direction: 'up' as const } },
-    { label: 'Avg Response', value: '1.2s', icon: <Zap className="w-5 h-5" />, color: '#22c55e', trend: { value: '-0.3s', direction: 'down' as const } },
-    { label: 'Accuracy', value: '96%', icon: <CheckCircle className="w-5 h-5" />, color: '#a855f7', trend: { value: '+2%', direction: 'up' as const } },
-    { label: 'Tasks Done', value: '1.2K', icon: <Sparkles className="w-5 h-5" />, color: '#f59e0b', trend: { value: '+180', direction: 'up' as const } },
-];
-
-const queryTypes = [
-    { name: 'Research', value: 85, color: '#3b82f6' },
-    { name: 'Writing', value: 62, color: '#22c55e' },
-    { name: 'Analysis', value: 55, color: '#a855f7' },
-    { name: 'Coding', value: 46, color: '#f59e0b' },
-];
-
-const dailyUsage = [
-    { name: 'Mon', value: 180 }, { name: 'Tue', value: 220 }, { name: 'Wed', value: 195 },
-    { name: 'Thu', value: 248 }, { name: 'Fri', value: 210 },
-];
-
-const assistantCharts = [
-    { type: 'bar' as const, title: 'Queries by Type', data: queryTypes },
-    { type: 'area' as const, title: 'Daily Usage', data: dailyUsage },
-];
-
-const assistantActions = [
-    { icon: '💬', label: 'New Chat', onClick: () => { } },
-    { icon: '📝', label: 'Templates', onClick: () => { } },
-    { icon: '📊', label: 'Analytics', onClick: () => { } },
-    { icon: '🧠', label: 'Train', onClick: () => { } },
-    { icon: '📚', label: 'History', onClick: () => { } },
-    { icon: '⚙️', label: 'Settings', onClick: () => { } },
-];
+import { MD3AppShell } from '@/components/md3/MD3AppShell';
+import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
 export default function AssistantPage({ params: { locale } }: { params: { locale: string } }) {
+    const { analytics, loading, projects, clients } = useAnalytics();
+    // Derive KPIs from real Supabase data
+    const kpi1 = analytics.totalRevenue;
+    const kpi2 = analytics.activeClients;
     return (
-        <DepartmentDashboard title="AI Assistant" subtitle="Chat • Research • Writing • Analysis" icon="🤖" color="blue"
-            statusLabel="Queries" statusValue="248" metrics={assistantMetrics} charts={assistantCharts} quickActions={assistantActions} locale={locale}
-        />
+        <MD3AppShell title="AI Assistant 🤖" subtitle="Queries • Automation • Tasks • Intelligence">
+            <MD3SupportingPaneLayout
+                mainContent={
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <MessageSquare className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Queries Today</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#3b82f6' }}>248</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+32 queries</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Zap className="w-5 h-5" style={{ color: '#22c55e' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Avg Response</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#22c55e' }}>1.2s</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>-0.3s faster</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <CheckCircle className="w-5 h-5" style={{ color: '#a855f7' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Accuracy</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#a855f7' }}>96%</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+2% improvement</div>
+                            </MD3Surface>
+                            <MD3Surface shape="large" className="auto-safe">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <Sparkles className="w-5 h-5" style={{ color: '#f59e0b' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-label-medium-size)', color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tasks Done</span>
+                                </div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-display-small-size)', fontWeight: 600, color: '#f59e0b' }}>1.2K</div>
+                                <div style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-tertiary)' }}>+180 completed</div>
+                            </MD3Surface>
+                        </div>
+                    </>
+                }
+                supportingContent={
+                    <MD3Card headline="Quick Actions" subhead="AI Tools">
+                        <div className="space-y-2">
+                            {[{ icon: '💬', label: 'Chat' }, { icon: '⚡', label: 'Automate' }, { icon: '📋', label: 'Tasks' }, { icon: '🔍', label: 'Search' }, { icon: '📊', label: 'Analytics' }, { icon: '⚙️', label: 'Settings' }].map((action) => (
+                                <button key={action.label} className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors" style={{ backgroundColor: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
+                                    <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </MD3Card>
+                }
+            />
+        </MD3AppShell>
     );
 }
