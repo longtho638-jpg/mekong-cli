@@ -1,5 +1,6 @@
 'use client';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { useEmployees } from '@/hooks/useHR';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -7,8 +8,11 @@ import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
 import { MD3Card } from '@/components/ui/MD3Card';
 import { MD3Surface, MD3Text } from '@/components/md3-dna';
-import { Users, Briefcase, TrendingUp, Heart, AlertTriangle, UserPlus, FileText, Calendar } from 'lucide-react';
+import { Users, Briefcase, TrendingUp, Heart, AlertTriangle, UserPlus, FileText, Calendar, Loader2 } from 'lucide-react';
 import { BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Tenant ID - in production, get from auth context
+const TENANT_ID = process.env.NEXT_PUBLIC_DEFAULT_TENANT_ID || 'demo-tenant';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 👥 HR HUB - MD3 DNA Standardized
@@ -52,10 +56,11 @@ const attritionRisk = [
 export default function HRPage({ params: { locale } }: { params: { locale: string } }) {
     const t = useTranslations('HR');
     const { analytics, loading, projects, clients } = useAnalytics();
+    const { employees, loading: empLoading } = useEmployees(TENANT_ID);
 
-    // Derive HR metrics from real Supabase data
-    // Headcount = derived from active clients (1 team member per 2 active clients)
-    const derivedHeadcount = Math.max(10, analytics.activeClients * 2 + analytics.totalProjects);
+    // Use real employee data if available, otherwise derive from analytics
+    const realHeadcount = employees.length > 0 ? employees.length : Math.max(10, analytics.activeClients * 2 + analytics.totalProjects);
+    const derivedHeadcount = realHeadcount;
 
     // Dynamic headcount by department
     const headcountByDept = [
