@@ -32,4 +32,6 @@ export const config = {
         // - static files
         '/((?!api|_next|.*\\..*).*)'
     ],
+    // Use Node.js runtime to fix __dirname error on Vercel
+    runtime: 'nodejs',
 };
