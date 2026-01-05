@@ -1,3 +1,27 @@
+## [2.3.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0...v2.3.0-beta.1) (2026-01-05)
+
+
+### 🚀 Features
+
+* **ck-help:** add fuzzy matching, synonyms, and disambiguation ([255a211](https://github.com/claudekit/claudekit-engineer/commit/255a2115516581bb890e3218e7ab65174b867d55))
+* **ck-help:** improve intent detection with positional weighting ([310cfe8](https://github.com/claudekit/claudekit-engineer/commit/310cfe8ecca9bb4eb463ce3974f1041b6339bcbf)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+
+
+### 🐞 Bug Fixes
+
+* **ck-help:** add action verb detection for imperative sentences ([105a258](https://github.com/claudekit/claudekit-engineer/commit/105a2580f93a12e1acc769e72e57fbb0b2b744ea))
+* **ck-help:** add service-specific compound phrases for notifications ([40e930c](https://github.com/claudekit/claudekit-engineer/commit/40e930cd4f674b7c44cf83ea1a7133b1433273ce))
+
+
+### ♻️ Code Refactoring
+
+* **ck-help:** generalize intent validation with pattern-based heuristics ([2f23b74](https://github.com/claudekit/claudekit-engineer/commit/2f23b74a2c4fe3134a5ea0682fce930bd9fab432))
+
+
+### ✅ Tests
+
+* **ck-help:** add comprehensive test suite with 57 test cases ([b5794d0](https://github.com/claudekit/claudekit-engineer/commit/b5794d03ac9da3e3c6796dc85266931e6f503ac1)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+
 ## [2.2.0](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0...v2.2.0) (2026-01-05)
 
 
