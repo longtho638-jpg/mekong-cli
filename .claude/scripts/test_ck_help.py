@@ -259,6 +259,28 @@ def main():
         expect_contains=["Not sure about", "browse categories"]
     )
 
+    # Edge cases: service-specific queries should hit notifications, not config
+    test(
+        "4.11 'configure discord' → notifications (service keyword)",
+        "configure discord",
+        expect_contains=["DISCORD_WEBHOOK_URL"],
+        expect_type="task-recommendations"
+    )
+
+    test(
+        "4.12 'discord webhook' → notifications",
+        "discord webhook",
+        expect_contains=["notifications"],
+        expect_type="task-recommendations"
+    )
+
+    test(
+        "4.13 'telegram bot' → notifications",
+        "telegram bot",
+        expect_contains=["TELEGRAM"],
+        expect_type="task-recommendations"
+    )
+
     # =========================================
     # CATEGORY 5: Command Lookup
     # =========================================
