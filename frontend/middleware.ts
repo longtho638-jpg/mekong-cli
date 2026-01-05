@@ -1,5 +1,8 @@
 import createMiddleware from 'next-intl/middleware';
 
+// Use Node.js runtime to avoid Edge Runtime limitations with __dirname
+export const runtime = 'nodejs';
+
 export default createMiddleware({
     // A list of all locales that are supported
     locales: ['en', 'vi', 'zh'],
