@@ -385,5 +385,7 @@ export class AccountingService {
     }
 }
 
-// Export singleton
-export const accountingService = new AccountingService();
+// Factory function for lazy initialization
+export function getAccountingService() {
+    return new AccountingService();
+}

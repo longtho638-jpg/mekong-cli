@@ -548,5 +548,7 @@ export class HRService {
     }
 }
 
-// Export singleton
-export const hrService = new HRService();
+// Factory function for lazy initialization
+export function getHRService() {
+    return new HRService();
+}

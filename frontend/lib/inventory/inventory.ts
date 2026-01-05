@@ -490,5 +490,7 @@ export class InventoryService {
     }
 }
 
-// Export singleton
-export const inventoryService = new InventoryService();
+// Factory function for lazy initialization
+export function getInventoryService() {
+    return new InventoryService();
+}
