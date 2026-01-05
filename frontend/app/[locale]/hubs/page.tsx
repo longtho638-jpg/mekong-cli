@@ -1,6 +1,6 @@
 'use client';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import Link from 'next/link';
@@ -20,9 +20,10 @@ const HUBS = [
     { id: 'portfolio', icon: '💎', path: '/vc/portfolio', color: 'green' },
 ];
 
-export default function HubsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function HubsPage() {
     const { analytics } = useAnalytics();
     const t = useTranslations('HubsPage');
+    const locale = useLocale();
 
     return (
         <MD3AppShell title={`🏯 ${t('title')}`} subtitle="Navigate to specialized hubs">

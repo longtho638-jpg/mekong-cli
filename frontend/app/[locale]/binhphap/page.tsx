@@ -30,7 +30,7 @@ const recentMoves = [
     { time: '3d ago', chapter: 1, action: '"Laying Plans" for Q1', result: 'Board approved' },
 ];
 
-export default function BinhPhapPage({ params: { locale } }: { params: { locale: string } }) {
+export default function BinhPhapPage() {
     const { analytics } = useAnalytics();
     const t = useTranslations('Strategy');
 

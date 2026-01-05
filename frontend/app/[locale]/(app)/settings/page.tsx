@@ -3,7 +3,7 @@ import { useAnalytics } from '@/lib/hooks/useAnalytics';
 
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { MD3TopAppBar } from '@/components/md3/MD3TopAppBar';
 import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
 import { MD3Card } from '@/components/ui/MD3Card';
@@ -13,11 +13,12 @@ import { User, Shield, Database, Globe } from 'lucide-react';
 // ⚙️ SETTINGS PAGE - MD3 Global System Compliant
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export default function SettingsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function SettingsPage() {
     const { analytics, loading, projects, clients } = useAnalytics();
     const router = useRouter();
     const pathname = usePathname();
     const t = useTranslations('SettingsPage');
+    const locale = useLocale();
 
     return (
         <>

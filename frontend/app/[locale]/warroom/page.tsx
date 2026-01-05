@@ -12,7 +12,7 @@ const generateMetricData = () => Array.from({ length: 20 }, (_, i) => ({
     value: Math.floor(Math.random() * 30) + 70,
 }));
 
-export default function WarroomPage({ params: { locale } }: { params: { locale: string } }) {
+export default function WarroomPage() {
     const { analytics } = useAnalytics();
     const t = useTranslations('Strategy');
 

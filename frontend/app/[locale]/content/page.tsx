@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 
-export default function ContentPage({ params: { locale } }: { params: { locale: string } }) {
+export default function ContentPage() {
     const { analytics, loading } = useAnalytics();
 
     // Derive content metrics from real data

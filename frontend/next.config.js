@@ -22,8 +22,8 @@ const nextConfig = {
         return config;
     },
     experimental: {
-        // Disable problematic features that may cause Edge issues
-        serverComponentsExternalPackages: ['ua-parser-js'],
+        // Enable Node.js runtime for middleware to fix __dirname error on Vercel
+        nodeMiddleware: true,
     },
 }
 

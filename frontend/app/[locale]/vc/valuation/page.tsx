@@ -19,7 +19,7 @@ const comparablesData = [
     { company: 'Target', evRevenue: 8.0, evEbitda: 14.0 },
 ];
 
-export default function ValuationPage({ params: { locale } }: { params: { locale: string } }) {
+export default function ValuationPage() {
     return (
         <MD3AppShell title="🧮 Startup Valuation" subtitle="DCF Analysis • Comparables • Final Valuation">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

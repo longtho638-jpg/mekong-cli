@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
-export default function LegalPage({ params: { locale } }: { params: { locale: string } }) {
+export default function LegalPage() {
     const { analytics, loading, projects, clients } = useAnalytics();
 
     // Derive legal metrics from real Supabase data

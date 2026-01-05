@@ -21,7 +21,7 @@ const RECENT_SCRIPTS = [
     { title: 'Customer Testimonial', platform: 'YouTube', duration: '3:00', status: 'Complete' },
 ];
 
-export default function VideoPage({ params: { locale } }: { params: { locale: string } }) {
+export default function VideoPage() {
     const [prompt, setPrompt] = useState('');
     const [platform, setPlatform] = useState('youtube');
     const { generate, loading: generating, result: generatedScript, error } = useVideoGenerator();

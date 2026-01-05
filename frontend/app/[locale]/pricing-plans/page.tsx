@@ -46,7 +46,7 @@ const TESTIMONIALS = [
     { name: 'Duc Pham', role: 'Director, Growth Agency', quote: 'White label launched our platform in 2 weeks.' },
 ];
 
-export default function PricingPlansPage({ params: { locale } }: { params: { locale: string } }) {
+export default function PricingPlansPage() {
     const [annual, setAnnual] = useState(false);
     const getPrice = (price: number) => annual ? Math.round(price * 10) : price;
 

@@ -1,7 +1,7 @@
 'use client';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3Footer } from '@/components/md3/MD3Footer';
 import { MD3FilledButton, MD3OutlinedButton } from '@/components/md3/MD3Button';
@@ -41,9 +41,10 @@ const BentoCard = ({ children, className, delay = 0 }: { children: React.ReactNo
     </motion.div>
 );
 
-export default function LandingPage({ params: { locale } }: { params: { locale: string } }) {
+export default function LandingPage() {
     const { analytics } = useAnalytics();
     const t = useTranslations('Landing');
+    const locale = useLocale();
 
     return (
         <>

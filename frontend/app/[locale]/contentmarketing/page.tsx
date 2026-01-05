@@ -15,7 +15,7 @@ const contentPerformance = [
     { title: 'Industry Report', views: 11000, engagement: 7.8, shares: 290, color: '#22c55e' },
 ];
 
-export default function ContentMarketingPage({ params: { locale } }: { params: { locale: string } }) {
+export default function ContentMarketingPage() {
     const { analytics } = useAnalytics();
     const totalViews = contentPerformance.reduce((sum, c) => sum + c.views, 0);
     const avgEngagement = (contentPerformance.reduce((sum, c) => sum + c.engagement, 0) / contentPerformance.length).toFixed(1);

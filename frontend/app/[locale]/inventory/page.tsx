@@ -11,7 +11,7 @@ import { useAssets, useAssetSummary, useLicenses } from '@/hooks/useInventory';
 // Tenant ID - in production, get from auth context
 const TENANT_ID = process.env.NEXT_PUBLIC_DEFAULT_TENANT_ID || 'demo-tenant';
 
-export default function InventoryPage({ params: { locale } }: { params: { locale: string } }) {
+export default function InventoryPage() {
     const { assets, loading, error, createAsset } = useAssets(TENANT_ID);
     const { summary } = useAssetSummary(TENANT_ID);
     const { licenses } = useLicenses(TENANT_ID);

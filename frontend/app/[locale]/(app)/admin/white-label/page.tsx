@@ -20,7 +20,7 @@ const THEMES = [
     { id: 'royal', name: 'Royal', primary: '#7C3AED', secondary: '#8B5CF6', accent: '#EC4899' },
 ];
 
-export default function WhiteLabelPage({ params: { locale } }: { params: { locale: string } }) {
+export default function WhiteLabelPage() {
     const [config, setConfig] = useState({
         agencyName: 'My Agency',
         tagline: 'Powered by Agency OS',

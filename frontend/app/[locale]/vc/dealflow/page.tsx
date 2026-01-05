@@ -36,7 +36,7 @@ const MOCK_DEALS = [
 
 const STAGE_COLORS: Record<string, string> = { sourcing: '#6b7280', screening: '#eab308', diligence: '#06b6d4', termsheet: '#a855f7', closed: '#10b981' };
 
-export default function DealFlowPage({ params: { locale } }: { params: { locale: string } }) {
+export default function DealFlowPage() {
     const t = useTranslations('VC');
     const totalPipeline = MOCK_DEALS.filter(d => d.stage !== 'closed').reduce((sum, d) => sum + d.fundingAsk, 0);
 

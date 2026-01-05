@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
-export default function DocumentsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function DocumentsPage() {
     const { analytics, loading } = useAnalytics();
     return (
         <MD3AppShell title="Documents Hub 📁" subtitle="Files • Folders • Sharing • Search">

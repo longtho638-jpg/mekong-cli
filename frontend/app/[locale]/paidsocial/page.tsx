@@ -12,7 +12,7 @@ const adSpend = Array.from({ length: 12 }, (_, i) => ({
     roas: 2.5 + i * 0.2 + Math.random() * 0.5,
 }));
 
-export default function PaidSocialPage({ params: { locale } }: { params: { locale: string } }) {
+export default function PaidSocialPage() {
     const { analytics } = useAnalytics();
 
     return (

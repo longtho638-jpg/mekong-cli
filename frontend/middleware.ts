@@ -31,5 +31,5 @@ export const config = {
         // - _next (Next.js internals)
         // - static files
         '/((?!api|_next|.*\\..*).*)'
-    ]
+    ],
 };

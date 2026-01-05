@@ -3,6 +3,7 @@ import { useAnalytics } from '@/lib/hooks/useAnalytics';
 
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
@@ -177,7 +178,7 @@ const CATEGORIES = [
     })),
 ];
 
-export default function NavigatorPage({ params: { locale } }: { params: { locale: string } }) {
+export default function NavigatorPage() {
     const { analytics, loading, projects, clients } = useAnalytics();
     // Derive KPIs from real Supabase data
     const kpi1 = analytics.totalRevenue;
@@ -185,6 +186,7 @@ export default function NavigatorPage({ params: { locale } }: { params: { locale
     const [activeCategory, setActiveCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
+    const locale = useLocale();
 
     // Flatten all pages
     const allPages = useMemo(() => {

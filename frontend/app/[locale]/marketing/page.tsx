@@ -41,7 +41,7 @@ const spendTrend = Array.from({ length: 12 }, (_, i) => ({
     paid: 25000 + Math.random() * 10000,
 }));
 
-export default function MarketingPage({ params: { locale } }: { params: { locale: string } }) {
+export default function MarketingPage() {
     const t = useTranslations('Common');
     const { analytics, loading, projects } = useAnalytics();
 

@@ -23,7 +23,7 @@ const AFFILIATE_PROGRAMS = [
     { name: 'OpenAI Affiliates', commission: '20%', type: 'Recurring', status: 'Active', earnings: 5600 },
 ];
 
-export default function AffiliatePage({ params: { locale } }: { params: { locale: string } }) {
+export default function AffiliatePage() {
     const { analytics } = useAnalytics();
 
     const totalEarnings = AFFILIATE_PROGRAMS.reduce((sum, p) => sum + p.earnings, 0);

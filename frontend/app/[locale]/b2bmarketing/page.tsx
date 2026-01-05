@@ -14,7 +14,7 @@ const leadScoring = [
     { score: '<60', count: 34, color: '#ef4444' },
 ];
 
-export default function B2BMarketingPage({ params: { locale } }: { params: { locale: string } }) {
+export default function B2BMarketingPage() {
     const { analytics } = useAnalytics();
     const totalLeads = leadScoring.reduce((s, l) => s + l.count, 0);
 

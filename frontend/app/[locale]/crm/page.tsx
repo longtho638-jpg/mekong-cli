@@ -17,7 +17,7 @@ import {
 // DNA: MD3AppShell + MD3SupportingPaneLayout + MD3Surface
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export default function CRMPage({ params: { locale } }: { params: { locale: string } }) {
+export default function CRMPage() {
     const {
         clients,
         loading,

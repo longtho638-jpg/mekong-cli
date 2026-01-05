@@ -21,7 +21,7 @@ const generateSparklineData = (baseValue: number, variance: number) =>
         value: baseValue + (Math.random() - 0.5) * variance,
     }));
 
-export default function AdminPage({ params: { locale } }: { params: { locale: string } }) {
+export default function AdminPage() {
     const t = useTranslations('AI');
     const tHubs = useTranslations('Hubs');
     const { analytics, loading, projects } = useAnalytics();

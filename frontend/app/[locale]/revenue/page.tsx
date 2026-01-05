@@ -9,7 +9,7 @@ import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { useMRR, formatCurrency as formatMRR, formatPercentage } from '@/hooks/useMRR';
 
-export default function RevenuePage({ params: { locale } }: { params: { locale: string } }) {
+export default function RevenuePage() {
     const { analytics, loading } = useAnalytics();
     const { metrics: stripeMetrics, loading: mrrLoading, refresh, lastUpdated, growthRate, isMock } = useMRR(true, 60000); // Auto-refresh every 60s
 

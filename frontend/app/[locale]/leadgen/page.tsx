@@ -28,7 +28,7 @@ const qualityBySource = [
     { source: 'Events', total: 178, mql: 85, sql: 32 },
 ];
 
-export default function LeadGenPage({ params: { locale } }: { params: { locale: string } }) {
+export default function LeadGenPage() {
     const { analytics } = useAnalytics();
     const totalLeads = leadSources.reduce((sum, s) => sum + s.leads, 0);
     const totalMQL = qualityBySource.reduce((sum, s) => sum + s.mql, 0);

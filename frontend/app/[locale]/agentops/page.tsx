@@ -2,7 +2,7 @@
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { useAgentsAPI } from '@/lib/hooks/useAgentsAPI';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Shield, Command, Activity, Zap, TrendingDown, AlertTriangle, Award, Bot, Target, Landmark, Rocket } from 'lucide-react';
@@ -13,7 +13,7 @@ import CommandPalette, { useCommandPalette } from '@/components/CommandPalette';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const AGENTIC_API = 'http://localhost:8080';
 
-export default function AgentOpsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function AgentOpsPage() {
     const { analytics, loading, projects, clients } = useAnalytics();
     // Derive KPIs from real Supabase data
     const kpi1 = analytics.totalRevenue;
@@ -23,6 +23,7 @@ export default function AgentOpsPage({ params: { locale } }: { params: { locale:
 
     const pathname = usePathname();
     const router = useRouter();
+    const locale = useLocale();
 
     // Real data from API
     const [summary, setSummary] = useState<any>(null);

@@ -15,7 +15,7 @@ const influencers = [
     { name: '@bizleader', followers: 156000, engagement: 5.1, roi: 380, color: '#f59e0b' },
 ];
 
-export default function InfluencerPage({ params: { locale } }: { params: { locale: string } }) {
+export default function InfluencerPage() {
     const { analytics, loading, projects, clients } = useAnalytics();
     const kpi1 = analytics.totalRevenue;
     const kpi2 = analytics.activeClients;

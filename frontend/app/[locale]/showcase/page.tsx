@@ -1,5 +1,6 @@
 'use client';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { useLocale } from 'next-intl';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import Link from 'next/link';
@@ -16,8 +17,9 @@ const SHOWCASES = [
     { title: 'HR Dashboard', path: '/hr', color: 'purple', description: 'People analytics' },
 ];
 
-export default function ShowcasePage({ params: { locale } }: { params: { locale: string } }) {
+export default function ShowcasePage() {
     const { analytics } = useAnalytics();
+    const locale = useLocale();
 
     return (
         <MD3AppShell title="🎨 Showcase" subtitle="Explore Pro Max dashboards with interactive visualizations">

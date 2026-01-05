@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useInvoices } from '@/lib/hooks/useInvoices';
 
-export default function FinOpsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function FinOpsPage() {
     const { invoices, loading, error, stats, createInvoice, markAsPaid, deleteInvoice } = useInvoices();
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newInvoice, setNewInvoice] = useState({

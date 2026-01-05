@@ -28,7 +28,7 @@ const monthlyROI = Array.from({ length: 12 }, (_, i) => ({
     roi: 250 + i * 25 + Math.random() * 50,
 }));
 
-export default function DigitalMarketingPage({ params: { locale } }: { params: { locale: string } }) {
+export default function DigitalMarketingPage() {
     const { analytics } = useAnalytics();
     const totalSpend = channelPerformance.reduce((sum, c) => sum + c.spend, 0);
     const totalConversions = channelPerformance.reduce((sum, c) => sum + c.conversions, 0);

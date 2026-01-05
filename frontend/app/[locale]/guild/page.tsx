@@ -9,7 +9,7 @@ import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useGuildStatus, useGuildNetwork } from '@/hooks/useBlueOcean';
 
-export default function GuildPage({ params: { locale } }: { params: { locale: string } }) {
+export default function GuildPage() {
     const { analytics, loading } = useAnalytics();
     const { data: status, isLoading: statusLoading } = useGuildStatus();
     const { data: network, isLoading: networkLoading } = useGuildNetwork();

@@ -13,7 +13,7 @@ const keywords = [
     { keyword: 'sales automation', cpc: 11.3, conversions: 178, color: '#f59e0b' },
 ];
 
-export default function PPCPage({ params: { locale } }: { params: { locale: string } }) {
+export default function PPCPage() {
     const { analytics } = useAnalytics();
 
     return (

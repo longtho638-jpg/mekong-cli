@@ -10,7 +10,7 @@ import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useBlacklist } from '@/hooks/useBlueOcean';
 import { checkClientDNA, ClientDNA } from '@/lib/api/blue-ocean';
 
-export default function DefensePage({ params: { locale } }: { params: { locale: string } }) {
+export default function DefensePage() {
     const { analytics, loading } = useAnalytics();
     const [searchQuery, setSearchQuery] = useState('');
     const [checkResult, setCheckResult] = useState<ClientDNA | null>(null);

@@ -23,7 +23,7 @@ const equityDistribution = [
     { name: 'Reserved', value: 15, color: '#6b7280' },
 ];
 
-export default function PortfolioPage({ params: { locale } }: { params: { locale: string } }) {
+export default function PortfolioPage() {
     const t = useTranslations('VC');
     const { metrics, loading, isMock, growthRate } = useMRR(true, 60000);
 

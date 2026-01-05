@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useLocale } from 'next-intl';
 import { TrendingUp, DollarSign, Users, Target, RefreshCw, Loader2, ChevronRight, Award, Zap, BarChart3 } from 'lucide-react';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
@@ -12,8 +13,9 @@ import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, 
 // Plan breakdown colors
 const PLAN_COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'];
 
-export default function InvestorPortalPage({ params: { locale } }: { params: { locale: string } }) {
+export default function InvestorPortalPage() {
     const { metrics, loading, error, isMock, lastUpdated, growthRate, churnRate, refresh } = useMRR(true, 30000); // Auto-refresh every 30s
+    const locale = useLocale();
 
     // Unit economics
     const ltv = metrics ? (metrics.averageRevenuePerUser / 0.05) : 0; // Assuming 5% churn

@@ -53,7 +53,7 @@ const attritionRisk = [
     { name: 'Critical', value: 3, color: '#7f1d1d' },
 ];
 
-export default function HRPage({ params: { locale } }: { params: { locale: string } }) {
+export default function HRPage() {
     const t = useTranslations('HR');
     const { analytics, loading, projects, clients } = useAnalytics();
     const { employees, loading: empLoading } = useEmployees(TENANT_ID);

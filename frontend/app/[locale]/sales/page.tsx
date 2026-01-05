@@ -17,7 +17,7 @@ import { useSalesCommand } from '@/lib/hooks/useCommands';
 // DNA: MD3AppShell + MD3SupportingPaneLayout (matches /revenue gold standard)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export default function SalesPage({ params: { locale } }: { params: { locale: string } }) {
+export default function SalesPage() {
     const t = useTranslations('Common');
     const { clients, loading: clientsLoading, error: clientsError } = useClients();
     const { projects, loading: projectsLoading, stats: projectStats } = useProjects();

@@ -34,7 +34,7 @@ const backlinkData = [
     { source: 'Medium', count: 89, authority: 85 },
 ];
 
-export default function SEOPage({ params: { locale } }: { params: { locale: string } }) {
+export default function SEOPage() {
     const { analytics } = useAnalytics();
     const avgPosition = Math.max(1, 20 - analytics.activeClients * 2);
     const totalKeywords = analytics.totalProjects * 10 + analytics.activeClients * 5;

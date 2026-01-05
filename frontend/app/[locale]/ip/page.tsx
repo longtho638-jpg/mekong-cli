@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
-export default function IPPage({ params: { locale } }: { params: { locale: string } }) {
+export default function IPPage() {
     const { analytics, loading } = useAnalytics();
     return (
         <MD3AppShell title="IP Hub 💡" subtitle="Patents • Trademarks • Copyrights • Trade Secrets">

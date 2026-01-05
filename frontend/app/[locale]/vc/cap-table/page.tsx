@@ -28,7 +28,7 @@ const stakeholders = [
     { name: 'Reserved', shares: 1000000, percentage: 10.0, vesting: 'Unallocated' },
 ];
 
-export default function CapTablePage({ params: { locale } }: { params: { locale: string } }) {
+export default function CapTablePage() {
     const t = useTranslations('VC');
     const totalShares = 10000000;
     const postMoneyValuation = 25000000;

@@ -8,7 +8,7 @@ import { MD3Card } from '@/components/ui/MD3Card';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useProjects } from '@/lib/hooks/useProjects';
 
-export default function ProjectsPage({ params: { locale } }: { params: { locale: string } }) {
+export default function ProjectsPage() {
     const { projects, loading, error, stats, createProject, deleteProject } = useProjects();
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newProject, setNewProject] = useState({ name: '', description: '', budget: 0, status: 'active' as const });
