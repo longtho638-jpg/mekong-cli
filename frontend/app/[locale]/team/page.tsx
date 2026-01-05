@@ -1,422 +1,374 @@
 'use client';
 
-import React, { useState } from 'react';
-import { MD3AppShell } from '@/components/md3/MD3AppShell';
-import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
-import { MD3Card } from '@/components/ui/MD3Card';
-import { MD3Surface, MD3Text } from '@/components/md3-dna';
-import { useTeam } from '@/lib/hooks/useTeam';
-import { useAgency } from '@/lib/hooks/useAgency';
+/**
+ * Team Management Page
+ * Enterprise team administration with roles and invitations
+ */
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Users, UserPlus, Crown, Shield, User, Eye,
-    Mail, MoreHorizontal, Trash2, X, Check, AlertCircle
+    Users,
+    UserPlus,
+    Shield,
+    MoreVertical,
+    Mail,
+    Check,
+    X,
+    Crown,
+    User,
+    Eye,
+    Briefcase
 } from 'lucide-react';
-import type { TeamRole } from '@/lib/types/team';
+import { MD3Button } from '@/components/md3/MD3Button';
+import { MD3Card } from '@/components/ui/MD3Card';
+import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 👥 TEAM MANAGEMENT - Multi-tenancy UI
-// DNA: MD3AppShell + MD3SupportingPaneLayout + MD3Surface
-// ═══════════════════════════════════════════════════════════════════════════════
+// Types
+type TenantRole = 'owner' | 'admin' | 'manager' | 'member' | 'viewer';
 
-const ROLE_ICONS: Record<TeamRole, React.ReactNode> = {
-    owner: <Crown className="w-4 h-4" />,
-    admin: <Shield className="w-4 h-4" />,
-    member: <User className="w-4 h-4" />,
-    viewer: <Eye className="w-4 h-4" />,
+interface TeamMember {
+    id: string;
+    email: string;
+    name: string;
+    role: TenantRole;
+    status: 'active' | 'pending' | 'suspended';
+    joinedAt?: string;
+    avatarUrl?: string;
+}
+
+// Role config
+const ROLES: Record<TenantRole, { label: string; icon: typeof Crown; color: string }> = {
+    owner: { label: 'Owner', icon: Crown, color: '#FFD700' },
+    admin: { label: 'Admin', icon: Shield, color: '#6750A4' },
+    manager: { label: 'Manager', icon: Briefcase, color: '#7D5260' },
+    member: { label: 'Member', icon: User, color: '#625B71' },
+    viewer: { label: 'Viewer', icon: Eye, color: '#938F99' },
 };
 
-const ROLE_COLORS: Record<TeamRole, string> = {
-    owner: 'var(--md-sys-color-tertiary)',
-    admin: 'var(--md-sys-color-primary)',
-    member: 'var(--md-sys-color-secondary)',
-    viewer: 'var(--md-sys-color-outline)',
-};
-
-export default function TeamPage({ params: { locale } }: { params: { locale: string } }) {
-    const { agency } = useAgency();
-    const {
-        members,
-        currentMember,
-        loading,
-        error,
-        stats,
-        isAdmin,
-        canInvite,
-        inviteMember,
-        updateMember,
-        removeMember,
-    } = useTeam();
-
+export default function TeamPage() {
+    const [members, setMembers] = useState<TeamMember[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showInviteModal, setShowInviteModal] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteRole, setInviteRole] = useState<TenantRole>('member');
 
-    return (
-        <MD3AppShell title="Team Management" subtitle={agency?.name || 'Organization'}>
-            <MD3SupportingPaneLayout
-                mainContent={
-                    <>
-                        {/* Stats Cards - Using gap-3 like KPIHeroGrid */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                            <StatCard icon={<Users className="w-5 h-5" />} label="Total Members" value={stats.total} color="var(--md-sys-color-primary)" />
-                            <StatCard icon={<Crown className="w-5 h-5" />} label="Owners" value={stats.owners} color="var(--md-sys-color-tertiary)" />
-                            <StatCard icon={<Shield className="w-5 h-5" />} label="Admins" value={stats.admins} color="var(--md-sys-color-primary)" />
-                            <StatCard icon={<Mail className="w-5 h-5" />} label="Pending" value={stats.pending} color="var(--md-sys-color-secondary)" />
-                        </div>
+    useEffect(() => {
+        // Mock data - in production, fetch from API
+        setMembers([
+            {
+                id: '1',
+                email: 'owner@agency.com',
+                name: 'Anh Founder',
+                role: 'owner',
+                status: 'active',
+                joinedAt: '2025-01-01',
+            },
+            {
+                id: '2',
+                email: 'admin@agency.com',
+                name: 'Linh Admin',
+                role: 'admin',
+                status: 'active',
+                joinedAt: '2025-02-15',
+            },
+            {
+                id: '3',
+                email: 'manager@agency.com',
+                name: 'Hùng Manager',
+                role: 'manager',
+                status: 'active',
+                joinedAt: '2025-03-10',
+            },
+            {
+                id: '4',
+                email: 'designer@agency.com',
+                name: 'Mai Designer',
+                role: 'member',
+                status: 'active',
+                joinedAt: '2025-04-20',
+            },
+            {
+                id: '5',
+                email: 'newbie@agency.com',
+                name: '',
+                role: 'member',
+                status: 'pending',
+            },
+        ]);
+        setLoading(false);
+    }, []);
 
-                        {/* Team Members List */}
-                        <MD3Card headline="Team Members">
-                            {loading ? (
-                                <div className="flex items-center justify-center py-8">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent"
-                                        style={{ borderColor: 'var(--md-sys-color-primary)' }} />
-                                </div>
-                            ) : error ? (
-                                <div className="text-center py-8" style={{ color: 'var(--md-sys-color-error)' }}>
-                                    <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-                                    <p>{error}</p>
-                                </div>
-                            ) : members.length === 0 ? (
-                                <div className="text-center py-8" style={{ color: 'var(--md-sys-color-outline)' }}>
-                                    <Users className="w-8 h-8 mx-auto mb-2" />
-                                    <p>No team members yet</p>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col" style={{ gap: '8px' }}>
-                                    {members.map((member) => (
-                                        <MemberRow
-                                            key={member.id}
-                                            member={member}
-                                            isCurrentUser={member.id === currentMember?.id}
-                                            canManage={isAdmin && member.role !== 'owner'}
-                                            onUpdateRole={(role) => updateMember(member.id, { role })}
-                                            onRemove={() => removeMember(member.id)}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </MD3Card>
+    const handleInvite = async () => {
+        if (!inviteEmail) return;
 
-                        {/* Role Permissions Info */}
-                        <MD3Card headline="Role Permissions">
-                            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: '12px' }}>
-                                {(['owner', 'admin', 'member', 'viewer'] as TeamRole[]).map((role) => (
-                                    <div key={role} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--md-sys-color-surface-container)' }}>
-                                        <div className="flex items-center mb-2" style={{ gap: '8px', color: ROLE_COLORS[role] }}>
-                                            {ROLE_ICONS[role]}
-                                            <span className="font-medium capitalize">{role}</span>
-                                        </div>
-                                        <ul className="text-xs space-y-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                                            {role === 'owner' && <><li>✓ Full access</li><li>✓ Billing</li><li>✓ Delete org</li></>}
-                                            {role === 'admin' && <><li>✓ Invite members</li><li>✓ Manage roles</li><li>✓ All data</li></>}
-                                            {role === 'member' && <><li>✓ Read/Write data</li><li>✗ No invites</li></>}
-                                            {role === 'viewer' && <><li>✓ View only</li><li>✗ No edits</li></>}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
-                        </MD3Card>
-                    </>
-                }
-                supportingContent={
-                    <>
-                        {/* Quick Actions */}
-                        <MD3Card headline="Quick Actions">
-                            <div className="flex flex-col" style={{ gap: '8px' }}>
-                                {canInvite && (
-                                    <button
-                                        onClick={() => setShowInviteModal(true)}
-                                        className="flex items-center w-full p-3 rounded-lg transition-all hover:opacity-80"
-                                        style={{
-                                            backgroundColor: 'var(--md-sys-color-primary)',
-                                            color: 'var(--md-sys-color-on-primary)',
-                                            gap: '12px',
-                                        }}
-                                    >
-                                        <UserPlus className="w-4 h-4" />
-                                        <span>Invite Team Member</span>
-                                    </button>
-                                )}
-                            </div>
-                        </MD3Card>
+        // Add pending member
+        setMembers(prev => [...prev, {
+            id: Date.now().toString(),
+            email: inviteEmail,
+            name: '',
+            role: inviteRole,
+            status: 'pending',
+        }]);
 
-                        {/* Your Role */}
-                        <MD3Card headline="Your Role">
-                            {currentMember ? (
-                                <div className="flex items-center p-3 rounded-lg" style={{
-                                    backgroundColor: 'var(--md-sys-color-surface-container)',
-                                    gap: '12px',
-                                }}>
-                                    <div
-                                        className="w-10 h-10 rounded-full flex items-center justify-center"
-                                        style={{ backgroundColor: `${ROLE_COLORS[currentMember.role]}20`, color: ROLE_COLORS[currentMember.role] }}
-                                    >
-                                        {ROLE_ICONS[currentMember.role]}
-                                    </div>
-                                    <div>
-                                        <div className="font-medium capitalize" style={{ color: ROLE_COLORS[currentMember.role] }}>
-                                            {currentMember.role}
-                                        </div>
-                                        <div className="text-xs" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                                            {currentMember.email}
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <p style={{ color: 'var(--md-sys-color-outline)' }}>Not a team member</p>
-                            )}
-                        </MD3Card>
-
-                        {/* Organization Info */}
-                        <MD3Card headline="Organization">
-                            <div className="flex flex-col" style={{ gap: '8px' }}>
-                                <div className="flex justify-between items-center">
-                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Name</span>
-                                    <span style={{ color: 'var(--md-sys-color-on-surface)', fontWeight: 500 }}>{agency?.name || '-'}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Plan</span>
-                                    <span style={{ color: 'var(--md-sys-color-tertiary)', fontWeight: 500 }}>{agency?.subscription_tier || 'Free'}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Members</span>
-                                    <span style={{ color: 'var(--md-sys-color-on-surface)' }}>{stats.total}</span>
-                                </div>
-                            </div>
-                        </MD3Card>
-                    </>
-                }
-            />
-
-            {/* Invite Modal */}
-            {showInviteModal && (
-                <InviteModal
-                    onClose={() => setShowInviteModal(false)}
-                    onInvite={async (email, role, name) => {
-                        await inviteMember(email, role, name);
-                        setShowInviteModal(false);
-                    }}
-                />
-            )}
-        </MD3AppShell>
-    );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// COMPONENTS
-// ═══════════════════════════════════════════════════════════════════════════════
-
-function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
-    return (
-        <MD3Surface shape="large" color="surface-container" interactive={true}>
-            {/* Header Row - Icon + Label */}
-            <div className="flex items-center gap-2 mb-3">
-                <div
-                    className="p-1.5 rounded-lg"
-                    style={{
-                        backgroundColor: 'var(--md-sys-color-primary-container)',
-                        color,
-                    }}
-                >
-                    {icon}
-                </div>
-                <MD3Text variant="label-small" color="on-surface-variant" transform="uppercase">
-                    {label}
-                </MD3Text>
-            </div>
-
-            {/* Value */}
-            <MD3Text variant="headline-small" color="on-surface">
-                {value}
-            </MD3Text>
-
-            {/* Pulse Indicator */}
-            <div
-                className="absolute top-4 right-4 w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: color }}
-            />
-        </MD3Surface>
-    );
-}
-
-function MemberRow({ member, isCurrentUser, canManage, onUpdateRole, onRemove }: {
-    member: { id: string; name?: string; email: string; role: TeamRole; status: string };
-    isCurrentUser: boolean;
-    canManage: boolean;
-    onUpdateRole: (role: TeamRole) => void;
-    onRemove: () => void;
-}) {
-    const [showRoleMenu, setShowRoleMenu] = useState(false);
-
-    return (
-        <div
-            className="flex items-center justify-between p-4 rounded-lg transition-all"
-            style={{
-                backgroundColor: 'var(--md-sys-color-surface-container)',
-                border: isCurrentUser ? `2px solid ${ROLE_COLORS[member.role]}` : 'none',
-            }}
-        >
-            <div className="flex items-center" style={{ gap: '16px' }}>
-                <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
-                    style={{ backgroundColor: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)' }}
-                >
-                    {(member.name || member.email)?.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                    <div className="font-medium flex items-center" style={{ color: 'var(--md-sys-color-on-surface)', gap: '8px' }}>
-                        {member.name || member.email}
-                        {isCurrentUser && <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)' }}>You</span>}
-                    </div>
-                    <div className="text-sm" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                        {member.email}
-                    </div>
-                </div>
-            </div>
-            <div className="flex items-center" style={{ gap: '12px' }}>
-                {/* Role Badge */}
-                <div
-                    className="relative flex items-center px-3 py-1.5 rounded-full cursor-pointer"
-                    style={{ backgroundColor: `${ROLE_COLORS[member.role]}20`, color: ROLE_COLORS[member.role], gap: '6px' }}
-                    onClick={() => canManage && setShowRoleMenu(!showRoleMenu)}
-                >
-                    {ROLE_ICONS[member.role]}
-                    <span className="text-sm font-medium capitalize">{member.role}</span>
-
-                    {/* Role Dropdown */}
-                    {showRoleMenu && canManage && (
-                        <div
-                            className="absolute top-full right-0 mt-2 py-2 rounded-lg shadow-lg z-10"
-                            style={{ backgroundColor: 'var(--md-sys-color-surface-container-high)', minWidth: '120px' }}
-                        >
-                            {(['admin', 'member', 'viewer'] as TeamRole[]).map((role) => (
-                                <button
-                                    key={role}
-                                    onClick={() => { onUpdateRole(role); setShowRoleMenu(false); }}
-                                    className="flex items-center w-full px-4 py-2 hover:opacity-80"
-                                    style={{ gap: '8px', color: ROLE_COLORS[role] }}
-                                >
-                                    {ROLE_ICONS[role]}
-                                    <span className="capitalize">{role}</span>
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                {/* Status Badge */}
-                {member.status === 'invited' && (
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--md-sys-color-secondary-container)', color: 'var(--md-sys-color-on-secondary-container)' }}>
-                        Pending
-                    </span>
-                )}
-
-                {/* Remove Button */}
-                {canManage && !isCurrentUser && (
-                    <button onClick={onRemove} className="p-2 rounded-lg hover:opacity-70" style={{ color: 'var(--md-sys-color-error)' }}>
-                        <Trash2 className="w-4 h-4" />
-                    </button>
-                )}
-            </div>
-        </div>
-    );
-}
-
-function InviteModal({ onClose, onInvite }: { onClose: () => void; onInvite: (email: string, role: TeamRole, name?: string) => Promise<void> }) {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [role, setRole] = useState<TeamRole>('member');
-    const [saving, setSaving] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email) return;
-
-        setSaving(true);
-        try {
-            await onInvite(email, role, name || undefined);
-        } finally {
-            setSaving(false);
-        }
+        setInviteEmail('');
+        setShowInviteModal(false);
     };
 
+    const handleRemoveMember = (memberId: string) => {
+        setMembers(prev => prev.filter(m => m.id !== memberId));
+    };
+
+    const handleChangeRole = (memberId: string, newRole: TenantRole) => {
+        setMembers(prev => prev.map(m =>
+            m.id === memberId ? { ...m, role: newRole } : m
+        ));
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent" />
+            </div>
+        );
+    }
+
+    const activeMembers = members.filter(m => m.status === 'active');
+    const pendingMembers = members.filter(m => m.status === 'pending');
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
-            <div
-                className="w-full max-w-md rounded-2xl p-6"
-                style={{ backgroundColor: 'var(--md-sys-color-surface-container-high)' }}
-            >
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold" style={{ color: 'var(--md-sys-color-on-surface)' }}>Invite Team Member</h2>
-                    <button onClick={onClose}><X className="w-5 h-5" style={{ color: 'var(--md-sys-color-outline)' }} /></button>
+        <div className="min-h-screen py-8 px-4 md:px-8" style={{ backgroundColor: 'var(--md-sys-color-surface)' }}>
+            <div className="max-w-5xl mx-auto">
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+                >
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <Users className="w-8 h-8" style={{ color: 'var(--md-sys-color-primary)' }} />
+                            <h1
+                                className="text-3xl font-bold"
+                                style={{ color: 'var(--md-sys-color-on-surface)' }}
+                            >
+                                Team Management
+                            </h1>
+                        </div>
+                        <p style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                            {activeMembers.length} active members • {pendingMembers.length} pending invitations
+                        </p>
+                    </div>
+
+                    <MD3Button onClick={() => setShowInviteModal(true)}>
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Invite Member
+                    </MD3Button>
+                </motion.div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    {Object.entries(ROLES).map(([role, config], index) => {
+                        const count = members.filter(m => m.role === role && m.status === 'active').length;
+                        const Icon = config.icon;
+
+                        return (
+                            <motion.div
+                                key={role}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <MD3Surface color="surface-container" className="p-4 text-center">
+                                    <Icon className="w-6 h-6 mx-auto mb-2" style={{ color: config.color }} />
+                                    <p className="text-2xl font-bold" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+                                        {count}
+                                    </p>
+                                    <p className="text-sm" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                        {config.label}s
+                                    </p>
+                                </MD3Surface>
+                            </motion.div>
+                        );
+                    })}
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '16px' }}>
-                    <div>
-                        <label className="block text-sm mb-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Email *</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 rounded-lg outline-none"
-                            style={{
-                                backgroundColor: 'var(--md-sys-color-surface-container)',
-                                border: '1px solid var(--md-sys-color-outline-variant)',
-                                color: 'var(--md-sys-color-on-surface)',
-                            }}
-                        />
-                    </div>
+                {/* Member List */}
+                <MD3Card headline="Team Members">
+                    <div className="divide-y mt-4" style={{ borderColor: 'var(--md-sys-color-outline-variant)' }}>
+                        {members.map((member, index) => {
+                            const roleConfig = ROLES[member.role];
+                            const RoleIcon = roleConfig.icon;
 
-                    <div>
-                        <label className="block text-sm mb-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Name (optional)</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-3 rounded-lg outline-none"
-                            style={{
-                                backgroundColor: 'var(--md-sys-color-surface-container)',
-                                border: '1px solid var(--md-sys-color-outline-variant)',
-                                color: 'var(--md-sys-color-on-surface)',
-                            }}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm mb-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Role</label>
-                        <div className="flex" style={{ gap: '8px' }}>
-                            {(['admin', 'member', 'viewer'] as TeamRole[]).map((r) => (
-                                <button
-                                    key={r}
-                                    type="button"
-                                    onClick={() => setRole(r)}
-                                    className="flex-1 flex items-center justify-center py-2 rounded-lg transition-all"
-                                    style={{
-                                        backgroundColor: role === r ? ROLE_COLORS[r] : 'var(--md-sys-color-surface-container)',
-                                        color: role === r ? 'white' : 'var(--md-sys-color-on-surface)',
-                                        gap: '6px',
-                                    }}
+                            return (
+                                <motion.div
+                                    key={member.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    className="py-4 flex items-center justify-between"
                                 >
-                                    {ROLE_ICONS[r]}
-                                    <span className="capitalize text-sm">{r}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                                    <div className="flex items-center gap-4">
+                                        {/* Avatar */}
+                                        <div
+                                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
+                                            style={{
+                                                backgroundColor: member.status === 'pending'
+                                                    ? 'var(--md-sys-color-outline)'
+                                                    : roleConfig.color
+                                            }}
+                                        >
+                                            {member.name ? member.name[0].toUpperCase() : '?'}
+                                        </div>
 
-                    <div className="flex justify-end" style={{ gap: '12px', marginTop: '8px' }}>
-                        <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg" style={{ color: 'var(--md-sys-color-on-surface)' }}>
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving || !email}
-                            className="px-6 py-2 rounded-lg font-medium transition-all disabled:opacity-50"
-                            style={{ backgroundColor: 'var(--md-sys-color-primary)', color: 'var(--md-sys-color-on-primary)' }}
-                        >
-                            {saving ? 'Sending...' : 'Send Invite'}
-                        </button>
+                                        {/* Info */}
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <p
+                                                    className="font-medium"
+                                                    style={{ color: 'var(--md-sys-color-on-surface)' }}
+                                                >
+                                                    {member.name || member.email}
+                                                </p>
+                                                {member.status === 'pending' && (
+                                                    <span
+                                                        className="text-xs px-2 py-0.5 rounded-full"
+                                                        style={{
+                                                            backgroundColor: 'var(--md-sys-color-secondary-container)',
+                                                            color: 'var(--md-sys-color-on-secondary-container)',
+                                                        }}
+                                                    >
+                                                        Pending
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p
+                                                className="text-sm"
+                                                style={{ color: 'var(--md-sys-color-on-surface-variant)' }}
+                                            >
+                                                {member.email}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Role & Actions */}
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm"
+                                            style={{
+                                                backgroundColor: `${roleConfig.color}20`,
+                                                color: roleConfig.color,
+                                            }}
+                                        >
+                                            <RoleIcon className="w-4 h-4" />
+                                            {roleConfig.label}
+                                        </div>
+
+                                        {member.role !== 'owner' && (
+                                            <button
+                                                onClick={() => handleRemoveMember(member.id)}
+                                                className="p-2 rounded-full hover:bg-red-50"
+                                            >
+                                                <X className="w-4 h-4 text-red-500" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
-                </form>
+                </MD3Card>
+
+                {/* Invite Modal */}
+                <AnimatePresence>
+                    {showInviteModal && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                            onClick={() => setShowInviteModal(false)}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                className="w-full max-w-md rounded-3xl p-6"
+                                style={{ backgroundColor: 'var(--md-sys-color-surface)' }}
+                                onClick={e => e.stopPropagation()}
+                            >
+                                <h2
+                                    className="text-xl font-bold mb-4"
+                                    style={{ color: 'var(--md-sys-color-on-surface)' }}
+                                >
+                                    Invite Team Member
+                                </h2>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1"
+                                            style={{ color: 'var(--md-sys-color-on-surface-variant)' }}
+                                        >
+                                            Email Address
+                                        </label>
+                                        <input
+                                            type="email"
+                                            value={inviteEmail}
+                                            onChange={(e) => setInviteEmail(e.target.value)}
+                                            placeholder="colleague@company.com"
+                                            className="w-full px-4 py-3 rounded-xl border-0"
+                                            style={{
+                                                backgroundColor: 'var(--md-sys-color-surface-container)',
+                                                color: 'var(--md-sys-color-on-surface)',
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1"
+                                            style={{ color: 'var(--md-sys-color-on-surface-variant)' }}
+                                        >
+                                            Role
+                                        </label>
+                                        <select
+                                            value={inviteRole}
+                                            onChange={(e) => setInviteRole(e.target.value as TenantRole)}
+                                            className="w-full px-4 py-3 rounded-xl border-0"
+                                            style={{
+                                                backgroundColor: 'var(--md-sys-color-surface-container)',
+                                                color: 'var(--md-sys-color-on-surface)',
+                                            }}
+                                        >
+                                            <option value="admin">Admin</option>
+                                            <option value="manager">Manager</option>
+                                            <option value="member">Member</option>
+                                            <option value="viewer">Viewer</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3 mt-6">
+                                    <MD3Button
+                                        variant="outlined"
+                                        className="flex-1"
+                                        onClick={() => setShowInviteModal(false)}
+                                    >
+                                        Cancel
+                                    </MD3Button>
+                                    <MD3Button
+                                        className="flex-1"
+                                        onClick={handleInvite}
+                                    >
+                                        <Mail className="w-4 h-4 mr-2" />
+                                        Send Invite
+                                    </MD3Button>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );
