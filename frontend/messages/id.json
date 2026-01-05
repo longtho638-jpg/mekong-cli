@@ -1,0 +1,114 @@
+{
+    "common": {
+        "appName": "AgencyOS",
+        "loading": "Memuat...",
+        "save": "Simpan",
+        "cancel": "Batal",
+        "delete": "Hapus",
+        "edit": "Edit",
+        "create": "Buat",
+        "search": "Cari",
+        "filter": "Filter",
+        "export": "Ekspor",
+        "import": "Impor",
+        "settings": "Pengaturan",
+        "profile": "Profil",
+        "logout": "Keluar",
+        "login": "Masuk",
+        "signup": "Daftar"
+    },
+    "navigation": {
+        "dashboard": "Dasbor",
+        "hubs": "Hub",
+        "analytics": "Analitik",
+        "team": "Tim",
+        "settings": "Pengaturan",
+        "billing": "Penagihan",
+        "admin": "Admin"
+    },
+    "billing": {
+        "pricing": {
+            "title": "Harga Sederhana dan Transparan",
+            "subtitle": "Pilih paket yang sesuai dengan agensi Anda. Tingkatkan seiring pertumbuhan.",
+            "monthly": "Bulanan",
+            "yearly": "Tahunan",
+            "yearlyDiscount": "Hemat 17%",
+            "perMonth": "/bulan",
+            "perYear": "/tahun"
+        },
+        "plans": {
+            "free": {
+                "name": "Starter",
+                "description": "Sempurna untuk mencoba AgencyOS"
+            },
+            "pro": {
+                "name": "Professional",
+                "description": "Untuk agensi yang berkembang"
+            },
+            "enterprise": {
+                "name": "Enterprise",
+                "description": "Untuk organisasi besar"
+            }
+        },
+        "features": {
+            "teamMembers": "Anggota tim",
+            "projects": "Proyek",
+            "storage": "Penyimpanan",
+            "apiAccess": "Akses API",
+            "support": "Dukungan",
+            "customDomain": "Domain kustom"
+        },
+        "cta": {
+            "startFree": "Mulai Gratis",
+            "upgradePro": "Upgrade ke Pro",
+            "contactSales": "Hubungi Sales"
+        }
+    },
+    "team": {
+        "title": "Manajemen Tim",
+        "inviteMember": "Undang Anggota",
+        "roles": {
+            "owner": "Pemilik",
+            "admin": "Admin",
+            "manager": "Manajer",
+            "member": "Anggota",
+            "viewer": "Pengamat"
+        },
+        "status": {
+            "active": "Aktif",
+            "pending": "Tertunda",
+            "suspended": "Ditangguhkan"
+        }
+    },
+    "analytics": {
+        "title": "Analitik",
+        "metrics": {
+            "mrr": "Pendapatan Bulanan Berulang",
+            "arr": "Pendapatan Tahunan Berulang",
+            "customers": "Pelanggan",
+            "churnRate": "Tingkat Churn",
+            "nrr": "Retensi Pendapatan Bersih",
+            "ltv": "Nilai Seumur Hidup",
+            "cac": "Biaya Akuisisi Pelanggan"
+        },
+        "periods": {
+            "today": "Hari ini",
+            "week": "Minggu ini",
+            "month": "Bulan ini",
+            "quarter": "Kuartal ini",
+            "year": "Tahun ini"
+        }
+    },
+    "errors": {
+        "generic": "Terjadi kesalahan",
+        "notFound": "Halaman tidak ditemukan",
+        "unauthorized": "Tidak diizinkan",
+        "forbidden": "Akses ditolak"
+    },
+    "meta": {
+        "language": "Bahasa Indonesia",
+        "locale": "id-ID",
+        "currency": "IDR",
+        "currencySymbol": "Rp"
+    }
+}

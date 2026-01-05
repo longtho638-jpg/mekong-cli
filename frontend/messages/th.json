@@ -1,0 +1,114 @@
+{
+    "common": {
+        "appName": "AgencyOS",
+        "loading": "กำลังโหลด...",
+        "save": "บันทึก",
+        "cancel": "ยกเลิก",
+        "delete": "ลบ",
+        "edit": "แก้ไข",
+        "create": "สร้าง",
+        "search": "ค้นหา",
+        "filter": "กรอง",
+        "export": "ส่งออก",
+        "import": "นำเข้า",
+        "settings": "การตั้งค่า",
+        "profile": "โปรไฟล์",
+        "logout": "ออกจากระบบ",
+        "login": "เข้าสู่ระบบ",
+        "signup": "สมัครสมาชิก"
+    },
+    "navigation": {
+        "dashboard": "แดชบอร์ด",
+        "hubs": "ฮับ",
+        "analytics": "การวิเคราะห์",
+        "team": "ทีม",
+        "settings": "การตั้งค่า",
+        "billing": "การเรียกเก็บเงิน",
+        "admin": "ผู้ดูแลระบบ"
+    },
+    "billing": {
+        "pricing": {
+            "title": "ราคาที่โปร่งใสและเรียบง่าย",
+            "subtitle": "เลือกแพลนที่เหมาะกับเอเจนซี่ของคุณ ขยายเมื่อคุณเติบโต",
+            "monthly": "รายเดือน",
+            "yearly": "รายปี",
+            "yearlyDiscount": "ประหยัด 17%",
+            "perMonth": "/เดือน",
+            "perYear": "/ปี"
+        },
+        "plans": {
+            "free": {
+                "name": "Starter",
+                "description": "เหมาะสำหรับทดลองใช้ AgencyOS"
+            },
+            "pro": {
+                "name": "Professional",
+                "description": "สำหรับเอเจนซี่ที่กำลังเติบโต"
+            },
+            "enterprise": {
+                "name": "Enterprise",
+                "description": "สำหรับองค์กรขนาดใหญ่"
+            }
+        },
+        "features": {
+            "teamMembers": "สมาชิกทีม",
+            "projects": "โปรเจกต์",
+            "storage": "พื้นที่เก็บข้อมูล",
+            "apiAccess": "การเข้าถึง API",
+            "support": "การสนับสนุน",
+            "customDomain": "โดเมนที่กำหนดเอง"
+        },
+        "cta": {
+            "startFree": "เริ่มต้นฟรี",
+            "upgradePro": "อัปเกรดเป็น Pro",
+            "contactSales": "ติดต่อฝ่ายขาย"
+        }
+    },
+    "team": {
+        "title": "การจัดการทีม",
+        "inviteMember": "เชิญสมาชิก",
+        "roles": {
+            "owner": "เจ้าของ",
+            "admin": "ผู้ดูแล",
+            "manager": "ผู้จัดการ",
+            "member": "สมาชิก",
+            "viewer": "ผู้ชม"
+        },
+        "status": {
+            "active": "ใช้งานอยู่",
+            "pending": "รอดำเนินการ",
+            "suspended": "ถูกระงับ"
+        }
+    },
+    "analytics": {
+        "title": "การวิเคราะห์",
+        "metrics": {
+            "mrr": "รายได้รายเดือน",
+            "arr": "รายได้รายปี",
+            "customers": "ลูกค้า",
+            "churnRate": "อัตราการยกเลิก",
+            "nrr": "การรักษารายได้สุทธิ",
+            "ltv": "มูลค่าตลอดชีพ",
+            "cac": "ต้นทุนการได้ลูกค้า"
+        },
+        "periods": {
+            "today": "วันนี้",
+            "week": "สัปดาห์นี้",
+            "month": "เดือนนี้",
+            "quarter": "ไตรมาสนี้",
+            "year": "ปีนี้"
+        }
+    },
+    "errors": {
+        "generic": "เกิดข้อผิดพลาดบางอย่าง",
+        "notFound": "ไม่พบหน้า",
+        "unauthorized": "ไม่ได้รับอนุญาต",
+        "forbidden": "ถูกห้ามเข้าถึง"
+    },
+    "meta": {
+        "language": "ไทย",
+        "locale": "th-TH",
+        "currency": "THB",
+        "currencySymbol": "฿"
+    }
+}

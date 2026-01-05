@@ -1,0 +1,114 @@
+{
+    "common": {
+        "appName": "AgencyOS",
+        "loading": "Naglo-load...",
+        "save": "I-save",
+        "cancel": "Kanselahin",
+        "delete": "Burahin",
+        "edit": "I-edit",
+        "create": "Gumawa",
+        "search": "Maghanap",
+        "filter": "Salain",
+        "export": "I-export",
+        "import": "I-import",
+        "settings": "Mga Setting",
+        "profile": "Profile",
+        "logout": "Mag-logout",
+        "login": "Mag-login",
+        "signup": "Mag-signup"
+    },
+    "navigation": {
+        "dashboard": "Dashboard",
+        "hubs": "Mga Hub",
+        "analytics": "Analytics",
+        "team": "Team",
+        "settings": "Mga Setting",
+        "billing": "Billing",
+        "admin": "Admin"
+    },
+    "billing": {
+        "pricing": {
+            "title": "Simple at Transparent na Presyo",
+            "subtitle": "Piliin ang plan na akma sa inyong agency. Lumago habang kayo'y lumalaki.",
+            "monthly": "Buwanan",
+            "yearly": "Taunan",
+            "yearlyDiscount": "Makatipid ng 17%",
+            "perMonth": "/buwan",
+            "perYear": "/taon"
+        },
+        "plans": {
+            "free": {
+                "name": "Starter",
+                "description": "Perpekto para subukan ang AgencyOS"
+            },
+            "pro": {
+                "name": "Professional",
+                "description": "Para sa mga lumalagong agency"
+            },
+            "enterprise": {
+                "name": "Enterprise",
+                "description": "Para sa malalaking organisasyon"
+            }
+        },
+        "features": {
+            "teamMembers": "Mga miyembro ng team",
+            "projects": "Mga proyekto",
+            "storage": "Storage",
+            "apiAccess": "API access",
+            "support": "Suporta",
+            "customDomain": "Custom domain"
+        },
+        "cta": {
+            "startFree": "Magsimula nang Libre",
+            "upgradePro": "I-upgrade sa Pro",
+            "contactSales": "Kontakin ang Sales"
+        }
+    },
+    "team": {
+        "title": "Pamamahala ng Team",
+        "inviteMember": "Mag-imbita ng Miyembro",
+        "roles": {
+            "owner": "May-ari",
+            "admin": "Admin",
+            "manager": "Manager",
+            "member": "Miyembro",
+            "viewer": "Tagatingin"
+        },
+        "status": {
+            "active": "Aktibo",
+            "pending": "Naghihintay",
+            "suspended": "Suspendido"
+        }
+    },
+    "analytics": {
+        "title": "Analytics",
+        "metrics": {
+            "mrr": "Monthly Recurring Revenue",
+            "arr": "Annual Recurring Revenue",
+            "customers": "Mga Customer",
+            "churnRate": "Churn Rate",
+            "nrr": "Net Revenue Retention",
+            "ltv": "Lifetime Value",
+            "cac": "Customer Acquisition Cost"
+        },
+        "periods": {
+            "today": "Ngayon",
+            "week": "Ngayong linggo",
+            "month": "Ngayong buwan",
+            "quarter": "Ngayong quarter",
+            "year": "Ngayong taon"
+        }
+    },
+    "errors": {
+        "generic": "May nangyaring problema",
+        "notFound": "Hindi nahanap ang pahina",
+        "unauthorized": "Walang pahintulot",
+        "forbidden": "Bawal ang access"
+    },
+    "meta": {
+        "language": "Filipino",
+        "locale": "fil-PH",
+        "currency": "PHP",
+        "currencySymbol": "₱"
+    }
+}
