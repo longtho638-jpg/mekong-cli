@@ -5,11 +5,21 @@
 
 import Stripe from 'stripe';
 
-// Initialize Stripe with secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-12-18.acacia',
-    typescript: true,
-});
+// Lazy initialize Stripe to avoid build-time errors
+let stripeInstance: Stripe | null = null;
+
+function getStripe(): Stripe {
+    if (!stripeInstance) {
+        if (!process.env.STRIPE_SECRET_KEY) {
+            throw new Error('STRIPE_SECRET_KEY is not configured');
+        }
+        stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2025-12-15.clover',
+            typescript: true,
+        });
+    }
+    return stripeInstance;
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 📊 PRICING TIERS (SEA SaaS Standard)
@@ -96,7 +106,7 @@ export interface CreateCheckoutParams {
 }
 
 export async function createCheckoutSession(params: CreateCheckoutParams) {
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
         customer: params.customerId,
         customer_email: params.customerId ? undefined : params.customerEmail,
         line_items: [
@@ -126,7 +136,7 @@ export async function createCheckoutSession(params: CreateCheckoutParams) {
 }
 
 export async function createCustomer(email: string, name: string, tenantId: string) {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
         email,
         name,
         metadata: {
@@ -138,17 +148,17 @@ export async function createCustomer(email: string, name: string, tenantId: stri
 }
 
 export async function getSubscription(subscriptionId: string) {
-    return stripe.subscriptions.retrieve(subscriptionId);
+    return getStripe().subscriptions.retrieve(subscriptionId);
 }
 
 export async function cancelSubscription(subscriptionId: string) {
-    return stripe.subscriptions.cancel(subscriptionId);
+    return getStripe().subscriptions.cancel(subscriptionId);
 }
 
 export async function updateSubscription(subscriptionId: string, priceId: string) {
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
 
-    return stripe.subscriptions.update(subscriptionId, {
+    return getStripe().subscriptions.update(subscriptionId, {
         items: [
             {
                 id: subscription.items.data[0].id,
@@ -164,7 +174,7 @@ export async function updateSubscription(subscriptionId: string, priceId: string
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export async function createBillingPortalSession(customerId: string, returnUrl: string) {
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
         customer: customerId,
         return_url: returnUrl,
     });
@@ -177,7 +187,7 @@ export async function createBillingPortalSession(customerId: string, returnUrl: 
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export async function getInvoices(customerId: string, limit = 10) {
-    const invoices = await stripe.invoices.list({
+    const invoices = await getStripe().invoices.list({
         customer: customerId,
         limit,
     });
@@ -187,9 +197,13 @@ export async function getInvoices(customerId: string, limit = 10) {
 
 export async function getUpcomingInvoice(customerId: string) {
     try {
-        return await stripe.invoices.retrieveUpcoming({
+        // Use list with upcoming filter for new Stripe API
+        const invoices = await getStripe().invoices.list({
             customer: customerId,
+            limit: 1,
+            status: 'draft',
         });
+        return invoices.data[0] || null;
     } catch {
         return null;
     }
@@ -212,7 +226,7 @@ export async function constructWebhookEvent(
     signature: string,
     webhookSecret: string
 ): Promise<Stripe.Event> {
-    return stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+    return getStripe().webhooks.constructEvent(payload, signature, webhookSecret);
 }
 
 export async function handleWebhookEvent(event: Stripe.Event) {
@@ -270,7 +284,7 @@ export interface MRRMetrics {
 
 export async function calculateMRRMetrics(): Promise<MRRMetrics> {
     // Get all active subscriptions
-    const subscriptions = await stripe.subscriptions.list({
+    const subscriptions = await getStripe().subscriptions.list({
         status: 'active',
         limit: 100,
     });
@@ -305,4 +319,4 @@ export async function calculateMRRMetrics(): Promise<MRRMetrics> {
     };
 }
 
-export { stripe };
+export { getStripe };

@@ -172,10 +172,7 @@ export default function PricingPage() {
                             )}
 
                             <MD3Card
-                                className={`h-full flex flex-col ${plan.popular ? 'ring-2' : ''}`}
-                                style={{
-                                    borderColor: plan.popular ? 'var(--md-sys-color-primary)' : undefined,
-                                }}
+                                className={`h-full flex flex-col ${plan.popular ? 'ring-2 ring-[var(--md-sys-color-primary)]' : ''}`}
                             >
                                 <div className="p-8 flex-1">
                                     {/* Plan Icon */}

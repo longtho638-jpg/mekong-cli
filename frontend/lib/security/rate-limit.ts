@@ -60,12 +60,12 @@ const store = new Map<string, RateLimitEntry>();
 if (typeof setInterval !== 'undefined') {
     setInterval(() => {
         const now = Date.now();
-        for (const [key, entry] of store.entries()) {
+        store.forEach((entry, key) => {
             const maxAge = 3600_000; // 1 hour
             if (now - entry.firstRequest > maxAge) {
                 store.delete(key);
             }
-        }
+        });
     }, 60_000); // Every minute
 }
 

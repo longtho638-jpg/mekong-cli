@@ -174,11 +174,12 @@ export class SubscriptionManager {
         }
 
         const tier = PRICING_TIERS[newPlan];
-        if (!tier.stripePriceId) {
+        const priceId = 'stripePriceId' in tier ? tier.stripePriceId : undefined;
+        if (!priceId) {
             throw new Error(`No Stripe price for ${newPlan}`);
         }
 
-        await updateSubscription(subscription.stripeSubscriptionId, tier.stripePriceId);
+        await updateSubscription(subscription.stripeSubscriptionId, priceId);
 
         await this.supabase
             .from('subscriptions')

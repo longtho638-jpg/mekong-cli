@@ -325,7 +325,8 @@ export class TenantManager {
             viewer: 20,
         };
 
-        return roleHierarchy[member.role] >= roleHierarchy[requiredRole];
+        const memberRole = member.role as TenantRole;
+        return roleHierarchy[memberRole] >= roleHierarchy[requiredRole];
     }
 
     async getUserRole(userId: string, tenantId: string): Promise<TenantRole | null> {

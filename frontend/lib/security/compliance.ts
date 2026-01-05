@@ -169,7 +169,7 @@ export class ComplianceService {
         return consent?.consents[type] ?? false;
     }
 
-    private async logConsentChange(userId: string, consents: Record<ConsentType, boolean>): Promise<void> {
+    private async logConsentChange(userId: string, consents: Record<string, boolean>): Promise<void> {
         await this.supabase.from('audit_logs').insert({
             user_id: userId,
             action: 'consent_update',

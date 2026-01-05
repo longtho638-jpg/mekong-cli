@@ -7,10 +7,19 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { calculateMRRMetrics } from '@/lib/billing/stripe';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!
-);
+// Force dynamic to skip build-time static generation
+export const dynamic = 'force-dynamic';
+
+// Lazy Supabase initialization
+function getSupabase() {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+        throw new Error('Supabase not configured');
+    }
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_KEY
+    );
+}
 
 export async function GET() {
     try {
@@ -25,7 +34,7 @@ export async function GET() {
         }
 
         // Get database metrics
-        const { data: subscriptions, error } = await supabase
+        const { data: subscriptions, error } = await getSupabase()
             .from('subscriptions')
             .select('*')
             .eq('status', 'active');
