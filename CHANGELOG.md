@@ -1,3 +1,10 @@
+## [2.2.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.18...v2.2.0-beta.19) (2026-01-05)
+
+
+### 🐞 Bug Fixes
+
+* **notifications:** deprecate jq-based bash scripts, add ck-help guide ([58aa509](https://github.com/claudekit/claudekit-engineer/commit/58aa509b4e30b069db6f8e7b14abbbbbca5ffed2)), closes [#297](https://github.com/claudekit/claudekit-engineer/issues/297)
+
 ## [2.2.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.17...v2.2.0-beta.18) (2026-01-03)
 
 
