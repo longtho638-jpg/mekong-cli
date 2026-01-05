@@ -9,6 +9,22 @@ const nextConfig = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    webpack: (config, { isServer }) => {
+        // Fix for Edge Runtime compatibility - polyfill Node.js globals
+        if (!isServer) {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                fs: false,
+                path: false,
+                os: false,
+            };
+        }
+        return config;
+    },
+    experimental: {
+        // Disable problematic features that may cause Edge issues
+        serverComponentsExternalPackages: ['ua-parser-js'],
+    },
 }
 
 module.exports = withNextIntl(nextConfig);
