@@ -6,25 +6,21 @@ argument-hint: [category|command|task description]
 Think harder.
 All-in-one ClaudeKit guide. Run the script and present output based on type markers.
 
-## Pre-Processing: Intent Analysis
+## Intent Validation
 
-**BEFORE running the script, analyze user intent:**
+The script uses keyword matching with smart weighting. After getting results, **validate** against these heuristics:
 
-1. **Identify the main subject** - What is the user actually asking about?
-   - "setup notifications" → subject is **notifications** (not project setup)
-   - "fix test failures" → subject is **tests** (not generic fixing)
-   - "create discord webhook" → subject is **notifications/discord** (not project creation)
+| Sentence Pattern | Primary Intent | Example |
+|------------------|----------------|---------|
+| `[action verb] my [object]` | The action verb | "commit my changes" → git |
+| `[context] [subject noun]` | The subject noun | "setup notifications" → notifications |
+| `[noun] [noun]` | Last noun (topic) | "discord webhook" → notifications |
 
-2. **Check for project context** - If current project has relevant files, prefer that context:
-   - User in project with `.claude/hooks/notifications/` → "notifications" likely means hook notifications
-   - User asks about "discord" → check for discord provider files first
+**Action verbs** (high intent when first): fix, test, commit, push, build, create, review, deploy, run, check, find, plan, refactor
 
-3. **Disambiguate compound phrases:**
-   - "setup X" → usually asking how to configure X, not `/bootstrap`
-   - "add X" → usually asking how to integrate X, not always `/cook`
-   - "fix X" → usually about X category, route appropriately
+**Context words** (low intent, modify subject): setup, add, start, new, my, the, configure
 
-**If script returns wrong category, override with your analysis and show correct docs.**
+**Override script only if:** result clearly mismatches the sentence pattern above. Otherwise trust the algorithm.
 
 ## Translation
 
