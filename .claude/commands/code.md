@@ -88,39 +88,64 @@ Mark Step 3 complete in TodoWrite, mark Step 4 in_progress.
 
 ---
 
-## Step 4: Code Review
+## Step 4: Code Review & Approval ⏸ BLOCKING GATE
 
-Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY". If critical issues found: STOP, fix all, re-run `tester` to verify, re-run `code-reviewer`. Repeat until no critical issues.
+Call `code-reviewer` subagent: "Review changes for plan phase [phase-name]. Check security, performance, architecture, YAGNI/KISS/DRY. Return score (X/10), critical issues list, warnings list, suggestions list."
+
+**Interactive Review-Fix Cycle (max 3 cycles):**
+
+```
+cycle = 0
+LOOP:
+  1. Run code-reviewer → get score, critical_count, warnings, suggestions
+
+  2. DISPLAY FULL FINDINGS + SUMMARY TO USER:
+     ┌─────────────────────────────────────────┐
+     │ Code Review Results: [score]/10         │
+     ├─────────────────────────────────────────┤
+     │ Summary: [what implemented], tests      │
+     │ [X/X passed]                            │
+     ├─────────────────────────────────────────┤
+     │ Critical Issues ([N]): MUST FIX         │
+     │  - [issue] at [file:line]               │
+     │ Warnings ([N]): SHOULD FIX              │
+     │  - [issue] at [file:line]               │
+     │ Suggestions ([N]): NICE TO HAVE         │
+     │  - [suggestion]                         │
+     └─────────────────────────────────────────┘
+
+  3. Use AskUserQuestion (header: "Review & Approve"):
+     IF critical_count > 0:
+       - "Fix critical issues" → implement fixes, re-run tester, cycle++, GOTO LOOP
+       - "Fix all issues" → implement all fixes, re-run tester, cycle++, GOTO LOOP
+       - "Approve anyway" → PROCEED to Step 5
+       - "Abort" → stop workflow
+     ELSE:
+       - "Approve" → PROCEED to Step 5
+       - "Fix warnings/suggestions" → implement fixes, cycle++, GOTO LOOP
+       - "Abort" → stop workflow
+
+  4. IF cycle >= 3 AND user selects fix:
+     → Output: "⚠ 3 review cycles completed. Final decision required."
+     → Use AskUserQuestion: "Approve with noted issues" / "Abort workflow"
+```
 
 **Critical issues:** Security vulnerabilities (XSS, SQL injection, OWASP), performance bottlenecks, architectural violations, principle violations.
 
-**Output:** `✓ Step 4: Code reviewed - [0] critical issues`
+**Output formats:**
+- Waiting: `⏸ Step 4: Code reviewed - [score]/10 - WAITING for user approval`
+- After fix: `✓ Step 4: [old]/10 → Fixed [N] issues → [new]/10 - User approved`
+- Approved: `✓ Step 4: Code reviewed - [score]/10 - User approved`
 
-**Validation:** If critical issues > 0, Step 4 INCOMPLETE - do not proceed.
+**Validation:** Step 4 INCOMPLETE until user explicitly approves.
 
 Mark Step 4 complete in TodoWrite, mark Step 5 in_progress.
 
 ---
 
-## Step 5: User Approval ⏸ BLOCKING GATE
+## Step 5: Finalize
 
-Present summary (3-5 bullets): what implemented, tests [X/X passed], code review outcome.
-
-**Ask user explicitly:** "Phase implementation complete. All tests pass, code reviewed. Approve changes?"
-
-**Stop and wait** - do not output Step 6 content until user responds.
-
-**Output (while waiting):** `⏸ Step 5: WAITING for user approval`
-
-**Output (after approval):** `✓ Step 5: User approved - Ready to complete`
-
-Mark Step 5 complete in TodoWrite, mark Step 6 in_progress.
-
----
-
-## Step 6: Finalize
-
-**Prerequisites:** User approved in Step 5 (verified above).
+**Prerequisites:** User approved in Step 4 (verified above).
 
 1. **STATUS UPDATE - BOTH MANDATORY - PARALLEL EXECUTION:**
 - **Call** `project-manager` sub-agent: "Update plan status in [plan-path]. Mark plan phase [phase-name] as DONE with timestamp. Update roadmap."
@@ -130,11 +155,11 @@ Mark Step 5 complete in TodoWrite, mark Step 6 in_progress.
 
 3. **AUTO-COMMIT (after steps 1 and 2 completes):**
 - Run only if: Steps 1 and 2 successful + User approved + Tests passed
-- Auto-stage, commit with message [phase - plan] and push
+- Auto-stage, commit with conventional commit message based on actual changes
 
 **Validation:** Steps 1 and 2 must complete successfully. Step 3 (auto-commit) runs only if conditions met.
 
-Mark Step 6 complete in TodoWrite.
+Mark Step 5 complete in TodoWrite.
 
 **Phase workflow finished. Ready for next plan phase.**
 
@@ -149,9 +174,8 @@ Mark Step 6 complete in TodoWrite.
 - Step 1: `✓ Step 1: Found [N] tasks across [M] phases - Ambiguities: [list]`
 - Step 2: `✓ Step 2: Implemented [N] files - [X/Y] tasks complete`
 - Step 3: `✓ Step 3: Tests [X/X passed] - All requirements met`
-- Step 4: `✓ Step 4: Code reviewed - [0] critical issues`
-- Step 5: `✓ Step 5: User approved - Ready to complete`
-- Step 6: `✓ Step 6: Finalize - Status updated - Git committed`
+- Step 4: `✓ Step 4: Code reviewed - [score]/10 - User approved`
+- Step 5: `✓ Step 5: Finalize - Status updated - Git committed`
 
 **If any "✓ Step N:" output missing, that step is INCOMPLETE.**
 
@@ -160,13 +184,12 @@ Mark Step 6 complete in TodoWrite.
 **Mandatory subagent calls:**
 - Step 3: `tester`
 - Step 4: `code-reviewer`
-- Step 6: `project-manager` AND `docs-manager` (when user approves)
+- Step 5: `project-manager` AND `docs-manager` (when user approves)
 
 **Blocking gates:**
 - Step 3: Tests must be 100% passing
-- Step 4: Critical issues must be 0
-- Step 5: User must explicitly approve
-- Step 6: Both `project-manager` and `docs-manager` must complete successfully
+- Step 4: User must explicitly approve (via AskUserQuestion)
+- Step 5: Both `project-manager` and `docs-manager` must complete successfully
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails. Do not assume approval without user response.

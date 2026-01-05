@@ -83,6 +83,11 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 4. **Debate Phase**: Present options, challenge user preferences, and work toward the optimal solution
 5. **Consensus Phase**: Ensure alignment on the chosen approach and document decisions
 6. **Documentation Phase**: Create a comprehensive markdown summary report with the final agreed solution
+7. **Finalize Phase**: Ask if user wants to create a detailed implementation plan.
+   - If `Yes`: Use the **Skill tool** to invoke `/plan:fast` or `/plan:hard` SlashCommand based on complexity.
+     Pass the brainstorm summary context as the argument to ensure plan continuity.
+     **CRITICAL:** The invoked plan command will create `plan.md` with YAML frontmatter including `status: pending`.
+   - If `No`: End the session.
 
 ## Report Output
 

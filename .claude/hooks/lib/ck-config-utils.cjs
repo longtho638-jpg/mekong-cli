@@ -38,6 +38,9 @@ const DEFAULT_CONFIG = {
     docs: 'docs',
     plans: 'plans'
   },
+  docs: {
+    maxLoc: 800  // Maximum lines of code per doc file before warning
+  },
   locale: {
     thinkingLanguage: null,  // Language for reasoning (e.g., "en" for precision)
     responseLanguage: null   // Language for user-facing output (e.g., "vi")
@@ -218,21 +221,41 @@ function findMostRecentPlan(plansDir) {
 }
 
 /**
+ * Default timeout for git commands (5 seconds)
+ * Prevents indefinite hangs on network mounts or corrupted repos
+ */
+const DEFAULT_EXEC_TIMEOUT_MS = 5000;
+
+/**
  * Safely execute shell command (internal helper)
  * SECURITY: Only accepts whitelisted git read commands
  * @param {string} cmd - Command to execute
+ * @param {Object} options - Execution options
+ * @param {string} options.cwd - Working directory (optional)
+ * @param {number} options.timeout - Timeout in ms (default: 5000)
  * @returns {string|null} Command output or null
  */
-function execSafe(cmd) {
+function execSafe(cmd, options = {}) {
   // Whitelist of safe read-only commands
-  const allowedCommands = ['git branch --show-current', 'git rev-parse --abbrev-ref HEAD'];
+  const allowedCommands = [
+    'git branch --show-current',
+    'git rev-parse --abbrev-ref HEAD',
+    'git rev-parse --show-toplevel'
+  ];
   if (!allowedCommands.includes(cmd)) {
     return null;
   }
 
+  const { cwd = undefined, timeout = DEFAULT_EXEC_TIMEOUT_MS } = options;
+
   try {
     return require('child_process')
-      .execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+      .execSync(cmd, {
+        encoding: 'utf8',
+        timeout,
+        cwd,
+        stdio: ['pipe', 'pipe', 'pipe']
+      })
       .trim();
   } catch (e) {
     return null;
@@ -441,7 +464,8 @@ function loadConfig(options = {}) {
     // Build result with optional sections
     const result = {
       plan: merged.plan || DEFAULT_CONFIG.plan,
-      paths: merged.paths || DEFAULT_CONFIG.paths
+      paths: merged.paths || DEFAULT_CONFIG.paths,
+      docs: merged.docs || DEFAULT_CONFIG.docs
     };
 
     if (includeLocale) {
@@ -473,6 +497,7 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
   const result = {
     plan: { ...DEFAULT_CONFIG.plan },
     paths: { ...DEFAULT_CONFIG.paths },
+    docs: { ...DEFAULT_CONFIG.docs },
     codingLevel: -1  // Default: disabled (no injection, saves tokens)
   };
   if (includeLocale) {
@@ -489,10 +514,15 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
 
 /**
  * Escape shell special characters for env file values
+ * Handles: backslash, double quote, dollar sign, backtick
  */
 function escapeShellValue(str) {
   if (typeof str !== 'string') return str;
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
+  return str
+    .replace(/\\/g, '\\\\')   // Backslash first
+    .replace(/"/g, '\\"')     // Double quotes
+    .replace(/\$/g, '\\$')    // Dollar sign
+    .replace(/`/g, '\\`');    // Backticks (command substitution)
 }
 
 /**
@@ -514,19 +544,28 @@ function writeEnv(envFile, key, value) {
  * @param {string|null} resolvedBy - How plan was resolved ('session'|'branch'|null)
  * @param {Object} planConfig - Plan configuration
  * @param {Object} pathsConfig - Paths configuration
- * @returns {string} Reports path
+ * @param {string|null} baseDir - Optional base directory for absolute path resolution
+ * @returns {string} Reports path (absolute if baseDir provided, relative otherwise)
  */
-function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig) {
+function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig, baseDir = null) {
   const reportsDir = normalizePath(planConfig?.reportsDir) || 'reports';
   const plansDir = normalizePath(pathsConfig?.plans) || 'plans';
 
+  let reportPath;
   // Only use plan-specific reports path if explicitly active (session state)
   if (planPath && resolvedBy === 'session') {
     const normalizedPlanPath = normalizePath(planPath) || planPath;
-    return `${normalizedPlanPath}/${reportsDir}/`;
+    reportPath = `${normalizedPlanPath}/${reportsDir}`;
+  } else {
+    // Default path for no plan or suggested (branch-matched) plans
+    reportPath = `${plansDir}/${reportsDir}`;
   }
-  // Default path for no plan or suggested (branch-matched) plans
-  return `${plansDir}/${reportsDir}/`;
+
+  // Return absolute path if baseDir provided
+  if (baseDir) {
+    return path.join(baseDir, reportPath);
+  }
+  return reportPath + '/';
 }
 
 /**
@@ -668,10 +707,20 @@ function resolveNamingPattern(planConfig, gitBranch) {
 
 /**
  * Get current git branch (safe execution)
+ * @param {string|null} cwd - Working directory to run git command from (optional)
  * @returns {string|null} Current branch name or null
  */
-function getGitBranch() {
-  return execSafe('git branch --show-current');
+function getGitBranch(cwd = null) {
+  return execSafe('git branch --show-current', { cwd: cwd || undefined });
+}
+
+/**
+ * Get git repository root directory
+ * @param {string|null} cwd - Working directory to run git command from (optional)
+ * @returns {string|null} Git root absolute path or null if not in git repo
+ */
+function getGitRoot(cwd = null) {
+  return execSafe('git rev-parse --show-toplevel', { cwd: cwd || undefined });
 }
 
 module.exports = {
@@ -702,5 +751,6 @@ module.exports = {
   formatDate,
   validateNamingPattern,
   resolveNamingPattern,
-  getGitBranch
+  getGitBranch,
+  getGitRoot
 };

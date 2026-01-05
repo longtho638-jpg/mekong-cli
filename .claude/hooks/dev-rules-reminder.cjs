@@ -109,7 +109,7 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, skillsVenv, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
+function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, skillsVenv, reportsPath, plansPath, docsPath, docsMaxLoc, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
   // Build language instructions based on config
   // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
   const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : null);
@@ -128,6 +128,13 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     languageLines.push(``);
   }
 
+  const memUsed = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
+  const memTotal = Math.round(os.totalmem() / 1024 / 1024);
+  const memPercent = Math.round((memUsed / memTotal) * 100);
+
+  const cpuUsage = Math.round((process.cpuUsage().user / 1000000) * 100);
+  const cpuSystem = Math.round((process.cpuUsage().system / 1000000) * 100);
+
   return [
     // ─────────────────────────────────────────────────────────────────────────
     // LANGUAGE (thinking + response, if configured)
@@ -140,6 +147,16 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     `## Session`,
     `- DateTime: ${new Date().toLocaleString()}`,
     `- CWD: ${process.cwd()}`,
+    `- Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+    `- Working directory: ${process.cwd()}`,
+    `- OS: ${process.platform}`,
+    `- User: ${process.env.USERNAME}`,
+    `- Locale: ${process.env.LANG}`,
+    `- Memory usage: ${memUsed}MB/${memTotal}MB (${memPercent}%)`,
+    `- CPU usage: ${cpuUsage}% user / ${cpuSystem}% system`,
+    `- Spawning multiple subagents can cause performance issues, spawn and delegate tasks intelligently based on the available system resources.`,
+    `- Remember that each subagent only has 200K tokens in context window, spawn and delegate tasks intelligently to make sure their context windows don't get bloated.`,
+    `- IMPORTANT: Include these environment information when prompting subagents to perform tasks.`,
     ``,
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -177,7 +194,7 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     // PATHS
     // ─────────────────────────────────────────────────────────────────────────
     `## Paths`,
-    `Reports: ${reportsPath} | Plans: ${plansPath}/ | Docs: ${docsPath}/`,
+    `Reports: ${reportsPath} | Plans: ${plansPath}/ | Docs: ${docsPath}/ | docs.maxLoc: ${docsMaxLoc}`,
     ``,
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -229,6 +246,7 @@ async function main() {
       reportsPath,
       plansPath: normalizePath(config.paths?.plans) || 'plans',
       docsPath: normalizePath(config.paths?.docs) || 'docs',
+      docsMaxLoc: Math.max(1, parseInt(config.docs?.maxLoc, 10) || 800),
       planLine,
       gitBranch,
       namePattern,

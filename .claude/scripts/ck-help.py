@@ -61,6 +61,14 @@ TASK_MAPPINGS = {
     "scout": ["find", "search", "locate", "explore", "scan", "where"],
     "config": ["config", "configure", "settings", "ck.json", ".ck.json", "setup", "locale", "language", "paths"],
     "coding-level": ["coding", "level", "eli5", "junior", "senior", "lead", "god", "beginner", "expert", "teach", "learn", "explain"],
+    # New categories
+    "worktree": ["worktree", "parallel", "isolate", "isolation", "concurrent", "multiple branches"],
+    "kanban": ["kanban", "board", "dashboard", "progress", "track", "orchestration", "visualize"],
+    "preview": ["preview", "view", "render", "markdown", "reader", "novel"],
+    "journal": ["journal", "diary", "log", "entry", "reflect", "failure", "lesson"],
+    "brainstorm": ["brainstorm", "idea", "ideate", "creative", "explore ideas", "think through"],
+    "watzup": ["watzup", "status", "summary", "wrap up", "what's up", "recent", "changes"],
+    "notifications": ["notification", "notify", "discord", "telegram", "slack", "alert", "webhook", "stop hook", "session end"],
 }
 
 # Category workflows and tips
@@ -197,6 +205,77 @@ CATEGORY_GUIDES = {
         ],
         "tip": "Global config works in fresh dirs; local overrides for projects",
     },
+    # New category guides (workflow-first approach)
+    "worktree": {
+        "title": "Git Worktrees (Parallel Development)",
+        "workflow": [
+            ("Create worktree", "`/worktree` \"feature description\""),
+            ("Work in isolation", "cd to worktree, implement, test"),
+            ("Review & merge", "`/git:pr` from worktree → merge → cleanup"),
+            ("List worktrees", "`/worktree list`"),
+            ("Remove worktree", "`/worktree remove <name>`"),
+        ],
+        "tip": "Use worktrees for parallel features without stashing. Each worktree = isolated branch + clean working directory",
+    },
+    "kanban": {
+        "title": "AI Orchestration Board",
+        "workflow": [
+            ("View dashboard", "`/kanban` (opens browser)"),
+            ("Specific plans", "`/kanban plans/my-feature/`"),
+            ("Track progress", "View phase completion, timeline, activity"),
+            ("Stop server", "`/kanban --stop`"),
+        ],
+        "tip": "Dashboard shows plan phases, progress bars, and agent activity. Future: worktree + agent orchestration",
+    },
+    "preview": {
+        "title": "Content Preview (Novel Reader UI)",
+        "workflow": [
+            ("View markdown", "`/preview plans/plan.md`"),
+            ("Browse directory", "`/preview docs/`"),
+            ("Stop server", "`/preview --stop`"),
+        ],
+        "tip": "Beautiful novel-reader UI for markdown. Great for reviewing plans before execution",
+    },
+    "journal": {
+        "title": "Technical Journaling",
+        "workflow": [
+            ("Write entry", "`/journal`"),
+            ("Document failures", "Capture what went wrong with emotional honesty"),
+            ("Lessons learned", "Turn setbacks into future guidance"),
+        ],
+        "tip": "Use after repeated test failures, critical bugs, or architectural pivots. Raw honesty = future wisdom",
+    },
+    "brainstorm": {
+        "title": "Brainstorming & Ideation",
+        "workflow": [
+            ("Quick brainstorm", "`/brainstorm \"your question\"`"),
+            ("Explore approaches", "Get 2-3 viable solutions with trade-offs"),
+            ("Challenge assumptions", "Receive brutally honest feedback"),
+        ],
+        "tip": "Respects codingLevel. Set `codingLevel: 0` for ELI5 explanations or `5` for expert-only mode",
+    },
+    "watzup": {
+        "title": "Session Review & Wrap-up",
+        "workflow": [
+            ("Review changes", "`/watzup`"),
+            ("Get summary", "See what was done, what files changed"),
+            ("Next steps", "Receive suggestions for what to do next"),
+        ],
+        "tip": "Run before ending session to capture progress and plan next steps",
+    },
+    "notifications": {
+        "title": "Session Notifications (Discord/Telegram/Slack)",
+        "workflow": [
+            ("1. Set env vars", "Add `DISCORD_WEBHOOK_URL` or `TELEGRAM_BOT_TOKEN`+`TELEGRAM_CHAT_ID` to `~/.claude/.env`"),
+            ("2. Add hook", "Add Stop hook to `.claude/settings.json` (see below)"),
+            ("3. Test", "`echo '{\"hook_event_name\":\"Stop\"}' | node .claude/hooks/notifications/notify.cjs`"),
+        ],
+        "tip": """Add to settings.json:
+```json
+"Stop": [{"matcher": "*", "hooks": [{"type": "command", "command": "node .claude/hooks/notifications/notify.cjs"}]}]
+```
+Docs: `.claude/hooks/notifications/docs/`""",
+    },
 }
 
 
@@ -299,18 +378,27 @@ def detect_intent(input_str: str, categories: list) -> str:
         return "overview"
 
     input_lower = input_str.lower()
+    words = input_str.split()
 
-    # Check if it's a known category
+    # Multiple words = likely task description (even if first word is a category)
+    # e.g., "test my login" should be task, not category "test"
+    if len(words) >= 2:
+        # Exception: if it looks like a command (has colon), treat as command
+        if ':' in input_str:
+            return "command"
+        return "task"
+
+    # Single word: check if it's a known category from discovered commands
     if input_lower in [c.lower() for c in categories]:
+        return "category"
+
+    # Check if it's a known category from CATEGORY_GUIDES (includes non-command categories)
+    if input_lower in [c.lower() for c in CATEGORY_GUIDES.keys()]:
         return "category"
 
     # Check if it looks like a command (has colon)
     if ':' in input_str:
         return "command"
-
-    # Multiple words = task description
-    if len(input_str.split()) >= 2:
-        return "task"
 
     return "search"
 
@@ -334,6 +422,11 @@ def show_overview(data: dict, prefix: str) -> None:
     print(f"- `/{prefix}fix` - Fix bugs intelligently")
     print(f"- `/{prefix}test` - Run and analyze tests")
     print()
+    print("**Common Workflows:**")
+    print(f"- New feature: `/{prefix}plan` → `/{prefix}code` → `/{prefix}test` → `/{prefix}git:pr`")
+    print(f"- Bug fix: `/{prefix}debug` → `/{prefix}fix` → `/{prefix}test` → `/{prefix}git:cm`")
+    print(f"- Review: `/{prefix}scout` → `/{prefix}review` → `/{prefix}watzup`")
+    print()
     print("**Categories:**")
     for cat_key in sorted(categories.keys()):
         count = len(commands.get(cat_key, []))
@@ -343,6 +436,12 @@ def show_overview(data: dict, prefix: str) -> None:
     print(f"- `{help_cmd} <category>` - Category guide with workflow")
     print(f"- `{help_cmd} <command>` - Command details")
     print(f"- `{help_cmd} <task description>` - Recommendations")
+    print()
+    print("**Tips:**")
+    print(f"- Unclear about approach? → `/{prefix}brainstorm` first")
+    print(f"- Agent generated report? → `/{prefix}preview` to view")
+    print("- Add `ultrathink` for deep analysis (more tokens)")
+    print("- `:parallel` variants (e.g., `/code:parallel`) = faster but more tokens, check quota")
 
 
 def show_category_guide(data: dict, category: str, prefix: str) -> None:
@@ -352,17 +451,25 @@ def show_category_guide(data: dict, category: str, prefix: str) -> None:
     categories = data["categories"]
     commands = data["commands"]
 
-    # Find matching category (case-insensitive)
+    # Find matching category (case-insensitive) - check both discovered and CATEGORY_GUIDES
     cat_key = None
     for key in categories:
         if key.lower() == category.lower():
             cat_key = key
             break
 
+    # Also check CATEGORY_GUIDES for categories without discovered commands (worktree, kanban, etc.)
     if not cat_key:
+        for key in CATEGORY_GUIDES.keys():
+            if key.lower() == category.lower():
+                cat_key = key
+                break
+
+    if not cat_key:
+        all_cats = set(categories.keys()) | set(CATEGORY_GUIDES.keys())
         print(f"Category '{category}' not found.")
         print()
-        print("Available: " + ", ".join(f"`{c}`" for c in sorted(categories.keys())))
+        print("Available: " + ", ".join(f"`{c}`" for c in sorted(all_cats)))
         return
 
     cmds = commands.get(cat_key, [])
@@ -378,10 +485,11 @@ def show_category_guide(data: dict, category: str, prefix: str) -> None:
             print(f"- {step}: {cmd}")
         print()
 
-    # Commands list
-    print("**Commands:**")
-    for cmd in cmds:
-        print(f"- `{cmd['name']}` - {cmd['description']}")
+    # Commands list (only if we have discovered commands for this category)
+    if cmds:
+        print("**Commands:**")
+        for cmd in cmds:
+            print(f"- `{cmd['name']}` - {cmd['description']}")
 
     # Tip at the end
     if "tip" in guide:
@@ -466,10 +574,20 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
     commands = data["commands"]
     task_lower = task.lower()
 
-    # Score categories by keyword matches
+    # Score categories by keyword matches (use word boundary to avoid substring false positives)
+    # e.g., "git" should not match "digital", "fail" should not match "available"
     scores = {}
     for cat, keywords in TASK_MAPPINGS.items():
-        score = sum(1 for kw in keywords if kw in task_lower)
+        score = 0
+        for kw in keywords:
+            # Multi-word keywords: exact substring match is fine
+            if ' ' in kw:
+                if kw in task_lower:
+                    score += 1
+            # Single-word keywords: require word boundary match
+            else:
+                if re.search(r'\b' + re.escape(kw) + r'\b', task_lower):
+                    score += 1
         if score > 0:
             scores[cat] = score
 
