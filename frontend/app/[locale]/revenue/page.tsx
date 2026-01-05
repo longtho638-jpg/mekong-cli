@@ -1,15 +1,17 @@
 'use client';
 
 import React from 'react';
-import { DollarSign, TrendingUp, Target, Crown, Loader2, Users, FileText, FolderKanban } from 'lucide-react';
+import { DollarSign, TrendingUp, Target, Crown, Loader2, Users, FileText, FolderKanban, RefreshCw, Zap } from 'lucide-react';
 import { MD3AppShell } from '@/components/md3/MD3AppShell';
 import { MD3SupportingPaneLayout } from '@/components/md3/MD3SupportingPaneLayout';
 import { MD3Card } from '@/components/ui/MD3Card';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { useAnalytics } from '@/lib/hooks/useAnalytics';
+import { useMRR, formatCurrency as formatMRR, formatPercentage } from '@/hooks/useMRR';
 
 export default function RevenuePage({ params: { locale } }: { params: { locale: string } }) {
     const { analytics, loading } = useAnalytics();
+    const { metrics: stripeMetrics, loading: mrrLoading, refresh, lastUpdated, growthRate, isMock } = useMRR(true, 60000); // Auto-refresh every 60s
 
     const formatCurrency = (amount: number) => {
         if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
@@ -182,6 +184,54 @@ export default function RevenuePage({ params: { locale } }: { params: { locale: 
                                         <span style={{ fontSize: 'var(--md-sys-typescale-body-large-size)', color: 'var(--md-sys-color-on-surface)' }}>{action.label}</span>
                                     </button>
                                 ))}
+                            </div>
+                        </MD3Card>
+
+                        {/* Stripe MRR - Real-time */}
+                        <MD3Card headline="Stripe MRR ⚡" subhead={isMock ? 'Demo Mode' : 'Live Data'}>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>MRR</span>
+                                    <span style={{ color: '#3b82f6', fontWeight: 600, fontSize: 'var(--md-sys-typescale-title-large-size)' }}>
+                                        {mrrLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : formatMRR(stripeMetrics?.mrr || 0)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>ARR</span>
+                                    <span style={{ color: '#22c55e', fontWeight: 600 }}>
+                                        {mrrLoading ? '...' : formatMRR(stripeMetrics?.arr || 0)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Active Subs</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        {mrrLoading ? '...' : stripeMetrics?.activeSubscriptions || 0}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Growth</span>
+                                    <span style={{ fontWeight: 600, color: growthRate >= 0 ? '#22c55e' : '#ef4444' }}>
+                                        {formatPercentage(growthRate)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>ARPU</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        {mrrLoading ? '...' : formatMRR(stripeMetrics?.averageRevenuePerUser || 0)}
+                                    </span>
+                                </div>
+
+                                {/* Refresh button */}
+                                <button
+                                    onClick={refresh}
+                                    className="w-full flex items-center justify-center gap-2 p-2 rounded-lg transition-colors"
+                                    style={{ backgroundColor: 'var(--md-sys-color-surface-container-high)' }}
+                                >
+                                    <RefreshCw className="w-4 h-4" style={{ color: 'var(--md-sys-color-primary)' }} />
+                                    <span style={{ fontSize: 'var(--md-sys-typescale-body-small-size)', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                        {lastUpdated ? `Updated ${new Date(lastUpdated).toLocaleTimeString()}` : 'Refresh'}
+                                    </span>
+                                </button>
                             </div>
                         </MD3Card>
                     </>
