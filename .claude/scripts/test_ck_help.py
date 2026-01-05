@@ -240,16 +240,16 @@ def main():
     )
 
     test(
-        "4.8 'commit my changes' → watzup (changes keyword stronger)",
+        "4.8 'commit my changes' → git (action verb 'commit' at start)",
         "commit my changes",
-        expect_contains=["/watzup"],  # "changes" is last word, higher weight
+        expect_contains=["/git"],  # "commit" is action verb = high intent
         expect_type="task-recommendations"
     )
 
     test(
-        "4.9 'test my code' → cook (code keyword stronger)",
+        "4.9 'test my code' → test (action verb 'test' at start)",
         "test my code",
-        expect_contains=["/cook"],  # "code" is last word, higher weight
+        expect_contains=["/test"],  # "test" is action verb = high intent, shows /test workflow
         expect_type="task-recommendations"
     )
 

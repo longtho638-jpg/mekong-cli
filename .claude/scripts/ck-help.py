@@ -575,9 +575,21 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
     task_lower = task.lower()
     words = task_lower.split()
 
-    # Score categories by keyword matches with positional weighting
-    # Later words (main subject) get higher weight than earlier words (context/verbs)
-    # e.g., "setup notifications" → "notifications" is the subject (weight 2), "setup" is context (weight 1)
+    # Action verbs that indicate primary intent when at sentence start
+    # These get BONUS weight when they appear first (imperative sentences)
+    # NOTE: Excluded contextual words like "setup", "add" that often precede subjects
+    ACTION_VERBS = {
+        "fix", "debug", "test", "commit", "push", "merge", "pull", "create",
+        "build", "implement", "write", "make", "deploy", "run",
+        "configure", "install", "update", "upgrade", "delete", "remove",
+        "review", "check", "verify", "validate", "find", "search", "locate",
+        "plan", "design", "refactor", "optimize", "document", "explain",
+    }
+
+    # Check if first word is an action verb
+    first_word_is_action = words[0] in ACTION_VERBS if words else False
+
+    # Score categories by keyword matches with smart weighting
     scores = {}
     for cat, keywords in TASK_MAPPINGS.items():
         score = 0.0
@@ -600,10 +612,19 @@ def recommend_task(data: dict, task: str, prefix: str) -> None:
                             break
                         char_count += len(word) + 1  # +1 for space
 
-                    # Weight: later words (subjects) get more weight
-                    # First word = 1.0, last word = 2.0, linear interpolation
+                    # Smart weighting based on sentence structure:
+                    # - If first word is action verb: first word gets BONUS (imperative: "commit my changes")
+                    # - Otherwise: later words get more weight (descriptive: "setup notifications")
                     if len(words) > 1:
-                        weight = 1.0 + (word_pos / (len(words) - 1))
+                        if first_word_is_action and word_pos == 0:
+                            # Action verb at start = high intent signal
+                            weight = 2.5
+                        elif first_word_is_action:
+                            # Other words in imperative sentence = lower weight
+                            weight = 1.0
+                        else:
+                            # Descriptive phrase: later words = subject = higher weight
+                            weight = 1.0 + (word_pos / (len(words) - 1))
                     else:
                         weight = 2.0  # Single word = full weight
                     score += weight
