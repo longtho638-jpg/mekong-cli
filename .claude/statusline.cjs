@@ -119,12 +119,12 @@ function renderSessionLines(ctx) {
   const termWidth = getTerminalWidth();
   const threshold = Math.floor(termWidth * 0.85);
 
-  // Build all atomic parts for flexible composition
-  const dirPart = `📁 ${cyan(ctx.currentDir)}`;
+  // Build all atomic parts for flexible composition (no colors on static text)
+  const dirPart = `📁 ${ctx.currentDir}`;
 
   let branchPart = '';
   if (ctx.gitBranch) {
-    branchPart = `🌿 ${magenta(ctx.gitBranch)}`;
+    branchPart = `🌿 ${ctx.gitBranch}`;
     if (ctx.gitUnstaged > 0) branchPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
   }
 
@@ -132,7 +132,7 @@ function renderSessionLines(ctx) {
   const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
 
   // Build session part: 🤖 model  contextBar%
-  let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
+  let sessionPart = `🤖 ${ctx.modelName}`;
   if (ctx.showCompactIndicator) {
     sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
   } else if (ctx.contextPercent > 0) {
@@ -190,9 +190,10 @@ function renderSessionLines(ctx) {
 }
 
 /**
- * Render agents lines (if agents active) - one line per agent
- * Running/completed agents with type, model, description, elapsed (detailed)
- * @returns {string[]} Array of lines, one per agent
+ * Render agents lines as compact chronological flow
+ * Format: ○ type → ○ type → ● type (N done)
+ *         ▸ description (elapsed)
+ * @returns {string[]} Array of lines (flow line + optional task line)
  */
 function renderAgentsLines(transcript) {
   const { agents } = transcript;
@@ -200,18 +201,36 @@ function renderAgentsLines(transcript) {
 
   const running = agents.filter(a => a.status === 'running');
   const recentCompleted = agents.filter(a => a.status === 'completed').slice(-2);
-  const toShow = [...running, ...recentCompleted].slice(-3);
+  const toShow = [...running, ...recentCompleted].slice(-4);
 
   if (toShow.length === 0) return [];
 
-  return toShow.map(agent => {
-    const icon = agent.status === 'running' ? yellow('◐') : green('✓');
-    const type = magenta(agent.type);
-    const model = agent.model ? dim(`[${agent.model}]`) : '';
-    const desc = agent.description ? `: ${agent.description.slice(0, 40)}${agent.description.length > 40 ? '...' : ''}` : '';
-    const elapsed = formatElapsed(agent.startTime, agent.endTime);
-    return `${icon} ${type}${model ? ` ${model}` : ''}${desc} ${dim(`(${elapsed})`)}`;
+  // Sort chronologically by startTime
+  toShow.sort((a, b) => new Date(a.startTime || 0) - new Date(b.startTime || 0));
+
+  // Build compact flow line with dots
+  const flowParts = toShow.map(agent => {
+    const icon = agent.status === 'running' ? yellow('●') : dim('○');
+    const type = agent.type.length > 12 ? agent.type.slice(0, 10) + '..' : agent.type;
+    return `${icon} ${type}`;
   });
+
+  const lines = [];
+  const completedCount = agents.filter(a => a.status === 'completed').length;
+  const flowSuffix = completedCount > 2 ? ` ${dim(`(${completedCount} done)`)}` : '';
+  lines.push(flowParts.join(' → ') + flowSuffix);
+
+  // Add indented task description for first running agent
+  const runningAgent = running[0];
+  if (runningAgent && runningAgent.description) {
+    const desc = runningAgent.description.length > 50
+      ? runningAgent.description.slice(0, 47) + '...'
+      : runningAgent.description;
+    const elapsed = formatElapsed(runningAgent.startTime, null);
+    lines.push(`   ${yellow('▸')} ${desc} ${dim(`(${elapsed})`)}`);
+  }
+
+  return lines;
 }
 
 /**
