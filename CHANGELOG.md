@@ -1,3 +1,10 @@
+## [2.3.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.2...v2.3.0-beta.3) (2026-01-06)
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** show full model name without truncation ([e693875](https://github.com/claudekit/claudekit-engineer/commit/e6938757a2cf73f5ba73c297c15e76c7bc0323f2))
+
 ## [2.3.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.1...v2.3.0-beta.2) (2026-01-06)
 
 
