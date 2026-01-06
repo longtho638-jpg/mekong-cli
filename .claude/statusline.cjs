@@ -12,6 +12,7 @@ const { stdin, env } = require('process');
 const { execSync } = require('child_process');
 const os = require('os');
 const fs = require('fs');
+const path = require('path');
 
 // Import modular components
 const { trackContext } = require('./hooks/lib/context-tracker.cjs');
@@ -119,20 +120,33 @@ function renderSessionLines(ctx) {
   const termWidth = getTerminalWidth();
   const threshold = Math.floor(termWidth * 0.85);
 
-  // Build all atomic parts for flexible composition
-  const dirPart = `📁 ${cyan(ctx.currentDir)}`;
+  // Build all atomic parts for flexible composition (no colors on static text)
+  const dirPart = `📁 ${ctx.currentDir}`;
 
   let branchPart = '';
   if (ctx.gitBranch) {
-    branchPart = `🌿 ${magenta(ctx.gitBranch)}`;
-    if (ctx.gitUnstaged > 0) branchPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
+    branchPart = `🌿 ${ctx.gitBranch}`;
+    // Build git status indicators: (unstaged, +staged, ahead↑, behind↓)
+    const gitIndicators = [];
+    if (ctx.gitUnstaged > 0) gitIndicators.push(`${ctx.gitUnstaged}`);
+    if (ctx.gitStaged > 0) gitIndicators.push(`+${ctx.gitStaged}`);
+    if (ctx.gitAhead > 0) gitIndicators.push(`${ctx.gitAhead}↑`);
+    if (ctx.gitBehind > 0) gitIndicators.push(`${ctx.gitBehind}↓`);
+    if (gitIndicators.length > 0) {
+      branchPart += ` ${yellow(`(${gitIndicators.join(', ')})`)}`;
+    }
   }
 
-  // Combined location (dir + branch)
-  const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
+  // Active plan indicator (disabled for now - code preserved)
+  // const planPart = ctx.activePlan ? `📋 ${ctx.activePlan}` : '';
+  const planPart = '';
+
+  // Combined location (dir + branch + plan)
+  let locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
+  if (planPart) locationPart += `  ${planPart}`;
 
   // Build session part: 🤖 model  contextBar%
-  let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
+  let sessionPart = `🤖 ${ctx.modelName}`;
   if (ctx.showCompactIndicator) {
     sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
   } else if (ctx.contextPercent > 0) {
@@ -175,9 +189,10 @@ function renderSessionLines(ctx) {
       if (statsLen > 0) lines.push(statsPart);
     }
   } else {
-    // Narrow: dir | branch | session+stats or session | stats
+    // Narrow: dir | branch | plan | session+stats or session | stats
     lines.push(dirPart);
     if (branchPart) lines.push(branchPart);
+    if (planPart) lines.push(planPart);
     if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
       lines.push(sessionStats);
     } else {
@@ -190,28 +205,76 @@ function renderSessionLines(ctx) {
 }
 
 /**
- * Render agents lines (if agents active) - one line per agent
- * Running/completed agents with type, model, description, elapsed (detailed)
- * @returns {string[]} Array of lines, one per agent
+ * Safe date parsing - returns epoch ms or 0 for invalid dates
+ */
+function safeGetTime(dateValue) {
+  if (!dateValue) return 0;
+  const time = new Date(dateValue).getTime();
+  return isNaN(time) ? 0 : time;
+}
+
+/**
+ * Render agents lines as compact chronological flow with duplicate collapsing
+ * Format: ○ type ×N → ● type (N done)
+ *         ▸ description (elapsed)
+ * @returns {string[]} Array of lines (flow line + optional task line)
  */
 function renderAgentsLines(transcript) {
   const { agents } = transcript;
   if (!agents || agents.length === 0) return [];
 
   const running = agents.filter(a => a.status === 'running');
-  const recentCompleted = agents.filter(a => a.status === 'completed').slice(-2);
-  const toShow = [...running, ...recentCompleted].slice(-3);
+  const completed = agents.filter(a => a.status === 'completed');
 
-  if (toShow.length === 0) return [];
+  // Sort all by startTime (safe NaN handling)
+  const allAgents = [...running, ...completed];
+  allAgents.sort((a, b) => safeGetTime(a.startTime) - safeGetTime(b.startTime));
 
-  return toShow.map(agent => {
-    const icon = agent.status === 'running' ? yellow('◐') : green('✓');
-    const type = magenta(agent.type);
-    const model = agent.model ? dim(`[${agent.model}]`) : '';
-    const desc = agent.description ? `: ${agent.description.slice(0, 40)}${agent.description.length > 40 ? '...' : ''}` : '';
-    const elapsed = formatElapsed(agent.startTime, agent.endTime);
-    return `${icon} ${type}${model ? ` ${model}` : ''}${desc} ${dim(`(${elapsed})`)}`;
+  if (allAgents.length === 0) return [];
+
+  // Collapse consecutive duplicate types FIRST (before slicing)
+  const collapsed = [];
+  for (const agent of allAgents) {
+    const type = agent.type || 'agent'; // fallback for missing type
+    const last = collapsed[collapsed.length - 1];
+    if (last && last.type === type && last.status === agent.status) {
+      last.count++;
+      last.agents.push(agent);
+    } else {
+      collapsed.push({ type, status: agent.status, count: 1, agents: [agent] });
+    }
+  }
+
+  // THEN slice to show last 4 collapsed groups
+  const toShow = collapsed.slice(-4);
+
+  // Build compact flow line with dots and ×N for duplicates
+  const flowParts = toShow.map(group => {
+    const icon = group.status === 'running' ? yellow('●') : dim('○');
+    const suffix = group.count > 1 ? ` ×${group.count}` : '';
+    return `${icon} ${group.type}${suffix}`;
   });
+
+  const lines = [];
+  const completedCount = agents.filter(a => a.status === 'completed').length;
+  const flowSuffix = completedCount > 2 ? ` ${dim(`(${completedCount} done)`)}` : '';
+  lines.push(flowParts.join(' → ') + flowSuffix);
+
+  // Add indented task description for running agent, or last completed if none running
+  const runningAgent = running[0];
+  const lastCompleted = completed[completed.length - 1];
+  const detailAgent = runningAgent || lastCompleted;
+
+  if (detailAgent && detailAgent.description) {
+    const desc = detailAgent.description.length > 50
+      ? detailAgent.description.slice(0, 47) + '...'
+      : detailAgent.description;
+    const elapsed = formatElapsed(detailAgent.startTime, detailAgent.endTime);
+    const icon = detailAgent.status === 'running' ? yellow('▸') : dim('▸');
+    lines.push(`   ${icon} ${desc} ${dim(`(${elapsed})`)}`);
+  }
+
+  return lines;
 }
 
 /**
@@ -298,11 +361,42 @@ async function main() {
     // Git detection
     let gitBranch = '';
     let gitUnstaged = 0;
+    let gitStaged = 0;
+    let gitAhead = 0;
+    let gitBehind = 0;
     if (exec('git rev-parse --git-dir')) {
       gitBranch = exec('git branch --show-current') || exec('git rev-parse --short HEAD');
       const unstagedOutput = exec('git diff --name-only');
       if (unstagedOutput) gitUnstaged = unstagedOutput.split('\n').filter(l => l.trim()).length;
+      // Staged files count
+      const stagedOutput = exec('git diff --cached --name-only');
+      if (stagedOutput) gitStaged = stagedOutput.split('\n').filter(l => l.trim()).length;
+      // Ahead/behind upstream
+      const aheadBehind = exec('git rev-list --left-right --count @{u}...HEAD 2>/dev/null');
+      if (aheadBehind) {
+        const parts = aheadBehind.split(/\s+/);
+        gitBehind = parseInt(parts[0], 10) || 0;
+        gitAhead = parseInt(parts[1], 10) || 0;
+      }
     }
+
+    // Active plan detection - read from session temp file
+    let activePlan = '';
+    try {
+      const sessionId = data.session_id;
+      if (sessionId) {
+        const sessionPath = `/tmp/ck-session-${sessionId}.json`;
+        if (fs.existsSync(sessionPath)) {
+          const session = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
+          const planPath = session.activePlan?.trim();
+          if (planPath) {
+            // Extract slug from path like "plans/260106-1554-statusline-visual"
+            const match = planPath.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
+            activePlan = match ? match[1] : planPath.split('/').pop();
+          }
+        }
+      }
+    } catch {}
 
     // Context window - use current_usage fields with AUTOCOMPACT_BUFFER
     const usage = data.context_window?.current_usage || {};
@@ -378,6 +472,10 @@ async function main() {
       currentDir,
       gitBranch,
       gitUnstaged,
+      gitStaged,
+      gitAhead,
+      gitBehind,
+      activePlan,
       contextPercent,
       showCompactIndicator,
       sessionText,

@@ -590,7 +590,8 @@ try {
   });
 
   test('Agent tracking shows completed agent', () => {
-    const hasAgent = agentTodoResult.includes('researcher') || agentTodoResult.includes('✓');
+    // New compact flow uses ○ for completed, ● for running (no ✓)
+    const hasAgent = agentTodoResult.includes('researcher') || agentTodoResult.includes('○') || agentTodoResult.includes('●');
     assertTrue(hasAgent, 'Should show agent info');
   });
 
