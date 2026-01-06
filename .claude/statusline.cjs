@@ -219,14 +219,18 @@ function renderAgentsLines(transcript) {
   const flowSuffix = completedCount > 2 ? ` ${dim(`(${completedCount} done)`)}` : '';
   lines.push(flowParts.join(' → ') + flowSuffix);
 
-  // Add indented task description for first running agent
+  // Add indented task description for running agent, or last completed if none running
   const runningAgent = running[0];
-  if (runningAgent && runningAgent.description) {
-    const desc = runningAgent.description.length > 50
-      ? runningAgent.description.slice(0, 47) + '...'
-      : runningAgent.description;
-    const elapsed = formatElapsed(runningAgent.startTime, null);
-    lines.push(`   ${yellow('▸')} ${desc} ${dim(`(${elapsed})`)}`);
+  const lastCompleted = recentCompleted[recentCompleted.length - 1];
+  const detailAgent = runningAgent || lastCompleted;
+
+  if (detailAgent && detailAgent.description) {
+    const desc = detailAgent.description.length > 50
+      ? detailAgent.description.slice(0, 47) + '...'
+      : detailAgent.description;
+    const elapsed = formatElapsed(detailAgent.startTime, detailAgent.endTime);
+    const icon = detailAgent.status === 'running' ? yellow('▸') : dim('▸');
+    lines.push(`   ${icon} ${desc} ${dim(`(${elapsed})`)}`);
   }
 
   return lines;
