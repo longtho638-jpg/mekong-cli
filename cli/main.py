@@ -59,6 +59,9 @@ def print_help():
 ║  📋 workflow    List all available workflows              ║
 ║  🎯 crm         Quick CRM access                          ║
 ║  📊 analytics   Analytics dashboard                       ║
+║  📝 plan        Create task plan (Manus pattern)          ║
+║  📝 notes       Add/view research notes                   ║
+║  🧠 mem         Memory system (search/add/timeline)       ║
 ║                                                           ║
 ║  ❓ help        Show this help menu                       ║
 ║                                                           ║
@@ -364,6 +367,83 @@ def run_notes():
             print("   Add: python3 cli/main.py notes \"Your note\"")
 
 
+def run_mem():
+    """Memory system (based on claude-mem architecture)."""
+    print("\n🧠 AgencyOS Memory System")
+    print("-" * 50)
+    
+    try:
+        from core.memory import Memory
+        
+        memory = Memory()
+        
+        # Parse subcommand
+        if len(sys.argv) < 3:
+            subcommand = "recent"
+        else:
+            subcommand = sys.argv[2].lower()
+        
+        if subcommand == "add":
+            # Add observation
+            if len(sys.argv) < 4:
+                print("   Usage: python3 cli/main.py mem add \"observation\"")
+                return
+            
+            content = " ".join(sys.argv[3:])
+            obs_id = memory.add_observation(content)
+            print(f"   ✅ Added observation #{obs_id}")
+            print(f"   Content: {content}")
+        
+        elif subcommand == "search":
+            # Search memory
+            if len(sys.argv) < 4:
+                print("   Usage: python3 cli/main.py mem search \"query\"")
+                return
+            
+            query = " ".join(sys.argv[3:])
+            results = memory.search_memory(query)
+            
+            print(f"   🔍 Search: {query}")
+            print(f"   Found: {len(results)} results\n")
+            
+            for r in results:
+                print(f"   #{r['id']} [{r['type']}] {r['summary']}")
+                print(f"   ⏰ {r['created_at']}")
+                print()
+        
+        elif subcommand == "timeline":
+            # View timeline
+            timeline = memory.get_timeline()
+            
+            print(f"   📅 Recent Activity ({len(timeline)} observations)\n")
+            
+            for t in timeline:
+                print(f"   #{t['id']} [{t['type']}] {t['summary']}")
+                print(f"   ⏰ {t['created_at']}")
+                print()
+        
+        else:
+            # Default: show recent
+            recent = memory.get_recent(limit=5)
+            
+            print(f"   📝 Recent Observations ({len(recent)})\n")
+            
+            for r in recent:
+                print(f"   #{r['id']} [{r['type']}] {r['summary']}")
+                print(f"   ⏰ {r['created_at']}")
+                print()
+            
+            print("   Commands:")
+            print("   • mem add \"text\"     - Add observation")
+            print("   • mem search \"query\"  - Search memory")
+            print("   • mem timeline        - View timeline")
+    
+    except ImportError as e:
+        print(f"   ❌ Memory module not found: {e}")
+    except Exception as e:
+        print(f"   ❌ Error: {e}")
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -387,6 +467,7 @@ def main():
         "analytics": run_analytics,
         "plan": run_plan,
         "notes": run_notes,
+        "mem": run_mem,
         "help": print_help,
     }
     
