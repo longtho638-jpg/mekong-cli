@@ -352,16 +352,19 @@ async function main() {
       }
     }
 
-    // Active plan detection
+    // Active plan detection - read from session temp file
     let activePlan = '';
     try {
-      const settingsPath = path.join(rawDir, '.claude', 'settings.local.json');
-      if (fs.existsSync(settingsPath)) {
-        const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-        if (settings.activePlan) {
-          // Extract slug from path like "plans/260106-1554-statusline-visual"
-          const match = settings.activePlan.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
-          activePlan = match ? match[1] : settings.activePlan.split('/').pop();
+      const sessionId = data.session_id;
+      if (sessionId) {
+        const sessionPath = `/tmp/ck-session-${sessionId}.json`;
+        if (fs.existsSync(sessionPath)) {
+          const session = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
+          if (session.activePlan) {
+            // Extract slug from path like "plans/260106-1554-statusline-visual"
+            const match = session.activePlan.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
+            activePlan = match ? match[1] : session.activePlan.split('/').pop();
+          }
         }
       }
     } catch {}
