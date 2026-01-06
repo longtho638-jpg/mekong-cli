@@ -1,3 +1,22 @@
+## [2.3.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.4...v2.3.0-beta.5) (2026-01-06)
+
+
+### 🚀 Features
+
+* **statusline:** add git staged/ahead and active plan indicators ([daeb5f1](https://github.com/claudekit/claudekit-engineer/commit/daeb5f1b7d91a05a81185855aa05b9a7c2063de7))
+* **statusline:** collapse duplicate agents + fix edge cases ([30c2490](https://github.com/claudekit/claudekit-engineer/commit/30c24902247388149aff434dbec2f6b0d3393f81))
+* **statusline:** refine visual presentation with compact agent flow ([d9ccf7b](https://github.com/claudekit/claudekit-engineer/commit/d9ccf7bdcc38266698da15797909d299dd337c12))
+* **statusline:** show last 3 completed agents for better flow context ([f2a02ec](https://github.com/claudekit/claudekit-engineer/commit/f2a02eca2878e230b670c6823c48cb2a7050c25e))
+* **statusline:** show last completed agent's description when no running agent ([967b8ff](https://github.com/claudekit/claudekit-engineer/commit/967b8ffcaaa93f1e86cfaa142dde9f94d59e560e))
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** collapse agents BEFORE slicing to preserve type variety ([286e25e](https://github.com/claudekit/claudekit-engineer/commit/286e25ea8b67b237159ef0099445b42b5b916ddd))
+* **statusline:** include plan in narrow layout mode ([8d41db9](https://github.com/claudekit/claudekit-engineer/commit/8d41db9b52dbbaa17c59d98a1e5987645907859d))
+* **statusline:** read activePlan from session temp file ([4ac5459](https://github.com/claudekit/claudekit-engineer/commit/4ac5459f6e264d4e8f2e0113ea24c6f952eb1c34))
+* **statusline:** remove agent type truncation for better readability ([9cda0ed](https://github.com/claudekit/claudekit-engineer/commit/9cda0ed7196af513c0b917a3830bf995d0c1fde2))
+
 ## [2.3.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.3...v2.3.0-beta.4) (2026-01-06)
 
 
