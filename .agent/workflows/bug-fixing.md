@@ -2,130 +2,150 @@
 description: How to debug and fix bugs using AgencyOS agentic workflow
 ---
 
-# Bug Fixing Workflow
+# Fixing Bugs
 
-Debug and fix bugs with agentic assistance in 5 phases.
+Debug and fix bugs with agentic assistance in 5 steps.
 
-## Quick Start
+## Quick Commands
 ```bash
-# Quick fix
-/debug "issue description" /fix:hard "solution"
+# Quick fix (simple bugs)
+/fix:fast "users getting 401 error on login"
+
+# Complex fix (investigation needed)
+/fix:hard "memory leak in WebSocket connections"
+
+# Type errors
+/fix:types
 ```
 
-## Overview
-| Phase | Command | Time |
-|-------|---------|------|
-| Investigation | `/debug` | 3 min |
-| Deep Analysis | `/debug` | 5 min |
-| Fix Implementation | `/fix:hard` | 10 min |
-| Testing | `/fix:test` | 5 min |
-| Deployment | `/fix:ci /git:cm` | 3 min |
+## Step-by-Step Workflow
 
-## Step-by-Step Guide
+### Step 1: Reproduce the Bug
+Document the issue first:
+- What happens (actual behavior)
+- What should happen (expected behavior)
+- Steps to reproduce
+- Error messages or logs
 
-### 1. Initial Investigation
 // turbo
 ```bash
-/debug "login button not working in production"
+# Test manually
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123"}'
+
+# Expected: 200 OK with token
+# Actual: 401 Unauthorized
+```
+
+### Step 2: Choose Debugging Approach
+
+#### Option A: Quick Fix (/fix:fast)
+For simple, isolated bugs:
+// turbo
+```bash
+/fix:fast "users getting 401 error on login with valid credentials"
 ```
 
 What happens:
-- Debugger Agent investigates the issue
-- Collects logs, error messages, stack traces
-- Identifies affected components
+1. Analyzes issue
+2. Implements fix
+3. Runs tests
+4. Verifies fix
 
-Output: Investigation report with root cause hypothesis
-
-### 2. Deep Analysis
+#### Option B: Complex Fix (/fix:hard)
+For bugs requiring investigation:
 // turbo
 ```bash
-/debug "analyze authentication flow for session issues"
+/fix:hard "memory leak in WebSocket connections causing server crashes"
 ```
 
 What happens:
-- Deep code analysis
-- Database consistency check
-- Security vulnerability check
+1. Investigation phase (root cause)
+2. Creates fix plan
+3. Implements fixes
+4. Runs tests
+5. Performance validation
+6. Documentation updated
 
-Output: Root cause identification with code locations
-
-### 3. Fix Implementation
+### Step 3: Verify the Fix
 // turbo
 ```bash
-/fix:hard "session timeout causing login issues"
+npm test
+npm run lint
 ```
 
-What happens:
-- Implements the fix
-- Code review for quality
-- Security validation
-
-Fix types: Code logic, config updates, database migrations, security patches
-
-### 4. Comprehensive Testing
+### Step 4: Document the Fix
 // turbo
 ```bash
-/fix:test
+/docs:update "fixed login authentication bug"
 ```
 
-What happens:
-- Regression tests for fixed code
-- Integration tests for affected flows
-- Performance benchmarks
-
-### 5. Validation & Deployment
+### Step 5: Commit the Fix
 // turbo
 ```bash
-/fix:ci "validate fix doesn't break production" /git:cm
+/git:cm
 ```
 
-What happens:
-- Validates fix in staging
-- Ensures CI pipeline passes
-- Commits with proper format
+## Common Variations
 
-## Specialized Commands
-
-### CI/CD Issues
+### Type Error Fix
 // turbo
 ```bash
-/fix:ci "failing GitHub Actions for test suite"
+/fix:types
+# Automatically fixes TypeScript errors
+# Updates type definitions
+# Runs type checker
 ```
 
-### Type Errors
+### Performance Bug
 // turbo
 ```bash
-/fix:types "TypeScript errors in user service"
+/fix:hard "API endpoint taking 8+ seconds to respond"
+# Analyzes performance
+# Identifies bottlenecks
+# Implements optimization
 ```
 
-### Performance Issues
+### Security Bug
 // turbo
 ```bash
-/debug "slow API response times" /fix "implement query optimization"
+/fix:fast "SQL injection vulnerability in search endpoint"
+# Implements parameterized queries
+# Adds input validation
+# Runs security tests
 ```
 
-### Security Issues
+### Integration Bug
 // turbo
 ```bash
-/debug "XSS vulnerability" /fix:hard "sanitize input and implement CSP"
+/fix:logs "Stripe webhook failing with 400 errors"
+# Analyzes webhook logs
+# Fixes verification logic
 ```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Can't reproduce bug | Add more logging, check environment |
+| Fix breaks other features | Run full test suite first |
+| Root cause unclear | Use `/debug` for deeper analysis |
+| Intermittent bug | Add monitoring and logging |
 
 ## Best Practices
+1. **Always reproduce first** - Confirm the bug exists
+2. **Add tests for bugs** - Prevent regressions
+3. **Check for related issues** - Sometimes bugs are connected
+4. **Document in changelog** - Track what was fixed
+5. **Monitor after deployment** - Ensure fix works in production
+6. **Root cause analysis** - Understand WHY it happened
 
-### Before Starting
-- [ ] Reproduce the issue
-- [ ] Check recent changes
-- [ ] Review error logs
-
-### During Investigation
-- [ ] Don't assume root cause
-- [ ] Check data consistency
-- [ ] Verify environment differences
-
-### After Deployment
-- [ ] Monitor for regressions
-- [ ] Update documentation
-- [ ] Share learnings
+## Time Comparison
+| Approach | Time |
+|----------|------|
+| Traditional debugging | 2-4 hours |
+| With AgencyOS | 15-30 min |
 
 ## 🏯 Binh Pháp Alignment
 "虛實篇" (Weak Points and Strong) - Find the root cause, not just symptoms.
