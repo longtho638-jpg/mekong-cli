@@ -4,7 +4,7 @@
 /**
  * Custom Claude Code statusline for Node.js - Multi-line Edition
  * Cross-platform support: Windows, macOS, Linux
- * Features: ANSI colors, agent/todo tracking, context window, session timer
+ * Features: ANSI colors, tool/agent/todo tracking, context window, session timer
  * No external dependencies - uses only Node.js built-in modules
  */
 
@@ -46,6 +46,32 @@ function expandHome(filePath) {
 }
 
 /**
+ * Get terminal width with fallback chain
+ * Piped context (statusline) needs alternative detection
+ */
+function getTerminalWidth() {
+  // Try multiple sources - stderr might still be TTY even when stdout is piped
+  if (process.stderr.columns) return process.stderr.columns;
+  if (env.COLUMNS) return parseInt(env.COLUMNS, 10);
+  // Subprocess fallback
+  const tputCols = exec('tput cols');
+  if (tputCols && /^\d+$/.test(tputCols)) return parseInt(tputCols, 10);
+  return 120; // Safe default
+}
+
+/**
+ * Calculate visible string length (strip ANSI codes, account for emoji width)
+ * Emojis typically render as 2 columns in terminals
+ */
+function visibleLength(str) {
+  // Strip ANSI escape codes
+  const noAnsi = str.replace(/\x1b\[[0-9;]*m/g, '');
+  // Count emojis (they render as ~2 cols) - common emoji ranges
+  const emojiMatches = noAnsi.match(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu) || [];
+  return noAnsi.length + emojiMatches.length; // +1 per emoji (base length + 1 = 2 cols)
+}
+
+/**
  * Format elapsed time from start to end (or now)
  */
 function formatElapsed(startTime, endTime) {
@@ -77,29 +103,41 @@ async function readStdin() {
 // ============================================================================
 
 /**
- * Render session lines (cleaner multi-line layout)
- * Line 1: Primary info (dir, git, model, context)
- * Line 2: Stats (timer, cost, lines) - only if any exist
+ * Render session lines with responsive width-based wrapping
+ * Splits location/session into 2 lines if combined exceeds 85% of terminal width
  */
 function renderSessionLines(ctx) {
   const lines = [];
+  const termWidth = getTerminalWidth();
+  const threshold = Math.floor(termWidth * 0.85);
 
-  // Line 1: Primary info
-  let line1 = '';
-  line1 += `📁 ${cyan(ctx.currentDir)}`;
+  // Build location part: 📁 dir  🌿 branch (N)
+  let locationPart = `📁 ${cyan(ctx.currentDir)}`;
   if (ctx.gitBranch) {
-    line1 += `  🌿 ${magenta(ctx.gitBranch)}`;
-    if (ctx.gitUnstaged > 0) line1 += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
+    locationPart += `  🌿 ${magenta(ctx.gitBranch)}`;
+    if (ctx.gitUnstaged > 0) locationPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
   }
-  line1 += `  🤖 ${cyan(ctx.modelName)}`;
-  if (ctx.showCompactIndicator) {
-    line1 += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
-  } else if (ctx.contextPercent > 0) {
-    line1 += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
-  }
-  lines.push(line1);
 
-  // Line 2: Stats (only if any exist)
+  // Build session part: 🤖 model  contextBar%
+  let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
+  if (ctx.showCompactIndicator) {
+    sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
+  } else if (ctx.contextPercent > 0) {
+    sessionPart += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
+  }
+
+  // Decide layout based on combined length vs terminal width
+  const combined = `${locationPart}  ${sessionPart}`;
+  if (visibleLength(combined) > threshold) {
+    // Split into two lines
+    lines.push(locationPart);
+    lines.push(sessionPart);
+  } else {
+    // Keep on single line
+    lines.push(combined);
+  }
+
+  // Stats line (always separate if any exist)
   const stats = [];
   if (ctx.sessionText) stats.push(`⌛ ${ctx.sessionText.replace(' until reset', '')}`);
   if (ctx.costText) stats.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
