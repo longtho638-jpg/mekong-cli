@@ -1,3 +1,16 @@
+## [2.3.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.3...v2.3.0-beta.4) (2026-01-06)
+
+
+### 🐞 Bug Fixes
+
+* **chrome-devtools:** add process.exit(1) to error handlers ([966048a](https://github.com/claudekit/claudekit-engineer/commit/966048a7e94113f8719770135643aaba5ecbac4c))
+* **context-engineering:** add UTF-8 encoding and error handling ([9947138](https://github.com/claudekit/claudekit-engineer/commit/9947138d15f0270e64ec84d02eafa1023c3fd8ca))
+
+
+### ✅ Tests
+
+* **edge-cases:** add comprehensive test suites for PR [#304](https://github.com/claudekit/claudekit-engineer/issues/304) ([080b206](https://github.com/claudekit/claudekit-engineer/commit/080b206983498e87c9848e32908e712a8940c1d5))
+
 ## [2.3.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.2...v2.3.0-beta.3) (2026-01-06)
 
 
