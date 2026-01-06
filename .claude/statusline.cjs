@@ -103,20 +103,27 @@ async function readStdin() {
 // ============================================================================
 
 /**
- * Render session lines with responsive width-based wrapping
- * Splits location/session into 2 lines if combined exceeds 85% of terminal width
+ * Render session lines with multi-level responsive wrapping
+ * Level 1: Everything on one line (wide terminals)
+ * Level 2: Location | Session split (medium terminals)
+ * Level 3: Dir | Branch | Session split (narrow terminals)
  */
 function renderSessionLines(ctx) {
   const lines = [];
   const termWidth = getTerminalWidth();
   const threshold = Math.floor(termWidth * 0.85);
 
-  // Build location part: 📁 dir  🌿 branch (N)
-  let locationPart = `📁 ${cyan(ctx.currentDir)}`;
+  // Build atomic parts separately for flexible composition
+  const dirPart = `📁 ${cyan(ctx.currentDir)}`;
+
+  let branchPart = '';
   if (ctx.gitBranch) {
-    locationPart += `  🌿 ${magenta(ctx.gitBranch)}`;
-    if (ctx.gitUnstaged > 0) locationPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
+    branchPart = `🌿 ${magenta(ctx.gitBranch)}`;
+    if (ctx.gitUnstaged > 0) branchPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
   }
+
+  // Combined location (dir + branch)
+  const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
 
   // Build session part: 🤖 model  contextBar%
   let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
@@ -126,15 +133,23 @@ function renderSessionLines(ctx) {
     sessionPart += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
   }
 
-  // Decide layout based on combined length vs terminal width
+  // Multi-level responsive layout
   const combined = `${locationPart}  ${sessionPart}`;
-  if (visibleLength(combined) > threshold) {
-    // Split into two lines
+  const combinedLen = visibleLength(combined);
+  const locationLen = visibleLength(locationPart);
+
+  if (combinedLen <= threshold) {
+    // Level 1: Everything fits on one line
+    lines.push(combined);
+  } else if (locationLen <= threshold) {
+    // Level 2: Split location | session
     lines.push(locationPart);
     lines.push(sessionPart);
   } else {
-    // Keep on single line
-    lines.push(combined);
+    // Level 3: Split dir | branch | session (narrowest)
+    lines.push(dirPart);
+    if (branchPart) lines.push(branchPart);
+    lines.push(sessionPart);
   }
 
   // Stats line (always separate if any exist)
