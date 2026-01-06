@@ -217,7 +217,7 @@ console.log('══════════════════════�
 
 test('coloredBar(0) renders empty bar', () => {
   const bar = coloredBar(0);
-  assertTrue(bar.includes('░'), 'Empty bar should contain empty blocks');
+  assertTrue(bar.includes('▱'), 'Empty bar should contain empty blocks (▱)');
 });
 
 test('coloredBar(50) renders half-filled bar', () => {
@@ -232,7 +232,7 @@ test('coloredBar(100) renders full bar', () => {
 
 test('coloredBar clamping: negative percent treated as 0', () => {
   const bar = coloredBar(-10, 12);
-  assertTrue(bar.includes('░'), 'Negative percent should show empty bar');
+  assertTrue(bar.includes('▱'), 'Negative percent should show empty bar (▱)');
 });
 
 test('coloredBar clamping: >100 percent treated as 100', () => {

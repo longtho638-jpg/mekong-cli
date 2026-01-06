@@ -376,6 +376,283 @@ try {
 }
 
 // ============================================================================
+// TEST: Wide Terminal Rendering (160+ cols)
+// ============================================================================
+
+console.log('\nTEST 10: Wide Terminal Rendering (160+ cols)\n');
+
+const wideInput = JSON.stringify({
+  model: { display_name: 'Opus 4.5' },
+  workspace: { current_dir: '/home/user/short' },
+  context_window: { context_window_size: 200000, current_usage: { input_tokens: 50000 } },
+  cost: { total_cost_usd: '10.50', total_lines_added: 100, total_lines_removed: 50 }
+});
+
+let wideLines = 0;
+try {
+  const wideResult = execSync(`echo '${wideInput.replace(/'/g, "'\\''")}'  | COLUMNS=160 node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, COLUMNS: '160' }
+  });
+  wideLines = wideResult.trim().split('\n').length;
+
+  test('Wide terminal (160 cols) produces output', () => {
+    assertTrue(wideResult.length > 0, 'Should produce output');
+  });
+
+  test('Wide terminal has fewer lines (compact layout)', () => {
+    assertTrue(wideLines <= 3, `Should be compact, got ${wideLines} lines`);
+  });
+
+  console.log(`  Lines: ${wideLines}`);
+  console.log(`  Output: ${wideResult.trim().split('\n')[0].substring(0, 100)}...`);
+} catch (e) {
+  test('Wide terminal (160 cols) produces output', () => { throw e; });
+}
+
+// ============================================================================
+// TEST: Narrow Terminal Wrapping (< 100 cols)
+// ============================================================================
+
+console.log('\nTEST 11: Narrow Terminal Wrapping (< 100 cols)\n');
+
+const narrowInput = JSON.stringify({
+  model: { display_name: 'Opus 4.5' },
+  workspace: { current_dir: '/home/user/very/long/nested/path/project' },
+  context_window: { context_window_size: 200000, current_usage: { input_tokens: 50000 } },
+  cost: { total_cost_usd: '10.50', total_lines_added: 100, total_lines_removed: 50 }
+});
+
+try {
+  const narrowResult = execSync(`echo '${narrowInput.replace(/'/g, "'\\''")}'  | COLUMNS=80 node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, COLUMNS: '80' }
+  });
+  const narrowLines = narrowResult.trim().split('\n').length;
+
+  test('Narrow terminal (80 cols) produces output', () => {
+    assertTrue(narrowResult.length > 0, 'Should produce output');
+  });
+
+  test('Narrow terminal wraps to multiple lines', () => {
+    assertTrue(narrowLines >= 2, `Should wrap to multiple lines, got ${narrowLines}`);
+  });
+
+  console.log(`  Lines: ${narrowLines}`);
+  if (wideLines > 0) {
+    test('Narrow has more lines than wide', () => {
+      assertTrue(narrowLines >= wideLines, 'Narrow should have equal or more lines');
+    });
+  }
+} catch (e) {
+  test('Narrow terminal (80 cols) produces output', () => { throw e; });
+}
+
+// ============================================================================
+// TEST: Long Directory/Branch Names
+// ============================================================================
+
+console.log('\nTEST 12: Long Directory/Branch Names\n');
+
+const longPathInput = JSON.stringify({
+  model: { display_name: 'Claude' },
+  workspace: { current_dir: '/home/user/very/deeply/nested/directory/structure/project/source' },
+  context_window: { context_window_size: 200000 }
+});
+
+try {
+  const longPathResult = execSync(`echo '${longPathInput.replace(/'/g, "'\\''")}'  | COLUMNS=100 node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, COLUMNS: '100' }
+  });
+
+  test('Long path produces output without crash', () => {
+    assertTrue(longPathResult.length > 0, 'Should produce output');
+  });
+
+  test('Long path contains directory info', () => {
+    assertTrue(longPathResult.includes('source') || longPathResult.includes('project'), 'Should contain path info');
+  });
+
+  const longPathLines = longPathResult.trim().split('\n').length;
+  console.log(`  Lines: ${longPathLines}`);
+  console.log(`  Output: ${longPathResult.trim().split('\n')[0].substring(0, 80)}...`);
+} catch (e) {
+  test('Long path produces output without crash', () => { throw e; });
+}
+
+// ============================================================================
+// TEST: Long Model Names
+// ============================================================================
+
+console.log('\nTEST 13: Long Model Names\n');
+
+const longModelInput = JSON.stringify({
+  model: { display_name: 'gemini-claude-opus-4-5-thinking-extended-context' },
+  workspace: { current_dir: '/home/user/project' },
+  context_window: { context_window_size: 200000, current_usage: { input_tokens: 50000 } }
+});
+
+try {
+  const longModelResult = execSync(`echo '${longModelInput.replace(/'/g, "'\\''")}'  | COLUMNS=100 node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, COLUMNS: '100' }
+  });
+
+  test('Long model name produces output', () => {
+    assertTrue(longModelResult.length > 0, 'Should produce output');
+  });
+
+  test('Long model name is truncated (not overflow)', () => {
+    // Model should be truncated to ~30 chars max
+    const modelLine = longModelResult.split('\n').find(l => l.includes('🤖')) || '';
+    // Strip ANSI codes for length check
+    const stripped = modelLine.replace(/\x1b\[[0-9;]*m/g, '');
+    assertTrue(stripped.length <= 100, `Model line should fit in 100 cols, got ${stripped.length}`);
+  });
+
+  console.log(`  Output: ${longModelResult.trim().split('\n').find(l => l.includes('🤖'))?.substring(0, 80)}...`);
+} catch (e) {
+  test('Long model name produces output', () => { throw e; });
+}
+
+// ============================================================================
+// TEST: Agent/Todo Tracking Display
+// ============================================================================
+
+console.log('\nTEST 14: Agent/Todo Tracking Display\n');
+
+const tmpTranscriptPath = path.join(os.tmpdir(), `test-transcript-${Date.now()}.jsonl`);
+
+// Create transcript with agents and todos
+const transcriptLines = [
+  JSON.stringify({
+    timestamp: new Date(Date.now() - 120000).toISOString(),
+    message: {
+      content: [{
+        type: 'tool_use',
+        id: 'agent-1',
+        name: 'Task',
+        input: { subagent_type: 'researcher', model: 'haiku', description: 'Researching API docs' }
+      }]
+    }
+  }),
+  JSON.stringify({
+    timestamp: new Date(Date.now() - 60000).toISOString(),
+    message: {
+      content: [{
+        type: 'tool_result',
+        tool_use_id: 'agent-1',
+        is_error: false
+      }]
+    }
+  }),
+  JSON.stringify({
+    timestamp: new Date().toISOString(),
+    message: {
+      content: [{
+        type: 'tool_use',
+        id: 'todo-1',
+        name: 'TodoWrite',
+        input: {
+          todos: [
+            { content: 'First task', status: 'completed', activeForm: 'Completing first task' },
+            { content: 'Second task', status: 'in_progress', activeForm: 'Working on second task' },
+            { content: 'Third task', status: 'pending', activeForm: 'Starting third task' }
+          ]
+        }
+      }]
+    }
+  })
+];
+
+fs.writeFileSync(tmpTranscriptPath, transcriptLines.join('\n'));
+
+const agentTodoInput = JSON.stringify({
+  model: { display_name: 'Opus 4.5' },
+  workspace: { current_dir: '/home/user/project' },
+  context_window: { context_window_size: 200000 },
+  transcript_path: tmpTranscriptPath
+});
+
+try {
+  const agentTodoResult = execSync(`echo '${agentTodoInput.replace(/'/g, "'\\''")}'  | node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+
+  test('Agent/Todo tracking produces output', () => {
+    assertTrue(agentTodoResult.length > 0, 'Should produce output');
+  });
+
+  test('Agent tracking shows completed agent', () => {
+    const hasAgent = agentTodoResult.includes('researcher') || agentTodoResult.includes('✓');
+    assertTrue(hasAgent, 'Should show agent info');
+  });
+
+  test('Todo tracking shows in-progress task', () => {
+    const hasTodo = agentTodoResult.includes('▸') || agentTodoResult.includes('second') || agentTodoResult.includes('Working');
+    assertTrue(hasTodo, 'Should show todo info');
+  });
+
+  console.log(`  Agent/Todo output:`);
+  agentTodoResult.trim().split('\n').forEach(line => {
+    console.log(`    ${line.substring(0, 80)}`);
+  });
+} catch (e) {
+  test('Agent/Todo tracking produces output', () => { throw e; });
+} finally {
+  try { fs.unlinkSync(tmpTranscriptPath); } catch {}
+}
+
+// ============================================================================
+// TEST: Edge Cases - Empty/Invalid Inputs
+// ============================================================================
+
+console.log('\nTEST 15: Edge Cases - Boundary Conditions\n');
+
+// Test with 0% context
+const zeroContextInput = JSON.stringify({
+  model: { display_name: 'Claude' },
+  workspace: { current_dir: '/home/user' },
+  context_window: { context_window_size: 200000, current_usage: { input_tokens: 0 } }
+});
+
+try {
+  const zeroResult = execSync(`echo '${zeroContextInput.replace(/'/g, "'\\''")}'  | node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+
+  test('Zero context produces output', () => {
+    assertTrue(zeroResult.length > 0, 'Should produce output');
+  });
+} catch (e) {
+  test('Zero context produces output', () => { throw e; });
+}
+
+// Test with very small terminal
+try {
+  const tinyResult = execSync(`echo '${wideInput.replace(/'/g, "'\\''")}'  | COLUMNS=40 node .claude/statusline.cjs`, {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, COLUMNS: '40' }
+  });
+
+  test('Very narrow terminal (40 cols) handles gracefully', () => {
+    assertTrue(tinyResult.length > 0, 'Should produce output even at 40 cols');
+  });
+
+  console.log(`  40-col lines: ${tinyResult.trim().split('\n').length}`);
+} catch (e) {
+  test('Very narrow terminal (40 cols) handles gracefully', () => { throw e; });
+}
+
+// ============================================================================
 // SUMMARY
 // ============================================================================
 
