@@ -188,9 +188,10 @@ function renderSessionLines(ctx) {
       if (statsLen > 0) lines.push(statsPart);
     }
   } else {
-    // Narrow: dir | branch | session+stats or session | stats
+    // Narrow: dir | branch | plan | session+stats or session | stats
     lines.push(dirPart);
     if (branchPart) lines.push(branchPart);
+    if (planPart) lines.push(planPart);
     if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
       lines.push(sessionStats);
     } else {
