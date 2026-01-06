@@ -10,10 +10,34 @@ Usage:
 import argparse
 import json
 import math
+import os
 import re
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
+
+MAX_FILE_SIZE_MB = 100
+
+
+def load_json_file(path: str):
+    """Load JSON file with proper error handling and size validation."""
+    try:
+        size_mb = os.path.getsize(path) / (1024 * 1024)
+        if size_mb > MAX_FILE_SIZE_MB:
+            print(f"Error: File too large ({size_mb:.1f}MB). Max {MAX_FILE_SIZE_MB}MB", file=sys.stderr)
+            sys.exit(1)
+        with open(path, encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: File not found: {path}", file=sys.stderr)
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied: {path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON in {path}: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 class HealthStatus(Enum):
@@ -270,8 +294,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == "analyze":
-        with open(args.context_file) as f:
-            data = json.load(f)
+        data = load_json_file(args.context_file)
         messages = data if isinstance(data, list) else data.get("messages", [])
         result = analyze_context(messages, args.limit, args.keywords)
         print(json.dumps({
