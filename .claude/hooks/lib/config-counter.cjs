@@ -46,15 +46,18 @@ function countHooksInFile(filePath) {
   return 0;
 }
 
-function countRulesInDir(rulesDir) {
-  if (!fs.existsSync(rulesDir)) return 0;
+function countRulesInDir(rulesDir, depth = 0) {
+  // Depth limit prevents symlink loops and excessive recursion
+  if (depth > 5 || !fs.existsSync(rulesDir)) return 0;
   let count = 0;
   try {
     const entries = fs.readdirSync(rulesDir, { withFileTypes: true });
     for (const entry of entries) {
+      // Skip symlinks to prevent loops
+      if (entry.isSymbolicLink()) continue;
       const fullPath = path.join(rulesDir, entry.name);
       if (entry.isDirectory()) {
-        count += countRulesInDir(fullPath);
+        count += countRulesInDir(fullPath, depth + 1);
       } else if (entry.isFile() && entry.name.endsWith('.md')) {
         count++;
       }

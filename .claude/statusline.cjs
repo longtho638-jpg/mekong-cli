@@ -52,7 +52,10 @@ function expandHome(filePath) {
 function getTerminalWidth() {
   // Try multiple sources - stderr might still be TTY even when stdout is piped
   if (process.stderr.columns) return process.stderr.columns;
-  if (env.COLUMNS) return parseInt(env.COLUMNS, 10);
+  if (env.COLUMNS) {
+    const parsed = parseInt(env.COLUMNS, 10);
+    if (!isNaN(parsed) && parsed > 0) return parsed;
+  }
   // Subprocess fallback
   const tputCols = exec('tput cols');
   if (tputCols && /^\d+$/.test(tputCols)) return parseInt(tputCols, 10);
@@ -64,6 +67,7 @@ function getTerminalWidth() {
  * Emojis typically render as 2 columns in terminals
  */
 function visibleLength(str) {
+  if (!str || typeof str !== 'string') return 0;
   // Strip ANSI escape codes
   const noAnsi = str.replace(/\x1b\[[0-9;]*m/g, '');
   // Count emojis (they render as ~2 cols) - common emoji ranges
@@ -75,10 +79,13 @@ function visibleLength(str) {
  * Format elapsed time from start to end (or now)
  */
 function formatElapsed(startTime, endTime) {
+  if (!startTime) return '0s';
   const start = startTime instanceof Date ? startTime.getTime() : new Date(startTime).getTime();
+  if (isNaN(start)) return '0s';
   const end = endTime ? (endTime instanceof Date ? endTime.getTime() : new Date(endTime).getTime()) : Date.now();
+  if (isNaN(end)) return '0s';
   const ms = end - start;
-  if (ms < 1000) return '<1s';
+  if (ms < 0 || ms < 1000) return '<1s';
   if (ms < 60000) return `${Math.round(ms / 1000)}s`;
   const mins = Math.floor(ms / 60000);
   const secs = Math.round((ms % 60000) / 1000);
@@ -125,7 +132,11 @@ function renderSessionLines(ctx) {
   const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
 
   // Build session part: 🤖 model  contextBar%
-  let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
+  // Truncate long model names to prevent overflow
+  const modelDisplay = ctx.modelName.length > 30
+    ? ctx.modelName.slice(0, 27) + '...'
+    : ctx.modelName;
+  let sessionPart = `🤖 ${cyan(modelDisplay)}`;
   if (ctx.showCompactIndicator) {
     sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
   } else if (ctx.contextPercent > 0) {
