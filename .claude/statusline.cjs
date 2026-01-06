@@ -200,7 +200,7 @@ function renderAgentsLines(transcript) {
   if (!agents || agents.length === 0) return [];
 
   const running = agents.filter(a => a.status === 'running');
-  const recentCompleted = agents.filter(a => a.status === 'completed').slice(-2);
+  const recentCompleted = agents.filter(a => a.status === 'completed').slice(-3);
   const toShow = [...running, ...recentCompleted].slice(-4);
 
   if (toShow.length === 0) return [];
