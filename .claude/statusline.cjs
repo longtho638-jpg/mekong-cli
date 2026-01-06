@@ -224,17 +224,17 @@ function renderAgentsLines(transcript) {
   if (!agents || agents.length === 0) return [];
 
   const running = agents.filter(a => a.status === 'running');
-  const recentCompleted = agents.filter(a => a.status === 'completed').slice(-3);
-  const toShow = [...running, ...recentCompleted].slice(-4);
+  const completed = agents.filter(a => a.status === 'completed');
 
-  if (toShow.length === 0) return [];
+  // Sort all by startTime (safe NaN handling)
+  const allAgents = [...running, ...completed];
+  allAgents.sort((a, b) => safeGetTime(a.startTime) - safeGetTime(b.startTime));
 
-  // Sort chronologically by startTime (safe NaN handling)
-  toShow.sort((a, b) => safeGetTime(a.startTime) - safeGetTime(b.startTime));
+  if (allAgents.length === 0) return [];
 
-  // Collapse consecutive duplicate types with ×N suffix
+  // Collapse consecutive duplicate types FIRST (before slicing)
   const collapsed = [];
-  for (const agent of toShow) {
+  for (const agent of allAgents) {
     const type = agent.type || 'agent'; // fallback for missing type
     const last = collapsed[collapsed.length - 1];
     if (last && last.type === type && last.status === agent.status) {
@@ -245,8 +245,11 @@ function renderAgentsLines(transcript) {
     }
   }
 
+  // THEN slice to show last 4 collapsed groups
+  const toShow = collapsed.slice(-4);
+
   // Build compact flow line with dots and ×N for duplicates
-  const flowParts = collapsed.map(group => {
+  const flowParts = toShow.map(group => {
     const icon = group.status === 'running' ? yellow('●') : dim('○');
     const suffix = group.count > 1 ? ` ×${group.count}` : '';
     return `${icon} ${group.type}${suffix}`;
@@ -259,7 +262,7 @@ function renderAgentsLines(transcript) {
 
   // Add indented task description for running agent, or last completed if none running
   const runningAgent = running[0];
-  const lastCompleted = recentCompleted[recentCompleted.length - 1];
+  const lastCompleted = completed[completed.length - 1];
   const detailAgent = runningAgent || lastCompleted;
 
   if (detailAgent && detailAgent.description) {
