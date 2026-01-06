@@ -205,8 +205,17 @@ function renderSessionLines(ctx) {
 }
 
 /**
- * Render agents lines as compact chronological flow
- * Format: ○ type → ○ type → ● type (N done)
+ * Safe date parsing - returns epoch ms or 0 for invalid dates
+ */
+function safeGetTime(dateValue) {
+  if (!dateValue) return 0;
+  const time = new Date(dateValue).getTime();
+  return isNaN(time) ? 0 : time;
+}
+
+/**
+ * Render agents lines as compact chronological flow with duplicate collapsing
+ * Format: ○ type ×N → ● type (N done)
  *         ▸ description (elapsed)
  * @returns {string[]} Array of lines (flow line + optional task line)
  */
@@ -220,13 +229,27 @@ function renderAgentsLines(transcript) {
 
   if (toShow.length === 0) return [];
 
-  // Sort chronologically by startTime
-  toShow.sort((a, b) => new Date(a.startTime || 0) - new Date(b.startTime || 0));
+  // Sort chronologically by startTime (safe NaN handling)
+  toShow.sort((a, b) => safeGetTime(a.startTime) - safeGetTime(b.startTime));
 
-  // Build compact flow line with dots (no truncation - let layout handle wrapping)
-  const flowParts = toShow.map(agent => {
-    const icon = agent.status === 'running' ? yellow('●') : dim('○');
-    return `${icon} ${agent.type}`;
+  // Collapse consecutive duplicate types with ×N suffix
+  const collapsed = [];
+  for (const agent of toShow) {
+    const type = agent.type || 'agent'; // fallback for missing type
+    const last = collapsed[collapsed.length - 1];
+    if (last && last.type === type && last.status === agent.status) {
+      last.count++;
+      last.agents.push(agent);
+    } else {
+      collapsed.push({ type, status: agent.status, count: 1, agents: [agent] });
+    }
+  }
+
+  // Build compact flow line with dots and ×N for duplicates
+  const flowParts = collapsed.map(group => {
+    const icon = group.status === 'running' ? yellow('●') : dim('○');
+    const suffix = group.count > 1 ? ` ×${group.count}` : '';
+    return `${icon} ${group.type}${suffix}`;
   });
 
   const lines = [];
@@ -362,10 +385,11 @@ async function main() {
         const sessionPath = `/tmp/ck-session-${sessionId}.json`;
         if (fs.existsSync(sessionPath)) {
           const session = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
-          if (session.activePlan) {
+          const planPath = session.activePlan?.trim();
+          if (planPath) {
             // Extract slug from path like "plans/260106-1554-statusline-visual"
-            const match = session.activePlan.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
-            activePlan = match ? match[1] : session.activePlan.split('/').pop();
+            const match = planPath.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
+            activePlan = match ? match[1] : planPath.split('/').pop();
           }
         }
       }
