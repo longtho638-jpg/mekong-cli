@@ -18,6 +18,12 @@ from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
 
+try:
+    from .config import get_settings
+except ImportError:
+    # Fallback for standalone execution
+    from config import get_settings
+
 
 class MessageType(Enum):
     """Types of Telegram messages."""
@@ -48,8 +54,9 @@ class TelegramBot:
     """
     
     def __init__(self, bot_token: Optional[str] = None, chat_id: Optional[str] = None):
-        self.bot_token = bot_token or os.getenv("TELEGRAM_BOT_TOKEN")
-        self.chat_id = chat_id or os.getenv("TELEGRAM_CHAT_ID")
+        settings = get_settings()
+        self.bot_token = bot_token or settings.TELEGRAM_BOT_TOKEN
+        self.chat_id = chat_id or settings.TELEGRAM_CHAT_ID
         self.api_base = f"https://api.telegram.org/bot{self.bot_token}"
         
         # Track sent messages

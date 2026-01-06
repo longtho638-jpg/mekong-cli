@@ -20,6 +20,19 @@ import json
 import os
 from datetime import datetime
 
+# Attempt to import centralized settings
+try:
+    from core.config import get_settings
+except ImportError:
+    try:
+        from ...core.config import get_settings
+    except ImportError:
+        # Fallback to os.getenv wrapper if config module unreachable
+        def get_settings():
+            class Settings:
+                OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+            return Settings()
+
 
 class AgentConfig(BaseModel):
     """Configuration for an agent"""
@@ -56,12 +69,14 @@ class BaseAgent(ABC):
         self.config = config
         self.redis = redis_client
         
+        settings = get_settings()
+        
         # Use OpenRouter for cost-effective LLM access
         self.llm = ChatOpenAI(
             model=config.model,
             temperature=config.temperature,
             openai_api_base="https://openrouter.ai/api/v1",
-            openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+            openai_api_key=settings.OPENROUTER_API_KEY,
             model_kwargs={
                 "headers": {
                     "HTTP-Referer": "https://agency-os.com",

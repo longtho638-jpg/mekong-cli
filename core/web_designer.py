@@ -62,6 +62,9 @@ class DesignAsset:
     url: str = ""
 
 
+import os
+from pathlib import Path
+
 class WebDesigner:
     """
     Web Designer System.
@@ -73,7 +76,56 @@ class WebDesigner:
         self.agency_name = agency_name
         self.projects: Dict[str, WebDesignProject] = {}
         self.assets: List[DesignAsset] = []
+        self.output_dir = Path("sites")
     
+    def generate_scaffold(self, project: WebDesignProject) -> str:
+        """Generate basic site scaffold."""
+        project_dir = self.output_dir / project.id
+        project_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Basic HTML template
+        html_content = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{project.name} | {project.client}</title>
+    <style>
+        body {{ font-family: system-ui, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; }}
+        header {{ border-bottom: 1px solid #ccc; padding-bottom: 1rem; margin-bottom: 2rem; }}
+        h1 {{ color: #2563eb; }}
+        .hero {{ background: #f3f4f6; padding: 2rem; border-radius: 0.5rem; text-align: center; }}
+        footer {{ margin-top: 4rem; border-top: 1px solid #ccc; padding-top: 1rem; color: #666; font-size: 0.875rem; }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{project.client}</h1>
+        <p>Project: {project.name} ({project.project_type.value})</p>
+    </header>
+    
+    <main>
+        <div class="hero">
+            <h2>Coming Soon</h2>
+            <p>We are building something amazing.</p>
+        </div>
+        
+        <section>
+            <h3>About This Project</h3>
+            <p>Designed by {self.agency_name}</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; {datetime.now().year} {project.client}. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+"""
+        (project_dir / "index.html").write_text(html_content)
+        return str(project_dir)
+
     def create_project(
         self,
         name: str,

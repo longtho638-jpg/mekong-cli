@@ -51,6 +51,17 @@ class ChapterSixWeakness:
     (Attack where they're unprepared, appear where unexpected)
     """
     
+    # Term Sheet Scoring Constants
+    BASE_SCORE = 100
+    DEDUCTION_CRITICAL = 25
+    DEDUCTION_HIGH = 15
+    DEDUCTION_MEDIUM = 10
+    DEDUCTION_LOW = 5
+    
+    # Status Thresholds
+    SCORE_FRIENDLY_THRESHOLD = 70
+    SCORE_NEGOTIATE_THRESHOLD = 50
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.red_flags: List[RedFlag] = []
@@ -58,7 +69,7 @@ class ChapterSixWeakness:
         self._init_red_flags()
         self._init_demo_data()
     
-    def _init_red_flags(self):
+    def _init_red_flags(self) -> None:
         """Initialize common investor red flags database."""
         self.red_flag_database = [
             RedFlag(
@@ -119,7 +130,7 @@ class ChapterSixWeakness:
             ),
         ]
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo competitor analysis."""
         self.competitor_weaknesses["BigCorp Enterprise"] = WeaknessAnalysis(
             competitor="BigCorp Enterprise",
@@ -146,7 +157,7 @@ class ChapterSixWeakness:
         liq_pref = term_sheet.get("liquidation_preference", "")
         if "participating" in liq_pref.lower() and "non-participating" not in liq_pref.lower():
             detected.append(self.red_flag_database[0])
-        if "2x" in liq_pref or "3x" in liq_pref:
+        elif "2x" in liq_pref or "3x" in liq_pref:
             detected.append(self.red_flag_database[0])
         
         # Check anti-dilution
@@ -170,26 +181,38 @@ class ChapterSixWeakness:
         """Score a term sheet for founder-friendliness."""
         red_flags = self.detect_red_flags(term_sheet)
         
-        # Base score
-        score = 100
+        # Use constants for initial score
+        score = self.BASE_SCORE
         
-        # Deduct for red flags
+        # Deduct for red flags using constants
         for flag in red_flags:
             if flag.severity == RedFlagSeverity.CRITICAL:
-                score -= 25
+                score -= self.DEDUCTION_CRITICAL
             elif flag.severity == RedFlagSeverity.HIGH:
-                score -= 15
+                score -= self.DEDUCTION_HIGH
             elif flag.severity == RedFlagSeverity.MEDIUM:
-                score -= 10
+                score -= self.DEDUCTION_MEDIUM
             else:
-                score -= 5
+                score -= self.DEDUCTION_LOW
         
+        # Determine status and recommendation based on thresholds
+        final_score = max(0, score)
+        if final_score >= self.SCORE_FRIENDLY_THRESHOLD:
+            recommendation = "PROCEED"
+            shield_status = "🛡️ PROTECTED"
+        elif final_score >= self.SCORE_NEGOTIATE_THRESHOLD:
+            recommendation = "NEGOTIATE"
+            shield_status = "⚠️ AT RISK"
+        else:
+            recommendation = "WALK AWAY"
+            shield_status = "🚨 DANGER"
+
         return {
-            "founder_friendly_score": max(0, score),
+            "founder_friendly_score": final_score,
             "red_flags_count": len(red_flags),
             "red_flags": red_flags,
-            "recommendation": "PROCEED" if score >= 70 else "NEGOTIATE" if score >= 50 else "WALK AWAY",
-            "shield_status": "🛡️ PROTECTED" if score >= 70 else "⚠️ AT RISK" if score >= 50 else "🚨 DANGER"
+            "recommendation": recommendation,
+            "shield_status": shield_status
         }
     
     def find_blue_ocean(self, market: str, competitors: List[str]) -> Dict[str, Any]:

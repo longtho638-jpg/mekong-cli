@@ -70,6 +70,22 @@ class ChapterTwoResources:
     (War requires substantial resources)
     """
     
+    # Runway Thresholds (Months)
+    RUNWAY_FORTRESS = 18
+    RUNWAY_STRONG = 12
+    RUNWAY_STABLE = 6
+    RUNWAY_WARNING = 3
+
+    # Fundraising Constants
+    RAISE_BUFFER_MONTHS = 6
+    RAISE_CLOSE_TIME_MONTHS = 4
+    URGENCY_HIGH_THRESHOLD = 9
+    URGENCY_MEDIUM_THRESHOLD = 12
+
+    # Optimization Thresholds (Percentage)
+    THRESHOLD_MARKETING_BURN_PCT = 25
+    THRESHOLD_INFRA_BURN_PCT = 15
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.war_chests: Dict[str, WarChest] = {}
@@ -94,7 +110,7 @@ class ChapterTwoResources:
             ResourceAllocation("Infrastructure", 5_000, 0, True),
         ]
     
-    def add_war_chest(self, startup_id: str, war_chest: WarChest):
+    def add_war_chest(self, startup_id: str, war_chest: WarChest) -> None:
         """Add or update war chest for a startup."""
         self.war_chests[startup_id] = war_chest
     
@@ -103,13 +119,13 @@ class ChapterTwoResources:
         months = war_chest.runway_months
         if months == float('inf'):
             return RunwayStatus.FORTRESS
-        elif months >= 18:
+        elif months >= self.RUNWAY_FORTRESS:
             return RunwayStatus.FORTRESS
-        elif months >= 12:
+        elif months >= self.RUNWAY_STRONG:
             return RunwayStatus.STRONG
-        elif months >= 6:
+        elif months >= self.RUNWAY_STABLE:
             return RunwayStatus.STABLE
-        elif months >= 3:
+        elif months >= self.RUNWAY_WARNING:
             return RunwayStatus.WARNING
         return RunwayStatus.CRITICAL
     
@@ -117,18 +133,15 @@ class ChapterTwoResources:
         """Calculate optimal fundraising timing."""
         runway = war_chest.runway_months
         
-        # Should start raising when 6+ months left
-        months_until_raise = max(0, runway - 6)
-        
-        # Time to close a round (typically 3-6 months)
-        close_time = 4
+        # Should start raising when buffer months left
+        months_until_raise = max(0, runway - self.RAISE_BUFFER_MONTHS)
         
         return {
             "current_runway": runway,
             "months_until_should_raise": months_until_raise,
-            "estimated_close_time": close_time,
+            "estimated_close_time": self.RAISE_CLOSE_TIME_MONTHS,
             "raise_deadline": datetime.now() + timedelta(days=int(months_until_raise * 30)),
-            "urgency": "HIGH" if runway < 9 else "MEDIUM" if runway < 12 else "LOW"
+            "urgency": "HIGH" if runway < self.URGENCY_HIGH_THRESHOLD else "MEDIUM" if runway < self.URGENCY_MEDIUM_THRESHOLD else "LOW"
         }
     
     def optimize_burn(self, startup_id: str) -> List[str]:
@@ -143,9 +156,9 @@ class ChapterTwoResources:
         for alloc in allocations:
             pct = (alloc.monthly_cost / total_burn) * 100 if total_burn > 0 else 0
             
-            if alloc.category == "Marketing" and pct > 25:
+            if alloc.category == "Marketing" and pct > self.THRESHOLD_MARKETING_BURN_PCT:
                 suggestions.append(f"📉 Marketing ({pct:.0f}%): Consider reducing paid ads")
-            if alloc.category == "Infrastructure" and pct > 15:
+            if alloc.category == "Infrastructure" and pct > self.THRESHOLD_INFRA_BURN_PCT:
                 suggestions.append(f"💻 Infra ({pct:.0f}%): Review cloud costs, right-size")
             if not alloc.is_essential:
                 suggestions.append(f"⚠️ {alloc.category}: Non-essential - can cut if needed")

@@ -19,6 +19,11 @@ from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
 import base64
+try:
+    from .config import get_settings
+except ImportError:
+    # Fallback for standalone execution
+    from config import get_settings
 
 
 class VoiceStyle(Enum):
@@ -74,7 +79,8 @@ class VoiceClone:
     """
     
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("ELEVENLABS_API_KEY")
+        settings = get_settings()
+        self.api_key = api_key or settings.ELEVENLABS_API_KEY
         self.api_base = "https://api.elevenlabs.io/v1"
         
         # Store voice profiles

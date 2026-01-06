@@ -54,13 +54,22 @@ class ChapterFiveMomentum:
     (The skilled warrior seeks victory through momentum)
     """
     
+    # Growth & Momentum Thresholds
+    GROWTH_STRONG_THRESHOLD = 30
+    GROWTH_GOOD_THRESHOLD = 15
+    GROWTH_STABLE_THRESHOLD = 0
+    
+    # Flywheel Health Thresholds
+    FLYWHEEL_STRONG_THRESHOLD = 60
+    FLYWHEEL_BUILDING_THRESHOLD = 30
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.metrics: Dict[str, List[MomentumMetric]] = {}
         self.flywheels: Dict[str, Flywheel] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Demo metrics
         self.metrics["TechVenture"] = [
@@ -100,12 +109,12 @@ class ChapterFiveMomentum:
         growth_rates = [m.growth_rate for m in metrics]
         avg_growth = sum(growth_rates) / len(growth_rates) if growth_rates else 0
         
-        # Momentum interpretation
-        if avg_growth > 30:
+        # Momentum interpretation using class constants
+        if avg_growth > self.GROWTH_STRONG_THRESHOLD:
             momentum_status = "🚀 STRONG - Accelerating"
-        elif avg_growth > 15:
+        elif avg_growth > self.GROWTH_GOOD_THRESHOLD:
             momentum_status = "📈 GOOD - Growing"
-        elif avg_growth > 0:
+        elif avg_growth > self.GROWTH_STABLE_THRESHOLD:
             momentum_status = "➡️ STABLE - Maintaining"
         else:
             momentum_status = "📉 DECLINING - Needs attention"
@@ -138,13 +147,20 @@ class ChapterFiveMomentum:
     
     def analyze_flywheel(self, flywheel: Flywheel) -> Dict[str, Any]:
         """Analyze flywheel health."""
+        # Determine health using constants
+        health = "WEAK"
+        if flywheel.current_velocity > self.FLYWHEEL_STRONG_THRESHOLD:
+            health = "STRONG"
+        elif flywheel.current_velocity > self.FLYWHEEL_BUILDING_THRESHOLD:
+            health = "BUILDING"
+
         return {
             "name": flywheel.name,
             "steps": len(flywheel.steps),
             "velocity": flywheel.current_velocity,
             "acceleration": flywheel.acceleration,
-            "health": "STRONG" if flywheel.current_velocity > 60 else "BUILDING" if flywheel.current_velocity > 30 else "WEAK",
-            "recommendation": "Increase velocity by improving weakest step" if flywheel.current_velocity < 60 else "Maintain and scale"
+            "health": health,
+            "recommendation": "Increase velocity by improving weakest step" if health != "STRONG" else "Maintain and scale"
         }
     
     def identify_momentum_blockers(self, startup_name: str) -> List[str]:
@@ -158,7 +174,7 @@ class ChapterFiveMomentum:
         for metric in metrics:
             if metric.growth_rate < 0:
                 blockers.append(f"📉 {metric.name} declining ({metric.growth_rate:.1f}%)")
-            elif metric.growth_rate < 10:
+            elif metric.growth_rate < 10: # Threshold for slow growth
                 blockers.append(f"⚠️ {metric.name} slow growth ({metric.growth_rate:.1f}%)")
         
         if not blockers:

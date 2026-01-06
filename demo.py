@@ -15,6 +15,7 @@ This demo showcases the complete Agency OS platform:
 
 import sys
 import time
+from typing import Callable, Any
 
 # Demo utilities
 def print_banner():
@@ -30,9 +31,19 @@ def print_banner():
     print(banner)
 
 
-def print_step(num, title):
+def run_step(num: int, title: str, func: Callable[[], Any]):
+    """
+    Executes a demo step with standardized formatting and error handling.
+    """
     print(f"\n[{num}/7] {title}")
     print("-" * 50)
+    try:
+        func()
+    except ImportError as e:
+        print(f"⚠️ {title.split(' - ')[0]} not available: {e}")
+    except Exception as e:
+        # Fallback for generic errors in demo logic
+        print(f"⚠️ Error in {title}: {e}")
 
 
 def animate(text, delay=0.02):
@@ -47,9 +58,9 @@ def main():
     print_banner()
     time.sleep(0.5)
     
-    # Step 1: i18n Showcase
-    print_step(1, "🌐 i18n - MULTI-LANGUAGE SUPPORT")
-    try:
+    # --- Step Definitions ---
+
+    def step_1_i18n():
         from locales import i18n, t
         
         print("Available locales:", i18n.get_available_locales())
@@ -67,12 +78,8 @@ def main():
         
         # Reset to English
         i18n.set_locale("en")
-    except ImportError as e:
-        print(f"⚠️ i18n not available: {e}")
-    
-    # Step 2: Vietnam Region
-    print_step(2, "🇻🇳 VIETNAM REGION CONFIG")
-    try:
+
+    def step_2_vietnam():
         from regions.vietnam import VietnamConfig, VietnamPricingEngine
         
         config = VietnamConfig()
@@ -85,12 +92,8 @@ def main():
         print("Local Services:")
         print(f"   SEO Basic: {pricing.get_local_price('seo_basic', in_usd=True)}")
         print(f"   Website: {pricing.get_local_price('website', in_usd=True)}")
-    except ImportError as e:
-        print(f"⚠️ Vietnam region not available: {e}")
-    
-    # Step 3: CRM
-    print_step(3, "🎯 CRM - SALES PIPELINE")
-    try:
+
+    def step_3_crm():
         from core import CRM
         
         crm = CRM()
@@ -106,12 +109,8 @@ def main():
         print(f"\n🔥 Hot Leads: {len(hot)}")
         for lead in hot[:3]:
             print(f"   • {lead.name} ({lead.company}) - Score: {lead.lead_score}")
-    except ImportError as e:
-        print(f"⚠️ CRM not available: {e}")
-    
-    # Step 4: Scheduler
-    print_step(4, "📅 SCHEDULER - MEETINGS")
-    try:
+
+    def step_4_scheduler():
         from core import Scheduler
         
         scheduler = Scheduler()
@@ -121,28 +120,22 @@ def main():
         for m in upcoming[:3]:
             config = scheduler.meeting_types[m.meeting_type]
             print(f"   • {m.start_time.strftime('%b %d, %H:%M')} - {config.name}")
-    except ImportError as e:
-        print(f"⚠️ Scheduler not available: {e}")
-    
-    # Step 5: Analytics
-    print_step(5, "📊 ANALYTICS - REVENUE")
-    try:
-        from core import AnalyticsDashboard
-        
-        analytics = AnalyticsDashboard()
-        summary = analytics.get_summary()
-        
-        print(f"MRR: ${summary['mrr']:,.0f}")
-        print(f"ARR: ${summary['arr']:,.0f}")
-        print(f"Clients: {summary['clients']}")
-    except ImportError as e:
-        print(f"⚠️ Analytics not available: {e}")
-    except Exception as e:
-        print(f"📊 Analytics Demo: MRR $5,000 | ARR $60,000")
-    
-    # Step 6: Franchise
-    print_step(6, "🌍 FRANCHISE - GLOBAL NETWORK")
-    try:
+
+    def step_5_analytics():
+        try:
+            from core import AnalyticsDashboard
+            
+            analytics = AnalyticsDashboard()
+            summary = analytics.get_summary()
+            
+            print(f"MRR: ${summary['mrr']:,.0f}")
+            print(f"ARR: ${summary['arr']:,.0f}")
+            print(f"Clients: {summary['clients']}")
+        except Exception:
+            # Fallback mockup if class exists but fails or doesn't exist
+            print(f"📊 Analytics Demo: MRR $5,000 | ARR $60,000")
+
+    def step_6_franchise():
         from core import FranchiseSystem
         
         franchise = FranchiseSystem()
@@ -153,11 +146,23 @@ def main():
         print(f"Territories: {stats['total_territories']} ({stats['claimed']} claimed)")
         print(f"HQ Monthly Revenue: {hq['monthly_platform_fees']}")
         print(f"Annual Projection: {hq['annual_projection']}")
-    except ImportError as e:
-        print(f"⚠️ Franchise not available: {e}")
+
+    # --- Execution ---
+
+    run_step(1, "🌐 i18n - MULTI-LANGUAGE SUPPORT", step_1_i18n)
+    run_step(2, "🇻🇳 VIETNAM REGION CONFIG", step_2_vietnam)
+    run_step(3, "🎯 CRM - SALES PIPELINE", step_3_crm)
+    run_step(4, "📅 SCHEDULER - MEETINGS", step_4_scheduler)
+    run_step(5, "📊 ANALYTICS - REVENUE", step_5_analytics)
+    run_step(6, "🌍 FRANCHISE - GLOBAL NETWORK", step_6_franchise)
     
     # Step 7: Summary
-    print_step(7, "🏆 AGENCY OS SUMMARY")
+    print_step_7_summary()
+
+
+def print_step_7_summary():
+    print("\n[7/7] 🏆 AGENCY OS SUMMARY")
+    print("-" * 50)
     print()
     print("╔═══════════════════════════════════════════════════════════╗")
     print("║                                                           ║")

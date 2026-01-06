@@ -302,6 +302,7 @@
 /nong-san               # Analyze agriculture
 /ban-hang               # Sales optimization
 /tiep-thi               # Marketing
+.claude                 # Refactor this file for better readability and performance (Dọn dẹp code)
 ```
 
 ---

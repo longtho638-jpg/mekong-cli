@@ -76,6 +76,18 @@ class ChapterOnePlanning:
     (War is a matter of life and death - must be studied carefully)
     """
     
+    # Scoring Weights
+    MAX_FACTOR_SCORE = 100
+    SWOT_STRENGTH_BONUS = 3
+    SWOT_WEAKNESS_PENALTY = 2
+    SWOT_OPPORTUNITY_BONUS = 2
+    SWOT_THREAT_PENALTY = 2
+
+    # Readiness Thresholds
+    THRESHOLD_BATTLE_READY = 80
+    THRESHOLD_READY = 60
+    THRESHOLD_PREPARING = 40
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.assessments: Dict[str, BattleAssessment] = {}
@@ -120,11 +132,11 @@ class ChapterOnePlanning:
         """Assess the 5 fundamental factors."""
         if assessment_id in self.assessments:
             self.assessments[assessment_id].ngu_su = NguSu(
-                dao=min(100, max(0, dao)),
-                thien=min(100, max(0, thien)),
-                dia=min(100, max(0, dia)),
-                tuong=min(100, max(0, tuong)),
-                phap=min(100, max(0, phap))
+                dao=min(self.MAX_FACTOR_SCORE, max(0, dao)),
+                thien=min(self.MAX_FACTOR_SCORE, max(0, thien)),
+                dia=min(self.MAX_FACTOR_SCORE, max(0, dia)),
+                tuong=min(self.MAX_FACTOR_SCORE, max(0, tuong)),
+                phap=min(self.MAX_FACTOR_SCORE, max(0, phap))
             )
     
     def calculate_battle_score(self, assessment: BattleAssessment) -> int:
@@ -133,10 +145,10 @@ class ChapterOnePlanning:
         
         # SWOT bonus/penalty
         swot = assessment.swot
-        strength_bonus = len(swot.get("strengths", [])) * 3
-        weakness_penalty = len(swot.get("weaknesses", [])) * 2
-        opportunity_bonus = len(swot.get("opportunities", [])) * 2
-        threat_penalty = len(swot.get("threats", [])) * 2
+        strength_bonus = len(swot.get("strengths", [])) * self.SWOT_STRENGTH_BONUS
+        weakness_penalty = len(swot.get("weaknesses", [])) * self.SWOT_WEAKNESS_PENALTY
+        opportunity_bonus = len(swot.get("opportunities", [])) * self.SWOT_OPPORTUNITY_BONUS
+        threat_penalty = len(swot.get("threats", [])) * self.SWOT_THREAT_PENALTY
         
         swot_adjustment = strength_bonus + opportunity_bonus - weakness_penalty - threat_penalty
         
@@ -144,11 +156,11 @@ class ChapterOnePlanning:
     
     def _determine_readiness(self, score: int) -> ReadinessLevel:
         """Determine readiness level from score."""
-        if score >= 80:
+        if score >= self.THRESHOLD_BATTLE_READY:
             return ReadinessLevel.BATTLE_READY
-        elif score >= 60:
+        elif score >= self.THRESHOLD_READY:
             return ReadinessLevel.READY
-        elif score >= 40:
+        elif score >= self.THRESHOLD_PREPARING:
             return ReadinessLevel.PREPARING
         return ReadinessLevel.NOT_READY
     

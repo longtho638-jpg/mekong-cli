@@ -72,13 +72,28 @@ class ChapterElevenSituations:
     "Tử địa thì chiến" (On desperate ground, fight)
     """
     
+    # Situation Thresholds
+    RUNWAY_DESPERATE_THRESHOLD = 3
+    RUNWAY_SURROUNDED_THRESHOLD = 6
+    RUNWAY_SERIOUS_THRESHOLD = 9
+    RUNWAY_DIFFICULT_THRESHOLD = 12
+    MORALE_LOW_THRESHOLD = 50
+    
+    # Survival Scoring Constants
+    BASE_SURVIVAL_SCORE = 100
+    DEDUCTION_RUNWAY_CRITICAL = 30
+    DEDUCTION_RUNWAY_LOW = 15
+    DEDUCTION_REVENUE_DECLINE = 25
+    DEDUCTION_REVENUE_FLAT = 10
+    DEDUCTION_LOSS_OF_CONTROL = 20
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.crisis_scenarios: Dict[str, CrisisScenario] = {}
         self.board_control: BoardControl = None
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Board control
         self.board_control = BoardControl(
@@ -139,17 +154,17 @@ class ChapterElevenSituations:
         board_control: BoardControl
     ) -> Dict[str, Any]:
         """Assess current situation and ground type."""
-        # Determine ground type
-        if runway_months < 3 and revenue_trend == "declining":
+        # Determine ground type using constants
+        if runway_months < self.RUNWAY_DESPERATE_THRESHOLD and revenue_trend == "declining":
             ground = GroundType.DESPERATE
             crisis = CrisisLevel.BLACK
-        elif runway_months < 6 or not board_control.founder_control:
+        elif runway_months < self.RUNWAY_SURROUNDED_THRESHOLD or not board_control.founder_control:
             ground = GroundType.SURROUNDED
             crisis = CrisisLevel.RED
-        elif runway_months < 9 or revenue_trend == "declining":
+        elif runway_months < self.RUNWAY_SERIOUS_THRESHOLD or revenue_trend == "declining":
             ground = GroundType.SERIOUS
             crisis = CrisisLevel.ORANGE
-        elif runway_months < 12 or team_morale < 50:
+        elif runway_months < self.RUNWAY_DIFFICULT_THRESHOLD or team_morale < self.MORALE_LOW_THRESHOLD:
             ground = GroundType.DIFFICULT
             crisis = CrisisLevel.YELLOW
         else:
@@ -168,19 +183,21 @@ class ChapterElevenSituations:
     def _calculate_survival_score(
         self, runway: float, trend: str, board: BoardControl
     ) -> int:
-        score = 100
-        if runway < 6:
-            score -= 30
-        elif runway < 12:
-            score -= 15
+        """Calculate survival score using constants."""
+        score = self.BASE_SURVIVAL_SCORE
+        
+        if runway < self.RUNWAY_SURROUNDED_THRESHOLD:
+            score -= self.DEDUCTION_RUNWAY_CRITICAL
+        elif runway < self.RUNWAY_DIFFICULT_THRESHOLD:
+            score -= self.DEDUCTION_RUNWAY_LOW
         
         if trend == "declining":
-            score -= 25
+            score -= self.DEDUCTION_REVENUE_DECLINE
         elif trend == "flat":
-            score -= 10
+            score -= self.DEDUCTION_REVENUE_FLAT
         
         if not board.founder_control:
-            score -= 20
+            score -= self.DEDUCTION_LOSS_OF_CONTROL
         
         return max(0, score)
     
@@ -214,6 +231,7 @@ class ChapterElevenSituations:
         return actions.get(ground, ["✅ Continue current strategy"])
     
     def _get_ground_wisdom(self, ground: GroundType) -> str:
+        """Get wisdom based on ground type."""
         wisdom = {
             GroundType.DESPERATE: "Tử địa thì chiến - On desperate ground, FIGHT",
             GroundType.SURROUNDED: "Vi địa thì mưu - When surrounded, use strategy",
@@ -226,6 +244,8 @@ class ChapterElevenSituations:
     def protect_board_control(self) -> Dict[str, Any]:
         """Strategies to protect board control."""
         bc = self.board_control
+        if bc is None:
+            return {"error": "Board control data missing"}
         
         strategies = []
         if bc.founder_control:

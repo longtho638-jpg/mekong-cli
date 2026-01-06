@@ -59,13 +59,27 @@ class ChapterTwelveDisruption:
     "5 ways to attack by fire" - 5 cách tấn công bằng lửa
     """
     
+    # Disruption Score Weightings
+    WEIGHT_TECH = 0.30
+    WEIGHT_TIMING = 0.25
+    WEIGHT_TEAM = 0.25
+    WEIGHT_CAPITAL = 0.20
+    
+    # Potential Score Thresholds
+    THRESHOLD_HIGH_POTENTIAL = 80
+    THRESHOLD_MEDIUM_POTENTIAL = 60
+    THRESHOLD_LOW_POTENTIAL = 40
+    
+    # Recommendation Thresholds
+    RECOMMENDATION_THRESHOLD = 70
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.strategies: List[DisruptionStrategy] = []
         self.displacements: List[CompetitiveDisplacement] = []
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         self.strategies = [
             DisruptionStrategy(
@@ -171,26 +185,20 @@ class ChapterTwelveDisruption:
         team_capability: int,       # 0-100
         capital_access: int         # 0-100
     ) -> Dict[str, Any]:
-        """Calculate disruption potential score."""
-        weights = {
-            "technology": 0.30,
-            "timing": 0.25,
-            "team": 0.25,
-            "capital": 0.20
-        }
-        
+        """Calculate disruption potential score using weighted average."""
         score = (
-            technology_advantage * weights["technology"] +
-            market_timing * weights["timing"] +
-            team_capability * weights["team"] +
-            capital_access * weights["capital"]
+            technology_advantage * self.WEIGHT_TECH +
+            market_timing * self.WEIGHT_TIMING +
+            team_capability * self.WEIGHT_TEAM +
+            capital_access * self.WEIGHT_CAPITAL
         )
         
-        if score >= 80:
+        # Determine potential using constants
+        if score >= self.THRESHOLD_HIGH_POTENTIAL:
             potential = "🔥 HIGH - Strong disruption potential"
-        elif score >= 60:
+        elif score >= self.THRESHOLD_MEDIUM_POTENTIAL:
             potential = "⚡ MEDIUM - Disrupt with focus"
-        elif score >= 40:
+        elif score >= self.THRESHOLD_LOW_POTENTIAL:
             potential = "⚠️ LOW - Need more advantages"
         else:
             potential = "❌ UNLIKELY - Reconsider approach"
@@ -212,16 +220,17 @@ class ChapterTwelveDisruption:
     def _get_disruption_recommendations(
         self, tech: int, timing: int, team: int, capital: int
     ) -> List[str]:
-        """Get recommendations to improve disruption potential."""
+        """Get recommendations to improve disruption potential using constant threshold."""
         recs = []
-        if tech < 70:
+        if tech < self.RECOMMENDATION_THRESHOLD:
             recs.append("🔧 Build stronger tech differentiation")
-        if timing < 70:
+        if timing < self.RECOMMENDATION_THRESHOLD:
             recs.append("⏰ Accelerate or wait for better timing")
-        if team < 70:
+        if team < self.RECOMMENDATION_THRESHOLD:
             recs.append("👥 Strengthen team with key hires")
-        if capital < 70:
+        if capital < self.RECOMMENDATION_THRESHOLD:
             recs.append("💰 Secure more runway/capital")
+        
         if not recs:
             recs.append("✅ Ready to disrupt - execute aggressively!")
         return recs

@@ -53,12 +53,20 @@ class ChapterFourPositioning:
     (First make yourself unconquerable, then wait for enemy's vulnerability)
     """
     
+    # Scoring Thresholds
+    RETENTION_THRESHOLD = 80
+    RETENTION_BONUS_DIVISOR = 2
+    NPS_THRESHOLD = 50
+    NPS_BONUS_DIVISOR = 5
+    MOAT_STRENGTH_WEAK_THRESHOLD = 50
+    MOAT_STRENGTH_TARGET_THRESHOLD = 70
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.positions: Dict[str, DefensivePosition] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         position = DefensivePosition(
             startup_name="TechVenture AI",
@@ -84,7 +92,7 @@ class ChapterFourPositioning:
         self.positions[startup_name] = position
         return position
     
-    def add_moat(self, startup_name: str, moat: Moat):
+    def add_moat(self, startup_name: str, moat: Moat) -> None:
         """Add a moat to startup's position."""
         if startup_name in self.positions:
             self.positions[startup_name].moats.append(moat)
@@ -100,11 +108,15 @@ class ChapterFourPositioning:
         # Average moat strength
         moat_score = sum(m.strength for m in position.moats) / len(position.moats)
         
-        # Retention bonus
-        retention_bonus = (position.customer_retention - 80) / 2 if position.customer_retention > 80 else 0
+        # Retention bonus using constants
+        retention_bonus = 0
+        if position.customer_retention > self.RETENTION_THRESHOLD:
+            retention_bonus = (position.customer_retention - self.RETENTION_THRESHOLD) / self.RETENTION_BONUS_DIVISOR
         
-        # NPS bonus
-        nps_bonus = (position.nps - 50) / 5 if position.nps > 50 else 0
+        # NPS bonus using constants
+        nps_bonus = 0
+        if position.nps > self.NPS_THRESHOLD:
+            nps_bonus = (position.nps - self.NPS_THRESHOLD) / self.NPS_BONUS_DIVISOR
         
         return min(100, int(moat_score + retention_bonus + nps_bonus))
     
@@ -119,9 +131,9 @@ class ChapterFourPositioning:
             if moat_type not in existing_types:
                 gaps.append(f"❌ Missing {moat_type.value.replace('_', ' ').title()} moat")
         
-        # Check for weak moats
+        # Check for weak moats using constant
         for moat in position.moats:
-            if moat.strength < 50:
+            if moat.strength < self.MOAT_STRENGTH_WEAK_THRESHOLD:
                 gaps.append(f"⚠️ Weak {moat.moat_type.value.replace('_', ' ').title()} moat ({moat.strength}%)")
         
         if not gaps:
@@ -152,7 +164,7 @@ class ChapterFourPositioning:
                     "timeline_months": months,
                     "priority": "HIGH" if moat_type in [MoatType.SWITCHING_COST, MoatType.DATA] else "MEDIUM"
                 })
-            elif existing_types[moat_type].strength < 70:
+            elif existing_types[moat_type].strength < self.MOAT_STRENGTH_TARGET_THRESHOLD:
                 roadmap.append({
                     "moat": moat_type.value,
                     "action": f"Strengthen {moat_type.value}",

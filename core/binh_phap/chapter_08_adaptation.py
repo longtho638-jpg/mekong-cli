@@ -65,13 +65,35 @@ class ChapterEightAdaptation:
     (There are roads not to take, armies not to attack)
     """
     
+    # Health Scoring Constants
+    BASE_HEALTH_SCORE = 100
+    DEDUCTION_LOW_RUNWAY = 30
+    DEDUCTION_SLOW_GROWTH = 20
+    DEDUCTION_POOR_NPS = 20
+    DEDUCTION_HIGH_CHURN = 15
+    
+    # Thresholds
+    RUNWAY_CRITICAL_THRESHOLD = 6
+    GROWTH_SLOW_THRESHOLD = 10
+    NPS_POOR_THRESHOLD = 40
+    CHURN_HIGH_THRESHOLD = 10
+    HEALTH_SCORE_PIVOT_THRESHOLD = 50
+    HEALTH_SCORE_CRITICAL_THRESHOLD = 30
+    HEALTH_SCORE_HIGH_THRESHOLD = 50
+    HEALTH_SCORE_MEDIUM_THRESHOLD = 70
+
+    # Exit Criteria
+    IPO_MIN_ARR = 50_000_000
+    IPO_MIN_GROWTH = 30
+    ACQUISITION_MIN_ARR = 5_000_000
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.pivot_history: List[PivotScenario] = []
         self.exit_options: List[ExitOption] = []
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Sample exit options
         self.exit_options = [
@@ -99,29 +121,39 @@ class ChapterEightAdaptation:
         nps = metrics.get("nps", 50)
         churn = metrics.get("churn_rate", 5)
         
-        # Scoring
-        score = 100
+        # Scoring using constants
+        score = self.BASE_HEALTH_SCORE
         signals = []
         
-        if runway < 6:
-            score -= 30
-            signals.append("🚨 Low runway (<6 months)")
-        if growth_rate < 10:
-            score -= 20
-            signals.append("📉 Slow growth (<10% MoM)")
-        if nps < 40:
-            score -= 20
-            signals.append("😞 Poor NPS (<40)")
-        if churn > 10:
-            score -= 15
-            signals.append("🚪 High churn (>10%)")
+        if runway < self.RUNWAY_CRITICAL_THRESHOLD:
+            score -= self.DEDUCTION_LOW_RUNWAY
+            signals.append(f"🚨 Low runway (<{self.RUNWAY_CRITICAL_THRESHOLD} months)")
+        if growth_rate < self.GROWTH_SLOW_THRESHOLD:
+            score -= self.DEDUCTION_SLOW_GROWTH
+            signals.append(f"📉 Slow growth (<{self.GROWTH_SLOW_THRESHOLD}% MoM)")
+        if nps < self.NPS_POOR_THRESHOLD:
+            score -= self.DEDUCTION_POOR_NPS
+            signals.append(f"😞 Poor NPS (<{self.NPS_POOR_THRESHOLD})")
+        if churn > self.CHURN_HIGH_THRESHOLD:
+            score -= self.DEDUCTION_HIGH_CHURN
+            signals.append(f"🚪 High churn (>{self.CHURN_HIGH_THRESHOLD}%)")
         
-        need_pivot = score < 50
+        need_pivot = score < self.HEALTH_SCORE_PIVOT_THRESHOLD
+        
+        # Determine urgency level using constants
+        if score < self.HEALTH_SCORE_CRITICAL_THRESHOLD:
+            urgency = "CRITICAL"
+        elif score < self.HEALTH_SCORE_HIGH_THRESHOLD:
+            urgency = "HIGH"
+        elif score < self.HEALTH_SCORE_MEDIUM_THRESHOLD:
+            urgency = "MEDIUM"
+        else:
+            urgency = "LOW"
         
         return {
             "health_score": max(0, score),
             "need_pivot": need_pivot,
-            "urgency": "CRITICAL" if score < 30 else "HIGH" if score < 50 else "MEDIUM" if score < 70 else "LOW",
+            "urgency": urgency,
             "signals": signals,
             "recommendation": "Consider pivot options" if need_pivot else "Continue current path",
             "binh_phap": "Cửu biến - know when to adapt"
@@ -137,7 +169,7 @@ class ChapterEightAdaptation:
         """Generate pivot options based on current state."""
         options = []
         
-        # Product pivot (medium resources, medium time)
+        # Product pivot criteria
         if resources >= 100_000 and runway_months >= 6:
             options.append(PivotScenario(
                 PivotType.PRODUCT,
@@ -149,7 +181,7 @@ class ChapterEightAdaptation:
                 "Leverage existing customers and distribution"
             ))
         
-        # Market pivot (lower resources, faster)
+        # Market pivot criteria
         if runway_months >= 4:
             options.append(PivotScenario(
                 PivotType.MARKET,
@@ -219,18 +251,19 @@ class ChapterEightAdaptation:
             viability = 100
             notes = []
             
+            # Apply criteria using constants
             if option.exit_type == ExitType.IPO:
-                if arr < 50_000_000:
+                if arr < self.IPO_MIN_ARR:
                     viability -= 50
-                    notes.append(f"Need ${50_000_000 - arr:,.0f} more ARR")
-                if growth < 30:
+                    notes.append(f"Need ${self.IPO_MIN_ARR - arr:,.0f} more ARR")
+                if growth < self.IPO_MIN_GROWTH:
                     viability -= 30
-                    notes.append("Need faster growth")
+                    notes.append(f"Need faster growth (>{self.IPO_MIN_GROWTH}%)")
             
             elif option.exit_type == ExitType.ACQUISITION:
-                if arr < 5_000_000:
+                if arr < self.ACQUISITION_MIN_ARR:
                     viability -= 30
-                    notes.append("Increase ARR for better multiple")
+                    notes.append(f"Increase ARR for better multiple (target ${self.ACQUISITION_MIN_ARR:,.0f})")
             
             viable_exits.append({
                 "type": option.exit_type.value,
@@ -241,6 +274,65 @@ class ChapterEightAdaptation:
             })
         
         return sorted(viable_exits, key=lambda x: x["viability"], reverse=True)
+    
+    def format_dashboard(self) -> str:
+        """Format Chapter 8 dashboard."""
+        lines = [
+            "╔═══════════════════════════════════════════════════════════╗",
+            "║  🏯 CHAPTER 8: CỬU BIẾN (九變)                             ║",
+            "║  Adaptation, Pivot & Walk-Away Power                      ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            "║  🔄 THE 9 ADAPTATIONS                                     ║",
+            "║  ─────────────────────────────────────────────────────── ║",
+            "║    1️⃣ Product Pivot    │ Change what you build          ║",
+            "║    2️⃣ Market Pivot     │ Change who you serve           ║",
+            "║    3️⃣ Channel Pivot    │ Change distribution            ║",
+            "║    4️⃣ Revenue Pivot    │ Change monetization            ║",
+            "║    5️⃣ Tech Pivot       │ Change technology              ║",
+            "║    6️⃣ Feature Pivot    │ Zoom in on one feature         ║",
+            "║    7️⃣ Platform Pivot   │ Product → Platform             ║",
+            "║    8️⃣ Business Pivot   │ B2B ↔ B2C                      ║",
+            "║    9️⃣ Complete Pivot   │ Start fresh                    ║",
+            "║                                                           ║",
+            "║  🚪 EXIT OPTIONS                                          ║",
+            "║  ─────────────────────────────────────────────────────── ║",
+        ]
+        
+        for option in self.exit_options[:4]:
+            value = option.potential_value / 1_000_000
+            prob = option.probability * 100
+            lines.append(f"║    {option.exit_type.value.upper():<12} │ ${value:.0f}M │ {prob:.0f}% prob  ║")
+        
+        lines.extend([
+            "║                                                           ║",
+            "║  💪 WALK-AWAY POWER                                       ║",
+            "║  ─────────────────────────────────────────────────────── ║",
+            "║    🎯 BATNA: Best Alternative To Negotiated Agreement    ║",
+            "║    📊 More runway = More power                           ║",
+            "║    🤝 Better alternatives = Stronger position            ║",
+            "║                                                           ║",
+            "║  💡 BINH PHÁP WISDOM                                      ║",
+            "║  ─────────────────────────────────────────────────────── ║",
+            "║    \"Đồ hữu sở bất do, quân hữu sở bất kích\"              ║",
+            "║    (Roads not to take, armies not to attack)             ║",
+            "║                                                           ║",
+            "║  [🔄 Pivot]  [🚪 Exit]  [💪 BATNA]                        ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  🏯 {self.agency_name} - Know when to adapt!             ║",
+            "╚═══════════════════════════════════════════════════════════╝",
+        ])
+        
+        return "\n".join(lines)
+
+
+# Example usage
+if __name__ == "__main__":
+    ch8 = ChapterEightAdaptation("Saigon Digital Hub")
+    print("🏯 Chapter 8: Cửu Biến")
+    print("=" * 60)
+    print()
+    print(ch8.format_dashboard())
+
     
     def format_dashboard(self) -> str:
         """Format Chapter 8 dashboard."""

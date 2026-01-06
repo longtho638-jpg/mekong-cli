@@ -87,13 +87,32 @@ class ChapterNineOperations:
     (An army abroad requires careful observation)
     """
     
+    # OKR Progress Thresholds
+    OKR_COMPLETED_THRESHOLD = 100
+    OKR_ON_TRACK_THRESHOLD = 70
+    OKR_AT_RISK_THRESHOLD = 40
+    
+    # Execution Score Weightings
+    OKR_WEIGHT = 0.6
+    MORALE_WEIGHT = 0.4
+    
+    # Execution Health Classification
+    HEALTH_EXCELLENT_THRESHOLD = 80
+    HEALTH_GOOD_THRESHOLD = 60
+    HEALTH_IMPROVEMENT_THRESHOLD = 40
+    
+    # Morale Warning Thresholds
+    MORALE_CRITICAL_THRESHOLD = 50
+    MORALE_LOW_THRESHOLD = 65
+    PARTICIPATION_WARNING_THRESHOLD = 0.7
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.objectives: List[Objective] = []
         self.morale_history: List[TeamMorale] = []
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Sample OKRs
         self.objectives = [
@@ -141,13 +160,14 @@ class ChapterNineOperations:
     def get_okr_summary(self) -> Dict[str, Any]:
         """Get OKR summary."""
         if not self.objectives:
-            return {"total": 0, "avg_progress": 0}
+            return {"total": 0, "avg_progress": 0, "by_status": {}, "on_track": 0}
         
         total = len(self.objectives)
         avg_progress = sum(o.overall_progress for o in self.objectives) / total
         
         by_status = {}
         for obj in self.objectives:
+            # Objective.status uses the thresholds internally
             status = obj.status.value
             by_status[status] = by_status.get(status, 0) + 1
         
@@ -155,7 +175,7 @@ class ChapterNineOperations:
             "total": total,
             "avg_progress": avg_progress,
             "by_status": by_status,
-            "on_track": by_status.get("on_track", 0) + by_status.get("completed", 0),
+            "on_track": by_status.get(OKRStatus.ON_TRACK.value, 0) + by_status.get(OKRStatus.COMPLETED.value, 0),
         }
     
     def assess_execution(self) -> Dict[str, Any]:
@@ -163,18 +183,18 @@ class ChapterNineOperations:
         okr_summary = self.get_okr_summary()
         latest_morale = self.morale_history[-1] if self.morale_history else None
         
-        # Execution score
+        # Execution score using weightings
         okr_score = okr_summary["avg_progress"]
-        morale_score = latest_morale.score if latest_morale else 50
+        morale_score = latest_morale.score if latest_morale else self.MORALE_CRITICAL_THRESHOLD
         
-        execution_score = (okr_score * 0.6 + morale_score * 0.4)
+        execution_score = (okr_score * self.OKR_WEIGHT + morale_score * self.MORALE_WEIGHT)
         
-        # Health classification
-        if execution_score >= 80:
+        # Health classification using thresholds
+        if execution_score >= self.HEALTH_EXCELLENT_THRESHOLD:
             health = "🟢 EXCELLENT"
-        elif execution_score >= 60:
+        elif execution_score >= self.HEALTH_GOOD_THRESHOLD:
             health = "🟡 GOOD"
-        elif execution_score >= 40:
+        elif execution_score >= self.HEALTH_IMPROVEMENT_THRESHOLD:
             health = "🟠 NEEDS IMPROVEMENT"
         else:
             health = "🔴 CRITICAL"
@@ -198,16 +218,16 @@ class ChapterNineOperations:
             elif obj.status == OKRStatus.AT_RISK:
                 warnings.append(f"⚠️ OKR '{obj.name}' is AT RISK ({obj.overall_progress:.0f}%)")
         
-        # Check morale
+        # Check morale using thresholds
         if self.morale_history:
             latest = self.morale_history[-1]
-            if latest.score < 50:
+            if latest.score < self.MORALE_CRITICAL_THRESHOLD:
                 warnings.append(f"🚨 Team morale CRITICAL ({latest.score}%)")
-            elif latest.score < 65:
+            elif latest.score < self.MORALE_LOW_THRESHOLD:
                 warnings.append(f"⚠️ Team morale LOW ({latest.score}%)")
             
-            if latest.survey_participation < 0.7:
-                warnings.append("⚠️ Low survey participation - disengagement risk")
+            if latest.survey_participation < self.PARTICIPATION_WARNING_THRESHOLD:
+                warnings.append(f"⚠️ Low survey participation ({latest.survey_participation*100:.0f}%) - disengagement risk")
         
         if not warnings:
             warnings.append("✅ Operations running smoothly")

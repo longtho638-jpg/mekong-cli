@@ -62,13 +62,19 @@ class ChapterThreeStrategy:
     (100 wins in 100 battles is not the best - winning without fighting is)
     """
     
+    # Strategic Scoring Thresholds
+    MIN_PROCEED_SCORE = 50
+    DEFAULT_STRATEGIC_FIT = 75
+    DEFAULT_RESOURCE_FIT = 80
+    DEFAULT_RISK_LEVEL = 30
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.alliances: Dict[str, Alliance] = {}
         self.competitors: Dict[str, CompetitorAnalysis] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Sample alliances
         alliance1 = Alliance(
@@ -127,19 +133,21 @@ class ChapterThreeStrategy:
     
     def evaluate_alliance_fit(self, potential_partner: str) -> Dict[str, Any]:
         """Evaluate if an alliance makes strategic sense."""
-        # Simple scoring framework
+        # Simple scoring framework using class constants
+        fit_score = self.DEFAULT_STRATEGIC_FIT
+        
         return {
             "partner": potential_partner,
-            "strategic_fit": 75,  # Does it align with goals?
-            "resource_fit": 80,   # Do resources complement?
-            "risk_level": 30,     # What's the downside?
-            "recommendation": "PROCEED" if 75 > 50 else "EVALUATE",
+            "strategic_fit": fit_score,
+            "resource_fit": self.DEFAULT_RESOURCE_FIT,
+            "risk_level": self.DEFAULT_RISK_LEVEL,
+            "recommendation": "PROCEED" if fit_score > self.MIN_PROCEED_SCORE else "EVALUATE",
             "binh_phap_principle": "Thượng binh phạt mưu - attack through strategy"
         }
     
     def identify_win_without_fighting(self) -> List[Dict[str, Any]]:
         """Identify opportunities to win without direct competition."""
-        strategies = [
+        return [
             {
                 "strategy": WinStrategy.ALLIANCE.value,
                 "description": "Partner with distribution leader",
@@ -169,7 +177,6 @@ class ChapterThreeStrategy:
                 "impact": "Very High"
             }
         ]
-        return strategies
     
     def analyze_competitor_alliances(self, competitor_name: str) -> Dict[str, Any]:
         """Analyze competitor's alliance network (to disrupt if needed)."""

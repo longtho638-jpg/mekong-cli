@@ -19,3 +19,6 @@ python-multipart>=0.0.6
 
 # Optional: Voice Clone (ElevenLabs)
 # elevenlabs>=0.2.0
+\n# Testing\npytest>=7.0.0\npytest-cov>=4.0.0
+\n# Configuration\npydantic-settings>=2.0.0
+supabase>=2.0.0

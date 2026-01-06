@@ -56,13 +56,30 @@ class ChapterSevenManeuvering:
     "Bất động như sơn" (Immovable as mountain in defense)
     """
     
+    # Speed Classification Thresholds
+    SPEED_LIGHTNING_THRESHOLD = 120
+    SPEED_FAST_THRESHOLD = 100
+    SPEED_ON_PACE_THRESHOLD = 80
+    
+    # First Mover Advantage Lead Times (Days)
+    LEAD_TIME_DOMINANT = 365
+    LEAD_TIME_STRONG = 180
+    LEAD_TIME_MODERATE = 90
+    LEAD_TIME_SLIM = 30
+    
+    # Pivot Decision Thresholds
+    RUNWAY_PIVOT_CRITICAL = 6
+    RUNWAY_PIVOT_HIGH = 9
+    RUNWAY_PIVOT_MEDIUM = 12
+    TRACTION_BURN_RATIO_THRESHOLD = 0.1
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.sprints: List[Sprint] = []
         self.speed_metrics: Dict[str, SpeedMetric] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Speed metrics
         self.speed_metrics = {
@@ -90,12 +107,12 @@ class ChapterSevenManeuvering:
         performances = [m.performance for m in metrics]
         avg_performance = sum(performances) / len(performances) if performances else 0
         
-        # Speed classification
-        if avg_performance >= 120:
+        # Speed classification using constants
+        if avg_performance >= self.SPEED_LIGHTNING_THRESHOLD:
             classification = "🚀 LIGHTNING FAST"
-        elif avg_performance >= 100:
+        elif avg_performance >= self.SPEED_FAST_THRESHOLD:
             classification = "⚡ FAST"
-        elif avg_performance >= 80:
+        elif avg_performance >= self.SPEED_ON_PACE_THRESHOLD:
             classification = "🏃 ON PACE"
         else:
             classification = "🐌 TOO SLOW"
@@ -114,18 +131,18 @@ class ChapterSevenManeuvering:
     ) -> Dict[str, Any]:
         """Calculate first mover advantage."""
         if competitor_entry_date is None:
-            lead_time = 365  # Assume 1 year if no competitor
+            lead_time = self.LEAD_TIME_DOMINANT
         else:
             lead_time = (competitor_entry_date - market_entry_date).days
         
-        # First mover advantages by lead time
-        if lead_time >= 365:
+        # First mover advantages using constants
+        if lead_time >= self.LEAD_TIME_DOMINANT:
             advantage = "DOMINANT - Build unassailable position"
-        elif lead_time >= 180:
+        elif lead_time >= self.LEAD_TIME_STRONG:
             advantage = "STRONG - Establish brand and distribution"
-        elif lead_time >= 90:
+        elif lead_time >= self.LEAD_TIME_MODERATE:
             advantage = "MODERATE - Move fast to capture market"
-        elif lead_time >= 30:
+        elif lead_time >= self.LEAD_TIME_SLIM:
             advantage = "SLIM - Execute flawlessly"
         else:
             advantage = "MINIMAL - Consider differentiation strategy"
@@ -138,7 +155,7 @@ class ChapterSevenManeuvering:
                 "Build switching costs rapidly",
                 "Capture best distribution channels",
                 "Hire key talent before competitor",
-            ] if lead_time >= 90 else [
+            ] if lead_time >= self.LEAD_TIME_MODERATE else [
                 "Focus on differentiation not speed",
                 "Find underserved niche",
                 "Partner rather than compete head-on",
@@ -153,17 +170,17 @@ class ChapterSevenManeuvering:
         market_signal: str  # "strong", "weak", "mixed"
     ) -> Dict[str, Any]:
         """Help decide when to pivot."""
-        # Simple decision logic
+        # Use constants for decision logic
         should_pivot = False
         urgency = "LOW"
         
-        if runway_months < 6 and market_signal == "weak":
+        if runway_months < self.RUNWAY_PIVOT_CRITICAL and market_signal == "weak":
             should_pivot = True
             urgency = "CRITICAL"
-        elif runway_months < 9 and market_signal != "strong":
+        elif runway_months < self.RUNWAY_PIVOT_HIGH and market_signal != "strong":
             should_pivot = True
             urgency = "HIGH"
-        elif current_traction < burn_rate * 0.1 and runway_months < 12:
+        elif burn_rate > 0 and (current_traction / burn_rate) < self.TRACTION_BURN_RATIO_THRESHOLD and runway_months < self.RUNWAY_PIVOT_MEDIUM:
             should_pivot = True
             urgency = "MEDIUM"
         
@@ -173,7 +190,7 @@ class ChapterSevenManeuvering:
             "reasoning": [
                 f"Runway: {runway_months} months",
                 f"Market signal: {market_signal}",
-                f"Traction vs burn: {current_traction/burn_rate*100:.0f}%",
+                f"Traction vs burn: {(current_traction/burn_rate*100 if burn_rate > 0 else 0):.0f}%",
             ],
             "binh_phap": "Cửu biến - 9 adaptations for survival",
             "options": [

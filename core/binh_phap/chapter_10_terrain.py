@@ -66,12 +66,24 @@ class ChapterTenTerrain:
     (Terrain is an aid to the army)
     """
     
+    # Terrain Classification Thresholds
+    BARRIER_LOW = 30
+    BARRIER_PRECIPITOUS = 70
+    COMPETITION_LOW = 40
+    COMPETITION_HIGH = 60
+    SAM_TAM_RATIO_NARROW = 0.1
+    
+    # Timing Growth Rates (%)
+    GROWTH_EARLY_THRESHOLD = 50
+    GROWTH_RIGHT_TIME_THRESHOLD = 25
+    GROWTH_LATE_THRESHOLD = 10
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.terrain_analyses: Dict[str, TerrainAnalysis] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         self.terrain_analyses["Enterprise AI"] = TerrainAnalysis(
             market_name="Enterprise AI",
@@ -97,24 +109,24 @@ class ChapterTenTerrain:
         regulatory: int, competition: int, barriers: int
     ) -> TerrainAnalysis:
         """Analyze market terrain."""
-        # Determine terrain type
-        if barriers < 30 and competition < 40:
+        # Determine terrain type using constants
+        if barriers < self.BARRIER_LOW and competition < self.COMPETITION_LOW:
             terrain_type = TerrainType.ACCESSIBLE
-        elif barriers < 40 and competition > 60:
+        elif barriers < self.BARRIER_LOW and competition > self.COMPETITION_HIGH:
             terrain_type = TerrainType.ENTANGLING
-        elif barriers > 70:
+        elif barriers > self.BARRIER_PRECIPITOUS:
             terrain_type = TerrainType.PRECIPITOUS
-        elif sam / tam < 0.1:
+        elif tam > 0 and (sam / tam) < self.SAM_TAM_RATIO_NARROW:
             terrain_type = TerrainType.NARROW
         else:
             terrain_type = TerrainType.TEMPORIZING
         
-        # Determine timing
-        if growth_rate > 50:
+        # Determine timing using constants
+        if growth_rate > self.GROWTH_EARLY_THRESHOLD:
             timing = MarketTiming.EARLY
-        elif growth_rate > 25:
+        elif growth_rate > self.GROWTH_RIGHT_TIME_THRESHOLD:
             timing = MarketTiming.RIGHT_TIME
-        elif growth_rate > 10:
+        elif growth_rate > self.GROWTH_LATE_THRESHOLD:
             timing = MarketTiming.LATE
         else:
             timing = MarketTiming.TOO_LATE

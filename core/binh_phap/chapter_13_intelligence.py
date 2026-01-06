@@ -64,13 +64,17 @@ class ChapterThirteenIntelligence:
     (Wise rulers and generals use the most intelligent spies)
     """
     
+    # Confidence Level Thresholds
+    CONFIDENCE_HIGH_THRESHOLD = 0.7
+    CONFIDENCE_MEDIUM_THRESHOLD = 0.4
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.intel_reports: List[IntelligenceReport] = []
         self.vc_database: Dict[str, VCIntelligence] = {}
         self._init_demo_data()
     
-    def _init_demo_data(self):
+    def _init_demo_data(self) -> None:
         """Initialize demo data."""
         # Sample intel reports
         self.intel_reports = [
@@ -200,7 +204,7 @@ class ChapterThirteenIntelligence:
     
     def detect_market_signals(self) -> List[Dict[str, Any]]:
         """Detect market signals from various sources."""
-        signals = [
+        return [
             {
                 "signal": "Competitor laying off 20% of staff",
                 "interpretation": "Runway pressure, opportunity to hire talent",
@@ -220,7 +224,6 @@ class ChapterThirteenIntelligence:
                 "confidence": 0.80
             },
         ]
-        return signals
     
     def format_dashboard(self) -> str:
         """Format Chapter 13 dashboard."""
