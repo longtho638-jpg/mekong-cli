@@ -4,7 +4,7 @@
 /**
  * Custom Claude Code statusline for Node.js - Multi-line Edition
  * Cross-platform support: Windows, macOS, Linux
- * Features: ANSI colors, tool/agent/todo tracking, context window, session timer
+ * Features: ANSI colors, agent/todo tracking, context window, session timer
  * No external dependencies - uses only Node.js built-in modules
  */
 
@@ -38,33 +38,11 @@ function exec(cmd) {
 }
 
 /**
- * Format epoch timestamp as HH:mm
- */
-function formatTimeHM(epoch) {
-  try {
-    const date = new Date(epoch * 1000);
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  } catch {
-    return '00:00';
-  }
-}
-
-/**
  * Expand home directory to ~
  */
 function expandHome(filePath) {
   const homeDir = os.homedir();
   return filePath.startsWith(homeDir) ? filePath.replace(homeDir, '~') : filePath;
-}
-
-/**
- * Truncate path to max length, keeping filename
- */
-function truncatePath(p, maxLen) {
-  if (!p || p.length <= maxLen) return p || '';
-  const parts = p.split('/');
-  const filename = parts.pop() || p;
-  return filename.length >= maxLen ? filename.slice(0, maxLen - 3) + '...' : '.../' + filename;
 }
 
 /**
@@ -136,81 +114,61 @@ function renderSessionLines(ctx) {
 }
 
 /**
- * Render tools line (if tools used)
- * Running tools with ◐, completed counts with ✓
+ * Render agents lines (if agents active) - one line per agent
+ * Running/completed agents with type, model, description, elapsed (detailed)
+ * @returns {string[]} Array of lines, one per agent
  */
-function renderToolsLine(transcript) {
-  const { tools } = transcript;
-  if (!tools || tools.length === 0) return null;
-
-  const parts = [];
-
-  // Running tools (max 2)
-  const running = tools.filter(t => t.status === 'running').slice(-2);
-  for (const tool of running) {
-    const target = tool.target ? truncatePath(tool.target, 20) : '';
-    parts.push(`${yellow('◐')} ${cyan(tool.name)}${target ? dim(`: ${target}`) : ''}`);
-  }
-
-  // Completed counts (top 4 by frequency)
-  const completed = tools.filter(t => t.status === 'completed' || t.status === 'error');
-  const counts = new Map();
-  for (const tool of completed) {
-    counts.set(tool.name, (counts.get(tool.name) ?? 0) + 1);
-  }
-  const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4);
-  for (const [name, count] of sorted) {
-    parts.push(`${green('✓')} ${name} ${dim(`×${count}`)}`);
-  }
-
-  return parts.length > 0 ? parts.join(' | ') : null;
-}
-
-/**
- * Render agents line (if agents active)
- * Running/completed agents with type and elapsed (simplified)
- */
-function renderAgentsLine(transcript) {
+function renderAgentsLines(transcript) {
   const { agents } = transcript;
-  if (!agents || agents.length === 0) return null;
+  if (!agents || agents.length === 0) return [];
 
   const running = agents.filter(a => a.status === 'running');
   const recentCompleted = agents.filter(a => a.status === 'completed').slice(-2);
   const toShow = [...running, ...recentCompleted].slice(-3);
 
-  if (toShow.length === 0) return null;
+  if (toShow.length === 0) return [];
 
-  const parts = toShow.map(agent => {
+  return toShow.map(agent => {
     const icon = agent.status === 'running' ? yellow('◐') : green('✓');
     const type = magenta(agent.type);
+    const model = agent.model ? dim(`[${agent.model}]`) : '';
+    const desc = agent.description ? `: ${agent.description.slice(0, 40)}${agent.description.length > 40 ? '...' : ''}` : '';
     const elapsed = formatElapsed(agent.startTime, agent.endTime);
-    return `${icon} ${type} ${dim(`(${elapsed})`)}`;
+    return `${icon} ${type}${model ? ` ${model}` : ''}${desc} ${dim(`(${elapsed})`)}`;
   });
-
-  return parts.join(' | ');
 }
 
 /**
  * Render todos line (if todos exist)
- * In-progress task with progress counter
+ * In-progress task with activeForm + detailed progress (done/pending)
  */
 function renderTodosLine(transcript) {
   const { todos } = transcript;
   if (!todos || todos.length === 0) return null;
 
   const inProgress = todos.find(t => t.status === 'in_progress');
-  const completed = todos.filter(t => t.status === 'completed').length;
+  const completedCount = todos.filter(t => t.status === 'completed').length;
+  const pendingCount = todos.filter(t => t.status === 'pending').length;
   const total = todos.length;
 
   if (!inProgress) {
-    if (completed === total && total > 0) {
-      return `${green('✓')} All todos complete ${dim(`(${completed}/${total})`)}`;
+    if (completedCount === total && total > 0) {
+      return `${green('✓')} All ${total} todos complete`;
+    }
+    // Show pending if no in_progress
+    if (pendingCount > 0) {
+      const nextPending = todos.find(t => t.status === 'pending');
+      const nextTask = nextPending?.content || 'Next task';
+      const display = nextTask.length > 40 ? nextTask.slice(0, 37) + '...' : nextTask;
+      return `${dim('○')} Next: ${display} ${dim(`(${completedCount} done, ${pendingCount} pending)`)}`;
     }
     return null;
   }
 
-  const content = inProgress.content.length > 50 ? inProgress.content.slice(0, 47) + '...' : inProgress.content;
-  return `${yellow('▸')} ${content} ${dim(`(${completed}/${total})`)}`;
+  // Show activeForm (present continuous) if available, else content
+  const displayText = inProgress.activeForm || inProgress.content;
+  const display = displayText.length > 50 ? displayText.slice(0, 47) + '...' : displayText;
+  return `${yellow('▸')} ${display} ${dim(`(${completedCount} done, ${pendingCount} pending)`)}`;
 }
 
 /**
@@ -225,13 +183,9 @@ function render(ctx, singleLineMode = false) {
   lines.push(...sessionLines);
 
   if (!singleLineMode) {
-    // Tools line (if used)
-    const toolsLine = renderToolsLine(ctx.transcript);
-    if (toolsLine) lines.push(toolsLine);
-
-    // Agents line (if active)
-    const agentsLine = renderAgentsLine(ctx.transcript);
-    if (agentsLine) lines.push(agentsLine);
+    // Agents lines (one per agent for clarity)
+    const agentsLines = renderAgentsLines(ctx.transcript);
+    lines.push(...agentsLines);
 
     // Todos line (if exist)
     const todosLine = renderTodosLine(ctx.transcript);
