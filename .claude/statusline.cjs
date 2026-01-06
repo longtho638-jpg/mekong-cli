@@ -12,6 +12,7 @@ const { stdin, env } = require('process');
 const { execSync } = require('child_process');
 const os = require('os');
 const fs = require('fs');
+const path = require('path');
 
 // Import modular components
 const { trackContext } = require('./hooks/lib/context-tracker.cjs');
@@ -125,11 +126,23 @@ function renderSessionLines(ctx) {
   let branchPart = '';
   if (ctx.gitBranch) {
     branchPart = `🌿 ${ctx.gitBranch}`;
-    if (ctx.gitUnstaged > 0) branchPart += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
+    // Build git status indicators: (unstaged, +staged, ahead↑, behind↓)
+    const gitIndicators = [];
+    if (ctx.gitUnstaged > 0) gitIndicators.push(`${ctx.gitUnstaged}`);
+    if (ctx.gitStaged > 0) gitIndicators.push(`+${ctx.gitStaged}`);
+    if (ctx.gitAhead > 0) gitIndicators.push(`${ctx.gitAhead}↑`);
+    if (ctx.gitBehind > 0) gitIndicators.push(`${ctx.gitBehind}↓`);
+    if (gitIndicators.length > 0) {
+      branchPart += ` ${yellow(`(${gitIndicators.join(', ')})`)}`;
+    }
   }
 
-  // Combined location (dir + branch)
-  const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
+  // Active plan indicator
+  const planPart = ctx.activePlan ? `📋 ${ctx.activePlan}` : '';
+
+  // Combined location (dir + branch + plan)
+  let locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
+  if (planPart) locationPart += `  ${planPart}`;
 
   // Build session part: 🤖 model  contextBar%
   let sessionPart = `🤖 ${ctx.modelName}`;
@@ -320,11 +333,38 @@ async function main() {
     // Git detection
     let gitBranch = '';
     let gitUnstaged = 0;
+    let gitStaged = 0;
+    let gitAhead = 0;
+    let gitBehind = 0;
     if (exec('git rev-parse --git-dir')) {
       gitBranch = exec('git branch --show-current') || exec('git rev-parse --short HEAD');
       const unstagedOutput = exec('git diff --name-only');
       if (unstagedOutput) gitUnstaged = unstagedOutput.split('\n').filter(l => l.trim()).length;
+      // Staged files count
+      const stagedOutput = exec('git diff --cached --name-only');
+      if (stagedOutput) gitStaged = stagedOutput.split('\n').filter(l => l.trim()).length;
+      // Ahead/behind upstream
+      const aheadBehind = exec('git rev-list --left-right --count @{u}...HEAD 2>/dev/null');
+      if (aheadBehind) {
+        const parts = aheadBehind.split(/\s+/);
+        gitBehind = parseInt(parts[0], 10) || 0;
+        gitAhead = parseInt(parts[1], 10) || 0;
+      }
     }
+
+    // Active plan detection
+    let activePlan = '';
+    try {
+      const settingsPath = path.join(rawDir, '.claude', 'settings.local.json');
+      if (fs.existsSync(settingsPath)) {
+        const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+        if (settings.activePlan) {
+          // Extract slug from path like "plans/260106-1554-statusline-visual"
+          const match = settings.activePlan.match(/plans\/\d+-\d+-(.+?)(?:\/|$)/);
+          activePlan = match ? match[1] : settings.activePlan.split('/').pop();
+        }
+      }
+    } catch {}
 
     // Context window - use current_usage fields with AUTOCOMPACT_BUFFER
     const usage = data.context_window?.current_usage || {};
@@ -400,6 +440,10 @@ async function main() {
       currentDir,
       gitBranch,
       gitUnstaged,
+      gitStaged,
+      gitAhead,
+      gitBehind,
+      activePlan,
       contextPercent,
       showCompactIndicator,
       sessionText,
