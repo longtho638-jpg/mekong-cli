@@ -104,16 +104,15 @@ async function readStdin() {
 
 /**
  * Render session lines with multi-level responsive wrapping
- * Level 1: Everything on one line (wide terminals)
- * Level 2: Location | Session split (medium terminals)
- * Level 3: Dir | Branch | Session split (narrow terminals)
+ * Combines parts based on content length vs terminal width
+ * Tries to minimize lines while keeping content readable
  */
 function renderSessionLines(ctx) {
   const lines = [];
   const termWidth = getTerminalWidth();
   const threshold = Math.floor(termWidth * 0.85);
 
-  // Build atomic parts separately for flexible composition
+  // Build all atomic parts for flexible composition
   const dirPart = `📁 ${cyan(ctx.currentDir)}`;
 
   let branchPart = '';
@@ -133,34 +132,51 @@ function renderSessionLines(ctx) {
     sessionPart += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
   }
 
-  // Multi-level responsive layout
-  const combined = `${locationPart}  ${sessionPart}`;
-  const combinedLen = visibleLength(combined);
-  const locationLen = visibleLength(locationPart);
+  // Build stats part
+  const statsItems = [];
+  if (ctx.sessionText) statsItems.push(`⌛ ${ctx.sessionText.replace(' until reset', '')}`);
+  if (ctx.costText) statsItems.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
+  if (ctx.linesAdded > 0 || ctx.linesRemoved > 0) {
+    statsItems.push(`📝 ${green(`+${ctx.linesAdded}`)} ${red(`-${ctx.linesRemoved}`)}`);
+  }
+  const statsPart = statsItems.join('  ');
 
-  if (combinedLen <= threshold) {
-    // Level 1: Everything fits on one line
-    lines.push(combined);
+  // Calculate lengths for layout decisions
+  const locationLen = visibleLength(locationPart);
+  const sessionLen = visibleLength(sessionPart);
+  const statsLen = visibleLength(statsPart);
+
+  // Try combinations from most compact to most spread out
+  const allOneLine = `${locationPart}  ${sessionPart}  ${statsPart}`;
+  const locationSession = `${locationPart}  ${sessionPart}`;
+  const sessionStats = `${sessionPart}  ${statsPart}`;
+
+  if (visibleLength(allOneLine) <= threshold && statsLen > 0) {
+    // Ultra-wide: everything on one line
+    lines.push(allOneLine);
+  } else if (visibleLength(locationSession) <= threshold) {
+    // Wide: location+session | stats (or session+stats if stats fit)
+    lines.push(locationSession);
+    if (statsLen > 0) lines.push(statsPart);
   } else if (locationLen <= threshold) {
-    // Level 2: Split location | session
+    // Medium: location | session+stats or session | stats
     lines.push(locationPart);
-    lines.push(sessionPart);
+    if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
+      lines.push(sessionStats);
+    } else {
+      lines.push(sessionPart);
+      if (statsLen > 0) lines.push(statsPart);
+    }
   } else {
-    // Level 3: Split dir | branch | session (narrowest)
+    // Narrow: dir | branch | session+stats or session | stats
     lines.push(dirPart);
     if (branchPart) lines.push(branchPart);
-    lines.push(sessionPart);
-  }
-
-  // Stats line (always separate if any exist)
-  const stats = [];
-  if (ctx.sessionText) stats.push(`⌛ ${ctx.sessionText.replace(' until reset', '')}`);
-  if (ctx.costText) stats.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
-  if (ctx.linesAdded > 0 || ctx.linesRemoved > 0) {
-    stats.push(`📝 ${green(`+${ctx.linesAdded}`)} ${red(`-${ctx.linesRemoved}`)}`);
-  }
-  if (stats.length > 0) {
-    lines.push(stats.join('  '));
+    if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
+      lines.push(sessionStats);
+    } else {
+      lines.push(sessionPart);
+      if (statsLen > 0) lines.push(statsPart);
+    }
   }
 
   return lines;
