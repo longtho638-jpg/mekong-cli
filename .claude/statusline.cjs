@@ -137,8 +137,9 @@ function renderSessionLines(ctx) {
     }
   }
 
-  // Active plan indicator
-  const planPart = ctx.activePlan ? `📋 ${ctx.activePlan}` : '';
+  // Active plan indicator (disabled for now - code preserved)
+  // const planPart = ctx.activePlan ? `📋 ${ctx.activePlan}` : '';
+  const planPart = '';
 
   // Combined location (dir + branch + plan)
   let locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
