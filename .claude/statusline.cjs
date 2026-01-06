@@ -2,314 +2,372 @@
 'use strict';
 
 /**
- * Custom Claude Code statusline for Node.js
+ * Custom Claude Code statusline for Node.js - Multi-line Edition
  * Cross-platform support: Windows, macOS, Linux
- * Theme: detailed | Features: directory, git, model, usage, session, tokens
+ * Features: ANSI colors, tool/agent/todo tracking, context window, session timer
  * No external dependencies - uses only Node.js built-in modules
- *
- * Context Window Calculation:
- * - 100% = compaction threshold (not model limit)
- * - Self-calibrates via PreCompact hook
- * - Falls back to smart defaults based on window size
  */
 
 const { stdin, env } = require('process');
 const { execSync } = require('child_process');
 const os = require('os');
 const fs = require('fs');
-const path = require('path');
 
-// Use modularized context tracker with 3-layer self-healing detection
+// Import modular components
 const { trackContext } = require('./hooks/lib/context-tracker.cjs');
+const { green, yellow, red, cyan, magenta, dim, coloredBar, RESET, shouldUseColor } = require('./hooks/lib/colors.cjs');
+const { parseTranscript } = require('./hooks/lib/transcript-parser.cjs');
+const { countConfigs } = require('./hooks/lib/config-counter.cjs');
 
+// Buffer constant matching /context output (22.5% of 200k)
+const AUTOCOMPACT_BUFFER = 45000;
 
 /**
  * Safe command execution wrapper
  */
 function exec(cmd) {
-    try {
-        return execSync(cmd, {
-            encoding: 'utf8',
-            stdio: ['pipe', 'pipe', 'ignore'],
-            windowsHide: true
-        }).trim();
-    } catch (err) {
-        return '';
-    }
+  try {
+    return execSync(cmd, {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+      windowsHide: true
+    }).trim();
+  } catch {
+    return '';
+  }
 }
 
 /**
  * Format epoch timestamp as HH:mm
  */
 function formatTimeHM(epoch) {
-    try {
-        const date = new Date(epoch * 1000);
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-    } catch (err) {
-        return '00:00';
-    }
-}
-
-// Context tracking functions moved to ./hooks/lib/context-tracker.cjs
-// Provides 3-layer self-healing detection:
-// - Layer 1: Session ID change detection
-// - Layer 2: Token drop detection (50% threshold)
-// - Layer 3: Hook marker system (SessionStart/SessionEnd)
-
-/**
- * Generate Unicode progress bar (horizontal rectangles)
- * Uses smooth block characters for consistent rendering
- *
- * @param {number} percent - 0-100 percentage
- * @param {number} width - bar width in characters (default 12)
- * @returns {string} Unicode progress bar like ▰▰▰▰▰▱▱▱▱▱▱▱
- */
-function progressBar(percent, width = 12) {
-    const clamped = Math.max(0, Math.min(100, percent));
-    const filled = Math.round(clamped * width / 100);
-    const empty = width - filled;
-    // ▰ (U+25B0) filled, ▱ (U+25B1) empty - smooth horizontal rectangles
-    return '▰'.repeat(filled) + '▱'.repeat(empty);
-}
-
-/**
- * Get severity emoji based on percentage (no color codes)
- *
- * @param {number} percent - 0-100 percentage
- * @returns {string} Emoji indicator
- */
-function getSeverityEmoji(percent) {
-    if (percent >= 90) return '🔴';      // Critical
-    if (percent >= 70) return '🟡';      // Warning
-    return '🟢';                          // Healthy
+  try {
+    const date = new Date(epoch * 1000);
+    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  } catch {
+    return '00:00';
+  }
 }
 
 /**
  * Expand home directory to ~
  */
 function expandHome(filePath) {
-    const homeDir = os.homedir();
-    if (filePath.startsWith(homeDir)) {
-        return filePath.replace(homeDir, '~');
-    }
-    return filePath;
+  const homeDir = os.homedir();
+  return filePath.startsWith(homeDir) ? filePath.replace(homeDir, '~') : filePath;
+}
+
+/**
+ * Truncate path to max length, keeping filename
+ */
+function truncatePath(p, maxLen) {
+  if (!p || p.length <= maxLen) return p || '';
+  const parts = p.split('/');
+  const filename = parts.pop() || p;
+  return filename.length >= maxLen ? filename.slice(0, maxLen - 3) + '...' : '.../' + filename;
+}
+
+/**
+ * Format elapsed time from start to end (or now)
+ */
+function formatElapsed(startTime, endTime) {
+  const start = startTime instanceof Date ? startTime.getTime() : new Date(startTime).getTime();
+  const end = endTime ? (endTime instanceof Date ? endTime.getTime() : new Date(endTime).getTime()) : Date.now();
+  const ms = end - start;
+  if (ms < 1000) return '<1s';
+  if (ms < 60000) return `${Math.round(ms / 1000)}s`;
+  const mins = Math.floor(ms / 60000);
+  const secs = Math.round((ms % 60000) / 1000);
+  return `${mins}m ${secs}s`;
 }
 
 /**
  * Read stdin asynchronously
  */
 async function readStdin() {
-    return new Promise((resolve, reject) => {
-        const chunks = [];
-        stdin.setEncoding('utf8');
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stdin.setEncoding('utf8');
+    stdin.on('data', chunk => chunks.push(chunk));
+    stdin.on('end', () => resolve(chunks.join('')));
+    stdin.on('error', reject);
+  });
+}
 
-        stdin.on('data', (chunk) => {
-            chunks.push(chunk);
-        });
+// ============================================================================
+// LINE RENDERERS
+// ============================================================================
 
-        stdin.on('end', () => {
-            resolve(chunks.join(''));
-        });
+/**
+ * Render session lines (cleaner multi-line layout)
+ * Line 1: Primary info (dir, git, model, context)
+ * Line 2: Stats (timer, cost, lines) - only if any exist
+ */
+function renderSessionLines(ctx) {
+  const lines = [];
 
-        stdin.on('error', (err) => {
-            reject(err);
-        });
-    });
+  // Line 1: Primary info
+  let line1 = '';
+  line1 += `📁 ${cyan(ctx.currentDir)}`;
+  if (ctx.gitBranch) {
+    line1 += `  🌿 ${magenta(ctx.gitBranch)}`;
+    if (ctx.gitUnstaged > 0) line1 += ` ${yellow(`(${ctx.gitUnstaged})`)}`;
+  }
+  line1 += `  🤖 ${cyan(ctx.modelName)}`;
+  if (ctx.showCompactIndicator) {
+    line1 += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
+  } else if (ctx.contextPercent > 0) {
+    line1 += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
+  }
+  lines.push(line1);
+
+  // Line 2: Stats (only if any exist)
+  const stats = [];
+  if (ctx.sessionText) stats.push(`⌛ ${ctx.sessionText.replace(' until reset', '')}`);
+  if (ctx.costText) stats.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
+  if (ctx.linesAdded > 0 || ctx.linesRemoved > 0) {
+    stats.push(`📝 ${green(`+${ctx.linesAdded}`)} ${red(`-${ctx.linesRemoved}`)}`);
+  }
+  if (stats.length > 0) {
+    lines.push(stats.join('  '));
+  }
+
+  return lines;
 }
 
 /**
- * Main function
+ * Render tools line (if tools used)
+ * Running tools with ◐, completed counts with ✓
  */
-async function main() {
-    try {
-        // Read and parse JSON input
-        const input = await readStdin();
-        if (!input.trim()) {
-            console.error('No input provided');
-            process.exit(1);
-        }
+function renderToolsLine(transcript) {
+  const { tools } = transcript;
+  if (!tools || tools.length === 0) return null;
 
-        const data = JSON.parse(input);
+  const parts = [];
 
-        // Extract basic information
-        let currentDir = 'unknown';
-        if (data.workspace?.current_dir) {
-            currentDir = data.workspace.current_dir;
-        } else if (data.cwd) {
-            currentDir = data.cwd;
-        }
-        currentDir = expandHome(currentDir);
+  // Running tools (max 2)
+  const running = tools.filter(t => t.status === 'running').slice(-2);
+  for (const tool of running) {
+    const target = tool.target ? truncatePath(tool.target, 20) : '';
+    parts.push(`${yellow('◐')} ${cyan(tool.name)}${target ? dim(`: ${target}`) : ''}`);
+  }
 
-        const modelName = data.model?.display_name || 'Claude';
-        const modelVersion = data.model?.version && data.model.version !== 'null' ? data.model.version : '';
+  // Completed counts (top 4 by frequency)
+  const completed = tools.filter(t => t.status === 'completed' || t.status === 'error');
+  const counts = new Map();
+  for (const tool of completed) {
+    counts.set(tool.name, (counts.get(tool.name) ?? 0) + 1);
+  }
+  const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  for (const [name, count] of sorted) {
+    parts.push(`${green('✓')} ${name} ${dim(`×${count}`)}`);
+  }
 
-        // Git branch detection
-        let gitBranch = '';
-        let gitUnstaged = 0;
-        const gitCheck = exec('git rev-parse --git-dir');
-        if (gitCheck) {
-            gitBranch = exec('git branch --show-current');
-            if (!gitBranch) {
-                gitBranch = exec('git rev-parse --short HEAD');
-            }
-            // Count unstaged files (modified, deleted, but not staged)
-            const unstagedOutput = exec('git diff --name-only');
-            if (unstagedOutput) {
-                gitUnstaged = unstagedOutput.split('\n').filter(line => line.trim()).length;
-            }
-        }
-
-        // Native Claude Code data integration
-        let sessionText = '';
-        let costUSD = '';
-        let linesAdded = 0;
-        let linesRemoved = 0;
-        let contextPercent = 0;
-        let contextText = '';
-        const billingMode = env.CLAUDE_BILLING_MODE || 'api';
-
-        // Extract native cost data from Claude Code
-        costUSD = data.cost?.total_cost_usd || '';
-        linesAdded = data.cost?.total_lines_added || 0;
-        linesRemoved = data.cost?.total_lines_removed || 0;
-
-        // Extract context window usage (Claude Code v2.0.65+)
-        // Uses 3-layer self-healing detection from context-tracker module:
-        // - Layer 1: Session ID change detection
-        // - Layer 2: Token drop detection (50% threshold)
-        // - Layer 3: Hook marker system (SessionStart/SessionEnd)
-        const contextInput = data.context_window?.total_input_tokens || 0;
-        const contextOutput = data.context_window?.total_output_tokens || 0;
-        const contextSize = data.context_window?.context_window_size || 0;
-
-        if (contextSize > 0) {
-            const result = trackContext({
-                sessionId: data.session_id,
-                contextInput,
-                contextOutput,
-                contextWindowSize: contextSize
-            });
-
-            contextPercent = result.percentage;
-
-            if (result.showCompactIndicator) {
-                // First render after compaction - show indicator once
-                contextText = `🔄 ▱▱▱▱▱▱▱▱▱▱▱▱`;
-            } else {
-                const emoji = getSeverityEmoji(contextPercent);
-                const bar = progressBar(contextPercent, 12);
-                contextText = `${emoji} ${bar} ${contextPercent}%`;
-            }
-        }
-
-        // Session timer - parse local transcript JSONL (zero external dependencies)
-        const transcriptPath = data.transcript_path;
-
-        if (transcriptPath) {
-            try {
-                if (fs.existsSync(transcriptPath)) {
-                    const content = fs.readFileSync(transcriptPath, 'utf8');
-                    const lines = content.split('\n').filter(l => l.trim());
-
-                    // Find first API call with usage data
-                    let firstApiCall = null;
-                    for (const line of lines) {
-                        try {
-                            const entry = JSON.parse(line);
-                            if (entry.usage && entry.timestamp) {
-                                firstApiCall = entry.timestamp;
-                                break;
-                            }
-                        } catch (e) {
-                            continue;
-                        }
-                    }
-
-                    if (firstApiCall) {
-                        // Calculate 5-hour billing block (Anthropic windows)
-                        const now = new Date();
-                        const currentUtcHour = now.getUTCHours();
-                        const blockStart = Math.floor(currentUtcHour / 5) * 5;
-                        let blockEnd = blockStart + 5;
-
-                        // Handle day wraparound
-                        let blockEndDate = new Date(now);
-                        if (blockEnd >= 24) {
-                            blockEnd -= 24;
-                            blockEndDate.setUTCDate(blockEndDate.getUTCDate() + 1);
-                        }
-                        blockEndDate.setUTCHours(blockEnd, 0, 0, 0);
-
-                        const nowSec = Math.floor(Date.now() / 1000);
-                        const blockEndSec = Math.floor(blockEndDate.getTime() / 1000);
-                        const remaining = blockEndSec - nowSec;
-
-                        if (remaining > 0 && remaining < 18000) {
-                            const rh = Math.floor(remaining / 3600);
-                            const rm = Math.floor((remaining % 3600) / 60);
-                            const blockEndLocal = formatTimeHM(blockEndSec);
-                            sessionText = `${rh}h ${rm}m until reset at ${blockEndLocal}`;
-                        }
-                    }
-                }
-            } catch (err) {
-                // Silent fail - transcript not readable
-            }
-        }
-
-        // Render statusline (no ANSI colors - emoji only for indicators)
-        let output = '';
-
-        // Directory
-        output += `📁 ${currentDir}`;
-
-        // Git branch
-        if (gitBranch) {
-            output += `  🌿 ${gitBranch}`;
-            if (gitUnstaged > 0) {
-                output += ` (${gitUnstaged})`;
-            }
-        }
-
-        // Model
-        output += `  🤖 ${modelName}`;
-
-        // Model version
-        if (modelVersion) {
-            output += ` ${modelVersion}`;
-        }
-
-        // Session time
-        if (sessionText) {
-            output += `  ⌛ ${sessionText}`;
-        }
-
-        // Cost (only show for API billing mode)
-        if (billingMode === 'api' && costUSD && /^\d+(\.\d+)?$/.test(costUSD.toString())) {
-            const costUSDNum = parseFloat(costUSD);
-            output += `  💵 $${costUSDNum.toFixed(4)}`;
-        }
-
-        // Lines changed
-        if ((linesAdded > 0 || linesRemoved > 0)) {
-            output += `  📝 +${linesAdded} -${linesRemoved}`;
-        }
-
-        // Context window usage (Claude Code v2.0.65+)
-        if (contextText) {
-            output += `  ${contextText}`;
-        }
-
-        console.log(output);
-    } catch (err) {
-        console.error('Error:', err.message);
-        process.exit(1);
-    }
+  return parts.length > 0 ? parts.join(' | ') : null;
 }
 
-main().catch(err => {
-    console.error('Fatal error:', err);
-    process.exit(1);
+/**
+ * Render agents line (if agents active)
+ * Running/completed agents with type and elapsed (simplified)
+ */
+function renderAgentsLine(transcript) {
+  const { agents } = transcript;
+  if (!agents || agents.length === 0) return null;
+
+  const running = agents.filter(a => a.status === 'running');
+  const recentCompleted = agents.filter(a => a.status === 'completed').slice(-2);
+  const toShow = [...running, ...recentCompleted].slice(-3);
+
+  if (toShow.length === 0) return null;
+
+  const parts = toShow.map(agent => {
+    const icon = agent.status === 'running' ? yellow('◐') : green('✓');
+    const type = magenta(agent.type);
+    const elapsed = formatElapsed(agent.startTime, agent.endTime);
+    return `${icon} ${type} ${dim(`(${elapsed})`)}`;
+  });
+
+  return parts.join(' | ');
+}
+
+/**
+ * Render todos line (if todos exist)
+ * In-progress task with progress counter
+ */
+function renderTodosLine(transcript) {
+  const { todos } = transcript;
+  if (!todos || todos.length === 0) return null;
+
+  const inProgress = todos.find(t => t.status === 'in_progress');
+  const completed = todos.filter(t => t.status === 'completed').length;
+  const total = todos.length;
+
+  if (!inProgress) {
+    if (completed === total && total > 0) {
+      return `${green('✓')} All todos complete ${dim(`(${completed}/${total})`)}`;
+    }
+    return null;
+  }
+
+  const content = inProgress.content.length > 50 ? inProgress.content.slice(0, 47) + '...' : inProgress.content;
+  return `${yellow('▸')} ${content} ${dim(`(${completed}/${total})`)}`;
+}
+
+/**
+ * Main render function - outputs all lines
+ * Falls back to single line if multi-line fails
+ */
+function render(ctx, singleLineMode = false) {
+  const lines = [];
+
+  // Session lines (cleaner multi-line layout)
+  const sessionLines = renderSessionLines(ctx);
+  lines.push(...sessionLines);
+
+  if (!singleLineMode) {
+    // Tools line (if used)
+    const toolsLine = renderToolsLine(ctx.transcript);
+    if (toolsLine) lines.push(toolsLine);
+
+    // Agents line (if active)
+    const agentsLine = renderAgentsLine(ctx.transcript);
+    if (agentsLine) lines.push(agentsLine);
+
+    // Todos line (if exist)
+    const todosLine = renderTodosLine(ctx.transcript);
+    if (todosLine) lines.push(todosLine);
+  }
+
+  // Output all lines with non-breaking spaces for alignment
+  for (const line of lines) {
+    const outputLine = shouldUseColor ? `${RESET}${line.replace(/ /g, '\u00A0')}` : line;
+    console.log(outputLine);
+  }
+}
+
+// ============================================================================
+// MAIN
+// ============================================================================
+
+async function main() {
+  try {
+    const input = await readStdin();
+    if (!input.trim()) {
+      console.error('No input provided');
+      process.exit(1);
+    }
+
+    const data = JSON.parse(input);
+
+    // Extract basic information
+    let currentDir = data.workspace?.current_dir || data.cwd || 'unknown';
+    currentDir = expandHome(currentDir);
+
+    const modelName = data.model?.display_name || 'Claude';
+
+    // Git detection
+    let gitBranch = '';
+    let gitUnstaged = 0;
+    if (exec('git rev-parse --git-dir')) {
+      gitBranch = exec('git branch --show-current') || exec('git rev-parse --short HEAD');
+      const unstagedOutput = exec('git diff --name-only');
+      if (unstagedOutput) gitUnstaged = unstagedOutput.split('\n').filter(l => l.trim()).length;
+    }
+
+    // Context window - use current_usage fields with AUTOCOMPACT_BUFFER
+    const usage = data.context_window?.current_usage || {};
+    const contextSize = data.context_window?.context_window_size || 0;
+    let contextPercent = 0;
+    let showCompactIndicator = false;
+
+    if (contextSize > 0 && contextSize > AUTOCOMPACT_BUFFER) {
+      const totalTokens = (usage.input_tokens ?? 0) +
+                          (usage.cache_creation_input_tokens ?? 0) +
+                          (usage.cache_read_input_tokens ?? 0);
+
+      // Add buffer to match /context calculation
+      contextPercent = Math.min(100, Math.round(((totalTokens + AUTOCOMPACT_BUFFER) / contextSize) * 100));
+
+      // Also use legacy tracker for compaction detection
+      const legacyInput = data.context_window?.total_input_tokens || 0;
+      const legacyOutput = data.context_window?.total_output_tokens || 0;
+      const result = trackContext({
+        sessionId: data.session_id,
+        contextInput: legacyInput,
+        contextOutput: legacyOutput,
+        contextWindowSize: contextSize
+      });
+      showCompactIndicator = result.showCompactIndicator;
+    }
+
+    // Session timer
+    let sessionText = '';
+    const transcriptPath = data.transcript_path;
+
+    // Parse transcript for tools/agents/todos
+    const transcript = transcriptPath ? await parseTranscript(transcriptPath) : { tools: [], agents: [], todos: [], sessionStart: null };
+
+    // Calculate session timer from transcript
+    if (transcriptPath && fs.existsSync(transcriptPath)) {
+      try {
+        const now = new Date();
+        const currentUtcHour = now.getUTCHours();
+        const blockStart = Math.floor(currentUtcHour / 5) * 5;
+        let blockEnd = blockStart + 5;
+        let blockEndDate = new Date(now);
+        if (blockEnd >= 24) {
+          blockEnd -= 24;
+          blockEndDate.setUTCDate(blockEndDate.getUTCDate() + 1);
+        }
+        blockEndDate.setUTCHours(blockEnd, 0, 0, 0);
+        const remaining = Math.floor(blockEndDate.getTime() / 1000) - Math.floor(Date.now() / 1000);
+        if (remaining > 0 && remaining < 18000) {
+          const rh = Math.floor(remaining / 3600);
+          const rm = Math.floor((remaining % 3600) / 60);
+          sessionText = `${rh}h ${rm}m until reset`;
+        }
+      } catch {}
+    }
+
+    // Cost and lines changed
+    const billingMode = env.CLAUDE_BILLING_MODE || 'api';
+    const costUSD = data.cost?.total_cost_usd;
+    const costText = billingMode === 'api' && costUSD && /^\d+(\.\d+)?$/.test(String(costUSD))
+      ? `$${parseFloat(costUSD).toFixed(4)}`
+      : null;
+    const linesAdded = data.cost?.total_lines_added || 0;
+    const linesRemoved = data.cost?.total_lines_removed || 0;
+
+    // Config counts
+    const rawDir = data.workspace?.current_dir || data.cwd || process.cwd();
+    const configs = countConfigs(rawDir);
+
+    // Build render context
+    const ctx = {
+      modelName,
+      currentDir,
+      gitBranch,
+      gitUnstaged,
+      contextPercent,
+      showCompactIndicator,
+      sessionText,
+      costText,
+      linesAdded,
+      linesRemoved,
+      configs,
+      transcript
+    };
+
+    // Render (multi-line by default)
+    render(ctx, false);
+
+  } catch (err) {
+    // Fallback: output minimal single line on any error
+    console.log('📁 ' + (process.cwd() || 'unknown'));
+  }
+}
+
+main().catch(() => {
+  console.log('📁 error');
+  process.exit(1);
 });
