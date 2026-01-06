@@ -132,11 +132,7 @@ function renderSessionLines(ctx) {
   const locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
 
   // Build session part: 🤖 model  contextBar%
-  // Truncate long model names to prevent overflow
-  const modelDisplay = ctx.modelName.length > 30
-    ? ctx.modelName.slice(0, 27) + '...'
-    : ctx.modelName;
-  let sessionPart = `🤖 ${cyan(modelDisplay)}`;
+  let sessionPart = `🤖 ${cyan(ctx.modelName)}`;
   if (ctx.showCompactIndicator) {
     sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
   } else if (ctx.contextPercent > 0) {
