@@ -50,23 +50,15 @@ def print_help():
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
 ║  🎯 onboard     Create your Agency DNA                   ║
-║                 → Answer 9 questions                      ║
-║                 → Get full business plan                  ║
-║                                                           ║
 ║  📝 proposal    Generate client proposal                  ║
-║                 → Professional pricing                    ║
-║                 → Ready to send                           ║
-║                                                           ║
 ║  🎨 content     Generate 50 content ideas                 ║
-║                 → 5 content pillars                       ║
-║                 → 10 ideas each                           ║
-║                                                           ║
 ║  💳 invoice     Create client invoice                     ║
-║                 → Multi-currency                          ║
-║                 → Professional format                     ║
-║                                                           ║
 ║  🎮 demo        Run full demonstration                    ║
-║                 → See all features                        ║
+║                                                           ║
+║  ⚡ NEW COMMANDS:                                         ║
+║  📋 workflow    List all available workflows              ║
+║  🎯 crm         Quick CRM access                          ║
+║  📊 analytics   Analytics dashboard                       ║
 ║                                                           ║
 ║  ❓ help        Show this help menu                       ║
 ║                                                           ║
@@ -197,6 +189,91 @@ def run_demo():
         print("🌐 agencyos.network")
 
 
+def run_workflow():
+    """List and run workflows."""
+    print("\n📋 Available Workflows")
+    print("-" * 50)
+    
+    workflows = [
+        ("starting-new-project", "Bootstrap new project"),
+        ("maintaining-old-project", "Maintain legacy project"),
+        ("deploy-project", "Deploy to production"),
+        ("add-feature", "Add new feature (11 steps)"),
+        ("bug-fixing", "Debug and fix bugs"),
+        ("sales-pipeline", "Sales pipeline management"),
+        ("client-onboarding", "Onboard new clients"),
+        ("proposal-to-close", "Close deals faster"),
+        ("pricing-strategy", "Pricing optimization"),
+        ("vc-readiness", "VC funding preparation"),
+        ("workflow-chain", "Chain automation workflows"),
+        ("human-in-loop", "Human approval workflows"),
+        ("customer-success", "Customer health scoring"),
+    ]
+    
+    print("   Category: Development")
+    for name, desc in workflows[:5]:
+        print(f"   /{name}: {desc}")
+    
+    print("\n   Category: Business")
+    for name, desc in workflows[5:10]:
+        print(f"   /{name}: {desc}")
+    
+    print("\n   Category: Automation")
+    for name, desc in workflows[10:]:
+        print(f"   /{name}: {desc}")
+    
+    print(f"\n   ✅ Total: {len(workflows)} workflows available")
+    print("   Run: python3 cli/main.py workflow <name>")
+
+
+def run_crm():
+    """Quick CRM access."""
+    print("\n🎯 CRM Quick Access")
+    print("-" * 50)
+    
+    try:
+        from core.crm import CRM, CRMPresenter
+        
+        crm = CRM()
+        
+        # CRMPresenter.format_pipeline_text is a static method
+        print(CRMPresenter.format_pipeline_text(crm))
+        
+        # Hot leads
+        hot_leads = crm.get_hot_leads()
+        if hot_leads:
+            print("\n🔥 Hot Leads:")
+            for lead in hot_leads[:3]:
+                print(f"   • {lead.name} ({lead.company}) - Score: {lead.lead_score}")
+        
+        # Pipeline value
+        forecast = crm.forecast_revenue()
+        print(f"\n💰 Pipeline: ${forecast['total_pipeline']:,.0f}")
+        print(f"   Weighted: ${forecast['weighted_pipeline']:,.0f}")
+        
+    except ImportError:
+        print("   Demo Mode - CRM module loading...")
+        print("   Contacts: 5 | Deals: 4 | Pipeline: $9,500")
+
+
+def run_analytics():
+    """Analytics dashboard."""
+    print("\n📊 Analytics Dashboard")
+    print("-" * 50)
+    
+    try:
+        from core.analytics import Analytics
+        analytics = Analytics()
+        
+        print(f"   MRR: ${analytics.mrr:,.0f}")
+        print(f"   ARR: ${analytics.arr:,.0f}")
+        print(f"   Growth: +{analytics.growth_rate}%")
+        
+    except ImportError:
+        print("   Demo Mode - Analytics loading...")
+        print("   MRR: $5,000 | ARR: $60,000 | Growth: +15%")
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -215,6 +292,9 @@ def main():
         "content": run_content,
         "invoice": run_invoice,
         "demo": run_demo,
+        "workflow": run_workflow,
+        "crm": run_crm,
+        "analytics": run_analytics,
         "help": print_help,
     }
     

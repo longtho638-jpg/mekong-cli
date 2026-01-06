@@ -39,8 +39,9 @@ class LicenseValidator:
         """
         Activate license key and store it locally.
         
-        Format: mk_live_<tier>_<hash>
-        Example: mk_live_pro_abc123def456
+        Supports two formats:
+        1. mk_live_<tier>_<hash> (Internal)
+        2. AGENCYOS-XXXX-XXXX-XXXX (Customer)
         
         Args:
             license_key: The license string to validate.
@@ -51,22 +52,27 @@ class LicenseValidator:
         Raises:
             ValueError: If the key format or tier is invalid.
         """
-        # 1. Parse license key
-        parts = license_key.strip().split("_")
+        license_key = license_key.strip()
+        tier = LicenseTier.STARTER
+
+        # Format 1: AgencyOS Professional Key
+        if license_key.startswith("AGENCYOS-"):
+            if len(license_key.split("-")) < 4:
+                raise ValueError("Invalid AgencyOS key format. Expected 'AGENCYOS-XXXX-XXXX-XXXX'.")
+            tier = LicenseTier.PRO
+            
+        # Format 2: Internal live key
+        elif license_key.startswith("mk_live_"):
+            parts = license_key.split("_")
+            if len(parts) < 4:
+                raise ValueError("Invalid internal key format. Expected 'mk_live_<tier>_<hash>'.")
+            
+            tier = parts[2]
+            if tier not in LicenseTier.all_tiers():
+                raise ValueError(f"Invalid tier: '{tier}'. Must be one of {LicenseTier.all_tiers()}.")
         
-        # Format check: mk_live_<tier>_<hash> (at least 4 parts)
-        if len(parts) < 4 or parts[0] != "mk" or parts[1] != "live":
-            raise ValueError("Invalid license key format. Expected 'mk_live_<tier>_<hash>'.")
-        
-        tier = parts[2]
-        if tier not in LicenseTier.all_tiers():
-            raise ValueError(f"Invalid tier: '{tier}'. Must be one of {LicenseTier.all_tiers()}.")
-        
-        # 2. Verify hash 
-        # (In a real scenario, this would call an API. Here we just check length.)
-        key_hash = parts[3]
-        if len(key_hash) < 6:
-             raise ValueError("Invalid license key hash.")
+        else:
+            raise ValueError("Invalid license key format. Use 'AGENCYOS-XXXX...' or 'mk_live_...'.")
         
         # 3. Create license object
         license_data = {
