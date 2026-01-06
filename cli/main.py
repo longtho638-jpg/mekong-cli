@@ -274,6 +274,96 @@ def run_analytics():
         print("   MRR: $5,000 | ARR: $60,000 | Growth: +15%")
 
 
+def run_plan():
+    """Create or view task plan (Manus 3-file pattern)."""
+    print("\n📋 Task Plan (Manus 3-File Pattern)")
+    print("-" * 50)
+    
+    import os
+    from pathlib import Path
+    from datetime import datetime
+    
+    plans_dir = Path("plans")
+    plans_dir.mkdir(exist_ok=True)
+    
+    task_plan = plans_dir / "task_plan.md"
+    notes = plans_dir / "notes.md"
+    
+    # Get task from args or show current plan
+    if len(sys.argv) > 2:
+        task = " ".join(sys.argv[2:])
+        
+        # Create task_plan.md
+        content = f"""# Task Plan: {task}
+
+Created: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+## Goal
+{task}
+
+## Phases
+- [ ] Phase 1: Research & Planning
+- [ ] Phase 2: Implementation
+- [ ] Phase 3: Testing
+- [ ] Phase 4: Review & Delivery
+
+## Progress Notes
+<!-- Update after each phase -->
+
+## Errors Log
+<!-- Track any errors for future reference -->
+"""
+        task_plan.write_text(content, encoding="utf-8")
+        
+        # Create notes.md if not exists
+        if not notes.exists():
+            notes.write_text("# Research Notes\n\n", encoding="utf-8")
+        
+        print(f"   ✅ Created: plans/task_plan.md")
+        print(f"   ✅ Created: plans/notes.md")
+        print(f"\n   Task: {task}")
+        print(f"\n   Next: mekong cook @plans/task_plan.md")
+    else:
+        # Show current plan
+        if task_plan.exists():
+            print(task_plan.read_text(encoding="utf-8"))
+        else:
+            print("   No task plan found.")
+            print("   Create one: python3 cli/main.py plan \"Your task\"")
+
+
+def run_notes():
+    """View or add notes (Manus pattern)."""
+    print("\n📝 Research Notes")
+    print("-" * 50)
+    
+    from pathlib import Path
+    
+    plans_dir = Path("plans")
+    plans_dir.mkdir(exist_ok=True)
+    notes = plans_dir / "notes.md"
+    
+    if len(sys.argv) > 2:
+        # Add note
+        note = " ".join(sys.argv[2:])
+        
+        if notes.exists():
+            content = notes.read_text(encoding="utf-8")
+        else:
+            content = "# Research Notes\n\n"
+        
+        content += f"- {note}\n"
+        notes.write_text(content, encoding="utf-8")
+        print(f"   ✅ Added: {note}")
+    else:
+        # View notes
+        if notes.exists():
+            print(notes.read_text(encoding="utf-8"))
+        else:
+            print("   No notes yet.")
+            print("   Add: python3 cli/main.py notes \"Your note\"")
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -295,6 +385,8 @@ def main():
         "workflow": run_workflow,
         "crm": run_crm,
         "analytics": run_analytics,
+        "plan": run_plan,
+        "notes": run_notes,
         "help": print_help,
     }
     
