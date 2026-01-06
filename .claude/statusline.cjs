@@ -208,11 +208,10 @@ function renderAgentsLines(transcript) {
   // Sort chronologically by startTime
   toShow.sort((a, b) => new Date(a.startTime || 0) - new Date(b.startTime || 0));
 
-  // Build compact flow line with dots
+  // Build compact flow line with dots (no truncation - let layout handle wrapping)
   const flowParts = toShow.map(agent => {
     const icon = agent.status === 'running' ? yellow('●') : dim('○');
-    const type = agent.type.length > 12 ? agent.type.slice(0, 10) + '..' : agent.type;
-    return `${icon} ${type}`;
+    return `${icon} ${agent.type}`;
   });
 
   const lines = [];
