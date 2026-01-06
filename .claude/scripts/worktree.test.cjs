@@ -275,6 +275,18 @@ test('remove error includes available worktrees', () => {
 });
 
 // ============================================
+// AUTO-FEATURES TESTS (env templates)
+// ============================================
+console.log('\n🤖 Auto-Features Tests');
+
+test('create dry-run succeeds', () => {
+  const result = run('create test-env-feature --prefix feat --dry-run --json');
+  assert(result.success, 'Dry-run should succeed');
+  const json = assertJSON(result.output);
+  assert(json.dryRun === true, 'Should have dryRun: true');
+});
+
+// ============================================
 // ERROR HANDLING TESTS
 // ============================================
 console.log('\n⚠️  Error Handling Tests');

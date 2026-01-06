@@ -13,7 +13,7 @@
  * Options:
  *   --prefix <type>    Branch prefix (feat|fix|refactor|docs|test|chore|perf)
  *   --json             Output in JSON format for LLM consumption
- *   --env <files>      Comma-separated list of .env files to copy
+ *   --env <files>      Comma-separated list of .env files to copy (legacy)
  *   --dry-run          Show what would be done without executing
  */
 
@@ -75,7 +75,10 @@ function output(data) {
         console.log(`   git worktree remove ${data.worktreePath}`);
         console.log(`   git branch -d ${data.branch}`);
       }
-      if (data.envFilesCopied && data.envFilesCopied.length > 0) {
+      if (data.envTemplatesCopied && data.envTemplatesCopied.length > 0) {
+        console.log(`\n📄 Environment templates copied:`);
+        data.envTemplatesCopied.forEach(t => console.log(`   ✓ ${t.from} → ${t.to}`));
+      } else if (data.envFilesCopied && data.envFilesCopied.length > 0) {
         console.log(`\n📄 Environment files copied:`);
         data.envFilesCopied.forEach(f => console.log(`   ✓ ${f}`));
       }
@@ -225,6 +228,43 @@ function findEnvFiles(dir) {
   } catch {
     return [];
   }
+}
+
+// Find .env template files (*.example)
+function findEnvTemplates(dir) {
+  try {
+    const files = fs.readdirSync(dir);
+    return files.filter(f => {
+      if (!f.startsWith('.env') || !f.endsWith('.example')) return false;
+      const fullPath = path.join(dir, f);
+      const stat = fs.statSync(fullPath);
+      return stat.isFile() && !stat.isSymbolicLink();
+    });
+  } catch {
+    return [];
+  }
+}
+
+// Copy env templates to worktree (strips .example suffix)
+function copyEnvTemplates(srcDir, destDir) {
+  const templates = findEnvTemplates(srcDir);
+  const copied = [];
+  const warnings = [];
+
+  templates.forEach(template => {
+    const srcPath = path.join(srcDir, template);
+    const destName = template.replace(/\.example$/, '');
+    const destPath = path.join(destDir, destName);
+
+    try {
+      fs.copyFileSync(srcPath, destPath);
+      copied.push({ from: template, to: destName });
+    } catch (err) {
+      warnings.push(`Failed to copy ${template}: ${err.message}`);
+    }
+  });
+
+  return { copied, warnings };
 }
 
 // Find matching projects
@@ -495,17 +535,23 @@ function cmdCreate() {
     });
   }
 
-  // Copy env files if specified
-  const envFilesCopied = [];
+  // Auto-copy env templates (.env*.example → .env*)
+  const sourceDir = isMonorepo ? workDir : gitRoot;
+  const envResult = copyEnvTemplates(sourceDir, worktreePath);
+  envResult.warnings.forEach(w => warnings.push(w));
+
+  // Also copy explicitly specified env files (legacy --env flag support)
+  const envFilesCopied = envResult.copied.map(c => c.to);
   if (envFilesToCopy.length > 0) {
-    const sourceDir = isMonorepo ? workDir : gitRoot;
     envFilesToCopy.forEach(envFile => {
       const sourcePath = path.join(sourceDir, envFile);
       const destPath = path.join(worktreePath, envFile);
       if (fs.existsSync(sourcePath)) {
         try {
           fs.copyFileSync(sourcePath, destPath);
-          envFilesCopied.push(envFile);
+          if (!envFilesCopied.includes(envFile)) {
+            envFilesCopied.push(envFile);
+          }
         } catch (err) {
           warnings.push(`Failed to copy ${envFile}: ${err.message}`);
         }
@@ -523,6 +569,7 @@ function cmdCreate() {
     baseBranch,
     project: isMonorepo ? projectName : null,
     envFilesCopied,
+    envTemplatesCopied: envResult.copied,
     warnings: warnings.length > 0 ? warnings : undefined
   });
 }
