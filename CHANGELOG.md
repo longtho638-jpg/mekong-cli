@@ -1,3 +1,24 @@
+## [2.3.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.1...v2.3.0-beta.2) (2026-01-06)
+
+
+### 🚀 Features
+
+* **statusline:** add responsive width-based line wrapping ([c0f70ac](https://github.com/claudekit/claudekit-engineer/commit/c0f70ac2f99183eda66c2b716d6fb18d30775e6f))
+* **statusline:** enhance with ANSI colors, transcript parsing, multi-line output ([1783f26](https://github.com/claudekit/claudekit-engineer/commit/1783f2619fbb7c2178b7d9e2edada279341b0bcb))
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** add 3-level responsive layout for narrow terminals ([75c23c8](https://github.com/claudekit/claudekit-engineer/commit/75c23c89d34b12a96e87d6f22c37049220ed9b68))
+* **statusline:** harden edge case handling ([a1bf687](https://github.com/claudekit/claudekit-engineer/commit/a1bf6876e1c62041d9d8f436abc9ed378303ecda))
+* **statusline:** improve UI with detailed agents/todos, remove tools display ([6eefd4c](https://github.com/claudekit/claudekit-engineer/commit/6eefd4c58cdab25e52ac578e28d56e2651e61e94))
+* **statusline:** merge session+stats when they fit together ([e59c860](https://github.com/claudekit/claudekit-engineer/commit/e59c86097eb457400a17bd84c28aeeecb59cfbcd))
+
+
+### ✅ Tests
+
+* **statusline:** add comprehensive test plan coverage ([a323dfd](https://github.com/claudekit/claudekit-engineer/commit/a323dfdb9e2e49fa5fbecbbfb33952c77ede86ae)), closes [#302](https://github.com/claudekit/claudekit-engineer/issues/302)
+
 ## [2.3.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0...v2.3.0-beta.1) (2026-01-05)
 
 
