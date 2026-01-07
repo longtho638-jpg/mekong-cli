@@ -152,13 +152,18 @@ async def get_revenue_engine() -> Dict[str, Any]:
         raise HTTPException(status_code=404, detail="RevenueEngine not initialized")
     
     stats = demo_engine.get_stats()
+    mrr = stats.get('mrr', 0)
+    arr = stats.get('arr', 0)
+    total_revenue = stats.get('total_revenue_usd', 0)
     return {
         **stats,
-        "mrr": stats['mrr_usd'],
-        "arr": stats['arr_usd'],
-        "mrr_formatted": f"${stats['mrr_usd']:,}",
-        "arr_formatted": f"${stats['arr_usd']:,}",
-        "total_revenue_formatted": f"${stats['total_revenue_usd']:,}",
+        "mrr_usd": mrr,
+        "arr_usd": arr,
+        "mrr_formatted": f"${mrr:,.0f}",
+        "arr_formatted": f"${arr:,.0f}",
+        "total_revenue_usd": total_revenue,
+        "total_revenue_formatted": f"${total_revenue:,.0f}",
+        "collection_rate": (stats['paid_invoices'] / stats['total_invoices'] * 100) if stats['total_invoices'] > 0 else 0,
         "timestamp": datetime.now().isoformat()
     }
 
@@ -181,12 +186,17 @@ async def get_franchise_manager() -> Dict[str, Any]:
         raise HTTPException(status_code=404, detail="FranchiseManager not initialized")
     
     stats = demo_franchise.get_network_stats()
+    # Get active territories from franchisees
+    active_territory_values = set(f.territory.value for f in demo_franchise.franchisees if f.status.value == 'active')
+    
     return {
         **stats,
-        "network_revenue_formatted": f"${stats['total_network_revenue']:,}",
-        "royalties_formatted": f"${stats['total_royalties_collected']:,}",
+        "total_territories": len(Territory),
+        "covered_territories": stats['territories_covered'],
+        "network_revenue_formatted": f"${stats['total_network_revenue']:,.0f}",
+        "royalties_formatted": f"${stats['total_royalties_collected']:,.0f}",
         "territories": [
-            {"name": t.value, "status": "active" if t in demo_franchise.active_territories else "available"}
+            {"name": t.value, "status": "active" if t.value in active_territory_values else "available"}
             for t in Territory
         ],
         "timestamp": datetime.now().isoformat()
