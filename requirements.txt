@@ -14,11 +14,12 @@ httpx>=0.24.0
 python-dotenv>=1.0.0
 python-multipart>=0.0.6
 
-# Optional: Telegram Bot
-# python-telegram-bot>=20.0
+# Configuration
+pydantic-settings>=2.0.0
 
-# Optional: Voice Clone (ElevenLabs)
-# elevenlabs>=0.2.0
-\n# Testing\npytest>=7.0.0\npytest-cov>=4.0.0
-\n# Configuration\npydantic-settings>=2.0.0
-supabase>=2.0.0
+# Database (optional)
+# supabase>=2.0.0
+
+# Testing (optional)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
