@@ -33,7 +33,6 @@ node .claude/scripts/worktree.cjs info --json
 
 **For MONOREPO:** Use AskUserQuestion if project not specified:
 ```javascript
-// If user said "/worktree add auth" but multiple projects exist
 AskUserQuestion({
   questions: [{
     header: "Project",
@@ -44,17 +43,7 @@ AskUserQuestion({
 })
 ```
 
-**For env files:** Always ask which to copy:
-```javascript
-AskUserQuestion({
-  questions: [{
-    header: "Env files",
-    question: "Which environment files should be copied to the worktree?",
-    options: envFiles.map(f => ({ label: f, description: "Copy to worktree" })),
-    multiSelect: true
-  }]
-})
-```
+**Env files:** Handled automatically - `.env*.example` templates are auto-copied with `.example` suffix removed.
 
 ### Step 3: Convert Description to Slug
 
@@ -66,19 +55,42 @@ AskUserQuestion({
 
 **Monorepo:**
 ```bash
-node .claude/scripts/worktree.cjs create "<PROJECT>" "<SLUG>" --prefix <TYPE> --env "<FILES>"
+node .claude/scripts/worktree.cjs create "<PROJECT>" "<SLUG>" --prefix <TYPE>
 ```
 
 **Standalone:**
 ```bash
-node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE> --env "<FILES>"
+node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE>
 ```
 
 **Options:**
 - `--prefix` - Branch type: feat|fix|refactor|docs|test|chore|perf
-- `--env` - Comma-separated .env files to copy
+- `--env` - Comma-separated .env files to copy (legacy)
 - `--json` - Output JSON for parsing
 - `--dry-run` - Preview without executing
+
+**Auto-behaviors:**
+- **Env templates:** `.env*.example` files auto-copied with suffix removed
+
+### Step 5: Install Dependencies (AI-Guided)
+
+Based on your existing knowledge of the project, determine and run the appropriate install command in background:
+
+```bash
+# Examples - use your project context to determine
+bun install          # bun.lock present
+pnpm install         # pnpm-lock.yaml present
+yarn install         # yarn.lock present
+npm install          # package-lock.json or package.json
+poetry install       # poetry.lock or pyproject.toml
+pip install -r requirements.txt  # requirements.txt
+cargo build          # Cargo.toml
+go mod download      # go.mod
+bundle install       # Gemfile
+composer install     # composer.json
+```
+
+**Key:** You already have project context from reading files. Use that knowledge instead of re-detecting.
 
 ## Commands
 
@@ -112,15 +124,15 @@ Claude: [Runs: node .claude/scripts/worktree.cjs info --json]
         [Detects: standalone repo, envFiles: [".env.example"]]
         [Detects prefix from "fix" keyword: fix]
         [Converts slug: "login-validation-bug"]
+        [Runs: node .claude/scripts/worktree.cjs create "login-validation-bug" --prefix fix]
 
-Claude: [Uses AskUserQuestion for env files]
-        "Which environment files should be copied?"
-        Options: .env.example
-
-User: .env.example
-
-Claude: [Runs: node .claude/scripts/worktree.cjs create "login-validation-bug" --prefix fix --env ".env.example"]
-
-Output: Worktree created at ../worktrees/myrepo-login-validation-bug
+Output: ✅ Worktree created successfully!
+        Path: ../worktrees/myrepo-login-validation-bug
         Branch: fix/login-validation-bug
+
+        📄 Environment templates copied:
+           ✓ .env.example → .env
+
+Claude: [Knows this is a Node.js project with pnpm from earlier context]
+        [Runs: pnpm install in background]
 ```
