@@ -27,6 +27,7 @@ from backend.api.routers import (
     vibes,
     commands
 )
+from backend.routes import antigravity
 
 # Initialize FastAPI
 app = FastAPI(
@@ -58,6 +59,7 @@ app.include_router(agents.router)
 app.include_router(hybrid_router.router)
 app.include_router(vibes.router)
 app.include_router(commands.router)
+app.include_router(antigravity.router)  # 🚀 AntigravityKit API
 
 # Root Endpoints
 @app.get("/")
