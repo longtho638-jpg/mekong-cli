@@ -50,7 +50,7 @@ def print_help():
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
 ║  🎯 onboard     Create your Agency DNA                   ║
-║  📝 proposal    Generate client proposal                  ║
+║  📝 proposal   Generate client proposal                  ║
 ║  🎨 content     Generate 50 content ideas                 ║
 ║  💳 invoice     Create client invoice                     ║
 ║  🎮 demo        Run full demonstration                    ║
@@ -62,6 +62,7 @@ def print_help():
 ║  📝 plan        Create task plan (Manus pattern)          ║
 ║  📝 notes       Add/view research notes                   ║
 ║  🧠 mem         Memory system (search/add/timeline)       ║
+║  📦 module      Module system (KuckIt pattern)            ║
 ║                                                           ║
 ║  ❓ help        Show this help menu                       ║
 ║                                                           ║
@@ -444,6 +445,133 @@ def run_mem():
         print(f"   ❌ Error: {e}")
 
 
+def run_module():
+    """Module system (KuckIt-style scaffolding)."""
+    print("\n📦 Module System (KuckIt Pattern)")
+    print("-" * 50)
+    
+    from pathlib import Path
+    
+    # Parse subcommand
+    if len(sys.argv) < 3:
+        print("   Commands:")
+        print("   • module create <name>   - Scaffold new module")
+        print("   • module list            - List all modules")
+        return
+    
+    subcommand = sys.argv[2].lower()
+    
+    if subcommand == "create":
+        # Create module
+        if len(sys.argv) < 4:
+            print("   Usage: python3 cli/main.py module create <name>")
+            return
+        
+        module_name = sys.argv[3]
+        
+        # Create module structure (KuckIt pattern)
+        print(f"\n   🏗️  Scaffolding module: {module_name}")
+        
+        # Entity
+        entity_path = Path(f"core/entities/{module_name}.py")
+        entity_content = f'''"""
+Entity: {module_name.title()}
+Core data structure for {module_name}.
+
+Clean Architecture Layer: Entities
+"""
+
+from dataclasses import dataclass
+from typing import Optional
+
+
+@dataclass
+class {module_name.title()}:
+    """Core {module_name} entity."""
+    id: Optional[int] = None
+    name: str = ""
+    # Add your fields here
+'''
+        entity_path.write_text(entity_content, encoding="utf-8")
+        print(f"   ✅ Created: core/entities/{module_name}.py")
+        
+        # Use Case
+        use_case_path = Path(f"core/use_cases/create_{module_name}.py")
+        use_case_content = f'''"""
+Use Case: Create {module_name.title()}
+Business logic for creating {module_name}.
+
+Clean Architecture Layer: Use Cases
+"""
+
+from core.entities.{module_name} import {module_name.title()}
+
+
+class Create{module_name.title()}UseCase:
+    """Use case for creating {module_name}."""
+    
+    def execute(self, name: str) -> {module_name.title()}:
+        """Create new {module_name}."""
+        # Add validation here
+        return {module_name.title()}(name=name)
+'''
+        use_case_path.write_text(use_case_content, encoding="utf-8")
+        print(f"   ✅ Created: core/use_cases/create_{module_name}.py")
+        
+        # Controller
+        controller_path = Path(f"core/controllers/{module_name}_controller.py")
+        controller_content = f'''"""
+Controller: {module_name.title()}
+Handles HTTP requests for {module_name} operations.
+
+Clean Architecture Layer: Controllers
+"""
+
+from typing import Dict, Any
+from core.use_cases.create_{module_name} import Create{module_name.title()}UseCase
+
+
+class {module_name.title()}Controller:
+    """Controller for {module_name} operations."""
+    
+    def __init__(self):
+        self.create_use_case = Create{module_name.title()}UseCase()
+    
+    def create(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle create request."""
+        try:
+            name = request_data.get("name", "")
+            entity = self.create_use_case.execute(name)
+            
+            return {{
+                "success": True,
+                "data": {{"id": entity.id, "name": entity.name}}
+            }}
+        except Exception as e:
+            return {{"success": False, "error": str(e)}}
+'''
+        controller_path.write_text(controller_content, encoding="utf-8")
+        print(f"   ✅ Created: core/controllers/{module_name}_controller.py")
+        
+        print(f"\n   🎉 Module '{module_name}' created successfully!")
+        print(f"\n   Next steps:")
+        print(f"   1. Edit core/entities/{module_name}.py (add fields)")
+        print(f"   2. Edit core/use_cases/create_{module_name}.py (business logic)")
+        print(f"   3. Edit core/controllers/{module_name}_controller.py (API routes)")
+    
+    elif subcommand == "list":
+        # List modules
+        entities_dir = Path("core/entities")
+        if not entities_dir.exists():
+            print("   No modules found.")
+            return
+        
+        modules = [f.stem for f in entities_dir.glob("*.py") if f.stem != "__init__"]
+        print(f"\n   📦 Installed Modules ({len(modules)}):\n")
+        for module in modules:
+            print(f"   • {module}")
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -468,6 +596,7 @@ def main():
         "plan": run_plan,
         "notes": run_notes,
         "mem": run_mem,
+        "module": run_module,
         "help": print_help,
     }
     
