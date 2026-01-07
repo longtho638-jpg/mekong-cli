@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-pattern-matcher.js - Unit tests for pattern-matcher module
+ * test-pattern-matcher.cjs - Unit tests for pattern-matcher module
  */
 
 const path = require('path');

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-full-flow-edge-cases.js - Edge case validation for full hook flow
+ * test-full-flow-edge-cases.cjs - Edge case validation for full hook flow
  */
 
 const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;

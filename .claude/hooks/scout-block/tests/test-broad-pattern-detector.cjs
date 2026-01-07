@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-broad-pattern-detector.js - Unit tests for broad pattern detection
+ * test-broad-pattern-detector.cjs - Unit tests for broad pattern detection
  *
  * Tests the detection of overly broad glob patterns that would fill context.
  */

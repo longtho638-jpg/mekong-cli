@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-monorepo-scenarios.js - Integration tests for monorepo patterns
+ * test-monorepo-scenarios.cjs - Integration tests for monorepo patterns
  *
  * THIS IS THE CRITICAL TEST FILE FOR THE BUG FIX!
  * Tests that subfolder blocked directories (node_modules, dist, etc.)
