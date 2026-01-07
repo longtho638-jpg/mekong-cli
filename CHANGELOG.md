@@ -1,3 +1,10 @@
+## [2.3.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.6...v2.3.0-beta.7) (2026-01-07)
+
+
+### 🐞 Bug Fixes
+
+* rename hook .js files to .cjs for CommonJS compatibility ([c067f15](https://github.com/claudekit/claudekit-engineer/commit/c067f150971c77790eba1a3127051244a1e5776b)), closes [#309](https://github.com/claudekit/claudekit-engineer/issues/309)
+
 ## [2.3.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.5...v2.3.0-beta.6) (2026-01-07)
 
 
