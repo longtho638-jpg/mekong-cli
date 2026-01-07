@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-build-command-allowlist.js - Tests for build command allowlist patterns
+ * test-build-command-allowlist.cjs - Tests for build command allowlist patterns
  *
  * Tests that build commands from various languages/tools are properly recognized
  * and allowed (bypassing path blocking).

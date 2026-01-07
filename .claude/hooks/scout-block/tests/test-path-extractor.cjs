@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-path-extractor.js - Unit tests for path-extractor module
+ * test-path-extractor.cjs - Unit tests for path-extractor module
  */
 
 const { extractFromToolInput, extractFromCommand, looksLikePath } = require('../path-extractor.cjs');
