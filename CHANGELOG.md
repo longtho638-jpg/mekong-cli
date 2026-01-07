@@ -1,3 +1,10 @@
+## [2.3.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.5...v2.3.0-beta.6) (2026-01-07)
+
+
+### 🚀 Features
+
+* **worktree:** auto-env templates + AI-guided dependency install ([#307](https://github.com/claudekit/claudekit-engineer/issues/307)) ([b8d34c5](https://github.com/claudekit/claudekit-engineer/commit/b8d34c54ef46872748155bbf096828d6be30cf32))
+
 ## [2.3.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.4...v2.3.0-beta.5) (2026-01-06)
 
 
