@@ -28,6 +28,8 @@ from backend.api.routers import (
     commands
 )
 from backend.routes import antigravity
+from backend.websocket.routes import router as websocket_router
+from backend.websocket import manager as ws_manager
 
 # Initialize FastAPI
 app = FastAPI(
@@ -60,6 +62,7 @@ app.include_router(hybrid_router.router)
 app.include_router(vibes.router)
 app.include_router(commands.router)
 app.include_router(antigravity.router)  # 🚀 AntigravityKit API
+app.include_router(websocket_router)  # 🔄 WebSocket Real-time
 
 # Root Endpoints
 @app.get("/")
@@ -84,7 +87,13 @@ def health():
             "vietnam": "loaded",
             "crm": "loaded",
             "hybrid_router": "loaded",
-            "agents": "loaded"
+            "agents": "loaded",
+            "antigravity": "loaded",
+            "websocket": "loaded"
+        },
+        "websocket": {
+            "connections": ws_manager.connection_count,
+            "endpoint": "/ws"
         }
     }
 
