@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AntigravityKit Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, rgba(59,130,246,0.1) 100%);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .module-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .module-card:hover {
+            border-color: rgba(139,92,246,0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(139,92,246,0.2);
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .module-icon {
+            font-size: 2.5rem;
+        }
+        
+        .module-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .module-desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .module-content {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: #888;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: #10b981;
+        }
+        
+        .metric-value.warning {
+            color: #f59e0b;
+        }
+        
+        .metric-value.info {
+            color: #3b82f6;
+        }
+        
+        .metric-value.purple {
+            color: #a855f7;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(139,92,246,0.2);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #a855f7;
+            margin: 2px;
+        }
+        
+        .tag.green {
+            background: rgba(16,185,129,0.2);
+            border-color: rgba(16,185,129,0.3);
+            color: #10b981;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            margin-top: 40px;
+        }
+        
+        .footer .wisdom {
+            font-style: italic;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        .vc-score {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .vc-score-number {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .territories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .territory {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1));
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .ideas-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .idea-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .idea-score {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 AntigravityKit Dashboard</h1>
+        <p>Độc đáo - Độc quyền - Độc nhất - Duy nhất</p>
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value">7</div>
+                <div class="stat-label">Core Modules</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">83</div>
+                <div class="stat-label">VC Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">$45K</div>
+                <div class="stat-label">Network Revenue</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Territories</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modules-grid">
+        <!-- AgencyDNA -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">🧬</span>
+                <div>
+                    <div class="module-title">AgencyDNA</div>
+                    <div class="module-desc">Identity + Vietnamese Tones</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">Agency Name</span>
+                    <span class="metric-value">NovaAgency</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Niche</span>
+                    <span class="metric-value info">Nông sản</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Location</span>
+                    <span class="metric-value info">Cần Thơ</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Tone</span>
+                    <span class="metric-value purple">Miền Tây</span>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(139,92,246,0.1); border-radius: 8px; text-align: center;">
+                    <em>"Chuyên gia Nông sản - Đậm chất Miền Tây"</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- ClientMagnet -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">🧲</span>
+                <div>
+                    <div class="module-title">ClientMagnet</div>
+                    <div class="module-desc">Lead Generation Engine</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">Total Leads</span>
+                    <span class="metric-value">127</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Hot Leads</span>
+                    <span class="metric-value warning">23</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Clients</span>
+                    <span class="metric-value">15</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Pipeline Value</span>
+                    <span class="metric-value">$45,000</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <span class="tag green">Facebook: 45</span>
+                    <span class="tag green">Referral: 32</span>
+                    <span class="tag green">Website: 28</span>
+                    <span class="tag green">Zalo: 22</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RevenueEngine -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">💰</span>
+                <div>
+                    <div class="module-title">RevenueEngine</div>
+                    <div class="module-desc">MRR/ARR Tracking</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">MRR</span>
+                    <span class="metric-value">$75,000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">ARR</span>
+                    <span class="metric-value">$900,000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Invoices</span>
+                    <span class="metric-value info">156</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Paid</span>
+                    <span class="metric-value">142</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 91%; background: linear-gradient(90deg, #10b981, #3b82f6);"></div>
+                </div>
+                <div style="text-align: right; font-size: 0.8rem; color: #888; margin-top: 5px;">91% Collection Rate</div>
+            </div>
+        </div>
+
+        <!-- ContentFactory -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">🎨</span>
+                <div>
+                    <div class="module-title">ContentFactory</div>
+                    <div class="module-desc">Mass Content Production</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">Ideas Generated</span>
+                    <span class="metric-value">87</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Content Created</span>
+                    <span class="metric-value info">43</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg Virality Score</span>
+                    <span class="metric-value warning">78/100</span>
+                </div>
+                <div class="ideas-list" style="margin-top: 10px;">
+                    <div class="idea-item">
+                        <span>Top 5 mẹo bảo quản trái cây</span>
+                        <span class="idea-score">95</span>
+                    </div>
+                    <div class="idea-item">
+                        <span>Cách nhận biết nông sản sạch</span>
+                        <span class="idea-score">92</span>
+                    </div>
+                    <div class="idea-item">
+                        <span>Xu hướng nông nghiệp 2026</span>
+                        <span class="idea-score">88</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FranchiseManager -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">🏢</span>
+                <div>
+                    <div class="module-title">FranchiseManager</div>
+                    <div class="module-desc">Territory Network</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">Active Franchisees</span>
+                    <span class="metric-value">3</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Territories Covered</span>
+                    <span class="metric-value info">3/8</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Network Revenue</span>
+                    <span class="metric-value">$45,000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Royalties (20%)</span>
+                    <span class="metric-value warning">$9,000</span>
+                </div>
+                <div class="territories">
+                    <span class="territory">🟢 Cần Thơ</span>
+                    <span class="territory">🟢 Đà Nẵng</span>
+                    <span class="territory">🟢 Hà Nội</span>
+                    <span class="territory" style="opacity: 0.5;">⚪ HCM</span>
+                    <span class="territory" style="opacity: 0.5;">⚪ Hải Phòng</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VCMetrics -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">📊</span>
+                <div>
+                    <div class="module-title">VCMetrics</div>
+                    <div class="module-desc">VC Readiness Dashboard</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="vc-score">
+                    <div class="vc-score-number">83</div>
+                    <div style="color: #888;">/ 100 Readiness Score</div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">LTV/CAC Ratio</span>
+                    <span class="metric-value">12.0x</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Rule of 40</span>
+                    <span class="metric-value warning">33%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">NRR</span>
+                    <span class="metric-value">112%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Stage</span>
+                    <span class="metric-value purple">SEED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DataMoat -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-icon">🛡️</span>
+                <div>
+                    <div class="module-title">DataMoat</div>
+                    <div class="module-desc">Proprietary Intelligence</div>
+                </div>
+            </div>
+            <div class="module-content">
+                <div class="metric">
+                    <span class="metric-label">Data Points</span>
+                    <span class="metric-value">1,247</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Insights</span>
+                    <span class="metric-value info">89</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Defensibility</span>
+                    <span class="metric-value">MEDIUM</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 0.85rem; color: #888; margin-bottom: 8px;">Top Best Practices:</div>
+                    <div class="tag green">Facebook: 94%</div>
+                    <div class="tag green">TikTok: 88%</div>
+                    <div class="tag green">Zalo: 78%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🏯 AntigravityKit v1.0.0 | Built with Binh Pháp Architecture</p>
+        <p class="wisdom">"Không đánh mà thắng" - Win Without Fighting</p>
+        <p style="margin-top: 20px; font-size: 0.8rem;">
+            <span class="tag">cook</span>
+            <span class="tag">test</span>
+            <span class="tag">ship</span>
+        </p>
+    </div>
+
+    <script>
+        // Animate numbers on load
+        document.querySelectorAll('.stat-value, .metric-value, .vc-score-number').forEach(el => {
+            const text = el.textContent;
+            if (text.match(/^\d+$/)) {
+                const target = parseInt(text);
+                let current = 0;
+                const increment = target / 30;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        el.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = Math.floor(current);
+                    }
+                }, 30);
+            }
+        });
+    </script>
+</body>
+</html>
