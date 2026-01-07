@@ -1,0 +1,64 @@
+# Files to ignore in Docker build
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Frontend (separate deployment)
+frontend/
+node_modules/
+
+# Documentation
+docs/
+*.md
+!requirements.txt
+
+# Tests
+tests/
+pytest.ini
+.pytest_cache/
+
+# Local config
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Temp files
+tmp/
+temp/
