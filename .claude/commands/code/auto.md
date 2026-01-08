@@ -21,6 +21,8 @@ argument-hint: [plan] [all-phases-yes-or-no] (default: yes)
 - Sacrifice grammar for the sake of concision when writing reports.
 - In reports, list any unresolved questions at the end, if any.
 - Ensure token efficiency while maintaining high quality.
+- DO NOT stop until you finish all phases.
+- If this is a frontend project, use any of these available skills/tools to verify the implementation: `chrome`, `chrome-devtools`
 
 ---
 
@@ -194,7 +196,8 @@ Use `AskUserQuestion` tool to ask these questions:
 
 **REMEMBER:**
 - Do not skip steps. Do not proceed if validation fails.
-- One plan phase per command run. Command focuses on single plan phase only.
+- One plan phase at a time. Do not proceed to the next phase until the current phase is complete and validated.
 - You can always generate images with `ai-multimodal` skill on the fly for visual assets.
 - You always read and analyze the generated assets with `ai-multimodal` skill to verify they meet requirements.
 - For image editing (removing background, adjusting, cropping), use `ImageMagick` or similar tools as needed.
+- If this is a frontend project, use any of these available skills/tools to verify the implementation: `chrome`, `chrome-devtools`.
