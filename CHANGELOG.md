@@ -1,3 +1,16 @@
+## [2.3.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.8...v2.3.0-beta.9) (2026-01-08)
+
+
+### 🐞 Bug Fixes
+
+* **command:** `/code:auto` should finish all phases and verify implementation at the end ([58b4587](https://github.com/claudekit/claudekit-engineer/commit/58b4587854db68cc2de2ebfadabdd93ed8251f99))
+* **skills:** `claude-code` skiill deprecated, use `claude-code-guide` subagent instead ([d5aa797](https://github.com/claudekit/claudekit-engineer/commit/d5aa7973258c71064cb9de1641c986a8dafb67af))
+
+
+### 📚 Documentation
+
+* **skill:** enhance claude-code skill documentation with SDK and built-in tools ([3950d7a](https://github.com/claudekit/claudekit-engineer/commit/3950d7ab93e0494ac6e21c3dcae6d6f4071c8e80))
+
 ## [2.3.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.7...v2.3.0-beta.8) (2026-01-08)
 
 
