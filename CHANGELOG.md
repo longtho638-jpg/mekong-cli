@@ -1,3 +1,10 @@
+## [2.3.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.10...v2.3.0-beta.11) (2026-01-08)
+
+
+### 🐞 Bug Fixes
+
+* **docs:** sync /docs:init structure with /docs:update ([445b9f2](https://github.com/claudekit/claudekit-engineer/commit/445b9f2b5f258ae8766ff44476d61b47179ba003)), closes [#317](https://github.com/claudekit/claudekit-engineer/issues/317)
+
 ## [2.3.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.9...v2.3.0-beta.10) (2026-01-08)
 
 
