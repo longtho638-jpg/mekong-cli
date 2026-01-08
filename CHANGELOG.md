@@ -1,3 +1,10 @@
+## [2.3.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.9...v2.3.0-beta.10) (2026-01-08)
+
+
+### 🐞 Bug Fixes
+
+* **brainstorm:** remove incorrect Skill tool reference ([#315](https://github.com/claudekit/claudekit-engineer/issues/315)) ([4bf7ccf](https://github.com/claudekit/claudekit-engineer/commit/4bf7ccf083a6b23c5601b19da7a3089a4b823cfc))
+
 ## [2.3.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.8...v2.3.0-beta.9) (2026-01-08)
 
 
