@@ -1,3 +1,10 @@
+## [2.3.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.7...v2.3.0-beta.8) (2026-01-08)
+
+
+### 🐞 Bug Fixes
+
+* use relative paths for skills to support project-scope installs ([dfd220a](https://github.com/claudekit/claudekit-engineer/commit/dfd220af8449b360128927ae3ffcc34009dd38c2)), closes [#311](https://github.com/claudekit/claudekit-engineer/issues/311)
+
 ## [2.3.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.6...v2.3.0-beta.7) (2026-01-07)
 
 
