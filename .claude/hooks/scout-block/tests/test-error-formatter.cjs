@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-error-formatter.js - Unit tests for error-formatter module
+ * test-error-formatter.cjs - Unit tests for error-formatter module
  */
 
 const {

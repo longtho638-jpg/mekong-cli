@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * test-privacy-block.js - Unit tests for privacy-block hook
+ * test-privacy-block.cjs - Unit tests for privacy-block hook
  */
 
 const { spawn } = require('child_process');

@@ -20,6 +20,37 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
+## Hook Response Protocol
+
+### Privacy Block Hook (`@@PRIVACY_PROMPT@@`)
+
+When a tool call is blocked by the privacy-block hook, the output contains a JSON marker between `@@PRIVACY_PROMPT_START@@` and `@@PRIVACY_PROMPT_END@@`. **You MUST use the `AskUserQuestion` tool** to get proper user approval.
+
+**Required Flow:**
+
+1. Parse the JSON from the hook output
+2. Use `AskUserQuestion` with the question data from the JSON
+3. Based on user's selection:
+   - **"Yes, approve access"** → Use `bash cat "filepath"` to read the file (bash is auto-approved)
+   - **"No, skip this file"** → Continue without accessing the file
+
+**Example AskUserQuestion call:**
+```json
+{
+  "questions": [{
+    "question": "I need to read \".env\" which may contain sensitive data. Do you approve?",
+    "header": "File Access",
+    "options": [
+      { "label": "Yes, approve access", "description": "Allow reading .env this time" },
+      { "label": "No, skip this file", "description": "Continue without accessing this file" }
+    ],
+    "multiSelect": false
+  }]
+}
+```
+
+**IMPORTANT:** Always ask the user via `AskUserQuestion` first. Never try to work around the privacy block without explicit user approval.
+
 ## Python Scripts (Skills)
 
 When running Python scripts from `.claude/skills/`, use the venv Python interpreter:

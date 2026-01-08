@@ -1,3 +1,262 @@
+## [2.3.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.6...v2.3.0-beta.7) (2026-01-07)
+
+
+### 🐞 Bug Fixes
+
+* rename hook .js files to .cjs for CommonJS compatibility ([c067f15](https://github.com/claudekit/claudekit-engineer/commit/c067f150971c77790eba1a3127051244a1e5776b)), closes [#309](https://github.com/claudekit/claudekit-engineer/issues/309)
+
+## [2.3.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.5...v2.3.0-beta.6) (2026-01-07)
+
+
+### 🚀 Features
+
+* **worktree:** auto-env templates + AI-guided dependency install ([#307](https://github.com/claudekit/claudekit-engineer/issues/307)) ([b8d34c5](https://github.com/claudekit/claudekit-engineer/commit/b8d34c54ef46872748155bbf096828d6be30cf32))
+
+## [2.3.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.4...v2.3.0-beta.5) (2026-01-06)
+
+
+### 🚀 Features
+
+* **statusline:** add git staged/ahead and active plan indicators ([daeb5f1](https://github.com/claudekit/claudekit-engineer/commit/daeb5f1b7d91a05a81185855aa05b9a7c2063de7))
+* **statusline:** collapse duplicate agents + fix edge cases ([30c2490](https://github.com/claudekit/claudekit-engineer/commit/30c24902247388149aff434dbec2f6b0d3393f81))
+* **statusline:** refine visual presentation with compact agent flow ([d9ccf7b](https://github.com/claudekit/claudekit-engineer/commit/d9ccf7bdcc38266698da15797909d299dd337c12))
+* **statusline:** show last 3 completed agents for better flow context ([f2a02ec](https://github.com/claudekit/claudekit-engineer/commit/f2a02eca2878e230b670c6823c48cb2a7050c25e))
+* **statusline:** show last completed agent's description when no running agent ([967b8ff](https://github.com/claudekit/claudekit-engineer/commit/967b8ffcaaa93f1e86cfaa142dde9f94d59e560e))
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** collapse agents BEFORE slicing to preserve type variety ([286e25e](https://github.com/claudekit/claudekit-engineer/commit/286e25ea8b67b237159ef0099445b42b5b916ddd))
+* **statusline:** include plan in narrow layout mode ([8d41db9](https://github.com/claudekit/claudekit-engineer/commit/8d41db9b52dbbaa17c59d98a1e5987645907859d))
+* **statusline:** read activePlan from session temp file ([4ac5459](https://github.com/claudekit/claudekit-engineer/commit/4ac5459f6e264d4e8f2e0113ea24c6f952eb1c34))
+* **statusline:** remove agent type truncation for better readability ([9cda0ed](https://github.com/claudekit/claudekit-engineer/commit/9cda0ed7196af513c0b917a3830bf995d0c1fde2))
+
+## [2.3.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.3...v2.3.0-beta.4) (2026-01-06)
+
+
+### 🐞 Bug Fixes
+
+* **chrome-devtools:** add process.exit(1) to error handlers ([966048a](https://github.com/claudekit/claudekit-engineer/commit/966048a7e94113f8719770135643aaba5ecbac4c))
+* **context-engineering:** add UTF-8 encoding and error handling ([9947138](https://github.com/claudekit/claudekit-engineer/commit/9947138d15f0270e64ec84d02eafa1023c3fd8ca))
+
+
+### ✅ Tests
+
+* **edge-cases:** add comprehensive test suites for PR [#304](https://github.com/claudekit/claudekit-engineer/issues/304) ([080b206](https://github.com/claudekit/claudekit-engineer/commit/080b206983498e87c9848e32908e712a8940c1d5))
+
+## [2.3.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.2...v2.3.0-beta.3) (2026-01-06)
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** show full model name without truncation ([e693875](https://github.com/claudekit/claudekit-engineer/commit/e6938757a2cf73f5ba73c297c15e76c7bc0323f2))
+
+## [2.3.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.1...v2.3.0-beta.2) (2026-01-06)
+
+
+### 🚀 Features
+
+* **statusline:** add responsive width-based line wrapping ([c0f70ac](https://github.com/claudekit/claudekit-engineer/commit/c0f70ac2f99183eda66c2b716d6fb18d30775e6f))
+* **statusline:** enhance with ANSI colors, transcript parsing, multi-line output ([1783f26](https://github.com/claudekit/claudekit-engineer/commit/1783f2619fbb7c2178b7d9e2edada279341b0bcb))
+
+
+### 🐞 Bug Fixes
+
+* **statusline:** add 3-level responsive layout for narrow terminals ([75c23c8](https://github.com/claudekit/claudekit-engineer/commit/75c23c89d34b12a96e87d6f22c37049220ed9b68))
+* **statusline:** harden edge case handling ([a1bf687](https://github.com/claudekit/claudekit-engineer/commit/a1bf6876e1c62041d9d8f436abc9ed378303ecda))
+* **statusline:** improve UI with detailed agents/todos, remove tools display ([6eefd4c](https://github.com/claudekit/claudekit-engineer/commit/6eefd4c58cdab25e52ac578e28d56e2651e61e94))
+* **statusline:** merge session+stats when they fit together ([e59c860](https://github.com/claudekit/claudekit-engineer/commit/e59c86097eb457400a17bd84c28aeeecb59cfbcd))
+
+
+### ✅ Tests
+
+* **statusline:** add comprehensive test plan coverage ([a323dfd](https://github.com/claudekit/claudekit-engineer/commit/a323dfdb9e2e49fa5fbecbbfb33952c77ede86ae)), closes [#302](https://github.com/claudekit/claudekit-engineer/issues/302)
+
+## [2.3.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0...v2.3.0-beta.1) (2026-01-05)
+
+
+### 🚀 Features
+
+* **ck-help:** add fuzzy matching, synonyms, and disambiguation ([255a211](https://github.com/claudekit/claudekit-engineer/commit/255a2115516581bb890e3218e7ab65174b867d55))
+* **ck-help:** improve intent detection with positional weighting ([310cfe8](https://github.com/claudekit/claudekit-engineer/commit/310cfe8ecca9bb4eb463ce3974f1041b6339bcbf)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+
+
+### 🐞 Bug Fixes
+
+* **ck-help:** add action verb detection for imperative sentences ([105a258](https://github.com/claudekit/claudekit-engineer/commit/105a2580f93a12e1acc769e72e57fbb0b2b744ea))
+* **ck-help:** add service-specific compound phrases for notifications ([40e930c](https://github.com/claudekit/claudekit-engineer/commit/40e930cd4f674b7c44cf83ea1a7133b1433273ce))
+
+
+### ♻️ Code Refactoring
+
+* **ck-help:** generalize intent validation with pattern-based heuristics ([2f23b74](https://github.com/claudekit/claudekit-engineer/commit/2f23b74a2c4fe3134a5ea0682fce930bd9fab432))
+
+
+### ✅ Tests
+
+* **ck-help:** add comprehensive test suite with 57 test cases ([b5794d0](https://github.com/claudekit/claudekit-engineer/commit/b5794d03ac9da3e3c6796dc85266931e6f503ac1)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+
+## [2.2.0](https://github.com/claudekit/claudekit-engineer/compare/v2.1.0...v2.2.0) (2026-01-05)
+
+
+### 🚀 Features
+
+* add Alpine Linux support to install.sh ([319de45](https://github.com/claudekit/claudekit-engineer/commit/319de45f225ceb209cdc8404a39b2a2cdeb20d37)), closes [#290](https://github.com/claudekit/claudekit-engineer/issues/290)
+* add Arch Linux and Windows/WSL detection ([5fec573](https://github.com/claudekit/claudekit-engineer/commit/5fec57369239408529bfa6e2481649816bbd5e95))
+* **agents:** add accuracy protocol and proactive size management to docs-manager ([0a0a25c](https://github.com/claudekit/claudekit-engineer/commit/0a0a25c2cde060daba7aeee1dbfcad62d4561414)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+* **ck-help:** add 6 missing category workflow guides ([cb8362e](https://github.com/claudekit/claudekit-engineer/commit/cb8362ef5652712969e9f4257014207de9b14e2c))
+* **ck-help:** add tips for preview and parallel commands ([ddf4b14](https://github.com/claudekit/claudekit-engineer/commit/ddf4b14b4b56e35f23fb0c31af3a8ee8728ccb79))
+* **code:** add interactive code review cycle with user confirmation ([69690cc](https://github.com/claudekit/claudekit-engineer/commit/69690ccf7c44dc1a24da9b160e55139bff43e485)), closes [#273](https://github.com/claudekit/claudekit-engineer/issues/273)
+* **commands:** add /review:codebase:parallel slash command ([ad09be3](https://github.com/claudekit/claudekit-engineer/commit/ad09be35106cf5d40f61a875b7b08cbaa4db7f44)), closes [#262](https://github.com/claudekit/claudekit-engineer/issues/262)
+* **docs:** add size limits, parallel reading, and validation for /docs:* commands ([d0c65d2](https://github.com/claudekit/claudekit-engineer/commit/d0c65d26390d75648a677eff90fdd42fe5377e5d)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+* **hooks:** add AskUserQuestion JSON marker to privacy-block ([ff1ade8](https://github.com/claudekit/claudekit-engineer/commit/ff1ade8226b4fd14f9d5788a1d4a11096e03d2c9)), closes [#279](https://github.com/claudekit/claudekit-engineer/issues/279)
+* **hooks:** add session context info to dev-rules-reminder ([220a602](https://github.com/claudekit/claudekit-engineer/commit/220a6027cce24d101b53b0d1449ebddafeffc96b))
+* **hooks:** add subagent resource management reminders ([62258ee](https://github.com/claudekit/claudekit-engineer/commit/62258eece45a2d40cdb63d7c14465084872341d8))
+* **release:** add git timestamps to release manifest ([96b2e6e](https://github.com/claudekit/claudekit-engineer/commit/96b2e6e341bc0e10a61c52098b9053a9a99300af))
+* **skill:** add context-engineering skill ([8db3dfa](https://github.com/claudekit/claudekit-engineer/commit/8db3dfa83d7f1aedc5edb3b570c7a1c205d3f01e))
+* **skill:** add mermaidjs-v11 diagram generation skill ([36ba714](https://github.com/claudekit/claudekit-engineer/commit/36ba714cc6d99920ff1c263f92a0392f0867bec1))
+* **skill:** add WebSocket debugging scripts to chrome-devtools ([0dfc628](https://github.com/claudekit/claudekit-engineer/commit/0dfc6283186e5df8b5fe1b37e37c8f35cf42b27c))
+* **skill:** improve markdown-novel-viewer with mermaid support and XSS protection ([1a1272e](https://github.com/claudekit/claudekit-engineer/commit/1a1272ee3b0cb5b45e422006b29ead8c08afb07e))
+
+
+### 🐞 Bug Fixes
+
+* **#288:** add Windows UTF-8 encoding support across skill scripts ([a9b66d1](https://github.com/claudekit/claudekit-engineer/commit/a9b66d19fcc2a958914129c15dfc5d3492b49a97)), closes [#288](https://github.com/claudekit/claudekit-engineer/issues/288) [#288](https://github.com/claudekit/claudekit-engineer/issues/288)
+* **chrome-devtools:** add process.exit(0) for clean script termination ([7cea5a6](https://github.com/claudekit/claudekit-engineer/commit/7cea5a6e722376039b291c94d4a3eea2e251afba))
+* **ck-help:** improve intent detection and add workflow guidance ([669d235](https://github.com/claudekit/claudekit-engineer/commit/669d235f826aa5cd928db8b6eade208290e6873e))
+* **command:** add merge step to git:pr workflow ([3e34833](https://github.com/claudekit/claudekit-engineer/commit/3e348339a45c7cbe17277a2ddab43930bcc59aaf))
+* **commands:** update scout subagent spawning logic ([bd9f3af](https://github.com/claudekit/claudekit-engineer/commit/bd9f3af4b50dfa6f6434a7419207dce924ac3598))
+* correct shebang/executable permissions in .claude folder ([53acbfd](https://github.com/claudekit/claudekit-engineer/commit/53acbfd081e34561099faa85e5ae6a58c9c853d4)), closes [#268](https://github.com/claudekit/claudekit-engineer/issues/268)
+* ensure plans from /brainstorm have YAML frontmatter with status ([2b74e15](https://github.com/claudekit/claudekit-engineer/commit/2b74e15664dc19eec6eecc820b72a339a1f7ba2d)), closes [#260](https://github.com/claudekit/claudekit-engineer/issues/260)
+* **env:** add context7 api key to .env.example ([7655a99](https://github.com/claudekit/claudekit-engineer/commit/7655a99b41fa33ee0b4094badfcd24b77d81edc1))
+* **hooks:** add approval state warning on context compact ([6ef7bd3](https://github.com/claudekit/claudekit-engineer/commit/6ef7bd3f4aea8899164b6c2df1f7a146e775e7bc)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+* **hooks:** allow bash commands for .env after AskUserQuestion approval ([71cb74b](https://github.com/claudekit/claudekit-engineer/commit/71cb74b16b0f594fcc9c8fdc561a5c467e92b1bd))
+* **hooks:** allow venv executable paths in scout-block ([8bbc5b2](https://github.com/claudekit/claudekit-engineer/commit/8bbc5b2cba20f4b3207e83915ce284a56b7d3bb1)), closes [#265](https://github.com/claudekit/claudekit-engineer/issues/265)
+* **hooks:** allow venv executable paths in scout-block ([9bfbfb8](https://github.com/claudekit/claudekit-engineer/commit/9bfbfb86bd34b14ac98e85235adc910647ed86a2)), closes [#265](https://github.com/claudekit/claudekit-engineer/issues/265)
+* **hooks:** comprehensive edge case handling and monorepo support ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([7991230](https://github.com/claudekit/claudekit-engineer/commit/7991230acd4049d7019fff5b07b300fb11b48bb8))
+* **hooks:** use absolute paths based on git root ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([14e8977](https://github.com/claudekit/claudekit-engineer/commit/14e8977790ff75c8246efe2aa0bd1b40733c6b6d))
+* **notifications:** deprecate jq-based bash scripts, add ck-help guide ([58aa509](https://github.com/claudekit/claudekit-engineer/commit/58aa509b4e30b069db6f8e7b14abbbbbca5ffed2)), closes [#297](https://github.com/claudekit/claudekit-engineer/issues/297)
+* **release:** harden manifest scripts for edge cases ([08dfc61](https://github.com/claudekit/claudekit-engineer/commit/08dfc618659ca49db8833565f32a17bf3cd66edd))
+
+
+### 📚 Documentation
+
+* **skill:** add Context7 API key URL to env example ([1ef523f](https://github.com/claudekit/claudekit-engineer/commit/1ef523f5e67d4ec9aba858f813b83a7c8a608d46))
+* update documentation and agent descriptions ([0fbe288](https://github.com/claudekit/claudekit-engineer/commit/0fbe28849ce05143e563a7205e634504d2e769d3))
+* **workflow:** clarify docs-seeker and debugging skill usage ([db960f3](https://github.com/claudekit/claudekit-engineer/commit/db960f3089b023264af6131dd6ca2b410338f1e8))
+
+
+### ♻️ Code Refactoring
+
+* **chrome-devtools:** remove unnecessary cd, use full paths ([7046363](https://github.com/claudekit/claudekit-engineer/commit/704636347ffa6f59daaaed4d882978463c77bda3)), closes [#275](https://github.com/claudekit/claudekit-engineer/issues/275)
+* **code:** merge review+approval steps, optimize no-test UX ([392b5e3](https://github.com/claudekit/claudekit-engineer/commit/392b5e32e288596601d9b6761f9ee6b784dcb90e))
+* **docs:** remove split script, use LLM-driven splitting guidelines ([c61fea0](https://github.com/claudekit/claudekit-engineer/commit/c61fea0483524df8c6f113498a1a6b51be5e3fdd)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+* remove auto-push and phase-based commits from /code workflows ([cbfcc0a](https://github.com/claudekit/claudekit-engineer/commit/cbfcc0a759b844cd67ee4437f81a36911d13f2c5)), closes [#283](https://github.com/claudekit/claudekit-engineer/issues/283)
+
+
+### ✅ Tests
+
+* **#291:** add comprehensive edge case tests for git root resolution ([c78b111](https://github.com/claudekit/claudekit-engineer/commit/c78b111b01340ec9dea1ca0f6d981b2b873cc557)), closes [#291](https://github.com/claudekit/claudekit-engineer/issues/291)
+* **ck-help:** add comprehensive test suite with 19 tests ([2d6ac6a](https://github.com/claudekit/claudekit-engineer/commit/2d6ac6a1e47ba91d9126bfc2e3a05896fa24538a))
+* **hooks:** add comprehensive test suite for privacy-block ([2d88049](https://github.com/claudekit/claudekit-engineer/commit/2d880494e5e1ad2f84752a5d57a162ffef2b50c7))
+* **hooks:** add comprehensive tests for session-init compact mitigation ([0335b38](https://github.com/claudekit/claudekit-engineer/commit/0335b385c1bae1bed5aedc4f71289973befd33d6)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+
+## [2.2.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.18...v2.2.0-beta.19) (2026-01-05)
+
+
+### 🐞 Bug Fixes
+
+* **notifications:** deprecate jq-based bash scripts, add ck-help guide ([58aa509](https://github.com/claudekit/claudekit-engineer/commit/58aa509b4e30b069db6f8e7b14abbbbbca5ffed2)), closes [#297](https://github.com/claudekit/claudekit-engineer/issues/297)
+
+## [2.2.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.17...v2.2.0-beta.18) (2026-01-03)
+
+
+### 🐞 Bug Fixes
+
+* **#288:** add Windows UTF-8 encoding support across skill scripts ([a9b66d1](https://github.com/claudekit/claudekit-engineer/commit/a9b66d19fcc2a958914129c15dfc5d3492b49a97)), closes [#288](https://github.com/claudekit/claudekit-engineer/issues/288) [#288](https://github.com/claudekit/claudekit-engineer/issues/288)
+
+## [2.2.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.16...v2.2.0-beta.17) (2026-01-03)
+
+
+### 🚀 Features
+
+* add Alpine Linux support to install.sh ([319de45](https://github.com/claudekit/claudekit-engineer/commit/319de45f225ceb209cdc8404a39b2a2cdeb20d37)), closes [#290](https://github.com/claudekit/claudekit-engineer/issues/290)
+* add Arch Linux and Windows/WSL detection ([5fec573](https://github.com/claudekit/claudekit-engineer/commit/5fec57369239408529bfa6e2481649816bbd5e95))
+
+## [2.2.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.15...v2.2.0-beta.16) (2026-01-03)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** comprehensive edge case handling and monorepo support ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([7991230](https://github.com/claudekit/claudekit-engineer/commit/7991230acd4049d7019fff5b07b300fb11b48bb8))
+* **hooks:** use absolute paths based on git root ([#291](https://github.com/claudekit/claudekit-engineer/issues/291)) ([14e8977](https://github.com/claudekit/claudekit-engineer/commit/14e8977790ff75c8246efe2aa0bd1b40733c6b6d))
+
+
+### ✅ Tests
+
+* **#291:** add comprehensive edge case tests for git root resolution ([c78b111](https://github.com/claudekit/claudekit-engineer/commit/c78b111b01340ec9dea1ca0f6d981b2b873cc557)), closes [#291](https://github.com/claudekit/claudekit-engineer/issues/291)
+
+## [2.2.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.14...v2.2.0-beta.15) (2026-01-03)
+
+
+### 🚀 Features
+
+* **agents:** add accuracy protocol and proactive size management to docs-manager ([0a0a25c](https://github.com/claudekit/claudekit-engineer/commit/0a0a25c2cde060daba7aeee1dbfcad62d4561414)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+* **docs:** add size limits, parallel reading, and validation for /docs:* commands ([d0c65d2](https://github.com/claudekit/claudekit-engineer/commit/d0c65d26390d75648a677eff90fdd42fe5377e5d)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+
+
+### ♻️ Code Refactoring
+
+* **docs:** remove split script, use LLM-driven splitting guidelines ([c61fea0](https://github.com/claudekit/claudekit-engineer/commit/c61fea0483524df8c6f113498a1a6b51be5e3fdd)), closes [#264](https://github.com/claudekit/claudekit-engineer/issues/264)
+
+## [2.2.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.13...v2.2.0-beta.14) (2025-12-31)
+
+
+### ♻️ Code Refactoring
+
+* remove auto-push and phase-based commits from /code workflows ([cbfcc0a](https://github.com/claudekit/claudekit-engineer/commit/cbfcc0a759b844cd67ee4437f81a36911d13f2c5)), closes [#283](https://github.com/claudekit/claudekit-engineer/issues/283)
+
+## [2.2.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.12...v2.2.0-beta.13) (2025-12-31)
+
+
+### 🚀 Features
+
+* **release:** add git timestamps to release manifest ([96b2e6e](https://github.com/claudekit/claudekit-engineer/commit/96b2e6e341bc0e10a61c52098b9053a9a99300af))
+
+
+### 🐞 Bug Fixes
+
+* **release:** harden manifest scripts for edge cases ([08dfc61](https://github.com/claudekit/claudekit-engineer/commit/08dfc618659ca49db8833565f32a17bf3cd66edd))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for session-init compact mitigation ([0335b38](https://github.com/claudekit/claudekit-engineer/commit/0335b385c1bae1bed5aedc4f71289973befd33d6)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+
+## [2.2.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.11...v2.2.0-beta.12) (2025-12-31)
+
+
+### 🚀 Features
+
+* **hooks:** add AskUserQuestion JSON marker to privacy-block ([ff1ade8](https://github.com/claudekit/claudekit-engineer/commit/ff1ade8226b4fd14f9d5788a1d4a11096e03d2c9)), closes [#279](https://github.com/claudekit/claudekit-engineer/issues/279)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** allow bash commands for .env after AskUserQuestion approval ([71cb74b](https://github.com/claudekit/claudekit-engineer/commit/71cb74b16b0f594fcc9c8fdc561a5c467e92b1bd))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive test suite for privacy-block ([2d88049](https://github.com/claudekit/claudekit-engineer/commit/2d880494e5e1ad2f84752a5d57a162ffef2b50c7))
+
+## [2.2.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.10...v2.2.0-beta.11) (2025-12-30)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** add approval state warning on context compact ([6ef7bd3](https://github.com/claudekit/claudekit-engineer/commit/6ef7bd3f4aea8899164b6c2df1f7a146e775e7bc)), closes [#277](https://github.com/claudekit/claudekit-engineer/issues/277)
+
 ## [2.2.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0-beta.9...v2.2.0-beta.10) (2025-12-29)
 
 

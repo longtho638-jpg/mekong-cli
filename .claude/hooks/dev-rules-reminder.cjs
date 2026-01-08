@@ -109,7 +109,7 @@ function wasRecentlyInjected(transcriptPath) {
 // REMINDER TEMPLATE (all output in one place for visibility)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, skillsVenv, reportsPath, plansPath, docsPath, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
+function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catalogScript, skillsVenv, reportsPath, plansPath, docsPath, docsMaxLoc, planLine, gitBranch, namePattern, validationMode, validationMin, validationMax }) {
   // Build language instructions based on config
   // Auto-default thinkingLanguage to 'en' when only responseLanguage is set
   const effectiveThinking = thinkingLanguage || (responseLanguage ? 'en' : null);
@@ -194,7 +194,7 @@ function buildReminder({ thinkingLanguage, responseLanguage, devRulesPath, catal
     // PATHS
     // ─────────────────────────────────────────────────────────────────────────
     `## Paths`,
-    `Reports: ${reportsPath} | Plans: ${plansPath}/ | Docs: ${docsPath}/`,
+    `Reports: ${reportsPath} | Plans: ${plansPath}/ | Docs: ${docsPath}/ | docs.maxLoc: ${docsMaxLoc}`,
     ``,
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -246,6 +246,7 @@ async function main() {
       reportsPath,
       plansPath: normalizePath(config.paths?.plans) || 'plans',
       docsPath: normalizePath(config.paths?.docs) || 'docs',
+      docsMaxLoc: Math.max(1, parseInt(config.docs?.maxLoc, 10) || 800),
       planLine,
       gitBranch,
       namePattern,

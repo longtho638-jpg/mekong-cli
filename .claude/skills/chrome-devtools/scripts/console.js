@@ -74,6 +74,7 @@ async function monitorConsole() {
     process.exit(0);
   } catch (error) {
     outputError(error);
+    process.exit(1);
   }
 }
 
