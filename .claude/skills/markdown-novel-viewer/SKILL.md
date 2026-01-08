@@ -45,7 +45,7 @@ node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
   --background
 
 # Stop all running servers
-node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
+node .claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
 ```
 
 ## Slash Command

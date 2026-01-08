@@ -28,16 +28,14 @@ Universal viewer using `markdown-novel-viewer` skill - pass ANY path and see it 
 
 **IMPORTANT:** Run server as Claude Code background task using `run_in_background: true` with the Bash tool. This makes the server visible in `/tasks` and manageable via `KillShell`.
 
-Check if this script is located in the current workspace or in `$HOME/.claude/skills/markdown-novel-viewer` directory:
-- If in current workspace: `$SKILL_DIR_PATH` = `./.claude/skills/markdown-novel-viewer/`
-- If in home directory: `$SKILL_DIR_PATH` = `$HOME/.claude/skills/markdown-novel-viewer/`
+The skill is located at `.claude/skills/markdown-novel-viewer/`.
 
 ### Stop Server
 
 If `--stop` flag is provided:
 
 ```bash
-node $SKILL_DIR_PATH/scripts/server.cjs --stop
+node .claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
 ```
 
 ### Start Server
@@ -49,14 +47,14 @@ Otherwise, run the `markdown-novel-viewer` server as CC background task with `--
 INPUT_PATH="{{path}}"
 if [[ -d "$INPUT_PATH" ]]; then
   # Directory mode - browse
-  node $SKILL_DIR_PATH/scripts/server.cjs \
+  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
     --dir "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
     --foreground
 else
   # File mode - view markdown
-  node $SKILL_DIR_PATH/scripts/server.cjs \
+  node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
     --file "$INPUT_PATH" \
     --host 0.0.0.0 \
     --open \
