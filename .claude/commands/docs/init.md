@@ -16,11 +16,14 @@ description: ⚡⚡⚡⚡ Analyze the codebase and create initial documentation
 ## Phase 2: Documentation Creation (docs-manager Agent)
 
 Pass the gathered file list to `docs-manager` agent to create initial documentation:
+- `README.md`: Update README with initial documentation (keep it under 300 lines)
 - `docs/project-overview-pdr.md`: Project overview and PDR (Product Development Requirements)
 - `docs/codebase-summary.md`: Codebase summary
 - `docs/code-standards.md`: Codebase structure and code standards
 - `docs/system-architecture.md`: System architecture
-- Update `README.md` with initial documentation (keep it under 300 lines)
+- `docs/project-roadmap.md`: Project roadmap
+- `docs/deployment-guide.md` [optional]: Deployment guide
+- `docs/design-guidelines.md` [optional]: Design guidelines
 
 Use `docs/` directory as the source of truth for documentation.
 
