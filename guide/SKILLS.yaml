@@ -219,17 +219,6 @@ skills:
     has_scripts: true
     has_references: true
   dev-tools:
-  - name: claude-code
-    path: claude-code/SKILL.md
-    description: Activate when users ask about Claude Code installation, slash commands
-      (/cook, /plan, /fix, /test, /docs, /design, /git), creating/managing Agent Skills,
-      configuring MCP servers, setting up hooks/plugins, IDE integration (VS Code,
-      JetBrains), CI/CD workflows, enterprise deployment (SSO, RBAC, sandboxing),
-      troubleshooting authentication/performance issues, or advanced features (extended
-      thinking, caching, checkpointing).
-    category: dev-tools
-    has_scripts: false
-    has_references: true
   - name: docs-seeker
     path: docs-seeker/SKILL.md
     description: 'Search technical documentation using executable scripts to detect
