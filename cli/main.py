@@ -50,10 +50,11 @@ def print_help():
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
 ║  🎯 onboard     Create your Agency DNA                   ║
-║  📝 proposal   Generate client proposal                  ║
-║  🎨 content     Generate 50 content ideas                 ║
-║  💳 invoice     Create client invoice                     ║
-║  🎮 demo        Run full demonstration                    ║
+║  📝 proposal         Generate client proposal             ║
+║  🎨 content           Generate 50 content ideas            ║
+║  🎯 content-marketing Full content strategy                ║
+║  💳 invoice           Create client invoice                ║
+║  🎮 demo              Run full demonstration               ║
 ║                                                           ║
 ║  ⚡ NEW COMMANDS:                                         ║
 ║  📋 workflow    List all available workflows              ║
@@ -134,6 +135,31 @@ def run_content():
         
     except ImportError:
         print("❌ Content module not found.")
+
+
+def run_content_marketing():
+    """Run content marketing strategy generator."""
+    print("\n🎯 Content Marketing Strategy Generator")
+    print("-" * 50)
+    
+    try:
+        from core.content_marketing import ContentMarketingStrategy
+        
+        # Get business type from args or use default
+        business_type = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else "digital agency"
+        
+        strategy_gen = ContentMarketingStrategy()
+        result = strategy_gen.generate_strategy(business_type)
+        print(strategy_gen.format_strategy(result))
+        
+        print(f"\n✅ Strategy generated for: {business_type}")
+        print("   Best Practices:")
+        print("   1. Quality over quantity - Focus on value")
+        print("   2. Repurpose content - One idea, many formats")
+        print("   3. Track engagement - Optimize based on data")
+        
+    except ImportError as e:
+        print(f"❌ Content marketing module not found: {e}")
 
 
 def run_invoice():
@@ -588,6 +614,7 @@ def main():
         "onboard": run_onboard,
         "proposal": run_proposal,
         "content": run_content,
+        "content-marketing": run_content_marketing,
         "invoice": run_invoice,
         "demo": run_demo,
         "workflow": run_workflow,
