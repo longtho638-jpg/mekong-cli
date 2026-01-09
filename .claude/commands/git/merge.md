@@ -26,7 +26,8 @@ git merge origin/{FROM_BRANCH} --no-ff -m "merge: {FROM_BRANCH} into {TO_BRANCH}
 **Why `origin/{FROM_BRANCH}`:** Ensures merging only committed+pushed changes, not local uncommitted work.
 
 ### Step 3: Resolve conflicts if any
-- If conflicts exist, resolve them manually
+- If conflicts exist, resolve them
+- If you need more clarifications, use `AskUserQuestion` tool to ask the user for more details
 - After resolution: `git add . && git commit`
 
 ### Step 4: Push merged result
