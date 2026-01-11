@@ -553,8 +553,9 @@ function getReportsPath(planPath, resolvedBy, planConfig, pathsConfig, baseDir =
 
   let reportPath;
   // Only use plan-specific reports path if explicitly active (session state)
-  if (planPath && resolvedBy === 'session') {
-    const normalizedPlanPath = normalizePath(planPath) || planPath;
+  // Issue #327: Validate normalized path to prevent whitespace-only paths creating invalid directories
+  const normalizedPlanPath = planPath && resolvedBy === 'session' ? normalizePath(planPath) : null;
+  if (normalizedPlanPath) {
     reportPath = `${normalizedPlanPath}/${reportsDir}`;
   } else {
     // Default path for no plan or suggested (branch-matched) plans

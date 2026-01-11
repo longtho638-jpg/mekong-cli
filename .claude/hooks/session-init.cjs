@@ -90,8 +90,9 @@ async function main() {
       claudeSettingsDir: path.resolve(__dirname, '..')
     };
 
-    // Compute base directory for absolute paths (git root or CWD fallback)
-    const baseDir = staticEnv.gitRoot || process.cwd();
+    // Compute base directory for absolute paths (Issue #327: use CWD for subdirectory support)
+    // Git root is kept in staticEnv for reference, but CWD determines where files are created
+    const baseDir = process.cwd();
 
     // Compute resolved naming pattern (date + issue resolved, {slug} kept as placeholder)
     const namePattern = resolveNamingPattern(config.plan, staticEnv.gitBranch);
@@ -113,7 +114,7 @@ async function main() {
       writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');
       writeEnv(envFile, 'CK_SUGGESTED_PLAN', resolved.resolvedBy === 'branch' ? resolved.path : '');
 
-      // Paths - use absolute paths based on git root for unambiguous file creation
+      // Paths - use absolute paths based on CWD for subdirectory workflow support (Issue #327)
       writeEnv(envFile, 'CK_GIT_ROOT', staticEnv.gitRoot || '');
       writeEnv(envFile, 'CK_REPORTS_PATH', path.join(baseDir, reportsPath));
       writeEnv(envFile, 'CK_DOCS_PATH', path.join(baseDir, config.paths.docs));
@@ -159,10 +160,10 @@ async function main() {
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved, staticEnv.gitRoot)}`);
 
-    // Warn user if running from subdirectory (CWD != git root)
+    // Info: Show git root when running from subdirectory (Issue #327: now supported)
     if (staticEnv.gitRoot && staticEnv.gitRoot !== process.cwd()) {
-      console.log(`⚠️ Running from subdirectory. Plans/docs created at git root: ${staticEnv.gitRoot}`);
-      console.log(`   To avoid this, run Claude from: cd ${staticEnv.gitRoot}`);
+      console.log(`📁 Subdirectory mode: Plans/docs will be created in current directory`);
+      console.log(`   Git root: ${staticEnv.gitRoot}`);
     }
 
     // MITIGATION: Issue #277 - Auto-compact can bypass AskUserQuestion approval gates
