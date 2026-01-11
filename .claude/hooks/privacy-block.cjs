@@ -10,163 +10,23 @@
  * 2. LLM asks user for permission
  * 3. User approves
  * 4. LLM retries: Read "APPROVED:.env" → ALLOWED
+ *
+ * Core logic extracted to lib/privacy-checker.cjs for OpenCode plugin reuse.
  */
 
 const path = require('path');
-const fs = require('fs');
 
-const APPROVED_PREFIX = 'APPROVED:';
-
-// Safe file patterns - exempt from privacy checks (documentation/template files)
-const SAFE_PATTERNS = [
-  /\.example$/i,   // .env.example, config.example
-  /\.sample$/i,    // .env.sample
-  /\.template$/i,  // .env.template
-];
-
-// Privacy-sensitive patterns
-const PRIVACY_PATTERNS = [
-  /^\.env$/,              // .env
-  /^\.env\./,             // .env.local, .env.production, etc.
-  /\.env$/,               // path/to/.env
-  /\/\.env\./,            // path/to/.env.local
-  /credentials/i,         // credentials.json, etc.
-  /secrets?\.ya?ml$/i,    // secrets.yaml, secret.yml
-  /\.pem$/,               // Private keys
-  /\.key$/,               // Private keys
-  /id_rsa/,               // SSH keys
-  /id_ed25519/,           // SSH keys
-];
-
-/**
- * Load .ck.json config to check if privacy block is disabled
- * @returns {boolean} true if privacy block should be skipped
- */
-function isPrivacyBlockDisabled() {
-  try {
-    const configPath = path.join(process.cwd(), '.claude', '.ck.json');
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    return config.privacyBlock === false;
-  } catch {
-    return false; // Default to enabled on error (file not found or invalid JSON)
-  }
-}
-
-/**
- * Check if path is a safe file (example/sample/template)
- * @param {string} testPath - Path to check
- * @returns {boolean} true if file matches safe patterns
- */
-function isSafeFile(testPath) {
-  if (!testPath) return false;
-  const basename = path.basename(testPath);
-  return SAFE_PATTERNS.some(p => p.test(basename));
-}
-
-/**
- * Check if path has APPROVED: prefix
- * @param {string} testPath - Path to check
- * @returns {boolean} true if path starts with APPROVED:
- */
-function hasApprovalPrefix(testPath) {
-  return testPath && testPath.startsWith(APPROVED_PREFIX);
-}
-
-/**
- * Strip APPROVED: prefix from path, warn on suspicious paths
- * @param {string} testPath - Path to process
- * @returns {string} Path without APPROVED: prefix
- */
-function stripApprovalPrefix(testPath) {
-  if (hasApprovalPrefix(testPath)) {
-    const stripped = testPath.slice(APPROVED_PREFIX.length);
-
-    // Warn on suspicious paths (path traversal or absolute)
-    if (stripped.includes('..') || path.isAbsolute(stripped)) {
-      console.error('\x1b[33mWARN:\x1b[0m Approved path is outside project:', stripped);
-    }
-
-    return stripped;
-  }
-  return testPath;
-}
-
-/**
- * Check if path matches privacy patterns
- * @param {string} testPath - Path to check
- * @returns {boolean} true if path matches privacy-sensitive patterns
- */
-function isPrivacySensitive(testPath) {
-  if (!testPath) return false;
-
-  // Strip prefix for pattern matching
-  const cleanPath = stripApprovalPrefix(testPath);
-  let normalized = cleanPath.replace(/\\/g, '/');
-
-  // Decode URI components to catch obfuscated paths (%2e = '.')
-  try {
-    normalized = decodeURIComponent(normalized);
-  } catch (e) {
-    // Invalid encoding, use as-is
-  }
-
-  // Check safe patterns first - exempt example/sample/template files
-  if (isSafeFile(normalized)) {
-    return false;
-  }
-
-  const basename = path.basename(normalized);
-
-  for (const pattern of PRIVACY_PATTERNS) {
-    if (pattern.test(basename) || pattern.test(normalized)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Extract paths from tool input
- * @param {Object} toolInput - Tool input object with file_path, path, pattern, or command
- * @returns {Array<{value: string, field: string}>} Array of extracted paths with field names
- */
-function extractPaths(toolInput) {
-  const paths = [];
-  if (!toolInput) return paths;
-
-  if (toolInput.file_path) paths.push({ value: toolInput.file_path, field: 'file_path' });
-  if (toolInput.path) paths.push({ value: toolInput.path, field: 'path' });
-  if (toolInput.pattern) paths.push({ value: toolInput.pattern, field: 'pattern' });
-
-  // Check bash commands for file paths
-  if (toolInput.command) {
-    // Look for APPROVED:.env or .env patterns
-    const approvedMatch = toolInput.command.match(/APPROVED:[^\s]+/g) || [];
-    approvedMatch.forEach(p => paths.push({ value: p, field: 'command' }));
-
-    // Only look for .env if no APPROVED: version found
-    if (approvedMatch.length === 0) {
-      const envMatch = toolInput.command.match(/\.env[^\s]*/g) || [];
-      envMatch.forEach(p => paths.push({ value: p, field: 'command' }));
-
-      // Also check bash variable assignments (FILE=.env, ENV_FILE=.env.local)
-      const varAssignments = toolInput.command.match(/\w+=[^\s]*\.env[^\s]*/g) || [];
-      varAssignments.forEach(a => {
-        const value = a.split('=')[1];
-        if (value) paths.push({ value, field: 'command' });
-      });
-
-      // Check command substitution containing sensitive patterns - extract .env from inside
-      const cmdSubst = toolInput.command.match(/\$\([^)]*?(\.env[^\s)]*)[^)]*\)/g) || [];
-      for (const subst of cmdSubst) {
-        const inner = subst.match(/\.env[^\s)]*/);
-        if (inner) paths.push({ value: inner[0], field: 'command' });
-      }
-    }
-  }
-
-  return paths.filter(p => p.value);
-}
+// Import shared privacy checking logic
+const {
+  checkPrivacy,
+  isSafeFile,
+  isPrivacyBlockDisabled,
+  isPrivacySensitive,
+  hasApprovalPrefix,
+  stripApprovalPrefix,
+  extractPaths,
+  isSuspiciousPath
+} = require('./lib/privacy-checker.cjs');
 
 /**
  * Format block message with approval instructions and JSON marker for AskUserQuestion
@@ -221,11 +81,6 @@ function formatApprovalNotice(filePath) {
 
 // Main
 async function main() {
-  // Check if privacy block is disabled via .ck.json
-  if (isPrivacyBlockDisabled()) {
-    process.exit(0); // Disabled, allow all
-  }
-
   let input = '';
   for await (const chunk of process.stdin) {
     input += chunk;
@@ -240,32 +95,33 @@ async function main() {
 
   const { tool_input: toolInput, tool_name: toolName } = hookData;
 
-  // For Bash commands, only warn but don't block - let Claude Code's permission system handle it
-  // This allows the "Yes → bash cat" flow after AskUserQuestion approval
-  const isBashTool = toolName === 'Bash';
+  // Use shared privacy checker
+  const result = checkPrivacy({
+    toolName,
+    toolInput,
+    options: { allowBash: true }
+  });
 
-  const paths = extractPaths(toolInput);
-
-  // Check each path
-  for (const { value: testPath } of paths) {
-    if (!isPrivacySensitive(testPath)) continue;
-
-    // Check for approval prefix
-    if (hasApprovalPrefix(testPath)) {
-      // User approved - allow with notice
-      console.error(formatApprovalNotice(testPath));
-      continue; // Check other paths
+  // Handle results
+  if (result.approved) {
+    // User approved - allow with notice
+    if (result.suspicious) {
+      console.error('\x1b[33mWARN:\x1b[0m Approved path is outside project:', result.filePath);
     }
+    console.error(formatApprovalNotice(result.filePath));
+    process.exit(0);
+  }
 
-    // For Bash: warn but don't block - allows "Yes → bash cat" flow
-    if (isBashTool) {
-      console.error(`\x1b[33mWARN:\x1b[0m Bash command accesses sensitive file: ${testPath}`);
-      continue; // Warn but allow
-    }
+  if (result.isBash) {
+    // Bash: warn but don't block - allows "Yes → bash cat" flow
+    console.error(`\x1b[33mWARN:\x1b[0m ${result.reason}`);
+    process.exit(0);
+  }
 
+  if (result.blocked) {
     // No approval - block
-    console.error(formatBlockMessage(testPath));
-    process.exit(2); // Block
+    console.error(formatBlockMessage(result.filePath));
+    process.exit(2);
   }
 
   process.exit(0); // Allow
