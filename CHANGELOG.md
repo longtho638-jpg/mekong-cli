@@ -1,3 +1,10 @@
+## [2.3.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.18...v2.3.0-beta.19) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** resolve plan paths correctly in brownfield projects ([#335](https://github.com/claudekit/claudekit-engineer/issues/335)) ([f154534](https://github.com/claudekit/claudekit-engineer/commit/f154534c47bc84f7d2870a5b2c4b1fd080c46762))
+
 ## [2.3.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.17...v2.3.0-beta.18) (2026-01-11)
 
 
