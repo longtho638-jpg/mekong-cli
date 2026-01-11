@@ -58,7 +58,12 @@ Load: `references/output-standards.md`
 - Provide multiple options with trade-offs when appropriate
 - Fully respect the `./docs/development-rules.md` file.
 
+### Important
+DO NOT create plans or reports in USER directory.
+ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
+
 **Plan Directory Structure**
+IN CURRENT WORKING PROJECT DIRECTORY:
 ```
 plans/
 └── {date}-plan-name/
@@ -92,7 +97,7 @@ Check the `## Plan Context` section injected by hooks:
 1. **If "Plan:" shows a path**: Ask "Continue with existing plan? [Y/n]"
 2. **If "Suggested:" shows a path**: Inform user, ask if they want to activate or create new
 3. **If "Plan: none"**: Create new plan using naming from `## Naming` section
-4. **Update on create**: Run `node .claude/scripts/set-active-plan.cjs {plan-dir}`
+4. **Update on create**: Run `node .opencode/scripts/set-active-plan.cjs {plan-dir}`
 
 ### Report Output Location
 
@@ -100,6 +105,10 @@ All agents writing reports MUST:
 1. Check `## Naming` section injected by hooks for the computed naming pattern
 2. Active plans use plan-specific reports path
 3. Suggested plans use default reports path (not plan folder)
+
+### Important
+DO NOT create plans or reports in USER directory.
+ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
 
 **Important:** Suggested plans do NOT get plan-specific reports - this prevents pollution of old plan folders.
 

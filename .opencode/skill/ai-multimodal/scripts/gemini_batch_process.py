@@ -23,8 +23,9 @@ from typing import List, Dict, Any, Optional
 import csv
 import shutil
 
-# Import centralized environment resolver
-sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+# Import centralized environment resolver (works for both local and global installs)
+CLAUDE_ROOT = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(CLAUDE_ROOT / 'scripts'))
 try:
     from resolve_env import resolve_env
     CENTRALIZED_RESOLVER_AVAILABLE = True
@@ -74,17 +75,17 @@ IMAGEN_MODELS = {
 def find_api_key() -> Optional[str]:
     """Find Gemini API key using centralized resolver or fallback.
 
-    Uses ~/.claude/scripts/resolve_env.py for consistent resolution across all skills.
+    Uses ~/.opencode/scripts/resolve_env.py for consistent resolution across all skills.
     Falls back to local resolution if centralized resolver not available.
 
     Priority order (highest to lowest):
     1. process.env (runtime environment variables)
-    2. PROJECT/.claude/skills/ai-multimodal/.env (skill-specific)
-    3. PROJECT/.claude/skills/.env (shared skills)
-    4. PROJECT/.claude/.env (project global)
-    5. ~/.claude/skills/ai-multimodal/.env (user skill-specific)
-    6. ~/.claude/skills/.env (user shared)
-    7. ~/.claude/.env (user global)
+    2. PROJECT/.opencode/skills/ai-multimodal/.env (skill-specific)
+    3. PROJECT/.opencode/skills/.env (shared skills)
+    4. PROJECT/.opencode/.env (project global)
+    5. ~/.opencode/skills/ai-multimodal/.env (user skill-specific)
+    6. ~/.opencode/skills/.env (user shared)
+    7. ~/.opencode/.env (user global)
     """
     if CENTRALIZED_RESOLVER_AVAILABLE:
         # Use centralized resolver (recommended)
@@ -735,9 +736,9 @@ def batch_process(
         print("Error: GEMINI_API_KEY not found")
         print("\nSetup options:")
         print("1. Run setup checker: python scripts/check_setup.py")
-        print("2. Show hierarchy: python ~/.claude/scripts/resolve_env.py --show-hierarchy --skill ai-multimodal")
+        print("2. Show hierarchy: python ~/.opencode/scripts/resolve_env.py --show-hierarchy --skill ai-multimodal")
         print("3. Quick setup: export GEMINI_API_KEY='your-key'")
-        print("4. Create .env: cd ~/.claude/skills/ai-multimodal && cp .env.example .env")
+        print("4. Create .env: cd ~/.opencode/skills/ai-multimodal && cp .env.example .env")
         print("\nFor key rotation, add multiple keys:")
         print("   GEMINI_API_KEY=key1")
         print("   GEMINI_API_KEY_2=key2")

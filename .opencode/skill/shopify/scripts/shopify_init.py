@@ -43,7 +43,7 @@ class EnvLoader:
             return env_vars
 
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if line and not line.startswith('#') and '=' in line:
@@ -59,7 +59,7 @@ class EnvLoader:
         """
         Get list of .env file paths in priority order.
 
-        Priority: process.env > skill/.env > skills/.env > .claude/.env
+        Priority: process.env > skill/.env > skills/.env > .opencode/.env
 
         Args:
             skill_dir: Path to skill directory
@@ -79,7 +79,7 @@ class EnvLoader:
         if skills_env.exists():
             paths.append(skills_env)
 
-        # .claude/.env
+        # .opencode/.env
         claude_env = skill_dir.parent.parent / '.env'
         if claude_env.exists():
             paths.append(claude_env)
@@ -91,7 +91,7 @@ class EnvLoader:
         """
         Load configuration from environment variables.
 
-        Priority: process.env > skill/.env > skills/.env > .claude/.env
+        Priority: process.env > skill/.env > skills/.env > .opencode/.env
 
         Args:
             skill_dir: Path to skill directory
@@ -231,7 +231,7 @@ customer_deletion_url = "/webhooks/gdpr/customer-deletion"
 shop_deletion_url = "/webhooks/gdpr/shop-deletion"
 """
         config_path = project_dir / 'shopify.app.toml'
-        config_path.write_text(config_content)
+        config_path.write_text(config_content, encoding='utf-8')
         print(f"✓ Created {config_path}")
 
     def create_extension_config(self, project_dir: Path, extension_name: str, extension_type: str) -> None:
@@ -265,7 +265,7 @@ network_access = true
 api_access = true
 """
         config_path = project_dir / 'shopify.extension.toml'
-        config_path.write_text(config_content)
+        config_path.write_text(config_content, encoding='utf-8')
         print(f"✓ Created {config_path}")
 
     def create_readme(self, project_dir: Path, project_type: str, project_name: str) -> None:
@@ -304,7 +304,7 @@ shopify {project_type} deploy
 - [Shopify CLI](https://shopify.dev/docs/api/shopify-cli)
 """
         readme_path = project_dir / 'README.md'
-        readme_path.write_text(content)
+        readme_path.write_text(content, encoding='utf-8')
         print(f"✓ Created {readme_path}")
 
     def init_app(self) -> None:
@@ -331,7 +331,7 @@ shopify {project_type} deploy
                 "deploy": "shopify app deploy"
             }
         }
-        (project_dir / 'package.json').write_text(json.dumps(package_json, indent=2))
+        (project_dir / 'package.json').write_text(json.dumps(package_json, indent=2), encoding='utf-8')
         print(f"✓ Created package.json")
 
         print(f"\n✓ App '{app_name}' initialized successfully!")

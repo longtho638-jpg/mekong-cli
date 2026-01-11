@@ -42,9 +42,9 @@ def find_api_key() -> Optional[str]:
 
     Priority order (highest to lowest):
     1. process.env (runtime environment variables)
-    2. .claude/skills/ai-multimodal/.env (skill-specific config)
-    3. .claude/skills/.env (shared skills config)
-    4. .claude/.env (Claude global config)
+    2. .opencode/skills/ai-multimodal/.env (skill-specific config)
+    3. .opencode/skills/.env (shared skills config)
+    4. .opencode/.env (Claude global config)
     """
     # Priority 1: Already in process.env (highest)
     api_key = os.getenv('GEMINI_API_KEY')
@@ -55,8 +55,8 @@ def find_api_key() -> Optional[str]:
     if load_dotenv:
         # Determine base paths
         script_dir = Path(__file__).parent
-        skill_dir = script_dir.parent  # .claude/skills/ai-multimodal
-        skills_dir = skill_dir.parent   # .claude/skills
+        skill_dir = script_dir.parent  # .opencode/skills/ai-multimodal
+        skills_dir = skill_dir.parent   # .opencode/skills
         claude_dir = skills_dir.parent  # .claude
 
         # Priority 2: Skill-specific .env

@@ -11,7 +11,7 @@ Background HTTP server rendering markdown files with calm, book-like reading exp
 ck init  # Runs install.sh which handles all skills
 
 # Option 2: Manual installation
-cd .claude/skills/markdown-novel-viewer
+cd .opencode/skills/markdown-novel-viewer
 npm install
 ```
 
@@ -29,23 +29,23 @@ Universal viewer - pass ANY path and view it:
 
 ```bash
 # View a markdown file
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node .opencode/skills/markdown-novel-viewer/scripts/server.cjs \
   --file ./plans/my-plan/plan.md \
   --open
 
 # Browse a directory
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node .opencode/skills/markdown-novel-viewer/scripts/server.cjs \
   --dir ./plans \
   --host 0.0.0.0 \
   --open
 
 # Background mode
-node .claude/skills/markdown-novel-viewer/scripts/server.cjs \
+node .opencode/skills/markdown-novel-viewer/scripts/server.cjs \
   --file ./README.md \
   --background
 
 # Stop all running servers
-node $HOME/.claude/skills/markdown-novel-viewer/scripts/server.cjs --stop
+node .opencode/skills/markdown-novel-viewer/scripts/server.cjs --stop
 ```
 
 ## Slash Command

@@ -33,14 +33,14 @@ gemini --version
 
 ### Symlink Setup
 
-Gemini CLI reads MCP servers from `.gemini/settings.json`. Create a symlink to `.claude/.mcp.json`:
+Gemini CLI reads MCP servers from `.gemini/settings.json`. Create a symlink to `.opencode/.mcp.json`:
 
 ```bash
 # Create .gemini directory
 mkdir -p .gemini
 
 # Create symlink (Unix/Linux/macOS)
-ln -sf .claude/.mcp.json .gemini/settings.json
+ln -sf .opencode/.mcp.json .gemini/settings.json
 
 # Create symlink (Windows - requires admin or developer mode)
 mklink .gemini\settings.json .claude\.mcp.json
@@ -101,7 +101,7 @@ echo "Navigate to https://example.com, click the signup button, and take a scree
 
 ## How It Works
 
-1. **Configuration Loading**: Reads `.gemini/settings.json` (symlinked to `.claude/.mcp.json`)
+1. **Configuration Loading**: Reads `.gemini/settings.json` (symlinked to `.opencode/.mcp.json`)
 2. **Server Connection**: Connects to all configured MCP servers
 3. **Tool Discovery**: Lists all available tools from servers
 4. **Prompt Analysis**: Gemini model analyzes the prompt
@@ -113,7 +113,7 @@ echo "Navigate to https://example.com, click the signup button, and take a scree
 
 ### Trusted Servers (Skip Confirmations)
 
-Edit `.claude/.mcp.json`:
+Edit `.opencode/.mcp.json`:
 
 ```json
 {
@@ -188,7 +188,7 @@ ls -la .gemini/settings.json
 dir .gemini\settings.json
 ```
 
-Should show symlink pointing to `.claude/.mcp.json`.
+Should show symlink pointing to `.opencode/.mcp.json`.
 
 ### Debug Mode
 

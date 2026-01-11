@@ -32,7 +32,7 @@ equipped with procedural knowledge that no model can fully possess.
 Every skill consists of a required SKILL.md file and optional bundled resources:
 
 ```
-.claude/skills/
+.opencode/skills/
 └── skill-name/
     ├── SKILL.md (required)
     │   ├── YAML frontmatter metadata (required)
@@ -59,7 +59,7 @@ Every skill consists of a required SKILL.md file and optional bundled resources:
 - **Referenced scripts**:
   - Prefer nodejs or python scripts instead of bash script, because bash scripts are not well-supported on Windows.
   - If you're going to write python scripts, make sure you have `requirements.txt`
-  - Make sure scripts respect `.env` file follow this order: `process.env` > `.claude/skills/${SKILL}/.env` > `.claude/skills/.env` > `.claude/.env` 
+  - Make sure scripts respect `.env` file follow this order: `process.env` > `.opencode/skills/${SKILL}/.env` > `.opencode/skills/.env` > `.opencode/.env` 
   - Create `.env.example` files to show the required environment variables.
   - Always write tests for these scripts.
 
@@ -95,7 +95,7 @@ Executable code (Python/Bash/etc.) for tasks that require deterministic reliabil
 - Write tests for scripts.
 - Run tests and make sure it works, if tests fail, fix them and run tests again, repeat until tests pass.
 - Run scripts manually with some usecases to make sure it works.
-- Make sure scripts respect `.env` file follow this order: `process.env` > `.claude/skills/docs-seeker/.env` > `.claude/skills/.env` > `.claude/.env`
+- Make sure scripts respect `.env` file follow this order: `process.env` > `.opencode/skills/docs-seeker/.env` > `.opencode/skills/.env` > `.opencode/.env`
 
 ##### References (`references/`)
 
@@ -177,7 +177,7 @@ Example: When building a `big-query` skill to handle queries like "How many user
 
 To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.
 
-- Make sure scripts respect `.env` file follow this order: `process.env` > `.claude/skills/docs-seeker/.env` > `.claude/skills/.env` > `.claude/.env`
+- Make sure scripts respect `.env` file follow this order: `process.env` > `.opencode/skills/docs-seeker/.env` > `.opencode/skills/.env` > `.opencode/.env`
 - Make sure scripts have tests.
 
 ### Step 3: Initializing the Skill
@@ -261,6 +261,6 @@ After testing the skill, users may request improvements. Often this happens righ
 
 ## References
 - [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills.md)
-- [Agent Skills Spec](.claude/skills/agent_skills_spec.md)
+- [Agent Skills Spec](.opencode/skills/agent_skills_spec.md)
 - [Agent Skills Overview](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
 - [Best Practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices.md)

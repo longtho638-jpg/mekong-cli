@@ -9,10 +9,34 @@ Usage:
 
 import argparse
 import json
+import os
 import re
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
+
+MAX_FILE_SIZE_MB = 100
+
+
+def load_file(path: str, as_json: bool = True):
+    """Load file with proper error handling and size validation."""
+    try:
+        size_mb = os.path.getsize(path) / (1024 * 1024)
+        if size_mb > MAX_FILE_SIZE_MB:
+            print(f"Error: File too large ({size_mb:.1f}MB). Max {MAX_FILE_SIZE_MB}MB", file=sys.stderr)
+            sys.exit(1)
+        with open(path, encoding='utf-8') as f:
+            return json.load(f) if as_json else f.read()
+    except FileNotFoundError:
+        print(f"Error: File not found: {path}", file=sys.stderr)
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied: {path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON in {path}: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 class ProbeType(Enum):
@@ -293,12 +317,9 @@ def main():
     args = parser.parse_args()
 
     if args.command == "evaluate":
-        with open(args.original_file) as f:
-            original = json.load(f)
+        original = load_file(args.original_file, as_json=True)
         messages = original if isinstance(original, list) else original.get("messages", [])
-
-        with open(args.compressed_file) as f:
-            compressed = f.read()
+        compressed = load_file(args.compressed_file, as_json=False)
 
         report = evaluate_compression(messages, compressed)
         print(json.dumps({
@@ -310,8 +331,7 @@ def main():
         }, indent=2))
 
     elif args.command == "generate-probes":
-        with open(args.context_file) as f:
-            data = json.load(f)
+        data = load_file(args.context_file, as_json=True)
         messages = data if isinstance(data, list) else data.get("messages", [])
 
         probes = generate_probes(messages)
