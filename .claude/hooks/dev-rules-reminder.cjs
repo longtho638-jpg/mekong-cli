@@ -33,8 +33,12 @@ async function main() {
 
     const sessionId = process.env.CK_SESSION_ID || null;
 
-    // Use shared context builder
-    const { content } = buildReminderContext({ sessionId });
+    // Issue #327: Use CWD as base for subdirectory workflow support
+    // The baseDir is passed to buildReminderContext for absolute path resolution
+    const baseDir = process.cwd();
+
+    // Use shared context builder with baseDir for absolute paths
+    const { content } = buildReminderContext({ sessionId, baseDir });
 
     console.log(content);
     process.exit(0);
