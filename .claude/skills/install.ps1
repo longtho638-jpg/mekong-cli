@@ -83,6 +83,15 @@ function Track-Skipped {
 function Initialize-State {
     if ($Resume -and (Test-Path $StateFile)) {
         Write-Info "Resuming from previous installation..."
+        # Load state and validate preference consistency
+        $state = Get-Content $StateFile -Raw | ConvertFrom-Json
+        if ($state.PSObject.Properties['prefer_package_manager']) {
+            if ($state.prefer_package_manager -ne $Script:PreferPackageManager) {
+                Write-Warning "Preference changed from '$($state.prefer_package_manager)' to '$($Script:PreferPackageManager)'"
+                Write-Warning "Using original preference: $($state.prefer_package_manager)"
+                $Script:PreferPackageManager = $state.prefer_package_manager
+            }
+        }
         return
     }
 
@@ -91,6 +100,7 @@ function Initialize-State {
         version = 1
         started_at = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
         last_updated = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
+        prefer_package_manager = $Script:PreferPackageManager
         phases = @{
             chocolatey = "pending"
             system_deps = "pending"
@@ -175,17 +185,34 @@ function Test-Administrator {
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-# Check if command exists
+# Check if command exists and is functional (not just in PATH)
+# Validates: command exists, is not a broken alias, and responds to --version
 function Test-Command {
     param([string]$Command)
     try {
-        if (Get-Command $Command -ErrorAction SilentlyContinue) {
-            return $true
+        $cmd = Get-Command $Command -ErrorAction SilentlyContinue
+        if (-not $cmd) {
+            return $false
         }
+
+        # Skip aliases that don't resolve to applications
+        if ($cmd.CommandType -eq 'Alias') {
+            $resolved = Get-Command $cmd.Definition -ErrorAction SilentlyContinue
+            if (-not $resolved -or $resolved.CommandType -ne 'Application') {
+                return $false
+            }
+        }
+
+        # For package managers, verify they actually respond
+        if ($Command -in @('winget', 'scoop', 'choco')) {
+            $null = & $Command --version 2>$null
+            return ($LASTEXITCODE -eq 0)
+        }
+
+        return $true
     } catch {
         return $false
     }
-    return $false
 }
 
 # Check if Visual Studio Build Tools are installed (not just in PATH)
@@ -328,10 +355,22 @@ function Get-PackageManager {
         if (Test-Command $Preference) {
             return $Preference
         }
-        Write-Warning "Preferred package manager '$Preference' not found, falling back to auto-detection"
+        # Auto-detect for better warning message
+        $autoDetected = $null
+        if (Test-Command "winget") { $autoDetected = "winget" }
+        elseif (Test-Command "scoop") { $autoDetected = "scoop" }
+        elseif (Test-Command "choco") { $autoDetected = "choco" }
+
+        if ($autoDetected) {
+            Write-Warning "Preferred '$Preference' not found, using auto-detected: $autoDetected"
+            return $autoDetected
+        } else {
+            Write-Warning "Preferred '$Preference' not found, no package manager available"
+            return $null
+        }
     }
 
-    # Auto-detection fallback (priority: winget > scoop > choco)
+    # Auto-detection (priority: winget > scoop > choco)
     if (Test-Command "winget") { return "winget" }
     if (Test-Command "scoop") { return "scoop" }
     if (Test-Command "choco") { return "choco" }
@@ -354,6 +393,13 @@ function Install-WithPackageManager {
     $pm = Get-PackageManager -Preference $Script:PreferPackageManager
 
     switch ($pm) {
+        $null {
+            # No package manager available - provide manual install guidance
+            Write-Warning "$DisplayName not installed. No package manager available."
+            Write-Info "Install manually from: $ManualUrl"
+            Track-Failure -Category $Category -Name $DisplayName -Reason "no package manager"
+            return $false
+        }
         "winget" {
             Write-Info "Installing $DisplayName via winget..."
             # Try user scope first, fallback to machine scope
