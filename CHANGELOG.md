@@ -1,3 +1,15 @@
+## [2.3.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.14...v2.3.0-beta.15) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([f121f34](https://github.com/claudekit/claudekit-engineer/commit/f121f348d406d8c72067ab9316e5e025f81394d7))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for path resolution and utilities ([8dcd272](https://github.com/claudekit/claudekit-engineer/commit/8dcd27253f560fa47aaf9905612434617aa66dc0)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+
 ## [2.3.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.13...v2.3.0-beta.14) (2026-01-11)
 
 
