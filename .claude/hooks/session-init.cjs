@@ -21,7 +21,6 @@ const {
   getReportsPath,
   resolveNamingPattern
 } = require('./lib/ck-config-utils.cjs');
-const { writeResetMarker } = require('./lib/context-tracker.cjs');
 
 /**
  * Safely execute shell command with optional timeout
