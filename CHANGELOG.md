@@ -1,3 +1,10 @@
+## [2.3.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.16...v2.3.0-beta.17) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* Alpine Linux sudo cannot find pkg_update/pkg_install functions ([428282e](https://github.com/claudekit/claudekit-engineer/commit/428282e1ff6525a15fd7ac7c922c1a5fac3586af)), closes [claudekit/claudekit-engineer#331](https://github.com/claudekit/claudekit-engineer/issues/331)
+
 ## [2.3.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.15...v2.3.0-beta.16) (2026-01-11)
 
 
