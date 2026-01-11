@@ -2,6 +2,10 @@
 
 ## Plan File Format
 
+**Important:**
+- DO NOT create plans or reports in USER directory.
+- ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
+
 ### YAML Frontmatter (Required for plan.md)
 
 All `plan.md` files MUST include YAML frontmatter at the top:
@@ -50,6 +54,11 @@ Use these predefined tags for consistency:
 - Provide clear acceptance criteria per task
 
 ### File Management
+
+**Important:**
+- DO NOT create plans or reports in USER directory.
+- ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
+
 List affected files with:
 - Full paths (not relative)
 - Action type (modify/create/delete)
@@ -68,6 +77,10 @@ List affected files with:
 
 ## Output Requirements
 
+**Important:**
+- DO NOT create plans or reports in USER directory.
+- ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
+
 ### What Planners Do
 - Create plans ONLY (no implementation)
 - Provide plan file path and summary
@@ -85,11 +98,12 @@ List affected files with:
 - Prioritize actionable info
 
 ### Unresolved Questions
-**IMPORTANT:** List unresolved questions at end
+**IMPORTANT:** Use `AskUserQuestion` to ask users for unresolved questions at the end
 - Questions needing clarification
 - Technical decisions requiring input
 - Unknowns impacting implementation
 - Trade-offs requiring business decisions
+Revise the plan and phases based on the answers.
 
 ## Quality Standards
 

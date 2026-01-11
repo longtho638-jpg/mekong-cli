@@ -341,6 +341,298 @@ Reference external instruction files in `opencode.json`:
     return agents_md
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# OPENCODE PLUGIN TEMPLATES
+# ═══════════════════════════════════════════════════════════════════════════
+
+PRIVACY_BLOCK_PLUGIN = '''import type { Plugin } from "@opencode-ai/plugin";
+
+// Import shared CJS module
+const { checkPrivacy } = require("./lib/privacy-checker.cjs");
+
+/**
+ * Privacy Block Plugin - Block access to sensitive files
+ *
+ * Equivalent to Claude's privacy-block.cjs hook.
+ * Blocks .env, credentials, keys unless explicitly approved.
+ */
+export const PrivacyBlockPlugin: Plugin = async ({ directory }) => {
+  return {
+    "tool.execute.before": async (input: any, output: any) => {
+      const result = checkPrivacy({
+        toolName: input.tool,
+        toolInput: output.args,
+        options: { configDir: `${directory}/.opencode` }
+      });
+
+      if (result.blocked && !result.approved) {
+        throw new Error(
+          `[Privacy Block] Access to ${result.filePath} requires approval.\\n` +
+          `File may contain sensitive data (API keys, passwords).\\n` +
+          `Reason: ${result.reason}`
+        );
+      }
+    }
+  };
+};
+
+export default PrivacyBlockPlugin;
+'''
+
+SCOUT_BLOCK_PLUGIN = '''import type { Plugin } from "@opencode-ai/plugin";
+
+const { checkScoutBlock } = require("./lib/scout-checker.cjs");
+
+/**
+ * Scout Block Plugin - Prevent access to heavy directories
+ *
+ * Blocks node_modules, dist, .git, etc. to prevent context overflow.
+ * Equivalent to Claude's scout-block.cjs hook.
+ */
+export const ScoutBlockPlugin: Plugin = async ({ directory }) => {
+  const ckignorePath = `${directory}/.opencode/.ckignore`;
+  const claudeDir = `${directory}/.opencode`;
+
+  return {
+    "tool.execute.before": async (input: any, output: any) => {
+      const result = checkScoutBlock({
+        toolName: input.tool,
+        toolInput: output.args,
+        options: { ckignorePath, claudeDir }
+      });
+
+      if (result.blocked) {
+        let errorMsg = `[Scout Block] Access to '${result.path}' blocked.\\n`;
+        errorMsg += `Pattern: ${result.pattern}\\n`;
+
+        if (result.isBroadPattern && result.suggestions?.length) {
+          errorMsg += `\\nSuggested alternatives:\\n`;
+          result.suggestions.forEach((s: string) => errorMsg += `  - ${s}\\n`);
+        }
+
+        errorMsg += `\\nTo allow, add '!${result.pattern}' to .opencode/.ckignore`;
+
+        throw new Error(errorMsg);
+      }
+    }
+  };
+};
+
+export default ScoutBlockPlugin;
+'''
+
+CONTEXT_INJECTOR_PLUGIN = '''import type { Plugin } from "@opencode-ai/plugin";
+
+const { buildReminderContext } = require("./lib/context-builder.cjs");
+const { detectProject, getCodingLevelGuidelines } = require("./lib/project-detector.cjs");
+const { loadConfig } = require("./lib/ck-config-utils.cjs");
+
+// Track first message per session to inject context once
+const injectedSessions = new Set<string>();
+
+/**
+ * Context Injector Plugin - Inject session context into first message
+ *
+ * Combines functionality of dev-rules-reminder.cjs and session-init.cjs.
+ * Injects rules, session info, project detection into first user message only.
+ */
+export const ContextInjectorPlugin: Plugin = async ({ directory }) => {
+  // Load config once at plugin initialization
+  let config: any;
+  let detections: any;
+
+  try {
+    config = loadConfig();
+    detections = detectProject();
+  } catch (e) {
+    // Fallback to defaults if config loading fails
+    config = { codingLevel: -1 };
+    detections = {};
+  }
+
+  return {
+    "chat.message": async ({}: any, { message }: any) => {
+      // Get or generate session ID
+      const sessionId = process.env.OPENCODE_SESSION_ID ||
+                        `opencode-${Date.now()}`;
+
+      // Only inject on first message per session
+      if (injectedSessions.has(sessionId)) {
+        return;
+      }
+      injectedSessions.add(sessionId);
+
+      try {
+        // Build context
+        const { content } = buildReminderContext({
+          sessionId,
+          config,
+          staticEnv: {
+            nodeVersion: process.version,
+            osPlatform: process.platform,
+            gitBranch: detections.gitBranch,
+            gitRoot: detections.gitRoot,
+            user: process.env.USER || process.env.USERNAME,
+            locale: process.env.LANG || '',
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          },
+          configDirName: '.opencode'
+        });
+
+        // Inject coding level guidelines if configured
+        const codingLevel = config.codingLevel ?? -1;
+        const guidelines = getCodingLevelGuidelines(codingLevel, `${directory}/.opencode`);
+
+        // Prepend context to first user message
+        const contextBlock = [
+          '<system-context>',
+          content,
+          guidelines ? `\\n${guidelines}` : '',
+          '</system-context>',
+          ''
+        ].filter(Boolean).join('\\n');
+
+        // Modify message content (prepend context)
+        if (message && typeof message.content === 'string') {
+          message.content = contextBlock + message.content;
+        }
+      } catch (e) {
+        // Silently fail - don't break the chat if context injection fails
+        console.error('[ContextInjector] Failed to inject context:', e);
+      }
+    }
+  };
+};
+
+export default ContextInjectorPlugin;
+'''
+
+PLUGIN_PACKAGE_JSON = '''{
+  "name": "@claudekit/opencode-plugins",
+  "version": "1.0.0",
+  "description": "ClaudeKit hooks converted to OpenCode plugins",
+  "dependencies": {
+    "@opencode-ai/plugin": ">=0.1.0"
+  }
+}
+'''
+
+
+def generate_opencode_plugins(
+    project_root: Path, claude_dir: Path, opencode_dir: Path, args
+) -> None:
+    """Generate OpenCode TypeScript plugins from Claude hooks."""
+    plugin_dir = opencode_dir / "plugin"
+    lib_dir = plugin_dir / "lib"
+
+    # Check if hooks/lib exists
+    hooks_lib_dir = claude_dir / "hooks" / "lib"
+    if not hooks_lib_dir.exists():
+        if args.verbose:
+            print("\nSkipped plugins: .claude/hooks/lib/ not found")
+        return
+
+    print("\nGenerating plugins...")
+
+    # Create directories
+    if not args.dry_run:
+        plugin_dir.mkdir(parents=True, exist_ok=True)
+        lib_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Copy lib/ modules
+    lib_files = [
+        "ck-config-utils.cjs",
+        "ck-paths.cjs",
+        "colors.cjs",
+        "privacy-checker.cjs",
+        "scout-checker.cjs",
+        "context-builder.cjs",
+        "project-detector.cjs",
+    ]
+
+    copied_libs = 0
+    for lib_file in lib_files:
+        src = hooks_lib_dir / lib_file
+        if src.exists():
+            dst = lib_dir / lib_file
+            if not dst.exists() or args.force:
+                if args.dry_run:
+                    print(f"  [DRY-RUN] Would copy lib: {lib_file}")
+                else:
+                    shutil.copy2(src, dst)
+                    # Replace .claude/ paths with .opencode/ in lib file
+                    replace_claude_paths_in_file(dst)
+                    if args.verbose:
+                        print(f"  Copied lib: {lib_file}")
+                copied_libs += 1
+
+    # 2. Copy scout-block/ modules to plugin/scout-block/ (sibling to lib/)
+    # This matches the relative import path in scout-checker.cjs: '../scout-block/'
+    scout_block_dir = claude_dir / "hooks" / "scout-block"
+    scout_dst_dir = plugin_dir / "scout-block"
+    if scout_block_dir.exists():
+        if not scout_dst_dir.exists() or args.force:
+            if args.dry_run:
+                print(f"  [DRY-RUN] Would copy scout-block/ modules")
+            else:
+                if scout_dst_dir.exists():
+                    shutil.rmtree(scout_dst_dir)
+                shutil.copytree(scout_block_dir, scout_dst_dir)
+                # Replace .claude/ paths with .opencode/ in scout-block files
+                replace_claude_paths_in_dir(scout_dst_dir)
+                if args.verbose:
+                    print(f"  Copied scout-block/ modules")
+
+    # 3. Copy .ckignore to .opencode/
+    ckignore_src = claude_dir / ".ckignore"
+    ckignore_dst = opencode_dir / ".ckignore"
+    if ckignore_src.exists():
+        if not ckignore_dst.exists() or args.force:
+            if args.dry_run:
+                print(f"  [DRY-RUN] Would copy .ckignore")
+            else:
+                shutil.copy2(ckignore_src, ckignore_dst)
+                if args.verbose:
+                    print(f"  Copied .ckignore")
+
+    # 4. Generate TypeScript plugins from templates
+    # NOTE: No index.ts - OpenCode auto-discovers all .ts files in plugin/
+    # Having index.ts re-export plugins causes double-loading and hangs
+    plugin_templates = {
+        "privacy-block.ts": PRIVACY_BLOCK_PLUGIN,
+        "scout-block.ts": SCOUT_BLOCK_PLUGIN,
+        "context-injector.ts": CONTEXT_INJECTOR_PLUGIN,
+    }
+
+    generated_plugins = 0
+    for filename, template in plugin_templates.items():
+        output_path = plugin_dir / filename
+        if not output_path.exists() or args.force:
+            if args.dry_run:
+                print(f"  [DRY-RUN] Would generate: {filename}")
+            else:
+                output_path.write_text(template, encoding="utf-8")
+                if args.verbose:
+                    print(f"  Generated: {filename}")
+            generated_plugins += 1
+        else:
+            if args.verbose:
+                print(f"  Skipped (exists): {filename}")
+
+    # 5. Generate package.json in .opencode/ (not plugin/)
+    # OpenCode looks for dependencies in .opencode/package.json
+    pkg_path = opencode_dir / "package.json"
+    if not pkg_path.exists() or args.force:
+        if args.dry_run:
+            print(f"  [DRY-RUN] Would generate: .opencode/package.json")
+        else:
+            pkg_path.write_text(PLUGIN_PACKAGE_JSON, encoding="utf-8")
+            if args.verbose:
+                print(f"  Generated: .opencode/package.json")
+
+    print(f"  Generated {generated_plugins} plugins, copied {copied_libs} lib modules")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate OpenCode configuration from Claude Code setup"
@@ -567,6 +859,9 @@ def main():
         else:
             if args.verbose:
                 print(f"\nSkipped (exists): .env.example")
+
+    # Generate OpenCode plugins from Claude hooks
+    generate_opencode_plugins(project_root, claude_dir, opencode_dir, args)
 
     # Summary
     print("\n" + "=" * 50)

@@ -101,17 +101,17 @@ LOOP:
 
   2. DISPLAY FULL FINDINGS + SUMMARY TO USER:
      ┌─────────────────────────────────────────┐
-     │ Code Review Results: [score]/10         │
+     │ Code Review Results: [score]/10     │
      ├─────────────────────────────────────────┤
-     │ Summary: [what implemented], tests      │
-     │ [X/X passed]                            │
+     │ Summary: [what implemented], tests  │
+     │ [X/X passed]                        │
      ├─────────────────────────────────────────┤
-     │ Critical Issues ([N]): MUST FIX         │
-     │  - [issue] at [file:line]               │
-     │ Warnings ([N]): SHOULD FIX              │
-     │  - [issue] at [file:line]               │
-     │ Suggestions ([N]): NICE TO HAVE         │
-     │  - [suggestion]                         │
+     │ Critical Issues ([N]): MUST FIX     │
+     │  - [issue] at [file:line]           │
+     │ Warnings ([N]): SHOULD FIX          │
+     │  - [issue] at [file:line]           │
+     │ Suggestions ([N]): NICE TO HAVE     │
+     │  - [suggestion]                     │
      └─────────────────────────────────────────┘
 
   3. Use AskUserQuestion (header: "Review & Approve"):
