@@ -1,3 +1,15 @@
+## [2.3.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.17...v2.3.0-beta.18) (2026-01-11)
+
+
+### 🚀 Features
+
+* **skills:** add PreferPackageManager parameter to install.ps1 ([4fda946](https://github.com/claudekit/claudekit-engineer/commit/4fda9464c51ace0027eab526958b6763d5a7bf39)), closes [#303](https://github.com/claudekit/claudekit-engineer/issues/303)
+
+
+### 🐞 Bug Fixes
+
+* **skills:** improve install.ps1 package manager validation ([61b2fc2](https://github.com/claudekit/claudekit-engineer/commit/61b2fc249bc1c1c3298526f9b4f8840686fc264b))
+
 ## [2.3.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.16...v2.3.0-beta.17) (2026-01-11)
 
 
