@@ -1,3 +1,20 @@
+## [2.3.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.15...v2.3.0-beta.16) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **claude:** add fixing skills rule ([f4f44b5](https://github.com/claudekit/claudekit-engineer/commit/f4f44b5b946e927052ccf5fdd6f9618944b8553a))
+* **hooks:** propagate plan context to subagents ([a5b1a9e](https://github.com/claudekit/claudekit-engineer/commit/a5b1a9ee816dbc9ee7d87778fb539932f4011dc4)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** propagate plan context to subagents ([45eadde](https://github.com/claudekit/claudekit-engineer/commit/45eaddeb54c6de4aca4b93d5decf8abff58d8f4a)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([1b27cac](https://github.com/claudekit/claudekit-engineer/commit/1b27cac35b3ec725ea40d835a1d6ad1ca9ae19c3))
+* remove broken refs after context-tracker cleanup ([a5b6228](https://github.com/claudekit/claudekit-engineer/commit/a5b62287113bbe06e0932db1f18d3423378ce48b))
+* remove broken refs after context-tracker cleanup ([4cc0065](https://github.com/claudekit/claudekit-engineer/commit/4cc00650a3ac89149475b65a90b9a5807b6d9a81))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for path resolution and utilities ([c1258f9](https://github.com/claudekit/claudekit-engineer/commit/c1258f9310393dada45f1ab55bcd27e02ce3995d)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+
 ## [2.3.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.14...v2.3.0-beta.15) (2026-01-11)
 
 
