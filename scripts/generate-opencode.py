@@ -39,6 +39,24 @@ def find_project_root() -> Path:
     return current
 
 
+def replace_claude_paths_in_file(file_path: Path) -> None:
+    """Replace .claude/ paths with .opencode/ in a file."""
+    try:
+        content = file_path.read_text(encoding="utf-8")
+        if ".claude/" in content:
+            content = content.replace(".claude/", ".opencode/")
+            file_path.write_text(content, encoding="utf-8")
+    except (UnicodeDecodeError, PermissionError):
+        pass  # Skip binary files or files we can't access
+
+
+def replace_claude_paths_in_dir(dir_path: Path) -> None:
+    """Replace .claude/ paths with .opencode/ in markdown and Python files."""
+    for pattern in ["*.md", "*.py"]:
+        for file in dir_path.rglob(pattern):
+            replace_claude_paths_in_file(file)
+
+
 def parse_yaml_frontmatter(content: str) -> tuple[dict, str]:
     """Parse YAML frontmatter from markdown content.
 
@@ -410,13 +428,23 @@ def main():
         print(f"  Converted {len(list(claude_agents_dir.glob('*.md')))} agents")
 
     # Convert Claude Code commands to OpenCode commands
+    # OpenCode doesn't support multi-level commands, so flatten with "-" separators
+    # e.g., bootstrap/auto/fast.md → bootstrap-auto-fast.md
     claude_commands_dir = claude_dir / "commands"
     if claude_commands_dir.exists():
         print("\nConverting commands...")
         converted_count = 0
 
-        for cmd_file in claude_commands_dir.glob("*.md"):
-            cmd_name = cmd_file.stem
+        # Use rglob to find all .md files including nested directories
+        for cmd_file in claude_commands_dir.rglob("*.md"):
+            # Get relative path from commands dir and flatten with dashes
+            rel_path = cmd_file.relative_to(claude_commands_dir)
+            # Convert path parts to flattened name: bootstrap/auto/fast.md → bootstrap-auto-fast
+            path_parts = list(rel_path.parts)
+            # Remove .md extension from last part
+            path_parts[-1] = path_parts[-1].replace(".md", "")
+            # Join with dashes for flat command name
+            cmd_name = "-".join(path_parts) if len(path_parts) > 1 else path_parts[0]
             output_path = opencode_dir / "command" / f"{cmd_name}.md"
 
             if output_path.exists() and not args.force:
@@ -467,6 +495,8 @@ def main():
                     if target_dir.exists():
                         shutil.rmtree(target_dir)
                     shutil.copytree(skill_dir, target_dir)
+                    # Replace .claude/ paths with .opencode/ in skill markdown files
+                    replace_claude_paths_in_dir(target_dir)
                     if args.verbose:
                         print(f"  Copied: {skill_name}")
                 skill_count += 1
@@ -497,10 +527,32 @@ def main():
                 print(f"  [DRY-RUN] Would copy workflow: {workflow_name}")
             else:
                 shutil.copy2(workflow_file, target_path)
+                # Replace .claude/ paths with .opencode/ in workflow file
+                replace_claude_paths_in_file(target_path)
                 if args.verbose:
                     print(f"  Copied: {workflow_name}")
             workflow_count += 1
         print(f"  Copied {workflow_count} workflows")
+
+    # Copy scripts from .claude/scripts/ to .opencode/scripts/
+    claude_scripts_dir = claude_dir / "scripts"
+    opencode_scripts_dir = opencode_dir / "scripts"
+    if claude_scripts_dir.exists():
+        print("\nCopying scripts...")
+        if opencode_scripts_dir.exists() and not args.force:
+            if args.verbose:
+                print(f"  Skipped (exists): scripts/")
+        else:
+            if args.dry_run:
+                print(f"  [DRY-RUN] Would copy scripts directory")
+            else:
+                if opencode_scripts_dir.exists():
+                    shutil.rmtree(opencode_scripts_dir)
+                shutil.copytree(claude_scripts_dir, opencode_scripts_dir)
+                # Replace .claude/ paths with .opencode/ in script files
+                replace_claude_paths_in_dir(opencode_scripts_dir)
+                script_count = len(list(opencode_scripts_dir.glob("*")))
+                print(f"  Copied {script_count} scripts")
 
     # Copy .env.example if exists
     env_example_src = claude_dir / ".env.example"
@@ -526,6 +578,7 @@ def main():
     print(f"  - .opencode/command/*.md (converted commands)")
     print(f"  - .opencode/skill/*/ (copied skills)")
     print(f"  - .opencode/workflows/*.md (copied workflows)")
+    print(f"  - .opencode/scripts/* (copied scripts)")
     print(f"  - .opencode/.env.example (if exists)")
     print(f"\nTo use OpenCode:")
     print(f"  1. Install OpenCode: https://opencode.ai/docs")
