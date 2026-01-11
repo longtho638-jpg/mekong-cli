@@ -53,17 +53,6 @@
         ]
       }
     ],
-    "PreCompact": [
-      {
-        "matcher": "manual|auto",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/write-compact-marker.cjs"
-          }
-        ]
-      }
-    ],
     "SessionEnd": [
       {
         "matcher": "clear",
