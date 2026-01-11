@@ -253,7 +253,7 @@ describe('session-init.cjs', () => {
       );
     });
 
-    it('shows subdirectory warning when CWD differs from git root', async () => {
+    it('shows subdirectory info when CWD differs from git root (Issue #327)', async () => {
       // Run from a subdirectory to test warning appears
       const gitRoot = require('child_process')
         .execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
@@ -278,13 +278,14 @@ describe('session-init.cjs', () => {
       });
 
       assert.strictEqual(result.exitCode, 0, 'Hook should exit with code 0');
+      // Issue #327: Changed from warning to info - subdirectory mode now supported
       assert.ok(
-        result.stdout.includes('Running from subdirectory'),
-        'Should show subdirectory warning when not at git root'
+        result.stdout.includes('Subdirectory mode'),
+        'Should show subdirectory info when not at git root'
       );
       assert.ok(
-        result.stdout.includes('To avoid this'),
-        'Should include actionable guidance'
+        result.stdout.includes('Git root:'),
+        'Should show git root for reference'
       );
     });
 

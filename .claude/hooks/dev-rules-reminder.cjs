@@ -237,15 +237,19 @@ async function main() {
     const skillsVenv = resolveSkillsVenv();
     const { reportsPath, gitBranch, planLine, namePattern, validationMode, validationMin, validationMax } = buildPlanContext(sessionId, config);
 
+    // Use CWD as base for output paths (Issue #327: subdirectory workflow support)
+    // Git root is kept for reference but CWD determines where files are created
+    const baseDir = process.cwd();
+
     const output = buildReminder({
       thinkingLanguage: config.locale?.thinkingLanguage,
       responseLanguage: config.locale?.responseLanguage,
       devRulesPath,
       catalogScript,
       skillsVenv,
-      reportsPath,
-      plansPath: normalizePath(config.paths?.plans) || 'plans',
-      docsPath: normalizePath(config.paths?.docs) || 'docs',
+      reportsPath: path.join(baseDir, reportsPath),
+      plansPath: path.join(baseDir, normalizePath(config.paths?.plans) || 'plans'),
+      docsPath: path.join(baseDir, normalizePath(config.paths?.docs) || 'docs'),
       docsMaxLoc: Math.max(1, parseInt(config.docs?.maxLoc, 10) || 800),
       planLine,
       gitBranch,
