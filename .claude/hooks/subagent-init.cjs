@@ -75,7 +75,9 @@ async function main() {
     const namePattern = resolveNamingPattern(config.plan, gitBranch);
 
     // Resolve plan and reports path - use absolute paths based on git root (Issue #291)
-    const resolved = resolvePlanPath(null, config);
+    // Use session_id from payload to resolve active plan context (Issue #321)
+    const sessionId = payload.session_id || process.env.CK_SESSION_ID || null;
+    const resolved = resolvePlanPath(sessionId, config);
     const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths, baseDir);
     const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
     const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';

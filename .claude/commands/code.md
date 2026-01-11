@@ -28,6 +28,12 @@ argument-hint: [plan]
 
 **If `$ARGUMENTS` provided:** Use that plan and detect which phase to work on (auto-detect or use argument like "phase-2").
 
+**After detecting plan path:** Extract plan folder (parent directory of phase file) and set active plan:
+```bash
+node .claude/scripts/set-active-plan.cjs {plan-folder}
+```
+Example: `plans/260108-1418-custom-domain-refactor/phase-01-database.md` → run `node .claude/scripts/set-active-plan.cjs plans/260108-1418-custom-domain-refactor`
+
 **Output:** `✓ Step 0: [Plan Name] - [Phase Name]`
 
 **Subagent Pattern (use throughout):**
