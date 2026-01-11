@@ -21,7 +21,6 @@ const {
   getReportsPath,
   resolveNamingPattern
 } = require('./lib/ck-config-utils.cjs');
-const { writeResetMarker } = require('./lib/context-tracker.cjs');
 
 /**
  * Safely execute shell command with optional timeout
@@ -329,12 +328,6 @@ async function main() {
     const sessionId = data.session_id || null;
 
     const config = loadConfig();
-
-    // Layer 3: Write reset marker on /clear to signal statusline to reset baseline
-    // This ensures context window percentage resets to 0% on fresh sessions
-    if (source === 'clear' && sessionId) {
-      writeResetMarker(sessionId, 'clear');
-    }
 
     const detections = {
       type: detectProjectType(config.project?.type),
