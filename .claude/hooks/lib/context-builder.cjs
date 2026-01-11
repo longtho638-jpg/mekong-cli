@@ -364,13 +364,14 @@ function buildReminder(params) {
  * @param {Object} [params.config] - CK config (auto-loaded if not provided)
  * @param {Object} [params.staticEnv] - Pre-computed static environment info
  * @param {string} [params.configDirName='.claude'] - Config directory name
+ * @param {string} [params.baseDir] - Base directory for absolute path resolution (Issue #327)
  * @returns {{
  *   content: string,
  *   lines: string[],
  *   sections: Object
  * }}
  */
-function buildReminderContext({ sessionId, config, staticEnv, configDirName = '.claude' } = {}) {
+function buildReminderContext({ sessionId, config, staticEnv, configDirName = '.claude', baseDir } = {}) {
   // Load config if not provided
   const cfg = config || loadConfig({ includeProject: false, includeAssertions: false });
 
@@ -382,16 +383,22 @@ function buildReminderContext({ sessionId, config, staticEnv, configDirName = '.
   // Build plan context
   const planCtx = buildPlanContext(sessionId, cfg);
 
-  // Build all parameters
+  // Issue #327: Use baseDir for absolute path resolution (subdirectory workflow support)
+  // If baseDir provided, resolve paths as absolute; otherwise use relative paths
+  const effectiveBaseDir = baseDir || null;
+  const plansPathRel = normalizePath(cfg.paths?.plans) || 'plans';
+  const docsPathRel = normalizePath(cfg.paths?.docs) || 'docs';
+
+  // Build all parameters with absolute paths if baseDir provided
   const params = {
     thinkingLanguage: cfg.locale?.thinkingLanguage,
     responseLanguage: cfg.locale?.responseLanguage,
     devRulesPath,
     catalogScript,
     skillsVenv,
-    reportsPath: planCtx.reportsPath,
-    plansPath: normalizePath(cfg.paths?.plans) || 'plans',
-    docsPath: normalizePath(cfg.paths?.docs) || 'docs',
+    reportsPath: effectiveBaseDir ? path.join(effectiveBaseDir, planCtx.reportsPath) : planCtx.reportsPath,
+    plansPath: effectiveBaseDir ? path.join(effectiveBaseDir, plansPathRel) : plansPathRel,
+    docsPath: effectiveBaseDir ? path.join(effectiveBaseDir, docsPathRel) : docsPathRel,
     docsMaxLoc: Math.max(1, parseInt(cfg.docs?.maxLoc, 10) || 800),
     planLine: planCtx.planLine,
     gitBranch: planCtx.gitBranch,
