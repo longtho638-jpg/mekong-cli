@@ -13,8 +13,8 @@ const crypto = require('crypto');
 const { execSync } = require('child_process');
 
 // Directories to include in release
-const INCLUDE_DIRS = ['.claude', 'plans'];
-const INCLUDE_FILES = ['.gitignore', '.repomixignore', '.mcp.json', 'CLAUDE.md'];
+const INCLUDE_DIRS = ['.claude', '.opencode', 'plans'];
+const INCLUDE_FILES = ['.gitignore', '.repomixignore', '.mcp.json', 'CLAUDE.md', 'AGENTS.md'];
 
 // Directories to skip
 const SKIP_DIRS = [
