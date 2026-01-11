@@ -696,6 +696,10 @@ function Try-PipInstall {
 function Setup-PythonEnv {
     Write-Header "Setting Up Python Environment"
 
+    # Suppress pip version check notices that trigger PowerShell NativeCommandError
+    # Set early to affect all pip operations in this function
+    $env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
+
     # Track successful and failed installations
     $successfulSkills = [System.Collections.ArrayList]::new()
     $failedSkills = [System.Collections.ArrayList]::new()
@@ -759,7 +763,8 @@ function Setup-PythonEnv {
     # Upgrade pip with prefer-binary
     Write-Info "Upgrading pip..."
     $pipLogFile = Join-Path $LogDir "pip-upgrade.log"
-    pip install --upgrade pip --prefer-binary 2>&1 | Tee-Object -FilePath $pipLogFile
+    $venvPython = Join-Path $VenvDir "Scripts\python.exe"
+    & $venvPython -m pip install --upgrade pip --prefer-binary 2>&1 | Tee-Object -FilePath $pipLogFile
     if ($LASTEXITCODE -eq 0) {
         Write-Success "pip upgraded successfully"
     } else {
