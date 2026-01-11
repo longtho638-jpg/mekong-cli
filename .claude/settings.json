@@ -52,17 +52,6 @@
           }
         ]
       }
-    ],
-    "SessionEnd": [
-      {
-        "matcher": "clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/session-end.cjs"
-          }
-        ]
-      }
     ]
   }
 }
