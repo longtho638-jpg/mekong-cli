@@ -329,12 +329,6 @@ async function main() {
 
     const config = loadConfig();
 
-    // Layer 3: Write reset marker on /clear to signal statusline to reset baseline
-    // This ensures context window percentage resets to 0% on fresh sessions
-    if (source === 'clear' && sessionId) {
-      writeResetMarker(sessionId, 'clear');
-    }
-
     const detections = {
       type: detectProjectType(config.project?.type),
       pm: detectPackageManager(config.project?.packageManager),
