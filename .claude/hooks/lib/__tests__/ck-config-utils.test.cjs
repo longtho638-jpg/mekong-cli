@@ -17,7 +17,11 @@ const {
   getGitRoot,
   getGitBranch,
   getReportsPath,
-  escapeShellValue
+  escapeShellValue,
+  resolvePlanPath,
+  writeSessionState,
+  readSessionState,
+  getSessionTempPath
 } = require('../ck-config-utils.cjs');
 
 let passed = 0;
@@ -656,6 +660,114 @@ test('getGitBranch on new repo returns default branch', () => {
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
+});
+
+console.log('\n=== resolvePlanPath with sessionOrigin tests (Issue #335) ===\n');
+
+// Helper to generate unique session IDs for isolation
+function generateTestSessionId() {
+  return `test-session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+// Cleanup helper
+function cleanupSession(sessionId) {
+  const tempPath = getSessionTempPath(sessionId);
+  try { fs.unlinkSync(tempPath); } catch (e) {}
+}
+
+test('resolvePlanPath returns absolute path as-is (Issue #335)', () => {
+  const sessionId = generateTestSessionId();
+  try {
+    // Store absolute path in session
+    writeSessionState(sessionId, {
+      sessionOrigin: '/project/subfolder',
+      activePlan: '/project/subfolder/plans/260111-feature',
+      timestamp: Date.now()
+    });
+
+    const config = { paths: { plans: 'plans' }, plan: { resolution: { order: ['session'] } } };
+    const result = resolvePlanPath(sessionId, config);
+
+    assertEquals(result.resolvedBy, 'session');
+    assertEquals(result.path, '/project/subfolder/plans/260111-feature');
+  } finally {
+    cleanupSession(sessionId);
+  }
+});
+
+test('resolvePlanPath resolves relative path using sessionOrigin (Issue #335)', () => {
+  const sessionId = generateTestSessionId();
+  try {
+    // Store relative path (legacy behavior)
+    writeSessionState(sessionId, {
+      sessionOrigin: '/project/subfolder',
+      activePlan: 'plans/260111-feature',  // Relative
+      timestamp: Date.now()
+    });
+
+    const config = { paths: { plans: 'plans' }, plan: { resolution: { order: ['session'] } } };
+    const result = resolvePlanPath(sessionId, config);
+
+    assertEquals(result.resolvedBy, 'session');
+    // Should resolve using sessionOrigin
+    assertEquals(result.path, '/project/subfolder/plans/260111-feature');
+  } finally {
+    cleanupSession(sessionId);
+  }
+});
+
+test('resolvePlanPath without sessionOrigin uses relative path as-is', () => {
+  const sessionId = generateTestSessionId();
+  try {
+    // No sessionOrigin (edge case)
+    writeSessionState(sessionId, {
+      activePlan: 'plans/260111-feature',
+      timestamp: Date.now()
+    });
+
+    const config = { paths: { plans: 'plans' }, plan: { resolution: { order: ['session'] } } };
+    const result = resolvePlanPath(sessionId, config);
+
+    assertEquals(result.resolvedBy, 'session');
+    // Without sessionOrigin, returns as-is (relative)
+    assertEquals(result.path, 'plans/260111-feature');
+  } finally {
+    cleanupSession(sessionId);
+  }
+});
+
+test('resolvePlanPath handles Windows-style paths on Windows', () => {
+  if (process.platform !== 'win32') {
+    console.log('  → Skipped: Windows-only test');
+    return;
+  }
+  const sessionId = generateTestSessionId();
+  try {
+    writeSessionState(sessionId, {
+      sessionOrigin: 'C:\\Users\\test\\project',
+      activePlan: 'C:\\Users\\test\\project\\plans\\feature',
+      timestamp: Date.now()
+    });
+
+    const config = { paths: { plans: 'plans' }, plan: { resolution: { order: ['session'] } } };
+    const result = resolvePlanPath(sessionId, config);
+
+    assertEquals(result.resolvedBy, 'session');
+    assertEquals(result.path, 'C:\\Users\\test\\project\\plans\\feature');
+  } finally {
+    cleanupSession(sessionId);
+  }
+});
+
+test('resolvePlanPath falls back to branch if no session state', () => {
+  const sessionId = generateTestSessionId();
+  // Don't write any session state
+
+  const config = { paths: { plans: 'plans' }, plan: { resolution: { order: ['session', 'branch'] } } };
+  const result = resolvePlanPath(sessionId, config);
+
+  // Should fall through to branch or return null
+  assertEquals(result.resolvedBy === 'branch' || result.resolvedBy === null, true);
 });
 
 // Summary
