@@ -462,7 +462,6 @@ async function main() {
       gitBehind,
       activePlan,
       contextPercent,
-      showCompactIndicator,
       sessionText,
       costText,
       linesAdded,

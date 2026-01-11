@@ -232,8 +232,6 @@ When modifying statusline modules:
 - **colors.cjs** - ANSI color support
 - **transcript-parser.cjs** - JSONL parsing
 - **config-counter.cjs** - Config file counting
-- **context-tracker.cjs** - Context window tracking
-- **ck-paths.cjs** - Path utilities
 - **ck-config-utils.cjs** - Config utilities
 
 ---
