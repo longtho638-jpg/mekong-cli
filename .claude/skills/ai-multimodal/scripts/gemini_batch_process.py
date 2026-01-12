@@ -23,8 +23,9 @@ from typing import List, Dict, Any, Optional
 import csv
 import shutil
 
-# Import centralized environment resolver
-sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+# Import centralized environment resolver (works for both local and global installs)
+CLAUDE_ROOT = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(CLAUDE_ROOT / 'scripts'))
 try:
     from resolve_env import resolve_env
     CENTRALIZED_RESOLVER_AVAILABLE = True

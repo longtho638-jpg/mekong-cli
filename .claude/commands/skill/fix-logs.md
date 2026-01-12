@@ -4,7 +4,7 @@ argument-hint: [prompt-or-path-to-skill]
 ---
 
 Think harder.
-Use `skill-creator` and `claude-code` skills.
+Use `skill-creator` skill and `claude-code-guide` subagent.
 Use `docs-seeker` skills to search for documentation if needed.
 
 ## Your mission

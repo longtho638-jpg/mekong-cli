@@ -3,12 +3,18 @@
 ## Directory Structure
 
 ### Plan Location
+
+**Important:**
+- DO NOT create plans or reports in USER directory.
+- ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
+
 Use `Plan dir:` from `## Naming` section injected by hooks. This is the full computed path.
 
 **Example:** `plans/251101-1505-authentication/` or `ai_docs/feature/MRR-1453/`
 
 ### File Organization
 
+IN CURRENT WORKING PROJECT DIRECTORY:
 ```
 {plan-dir}/                                    # From `Plan dir:` in ## Naming
 ├── research/
@@ -52,6 +58,10 @@ node .claude/scripts/set-active-plan.cjs {plan-dir}
 3. Suggested plans use default reports path to prevent old plan pollution
 
 ## File Structure
+
+**Important:**
+- DO NOT create plans or reports in USER directory.
+- ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.
 
 ### Overview Plan (plan.md)
 

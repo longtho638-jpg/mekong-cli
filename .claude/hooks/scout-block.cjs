@@ -18,51 +18,24 @@
  * Exit Codes:
  * - 0: Command allowed
  * - 2: Command blocked
+ *
+ * Core logic extracted to lib/scout-checker.cjs for OpenCode plugin reuse.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Import modules
-const { loadPatterns, createMatcher, matchPath } = require('./scout-block/pattern-matcher.cjs');
-const { extractFromToolInput } = require('./scout-block/path-extractor.cjs');
+// Import shared scout checking logic
+const {
+  checkScoutBlock,
+  isBuildCommand,
+  isVenvExecutable,
+  isAllowedCommand
+} = require('./lib/scout-checker.cjs');
+
+// Import formatters (kept local as they're Claude-specific output)
 const { formatBlockedError } = require('./scout-block/error-formatter.cjs');
-const { detectBroadPatternIssue, formatBroadPatternError } = require('./scout-block/broad-pattern-detector.cjs');
-
-// Build command allowlist - these are allowed even if they contain blocked paths
-// Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
-// Also allows: go, cargo, make, mvn/mvnw, gradle/gradlew, dotnet, docker, bazel, cmake, sbt, flutter, swift, ant, ninja, meson
-const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
-const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson)/;
-
-// Allow execution from .venv/bin/ or venv/bin/ (Unix) and .venv/Scripts/ or venv/Scripts/ (Windows)
-// Blocks exploration (cat, ls, grep) but allows running venv executables
-const VENV_EXECUTABLE_PATTERN = /(^|[\/\\])\.?venv[\/\\](bin|Scripts)[\/\\]/;
-
-/**
- * Check if a command is a build/tooling command (should be allowed)
- *
- * @param {string} command - The command to check
- * @returns {boolean}
- */
-function isBuildCommand(command) {
-  if (!command || typeof command !== 'string') return false;
-  const trimmed = command.trim();
-  return BUILD_COMMAND_PATTERN.test(trimmed) || TOOL_COMMAND_PATTERN.test(trimmed);
-}
-
-/**
- * Check if command executes from a .venv bin directory
- * Allows: ~/.claude/skills/.venv/bin/python3 script.py
- * Allows: .venv/Scripts/python.exe script.py
- *
- * @param {string} command - The command to check
- * @returns {boolean}
- */
-function isVenvExecutable(command) {
-  if (!command || typeof command !== 'string') return false;
-  return VENV_EXECUTABLE_PATTERN.test(command);
-}
+const { formatBroadPatternError } = require('./scout-block/broad-pattern-detector.cjs');
 
 try {
   // Read stdin synchronously
@@ -93,52 +66,45 @@ try {
 
   const toolInput = data.tool_input;
   const toolName = data.tool_name || 'unknown';
+  const claudeDir = path.dirname(__dirname); // Go up from hooks/ to .claude/
 
-  // Check if it's a build command or venv executable (allowed regardless of paths)
-  if (toolInput.command && (isBuildCommand(toolInput.command) || isVenvExecutable(toolInput.command))) {
+  // Use shared scout checker
+  const result = checkScoutBlock({
+    toolName,
+    toolInput,
+    options: {
+      claudeDir,
+      ckignorePath: path.join(claudeDir, '.ckignore'),
+      checkBroadPatterns: true
+    }
+  });
+
+  // Handle allowed commands
+  if (result.isAllowedCommand) {
     process.exit(0);
   }
 
-  // Check for overly broad glob patterns (Glob tool)
-  // This prevents LLMs from filling context with **/*.ts at project root
-  if (toolName === 'Glob' || toolInput.pattern) {
-    const broadResult = detectBroadPatternIssue(toolInput);
-    if (broadResult.blocked) {
-      const errorMsg = formatBroadPatternError(broadResult, path.dirname(__dirname));
-      console.error(errorMsg);
-      process.exit(2);
-    }
+  // Handle broad pattern blocks
+  if (result.blocked && result.isBroadPattern) {
+    const errorMsg = formatBroadPatternError({
+      blocked: true,
+      reason: result.reason,
+      suggestions: result.suggestions
+    }, claudeDir);
+    console.error(errorMsg);
+    process.exit(2);
   }
 
-  // Load patterns from .ckignore
-  const scriptDir = __dirname;
-  const claudeDir = path.dirname(scriptDir); // Go up from hooks/ to .claude/
-  const ckignorePath = path.join(claudeDir, '.ckignore');
-  const patterns = loadPatterns(ckignorePath);
-  const matcher = createMatcher(patterns);
-
-  // Extract paths from tool input
-  const extractedPaths = extractFromToolInput(toolInput);
-
-  // If no paths extracted, allow operation
-  if (extractedPaths.length === 0) {
-    process.exit(0);
-  }
-
-  // Check each path against patterns
-  for (const extractedPath of extractedPaths) {
-    const result = matchPath(matcher, extractedPath);
-    if (result.blocked) {
-      // Output rich error message
-      const errorMsg = formatBlockedError({
-        path: extractedPath,
-        pattern: result.pattern,
-        tool: toolName,
-        claudeDir: claudeDir
-      });
-      console.error(errorMsg);
-      process.exit(2);
-    }
+  // Handle pattern blocks
+  if (result.blocked) {
+    const errorMsg = formatBlockedError({
+      path: result.path,
+      pattern: result.pattern,
+      tool: toolName,
+      claudeDir: claudeDir
+    });
+    console.error(errorMsg);
+    process.exit(2);
   }
 
   // All paths allowed

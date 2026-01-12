@@ -67,12 +67,6 @@ Work with MongoDB (document database, BSON documents, aggregation pipelines, Atl
 
 ## Development Tools
 
-### 📚 `claude-code`
-
-Activate when users ask about Claude Code installation, slash commands (/cook, /plan, /fix, /test, /docs, /design, /git), creating/managing Agent Skills, configuring MCP servers, setting up hooks/plugins, IDE integration (VS Code, JetBrains), CI/CD workflows, enterprise deployment (SSO, RBAC, sandboxing), troubleshooting authentication/performance issues, or advanced features (extended thinking, caching, checkpointing).
-
-**Location**: `.claude/skills/claude-code/SKILL.md`
-
 ### 📦 📚 `docs-seeker`
 
 Search technical documentation using executable scripts to detect query type, fetch from llms.txt sources (context7.com), and analyze results. Use when user needs: (1) Topic-specific documentation (features/components/concepts), (2) Library/framework documentation, (3) GitHub repository analysis, (4) Documentation discovery with automated agent distribution strategy

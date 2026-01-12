@@ -89,7 +89,8 @@ def check_centralized_resolver():
     """Check if centralized resolver is available."""
     print_header("Checking Centralized Resolver")
 
-    resolver_path = Path.home() / '.claude' / 'scripts' / 'resolve_env.py'
+    claude_root = Path(__file__).parent.parent.parent.parent
+    resolver_path = claude_root / 'scripts' / 'resolve_env.py'
 
     if resolver_path.exists():
         print_success(f"Centralized resolver found: {resolver_path}")
@@ -114,7 +115,8 @@ def find_api_key():
     print_header("Checking API Key Configuration")
 
     # Try to use centralized resolver
-    sys.path.insert(0, str(Path.home() / '.claude' / 'scripts'))
+    claude_root = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(claude_root / 'scripts'))
     try:
         from resolve_env import resolve_env
 

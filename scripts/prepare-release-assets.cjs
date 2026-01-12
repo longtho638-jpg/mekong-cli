@@ -25,7 +25,7 @@ const { execSync } = require('child_process');
   const manifestPath = path.join(projectRoot, 'release-manifest.json');
 
   // Critical files that MUST be present in release
-  const CRITICAL_TARGETS = ['.claude', 'release-manifest.json'];
+  const CRITICAL_TARGETS = ['.claude', '.opencode', 'release-manifest.json'];
 
   try {
     if (!fs.existsSync(packageJsonPath)) {
@@ -73,6 +73,11 @@ const { execSync } = require('child_process');
     fs.writeFileSync(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, 'utf8');
     console.log(`✓ Generated metadata.json with version ${metadata.version}`);
 
+    // Generate OpenCode configuration from Claude Code setup
+    console.log('Generating OpenCode configuration...');
+    execSync('python scripts/generate-opencode.py --force', { stdio: 'inherit' });
+    console.log('✓ Generated .opencode directory and AGENTS.md');
+
     // Generate release manifest with file timestamps
     console.log('Generating release manifest with timestamps...');
     execSync(`node scripts/generate-release-manifest.cjs "${version}"`, { stdio: 'inherit' });
@@ -105,11 +110,13 @@ const { execSync } = require('child_process');
 
     const archiveTargets = [
       '.claude',
+      '.opencode',
       'plans',
       '.gitignore',
       '.repomixignore',
       '.mcp.json',
       'CLAUDE.md',
+      'AGENTS.md',
       'release-manifest.json',
     ];
 

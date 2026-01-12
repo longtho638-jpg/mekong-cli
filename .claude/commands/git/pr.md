@@ -32,7 +32,7 @@ git diff origin/{TO_BRANCH}...origin/{FROM_BRANCH}
 - `git diff --cached` (staged local changes)
 - `git status` (local working tree state)
 
-**IMPORTANT:** Merge `main` (or default branch) into $2 branch and resolve any conflicts.
+**IMPORTANT:** Merge $1 branch (or default branch) into $2 branch and resolve any conflicts.
 
 ### Step 3: Generate PR content from remote diff
 Based on the REMOTE diff analysis:

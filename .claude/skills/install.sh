@@ -400,7 +400,16 @@ install_system_package() {
     if [[ "$WITH_SUDO" == "true" ]] || [[ "$DISTRO" == "alpine" && "$(id -u)" == "0" ]]; then
         print_info "Installing $display_name..."
         if [[ "$WITH_SUDO" == "true" ]]; then
-            if sudo pkg_install "$package_name"; then
+            # Call package manager directly with sudo (functions don't work with sudo)
+            local install_result=0
+            case "$DISTRO" in
+                alpine) sudo apk add --no-cache "$package_name" || install_result=1 ;;
+                arch) sudo pacman -S --noconfirm "$package_name" || install_result=1 ;;
+                debian) sudo apt-get install -y "$package_name" || install_result=1 ;;
+                redhat) sudo dnf install -y "$package_name" || install_result=1 ;;
+                *) install_result=1 ;;
+            esac
+            if [[ "$install_result" -eq 0 ]]; then
                 print_success "$display_name installed"
                 track_success "optional" "$display_name"
                 return 0
@@ -477,7 +486,13 @@ install_system_deps() {
     if [[ "$OS" == "linux" ]]; then
         if [[ "$WITH_SUDO" == "true" ]]; then
             print_info "Updating package lists..."
-            sudo pkg_update
+            # Call package manager directly with sudo (functions don't work with sudo)
+            case "$DISTRO" in
+                alpine) sudo apk update ;;
+                arch) sudo pacman -Sy ;;
+                debian) sudo apt-get update -qq ;;
+                redhat) sudo dnf check-update || true ;;
+            esac
         elif [[ "$DISTRO" == "alpine" && "$(id -u)" == "0" ]]; then
             # Alpine as root (no sudo needed)
             print_info "Updating package lists..."

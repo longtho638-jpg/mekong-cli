@@ -6,7 +6,23 @@ argument-hint: [category|command|task description]
 Think harder.
 All-in-one ClaudeKit guide. Run the script and present output based on type markers.
 
-## Pre-Processing
+## Intent Validation
+
+The script uses keyword matching with smart weighting. After getting results, **validate** against these heuristics:
+
+| Sentence Pattern | Primary Intent | Example |
+|------------------|----------------|---------|
+| `[action verb] my [object]` | The action verb | "commit my changes" → git |
+| `[context] [subject noun]` | The subject noun | "setup notifications" → notifications |
+| `[noun] [noun]` | Last noun (topic) | "discord webhook" → notifications |
+
+**Action verbs** (high intent when first): fix, test, commit, push, build, create, review, deploy, run, check, find, plan, refactor
+
+**Context words** (low intent, modify subject): setup, add, start, new, my, the, configure
+
+**Override script only if:** result clearly mismatches the sentence pattern above. Otherwise trust the algorithm.
+
+## Translation
 
 **IMPORTANT: Always translate `$ARGUMENTS` to English before passing to script.**
 
