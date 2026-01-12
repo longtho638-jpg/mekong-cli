@@ -1,3 +1,10 @@
+## [2.3.2-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.1...v2.3.2-beta.1) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* **manifest:** strip .claude/ prefix from manifest paths ([db35217](https://github.com/claudekit/claudekit-engineer/commit/db35217521e079c7d86ff3e293ad1c6833f5f6e2))
+
 ## [2.3.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0...v2.3.1) (2026-01-12)
 
 
