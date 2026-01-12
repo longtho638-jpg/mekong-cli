@@ -1,3 +1,20 @@
+## [2.3.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0...v2.3.1) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* add backward compat for workflows/ in hooks ([6227d62](https://github.com/claudekit/claudekit-engineer/commit/6227d62e60089c840f55d1b473760945a689d4eb))
+
+
+### ♻️ Code Refactoring
+
+* rename workflows/ to rules/ ([#337](https://github.com/claudekit/claudekit-engineer/issues/337)) ([d54d0c4](https://github.com/claudekit/claudekit-engineer/commit/d54d0c42a0b8a9936cff1e105dae968d348a1823))
+
+
+### ✅ Tests
+
+* add comprehensive context-builder tests for rules/workflows compat ([3add387](https://github.com/claudekit/claudekit-engineer/commit/3add387c59527edaf245ffccf96a6ebba49a9e40))
+
 ## [2.3.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0...v2.3.1-beta.1) (2026-01-12)
 
 
