@@ -163,7 +163,7 @@ Send a notification with a custom message:
 
 ### Automated Usage (Claude Code Workflow)
 
-Claude automatically calls this script when completing implementations. This is configured in `.claude/workflows/development-rules.md`:
+Claude automatically calls this script when completing implementations. This is configured in `.claude/rules/development-rules.md`:
 
 ```markdown
 - When you finish the implementation, send a full summary report to Discord channel

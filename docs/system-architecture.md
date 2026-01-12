@@ -344,7 +344,7 @@ All hooks located in `.claude/hooks/` with consistent patterns - fail-safe exit 
 - **Trigger**: Every user prompt
 - **Purpose**: Inject development context and rules
 - **Functionality**:
-  - Injects current development rules from `.claude/workflows/`
+  - Injects current development rules from `.claude/rules/`
   - Smart deduplication prevents redundant context
   - Suggests branch-matched workflows
   - Optimized for minimal token overhead
@@ -981,7 +981,7 @@ User Project
 
 ### Custom Workflows
 
-1. Define workflow in `.claude/workflows/`
+1. Define workflow in `.claude/rules/`
 2. Document orchestration patterns
 3. Specify agent handoffs
 4. Provide examples
