@@ -25,7 +25,7 @@ echo "=== FILE GROUPS ===" && \
 git diff --cached --name-only | awk -F'/' '{
   if ($0 ~ /\.(md|txt)$/) print "docs:"$0
   else if ($0 ~ /test|spec/) print "test:"$0
-  else if ($0 ~ /\.claude\/(skills|agents|commands|workflows)/) print "config:"$0
+  else if ($0 ~ /\.claude\/(skills|agents|commands|rules)/) print "config:"$0
   else if ($0 ~ /package\.json|yarn\.lock|pnpm-lock/) print "deps:"$0
   else if ($0 ~ /\.github|\.gitlab|ci\.yml/) print "ci:"$0
   else print "code:"$0

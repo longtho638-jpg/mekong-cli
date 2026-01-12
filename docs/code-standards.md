@@ -44,7 +44,7 @@ project-root/
 │   │   └── [skill-name]/     # Individual skill directories
 │   │       ├── SKILL.md      # Skill definition
 │   │       └── references/   # Supporting materials
-│   └── workflows/            # Workflow definitions
+│   └── rules/                # Development rules and protocols
 ├── .github/                   # GitHub-specific files
 │   └── workflows/            # CI/CD workflows
 ├── docs/                      # Project documentation
