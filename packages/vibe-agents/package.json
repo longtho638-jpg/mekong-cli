@@ -1,0 +1,14 @@
+{
+    "name": "@agencyos/vibe-agents",
+    "version": "1.0.0",
+    "description": "🟣 Saturn - AI Agent Orchestration Layer",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0"
+    }
+}

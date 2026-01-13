@@ -1,0 +1,11 @@
+{
+    "name": "@agencyos/vibe-crm",
+    "version": "1.0.0",
+    "description": "🟠 Jupiter - Sales & CRM Layer",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "vitest"
+    }
+}
