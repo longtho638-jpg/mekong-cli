@@ -29,6 +29,19 @@ class Currency(Enum):
     """Supported currencies."""
     USD = "USD"
     VND = "VND"
+    THB = "THB"  # Thailand expansion 2026
+
+
+# Exchange rates (1 USD = X)
+EXCHANGE_RATES = {
+    Currency.USD: 1.0,
+    Currency.VND: 24500,
+    Currency.THB: 35,
+}
+
+
+# $1M 2026 ARR Target
+ARR_TARGET_2026 = 1_000_000
 
 
 @dataclass
@@ -163,4 +176,45 @@ class RevenueEngine:
             "mrr": self.get_mrr(),
             "arr": self.get_arr(),
             "outstanding": self.get_outstanding()
+        }
+    
+    # ===== $1M 2026 Goal Tracking =====
+    
+    def get_goal_progress(self) -> float:
+        """Get progress toward $1M ARR goal (0-100%)."""
+        return min((self.get_arr() / ARR_TARGET_2026) * 100, 100)
+    
+    def get_goal_gap(self) -> float:
+        """Get remaining ARR needed to hit $1M goal."""
+        return max(ARR_TARGET_2026 - self.get_arr(), 0)
+    
+    def months_to_goal(self, growth_rate: float = 0.10) -> int:
+        """
+        Estimate months to hit $1M ARR at given monthly growth rate.
+        Default: 10% month-over-month growth.
+        """
+        current_arr = self.get_arr()
+        if current_arr >= ARR_TARGET_2026:
+            return 0
+        if current_arr <= 0 or growth_rate <= 0:
+            return -1  # Cannot reach goal
+        
+        import math
+        # ARR * (1 + growth_rate)^n = target
+        # n = log(target/ARR) / log(1 + growth_rate)
+        months = math.ceil(
+            math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + growth_rate)
+        )
+        return months
+    
+    def get_goal_dashboard(self) -> Dict:
+        """Get complete $1M 2026 goal dashboard."""
+        return {
+            "current_arr": self.get_arr(),
+            "target_arr": ARR_TARGET_2026,
+            "progress_percent": self.get_goal_progress(),
+            "gap_usd": self.get_goal_gap(),
+            "months_to_goal": self.months_to_goal(),
+            "mrr": self.get_mrr(),
+            "forecast_12m": self.get_mrr() * 12 * (1.10 ** 12)  # 10% growth for 12 months
         }
