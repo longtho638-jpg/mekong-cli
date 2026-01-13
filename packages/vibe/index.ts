@@ -70,6 +70,11 @@ export const PLANETS = [
 
 export type Planet = typeof PLANETS[number];
 
+// ============================================
+// 🎨 FLOW - Visual Workflow Builder (SimStudio)
+// ============================================
+export { VibeFlow, FlowCopilot, PLANET_NODES, vibeFlow, flowCopilot } from './flow';
+
 export default {
     version: VIBE_VERSION,
     planets: PLANETS,
