@@ -75,6 +75,11 @@ export type Planet = typeof PLANETS[number];
 // ============================================
 export { VibeFlow, FlowCopilot, PLANET_NODES, vibeFlow, flowCopilot } from './flow';
 
+// ============================================
+// 📋 PROJECT - Project Management (OpenProject)
+// ============================================
+export { VibeProject, vibeProject } from './project';
+
 export default {
     version: VIBE_VERSION,
     planets: PLANETS,
