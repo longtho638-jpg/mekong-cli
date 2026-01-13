@@ -1,3 +1,10 @@
+## [2.4.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0-beta.1) (2026-01-13)
+
+
+### 🚀 Features
+
+* integrate code-simplifier agent with PostToolUse hook ([d8adf1a](https://github.com/claudekit/claudekit-engineer/commit/d8adf1a5303bdefe894963d0e3918b99edbe2915))
+
 ## [2.3.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.1...v2.3.2) (2026-01-12)
 
 
