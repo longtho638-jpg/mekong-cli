@@ -1,0 +1,28 @@
+{
+    "name": "@agencyos/vibe",
+    "version": "1.0.0",
+    "description": "🌐 Unified VIBE Ecosystem - 8 Planets, 1 Package",
+    "main": "index.ts",
+    "types": "index.ts",
+    "exports": {
+        ".": "./index.ts",
+        "./ui": "../vibe-ui/index.ts",
+        "./analytics": "../vibe-analytics/index.ts",
+        "./agents": "../vibe-agents/index.ts",
+        "./crm": "../vibe-crm/index.ts",
+        "./ops": "../vibe-ops/index.ts",
+        "./dev": "../vibe-dev/index.ts",
+        "./marketing": "../vibe-marketing/index.ts",
+        "./revenue": "../vibe-revenue/index.ts"
+    },
+    "dependencies": {
+        "@agencyos/vibe-ui": "workspace:*",
+        "@agencyos/vibe-analytics": "workspace:*",
+        "@agencyos/vibe-agents": "workspace:*",
+        "@agencyos/vibe-crm": "workspace:*",
+        "@agencyos/vibe-ops": "workspace:*",
+        "@agencyos/vibe-dev": "workspace:*",
+        "@agencyos/vibe-marketing": "workspace:*",
+        "@agencyos/vibe-revenue": "workspace:*"
+    }
+}
