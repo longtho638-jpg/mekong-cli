@@ -1,0 +1,429 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'AgencyOS Blog - Tips & Insights';
+const description = 'Agency automation tips, AI workflows, and business insights to help you scale.';
+
+// Sample blog posts
+const posts = [
+  {
+    title: "How I Replaced My Team with AI (And Tripled Profits)",
+    excerpt: "The story of how one agency owner went from burnout to breakthrough using AI automation.",
+    date: "Dec 20, 2024",
+    category: "Case Study",
+    readTime: "5 min",
+    featured: true,
+    image: "📊"
+  },
+  {
+    title: "85 AI Commands Every Agency Owner Should Know",
+    excerpt: "A comprehensive guide to the most powerful AgencyOS commands for marketing, sales, and content.",
+    date: "Dec 18, 2024",
+    category: "Tutorial",
+    readTime: "12 min",
+    featured: true,
+    image: "🤖"
+  },
+  {
+    title: "The Affiliate Playbook: $5K/Month Passive Income",
+    excerpt: "Step-by-step guide to building a passive income stream with PayPal-friendly affiliate programs.",
+    date: "Dec 15, 2024",
+    category: "Guide",
+    readTime: "8 min",
+    featured: false,
+    image: "💰"
+  },
+  {
+    title: "From Freelancer to Agency Owner in 90 Days",
+    excerpt: "The exact framework to transition from solo freelancer to running a profitable one-person agency.",
+    date: "Dec 12, 2024",
+    category: "Strategy",
+    readTime: "10 min",
+    featured: false,
+    image: "🚀"
+  },
+  {
+    title: "AI Video Scripts That Convert: A Template Guide",
+    excerpt: "Copy-paste templates for creating YouTube, TikTok, and Reels content that drives engagement.",
+    date: "Dec 10, 2024",
+    category: "Template",
+    readTime: "6 min",
+    featured: false,
+    image: "🎬"
+  },
+  {
+    title: "The Win-Win-Win Framework for Agency Growth",
+    excerpt: "How to structure deals that benefit you, your clients, and your partners simultaneously.",
+    date: "Dec 8, 2024",
+    category: "Philosophy",
+    readTime: "7 min",
+    featured: false,
+    image: "🏯"
+  }
+];
+
+const featuredPosts = posts.filter(p => p.featured);
+const regularPosts = posts.filter(p => !p.featured);
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="blog-page">
+    <div class="blog-container">
+      
+      <!-- Header -->
+      <div class="blog-header">
+        <h1 class="blog-title">Blog</h1>
+        <p class="blog-subtitle">
+          Tips, tutorials, and insights to help you automate your agency.
+        </p>
+      </div>
+
+      <!-- Featured Posts -->
+      <div class="featured-section">
+        <h2 class="section-title">Featured</h2>
+        <div class="featured-grid">
+          {featuredPosts.map(post => (
+            <a href="#" class="featured-card">
+              <div class="post-image">{post.image}</div>
+              <div class="post-content">
+                <div class="post-meta">
+                  <span class="post-category">{post.category}</span>
+                  <span class="post-date">{post.date}</span>
+                </div>
+                <h3 class="post-title">{post.title}</h3>
+                <p class="post-excerpt">{post.excerpt}</p>
+                <span class="post-read">{post.readTime} read →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- All Posts -->
+      <div class="posts-section">
+        <h2 class="section-title">All Posts</h2>
+        <div class="posts-grid">
+          {regularPosts.map(post => (
+            <a href="#" class="post-card">
+              <div class="post-emoji">{post.image}</div>
+              <div class="post-body">
+                <div class="post-meta">
+                  <span class="post-category">{post.category}</span>
+                  <span class="post-date">{post.date}</span>
+                </div>
+                <h3 class="post-title">{post.title}</h3>
+                <p class="post-excerpt">{post.excerpt}</p>
+                <span class="post-read">{post.readTime} read →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Newsletter CTA -->
+      <div class="newsletter-cta">
+        <h2>Subscribe to the Newsletter</h2>
+        <p>Get weekly tips on agency automation, AI workflows, and business growth.</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="your@email.com" required />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== PAGE ===================== */
+  .blog-page {
+    min-height: calc(100vh - 72px);
+    padding: 64px 24px;
+  }
+
+  .blog-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HERO WOW ===================== */
+  .blog-header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .blog-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    animation: title-shine 5s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .blog-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    animation: fade-up 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== SECTION TITLES ===================== */
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+  }
+
+  /* ===================== FEATURED SECTION WOW ===================== */
+  .featured-section {
+    margin-bottom: 48px;
+    animation: fade-up 0.6s ease-out 0.3s both;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .featured-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: card-entrance 0.5s ease-out both;
+  }
+
+  .featured-card:first-child { animation-delay: 0.4s; }
+  .featured-card:last-child { animation-delay: 0.5s; }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .featured-card:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(34, 197, 94, 0.15);
+  }
+
+  .post-image {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .featured-card:hover .post-image {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .post-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #22c55e;
+    text-transform: uppercase;
+  }
+
+  .post-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .post-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .post-excerpt {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .post-read {
+    font-size: 0.875rem;
+    color: #22c55e;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .featured-card:hover .post-read,
+  .post-card:hover .post-read {
+    transform: translateX(4px);
+  }
+
+  /* ===================== POSTS SECTION WOW ===================== */
+  .posts-section {
+    margin-bottom: 48px;
+    animation: fade-up 0.6s ease-out 0.5s both;
+  }
+
+  .posts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .post-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .post-card:nth-child(1) { animation: card-slide 0.4s ease-out 0.6s both; }
+  .post-card:nth-child(2) { animation: card-slide 0.4s ease-out 0.7s both; }
+  .post-card:nth-child(3) { animation: card-slide 0.4s ease-out 0.8s both; }
+  .post-card:nth-child(4) { animation: card-slide 0.4s ease-out 0.9s both; }
+
+  @keyframes card-slide {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .post-card:hover {
+    border-color: var(--color-accent-green);
+    transform: translateX(6px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .post-emoji {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .post-card:hover .post-emoji {
+    transform: scale(1.15) rotate(-5deg);
+    background: rgba(34, 197, 94, 0.15);
+  }
+
+  .post-body {
+    flex: 1;
+  }
+
+  /* ===================== NEWSLETTER CTA WOW ===================== */
+  .newsletter-cta {
+    text-align: center;
+    padding: 48px 32px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(6, 182, 212, 0.05));
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    animation: cta-entrance 0.6s ease-out 0.9s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .newsletter-cta h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .newsletter-cta p {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .newsletter-form input {
+    padding: 12px 16px;
+    width: 280px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+  }
+
+  .newsletter-form input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  }
+
+  .newsletter-form button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 15px 3px rgba(34, 197, 94, 0.2); }
+  }
+
+  .newsletter-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+  }
+</style>

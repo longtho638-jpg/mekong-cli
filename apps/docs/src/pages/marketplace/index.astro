@@ -1,0 +1,408 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Marketplace - AgencyOS';
+const description = 'Skills, templates, agents, and workflows for your agency.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="marketplace-section">
+    <div class="marketplace-header">
+      <h1>🏪 Marketplace</h1>
+      <p class="subtitle">Skills, templates, agents, and workflows to supercharge your agency</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-number" id="total-items">6</span>
+        <span class="stat-label">Products</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="total-downloads">1,267</span>
+        <span class="stat-label">Downloads</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="total-creators">25</span>
+        <span class="stat-label">Creators</span>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-type="all">All</button>
+        <button class="filter-tab" data-type="skill">⚡ Skills</button>
+        <button class="filter-tab" data-type="template">📋 Templates</button>
+        <button class="filter-tab" data-type="agent">🤖 Agents</button>
+        <button class="filter-tab" data-type="workflow">🔄 Workflows</button>
+      </div>
+      <div class="filter-right">
+        <select id="sort-select" class="sort-select">
+          <option value="popular">Most Popular</option>
+          <option value="newest">Newest</option>
+          <option value="rating">Highest Rated</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="products-grid">
+      <!-- SEO Audit -->
+      <div class="product-card" data-type="skill">
+        <div class="product-icon">🔍</div>
+        <div class="product-badge skill">SKILL</div>
+        <h3>SEO Audit Skill</h3>
+        <p class="product-desc">Complete SEO audit automation for any website</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.8</span>
+          <span class="downloads">245 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price">$49</span>
+          <button class="btn-buy">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Invoice Generator -->
+      <div class="product-card" data-type="skill">
+        <div class="product-icon">📄</div>
+        <div class="product-badge skill">SKILL</div>
+        <h3>Invoice Generator</h3>
+        <p class="product-desc">Generate professional invoices in seconds</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.6</span>
+          <span class="downloads">189 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price">$29</span>
+          <button class="btn-buy">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Proposal Templates -->
+      <div class="product-card" data-type="template">
+        <div class="product-icon">📋</div>
+        <div class="product-badge template">TEMPLATE</div>
+        <h3>Proposal Template Pack</h3>
+        <p class="product-desc">10 professional proposal templates</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.9</span>
+          <span class="downloads">156 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price">$79</span>
+          <button class="btn-buy">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Social Media Agent -->
+      <div class="product-card" data-type="agent">
+        <div class="product-icon">📱</div>
+        <div class="product-badge agent">AGENT</div>
+        <h3>Social Media Manager</h3>
+        <p class="product-desc">AI agent for social media management</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.7</span>
+          <span class="downloads">98 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price">$99</span>
+          <button class="btn-buy">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Client Onboarding -->
+      <div class="product-card" data-type="workflow">
+        <div class="product-icon">🚀</div>
+        <div class="product-badge workflow">WORKFLOW</div>
+        <h3>Client Onboarding Flow</h3>
+        <p class="product-desc">Complete client onboarding automation</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.8</span>
+          <span class="downloads">67 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price">$149</span>
+          <button class="btn-buy">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Content Calendar (FREE) -->
+      <div class="product-card" data-type="skill">
+        <div class="product-icon">📅</div>
+        <div class="product-badge free">FREE</div>
+        <h3>Content Calendar</h3>
+        <p class="product-desc">AI-powered content calendar generation</p>
+        <div class="product-meta">
+          <span class="rating">⭐ 4.5</span>
+          <span class="downloads">512 downloads</span>
+        </div>
+        <div class="product-footer">
+          <span class="price free">FREE</span>
+          <button class="btn-buy free">Get Free</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Become Creator CTA -->
+    <div class="creator-cta">
+      <h2>🎨 Become a Creator</h2>
+      <p>Build and sell skills, templates, and agents. Earn 70% of every sale.</p>
+      <a href="/marketplace/submit" class="btn-primary">Submit Your Product →</a>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .marketplace-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .marketplace-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .marketplace-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { color: var(--color-text-muted); font-size: 1.1rem; }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border-radius: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .stat-label { color: var(--color-text-muted); font-size: 0.9rem; }
+
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-tab:hover, .filter-tab.active {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+    border-color: transparent;
+  }
+
+  .sort-select {
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .product-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    border-color: #f59e0b;
+  }
+
+  .product-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .product-badge.skill { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+  .product-badge.template { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
+  .product-badge.agent { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+  .product-badge.workflow { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+  .product-badge.free { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+  .product-card h3 {
+    font-size: 1.25rem;
+    margin: 0 0 8px 0;
+  }
+
+  .product-desc {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+
+  .product-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .price.free { color: #22c55e; }
+
+  .btn-buy {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-buy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+  }
+
+  .btn-buy.free {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+
+  .creator-cta {
+    text-align: center;
+    padding: 48px;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(239, 68, 68, 0.1));
+    border-radius: 16px;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+  }
+
+  .creator-cta h2 { margin: 0 0 12px 0; font-size: 1.75rem; }
+  .creator-cta p { color: var(--color-text-muted); margin-bottom: 24px; }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar { flex-direction: column; gap: 24px; }
+    .filters { flex-direction: column; }
+    .filter-tabs { justify-content: center; }
+  }
+</style>
+
+<script>
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const type = (tab as HTMLElement).dataset.type;
+      document.querySelectorAll('.product-card').forEach(card => {
+        const cardType = (card as HTMLElement).dataset.type;
+        if (type === 'all' || cardType === type) {
+          (card as HTMLElement).style.display = 'block';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Buy buttons
+  document.querySelectorAll('.btn-buy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.product-card');
+      const name = card?.querySelector('h3')?.textContent;
+      const price = card?.querySelector('.price')?.textContent;
+      
+      if (price === 'FREE') {
+        alert(`✅ "${name}" added to your library!\n\nYou can access it from your dashboard.`);
+      } else {
+        alert(`🛒 "${name}" added to cart!\n\nPrice: ${price}\n\nCheckout coming soon.`);
+      }
+    });
+  });
+</script>

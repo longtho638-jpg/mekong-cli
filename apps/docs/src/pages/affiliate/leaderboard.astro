@@ -1,0 +1,604 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Affiliate Leaderboard | AgencyOS';
+const description = 'See top affiliate earners and compete for monthly bonuses.';
+
+// Sample leaderboard data
+const topAffiliates = [
+  { rank: 1, name: 'Alex M.', sales: 47, earnings: '$1,862', badge: '👑' },
+  { rank: 2, name: 'Sarah K.', sales: 38, earnings: '$1,505', badge: '💎' },
+  { rank: 3, name: 'John D.', sales: 31, earnings: '$1,228', badge: '💎' },
+  { rank: 4, name: 'Maria L.', sales: 24, earnings: '$950', badge: '🔥' },
+  { rank: 5, name: 'Tom H.', sales: 19, earnings: '$752', badge: '🔥' },
+  { rank: 6, name: 'Lisa P.', sales: 15, earnings: '$594', badge: '🔥' },
+  { rank: 7, name: 'Mike R.', sales: 12, earnings: '$475', badge: '🌟' },
+  { rank: 8, name: 'Emma S.', sales: 9, earnings: '$356', badge: '🌟' },
+  { rank: 9, name: 'David W.', sales: 7, earnings: '$277', badge: '🌟' },
+  { rank: 10, name: 'Anna C.', sales: 5, earnings: '$198', badge: '🌟' },
+];
+---
+
+<LandingLayout title={title} description={description}>
+  <div class="leaderboard-container">
+    <header class="page-header">
+      <a href="/affiliate/dashboard" class="back-link">← Back to Dashboard</a>
+      <h1>🏆 Affiliate Leaderboard</h1>
+      <p>December 2024 • Top performers earn bonus rewards!</p>
+    </header>
+
+    <!-- Monthly Prizes -->
+    <section class="prizes-section">
+      <h2>🎁 Monthly Prizes</h2>
+      <div class="prizes-grid">
+        <div class="prize-card gold">
+          <div class="prize-rank">🥇 1st Place</div>
+          <div class="prize-amount">$500</div>
+          <div class="prize-label">Cash Bonus</div>
+        </div>
+        <div class="prize-card silver">
+          <div class="prize-rank">🥈 2nd Place</div>
+          <div class="prize-amount">$200</div>
+          <div class="prize-label">Cash Bonus</div>
+        </div>
+        <div class="prize-card bronze">
+          <div class="prize-rank">🥉 3rd Place</div>
+          <div class="prize-amount">$100</div>
+          <div class="prize-label">Cash Bonus</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top 3 Podium -->
+    <section class="podium-section">
+      <div class="podium">
+        <div class="podium-place second">
+          <div class="avatar">🥈</div>
+          <div class="name">{topAffiliates[1].name}</div>
+          <div class="sales">{topAffiliates[1].sales} sales</div>
+          <div class="earnings">{topAffiliates[1].earnings}</div>
+          <div class="podium-stand">2</div>
+        </div>
+        <div class="podium-place first">
+          <div class="crown">👑</div>
+          <div class="avatar gold">🥇</div>
+          <div class="name">{topAffiliates[0].name}</div>
+          <div class="sales">{topAffiliates[0].sales} sales</div>
+          <div class="earnings">{topAffiliates[0].earnings}</div>
+          <div class="podium-stand tall">1</div>
+        </div>
+        <div class="podium-place third">
+          <div class="avatar">🥉</div>
+          <div class="name">{topAffiliates[2].name}</div>
+          <div class="sales">{topAffiliates[2].sales} sales</div>
+          <div class="earnings">{topAffiliates[2].earnings}</div>
+          <div class="podium-stand">3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Full Leaderboard -->
+    <section class="leaderboard-table">
+      <h2>📊 Full Rankings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Affiliate</th>
+            <th>Badge</th>
+            <th>Sales</th>
+            <th>Earnings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topAffiliates.map(affiliate => (
+            <tr class={affiliate.rank <= 3 ? 'top-three' : ''}>
+              <td class="rank">
+                {affiliate.rank <= 3 ? (
+                  <span class={`medal medal-${affiliate.rank}`}>
+                    {affiliate.rank === 1 ? '🥇' : affiliate.rank === 2 ? '🥈' : '🥉'}
+                  </span>
+                ) : (
+                  <span class="number">#{affiliate.rank}</span>
+                )}
+              </td>
+              <td class="name">{affiliate.name}</td>
+              <td class="badge">{affiliate.badge}</td>
+              <td class="sales">{affiliate.sales}</td>
+              <td class="earnings">{affiliate.earnings}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Your Position -->
+    <section class="your-position">
+      <div class="position-card">
+        <div class="position-icon">📍</div>
+        <div class="position-content">
+          <div class="position-title">Your Current Position</div>
+          <div class="position-rank">#- (Not ranked yet)</div>
+          <div class="position-hint">Make your first sale to appear on the leaderboard!</div>
+        </div>
+        <a href="/affiliate/dashboard" class="btn-primary">View Dashboard</a>
+      </div>
+    </section>
+
+    <!-- Achievement Badges -->
+    <section class="badges-section">
+      <h2>🎖️ Achievement Badges</h2>
+      <div class="badges-grid">
+        <div class="badge-card">
+          <div class="badge-icon">🌟</div>
+          <div class="badge-name">First Blood</div>
+          <div class="badge-requirement">1 sale</div>
+          <div class="badge-reward">+$25</div>
+        </div>
+        <div class="badge-card">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Rising Star</div>
+          <div class="badge-requirement">5 sales</div>
+          <div class="badge-reward">+$50</div>
+        </div>
+        <div class="badge-card">
+          <div class="badge-icon">💎</div>
+          <div class="badge-name">Diamond</div>
+          <div class="badge-requirement">25 sales</div>
+          <div class="badge-reward">+$250</div>
+        </div>
+        <div class="badge-card">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">King</div>
+          <div class="badge-requirement">100 sales</div>
+          <div class="badge-reward">+$1,000</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</LandingLayout>
+
+<style>
+  /* ===================== CONTAINER WOW ===================== */
+  .leaderboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 100px 20px 60px;
+  }
+
+  .back-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #10b981;
+    transform: translateX(-4px);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ffd700, #10b981, #ffd700);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-shine 4s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ===================== PRIZES WOW ===================== */
+  .prizes-section {
+    margin-bottom: 50px;
+    animation: fade-up 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .prizes-section h2 {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .prizes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .prize-card {
+    background: var(--color-bg-tertiary);
+    border: 2px solid var(--color-border);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: prize-entrance 0.5s ease-out both;
+  }
+
+  .prize-card:nth-child(1) { animation-delay: 0.3s; }
+  .prize-card:nth-child(2) { animation-delay: 0.4s; }
+  .prize-card:nth-child(3) { animation-delay: 0.5s; }
+
+  @keyframes prize-entrance {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .prize-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .prize-card.gold {
+    border-color: #ffd700;
+    background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent);
+  }
+
+  .prize-card.gold:hover {
+    box-shadow: 0 12px 30px rgba(255, 215, 0, 0.3);
+  }
+
+  .prize-card.silver {
+    border-color: #c0c0c0;
+  }
+
+  .prize-card.bronze {
+    border-color: #cd7f32;
+  }
+
+  .prize-rank {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .prize-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #10b981;
+    margin-bottom: 4px;
+  }
+
+  .prize-label {
+    color: var(--color-text-secondary);
+  }
+
+  /* ===================== PODIUM WOW ===================== */
+  .podium-section {
+    margin-bottom: 50px;
+    animation: fade-up 0.6s ease-out 0.5s both;
+  }
+
+  .podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 40px 0;
+  }
+
+  .podium-place {
+    text-align: center;
+    width: 150px;
+    animation: podium-rise 0.6s ease-out both;
+  }
+
+  .podium-place.second { animation-delay: 0.6s; }
+  .podium-place.first { animation-delay: 0.5s; }
+  .podium-place.third { animation-delay: 0.7s; }
+
+  @keyframes podium-rise {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .podium-place {
+    text-align: center;
+    width: 150px;
+  }
+
+  .podium-place .crown {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    animation: crown-bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes crown-bounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+  }
+
+  .podium-place .avatar {
+    font-size: 3rem;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .podium-place:hover .avatar {
+    transform: scale(1.2);
+  }
+
+  .podium-place .name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+
+  .podium-place .sales {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .podium-place .earnings {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .podium-stand {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .podium-stand.tall {
+    padding: 40px 20px;
+  }
+
+  .leaderboard-table {
+    margin-bottom: 50px;
+  }
+
+  .leaderboard-table h2 {
+    margin-bottom: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-bg-tertiary);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 16px 20px;
+    text-align: left;
+  }
+
+  th {
+    background: var(--color-bg-primary);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  /* ===================== TABLE WOW ===================== */
+  tr {
+    border-bottom: 1px solid var(--color-border);
+    transition: all 0.2s ease;
+  }
+
+  tr:hover {
+    background: rgba(16, 185, 129, 0.05);
+    transform: translateX(4px);
+  }
+
+  tr.top-three {
+    background: linear-gradient(135deg, rgba(16,185,129,0.1), transparent);
+  }
+
+  tr.top-three:hover {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), transparent);
+  }
+
+  .rank .medal {
+    font-size: 1.5rem;
+  }
+
+  .rank .number {
+    color: var(--color-text-secondary);
+  }
+
+  td.name {
+    font-weight: 600;
+  }
+
+  td.badge {
+    font-size: 1.25rem;
+  }
+
+  td.sales {
+    color: var(--color-text-secondary);
+  }
+
+  td.earnings {
+    color: #10b981;
+    font-weight: 700;
+  }
+
+  /* ===================== POSITION CARD WOW ===================== */
+  .your-position {
+    margin-bottom: 50px;
+    animation: fade-up 0.6s ease-out 0.7s both;
+  }
+
+  .position-card {
+    background: var(--color-bg-tertiary);
+    border: 2px dashed var(--color-border);
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .position-card:hover {
+    border-color: #10b981;
+    transform: translateY(-4px);
+  }
+
+  .position-icon {
+    font-size: 2.5rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .position-content {
+    flex: 1;
+  }
+
+  .position-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .position-rank {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .position-hint {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .btn-primary {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 15px 3px rgba(16, 185, 129, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  }
+
+  /* ===================== BADGES WOW ===================== */
+  .badges-section {
+    animation: fade-up 0.6s ease-out 0.8s both;
+  }
+
+  .badges-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .badge-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: badge-pop 0.4s ease-out both;
+  }
+
+  .badge-card:nth-child(1) { animation-delay: 0.9s; }
+  .badge-card:nth-child(2) { animation-delay: 0.95s; }
+  .badge-card:nth-child(3) { animation-delay: 1s; }
+  .badge-card:nth-child(4) { animation-delay: 1.05s; }
+
+  @keyframes badge-pop {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .badge-card:hover {
+    transform: translateY(-6px) rotate(2deg);
+    border-color: #10b981;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+  }
+
+  .badge-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .badge-card:hover .badge-icon {
+    transform: scale(1.2) rotate(-5deg);
+  }
+
+  .badge-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .badge-requirement {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+
+  .badge-reward {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .prizes-grid, .badges-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .podium {
+      flex-direction: column;
+      align-items: center;
+    }
+    .position-card {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

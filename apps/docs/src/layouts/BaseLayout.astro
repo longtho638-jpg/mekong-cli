@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+import { getAlternateUrls } from '../i18n/utils';
+import type { Locale } from '../i18n/locales';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  locale?: Locale;
+  slug?: string;
+}
+
+const {
+  title = 'AgencyOS Documentation',
+  description = 'Official documentation for AgencyOS CLI',
+  locale = 'en',
+  slug = '',
+} = Astro.props;
+
+// Generate alternate URLs for hreflang tags
+const alternates = slug ? getAlternateUrls(slug) : [];
+---
+
+<!DOCTYPE html>
+<html lang={locale} data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo-512-dark.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo-512-dark.png" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#22c55e" />
+
+    <!-- Hreflang tags for SEO -->
+    {alternates.map(({ lang, url }) => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ))}
+    
+    <!-- Brand -->
+    <meta name="author" content="AgencyOS - Binh Pháp Venture Studio" />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <slot />
+    </div>
+
+    <script>
+      // Theme initialization
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+
+      // Theme toggle function
+      function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      }
+
+      // Expose to window for button handlers
+      (window as any).toggleTheme = toggleTheme;
+    </script>
+  </body>
+</html>
+
+<style>
+  .app-container {
+    width: 100%;
+    min-height: 100vh;
+  }
+</style>

@@ -1,0 +1,456 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'License Management - AgencyOS';
+const description = 'View and manage your AgencyOS license key.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="license-page">
+    <div class="license-card">
+      
+      <h1>🔑 License Management</h1>
+      
+      <div class="license-status" id="license-status">
+        <div class="status-badge active" id="status-badge">
+          <span class="status-dot"></span>
+          <span>Active</span>
+        </div>
+      </div>
+
+      <!-- License Key Display -->
+      <div class="license-display">
+        <label>Your License Key</label>
+        <div class="key-box">
+          <code id="license-key">Loading...</code>
+          <button id="copy-btn" class="btn-copy">📋 Copy</button>
+        </div>
+      </div>
+
+      <!-- License Details -->
+      <div class="license-details">
+        <div class="detail-row">
+          <span class="label">Email:</span>
+          <span class="value" id="user-email">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Plan:</span>
+          <span class="value" id="user-plan">Pro</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Activated:</span>
+          <span class="value" id="activated-date">-</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status:</span>
+          <span class="value text-green" id="license-type">Lifetime Access</span>
+        </div>
+      </div>
+
+      <!-- CLI Installation -->
+      <div class="cli-section">
+        <h3>📦 CLI Installation</h3>
+        
+        <div class="code-row">
+          <span class="step-label">Clone:</span>
+          <code>git clone https://github.com/longtho638-jpg/agencyos-starter.git</code>
+          <button class="btn-copy-sm" data-copy="git clone https://github.com/longtho638-jpg/agencyos-starter.git">📋</button>
+        </div>
+        
+        <div class="code-row">
+          <span class="step-label">Setup:</span>
+          <code>cd agencyos-starter && pip install -r requirements.txt</code>
+          <button class="btn-copy-sm" data-copy="cd agencyos-starter && pip install -r requirements.txt">📋</button>
+        </div>
+        
+        <div class="code-row">
+          <span class="step-label">Run:</span>
+          <code>python -m core.help</code>
+          <button class="btn-copy-sm" data-copy="python -m core.help">📋</button>
+        </div>
+      </div>
+
+      <!-- IDE Links -->
+      <div class="ide-section">
+        <h3>🖥️ Open in IDE</h3>
+        <div class="ide-grid">
+          <a href="vscode://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-link">
+            VS Code
+          </a>
+          <a href="cursor://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-link">
+            Cursor
+          </a>
+          <a href="https://antigravity.google/?repo=longtho638-jpg/agencyos-starter" class="ide-link featured">
+            🚀 Antigravity
+          </a>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-buttons">
+        <a href="/docs/getting-started/installation" class="btn-primary">📖 Documentation</a>
+        <a href="/quickstart" class="btn-secondary">🎯 Quick Start</a>
+      </div>
+
+      <div class="support-footer">
+        <p>Issues with your license? <a href="mailto:support@agencyos.network">Contact Support</a></p>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .license-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* ===================== WOW ENTRANCE ===================== */
+  .license-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    animation: card-entrance 0.6s ease-out;
+    box-shadow: 0 20px 60px rgba(34, 197, 94, 0.15);
+  }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .license-card h1 {
+    font-size: 1.75rem;
+    color: var(--color-text-primary);
+    margin: 0 0 16px 0;
+    text-align: center;
+    animation: title-fade 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes title-fade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .license-status {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    animation: badge-pop 0.5s ease-out 0.3s both;
+  }
+
+  @keyframes badge-pop {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .status-badge.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .license-display {
+    margin-bottom: 24px;
+  }
+
+  .license-display label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* ===================== LICENSE KEY WOW ===================== */
+  .key-box {
+    display: flex;
+    gap: 12px;
+    background: var(--color-bg-tertiary);
+    border: 2px solid #22c55e;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    animation: key-box-entrance 0.6s ease-out 0.4s both;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+  }
+
+  .key-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.3), transparent);
+    animation: shine-sweep 3s ease-in-out 1s infinite;
+  }
+
+  @keyframes shine-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  @keyframes key-box-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .key-box code {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: #22c55e;
+    letter-spacing: 1px;
+  }
+
+  .btn-copy {
+    padding: 8px 16px;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: button-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes button-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-copy:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  .license-details {
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+
+  .detail-row .label { color: var(--color-text-muted); }
+  .detail-row .value { color: var(--color-text-primary); font-weight: 600; }
+  .text-green { color: #22c55e; }
+
+  /* ===================== SECTION STAGGER ===================== */
+  .cli-section {
+    margin-bottom: 24px;
+    animation: section-fade 0.6s ease-out 0.6s both;
+  }
+
+  .ide-section {
+    margin-bottom: 24px;
+    animation: section-fade 0.6s ease-out 0.8s both;
+  }
+
+  @keyframes section-fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cli-section h3, .ide-section h3 {
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    margin: 0 0 12px 0;
+  }
+
+  .code-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-bg-tertiary);
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    min-width: 60px;
+  }
+
+  .code-row code {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #22c55e;
+  }
+
+  .btn-copy-sm {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+  }
+
+  .btn-copy-sm:hover { opacity: 1; }
+
+  .ide-grid {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ide-link {
+    padding: 10px 20px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .ide-link:hover {
+    border-color: #22c55e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+  }
+
+  .ide-link.featured {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    border: none;
+    color: white;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    animation: cta-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes cta-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.5); }
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+  }
+
+  .support-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .support-footer a { color: #22c55e; text-decoration: none; }
+</style>
+
+<script>
+  const licenseKey = localStorage.getItem('agencyos_license_key');
+  const userData = localStorage.getItem('agencyos_user');
+
+  const licenseKeyEl = document.getElementById('license-key');
+  const activateCmdEl = document.getElementById('activate-cmd');
+  const userEmailEl = document.getElementById('user-email');
+  const userPlanEl = document.getElementById('user-plan');
+  const activatedDateEl = document.getElementById('activated-date');
+  const licenseTypeEl = document.getElementById('license-type');
+
+  if (licenseKey) {
+    if (licenseKeyEl) licenseKeyEl.textContent = licenseKey;
+    if (activateCmdEl) activateCmdEl.textContent = `mk activate ${licenseKey}`;
+  } else {
+    if (licenseKeyEl) licenseKeyEl.textContent = 'No license found';
+    const statusBadge = document.getElementById('status-badge');
+    if (statusBadge) {
+      statusBadge.className = 'status-badge';
+      statusBadge.innerHTML = '<span>No License</span>';
+    }
+  }
+
+  if (userData) {
+    const user = JSON.parse(userData);
+    if (userEmailEl) userEmailEl.textContent = user.email || '-';
+    if (userPlanEl) userPlanEl.textContent = (user.plan || 'pro').charAt(0).toUpperCase() + (user.plan || 'pro').slice(1);
+    if (activatedDateEl) activatedDateEl.textContent = new Date(user.timestamp || Date.now()).toLocaleDateString();
+    if (user.discount === 100 && licenseTypeEl) {
+      licenseTypeEl.textContent = 'LIFETIME FREE 🎉';
+    }
+  }
+
+  // Copy functionality
+  document.getElementById('copy-btn')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(licenseKey || '');
+    alert('License key copied!');
+  });
+
+  document.getElementById('copy-activate')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(`mk activate ${licenseKey}`);
+    alert('Command copied!');
+  });
+
+  document.querySelectorAll('.btn-copy-sm[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.getAttribute('data-copy');
+      if (text) navigator.clipboard.writeText(text);
+      alert('Copied!');
+    });
+  });
+</script>

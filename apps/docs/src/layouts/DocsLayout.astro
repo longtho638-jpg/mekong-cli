@@ -1,0 +1,187 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Search from '../components/Search.astro';
+// import AIPanel from '../components/AIPanel.astro'; // Temporarily disabled - backend not ready
+import TableOfContents from '../components/TableOfContents';
+import CopyForLLMs from '../components/CopyForLLMs.tsx';
+import type { Locale } from '../i18n/locales';
+
+interface Heading {
+  depth: number;
+  text: string;
+  slug: string;
+}
+
+export interface Props {
+  title?: string;
+  description?: string;
+  locale?: Locale;
+  slug?: string;
+  headings?: Heading[];
+}
+
+const { title, description, locale = 'en', slug = '', headings = [] } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+// Get the content data for CopyForLLMs
+const content = Astro.props.content;
+const frontmatter = content?.data || {
+  title: title || '',
+  description: description || '',
+  section: 'docs',
+  category: 'N/A'
+};
+---
+
+<BaseLayout title={title} description={description} locale={locale} slug={slug}>
+  <div class="docs-layout">
+    <Sidebar currentPath={currentPath} />
+
+    <div class="main-wrapper">
+      <Header />
+
+      <div class="content-wrapper">
+        <main class="content-area" data-pagefind-body>
+          {content?.body && (
+            <div class="content-header" data-pagefind-ignore>
+              <CopyForLLMs
+                client:load
+                pageContent={content.body}
+                pageUrl={currentPath}
+                pageSlug={slug}
+                frontmatter={{
+                  title: frontmatter.title,
+                  description: frontmatter.description,
+                  section: frontmatter.section,
+                  category: frontmatter.category
+                }}
+              />
+            </div>
+          )}
+
+          <article class="prose" data-pagefind-meta={`title:${title}`}>
+            <slot />
+          </article>
+        </main>
+
+        {headings.length > 0 && (
+          <TableOfContents headings={headings} client:load />
+        )}
+
+        {/* AIPanel temporarily disabled - backend not ready */}
+      </div>
+    </div>
+  </div>
+
+  <Search />
+</BaseLayout>
+
+<script>
+  // Aggressive scroll prevention
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // Immediately set scroll to top
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
+  // Prevent any scroll attempts during page load
+  let isLoading = true;
+  const preventScroll = (e: Event) => {
+    if (isLoading) {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  };
+
+  window.addEventListener('scroll', preventScroll, { passive: false });
+
+  // Stop preventing scroll after page is fully loaded
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      isLoading = false;
+      window.removeEventListener('scroll', preventScroll);
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+  });
+
+  // Also reset on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
+</script>
+
+<style>
+  .docs-layout {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex: 1;
+    position: relative;
+  }
+
+  .content-area {
+    flex: 1;
+    padding-top: var(--space-8);
+    padding-right: var(--space-8);
+    padding-bottom: var(--space-8);
+    padding-left: var(--space-8);
+    max-width: var(--layout-content-max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .content-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .prose {
+    max-width: 100%;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .content-area {
+      padding: var(--spacing-6);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .docs-layout {
+      flex-direction: column;
+    }
+
+    .content-wrapper {
+      flex-direction: column;
+    }
+
+    .content-area {
+      padding: var(--spacing-4);
+    }
+  }
+</style>

@@ -1,0 +1,286 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Changelog - AgencyOS';
+const description = 'See what is new in AgencyOS. Latest updates, features, and improvements.';
+
+const releases = [
+  {
+    version: "2.0.0",
+    date: "December 20, 2024",
+    tag: "Latest",
+    changes: [
+      { type: "new", text: "125+ AI commands now available" },
+      { type: "new", text: "Affiliate Hub with 50+ programs" },
+      { type: "new", text: "Franchise management system" },
+      { type: "improved", text: "Faster command execution (2x)" },
+      { type: "improved", text: "New dark theme UI" }
+    ]
+  },
+  {
+    version: "1.5.0",
+    date: "November 15, 2024",
+    tag: "",
+    changes: [
+      { type: "new", text: "Video script generator" },
+      { type: "new", text: "Email sequence builder" },
+      { type: "improved", text: "Better error handling" },
+      { type: "fixed", text: "API rate limiting issues" }
+    ]
+  },
+  {
+    version: "1.0.0",
+    date: "October 1, 2024",
+    tag: "",
+    changes: [
+      { type: "new", text: "Initial release" },
+      { type: "new", text: "20 core commands" },
+      { type: "new", text: "Marketing automation" },
+      { type: "new", text: "Sales pipeline tools" }
+    ]
+  }
+];
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="changelog-page">
+    <div class="changelog-container">
+      
+      <div class="changelog-header">
+        <h1 class="changelog-title">Changelog</h1>
+        <p class="changelog-subtitle">
+          See what's new in AgencyOS.
+        </p>
+      </div>
+
+      <div class="releases">
+        {releases.map((release, index) => (
+          <div class="release">
+            <div class="release-header">
+              <div class="version-info">
+                <span class="version">v{release.version}</span>
+                {release.tag && <span class="tag">{release.tag}</span>}
+              </div>
+              <span class="date">{release.date}</span>
+            </div>
+            
+            <ul class="changes">
+              {release.changes.map(change => (
+                <li class={`change ${change.type}`}>
+                  <span class="change-type">{change.type}</span>
+                  {change.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="subscribe-cta">
+        <p>Subscribe to get notified about new releases</p>
+        <a href="/contact" class="btn-primary">Get Updates</a>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .changelog-page {
+    min-height: calc(100vh - 72px);
+    padding: 64px 24px;
+  }
+
+  .changelog-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HEADER WOW ===================== */
+  .changelog-header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .changelog-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    animation: title-shine 5s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .changelog-subtitle {
+    color: var(--color-text-muted);
+  }
+
+  .releases {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+
+  /* ===================== RELEASE WOW ===================== */
+  .release {
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    animation: release-entrance 0.6s ease-out both;
+    transition: all 0.3s ease;
+  }
+
+  .release:nth-child(1) { animation-delay: 0.3s; }
+  .release:nth-child(2) { animation-delay: 0.4s; }
+  .release:nth-child(3) { animation-delay: 0.5s; }
+
+  @keyframes release-entrance {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .release:hover {
+    border-color: rgba(34, 197, 94, 0.4);
+    transform: translateX(4px);
+  }
+
+  .release-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .version-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .version {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .tag {
+    padding: 2px 8px;
+    background: #22c55e;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 4px;
+    animation: tag-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes tag-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .date {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .changes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .change {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+  }
+
+  .change-type {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+
+  .change.new .change-type {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+
+  .change.improved .change-type {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+  }
+
+  .change.fixed .change-type {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+  }
+
+  /* ===================== CTA WOW ===================== */
+  .subscribe-cta {
+    text-align: center;
+    padding: 32px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    animation: cta-entrance 0.6s ease-out 0.6s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .subscribe-cta p {
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 15px 3px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+  }
+</style>

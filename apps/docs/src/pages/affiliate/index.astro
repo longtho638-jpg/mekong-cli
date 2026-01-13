@@ -1,0 +1,706 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Become an Affiliate | AgencyOS';
+const description = 'Earn 40% recurring commission promoting AgencyOS. Get banners, email templates, and real-time tracking.';
+---
+
+<LandingLayout title={title} description={description}>
+  <!-- Hero Section -->
+  <section class="affiliate-hero">
+    <div class="container">
+      <div class="badge">💰 AFFILIATE PROGRAM</div>
+      <h1>Earn <span class="gradient-text">40% Recurring</span> Commission</h1>
+      <p class="subtitle">Promote AgencyOS and earn up to $79/month per referral. Forever.</p>
+      
+      <div class="earnings-preview">
+        <div class="earning-card">
+          <div class="plan">Starter Referral</div>
+          <div class="price">$29/mo</div>
+          <div class="commission">You earn <strong>$11.60/mo</strong></div>
+        </div>
+        <div class="earning-card featured">
+          <div class="plan">Pro Referral</div>
+          <div class="price">$99/mo</div>
+          <div class="commission">You earn <strong>$39.60/mo</strong></div>
+        </div>
+        <div class="earning-card">
+          <div class="plan">Enterprise Referral</div>
+          <div class="price">$299/mo</div>
+          <div class="commission">You earn <strong>$89.70/mo</strong></div>
+        </div>
+      </div>
+
+      <div class="cta-buttons">
+        <a href="/affiliate/dashboard" class="btn-primary">
+          🚀 Join Affiliate Program
+        </a>
+        <a href="#how-it-works" class="btn-secondary">
+          How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="affiliate-stats">
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number" data-target="40">0</div>
+          <div class="stat-label">% Commission</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" data-target="60">0</div>
+          <div class="stat-label">Day Cookie</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" data-target="48">0</div>
+          <div class="stat-label">Hour Payouts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Recurring Forever</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Sign Up Free</h3>
+          <p>Create your affiliate account in 30 seconds. No fees, no commitments.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Get Your Link</h3>
+          <p>Receive your unique referral link with 60-day cookie tracking.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Share & Earn</h3>
+          <p>Promote with our banners, emails, and videos. Track everything in real-time.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Get Paid</h3>
+          <p>Receive PayPal or Wise payouts monthly. $50 minimum threshold.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Earnings Calculator -->
+  <section class="earnings-calc">
+    <div class="container">
+      <h2>💰 Earnings Calculator</h2>
+      <div class="calc-card">
+        <div class="calc-input">
+          <label>Monthly Referrals (Pro Plan)</label>
+          <input type="range" id="referrals" min="1" max="50" value="10">
+          <span class="range-value" id="referral-count">10</span>
+        </div>
+        <div class="calc-result">
+          <div class="result-item">
+            <span class="label">Monthly Commission</span>
+            <span class="value" id="monthly-earn">$396</span>
+          </div>
+          <div class="result-item">
+            <span class="label">Yearly Commission</span>
+            <span class="value" id="yearly-earn">$4,752</span>
+          </div>
+          <div class="result-item featured">
+            <span class="label">Lifetime Value (3 years avg)</span>
+            <span class="value" id="lifetime-earn">$14,256</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You Get -->
+  <section class="what-you-get">
+    <div class="container">
+      <h2>What You Get</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">📊</div>
+          <h3>Real-Time Dashboard</h3>
+          <p>Track clicks, conversions, and earnings live.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <h3>Marketing Assets</h3>
+          <p>Professional banners, emails, and social templates.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔗</div>
+          <h3>Custom Links</h3>
+          <p>Create branded links for different campaigns.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🏆</div>
+          <h3>Leaderboard</h3>
+          <p>Compete for monthly bonuses up to $500.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">💳</div>
+          <h3>Fast Payouts</h3>
+          <p>PayPal or Wise within 48 hours.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎁</div>
+          <h3>Milestone Bonuses</h3>
+          <p>Extra $25-$1000 for reaching goals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bonuses -->
+  <section class="bonuses">
+    <div class="container">
+      <h2>🏆 Achievement Bonuses</h2>
+      <div class="bonus-grid">
+        <div class="bonus-card">
+          <div class="badge bronze">🌟 First Blood</div>
+          <div class="requirement">1 Sale</div>
+          <div class="reward">+$25 Bonus</div>
+        </div>
+        <div class="bonus-card">
+          <div class="badge silver">🔥 Rising Star</div>
+          <div class="requirement">5 Sales</div>
+          <div class="reward">+$50 Bonus</div>
+        </div>
+        <div class="bonus-card">
+          <div class="badge gold">💎 Diamond</div>
+          <div class="requirement">25 Sales</div>
+          <div class="reward">+$250 Bonus</div>
+        </div>
+        <div class="bonus-card">
+          <div class="badge platinum">👑 King</div>
+          <div class="requirement">100 Sales</div>
+          <div class="reward">+$1,000 Bonus</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Ready to Start Earning?</h2>
+      <p>Join 100+ affiliates already earning with AgencyOS</p>
+      <a href="/affiliate/dashboard" class="btn-primary btn-large">
+        🚀 Join Now – It's Free
+      </a>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .affiliate-hero {
+    padding: 100px 0 60px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: var(--color-text-primary);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 40px;
+  }
+
+  .earnings-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto 40px;
+  }
+
+  .earning-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .earning-card:hover {
+    transform: translateY(-4px);
+    border-color: #10b981;
+  }
+
+  .earning-card.featured {
+    border-color: #10b981;
+    background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1));
+  }
+
+  .earning-card .plan {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .earning-card .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .earning-card .commission {
+    font-size: 1rem;
+    color: #10b981;
+  }
+
+  .earning-card .commission strong {
+    font-size: 1.25rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(16,185,129,0.3);
+  }
+
+  .btn-secondary {
+    padding: 16px 32px;
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: #10b981;
+  }
+
+  .affiliate-stats {
+    padding: 60px 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .stat-card {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #10b981;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-top: 8px;
+  }
+
+  .how-it-works {
+    padding: 80px 0;
+  }
+
+  .how-it-works h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .step-card {
+    text-align: center;
+    padding: 30px;
+  }
+
+  .step-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 20px;
+  }
+
+  .step-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    color: var(--color-text-primary);
+  }
+
+  .step-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .earnings-calc {
+    padding: 80px 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .earnings-calc h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  .calc-card {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .calc-input {
+    margin-bottom: 30px;
+  }
+
+  .calc-input label {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  .calc-input input[type="range"] {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .range-value {
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #10b981;
+  }
+
+  .calc-result {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--color-bg-primary);
+    border-radius: 12px;
+  }
+
+  .result-item .label {
+    color: var(--color-text-secondary);
+  }
+
+  .result-item .value {
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .result-item.featured {
+    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2));
+  }
+
+  .result-item.featured .value {
+    color: #10b981;
+    font-size: 1.25rem;
+  }
+
+  .what-you-get {
+    padding: 80px 0;
+  }
+
+  .what-you-get h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: #10b981;
+  }
+
+  .feature-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+  }
+
+  .feature-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .bonuses {
+    padding: 80px 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .bonuses h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 50px;
+  }
+
+  .bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .bonus-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .bonus-card .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+
+  .bonus-card .badge.bronze { background: #cd7f32; }
+  .bonus-card .badge.silver { background: #c0c0c0; color: #333; }
+  .bonus-card .badge.gold { background: linear-gradient(135deg, #ffd700, #ffb700); color: #333; }
+  .bonus-card .badge.platinum { background: linear-gradient(135deg, #e5e4e2, #a0a0a0); color: #333; }
+
+  .bonus-card .requirement {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .bonus-card .reward {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #10b981;
+  }
+
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+  }
+
+  .final-cta h2 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .final-cta p {
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+  }
+
+  .btn-large {
+    padding: 20px 48px;
+    font-size: 1.1rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* WOW Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .affiliate-hero { animation: fadeInUp 0.6s ease-out; }
+  .badge { animation: pulse 2s ease-in-out infinite; }
+  .earning-card { animation: scaleIn 0.5s ease-out backwards; }
+  .earning-card:nth-child(1) { animation-delay: 0.1s; }
+  .earning-card:nth-child(2) { animation-delay: 0.2s; }
+  .earning-card:nth-child(3) { animation-delay: 0.3s; }
+  .step-card { animation: fadeInUp 0.6s ease-out backwards; }
+  .step-card:nth-child(1) { animation-delay: 0.1s; }
+  .step-card:nth-child(2) { animation-delay: 0.2s; }
+  .step-card:nth-child(3) { animation-delay: 0.3s; }
+  .step-card:nth-child(4) { animation-delay: 0.4s; }
+  .step-number { animation: float 3s ease-in-out infinite; }
+  .feature-card { animation: scaleIn 0.5s ease-out backwards; }
+  .bonus-card { animation: fadeInUp 0.6s ease-out backwards; }
+  
+  .gradient-text {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+  }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    .earnings-preview, .stat-grid, .steps-grid, .features-grid, .bonus-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Animate stat numbers
+  const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = parseInt(entry.target.dataset.target);
+        animateNumber(entry.target, target);
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+  
+  statNumbers.forEach(num => observer.observe(num));
+  
+  function animateNumber(el, target) {
+    let current = 0;
+    const step = target / 50;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        el.textContent = target;
+        clearInterval(timer);
+      } else {
+        el.textContent = Math.floor(current);
+      }
+    }, 30);
+  }
+
+  // Earnings calculator
+  const slider = document.getElementById('referrals');
+  const countEl = document.getElementById('referral-count');
+  const monthlyEl = document.getElementById('monthly-earn');
+  const yearlyEl = document.getElementById('yearly-earn');
+  const lifetimeEl = document.getElementById('lifetime-earn');
+
+  slider?.addEventListener('input', () => {
+    const refs = parseInt(slider.value);
+    const monthly = refs * 39.60;
+    const yearly = monthly * 12;
+    const lifetime = yearly * 3;
+    
+    countEl.textContent = refs;
+    monthlyEl.textContent = '$' + monthly.toFixed(0);
+    yearlyEl.textContent = '$' + yearly.toLocaleString();
+    lifetimeEl.textContent = '$' + lifetime.toLocaleString();
+  });
+</script>

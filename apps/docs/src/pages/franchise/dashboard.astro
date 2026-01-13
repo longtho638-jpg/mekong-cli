@@ -1,0 +1,567 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Franchise Dashboard - AgencyOS';
+const description = 'Manage your franchise territories and revenue.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="franchise-section">
+    <div class="franchise-header">
+      <h1>🌍 Franchise Dashboard</h1>
+      <p class="subtitle">Manage your territories & track revenue</p>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" id="loading-state">
+      <div class="spinner"></div>
+      <p>Loading franchise data...</p>
+    </div>
+
+    <!-- Not a Franchisee -->
+    <div class="not-franchisee hidden" id="not-franchisee">
+      <span class="icon">🏯</span>
+      <h2>Become a Franchisee</h2>
+      <p>Join our global network and grow your agency business.</p>
+      <div class="benefits">
+        <div class="benefit">✅ Exclusive territory rights</div>
+        <div class="benefit">✅ 70% revenue share</div>
+        <div class="benefit">✅ Full platform access</div>
+        <div class="benefit">✅ Marketing support</div>
+      </div>
+      <a href="/pricing?plan=franchise" class="btn-primary">Apply Now →</a>
+    </div>
+
+    <!-- Franchise Dashboard -->
+    <div class="franchise-dashboard hidden" id="franchise-dashboard">
+      <!-- Status Card -->
+      <div class="dash-card status-card">
+        <div class="card-header">
+          <h2>🎫 Franchise Status</h2>
+          <span class="status-badge" id="status-badge">ACTIVE</span>
+        </div>
+        <div class="status-grid">
+          <div class="stat">
+            <span class="stat-value" id="territories-count">0</span>
+            <span class="stat-label">Territories</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="clients-count">0</span>
+            <span class="stat-label">Clients</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="revenue-share">70%</span>
+            <span class="stat-label">Revenue Share</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="monthly-fee">$299</span>
+            <span class="stat-label">Platform Fee</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Card -->
+      <div class="dash-card revenue-card">
+        <div class="card-header">
+          <h2>💰 This Month's Revenue</h2>
+        </div>
+        <div class="revenue-breakdown">
+          <div class="revenue-item">
+            <span class="label">Local Services</span>
+            <span class="value" id="local-revenue">$0</span>
+          </div>
+          <div class="revenue-item">
+            <span class="label">SaaS Reselling</span>
+            <span class="value" id="saas-revenue">$0</span>
+          </div>
+          <div class="revenue-divider"></div>
+          <div class="revenue-item total">
+            <span class="label">Total Revenue</span>
+            <span class="value" id="total-revenue">$0</span>
+          </div>
+          <div class="revenue-item your-share">
+            <span class="label">Your Share (70%)</span>
+            <span class="value highlight" id="your-share">$0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Territories -->
+      <div class="dash-card territories-card">
+        <div class="card-header">
+          <h2>📍 Your Territories</h2>
+          <button class="btn-secondary" id="claim-btn">+ Claim Territory</button>
+        </div>
+        <div class="territories-list" id="territories-list">
+          <div class="empty-state">No territories claimed yet.</div>
+        </div>
+      </div>
+
+      <!-- Onboarding -->
+      <div class="dash-card onboarding-card" id="onboarding-card">
+        <div class="card-header">
+          <h2>📋 Onboarding Progress</h2>
+          <span class="progress-badge" id="onboarding-progress">0/6</span>
+        </div>
+        <div class="onboarding-steps" id="onboarding-steps">
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Complete profile</span>
+          </div>
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Claim first territory</span>
+          </div>
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Setup payment method</span>
+          </div>
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Complete training</span>
+          </div>
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Get first client</span>
+          </div>
+          <div class="step">
+            <span class="step-check">⬜</span>
+            <span>Submit first revenue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Territory Picker Modal -->
+    <div class="modal hidden" id="territory-modal">
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🗺️ Claim Territory</h2>
+          <button class="close-btn" id="close-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="filter-row">
+            <select id="country-filter">
+              <option value="">All Countries</option>
+              <option value="Vietnam">Vietnam</option>
+              <option value="Thailand">Thailand</option>
+              <option value="Singapore">Singapore</option>
+              <option value="Malaysia">Malaysia</option>
+              <option value="Philippines">Philippines</option>
+              <option value="Indonesia">Indonesia</option>
+            </select>
+          </div>
+          <div class="available-territories" id="available-territories">
+            <div class="loading">Loading territories...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .franchise-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .franchise-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .franchise-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { color: var(--color-text-muted); font-size: 1.1rem; }
+
+  .loading-state, .not-franchisee {
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--color-bg-secondary);
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+  }
+
+  .spinner {
+    width: 40px; height: 40px; margin: 0 auto 16px;
+    border: 3px solid var(--color-bg-tertiary);
+    border-top-color: #8b5cf6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+
+  .not-franchisee .icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+
+  .benefits {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    margin: 24px 0;
+  }
+
+  .benefit {
+    padding: 8px 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .franchise-dashboard {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  .dash-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card-header h2 { margin: 0; font-size: 1.25rem; }
+
+  .status-badge {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .status-badge.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .status-badge.suspended { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+  }
+
+  .stat-value {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .stat-label {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .revenue-breakdown { display: flex; flex-direction: column; gap: 12px; }
+
+  .revenue-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+  }
+
+  .revenue-item.total { background: rgba(139, 92, 246, 0.1); }
+  .revenue-item.your-share { background: rgba(34, 197, 94, 0.1); }
+  .revenue-item .highlight { color: #22c55e; font-weight: 700; font-size: 1.25rem; }
+
+  .revenue-divider { height: 1px; background: var(--color-border); margin: 8px 0; }
+
+  .territories-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .territory-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+  }
+
+  .territory-info h4 { margin: 0 0 4px 0; }
+  .territory-info span { color: var(--color-text-muted); font-size: 0.85rem; }
+
+  .territory-status {
+    padding: 4px 12px;
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .onboarding-steps { display: flex; flex-direction: column; gap: 8px; }
+
+  .step {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+  }
+
+  .step.completed { background: rgba(34, 197, 94, 0.1); }
+  .step.completed .step-check { color: #22c55e; }
+
+  .progress-badge {
+    font-size: 0.9rem;
+    background: var(--color-bg-tertiary);
+    padding: 4px 12px;
+    border-radius: 8px;
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+  }
+
+  .modal-content {
+    position: relative;
+    background: var(--color-bg-secondary);
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .modal-header h2 { margin: 0; }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text-muted);
+  }
+
+  .modal-body { padding: 24px; max-height: 60vh; overflow-y: auto; }
+
+  .filter-row { margin-bottom: 16px; }
+
+  .filter-row select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+  }
+
+  .available-territories { display: flex; flex-direction: column; gap: 12px; }
+
+  .territory-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .territory-option:hover {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid #8b5cf6;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .status-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<script>
+  // Load franchise data
+  async function loadFranchiseData() {
+    const loadingState = document.getElementById('loading-state');
+    const notFranchisee = document.getElementById('not-franchisee');
+    const dashboard = document.getElementById('franchise-dashboard');
+
+    // Get user from localStorage
+    const email = localStorage.getItem('agencyos_email');
+
+    if (!email) {
+      loadingState?.classList.add('hidden');
+      notFranchisee?.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      // In production: fetch from /api/franchise/status?email=...
+      // Demo data for now
+      const isDemo = true;
+
+      if (isDemo) {
+        // Show demo data
+        document.getElementById('territories-count')!.textContent = '2';
+        document.getElementById('clients-count')!.textContent = '12';
+        document.getElementById('local-revenue')!.textContent = '$8,500';
+        document.getElementById('saas-revenue')!.textContent = '$3,200';
+        document.getElementById('total-revenue')!.textContent = '$11,700';
+        document.getElementById('your-share')!.textContent = '$8,190';
+
+        // Demo territories
+        const territoriesList = document.getElementById('territories-list')!;
+        territoriesList.innerHTML = `
+          <div class="territory-item">
+            <div class="territory-info">
+              <h4>🇻🇳 Ho Chi Minh City - District 1</h4>
+              <span>Population: 200,000 • Claimed: Dec 15, 2025</span>
+            </div>
+            <span class="territory-status">ACTIVE</span>
+          </div>
+          <div class="territory-item">
+            <div class="territory-info">
+              <h4>🇻🇳 Ho Chi Minh City - Thu Duc City</h4>
+              <span>Population: 1,000,000 • Claimed: Dec 20, 2025</span>
+            </div>
+            <span class="territory-status">ACTIVE</span>
+          </div>
+        `;
+
+        loadingState?.classList.add('hidden');
+        dashboard?.classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Failed to load franchise data:', error);
+      loadingState?.classList.add('hidden');
+      notFranchisee?.classList.remove('hidden');
+    }
+  }
+
+  // Modal controls
+  const modal = document.getElementById('territory-modal');
+  const claimBtn = document.getElementById('claim-btn');
+  const closeModal = document.getElementById('close-modal');
+  const modalBackdrop = document.getElementById('modal-backdrop');
+
+  claimBtn?.addEventListener('click', () => {
+    modal?.classList.remove('hidden');
+    loadAvailableTerritories();
+  });
+
+  closeModal?.addEventListener('click', () => modal?.classList.add('hidden'));
+  modalBackdrop?.addEventListener('click', () => modal?.classList.add('hidden'));
+
+  async function loadAvailableTerritories() {
+    const container = document.getElementById('available-territories')!;
+    
+    // Demo territories
+    container.innerHTML = `
+      <div class="territory-option" data-id="t1">
+        <div class="territory-info">
+          <h4>🇻🇳 Hanoi - Hoan Kiem</h4>
+          <span>Population: 150,000</span>
+        </div>
+        <span class="btn-secondary">Claim $299/mo</span>
+      </div>
+      <div class="territory-option" data-id="t2">
+        <div class="territory-info">
+          <h4>🇻🇳 Da Nang - Hai Chau</h4>
+          <span>Population: 200,000</span>
+        </div>
+        <span class="btn-secondary">Claim $299/mo</span>
+      </div>
+      <div class="territory-option" data-id="t3">
+        <div class="territory-info">
+          <h4>🇹🇭 Bangkok - Sukhumvit</h4>
+          <span>Population: 500,000</span>
+        </div>
+        <span class="btn-secondary">Claim $299/mo</span>
+      </div>
+      <div class="territory-option" data-id="t4">
+        <div class="territory-info">
+          <h4>🇸🇬 Singapore - CBD</h4>
+          <span>Population: 300,000</span>
+        </div>
+        <span class="btn-secondary">Claim $299/mo</span>
+      </div>
+    `;
+
+    // Add click handlers
+    container.querySelectorAll('.territory-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        alert('Territory claim flow coming soon!\n\nIn production, this would:\n1. Check your franchise tier\n2. Process payment\n3. Assign territory');
+      });
+    });
+  }
+
+  // Country filter
+  document.getElementById('country-filter')?.addEventListener('change', (e) => {
+    const country = (e.target as HTMLSelectElement).value;
+    // Filter territories by country
+    loadAvailableTerritories();
+  });
+
+  loadFranchiseData();
+</script>

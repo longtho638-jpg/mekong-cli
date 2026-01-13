@@ -1,0 +1,621 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'ROI Calculator - AgencyOS';
+const description = 'Calculate how much time and money AgencyOS can save your agency.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="roi-hero">
+    <h1>💰 Calculate Your ROI</h1>
+    <p>See how much AgencyOS can save your agency in time and money</p>
+  </section>
+
+  <section class="calculator-section">
+    <div class="calculator-card">
+      
+      <div class="inputs-panel">
+        <h3>📊 Your Agency</h3>
+        
+        <div class="input-group">
+          <label for="revenue">Monthly Revenue ($)</label>
+          <input type="range" id="revenue" min="5000" max="500000" value="50000" step="5000" />
+          <div class="range-display">
+            <span>$5K</span>
+            <span class="value" id="revenue-value">$50,000</span>
+            <span>$500K</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="team-size">Team Size</label>
+          <input type="range" id="team-size" min="1" max="50" value="5" />
+          <div class="range-display">
+            <span>1</span>
+            <span class="value" id="team-value">5 people</span>
+            <span>50</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="admin-hours">Hours on Admin/Week (per person)</label>
+          <input type="range" id="admin-hours" min="5" max="40" value="15" />
+          <div class="range-display">
+            <span>5h</span>
+            <span class="value" id="hours-value">15 hours</span>
+            <span>40h</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="hourly-rate">Average Hourly Rate ($)</label>
+          <input type="range" id="hourly-rate" min="25" max="500" value="100" step="25" />
+          <div class="range-display">
+            <span>$25</span>
+            <span class="value" id="rate-value">$100/hr</span>
+            <span>$500</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <h3>🚀 With AgencyOS</h3>
+        
+        <div class="result-card savings">
+          <div class="result-icon">💵</div>
+          <div class="result-content">
+            <span class="result-label">Annual Savings</span>
+            <span class="result-value" id="annual-savings">$156,000</span>
+          </div>
+        </div>
+
+        <div class="result-card time">
+          <div class="result-icon">⏰</div>
+          <div class="result-content">
+            <span class="result-label">Hours Saved/Year</span>
+            <span class="result-value" id="hours-saved">1,560 hrs</span>
+          </div>
+        </div>
+
+        <div class="result-card roi">
+          <div class="result-icon">📈</div>
+          <div class="result-content">
+            <span class="result-label">ROI</span>
+            <span class="result-value highlight" id="roi-percent">13,200%</span>
+          </div>
+        </div>
+
+        <div class="result-card payback">
+          <div class="result-icon">🎯</div>
+          <div class="result-content">
+            <span class="result-label">Payback Period</span>
+            <span class="result-value" id="payback-days">3 days</span>
+          </div>
+        </div>
+
+        <div class="comparison-bar">
+          <div class="bar-label">AgencyOS Cost vs Savings</div>
+          <div class="bar-visual">
+            <div class="bar-cost" id="bar-cost">$1,188</div>
+            <div class="bar-savings" id="bar-savings">$156,000</div>
+          </div>
+        </div>
+
+        <a href="/signup?plan=pro" class="btn-primary">
+          Start Saving Now →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="breakdown-section">
+    <h2>📋 Savings Breakdown</h2>
+    
+    <div class="breakdown-grid">
+      <div class="breakdown-card">
+        <span class="category-icon">📣</span>
+        <h4>Marketing</h4>
+        <p class="saved" id="marketing-saved">$31,200/yr</p>
+        <p class="tasks">Content, SEO, Social, Email</p>
+      </div>
+      
+      <div class="breakdown-card">
+        <span class="category-icon">💼</span>
+        <h4>Sales</h4>
+        <p class="saved" id="sales-saved">$31,200/yr</p>
+        <p class="tasks">Proposals, CRM, Follow-ups</p>
+      </div>
+      
+      <div class="breakdown-card">
+        <span class="category-icon">📊</span>
+        <h4>Finance</h4>
+        <p class="saved" id="finance-saved">$31,200/yr</p>
+        <p class="tasks">Invoicing, Reports, Budgets</p>
+      </div>
+      
+      <div class="breakdown-card">
+        <span class="category-icon">⚙️</span>
+        <h4>Operations</h4>
+        <p class="saved" id="ops-saved">$31,200/yr</p>
+        <p class="tasks">SOPs, Workflows, Meetings</p>
+      </div>
+      
+      <div class="breakdown-card">
+        <span class="category-icon">🎯</span>
+        <h4>Strategy</h4>
+        <p class="saved" id="strategy-saved">$31,200/yr</p>
+        <p class="tasks">Research, Competitive, OKRs</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to 10x Your Agency?</h2>
+    <p>Join 100+ agencies already saving thousands with AgencyOS</p>
+    <div class="cta-buttons">
+      <a href="/signup?plan=pro" class="btn-primary">Start Free Trial →</a>
+      <a href="/pricing" class="btn-secondary">View Pricing</a>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .roi-hero {
+    text-align: center;
+    padding: 64px 24px 32px;
+  }
+
+  .roi-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22c55e, #eab308);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .roi-hero p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .calculator-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  /* ===================== CALCULATOR WOW ===================== */
+  .calculator-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px;
+    animation: card-entrance 0.6s ease-out;
+    box-shadow: 0 20px 60px rgba(34, 197, 94, 0.15);
+  }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .inputs-panel h3, .results-panel h3 {
+    font-size: 1.1rem;
+    color: var(--color-text-primary);
+    margin: 0 0 24px 0;
+  }
+
+  .input-group {
+    margin-bottom: 24px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .input-group input[type="range"] {
+    width: 100%;
+    height: 8px;
+    background: var(--color-bg-tertiary);
+    border-radius: 4px;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .input-group input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #22c55e;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    animation: thumb-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes thumb-pulse {
+    0%, 100% { box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5); }
+  }
+
+  .range-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 8px;
+  }
+
+  .range-display .value {
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  /* ===================== RESULTS WOW ===================== */
+  .result-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    animation: result-pop 0.5s ease-out both;
+    transition: all 0.3s ease;
+  }
+
+  .result-card:nth-child(1) { animation-delay: 0.3s; }
+  .result-card:nth-child(2) { animation-delay: 0.4s; }
+  .result-card:nth-child(3) { animation-delay: 0.5s; }
+  .result-card:nth-child(4) { animation-delay: 0.6s; }
+
+  @keyframes result-pop {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.15);
+  }
+
+  .result-icon {
+    font-size: 1.5rem;
+  }
+
+  .result-content {
+    flex: 1;
+  }
+
+  .result-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .result-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+  }
+
+  .result-value.highlight {
+    color: #22c55e;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: value-shine 3s linear infinite;
+  }
+
+  @keyframes value-shine {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+    100% { filter: brightness(1); }
+  }
+
+  .comparison-bar {
+    margin: 24px 0;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+  }
+
+  .bar-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .bar-visual {
+    display: flex;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .bar-cost {
+    background: #ef4444;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 60px;
+    padding: 0 8px;
+  }
+
+  .bar-savings {
+    flex: 1;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    animation: bar-grow 1s ease-out 0.7s both;
+  }
+
+  @keyframes bar-grow {
+    from { flex: 0; }
+    to { flex: 1; }
+  }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+  }
+
+  /* Breakdown Section */
+  .breakdown-section {
+    max-width: 1000px;
+    margin: 48px auto;
+    padding: 24px;
+  }
+
+  .breakdown-section h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: 32px;
+  }
+
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  /* ===================== BREAKDOWN WOW ===================== */
+  .breakdown-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    animation: breakdown-entrance 0.5s ease-out both;
+    transition: all 0.3s ease;
+  }
+
+  .breakdown-card:nth-child(1) { animation-delay: 0.1s; }
+  .breakdown-card:nth-child(2) { animation-delay: 0.2s; }
+  .breakdown-card:nth-child(3) { animation-delay: 0.3s; }
+  .breakdown-card:nth-child(4) { animation-delay: 0.4s; }
+  .breakdown-card:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes breakdown-entrance {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .breakdown-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+  }
+
+  .category-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+    animation: icon-bounce 2.5s ease-in-out infinite;
+  }
+
+  @keyframes icon-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .breakdown-card h4 {
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    margin: 0 0 8px 0;
+  }
+
+  .breakdown-card .saved {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #22c55e;
+    margin: 0 0 4px 0;
+  }
+
+  .breakdown-card .tasks {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    padding: 64px 24px;
+    background: linear-gradient(180deg, transparent, var(--color-bg-secondary));
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    color: var(--color-text-primary);
+    margin: 0 0 16px 0;
+  }
+
+  .cta-section p {
+    color: var(--color-text-muted);
+    margin: 0 0 32px 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .cta-buttons .btn-primary {
+    width: auto;
+    padding: 16px 32px;
+  }
+
+  .btn-secondary {
+    padding: 16px 32px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .calculator-card {
+      grid-template-columns: 1fr;
+    }
+    
+    .breakdown-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  // Calculator Logic
+  const revenueSlider = document.getElementById('revenue') as HTMLInputElement;
+  const teamSlider = document.getElementById('team-size') as HTMLInputElement;
+  const hoursSlider = document.getElementById('admin-hours') as HTMLInputElement;
+  const rateSlider = document.getElementById('hourly-rate') as HTMLInputElement;
+
+  const revenueValue = document.getElementById('revenue-value');
+  const teamValue = document.getElementById('team-value');
+  const hoursValue = document.getElementById('hours-value');
+  const rateValue = document.getElementById('rate-value');
+
+  const annualSavingsEl = document.getElementById('annual-savings');
+  const hoursSavedEl = document.getElementById('hours-saved');
+  const roiPercentEl = document.getElementById('roi-percent');
+  const paybackDaysEl = document.getElementById('payback-days');
+  const barCostEl = document.getElementById('bar-cost');
+  const barSavingsEl = document.getElementById('bar-savings');
+
+  const marketingSavedEl = document.getElementById('marketing-saved');
+  const salesSavedEl = document.getElementById('sales-saved');
+  const financeSavedEl = document.getElementById('finance-saved');
+  const opsSavedEl = document.getElementById('ops-saved');
+  const strategySavedEl = document.getElementById('strategy-saved');
+
+  const AGENCYOS_YEARLY_COST = 99 * 12; // Pro plan
+  const AUTOMATION_EFFICIENCY = 0.4; // 40% of admin time automated
+
+  function formatMoney(amount: number): string {
+    if (amount >= 1000000) {
+      return '$' + (amount / 1000000).toFixed(1) + 'M';
+    } else if (amount >= 1000) {
+      return '$' + Math.round(amount).toLocaleString();
+    }
+    return '$' + amount.toFixed(0);
+  }
+
+  function formatNumber(num: number): string {
+    return num.toLocaleString();
+  }
+
+  function calculateROI() {
+    const revenue = parseInt(revenueSlider?.value || '50000');
+    const team = parseInt(teamSlider?.value || '5');
+    const adminHours = parseInt(hoursSlider?.value || '15');
+    const hourlyRate = parseInt(rateSlider?.value || '100');
+
+    // Update display values
+    if (revenueValue) revenueValue.textContent = formatMoney(revenue);
+    if (teamValue) teamValue.textContent = `${team} ${team === 1 ? 'person' : 'people'}`;
+    if (hoursValue) hoursValue.textContent = `${adminHours} hours`;
+    if (rateValue) rateValue.textContent = `$${hourlyRate}/hr`;
+
+    // Calculate savings
+    const weeklyHoursSaved = team * adminHours * AUTOMATION_EFFICIENCY;
+    const yearlyHoursSaved = weeklyHoursSaved * 52;
+    const yearlySavings = yearlyHoursSaved * hourlyRate;
+    
+    // ROI calculation
+    const roi = ((yearlySavings - AGENCYOS_YEARLY_COST) / AGENCYOS_YEARLY_COST) * 100;
+    
+    // Payback period in days
+    const dailySavings = yearlySavings / 365;
+    const paybackDays = Math.ceil(AGENCYOS_YEARLY_COST / dailySavings);
+
+    // Update results
+    if (annualSavingsEl) annualSavingsEl.textContent = formatMoney(yearlySavings);
+    if (hoursSavedEl) hoursSavedEl.textContent = `${formatNumber(Math.round(yearlyHoursSaved))} hrs`;
+    if (roiPercentEl) roiPercentEl.textContent = `${formatNumber(Math.round(roi))}%`;
+    if (paybackDaysEl) paybackDaysEl.textContent = paybackDays <= 30 ? `${paybackDays} days` : `${Math.round(paybackDays / 30)} months`;
+    
+    // Update comparison bar
+    if (barCostEl) barCostEl.textContent = formatMoney(AGENCYOS_YEARLY_COST);
+    if (barSavingsEl) barSavingsEl.textContent = formatMoney(yearlySavings);
+
+    // Breakdown (divide equally for demo)
+    const perCategory = yearlySavings / 5;
+    if (marketingSavedEl) marketingSavedEl.textContent = `${formatMoney(perCategory)}/yr`;
+    if (salesSavedEl) salesSavedEl.textContent = `${formatMoney(perCategory)}/yr`;
+    if (financeSavedEl) financeSavedEl.textContent = `${formatMoney(perCategory)}/yr`;
+    if (opsSavedEl) opsSavedEl.textContent = `${formatMoney(perCategory)}/yr`;
+    if (strategySavedEl) strategySavedEl.textContent = `${formatMoney(perCategory)}/yr`;
+  }
+
+  // Attach event listeners
+  revenueSlider?.addEventListener('input', calculateROI);
+  teamSlider?.addEventListener('input', calculateROI);
+  hoursSlider?.addEventListener('input', calculateROI);
+  rateSlider?.addEventListener('input', calculateROI);
+
+  // Initial calculation
+  calculateROI();
+</script>

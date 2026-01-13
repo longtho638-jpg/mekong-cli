@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agencyos-docs-config
+data:
+  SITE_URL: "https://docs.agencyos.cc"
+  NODE_ENV: "production"

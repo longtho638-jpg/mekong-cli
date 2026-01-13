@@ -1,0 +1,2100 @@
+---
+import '../styles/global.css';
+import '../styles/wow-components.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'AgencyOS - The One-Person Agency Operating System',
+  description = '85+ AI commands to run your entire agency. Marketing, sales, affiliate, finance - all automated.',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo-512-dark.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo-512-dark.png" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#22c55e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agencyos.network" />
+    <meta property="og:image" content="https://agencyos.network/og-image.png" />
+    <meta property="og:site_name" content="AgencyOS" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://agencyos.network/og-image.png" />
+    
+    <!-- Brand -->
+    <meta name="author" content="AgencyOS - Binh Pháp Venture Studio" />
+    <meta name="keywords" content="agency os, ai agency, automation, marketing automation, sales automation" />
+    
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- Urgency Countdown Banner -->
+    <div class="countdown-banner" id="countdown-banner">
+      <div class="banner-content">
+        <span class="fire-icon">🔥</span>
+        <span class="banner-text">
+          <strong>Early Bird Special:</strong> 50% OFF Pro Plan
+        </span>
+        <span class="countdown-timer">
+          <span class="timer-label">Ends in:</span>
+          <span class="timer" id="countdown-timer">00:00:00</span>
+        </span>
+        <a href="/pricing" class="banner-cta">Claim Now →</a>
+      </div>
+      <button class="banner-close" id="banner-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scroll-progress">
+      <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+      <span>↑</span>
+    </button>
+
+    <!-- Cursor Glow Effect -->
+    <div class="cursor-glow" id="cursor-glow"></div>
+
+    <!-- Simple Header -->
+    <header class="landing-header">
+      <div class="header-container">
+        <a href="/" class="logo animated-logo">
+          <span class="logo-icon">🏯</span>
+          <span class="logo-text">AgencyOS</span>
+        </a>
+        
+        <nav class="landing-nav">
+          <a href="/agencyos">Home</a>
+          
+          <!-- Products Mega Dropdown -->
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger">Products <span class="dropdown-arrow">▾</span></button>
+            <div class="mega-dropdown">
+              <div class="mega-col">
+                <div class="mega-title">🆓 FREE</div>
+                <a href="/docs" class="mega-item">
+                  <span class="mega-icon">📚</span>
+                  <div>
+                    <div class="mega-item-title">Documentation</div>
+                    <div class="mega-item-desc">310+ IDE-executable pages</div>
+                  </div>
+                </a>
+                <a href="/docs/getting-started" class="mega-item">
+                  <span class="mega-icon">🛠️</span>
+                  <div>
+                    <div class="mega-item-title">Mekong-CLI</div>
+                    <div class="mega-item-desc">Open source, 125+ commands</div>
+                  </div>
+                </a>
+                <a href="/binh-phap" class="mega-item">
+                  <span class="mega-icon">🏯</span>
+                  <div>
+                    <div class="mega-item-title">Binh Pháp</div>
+                    <div class="mega-item-desc">13 chapters strategy</div>
+                  </div>
+                </a>
+                <a href="/workflows" class="mega-item">
+                  <span class="mega-icon">📋</span>
+                  <div>
+                    <div class="mega-item-title">Workflows</div>
+                    <div class="mega-item-desc">27 workflow guides</div>
+                  </div>
+                </a>
+              </div>
+              <div class="mega-col">
+                <div class="mega-title">💰 PAID</div>
+                <a href="/pricing" class="mega-item">
+                  <span class="mega-icon">⭐</span>
+                  <div>
+                    <div class="mega-item-title">Starter</div>
+                    <div class="mega-item-desc">$29/mo - Solo operators</div>
+                  </div>
+                </a>
+                <a href="/pricing" class="mega-item">
+                  <span class="mega-icon">🚀</span>
+                  <div>
+                    <div class="mega-item-title">Pro</div>
+                    <div class="mega-item-desc">$99/mo - Teams + API</div>
+                  </div>
+                </a>
+                <a href="/franchise" class="mega-item">
+                  <span class="mega-icon">🏆</span>
+                  <div>
+                    <div class="mega-item-title">Franchise</div>
+                    <div class="mega-item-desc">$299/mo - White-label</div>
+                  </div>
+                </a>
+              </div>
+              <div class="mega-col">
+                <div class="mega-title">✨ Features</div>
+                <a href="/newsletter" class="mega-item">
+                  <span class="mega-icon">📧</span>
+                  <div>
+                    <div class="mega-item-title">Newsletter Hub</div>
+                    <div class="mega-item-desc">Email marketing</div>
+                  </div>
+                </a>
+                <a href="/affiliate" class="mega-item">
+                  <span class="mega-icon">🎯</span>
+                  <div>
+                    <div class="mega-item-title">Affiliate</div>
+                    <div class="mega-item-desc">Earn commissions</div>
+                  </div>
+                </a>
+                <a href="/marketplace" class="mega-item">
+                  <span class="mega-icon">🏪</span>
+                  <div>
+                    <div class="mega-item-title">Marketplace</div>
+                    <div class="mega-item-desc">Templates & tools</div>
+                  </div>
+                </a>
+                <a href="/wallet" class="mega-item">
+                  <span class="mega-icon">💳</span>
+                  <div>
+                    <div class="mega-item-title">Wallet</div>
+                    <div class="mega-item-desc">Payments & earnings</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <a href="/pricing">Pricing</a>
+          <a href="/demo">🖥️ Demo</a>
+          <a href="/docs/getting-started/introduction">Docs</a>
+          <a href="/blog">Blog</a>
+        </nav>
+        
+        <div class="header-actions">
+          <a href="/docs/getting-started/installation" class="btn-primary">Get Started</a>
+          
+          <!-- Mobile Menu Button -->
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="mobile-nav" id="mobile-nav">
+        <a href="/agencyos">Home</a>
+        <div class="mobile-section-title">🆓 FREE</div>
+        <a href="/docs">📚 Documentation</a>
+        <a href="/binh-phap">🏯 Binh Pháp</a>
+        <a href="/workflows">📋 Workflows</a>
+        <div class="mobile-section-title">💰 PAID</div>
+        <a href="/pricing">⭐ Starter $29</a>
+        <a href="/pricing">🚀 Pro $99</a>
+        <a href="/franchise">🏆 Franchise $299</a>
+        <div class="mobile-section-title">✨ Features</div>
+        <a href="/newsletter">📧 Newsletter</a>
+        <a href="/affiliate">🎯 Affiliate</a>
+        <a href="/marketplace">🏪 Marketplace</a>
+        <a href="/docs/getting-started/installation" class="mobile-cta">Get Started</a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="landing-main">
+      <slot />
+    </main>
+
+    <!-- Mega Footer -->
+    <footer class="landing-footer">
+      <div class="footer-mega">
+        <!-- Brand Column -->
+        <div class="footer-brand-col">
+          <a href="/" class="footer-logo">
+            <span class="logo-icon">🏯</span>
+            <span class="logo-text">AgencyOS</span>
+          </a>
+          <p class="footer-tagline">The AI-powered operating system for one-person agencies.</p>
+          <div class="footer-social">
+            <a href="https://twitter.com/agencyos" aria-label="Twitter">𝕏</a>
+            <a href="https://github.com/agencyos" aria-label="GitHub">⌘</a>
+            <a href="https://discord.gg/agencyos" aria-label="Discord">💬</a>
+          </div>
+        </div>
+        
+        <!-- Products Column -->
+        <div class="footer-col">
+          <h4 class="footer-title">Products</h4>
+          <div class="footer-col-split">
+            <div class="footer-links">
+              <span class="footer-label">FREE</span>
+              <a href="/docs">📚 Documentation</a>
+              <a href="/binh-phap">🏯 Binh Pháp</a>
+              <a href="/workflows">📋 Workflows</a>
+            </div>
+            <div class="footer-links">
+              <span class="footer-label">PAID</span>
+              <a href="/pricing">⭐ Starter $29</a>
+              <a href="/pricing">🚀 Pro $99</a>
+              <a href="/franchise">🏆 Franchise $299</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Features Column -->
+        <div class="footer-col">
+          <h4 class="footer-title">Features</h4>
+          <div class="footer-links">
+            <a href="/newsletter">📧 Newsletter Hub</a>
+            <a href="/affiliate">🎯 Affiliate Program</a>
+            <a href="/marketplace">🏪 Marketplace</a>
+            <a href="/wallet">💳 Wallet</a>
+            <a href="/gamification">🎮 Gamification</a>
+            <a href="/dashboard">📊 Dashboard</a>
+          </div>
+        </div>
+        
+        <!-- Resources Column -->
+        <div class="footer-col">
+          <h4 class="footer-title">Resources</h4>
+          <div class="footer-links">
+            <a href="/docs/getting-started">🚀 Quick Start</a>
+            <a href="/commands">⌨️ Commands</a>
+            <a href="/demo">🎬 Demo</a>
+            <a href="/roi-calculator">💰 ROI Calculator</a>
+            <a href="/blog">📝 Blog</a>
+            <a href="/changelog">📋 Changelog</a>
+          </div>
+        </div>
+        
+        <!-- Company Column -->
+        <div class="footer-col">
+          <h4 class="footer-title">Company</h4>
+          <div class="footer-links">
+            <a href="/about">ℹ️ About Us</a>
+            <a href="/case-studies">📈 Case Studies</a>
+            <a href="/contact">✉️ Contact</a>
+            <a href="/faq">❓ FAQ</a>
+            <a href="/terms">📜 Terms</a>
+            <a href="/privacy">🔒 Privacy</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          © 2026 AgencyOS Network. All rights reserved.
+        </div>
+        <div class="footer-motto">
+          🏯 "Họ WIN → Mình WIN → All WIN"
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating Quick Help Widget -->
+    <div class="quick-help-widget" id="quick-help">
+      <button class="help-toggle" id="help-toggle" aria-label="Quick Help">
+        <span class="icon-open">💡</span>
+        <span class="icon-close">✕</span>
+      </button>
+      
+      <div class="help-popup" id="help-popup">
+        <div class="popup-header">
+          <span>⚡ Quick Commands</span>
+        </div>
+        <div class="popup-content">
+          <a href="/commands" class="cmd-item">
+            <code>/help</code>
+            <span>View all 85+ commands</span>
+          </a>
+          <a href="/demo" class="cmd-item">
+            <code>/demo</code>
+            <span>Try interactive demo</span>
+          </a>
+          <a href="/roi-calculator" class="cmd-item">
+            <code>/roi</code>
+            <span>Calculate your savings</span>
+          </a>
+          <a href="/compare" class="cmd-item">
+            <code>/compare</code>
+            <span>See vs competitors</span>
+          </a>
+          <a href="/pricing" class="cmd-item">
+            <code>/pricing</code>
+            <span>View pricing plans</span>
+          </a>
+        </div>
+        <div class="popup-footer">
+          <a href="/docs/getting-started/installation" class="start-btn">🚀 Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="shortcuts-modal" id="shortcuts-modal">
+      <div class="shortcuts-overlay" id="shortcuts-overlay"></div>
+      <div class="shortcuts-content">
+        <div class="shortcuts-header">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <button class="shortcuts-close" id="shortcuts-close">ESC</button>
+        </div>
+        <div class="shortcuts-body">
+          <div class="shortcut-section">
+            <h4>Navigation</h4>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>G</kbd> then <kbd>H</kbd></span>
+              <span class="shortcut-desc">Go to Home</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>G</kbd> then <kbd>P</kbd></span>
+              <span class="shortcut-desc">Go to Pricing</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>G</kbd> then <kbd>D</kbd></span>
+              <span class="shortcut-desc">Go to Demo</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>G</kbd> then <kbd>C</kbd></span>
+              <span class="shortcut-desc">Go to Commands</span>
+            </div>
+          </div>
+          <div class="shortcut-section">
+            <h4>Actions</h4>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>/</kbd></span>
+              <span class="shortcut-desc">Focus Search</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>⌘</kbd> <kbd>K</kbd></span>
+              <span class="shortcut-desc">Quick Commands</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-keys"><kbd>?</kbd></span>
+              <span class="shortcut-desc">Show Shortcuts</span>
+            </div>
+          </div>
+        </div>
+        <div class="shortcuts-footer">
+          Press <kbd>ESC</kbd> to close
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Proof Notification -->
+    <div class="social-proof" id="social-proof">
+      <div class="proof-avatar" id="proof-avatar">👤</div>
+      <div class="proof-content">
+        <p class="proof-text" id="proof-text">Someone just signed up</p>
+        <p class="proof-time" id="proof-time">2 minutes ago</p>
+      </div>
+      <button class="proof-close" id="proof-close">×</button>
+    </div>
+
+    <!-- Floating Promo Badge -->
+    <div class="promo-badge" id="promo-badge">
+      <div class="promo-badge-content">
+        <span class="promo-pulse"></span>
+        <span class="promo-text">🎄 LAUNCH20</span>
+        <span class="promo-discount">-20% OFF</span>
+      </div>
+      <button class="promo-close" id="promo-close">×</button>
+    </div>
+
+    <script>
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      
+      // Mobile menu toggle
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('mobile-menu-btn');
+        const nav = document.getElementById('mobile-nav');
+        
+        if (btn && nav) {
+          btn.addEventListener('click', () => {
+            nav.classList.toggle('open');
+            btn.classList.toggle('open');
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Landing Header */
+  .landing-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    z-index: 100;
+  }
+
+  /* === Mega Footer === */
+  .landing-footer {
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    padding: 64px 24px 24px;
+  }
+
+  .footer-mega {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    gap: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .footer-brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .footer-tagline {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    max-width: 220px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 12px;
+  }
+
+  .footer-social a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .footer-social a:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-2px);
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-col-split {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--color-accent-green);
+    margin-bottom: 4px;
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-text-primary);
+    transform: translateX(4px);
+  }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .footer-motto {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  /* Footer Responsive */
+  @media (max-width: 1024px) {
+    .footer-mega {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .footer-brand-col {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-mega {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+  }
+
+  /* Landing Header */
+  .landing-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    z-index: 100;
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .landing-nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .landing-nav > a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .landing-nav > a:hover {
+    color: var(--color-text-primary);
+  }
+
+  /* Mega Dropdown */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown-trigger {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0;
+    transition: color 0.2s;
+  }
+
+  .nav-dropdown-trigger:hover {
+    color: var(--color-text-primary);
+  }
+
+  .dropdown-arrow {
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+  }
+
+  .nav-dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .mega-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 720px;
+    background: rgba(15, 15, 15, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+
+  .nav-dropdown:hover .mega-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .mega-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mega-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    padding-left: 8px;
+  }
+
+  .mega-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .mega-item:hover {
+    background: var(--color-bg-tertiary);
+    transform: translateX(4px);
+  }
+
+  .mega-icon {
+    font-size: 1.25rem;
+    margin-top: 2px;
+  }
+
+  .mega-item-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+  }
+
+  .mega-item-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Mobile section titles */
+  .mobile-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px 4px;
+    margin-top: 8px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #22c55e;
+    color: white;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  /* Main Content */
+  .landing-main {
+    min-height: 100vh;
+    padding-top: 72px;
+  }
+
+  /* Footer */
+  .landing-footer {
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    padding: 48px 24px;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-text-primary);
+  }
+
+  .footer-copy {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-btn {
+    display: none;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .mobile-menu-btn:hover {
+    background: var(--color-bg-tertiary);
+  }
+
+  .mobile-menu-btn.open {
+    background: var(--color-bg-tertiary);
+  }
+
+  /* Mobile Nav Dropdown */
+  .mobile-nav {
+    display: none;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 24px;
+    flex-direction: column;
+    gap: 8px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .mobile-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .mobile-nav a:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+  }
+
+  .mobile-cta {
+    background: #22c55e !important;
+    color: white !important;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .landing-nav {
+      display: none;
+    }
+
+    .btn-primary {
+      display: none;
+    }
+
+    .mobile-menu-btn {
+      display: flex;
+    }
+
+    .mobile-nav {
+      display: flex;
+    }
+  }
+
+  /* === WOW ANIMATIONS === */
+  
+  /* Gradient Background Glow */
+  .landing-main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1000px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Fade-in animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Pulse animation for CTA */
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
+    }
+  }
+
+  /* Glow animation */
+  @keyframes glow {
+    0%, 100% {
+      text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    }
+    50% {
+      text-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+    }
+  }
+
+  /* Apply animations */
+  .btn-primary {
+    animation: pulse 2s infinite;
+  }
+
+  .btn-primary:hover {
+    animation: none;
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);
+  }
+
+  .logo-text {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  /* Floating animation for icons */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .logo-icon {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    background: rgba(34, 197, 94, 0.3);
+    color: white;
+  }
+
+  /* Link hover underline animation */
+  .landing-nav a {
+    position: relative;
+  }
+
+  .landing-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    transition: width 0.3s ease;
+  }
+
+  .landing-nav a:hover::after {
+    width: 100%;
+  }
+
+  /* Card hover effects */
+  :global(.landing-main section) {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  :global(.landing-main section:nth-child(2)) {
+    animation-delay: 0.1s;
+  }
+
+  :global(.landing-main section:nth-child(3)) {
+    animation-delay: 0.2s;
+  }
+
+  :global(.landing-main section:nth-child(4)) {
+    animation-delay: 0.3s;
+  }
+
+  /* Floating Quick Help Widget */
+  .quick-help-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+  }
+
+  .help-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+
+  .help-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(34, 197, 94, 0.5);
+  }
+
+  .help-toggle .icon-close {
+    display: none;
+    color: white;
+    font-weight: bold;
+  }
+
+  .quick-help-widget.open .help-toggle .icon-open {
+    display: none;
+  }
+
+  .quick-help-widget.open .help-toggle .icon-close {
+    display: block;
+  }
+
+  .quick-help-widget.open .help-toggle {
+    animation: none;
+    background: #ef4444;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 4px 30px rgba(34, 197, 94, 0.7); }
+  }
+
+  .help-popup {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 280px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.3s ease;
+  }
+
+  .quick-help-widget.open .help-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .popup-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .popup-content {
+    padding: 8px 0;
+  }
+
+  .cmd-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .cmd-item:hover {
+    background: var(--color-bg-tertiary);
+  }
+
+  .cmd-item code {
+    background: var(--color-bg-tertiary);
+    color: #22c55e;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .cmd-item span {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .popup-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .start-btn {
+    display: block;
+    text-align: center;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+
+  .start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .quick-help-widget {
+      bottom: 16px;
+      right: 16px;
+    }
+
+    .help-toggle {
+      width: 48px;
+      height: 48px;
+      font-size: 1.25rem;
+    }
+
+    .help-popup {
+      width: 260px;
+      right: -8px;
+    }
+  }
+</style>
+
+<script>
+  // Quick Help Widget Toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.getElementById('quick-help');
+    const toggle = document.getElementById('help-toggle');
+    
+    toggle?.addEventListener('click', () => {
+      widget?.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (widget && !widget.contains(e.target as Node)) {
+        widget.classList.remove('open');
+      }
+    });
+
+    // Countdown Banner
+    const banner = document.getElementById('countdown-banner');
+    const closeBtn = document.getElementById('banner-close');
+    const timerEl = document.getElementById('countdown-timer');
+    
+    // Check if dismissed
+    if (localStorage.getItem('banner-dismissed') === 'true') {
+      banner?.remove();
+    } else {
+      // Set end date (7 days from now or fixed date)
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 3); // 3 days from now
+      endDate.setHours(23, 59, 59, 0);
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = endDate.getTime() - now;
+
+        if (distance < 0) {
+          if (timerEl) timerEl.textContent = '00:00:00';
+          return;
+        }
+
+        const hours = Math.floor(distance / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (timerEl) {
+          timerEl.textContent = 
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // Close button
+      closeBtn?.addEventListener('click', () => {
+        banner?.remove();
+        localStorage.setItem('banner-dismissed', 'true');
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Countdown Banner */
+  .countdown-banner {
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+    background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .fire-icon {
+    font-size: 1.25rem;
+    animation: bounce 0.5s infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
+  }
+
+  .banner-text {
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  .banner-text strong {
+    font-weight: 700;
+  }
+
+  .countdown-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+  }
+
+  .timer-label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+
+  .timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .banner-cta {
+    background: white;
+    color: #ef4444;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .banner-cta:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .banner-close {
+    position: absolute;
+    right: 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .banner-close:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .countdown-banner {
+      padding: 8px 12px;
+    }
+
+    .banner-content {
+      gap: 8px;
+    }
+
+    .banner-text {
+      font-size: 0.8rem;
+    }
+
+    .timer {
+      font-size: 0.9rem;
+    }
+
+    .banner-cta {
+      padding: 4px 12px;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Keyboard Shortcuts Modal */
+  .shortcuts-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+  }
+
+  .shortcuts-modal.open {
+    display: block;
+  }
+
+  .shortcuts-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .shortcuts-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: modalSlideIn 0.2s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from { opacity: 0; transform: translate(-50%, -45%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  .shortcuts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .shortcuts-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-text-primary);
+  }
+
+  .shortcuts-close {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .shortcuts-close:hover {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+  }
+
+  .shortcuts-body {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .shortcut-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+  }
+
+  .shortcut-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  .shortcut-keys {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+  }
+
+  .shortcuts-modal kbd {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--color-text-primary);
+  }
+
+  .shortcut-desc {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .shortcuts-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    .shortcuts-body {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Keyboard Shortcuts
+  const modal = document.getElementById('shortcuts-modal');
+  const closeBtn = document.getElementById('shortcuts-close');
+  const overlay = document.getElementById('shortcuts-overlay');
+  let gPressed = false;
+
+  function openShortcuts() { modal?.classList.add('open'); }
+  function closeShortcuts() { modal?.classList.remove('open'); }
+
+  document.addEventListener('keydown', (e) => {
+    // Don't trigger if typing in input
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+    // ? to open shortcuts
+    if (e.key === '?' && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      openShortcuts();
+    }
+
+    // Cmd+K to open quick help
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      document.getElementById('quick-help')?.classList.toggle('open');
+    }
+
+    // ESC to close
+    if (e.key === 'Escape') {
+      closeShortcuts();
+      document.getElementById('quick-help')?.classList.remove('open');
+    }
+
+    // G + key navigation
+    if (e.key.toLowerCase() === 'g') {
+      gPressed = true;
+      setTimeout(() => { gPressed = false; }, 1000);
+    } else if (gPressed) {
+      switch (e.key.toLowerCase()) {
+        case 'h': window.location.href = '/agencyos'; break;
+        case 'p': window.location.href = '/pricing'; break;
+        case 'd': window.location.href = '/demo'; break;
+        case 'c': window.location.href = '/commands'; break;
+      }
+      gPressed = false;
+    }
+  });
+
+  closeBtn?.addEventListener('click', closeShortcuts);
+  overlay?.addEventListener('click', closeShortcuts);
+</script>
+
+<style>
+  /* Scroll Progress Indicator */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(34, 197, 94, 0.2);
+    z-index: 99998;
+  }
+
+  .scroll-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+  }
+
+  /* Back to Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 9998;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  .back-to-top span {
+    display: block;
+    animation: bounce-up 1s infinite;
+  }
+
+  @keyframes bounce-up {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+</style>
+
+<script>
+  // Scroll Progress Indicator
+  const progressBar = document.getElementById('scroll-progress-bar');
+  const backToTop = document.getElementById('back-to-top');
+
+  function updateScrollProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+
+    if (progressBar) {
+      progressBar.style.width = `${Math.min(scrollPercent, 100)}%`;
+    }
+
+    // Show/hide back to top button
+    if (backToTop) {
+      if (scrollTop > 500) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    }
+  }
+
+  // Throttle scroll events for performance
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateScrollProgress();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Back to top click handler
+  backToTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Initial update
+  updateScrollProgress();
+</script>
+
+<style>
+  /* Social Proof Notification */
+  .social-proof {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 9990;
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .social-proof.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .proof-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+  }
+
+  .proof-content {
+    flex: 1;
+  }
+
+  .proof-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .proof-time {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .proof-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .proof-close:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .social-proof {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+    }
+  }
+
+  /* Floating Promo Badge */
+  .promo-badge {
+    position: fixed;
+    bottom: 200px;
+    left: 24px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(245, 158, 11, 0.95));
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+    animation: badge-float 3s ease-in-out infinite, badge-glow 2s ease-in-out infinite alternate;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .promo-badge:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.4);
+  }
+
+  .promo-badge-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .promo-pulse {
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse-ring 1.5s infinite;
+  }
+
+  .promo-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .promo-discount {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+  }
+
+  .promo-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+  }
+
+  .promo-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  @keyframes badge-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  @keyframes badge-glow {
+    0% { box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3); }
+    100% { box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4); }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .promo-badge.hidden {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .promo-badge {
+      left: 12px;
+      bottom: 80px;
+      padding: 10px 12px;
+    }
+  }
+</style>
+
+<script>
+  // Social Proof Notifications
+  const proofEl = document.getElementById('social-proof');
+  const proofText = document.getElementById('proof-text');
+  const proofTime = document.getElementById('proof-time');
+  const proofAvatar = document.getElementById('proof-avatar');
+  const proofClose = document.getElementById('proof-close');
+
+  const signups = [
+    { name: 'Minh', location: 'Vietnam', emoji: '🇻🇳', action: 'started Pro trial' },
+    { name: 'Sarah', location: 'USA', emoji: '🇺🇸', action: 'upgraded to Pro' },
+    { name: 'Alex', location: 'UK', emoji: '🇬🇧', action: 'joined AgencyOS' },
+    { name: 'Yuki', location: 'Japan', emoji: '🇯🇵', action: 'started Franchise' },
+    { name: 'Hans', location: 'Germany', emoji: '🇩🇪', action: 'purchased Pro' },
+    { name: 'Marie', location: 'France', emoji: '🇫🇷', action: 'activated license' },
+    { name: 'Carlos', location: 'Brazil', emoji: '🇧🇷', action: 'started Pro trial' },
+    { name: 'Kim', location: 'Korea', emoji: '🇰🇷', action: 'joined AgencyOS' },
+    { name: 'Raj', location: 'India', emoji: '🇮🇳', action: 'upgraded to Pro' },
+    { name: 'Emma', location: 'Australia', emoji: '🇦🇺', action: 'purchased Starter' },
+  ];
+
+  const times = ['just now', '1 minute ago', '2 minutes ago', '3 minutes ago', '5 minutes ago'];
+
+  let proofDismissed = false;
+  let proofTimeout: ReturnType<typeof setTimeout>;
+
+  function showProof() {
+    if (proofDismissed || !proofEl) return;
+    
+    const signup = signups[Math.floor(Math.random() * signups.length)];
+    const time = times[Math.floor(Math.random() * times.length)];
+    
+    if (proofText) proofText.textContent = `${signup.name} from ${signup.location} ${signup.action}`;
+    if (proofTime) proofTime.textContent = time;
+    if (proofAvatar) proofAvatar.textContent = signup.emoji;
+    
+    proofEl.classList.add('visible');
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+      proofEl?.classList.remove('visible');
+    }, 5000);
+  }
+
+  function scheduleNextProof() {
+    if (proofDismissed) return;
+    // Random delay between 15-30 seconds
+    const delay = 15000 + Math.random() * 15000;
+    proofTimeout = setTimeout(() => {
+      showProof();
+      scheduleNextProof();
+    }, delay);
+  }
+
+  // Close button
+  proofClose?.addEventListener('click', () => {
+    proofEl?.classList.remove('visible');
+    proofDismissed = true;
+    clearTimeout(proofTimeout);
+  });
+
+  // Start after 8 seconds
+  setTimeout(() => {
+    showProof();
+    scheduleNextProof();
+  }, 8000);
+
+  // Promo Badge Functionality
+  const promoBadge = document.getElementById('promo-badge');
+  const promoCloseBtn = document.getElementById('promo-close');
+  
+  // Hide if already closed
+  if (localStorage.getItem('promo_closed') === 'true') {
+    promoBadge?.classList.add('hidden');
+  }
+  
+  promoCloseBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    promoBadge?.classList.add('hidden');
+    localStorage.setItem('promo_closed', 'true');
+  });
+  
+  promoBadge?.addEventListener('click', () => {
+    window.location.href = '/pricing?promo=LAUNCH20';
+  });
+</script>
+
+<style>
+  /* Animated Logo */
+  .animated-logo .logo-icon {
+    display: inline-block;
+    animation: logoBreathe 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 0 transparent);
+    transition: all 0.3s ease;
+  }
+
+  .animated-logo:hover .logo-icon {
+    animation: logoSpin 0.6s ease-out;
+    filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.6));
+  }
+
+  @keyframes logoBreathe {
+    0%, 100% { 
+      transform: scale(1);
+      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.3));
+    }
+    50% { 
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.5));
+    }
+  }
+
+  @keyframes logoSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-10deg) scale(1.1); }
+    75% { transform: rotate(10deg) scale(1.1); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+
+  .animated-logo .logo-text {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animated-logo:hover .logo-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(34, 197, 94, 0.3),
+      transparent
+    );
+    animation: logoShine 0.6s ease-out;
+  }
+
+  @keyframes logoShine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+</style>
+
+<style>
+  /* Cursor Glow Effect */
+  .cursor-glow {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(34, 197, 94, 0.15) 0%,
+      rgba(34, 197, 94, 0.05) 30%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    mix-blend-mode: screen;
+  }
+
+  .cursor-glow.visible {
+    opacity: 1;
+  }
+
+  /* Hide on touch devices */
+  @media (hover: none) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Cursor Glow Effect
+  const cursorGlow = document.getElementById('cursor-glow');
+  
+  let mouseX = 0;
+  let mouseY = 0;
+  let glowX = 0;
+  let glowY = 0;
+  
+  // Track mouse position
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    if (cursorGlow && !cursorGlow.classList.contains('visible')) {
+      cursorGlow.classList.add('visible');
+    }
+  });
+
+  // Hide when mouse leaves window
+  document.addEventListener('mouseleave', () => {
+    cursorGlow?.classList.remove('visible');
+  });
+
+  // Smooth follow animation
+  function animateGlow() {
+    // Lerp for smooth following
+    glowX += (mouseX - glowX) * 0.1;
+    glowY += (mouseY - glowY) * 0.1;
+    
+    if (cursorGlow) {
+      cursorGlow.style.left = `${glowX}px`;
+      cursorGlow.style.top = `${glowY}px`;
+    }
+    
+    requestAnimationFrame(animateGlow);
+  }
+  
+  // Start animation
+  animateGlow();
+</script>

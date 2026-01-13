@@ -1,0 +1,251 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = '404 - Page Not Found | AgencyOS';
+const description = 'The page you are looking for does not exist.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="error-page">
+    <div class="error-content">
+      <div class="error-icon">🏯</div>
+      <h1 class="error-code">404</h1>
+      <h2 class="error-title">Page Not Found</h2>
+      <p class="error-message">
+        The page you're looking for has wandered off into the mist.
+        <br />
+        Let's get you back on track.
+      </p>
+      
+      <div class="error-actions">
+        <a href="/agencyos" class="btn-primary">Go Home</a>
+        <a href="/pricing" class="btn-secondary">View Pricing</a>
+        <a href="/docs/getting-started/introduction" class="btn-secondary">Read Docs</a>
+      </div>
+      
+      <div class="error-commands">
+        <p class="commands-title">Or try these commands:</p>
+        <code>/marketing/social</code>
+        <code>/sales/proposal</code>
+        <code>/affiliate/scout</code>
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .error-page {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fog overlay effect */
+  .error-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
+    animation: fog-drift 20s ease-in-out infinite;
+  }
+
+  @keyframes fog-drift {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+  }
+
+  .error-content {
+    max-width: 500px;
+    position: relative;
+    z-index: 1;
+    animation: content-entrance 0.8s ease-out;
+  }
+
+  @keyframes content-entrance {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite, icon-glow 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.3));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(-2deg); }
+    75% { transform: translateY(-5px) rotate(2deg); }
+  }
+
+  @keyframes icon-glow {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.3)); }
+    50% { filter: drop-shadow(0 0 40px rgba(34, 197, 94, 0.6)); }
+  }
+
+  /* 404 with glitch effect */
+  .error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    animation: text-shine 3s linear infinite, glitch 5s ease-in-out infinite;
+    position: relative;
+  }
+
+  @keyframes text-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes glitch {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 1px); }
+    94% { transform: translate(2px, -1px); }
+    96% { transform: translate(-1px, -2px); }
+    98% { transform: translate(1px, 2px); }
+  }
+
+  .error-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+    animation: fade-up 0.5s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .error-message {
+    color: var(--color-text-muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+    animation: fade-up 0.5s ease-out 0.3s both;
+  }
+
+  .error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+    animation: fade-up 0.5s ease-out 0.4s both;
+  }
+
+  .btn-primary {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite 1s;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-secondary {
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.15);
+  }
+
+  .error-commands {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    animation: fade-up 0.5s ease-out 0.5s both;
+  }
+
+  .commands-title {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .error-commands code {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 4px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #22c55e;
+    font-family: monospace;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .error-commands code:hover {
+    border-color: #22c55e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  }
+
+  /* Floating particles */
+  .error-page::after {
+    content: '✨';
+    position: absolute;
+    font-size: 1.5rem;
+    animation: particle-float 8s ease-in-out infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes particle-float {
+    0%, 100% { 
+      top: 20%; left: 10%; 
+      opacity: 0.3;
+    }
+    25% { 
+      top: 60%; left: 80%; 
+      opacity: 0.5;
+    }
+    50% { 
+      top: 80%; left: 30%; 
+      opacity: 0.2;
+    }
+    75% { 
+      top: 40%; left: 70%; 
+      opacity: 0.4;
+    }
+  }
+</style>

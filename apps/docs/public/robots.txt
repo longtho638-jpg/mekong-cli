@@ -1,0 +1,13 @@
+# AgencyOS robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://agencyos.network/sitemap.xml
+
+# Block internal paths
+Disallow: /_astro/
+Disallow: /api/
+
+# Crawl-delay for polite bots
+Crawl-delay: 1

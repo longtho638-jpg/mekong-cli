@@ -1,0 +1,413 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Checkout - AgencyOS';
+const description = 'Complete your AgencyOS subscription.';
+
+// Polar.sh Product Configuration
+// Use Product IDs from setup-polar.js (created 2025-12-31)
+const PRODUCT_STARTER = 'af7a521d-142b-45b5-9dd2-337417b0d6b2';
+const PRODUCT_PRO = 'a8323c67-a6f4-4055-8609-aea2f5687e63';
+const PRODUCT_FRANCHISE = 'c2a5666b-bb41-43e5-9d0d-0dc30aee76df';
+
+const POLAR_PRODUCTS = {
+  starter: {
+    monthly: `https://polar.sh/checkout?products=${PRODUCT_STARTER}`,
+    annual: `https://polar.sh/checkout?products=${PRODUCT_STARTER}`
+  },
+  pro: {
+    monthly: `https://polar.sh/checkout?products=${PRODUCT_PRO}`,
+    annual: `https://polar.sh/checkout?products=${PRODUCT_PRO}`
+  },
+  franchise: {
+    monthly: `https://polar.sh/checkout?products=${PRODUCT_FRANCHISE}`,
+    annual: `https://polar.sh/checkout?products=${PRODUCT_FRANCHISE}`
+  }
+};
+
+// Set to true when Polar.sh products are configured
+// ✅ ACTIVATED: 2025-12-31 for $1M 2026 revenue target
+const POLAR_READY = true;
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="checkout-section">
+    <div class="checkout-card">
+      
+      <!-- Loading State -->
+      <div class="loading-state" id="loading-state">
+        <div class="spinner"></div>
+        <h2>Preparing Checkout...</h2>
+        <p>Redirecting to secure payment...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state hidden" id="error-state">
+        <span class="error-icon">⚠️</span>
+        <h2>Something went wrong</h2>
+        <p id="error-message">Unable to process checkout.</p>
+        <a href="/pricing" class="btn-primary">← Back to Pricing</a>
+      </div>
+
+      <!-- Demo Mode State -->
+      <div class="demo-state hidden" id="demo-state">
+        <span class="demo-icon">🏯</span>
+        <h2>Demo Mode Active</h2>
+        <p>Polar.sh checkout is not yet configured.</p>
+        <p class="demo-note">In production, you would be redirected to Polar.sh for payment.</p>
+        
+        <div class="demo-info">
+          <h3>Selected Plan: <span id="selected-plan">Pro</span></h3>
+          <p id="selected-email"></p>
+        </div>
+        
+        <div class="demo-actions">
+          <a href="/success?demo=true&plan=pro" class="btn-primary">
+            Continue to Success (Demo)
+          </a>
+          <a href="/pricing" class="btn-secondary">
+            ← Back to Pricing
+          </a>
+        </div>
+        
+        <div class="setup-note">
+          <h4>🔧 To enable real payments:</h4>
+          <ol>
+            <li>Create products in <a href="https://polar.sh" target="_blank">Polar.sh</a></li>
+            <li>Update POLAR_PRODUCTS in checkout.astro</li>
+            <li>Set POLAR_READY = true</li>
+            <li>Configure webhook URL: /api/webhook/polar</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== WOW CHECKOUT ANIMATIONS ===================== */
+  .checkout-section {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+  }
+
+  /* Card entrance with glow */
+  .checkout-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    animation: card-entrance 0.6s ease-out forwards;
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.15);
+  }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .loading-state, .error-state, .demo-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Enhanced glowing spinner */
+  .spinner {
+    width: 56px;
+    height: 56px;
+    border: 4px solid var(--color-bg-tertiary);
+    border-top-color: #22c55e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite, spinner-glow 2s ease-in-out infinite;
+    position: relative;
+  }
+
+  .spinner::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: rgba(34, 197, 94, 0.3);
+    animation: spin 1.5s linear infinite reverse;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes spinner-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2); }
+  }
+
+  .loading-state h2, .error-state h2, .demo-state h2 {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin: 0;
+    animation: fade-up 0.5s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .loading-state p, .error-state p, .demo-state p {
+    color: var(--color-text-muted);
+    margin: 0;
+    animation: fade-up 0.5s ease-out 0.3s both;
+  }
+
+  .error-icon, .demo-icon {
+    font-size: 3.5rem;
+    animation: icon-bounce 0.6s ease-out 0.1s both;
+  }
+
+  @keyframes icon-bounce {
+    0% { opacity: 0; transform: scale(0); }
+    70% { transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Primary button with pulse */
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: all 0.2s;
+    animation: fade-up 0.5s ease-out 0.5s both, btn-pulse 2.5s ease-in-out infinite 1s;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: all 0.2s;
+    animation: fade-up 0.5s ease-out 0.6s both;
+  }
+
+  .btn-secondary:hover {
+    border-color: #22c55e;
+    transform: translateY(-1px);
+  }
+
+  /* Demo info with shine */
+  .demo-info {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin: 16px 0;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    position: relative;
+    overflow: hidden;
+    animation: fade-up 0.5s ease-out 0.4s both;
+  }
+
+  .demo-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.15), transparent);
+    animation: sweep 3s ease-in-out infinite 1s;
+  }
+
+  @keyframes sweep {
+    0% { left: -100%; }
+    50%, 100% { left: 100%; }
+  }
+
+  .demo-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-text-primary);
+    position: relative;
+    z-index: 1;
+  }
+
+  .demo-info #selected-plan {
+    color: #22c55e;
+    font-weight: 700;
+  }
+
+  .demo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .demo-note {
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  /* Secure Badge */
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    animation: fade-up 0.5s ease-out 0.7s both;
+  }
+
+  .secure-badge .lock-icon {
+    color: #22c55e;
+  }
+
+  .setup-note {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    text-align: left;
+    font-size: 0.85rem;
+    animation: fade-up 0.5s ease-out 0.8s both;
+  }
+
+  .setup-note h4 {
+    margin: 0 0 12px 0;
+    color: var(--color-text-primary);
+  }
+
+  .setup-note ol {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--color-text-muted);
+  }
+
+  .setup-note li {
+    margin-bottom: 8px;
+  }
+
+  .setup-note a {
+    color: #22c55e;
+  }
+
+  @media (max-width: 480px) {
+    .checkout-card {
+      padding: 32px 24px;
+    }
+  }
+</style>
+
+<script define:vars={{ POLAR_PRODUCTS, POLAR_READY }}>
+  const loadingState = document.getElementById('loading-state');
+  const errorState = document.getElementById('error-state');
+  const demoState = document.getElementById('demo-state');
+  const errorMessage = document.getElementById('error-message');
+  const selectedPlanEl = document.getElementById('selected-plan');
+  const selectedEmailEl = document.getElementById('selected-email');
+
+  // Get params
+  const urlParams = new URLSearchParams(window.location.search);
+  const plan = urlParams.get('plan') || 'pro';
+  const billing = urlParams.get('billing') || 'monthly';
+  const email = urlParams.get('email');
+  const promo = urlParams.get('promo');
+
+  // Also check localStorage for user data
+  let userData = null;
+  try {
+    userData = JSON.parse(localStorage.getItem('agencyos_user') || '{}');
+  } catch (e) {}
+
+  const userEmail = email || userData?.email;
+
+  function showError(message) {
+    if (loadingState) loadingState.classList.add('hidden');
+    if (demoState) demoState.classList.add('hidden');
+    if (errorState) errorState.classList.remove('hidden');
+    if (errorMessage) errorMessage.textContent = message;
+  }
+
+  function showDemo() {
+    if (loadingState) loadingState.classList.add('hidden');
+    if (errorState) errorState.classList.add('hidden');
+    if (demoState) demoState.classList.remove('hidden');
+    
+    if (selectedPlanEl) selectedPlanEl.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    if (selectedEmailEl && userEmail) selectedEmailEl.textContent = `Email: ${userEmail}`;
+  }
+
+  async function redirectToCheckout() {
+    // Check if Polar.sh is configured
+    if (!POLAR_READY) {
+      // Show demo mode
+      setTimeout(showDemo, 1500);
+      return;
+    }
+
+    try {
+      // POST to Vercel API function to create checkout session
+      const response = await fetch('/api/checkout/polar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan: plan,
+          billing: billing,
+          email: userEmail,
+          promoCode: promo
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.checkoutUrl) {
+        // Redirect to Polar checkout
+        window.location.href = data.checkoutUrl;
+      } else {
+        showError(data.error || 'Failed to create checkout');
+      }
+    } catch (error) {
+      showError('Network error. Please try again.');
+    }
+  }
+
+  // Start checkout process
+  setTimeout(redirectToCheckout, 1000);
+</script>

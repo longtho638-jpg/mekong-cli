@@ -1,0 +1,675 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+export const prerender = true;
+
+const title = 'Bảng Giá AgencyOS - Đơn Giản, Giá Trị Khổng Lồ';
+const description = 'Tất cả gói đều có 125+ lệnh AI. Chọn gói phù hợp với agency của bạn. Dùng thử miễn phí 7 ngày.';
+---
+
+<LandingLayout title={title} description={description}>
+
+<!-- Hero -->
+<div class="text-center py-12">
+  <h1 class="text-4xl font-bold mb-4 text-[var(--color-text-primary)]">
+    Bảng giá đơn giản. Giá trị khổng lồ.
+  </h1>
+  <p class="text-lg text-[var(--color-text-muted)]">
+    Tất cả gói đều có 125+ lệnh AI. Chọn gói phù hợp với agency của bạn.
+  </p>
+</div>
+
+<!-- Promo Code Input -->
+<section class="py-4 mb-8">
+  <div class="max-w-md mx-auto">
+    <div id="promo-box" class="p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+      <label class="block text-sm font-medium mb-2 text-[var(--color-text-primary)]">
+        🎟️ Bạn có mã giảm giá?
+      </label>
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          id="promo-input" 
+          placeholder="Nhập mã (VD: AGENCYOS-XXXX)"
+          class="flex-1 px-4 py-2 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-green)]"
+        />
+        <button 
+          id="apply-promo-btn"
+          class="px-6 py-2 bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all"
+        >
+          Áp dụng
+        </button>
+      </div>
+      <div id="promo-result" class="mt-3 hidden">
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-green-500">✓</span>
+          <span id="promo-message" class="text-green-500"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Cards -->
+<section id="pricing-plans" class="py-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+    
+    <!-- Starter -->
+    <div class="tilt-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--color-accent-green)] transition-all">
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Starter</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]">
+        $29<span class="text-lg font-normal text-[var(--color-text-muted)]">/tháng</span>
+      </div>
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">Hoàn hảo cho solo founder</p>
+      
+      <a href="/signup?plan=starter" class="block w-full py-3 text-center bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-all mb-6">
+        Dùng Thử Miễn Phí
+      </a>
+      
+      <ul class="space-y-3 text-sm">
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> 125+ lệnh AI
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Tự động hóa marketing
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Proposal sales
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Theo dõi affiliate
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Dashboard tài chính
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Hỗ trợ cộng đồng
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Cập nhật hàng tháng
+        </li>
+      </ul>
+    </div>
+
+    <!-- Pro -->
+    <div class="tilt-card pro-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-green)] relative transform scale-105 shadow-xl">
+      <div class="pricing-particles"></div>
+      <div class="popular-badge absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 text-white text-sm font-semibold rounded-full">
+        ✨ PHỔ BIẾN NHẤT
+      </div>
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Pro</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)] price-animate">
+        $99<span class="text-lg font-normal text-[var(--color-text-muted)]">/tháng</span>
+      </div>
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">Cho agency chuyên nghiệp</p>
+      
+      <a href="/signup?plan=pro" class="cta-btn block w-full py-3 text-center bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all mb-6">
+        Dùng Thử Miễn Phí →
+      </a>
+      
+      <ul class="space-y-3 text-sm">
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Tất cả tính năng Starter
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Hỗ trợ ưu tiên (24h)
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> 5 tài khoản team
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Phân tích nâng cao
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Tùy chỉnh thương hiệu
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Truy cập API
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Onboarding 1-1
+        </li>
+      </ul>
+    </div>
+
+    <!-- Franchise -->
+    <div class="tilt-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--color-accent-purple)] transition-all">
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Franchise</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]">
+        $299<span class="text-lg font-normal text-[var(--color-text-muted)]">/tháng</span>
+      </div>
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">White-label & bán lại</p>
+      
+      <a href="mailto:franchise@agencyos.network" class="block w-full py-3 text-center bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-all mb-6">
+        Liên Hệ Sales
+      </a>
+      
+      <ul class="space-y-3 text-sm">
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Tất cả tính năng Pro
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Quyền white-label
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Domain riêng
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Không giới hạn tài khoản
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Chia sẻ doanh thu (85%)
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Hỗ trợ franchise
+        </li>
+        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+          <span class="text-green-500">✓</span> Họp chiến lược quý
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Annual Savings -->
+<section class="py-8 text-center">
+  <div class="inline-block p-6 rounded-xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
+    <p class="text-lg font-semibold text-[var(--color-text-primary)] mb-2">💰 Tiết kiệm 20% với thanh toán năm</p>
+    <div class="flex gap-8 justify-center text-sm text-[var(--color-text-muted)]">
+      <span>Starter: $279/năm</span>
+      <span>Pro: $949/năm</span>
+      <span>Franchise: $2,869/năm</span>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Comparison -->
+<section id="compare-features" class="py-12">
+  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">So Sánh Tính Năng</h2>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full max-w-4xl mx-auto text-sm">
+      <thead>
+        <tr class="border-b border-[var(--color-border)]">
+          <th class="py-4 px-4 text-left text-[var(--color-text-primary)]">Tính Năng</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Starter</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Pro</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Franchise</th>
+        </tr>
+      </thead>
+      <tbody class="text-[var(--color-text-secondary)]">
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Lệnh AI</td>
+          <td class="py-3 px-4 text-center">125+</td>
+          <td class="py-3 px-4 text-center">125+</td>
+          <td class="py-3 px-4 text-center">125+</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Tài khoản Team</td>
+          <td class="py-3 px-4 text-center">1</td>
+          <td class="py-3 px-4 text-center">5</td>
+          <td class="py-3 px-4 text-center">Không giới hạn</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Hỗ Trợ</td>
+          <td class="py-3 px-4 text-center">Cộng đồng</td>
+          <td class="py-3 px-4 text-center">Ưu tiên (24h)</td>
+          <td class="py-3 px-4 text-center">Chuyên dụng</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Tùy Chỉnh Thương Hiệu</td>
+          <td class="py-3 px-4 text-center">❌</td>
+          <td class="py-3 px-4 text-center">✅</td>
+          <td class="py-3 px-4 text-center">✅</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">White-label</td>
+          <td class="py-3 px-4 text-center">❌</td>
+          <td class="py-3 px-4 text-center">❌</td>
+          <td class="py-3 px-4 text-center">✅</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Truy Cập API</td>
+          <td class="py-3 px-4 text-center">❌</td>
+          <td class="py-3 px-4 text-center">✅</td>
+          <td class="py-3 px-4 text-center">✅</td>
+        </tr>
+        <tr class="border-b border-[var(--color-border)]">
+          <td class="py-3 px-4">Onboarding</td>
+          <td class="py-3 px-4 text-center">Tài liệu</td>
+          <td class="py-3 px-4 text-center">Họp 1-1</td>
+          <td class="py-3 px-4 text-center">Setup đầy đủ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-12">
+  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">Câu Hỏi Thường Gặp</h2>
+  
+  <div class="max-w-2xl mx-auto space-y-6">
+    <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Tôi có thể đổi gói không?</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">Có! Nâng cấp hoặc hạ cấp bất cứ lúc nào. Thay đổi có hiệu lực vào kỳ thanh toán tiếp theo.</p>
+    </div>
+    
+    <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Có dùng thử miễn phí không?</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">Có! 7 ngày dùng thử miễn phí tất cả gói. Thẻ sẽ bị tính phí sau khi hết thời gian dùng thử - hủy bất cứ lúc nào trước đó.</p>
+    </div>
+    
+    <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Chấp nhận phương thức thanh toán nào?</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">Thẻ tín dụng/ghi nợ, PayPal, và Crypto (USDT/USDC). Tất cả thanh toán được bảo mật bởi Polar.sh.</p>
+    </div>
+    
+    <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Có được hoàn tiền không?</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">Đảm bảo hoàn tiền 30 ngày. Không hỏi lý do.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Guarantee -->
+<section class="py-12 text-center">
+  <div class="inline-block p-8 rounded-2xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
+    <div class="text-4xl mb-4">🛡️</div>
+    <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Đảm Bảo Hoàn Tiền 30 Ngày</h3>
+    <p class="text-[var(--color-text-muted)]">Không hài lòng? Hoàn tiền đầy đủ trong 30 ngày. Không hỏi lý do.</p>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-12 text-center">
+  <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-primary)]">Sẵn sàng tự động hóa agency của bạn?</h2>
+  <div class="flex gap-4 justify-center">
+    <a href="/signup?plan=pro" class="px-8 py-3 bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all">
+      Dùng Thử Miễn Phí
+    </a>
+    <a href="mailto:hello@agencyos.network" class="px-8 py-3 border border-[var(--color-accent-green)] text-[var(--color-accent-green)] rounded-lg font-medium hover:bg-[var(--color-accent-green)]/10 transition-all">
+      Đặt Lịch Demo
+    </a>
+  </div>
+</section>
+
+<!-- Language Switcher -->
+<div class="fixed bottom-6 left-6 z-50">
+  <a href="/pricing" class="lang-switch">
+    🇬🇧 EN
+  </a>
+</div>
+
+<script>
+  // Promo code validation
+  const promoInput = document.getElementById('promo-input') as HTMLInputElement;
+  const applyBtn = document.getElementById('apply-promo-btn');
+  const promoResult = document.getElementById('promo-result');
+  const promoMessage = document.getElementById('promo-message');
+  const promoBox = document.getElementById('promo-box');
+
+  // Original prices
+  const prices = {
+    starter: 29,
+    pro: 99,
+    franchise: 299
+  };
+
+  applyBtn?.addEventListener('click', async () => {
+    const code = promoInput?.value.trim().toUpperCase();
+    
+    if (!code) {
+      showError('Vui lòng nhập mã giảm giá');
+      return;
+    }
+
+    // Show loading state
+    if (applyBtn) {
+      (applyBtn as HTMLButtonElement).disabled = true;
+      applyBtn.textContent = '...';
+    }
+
+    try {
+      // Validate via API (checks Polar.sh discounts first)
+      const response = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+
+      const result = await response.json();
+
+      if (result.valid) {
+        showSuccess(result.value, result.name);
+        updatePrices(result.value);
+        // Save applied code with discountId
+        localStorage.setItem('agencyos_applied_code', JSON.stringify({
+          code: result.code,
+          discount: result.value,
+          discountId: result.discountId,
+          source: result.source
+        }));
+      } else {
+        showError(result.error || 'Mã giảm giá không hợp lệ');
+      }
+    } catch (error) {
+      console.error('Promo validation error:', error);
+      showError('Không thể xác thực mã');
+    } finally {
+      // Reset button
+      if (applyBtn) {
+        (applyBtn as HTMLButtonElement).disabled = false;
+        applyBtn.textContent = 'Áp dụng';
+      }
+    }
+  });
+
+  function showSuccess(discount: number, name?: string) {
+    if (promoResult && promoMessage && promoBox) {
+      promoResult.classList.remove('hidden');
+      promoMessage.classList.remove('text-red-500');
+      promoMessage.classList.add('text-green-500');
+      
+      if (discount === 100) {
+        promoMessage.textContent = `🎉 MIỄN PHÍ! ${name || '100% giảm giá'} đã áp dụng!`;
+        promoBox.classList.add('border-green-500');
+      } else {
+        promoMessage.textContent = `${name || 'Giảm ' + discount + '%'} đã áp dụng!`;
+        promoBox.classList.add('border-green-500');
+      }
+    }
+  }
+
+  function showError(message: string) {
+    if (promoResult && promoMessage && promoBox) {
+      promoResult.classList.remove('hidden');
+      promoMessage.classList.remove('text-green-500');
+      promoMessage.classList.add('text-red-500');
+      promoMessage.textContent = message;
+      promoBox.classList.remove('border-green-500');
+    }
+  }
+
+  function updatePrices(discount: number) {
+    // Update displayed prices
+    const priceElements = document.querySelectorAll('[data-price]');
+    priceElements.forEach(el => {
+      const originalPrice = parseInt(el.getAttribute('data-price') || '0');
+      const newPrice = Math.round(originalPrice * (1 - discount / 100));
+      
+      if (discount === 100) {
+        el.innerHTML = `<span class="line-through text-red-500">$${originalPrice}</span> <span class="text-green-500">MIỄN PHÍ</span>`;
+      } else if (discount > 0) {
+        el.innerHTML = `<span class="line-through text-[var(--color-text-muted)]">$${originalPrice}</span> $${newPrice}`;
+      }
+    });
+
+    // Add discount badge to pricing cards
+    if (discount > 0) {
+      const pricingCards = document.querySelectorAll('#pricing-plans > div > div');
+      pricingCards.forEach(card => {
+        if (!card.querySelector('.discount-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'discount-badge absolute -top-3 -right-3 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full';
+          badge.textContent = discount === 100 ? 'MIỄN PHÍ!' : `-${discount}%`;
+          (card as HTMLElement).style.position = 'relative';
+          card.appendChild(badge);
+        }
+      });
+    }
+  }
+
+  // Check for previously applied code
+  const appliedCode = localStorage.getItem('agencyos_applied_code');
+  if (appliedCode) {
+    const { code, discount } = JSON.parse(appliedCode);
+    if (promoInput) promoInput.value = code;
+    showSuccess(discount);
+    updatePrices(discount);
+  }
+</script>
+
+<style>
+  /* ===================== WOW PRICING ANIMATIONS ===================== */
+  /* 3D Tilt Card Effect */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+    will-change: transform;
+    position: relative;
+    overflow: hidden;
+    animation: card-entrance 0.6s ease-out both;
+  }
+
+  .tilt-card:nth-child(1) { animation-delay: 0.1s; }
+  .tilt-card:nth-child(2) { animation-delay: 0.2s; }
+  .tilt-card:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes card-entrance {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .tilt-card:hover {
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.3),
+      0 0 60px rgba(34, 197, 94, 0.15);
+  }
+
+  /* Mouse-follow gradient */
+  .tilt-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(34, 197, 94, 0.1),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tilt-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Shine sweep effect on hover */
+  .tilt-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .tilt-card:hover::after {
+    left: 100%;
+  }
+
+  .tilt-card > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Pro card special glow */
+  .tilt-card.pro-card {
+    animation: card-entrance 0.6s ease-out both, pro-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pro-glow {
+    0%, 100% {
+      box-shadow: 
+        0 0 20px rgba(34, 197, 94, 0.3),
+        0 0 40px rgba(34, 197, 94, 0.1);
+    }
+    50% {
+      box-shadow: 
+        0 0 30px rgba(34, 197, 94, 0.5),
+        0 0 60px rgba(34, 197, 94, 0.2);
+    }
+  }
+
+  /* Floating particles */
+  .pricing-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pricing-particles::before,
+  .pricing-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--color-accent-green);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: float-particle 6s ease-in-out infinite;
+  }
+
+  .pricing-particles::before {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .pricing-particles::after {
+    top: 60%;
+    right: 15%;
+    animation-delay: 3s;
+  }
+
+  @keyframes float-particle {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { transform: translateY(-20px) scale(1.5); opacity: 0.6; }
+  }
+
+  /* Price counter animation */
+  .price-animate {
+    display: inline-block;
+    animation: price-pop 0.4s ease-out;
+  }
+
+  @keyframes price-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Popular badge shine */
+  .popular-badge {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #22c55e 100%);
+    background-size: 200% auto;
+    animation: badge-shine 3s linear infinite;
+  }
+
+  @keyframes badge-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Feature list hover effect */
+  .tilt-card li {
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .tilt-card:hover li {
+    transform: translateX(4px);
+  }
+
+  .tilt-card li:hover {
+    color: var(--color-text-primary);
+  }
+
+  /* CTA button pulse on Pro */
+  .pro-card .cta-btn {
+    animation: btn-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  }
+
+  /* Language Switcher */
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .lang-switch:hover {
+    border-color: var(--color-accent-green);
+    color: var(--color-text-primary);
+    transform: translateY(-2px);
+  }
+</style>
+
+<script>
+  // 3D Tilt Card Effect
+  const tiltCards = document.querySelectorAll('.tilt-card');
+  
+  tiltCards.forEach(card => {
+    const cardEl = card as HTMLElement;
+    
+    cardEl.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = cardEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      
+      cardEl.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      
+      // Update gradient position
+      const percentX = (x / rect.width) * 100;
+      const percentY = (y / rect.height) * 100;
+      cardEl.style.setProperty('--mouse-x', `${percentX}%`);
+      cardEl.style.setProperty('--mouse-y', `${percentY}%`);
+    });
+    
+    cardEl.addEventListener('mouseleave', () => {
+      cardEl.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+    });
+  });
+</script>
+
+</LandingLayout>

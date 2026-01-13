@@ -1,0 +1,497 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Gamification - AgencyOS';
+const description = 'Level up while you earn. XP system, achievement badges, and rewards for using AgencyOS.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="gaming-hero">
+    <h1>🎮 Level Up While You Earn</h1>
+    <p>Gamification that actually makes you money</p>
+  </section>
+
+  <!-- XP System -->
+  <section class="xp-section">
+    <h2>⚡ XP System</h2>
+    <p class="section-desc">Earn XP for every action. Level up to unlock premium features.</p>
+    
+    <div class="xp-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>XP</th>
+            <th>Ví dụ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🔧 Gõ command</td>
+            <td><span class="xp-badge">+50</span></td>
+            <td>Mỗi lần dùng /command</td>
+          </tr>
+          <tr>
+            <td>✅ Hoàn thành workflow</td>
+            <td><span class="xp-badge">+200</span></td>
+            <td>Finish Affiliate Workflow</td>
+          </tr>
+          <tr>
+            <td>💰 Kiếm được tiền</td>
+            <td><span class="xp-badge gold">+500</span></td>
+            <td>First affiliate payout</td>
+          </tr>
+          <tr>
+            <td>🚀 Launch sản phẩm</td>
+            <td><span class="xp-badge gold">+1000</span></td>
+            <td>Ship feature mới</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Achievement Badges -->
+  <section class="badges-section">
+    <h2>🏆 Achievement Badges</h2>
+    <p class="section-desc">Collect badges as you progress. Show off your achievements!</p>
+    
+    <div class="badges-grid">
+      <div class="badge-card">
+        <span class="badge-icon">🔰</span>
+        <h3>First Timer</h3>
+        <p>Dùng command đầu tiên</p>
+        <span class="badge-reward">+100 XP</span>
+      </div>
+      
+      <div class="badge-card gold">
+        <span class="badge-icon">💸</span>
+        <h3>Money Maker</h3>
+        <p>Kiếm $100 đầu tiên</p>
+        <span class="badge-reward">+500 XP</span>
+      </div>
+      
+      <div class="badge-card">
+        <span class="badge-icon">🚀</span>
+        <h3>Shipper</h3>
+        <p>Launch 3 sản phẩm</p>
+        <span class="badge-reward">+1000 XP</span>
+      </div>
+      
+      <div class="badge-card legendary">
+        <span class="badge-icon">👑</span>
+        <h3>Master</h3>
+        <p>Đạt Level 10</p>
+        <span class="badge-reward">Unlock Premium</span>
+      </div>
+      
+      <div class="badge-card">
+        <span class="badge-icon">📣</span>
+        <h3>Influencer</h3>
+        <p>10K followers</p>
+        <span class="badge-reward">+2000 XP</span>
+      </div>
+      
+      <div class="badge-card">
+        <span class="badge-icon">🏯</span>
+        <h3>Strategist</h3>
+        <p>Complete 13 Binh Pháp</p>
+        <span class="badge-reward">+5000 XP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Level Progression -->
+  <section class="levels-section">
+    <h2>📊 Level Progression</h2>
+    
+    <div class="levels-list">
+      <div class="level-item">
+        <span class="level-number">1-3</span>
+        <span class="level-title">Beginner</span>
+        <span class="level-perk">Basic commands unlocked</span>
+      </div>
+      <div class="level-item">
+        <span class="level-number">4-6</span>
+        <span class="level-title">Intermediate</span>
+        <span class="level-perk">Advanced workflows</span>
+      </div>
+      <div class="level-item">
+        <span class="level-number">7-9</span>
+        <span class="level-title">Advanced</span>
+        <span class="level-perk">Priority support</span>
+      </div>
+      <div class="level-item legendary">
+        <span class="level-number">10+</span>
+        <span class="level-title">Master</span>
+        <span class="level-perk">All premium features FREE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Soon -->
+  <section class="coming-soon">
+    <h2>🔮 Coming Soon</h2>
+    <div class="coming-grid">
+      <div class="coming-card">
+        <span>🏆</span>
+        <p>Leaderboards</p>
+      </div>
+      <div class="coming-card">
+        <span>🎁</span>
+        <p>Weekly Rewards</p>
+      </div>
+      <div class="coming-card">
+        <span>🤝</span>
+        <p>Team Challenges</p>
+      </div>
+      <div class="coming-card">
+        <span>💎</span>
+        <p>NFT Badges</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to level up?</h2>
+    <a href="/docs/getting-started/installation" class="btn-primary">Start Earning XP →</a>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== HERO WOW ===================== */
+  .gaming-hero {
+    text-align: center;
+    padding: 64px 24px 32px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gaming-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899, #f97316, #8b5cf6);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    animation: rainbow-shine 4s linear infinite;
+  }
+
+  @keyframes rainbow-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .gaming-hero p {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+  }
+
+  .xp-section,
+  .badges-section,
+  .levels-section,
+  .coming-soon {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  .xp-section h2,
+  .badges-section h2,
+  .levels-section h2,
+  .coming-soon h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+
+  .xp-table {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .xp-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .xp-table th,
+  .xp-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .xp-table th {
+    background: var(--color-bg-tertiary);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .xp-table td {
+    color: var(--color-text-secondary);
+  }
+
+  .xp-badge {
+    background: #8b5cf6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    animation: xp-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes xp-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .xp-badge.gold {
+    background: linear-gradient(135deg, #eab308, #f97316);
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  /* ===================== BADGES WOW ===================== */
+  .badge-card {
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: badge-pop 0.5s ease-out both;
+  }
+
+  .badge-card:nth-child(1) { animation-delay: 0.3s; }
+  .badge-card:nth-child(2) { animation-delay: 0.4s; }
+  .badge-card:nth-child(3) { animation-delay: 0.5s; }
+  .badge-card:nth-child(4) { animation-delay: 0.6s; }
+  .badge-card:nth-child(5) { animation-delay: 0.7s; }
+  .badge-card:nth-child(6) { animation-delay: 0.8s; }
+
+  @keyframes badge-pop {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .badge-card:hover {
+    transform: translateY(-6px) rotate(2deg);
+    border-color: #8b5cf6;
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2);
+  }
+
+  .badge-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .badge-card:hover .badge-icon {
+    transform: scale(1.2) rotate(-5deg);
+  }
+
+  .badge-card.gold {
+    border-color: #eab308;
+  }
+
+  .badge-card.legendary {
+    border-color: #ec4899;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+  }
+
+  .badge-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .badge-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 4px 0;
+  }
+
+  .badge-card p {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: 0 0 12px 0;
+  }
+
+  .badge-reward {
+    background: var(--color-bg-tertiary);
+    color: #22c55e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .levels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ===================== LEVELS WOW ===================== */
+  .level-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 16px;
+    animation: level-slide 0.5s ease-out both;
+    transition: all 0.3s ease;
+  }
+
+  .level-item:nth-child(1) { animation-delay: 0.5s; }
+  .level-item:nth-child(2) { animation-delay: 0.6s; }
+  .level-item:nth-child(3) { animation-delay: 0.7s; }
+  .level-item:nth-child(4) { animation-delay: 0.8s; }
+
+  @keyframes level-slide {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .level-item:hover {
+    transform: translateX(4px);
+    border-color: #8b5cf6;
+  }
+
+  .level-item.legendary {
+    border-color: #ec4899;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+  }
+
+  .level-number {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .level-title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    min-width: 120px;
+  }
+
+  .level-perk {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-left: auto;
+  }
+
+  .coming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .coming-card {
+    background: var(--color-bg-secondary);
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .coming-card span {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .coming-card p {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  /* ===================== CTA WOW ===================== */
+  .cta-section {
+    text-align: center;
+    padding: 64px 24px;
+    background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.05));
+    border-top: 1px solid var(--color-border);
+    animation: cta-entrance 0.6s ease-out 0.9s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(139, 92, 246, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .gaming-hero h1 {
+      font-size: 2rem;
+    }
+
+    .level-item {
+      flex-wrap: wrap;
+    }
+
+    .level-perk {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 8px;
+    }
+  }
+</style>

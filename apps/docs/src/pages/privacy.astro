@@ -1,0 +1,198 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Privacy Policy - AgencyOS';
+const description = 'Privacy policy for AgencyOS. How we handle your data.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="legal-page">
+    <div class="legal-container">
+      
+      <div class="legal-header">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last updated: December 22, 2024</p>
+      </div>
+
+      <div class="legal-content">
+        
+        <h2>1. Information We Collect</h2>
+        <p>We collect information you provide directly:</p>
+        <ul>
+          <li><strong>Account data:</strong> Email, name when you sign up</li>
+          <li><strong>Payment data:</strong> Processed securely via Stripe/PayPal</li>
+          <li><strong>Usage data:</strong> Commands used, features accessed</li>
+        </ul>
+
+        <h2>2. How We Use Your Information</h2>
+        <ul>
+          <li>Provide and improve AgencyOS services</li>
+          <li>Send important product updates</li>
+          <li>Process payments and prevent fraud</li>
+          <li>Respond to support requests</li>
+        </ul>
+
+        <h2>3. Data Security</h2>
+        <p>We use industry-standard security measures:</p>
+        <ul>
+          <li>SSL/TLS encryption for all data transfers</li>
+          <li>Secure cloud infrastructure (Vercel, Supabase)</li>
+          <li>No storage of payment card details</li>
+        </ul>
+
+        <h2>4. Third-Party Services</h2>
+        <p>We use these trusted services:</p>
+        <ul>
+          <li><strong>Stripe/PayPal:</strong> Payment processing</li>
+          <li><strong>Vercel:</strong> Hosting</li>
+          <li><strong>Supabase:</strong> Database</li>
+          <li><strong>Plausible:</strong> Privacy-friendly analytics</li>
+        </ul>
+
+        <h2>5. Your Rights</h2>
+        <ul>
+          <li>Access your personal data</li>
+          <li>Request data deletion</li>
+          <li>Export your data</li>
+          <li>Opt out of marketing emails</li>
+        </ul>
+
+        <h2>6. Cookies</h2>
+        <p>We use minimal cookies for:</p>
+        <ul>
+          <li>Session management (required)</li>
+          <li>Preference storage (optional)</li>
+        </ul>
+        <p>No third-party tracking cookies.</p>
+
+        <h2>7. Contact</h2>
+        <p>Questions about privacy? Contact us:</p>
+        <ul>
+          <li>Email: <a href="mailto:privacy@agencyos.network">privacy@agencyos.network</a></li>
+        </ul>
+
+      </div>
+
+      <div class="legal-footer">
+        <a href="/terms">Terms of Service →</a>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .legal-page {
+    min-height: calc(100vh - 72px);
+    padding: 64px 24px;
+  }
+
+  .legal-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HEADER WOW ===================== */
+  .legal-header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .legal-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    animation: title-shine 5s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .last-updated {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  /* ===================== CONTENT WOW ===================== */
+  .legal-content {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px;
+    animation: content-fade 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes content-fade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .legal-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+
+  .legal-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-content p {
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .legal-content ul {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  .legal-content li {
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .legal-content a {
+    color: #22c55e;
+    transition: all 0.2s ease;
+  }
+
+  .legal-content a:hover {
+    text-decoration: underline;
+  }
+
+  /* ===================== FOOTER WOW ===================== */
+  .legal-footer {
+    text-align: center;
+    margin-top: 32px;
+    animation: content-fade 0.6s ease-out 0.4s both;
+  }
+
+  .legal-footer a {
+    color: #22c55e;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .legal-footer a:hover {
+    transform: translateX(4px);
+    display: inline-block;
+  }
+</style>

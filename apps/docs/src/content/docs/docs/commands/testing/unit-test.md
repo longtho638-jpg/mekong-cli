@@ -1,0 +1,37 @@
+---
+title: "Unit Test"
+description: "ZERO-EFFORT Unit Test automation"
+section: docs
+category: commands
+order: 100
+published: true
+ai_executable: true
+---
+
+# /unit-test
+
+---
+
+## 🤖 Quick Execute
+
+```
+Execute: https://agencyos.network/docs/commands/testing/unit-test
+```
+
+
+
+> 🏯 **Binh Pháp Aligned** - ZERO-EFFORT automation
+
+## Usage
+
+```bash
+/unit-test
+```
+
+## What Agent Does
+
+Agent tự động thực hiện tất cả bước - **NO INPUT REQUIRED**.
+
+---
+
+📖 [Back to Commands](/docs/commands)

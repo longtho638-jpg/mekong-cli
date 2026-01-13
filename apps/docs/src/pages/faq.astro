@@ -1,0 +1,517 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'FAQ - AgencyOS';
+const description = 'Frequently asked questions about AgencyOS, pricing, and getting started.';
+
+const faqs = [
+  {
+    category: "Getting Started",
+    icon: "🚀",
+    questions: [
+      {
+        q: "What is AgencyOS?",
+        a: "AgencyOS is an AI-powered operating system for solo agencies. It includes 125+ commands to automate marketing, sales, affiliate management, and finance tasks."
+      },
+      {
+        q: "How do I install AgencyOS?",
+        a: "After purchase, you get access to a private GitHub repository. Clone it locally and open in your IDE. Run the setup script and you're ready to go."
+      },
+      {
+        q: "Do I need coding experience?",
+        a: "No! AgencyOS is designed for non-technical users. Just type natural language commands like /marketing/social or /sales/proposal and the AI handles the rest."
+      }
+    ]
+  },
+  {
+    category: "Pricing & Plans",
+    icon: "💰",
+    questions: [
+      {
+        q: "What's included in the free trial?",
+        a: "The 7-day free trial includes all Starter tier features: 20 AI commands, basic marketing automation, and community support."
+      },
+      {
+        q: "Can I upgrade or downgrade anytime?",
+        a: "Yes! You can switch plans at any time. Upgrades are prorated, and downgrades take effect at the next billing cycle."
+      },
+      {
+        q: "Is there a refund policy?",
+        a: "Absolutely. We offer a 30-day money-back guarantee. If you're not satisfied, email us and we'll refund you, no questions asked."
+      }
+    ]
+  },
+  {
+    category: "Features & Commands",
+    icon: "⌨️",
+    questions: [
+      {
+        q: "How many commands are available?",
+        a: "AgencyOS includes 125+ commands across marketing, sales, affiliate, finance, and content creation. New commands are added monthly."
+      },
+      {
+        q: "Can I create custom commands?",
+        a: "Yes! Pro and Franchise tiers include the ability to create and save custom command templates."
+      },
+      {
+        q: "Does it integrate with my existing tools?",
+        a: "AgencyOS works with popular tools like Notion, Google Workspace, Slack, and more through our MCP (Model Context Protocol) integrations."
+      }
+    ]
+  },
+  {
+    category: "Support & Community",
+    icon: "🆘",
+    questions: [
+      {
+        q: "How do I get support?",
+        a: "Starter users get community support via Discord. Pro users get priority email support. Franchise users get dedicated 1:1 onboarding calls."
+      },
+      {
+        q: "Is there a community?",
+        a: "Yes! Join our Discord community with 500+ agency owners sharing tips, templates, and wins."
+      },
+      {
+        q: "Are there tutorials or documentation?",
+        a: "We have comprehensive documentation, video tutorials, and a blog with tips and best practices."
+      }
+    ]
+  }
+];
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="faq-page">
+    <div class="faq-container">
+      
+      <!-- Hero -->
+      <div class="faq-hero">
+        <div class="hero-icon">❓</div>
+        <h1 class="faq-title">Frequently Asked Questions</h1>
+        <p class="faq-subtitle">
+          Got questions? We've got answers.
+        </p>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrapper">
+        <input 
+          type="text" 
+          id="faq-search" 
+          class="search-input" 
+          placeholder="🔍 Search questions..."
+        />
+      </div>
+
+      <!-- FAQ Categories -->
+      <div class="faq-content">
+        {faqs.map((category, catIndex) => (
+          <div class="faq-category" style={`--cat-delay: ${catIndex}`}>
+            <div class="category-header">
+              <span class="category-icon">{category.icon}</span>
+              <h2 class="category-title">{category.category}</h2>
+            </div>
+            <div class="questions-list">
+              {category.questions.map((item, qIndex) => (
+                <details class="faq-item" style={`--q-delay: ${catIndex * 3 + qIndex}`}>
+                  <summary class="faq-question">
+                    <span class="question-text">{item.q}</span>
+                    <span class="faq-icon">+</span>
+                  </summary>
+                  <div class="faq-answer">{item.a}</div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- No Results -->
+      <div class="no-results" id="no-results">
+        <span class="no-results-icon">🔍</span>
+        <p>No questions found. Try a different search.</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="faq-cta">
+        <h2>Still have questions?</h2>
+        <p>We're here to help. Reach out to our team.</p>
+        <div class="cta-buttons">
+          <a href="mailto:hello@agencyos.network" class="btn-primary">Contact Support</a>
+          <a href="https://discord.gg/agencyos" class="btn-secondary" target="_blank">Join Discord</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== PAGE CONTAINER ===================== */
+  .faq-page {
+    min-height: calc(100vh - 72px);
+    padding: 64px 24px;
+  }
+
+  .faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HERO WOW ===================== */
+  .faq-hero {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.4));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .faq-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-shine 4s linear infinite;
+    margin-bottom: 12px;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .faq-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+  }
+
+  /* ===================== SEARCH WOW ===================== */
+  .search-wrapper {
+    margin-bottom: 40px;
+    animation: fade-up 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+  }
+
+  /* ===================== CATEGORY SECTIONS ===================== */
+  .faq-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .faq-category {
+    animation: category-entrance 0.6s ease-out both;
+    animation-delay: calc(var(--cat-delay) * 0.1s + 0.3s);
+  }
+
+  @keyframes category-entrance {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .category-icon {
+    font-size: 1.5rem;
+  }
+
+  .category-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ===================== FAQ ITEM WOW ===================== */
+  .faq-item {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: faq-entrance 0.5s ease-out both;
+    animation-delay: calc(var(--q-delay) * 0.05s + 0.5s);
+  }
+
+  @keyframes faq-entrance {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .faq-item:hover {
+    border-color: rgba(34, 197, 94, 0.5);
+    transform: translateX(4px);
+  }
+
+  .faq-item[open] {
+    border-color: #22c55e;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.15);
+  }
+
+  .faq-question {
+    padding: 18px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s ease;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question:hover {
+    background: rgba(34, 197, 94, 0.05);
+  }
+
+  .question-text {
+    flex: 1;
+  }
+
+  .faq-icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #22c55e;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] .faq-icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    padding: 0 20px 20px 20px;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+    animation: answer-reveal 0.4s ease-out;
+  }
+
+  @keyframes answer-reveal {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== NO RESULTS ===================== */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 48px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    margin-bottom: 48px;
+  }
+
+  .no-results.visible {
+    display: block;
+    animation: fade-up 0.4s ease-out;
+  }
+
+  .no-results-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .no-results p {
+    color: var(--color-text-muted);
+  }
+
+  /* ===================== CTA WOW ===================== */
+  .faq-cta {
+    text-align: center;
+    padding: 48px 32px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    animation: cta-entrance 0.6s ease-out 0.8s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .faq-cta h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .faq-cta p {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 15px 3px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+  }
+
+  .btn-secondary {
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+    transform: translateY(-2px);
+  }
+
+  /* ===================== HIDDEN STATE ===================== */
+  .faq-item.hidden {
+    display: none;
+  }
+
+  .faq-category.hidden {
+    display: none;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 640px) {
+    .faq-title { font-size: 2rem; }
+    .hero-icon { font-size: 3rem; }
+    .faq-question { padding: 16px; }
+    .faq-answer { padding: 0 16px 16px; }
+  }
+</style>
+
+<script>
+  // Search functionality
+  const searchInput = document.getElementById('faq-search');
+  const noResults = document.getElementById('no-results');
+  const faqContent = document.querySelector('.faq-content');
+
+  searchInput?.addEventListener('input', (e) => {
+    const query = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    let hasResults = false;
+
+    document.querySelectorAll('.faq-category').forEach(category => {
+      let categoryHasMatch = false;
+      
+      category.querySelectorAll('.faq-item').forEach(item => {
+        const question = item.querySelector('.question-text')?.textContent?.toLowerCase() || '';
+        const answer = item.querySelector('.faq-answer')?.textContent?.toLowerCase() || '';
+        
+        if (question.includes(query) || answer.includes(query) || query === '') {
+          item.classList.remove('hidden');
+          categoryHasMatch = true;
+          hasResults = true;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      if (categoryHasMatch || query === '') {
+        category.classList.remove('hidden');
+      } else {
+        category.classList.add('hidden');
+      }
+    });
+
+    if (hasResults || query === '') {
+      noResults?.classList.remove('visible');
+      (faqContent as HTMLElement).style.display = 'flex';
+    } else {
+      noResults?.classList.add('visible');
+      (faqContent as HTMLElement).style.display = 'none';
+    }
+  });
+</script>

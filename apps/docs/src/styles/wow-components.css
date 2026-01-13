@@ -1,0 +1,665 @@
+/* ============================================================
+   WOW Components - Shared Animation Library
+   AgencyOS Design System v2.0
+   ============================================================ */
+
+/* ===================== KEYFRAMES ===================== */
+
+/* Hero entrance animation */
+@keyframes wow-hero-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade up entrance */
+@keyframes wow-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card entrance with scale */
+@keyframes wow-card-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Pop entrance */
+@keyframes wow-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Title gradient shine */
+@keyframes wow-title-shine {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* Multi-color shine */
+@keyframes wow-rainbow-shine {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 300% center;
+    }
+}
+
+/* Floating animation */
+@keyframes wow-float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(2deg);
+    }
+}
+
+/* Icon bounce */
+@keyframes wow-icon-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Button pulse glow */
+@keyframes wow-btn-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2);
+    }
+}
+
+/* Card glow pulse */
+@keyframes wow-glow-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 35px rgba(34, 197, 94, 0.4);
+    }
+}
+
+/* Emoji glow */
+@keyframes wow-emoji-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.4));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 35px rgba(34, 197, 94, 0.7));
+    }
+}
+
+/* Spin animation */
+@keyframes wow-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Shake celebration */
+@keyframes wow-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-5px);
+    }
+
+    40% {
+        transform: translateX(5px);
+    }
+
+    60% {
+        transform: translateX(-3px);
+    }
+
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+/* Confetti fall */
+@keyframes wow-confetti {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* ===================== HERO COMPONENTS ===================== */
+
+.wow-hero {
+    animation: wow-hero-entrance 0.8s ease-out;
+    text-align: center;
+    padding: 64px 24px;
+}
+
+.wow-hero-emoji {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 16px;
+    animation: wow-float 3s ease-in-out infinite, wow-emoji-glow 2s ease-in-out infinite;
+}
+
+.wow-title {
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: wow-title-shine 4s linear infinite;
+}
+
+.wow-title-rainbow {
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: wow-rainbow-shine 5s linear infinite;
+}
+
+/* ===================== CARD COMPONENTS ===================== */
+
+.wow-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    animation: wow-card-entrance 0.6s ease-out both;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.wow-card:hover {
+    border-color: rgba(34, 197, 94, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Shine sweep on hover */
+.wow-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.wow-card:hover::after {
+    left: 100%;
+}
+
+/* Staggered delays */
+.wow-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.wow-card:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.wow-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.wow-card:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.wow-card:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.wow-card:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+.wow-card:nth-child(7) {
+    animation-delay: 0.4s;
+}
+
+.wow-card:nth-child(8) {
+    animation-delay: 0.45s;
+}
+
+/* Featured card with glow */
+.wow-card-featured {
+    border-color: var(--color-accent-green);
+    animation: wow-card-entrance 0.6s ease-out both, wow-glow-pulse 3s ease-in-out infinite;
+}
+
+/* ===================== BUTTON COMPONENTS ===================== */
+
+.wow-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: wow-btn-pulse 2.5s ease-in-out infinite;
+}
+
+.wow-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+}
+
+.wow-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wow-btn-secondary:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ===================== ICON COMPONENTS ===================== */
+
+.wow-icon {
+    font-size: 2rem;
+    display: inline-block;
+    animation: wow-icon-bounce 2s ease-in-out infinite;
+}
+
+.wow-icon-float {
+    animation: wow-float 3s ease-in-out infinite;
+}
+
+.wow-icon-glow {
+    filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.5));
+}
+
+/* ===================== SECTION COMPONENTS ===================== */
+
+.wow-section {
+    animation: wow-fade-up 0.6s ease-out both;
+    margin-bottom: 48px;
+}
+
+.wow-section:nth-of-type(1) {
+    animation-delay: 0.2s;
+}
+
+.wow-section:nth-of-type(2) {
+    animation-delay: 0.3s;
+}
+
+.wow-section:nth-of-type(3) {
+    animation-delay: 0.4s;
+}
+
+.wow-section:nth-of-type(4) {
+    animation-delay: 0.5s;
+}
+
+/* ===================== GRID COMPONENTS ===================== */
+
+.wow-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.wow-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wow-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.wow-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+
+    .wow-grid-2,
+    .wow-grid-3,
+    .wow-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===================== STAT COUNTER COMPONENTS ===================== */
+
+.wow-stat {
+    padding: 24px;
+    text-align: center;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.wow-stat:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-4px);
+}
+
+.wow-stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-accent-green);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.wow-stat-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+/* ===================== FORM COMPONENTS ===================== */
+
+.wow-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.wow-input:focus {
+    outline: none;
+    border-color: var(--color-accent-green);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+}
+
+.wow-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+}
+
+/* ===================== SUCCESS CELEBRATION ===================== */
+
+.wow-success {
+    text-align: center;
+    animation: wow-hero-entrance 0.8s ease-out;
+}
+
+.wow-success-icon {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 24px;
+    animation: wow-float 2s ease-in-out infinite, wow-emoji-glow 1.5s ease-in-out infinite;
+}
+
+.wow-confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: wow-confetti 3s ease-in-out forwards;
+    pointer-events: none;
+}
+
+/* ===================== BADGE COMPONENTS ===================== */
+
+.wow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    animation: wow-pop 0.4s ease-out both;
+}
+
+.wow-badge-success {
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+}
+
+.wow-badge-popular {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    animation: wow-pop 0.4s ease-out both, wow-glow-pulse 3s ease-in-out infinite;
+}
+
+/* ===================== TIMELINE COMPONENTS ===================== */
+
+.wow-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.wow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    background: linear-gradient(180deg, #22c55e, #06b6d4);
+}
+
+.wow-timeline-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    animation: wow-fade-up 0.5s ease-out both;
+}
+
+.wow-timeline-item:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.wow-timeline-item:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.wow-timeline-item:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.wow-timeline-item:nth-child(4) {
+    animation-delay: 0.5s;
+}
+
+.wow-timeline-item:nth-child(5) {
+    animation-delay: 0.6s;
+}
+
+.wow-timeline-marker {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 4px var(--color-bg-primary);
+}
+
+/* ===================== ACCORDION COMPONENTS ===================== */
+
+.wow-accordion {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    animation: wow-card-entrance 0.5s ease-out both;
+}
+
+.wow-accordion-trigger {
+    width: 100%;
+    padding: 20px 24px;
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+}
+
+.wow-accordion-trigger:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.wow-accordion-content {
+    padding: 0 24px 20px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ===================== DASHBOARD COMPONENTS ===================== */
+
+.wow-dashboard-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    animation: wow-fade-up 0.5s ease-out both;
+    transition: all 0.2s ease;
+}
+
+.wow-dashboard-card:hover {
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.wow-sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.wow-sidebar-item:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.wow-sidebar-item.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+/* ===================== REDUCED MOTION ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,0 +1,881 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'AgentOps - AI Agent Architecture';
+const description = '18 specialized AI agents, 135 ZERO-EFFORT commands, 11 business suites. Binh Pháp × Antigravity powered.';
+
+// Agent data
+const agents = [
+  { name: 'Brainstormer', icon: '💡', desc: 'Idea generation & creative thinking', color: '#f59e0b' },
+  { name: 'Code Reviewer', icon: '🔍', desc: 'PR analysis & code quality', color: '#8b5cf6' },
+  { name: 'Copywriter', icon: '✍️', desc: 'Marketing content & copy', color: '#ec4899' },
+  { name: 'DB Admin', icon: '🗄️', desc: 'Database operations', color: '#06b6d4' },
+  { name: 'Debugger', icon: '🐛', desc: 'Error resolution', color: '#ef4444' },
+  { name: 'Docs Manager', icon: '📚', desc: 'Documentation system', color: '#22c55e' },
+  { name: 'Fullstack Dev', icon: '💻', desc: 'Code generation', color: '#3b82f6' },
+  { name: 'Git Manager', icon: '🔀', desc: 'Version control', color: '#a855f7' },
+  { name: 'MCP Manager', icon: '🔧', desc: 'Tool integration', color: '#14b8a6' },
+  { name: 'Planner', icon: '📋', desc: 'Strategy & planning', color: '#f97316' },
+  { name: 'Project Manager', icon: '📊', desc: 'Task tracking', color: '#0ea5e9' },
+  { name: 'Researcher', icon: '🔬', desc: 'Data gathering', color: '#84cc16' },
+  { name: 'Scout (Internal)', icon: '🔎', desc: 'Code analysis', color: '#6366f1' },
+  { name: 'Scout (External)', icon: '🌐', desc: 'Market intel', color: '#10b981' },
+  { name: 'Tester', icon: '🧪', desc: 'QA automation', color: '#d946ef' },
+  { name: 'UI/UX Designer', icon: '🎨', desc: 'Design system', color: '#f43f5e' },
+  { name: 'Journal Writer', icon: '📝', desc: 'Documentation', color: '#eab308' },
+];
+
+// Business suites - 11 total with Binh Pháp × Antigravity
+const suites = [
+  { 
+    name: 'Marketing', 
+    icon: '🔥', 
+    binh_phap: '謀攻篇 Mưu Công',
+    color: '#ef4444',
+    commands: ['/ke-hoach-tiep-thi', '/seo', '/pr', '/content', '/social', '/ads', '/branding', '/email']
+  },
+  { 
+    name: 'Sales', 
+    icon: '🛒', 
+    binh_phap: '作戰篇 Tác Chiến',
+    color: '#3b82f6',
+    commands: ['/khach-hang', '/crm', '/leadgen', '/pipeline', '/proposal', '/pricing', '/demo', '/close']
+  },
+  { 
+    name: 'Finance', 
+    icon: '💰', 
+    binh_phap: '計篇 Kế',
+    color: '#22c55e',
+    commands: ['/bao-cao-tai-chinh', '/ngan-sach', '/invoice', '/cashflow', '/tax', '/forecast', '/expense', '/revenue']
+  },
+  { 
+    name: 'Development', 
+    icon: '⚡', 
+    binh_phap: '九變篇 Cửu Biến',
+    color: '#8b5cf6',
+    commands: ['/refactor', '/migrate', '/api', '/component', '/optimize', '/security', '/deploy:prod', '/rollback']
+  },
+  { 
+    name: 'Testing', 
+    icon: '🧪', 
+    binh_phap: '虛實篇 Hư Thực',
+    color: '#d946ef',
+    commands: ['/test:unit', '/test:e2e', '/coverage', '/lint', '/format', '/typecheck', '/audit', '/benchmark']
+  },
+  { 
+    name: 'Git', 
+    icon: '📦', 
+    binh_phap: '行軍篇 Hành Quân',
+    color: '#6366f1',
+    commands: ['/git:branch', '/git:merge', '/git:rebase', '/git:squash', '/git:tag', '/git:stash', '/git:cherry', '/git:bisect']
+  },
+  { 
+    name: 'Strategy', 
+    icon: '🎯', 
+    binh_phap: '計篇 Kế',
+    color: '#f59e0b',
+    commands: ['/swot', '/competitor', '/market', '/persona', '/roadmap', '/kpi', '/retro', '/quarterly']
+  },
+  { 
+    name: 'Agency', 
+    icon: '🏢', 
+    binh_phap: '始計篇 Thủy Kế',
+    color: '#06b6d4',
+    commands: ['/client', '/project', '/scope', '/estimate', '/timeline', '/handoff', '/feedback', '/report']
+  },
+  { 
+    name: 'Vietnamese', 
+    icon: '🇻🇳', 
+    binh_phap: '地形篇 Địa Hình',
+    color: '#dc2626',
+    commands: ['/phan-tich', '/bao-cao', '/du-an', '/nhan-su', '/hop-dong', '/lich-trinh', '/muc-tieu', '/danh-gia']
+  },
+  { 
+    name: 'Sync', 
+    icon: '🔄', 
+    binh_phap: '用間篇 Dụng Gián',
+    color: '#10b981',
+    commands: ['/sync-agent', '/sync-rules', '/sync-tasks', '/sync-browser', '/sync-mcp', '/sync-artifacts', '/sync-editor', '/sync-all']
+  },
+  { 
+    name: 'Docs', 
+    icon: '📚', 
+    binh_phap: '法篇 Pháp',
+    color: '#84cc16',
+    commands: ['/docs:api', '/docs:readme', '/docs:changelog', '/docs:onboard', '/docs:arch', '/docs:deploy']
+  },
+];
+
+// WIN3 metrics
+const win3 = [
+  { label: 'ANH WIN', value: 92, desc: 'Deal flow + Portfolio', color: '#22c55e' },
+  { label: 'AGENCY WIN', value: 88, desc: 'Revenue automation', color: '#3b82f6' },
+  { label: 'STARTUP WIN', value: 85, desc: 'Resource protection', color: '#8b5cf6' },
+];
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="agentops-page">
+    <div class="container">
+      
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-icon">🤖</div>
+        <h1 class="hero-title">AgentOps</h1>
+        <p class="hero-subtitle">18 Specialized AI Agents • 135 ZERO-EFFORT Commands • 11 Business Suites</p>
+        <p class="hero-desc">The intelligent nervous system powering your agency automation</p>
+      </div>
+
+      <!-- Architecture Diagram -->
+      <div class="architecture-section">
+        <h2 class="section-title">🏗️ System Architecture</h2>
+        <div class="arch-diagram">
+          <div class="arch-layer frontend">
+            <div class="layer-label">Frontend</div>
+            <div class="layer-items">
+              <span class="arch-item" style="--delay: 0">Dashboard</span>
+              <span class="arch-item" style="--delay: 1">Docs Portal</span>
+              <span class="arch-item" style="--delay: 2">Command UI</span>
+            </div>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-layer backend">
+            <div class="layer-label">Backend</div>
+            <div class="layer-items">
+              <span class="arch-item" style="--delay: 3">FastAPI :8000</span>
+              <span class="arch-item" style="--delay: 4">LangChain</span>
+              <span class="arch-item" style="--delay: 5">OpenRouter</span>
+            </div>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-layer agents-layer">
+            <div class="layer-label">17 Agents</div>
+            <div class="layer-items">
+              <span class="arch-item" style="--delay: 6">Scout</span>
+              <span class="arch-item" style="--delay: 7">Planner</span>
+              <span class="arch-item" style="--delay: 8">Copywriter</span>
+              <span class="arch-item" style="--delay: 9">+14 more</span>
+            </div>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-layer data">
+            <div class="layer-label">Data Layer</div>
+            <div class="layer-items">
+              <span class="arch-item" style="--delay: 10">Supabase</span>
+              <span class="arch-item" style="--delay: 11">PostgreSQL</span>
+              <span class="arch-item" style="--delay: 12">Redis</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agents Grid -->
+      <div class="agents-section">
+        <h2 class="section-title">🤖 17 Specialized Agents</h2>
+        <div class="agents-grid">
+          {agents.map((agent, i) => (
+            <div class="agent-card" style={`--agent-color: ${agent.color}; --delay: ${i}`}>
+              <div class="agent-icon">{agent.icon}</div>
+              <h3 class="agent-name">{agent.name}</h3>
+              <p class="agent-desc">{agent.desc}</p>
+              <div class="agent-status">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Business Suites -->
+      <div class="suites-section">
+        <h2 class="section-title">📦 11 Business Suites × Binh Pháp</h2>
+        <div class="suites-grid">
+          {suites.map((suite, i) => (
+            <div class="suite-card" style={`--suite-color: ${suite.color}; --delay: ${i}`}>
+              <div class="suite-header">
+                <span class="suite-icon">{suite.icon}</span>
+                <div>
+                  <h3 class="suite-name">{suite.name}</h3>
+                  <span class="suite-binh-phap">{suite.binh_phap}</span>
+                </div>
+              </div>
+              <div class="suite-commands">
+                {suite.commands.map(cmd => (
+                  <code class="command-tag">{cmd}</code>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- WIN3 Metrics -->
+      <div class="win3-section">
+        <h2 class="section-title">🎯 WIN³ Alignment</h2>
+        <div class="win3-grid">
+          {win3.map((metric, i) => (
+            <div class="win3-card" style={`--win-color: ${metric.color}; --delay: ${i}`}>
+              <div class="win3-label">{metric.label}</div>
+              <div class="win3-value">{metric.value}%</div>
+              <div class="win3-bar">
+                <div class="win3-fill" style={`width: ${metric.value}%`}></div>
+              </div>
+              <div class="win3-desc">{metric.desc}</div>
+            </div>
+          ))}
+        </div>
+        <div class="win3-total">
+          <span>Overall Alignment:</span>
+          <strong>88%</strong>
+        </div>
+      </div>
+
+      <!-- Interactive Demo -->
+      <div class="demo-section">
+        <h2 class="section-title">💬 Interactive Command Pattern</h2>
+        <div class="terminal">
+          <div class="terminal-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">AgentOps Terminal</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line input">
+              <span class="prompt">$</span>
+              <span class="command">/business-plan</span>
+            </div>
+            <div class="terminal-line output">
+              <span class="agent-badge">🤖 Planner</span>
+              Starting Business Plan...
+            </div>
+            <div class="terminal-line question">
+              <span class="q-num">1.</span> Tên dự án? | Project name?
+            </div>
+            <div class="terminal-line question">
+              <span class="q-num">2.</span> Vấn đề giải quyết? | Problem solving?
+            </div>
+            <div class="terminal-line question">
+              <span class="q-num">3.</span> Khách hàng mục tiêu? | Target customer?
+            </div>
+            <div class="terminal-line dots">...</div>
+            <div class="terminal-line success">
+              ✅ Generates comprehensive 12-month plan with TAM/SAM/SOM
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <h2>Ready to unleash AI agents?</h2>
+        <div class="cta-buttons">
+          <a href="/docs/agents" class="btn-primary">Explore Agents</a>
+          <a href="/pricing" class="btn-secondary">Get Started</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== PAGE CONTAINER ===================== */
+  .agentops-page {
+    min-height: 100vh;
+    padding: 64px 24px;
+    background: var(--color-bg-primary);
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HERO WOW ===================== */
+  .hero {
+    text-align: center;
+    margin-bottom: 80px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-icon {
+    font-size: 5rem;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite, icon-glow 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(34, 197, 94, 0.4));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+  }
+
+  @keyframes icon-glow {
+    0%, 100% { filter: drop-shadow(0 0 30px rgba(34, 197, 94, 0.4)); }
+    50% { filter: drop-shadow(0 0 50px rgba(34, 197, 94, 0.7)); }
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-shine 5s linear infinite;
+    margin-bottom: 12px;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #22c55e;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .hero-desc {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+  }
+
+  /* ===================== SECTION TITLES ===================== */
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* ===================== ARCHITECTURE DIAGRAM ===================== */
+  .architecture-section {
+    margin-bottom: 80px;
+  }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .arch-layer {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    animation: layer-entrance 0.6s ease-out both;
+  }
+
+  .arch-layer:nth-child(1) { animation-delay: 0.1s; }
+  .arch-layer:nth-child(3) { animation-delay: 0.2s; }
+  .arch-layer:nth-child(5) { animation-delay: 0.3s; }
+  .arch-layer:nth-child(7) { animation-delay: 0.4s; }
+
+  @keyframes layer-entrance {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .layer-label {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .frontend { border-color: #22c55e; }
+  .frontend .layer-label { color: #22c55e; }
+  
+  .backend { border-color: #3b82f6; }
+  .backend .layer-label { color: #3b82f6; }
+  
+  .agents-layer { border-color: #8b5cf6; }
+  .agents-layer .layer-label { color: #8b5cf6; }
+  
+  .data { border-color: #06b6d4; }
+  .data .layer-label { color: #06b6d4; }
+
+  .layer-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .arch-item {
+    padding: 8px 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    animation: pop-in 0.4s ease-out both;
+    animation-delay: calc(var(--delay) * 0.1s);
+    transition: all 0.2s ease;
+  }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .arch-item:hover {
+    background: #22c55e;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+    animation: arrow-bounce 1s ease-in-out infinite;
+  }
+
+  @keyframes arrow-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* ===================== AGENTS GRID ===================== */
+  .agents-section {
+    margin-bottom: 80px;
+  }
+
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .agent-card {
+    padding: 20px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: card-entrance 0.5s ease-out both;
+    animation-delay: calc(var(--delay) * 0.05s);
+  }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .agent-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--agent-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .agent-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+
+  .agent-card:hover .agent-icon {
+    animation: agent-pulse 0.5s ease-out;
+  }
+
+  @keyframes agent-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .agent-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+
+  .agent-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+  }
+
+  .agent-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: #22c55e;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: dot-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* ===================== BUSINESS SUITES ===================== */
+  .suites-section {
+    margin-bottom: 80px;
+  }
+
+  .suites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .suite-card {
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    animation: card-entrance 0.5s ease-out both;
+    animation-delay: calc(var(--delay) * 0.1s);
+  }
+
+  .suite-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--suite-color);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .suite-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .suite-icon {
+    font-size: 2rem;
+  }
+
+  .suite-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .suite-binh-phap {
+    font-size: 0.8rem;
+    color: var(--suite-color);
+    font-weight: 500;
+  }
+
+  .suite-commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .command-tag {
+    padding: 6px 12px;
+    background: var(--color-bg-tertiary);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+  }
+
+  .suite-card:hover .command-tag {
+    background: var(--suite-color);
+    color: white;
+  }
+
+  /* ===================== WIN3 METRICS ===================== */
+  .win3-section {
+    margin-bottom: 80px;
+  }
+
+  .win3-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .win3-grid { grid-template-columns: 1fr; }
+  }
+
+  .win3-card {
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    text-align: center;
+    animation: card-entrance 0.5s ease-out both;
+    animation-delay: calc(var(--delay) * 0.15s);
+    transition: all 0.3s ease;
+  }
+
+  .win3-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--win-color);
+  }
+
+  .win3-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--win-color);
+    margin-bottom: 8px;
+  }
+
+  .win3-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    margin-bottom: 12px;
+  }
+
+  .win3-bar {
+    height: 8px;
+    background: var(--color-bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .win3-fill {
+    height: 100%;
+    background: var(--win-color);
+    border-radius: 4px;
+    animation: bar-fill 1s ease-out both;
+    animation-delay: calc(var(--delay) * 0.2s + 0.5s);
+  }
+
+  @keyframes bar-fill {
+    from { width: 0; }
+  }
+
+  .win3-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .win3-total {
+    text-align: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+  }
+
+  .win3-total strong {
+    color: #22c55e;
+    font-size: 1.5rem;
+    margin-left: 8px;
+  }
+
+  /* ===================== TERMINAL DEMO ===================== */
+  .demo-section {
+    margin-bottom: 80px;
+  }
+
+  .terminal {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: terminal-entrance 0.6s ease-out 0.3s both;
+  }
+
+  @keyframes terminal-entrance {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #febc2e; }
+  .dot.green { background: #28c840; }
+
+  .terminal-title {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #8b949e;
+  }
+
+  .terminal-body {
+    padding: 16px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .terminal-line {
+    margin-bottom: 8px;
+    animation: line-appear 0.3s ease-out both;
+  }
+
+  .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+  .terminal-line:nth-child(2) { animation-delay: 0.8s; }
+  .terminal-line:nth-child(3) { animation-delay: 1.1s; }
+  .terminal-line:nth-child(4) { animation-delay: 1.4s; }
+  .terminal-line:nth-child(5) { animation-delay: 1.7s; }
+  .terminal-line:nth-child(6) { animation-delay: 2.0s; }
+  .terminal-line:nth-child(7) { animation-delay: 2.3s; }
+
+  @keyframes line-appear {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .terminal-line.input .prompt {
+    color: #22c55e;
+    margin-right: 8px;
+  }
+
+  .terminal-line.input .command {
+    color: #58a6ff;
+  }
+
+  .terminal-line.output {
+    color: #8b949e;
+  }
+
+  .agent-badge {
+    background: rgba(139, 92, 246, 0.2);
+    color: #a78bfa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+
+  .terminal-line.question {
+    color: #c9d1d9;
+    padding-left: 16px;
+  }
+
+  .q-num {
+    color: #22c55e;
+    margin-right: 8px;
+  }
+
+  .terminal-line.dots {
+    color: #8b949e;
+    padding-left: 16px;
+  }
+
+  .terminal-line.success {
+    color: #22c55e;
+  }
+
+  /* ===================== CTA ===================== */
+  .cta-section {
+    text-align: center;
+    padding: 48px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    animation: cta-entrance 0.6s ease-out 0.5s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .cta-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-secondary {
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+    transform: translateY(-2px);
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-icon { font-size: 4rem; }
+    .agents-grid { grid-template-columns: repeat(2, 1fr); }
+    .suites-grid { grid-template-columns: 1fr; }
+  }
+</style>

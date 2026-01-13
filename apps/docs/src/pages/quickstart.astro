@@ -1,0 +1,371 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Quick Start - AgencyOS';
+const description = 'Choose your path: Developer, Marketing, Sales, Finance, or Founder. Each with money-making commands.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="quickstart-hero">
+    <h1>🚀 Quick Start</h1>
+    <p class="tagline">"Tôi muốn kiếm tiền ngay!" - Đây là cách:</p>
+  </section>
+
+  <section class="personas-grid">
+    
+    <!-- Developer -->
+    <div class="persona-card developer">
+      <div class="persona-header">
+        <span class="persona-icon">🧑‍💻</span>
+        <h2>Developer</h2>
+        <span class="money-tag">Code → Cash</span>
+      </div>
+      <div class="commands-list">
+        <code>/code</code>
+        <code>/ship</code>
+        <code>/video/script</code>
+        <code>/video</code>
+        <code>/affiliate</code>
+      </div>
+      <div class="money-flow">
+        <p>💰 <strong>Money Flow:</strong></p>
+        <p>Code → Demo Video → YouTube → Affiliate Links → <span class="money">$$$</span></p>
+      </div>
+      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+    </div>
+
+    <!-- Marketing -->
+    <div class="persona-card marketing">
+      <div class="persona-header">
+        <span class="persona-icon">📣</span>
+        <h2>Marketing</h2>
+        <span class="money-tag">Content → Cash</span>
+      </div>
+      <div class="commands-list">
+        <code>/marketing/social</code>
+        <code>/video/script</code>
+        <code>/video</code>
+        <code>/content/cro</code>
+        <code>/affiliate/scout</code>
+      </div>
+      <div class="money-flow">
+        <p>💰 <strong>Money Flow:</strong></p>
+        <p>Content → Social → Traffic → Affiliate → <span class="money">$$$</span></p>
+      </div>
+      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+    </div>
+
+    <!-- Sales -->
+    <div class="persona-card sales">
+      <div class="persona-header">
+        <span class="persona-icon">💼</span>
+        <h2>Sales</h2>
+        <span class="money-tag">Lead → Cash</span>
+      </div>
+      <div class="commands-list">
+        <code>/sales/lead</code>
+        <code>/sales/proposal</code>
+        <code>/intel/competitor</code>
+        <code>/sales/close</code>
+        <code>/finance/invoice</code>
+      </div>
+      <div class="money-flow">
+        <p>💰 <strong>Money Flow:</strong></p>
+        <p>Lead → Proposal → Close → Invoice → <span class="money">$$$</span></p>
+      </div>
+      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+    </div>
+
+    <!-- Finance -->
+    <div class="persona-card finance">
+      <div class="persona-header">
+        <span class="persona-icon">📊</span>
+        <h2>Finance</h2>
+        <span class="money-tag">Optimize → Save</span>
+      </div>
+      <div class="commands-list">
+        <code>/finance</code>
+        <code>/finance/runway</code>
+        <code>/finance/expense</code>
+        <code>/ops/billing</code>
+        <code>/ops/reporting</code>
+      </div>
+      <div class="money-flow">
+        <p>💰 <strong>Money Flow:</strong></p>
+        <p>Optimize → Reduce Waste → More Profit → <span class="money">$$$</span></p>
+      </div>
+      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+    </div>
+
+    <!-- Founder -->
+    <div class="persona-card founder">
+      <div class="persona-header">
+        <span class="persona-icon">👑</span>
+        <h2>Founder</h2>
+        <span class="money-tag">Strategy → Scale</span>
+      </div>
+      <div class="commands-list">
+        <code>/binh-phap</code>
+        <code>/okr</code>
+        <code>/fundraise</code>
+        <code>/intel/vc</code>
+        <code>/equity</code>
+      </div>
+      <div class="money-flow">
+        <p>💰 <strong>Money Flow:</strong></p>
+        <p>Strategy → Fundraise → Scale → Exit → <span class="money">$$$</span></p>
+      </div>
+      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+    </div>
+
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to Start?</h2>
+    <p>Pick your path and start making money with AI.</p>
+    <a href="/commands" class="btn-primary">View All 85+ Commands →</a>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== HERO WOW ===================== */
+  .quickstart-hero {
+    text-align: center;
+    padding: 64px 24px 32px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .quickstart-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    animation: title-shine 5s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    animation: fade-up 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .personas-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  /* ===================== PERSONA CARDS WOW ===================== */
+  .persona-card {
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    animation: card-entrance 0.6s ease-out both;
+  }
+
+  .persona-card:nth-child(1) { animation-delay: 0.3s; }
+  .persona-card:nth-child(2) { animation-delay: 0.4s; }
+  .persona-card:nth-child(3) { animation-delay: 0.5s; }
+  .persona-card:nth-child(4) { animation-delay: 0.6s; }
+  .persona-card:nth-child(5) { animation-delay: 0.7s; }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .persona-card {
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .persona-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .persona-card.developer:hover { border-color: #22c55e; }
+  .persona-card.marketing:hover { border-color: #f97316; }
+  .persona-card.sales:hover { border-color: #3b82f6; }
+  .persona-card.finance:hover { border-color: #8b5cf6; }
+  .persona-card.founder:hover { border-color: #eab308; }
+
+  .persona-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .persona-icon {
+    font-size: 2rem;
+    animation: icon-bounce 2s ease-in-out infinite;
+  }
+
+  .persona-card:nth-child(1) .persona-icon { animation-delay: 0s; }
+  .persona-card:nth-child(2) .persona-icon { animation-delay: 0.2s; }
+  .persona-card:nth-child(3) .persona-icon { animation-delay: 0.4s; }
+  .persona-card:nth-child(4) .persona-icon { animation-delay: 0.6s; }
+  .persona-card:nth-child(5) .persona-icon { animation-delay: 0.8s; }
+
+  @keyframes icon-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .persona-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .money-tag {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin-left: auto;
+  }
+
+  .commands-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .commands-list code {
+    background: var(--color-bg-tertiary);
+    color: #22c55e;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .money-flow {
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .money-flow p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  .money-flow .money {
+    color: #22c55e;
+    font-weight: 700;
+  }
+
+  .btn-start {
+    display: block;
+    text-align: center;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-start:hover {
+    background: #22c55e;
+    color: white;
+    border-color: #22c55e;
+  }
+
+  /* ===================== CTA WOW ===================== */
+  .cta-section {
+    text-align: center;
+    padding: 64px 24px;
+    background: linear-gradient(180deg, transparent, rgba(34, 197, 94, 0.05));
+    border-top: 1px solid var(--color-border);
+    animation: cta-entrance 0.6s ease-out 0.8s both;
+  }
+
+  @keyframes cta-entrance {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .cta-section p {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .quickstart-hero h1 {
+      font-size: 2rem;
+    }
+
+    .personas-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,201 @@
+---
+title: AgencyOS Agent Framework
+description: Native agent integration framework for AgencyOS dashboards
+---
+
+# AgencyOS Agent Framework
+
+The AgencyOS Agent Framework provides a complete set of hooks, components, and widgets for building AI-powered interactive dashboards.
+
+## Quick Start
+
+```tsx
+import { 
+  AgencyOSProvider,
+  useAgentOS,
+  useTaskTracker,
+  useApprovalGate,
+  TaskTrackerWidget,
+  AgentActivityFeed
+} from '@/agencyos';
+
+function App() {
+  return (
+    <AgencyOSProvider>
+      <Dashboard />
+    </AgencyOSProvider>
+  );
+}
+```
+
+## Core Hooks
+
+### useAgentOS
+
+Connect agents to your UI with real-time status updates.
+
+```tsx
+const { state, startTask, updateStatus, completeTask } = useAgentOS({
+  agentName: 'planner',
+  onStateChange: (state) => console.log('Agent state:', state)
+});
+
+// Start a task
+startTask('Planning new feature');
+
+// Update status
+updateStatus('Analyzing requirements...');
+
+// Complete
+completeTask();
+```
+
+### useTaskTracker
+
+Track task progress with step-by-step execution.
+
+```tsx
+const { state, progress, initTask, completeStep } = useTaskTracker();
+
+// Initialize with steps
+initTask('Build Feature', [
+  'Plan architecture',
+  'Write code', 
+  'Test',
+  'Deploy'
+]);
+
+// Complete steps
+completeStep('step_0');
+```
+
+### useApprovalGate
+
+Implement human-in-the-loop approval flows.
+
+```tsx
+const { pendingRequest, requestApproval, approve, reject } = useApprovalGate();
+
+// Request approval
+const approved = await requestApproval(
+  'Deploy to production',
+  'This will update the live environment'
+);
+
+if (approved) {
+  // Proceed with deployment
+}
+```
+
+### useDashboardAction
+
+Trigger dashboard actions from agents.
+
+```tsx
+const { navigate, refreshWidget, showNotification } = useDashboardAction();
+
+// Navigate
+await navigate('/dashboard/analytics');
+
+// Refresh a widget
+await refreshWidget('stats-widget');
+
+// Show notification
+showNotification('Task completed!', 'success');
+```
+
+## Components
+
+### AgentReport
+
+Render agent-generated reports.
+
+```tsx
+<AgentReport
+  type="plan"
+  title="Feature Implementation Plan"
+  steps={[
+    { id: '1', text: 'Design API', completed: true },
+    { id: '2', text: 'Build frontend', completed: false }
+  ]}
+  status="in-progress"
+/>
+```
+
+### DynamicCard
+
+Display agent-generated cards with metrics and actions.
+
+```tsx
+<DynamicCard
+  title="Project Status"
+  icon="📊"
+  metrics={[
+    { label: 'Tasks', value: 12, change: 5 },
+    { label: 'Progress', value: '75%' }
+  ]}
+  actions={[
+    { id: 'view', label: 'View Details', variant: 'primary' }
+  ]}
+  glowing={true}
+/>
+```
+
+### TaskTrackerWidget
+
+Real-time task progress widget.
+
+```tsx
+<TaskTrackerWidget
+  taskName="Building feature"
+  taskStatus="running"
+  progress={45}
+  steps={steps}
+  currentStep="Writing tests..."
+/>
+```
+
+### ApprovalDialog
+
+Modal for human approval flows.
+
+```tsx
+<ApprovalDialog
+  isOpen={pendingRequest !== null}
+  action="Deploy to Production"
+  description="This action will update the live environment."
+  onApprove={approve}
+  onReject={reject}
+/>
+```
+
+### AgentActivityFeed
+
+Live feed of agent activities.
+
+```tsx
+<AgentActivityFeed
+  activities={[
+    {
+      id: '1',
+      agentName: 'scout',
+      action: 'Found 5 relevant files',
+      timestamp: new Date(),
+      type: 'success'
+    }
+  ]}
+  maxItems={10}
+/>
+```
+
+## Architecture
+
+```
+AgencyOSProvider
+├── useAgentOS      - Agent connection
+├── useTaskTracker  - Task progress
+├── useApprovalGate - Human approval
+└── useDashboardAction - UI actions
+```
+
+All hooks work together within the `AgencyOSProvider` context to provide a unified agent experience.

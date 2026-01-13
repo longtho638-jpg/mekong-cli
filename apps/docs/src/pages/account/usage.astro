@@ -1,0 +1,434 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Usage Dashboard - AgencyOS';
+const description = 'Monitor your API usage and subscription limits.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="usage-section">
+    <div class="usage-header">
+      <h1>📊 Usage Dashboard</h1>
+      <p class="subtitle">Monitor your subscription and API usage</p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="usage-card loading-state" id="loading-state">
+      <div class="spinner"></div>
+      <p>Loading usage data...</p>
+    </div>
+
+    <!-- No Subscription State -->
+    <div class="usage-card no-sub-state hidden" id="no-sub-state">
+      <span class="icon">🔒</span>
+      <h2>No Active Subscription</h2>
+      <p>Subscribe to track your usage and unlock more features.</p>
+      <a href="/pricing" class="btn-primary">View Pricing →</a>
+    </div>
+
+    <!-- Usage Dashboard -->
+    <div class="usage-dashboard hidden" id="usage-dashboard">
+      <!-- Subscription Info -->
+      <div class="usage-card subscription-info">
+        <div class="card-header">
+          <h2>🎫 Subscription</h2>
+          <span class="tier-badge" id="tier-badge">PRO</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Status</span>
+            <span class="value status-active" id="sub-status">Active</span>
+          </div>
+          <div class="info-item">
+            <span class="label">License</span>
+            <span class="value mono" id="license-key">AGOS-XXXX-XXXX</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Expires</span>
+            <span class="value" id="expires-at">Dec 31, 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usage Meters -->
+      <div class="usage-meters">
+        <div class="usage-card meter-card">
+          <div class="meter-header">
+            <span class="meter-icon">📡</span>
+            <h3>API Calls</h3>
+          </div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="api-meter" style="width: 0%"></div>
+          </div>
+          <div class="meter-stats">
+            <span id="api-used">0</span> / <span id="api-limit">1,000</span>
+            <span class="remaining">(<span id="api-remaining">1,000</span> remaining)</span>
+          </div>
+        </div>
+
+        <div class="usage-card meter-card">
+          <div class="meter-header">
+            <span class="meter-icon">⚡</span>
+            <h3>Commands</h3>
+          </div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="cmd-meter" style="width: 0%"></div>
+          </div>
+          <div class="meter-stats">
+            <span id="cmd-used">0</span> / <span id="cmd-limit">50</span>
+            <span class="remaining">(<span id="cmd-remaining">50</span> remaining)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="usage-card features-card">
+        <h3>🎁 Your Features</h3>
+        <div class="features-grid">
+          <div class="feature-item" id="feat-api">
+            <span class="feature-icon">❌</span>
+            <span>API Access</span>
+          </div>
+          <div class="feature-item" id="feat-whitelabel">
+            <span class="feature-icon">❌</span>
+            <span>White-Label</span>
+          </div>
+          <div class="feature-item" id="feat-team">
+            <span class="feature-icon">👤</span>
+            <span id="team-limit">1 Team Member</span>
+          </div>
+          <div class="feature-item" id="feat-priority">
+            <span class="feature-icon">❌</span>
+            <span>Priority Support</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upgrade CTA -->
+      <div class="upgrade-cta" id="upgrade-cta">
+        <h3>🚀 Want more?</h3>
+        <p>Upgrade to unlock higher limits and premium features.</p>
+        <a href="/pricing" class="btn-primary">Upgrade Plan →</a>
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .usage-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .usage-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .usage-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .usage-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-bg-tertiary);
+    border-top-color: #22c55e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .hidden { display: none !important; }
+
+  .no-sub-state {
+    text-align: center;
+    padding: 60px 40px;
+  }
+
+  .no-sub-state .icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card-header h2 { margin: 0; }
+
+  .tier-badge {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .info-item .label {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .info-item .value {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .status-active { color: #22c55e; }
+  .mono { font-family: monospace; font-size: 0.9rem; }
+
+  .usage-meters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .meter-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .meter-icon { font-size: 1.5rem; }
+  .meter-header h3 { margin: 0; }
+
+  .meter-bar {
+    height: 12px;
+    background: var(--color-bg-tertiary);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  .meter-fill.warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .meter-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .meter-stats {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .remaining { color: var(--color-text-muted); }
+
+  .features-card h3 {
+    margin: 0 0 20px 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+  }
+
+  .feature-item.enabled { background: rgba(34, 197, 94, 0.1); }
+  .feature-icon { font-size: 1.2rem; }
+
+  .upgrade-cta {
+    text-align: center;
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    border-radius: 16px;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+  }
+
+  .upgrade-cta h3 { margin: 0 0 8px 0; }
+  .upgrade-cta p { color: var(--color-text-muted); margin-bottom: 16px; }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  @media (max-width: 600px) {
+    .info-grid, .usage-meters, .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  async function loadUsage() {
+    const loadingState = document.getElementById('loading-state');
+    const noSubState = document.getElementById('no-sub-state');
+    const dashboard = document.getElementById('usage-dashboard');
+
+    // Get email from localStorage or ask user
+    let email = localStorage.getItem('agencyos_email');
+    const licenseKey = localStorage.getItem('agencyos_license');
+
+    if (!email && !licenseKey) {
+      // Show prompt for email
+      email = prompt('Enter your email to view usage:');
+      if (email) {
+        localStorage.setItem('agencyos_email', email);
+      }
+    }
+
+    if (!email && !licenseKey) {
+      loadingState?.classList.add('hidden');
+      noSubState?.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const params = new URLSearchParams();
+      if (licenseKey) params.set('license_key', licenseKey);
+      else if (email) params.set('email', email);
+
+      const response = await fetch(`/api/subscription/status?${params}`);
+      const data = await response.json();
+
+      if (!data.has_subscription) {
+        loadingState?.classList.add('hidden');
+        noSubState?.classList.remove('hidden');
+        return;
+      }
+
+      // Populate dashboard
+      document.getElementById('tier-badge')!.textContent = data.tier.toUpperCase();
+      document.getElementById('sub-status')!.textContent = data.status;
+      document.getElementById('license-key')!.textContent = data.license_key || 'N/A';
+      document.getElementById('expires-at')!.textContent = data.expires_at 
+        ? new Date(data.expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : 'Never';
+
+      // Usage meters
+      const apiUsed = data.usage.api_calls;
+      const apiLimit = data.limits.monthly_api_calls;
+      const cmdUsed = data.usage.commands;
+      const cmdLimit = data.limits.monthly_commands;
+
+      const apiPct = apiLimit > 0 ? (apiUsed / apiLimit * 100) : 0;
+      const cmdPct = cmdLimit > 0 ? (cmdUsed / cmdLimit * 100) : 0;
+
+      const apiMeter = document.getElementById('api-meter') as HTMLElement;
+      const cmdMeter = document.getElementById('cmd-meter') as HTMLElement;
+
+      apiMeter.style.width = `${Math.min(apiPct, 100)}%`;
+      cmdMeter.style.width = `${Math.min(cmdPct, 100)}%`;
+
+      if (apiPct >= 90) apiMeter.classList.add('danger');
+      else if (apiPct >= 70) apiMeter.classList.add('warning');
+
+      if (cmdPct >= 90) cmdMeter.classList.add('danger');
+      else if (cmdPct >= 70) cmdMeter.classList.add('warning');
+
+      document.getElementById('api-used')!.textContent = apiUsed.toLocaleString();
+      document.getElementById('api-limit')!.textContent = apiLimit === -1 ? '∞' : apiLimit.toLocaleString();
+      document.getElementById('api-remaining')!.textContent = data.usage.api_calls_remaining === -1 ? '∞' : data.usage.api_calls_remaining.toLocaleString();
+
+      document.getElementById('cmd-used')!.textContent = cmdUsed.toLocaleString();
+      document.getElementById('cmd-limit')!.textContent = cmdLimit === -1 ? '∞' : cmdLimit.toLocaleString();
+      document.getElementById('cmd-remaining')!.textContent = data.usage.commands_remaining === -1 ? '∞' : data.usage.commands_remaining.toLocaleString();
+
+      // Features
+      const featApi = document.getElementById('feat-api');
+      const featWhitelabel = document.getElementById('feat-whitelabel');
+      const featTeam = document.getElementById('feat-team');
+
+      if (data.features.api_access) {
+        featApi?.querySelector('.feature-icon')?.replaceWith(document.createTextNode('✅'));
+        featApi?.classList.add('enabled');
+      }
+
+      if (data.features.white_label) {
+        featWhitelabel?.querySelector('.feature-icon')?.replaceWith(document.createTextNode('✅'));
+        featWhitelabel?.classList.add('enabled');
+      }
+
+      document.getElementById('team-limit')!.textContent = 
+        data.features.team_members === -1 ? 'Unlimited Team' : `${data.features.team_members} Team Member${data.features.team_members > 1 ? 's' : ''}`;
+
+      // Hide upgrade CTA for enterprise
+      if (data.tier === 'enterprise') {
+        document.getElementById('upgrade-cta')?.classList.add('hidden');
+      }
+
+      loadingState?.classList.add('hidden');
+      dashboard?.classList.remove('hidden');
+
+    } catch (error) {
+      console.error('Failed to load usage:', error);
+      loadingState?.classList.add('hidden');
+      noSubState?.classList.remove('hidden');
+    }
+  }
+
+  loadUsage();
+</script>

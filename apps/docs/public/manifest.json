@@ -1,0 +1,26 @@
+{
+    "name": "AgencyOS",
+    "short_name": "AgencyOS",
+    "description": "AI-Native Agency Operating System - 85+ Commands to Automate Your Agency",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#22c55e",
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "/logo-512-dark.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ]
+}

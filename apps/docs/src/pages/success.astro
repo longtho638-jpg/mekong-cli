@@ -1,0 +1,732 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Welcome to AgencyOS!';
+const description = 'Your account is ready. Get your license key and start automating your agency.';
+---
+
+<LandingLayout title={title} description={description}>
+  <!-- Fireworks Canvas -->
+  <canvas id="fireworks-canvas"></canvas>
+  
+  <section class="success-section">
+    <div class="success-card">
+      
+      <div class="success-icon">🎉</div>
+      
+      <h1>Welcome to AgencyOS!</h1>
+      
+      <div class="welcome-message" id="welcome-message">
+        <p>Your account has been created successfully.</p>
+      </div>
+
+      <!-- License Key Section -->
+      <div class="license-section" id="license-section">
+        <h3>🔑 Your License Key</h3>
+        <div class="license-box">
+          <code id="license-key">AGENCYOS-XXXX-XXXX-XXXX</code>
+          <button id="copy-license" class="btn-copy" title="Copy license key">📋</button>
+        </div>
+        <p class="license-note">Keep this key safe. You'll need it to activate your CLI.</p>
+      </div>
+
+      <!-- Account Info -->
+      <div class="account-info" id="account-info">
+        <div class="info-row">
+          <span class="label">Email:</span>
+          <span class="value" id="user-email">-</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Plan:</span>
+          <span class="value" id="user-plan">Pro</span>
+        </div>
+        <div class="info-row" id="discount-info" style="display: none;">
+          <span class="label">Status:</span>
+          <span class="value text-green" id="user-discount">LIFETIME FREE</span>
+        </div>
+      </div>
+
+      <!-- Installation Steps -->
+      <div class="install-steps">
+        <h3>🚀 Quick Setup (1 minute)</h3>
+        
+        <div class="step featured">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <strong>Open in your IDE (1-click clone)</strong>
+            <p class="step-desc">Click a button below. It will automatically clone the project and open it:</p>
+            <div class="ide-buttons">
+              <a href="vscode://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-btn" title="Open in VS Code">
+                <span>💻 VS Code</span>
+              </a>
+              <a href="cursor://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-btn" title="Open in Cursor">
+                <span>🖱️ Cursor</span>
+              </a>
+              <a href="https://antigravity.google/?repo=longtho638-jpg/agencyos-starter" class="ide-btn antigravity" title="Open in Antigravity (Recommended)">
+                <span>🚀 Antigravity</span>
+              </a>
+            </div>
+            <p class="step-note">Don't have an IDE? <a href="https://code.visualstudio.com/download" target="_blank">Download VS Code</a> (free)</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <strong>Run in IDE terminal</strong>
+            <p class="step-desc">Press <kbd>Ctrl</kbd>+<kbd>`</kbd> to open terminal, then paste:</p>
+            <div class="code-block">
+              <code>/help</code>
+              <button class="btn-copy-small" data-copy="/help">📋</button>
+            </div>
+            <p class="step-note">That's it! Start using 125+ AI commands 🎉</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- IDE Compatibility -->
+      <div class="ide-compatibility">
+        <h4>✅ Compatible with:</h4>
+        <div class="ide-logos">
+          <span class="ide-logo">VS Code</span>
+          <span class="ide-logo">Cursor</span>
+          <span class="ide-logo highlight">Antigravity</span>
+          <span class="ide-logo">Windsurf</span>
+          <span class="ide-logo">Claude Code</span>
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="cta-buttons">
+        <a href="/docs/getting-started/installation" class="btn-primary">
+          📖 Full Documentation →
+        </a>
+        <a href="/quickstart" class="btn-secondary">
+          🎯 Quick Start Guide
+        </a>
+      </div>
+
+      <!-- Email Sent Notice -->
+      <div class="email-notice" id="email-notice">
+        <p>📧 We've also sent these instructions to your email.</p>
+      </div>
+
+      <div class="support-note">
+        <p>Need help? <a href="mailto:support@agencyos.network">support@agencyos.network</a> | <a href="/license">Manage License</a></p>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  /* ===================== WOW SUCCESS ANIMATIONS ===================== */
+  /* Fireworks Canvas */
+  #fireworks-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .success-section {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+  }
+
+  /* Card entrance with bounce */
+  .success-card {
+    background: var(--color-bg-secondary);
+    border: 2px solid #22c55e;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 700px;
+    width: 100%;
+    position: relative;
+    animation: card-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
+  }
+
+  @keyframes card-bounce {
+    0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+    60% { transform: scale(1.05) translateY(-10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Success icon with celebration */
+  .success-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 8px;
+    animation: icon-celebrate 1s ease-out 0.5s both;
+  }
+
+  @keyframes icon-celebrate {
+    0% { transform: scale(0) rotate(-180deg); }
+    50% { transform: scale(1.3) rotate(20deg); }
+    70% { transform: scale(0.9) rotate(-10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .success-card h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 8px 0;
+    text-align: center;
+    animation: text-shine 3s linear infinite, fade-in 0.6s ease-out 0.3s both;
+  }
+
+  @keyframes text-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .welcome-message {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+    text-align: center;
+    animation: fade-in 0.6s ease-out 0.5s both;
+  }
+
+  .welcome-message p { margin: 4px 0; }
+
+  /* License Section - with glow pulse */
+  .license-section {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    border: 2px dashed #22c55e;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+    animation: fade-in 0.6s ease-out 0.7s both, license-glow 2s ease-in-out infinite 1.5s;
+    position: relative;
+  }
+
+  @keyframes license-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+  }
+
+  .license-section h3 {
+    margin: 0 0 12px 0;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+  }
+
+  .license-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    padding: 12px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Shine sweep on license box */
+  .license-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(34, 197, 94, 0.2),
+      transparent
+    );
+    animation: sweep 3s ease-in-out infinite 2s;
+  }
+
+  @keyframes sweep {
+    0% { left: -100%; }
+    50%, 100% { left: 100%; }
+  }
+
+  .license-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: #22c55e;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-copy {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+
+  .btn-copy:hover { background: #22c55e; }
+
+  .license-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: 8px 0 0 0;
+  }
+
+  /* Account Info */
+  .account-info {
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-row .label { color: var(--color-text-muted); }
+  .info-row .value { color: var(--color-text-primary); font-weight: 600; }
+  .text-green { color: #22c55e !important; }
+
+  /* Install Steps */
+  .install-steps {
+    margin-bottom: 24px;
+  }
+
+  .install-steps h3 {
+    color: var(--color-text-primary);
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    background: #22c55e;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .step.featured {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    border: 2px solid #22c55e;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-content strong {
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0 0 12px 0;
+  }
+
+  kbd {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--color-text-primary);
+  }
+
+  .code-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-bg-tertiary);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+  }
+
+  .code-block code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #22c55e;
+    flex: 1;
+  }
+
+  .btn-copy-small {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .btn-copy-small:hover { opacity: 1; }
+
+  .step-note {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: 6px 0 0 0;
+  }
+
+  /* IDE Buttons */
+  .ide-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ide-btn {
+    padding: 8px 16px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .ide-btn:hover { border-color: #22c55e; }
+
+  .ide-btn.antigravity {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    border: none;
+    color: white;
+  }
+
+  /* IDE Compatibility */
+  .ide-compatibility {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+  }
+
+  .ide-compatibility h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .ide-logos {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .ide-logo {
+    padding: 4px 12px;
+    background: var(--color-bg-secondary);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .ide-logo.highlight {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    color: white;
+  }
+
+  /* CTA Buttons */
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+  }
+
+  .btn-secondary {
+    padding: 12px 24px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .email-notice {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .email-notice p { margin: 0; }
+
+  .support-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .support-note a {
+    color: #22c55e;
+    text-decoration: none;
+  }
+
+  @media (max-width: 480px) {
+    .success-card { padding: 24px; }
+    .success-card h1 { font-size: 1.5rem; }
+    .ide-buttons { flex-direction: column; }
+    .cta-buttons { flex-direction: column; }
+  }
+</style>
+
+<script>
+  // Fireworks celebration animation
+  function launchFireworks() {
+    const canvas = document.getElementById('fireworks-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles: Array<{
+      x: number; y: number; vx: number; vy: number;
+      color: string; life: number; maxLife: number; size: number;
+    }> = [];
+    
+    const colors = ['#22c55e', '#06b6d4', '#eab308', '#f97316', '#ec4899', '#8b5cf6', '#ffffff'];
+    
+    function createFirework(x: number, y: number) {
+      const particleCount = 80 + Math.random() * 40;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      for (let i = 0; i < particleCount; i++) {
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const speed = 3 + Math.random() * 4;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color,
+          life: 0,
+          maxLife: 60 + Math.random() * 30,
+          size: 2 + Math.random() * 2
+        });
+      }
+    }
+    
+    let frame = 0;
+    const maxFrames = 180;
+    
+    // Launch multiple fireworks at different times
+    setTimeout(() => createFirework(canvas.width * 0.3, canvas.height * 0.4), 100);
+    setTimeout(() => createFirework(canvas.width * 0.7, canvas.height * 0.35), 400);
+    setTimeout(() => createFirework(canvas.width * 0.5, canvas.height * 0.3), 700);
+    setTimeout(() => createFirework(canvas.width * 0.2, canvas.height * 0.45), 1000);
+    setTimeout(() => createFirework(canvas.width * 0.8, canvas.height * 0.4), 1300);
+    
+    function animate() {
+      if (frame > maxFrames && particles.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05; // gravity
+        p.vx *= 0.99; // air resistance
+        p.life++;
+        
+        const progress = p.life / p.maxLife;
+        const alpha = 1 - progress;
+        
+        if (alpha <= 0) {
+          particles.splice(i, 1);
+          return;
+        }
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * (1 - progress * 0.5), 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = alpha;
+        ctx.fill();
+        
+        // Trail effect
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = alpha * 0.5;
+        ctx.lineWidth = p.size * 0.5;
+        ctx.stroke();
+      });
+      
+      ctx.globalAlpha = 1;
+      frame++;
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+  }
+  
+  // Launch fireworks on page load
+  setTimeout(launchFireworks, 300);
+
+  // Generate license key
+  function generateLicenseKey(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const segments = [];
+    for (let s = 0; s < 3; s++) {
+      let segment = '';
+      for (let i = 0; i < 4; i++) {
+        segment += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      segments.push(segment);
+    }
+    return 'AGENCYOS-' + segments.join('-');
+  }
+
+  // Get user data
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFree = urlParams.get('free') === 'true';
+  const plan = urlParams.get('plan') || 'pro';
+  const emailFromUrl = urlParams.get('email');
+
+  const userData = localStorage.getItem('agencyos_user');
+  const licenseKeyEl = document.getElementById('license-key');
+  const activateCmdEl = document.getElementById('activate-cmd');
+  const userEmailEl = document.getElementById('user-email');
+  const userPlanEl = document.getElementById('user-plan');
+  const discountInfoEl = document.getElementById('discount-info');
+  const userDiscountEl = document.getElementById('user-discount');
+  const welcomeMessage = document.getElementById('welcome-message');
+
+  // Generate or retrieve license key
+  let licenseKey = localStorage.getItem('agencyos_license_key');
+  if (!licenseKey) {
+    licenseKey = generateLicenseKey();
+    localStorage.setItem('agencyos_license_key', licenseKey);
+  }
+
+  // Display license key
+  if (licenseKeyEl) licenseKeyEl.textContent = licenseKey;
+  if (activateCmdEl) activateCmdEl.textContent = `mk activate ${licenseKey}`;
+
+  // Update user info
+  if (userData) {
+    const user = JSON.parse(userData);
+    if (userEmailEl) userEmailEl.textContent = user.email || emailFromUrl || '-';
+    if (userPlanEl) userPlanEl.textContent = (user.plan || plan).charAt(0).toUpperCase() + (user.plan || plan).slice(1);
+    
+    if (user.discount > 0 && discountInfoEl && userDiscountEl) {
+      discountInfoEl.style.display = 'flex';
+      userDiscountEl.textContent = user.discount === 100 ? 'LIFETIME FREE 🎉' : user.discount + '% OFF';
+    }
+  } else if (emailFromUrl) {
+    if (userEmailEl) userEmailEl.textContent = emailFromUrl;
+  }
+
+  // Free user message
+  if (isFree && welcomeMessage) {
+    welcomeMessage.innerHTML = `
+      <p>🎉 <strong>You're one of the first 100!</strong></p>
+      <p>Enjoy lifetime access to AgencyOS - completely FREE!</p>
+    `;
+    if (discountInfoEl && userDiscountEl) {
+      discountInfoEl.style.display = 'flex';
+      userDiscountEl.textContent = 'LIFETIME FREE 🎉';
+    }
+  }
+
+  // Copy buttons
+  document.getElementById('copy-license')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(licenseKey || '');
+    alert('License key copied!');
+  });
+
+  document.getElementById('copy-activate')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(`mk activate ${licenseKey}`);
+    alert('Command copied!');
+  });
+
+  document.querySelectorAll('.btn-copy-small[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.getAttribute('data-copy');
+      if (text) navigator.clipboard.writeText(text);
+      alert('Copied!');
+    });
+  });
+
+  // Save license with user data
+  if (userData) {
+    const user = JSON.parse(userData);
+    user.licenseKey = licenseKey;
+    localStorage.setItem('agencyos_user', JSON.stringify(user));
+  }
+</script>

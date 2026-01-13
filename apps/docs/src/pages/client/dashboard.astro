@@ -1,0 +1,639 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Client Portal - Dự Án & Tiến Độ';
+const description = 'Theo dõi dự án, nhiệm vụ, hóa đơn và giao tiếp với agency của bạn';
+
+// Extract portal code from URL params
+const urlParams = new URL(Astro.request.url).searchParams;
+const portalCode = urlParams.get('code') || '';
+---
+
+<LandingLayout title={title} description={description}>
+  <!-- Login Screen (if no code) -->
+  <div id="auth-screen" class="auth-container" style={portalCode ? 'display:none' : ''}>
+    <div class="auth-card">
+      <h1>🏯 Client Portal</h1>
+      <p class="subtitle">Nhập mã truy cập của bạn</p>
+      
+      <form id="auth-form" class="auth-form">
+        <div class="form-group">
+          <label for="portal-code">Portal Code</label>
+          <input 
+            type="text" 
+            id="portal-code" 
+            placeholder="Nhập 12-ký tự access code"
+            maxlength="12"
+            required
+          />
+        </div>
+        
+        <button type="submit" class="btn-primary">
+          Truy Cập Portal →
+        </button>
+      </form>
+      
+      <p class="hint">Không có mã? Liên hệ agency của bạn để nhận access code.</p>
+    </div>
+  </div>
+
+  <!-- Dashboard (after login) -->
+  <div id="dashboard" class="dashboard-container" style={!portalCode ? 'display:none' : ''}>
+    
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1 id="client-name">Chào mừng, Client</h1>
+        <p class="company-name" id="company-name">Company Name</p>
+      </div>
+      <div class="header-right">
+        <div class="member-badge">
+          <span class="icon">👤</span>
+          <span id="member-since">Member since Dec 2025</span>
+        </div>
+        <button id="logout-btn" class="btn-secondary">Đăng xuất</button>
+      </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📁</div>
+        <div class="stat-content">
+          <div class="stat-value" id="projects-count">0</div>
+          <div class="stat-label">Dự Án Đang Chạy</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <div class="stat-value" id="tasks-done">0</div>
+          <div class="stat-label">Nhiệm Vụ Hoàn Thành</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <div class="stat-value" id="total-paid">$0</div>
+          <div class="stat-label">Đã Thanh Toán</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📧</div>
+        <div class="stat-content">
+          <div class="stat-value" id="messages-unread">0</div>
+          <div class="stat-label">Tin Nhắn Mới</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <div class="main-grid">
+      
+      <!-- Left Column -->
+      <div class="left-column">
+        
+        <!-- Active Projects -->
+        <section class="card projects-card">
+          <div class="card-header">
+            <h2>📁 Dự Án Của Bạn</h2>
+          </div>
+          <div id="projects-list" class="projects-list">
+            <!-- Projects will load here -->
+          </div>
+        </section>
+
+        <!-- Tasks -->
+        <section class="card tasks-card">
+          <div class="card-header">
+            <h2>✅ Nhiệm Vụ Gần Đây</h2>
+          </div>
+          <div id="tasks-list" class="tasks-list">
+            <!-- Tasks will load here -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column">
+        
+        <!-- Invoices -->
+        <section class="card invoices-card">
+          <div class="card-header">
+            <h2>💳 Hóa Đơn</h2>
+          </div>
+          <div id="invoices-list" class="invoices-list">
+            <!-- Invoices will load here -->
+          </div>
+        </section>
+
+        <!-- Messages -->
+        <section class="card messages-card">
+          <div class="card-header">
+            <h2>📧 Tin Nhắn</h2>
+          </div>
+          <div id="messages-list" class="messages-list">
+            <!-- Messages will load here -->
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </div>
+</LandingLayout>
+
+<style>
+  /* ===================== WOW AUTH SCREEN ===================== */
+  .auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .auth-card {
+    max-width: 420px;
+    width: 100%;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    text-align: center;
+    animation: card-entrance 0.6s ease-out;
+    box-shadow: 0 20px 60px rgba(34, 197, 94, 0.15);
+  }
+
+  @keyframes card-entrance {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .auth-card h1 {
+    font-size: 2rem;
+    margin: 0 0 12px 0;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shine 4s linear infinite;
+  }
+
+  @keyframes text-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin-bottom: 32px;
+    animation: fade-in 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .auth-form { animation: fade-in 0.6s ease-out 0.3s both; }
+  .hint { 
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 24px;
+    animation: fade-in 0.6s ease-out 0.4s both;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 16px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    font-family: monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.1);
+    transform: scale(1.01);
+  }
+
+  /* ===================== WOW DASHBOARD ===================== */
+  .dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    animation: header-slide 0.6s ease-out;
+  }
+
+  @keyframes header-slide {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+    margin: 0;
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .company-name {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .member-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-bg-tertiary);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-right: 12px;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: stat-pop 0.5s ease-out both;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { animation-delay: 0.3s; }
+  .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes stat-pop {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+    animation: icon-float 2s ease-in-out infinite;
+  }
+
+  @keyframes icon-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+
+  /* Main Grid */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: card-slide 0.5s ease-out 0.5s both;
+    transition: all 0.3s ease;
+  }
+
+  @keyframes card-slide {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card-header h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  /* Buttons */
+  .btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.5); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  .btn-secondary:hover {
+    border-color: #22c55e;
+    transform: translateY(-1px);
+  }
+
+  /* Lists */
+  .projects-list, .tasks-list, .invoices-list, .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  @media (max-width: 1024px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .dashboard-header { flex-direction: column; gap: 16px; }
+  }
+</style>
+
+<script>
+  // ===================== CLIENT PORTAL - LIVE API INTEGRATION =====================
+  
+  // DOM Elements
+  const authForm = document.getElementById('auth-form');
+  const authScreen = document.getElementById('auth-screen');
+  const dashboard = document.getElementById('dashboard');
+  const portalCodeInput = document.getElementById('portal-code') as HTMLInputElement;
+
+  // Loading state
+  function showLoading() {
+    const projectsList = document.getElementById('projects-list');
+    const tasksList = document.getElementById('tasks-list');
+    const invoicesList = document.getElementById('invoices-list');
+    
+    const skeleton = '<div class="skeleton">Loading...</div>';
+    if (projectsList) projectsList.innerHTML = skeleton;
+    if (tasksList) tasksList.innerHTML = skeleton;
+    if (invoicesList) invoicesList.innerHTML = skeleton;
+  }
+
+  // Error display
+  function showError(message: string) {
+    alert(`Error: ${message}`);
+    authScreen!.style.display = 'flex';
+    dashboard!.style.display = 'none';
+  }
+
+  // Fetch data from API
+  async function fetchDashboardData(code: string) {
+    try {
+      showLoading();
+      
+      const response = await fetch(`/api/client/dashboard?code=${encodeURIComponent(code)}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch dashboard data');
+      }
+      
+      return data;
+    } catch (error: any) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  }
+
+  // Render dashboard with real data
+  function renderDashboard(data: any) {
+    // Update header
+    document.getElementById('client-name')!.textContent = `Chào mừng, ${data.client.name}`;
+    document.getElementById('company-name')!.textContent = data.client.company;
+    document.getElementById('member-since')!.textContent = `Member since ${data.client.member_since}`;
+
+    // Update stats
+    document.getElementById('projects-count')!.textContent = data.stats.active_projects.toString();
+    document.getElementById('tasks-done')!.textContent = data.stats.completed_tasks.toString();
+    document.getElementById('total-paid')!.textContent = `$${data.stats.total_paid.toLocaleString()}`;
+    document.getElementById('messages-unread')!.textContent = data.stats.unread_messages.toString();
+
+    // Load projects
+    const projectsList = document.getElementById('projects-list')!;
+    if (data.projects.length === 0) {
+      projectsList.innerHTML = '<div class="empty-state">Không có dự án nào</div>';
+    } else {
+      projectsList.innerHTML = data.projects.map((p: any) => `
+        <div class="project-item">
+          <div class="project-header">
+            <strong>${p.name}</strong>
+            <span class="badge ${p.status}">${p.status.replace('_', ' ')}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${p.progress}%"></div>
+          </div>
+          <div class="project-footer">
+            <span>${p.tasks_done}/${p.tasks_total} tasks completed</span>
+            <span>${p.progress}%</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Load tasks
+    const tasksList = document.getElementById('tasks-list')!;
+    if (data.tasks.length === 0) {
+      tasksList.innerHTML = '<div class="empty-state">Không có nhiệm vụ nào</div>';
+    } else {
+      tasksList.innerHTML = data.tasks.map((t: any) => `
+        <div class="task-item">
+          <span class="task-icon">${t.status === 'done' ? '✅' : '⏳'}</span>
+          <span class="task-name">${t.title}</span>
+          <span class="task-status ${t.status}">${t.status}</span>
+        </div>
+      `).join('');
+    }
+
+    // Load invoices
+    const invoicesList = document.getElementById('invoices-list')!;
+    if (data.invoices.length === 0) {
+      invoicesList.innerHTML = '<div class="empty-state">Không có hóa đơn nào</div>';
+    } else {
+      invoicesList.innerHTML = data.invoices.map((inv: any) => `
+        <div class="invoice-item">
+          <div class="invoice-id">${inv.invoice_number}</div>
+          <div class="invoice-amount">$${parseFloat(inv.amount).toLocaleString()}</div>
+          <div class="invoice-status ${inv.status}">${inv.status.toUpperCase()}</div>
+        </div>
+      `).join('');
+    }
+
+    // Load messages count
+    const messagesList = document.getElementById('messages-list');
+    if (messagesList) {
+      if (data.messages.recent.length === 0) {
+        messagesList.innerHTML = '<div class="empty-state">Không có tin nhắn mới</div>';
+      } else {
+        messagesList.innerHTML = data.messages.recent.map((m: any) => `
+          <div class="message-item ${m.read ? '' : 'unread'}">
+            <span class="message-sender">${m.sender === 'agency' ? '🏢' : '👤'}</span>
+            <span class="message-content">${m.content.substring(0, 50)}...</span>
+          </div>
+        `).join('');
+      }
+    }
+  }
+
+  // Auth form submit
+  authForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = portalCodeInput.value.trim().toUpperCase();
+    
+    if (code.length < 8) {
+      alert('Portal code phải có ít nhất 8 ký tự');
+      return;
+    }
+    
+    try {
+      authScreen!.style.display = 'none';
+      dashboard!.style.display = 'block';
+      
+      const data = await fetchDashboardData(code);
+      renderDashboard(data);
+      
+      // Save code for session
+      sessionStorage.setItem('portal_code', code);
+      
+    } catch (error: any) {
+      showError(error.message || 'Không thể kết nối API');
+    }
+  });
+
+  // Logout
+  document.getElementById('logout-btn')?.addEventListener('click', () => {
+    dashboard!.style.display = 'none';
+    authScreen!.style.display = 'flex';
+    portalCodeInput.value = '';
+    sessionStorage.removeItem('portal_code');
+  });
+
+  // Auto-login if code in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlCode = urlParams.get('code');
+  
+  if (urlCode) {
+    // Code provided in URL, auto-login
+    (async () => {
+      try {
+        authScreen!.style.display = 'none';
+        dashboard!.style.display = 'block';
+        
+        const data = await fetchDashboardData(urlCode);
+        renderDashboard(data);
+        
+        sessionStorage.setItem('portal_code', urlCode);
+      } catch (error: any) {
+        showError(error.message || 'Portal code không hợp lệ');
+      }
+    })();
+  } else {
+    // Check session storage for saved code
+    const savedCode = sessionStorage.getItem('portal_code');
+    if (savedCode) {
+      (async () => {
+        try {
+          authScreen!.style.display = 'none';
+          dashboard!.style.display = 'block';
+          
+          const data = await fetchDashboardData(savedCode);
+          renderDashboard(data);
+        } catch (error) {
+          // Session expired, show login
+          authScreen!.style.display = 'flex';
+          dashboard!.style.display = 'none';
+        }
+      })();
+    }
+  }
+</script>

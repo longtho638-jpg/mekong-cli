@@ -1,0 +1,844 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'AG Wallet - AgencyOS';
+const description = 'Manage your AG Credits - earn from referrals, transfer to others, or spend on SaaS products.';
+---
+
+<LandingLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="wallet-hero">
+    <h1>💰 AG Wallet</h1>
+    <p>Your internal credit system - Earn, Transfer, Spend</p>
+  </section>
+
+  <!-- Balance Card -->
+  <section class="wallet-section">
+    <div class="balance-card">
+      <div class="balance-header">
+        <span class="balance-label">Available Balance</span>
+        <span class="rank-badge" id="rank-badge">🥉 Chiến Binh</span>
+      </div>
+      <div class="balance-amount" id="balance">0.00 AGC</div>
+      <div class="balance-usd" id="balance-usd">≈ $0.00 USD</div>
+      
+      <div class="balance-stats">
+        <div class="stat">
+          <span class="stat-label">Lifetime Earned</span>
+          <span class="stat-value" id="lifetime-earned">0 AGC</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Lifetime Spent</span>
+          <span class="stat-value" id="lifetime-spent">0 AGC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-action" id="btn-transfer">
+        <span class="btn-icon">↗️</span>
+        Transfer
+      </button>
+      <button class="btn-action btn-primary" id="btn-redeem">
+        <span class="btn-icon">🛒</span>
+        Buy SaaS
+      </button>
+    </div>
+  </section>
+
+  <!-- Transfer Modal -->
+  <div class="modal" id="transfer-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>↗️ Transfer AGC</h3>
+        <button class="modal-close" id="close-transfer">&times;</button>
+      </div>
+      <form id="transfer-form">
+        <div class="form-group">
+          <label>Recipient Email</label>
+          <input type="email" id="transfer-email" placeholder="user@example.com" required />
+        </div>
+        <div class="form-group">
+          <label>Amount (AGC)</label>
+          <input type="number" id="transfer-amount" min="1" step="0.01" placeholder="10.00" required />
+        </div>
+        <div class="form-group">
+          <label>Note (Optional)</label>
+          <input type="text" id="transfer-note" placeholder="Thanks for the help!" />
+        </div>
+        <button type="submit" class="btn-primary full-width">Send Transfer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Redeem Modal -->
+  <div class="modal" id="redeem-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🛒 Buy with AGC</h3>
+        <button class="modal-close" id="close-redeem">&times;</button>
+      </div>
+      <div class="product-grid">
+        <div class="product-card" data-product="starter_monthly">
+          <h4>Starter</h4>
+          <div class="product-price">29 AGC</div>
+          <p>1 month access</p>
+          <button class="btn-buy">Buy Now</button>
+        </div>
+        <div class="product-card featured" data-product="pro_monthly">
+          <h4>Pro</h4>
+          <div class="product-price">99 AGC</div>
+          <p>1 month access</p>
+          <button class="btn-buy">Buy Now</button>
+        </div>
+        <div class="product-card" data-product="franchise_monthly">
+          <h4>Franchise</h4>
+          <div class="product-price">299 AGC</div>
+          <p>1 month access</p>
+          <button class="btn-buy">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction History -->
+  <section class="history-section">
+    <h2>📜 Transaction History</h2>
+    <div class="history-list" id="history-list">
+      <div class="loading">Loading...</div>
+    </div>
+  </section>
+
+  <!-- Rank Progress -->
+  <section class="rank-section">
+    <h2>🎖️ Rank Progress</h2>
+    <div class="rank-progress">
+      <div class="rank-item active">
+        <span class="rank-emoji">🥉</span>
+        <span class="rank-name">Chiến Binh</span>
+        <span class="rank-threshold">0+ AGC</span>
+      </div>
+      <div class="rank-item">
+        <span class="rank-emoji">🥈</span>
+        <span class="rank-name">Tướng Quân</span>
+        <span class="rank-threshold">500+ AGC</span>
+        <span class="rank-perk">+5% bonus</span>
+      </div>
+      <div class="rank-item">
+        <span class="rank-emoji">🥇</span>
+        <span class="rank-name">Thống Soái</span>
+        <span class="rank-threshold">2000+ AGC</span>
+        <span class="rank-perk">+10% bonus</span>
+      </div>
+      <div class="rank-item">
+        <span class="rank-emoji">👑</span>
+        <span class="rank-name">Nguyên Soái</span>
+        <span class="rank-threshold">10000+ AGC</span>
+        <span class="rank-perk">+15% bonus</span>
+      </div>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .wallet-hero {
+    text-align: center;
+    padding: 64px 24px 32px;
+  }
+
+  .wallet-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .wallet-hero p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .wallet-section {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .balance-card {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(34, 197, 94, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: card-entrance 0.8s ease-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .balance-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, #f59e0b, #22c55e, #f59e0b);
+    background-size: 200% 200%;
+    border-radius: 22px;
+    z-index: -1;
+    opacity: 0;
+    animation: glow-pulse 3s ease-in-out infinite;
+    transition: opacity 0.3s ease;
+  }
+
+  .balance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(245, 158, 11, 0.25);
+  }
+
+  .balance-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Floating particles */
+  .balance-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 80% 70%, rgba(34, 197, 94, 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.2) 1px, transparent 1px);
+    background-size: 60px 60px, 80px 80px, 100px 100px;
+    animation: particle-float 20s linear infinite;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  @keyframes card-entrance {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      background-position: 0% 50%;
+      filter: blur(8px);
+    }
+    50% {
+      background-position: 100% 50%;
+      filter: blur(12px);
+    }
+  }
+
+  @keyframes particle-float {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 60px 100px, -80px -150px, 100px 200px; }
+  }
+
+  .balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .balance-label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .rank-badge {
+    background: rgba(245, 158, 11, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #f59e0b;
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+  }
+
+  .balance-amount {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .balance-usd {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+
+  .balance-stats {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .btn-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text-primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-action:hover {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+  }
+
+  .btn-action.btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #22c55e);
+    border: none;
+    color: white;
+  }
+
+  .btn-action.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+  }
+
+  .btn-icon {
+    font-size: 1.2rem;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #f59e0b;
+  }
+
+  .btn-primary.full-width {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f59e0b, #22c55e);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary.full-width:hover {
+    transform: translateY(-2px);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .product-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .product-card.featured {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+  }
+
+  .product-card h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .product-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 4px;
+  }
+
+  .product-card p {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .btn-buy {
+    width: 100%;
+    padding: 8px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .btn-buy:hover {
+    border-color: #f59e0b;
+  }
+
+  /* History */
+  .history-section {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 24px;
+  }
+
+  .history-section h2 {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+  }
+
+  .history-list {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .history-item:last-child {
+    border-bottom: none;
+  }
+
+  .history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .history-desc {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .history-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .history-amount {
+    font-weight: 600;
+  }
+
+  .history-amount.positive {
+    color: #22c55e;
+  }
+
+  .history-amount.negative {
+    color: #ef4444;
+  }
+
+  .loading {
+    padding: 24px;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+
+  /* Rank Progress */
+  .rank-section {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 24px 80px;
+  }
+
+  .rank-section h2 {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+  }
+
+  .rank-progress {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .rank-item {
+    flex: 1;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .rank-item:hover {
+    transform: translateY(-4px);
+    opacity: 0.8;
+  }
+
+  .rank-item.active {
+    opacity: 1;
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2);
+  }
+
+  .rank-item.active:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+  }
+
+  .rank-emoji {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .rank-name {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .rank-threshold {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  .rank-perk {
+    display: block;
+    font-size: 0.7rem;
+    color: #22c55e;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rank-progress {
+      flex-wrap: wrap;
+    }
+
+    .rank-item {
+      flex: 1 1 45%;
+    }
+  }
+</style>
+
+<script>
+  // Elements
+  const balanceEl = document.getElementById('balance');
+  const balanceUsdEl = document.getElementById('balance-usd');
+  const lifetimeEarnedEl = document.getElementById('lifetime-earned');
+  const lifetimeSpentEl = document.getElementById('lifetime-spent');
+  const rankBadgeEl = document.getElementById('rank-badge');
+  const historyListEl = document.getElementById('history-list');
+
+  const btnTransfer = document.getElementById('btn-transfer');
+  const btnRedeem = document.getElementById('btn-redeem');
+  const transferModal = document.getElementById('transfer-modal');
+  const redeemModal = document.getElementById('redeem-modal');
+  const closeTransfer = document.getElementById('close-transfer');
+  const closeRedeem = document.getElementById('close-redeem');
+  const transferForm = document.getElementById('transfer-form');
+
+  // Rank mapping
+  const RANKS: Record<string, { emoji: string; name: string }> = {
+    chien_binh: { emoji: '🥉', name: 'Chiến Binh' },
+    tuong_quan: { emoji: '🥈', name: 'Tướng Quân' },
+    thong_soai: { emoji: '🥇', name: 'Thống Soái' },
+    nguyen_soai: { emoji: '👑', name: 'Nguyên Soái' },
+  };
+
+  // Get token (demo - in production would use auth)
+  const token = localStorage.getItem('agencyos_token') || '';
+
+  // Load balance
+  async function loadBalance() {
+    try {
+      const res = await fetch('/api/credits', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      // Animate counter function
+      function animateCounter(element: HTMLElement | null, targetValue: number, suffix: string = '', duration: number = 1000) {
+        if (!element) return;
+        const startValue = 0;
+        const startTime = performance.now();
+        
+        function update(currentTime: number) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Easing: ease-out quad
+          const easedProgress = 1 - (1 - progress) * (1 - progress);
+          const currentValue = startValue + (targetValue - startValue) * easedProgress;
+          
+          element.textContent = currentValue.toFixed(2) + suffix;
+          
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+        requestAnimationFrame(update);
+      }
+
+      // Animate balances
+      animateCounter(balanceEl, data.balance || 0, ' AGC', 1500);
+      animateCounter(balanceUsdEl, data.balance || 0, ' USD', 1500);
+      if (balanceUsdEl) balanceUsdEl.textContent = `≈ $${(data.balance || 0).toFixed(2)} USD`; // Will be overwritten by animation
+      if (lifetimeEarnedEl) lifetimeEarnedEl.textContent = `${data.lifetime_earned?.toFixed(0) || 0} AGC`;
+      if (lifetimeSpentEl) lifetimeSpentEl.textContent = `${data.lifetime_spent?.toFixed(0) || 0} AGC`;
+
+      const rank = RANKS[data.rank] || RANKS.chien_binh;
+      if (rankBadgeEl) rankBadgeEl.textContent = `${rank.emoji} ${rank.name}`;
+
+      // Update rank progress
+      document.querySelectorAll('.rank-item').forEach((el, i) => {
+        const ranks = ['chien_binh', 'tuong_quan', 'thong_soai', 'nguyen_soai'];
+        if (ranks.indexOf(data.rank) >= i) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    } catch (e) {
+      console.error('Error loading balance:', e);
+    }
+  }
+
+  // Load history
+  async function loadHistory() {
+    try {
+      const res = await fetch('/api/credits?type=history', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      if (!data.transactions?.length) {
+        if (historyListEl) historyListEl.innerHTML = '<div class="loading">No transactions yet</div>';
+        return;
+      }
+
+      const html = data.transactions.map((tx: any) => {
+        const isPositive = tx.type === 'earn' || tx.type === 'bonus' || tx.to_user_id;
+        return `
+          <div class="history-item">
+            <div class="history-info">
+              <span class="history-desc">${tx.description || tx.type}</span>
+              <span class="history-date">${new Date(tx.created_at).toLocaleDateString()}</span>
+            </div>
+            <span class="history-amount ${isPositive ? 'positive' : 'negative'}">
+              ${isPositive ? '+' : '-'}${tx.amount} AGC
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      if (historyListEl) historyListEl.innerHTML = html;
+    } catch (e) {
+      console.error('Error loading history:', e);
+    }
+  }
+
+  // Modal handlers
+  btnTransfer?.addEventListener('click', () => transferModal?.classList.add('active'));
+  btnRedeem?.addEventListener('click', () => redeemModal?.classList.add('active'));
+  closeTransfer?.addEventListener('click', () => transferModal?.classList.remove('active'));
+  closeRedeem?.addEventListener('click', () => redeemModal?.classList.remove('active'));
+
+  // Transfer form
+  transferForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('transfer-email') as HTMLInputElement)?.value;
+    const amount = parseFloat((document.getElementById('transfer-amount') as HTMLInputElement)?.value);
+    const note = (document.getElementById('transfer-note') as HTMLInputElement)?.value;
+
+    try {
+      const res = await fetch('/api/credits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ to_email: email, amount, description: note }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`✅ ${data.message}`);
+        transferModal?.classList.remove('active');
+        loadBalance();
+        loadHistory();
+      } else {
+        alert(`❌ ${data.error}`);
+      }
+    } catch (e) {
+      alert('Transfer failed');
+    }
+  });
+
+  // Buy buttons
+  document.querySelectorAll('.btn-buy').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const card = btn.closest('.product-card');
+      const productId = card?.getAttribute('data-product');
+
+      if (!confirm(`Buy ${productId} with AGC?`)) return;
+
+      try {
+        const res = await fetch('/api/credits/redeem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ product_id: productId }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert(`✅ ${data.message}\nLicense: ${data.license_key}`);
+          redeemModal?.classList.remove('active');
+          loadBalance();
+          loadHistory();
+        } else {
+          alert(`❌ ${data.error}`);
+        }
+      } catch (e) {
+        alert('Purchase failed');
+      }
+    });
+  });
+
+  // Init
+  loadBalance();
+  loadHistory();
+</script>

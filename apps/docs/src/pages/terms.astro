@@ -1,0 +1,215 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Terms of Service - AgencyOS';
+const description = 'Terms of service for AgencyOS. Usage terms and conditions.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="legal-page">
+    <div class="legal-container">
+      
+      <div class="legal-header">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Last updated: December 22, 2024</p>
+      </div>
+
+      <div class="legal-content">
+        
+        <h2>1. Acceptance of Terms</h2>
+        <p>By using AgencyOS, you agree to these terms. If you don't agree, don't use our services.</p>
+
+        <h2>2. Service Description</h2>
+        <p>AgencyOS provides:</p>
+        <ul>
+          <li>AI-powered agency automation tools</li>
+          <li>85+ commands for marketing, sales, and operations</li>
+          <li>Documentation and support resources</li>
+        </ul>
+
+        <h2>3. User Accounts</h2>
+        <ul>
+          <li>You must provide accurate information</li>
+          <li>Keep your credentials secure</li>
+          <li>You're responsible for account activity</li>
+          <li>One account per person/agency</li>
+        </ul>
+
+        <h2>4. Pricing & Payments</h2>
+        <ul>
+          <li><strong>Starter:</strong> $29/month</li>
+          <li><strong>Pro:</strong> $99/month</li>
+          <li><strong>Franchise:</strong> $299/month</li>
+          <li>30-day money-back guarantee</li>
+          <li>Prices may change with 30 days notice</li>
+        </ul>
+
+        <h2>5. Acceptable Use</h2>
+        <p>You agree NOT to:</p>
+        <ul>
+          <li>Use for illegal activities</li>
+          <li>Share account credentials</li>
+          <li>Reverse engineer our software</li>
+          <li>Resell without Franchise license</li>
+          <li>Abuse API rate limits</li>
+        </ul>
+
+        <h2>6. Intellectual Property</h2>
+        <ul>
+          <li>AgencyOS owns all product IP</li>
+          <li>You own your generated content</li>
+          <li>You grant us license to improve services</li>
+        </ul>
+
+        <h2>7. Refunds</h2>
+        <ul>
+          <li>30-day money-back guarantee on all plans</li>
+          <li>No questions asked refunds</li>
+          <li>Email <a href="mailto:support@agencyos.network">support@agencyos.network</a></li>
+        </ul>
+
+        <h2>8. Termination</h2>
+        <p>We may suspend or terminate accounts that:</p>
+        <ul>
+          <li>Violate these terms</li>
+          <li>Engage in fraudulent activity</li>
+          <li>Fail to pay for services</li>
+        </ul>
+
+        <h2>9. Disclaimer</h2>
+        <p>AgencyOS is provided "as is". We don't guarantee specific business results. AI outputs should be reviewed by humans.</p>
+
+        <h2>10. Limitation of Liability</h2>
+        <p>Our liability is limited to the amount you paid in the last 12 months. We're not liable for indirect damages.</p>
+
+        <h2>11. Contact</h2>
+        <p>Questions about terms?</p>
+        <ul>
+          <li>Email: <a href="mailto:legal@agencyos.network">legal@agencyos.network</a></li>
+        </ul>
+
+      </div>
+
+      <div class="legal-footer">
+        <a href="/privacy">Privacy Policy →</a>
+      </div>
+
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .legal-page {
+    min-height: calc(100vh - 72px);
+    padding: 64px 24px;
+  }
+
+  .legal-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ===================== HEADER WOW ===================== */
+  .legal-header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: hero-entrance 0.8s ease-out;
+  }
+
+  @keyframes hero-entrance {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .legal-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    animation: title-shine 5s linear infinite;
+  }
+
+  @keyframes title-shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+  }
+
+  .last-updated {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  /* ===================== CONTENT WOW ===================== */
+  .legal-content {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px;
+    animation: content-fade 0.6s ease-out 0.2s both;
+  }
+
+  @keyframes content-fade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .legal-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+
+  .legal-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-content p {
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .legal-content ul {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  .legal-content li {
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .legal-content a {
+    color: #22c55e;
+    transition: all 0.2s ease;
+  }
+
+  .legal-content a:hover {
+    text-decoration: underline;
+  }
+
+  /* ===================== FOOTER WOW ===================== */
+  .legal-footer {
+    text-align: center;
+    margin-top: 32px;
+    animation: content-fade 0.6s ease-out 0.4s both;
+  }
+
+  .legal-footer a {
+    color: #22c55e;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .legal-footer a:hover {
+    transform: translateX(4px);
+    display: inline-block;
+  }
+</style>

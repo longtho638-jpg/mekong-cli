@@ -1,0 +1,1368 @@
+---
+import LandingLayout from '../../layouts/LandingLayout.astro';
+
+const title = 'Agency Command Center';
+const description = 'Real-time agency metrics, system health monitoring, and quick actions';
+---
+
+<LandingLayout title={title} description={description}>
+  <div class="command-center">
+    
+    <!-- Ultra Header -->
+    <header class="center-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="center-title">🏯 AGENCY COMMAND CENTER</h1>
+          <p class="center-subtitle">MILESTONE 100 • "Không đánh mà thắng"</p>
+        </div>
+        <div class="header-right">
+          <div class="pulse-indicator" id="pulse-indicator">
+            <span class="pulse-dot"></span>
+            <span class="pulse-text">💚 THRIVING</span>
+          </div>
+          <div class="live-time" id="live-time"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Quick Stats Grid (6 metrics) -->
+    <section class="metrics-grid">
+      <div class="metric-card revenue">
+        <div class="metric-icon">💰</div>
+        <div class="metric-body">
+          <div class="metric-label">Revenue MTD</div>
+          <div class="metric-value" id="revenue-value">$0</div>
+          <div class="metric-trend positive">↑ 12%</div>
+        </div>
+      </div>
+
+      <div class="metric-card clients">
+        <div class="metric-icon">👥</div>
+        <div class="metric-body">
+          <div class="metric-label">Active Clients</div>
+          <div class="metric-value" id="clients-value">0</div>
+          <div class="metric-trend positive">↑ 2</div>
+        </div>
+      </div>
+
+      <div class="metric-card margin">
+        <div class="metric-icon">📈</div>
+        <div class="metric-body">
+          <div class="metric-label">Profit Margin</div>
+          <div class="metric-value" id="margin-value">0%</div>
+          <div class="metric-trend positive">↑ 5%</div>
+        </div>
+      </div>
+
+      <div class="metric-card utilization">
+        <div class="metric-icon">⚙️</div>
+        <div class="metric-body">
+          <div class="metric-label">Utilization</div>
+          <div class="metric-value" id="util-value">0%</div>
+          <div class="metric-trend neutral">→ 0%</div>
+        </div>
+      </div>
+
+      <div class="metric-card nps">
+        <div class="metric-icon">❤️</div>
+        <div class="metric-body">
+          <div class="metric-label">NPS Score</div>
+          <div class="metric-value" id="nps-value">0</div>
+          <div class="metric-trend positive">↑ 5</div>
+        </div>
+      </div>
+
+      <div class="metric-card pipeline">
+        <div class="metric-icon">🎯</div>
+        <div class="metric-body">
+          <div class="metric-label">Pipeline</div>
+          <div class="metric-value" id="pipeline-value">$0</div>
+          <div class="metric-trend positive">↑ 18%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <div class="center-grid">
+      
+      <!-- Left: System Health -->
+      <section class="panel system-panel">
+        <div class="panel-header">
+          <h2>🔧 System Status</h2>
+          <span class="status-badge all-operational">All Systems Operational</span>
+        </div>
+        <div class="systems-grid">
+          <div class="system-item operational" data-system="crm">
+            <span class="system-status">🟢</span>
+            <span class="system-name">CRM</span>
+          </div>
+          <div class="system-item operational" data-system="invoicing">
+            <span class="system-status">🟢</span>
+            <span class="system-name">Invoicing</span>
+          </div>
+          <div class="system-item operational" data-system="analytics">
+            <span class="system-status">🟢</span>
+            <span class="system-name">Analytics</span>
+          </div>
+          <div class="system-item operational" data-system="email">
+            <span class="system-status">🟢</span>
+            <span class="system-name">Email</span>
+          </div>
+          <div class="system-item operational" data-system="webhooks">
+            <span class="system-status">🟢</span>
+            <span class="system-name">Webhooks</span>
+          </div>
+          <div class="system-item operational" data-system="calendar">
+            <span class="system-status">🟢</span>
+            <span class="system-name">Calendar</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Top: Quick Actions -->
+      <section class="panel actions-panel">
+        <div class="panel-header">
+          <h2>🚀 Quick Actions</h2>
+        </div>
+        <div class="actions-grid">
+          <button class="action-btn" data-action="proposal" data-url="/docs/commands/sales/proposal">
+            <span class="action-icon">📝</span>
+            <span class="action-label">New Proposal</span>
+          </button>
+          <button class="action-btn" data-action="invoice" data-url="/docs/commands/finance/invoice">
+            <span class="action-icon">💳</span>
+            <span class="action-label">Create Invoice</span>
+          </button>
+          <button class="action-btn" data-action="meeting" data-url="/docs/commands/agency/timeline">
+            <span class="action-icon">📅</span>
+            <span class="action-label">Schedule Meeting</span>
+          </button>
+          <button class="action-btn" data-action="client" data-url="/docs/commands/agency/client">
+            <span class="action-icon">👤</span>
+            <span class="action-label">Add Client</span>
+          </button>
+          <button class="action-btn" data-action="report" data-url="/docs/commands/agency/report">
+            <span class="action-icon">📊</span>
+            <span class="action-label">Run Report</span>
+          </button>
+          <button class="action-btn" data-action="campaign" data-url="/docs/commands/marketing/email">
+            <span class="action-icon">📧</span>
+            <span class="action-label">Send Campaign</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Bottom: Today's Priorities -->
+      <section class="panel priorities-panel">
+        <div class="panel-header">
+          <h2>📋 Today's Priorities</h2>
+        </div>
+        <div class="priorities-list">
+          <div class="priority-item urgent">
+            <span class="priority-dot">🔴</span>
+            <span class="priority-text">Invoice #INV-003 overdue - send reminder</span>
+          </div>
+          <div class="priority-item high">
+            <span class="priority-dot">🟠</span>
+            <span class="priority-text">Coffee Lab proposal due tomorrow</span>
+          </div>
+          <div class="priority-item medium">
+            <span class="priority-dot">🟡</span>
+            <span class="priority-text">Tech Startup monthly report to prepare</span>
+          </div>
+          <div class="priority-item low">
+            <span class="priority-dot">🟢</span>
+            <span class="priority-text">Team standup at 2:00 PM</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 🏯 135 Commands Quick Access (NEW) -->
+    <section class="panel commands-panel">
+      <div class="panel-header">
+        <h2>🏯 135 ZERO-EFFORT Commands</h2>
+        <a href="/agentops-architecture" class="nav-link">View All →</a>
+      </div>
+      <div class="command-suites">
+        <div class="suite-chip" data-suite="marketing">
+          <span class="chip-icon">🔥</span>
+          <span class="chip-name">Marketing</span>
+          <span class="chip-count">8</span>
+        </div>
+        <div class="suite-chip" data-suite="sales">
+          <span class="chip-icon">🛒</span>
+          <span class="chip-name">Sales</span>
+          <span class="chip-count">8</span>
+        </div>
+        <div class="suite-chip" data-suite="finance">
+          <span class="chip-icon">💰</span>
+          <span class="chip-name">Finance</span>
+          <span class="chip-count">8</span>
+        </div>
+        <div class="suite-chip" data-suite="dev">
+          <span class="chip-icon">⚡</span>
+          <span class="chip-name">Dev</span>
+          <span class="chip-count">18</span>
+        </div>
+        <div class="suite-chip" data-suite="testing">
+          <span class="chip-icon">🧪</span>
+          <span class="chip-name">Testing</span>
+          <span class="chip-count">10</span>
+        </div>
+        <div class="suite-chip" data-suite="strategy">
+          <span class="chip-icon">🎯</span>
+          <span class="chip-name">Strategy</span>
+          <span class="chip-count">10</span>
+        </div>
+        <div class="suite-chip" data-suite="agency">
+          <span class="chip-icon">🏢</span>
+          <span class="chip-name">Agency</span>
+          <span class="chip-count">10</span>
+        </div>
+        <div class="suite-chip" data-suite="vietnamese">
+          <span class="chip-icon">🇻🇳</span>
+          <span class="chip-name">Vietnamese</span>
+          <span class="chip-count">10</span>
+        </div>
+        <div class="suite-chip" data-suite="sync">
+          <span class="chip-icon">🔄</span>
+          <span class="chip-name">Sync</span>
+          <span class="chip-count">8</span>
+        </div>
+      </div>
+      <div class="command-cta">
+        <span class="cta-hint">Press</span>
+        <kbd>⌘K</kbd>
+        <span class="cta-hint">to open Command Palette</span>
+      </div>
+    </section>
+
+    <!-- 🏯 MISSION CONTROL MODAL -->
+    <div id="system-modal" class="system-modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-status">🟢</span>
+            <h3 id="modal-title">System Name</h3>
+            <span class="modal-badge">Operational</span>
+          </div>
+          <button class="modal-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-metrics" id="modal-metrics">
+            <!-- Dynamic metrics -->
+          </div>
+          <div class="modal-actions">
+            <h4>⚡ Quick Actions</h4>
+            <div class="modal-action-grid" id="modal-actions">
+              <!-- Dynamic actions -->
+            </div>
+          </div>
+          <div class="modal-activity">
+            <h4>📈 Recent Activity</h4>
+            <ul id="modal-activity">
+              <!-- Dynamic activity -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Footer -->
+    <nav class="dashboard-nav">
+      <a href="/agentops-architecture" class="nav-card">
+        <span class="nav-icon">🤖</span>
+        <div class="nav-content">
+          <span class="nav-title">AgentOps Architecture</span>
+          <span class="nav-desc">18 Agents × 135 Commands</span>
+        </div>
+      </a>
+      <a href="/client/dashboard" class="nav-card">
+        <span class="nav-icon">👥</span>
+        <div class="nav-content">
+          <span class="nav-title">Client Dashboard</span>
+          <span class="nav-desc">Client-facing portal</span>
+        </div>
+      </a>
+      <a href="/docs/commands" class="nav-card">
+        <span class="nav-icon">📚</span>
+        <div class="nav-content">
+          <span class="nav-title">Command Docs</span>
+          <span class="nav-desc">176 documentation pages</span>
+        </div>
+      </a>
+    </nav>
+
+  </div>
+</LandingLayout>
+
+<style>
+  /* ===================== WOW COMMAND CENTER ===================== */
+  .command-center {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 100px 24px 40px;
+  }
+
+  /* Header */
+  .center-header {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    animation: header-entrance 0.6s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes header-entrance {
+    from { opacity: 0; transform: translateY(-30px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .center-title {
+    font-size: 2.5rem;
+    margin: 0 0 8px 0;
+    background: linear-gradient(135deg, #22c55e, #06b6d4, #22c55e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow-shift 6s linear infinite;
+  }
+
+  @keyframes rainbow-shift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .center-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fade-in-delay 0.6s ease-out 0.3s both;
+  }
+
+  @keyframes fade-in-delay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .pulse-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(34, 197, 94, 0.15);
+    border-radius: 24px;
+    margin-bottom: 8px;
+  }
+
+  .pulse-dot {
+    width: 12px;
+    height: 12px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse-ring 2s ease-out infinite;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  }
+
+  .pulse-text {
+    font-weight: 700;
+    color: #22c55e;
+    font-size: 0.9rem;
+  }
+
+  .live-time {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    font-family: monospace;
+    animation: fade-in-delay 0.6s ease-out 0.4s both;
+  }
+
+  /* Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .metric-card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: metric-pop 0.5s ease-out both;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .metric-card:nth-child(1) { animation-delay: 0.1s; }
+  .metric-card:nth-child(2) { animation-delay: 0.2s; }
+  .metric-card:nth-child(3) { animation-delay: 0.3s; }
+  .metric-card:nth-child(4) { animation-delay: 0.4s; }
+  .metric-card:nth-child(5) { animation-delay: 0.5s; }
+  .metric-card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes metric-pop {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .metric-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .metric-icon {
+    font-size: 2.5rem;
+    animation: icon-bounce 3s ease-in-out infinite;
+  }
+
+  @keyframes icon-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .metric-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+  }
+
+  .metric-trend.positive {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+
+  .metric-trend.neutral {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+  }
+
+  /* Main Grid */
+  .center-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 24px;
+  }
+
+  .panel {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    animation: panel-slide 0.5s ease-out both;
+    transition: all 0.3s ease;
+  }
+
+  .system-panel {
+    grid-row: span 2;
+    animation-delay: 0.7s;
+  }
+
+  .actions-panel { animation-delay: 0.8s; }
+  .priorities-panel { animation-delay: 0.9s; }
+
+  @keyframes panel-slide {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .panel:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .panel-header h2 {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .status-badge.all-operational {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+
+  /* System Grid */
+  .systems-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .system-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--color-bg-primary);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .system-item:hover {
+    transform: translateX(4px);
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
+  }
+
+  .system-status {
+    font-size: 1.2rem;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .system-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  /* Actions Grid */
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .action-btn:hover {
+    border-color: #22c55e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+  }
+
+  .action-icon {
+    font-size: 1.5rem;
+  }
+
+  .action-label {
+    font-size: 0.9rem;
+  }
+
+  /* Priorities List */
+  .priorities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .priority-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--color-bg-primary);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .priority-item:hover {
+    transform: translateX(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .priority-dot {
+    font-size: 1rem;
+  }
+
+  .priority-text {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1200px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .center-grid { grid-template-columns: 1fr; }
+    .system-panel { grid-row: span 1; }
+  }
+
+  @media (max-width: 640px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+    .systems-grid { grid-template-columns: 1fr; }
+    .actions-grid { grid-template-columns: 1fr; }
+    .center-title { font-size: 1.75rem; }
+    .command-suites { grid-template-columns: repeat(3, 1fr); }
+    .dashboard-nav { grid-template-columns: 1fr; }
+  }
+
+  /* 🏯 135 Commands Panel */
+  .commands-panel {
+    margin-top: 24px;
+    animation: panel-slide 0.5s ease-out 1s both;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(139, 92, 246, 0.05));
+  }
+
+  .nav-link {
+    color: #22c55e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: #4ade80;
+    transform: translateX(4px);
+  }
+
+  .command-suites {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .suite-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .suite-chip:hover {
+    transform: translateY(-4px);
+    border-color: #22c55e;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.2);
+  }
+
+  .chip-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .chip-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+
+  .chip-count {
+    font-size: 0.65rem;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  .command-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    background: var(--color-bg-primary);
+    border-radius: 12px;
+    animation: cta-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes cta-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  }
+
+  .cta-hint {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+  }
+
+  kbd {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+  }
+
+  /* Navigation Footer */
+  .dashboard-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .nav-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: panel-slide 0.5s ease-out 1.1s both;
+  }
+
+  .nav-card:nth-child(2) { animation-delay: 1.2s; }
+  .nav-card:nth-child(3) { animation-delay: 1.3s; }
+
+  .nav-card:hover {
+    transform: translateY(-4px);
+    border-color: #22c55e;
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.15);
+  }
+
+  .nav-icon {
+    font-size: 2rem;
+  }
+
+  .nav-title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+
+  .nav-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+
+  /* ===================== MISSION CONTROL MODAL ===================== */
+  .system-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .system-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: relative;
+    background: linear-gradient(145deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.98));
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    animation: modal-in 0.3s ease-out;
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+  }
+
+  .modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modal-status {
+    font-size: 1.5rem;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #fff;
+  }
+
+  .modal-badge {
+    padding: 4px 12px;
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(80vh - 100px);
+  }
+
+  .modal-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .metric-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .metric-box .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #22c55e;
+    margin-bottom: 4px;
+  }
+
+  .metric-box .label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+  }
+
+  .modal-actions h4,
+  .modal-activity h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .modal-action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .modal-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-action-btn:hover {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .modal-action-btn .icon {
+    font-size: 1.25rem;
+  }
+
+  .modal-activity ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .modal-activity li {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .modal-activity .time {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .modal-activity .event {
+    color: #fff;
+    font-size: 0.85rem;
+  }
+
+  /* System item hover for clickability */
+  .system-item[data-system] {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .system-item[data-system]:hover {
+    transform: scale(1.05);
+    background: rgba(34, 197, 94, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    .modal-content {
+      width: 95%;
+      margin: 20px;
+    }
+    .modal-metrics,
+    .modal-action-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<script>
+  // ===================== AGENCY COMMAND CENTER - LIVE API INTEGRATION =====================
+  
+  // Counter animation
+  function animateValue(id: string, start: number, end: number, duration: number, prefix = '', suffix = '') {
+    const element = document.getElementById(id);
+    if (!element) return;
+    
+    const range = end - start;
+    const increment = range / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+        current = end;
+        clearInterval(timer);
+      }
+      element.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+    }, 16);
+  }
+
+  // Update live time
+  function updateTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    document.getElementById('live-time')!.textContent = timeStr;
+  }
+
+  // Fetch agency stats from API
+  async function fetchAgencyStats() {
+    try {
+      const response = await fetch('/api/agency/stats');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('API Error:', data);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch agency stats:', error);
+      return null;
+    }
+  }
+
+  // Render metrics with animation
+  function renderMetrics(data: any) {
+    const metrics = data.metrics;
+    
+    animateValue('revenue-value', 0, metrics.revenue_mtd || 0, 2000, '$', '');
+    animateValue('clients-value', 0, metrics.active_clients || 0, 2000);
+    animateValue('margin-value', 0, metrics.profit_margin || 0, 2000, '', '%');
+    animateValue('util-value', 0, metrics.utilization || 0, 2000, '', '%');
+    animateValue('nps-value', 0, metrics.nps_score || 0, 2000);
+    animateValue('pipeline-value', 0, metrics.pipeline ? Math.floor(metrics.pipeline / 1000) : 0, 2000, '$', 'K');
+  }
+
+  // Initialize
+  updateTime();
+  setInterval(updateTime, 1000);
+  
+  // Fetch and display live data
+  (async () => {
+    const data = await fetchAgencyStats();
+    if (data) {
+      setTimeout(() => renderMetrics(data), 500);
+    } else {
+      // Fallback to demo values if API fails
+      setTimeout(() => {
+        animateValue('revenue-value', 0, 45200, 2000, '$', '');
+        animateValue('clients-value', 0, 15, 2000);
+        animateValue('margin-value', 0, 42, 2000, '', '%');
+        animateValue('util-value', 0, 82, 2000, '', '%');
+        animateValue('nps-value', 0, 72, 2000);
+        animateValue('pipeline-value', 0, 125, 2000, '$', 'K');
+      }, 500);
+    }
+  })();
+
+  // Auto-refresh every 30 seconds
+  setInterval(async () => {
+    const data = await fetchAgencyStats();
+    if (data) {
+      renderMetrics(data);
+    }
+  }, 30000);
+
+  // ===================== QUICK ACTIONS CLICK HANDLERS =====================
+  
+  // Quick Actions buttons - navigate to command docs
+  document.querySelectorAll('.action-btn[data-url]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const url = btn.getAttribute('data-url');
+      if (url) {
+        // Show click feedback
+        btn.classList.add('clicked');
+        setTimeout(() => btn.classList.remove('clicked'), 200);
+        
+        // Navigate to command page
+        window.location.href = url;
+      }
+    });
+  });
+
+  // Suite chips - navigate to agentops filtered by suite
+  document.querySelectorAll('.suite-chip[data-suite]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const suite = chip.getAttribute('data-suite');
+      // Navigate to AgentOps and highlight suite
+      window.location.href = `/agentops-architecture?suite=${suite}`;
+    });
+  });
+
+  // Priorities - toggle completion on click
+  document.querySelectorAll('.priority-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('done');
+      const text = item.querySelector('.priority-text');
+      if (item.classList.contains('done') && text) {
+        text.style.textDecoration = 'line-through';
+        text.style.opacity = '0.5';
+      } else if (text) {
+        text.style.textDecoration = 'none';
+        text.style.opacity = '1';
+      }
+    });
+  });
+
+  // ===================== MISSION CONTROL MODAL =====================
+  
+  // System data for each module
+  const systemData: Record<string, {
+    title: string;
+    metrics: { value: string; label: string }[];
+    actions: { icon: string; label: string; url: string }[];
+    activity: { time: string; event: string }[];
+  }> = {
+    crm: {
+      title: 'CRM System',
+      metrics: [
+        { value: '1,234', label: 'Contacts' },
+        { value: '28', label: 'Active Deals' },
+        { value: '$45.6K', label: 'Pipeline' }
+      ],
+      actions: [
+        { icon: '👤', label: 'New Contact', url: '/docs/commands/agency/client' },
+        { icon: '📝', label: 'New Deal', url: '/docs/commands/sales/proposal' },
+        { icon: '📊', label: 'View Pipeline', url: '/agency/deals' }
+      ],
+      activity: [
+        { time: '2m ago', event: '✅ Contact "TechFlow AI" added' },
+        { time: '15m ago', event: '📝 Deal #28 moved to Negotiation' },
+        { time: '1h ago', event: '📧 Follow-up email sent to 5 leads' }
+      ]
+    },
+    invoicing: {
+      title: 'Invoicing System',
+      metrics: [
+        { value: '$25.4K', label: 'Outstanding' },
+        { value: '12', label: 'Pending' },
+        { value: '95%', label: 'Collection Rate' }
+      ],
+      actions: [
+        { icon: '💳', label: 'New Invoice', url: '/docs/commands/finance/invoice' },
+        { icon: '📤', label: 'Send Reminders', url: '/docs/commands/finance/reminder' },
+        { icon: '📊', label: 'View Report', url: '/docs/commands/agency/report' }
+      ],
+      activity: [
+        { time: '5m ago', event: '💰 Invoice #INV-045 paid ($3,200)' },
+        { time: '30m ago', event: '📧 Reminder sent for INV-003' },
+        { time: '2h ago', event: '📄 Invoice #INV-046 created' }
+      ]
+    },
+    analytics: {
+      title: 'Analytics Engine',
+      metrics: [
+        { value: '12.5K', label: 'Page Views' },
+        { value: '2.4K', label: 'Unique Visitors' },
+        { value: '3.2%', label: 'Conversion' }
+      ],
+      actions: [
+        { icon: '📊', label: 'Run Report', url: '/docs/commands/agency/report' },
+        { icon: '📈', label: 'View Trends', url: '/docs/commands/strategy/growth-analysis' },
+        { icon: '🎯', label: 'Set Goals', url: '/docs/commands/strategy/kpi-dashboard' }
+      ],
+      activity: [
+        { time: '1m ago', event: '📊 Dashboard refreshed' },
+        { time: '1h ago', event: '📈 Weekly report generated' },
+        { time: '3h ago', event: '🎯 Conversion goal exceeded' }
+      ]
+    },
+    email: {
+      title: 'Email Marketing',
+      metrics: [
+        { value: '4,521', label: 'Subscribers' },
+        { value: '68%', label: 'Open Rate' },
+        { value: '12%', label: 'Click Rate' }
+      ],
+      actions: [
+        { icon: '📧', label: 'New Campaign', url: '/docs/commands/marketing/email' },
+        { icon: '👥', label: 'Manage Lists', url: '/docs/commands/marketing/audience' },
+        { icon: '📊', label: 'View Stats', url: '/docs/commands/marketing/analytics' }
+      ],
+      activity: [
+        { time: '10m ago', event: '📧 Campaign "December Newsletter" sent' },
+        { time: '2h ago', event: '👥 45 new subscribers added' },
+        { time: '5h ago', event: '✅ A/B test completed' }
+      ]
+    },
+    webhooks: {
+      title: 'Webhooks & Integrations',
+      metrics: [
+        { value: '18', label: 'Active Hooks' },
+        { value: '99.9%', label: 'Uptime' },
+        { value: '1.2K', label: 'Events/Day' }
+      ],
+      actions: [
+        { icon: '🔗', label: 'New Webhook', url: '/docs/commands/dev/webhook-create' },
+        { icon: '⚙️', label: 'Configure', url: '/docs/commands/sync/config' },
+        { icon: '📋', label: 'View Logs', url: '/docs/commands/sync/log' }
+      ],
+      activity: [
+        { time: '30s ago', event: '✅ Stripe webhook processed' },
+        { time: '2m ago', event: '✅ Slack notification sent' },
+        { time: '5m ago', event: '✅ GitHub deploy hook triggered' }
+      ]
+    },
+    calendar: {
+      title: 'Calendar & Scheduling',
+      metrics: [
+        { value: '8', label: 'Today\'s Events' },
+        { value: '23', label: 'This Week' },
+        { value: '15', label: 'Pending Confirms' }
+      ],
+      actions: [
+        { icon: '📅', label: 'New Event', url: '/docs/commands/agency/timeline' },
+        { icon: '👥', label: 'Schedule Meeting', url: '/docs/commands/agency/client' },
+        { icon: '🔄', label: 'Sync Calendars', url: '/docs/commands/sync/calendar' }
+      ],
+      activity: [
+        { time: '15m ago', event: '📅 Meeting with TechFlow confirmed' },
+        { time: '1h ago', event: '🔔 Reminder: Team standup in 30min' },
+        { time: '3h ago', event: '✅ Weekly review scheduled' }
+      ]
+    }
+  };
+
+  // Modal elements
+  const modal = document.getElementById('system-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalMetrics = document.getElementById('modal-metrics');
+  const modalActions = document.getElementById('modal-actions');
+  const modalActivity = document.getElementById('modal-activity');
+  const closeBtn = document.querySelector('.modal-close');
+  const backdrop = document.querySelector('.modal-backdrop');
+
+  // Open modal with system data
+  function openSystemModal(systemId: string) {
+    const data = systemData[systemId];
+    if (!data || !modal) return;
+
+    // Set title
+    if (modalTitle) modalTitle.textContent = data.title;
+
+    // Render metrics
+    if (modalMetrics) {
+      modalMetrics.innerHTML = data.metrics.map(m => `
+        <div class="metric-box">
+          <div class="value">${m.value}</div>
+          <div class="label">${m.label}</div>
+        </div>
+      `).join('');
+    }
+
+    // Render actions
+    if (modalActions) {
+      modalActions.innerHTML = data.actions.map(a => `
+        <button class="modal-action-btn" data-url="${a.url}">
+          <span class="icon">${a.icon}</span>
+          <span>${a.label}</span>
+        </button>
+      `).join('');
+      
+      // Add click handlers to action buttons
+      modalActions.querySelectorAll('.modal-action-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const url = btn.getAttribute('data-url');
+          if (url) window.location.href = url;
+        });
+      });
+    }
+
+    // Render activity
+    if (modalActivity) {
+      modalActivity.innerHTML = data.activity.map(a => `
+        <li>
+          <span class="time">${a.time}</span>
+          <span class="event">${a.event}</span>
+        </li>
+      `).join('');
+    }
+
+    // Show modal
+    modal.classList.remove('hidden');
+  }
+
+  // Close modal
+  function closeModal() {
+    if (modal) modal.classList.add('hidden');
+  }
+
+  // System item click handlers
+  document.querySelectorAll('.system-item[data-system]').forEach(item => {
+    item.addEventListener('click', () => {
+      const systemId = item.getAttribute('data-system');
+      if (systemId) openSystemModal(systemId);
+    });
+  });
+
+  // Close button
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  // Backdrop click to close
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+
+  // ESC key to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+</script>
+
+</LandingLayout>

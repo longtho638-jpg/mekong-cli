@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+// In SSR mode, getStaticPaths is ignored. We need to fetch the entry dynamically.
+const { slug } = Astro.params;
+
+// Fetch all docs entries
+const docsEntries = await getCollection('docs');
+
+// Find the entry that matches the URL slug
+// Content in src/content/docs/docs/* creates slugs like "docs/agents/planner"
+// URL is /docs/agents/planner, so slug param is "agents/planner"
+// We need to match against "docs/agents/planner" (with the "docs/" prefix)
+const entry = docsEntries.find((e) => {
+  const normalizedSlug = e.slug.startsWith('docs/') 
+    ? e.slug.slice(5) 
+    : e.slug;
+  return normalizedSlug === slug;
+});
+
+// Safety check for entry
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content, headings } = await entry.render();
+---
+
+<DocsLayout
+  title={`${entry.data.title} - AgencyOS Documentation`}
+  description={entry.data.description}
+  locale="en"
+  slug={entry.slug}
+  headings={headings}
+  content={entry}
+>
+  <Content />
+</DocsLayout>

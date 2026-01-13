@@ -1,0 +1,607 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+
+const title = 'Try AgencyOS - Interactive Demo';
+const description = 'Try AgencyOS commands in your browser. See the power of 125+ AI commands instantly.';
+---
+
+<LandingLayout title={title} description={description}>
+  <section class="demo-hero">
+    <h1>🖥️ Try Before You Buy</h1>
+    <p>Type a command below and see the magic happen</p>
+  </section>
+
+  <section class="terminal-section">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-buttons">
+          <span class="btn-close"></span>
+          <span class="btn-minimize"></span>
+          <span class="btn-maximize"></span>
+        </div>
+        <span class="terminal-title">AgencyOS Terminal</span>
+      </div>
+      
+      <div class="terminal-body" id="terminal-body">
+        <div class="terminal-welcome">
+          <pre class="ascii-art">
+    _                           ___  ____  
+   / \   __ _  ___ _ __   ___ _|_ _|/ ___| 
+  / _ \ / _` |/ _ \ '_ \ / __| | | \___ \ 
+ / ___ \ (_| |  __/ | | | (__ | |  ___) |
+/_/   \_\__, |\___|_| |_|\___|___|_|____/ 
+        |___/                             
+          </pre>
+          <p class="welcome-text">Welcome to AgencyOS! Type a command or click a suggestion below.</p>
+          <p class="version-text">v2.0.0 • 125+ commands available</p>
+        </div>
+        
+        <div class="terminal-output" id="terminal-output"></div>
+        
+        <div class="terminal-input-line">
+          <span class="prompt">$</span>
+          <input type="text" id="terminal-input" placeholder="Type a command..." autocomplete="off" autofocus />
+        </div>
+      </div>
+    </div>
+    
+    <div class="suggestions">
+      <p>Try these commands:</p>
+      <div class="suggestion-buttons">
+        <button class="suggestion-btn" data-cmd="/marketing-plan">/marketing-plan</button>
+        <button class="suggestion-btn" data-cmd="/proposal">/proposal</button>
+        <button class="suggestion-btn" data-cmd="/invoice">/invoice</button>
+        <button class="suggestion-btn" data-cmd="/binh-phap">/binh-phap</button>
+        <button class="suggestion-btn" data-cmd="/fix/fast">/fix/fast</button>
+        <button class="suggestion-btn" data-cmd="/help">/help</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to automate your agency?</h2>
+    <p>Get full access to all 125+ commands</p>
+    <div class="cta-buttons">
+      <a href="/signup?plan=pro" class="btn-primary">Start Free Trial →</a>
+      <a href="/pricing" class="btn-secondary">View Pricing</a>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  .demo-hero {
+    text-align: center;
+    padding: 64px 24px 32px;
+  }
+
+  .demo-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .demo-hero p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .terminal-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  /* ===================== TERMINAL WOW ===================== */
+  .terminal-window {
+    background: #0d1117;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid #30363d;
+    animation: terminal-entrance 0.6s ease-out, terminal-glow 3s ease-in-out 1s infinite;
+  }
+
+  @keyframes terminal-entrance {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes terminal-glow {
+    0%, 100% { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 rgba(34, 197, 94, 0); }
+    50% { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(34, 197, 94, 0.3); }
+  }
+
+  .terminal-header {
+    background: #161b22;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .terminal-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .terminal-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .btn-close { background: #ff5f57; }
+  .btn-minimize { background: #febc2e; }
+  .btn-maximize { background: #28c840; }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: #8b949e;
+    font-size: 0.85rem;
+  }
+
+  .terminal-body {
+    padding: 20px;
+    min-height: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .terminal-welcome {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 16px;
+  }
+
+  .ascii-art {
+    color: #22c55e;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    margin: 0 0 12px 0;
+    animation: ascii-fade 0.8s ease-out 0.3s both;
+  }
+
+  @keyframes ascii-fade {
+    from { opacity: 0; filter: blur(4px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  .welcome-text {
+    color: #c9d1d9;
+    margin: 0 0 4px 0;
+  }
+
+  .version-text {
+    color: #8b949e;
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  .terminal-output {
+    margin-bottom: 16px;
+  }
+
+  .output-line {
+    margin: 4px 0;
+  }
+
+  .output-line.command {
+    color: #58a6ff;
+  }
+
+  .output-line.success {
+    color: #22c55e;
+  }
+
+  .output-line.info {
+    color: #c9d1d9;
+  }
+
+  .output-line.error {
+    color: #f85149;
+  }
+
+  .output-line.muted {
+    color: #8b949e;
+  }
+
+  .output-block {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+  }
+
+  .terminal-input-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .prompt {
+    color: #22c55e;
+    font-weight: 700;
+  }
+
+  #terminal-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #c9d1d9;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+  }
+
+  #terminal-input::placeholder {
+    color: #484f58;
+  }
+
+  .suggestions {
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .suggestions p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .suggestion-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ===================== SUGGESTIONS WOW ===================== */
+  .suggestion-btn {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: #22c55e;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: btn-float 3s ease-in-out infinite;
+    animation-delay: calc(var(--index) * 0.1s);
+  }
+
+  .suggestion-btn:nth-child(1) { --index: 0; }
+  .suggestion-btn:nth-child(2) { --index: 1; }
+  .suggestion-btn:nth-child(3) { --index: 2; }
+  .suggestion-btn:nth-child(4) { --index: 3; }
+  .suggestion-btn:nth-child(5) { --index: 4; }
+  .suggestion-btn:nth-child(6) { --index: 5; }
+
+  @keyframes btn-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
+  .suggestion-btn:hover {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 64px 24px;
+    background: linear-gradient(180deg, transparent, var(--color-bg-secondary));
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    color: var(--color-text-primary);
+    margin: 0 0 16px 0;
+  }
+
+  .cta-section p {
+    color: var(--color-text-muted);
+    margin: 0 0 32px 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  /* ===================== CTA WOW ===================== */
+  .btn-primary {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: btn-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.5); }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-secondary {
+    padding: 16px 32px;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .typing-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: #22c55e;
+    animation: blink 1s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* ===================== SPINNER WOW ===================== */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #30363d;
+    border-top-color: #22c55e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite, spinner-glow 2s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spinner-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.4); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 768px) {
+    .demo-hero h1 {
+      font-size: 1.75rem;
+    }
+
+    .ascii-art {
+      font-size: 0.45rem;
+    }
+
+    .terminal-body {
+      min-height: 300px;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  // Command outputs database
+  const commandOutputs: Record<string, string[]> = {
+    '/help': [
+      '📋 AgencyOS Commands:\n',
+      '  📣 Marketing    /marketing, /marketing/social, /marketing/email',
+      '  💼 Sales        /sales, /proposal, /sales/lead',
+      '  💰 Finance      /finance, /invoice, /runway',
+      '  ⚙️ Operations   /ops, /sop-gen, /workflow',
+      '  🎯 Strategy     /binh-phap, /okr, /intel',
+      '  🧑‍💻 Tech          /code, /fix, /plan, /debug\n',
+      '📖 Full docs: https://agencyos.network/commands'
+    ],
+    '/marketing-plan': [
+      '🚀 Generating marketing plan...\n',
+      '✅ Marketing Plan Generated!\n',
+      '📊 30-Day Marketing Strategy:',
+      '┌─────────────────────────────────────────┐',
+      '│ Week 1: Foundation                      │',
+      '│  • Audit existing content               │',
+      '│  • Define target personas               │',
+      '│  • Set KPIs (leads, traffic, conv)      │',
+      '├─────────────────────────────────────────┤',
+      '│ Week 2-3: Content Blitz                 │',
+      '│  • 10 blog posts (SEO optimized)        │',
+      '│  • 30 social posts (scheduled)          │',
+      '│  • 4 email sequences                    │',
+      '├─────────────────────────────────────────┤',
+      '│ Week 4: Launch & Optimize               │',
+      '│  • A/B test headlines                   │',
+      '│  • Analyze metrics                      │',
+      '│  • Double down on winners               │',
+      '└─────────────────────────────────────────┘\n',
+      '📂 Saved to: /output/marketing-plan.md'
+    ],
+    '/proposal': [
+      '📝 Creating sales proposal...\n',
+      '✅ Proposal Generated!\n',
+      '📄 Proposal: "Digital Transformation Partnership"',
+      '┌─────────────────────────────────────────┐',
+      '│ Executive Summary                       │',
+      '│ Problem → Solution → ROI                │',
+      '├─────────────────────────────────────────┤',
+      '│ Pricing:                                │',
+      '│  Phase 1: $15,000 (Discovery)           │',
+      '│  Phase 2: $45,000 (Development)         │',
+      '│  Phase 3: $10,000/mo (Support)          │',
+      '├─────────────────────────────────────────┤',
+      '│ Timeline: 8 weeks                       │',
+      '│ ROI: 340% within 6 months               │',
+      '└─────────────────────────────────────────┘\n',
+      '📂 Saved to: /output/proposal.pdf'
+    ],
+    '/invoice': [
+      '💰 Generating invoice...\n',
+      '✅ Invoice #INV-2024-0089 Created!\n',
+      '┌─────────────────────────────────────────┐',
+      '│ INVOICE                    #INV-2024-89│',
+      '├─────────────────────────────────────────┤',
+      '│ To: Acme Corp                           │',
+      '│ Date: Dec 23, 2024                      │',
+      '│ Due: Jan 7, 2025                        │',
+      '├─────────────────────────────────────────┤',
+      '│ Website Redesign        $12,000.00      │',
+      '│ SEO Setup               $3,000.00       │',
+      '│ Content Package         $2,500.00       │',
+      '├─────────────────────────────────────────┤',
+      '│ Subtotal:              $17,500.00       │',
+      '│ Tax (10%):              $1,750.00       │',
+      '│ TOTAL:                 $19,250.00       │',
+      '└─────────────────────────────────────────┘\n',
+      '📧 Email sent to client@acme.com'
+    ],
+    '/binh-phap': [
+      '🏯 Analyzing with Binh Pháp framework...\n',
+      '✅ Strategic Analysis Complete!\n',
+      '📜 The Art of War - Applied:\n',
+      '┌─────────────────────────────────────────┐',
+      '│ 🎯 Current Position: CHALLENGER         │',
+      '├─────────────────────────────────────────┤',
+      '│ Key Insights:                           │',
+      '│  ✓ "Know enemy, know self = 100 wins"   │',
+      '│  ✓ Your moat: Speed to market           │',
+      '│  ✓ Competitor weakness: Support lag     │',
+      '├─────────────────────────────────────────┤',
+      '│ Recommended Strategy:                   │',
+      '│  → Attack where they are weakest        │',
+      '│  → Focus on customer success            │',
+      '│  → "Win without fighting" = Partnerships│',
+      '└─────────────────────────────────────────┘\n',
+      '📂 Full report: /output/binh-phap-analysis.md'
+    ],
+    '/fix/fast': [
+      '🔧 Analyzing codebase...\n',
+      '✅ 3 Issues Found & Fixed!\n',
+      '┌─────────────────────────────────────────┐',
+      '│ 🐛 Bug #1: Null pointer in auth.ts L47  │',
+      '│ ✅ Fixed: Added null check              │',
+      '├─────────────────────────────────────────┤',
+      '│ 🐛 Bug #2: Memory leak in useEffect     │',
+      '│ ✅ Fixed: Added cleanup function        │',
+      '├─────────────────────────────────────────┤',
+      '│ 🐛 Bug #3: Race condition in API call   │',
+      '│ ✅ Fixed: Added AbortController         │',
+      '└─────────────────────────────────────────┘\n',
+      '📊 Code quality: 94% → 98%',
+      '⏱️ Time saved: ~2 hours'
+    ]
+  };
+
+  // Default response for unknown commands
+  const defaultOutput = [
+    '⚠️ Command not found in demo.\n',
+    '💡 This is a demo with limited commands.',
+    '   Full access includes 125+ commands!\n',
+    '🚀 Try: /help, /marketing-plan, /proposal, /invoice'
+  ];
+
+  const terminalInput = document.getElementById('terminal-input') as HTMLInputElement;
+  const terminalOutput = document.getElementById('terminal-output');
+  const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+
+  function addOutputLine(text: string, className: string = 'info') {
+    const line = document.createElement('div');
+    line.className = `output-line ${className}`;
+    line.textContent = text;
+    terminalOutput?.appendChild(line);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    const body = document.getElementById('terminal-body');
+    if (body) body.scrollTop = body.scrollHeight;
+  }
+
+  async function typeOutput(lines: string[]) {
+    for (const line of lines) {
+      await new Promise(r => setTimeout(r, 50));
+      const className = line.includes('✅') ? 'success' : 
+                       line.includes('⚠️') || line.includes('❌') ? 'error' :
+                       line.includes('📂') || line.includes('💡') ? 'muted' : 'info';
+      addOutputLine(line, className);
+    }
+  }
+
+  async function executeCommand(cmd: string) {
+    // Show command
+    addOutputLine(`$ ${cmd}`, 'command');
+    
+    // Show loading
+    const loadingLine = document.createElement('div');
+    loadingLine.className = 'output-line info';
+    loadingLine.innerHTML = '<span class="spinner"></span>Processing...';
+    terminalOutput?.appendChild(loadingLine);
+    scrollToBottom();
+
+    // Simulate processing time
+    await new Promise(r => setTimeout(r, 800));
+    loadingLine.remove();
+
+    // Get output
+    const output = commandOutputs[cmd.toLowerCase()] || defaultOutput;
+    await typeOutput(output);
+    
+    // Add empty line
+    addOutputLine('', 'info');
+  }
+
+  // Handle enter key
+  terminalInput?.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter' && terminalInput.value.trim()) {
+      const cmd = terminalInput.value.trim();
+      terminalInput.value = '';
+      await executeCommand(cmd);
+    }
+  });
+
+  // Handle suggestion clicks
+  suggestionBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const cmd = btn.getAttribute('data-cmd');
+      if (cmd) {
+        terminalInput.value = '';
+        await executeCommand(cmd);
+        terminalInput.focus();
+      }
+    });
+  });
+
+  // Focus input on click
+  document.querySelector('.terminal-body')?.addEventListener('click', () => {
+    terminalInput?.focus();
+  });
+</script>
+</LandingLayout>
