@@ -1,0 +1,19 @@
+{
+    "name": "vibe-agency",
+    "version": "1.0.0",
+    "description": "VIBE Agency - AI-Native Agency Template",
+    "scripts": {
+        "dev": "turbo dev",
+        "build": "turbo build",
+        "test": "turbo test"
+    },
+    "dependencies": {
+        "@agencyos/vibe-ui": "workspace:*",
+        "@agencyos/vibe-analytics": "workspace:*",
+        "@agencyos/antigravity": "workspace:*"
+    },
+    "devDependencies": {
+        "turbo": "^2.0.0",
+        "typescript": "^5.0.0"
+    }
+}

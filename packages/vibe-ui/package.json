@@ -1,0 +1,18 @@
+{
+    "name": "@agencyos/vibe-ui",
+    "version": "1.0.0",
+    "description": "VIBE Design System - Aura Elite Components",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "framer-motion": "^11.0.0",
+        "tailwindcss": "^4.0.0"
+    },
+    "peerDependencies": {
+        "react": "^18.0.0"
+    }
+}
