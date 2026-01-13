@@ -1,96 +1,51 @@
 /**
- * 🌐 @agencyos/vibe - Unified VIBE Ecosystem
+ * 🌊 @agencyos/blue-ocean
+ * Đại Dương Xanh - Unified VIBE Ecosystem
  * 
- * 8 Planets + Core Systems
+ * v1.0.0 | 13 files → 1 package
  */
 
 // ============================================
-// 🔵 VENUS - UI/Design
+// 🪐 PLANETS (8 Unified)
 // ============================================
-export * as vibeUI from '../vibe-ui';
-export { colors, gradients, animations, transitions, vibeClasses } from '../vibe-ui';
+export * from './planets';
 
 // ============================================
-// ⚪ URANUS - Analytics/Data
+// ☀️ CORE (Treasury + Workflow)
 // ============================================
-export * as vibeAnalytics from '../vibe-analytics';
-export { vibeTelemetry, calculateGrowthMetrics, formatVND, shareContent } from '../vibe-analytics';
+export * from './core';
 
 // ============================================
-// 🟣 SATURN - AI Agents
+// 🎨 FLOW (SimStudio)
 // ============================================
-export * as vibeAgents from '../vibe-agents';
-export { AGENT_REGISTRY, AgentOrchestrator, BaseAgent, orchestrator } from '../vibe-agents';
+export { VibeFlow, FlowCopilot, vibeFlow, flowCopilot, PLANET_NODES } from './flow';
 
 // ============================================
-// 🟠 JUPITER - CRM/Sales
-// ============================================
-export * as vibeCRM from '../vibe-crm';
-export { VibeCRM, TIER_CONFIG, validateWinWinWin, crm } from '../vibe-crm';
-
-// ============================================
-// 🔴 MARS - Ops/Deploy
-// ============================================
-export * as vibeOps from '../vibe-ops';
-export { VibeOps, commands, ops } from '../vibe-ops';
-
-// ============================================
-// 🟢 EARTH - Dev/Quality
-// ============================================
-export * as vibeDev from '../vibe-dev';
-export { VibeDev, EVOLUTION_TARGETS, workflow, dev } from '../vibe-dev';
-
-// ============================================
-// 🟡 MERCURY - Marketing
-// ============================================
-export * as vibeMarketing from '../vibe-marketing';
-export { ContentFactory, ReferralEngine, contentFactory, referralEngine } from '../vibe-marketing';
-
-// ============================================
-// 🟤 NEPTUNE - Finance/Revenue
-// ============================================
-export * as vibeRevenue from '../vibe-revenue';
-export { VibeRevenue, ARR_TARGET_2026, EXCHANGE_RATES, revenue } from '../vibe-revenue';
-
-// ============================================
-// ☀️ CORE - Treasury & Workflow
-// ============================================
-export { CoreTreasury, PLANET_REVENUE, DISTRIBUTION, treasury } from '../antigravity/core/treasury';
-export { JourneyTracker, STAGE_PLANET_MAP, STATE_TRANSITIONS, tracker } from '../antigravity/core/workflow';
-
-// ============================================
-// META
-// ============================================
-export const VIBE_VERSION = '1.0.0';
-
-export const PLANETS = [
-    'venus', 'uranus', 'saturn', 'jupiter',
-    'mars', 'earth', 'mercury', 'neptune'
-] as const;
-
-export type Planet = typeof PLANETS[number];
-
-// ============================================
-// 🎨 FLOW - Visual Workflow Builder (SimStudio)
-// ============================================
-export { VibeFlow, FlowCopilot, PLANET_NODES, vibeFlow, flowCopilot } from './flow';
-
-// ============================================
-// 📋 PROJECT - Project Management (OpenProject)
+// 📋 PROJECT (OpenProject)
 // ============================================
 export { VibeProject, vibeProject } from './project';
 
 // ============================================
-// 🛡️ HARDENED - Production Patterns (Go-Live)
+// 🛡️ HARDENED (Go-Live)
 // ============================================
 export {
     ShortcutRegistry, shortcuts,
-    DEPLOY_COMMANDS, GO_LIVE_CHECKLIST,
-    runBlackScreenDiagnostics, runGoLiveChecklist,
-    validateEnv, isProductionReady
+    DEPLOY_COMMANDS as DEPLOY_CLI,
+    GO_LIVE_CHECKLIST,
+    runBlackScreenDiagnostics,
+    runGoLiveChecklist,
+    validateEnv,
+    isProductionReady
 } from './hardened';
 
+// ============================================
+// META
+// ============================================
+export const BLUE_OCEAN_VERSION = '1.0.0';
+export const VIBE_VERSION = BLUE_OCEAN_VERSION;
+
 export default {
-    version: VIBE_VERSION,
-    planets: PLANETS,
+    version: BLUE_OCEAN_VERSION,
+    name: 'Đại Dương Xanh',
+    description: 'Enterprise VIBE Ecosystem',
 };
