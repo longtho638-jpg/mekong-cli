@@ -1,0 +1,7 @@
+{
+    "name": "@agencyos/vibe-revenue",
+    "version": "1.0.0",
+    "description": "🟤 Neptune - Finance & Revenue Layer",
+    "main": "index.ts",
+    "types": "index.ts"
+}

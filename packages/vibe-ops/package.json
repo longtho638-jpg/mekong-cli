@@ -1,0 +1,7 @@
+{
+    "name": "@agencyos/vibe-ops",
+    "version": "1.0.0",
+    "description": "🔴 Mars - DevOps & Deployment Layer",
+    "main": "index.ts",
+    "types": "index.ts"
+}
