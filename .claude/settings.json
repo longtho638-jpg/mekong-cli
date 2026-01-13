@@ -52,6 +52,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-edit-simplify-reminder.cjs"
+          }
+        ]
+      }
     ]
   }
 }

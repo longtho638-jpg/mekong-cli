@@ -2,7 +2,7 @@
 
 #### Sequential Chaining
 Chain subagents when tasks have dependencies or require outputs from previous steps:
-- **Planning → Implementation → Testing → Review**: Use for feature development
+- **Planning → Implementation → Simplification → Testing → Review**: Use for feature development (tests verify simplified code)
 - **Research → Design → Code → Documentation**: Use for new system components
 - Each agent completes fully before the next begins
 - Pass context and outputs between agents in the chain
