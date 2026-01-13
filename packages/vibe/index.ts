@@ -80,6 +80,16 @@ export { VibeFlow, FlowCopilot, PLANET_NODES, vibeFlow, flowCopilot } from './fl
 // ============================================
 export { VibeProject, vibeProject } from './project';
 
+// ============================================
+// 🛡️ HARDENED - Production Patterns (Go-Live)
+// ============================================
+export {
+    ShortcutRegistry, shortcuts,
+    DEPLOY_COMMANDS, GO_LIVE_CHECKLIST,
+    runBlackScreenDiagnostics, runGoLiveChecklist,
+    validateEnv, isProductionReady
+} from './hardened';
+
 export default {
     version: VIBE_VERSION,
     planets: PLANETS,
