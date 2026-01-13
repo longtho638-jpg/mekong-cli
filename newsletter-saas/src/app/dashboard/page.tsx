@@ -1,23 +1,23 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface Newsletter {
     id: string;
     name: string;
-    client: string;
-    subs: number;
-    openRate: string;
+    client_name: string;
+    subscriber_count: number;
+    avg_open_rate: number;
     status: "active" | "draft" | "paused";
-    lastSent: string;
+    updated_at: string;
 }
 
 const demoNewsletters: Newsletter[] = [
-    { id: "1", name: "Tech Weekly", client: "TechCo", subs: 1247, openRate: "52%", status: "active", lastSent: "2 days ago" },
-    { id: "2", name: "Design Digest", client: "DesignHub", subs: 856, openRate: "48%", status: "active", lastSent: "1 week ago" },
-    { id: "3", name: "AI Insights", client: "AI Corp", subs: 2100, openRate: "61%", status: "active", lastSent: "3 days ago" },
-    { id: "4", name: "Startup News", client: "Venture Inc", subs: 432, openRate: "—", status: "draft", lastSent: "Never" },
+    { id: "1", name: "Tech Weekly", client_name: "TechCo", subscriber_count: 1247, avg_open_rate: 52, status: "active", updated_at: "2 days ago" },
+    { id: "2", name: "Design Digest", client_name: "DesignHub", subscriber_count: 856, avg_open_rate: 48, status: "active", updated_at: "1 week ago" },
+    { id: "3", name: "AI Insights", client_name: "AI Corp", subscriber_count: 2100, avg_open_rate: 61, status: "active", updated_at: "3 days ago" },
+    { id: "4", name: "Startup News", client_name: "Venture Inc", subscriber_count: 432, avg_open_rate: 0, status: "draft", updated_at: "Never" },
 ];
 
 export default function DashboardPage() {
@@ -42,18 +42,43 @@ export default function DashboardPage() {
         router.push("/");
     };
 
-    const handleCreate = (e: React.FormEvent) => {
+    const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
-        const newNl: Newsletter = {
-            id: String(newsletters.length + 1),
-            name: newName,
-            client: newClient,
-            subs: 0,
-            openRate: "—",
-            status: "draft",
-            lastSent: "Never",
-        };
-        setNewsletters([newNl, ...newsletters]);
+        try {
+            const res = await fetch("/api/newsletters", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: newName, client_name: newClient }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setNewsletters([data.newsletter, ...newsletters]);
+            } else {
+                // Demo fallback
+                const newNl: Newsletter = {
+                    id: String(Date.now()),
+                    name: newName,
+                    client_name: newClient,
+                    subscriber_count: 0,
+                    avg_open_rate: 0,
+                    status: "draft",
+                    updated_at: "Just now",
+                };
+                setNewsletters([newNl, ...newsletters]);
+            }
+        } catch {
+            // Demo fallback
+            const newNl: Newsletter = {
+                id: String(Date.now()),
+                name: newName,
+                client_name: newClient,
+                subscriber_count: 0,
+                avg_open_rate: 0,
+                status: "draft",
+                updated_at: "Just now",
+            };
+            setNewsletters([newNl, ...newsletters]);
+        }
         setNewName("");
         setNewClient("");
         setShowCreate(false);
@@ -63,7 +88,7 @@ export default function DashboardPage() {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
 
-    const totalSubs = newsletters.reduce((sum, nl) => sum + nl.subs, 0);
+    const totalSubs = newsletters.reduce((sum, nl) => sum + nl.subscriber_count, 0);
     const activeNls = newsletters.filter(nl => nl.status === "active").length;
 
     return (
@@ -157,18 +182,18 @@ export default function DashboardPage() {
                             {newsletters.map((nl) => (
                                 <tr key={nl.id} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
                                     <td className="px-6 py-4 font-medium">{nl.name}</td>
-                                    <td className="px-6 py-4 text-gray-400">{nl.client}</td>
-                                    <td className="px-6 py-4">{nl.subs.toLocaleString()}</td>
-                                    <td className="px-6 py-4 text-indigo-400">{nl.openRate}</td>
+                                    <td className="px-6 py-4 text-gray-400">{nl.client_name}</td>
+                                    <td className="px-6 py-4">{nl.subscriber_count.toLocaleString()}</td>
+                                    <td className="px-6 py-4 text-indigo-400">{nl.avg_open_rate}%</td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded text-xs font-medium ${nl.status === "active" ? "bg-green-500/20 text-green-400" :
-                                                nl.status === "draft" ? "bg-yellow-500/20 text-yellow-400" :
-                                                    "bg-gray-500/20 text-gray-400"
+                                            nl.status === "draft" ? "bg-yellow-500/20 text-yellow-400" :
+                                                "bg-gray-500/20 text-gray-400"
                                             }`}>
                                             {nl.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-400">{nl.lastSent}</td>
+                                    <td className="px-6 py-4 text-gray-400">{nl.updated_at}</td>
                                     <td className="px-6 py-4 text-right">
                                         <Link
                                             href={`/dashboard/editor/${nl.id}`}

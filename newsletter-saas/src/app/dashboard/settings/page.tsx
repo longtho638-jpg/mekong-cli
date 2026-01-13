@@ -1,18 +1,63 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SettingsPage() {
-    const [activeTab, setActiveTab] = useState<"profile" | "billing" | "api" | "team">("profile");
+function SettingsContent() {
+    const searchParams = useSearchParams();
+    const billingSuccess = searchParams.get("billing") === "success";
 
-    // Demo data
-    const user = {
-        name: "Agency Admin",
-        email: "admin@agency.com",
-        company: "Premium Agency Co",
-        plan: "Pro",
-        plan_expires: "Mar 31, 2025",
+    const [user, setUser] = useState<{ name: string; email: string; plan: string } | null>(null);
+    const [currentPlan, setCurrentPlan] = useState("free");
+    const [isUpgrading, setIsUpgrading] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (!storedUser) {
+            router.push("/login");
+            return;
+        }
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+        setCurrentPlan(parsed.plan || "free");
+    }, [router]);
+
+    const handleUpgrade = async (plan: string) => {
+        setIsUpgrading(true);
+        try {
+            const res = await fetch("/api/billing/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan, interval: "monthly" }),
+            });
+            const data = await res.json();
+            if (data.checkout_url) {
+                window.location.href = data.checkout_url;
+            } else if (data.demo) {
+                // Demo mode - update local storage
+                if (user) {
+                    const updated = { ...user, plan };
+                    localStorage.setItem("user", JSON.stringify(updated));
+                    setUser(updated);
+                    setCurrentPlan(plan);
+                }
+                alert(`Upgraded to ${plan}! (Demo mode)`);
+            }
+        } catch {
+            alert("Upgrade failed. Please try again.");
+        } finally {
+            setIsUpgrading(false);
+        }
     };
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin text-4xl">⏳</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#0a0a0a]">
@@ -21,19 +66,15 @@ export default function SettingsPage() {
                 <Link href="/dashboard" className="text-xl font-bold gradient-text block mb-10">
                     📧 Mekong Mail
                 </Link>
-
                 <nav className="space-y-2">
                     <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-400">
                         <span>📋</span> Newsletters
-                    </Link>
-                    <Link href="/dashboard/subscribers" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-400">
-                        <span>👥</span> Subscribers
                     </Link>
                     <Link href="/dashboard/analytics" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-400">
                         <span>📊</span> Analytics
                     </Link>
                     <Link href="/dashboard/referral" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-400">
-                        <span>🎁</span> Referral Program
+                        <span>🎁</span> Referrals
                     </Link>
                     <Link href="/dashboard/settings" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-500/10 text-indigo-400">
                         <span>⚙️</span> Settings
@@ -43,224 +84,117 @@ export default function SettingsPage() {
 
             {/* Main Content */}
             <main className="ml-64 p-8">
-                <h1 className="text-3xl font-bold mb-8">Settings</h1>
+                {billingSuccess && (
+                    <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400">
+                        ✓ Your subscription has been updated successfully!
+                    </div>
+                )}
 
-                {/* Tabs */}
-                <div className="flex gap-1 mb-8 bg-[#12121a] p-1 rounded-lg w-fit">
-                    {(["profile", "billing", "api", "team"] as const).map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`px-6 py-2 rounded-md font-medium transition-all capitalize ${activeTab === tab
-                                    ? "bg-indigo-500 text-white"
-                                    : "text-gray-400 hover:text-white"
-                                }`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold">Settings</h1>
+                    <p className="text-gray-400 mt-1">Manage your account and billing</p>
                 </div>
 
-                {/* Profile Tab */}
-                {activeTab === "profile" && (
-                    <div className="glass rounded-xl p-6 max-w-2xl">
-                        <h2 className="text-xl font-semibold mb-6">Profile Settings</h2>
-                        <div className="space-y-6">
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-2">Full Name</label>
-                                <input
-                                    type="text"
-                                    defaultValue={user.name}
-                                    className="w-full bg-[#1a1a24] border border-gray-700 rounded-lg px-4 py-3 focus:border-indigo-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-2">Email</label>
-                                <input
-                                    type="email"
-                                    defaultValue={user.email}
-                                    className="w-full bg-[#1a1a24] border border-gray-700 rounded-lg px-4 py-3 focus:border-indigo-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-2">Company Name</label>
-                                <input
-                                    type="text"
-                                    defaultValue={user.company}
-                                    className="w-full bg-[#1a1a24] border border-gray-700 rounded-lg px-4 py-3 focus:border-indigo-500 outline-none"
-                                />
-                            </div>
-                            <button className="btn-primary px-8 py-3">Save Changes</button>
+                {/* Profile Section */}
+                <div className="glass rounded-xl p-6 mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Profile</h2>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-2">Name</label>
+                            <input
+                                type="text"
+                                value={user.name}
+                                readOnly
+                                className="w-full px-4 py-3 bg-[#12121a] border border-gray-700 rounded-lg"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-2">Email</label>
+                            <input
+                                type="email"
+                                value={user.email}
+                                readOnly
+                                className="w-full px-4 py-3 bg-[#12121a] border border-gray-700 rounded-lg"
+                            />
                         </div>
                     </div>
-                )}
+                </div>
 
-                {/* Billing Tab */}
-                {activeTab === "billing" && (
-                    <div className="space-y-6 max-w-2xl">
-                        {/* Current Plan */}
-                        <div className="glass rounded-xl p-6">
-                            <h2 className="text-xl font-semibold mb-4">Current Plan</h2>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-2xl font-bold">{user.plan}</span>
-                                        <span className="px-2 py-1 bg-green-500/20 text-green-400 text-sm rounded">Active</span>
-                                    </div>
-                                    <p className="text-gray-400 mt-1">Renews on {user.plan_expires}</p>
-                                </div>
-                                <button className="btn-secondary px-6 py-2">Upgrade</button>
-                            </div>
+                {/* Billing Section */}
+                <div className="glass rounded-xl p-6">
+                    <h2 className="text-xl font-semibold mb-4">Billing & Plan</h2>
+                    <div className="mb-6">
+                        <span className="text-gray-400">Current Plan: </span>
+                        <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 font-semibold">
+                            {currentPlan.toUpperCase()}
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-6">
+                        {/* Free */}
+                        <div className={`rounded-xl p-6 border ${currentPlan === "free" ? "border-indigo-500 bg-indigo-500/5" : "border-gray-700"}`}>
+                            <h3 className="font-semibold mb-2">Free</h3>
+                            <div className="text-2xl font-bold mb-4">$0/mo</div>
+                            <ul className="text-sm text-gray-400 space-y-2 mb-6">
+                                <li>• 1 newsletter</li>
+                                <li>• 500 subscribers</li>
+                                <li>• 1,000 sends/month</li>
+                            </ul>
+                            {currentPlan === "free" ? (
+                                <button disabled className="w-full btn-secondary opacity-50">Current Plan</button>
+                            ) : (
+                                <button onClick={() => handleUpgrade("free")} className="w-full btn-secondary">
+                                    Downgrade
+                                </button>
+                            )}
                         </div>
 
-                        {/* Usage */}
-                        <div className="glass rounded-xl p-6">
-                            <h2 className="text-xl font-semibold mb-4">Usage This Month</h2>
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between text-sm mb-2">
-                                        <span className="text-gray-400">Newsletters</span>
-                                        <span>3 / 10</span>
-                                    </div>
-                                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: "30%" }} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-sm mb-2">
-                                        <span className="text-gray-400">Emails Sent</span>
-                                        <span>4,523 / 50,000</span>
-                                    </div>
-                                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-purple-500 rounded-full" style={{ width: "9%" }} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-sm mb-2">
-                                        <span className="text-gray-400">AI Credits</span>
-                                        <span>127 / 500</span>
-                                    </div>
-                                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-green-500 rounded-full" style={{ width: "25%" }} />
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Pro */}
+                        <div className={`rounded-xl p-6 border ${currentPlan === "pro" ? "border-indigo-500 bg-indigo-500/5" : "border-gray-700"}`}>
+                            <h3 className="font-semibold mb-2">Pro</h3>
+                            <div className="text-2xl font-bold mb-4">$29/mo</div>
+                            <ul className="text-sm text-gray-400 space-y-2 mb-6">
+                                <li>• 5 newsletters</li>
+                                <li>• 10,000 subscribers</li>
+                                <li>• AI writing assistant</li>
+                            </ul>
+                            {currentPlan === "pro" ? (
+                                <button disabled className="w-full btn-primary opacity-50">Current Plan</button>
+                            ) : (
+                                <button onClick={() => handleUpgrade("pro")} disabled={isUpgrading} className="w-full btn-primary">
+                                    {isUpgrading ? "Processing..." : "Upgrade"}
+                                </button>
+                            )}
                         </div>
 
-                        {/* Payment Method */}
-                        <div className="glass rounded-xl p-6">
-                            <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
-                            <div className="flex items-center justify-between p-4 bg-[#1a1a24] rounded-lg">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-8 bg-gradient-to-r from-blue-600 to-blue-400 rounded flex items-center justify-center text-xs font-bold">
-                                        VISA
-                                    </div>
-                                    <div>
-                                        <div>•••• •••• •••• 4242</div>
-                                        <div className="text-sm text-gray-400">Expires 12/26</div>
-                                    </div>
-                                </div>
-                                <button className="text-indigo-400 hover:underline">Change</button>
-                            </div>
+                        {/* Agency */}
+                        <div className={`rounded-xl p-6 border ${currentPlan === "agency" ? "border-indigo-500 bg-indigo-500/5" : "border-gray-700"}`}>
+                            <h3 className="font-semibold mb-2">Agency</h3>
+                            <div className="text-2xl font-bold mb-4">$99/mo</div>
+                            <ul className="text-sm text-gray-400 space-y-2 mb-6">
+                                <li>• Unlimited newsletters</li>
+                                <li>• Unlimited subscribers</li>
+                                <li>• White-label option</li>
+                            </ul>
+                            {currentPlan === "agency" ? (
+                                <button disabled className="w-full btn-primary opacity-50">Current Plan</button>
+                            ) : (
+                                <button onClick={() => handleUpgrade("agency")} disabled={isUpgrading} className="w-full btn-primary">
+                                    {isUpgrading ? "Processing..." : "Upgrade"}
+                                </button>
+                            )}
                         </div>
                     </div>
-                )}
-
-                {/* API Tab */}
-                {activeTab === "api" && (
-                    <div className="space-y-6 max-w-2xl">
-                        <div className="glass rounded-xl p-6">
-                            <h2 className="text-xl font-semibold mb-4">API Keys</h2>
-                            <p className="text-gray-400 mb-6">
-                                Use these keys to integrate Mekong Mail with your applications.
-                            </p>
-
-                            <div className="space-y-4">
-                                <div className="p-4 bg-[#1a1a24] rounded-lg">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="font-medium">Production Key</span>
-                                        <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">Active</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <input
-                                            type="password"
-                                            readOnly
-                                            value="mm_live_sk_xxxxxxxxxxxxxxxxxxxx"
-                                            className="flex-1 bg-[#0a0a0a] border border-gray-700 rounded px-3 py-2 font-mono text-sm"
-                                        />
-                                        <button className="text-indigo-400 hover:underline text-sm">Reveal</button>
-                                        <button className="text-indigo-400 hover:underline text-sm">Copy</button>
-                                    </div>
-                                </div>
-
-                                <div className="p-4 bg-[#1a1a24] rounded-lg">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="font-medium">Test Key</span>
-                                        <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded">Test</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <input
-                                            type="password"
-                                            readOnly
-                                            value="mm_test_sk_xxxxxxxxxxxxxxxxxxxx"
-                                            className="flex-1 bg-[#0a0a0a] border border-gray-700 rounded px-3 py-2 font-mono text-sm"
-                                        />
-                                        <button className="text-indigo-400 hover:underline text-sm">Reveal</button>
-                                        <button className="text-indigo-400 hover:underline text-sm">Copy</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button className="btn-secondary mt-6 px-6 py-2">Generate New Key</button>
-                        </div>
-
-                        {/* Webhooks */}
-                        <div className="glass rounded-xl p-6">
-                            <h2 className="text-xl font-semibold mb-4">Webhooks</h2>
-                            <p className="text-gray-400 mb-4">
-                                Receive real-time notifications for events.
-                            </p>
-                            <button className="btn-primary px-6 py-2">Add Webhook Endpoint</button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Team Tab */}
-                {activeTab === "team" && (
-                    <div className="space-y-6 max-w-2xl">
-                        <div className="glass rounded-xl p-6">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold">Team Members</h2>
-                                <button className="btn-primary px-4 py-2">Invite Member</button>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between p-4 bg-[#1a1a24] rounded-lg">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold">A</div>
-                                        <div>
-                                            <div>Agency Admin</div>
-                                            <div className="text-sm text-gray-400">admin@agency.com</div>
-                                        </div>
-                                    </div>
-                                    <span className="px-3 py-1 bg-indigo-500/20 text-indigo-400 text-sm rounded">Owner</span>
-                                </div>
-
-                                <div className="flex items-center justify-between p-4 bg-[#1a1a24] rounded-lg">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center font-bold">M</div>
-                                        <div>
-                                            <div>Marketing Lead</div>
-                                            <div className="text-sm text-gray-400">marketing@agency.com</div>
-                                        </div>
-                                    </div>
-                                    <span className="px-3 py-1 bg-gray-500/20 text-gray-400 text-sm rounded">Admin</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                </div>
             </main>
         </div>
+    );
+}
+
+export default function SettingsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <SettingsContent />
+        </Suspense>
     );
 }
