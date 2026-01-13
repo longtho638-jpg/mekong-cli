@@ -1,0 +1,13 @@
+{
+    "name": "@agencyos/web",
+    "version": "1.0.0",
+    "description": "AgencyOS Website - agencyos.network",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview"
+    },
+    "dependencies": {
+        "astro": "^5.0.0"
+    }
+}
