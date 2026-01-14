@@ -1,3 +1,4 @@
+
 """
 🙏 Nonprofit Marketing - Cause Marketing
 ==========================================
@@ -12,15 +13,19 @@ Features:
 - Grant support
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class NonprofitCategory(Enum):
-    """Nonprofit categories."""
+    """Sectors of non-profit organizations."""
     RELIGIOUS = "religious"
     CHARITY = "charity"
     EDUCATION = "education"
@@ -30,7 +35,7 @@ class NonprofitCategory(Enum):
 
 
 class CampaignType(Enum):
-    """Campaign types."""
+    """Types of marketing campaigns for nonprofits."""
     FUNDRAISING = "fundraising"
     AWARENESS = "awareness"
     VOLUNTEER = "volunteer"
@@ -39,7 +44,7 @@ class CampaignType(Enum):
 
 
 class CampaignStatus(Enum):
-    """Campaign status."""
+    """Lifecycle status of a campaign."""
     PLANNING = "planning"
     ACTIVE = "active"
     COMPLETED = "completed"
@@ -48,183 +53,164 @@ class CampaignStatus(Enum):
 
 @dataclass
 class NonprofitClient:
-    """A nonprofit client."""
+    """A non-profit organization client entity."""
     id: str
     name: str
     category: NonprofitCategory
     mission: str
-    monthly_retainer: float = 0
+    monthly_retainer: float = 0.0
     campaigns: List[str] = field(default_factory=list)
-    total_raised: float = 0
+    total_raised: float = 0.0
+
+    def __post_init__(self):
+        if self.monthly_retainer < 0:
+            raise ValueError("Retainer cannot be negative")
 
 
 @dataclass
 class DonationCampaign:
-    """A donation/fundraising campaign."""
+    """A fundraising campaign record."""
     id: str
     client_id: str
     name: str
     campaign_type: CampaignType
     goal: float
-    raised: float = 0
+    raised: float = 0.0
     donors: int = 0
     status: CampaignStatus = CampaignStatus.PLANNING
-    start_date: Optional[datetime] = None
+    start_date: Optional[datetime] = field(default_factory=datetime.now)
     end_date: Optional[datetime] = None
+
+    def __post_init__(self):
+        if self.goal <= 0:
+            raise ValueError("Campaign goal must be positive")
 
 
 class NonprofitMarketing:
     """
-    Nonprofit Marketing.
+    Nonprofit Marketing System.
     
-    Cause-driven marketing for nonprofits.
+    Orchestrates cause-driven marketing initiatives and fundraising tracking.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.clients: Dict[str, NonprofitClient] = {}
         self.campaigns: Dict[str, DonationCampaign] = {}
-        
-        self._init_demo_data()
+        logger.info(f"Nonprofit Marketing system initialized for {agency_name}")
+        self._init_defaults()
     
-    def _init_demo_data(self):
-        """Initialize demo data."""
-        clients = [
-            ("Hope Church", NonprofitCategory.RELIGIOUS, "Spreading hope to the community", 2000),
-            ("Green Earth Foundation", NonprofitCategory.ENVIRONMENT, "Protecting our planet", 3000),
-            ("Local Food Bank", NonprofitCategory.CHARITY, "Fighting hunger locally", 1500),
-            ("Youth Education Center", NonprofitCategory.EDUCATION, "Empowering young minds", 2500),
-        ]
-        
-        for name, cat, mission, retainer in clients:
-            client = self.add_client(name, cat, mission, retainer)
-            
-            # Create a campaign for each
-            camp = self.create_campaign(
-                client, f"{name} Annual Drive",
-                CampaignType.FUNDRAISING, 50000
-            )
-            camp.status = CampaignStatus.ACTIVE
-            camp.raised = 35000
-            camp.donors = 150
+    def _init_defaults(self):
+        """Seed the system with sample non-profit data."""
+        logger.info("Loading demo non-profit data...")
+        try:
+            c1 = self.add_client("Hope Church", NonprofitCategory.RELIGIOUS, "Community hope", 2000.0)
+            camp = self.create_campaign(c1.id, "Annual Drive", CampaignType.FUNDRAISING, 50000.0)
+            self.update_campaign_progress(camp.id, 35000.0, 150)
+        except Exception as e:
+            logger.error(f"Demo data error: {e}")
     
     def add_client(
         self,
         name: str,
         category: NonprofitCategory,
         mission: str,
-        monthly_retainer: float = 0
+        monthly_retainer: float = 0.0
     ) -> NonprofitClient:
-        """Add a nonprofit client."""
+        """Register a new non-profit client."""
+        if not name:
+            raise ValueError("Client name required")
+
         client = NonprofitClient(
             id=f"NPO-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            category=category,
-            mission=mission,
+            name=name, category=category, mission=mission,
             monthly_retainer=monthly_retainer
         )
         self.clients[client.id] = client
+        logger.info(f"Nonprofit client added: {name} ({category.value})")
         return client
     
     def create_campaign(
         self,
-        client: NonprofitClient,
+        client_id: str,
         name: str,
         campaign_type: CampaignType,
         goal: float
-    ) -> DonationCampaign:
-        """Create a fundraising campaign."""
+    ) -> Optional[DonationCampaign]:
+        """Launch a new marketing campaign for a client."""
+        if client_id not in self.clients:
+            logger.error(f"Client {client_id} not found")
+            return None
+
         campaign = DonationCampaign(
             id=f"CMP-{uuid.uuid4().hex[:6].upper()}",
-            client_id=client.id,
-            name=name,
-            campaign_type=campaign_type,
-            goal=goal,
-            start_date=datetime.now(),
+            client_id=client_id, name=name,
+            campaign_type=campaign_type, goal=goal,
             end_date=datetime.now() + timedelta(days=90)
         )
         self.campaigns[campaign.id] = campaign
-        client.campaigns.append(campaign.id)
+        self.clients[client_id].campaigns.append(campaign.id)
+        
+        logger.info(f"Campaign created: {name} (Goal: ${goal:,.0f})")
         return campaign
     
-    def update_campaign(self, campaign: DonationCampaign, raised: float, donors: int):
-        """Update campaign progress."""
-        campaign.raised = raised
-        campaign.donors = donors
+    def update_campaign_progress(self, campaign_id: str, raised: float, donors: int) -> bool:
+        """Update fundraising metrics for a campaign."""
+        if campaign_id not in self.campaigns: return False
         
-        # Update client total
-        client = self.clients.get(campaign.client_id)
+        camp = self.campaigns[campaign_id]
+        camp.raised = raised
+        camp.donors = donors
+        camp.status = CampaignStatus.ACTIVE
+        
+        # Update client aggregated stats
+        client = self.clients.get(camp.client_id)
         if client:
-            client.total_raised = sum(
-                c.raised for c in self.campaigns.values()
-                if c.client_id == client.id
-            )
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get nonprofit marketing statistics."""
-        total_raised = sum(c.raised for c in self.campaigns.values())
-        total_donors = sum(c.donors for c in self.campaigns.values())
-        active_campaigns = sum(1 for c in self.campaigns.values() 
-                              if c.status == CampaignStatus.ACTIVE)
-        total_retainer = sum(c.monthly_retainer for c in self.clients.values())
-        
-        return {
-            "clients": len(self.clients),
-            "campaigns": len(self.campaigns),
-            "active_campaigns": active_campaigns,
-            "total_raised": total_raised,
-            "total_donors": total_donors,
-            "monthly_retainer": total_retainer
-        }
+            client.total_raised = sum(c.raised for c in self.campaigns.values() if c.client_id == client.id)
+            
+        logger.info(f"Campaign {camp.name} updated: ${raised:,.0f} raised")
+        return True
     
     def format_dashboard(self) -> str:
-        """Format nonprofit marketing dashboard."""
-        stats = self.get_stats()
+        """Render the Nonprofit Marketing Dashboard."""
+        total_raised = sum(c.raised for c in self.campaigns.values())
+        active_camps = [c for c in self.campaigns.values() if c.status == CampaignStatus.ACTIVE]
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🙏 NONPROFIT MARKETING                                   ║",
-            f"║  {stats['clients']} clients │ ${stats['total_raised']:,.0f} raised │ {stats['total_donors']} donors  ║",
+            f"║  🙏 NONPROFIT MARKETING DASHBOARD{' ' * 25}║",
+            f"║  {len(self.clients)} clients │ ${total_raised:,.0f} raised │ {len(active_camps)} active campaigns{' ' * 7}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🏛️ NONPROFIT CLIENTS                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🏛️ ACTIVE CLIENTS                                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        cat_icons = {"religious": "⛪", "charity": "💝", "education": "📚",
-                    "healthcare": "🏥", "environment": "🌳", "social": "👥"}
+        cat_icons = {
+            NonprofitCategory.RELIGIOUS: "⛪", NonprofitCategory.CHARITY: "💝",
+            NonprofitCategory.EDUCATION: "📚", NonprofitCategory.ENVIRONMENT: "🌳"
+        }
         
-        for client in list(self.clients.values())[:4]:
-            icon = cat_icons.get(client.category.value, "🙏")
-            lines.append(f"║    {icon} {client.name[:22]:<22} │ ${client.monthly_retainer:>6,.0f}/mo  ║")
-        
+        for c in list(self.clients.values())[:4]:
+            icon = cat_icons.get(c.category, "🙏")
+            name_disp = (c.name[:20] + '..') if len(c.name) > 22 else c.name
+            lines.append(f"║  {icon} {name_disp:<22} │ ${c.monthly_retainer:>8,.0f}/mo │ ${c.total_raised:>8,.0f} raised ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  📊 ACTIVE CAMPAIGNS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 CAMPAIGN PERFORMANCE                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"fundraising": "💰", "awareness": "📢", "volunteer": "🙋",
-                     "event": "📅", "membership": "👥"}
-        
-        for campaign in list(self.campaigns.values())[:4]:
-            if campaign.status == CampaignStatus.ACTIVE:
-                icon = type_icons.get(campaign.campaign_type.value, "📊")
-                progress = (campaign.raised / campaign.goal * 100) if campaign.goal else 0
-                bar = "█" * int(progress / 10) + "░" * (10 - int(progress / 10))
-                lines.append(f"║    {icon} {campaign.name[:18]:<18} │ {bar} │ {progress:>3.0f}%  ║")
-        
+        for camp in active_camps[:3]:
+            prog = (camp.raised / camp.goal) * 100
+            bar = "█" * int(prog / 10) + "░" * (10 - int(prog / 10))
+            lines.append(f"║    🎯 {camp.name[:18]:<18} │ {bar} │ {prog:>3.0f}% (${camp.raised:,.0f}) ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  💰 FUNDRAISING IMPACT                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    💰 Total Raised:       ${stats['total_raised']:>11,.0f}              ║",
-            f"║    👥 Total Donors:       {stats['total_donors']:>12}              ║",
-            f"║    📊 Active Campaigns:   {stats['active_campaigns']:>12}              ║",
-            f"║    💵 Monthly Retainer:   ${stats['monthly_retainer']:>11,.0f}              ║",
-            "║                                                           ║",
-            "║  [🏛️ Clients]  [📊 Campaigns]  [💰 Donations]             ║",
+            "║  [🏛️ New Client]  [📢 Campaign]  [💰 Donation]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Make a difference!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Impact!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -233,10 +219,11 @@ class NonprofitMarketing:
 
 # Example usage
 if __name__ == "__main__":
-    nm = NonprofitMarketing("Saigon Digital Hub")
-    
-    print("🙏 Nonprofit Marketing")
+    print("🙏 Initializing Nonprofit System...")
     print("=" * 60)
-    print()
     
-    print(nm.format_dashboard())
+    try:
+        np_system = NonprofitMarketing("Saigon Digital Hub")
+        print("\n" + np_system.format_dashboard())
+    except Exception as e:
+        logger.error(f"Nonprofit Error: {e}")

@@ -12,15 +12,19 @@ Features:
 - Trend analysis
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class CostType(Enum):
-    """Cost types."""
+    """Categories of project-specific expenses."""
     LABOR = "labor"
     SOFTWARE = "software"
     CONTRACTOR = "contractor"
@@ -29,7 +33,7 @@ class CostType(Enum):
 
 
 class ProfitLevel(Enum):
-    """Profit levels."""
+    """Profitability benchmarks."""
     LOSS = "loss"          # < 0%
     LOW = "low"            # 0-20%
     HEALTHY = "healthy"    # 20-40%
@@ -38,15 +42,19 @@ class ProfitLevel(Enum):
 
 @dataclass
 class Cost:
-    """A project cost."""
+    """A single project cost item entity."""
     type: CostType
     amount: float
     description: str
 
+    def __post_init__(self):
+        if self.amount < 0:
+            raise ValueError("Cost amount cannot be negative")
+
 
 @dataclass
 class ProjectPnL:
-    """Project profit and loss."""
+    """A project profit and loss record entity."""
     id: str
     project_name: str
     client: str
@@ -59,153 +67,100 @@ class ProjectPnL:
         return sum(c.amount for c in self.costs)
     
     @property
-    def profit(self) -> float:
+    def net_profit(self) -> float:
         return self.revenue - self.total_costs
     
     @property
-    def margin(self) -> float:
-        return (self.profit / self.revenue * 100) if self.revenue else 0
+    def margin_pct(self) -> float:
+        if self.revenue <= 0: return 0.0
+        return (self.net_profit / self.revenue) * 100.0
 
 
 class ProfitMarginTracker:
     """
-    Profit Margin Tracker.
+    Profit Margin Tracker System.
     
-    Track project profitability.
+    Orchestrates the tracking of project-level costs and revenue to derive granular profitability insights.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.projects: Dict[str, ProjectPnL] = {}
+        logger.info(f"Profit Margin Tracker initialized for {agency_name}")
     
-    def add_project(
+    def register_project(
         self,
         name: str,
         client: str,
         revenue: float
     ) -> ProjectPnL:
-        """Add a project."""
-        project = ProjectPnL(
+        """Initialize a new project P&L record."""
+        p = ProjectPnL(
             id=f"PRJ-{uuid.uuid4().hex[:6].upper()}",
-            project_name=name,
-            client=client,
-            revenue=revenue
+            project_name=name, client=client, revenue=float(revenue)
         )
-        self.projects[project.id] = project
-        return project
+        self.projects[p.id] = p
+        logger.info(f"Project P&L created: {name} (${revenue:,.0f})")
+        return p
     
-    def add_cost(
-        self,
-        project: ProjectPnL,
-        cost_type: CostType,
-        amount: float,
-        description: str = ""
-    ):
-        """Add cost to project."""
-        project.costs.append(Cost(cost_type, amount, description or cost_type.value))
-    
-    def get_level(self, project: ProjectPnL) -> ProfitLevel:
-        """Get profit level."""
-        margin = project.margin
-        if margin < 0:
-            return ProfitLevel.LOSS
-        elif margin < 20:
-            return ProfitLevel.LOW
-        elif margin <= 40:
-            return ProfitLevel.HEALTHY
-        else:
-            return ProfitLevel.EXCELLENT
-    
-    def get_totals(self) -> Dict[str, float]:
-        """Get overall totals."""
-        revenue = sum(p.revenue for p in self.projects.values())
-        costs = sum(p.total_costs for p in self.projects.values())
-        profit = revenue - costs
-        margin = (profit / revenue * 100) if revenue else 0
-        
-        return {
-            "revenue": revenue,
-            "costs": costs,
-            "profit": profit,
-            "margin": margin
-        }
+    def add_project_cost(self, p_id: str, c_type: CostType, amount: float, desc: str = ""):
+        """Attach a cost item to an existing project."""
+        if p_id not in self.projects:
+            logger.error(f"Project {p_id} not found")
+            return
+            
+        p = self.projects[p_id]
+        p.costs.append(Cost(c_type, float(amount), desc or c_type.value))
+        logger.info(f"Cost added to {p.project_name}: ${amount:,.2f} ({c_type.value})")
     
     def format_dashboard(self) -> str:
-        """Format profit margin dashboard."""
-        totals = self.get_totals()
+        """Render the Profit Margin Dashboard."""
+        rev = sum(p.revenue for p in self.projects.values())
+        costs = sum(p.total_costs for p in self.projects.values())
+        profit = rev - costs
+        margin = (profit / rev * 100.0) if rev > 0 else 0.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💰 PROFIT MARGIN TRACKER                                 ║",
-            f"║  ${totals['revenue']:,.0f} rev │ {totals['margin']:.0f}% margin │ ${totals['profit']:,.0f} profit ║",
+            f"║  💰 PROFIT MARGIN TRACKER DASHBOARD{' ' * 28}║",
+            f"║  ${rev:,.0f} revenue │ ${profit:,.0f} net profit │ {margin:.1f}% avg margin{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 PROJECT PROFITABILITY                                 ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 PROJECT PERFORMANCE                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        level_icons = {"loss": "🔴", "low": "🟠", "healthy": "🟢", "excellent": "💚"}
+        icons = {ProfitLevel.EXCELLENT: "💚", ProfitLevel.HEALTHY: "🟢", ProfitLevel.LOW: "🟠", ProfitLevel.LOSS: "🔴"}
         
-        for project in sorted(self.projects.values(), key=lambda x: x.margin, reverse=True)[:5]:
-            level = self.get_level(project)
-            icon = level_icons[level.value]
-            bar = "█" * max(0, int(project.margin / 10)) + "░" * max(0, (5 - int(project.margin / 10)))
+        for p in sorted(self.projects.values(), key=lambda x: x.margin_pct, reverse=True)[:5]:
+            # Determine level
+            lvl = ProfitLevel.EXCELLENT if p.margin_pct > 40 else ProfitLevel.HEALTHY if p.margin_pct >= 20 else ProfitLevel.LOW if p.margin_pct >= 0 else ProfitLevel.LOSS
+            icon = icons.get(lvl, "⚪")
+            bar = "█" * int(max(0, p.margin_pct / 10)) + "░" * int(max(0, 5 - (p.margin_pct / 10)))
+            lines.append(f"║  {icon} {p.project_name[:15]:<15} │ {bar} │ {p.margin_pct:>5.1f}% │ ${p.net_profit:>8,.0f}  ║")
             
-            lines.append(f"║  {icon} {project.project_name[:15]:<15} │ {bar} │ {project.margin:>5.1f}% │ ${project.profit:>8,.0f}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📈 COST BREAKDOWN                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        # Aggregate costs by type
-        cost_totals = {}
-        for project in self.projects.values():
-            for cost in project.costs:
-                cost_totals[cost.type.value] = cost_totals.get(cost.type.value, 0) + cost.amount
-        
-        type_icons = {"labor": "👥", "software": "💻", "contractor": "🤝", "advertising": "📢", "other": "📦"}
-        
-        for cost_type, amount in sorted(cost_totals.items(), key=lambda x: x[1], reverse=True)[:4]:
-            icon = type_icons.get(cost_type, "•")
-            lines.append(f"║    {icon} {cost_type.capitalize():<15} │ ${amount:>12,.0f}               ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            f"║  📊 Overall Margin: {totals['margin']:>5.1f}%                             ║",
-            "║                                                           ║",
-            "║  [📊 Details]  [📈 Trends]  [📥 Export]                   ║",
+            "║  [➕ Project]  [💸 Add Cost]  [📈 Full Report]  [⚙️]      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Know your numbers!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    tracker = ProfitMarginTracker("Saigon Digital Hub")
-    
-    print("💰 Profit Margin Tracker")
+    print("💰 Initializing Profit Tracker...")
     print("=" * 60)
-    print()
     
-    # Add projects
-    p1 = tracker.add_project("SEO Campaign", "Sunrise Realty", 8000)
-    tracker.add_cost(p1, CostType.LABOR, 3500, "SEO Team")
-    tracker.add_cost(p1, CostType.SOFTWARE, 500, "Tools")
-    
-    p2 = tracker.add_project("Website Redesign", "Coffee Lab", 12000)
-    tracker.add_cost(p2, CostType.LABOR, 5000, "Design & Dev")
-    tracker.add_cost(p2, CostType.CONTRACTOR, 2000, "Copywriter")
-    
-    p3 = tracker.add_project("PPC Campaign", "Tech Startup", 5000)
-    tracker.add_cost(p3, CostType.LABOR, 2000)
-    tracker.add_cost(p3, CostType.ADVERTISING, 1500)
-    
-    p4 = tracker.add_project("Social Media", "Fashion Brand", 3000)
-    tracker.add_cost(p4, CostType.LABOR, 1500)
-    tracker.add_cost(p4, CostType.SOFTWARE, 200)
-    
-    print(tracker.format_dashboard())
+    try:
+        tracker = ProfitMarginTracker("Saigon Digital Hub")
+        # Seed
+        p = tracker.register_project("Web Build", "Acme Corp", 10000.0)
+        tracker.add_project_cost(p.id, CostType.LABOR, 4000.0, "Dev Team")
+        tracker.add_project_cost(p.id, CostType.SOFTWARE, 500.0, "SaaS")
+        
+        print("\n" + tracker.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Tracker Error: {e}")

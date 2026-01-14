@@ -1,8 +1,9 @@
 """
-🔔 Notification System - Automated Alerts
-==========================================
+🔔 Notification System - Automated Templated Alerts
+===================================================
 
 Automated notifications for agency operations.
+Handles templating and multi-channel delivery.
 
 Features:
 - Payment reminders
@@ -12,14 +13,18 @@ Features:
 """
 
 import uuid
-from typing import Optional, Dict, Any, List
+import logging
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class NotificationType(Enum):
-    """Notification types."""
+    """Categories of automated alerts."""
     PAYMENT_REMINDER = "payment_reminder"
     PROJECT_UPDATE = "project_update"
     REPORT_READY = "report_ready"
@@ -29,7 +34,7 @@ class NotificationType(Enum):
 
 
 class Channel(Enum):
-    """Notification channels."""
+    """Supported communication channels."""
     EMAIL = "email"
     SMS = "sms"
     TELEGRAM = "telegram"
@@ -37,7 +42,7 @@ class Channel(Enum):
 
 
 class Priority(Enum):
-    """Notification priority."""
+    """Urgency levels."""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -46,7 +51,7 @@ class Priority(Enum):
 
 @dataclass
 class Notification:
-    """A notification to send."""
+    """A notification record entity."""
     id: str
     type: NotificationType
     channel: Channel
@@ -58,231 +63,98 @@ class Notification:
     sent_at: Optional[datetime] = None
     read_at: Optional[datetime] = None
 
+    def __post_init__(self):
+        if not self.recipient or not self.body:
+            raise ValueError("Recipient and body are mandatory")
+
 
 class NotificationSystem:
     """
     Notification System.
     
-    Automate client communication.
+    Manages automated client communication via templated alerts.
     """
     
     def __init__(self):
         self.notifications: List[Notification] = []
+        logger.info("Notification System initialized.")
         self.templates = self._load_templates()
     
     def _load_templates(self) -> Dict[NotificationType, Dict[str, str]]:
-        """Load notification templates."""
+        """Load default notification templates."""
         return {
             NotificationType.WELCOME: {
                 "subject": "🏯 Welcome to {agency_name}!",
-                "body": """
-Hello {client_name}! 👋
-
-Welcome aboard! We're thrilled to have {company} as our client.
-
-Your dedicated team is ready to help you achieve:
-✨ {goal_1}
-✨ {goal_2}
-✨ {goal_3}
-
-Let's make magic happen!
-
-Best,
-{agency_name} Team 🏯
-                """.strip()
+                "body": "Hello {client_name}! We're thrilled to have {company} as our client."
             },
             NotificationType.PAYMENT_REMINDER: {
-                "subject": "💳 Friendly reminder: Invoice {invoice_id} due soon",
-                "body": """
-Hi {client_name},
-
-Just a friendly reminder that invoice {invoice_id} for {amount} is due on {due_date}.
-
-Payment options:
-• Bank transfer
-• Credit card: {payment_link}
-
-Questions? Reply to this email!
-
-Thanks,
-{agency_name}
-                """.strip()
-            },
-            NotificationType.PROJECT_UPDATE: {
-                "subject": "📊 Project Update: {project_name} ({progress}% complete)",
-                "body": """
-Hi {client_name}! 📊
-
-Great news on your project "{project_name}"!
-
-Current Progress: {progress}%
-Status: {status}
-
-✅ Completed:
-{completed_items}
-
-🔄 In Progress:
-{in_progress_items}
-
-📅 Next milestone: {next_milestone}
-
-View full dashboard: {dashboard_link}
-
-Cheers,
-{agency_name}
-                """.strip()
-            },
-            NotificationType.REPORT_READY: {
-                "subject": "📈 Your {period} Report is Ready!",
-                "body": """
-Hi {client_name}! 📈
-
-Your {period} performance report is ready!
-
-Quick Highlights:
-• Traffic: {traffic} ({traffic_change})
-• Leads: {leads} ({leads_change})
-• ROI: {roi}
-
-View full report: {report_link}
-
-Questions? We're here to help!
-
-{agency_name} Team
-                """.strip()
-            },
-            NotificationType.MILESTONE: {
-                "subject": "🎉 Milestone Achieved: {milestone_name}!",
-                "body": """
-🎉 CONGRATULATIONS!
-
-{client_name}, you've reached an amazing milestone:
-
-✨ {milestone_name} ✨
-
-{milestone_description}
-
-Keep crushing it!
-
-{agency_name} 🏯
-                """.strip()
+                "subject": "💳 Reminder: Invoice {invoice_id}",
+                "body": "Hi {client_name}, your invoice for {amount} is due on {due_date}."
             }
         }
     
     def create_notification(
         self,
-        type: NotificationType,
+        n_type: NotificationType,
         channel: Channel,
         recipient: str,
         variables: Dict[str, str],
         priority: Priority = Priority.MEDIUM
     ) -> Notification:
-        """Create a notification from template."""
-        template = self.templates.get(type, {})
+        """Execute template rendering and create a new notification."""
+        tpl = self.templates.get(n_type, {"subject": "Alert", "body": "Default message"})
         
-        subject = template.get("subject", "Notification")
-        body = template.get("body", "")
+        subject = tpl["subject"]
+        body = tpl["body"]
         
-        # Replace variables
-        for key, value in variables.items():
-            subject = subject.replace(f"{{{key}}}", str(value))
-            body = body.replace(f"{{{key}}}", str(value))
+        # Safe interpolation
+        for k, v in variables.items():
+            subject = subject.replace(f"{{{k}}}", str(v))
+            body = body.replace(f"{{{k}}}", str(v))
         
         notification = Notification(
             id=f"NOT-{uuid.uuid4().hex[:6].upper()}",
-            type=type,
-            channel=channel,
-            priority=priority,
-            recipient=recipient,
-            subject=subject,
-            body=body
+            type=n_type, channel=channel, priority=priority,
+            recipient=recipient, subject=subject, body=body
         )
         
         self.notifications.append(notification)
+        logger.info(f"Created {n_type.value} for {recipient} via {channel.value}")
         return notification
     
-    def send(self, notification_id: str) -> bool:
-        """Mark notification as sent."""
-        for n in self.notifications:
-            if n.id == notification_id:
-                n.sent_at = datetime.now()
-                return True
-        return False
-    
-    def format_notification(self, notification: Notification) -> str:
-        """Format notification for display."""
-        priority_icon = {
-            Priority.LOW: "🔵",
-            Priority.MEDIUM: "🟡",
-            Priority.HIGH: "🟠",
-            Priority.URGENT: "🔴"
-        }[notification.priority]
-        
-        channel_icon = {
-            Channel.EMAIL: "📧",
-            Channel.SMS: "📱",
-            Channel.TELEGRAM: "💬",
-            Channel.SLACK: "💼"
-        }[notification.channel]
+    def format_notification(self, n: Notification) -> str:
+        """Render a single notification record as ASCII."""
+        p_icon = {Priority.LOW: "🔵", Priority.MEDIUM: "🟡", Priority.HIGH: "🟠", Priority.URGENT: "🔴"}.get(n.priority, "⚪")
+        c_icon = {Channel.EMAIL: "📧", Channel.SMS: "📱", Channel.TELEGRAM: "💬", Channel.SLACK: "💼"}.get(n.channel, "📦")
         
         lines = [
-            f"╔═══════════════════════════════════════════════════════════╗",
-            f"║  {priority_icon} {notification.type.value.upper():<45}   ║",
-            f"╠═══════════════════════════════════════════════════════════╣",
-            f"║  {channel_icon} To: {notification.recipient:<40}       ║",
-            f"║  Subject: {notification.subject[:45]:<45}  ║",
-            f"╠═══════════════════════════════════════════════════════════╣",
+            "╔═══════════════════════════════════════════════════════════╗",
+            f"║  {p_icon} {n.type.value.upper():<45}   ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  {c_icon} To: {n.recipient:<40}       ║",
+            f"║  Sub: {n.subject[:45]:<45}  ║",
+            "╠═══════════════════════════════════════════════════════════╣",
         ]
         
-        # Body (truncated)
-        for line in notification.body.split('\n')[:8]:
+        for line in n.body.split('\n')[:5]:
             lines.append(f"║  {line[:55]:<55}  ║")
-        
-        lines.append(f"╚═══════════════════════════════════════════════════════════╝")
-        
+            
+        lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    system = NotificationSystem()
+    print("🔔 Initializing Notification System...")
+    print("=" * 60)
     
-    print("🔔 Notification System")
-    print("=" * 50)
-    print()
-    
-    # Create welcome notification
-    welcome = system.create_notification(
-        type=NotificationType.WELCOME,
-        channel=Channel.EMAIL,
-        recipient="minh@saigoncoffee.vn",
-        variables={
-            "agency_name": "Agency OS",
-            "client_name": "Minh",
-            "company": "Saigon Coffee Co.",
-            "goal_1": "Increase organic traffic by 50%",
-            "goal_2": "Generate 100+ leads per month",
-            "goal_3": "Achieve 3x ROI on marketing spend"
-        }
-    )
-    
-    print(system.format_notification(welcome))
-    print()
-    
-    # Create payment reminder
-    reminder = system.create_notification(
-        type=NotificationType.PAYMENT_REMINDER,
-        channel=Channel.EMAIL,
-        recipient="minh@saigoncoffee.vn",
-        priority=Priority.HIGH,
-        variables={
-            "client_name": "Minh",
-            "invoice_id": "INV-202512-03FD",
-            "amount": "$1,430.00",
-            "due_date": "Jan 16, 2026",
-            "payment_link": "https://pay.agencyos.network/xxx",
-            "agency_name": "Agency OS"
-        }
-    )
-    
-    print(system.format_notification(reminder))
+    try:
+        sys = NotificationSystem()
+        notif = sys.create_notification(
+            NotificationType.WELCOME, Channel.EMAIL, "client@corp.co",
+            {"agency_name": "AgencyOS", "client_name": "John", "company": "Acme"}
+        )
+        print("\n" + sys.format_notification(notif))
+        
+    except Exception as e:
+        logger.error(f"System Error: {e}")

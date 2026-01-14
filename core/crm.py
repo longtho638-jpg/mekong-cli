@@ -192,6 +192,16 @@ class CRM:
         logger.debug(f"Activity logged for {contact_id}")
         return activity
 
+    def get_summary(self) -> Dict[str, Any]:
+        """Aggregate high-level CRM performance metrics."""
+        active = [d for d in self.deals.values() if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        return {
+            "total_contacts": len(self.contacts),
+            "pipeline_value": sum(d.value for d in active),
+            "deal_count": len(self.deals),
+            "active_deal_count": len(active)
+        }
+
     def format_dashboard(self) -> str:
         """Render ASCII CRM Dashboard."""
         active_deals = [d for d in self.deals.values() if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]

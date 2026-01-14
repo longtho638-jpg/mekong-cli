@@ -128,6 +128,14 @@ class InventoryManager:
         """Filter items that have fallen below their reorder point."""
         return [i for i in self.inventory.values() if i.quantity <= i.reorder_point]
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate inventory performance metrics."""
+        return {
+            "total_items": len(self.inventory),
+            "reorder_alerts": len(self.get_stock_alerts()),
+            "total_orders": len(self.orders)
+        }
+    
     def format_dashboard(self) -> str:
         """Render the Inventory & Fulfillment Dashboard."""
         alerts = self.get_stock_alerts()

@@ -140,6 +140,15 @@ class DigitalMerchandiser:
         logger.info(f"Theme registered: {name} ({color})")
         return theme
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate visual merchandising performance metrics."""
+        live = [d for d in self.displays.values() if d.status == DisplayStatus.LIVE]
+        return {
+            "total_displays": len(self.displays),
+            "live": len(live),
+            "total_themes": len(self.themes)
+        }
+    
     def format_dashboard(self) -> str:
         """Render the Digital Merchandiser Dashboard."""
         live_count = sum(1 for d in self.displays.values() if d.status == DisplayStatus.LIVE)

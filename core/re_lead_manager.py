@@ -12,17 +12,22 @@ Roles:
 - Conversion optimization
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class LeadSource(Enum):
-    """Lead sources."""
+    """Origins of incoming property leads."""
     WEBSITE = "website"
-    PORTAL = "portal"  # batdongsan, etc.
+    PORTAL = "portal"
     REFERRAL = "referral"
     SOCIAL = "social"
     WALK_IN = "walk_in"
@@ -30,7 +35,7 @@ class LeadSource(Enum):
 
 
 class LeadStatus(Enum):
-    """Lead status."""
+    """Lifecycle status of a real estate lead."""
     NEW = "new"
     CONTACTED = "contacted"
     QUALIFIED = "qualified"
@@ -41,7 +46,7 @@ class LeadStatus(Enum):
 
 
 class LeadIntent(Enum):
-    """Lead intent."""
+    """Primary objective of the prospect."""
     BUY = "buy"
     SELL = "sell"
     RENT = "rent"
@@ -51,7 +56,7 @@ class LeadIntent(Enum):
 
 @dataclass
 class RELead:
-    """A real estate lead."""
+    """A real estate lead entity record."""
     id: str
     name: str
     phone: str
@@ -67,10 +72,14 @@ class RELead:
     created_at: datetime = field(default_factory=datetime.now)
     last_contact: Optional[datetime] = None
 
+    def __post_init__(self):
+        if self.budget < 0:
+            raise ValueError("Budget cannot be negative")
+
 
 @dataclass
 class Viewing:
-    """A property viewing."""
+    """A property showing record."""
     id: str
     lead_id: str
     property_id: str
@@ -81,16 +90,20 @@ class Viewing:
 
 class RELeadManager:
     """
-    Real Estate Lead Manager.
+    RE Lead Manager System.
     
-    Manage leads and conversions.
+    Orchestrates property lead capture, agent assignment, and viewing schedules.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.leads: Dict[str, RELead] = {}
         self.viewings: List[Viewing] = []
+        logger.info(f"RE Lead Manager initialized for {agency_name}")
     
+    def _validate_email(self, email: str) -> bool:
+        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+
     def capture_lead(
         self,
         name: str,
@@ -99,154 +112,75 @@ class RELeadManager:
         source: LeadSource,
         intent: LeadIntent,
         budget: float,
-        location: str,
-        property_type: str = ""
+        location: str
     ) -> RELead:
-        """Capture a new lead."""
+        """Register a new incoming lead into the CRM."""
+        if not self._validate_email(email):
+            raise ValueError(f"Invalid email: {email}")
+
         lead = RELead(
             id=f"LED-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            phone=phone,
-            email=email,
-            source=source,
-            intent=intent,
-            budget=budget,
-            location_pref=location,
-            property_type=property_type
+            name=name, phone=phone, email=email,
+            source=source, intent=intent, budget=float(budget),
+            location_pref=location
         )
         self.leads[lead.id] = lead
+        logger.info(f"Lead captured: {name} (${budget:,.0f} {intent.value})")
         return lead
     
-    def assign_lead(self, lead: RELead, agent: str):
-        """Assign lead to agent."""
-        lead.assigned_to = agent
-    
-    def update_status(self, lead: RELead, status: LeadStatus):
-        """Update lead status."""
-        lead.status = status
-        lead.last_contact = datetime.now()
-    
-    def add_note(self, lead: RELead, note: str):
-        """Add note to lead."""
-        lead.notes.append(f"[{datetime.now().strftime('%Y-%m-%d')}] {note}")
-    
-    def schedule_viewing(
-        self,
-        lead: RELead,
-        property_id: str,
-        scheduled: datetime
-    ) -> Viewing:
-        """Schedule a viewing."""
-        viewing = Viewing(
+    def schedule_showing(self, lead_id: str, property_id: str, time: datetime) -> Optional[Viewing]:
+        """Book a property viewing for a specific lead."""
+        if lead_id not in self.leads: return None
+        
+        v = Viewing(
             id=f"VWG-{uuid.uuid4().hex[:6].upper()}",
-            lead_id=lead.id,
-            property_id=property_id,
-            scheduled_at=scheduled
+            lead_id=lead_id, property_id=property_id, scheduled_at=time
         )
-        self.viewings.append(viewing)
-        lead.status = LeadStatus.VIEWING
-        return viewing
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get lead statistics."""
-        by_status = {}
-        for status in LeadStatus:
-            by_status[status.value] = sum(1 for l in self.leads.values() if l.status == status)
-        
-        won = by_status.get("won", 0)
-        total = len(self.leads)
-        conversion = (won / total * 100) if total else 0
-        
-        pipeline_value = sum(l.budget for l in self.leads.values() 
-                            if l.status not in [LeadStatus.WON, LeadStatus.LOST])
-        
-        return {
-            "total": total,
-            "by_status": by_status,
-            "conversion_rate": conversion,
-            "pipeline_value": pipeline_value,
-            "viewings": len(self.viewings)
-        }
+        self.viewings.append(v)
+        self.leads[lead_id].status = LeadStatus.VIEWING
+        logger.info(f"Viewing scheduled for {lead_id} at {property_id}")
+        return v
     
     def format_dashboard(self) -> str:
-        """Format lead manager dashboard."""
-        stats = self.get_stats()
+        """Render the RE Lead Dashboard."""
+        active_leads = [l for l in self.leads.values() if l.status != LeadStatus.WON and l.status != LeadStatus.LOST]
+        total_pipe = sum(l.budget for l in active_leads)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 RE LEAD MANAGER                                       ║",
-            f"║  {stats['total']} leads │ ${stats['pipeline_value']:,.0f} pipeline │ {stats['conversion_rate']:.0f}% CVR  ║",
+            f"║  📋 RE LEAD MANAGER DASHBOARD{' ' * 31}║",
+            f"║  {len(self.leads)} total │ {len(active_leads)} active │ ${total_pipe:,.0f} pipeline value{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 LEAD PIPELINE                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 SALES PIPELINE                                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        status_icons = {"new": "🆕", "contacted": "📞", "qualified": "✅",
-                       "viewing": "👁️", "negotiating": "🤝", "won": "🏆", "lost": "❌"}
-        
-        for status in [LeadStatus.NEW, LeadStatus.CONTACTED, LeadStatus.QUALIFIED, 
-                      LeadStatus.VIEWING, LeadStatus.NEGOTIATING]:
-            count = stats['by_status'].get(status.value, 0)
-            icon = status_icons.get(status.value, "⚪")
-            value = sum(l.budget for l in self.leads.values() if l.status == status)
-            lines.append(f"║    {icon} {status.value.title():<12} │ {count:>3} leads │ ${value:>12,.0f}   ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 RECENT LEADS                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        intent_icons = {"buy": "🏠", "sell": "💰", "rent": "🔑", "lease": "📄", "invest": "💎"}
-        
-        for lead in list(self.leads.values())[-4:]:
-            s_icon = status_icons.get(lead.status.value, "⚪")
-            i_icon = intent_icons.get(lead.intent.value, "🏠")
+        # Display latest 5 active leads
+        for l in sorted(active_leads, key=lambda x: x.created_at, reverse=True)[:5]:
+            icon = {"buy": "🏠", "rent": "🔑", "invest": "💎"}.get(l.intent.value, "📋")
+            lines.append(f"║  🆕 {icon} {l.name[:15]:<15} │ ${l.budget:>10,.0f} │ {l.status.value:<12} ║")
             
-            lines.append(f"║  {s_icon} {i_icon} {lead.name[:15]:<15} │ ${lead.budget:>10,.0f} │ {lead.location_pref[:8]:<8}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 BY SOURCE                                             ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        source_icons = {"website": "🌐", "portal": "📱", "referral": "👋",
-                       "social": "📘", "walk_in": "🚶", "ad": "📢"}
-        
-        for source in list(LeadSource)[:4]:
-            count = sum(1 for l in self.leads.values() if l.source == source)
-            icon = source_icons.get(source.value, "📋")
-            lines.append(f"║    {icon} {source.value.title():<12} │ {count:>3} leads                     ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Lead]  [📅 Viewings]  [📊 Reports]               ║",
+            "║  [➕ New Lead]  [📅 Viewings]  [📊 Reports]  [⚙️ Setup]   ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Leads that convert!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Converting!       ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    leads = RELeadManager("Saigon Digital Hub")
-    
-    print("📋 RE Lead Manager")
+    print("📋 Initializing RE Lead System...")
     print("=" * 60)
-    print()
     
-    l1 = leads.capture_lead("Nguyen Van A", "0901234567", "a@email.com", LeadSource.WEBSITE, LeadIntent.BUY, 500000, "District 2", "Villa")
-    l2 = leads.capture_lead("Tran Thi B", "0907654321", "b@email.com", LeadSource.PORTAL, LeadIntent.RENT, 2000, "District 7", "Apartment")
-    l3 = leads.capture_lead("John Smith", "0909999999", "john@email.com", LeadSource.REFERRAL, LeadIntent.INVEST, 1000000, "District 1")
-    
-    leads.assign_lead(l1, "Agent Alex")
-    leads.update_status(l1, LeadStatus.QUALIFIED)
-    leads.add_note(l1, "Interested in 5-bed villa, budget flexible")
-    
-    leads.update_status(l2, LeadStatus.VIEWING)
-    leads.schedule_viewing(l2, "LST-001", datetime.now() + timedelta(days=2))
-    
-    print(leads.format_dashboard())
+    try:
+        leads_system = RELeadManager("Saigon Digital Hub")
+        # Seed
+        leads_system.capture_lead("Nguyen Van A", "090", "a@corp.co", LeadSource.WEBSITE, LeadIntent.BUY, 500000.0, "D2")
+        
+        print("\n" + leads_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Lead Error: {e}")

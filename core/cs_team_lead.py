@@ -128,6 +128,19 @@ class CSTeamLead:
         logger.warning(f"ESCALATION: {client} - {issue} (Assigned to {target_leader})")
         return esc
     
+    def get_team_stats(self) -> Dict[str, Any]:
+        """Aggregate team performance metrics for the Hub."""
+        available = sum(1 for a in self.agents.values() if a.status == AgentStatus.AVAILABLE)
+        total = len(self.agents)
+        avg_sat = sum(a.satisfaction_score for a in self.agents.values()) / total if total else 0.0
+        
+        return {
+            "total_agents": total,
+            "available": available,
+            "avg_satisfaction": avg_sat,
+            "open_escalations": sum(1 for e in self.escalations if not e.resolved)
+        }
+    
     def get_aggregate_stats(self) -> Dict[str, Any]:
         """Calculate high-level team metrics."""
         if not self.agents:

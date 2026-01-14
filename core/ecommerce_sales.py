@@ -131,7 +131,7 @@ class EcommerceSales:
         logger.info(f"Abandoned cart logged: {email} (${value:,.0f})")
         return cart
     
-    def get_stats(self, days: int = 30) -> Dict[str, Any]:
+    def get_sales_stats(self, days: int = 30) -> Dict[str, Any]:
         """Aggregate sales and recovery performance data."""
         cutoff = datetime.now() - timedelta(days=days)
         recent_sales = [s for s in self.sales if s.created_at >= cutoff and s.status == SaleStatus.PAID]
@@ -150,7 +150,7 @@ class EcommerceSales:
     
     def format_dashboard(self) -> str:
         """Render the Sales Dashboard."""
-        s = self.get_stats()
+        s = self.get_sales_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",

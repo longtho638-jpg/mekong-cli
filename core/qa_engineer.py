@@ -12,15 +12,19 @@ Roles:
 - Quality metrics
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class BugSeverity(Enum):
-    """Bug severity levels."""
+    """Degrees of critical impact for reported issues."""
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -28,7 +32,7 @@ class BugSeverity(Enum):
 
 
 class BugStatus(Enum):
-    """Bug status."""
+    """Lifecycle status of a bug report."""
     NEW = "new"
     CONFIRMED = "confirmed"
     IN_PROGRESS = "in_progress"
@@ -38,7 +42,7 @@ class BugStatus(Enum):
 
 
 class TestType(Enum):
-    """Test types."""
+    """Methodologies for software validation."""
     UNIT = "unit"
     INTEGRATION = "integration"
     E2E = "e2e"
@@ -49,7 +53,7 @@ class TestType(Enum):
 
 @dataclass
 class Bug:
-    """A bug report."""
+    """A software defect record entity."""
     id: str
     project: str
     title: str
@@ -60,10 +64,14 @@ class Bug:
     created_at: datetime = field(default_factory=datetime.now)
     resolved_at: Optional[datetime] = None
 
+    def __post_init__(self):
+        if not self.title or not self.project:
+            raise ValueError("Title and project name are mandatory")
+
 
 @dataclass
 class TestRun:
-    """A test run."""
+    """A single execution of a test suite record."""
     id: str
     project: str
     test_type: TestType
@@ -74,172 +82,124 @@ class TestRun:
     duration_seconds: int = 0
     run_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.total_tests < 0:
+            raise ValueError("Test count cannot be negative")
+
 
 class QAEngineer:
     """
     QA Engineer System.
     
-    Quality assurance workflow.
+    Orchestrates the quality control process, encompassing bug tracking, test execution, and release validation.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.bugs: Dict[str, Bug] = {}
         self.test_runs: List[TestRun] = []
+        logger.info(f"QA System initialized for {agency_name}")
     
-    def report_bug(
+    def report_defect(
         self,
         project: str,
         title: str,
         severity: BugSeverity,
-        reported_by: str = ""
+        reporter: str = "Tester AI"
     ) -> Bug:
-        """Report a bug."""
+        """Register a new software bug into the tracking system."""
         bug = Bug(
             id=f"BUG-{uuid.uuid4().hex[:6].upper()}",
-            project=project,
-            title=title,
-            severity=severity,
-            reported_by=reported_by
+            project=project, title=title,
+            severity=severity, reported_by=reporter
         )
         self.bugs[bug.id] = bug
+        logger.warning(f"Defect Reported: {title} [{severity.value}] in {project}")
         return bug
     
-    def update_bug(self, bug: Bug, status: BugStatus, assigned_to: str = ""):
-        """Update bug status."""
-        bug.status = status
-        if assigned_to:
-            bug.assigned_to = assigned_to
-        if status == BugStatus.CLOSED:
-            bug.resolved_at = datetime.now()
-    
-    def run_tests(
+    def run_suite(
         self,
         project: str,
-        test_type: TestType,
-        total: int,
+        t_type: TestType,
         passed: int,
         failed: int,
         duration: int = 0
     ) -> TestRun:
-        """Record a test run."""
+        """Log the results of a suite execution."""
+        total = passed + failed
         run = TestRun(
             id=f"TST-{uuid.uuid4().hex[:6].upper()}",
-            project=project,
-            test_type=test_type,
-            total_tests=total,
-            passed=passed,
-            failed=failed,
-            skipped=total - passed - failed,
+            project=project, test_type=t_type,
+            total_tests=total, passed=passed, failed=failed,
             duration_seconds=duration
         )
         self.test_runs.append(run)
+        logger.info(f"Test Suite Finished: {project} ({t_type.value}) - {passed}/{total} passed")
         return run
     
-    def get_open_bugs(self) -> List[Bug]:
-        """Get open bugs."""
-        return [b for b in self.bugs.values() if b.status not in [BugStatus.VERIFIED, BugStatus.CLOSED]]
-    
     def get_stats(self) -> Dict[str, Any]:
-        """Get QA statistics."""
-        open_bugs = len(self.get_open_bugs())
-        critical = sum(1 for b in self.bugs.values() if b.severity == BugSeverity.CRITICAL and b.status != BugStatus.CLOSED)
+        """Aggregate high-level quality performance metrics."""
+        open_b = [b for b in self.bugs.values() if b.status not in [BugStatus.VERIFIED, BugStatus.CLOSED]]
         
-        if self.test_runs:
-            total_tests = sum(r.total_tests for r in self.test_runs)
-            total_passed = sum(r.passed for r in self.test_runs)
-            pass_rate = (total_passed / total_tests * 100) if total_tests else 0
-        else:
-            pass_rate = 0
+        passed_t = sum(r.passed for r in self.test_runs)
+        total_t = sum(r.total_tests for r in self.test_runs)
         
         return {
             "total_bugs": len(self.bugs),
-            "open_bugs": open_bugs,
-            "critical_bugs": critical,
-            "test_runs": len(self.test_runs),
-            "pass_rate": pass_rate
+            "open_count": len(open_b),
+            "pass_rate": (passed_t / total_t * 100.0) if total_t > 0 else 0.0,
+            "test_run_count": len(self.test_runs)
         }
     
     def format_dashboard(self) -> str:
-        """Format QA dashboard."""
-        stats = self.get_stats()
+        """Render the QA Quality Dashboard."""
+        s = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🧪 QA ENGINEER                                           ║",
-            f"║  {stats['total_bugs']} bugs │ {stats['open_bugs']} open │ {stats['pass_rate']:.0f}% pass rate    ║",
+            f"║  🧪 QA ENGINEER DASHBOARD{' ' * 35}║",
+            f"║  {s['open_count']} open bugs │ {s['pass_rate']:.1f}% avg pass rate │ {s['test_run_count']} runs{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🐛 BUG TRACKER                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🐛 ACTIVE DEFECT QUEUE                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        severity_icons = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
-        status_icons = {"new": "🆕", "confirmed": "✅", "in_progress": "🔄", 
-                       "fixed": "🔧", "verified": "✅", "closed": "📁"}
-        
-        for bug in list(self.get_open_bugs())[:5]:
-            sev_icon = severity_icons.get(bug.severity.value, "⚪")
-            st_icon = status_icons.get(bug.status.value, "⚪")
+        for b in list(self.bugs.values())[:5]:
+            sev_icon = {"critical": "🔴", "high": "🟠", "medium": "🟡"}.get(b.severity.value, "⚪")
+            lines.append(f"║  {sev_icon} {b.title[:22]:<22} │ {b.project[:12]:<12} │ {b.status.value:<10} ║")
             
-            lines.append(f"║  {sev_icon} {st_icon} {bug.title[:22]:<22} │ {bug.project[:12]:<12}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 RECENT TEST RUNS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🧪 RECENT TEST EXECUTIONS                                ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"unit": "🔬", "integration": "🔗", "e2e": "🌐", 
-                     "performance": "⚡", "security": "🔒", "uat": "👤"}
-        
-        for run in self.test_runs[-4:]:
-            t_icon = type_icons.get(run.test_type.value, "🧪")
-            pass_rate = (run.passed / run.total_tests * 100) if run.total_tests else 0
-            bar = "█" * int(pass_rate / 20) + "░" * (5 - int(pass_rate / 20))
+        for r in self.test_runs[-3:]:
+            rate = (r.passed / r.total_tests * 100) if r.total_tests else 0
+            lines.append(f"║    🔬 {r.project[:15]:<15} │ {r.test_type.value:<12} │ {rate:>5.1f}% pass  ║")
             
-            lines.append(f"║  {t_icon} {run.project[:12]:<12} │ {bar} │ {run.passed}/{run.total_tests} ({pass_rate:.0f}%)  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 BY SEVERITY                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for sev in BugSeverity:
-            count = sum(1 for b in self.get_open_bugs() if b.severity == sev)
-            icon = severity_icons.get(sev.value, "⚪")
-            lines.append(f"║    {icon} {sev.value.capitalize():<12} │ {count:>2} open bugs                ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [🐛 Report Bug]  [🧪 Run Tests]  [📊 Metrics]            ║",
+            "║  [🐛 Report Bug]  [🧪 Run Suite]  [📊 Coverage]  [⚙️]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Quality first!                   ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Quality!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    qa = QAEngineer("Saigon Digital Hub")
-    
-    print("🧪 QA Engineer")
+    print("🧪 Initializing QA System...")
     print("=" * 60)
-    print()
     
-    # Report bugs
-    b1 = qa.report_bug("Website", "Login button not working", BugSeverity.CRITICAL, "Sarah")
-    b2 = qa.report_bug("Portal", "Slow loading on mobile", BugSeverity.HIGH, "Mike")
-    b3 = qa.report_bug("API", "Typo in error message", BugSeverity.LOW, "Alex")
-    
-    qa.update_bug(b1, BugStatus.IN_PROGRESS, "Tom")
-    qa.update_bug(b3, BugStatus.CLOSED)
-    
-    # Run tests
-    qa.run_tests("Website", TestType.UNIT, 150, 145, 5, 30)
-    qa.run_tests("Website", TestType.E2E, 50, 48, 2, 180)
-    qa.run_tests("API", TestType.INTEGRATION, 80, 80, 0, 60)
-    
-    print(qa.format_dashboard())
+    try:
+        qa_system = QAEngineer("Saigon Digital Hub")
+        # Seed
+        qa_system.report_defect("Main Web", "Login Timeout", BugSeverity.HIGH)
+        qa_system.run_suite("Portal", TestType.UNIT, 95, 5)
+        
+        print("\n" + qa_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"QA Error: {e}")

@@ -12,15 +12,20 @@ Roles:
 - Brand reputation
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class PRActivityType(Enum):
-    """PR activity types."""
+    """Categories of PR activities."""
     PRESS_RELEASE = "press_release"
     MEDIA_PITCH = "media_pitch"
     INTERVIEW_ARRANGE = "interview_arrange"
@@ -30,7 +35,7 @@ class PRActivityType(Enum):
 
 
 class PRStatus(Enum):
-    """PR activity status."""
+    """Lifecycle status of a PR campaign."""
     PLANNED = "planned"
     IN_PROGRESS = "in_progress"
     SENT = "sent"
@@ -41,7 +46,7 @@ class PRStatus(Enum):
 
 @dataclass
 class MediaContact:
-    """A media contact."""
+    """A media outlet contact record entity."""
     id: str
     name: str
     outlet: str
@@ -49,10 +54,14 @@ class MediaContact:
     beat: str
     last_contact: Optional[datetime] = None
 
+    def __post_init__(self):
+        if not self.email or "@" not in self.email:
+            raise ValueError(f"Invalid contact email: {self.email}")
+
 
 @dataclass
 class PRActivity:
-    """A PR activity."""
+    """A specific PR campaign or initiative entity."""
     id: str
     title: str
     client: str
@@ -62,18 +71,23 @@ class PRActivity:
     coverage_count: int = 0
     specialist: str = ""
 
+    def __post_init__(self):
+        if not self.title or not self.client:
+            raise ValueError("Title and client are required")
+
 
 class PRSpecialist:
     """
-    Public Relations Specialist.
+    PR Specialist System.
     
-    PR and media relations.
+    Orchestrates media relations, outreach campaigns, and reputation management.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.activities: Dict[str, PRActivity] = {}
         self.contacts: Dict[str, MediaContact] = {}
+        logger.info(f"PR Specialist initialized for {agency_name}")
     
     def add_contact(
         self,
@@ -82,106 +96,71 @@ class PRSpecialist:
         email: str,
         beat: str
     ) -> MediaContact:
-        """Add a media contact."""
+        """Register a new journalist or media influencer."""
         contact = MediaContact(
             id=f"MC-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            outlet=outlet,
-            email=email,
-            beat=beat
+            name=name, outlet=outlet, email=email, beat=beat
         )
         self.contacts[contact.id] = contact
+        logger.info(f"Media contact added: {name} ({outlet})")
         return contact
     
-    def create_activity(
+    def create_campaign(
         self,
         title: str,
         client: str,
-        activity_type: PRActivityType,
-        specialist: str = ""
+        act_type: PRActivityType,
+        specialist: str = "Expert AI"
     ) -> PRActivity:
-        """Create a PR activity."""
+        """Initialize a new PR activity."""
         activity = PRActivity(
             id=f"PR-{uuid.uuid4().hex[:6].upper()}",
-            title=title,
-            client=client,
-            activity_type=activity_type,
-            specialist=specialist
+            title=title, client=client,
+            activity_type=act_type, specialist=specialist
         )
         self.activities[activity.id] = activity
+        logger.info(f"PR Campaign created: {title} for {client}")
         return activity
     
-    def record_coverage(self, activity: PRActivity):
-        """Record media coverage."""
-        activity.coverage_count += 1
-        if activity.coverage_count > 0:
-            activity.status = PRStatus.PICKED_UP
-    
-    def update_status(self, activity: PRActivity, status: PRStatus):
-        """Update activity status."""
-        activity.status = status
+    def record_coverage(self, activity_id: str):
+        """Log a successful media hit."""
+        if activity_id in self.activities:
+            self.activities[activity_id].coverage_count += 1
+            self.activities[activity_id].status = PRStatus.PICKED_UP
+            logger.info(f"Coverage recorded for {activity_id}")
     
     def get_coverage_stats(self) -> Dict[str, int]:
-        """Get coverage statistics."""
+        """Aggregate total media hits across all campaigns."""
         total = sum(a.coverage_count for a in self.activities.values())
-        by_type = {}
-        for atype in PRActivityType:
-            by_type[atype.value] = sum(
-                a.coverage_count for a in self.activities.values() 
-                if a.activity_type == atype
-            )
-        return {"total": total, "by_type": by_type}
+        return {"total": total}
     
     def format_dashboard(self) -> str:
-        """Format PR dashboard."""
+        """Render the PR Specialist Dashboard."""
         stats = self.get_coverage_stats()
-        active = sum(1 for a in self.activities.values() if a.status != PRStatus.COMPLETED)
+        active = [a for a in self.activities.values() if a.status != PRStatus.COMPLETED]
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎙️ PR SPECIALIST                                         ║",
-            f"║  {len(self.activities)} activities │ {stats['total']} coverage │ {len(self.contacts)} contacts   ║",
+            f"║  🎙️ PR SPECIALIST DASHBOARD{' ' * 32}║",
+            f"║  {len(self.activities)} activities │ {stats['total']} total hits │ {len(self.contacts)} contacts{' ' * 12}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 ACTIVE CAMPAIGNS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"press_release": "📰", "media_pitch": "📧", "interview_arrange": "🎤",
-                     "crisis_response": "🚨", "event_pr": "🎉", "influencer": "⭐"}
-        status_icons = {"planned": "📋", "in_progress": "🔄", "sent": "📤",
-                       "picked_up": "✅", "published": "🚀", "completed": "🏆"}
+        type_icons = {PRActivityType.PRESS_RELEASE: "📰", PRActivityType.MEDIA_PITCH: "📧", PRActivityType.INTERVIEW_ARRANGE: "🎤"}
         
-        for activity in list(self.activities.values())[:5]:
-            t_icon = type_icons.get(activity.activity_type.value, "📋")
-            s_icon = status_icons.get(activity.status.value, "⚪")
+        for a in active[:5]:
+            icon = type_icons.get(a.activity_type, "📋")
+            s_icon = "✅" if a.status == PRStatus.PICKED_UP else "🔄"
+            title_disp = (a.title[:20] + '..') if len(a.title) > 22 else a.title
+            lines.append(f"║  {s_icon} {icon} {title_disp:<22} │ {a.coverage_count:>2} hits │ {a.client[:8]:<8}  ║")
             
-            lines.append(f"║  {s_icon} {t_icon} {activity.title[:20]:<20} │ {activity.coverage_count:>2} hits │ {activity.client[:8]:<8}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 MEDIA CONTACTS                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for contact in list(self.contacts.values())[:3]:
-            lines.append(f"║    📇 {contact.name[:15]:<15} │ {contact.outlet[:20]:<20}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📈 COVERAGE BY TYPE                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for atype in list(PRActivityType)[:3]:
-            count = stats["by_type"].get(atype.value, 0)
-            icon = type_icons.get(atype.value, "📋")
-            lines.append(f"║    {icon} {atype.value.replace('_', ' ').title():<18} │ {count:>2} coverage          ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [📰 Press Release]  [📧 Pitch]  [📊 Report]              ║",
+            "║  [📰 Release]  [📧 Pitch]  [📊 Coverage Report]  [⚙️]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Reputation that shines!          ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Reputation!        ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -190,25 +169,17 @@ class PRSpecialist:
 
 # Example usage
 if __name__ == "__main__":
-    pr = PRSpecialist("Saigon Digital Hub")
-    
-    print("🎙️ PR Specialist")
+    print("🎙️ Initializing PR Specialist...")
     print("=" * 60)
-    print()
     
-    # Add contacts
-    pr.add_contact("Nguyen Van A", "VN Express", "a@vnexpress.vn", "Business")
-    pr.add_contact("Tran Thi B", "Forbes VN", "b@forbes.vn", "Tech")
-    
-    # Create activities
-    a1 = pr.create_activity("Office Launch PR", "Sunrise Realty", PRActivityType.PRESS_RELEASE, "Lisa")
-    a2 = pr.create_activity("CEO Interview", "Coffee Lab", PRActivityType.INTERVIEW_ARRANGE, "Tom")
-    a3 = pr.create_activity("Product Launch", "Tech Startup", PRActivityType.MEDIA_PITCH, "Lisa")
-    
-    # Record coverage
-    pr.record_coverage(a1)
-    pr.record_coverage(a1)
-    pr.record_coverage(a3)
-    pr.update_status(a2, PRStatus.IN_PROGRESS)
-    
-    print(pr.format_dashboard())
+    try:
+        pr_system = PRSpecialist("Saigon Digital Hub")
+        # Seed
+        c = pr_system.add_contact("Nguyen A", "VN Express", "a@vn.vn", "Tech")
+        a = pr_system.create_campaign("Big Launch", "Sunrise", PRActivityType.PRESS_RELEASE)
+        pr_system.record_coverage(a.id)
+        
+        print("\n" + pr_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"PR Error: {e}")

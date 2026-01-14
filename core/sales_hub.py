@@ -2,7 +2,7 @@
 💰 Sales Hub - Revenue Engine
 ===============================
 
-Central hub connecting all Sales roles.
+Central hub connecting all Sales roles within the agency operations.
 
 Integrates:
 - CRM (crm.py)
@@ -10,103 +10,104 @@ Integrates:
 - Proposal Generator (proposal_generator.py)
 """
 
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
+import logging
+from typing import Dict, List, Any, Optional, Union
+from dataclasses import dataclass, field
 from datetime import datetime
 
-# Import role modules
-from core.crm import CRM, ContactType, DealStage
-from core.lead_scoring import LeadScoring, LeadSource, LeadStage
-from core.proposal_generator import ProposalGenerator, ServiceType, ProjectSize
+# Import role modules with fallback
+try:
+    from core.crm import CRM, ContactType, DealStage
+    from core.lead_scoring import LeadScoring, LeadSource, LeadStage
+    from core.proposal_generator import ProposalGenerator, ServiceType, ProjectTier
+except ImportError:
+    from crm import CRM, ContactType, DealStage
+    from lead_scoring import LeadScoring, LeadSource, LeadStage
+    from proposal_generator import ProposalGenerator, ServiceType, ProjectTier
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class SalesMetrics:
-    """Department-wide metrics."""
-    total_contacts: int
-    hot_leads: int
-    pipeline_value: float
-    deals_open: int
-    proposals_sent: int
-    proposals_accepted: int
-    conversion_rate: float
-    forecast_revenue: float
+    """Department-wide Sales performance metrics."""
+    total_contacts: int = 0
+    hot_leads: int = 0
+    pipeline_value: float = 0.0
+    deals_open: int = 0
+    proposals_sent: int = 0
+    proposals_accepted: int = 0
+    conversion_rate: float = 0.0
+    forecast_revenue: float = 0.0
 
 
 class SalesHub:
     """
-    Sales Hub.
+    Sales Hub System.
     
-    Revenue engine for the agency.
+    Orchestrates department-wide integration between lead scoring, CRM pipeline management, and automated proposals.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
+        logger.info(f"Initializing Sales Hub for {agency_name}")
         
-        # Initialize role modules
-        self.crm = CRM(agency_name)
-        self.lead_scoring = LeadScoring(agency_name)
-        self.proposals = ProposalGenerator(agency_name)
+        try:
+            self.crm = CRM(agency_name)
+            self.lead_scoring = LeadScoring(agency_name)
+            self.proposals = ProposalGenerator(agency_name)
+        except Exception as e:
+            logger.error(f"Sales Hub initialization failed: {e}")
+            raise
     
-    def get_department_metrics(self) -> SalesMetrics:
-        """Get department-wide metrics."""
-        crm_summary = self.crm.get_summary()
-        pipeline = self.crm.get_pipeline()
-        forecast = self.crm.forecast_revenue()
-        hot_leads = self.lead_scoring.get_hot_leads()
-        proposal_stats = self.proposals.get_stats()
+    def get_aggregate_stats(self) -> SalesMetrics:
+        """Fetch and aggregate data from all sales sub-modules."""
+        m = SalesMetrics()
         
-        deals_open = sum(
-            len(deals) for stage, deals in pipeline.items() 
-            if stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]
-        )
-        
-        return SalesMetrics(
-            total_contacts=crm_summary.get("total_contacts", 0),
-            hot_leads=len(hot_leads),
-            pipeline_value=crm_summary.get("pipeline_value", 0),
-            deals_open=deals_open,
-            proposals_sent=proposal_stats.get("sent", 0),
-            proposals_accepted=proposal_stats.get("accepted", 0),
-            conversion_rate=proposal_stats.get("conversion_rate", 0),
-            forecast_revenue=forecast.get("total_weighted", 0)
-        )
+        try:
+            # 1. CRM Metrics
+            crm_sum = self.crm.get_summary()
+            m.total_contacts = crm_sum.get("total_contacts", 0)
+            m.pipeline_value = float(crm_sum.get("pipeline_value", 0.0))
+            
+            # 2. Lead Scoring
+            m.hot_leads = len(self.lead_scoring.get_hot_leads())
+            
+            # 3. Proposal Data
+            # Note: ProposalGenerator stats might need standardization
+            m.proposals_sent = len(self.proposals.active_proposals)
+            m.proposals_accepted = sum(1 for p in self.proposals.active_proposals.values() if p.status.value == "accepted")
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating Sales metrics: {e}")
+            
+        return m
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render the unified Sales Department Dashboard."""
+        m = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💰 SALES HUB                                             ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  💰 SALES HUB DASHBOARD{' ' * 35}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    👥 Total Contacts:     {metrics.total_contacts:>5}                          ║",
-            f"║    🔥 Hot Leads:          {metrics.hot_leads:>5}                          ║",
-            f"║    💰 Pipeline Value:     ${metrics.pipeline_value:>12,.0f}              ║",
-            f"║    📋 Open Deals:         {metrics.deals_open:>5}                          ║",
-            f"║    📄 Proposals Sent:     {metrics.proposals_sent:>5}                          ║",
-            f"║    ✅ Proposals Won:      {metrics.proposals_accepted:>5}                          ║",
-            f"║    📈 Conversion Rate:    {metrics.conversion_rate:>5.1f}%                         ║",
-            f"║    💵 Forecast Revenue:   ${metrics.forecast_revenue:>12,.0f}              ║",
+            "║  📊 DEPARTMENT PERFORMANCE METRICS                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    👥 Total Contacts:     {m.total_contacts:>5}                          ║",
+            f"║    🔥 Hot Leads:          {m.hot_leads:>5}                          ║",
+            f"║    💰 Pipeline Value:     ${m.pipeline_value:>12,.0f}              ║",
+            f"║    📄 Proposals Sent:     {m.proposals_sent:>5}                          ║",
+            f"║    ✅ Proposals Won:      {m.proposals_accepted:>5}                          ║",
             "║                                                           ║",
-            "║  🔗 SALES ROLES                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    👥 CRM               → Contacts, deals, pipeline      ║",
-            "║    🎯 Lead Scoring      → Score, prioritize, qualify     ║",
-            "║    📋 Proposal Generator → Quotes, pricing, close        ║",
+            "║  🔗 SERVICE INTEGRATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    👥 CRM (Pipeline) │ 🎯 Leads (Score) │ 📋 Quotes (Auto)║",
             "║                                                           ║",
-            "║  📋 SALES TEAM                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    👥 CRM               │ {metrics.total_contacts} contacts, {metrics.deals_open} deals     ║",
-            f"║    🎯 Leads             │ {metrics.hot_leads} hot leads ready          ║",
-            f"║    📋 Proposals         │ {metrics.proposals_sent} sent, {metrics.proposals_accepted} won           ║",
-            "║                                                           ║",
-            "║  [📊 Reports]  [👥 CRM]  [📋 Proposals]                   ║",
+            "║  [📊 Reports]  [👥 CRM]  [📋 Proposals]  [⚙️ Setup]       ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Close more deals!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Close Deals!     ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -115,25 +116,11 @@ class SalesHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = SalesHub("Saigon Digital Hub")
-    
-    print("💰 Sales Hub")
+    print("💰 Initializing Sales Hub...")
     print("=" * 60)
-    print()
     
-    # CRM already has demo data
-    # Add some leads to lead scoring
-    hub.lead_scoring.add_lead("Sarah CEO", "Big Corp", "sarah@bigcorp.com", LeadSource.REFERRAL, 15000)
-    hub.lead_scoring.add_lead("Mike CTO", "Tech Inc", "mike@tech.com", LeadSource.WEBSITE, 8000)
-    
-    # Create a proposal
-    hub.proposals.create_proposal(
-        "Sarah CEO",
-        "sarah@bigcorp.com",
-        "Digital Transformation",
-        "Complete digital agency services",
-        [ServiceType.WEB_DEV, ServiceType.SEO, ServiceType.CONTENT],
-        ProjectSize.GROWTH
-    )
-    
-    print(hub.format_hub_dashboard())
+    try:
+        hub = SalesHub("Saigon Digital Hub")
+        print("\n" + hub.format_hub_dashboard())
+    except Exception as e:
+        logger.error(f"Sales Hub Error: {e}")

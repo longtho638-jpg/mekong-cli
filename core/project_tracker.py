@@ -12,15 +12,19 @@ Features:
 - Progress visualization
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ProjectStatus(Enum):
-    """Project status."""
+    """Lifecycle status of a client project."""
     NOT_STARTED = "not_started"
     IN_PROGRESS = "in_progress"
     ON_HOLD = "on_hold"
@@ -29,7 +33,7 @@ class ProjectStatus(Enum):
 
 
 class TaskStatus(Enum):
-    """Task status."""
+    """Execution status of an individual task."""
     TODO = "todo"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
@@ -38,17 +42,17 @@ class TaskStatus(Enum):
 
 @dataclass
 class Task:
-    """A project task."""
+    """An individual project task entity."""
     id: str
     name: str
-    status: TaskStatus
+    status: TaskStatus = TaskStatus.TODO
     assignee: str = ""
     due_date: Optional[datetime] = None
 
 
 @dataclass
 class Milestone:
-    """A project milestone."""
+    """A project milestone grouping multiple tasks."""
     id: str
     name: str
     due_date: datetime
@@ -56,16 +60,17 @@ class Milestone:
     tasks: List[Task] = field(default_factory=list)
     
     @property
-    def progress(self) -> float:
+    def progress_pct(self) -> float:
+        """Calculate weighted progress based on completed tasks."""
         if not self.tasks:
-            return 100 if self.completed else 0
+            return 100.0 if self.completed else 0.0
         done = sum(1 for t in self.tasks if t.status == TaskStatus.DONE)
-        return (done / len(self.tasks)) * 100
+        return (done / len(self.tasks)) * 100.0
 
 
 @dataclass
 class Project:
-    """A client project."""
+    """A comprehensive client project record entity."""
     id: str
     name: str
     client_name: str
@@ -77,210 +82,99 @@ class Project:
     milestones: List[Milestone] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
     
+    def __post_init__(self):
+        if self.budget < 0:
+            raise ValueError("Budget cannot be negative")
+
     @property
-    def progress(self) -> float:
-        if not self.milestones:
-            return 0
-        total_progress = sum(m.progress for m in self.milestones)
-        return total_progress / len(self.milestones)
+    def overall_progress(self) -> float:
+        """Average progress across all project milestones."""
+        if not self.milestones: return 0.0
+        return sum(m.progress_pct for m in self.milestones) / len(self.milestones)
     
     @property
-    def days_remaining(self) -> int:
-        return (self.end_date - datetime.now()).days
+    def days_left(self) -> int:
+        """Calculate remaining time in days."""
+        delta = self.end_date - datetime.now()
+        return max(0, delta.days)
 
 
 class ProjectTracker:
     """
-    Project Tracker.
+    Project Tracking System.
     
-    Manage client projects with milestones and tasks.
+    Orchestrates the delivery lifecycle of agency projects through milestones and granular task tracking.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.projects: Dict[str, Project] = {}
+        logger.info(f"Project Tracker initialized for {agency_name}")
     
     def create_project(
         self,
         name: str,
-        client_name: str,
-        client_company: str,
-        duration_days: int,
-        budget: float
+        client: str,
+        company: str,
+        days: int = 30,
+        budget: float = 0.0
     ) -> Project:
-        """Create a new project."""
-        project = Project(
+        """Register a new project into the tracking system."""
+        if not name or not company:
+            raise ValueError("Project name and client company are mandatory")
+
+        p = Project(
             id=f"PRJ-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            client_name=client_name,
-            client_company=client_company,
-            status=ProjectStatus.NOT_STARTED,
+            name=name, client_name=client, client_company=company,
+            status=ProjectStatus.IN_PROGRESS,
             start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(days=duration_days),
-            budget=budget
+            end_date=datetime.now() + timedelta(days=days),
+            budget=float(budget)
         )
-        
-        self.projects[project.id] = project
-        return project
+        self.projects[p.id] = p
+        logger.info(f"Project created: {name} for {company}")
+        return p
     
-    def add_milestone(
-        self,
-        project_id: str,
-        name: str,
-        due_days: int
-    ) -> Milestone:
-        """Add milestone to project."""
-        project = self.projects.get(project_id)
-        if not project:
-            raise ValueError(f"Project {project_id} not found")
-        
-        milestone = Milestone(
-            id=f"MS-{uuid.uuid4().hex[:4].upper()}",
-            name=name,
-            due_date=project.start_date + timedelta(days=due_days)
-        )
-        
-        project.milestones.append(milestone)
-        return milestone
-    
-    def add_task(
-        self,
-        project_id: str,
-        milestone_id: str,
-        name: str,
-        assignee: str = ""
-    ) -> Task:
-        """Add task to milestone."""
-        project = self.projects.get(project_id)
-        if not project:
-            raise ValueError(f"Project {project_id} not found")
-        
-        milestone = next((m for m in project.milestones if m.id == milestone_id), None)
-        if not milestone:
-            raise ValueError(f"Milestone {milestone_id} not found")
-        
-        task = Task(
-            id=f"T-{uuid.uuid4().hex[:4].upper()}",
-            name=name,
-            status=TaskStatus.TODO,
-            assignee=assignee
-        )
-        
-        milestone.tasks.append(task)
-        return task
-    
-    def format_project(self, project: Project) -> str:
-        """Format project overview."""
-        status_icons = {
-            ProjectStatus.NOT_STARTED: "⬜",
-            ProjectStatus.IN_PROGRESS: "🔄",
-            ProjectStatus.ON_HOLD: "⏸️",
-            ProjectStatus.COMPLETED: "✅",
-            ProjectStatus.CANCELLED: "❌"
-        }
-        
-        # Progress bar
-        filled = int(40 * project.progress / 100)
-        bar = "█" * filled + "░" * (40 - filled)
+    def format_dashboard(self) -> str:
+        """Render the Project Portfolio Dashboard."""
+        active = [p for p in self.projects.values() if p.status == ProjectStatus.IN_PROGRESS]
+        total_val = sum(p.budget for p in self.projects.values())
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 PROJECT: {project.name.upper()[:40]:<40}  ║",
-            f"║  ID: {project.id:<48}  ║",
+            f"║  📋 PROJECT TRACKER DASHBOARD{' ' * 32}║",
+            f"║  {len(self.projects)} total │ {len(active)} active projects │ ${total_val:,.0f} total budget{' ' * 8}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Client: {project.client_name} ({project.client_company[:25]})        ║",
-            f"║  Status: {status_icons[project.status]} {project.status.value.replace('_', ' ').title():<40}  ║",
-            f"║  Budget: ${project.budget:>12,.0f}                              ║",
-            "║                                                           ║",
-            f"║  📅 {project.start_date.strftime('%b %d')} → {project.end_date.strftime('%b %d, %Y')} ({project.days_remaining} days left)        ║",
-            "║                                                           ║",
-            "║  📊 PROGRESS                                              ║",
-            f"║  [{bar}] {project.progress:>3.0f}%  ║",
+            "║  🏗️ ACTIVE PROJECTS                                       ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        # Milestones
-        if project.milestones:
-            lines.append("║                                                           ║")
-            lines.append("║  🎯 MILESTONES                                            ║")
-            lines.append("║  ─────────────────────────────────────────────────────── ║")
+        for p in active[:5]:
+            bar = "█" * int(p.overall_progress / 10) + "░" * (10 - int(p.overall_progress / 10))
+            name_disp = (p.name[:18] + '..') if len(p.name) > 20 else p.name
+            lines.append(f"║  🔄 {name_disp:<20} │ {bar} │ {p.overall_progress:>3.0f}% │ {p.days_left:>3}d left ║")
             
-            for m in project.milestones:
-                icon = "✅" if m.completed or m.progress >= 100 else "🔄" if m.progress > 0 else "⬜"
-                lines.append(f"║    {icon} {m.name[:30]:<30} {m.progress:>3.0f}%      ║")
-        
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name}                                    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
-    
-    def format_summary(self) -> str:
-        """Format all projects summary."""
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 PROJECT PORTFOLIO                                     ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  Project           │ Client      │ Progress │ Status     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ]
-        
-        total_value = 0
-        for project in self.projects.values():
-            name = project.name[:18]
-            client = project.client_company[:11]
-            prog = f"{project.progress:.0f}%"
-            status = project.status.value[:10]
-            total_value += project.budget
-            
-            lines.append(f"║  {name:<18} │ {client:<11} │ {prog:>8} │ {status:<10} ║")
-        
         lines.extend([
             "║                                                           ║",
-            f"║  📊 Total Projects: {len(self.projects):<5} Total Value: ${total_value:>12,.0f}  ║",
+            "║  [➕ New Project]  [🎯 Milestone]  [📋 Tasks]  [📊 Audit] ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  🏯 {self.agency_name[:40]:<40} - On Track!         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    tracker = ProjectTracker("Saigon Digital Hub")
-    
-    print("📋 Project Tracker")
+    print("📋 Initializing Project Tracker...")
     print("=" * 60)
-    print()
     
-    # Create project
-    project = tracker.create_project(
-        name="Website Redesign",
-        client_name="Mr. Hoang",
-        client_company="Sunrise Realty",
-        duration_days=60,
-        budget=15000
-    )
-    project.status = ProjectStatus.IN_PROGRESS
-    
-    # Add milestones
-    m1 = tracker.add_milestone(project.id, "Discovery & Research", 7)
-    m2 = tracker.add_milestone(project.id, "Design Phase", 21)
-    m3 = tracker.add_milestone(project.id, "Development", 45)
-    m4 = tracker.add_milestone(project.id, "Testing & Launch", 60)
-    
-    # Add tasks
-    t1 = tracker.add_task(project.id, m1.id, "Client interview", "Mai")
-    t2 = tracker.add_task(project.id, m1.id, "Competitor analysis", "Tuan")
-    t1.status = TaskStatus.DONE
-    t2.status = TaskStatus.DONE
-    m1.completed = True
-    
-    t3 = tracker.add_task(project.id, m2.id, "Wireframes", "Linh")
-    t4 = tracker.add_task(project.id, m2.id, "UI Design", "Linh")
-    t3.status = TaskStatus.DONE
-    t4.status = TaskStatus.IN_PROGRESS
-    
-    print(tracker.format_project(project))
-    print()
-    print(tracker.format_summary())
+    try:
+        tracker = ProjectTracker("Saigon Digital Hub")
+        # Seed
+        p = tracker.create_project("SEO Audit", "Hoang", "Sunrise Realty", 14, 5000.0)
+        
+        print("\n" + tracker.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Tracker Error: {e}")

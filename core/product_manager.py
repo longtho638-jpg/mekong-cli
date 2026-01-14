@@ -12,15 +12,19 @@ Roles:
 - Supplier relations
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ProductStatus(Enum):
-    """Product status."""
+    """Lifecycle status of a catalog product."""
     DRAFT = "draft"
     ACTIVE = "active"
     OUT_OF_STOCK = "out_of_stock"
@@ -28,7 +32,7 @@ class ProductStatus(Enum):
 
 
 class ProductCategory(Enum):
-    """Product categories."""
+    """Broad categories for product classification."""
     ELECTRONICS = "electronics"
     FASHION = "fashion"
     FOOD = "food"
@@ -39,7 +43,7 @@ class ProductCategory(Enum):
 
 @dataclass
 class Product:
-    """A product."""
+    """A single catalog product entity."""
     id: str
     store_id: str
     name: str
@@ -50,10 +54,16 @@ class Product:
     quantity: int
     status: ProductStatus = ProductStatus.DRAFT
 
+    def __post_init__(self):
+        if self.price < 0 or self.cost < 0:
+            raise ValueError("Financials cannot be negative")
+        if self.quantity < 0:
+            raise ValueError("Quantity cannot be negative")
+
 
 @dataclass
 class Supplier:
-    """A supplier."""
+    """A product sourcing partner entity."""
     id: str
     name: str
     contact: str
@@ -64,15 +74,16 @@ class Supplier:
 
 class ProductManager:
     """
-    Product Manager.
+    Product Manager System.
     
-    Manage product catalogs.
+    Orchestrates the lifecycle of e-commerce products, supplier relations, and inventory health.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.products: Dict[str, Product] = {}
         self.suppliers: Dict[str, Supplier] = {}
+        logger.info(f"Product Manager initialized for {agency_name}")
     
     def add_product(
         self,
@@ -83,129 +94,77 @@ class ProductManager:
         cost: float,
         quantity: int = 0
     ) -> Product:
-        """Add a product."""
-        product = Product(
+        """Register a new product in the catalog."""
+        if not store_id or not name:
+            raise ValueError("Store ID and Name are mandatory")
+
+        p = Product(
             id=f"PRD-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id,
-            name=name,
-            category=category,
+            store_id=store_id, name=name, category=category,
             sku=f"SKU-{uuid.uuid4().hex[:8].upper()}",
-            price=price,
-            cost=cost,
-            quantity=quantity
+            price=float(price), cost=float(cost), quantity=max(0, quantity)
         )
-        self.products[product.id] = product
-        return product
+        self.products[p.id] = p
+        logger.info(f"Product added: {name} (SKU: {p.sku})")
+        return p
     
-    def activate_product(self, product: Product):
-        """Activate a product."""
-        product.status = ProductStatus.ACTIVE
-    
-    def add_supplier(
-        self,
-        name: str,
-        contact: str,
-        lead_time: int = 7
-    ) -> Supplier:
-        """Add a supplier."""
-        supplier = Supplier(
-            id=f"SUP-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            contact=contact,
-            lead_time_days=lead_time
-        )
-        self.suppliers[supplier.id] = supplier
-        return supplier
-    
-    def get_margin_analysis(self) -> Dict[str, Any]:
-        """Get margin analysis."""
-        if not self.products:
-            return {}
-        
-        total_revenue = sum(p.price * p.quantity for p in self.products.values())
-        total_cost = sum(p.cost * p.quantity for p in self.products.values())
-        margin = ((total_revenue - total_cost) / total_revenue * 100) if total_revenue else 0
-        
-        return {
-            "total_products": len(self.products),
-            "total_revenue_potential": total_revenue,
-            "total_cost": total_cost,
-            "margin_percent": margin
-        }
+    def calculate_potential_margin(self) -> float:
+        """Derive aggregate profit margin for all inventoried products."""
+        rev = sum(p.price * p.quantity for p in self.products.values())
+        cost = sum(p.cost * p.quantity for p in self.products.values())
+        if rev <= 0: return 0.0
+        return ((rev - cost) / rev) * 100.0
     
     def format_dashboard(self) -> str:
-        """Format product manager dashboard."""
-        analysis = self.get_margin_analysis()
-        active = sum(1 for p in self.products.values() if p.status == ProductStatus.ACTIVE)
+        """Render the Product Manager Dashboard."""
+        margin = self.calculate_potential_margin()
+        active = [p for p in self.products.values() if p.status == ProductStatus.ACTIVE]
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📦 PRODUCT MANAGER                                       ║",
-            f"║  {len(self.products)} products │ {len(self.suppliers)} suppliers │ {analysis.get('margin_percent', 0):.0f}% margin  ║",
+            f"║  📦 PRODUCT MANAGER DASHBOARD{' ' * 31}║",
+            f"║  {len(self.products)} products │ {len(self.suppliers)} suppliers │ {margin:.1f}% potential margin{' ' * 8}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📋 PRODUCT CATALOG                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📋 CORE CATALOG                                          ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        status_icons = {"draft": "📝", "active": "✅", "out_of_stock": "❌", "discontinued": "🚫"}
-        
-        for product in list(self.products.values())[:5]:
-            icon = status_icons.get(product.status.value, "⚪")
-            margin = ((product.price - product.cost) / product.price * 100) if product.price else 0
+        for p in list(self.products.values())[:5]:
+            stat_icon = "✅" if p.status == ProductStatus.ACTIVE else "📝"
+            lines.append(f"║  {stat_icon} {p.name[:18]:<18} │ ${p.price:>10,.2f} │ Qty: {p.quantity:>4}  ║")
             
-            lines.append(f"║  {icon} {product.name[:18]:<18} │ ${product.price:>6.0f} │ {margin:>3.0f}% │ {product.quantity:>3} qty  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 BY CATEGORY                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🏭 ACTIVE SUPPLIERS                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        cat_icons = {"electronics": "📱", "fashion": "👗", "food": "🍕",
-                    "beauty": "💄", "home": "🏠", "other": "📦"}
-        
-        for cat in list(ProductCategory)[:4]:
-            count = sum(1 for p in self.products.values() if p.category == cat)
-            icon = cat_icons.get(cat.value, "📦")
-            lines.append(f"║    {icon} {cat.value.title():<15} │ {count:>3} products                  ║")
-        
+        for s in list(self.suppliers.values())[:3]:
+            stars = "★" * s.rating + "☆" * (5 - s.rating)
+            lines.append(f"║    📦 {s.name[:15]:<15} │ {stars} │ {s.lead_time_days:>2} days lead  ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  🏭 SUPPLIERS                                             ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for supplier in list(self.suppliers.values())[:3]:
-            stars = "⭐" * supplier.rating
-            lines.append(f"║    📦 {supplier.name[:15]:<15} │ {stars:<5} │ {supplier.lead_time_days:>2} days        ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Add Product]  [🏭 Suppliers]  [📊 Analysis]          ║",
+            "║  [➕ Product]  [🏭 Suppliers]  [📊 Analysis]  [⚙️ Setup]  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Products that sell!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Selling!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    pm = ProductManager("Saigon Digital Hub")
-    
-    print("📦 Product Manager")
+    print("📦 Initializing Product Manager...")
     print("=" * 60)
-    print()
     
-    p1 = pm.add_product("STR-001", "Premium Coffee Beans", ProductCategory.FOOD, 25, 12, 100)
-    p2 = pm.add_product("STR-001", "Coffee Mug Set", ProductCategory.HOME, 35, 15, 50)
-    p3 = pm.add_product("STR-002", "Designer T-Shirt", ProductCategory.FASHION, 45, 18, 75)
-    
-    pm.activate_product(p1)
-    pm.activate_product(p2)
-    
-    pm.add_supplier("Vietnam Coffee Co", "info@vncoffee.vn", 5)
-    pm.add_supplier("Fashion Wholesale", "sales@fashion.com", 10)
-    
-    print(pm.format_dashboard())
+    try:
+        pm_system = ProductManager("Saigon Digital Hub")
+        # Seed
+        pm_system.add_product("S1", "Coffee Beans", ProductCategory.FOOD, 25.0, 12.0, 100)
+        pm_system.suppliers["S1"] = Supplier("SUP-1", "VNCoffee", "info@vn.co")
+        
+        print("\n" + pm_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Product Error: {e}")
