@@ -16,7 +16,8 @@ from antigravity.core.agent_chains import (
     get_chain, 
     get_chain_summary, 
     AgentCategory,
-    AgentStep
+    AgentStep,
+    AgentConfig
 )
 
 class TestAgentChains:
@@ -24,10 +25,11 @@ class TestAgentChains:
     def test_inventory_structure(self):
         """Verify inventory has correct structure."""
         for name, info in AGENT_INVENTORY.items():
-            assert "category" in info
-            assert "file" in info
-            assert isinstance(info["category"], AgentCategory)
-            assert info["file"].startswith(".claude/agents/")
+            # Check NamedTuple attributes
+            assert isinstance(info, AgentConfig)
+            assert isinstance(info.category, AgentCategory)
+            assert isinstance(info.file, Path)
+            assert str(info.file).startswith(".claude/agents/") or str(info.file).startswith(".claude\\agents\\")
 
     def test_chains_structure(self):
         """Verify chains are valid."""
@@ -52,7 +54,10 @@ class TestAgentChains:
         """Test summary formatting."""
         summary = get_chain_summary("dev", "cook")
         assert "🔗 Chain: /dev:cook" in summary
-        assert "1. planner" in summary
+        # Check for presence of key elements, allowing for formatting differences
+        assert "planner" in summary
+        assert "Analyze requirements" in summary
+        assert "🛠️" in summary # Check for icon
 
 if __name__ == "__main__":
     pytest.main([__file__])

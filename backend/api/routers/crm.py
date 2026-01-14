@@ -2,12 +2,18 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/api/crm", tags=["CRM"])
 
+# Safe import with None check
+CRM_AVAILABLE = False
+crm = None
+
 try:
     from core import CRM
-    crm = CRM()
-    CRM_AVAILABLE = True
-except ImportError:
+    if CRM is not None:
+        crm = CRM()
+        CRM_AVAILABLE = True
+except (ImportError, TypeError, Exception):
     CRM_AVAILABLE = False
+    crm = None
 
 @router.get("/summary")
 def get_crm_summary():
