@@ -1,0 +1,49 @@
+{
+  "data": {
+    "strength": 37,
+    "metrics": {
+      "projects": 50,
+      "clients": 25,
+      "quotes": 100,
+      "invoices": 200,
+      "total_revenue": 0,
+      "years_of_data": 0
+    }
+  },
+  "learning": {
+    "strength": 59,
+    "metrics": {
+      "patterns_learned": 300,
+      "success_rate": 0.9999999377408997,
+      "custom_agents": 0,
+      "commands_run": 300
+    }
+  },
+  "network": {
+    "strength": 15,
+    "metrics": {
+      "collaborators": 2,
+      "referral_partners": 1,
+      "shared_skills": 0,
+      "community_reputation": "Bronze"
+    }
+  },
+  "workflow": {
+    "strength": 30,
+    "metrics": {
+      "custom_workflows": 2,
+      "custom_agents": 0,
+      "integrations": 1,
+      "hours_saved_monthly": 0
+    }
+  },
+  "identity": {
+    "strength": 75,
+    "metrics": {
+      "brand_configured": true,
+      "pricing_tiers": 3,
+      "templates": 10,
+      "personas": 0
+    }
+  }
+}
