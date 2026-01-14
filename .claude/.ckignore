@@ -21,3 +21,7 @@ target
 # VCS & Coverage
 .git
 coverage
+
+# Allow reading these files
+!.env
+!.env.*
