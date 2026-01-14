@@ -1,8 +1,8 @@
 {
-  "version": "2.3.2",
-  "name": "claudekit-engineer",
-  "description": "A comprehensive boilerplate template for building professional software projects with CLI Coding Agents (Claude Code and Open Code).",
-  "buildDate": "2026-01-12T20:10:15.811Z",
+  "version": "3.1.0-vibe-coding",
+  "name": "antigravity-vibe-coding",
+  "description": "🏯 Antigravity VIBE CODING - Kiếm tiền dễ như ăn kẹo | AgencyOS + ClaudeKit-Engineer unified agentic framework",
+  "buildDate": "2026-01-14T13:30:00.000Z",
   "repository": {
     "type": "git",
     "url": "https://github.com/claudekit/claudekit-engineer.git"

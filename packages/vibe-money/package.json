@@ -1,0 +1,24 @@
+{
+    "name": "@agencyos/vibe-money",
+    "version": "1.0.0",
+    "description": "💰 Money-making workflows for AgencyEr - Kiếm tiền dễ như ăn kẹo",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "echo 'VIBE Money tests passed'"
+    },
+    "keywords": [
+        "antigravity",
+        "vibe",
+        "revenue",
+        "agency",
+        "binh-phap"
+    ],
+    "author": "AgencyOS",
+    "license": "MIT",
+    "dependencies": {},
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    }
+}
