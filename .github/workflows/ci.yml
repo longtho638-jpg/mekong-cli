@@ -1,13 +1,12 @@
-name: Deploy to Vercel
+name: CI Tests
 
 on:
   push:
     branches:
       - main
-
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  pull_request:
+    branches:
+      - main
 
 jobs:
   # ═══════════════════════════════════════════════════════════
@@ -80,40 +79,17 @@ jobs:
           
           # Allow pipeline to continue even if some optional modules fail
           if tests_passed >= 2:
-              print('✅ Minimum tests passed, continuing...')
+              print('✅ Minimum tests passed!')
               sys.exit(0)
           else:
               print('❌ Too many failures')
               sys.exit(1)
           "
 
-  # ═══════════════════════════════════════════════════════════
-  # Deploy to Vercel - Uses apps/web as root (matches Vercel config)
-  # ═══════════════════════════════════════════════════════════
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Pull Vercel Environment Information
-        working-directory: apps/web
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts  
-        working-directory: apps/web
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        working-directory: apps/web
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Summary
+        run: |
+          echo "## 🧪 CI Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Core Python tests completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> 📦 Deployment is handled directly by Vercel (not this workflow)" >> $GITHUB_STEP_SUMMARY
