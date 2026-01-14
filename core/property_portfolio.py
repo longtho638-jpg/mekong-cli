@@ -12,15 +12,19 @@ Roles:
 - Investment returns
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class AssetClass(Enum):
-    """Asset classes."""
+    """Broad categories for real estate assets."""
     RESIDENTIAL = "residential"
     COMMERCIAL = "commercial"
     INDUSTRIAL = "industrial"
@@ -29,7 +33,7 @@ class AssetClass(Enum):
 
 
 class AssetStatus(Enum):
-    """Asset status."""
+    """Operational status of a property asset."""
     HOLDING = "holding"
     RENTED = "rented"
     FOR_SALE = "for_sale"
@@ -39,161 +43,134 @@ class AssetStatus(Enum):
 
 @dataclass
 class PropertyAsset:
-    """A property asset."""
+    """A real estate asset entity record."""
     id: str
     owner_id: str
     name: str
     asset_class: AssetClass
     purchase_price: float
     current_value: float
-    rental_income: float = 0  # monthly
+    rental_income: float = 0.0
     status: AssetStatus = AssetStatus.HOLDING
     purchase_date: datetime = field(default_factory=datetime.now)
     location: str = ""
 
+    def __post_init__(self):
+        if self.purchase_price < 0 or self.current_value < 0:
+            raise ValueError("Valuation cannot be negative")
+
 
 @dataclass
 class PortfolioSummary:
-    """Portfolio summary."""
-    total_assets: int
-    total_value: float
-    total_rental: float
-    roi_percent: float
-    unrealized_gain: float
+    """High-level metrics for an asset collection."""
+    total_assets: int = 0
+    total_value: float = 0.0
+    total_rental: float = 0.0
+    roi_percent: float = 0.0
+    unrealized_gain: float = 0.0
 
 
 class PropertyPortfolio:
     """
-    Property Portfolio Manager.
+    Property Portfolio System.
     
-    Manage property portfolios.
+    Orchestrates the tracking of real estate assets, performance monitoring, and valuation reporting.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.assets: Dict[str, PropertyAsset] = {}
+        logger.info(f"Property Portfolio initialized for {agency_name}")
     
     def add_asset(
         self,
         owner_id: str,
         name: str,
-        asset_class: AssetClass,
-        purchase_price: float,
-        current_value: float,
+        a_class: AssetClass,
+        price: float,
+        value: float,
         location: str = "",
-        rental_income: float = 0
+        rental: float = 0.0
     ) -> PropertyAsset:
-        """Add a property asset."""
+        """Register a new asset into the portfolio tracking system."""
+        if not owner_id or not name:
+            raise ValueError("Owner ID and Asset Name are required")
+
         asset = PropertyAsset(
             id=f"AST-{uuid.uuid4().hex[:6].upper()}",
-            owner_id=owner_id,
-            name=name,
-            asset_class=asset_class,
-            purchase_price=purchase_price,
-            current_value=current_value,
-            rental_income=rental_income,
-            location=location
+            owner_id=owner_id, name=name, asset_class=a_class,
+            purchase_price=float(price), current_value=float(value),
+            rental_income=float(rental), location=location
         )
         self.assets[asset.id] = asset
+        logger.info(f"Asset registered: {name} (${value:,.0f})")
         return asset
     
-    def update_valuation(self, asset: PropertyAsset, new_value: float):
-        """Update asset valuation."""
-        asset.current_value = new_value
-    
-    def set_rental(self, asset: PropertyAsset, monthly_rent: float):
-        """Set rental income."""
-        asset.rental_income = monthly_rent
-        asset.status = AssetStatus.RENTED
-    
-    def get_portfolio_summary(self, owner_id: str = None) -> PortfolioSummary:
-        """Get portfolio summary."""
-        assets = self.assets.values() if not owner_id else [a for a in self.assets.values() if a.owner_id == owner_id]
+    def get_aggregate_summary(self) -> PortfolioSummary:
+        """Calculate performance across all tracked assets."""
+        if not self.assets: return PortfolioSummary()
         
-        total_value = sum(a.current_value for a in assets)
-        total_cost = sum(a.purchase_price for a in assets)
-        total_rental = sum(a.rental_income for a in assets)
-        unrealized_gain = total_value - total_cost
-        roi = (unrealized_gain / total_cost * 100) if total_cost else 0
+        total_v = sum(a.current_value for a in self.assets.values())
+        total_p = sum(a.purchase_price for a in self.assets.values())
+        total_r = sum(a.rental_income for a in self.assets.values())
+        gain = total_v - total_p
         
         return PortfolioSummary(
-            total_assets=len(list(assets)),
-            total_value=total_value,
-            total_rental=total_rental,
-            roi_percent=roi,
-            unrealized_gain=unrealized_gain
+            total_assets=len(self.assets),
+            total_value=total_v,
+            total_rental=total_r,
+            unrealized_gain=gain,
+            roi_percent=(gain / total_p * 100.0) if total_p > 0 else 0.0
         )
     
     def format_dashboard(self) -> str:
-        """Format portfolio dashboard."""
-        summary = self.get_portfolio_summary()
+        """Render the Property Portfolio Dashboard."""
+        s = self.get_aggregate_summary()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🏢 PROPERTY PORTFOLIO                                    ║",
-            f"║  {summary.total_assets} assets │ ${summary.total_value:,.0f} value │ {summary.roi_percent:+.1f}% ROI  ║",
+            f"║  🏢 PROPERTY PORTFOLIO DASHBOARD{' ' * 29}║",
+            f"║  {s.total_assets} assets │ ${s.total_value:,.0f} valuation │ {s.roi_percent:+.1f}% avg ROI{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 PORTFOLIO OVERVIEW                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    💰 Total Value:        ${summary.total_value:>15,.0f}       ║",
-            f"║    📈 Unrealized Gain:    ${summary.unrealized_gain:>15,.0f}       ║",
-            f"║    🏠 Monthly Rental:     ${summary.total_rental:>15,.0f}       ║",
-            f"║    📊 Portfolio ROI:      {summary.roi_percent:>15.1f}%       ║",
+            "║  📊 ASSET ALLOCATION & YIELD                              ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    💰 Total Value:        ${s.total_value:>15,.0f}       ║",
+            f"║    📈 Unrealized Gain:    ${s.unrealized_gain:>15,.0f}       ║",
+            f"║    🏠 Monthly Rental:     ${s.total_rental:>15,.0f}       ║",
             "║                                                           ║",
-            "║  🏠 ASSETS                                                ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🏠 CORE ASSET LIST                                       ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        class_icons = {"residential": "🏠", "commercial": "🏢", "industrial": "🏭",
-                      "mixed_use": "🏬", "land": "🌳"}
-        status_icons = {"holding": "📦", "rented": "🔑", "for_sale": "🏷️",
-                       "development": "🏗️", "sold": "✅"}
+        class_icons = {AssetClass.RESIDENTIAL: "🏠", AssetClass.COMMERCIAL: "🏢", AssetClass.LAND: "🌳"}
         
-        for asset in list(self.assets.values())[:5]:
-            c_icon = class_icons.get(asset.asset_class.value, "🏠")
-            s_icon = status_icons.get(asset.status.value, "⚪")
-            gain = asset.current_value - asset.purchase_price
-            gain_pct = (gain / asset.purchase_price * 100) if asset.purchase_price else 0
+        for a in list(self.assets.values())[:5]:
+            icon = class_icons.get(a.asset_class, "🏢")
+            gain = a.current_value - a.purchase_price
+            gain_pct = (gain / a.purchase_price * 100) if a.purchase_price else 0
+            lines.append(f"║  🟢 {icon} {a.name[:18]:<18} │ ${a.current_value:>10,.0f} │ {gain_pct:>+5.1f}% ║")
             
-            lines.append(f"║  {c_icon} {s_icon} {asset.name[:15]:<15} │ ${asset.current_value:>10,.0f} │ {gain_pct:>+5.1f}%  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 BY ASSET CLASS                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for aclass in list(AssetClass)[:4]:
-            count = sum(1 for a in self.assets.values() if a.asset_class == aclass)
-            value = sum(a.current_value for a in self.assets.values() if a.asset_class == aclass)
-            icon = class_icons.get(aclass.value, "🏠")
-            lines.append(f"║    {icon} {aclass.value.title():<12} │ {count:>2} │ ${value:>14,.0f}    ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Add Asset]  [📊 Valuation]  [📈 Performance]         ║",
+            "║  [➕ New Asset]  [📈 Revaluation]  [📂 Report]  [⚙️]      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Assets that grow!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Growth!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    portfolio = PropertyPortfolio("Saigon Digital Hub")
-    
-    print("🏢 Property Portfolio")
+    print("🏢 Initializing Portfolio System...")
     print("=" * 60)
-    print()
     
-    a1 = portfolio.add_asset("CLT-001", "D2 Villa Complex", AssetClass.RESIDENTIAL, 2000000, 2500000, "District 2", 8000)
-    a2 = portfolio.add_asset("CLT-001", "Office Tower A", AssetClass.COMMERCIAL, 5000000, 5800000, "District 1", 45000)
-    a3 = portfolio.add_asset("CLT-002", "Industrial Park", AssetClass.INDUSTRIAL, 3000000, 3200000, "Binh Duong", 25000)
-    a4 = portfolio.add_asset("CLT-002", "Development Land", AssetClass.LAND, 1000000, 1500000, "Thu Duc")
-    
-    portfolio.set_rental(a1, 8000)
-    portfolio.set_rental(a2, 45000)
-    
-    print(portfolio.format_dashboard())
+    try:
+        portfolio = PropertyPortfolio("Saigon Digital Hub")
+        # Seed
+        portfolio.add_asset("C1", "Villa District 2", AssetClass.RESIDENTIAL, 2000000.0, 2500000.0, "D2", 8000.0)
+        
+        print("\n" + portfolio.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Portfolio Error: {e}")

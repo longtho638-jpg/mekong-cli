@@ -12,15 +12,19 @@ Features:
 - Confidence intervals
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ForecastPeriod(Enum):
-    """Forecast periods."""
+    """Supported intervals for financial projections."""
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     YEARLY = "yearly"
@@ -28,17 +32,21 @@ class ForecastPeriod(Enum):
 
 @dataclass
 class RevenueSource:
-    """A revenue source."""
+    """A stream of income entity record."""
     id: str
     name: str
-    type: str  # recurring, project, product
+    r_type: str  # recurring, project, product
     monthly_value: float
-    growth_rate: float = 0  # % monthly growth
+    growth_rate: float = 0.0
+
+    def __post_init__(self):
+        if self.monthly_value < 0:
+            raise ValueError("Monthly value cannot be negative")
 
 
 @dataclass
 class Forecast:
-    """A revenue forecast."""
+    """A projection record for a specific future period."""
     period: str
     predicted: float
     optimistic: float
@@ -48,128 +56,97 @@ class Forecast:
 
 class RevenueForecasting:
     """
-    Revenue Forecasting.
+    Revenue Forecasting System.
     
-    Predict future revenue.
+    Orchestrates financial modeling, trend extrapolation, and risk-adjusted growth projections.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.sources: List[RevenueSource] = []
         self.historical: Dict[str, float] = {}
-        self.forecasts: List[Forecast] = []
+        logger.info(f"Revenue Forecasting system initialized for {agency_name}")
     
-    def add_source(
+    def add_income_source(
         self,
         name: str,
-        revenue_type: str,
-        monthly_value: float,
-        growth_rate: float = 0
+        r_type: str,
+        value: float,
+        growth: float = 0.0
     ) -> RevenueSource:
-        """Add a revenue source."""
+        """Register a new revenue stream for modeling."""
         source = RevenueSource(
             id=f"REV-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            type=revenue_type,
-            monthly_value=monthly_value,
-            growth_rate=growth_rate
+            name=name, r_type=r_type, monthly_value=float(value), growth_rate=float(growth)
         )
         self.sources.append(source)
+        logger.info(f"Revenue source added: {name} (${value:,.0f}/mo)")
         return source
     
-    def set_historical(self, month: str, revenue: float):
-        """Set historical revenue data."""
-        self.historical[month] = revenue
-    
-    def generate_forecast(self, months: int = 6) -> List[Forecast]:
-        """Generate revenue forecast."""
-        self.forecasts = []
-        
-        base_monthly = sum(s.monthly_value for s in self.sources)
-        avg_growth = sum(s.growth_rate for s in self.sources) / len(self.sources) if self.sources else 0.05
+    def generate_projections(self, months: int = 6) -> List[Forecast]:
+        """Execute mathematical modeling to project future income."""
+        projections = []
+        base = sum(s.monthly_value for s in self.sources)
+        avg_g = sum(s.growth_rate for s in self.sources) / len(self.sources) if self.sources else 0.02
         
         now = datetime.now()
-        
         for i in range(1, months + 1):
-            future_date = now + timedelta(days=30 * i)
-            period = future_date.strftime("%b %Y")
+            target_date = now + timedelta(days=30 * i)
+            p_val = base * ((1 + avg_g) ** i)
             
-            # Apply compound growth
-            predicted = base_monthly * ((1 + avg_growth) ** i)
-            
-            forecast = Forecast(
-                period=period,
-                predicted=predicted,
-                optimistic=predicted * 1.2,
-                pessimistic=predicted * 0.8,
-                confidence=max(50, 95 - i * 5)  # Confidence decreases over time
+            f = Forecast(
+                period=target_date.strftime("%b %Y"),
+                predicted=p_val,
+                optimistic=p_val * 1.15,
+                pessimistic=p_val * 0.85,
+                confidence=max(40.0, 95.0 - (i * 5))
             )
-            self.forecasts.append(forecast)
-        
-        return self.forecasts
+            projections.append(f)
+            
+        logger.info(f"Generated {months}-month revenue projection.")
+        return projections
     
-    def format_dashboard(self) -> str:
-        """Format forecast dashboard."""
-        total_monthly = sum(s.monthly_value for s in self.sources)
-        recurring = sum(s.monthly_value for s in self.sources if s.type == "recurring")
+    def format_dashboard(self, forecasts: List[Forecast]) -> str:
+        """Render the Revenue Projections Dashboard."""
+        curr_mo = sum(s.monthly_value for s in self.sources)
+        total_proj = sum(f.predicted for f in forecasts)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📈 REVENUE FORECASTING                                   ║",
-            f"║  ${total_monthly:,.0f}/mo │ ${recurring:,.0f} recurring           ║",
+            f"║  📈 REVENUE PROJECTIONS DASHBOARD{' ' * 29}║",
+            f"║  ${curr_mo:,.0f} current/mo │ ${total_proj:,.0f} projected total │ {len(forecasts)}mo horizon{' ' * 6}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  💰 REVENUE SOURCES                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 GROWTH TRAJECTORY (ADJUSTED)                          ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"recurring": "🔄", "project": "📁", "product": "📦"}
-        
-        for source in self.sources[:4]:
-            icon = type_icons.get(source.type, "💵")
-            growth = f"+{source.growth_rate*100:.0f}%" if source.growth_rate > 0 else "—"
-            lines.append(f"║    {icon} {source.name:<18} │ ${source.monthly_value:>8,.0f}/mo │ {growth:<5}  ║")
-        
+        for f in forecasts[:6]:
+            bar = "█" * int(f.confidence / 10) + "░" * (10 - int(f.confidence / 10))
+            lines.append(f"║    {f.period:<10} │ ${f.predicted:>12,.0f} │ {bar} {f.confidence:>3.0f}% ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  📊 6-MONTH FORECAST                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for forecast in self.forecasts[:6]:
-            bar = "█" * int(forecast.confidence / 10) + "░" * (10 - int(forecast.confidence / 10))
-            lines.append(f"║    {forecast.period:<8} │ ${forecast.predicted:>10,.0f} │ {bar} {forecast.confidence:.0f}%  ║")
-        
-        # Calculate totals
-        total_forecast = sum(f.predicted for f in self.forecasts)
-        
-        lines.extend([
-            "║                                                           ║",
-            f"║  📈 6-Month Total: ${total_forecast:>12,.0f}                    ║",
-            "║                                                           ║",
-            "║  [📊 Detailed]  [📥 Export]  [⚙️ Adjust]                  ║",
+            "║  [📊 Scenarios]  [📉 Risk Audit]  [📤 Export]  [⚙️ Model]  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Plan with confidence!            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Plan Ahead!      ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    forecasting = RevenueForecasting("Saigon Digital Hub")
-    
-    print("📈 Revenue Forecasting")
+    print("📈 Initializing Projections...")
     print("=" * 60)
-    print()
     
-    # Add revenue sources
-    forecasting.add_source("Retainer Clients", "recurring", 15000, 0.05)
-    forecasting.add_source("Project Work", "project", 8000, 0.03)
-    forecasting.add_source("SaaS Affiliates", "recurring", 3000, 0.10)
-    forecasting.add_source("Training/Courses", "product", 2000, 0.08)
-    
-    # Generate forecast
-    forecasting.generate_forecast(6)
-    
-    print(forecasting.format_dashboard())
+    try:
+        engine = RevenueForecasting("Saigon Digital Hub")
+        # Seed
+        engine.add_income_source("Retainers", "recurring", 20000.0, 0.03)
+        engine.add_income_source("Consulting", "project", 5000.0, 0.01)
+        
+        forecasts = engine.generate_projections(6)
+        print("\n" + engine.format_dashboard(forecasts))
+        
+    except Exception as e:
+        logger.error(f"Forecasting Error: {e}")

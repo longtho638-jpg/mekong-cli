@@ -133,6 +133,10 @@ class LeadScoring:
         )
         lead.score = int(total)
     
+    def get_hot_leads(self, threshold: int = 70) -> List[Lead]:
+        """Filter leads that meet the hot priority threshold."""
+        return [l for l in self.leads.values() if l.score >= threshold]
+    
     def format_dashboard(self) -> str:
         """Render the Lead Scoring Dashboard."""
         hot_leads = [l for l in self.leads.values() if l.score >= 70]

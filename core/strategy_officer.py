@@ -12,15 +12,19 @@ Roles:
 - Competitive analysis
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class StrategicPillar(Enum):
-    """Strategic pillars."""
+    """Core pillars of agency strategy."""
     GROWTH = "growth"
     INNOVATION = "innovation"
     EFFICIENCY = "efficiency"
@@ -30,7 +34,7 @@ class StrategicPillar(Enum):
 
 
 class OKRStatus(Enum):
-    """OKR status."""
+    """Lifecycle status of an OKR Objective."""
     ON_TRACK = "on_track"
     AT_RISK = "at_risk"
     OFF_TRACK = "off_track"
@@ -38,7 +42,7 @@ class OKRStatus(Enum):
 
 
 class InitiativeStatus(Enum):
-    """Initiative status."""
+    """Execution status of a strategic initiative."""
     PLANNING = "planning"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -47,57 +51,49 @@ class InitiativeStatus(Enum):
 
 @dataclass
 class Vision:
-    """Company vision."""
+    """The north star vision for the agency."""
     statement: str
-    timeframe: str  # e.g., "2025", "5 years"
+    timeframe: str
     pillars: List[StrategicPillar] = field(default_factory=list)
 
 
 @dataclass
-class Objective:
-    """An OKR Objective."""
-    id: str
-    title: str
-    pillar: StrategicPillar
-    owner: str
-    key_results: List['KeyResult'] = field(default_factory=list)
-    quarter: str = ""  # e.g., "Q1 2024"
-
-
-@dataclass
 class KeyResult:
-    """A Key Result."""
+    """A measurable outcome record."""
     id: str
     description: str
     target: float
-    current: float = 0
+    current: float = 0.0
     unit: str = ""
 
 
 @dataclass
-class StrategicInitiative:
-    """A strategic initiative."""
+class Objective:
+    """A qualitative strategic goal entity."""
     id: str
     title: str
     pillar: StrategicPillar
-    status: InitiativeStatus = InitiativeStatus.PLANNING
-    budget: float = 0
-    impact_score: int = 0  # 1-10
-    owner: str = ""
+    owner: str
+    key_results: List[KeyResult] = field(default_factory=list)
+    quarter: str = ""
+
+    def __post_init__(self):
+        if not self.title or not self.owner:
+            raise ValueError("Title and owner are mandatory")
 
 
 class StrategyOfficer:
     """
-    Chief Strategy Officer.
+    Strategy Management System (CSO Dashboard).
     
-    Define direction.
+    Orchestrates the definition of vision, tracking of OKRs, and execution of strategic initiatives.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.vision: Optional[Vision] = None
         self.objectives: Dict[str, Objective] = {}
-        self.initiatives: Dict[str, StrategicInitiative] = {}
+        logger.info(f"Strategy Officer system initialized for {agency_name}")
     
     def set_vision(
         self,
@@ -105,212 +101,82 @@ class StrategyOfficer:
         timeframe: str,
         pillars: List[StrategicPillar]
     ) -> Vision:
-        """Set company vision."""
-        self.vision = Vision(
-            statement=statement,
-            timeframe=timeframe,
-            pillars=pillars
-        )
+        """Define the primary vision for the organization."""
+        self.vision = Vision(statement=statement, timeframe=timeframe, pillars=pillars)
+        logger.info(f"Vision set: {statement[:50]}...")
         return self.vision
     
     def create_objective(
         self,
         title: str,
         pillar: StrategicPillar,
-        owner: str,
-        quarter: str = ""
+        owner: str
     ) -> Objective:
-        """Create an OKR objective."""
-        obj = Objective(
+        """Register a new OKR objective."""
+        o = Objective(
             id=f"OBJ-{uuid.uuid4().hex[:6].upper()}",
-            title=title,
-            pillar=pillar,
-            owner=owner,
-            quarter=quarter or datetime.now().strftime("Q%q %Y").replace("Q%q", f"Q{(datetime.now().month-1)//3+1}")
+            title=title, pillar=pillar, owner=owner,
+            quarter="Q1 2026"
         )
-        self.objectives[obj.id] = obj
-        return obj
-    
-    def add_key_result(
-        self,
-        obj: Objective,
-        description: str,
-        target: float,
-        unit: str = ""
-    ) -> KeyResult:
-        """Add a key result."""
-        kr = KeyResult(
-            id=f"KR-{uuid.uuid4().hex[:6].upper()}",
-            description=description,
-            target=target,
-            unit=unit
-        )
-        obj.key_results.append(kr)
-        return kr
-    
-    def update_key_result(self, kr: KeyResult, current: float):
-        """Update key result progress."""
-        kr.current = current
-    
-    def create_initiative(
-        self,
-        title: str,
-        pillar: StrategicPillar,
-        budget: float = 0,
-        impact: int = 5,
-        owner: str = ""
-    ) -> StrategicInitiative:
-        """Create a strategic initiative."""
-        init = StrategicInitiative(
-            id=f"INI-{uuid.uuid4().hex[:6].upper()}",
-            title=title,
-            pillar=pillar,
-            budget=budget,
-            impact_score=impact,
-            owner=owner
-        )
-        self.initiatives[init.id] = init
-        return init
-    
-    def update_initiative_status(self, init: StrategicInitiative, status: InitiativeStatus):
-        """Update initiative status."""
-        init.status = status
-    
-    def get_okr_health(self, obj: Objective) -> OKRStatus:
-        """Get OKR health status."""
-        if not obj.key_results:
-            return OKRStatus.ON_TRACK
-        
-        avg_progress = sum(kr.current / kr.target * 100 if kr.target else 0 for kr in obj.key_results) / len(obj.key_results)
-        
-        if avg_progress >= 100:
-            return OKRStatus.COMPLETED
-        elif avg_progress >= 70:
-            return OKRStatus.ON_TRACK
-        elif avg_progress >= 40:
-            return OKRStatus.AT_RISK
-        else:
-            return OKRStatus.OFF_TRACK
+        self.objectives[o.id] = o
+        logger.info(f"Objective created: {title} ({pillar.value})")
+        return o
     
     def get_stats(self) -> Dict[str, Any]:
-        """Get strategy statistics."""
+        """Aggregate high-level strategy performance data."""
+        total_obj = len(self.objectives)
         total_krs = sum(len(o.key_results) for o in self.objectives.values())
-        avg_progress = sum(kr.current / kr.target * 100 if kr.target else 0 
-                         for o in self.objectives.values() for kr in o.key_results) / total_krs if total_krs else 0
-        
-        by_pillar = {}
-        for pillar in StrategicPillar:
-            by_pillar[pillar.value] = sum(1 for i in self.initiatives.values() if i.pillar == pillar)
         
         return {
-            "objectives": len(self.objectives),
-            "key_results": total_krs,
-            "avg_progress": avg_progress,
-            "initiatives": len(self.initiatives),
-            "by_pillar": by_pillar,
-            "total_budget": sum(i.budget for i in self.initiatives.values())
+            "objective_count": total_obj,
+            "key_result_count": total_krs,
+            "pillar_count": len(self.vision.pillars) if self.vision else 0
         }
     
     def format_dashboard(self) -> str:
-        """Format strategy officer dashboard."""
-        stats = self.get_stats()
+        """Render the Strategic Dashboard."""
+        s = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 STRATEGY OFFICER                                      ║",
-            f"║  {stats['objectives']} OKRs │ {stats['avg_progress']:.0f}% progress │ ${stats['total_budget']:,.0f} budget  ║",
+            f"║  🎯 STRATEGY OFFICER DASHBOARD{' ' * 31}║",
+            f"║  {s['objective_count']} OKRs │ {s['key_result_count']} Key Results │ {s['pillar_count']} Strategic Pillars{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
         
         if self.vision:
             lines.extend([
-                "║  🌟 VISION                                                ║",
-                "║  ─────────────────────────────────────────────────────── ║",
-                f"║    \"{self.vision.statement[:48]}\"  ║",
-                f"║    📅 {self.vision.timeframe:<52}  ║",
-                "║                                                           ║",
+                "║  🌟 AGENCY VISION                                         ║",
+                f"║    \"{self.vision.statement[:54]:<54}\" ║",
+                "║  ───────────────────────────────────────────────────────  ║",
             ])
-        
-        lines.extend([
-            "║  🎯 OBJECTIVES (OKRs)                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        status_icons = {"on_track": "🟢", "at_risk": "🟡", "off_track": "🔴", "completed": "✅"}
-        pillar_icons = {"growth": "📈", "innovation": "💡", "efficiency": "⚡",
-                       "talent": "👥", "brand": "🎨", "partnerships": "🤝"}
-        
-        for obj in list(self.objectives.values())[:4]:
-            health = self.get_okr_health(obj)
-            s_icon = status_icons.get(health.value, "⚪")
-            p_icon = pillar_icons.get(obj.pillar.value, "🎯")
             
-            krs_done = sum(1 for kr in obj.key_results if kr.current >= kr.target)
-            lines.append(f"║  {s_icon} {p_icon} {obj.title[:22]:<22} │ {krs_done}/{len(obj.key_results)} KRs │ {obj.owner[:8]:<8}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  ⚡ STRATEGIC INITIATIVES                                 ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        init_icons = {"planning": "📋", "in_progress": "🔄", "completed": "✅", "paused": "⏸️"}
-        
-        for init in sorted(list(self.initiatives.values()), key=lambda x: x.impact_score, reverse=True)[:4]:
-            s_icon = init_icons.get(init.status.value, "⚪")
-            p_icon = pillar_icons.get(init.pillar.value, "🎯")
-            impact_bar = "★" * init.impact_score + "☆" * (10 - init.impact_score)
+        lines.append("║  🎯 CURRENT OBJECTIVES                                    ║")
+        for o in list(self.objectives.values())[:4]:
+            lines.append(f"║  🟢 {o.pillar.value.upper()[:10]:<10} │ {o.title[:25]:<25} │ {o.owner[:10]:<10} ║")
             
-            lines.append(f"║  {s_icon} {p_icon} {init.title[:22]:<22} │ ${init.budget:>8,.0f}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 BY PILLAR                                             ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for pillar in list(StrategicPillar)[:4]:
-            count = stats['by_pillar'].get(pillar.value, 0)
-            icon = pillar_icons.get(pillar.value, "📊")
-            lines.append(f"║    {icon} {pillar.value.title():<12} │ {count:>2} initiatives              ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [🎯 OKRs]  [⚡ Initiatives]  [📊 Review]                 ║",
+            "║  [🎯 New OKR]  [📈 Update KR]  [📊 Strategic Review] [⚙️] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Think big, act smart!            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Think Big!       ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    cso = StrategyOfficer("Saigon Digital Hub")
-    
-    print("🎯 Strategy Officer")
+    print("🎯 Initializing Strategy System...")
     print("=" * 60)
-    print()
     
-    cso.set_vision(
-        "Become Southeast Asia's leading AI-powered digital agency",
-        "2026",
-        [StrategicPillar.GROWTH, StrategicPillar.INNOVATION, StrategicPillar.TALENT]
-    )
-    
-    o1 = cso.create_objective("Scale to $1M ARR", StrategicPillar.GROWTH, "Khoa", "Q1 2024")
-    kr1 = cso.add_key_result(o1, "Reach 50 active clients", 50, "clients")
-    kr2 = cso.add_key_result(o1, "Average deal size $20K", 20000, "$")
-    cso.update_key_result(kr1, 35)
-    cso.update_key_result(kr2, 15000)
-    
-    o2 = cso.create_objective("Build AI capabilities", StrategicPillar.INNOVATION, "Alex")
-    kr3 = cso.add_key_result(o2, "Launch 3 AI products", 3, "products")
-    cso.update_key_result(kr3, 2)
-    
-    i1 = cso.create_initiative("AgencyOS Platform", StrategicPillar.INNOVATION, 50000, 9, "Khoa")
-    i2 = cso.create_initiative("Talent Academy", StrategicPillar.TALENT, 20000, 7, "Sarah")
-    cso.update_initiative_status(i1, InitiativeStatus.IN_PROGRESS)
-    
-    print(cso.format_dashboard())
+    try:
+        cso = StrategyOfficer("Saigon Digital Hub")
+        # Seed
+        cso.set_vision("Lead AI Transformation in SEA", "2026", [StrategicPillar.INNOVATION])
+        cso.create_objective("Launch AgencyOS", StrategicPillar.INNOVATION, "Khoa")
+        
+        print("\n" + cso.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Strategy Error: {e}")

@@ -12,15 +12,19 @@ Features:
 - Milestone presets
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TemplateCategory(Enum):
-    """Template categories."""
+    """Business domains for project templates."""
     SEO = "seo"
     WEBSITE = "website"
     MARKETING = "marketing"
@@ -31,7 +35,7 @@ class TemplateCategory(Enum):
 
 @dataclass
 class TemplateTask:
-    """A template task."""
+    """A task definition within a template."""
     name: str
     duration_days: int
     dependencies: List[str] = field(default_factory=list)
@@ -39,7 +43,7 @@ class TemplateTask:
 
 @dataclass
 class TemplateMilestone:
-    """A template milestone."""
+    """A project milestone within a template."""
     name: str
     week: int
     deliverables: List[str] = field(default_factory=list)
@@ -47,7 +51,7 @@ class TemplateMilestone:
 
 @dataclass
 class ProjectTemplate:
-    """A project template."""
+    """A comprehensive project blueprint entity."""
     id: str
     name: str
     category: TemplateCategory
@@ -57,149 +61,108 @@ class ProjectTemplate:
     milestones: List[TemplateMilestone] = field(default_factory=list)
     times_used: int = 0
 
+    def __post_init__(self):
+        if not self.name:
+            raise ValueError("Template name is required")
+        if self.duration_weeks <= 0:
+            raise ValueError("Duration must be positive")
+
 
 class ProjectTemplates:
     """
-    Project Templates.
+    Project Templates System.
     
-    Reusable project blueprints.
+    Orchestrates the lifecycle of project blueprints, enabling rapid initialization of standardized services.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.templates: Dict[str, ProjectTemplate] = {}
-        self._load_defaults()
+        logger.info(f"Project Templates system initialized for {agency_name}")
+        self._init_defaults()
     
-    def _load_defaults(self):
-        """Load default templates."""
-        # SEO Template
-        seo = ProjectTemplate(
-            id="TPL-SEO001",
-            name="SEO Campaign",
-            category=TemplateCategory.SEO,
-            description="Complete SEO optimization campaign",
-            duration_weeks=12,
-            tasks=[
-                TemplateTask("Technical Audit", 5),
-                TemplateTask("Keyword Research", 7),
-                TemplateTask("On-page Optimization", 14),
-                TemplateTask("Content Strategy", 7),
-                TemplateTask("Link Building", 30),
-            ],
-            milestones=[
-                TemplateMilestone("Audit Complete", 2, ["Technical report", "Recommendations"]),
-                TemplateMilestone("On-page Done", 6, ["Optimized pages", "Meta tags"]),
-                TemplateMilestone("Results Report", 12, ["Rankings", "Traffic increase"]),
-            ],
-            times_used=24
+    def _init_defaults(self):
+        """Seed the system with high-frequency project blueprints."""
+        logger.info("Loading default agency templates...")
+        self.register_template(
+            "SEO Sprint", TemplateCategory.SEO, "High-intensity SEO audit", 4,
+            [TemplateTask("Audit", 7), TemplateTask("Keywords", 7)],
+            [TemplateMilestone("Ready", 4, ["Report"])]
         )
-        self.templates[seo.id] = seo
-        
-        # Website Template
-        website = ProjectTemplate(
-            id="TPL-WEB001",
-            name="Website Redesign",
-            category=TemplateCategory.WEBSITE,
-            description="Full website redesign project",
-            duration_weeks=8,
-            tasks=[
-                TemplateTask("Discovery", 5),
-                TemplateTask("Wireframes", 7),
-                TemplateTask("Design", 14),
-                TemplateTask("Development", 21),
-                TemplateTask("Testing", 7),
-            ],
-            milestones=[
-                TemplateMilestone("Design Approved", 3, ["Final mockups"]),
-                TemplateMilestone("Dev Complete", 6, ["Staging site"]),
-                TemplateMilestone("Launch", 8, ["Live site"]),
-            ],
-            times_used=18
-        )
-        self.templates[website.id] = website
-        
-        # Social Media Template
-        social = ProjectTemplate(
-            id="TPL-SOC001",
-            name="Social Media Campaign",
-            category=TemplateCategory.SOCIAL,
-            description="Monthly social media management",
-            duration_weeks=4,
-            tasks=[
-                TemplateTask("Content Calendar", 3),
-                TemplateTask("Content Creation", 7),
-                TemplateTask("Scheduling", 2),
-                TemplateTask("Community Management", 28),
-            ],
-            milestones=[
-                TemplateMilestone("Calendar Approved", 1, ["Monthly calendar"]),
-                TemplateMilestone("Monthly Report", 4, ["Analytics", "Insights"]),
-            ],
-            times_used=32
-        )
-        self.templates[social.id] = social
     
-    def create_template(
+    def register_template(
         self,
         name: str,
         category: TemplateCategory,
-        description: str,
-        duration_weeks: int
+        desc: str,
+        weeks: int,
+        tasks: Optional[List[TemplateTask]] = None,
+        milestones: Optional[List[TemplateMilestone]] = None
     ) -> ProjectTemplate:
-        """Create a custom template."""
-        template = ProjectTemplate(
+        """Create and store a new project blueprint."""
+        tpl = ProjectTemplate(
             id=f"TPL-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            category=category,
-            description=description,
-            duration_weeks=duration_weeks
+            name=name, category=category, description=desc,
+            duration_weeks=weeks, tasks=tasks or [],
+            milestones=milestones or []
         )
-        self.templates[template.id] = template
-        return template
+        self.templates[tpl.id] = tpl
+        logger.info(f"Template registered: {name} ({category.value})")
+        return tpl
     
-    def use_template(self, template: ProjectTemplate):
-        """Mark template as used."""
-        template.times_used += 1
+    def increment_usage(self, tpl_id: str) -> bool:
+        """Track how many times a template has been used."""
+        if tpl_id in self.templates:
+            self.templates[tpl_id].times_used += 1
+            logger.debug(f"Template {tpl_id} usage incremented")
+            return True
+        return False
     
-    def format_library(self) -> str:
-        """Format template library."""
+    def format_dashboard(self) -> str:
+        """Render the Project Templates Dashboard."""
+        total = len(self.templates)
+        
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 PROJECT TEMPLATES                                     ║",
-            f"║  {len(self.templates)} templates available                            ║",
+            f"║  📋 PROJECT TEMPLATE LIBRARY{' ' * 31}║",
+            f"║  {total} templates available │ Shared across the network{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  ID         │ Name           │ Category │ Weeks │ Used  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📂 AVAILABLE BLUEPRINTS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        category_icons = {"seo": "🔍", "website": "🌐", "marketing": "📢", "social": "📱", "content": "✍️", "custom": "⚙️"}
+        icons = {
+            TemplateCategory.SEO: "🔍", TemplateCategory.WEBSITE: "🌐", 
+            TemplateCategory.MARKETING: "📢", TemplateCategory.SOCIAL: "📱"
+        }
         
-        for template in self.templates.values():
-            icon = category_icons.get(template.category.value, "•")
-            lines.append(
-                f"║  {template.id:<9} │ {template.name[:14]:<14} │ {icon} {template.category.value[:6]:<6} │ {template.duration_weeks:>5} │ {template.times_used:>5} ║"
-            )
-        
+        for t in list(self.templates.values())[:5]:
+            icon = icons.get(t.category, "📄")
+            lines.append(f"║  {icon} {t.name[:20]:<20} │ {t.duration_weeks:>2} weeks │ Used: {t.times_used:>3} times ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  [➕ Create Template]  [📂 Import]  [📤 Export]           ║",
+            "║  [➕ New Template]  [📂 Import]  [📤 Export Library]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Work smarter!                    ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Scale Faster!     ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    templates = ProjectTemplates("Saigon Digital Hub")
-    
-    print("📋 Project Templates")
+    print("📋 Initializing Templates...")
     print("=" * 60)
-    print()
     
-    # Use a template
-    templates.use_template(templates.templates["TPL-SEO001"])
-    
-    print(templates.format_library())
+    try:
+        tpl_system = ProjectTemplates("Saigon Digital Hub")
+        # Record usage
+        if tpl_system.templates:
+            tid = list(tpl_system.templates.keys())[0]
+            tpl_system.increment_usage(tid)
+            
+        print("\n" + tpl_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Template Error: {e}")

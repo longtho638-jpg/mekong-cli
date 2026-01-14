@@ -8,11 +8,15 @@ Pattern: 3-layer workflow (search → timeline → get_observations)
 
 import sqlite3
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 from dataclasses import dataclass, asdict
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Observation:
@@ -26,55 +30,68 @@ class Observation:
 
 
 class Memory:
-    """AgencyOS Memory System with SQLite storage."""
+    """
+    AgencyOS Memory System.
+    
+    Persists contextual observations using SQLite with Full-Text Search (FTS5).
+    """
     
     def __init__(self, db_path: Optional[Path] = None):
         if db_path is None:
             # Default: ~/.agencyos/memory/sessions.db
             memory_dir = Path.home() / ".agencyos" / "memory"
-            memory_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                memory_dir.mkdir(parents=True, exist_ok=True)
+            except OSError as e:
+                logger.error(f"Failed to create memory directory: {e}")
+                
             db_path = memory_dir / "sessions.db"
         
         self.db_path = db_path
         self._init_db()
+        logger.info(f"Memory system initialized at {db_path}")
     
     def _init_db(self):
         """Initialize SQLite database with FTS5 for full-text search."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        # Main observations table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS observations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT NOT NULL,
-                type TEXT NOT NULL,
-                content TEXT NOT NULL,
-                summary TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        
-        # FTS5 virtual table for full-text search
-        cursor.execute("""
-            CREATE VIRTUAL TABLE IF NOT EXISTS observations_fts USING fts5(
-                content,
-                summary,
-                content='observations',
-                content_rowid='id'
-            )
-        """)
-        
-        # Trigger to keep FTS5 in sync
-        cursor.execute("""
-            CREATE TRIGGER IF NOT EXISTS observations_ai AFTER INSERT ON observations BEGIN
-                INSERT INTO observations_fts(rowid, content, summary)
-                VALUES (new.id, new.content, new.summary);
-            END;
-        """)
-        
-        conn.commit()
-        conn.close()
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Main observations table
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS observations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    type TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    summary TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            # FTS5 virtual table for full-text search
+            cursor.execute("""
+                CREATE VIRTUAL TABLE IF NOT EXISTS observations_fts USING fts5(
+                    content,
+                    summary,
+                    content='observations',
+                    content_rowid='id'
+                )
+            """)
+            
+            # Trigger to keep FTS5 in sync
+            cursor.execute("""
+                CREATE TRIGGER IF NOT EXISTS observations_ai AFTER INSERT ON observations BEGIN
+                    INSERT INTO observations_fts(rowid, content, summary)
+                    VALUES (new.id, new.content, new.summary);
+                END;
+            """)
+            
+            conn.commit()
+        except sqlite3.Error as e:
+            logger.critical(f"Memory DB Init Failed: {e}")
+        finally:
+            if conn: conn.close()
     
     def add_observation(
         self,
@@ -83,24 +100,32 @@ class Memory:
         session_id: str = "default",
         summary: Optional[str] = None
     ) -> int:
-        """Add a memory observation."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
+        """Add a new memory observation."""
+        if not content:
+            raise ValueError("Observation content cannot be empty")
+
         if summary is None:
             # Auto-summarize (simple truncate for now)
             summary = content[:100] + "..." if len(content) > 100 else content
         
-        cursor.execute("""
-            INSERT INTO observations (session_id, type, content, summary)
-            VALUES (?, ?, ?, ?)
-        """, (session_id, obs_type, content, summary))
-        
-        obs_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-        
-        return obs_id
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                INSERT INTO observations (session_id, type, content, summary)
+                VALUES (?, ?, ?, ?)
+            """, (session_id, obs_type, content, summary))
+            
+            obs_id = cursor.lastrowid
+            conn.commit()
+            logger.debug(f"Added observation {obs_id} ({obs_type})")
+            return obs_id
+        except sqlite3.Error as e:
+            logger.error(f"Failed to add observation: {e}")
+            return -1
+        finally:
+            if conn: conn.close()
     
     def search_memory(
         self,
@@ -112,55 +137,62 @@ class Memory:
         Search memory using FTS5 full-text search.
         Returns compact index (~50-100 tokens/result).
         """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        # Build query
-        sql = """
-            SELECT o.id, o.type, o.summary, o.created_at
-            FROM observations o
-            JOIN observations_fts fts ON o.id = fts.rowid
-            WHERE observations_fts MATCH ?
-        """
-        params = [query]
-        
-        if obs_type:
-            sql += " AND o.type = ?"
-            params.append(obs_type)
-        
-        sql += " ORDER BY o.created_at DESC LIMIT ?"
-        params.append(limit)
-        
-        cursor.execute(sql, params)
-        results = [dict(row) for row in cursor.fetchall()]
-        
-        conn.close()
-        return results
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            # Build query
+            sql = """
+                SELECT o.id, o.type, o.summary, o.created_at
+                FROM observations o
+                JOIN observations_fts fts ON o.id = fts.rowid
+                WHERE observations_fts MATCH ?
+            """
+            params = [query]
+            
+            if obs_type:
+                sql += " AND o.type = ?"
+                params.append(obs_type)
+            
+            sql += " ORDER BY o.created_at DESC LIMIT ?"
+            params.append(limit)
+            
+            cursor.execute(sql, params)
+            results = [dict(row) for row in cursor.fetchall()]
+            return results
+        except sqlite3.Error as e:
+            logger.error(f"Search failed: {e}")
+            return []
+        finally:
+            if conn: conn.close()
     
     def get_observations(self, ids: List[int]) -> List[Observation]:
         """
         Fetch full observation details by IDs.
         This is the final layer - fetch details ONLY for filtered IDs.
         """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+        if not ids: return []
         
-        placeholders = ','.join('?' * len(ids))
-        cursor.execute(f"""
-            SELECT * FROM observations
-            WHERE id IN ({placeholders})
-            ORDER BY created_at DESC
-        """, ids)
-        
-        results = [
-            Observation(**dict(row))
-            for row in cursor.fetchall()
-        ]
-        
-        conn.close()
-        return results
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            placeholders = ','.join('?' * len(ids))
+            cursor.execute(f"""
+                SELECT * FROM observations
+                WHERE id IN ({placeholders})
+                ORDER BY created_at DESC
+            """, ids)
+            
+            results = [Observation(**dict(row)) for row in cursor.fetchall()]
+            return results
+        except sqlite3.Error as e:
+            logger.error(f"Failed to get observations: {e}")
+            return []
+        finally:
+            if conn: conn.close()
     
     def get_timeline(
         self,
@@ -168,29 +200,34 @@ class Memory:
         limit: int = 20
     ) -> List[Dict]:
         """Get chronological timeline of observations."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        if session_id:
-            cursor.execute("""
-                SELECT id, type, summary, created_at
-                FROM observations
-                WHERE session_id = ?
-                ORDER BY created_at DESC
-                LIMIT ?
-            """, (session_id, limit))
-        else:
-            cursor.execute("""
-                SELECT id, type, summary, created_at
-                FROM observations
-                ORDER BY created_at DESC
-                LIMIT ?
-            """, (limit,))
-        
-        results = [dict(row) for row in cursor.fetchall()]
-        conn.close()
-        return results
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            if session_id:
+                cursor.execute("""
+                    SELECT id, type, summary, created_at
+                    FROM observations
+                    WHERE session_id = ?
+                    ORDER BY created_at DESC
+                    LIMIT ?
+                """, (session_id, limit))
+            else:
+                cursor.execute("""
+                    SELECT id, type, summary, created_at
+                    FROM observations
+                    ORDER BY created_at DESC
+                    LIMIT ?
+                """, (limit,))
+            
+            results = [dict(row) for row in cursor.fetchall()]
+            return results
+        except sqlite3.Error as e:
+            logger.error(f"Timeline fetch failed: {e}")
+            return []
+        finally:
+            if conn: conn.close()
     
     def get_recent(self, limit: int = 10) -> List[Dict]:
         """Get recent observations."""
@@ -198,14 +235,29 @@ class Memory:
     
     def export_json(self, output_path: Path):
         """Export all observations to JSON."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT * FROM observations ORDER BY created_at DESC")
-        results = [dict(row) for row in cursor.fetchall()]
-        
-        conn.close()
-        
-        output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
-        return len(results)
+        try:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            cursor.execute("SELECT * FROM observations ORDER BY created_at DESC")
+            results = [dict(row) for row in cursor.fetchall()]
+            
+            output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+            logger.info(f"Exported {len(results)} memories to {output_path}")
+            return len(results)
+        except (sqlite3.Error, OSError) as e:
+            logger.error(f"Export failed: {e}")
+            return 0
+        finally:
+            if conn: conn.close()
+
+if __name__ == "__main__":
+    print("🧠 Initializing Memory...")
+    print("=" * 60)
+    
+    mem = Memory()
+    mem.add_observation("System initialized successfully.", "system")
+    recent = mem.get_recent(1)
+    
+    print(f"Recent Memory: {recent[0] if recent else 'None'}")

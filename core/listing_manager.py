@@ -154,6 +154,15 @@ class ListingManager:
         logger.info(f"Syndication added: {name}")
         return synd
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate listing performance metrics."""
+        active = [l for l in self.listings.values() if l.status == ListingStatus.ACTIVE]
+        return {
+            "active": len(active),
+            "total_value": sum(l.price for l in active),
+            "total_listings": len(self.listings)
+        }
+    
     def format_dashboard(self) -> str:
         """Render the Listing Manager Dashboard."""
         active_lst = [l for l in self.listings.values() if l.status == ListingStatus.ACTIVE]

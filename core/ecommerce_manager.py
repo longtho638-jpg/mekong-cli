@@ -131,6 +131,15 @@ class EcommerceManager:
         logger.debug(f"Metrics logged for {s.name}: ${revenue:,.0f}")
         return m
     
+    def get_portfolio_stats(self) -> Dict[str, Any]:
+        """Aggregate store portfolio statistics."""
+        active = [s for s in self.stores.values() if s.status == StoreStatus.ACTIVE]
+        return {
+            "total_stores": len(self.stores),
+            "active": len(active),
+            "total_revenue_mtd": sum(s.revenue_mtd for s in self.stores.values())
+        }
+    
     def format_dashboard(self) -> str:
         """Render the E-commerce Portfolio Dashboard."""
         total_rev = sum(s.revenue_mtd for s in self.stores.values())

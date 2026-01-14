@@ -2,7 +2,7 @@
 🏠 Real Estate Hub - Department Integration
 =============================================
 
-Central hub connecting all Real Estate roles.
+Central hub connecting all Real Estate roles within the agency operations.
 
 Integrates:
 - Listing Manager
@@ -11,100 +11,114 @@ Integrates:
 - RE Lead Manager
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import role modules
-from core.listing_manager import ListingManager, PropertyType, ListingType
-from core.re_market_analyst import REMarketAnalyst, AnalysisType, MarketTrend
-from core.property_portfolio import PropertyPortfolio, AssetClass
-from core.re_lead_manager import RELeadManager, LeadSource, LeadIntent
+# Import role modules with fallback
+try:
+    from core.listing_manager import ListingManager, PropertyType, ListingType
+    from core.re_market_analyst import REMarketAnalyst, AnalysisType, MarketTrend
+    from core.property_portfolio import PropertyPortfolio, AssetClass
+    from core.re_lead_manager import RELeadManager, LeadSource, LeadIntent
+except ImportError:
+    from listing_manager import ListingManager, PropertyType, ListingType
+    from re_market_analyst import REMarketAnalyst, AnalysisType, MarketTrend
+    from property_portfolio import PropertyPortfolio, AssetClass
+    from re_lead_manager import RELeadManager, LeadSource, LeadIntent
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class RealEstateMetrics:
-    """Department-wide metrics."""
-    active_listings: int
-    total_listing_value: float
-    portfolio_value: float
-    portfolio_roi: float
-    total_leads: int
-    pipeline_value: float
-    conversion_rate: float
-    market_reports: int
+    """Department-wide Real Estate performance metrics."""
+    active_listings: int = 0
+    total_listing_value: float = 0.0
+    portfolio_value: float = 0.0
+    portfolio_roi: float = 0.0
+    total_leads: int = 0
+    pipeline_value: float = 0.0
+    conversion_rate: float = 0.0
+    market_reports: int = 0
 
 
 class RealEstateHub:
     """
-    Real Estate Hub.
+    Real Estate Hub System.
     
-    Connects all RE roles.
+    Orchestrates department-wide integration between listings, market research, portfolio tracking, and lead management.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
+        logger.info(f"Initializing Real Estate Hub for {agency_name}")
         
-        # Initialize role modules
-        self.listings = ListingManager(agency_name)
-        self.analyst = REMarketAnalyst(agency_name)
-        self.portfolio = PropertyPortfolio(agency_name)
-        self.leads = RELeadManager(agency_name)
+        try:
+            self.listings = ListingManager(agency_name)
+            self.analyst = REMarketAnalyst(agency_name)
+            self.portfolio = PropertyPortfolio(agency_name)
+            self.leads = RELeadManager(agency_name)
+        except Exception as e:
+            logger.error(f"RE Hub initialization failed: {e}")
+            raise
     
-    def get_department_metrics(self) -> RealEstateMetrics:
-        """Get department-wide metrics."""
-        listing_stats = self.listings.get_stats()
-        portfolio_summary = self.portfolio.get_portfolio_summary()
-        lead_stats = self.leads.get_stats()
-        analyst_stats = self.analyst.get_stats()
+    def get_aggregate_stats(self) -> RealEstateMetrics:
+        """Fetch and aggregate data from all department sub-modules."""
+        m = RealEstateMetrics()
         
-        return RealEstateMetrics(
-            active_listings=listing_stats.get("active", 0),
-            total_listing_value=listing_stats.get("total_value", 0),
-            portfolio_value=portfolio_summary.total_value,
-            portfolio_roi=portfolio_summary.roi_percent,
-            total_leads=lead_stats.get("total", 0),
-            pipeline_value=lead_stats.get("pipeline_value", 0),
-            conversion_rate=lead_stats.get("conversion_rate", 0),
-            market_reports=analyst_stats.get("total_reports", 0)
-        )
+        try:
+            # 1. Listing Data
+            l_stats = self.listings.get_stats()
+            m.active_listings = l_stats.get("active", 0)
+            m.total_listing_value = float(l_stats.get("total_value", 0.0))
+            
+            # 2. Portfolio Data
+            p_sum = self.portfolio.get_aggregate_summary()
+            m.portfolio_value = p_sum.total_value
+            m.portfolio_roi = p_sum.roi_percent
+            
+            # 3. Lead Data
+            # Note: RELeadManager dashboard/stats might need standardization
+            m.total_leads = len(self.leads.leads)
+            m.pipeline_value = sum(l.budget for l in self.leads.leads.values())
+            
+            # 4. Market Reports
+            m.market_reports = len(self.analyst.reports)
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating RE metrics: {e}")
+            
+        return m
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render the unified Real Estate Department Dashboard."""
+        m = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🏠 REAL ESTATE HUB                                       ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  🏠 REAL ESTATE HUB DASHBOARD{' ' * 33}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Active Listings:    {metrics.active_listings:>5}                          ║",
-            f"║    💰 Listing Value:      ${metrics.total_listing_value:>12,.0f}              ║",
-            f"║    🏢 Portfolio Value:    ${metrics.portfolio_value:>12,.0f}              ║",
-            f"║    📈 Portfolio ROI:      {metrics.portfolio_roi:>+5.1f}%                         ║",
-            f"║    📋 Total Leads:        {metrics.total_leads:>5}                          ║",
-            f"║    💰 Pipeline Value:     ${metrics.pipeline_value:>12,.0f}              ║",
-            f"║    🎯 Conversion Rate:    {metrics.conversion_rate:>5.1f}%                         ║",
-            f"║    📊 Market Reports:     {metrics.market_reports:>5}                          ║",
+            "║  📊 DEPARTMENT PERFORMANCE METRICS                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📋 Active Listings:    {m.active_listings:>5}                          ║",
+            f"║    💰 Listing Value:      ${m.total_listing_value:>12,.0f}              ║",
+            f"║    🏢 Portfolio Value:    ${m.portfolio_value:>12,.0f}              ║",
+            f"║    📈 Portfolio ROI:      {m.portfolio_roi:>+11.1f}%              ║",
+            f"║    👥 Total Leads:        {m.total_leads:>5}                          ║",
+            f"║    💰 Pipeline Value:     ${m.pipeline_value:>12,.0f}              ║",
+            f"║    📊 Market Reports:     {m.market_reports:>5}                          ║",
             "║                                                           ║",
-            "║  🔗 REAL ESTATE ROLES                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    📋 Listing Manager    → Property listings             ║",
-            "║    📊 Market Analyst     → Market intelligence           ║",
-            "║    🏢 Portfolio Manager  → Asset management              ║",
-            "║    📋 Lead Manager       → Sales pipeline                ║",
+            "║  🔗 SERVICE INTEGRATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    🏠 Listings │ 📊 Research │ 🏢 Assets │ 👥 Pipeline    ║",
             "║                                                           ║",
-            "║  📋 TEAM STATS                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Listings           │ {metrics.active_listings} active                  ║",
-            f"║    🏢 Portfolio          │ ${metrics.portfolio_value:,.0f}              ║",
-            f"║    📋 Leads              │ {metrics.total_leads} in pipeline             ║",
-            "║                                                           ║",
-            "║  [📊 Reports]  [🏠 Listings]  [⚙️ Settings]               ║",
+            "║  [📊 Reports]  [🏠 Listings]  [👥 Leads]  [⚙️ Setup]      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Real estate excellence!         ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Excellence!      ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -113,16 +127,11 @@ class RealEstateHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = RealEstateHub("Saigon Digital Hub")
-    
-    print("🏠 Real Estate Hub")
+    print("🏠 Initializing RE Hub...")
     print("=" * 60)
-    print()
     
-    # Simulate data
-    hub.listings.create_listing("CLT-001", "Villa D2", PropertyType.VILLA, ListingType.SALE, 1000000, "D2")
-    hub.analyst.create_report("CLT-001", "Market Overview", AnalysisType.MARKET_OVERVIEW, "D2", 5000, MarketTrend.UP)
-    hub.portfolio.add_asset("CLT-001", "Office Tower", AssetClass.COMMERCIAL, 5000000, 6000000)
-    hub.leads.capture_lead("John", "0901234567", "j@email.com", LeadSource.WEBSITE, LeadIntent.BUY, 500000, "D2")
-    
-    print(hub.format_hub_dashboard())
+    try:
+        hub = RealEstateHub("Saigon Digital Hub")
+        print("\n" + hub.format_hub_dashboard())
+    except Exception as e:
+        logger.error(f"RE Hub Error: {e}")

@@ -12,21 +12,25 @@ Features:
 - Profit margin analysis
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class PricingStrategy(Enum):
-    """Pricing strategies."""
+    """Business strategies for calculating price."""
     COST_PLUS = "cost_plus"
     MARKET_BASED = "market_based"
     VALUE_BASED = "value_based"
 
 
 class ServiceComplexity(Enum):
-    """Service complexity level."""
+    """Degree of difficulty/intensity for a service."""
     SIMPLE = "simple"
     MODERATE = "moderate"
     COMPLEX = "complex"
@@ -35,7 +39,7 @@ class ServiceComplexity(Enum):
 
 @dataclass
 class CostBreakdown:
-    """Cost breakdown for a service."""
+    """Labor and overhead expenses for a service entity."""
     hours_required: float
     hourly_rate: float
     tools_cost: float
@@ -43,13 +47,14 @@ class CostBreakdown:
     
     @property
     def total_cost(self) -> float:
+        """Calculate aggregate cost of production."""
         labor = self.hours_required * self.hourly_rate
-        return labor + self.tools_cost + self.overhead_cost
+        return float(labor + self.tools_cost + self.overhead_cost)
 
 
 @dataclass
 class PriceRecommendation:
-    """Price recommendation result."""
+    """Strategic price recommendation record."""
     service_name: str
     cost: float
     recommended_price: float
@@ -60,9 +65,9 @@ class PriceRecommendation:
 
 class PricingCalculator:
     """
-    Pricing Calculator.
+    Pricing Calculator System.
     
-    Calculate optimal pricing for agency services.
+    Orchestrates cost analysis and strategic pricing to maximize agency profitability.
     """
     
     # Market benchmarks by complexity
@@ -73,202 +78,75 @@ class PricingCalculator:
         ServiceComplexity.ENTERPRISE: {"min": 5000, "max": 15000, "avg": 10000},
     }
     
-    # Value multipliers
-    VALUE_MULTIPLIERS = {
-        "high_roi": 2.0,
-        "quick_turnaround": 1.5,
-        "specialized_expertise": 1.8,
-        "ongoing_support": 1.3,
-    }
-    
     def __init__(self, agency_name: str, target_margin: float = 0.40):
         self.agency_name = agency_name
-        self.target_margin = target_margin  # 40% default
-    
-    def calculate_cost_plus(
-        self,
-        costs: CostBreakdown,
-        margin: float = None
-    ) -> float:
-        """Calculate price using cost-plus strategy."""
-        if margin is None:
-            margin = self.target_margin
-        
-        return costs.total_cost / (1 - margin)
-    
-    def calculate_market_based(
-        self,
-        complexity: ServiceComplexity,
-        position: str = "average"  # low, average, premium
-    ) -> float:
-        """Calculate price based on market rates."""
-        rates = self.MARKET_RATES[complexity]
-        
-        if position == "low":
-            return rates["min"]
-        elif position == "premium":
-            return rates["max"]
-        else:
-            return rates["avg"]
-    
-    def calculate_value_based(
-        self,
-        base_price: float,
-        value_factors: List[str]
-    ) -> float:
-        """Calculate price based on value delivered."""
-        multiplier = 1.0
-        
-        for factor in value_factors:
-            if factor in self.VALUE_MULTIPLIERS:
-                multiplier *= self.VALUE_MULTIPLIERS[factor]
-        
-        return base_price * multiplier
+        self.target_margin = target_margin  # 40% target
+        logger.info(f"Pricing Calculator initialized for {agency_name}")
     
     def get_recommendation(
         self,
         service_name: str,
         costs: CostBreakdown,
         complexity: ServiceComplexity,
-        value_factors: List[str] = None
+        value_bonus: float = 1.0
     ) -> PriceRecommendation:
-        """Get comprehensive price recommendation."""
-        if value_factors is None:
-            value_factors = []
+        """Execute comprehensive pricing strategy logic."""
+        if not service_name:
+            raise ValueError("Service name is required")
+
+        # 1. Cost-Plus Base
+        cost_plus = costs.total_cost / (1 - self.target_margin)
         
-        # Calculate all strategies
-        cost_plus_price = self.calculate_cost_plus(costs)
-        market_price = self.calculate_market_based(complexity)
-        value_price = self.calculate_value_based(market_price, value_factors)
+        # 2. Market Reference
+        market = self.MARKET_RATES[complexity]["avg"]
         
-        # Choose best strategy
-        if value_factors:
-            recommended = value_price
-            strategy = PricingStrategy.VALUE_BASED
-        elif cost_plus_price > market_price:
-            recommended = cost_plus_price
-            strategy = PricingStrategy.COST_PLUS
-        else:
-            recommended = market_price
-            strategy = PricingStrategy.MARKET_BASED
+        # 3. Strategic Selection
+        recommended = max(cost_plus, market) * value_bonus
+        strategy = PricingStrategy.VALUE_BASED if value_bonus > 1.0 else PricingStrategy.MARKET_BASED
         
-        # Calculate profit margin
-        profit = recommended - costs.total_cost
-        margin = profit / recommended
+        margin = (recommended - costs.total_cost) / recommended
+        logger.info(f"Price recommended for {service_name}: ${recommended:,.0f} ({strategy.value})")
         
         return PriceRecommendation(
-            service_name=service_name,
-            cost=costs.total_cost,
-            recommended_price=recommended,
-            profit_margin=margin,
-            competitors_avg=self.MARKET_RATES[complexity]["avg"],
-            strategy_used=strategy
+            service_name=service_name, cost=costs.total_cost,
+            recommended_price=recommended, profit_margin=margin,
+            competitors_avg=market, strategy_used=strategy
         )
     
     def format_recommendation(self, rec: PriceRecommendation) -> str:
-        """Format price recommendation."""
+        """Render ASCII Price Recommendation report."""
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💵 PRICING RECOMMENDATION                                ║",
-            f"║  Service: {rec.service_name:<44}  ║",
+            f"║  💵 PRICING STRATEGY - {rec.service_name.upper()[:28]:<28} ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  COST ANALYSIS                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    Your Cost: ${rec.cost:>12,.0f}                             ║",
-            f"║    Competitors Avg: ${rec.competitors_avg:>8,.0f}                         ║",
+            f"║  Production Cost:  ${rec.cost:>10,.0f} {' ' * 26}║",
+            f"║  Market Average:   ${rec.competitors_avg:>10,.0f} {' ' * 26}║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║  💰 RECOMMENDED QUOTE:                                    ║",
+            f"║    ╔═════════════════════╗                                ║",
+            f"║    ║  ${rec.recommended_price:^17,.0f}  ║                                ║",
+            f"║    ╚═════════════════════╝                                ║",
             "║                                                           ║",
-            "║  💰 RECOMMENDED PRICE                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ]
-        
-        # Price display with emphasis
-        price_str = f"${rec.recommended_price:,.0f}"
-        lines.append(f"║    ╔═════════════════════╗                              ║")
-        lines.append(f"║    ║  {price_str:^19}  ║                              ║")
-        lines.append(f"║    ╚═════════════════════╝                              ║")
-        
-        # Profit info
-        profit = rec.recommended_price - rec.cost
-        lines.extend([
-            "║                                                           ║",
-            f"║    Profit: ${profit:>11,.0f}                                  ║",
-            f"║    Margin: {rec.profit_margin * 100:>10.1f}%                                  ║",
-            f"║    Strategy: {rec.strategy_used.value:<39}  ║",
-        ])
-        
-        # Rating
-        if rec.profit_margin >= 0.50:
-            rating = "🔥 EXCELLENT MARGIN!"
-        elif rec.profit_margin >= 0.30:
-            rating = "✅ HEALTHY MARGIN"
-        elif rec.profit_margin >= 0.15:
-            rating = "🟡 ACCEPTABLE"
-        else:
-            rating = "⚠️ LOW MARGIN"
-        
-        lines.extend([
-            "║                                                           ║",
-            f"║    {rating:<50}  ║",
+            f"║  📈 Net Profit:    ${rec.recommended_price - rec.cost:>10,.0f} {' ' * 26}║",
+            f"║  📊 Target Margin: {rec.profit_margin:>10.1%} {' ' * 26}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - \"Không đánh mà thắng\"            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Win-Win!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
-    
-    def format_pricing_table(self) -> str:
-        """Format market rates table."""
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            "║  📊 MARKET PRICING GUIDE                                  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  Complexity    │   Min    │   Avg    │   Max    │ Margin ║",
-            "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
-        for complexity, rates in self.MARKET_RATES.items():
-            name = complexity.value.capitalize()[:12]
-            lines.append(
-                f"║  {name:<12}  │ ${rates['min']:>6,} │ ${rates['avg']:>6,} │ ${rates['max']:>6,} │  40%   ║"
-            )
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  💡 Value Multipliers:                                    ║",
-            "║    • High ROI: 2.0x                                       ║",
-            "║    • Quick Turnaround: 1.5x                               ║",
-            "║    • Specialized: 1.8x                                    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    calculator = PricingCalculator("Saigon Digital Hub")
-    
-    print("💵 Pricing Calculator")
+    print("💵 Initializing Pricing Calculator...")
     print("=" * 60)
-    print()
     
-    # Show market guide
-    print(calculator.format_pricing_table())
-    print()
-    
-    # Sample calculation
-    costs = CostBreakdown(
-        hours_required=20,
-        hourly_rate=50,
-        tools_cost=100,
-        overhead_cost=200
-    )
-    
-    rec = calculator.get_recommendation(
-        service_name="SEO Strategy Package",
-        costs=costs,
-        complexity=ServiceComplexity.MODERATE,
-        value_factors=["high_roi"]
-    )
-    
-    print(calculator.format_recommendation(rec))
+    try:
+        calc = PricingCalculator("Saigon Digital Hub")
+        # Sample
+        c_breakdown = CostBreakdown(20, 50.0, 100.0, 200.0)
+        rec = calc.get_recommendation("SEO Audit", c_breakdown, ServiceComplexity.MODERATE, 1.2)
+        print("\n" + calc.format_recommendation(rec))
+        
+    except Exception as e:
+        logger.error(f"Pricing Error: {e}")

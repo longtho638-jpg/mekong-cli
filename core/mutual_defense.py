@@ -1,16 +1,29 @@
 """
 🛡️ Mutual Defense Protocol - Collective Protection System
-Part of Agency Guild Protocol
+=========================================================
+
+Part of Agency Guild Protocol.
+Provides collective protection against problematic clients through case reporting and voting.
+
+Features:
+- Case reporting
+- Voting mechanism
+- Blacklist management
 """
 
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-from datetime import datetime, timedelta
+import logging
+import uuid
+from typing import Dict, List, Optional, Any, Union
+from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
-import json
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class CaseType(Enum):
+    """Types of disputes or violations."""
     NON_PAYMENT = "non_payment"
     FRAUD = "fraud"
     SCOPE_DISPUTE = "scope_dispute"
@@ -19,6 +32,7 @@ class CaseType(Enum):
 
 
 class CaseStatus(Enum):
+    """Lifecycle status of a defense case."""
     OPEN = "open"
     VOTING = "voting"
     APPROVED = "approved"
@@ -28,402 +42,150 @@ class CaseStatus(Enum):
 
 @dataclass
 class DefenseCase:
-    """Defense case data structure"""
+    """A formal dispute case entity."""
     id: str
     reporter_id: str
-    client_id: str
+    client_name: str
     case_type: CaseType
     title: str
     description: str
     amount_disputed: float
-    evidence_urls: List[str]
-    status: CaseStatus
-    votes_for: int
-    votes_against: int
+    status: CaseStatus = CaseStatus.OPEN
+    votes_for: int = 0
+    votes_against: int = 0
     votes_required: int = 5
+    created_at: datetime = field(default_factory=datetime.now)
+
+    def __post_init__(self):
+        if self.amount_disputed < 0:
+            raise ValueError("Amount cannot be negative")
 
 
 class MutualDefenseProtocol:
     """
-    Mutual Defense Protocol
+    Mutual Defense System.
     
-    Provides collective protection against problematic clients
-    through case reporting, voting, and collective action.
+    Orchestrates the collective defense mechanism for the agency guild network.
     """
     
     def __init__(self):
-        self.name = "Mutual Defense Protocol"
-        self.commands = {
-            "/defense": self.defense_command,
-            "/defense report": self.report_case,
-            "/defense status": self.get_case_status,
-            "/defense vote": self.vote_on_case,
-            "/defense blacklist": self.view_blacklist,
-        }
+        self.cases: Dict[str, DefenseCase] = {}
+        self.blacklist: List[str] = []
+        logger.info("Mutual Defense Protocol initialized.")
+        self._init_defaults()
     
-    async def defense_command(self, args: str = "") -> str:
-        """Main defense command router"""
-        if not args:
-            return self._get_defense_menu()
-        
-        subcommand = args.lower().split()[0]
-        rest_args = " ".join(args.split()[1:]) if len(args.split()) > 1 else ""
-        
-        handlers = {
-            "report": lambda: self.report_case(rest_args),
-            "status": lambda: self.get_case_status(rest_args),
-            "vote": lambda: self.vote_on_case(rest_args),
-            "blacklist": lambda: self.view_blacklist(rest_args),
-            "cases": lambda: self.list_active_cases(),
-        }
-        
-        handler = handlers.get(subcommand)
-        if handler:
-            return await handler()
-        return f"Unknown subcommand: {subcommand}\n\n{self._get_defense_menu()}"
+    def _init_defaults(self):
+        """Seed with sample cases."""
+        logger.info("Loading defense case data...")
+        self.report_case("AG-1", "BadClient Inc", CaseType.NON_PAYMENT, "Unpaid Invoice", "Refused payment", 15000.0)
     
-    def _get_defense_menu(self) -> str:
-        """Display defense command menu"""
-        return """
-🛡️ **MUTUAL DEFENSE PROTOCOL**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-When a guild member is wronged, we act together.
-Collective action protects everyone.
-
-**Available Commands:**
-
-🚨 `/defense report`           → Report a case
-📋 `/defense status <case_id>` → Check case status
-🗳️ `/defense vote <case_id>`   → Vote on a case
-📜 `/defense blacklist`        → View blacklist
-📂 `/defense cases`            → List active cases
-
-**How It Works:**
-
-1. Member reports case with evidence
-2. Guild members vote (5 votes required)
-3. If approved: Client is blacklisted
-4. All members warned against client
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚔️ "An attack on one is an attack on all."
-"""
+    def report_case(
+        self,
+        reporter_id: str,
+        client_name: str,
+        case_type: CaseType,
+        title: str,
+        description: str,
+        amount: float
+    ) -> DefenseCase:
+        """File a new defense case."""
+        case = DefenseCase(
+            id=f"DC-{uuid.uuid4().hex[:6].upper()}",
+            reporter_id=reporter_id,
+            client_name=client_name,
+            case_type=case_type,
+            title=title,
+            description=description,
+            amount_disputed=amount,
+            status=CaseStatus.VOTING
+        )
+        self.cases[case.id] = case
+        logger.info(f"Defense case filed: {case.id} against {client_name}")
+        return case
     
-    async def report_case(self, args: str = "") -> str:
-        """Report a defense case"""
-        return """
-🚨 **REPORT DEFENSE CASE**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Report a client to initiate collective defense.
-
-**Case Types:**
-
-💸 **Non-Payment** - Failed to pay for work
-🎭 **Fraud** - Misrepresentation or scam
-📋 **Scope Dispute** - Refused to honor scope
-📜 **Contract Breach** - Violated agreement
-❓ **Other** - Other issues
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Required Information:**
-
-1. **Client Name:** _______________
-2. **Case Type:** [Select above]
-3. **Amount Disputed:** $___________
-4. **Description:** 
-   [What happened? Be specific]
-5. **Evidence:**
-   [Upload contracts, emails, invoices]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**CLI Submission:**
-```
-/defense report \\
-  --client "BadClient Corp" \\
-  --type non_payment \\
-  --amount 15000 \\
-  --description "Delivered web app per spec. \\
-    Client refuses to pay final 50%." \\
-  --evidence "https://drive.google.com/..."
-```
-
-**Or via form:**
-agencyos.network/guild/defense/report
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠️ **Important:**
-├─ False reports result in -20 trust
-├─ Evidence is required
-└─ Case will be reviewed by guild
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
+    def cast_vote(self, case_id: str, vote_for: bool) -> bool:
+        """Register a vote on a case."""
+        if case_id not in self.cases:
+            logger.error(f"Case {case_id} not found")
+            return False
+            
+        case = self.cases[case_id]
+        if case.status != CaseStatus.VOTING:
+            logger.warning(f"Case {case_id} not open for voting")
+            return False
+            
+        if vote_for:
+            case.votes_for += 1
+        else:
+            case.votes_against += 1
+            
+        # Check threshold
+        if case.votes_for >= case.votes_required:
+            case.status = CaseStatus.APPROVED
+            self.blacklist.append(case.client_name)
+            logger.warning(f"Case {case_id} APPROVED. {case.client_name} blacklisted.")
+            
+        return True
     
-    async def get_case_status(self, case_id: str = "") -> str:
-        """Get status of a defense case"""
-        if not case_id:
-            return "Usage: `/defense status <case_id>`"
+    def format_dashboard(self) -> str:
+        """Render the Defense Dashboard."""
+        active_cases = [c for c in self.cases.values() if c.status == CaseStatus.VOTING]
         
-        return f"""
-📋 **DEFENSE CASE STATUS**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        lines = [
+            "╔═══════════════════════════════════════════════════════════╗",
+            f"║  🛡️ MUTUAL DEFENSE PROTOCOL{' ' * 29}║",
+            f"║  {len(self.cases)} total cases │ {len(active_cases)} active voting │ {len(self.blacklist)} blacklisted{' ' * 5}║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            "║  🗳️ ACTIVE VOTING                                         ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+        ]
+        
+        for c in active_cases[:3]:
+            # Vote bar
+            total_votes = c.votes_for + c.votes_against
+            bar_len = 10
+            fill = int((c.votes_for / c.votes_required) * bar_len) if c.votes_required else 0
+            bar = "█" * fill + "░" * (bar_len - fill)
+            
+            lines.append(f"║  🔴 {c.client_name[:15]:<15} │ {c.case_type.value[:12]:<12} │ {bar} {c.votes_for}/{c.votes_required} ║")
+            
+        lines.extend([
+            "║                                                           ║",
+            "║  ⛔ RECENT BLACKLIST                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+        ])
+        
+        for name in self.blacklist[-3:]:
+            lines.append(f"║    🚫 {name:<50}  ║")
+            
+        lines.extend([
+            "║                                                           ║",
+            "║  [🚨 Report Case]  [🗳️ Vote]  [📜 View Blacklist]         ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            "║  ⚔️ \"An attack on one is an attack on all.\"                ║",
+            "╚═══════════════════════════════════════════════════════════╝",
+        ])
+        
+        return "\n".join(lines)
 
-**Case ID:** #{case_id}
-**Status:** 🗳️ VOTING IN PROGRESS
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Case Details:**
-
-├─ **Client:** BadClient Corp
-├─ **Reporter:** Agency Alpha (Queen Bee)
-├─ **Type:** 💸 Non-Payment
-├─ **Amount:** $15,000
-├─ **Filed:** 2024-12-28
-
-**Description:**
-> "Delivered web application per specification.
->  Client approved final version. Now refuses 
->  to pay final 50% claiming 'budget issues.'
->  No prior warning. Contract clearly states
->  payment terms."
-
-**Evidence:** 3 files uploaded ✅
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🗳️ **VOTING STATUS**
-
-Votes FOR action:     ████████░░ 8
-Votes AGAINST:        ██░░░░░░░░ 2
-Required to approve:  5 votes ✅
-
-**Threshold reached!**
-Awaiting: 24-hour review period
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Timeline:**
-├─ Filed: Dec 28, 2024
-├─ Voting Started: Dec 28, 2024
-├─ Votes Received: Dec 28-29
-└─ Expected Resolution: Dec 30, 2024
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**If Approved:**
-├─ Client added to blacklist
-├─ All guild members notified
-├─ Client DNA marked ⛔
-└─ Cannot work with guild agencies
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
+# Example usage
+if __name__ == "__main__":
+    print("🛡️ Initializing Defense Protocol...")
+    print("=" * 60)
     
-    async def vote_on_case(self, args: str = "") -> str:
-        """Vote on a defense case"""
-        if not args:
-            return """
-Usage: `/defense vote <case_id> [for|against]`
-
-Example:
-  `/defense vote abc123 for`
-  `/defense vote abc123 against --reason "Need more evidence"`
-"""
+    try:
+        defense = MutualDefenseProtocol()
         
-        parts = args.split()
-        case_id = parts[0]
-        vote = parts[1] if len(parts) > 1 else None
+        # Test voting
+        case_id = list(defense.cases.keys())[0]
+        defense.cast_vote(case_id, True)
+        defense.cast_vote(case_id, True)
+        defense.cast_vote(case_id, True)
+        defense.cast_vote(case_id, True)
+        defense.cast_vote(case_id, True) # Should approve
         
-        if not vote:
-            # Show case and ask for vote
-            return f"""
-🗳️ **VOTE ON CASE #{case_id}**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Case Summary:**
-
-├─ Client: BadClient Corp
-├─ Type: Non-Payment
-├─ Amount: $15,000
-├─ Reporter: Agency Alpha (Queen Bee)
-
-**Claim:**
-> "Client received completed work but refuses
->  to pay final 50%."
-
-**Evidence Provided:**
-├─ ✅ Signed contract
-├─ ✅ Delivery confirmation email
-├─ ✅ Client approval message
-└─ ✅ Payment reminder thread
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Your Vote:**
-
-✅ `/defense vote {case_id} for`
-   → Support collective action
-
-❌ `/defense vote {case_id} against`
-   → Oppose (requires reason)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Note:** Only Worker and Queen tiers can vote.
-"""
+        print("\n" + defense.format_dashboard())
         
-        vote_is_for = vote.lower() == "for"
-        vote_str = "FOR ✅" if vote_is_for else "AGAINST ❌"
-        
-        return f"""
-🗳️ **VOTE RECORDED**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Case:** #{case_id}
-**Your Vote:** {vote_str}
-
-Your vote has been counted.
-
-**Current Tally:**
-├─ FOR: {'9' if vote_is_for else '8'}
-├─ AGAINST: {'2' if vote_is_for else '3'}
-└─ Required: 5
-
-{'✅ Threshold reached! Case will be resolved.' if vote_is_for else ''}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Thank you for participating in collective defense.
-"""
-    
-    async def view_blacklist(self, args: str = "") -> str:
-        """View the guild blacklist"""
-        return """
-⛔ **GUILD BLACKLIST**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Clients with verified violations against guild members.
-Do NOT accept work from these entities.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**1. BadClient Corp**
-├─ Reason: Non-Payment ($15,000)
-├─ Added: Dec 30, 2024
-├─ Verified by: 8 agencies
-└─ Reports: 3 incidents
-
-**2. ScamStartup Inc**
-├─ Reason: Fraud
-├─ Added: Nov 15, 2024
-├─ Verified by: 5 agencies
-└─ Reports: 2 incidents
-
-**3. NeverPay LLC**
-├─ Reason: Non-Payment ($42,000)
-├─ Added: Oct 22, 2024
-├─ Verified by: 12 agencies
-└─ Reports: 5 incidents
-
-[...20 more entries...]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Total Blacklisted:** 23 entities
-**Total Protected Value:** $127,000+
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠️ **Warning:**
-Working with blacklisted clients is at your own risk.
-Guild protection does not apply.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
-    
-    async def list_active_cases(self) -> str:
-        """List all active defense cases"""
-        return """
-📂 **ACTIVE DEFENSE CASES**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Cases that need your vote (last 30 days):
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🗳️ **#DC-2024-089** (Voting)
-├─ Client: BadClient Corp
-├─ Type: Non-Payment ($15,000)
-├─ Votes: 8/5 ✅ Threshold met
-└─ `/defense vote DC-2024-089`
-
-🗳️ **#DC-2024-088** (Voting)
-├─ Client: DelayTech Ltd
-├─ Type: Contract Breach
-├─ Votes: 3/5 ⏳ Need 2 more
-└─ `/defense vote DC-2024-088`
-
-📋 **#DC-2024-087** (Open)
-├─ Client: VaporSoft Inc
-├─ Type: Non-Payment ($8,500)
-├─ Status: Awaiting verification
-└─ `/defense status DC-2024-087`
-
-✅ **#DC-2024-086** (Resolved)
-├─ Client: GhostStartup
-├─ Action: Blacklisted
-├─ Resolved: Dec 25, 2024
-└─ `/defense status DC-2024-086`
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Your Voting Stats:**
-├─ Cases voted: 12
-├─ Abstained: 2
-└─ Trust earned: +6
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
-    
-    async def execute_collective_action(self, case_id: str) -> Dict[str, Any]:
-        """Execute collective action on approved case"""
-        # In production: This would:
-        # 1. Add client to blacklist
-        # 2. Update client_dna.blacklisted = True
-        # 3. Notify all guild members
-        # 4. Update case status
-        
-        return {
-            'success': True,
-            'action': 'blacklisted',
-            'case_id': case_id,
-            'notification_sent': True
-        }
-
-
-# Command registration
-def register_commands() -> Dict[str, Any]:
-    """Register Mutual Defense commands with CLI"""
-    system = MutualDefenseProtocol()
-    return {
-        "/defense": {
-            "handler": system.defense_command,
-            "description": "Access Mutual Defense Protocol",
-            "usage": "/defense [report|status|vote|blacklist]"
-        },
-        "/defense report": {
-            "handler": system.report_case,
-            "description": "Report a defense case",
-            "usage": "/defense report"
-        },
-        "/defense vote": {
-            "handler": system.vote_on_case,
-            "description": "Vote on a defense case",
-            "usage": "/defense vote <case_id>"
-        }
-    }
+    except Exception as e:
+        logger.error(f"Defense Error: {e}")

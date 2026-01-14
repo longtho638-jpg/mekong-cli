@@ -12,15 +12,19 @@ Roles:
 - Handoff to success team
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class OnboardingPhase(Enum):
-    """Onboarding phases."""
+    """Phases of the client onboarding lifecycle."""
     WELCOME = "welcome"
     DISCOVERY = "discovery"
     SETUP = "setup"
@@ -30,7 +34,7 @@ class OnboardingPhase(Enum):
 
 
 class TaskPriority(Enum):
-    """Task priority."""
+    """Urgency levels for individual onboarding tasks."""
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
@@ -38,7 +42,7 @@ class TaskPriority(Enum):
 
 @dataclass
 class OnboardingTask:
-    """An onboarding task."""
+    """An individual onboarding task entity."""
     id: str
     name: str
     phase: OnboardingPhase
@@ -50,7 +54,7 @@ class OnboardingTask:
 
 @dataclass
 class ClientOnboardingRecord:
-    """Client onboarding record."""
+    """A comprehensive onboarding project for a specific client."""
     id: str
     client_name: str
     specialist: str
@@ -59,137 +63,95 @@ class ClientOnboardingRecord:
     tasks: List[OnboardingTask]
     satisfaction_score: Optional[int] = None
 
+    def __post_init__(self):
+        if not self.client_name:
+            raise ValueError("Client name is required")
+
 
 class OnboardingSpecialist:
     """
     Onboarding Specialist System.
     
-    Expert client onboarding.
+    Orchestrates the new client setup journey through phased task management and tracking.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.onboardings: Dict[str, ClientOnboardingRecord] = {}
+        logger.info(f"Onboarding Specialist system initialized for {agency_name}")
     
-    def _create_task_template(self) -> List[OnboardingTask]:
-        """Create standard onboarding tasks."""
-        tasks = [
-            # Welcome Phase (Day 0-1)
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Welcome email", OnboardingPhase.WELCOME, TaskPriority.HIGH, 0),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Welcome call scheduled", OnboardingPhase.WELCOME, TaskPriority.HIGH, 1),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Send welcome kit", OnboardingPhase.WELCOME, TaskPriority.MEDIUM, 1),
-            
-            # Discovery Phase (Day 2-5)
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Discovery call", OnboardingPhase.DISCOVERY, TaskPriority.HIGH, 3),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Goals documentation", OnboardingPhase.DISCOVERY, TaskPriority.HIGH, 5),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Access credentials gathered", OnboardingPhase.DISCOVERY, TaskPriority.MEDIUM, 5),
-            
-            # Setup Phase (Day 5-10)
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Portal account created", OnboardingPhase.SETUP, TaskPriority.HIGH, 6),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Integrations setup", OnboardingPhase.SETUP, TaskPriority.MEDIUM, 8),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Reporting configured", OnboardingPhase.SETUP, TaskPriority.MEDIUM, 10),
-            
-            # Training Phase (Day 10-15)
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Platform training", OnboardingPhase.TRAINING, TaskPriority.HIGH, 12),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Reporting walkthrough", OnboardingPhase.TRAINING, TaskPriority.MEDIUM, 14),
-            
-            # Handoff Phase (Day 15-21)
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Introduce CSM", OnboardingPhase.HANDOFF, TaskPriority.HIGH, 16),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Satisfaction survey", OnboardingPhase.HANDOFF, TaskPriority.MEDIUM, 18),
-            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Handoff complete", OnboardingPhase.HANDOFF, TaskPriority.HIGH, 21),
+    def _get_standard_tasks(self) -> List[OnboardingTask]:
+        """Generate the blueprint of tasks for every new client."""
+        return [
+            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Welcome Email", OnboardingPhase.WELCOME, TaskPriority.HIGH, 0),
+            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Discovery Call", OnboardingPhase.DISCOVERY, TaskPriority.HIGH, 3),
+            OnboardingTask(f"T-{uuid.uuid4().hex[:4]}", "Account Setup", OnboardingPhase.SETUP, TaskPriority.MEDIUM, 7),
         ]
-        return tasks
     
     def start_onboarding(
         self,
         client_name: str,
-        specialist: str
+        specialist: str = "Expert AI"
     ) -> ClientOnboardingRecord:
-        """Start client onboarding."""
+        """Initialize a new onboarding project."""
         record = ClientOnboardingRecord(
             id=f"ONB-{uuid.uuid4().hex[:6].upper()}",
-            client_name=client_name,
-            specialist=specialist,
+            client_name=client_name, specialist=specialist,
             start_date=datetime.now(),
             current_phase=OnboardingPhase.WELCOME,
-            tasks=self._create_task_template()
+            tasks=self._get_standard_tasks()
         )
         self.onboardings[record.id] = record
+        logger.info(f"Onboarding started: {client_name} ({record.id})")
         return record
     
-    def complete_task(self, record: ClientOnboardingRecord, task_id: str):
-        """Complete a task."""
-        for task in record.tasks:
-            if task.id == task_id:
-                task.completed = True
-                task.completed_at = datetime.now()
-                break
+    def complete_task(self, onb_id: str, task_id: str) -> bool:
+        """Mark a specific task as finished and re-evaluate phase."""
+        if onb_id not in self.onboardings: return False
         
-        # Update phase
-        self._update_phase(record)
+        record = self.onboardings[onb_id]
+        for t in record.tasks:
+            if t.id == task_id:
+                t.completed = True
+                t.completed_at = datetime.now()
+                logger.info(f"Task '{t.name}' completed for {record.client_name}")
+                self._sync_phase(record)
+                return True
+        return False
     
-    def _update_phase(self, record: ClientOnboardingRecord):
-        """Update current phase based on completed tasks."""
-        phases = list(OnboardingPhase)
-        for phase in phases:
-            phase_tasks = [t for t in record.tasks if t.phase == phase]
-            if phase_tasks and not all(t.completed for t in phase_tasks):
+    def _sync_phase(self, record: ClientOnboardingRecord):
+        """Update current phase based on remaining open tasks."""
+        for phase in list(OnboardingPhase)[:-1]:
+            tasks = [t for t in record.tasks if t.phase == phase]
+            if any(not t.completed for t in tasks):
                 record.current_phase = phase
                 return
         record.current_phase = OnboardingPhase.COMPLETE
     
-    def get_progress(self, record: ClientOnboardingRecord) -> float:
-        """Get onboarding progress."""
-        completed = sum(1 for t in record.tasks if t.completed)
-        return (completed / len(record.tasks) * 100) if record.tasks else 0
-    
     def format_dashboard(self) -> str:
-        """Format specialist dashboard."""
-        active = sum(1 for o in self.onboardings.values() if o.current_phase != OnboardingPhase.COMPLETE)
+        """Render the Onboarding Dashboard."""
+        active = [o for o in self.onboardings.values() if o.current_phase != OnboardingPhase.COMPLETE]
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  👋 ONBOARDING SPECIALIST                                 ║",
-            f"║  {len(self.onboardings)} total │ {active} active onboardings                 ║",
+            f"║  👋 ONBOARDING SPECIALIST DASHBOARD{' ' * 27}║",
+            f"║  {len(self.onboardings)} projects │ {len(active)} active onboarding flows{' ' * 16}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 ACTIVE ONBOARDINGS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        phase_icons = {"welcome": "👋", "discovery": "🔍", "setup": "⚙️", "training": "📚", "handoff": "🤝", "complete": "✅"}
-        
-        for record in list(self.onboardings.values())[:5]:
-            progress = self.get_progress(record)
-            icon = phase_icons.get(record.current_phase.value, "📋")
-            bar = "█" * int(progress / 10) + "░" * (10 - int(progress / 10))
+        for o in active[:5]:
+            done = sum(1 for t in o.tasks if t.completed)
+            pct = (done / len(o.tasks)) * 100 if o.tasks else 0
+            bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
+            lines.append(f"║  👋 {o.client_name[:18]:<18} │ {bar} │ {pct:>3.0f}% phase: {o.current_phase.value:<8}║")
             
-            lines.append(f"║  {icon} {record.client_name[:18]:<18} │ {bar} │ {progress:>3.0f}%  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📊 TODAY'S TASKS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        # Get overdue/due tasks
-        priority_icons = {"high": "🔴", "medium": "🟡", "low": "🟢"}
-        today_tasks = []
-        for record in self.onboardings.values():
-            for task in record.tasks:
-                if not task.completed:
-                    days_since = (datetime.now() - record.start_date).days
-                    if days_since >= task.due_day:
-                        today_tasks.append((record.client_name, task))
-        
-        for client, task in today_tasks[:4]:
-            icon = priority_icons.get(task.priority.value, "⚪")
-            lines.append(f"║    {icon} {client[:12]:<12} │ {task.name[:30]:<30}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [✅ Complete Task]  [📋 Templates]  [📊 Metrics]         ║",
+            "║  [✅ Complete Task]  [📋 Workflow]  [📊 Retention]        ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Great first impressions!         ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - First Impression! ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -198,18 +160,16 @@ class OnboardingSpecialist:
 
 # Example usage
 if __name__ == "__main__":
-    specialist = OnboardingSpecialist("Saigon Digital Hub")
-    
-    print("👋 Onboarding Specialist")
+    print("👋 Initializing Onboarding System...")
     print("=" * 60)
-    print()
     
-    # Start onboardings
-    onb1 = specialist.start_onboarding("Sunrise Realty", "Sarah")
-    onb2 = specialist.start_onboarding("Coffee Lab", "Mike")
-    
-    # Complete some tasks
-    for i, task in enumerate(onb1.tasks[:5]):
-        specialist.complete_task(onb1, task.id)
-    
-    print(specialist.format_dashboard())
+    try:
+        specialist = OnboardingSpecialist("Saigon Digital Hub")
+        # Seed
+        o = specialist.start_onboarding("Acme Corp")
+        specialist.complete_task(o.id, o.tasks[0].id)
+        
+        print("\n" + specialist.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Onboarding Error: {e}")
