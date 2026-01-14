@@ -12,12 +12,16 @@ Features:
 - Market benchmarking
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class BenefitType(Enum):
     """Benefit types."""
@@ -44,17 +48,23 @@ class PayGrade(Enum):
 
 @dataclass
 class SalaryBand:
-    """A salary band."""
+    """A salary band entity."""
     grade: PayGrade
     min_salary: float
     mid_salary: float
     max_salary: float
     currency: str = "USD"
 
+    def __post_init__(self):
+        if not (self.min_salary < self.mid_salary < self.max_salary):
+            raise ValueError(f"Invalid salary band for {self.grade.value}: min < mid < max required")
+        if self.min_salary < 0:
+            raise ValueError("Salary cannot be negative")
+
 
 @dataclass
 class Benefit:
-    """A benefit offering."""
+    """A benefit offering entity."""
     id: str
     name: str
     benefit_type: BenefitType
@@ -62,24 +72,34 @@ class Benefit:
     employer_contribution: float  # percentage 0-100
     active: bool = True
 
+    def __post_init__(self):
+        if not 0 <= self.employer_contribution <= 100:
+            raise ValueError("Employer contribution must be between 0 and 100")
+        if self.cost_monthly < 0:
+            raise ValueError("Cost cannot be negative")
+
 
 @dataclass
 class EmployeeComp:
-    """Employee compensation package."""
+    """Employee compensation package record."""
     id: str
     employee_name: str
     grade: PayGrade
     base_salary: float
-    bonus_target: float = 0  # percentage
-    benefits: List[str] = field(default_factory=list)
-    equity: float = 0
+    bonus_target: float = 0.0  # percentage
+    benefit_ids: List[str] = field(default_factory=list)
+    equity: float = 0.0
+
+    def __post_init__(self):
+        if self.base_salary < 0:
+            raise ValueError("Base salary cannot be negative")
 
 
 class CompensationManager:
     """
-    Compensation Manager.
+    Compensation Manager System.
     
-    Fair and competitive pay.
+    Handles fair pay structures, benefits distribution, and total rewards tracking.
     """
     
     def __init__(self, agency_name: str):
@@ -88,36 +108,32 @@ class CompensationManager:
         self.benefits: Dict[str, Benefit] = {}
         self.compensation: Dict[str, EmployeeComp] = {}
         
-        self._init_salary_bands()
-        self._init_benefits()
+        logger.info(f"Compensation Manager initialized for {agency_name}")
+        self._init_defaults()
     
-    def _init_salary_bands(self):
-        """Initialize default salary bands."""
+    def _init_defaults(self):
+        """Setup default salary bands and standard benefits."""
+        # Bands
         bands = [
-            (PayGrade.JUNIOR, 1000, 1500, 2000),
-            (PayGrade.MID, 2000, 2750, 3500),
-            (PayGrade.SENIOR, 3000, 4000, 5000),
-            (PayGrade.LEAD, 4000, 5000, 6000),
-            (PayGrade.MANAGER, 4500, 5500, 6500),
-            (PayGrade.DIRECTOR, 6000, 7500, 9000),
-            (PayGrade.EXECUTIVE, 8000, 10000, 15000),
+            (PayGrade.JUNIOR, 1000.0, 1500.0, 2000.0),
+            (PayGrade.MID, 2000.0, 2750.0, 3500.0),
+            (PayGrade.SENIOR, 3000.0, 4000.0, 5000.0),
+            (PayGrade.LEAD, 4000.0, 5000.0, 6000.0),
+            (PayGrade.MANAGER, 4500.0, 5500.0, 6500.0),
+            (PayGrade.DIRECTOR, 6000.0, 7500.0, 9000.0),
+            (PayGrade.EXECUTIVE, 8000.0, 10000.0, 15000.0),
         ]
-        
         for grade, min_s, mid_s, max_s in bands:
             self.salary_bands[grade] = SalaryBand(grade, min_s, mid_s, max_s)
-    
-    def _init_benefits(self):
-        """Initialize default benefits."""
+            
+        # Standard Benefits
         default_benefits = [
-            ("Health Insurance", BenefitType.HEALTH, 300, 80),
-            ("Dental Plan", BenefitType.DENTAL, 50, 100),
-            ("401k Match", BenefitType.RETIREMENT, 0, 50),
-            ("Unlimited PTO", BenefitType.PTO, 0, 100),
-            ("Remote Work", BenefitType.REMOTE, 100, 100),
-            ("Learning Budget", BenefitType.LEARNING, 100, 100),
-            ("Wellness Stipend", BenefitType.WELLNESS, 50, 100),
+            ("Health Insurance", BenefitType.HEALTH, 300.0, 80.0),
+            ("Dental Plan", BenefitType.DENTAL, 50.0, 100.0),
+            ("401k Match", BenefitType.RETIREMENT, 0.0, 50.0),
+            ("Unlimited PTO", BenefitType.PTO, 0.0, 100.0),
+            ("Remote Work", BenefitType.REMOTE, 100.0, 100.0),
         ]
-        
         for name, btype, cost, contrib in default_benefits:
             self.add_benefit(name, btype, cost, contrib)
     
@@ -126,9 +142,9 @@ class CompensationManager:
         name: str,
         benefit_type: BenefitType,
         cost: float,
-        employer_contribution: float = 100
+        employer_contribution: float = 100.0
     ) -> Benefit:
-        """Add a benefit."""
+        """Add a new benefit to the catalog."""
         benefit = Benefit(
             id=f"BEN-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -137,6 +153,7 @@ class CompensationManager:
             employer_contribution=employer_contribution
         )
         self.benefits[benefit.id] = benefit
+        logger.info(f"Benefit added: {name} (${cost}/mo)")
         return benefit
     
     def set_employee_comp(
@@ -144,128 +161,118 @@ class CompensationManager:
         name: str,
         grade: PayGrade,
         base_salary: float,
-        bonus_target: float = 0,
-        benefit_ids: List[str] = None,
-        equity: float = 0
+        bonus_target: float = 0.0,
+        benefit_ids: Optional[List[str]] = None,
+        equity: float = 0.0
     ) -> EmployeeComp:
-        """Set employee compensation."""
+        """Define or update an employee's total rewards package."""
+        if not name:
+            raise ValueError("Employee name required")
+
         comp = EmployeeComp(
             id=f"CMP-{uuid.uuid4().hex[:6].upper()}",
             employee_name=name,
             grade=grade,
             base_salary=base_salary,
             bonus_target=bonus_target,
-            benefits=benefit_ids or list(self.benefits.keys()),
+            benefit_ids=benefit_ids or list(self.benefits.keys()),
             equity=equity
         )
         self.compensation[comp.id] = comp
+        logger.info(f"Compensation set for {name} ({grade.value})")
         return comp
     
-    def get_total_compensation(self, comp: EmployeeComp) -> Dict[str, float]:
-        """Calculate total compensation."""
-        base = comp.base_salary * 12
-        bonus = base * (comp.bonus_target / 100)
+    def get_total_comp_summary(self, comp_id: str) -> Dict[str, float]:
+        """Calculate annualized total compensation including bonuses and benefits."""
+        if comp_id not in self.compensation:
+            return {"total": 0.0}
+            
+        c = self.compensation[comp_id]
+        base_annual = c.base_salary * 12
+        bonus_value = base_annual * (c.bonus_target / 100.0)
         
-        benefits_value = 0
-        for ben_id in comp.benefits:
-            ben = self.benefits.get(ben_id)
-            if ben:
-                benefits_value += ben.cost_monthly * (ben.employer_contribution / 100) * 12
-        
-        total = base + bonus + benefits_value + comp.equity
+        benefits_value = 0.0
+        for bid in c.benefit_ids:
+            ben = self.benefits.get(bid)
+            if ben and ben.active:
+                benefits_value += ben.cost_monthly * (ben.employer_contribution / 100.0) * 12
         
         return {
-            "base": base,
-            "bonus": bonus,
+            "base": base_annual,
+            "bonus": bonus_value,
             "benefits": benefits_value,
-            "equity": comp.equity,
-            "total": total
+            "equity": c.equity,
+            "total": base_annual + bonus_value + benefits_value + c.equity
         }
     
-    def get_compa_ratio(self, comp: EmployeeComp) -> float:
-        """Calculate compa-ratio (salary vs mid-point)."""
-        band = self.salary_bands.get(comp.grade)
-        if not band:
-            return 1.0
-        return comp.base_salary / band.mid_salary
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get compensation statistics."""
-        if not self.compensation:
-            return {"employees": 0, "avg_salary": 0, "total_payroll": 0, "avg_compa": 0}
-        
-        total_salary = sum(c.base_salary for c in self.compensation.values())
-        avg_salary = total_salary / len(self.compensation)
-        avg_compa = sum(self.get_compa_ratio(c) for c in self.compensation.values()) / len(self.compensation)
-        
-        return {
-            "employees": len(self.compensation),
-            "avg_salary": avg_salary,
-            "total_payroll": total_salary * 12,
-            "avg_compa": avg_compa,
-            "benefits_count": len(self.benefits)
-        }
+    def get_compa_ratio(self, comp_id: str) -> float:
+        """Calculate compa-ratio (salary relative to mid-point of band)."""
+        c = self.compensation.get(comp_id)
+        if not c: return 0.0
+        band = self.salary_bands.get(c.grade)
+        if not band or band.mid_salary == 0: return 1.0
+        return c.base_salary / band.mid_salary
     
     def format_dashboard(self) -> str:
-        """Format compensation manager dashboard."""
-        stats = self.get_stats()
+        """Render Compensation Dashboard."""
+        count = len(self.compensation)
+        total_salary = sum(c.base_salary for c in self.compensation.values())
+        avg_salary = total_salary / count if count else 0.0
+        avg_compa = sum(self.get_compa_ratio(cid) for cid in self.compensation) / count if count else 0.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💰 COMPENSATION MANAGER                                  ║",
-            f"║  {stats['employees']} employees │ ${stats['avg_salary']:,.0f} avg │ {stats['avg_compa']:.0%} compa  ║",
+            f"║  💰 COMPENSATION MANAGER{' ' * 42}║",
+            f"║  {count} employees │ ${avg_salary:,.0f} avg monthly │ {avg_compa:.0%} avg compa {' ' * 8}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 SALARY BANDS                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 SALARY BANDS (Core)                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        grade_icons = {"junior": "🌱", "mid": "🌿", "senior": "🌳",
-                      "lead": "⭐", "manager": "👔", "director": "🎯", "executive": "👑"}
+        grade_icons = {
+            PayGrade.JUNIOR: "🌱", PayGrade.MID: "🌿", PayGrade.SENIOR: "🌳",
+            PayGrade.LEAD: "⭐", PayGrade.MANAGER: "👔", PayGrade.DIRECTOR: "🎯", PayGrade.EXECUTIVE: "👑"
+        }
         
-        for grade in [PayGrade.JUNIOR, PayGrade.MID, PayGrade.SENIOR, PayGrade.LEAD]:
-            band = self.salary_bands.get(grade)
-            if band:
-                icon = grade_icons.get(grade.value, "💼")
-                lines.append(f"║    {icon} {grade.value.title():<10} │ ${band.min_salary:>5,.0f} - ${band.max_salary:>5,.0f}     ║")
+        # Show key bands
+        for g in [PayGrade.JUNIOR, PayGrade.MID, PayGrade.SENIOR, PayGrade.LEAD]:
+            b = self.salary_bands.get(g)
+            if b:
+                icon = grade_icons.get(g, "💼")
+                lines.append(f"║    {icon} {g.value.title():<10} │ ${b.min_salary:>5,.0f} - ${b.max_salary:>5,.0f} {' ' * 15}║")
         
         lines.extend([
             "║                                                           ║",
-            "║  🎁 BENEFITS PACKAGE                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🎁 TOP BENEFITS                                          ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"health": "🏥", "dental": "🦷", "vision": "👁️",
-                     "retirement": "🏦", "pto": "🏖️", "remote": "🏠",
-                     "learning": "📚", "wellness": "💪"}
+        type_icons = {
+            BenefitType.HEALTH: "🏥", BenefitType.DENTAL: "🦷", BenefitType.VISION: "👁️",
+            BenefitType.RETIREMENT: "🏦", BenefitType.PTO: "🏖️", BenefitType.REMOTE: "🏠"
+        }
         
-        for benefit in list(self.benefits.values())[:5]:
-            icon = type_icons.get(benefit.benefit_type.value, "🎁")
-            contrib = f"{benefit.employer_contribution:.0f}%"
-            lines.append(f"║    {icon} {benefit.name:<18} │ {contrib:>5} covered       ║")
+        for ben in list(self.benefits.values())[:4]:
+            icon = type_icons.get(ben.benefit_type, "🎁")
+            lines.append(f"║    {icon} {ben.name:<18} │ {ben.employer_contribution:>3.0f}% covered{' ' * 14}║")
         
         lines.extend([
             "║                                                           ║",
-            "║  👥 EMPLOYEE COMPENSATION                                 ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  👥 EMPLOYEE SNAPSHOT                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        for comp in list(self.compensation.values())[:4]:
-            total = self.get_total_compensation(comp)
-            compa = self.get_compa_ratio(comp)
-            compa_icon = "🟢" if compa >= 0.9 else "🟡" if compa >= 0.8 else "🔴"
-            lines.append(f"║    {compa_icon} {comp.employee_name[:14]:<14} │ ${comp.base_salary:>6,.0f}/mo │ {compa:.0%}  ║")
+        for cid, comp in list(self.compensation.items())[:4]:
+            ratio = self.get_compa_ratio(cid)
+            r_icon = "🟢" if ratio >= 0.9 else "🟡" if ratio >= 0.8 else "🔴"
+            name_disp = (comp.employee_name[:14] + '..') if len(comp.employee_name) > 16 else comp.employee_name
+            lines.append(f"║    {r_icon} {name_disp:<16} │ ${comp.base_salary:>6,.0f}/mo │ Ratio: {ratio:>4.0%}  ║")
         
         lines.extend([
-            "║                                                           ║",
-            "║  📈 COMPENSATION SUMMARY                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    💰 Annual Payroll:     ${stats['total_payroll']:>12,.0f}              ║",
-            f"║    📊 Avg Monthly Salary: ${stats['avg_salary']:>12,.0f}              ║",
-            f"║    🎯 Avg Compa-Ratio:    {stats['avg_compa']:>12.0%}              ║",
             "║                                                           ║",
             "║  [📊 Bands]  [🎁 Benefits]  [👥 Employees]                ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Pay fairly!                      ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Pay Fairly!         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -274,15 +281,17 @@ class CompensationManager:
 
 # Example usage
 if __name__ == "__main__":
-    cm = CompensationManager("Saigon Digital Hub")
-    
-    print("💰 Compensation Manager")
+    print("💰 Initializing Compensation Manager...")
     print("=" * 60)
-    print()
     
-    cm.set_employee_comp("Khoa Vo", PayGrade.EXECUTIVE, 10000, 20)
-    cm.set_employee_comp("Alex Nguyen", PayGrade.SENIOR, 4000, 15)
-    cm.set_employee_comp("Sarah Tran", PayGrade.SENIOR, 3500, 10)
-    cm.set_employee_comp("Mike Chen", PayGrade.MID, 2500, 10)
-    
-    print(cm.format_dashboard())
+    try:
+        mgr = CompensationManager("Saigon Digital Hub")
+        
+        mgr.set_employee_comp("Khoa Vo", PayGrade.EXECUTIVE, 10000.0, 20.0)
+        mgr.set_employee_comp("Alex Nguyen", PayGrade.SENIOR, 4000.0, 15.0)
+        mgr.set_employee_comp("Sarah Tran", PayGrade.SENIOR, 3500.0, 10.0)
+        
+        print("\n" + mgr.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Manager Error: {e}")

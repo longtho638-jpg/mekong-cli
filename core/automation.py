@@ -12,12 +12,16 @@ Features:
 - Notification workflows
 """
 
+import uuid
+import logging
 from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TriggerType(Enum):
     """Automation trigger types."""
@@ -40,15 +44,19 @@ class ActionType(Enum):
 
 @dataclass
 class Action:
-    """An automation action."""
+    """An automation action entity."""
     type: ActionType
     config: Dict[str, Any]
     delay_hours: int = 0
 
+    def __post_init__(self):
+        if self.delay_hours < 0:
+            raise ValueError("Delay hours cannot be negative")
+
 
 @dataclass
 class Workflow:
-    """An automation workflow."""
+    """An automation workflow entity."""
     id: str
     name: str
     description: str
@@ -61,20 +69,19 @@ class Workflow:
 
 class AutomationEngine:
     """
-    Automation Engine.
+    Automation Engine System.
     
-    Automate repetitive agency tasks.
+    Orchestrates workflows triggered by agency events.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.workflows: Dict[str, Workflow] = {}
-        
-        # Pre-build common workflows
+        logger.info(f"Automation Engine initialized for {agency_name}")
         self._create_default_workflows()
     
     def _create_default_workflows(self):
-        """Create default automation workflows."""
+        """Pre-configure common agency workflows."""
         
         # New client onboarding
         self.create_workflow(
@@ -84,7 +91,6 @@ class AutomationEngine:
             actions=[
                 Action(ActionType.SEND_EMAIL, {"template": "welcome_email", "to": "client"}, 0),
                 Action(ActionType.CREATE_TASK, {"title": "Schedule kickoff call", "assign": "account_manager"}, 0),
-                Action(ActionType.CREATE_TASK, {"title": "Collect brand assets", "assign": "designer"}, 24),
                 Action(ActionType.SEND_NOTIFICATION, {"message": "New client onboarded!", "channel": "slack"}, 0),
             ]
         )
@@ -106,31 +112,8 @@ class AutomationEngine:
             description="Celebrate and notify when milestones are completed",
             trigger=TriggerType.MILESTONE_COMPLETE,
             actions=[
-                Action(ActionType.SEND_EMAIL, {"template": "milestone_update", "to": "client"}, 0),
                 Action(ActionType.SEND_NOTIFICATION, {"message": "Milestone completed! 🎉", "channel": "slack"}, 0),
-                Action(ActionType.CREATE_TASK, {"title": "Review milestone with client", "assign": "project_manager"}, 0),
-            ]
-        )
-        
-        # Feedback follow-up
-        self.create_workflow(
-            name="Feedback Follow-up",
-            description="Follow up on client feedback",
-            trigger=TriggerType.FEEDBACK_RECEIVED,
-            actions=[
-                Action(ActionType.SEND_EMAIL, {"template": "thank_you_feedback", "to": "client"}, 0),
-                Action(ActionType.CREATE_TASK, {"title": "Review feedback and action items", "assign": "owner"}, 0),
-            ]
-        )
-        
-        # Meeting prep
-        self.create_workflow(
-            name="Meeting Preparation",
-            description="Prepare for scheduled client meetings",
-            trigger=TriggerType.MEETING_SCHEDULED,
-            actions=[
-                Action(ActionType.CREATE_TASK, {"title": "Prepare meeting agenda", "assign": "account_manager"}, 0),
-                Action(ActionType.SEND_NOTIFICATION, {"message": "Meeting scheduled - prep needed", "channel": "slack"}, 0),
+                Action(ActionType.CREATE_TASK, {"title": "Review milestone", "assign": "pm"}, 0),
             ]
         )
     
@@ -141,7 +124,10 @@ class AutomationEngine:
         trigger: TriggerType,
         actions: List[Action]
     ) -> Workflow:
-        """Create a new workflow."""
+        """Create and register a new workflow."""
+        if not name:
+            raise ValueError("Workflow name required")
+
         workflow = Workflow(
             id=f"WF-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -151,96 +137,62 @@ class AutomationEngine:
         )
         
         self.workflows[workflow.id] = workflow
+        logger.info(f"Workflow created: {name} (Trigger: {trigger.value})")
         return workflow
     
     def run_workflow(self, workflow_id: str) -> List[str]:
-        """Simulate running a workflow."""
+        """
+        Simulate workflow execution.
+        In production, this would dispatch tasks to a queue.
+        """
         workflow = self.workflows.get(workflow_id)
         if not workflow:
-            return ["Workflow not found"]
+            logger.error(f"Workflow {workflow_id} not found")
+            return ["Error: Workflow not found"]
         
+        if not workflow.enabled:
+            logger.warning(f"Workflow {workflow.name} is disabled")
+            return [f"Workflow {workflow.name} is disabled"]
+
         workflow.runs += 1
-        results = []
+        logger.info(f"Executing workflow: {workflow.name} (Run #{workflow.runs})")
         
+        results = []
         for action in workflow.actions:
-            delay_text = f" (after {action.delay_hours}h)" if action.delay_hours > 0 else ""
-            results.append(f"✅ {action.type.value}: {action.config}{delay_text}")
+            delay_text = f" (+{action.delay_hours}h delay)" if action.delay_hours > 0 else ""
+            status_msg = f"✅ {action.type.value}: {list(action.config.keys())}{delay_text}"
+            results.append(status_msg)
+            logger.debug(f"Action triggered: {action.type.value}")
         
         return results
     
-    def format_workflow(self, workflow: Workflow) -> str:
-        """Format workflow details."""
-        trigger_icons = {
-            TriggerType.NEW_CLIENT: "👤",
-            TriggerType.NEW_PROJECT: "📋",
-            TriggerType.INVOICE_DUE: "💳",
-            TriggerType.MILESTONE_COMPLETE: "🎯",
-            TriggerType.FEEDBACK_RECEIVED: "💬",
-            TriggerType.MEETING_SCHEDULED: "📅"
-        }
-        
-        action_icons = {
-            ActionType.SEND_EMAIL: "📧",
-            ActionType.CREATE_TASK: "✅",
-            ActionType.SEND_NOTIFICATION: "🔔",
-            ActionType.UPDATE_STATUS: "🔄",
-            ActionType.ASSIGN_TEAM: "👥"
-        }
-        
-        status = "🟢 Active" if workflow.enabled else "🔴 Disabled"
-        
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  ⚙️ {workflow.name.upper()[:48]:<48}  ║",
-            f"║  {workflow.description[:53]:<53}  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🎯 Trigger: {trigger_icons[workflow.trigger]} {workflow.trigger.value:<37}  ║",
-            f"║  Status: {status:<44}  ║",
-            f"║  Runs: {workflow.runs:<46}  ║",
-            "║                                                           ║",
-            "║  📋 ACTIONS:                                              ║",
-        ]
-        
-        for i, action in enumerate(workflow.actions, 1):
-            icon = action_icons[action.type]
-            delay = f"(+{action.delay_hours}h)" if action.delay_hours > 0 else ""
-            lines.append(f"║    {i}. {icon} {action.type.value:<20} {delay:<14}  ║")
-        
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name}                                    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
-    
     def format_dashboard(self) -> str:
-        """Format automation dashboard."""
-        active = sum(1 for w in self.workflows.values() if w.enabled)
+        """Render Automation Dashboard."""
+        active_count = sum(1 for w in self.workflows.values() if w.enabled)
         total_runs = sum(w.runs for w in self.workflows.values())
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  ⚙️ AUTOMATION DASHBOARD                                  ║",
-            f"║  {len(self.workflows)} workflows | {active} active | {total_runs} total runs          ║",
+            f"║  ⚙️ AUTOMATION DASHBOARD{' ' * 35}║",
+            f"║  {len(self.workflows)} workflows │ {active_count} active │ {total_runs} total runs{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  Workflow              │ Trigger        │ Actions │ Runs ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  Workflow              │ Trigger        │ Actions │ Runs  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for workflow in list(self.workflows.values())[:5]:
-            name = workflow.name[:20]
-            trigger = workflow.trigger.value[:14]
-            actions = len(workflow.actions)
-            runs = workflow.runs
+        # Display top 5 workflows
+        for w in list(self.workflows.values())[:5]:
+            name_display = (w.name[:20] + '..') if len(w.name) > 22 else w.name
+            trigger_display = w.trigger.value[:14]
+            status_icon = "🟢" if w.enabled else "🔴"
             
-            lines.append(f"║  {name:<20} │ {trigger:<14} │ {actions:>7} │ {runs:>4} ║")
+            lines.append(f"║  {status_icon} {name_display:<20} │ {trigger_display:<14} │ {len(w.actions):>7} │ {w.runs:>4}  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  💡 Automations save 10+ hours/week!                      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Work smarter, not harder!        ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Efficiency!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -249,22 +201,17 @@ class AutomationEngine:
 
 # Example usage
 if __name__ == "__main__":
-    engine = AutomationEngine("Saigon Digital Hub")
-    
-    print("⚙️ Automation Workflows")
+    print("⚙️ Initializing Automation Engine...")
     print("=" * 60)
-    print()
     
-    print(engine.format_dashboard())
-    print()
-    
-    # Show a workflow
-    workflow = list(engine.workflows.values())[0]
-    print(engine.format_workflow(workflow))
-    print()
-    
-    # Simulate running
-    print("🔄 Simulating workflow run:")
-    results = engine.run_workflow(workflow.id)
-    for result in results:
-        print(f"   {result}")
+    try:
+        engine = AutomationEngine("Saigon Digital Hub")
+        
+        # Simulate running a workflow
+        workflow = list(engine.workflows.values())[0]
+        engine.run_workflow(workflow.id)
+        
+        print("\n" + engine.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

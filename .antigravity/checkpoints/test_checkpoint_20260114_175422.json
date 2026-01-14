@@ -1,0 +1,72 @@
+{
+  "name": "test_checkpoint",
+  "description": "Testing checkpoint system",
+  "timestamp": "2026-01-14T17:54:22.854329",
+  "data": {
+    "version": "1.0.0",
+    "gathered_at": "2026-01-14T17:54:22.851839",
+    "moats": {
+      "data": {
+        "strength": 37,
+        "metrics": {
+          "projects": 50,
+          "clients": 25,
+          "quotes": 100,
+          "invoices": 200,
+          "total_revenue": 0,
+          "years_of_data": 0
+        }
+      },
+      "learning": {
+        "strength": 59,
+        "metrics": {
+          "patterns_learned": 300,
+          "success_rate": 0.9999999377408997,
+          "custom_agents": 0,
+          "commands_run": 300
+        }
+      },
+      "network": {
+        "strength": 15,
+        "metrics": {
+          "collaborators": 2,
+          "referral_partners": 1,
+          "shared_skills": 0,
+          "community_reputation": "Bronze"
+        }
+      },
+      "workflow": {
+        "strength": 30,
+        "metrics": {
+          "custom_workflows": 2,
+          "custom_agents": 0,
+          "integrations": 1,
+          "hours_saved_monthly": 0
+        }
+      },
+      "identity": {
+        "strength": 75,
+        "metrics": {
+          "brand_configured": true,
+          "pricing_tiers": 3,
+          "templates": 10,
+          "personas": 0
+        }
+      }
+    },
+    "cashflow": {
+      "total_arr": 100000.0,
+      "progress": 10.0
+    },
+    "loyalty": {
+      "tenure_months": 0,
+      "tier": "Bronze Agent"
+    },
+    "memory": {
+      "total_memories": 3,
+      "agents_with_memory": 1,
+      "total_patterns": 0,
+      "overall_success_rate": 1.0
+    }
+  }
+}

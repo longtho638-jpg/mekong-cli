@@ -12,14 +12,18 @@ Features:
 - Agency pulse
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SystemStatus(Enum):
-    """System status."""
+    """System availability status."""
     OPERATIONAL = "operational"
     DEGRADED = "degraded"
     DOWN = "down"
@@ -27,7 +31,7 @@ class SystemStatus(Enum):
 
 @dataclass
 class QuickStat:
-    """A quick stat for the dashboard."""
+    """A single dashboard metric entity."""
     name: str
     value: str
     trend: str
@@ -36,7 +40,7 @@ class QuickStat:
 
 @dataclass
 class SystemHealth:
-    """System health check."""
+    """Health status record for a system component."""
     name: str
     status: SystemStatus
     message: str = ""
@@ -44,21 +48,21 @@ class SystemHealth:
 
 class AgencyCommandCenter:
     """
-    Agency Command Center.
+    Agency Command Center System.
     
     MILESTONE 100 - THE ULTIMATE DASHBOARD!
-    
-    "Không đánh mà thắng" 🏯
+    Aggregates agency-wide health metrics and system statuses.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.quick_stats: List[QuickStat] = []
         self.systems: List[SystemHealth] = []
-        self._load_data()
+        logger.info(f"Command Center initialized for {agency_name}")
+        self._load_current_data()
     
-    def _load_data(self):
-        """Load command center data."""
+    def _load_current_data(self):
+        """Pre-populate with snapshot data."""
         self.quick_stats = [
             QuickStat("Revenue MTD", "$45,200", "↑ 12%", "💰"),
             QuickStat("Active Clients", "15", "↑ 2", "👥"),
@@ -77,90 +81,88 @@ class AgencyCommandCenter:
             SystemHealth("Calendar", SystemStatus.OPERATIONAL),
         ]
     
-    def get_pulse(self) -> str:
-        """Get agency pulse status."""
-        # Calculate overall health
-        revenue_growth = True  # Simulated
-        clients_growing = True
-        team_happy = True
+    def get_pulse_status(self) -> str:
+        """Evaluate overall agency momentum."""
+        # Simulated health algorithm
+        revenue_thriving = True
+        churn_low = True
         
-        if revenue_growth and clients_growing and team_happy:
+        if revenue_thriving and churn_low:
             return "💚 THRIVING"
-        elif revenue_growth or clients_growing:
+        elif revenue_thriving or churn_low:
             return "🟢 HEALTHY"
         else:
-            return "🟡 NEEDS ATTENTION"
+            return "🟡 CAUTION"
     
     def format_command_center(self) -> str:
-        """Format the ultimate command center."""
-        pulse = self.get_pulse()
-        now = datetime.now().strftime("%b %d, %Y %H:%M")
+        """Render the complete Command Center Dashboard."""
+        pulse = self.get_pulse_status()
+        now_str = datetime.now().strftime("%b %d, %Y %H:%M")
+        
+        border_top = "╔" + "═" * 70 + "╗"
+        border_bottom = "╚" + "═" * 70 + "╝"
+        sep = "╠" + "═" * 70 + "╣"
         
         lines = [
-            "╔══════════════════════════════════════════════════════════════════════╗",
-            "║                                                                      ║",
-            f"║  🏯 {self.agency_name.upper():<61}  ║",
-            "║  ═══════════════════════════════════════════════════════════════════ ║",
-            "║                     A G E N C Y    C O M M A N D    C E N T E R      ║",
-            "║                              M I L E S T O N E   1 0 0               ║",
-            "║                                                                      ║",
-            "╠══════════════════════════════════════════════════════════════════════╣",
-            f"║  📊 AGENCY PULSE: {pulse:<20}    📅 {now:<18}  ║",
-            "╠══════════════════════════════════════════════════════════════════════╣",
-            "║                                                                      ║",
+            border_top,
+            f"║  {self.agency_name.upper()[:60]:<60}         ║",
+            f"║  {'═' * 66}  ║",
+            "║           A G E N C Y    C O M M A N D    C E N T E R            ║",
+            "║                    M I L E S T O N E   1 0 0                     ║",
+            sep,
+            f"║  📊 PULSE: {pulse:<20} │ 📅 {now_str:<25}  ║",
+            sep,
             "║  📈 QUICK STATS                                                      ║",
-            "║  ─────────────────────────────────────────────────────────────────── ║",
+            "║  " + "─" * 66 + "  ║",
         ]
         
-        # Display stats in 2 columns
+        # Grid layout for stats (2 columns)
         for i in range(0, len(self.quick_stats), 2):
-            stat1 = self.quick_stats[i]
-            stat2 = self.quick_stats[i + 1] if i + 1 < len(self.quick_stats) else None
+            s1 = self.quick_stats[i]
+            s2 = self.quick_stats[i + 1] if i + 1 < len(self.quick_stats) else None
             
-            col1 = f"{stat1.icon} {stat1.name}: {stat1.value} {stat1.trend}"
-            if stat2:
-                col2 = f"{stat2.icon} {stat2.name}: {stat2.value} {stat2.trend}"
-                lines.append(f"║    {col1:<30} │ {col2:<30}  ║")
+            c1 = f"{s1.icon} {s1.name}: {s1.value} {s1.trend}"
+            if s2:
+                c2 = f"{s2.icon} {s2.name}: {s2.value} {s2.trend}"
+                lines.append(f"║    {c1:<30} │ {c2:<30}  ║")
             else:
-                lines.append(f"║    {col1:<66}  ║")
+                lines.append(f"║    {c1:<66}  ║")
         
         lines.extend([
             "║                                                                      ║",
             "║  🔧 SYSTEM STATUS                                                    ║",
-            "║  ─────────────────────────────────────────────────────────────────── ║",
+            "║  " + "─" * 66 + "  ║",
         ])
         
-        status_icons = {"operational": "🟢", "degraded": "🟡", "down": "🔴"}
+        status_map = {
+            SystemStatus.OPERATIONAL: "🟢", 
+            SystemStatus.DEGRADED: "🟡", 
+            SystemStatus.DOWN: "🔴"
+        }
         
-        # Display systems in 3 columns
-        system_strs = [f"{status_icons[s.status.value]} {s.name}" for s in self.systems]
-        for i in range(0, len(system_strs), 3):
-            row = system_strs[i:i+3]
-            row_str = " │ ".join(f"{s:<18}" for s in row)
-            lines.append(f"║    {row_str:<66}  ║")
+        # Grid for systems (3 columns)
+        for i in range(0, len(self.systems), 3):
+            row = self.systems[i:i+3]
+            row_content = " │ ".join(f"{status_map.get(s.status, '⚪')} {s.name:<14}" for s in row)
+            lines.append(f"║    {row_content:<66}  ║")
         
         lines.extend([
             "║                                                                      ║",
             "║  🚀 QUICK ACTIONS                                                    ║",
-            "║  ─────────────────────────────────────────────────────────────────── ║",
-            "║    [📝 New Proposal]  [💳 Create Invoice]  [📅 Schedule Meeting]     ║",
-            "║    [👤 Add Client]    [📊 Run Report]      [📧 Send Campaign]        ║",
+            "║  " + "─" * 66 + "  ║",
+            "║    [📝 Proposal] [💳 Invoice] [📅 Meeting] [👤 Client] [📊 Report]   ║",
             "║                                                                      ║",
             "║  📋 TODAY'S PRIORITIES                                               ║",
-            "║  ─────────────────────────────────────────────────────────────────── ║",
-            "║    🔴 Invoice #INV-003 overdue - send reminder                       ║",
-            "║    🟠 Coffee Lab proposal due tomorrow                               ║",
-            "║    🟡 Tech Startup monthly report to prepare                         ║",
+            "║  " + "─" * 66 + "  ║",
+            "║    🔴 Overdue Invoice #INV-003 - follow up                           ║",
+            "║    🟠 Coffee Lab proposal deadline tomorrow                          ║",
             "║    🟢 Team standup at 2:00 PM                                        ║",
-            "║                                                                      ║",
-            "╠══════════════════════════════════════════════════════════════════════╣",
-            "║                                                                      ║",
-            "║   🏆 MILESTONE 100 COMPLETE! 🏆                                      ║",
-            "║   65 Modules │ 53 Commits │ 50,000+ Lines │ 100 Phases               ║",
+            sep,
+            "║   🏆 MILESTONE 100 ACHIEVED! 🏆                                      ║",
+            "║   65 Modules │ 53 Commits │ 50,000+ Lines │ Agency OS Core           ║",
             "║                                                                      ║",
             "║                    \"Không đánh mà thắng\" 🏯                          ║",
-            "║                                                                      ║",
-            "╚══════════════════════════════════════════════════════════════════════╝",
+            border_bottom,
         ])
         
         return "\n".join(lines)
@@ -168,11 +170,11 @@ class AgencyCommandCenter:
 
 # Example usage
 if __name__ == "__main__":
-    center = AgencyCommandCenter("Saigon Digital Hub")
-    
-    print()
-    print("🏯 AGENCY COMMAND CENTER - MILESTONE 100!")
+    print("🏯 Initializing Command Center Dashboard...")
     print("=" * 72)
-    print()
     
-    print(center.format_command_center())
+    try:
+        center = AgencyCommandCenter("Saigon Digital Hub")
+        print("\n" + center.format_command_center())
+    except Exception as e:
+        logger.error(f"Dashboard Error: {e}")

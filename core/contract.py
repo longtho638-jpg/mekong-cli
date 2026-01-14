@@ -12,11 +12,17 @@ Features:
 - Cancellation policy
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ContractType(Enum):
     """Contract types."""
@@ -26,7 +32,7 @@ class ContractType(Enum):
 
 
 class PaymentTerms(Enum):
-    """Payment terms."""
+    """Payment terms configuration."""
     NET_15 = "net_15"
     NET_30 = "net_30"
     DUE_ON_RECEIPT = "due_on_receipt"
@@ -35,16 +41,20 @@ class PaymentTerms(Enum):
 
 @dataclass
 class ContractParty:
-    """A party to the contract."""
+    """A party involved in the legal agreement."""
     name: str
     company: str
     email: str
     address: str
 
+    def __post_init__(self):
+        if not self.email or "@" not in self.email:
+            raise ValueError(f"Invalid email for party {self.company}")
+
 
 @dataclass
 class ServiceScope:
-    """Scope of services."""
+    """Detailed scope of services and deliverables."""
     services: List[str]
     deliverables: List[str]
     exclusions: List[str]
@@ -53,7 +63,7 @@ class ServiceScope:
 
 @dataclass
 class Contract:
-    """A contract document."""
+    """A complete contract document entity."""
     id: str
     type: ContractType
     agency: ContractParty
@@ -65,12 +75,18 @@ class Contract:
     duration_months: int
     created_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.monthly_fee < 0:
+            raise ValueError("Fees cannot be negative")
+        if self.duration_months <= 0:
+            raise ValueError("Duration must be at least 1 month")
+
 
 class ContractGenerator:
     """
-    Contract Generator.
+    Contract Generator System.
     
-    Create professional agency-client contracts.
+    Automates the creation of professional, legally-aligned service agreements.
     """
     
     def __init__(self, agency_name: str, agency_email: str, agency_address: str):
@@ -80,6 +96,7 @@ class ContractGenerator:
             email=agency_email,
             address=agency_address
         )
+        logger.info(f"Contract Generator initialized for {agency_name}")
     
     def create_contract(
         self,
@@ -90,23 +107,23 @@ class ContractGenerator:
         payment_terms: PaymentTerms = PaymentTerms.NET_30,
         duration_months: int = 6
     ) -> Contract:
-        """Create a new contract."""
-        import uuid
-        
-        return Contract(
+        """Execute the contract generation logic."""
+        contract = Contract(
             id=f"AGR-{uuid.uuid4().hex[:6].upper()}",
             type=contract_type,
             agency=self.agency,
             client=client,
             scope=scope,
-            monthly_fee=monthly_fee,
+            monthly_fee=float(monthly_fee),
             payment_terms=payment_terms,
             start_date=datetime.now(),
             duration_months=duration_months
         )
+        logger.info(f"Contract {contract.id} generated for {client.company}")
+        return contract
     
     def format_contract(self, contract: Contract) -> str:
-        """Format contract as text document."""
+        """Render the contract as a clean, text-based document."""
         end_date = contract.start_date + timedelta(days=30 * contract.duration_months)
         total_value = contract.monthly_fee * contract.duration_months
         
@@ -117,7 +134,7 @@ class ContractGenerator:
             "╚═══════════════════════════════════════════════════════════╝",
             "",
             "═══════════════════════════════════════════════════════════",
-            "                      PARTIES",
+            "                      CONTRACT PARTIES",
             "═══════════════════════════════════════════════════════════",
             "",
             f"SERVICE PROVIDER (\"Agency\"):",
@@ -141,65 +158,41 @@ class ContractGenerator:
         for service in contract.scope.services:
             lines.append(f"  ✓ {service}")
         
-        lines.extend([
-            "",
-            "Deliverables:",
-        ])
-        
+        lines.append("\nDeliverables:")
         for deliverable in contract.scope.deliverables:
             lines.append(f"  • {deliverable}")
         
-        lines.extend([
-            "",
-            "Exclusions:",
-        ])
-        
+        lines.append("\nExclusions:")
         for exclusion in contract.scope.exclusions:
             lines.append(f"  ✗ {exclusion}")
         
         lines.extend([
-            "",
-            f"Timeline: {contract.scope.timeline}",
+            f"\nTimeline: {contract.scope.timeline}",
             "",
             "═══════════════════════════════════════════════════════════",
             "                    FINANCIAL TERMS",
             "═══════════════════════════════════════════════════════════",
             "",
             f"  Contract Type: {contract.type.value.capitalize()}",
-            f"  Monthly Fee: ${contract.monthly_fee:,.0f}",
-            f"  Duration: {contract.duration_months} months",
-            f"  Total Value: ${total_value:,.0f}",
+            f"  Monthly Fee:   ${contract.monthly_fee:,.0f}",
+            f"  Duration:      {contract.duration_months} months",
+            f"  Total Value:   ${total_value:,.0f}",
             f"  Payment Terms: {contract.payment_terms.value.replace('_', ' ').title()}",
-            "",
-            "═══════════════════════════════════════════════════════════",
-            "                    CONTRACT PERIOD",
-            "═══════════════════════════════════════════════════════════",
-            "",
-            f"  Start Date: {contract.start_date.strftime('%B %d, %Y')}",
-            f"  End Date: {end_date.strftime('%B %d, %Y')}",
             "",
             "═══════════════════════════════════════════════════════════",
             "                    TERMS & CONDITIONS",
             "═══════════════════════════════════════════════════════════",
-            "",
             "1. CANCELLATION: Either party may cancel with 30 days notice.",
             "2. LATE PAYMENT: 1.5% interest per month on overdue amounts.",
             "3. OWNERSHIP: All deliverables become client property upon payment.",
-            "4. CONFIDENTIALITY: Both parties agree to keep sensitive info private.",
-            "5. LIMITATION: Agency liability limited to fees paid.",
             "",
             "═══════════════════════════════════════════════════════════",
             "                      SIGNATURES",
             "═══════════════════════════════════════════════════════════",
-            "",
             f"AGENCY: {contract.agency.company}",
-            "",
-            "Signature: _________________________  Date: ______________",
-            "",
+            "Signature: _________________________  Date: ______________\n",
             f"CLIENT: {contract.client.company}",
-            "",
             "Signature: _________________________  Date: ______________",
-            "",
             "═══════════════════════════════════════════════════════════",
             f"  🏯 {contract.agency.company} - \"Không đánh mà thắng\"",
             "═══════════════════════════════════════════════════════════",
@@ -210,48 +203,19 @@ class ContractGenerator:
 
 # Example usage
 if __name__ == "__main__":
-    generator = ContractGenerator(
-        agency_name="Saigon Digital Hub",
-        agency_email="hello@saigondigitalhub.com",
-        agency_address="123 Digital Street, Ho Chi Minh City"
-    )
-    
-    client = ContractParty(
-        name="Mr. Hoang",
-        company="Sunrise Realty",
-        email="hoang@sunriserealty.vn",
-        address="456 Business Ave, District 1"
-    )
-    
-    scope = ServiceScope(
-        services=[
-            "SEO Strategy & Implementation",
-            "Content Marketing",
-            "Social Media Management",
-            "Monthly Analytics Reports"
-        ],
-        deliverables=[
-            "Monthly SEO audit",
-            "4 blog posts per month",
-            "20 social posts per month",
-            "Monthly performance report"
-        ],
-        exclusions=[
-            "Paid advertising spend",
-            "Website development",
-            "Video production"
-        ],
-        timeline="Ongoing monthly retainer"
-    )
-    
-    contract = generator.create_contract(
-        client=client,
-        scope=scope,
-        monthly_fee=2500,
-        duration_months=6
-    )
-    
-    print("📄 Contract Generator")
+    print("📄 Initializing Contract Generator...")
     print("=" * 60)
-    print()
-    print(generator.format_contract(contract))
+    
+    try:
+        gen = ContractGenerator("Saigon Digital", "hello@saigon.vn", "HCM City")
+        
+        c_party = ContractParty("Hoang", "Sunrise Realty", "hoang@sunrise.vn", "District 1")
+        c_scope = ServiceScope(
+            services=["SEO", "Ads"], deliverables=["Reports"], exclusions=["Video"], timeline="Monthly"
+        )
+        
+        agreement = gen.create_contract(c_party, c_scope, 2500.0)
+        print("\n" + gen.format_contract(agreement))
+        
+    except Exception as e:
+        logger.error(f"Generation Error: {e}")

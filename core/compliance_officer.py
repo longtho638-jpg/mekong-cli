@@ -12,12 +12,16 @@ Features:
 - Audit trail
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ComplianceArea(Enum):
     """Compliance areas."""
@@ -29,7 +33,7 @@ class ComplianceArea(Enum):
 
 
 class ComplianceStatus(Enum):
-    """Compliance status."""
+    """Compliance status levels."""
     NOT_STARTED = "not_started"
     IN_PROGRESS = "in_progress"
     COMPLIANT = "compliant"
@@ -38,7 +42,7 @@ class ComplianceStatus(Enum):
 
 
 class DocumentType(Enum):
-    """Compliance document types."""
+    """Compliance document categories."""
     PRIVACY_POLICY = "privacy_policy"
     TERMS_OF_SERVICE = "terms_of_service"
     DPA = "dpa"  # Data Processing Agreement
@@ -48,7 +52,7 @@ class DocumentType(Enum):
 
 @dataclass
 class ComplianceChecklist:
-    """A compliance checklist."""
+    """A compliance checklist entity."""
     id: str
     area: ComplianceArea
     items: Dict[str, bool] = field(default_factory=dict)
@@ -59,7 +63,7 @@ class ComplianceChecklist:
 
 @dataclass
 class ComplianceDocument:
-    """A compliance document."""
+    """A compliance document record."""
     id: str
     name: str
     doc_type: DocumentType
@@ -68,10 +72,14 @@ class ComplianceDocument:
     last_reviewed: Optional[datetime] = None
     needs_update: bool = False
 
+    def __post_init__(self):
+        if not self.name:
+            raise ValueError("Document name required")
+
 
 @dataclass
 class AuditLog:
-    """An audit log entry."""
+    """An audit log entry entity."""
     id: str
     action: str
     user: str
@@ -81,9 +89,9 @@ class AuditLog:
 
 class ComplianceOfficer:
     """
-    Compliance Officer.
+    Compliance Officer System.
     
-    Regulatory compliance management.
+    Tracks regulatory adherence, document versioning, and internal audits.
     """
     
     def __init__(self, agency_name: str):
@@ -92,79 +100,66 @@ class ComplianceOfficer:
         self.documents: Dict[str, ComplianceDocument] = {}
         self.audit_logs: List[AuditLog] = []
         
+        logger.info(f"Compliance Officer initialized for {agency_name}")
         self._init_demo_data()
     
-    def _get_gdpr_items(self) -> Dict[str, bool]:
-        """Get GDPR checklist items."""
-        return {
-            "Privacy policy updated": True,
-            "Cookie consent implemented": True,
-            "Data processing register": True,
-            "DPA with vendors": False,
-            "Right to erasure process": True,
-            "Data breach procedure": True,
-            "DPO appointed": False,
-            "Staff training complete": True,
-        }
-    
     def _init_demo_data(self):
-        """Initialize demo data."""
-        # GDPR checklist
+        """Setup initial compliance state for demonstration."""
+        # GDPR
         gdpr = self.create_checklist(ComplianceArea.GDPR)
-        gdpr.items = self._get_gdpr_items()
-        gdpr.status = ComplianceStatus.IN_PROGRESS
-        self._calculate_score(gdpr)
+        gdpr.items = {
+            "Privacy policy updated": True,
+            "Cookie consent active": True,
+            "Data register created": True,
+            "DPO appointed": False,
+            "Breach procedure ready": True
+        }
+        self.recalculate_checklist_score(gdpr.id)
         
-        # Documents
-        docs = [
-            ("Privacy Policy", DocumentType.PRIVACY_POLICY, "2.1"),
-            ("Terms of Service", DocumentType.TERMS_OF_SERVICE, "1.5"),
-            ("Cookie Policy", DocumentType.COOKIE_POLICY, "1.2"),
-            ("Data Processing Agreement", DocumentType.DPA, "1.0"),
-        ]
-        
-        for name, dtype, version in docs:
-            self.add_document(name, dtype, version)
+        # Standard Docs
+        self.add_document("Privacy Policy", DocumentType.PRIVACY_POLICY, "2.1")
+        self.add_document("Terms of Service", DocumentType.TERMS_OF_SERVICE, "1.5")
     
     def create_checklist(self, area: ComplianceArea) -> ComplianceChecklist:
-        """Create a compliance checklist."""
+        """Initialize a new compliance area checklist."""
         checklist = ComplianceChecklist(
             id=f"CMP-{uuid.uuid4().hex[:6].upper()}",
             area=area
         )
         self.checklists[checklist.id] = checklist
+        logger.info(f"Compliance checklist created: {area.value.upper()}")
         return checklist
     
-    def update_checklist_item(self, checklist: ComplianceChecklist, item: str, completed: bool):
-        """Update a checklist item."""
-        if item in checklist.items:
-            checklist.items[item] = completed
-            self._calculate_score(checklist)
-            self._log_action(f"Updated {item}", f"Set to {completed}")
-    
-    def _calculate_score(self, checklist: ComplianceChecklist):
-        """Calculate compliance score."""
-        if not checklist.items:
-            checklist.score = 0
-        else:
-            completed = sum(checklist.items.values())
-            total = len(checklist.items)
-            checklist.score = int((completed / total) * 100)
+    def update_item(self, checklist_id: str, item_key: str, completed: bool):
+        """Update a specific checklist item status."""
+        if checklist_id not in self.checklists:
+            return
             
-            if checklist.score == 100:
-                checklist.status = ComplianceStatus.COMPLIANT
-            elif checklist.score >= 70:
-                checklist.status = ComplianceStatus.IN_PROGRESS
-            else:
-                checklist.status = ComplianceStatus.NON_COMPLIANT
+        checklist = self.checklists[checklist_id]
+        checklist.items[item_key] = completed
+        self.recalculate_checklist_score(checklist_id)
+        self.log_audit("Update Item", f"{item_key} -> {completed}")
     
-    def add_document(
-        self,
-        name: str,
-        doc_type: DocumentType,
-        version: str = "1.0"
-    ) -> ComplianceDocument:
-        """Add a compliance document."""
+    def recalculate_checklist_score(self, checklist_id: str):
+        """Calculate score based on completed items."""
+        if checklist_id not in self.checklists: return
+        
+        c = self.checklists[checklist_id]
+        if not c.items:
+            c.score = 0
+        else:
+            done = sum(1 for val in c.items.values() if val)
+            total = len(c.items)
+            c.score = int((done / total) * 100)
+            
+            if c.score == 100: c.status = ComplianceStatus.COMPLIANT
+            elif c.score >= 70: c.status = ComplianceStatus.IN_PROGRESS
+            else: c.status = ComplianceStatus.NON_COMPLIANT
+            
+        c.last_audit = datetime.now()
+    
+    def add_document(self, name: str, doc_type: DocumentType, version: str = "1.0") -> ComplianceDocument:
+        """Register a compliance document version."""
         doc = ComplianceDocument(
             id=f"DOC-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -173,10 +168,11 @@ class ComplianceOfficer:
             last_reviewed=datetime.now()
         )
         self.documents[doc.id] = doc
+        logger.info(f"Compliance document added: {name} v{version}")
         return doc
     
-    def _log_action(self, action: str, details: str, user: str = "System"):
-        """Log an audit action."""
+    def log_audit(self, action: str, details: str, user: str = "System"):
+        """Record an action in the immutable audit trail."""
         log = AuditLog(
             id=f"LOG-{uuid.uuid4().hex[:6].upper()}",
             action=action,
@@ -184,89 +180,58 @@ class ComplianceOfficer:
             details=details
         )
         self.audit_logs.append(log)
+        logger.debug(f"Audit: {action} - {details}")
     
-    def get_overall_score(self) -> float:
-        """Get overall compliance score."""
-        if not self.checklists:
-            return 0
-        return sum(c.score for c in self.checklists.values()) / len(self.checklists)
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get compliance statistics."""
-        compliant = sum(1 for c in self.checklists.values() 
-                       if c.status == ComplianceStatus.COMPLIANT)
-        
-        return {
-            "checklists": len(self.checklists),
-            "documents": len(self.documents),
-            "overall_score": self.get_overall_score(),
-            "compliant_areas": compliant,
-            "audit_entries": len(self.audit_logs)
-        }
+    def get_overall_compliance_score(self) -> int:
+        """Average score across all checklists."""
+        if not self.checklists: return 100
+        return int(sum(c.score for c in self.checklists.values()) / len(self.checklists))
     
     def format_dashboard(self) -> str:
-        """Format compliance officer dashboard."""
-        stats = self.get_stats()
-        
-        score = stats['overall_score']
-        score_icon = "🟢" if score >= 80 else "🟡" if score >= 60 else "🔴"
+        """Render Compliance Dashboard."""
+        overall = self.get_overall_compliance_score()
+        score_icon = "🟢" if overall >= 80 else "🟡" if overall >= 60 else "🔴"
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🔒 COMPLIANCE OFFICER                                    ║",
-            f"║  {score_icon} {score:.0f}% compliant │ {stats['documents']} docs │ {stats['audit_entries']} audits  ║",
+            f"║  🔒 COMPLIANCE OFFICER{' ' * 41}║",
+            f"║  {score_icon} {overall:>3}% Compliant │ {len(self.documents)} docs │ {len(self.audit_logs)} audit logs {' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📋 COMPLIANCE CHECKLISTS                                 ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📋 ACTIVE CHECKLISTS                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        area_icons = {"gdpr": "🇪🇺", "ccpa": "🇺🇸", "hipaa": "🏥",
-                     "soc2": "🔐", "pci_dss": "💳"}
-        status_icons = {"not_started": "⚪", "in_progress": "🟡",
-                       "compliant": "🟢", "non_compliant": "🔴", "needs_review": "🟠"}
+        area_icons = {"gdpr": "🇪🇺", "ccpa": "🇺🇸", "hipaa": "🏥", "soc2": "🔐", "pci_dss": "💳"}
+        status_icons = {
+            ComplianceStatus.NOT_STARTED: "⚪", 
+            ComplianceStatus.IN_PROGRESS: "🟡",
+            ComplianceStatus.COMPLIANT: "🟢", 
+            ComplianceStatus.NON_COMPLIANT: "🔴"
+        }
         
-        for checklist in self.checklists.values():
-            a_icon = area_icons.get(checklist.area.value, "📋")
-            s_icon = status_icons.get(checklist.status.value, "⚪")
-            bar = "█" * (checklist.score // 10) + "░" * (10 - checklist.score // 10)
-            lines.append(f"║    {a_icon} {s_icon} {checklist.area.value.upper():<8} │ {bar} │ {checklist.score:>3}%  ║")
+        for c in self.checklists.values():
+            a_icon = area_icons.get(c.area.value, "📋")
+            s_icon = status_icons.get(c.status, "⚪")
+            # 10-segment bar
+            bar = "█" * (c.score // 10) + "░" * (10 - c.score // 10)
+            lines.append(f"║    {a_icon} {s_icon} {c.area.value.upper():<8} │ {bar} │ {c.score:>3}%  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📋 GDPR CHECKLIST                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📄 DOCUMENT REPOSITORY                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        gdpr = next((c for c in self.checklists.values() if c.area == ComplianceArea.GDPR), None)
-        if gdpr:
-            for item, done in list(gdpr.items.items())[:5]:
-                icon = "✅" if done else "❌"
-                lines.append(f"║    {icon} {item[:45]:<45}  ║")
+        doc_icons = {"privacy_policy": "🔒", "terms_of_service": "📜", "dpa": "📋", "cookie_policy": "🍪"}
+        for d in list(self.documents.values())[:4]:
+            d_icon = doc_icons.get(d.doc_type.value, "📄")
+            lines.append(f"║    {d_icon} {d.name:<28} │ v{d.version:<6}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📄 COMPLIANCE DOCUMENTS                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        doc_icons = {"privacy_policy": "🔒", "terms_of_service": "📜",
-                    "dpa": "📋", "cookie_policy": "🍪", "consent_form": "✍️"}
-        
-        for doc in list(self.documents.values())[:4]:
-            icon = doc_icons.get(doc.doc_type.value, "📄")
-            lines.append(f"║    {icon} {doc.name:<28} │ v{doc.version:<6}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 COMPLIANCE SUMMARY                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Compliance Areas:   {stats['checklists']:>12}              ║",
-            f"║    📄 Documents:          {stats['documents']:>12}              ║",
-            f"║    {score_icon} Overall Score:       {score:>12.0f}%              ║",
-            "║                                                           ║",
-            "║  [📋 Checklists]  [📄 Documents]  [📊 Audit]              ║",
+            "║  [📋 Checklists]  [📄 Documents]  [📊 Audit Trail]        ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Stay compliant!                  ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Be Compliant!      ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -275,10 +240,11 @@ class ComplianceOfficer:
 
 # Example usage
 if __name__ == "__main__":
-    co = ComplianceOfficer("Saigon Digital Hub")
-    
-    print("🔒 Compliance Officer")
+    print("🔒 Initializing Compliance System...")
     print("=" * 60)
-    print()
     
-    print(co.format_dashboard())
+    try:
+        officer = ComplianceOfficer("Saigon Digital Hub")
+        print("\n" + officer.format_dashboard())
+    except Exception as e:
+        logger.error(f"System Error: {e}")

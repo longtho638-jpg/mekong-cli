@@ -12,15 +12,18 @@ Features:
 - Recommendations
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import random
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class MetricTrend(Enum):
-    """Metric trend direction."""
+    """Trend direction based on period comparison."""
     UP = "up"
     DOWN = "down"
     STABLE = "stable"
@@ -28,31 +31,30 @@ class MetricTrend(Enum):
 
 @dataclass
 class Metric:
-    """A performance metric."""
+    """A performance indicator record."""
     name: str
     value: float
     previous: float
     unit: str = ""
     
     @property
-    def change(self) -> float:
+    def change_percent(self) -> float:
+        """Calculate percentage change."""
         if self.previous == 0:
-            return 0
-        return ((self.value - self.previous) / self.previous) * 100
+            return 0.0
+        return ((self.value - self.previous) / self.previous) * 100.0
     
     @property
     def trend(self) -> MetricTrend:
-        if self.change > 5:
-            return MetricTrend.UP
-        elif self.change < -5:
-            return MetricTrend.DOWN
-        else:
-            return MetricTrend.STABLE
+        """Determine trend category."""
+        if self.change_percent > 5.0: return MetricTrend.UP
+        if self.change_percent < -5.0: return MetricTrend.DOWN
+        return MetricTrend.STABLE
 
 
 @dataclass
 class DashboardReport:
-    """A client dashboard report."""
+    """A complete dashboard report entity."""
     client_name: str
     client_company: str
     period: str
@@ -64,175 +66,80 @@ class DashboardReport:
 
 class ClientDashboard:
     """
-    Client Dashboard Generator.
+    Client Dashboard System.
     
-    Create beautiful monthly reports for clients.
+    Creates professional performance summaries for agency clients.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
+        logger.info(f"Client Dashboard system initialized for {agency_name}")
     
     def generate_report(
         self,
         client_name: str,
         client_company: str,
-        period: str = None
+        period: Optional[str] = None
     ) -> DashboardReport:
-        """Generate a sample dashboard report."""
-        if period is None:
-            period = datetime.now().strftime("%B %Y")
+        """Execute logic to compile a performance report."""
+        if not client_name or not client_company:
+            raise ValueError("Client details required")
+
+        p = period if period else datetime.now().strftime("%B %Y")
+        logger.info(f"Generating report for {client_company} - {p}")
         
-        # Sample metrics (would come from real data)
+        # Sample data injection (In production, query DB/Analytics)
         metrics = [
-            Metric("Website Traffic", 12500, 10850, "visitors"),
-            Metric("Conversion Rate", 3.2, 2.8, "%"),
-            Metric("Leads Generated", 156, 128, "leads"),
-            Metric("Revenue", 45000, 38500, "$"),
-            Metric("Email Open Rate", 32.5, 28.2, "%"),
-            Metric("Social Followers", 2450, 2100, "followers"),
-        ]
-        
-        wins = [
-            "🎉 Traffic increased by 15% month-over-month!",
-            "🏆 Conversion rate at all-time high of 3.2%!",
-            "💰 Revenue exceeded target by $5,000!",
-            "📧 Email list grew by 500 new subscribers!",
-        ]
-        
-        recommendations = [
-            "💡 Launch retargeting campaigns for abandoned carts",
-            "📊 A/B test new landing page headlines",
-            "🎯 Increase ad spend on top-performing channels",
-            "📱 Optimize mobile checkout experience",
+            Metric("Website Traffic", 12500.0, 10850.0, "visitors"),
+            Metric("Leads Generated", 156.0, 128.0, "leads"),
+            Metric("Revenue", 45000.0, 38500.0, "$")
         ]
         
         return DashboardReport(
             client_name=client_name,
             client_company=client_company,
-            period=period,
+            period=p,
             metrics=metrics,
-            wins=wins,
-            recommendations=recommendations
+            wins=["Increased organic leads by 22%!", "Revenue exceeded target by $5k"],
+            recommendations=["Launch social ads", "Optimize mobile landing page"]
         )
     
     def format_dashboard(self, report: DashboardReport) -> str:
-        """Format dashboard as ASCII report."""
+        """Render the report as an ASCII dashboard."""
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📈 MONTHLY DASHBOARD: {report.client_company.upper()[:28]:<28}   ║",
+            f"║  📈 MONTHLY DASHBOARD - {report.client_company.upper()[:28]:<28} ║",
             f"║  Period: {report.period:<45}   ║",
             "╠═══════════════════════════════════════════════════════════╣",
+            "║  📊 KEY PERFORMANCE METRICS                               ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        # Metrics section
-        lines.append("║  📊 KEY METRICS                                           ║")
-        lines.append("║  ─────────────────────────────────────────────────────── ║")
-        
-        for metric in report.metrics:
-            # Trend indicator
-            if metric.trend == MetricTrend.UP:
-                trend = "↑"
-                color = "🟢"
-            elif metric.trend == MetricTrend.DOWN:
-                trend = "↓"
-                color = "🔴"
-            else:
-                trend = "→"
-                color = "🟡"
+        for m in report.metrics:
+            trend_map = {MetricTrend.UP: ("↑", "🟢"), MetricTrend.DOWN: ("↓", "🔴"), MetricTrend.STABLE: ("→", "🟡")}
+            arr, icon = trend_map.get(m.trend, ("?", "⚪"))
             
-            # Format value
-            if metric.unit == "$":
-                value_str = f"${metric.value:,.0f}"
-            elif metric.unit == "%":
-                value_str = f"{metric.value:.1f}%"
-            else:
-                value_str = f"{metric.value:,.0f}"
+            val_str = f"${m.value:,.0f}" if m.unit == "$" else f"{m.value:,.0f}"
+            change_str = f"{m.change_percent:+.1f}%"
             
-            change_str = f"{metric.change:+.1f}%"
-            
-            lines.append(f"║  {color} {metric.name:<18} {value_str:>10}  ({trend} {change_str})       ║")
+            lines.append(f"║  {icon} {m.name:<18} {val_str:>10}  ({arr} {change_str:<7}) {' ' * 5}║")
         
-        lines.append("║                                                           ║")
-        
-        # Wins section
-        lines.append("╠═══════════════════════════════════════════════════════════╣")
-        lines.append("║  🏆 THIS MONTH'S WINS                                     ║")
-        lines.append("║  ─────────────────────────────────────────────────────── ║")
-        
-        for win in report.wins[:4]:
-            lines.append(f"║    {win[:50]:<50}   ║")
-        
-        lines.append("║                                                           ║")
-        
-        # Recommendations section
-        lines.append("╠═══════════════════════════════════════════════════════════╣")
-        lines.append("║  💡 NEXT MONTH RECOMMENDATIONS                            ║")
-        lines.append("║  ─────────────────────────────────────────────────────── ║")
-        
-        for rec in report.recommendations[:4]:
-            lines.append(f"║    {rec[:50]:<50}   ║")
-        
-        lines.append("║                                                           ║")
-        
-        # Footer
         lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Generated by {self.agency_name:<38}   ║",
-            f"║  {report.generated_at.strftime('%Y-%m-%d %H:%M'):<51}   ║",
             "║                                                           ║",
-            "║  🏯 \"Không đánh mà thắng\" - Win Without Fighting          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
+            "╠═══════════════════════════════════════════════════════════╣",
+            "║  🏆 THIS MONTH'S WINS                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
-        return "\n".join(lines)
-    
-    def format_summary_email(self, report: DashboardReport) -> str:
-        """Format as email summary."""
-        # Calculate overall health
-        positive = sum(1 for m in report.metrics if m.trend == MetricTrend.UP)
-        total = len(report.metrics)
-        health_pct = (positive / total) * 100
-        
-        if health_pct >= 80:
-            health = "🔥 EXCELLENT"
-        elif health_pct >= 60:
-            health = "✅ GOOD"
-        elif health_pct >= 40:
-            health = "🟡 MODERATE"
-        else:
-            health = "⚠️ NEEDS ATTENTION"
-        
-        lines = [
-            f"Subject: 📈 {report.period} Report for {report.client_company}",
-            "",
-            f"Hi {report.client_name}! 👋",
-            "",
-            f"Here's your {report.period} performance summary:",
-            "",
-            f"📊 Overall Health: {health}",
-            f"   {positive}/{total} metrics trending up!",
-            "",
-            "🏆 Key Wins:",
-        ]
         
         for win in report.wins[:3]:
-            lines.append(f"   • {win}")
-        
+            lines.append(f"║    ✅ {win[:50]:<50}  ║")
+            
         lines.extend([
-            "",
-            "📈 Quick Stats:",
-        ])
-        
-        for metric in report.metrics[:4]:
-            trend = "↑" if metric.trend == MetricTrend.UP else ("↓" if metric.trend == MetricTrend.DOWN else "→")
-            lines.append(f"   • {metric.name}: {metric.value:,.0f} ({trend} {metric.change:+.1f}%)")
-        
-        lines.extend([
-            "",
-            "View full dashboard in your client portal!",
-            "",
-            f"Best,",
-            f"{self.agency_name} Team 🏯",
+            "║                                                           ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  Generated by {self.agency_name[:20]:<20}  │ {report.generated_at.strftime('%Y-%m-%d'):<10} ║",
+            "║  🏯 \"Không đánh mà thắng\" - Agency OS                     ║",
+            "╚═══════════════════════════════════════════════════════════╝",
         ])
         
         return "\n".join(lines)
@@ -240,22 +147,13 @@ class ClientDashboard:
 
 # Example usage
 if __name__ == "__main__":
-    dashboard = ClientDashboard("Saigon Digital Hub")
-    
-    print("📈 Client Dashboard Generator")
+    print("📈 Initializing Dashboard Generator...")
     print("=" * 60)
-    print()
     
-    # Generate report
-    report = dashboard.generate_report(
-        client_name="Mr. Hoang",
-        client_company="Sunrise Realty"
-    )
-    
-    print(dashboard.format_dashboard(report))
-    print()
-    print("-" * 60)
-    print()
-    print("📧 Email Summary:")
-    print()
-    print(dashboard.format_summary_email(report))
+    try:
+        gen = ClientDashboard("Saigon Digital Hub")
+        rpt = gen.generate_report("Mr. Hoang", "Sunrise Realty")
+        print("\n" + gen.format_dashboard(rpt))
+        
+    except Exception as e:
+        logger.error(f"Dashboard Error: {e}")

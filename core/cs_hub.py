@@ -2,109 +2,139 @@
 👥 Customer Success Hub - Department Integration
 ==================================================
 
-Central hub connecting all Customer Success roles
-with their operational tools.
+Central hub connecting all Customer Success roles with their operational tools.
 
 Integrates:
-- Account Manager → client_portal.py
-- Onboarding Specialist → client_onboarding.py
-- Customer Success Manager → client_health.py
-- CS Coordinator → support_tickets.py
-- CS Analyst → client_health.py
+- Account Manager
+- Onboarding Specialist
+- Customer Success Manager
+- CS Coordinator
+- CS Analyst
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import existing Ops modules
-from core.client_health import ClientHealthScore, HealthLevel
-from core.client_onboarding import ClientOnboardingFlow, OnboardingStep
-from core.support_tickets import SupportTickets, TicketPriority
+# Import existing modules with fallback for direct testing
+try:
+    from core.client_health import ClientHealthScore, HealthLevel
+    from core.client_onboarding import ClientOnboardingFlow, OnboardingStep
+    from core.support_tickets import SupportTickets, TicketPriority
+    from core.account_manager import AccountManager, AccountTier
+    from core.onboarding_specialist import OnboardingSpecialist
+    from core.csm import CustomerSuccessManager, SuccessStage
+    from core.cs_coordinator import CSCoordinator, TaskType
+    from core.cs_analyst import CSAnalyst, RiskLevel
+except ImportError:
+    from client_health import ClientHealthScore, HealthLevel
+    from client_onboarding import ClientOnboardingFlow, OnboardingStep
+    from support_tickets import SupportTickets, TicketPriority
+    from account_manager import AccountManager, AccountTier
+    from onboarding_specialist import OnboardingSpecialist
+    from csm import CustomerSuccessManager, SuccessStage
+    from cs_coordinator import CSCoordinator, TaskType
+    from cs_analyst import CSAnalyst, RiskLevel
 
-# Import role modules
-from core.account_manager import AccountManager, AccountTier
-from core.onboarding_specialist import OnboardingSpecialist
-from core.csm import CustomerSuccessManager, SuccessStage
-from core.cs_coordinator import CSCoordinator, TaskType
-from core.cs_analyst import CSAnalyst, RiskLevel
-
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class CustomerSuccessMetrics:
-    """Department-wide metrics."""
-    total_accounts: int
-    active_onboardings: int
-    avg_health_score: float
-    at_risk_count: int
-    open_tickets: int
-    nps_score: float
+    """Department-wide metrics container."""
+    total_accounts: int = 0
+    active_onboardings: int = 0
+    avg_health_score: float = 0.0
+    at_risk_count: int = 0
+    open_tickets: int = 0
+    nps_score: float = 0.0
 
 
 class CustomerSuccessHub:
     """
-    Customer Success Hub.
+    Customer Success Hub System.
     
-    Connects all CS roles with their tools.
+    Orchestrates account health, onboarding, support, and relationship management.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         
-        # Initialize Ops modules
-        self.health_ops = ClientHealthScore(agency_name)
-        self.onboarding_ops = ClientOnboardingFlow(agency_name)
-        self.tickets_ops = SupportTickets(agency_name)
-        
-        # Initialize role modules
-        self.account_manager = AccountManager(agency_name)
-        self.onboarding_specialist = OnboardingSpecialist(agency_name)
-        self.csm = CustomerSuccessManager(agency_name)
-        self.coordinator = CSCoordinator(agency_name)
-        self.analyst = CSAnalyst(agency_name)
+        logger.info(f"Initializing Customer Success Hub for {agency_name}")
+        try:
+            # Ops modules
+            self.health_ops = ClientHealthScore(agency_name)
+            self.onboarding_ops = ClientOnboardingFlow(agency_name)
+            self.tickets_ops = SupportTickets(agency_name)
+            
+            # Role modules
+            self.account_manager = AccountManager(agency_name)
+            self.onboarding_specialist = OnboardingSpecialist(agency_name)
+            self.csm = CustomerSuccessManager(agency_name)
+            self.coordinator = CSCoordinator(agency_name)
+            self.analyst = CSAnalyst(agency_name)
+        except Exception as e:
+            logger.error(f"CS Hub initialization failed: {e}")
+            raise
     
     def get_department_metrics(self) -> CustomerSuccessMetrics:
-        """Get department-wide metrics."""
-        return CustomerSuccessMetrics(
-            total_accounts=len(self.account_manager.accounts),
-            active_onboardings=len([o for o in self.onboarding_specialist.onboardings.values() 
-                                   if o.current_phase.value != "complete"]),
-            avg_health_score=sum(c.overall_score for c in self.health_ops.clients.values()) / 
-                            len(self.health_ops.clients) if self.health_ops.clients else 0,
-            at_risk_count=len(self.analyst.get_at_risk()),
-            open_tickets=self.tickets_ops.get_stats().get("open", 0),
-            nps_score=72  # Example
-        )
+        """Aggregate data from all Customer Success sub-modules."""
+        metrics = CustomerSuccessMetrics()
+        
+        try:
+            metrics.total_accounts = len(self.account_manager.accounts)
+            
+            # Safe phase check for onboarding
+            active_onb = [
+                o for o in self.onboarding_specialist.onboardings.values() 
+                if getattr(o.current_phase, 'value', str(o.current_phase)) != "complete"
+            ]
+            metrics.active_onboardings = len(active_onb)
+            
+            # Health aggregation
+            if self.health_ops.clients:
+                metrics.avg_health_score = sum(c.overall_score for c in self.health_ops.clients.values()) / len(self.health_ops.clients)
+            
+            metrics.at_risk_count = len(self.analyst.get_at_risk_list())
+            metrics.open_tickets = self.tickets_ops.get_stats().get("open", 0)
+            metrics.nps_score = 72.0  # Placeholder for real NPS module
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating CS metrics: {e}")
+            
+        return metrics
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render Customer Success Hub Dashboard."""
+        m = self.get_department_metrics()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  👥 CUSTOMER SUCCESS HUB                                  ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  👥 CUSTOMER SUCCESS HUB{' ' * 34}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    👤 Total Accounts:     {metrics.total_accounts:>5}                          ║",
-            f"║    👋 Active Onboardings: {metrics.active_onboardings:>5}                          ║",
-            f"║    ❤️ Avg Health Score:   {metrics.avg_health_score:>5.0f}%                         ║",
-            f"║    ⚠️ At-Risk Clients:    {metrics.at_risk_count:>5}                          ║",
-            f"║    🎫 Open Tickets:       {metrics.open_tickets:>5}                          ║",
-            f"║    ⭐ NPS Score:          {metrics.nps_score:>5.0f}                          ║",
+            "║  📊 PERFORMANCE METRICS                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    👤 Total Accounts:     {m.total_accounts:>5}                          ║",
+            f"║    👋 Active Onboardings: {m.active_onboardings:>5}                          ║",
+            f"║    ❤️ Avg Health Score:   {m.avg_health_score:>5.0f}%                         ║",
+            f"║    ⚠️ At-Risk Clients:    {m.at_risk_count:>5}                          ║",
+            f"║    🎫 Open Tickets:       {m.open_tickets:>5}                          ║",
+            f"║    ⭐ NPS Score:          {m.nps_score:>5.0f}                          ║",
             "║                                                           ║",
-            "║  🔗 ROLE → OPS CONNECTIONS                                ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    👤 Account Manager     → client_portal.py             ║",
-            "║    👋 Onboarding          → client_onboarding.py         ║",
-            "║    🎯 CSM                 → client_health.py             ║",
-            "║    🤝 Coordinator         → support_tickets.py           ║",
-            "║    📊 Analyst             → client_health.py             ║",
+            "║  🔗 SERVICE CONNECTIONS                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    👤 AM   → account_manager.py (Tiers, MRR)             ║",
+            "║    👋 OS   → onboarding_specialist.py (Setup)            ║",
+            "║    🎯 CSM  → csm.py (Relationship, Upsell)               ║",
+            "║    🤝 CO   → cs_coordinator.py (Tasks, Touches)          ║",
+            "║    📊 AN   → cs_analyst.py (Data, Risk)                  ║",
             "║                                                           ║",
-            "║  [📊 Reports]  [👥 Team]  [⚙️ Settings]                   ║",
+            "║  [📊 Reports]  [👥 Team]  [🎫 Tickets]  [⚙️ Settings]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Customer Success Excellence!     ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Excellence!        ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -113,19 +143,16 @@ class CustomerSuccessHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = CustomerSuccessHub("Saigon Digital Hub")
-    
-    print("👥 Customer Success Hub")
+    print("👥 Initializing CS Hub...")
     print("=" * 60)
-    print()
     
-    # Simulate data
-    hub.account_manager.add_account("Sunrise Realty", AccountTier.ENTERPRISE, 5000, "Alex")
-    hub.account_manager.add_account("Coffee Lab", AccountTier.BUSINESS, 2500, "Sarah")
-    
-    hub.onboarding_specialist.start_onboarding("Tech Startup", "Mike")
-    
-    hub.health_ops.add_client("Sunrise Realty", 85, 100, 80, 90)
-    hub.health_ops.add_client("Coffee Lab", 70, 90, 65, 75)
-    
-    print(hub.format_hub_dashboard())
+    try:
+        hub = CustomerSuccessHub("Saigon Digital Hub")
+        # Add sample data
+        hub.account_manager.add_account("Acme Corp", AccountTier.ENTERPRISE, 5000.0, "Alex")
+        hub.health_ops.add_client("Acme Corp", 85, 100, 80, 90)
+        
+        print("\n" + hub.format_hub_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Hub Error: {e}")

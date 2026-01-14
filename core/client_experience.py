@@ -11,16 +11,20 @@ Features:
 - Invoice tracking
 """
 
-import os
 import uuid
-from typing import Optional, Dict, Any, List
+import logging
+import re
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ProjectStatus(Enum):
-    """Project status."""
+    """Project lifecycle status."""
     DISCOVERY = "discovery"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
@@ -28,7 +32,7 @@ class ProjectStatus(Enum):
 
 
 class ServiceType(Enum):
-    """Service types offered."""
+    """Service categories offered by the agency."""
     SEO = "seo"
     PPC = "ppc"
     CONTENT = "content"
@@ -39,39 +43,43 @@ class ServiceType(Enum):
 
 @dataclass
 class Client:
-    """An agency client."""
+    """An agency client entity."""
     id: str
     company: str
     contact_name: str
     contact_email: str
     phone: Optional[str] = None
-    industry: str = ""
+    industry: str = "N/A"
     onboarded_at: datetime = field(default_factory=datetime.now)
     notes: str = ""
 
 
 @dataclass
 class Project:
-    """A client project."""
+    """A client project record."""
     id: str
     client_id: str
     name: str
     service: ServiceType
-    status: ProjectStatus
-    start_date: datetime
+    status: ProjectStatus = ProjectStatus.DISCOVERY
+    start_date: datetime = field(default_factory=datetime.now)
     end_date: Optional[datetime] = None
-    budget: float = 0
+    budget: float = 0.0
     deliverables: List[str] = field(default_factory=list)
     progress: int = 0  # 0-100
+
+    def __post_init__(self):
+        if not 0 <= self.progress <= 100:
+            raise ValueError("Progress must be between 0 and 100")
 
 
 @dataclass
 class Report:
-    """An automated client report."""
+    """A generated performance report for a client."""
     id: str
     client_id: str
     project_id: str
-    period: str  # "2024-12"
+    period: str  # e.g., "2024-12"
     metrics: Dict[str, Any] = field(default_factory=dict)
     generated_at: datetime = field(default_factory=datetime.now)
 
@@ -80,56 +88,46 @@ class ClientExperience:
     """
     Client Experience System.
     
-    Make agency's clients feel WOW with:
-    - Professional onboarding
-    - Project visibility
-    - Automated reports
+    Manages client onboarding, project transparency, and professional reporting.
     """
     
-    def __init__(self):
+    def __init__(self, demo_mode: bool = True):
         self.clients: Dict[str, Client] = {}
         self.projects: Dict[str, Project] = {}
         self.reports: List[Report] = []
         
-        # Service pricing (base)
-        self.pricing = {
-            ServiceType.SEO: {"monthly": 500, "setup": 0},
-            ServiceType.PPC: {"monthly": 1000, "setup": 500},
-            ServiceType.CONTENT: {"monthly": 800, "setup": 0},
-            ServiceType.SOCIAL: {"monthly": 600, "setup": 200},
-            ServiceType.BRANDING: {"monthly": 0, "setup": 5000},
-            ServiceType.WEBSITE: {"monthly": 100, "setup": 3000},
-        }
-        
-        # Create demo data
-        self._create_demo_data()
+        logger.info("Client Experience System initialized")
+        if demo_mode:
+            self._create_demo_data()
     
+    def _validate_email(self, email: str) -> bool:
+        """Simple email format validation."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(pattern, email))
+
     def _create_demo_data(self):
-        """Create demo clients and projects."""
-        # Demo client
-        client = self.onboard_client(
-            company="Saigon Coffee Co.",
-            contact_name="Nguyen Van Minh",
-            contact_email="minh@saigoncoffee.vn",
-            industry="F&B"
-        )
-        
-        # Demo project
-        project = self.create_project(
-            client_id=client.id,
-            name="SEO + Content Strategy",
-            service=ServiceType.SEO,
-            budget=5000,
-            deliverables=["Keyword Research", "10 Blog Posts", "Technical Audit"]
-        )
-        
-        # Update progress
-        project.progress = 65
-        project.status = ProjectStatus.IN_PROGRESS
-    
-    # ═══════════════════════════════════════════════════════════
-    # Client Management
-    # ═══════════════════════════════════════════════════════════
+        """Pre-fill with sample client and project."""
+        logger.info("Loading demo client experience data...")
+        try:
+            client = self.onboard_client(
+                company="Saigon Coffee Co.",
+                contact_name="Nguyen Van Minh",
+                contact_email="minh@saigoncoffee.vn",
+                industry="F&B"
+            )
+            
+            project = self.create_project(
+                client_id=client.id,
+                name="SEO Strategy",
+                service=ServiceType.SEO,
+                budget=5000.0,
+                deliverables=["Keyword Research", "Technical Audit"]
+            )
+            
+            project.progress = 65
+            project.status = ProjectStatus.IN_PROGRESS
+        except Exception as e:
+            logger.error(f"Demo data error: {e}")
     
     def onboard_client(
         self,
@@ -138,7 +136,11 @@ class ClientExperience:
         contact_email: str,
         **kwargs
     ) -> Client:
-        """Onboard a new client."""
+        """Register a new agency client."""
+        if not self._validate_email(contact_email):
+            logger.error(f"Invalid email: {contact_email}")
+            raise ValueError(f"Invalid contact email: {contact_email}")
+
         client = Client(
             id=f"CL-{uuid.uuid4().hex[:6].upper()}",
             company=company,
@@ -148,103 +150,43 @@ class ClientExperience:
         )
         
         self.clients[client.id] = client
+        logger.info(f"Client onboarded: {company} ({client.id})")
         return client
-    
-    def get_client_dashboard(self, client_id: str) -> Dict[str, Any]:
-        """Get client dashboard data."""
-        client = self.clients.get(client_id)
-        if not client:
-            return {"error": "Client not found"}
-        
-        # Get client's projects
-        projects = [p for p in self.projects.values() if p.client_id == client_id]
-        
-        active = [p for p in projects if p.status not in [ProjectStatus.COMPLETED]]
-        completed = [p for p in projects if p.status == ProjectStatus.COMPLETED]
-        
-        total_budget = sum(p.budget for p in projects)
-        avg_progress = sum(p.progress for p in active) / max(1, len(active))
-        
-        return {
-            "client": {
-                "company": client.company,
-                "contact": client.contact_name
-            },
-            "summary": {
-                "active_projects": len(active),
-                "completed_projects": len(completed),
-                "total_investment": f"${total_budget:,.0f}",
-                "avg_progress": f"{avg_progress:.0f}%"
-            },
-            "projects": [
-                {
-                    "name": p.name,
-                    "service": p.service.value,
-                    "status": p.status.value,
-                    "progress": p.progress
-                }
-                for p in projects
-            ]
-        }
-    
-    # ═══════════════════════════════════════════════════════════
-    # Project Management
-    # ═══════════════════════════════════════════════════════════
     
     def create_project(
         self,
         client_id: str,
         name: str,
         service: ServiceType,
-        budget: float = 0,
-        deliverables: List[str] = None
+        budget: float = 0.0,
+        deliverables: Optional[List[str]] = None
     ) -> Project:
-        """Create a new project."""
+        """Launch a new project for an onboarded client."""
+        if client_id not in self.clients:
+            logger.error(f"Client {client_id} not found")
+            raise KeyError("Invalid Client ID")
+
         project = Project(
             id=f"PR-{uuid.uuid4().hex[:6].upper()}",
             client_id=client_id,
             name=name,
             service=service,
-            status=ProjectStatus.DISCOVERY,
-            start_date=datetime.now(),
             budget=budget,
             deliverables=deliverables or []
         )
         
         self.projects[project.id] = project
+        logger.info(f"Project created: {name} for {self.clients[client_id].company}")
         return project
     
-    def update_progress(self, project_id: str, progress: int) -> bool:
-        """Update project progress."""
-        if project_id not in self.projects:
-            return False
-        
-        project = self.projects[project_id]
-        project.progress = min(100, max(0, progress))
-        
-        if progress >= 100:
-            project.status = ProjectStatus.COMPLETED
-            project.end_date = datetime.now()
-        elif progress > 0:
-            project.status = ProjectStatus.IN_PROGRESS
-        
-        return True
-    
-    # ═══════════════════════════════════════════════════════════
-    # Automated Reports
-    # ═══════════════════════════════════════════════════════════
-    
     def generate_report(self, client_id: str, project_id: str) -> Report:
-        """Generate an automated report."""
+        """Create a monthly performance snapshot."""
         period = datetime.now().strftime("%Y-%m")
         
-        project = self.projects.get(project_id)
-        
-        # Demo metrics
+        # Simulate analytics metrics
         metrics = {
             "traffic": {"value": 12500, "change": "+15%"},
             "leads": {"value": 45, "change": "+22%"},
-            "conversions": {"value": 12, "change": "+8%"},
             "roi": {"value": "3.2x", "change": "+0.4x"}
         }
         
@@ -257,59 +199,30 @@ class ClientExperience:
         )
         
         self.reports.append(report)
+        logger.info(f"Report generated for {period}")
         return report
     
-    def format_report_email(self, report: Report) -> str:
-        """Format report as email template."""
-        client = self.clients.get(report.client_id)
-        project = self.projects.get(report.project_id)
-        
-        metrics = report.metrics
-        
-        html = f"""
-🏯 AGENCY OS - MONTHLY REPORT
-{'=' * 50}
-
-Hello {client.contact_name}! 👋
-
-Here's your {report.period} performance summary for "{project.name}":
-
-📊 KEY METRICS
-{'─' * 30}
-  Traffic:     {metrics['traffic']['value']:,} ({metrics['traffic']['change']})
-  Leads:       {metrics['leads']['value']} ({metrics['leads']['change']})
-  Conversions: {metrics['conversions']['value']} ({metrics['conversions']['change']})
-  ROI:         {metrics['roi']['value']} ({metrics['roi']['change']})
-
-📈 PROJECT PROGRESS
-{'─' * 30}
-  Status:   {project.status.value}
-  Progress: {project.progress}%
-  
-✨ You're crushing it!
-
-Best regards,
-Your Agency Team 🏯
-        """
-        
-        return html.strip()
-    
     def format_client_portal(self) -> str:
-        """Format client portal as ASCII."""
+        """Render ASCII Client Portal."""
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            "║  👥 AGENCY OS - CLIENT PORTAL                            ║",
+            "║  👥 CLIENT PORTAL - AGENCY OS                            ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
         
         for client in list(self.clients.values())[:3]:
-            dashboard = self.get_client_dashboard(client.id)
-            summary = dashboard["summary"]
+            # Get project summary
+            c_projects = [p for p in self.projects.values() if p.client_id == client.id]
+            active_count = sum(1 for p in c_projects if p.status != ProjectStatus.COMPLETED)
+            total_inv = sum(p.budget for p in c_projects)
+            avg_prog = sum(p.progress for p in c_projects) / max(1, len(c_projects))
             
-            lines.append(f"║  {client.company[:20]:<20}                           ║")
-            lines.append(f"║    Active: {summary['active_projects']}  |  Progress: {summary['avg_progress']}  |  {summary['total_investment']}    ║")
-            lines.append("║                                                           ║")
+            lines.append(f"║  🏢 {client.company[:40]:<40}         ║")
+            lines.append(f"║    👤 Contact: {client.contact_name:<30}         ║")
+            lines.append(f"║    📊 Status:  {active_count} Active │ {avg_prog:>3.0f}% Progress │ ${total_inv:>8,.0f} ║")
+            lines.append("║  " + "─" * 57 + "  ║")
         
+        lines.append("║  [📂 Files]  [💬 Messages]  [📅 Meetings]  [💳 Billing]  ║")
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         
         return "\n".join(lines)
@@ -317,30 +230,17 @@ Your Agency Team 🏯
 
 # Example usage
 if __name__ == "__main__":
-    cx = ClientExperience()
+    print("👥 Initializing Client Experience System...")
+    print("=" * 60)
     
-    print("👥 Client Experience System")
-    print("=" * 50)
-    print()
-    
-    # Show client portal
-    print(cx.format_client_portal())
-    print()
-    
-    # Get client dashboard
-    client_id = list(cx.clients.keys())[0]
-    dashboard = cx.get_client_dashboard(client_id)
-    
-    print("📊 Client Dashboard:")
-    print(f"   Company: {dashboard['client']['company']}")
-    print(f"   Active Projects: {dashboard['summary']['active_projects']}")
-    print(f"   Investment: {dashboard['summary']['total_investment']}")
-    print(f"   Avg Progress: {dashboard['summary']['avg_progress']}")
-    print()
-    
-    # Generate report
-    project_id = list(cx.projects.keys())[0]
-    report = cx.generate_report(client_id, project_id)
-    
-    print("📧 Report Email Preview:")
-    print(cx.format_report_email(report))
+    try:
+        cx = ClientExperience()
+        
+        # Add another client for demo
+        c2 = cx.onboard_client("Global Tech", "Sarah Connor", "sarah@global.tech")
+        cx.create_project(c2.id, "PPC Ads", ServiceType.PPC, 2500.0)
+        
+        print("\n" + cx.format_client_portal())
+        
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

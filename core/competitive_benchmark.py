@@ -12,13 +12,17 @@ Features:
 - Improvement suggestions
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class BenchmarkCategory(Enum):
-    """Benchmark categories."""
+    """Benchmark categories for metrics classification."""
     PRICING = "pricing"
     GROWTH = "growth"
     PROFITABILITY = "profitability"
@@ -27,7 +31,7 @@ class BenchmarkCategory(Enum):
 
 
 class Percentile(Enum):
-    """Percentile rankings."""
+    """Percentile rankings based on performance."""
     TOP_10 = "top_10"
     TOP_25 = "top_25"
     MEDIAN = "median"
@@ -36,7 +40,7 @@ class Percentile(Enum):
 
 @dataclass
 class Benchmark:
-    """An industry benchmark."""
+    """An industry benchmark record entity."""
     metric: str
     category: BenchmarkCategory
     your_value: float
@@ -44,96 +48,106 @@ class Benchmark:
     top_performers: float
     unit: str = ""
 
+    def __post_init__(self):
+        if self.industry_avg > self.top_performers:
+            logger.warning(f"Consistency issue in '{self.metric}': Industry Avg ({self.industry_avg}) > Top Performers ({self.top_performers})")
+
 
 class CompetitiveBenchmarking:
     """
-    Competitive Benchmarking.
+    Competitive Benchmarking System.
     
-    Industry comparison.
+    Provides context by comparing agency metrics against global and local industry benchmarks.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.benchmarks: List[Benchmark] = []
+        logger.info(f"Competitive Benchmarking initialized for {agency_name}")
         self._load_defaults()
     
     def _load_defaults(self):
-        """Load default benchmarks."""
+        """Pre-populate with standard digital agency benchmarks."""
         defaults = [
-            ("Hourly Rate", BenchmarkCategory.PRICING, 125, 100, 200, "$"),
-            ("Project Value", BenchmarkCategory.PRICING, 8000, 5000, 15000, "$"),
-            ("Revenue Growth", BenchmarkCategory.GROWTH, 15, 12, 30, "%"),
-            ("Client Growth", BenchmarkCategory.GROWTH, 20, 15, 35, "%"),
-            ("Profit Margin", BenchmarkCategory.PROFITABILITY, 42, 30, 50, "%"),
-            ("Revenue/Employee", BenchmarkCategory.PROFITABILITY, 150, 120, 200, "k"),
-            ("Utilization Rate", BenchmarkCategory.EFFICIENCY, 82, 70, 85, "%"),
-            ("On-Time Delivery", BenchmarkCategory.EFFICIENCY, 88, 80, 95, "%"),
-            ("Client Retention", BenchmarkCategory.CLIENT, 92, 85, 95, "%"),
-            ("NPS Score", BenchmarkCategory.CLIENT, 72, 50, 80, ""),
+            ("Hourly Rate", BenchmarkCategory.PRICING, 125.0, 100.0, 200.0, "$"),
+            ("Project Value", BenchmarkCategory.PRICING, 8000.0, 5000.0, 15000.0, "$"),
+            ("Revenue Growth", BenchmarkCategory.GROWTH, 15.0, 12.0, 30.0, "%"),
+            ("Profit Margin", BenchmarkCategory.PROFITABILITY, 42.0, 30.0, 50.0, "%"),
+            ("Rev/Employee", BenchmarkCategory.PROFITABILITY, 150.0, 120.0, 200.0, "k"),
+            ("Utilization", BenchmarkCategory.EFFICIENCY, 82.0, 70.0, 85.0, "%"),
+            ("Retention", BenchmarkCategory.CLIENT, 92.0, 85.0, 95.0, "%"),
+            ("NPS Score", BenchmarkCategory.CLIENT, 72.0, 50.0, 80.0, ""),
         ]
         
-        for metric, category, your_value, industry_avg, top, unit in defaults:
-            self.benchmarks.append(Benchmark(metric, category, your_value, industry_avg, top, unit))
+        for m, cat, val, avg, top, unit in defaults:
+            self.benchmarks.append(Benchmark(m, cat, val, avg, top, unit))
     
     def get_percentile(self, benchmark: Benchmark) -> Percentile:
-        """Get percentile ranking."""
+        """Determine the percentile ranking for a specific benchmark."""
         if benchmark.your_value >= benchmark.top_performers:
             return Percentile.TOP_10
-        elif benchmark.your_value >= benchmark.industry_avg * 1.2:
+        elif benchmark.your_value >= (benchmark.industry_avg + (benchmark.top_performers - benchmark.industry_avg) * 0.5):
             return Percentile.TOP_25
         elif benchmark.your_value >= benchmark.industry_avg:
             return Percentile.MEDIAN
         else:
             return Percentile.BOTTOM_25
     
-    def get_gap(self, benchmark: Benchmark) -> float:
-        """Get gap to top performers."""
-        return benchmark.top_performers - benchmark.your_value
+    def get_gap_to_top(self, benchmark: Benchmark) -> float:
+        """Calculate the numerical gap between current value and top performance."""
+        return max(0.0, benchmark.top_performers - benchmark.your_value)
     
     def format_dashboard(self) -> str:
-        """Format benchmarking dashboard."""
-        above_avg = sum(1 for b in self.benchmarks if b.your_value >= b.industry_avg)
+        """Render Benchmarking Dashboard."""
+        above_avg_count = sum(1 for b in self.benchmarks if b.your_value >= b.industry_avg)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📊 COMPETITIVE BENCHMARKING                              ║",
-            f"║  {above_avg}/{len(self.benchmarks)} above industry average                         ║",
+            f"║  📊 COMPETITIVE BENCHMARKING{' ' * 31}║",
+            f"║  {above_avg_count}/{len(self.benchmarks)} metrics above industry average {' ' * 24}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  Metric          │ You    │ Avg    │ Top    │ Rank      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        percentile_icons = {"top_10": "🥇", "top_25": "🥈", "median": "🔵", "bottom_25": "⚪"}
+        rank_icons = {
+            Percentile.TOP_10: "🥇", 
+            Percentile.TOP_25: "🥈", 
+            Percentile.MEDIAN: "🔵", 
+            Percentile.BOTTOM_25: "⚪"
+        }
         
-        for benchmark in self.benchmarks[:8]:
-            percentile = self.get_percentile(benchmark)
-            icon = percentile_icons[percentile.value]
+        for b in self.benchmarks[:8]:
+            p = self.get_percentile(b)
+            icon = rank_icons.get(p, "❓")
             
-            you = f"{benchmark.your_value:,.0f}{benchmark.unit}"
-            avg = f"{benchmark.industry_avg:,.0f}{benchmark.unit}"
-            top = f"{benchmark.top_performers:,.0f}{benchmark.unit}"
+            val_str = f"{b.your_value:,.0f}{b.unit}"
+            avg_str = f"{b.industry_avg:,.0f}{b.unit}"
+            top_str = f"{b.top_performers:,.0f}{b.unit}"
             
-            lines.append(f"║  {benchmark.metric[:15]:<15} │ {you:>6} │ {avg:>6} │ {top:>6} │ {icon} {percentile.value[4:] if 'top' in percentile.value else percentile.value[:6]:<6}  ║")
+            # Extract rank text safely
+            rank_text = p.value.replace("top_", "Top ").replace("median", "Median").replace("bottom_25", "Btm 25")
+            
+            lines.append(f"║  {b.metric[:15]:<15} │ {val_str:>6} │ {avg_str:>6} │ {top_str:>6} │ {icon} {rank_text:<7} ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  💡 IMPROVEMENT OPPORTUNITIES                             ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  💡 GROWTH OPPORTUNITIES                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        # Find biggest gaps
-        gaps = [(b, self.get_gap(b)) for b in self.benchmarks]
-        gaps.sort(key=lambda x: x[1], reverse=True)
-        
-        for benchmark, gap in gaps[:3]:
+        # Identify top 3 gaps
+        gaps = sorted(self.benchmarks, key=lambda x: self.get_gap_to_top(x), reverse=True)
+        for b in gaps[:3]:
+            gap = self.get_gap_to_top(b)
             if gap > 0:
-                lines.append(f"║    📈 {benchmark.metric}: +{gap:,.0f}{benchmark.unit} to reach top          ║")
+                lines.append(f"║    📈 {b.metric:<15}: +{gap:,.0f}{b.unit} to reach top performance{' ' * 10}║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [📊 Industry Report]  [🎯 Set Targets]  [📈 Track]       ║",
+            "║  [📊 Full Report]  [🎯 Set Targets]  [📈 Track Progress]  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Know your position!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Be Competitive!    ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -142,10 +156,11 @@ class CompetitiveBenchmarking:
 
 # Example usage
 if __name__ == "__main__":
-    benchmarking = CompetitiveBenchmarking("Saigon Digital Hub")
-    
-    print("📊 Competitive Benchmarking")
+    print("📊 Initializing Competitive Benchmarking...")
     print("=" * 60)
-    print()
     
-    print(benchmarking.format_dashboard())
+    try:
+        benchmark_system = CompetitiveBenchmarking("Saigon Digital Hub")
+        print("\n" + benchmark_system.format_dashboard())
+    except Exception as e:
+        logger.error(f"System Error: {e}")

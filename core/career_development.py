@@ -12,12 +12,16 @@ Roles:
 - Performance tracking
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SkillLevel(Enum):
     """Skill proficiency levels."""
@@ -48,18 +52,28 @@ class TrainingType(Enum):
 
 @dataclass
 class Skill:
-    """A skill to track."""
+    """A skill being tracked for an employee."""
     id: str
     name: str
     category: str
     level: SkillLevel = SkillLevel.BEGINNER
     target_level: SkillLevel = SkillLevel.INTERMEDIATE
-    progress: int = 0  # 0-100
+    _progress: int = 0  # 0-100
+
+    @property
+    def progress(self) -> int:
+        return self._progress
+
+    @progress.setter
+    def progress(self, value: int) -> None:
+        if not 0 <= value <= 100:
+            raise ValueError("Progress must be between 0 and 100")
+        self._progress = value
 
 
 @dataclass
 class CareerPath:
-    """A career path for an employee."""
+    """A career trajectory definition."""
     id: str
     employee: str
     current_role: str
@@ -72,27 +86,34 @@ class CareerPath:
 
 @dataclass
 class Training:
-    """A training program."""
+    """A training program entity."""
     id: str
     name: str
     training_type: TrainingType
     duration_hours: int
-    cost: float = 0
+    cost: float = 0.0
     skills: List[str] = field(default_factory=list)
     completed_by: List[str] = field(default_factory=list)
+
+    def __post_init__(self):
+        if self.duration_hours < 0:
+            raise ValueError("Duration cannot be negative")
+        if self.cost < 0:
+            raise ValueError("Cost cannot be negative")
 
 
 class CareerDevelopment:
     """
     Career Development System.
     
-    Grow team careers.
+    Orchestrates employee growth, skill acquisition, and training programs.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.career_paths: Dict[str, CareerPath] = {}
         self.trainings: Dict[str, Training] = {}
+        logger.info(f"Career Development initialized for {agency_name}")
     
     def create_career_path(
         self,
@@ -103,7 +124,10 @@ class CareerDevelopment:
         target_level: CareerLevel,
         months: int = 12
     ) -> CareerPath:
-        """Create a career path."""
+        """Define a new growth path for an employee."""
+        if not employee:
+            raise ValueError("Employee name required")
+
         path = CareerPath(
             id=f"CAR-{uuid.uuid4().hex[:6].upper()}",
             employee=employee,
@@ -114,17 +138,22 @@ class CareerDevelopment:
             target_date=datetime.now() + timedelta(days=months * 30)
         )
         self.career_paths[path.id] = path
+        logger.info(f"Career path created for {employee}: {current_role} -> {target_role}")
         return path
     
     def add_skill(
         self,
-        path: CareerPath,
+        path_id: str,
         skill_name: str,
         category: str,
         current: SkillLevel = SkillLevel.BEGINNER,
         target: SkillLevel = SkillLevel.INTERMEDIATE
-    ) -> Skill:
-        """Add a skill to track."""
+    ) -> Optional[Skill]:
+        """Attach a skill to a career path."""
+        if path_id not in self.career_paths:
+            logger.error(f"Career path {path_id} not found")
+            return None
+
         skill = Skill(
             id=f"SKL-{uuid.uuid4().hex[:6].upper()}",
             name=skill_name,
@@ -132,24 +161,29 @@ class CareerDevelopment:
             level=current,
             target_level=target
         )
-        path.skills.append(skill)
+        self.career_paths[path_id].skills.append(skill)
+        logger.info(f"Skill '{skill_name}' added to {self.career_paths[path_id].employee}'s path")
         return skill
     
-    def update_skill_progress(self, skill: Skill, progress: int, level: SkillLevel = None):
-        """Update skill progress."""
-        skill.progress = min(100, progress)
-        if level:
-            skill.level = level
+    def update_skill_progress(self, skill: Skill, progress: int, level: Optional[SkillLevel] = None):
+        """Update progress and proficiency for a skill."""
+        try:
+            skill.progress = progress
+            if level:
+                skill.level = level
+            logger.debug(f"Skill {skill.name} updated: {progress}%")
+        except ValueError as e:
+            logger.error(f"Invalid progress update: {e}")
     
     def add_training(
         self,
         name: str,
         training_type: TrainingType,
         hours: int,
-        cost: float = 0,
-        skills: List[str] = None
+        cost: float = 0.0,
+        skills: Optional[List[str]] = None
     ) -> Training:
-        """Add a training program."""
+        """Register a new training program."""
         training = Training(
             id=f"TRN-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -159,17 +193,27 @@ class CareerDevelopment:
             skills=skills or []
         )
         self.trainings[training.id] = training
+        logger.info(f"Training registered: {name} ({training_type.value})")
         return training
     
-    def complete_training(self, training: Training, employee: str):
-        """Mark training as completed."""
-        if employee not in training.completed_by:
-            training.completed_by.append(employee)
+    def complete_training(self, training_id: str, employee: str) -> bool:
+        """Log training completion for an employee."""
+        if training_id not in self.trainings:
+            return False
+            
+        t = self.trainings[training_id]
+        if employee not in t.completed_by:
+            t.completed_by.append(employee)
+            logger.info(f"{employee} completed {t.name}")
+            return True
+        return False
     
     def get_stats(self) -> Dict[str, Any]:
-        """Get career development stats."""
+        """Aggregate development statistics."""
         total_skills = sum(len(p.skills) for p in self.career_paths.values())
-        avg_progress = sum(s.progress for p in self.career_paths.values() for s in p.skills) / total_skills if total_skills else 0
+        all_skills = [s for p in self.career_paths.values() for s in p.skills]
+        avg_progress = sum(s.progress for s in all_skills) / total_skills if total_skills else 0.0
+        
         total_completions = sum(len(t.completed_by) for t in self.trainings.values())
         training_investment = sum(t.cost for t in self.trainings.values())
         
@@ -183,60 +227,78 @@ class CareerDevelopment:
         }
     
     def format_dashboard(self) -> str:
-        """Format career development dashboard."""
+        """Render Career Development Dashboard."""
         stats = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📈 CAREER DEVELOPMENT                                    ║",
-            f"║  {stats['career_paths']} paths │ {stats['total_skills']} skills │ {stats['avg_progress']:.0f}% progress  ║",
+            f"║  📈 CAREER DEVELOPMENT{' ' * 39}║",
+            f"║  {stats['career_paths']} paths │ {stats['total_skills']} skills │ {stats['avg_progress']:.0f}% avg progress{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🎯 CAREER PATHS                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🎯 ACTIVE CAREER PATHS                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        level_icons = {"junior": "🌱", "mid": "🌿", "senior": "🌳", 
-                      "lead": "⭐", "manager": "👑", "director": "🏆"}
+        level_icons = {
+            CareerLevel.JUNIOR: "🌱", 
+            CareerLevel.MID: "🌿", 
+            CareerLevel.SENIOR: "🌳", 
+            CareerLevel.LEAD: "⭐", 
+            CareerLevel.MANAGER: "👑", 
+            CareerLevel.DIRECTOR: "🏆"
+        }
         
-        for path in list(self.career_paths.values())[:4]:
-            curr_icon = level_icons.get(path.current_level.value, "⚪")
-            tgt_icon = level_icons.get(path.target_level.value, "⭐")
-            skill_progress = sum(s.progress for s in path.skills) / len(path.skills) if path.skills else 0
+        for p in list(self.career_paths.values())[:4]:
+            c_icon = level_icons.get(p.current_level, "⚪")
+            t_icon = level_icons.get(p.target_level, "⭐")
+            name_display = (p.employee[:12] + '..') if len(p.employee) > 14 else p.employee
             
-            lines.append(f"║  {curr_icon}→{tgt_icon} {path.employee[:12]:<12} │ {path.current_role[:10]:<10} → {path.target_role[:10]:<10}  ║")
+            lines.append(f"║  {c_icon}→{t_icon} {name_display:<14} │ {p.current_role[:10]:<10} → {p.target_role[:10]:<10}  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  📚 TRAINING PROGRAMS                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"course": "📖", "workshop": "🔧", "certification": "🏅",
-                     "mentorship": "👥", "conference": "🎤"}
+        type_icons = {
+            TrainingType.COURSE: "📖", 
+            TrainingType.WORKSHOP: "🔧", 
+            TrainingType.CERTIFICATION: "🏅",
+            TrainingType.MENTORSHIP: "👥", 
+            TrainingType.CONFERENCE: "🎤"
+        }
         
-        for training in list(self.trainings.values())[:4]:
-            icon = type_icons.get(training.training_type.value, "📚")
-            lines.append(f"║  {icon} {training.name[:22]:<22} │ {training.duration_hours:>3}h │ {len(training.completed_by):>2} done  ║")
+        for t in list(self.trainings.values())[:4]:
+            icon = type_icons.get(t.training_type, "📚")
+            name_display = (t.name[:22] + '..') if len(t.name) > 24 else t.name
+            lines.append(f"║  {icon} {name_display:<24} │ {t.duration_hours:>3}h │ {len(t.completed_by):>2} done  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  💡 SKILL DEVELOPMENT                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  💡 SKILL PROGRESS                                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        skill_icons = {"beginner": "🔵", "intermediate": "🟢", "advanced": "🟡", "expert": "🔴"}
-        all_skills = [s for p in self.career_paths.values() for s in p.skills][:4]
+        skill_icons = {
+            SkillLevel.BEGINNER: "🔵", 
+            SkillLevel.INTERMEDIATE: "🟢", 
+            SkillLevel.ADVANCED: "🟡", 
+            SkillLevel.EXPERT: "🔴"
+        }
         
-        for skill in all_skills:
-            icon = skill_icons.get(skill.level.value, "⚪")
-            bar = "█" * int(skill.progress / 20) + "░" * (5 - int(skill.progress / 20))
-            lines.append(f"║  {icon} {skill.name[:18]:<18} │ {bar} │ {skill.progress:>3}%       ║")
+        all_skills = [s for p in self.career_paths.values() for s in p.skills]
+        for s in all_skills[:4]:
+            icon = skill_icons.get(s.level, "⚪")
+            bar = "█" * int(s.progress / 20) + "░" * (5 - int(s.progress / 20))
+            name_display = (s.name[:18] + '..') if len(s.name) > 20 else s.name
+            lines.append(f"║  {icon} {name_display:<20} │ {bar} │ {s.progress:>3}%       ║")
         
         lines.extend([
             "║                                                           ║",
             "║  [📈 Paths]  [📚 Training]  [💡 Skills]                   ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Grow together!                   ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Growth!             ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -245,28 +307,31 @@ class CareerDevelopment:
 
 # Example usage
 if __name__ == "__main__":
-    cd = CareerDevelopment("Saigon Digital Hub")
-    
-    print("📈 Career Development")
+    print("📈 Initializing Career Development...")
     print("=" * 60)
-    print()
     
-    p1 = cd.create_career_path("Alex Nguyen", "Developer", CareerLevel.MID, "Tech Lead", CareerLevel.LEAD, 18)
-    p2 = cd.create_career_path("Sarah Tran", "Designer", CareerLevel.JUNIOR, "Senior Designer", CareerLevel.SENIOR, 12)
-    
-    s1 = cd.add_skill(p1, "System Design", "Technical", SkillLevel.BEGINNER, SkillLevel.ADVANCED)
-    s2 = cd.add_skill(p1, "Leadership", "Soft Skills", SkillLevel.INTERMEDIATE, SkillLevel.ADVANCED)
-    s3 = cd.add_skill(p2, "UX Research", "Design", SkillLevel.BEGINNER, SkillLevel.INTERMEDIATE)
-    
-    cd.update_skill_progress(s1, 45)
-    cd.update_skill_progress(s2, 70, SkillLevel.ADVANCED)
-    cd.update_skill_progress(s3, 30)
-    
-    t1 = cd.add_training("AWS Solutions Architect", TrainingType.CERTIFICATION, 40, 500, ["Cloud", "Architecture"])
-    t2 = cd.add_training("Leadership Workshop", TrainingType.WORKSHOP, 16, 200, ["Leadership"])
-    
-    cd.complete_training(t1, "Alex Nguyen")
-    cd.complete_training(t2, "Alex Nguyen")
-    cd.complete_training(t2, "Sarah Tran")
-    
-    print(cd.format_dashboard())
+    try:
+        cd = CareerDevelopment("Saigon Digital Hub")
+        
+        p1 = cd.create_career_path("Alex Nguyen", "Developer", CareerLevel.MID, "Tech Lead", CareerLevel.LEAD, 18)
+        p2 = cd.create_career_path("Sarah Tran", "Designer", CareerLevel.JUNIOR, "Senior Designer", CareerLevel.SENIOR, 12)
+        
+        s1 = cd.add_skill(p1.id, "System Design", "Technical", SkillLevel.BEGINNER, SkillLevel.ADVANCED)
+        s2 = cd.add_skill(p1.id, "Leadership", "Soft Skills", SkillLevel.INTERMEDIATE, SkillLevel.ADVANCED)
+        s3 = cd.add_skill(p2.id, "UX Research", "Design", SkillLevel.BEGINNER, SkillLevel.INTERMEDIATE)
+        
+        if s1: cd.update_skill_progress(s1, 45)
+        if s2: cd.update_skill_progress(s2, 70, SkillLevel.ADVANCED)
+        if s3: cd.update_skill_progress(s3, 30)
+        
+        t1 = cd.add_training("AWS Architect", TrainingType.CERTIFICATION, 40, 500.0, ["Cloud"])
+        t2 = cd.add_training("Leadership", TrainingType.WORKSHOP, 16, 200.0, ["Soft"])
+        
+        cd.complete_training(t1.id, "Alex Nguyen")
+        cd.complete_training(t2.id, "Alex Nguyen")
+        cd.complete_training(t2.id, "Sarah Tran")
+        
+        print("\n" + cd.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

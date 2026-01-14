@@ -12,15 +12,19 @@ Roles:
 - Success metrics reporting
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class MetricCategory(Enum):
-    """Metric categories."""
+    """Metric categories for analytics."""
     ENGAGEMENT = "engagement"
     SATISFACTION = "satisfaction"
     USAGE = "usage"
@@ -29,7 +33,7 @@ class MetricCategory(Enum):
 
 
 class RiskLevel(Enum):
-    """Churn risk level."""
+    """Churn risk levels."""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -38,7 +42,7 @@ class RiskLevel(Enum):
 
 @dataclass
 class ClientMetrics:
-    """Client success metrics."""
+    """Client success metrics record entity."""
     client_name: str
     engagement_score: int
     satisfaction_score: int
@@ -47,10 +51,16 @@ class ClientMetrics:
     risk_level: RiskLevel
     last_updated: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        # Validate scores are within 0-100 range
+        for score in [self.engagement_score, self.satisfaction_score, self.usage_score, self.health_score]:
+            if not 0 <= score <= 100:
+                raise ValueError(f"Score {score} out of range (0-100)")
+
 
 @dataclass
 class InsightReport:
-    """Analytics insight report."""
+    """Analytics insight report record entity."""
     id: str
     title: str
     period: str
@@ -61,15 +71,23 @@ class InsightReport:
 
 class CSAnalyst:
     """
-    Customer Success Analyst.
+    Customer Success Analyst System.
     
-    Data-driven insights.
+    Provides data-driven insights into portfolio health and churn risk.
     """
+    
+    # Weight configuration for health calculation
+    WEIGHTS = {
+        "engagement": 0.35,
+        "satisfaction": 0.40,
+        "usage": 0.25
+    }
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.client_metrics: Dict[str, ClientMetrics] = {}
         self.reports: List[InsightReport] = []
+        logger.info(f"CS Analyst initialized for {agency_name}")
     
     def calculate_health_score(
         self,
@@ -77,19 +95,19 @@ class CSAnalyst:
         satisfaction: int,
         usage: int
     ) -> int:
-        """Calculate health score."""
-        return int(engagement * 0.35 + satisfaction * 0.40 + usage * 0.25)
+        """Weighted health score calculation."""
+        return int(
+            engagement * self.WEIGHTS["engagement"] + 
+            satisfaction * self.WEIGHTS["satisfaction"] + 
+            usage * self.WEIGHTS["usage"]
+        )
     
     def assess_risk(self, health_score: int) -> RiskLevel:
-        """Assess churn risk."""
-        if health_score >= 80:
-            return RiskLevel.LOW
-        elif health_score >= 60:
-            return RiskLevel.MEDIUM
-        elif health_score >= 40:
-            return RiskLevel.HIGH
-        else:
-            return RiskLevel.CRITICAL
+        """Map health score to a specific risk tier."""
+        if health_score >= 80: return RiskLevel.LOW
+        if health_score >= 60: return RiskLevel.MEDIUM
+        if health_score >= 40: return RiskLevel.HIGH
+        return RiskLevel.CRITICAL
     
     def analyze_client(
         self,
@@ -98,7 +116,10 @@ class CSAnalyst:
         satisfaction: int,
         usage: int
     ) -> ClientMetrics:
-        """Analyze client metrics."""
+        """Execute a full health and risk analysis for a client."""
+        if not client_name:
+            raise ValueError("Client name is required")
+
         health = self.calculate_health_score(engagement, satisfaction, usage)
         risk = self.assess_risk(health)
         
@@ -111,6 +132,7 @@ class CSAnalyst:
             risk_level=risk
         )
         self.client_metrics[client_name] = metrics
+        logger.info(f"Analysis complete for {client_name}. Health: {health}, Risk: {risk.value}")
         return metrics
     
     def generate_report(
@@ -120,7 +142,7 @@ class CSAnalyst:
         findings: List[str],
         recommendations: List[str]
     ) -> InsightReport:
-        """Generate insight report."""
+        """Create a summary intelligence report."""
         report = InsightReport(
             id=f"RPT-{uuid.uuid4().hex[:6].upper()}",
             title=title,
@@ -129,67 +151,54 @@ class CSAnalyst:
             recommendations=recommendations
         )
         self.reports.append(report)
+        logger.info(f"Insight report generated: {title}")
         return report
     
-    def get_at_risk(self) -> List[ClientMetrics]:
-        """Get at-risk clients."""
+    def get_at_risk_list(self) -> List[ClientMetrics]:
+        """Filter list of high or critical risk clients."""
         return [m for m in self.client_metrics.values() 
                 if m.risk_level in [RiskLevel.HIGH, RiskLevel.CRITICAL]]
     
-    def get_portfolio_stats(self) -> Dict[str, Any]:
-        """Get portfolio statistics."""
-        if not self.client_metrics:
-            return {}
-        
-        scores = [m.health_score for m in self.client_metrics.values()]
-        return {
-            "total_clients": len(self.client_metrics),
-            "avg_health": sum(scores) / len(scores),
-            "at_risk": len(self.get_at_risk()),
-            "healthy": sum(1 for m in self.client_metrics.values() if m.risk_level == RiskLevel.LOW)
-        }
-    
     def format_dashboard(self) -> str:
-        """Format analyst dashboard."""
-        stats = self.get_portfolio_stats()
+        """Render the CS Analyst Dashboard."""
+        active_count = len(self.client_metrics)
+        avg_health = sum(m.health_score for m in self.client_metrics.values()) / active_count if active_count else 0.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📊 CS ANALYST                                            ║",
-            f"║  {stats.get('total_clients', 0)} clients │ Avg Health: {stats.get('avg_health', 0):.0f}%                ║",
+            f"║  📊 CS ANALYST DASHBOARD{' ' * 34}║",
+            f"║  {active_count} clients │ Avg Health: {avg_health:.0f}% {' ' * 25}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📈 HEALTH DISTRIBUTION                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📈 RISK DISTRIBUTION                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for risk in RiskLevel:
-            count = sum(1 for m in self.client_metrics.values() if m.risk_level == risk)
-            icons = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
+        icons = {RiskLevel.LOW: "🟢", RiskLevel.MEDIUM: "🟡", RiskLevel.HIGH: "🟠", RiskLevel.CRITICAL: "🔴"}
+        for level in RiskLevel:
+            count = sum(1 for m in self.client_metrics.values() if m.risk_level == level)
             bar = "█" * count + "░" * max(0, 5 - count)
-            lines.append(f"║  {icons[risk.value]} {risk.value.capitalize():<10} │ {bar:<5} │ {count:>2} clients          ║")
+            lines.append(f"║  {icons[level]} {level.value.capitalize():<10} │ {bar:<5} │ {count:>2} clients          ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  ⚠️ AT-RISK ANALYSIS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ⚠️ AT-RISK ANALYSIS (Lowest Score First)                 ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        for metrics in sorted(self.get_at_risk(), key=lambda x: x.health_score)[:4]:
-            icons = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
-            bar = "█" * (metrics.health_score // 10) + "░" * (10 - metrics.health_score // 10)
-            
-            lines.append(f"║  {icons[metrics.risk_level.value]} {metrics.client_name[:15]:<15} │ {bar} │ {metrics.health_score}%  ║")
+        at_risk = sorted(self.get_at_risk_list(), key=lambda x: x.health_score)[:4]
+        if not at_risk:
+            lines.append("║    ✅ No high-risk clients detected.                      ║")
+        else:
+            for m in at_risk:
+                icon = icons.get(m.risk_level, "⚪")
+                bar = "█" * (m.health_score // 10) + "░" * (10 - m.health_score // 10)
+                lines.append(f"║  {icon} {m.client_name[:15]:<15} │ {bar} │ {m.health_score:>3}%  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📋 SCORE BREAKDOWN                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    📊 Engagement (35%)  │ 📈 Satisfaction (40%)           ║",
-            "║    💻 Usage (25%)       │ = Health Score                  ║",
-            "║                                                           ║",
-            "║  [📊 Run Analysis]  [📋 Generate Report]  [📈 Trends]    ║",
+            "║  [📊 Run Data]  [📋 Generate Report]  [📈 Global Trends]  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Data-driven success!             ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Insights!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -198,25 +207,16 @@ class CSAnalyst:
 
 # Example usage
 if __name__ == "__main__":
-    analyst = CSAnalyst("Saigon Digital Hub")
-    
-    print("📊 CS Analyst")
+    print("📊 Initializing CS Analyst...")
     print("=" * 60)
-    print()
     
-    # Analyze clients
-    analyst.analyze_client("Sunrise Realty", 90, 85, 88)
-    analyst.analyze_client("Coffee Lab", 75, 80, 70)
-    analyst.analyze_client("Tech Startup", 60, 65, 55)
-    analyst.analyze_client("Fashion Brand", 40, 45, 35)
-    analyst.analyze_client("Restaurant Chain", 85, 90, 80)
-    
-    # Generate report
-    analyst.generate_report(
-        "Q4 Portfolio Analysis",
-        "October - December 2025",
-        ["2 clients at high risk", "Engagement trending down", "NPS improved 5 points"],
-        ["Focus on Fashion Brand", "Launch re-engagement campaign", "Schedule executive check-ins"]
-    )
-    
-    print(analyst.format_dashboard())
+    try:
+        analyst = CSAnalyst("Saigon Digital Hub")
+        # Seed analysis
+        analyst.analyze_client("Acme Corp", 90, 85, 88)
+        analyst.analyze_client("Fashion Brand", 40, 45, 35)
+        
+        print("\n" + analyst.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Analysis Error: {e}")

@@ -8,3 +8,17 @@ venv/
 frontend/node_modules/
 frontend/.next/
 .vercel
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# OS
+Thumbs.db

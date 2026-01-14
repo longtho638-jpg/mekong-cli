@@ -12,12 +12,16 @@ Roles:
 - Cross-team communication
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TaskType(Enum):
     """Coordinator task types."""
@@ -29,7 +33,7 @@ class TaskType(Enum):
 
 
 class TaskStatus(Enum):
-    """Task status."""
+    """Execution status for coordinator tasks."""
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -38,7 +42,7 @@ class TaskStatus(Enum):
 
 @dataclass
 class CoordinatorTask:
-    """A coordinator task."""
+    """A coordinator task entity."""
     id: str
     client: str
     task_type: TaskType
@@ -51,7 +55,7 @@ class CoordinatorTask:
 
 @dataclass
 class ClientTouch:
-    """Client touchpoint record."""
+    """Client touchpoint record entity."""
     id: str
     client: str
     type: str
@@ -62,15 +66,16 @@ class ClientTouch:
 
 class CSCoordinator:
     """
-    Customer Success Coordinator.
+    Customer Success Coordinator System.
     
-    Coordinate success activities.
+    Orchestrates daily interactions, follow-ups, and task management.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.tasks: Dict[str, CoordinatorTask] = {}
         self.touches: List[ClientTouch] = []
+        logger.info(f"CS Coordinator initialized for {agency_name}")
     
     def create_task(
         self,
@@ -80,7 +85,10 @@ class CSCoordinator:
         assigned_to: str,
         due_days: int = 1
     ) -> CoordinatorTask:
-        """Create a coordination task."""
+        """Initialize a new coordination task."""
+        if not client or not description:
+            raise ValueError("Client and description are required")
+
         task = CoordinatorTask(
             id=f"TSK-{uuid.uuid4().hex[:6].upper()}",
             client=client,
@@ -90,13 +98,22 @@ class CSCoordinator:
             due_date=datetime.now() + timedelta(days=due_days)
         )
         self.tasks[task.id] = task
+        logger.info(f"Task created for {client}: {task_type.value}")
         return task
     
-    def update_status(self, task: CoordinatorTask, status: TaskStatus, notes: str = ""):
-        """Update task status."""
+    def update_status(self, task_id: str, status: TaskStatus, notes: str = "") -> bool:
+        """Update the progress of a specific task."""
+        if task_id not in self.tasks:
+            logger.error(f"Task ID {task_id} not found")
+            return False
+            
+        task = self.tasks[task_id]
+        old_status = task.status
         task.status = status
         if notes:
             task.notes = notes
+        logger.info(f"Task {task_id} updated: {old_status.value} -> {status.value}")
+        return True
     
     def log_touch(
         self,
@@ -105,7 +122,7 @@ class CSCoordinator:
         summary: str,
         next_action: str
     ) -> ClientTouch:
-        """Log a client touchpoint."""
+        """Record a successful client interaction."""
         touch = ClientTouch(
             id=f"TCH-{uuid.uuid4().hex[:6].upper()}",
             client=client,
@@ -114,69 +131,62 @@ class CSCoordinator:
             next_action=next_action
         )
         self.touches.append(touch)
+        logger.info(f"Touchpoint logged for {client}")
         return touch
     
-    def get_overdue(self) -> List[CoordinatorTask]:
-        """Get overdue tasks."""
+    def get_overdue_tasks(self) -> List[CoordinatorTask]:
+        """Filter tasks that have passed their deadline."""
         now = datetime.now()
         return [t for t in self.tasks.values() 
                 if t.status != TaskStatus.COMPLETED and t.due_date < now]
     
-    def get_today(self) -> List[CoordinatorTask]:
-        """Get today's tasks."""
-        today = datetime.now().date()
-        return [t for t in self.tasks.values() 
-                if t.status != TaskStatus.COMPLETED and t.due_date.date() == today]
-    
     def format_dashboard(self) -> str:
-        """Format coordinator dashboard."""
-        pending = sum(1 for t in self.tasks.values() if t.status == TaskStatus.PENDING)
-        overdue = len(self.get_overdue())
-        today = len(self.get_today())
+        """Render the CS Coordinator Dashboard."""
+        pending_count = sum(1 for t in self.tasks.values() if t.status == TaskStatus.PENDING)
+        overdue = self.get_overdue_tasks()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🤝 CS COORDINATOR                                        ║",
-            f"║  {len(self.tasks)} tasks │ {pending} pending │ {overdue} overdue           ║",
+            f"║  🤝 CS COORDINATOR DASHBOARD{' ' * 31}║",
+            f"║  {len(self.tasks)} total tasks │ {pending_count} pending │ {len(overdue)} overdue{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📋 TODAY'S TASKS ({today})                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📋 ACTIVE TASK QUEUE                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"meeting": "📅", "follow_up": "📞", "escalation": "⚠️", "report": "📊", "admin": "📝"}
-        status_icons = {"pending": "⏳", "in_progress": "🔄", "completed": "✅", "blocked": "🚫"}
+        type_icons = {
+            TaskType.MEETING: "📅", TaskType.FOLLOW_UP: "📞", 
+            TaskType.ESCALATION: "⚠️", TaskType.REPORT: "📊", TaskType.ADMIN: "📝"
+        }
+        status_icons = {
+            TaskStatus.PENDING: "⏳", TaskStatus.IN_PROGRESS: "🔄", 
+            TaskStatus.COMPLETED: "✅", TaskStatus.BLOCKED: "🚫"
+        }
         
-        for task in self.get_today()[:4]:
-            t_icon = type_icons.get(task.task_type.value, "📋")
-            s_icon = status_icons.get(task.status.value, "⚪")
-            
-            lines.append(f"║  {s_icon} {t_icon} {task.client[:12]:<12} │ {task.description[:28]:<28}  ║")
-        
-        if overdue > 0:
-            lines.extend([
-                "║                                                           ║",
-                f"║  ⚠️ OVERDUE ({overdue})                                       ║",
-                "║  ─────────────────────────────────────────────────────── ║",
-            ])
-            
-            for task in self.get_overdue()[:3]:
-                days = (datetime.now() - task.due_date).days
-                lines.append(f"║    🔴 {task.client[:15]:<15} │ {days} days overdue         ║")
+        # Display latest 5 active tasks
+        active_tasks = [t for t in self.tasks.values() if t.status != TaskStatus.COMPLETED]
+        for t in sorted(active_tasks, key=lambda x: x.due_date)[:5]:
+            t_icon = type_icons.get(t.task_type, "📋")
+            s_icon = status_icons.get(t.status, "⚪")
+            client_disp = (t.client[:12] + '..') if len(t.client) > 14 else t.client
+            desc_disp = (t.description[:25] + '..') if len(t.description) > 27 else t.description
+            lines.append(f"║  {s_icon} {t_icon} {client_disp:<14} │ {desc_disp:<27}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📞 RECENT TOUCHES                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📞 RECENT INTERACTIONS                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
         for touch in self.touches[-3:]:
-            lines.append(f"║    📍 {touch.client[:12]:<12} │ {touch.type[:8]:<8} │ {touch.summary[:20]:<20}  ║")
+            client_disp = (touch.client[:12] + '..') if len(touch.client) > 14 else touch.client
+            lines.append(f"║    📍 {client_disp:<14} │ {touch.type[:8]:<8} │ {touch.summary[:20]:<20}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [➕ New Task]  [📞 Log Touch]  [📊 Reports]              ║",
+            "║  [➕ New Task]  [📞 Log Touch]  [📊 Sync All]             ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Coordinating success!            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Sync Success!      ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -185,20 +195,19 @@ class CSCoordinator:
 
 # Example usage
 if __name__ == "__main__":
-    coord = CSCoordinator("Saigon Digital Hub")
-    
-    print("🤝 CS Coordinator")
+    print("🤝 Initializing CS Coordinator...")
     print("=" * 60)
-    print()
     
-    # Create tasks
-    coord.create_task("Sunrise Realty", TaskType.MEETING, "Quarterly review call", "Alex", 0)
-    coord.create_task("Coffee Lab", TaskType.FOLLOW_UP, "Check on campaign results", "Sarah", 0)
-    coord.create_task("Tech Startup", TaskType.REPORT, "Prepare monthly report", "Mike", 1)
-    coord.create_task("Fashion Brand", TaskType.ESCALATION, "Address delayed delivery", "Alex", -1)  # Overdue
-    
-    # Log touches
-    coord.log_touch("Sunrise Realty", "Email", "Sent performance update", "Schedule call")
-    coord.log_touch("Coffee Lab", "Call", "Discussed new campaign ideas", "Send proposal")
-    
-    print(coord.format_dashboard())
+    try:
+        coordinator = CSCoordinator("Saigon Digital Hub")
+        
+        # Seed data
+        coordinator.create_task("Acme Corp", TaskType.MEETING, "Quarterly sync", "Alex", 0)
+        coordinator.create_task("Fashion Ltd", TaskType.ESCALATION, "Late delivery", "Mike", -1)
+        
+        coordinator.log_touch("Acme Corp", "Email", "Sent report", "Wait for reply")
+        
+        print("\n" + coordinator.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Coordinator Error: {e}")

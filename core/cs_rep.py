@@ -12,15 +12,19 @@ Roles:
 - Ticket management
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class InquiryType(Enum):
-    """Inquiry types."""
+    """Common categories for customer inquiries."""
     GENERAL = "general"
     BILLING = "billing"
     PRODUCT = "product"
@@ -30,7 +34,7 @@ class InquiryType(Enum):
 
 
 class InquiryStatus(Enum):
-    """Inquiry status."""
+    """Lifecycle status of an inquiry."""
     NEW = "new"
     RESPONDED = "responded"
     PENDING_CLIENT = "pending_client"
@@ -40,7 +44,7 @@ class InquiryStatus(Enum):
 
 @dataclass
 class CustomerInquiry:
-    """A customer inquiry."""
+    """A customer inquiry entity."""
     id: str
     client: str
     inquiry_type: InquiryType
@@ -54,15 +58,16 @@ class CustomerInquiry:
 
 class CustomerServiceRep:
     """
-    Customer Service Rep.
+    Customer Service Rep System.
     
-    Frontline support.
+    Manages incoming client requests and resolution workflow.
     """
     
-    def __init__(self, agency_name: str, rep_name: str = ""):
+    def __init__(self, agency_name: str, rep_name: str = "Assistant"):
         self.agency_name = agency_name
         self.rep_name = rep_name
         self.inquiries: Dict[str, CustomerInquiry] = {}
+        logger.info(f"CS Rep System initialized for {agency_name} (Rep: {rep_name})")
     
     def receive_inquiry(
         self,
@@ -70,7 +75,10 @@ class CustomerServiceRep:
         inquiry_type: InquiryType,
         message: str
     ) -> CustomerInquiry:
-        """Receive a customer inquiry."""
+        """Log a new incoming client request."""
+        if not client or not message:
+            raise ValueError("Client and message are required")
+
         inquiry = CustomerInquiry(
             id=f"INQ-{uuid.uuid4().hex[:6].upper()}",
             client=client,
@@ -79,74 +87,68 @@ class CustomerServiceRep:
             rep=self.rep_name
         )
         self.inquiries[inquiry.id] = inquiry
+        logger.info(f"Inquiry received: {client} ({inquiry_type.value})")
         return inquiry
     
-    def respond(self, inquiry: CustomerInquiry, response: str):
-        """Respond to inquiry."""
+    def respond(self, inquiry_id: str, response: str) -> bool:
+        """Attach a response to an inquiry."""
+        if inquiry_id not in self.inquiries:
+            return False
+            
+        inquiry = self.inquiries[inquiry_id]
         inquiry.response = response
         inquiry.status = InquiryStatus.RESPONDED
+        logger.info(f"Responded to inquiry: {inquiry_id}")
+        return True
     
-    def resolve(self, inquiry: CustomerInquiry):
-        """Resolve inquiry."""
+    def resolve(self, inquiry_id: str) -> bool:
+        """Mark an inquiry as successfully completed."""
+        if inquiry_id not in self.inquiries:
+            return False
+            
+        inquiry = self.inquiries[inquiry_id]
         inquiry.status = InquiryStatus.RESOLVED
         inquiry.resolved_at = datetime.now()
-    
-    def escalate(self, inquiry: CustomerInquiry):
-        """Escalate inquiry."""
-        inquiry.status = InquiryStatus.ESCALATED
-    
-    def get_queue(self) -> List[CustomerInquiry]:
-        """Get inquiry queue."""
-        return [i for i in self.inquiries.values() if i.status in [InquiryStatus.NEW, InquiryStatus.PENDING_CLIENT]]
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get rep statistics."""
-        resolved = sum(1 for i in self.inquiries.values() if i.status == InquiryStatus.RESOLVED)
-        return {
-            "total": len(self.inquiries),
-            "queue": len(self.get_queue()),
-            "resolved": resolved,
-            "escalated": sum(1 for i in self.inquiries.values() if i.status == InquiryStatus.ESCALATED)
-        }
+        logger.info(f"Inquiry resolved: {inquiry_id}")
+        return True
     
     def format_dashboard(self) -> str:
-        """Format CSR dashboard."""
-        stats = self.get_stats()
+        """Render the CS Rep Dashboard."""
+        active_queue = [i for i in self.inquiries.values() 
+                       if i.status in [InquiryStatus.NEW, InquiryStatus.PENDING_CLIENT]]
+        resolved_count = sum(1 for i in self.inquiries.values() if i.status == InquiryStatus.RESOLVED)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎧 CUSTOMER SERVICE REP                                  ║",
-            f"║  {stats['total']} total │ {stats['queue']} in queue │ {stats['resolved']} resolved       ║",
+            f"║  🎧 CS REP DASHBOARD{' ' * 38}║",
+            f"║  {len(self.inquiries)} total │ {len(active_queue)} in queue │ {resolved_count} resolved{' ' * 14}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📥 INQUIRY QUEUE                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"general": "❓", "billing": "💳", "product": "📦", "complaint": "😔", "feedback": "💬", "cancellation": "❌"}
-        status_icons = {"new": "🆕", "responded": "💬", "pending_client": "⏳", "resolved": "✅", "escalated": "⬆️"}
+        type_icons = {
+            InquiryType.GENERAL: "❓", InquiryType.BILLING: "💳", 
+            InquiryType.PRODUCT: "📦", InquiryType.COMPLAINT: "😔", 
+            InquiryType.FEEDBACK: "💬"
+        }
+        status_icons = {
+            InquiryStatus.NEW: "🆕", InquiryStatus.RESPONDED: "💬", 
+            InquiryStatus.PENDING_CLIENT: "⏳", InquiryStatus.RESOLVED: "✅"
+        }
         
-        for inquiry in list(self.get_queue())[:5]:
-            t_icon = type_icons.get(inquiry.inquiry_type.value, "📋")
-            s_icon = status_icons.get(inquiry.status.value, "⚪")
-            
-            lines.append(f"║  {s_icon} {t_icon} {inquiry.client[:15]:<15} │ {inquiry.message[:22]:<22}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY TYPE                                               ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for itype in list(InquiryType)[:4]:
-            count = sum(1 for i in self.inquiries.values() if i.inquiry_type == itype)
-            icon = type_icons.get(itype.value, "📋")
-            lines.append(f"║    {icon} {itype.value.capitalize():<15} │ {count:>2} inquiries             ║")
+        for i in active_queue[:5]:
+            t_icon = type_icons.get(i.inquiry_type, "📋")
+            s_icon = status_icons.get(i.status, "⚪")
+            client_disp = (i.client[:15] + '..') if len(i.client) > 17 else i.client
+            msg_disp = (i.message[:22] + '..') if len(i.message) > 24 else i.message
+            lines.append(f"║  {s_icon} {t_icon} {client_disp:<17} │ {msg_disp:<24}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [📥 View Queue]  [💬 Respond]  [⬆️ Escalate]             ║",
+            "║  [📥 View Queue]  [💬 Respond]  [⬆️ Escalate]  [✅ Resolve]║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Always helpful!                  ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Helpful!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -155,20 +157,19 @@ class CustomerServiceRep:
 
 # Example usage
 if __name__ == "__main__":
-    csr = CustomerServiceRep("Saigon Digital Hub", "Sarah")
-    
-    print("🎧 Customer Service Rep")
+    print("🎧 Initializing Customer Service Rep...")
     print("=" * 60)
-    print()
     
-    i1 = csr.receive_inquiry("Sunrise Realty", InquiryType.BILLING, "Question about invoice")
-    i2 = csr.receive_inquiry("Coffee Lab", InquiryType.PRODUCT, "How to update website?")
-    i3 = csr.receive_inquiry("Tech Startup", InquiryType.COMPLAINT, "Project delayed")
-    i4 = csr.receive_inquiry("Fashion Brand", InquiryType.GENERAL, "Contract renewal info")
-    
-    # Handle some inquiries
-    csr.respond(i1, "Invoice breakdown sent via email")
-    csr.resolve(i1)
-    csr.escalate(i3)
-    
-    print(csr.format_dashboard())
+    try:
+        rep_system = CustomerServiceRep("Saigon Digital Hub", "Sarah")
+        
+        # Seed data
+        inq1 = rep_system.receive_inquiry("Acme Corp", InquiryType.BILLING, "Invoice question")
+        rep_system.receive_inquiry("CoffeeCo", InquiryType.PRODUCT, "How to update?")
+        
+        rep_system.respond(inq1.id, "Checking now.")
+        
+        print("\n" + rep_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Rep Error: {e}")

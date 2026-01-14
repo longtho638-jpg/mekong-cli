@@ -12,12 +12,16 @@ Features:
 - Payment schedules
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TransactionType(Enum):
     """Transaction types."""
@@ -45,7 +49,7 @@ class ExpenseCategory(Enum):
 
 @dataclass
 class Transaction:
-    """A cash transaction."""
+    """A cash transaction record entity."""
     id: str
     type: TransactionType
     category: str
@@ -54,10 +58,14 @@ class Transaction:
     date: datetime = field(default_factory=datetime.now)
     client: str = ""
 
+    def __post_init__(self):
+        if self.amount <= 0:
+            raise ValueError("Transaction amount must be positive")
+
 
 @dataclass
 class CashForecast:
-    """A cash flow forecast."""
+    """A cash flow forecast for a specific period."""
     month: str
     opening: float
     income: float
@@ -67,29 +75,30 @@ class CashForecast:
 
 class CashFlowTracker:
     """
-    Cash Flow Tracker.
+    Cash Flow Tracker System.
     
-    Know where the money goes.
+    Monitors all cash movements and calculates business runway.
     """
     
-    def __init__(self, agency_name: str, opening_balance: float = 50000):
+    def __init__(self, agency_name: str, opening_balance: float = 50000.0):
         self.agency_name = agency_name
         self.opening_balance = opening_balance
         self.transactions: List[Transaction] = []
-        
+        logger.info(f"Cash Flow Tracker initialized for {agency_name} (Opening: ${opening_balance:,.0f})")
         self._init_demo_data()
     
     def _init_demo_data(self):
-        """Initialize demo transactions."""
-        # Income
-        self.add_income(IncomeCategory.RETAINER, 15000, "Client A monthly retainer", "TechStart Inc")
-        self.add_income(IncomeCategory.RETAINER, 8000, "Client B monthly retainer", "GrowthCo")
-        self.add_income(IncomeCategory.PROJECT, 12000, "Website redesign project", "NewBrand")
-        
-        # Expenses
-        self.add_expense(ExpenseCategory.PAYROLL, 20000, "Monthly payroll")
-        self.add_expense(ExpenseCategory.RENT, 3000, "Office rent")
-        self.add_expense(ExpenseCategory.SOFTWARE, 2000, "SaaS subscriptions")
+        """Setup sample financial data."""
+        try:
+            self.add_income(IncomeCategory.RETAINER, 15000.0, "Client A retainer", "TechStart Inc")
+            self.add_income(IncomeCategory.RETAINER, 8000.0, "Client B retainer", "GrowthCo")
+            self.add_income(IncomeCategory.PROJECT, 12000.0, "Website project", "NewBrand")
+            
+            self.add_expense(ExpenseCategory.PAYROLL, 20000.0, "Monthly payroll")
+            self.add_expense(ExpenseCategory.RENT, 3000.0, "Office rent")
+            self.add_expense(ExpenseCategory.SOFTWARE, 2000.0, "SaaS subscriptions")
+        except ValueError as e:
+            logger.error(f"Failed to initialize demo data: {e}")
     
     def add_income(
         self,
@@ -98,7 +107,7 @@ class CashFlowTracker:
         description: str,
         client: str = ""
     ) -> Transaction:
-        """Add income transaction."""
+        """Record an incoming transaction."""
         tx = Transaction(
             id=f"TXN-{uuid.uuid4().hex[:6].upper()}",
             type=TransactionType.INCOME,
@@ -108,6 +117,7 @@ class CashFlowTracker:
             client=client
         )
         self.transactions.append(tx)
+        logger.info(f"Income added: ${amount:,.2f} from {client or 'N/A'}")
         return tx
     
     def add_expense(
@@ -116,7 +126,7 @@ class CashFlowTracker:
         amount: float,
         description: str
     ) -> Transaction:
-        """Add expense transaction."""
+        """Record an outgoing transaction."""
         tx = Transaction(
             id=f"TXN-{uuid.uuid4().hex[:6].upper()}",
             type=TransactionType.EXPENSE,
@@ -125,10 +135,11 @@ class CashFlowTracker:
             description=description
         )
         self.transactions.append(tx)
+        logger.info(f"Expense added: ${amount:,.2f} for {category.value}")
         return tx
     
     def get_current_balance(self) -> float:
-        """Calculate current balance."""
+        """Calculate the actual balance based on all transactions."""
         balance = self.opening_balance
         for tx in self.transactions:
             if tx.type == TransactionType.INCOME:
@@ -137,51 +148,45 @@ class CashFlowTracker:
                 balance -= tx.amount
         return balance
     
-    def get_total_income(self) -> float:
-        """Get total income."""
-        return sum(tx.amount for tx in self.transactions if tx.type == TransactionType.INCOME)
-    
-    def get_total_expenses(self) -> float:
-        """Get total expenses."""
-        return sum(tx.amount for tx in self.transactions if tx.type == TransactionType.EXPENSE)
-    
     def get_runway_months(self) -> float:
-        """Calculate runway in months."""
+        """Estimate how many months the business can survive with current balance and burn rate."""
         balance = self.get_current_balance()
-        monthly_burn = self.get_total_expenses()  # Assume current month
+        # Calculate monthly burn rate (sum of expenses in last 30 days)
+        cutoff = datetime.now() - timedelta(days=30)
+        recent_expenses = [t.amount for t in self.transactions if t.type == TransactionType.EXPENSE and t.date >= cutoff]
+        monthly_burn = sum(recent_expenses)
         
         if monthly_burn <= 0:
-            return 99  # Infinite runway
+            return 99.0 # Infinite runway if no expenses
         
         return balance / monthly_burn
     
-    def get_net_cash_flow(self) -> float:
-        """Get net cash flow."""
-        return self.get_total_income() - self.get_total_expenses()
-    
     def get_stats(self) -> Dict[str, Any]:
-        """Get cash flow statistics."""
+        """Aggregate financial stats."""
+        income = sum(t.amount for t in self.transactions if t.type == TransactionType.INCOME)
+        expenses = sum(t.amount for t in self.transactions if t.type == TransactionType.EXPENSE)
+        
         return {
             "opening": self.opening_balance,
             "current": self.get_current_balance(),
-            "income": self.get_total_income(),
-            "expenses": self.get_total_expenses(),
-            "net_flow": self.get_net_cash_flow(),
+            "income": income,
+            "expenses": expenses,
+            "net_flow": income - expenses,
             "runway": self.get_runway_months(),
-            "transactions": len(self.transactions)
+            "transactions_count": len(self.transactions)
         }
     
     def format_dashboard(self) -> str:
-        """Format cash flow dashboard."""
+        """Render Cash Flow Dashboard."""
         stats = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💵 CASH FLOW TRACKER                                     ║",
-            f"║  ${stats['current']:,.0f} balance │ {stats['runway']:.1f} months runway  ║",
+            f"║  💵 CASH FLOW TRACKER{' ' * 41}║",
+            f"║  ${stats['current']:,.0f} balance │ {stats['runway']:>4.1f} months runway{' ' * 18}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  💰 CASH SUMMARY                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
             f"║    📈 Opening Balance:    ${stats['opening']:>12,.0f}              ║",
             f"║    💵 Total Income:       ${stats['income']:>12,.0f}              ║",
             f"║    💸 Total Expenses:     ${stats['expenses']:>12,.0f}              ║",
@@ -189,65 +194,59 @@ class CashFlowTracker:
             f"║    💰 Current Balance:    ${stats['current']:>12,.0f}              ║",
             "║                                                           ║",
             "║  📈 INCOME BREAKDOWN                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
         # Group income by category
         income_by_cat = {}
         for tx in self.transactions:
             if tx.type == TransactionType.INCOME:
-                cat = tx.category
-                income_by_cat[cat] = income_by_cat.get(cat, 0) + tx.amount
+                income_by_cat[tx.category] = income_by_cat.get(tx.category, 0.0) + tx.amount
         
         cat_icons = {"retainer": "🔄", "project": "📋", "consulting": "💼", "other": "📝"}
         
         for cat, amount in sorted(income_by_cat.items(), key=lambda x: x[1], reverse=True):
             icon = cat_icons.get(cat, "💵")
-            pct = (amount / stats['income'] * 100) if stats['income'] else 0
+            pct = (amount / stats['income'] * 100) if stats['income'] else 0.0
             lines.append(f"║    {icon} {cat.title():<12} │ ${amount:>10,.0f} │ {pct:>4.0f}%  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  💸 EXPENSE BREAKDOWN                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
         # Group expenses by category
         expense_by_cat = {}
         for tx in self.transactions:
             if tx.type == TransactionType.EXPENSE:
-                cat = tx.category
-                expense_by_cat[cat] = expense_by_cat.get(cat, 0) + tx.amount
+                expense_by_cat[tx.category] = expense_by_cat.get(tx.category, 0.0) + tx.amount
         
-        exp_icons = {"payroll": "👥", "rent": "🏢", "software": "💻",
-                    "marketing": "📢", "utilities": "⚡", "other": "📝"}
+        exp_icons = {"payroll": "👥", "rent": "🏢", "software": "💻", "marketing": "📢", "utilities": "⚡", "other": "📝"}
         
         for cat, amount in sorted(expense_by_cat.items(), key=lambda x: x[1], reverse=True):
             icon = exp_icons.get(cat, "💸")
-            pct = (amount / stats['expenses'] * 100) if stats['expenses'] else 0
+            pct = (amount / stats['expenses'] * 100) if stats['expenses'] else 0.0
             lines.append(f"║    {icon} {cat.title():<12} │ ${amount:>10,.0f} │ {pct:>4.0f}%  ║")
         
-        # Runway indicator
+        # Runway indicator logic
         runway = stats['runway']
         if runway >= 6:
-            runway_icon = "🟢"
-            runway_status = "Healthy"
+            r_icon, r_status = "🟢", "Healthy "
         elif runway >= 3:
-            runway_icon = "🟡"
-            runway_status = "Caution"
+            r_icon, r_status = "🟡", "Caution "
         else:
-            runway_icon = "🔴"
-            runway_status = "Critical"
+            r_icon, r_status = "🔴", "Critical"
         
         lines.extend([
             "║                                                           ║",
             "║  🎯 RUNWAY STATUS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    {runway_icon} {runway:.1f} months │ {runway_status}                         ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    {r_icon} {runway:>4.1f} months │ {r_status:<30} ║",
             "║                                                           ║",
             "║  [💵 Transactions]  [📊 Forecast]  [📈 Reports]           ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Know your runway!                ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Stability!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -256,10 +255,11 @@ class CashFlowTracker:
 
 # Example usage
 if __name__ == "__main__":
-    cf = CashFlowTracker("Saigon Digital Hub", 50000)
-    
-    print("💵 Cash Flow Tracker")
+    print("💵 Initializing Cash Flow Tracker...")
     print("=" * 60)
-    print()
     
-    print(cf.format_dashboard())
+    try:
+        cf = CashFlowTracker("Saigon Digital Hub", 50000.0)
+        print("\n" + cf.format_dashboard())
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

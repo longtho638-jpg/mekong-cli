@@ -14,11 +14,15 @@ Features:
 
 import os
 import json
+import logging
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from enum import Enum
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class WingmanMode(Enum):
     """Operating modes for AI Wingman."""
@@ -41,17 +45,11 @@ class AgencyOwnerProfile:
     """Profile for personalization."""
     name: str
     agency_name: str
-    timezone: str = "UTC"  # Global default - user can override
+    timezone: str = "UTC"
     response_style: str = "professional"
-    services: List[str] = None
+    services: List[str] = field(default_factory=lambda: ["SEO", "Content", "PPC"])
     pricing_tier: str = "premium"
-    working_hours: Dict[str, str] = None
-    
-    def __post_init__(self):
-        if self.services is None:
-            self.services = ["SEO", "Content", "PPC"]
-        if self.working_hours is None:
-            self.working_hours = {"start": "09:00", "end": "18:00"}
+    working_hours: Dict[str, str] = field(default_factory=lambda: {"start": "09:00", "end": "18:00"})
 
 
 @dataclass
@@ -63,16 +61,15 @@ class Notification:
     message: str
     priority: int  # 1-5, 5 being most urgent
     timestamp: datetime
-    data: Dict[str, Any] = None
+    data: Dict[str, Any] = field(default_factory=dict)
     read: bool = False
 
 
 class AIWingman:
     """
-    Your 24/7 AI Assistant.
+    Your 24/7 AI Assistant System.
     
-    "Không đánh mà thắng" - Win without fighting.
-    Let the AI handle routine tasks while you focus on strategy.
+    Automates interactions and notifications.
     """
     
     def __init__(
@@ -93,6 +90,7 @@ class AIWingman:
             "revenue_generated": 0.0,
             "hours_saved": 0
         }
+        logger.info(f"AI Wingman initialized for {owner_profile.agency_name} in {mode.value} mode")
     
     def _load_templates(self) -> Dict[str, str]:
         """Load response templates."""
@@ -169,12 +167,13 @@ Best,
     ) -> Dict[str, Any]:
         """
         Handle an incoming client inquiry.
-        
-        Returns response based on mode:
-        - PASSIVE: Just notifies owner
-        - SEMI_AUTO: Drafts response for approval
-        - FULL_AUTO: Sends response automatically
         """
+        if not client_email or "@" not in client_email:
+             logger.warning(f"Invalid email received from {client_name}")
+             # We proceed but log warning
+
+        logger.info(f"Handling inquiry from {client_name} regarding {service}")
+
         # Create notification
         notif = Notification(
             id=f"inq_{datetime.now().strftime('%Y%m%d%H%M%S')}",
@@ -210,11 +209,14 @@ Best,
             result["action_taken"] = "sent_automatically"
             result["sent_to"] = client_email
             self.stats["inquiries_handled"] += 1
+            logger.info("Auto-response sent")
         elif self.mode == WingmanMode.SEMI_AUTO:
             result["action_taken"] = "awaiting_approval"
             result["approval_required"] = True
+            logger.info("Response drafted, awaiting approval")
         else:
             result["action_taken"] = "notification_only"
+            logger.info("Passive mode: Notification only")
         
         return result
     
@@ -229,6 +231,11 @@ Best,
         timeline: str = "4-6 weeks"
     ) -> str:
         """Generate a professional proposal."""
+        if setup_fee < 0 or monthly_fee < 0:
+            raise ValueError("Fees cannot be negative")
+
+        logger.info(f"Generating proposal for {client_name}: {project_name}")
+
         services_list = "\n".join([f"- {s}" for s in services])
         
         proposal = self.response_templates["proposal"].format(
@@ -249,6 +256,11 @@ Best,
     
     def notify_payment(self, client_name: str, amount: float, project: str) -> Notification:
         """Create notification for received payment."""
+        if amount <= 0:
+             logger.warning(f"Received non-positive payment amount: {amount}")
+
+        logger.info(f"Payment received: ${amount} from {client_name}")
+        
         notif = Notification(
             id=f"pay_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.PAYMENT,
@@ -268,6 +280,7 @@ Best,
     
     def notify_milestone(self, title: str, description: str, priority: int = 3) -> Notification:
         """Create notification for milestone achieved."""
+        logger.info(f"Milestone achieved: {title}")
         notif = Notification(
             id=f"mile_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.MILESTONE,
@@ -339,50 +352,50 @@ if __name__ == "__main__":
         pricing_tier="premium"
     )
     
-    # Initialize Wingman
-    wingman = AIWingman(owner, mode=WingmanMode.SEMI_AUTO)
+    print("🤖 Initializing AI Wingman...")
+    print("=" * 60)
     
-    print("🤖 AI Wingman Initialized!")
-    print(f"   Owner: {owner.name}")
-    print(f"   Agency: {owner.agency_name}")
-    print(f"   Mode: {wingman.mode.value}")
-    print()
-    
-    # Simulate an inquiry
-    result = wingman.handle_inquiry(
-        client_name="John Smith",
-        client_email="john@example.com",
-        service="SEO",
-        message="Hi, I need help ranking my website for 'best coffee shop in NYC'"
-    )
-    
-    print("📩 Inquiry Handled:")
-    print(f"   Action: {result['action_taken']}")
-    print()
-    
-    # Generate a proposal
-    proposal = wingman.generate_proposal(
-        client_name="John Smith",
-        project_name="NYC Coffee Shop SEO",
-        project_description="Complete SEO optimization to rank #1 for local coffee keywords",
-        services=["Technical SEO Audit", "Local SEO Optimization", "Content Strategy"],
-        setup_fee=1500,
-        monthly_fee=500,
-        timeline="8 weeks to page 1"
-    )
-    
-    print("📋 Proposal Generated!")
-    print("-" * 40)
-    print(proposal[:500] + "...")
-    print()
-    
-    # Payment notification
-    notif = wingman.notify_payment("John Smith", 1500, "NYC Coffee Shop SEO")
-    print(wingman.format_for_telegram(notif))
-    
-    # Daily summary
-    summary = wingman.get_daily_summary()
-    print("📊 Daily Summary:")
-    print(f"   Inquiries: {summary['by_type']['inquiries']}")
-    print(f"   Payments: {summary['by_type']['payments']}")
-    print(f"   Revenue: ${summary['stats']['revenue_generated']:.2f}")
+    try:
+        # Initialize Wingman
+        wingman = AIWingman(owner, mode=WingmanMode.SEMI_AUTO)
+        
+        # Simulate an inquiry
+        result = wingman.handle_inquiry(
+            client_name="John Smith",
+            client_email="john@example.com",
+            service="SEO",
+            message="Hi, I need help ranking my website for 'best coffee shop in NYC'"
+        )
+        
+        print("\n📩 Inquiry Handled:")
+        print(f"   Action: {result['action_taken']}")
+        
+        # Generate a proposal
+        proposal = wingman.generate_proposal(
+            client_name="John Smith",
+            project_name="NYC Coffee Shop SEO",
+            project_description="Complete SEO optimization to rank #1 for local coffee keywords",
+            services=["Technical SEO Audit", "Local SEO Optimization", "Content Strategy"],
+            setup_fee=1500,
+            monthly_fee=500,
+            timeline="8 weeks to page 1"
+        )
+        
+        print("\n📋 Proposal Generated (Snippet):")
+        print("-" * 40)
+        print(proposal[:200] + "...")
+        print()
+        
+        # Payment notification
+        notif = wingman.notify_payment("John Smith", 1500, "NYC Coffee Shop SEO")
+        print(wingman.format_for_telegram(notif))
+        
+        # Daily summary
+        summary = wingman.get_daily_summary()
+        print("📊 Daily Summary:")
+        print(f"   Inquiries: {summary['by_type']['inquiries']}")
+        print(f"   Payments: {summary['by_type']['payments']}")
+        print(f"   Revenue: ${summary['stats']['revenue_generated']:.2f}")
+
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

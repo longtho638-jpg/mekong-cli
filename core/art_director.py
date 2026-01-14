@@ -12,12 +12,16 @@ Roles:
 - Quality standards
 """
 
+import uuid
+import logging
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ProjectType(Enum):
     """Creative project types."""
@@ -39,7 +43,7 @@ class ReviewStatus(Enum):
 
 @dataclass
 class CreativeBrief:
-    """A creative brief."""
+    """A creative brief entity."""
     id: str
     project_name: str
     client: str
@@ -54,7 +58,7 @@ class CreativeBrief:
 
 @dataclass
 class CreativeReview:
-    """A creative review."""
+    """A creative review record."""
     id: str
     brief_id: str
     reviewer: str
@@ -67,13 +71,14 @@ class ArtDirector:
     """
     Art Director System.
     
-    Lead creative vision.
+    Manages creative briefs, reviews, and project direction.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.briefs: Dict[str, CreativeBrief] = {}
         self.reviews: List[CreativeReview] = []
+        logger.info(f"Art Director initialized for {agency_name}")
     
     def create_brief(
         self,
@@ -87,6 +92,11 @@ class ArtDirector:
         days_to_deadline: int = 14
     ) -> CreativeBrief:
         """Create a creative brief."""
+        if not project_name or not client:
+            raise ValueError("Project name and client are required")
+        if days_to_deadline <= 0:
+            raise ValueError("Deadline must be in the future")
+
         brief = CreativeBrief(
             id=f"BRF-{uuid.uuid4().hex[:6].upper()}",
             project_name=project_name,
@@ -99,6 +109,7 @@ class ArtDirector:
             deadline=datetime.now() + timedelta(days=days_to_deadline)
         )
         self.briefs[brief.id] = brief
+        logger.info(f"Creative Brief created: {project_name} for {client} ({project_type.value})")
         return brief
     
     def review_creative(
@@ -109,6 +120,9 @@ class ArtDirector:
         feedback: str
     ) -> CreativeReview:
         """Review creative work."""
+        if not feedback and status in [ReviewStatus.REVISION, ReviewStatus.REJECTED]:
+            raise ValueError("Feedback is required for revisions or rejections")
+
         review = CreativeReview(
             id=f"REV-{uuid.uuid4().hex[:6].upper()}",
             brief_id=brief.id,
@@ -117,7 +131,11 @@ class ArtDirector:
             feedback=feedback
         )
         self.reviews.append(review)
+        
+        old_status = brief.status
         brief.status = status
+        
+        logger.info(f"Review submitted for {brief.project_name}: {old_status.value} -> {status.value}")
         return review
     
     def get_by_status(self, status: ReviewStatus) -> List[CreativeBrief]:
@@ -125,45 +143,60 @@ class ArtDirector:
         return [b for b in self.briefs.values() if b.status == status]
     
     def format_dashboard(self) -> str:
-        """Format art director dashboard."""
+        """Render Art Director Dashboard."""
         pending = len(self.get_by_status(ReviewStatus.PENDING))
         in_review = len(self.get_by_status(ReviewStatus.IN_REVIEW))
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎨 ART DIRECTOR                                          ║",
-            f"║  {len(self.briefs)} projects │ {pending} pending │ {in_review} in review      ║",
+            f"║  🎨 ART DIRECTOR{' ' * 40}║",
+            f"║  {len(self.briefs)} projects │ {pending} pending │ {in_review} in review {' ' * 7}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 ACTIVE BRIEFS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"branding": "🏷️", "campaign": "📢", "website": "🌐", "video": "🎬", "print": "🖨️"}
-        status_icons = {"pending": "⏳", "in_review": "👁️", "approved": "✅", "revision": "🔄", "rejected": "❌"}
+        type_icons = {
+            ProjectType.BRANDING: "🏷️", 
+            ProjectType.CAMPAIGN: "📢", 
+            ProjectType.WEBSITE: "🌐", 
+            ProjectType.VIDEO: "🎬", 
+            ProjectType.PRINT: "🖨️"
+        }
+        status_icons = {
+            ReviewStatus.PENDING: "⏳", 
+            ReviewStatus.IN_REVIEW: "👁️", 
+            ReviewStatus.APPROVED: "✅", 
+            ReviewStatus.REVISION: "🔄", 
+            ReviewStatus.REJECTED: "❌"
+        }
         
-        for brief in list(self.briefs.values())[:5]:
-            t_icon = type_icons.get(brief.project_type.value, "📋")
-            s_icon = status_icons.get(brief.status.value, "⚪")
+        # Sort by deadline
+        sorted_briefs = sorted(self.briefs.values(), key=lambda b: b.deadline)[:5]
+        
+        for brief in sorted_briefs:
+            t_icon = type_icons.get(brief.project_type, "📋")
+            s_icon = status_icons.get(brief.status, "⚪")
             days_left = (brief.deadline - datetime.now()).days
             
-            lines.append(f"║  {s_icon} {t_icon} {brief.project_name[:18]:<18} │ {brief.client[:12]:<12} │ {days_left}d  ║")
+            lines.append(f"║  {s_icon} {t_icon} {brief.project_name[:18]:<18} │ {brief.client[:12]:<12} │ {days_left:>3}d  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  📊 BY TYPE                                               ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
         for ptype in ProjectType:
             count = sum(1 for b in self.briefs.values() if b.project_type == ptype)
-            icon = type_icons.get(ptype.value, "📋")
+            icon = type_icons.get(ptype, "📋")
             lines.append(f"║    {icon} {ptype.value.capitalize():<12} │ {count:>2} projects                  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  [📋 New Brief]  [👁️ Review Queue]  [📊 Portfolio]        ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Creative excellence!             ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Creative!             ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -172,35 +205,41 @@ class ArtDirector:
 
 # Example usage
 if __name__ == "__main__":
-    ad = ArtDirector("Saigon Digital Hub")
-    
-    print("🎨 Art Director")
+    print("🎨 Initializing Art Director...")
     print("=" * 60)
-    print()
     
-    # Create briefs
-    ad.create_brief(
-        "Brand Refresh", "Sunrise Realty", ProjectType.BRANDING,
-        ["Modern look", "Professional feel"],
-        "Real estate buyers 30-50",
-        ["Trusted partner", "Premium service"],
-        ["Logo", "Brand guide", "Templates"], 21
-    )
-    
-    ad.create_brief(
-        "Summer Campaign", "Coffee Lab", ProjectType.CAMPAIGN,
-        ["Increase awareness", "Drive footfall"],
-        "Coffee lovers 25-45",
-        ["Fresh summer flavors", "Cool down"],
-        ["Social posts", "Posters", "Video"], 14
-    )
-    
-    ad.create_brief(
-        "Website Redesign", "Tech Startup", ProjectType.WEBSITE,
-        ["Modern SaaS look", "Convert visitors"],
-        "B2B tech buyers",
-        ["Innovative", "Reliable"],
-        ["Homepage", "Product pages", "Blog"], 28
-    )
-    
-    print(ad.format_dashboard())
+    try:
+        ad = ArtDirector("Saigon Digital Hub")
+        
+        # Create briefs
+        b1 = ad.create_brief(
+            "Brand Refresh", "Sunrise Realty", ProjectType.BRANDING,
+            ["Modern look", "Professional feel"],
+            "Real estate buyers 30-50",
+            ["Trusted partner", "Premium service"],
+            ["Logo", "Brand guide", "Templates"], 21
+        )
+        
+        b2 = ad.create_brief(
+            "Summer Campaign", "Coffee Lab", ProjectType.CAMPAIGN,
+            ["Increase awareness", "Drive footfall"],
+            "Coffee lovers 25-45",
+            ["Fresh summer flavors", "Cool down"],
+            ["Social posts", "Posters", "Video"], 14
+        )
+        
+        b3 = ad.create_brief(
+            "Website Redesign", "Tech Startup", ProjectType.WEBSITE,
+            ["Modern SaaS look", "Convert visitors"],
+            "B2B tech buyers",
+            ["Innovative", "Reliable"],
+            ["Homepage", "Product pages", "Blog"], 28
+        )
+        
+        # Simulate Review
+        ad.review_creative(b2, "Senior AD", ReviewStatus.IN_REVIEW, "Looks good, check colors.")
+        
+        print("\n" + ad.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

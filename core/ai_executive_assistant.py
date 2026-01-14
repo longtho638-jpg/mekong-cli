@@ -12,12 +12,16 @@ Roles:
 - Task prioritization
 """
 
+import uuid
+import logging
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TaskPriority(Enum):
     """Task priority levels."""
@@ -25,6 +29,17 @@ class TaskPriority(Enum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
+    @property
+    def weight(self) -> int:
+        """Numeric weight for sorting (higher is more urgent)."""
+        mapping = {
+            TaskPriority.URGENT: 4,
+            TaskPriority.HIGH: 3,
+            TaskPriority.MEDIUM: 2,
+            TaskPriority.LOW: 1
+        }
+        return mapping[self]
 
 
 class MeetingType(Enum):
@@ -83,9 +98,9 @@ class EmailDigest:
 
 class AIExecutiveAssistant:
     """
-    AI Executive Assistant.
+    AI Executive Assistant System.
     
-    Smart admin automation.
+    Automates scheduling, task tracking, and briefings.
     """
     
     def __init__(self, agency_name: str, executive: str = "CEO"):
@@ -94,6 +109,7 @@ class AIExecutiveAssistant:
         self.tasks: Dict[str, ExecutiveTask] = {}
         self.meetings: List[Meeting] = []
         self.email_digests: List[EmailDigest] = []
+        logger.info(f"AI Executive Assistant initialized for {executive} at {agency_name}")
     
     def create_task(
         self,
@@ -102,7 +118,10 @@ class AIExecutiveAssistant:
         due_days: int = 1,
         assignee: str = ""
     ) -> ExecutiveTask:
-        """Create a task."""
+        """Create a new task."""
+        if not title:
+            raise ValueError("Task title cannot be empty")
+
         task = ExecutiveTask(
             id=f"TSK-{uuid.uuid4().hex[:6].upper()}",
             title=title,
@@ -111,11 +130,13 @@ class AIExecutiveAssistant:
             assignee=assignee or self.executive
         )
         self.tasks[task.id] = task
+        logger.info(f"Task created: {title} ({priority.value})")
         return task
     
     def complete_task(self, task: ExecutiveTask):
-        """Mark task complete."""
+        """Mark task as complete."""
         task.completed = True
+        logger.info(f"Task completed: {task.title}")
     
     def schedule_meeting(
         self,
@@ -127,6 +148,9 @@ class AIExecutiveAssistant:
         agenda: str = ""
     ) -> Meeting:
         """Schedule a meeting."""
+        if duration <= 0:
+            raise ValueError("Duration must be positive")
+
         meeting = Meeting(
             id=f"MTG-{uuid.uuid4().hex[:6].upper()}",
             title=title,
@@ -137,12 +161,14 @@ class AIExecutiveAssistant:
             agenda=agenda
         )
         self.meetings.append(meeting)
+        logger.info(f"Meeting scheduled: {title} with {len(attendees)} attendees")
         return meeting
     
     def summarize_meeting(self, meeting: Meeting, summary: str, actions: List[str] = None):
         """Add meeting summary and action items."""
         meeting.summary = summary
         meeting.action_items = actions or []
+        logger.info(f"Meeting summarized: {meeting.title}")
     
     def create_email_digest(
         self,
@@ -160,15 +186,16 @@ class AIExecutiveAssistant:
                 "urgent": urgent,
                 "action_required": action,
                 "fyi": fyi,
-                "other": total - urgent - action - fyi
+                "other": max(0, total - urgent - action - fyi)
             },
             top_urgent=top_urgent or []
         )
         self.email_digests.append(digest)
+        logger.info(f"Email digest created. Total: {total}, Urgent: {urgent}")
         return digest
     
     def get_daily_brief(self) -> Dict[str, Any]:
-        """Get daily briefing."""
+        """Get daily briefing statistics."""
         today = datetime.now().date()
         
         pending_tasks = [t for t in self.tasks.values() if not t.completed]
@@ -191,18 +218,26 @@ class AIExecutiveAssistant:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🤖 AI EXECUTIVE ASSISTANT                                ║",
-            f"║  {self.executive}'s Dashboard │ {brief['pending_tasks']} tasks │ {brief['today_meetings']} meetings  ║",
+            f"║  🤖 AI EXECUTIVE ASSISTANT{' ' * 32}║",
+            f"║  {self.executive[:15]:<15}'s Dashboard │ {brief['pending_tasks']:>2} tasks │ {brief['today_meetings']:>2} meetings{' ' * 7}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 TODAY'S PRIORITIES                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        priority_icons = {"urgent": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
+        priority_icons = {
+            TaskPriority.URGENT: "🔴", 
+            TaskPriority.HIGH: "🟠", 
+            TaskPriority.MEDIUM: "🟡", 
+            TaskPriority.LOW: "🟢"
+        }
         
-        for task in sorted([t for t in self.tasks.values() if not t.completed], 
-                          key=lambda x: list(TaskPriority).index(x.priority))[:5]:
-            icon = priority_icons.get(task.priority.value, "⚪")
+        # Sort by priority weight (descending) and then due date
+        pending = [t for t in self.tasks.values() if not t.completed]
+        sorted_tasks = sorted(pending, key=lambda x: (-x.priority.weight, x.due_date))[:5]
+        
+        for task in sorted_tasks:
+            icon = priority_icons.get(task.priority, "⚪")
             due = task.due_date.strftime("%b %d")
             status = "⏰" if task.due_date.date() < datetime.now().date() else "📋"
             
@@ -211,13 +246,21 @@ class AIExecutiveAssistant:
         lines.extend([
             "║                                                           ║",
             "║  📅 UPCOMING MEETINGS                                     ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"one_on_one": "👤", "team": "👥", "client": "🤝", "board": "🏛️", "standup": "🚀"}
+        type_icons = {
+            MeetingType.ONE_ON_ONE: "👤", 
+            MeetingType.TEAM: "👥", 
+            MeetingType.CLIENT: "🤝", 
+            MeetingType.BOARD: "🏛️", 
+            MeetingType.STANDUP: "🚀"
+        }
         
-        for meeting in sorted(self.meetings, key=lambda x: x.scheduled_at)[:4]:
-            icon = type_icons.get(meeting.meeting_type.value, "📅")
+        # Sort meetings by date
+        sorted_meetings = sorted(self.meetings, key=lambda x: x.scheduled_at)[:4]
+        for meeting in sorted_meetings:
+            icon = type_icons.get(meeting.meeting_type, "📅")
             time = meeting.scheduled_at.strftime("%b %d %H:%M")
             
             lines.append(f"║  {icon} {meeting.title[:20]:<20} │ {time:<14} │ {meeting.duration_mins:>2}min  ║")
@@ -225,7 +268,7 @@ class AIExecutiveAssistant:
         lines.extend([
             "║                                                           ║",
             "║  📧 EMAIL DIGEST                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
         if self.email_digests:
@@ -240,7 +283,7 @@ class AIExecutiveAssistant:
             "║                                                           ║",
             "║  [📋 Tasks]  [📅 Schedule]  [📧 Emails]  [🤖 Automate]    ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Your second brain!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Second brain!         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -249,23 +292,26 @@ class AIExecutiveAssistant:
 
 # Example usage
 if __name__ == "__main__":
-    ea = AIExecutiveAssistant("Saigon Digital Hub", "Khoa Nguyen")
-    
-    print("🤖 AI Executive Assistant")
+    print("🤖 Initializing AI Executive Assistant...")
     print("=" * 60)
-    print()
     
-    ea.create_task("Review Q4 financials", TaskPriority.URGENT, 0)
-    ea.create_task("Approve marketing budget", TaskPriority.HIGH, 1)
-    ea.create_task("Sign partnership agreement", TaskPriority.HIGH, 2)
-    ea.create_task("Team performance reviews", TaskPriority.MEDIUM, 7)
-    
-    m1 = ea.schedule_meeting("Weekly Leadership Sync", MeetingType.TEAM, ["CTO", "CMO", "CFO"], 2, 60)
-    m2 = ea.schedule_meeting("Client Onboarding", MeetingType.CLIENT, ["Coffee Lab Team"], 24, 45)
-    m3 = ea.schedule_meeting("Board Update", MeetingType.BOARD, ["All Board Members"], 48, 90)
-    
-    ea.summarize_meeting(m1, "Discussed Q4 goals", ["Finalize budget", "Hire 2 developers"])
-    
-    ea.create_email_digest(45, 3, 12, 20, ["Contract from BigCorp - URGENT", "Payment reminder"])
-    
-    print(ea.format_dashboard())
+    try:
+        ea = AIExecutiveAssistant("Saigon Digital Hub", "Khoa Nguyen")
+        
+        ea.create_task("Review Q4 financials", TaskPriority.URGENT, 0)
+        ea.create_task("Approve marketing budget", TaskPriority.HIGH, 1)
+        ea.create_task("Sign partnership agreement", TaskPriority.HIGH, 2)
+        ea.create_task("Team performance reviews", TaskPriority.MEDIUM, 7)
+        
+        m1 = ea.schedule_meeting("Weekly Leadership Sync", MeetingType.TEAM, ["CTO", "CMO", "CFO"], 2, 60)
+        m2 = ea.schedule_meeting("Client Onboarding", MeetingType.CLIENT, ["Coffee Lab Team"], 24, 45)
+        m3 = ea.schedule_meeting("Board Update", MeetingType.BOARD, ["All Board Members"], 48, 90)
+        
+        ea.summarize_meeting(m1, "Discussed Q4 goals", ["Finalize budget", "Hire 2 developers"])
+        
+        ea.create_email_digest(45, 3, 12, 20, ["Contract from BigCorp - URGENT", "Payment reminder"])
+        
+        print("\n" + ea.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Runtime Error: {e}")

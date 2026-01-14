@@ -2,117 +2,145 @@
 🎨 Creative Hub - Department Integration
 ==========================================
 
-Central hub connecting all Creative roles
-with their operational tools.
+Central hub connecting all Creative roles with their operational tools.
 
 Integrates:
-- Art Director → creative briefs
-- Video Editor → video production
-- Web Designer → web design
-- Graphic Designer → visual assets
-- UX Designer → user experience
-- Illustrator → illustrations
-- Animator → motion graphics
+- Art Director
+- Video Editor
+- Web Designer
+- Graphic Designer
+- UX Designer
+- Illustrator
+- Animator
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import role modules
-from core.art_director import ArtDirector, ProjectType, ReviewStatus
-from core.video_editor import VideoEditor, VideoType
-from core.web_designer import WebDesigner, WebProjectType
-from core.graphic_designer import GraphicDesigner, AssetCategory
-from core.ux_designer import UXDesigner, UXPhase
-from core.illustrator import Illustrator, IllustrationType
-from core.animator import Animator, AnimationType
+# Import role modules with fallback for direct testing
+try:
+    from core.art_director import ArtDirector, ProjectType, ReviewStatus
+    from core.video_editor import VideoEditor, VideoType
+    from core.web_designer import WebDesigner, WebProjectType
+    from core.graphic_designer import GraphicDesigner, AssetCategory
+    from core.ux_designer import UXDesigner, UXPhase
+    from core.illustrator import Illustrator, IllustrationType
+    from core.animator import Animator, AnimationType
+except ImportError:
+    from art_director import ArtDirector, ProjectType, ReviewStatus
+    from video_editor import VideoEditor, VideoType
+    from web_designer import WebDesigner, WebProjectType
+    from graphic_designer import GraphicDesigner, AssetCategory
+    from ux_designer import UXDesigner, UXPhase
+    from illustrator import Illustrator, IllustrationType
+    from animator import Animator, AnimationType
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class CreativeMetrics:
-    """Department-wide metrics."""
-    total_projects: int
-    in_progress: int
-    pending_review: int
-    videos_in_production: int
-    designs_in_queue: int
-    animations_rendering: int
+    """Department-wide metrics container."""
+    total_projects: int = 0
+    in_progress: int = 0
+    pending_review: int = 0
+    videos_in_production: int = 0
+    designs_in_queue: int = 0
+    animations_rendering: int = 0
 
 
 class CreativeHub:
     """
-    Creative Hub.
+    Creative Hub System.
     
-    Connects all Creative roles with their tools.
+    Orchestrates all creative production roles and aggregates high-level metrics.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         
-        # Initialize role modules
-        self.art_director = ArtDirector(agency_name)
-        self.video_editor = VideoEditor(agency_name)
-        self.web_designer = WebDesigner(agency_name)
-        self.graphic_designer = GraphicDesigner(agency_name)
-        self.ux_designer = UXDesigner(agency_name)
-        self.illustrator = Illustrator(agency_name)
-        self.animator = Animator(agency_name)
+        logger.info(f"Initializing Creative Hub for {agency_name}")
+        try:
+            self.art_director = ArtDirector(agency_name)
+            self.video_editor = VideoEditor(agency_name)
+            self.web_designer = WebDesigner(agency_name)
+            self.graphic_designer = GraphicDesigner(agency_name)
+            self.ux_designer = UXDesigner(agency_name)
+            self.illustrator = Illustrator(agency_name)
+            self.animator = Animator(agency_name)
+        except Exception as e:
+            logger.error(f"Sub-module initialization error: {e}")
+            raise
     
     def get_department_metrics(self) -> CreativeMetrics:
-        """Get department-wide metrics."""
-        total = (len(self.art_director.briefs) + 
-                len(self.video_editor.projects) + 
-                len(self.web_designer.projects) +
-                len(self.graphic_designer.assets) +
-                len(self.ux_designer.projects) +
-                len(self.illustrator.projects) +
-                len(self.animator.projects))
+        """Aggregate data from all specialized creative sub-modules."""
+        metrics = CreativeMetrics()
         
-        pending_review = len(self.art_director.get_by_status(ReviewStatus.IN_REVIEW))
-        
-        return CreativeMetrics(
-            total_projects=total,
-            in_progress=total - pending_review,
-            pending_review=pending_review,
-            videos_in_production=len([p for p in self.video_editor.projects.values() 
-                                     if p.status.value == "editing"]),
-            designs_in_queue=len(self.graphic_designer.get_queue()),
-            animations_rendering=len([p for p in self.animator.projects.values() 
-                                     if p.status.value == "rendering"])
-        )
+        try:
+            # Aggregate counts safely
+            counts = [
+                len(self.art_director.briefs),
+                len(self.video_editor.projects),
+                len(self.web_designer.projects),
+                len(self.graphic_designer.assets),
+                len(self.ux_designer.projects),
+                len(self.illustrator.projects),
+                len(self.animator.projects)
+            ]
+            metrics.total_projects = sum(counts)
+            
+            # Specific status filtering
+            metrics.pending_review = len(self.art_director.get_by_status(ReviewStatus.IN_REVIEW))
+            
+            # Check production statuses (handling potential variations in status naming)
+            metrics.videos_in_production = len([
+                p for p in self.video_editor.projects.values() 
+                if getattr(p.status, 'value', str(p.status)) == "editing"
+            ])
+            
+            metrics.designs_in_queue = len(self.graphic_designer.get_queue())
+            
+            metrics.animations_rendering = len([
+                p for p in self.animator.projects.values() 
+                if getattr(p.status, 'value', str(p.status)) == "rendering"
+            ])
+            
+            metrics.in_progress = metrics.total_projects - metrics.pending_review
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating creative metrics: {e}")
+            
+        return metrics
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render Creative Hub Dashboard."""
+        m = self.get_department_metrics()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎨 CREATIVE HUB                                          ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  🎨 CREATIVE HUB{' ' * 42}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Total Projects:     {metrics.total_projects:>5}                          ║",
-            f"║    🔄 In Progress:        {metrics.in_progress:>5}                          ║",
-            f"║    👁️ Pending Review:     {metrics.pending_review:>5}                          ║",
-            f"║    🎬 Videos in Prod:     {metrics.videos_in_production:>5}                          ║",
-            f"║    🖼️ Designs in Queue:   {metrics.designs_in_queue:>5}                          ║",
-            f"║    ⚙️ Animations Render:  {metrics.animations_rendering:>5}                          ║",
+            "║  📊 PRODUCTION METRICS                                    ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📋 Total Projects:     {m.total_projects:>5}                          ║",
+            f"║    🔄 In Progress:        {m.in_progress:>5}                          ║",
+            f"║    👁️ Pending Review:     {m.pending_review:>5}                          ║",
+            f"║    🎬 Videos in Prod:     {m.videos_in_production:>5}                          ║",
+            f"║    🖼️ Designs in Queue:   {m.designs_in_queue:>5}                          ║",
+            f"║    ⚙️ Animations Render:  {m.animations_rendering:>5}                          ║",
             "║                                                           ║",
-            "║  🔗 CREATIVE ROLES                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    🎨 Art Director        │ {len(self.art_director.briefs):>2} briefs               ║",
-            f"║    🎬 Video Editor        │ {len(self.video_editor.projects):>2} videos               ║",
-            f"║    🌐 Web Designer        │ {len(self.web_designer.projects):>2} designs              ║",
-            f"║    🖼️ Graphic Designer    │ {len(self.graphic_designer.assets):>2} assets               ║",
-            f"║    🎯 UX Designer         │ {len(self.ux_designer.projects):>2} projects             ║",
-            f"║    ✏️ Illustrator         │ {len(self.illustrator.projects):>2} illustrations       ║",
-            f"║    🎬 Animator            │ {len(self.animator.projects):>2} animations           ║",
+            "║  🔗 SPECIALIZED ROLES                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    🎨 Art Dir │ {len(self.art_director.briefs):>2}    🎬 Video │ {len(self.video_editor.projects):>2}    🌐 Web │ {len(self.web_designer.projects):>2} ║",
+            f"║    🖼️ Graphic │ {len(self.graphic_designer.assets):>2}    🎯 UX    │ {len(self.ux_designer.projects):>2}    ✏️ Ill │ {len(self.illustrator.projects):>2} ║",
             "║                                                           ║",
-            "║  [📊 Reports]  [📋 Briefs]  [⚙️ Settings]                 ║",
+            "║  [📊 Reports]  [📋 Briefs]  [🎨 Portfolio]  [⚙️ Settings] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Creative Excellence!             ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Creative!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -121,16 +149,15 @@ class CreativeHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = CreativeHub("Saigon Digital Hub")
-    
-    print("🎨 Creative Hub")
+    print("🎨 Initializing Creative Hub...")
     print("=" * 60)
-    print()
     
-    # Simulate data
-    hub.art_director.create_brief("Brand Refresh", "Sunrise Realty", ProjectType.BRANDING,
-        ["Modern"], "Adults", ["Trust"], ["Logo"], 14)
-    hub.video_editor.create_project("Promo Video", "Coffee Lab", VideoType.PROMO, 60)
-    hub.web_designer.create_project("Website", "Tech Startup", WebProjectType.CORPORATE, 8)
-    
-    print(hub.format_hub_dashboard())
+    try:
+        hub = CreativeHub("Saigon Digital Hub")
+        # Add sample project
+        hub.art_director.create_brief("Logo", "Sunrise", ProjectType.BRANDING, ["Mdn"], "All", ["Tst"], ["Lg"], 14)
+        
+        print("\n" + hub.format_hub_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Hub Error: {e}")

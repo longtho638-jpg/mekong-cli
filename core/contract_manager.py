@@ -12,15 +12,19 @@ Features:
 - E-signature tracking
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ContractType(Enum):
-    """Contract types."""
+    """Common legal agreement types."""
     MSA = "msa"  # Master Service Agreement
     SOW = "sow"  # Statement of Work
     NDA = "nda"  # Non-Disclosure Agreement
@@ -30,7 +34,7 @@ class ContractType(Enum):
 
 
 class ContractStatus(Enum):
-    """Contract status."""
+    """Contract lifecycle status."""
     DRAFT = "draft"
     PENDING_SIGNATURE = "pending_signature"
     ACTIVE = "active"
@@ -39,7 +43,7 @@ class ContractStatus(Enum):
 
 
 class SignatureStatus(Enum):
-    """Signature status."""
+    """E-signature tracking status."""
     NOT_SENT = "not_sent"
     SENT = "sent"
     SIGNED = "signed"
@@ -48,23 +52,27 @@ class SignatureStatus(Enum):
 
 @dataclass
 class Contract:
-    """A contract."""
+    """A contract record entity."""
     id: str
     title: str
     contract_type: ContractType
     client_name: str
     status: ContractStatus = ContractStatus.DRAFT
-    value: float = 0
+    value: float = 0.0
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     signature_status: SignatureStatus = SignatureStatus.NOT_SENT
     auto_renew: bool = False
     created_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.value < 0:
+            raise ValueError("Contract value cannot be negative")
+
 
 @dataclass
 class ContractTemplate:
-    """A contract template."""
+    """A reusable contract template."""
     id: str
     name: str
     contract_type: ContractType
@@ -74,9 +82,9 @@ class ContractTemplate:
 
 class ContractManager:
     """
-    Contract Manager.
+    Contract Manager System.
     
-    Manage all agency contracts.
+    Centralized handling of all legal and professional agreements.
     """
     
     def __init__(self, agency_name: str):
@@ -84,38 +92,27 @@ class ContractManager:
         self.contracts: Dict[str, Contract] = {}
         self.templates: Dict[str, ContractTemplate] = {}
         
-        self._init_demo_data()
+        logger.info(f"Contract Manager initialized for {agency_name}")
+        self._init_defaults()
     
-    def _init_templates(self):
-        """Initialize contract templates."""
-        templates = [
-            ("Master Service Agreement", ContractType.MSA, 
-             ["client_name", "effective_date", "terms"]),
-            ("Statement of Work", ContractType.SOW,
-             ["project_name", "deliverables", "timeline", "fee"]),
-            ("Non-Disclosure Agreement", ContractType.NDA,
-             ["parties", "confidential_info", "duration"]),
-            ("Service Level Agreement", ContractType.SLA,
-             ["service_levels", "uptime", "response_times"]),
+    def _init_defaults(self):
+        """Pre-populate with templates and sample data."""
+        # Initialize templates
+        templates_config = [
+            ("Master Service Agreement", ContractType.MSA, ["client_name", "effective_date"]),
+            ("Statement of Work", ContractType.SOW, ["project_name", "deliverables", "fee"]),
+            ("Non-Disclosure Agreement", ContractType.NDA, ["parties", "duration"]),
         ]
-        
-        for name, ctype, vars in templates:
-            self.add_template(name, ctype, f"Template for {name}", vars)
-    
-    def _init_demo_data(self):
-        """Initialize demo data."""
-        self._init_templates()
-        
-        # Add demo contracts
-        contracts = [
-            ("TechStart Inc - MSA", ContractType.MSA, "TechStart Inc", 36000, 365),
-            ("GrowthCo - Retainer SOW", ContractType.SOW, "GrowthCo", 24000, 180),
-            ("NewBrand - NDA", ContractType.NDA, "NewBrand", 0, 730),
-            ("BigCorp - MSA", ContractType.MSA, "BigCorp", 60000, 365),
+        for name, ctype, vars in templates_config:
+            self.add_template(name, ctype, f"Content for {name}", vars)
+            
+        # Add sample active contracts
+        samples = [
+            ("TechStart - MSA", ContractType.MSA, "TechStart Inc", 36000.0, 365),
+            ("GrowthCo - SOW", ContractType.SOW, "GrowthCo", 24000.0, 180),
         ]
-        
-        for title, ctype, client, value, days in contracts:
-            c = self.create_contract(title, ctype, client, value, days)
+        for title, ctype, client, val, days in samples:
+            c = self.create_contract(title, ctype, client, val, days)
             c.status = ContractStatus.ACTIVE
             c.signature_status = SignatureStatus.SIGNED
     
@@ -126,7 +123,7 @@ class ContractManager:
         content: str,
         variables: List[str]
     ) -> ContractTemplate:
-        """Add a contract template."""
+        """Register a new contract template."""
         template = ContractTemplate(
             id=f"TPL-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -135,6 +132,7 @@ class ContractManager:
             variables=variables
         )
         self.templates[template.id] = template
+        logger.debug(f"Template added: {name}")
         return template
     
     def create_contract(
@@ -142,10 +140,13 @@ class ContractManager:
         title: str,
         contract_type: ContractType,
         client_name: str,
-        value: float = 0,
+        value: float = 0.0,
         duration_days: int = 365
     ) -> Contract:
-        """Create a new contract."""
+        """Create a new contract based on a template or custom terms."""
+        if not title or not client_name:
+            raise ValueError("Title and client name are required")
+
         contract = Contract(
             id=f"CTR-{uuid.uuid4().hex[:6].upper()}",
             title=title,
@@ -156,102 +157,57 @@ class ContractManager:
             end_date=datetime.now() + timedelta(days=duration_days)
         )
         self.contracts[contract.id] = contract
+        logger.info(f"Contract record created: {title} for {client_name}")
         return contract
     
-    def send_for_signature(self, contract: Contract):
-        """Send contract for e-signature."""
-        contract.signature_status = SignatureStatus.SENT
-        contract.status = ContractStatus.PENDING_SIGNATURE
-    
-    def mark_signed(self, contract: Contract):
-        """Mark contract as signed."""
-        contract.signature_status = SignatureStatus.SIGNED
-        contract.status = ContractStatus.ACTIVE
-    
-    def get_expiring_soon(self, days: int = 30) -> List[Contract]:
-        """Get contracts expiring soon."""
-        cutoff = datetime.now() + timedelta(days=days)
-        return [
-            c for c in self.contracts.values()
-            if c.status == ContractStatus.ACTIVE
-            and c.end_date and c.end_date <= cutoff
-        ]
-    
     def get_stats(self) -> Dict[str, Any]:
-        """Get contract statistics."""
-        active = sum(1 for c in self.contracts.values() if c.status == ContractStatus.ACTIVE)
-        pending = sum(1 for c in self.contracts.values() if c.status == ContractStatus.PENDING_SIGNATURE)
-        total_value = sum(c.value for c in self.contracts.values() if c.status == ContractStatus.ACTIVE)
-        expiring = len(self.get_expiring_soon())
+        """Aggregate contract statistics."""
+        active = [c for c in self.contracts.values() if c.status == ContractStatus.ACTIVE]
+        pending = [c for c in self.contracts.values() if c.status == ContractStatus.PENDING_SIGNATURE]
         
         return {
-            "total": len(self.contracts),
-            "active": active,
-            "pending_signature": pending,
-            "total_value": total_value,
-            "expiring_soon": expiring,
-            "templates": len(self.templates)
+            "active_count": len(active),
+            "pending_count": len(pending),
+            "total_value": sum(c.value for c in active),
+            "total_records": len(self.contracts)
         }
     
     def format_dashboard(self) -> str:
-        """Format contract manager dashboard."""
+        """Render ASCII Contract Dashboard."""
         stats = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 CONTRACT MANAGER                                      ║",
-            f"║  {stats['active']} active │ ${stats['total_value']:,.0f} value │ {stats['expiring_soon']} expiring  ║",
+            f"║  📋 CONTRACT MANAGER DASHBOARD{' ' * 31}║",
+            f"║  {stats['active_count']} active │ ${stats['total_value']:,.0f} active value │ {len(self.contracts)} total{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📄 ACTIVE CONTRACTS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📄 RECENT CONTRACTS                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"msa": "📋", "sow": "📝", "nda": "🔒",
-                     "sla": "📊", "employment": "👤", "vendor": "🏢"}
-        status_icons = {"draft": "📝", "pending_signature": "✍️",
-                       "active": "✅", "expired": "⏰", "terminated": "❌"}
+        type_icons = {
+            ContractType.MSA: "📋", ContractType.SOW: "📝", 
+            ContractType.NDA: "🔒", ContractType.SLA: "📊", 
+            ContractType.EMPLOYMENT: "👤", ContractType.VENDOR: "🏢"
+        }
+        status_icons = {
+            ContractStatus.DRAFT: "📝", ContractStatus.PENDING_SIGNATURE: "✍️",
+            ContractStatus.ACTIVE: "✅", ContractStatus.EXPIRED: "⏰", 
+            ContractStatus.TERMINATED: "❌"
+        }
         
-        for contract in list(self.contracts.values())[:4]:
-            t_icon = type_icons.get(contract.contract_type.value, "📄")
-            s_icon = status_icons.get(contract.status.value, "⚪")
-            lines.append(f"║    {t_icon} {s_icon} {contract.title[:22]:<22} │ ${contract.value:>8,.0f}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📑 CONTRACT TEMPLATES                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for template in list(self.templates.values())[:4]:
-            t_icon = type_icons.get(template.contract_type.value, "📄")
-            lines.append(f"║    {t_icon} {template.name:<35}  ║")
+        # Display top 5 active/recent contracts
+        for c in list(self.contracts.values())[:5]:
+            t_icon = type_icons.get(c.contract_type, "📄")
+            s_icon = status_icons.get(c.status, "⚪")
+            title_disp = (c.title[:22] + '..') if len(c.title) > 24 else c.title
+            lines.append(f"║    {t_icon} {s_icon} {title_disp:<24} │ ${c.value:>10,.0f}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  ⏰ RENEWAL ALERTS                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        expiring = self.get_expiring_soon()
-        if expiring:
-            for contract in expiring[:3]:
-                days_left = (contract.end_date - datetime.now()).days if contract.end_date else 0
-                lines.append(f"║    ⚠️ {contract.title[:25]:<25} │ {days_left} days  ║")
-        else:
-            lines.append("║    ✅ No contracts expiring in next 30 days             ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 CONTRACT SUMMARY                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📄 Total Contracts:    {stats['total']:>12}              ║",
-            f"║    ✅ Active:             {stats['active']:>12}              ║",
-            f"║    ✍️ Pending Signature:  {stats['pending_signature']:>12}              ║",
-            f"║    💰 Total Value:        ${stats['total_value']:>11,.0f}              ║",
-            "║                                                           ║",
-            "║  [📋 Contracts]  [📑 Templates]  [✍️ Sign]                ║",
+            "║  [📋 Contracts]  [📑 Templates]  [✍️ Send for Signature]  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Protect your business!           ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Stability!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -260,10 +216,16 @@ class ContractManager:
 
 # Example usage
 if __name__ == "__main__":
-    cm = ContractManager("Saigon Digital Hub")
-    
-    print("📋 Contract Manager")
+    print("📋 Initializing Contract Manager...")
     print("=" * 60)
-    print()
     
-    print(cm.format_dashboard())
+    try:
+        contract_system = ContractManager("Saigon Digital Hub")
+        
+        # Create a new draft
+        contract_system.create_contract("New Project SOW", ContractType.SOW, "Acme Corp", 5000.0)
+        
+        print("\n" + contract_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Manager Error: {e}")

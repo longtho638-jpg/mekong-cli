@@ -12,15 +12,19 @@ Roles:
 - Advocacy development
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SuccessStage(Enum):
-    """Client success stages."""
+    """Client success lifecycle stages."""
     ONBOARDING = "onboarding"
     ADOPTION = "adoption"
     VALUE_REALIZATION = "value_realization"
@@ -29,7 +33,7 @@ class SuccessStage(Enum):
 
 
 class EngagementLevel(Enum):
-    """Client engagement level."""
+    """Client engagement categories."""
     CHAMPION = "champion"
     ENGAGED = "engaged"
     PASSIVE = "passive"
@@ -38,7 +42,7 @@ class EngagementLevel(Enum):
 
 @dataclass
 class SuccessPlan:
-    """Client success plan."""
+    """A strategic success roadmap for a client."""
     id: str
     client_name: str
     csm: str
@@ -50,10 +54,14 @@ class SuccessPlan:
     health_score: int = 80
     nps_score: Optional[int] = None
 
+    def __post_init__(self):
+        if not 0 <= self.health_score <= 100:
+            raise ValueError("Health score must be between 0 and 100")
+
 
 @dataclass
 class QBRRecord:
-    """Quarterly Business Review."""
+    """A record of a Quarterly Business Review meeting."""
     id: str
     client_name: str
     date: datetime
@@ -67,13 +75,14 @@ class CustomerSuccessManager:
     """
     Customer Success Manager System.
     
-    Drive client success.
+    Orchestrates the success journey, quarterly reviews, and proactive relationship building.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.success_plans: Dict[str, SuccessPlan] = {}
         self.qbrs: List[QBRRecord] = []
+        logger.info(f"CSM System initialized for {agency_name}")
     
     def create_success_plan(
         self,
@@ -82,7 +91,10 @@ class CustomerSuccessManager:
         goals: List[str],
         milestones: List[str]
     ) -> SuccessPlan:
-        """Create success plan."""
+        """Create a new strategic success plan."""
+        if not client_name or not csm:
+            raise ValueError("Client and CSM names are required")
+
         plan = SuccessPlan(
             id=f"CSP-{uuid.uuid4().hex[:6].upper()}",
             client_name=client_name,
@@ -94,14 +106,22 @@ class CustomerSuccessManager:
             engagement=EngagementLevel.ENGAGED
         )
         self.success_plans[plan.id] = plan
+        logger.info(f"Success plan created for {client_name} (CSM: {csm})")
         return plan
     
-    def advance_stage(self, plan: SuccessPlan):
-        """Advance to next stage."""
+    def advance_stage(self, plan_id: str) -> bool:
+        """Move a client to the next stage in their success journey."""
+        if plan_id not in self.success_plans:
+            return False
+            
+        plan = self.success_plans[plan_id]
         stages = list(SuccessStage)
         current_idx = stages.index(plan.stage)
         if current_idx < len(stages) - 1:
             plan.stage = stages[current_idx + 1]
+            logger.info(f"Stage advanced for {plan.client_name}: {plan.stage.value}")
+            return True
+        return False
     
     def record_qbr(
         self,
@@ -111,7 +131,7 @@ class CustomerSuccessManager:
         next_goals: List[str],
         satisfaction: int
     ) -> QBRRecord:
-        """Record a QBR."""
+        """Log the outcome of a Quarterly Business Review."""
         qbr = QBRRecord(
             id=f"QBR-{uuid.uuid4().hex[:6].upper()}",
             client_name=client_name,
@@ -122,56 +142,57 @@ class CustomerSuccessManager:
             satisfaction=satisfaction
         )
         self.qbrs.append(qbr)
+        logger.info(f"QBR recorded for {client_name}")
         return qbr
     
-    def get_by_stage(self, stage: SuccessStage) -> List[SuccessPlan]:
-        """Get plans by stage."""
-        return [p for p in self.success_plans.values() if p.stage == stage]
-    
     def format_dashboard(self) -> str:
-        """Format CSM dashboard."""
-        avg_health = sum(p.health_score for p in self.success_plans.values()) / len(self.success_plans) if self.success_plans else 0
+        """Render the CSM Dashboard."""
+        avg_health = sum(p.health_score for p in self.success_plans.values()) / len(self.success_plans) if self.success_plans else 0.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 CUSTOMER SUCCESS MANAGER                              ║",
-            f"║  {len(self.success_plans)} clients │ Avg Health: {avg_health:.0f}%                   ║",
+            f"║  🎯 CUSTOMER SUCCESS DASHBOARD{' ' * 31}║",
+            f"║  {len(self.success_plans)} success plans │ Avg Health: {avg_health:.0f}%{' ' * 23}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 SUCCESS JOURNEY                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 SUCCESS STAGE DISTRIBUTION                            ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        stage_icons = {"onboarding": "👋", "adoption": "📈", "value_realization": "💎", "growth": "🚀", "advocacy": "⭐"}
+        stage_icons = {
+            SuccessStage.ONBOARDING: "👋", SuccessStage.ADOPTION: "📈", 
+            SuccessStage.VALUE_REALIZATION: "💎", SuccessStage.GROWTH: "🚀", 
+            SuccessStage.ADVOCACY: "⭐"
+        }
         
         for stage in SuccessStage:
-            plans = self.get_by_stage(stage)
-            icon = stage_icons.get(stage.value, "📊")
-            lines.append(f"║  {icon} {stage.value.replace('_', ' ').title():<25} │ {len(plans):>3} clients        ║")
+            count = sum(1 for p in self.success_plans.values() if p.stage == stage)
+            icon = stage_icons.get(stage, "📊")
+            lines.append(f"║  {icon} {stage.value.replace('_', ' ').title():<25} │ {count:>3} clients        ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  👤 MY CLIENTS                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  👤 TOP CLIENT HEALTH                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        engagement_icons = {"champion": "⭐", "engaged": "🟢", "passive": "🟡", "disengaged": "🔴"}
+        eng_icons = {
+            EngagementLevel.CHAMPION: "⭐", EngagementLevel.ENGAGED: "🟢", 
+            EngagementLevel.PASSIVE: "🟡", EngagementLevel.DISENGAGED: "🔴"
+        }
         
-        for plan in sorted(self.success_plans.values(), key=lambda x: x.health_score, reverse=True)[:4]:
-            eng_icon = engagement_icons.get(plan.engagement.value, "⚪")
-            stage_icon = stage_icons.get(plan.stage.value, "📊")
-            
-            lines.append(f"║  {eng_icon} {plan.client_name[:18]:<18} │ {stage_icon} {plan.stage.value[:12]:<12} │ {plan.health_score}%  ║")
+        # Display top 4 healthy clients
+        top_plans = sorted(self.success_plans.values(), key=lambda x: x.health_score, reverse=True)[:4]
+        for p in top_plans:
+            e_icon = eng_icons.get(p.engagement, "⚪")
+            s_icon = stage_icons.get(p.stage, "📊")
+            name_disp = (p.client_name[:18] + '..') if len(p.client_name) > 20 else p.client_name
+            lines.append(f"║  {e_icon} {name_disp:<18} │ {s_icon} {p.stage.value[:12]:<12} │ {p.health_score:>3}%  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📅 UPCOMING QBRs                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    📋 Sunrise Realty - Next week                         ║",
-            "║    📋 Coffee Lab - In 2 weeks                            ║",
-            "║                                                           ║",
-            "║  [📋 Success Plan]  [📊 QBR Prep]  [📈 Health Check]      ║",
+            "║  [📋 Plan]  [📊 QBR Prep]  [📈 Health]  [⚙️ Settings]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Partner for success!             ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Partner!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -180,33 +201,21 @@ class CustomerSuccessManager:
 
 # Example usage
 if __name__ == "__main__":
-    csm = CustomerSuccessManager("Saigon Digital Hub")
-    
-    print("🎯 Customer Success Manager")
+    print("🎯 Initializing Customer Success Manager...")
     print("=" * 60)
-    print()
     
-    # Create success plans
-    p1 = csm.create_success_plan(
-        "Sunrise Realty", "Alex",
-        ["Increase organic traffic 50%", "Generate 100 leads/month"],
-        ["SEO audit complete", "Content strategy live", "First leads generated"]
-    )
-    p1.stage = SuccessStage.VALUE_REALIZATION
-    p1.engagement = EngagementLevel.CHAMPION
-    p1.health_score = 92
-    
-    p2 = csm.create_success_plan(
-        "Coffee Lab", "Sarah",
-        ["Brand awareness", "Social growth"],
-        ["Brand guide", "Social calendar", "First campaign"]
-    )
-    p2.stage = SuccessStage.ADOPTION
-    
-    p3 = csm.create_success_plan(
-        "Tech Startup", "Alex",
-        ["Lead generation", "Conversion optimization"],
-        ["PPC setup", "Landing pages", "First conversions"]
-    )
-    
-    print(csm.format_dashboard())
+    try:
+        csm_system = CustomerSuccessManager("Saigon Digital Hub")
+        
+        # Create plans
+        p1 = csm_system.create_success_plan("Sunrise Realty", "Alex", ["SEO +50%"], ["Audit"])
+        p1.stage = SuccessStage.VALUE_REALIZATION
+        p1.engagement = EngagementLevel.CHAMPION
+        p1.health_score = 92
+        
+        csm_system.create_success_plan("Coffee Lab", "Sarah", ["Brand Growth"], ["Guide"])
+        
+        print("\n" + csm_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"CSM Error: {e}")

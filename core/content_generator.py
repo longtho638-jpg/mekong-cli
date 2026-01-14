@@ -13,13 +13,17 @@ Pillars:
 5. Agency Life (Cuộc sống agency)
 """
 
-from typing import Dict, List, Any
-from dataclasses import dataclass
+import logging
+from typing import Dict, List, Any, Optional
+from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ContentPillar(Enum):
-    """5 Content Pillars from MEKONG-CLI.txt."""
+    """5 Content Pillars for agency growth."""
     CODE_TO_CASHFLOW = "code_to_cashflow"
     SOLOPRENEUR_MINDSET = "solopreneur_mindset"
     LOCAL_AI = "local_ai"
@@ -28,7 +32,7 @@ class ContentPillar(Enum):
 
 
 class ContentFormat(Enum):
-    """Content formats."""
+    """Standard social media formats."""
     TWITTER_THREAD = "Twitter Thread"
     CAROUSEL = "Carousel Post"
     VIDEO_SHORT = "Short Video"
@@ -39,7 +43,7 @@ class ContentFormat(Enum):
 
 @dataclass
 class ContentIdea:
-    """A content idea."""
+    """A content idea entity."""
     pillar: ContentPillar
     title: str
     hook: str
@@ -49,9 +53,9 @@ class ContentIdea:
 
 class ContentGenerator:
     """
-    AI Content Generator.
+    AI Content Generator System.
     
-    Generate 50 social media ideas from Agency DNA.
+    Generates tailored social media strategy based on Agency DNA.
     """
     
     def __init__(self, agency_name: str, niche: str, location: str, skill: str):
@@ -60,179 +64,137 @@ class ContentGenerator:
         self.location = location
         self.skill = skill
         
-        # Templates per pillar (10 each)
+        logger.info(f"Content Generator initialized for {agency_name} ({niche})")
         self.templates = self._load_templates()
     
     def _load_templates(self) -> Dict[ContentPillar, List[Dict]]:
-        """Load content templates."""
+        """Load content templates mapped to variables."""
         return {
             ContentPillar.CODE_TO_CASHFLOW: [
-                {"title": f"From {self.skill} to $10K/month: My journey", "format": ContentFormat.TWITTER_THREAD, "hook": "I made ${amount} in my first month. Here's how..."},
-                {"title": f"5 ways {self.niche} agencies waste money", "format": ContentFormat.CAROUSEL, "hook": "Stop burning cash on these..."},
-                {"title": f"Setup {self.niche} CRM for free in 15 minutes", "format": ContentFormat.VIDEO_SHORT, "hook": "No more spreadsheets!"},
-                {"title": f"How I automated {self.niche} reporting", "format": ContentFormat.BLOG_POST, "hook": "Save 10 hours per week"},
-                {"title": f"Live: Building a {self.niche} funnel", "format": ContentFormat.LIVE_STREAM, "hook": "Watch me build in real-time"},
-                {"title": f"Client result: 3x ROI in {self.niche}", "format": ContentFormat.CASE_STUDY, "hook": "From 0 to hero"},
-                {"title": f"The tech stack behind {self.agency_name}", "format": ContentFormat.CAROUSEL, "hook": "Tools that make $$$"},
-                {"title": f"Why I chose {self.niche} over other niches", "format": ContentFormat.TWITTER_THREAD, "hook": "The math that changed my life"},
-                {"title": f"$500/day with {self.skill}: Blueprint", "format": ContentFormat.BLOG_POST, "hook": "Step by step process"},
-                {"title": f"Deploy {self.niche} agency in 15 minutes", "format": ContentFormat.VIDEO_SHORT, "hook": "Speed run!"},
+                {"title": f"From {self.skill} to $10K/month: My journey", "format": ContentFormat.TWITTER_THREAD, "hook": "The math behind my first profitable month..."},
+                {"title": f"5 ways {self.niche} agencies waste money", "format": ContentFormat.CAROUSEL, "hook": "Stop burning cash on these legacy processes..."},
+                {"title": f"Setup {self.niche} CRM for free in 15 mins", "format": ContentFormat.VIDEO_SHORT, "hook": "Legacy CRM is dead. Try this instead..."},
+                {"title": f"How I automated {self.niche} reporting", "format": ContentFormat.BLOG_POST, "hook": "Save 10 hours per week with this simple stack..."},
+                {"title": f"Live: Building a {self.niche} funnel", "format": ContentFormat.LIVE_STREAM, "hook": "Zero to lead gen in 60 minutes..."},
+                {"title": f"Client result: 3x ROI in {self.niche}", "format": ContentFormat.CASE_STUDY, "hook": "Data-driven results for local businesses..."},
+                {"title": f"The tech stack behind {self.agency_name}", "format": ContentFormat.CAROUSEL, "hook": "The lean stack that generates revenue..."},
+                {"title": f"Why I chose {self.niche} over other niches", "format": ContentFormat.TWITTER_THREAD, "hook": "Finding your blue ocean in a crowded market..."},
+                {"title": f"$500/day with {self.skill}: Blueprint", "format": ContentFormat.BLOG_POST, "hook": "The exact process I use for every client..."},
+                {"title": f"Deploy {self.niche} agency in 15 minutes", "format": ContentFormat.VIDEO_SHORT, "hook": "Rapid deployment for the AI era..."},
             ],
             ContentPillar.SOLOPRENEUR_MINDSET: [
-                {"title": "Why 1-person agency is the future", "format": ContentFormat.TWITTER_THREAD, "hook": "Sam Altman predicted this..."},
-                {"title": "I fired my team. Best decision ever.", "format": ContentFormat.CAROUSEL, "hook": "Controversial but true"},
-                {"title": f"Morning routine at {self.agency_name}", "format": ContentFormat.VIDEO_SHORT, "hook": "4:30 AM start"},
-                {"title": "The loneliness of solo entrepreneurship", "format": ContentFormat.BLOG_POST, "hook": "Let's talk about mental health"},
-                {"title": "AMA: Running agency from laptop", "format": ContentFormat.LIVE_STREAM, "hook": "Ask me anything!"},
-                {"title": f"Year 1 at {self.agency_name}: Lessons", "format": ContentFormat.CASE_STUDY, "hook": "What I learned"},
-                {"title": "Tool vs Team: My controversial take", "format": ContentFormat.CAROUSEL, "hook": "Why I invest in tools"},
-                {"title": "4-hour workweek as agency owner", "format": ContentFormat.TWITTER_THREAD, "hook": "Tim Ferriss was right"},
-                {"title": f"Building in {self.location}: Pros and cons", "format": ContentFormat.BLOG_POST, "hook": "The honest truth"},
-                {"title": "My daily non-negotiables", "format": ContentFormat.VIDEO_SHORT, "hook": "Habits that make millions"},
+                {"title": "Why 1-person agency is the future", "format": ContentFormat.TWITTER_THREAD, "hook": "Leverage tools, not headcount..."},
+                {"title": "I fired my team. Best decision ever.", "format": ContentFormat.CAROUSEL, "hook": "Focusing on profitability over ego..."},
+                {"title": f"Morning routine at {self.agency_name}", "format": ContentFormat.VIDEO_SHORT, "hook": "Habits of a highly automated founder..."},
+                {"title": "The loneliness of solo entrepreneurship", "format": ContentFormat.BLOG_POST, "hook": "The price of freedom nobody talks about..."},
+                {"title": "AMA: Running agency from laptop", "format": ContentFormat.LIVE_STREAM, "hook": "Ask me about my workflow or niche..."},
+                {"title": f"Year 1 at {self.agency_name}: Lessons", "format": ContentFormat.CASE_STUDY, "hook": "Avoid these 3 expensive mistakes..."},
+                {"title": "Tool vs Team: My controversial take", "format": ContentFormat.CAROUSEL, "hook": "Why software is the best employee..."},
+                {"title": "4-hour workweek as agency owner", "format": ContentFormat.TWITTER_THREAD, "hook": "Hyper-efficiency is the ultimate leverage..."},
+                {"title": f"Building in {self.location}: Pros and cons", "format": ContentFormat.BLOG_POST, "hook": "Market dynamics in our local region..."},
+                {"title": "My daily non-negotiables", "format": ContentFormat.VIDEO_SHORT, "hook": "3 tasks that move the needle every day..."},
             ],
             ContentPillar.LOCAL_AI: [
-                {"title": f"AI that speaks {self.location} language", "format": ContentFormat.TWITTER_THREAD, "hook": "Local vibe matters..."},
-                {"title": f"GPT vs local-tuned AI for {self.niche}", "format": ContentFormat.CAROUSEL, "hook": "The comparison you needed"},
-                {"title": f"Training AI on {self.location} data", "format": ContentFormat.VIDEO_SHORT, "hook": "Secret sauce revealed"},
-                {"title": f"Why {self.location} businesses need local AI", "format": ContentFormat.BLOG_POST, "hook": "The cultural nuance"},
-                {"title": f"Live: Tuning AI for {self.niche}", "format": ContentFormat.LIVE_STREAM, "hook": "Watch the magic"},
-                {"title": f"Case: AI content for {self.location}", "format": ContentFormat.CASE_STUDY, "hook": "Before vs After"},
-                {"title": "Vibe Tuning: What and why", "format": ContentFormat.CAROUSEL, "hook": "The secret weapon"},
-                {"title": f"ChatGPT fails in {self.location}", "format": ContentFormat.TWITTER_THREAD, "hook": "Funny mistakes"},
-                {"title": f"Building {self.niche} AI assistant", "format": ContentFormat.BLOG_POST, "hook": "Your 24/7 employee"},
-                {"title": f"AI demo: {self.niche} content", "format": ContentFormat.VIDEO_SHORT, "hook": "Mind = blown"},
+                {"title": f"AI that speaks {self.location} language", "format": ContentFormat.TWITTER_THREAD, "hook": "Why local nuances win over generic GPT..."},
+                {"title": f"GPT vs local-tuned AI for {self.niche}", "format": ContentFormat.CAROUSEL, "hook": "The benchmark results are in..."},
+                {"title": f"Training AI on {self.location} data", "format": ContentFormat.VIDEO_SHORT, "hook": "The secret to cultural relevance..."},
+                {"title": f"Why {self.location} businesses need local AI", "format": ContentFormat.BLOG_POST, "hook": "Generic AI is failing your local clients..."},
+                {"title": f"Live: Tuning AI for {self.niche}", "format": ContentFormat.LIVE_STREAM, "hook": "Watch me adjust the vibe in real-time..."},
+                {"title": f"Case: AI content for {self.location}", "format": ContentFormat.CASE_STUDY, "hook": "Engagement stats: AI vs Human..."},
+                {"title": "Vibe Tuning: What and why", "format": ContentFormat.CAROUSEL, "hook": "The hidden layer of prompt engineering..."},
+                {"title": f"ChatGPT fails in {self.location}", "format": ContentFormat.TWITTER_THREAD, "hook": "Why prompt engineering is a local game..."},
+                {"title": f"Building {self.niche} AI assistant", "format": ContentFormat.BLOG_POST, "hook": "Automating client support with local context..."},
+                {"title": f"AI demo: {self.niche} content", "format": ContentFormat.VIDEO_SHORT, "hook": "Generating ads that sound like locals..."},
             ],
             ContentPillar.AUTOMATION_HACKS: [
-                {"title": f"Automate {self.niche} in 10 minutes", "format": ContentFormat.TWITTER_THREAD, "hook": "Zero code needed"},
-                {"title": "5 automations that save me 20h/week", "format": ContentFormat.CAROUSEL, "hook": "Copy these today"},
-                {"title": f"Auto-report for {self.niche} clients", "format": ContentFormat.VIDEO_SHORT, "hook": "Set it and forget it"},
-                {"title": "Zapier vs Make vs n8n: My verdict", "format": ContentFormat.BLOG_POST, "hook": "After 1000 zaps..."},
-                {"title": "Build automation live!", "format": ContentFormat.LIVE_STREAM, "hook": "From idea to deployed"},
-                {"title": f"0 to automated: {self.niche} case", "format": ContentFormat.CASE_STUDY, "hook": "The transformation"},
-                {"title": "Automations under $10/month", "format": ContentFormat.CAROUSEL, "hook": "Budget-friendly power"},
-                {"title": f"Auto-invoice for {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Never chase payments"},
-                {"title": f"Client onboarding automation", "format": ContentFormat.BLOG_POST, "hook": "First impression matters"},
-                {"title": "My Telegram bot that runs agency", "format": ContentFormat.VIDEO_SHORT, "hook": "The ultimate hack"},
+                {"title": f"Automate {self.niche} in 10 minutes", "format": ContentFormat.TWITTER_THREAD, "hook": "No-code blueprints for scale..."},
+                {"title": "5 automations that save me 20h/week", "format": ContentFormat.CAROUSEL, "hook": "The exact Make.com workflows I use..."},
+                {"title": f"Auto-report for {self.niche} clients", "format": ContentFormat.VIDEO_SHORT, "hook": "Stop wasting time on PDF reports..."},
+                {"title": "Zapier vs Make vs n8n: My verdict", "format": ContentFormat.BLOG_POST, "hook": "Choosing the right engine for your agency..."},
+                {"title": "Build automation live!", "format": ContentFormat.LIVE_STREAM, "hook": "Taking your automation requests..."},
+                {"title": f"0 to automated: {self.niche} case", "format": ContentFormat.CASE_STUDY, "hook": "Scaling without increasing overhead..."},
+                {"title": "Automations under $10/month", "format": ContentFormat.CAROUSEL, "hook": "Small price, massive leverage..."},
+                {"title": f"Auto-invoice for {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Getting paid while you sleep..."},
+                {"title": f"Client onboarding automation", "format": ContentFormat.BLOG_POST, "hook": "Perfect first impressions on autopilot..."},
+                {"title": "My Telegram bot that runs agency", "format": ContentFormat.VIDEO_SHORT, "hook": "Command center in my pocket..."},
             ],
             ContentPillar.AGENCY_LIFE: [
-                {"title": f"A day at {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Behind the scenes"},
-                {"title": "Setup tour: My minimal workspace", "format": ContentFormat.CAROUSEL, "hook": "Just laptop + coffee"},
-                {"title": f"Working from {self.location} cafe", "format": ContentFormat.VIDEO_SHORT, "hook": "The digital nomad life"},
-                {"title": "Funny AI fails with clients", "format": ContentFormat.BLOG_POST, "hook": "When AI goes wrong"},
-                {"title": "Friday Q&A with community", "format": ContentFormat.LIVE_STREAM, "hook": "Let's chat!"},
-                {"title": f"Client win: {self.niche} success", "format": ContentFormat.CASE_STUDY, "hook": "Celebration time"},
-                {"title": "Books that built my agency", "format": ContentFormat.CAROUSEL, "hook": "Must reads"},
-                {"title": f"1 year running {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "The honest review"},
-                {"title": "Work-life balance as solo founder", "format": ContentFormat.BLOG_POST, "hook": "Is it possible?"},
-                {"title": "My favorite agency memes", "format": ContentFormat.VIDEO_SHORT, "hook": "Laugh with me"},
+                {"title": f"A day at {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Behind the curtain of a solo agency..."},
+                {"title": "Setup tour: My minimal workspace", "format": ContentFormat.CAROUSEL, "hook": "Tools for the digital nomad era..."},
+                {"title": f"Working from {self.location} cafe", "format": ContentFormat.VIDEO_SHORT, "hook": "Location independence is the prize..."},
+                {"title": "Funny AI fails with clients", "format": ContentFormat.BLOG_POST, "hook": "Learning from the hallucinations..."},
+                {"title": "Friday Q&A with community", "format": ContentFormat.LIVE_STREAM, "hook": "Discussing {niche} and AI..."},
+                {"title": f"Client win: {self.niche} success", "format": ContentFormat.CASE_STUDY, "hook": "Sharing the wins with the team..."},
+                {"title": "Books that built my agency", "format": ContentFormat.CAROUSEL, "hook": "The mindset shift required for scale..."},
+                {"title": f"1 year running {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Raw numbers and honest truths..."},
+                {"title": "Work-life balance as solo founder", "format": ContentFormat.BLOG_POST, "hook": "Avoiding burnout while scaling..."},
+                {"title": "My favorite agency memes", "format": ContentFormat.VIDEO_SHORT, "hook": "Because if we don't laugh, we cry..."},
             ],
         }
     
     def generate_50_ideas(self) -> List[ContentIdea]:
-        """Generate 50 content ideas (10 per pillar)."""
+        """Generate full set of 50 content ideas (10 per pillar)."""
         ideas = []
-        
         for pillar, templates in self.templates.items():
-            for template in templates:
+            for t in templates:
                 idea = ContentIdea(
                     pillar=pillar,
-                    title=template["title"],
-                    hook=template["hook"],
-                    format=template["format"],
-                    cta=f"Follow {self.agency_name} for more!"
+                    title=t["title"],
+                    hook=t["hook"],
+                    format=t["format"],
+                    cta=f"Follow {self.agency_name} for more {self.niche} insights!"
                 )
                 ideas.append(idea)
         
+        logger.info(f"Successfully generated {len(ideas)} ideas.")
         return ideas
     
-    def format_content_calendar(self, ideas: List[ContentIdea]) -> str:
-        """Format as content calendar."""
+    def format_calendar_view(self, ideas: List[ContentIdea]) -> str:
+        """Render ASCII content calendar."""
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📅 CONTENT CALENDAR: {self.agency_name.upper()[:30]:<30} ║",
+            f"║  📅 CONTENT STRATEGY: {self.agency_name.upper()[:28]:<28} ║",
             "╠═══════════════════════════════════════════════════════════╣",
-        ]
-        
-        for i, pillar in enumerate(ContentPillar):
-            pillar_ideas = [idea for idea in ideas if idea.pillar == pillar]
-            pillar_name = pillar.value.replace("_", " ").title()
-            
-            lines.append(f"║                                                           ║")
-            lines.append(f"║  📌 {pillar_name:<50}   ║")
-            lines.append(f"║  ─────────────────────────────────────────────────────── ║")
-            
-            for j, idea in enumerate(pillar_ideas[:3], 1):
-                title = idea.title[:40]
-                lines.append(f"║    {j}. {title:<50} ║")
-            
-            lines.append(f"║    ... +{len(pillar_ideas) - 3} more ideas                                  ║")
-        
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📊 TOTAL: {len(ideas)} IDEAS | 5 PILLARS | READY TO POST!       ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
-    
-    def export_to_markdown(self, ideas: List[ContentIdea]) -> str:
-        """Export ideas as markdown."""
-        lines = [
-            f"# 📅 {self.agency_name} - 50 Content Ideas",
-            "",
-            f"> Generated by Agency OS | {self.niche} | {self.location}",
-            "",
-            "---",
-            "",
         ]
         
         for pillar in ContentPillar:
-            pillar_ideas = [idea for idea in ideas if idea.pillar == pillar]
-            pillar_name = pillar.value.replace("_", " ").title()
+            pillar_ideas = [i for i in ideas if i.pillar == pillar]
+            p_name = pillar.value.replace("_", " ").title()
             
-            lines.append(f"## 📌 {pillar_name}")
-            lines.append("")
+            lines.append(f"║  📌 {p_name:<50}   ║")
+            lines.append("║  " + "─" * 57 + "  ║")
             
-            for i, idea in enumerate(pillar_ideas, 1):
-                lines.append(f"### {i}. {idea.title}")
-                lines.append(f"- **Format:** {idea.format.value}")
-                lines.append(f"- **Hook:** {idea.hook}")
-                lines.append(f"- **CTA:** {idea.cta}")
-                lines.append("")
+            for j, idea in enumerate(pillar_ideas[:3], 1):
+                title_short = (idea.title[:40] + "..") if len(idea.title) > 42 else idea.title
+                lines.append(f"║    {j}. {title_short:<50} ║")
             
-            lines.append("---")
-            lines.append("")
+            lines.append(f"║    ... +{len(pillar_ideas) - 3} more ideas                                  ║")
+            lines.append("║                                                           ║")
         
-        lines.append("🏯 *Generated by Agency OS - \"Không đánh mà thắng\"*")
+        lines.extend([
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  📊 TOTAL: {len(ideas)} IDEAS READY FOR MULTI-CHANNEL POSTING    ║",
+            "╚═══════════════════════════════════════════════════════════╝",
+        ])
         
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    generator = ContentGenerator(
-        agency_name="Saigon Digital Hub",
-        niche="Real Estate Marketing",
-        location="Ho Chi Minh City",
-        skill="Facebook Ads"
-    )
-    
-    print("🎨 AI Content Generator")
+    print("🎨 Initializing AI Content Generator...")
     print("=" * 60)
-    print()
     
-    ideas = generator.generate_50_ideas()
-    
-    print(generator.format_content_calendar(ideas))
-    print()
-    print(f"✅ Generated {len(ideas)} content ideas!")
-    print(f"   Agency: {generator.agency_name}")
-    print(f"   Niche: {generator.niche}")
-    print()
-    
-    # Show sample ideas
-    print("📝 Sample Ideas:")
-    for idea in ideas[:5]:
-        print(f"   • {idea.title}")
-        print(f"     ({idea.format.value}) - {idea.hook}")
-        print()
+    try:
+        gen = ContentGenerator(
+            agency_name="Saigon Digital Hub",
+            niche="Real Estate",
+            location="Vietnam",
+            skill="Facebook Ads"
+        )
+        
+        all_ideas = gen.generate_50_ideas()
+        print("\n" + gen.format_calendar_view(all_ideas))
+        
+    except Exception as e:
+        logger.error(f"Generation Error: {e}")

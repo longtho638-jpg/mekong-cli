@@ -12,15 +12,19 @@ Roles:
 - Escalation handling
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class AgentStatus(Enum):
-    """Agent status."""
+    """Real-time availability status of a service agent."""
     AVAILABLE = "available"
     ON_CALL = "on_call"
     BREAK = "break"
@@ -30,19 +34,23 @@ class AgentStatus(Enum):
 
 @dataclass
 class ServiceAgent:
-    """A customer service agent."""
+    """A customer service agent entity."""
     id: str
     name: str
     status: AgentStatus = AgentStatus.AVAILABLE
     calls_today: int = 0
-    avg_handle_time: float = 0  # minutes
-    satisfaction_score: float = 0  # 1-5
+    avg_handle_time: float = 0.0  # minutes
+    satisfaction_score: float = 0.0  # 1-5
     tickets_resolved: int = 0
+
+    def __post_init__(self):
+        if not 0 <= self.satisfaction_score <= 5:
+            raise ValueError("Satisfaction score must be between 0 and 5")
 
 
 @dataclass
 class Escalation:
-    """A service escalation."""
+    """A critical service issue requiring leadership attention."""
     id: str
     agent_id: str
     client: str
@@ -54,24 +62,28 @@ class Escalation:
 
 class CSTeamLead:
     """
-    Customer Service Team Lead.
+    Customer Service Team Lead System.
     
-    Lead service excellence.
+    Manages a roster of agents, tracks performance, and handles escalations.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.agents: Dict[str, ServiceAgent] = {}
         self.escalations: List[Escalation] = []
+        logger.info(f"CS Team Lead system initialized for {agency_name}")
     
     def add_agent(
         self,
         name: str,
         calls: int = 0,
-        handle_time: float = 5,
+        handle_time: float = 5.0,
         satisfaction: float = 4.5
     ) -> ServiceAgent:
-        """Add a service agent."""
+        """Add a new agent to the CS team."""
+        if not name:
+            raise ValueError("Agent name is required")
+
         agent = ServiceAgent(
             id=f"AGT-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -80,89 +92,102 @@ class CSTeamLead:
             satisfaction_score=satisfaction
         )
         self.agents[agent.id] = agent
+        logger.info(f"Agent added: {name} ({agent.id})")
         return agent
     
-    def set_status(self, agent: ServiceAgent, status: AgentStatus):
-        """Set agent status."""
-        agent.status = status
+    def update_agent_status(self, agent_id: str, status: AgentStatus) -> bool:
+        """Update an agent's current working status."""
+        if agent_id not in self.agents:
+            return False
+        
+        old_status = self.agents[agent_id].status
+        self.agents[agent_id].status = status
+        logger.info(f"Agent {agent_id} status change: {old_status.value} -> {status.value}")
+        return True
     
-    def create_escalation(
+    def trigger_escalation(
         self,
-        agent: ServiceAgent,
+        agent_id: str,
         client: str,
         issue: str,
-        escalated_to: str
-    ) -> Escalation:
-        """Create an escalation."""
+        target_leader: str = "Manager"
+    ) -> Optional[Escalation]:
+        """Create a new escalation ticket."""
+        if agent_id not in self.agents:
+            logger.error(f"Cannot escalate: Agent {agent_id} not found")
+            return None
+
         esc = Escalation(
             id=f"ESC-{uuid.uuid4().hex[:6].upper()}",
-            agent_id=agent.id,
+            agent_id=agent_id,
             client=client,
             issue=issue,
-            escalated_to=escalated_to
+            escalated_to=target_leader
         )
         self.escalations.append(esc)
+        logger.warning(f"ESCALATION: {client} - {issue} (Assigned to {target_leader})")
         return esc
     
-    def get_team_stats(self) -> Dict[str, Any]:
-        """Get team statistics."""
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Calculate high-level team metrics."""
         if not self.agents:
-            return {}
-        
+            return {"count": 0, "available": 0, "avg_sat": 0.0}
+            
         total_calls = sum(a.calls_today for a in self.agents.values())
-        avg_satisfaction = sum(a.satisfaction_score for a in self.agents.values()) / len(self.agents)
+        avg_sat = sum(a.satisfaction_score for a in self.agents.values()) / len(self.agents)
         available = sum(1 for a in self.agents.values() if a.status == AgentStatus.AVAILABLE)
         
         return {
             "total_agents": len(self.agents),
-            "available": available,
+            "available_count": available,
             "total_calls": total_calls,
-            "avg_satisfaction": avg_satisfaction,
+            "avg_satisfaction": avg_sat,
             "open_escalations": sum(1 for e in self.escalations if not e.resolved)
         }
     
     def format_dashboard(self) -> str:
-        """Format team lead dashboard."""
-        stats = self.get_team_stats()
+        """Render the Team Lead Dashboard."""
+        stats = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  👑 CS TEAM LEAD                                          ║",
-            f"║  {stats.get('total_agents', 0)} agents │ {stats.get('available', 0)} available │ {stats.get('total_calls', 0)} calls today  ║",
+            f"║  👑 CS TEAM LEAD DASHBOARD{' ' * 34}║",
+            f"║  {stats.get('total_agents', 0)} agents │ {stats.get('available_count', 0)} available │ {stats.get('total_calls', 0)} calls today  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  👥 TEAM STATUS                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  👥 ACTIVE TEAM ROSTER                                    ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        status_icons = {"available": "🟢", "on_call": "📞", "break": "☕", "training": "📚", "offline": "⚪"}
+        status_icons = {
+            AgentStatus.AVAILABLE: "🟢", AgentStatus.ON_CALL: "📞", 
+            AgentStatus.BREAK: "☕", AgentStatus.TRAINING: "📚", 
+            AgentStatus.OFFLINE: "⚪"
+        }
         
         for agent in list(self.agents.values())[:5]:
-            icon = status_icons.get(agent.status.value, "⚪")
-            stars = "⭐" * int(agent.satisfaction_score)
-            
-            lines.append(f"║  {icon} {agent.name[:15]:<15} │ {agent.calls_today:>2} calls │ {stars:<5}  ║")
+            icon = status_icons.get(agent.status, "⚪")
+            # Star rating
+            stars = "★" * int(agent.satisfaction_score) + "☆" * (5 - int(agent.satisfaction_score))
+            lines.append(f"║  {icon} {agent.name[:15]:<15} │ {agent.calls_today:>3} calls │ {stars}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📊 TEAM METRICS                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📞 Total Calls:        {stats.get('total_calls', 0):>5}                       ║",
-            f"║    ⭐ Avg Satisfaction:   {stats.get('avg_satisfaction', 0):>5.1f}                       ║",
-            f"║    ⚠️ Open Escalations:   {stats.get('open_escalations', 0):>5}                       ║",
-            "║                                                           ║",
-            "║  ⚠️ RECENT ESCALATIONS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🚨 PRIORITY ESCALATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        for esc in self.escalations[-3:]:
-            icon = "✅" if esc.resolved else "🔴"
-            lines.append(f"║  {icon} {esc.client[:15]:<15} │ {esc.issue[:25]:<25}  ║")
+        active_esc = [e for e in self.escalations if not e.resolved][:3]
+        if not active_esc:
+            lines.append("║    ✅ No active escalations. Team is operating smoothly.  ║")
+        else:
+            for esc in active_esc:
+                lines.append(f"║    🔴 {esc.client[:15]:<15} │ {esc.issue[:28]:<28} ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [👥 Team View]  [📊 Reports]  [⚠️ Escalations]           ║",
+            "║  [👥 Team View]  [📊 Real-time Stats]  [⚠️ Escalations]   ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Service excellence!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Excellence!        ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -171,22 +196,21 @@ class CSTeamLead:
 
 # Example usage
 if __name__ == "__main__":
-    lead = CSTeamLead("Saigon Digital Hub")
-    
-    print("👑 CS Team Lead")
+    print("👑 Initializing CS Team Lead...")
     print("=" * 60)
-    print()
     
-    a1 = lead.add_agent("Sarah Kim", 15, 4.5, 4.8)
-    a2 = lead.add_agent("Mike Chen", 12, 5.0, 4.5)
-    a3 = lead.add_agent("Lisa Tran", 18, 3.8, 4.9)
-    a4 = lead.add_agent("Tom Lee", 8, 6.2, 4.2)
-    
-    # Set statuses
-    lead.set_status(a1, AgentStatus.ON_CALL)
-    lead.set_status(a4, AgentStatus.BREAK)
-    
-    # Create escalation
-    lead.create_escalation(a2, "Tech Startup", "Refund request dispute", "Manager")
-    
-    print(lead.format_dashboard())
+    try:
+        lead_system = CSTeamLead("Saigon Digital Hub")
+        
+        # Seed agents
+        a1 = lead_system.add_agent("Sarah Kim", 15, 4.5, 4.8)
+        lead_system.add_agent("Mike Chen", 12, 5.0, 4.2)
+        
+        # Interactions
+        lead_system.update_agent_status(a1.id, AgentStatus.ON_CALL)
+        lead_system.trigger_escalation(a1.id, "TechCorp", "Billing error dispute")
+        
+        print("\n" + lead_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Lead Error: {e}")
