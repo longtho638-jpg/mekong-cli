@@ -28,6 +28,12 @@ argument-hint: [plan]
 
 **If `$ARGUMENTS` provided:** Use that plan and detect which phase to work on (auto-detect or use argument like "phase-2").
 
+**After detecting plan path:** Extract plan folder (parent directory of phase file) and set active plan:
+```bash
+node .claude/scripts/set-active-plan.cjs {plan-folder}
+```
+Example: `plans/260108-1418-custom-domain-refactor/phase-01-database.md` → run `node .claude/scripts/set-active-plan.cjs plans/260108-1418-custom-domain-refactor`
+
 **Output:** `✓ Step 0: [Plan Name] - [Phase Name]`
 
 **Subagent Pattern (use throughout):**
@@ -101,17 +107,17 @@ LOOP:
 
   2. DISPLAY FULL FINDINGS + SUMMARY TO USER:
      ┌─────────────────────────────────────────┐
-     │ Code Review Results: [score]/10         │
+     │ Code Review Results: [score]/10     │
      ├─────────────────────────────────────────┤
-     │ Summary: [what implemented], tests      │
-     │ [X/X passed]                            │
+     │ Summary: [what implemented], tests  │
+     │ [X/X passed]                        │
      ├─────────────────────────────────────────┤
-     │ Critical Issues ([N]): MUST FIX         │
-     │  - [issue] at [file:line]               │
-     │ Warnings ([N]): SHOULD FIX              │
-     │  - [issue] at [file:line]               │
-     │ Suggestions ([N]): NICE TO HAVE         │
-     │  - [suggestion]                         │
+     │ Critical Issues ([N]): MUST FIX     │
+     │  - [issue] at [file:line]           │
+     │ Warnings ([N]): SHOULD FIX          │
+     │  - [issue] at [file:line]           │
+     │ Suggestions ([N]): NICE TO HAVE     │
+     │  - [suggestion]                     │
      └─────────────────────────────────────────┘
 
   3. Use AskUserQuestion (header: "Review & Approve"):

@@ -15,7 +15,6 @@ const fs = require('fs');
 const path = require('path');
 
 // Import modular components
-const { trackContext } = require('./hooks/lib/context-tracker.cjs');
 const { green, yellow, red, cyan, magenta, dim, coloredBar, RESET, shouldUseColor } = require('./hooks/lib/colors.cjs');
 const { parseTranscript } = require('./hooks/lib/transcript-parser.cjs');
 const { countConfigs } = require('./hooks/lib/config-counter.cjs');
@@ -147,9 +146,7 @@ function renderSessionLines(ctx) {
 
   // Build session part: 🤖 model  contextBar%
   let sessionPart = `🤖 ${ctx.modelName}`;
-  if (ctx.showCompactIndicator) {
-    sessionPart += `  ${cyan('🔄')} ${dim('▱▱▱▱▱▱▱▱▱▱▱▱')}`;
-  } else if (ctx.contextPercent > 0) {
+  if (ctx.contextPercent > 0) {
     sessionPart += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
   }
 
@@ -402,7 +399,6 @@ async function main() {
     const usage = data.context_window?.current_usage || {};
     const contextSize = data.context_window?.context_window_size || 0;
     let contextPercent = 0;
-    let showCompactIndicator = false;
 
     if (contextSize > 0 && contextSize > AUTOCOMPACT_BUFFER) {
       const totalTokens = (usage.input_tokens ?? 0) +
@@ -411,17 +407,6 @@ async function main() {
 
       // Add buffer to match /context calculation
       contextPercent = Math.min(100, Math.round(((totalTokens + AUTOCOMPACT_BUFFER) / contextSize) * 100));
-
-      // Also use legacy tracker for compaction detection
-      const legacyInput = data.context_window?.total_input_tokens || 0;
-      const legacyOutput = data.context_window?.total_output_tokens || 0;
-      const result = trackContext({
-        sessionId: data.session_id,
-        contextInput: legacyInput,
-        contextOutput: legacyOutput,
-        contextWindowSize: contextSize
-      });
-      showCompactIndicator = result.showCompactIndicator;
     }
 
     // Session timer
@@ -477,7 +462,6 @@ async function main() {
       gitBehind,
       activePlan,
       contextPercent,
-      showCompactIndicator,
       sessionText,
       costText,
       linesAdded,

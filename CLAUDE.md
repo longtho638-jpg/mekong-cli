@@ -59,6 +59,8 @@ When running Python scripts from `.claude/skills/`, use the venv Python interpre
 
 This ensures packages installed by `install.sh` (google-genai, pypdf, etc.) are available.
 
+**IMPORTANT:** When scripts of skills failed, don't stop, try to fix them directly.
+
 ## [IMPORTANT] Consider Modularization
 - If a code file exceeds 200 lines of code, consider modularizing it
 - Check existing modules before creating new

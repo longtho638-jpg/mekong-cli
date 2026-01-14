@@ -1,3 +1,62 @@
+## [2.3.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.14...v2.3.0-beta.15) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([f121f34](https://github.com/claudekit/claudekit-engineer/commit/f121f348d406d8c72067ab9316e5e025f81394d7))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for path resolution and utilities ([8dcd272](https://github.com/claudekit/claudekit-engineer/commit/8dcd27253f560fa47aaf9905612434617aa66dc0)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+
+## [2.3.0-beta.14](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.13...v2.3.0-beta.14) (2026-01-11)
+
+
+### 🚀 Features
+
+* **opencode:** add flattened commands for OpenCode compatibility ([f3e3da4](https://github.com/claudekit/claudekit-engineer/commit/f3e3da48c0f31ae45db9cfb2814a259df68e8b32))
+* **opencode:** add plugin generation with shared libraries and test suite ([03df0ea](https://github.com/claudekit/claudekit-engineer/commit/03df0ea8c77e36bb6d465b26c5d88d83f29164ed))
+* **release:** add OpenCode support to release scripts ([587c316](https://github.com/claudekit/claudekit-engineer/commit/587c3165efeedc150ea559efae714ba72248a01a))
+* **scripts:** add OpenCode configuration generator ([74a998e](https://github.com/claudekit/claudekit-engineer/commit/74a998ecc0d77dca8c8d9da14d37a4de53cc3b31))
+
+
+### 📚 Documentation
+
+* **skill:** update planning skill with minor additions ([b5b5b60](https://github.com/claudekit/claudekit-engineer/commit/b5b5b60bd979b3b4a886e7f7711ee4334f50e245))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** extract shared library modules for reusability ([bfe75ea](https://github.com/claudekit/claudekit-engineer/commit/bfe75eaba958f5a7bed70901d4cb42f2354a64b2))
+* **hooks:** migrate to shared library modules and reduce duplication ([d828cac](https://github.com/claudekit/claudekit-engineer/commit/d828cacc17daaa91fc660bcbbaa880af4fe45031))
+* **scripts:** move generate-opencode.py and generate_catalogs.py to root scripts ([bcca1b1](https://github.com/claudekit/claudekit-engineer/commit/bcca1b124345c7c2aab4fc062014f1f38de19abf))
+
+
+### 👷 CI
+
+* **release:** add Python setup for OpenCode generation ([63e1c29](https://github.com/claudekit/claudekit-engineer/commit/63e1c29b794b1928a697f69853899f6d083477bd))
+
+## [2.3.0-beta.13](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.12...v2.3.0-beta.13) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* remove broken refs after context-tracker cleanup ([cf6e177](https://github.com/claudekit/claudekit-engineer/commit/cf6e1776f616ce926ae83f5bf8a35718b36d719e))
+
+## [2.3.0-beta.12](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.11...v2.3.0-beta.12) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** propagate plan context to subagents ([41f2fba](https://github.com/claudekit/claudekit-engineer/commit/41f2fba5fddc4b1b2339a59835da4594b28e1e63)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+
+
+### 📚 Documentation
+
+* **git-commands:** improve commit and merge instructions ([abc37f4](https://github.com/claudekit/claudekit-engineer/commit/abc37f43debdfbdd8a8bf7d74991ad01f766ec09))
+* **skill-commands:** replace claude-code skill with claude-code-guide subagent ([a7d9ea2](https://github.com/claudekit/claudekit-engineer/commit/a7d9ea227d72f7c5cb2331fcf065b6a0a25ebbee))
+
 ## [2.3.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.10...v2.3.0-beta.11) (2026-01-08)
 
 
