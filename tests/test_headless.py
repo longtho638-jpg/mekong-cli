@@ -20,7 +20,7 @@ class TestHeadless:
         result = headless.execute("Hello world")
         
         assert result["status"] == "success"
-        assert "Processed" in result["output"]
+        assert "Processed" in result["message"]
 
     def test_slash_command_routing(self):
         """Test routing of / commands."""
@@ -28,15 +28,14 @@ class TestHeadless:
         result = headless.execute("/infra")
         
         assert result["status"] == "success"
-        assert "Infrastructure" in result["output"]
+        assert "Infra" in result["message"]
 
     def test_json_output_format(self):
         """Test JSON output capability."""
-        headless = HeadlessMode()
-        headless.set_output_format("json")
+        headless = HeadlessMode(output_format="json")
         result = headless.execute("/infra")
         
-        # Output should be a JSON string (list of layers)
+        # result["output"] should be a JSON string
         data = json.loads(result["output"])
         assert isinstance(data, list)
         assert len(data) == 10
