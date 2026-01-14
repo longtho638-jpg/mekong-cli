@@ -1,12 +1,19 @@
 """
 🎚️ Coding Level - Output Style Controller
+==========================================
 
 Switch between coding levels from ELI5 to GOD mode.
-Each level adjusts code complexity and explanation depth.
+Each level adjusts code complexity, explanation depth, and commenting style.
+Controls the AI persona's output format.
 
 Usage:
-    from antigravity.core.coding_level import CodingLevel, set_level
-    set_level(5)  # GOD mode
+    from antigravity.core.coding_level import set_level, get_level_prompt
+    
+    # Set to Senior Dev mode
+    set_level(3)
+    
+    # Get prompt to inject
+    prompt = get_level_prompt()
 """
 
 from typing import Dict, Any, Optional
@@ -33,6 +40,10 @@ class CodingLevel:
     description: str
     style_file: str
     characteristics: Dict[str, Any]
+
+
+# Base path for style definitions
+STYLES_BASE_DIR = Path(".claude/output-styles")
 
 
 # Level Definitions
@@ -118,19 +129,19 @@ _current_level: int = 3
 
 def get_level() -> CodingLevel:
     """Get current coding level."""
-    return LEVELS[_current_level]
+    return LEVELS.get(_current_level, LEVELS[3])
 
 
 def set_level(level: int) -> CodingLevel:
     """Set coding level (0-5)."""
     global _current_level
-    if level < 0 or level > 5:
-        raise ValueError("Level must be between 0 and 5")
+    if not isinstance(level, int) or level < 0 or level > 5:
+        raise ValueError("Level must be an integer between 0 and 5")
     _current_level = level
     return LEVELS[level]
 
 
-def get_level_prompt(level: int = None) -> str:
+def get_level_prompt(level: Optional[int] = None) -> str:
     """Get the coding style prompt for a level."""
     if level is None:
         level = _current_level
@@ -152,7 +163,7 @@ def get_level_prompt(level: int = None) -> str:
 """
 
 
-def load_level_style(level: int = None, base_path: str = ".claude/output-styles") -> str:
+def load_level_style(level: Optional[int] = None, base_path: Path = STYLES_BASE_DIR) -> str:
     """Load the full style definition from file."""
     if level is None:
         level = _current_level
@@ -161,9 +172,16 @@ def load_level_style(level: int = None, base_path: str = ".claude/output-styles"
     if not lvl:
         return ""
     
-    style_path = Path(base_path) / lvl.style_file
+    if isinstance(base_path, str):
+        base_path = Path(base_path)
+        
+    style_path = base_path / lvl.style_file
     if style_path.exists():
-        return style_path.read_text()
+        try:
+            return style_path.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"⚠️ Failed to read style file {style_path}: {e}")
+            return ""
     return ""
 
 

@@ -1,49 +1,66 @@
 """
 🪝 Hooks Manager - Pre/Post Execution Hooks
+===========================================
 
 Orchestrates hooks that run before and after agent actions.
-Integrates with win-win-win-gate, privacy-block, etc.
+Integrates governance gates (WIN-WIN-WIN), security checks (Privacy Block), 
+and workflow automation.
 
 Usage:
     from antigravity.core.hooks_manager import HooksManager
+    
     hooks = HooksManager()
-    hooks.run_pre_hooks("revenue", context)
+    if not hooks.run_pre_hooks("revenue", context):
+        print("Aborted by hook")
 """
 
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from pathlib import Path
-import subprocess
 import json
+import re
+
+# Base path for hooks
+HOOKS_BASE_DIR = Path(".claude/hooks")
 
 
 @dataclass
 class Hook:
-    """Single hook definition."""
+    """
+    Single hook definition. 
+    
+    Attributes:
+        name: Unique identifier for the hook
+        file: Relative path to the hook script (e.g., .cjs or .py)
+        trigger: When it runs (pre/post)
+        category: Domain category (revenue, code, research, session)
+        blocking: If True, failure halts the entire workflow
+    """
     name: str
-    file: str
-    trigger: str  # pre, post
-    category: str  # revenue, code, research, session
-    blocking: bool = True  # If True, failure blocks execution
+    file: Path
+    trigger: str
+    category: str
+    blocking: bool = True
 
 
 # Hook Registry
+# Maps trigger_point -> List[Hook]
 HOOKS: Dict[str, List[Hook]] = {
     "pre_revenue": [
-        Hook("win-win-win-gate", ".claude/hooks/win-win-win-gate.cjs", "pre", "revenue", blocking=True),
+        Hook("win-win-win-gate", HOOKS_BASE_DIR / "win-win-win-gate.cjs", "pre", "revenue", blocking=True),
     ],
     "pre_code": [
-        Hook("dev-rules-reminder", ".claude/hooks/dev-rules-reminder.cjs", "pre", "code", blocking=False),
-        Hook("privacy-block", ".claude/hooks/privacy-block.cjs", "pre", "code", blocking=True),
+        Hook("dev-rules-reminder", HOOKS_BASE_DIR / "dev-rules-reminder.cjs", "pre", "code", blocking=False),
+        Hook("privacy-block", HOOKS_BASE_DIR / "privacy-block.cjs", "pre", "code", blocking=True),
     ],
     "pre_research": [
-        Hook("scout-block", ".claude/hooks/scout-block.cjs", "pre", "research", blocking=False),
+        Hook("scout-block", HOOKS_BASE_DIR / "scout-block.cjs", "pre", "research", blocking=False),
     ],
     "session_start": [
-        Hook("session-init", ".claude/hooks/session-init.cjs", "pre", "session", blocking=False),
+        Hook("session-init", HOOKS_BASE_DIR / "session-init.cjs", "pre", "session", blocking=False),
     ],
     "spawn_subagent": [
-        Hook("subagent-init", ".claude/hooks/subagent-init.cjs", "pre", "subagent", blocking=False),
+        Hook("subagent-init", HOOKS_BASE_DIR / "subagent-init.cjs", "pre", "subagent", blocking=False),
     ],
 }
 
@@ -72,16 +89,21 @@ class HooksManager:
     Orchestrates pre/post execution hooks for all agent actions.
     """
     
-    def __init__(self, base_path: str = "."):
+    def __init__(self, base_path: Union[str, Path] = "."):
         self.base_path = Path(base_path)
         self.enabled = True
-        self.results: List[Dict] = []
+        self.results: List[Dict[str, Any]] = []
     
-    def run_pre_hooks(self, suite: str, context: Dict[str, Any] = None) -> bool:
+    def run_pre_hooks(self, suite: str, context: Optional[Dict[str, Any]] = None) -> bool:
         """
         Run pre-execution hooks for a suite.
         
-        Returns True if all blocking hooks pass.
+        Args:
+            suite: The command suite being executed (e.g., 'revenue')
+            context: Data context to pass to hooks
+            
+        Returns:
+            True if all blocking hooks pass, False otherwise.
         """
         triggers = SUITE_TRIGGERS.get(suite, [])
         
@@ -92,14 +114,16 @@ class HooksManager:
                 self.results.append(result)
                 
                 if hook.blocking and not result["passed"]:
-                    print(f"❌ Hook blocked: {hook.name}")
+                    print(f"❌ Hook blocked execution: {hook.name}")
+                    print(f"   Reason: {result.get('output', 'Unknown error')}")
                     return False
         
         return True
     
     def run_win3_gate(self, deal: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Run WIN-WIN-WIN validation gate.
+        Run WIN-WIN-WIN validation gate (Python Implementation).
+        Validates that all 3 parties (Anh, Agency, Client) have sufficient wins.
         """
         result = {
             "valid": True,
@@ -111,19 +135,25 @@ class HooksManager:
         parties = ["anh", "agency", "client"]
         for party in parties:
             party_data = deal.get(party, {})
+            # Score is count of truthy values in the party's dict
             score = sum(1 for v in party_data.values() if v)
-            passed = score >= 2
+            passed = score >= 2 # Threshold: at least 2 wins per party
             result["scores"][party] = {"score": score, "passed": passed}
+            
             if not passed:
                 result["valid"] = False
         
         if not result["valid"]:
-            result["message"] = "⚠️ WIN-WIN-WIN alignment needed"
+            result["message"] = "⚠️ WIN-WIN-WIN alignment failed. Each party needs at least 2 wins."
         
         return result
     
-    def _run_hook(self, hook: Hook, context: Dict = None) -> Dict:
-        """Run a single hook."""
+    def _run_hook(self, hook: Hook, context: Optional[Dict] = None) -> Dict[str, Any]:
+        """
+        Run a single hook.
+        Currently simulates JS hooks with Python logic for performance.
+        """
+        # Ensure hook file path is resolved relative to project root
         hook_path = self.base_path / hook.file
         
         result = {
@@ -133,27 +163,50 @@ class HooksManager:
             "error": None
         }
         
-        # For JS hooks, we simulate the check
-        # In real impl, would run: node hook_path --context json
-        if hook.name == "win-win-win-gate" and context:
-            win3_result = self.run_win3_gate(context.get("deal", {}))
-            result["passed"] = win3_result["valid"]
-            result["output"] = win3_result["message"]
-        elif hook.name == "privacy-block":
-            # Check for sensitive data
-            if context:
-                text = str(context)
-                if any(x in text.lower() for x in ["password", "secret", "api_key"]):
-                    result["passed"] = False
-                    result["output"] = "🔒 Sensitive data detected"
-        else:
-            # Default: pass
-            result["passed"] = True
+        # Simulated Hook Execution
+        # In a full Node.js environment, we would subprocess.run(['node', hook_path])
+        try:
+            if hook.name == "win-win-win-gate":
+                if context and "deal" in context:
+                    win3_result = self.run_win3_gate(context.get("deal", {}))
+                    result["passed"] = win3_result["valid"]
+                    result["output"] = win3_result["message"]
+                else:
+                    # Pass if no deal context provided (or fail safe?)
+                    result["passed"] = True
+                    result["output"] = "Skipped (No deal context)"
+
+            elif hook.name == "privacy-block":
+                # Check for sensitive data patterns
+                if context:
+                    text_dump = json.dumps(context, default=str).lower()
+                    
+                    # Simple regex patterns for secrets
+                    patterns = [
+                        r"sk-[a-zA-Z0-9]{20,}",  # OpenAI style keys
+                        r"ghp_[a-zA-Z0-9]{20,}", # GitHub tokens
+                        r"password\s*[:=]\s*['\"][^'\"]+['\"]" # Simple password fields
+                    ]
+                    
+                    for pattern in patterns:
+                        if re.search(pattern, text_dump):
+                            result["passed"] = False
+                            result["output"] = "🔒 Sensitive data detected (API Key or Password)"
+                            break
+                            
+            # Other hooks are currently pass-through placeholders
+            else:
+                result["passed"] = True
+
+        except Exception as e:
+            result["passed"] = False
+            result["error"] = str(e)
+            result["output"] = f"Hook execution failed: {e}"
         
         return result
     
     def get_hooks_for_suite(self, suite: str) -> List[Hook]:
-        """Get all hooks that will run for a suite."""
+        """Get all hooks that will run for a specific suite."""
         triggers = SUITE_TRIGGERS.get(suite, [])
         hooks = []
         for trigger in triggers:
@@ -161,7 +214,7 @@ class HooksManager:
         return hooks
     
     def print_hooks_status(self):
-        """Print hooks status."""
+        """Print detailed hooks status."""
         print("\n🪝 HOOKS STATUS")
         print("═" * 50)
         
@@ -172,13 +225,16 @@ class HooksManager:
         
         print("📋 HOOKS BY TRIGGER:")
         for trigger, hooks in HOOKS.items():
-            print(f"   {trigger}: {[h.name for h in hooks]}")
+            print(f"   {trigger}:")
+            for h in hooks:
+                status = "🛑 Blocking" if h.blocking else "ℹ️ Info"
+                print(f"      • {h.name:<20} [{status}]")
         
         print("═" * 50)
 
 
 def validate_deal(deal: Dict) -> bool:
-    """Quick deal validation."""
+    """Quick helper for deal validation."""
     manager = HooksManager()
     result = manager.run_win3_gate(deal)
     return result["valid"]

@@ -1,24 +1,36 @@
 """
 📜 Rules Loader - Auto-Apply Rules to Agents
+============================================
 
 Loads and applies rules from .claude/rules to appropriate agents.
+Ensures compliance with AgencyOS governance and coding standards.
 
 Usage:
-    from antigravity.core.rules_loader import load_rules_for_agent, RULE_MAPPING
-    rules = load_rules_for_agent("fullstack-developer")
+    from antigravity.core.rules_loader import load_rules_for_agent
+    
+    # Get rules as text
+    rules_dict = load_rules_for_agent("fullstack-developer")
+    
+    # Print matrix
+    print_rules_matrix()
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Set, Optional
 from pathlib import Path
 
+# Base path for rules
+RULES_BASE_DIR = Path(".claude/rules")
 
 # Rule → Agent Mapping
+# Defines which rules apply to which agents
 RULE_MAPPING: Dict[str, List[str]] = {
     "binh-phap-strategy.md": [
         "binh-phap-strategist", 
         "deal-closer", 
         "money-maker",
         "growth-strategist",
+        "client-magnet",
+        "revenue-engine"
     ],
     "development-rules.md": [
         "fullstack-developer",
@@ -26,14 +38,19 @@ RULE_MAPPING: Dict[str, List[str]] = {
         "debugger",
         "code-reviewer",
         "database-admin",
+        "mcp-manager",
+        "git-manager"
     ],
     "documentation-management.md": [
         "docs-manager",
         "journal-writer",
+        "content-factory"
     ],
     "orchestration-protocol.md": [
         "project-manager",
         "planner",
+        "scout",
+        "brainstormer"
     ],
     "primary-workflow.md": [
         # Applied to ALL agents
@@ -43,55 +60,85 @@ RULE_MAPPING: Dict[str, List[str]] = {
         "fullstack-developer",
         "ui-ux-designer",
         "tester",
+        "frontend-developer" # Future agent
     ],
 }
 
+# Reverse mapping: Agent → Rules (Computed once)
+AGENT_RULES: Dict[str, Set[str]] = {}
 
-# Reverse mapping: Agent → Rules
-AGENT_RULES: Dict[str, List[str]] = {}
-for rule, agents in RULE_MAPPING.items():
-    for agent in agents:
-        if agent not in AGENT_RULES:
-            AGENT_RULES[agent] = []
-        AGENT_RULES[agent].append(rule)
+def _build_reverse_mapping():
+    """Build the AGENT_RULES cache."""
+    for rule, agents in RULE_MAPPING.items():
+        for agent in agents:
+            if agent not in AGENT_RULES:
+                AGENT_RULES[agent] = set()
+            AGENT_RULES[agent].add(rule)
+
+# Initialize mapping on import
+_build_reverse_mapping()
 
 
 def get_rules_for_agent(agent: str) -> List[str]:
-    """Get all rules for an agent."""
-    rules = AGENT_RULES.get(agent, [])
-    # Add rules that apply to all agents
-    rules.extend(AGENT_RULES.get("*", []))
-    return list(set(rules))
+    """
+    Get all rule filenames for an agent.
+    Includes global rules (assigned to "*").
+    """
+    rules = AGENT_RULES.get(agent, set()).copy()
+    # Add global rules
+    rules.update(AGENT_RULES.get("*", set()))
+    return sorted(list(rules))
 
 
-def load_rules_for_agent(agent: str, base_path: str = ".claude/rules") -> Dict[str, str]:
+def load_rules_for_agent(agent: str, base_path: Path = RULES_BASE_DIR) -> Dict[str, str]:
     """
     Load rule content for an agent.
     
-    Returns dict of rule_name -> rule_content
+    Args:
+        agent: Agent ID (e.g. 'fullstack-developer')
+        base_path: Directory containing rule files
+        
+    Returns:
+        Dict[rule_filename, rule_content]
     """
     rule_names = get_rules_for_agent(agent)
     loaded = {}
     
+    # Ensure base_path is a Path object
+    if isinstance(base_path, str):
+        base_path = Path(base_path)
+
     for rule in rule_names:
-        rule_path = Path(base_path) / rule
+        rule_path = base_path / rule
         if rule_path.exists():
-            loaded[rule] = rule_path.read_text()
+            try:
+                loaded[rule] = rule_path.read_text(encoding="utf-8")
+            except Exception as e:
+                print(f"⚠️ Failed to read rule {rule}: {e}")
+        else:
+            # Silent fail or log warning if strict mode?
+            pass
     
     return loaded
 
 
-def get_rule_summary(rule_name: str, base_path: str = ".claude/rules") -> str:
+def get_rule_summary(rule_name: str, base_path: Path = RULES_BASE_DIR) -> str:
     """Get first 3 lines of a rule as summary."""
-    rule_path = Path(base_path) / rule_name
+    if isinstance(base_path, str):
+        base_path = Path(base_path)
+        
+    rule_path = base_path / rule_name
     if rule_path.exists():
-        lines = rule_path.read_text().split('\n')[:3]
-        return '\n'.join(lines)
+        try:
+            lines = rule_path.read_text(encoding="utf-8").split('\n')[:3]
+            return '\n'.join(lines)
+        except Exception:
+            return "Error reading rule"
     return "Rule not found"
 
 
 def get_total_rules() -> int:
-    """Get total number of rules."""
+    """Get total number of configured rules."""
     return len(RULE_MAPPING)
 
 
@@ -110,9 +157,15 @@ def print_rules_matrix():
     
     print("📋 RULES BY FILE:")
     for rule, agents in RULE_MAPPING.items():
-        agents_str = ', '.join(agents[:3])
-        if len(agents) > 3:
-            agents_str += f' +{len(agents)-3} more'
+        # Handle wildcard
+        if "*" in agents:
+             agents_display = ["ALL AGENTS"]
+        else:
+            agents_display = agents
+            
+        agents_str = ", ".join(agents_display[:3])
+        if len(agents_display) > 3:
+            agents_str += f' +{len(agents_display)-3} more'
         print(f"   {rule}")
         print(f"      └── {agents_str}")
     print()
@@ -125,7 +178,8 @@ def print_agent_rules(agent: str):
     print("─" * 40)
     if rules:
         for rule in rules:
-            print(f"   • {rule}")
+            summary = get_rule_summary(rule).split('\n')[0].strip('# ').strip()
+            print(f"   • {rule:<30} | {summary}")
     else:
         print("   No rules assigned")
     print()
