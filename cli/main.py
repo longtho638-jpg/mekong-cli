@@ -1009,6 +1009,145 @@ def run_customer_profile():
     print("   Export: plans/customer_profile.md")
 
 
+def run_quote():
+    """💰 Quick quote generator - no arguments needed."""
+    print("\n💰 QUICK QUOTE")
+    print("═" * 60)
+    
+    try:
+        from antigravity.core.money_maker import MoneyMaker, ServiceTier
+        
+        mm = MoneyMaker()
+        
+        # Get client from args or use default
+        if len(sys.argv) > 2:
+            client = " ".join(sys.argv[2:])
+        else:
+            client = "Demo Corp"
+        
+        # Show pricing menu
+        print(mm.get_pricing_menu())
+        
+        # Generate quote with popular chapters
+        quote = mm.generate_quote(client, [1, 3, 5], ServiceTier.WARRIOR)
+        print(mm.format_quote(quote))
+        
+        # Validate
+        win3 = mm.validate_win3(quote)
+        print(f"\n✅ WIN-WIN-WIN: {win3.alignment_score}/100")
+        
+    except ImportError as e:
+        print(f"❌ Error: {e}")
+
+
+def run_revenue():
+    """💰 Revenue Hub - all money commands in one place."""
+    print("\n💰 REVENUE HUB")
+    print("═" * 60)
+    
+    # Get subcommand
+    subcommand = sys.argv[2] if len(sys.argv) > 2 else "menu"
+    
+    if subcommand == "quote":
+        run_quote()
+    elif subcommand == "stats":
+        try:
+            from antigravity.core.revenue_engine import RevenueEngine
+            engine = RevenueEngine()
+            stats = engine.get_stats()
+            goal = engine.get_goal_dashboard()
+            
+            print(f"   MRR: ${stats['mrr']:,.0f}")
+            print(f"   ARR: ${stats['arr']:,.0f}")
+            print(f"   $1M Goal: {goal['progress_percent']:.1f}%")
+        except ImportError:
+            print("   Demo Mode - Revenue: $50,000 MRR")
+    else:
+        print("""
+┌───────────────────────────────────────────────────────────┐
+│  💰 REVENUE HUB                                           │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  Commands:                                                │
+│  revenue quote     → Generate quote                       │
+│  revenue invoice   → Create invoice                       │
+│  revenue proposal  → Generate proposal                    │
+│  revenue stats     → Dashboard                            │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+        """)
+
+
+def run_dev():
+    """🛠️ Dev Hub - cook, test, ship in one place."""
+    print("\n🛠️ DEV HUB")
+    print("═" * 60)
+    
+    # Get subcommand
+    subcommand = sys.argv[2] if len(sys.argv) > 2 else "status"
+    
+    if subcommand == "cook":
+        run_cook()
+    elif subcommand == "test":
+        run_test()
+    elif subcommand == "ship":
+        run_ship()
+    else:
+        from pathlib import Path
+        print("""
+┌───────────────────────────────────────────────────────────┐
+│  🛠️  DEV HUB                                              │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  Commands:                                                │
+│  dev cook     → Build feature                             │
+│  dev test     → Run tests                                 │
+│  dev ship     → Deploy                                    │
+│  dev status   → Dashboard                                 │
+│                                                           │
+├───────────────────────────────────────────────────────────┤""")
+        plan = Path("plans/task_plan.md")
+        if plan.exists():
+            print("│  📋 Active Plan: plans/task_plan.md                      │")
+        else:
+            print("│  📋 No active plan                                       │")
+        print("└───────────────────────────────────────────────────────────┘")
+
+
+def run_strategy():
+    """🏯 Strategy Hub - Binh Pháp planning commands."""
+    print("\n🏯 STRATEGY HUB")
+    print("═" * 60)
+    
+    # Get subcommand
+    subcommand = sys.argv[2] if len(sys.argv) > 2 else "win3"
+    
+    if subcommand == "analyze":
+        run_binh_phap()
+    elif subcommand == "plan":
+        run_plan()
+    else:
+        print("""
+┌───────────────────────────────────────────────────────────┐
+│  🏯 STRATEGY HUB                                          │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  Commands:                                                │
+│  strategy analyze  → Binh Pháp analysis                   │
+│  strategy plan     → Create plan                          │
+│  strategy win3     → WIN-WIN-WIN check                    │
+│                                                           │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  WIN-WIN-WIN ALIGNMENT:                                   │
+│  👑 ANH (Owner)     ✅ Equity + Cash flow                 │
+│  🏢 AGENCY          ✅ Moat + Process                     │
+│  🚀 CLIENT          ✅ 10x Value                          │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+        """)
+
+
 def run_agencyos():
     """
     🏯 UNIFIED AGENCYOS FLOW
@@ -1116,6 +1255,12 @@ def main():
         # Unified Flow
         "agencyos": run_agencyos,
         "aos": run_agencyos,  # Alias
+        # Command Hubs (NEW)
+        "quote": run_quote,
+        "revenue": run_revenue,
+        "rev": run_revenue,  # Alias
+        "dev": run_dev,
+        "strategy": run_strategy,
         "help": print_help,
     }
     
