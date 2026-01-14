@@ -7,29 +7,59 @@ Create an isolated git worktree for parallel feature development.
 
 ## Workflow
 
-### Step 1: Get Repository Info
+### Step 1: Gather Repository Context
 
+Run these commands to understand the full repo structure:
+
+```bash
+# Get current repo info
+echo "=== GIT ROOT ===" && git rev-parse --show-toplevel
+echo "=== SUPERPROJECT ===" && git rev-parse --show-superproject-working-tree 2>/dev/null || echo "none"
+echo "=== GITMODULES ===" && cat .gitmodules 2>/dev/null | head -30 || echo "none"
+echo "=== EXISTING WORKTREES ===" && ls -la "$(git rev-parse --show-toplevel)/../worktrees" 2>/dev/null || echo "none"
+```
+
+### Step 2: Determine Worktree Location (YOU DECIDE)
+
+Based on gathered context, **you must decide** the worktree root directory.
+
+**Decision Rules (in priority order):**
+
+1. **Superproject detected?** → Use `<superproject>/worktrees/`
+   - If superproject output is NOT "none", that's your target
+   - This ensures all submodule worktrees go to the parent monorepo
+
+2. **Has .gitmodules?** → Use `<git-root>/worktrees/`
+   - This repo IS a monorepo, keep worktrees inside
+
+3. **Standalone repo** → Use `<git-root>/../worktrees/`
+   - Place worktrees as sibling directory
+
+**Your decision should be an absolute path.**
+
+### Step 3: Detect Branch Prefix
+
+From user's description, detect the prefix:
+- Keywords "fix", "bug", "error", "issue" → `fix`
+- Keywords "refactor", "restructure", "rewrite" → `refactor`
+- Keywords "docs", "documentation", "readme" → `docs`
+- Keywords "test", "spec", "coverage" → `test`
+- Keywords "chore", "cleanup", "deps" → `chore`
+- Keywords "perf", "performance", "optimize" → `perf`
+- Everything else → `feat`
+
+### Step 4: Convert Description to Slug
+
+- "add authentication system" → `add-auth`
+- "fix login bug" → `login-bug`
+- Remove filler words, kebab-case, max 50 chars
+
+### Step 5: Handle Monorepo Projects
+
+If `.gitmodules` exists, get project list:
 ```bash
 node .claude/scripts/worktree.cjs info --json
 ```
-
-**Response fields:**
-- `repoType`: "monorepo" or "standalone"
-- `baseBranch`: detected base branch
-- `projects`: array of {name, path} for monorepo
-- `envFiles`: array of .env* files found
-- `dirtyState`: boolean
-
-### Step 2: Gather Info via AskUserQuestion
-
-**Detect branch prefix from user's description:**
-- Keywords "fix", "bug", "error", "issue" → prefix = `fix`
-- Keywords "refactor", "restructure", "rewrite" → prefix = `refactor`
-- Keywords "docs", "documentation", "readme" → prefix = `docs`
-- Keywords "test", "spec", "coverage" → prefix = `test`
-- Keywords "chore", "cleanup", "deps" → prefix = `chore`
-- Keywords "perf", "performance", "optimize" → prefix = `perf`
-- Everything else → prefix = `feat`
 
 **For MONOREPO:** Use AskUserQuestion if project not specified:
 ```javascript
@@ -43,96 +73,68 @@ AskUserQuestion({
 })
 ```
 
-**Env files:** Handled automatically - `.env*.example` templates are auto-copied with `.example` suffix removed.
+### Step 6: Execute with Your Decision
 
-### Step 3: Convert Description to Slug
-
-- "add authentication system" → `add-auth`
-- "fix login bug" → `login-bug`
-- Remove filler words, kebab-case, max 50 chars
-
-### Step 4: Execute Command
+Pass your decided worktree root via `--worktree-root`:
 
 **Monorepo:**
 ```bash
-node .claude/scripts/worktree.cjs create "<PROJECT>" "<SLUG>" --prefix <TYPE>
+node .claude/scripts/worktree.cjs create "<PROJECT>" "<SLUG>" --prefix <TYPE> --worktree-root "<YOUR_DECIDED_PATH>"
 ```
 
 **Standalone:**
 ```bash
-node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE>
+node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE> --worktree-root "<YOUR_DECIDED_PATH>"
 ```
 
 **Options:**
 - `--prefix` - Branch type: feat|fix|refactor|docs|test|chore|perf
-- `--env` - Comma-separated .env files to copy (legacy)
+- `--worktree-root` - **Your decided worktree directory (absolute path)**
 - `--json` - Output JSON for parsing
 - `--dry-run` - Preview without executing
 
-**Auto-behaviors:**
-- **Env templates:** `.env*.example` files auto-copied with suffix removed
+### Step 7: Install Dependencies
 
-### Step 5: Install Dependencies (AI-Guided)
-
-Based on your existing knowledge of the project, determine and run the appropriate install command in background:
-
+Based on project context, run install in background:
 ```bash
-# Examples - use your project context to determine
-bun install          # bun.lock present
-pnpm install         # pnpm-lock.yaml present
-yarn install         # yarn.lock present
-npm install          # package-lock.json or package.json
-poetry install       # poetry.lock or pyproject.toml
-pip install -r requirements.txt  # requirements.txt
-cargo build          # Cargo.toml
-go mod download      # go.mod
-bundle install       # Gemfile
-composer install     # composer.json
+bun install / pnpm install / npm install / yarn install / etc.
 ```
 
-**Key:** You already have project context from reading files. Use that knowledge instead of re-detecting.
-
-## Commands
+## Commands Reference
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `create` | `create [project] <feature>` | Create new worktree |
+| `create` | `create [project] <feature> --worktree-root <path>` | Create new worktree |
 | `remove` | `remove <name-or-path>` | Remove worktree and branch |
-| `info` | `info` | Get repo info |
+| `info` | `info` | Get repo info (shows default location) |
 | `list` | `list` | List existing worktrees |
-
-## Error Codes
-
-| Code | Meaning | Action |
-|------|---------|--------|
-| `MISSING_ARGS` | Missing project/feature for monorepo | Ask for both |
-| `MISSING_FEATURE` | No feature name (standalone) | Ask for feature |
-| `PROJECT_NOT_FOUND` | Project not in .gitmodules | Show available projects |
-| `MULTIPLE_PROJECTS_MATCH` | Ambiguous project name | Use AskUserQuestion |
-| `MULTIPLE_WORKTREES_MATCH` | Ambiguous worktree for remove | Use AskUserQuestion |
-| `BRANCH_CHECKED_OUT` | Branch in use elsewhere | Suggest different name |
-| `WORKTREE_EXISTS` | Path already exists | Suggest use or remove |
-| `WORKTREE_CREATE_FAILED` | Git command failed | Show git error |
-| `WORKTREE_REMOVE_FAILED` | Cannot remove worktree | Check uncommitted changes |
 
 ## Example Session
 
 ```
 User: /worktree fix the login validation bug
 
-Claude: [Runs: node .claude/scripts/worktree.cjs info --json]
-        [Detects: standalone repo, envFiles: [".env.example"]]
+Claude: [Runs context gathering commands]
+        git root: /home/user/my-project
+        superproject: /home/user/monorepo  <-- DETECTED!
+
+        [DECISION: superproject exists, use /home/user/monorepo/worktrees/]
+
         [Detects prefix from "fix" keyword: fix]
         [Converts slug: "login-validation-bug"]
-        [Runs: node .claude/scripts/worktree.cjs create "login-validation-bug" --prefix fix]
 
-Output: ✅ Worktree created successfully!
-        Path: ../worktrees/myrepo-login-validation-bug
-        Branch: fix/login-validation-bug
+        [Runs: node .claude/scripts/worktree.cjs create "login-validation-bug" \
+               --prefix fix --worktree-root "/home/user/monorepo/worktrees"]
 
-        📄 Environment templates copied:
-           ✓ .env.example → .env
-
-Claude: [Knows this is a Node.js project with pnpm from earlier context]
-        [Runs: pnpm install in background]
+Output: Worktree created at /home/user/monorepo/worktrees/my-project-login-validation-bug
+        Source: --worktree-root flag
 ```
+
+## Why You Decide
+
+The script has fallback logic, but **you have broader context**:
+- You can see the user's directory structure
+- You know their habits from conversation history
+- You can reason through edge cases the script can't anticipate
+
+Always pass `--worktree-root` with your explicit decision for transparency.

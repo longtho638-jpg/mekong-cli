@@ -11,10 +11,11 @@
  *   list                        List existing worktrees
  *
  * Options:
- *   --prefix <type>    Branch prefix (feat|fix|refactor|docs|test|chore|perf)
- *   --json             Output in JSON format for LLM consumption
- *   --env <files>      Comma-separated list of .env files to copy (legacy)
- *   --dry-run          Show what would be done without executing
+ *   --prefix <type>        Branch prefix (feat|fix|refactor|docs|test|chore|perf)
+ *   --worktree-root <path> Explicit worktree directory (Claude's decision)
+ *   --json                 Output in JSON format for LLM consumption
+ *   --env <files>          Comma-separated list of .env files to copy (legacy)
+ *   --dry-run              Show what would be done without executing
  */
 
 const { execSync, spawnSync } = require('child_process');
@@ -52,6 +53,14 @@ if (envIndex > -1) {
 const dryRunIndex = args.indexOf('--dry-run');
 const dryRun = dryRunIndex > -1;
 if (dryRunIndex > -1) args.splice(dryRunIndex, 1);
+
+// --worktree-root: explicit override for worktree location (Claude's decision)
+const worktreeRootIndex = args.indexOf('--worktree-root');
+let explicitWorktreeRoot = null;
+if (worktreeRootIndex > -1) {
+  explicitWorktreeRoot = args[worktreeRootIndex + 1];
+  args.splice(worktreeRootIndex, 2);
+}
 
 const command = args[0];
 // For create: args[1] is project (or feature for standalone), args[2] is feature
@@ -207,7 +216,12 @@ function findTopmostSuperproject(gitRoot) {
 // 2. Topmost superproject's worktrees/ (for submodules)
 // 3. Monorepo's internal worktrees/ (has .gitmodules)
 // 4. Sibling worktrees/ (standalone repos)
-function getWorktreeRoot(gitRoot, isMonorepo) {
+function getWorktreeRoot(gitRoot, isMonorepo, explicitRoot = null) {
+  // Priority 0: Explicit --worktree-root flag (Claude's decision)
+  if (explicitRoot) {
+    return { dir: path.resolve(explicitRoot), source: '--worktree-root flag' };
+  }
+
   // Priority 1: Environment variable override
   const envRoot = process.env.WORKTREE_ROOT;
   if (envRoot) {
@@ -519,7 +533,8 @@ function cmdCreate() {
   }
 
   // Determine worktree path using smart root detection
-  const worktreeRoot = getWorktreeRoot(gitRoot, isMonorepo);
+  // explicitWorktreeRoot comes from --worktree-root flag (Claude's decision)
+  const worktreeRoot = getWorktreeRoot(gitRoot, isMonorepo, explicitWorktreeRoot);
   const worktreesDir = worktreeRoot.dir;
 
   // Build worktree name: always include repo name for clarity
