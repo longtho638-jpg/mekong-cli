@@ -2,103 +2,122 @@
 🎓 Education Hub - Learning Center
 =====================================
 
-Central hub connecting all Education roles.
+Central hub connecting all Education roles with their operational tools.
 
 Integrates:
-- Course Manager (course_manager.py)
-- Knowledge Base (knowledge_base.py) - existing
-- Training Tracker (training_tracker.py)
+- Course Manager
+- Knowledge Base
+- Training Tracker
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import role modules
-from core.course_manager import CourseManager
-from core.knowledge_base import KnowledgeBase
-from core.training_tracker import TrainingTracker
+# Import existing modules with fallback for direct testing
+try:
+    from core.course_manager import CourseManager
+    from core.knowledge_base import KnowledgeBase
+    from core.training_tracker import TrainingTracker
+except ImportError:
+    from course_manager import CourseManager
+    from knowledge_base import KnowledgeBase
+    from training_tracker import TrainingTracker
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class EducationMetrics:
-    """Department-wide metrics."""
-    courses_available: int
-    total_enrollments: int
-    completion_rate: float
-    articles_published: int
-    learning_paths: int
-    certifications: int
-    avg_progress: float
+    """Department-wide metrics container."""
+    courses_available: int = 0
+    total_enrollments: int = 0
+    completion_rate: float = 0.0
+    articles_published: int = 0
+    learning_paths: int = 0
+    certifications: int = 0
+    avg_progress: float = 0.0
 
 
 class EducationHub:
     """
-    Education Hub.
+    Education Hub System.
     
-    Team learning center.
+    Orchestrates team training, knowledge sharing, and competency tracking.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         
-        # Initialize role modules
-        self.courses = CourseManager(agency_name)
-        self.knowledge = KnowledgeBase(agency_name)
-        self.training = TrainingTracker(agency_name)
+        logger.info(f"Initializing Education Hub for {agency_name}")
+        try:
+            self.courses = CourseManager(agency_name)
+            self.knowledge = KnowledgeBase(agency_name)
+            self.training = TrainingTracker(agency_name)
+        except Exception as e:
+            logger.error(f"Education Hub initialization failed: {e}")
+            raise
     
     def get_department_metrics(self) -> EducationMetrics:
-        """Get department-wide metrics."""
-        course_stats = self.courses.get_stats()
-        training_stats = self.training.get_stats()
+        """Aggregate data from all learning and development sub-modules."""
+        metrics = EducationMetrics()
         
-        # Knowledge base uses resources dict directly
-        kb_articles = len(self.knowledge.resources) if hasattr(self.knowledge, 'resources') else 0
-        
-        return EducationMetrics(
-            courses_available=course_stats.get("courses", 0),
-            total_enrollments=course_stats.get("enrollments", 0),
-            completion_rate=course_stats.get("completion_rate", 0),
-            articles_published=kb_articles,
-            learning_paths=training_stats.get("paths", 0),
-            certifications=training_stats.get("certifications", 0),
-            avg_progress=training_stats.get("avg_progress", 0)
-        )
+        try:
+            # 1. Course metrics
+            c_stats = self.courses.get_stats()
+            metrics.courses_available = c_stats.get("courses", 0)
+            metrics.total_enrollments = c_stats.get("enrollments", 0)
+            metrics.completion_rate = float(c_stats.get("completion_rate", 0.0))
+            
+            # 2. Knowledge metrics
+            metrics.articles_published = len(getattr(self.knowledge, 'resources', {}))
+            
+            # 3. Training metrics
+            t_stats = self.training.get_stats()
+            metrics.learning_paths = t_stats.get("paths", 0)
+            metrics.certifications = t_stats.get("certifications", 0)
+            metrics.avg_progress = float(t_stats.get("avg_progress", 0.0))
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating Education metrics: {e}")
+            
+        return metrics
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render the Education Hub Dashboard."""
+        m = self.get_department_metrics()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎓 EDUCATION HUB                                         ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  🎓 EDUCATION HUB{' ' * 41}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📚 Courses Available:  {metrics.courses_available:>5}                          ║",
-            f"║    👥 Total Enrollments:  {metrics.total_enrollments:>5}                          ║",
-            f"║    ✅ Completion Rate:    {metrics.completion_rate:>5.0f}%                         ║",
-            f"║    📖 Articles Published: {metrics.articles_published:>5}                          ║",
-            f"║    📚 Learning Paths:     {metrics.learning_paths:>5}                          ║",
-            f"║    🏆 Certifications:     {metrics.certifications:>5}                          ║",
-            f"║    📈 Avg Progress:       {metrics.avg_progress:>5.0f}%                         ║",
+            "║  📊 LEARNING & DEVELOPMENT METRICS                        ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📚 Courses Available:  {m.courses_available:>5}                          ║",
+            f"║    👥 Total Enrollments:  {m.total_enrollments:>5}                          ║",
+            f"║    ✅ Completion Rate:    {m.completion_rate:>5.0f}%                         ║",
+            f"║    📖 Articles Published: {m.articles_published:>5}                          ║",
+            f"║    📚 Learning Paths:     {m.learning_paths:>5}                          ║",
+            f"║    🏆 Certifications:     {m.certifications:>5}                          ║",
+            f"║    📈 Avg Progress:       {m.avg_progress:>5.0f}%                         ║",
             "║                                                           ║",
-            "║  🔗 EDUCATION ROLES                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    📚 Course Manager    → LMS, lessons, enrollments      ║",
-            "║    📖 Knowledge Base    → Articles, FAQs, docs           ║",
-            "║    🎯 Training Tracker  → Paths, certs, team progress    ║",
+            "║  🔗 SERVICE INTEGRATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    📚 LMS (Course Manager) │ 📖 KB (Knowledge Base)       ║",
+            "║    🎯 Tracker (Training Tracker)                          ║",
             "║                                                           ║",
-            "║  📋 EDUCATION TEAM                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📚 Courses          │ {metrics.courses_available} courses, {metrics.total_enrollments} enrolled    ║",
-            f"║    📖 Knowledge        │ {metrics.articles_published} articles published    ║",
-            f"║    🎯 Training         │ {metrics.learning_paths} paths, {metrics.certifications} certs        ║",
+            "║  📋 TEAM SNAPSHOT                                         ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📚 Courses  │ {m.courses_available} courses, {m.total_enrollments} enrolled           ║",
+            f"║    📖 Knowledge│ {m.articles_published} articles published                   ║",
+            f"║    🎯 Training │ {m.learning_paths} paths, {m.certifications} certs               ║",
             "║                                                           ║",
-            "║  [📚 Courses]  [📖 Knowledge]  [🎯 Training]              ║",
+            "║  [📚 Catalog]  [📖 Library]  [🎯 Paths]  [⚙️ Settings]    ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Never stop learning!            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Growth!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -107,10 +126,11 @@ class EducationHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = EducationHub("Saigon Digital Hub")
-    
-    print("🎓 Education Hub")
+    print("🎓 Initializing Education Hub...")
     print("=" * 60)
-    print()
     
-    print(hub.format_hub_dashboard())
+    try:
+        hub = EducationHub("Saigon Digital Hub")
+        print("\n" + hub.format_hub_dashboard())
+    except Exception as e:
+        logger.error(f"Hub Error: {e}")

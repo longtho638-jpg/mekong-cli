@@ -188,6 +188,22 @@ class CourseManager:
                     return False
         return False
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate LMS performance statistics."""
+        total_e = len(self.enrollments)
+        completed = sum(1 for e in self.enrollments if e.status == EnrollmentStatus.COMPLETED)
+        in_progress = sum(1 for e in self.enrollments if e.status == EnrollmentStatus.IN_PROGRESS)
+        avg_progress = sum(e.progress for e in self.enrollments) / total_e if total_e else 0.0
+        
+        return {
+            "courses": len(self.courses),
+            "enrollments": total_e,
+            "completed": completed,
+            "in_progress": in_progress,
+            "avg_progress": avg_progress,
+            "completion_rate": (completed / total_e * 100) if total_e else 0.0
+        }
+    
     def format_dashboard(self) -> str:
         """Render ASCII LMS Dashboard."""
         total = len(self.courses)

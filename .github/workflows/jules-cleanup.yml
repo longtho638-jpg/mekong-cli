@@ -1,0 +1,74 @@
+name: 🤖 Jules Tech Debt Cleanup
+
+on:
+  schedule:
+    # Every Monday at 9 AM UTC (4 PM Vietnam)
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      task_type:
+        description: 'Type of cleanup task'
+        required: true
+        default: 'tests'
+        type: choice
+        options:
+          - tests
+          - lint
+          - docs
+          - deps
+          - security
+
+jobs:
+  jules-cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Gemini CLI
+        run: npm install -g @anthropic/gemini-cli
+      
+      - name: Install Jules Extension
+        run: |
+          gemini extensions install https://github.com/gemini-cli-extensions/jules --auto-update
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      
+      - name: Run Jules Task
+        run: |
+          case "${{ github.event.inputs.task_type || 'tests' }}" in
+            tests)
+              echo "Running: Add unit tests"
+              gemini -p "/jules add unit tests for any functions missing tests in antigravity/core/"
+              ;;
+            lint)
+              echo "Running: Fix lint errors"
+              gemini -p "/jules fix all TypeScript and Python type errors"
+              ;;
+            docs)
+              echo "Running: Update documentation"
+              gemini -p "/jules add missing docstrings to all public functions"
+              ;;
+            deps)
+              echo "Running: Update dependencies"
+              gemini -p "/jules update all dependencies to latest stable versions"
+              ;;
+            security)
+              echo "Running: Security fixes"
+              gemini -p "/jules fix all security vulnerabilities"
+              ;;
+          esac
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+      
+      - name: Check Jules Status
+        run: |
+          sleep 60
+          gemini -p "/jules what is the status of my latest task?"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

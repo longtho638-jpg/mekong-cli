@@ -2,7 +2,7 @@
 🚀 Entrepreneur Hub - Business Development
 =============================================
 
-Central hub connecting all Entrepreneur roles.
+Central hub connecting all Entrepreneur roles with their operational tools.
 
 Integrates:
 - Startup Launcher
@@ -10,99 +10,114 @@ Integrates:
 - Operations Manager
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import role modules
-from core.startup_launcher import StartupLauncher, VentureType, VentureStage
-from core.strategy_officer import StrategyOfficer, StrategicPillar, InitiativeStatus
-from core.operations_manager import OperationsManager, OperationalArea, ResourceType
+# Import role modules with fallback for direct testing
+try:
+    from core.startup_launcher import StartupLauncher, VentureType, VentureStage
+    from core.strategy_officer import StrategyOfficer, StrategicPillar, InitiativeStatus
+    from core.operations_manager import OperationsManager, OperationalArea, ResourceType
+except ImportError:
+    from startup_launcher import StartupLauncher, VentureType, VentureStage
+    from strategy_officer import StrategyOfficer, StrategicPillar, InitiativeStatus
+    from operations_manager import OperationsManager, OperationalArea, ResourceType
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class EntrepreneurMetrics:
-    """Department-wide metrics."""
-    ventures: int
-    total_users: int
-    venture_revenue: float
-    objectives: int
-    okr_progress: float
-    initiatives: int
-    processes: int
-    avg_efficiency: float
-    resource_utilization: float
+    """Department-wide metrics container."""
+    ventures: int = 0
+    total_users: int = 0
+    venture_revenue: float = 0.0
+    objectives: int = 0
+    okr_progress: float = 0.0
+    initiatives: int = 0
+    processes: int = 0
+    avg_efficiency: float = 0.0
+    resource_utilization: float = 0.0
 
 
 class EntrepreneurHub:
     """
-    Entrepreneur Hub.
+    Entrepreneur Hub System.
     
-    Business development center.
+    Orchestrates business growth, strategic planning, and operational excellence.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         
-        # Initialize role modules
-        self.launcher = StartupLauncher(agency_name)
-        self.strategy = StrategyOfficer(agency_name)
-        self.operations = OperationsManager(agency_name)
+        logger.info(f"Initializing Entrepreneur Hub for {agency_name}")
+        try:
+            self.launcher = StartupLauncher(agency_name)
+            self.strategy = StrategyOfficer(agency_name)
+            self.operations = OperationsManager(agency_name)
+        except Exception as e:
+            logger.error(f"Entrepreneur Hub initialization failed: {e}")
+            raise
     
     def get_department_metrics(self) -> EntrepreneurMetrics:
-        """Get department-wide metrics."""
-        launcher_stats = self.launcher.get_stats()
-        strategy_stats = self.strategy.get_stats()
-        ops_stats = self.operations.get_stats()
+        """Aggregate data from all business development sub-modules."""
+        metrics = EntrepreneurMetrics()
         
-        return EntrepreneurMetrics(
-            ventures=launcher_stats.get("ventures", 0),
-            total_users=launcher_stats.get("users", 0),
-            venture_revenue=launcher_stats.get("revenue", 0),
-            objectives=strategy_stats.get("objectives", 0),
-            okr_progress=strategy_stats.get("avg_progress", 0),
-            initiatives=strategy_stats.get("initiatives", 0),
-            processes=ops_stats.get("processes", 0),
-            avg_efficiency=ops_stats.get("avg_efficiency", 0),
-            resource_utilization=ops_stats.get("utilization", 0)
-        )
+        try:
+            # 1. Launcher Metrics
+            l_stats = self.launcher.get_stats()
+            metrics.ventures = l_stats.get("ventures", 0)
+            metrics.total_users = l_stats.get("users", 0)
+            metrics.venture_revenue = float(l_stats.get("revenue", 0.0))
+            
+            # 2. Strategy Metrics
+            s_stats = self.strategy.get_stats()
+            metrics.objectives = s_stats.get("objectives", 0)
+            metrics.okr_progress = float(s_stats.get("avg_progress", 0.0))
+            metrics.initiatives = s_stats.get("initiatives", 0)
+            
+            # 3. Operations Metrics
+            o_stats = self.operations.get_stats()
+            metrics.processes = o_stats.get("processes", 0)
+            metrics.avg_efficiency = float(o_stats.get("avg_efficiency", 0.0))
+            metrics.resource_utilization = float(o_stats.get("utilization", 0.0))
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating Entrepreneur metrics: {e}")
+            
+        return metrics
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render the Entrepreneur Hub Dashboard."""
+        m = self.get_department_metrics()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🚀 ENTREPRENEUR HUB                                      ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  🚀 ENTREPRENEUR HUB{' ' * 39}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    🚀 Active Ventures:    {metrics.ventures:>5}                          ║",
-            f"║    👥 Total Users:        {metrics.total_users:>8,}                       ║",
-            f"║    💰 Venture Revenue:    ${metrics.venture_revenue:>10,.0f}                  ║",
-            f"║    🎯 OKR Objectives:     {metrics.objectives:>5}                          ║",
-            f"║    📈 OKR Progress:       {metrics.okr_progress:>5.0f}%                         ║",
-            f"║    ⚡ Initiatives:        {metrics.initiatives:>5}                          ║",
-            f"║    🔄 Processes:          {metrics.processes:>5}                          ║",
-            f"║    ⚙️ Efficiency:         {metrics.avg_efficiency:>5.0f}%                         ║",
-            f"║    📦 Utilization:        {metrics.resource_utilization:>5.0f}%                         ║",
+            "║  📊 STRATEGIC GROWTH METRICS                              ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    🚀 Active Ventures:    {m.ventures:>5}                          ║",
+            f"║    👥 Total Users:        {m.total_users:>8,}                       ║",
+            f"║    💰 Venture Revenue:    ${m.venture_revenue:>10,.0f}                  ║",
+            f"║    🎯 OKR Objectives:     {m.objectives:>5}                          ║",
+            f"║    📈 OKR Progress:       {m.okr_progress:>5.0f}%                         ║",
+            f"║    ⚡ Initiatives:        {m.initiatives:>5}                          ║",
+            f"║    🔄 Processes:          {m.processes:>5}                          ║",
+            f"║    ⚙️ Efficiency:         {m.avg_efficiency:>5.0f}%                         ║",
+            f"║    📦 Utilization:        {m.resource_utilization:>5.0f}%                         ║",
             "║                                                           ║",
-            "║  🔗 ENTREPRENEUR ROLES                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    🚀 Startup Launcher  → Ventures, MVPs, experiments    ║",
-            "║    🎯 Strategy Officer  → Vision, OKRs, initiatives      ║",
-            "║    ⚙️ Operations Manager → Processes, metrics, resources ║",
+            "║  🔗 SERVICE INTEGRATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    🚀 Launcher (MVP) │ 🎯 Strategy (Vision) │ ⚙️ Ops (SOPs) ║",
             "║                                                           ║",
-            "║  📋 BUSINESS DEVELOPMENT                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    🚀 Ventures          │ {metrics.ventures} active, ${metrics.venture_revenue:,.0f} rev  ║",
-            f"║    🎯 Strategy          │ {metrics.objectives} OKRs, {metrics.okr_progress:.0f}% progress  ║",
-            f"║    ⚙️ Operations        │ {metrics.processes} processes, {metrics.avg_efficiency:.0f}% eff  ║",
-            "║                                                           ║",
-            "║  [📊 Reports]  [🚀 Launch]  [🎯 Strategy]                 ║",
+            "║  [📊 Reports]  [🚀 Launch]  [🎯 OKRs]  [⚙️ Operations]    ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Build the future!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Scale!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -111,15 +126,11 @@ class EntrepreneurHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = EntrepreneurHub("Saigon Digital Hub")
-    
-    print("🚀 Entrepreneur Hub")
+    print("🚀 Initializing Entrepreneur Hub...")
     print("=" * 60)
-    print()
     
-    # Simulate data
-    hub.launcher.create_venture("AgencyOS", "AI agency platform", VentureType.SAAS, ["Khoa"])
-    hub.strategy.create_objective("Scale to $1M", StrategicPillar.GROWTH, "Khoa")
-    hub.operations.add_process("Client Onboarding", OperationalArea.DELIVERY, "Sarah", 85)
-    
-    print(hub.format_hub_dashboard())
+    try:
+        hub = EntrepreneurHub("Saigon Digital Hub")
+        print("\n" + hub.format_hub_dashboard())
+    except Exception as e:
+        logger.error(f"Hub Error: {e}")

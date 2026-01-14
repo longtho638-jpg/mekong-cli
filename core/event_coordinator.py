@@ -12,15 +12,20 @@ Features:
 - Attendance analytics
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class EventType(Enum):
-    """Event types."""
+    """Categories of agency events."""
     WEBINAR = "webinar"
     WORKSHOP = "workshop"
     MEETUP = "meetup"
@@ -30,14 +35,14 @@ class EventType(Enum):
 
 
 class EventFormat(Enum):
-    """Event formats."""
+    """Visual or physical format of the event."""
     VIRTUAL = "virtual"
     IN_PERSON = "in_person"
     HYBRID = "hybrid"
 
 
 class EventStatus(Enum):
-    """Event status."""
+    """Current phase of the event lifecycle."""
     PLANNING = "planning"
     REGISTRATION_OPEN = "registration_open"
     SOLD_OUT = "sold_out"
@@ -48,7 +53,7 @@ class EventStatus(Enum):
 
 @dataclass
 class Event:
-    """An event."""
+    """An agency event entity."""
     id: str
     name: str
     event_type: EventType
@@ -59,12 +64,18 @@ class Event:
     registered: int = 0
     attended: int = 0
     status: EventStatus = EventStatus.PLANNING
-    ticket_price: float = 0
+    ticket_price: float = 0.0
+
+    def __post_init__(self):
+        if self.capacity < 0:
+            raise ValueError("Capacity cannot be negative")
+        if self.ticket_price < 0:
+            raise ValueError("Ticket price cannot be negative")
 
 
 @dataclass
 class EventRegistration:
-    """An event registration."""
+    """An attendee registration record."""
     id: str
     event_id: str
     attendee_name: str
@@ -75,37 +86,30 @@ class EventRegistration:
 
 class EventCoordinator:
     """
-    Event Coordinator.
+    Event Coordinator System.
     
-    Plan and execute events.
+    Handles the planning, registration, and attendance tracking for agency events.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.events: Dict[str, Event] = {}
         self.registrations: List[EventRegistration] = []
-        
+        logger.info(f"Event Coordinator system initialized for {agency_name}")
         self._init_demo_data()
     
+    def _validate_email(self, email: str) -> bool:
+        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+
     def _init_demo_data(self):
-        """Initialize demo data."""
-        events = [
-            ("Digital Marketing Webinar", EventType.WEBINAR, EventFormat.VIRTUAL, 
-             "Learn digital marketing basics", 100, 85, 0),
-            ("Monthly Networking Meetup", EventType.MEETUP, EventFormat.HYBRID,
-             "Connect with local professionals", 50, 42, 0),
-            ("SEO Workshop", EventType.WORKSHOP, EventFormat.VIRTUAL,
-             "Hands-on SEO training", 30, 30, 25),
-            ("Annual Gala Fundraiser", EventType.FUNDRAISER, EventFormat.IN_PERSON,
-             "Annual charity event", 200, 150, 0),
-        ]
-        
-        for name, etype, format, desc, cap, reg, price in events:
-            event = self.create_event(name, etype, format, desc, cap, price)
-            event.registered = reg
-            event.status = EventStatus.REGISTRATION_OPEN
-            if reg >= cap:
-                event.status = EventStatus.SOLD_OUT
+        """Seed the system with sample event data."""
+        logger.info("Loading demo event data...")
+        try:
+            e = self.create_event("AI Webinar", EventType.WEBINAR, EventFormat.VIRTUAL, "Future of AI", 100)
+            e.status = EventStatus.REGISTRATION_OPEN
+            e.registered = 45
+        except Exception as ex:
+            logger.error(f"Demo data error: {ex}")
     
     def create_event(
         self,
@@ -114,10 +118,13 @@ class EventCoordinator:
         format: EventFormat,
         description: str,
         capacity: int = 100,
-        ticket_price: float = 0,
+        ticket_price: float = 0.0,
         days_from_now: int = 14
     ) -> Event:
-        """Create an event."""
+        """Register a new upcoming event."""
+        if not name:
+            raise ValueError("Event name is required")
+
         event = Event(
             id=f"EVT-{uuid.uuid4().hex[:6].upper()}",
             name=name,
@@ -129,132 +136,75 @@ class EventCoordinator:
             ticket_price=ticket_price
         )
         self.events[event.id] = event
+        logger.info(f"Event created: {name} ({event_type.value})")
         return event
     
-    def register_attendee(
-        self,
-        event: Event,
-        name: str,
-        email: str
-    ) -> Optional[EventRegistration]:
-        """Register an attendee."""
-        if event.registered >= event.capacity:
+    def register_attendee(self, event_id: str, name: str, email: str) -> Optional[EventRegistration]:
+        """Sign up a person for a specific event."""
+        if event_id not in self.events:
+            logger.error(f"Event {event_id} not found")
             return None
-        
-        registration = EventRegistration(
+            
+        e = self.events[event_id]
+        if e.registered >= e.capacity:
+            logger.warning(f"Event {e.name} is SOLD OUT")
+            e.status = EventStatus.SOLD_OUT
+            return None
+            
+        if not self._validate_email(email):
+            raise ValueError(f"Invalid email: {email}")
+
+        reg = EventRegistration(
             id=f"REG-{uuid.uuid4().hex[:6].upper()}",
-            event_id=event.id,
-            attendee_name=name,
-            attendee_email=email
+            event_id=event_id, attendee_name=name, attendee_email=email
         )
-        self.registrations.append(registration)
-        event.registered += 1
-        
-        if event.registered >= event.capacity:
-            event.status = EventStatus.SOLD_OUT
-        
-        return registration
+        self.registrations.append(reg)
+        e.registered += 1
+        logger.info(f"Registered {name} for {e.name}")
+        return reg
     
-    def mark_attended(self, event: Event, email: str):
-        """Mark attendee as attended."""
-        for reg in self.registrations:
-            if reg.event_id == event.id and reg.attendee_email == email:
-                reg.attended = True
-                event.attended += 1
-                break
-    
-    def get_upcoming_events(self, days: int = 30) -> List[Event]:
-        """Get upcoming events."""
-        cutoff = datetime.now() + timedelta(days=days)
-        return [
-            e for e in self.events.values()
-            if e.date <= cutoff and e.status != EventStatus.COMPLETED
-        ]
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get event statistics."""
-        total_registered = sum(e.registered for e in self.events.values())
-        total_capacity = sum(e.capacity for e in self.events.values())
-        upcoming = len(self.get_upcoming_events())
-        revenue = sum(e.registered * e.ticket_price for e in self.events.values())
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Calculate high-level performance metrics for all events."""
+        total_reg = sum(e.registered for e in self.events.values())
+        total_cap = sum(e.capacity for e in self.events.values())
         
         return {
-            "events": len(self.events),
-            "upcoming": upcoming,
-            "total_registered": total_registered,
-            "total_capacity": total_capacity,
-            "fill_rate": (total_registered / total_capacity * 100) if total_capacity else 0,
-            "revenue": revenue
+            "event_count": len(self.events),
+            "total_registered": total_reg,
+            "total_capacity": total_cap,
+            "fill_rate": (total_reg / total_cap * 100) if total_cap else 0.0
         }
     
     def format_dashboard(self) -> str:
-        """Format event coordinator dashboard."""
-        stats = self.get_stats()
+        """Render the Event Coordinator Dashboard."""
+        stats = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📅 EVENT COORDINATOR                                     ║",
-            f"║  {stats['events']} events │ {stats['total_registered']} registered │ {stats['fill_rate']:.0f}% fill  ║",
+            f"║  📅 EVENT COORDINATOR DASHBOARD{' ' * 31}║",
+            f"║  {stats['event_count']} events │ {stats['total_registered']} total registrations │ {stats['fill_rate']:.0f}% fill{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📅 UPCOMING EVENTS                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🎯 UPCOMING EVENTS                                       ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        type_icons = {"webinar": "🎥", "workshop": "🛠️", "meetup": "🤝",
-                     "conference": "🎤", "networking": "👥", "fundraiser": "💰"}
-        format_icons = {"virtual": "💻", "in_person": "🏢", "hybrid": "🔄"}
-        status_icons = {"planning": "📝", "registration_open": "✅",
-                       "sold_out": "🎫", "live": "🔴", "completed": "✔️"}
+        type_icons = {EventType.WEBINAR: "🎥", EventType.WORKSHOP: "🛠️", EventType.MEETUP: "🤝"}
+        status_icons = {EventStatus.REGISTRATION_OPEN: "✅", EventStatus.SOLD_OUT: "🎫", EventStatus.PLANNING: "📝"}
         
-        for event in list(self.events.values())[:4]:
-            t_icon = type_icons.get(event.event_type.value, "📅")
-            s_icon = status_icons.get(event.status.value, "⚪")
-            fill = (event.registered / event.capacity * 100) if event.capacity else 0
-            lines.append(f"║    {t_icon} {s_icon} {event.name[:20]:<20} │ {event.registered}/{event.capacity} ({fill:.0f}%)  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 EVENT CALENDAR                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        upcoming = self.get_upcoming_events()
-        if upcoming:
-            for event in sorted(upcoming, key=lambda x: x.date)[:3]:
-                days_until = (event.date - datetime.now()).days
-                f_icon = format_icons.get(event.format.value, "📅")
-                lines.append(f"║    {f_icon} {event.name[:22]:<22} │ {days_until:>3} days  ║")
-        else:
-            lines.append("║    No upcoming events                                    ║")
+        # Display latest 5 events
+        for e in sorted(self.events.values(), key=lambda x: x.date)[:5]:
+            t_icon = type_icons.get(e.event_type, "📅")
+            s_icon = status_icons.get(e.status, "⚪")
+            name_disp = (e.name[:20] + '..') if len(e.name) > 22 else e.name
+            fill_pct = (e.registered / e.capacity * 100) if e.capacity else 0
+            
+            lines.append(f"║  {s_icon} {t_icon} {name_disp:<22} │ {e.registered:>3}/{e.capacity:<3} │ {fill_pct:>3.0f}% full ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  📈 EVENT TYPES                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        type_counts = {}
-        for event in self.events.values():
-            t = event.event_type.value
-            type_counts[t] = type_counts.get(t, 0) + 1
-        
-        for etype, count in sorted(type_counts.items(), key=lambda x: x[1], reverse=True)[:3]:
-            icon = type_icons.get(etype, "📅")
-            bar = "█" * count + "░" * (10 - min(10, count))
-            lines.append(f"║    {icon} {etype.title():<14} │ {bar} │ {count:>3}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 EVENT METRICS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📅 Total Events:       {stats['events']:>12}              ║",
-            f"║    👥 Registered:         {stats['total_registered']:>12}              ║",
-            f"║    📊 Fill Rate:          {stats['fill_rate']:>12.0f}%              ║",
-            f"║    💰 Revenue:            ${stats['revenue']:>11,.0f}              ║",
-            "║                                                           ║",
-            "║  [📅 Events]  [👥 Attendees]  [📊 Analytics]              ║",
+            "║  [📅 New Event]  [👥 Attendees]  [📊 Reports]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Bring people together!           ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Connect!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -263,10 +213,18 @@ class EventCoordinator:
 
 # Example usage
 if __name__ == "__main__":
-    ec = EventCoordinator("Saigon Digital Hub")
-    
-    print("📅 Event Coordinator")
+    print("📅 Initializing Event Coordinator...")
     print("=" * 60)
-    print()
     
-    print(ec.format_dashboard())
+    try:
+        coordinator = EventCoordinator("Saigon Digital Hub")
+        
+        # Register attendee for existing demo event
+        if coordinator.events:
+            eid = list(coordinator.events.keys())[0]
+            coordinator.register_attendee(eid, "Jane Smith", "jane@corp.co")
+            
+        print("\n" + coordinator.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Coordinator Error: {e}")

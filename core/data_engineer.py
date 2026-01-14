@@ -165,6 +165,19 @@ class DataEngineer:
             logger.error(f"Job {job_id} failed: {error_msg}")
         return True
     
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Calculate high-level infrastructure metrics."""
+        total_p = len(self.pipelines)
+        total_r = sum(p.records_processed for p in self.pipelines.values())
+        success_rate = (sum(1 for j in self.jobs if j.success) / len(self.jobs) * 100) if self.jobs else 0.0
+        
+        return {
+            "pipeline_count": total_p,
+            "total_records": total_r,
+            "success_rate": success_rate,
+            "job_count": len(self.jobs)
+        }
+    
     def format_dashboard(self) -> str:
         """Render the Data Engineer Dashboard."""
         total_p = len(self.pipelines)

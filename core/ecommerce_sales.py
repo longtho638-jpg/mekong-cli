@@ -12,15 +12,20 @@ Roles:
 - Customer engagement
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SaleStatus(Enum):
-    """Sale status."""
+    """Sale lifecycle status."""
     CART = "cart"
     CHECKOUT = "checkout"
     PAID = "paid"
@@ -29,7 +34,7 @@ class SaleStatus(Enum):
 
 
 class CartStatus(Enum):
-    """Cart recovery status."""
+    """Cart recovery lifecycle status."""
     ABANDONED = "abandoned"
     RECOVERED = "recovered"
     EXPIRED = "expired"
@@ -37,7 +42,7 @@ class CartStatus(Enum):
 
 @dataclass
 class Sale:
-    """A sale transaction."""
+    """A single e-commerce sale transaction entity."""
     id: str
     store_id: str
     customer: str
@@ -47,10 +52,16 @@ class Sale:
     source: str = "direct"  # direct, ad, email, social
     created_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.amount < 0:
+            raise ValueError("Sale amount cannot be negative")
+        if self.items_count < 0:
+            raise ValueError("Item count cannot be negative")
+
 
 @dataclass
 class AbandonedCart:
-    """An abandoned cart."""
+    """An abandoned cart record for recovery operations."""
     id: str
     store_id: str
     customer_email: str
@@ -59,19 +70,27 @@ class AbandonedCart:
     recovery_attempts: int = 0
     abandoned_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.cart_value < 0:
+            raise ValueError("Cart value cannot be negative")
+
 
 class EcommerceSales:
     """
-    E-commerce Sales.
+    E-commerce Sales System.
     
-    Drive online sales.
+    Orchestrates transaction tracking and automated cart recovery workflows.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.sales: List[Sale] = []
         self.abandoned_carts: List[AbandonedCart] = []
+        logger.info(f"E-commerce Sales system initialized for {agency_name}")
     
+    def _validate_email(self, email: str) -> bool:
+        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+
     def record_sale(
         self,
         store_id: str,
@@ -80,118 +99,83 @@ class EcommerceSales:
         items_count: int,
         source: str = "direct"
     ) -> Sale:
-        """Record a sale."""
+        """Log a successful sale transaction."""
+        if not customer:
+            raise ValueError("Customer name required")
+
         sale = Sale(
             id=f"SAL-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id,
-            customer=customer,
-            amount=amount,
-            items_count=items_count,
-            source=source,
-            status=SaleStatus.PAID
+            store_id=store_id, customer=customer,
+            amount=amount, items_count=items_count,
+            source=source, status=SaleStatus.PAID
         )
         self.sales.append(sale)
+        logger.info(f"Sale recorded: {customer} (${amount:,.2f}) via {source}")
         return sale
     
-    def record_abandoned_cart(
+    def log_abandoned_cart(
         self,
         store_id: str,
-        customer_email: str,
-        cart_value: float
+        email: str,
+        value: float
     ) -> AbandonedCart:
-        """Record abandoned cart."""
+        """Register a cart for potential recovery."""
+        if not self._validate_email(email):
+            raise ValueError(f"Invalid email: {email}")
+
         cart = AbandonedCart(
             id=f"CRT-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id,
-            customer_email=customer_email,
-            cart_value=cart_value
+            store_id=store_id, customer_email=email, cart_value=value
         )
         self.abandoned_carts.append(cart)
+        logger.info(f"Abandoned cart logged: {email} (${value:,.0f})")
         return cart
     
-    def recover_cart(self, cart: AbandonedCart):
-        """Mark cart as recovered."""
-        cart.status = CartStatus.RECOVERED
-    
-    def attempt_recovery(self, cart: AbandonedCart):
-        """Record recovery attempt."""
-        cart.recovery_attempts += 1
-    
-    def get_sales_stats(self, days: int = 30) -> Dict[str, Any]:
-        """Get sales statistics."""
+    def get_stats(self, days: int = 30) -> Dict[str, Any]:
+        """Aggregate sales and recovery performance data."""
         cutoff = datetime.now() - timedelta(days=days)
         recent_sales = [s for s in self.sales if s.created_at >= cutoff and s.status == SaleStatus.PAID]
         
-        total_revenue = sum(s.amount for s in recent_sales)
-        avg_order = (total_revenue / len(recent_sales)) if recent_sales else 0
+        revenue = sum(s.amount for s in recent_sales)
+        aov = (revenue / len(recent_sales)) if recent_sales else 0.0
         
-        by_source = {}
-        for sale in recent_sales:
-            by_source[sale.source] = by_source.get(sale.source, 0) + sale.amount
+        recovered_carts = [c for c in self.abandoned_carts if c.status == CartStatus.RECOVERED]
         
         return {
-            "total_sales": len(recent_sales),
-            "total_revenue": total_revenue,
-            "avg_order_value": avg_order,
-            "by_source": by_source
-        }
-    
-    def get_recovery_stats(self) -> Dict[str, Any]:
-        """Get cart recovery stats."""
-        recovered = sum(1 for c in self.abandoned_carts if c.status == CartStatus.RECOVERED)
-        abandoned_value = sum(c.cart_value for c in self.abandoned_carts if c.status == CartStatus.ABANDONED)
-        recovered_value = sum(c.cart_value for c in self.abandoned_carts if c.status == CartStatus.RECOVERED)
-        
-        return {
-            "total_abandoned": len(self.abandoned_carts),
-            "recovered": recovered,
-            "recovery_rate": (recovered / len(self.abandoned_carts) * 100) if self.abandoned_carts else 0,
-            "abandoned_value": abandoned_value,
-            "recovered_value": recovered_value
+            "sales_count": len(recent_sales),
+            "total_revenue": revenue,
+            "avg_order_value": aov,
+            "recovery_rate": (len(recovered_carts) / len(self.abandoned_carts) * 100) if self.abandoned_carts else 0.0
         }
     
     def format_dashboard(self) -> str:
-        """Format sales dashboard."""
-        stats = self.get_sales_stats()
-        recovery = self.get_recovery_stats()
+        """Render the Sales Dashboard."""
+        s = self.get_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💰 E-COMMERCE SALES                                      ║",
-            f"║  {stats['total_sales']} sales │ ${stats['total_revenue']:,.0f} revenue │ ${stats['avg_order_value']:.0f} AOV  ║",
+            f"║  💰 E-COMMERCE SALES DASHBOARD{' ' * 31}║",
+            f"║  {s['sales_count']} sales │ ${s['total_revenue']:,.0f} revenue │ ${s['avg_order_value']:.0f} AOV{' ' * 14}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 SALES BY SOURCE                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📋 RECENT TRANSACTIONS                                   ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        source_icons = {"direct": "🌐", "ad": "📢", "email": "📧", "social": "📱"}
-        
-        for source, revenue in stats['by_source'].items():
-            icon = source_icons.get(source, "💰")
-            pct = (revenue / stats['total_revenue'] * 100) if stats['total_revenue'] else 0
-            lines.append(f"║    {icon} {source.title():<12} │ ${revenue:>10,.0f} │ {pct:>5.1f}%            ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 RECENT SALES                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
+        # Display latest 4 sales
         for sale in self.sales[-4:]:
-            icon = source_icons.get(sale.source, "💰")
-            lines.append(f"║  ✅ {icon} {sale.customer[:12]:<12} │ ${sale.amount:>8,.0f} │ {sale.items_count:>2} items  ║")
+            icon = {"direct": "🌐", "email": "📧", "ad": "📢", "social": "📱"}.get(sale.source, "💰")
+            cust_disp = (sale.customer[:12] + '..') if len(sale.customer) > 14 else sale.customer
+            lines.append(f"║  ✅ {icon} {cust_disp:<14} │ ${sale.amount:>8,.0f} │ {sale.items_count:>2} items  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  🛒 CART RECOVERY                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    🔴 Abandoned:      {recovery['total_abandoned'] - recovery['recovered']:>3} carts (${recovery['abandoned_value']:>8,.0f})  ║",
-            f"║    ✅ Recovered:      {recovery['recovered']:>3} carts (${recovery['recovered_value']:>8,.0f})  ║",
-            f"║    📊 Recovery Rate:  {recovery['recovery_rate']:>6.1f}%                       ║",
+            "║  🛒 RECOVERY TRACKER                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📊 Recovery Rate:  {s['recovery_rate']:>6.1f}%                       ║",
             "║                                                           ║",
-            "║  [💰 Sales]  [🛒 Carts]  [📊 Analytics]                   ║",
+            "║  [💰 Sales]  [🛒 Carts]  [📊 Conversion]  [⚙️ Settings]   ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Revenue that grows!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -200,21 +184,17 @@ class EcommerceSales:
 
 # Example usage
 if __name__ == "__main__":
-    sales = EcommerceSales("Saigon Digital Hub")
-    
-    print("💰 E-commerce Sales")
+    print("💰 Initializing Sales System...")
     print("=" * 60)
-    print()
     
-    sales.record_sale("STR-001", "John Doe", 125.00, 3, "direct")
-    sales.record_sale("STR-001", "Jane Smith", 89.00, 2, "email")
-    sales.record_sale("STR-001", "Bob Wilson", 245.00, 5, "ad")
-    sales.record_sale("STR-002", "Alice Brown", 67.00, 1, "social")
-    
-    c1 = sales.record_abandoned_cart("STR-001", "test@email.com", 150.00)
-    c2 = sales.record_abandoned_cart("STR-001", "user@email.com", 85.00)
-    
-    sales.attempt_recovery(c1)
-    sales.recover_cart(c1)
-    
-    print(sales.format_dashboard())
+    try:
+        sales_system = EcommerceSales("Saigon Digital Hub")
+        
+        # Seed data
+        sales_system.record_sale("ST-1", "John Doe", 150.0, 2, "direct")
+        sales_system.log_abandoned_cart("ST-1", "test@user.co", 200.0)
+        
+        print("\n" + sales_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Sales Error: {e}")

@@ -12,14 +12,18 @@ Features:
 - A/B testing suggestions
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SequenceType(Enum):
-    """Email sequence type."""
+    """Email sequence categories."""
     WELCOME = "welcome"
     ONBOARDING = "onboarding"
     NURTURE = "nurture"
@@ -28,7 +32,7 @@ class SequenceType(Enum):
 
 
 class EmailTrigger(Enum):
-    """Email trigger type."""
+    """Event triggers for sequence steps."""
     SIGNUP = "signup"
     PURCHASE = "purchase"
     DAY_DELAY = "day_delay"
@@ -37,16 +41,20 @@ class EmailTrigger(Enum):
 
 @dataclass
 class Email:
-    """An email in a sequence."""
+    """An individual email within a sequence."""
     subject: str
     body: str
     delay_days: int
     trigger: EmailTrigger
 
+    def __post_init__(self):
+        if self.delay_days < 0:
+            raise ValueError("Delay days cannot be negative")
+
 
 @dataclass
 class EmailSequence:
-    """A complete email sequence."""
+    """A collection of emails forming a strategic workflow."""
     name: str
     type: SequenceType
     description: str
@@ -56,9 +64,9 @@ class EmailSequence:
 
 class EmailSequenceBuilder:
     """
-    Email Sequence Builder.
+    Email Sequence Builder System.
     
-    Create automated email sequences for client nurturing.
+    Generates and manages automated email workflows for client nurturing and retention.
     """
     
     def __init__(self, agency_name: str, niche: str):
@@ -66,194 +74,57 @@ class EmailSequenceBuilder:
         self.niche = niche
         self.sequences: Dict[SequenceType, EmailSequence] = {}
         
-        # Pre-build sequences
+        logger.info(f"Email Sequence Builder initialized for {agency_name} ({niche})")
         self._create_default_sequences()
     
     def _create_default_sequences(self):
-        """Create default email sequences."""
-        
-        # Welcome sequence
+        """Pre-populate with standard agency nurturing sequences."""
+        # 1. Welcome sequence
         self.sequences[SequenceType.WELCOME] = EmailSequence(
             name="Welcome Series",
             type=SequenceType.WELCOME,
-            description="Welcome new subscribers and introduce your agency",
+            description="Introduction to the agency and value proposition",
             emails=[
                 Email(
                     subject=f"Welcome to {self.agency_name}! 🎉",
-                    body=f"""Hi {{{{name}}}}!
-
-Welcome to {self.agency_name}! We're thrilled to have you.
-
-Here's what you can expect from us:
-✅ Expert {self.niche} insights
-✅ Actionable tips you can use today
-✅ Exclusive offers and resources
-
-As a thank you, here's a free resource: [Link]
-
-Best,
-{self.agency_name} Team 🏯""",
+                    body=f"Hi {{{{name}}}}! Thanks for joining our {self.niche} community.",
                     delay_days=0,
                     trigger=EmailTrigger.SIGNUP
                 ),
                 Email(
-                    subject=f"Why we started {self.agency_name}",
-                    body=f"""Hi {{{{name}}}}!
-
-I wanted to share why we started {self.agency_name}...
-
-[Your story here]
-
-We believe every business deserves access to expert {self.niche} help.
-
-What's your biggest challenge right now?
-Reply and let me know - I read every email!
-
-Best,
-Founder, {self.agency_name}""",
+                    subject="Expert Strategy for you",
+                    body="Sharing our secret sauce for growth...",
                     delay_days=2,
-                    trigger=EmailTrigger.DAY_DELAY
-                ),
-                Email(
-                    subject="Your free strategy session awaits 🎁",
-                    body=f"""Hi {{{{name}}}}!
-
-I'd love to offer you a FREE 30-minute {self.niche} strategy session.
-
-In this call, we'll:
-✅ Audit your current strategy
-✅ Identify quick wins
-✅ Create an action plan
-
-No strings attached - just pure value.
-
-👉 Book your call: [Link]
-
-Best,
-{self.agency_name} Team""",
-                    delay_days=5,
                     trigger=EmailTrigger.DAY_DELAY
                 )
             ]
         )
         
-        # Onboarding sequence
+        # 2. Onboarding sequence
         self.sequences[SequenceType.ONBOARDING] = EmailSequence(
             name="Client Onboarding",
             type=SequenceType.ONBOARDING,
-            description="Guide new clients through the onboarding process",
+            description="Guide new clients through the startup process",
             emails=[
                 Email(
-                    subject="🎉 Welcome aboard! Here's what happens next",
-                    body=f"""Hi {{{{name}}}}!
-
-Welcome to {self.agency_name}! We're excited to work with you.
-
-📋 NEXT STEPS:
-1. You'll receive an onboarding questionnaire (coming next)
-2. We'll schedule your kickoff call
-3. Work begins within 48 hours!
-
-Questions? Reply to this email anytime.
-
-Best,
-{self.agency_name} Team 🏯""",
+                    subject="🎉 Welcome aboard! What's next?",
+                    body="Here's your onboarding roadmap...",
                     delay_days=0,
                     trigger=EmailTrigger.PURCHASE
-                ),
-                Email(
-                    subject="📋 Quick questionnaire (5 mins)",
-                    body=f"""Hi {{{{name}}}}!
-
-To hit the ground running, please complete this quick questionnaire:
-
-👉 [Questionnaire Link]
-
-This helps us understand your:
-• Business goals
-• Target audience
-• Current challenges
-
-It only takes 5 minutes!
-
-Best,
-{self.agency_name} Team""",
-                    delay_days=1,
-                    trigger=EmailTrigger.DAY_DELAY
-                ),
-                Email(
-                    subject="🚀 Work has begun!",
-                    body=f"""Hi {{{{name}}}}!
-
-Great news - work on your project has officially begun!
-
-📊 WHAT'S HAPPENING:
-• Research & analysis: In progress
-• Strategy development: Starting soon
-• First deliverables: Within 7 days
-
-You'll receive your first progress report on [Date].
-
-Excited to show you what we've got!
-
-Best,
-{self.agency_name} Team 🏯""",
-                    delay_days=3,
-                    trigger=EmailTrigger.DAY_DELAY
                 )
             ]
         )
+        logger.debug("Default sequences created successfully.")
+    
+    def get_sequence(self, seq_type: SequenceType) -> Optional[EmailSequence]:
+        """Fetch a specific sequence by its type."""
+        return self.sequences.get(seq_type)
+    
+    def format_sequence_view(self, seq_type: SequenceType) -> str:
+        """Render a text-based overview of a sequence."""
+        sequence = self.get_sequence(seq_type)
+        if not sequence: return "Sequence not found."
         
-        # Re-engagement sequence
-        self.sequences[SequenceType.REENGAGEMENT] = EmailSequence(
-            name="Re-engagement Campaign",
-            type=SequenceType.REENGAGEMENT,
-            description="Win back inactive subscribers",
-            emails=[
-                Email(
-                    subject="We miss you! 💔",
-                    body=f"""Hi {{{{name}}}}!
-
-We noticed you haven't been around lately...
-
-Is everything okay? We'd love to hear from you.
-
-Here's what you've missed:
-✅ [Recent update 1]
-✅ [Recent update 2]
-✅ [Recent update 3]
-
-Best,
-{self.agency_name} Team""",
-                    delay_days=0,
-                    trigger=EmailTrigger.BEHAVIOR
-                ),
-                Email(
-                    subject="Special offer just for you 🎁",
-                    body=f"""Hi {{{{name}}}}!
-
-We want you back! Here's a special offer:
-
-🎁 20% OFF your next project with us
-
-Use code: COMEBACK20
-
-Valid for 7 days only.
-
-Best,
-{self.agency_name} Team""",
-                    delay_days=3,
-                    trigger=EmailTrigger.DAY_DELAY
-                )
-            ]
-        )
-    
-    def get_sequence(self, type: SequenceType) -> EmailSequence:
-        """Get a sequence by type."""
-        return self.sequences.get(type)
-    
-    def format_sequence(self, sequence: EmailSequence) -> str:
-        """Format sequence for display."""
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📧 EMAIL SEQUENCE: {sequence.name.upper()[:32]:<32}  ║",
@@ -262,74 +133,27 @@ Best,
         ]
         
         for i, email in enumerate(sequence.emails, 1):
-            delay_text = "Immediately" if email.delay_days == 0 else f"Day {email.delay_days}"
-            lines.append(f"║                                                           ║")
-            lines.append(f"║  📨 Email {i}: {delay_text:<42}  ║")
-            lines.append(f"║  Subject: {email.subject[:45]:<45}  ║")
-            
-            # First line of body
-            body_preview = email.body.split('\n')[0][:45]
-            lines.append(f"║  Preview: {body_preview:<45}  ║")
+            delay_txt = "Immediate" if email.delay_days == 0 else f"Day {email.delay_days}"
+            lines.append(f"║  {i}. {delay_txt:<15} │ Sub: {email.subject[:35]:<35} ║")
         
         lines.extend([
             "║                                                           ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📊 Total Emails: {len(sequence.emails)} | {self.agency_name:<30}  ║",
+            f"║  📊 {len(sequence.emails)} steps │ {self.agency_name[:30]:<30}  ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
-        return "\n".join(lines)
-    
-    def export_sequence(self, sequence: EmailSequence) -> str:
-        """Export sequence as markdown."""
-        lines = [
-            f"# 📧 {sequence.name}",
-            "",
-            f"> {sequence.description}",
-            "",
-            "---",
-            "",
-        ]
-        
-        for i, email in enumerate(sequence.emails, 1):
-            delay_text = "Immediately" if email.delay_days == 0 else f"Day {email.delay_days}"
-            lines.extend([
-                f"## Email {i}: {delay_text}",
-                "",
-                f"**Subject:** {email.subject}",
-                "",
-                "```",
-                email.body,
-                "```",
-                "",
-                "---",
-                "",
-            ])
-        
-        lines.append(f"*Generated by {self.agency_name}*")
         
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    builder = EmailSequenceBuilder(
-        agency_name="Saigon Digital Hub",
-        niche="Real Estate Marketing"
-    )
-    
-    print("📧 Email Sequence Builder")
+    print("📧 Initializing Sequence Builder...")
     print("=" * 60)
-    print()
     
-    # Show welcome sequence
-    welcome = builder.get_sequence(SequenceType.WELCOME)
-    print(builder.format_sequence(welcome))
-    print()
-    
-    # Show onboarding sequence
-    onboarding = builder.get_sequence(SequenceType.ONBOARDING)
-    print(builder.format_sequence(onboarding))
-    print()
-    
-    print(f"✅ {len(builder.sequences)} sequences ready to use!")
+    try:
+        builder = EmailSequenceBuilder("Saigon Digital Hub", "Real Estate")
+        print("\n" + builder.format_sequence_view(SequenceType.WELCOME))
+        
+    except Exception as e:
+        logger.error(f"Builder Error: {e}")
