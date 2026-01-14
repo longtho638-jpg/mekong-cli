@@ -97,7 +97,17 @@ node .claude/scripts/worktree.cjs create "<SLUG>" --prefix <TYPE> --worktree-roo
 
 Based on project context, run install in background:
 ```bash
-bun install / pnpm install / npm install / yarn install / etc.
+# Examples - use your project context to determine
+bun install          # bun.lock present
+pnpm install         # pnpm-lock.yaml present
+yarn install         # yarn.lock present
+npm install          # package-lock.json or package.json
+poetry install       # poetry.lock or pyproject.toml
+pip install -r requirements.txt  # requirements.txt
+cargo build          # Cargo.toml
+go mod download      # go.mod
+bundle install       # Gemfile
+composer install     # composer.json
 ```
 
 ## Commands Reference
