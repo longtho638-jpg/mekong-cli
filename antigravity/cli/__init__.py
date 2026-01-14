@@ -180,6 +180,65 @@ def cmd_stats():
     print("   🏯 'Không đánh mà thắng' - Win Without Fighting")
 
 
+def cmd_vibe_code(plan_path: str = None):
+    """Run VIBE 6-step development workflow."""
+    from antigravity.core.vibe_workflow import VIBEWorkflow
+    
+    print("\n🚀 VIBE CODE - 6-Step Development Workflow")
+    print("-" * 50)
+    
+    workflow = VIBEWorkflow()
+    
+    # Step 0: Plan Detection
+    plan = workflow.detect_plan(plan_path)
+    if plan:
+        print(f"✅ Step 0: Plan detected - {plan}")
+    else:
+        print("⚠️ No plan found. Create one with: vibe:plan")
+        return
+    
+    # Step 1: Analysis
+    tasks = workflow.analyze_plan()
+    print(f"✅ Step 1: Found {len(tasks)} tasks")
+    
+    workflow.print_status()
+    print("\n🏯 Run /code in your IDE to continue the workflow")
+
+
+def cmd_vibe_plan(title: str = "New Feature"):
+    """Create a new implementation plan."""
+    from antigravity.core.vibe_ide import VIBEIDE
+    
+    print("\n📝 VIBE PLAN - Create Implementation Plan")
+    print("-" * 50)
+    
+    ide = VIBEIDE()
+    
+    description = input("   Description []: ").strip() or f"Implementation plan for {title}"
+    priority = input("   Priority [P2]: ").strip() or "P2"
+    
+    plan_file = ide.create_plan(
+        title=title,
+        description=description,
+        priority=priority
+    )
+    
+    print(f"\n✅ Plan created: {plan_file}")
+    print(f"   Next: Edit the plan and run vibe:code")
+
+
+def cmd_vibe_status():
+    """Show VIBE IDE dashboard."""
+    from antigravity.core.vibe_ide import VIBEIDE
+    from antigravity.core.vibe_orchestrator import VIBEOrchestrator
+    
+    ide = VIBEIDE()
+    orchestrator = VIBEOrchestrator()
+    
+    ide.print_dashboard()
+    orchestrator.print_status()
+
+
 def cmd_help():
     """Show help menu."""
     print("""
@@ -206,6 +265,13 @@ def cmd_help():
 ║  analytics              Full analytics                    ║
 ║  franchise              Franchise management              ║
 ║                                                           ║
+╠═══════════════════════════════════════════════════════════╣
+║  🚀 VIBE IDE (Development Workflow)                       ║
+║  ──────────────────────────────────────────────────────  ║
+║  vibe:code [plan]       Run 6-step dev workflow           ║
+║  vibe:plan "Title"      Create implementation plan        ║
+║  vibe:status            Show IDE dashboard                ║
+║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
     """)
 
@@ -231,6 +297,14 @@ def main():
         cmd_content_generate(count)
     elif command == "stats":
         cmd_stats()
+    elif command == "vibe:code":
+        plan_path = sys.argv[2] if len(sys.argv) > 2 else None
+        cmd_vibe_code(plan_path)
+    elif command == "vibe:plan":
+        title = sys.argv[2] if len(sys.argv) > 2 else "New Feature"
+        cmd_vibe_plan(title)
+    elif command == "vibe:status":
+        cmd_vibe_status()
     elif command == "help":
         cmd_help()
     else:

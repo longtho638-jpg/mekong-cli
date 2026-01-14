@@ -1,8 +1,8 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "name": "agency-cli",
-  "description": "Agency OS - Professional Agency Platform powered by AI Agents. 1 Person = 1 Professional Agency.",
-  "buildDate": "2025-12-19T11:48:40.000Z",
+  "description": "Agency OS Max Level WOW - Enterprise Agency Platform with Binh Pháp Integration. 1 Person = 1 Professional Agency.",
+  "buildDate": "2026-01-14T02:08:00.000Z",
   "repository": {
     "type": "git",
     "url": "https://github.com/agencyos/agency-cli.git"
