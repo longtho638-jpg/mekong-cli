@@ -1009,6 +1009,72 @@ def run_customer_profile():
     print("   Export: plans/customer_profile.md")
 
 
+def run_agencyos():
+    """
+    🏯 UNIFIED AGENCYOS FLOW
+    Complete workflow: brainstorm → plan → code → test → ship
+    """
+    print("\n🏯 AGENCYOS UNIFIED FLOW")
+    print("═" * 60)
+    
+    if len(sys.argv) > 2:
+        idea = " ".join(sys.argv[2:])
+    else:
+        idea = None
+    
+    print("""
+┌─────────────────────────────────────────────────────────────┐
+│                   🏯 AGENCYOS UNIFIED FLOW                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Phase 1: BRAINSTORM (Mưu Công)     → /binh-phap           │
+│  Phase 2: PLAN (Kế Hoạch)           → /plan                │
+│  Phase 3: CODE (Quân Tranh)         → /cook                │
+│  Phase 4: TEST (Hành Quân)          → /test                │
+│  Phase 5: SHIP (Cửu Địa)            → /ship                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+    """)
+    
+    if idea:
+        print(f"🎯 Task: {idea}")
+        print("\n" + "─" * 60)
+        
+        # Phase 1: Strategic Analysis
+        print("\n📍 PHASE 1: Strategic Analysis")
+        run_binh_phap()
+        
+        # Phase 2: Planning
+        print("\n📍 PHASE 2: Create Plan")
+        sys.argv = [sys.argv[0], "plan", idea]
+        run_plan()
+        
+        print("\n" + "─" * 60)
+        print("⏸️  APPROVAL GATE")
+        print("   Review: plans/task_plan.md")
+        print("   Then run: agencyos cook \"feature\"")
+        print("─" * 60)
+    else:
+        print("📋 USAGE:")
+        print("   python3 cli/main.py agencyos \"Your idea or task\"")
+        print()
+        print("📍 INDIVIDUAL PHASES:")
+        print("   1. python3 cli/main.py binh-phap \"idea\"   → Strategic analysis")
+        print("   2. python3 cli/main.py plan \"task\"        → Create plan")
+        print("   3. python3 cli/main.py cook \"feature\"     → Build")
+        print("   4. python3 cli/main.py test               → Verify")
+        print("   5. python3 cli/main.py ship               → Deploy")
+        print()
+        print("🔧 QUICK SETUP (add to ~/.zshrc):")
+        print("   alias agencyos='cd $(pwd) && PYTHONPATH=. python3 cli/main.py'")
+        print()
+        print("   Then use: agencyos binh-phap \"my idea\"")
+    
+    print("\n" + "═" * 60)
+    print("🏯 \"Không đánh mà thắng\" - Win Without Fighting")
+    print("═" * 60)
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -1047,6 +1113,9 @@ def main():
         # Business Commands
         "business-plan": run_business_plan,
         "customer-profile": run_customer_profile,
+        # Unified Flow
+        "agencyos": run_agencyos,
+        "aos": run_agencyos,  # Alias
         "help": print_help,
     }
     
