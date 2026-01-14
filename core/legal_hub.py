@@ -2,100 +2,113 @@
 ⚖️ Legal Hub - Legal Operations
 ==================================
 
-Central hub connecting all Legal roles.
+Central hub connecting all Legal roles with their operational tools.
 
 Integrates:
-- Contract Manager (contract_manager.py)
-- IP Manager (ip_manager.py)
-- Compliance Officer (compliance_officer.py)
+- Contract Manager
+- IP Manager
+- Compliance Officer
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from datetime import datetime
 
-# Import role modules
-from core.contract_manager import ContractManager
-from core.ip_manager import IPManager
-from core.compliance_officer import ComplianceOfficer
+# Import role modules with fallback for direct testing
+try:
+    from core.contract_manager import ContractManager
+    from core.ip_manager import IPManager
+    from core.compliance_officer import ComplianceOfficer
+except ImportError:
+    from contract_manager import ContractManager
+    from ip_manager import IPManager
+    from compliance_officer import ComplianceOfficer
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class LegalMetrics:
-    """Department-wide metrics."""
-    active_contracts: int
-    contract_value: float
-    ip_assets: int
-    compliance_score: float
-    pending_signatures: int
-    expiring_contracts: int
+    """Department-wide legal metrics container."""
+    active_contracts: int = 0
+    contract_value: float = 0.0
+    ip_assets: int = 0
+    compliance_score: float = 0.0
+    pending_signatures: int = 0
+    expiring_contracts: int = 0
 
 
 class LegalHub:
     """
-    Legal Hub.
+    Legal Hub System.
     
-    Legal operations center.
+    Orchestrates contracts, IP protections, and regulatory compliance across the agency.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         
-        # Initialize role modules
-        self.contracts = ContractManager(agency_name)
-        self.ip = IPManager(agency_name)
-        self.compliance = ComplianceOfficer(agency_name)
+        logger.info(f"Initializing Legal Hub for {agency_name}")
+        try:
+            self.contracts = ContractManager(agency_name)
+            self.ip = IPManager(agency_name)
+            self.compliance = ComplianceOfficer(agency_name)
+        except Exception as e:
+            logger.error(f"Legal Hub initialization failed: {e}")
+            raise
     
     def get_department_metrics(self) -> LegalMetrics:
-        """Get department-wide metrics."""
-        contract_stats = self.contracts.get_stats()
-        ip_stats = self.ip.get_stats()
-        compliance_stats = self.compliance.get_stats()
+        """Aggregate data from all legal specialized sub-modules."""
+        metrics = LegalMetrics()
         
-        return LegalMetrics(
-            active_contracts=contract_stats.get("active", 0),
-            contract_value=contract_stats.get("total_value", 0),
-            ip_assets=ip_stats.get("registered", 0),
-            compliance_score=compliance_stats.get("overall_score", 0),
-            pending_signatures=contract_stats.get("pending_signature", 0),
-            expiring_contracts=contract_stats.get("expiring_soon", 0)
-        )
+        try:
+            # 1. Contract Metrics
+            c_stats = self.contracts.get_stats()
+            metrics.active_contracts = c_stats.get("active_count", 0)
+            metrics.contract_value = float(c_stats.get("total_value", 0.0))
+            metrics.pending_signatures = c_stats.get("pending_count", 0)
+            
+            # 2. IP Metrics
+            i_stats = self.ip.get_stats()
+            metrics.ip_assets = i_stats.get("registered_count", 0)
+            
+            # 3. Compliance Metrics
+            co_stats = self.compliance.get_stats()
+            metrics.compliance_score = float(co_stats.get("overall_score", 0.0))
+            
+        except Exception as e:
+            logger.warning(f"Error aggregating Legal metrics: {e}")
+            
+        return metrics
     
     def format_hub_dashboard(self) -> str:
-        """Format the hub dashboard."""
-        metrics = self.get_department_metrics()
+        """Render the Legal Hub Dashboard."""
+        m = self.get_department_metrics()
         
-        score_icon = "🟢" if metrics.compliance_score >= 80 else "🟡" if metrics.compliance_score >= 60 else "🔴"
+        score_icon = "🟢" if m.compliance_score >= 80 else "🟡" if m.compliance_score >= 60 else "🔴"
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  ⚖️ LEGAL HUB                                             ║",
-            f"║  {self.agency_name:<50}  ║",
+            f"║  ⚖️ LEGAL HUB{' ' * 47}║",
+            f"║  {self.agency_name[:50]:<50}         ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 DEPARTMENT METRICS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Active Contracts:   {metrics.active_contracts:>5}                          ║",
-            f"║    💰 Contract Value:     ${metrics.contract_value:>10,.0f}                ║",
-            f"║    ©️ IP Assets:           {metrics.ip_assets:>5}                          ║",
-            f"║    {score_icon} Compliance Score:   {metrics.compliance_score:>5.0f}%                         ║",
-            f"║    ✍️ Pending Signatures:  {metrics.pending_signatures:>5}                          ║",
-            f"║    ⏰ Expiring Soon:       {metrics.expiring_contracts:>5}                          ║",
+            "║  📊 CONSOLIDATED LEGAL METRICS                            ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    📋 Active Contracts:   {m.active_contracts:>5}                          ║",
+            f"║    💰 Total Contract Val: ${m.contract_value:>10,.0f}                ║",
+            f"║    ©️ Registered IP:       {m.ip_assets:>5}                          ║",
+            f"║    {score_icon} Compliance Score:   {m.compliance_score:>5.0f}%                         ║",
+            f"║    ✍️ Pending Signatures:  {m.pending_signatures:>5}                          ║",
             "║                                                           ║",
-            "║  🔗 LEGAL ROLES                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    📋 Contract Manager  → MSA, SOW, NDA, e-sign          ║",
-            "║    ©️ IP Manager        → Trademarks, copyrights         ║",
-            "║    🔒 Compliance        → GDPR, privacy, audits          ║",
+            "║  🔗 SERVICE INTEGRATIONS                                  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            "║    📋 Contracts │ ©️ IP Protection │ 🔒 Compliance Audit  ║",
             "║                                                           ║",
-            "║  📋 LEGAL TEAM                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📋 Contracts        │ {metrics.active_contracts} active, ${metrics.contract_value:,.0f}    ║",
-            f"║    ©️ IP               │ {metrics.ip_assets} registered assets    ║",
-            f"║    🔒 Compliance       │ {metrics.compliance_score:.0f}% compliant          ║",
-            "║                                                           ║",
-            "║  [📋 Contracts]  [©️ IP]  [🔒 Compliance]                 ║",
+            "║  [📋 Contracts]  [©️ IP]  [🔒 Audit]  [⚙️ Settings]      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Legal protection!               ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Protected!         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
         
@@ -104,10 +117,11 @@ class LegalHub:
 
 # Example usage
 if __name__ == "__main__":
-    hub = LegalHub("Saigon Digital Hub")
-    
-    print("⚖️ Legal Hub")
+    print("⚖️ Initializing Legal Hub...")
     print("=" * 60)
-    print()
     
-    print(hub.format_hub_dashboard())
+    try:
+        hub = LegalHub("Saigon Digital Hub")
+        print("\n" + hub.format_hub_dashboard())
+    except Exception as e:
+        logger.error(f"Hub Error: {e}")

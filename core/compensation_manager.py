@@ -213,6 +213,16 @@ class CompensationManager:
         if not band or band.mid_salary == 0: return 1.0
         return c.base_salary / band.mid_salary
     
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Aggregate high-level compensation performance metrics."""
+        count = len(self.compensation)
+        total_salary = sum(c.base_salary for c in self.compensation.values())
+        return {
+            "total_records": count,
+            "avg_salary": total_salary / count if count else 0.0,
+            "benefits_count": len(self.benefits)
+        }
+    
     def format_dashboard(self) -> str:
         """Render Compensation Dashboard."""
         count = len(self.compensation)

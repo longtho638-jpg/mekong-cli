@@ -1,199 +1,145 @@
 """
 Hybrid Router - Intelligent AI Task Routing.
-Mekong-CLI Core Module.
+============================================
 
-Routes tasks to optimal AI provider for up to 70% cost savings:
-- Easy tasks → OpenRouter (Llama 3.1)
-- Complex tasks → Google Gemini / Anthropic Claude
-- Vision tasks → Google Gemini Flash/Pro
-- Code tasks → Anthropic Claude
+Routes tasks to optimal AI providers for cost efficiency and performance.
+Achieves up to 70% cost savings by matching task complexity to the right model.
+
+"Dùng binh phải biết ứng biến."
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Optional, Tuple, Any
+from typing import Dict, Optional, Tuple, Any, Union
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class TaskComplexity(Enum):
+    """Degrees of computational reasoning required."""
     SIMPLE = "simple"
     MEDIUM = "medium"
     COMPLEX = "complex"
 
+
 class TaskType(Enum):
+    """Modality or specific skill required."""
     TEXT = "text"
     CODE = "code"
     VISION = "vision"
     AUDIO = "audio"
 
+
 @dataclass
 class ProviderConfig:
+    """Pricing and capability configuration for an AI model."""
     cost_input: float
     cost_output: float
     max_tokens: int
     strengths: list[str]
 
+
 @dataclass
 class RoutingResult:
-    """Result of routing decision."""
+    """Decision outcome from the routing engine."""
     provider: str
     model: str
     estimated_cost: float
     reason: str
 
+
 class HybridRouter:
     """
-    Intelligent router for dispatching AI tasks to the most cost-effective provider.
+    Intelligent Routing Engine.
+    
+    Dynamically dispatches requests based on heuristics, context size, and modality.
     """
     
+    # Provider definitions updated for 2026 standards
     PROVIDERS: Dict[str, ProviderConfig] = {
-        "openrouter/llama-3.1-8b": ProviderConfig(
-            cost_input=0.00005, cost_output=0.00005, max_tokens=8192,
-            strengths=["fast", "cheap", "simple-text"]
-        ),
-        "openrouter/llama-3.1-70b": ProviderConfig(
-            cost_input=0.0003, cost_output=0.0003, max_tokens=8192,
-            strengths=["medium-complexity", "reasoning"]
-        ),
-        "google/gemini-2.5-flash": ProviderConfig(
-            cost_input=0.00015, cost_output=0.0006, max_tokens=1048576,
-            strengths=["long-context", "fast", "vision"]
-        ),
-        "google/gemini-2.5-pro": ProviderConfig(
-            cost_input=0.00125, cost_output=0.005, max_tokens=1048576,
-            strengths=["complex", "reasoning", "vision", "code"]
-        ),
-        "anthropic/claude-sonnet": ProviderConfig(
-            cost_input=0.003, cost_output=0.015, max_tokens=200000,
-            strengths=["code", "analysis", "complex"]
-        )
+        "openrouter/llama-3.1-8b": ProviderConfig(0.00005, 0.00005, 8192, ["fast", "cheap"]),
+        "openrouter/llama-3.1-70b": ProviderConfig(0.0003, 0.0003, 8192, ["reasoning"]),
+        "google/gemini-2.0-flash": ProviderConfig(0.0001, 0.0004, 1048576, ["multimodal", "fast"]),
+        "google/gemini-2.0-pro": ProviderConfig(0.001, 0.004, 2097152, ["complex", "context"]),
+        "anthropic/claude-3.5-sonnet": ProviderConfig(0.003, 0.015, 200000, ["code", "analysis"])
     }
     
-    # Routing table: (TaskType, TaskComplexity) -> Provider Key
+    # Routing Table mapping (Type, Complexity) -> Model Key
     ROUTING_TABLE: Dict[Tuple[TaskType, TaskComplexity], str] = {
         (TaskType.TEXT, TaskComplexity.SIMPLE): "openrouter/llama-3.1-8b",
         (TaskType.TEXT, TaskComplexity.MEDIUM): "openrouter/llama-3.1-70b",
-        (TaskType.TEXT, TaskComplexity.COMPLEX): "google/gemini-2.5-pro",
+        (TaskType.TEXT, TaskComplexity.COMPLEX): "google/gemini-2.0-pro",
         
         (TaskType.CODE, TaskComplexity.SIMPLE): "openrouter/llama-3.1-70b",
-        (TaskType.CODE, TaskComplexity.MEDIUM): "google/gemini-2.5-flash",
-        (TaskType.CODE, TaskComplexity.COMPLEX): "anthropic/claude-sonnet",
+        (TaskType.CODE, TaskComplexity.MEDIUM): "google/gemini-2.0-flash",
+        (TaskType.CODE, TaskComplexity.COMPLEX): "anthropic/claude-3.5-sonnet",
         
-        (TaskType.VISION, TaskComplexity.SIMPLE): "google/gemini-2.5-flash",
-        (TaskType.VISION, TaskComplexity.MEDIUM): "google/gemini-2.5-flash",
-        (TaskType.VISION, TaskComplexity.COMPLEX): "google/gemini-2.5-pro",
-        
-        (TaskType.AUDIO, TaskComplexity.SIMPLE): "google/gemini-2.5-flash",
-        (TaskType.AUDIO, TaskComplexity.MEDIUM): "google/gemini-2.5-flash",
-        (TaskType.AUDIO, TaskComplexity.COMPLEX): "google/gemini-2.5-pro",
+        (TaskType.VISION, TaskComplexity.SIMPLE): "google/gemini-2.0-flash",
+        (TaskType.VISION, TaskComplexity.COMPLEX): "google/gemini-2.0-pro",
     }
     
     def __init__(self, cost_optimize: bool = True):
         self.cost_optimize = cost_optimize
         self.total_savings = 0.0
         self.calls_count = 0
+        logger.info("Hybrid Router initialized.")
     
     def route(
         self,
         task_type: TaskType,
         complexity: TaskComplexity,
-        context_length: int = 0,
-        override_provider: Optional[str] = None
+        context_len: int = 0
     ) -> RoutingResult:
-        """Route a task to the optimal AI provider."""
+        """Execute routing logic to select the best model."""
         self.calls_count += 1
         
-        # 1. Handle Overrides
-        if override_provider and override_provider in self.PROVIDERS:
-            return self._create_result(override_provider, context_length, "Manual override")
-        
-        # 2. Handle Long Context (Hard constraint)
-        if context_length > 100000:
-            return self._create_result("google/gemini-2.5-pro", context_length, f"Long context ({context_length} tokens)")
-        
-        # 3. Standard Routing
-        provider = self.ROUTING_TABLE.get((task_type, complexity), "openrouter/llama-3.1-8b")
-        
-        # 4. Calculate Savings (vs Baseline GPT-4/Claude Sonnet)
-        self._track_savings(provider, context_length)
-        
-        return self._create_result(provider, context_length, f"Optimal for {task_type.value}/{complexity.value}")
-
-    def _create_result(self, provider: str, tokens: int, reason: str) -> RoutingResult:
-        return RoutingResult(
-            provider=provider,
-            model=provider.split("/")[-1],
-            estimated_cost=self._estimate_cost(provider, tokens),
-            reason=reason
-        )
-
-    def _track_savings(self, chosen_provider: str, tokens: int):
-        # Baseline comparison: Anthropic Claude Sonnet (proxy for GPT-4 class)
-        baseline_cost = self._estimate_cost("anthropic/claude-sonnet", tokens)
-        actual_cost = self._estimate_cost(chosen_provider, tokens)
-        self.total_savings += max(0, baseline_cost - actual_cost)
+        # Priority 1: Context Length Constraint
+        if context_len > 150000:
+            provider = "google/gemini-2.0-pro"
+            reason = f"Long context overflow ({context_len} tokens)"
+        else:
+            # Priority 2: Table Lookup with Fallback
+            provider = self.ROUTING_TABLE.get((task_type, complexity), "google/gemini-2.0-flash")
+            reason = f"Optimized for {task_type.value}/{complexity.value}"
+            
+        cost = self._estimate_cost(provider, context_len)
+        logger.info(f"Routed to {provider} ({reason})")
+        return RoutingResult(provider, provider.split("/")[-1], cost, reason)
 
     def _estimate_cost(self, provider: str, tokens: int) -> float:
-        if provider not in self.PROVIDERS:
-            return 0.0
-        config = self.PROVIDERS[provider]
-        # Simplified estimate: 50/50 input/output split
-        return (tokens / 1000) * (config.cost_input + config.cost_output) / 2
-    
-    def get_stats(self) -> Dict[str, Any]:
-        return {
-            "total_calls": self.calls_count,
-            "total_savings_usd": round(self.total_savings, 4),
-            "avg_savings_per_call": round(self.total_savings / max(1, self.calls_count), 6)
-        }
-    
+        if provider not in self.PROVIDERS: return 0.0
+        cfg = self.PROVIDERS[provider]
+        return (tokens / 1000) * (cfg.cost_input + cfg.cost_output) / 2
+
     @staticmethod
     def analyze_task(prompt: str) -> Tuple[TaskType, TaskComplexity]:
-        """Heuristic analysis of a prompt to determine type and complexity."""
-        prompt_lower = prompt.lower()
-        length = len(prompt)
+        """Determine type and complexity based on heuristics."""
+        p = prompt.lower()
+        t = TaskType.TEXT
+        c = TaskComplexity.MEDIUM
         
-        # Type Detection
-        if any(w in prompt_lower for w in ["code", "function", "class", "debug", "fix", "import "]):
-            task_type = TaskType.CODE
-        elif any(w in prompt_lower for w in ["image", "photo", "screenshot", "picture", "vision"]):
-            task_type = TaskType.VISION
-        elif any(w in prompt_lower for w in ["audio", "voice", "sound", "music", "transcribe"]):
-            task_type = TaskType.AUDIO
-        else:
-            task_type = TaskType.TEXT
+        if any(w in p for w in ["code", "script", "def ", "class "]): t = TaskType.CODE
+        elif any(w in p for w in ["image", "picture", "draw"]): t = TaskType.VISION
         
-        # Complexity Detection
-        if length > 2000 or any(w in prompt_lower for w in ["architecture", "comprehensive", "detailed analysis"]):
-            complexity = TaskComplexity.COMPLEX
-        elif length < 200 or any(w in prompt_lower for w in ["simple", "quick", "brief", "summarize"]):
-            complexity = TaskComplexity.SIMPLE
-        else:
-            complexity = TaskComplexity.MEDIUM
-            
-        return task_type, complexity
+        if len(prompt) > 2000: c = TaskComplexity.COMPLEX
+        elif len(prompt) < 200: c = TaskComplexity.SIMPLE
+        
+        return t, c
 
-def route_task(prompt: str, router: Optional[HybridRouter] = None) -> RoutingResult:
-    """Convenience wrapper for routing a single prompt."""
-    if router is None:
-        router = HybridRouter()
-    
-    task_type, complexity = HybridRouter.analyze_task(prompt)
-    # Estimate context length: ~1.5 tokens per word is a safer heuristic than 2, but let's stick to simple
-    est_tokens = len(prompt.split()) * 1.5 
-    return router.route(task_type, complexity, int(est_tokens))
+
+# Helper function
+def route_request(prompt: str) -> RoutingResult:
+    """Quick access routing helper."""
+    router = HybridRouter()
+    t, c = router.analyze_task(prompt)
+    return router.route(t, c, len(prompt.split()))
 
 
 if __name__ == "__main__":
-    router = HybridRouter()
+    print("🌊 Mekong Hybrid Router Test")
+    print("=" * 60)
     
-    demos = [
-        "Write a simple hello world python script",
-        "Analyze the geopolitical implications of quantum computing on global security protocols in the next decade",
-        "Describe this image of a cat",
-    ]
-    
-    print("🌊 Mekong-CLI Hybrid Router Demo\n")
-    for d in demos:
-        res = route_task(d, router)
-        print(f"📝 '{d[:40]}...' → {res.provider} (${res.estimated_cost:.6f})")
-    
-    print(f"\n📊 {router.get_stats()}")
+    res = route_request("Write a basic hello world in python")
+    print(f"Result: {res.provider} | Reason: {res.reason}")

@@ -12,29 +12,30 @@ Features:
 - RTL support ready
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class Language(Enum):
-    """Supported languages."""
-    EN = "en"      # English
-    VI = "vi"      # Vietnamese
-    ES = "es"      # Spanish
-    FR = "fr"      # French
-    DE = "de"      # German
-    ZH = "zh"      # Chinese
-    JA = "ja"      # Japanese
-    KO = "ko"      # Korean
-    PT = "pt"      # Portuguese
-    AR = "ar"      # Arabic (RTL)
+    """Supported business languages."""
+    EN = "en"
+    VI = "vi"
+    ES = "es"
+    FR = "fr"
+    ZH = "zh"
+    JA = "ja"
+    AR = "ar"
 
 
 @dataclass
 class LanguageConfig:
-    """Language configuration."""
+    """Configuration metadata for a language."""
     code: str
     name: str
     native_name: str
@@ -44,189 +45,97 @@ class LanguageConfig:
 
 class I18nManager:
     """
-    Internationalization Manager.
+    Internationalization Manager System.
     
-    Multi-language support for Agency OS.
+    Orchestrates localized content and system translations across the Agency OS.
     """
     
-    LANGUAGES = {
+    LANG_REGISTRY = {
         Language.EN: LanguageConfig("en", "English", "English", "🇺🇸"),
         Language.VI: LanguageConfig("vi", "Vietnamese", "Tiếng Việt", "🇻🇳"),
-        Language.ES: LanguageConfig("es", "Spanish", "Español", "🇪🇸"),
-        Language.FR: LanguageConfig("fr", "French", "Français", "🇫🇷"),
-        Language.DE: LanguageConfig("de", "German", "Deutsch", "🇩🇪"),
-        Language.ZH: LanguageConfig("zh", "Chinese", "中文", "🇨🇳"),
         Language.JA: LanguageConfig("ja", "Japanese", "日本語", "🇯🇵"),
-        Language.KO: LanguageConfig("ko", "Korean", "한국어", "🇰🇷"),
-        Language.PT: LanguageConfig("pt", "Portuguese", "Português", "🇧🇷"),
         Language.AR: LanguageConfig("ar", "Arabic", "العربية", "🇸🇦", rtl=True),
     }
     
-    # Core translations
     TRANSLATIONS = {
-        "welcome": {
-            "en": "Welcome to Agency OS",
-            "vi": "Chào mừng đến với Agency OS",
-            "es": "Bienvenido a Agency OS",
-            "fr": "Bienvenue sur Agency OS",
-            "de": "Willkommen bei Agency OS",
-            "zh": "欢迎使用 Agency OS",
-            "ja": "Agency OS へようこそ",
-            "ko": "Agency OS에 오신 것을 환영합니다",
-        },
-        "dashboard": {
-            "en": "Dashboard",
-            "vi": "Bảng điều khiển",
-            "es": "Panel de control",
-            "fr": "Tableau de bord",
-            "de": "Dashboard",
-            "zh": "仪表板",
-            "ja": "ダッシュボード",
-            "ko": "대시보드",
-        },
-        "clients": {
-            "en": "Clients",
-            "vi": "Khách hàng",
-            "es": "Clientes",
-            "fr": "Clients",
-            "de": "Kunden",
-            "zh": "客户",
-            "ja": "クライアント",
-            "ko": "고객",
-        },
-        "projects": {
-            "en": "Projects",
-            "vi": "Dự án",
-            "es": "Proyectos",
-            "fr": "Projets",
-            "de": "Projekte",
-            "zh": "项目",
-            "ja": "プロジェクト",
-            "ko": "프로젝트",
-        },
-        "invoices": {
-            "en": "Invoices",
-            "vi": "Hóa đơn",
-            "es": "Facturas",
-            "fr": "Factures",
-            "de": "Rechnungen",
-            "zh": "发票",
-            "ja": "請求書",
-            "ko": "청구서",
-        },
-        "reports": {
-            "en": "Reports",
-            "vi": "Báo cáo",
-            "es": "Informes",
-            "fr": "Rapports",
-            "de": "Berichte",
-            "zh": "报告",
-            "ja": "レポート",
-            "ko": "보고서",
-        },
-        "settings": {
-            "en": "Settings",
-            "vi": "Cài đặt",
-            "es": "Configuración",
-            "fr": "Paramètres",
-            "de": "Einstellungen",
-            "zh": "设置",
-            "ja": "設定",
-            "ko": "설정",
-        },
-        "thank_you": {
-            "en": "Thank you for choosing us!",
-            "vi": "Cảm ơn bạn đã chọn chúng tôi!",
-            "es": "¡Gracias por elegirnos!",
-            "fr": "Merci de nous avoir choisis!",
-            "de": "Danke, dass Sie uns gewählt haben!",
-            "zh": "感谢您选择我们!",
-            "ja": "お選びいただきありがとうございます!",
-            "ko": "저희를 선택해 주셔서 감사합니다!",
-        },
+        "welcome": {"en": "Welcome", "vi": "Chào mừng", "ja": "ようこそ"},
+        "dashboard": {"en": "Dashboard", "vi": "Bảng điều khiển", "ja": "ダッシュボード"},
+        "settings": {"en": "Settings", "vi": "Cài đặt", "ja": "設定"},
     }
     
-    def __init__(self, default_language: Language = Language.EN):
-        self.current_language = default_language
-        self.custom_translations: Dict[str, Dict[str, str]] = {}
+    def __init__(self, default_lang: Language = Language.EN):
+        self.current_lang = default_lang
+        self.custom_map: Dict[str, Dict[str, str]] = {}
+        logger.info(f"I18n Manager initialized. Default: {default_lang.value}")
     
-    def set_language(self, language: Language):
-        """Set current language."""
-        self.current_language = language
+    def set_lang(self, lang: Language):
+        """Switch the current active system language."""
+        if lang in self.LANG_REGISTRY:
+            self.current_lang = lang
+            logger.info(f"System language set to: {lang.value}")
+        else:
+            logger.error(f"Unsupported language: {lang}")
     
-    def t(self, key: str) -> str:
-        """Translate a key to current language."""
-        lang_code = self.current_language.value
+    def t(self, key: str, **kwargs) -> str:
+        """Translate a string key into the current active language."""
+        code = self.current_lang.value
         
-        # Check custom translations first
-        if key in self.custom_translations:
-            if lang_code in self.custom_translations[key]:
-                return self.custom_translations[key][lang_code]
+        # 1. Check custom overrides
+        val = self.custom_map.get(key, {}).get(code)
         
-        # Fall back to built-in translations
-        if key in self.TRANSLATIONS:
-            return self.TRANSLATIONS[key].get(lang_code, self.TRANSLATIONS[key].get("en", key))
-        
-        return key
+        # 2. Check system translations
+        if not val:
+            val = self.TRANSLATIONS.get(key, {}).get(code)
+            
+        # 3. Fallback to English
+        if not val:
+            val = self.TRANSLATIONS.get(key, {}).get("en", key)
+            
+        # 4. Perform variable interpolation
+        if kwargs:
+            try:
+                val = val.format(**kwargs)
+            except KeyError as e:
+                logger.warning(f"Translation interpolation error for {key}: missing {e}")
+                
+        return val
     
-    def add_translation(self, key: str, translations: Dict[str, str]):
-        """Add custom translation."""
-        self.custom_translations[key] = translations
-    
-    def get_available_languages(self) -> List[LanguageConfig]:
-        """Get list of available languages."""
-        return list(self.LANGUAGES.values())
-    
-    def format_language_selector(self) -> str:
-        """Format language selector."""
-        current = self.LANGUAGES[self.current_language]
+    def format_status(self) -> str:
+        """Render the I18n Status Dashboard."""
+        current = self.LANG_REGISTRY[self.current_lang]
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🌍 MULTI-LANGUAGE SUPPORT                                ║",
-            f"║  Current: {current.flag} {current.native_name:<42}  ║",
+            f"║  🌍 I18N SYSTEM STATUS - {self.current_lang.value.upper()}{' ' * 32}║",
+            f"║  Active: {current.flag} {current.native_name:<15} │ RTL: {'Yes' if current.rtl else 'No ':<10} {' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🌐 AVAILABLE LANGUAGES                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🌐 SUPPORTED LOCALES                                     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for lang, config in self.LANGUAGES.items():
-            selected = "●" if lang == self.current_language else "○"
-            rtl_badge = " (RTL)" if config.rtl else ""
-            lines.append(f"║  {selected} {config.flag} {config.native_name:<15} ({config.name}){rtl_badge:<10}  ║")
-        
+        for lang, cfg in self.LANG_REGISTRY.items():
+            sel = "●" if lang == self.current_lang else "○"
+            lines.append(f"║  {sel} {cfg.flag} {cfg.native_name:<15} ({cfg.code}) {' ' * 30} ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  📝 SAMPLE TRANSLATIONS                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for key in ["welcome", "dashboard", "clients", "invoices"]:
-            translation = self.t(key)
-            lines.append(f"║    {key:<12}: {translation[:38]:<38}  ║")
-        
-        lines.extend([
+            "║  [🌐 Change Language]  [📝 Edit Translations]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🏯 Agency OS - Global by design!                         ║",
+            f"║  🏯 Global Agency OS - \"World is Local\"{' ' * 19}║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    i18n = I18nManager(Language.EN)
-    
-    print("🌍 Multi-Language (i18n) Support")
+    print("🌍 Initializing I18n...")
     print("=" * 60)
-    print()
     
-    print("English:")
-    print(i18n.format_language_selector())
-    print()
-    
-    # Switch to Vietnamese
-    i18n.set_language(Language.VI)
-    print("Vietnamese:")
-    print(i18n.format_language_selector())
+    try:
+        manager = I18nManager(Language.VI)
+        print("\n" + manager.format_status())
+        print(f"\nExample translation (Dashboard): {manager.t('dashboard')}")
+        
+    except Exception as e:
+        logger.error(f"I18n Error: {e}")

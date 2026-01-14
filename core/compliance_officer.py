@@ -187,6 +187,15 @@ class ComplianceOfficer:
         if not self.checklists: return 100
         return int(sum(c.score for c in self.checklists.values()) / len(self.checklists))
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate high-level compliance performance metrics."""
+        return {
+            "overall_score": self.get_overall_compliance_score(),
+            "checklist_count": len(self.checklists),
+            "document_count": len(self.documents),
+            "audit_log_count": len(self.audit_logs)
+        }
+    
     def format_dashboard(self) -> str:
         """Render Compliance Dashboard."""
         overall = self.get_overall_compliance_score()

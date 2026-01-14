@@ -12,15 +12,19 @@ Features:
 - Improvement insights
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class FeedbackCategory(Enum):
-    """Feedback categories."""
+    """Specific areas of agency performance."""
     COMMUNICATION = "communication"
     QUALITY = "quality"
     TIMELINESS = "timeliness"
@@ -29,7 +33,7 @@ class FeedbackCategory(Enum):
 
 
 class NPSCategory(Enum):
-    """NPS score categories."""
+    """NPS loyalty segments."""
     DETRACTOR = "detractor"      # 0-6
     PASSIVE = "passive"          # 7-8
     PROMOTER = "promoter"        # 9-10
@@ -37,43 +41,43 @@ class NPSCategory(Enum):
 
 @dataclass
 class Feedback:
-    """A client feedback entry."""
+    """A client feedback record entity."""
     id: str
     client_name: str
     client_company: str
     project_name: str
     nps_score: int  # 0-10
     category_scores: Dict[FeedbackCategory, int]  # 1-5
-    comments: str
-    would_recommend: bool
+    comments: str = ""
+    would_recommend: bool = True
     created_at: datetime = field(default_factory=datetime.now)
     
+    def __post_init__(self):
+        if not 0 <= self.nps_score <= 10:
+            raise ValueError("NPS score must be 0-10")
+        for score in self.category_scores.values():
+            if not 1 <= score <= 5:
+                raise ValueError("Category score must be 1-5")
+
     @property
     def nps_category(self) -> NPSCategory:
-        if self.nps_score <= 6:
-            return NPSCategory.DETRACTOR
-        elif self.nps_score <= 8:
-            return NPSCategory.PASSIVE
-        else:
-            return NPSCategory.PROMOTER
-    
-    @property
-    def avg_satisfaction(self) -> float:
-        if not self.category_scores:
-            return 0
-        return sum(self.category_scores.values()) / len(self.category_scores)
+        """Categorize responder based on NPS score."""
+        if self.nps_score <= 6: return NPSCategory.DETRACTOR
+        if self.nps_score <= 8: return NPSCategory.PASSIVE
+        return NPSCategory.PROMOTER
 
 
 class FeedbackSystem:
     """
     Feedback System.
     
-    Collect and analyze client feedback.
+    Tracks Net Promoter Score and multi-factor satisfaction metrics.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.feedbacks: List[Feedback] = []
+        logger.info(f"Feedback System initialized for {agency_name}")
     
     def collect_feedback(
         self,
@@ -82,210 +86,78 @@ class FeedbackSystem:
         project_name: str,
         nps_score: int,
         category_scores: Dict[FeedbackCategory, int],
-        comments: str = "",
-        would_recommend: bool = True
+        comments: str = ""
     ) -> Feedback:
-        """Collect new feedback."""
-        feedback = Feedback(
+        """Register a new piece of client feedback."""
+        fb = Feedback(
             id=f"FB-{uuid.uuid4().hex[:6].upper()}",
-            client_name=client_name,
-            client_company=client_company,
-            project_name=project_name,
-            nps_score=nps_score,
-            category_scores=category_scores,
-            comments=comments,
-            would_recommend=would_recommend
+            client_name=client_name, client_company=client_company,
+            project_name=project_name, nps_score=nps_score,
+            category_scores=category_scores, comments=comments
         )
-        
-        self.feedbacks.append(feedback)
-        return feedback
+        self.feedbacks.append(fb)
+        logger.info(f"Feedback collected from {client_name} ({client_company})")
+        return fb
     
     def calculate_nps(self) -> float:
-        """Calculate Net Promoter Score."""
-        if not self.feedbacks:
-            return 0
+        """Calculate aggregate Net Promoter Score."""
+        if not self.feedbacks: return 0.0
         
         promoters = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.PROMOTER)
         detractors = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.DETRACTOR)
-        total = len(self.feedbacks)
-        
-        return ((promoters - detractors) / total) * 100
-    
-    def get_category_averages(self) -> Dict[FeedbackCategory, float]:
-        """Get average scores by category."""
-        if not self.feedbacks:
-            return {}
-        
-        category_totals = {cat: [] for cat in FeedbackCategory}
-        
-        for feedback in self.feedbacks:
-            for cat, score in feedback.category_scores.items():
-                category_totals[cat].append(score)
-        
-        return {
-            cat: sum(scores) / len(scores) if scores else 0
-            for cat, scores in category_totals.items()
-        }
-    
-    def format_feedback(self, feedback: Feedback) -> str:
-        """Format single feedback."""
-        nps_icons = {
-            NPSCategory.DETRACTOR: "🔴",
-            NPSCategory.PASSIVE: "🟡",
-            NPSCategory.PROMOTER: "🟢"
-        }
-        
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💬 FEEDBACK: {feedback.id:<39}  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Client: {feedback.client_name} ({feedback.client_company[:20]})         ║",
-            f"║  Project: {feedback.project_name:<43}  ║",
-            "║                                                           ║",
-            f"║  📊 NPS Score: {feedback.nps_score}/10 {nps_icons[feedback.nps_category]} {feedback.nps_category.value.upper():<30}  ║",
-            "║                                                           ║",
-            "║  📋 CATEGORY SCORES (1-5):                                ║",
-        ]
-        
-        cat_icons = {
-            FeedbackCategory.COMMUNICATION: "📞",
-            FeedbackCategory.QUALITY: "⭐",
-            FeedbackCategory.TIMELINESS: "⏰",
-            FeedbackCategory.VALUE: "💰",
-            FeedbackCategory.SUPPORT: "🤝"
-        }
-        
-        for cat, score in feedback.category_scores.items():
-            stars = "★" * score + "☆" * (5 - score)
-            lines.append(f"║    {cat_icons[cat]} {cat.value.capitalize():<14}: {stars}        ║")
-        
-        if feedback.comments:
-            lines.extend([
-                "║                                                           ║",
-                f"║  💬 \"{feedback.comments[:45]}\"  ║",
-            ])
-        
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name}                                    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
+        return ((promoters - detractors) / len(self.feedbacks)) * 100.0
     
     def format_dashboard(self) -> str:
-        """Format feedback dashboard."""
+        """Render the Feedback Dashboard."""
         nps = self.calculate_nps()
-        category_avgs = self.get_category_averages()
-        
-        promoters = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.PROMOTER)
-        passives = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.PASSIVE)
-        detractors = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.DETRACTOR)
-        
-        # NPS rating
-        if nps >= 70:
-            nps_rating = "🔥 WORLD CLASS!"
-        elif nps >= 50:
-            nps_rating = "✅ EXCELLENT"
-        elif nps >= 0:
-            nps_rating = "🟡 GOOD"
-        else:
-            nps_rating = "🔴 NEEDS WORK"
+        total = len(self.feedbacks)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📊 FEEDBACK DASHBOARD                                    ║",
-            f"║  Total Responses: {len(self.feedbacks):<35}  ║",
+            f"║  📊 FEEDBACK DASHBOARD{' ' * 36}║",
+            f"║  {total} total responses │ Aggregate NPS: {nps:>+4.0f}{' ' * 23}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🎯 NET PROMOTER SCORE (NPS)                              ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🎯 LOYALTY SEGMENTS                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        # NPS display
-        nps_bar_pos = int(30 * (nps + 100) / 200)  # -100 to +100
-        nps_bar = "░" * nps_bar_pos + "█" + "░" * (30 - nps_bar_pos)
-        
+        for cat, icon in [(NPSCategory.PROMOTER, "🟢"), (NPSCategory.PASSIVE, "🟡"), (NPSCategory.DETRACTOR, "🔴")]:
+            count = sum(1 for f in self.feedbacks if f.nps_category == cat)
+            pct = (count / total * 100) if total else 0
+            bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
+            lines.append(f"║  {icon} {cat.value.capitalize():<12} │ {bar} │ {count:>3} clients ({pct:>3.0f}%)  ║")
+            
         lines.extend([
-            f"║    [{nps_bar}]      ║",
-            f"║    NPS: {nps:>+.0f}  {nps_rating:<35}  ║",
             "║                                                           ║",
-            f"║    🟢 Promoters: {promoters:<3} │ 🟡 Passives: {passives:<3} │ 🔴 Detractors: {detractors:<2} ║",
-            "║                                                           ║",
-            "║  📋 CATEGORY PERFORMANCE                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📝 RECENT COMMENTS                                       ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        cat_icons = {"communication": "📞", "quality": "⭐", "timeliness": "⏰", "value": "💰", "support": "🤝"}
-        
-        for cat, avg in category_avgs.items():
-            icon = cat_icons[cat.value]
-            bar_filled = int(20 * avg / 5)
-            bar = "█" * bar_filled + "░" * (20 - bar_filled)
-            lines.append(f"║    {icon} {cat.value.capitalize():<12} [{bar}] {avg:.1f}/5  ║")
-        
+        for f in self.feedbacks[-2:]:
+            com = (f.comments[:50] + '..') if len(f.comments) > 52 else f.comments
+            lines.append(f"║  💬 \"{com:<53}\" ║")
+            
         lines.extend([
+            "║                                                           ║",
+            "║  [📊 Full Report]  [📝 Send Survey]  [⚙️ Settings]        ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Keep improving!                  ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Feedback!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    system = FeedbackSystem("Saigon Digital Hub")
-    
-    print("💬 Feedback System")
+    print("💬 Initializing Feedback System...")
     print("=" * 60)
-    print()
     
-    # Collect sample feedback
-    system.collect_feedback(
-        client_name="Mr. Hoang",
-        client_company="Sunrise Realty",
-        project_name="Website Redesign",
-        nps_score=9,
-        category_scores={
-            FeedbackCategory.COMMUNICATION: 5,
-            FeedbackCategory.QUALITY: 5,
-            FeedbackCategory.TIMELINESS: 4,
-            FeedbackCategory.VALUE: 5,
-            FeedbackCategory.SUPPORT: 5
-        },
-        comments="Excellent work! Very professional team."
-    )
-    
-    system.collect_feedback(
-        client_name="Ms. Linh",
-        client_company="Coffee Lab",
-        project_name="SEO Campaign",
-        nps_score=10,
-        category_scores={
-            FeedbackCategory.COMMUNICATION: 5,
-            FeedbackCategory.QUALITY: 5,
-            FeedbackCategory.TIMELINESS: 5,
-            FeedbackCategory.VALUE: 4,
-            FeedbackCategory.SUPPORT: 5
-        },
-        comments="Amazing results! Our traffic doubled."
-    )
-    
-    system.collect_feedback(
-        client_name="Dr. Pham",
-        client_company="Dental Plus",
-        project_name="Social Media",
-        nps_score=8,
-        category_scores={
-            FeedbackCategory.COMMUNICATION: 4,
-            FeedbackCategory.QUALITY: 4,
-            FeedbackCategory.TIMELINESS: 4,
-            FeedbackCategory.VALUE: 4,
-            FeedbackCategory.SUPPORT: 4
-        },
-        comments="Good overall, some minor delays."
-    )
-    
-    print(system.format_dashboard())
-    print()
-    print(system.format_feedback(system.feedbacks[0]))
+    try:
+        f_system = FeedbackSystem("Saigon Digital Hub")
+        f_system.collect_feedback("Hoang", "Sunrise", "Web", 10, {FeedbackCategory.QUALITY: 5}, "Great!")
+        f_system.collect_feedback("Linh", "CoffeeCo", "SEO", 8, {FeedbackCategory.QUALITY: 4}, "Good work.")
+        
+        print("\n" + f_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Feedback Error: {e}")

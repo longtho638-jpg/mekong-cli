@@ -164,6 +164,20 @@ class CTO:
             self.tech_stack[category].append(technology)
             logger.debug(f"Stack Update: {category.value} -> {technology}")
     
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregate high-level technology performance metrics."""
+        active_ini = [i for i in self.initiatives.values() if i.status != InitiativeStatus.SCALED]
+        open_debt = [d for d in self.tech_debt.values() if d.status != "resolved"]
+        debt_effort = sum(d.effort_days for d in open_debt)
+        
+        return {
+            "initiatives": len(self.initiatives),
+            "active": len(active_ini),
+            "decisions": len(self.decisions),
+            "tech_debt": len(open_debt),
+            "debt_days": debt_effort
+        }
+    
     def format_dashboard(self) -> str:
         """Render the CTO Dashboard."""
         active_ini = [i for i in self.initiatives.values() if i.status != InitiativeStatus.SCALED]

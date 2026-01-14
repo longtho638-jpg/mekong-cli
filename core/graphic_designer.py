@@ -12,15 +12,19 @@ Roles:
 - Brand collateral
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class AssetCategory(Enum):
-    """Graphic asset categories."""
+    """Types of graphic design deliverables."""
     SOCIAL = "social"
     PRINT = "print"
     DIGITAL_AD = "digital_ad"
@@ -30,7 +34,7 @@ class AssetCategory(Enum):
 
 
 class AssetStatus(Enum):
-    """Asset status."""
+    """Current state of a graphic asset project."""
     QUEUED = "queued"
     DESIGNING = "designing"
     REVIEW = "review"
@@ -40,7 +44,7 @@ class AssetStatus(Enum):
 
 @dataclass
 class GraphicAsset:
-    """A graphic design asset."""
+    """A graphic design asset record entity."""
     id: str
     name: str
     client: str
@@ -50,17 +54,22 @@ class GraphicAsset:
     designer: str = ""
     due_date: datetime = field(default_factory=lambda: datetime.now() + timedelta(days=3))
 
+    def __post_init__(self):
+        if not self.name or not self.client:
+            raise ValueError("Name and client are required")
+
 
 class GraphicDesigner:
     """
     Graphic Designer System.
     
-    Visual asset creation.
+    Orchestrates the visual design workflow, from queuing requests to final delivery.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.assets: Dict[str, GraphicAsset] = {}
+        logger.info(f"Graphic Designer system initialized for {agency_name}")
     
     def create_asset(
         self,
@@ -68,69 +77,67 @@ class GraphicDesigner:
         client: str,
         category: AssetCategory,
         dimensions: str,
-        designer: str = "",
+        designer: str = "Designer AI",
         due_days: int = 3
     ) -> GraphicAsset:
-        """Create a graphic asset."""
+        """Register a new design asset request."""
         asset = GraphicAsset(
             id=f"GFX-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            client=client,
-            category=category,
-            dimensions=dimensions,
-            designer=designer,
+            name=name, client=client, category=category,
+            dimensions=dimensions, designer=designer,
             due_date=datetime.now() + timedelta(days=due_days)
         )
         self.assets[asset.id] = asset
+        logger.info(f"Design asset created: {name} for {client}")
         return asset
     
-    def update_status(self, asset: GraphicAsset, status: AssetStatus):
-        """Update asset status."""
-        asset.status = status
+    def update_status(self, asset_id: str, status: AssetStatus) -> bool:
+        """Advance the production status of an asset."""
+        if asset_id not in self.assets:
+            logger.error(f"Asset ID {asset_id} not found")
+            return False
+            
+        a = self.assets[asset_id]
+        old = a.status
+        a.status = status
+        logger.info(f"Asset {asset_id} status updated: {old.value} -> {status.value}")
+        return True
     
-    def get_queue(self) -> List[GraphicAsset]:
-        """Get design queue."""
+    def get_active_queue(self) -> List[GraphicAsset]:
+        """Filter list of assets currently in production."""
         return [a for a in self.assets.values() if a.status in [AssetStatus.QUEUED, AssetStatus.DESIGNING]]
     
     def format_dashboard(self) -> str:
-        """Format graphic designer dashboard."""
-        queue = len(self.get_queue())
+        """Render the Graphic Designer Dashboard."""
+        active = self.get_active_queue()
         review = sum(1 for a in self.assets.values() if a.status == AssetStatus.REVIEW)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🖼️ GRAPHIC DESIGNER                                      ║",
-            f"║  {len(self.assets)} assets │ {queue} in queue │ {review} in review       ║",
+            f"║  🖼️ GRAPHIC DESIGNER DASHBOARD{' ' * 32}║",
+            f"║  {len(self.assets)} total assets │ {len(active)} in queue │ {review} pending review{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📋 DESIGN QUEUE                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🎨 PRODUCTION QUEUE                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        cat_icons = {"social": "📱", "print": "🖨️", "digital_ad": "📺", "branding": "🏷️", "presentation": "📊", "packaging": "📦"}
-        status_icons = {"queued": "⏳", "designing": "🎨", "review": "👁️", "approved": "✅", "delivered": "📤"}
+        cat_icons = {
+            AssetCategory.SOCIAL: "📱", AssetCategory.PRINT: "🖨️", 
+            AssetCategory.DIGITAL_AD: "📺", AssetCategory.BRANDING: "🏷️"
+        }
         
-        for asset in list(self.assets.values())[:5]:
-            c_icon = cat_icons.get(asset.category.value, "🖼️")
-            s_icon = status_icons.get(asset.status.value, "⚪")
-            
-            lines.append(f"║  {s_icon} {c_icon} {asset.name[:18]:<18} │ {asset.dimensions:<10} │ {asset.client[:8]:<8}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY CATEGORY                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for cat in list(AssetCategory)[:4]:
-            count = sum(1 for a in self.assets.values() if a.category == cat)
-            icon = cat_icons.get(cat.value, "🖼️")
-            lines.append(f"║    {icon} {cat.value.replace('_', ' ').capitalize():<15} │ {count:>2} assets              ║")
+        # Display latest 5 active assets
+        for a in sorted(active, key=lambda x: x.due_date)[:5]:
+            icon = cat_icons.get(a.category, "🖼️")
+            s_icon = "🎨" if a.status == AssetStatus.DESIGNING else "⏳"
+            name_disp = (a.name[:18] + '..') if len(a.name) > 20 else a.name
+            lines.append(f"║  {s_icon} {icon} {name_disp:<20} │ {a.dimensions:<10} │ {a.client[:8]:<8}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [➕ New Asset]  [🎨 Design]  [📤 Export]                 ║",
+            "║  [➕ New Request]  [🎨 Design]  [📤 Export]  [⚙️ Settings] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Design that communicates!        ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Visual Excellence! ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -139,19 +146,17 @@ class GraphicDesigner:
 
 # Example usage
 if __name__ == "__main__":
-    gd = GraphicDesigner("Saigon Digital Hub")
-    
-    print("🖼️ Graphic Designer")
+    print("🖼️ Initializing Graphic Designer...")
     print("=" * 60)
-    print()
     
-    gd.create_asset("FB Cover", "Sunrise Realty", AssetCategory.SOCIAL, "1200x630", "Anna")
-    gd.create_asset("IG Post Set", "Coffee Lab", AssetCategory.SOCIAL, "1080x1080", "Tom")
-    gd.create_asset("Brochure", "Fashion Brand", AssetCategory.PRINT, "A4", "Anna")
-    gd.create_asset("Banner Ads", "Tech Startup", AssetCategory.DIGITAL_AD, "Various", "Tom")
-    
-    # Update statuses
-    gd.update_status(list(gd.assets.values())[0], AssetStatus.DESIGNING)
-    gd.update_status(list(gd.assets.values())[1], AssetStatus.REVIEW)
-    
-    print(gd.format_dashboard())
+    try:
+        designer_system = GraphicDesigner("Saigon Digital Hub")
+        
+        # Seed
+        a1 = designer_system.create_asset("Logo v1", "Sunrise", AssetCategory.BRANDING, "Vector")
+        designer_system.update_status(a1.id, AssetStatus.DESIGNING)
+        
+        print("\n" + designer_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Designer Error: {e}")

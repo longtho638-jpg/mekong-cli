@@ -12,15 +12,19 @@ Features:
 - Profit calculation
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ExpenseCategory(Enum):
-    """Expense categories."""
+    """Common expense categories."""
     TOOLS = "tools"
     MARKETING = "marketing"
     PAYROLL = "payroll"
@@ -32,30 +36,35 @@ class ExpenseCategory(Enum):
 
 @dataclass
 class Expense:
-    """An expense entry."""
+    """An individual expense record entity."""
     id: str
     description: str
     amount: float
     category: ExpenseCategory
     vendor: str
-    date: datetime
+    date: datetime = field(default_factory=datetime.now)
     recurring: bool = False
     billable: bool = False
     client_name: Optional[str] = None
     created_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if self.amount < 0:
+            raise ValueError("Amount cannot be negative")
+
 
 class ExpenseTracker:
     """
-    Expense Tracker.
+    Expense Tracker System.
     
-    Track agency expenses and calculate profits.
+    Manages agency operational costs, tracks vendor spending, and reports on monthly profitability.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.expenses: List[Expense] = []
         self.monthly_revenue: Dict[str, float] = {}
+        logger.info(f"Expense Tracker initialized for {agency_name}")
     
     def add_expense(
         self,
@@ -63,16 +72,19 @@ class ExpenseTracker:
         amount: float,
         category: ExpenseCategory,
         vendor: str,
-        date: datetime = None,
+        date: Optional[datetime] = None,
         recurring: bool = False,
         billable: bool = False,
-        client_name: str = None
+        client_name: Optional[str] = None
     ) -> Expense:
-        """Add an expense."""
+        """Log a new expense entry."""
+        if amount <= 0:
+            logger.warning(f"Logging zero or negative expense: {amount}")
+
         expense = Expense(
             id=f"EXP-{uuid.uuid4().hex[:6].upper()}",
             description=description,
-            amount=amount,
+            amount=float(amount),
             category=category,
             vendor=vendor,
             date=date or datetime.now(),
@@ -82,170 +94,92 @@ class ExpenseTracker:
         )
         
         self.expenses.append(expense)
+        logger.info(f"Expense recorded: {description} (${amount:,.2f})")
         return expense
     
-    def set_revenue(self, month: str, amount: float):
-        """Set monthly revenue (e.g., '2025-12')."""
-        self.monthly_revenue[month] = amount
+    def set_monthly_revenue(self, month_key: str, amount: float):
+        """Register gross revenue for a specific month (e.g. '2026-01')."""
+        self.monthly_revenue[month_key] = float(amount)
+        logger.debug(f"Revenue set for {month_key}: ${amount:,.0f}")
     
-    def get_monthly_expenses(self, month: str) -> float:
-        """Get total expenses for a month."""
-        total = 0
-        for exp in self.expenses:
-            exp_month = exp.date.strftime("%Y-%m")
-            if exp_month == month:
-                total += exp.amount
-        return total
-    
-    def get_category_breakdown(self, month: str = None) -> Dict[ExpenseCategory, float]:
-        """Get expenses by category."""
-        breakdown = {cat: 0 for cat in ExpenseCategory}
+    def calculate_profitability(self, month_key: str) -> Dict[str, Any]:
+        """Compute net profit and margin for a given month."""
+        revenue = self.monthly_revenue.get(month_key, 0.0)
         
-        for exp in self.expenses:
-            if month:
-                if exp.date.strftime("%Y-%m") != month:
-                    continue
-            breakdown[exp.category] += exp.amount
+        # Filter and sum expenses
+        monthly_exp = sum(
+            e.amount for e in self.expenses 
+            if e.date.strftime("%Y-%m") == month_key
+        )
         
-        return {k: v for k, v in breakdown.items() if v > 0}
-    
-    def calculate_profit(self, month: str) -> Dict[str, float]:
-        """Calculate profit for a month."""
-        revenue = self.monthly_revenue.get(month, 0)
-        expenses = self.get_monthly_expenses(month)
-        profit = revenue - expenses
-        margin = (profit / revenue * 100) if revenue > 0 else 0
+        profit = revenue - monthly_exp
+        margin = (profit / revenue * 100.0) if revenue > 0 else 0.0
         
         return {
             "revenue": revenue,
-            "expenses": expenses,
-            "profit": profit,
-            "margin": margin
+            "expenses": monthly_exp,
+            "net_profit": profit,
+            "margin_pct": margin
         }
     
-    def format_monthly_report(self, month: str) -> str:
-        """Format monthly expense report."""
-        breakdown = self.get_category_breakdown(month)
-        profit_data = self.calculate_profit(month)
-        
-        total_expenses = profit_data["expenses"]
+    def format_dashboard(self, month_key: str) -> str:
+        """Render the Expense & Profit Dashboard."""
+        data = self.calculate_profitability(month_key)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💸 EXPENSE REPORT: {month:<35}  ║",
+            f"║  💸 FINANCIAL REPORT: {month_key:<35}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 EXPENSES BY CATEGORY                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 PROFIT & LOSS SUMMARY                                 ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    Gross Revenue:  ${data['revenue']:>12,.0f}                      ║",
+            f"║    Total Expenses: ${data['expenses']:>12,.0f}                      ║",
+            "║    ─────────────────────────────                          ║",
         ]
         
-        cat_icons = {
-            ExpenseCategory.TOOLS: "🛠️",
-            ExpenseCategory.MARKETING: "📢",
-            ExpenseCategory.PAYROLL: "👥",
-            ExpenseCategory.OFFICE: "🏢",
-            ExpenseCategory.TRAVEL: "✈️",
-            ExpenseCategory.TRAINING: "🎓",
-            ExpenseCategory.OTHER: "📋"
-        }
+        p_icon = "✅" if data['net_profit'] >= 0 else "🔴"
+        lines.append(f"║    {p_icon} Net Profit:    ${data['net_profit']:>12,.0f} ({data['margin_pct']:.1f}% margin)  ║")
         
-        for cat, amount in sorted(breakdown.items(), key=lambda x: x[1], reverse=True):
-            icon = cat_icons[cat]
-            pct = (amount / total_expenses * 100) if total_expenses > 0 else 0
-            bar_filled = int(20 * pct / 100)
-            bar = "█" * bar_filled + "░" * (20 - bar_filled)
-            
-            lines.append(f"║  {icon} {cat.value.capitalize():<10} [{bar}] ${amount:>8,.0f} ({pct:>4.0f}%)  ║")
-        
-        lines.append("║                                                           ║")
-        lines.append(f"║  💰 TOTAL EXPENSES: ${total_expenses:>12,.0f}                    ║")
-        
-        # Profit section
         lines.extend([
             "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  📈 PROFIT & LOSS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    Revenue:    ${profit_data['revenue']:>12,.0f}                         ║",
-            f"║    Expenses:   ${profit_data['expenses']:>12,.0f}                         ║",
-            "║    ─────────────────────────────                        ║",
+            "║  📂 TOP EXPENSE CATEGORIES                                ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        profit = profit_data['profit']
-        margin = profit_data['margin']
+        # Aggregated Category View
+        cat_map = {}
+        for e in self.expenses:
+            if e.date.strftime("%Y-%m") == month_key:
+                cat_map[e.category.value] = cat_map.get(e.category.value, 0.0) + e.amount
         
-        if profit >= 0:
-            lines.append(f"║    ✅ Profit:   ${profit:>12,.0f} ({margin:.1f}% margin)         ║")
-        else:
-            lines.append(f"║    🔴 Loss:     ${profit:>12,.0f} ({margin:.1f}% margin)         ║")
-        
-        # Health indicator
-        if margin >= 30:
-            health = "🔥 EXCELLENT"
-        elif margin >= 20:
-            health = "✅ HEALTHY"
-        elif margin >= 10:
-            health = "🟡 NEEDS ATTENTION"
-        else:
-            health = "🔴 CRITICAL"
-        
+        for cat, amt in sorted(cat_map.items(), key=lambda x: x[1], reverse=True)[:4]:
+            lines.append(f"║    • {cat.title():<15} │ ${amt:>10,.0f}                      ║")
+            
         lines.extend([
             "║                                                           ║",
-            f"║    Health: {health:<42}  ║",
+            "║  [➕ Expense]  [📊 Full P&L]  [📑 Taxes]  [⚙️ Settings]   ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name}                                    ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
-        return "\n".join(lines)
-    
-    def format_recent_expenses(self, limit: int = 5) -> str:
-        """Format recent expenses."""
-        recent = sorted(self.expenses, key=lambda x: x.date, reverse=True)[:limit]
-        
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💸 RECENT EXPENSES                                       ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  Date  │ Description      │ Category  │ Amount  │ Vendor ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ]
-        
-        for exp in recent:
-            date = exp.date.strftime("%m/%d")
-            desc = exp.description[:16]
-            cat = exp.category.value[:9]
-            amount = f"${exp.amount:,.0f}"
-            vendor = exp.vendor[:6]
-            
-            lines.append(f"║  {date}  │ {desc:<16} │ {cat:<9} │ {amount:>7} │ {vendor:<6} ║")
-        
-        lines.append("╚═══════════════════════════════════════════════════════════╝")
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    tracker = ExpenseTracker("Saigon Digital Hub")
-    
-    print("💸 Expense Tracker")
+    print("💸 Initializing Expense Tracker...")
     print("=" * 60)
-    print()
     
-    today = datetime.now()
-    month = today.strftime("%Y-%m")
-    
-    # Add sample expenses
-    tracker.add_expense("Figma Pro", 15, ExpenseCategory.TOOLS, "Figma", today)
-    tracker.add_expense("Google Ads", 500, ExpenseCategory.MARKETING, "Google", today)
-    tracker.add_expense("Team Salary", 8000, ExpenseCategory.PAYROLL, "Internal", today)
-    tracker.add_expense("Coworking Space", 300, ExpenseCategory.OFFICE, "WeWork", today)
-    tracker.add_expense("SEMrush", 120, ExpenseCategory.TOOLS, "SEMrush", today)
-    tracker.add_expense("Online Course", 50, ExpenseCategory.TRAINING, "Udemy", today)
-    
-    # Set revenue
-    tracker.set_revenue(month, 15000)
-    
-    print(tracker.format_monthly_report(month))
-    print()
-    print(tracker.format_recent_expenses())
+    try:
+        tracker = ExpenseTracker("Saigon Digital Hub")
+        now_key = datetime.now().strftime("%Y-%m")
+        
+        # Add data
+        tracker.add_expense("Team Salaries", 8000.0, ExpenseCategory.PAYROLL, "Internal")
+        tracker.add_expense("SaaS Suite", 300.0, ExpenseCategory.TOOLS, "Various")
+        tracker.set_monthly_revenue(now_key, 12000.0)
+        
+        print("\n" + tracker.format_dashboard(now_key))
+        
+    except Exception as e:
+        logger.error(f"Tracker Error: {e}")

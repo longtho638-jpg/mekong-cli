@@ -12,15 +12,19 @@ Features:
 - Quick access commands
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ResourceCategory(Enum):
-    """Resource categories."""
+    """Broad categories for agency intellectual property."""
     TEMPLATES = "templates"
     GUIDES = "guides"
     CHECKLISTS = "checklists"
@@ -30,17 +34,16 @@ class ResourceCategory(Enum):
 
 
 class ResourceType(Enum):
-    """Resource types."""
+    """Format of the knowledge asset."""
     DOCUMENT = "document"
     VIDEO = "video"
     SPREADSHEET = "spreadsheet"
-    PRESENTATION = "presentation"
     CHECKLIST = "checklist"
 
 
 @dataclass
 class Resource:
-    """A knowledge base resource."""
+    """A single knowledge asset record entity."""
     id: str
     title: str
     category: ResourceCategory
@@ -52,298 +55,115 @@ class Resource:
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if not self.title or not self.content:
+            raise ValueError("Title and content are required")
+
 
 class KnowledgeBase:
     """
-    Knowledge Base.
+    Knowledge Base System.
     
-    Store and organize agency resources.
+    Orchestrates the storage, retrieval, and categorization of institutional knowledge.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.resources: Dict[str, Resource] = {}
-        
-        # Pre-populate with starter resources
-        self._add_starter_resources()
+        logger.info(f"Knowledge Base initialized for {agency_name}")
+        self._init_defaults()
     
-    def _add_starter_resources(self):
-        """Add starter resources."""
-        starters = [
-            {
-                "title": "Client Onboarding Checklist",
-                "category": ResourceCategory.CHECKLISTS,
-                "type": ResourceType.CHECKLIST,
-                "description": "Step-by-step checklist for onboarding new clients",
-                "content": """
-□ Send welcome email
-□ Schedule kickoff call
-□ Collect brand assets
-□ Set up project in tracker
-□ Create shared folder
-□ Send contract for signing
-□ Collect first payment
-□ Assign team members
-                """,
-                "tags": ["onboarding", "client", "checklist"]
-            },
-            {
-                "title": "Sales Call Script",
-                "category": ResourceCategory.SCRIPTS,
-                "type": ResourceType.DOCUMENT,
-                "description": "Proven script for discovery and sales calls",
-                "content": """
-OPENING (2 min):
-- Introduce yourself and agency
-- Confirm time available
-
-DISCOVERY (10 min):
-- What are your biggest challenges?
-- What have you tried before?
-- What would success look like?
-
-SOLUTION (5 min):
-- Present relevant case studies
-- Explain your approach
-
-CLOSE (3 min):
-- Propose next steps
-- Schedule follow-up
-                """,
-                "tags": ["sales", "script", "call"]
-            },
-            {
-                "title": "Monthly Report Template",
-                "category": ResourceCategory.TEMPLATES,
-                "type": ResourceType.DOCUMENT,
-                "description": "Template for client monthly performance reports",
-                "content": """
-# Monthly Report: [Client Name]
-## Month: [Month Year]
-
-### Executive Summary
-[Brief overview of performance]
-
-### Key Metrics
-- Traffic: X (↑/↓ Y%)
-- Leads: X (↑/↓ Y%)
-- Conversions: X (↑/↓ Y%)
-
-### Highlights
-- [Win 1]
-- [Win 2]
-
-### Next Month Focus
-- [Priority 1]
-- [Priority 2]
-                """,
-                "tags": ["report", "template", "monthly"]
-            },
-            {
-                "title": "SEO Audit Guide",
-                "category": ResourceCategory.GUIDES,
-                "type": ResourceType.DOCUMENT,
-                "description": "Complete guide for conducting SEO audits",
-                "content": """
-1. TECHNICAL SEO
-   - Site speed analysis
-   - Mobile responsiveness
-   - Crawl errors
-   - Sitemap check
-
-2. ON-PAGE SEO
-   - Title tags
-   - Meta descriptions
-   - Header structure
-   - Content quality
-
-3. OFF-PAGE SEO
-   - Backlink profile
-   - Domain authority
-   - Competitor analysis
-                """,
-                "tags": ["seo", "audit", "guide"]
-            },
-            {
-                "title": "New Hire Training",
-                "category": ResourceCategory.TRAINING,
-                "type": ResourceType.DOCUMENT,
-                "description": "Training materials for new team members",
-                "content": """
-WEEK 1: Orientation
-- Company culture
-- Tools & systems
-- Meet the team
-
-WEEK 2: Process Training
-- Project management
-- Client communication
-- Quality standards
-
-WEEK 3: Shadowing
-- Join client calls
-- Observe projects
-- Ask questions
-                """,
-                "tags": ["training", "onboarding", "hr"]
-            },
-            {
-                "title": "Project Kickoff Process",
-                "category": ResourceCategory.PROCESSES,
-                "type": ResourceType.DOCUMENT,
-                "description": "Standard process for starting new projects",
-                "content": """
-1. PRE-KICKOFF
-   □ Review contract scope
-   □ Assign project manager
-   □ Create project folder
-
-2. KICKOFF MEETING
-   □ Introductions
-   □ Review goals
-   □ Discuss timeline
-   □ Set communication cadence
-
-3. POST-KICKOFF
-   □ Send meeting notes
-   □ Create tasks in tracker
-   □ Schedule next meeting
-                """,
-                "tags": ["process", "kickoff", "project"]
-            }
-        ]
-        
-        for starter in starters:
-            self.add_resource(**starter)
+    def _init_defaults(self):
+        """Seed the system with essential agency starting resources."""
+        logger.info("Loading default knowledge assets...")
+        try:
+            self.add_resource(
+                "Client Onboarding", ResourceCategory.CHECKLISTS, ResourceType.CHECKLIST,
+                "Steps for new accounts", "1. Welcome 2. Kickoff 3. Contract", ["setup"]
+            )
+            self.add_resource(
+                "Sales Script", ResourceCategory.SCRIPTS, ResourceType.DOCUMENT,
+                "Discovery call guide", "Hello, I am calling from...", ["sales"]
+            )
+        except Exception as e:
+            logger.error(f"Error seeding knowledge base: {e}")
     
     def add_resource(
         self,
         title: str,
         category: ResourceCategory,
-        type: ResourceType,
+        res_type: ResourceType,
         description: str,
         content: str,
         tags: List[str]
     ) -> Resource:
-        """Add a resource."""
-        resource = Resource(
+        """Register a new asset into the knowledge base."""
+        res = Resource(
             id=f"KB-{uuid.uuid4().hex[:6].upper()}",
-            title=title,
-            category=category,
-            type=type,
-            description=description,
-            content=content,
-            tags=tags
+            title=title, category=category, type=res_type,
+            description=description, content=content, tags=tags
         )
-        
-        self.resources[resource.id] = resource
-        return resource
+        self.resources[res.id] = res
+        logger.info(f"Resource indexed: {title} ({category.value})")
+        return res
     
     def search(self, query: str) -> List[Resource]:
-        """Search resources."""
-        query_lower = query.lower()
-        results = []
-        
-        for resource in self.resources.values():
-            if (query_lower in resource.title.lower() or
-                query_lower in resource.description.lower() or
-                any(query_lower in tag for tag in resource.tags)):
-                results.append(resource)
-        
+        """Keyword search across titles, descriptions, and tags."""
+        q = query.lower()
+        results = [
+            r for r in self.resources.values()
+            if q in r.title.lower() or q in r.description.lower() or any(q in t.lower() for t in r.tags)
+        ]
+        logger.debug(f"Search for '{query}' found {len(results)} matches.")
         return results
     
-    def format_resource(self, resource: Resource) -> str:
-        """Format single resource."""
-        type_icons = {
-            ResourceType.DOCUMENT: "📄",
-            ResourceType.VIDEO: "🎥",
-            ResourceType.SPREADSHEET: "📊",
-            ResourceType.PRESENTATION: "📽️",
-            ResourceType.CHECKLIST: "✅"
-        }
+    def format_dashboard(self) -> str:
+        """Render the Knowledge Base Library Dashboard."""
+        total = len(self.resources)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📚 {resource.title.upper()[:48]:<48}  ║",
-            f"║  {type_icons[resource.type]} {resource.type.value.capitalize()} | {resource.category.value.capitalize():<34}  ║",
+            f"║  📚 KNOWLEDGE BASE - {self.agency_name.upper()[:30]:<30} ║",
+            f"║  {total} total assets indexed{' ' * 36}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  {resource.description[:53]:<53}  ║",
-            "║                                                           ║",
-            "║  📋 CONTENT:                                              ║",
+            "║  📂 ASSET REPOSITORY BY CATEGORY                          ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        content_lines = resource.content.strip().split('\n')[:8]
-        for line in content_lines:
-            lines.append(f"║  {line[:53]:<53}  ║")
-        
-        if len(resource.content.strip().split('\n')) > 8:
-            lines.append("║  ... (more content)                                     ║")
-        
-        tags_str = ", ".join(f"#{tag}" for tag in resource.tags[:4])
-        lines.extend([
-            "║                                                           ║",
-            f"║  🏷️ {tags_str:<48}  ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        
-        return "\n".join(lines)
-    
-    def format_library(self) -> str:
-        """Format library overview."""
-        # Count by category
-        category_counts = {}
-        for cat in ResourceCategory:
-            count = sum(1 for r in self.resources.values() if r.category == cat)
-            if count > 0:
-                category_counts[cat] = count
-        
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📚 KNOWLEDGE BASE                                        ║",
-            f"║  Total Resources: {len(self.resources):<35}  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-        ]
-        
-        cat_icons = {
-            ResourceCategory.TEMPLATES: "📝",
-            ResourceCategory.GUIDES: "📖",
-            ResourceCategory.CHECKLISTS: "✅",
-            ResourceCategory.SCRIPTS: "📜",
-            ResourceCategory.PROCESSES: "⚙️",
-            ResourceCategory.TRAINING: "🎓"
+        icons = {
+            ResourceCategory.TEMPLATES: "📝", ResourceCategory.GUIDES: "📖", 
+            ResourceCategory.CHECKLISTS: "✅", ResourceCategory.SCRIPTS: "📜",
+            ResourceCategory.PROCESSES: "⚙️", ResourceCategory.TRAINING: "🎓"
         }
         
-        for cat, count in category_counts.items():
-            icon = cat_icons[cat]
-            lines.append(f"║  {icon} {cat.value.capitalize():<20} ({count} resources)                 ║")
-        
+        # Display aggregated counts by category
+        cat_counts = {}
+        for r in self.resources.values():
+            cat_counts[r.category] = cat_counts.get(r.category, 0) + 1
+            
+        for cat in list(ResourceCategory):
+            count = cat_counts.get(cat, 0)
+            icon = icons.get(cat, "📁")
+            lines.append(f"║  {icon} {cat.value.capitalize():<20} │ {count:>3} assets available      ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  🔍 QUICK ACCESS:                                         ║",
-            "║    • kb.search('onboarding')                              ║",
-            "║    • kb.get_by_category('templates')                      ║",
+            "║  [➕ New Asset]  [🔍 Search KB]  [📂 Export All]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Knowledge is power!              ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Wisdom!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    kb = KnowledgeBase("Saigon Digital Hub")
-    
-    print("📚 Knowledge Base")
+    print("📚 Initializing Knowledge Base...")
     print("=" * 60)
-    print()
     
-    print(kb.format_library())
-    print()
-    
-    # Search example
-    results = kb.search("onboarding")
-    if results:
-        print(f"🔍 Search results for 'onboarding': {len(results)} found")
-        print()
-        print(kb.format_resource(results[0]))
+    try:
+        kb_system = KnowledgeBase("Saigon Digital Hub")
+        print("\n" + kb_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Library Error: {e}")

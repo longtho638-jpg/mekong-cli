@@ -12,15 +12,20 @@ Features:
 - Conversion prediction
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+import re
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class LeadStage(Enum):
-    """Lead stages."""
+    """Lifecycle stages of a sales lead."""
     NEW = "new"
     CONTACTED = "contacted"
     QUALIFIED = "qualified"
@@ -31,7 +36,7 @@ class LeadStage(Enum):
 
 
 class LeadSource(Enum):
-    """Lead sources."""
+    """Origins of incoming leads."""
     WEBSITE = "website"
     REFERRAL = "referral"
     SOCIAL = "social"
@@ -42,170 +47,132 @@ class LeadSource(Enum):
 
 @dataclass
 class Lead:
-    """A sales lead."""
+    """A sales lead entity record."""
     id: str
     name: str
     company: str
     email: str
     source: LeadSource
     stage: LeadStage = LeadStage.NEW
-    budget: float = 0
+    budget: float = 0.0
     score: int = 0
     engagement_score: int = 0
     fit_score: int = 0
     created_at: datetime = field(default_factory=datetime.now)
+
+    def __post_init__(self):
+        if self.budget < 0:
+            raise ValueError("Budget cannot be negative")
 
 
 class LeadScoring:
     """
     Lead Scoring System.
     
-    Smart lead prioritization.
+    Automates the prioritization of sales prospects based on budget, source, and strategic fit.
     """
+    
+    # Weighting configuration
+    WEIGHTS = {"budget": 0.30, "source": 0.25, "engagement": 0.25, "fit": 0.20}
+    
+    SOURCE_VALS = {
+        LeadSource.REFERRAL: 100, LeadSource.EVENT: 80,
+        LeadSource.WEBSITE: 70, LeadSource.SOCIAL: 50,
+        LeadSource.ADS: 40, LeadSource.COLD: 20
+    }
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.leads: Dict[str, Lead] = {}
-        self.score_weights = {
-            "budget": 30,
-            "source": 25,
-            "engagement": 25,
-            "fit": 20
-        }
-        self.source_scores = {
-            LeadSource.REFERRAL: 100,
-            LeadSource.EVENT: 80,
-            LeadSource.WEBSITE: 70,
-            LeadSource.SOCIAL: 50,
-            LeadSource.ADS: 40,
-            LeadSource.COLD: 20,
-        }
+        logger.info(f"Lead Scoring initialized for {agency_name}")
     
+    def _validate_email(self, email: str) -> bool:
+        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+
     def add_lead(
         self,
         name: str,
         company: str,
         email: str,
         source: LeadSource,
-        budget: float = 0
+        budget: float = 0.0
     ) -> Lead:
-        """Add a new lead."""
+        """Register and immediately score a new sales lead."""
+        if not self._validate_email(email):
+            raise ValueError(f"Invalid email: {email}")
+
         lead = Lead(
             id=f"LEAD-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            company=company,
-            email=email,
-            source=source,
-            budget=budget
+            name=name, company=company, email=email,
+            source=source, budget=float(budget)
         )
         
-        self.score_lead(lead)
+        self.calculate_score(lead)
         self.leads[lead.id] = lead
+        logger.info(f"Lead added: {name} ({company}). Score: {lead.score}")
         return lead
     
-    def score_lead(self, lead: Lead):
-        """Score a lead."""
-        # Budget score (0-100)
-        if lead.budget >= 10000:
-            budget_score = 100
-        elif lead.budget >= 5000:
-            budget_score = 75
-        elif lead.budget >= 2000:
-            budget_score = 50
-        else:
-            budget_score = 25
+    def calculate_score(self, lead: Lead):
+        """Execute multi-factor scoring algorithm."""
+        # 1. Budget Score
+        b_score = 100 if lead.budget >= 10000 else 75 if lead.budget >= 5000 else 50 if lead.budget >= 2000 else 25
         
-        # Source score
-        source_score = self.source_scores.get(lead.source, 30)
+        # 2. Source Value
+        s_val = self.SOURCE_VALS.get(lead.source, 30)
         
-        # Engagement score (simulated)
-        lead.engagement_score = min(100, 40 + (lead.budget // 100))
+        # 3. Engagement & Fit (Simulated base)
+        lead.engagement_score = min(100, 40 + int(lead.budget / 200))
+        lead.fit_score = min(100, s_val + 10)
         
-        # Fit score (simulated)
-        lead.fit_score = min(100, source_score + 10)
-        
-        # Calculate total score
-        lead.score = int(
-            (budget_score * self.score_weights["budget"] +
-             source_score * self.score_weights["source"] +
-             lead.engagement_score * self.score_weights["engagement"] +
-             lead.fit_score * self.score_weights["fit"]) / 100
+        # Aggregate
+        total = (
+            b_score * self.WEIGHTS["budget"] +
+            s_val * self.WEIGHTS["source"] +
+            lead.engagement_score * self.WEIGHTS["engagement"] +
+            lead.fit_score * self.WEIGHTS["fit"]
         )
-    
-    def get_hot_leads(self) -> List[Lead]:
-        """Get hot leads (score >= 70)."""
-        return sorted(
-            [l for l in self.leads.values() if l.score >= 70],
-            key=lambda x: x.score,
-            reverse=True
-        )
+        lead.score = int(total)
     
     def format_dashboard(self) -> str:
-        """Format lead scoring dashboard."""
-        hot = len(self.get_hot_leads())
-        total = len(self.leads)
-        avg_score = sum(l.score for l in self.leads.values()) / total if total else 0
+        """Render the Lead Scoring Dashboard."""
+        hot_leads = [l for l in self.leads.values() if l.score >= 70]
+        avg_score = sum(l.score for l in self.leads.values()) / len(self.leads) if self.leads else 0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 LEAD SCORING                                          ║",
-            f"║  {total} leads │ {hot} hot │ Avg: {avg_score:.0f}                       ║",
+            f"║  🎯 LEAD SCORING DASHBOARD{' ' * 32}║",
+            f"║  {len(self.leads)} total │ {len(hot_leads)} hot leads │ {avg_score:.0f} avg score{' ' * 15}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🔥 HOT LEADS (Score ≥70)                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🔥 HIGH-PRIORITY PROSPECTS                               ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for lead in self.get_hot_leads()[:4]:
-            bar = "█" * (lead.score // 10) + "░" * (10 - lead.score // 10)
-            lines.append(f"║    {lead.name[:15]:<15} │ {bar} │ {lead.score:>3}  ║")
-        
+        for l in sorted(hot_leads, key=lambda x: x.score, reverse=True)[:5]:
+            bar = "█" * (l.score // 10) + "░" * (10 - l.score // 10)
+            lines.append(f"║    {l.name[:15]:<15} │ {bar} │ {l.score:>3} points  ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  📊 SCORING FACTORS                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for factor, weight in self.score_weights.items():
-            bar_len = weight // 5
-            bar = "█" * bar_len
-            lines.append(f"║    {factor.capitalize():<12} │ {bar:<6} │ {weight}%              ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📈 BY SOURCE                                             ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        source_icons = {"referral": "👥", "website": "🌐", "social": "📱", "ads": "📺", "cold": "❄️", "event": "🎪"}
-        
-        for source in list(LeadSource)[:4]:
-            count = sum(1 for l in self.leads.values() if l.source == source)
-            icon = source_icons.get(source.value, "•")
-            lines.append(f"║    {icon} {source.value.capitalize():<12} │ {count:>3} leads                   ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Add Lead]  [🎯 Score All]  [📊 Analytics]            ║",
+            "║  [➕ New Lead]  [🎯 Re-score]  [📊 Analytics]  [⚙️ Weights] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Focus on winners!                ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Focus!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    scoring = LeadScoring("Saigon Digital Hub")
-    
-    print("🎯 Lead Scoring")
+    print("🎯 Initializing Lead Scoring...")
     print("=" * 60)
-    print()
     
-    # Add leads
-    scoring.add_lead("John Smith", "Tech Corp", "john@techcorp.com", LeadSource.REFERRAL, 8000)
-    scoring.add_lead("Sarah Lee", "Growth Inc", "sarah@growth.com", LeadSource.WEBSITE, 5000)
-    scoring.add_lead("Mike Chen", "Startup XYZ", "mike@startup.com", LeadSource.SOCIAL, 3000)
-    scoring.add_lead("Anna Kim", "Enterprise Co", "anna@enterprise.com", LeadSource.EVENT, 15000)
-    
-    print(scoring.format_dashboard())
+    try:
+        system = LeadScoring("Saigon Digital Hub")
+        # Seed
+        system.add_lead("John Smith", "TechCorp", "john@tech.io", LeadSource.REFERRAL, 8000.0)
+        system.add_lead("Anna Kim", "Enterprise", "anna@corp.co", LeadSource.EVENT, 15000.0)
+        
+        print("\n" + system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Scoring Error: {e}")

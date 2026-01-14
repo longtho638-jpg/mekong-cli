@@ -11,23 +11,26 @@ Features:
 - Performance analytics
 """
 
-import os
 import uuid
-from typing import Optional, Dict, Any, List
+import logging
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class FranchiseTier(Enum):
     """Franchise tier levels."""
-    STARTER = "starter"       # Free - personal use
-    FRANCHISE = "franchise"   # $500/month - up to 3 territories
-    ENTERPRISE = "enterprise" # Custom - unlimited
+    STARTER = "starter"       
+    FRANCHISE = "franchise"   
+    ENTERPRISE = "enterprise" 
 
 
 class FranchiseStatus(Enum):
-    """Franchisee status."""
+    """Franchisee lifecycle status."""
     PENDING = "pending"
     ACTIVE = "active"
     SUSPENDED = "suspended"
@@ -35,7 +38,7 @@ class FranchiseStatus(Enum):
 
 
 class TerritoryStatus(Enum):
-    """Territory status."""
+    """Current status of a geographical territory."""
     AVAILABLE = "available"
     CLAIMED = "claimed"
     EXCLUSIVE = "exclusive"
@@ -43,7 +46,7 @@ class TerritoryStatus(Enum):
 
 @dataclass
 class Territory:
-    """A franchise territory."""
+    """A franchise territory entity."""
     id: str
     country: str
     region: str
@@ -53,121 +56,61 @@ class Territory:
     franchisee_id: Optional[str] = None
     claimed_at: Optional[datetime] = None
 
+    def __post_init__(self):
+        if self.population < 0:
+            raise ValueError("Population cannot be negative")
+
 
 @dataclass
 class Franchisee:
-    """A franchise partner."""
+    """A franchise partner record."""
     id: str
     name: str
     email: str
     company: str
     tier: FranchiseTier
-    status: FranchiseStatus
-    joined_at: datetime
+    status: FranchiseStatus = FranchiseStatus.PENDING
+    joined_at: datetime = field(default_factory=datetime.now)
     territories: List[str] = field(default_factory=list)
-    
-    # Revenue tracking
     monthly_fee: float = 0.0
-    local_revenue: float = 0.0
-    saas_revenue: float = 0.0
-    
-    # Performance
-    clients_count: int = 0
-    mrr: float = 0.0
-
-
-@dataclass
-class RevenueShare:
-    """Revenue sharing configuration."""
-    franchisee_id: str
-    period: str  # "2024-12"
-    
-    # Local client revenue (franchisee keeps 100%)
-    local_revenue: float = 0.0
-    local_fee: float = 0.0  # 0% to HQ
-    
-    # SaaS affiliate revenue (franchisee keeps 100%)
-    saas_revenue: float = 0.0  
-    saas_fee: float = 0.0  # 0% to HQ
-    
-    # Platform fee (franchisee pays to HQ)
-    platform_fee: float = 500.0  # Monthly fee
+    total_revenue: float = 0.0
 
 
 class FranchiseSystem:
     """
-    Global Franchise Management System.
+    Franchise Management System.
     
-    "Win Without Fighting" - Scale globally through partnerships.
+    Orchestrates the global expansion of the agency network through partnerships and territory claims.
     """
+    
+    TIER_LIMITS = {
+        FranchiseTier.STARTER: 1,
+        FranchiseTier.FRANCHISE: 3,
+        FranchiseTier.ENTERPRISE: 999
+    }
+    
+    PRICING = {
+        FranchiseTier.STARTER: 0.0,
+        FranchiseTier.FRANCHISE: 500.0,
+        FranchiseTier.ENTERPRISE: 2000.0
+    }
     
     def __init__(self):
         self.franchisees: Dict[str, Franchisee] = {}
         self.territories: Dict[str, Territory] = {}
-        self.revenue_records: List[RevenueShare] = []
         
-        # Pricing
-        self.pricing = {
-            FranchiseTier.STARTER: 0,
-            FranchiseTier.FRANCHISE: 500,
-            FranchiseTier.ENTERPRISE: 2000
-        }
-        
-        # Initialize demo data
+        logger.info("Franchise System initialized.")
         self._create_demo_data()
     
     def _create_demo_data(self):
-        """Create demo franchisees and territories."""
-        # Create territories
-        territories_data = [
-            # Vietnam
-            ("VN-HN", "Vietnam", "Hanoi", None, 8053),
-            ("VN-HCM", "Vietnam", "Ho Chi Minh", None, 9000),
-            ("VN-DN", "Vietnam", "Da Nang", None, 1134),
-            
-            # USA
-            ("US-NY", "USA", "New York", "Manhattan", 1630),
-            ("US-LA", "USA", "California", "Los Angeles", 3970),
-            ("US-SF", "USA", "California", "San Francisco", 874),
-            
-            # Europe
-            ("UK-LON", "UK", "England", "London", 8982),
-            ("DE-BER", "Germany", "Berlin", None, 3645),
-            ("FR-PAR", "France", "Paris", None, 2161),
-            
-            # Asia
-            ("JP-TKY", "Japan", "Tokyo", None, 13960),
-            ("SG-SG", "Singapore", "Singapore", None, 5454),
-            ("TH-BKK", "Thailand", "Bangkok", None, 10539),
-        ]
+        """Seed the system with sample territories and a franchisee."""
+        logger.info("Loading demo franchise data...")
+        # Add basic territories
+        t1 = Territory("VN-HCM", "Vietnam", "HCM City", population=9000)
+        self.territories[t1.id] = t1
         
-        for tid, country, region, city, pop in territories_data:
-            self.territories[tid] = Territory(
-                id=tid,
-                country=country,
-                region=region,
-                city=city,
-                population=pop
-            )
-        
-        # Create demo franchisees
-        demo_franchisees = [
-            ("Minh Nguyen", "minh@nova-vn.com", "Nova Digital Vietnam", 
-             FranchiseTier.FRANCHISE, ["VN-HN", "VN-HCM"]),
-            ("John Smith", "john@agency-us.com", "Smith Agency", 
-             FranchiseTier.FRANCHISE, ["US-NY"]),
-            ("Emma Wilson", "emma@london-agency.co.uk", "London Digital", 
-             FranchiseTier.ENTERPRISE, ["UK-LON"]),
-        ]
-        
-        for name, email, company, tier, territory_ids in demo_franchisees:
-            franchisee = self.onboard_franchisee(name, email, company, tier)
-            for tid in territory_ids:
-                self.claim_territory(franchisee.id, tid)
-    
-    # ═══════════════════════════════════════════════════════════
-    # Onboarding
-    # ═══════════════════════════════════════════════════════════
+        # Add a sample franchisee
+        self.onboard_franchisee("Minh Nguyen", "minh@agency.vn", "Minh Digital", FranchiseTier.FRANCHISE)
     
     def onboard_franchisee(
         self,
@@ -176,236 +119,95 @@ class FranchiseSystem:
         company: str,
         tier: FranchiseTier = FranchiseTier.FRANCHISE
     ) -> Franchisee:
-        """Onboard a new franchisee."""
-        franchisee = Franchisee(
+        """Register a new partner into the network."""
+        if not name or not email:
+            raise ValueError("Name and email are required")
+
+        f = Franchisee(
             id=f"FR-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            email=email,
-            company=company,
-            tier=tier,
-            status=FranchiseStatus.ACTIVE,
-            joined_at=datetime.now(),
-            monthly_fee=self.pricing[tier]
+            name=name, email=email, company=company,
+            tier=tier, status=FranchiseStatus.ACTIVE,
+            monthly_fee=self.PRICING.get(tier, 500.0)
         )
-        
-        self.franchisees[franchisee.id] = franchisee
-        return franchisee
-    
-    def get_onboarding_checklist(self) -> List[Dict[str, Any]]:
-        """Get franchisee onboarding checklist."""
-        return [
-            {"step": 1, "title": "Sign Agreement", "description": "Review and sign franchise agreement"},
-            {"step": 2, "title": "Setup Account", "description": "Create Agency OS account"},
-            {"step": 3, "title": "Claim Territory", "description": "Select your operating territory"},
-            {"step": 4, "title": "Complete Training", "description": "Watch onboarding videos"},
-            {"step": 5, "title": "Setup Payment", "description": "Add billing information"},
-            {"step": 6, "title": "Launch", "description": "Start acquiring clients!"},
-        ]
-    
-    # ═══════════════════════════════════════════════════════════
-    # Territory Management
-    # ═══════════════════════════════════════════════════════════
+        self.franchisees[f.id] = f
+        logger.info(f"Franchisee onboarded: {company} ({tier.value})")
+        return f
     
     def claim_territory(self, franchisee_id: str, territory_id: str) -> bool:
-        """Claim a territory for a franchisee."""
-        if territory_id not in self.territories:
+        """Assign an available territory to a franchisee."""
+        if franchisee_id not in self.franchisees: return False
+        if territory_id not in self.territories: return False
+        
+        f = self.franchisees[franchisee_id]
+        t = self.territories[territory_id]
+        
+        if t.status != TerritoryStatus.AVAILABLE:
+            logger.error(f"Territory {territory_id} is not available")
             return False
-        
-        territory = self.territories[territory_id]
-        
-        if territory.status != TerritoryStatus.AVAILABLE:
+            
+        if len(f.territories) >= self.TIER_LIMITS.get(f.tier, 1):
+            logger.warning(f"Franchisee {f.company} reached tier limit for territories")
             return False
+            
+        t.status = TerritoryStatus.CLAIMED
+        t.franchisee_id = franchisee_id
+        t.claimed_at = datetime.now()
+        f.territories.append(territory_id)
         
-        franchisee = self.franchisees.get(franchisee_id)
-        if not franchisee:
-            return False
-        
-        # Check tier limits
-        max_territories = {
-            FranchiseTier.STARTER: 1,
-            FranchiseTier.FRANCHISE: 3,
-            FranchiseTier.ENTERPRISE: 100
-        }
-        
-        if len(franchisee.territories) >= max_territories[franchisee.tier]:
-            return False
-        
-        # Claim territory
-        territory.status = TerritoryStatus.CLAIMED
-        territory.franchisee_id = franchisee_id
-        territory.claimed_at = datetime.now()
-        
-        franchisee.territories.append(territory_id)
-        
+        logger.info(f"Territory {territory_id} claimed by {f.company}")
         return True
     
-    def get_available_territories(self, country: Optional[str] = None) -> List[Territory]:
-        """Get available territories."""
-        territories = [t for t in self.territories.values() 
-                      if t.status == TerritoryStatus.AVAILABLE]
-        
-        if country:
-            territories = [t for t in territories if t.country == country]
-        
-        return territories
-    
-    def get_territory_stats(self) -> Dict[str, Any]:
-        """Get territory statistics."""
-        total = len(self.territories)
-        claimed = len([t for t in self.territories.values() 
-                      if t.status != TerritoryStatus.AVAILABLE])
-        
-        by_country = {}
-        for t in self.territories.values():
-            by_country[t.country] = by_country.get(t.country, 0) + 1
-        
-        return {
-            "total_territories": total,
-            "claimed": claimed,
-            "available": total - claimed,
-            "claim_rate": (claimed / max(1, total)) * 100,
-            "by_country": by_country
-        }
-    
-    # ═══════════════════════════════════════════════════════════
-    # Revenue Sharing
-    # ═══════════════════════════════════════════════════════════
-    
-    def record_revenue(
-        self,
-        franchisee_id: str,
-        local_revenue: float = 0,
-        saas_revenue: float = 0
-    ) -> RevenueShare:
-        """Record monthly revenue for a franchisee."""
-        period = datetime.now().strftime("%Y-%m")
-        
-        franchisee = self.franchisees.get(franchisee_id)
-        platform_fee = franchisee.monthly_fee if franchisee else 500
-        
-        record = RevenueShare(
-            franchisee_id=franchisee_id,
-            period=period,
-            local_revenue=local_revenue,
-            saas_revenue=saas_revenue,
-            platform_fee=platform_fee
-        )
-        
-        self.revenue_records.append(record)
-        
-        # Update franchisee stats
-        if franchisee:
-            franchisee.local_revenue += local_revenue
-            franchisee.saas_revenue += saas_revenue
-            franchisee.mrr = local_revenue + saas_revenue
-        
-        return record
-    
-    def get_hq_revenue(self) -> Dict[str, Any]:
-        """Get HQ revenue from franchise fees."""
-        active = [f for f in self.franchisees.values() 
-                 if f.status == FranchiseStatus.ACTIVE]
-        
-        monthly_fees = sum(f.monthly_fee for f in active)
-        annual_projection = monthly_fees * 12
-        
-        return {
-            "active_franchisees": len(active),
-            "monthly_platform_fees": f"${monthly_fees:,.0f}",
-            "annual_projection": f"${annual_projection:,.0f}",
-            "avg_fee_per_franchisee": f"${monthly_fees / max(1, len(active)):,.0f}"
-        }
-    
-    def get_network_stats(self) -> Dict[str, Any]:
-        """Get complete franchise network stats."""
-        franchisees = list(self.franchisees.values())
-        active = [f for f in franchisees if f.status == FranchiseStatus.ACTIVE]
-        
-        total_local = sum(f.local_revenue for f in franchisees)
-        total_saas = sum(f.saas_revenue for f in franchisees)
-        
-        territories = self.get_territory_stats()
-        hq_revenue = self.get_hq_revenue()
-        
-        return {
-            "franchisees": {
-                "total": len(franchisees),
-                "active": len(active),
-                "by_tier": {
-                    "starter": len([f for f in franchisees if f.tier == FranchiseTier.STARTER]),
-                    "franchise": len([f for f in franchisees if f.tier == FranchiseTier.FRANCHISE]),
-                    "enterprise": len([f for f in franchisees if f.tier == FranchiseTier.ENTERPRISE])
-                }
-            },
-            "territories": territories,
-            "revenue": {
-                "network_local_revenue": f"${total_local:,.0f}",
-                "network_saas_revenue": f"${total_saas:,.0f}",
-                "hq_platform_fees": hq_revenue["monthly_platform_fees"]
-            }
-        }
-    
     def format_dashboard(self) -> str:
-        """Format franchise dashboard as text."""
-        stats = self.get_network_stats()
-        hq = self.get_hq_revenue()
+        """Render the Franchise Network Dashboard."""
+        active_f = [f for f in self.franchisees.values() if f.status == FranchiseStatus.ACTIVE]
+        claimed_t = sum(1 for t in self.territories.values() if t.status != TerritoryStatus.AVAILABLE)
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            "║  🌍 AGENCY OS - FRANCHISE NETWORK                        ║",
+            f"║  🌍 FRANCHISE NETWORK DASHBOARD{' ' * 30}║",
+            f"║  {len(active_f)} active partners │ {claimed_t} territories claimed{' ' * 18}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║                                                           ║",
-            "║  📊 FRANCHISEES                                          ║",
-            f"║  Total: {stats['franchisees']['total']}    Active: {stats['franchisees']['active']}    Enterprise: {stats['franchisees']['by_tier']['enterprise']}     ║",
-            "║                                                           ║",
-            "║  🗺️ TERRITORIES                                          ║",
-            f"║  Total: {stats['territories']['total_territories']}   Claimed: {stats['territories']['claimed']}   Available: {stats['territories']['available']}      ║",
-            "║                                                           ║",
-            "║  💰 HQ REVENUE                                            ║",
-            f"║  Monthly: {hq['monthly_platform_fees']}                                   ║",
-            f"║  Annual Projection: {hq['annual_projection']}                       ║",
-            "║                                                           ║",
-            "╚═══════════════════════════════════════════════════════════╝"
+            "║  📊 PARTNER OVERVIEW                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
+        for f in list(self.franchisees.values())[:5]:
+            tier_icon = "💎" if f.tier == FranchiseTier.ENTERPRISE else "⭐"
+            lines.append(f"║  {tier_icon} {f.company[:20]:<20} │ {len(f.territories)} terr │ ${f.monthly_fee:>8,.0f}/mo ║")
+            
+        lines.extend([
+            "║                                                           ║",
+            "║  🗺️ TERRITORY STATUS                                      ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+        ])
+        
+        for t in list(self.territories.values())[:3]:
+            s_icon = "🔴" if t.status == TerritoryStatus.CLAIMED else "🟢"
+            lines.append(f"║    {s_icon} {t.id:<10} │ {t.region:<15} │ {t.status.value:<12} ║")
+            
+        lines.extend([
+            "║                                                           ║",
+            "║  [➕ Partner]  [🗺️ Map]  [💰 Revenue]  [⚙️ Settings]      ║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            f"║  🏯 Global HQ - \"Không đánh mà thắng\"{' ' * 21}║",
+            "╚═══════════════════════════════════════════════════════════╝",
+        ])
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    # Initialize franchise system
-    system = FranchiseSystem()
+    print("🌍 Initializing Franchise System...")
+    print("=" * 60)
     
-    print("🌍 Franchise System Initialized!")
-    print()
-    
-    # Onboarding checklist
-    print("📋 Onboarding Checklist:")
-    for step in system.get_onboarding_checklist()[:3]:
-        print(f"   {step['step']}. {step['title']}")
-    print()
-    
-    # Available territories
-    available = system.get_available_territories()
-    print(f"🗺️ Available Territories: {len(available)}")
-    for t in available[:5]:
-        print(f"   • {t.country} - {t.region} ({t.population}k pop)")
-    print()
-    
-    # Network stats
-    stats = system.get_network_stats()
-    print("📊 Network Stats:")
-    print(f"   Franchisees: {stats['franchisees']['total']}")
-    print(f"   Territories: {stats['territories']['total_territories']}")
-    print()
-    
-    # HQ Revenue
-    hq = system.get_hq_revenue()
-    print("💰 HQ Revenue:")
-    print(f"   Active: {hq['active_franchisees']} franchisees")
-    print(f"   Monthly: {hq['monthly_platform_fees']}")
-    print(f"   Annual: {hq['annual_projection']}")
-    print()
-    
-    # Dashboard
-    print(system.format_dashboard())
+    try:
+        franchise_system = FranchiseSystem()
+        # Claim
+        fid = list(franchise_system.franchisees.keys())[0]
+        tid = "VN-HCM"
+        franchise_system.claim_territory(fid, tid)
+        
+        print("\n" + franchise_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Franchise Error: {e}")

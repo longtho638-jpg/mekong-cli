@@ -12,14 +12,18 @@ Features:
 """
 
 import uuid
-from typing import Optional, Dict, Any, List
+import logging
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class InvoiceStatus(Enum):
-    """Invoice status."""
+    """Lifecycle status of a billable invoice."""
     DRAFT = "draft"
     SENT = "sent"
     PAID = "paid"
@@ -28,7 +32,7 @@ class InvoiceStatus(Enum):
 
 
 class Currency(Enum):
-    """Supported currencies."""
+    """Supported transaction currencies."""
     USD = "USD"
     VND = "VND"
     JPY = "JPY"
@@ -37,27 +41,28 @@ class Currency(Enum):
 
 @dataclass
 class InvoiceItem:
-    """A line item on an invoice."""
+    """A single line item record on an invoice."""
     description: str
     quantity: int
     unit_price: float
     
     @property
     def total(self) -> float:
-        return self.quantity * self.unit_price
+        """Calculate line item total."""
+        return float(self.quantity * self.unit_price)
 
 
 @dataclass
 class Invoice:
-    """An invoice for a client."""
+    """An invoice entity record."""
     id: str
     client_id: str
     client_name: str
     items: List[InvoiceItem]
     currency: Currency
-    status: InvoiceStatus
-    created_at: datetime
-    due_date: datetime
+    status: InvoiceStatus = InvoiceStatus.DRAFT
+    created_at: datetime = field(default_factory=datetime.now)
+    due_date: datetime = field(default_factory=lambda: datetime.now() + timedelta(days=30))
     paid_at: Optional[datetime] = None
     notes: str = ""
     
@@ -66,12 +71,8 @@ class Invoice:
         return sum(item.total for item in self.items)
     
     @property
-    def tax_rate(self) -> float:
-        return 0.10  # 10% VAT
-    
-    @property
     def tax(self) -> float:
-        return self.subtotal * self.tax_rate
+        return self.subtotal * 0.10  # 10% Standard VAT
     
     @property
     def total(self) -> float:
@@ -80,172 +81,89 @@ class Invoice:
 
 class InvoiceSystem:
     """
-    Invoice and Payment System.
+    Invoice and Billing System.
     
-    Generate professional invoices and track payments.
+    Manages professional client billing, tax calculation, and payment reconciliation.
     """
     
-    def __init__(self):
+    def __init__(self, agency_name: str = "My Agency"):
+        self.agency_name = agency_name
         self.invoices: Dict[str, Invoice] = {}
-        
-        # Currency symbols
-        self.symbols = {
-            Currency.USD: "$",
-            Currency.VND: "₫",
-            Currency.JPY: "¥",
-            Currency.KRW: "₩"
-        }
-        
-        # Exchange rates (to USD)
-        self.rates = {
-            Currency.USD: 1.0,
-            Currency.VND: 24500,
-            Currency.JPY: 150,
-            Currency.KRW: 1300
-        }
-        
-        # Create demo invoices
-        self._create_demo_data()
+        logger.info(f"Invoice System initialized for {agency_name}")
+        self._init_demo_data()
     
-    def _create_demo_data(self):
-        """Create demo invoices."""
-        # Demo invoice 1: USD
-        self.create_invoice(
-            client_id="CL-001",
-            client_name="Saigon Coffee Co.",
-            items=[
-                InvoiceItem("SEO Monthly Retainer", 1, 500),
-                InvoiceItem("Content Writing (5 posts)", 5, 100),
-                InvoiceItem("Technical Audit", 1, 300),
-            ],
-            currency=Currency.USD
-        )
-        
-        # Demo invoice 2: VND
-        self.create_invoice(
-            client_id="CL-002",
-            client_name="Hanoi Tech Startup",
-            items=[
-                InvoiceItem("Website Development", 1, 25000000),
-                InvoiceItem("SEO Setup", 1, 5000000),
-            ],
-            currency=Currency.VND
-        )
+    def _init_demo_data(self):
+        """Seed the system with sample invoices."""
+        logger.info("Loading demo invoice data...")
+        try:
+            self.create_invoice("C1", "Acme Corp", [InvoiceItem("SEO Monthly", 1, 1500.0)])
+        except Exception as e:
+            logger.error(f"Demo data error: {e}")
     
     def create_invoice(
         self,
         client_id: str,
         client_name: str,
         items: List[InvoiceItem],
-        currency: Currency = Currency.USD,
-        due_days: int = 30
+        currency: Currency = Currency.USD
     ) -> Invoice:
-        """Create a new invoice."""
-        invoice = Invoice(
-            id=f"INV-{datetime.now().strftime('%Y%m')}-{uuid.uuid4().hex[:4].upper()}",
-            client_id=client_id,
-            client_name=client_name,
-            items=items,
-            currency=currency,
-            status=InvoiceStatus.DRAFT,
-            created_at=datetime.now(),
-            due_date=datetime.now() + timedelta(days=due_days)
+        """Register a new billable invoice."""
+        if not items:
+            raise ValueError("Invoice must contain at least one item")
+
+        inv = Invoice(
+            id=f"INV-{uuid.uuid4().hex[:6].upper()}",
+            client_id=client_id, client_name=client_name,
+            items=items, currency=currency
         )
-        
-        self.invoices[invoice.id] = invoice
-        return invoice
+        self.invoices[inv.id] = inv
+        logger.info(f"Invoice generated: {inv.id} for {client_name}")
+        return inv
     
-    def mark_paid(self, invoice_id: str) -> bool:
-        """Mark invoice as paid."""
-        if invoice_id not in self.invoices:
-            return False
+    def format_invoice_ascii(self, inv_id: str) -> str:
+        """Render a specific invoice as a professional text document."""
+        if inv_id not in self.invoices: return "Invoice not found."
         
-        self.invoices[invoice_id].status = InvoiceStatus.PAID
-        self.invoices[invoice_id].paid_at = datetime.now()
-        return True
-    
-    def format_currency(self, amount: float, currency: Currency) -> str:
-        """Format amount with currency symbol."""
-        symbol = self.symbols[currency]
-        
-        if currency == Currency.VND:
-            return f"{amount:,.0f}{symbol}"
-        elif currency in [Currency.JPY, Currency.KRW]:
-            return f"{symbol}{amount:,.0f}"
-        else:
-            return f"{symbol}{amount:,.2f}"
-    
-    def format_invoice(self, invoice: Invoice) -> str:
-        """Format invoice as ASCII."""
-        currency = invoice.currency
+        inv = self.invoices[inv_id]
+        sym = {"USD": "$", "VND": "₫"}.get(inv.currency.value, "$")
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            "║  🏯 AGENCY OS - INVOICE                                   ║",
+            f"║  🏯 {self.agency_name.upper()[:30]:<30} INVOICE  ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Invoice: {invoice.id:<20}                     ║",
-            f"║  Date: {invoice.created_at.strftime('%Y-%m-%d'):<23}                     ║",
-            f"║  Due: {invoice.due_date.strftime('%Y-%m-%d'):<24}                     ║",
-            f"║  Status: {invoice.status.value.upper():<21}                     ║",
+            f"║  ID: {inv.id:<20} │ Date: {inv.created_at.strftime('%Y-%m-%d')} ║",
+            f"║  To: {inv.client_name:<20} │ Status: {inv.status.value.upper():<10} ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Bill To: {invoice.client_name:<20}                     ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  ITEMS                                            AMOUNT  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ITEM DESCRIPTION                      QTY      TOTAL     ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for item in invoice.items:
-            desc = item.description[:35]
-            amount = self.format_currency(item.total, currency)
-            lines.append(f"║  {desc:<35} {amount:>15}  ║")
-        
+        for item in inv.items:
+            lines.append(f"║  • {item.description[:30]:<30} {item.quantity:>3}  {sym}{item.total:>10,.0f} ║")
+            
         lines.extend([
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║  Subtotal:                               {self.format_currency(invoice.subtotal, currency):>15}  ║",
-            f"║  Tax (10%):                              {self.format_currency(invoice.tax, currency):>15}  ║",
-            f"║  TOTAL:                                  {self.format_currency(invoice.total, currency):>15}  ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║  Subtotal: {sym}{inv.subtotal:>15,.0f} {' ' * 28}║",
+            f"║  VAT (10%): {sym}{inv.tax:>14,.0f} {' ' * 28}║",
+            f"║  TOTAL DUE: {sym}{inv.total:>14,.0f} {' ' * 28}║",
+            "╠═══════════════════════════════════════════════════════════╣",
+            "║  [💳 Pay Online]  [📥 Download PDF]  [📧 Send Reminder]   ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
-    
-    def get_summary(self) -> Dict[str, Any]:
-        """Get invoice summary."""
-        total_invoices = len(self.invoices)
-        paid = sum(1 for i in self.invoices.values() if i.status == InvoiceStatus.PAID)
-        pending = sum(1 for i in self.invoices.values() if i.status in [InvoiceStatus.SENT, InvoiceStatus.DRAFT])
-        
-        # Calculate totals in USD
-        total_value = 0
-        for inv in self.invoices.values():
-            rate = self.rates[inv.currency]
-            total_value += inv.total / rate
-        
-        return {
-            "total_invoices": total_invoices,
-            "paid": paid,
-            "pending": pending,
-            "total_value_usd": f"${total_value:,.2f}"
-        }
 
 
 # Example usage
 if __name__ == "__main__":
-    system = InvoiceSystem()
+    print("💳 Initializing Invoice System...")
+    print("=" * 60)
     
-    print("💳 Invoice System")
-    print("=" * 50)
-    print()
-    
-    # Show summary
-    summary = system.get_summary()
-    print("📊 Summary:")
-    print(f"   Total Invoices: {summary['total_invoices']}")
-    print(f"   Paid: {summary['paid']}")
-    print(f"   Pending: {summary['pending']}")
-    print(f"   Total Value: {summary['total_value_usd']}")
-    print()
-    
-    # Show first invoice
-    invoice = list(system.invoices.values())[0]
-    print(system.format_invoice(invoice))
+    try:
+        sys = InvoiceSystem("Saigon Digital Hub")
+        # Display first demo
+        if sys.invoices:
+            iid = list(sys.invoices.keys())[0]
+            print("\n" + sys.format_invoice_ascii(iid))
+            
+    except Exception as e:
+        logger.error(f"Invoice Error: {e}")

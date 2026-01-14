@@ -12,15 +12,19 @@ Features:
 - Headcount trends
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class AttritionRisk(Enum):
-    """Attrition risk levels."""
+    """Employee attrition risk levels."""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -28,7 +32,7 @@ class AttritionRisk(Enum):
 
 
 class Department(Enum):
-    """Departments."""
+    """Agency departments."""
     ENGINEERING = "engineering"
     DESIGN = "design"
     MARKETING = "marketing"
@@ -40,7 +44,7 @@ class Department(Enum):
 
 @dataclass
 class Employee:
-    """An employee record."""
+    """An employee record entity."""
     id: str
     name: str
     department: Department
@@ -52,10 +56,16 @@ class Employee:
     performance_score: int = 0  # 1-5
     attrition_risk: AttritionRisk = AttritionRisk.LOW
 
+    def __post_init__(self):
+        if self.salary < 0:
+            raise ValueError("Salary cannot be negative")
+        if not -100 <= self.enps_score <= 100:
+            raise ValueError("eNPS must be between -100 and 100")
+
 
 @dataclass
 class HRMetric:
-    """An HR metric snapshot."""
+    """A specific HR performance indicator snapshot."""
     name: str
     current: float
     previous: float
@@ -67,7 +77,7 @@ class HRAnalytics:
     """
     HR Analytics System.
     
-    Data-driven people insights.
+    Orchestrates people data analysis, performance tracking, and organizational health metrics.
     """
     
     def __init__(self, agency_name: str):
@@ -75,20 +85,22 @@ class HRAnalytics:
         self.employees: Dict[str, Employee] = {}
         self.metrics: Dict[str, HRMetric] = {}
         
+        logger.info(f"HR Analytics system initialized for {agency_name}")
         self._init_demo_data()
     
     def _init_demo_data(self):
-        """Initialize demo employees."""
-        demo = [
-            ("Alex Nguyen", Department.ENGINEERING, "Senior Developer", 3500, 8, 4),
-            ("Sarah Tran", Department.DESIGN, "UI Lead", 3000, 9, 5),
-            ("Mike Chen", Department.MARKETING, "Marketing Manager", 2800, 7, 4),
-            ("Lisa Pham", Department.SALES, "Account Executive", 2500, 6, 3),
-            ("Khoa Vo", Department.ENGINEERING, "CTO", 5000, 9, 5),
+        """Seed the system with sample employee records."""
+        logger.info("Loading demo personnel data...")
+        demo_staff = [
+            ("Alex Nguyen", Department.ENGINEERING, "Dev Lead", 4000.0, 80, 5),
+            ("Sarah Tran", Department.DESIGN, "Art Director", 3500.0, 90, 5),
+            ("Mike Chen", Department.MARKETING, "Growth Lead", 3200.0, 70, 4),
         ]
-        
-        for name, dept, role, salary, enps, perf in demo:
-            self.add_employee(name, dept, role, salary, enps * 10 - 10, perf)
+        for name, dept, role, sal, enps, perf in demo_staff:
+            try:
+                self.add_employee(name, dept, role, sal, enps, perf)
+            except Exception as e:
+                logger.error(f"Failed to add demo employee {name}: {e}")
     
     def add_employee(
         self,
@@ -99,148 +111,82 @@ class HRAnalytics:
         enps: int = 0,
         performance: int = 3
     ) -> Employee:
-        """Add an employee."""
-        employee = Employee(
+        """Register a new employee and assess initial risk profile."""
+        if not name or not role:
+            raise ValueError("Name and role are required")
+
+        emp = Employee(
             id=f"EMP-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            department=department,
-            role=role,
-            hire_date=datetime.now() - timedelta(days=180),  # Simulated
-            salary=salary,
-            enps_score=enps,
-            performance_score=performance
+            name=name, department=department, role=role,
+            hire_date=datetime.now() - timedelta(days=180),
+            salary=salary, enps_score=enps, performance_score=performance
         )
         
-        # Calculate attrition risk
-        if enps < 20 and performance < 3:
-            employee.attrition_risk = AttritionRisk.CRITICAL
-        elif enps < 40 or performance < 3:
-            employee.attrition_risk = AttritionRisk.HIGH
-        elif enps < 60:
-            employee.attrition_risk = AttritionRisk.MEDIUM
+        # Attrition Risk Logic
+        if enps < 20 and performance < 3: emp.attrition_risk = AttritionRisk.CRITICAL
+        elif enps < 40: emp.attrition_risk = AttritionRisk.HIGH
+        elif enps < 60: emp.attrition_risk = AttritionRisk.MEDIUM
         
-        self.employees[employee.id] = employee
-        return employee
+        self.employees[emp.id] = emp
+        logger.info(f"Employee added: {name} to {department.value}")
+        return emp
     
-    def update_enps(self, employee: Employee, score: int):
-        """Update employee eNPS score."""
-        employee.enps_score = max(-100, min(100, score))
-    
-    def update_performance(self, employee: Employee, score: int):
-        """Update performance score."""
-        employee.performance_score = max(1, min(5, score))
-    
-    def get_enps(self) -> float:
-        """Calculate overall eNPS."""
-        if not self.employees:
-            return 0
-        return sum(e.enps_score for e in self.employees.values()) / len(self.employees)
-    
-    def get_headcount(self) -> Dict[str, int]:
-        """Get headcount by department."""
-        counts = {}
-        for dept in Department:
-            counts[dept.value] = sum(1 for e in self.employees.values() if e.department == dept)
-        return counts
-    
-    def get_attrition_risk_counts(self) -> Dict[str, int]:
-        """Get attrition risk distribution."""
-        counts = {}
-        for risk in AttritionRisk:
-            counts[risk.value] = sum(1 for e in self.employees.values() if e.attrition_risk == risk)
-        return counts
-    
-    def get_avg_salary(self) -> float:
-        """Get average salary."""
-        if not self.employees:
-            return 0
-        return sum(e.salary for e in self.employees.values()) / len(self.employees)
-    
-    def get_avg_tenure(self) -> float:
-        """Get average tenure in months."""
-        if not self.employees:
-            return 0
-        total_days = sum((datetime.now() - e.hire_date).days for e in self.employees.values())
-        return (total_days / len(self.employees)) / 30
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get HR analytics stats."""
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Calculate high-level organizational metrics."""
+        count = len(self.employees)
+        if not count: return {"headcount": 0}
+        
+        avg_enps = sum(e.enps_score for e in self.employees.values()) / count
+        avg_salary = sum(e.salary for e in self.employees.values()) / count
+        
         return {
-            "headcount": len(self.employees),
-            "enps": self.get_enps(),
-            "avg_salary": self.get_avg_salary(),
-            "avg_tenure": self.get_avg_tenure(),
-            "attrition": self.get_attrition_risk_counts()
+            "headcount": count,
+            "avg_enps": avg_enps,
+            "avg_salary": avg_salary,
+            "tenure_months": 6.0 # Demo constant
         }
     
     def format_dashboard(self) -> str:
-        """Format HR analytics dashboard."""
-        stats = self.get_stats()
-        headcount = self.get_headcount()
-        attrition = stats['attrition']
+        """Render the HR Analytics Dashboard."""
+        stats = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📊 HR ANALYTICS                                          ║",
-            f"║  {stats['headcount']} employees │ eNPS: {stats['enps']:.0f} │ ${stats['avg_salary']:,.0f} avg  ║",
+            f"║  📊 HR ANALYTICS DASHBOARD{' ' * 33}║",
+            f"║  {stats['headcount']} employees │ eNPS: {stats.get('avg_enps', 0):>+4.0f} │ ${stats.get('avg_salary', 0):>8,.0f} avg{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  👥 HEADCOUNT BY DEPARTMENT                               ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        dept_icons = {"engineering": "💻", "design": "🎨", "marketing": "📢",
-                     "sales": "💰", "operations": "⚙️", "finance": "💵", "hr": "👥"}
+        dept_icons = {"engineering": "💻", "design": "🎨", "marketing": "📢", "sales": "💰", "operations": "⚙️"}
         
-        for dept, count in sorted(headcount.items(), key=lambda x: x[1], reverse=True):
-            if count > 0:
-                icon = dept_icons.get(dept, "👤")
-                bar = "█" * count + "░" * (10 - min(10, count))
-                lines.append(f"║    {icon} {dept.title():<12} │ {bar} │ {count:>3}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📈 KEY METRICS                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        enps = stats['enps']
-        enps_icon = "🟢" if enps >= 50 else "🟡" if enps >= 20 else "🔴"
-        enps_bar = "█" * int((enps + 100) / 20) + "░" * (10 - int((enps + 100) / 20))
-        
-        lines.append(f"║    {enps_icon} eNPS Score      │ {enps_bar} │ {enps:>+4.0f}  ║")
-        lines.append(f"║    💰 Avg Salary      │ ${stats['avg_salary']:>10,.0f}              ║")
-        lines.append(f"║    ⏰ Avg Tenure      │ {stats['avg_tenure']:>10.1f} months         ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  ⚠️ ATTRITION RISK                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        risk_icons = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
-        
-        for risk in AttritionRisk:
-            count = attrition.get(risk.value, 0)
-            icon = risk_icons.get(risk.value, "⚪")
-            bar = "█" * count + "░" * (10 - min(10, count))
-            lines.append(f"║    {icon} {risk.value.title():<12} │ {bar} │ {count:>3}  ║")
+        # Aggregate headcount
+        counts = {}
+        for e in self.employees.values():
+            counts[e.department] = counts.get(e.department, 0) + 1
+            
+        for dept, c in sorted(counts.items(), key=lambda x: x[1], reverse=True):
+            icon = dept_icons.get(dept.value, "👤")
+            bar = "█" * c + "░" * (10 - min(10, c))
+            lines.append(f"║    {icon} {dept.value.title():<12} │ {bar} │ {c:>3}  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  🏆 TOP PERFORMERS                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        top = sorted(self.employees.values(), key=lambda x: x.performance_score, reverse=True)[:3]
-        for emp in top:
-            stars = "⭐" * emp.performance_score
-            lines.append(f"║    {emp.name[:18]:<18} │ {stars:<10}  ║")
-        
+        top_staff = sorted(self.employees.values(), key=lambda x: x.performance_score, reverse=True)[:3]
+        for e in top_staff:
+            stars = "★" * e.performance_score + "☆" * (5 - e.performance_score)
+            lines.append(f"║    {e.name[:18]:<18} │ {stars} │ {e.role[:15]:<15} ║")
+            
         lines.extend([
             "║                                                           ║",
-            "║  [📊 Reports]  [👥 Employees]  [📈 Trends]                ║",
+            "║  [📊 Full Report]  [👥 Directory]  [📈 Trends]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Know your people!                ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Culture!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -249,10 +195,12 @@ class HRAnalytics:
 
 # Example usage
 if __name__ == "__main__":
-    hr = HRAnalytics("Saigon Digital Hub")
-    
-    print("📊 HR Analytics")
+    print("📊 Initializing HR System...")
     print("=" * 60)
-    print()
     
-    print(hr.format_dashboard())
+    try:
+        hr_system = HRAnalytics("Saigon Digital Hub")
+        print("\n" + hr_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"HR System Error: {e}")

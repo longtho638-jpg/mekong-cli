@@ -12,14 +12,18 @@ Features:
 - CFO insights
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ReportPeriod(Enum):
-    """Report periods."""
+    """Reporting timeframes."""
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     YEARLY = "yearly"
@@ -27,7 +31,7 @@ class ReportPeriod(Enum):
 
 @dataclass
 class ProfitLoss:
-    """Profit & Loss statement."""
+    """Profit & Loss statement entity."""
     period: str
     revenue: float
     cogs: float
@@ -36,10 +40,14 @@ class ProfitLoss:
     operating_income: float
     net_income: float
 
+    def __post_init__(self):
+        if self.revenue < 0:
+            raise ValueError("Revenue cannot be negative")
+
 
 @dataclass
 class FinancialRatio:
-    """A financial ratio."""
+    """A financial performance ratio record."""
     name: str
     value: float
     target: float
@@ -49,9 +57,9 @@ class FinancialRatio:
 
 class FinancialReports:
     """
-    Financial Reports.
+    Financial Reports System.
     
-    CFO-level insights.
+    Orchestrates financial data aggregation, ratio calculation, and CFO-level reporting.
     """
     
     def __init__(self, agency_name: str):
@@ -59,188 +67,111 @@ class FinancialReports:
         self.pnl_history: List[ProfitLoss] = []
         self.ratios: Dict[str, FinancialRatio] = {}
         
+        logger.info(f"Financial Reports system initialized for {agency_name}")
         self._init_demo_data()
     
     def _init_demo_data(self):
-        """Initialize demo financial data."""
-        # Current month P&L
-        self.add_pnl(
-            period="Dec 2024",
-            revenue=85000,
-            cogs=25000,
-            operating_expenses=35000
-        )
-        
-        # Previous months
-        self.pnl_history.append(ProfitLoss(
-            period="Nov 2024", revenue=78000, cogs=23000,
-            gross_profit=55000, operating_expenses=33000,
-            operating_income=22000, net_income=22000
-        ))
-        self.pnl_history.append(ProfitLoss(
-            period="Oct 2024", revenue=72000, cogs=21000,
-            gross_profit=51000, operating_expenses=32000,
-            operating_income=19000, net_income=19000
-        ))
-        
-        # Key ratios
-        self._calculate_ratios()
+        """Seed the system with sample historical financial records."""
+        logger.info("Loading demo financial history...")
+        try:
+            # Add latest
+            self.add_pnl("Dec 2025", 85000.0, 25000.0, 35000.0)
+            # Add previous manually
+            self.pnl_history.append(ProfitLoss(
+                "Nov 2025", 78000.0, 23000.0, 55000.0, 33000.0, 22000.0, 22000.0
+            ))
+        except Exception as e:
+            logger.error(f"Demo data error: {e}")
     
     def add_pnl(
         self,
         period: str,
         revenue: float,
         cogs: float,
-        operating_expenses: float
+        op_expenses: float
     ) -> ProfitLoss:
-        """Add a P&L statement."""
-        gross_profit = revenue - cogs
-        operating_income = gross_profit - operating_expenses
-        net_income = operating_income  # Simplified
+        """Register a new Profit & Loss statement for a specific period."""
+        if revenue < 0 or cogs < 0 or op_expenses < 0:
+            raise ValueError("Financial figures must be non-negative")
+
+        gross = revenue - cogs
+        income = gross - op_expenses
         
         pnl = ProfitLoss(
-            period=period,
-            revenue=revenue,
-            cogs=cogs,
-            gross_profit=gross_profit,
-            operating_expenses=operating_expenses,
-            operating_income=operating_income,
-            net_income=net_income
+            period=period, revenue=revenue, cogs=cogs,
+            gross_profit=gross, operating_expenses=op_expenses,
+            operating_income=income, net_income=income
         )
         self.pnl_history.insert(0, pnl)
-        self._calculate_ratios()
+        self.recalculate_all_ratios()
+        logger.info(f"P&L added for {period}: Net ${income:,.0f}")
         return pnl
     
-    def _calculate_ratios(self):
-        """Calculate financial ratios."""
-        if not self.pnl_history:
-            return
+    def recalculate_all_ratios(self):
+        """Update financial KPIs based on the latest history."""
+        if not self.pnl_history: return
         
         latest = self.pnl_history[0]
+        rev = max(1.0, latest.revenue)
         
-        # Gross margin
-        gross_margin = (latest.gross_profit / latest.revenue * 100) if latest.revenue else 0
-        self.ratios["gross_margin"] = FinancialRatio(
-            "Gross Margin", gross_margin, 70, "%"
-        )
+        self.ratios["gross_margin"] = FinancialRatio("Gross Margin", (latest.gross_profit / rev) * 100, 70, "%")
+        self.ratios["net_margin"] = FinancialRatio("Net Margin", (latest.net_income / rev) * 100, 25, "%")
         
-        # Operating margin
-        op_margin = (latest.operating_income / latest.revenue * 100) if latest.revenue else 0
-        self.ratios["operating_margin"] = FinancialRatio(
-            "Operating Margin", op_margin, 30, "%"
-        )
-        
-        # Net margin
-        net_margin = (latest.net_income / latest.revenue * 100) if latest.revenue else 0
-        self.ratios["net_margin"] = FinancialRatio(
-            "Net Margin", net_margin, 25, "%"
-        )
-        
-        # Revenue growth (if we have history)
         if len(self.pnl_history) > 1:
-            prev = self.pnl_history[1]
-            growth = ((latest.revenue - prev.revenue) / prev.revenue * 100) if prev.revenue else 0
-            self.ratios["revenue_growth"] = FinancialRatio(
-                "Revenue Growth", growth, 10, "%"
-            )
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get financial statistics."""
-        if not self.pnl_history:
-            return {}
-        
-        latest = self.pnl_history[0]
-        
-        return {
-            "period": latest.period,
-            "revenue": latest.revenue,
-            "gross_profit": latest.gross_profit,
-            "operating_income": latest.operating_income,
-            "net_income": latest.net_income,
-            "gross_margin": self.ratios.get("gross_margin", FinancialRatio("", 0, 0)).value,
-            "net_margin": self.ratios.get("net_margin", FinancialRatio("", 0, 0)).value,
-        }
+            prev_rev = max(1.0, self.pnl_history[1].revenue)
+            growth = ((latest.revenue - prev_rev) / prev_rev) * 100
+            self.ratios["growth"] = FinancialRatio("Revenue Growth", growth, 10, "%")
+            
+        logger.debug("Financial ratios updated.")
     
     def format_dashboard(self) -> str:
-        """Format financial reports dashboard."""
-        stats = self.get_stats()
+        """Render the CFO Financial Dashboard."""
+        if not self.pnl_history: return "No financial history data."
         
-        if not stats:
-            return "No financial data available."
+        latest = self.pnl_history[0]
+        overall_score = self.ratios.get("net_margin", FinancialRatio("", 0, 0)).value
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📊 FINANCIAL REPORTS - CFO DASHBOARD                     ║",
-            f"║  {stats['period']} │ ${stats['revenue']:,.0f} revenue │ {stats['net_margin']:.0f}% margin  ║",
+            f"║  📊 FINANCIAL REPORTS - CFO DASHBOARD{' ' * 21}║",
+            f"║  {latest.period} │ ${latest.revenue:,.0f} revenue │ {overall_score:.0f}% net margin{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📈 PROFIT & LOSS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    📊 Revenue:            ${stats['revenue']:>12,.0f}              ║",
-            f"║    📉 COGS:               ${self.pnl_history[0].cogs:>12,.0f}              ║",
-            f"║    ═══════════════════════════════════                  ║",
-            f"║    💰 Gross Profit:       ${stats['gross_profit']:>12,.0f}              ║",
-            f"║    💸 Operating Expenses: ${self.pnl_history[0].operating_expenses:>12,.0f}              ║",
-            f"║    ═══════════════════════════════════                  ║",
-            f"║    ✅ Net Income:         ${stats['net_income']:>12,.0f}              ║",
+            "║  ───────────────────────────────────────────────────────  ║",
+            f"║    Gross Revenue:  ${latest.revenue:>12,.0f}                      ║",
+            f"║    COGS:           ${latest.cogs:>12,.0f}                      ║",
+            f"║    Gross Profit:   ${latest.gross_profit:>12,.0f}                      ║",
+            f"║    Op Expenses:    ${latest.operating_expenses:>12,.0f}                      ║",
+            f"║    ✅ Net Income:  ${latest.net_income:>12,.0f}                      ║",
             "║                                                           ║",
-            "║  📊 KEY RATIOS                                            ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 PERFORMANCE RATIOS                                    ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        for ratio in self.ratios.values():
-            # Determine if on target
-            on_target = ratio.value >= ratio.target
-            icon = "🟢" if on_target else "🟡"
-            bar_len = min(10, int(ratio.value / 10))
+        for r in self.ratios.values():
+            status = "🟢" if r.value >= r.target else "🟡"
+            bar_len = min(10, int(r.value / 10))
             bar = "█" * bar_len + "░" * (10 - bar_len)
+            lines.append(f"║    {status} {r.name:<18} │ {bar} │ {r.value:>5.1f}{r.unit}  ║")
             
-            lines.append(f"║    {icon} {ratio.name:<18} │ {bar} │ {ratio.value:>5.1f}{ratio.unit}  ║")
-        
         lines.extend([
             "║                                                           ║",
-            "║  📈 REVENUE TREND                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for pnl in self.pnl_history[:3]:
-            bar_len = int(pnl.revenue / 10000)
-            bar = "█" * min(10, bar_len)
-            lines.append(f"║    📊 {pnl.period:<10} │ {bar:<10} │ ${pnl.revenue:>8,.0f}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  🎯 CFO INSIGHTS                                          ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        # Generate insights
-        growth = self.ratios.get("revenue_growth")
-        if growth and growth.value > 0:
-            lines.append(f"║    📈 Revenue up {growth.value:.1f}% vs last month               ║")
-        
-        net_margin = stats.get('net_margin', 0)
-        if net_margin > 25:
-            lines.append(f"║    ✅ Healthy margins at {net_margin:.0f}%                        ║")
-        elif net_margin < 15:
-            lines.append(f"║    ⚠️ Low margins - review expenses                    ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 P&L]  [📈 Trends]  [💰 Forecast]                     ║",
+            "║  [📊 P&L]  [📈 Trends]  [💰 Forecast]  [⚙️ Settings]      ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - See the big picture!            ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Big Picture!      ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    fr = FinancialReports("Saigon Digital Hub")
-    
-    print("📊 Financial Reports")
+    print("📊 Initializing Financial Reports...")
     print("=" * 60)
-    print()
     
-    print(fr.format_dashboard())
+    try:
+        cfo_system = FinancialReports("Saigon Digital Hub")
+        print("\n" + cfo_system.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Financial Error: {e}")

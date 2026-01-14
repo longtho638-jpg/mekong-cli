@@ -12,21 +12,25 @@ Features:
 - Achievement badges
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class GoalPeriod(Enum):
-    """Goal time period."""
+    """Timeframe for specific agency goals."""
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     YEARLY = "yearly"
 
 
 class GoalStatus(Enum):
-    """Goal status."""
+    """Lifecycle status of a goal."""
     NOT_STARTED = "not_started"
     IN_PROGRESS = "in_progress"
     ACHIEVED = "achieved"
@@ -34,7 +38,7 @@ class GoalStatus(Enum):
 
 
 class GoalCategory(Enum):
-    """Goal category."""
+    """Categorization for grouping goals."""
     REVENUE = "revenue"
     CLIENTS = "clients"
     LEADS = "leads"
@@ -44,7 +48,7 @@ class GoalCategory(Enum):
 
 @dataclass
 class Goal:
-    """A goal to track."""
+    """A goal entity tracking target vs current performance."""
     name: str
     category: GoalCategory
     period: GoalPeriod
@@ -54,208 +58,109 @@ class Goal:
     deadline: datetime
     created_at: datetime = field(default_factory=datetime.now)
     
+    def __post_init__(self):
+        if self.target <= 0:
+            raise ValueError("Target must be greater than zero")
+
     @property
-    def progress(self) -> float:
-        if self.target == 0:
-            return 0
-        return min((self.current / self.target) * 100, 100)
+    def progress_pct(self) -> float:
+        """Calculate progress percentage towards target."""
+        return min((self.current / self.target) * 100.0, 100.0)
     
     @property
     def status(self) -> GoalStatus:
-        if self.progress >= 100:
-            return GoalStatus.ACHIEVED
-        elif datetime.now() > self.deadline:
-            return GoalStatus.MISSED
-        elif self.progress > 0:
-            return GoalStatus.IN_PROGRESS
-        else:
-            return GoalStatus.NOT_STARTED
+        """Determine status based on progress and deadline."""
+        if self.progress_pct >= 100.0: return GoalStatus.ACHIEVED
+        if datetime.now() > self.deadline: return GoalStatus.MISSED
+        if self.current > 0: return GoalStatus.IN_PROGRESS
+        return GoalStatus.NOT_STARTED
 
 
 class GoalTracker:
     """
-    Goal Tracker.
+    Goal Tracker System.
     
-    Track and visualize agency goals.
+    Orchestrates the setting and monitoring of strategic agency benchmarks.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.goals: List[Goal] = []
+        logger.info(f"Goal Tracker initialized for {agency_name}")
     
     def add_goal(self, goal: Goal):
-        """Add a goal."""
+        """Register a new goal into the tracker."""
         self.goals.append(goal)
+        logger.info(f"Goal added: {goal.name} ({goal.target} {goal.unit})")
     
-    def update_progress(self, goal_name: str, current: float):
-        """Update goal progress."""
-        for goal in self.goals:
-            if goal.name == goal_name:
-                goal.current = current
-                break
-    
-    def get_summary(self) -> Dict[str, Any]:
-        """Get goals summary."""
-        total = len(self.goals)
-        achieved = sum(1 for g in self.goals if g.status == GoalStatus.ACHIEVED)
-        in_progress = sum(1 for g in self.goals if g.status == GoalStatus.IN_PROGRESS)
-        
-        return {
-            "total": total,
-            "achieved": achieved,
-            "in_progress": in_progress,
-            "achievement_rate": (achieved / total * 100) if total > 0 else 0
-        }
-    
-    def format_goal(self, goal: Goal) -> str:
-        """Format single goal progress."""
-        # Progress bar
-        filled = int(40 * goal.progress / 100)
-        bar = "█" * filled + "░" * (40 - filled)
-        
-        # Status icon
-        status_icons = {
-            GoalStatus.NOT_STARTED: "⬜",
-            GoalStatus.IN_PROGRESS: "🔄",
-            GoalStatus.ACHIEVED: "✅",
-            GoalStatus.MISSED: "❌"
-        }
-        icon = status_icons[goal.status]
-        
-        # Category emoji
-        cat_icons = {
-            GoalCategory.REVENUE: "💰",
-            GoalCategory.CLIENTS: "👥",
-            GoalCategory.LEADS: "📊",
-            GoalCategory.CONTENT: "📝",
-            GoalCategory.GROWTH: "📈"
-        }
-        cat_icon = cat_icons[goal.category]
-        
-        return f"""{icon} {cat_icon} {goal.name}
-   [{bar}] {goal.progress:.0f}%
-   Current: {goal.current:,.0f} / Target: {goal.target:,.0f} {goal.unit}
-   Deadline: {goal.deadline.strftime('%Y-%m-%d')}"""
+    def update_progress(self, goal_name: str, current_value: float) -> bool:
+        """Update the current value for an identified goal."""
+        for g in self.goals:
+            if g.name == goal_name:
+                g.current = float(current_value)
+                logger.info(f"Progress updated: {goal_name} -> {current_value}")
+                return True
+        logger.error(f"Goal '{goal_name}' not found for update.")
+        return False
     
     def format_dashboard(self) -> str:
-        """Format goals dashboard."""
-        summary = self.get_summary()
+        """Render the Goal Tracking Dashboard."""
+        if not self.goals: return "No active goals tracked."
+        
+        achieved = sum(1 for g in self.goals if g.status == GoalStatus.ACHIEVED)
+        overall_rate = (achieved / len(self.goals)) * 100.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 GOAL TRACKER: {self.agency_name.upper()[:33]:<33}  ║",
+            f"║  🎯 GOAL TRACKER - {self.agency_name.upper()[:28]:<28} ║",
+            f"║  {len(self.goals)} total goals │ {achieved} achieved │ {overall_rate:.0f}% success rate{' ' * 10}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📊 Summary: {summary['achieved']}/{summary['total']} goals achieved ({summary['achievement_rate']:.0f}%)       ║",
-            "║                                                           ║",
         ]
         
-        # Group by category
-        for category in GoalCategory:
-            cat_goals = [g for g in self.goals if g.category == category]
-            if not cat_goals:
-                continue
+        # Group and display by category
+        for cat in GoalCategory:
+            cat_goals = [g for g in self.goals if g.category == cat]
+            if not cat_goals: continue
             
-            cat_icon = {"revenue": "💰", "clients": "👥", "leads": "📊", "content": "📝", "growth": "📈"}[category.value]
-            lines.append(f"║  {cat_icon} {category.value.upper():<50}   ║")
-            lines.append("║  ─────────────────────────────────────────────────────── ║")
+            icon = {"revenue": "💰", "clients": "👥", "leads": "📊", "content": "📝", "growth": "📈"}.get(cat.value, "🎯")
+            lines.append(f"║  {icon} {cat.value.upper():<50}   ║")
+            lines.append("║  " + "─" * 57 + "  ║")
             
-            for goal in cat_goals:
-                # Status
-                if goal.status == GoalStatus.ACHIEVED:
-                    icon = "✅"
-                elif goal.status == GoalStatus.IN_PROGRESS:
-                    icon = "🔄"
-                else:
-                    icon = "⬜"
-                
-                # Mini progress bar
-                filled = int(20 * goal.progress / 100)
-                bar = "█" * filled + "░" * (20 - filled)
-                
-                lines.append(f"║    {icon} {goal.name[:20]:<20} [{bar}] {goal.progress:>3.0f}%  ║")
-            
+            for g in cat_goals:
+                s_icon = "✅" if g.status == GoalStatus.ACHIEVED else "🔄" if g.status == GoalStatus.IN_PROGRESS else "⬜"
+                # 10-segment bar
+                bar = "█" * int(g.progress_pct / 10) + "░" * (10 - int(g.progress_pct / 10))
+                name_disp = (g.name[:18] + '..') if len(g.name) > 20 else g.name
+                lines.append(f"║    {s_icon} {name_disp:<20} │ {bar} │ {g.progress_pct:>3.0f}%  ║")
             lines.append("║                                                           ║")
-        
-        # Footer
-        achievement_bar_fill = int(40 * summary['achievement_rate'] / 100)
-        achievement_bar = "█" * achievement_bar_fill + "░" * (40 - achievement_bar_fill)
-        
+            
         lines.extend([
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  🏆 OVERALL ACHIEVEMENT                                   ║",
-            f"║  [{achievement_bar}] {summary['achievement_rate']:.0f}%  ║",
-            "║                                                           ║",
-            f"║  🏯 Keep crushing it! - {self.agency_name}               ║",
+            "║  [🎯 New Goal]  [📊 Statistics]  [📅 Calendar]  [⚙️ Setup] ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Crush It!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
-    tracker = GoalTracker("Saigon Digital Hub")
-    
-    # Add sample goals
-    tracker.add_goal(Goal(
-        name="Monthly Revenue",
-        category=GoalCategory.REVENUE,
-        period=GoalPeriod.MONTHLY,
-        target=10000,
-        current=8500,
-        unit="USD",
-        deadline=datetime(2025, 12, 31)
-    ))
-    
-    tracker.add_goal(Goal(
-        name="New Clients",
-        category=GoalCategory.CLIENTS,
-        period=GoalPeriod.MONTHLY,
-        target=5,
-        current=4,
-        unit="clients",
-        deadline=datetime(2025, 12, 31)
-    ))
-    
-    tracker.add_goal(Goal(
-        name="Leads Generated",
-        category=GoalCategory.LEADS,
-        period=GoalPeriod.MONTHLY,
-        target=100,
-        current=120,
-        unit="leads",
-        deadline=datetime(2025, 12, 31)
-    ))
-    
-    tracker.add_goal(Goal(
-        name="Blog Posts",
-        category=GoalCategory.CONTENT,
-        period=GoalPeriod.MONTHLY,
-        target=8,
-        current=6,
-        unit="posts",
-        deadline=datetime(2025, 12, 31)
-    ))
-    
-    tracker.add_goal(Goal(
-        name="Social Followers",
-        category=GoalCategory.GROWTH,
-        period=GoalPeriod.QUARTERLY,
-        target=5000,
-        current=3200,
-        unit="followers",
-        deadline=datetime(2025, 12, 31)
-    ))
-    
-    print("🎯 Goal Tracker")
+    print("🎯 Initializing Goal System...")
     print("=" * 60)
-    print()
     
-    print(tracker.format_dashboard())
-    print()
-    
-    print("📋 Individual Goals:")
-    print("-" * 40)
-    for goal in tracker.goals[:2]:
-        print(tracker.format_goal(goal))
-        print()
+    try:
+        tracker = GoalTracker("Saigon Digital Hub")
+        # Seed
+        tracker.add_goal(Goal(
+            "Revenue Target", GoalCategory.REVENUE, GoalPeriod.MONTHLY,
+            10000.0, 8500.0, "USD", datetime.now() + timedelta(days=30)
+        ))
+        tracker.add_goal(Goal(
+            "New Clients", GoalCategory.CLIENTS, GoalPeriod.MONTHLY,
+            5.0, 5.0, "clients", datetime.now() + timedelta(days=15)
+        ))
+        
+        print("\n" + tracker.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Goal Error: {e}")

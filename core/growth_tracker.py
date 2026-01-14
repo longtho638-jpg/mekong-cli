@@ -12,15 +12,19 @@ Features:
 - Celebration triggers
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class GrowthMetric(Enum):
-    """Growth metrics."""
+    """Growth performance metrics."""
     REVENUE = "revenue"
     CLIENTS = "clients"
     TEAM = "team"
@@ -29,7 +33,7 @@ class GrowthMetric(Enum):
 
 
 class MilestoneType(Enum):
-    """Milestone types."""
+    """Types of significant business milestones."""
     REVENUE = "revenue"
     CLIENTS = "clients"
     TEAM = "team"
@@ -38,7 +42,7 @@ class MilestoneType(Enum):
 
 @dataclass
 class GrowthData:
-    """Growth data point."""
+    """Growth performance record entity."""
     metric: GrowthMetric
     current: float
     previous: float
@@ -46,122 +50,109 @@ class GrowthData:
     
     @property
     def growth_rate(self) -> float:
-        return ((self.current - self.previous) / self.previous * 100) if self.previous else 0
+        """Percentage growth from previous period."""
+        return ((self.current - self.previous) / self.previous * 100) if self.previous else 0.0
     
     @property
     def delta(self) -> float:
+        """Numerical difference between periods."""
         return self.current - self.previous
 
 
 @dataclass
 class Milestone:
-    """A growth milestone."""
+    """A historical business milestone entity."""
     id: str
     type: MilestoneType
     name: str
-    achieved_at: datetime
-    value: float
+    achieved_at: datetime = field(default_factory=datetime.now)
+    value: float = 0.0
 
 
 class GrowthTracker:
     """
-    Growth Tracker.
+    Growth Tracker System.
     
-    Track agency growth.
+    Monitors high-level agency growth metrics, streaks, and milestone achievements.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.growth_data: List[GrowthData] = []
         self.milestones: List[Milestone] = []
+        
+        logger.info(f"Growth Tracker initialized for {agency_name}")
         self._load_defaults()
     
     def _load_defaults(self):
-        """Load default data."""
+        """Seed the system with sample growth data."""
+        logger.info("Loading demo growth history...")
         self.growth_data = [
-            GrowthData(GrowthMetric.REVENUE, 45000, 40000),
-            GrowthData(GrowthMetric.CLIENTS, 15, 13),
-            GrowthData(GrowthMetric.TEAM, 12, 10),
-            GrowthData(GrowthMetric.PROJECTS, 18, 15),
-            GrowthData(GrowthMetric.MRR, 28000, 25000),
+            GrowthData(GrowthMetric.REVENUE, 45000.0, 40000.0),
+            GrowthData(GrowthMetric.CLIENTS, 15.0, 13.0),
+            GrowthData(GrowthMetric.MRR, 28000.0, 25000.0),
         ]
         
         self.milestones = [
-            Milestone("MS-001", MilestoneType.REVENUE, "$100K Revenue", datetime.now() - timedelta(days=180), 100000),
-            Milestone("MS-002", MilestoneType.CLIENTS, "10 Clients", datetime.now() - timedelta(days=120), 10),
-            Milestone("MS-003", MilestoneType.TEAM, "10 Team Members", datetime.now() - timedelta(days=60), 10),
-            Milestone("MS-004", MilestoneType.ANNIVERSARY, "1 Year Anniversary", datetime.now() - timedelta(days=30), 1),
+            Milestone(f"MS-{uuid.uuid4().hex[:4].upper()}", MilestoneType.REVENUE, "$100K ARR", datetime.now() - timedelta(days=180), 100000.0),
+            Milestone(f"MS-{uuid.uuid4().hex[:4].upper()}", MilestoneType.CLIENTS, "First 10 Clients", datetime.now() - timedelta(days=120), 10.0),
         ]
     
-    def add_milestone(
+    def record_milestone(
         self,
-        milestone_type: MilestoneType,
+        m_type: MilestoneType,
         name: str,
         value: float
     ) -> Milestone:
-        """Add a milestone."""
-        milestone = Milestone(
+        """Register a new major accomplishment."""
+        if not name:
+            raise ValueError("Milestone name required")
+
+        m = Milestone(
             id=f"MS-{uuid.uuid4().hex[:6].upper()}",
-            type=milestone_type,
-            name=name,
-            achieved_at=datetime.now(),
-            value=value
+            type=m_type, name=name, value=value
         )
-        self.milestones.append(milestone)
-        return milestone
-    
-    def get_growth_streak(self) -> int:
-        """Get consecutive months of growth."""
-        # Simulated
-        return 8
+        self.milestones.append(m)
+        logger.info(f"🎉 MILESTONE ACHIEVED: {name}")
+        return m
     
     def format_dashboard(self) -> str:
-        """Format growth dashboard."""
-        streak = self.get_growth_streak()
-        total_growth = sum(g.growth_rate for g in self.growth_data) / len(self.growth_data)
+        """Render the Growth Dashboard."""
+        avg_growth = sum(g.growth_rate for g in self.growth_data) / len(self.growth_data) if self.growth_data else 0.0
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📈 GROWTH TRACKER                                        ║",
-            f"║  {total_growth:.1f}% avg growth │ {streak} month streak 🔥            ║",
+            f"║  📈 GROWTH TRACKER - {self.agency_name.upper()[:28]:<28} ║",
+            f"║  {avg_growth:.1f}% avg growth │ 8 month streak 🔥 {' ' * 18}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📊 GROWTH METRICS (MoM)                                  ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        metric_icons = {"revenue": "💰", "clients": "👥", "team": "👨‍💼", "projects": "📁", "mrr": "🔄"}
+        icons = {GrowthMetric.REVENUE: "💰", GrowthMetric.CLIENTS: "👥", GrowthMetric.MRR: "🔄"}
         
-        for data in self.growth_data:
-            icon = metric_icons.get(data.metric.value, "📊")
-            trend = "↑" if data.growth_rate > 0 else ("↓" if data.growth_rate < 0 else "→")
-            color = "🟢" if data.growth_rate > 0 else ("🔴" if data.growth_rate < 0 else "⚪")
+        for d in self.growth_data:
+            icon = icons.get(d.metric, "📊")
+            trend = "↑" if d.growth_rate > 0 else "↓"
+            status = "🟢" if d.growth_rate > 0 else "🔴"
             
-            current = f"{data.current:,.0f}"
-            lines.append(f"║  {icon} {data.metric.value.upper():<10} │ {current:>10} │ {color} {trend}{abs(data.growth_rate):>5.1f}%  ║")
+            lines.append(f"║  {icon} {d.metric.value.upper():<10} │ {d.current:>10,.0f} │ {status} {trend}{abs(d.growth_rate):>5.1f}%  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  🏆 MILESTONES ACHIEVED                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  🏆 HISTORICAL MILESTONES                                 ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        type_icons = {"revenue": "💰", "clients": "👥", "team": "👨‍💼", "anniversary": "🎂"}
-        
-        for milestone in self.milestones[-4:]:
-            icon = type_icons.get(milestone.type.value, "🏆")
-            date = milestone.achieved_at.strftime("%b %d")
-            lines.append(f"║    {icon} {milestone.name:<30} │ {date:<8}  ║")
+        for m in self.milestones[-3:]:
+            icon = "🏆" if m.type != MilestoneType.ANNIVERSARY else "🎂"
+            lines.append(f"║    {icon} {m.name:<30} │ {m.achieved_at.strftime('%b %d')}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  🎯 NEXT MILESTONES                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    🎯 $500K Revenue            (85% there)                ║",
-            "║    🎯 20 Clients               (75% there)                ║",
-            "║                                                           ║",
-            "║  [📊 History]  [🎯 Set Goals]  [🎉 Celebrate]             ║",
+            "║  [📊 History]  [🎯 Set Goals]  [🎉 Celebrate]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Growing strong!                  ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Momentum!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -170,10 +161,12 @@ class GrowthTracker:
 
 # Example usage
 if __name__ == "__main__":
-    tracker = GrowthTracker("Saigon Digital Hub")
-    
-    print("📈 Growth Tracker")
+    print("📈 Initializing Growth System...")
     print("=" * 60)
-    print()
     
-    print(tracker.format_dashboard())
+    try:
+        tracker = GrowthTracker("Saigon Digital Hub")
+        print("\n" + tracker.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Growth Error: {e}")
