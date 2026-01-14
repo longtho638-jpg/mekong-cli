@@ -42,10 +42,10 @@ class TestVIBEOrchestrator:
         def mock_handler(prompt):
             return f"Processed: {prompt}"
             
-        orc.register_agent(AgentType.TESTER, mock_handler)
+        orc.register_agent_handler(AgentType.TESTER, mock_handler)
         task = orc.delegate(AgentType.TESTER, "Test the app")
         
-        assert task.output == "Processed: Test the app"
+        assert task.result == "Processed: Test the app"
         assert task.status == "completed"
 
 if __name__ == "__main__":
