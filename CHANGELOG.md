@@ -1,3 +1,10 @@
+## [2.4.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.1...v2.4.0-beta.2) (2026-01-14)
+
+
+### 🚀 Features
+
+* **rules:** add mandatory delegation context for cross-project work ([4fd2c34](https://github.com/claudekit/claudekit-engineer/commit/4fd2c34994f4e9edac6515d3877ad91290c40169)), closes [#342](https://github.com/claudekit/claudekit-engineer/issues/342)
+
 ## [2.4.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0-beta.1) (2026-01-13)
 
 
