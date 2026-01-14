@@ -16,15 +16,15 @@ class TestAgencyDNA:
     def test_service_initialization(self):
         """Test service auto-conversion."""
         s = Service("Web Dev", "Build site", 1000.0)
-        assert s.price_vnd == 24500000
+        assert s.price_vnd == 25000000 # New rate 25,000
         
     def test_agency_dna_tagline(self):
         """Test tagline generation for different tones."""
         dna = AgencyDNA(name="Mekong AI", niche="Gạo", tone=Tone.MIEN_TAY)
-        assert "Miền Tây" in dna.get_tagline()
+        assert "miền Tây" in dna.get_tagline()
         
         dna.tone = Tone.MIEN_BAC
-        assert "Hà Nội" in dna.get_tagline()
+        assert "Thủ đô" in dna.get_tagline()
 
     def test_add_service(self):
         """Test adding services to DNA."""
@@ -37,8 +37,8 @@ class TestAgencyDNA:
         """Test dictionary export."""
         dna = AgencyDNA(name="Test Agency")
         data = dna.to_dict()
-        assert data["name"] == "Test Agency"
-        assert "tagline" in data
+        assert data["identity"]["name"] == "Test Agency"
+        assert "tagline" in data["identity"]
 
 if __name__ == "__main__":
     pytest.main([__file__])

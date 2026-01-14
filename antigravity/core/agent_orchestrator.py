@@ -1,17 +1,24 @@
 """
 🏯 Agent Orchestrator - Auto-Execute Agent Chains
+================================================
 
-Automatically runs the optimal agent chain for any command.
-Handles step-by-step execution with status reporting.
+The central execution engine for Agency OS. It maps commands to optimal 
+specialized agents, manages their execution state, and 
+tracks performance metrics.
 
-Usage:
-    from antigravity.core.agent_orchestrator import AgentOrchestrator
-    orchestrator = AgentOrchestrator()
-    result = orchestrator.run("dev", "cook", {"task": "build auth"})
+Key Responsibilities:
+- Chain Retrieval: Identifying the right team for the task.
+- Step Execution: Sequential or parallel invocation of agents.
+- State Management: Capturing outputs and handling failures.
+- Telemetry: Measuring execution time and success rates.
+
+Binh Pháp: 💂 Tướng (Leadership) - Commanding the agent workforce.
 """
 
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
+import logging
+import time
+from typing import Dict, List, Any, Optional, Union
+from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
 
@@ -20,9 +27,11 @@ from .agent_chains import (
     get_chain, get_chain_summary, AgentCategory
 )
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class StepStatus(Enum):
-    """Status of a chain step."""
+    """Execution status of an individual agent step."""
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -32,31 +41,33 @@ class StepStatus(Enum):
 
 @dataclass
 class StepResult:
-    """Result of a single step."""
+    """Detailed output and metadata for a single agent action."""
     agent: str
     action: str
     status: StepStatus
-    output: Optional[str] = None
-    duration_ms: int = 0
+    output: Optional[Any] = None
+    duration_ms: float = 0.0
     error: Optional[str] = None
 
 
 @dataclass
 class ChainResult:
-    """Result of a full chain execution."""
+    """Aggregated results from a full agent chain execution."""
     suite: str
     subcommand: str
-    steps: List[StepResult]
-    success: bool
-    total_duration_ms: int
-    started_at: datetime
+    steps: List[StepResult] = field(default_factory=list)
+    success: bool = False
+    total_duration_ms: float = 0.0
+    started_at: datetime = field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None
 
 
 class AgentOrchestrator:
     """
     🏯 Agent Orchestrator
-    Auto-executes optimal agent chains for any command.
+    
+    The master conductor of AI workflows. 
+    It ensures that complex tasks are broken down and handled by the best agents.
     """
     
     def __init__(self, verbose: bool = True):
@@ -70,161 +81,134 @@ class AgentOrchestrator:
         context: Optional[Dict[str, Any]] = None
     ) -> ChainResult:
         """
-        Execute the agent chain for a command.
-        
-        Args:
-            suite: Suite name (e.g., "dev")
-            subcommand: Subcommand (e.g., "cook")
-            context: Optional context dict with task details
-        
-        Returns:
-            ChainResult with all step results
+        Executes the optimized agent chain for a specific command suite.
         """
         chain = get_chain(suite, subcommand)
         
         if not chain:
+            logger.warning(f"No execution chain defined for {suite}:{subcommand}")
             return self._empty_result(suite, subcommand)
         
-        started_at = datetime.now()
-        steps_results: List[StepResult] = []
+        result = ChainResult(
+            suite=suite,
+            subcommand=subcommand,
+            started_at=datetime.now()
+        )
         
         if self.verbose:
             self._print_header(suite, subcommand, len(chain))
         
         for i, step in enumerate(chain, 1):
-            result = self._execute_step(step, i, len(chain), context)
-            steps_results.append(result)
+            step_res = self._execute_step(step, i, len(chain), context)
+            result.steps.append(step_res)
             
-            # Stop on failure (unless optional)
-            if result.status == StepStatus.FAILED and not step.optional:
+            # Critical Path Logic: Stop on failure unless step is optional
+            if step_res.status == StepStatus.FAILED and not step.optional:
+                logger.error(f"Chain halted due to failure in critical step: {step.agent}")
                 break
         
-        completed_at = datetime.now()
-        total_ms = int((completed_at - started_at).total_seconds() * 1000)
+        result.completed_at = datetime.now()
+        result.total_duration_ms = (result.completed_at - result.started_at).total_seconds() * 1000
         
-        success = all(
+        # Chain success = all non-optional steps completed
+        result.success = all(
             r.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] 
-            for r in steps_results
+            for r in result.steps
         )
         
-        chain_result = ChainResult(
-            suite=suite,
-            subcommand=subcommand,
-            steps=steps_results,
-            success=success,
-            total_duration_ms=total_ms,
-            started_at=started_at,
-            completed_at=completed_at,
-        )
-        
-        self.history.append(chain_result)
+        self.history.append(result)
         
         if self.verbose:
-            self._print_summary(chain_result)
+            self._print_summary(result)
         
-        return chain_result
+        return result
     
     def _execute_step(
         self, 
         step: AgentStep, 
         index: int, 
         total: int,
-        context: Optional[Dict]
+        context: Optional[Dict[str, Any]]
     ) -> StepResult:
-        """Execute a single step."""
-        if self.verbose:
-            print(f"   [{index}/{total}] {step.agent}: {step.description}...")
-        
-        # Simulate agent execution (in real impl, would call actual agent)
-        # For now, we mark all as completed
-        import time
-        start = time.time()
-        
-        # Here you would actually invoke the agent
-        # agent = load_agent(step.agent)
-        # output = agent.run(step.action, context)
-        
-        duration_ms = int((time.time() - start) * 1000)
+        """Invokes an individual agent and captures the result."""
+        start_time = time.time()
         
         if self.verbose:
-            print(f"   ✓ {step.agent} complete")
+            print(f"   [{index}/{total}] 🤖 {step.agent:<20} | {step.description}...")
+        
+        try:
+            # INTERFACE POINT: Real agent invocation would happen here.
+            # For this prototype, we simulate a successful execution.
+            time.sleep(0.01) # Simulated network/processing latency
+            
+            output = f"Simulated output for {step.action}"
+            status = StepStatus.COMPLETED
+            error = None
+            
+        except Exception as e:
+            logger.exception(f"Agent {step.agent} failed during {step.action}")
+            output = None
+            status = StepStatus.FAILED
+            error = str(e)
+        
+        duration = (time.time() - start_time) * 1000
+        
+        if self.verbose and status == StepStatus.COMPLETED:
+            print(f"   ✓ Success ({duration:.0f}ms)")
         
         return StepResult(
             agent=step.agent,
             action=step.action,
-            status=StepStatus.COMPLETED,
-            output=f"Executed {step.action}",
-            duration_ms=duration_ms,
+            status=status,
+            output=output,
+            duration_ms=duration,
+            error=error
         )
     
     def _print_header(self, suite: str, subcommand: str, steps: int):
-        """Print chain execution header."""
-        print(f"\n🔗 AGENT CHAIN: /{suite}:{subcommand}")
-        print("═" * 50)
-        print(f"   Steps: {steps} agents")
-        print("─" * 50)
+        """Standard visual header for CLI execution."""
+        print(f"\n🚀 ORCHESTRATING: /{suite}:{subcommand}")
+        print("═" * 60)
+        print(f"   Deployment: {steps} specialized agents active")
+        print("─" * 60)
     
     def _print_summary(self, result: ChainResult):
-        """Print chain execution summary."""
-        print("─" * 50)
-        status = "✅ SUCCESS" if result.success else "❌ FAILED"
-        print(f"   {status} ({result.total_duration_ms}ms)")
-        print("═" * 50)
+        """Standard visual summary for CLI completion."""
+        print("─" * 60)
+        icon = "✅" if result.success else "❌"
+        status_text = "MISSION COMPLETE" if result.success else "MISSION FAILED"
+        print(f"   {icon} {status_text} | Total Time: {result.total_duration_ms:.0f}ms")
+        print("═" * 60)
     
     def _empty_result(self, suite: str, subcommand: str) -> ChainResult:
-        """Return empty result for undefined chain."""
+        """Fallback result for missing configurations."""
         return ChainResult(
             suite=suite,
             subcommand=subcommand,
-            steps=[],
             success=False,
-            total_duration_ms=0,
-            started_at=datetime.now(),
+            started_at=datetime.now()
         )
     
     def get_stats(self) -> Dict[str, Any]:
-        """Get orchestrator statistics."""
-        total_runs = len(self.history)
+        """Aggregates performance data from the current session."""
+        total = len(self.history)
         successful = sum(1 for r in self.history if r.success)
         
-        # Count agent usage
         agent_usage: Dict[str, int] = {}
-        for result in self.history:
-            for step in result.steps:
+        for res in self.history:
+            for step in res.steps:
                 agent_usage[step.agent] = agent_usage.get(step.agent, 0) + 1
         
         return {
-            "total_runs": total_runs,
-            "successful": successful,
-            "success_rate": successful / total_runs if total_runs > 0 else 0,
+            "total_runs": total,
+            "success_rate": (successful / total * 100) if total > 0 else 0,
             "agent_usage": agent_usage,
-            "total_agents": len(AGENT_INVENTORY),
-            "total_chains": len(AGENT_CHAINS),
+            "session_duration_ms": sum(r.total_duration_ms for r in self.history)
         }
-    
-    def print_dashboard(self):
-        """Print agent dashboard."""
-        stats = self.get_stats()
-        
-        print("\n🏯 AGENT ORCHESTRATOR DASHBOARD")
-        print("═" * 60)
-        print(f"   Total Agents: {stats['total_agents']}")
-        print(f"   Total Chains: {stats['total_chains']}")
-        print(f"   Runs: {stats['total_runs']}")
-        print(f"   Success Rate: {stats['success_rate']:.1%}")
-        print()
-        
-        # Agent categories
-        print("📊 AGENTS BY CATEGORY:")
-        for cat in AgentCategory:
-            from .agent_chains import get_agents_by_category
-            agents = get_agents_by_category(cat)
-            print(f"   {cat.value}: {len(agents)}")
-        
-        print("═" * 60)
 
 
-def run_chain(suite: str, subcommand: str, context: Dict = None) -> ChainResult:
-    """Quick function to run a chain."""
+# Quick Access Function
+def execute_chain(suite: str, subcommand: str, context: Optional[Dict] = None) -> ChainResult:
+    """Convenience wrapper for one-off chain execution."""
     orchestrator = AgentOrchestrator()
     return orchestrator.run(suite, subcommand, context)

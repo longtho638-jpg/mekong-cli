@@ -1,41 +1,42 @@
 """
-AgencyDNA - Your agency's unique identity.
+🧬 AgencyDNA - Your Agency's Unique Identity
+===========================================
 
-This module defines the core identity of your agency:
-- Niche specialization
-- Location/region
-- Brand tone and voice
-- Service offerings
-- Pricing structure
+Defines the core essence of the agency, determining its market position,
+voice, and operational parameters.
 
-🏯 Binh Pháp: Đạo (Way) - Alignment
+Binh Pháp: ☸️ Đạo (Way) - Alignment of purpose and vision.
 """
 
+import logging
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from datetime import datetime
+from typing import List, Dict, Optional, Any, Union
 from enum import Enum
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class Tone(Enum):
-    """Brand voice tones."""
+    """Regional and professional brand voice archetypes."""
     PROFESSIONAL = "professional"
     FRIENDLY = "friendly"
-    MIEN_TAY = "mien_tay"      # Miền Tây - Southern Vietnam
-    MIEN_BAC = "mien_bac"      # Miền Bắc - Northern Vietnam
-    MIEN_TRUNG = "mien_trung"  # Miền Trung - Central Vietnam
+    MIEN_TAY = "mien_tay"      # Southern: Warm, sincere, humble
+    MIEN_BAC = "mien_bac"      # Northern: Formal, precise, elegant
+    MIEN_TRUNG = "mien_trung"  # Central: Hardworking, resilient, simple
 
 
 class PricingTier(Enum):
-    """Pricing tiers."""
-    STARTER = "starter"         # $0-500/project
-    GROWTH = "growth"           # $500-2000/project
-    PROFESSIONAL = "professional"  # $2000-5000/project
-    ENTERPRISE = "enterprise"   # $5000+/project
+    """Standardized service pricing brackets."""
+    STARTER = "starter"           # Solo project focus
+    GROWTH = "growth"             # Scaling agency focus
+    PROFESSIONAL = "professional" # High-ticket boutique
+    ENTERPRISE = "enterprise"     # Venture-backed / Corporate
 
 
 @dataclass
 class Service:
-    """A service offering."""
+    """Represents a specific product or service offering."""
     name: str
     description: str
     price_usd: float
@@ -43,76 +44,109 @@ class Service:
     duration_days: int = 7
     
     def __post_init__(self):
-        # Auto-convert USD to VND (1 USD = 24,500 VND)
+        """Auto-conversion of USD to VND using updated rates."""
+        # Standard rate: 1 USD ≈ 25,000 VND (2026 approximation)
         if self.price_vnd == 0:
-            self.price_vnd = int(self.price_usd * 24500)
+            self.price_vnd = int(self.price_usd * 25000)
 
 
 @dataclass
 class AgencyDNA:
     """
-    Your agency's unique identity.
+    🧬 Agency DNA
     
-    Example:
-        dna = AgencyDNA(
-            name="Nova Digital",
-            niche="Nông sản",
-            location="Cần Thơ",
-            tone=Tone.MIEN_TAY
-        )
+    The single source of truth for agency identity.
+    Used by AI agents to personalize content, proposals, and communication.
     """
-    name: str = "My Agency"
-    niche: str = "Digital Marketing"
-    location: str = "Vietnam"
+    name: str = "Unicorn Agency"
+    niche: str = "Full-stack Automation"
+    location: str = "Ho Chi Minh City"
+    region: str = "South"
     tone: Tone = Tone.FRIENDLY
-    tier: PricingTier = PricingTier.STARTER
+    tier: PricingTier = PricingTier.GROWTH
     
-    # Services
+    # Core specializations
+    capabilities: List[str] = field(default_factory=lambda: ["AI Automation", "Lead Gen"])
+    
+    # Service Catalog
     services: List[Service] = field(default_factory=list)
     
-    # Contact
-    email: str = ""
-    phone: str = ""
-    website: str = ""
+    # Contact & Identity
+    contact: Dict[str, str] = field(default_factory=lambda: {
+        "email": "",
+        "phone": "",
+        "website": "",
+        "zalo": "",
+        "telegram": ""
+    })
     
-    # Social
-    facebook: str = ""
-    zalo: str = ""
-    telegram: str = ""
+    # Social Handles
+    social: Dict[str, str] = field(default_factory=dict)
     
-    def add_service(self, name: str, description: str, price_usd: float) -> Service:
-        """Add a service offering."""
-        service = Service(name=name, description=description, price_usd=price_usd)
+    def add_service(self, name: str, description: str, price_usd: float, duration: int = 7) -> Service:
+        """Appends a new service to the agency's catalog."""
+        service = Service(
+            name=name, 
+            description=description, 
+            price_usd=price_usd,
+            duration_days=duration
+        )
         self.services.append(service)
+        logger.info(f"Service added to DNA: {name} (${price_usd})")
         return service
     
-    def get_tagline(self) -> str:
-        """Generate agency tagline based on niche and tone."""
-        taglines = {
-            Tone.MIEN_TAY: f"Chuyên gia {self.niche} - Đậm chất Miền Tây",
-            Tone.MIEN_BAC: f"Chuyên gia {self.niche} - Chất lượng Hà Nội",
-            Tone.MIEN_TRUNG: f"Chuyên gia {self.niche} - Đẳng cấp Miền Trung",
-            Tone.FRIENDLY: f"Your Partner in {self.niche}",
-            Tone.PROFESSIONAL: f"Professional {self.niche} Solutions"
+    def get_localized_voice(self) -> str:
+        """Returns a description of the agent's voice for prompting."""
+        profiles = {
+            Tone.MIEN_TAY: "Chân thành, mộc mạc, dùng từ ngữ ấm áp như 'nghen', 'hen', 'tui'.",
+            Tone.MIEN_BAC: "Trang trọng, chỉn chu, lễ phép, dùng từ 'vâng', 'ạ', 'xin phép'.",
+            Tone.MIEN_TRUNG: "Thẳng thắn, kiên cường, mộc mạc, đậm chất miền Trung.",
+            Tone.FRIENDLY: "Modern, approachable, and supportive tone.",
+            Tone.PROFESSIONAL: "Authoritative, data-driven, and corporate tone."
         }
-        return taglines.get(self.tone, f"Expert in {self.niche}")
+        return profiles.get(self.tone, "Standard professional tone.")
     
-    def to_dict(self) -> Dict:
-        """Export DNA as dictionary."""
+    def get_tagline(self) -> str:
+        """Generates a contextual tagline for marketing materials."""
+        if self.tone == Tone.MIEN_TAY:
+            return f"Đồng hành cùng {self.niche} - Trọn tình miền Tây"
+        elif self.tone == Tone.MIEN_BAC:
+            return f"Giải pháp {self.niche} tinh hoa - Đẳng cấp Thủ đô"
+        elif self.tone == Tone.MIEN_TRUNG:
+            return f"{self.niche} bền vững - Vững chãi miền Trung"
+        
+        return f"Elite {self.niche} Experts | {self.location}"
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializable dictionary for frontend and agent injection."""
         return {
-            "name": self.name,
-            "niche": self.niche,
-            "location": self.location,
-            "tone": self.tone.value,
-            "tier": self.tier.value,
-            "services": [
-                {"name": s.name, "price_usd": s.price_usd, "price_vnd": s.price_vnd}
-                for s in self.services
-            ],
-            "contact": {
-                "email": self.email,
-                "phone": self.phone,
-                "website": self.website
+            "identity": {
+                "name": self.name,
+                "niche": self.niche,
+                "location": self.location,
+                "tagline": self.get_tagline(),
+                "voice": self.get_localized_voice()
             },
-            "tagline": self.get_tagline()
+            "configuration": {
+                "tone": self.tone.value,
+                "tier": self.tier.value,
+                "capabilities": self.capabilities
+            },
+            "services": [
+                {
+                    "name": s.name, 
+                    "price_usd": s.price_usd, 
+                    "price_vnd": s.price_vnd,
+                    "duration": s.duration_days
+                } for s in self.services
+            ],
+            "contact": self.contact
         }
+
+
+def create_starter_dna(agency_name: str, niche: str) -> AgencyDNA:
+    """Factory for bootstrapping a new agency DNA."""
+    dna = AgencyDNA(name=agency_name, niche=niche)
+    dna.add_service("MVP Launch", "Quick market validation", 499.0, 14)
+    dna.add_service("Agency OS Setup", "Full automation implementation", 1999.0, 30)
+    return dna

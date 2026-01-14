@@ -1,19 +1,31 @@
 """
-Deal models for SalesPipeline.
+📋 Deal Models - Startup Opportunities
+======================================
 
-Extracted from sales_pipeline.py for clean architecture.
+Defines the data structures for managing high-growth startup deals within 
+the Agency OS sales pipeline. Supports automated pricing based on the 
+Binh Pháp engagement tiers.
+
+Hierarchy:
+- DealStage: Pipeline status levels.
+- StartupDeal: Comprehensive financial and relationship container.
+
+Binh Pháp: 📋 Hình (Configuration) - Structuring the deal for success.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 from enum import Enum
 
-from ..config import DealTier, TIER_PRICING, get_tier_pricing
+from ..config import DealTier, get_tier_pricing
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class DealStage(Enum):
-    """Deal pipeline stages."""
+    """Workflow stages for a startup engagement."""
     LEAD = "lead"
     DISCOVERY = "discovery"
     PROPOSAL = "proposal"
@@ -24,80 +36,94 @@ class DealStage(Enum):
 
 @dataclass
 class StartupDeal:
-    """A startup client deal."""
+    """
+    📋 Startup Engagement Deal
+    
+    Captures all strategic and financial parameters of a client relationship.
+    Automatically applies tier-based pricing if defaults are not overridden.
+    """
     id: Optional[int] = None
     startup_name: str = ""
     founder_name: str = ""
     email: str = ""
-    tier: DealTier = DealTier.WARRIOR
-    stage: DealStage = DealStage.LEAD
+    tier: DealTier = field(default=DealTier.WARRIOR)
+    stage: DealStage = field(default=DealStage.LEAD)
     
-    # Financials
+    # Financial Commitments (USD)
     retainer_monthly: float = 0.0
     equity_percent: float = 0.0
     success_fee_percent: float = 0.0
     
-    # Funding
+    # Capital Milestones
     funding_target: float = 0.0
     valuation: float = 0.0
     
-    # Timestamps
+    # Metadata & Tracking
     created_at: datetime = field(default_factory=datetime.now)
     closed_at: Optional[datetime] = None
-    
-    # Notes
     notes: str = ""
 
     def __post_init__(self):
-        """Set tier pricing if not specified."""
+        """Auto-populates financial terms based on the selected tier."""
         if self.retainer_monthly == 0:
             pricing = get_tier_pricing(self.tier)
-            self.retainer_monthly = pricing["retainer"]
-            self.equity_percent = sum(pricing["equity_range"]) / 2
-            self.success_fee_percent = pricing["success_fee"]
+            # Match the refactored config keys (retainer_usd, success_fee_percent)
+            self.retainer_monthly = pricing.get("retainer_usd", 0.0)
+            
+            # Default to mid-range of equity
+            range_val = pricing.get("equity_range", (0.0, 0.0))
+            self.equity_percent = sum(range_val) / 2
+            
+            self.success_fee_percent = pricing.get("success_fee_percent", 0.0)
 
     def get_annual_retainer(self) -> float:
-        """Calculate annual retainer revenue."""
+        """Projects yearly cashflow from this deal."""
         return self.retainer_monthly * 12
 
     def get_equity_value(self) -> float:
-        """Calculate equity value at current valuation."""
+        """Estimates current paper value of the equity stake."""
         return self.valuation * (self.equity_percent / 100)
 
-    def get_success_fee(self) -> float:
-        """Calculate potential success fee."""
+    def get_success_fee_value(self) -> float:
+        """Calculates expected fee upon successful funding round."""
         return self.funding_target * (self.success_fee_percent / 100)
 
-    def get_total_deal_value(self) -> float:
-        """Calculate total deal value."""
+    def get_aggregate_value(self) -> float:
+        """Estimates total first-year financial impact (LTV)."""
         return (
             self.get_annual_retainer() +
             self.get_equity_value() +
-            self.get_success_fee()
+            self.get_success_fee_value()
         )
 
     def is_won(self) -> bool:
-        """Check if deal is won."""
+        """Returns True if the contract is signed."""
         return self.stage == DealStage.CLOSED_WON
 
     def is_active(self) -> bool:
-        """Check if deal is still active."""
+        """Returns True if the deal is currently moving through the pipeline."""
         return self.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation for APIs and storage."""
         return {
             "id": self.id,
             "startup_name": self.startup_name,
-            "founder_name": self.founder_name,
-            "email": self.email,
+            "founder": self.founder_name,
             "tier": self.tier.value,
             "stage": self.stage.value,
-            "retainer_monthly": self.retainer_monthly,
-            "equity_percent": self.equity_percent,
-            "success_fee_percent": self.success_fee_percent,
-            "funding_target": self.funding_target,
-            "valuation": self.valuation,
-            "total_value": self.get_total_deal_value(),
-            "created_at": self.created_at.isoformat()
+            "financials": {
+                "mrr": self.retainer_monthly,
+                "equity": self.equity_percent,
+                "success_fee": self.success_fee_percent
+            },
+            "milestones": {
+                "funding": self.funding_target,
+                "valuation": self.valuation
+            },
+            "aggregate_value": self.get_aggregate_value(),
+            "timestamps": {
+                "created": self.created_at.isoformat(),
+                "closed": self.closed_at.isoformat() if self.closed_at else None
+            }
         }

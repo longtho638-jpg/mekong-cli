@@ -1,326 +1,235 @@
-"""
-🏰 Moat Engine - 5 Immortal Moats for AgencyEr Retention
+'''
+🏰 Moat Engine - 5 Immortal Moats for Agency Retention
+======================================================
 
-Makes AgencyOS irreplaceable by tracking accumulated value
-that would be lost if AgencyEr switches platforms.
+Creates compounding defensibility for AgencyEr by tracking accumulated value
+that would be permanently lost if switching platforms.
 
-Usage:
-    from antigravity.core.moat_engine import MoatEngine
-    engine = MoatEngine()
-    engine.print_moat_status()
-"""
+The 5 Immortal Moats:
+1. 📊 Data Moat: All operational records and client history.
+2. 🧠 Learning Moat: AI personalized to the agency's specific style.
+3. 🌐 Network Moat: Community reputation and partner connections.
+4. ⚡ Workflow Moat: Proprietary automations and custom agent crews.
+5. 🏯 Identity Moat: Agency DNA and localized brand voice.
 
-from typing import Dict, Any, List, Optional
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from pathlib import Path
+Binh Pháp: 🏰 Hình Thế (Strategic Configuration) - Defensive positioning.
+'''
+
+import logging
 import json
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Union
+from pathlib import Path
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Moat:
-    """Single moat definition."""
+    '''Defines a specific area of defensibility. '''
+    id: str
     name: str
     emoji: str
     description: str
-    strength: int  # 0-100
-    switching_cost: str
+    strength: int = 0  # 0-100%
+    switching_cost_label: str = ""
     metrics: Dict[str, Any] = field(default_factory=dict)
 
 
 class MoatEngine:
-    """
-    🏰 Moat Engine
+    '''
+    🏰 Moat Strategy Engine
     
-    Tracks the 5 Immortal Moats that make AgencyOS irreplaceable:
-    1. Data Moat - All work stored here
-    2. Learning Moat - AI personalized for them
-    3. Network Moat - Community connections
-    4. Workflow Moat - Custom automations
-    5. Identity Moat - Agency DNA tied here
-    """
+    The value-accumulation engine of Agency OS. 
+    Calculates how "sticky" the platform has become for the user.
+    '''
     
-    def __init__(self, storage_path: str = ".antigravity/moats"):
+    def __init__(self, storage_path: Union[str, Path] = ".antigravity/moats"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
+        self.data_file = self.storage_path / "moats_v2.json"
+        
         self.moats: Dict[str, Moat] = {}
-        self._initialize_moats()
+        self._initialize_moat_definitions()
         self._load_data()
     
-    def _initialize_moats(self):
-        """Initialize the 5 Immortal Moats."""
+    def _initialize_moat_definitions(self):
+        '''Sets up the 5 core areas of platform defensibility.'''
         self.moats = {
             "data": Moat(
+                id="data",
                 name="Data Moat",
                 emoji="📊",
-                description="All work, clients, quotes, invoices stored here",
-                strength=0,
-                switching_cost="Years of data to export",
-                metrics={
-                    "projects": 0,
-                    "clients": 0,
-                    "quotes": 0,
-                    "invoices": 0,
-                    "total_revenue": 0,
-                    "years_of_data": 0,
-                },
+                description="Hồ sơ khách hàng, báo giá, hóa đơn và lịch sử dự án.",
+                switching_cost_label="Mất hàng năm dữ liệu vận hành",
+                metrics={"projects": 0, "clients": 0, "quotes": 0, "invoices": 0}
             ),
             "learning": Moat(
+                id="learning",
                 name="Learning Moat",
                 emoji="🧠",
-                description="AI learns your patterns, style, preferences",
-                strength=0,
-                switching_cost="All learned patterns lost",
-                metrics={
-                    "patterns_learned": 0,
-                    "success_rate": 0.7,
-                    "custom_agents": 0,
-                    "commands_run": 0,
-                },
+                description="AI đã học phong cách, sở thích và quy trình riêng của Anh.",
+                switching_cost_label="Mất sạch các mẫu AI cá nhân hóa",
+                metrics={"patterns": 0, "success_rate": 0.75, "custom_skills": 0}
             ),
             "network": Moat(
+                id="network",
                 name="Network Moat",
                 emoji="🌐",
-                description="Community connections, collaborators, referrals",
-                strength=0,
-                switching_cost="Lose entire network",
-                metrics={
-                    "collaborators": 0,
-                    "referral_partners": 0,
-                    "shared_skills": 0,
-                    "community_reputation": "Bronze",
-                },
+                description="Kết nối cộng đồng, đối tác và uy tín hệ thống.",
+                switching_cost_label="Mất toàn bộ mạng lưới đối tác",
+                metrics={"partners": 0, "referrals": 0, "reputation_points": 0}
             ),
             "workflow": Moat(
+                id="workflow",
                 name="Workflow Moat",
                 emoji="⚡",
-                description="Custom workflows, automations, integrations",
-                strength=0,
-                switching_cost="Rebuild all automations",
-                metrics={
-                    "custom_workflows": 0,
-                    "custom_agents": 0,
-                    "integrations": 0,
-                    "hours_saved_monthly": 0,
-                },
+                description="Các quy trình tự động và Agent Crews tùy chỉnh.",
+                switching_cost_label="Phải xây dựng lại mọi tự động hóa",
+                metrics={"custom_workflows": 0, "active_crews": 0, "hours_saved": 0}
             ),
             "identity": Moat(
+                id="identity",
                 name="Identity Moat",
                 emoji="🏯",
-                description="Agency DNA, brand, templates, personas",
-                strength=0,
-                switching_cost="Redefine entire identity",
-                metrics={
-                    "brand_configured": False,
-                    "pricing_tiers": 0,
-                    "templates": 0,
-                    "personas": 0,
-                },
-            ),
+                description="Agency DNA, giọng thương hiệu và bản sắc địa phương.",
+                switching_cost_label="Mất bản sắc và định vị thương hiệu",
+                metrics={"dna_sync": False, "locales": 1, "brand_assets": 0}
+            )
         }
     
     def add_data_point(self, category: str, count: int = 1):
-        """Add data to the data moat."""
+        '''Updates metrics in the Data Moat.'''
         if category in self.moats["data"].metrics:
             self.moats["data"].metrics[category] += count
-            self._recalculate_strength("data")
+            self._update_strength("data")
             self._save_data()
     
-    def add_pattern(self, success: bool = True):
-        """Add a learned pattern to the learning moat."""
-        self.moats["learning"].metrics["patterns_learned"] += 1
-        self.moats["learning"].metrics["commands_run"] += 1
+    def record_learning(self, success: bool = True):
+        '''Updates the Learning Moat based on execution outcomes.'''
+        metrics = self.moats["learning"].metrics
+        metrics["patterns"] += 1
         
-        # Update success rate with moving average
-        old_rate = self.moats["learning"].metrics["success_rate"]
-        new_rate = (old_rate * 0.95) + (1.0 if success else 0.0) * 0.05
-        self.moats["learning"].metrics["success_rate"] = new_rate
+        # Exponential moving average for success rate
+        alpha = 0.1
+        metrics["success_rate"] = (metrics["success_rate"] * (1-alpha)) + (1.0 if success else 0.0) * alpha
         
-        self._recalculate_strength("learning")
+        self._update_strength("learning")
         self._save_data()
     
-    def add_connection(self, connection_type: str):
-        """Add a network connection."""
-        if connection_type in ["collaborators", "referral_partners", "shared_skills"]:
-            self.moats["network"].metrics[connection_type] += 1
-            self._recalculate_strength("network")
-            self._save_data()
+    def add_workflow(self, count: int = 1):
+        '''Updates the Workflow Moat.'''
+        self.moats["workflow"].metrics["custom_workflows"] += count
+        self._update_strength("workflow")
+        self._save_data()
     
-    def add_workflow(self, workflow_type: str):
-        """Add a custom workflow/automation."""
-        if workflow_type in self.moats["workflow"].metrics:
-            self.moats["workflow"].metrics[workflow_type] += 1
-            self._recalculate_strength("workflow")
-            self._save_data()
-    
-    def configure_identity(self, item: str, value: Any = 1):
-        """Configure identity moat items."""
-        if item in self.moats["identity"].metrics:
-            if isinstance(self.moats["identity"].metrics[item], bool):
-                self.moats["identity"].metrics[item] = True
-            else:
-                self.moats["identity"].metrics[item] += value
-            self._recalculate_strength("identity")
-            self._save_data()
-    
-    def _recalculate_strength(self, moat_name: str):
-        """Recalculate moat strength based on metrics."""
-        moat = self.moats[moat_name]
+    def _update_strength(self, moat_id: str):
+        '''Recalculates 0-100% strength for a specific moat based on its metrics.'''
+        moat = self.moats[moat_id]
         
-        if moat_name == "data":
-            # More data = stronger moat
-            total_records = sum(
-                v for k, v in moat.metrics.items() 
-                if isinstance(v, (int, float)) and k != "years_of_data"
-            )
-            moat.strength = min(100, total_records // 10)
+        if moat_id == "data":
+            total = sum(v for v in moat.metrics.values() if isinstance(v, (int, float)))
+            moat.strength = min(100, int(total / 5)) # 500 points = 100%
             
-        elif moat_name == "learning":
-            # More patterns = stronger
-            patterns = moat.metrics["patterns_learned"]
-            success = moat.metrics["success_rate"]
-            moat.strength = min(100, int(patterns / 5 * success))
+        elif moat_id == "learning":
+            patterns = moat.metrics["patterns"]
+            rate = moat.metrics["success_rate"]
+            moat.strength = min(100, int((patterns / 2) * rate)) # 200 patterns @ 100% success = 100%
             
-        elif moat_name == "network":
-            connections = sum(
-                v for v in moat.metrics.values() 
-                if isinstance(v, (int, float))
-            )
-            moat.strength = min(100, connections * 5)
+        elif moat_id == "workflow":
+            wf = moat.metrics["custom_workflows"]
+            moat.strength = min(100, wf * 5) # 20 workflows = 100%
             
-        elif moat_name == "workflow":
-            automations = sum(
-                v for v in moat.metrics.values() 
-                if isinstance(v, (int, float))
-            )
-            moat.strength = min(100, automations * 10)
+        elif moat_id == "identity":
+            moat.strength = 100 if moat.metrics["dna_sync"] else 20
             
-        elif moat_name == "identity":
-            configured = sum(
-                1 for v in moat.metrics.values() 
-                if v and (isinstance(v, bool) or v > 0)
-            )
-            moat.strength = min(100, configured * 25)
+        elif moat_id == "network":
+            total = moat.metrics["partners"] + (moat.metrics["referrals"] * 2)
+            moat.strength = min(100, total * 10)
     
-    def get_total_strength(self) -> int:
-        """Get combined moat strength (0-100)."""
-        total = sum(m.strength for m in self.moats.values())
-        return min(100, total // 5)
+    def get_aggregate_strength(self) -> int:
+        '''Calculates the weighted average strength of all 5 moats.'''
+        return sum(m.strength for m in self.moats.values()) // 5
     
     def calculate_switching_cost(self) -> Dict[str, Any]:
-        """Calculate the cost of switching away from AgencyOS."""
-        data = self.moats["data"].metrics
-        learning = self.moats["learning"].metrics
-        network = self.moats["network"].metrics
-        workflow = self.moats["workflow"].metrics
+        '''Estimates the time and financial impact of leaving the Agency OS.'''
+        m = self.moats
         
-        # Time cost
-        hours_to_migrate_data = data.get("projects", 0) * 2 + data.get("clients", 0) * 0.5
-        hours_to_rebuild_patterns = learning.get("patterns_learned", 0) * 0.1
-        hours_to_rebuild_workflows = workflow.get("custom_workflows", 0) * 8
-        total_hours = hours_to_migrate_data + hours_to_rebuild_patterns + hours_to_rebuild_workflows
+        # Heuristic Time Impact (Hours)
+        h_data = m["data"].metrics.get("projects", 0) * 3
+        h_learn = m["learning"].metrics.get("patterns", 0) * 0.5
+        h_work = m["workflow"].metrics.get("custom_workflows", 0) * 10
+        total_hours = h_data + h_learn + h_work
         
-        # Money cost ($100/hour opportunity cost)
-        money_cost = int(total_hours * 100)
-        
-        # Risk cost
-        lost_connections = network.get("collaborators", 0) + network.get("referral_partners", 0)
+        # Opportunity Cost ($100/hr)
+        financial_loss = int(total_hours * 100)
         
         return {
             "hours": int(total_hours),
-            "days": int(total_hours / 8),
-            "months": round(total_hours / 160, 1),
-            "money_cost": money_cost,
-            "lost_patterns": learning.get("patterns_learned", 0),
-            "lost_connections": lost_connections,
-            "lost_workflows": workflow.get("custom_workflows", 0),
-            "verdict": self._get_switching_verdict(total_hours),
+            "days": round(total_hours / 8, 1),
+            "financial_usd": financial_loss,
+            "verdict": self._get_verdict(total_hours)
         }
     
-    def _get_switching_verdict(self, hours: float) -> str:
-        """Get verdict on switching."""
-        if hours > 500:
-            return "🚫 SWITCHING = INSANE"
-        elif hours > 200:
-            return "⚠️ SWITCHING = Very painful"
-        elif hours > 50:
-            return "😟 SWITCHING = Painful"
-        else:
-            return "⚡ SWITCHING = Possible (strengthen moats!)"
+    def _get_verdict(self, hours: float) -> str:
+        '''Returns a strategic verdict based on estimated switching pain.'''
+        if hours > 400: return "🚫 RỜI ĐI LÀ KHÔNG THỂ (Moat tối cao)"
+        if hours > 100: return "⚠️ RỜI ĐI RẤT ĐAU ĐỚN (Moat mạnh)"
+        if hours > 20:  return "😟 RỜI ĐI KHÁ KHÓ KHĂN (Moat trung bình)"
+        return "⚡ RỜI ĐI DỄ DÀNG (Cần xây thêm Moat!)"
     
     def _save_data(self):
-        """Save moat data to disk."""
-        data = {
-            name: {
-                "strength": moat.strength,
-                "metrics": moat.metrics,
-            }
-            for name, moat in self.moats.items()
-        }
-        path = self.storage_path / "moats.json"
-        path.write_text(json.dumps(data, indent=2))
-    
-    def _load_data(self):
-        """Load moat data from disk."""
+        '''Persists moat metrics to disk.'''
         try:
-            path = self.storage_path / "moats.json"
-            if path.exists():
-                data = json.loads(path.read_text())
-                for name, saved in data.items():
-                    if name in self.moats:
-                        self.moats[name].strength = saved.get("strength", 0)
-                        self.moats[name].metrics.update(saved.get("metrics", {}))
-        except Exception:
-            pass
-    
-    def print_moat_status(self):
-        """Print moat status dashboard."""
-        total = self.get_total_strength()
-        switching = self.calculate_switching_cost()
+            data = {k: {"s": v.strength, "m": v.metrics} for k, v in self.moats.items()}
+            self.data_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        except Exception as e:
+            logger.error(f"Failed to save moat engine data: {e}")
+            
+    def _load_data(self):
+        '''Loads moat metrics from disk.'''
+        if not self.data_file.exists(): return
+        try:
+            raw = json.loads(self.data_file.read_text(encoding="utf-8"))
+            for k, v in raw.items():
+                if k in self.moats:
+                    self.moats[k].strength = v.get("s", 0)
+                    self.moats[k].metrics.update(v.get("m", {}))
+        except Exception as e:
+            logger.warning(f"Failed to load moat data: {e}")
+
+    def print_dashboard(self):
+        '''Renders the Moat Strategy Dashboard.'''
+        agg = self.get_aggregate_strength()
+        costs = self.calculate_switching_cost()
         
-        print("\n" + "═" * 60)
-        print("║" + "🏰 AGENCYOS IMMORTAL MOATS".center(58) + "║")
-        print("═" * 60)
+        print("\n" + "═" * 65)
+        print("║" + "🏰 AGENCY OS - ĐỘC QUYỀN HÓA CHIẾN LƯỢC (5 MOATS)".center(63) + "║")
+        print("═" * 65)
         
-        for name, moat in self.moats.items():
-            bar = "█" * (moat.strength // 10) + "░" * (10 - moat.strength // 10)
-            print(f"\n{moat.emoji} {moat.name.upper()}: [{bar}] {moat.strength}%")
-            print(f"   {moat.description}")
-            # Show top metrics
-            top_metrics = list(moat.metrics.items())[:3]
-            for key, val in top_metrics:
-                print(f"   • {key}: {val}")
-        
-        print("\n" + "─" * 60)
-        print("💰 SWITCHING COST:")
-        print(f"   • Time: {switching['hours']} hours ({switching['months']} months)")
-        print(f"   • Money: ${switching['money_cost']:,}")
-        print(f"   • Lost patterns: {switching['lost_patterns']}")
-        print(f"   • Lost connections: {switching['lost_connections']}")
-        print("\n" + "═" * 60)
-        print(f"║ 🏆 TOTAL MOAT STRENGTH: {total}%".ljust(59) + "║")
-        print(f"║ {switching['verdict']}".ljust(59) + "║")
-        print("═" * 60)
+        for m in self.moats.values():
+            bar_w = 20
+            filled = int(bar_w * m.strength / 100)
+            bar = "█" * filled + "░" * (bar_w - filled)
+            print(f"\n  {m.emoji} {m.name.upper():<15} | [{bar}] {m.strength}%")
+            print(f"     └─ {m.description}")
+            print(f"     └─ Chi phí rời bỏ: {m.switching_cost_label}")
+            
+        print("\n" + "─" * 65)
+        print(f"  💰 CHI PHÍ RỜI BỎ ƯỚC TÍNH: ${costs['financial_usd']:,} USD")
+        print(f"  ⏳ THỜI GIAN KHÔI PHỤC:     {costs['hours']} giờ làm việc")
+        print("\n" + "═" * 65)
+        print(f"  🏆 TỔNG THỂ SỨC MẠNH: {agg}% | {costs['verdict']}")
+        print("═" * 65 + "\n")
 
 
-# Global instance
-_moat_engine: Optional[MoatEngine] = None
+# Global Instance
+_moat_engine = None
 
 def get_moat_engine() -> MoatEngine:
-    """Get global moat engine instance."""
+    '''Access the shared moat strategy engine.'''
     global _moat_engine
     if _moat_engine is None:
         _moat_engine = MoatEngine()
     return _moat_engine
-
-
-def track_usage(category: str, action: str, success: bool = True):
-    """Track usage to build moats automatically."""
-    engine = get_moat_engine()
-    
-    if category == "data":
-        engine.add_data_point(action)
-    elif category == "learning":
-        engine.add_pattern(success)
-    elif category == "workflow":
-        engine.add_workflow(action)
