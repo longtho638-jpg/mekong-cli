@@ -1,50 +1,59 @@
 """
-💰 Cashflow Engine - Closed-Loop Revenue Tracking for $1M 2026
+💰 Cashflow Engine - Closed-Loop Revenue Tracking
+================================================
 
-Maps all revenue streams to the $1M ARR target.
-Tracks progress, gaps, and required growth rate.
+Monitors and projects agency revenue against the $1M ARR 2026 milestone.
+Provides real-time visibility into growth rates, churn impacts, and 
+required performance to hit the target.
 
-Usage:
-    from antigravity.core.cashflow_engine import CashflowEngine
-    engine = CashflowEngine()
-    engine.print_dashboard()
+Features:
+- Multi-currency support (VND, USD, THB).
+- Automated ARR/MRR calculation.
+- Growth trajectory projections.
+- Revenue stream breakdown.
+
+Binh Pháp: 💰 Tài (Wealth) - Managing the lifeblood of the agency.
 """
 
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from pathlib import Path
-from enum import Enum
+import logging
 import json
 import math
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional, Any, Union
+from pathlib import Path
+from enum import Enum
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
-# ============================================
-# CONSTANTS
-# ============================================
+# ============================================ 
+# TARGETS & CONFIGURATION
+# ============================================ 
 
 ARR_TARGET_2026 = 1_000_000  # $1M ARR goal
-MONTHS_REMAINING = 12  # Months left in 2026
-EXCHANGE_RATES = {"USD": 1, "VND": 24500, "THB": 35}
+# 2026 standard rates
+EXCHANGE_RATES = {"USD": 1.0, "VND": 25000.0, "THB": 35.0}
 
 
 class RevenueStream(Enum):
-    """Revenue stream types."""
+    """Core revenue buckets for Agency OS."""
     WELLNEXUS = "wellnexus"      # Social Commerce Platform
     AGENCY = "agency"            # Agency Services (Retainer + Equity)
-    SAAS = "saas"                # SaaS Products (Newsletter, etc.)
-    CONSULTING = "consulting"   # Consulting & Strategy
-    AFFILIATE = "affiliate"      # Affiliate Revenue
-    EXIT = "exit"                # Exit/Acquisition Proceeds
+    SAAS = "saas"                # AI / SaaS Products
+    CONSULTING = "consulting"    # High-ticket Strategy
+    AFFILIATE = "affiliate"      # Partner Revenue
+    EXIT = "exit"                # Liquidity Events
 
 
 @dataclass
 class Revenue:
-    """Single revenue entry."""
+    """A single revenue transaction or commitment."""
     id: str
     stream: RevenueStream
-    amount: float  # In USD
+    amount_usd: float
     currency: str
+    amount_original: float
     date: datetime
     recurring: bool
     client: Optional[str] = None
@@ -53,275 +62,243 @@ class Revenue:
 
 @dataclass
 class RevenueGoal:
-    """Revenue goal by stream."""
+    """Target allocation per revenue stream."""
     stream: RevenueStream
     target_arr: float
-    current_arr: float = 0
+    current_arr: float = 0.0
     
     @property
-    def progress(self) -> float:
-        return (self.current_arr / self.target_arr * 100) if self.target_arr > 0 else 0
+    def progress_percent(self) -> float:
+        """Percentage of target achieved."""
+        return (self.current_arr / self.target_arr * 100) if self.target_arr > 0 else 0.0
     
     @property
-    def gap(self) -> float:
-        return max(0, self.target_arr - self.current_arr)
+    def gap_usd(self) -> float:
+        """Remaining USD to hit target."""
+        return max(0.0, self.target_arr - self.current_arr)
 
 
 class CashflowEngine:
     """
-    💰 Cashflow Engine
+    💰 Cashflow Management System
     
-    Closed-loop revenue tracking for $1M ARR 2026 goal.
+    The financial cockpit for the solo unicorn journey.
     """
     
     def __init__(self, storage_path: str = ".antigravity/cashflow"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
+        self.revenue_file = self.storage_path / "revenues.json"
+        
         self.revenues: List[Revenue] = []
-        self.goals = self._init_goals()
+        self.goals: Dict[RevenueStream, RevenueGoal] = self._init_goals()
         self._load_data()
     
     def _init_goals(self) -> Dict[RevenueStream, RevenueGoal]:
-        """Initialize revenue goals by stream."""
-        # $1M split across streams
+        """Distributes the $1M goal across diversified streams."""
         return {
-            RevenueStream.WELLNEXUS: RevenueGoal(RevenueStream.WELLNEXUS, 300_000),    # $300K
-            RevenueStream.AGENCY: RevenueGoal(RevenueStream.AGENCY, 400_000),           # $400K
-            RevenueStream.SAAS: RevenueGoal(RevenueStream.SAAS, 200_000),               # $200K
-            RevenueStream.CONSULTING: RevenueGoal(RevenueStream.CONSULTING, 80_000),   # $80K
-            RevenueStream.AFFILIATE: RevenueGoal(RevenueStream.AFFILIATE, 20_000),     # $20K
+            RevenueStream.WELLNEXUS: RevenueGoal(RevenueStream.WELLNEXUS, 300_000),
+            RevenueStream.AGENCY:    RevenueGoal(RevenueStream.AGENCY,    400_000),
+            RevenueStream.SAAS:      RevenueGoal(RevenueStream.SAAS,      200_000),
+            RevenueStream.CONSULTING: RevenueGoal(RevenueStream.CONSULTING, 80_000),
+            RevenueStream.AFFILIATE:  RevenueGoal(RevenueStream.AFFILIATE,  20_000),
         }
     
     def add_revenue(
         self,
-        stream: RevenueStream,
+        stream: Union[RevenueStream, str],
         amount: float,
         currency: str = "USD",
         recurring: bool = False,
-        client: str = None,
+        client: Optional[str] = None,
         description: str = ""
     ) -> Revenue:
-        """Add a revenue entry."""
-        # Convert to USD
-        usd_amount = amount / EXCHANGE_RATES.get(currency, 1)
+        """Adds a revenue entry and updates the dashboard state."""
+        # Normalize stream type
+        if isinstance(stream, str):
+            try:
+                stream = RevenueStream(stream.lower())
+            except ValueError:
+                stream = RevenueStream.AGENCY
+                
+        # Handle Currency Conversion
+        rate = EXCHANGE_RATES.get(currency.upper(), 1.0)
+        usd_val = amount / rate
         
-        revenue = Revenue(
-            id=f"rev_{datetime.now().timestamp()}",
+        entry = Revenue(
+            id=f"rev_{{datetime.now().strftime('%y%m%d%H%M%S')}}_{len(self.revenues)}",
             stream=stream,
-            amount=usd_amount,
-            currency=currency,
+            amount_usd=usd_val,
+            amount_original=amount,
+            currency=currency.upper(),
             date=datetime.now(),
             recurring=recurring,
             client=client,
-            description=description,
+            description=description
         )
         
-        self.revenues.append(revenue)
-        self._update_goals()
+        self.revenues.append(entry)
+        self._recalculate_progress()
         self._save_data()
         
-        return revenue
+        logger.info(f"Revenue recorded: ${usd_val:,.2f} via {stream.value}")
+        return entry
     
-    def _update_goals(self):
-        """Update goal progress from revenues."""
-        for stream, goal in self.goals.items():
-            # Calculate current ARR from revenues
-            stream_revenues = [r for r in self.revenues if r.stream == stream]
+    def _recalculate_progress(self):
+        """Re-evaluates current ARR across all streams."""
+        now = datetime.now()
+        thirty_days_ago = now - timedelta(days=30)
+        
+        # Reset current ARR for all goals
+        for goal in self.goals.values():
+            goal.current_arr = 0.0
             
-            # MRR from recurring in last 30 days
-            thirty_days_ago = datetime.now() - timedelta(days=30)
-            mrr = sum(
-                r.amount for r in stream_revenues 
-                if r.recurring and r.date > thirty_days_ago
-            )
+        for rev in self.revenues:
+            goal = self.goals.get(rev.stream)
+            if not goal: continue
             
-            # One-time revenue annualized
-            one_time = sum(r.amount for r in stream_revenues if not r.recurring)
-            
-            goal.current_arr = mrr * 12 + one_time
+            if rev.recurring:
+                # Only count recurring if it happened in last 30 days (active)
+                if rev.date >= thirty_days_ago:
+                    goal.current_arr += (rev.amount_usd * 12)
+            else:
+                # One-time revenue counts toward ARR for the current period
+                goal.current_arr += rev.amount_usd
     
     def get_total_arr(self) -> float:
-        """Get total current ARR."""
+        """Returns the aggregate ARR across all streams."""
         return sum(g.current_arr for g in self.goals.values())
     
-    def get_progress(self) -> float:
-        """Get progress toward $1M goal."""
+    def get_progress_percent(self) -> float:
+        """Returns overall progress percentage toward $1M."""
         return (self.get_total_arr() / ARR_TARGET_2026) * 100
     
-    def get_gap(self) -> float:
-        """Get remaining gap to $1M."""
-        return max(0, ARR_TARGET_2026 - self.get_total_arr())
-    
-    def get_required_mrr(self) -> float:
-        """Get required MRR to reach $1M."""
-        return self.get_gap() / 12
-    
-    def get_required_growth_rate(self) -> float:
-        """Get required monthly growth rate to reach $1M."""
-        current = self.get_total_arr() / 12  # Current MRR
+    def get_required_mrr_growth(self) -> float:
+        """
+        Calculates the required monthly growth rate to hit $1M by end of 2026.
+        Assumes linear compounding growth.
+        """
+        current_mrr = self.get_total_arr() / 12
         target_mrr = ARR_TARGET_2026 / 12
         
-        if current <= 0:
-            return 100.0  # Need to start from scratch
-        
-        # Calculate required growth rate over remaining months
+        # Determine months remaining in 2026
+        # If we are in 2026, calculate based on current month
+        now = datetime.now()
+        if now.year < 2026:
+            months_left = 12
+        elif now.year == 2026:
+            months_left = 12 - now.month + 1
+        else:
+            months_left = 1 # Already past 2026?
+            
+        if current_mrr <= 0:
+            return 100.0 # High growth needed
+            
+        if current_mrr >= target_mrr:
+            return 0.0
+            
         # target = current * (1 + rate)^months
-        # rate = (target/current)^(1/months) - 1
-        rate = (target_mrr / current) ** (1 / MONTHS_REMAINING) - 1
+        rate = (target_mrr / current_mrr) ** (1 / months_left) - 1
         return rate * 100
     
-    def get_monthly_targets(self) -> List[Dict]:
-        """Get monthly targets to reach $1M."""
-        current_mrr = self.get_total_arr() / 12
-        growth_rate = self.get_required_growth_rate() / 100
-        
-        targets = []
-        mrr = current_mrr
-        
-        for month in range(1, MONTHS_REMAINING + 1):
-            mrr = mrr * (1 + growth_rate)
-            targets.append({
-                "month": month,
-                "mrr": mrr,
-                "arr": mrr * 12,
-                "progress": (mrr * 12 / ARR_TARGET_2026) * 100
-            })
-        
-        return targets
-    
-    def get_stream_breakdown(self) -> Dict[str, Dict]:
-        """Get breakdown by stream."""
-        breakdown = {}
-        for stream, goal in self.goals.items():
-            breakdown[stream.value] = {
-                "target": goal.target_arr,
-                "current": goal.current_arr,
-                "progress": goal.progress,
-                "gap": goal.gap,
-            }
-        return breakdown
-    
     def _save_data(self):
-        """Save cashflow data."""
-        data = {
-            "revenues": [
-                {
-                    "id": r.id,
-                    "stream": r.stream.value,
-                    "amount": r.amount,
-                    "currency": r.currency,
-                    "date": r.date.isoformat(),
-                    "recurring": r.recurring,
-                    "client": r.client,
-                    "description": r.description,
-                }
-                for r in self.revenues
-            ]
-        }
-        path = self.storage_path / "cashflow.json"
-        path.write_text(json.dumps(data, indent=2))
-    
-    def _load_data(self):
-        """Load cashflow data."""
+        """Persists revenue state to JSON."""
         try:
-            path = self.storage_path / "cashflow.json"
-            if path.exists():
-                data = json.loads(path.read_text())
-                for r in data.get("revenues", []):
-                    self.revenues.append(Revenue(
-                        id=r["id"],
-                        stream=RevenueStream(r["stream"]),
-                        amount=r["amount"],
-                        currency=r["currency"],
-                        date=datetime.fromisoformat(r["date"]),
-                        recurring=r["recurring"],
-                        client=r.get("client"),
-                        description=r.get("description", ""),
-                    ))
-                self._update_goals()
-        except Exception:
-            pass
-    
+            data = {
+                "metadata": {"last_updated": datetime.now().isoformat()},
+                "revenues": [
+                    {
+                        "id": r.id,
+                        "stream": r.stream.value,
+                        "usd": r.amount_usd,
+                        "orig": r.amount_original,
+                        "cur": r.currency,
+                        "date": r.date.isoformat(),
+                        "rec": r.recurring,
+                        "client": r.client,
+                        "desc": r.description
+                    }
+                    for r in self.revenues
+                ]
+            }
+            self.revenue_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        except Exception as e:
+            logger.error(f"Failed to save cashflow data: {e}")
+            
+    def _load_data(self):
+        """Loads revenue state from disk."""
+        if not self.revenue_file.exists():
+            return
+            
+        try:
+            data = json.loads(self.revenue_file.read_text(encoding="utf-8"))
+            for r in data.get("revenues", []):
+                self.revenues.append(Revenue(
+                    id=r["id"],
+                    stream=RevenueStream(r["stream"]),
+                    amount_usd=r["usd"],
+                    amount_original=r["orig"],
+                    currency=r["cur"],
+                    date=datetime.fromisoformat(r["date"]),
+                    recurring=r["rec"],
+                    client=r.get("client"),
+                    description=r.get("desc", "")
+                ))
+            self._recalculate_progress()
+        except Exception as e:
+            logger.warning(f"Cashflow data loading failed: {e}")
+
     def print_dashboard(self):
-        """Print cashflow dashboard."""
-        total_arr = self.get_total_arr()
-        progress = self.get_progress()
-        gap = self.get_gap()
-        growth_rate = self.get_required_growth_rate()
+        """Renders the comprehensive $1M Goal Dashboard."""
+        arr = self.get_total_arr()
+        progress = self.get_progress_percent()
+        growth = self.get_required_mrr_growth()
         
-        print("\n" + "═" * 60)
-        print("║" + "💰 $1M ARR 2026 - CASHFLOW DASHBOARD".center(58) + "║")
-        print("═" * 60)
+        print("\n" + "═" * 65)
+        print("║" + "💰 2026 UNICORN REVENUE DASHBOARD ($1M ARR)".center(63) + "║")
+        print("═" * 65)
         
-        # Progress bar
-        bar_filled = int(progress / 5)
-        bar = "█" * bar_filled + "░" * (20 - bar_filled)
-        print(f"\n🎯 PROGRESS: [{bar}] {progress:.1f}%")
-        print(f"   Current ARR: ${total_arr:,.0f}")
-        print(f"   Target ARR:  ${ARR_TARGET_2026:,}")
-        print(f"   Gap:         ${gap:,.0f}")
+        # Main Progress Bar
+        bar_width = 30
+        filled = int(bar_width * min(progress, 100) / 100)
+        bar = "█" * filled + "░" * (bar_width - filled)
         
-        # Growth required
-        print(f"\n📈 REQUIRED GROWTH:")
-        print(f"   Monthly Rate: {growth_rate:.1f}%")
-        print(f"   Required MRR: ${self.get_required_mrr():,.0f}/month")
+        print(f"\n  OVERALL PROGRESS: [{bar}] {progress:.1f}%")
+        print(f"  CURRENT ARR:      ${arr:,.0f} / ${ARR_TARGET_2026:,}")
+        print(f"  REQUIRED GROWTH:  {growth:.1f}% month-over-month")
         
-        # Stream breakdown
-        print(f"\n📊 REVENUE STREAMS:")
+        print("\n  📊 STREAM BREAKDOWN:")
+        print("  " + "─" * 61)
+        
         for stream, goal in self.goals.items():
-            bar_stream = "█" * int(goal.progress / 10) + "░" * (10 - int(goal.progress / 10))
-            emoji = {
+            s_filled = int(15 * min(goal.progress_percent, 100) / 100)
+            s_bar = "█" * s_filled + "░" * (15 - s_filled)
+            icon = {
                 RevenueStream.WELLNEXUS: "🌐",
-                RevenueStream.AGENCY: "🏢",
-                RevenueStream.SAAS: "☁️",
+                RevenueStream.AGENCY:    "🏢",
+                RevenueStream.SAAS:      "🤖",
                 RevenueStream.CONSULTING: "💼",
-                RevenueStream.AFFILIATE: "🔗",
+                RevenueStream.AFFILIATE:  "🔗",
             }.get(stream, "💰")
-            print(f"   {emoji} {stream.value.upper()}")
-            print(f"      [{bar_stream}] ${goal.current_arr:,.0f} / ${goal.target_arr:,.0f}")
-        
-        print("\n" + "═" * 60)
+            
+            print(f"  {icon} {stream.value.upper():<12} | [{s_bar}] ${goal.current_arr:,.0f} / ${goal.target_arr:,.0f}")
+            
+        print("\n" + "═" * 65)
         if progress >= 100:
-            print("║ 🎊 $1M GOAL ACHIEVED!".ljust(59) + "║")
+            print("║  🏆 GOAL ACHIEVED! Celebrating the $1M Unicorn status.  ║")
         elif progress >= 50:
-            print("║ ⚡ On track - Keep pushing!".ljust(59) + "║")
+            print("║  ⚡ Momentum Building. Focus on scaling the winning stream. ║")
         else:
-            print(f"║ 🚀 Need {growth_rate:.0f}% monthly growth to reach $1M".ljust(59) + "║")
-        print("═" * 60)
+            print(f"║  🚀 Target: ${ (ARR_TARGET_2026/12):,.0f} MRR. Keep building the moat! ║")
+        print("═" * 65 + "\n")
 
 
-# ============================================
-# QUICK FUNCTIONS
-# ============================================
-
-_cashflow_engine: Optional[CashflowEngine] = None
-
+# Global Instance
+_engine = None
 
 def get_cashflow_engine() -> CashflowEngine:
-    """Get global cashflow engine."""
-    global _cashflow_engine
-    if _cashflow_engine is None:
-        _cashflow_engine = CashflowEngine()
-    return _cashflow_engine
-
-
-def track_revenue(
-    stream: str,
-    amount: float,
-    recurring: bool = False,
-    client: str = None
-) -> Revenue:
-    """Quick function to track revenue."""
-    engine = get_cashflow_engine()
-    return engine.add_revenue(
-        stream=RevenueStream(stream),
-        amount=amount,
-        recurring=recurring,
-        client=client,
-    )
-
-
-def show_progress():
-    """Show $1M progress."""
-    engine = get_cashflow_engine()
-    engine.print_dashboard()
+    """Access the shared cashflow tracking engine."""
+    global _engine
+    if _engine is None:
+        _engine = CashflowEngine()
+    return _engine

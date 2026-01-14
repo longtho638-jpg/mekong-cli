@@ -1,27 +1,32 @@
 """
-🔀 PR Manager - Auto Check & Merge Pull Requests
+🔀 PR Manager - Automated Change Integration
+============================================
 
-Automatically checks GitHub for PRs and merges them if:
-- All CI checks pass
-- No conflicts
-- PR is from Jules or approved bots
+Orchestrates the automated merging of Pull Requests from trusted sources. 
+Ensures system stability by enforcing CI pass requirements and conflict 
+checks before any merge operation.
 
-Usage:
-    from antigravity.core.pr_manager import PRManager
-    manager = PRManager()
-    manager.check_and_merge_all()
+Key Sources:
+- 🤖 Jules [bot]: Primary autonomous agent.
+- 📦 Dependabot / Renovate: Automated dependency updates.
+- 🛠️ GitHub Actions: System-generated maintenance.
+
+Binh Pháp: ⚡ Quân Tranh (Unity) - Seamlessly integrating improvements.
 """
 
+import logging
 import subprocess
 import json
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Dict, List, Any, Optional, Tuple, Union, Set
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 @dataclass
 class PullRequest:
-    """Pull Request info."""
+    """Detailed information for a single GitHub Pull Request."""
     number: int
     title: str
     author: str
@@ -29,238 +34,152 @@ class PullRequest:
     mergeable: bool
     checks_passed: bool
     url: str
-    created_at: str
+    created_at: datetime
+    raw_data: Dict[str, Any] = field(default_factory=dict)
 
 
 class PRManager:
     """
-    🔀 PR Manager
+    🔀 PR Orchestration Engine
     
-    Auto-check and merge Pull Requests.
+    Automates the 'Ship' phase of the Agency OS workflow.
+    Uses the GitHub CLI ('gh') for reliable remote operations.
     """
     
-    # Trusted authors that can be auto-merged
-    TRUSTED_AUTHORS = [
+    # Defaults for trusted autonomous contributors
+    DEFAULT_TRUSTED_AUTHORS: Set = {
         "jules[bot]",
-        "app/google-labs-jules",  # Jules Google Labs
-        "google-labs-jules",       # Jules alternative
+        "app/google-labs-jules",
+        "google-labs-jules",
         "dependabot[bot]",
         "github-actions[bot]",
         "renovate[bot]",
-    ]
+    }
     
     def __init__(self, repo: str = "longtho638-jpg/mekong-cli"):
         self.repo = repo
+        self.trusted_authors = self.DEFAULT_TRUSTED_AUTHORS.copy()
     
     def get_open_prs(self) -> List[PullRequest]:
-        """Get all open PRs from GitHub."""
+        """Queries GitHub for all currently open pull requests."""
         try:
-            result = subprocess.run(
-                ["gh", "pr", "list", "--json", 
-                 "number,title,author,state,mergeable,statusCheckRollup,url,createdAt"],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            cmd = [
+                "gh", "pr", "list", 
+                "--repo", self.repo,
+                "--json", "number,title,author,state,mergeable,statusCheckRollup,url,createdAt"
+            ]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             
             if result.returncode != 0:
-                print(f"❌ Error getting PRs: {result.stderr}")
+                logger.error(f"GitHub CLI failure: {result.stderr}")
                 return []
             
-            prs_data = json.loads(result.stdout)
+            data = json.loads(result.stdout)
             prs = []
             
-            for pr in prs_data:
-                # Check if all status checks passed
-                checks = pr.get("statusCheckRollup", []) or []
-                checks_passed = all(
-                    c.get("conclusion") == "SUCCESS" or c.get("state") == "SUCCESS"
-                    for c in checks
-                ) if checks else True  # If no checks, assume passed
+            for item in data:
+                # CI Validation Logic
+                checks = item.get("statusCheckRollup", []) or []
+                # If no checks defined, we pass (assume simple repo or non-blocking)
+                checks_ok = True
+                if checks:
+                    checks_ok = all(
+                        c.get("conclusion") == "SUCCESS" or c.get("state") == "SUCCESS"
+                        for c in checks
+                    )
                 
                 prs.append(PullRequest(
-                    number=pr["number"],
-                    title=pr["title"],
-                    author=pr["author"]["login"],
-                    state=pr["state"],
-                    mergeable=pr.get("mergeable", "UNKNOWN") == "MERGEABLE",
-                    checks_passed=checks_passed,
-                    url=pr["url"],
-                    created_at=pr["createdAt"],
+                    number=item["number"],
+                    title=item["title"],
+                    author=item["author"]["login"],
+                    state=item["state"],
+                    mergeable=(item.get("mergeable") == "MERGEABLE"),
+                    checks_passed=checks_ok,
+                    url=item["url"],
+                    created_at=datetime.fromisoformat(item["createdAt"].replace('Z', '+00:00')),
+                    raw_data=item
                 ))
-            
             return prs
             
+        except FileNotFoundError:
+            logger.warning("GitHub CLI ('gh') not found. PR management disabled.")
+            return []
         except Exception as e:
-            print(f"❌ Exception: {e}")
+            logger.exception(f"Unexpected error fetching PRs: {e}")
             return []
     
-    def can_auto_merge(self, pr: PullRequest) -> tuple[bool, str]:
-        """
-        Check if a PR can be auto-merged.
+    def can_auto_merge(self, pr: PullRequest) -> Tuple[bool, str]:
+        """Evaluates if a PR meets the safety and trust criteria for automation."""
+        # 1. Trust Check
+        if pr.author not in self.trusted_authors:
+            return False, f"Author '{pr.author}' is not in the trusted automation list."
         
-        Returns:
-            (can_merge, reason)
-        """
-        # Check author
-        if pr.author not in self.TRUSTED_AUTHORS:
-            return False, f"Author {pr.author} not in trusted list"
-        
-        # Check mergeable
+        # 2. Conflict Check
         if not pr.mergeable:
-            return False, "PR has conflicts or is not mergeable"
+            return False, "PR has merge conflicts or is currently blocked."
         
-        # Check CI
+        # 3. Quality Check (CI)
         if not pr.checks_passed:
-            return False, "CI checks have not passed"
+            return False, "CI/CD checks have not passed or are still in progress."
         
-        return True, "All checks passed ✅"
+        return True, "Safety criteria met."
     
-    def merge_pr(self, pr: PullRequest, method: str = "squash") -> bool:
-        """
-        Merge a PR.
-        
-        Args:
-            pr: The PR to merge
-            method: Merge method (merge, squash, rebase)
-        
-        Returns:
-            True if merged successfully
-        """
+    def merge_pr(self, pr_number: int, method: str = "squash") -> bool:
+        """Executes the merge operation on GitHub."""
         try:
-            result = subprocess.run(
-                ["gh", "pr", "merge", str(pr.number), f"--{method}", "--auto"],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            cmd = ["gh", "pr", "merge", str(pr_number), f"--{method}", "--auto", "--delete-branch"]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             
             if result.returncode == 0:
-                print(f"✅ Merged PR #{pr.number}: {pr.title}")
+                logger.info(f"Successfully merged PR #{pr_number}")
                 return True
             else:
-                print(f"❌ Failed to merge PR #{pr.number}: {result.stderr}")
+                logger.error(f"Merge failed for PR #{pr_number}: {result.stderr}")
                 return False
-                
         except Exception as e:
-            print(f"❌ Exception merging PR #{pr.number}: {e}")
+            logger.error(f"Critical error during merge of PR #{pr_number}: {e}")
             return False
     
     def check_and_merge_all(self, dry_run: bool = False) -> Dict[str, Any]:
-        """
-        Check all PRs and merge eligible ones.
-        
-        Args:
-            dry_run: If True, just report without merging
-        
-        Returns:
-            Report of actions taken
-        """
-        print("\n🔀 PR MANAGER - Auto Check & Merge")
-        print("=" * 50)
-        
+        """Bulk operation to process and integrate all eligible changes."""
         prs = self.get_open_prs()
-        
-        report = {
-            "total": len(prs),
-            "merged": [],
-            "skipped": [],
-            "errors": [],
-        }
-        
-        if not prs:
-            print("   📭 No open PRs found")
-            return report
-        
-        print(f"   📋 Found {len(prs)} open PR(s)\n")
+        report = {"total": len(prs), "merged": [], "eligible": [], "skipped": [], "errors": []}
         
         for pr in prs:
-            can_merge, reason = self.can_auto_merge(pr)
-            
-            print(f"   PR #{pr.number}: {pr.title[:40]}...")
-            print(f"      Author: {pr.author}")
-            print(f"      Mergeable: {'✅' if pr.mergeable else '❌'}")
-            print(f"      CI Passed: {'✅' if pr.checks_passed else '❌'}")
-            
-            if can_merge:
-                if dry_run:
-                    print(f"      Action: [DRY RUN] Would merge")
-                    report["skipped"].append({"pr": pr.number, "reason": "Dry run"})
-                else:
-                    if self.merge_pr(pr):
-                        print(f"      Action: ✅ MERGED")
+            eligible, reason = self.can_auto_merge(pr)
+            if eligible:
+                report["eligible"].append(pr.number)
+                if not dry_run:
+                    if self.merge_pr(pr.number):
                         report["merged"].append(pr.number)
                     else:
-                        print(f"      Action: ❌ MERGE FAILED")
                         report["errors"].append(pr.number)
             else:
-                print(f"      Action: ⏭️ Skipped - {reason}")
-                report["skipped"].append({"pr": pr.number, "reason": reason})
-            
-            print("")
-        
-        # Summary
-        print("=" * 50)
-        print(f"   📊 Summary:")
-        print(f"      Total: {report['total']}")
-        print(f"      Merged: {len(report['merged'])}")
-        print(f"      Skipped: {len(report['skipped'])}")
-        print(f"      Errors: {len(report['errors'])}")
-        print("=" * 50)
-        
-        return report
-    
-    def add_trusted_author(self, author: str):
-        """Add an author to trusted list."""
-        if author not in self.TRUSTED_AUTHORS:
-            self.TRUSTED_AUTHORS.append(author)
-            print(f"✅ Added {author} to trusted authors")
-    
-    def print_status(self):
-        """Print PR status summary."""
-        prs = self.get_open_prs()
-        
-        print("\n🔀 OPEN PULL REQUESTS")
-        print("=" * 60)
-        
-        if not prs:
-            print("   📭 No open PRs")
-        else:
-            for pr in prs:
-                can_merge, reason = self.can_auto_merge(pr)
-                status = "✅ Can auto-merge" if can_merge else f"⏸️ {reason}"
+                report["skipped"].append({"id": pr.number, "reason": reason})
                 
-                print(f"\n   #{pr.number} {pr.title[:45]}...")
-                print(f"      👤 {pr.author}")
-                print(f"      📊 {status}")
-                print(f"      🔗 {pr.url}")
-        
-        print("\n" + "=" * 60)
+        return report
+
+    def add_trusted_author(self, username: str):
+        """Whitelists a new contributor for automated merging."""
+        self.trusted_authors.add(username)
+        logger.info(f"Contributor '{username}' added to trusted list.")
 
 
-# Quick functions
-def check_prs():
-    """Quick function to check PRs."""
-    manager = PRManager()
-    manager.print_status()
+# --- Integration Helpers ---
 
-
-def merge_prs(dry_run: bool = True):
-    """Quick function to merge PRs."""
-    manager = PRManager()
-    return manager.check_and_merge_all(dry_run=dry_run)
-
-
-def auto_merge():
-    """Auto-merge all eligible PRs (NOT dry run)."""
-    manager = PRManager()
-    return manager.check_and_merge_all(dry_run=False)
-
-
-if __name__ == "__main__":
-    import sys
+def get_pr_report() -> str:
+    """Standardized visual status report for the CLI."""
+    mgr = PRManager()
+    prs = mgr.get_open_prs()
     
-    if len(sys.argv) > 1 and sys.argv[1] == "--merge":
-        auto_merge()
-    else:
-        check_prs()
+    if not prs:
+        return "📭 No pending changes found."
+        
+    lines = [f"📂 OPEN PULL REQUESTS ({len(prs)})", "═" * 50]
+    for pr in prs:
+        eligible, reason = mgr.can_auto_merge(pr)
+        status = "✅ READY" if eligible else f"⏸️ BLOCKED: {reason}"
+        lines.append(f"#{pr.number:<4} | {pr.title[:40]}")
+        lines.append(f"      └─ Author: {pr.author} | {status}")
+        
+    return "\n".join(lines)
