@@ -270,6 +270,101 @@ def test_memory_system():
     return True
 
 
+def test_money_maker():
+    """Test MoneyMaker module."""
+    print("\n🏯 TEST 9: MoneyMaker")
+    print("-" * 50)
+    
+    from antigravity.core.money_maker import MoneyMaker, ServiceTier
+    
+    mm = MoneyMaker()
+    
+    # Generate quote with 3 chapters
+    quote = mm.generate_quote(
+        "Test Corp",
+        [1, 3, 5],  # Strategy, Win-Without-Fighting, Growth
+        ServiceTier.WARRIOR
+    )
+    
+    print(f"   ✅ Quote ID: {quote.id}")
+    print(f"   ✅ Client: {quote.client_name}")
+    print(f"   ✅ Services: {len(quote.services)}")
+    print(f"   ✅ Total: ${quote.total_amount:,.0f}")
+    print(f"   ✅ Monthly: ${quote.recurring_monthly:,.0f}")
+    print(f"   ✅ Equity: {quote.equity_percent}%")
+    
+    # Validate WIN-WIN-WIN
+    win3 = mm.validate_win3(quote)
+    print(f"   ✅ WIN-WIN-WIN: {'VALID' if win3.is_valid else 'INVALID'} ({win3.alignment_score}/100)")
+    
+    # Auto-qualify lead
+    score, action, tier = mm.auto_qualify_lead(5000, 80, 90, 70)
+    print(f"   ✅ Lead Score: {score} - {tier.value.upper()}")
+    
+    return True
+
+
+def test_proposal_generator():
+    """Test ProposalGenerator module."""
+    print("\n📝 TEST 10: ProposalGenerator")
+    print("-" * 50)
+    
+    from antigravity.core.proposal_generator import ProposalGenerator
+    from antigravity.core.money_maker import ServiceTier
+    
+    pg = ProposalGenerator()
+    
+    # Generate quick proposal
+    proposal = pg.quick_proposal(
+        "ABC Corporation",
+        "John Doe",
+        [1, 3, 6],  # Strategy, Win-Without-Fighting, Anti-Dilution
+        ServiceTier.WARRIOR
+    )
+    
+    print(f"   ✅ Proposal ID: {proposal.id}")
+    print(f"   ✅ Client: {proposal.client_name}")
+    print(f"   ✅ Contact: {proposal.client_contact}")
+    print(f"   ✅ Content Length: {len(proposal.markdown_content)} chars")
+    print(f"   ✅ Has WIN-WIN-WIN Section: {'WIN-WIN-WIN' in proposal.markdown_content}")
+    
+    # Stats
+    stats = pg.get_stats()
+    print(f"   ✅ Total Proposals: {stats['total_proposals']}")
+    
+    return True
+
+
+def test_win3_validation():
+    """Test WIN-WIN-WIN validation."""
+    print("\n🎯 TEST 11: WIN-WIN-WIN Validation")
+    print("-" * 50)
+    
+    from antigravity.core.money_maker import MoneyMaker, ServiceTier
+    
+    mm = MoneyMaker()
+    
+    # Valid deal
+    quote1 = mm.generate_quote("Good Corp", [1, 3, 5], ServiceTier.GENERAL)
+    win3_1 = mm.validate_win3(quote1)
+    
+    # Edge case: No services (should be invalid)
+    quote2 = mm.generate_quote("Edge Corp", [], ServiceTier.WARRIOR)
+    win3_2 = mm.validate_win3(quote2)
+    
+    print(f"   ✅ Valid Deal Score: {win3_1.alignment_score}/100")
+    print(f"   ✅ Valid Deal Status: {'VALID' if win3_1.is_valid else 'INVALID'}")
+    print(f"   ✅ Edge Case Score: {win3_2.alignment_score}/100")
+    print(f"   ✅ Edge Case Warnings: {len(win3_2.warnings)}")
+    
+    # Verify WIN components exist
+    print(f"   ✅ Owner WIN: {win3_1.owner_win[:30]}...")
+    print(f"   ✅ Agency WIN: {win3_1.agency_win[:30]}...")
+    print(f"   ✅ Client WIN: {win3_1.client_win[:30]}...")
+    
+    return True
+
+
 def print_summary(results):
     """Print test summary."""
     print("\n")
@@ -361,6 +456,25 @@ def main():
     except Exception as e:
         print(f"   ❌ Error: {e}")
         results["MemorySystem"] = False
+    
+    # Money Suite tests
+    try:
+        results["MoneyMaker"] = test_money_maker()
+    except Exception as e:
+        print(f"   ❌ Error: {e}")
+        results["MoneyMaker"] = False
+    
+    try:
+        results["ProposalGenerator"] = test_proposal_generator()
+    except Exception as e:
+        print(f"   ❌ Error: {e}")
+        results["ProposalGenerator"] = False
+    
+    try:
+        results["WIN3Validation"] = test_win3_validation()
+    except Exception as e:
+        print(f"   ❌ Error: {e}")
+        results["WIN3Validation"] = False
     
     print_summary(results)
     
