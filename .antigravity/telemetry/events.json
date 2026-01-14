@@ -1,0 +1,37 @@
+[
+  {
+    "category": "command",
+    "action": "/master",
+    "timestamp": "2026-01-14T17:56:44.305589",
+    "duration_ms": 150,
+    "metadata": {}
+  },
+  {
+    "category": "command",
+    "action": "/cashflow",
+    "timestamp": "2026-01-14T17:56:44.305869",
+    "duration_ms": 100,
+    "metadata": {}
+  },
+  {
+    "category": "command",
+    "action": "/moats",
+    "timestamp": "2026-01-14T17:56:44.306065",
+    "duration_ms": 120,
+    "metadata": {}
+  },
+  {
+    "category": "agent",
+    "action": "fullstack-developer",
+    "timestamp": "2026-01-14T17:56:44.306149",
+    "duration_ms": 500,
+    "metadata": {}
+  },
+  {
+    "category": "crew",
+    "action": "product_launch",
+    "timestamp": "2026-01-14T17:56:44.306234",
+    "duration_ms": 1200,
+    "metadata": {}
+  }
+]

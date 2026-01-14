@@ -12,22 +12,26 @@ Roles:
 - Deployment automation
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class EnvironmentType(Enum):
-    """Environment types."""
+    """Execution environments."""
     DEVELOPMENT = "development"
     STAGING = "staging"
     PRODUCTION = "production"
 
 
 class DeploymentStatus(Enum):
-    """Deployment status."""
+    """Current state of a deployment job."""
     PENDING = "pending"
     BUILDING = "building"
     DEPLOYING = "deploying"
@@ -37,7 +41,7 @@ class DeploymentStatus(Enum):
 
 
 class ServiceHealth(Enum):
-    """Service health status."""
+    """Operational health of a monitored service."""
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     DOWN = "down"
@@ -45,7 +49,7 @@ class ServiceHealth(Enum):
 
 @dataclass
 class Deployment:
-    """A deployment."""
+    """A deployment record entity."""
     id: str
     project: str
     environment: EnvironmentType
@@ -55,10 +59,14 @@ class Deployment:
     deployed_at: Optional[datetime] = None
     duration_seconds: int = 0
 
+    def __post_init__(self):
+        if self.duration_seconds < 0:
+            raise ValueError("Duration cannot be negative")
+
 
 @dataclass
 class Service:
-    """A monitored service."""
+    """A monitored service entity."""
     id: str
     name: str
     url: str
@@ -66,27 +74,35 @@ class Service:
     uptime_percent: float = 99.9
     last_check: datetime = field(default_factory=datetime.now)
 
+    def __post_init__(self):
+        if not 0 <= self.uptime_percent <= 100:
+            raise ValueError("Uptime must be between 0 and 100")
+
 
 class DevOpsEngineer:
     """
     DevOps Engineer System.
     
-    Infrastructure and deployment.
+    Orchestrates infrastructure health monitoring and automated deployment pipelines.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.deployments: List[Deployment] = []
         self.services: Dict[str, Service] = {}
+        logger.info(f"DevOps system initialized for {agency_name}")
     
-    def deploy(
+    def initiate_deploy(
         self,
         project: str,
         environment: EnvironmentType,
         version: str,
-        deployed_by: str = ""
+        deployed_by: str = "Agency AI"
     ) -> Deployment:
-        """Create a deployment."""
+        """Create a new deployment request."""
+        if not project or not version:
+            raise ValueError("Project name and version are required")
+
         deployment = Deployment(
             id=f"DEP-{uuid.uuid4().hex[:6].upper()}",
             project=project,
@@ -95,90 +111,83 @@ class DevOpsEngineer:
             deployed_by=deployed_by
         )
         self.deployments.append(deployment)
+        logger.info(f"Deployment initiated: {project} {version} to {environment.value}")
         return deployment
     
-    def complete_deployment(self, deployment: Deployment, success: bool, duration: int = 0):
-        """Complete a deployment."""
-        deployment.status = DeploymentStatus.SUCCESS if success else DeploymentStatus.FAILED
-        deployment.deployed_at = datetime.now()
-        deployment.duration_seconds = duration
+    def complete_deploy(self, deployment_id: str, success: bool, duration: int = 0) -> bool:
+        """Finalize a deployment and log results."""
+        for d in self.deployments:
+            if d.id == deployment_id:
+                d.status = DeploymentStatus.SUCCESS if success else DeploymentStatus.FAILED
+                d.deployed_at = datetime.now()
+                d.duration_seconds = duration
+                if success:
+                    logger.info(f"Deployment {deployment_id} succeeded in {duration}s")
+                else:
+                    logger.error(f"Deployment {deployment_id} FAILED")
+                return True
+        return False
     
-    def add_service(
-        self,
-        name: str,
-        url: str,
-        uptime: float = 99.9
-    ) -> Service:
-        """Add a service to monitor."""
+    def monitor_service(self, name: str, url: str, uptime: float = 99.9) -> Service:
+        """Register a new service for health monitoring."""
         service = Service(
             id=f"SVC-{uuid.uuid4().hex[:6].upper()}",
-            name=name,
-            url=url,
-            uptime_percent=uptime
+            name=name, url=url, uptime_percent=uptime
         )
         self.services[service.id] = service
+        logger.info(f"Service monitor established: {name}")
         return service
     
-    def update_health(self, service: Service, health: ServiceHealth):
-        """Update service health."""
-        service.health = health
-        service.last_check = datetime.now()
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get DevOps stats."""
-        successful = sum(1 for d in self.deployments if d.status == DeploymentStatus.SUCCESS)
-        healthy = sum(1 for s in self.services.values() if s.health == ServiceHealth.HEALTHY)
-        avg_uptime = sum(s.uptime_percent for s in self.services.values()) / len(self.services) if self.services else 0
+    def get_aggregate_stats(self) -> Dict[str, Any]:
+        """Calculate high-level infrastructure metrics."""
+        success_count = sum(1 for d in self.deployments if d.status == DeploymentStatus.SUCCESS)
+        total_d = len(self.deployments)
         
         return {
-            "total_deployments": len(self.deployments),
-            "successful": successful,
-            "success_rate": (successful / len(self.deployments) * 100) if self.deployments else 0,
-            "services": len(self.services),
-            "healthy_services": healthy,
-            "avg_uptime": avg_uptime
+            "total_deployments": total_d,
+            "success_rate": (success_count / total_d * 100) if total_d else 0.0,
+            "service_count": len(self.services),
+            "healthy_count": sum(1 for s in self.services.values() if s.health == ServiceHealth.HEALTHY)
         }
     
     def format_dashboard(self) -> str:
-        """Format DevOps dashboard."""
-        stats = self.get_stats()
+        """Render the DevOps Dashboard."""
+        stats = self.get_aggregate_stats()
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🔧 DEVOPS ENGINEER                                       ║",
-            f"║  {stats['total_deployments']} deploys │ {stats['success_rate']:.0f}% success │ {stats['avg_uptime']:.1f}% uptime  ║",
+            f"║  🔧 DEVOPS ENGINEER DASHBOARD{' ' * 32}║",
+            f"║  {stats['total_deployments']} deploys │ {stats['success_rate']:.0f}% success │ {stats['service_count']} services{' ' * 13}║",
             "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 SERVICE HEALTH                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  📊 SERVICE HEALTH MONITOR                                ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        health_icons = {"healthy": "🟢", "degraded": "🟡", "down": "🔴"}
-        
-        for service in list(self.services.values())[:5]:
-            icon = health_icons.get(service.health.value, "⚪")
-            lines.append(f"║  {icon} {service.name[:20]:<20} │ {service.uptime_percent:>5.1f}% │ {service.url[:15]:<15}  ║")
+        h_icons = {ServiceHealth.HEALTHY: "🟢", ServiceHealth.DEGRADED: "🟡", ServiceHealth.DOWN: "🔴"}
+        for s in list(self.services.values())[:4]:
+            icon = h_icons.get(s.health, "⚪")
+            lines.append(f"║  {icon} {s.name[:20]:<20} │ {s.uptime_percent:>5.1f}% uptime │ {s.id}  ║")
         
         lines.extend([
             "║                                                           ║",
             "║  🚀 RECENT DEPLOYMENTS                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ])
         
-        status_icons = {"pending": "⏳", "building": "🔄", "deploying": "🚀", 
-                       "success": "✅", "failed": "❌", "rolled_back": "↩️"}
-        env_icons = {"development": "🔧", "staging": "🎭", "production": "🚀"}
+        s_icons = {DeploymentStatus.SUCCESS: "✅", DeploymentStatus.FAILED: "❌", DeploymentStatus.PENDING: "⏳"}
+        e_icons = {EnvironmentType.PRODUCTION: "🚀", EnvironmentType.STAGING: "🎭", EnvironmentType.DEVELOPMENT: "🔧"}
         
-        for deploy in self.deployments[-4:]:
-            s_icon = status_icons.get(deploy.status.value, "⚪")
-            e_icon = env_icons.get(deploy.environment.value, "📦")
-            
-            lines.append(f"║  {s_icon} {e_icon} {deploy.project[:15]:<15} │ {deploy.version:<10} │ {deploy.duration_seconds:>3}s  ║")
+        for d in self.deployments[-4:]:
+            s_icon = s_icons.get(d.status, "⚪")
+            e_icon = e_icons.get(d.environment, "📦")
+            proj_disp = (d.project[:15] + '..') if len(d.project) > 17 else d.project
+            lines.append(f"║  {s_icon} {e_icon} {proj_disp:<17} │ {d.version:<10} │ {d.duration_seconds:>3}s  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [🚀 Deploy]  [📊 Metrics]  [🔔 Alerts]                   ║",
+            "║  [🚀 Deploy Now]  [📊 Infrastructure]  [🔔 Alert Log]     ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Reliable systems!                ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Stable!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -187,24 +196,19 @@ class DevOpsEngineer:
 
 # Example usage
 if __name__ == "__main__":
-    devops = DevOpsEngineer("Saigon Digital Hub")
-    
-    print("🔧 DevOps Engineer")
+    print("🔧 Initializing DevOps Engineer...")
     print("=" * 60)
-    print()
     
-    # Add services
-    devops.add_service("Main Website", "https://saigonhub.vn", 99.95)
-    devops.add_service("Client Portal", "https://portal.saigonhub.vn", 99.8)
-    devops.add_service("API Gateway", "https://api.saigonhub.vn", 99.99)
-    
-    # Create deployments
-    d1 = devops.deploy("Website", EnvironmentType.PRODUCTION, "v2.1.0", "Alex")
-    d2 = devops.deploy("Portal", EnvironmentType.STAGING, "v1.5.2", "Sam")
-    d3 = devops.deploy("API", EnvironmentType.PRODUCTION, "v3.0.0", "Alex")
-    
-    devops.complete_deployment(d1, True, 45)
-    devops.complete_deployment(d2, True, 30)
-    devops.complete_deployment(d3, False, 120)
-    
-    print(devops.format_dashboard())
+    try:
+        devops = DevOpsEngineer("Saigon Digital Hub")
+        
+        # Monitor
+        devops.monitor_service("API", "https://api.vn", 99.9)
+        # Deploy
+        dep = devops.initiate_deploy("Portal", EnvironmentType.PRODUCTION, "v1.0.0")
+        devops.complete_deploy(dep.id, True, 45)
+        
+        print("\n" + devops.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"DevOps Error: {e}")

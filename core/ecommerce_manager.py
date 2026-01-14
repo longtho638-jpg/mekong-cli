@@ -12,15 +12,19 @@ Roles:
 - Performance tracking
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class StoreStatus(Enum):
-    """Store status."""
+    """Lifecycle status of an e-commerce store."""
     SETUP = "setup"
     ACTIVE = "active"
     MAINTENANCE = "maintenance"
@@ -28,7 +32,7 @@ class StoreStatus(Enum):
 
 
 class StorePlatform(Enum):
-    """E-commerce platforms."""
+    """Supported e-commerce platforms."""
     SHOPIFY = "shopify"
     WOOCOMMERCE = "woocommerce"
     MAGENTO = "magento"
@@ -39,7 +43,7 @@ class StorePlatform(Enum):
 
 @dataclass
 class EcomStore:
-    """An e-commerce store."""
+    """An e-commerce store entity."""
     id: str
     client: str
     name: str
@@ -48,33 +52,38 @@ class EcomStore:
     status: StoreStatus = StoreStatus.SETUP
     products_count: int = 0
     orders_today: int = 0
-    revenue_mtd: float = 0
+    revenue_mtd: float = 0.0
     created_at: datetime = field(default_factory=datetime.now)
+
+    def __post_init__(self):
+        if self.products_count < 0:
+            raise ValueError("Product count cannot be negative")
 
 
 @dataclass
 class StoreMetrics:
-    """Store performance metrics."""
+    """Snapshot of store performance metrics."""
     store_id: str
-    date: datetime
-    visitors: int
-    orders: int
-    revenue: float
-    conversion_rate: float
-    avg_order_value: float
+    date: datetime = field(default_factory=datetime.now)
+    visitors: int = 0
+    orders: int = 0
+    revenue: float = 0.0
+    conversion_rate: float = 0.0
+    avg_order_value: float = 0.0
 
 
 class EcommerceManager:
     """
-    E-commerce Manager.
+    E-commerce Manager System.
     
-    Manage online stores.
+    Orchestrates online storefront management, inventory tracking, and sales analytics.
     """
     
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.stores: Dict[str, EcomStore] = {}
         self.metrics: List[StoreMetrics] = []
+        logger.info(f"E-commerce system initialized for {agency_name}")
     
     def create_store(
         self,
@@ -83,101 +92,73 @@ class EcommerceManager:
         platform: StorePlatform,
         url: str
     ) -> EcomStore:
-        """Create an e-commerce store."""
+        """Register a new e-commerce storefront for a client."""
+        if not client or not name:
+            raise ValueError("Client and store name are required")
+
         store = EcomStore(
             id=f"STR-{uuid.uuid4().hex[:6].upper()}",
-            client=client,
-            name=name,
-            platform=platform,
-            url=url
+            client=client, name=name, platform=platform, url=url
         )
         self.stores[store.id] = store
+        logger.info(f"Store created: {name} on {platform.value}")
         return store
     
-    def launch_store(self, store: EcomStore):
-        """Launch a store."""
-        store.status = StoreStatus.ACTIVE
-    
-    def record_metrics(
+    def update_metrics(
         self,
-        store: EcomStore,
+        store_id: str,
         visitors: int,
         orders: int,
         revenue: float
-    ) -> StoreMetrics:
-        """Record daily metrics."""
-        conversion = (orders / visitors * 100) if visitors else 0
-        aov = (revenue / orders) if orders else 0
+    ) -> Optional[StoreMetrics]:
+        """Record and calculate daily store performance metrics."""
+        if store_id not in self.stores:
+            return None
+            
+        s = self.stores[store_id]
+        cvr = (orders / visitors * 100.0) if visitors > 0 else 0.0
+        aov = (revenue / orders) if orders > 0 else 0.0
         
-        metrics = StoreMetrics(
-            store_id=store.id,
-            date=datetime.now(),
-            visitors=visitors,
-            orders=orders,
-            revenue=revenue,
-            conversion_rate=conversion,
-            avg_order_value=aov
+        m = StoreMetrics(
+            store_id=store_id, visitors=visitors, orders=orders, 
+            revenue=revenue, conversion_rate=cvr, avg_order_value=aov
         )
-        self.metrics.append(metrics)
+        self.metrics.append(m)
         
-        store.orders_today = orders
-        store.revenue_mtd += revenue
+        s.orders_today = orders
+        s.revenue_mtd += revenue
         
-        return metrics
-    
-    def get_portfolio_stats(self) -> Dict[str, Any]:
-        """Get portfolio statistics."""
-        active = sum(1 for s in self.stores.values() if s.status == StoreStatus.ACTIVE)
-        total_revenue = sum(s.revenue_mtd for s in self.stores.values())
-        total_products = sum(s.products_count for s in self.stores.values())
-        
-        return {
-            "total_stores": len(self.stores),
-            "active": active,
-            "total_revenue": total_revenue,
-            "total_products": total_products
-        }
+        logger.debug(f"Metrics logged for {s.name}: ${revenue:,.0f}")
+        return m
     
     def format_dashboard(self) -> str:
-        """Format e-commerce manager dashboard."""
-        stats = self.get_portfolio_stats()
+        """Render the E-commerce Portfolio Dashboard."""
+        total_rev = sum(s.revenue_mtd for s in self.stores.values())
+        total_prod = sum(s.products_count for s in self.stores.values())
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🏪 E-COMMERCE MANAGER                                    ║",
-            f"║  {stats['total_stores']} stores │ ${stats['total_revenue']:,.0f} revenue │ {stats['total_products']} products  ║",
+            f"║  🏪 E-COMMERCE MANAGER DASHBOARD{' ' * 30}║",
+            f"║  {len(self.stores)} stores │ ${total_rev:,.0f} revenue │ {total_prod} products{' ' * 15}║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  🛒 STORE PORTFOLIO                                       ║",
-            "║  ─────────────────────────────────────────────────────── ║",
+            "║  ───────────────────────────────────────────────────────  ║",
         ]
         
-        status_icons = {"setup": "🔧", "active": "🟢", "maintenance": "🟡", "paused": "⏸️"}
-        platform_icons = {"shopify": "🛍️", "woocommerce": "🔌", "magento": "🏬",
-                         "tiktok_shop": "📱", "facebook_shop": "📘", "custom": "⚙️"}
+        p_icons = {StorePlatform.SHOPIFY: "🛍️", StorePlatform.WOOCOMMERCE: "🔌", StorePlatform.TIKTOK_SHOP: "📱"}
+        s_icons = {StoreStatus.ACTIVE: "🟢", StoreStatus.SETUP: "🔧", StoreStatus.MAINTENANCE: "🟡"}
         
-        for store in list(self.stores.values())[:5]:
-            s_icon = status_icons.get(store.status.value, "⚪")
-            p_icon = platform_icons.get(store.platform.value, "🛒")
-            
-            lines.append(f"║  {s_icon} {p_icon} {store.name[:15]:<15} │ {store.client[:10]:<10} │ ${store.revenue_mtd:>8,.0f}  ║")
-        
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY PLATFORM                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
-        
-        for platform in list(StorePlatform)[:4]:
-            count = sum(1 for s in self.stores.values() if s.platform == platform)
-            revenue = sum(s.revenue_mtd for s in self.stores.values() if s.platform == platform)
-            icon = platform_icons.get(platform.value, "🛒")
-            lines.append(f"║    {icon} {platform.value.replace('_', ' ').title():<15} │ {count:>2} stores │ ${revenue:>10,.0f}  ║")
+        for s in list(self.stores.values())[:5]:
+            icon = p_icons.get(s.platform, "🛒")
+            stat = s_icons.get(s.status, "⚪")
+            name_disp = (s.name[:15] + '..') if len(s.name) > 17 else s.name
+            lines.append(f"║  {stat} {icon} {name_disp:<17} │ {s.client[:10]:<10} │ ${s.revenue_mtd:>8,.0f}  ║")
         
         lines.extend([
             "║                                                           ║",
-            "║  [🛒 New Store]  [📊 Analytics]  [⚙️ Settings]            ║",
+            "║  [🛒 New Store]  [📊 Analytics]  [📦 Inventory]  [⚙️ Setup] ║",
             "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - E-commerce excellence!           ║",
+            f"║  🏯 {self.agency_name[:40]:<40} - Selling!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
         
@@ -186,24 +167,18 @@ class EcommerceManager:
 
 # Example usage
 if __name__ == "__main__":
-    ecom = EcommerceManager("Saigon Digital Hub")
-    
-    print("🏪 E-commerce Manager")
+    print("🏪 Initializing E-commerce Manager...")
     print("=" * 60)
-    print()
     
-    s1 = ecom.create_store("Coffee Lab", "CoffeeLab Shop", StorePlatform.SHOPIFY, "coffeelab.myshopify.com")
-    s2 = ecom.create_store("Fashion Brand", "Style Store", StorePlatform.WOOCOMMERCE, "style.com")
-    s3 = ecom.create_store("Tech Startup", "Gadget Store", StorePlatform.TIKTOK_SHOP, "tiktok.com/@gadgets")
-    
-    s1.products_count = 45
-    s2.products_count = 120
-    s3.products_count = 30
-    
-    ecom.launch_store(s1)
-    ecom.launch_store(s2)
-    
-    ecom.record_metrics(s1, 1500, 45, 4500)
-    ecom.record_metrics(s2, 2500, 75, 9500)
-    
-    print(ecom.format_dashboard())
+    try:
+        ecom = EcommerceManager("Saigon Digital Hub")
+        
+        # Seed
+        s1 = ecom.create_store("Coffee Lab", "CoffeeLab", StorePlatform.SHOPIFY, "coffee.myshopify.com")
+        s1.status = StoreStatus.ACTIVE
+        ecom.update_metrics(s1.id, 1000, 30, 3000.0)
+        
+        print("\n" + ecom.format_dashboard())
+        
+    except Exception as e:
+        logger.error(f"Manager Error: {e}")
