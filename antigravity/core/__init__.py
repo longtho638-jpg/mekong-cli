@@ -8,6 +8,7 @@ Provides all core functionality for agency management:
 - Revenue tracking (RevenueEngine)
 - Sales pipeline (SalesPipeline)
 - VIBE IDE (VIBEWorkflow, VIBEIDE, VIBEOrchestrator)
+- Command Registry (COMMAND_REGISTRY)
 
 🏯 "Không đánh mà thắng" - Win Without Fighting
 """
