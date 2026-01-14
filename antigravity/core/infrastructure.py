@@ -1,37 +1,41 @@
 """
-🏗️ Full Stack Infrastructure - The ACTUAL Full Stack
+🏗️ Full Stack Infrastructure - The Unified 10-Layer Stack
+========================================================
 
-Not just Frontend + Backend, but ALL 10 layers:
-1. Database
-2. Server
-3. Networking
-4. Cloud Infrastructure
-5. CI/CD
-6. Security
-7. Monitoring
-8. Containers
-9. CDN
-10. Backup
+Defines and monitors the complete operational stack for the Agency OS. 
+Unlike traditional Frontend/Backend splits, this model identifies 10 
+distinct layers required for professional production readiness.
 
-Usage:
-    from antigravity.core.infrastructure import InfrastructureStack
-    stack = InfrastructureStack()
-    stack.print_status()
+Layers:
+1. 🗄️ Database: Data persistence and integrity.
+2. 🖥️ Server: Core logic and API execution.
+3. 🌐 Networking: DNS, SSL, and connectivity.
+4. ☁️ Cloud: Computing and storage allocation.
+5. 🔄 CI/CD: Automated integration and deployment.
+6. 🔒 Security: Auth, RLS, and WAF protection.
+7. 📊 Monitoring: Observability and error tracking.
+8. 📦 Containers: Runtime isolation and scaling.
+9. ⚡ CDN: Edge acceleration and optimization.
+10. 💾 Backup: Disaster recovery and snapshots.
+
+Binh Pháp: 🏗️ Địa (Ground) - Securing the foundation of the fortress.
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import json
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class StackLayer(Enum):
-    """The 10 layers of Actual Full Stack."""
+    """The 10 functional layers of a modern production stack."""
     DATABASE = "database"
     SERVER = "server"
     NETWORKING = "networking"
-    CLOUD = "cloud_infrastructure"
+    CLOUD = "cloud"
     CICD = "ci_cd"
     SECURITY = "security"
     MONITORING = "monitoring"
@@ -42,313 +46,142 @@ class StackLayer(Enum):
 
 @dataclass
 class LayerConfig:
-    """Configuration for a stack layer."""
+    """Standardized configuration and status for a stack layer."""
     layer: StackLayer
     provider: str
-    status: str  # configured, running, warning, error
+    status: str = "configured"  # configured, running, warning, error
+    tier: str = "starter"
     config: Dict[str, Any] = field(default_factory=dict)
-    last_check: Optional[datetime] = None
+    last_check: datetime = field(default_factory=datetime.now)
 
 
 class InfrastructureStack:
     """
-    🏗️ Infrastructure Stack
+    🏗️ Infrastructure Manager
     
-    Manages the ACTUAL 10-layer full stack architecture.
+    Orchestrates the 'Strong Ground' policy. Ensures all 10 layers of 
+    production infrastructure are correctly provisioned and monitored.
     """
     
     def __init__(self):
         self.layers: Dict[StackLayer, LayerConfig] = {}
-        self._init_defaults()
+        self._initialize_default_stack()
     
-    def _init_defaults(self):
-        """Initialize with AgencyOS recommended stack."""
+    def _initialize_default_stack(self):
+        """Builds the Agency OS 'Golden Stack' defaults."""
         
-        # 1. DATABASE
-        self.layers[StackLayer.DATABASE] = LayerConfig(
-            layer=StackLayer.DATABASE,
-            provider="Supabase",
-            status="configured",
-            config={
-                "type": "PostgreSQL",
-                "realtime": True,
-                "row_level_security": True,
-                "edge_functions": True,
-            }
-        )
+        # Mapping definition logic
+        defaults = [
+            (StackLayer.DATABASE, "Supabase (Postgres)", {"rls": True, "realtime": True}),
+            (StackLayer.SERVER,   "Vercel Edge", {"runtime": "Edge", "framework": "Next.js"}),
+            (StackLayer.NETWORKING, "Cloudflare", {"dns": "Strict", "ssl": "Full"}),
+            (StackLayer.CLOUD,    "Vercel + Supabase", {"compute": "Serverless"}),
+            (StackLayer.CICD,     "GitHub Actions", {"auto_deploy": True}),
+            (StackLayer.SECURITY, "Multi-layered", {"auth": "Supabase Auth", "waf": "Cloudflare"}),
+            (StackLayer.MONITORING, "Vercel + Sentry", {"apm": "Speed Insights"}),
+            (StackLayer.CONTAINERS, "Serverless Edge", {"scaling": "Dynamic"}),
+            (StackLayer.CDN,      "Vercel Edge Network", {"caching": "Auto"}),
+            (StackLayer.BACKUP,   "GitHub + Supabase", {"frequency": "Daily"})
+        ]
         
-        # 2. SERVER
-        self.layers[StackLayer.SERVER] = LayerConfig(
-            layer=StackLayer.SERVER,
-            provider="Vercel Edge",
-            status="configured",
-            config={
-                "framework": "Next.js 15",
-                "runtime": "Edge Functions",
-                "regions": ["sin1", "hnd1", "sfo1"],
-            }
-        )
-        
-        # 3. NETWORKING
-        self.layers[StackLayer.NETWORKING] = LayerConfig(
-            layer=StackLayer.NETWORKING,
-            provider="Cloudflare",
-            status="configured",
-            config={
-                "dns": "Cloudflare DNS",
-                "ssl": "Full (strict)",
-                "http2": True,
-                "websockets": True,
-            }
-        )
-        
-        # 4. CLOUD INFRASTRUCTURE
-        self.layers[StackLayer.CLOUD] = LayerConfig(
-            layer=StackLayer.CLOUD,
-            provider="Vercel + Supabase",
-            status="configured",
-            config={
-                "compute": "Vercel Serverless",
-                "storage": "Supabase Storage",
-                "functions": "Edge Functions",
-                "regions": "Global",
-            }
-        )
-        
-        # 5. CI/CD
-        self.layers[StackLayer.CICD] = LayerConfig(
-            layer=StackLayer.CICD,
-            provider="GitHub Actions",
-            status="configured",
-            config={
-                "workflows": ["test", "build", "deploy"],
-                "auto_deploy": True,
-                "preview_deploys": True,
-                "branch_protection": True,
-            }
-        )
-        
-        # 6. SECURITY
-        self.layers[StackLayer.SECURITY] = LayerConfig(
-            layer=StackLayer.SECURITY,
-            provider="Multi-layer",
-            status="configured",
-            config={
-                "auth": "Supabase Auth",
-                "2fa": True,
-                "rls": "Row Level Security",
-                "waf": "Cloudflare WAF",
-                "secrets": "Environment Variables",
-            }
-        )
-        
-        # 7. MONITORING
-        self.layers[StackLayer.MONITORING] = LayerConfig(
-            layer=StackLayer.MONITORING,
-            provider="Vercel Analytics",
-            status="configured",
-            config={
-                "apm": "Vercel Speed Insights",
-                "errors": "Sentry",
-                "logs": "Vercel Logs",
-                "uptime": "Better Uptime",
-            }
-        )
-        
-        # 8. CONTAINERS
-        self.layers[StackLayer.CONTAINERS] = LayerConfig(
-            layer=StackLayer.CONTAINERS,
-            provider="Serverless",
-            status="configured",
-            config={
-                "type": "Serverless (no containers)",
-                "cold_start": "Edge = instant",
-                "scaling": "Auto-scale to 0",
-            }
-        )
-        
-        # 9. CDN
-        self.layers[StackLayer.CDN] = LayerConfig(
-            layer=StackLayer.CDN,
-            provider="Vercel Edge Network",
-            status="configured",
-            config={
-                "pops": "100+ global",
-                "caching": "Automatic",
-                "compression": "Brotli",
-                "images": "Vercel Image Optimization",
-            }
-        )
-        
-        # 10. BACKUP
-        self.layers[StackLayer.BACKUP] = LayerConfig(
-            layer=StackLayer.BACKUP,
-            provider="Supabase + GitHub",
-            status="configured",
-            config={
-                "database": "Daily automatic",
-                "code": "Git versioned",
-                "storage": "Replicated",
-                "recovery_time": "< 1 hour",
-            }
-        )
-    
-    def get_layer_status(self, layer: StackLayer) -> LayerConfig:
-        """Get status of a specific layer."""
-        return self.layers.get(layer)
+        for layer, provider, cfg in defaults:
+            self.layers[layer] = LayerConfig(
+                layer=layer,
+                provider=provider,
+                config=cfg
+            )
     
     def get_health_score(self) -> int:
-        """Get overall stack health score (0-100)."""
-        status_scores = {
+        """Calculates 0-100 system health score based on layer statuses."""
+        weights = {
             "running": 100,
             "configured": 90,
             "warning": 50,
-            "error": 0,
+            "error": 0
         }
         
-        total = sum(
-            status_scores.get(layer.status, 0) 
-            for layer in self.layers.values()
-        )
-        return total // len(self.layers)
+        total = sum(weights.get(l.status, 0) for l in self.layers.values())
+        return total // len(self.layers) if self.layers else 0
     
-    def get_layer_summary(self) -> List[Dict]:
-        """Get summary of all layers."""
+    def update_layer(self, layer: StackLayer, status: str, provider: Optional[str] = None):
+        """Updates the operational state of a specific stack layer."""
+        if layer in self.layers:
+            self.layers[layer].status = status
+            if provider:
+                self.layers[layer].provider = provider
+            self.layers[layer].last_check = datetime.now()
+            logger.info(f"Infrastructure: {layer.value} updated to {status}")
+
+    def get_layer_summary(self) -> List[Dict[str, Any]]:
+        """Returns a flat list of layer status for dashboards."""
         return [
             {
-                "layer": layer.value,
-                "provider": config.provider,
-                "status": config.status,
+                "id": l.layer.value,
+                "provider": l.provider,
+                "status": l.status,
+                "health": "OK" if l.status in ["running", "configured"] else "FAIL"
             }
-            for layer, config in self.layers.items()
+            for l in self.layers.values()
         ]
-    
-    def print_status(self):
-        """Print infrastructure status."""
-        health = self.get_health_score()
+
+    def print_status_report(self):
+        """Pretty-prints the full 10-layer stack report to the console."""
+        score = self.get_health_score()
         
-        print("\n" + "═" * 60)
-        print("║" + "🏗️ ACTUAL FULL STACK INFRASTRUCTURE".center(58) + "║")
-        print("═" * 60)
+        print("\n" + "═" * 65)
+        print("║" + "🏗️ INFRASTRUCTURE STACK REPORT (10/10)".center(63) + "║")
+        print("═" * 65)
         
-        # Status icons
-        status_icons = {
-            "running": "🟢",
-            "configured": "🔵",
-            "warning": "🟡",
-            "error": "🔴",
+        icons = {
+            StackLayer.DATABASE: "🗄️", StackLayer.SERVER: "🖥️",
+            StackLayer.NETWORKING: "🌐", StackLayer.CLOUD: "☁️",
+            StackLayer.CICD: "🔄", StackLayer.SECURITY: "🔒",
+            StackLayer.MONITORING: "📊", StackLayer.CONTAINERS: "📦",
+            StackLayer.CDN: "⚡", StackLayer.BACKUP: "💾"
         }
         
-        # Layer icons
-        layer_icons = {
-            StackLayer.DATABASE: "🗄️",
-            StackLayer.SERVER: "🖥️",
-            StackLayer.NETWORKING: "🌐",
-            StackLayer.CLOUD: "☁️",
-            StackLayer.CICD: "🔄",
-            StackLayer.SECURITY: "🔒",
-            StackLayer.MONITORING: "📊",
-            StackLayer.CONTAINERS: "📦",
-            StackLayer.CDN: "⚡",
-            StackLayer.BACKUP: "💾",
-        }
+        status_colors = {"running": "🟢", "configured": "🔵", "warning": "🟡", "error": "🔴"}
         
-        print("\n📋 STACK LAYERS (10/10):\n")
+        for ltype, lcfg in self.layers.items():
+            s_icon = status_colors.get(lcfg.status, "⚪")
+            l_icon = icons.get(ltype, "•")
+            print(f"  {l_icon} {ltype.value.upper():<12} | {s_icon} {lcfg.provider}")
+            
+        print("\n" + "─" * 65)
+        print(f"  🏆 STACK HEALTH: {score}%")
         
-        for layer, config in self.layers.items():
-            icon = layer_icons.get(layer, "•")
-            status_icon = status_icons.get(config.status, "⚪")
-            print(f"   {icon} {layer.value.upper()}")
-            print(f"      {status_icon} {config.provider}")
-        
-        print("\n" + "─" * 60)
-        print(f"   🏆 HEALTH SCORE: {health}%")
-        
-        if health >= 90:
-            print("   ✅ PRODUCTION READY")
-        elif health >= 70:
-            print("   ⚠️ NEEDS ATTENTION")
-        else:
-            print("   ❌ CRITICAL ISSUES")
-        
-        print("═" * 60)
-    
-    def print_layer_detail(self, layer: StackLayer):
-        """Print detailed info for a layer."""
-        config = self.layers.get(layer)
-        if not config:
-            print(f"Layer {layer} not found")
-            return
-        
-        print(f"\n🔍 {layer.value.upper()} DETAIL")
-        print("─" * 40)
-        print(f"   Provider: {config.provider}")
-        print(f"   Status: {config.status}")
-        print(f"   Config:")
-        for key, value in config.config.items():
-            print(f"      • {key}: {value}")
+        verdict = (
+            "🚀 PRODUCTION READY" if score >= 90 else
+            "⚠️ AT RISK - NEEDS CONFIG" if score >= 70 else
+            "🚫 INSECURE / UNSTABLE"
+        )
+        print(f"  📢 STATUS: {verdict}")
+        print("═" * 65 + "\n")
 
 
-# ============================================
-# RECOMMENDED STACK PRESETS
-# ============================================
+# --- Stack Presets (Static Definitions) ---
 
 STACK_PRESETS = {
-    "starter": {
-        "database": "Supabase",
-        "server": "Vercel",
-        "networking": "Cloudflare",
-        "cloud": "Vercel + Supabase",
-        "cicd": "GitHub Actions",
-        "security": "Supabase Auth",
-        "monitoring": "Vercel Analytics",
-        "containers": "Serverless",
-        "cdn": "Vercel Edge",
-        "backup": "Automatic",
-        "cost": "$0-50/month",
+    "solo": {
+        "label": "Solo Unicorn (Low Cost)",
+        "stack": "Supabase + Vercel + Cloudflare",
+        "monthly_est": "$0 - $25",
+        "maintenance": "Minimal (Serverless)"
     },
-    "growth": {
-        "database": "Supabase Pro",
-        "server": "Vercel Pro",
-        "networking": "Cloudflare Pro",
-        "cloud": "AWS",
-        "cicd": "GitHub Actions",
-        "security": "Auth0",
-        "monitoring": "Datadog",
-        "containers": "Docker",
-        "cdn": "CloudFront",
-        "backup": "AWS Backup",
-        "cost": "$100-500/month",
-    },
-    "enterprise": {
-        "database": "AWS RDS",
-        "server": "AWS ECS",
-        "networking": "AWS VPC",
-        "cloud": "AWS",
-        "cicd": "CircleCI",
-        "security": "Multi-layer",
-        "monitoring": "Datadog + PagerDuty",
-        "containers": "Kubernetes",
-        "cdn": "CloudFront + WAF",
-        "backup": "Multi-region",
-        "cost": "$1000+/month",
-    },
+    "studio": {
+        "label": "Agency Studio (High Performance)",
+        "stack": "AWS + Vercel Pro + Datadog",
+        "monthly_est": "$100 - $500",
+        "maintenance": "Automated (DevOps Needed)"
+    }
 }
 
-
-def get_recommended_stack(tier: str = "starter") -> Dict:
-    """Get recommended stack for a tier."""
-    return STACK_PRESETS.get(tier, STACK_PRESETS["starter"])
-
-
-def print_stack_comparison():
-    """Print comparison of stack presets."""
-    print("\n🏗️ STACK PRESETS COMPARISON")
-    print("═" * 60)
-    
-    for name, stack in STACK_PRESETS.items():
-        print(f"\n📦 {name.upper()}")
-        print(f"   Cost: {stack['cost']}")
-        print(f"   DB: {stack['database']}")
-        print(f"   Server: {stack['server']}")
-        print(f"   Security: {stack['security']}")
+def get_preset_comparison() -> str:
+    """Visualizes the difference between infrastructure tiers."""
+    lines = ["\n🏗️ AGENCY OS - STACK COMPARISON", "═" * 50]
+    for key, p in STACK_PRESETS.items():
+        lines.append(f"📦 {p['label'].upper()}")
+        lines.append(f"   Stack: {p['stack']}")
+        lines.append(f"   Cost : {p['monthly_est']}")
+        lines.append("")
+    return "\n".join(lines)
