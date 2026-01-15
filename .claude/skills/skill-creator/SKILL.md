@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Guide for creating effective skills, adding skill references, skill scripts or optimizing existing skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, frameworks, libraries or plugins usage, or API and tool integrations.
+description: Create or update Claude skills with specialized knowledge and workflows. Use for new skills, skill references, skill scripts, optimizing existing skills, extending Claude's capabilities.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -52,7 +52,7 @@ Every skill consists of a required SKILL.md file and optional bundled resources:
 - Skill should be combined into specific topics, for example: `cloudflare`, `cloudflare-r2`, `cloudflare-workers`, `docker`, `gcloud` should be combined into `devops`
 - `SKILL.md` should be **less than 100 lines** and include the references of related markdown files and scripts.
 - Each script or referenced markdown file should be also **less than 100 lines**, remember that you can always split them into multiple files (**progressive disclosure** principle).
-- Descriptions in metadata of `SKILL.md` files should be both concise and still contains enough usecases of the references and scripts, this will help skills can be activated automatically during the implementation process of Claude Code.
+- Descriptions in metadata of `SKILL.md` files should be both concise (less than 200 characters) and still contains enough usecases of the references and scripts, this will help skills can be activated automatically during the implementation process of Claude Code.
 - **Referenced markdowns**:
   - Sacrifice grammar for the sake of concision when writing these files.
   - Can reference other markdown files or scripts as well.
@@ -78,7 +78,7 @@ Better **context engineering**: leverage **progressive disclosure** technique of
 **File size:** Under 100 lines, if you need more, plit it to multiple files in `references` folder.
 `SKILL.md` is always short and concise, straight to the point, treat it as a quick reference guide.
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+**Metadata Quality:** The `name` and `description` (**MUST be under 200 characters**) in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it, DO NOT sound generic, vague or educational. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
 
 #### Bundled Resources (optional)
 
@@ -126,7 +126,7 @@ Files not intended to be loaded into context, but rather used within the output 
 
 Skills use a three-level loading system to manage context efficiently:
 
-1. **Metadata (name + description)** - Always in context (~100 words)
+1. **Metadata (name + description)** - Always in context (less than 200 characters)
 2. **SKILL.md body** - When skill triggers (<5k words)
 3. **Bundled resources** - As needed by Claude (Unlimited*)
 
@@ -242,7 +242,7 @@ The packaging script will:
 1. **Validate** the skill automatically, checking:
    - YAML frontmatter format and required fields
    - Skill naming conventions and directory structure
-   - Description completeness and quality
+   - Description completeness and quality (MUST be under 200 characters)
    - File organization and resource references
 
 2. **Package** the skill if validation passes, creating a zip file named after the skill (e.g., `my-skill.zip`) that includes all files and maintains the proper directory structure for distribution.

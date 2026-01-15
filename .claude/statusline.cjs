@@ -152,8 +152,12 @@ function renderSessionLines(ctx) {
 
   // Build stats part
   const statsItems = [];
-  if (ctx.sessionText) statsItems.push(`⌛ ${ctx.sessionText.replace(' until reset', '')}`);
-  if (ctx.costText) statsItems.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
+  if (ctx.sessionText) {
+    let sessionStr = `⌛ ${ctx.sessionText.replace(' until reset', ' left')}`;
+    if (ctx.usagePercent != null) sessionStr += ` (${Math.round(ctx.usagePercent)}% used)`;
+    statsItems.push(sessionStr);
+  }
+  // if (ctx.costText) statsItems.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
   if (ctx.linesAdded > 0 || ctx.linesRemoved > 0) {
     statsItems.push(`📝 ${green(`+${ctx.linesAdded}`)} ${red(`-${ctx.linesRemoved}`)}`);
   }
@@ -399,44 +403,59 @@ async function main() {
     const usage = data.context_window?.current_usage || {};
     const contextSize = data.context_window?.context_window_size || 0;
     let contextPercent = 0;
+    let totalTokens = 0;
 
     if (contextSize > 0 && contextSize > AUTOCOMPACT_BUFFER) {
-      const totalTokens = (usage.input_tokens ?? 0) +
-                          (usage.cache_creation_input_tokens ?? 0) +
-                          (usage.cache_read_input_tokens ?? 0);
+      totalTokens = (usage.input_tokens ?? 0) +
+                    (usage.cache_creation_input_tokens ?? 0) +
+                    (usage.cache_read_input_tokens ?? 0);
 
       // Add buffer to match /context calculation
       contextPercent = Math.min(100, Math.round(((totalTokens + AUTOCOMPACT_BUFFER) / contextSize) * 100));
     }
 
-    // Session timer
+    // Write context data to temp file for hooks to read
+    const sessionId = data.session_id;
+    if (sessionId && contextSize > 0) {
+      try {
+        const contextDataPath = path.join(os.tmpdir(), `ck-context-${sessionId}.json`);
+        fs.writeFileSync(contextDataPath, JSON.stringify({
+          percent: contextPercent,
+          tokens: totalTokens,
+          size: contextSize,
+          usage: usage,
+          timestamp: Date.now()
+        }));
+      } catch {}
+    }
+
+    // Session timer - read actual reset time from usage limits cache
     let sessionText = '';
     const transcriptPath = data.transcript_path;
 
     // Parse transcript for tools/agents/todos
     const transcript = transcriptPath ? await parseTranscript(transcriptPath) : { tools: [], agents: [], todos: [], sessionStart: null };
 
-    // Calculate session timer from transcript
-    if (transcriptPath && fs.existsSync(transcriptPath)) {
-      try {
-        const now = new Date();
-        const currentUtcHour = now.getUTCHours();
-        const blockStart = Math.floor(currentUtcHour / 5) * 5;
-        let blockEnd = blockStart + 5;
-        let blockEndDate = new Date(now);
-        if (blockEnd >= 24) {
-          blockEnd -= 24;
-          blockEndDate.setUTCDate(blockEndDate.getUTCDate() + 1);
+    // Read actual reset time and utilization from usage limits cache (written by usage-context-awareness hook)
+    let usagePercent = null;
+    try {
+      const usageCachePath = path.join(os.tmpdir(), 'ck-usage-limits-cache.json');
+      if (fs.existsSync(usageCachePath)) {
+        const cache = JSON.parse(fs.readFileSync(usageCachePath, 'utf8'));
+        const fiveHour = cache.data?.five_hour;
+        usagePercent = fiveHour?.utilization ?? null;
+        const resetAt = fiveHour?.resets_at;
+        if (resetAt) {
+          const resetTime = new Date(resetAt);
+          const remaining = Math.floor(resetTime.getTime() / 1000) - Math.floor(Date.now() / 1000);
+          if (remaining > 0 && remaining < 18000) {
+            const rh = Math.floor(remaining / 3600);
+            const rm = Math.floor((remaining % 3600) / 60);
+            sessionText = `${rh}h ${rm}m until reset`;
+          }
         }
-        blockEndDate.setUTCHours(blockEnd, 0, 0, 0);
-        const remaining = Math.floor(blockEndDate.getTime() / 1000) - Math.floor(Date.now() / 1000);
-        if (remaining > 0 && remaining < 18000) {
-          const rh = Math.floor(remaining / 3600);
-          const rm = Math.floor((remaining % 3600) / 60);
-          sessionText = `${rh}h ${rm}m until reset`;
-        }
-      } catch {}
-    }
+      }
+    } catch {}
 
     // Cost and lines changed
     const billingMode = env.CLAUDE_BILLING_MODE || 'api';
@@ -463,6 +482,7 @@ async function main() {
       activePlan,
       contextPercent,
       sessionText,
+      usagePercent,
       costText,
       linesAdded,
       linesRemoved,

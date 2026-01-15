@@ -1,6 +1,6 @@
 ---
 name: ui-ux-pro-max
-description: "Frontend UI/UX design intelligence - activate FIRST when user requests beautiful, stunning, gorgeous, or aesthetic interfaces. The primary skill for design decisions before implementation. 50 styles, 21 palettes, 50 font pairings, 20 charts, 8 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check frontend UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient."
+description: Design beautiful UIs - activate FIRST for stunning, aesthetic interfaces. Use for design systems, color palettes, typography, font pairings, animations, glassmorphism, minimalism, bento grids.
 ---
 
 # UI/UX Pro Max - Design Intelligence
