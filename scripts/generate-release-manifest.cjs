@@ -155,7 +155,14 @@ function main() {
         continue;
       }
 
-      const relativePath = path.relative(projectRoot, file).replace(/\\/g, '/');
+      let relativePath = path.relative(projectRoot, file).replace(/\\/g, '/');
+
+      // Strip .claude/ prefix for files inside .claude directory
+      // CLI tracks files relative to .claude/, not project root
+      if (relativePath.startsWith('.claude/')) {
+        relativePath = relativePath.slice('.claude/'.length);
+      }
+
       const stats = fs.statSync(file);
       const checksum = calculateChecksum(file);
       const lastModified = getGitTimestamp(file);

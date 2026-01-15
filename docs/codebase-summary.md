@@ -173,7 +173,7 @@ claudekit-engineer/
 
 ### 5. Workflows
 
-**Primary Workflows** (`.claude/workflows/`):
+**Primary Workflows** (`.claude/rules/`):
 1. **primary-workflow.md**: Core development cycle
    - Code implementation
    - Testing
@@ -211,7 +211,7 @@ claudekit-engineer/
 
 ### For Agents
 - **CLAUDE.md**: Primary agent instructions
-- **.claude/workflows/**: Workflow definitions
+- **.claude/rules/**: Development rules and protocols
 - **plans/templates/**: Implementation plan templates
 
 ## Development Principles
@@ -357,10 +357,10 @@ Features: Automated releases, changelog generation
 - `/mnt/d/www/claudekit/claudekit-engineer/guide/COMMANDS.md` - Command reference
 
 ### Workflows
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/primary-workflow.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/development-rules.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/orchestration-protocol.md`
-- `/mnt/d/www/claudekit/claudekit-engineer/.claude/workflows/documentation-management.md`
+- `/mnt/d/www/claudekit/claudekit-engineer/.claude/rules/primary-workflow.md`
+- `/mnt/d/www/claudekit/claudekit-engineer/.claude/rules/development-rules.md`
+- `/mnt/d/www/claudekit/claudekit-engineer/.claude/rules/orchestration-protocol.md`
+- `/mnt/d/www/claudekit/claudekit-engineer/.claude/rules/documentation-management.md`
 
 ## Related Projects
 

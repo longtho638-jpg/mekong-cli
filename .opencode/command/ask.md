@@ -7,10 +7,10 @@ Technical question or architecture challenge:
 <questions>$ARGUMENTS</questions>
 
 Current development workflows, system constraints, scale requirements, and business context will be considered:
-- Primary workflow: `./.opencode/workflows/primary-workflow.md`
-- Development rules: `./.opencode/workflows/development-rules.md`
-- Orchestration protocols: `./.opencode/workflows/orchestration-protocol.md`
-- Documentation management: `./.opencode/workflows/documentation-management.md`
+- Primary workflow: `./.opencode/rules/primary-workflow.md`
+- Development rules: `./.opencode/rules/development-rules.md`
+- Orchestration protocols: `./.opencode/rules/orchestration-protocol.md`
+- Documentation management: `./.opencode/rules/documentation-management.md`
 
 **Project Documentation:**
 ```

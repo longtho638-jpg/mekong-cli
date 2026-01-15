@@ -1,3 +1,194 @@
+## [2.4.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.1...v2.4.0-beta.2) (2026-01-14)
+
+
+### 🚀 Features
+
+* **rules:** add mandatory delegation context for cross-project work ([4fd2c34](https://github.com/claudekit/claudekit-engineer/commit/4fd2c34994f4e9edac6515d3877ad91290c40169)), closes [#342](https://github.com/claudekit/claudekit-engineer/issues/342)
+
+## [2.4.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0-beta.1) (2026-01-13)
+
+
+### 🚀 Features
+
+* integrate code-simplifier agent with PostToolUse hook ([d8adf1a](https://github.com/claudekit/claudekit-engineer/commit/d8adf1a5303bdefe894963d0e3918b99edbe2915))
+
+## [2.3.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.1...v2.3.2) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* **manifest:** strip .claude/ prefix from manifest paths ([db35217](https://github.com/claudekit/claudekit-engineer/commit/db35217521e079c7d86ff3e293ad1c6833f5f6e2))
+
+## [2.3.2-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.1...v2.3.2-beta.1) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* **manifest:** strip .claude/ prefix from manifest paths ([db35217](https://github.com/claudekit/claudekit-engineer/commit/db35217521e079c7d86ff3e293ad1c6833f5f6e2))
+
+## [2.3.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0...v2.3.1) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* add backward compat for workflows/ in hooks ([6227d62](https://github.com/claudekit/claudekit-engineer/commit/6227d62e60089c840f55d1b473760945a689d4eb))
+
+
+### ♻️ Code Refactoring
+
+* rename workflows/ to rules/ ([#337](https://github.com/claudekit/claudekit-engineer/issues/337)) ([d54d0c4](https://github.com/claudekit/claudekit-engineer/commit/d54d0c42a0b8a9936cff1e105dae968d348a1823))
+
+
+### ✅ Tests
+
+* add comprehensive context-builder tests for rules/workflows compat ([3add387](https://github.com/claudekit/claudekit-engineer/commit/3add387c59527edaf245ffccf96a6ebba49a9e40))
+
+## [2.3.1-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0...v2.3.1-beta.1) (2026-01-12)
+
+
+### 🐞 Bug Fixes
+
+* add backward compat for workflows/ in hooks ([6227d62](https://github.com/claudekit/claudekit-engineer/commit/6227d62e60089c840f55d1b473760945a689d4eb))
+
+
+### ♻️ Code Refactoring
+
+* rename workflows/ to rules/ ([#337](https://github.com/claudekit/claudekit-engineer/issues/337)) ([d54d0c4](https://github.com/claudekit/claudekit-engineer/commit/d54d0c42a0b8a9936cff1e105dae968d348a1823))
+
+
+### ✅ Tests
+
+* add comprehensive context-builder tests for rules/workflows compat ([3add387](https://github.com/claudekit/claudekit-engineer/commit/3add387c59527edaf245ffccf96a6ebba49a9e40))
+
+## [2.3.0](https://github.com/claudekit/claudekit-engineer/compare/v2.2.0...v2.3.0) (2026-01-12)
+
+
+### 🚀 Features
+
+* **ck-help:** add fuzzy matching, synonyms, and disambiguation ([255a211](https://github.com/claudekit/claudekit-engineer/commit/255a2115516581bb890e3218e7ab65174b867d55))
+* **ck-help:** improve intent detection with positional weighting ([310cfe8](https://github.com/claudekit/claudekit-engineer/commit/310cfe8ecca9bb4eb463ce3974f1041b6339bcbf)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+* **opencode:** add flattened commands for OpenCode compatibility ([f3e3da4](https://github.com/claudekit/claudekit-engineer/commit/f3e3da48c0f31ae45db9cfb2814a259df68e8b32))
+* **opencode:** add plugin generation with shared libraries and test suite ([03df0ea](https://github.com/claudekit/claudekit-engineer/commit/03df0ea8c77e36bb6d465b26c5d88d83f29164ed))
+* **release:** add OpenCode support to release scripts ([587c316](https://github.com/claudekit/claudekit-engineer/commit/587c3165efeedc150ea559efae714ba72248a01a))
+* **scripts:** add OpenCode configuration generator ([74a998e](https://github.com/claudekit/claudekit-engineer/commit/74a998ecc0d77dca8c8d9da14d37a4de53cc3b31))
+* **skills:** add PreferPackageManager parameter to install.ps1 ([4fda946](https://github.com/claudekit/claudekit-engineer/commit/4fda9464c51ace0027eab526958b6763d5a7bf39)), closes [#303](https://github.com/claudekit/claudekit-engineer/issues/303)
+* **statusline:** add git staged/ahead and active plan indicators ([daeb5f1](https://github.com/claudekit/claudekit-engineer/commit/daeb5f1b7d91a05a81185855aa05b9a7c2063de7))
+* **statusline:** add responsive width-based line wrapping ([c0f70ac](https://github.com/claudekit/claudekit-engineer/commit/c0f70ac2f99183eda66c2b716d6fb18d30775e6f))
+* **statusline:** collapse duplicate agents + fix edge cases ([30c2490](https://github.com/claudekit/claudekit-engineer/commit/30c24902247388149aff434dbec2f6b0d3393f81))
+* **statusline:** enhance with ANSI colors, transcript parsing, multi-line output ([1783f26](https://github.com/claudekit/claudekit-engineer/commit/1783f2619fbb7c2178b7d9e2edada279341b0bcb))
+* **statusline:** refine visual presentation with compact agent flow ([d9ccf7b](https://github.com/claudekit/claudekit-engineer/commit/d9ccf7bdcc38266698da15797909d299dd337c12))
+* **statusline:** show last 3 completed agents for better flow context ([f2a02ec](https://github.com/claudekit/claudekit-engineer/commit/f2a02eca2878e230b670c6823c48cb2a7050c25e))
+* **statusline:** show last completed agent's description when no running agent ([967b8ff](https://github.com/claudekit/claudekit-engineer/commit/967b8ffcaaa93f1e86cfaa142dde9f94d59e560e))
+* **worktree:** auto-env templates + AI-guided dependency install ([#307](https://github.com/claudekit/claudekit-engineer/issues/307)) ([b8d34c5](https://github.com/claudekit/claudekit-engineer/commit/b8d34c54ef46872748155bbf096828d6be30cf32))
+
+
+### 🐞 Bug Fixes
+
+* Alpine Linux sudo cannot find pkg_update/pkg_install functions ([428282e](https://github.com/claudekit/claudekit-engineer/commit/428282e1ff6525a15fd7ac7c922c1a5fac3586af)), closes [claudekit/claudekit-engineer#331](https://github.com/claudekit/claudekit-engineer/issues/331)
+* **brainstorm:** remove incorrect Skill tool reference ([#315](https://github.com/claudekit/claudekit-engineer/issues/315)) ([4bf7ccf](https://github.com/claudekit/claudekit-engineer/commit/4bf7ccf083a6b23c5601b19da7a3089a4b823cfc))
+* **chrome-devtools:** add process.exit(1) to error handlers ([966048a](https://github.com/claudekit/claudekit-engineer/commit/966048a7e94113f8719770135643aaba5ecbac4c))
+* **ck-help:** add action verb detection for imperative sentences ([105a258](https://github.com/claudekit/claudekit-engineer/commit/105a2580f93a12e1acc769e72e57fbb0b2b744ea))
+* **ck-help:** add service-specific compound phrases for notifications ([40e930c](https://github.com/claudekit/claudekit-engineer/commit/40e930cd4f674b7c44cf83ea1a7133b1433273ce))
+* **claude:** add fixing skills rule ([f4f44b5](https://github.com/claudekit/claudekit-engineer/commit/f4f44b5b946e927052ccf5fdd6f9618944b8553a))
+* **command:** `/code:auto` should finish all phases and verify implementation at the end ([58b4587](https://github.com/claudekit/claudekit-engineer/commit/58b4587854db68cc2de2ebfadabdd93ed8251f99))
+* **context-engineering:** add UTF-8 encoding and error handling ([9947138](https://github.com/claudekit/claudekit-engineer/commit/9947138d15f0270e64ec84d02eafa1023c3fd8ca))
+* **docs:** sync /docs:init structure with /docs:update ([445b9f2](https://github.com/claudekit/claudekit-engineer/commit/445b9f2b5f258ae8766ff44476d61b47179ba003)), closes [#317](https://github.com/claudekit/claudekit-engineer/issues/317)
+* **hooks:** propagate plan context to subagents ([a5b1a9e](https://github.com/claudekit/claudekit-engineer/commit/a5b1a9ee816dbc9ee7d87778fb539932f4011dc4)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** propagate plan context to subagents ([45eadde](https://github.com/claudekit/claudekit-engineer/commit/45eaddeb54c6de4aca4b93d5decf8abff58d8f4a)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** propagate plan context to subagents ([41f2fba](https://github.com/claudekit/claudekit-engineer/commit/41f2fba5fddc4b1b2339a59835da4594b28e1e63)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** resolve plan paths correctly in brownfield projects ([#335](https://github.com/claudekit/claudekit-engineer/issues/335)) ([f154534](https://github.com/claudekit/claudekit-engineer/commit/f154534c47bc84f7d2870a5b2c4b1fd080c46762))
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([1b27cac](https://github.com/claudekit/claudekit-engineer/commit/1b27cac35b3ec725ea40d835a1d6ad1ca9ae19c3))
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([f121f34](https://github.com/claudekit/claudekit-engineer/commit/f121f348d406d8c72067ab9316e5e025f81394d7))
+* remove broken refs after context-tracker cleanup ([a5b6228](https://github.com/claudekit/claudekit-engineer/commit/a5b62287113bbe06e0932db1f18d3423378ce48b))
+* remove broken refs after context-tracker cleanup ([4cc0065](https://github.com/claudekit/claudekit-engineer/commit/4cc00650a3ac89149475b65a90b9a5807b6d9a81))
+* remove broken refs after context-tracker cleanup ([cf6e177](https://github.com/claudekit/claudekit-engineer/commit/cf6e1776f616ce926ae83f5bf8a35718b36d719e))
+* rename hook .js files to .cjs for CommonJS compatibility ([c067f15](https://github.com/claudekit/claudekit-engineer/commit/c067f150971c77790eba1a3127051244a1e5776b)), closes [#309](https://github.com/claudekit/claudekit-engineer/issues/309)
+* **skills:** `claude-code` skiill deprecated, use `claude-code-guide` subagent instead ([d5aa797](https://github.com/claudekit/claudekit-engineer/commit/d5aa7973258c71064cb9de1641c986a8dafb67af))
+* **skills:** improve install.ps1 package manager validation ([61b2fc2](https://github.com/claudekit/claudekit-engineer/commit/61b2fc249bc1c1c3298526f9b4f8840686fc264b))
+* **statusline:** add 3-level responsive layout for narrow terminals ([75c23c8](https://github.com/claudekit/claudekit-engineer/commit/75c23c89d34b12a96e87d6f22c37049220ed9b68))
+* **statusline:** collapse agents BEFORE slicing to preserve type variety ([286e25e](https://github.com/claudekit/claudekit-engineer/commit/286e25ea8b67b237159ef0099445b42b5b916ddd))
+* **statusline:** harden edge case handling ([a1bf687](https://github.com/claudekit/claudekit-engineer/commit/a1bf6876e1c62041d9d8f436abc9ed378303ecda))
+* **statusline:** improve UI with detailed agents/todos, remove tools display ([6eefd4c](https://github.com/claudekit/claudekit-engineer/commit/6eefd4c58cdab25e52ac578e28d56e2651e61e94))
+* **statusline:** include plan in narrow layout mode ([8d41db9](https://github.com/claudekit/claudekit-engineer/commit/8d41db9b52dbbaa17c59d98a1e5987645907859d))
+* **statusline:** merge session+stats when they fit together ([e59c860](https://github.com/claudekit/claudekit-engineer/commit/e59c86097eb457400a17bd84c28aeeecb59cfbcd))
+* **statusline:** read activePlan from session temp file ([4ac5459](https://github.com/claudekit/claudekit-engineer/commit/4ac5459f6e264d4e8f2e0113ea24c6f952eb1c34))
+* **statusline:** remove agent type truncation for better readability ([9cda0ed](https://github.com/claudekit/claudekit-engineer/commit/9cda0ed7196af513c0b917a3830bf995d0c1fde2))
+* **statusline:** show full model name without truncation ([e693875](https://github.com/claudekit/claudekit-engineer/commit/e6938757a2cf73f5ba73c297c15e76c7bc0323f2))
+* use relative paths for skills to support project-scope installs ([dfd220a](https://github.com/claudekit/claudekit-engineer/commit/dfd220af8449b360128927ae3ffcc34009dd38c2)), closes [#311](https://github.com/claudekit/claudekit-engineer/issues/311)
+
+
+### 📚 Documentation
+
+* **git-commands:** improve commit and merge instructions ([abc37f4](https://github.com/claudekit/claudekit-engineer/commit/abc37f43debdfbdd8a8bf7d74991ad01f766ec09))
+* **skill-commands:** replace claude-code skill with claude-code-guide subagent ([a7d9ea2](https://github.com/claudekit/claudekit-engineer/commit/a7d9ea227d72f7c5cb2331fcf065b6a0a25ebbee))
+* **skill:** enhance claude-code skill documentation with SDK and built-in tools ([3950d7a](https://github.com/claudekit/claudekit-engineer/commit/3950d7ab93e0494ac6e21c3dcae6d6f4071c8e80))
+* **skill:** update planning skill with minor additions ([b5b5b60](https://github.com/claudekit/claudekit-engineer/commit/b5b5b60bd979b3b4a886e7f7711ee4334f50e245))
+
+
+### ♻️ Code Refactoring
+
+* **ck-help:** generalize intent validation with pattern-based heuristics ([2f23b74](https://github.com/claudekit/claudekit-engineer/commit/2f23b74a2c4fe3134a5ea0682fce930bd9fab432))
+* **hooks:** extract shared library modules for reusability ([bfe75ea](https://github.com/claudekit/claudekit-engineer/commit/bfe75eaba958f5a7bed70901d4cb42f2354a64b2))
+* **hooks:** migrate to shared library modules and reduce duplication ([d828cac](https://github.com/claudekit/claudekit-engineer/commit/d828cacc17daaa91fc660bcbbaa880af4fe45031))
+* **scripts:** move generate-opencode.py and generate_catalogs.py to root scripts ([bcca1b1](https://github.com/claudekit/claudekit-engineer/commit/bcca1b124345c7c2aab4fc062014f1f38de19abf))
+
+
+### ✅ Tests
+
+* **ck-help:** add comprehensive test suite with 57 test cases ([b5794d0](https://github.com/claudekit/claudekit-engineer/commit/b5794d03ac9da3e3c6796dc85266931e6f503ac1)), closes [#299](https://github.com/claudekit/claudekit-engineer/issues/299)
+* **edge-cases:** add comprehensive test suites for PR [#304](https://github.com/claudekit/claudekit-engineer/issues/304) ([080b206](https://github.com/claudekit/claudekit-engineer/commit/080b206983498e87c9848e32908e712a8940c1d5))
+* **hooks:** add comprehensive tests for path resolution and utilities ([c1258f9](https://github.com/claudekit/claudekit-engineer/commit/c1258f9310393dada45f1ab55bcd27e02ce3995d)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+* **hooks:** add comprehensive tests for path resolution and utilities ([8dcd272](https://github.com/claudekit/claudekit-engineer/commit/8dcd27253f560fa47aaf9905612434617aa66dc0)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+* **statusline:** add comprehensive test plan coverage ([a323dfd](https://github.com/claudekit/claudekit-engineer/commit/a323dfdb9e2e49fa5fbecbbfb33952c77ede86ae)), closes [#302](https://github.com/claudekit/claudekit-engineer/issues/302)
+
+
+### 👷 CI
+
+* **release:** add Python setup for OpenCode generation ([63e1c29](https://github.com/claudekit/claudekit-engineer/commit/63e1c29b794b1928a697f69853899f6d083477bd))
+
+## [2.3.0-beta.19](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.18...v2.3.0-beta.19) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** resolve plan paths correctly in brownfield projects ([#335](https://github.com/claudekit/claudekit-engineer/issues/335)) ([f154534](https://github.com/claudekit/claudekit-engineer/commit/f154534c47bc84f7d2870a5b2c4b1fd080c46762))
+
+## [2.3.0-beta.18](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.17...v2.3.0-beta.18) (2026-01-11)
+
+
+### 🚀 Features
+
+* **skills:** add PreferPackageManager parameter to install.ps1 ([4fda946](https://github.com/claudekit/claudekit-engineer/commit/4fda9464c51ace0027eab526958b6763d5a7bf39)), closes [#303](https://github.com/claudekit/claudekit-engineer/issues/303)
+
+
+### 🐞 Bug Fixes
+
+* **skills:** improve install.ps1 package manager validation ([61b2fc2](https://github.com/claudekit/claudekit-engineer/commit/61b2fc249bc1c1c3298526f9b4f8840686fc264b))
+
+## [2.3.0-beta.17](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.16...v2.3.0-beta.17) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* Alpine Linux sudo cannot find pkg_update/pkg_install functions ([428282e](https://github.com/claudekit/claudekit-engineer/commit/428282e1ff6525a15fd7ac7c922c1a5fac3586af)), closes [claudekit/claudekit-engineer#331](https://github.com/claudekit/claudekit-engineer/issues/331)
+
+## [2.3.0-beta.16](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.15...v2.3.0-beta.16) (2026-01-11)
+
+
+### 🐞 Bug Fixes
+
+* **claude:** add fixing skills rule ([f4f44b5](https://github.com/claudekit/claudekit-engineer/commit/f4f44b5b946e927052ccf5fdd6f9618944b8553a))
+* **hooks:** propagate plan context to subagents ([a5b1a9e](https://github.com/claudekit/claudekit-engineer/commit/a5b1a9ee816dbc9ee7d87778fb539932f4011dc4)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** propagate plan context to subagents ([45eadde](https://github.com/claudekit/claudekit-engineer/commit/45eaddeb54c6de4aca4b93d5decf8abff58d8f4a)), closes [#321](https://github.com/claudekit/claudekit-engineer/issues/321)
+* **hooks:** use CWD for path resolution instead of git root ([#327](https://github.com/claudekit/claudekit-engineer/issues/327)) ([1b27cac](https://github.com/claudekit/claudekit-engineer/commit/1b27cac35b3ec725ea40d835a1d6ad1ca9ae19c3))
+* remove broken refs after context-tracker cleanup ([a5b6228](https://github.com/claudekit/claudekit-engineer/commit/a5b62287113bbe06e0932db1f18d3423378ce48b))
+* remove broken refs after context-tracker cleanup ([4cc0065](https://github.com/claudekit/claudekit-engineer/commit/4cc00650a3ac89149475b65a90b9a5807b6d9a81))
+
+
+### ✅ Tests
+
+* **hooks:** add comprehensive tests for path resolution and utilities ([c1258f9](https://github.com/claudekit/claudekit-engineer/commit/c1258f9310393dada45f1ab55bcd27e02ce3995d)), closes [#327](https://github.com/claudekit/claudekit-engineer/issues/327)
+
 ## [2.3.0-beta.15](https://github.com/claudekit/claudekit-engineer/compare/v2.3.0-beta.14...v2.3.0-beta.15) (2026-01-11)
 
 

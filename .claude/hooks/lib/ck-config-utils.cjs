@@ -285,11 +285,15 @@ function resolvePlanPath(sessionId, config) {
       case 'session': {
         const state = readSessionState(sessionId);
         if (state?.activePlan) {
-          // Only use session state if CWD matches session origin (monorepo support)
-          if (state.sessionOrigin && state.sessionOrigin !== process.cwd()) {
-            break;  // Fall through to branch
+          // Issue #335: Handle both absolute and relative paths
+          // - Absolute paths (from updated set-active-plan.cjs): use as-is
+          // - Relative paths (legacy): resolve using sessionOrigin if available
+          let resolvedPath = state.activePlan;
+          if (!path.isAbsolute(resolvedPath) && state.sessionOrigin) {
+            // Resolve relative path using session origin directory
+            resolvedPath = path.join(state.sessionOrigin, resolvedPath);
           }
-          return { path: state.activePlan, resolvedBy: 'session' };
+          return { path: resolvedPath, resolvedBy: 'session' };
         }
         break;
       }

@@ -38,16 +38,26 @@ function execSafe(cmd) {
 }
 
 /**
- * Resolve workflow file path (local or global)
- * @param {string} filename - Workflow filename
+ * Resolve rules file path (local or global) with backward compat
+ * @param {string} filename - Rules filename
  * @param {string} [configDirName='.claude'] - Config directory name
  * @returns {string|null} Resolved path or null
  */
-function resolveWorkflowPath(filename, configDirName = '.claude') {
-  const localPath = path.join(process.cwd(), configDirName, 'workflows', filename);
-  const globalPath = path.join(os.homedir(), '.claude', 'workflows', filename);
-  if (fs.existsSync(localPath)) return `${configDirName}/workflows/${filename}`;
-  if (fs.existsSync(globalPath)) return `~/.opencode/workflows/${filename}`;
+function resolveRulesPath(filename, configDirName = '.claude') {
+  // Try rules/ first (new location)
+  const localRulesPath = path.join(process.cwd(), configDirName, 'rules', filename);
+  const globalRulesPath = path.join(os.homedir(), '.claude', 'rules', filename);
+
+  if (fs.existsSync(localRulesPath)) return `${configDirName}/rules/${filename}`;
+  if (fs.existsSync(globalRulesPath)) return `~/.opencode/rules/${filename}`;
+
+  // Backward compat: try workflows/ (legacy location)
+  const localWorkflowsPath = path.join(process.cwd(), configDirName, 'workflows', filename);
+  const globalWorkflowsPath = path.join(os.homedir(), '.opencode', 'workflows', filename);
+
+  if (fs.existsSync(localWorkflowsPath)) return `${configDirName}/workflows/${filename}`;
+  if (fs.existsSync(globalWorkflowsPath)) return `~/.opencode/workflows/${filename}`;
+
   return null;
 }
 
@@ -375,7 +385,7 @@ function buildReminderContext({ sessionId, config, staticEnv, configDirName = '.
   const cfg = config || loadConfig({ includeProject: false, includeAssertions: false });
 
   // Resolve paths
-  const devRulesPath = resolveWorkflowPath('development-rules.md', configDirName);
+  const devRulesPath = resolveRulesPath('development-rules.md', configDirName);
   const catalogScript = resolveScriptPath('generate_catalogs.py', configDirName);
   const skillsVenv = resolveSkillsVenv(configDirName);
 
@@ -439,9 +449,12 @@ module.exports = {
 
   // Helpers
   execSafe,
-  resolveWorkflowPath,
+  resolveRulesPath,
   resolveScriptPath,
   resolveSkillsVenv,
   buildPlanContext,
-  wasRecentlyInjected
+  wasRecentlyInjected,
+
+  // Backward compat alias
+  resolveWorkflowPath: resolveRulesPath
 };
