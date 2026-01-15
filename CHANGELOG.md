@@ -1,3 +1,29 @@
+## [2.4.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.2...v2.4.0-beta.3) (2026-01-15)
+
+
+### 🚀 Features
+
+* **hooks:** add usage-context-awareness hook for limit monitoring ([1944a0c](https://github.com/claudekit/claudekit-engineer/commit/1944a0c72f5963624660fac7cb510fa9bbe3c2e1))
+* **opencode:** add opencode configuration and skills ([0adfd45](https://github.com/claudekit/claudekit-engineer/commit/0adfd456fc46abfc2e2ebccf0f25f9a3e6c1d197))
+* **skills:** add fixing skill for bug classification and resolution ([1745741](https://github.com/claudekit/claudekit-engineer/commit/17457417cffea18016d4b4dc15bb34723630ad1b))
+* **skills:** add runtime awareness to context-engineering skill ([aa65316](https://github.com/claudekit/claudekit-engineer/commit/aa653161ca34f8d53c4642f2043323c478a948e4))
+* **statusline:** export context data for hooks consumption ([bb5057c](https://github.com/claudekit/claudekit-engineer/commit/bb5057c365ba5b4510dbd2d9faa59504507ccbce))
+
+
+### 📚 Documentation
+
+* add Claude CLI usage limits API reference ([8347b13](https://github.com/claudekit/claudekit-engineer/commit/8347b131a0b795e00fb94a3e1dce9f7c9d2b5b97))
+
+
+### ♻️ Code Refactoring
+
+* **skills:** shorten skill descriptions for token efficiency ([632411b](https://github.com/claudekit/claudekit-engineer/commit/632411b91e77ca45e6dc9ae1174814e87ae5c533))
+
+
+### ⚡ Performance Improvements
+
+* **skill:** upgrade `db-design` skill from Viet's contribution ([51cc63a](https://github.com/claudekit/claudekit-engineer/commit/51cc63a7b62f57ffafdc9eba8f8c937081312164))
+
 ## [2.4.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.1...v2.4.0-beta.2) (2026-01-14)
 
 
