@@ -8,8 +8,16 @@
     ],
     "rewrites": [
         {
+            "source": "/docs/:path*",
+            "destination": "/:path*"
+        },
+        {
             "source": "/app/:path*",
             "destination": "https://dashboard-rm4rowo86-minh-longs-projects-f5c82c9b.vercel.app/:path*"
+        },
+        {
+            "source": "/api/:path*",
+            "destination": "https://api.agencyos.network/:path*"
         },
         {
             "source": "/en/:path*",

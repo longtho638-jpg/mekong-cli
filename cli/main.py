@@ -105,7 +105,7 @@ def run_proposal():
     print("-" * 50)
     
     try:
-        from core.proposal_gen import ProposalGenerator, ServiceTier
+        from core.modules.proposal import ProposalGenerator, ServiceTier
         
         # Demo
         generator = ProposalGenerator(
@@ -134,7 +134,7 @@ def run_content():
     print("-" * 50)
     
     try:
-        from core.content_generator import ContentGenerator
+        from core.modules.content import ContentGenerator
         
         generator = ContentGenerator(
             agency_name="Your Agency",
@@ -182,7 +182,7 @@ def run_invoice():
     print("-" * 50)
     
     try:
-        from core.invoice import InvoiceSystem
+        from core.modules.invoice import InvoiceSystem
         
         system = InvoiceSystem()
         summary = system.get_summary()
@@ -276,7 +276,7 @@ def run_crm():
     print("-" * 50)
     
     try:
-        from core.crm import CRM, CRMPresenter
+        from core.modules.crm import CRM, CRMPresenter
         
         crm = CRM()
         
@@ -614,44 +614,27 @@ class {module_name.title()}Controller:
 
 def run_binh_phap():
     """Run Binh Pháp strategic analysis (Ngũ Sự + Cluster recommendations)."""
-    print("\n🏯 BINH PHÁP ANALYSIS")
-    print("═" * 60)
-    
-    # Get project idea from args
-    if len(sys.argv) > 2:
-        idea = " ".join(sys.argv[2:])
-    else:
-        idea = "your project"
-    
-    print(f"\n📋 Analyzing: {idea}\n")
-    
-    # Ngũ Sự (5 Factors)
-    print("📊 NGŨ SỰ (5 Factors)")
-    print("─" * 60)
-    print(f"   1. 道 Đạo (Purpose): Aligned with agency growth")
-    print(f"   2. 天 Thiên (Timing): Market conditions favorable")
-    print(f"   3. 地 Địa (Market): Opportunity identified")
-    print(f"   4. 將 Tướng (Leadership): Solo founder capability")
-    print(f"   5. 法 Pháp (Process): AgencyOS automation ready")
-    
-    # Cluster recommendations
-    print("\n🎯 RECOMMENDED CLUSTERS")
-    print("─" * 60)
-    print("   • Ch.3 Mưu Công: Win without direct competition")
-    print("   • Ch.7 Quân Tranh: Speed to market critical")
-    print("   • Ch.12 Hỏa Công: Viral marketing potential")
-    
-    # Action roadmap
-    print("\n📋 ACTION ROADMAP")
-    print("─" * 60)
-    print("   Week 1: MVP landing + auth + core feature")
-    print("   Week 2: Dashboard + analytics")
-    print("   Week 3: Marketing campaign launch")
-    print("   Week 4: Iterate based on feedback")
-    
-    print("\n✅ WIN³ ALIGNMENT: 92%")
-    print("═" * 60)
-    print("\n   Next: python3 cli/main.py plan \"Create implementation plan\"")
+    try:
+        from core.modules.strategy import StrategyService, StrategyPresenter
+        
+        # Get project idea from args
+        if len(sys.argv) > 2:
+            idea = " ".join(sys.argv[2:])
+        else:
+            idea = "your project"
+            
+        print("\n🏯 BINH PHÁP ANALYSIS")
+        print("═" * 60)
+        
+        service = StrategyService(agency_name=idea)
+        insights = service.analyze_situation(idea)
+        
+        print(StrategyPresenter.format_report(service, insights))
+        
+        print("\n   Next: python3 cli/main.py plan \"Create implementation plan\"")
+        
+    except ImportError as e:
+        print(f"❌ Strategy module not found: {e}")
 
 
 def run_cook():

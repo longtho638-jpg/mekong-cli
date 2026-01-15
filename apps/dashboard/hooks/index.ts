@@ -8,3 +8,8 @@ export * from './useInventory';
 export * from './useHR';
 export * from './useMRR';
 export * from './useUsageAnalytics';
+
+// Phase 5 WOW Hooks
+export * from './useAgentSocket';
+export * from './useCLIBridge';
+

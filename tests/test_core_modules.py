@@ -18,7 +18,7 @@ class TestCRM:
     
     def test_crm_initialization(self):
         """Test CRM initializes with correct defaults."""
-        from core.crm import CRM
+        from core.modules.crm import CRM
         
         crm = CRM()
         assert crm.agency_name is not None
@@ -27,7 +27,7 @@ class TestCRM:
     
     def test_crm_add_contact(self):
         """Test adding a contact to CRM."""
-        from core.crm import CRM
+        from core.modules.crm import CRM
         
         crm = CRM()
         initial_count = len(crm.contacts)
@@ -45,7 +45,7 @@ class TestCRM:
     
     def test_crm_get_hot_leads(self):
         """Test getting hot leads with high scores."""
-        from core.crm import CRM
+        from core.modules.crm import CRM
         
         crm = CRM()
         hot_leads = crm.get_hot_leads()
@@ -59,7 +59,7 @@ class TestCRM:
     
     def test_crm_forecast_revenue(self):
         """Test revenue forecasting."""
-        from core.crm import CRM
+        from core.modules.crm import CRM
         
         crm = CRM()
         forecast = crm.forecast_revenue()
@@ -71,7 +71,7 @@ class TestCRM:
     
     def test_crm_get_summary(self):
         """Test CRM summary generation."""
-        from core.crm import CRM
+        from core.modules.crm import CRM
         
         crm = CRM()
         summary = crm.get_summary()
@@ -85,7 +85,7 @@ class TestCRMPresenter:
     
     def test_format_pipeline_text(self):
         """Test pipeline text formatting."""
-        from core.crm import CRM, CRMPresenter
+        from core.modules.crm import CRM, CRMPresenter
         
         crm = CRM()
         text = CRMPresenter.format_pipeline_text(crm)
