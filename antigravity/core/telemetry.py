@@ -69,12 +69,21 @@ class Telemetry:
         if not self.enabled:
             return None
             
+        # Sanitize metadata
+        safe_meta = {}
+        if metadata:
+            for k, v in metadata.items():
+                if "key" in k.lower() or "secret" in k.lower() or "token" in k.lower() or "password" in k.lower():
+                    safe_meta[k] = "[REDACTED]"
+                else:
+                    safe_meta[k] = v
+
         event = Event(
             category=category,
             action=action,
             duration_ms=duration_ms,
             status=status,
-            metadata=metadata or {}
+            metadata=safe_meta
         )
         
         self.events.append(event)

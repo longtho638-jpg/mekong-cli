@@ -1,29 +1,46 @@
 """
-IDE models for VIBEIDE.
+🛠️ IDE Models - Planning & Productivity
+=======================================
 
-Extracted from vibe_ide.py for clean architecture.
+Defines the core data structures for developer experience (DX). 
+Enables structured implementation planning using Markdown frontmatter 
+and lightweight task tracking.
+
+Hierarchy:
+- Plan: High-level mission blueprint.
+- TodoItem: Tactical unit of work.
+
+Binh Pháp: 🛠️ Khí (Tools) - Organizing the workshop.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Plan:
-    """Implementation plan structure."""
+    """
+    📜 Strategic Implementation Plan
+    
+    Acts as the blueprint for an agent mission. 
+    Can be serialized to Markdown frontmatter for human/AI collaboration.
+    """
     title: str
     description: str
-    status: str = "pending"  # pending, in-progress, completed
-    priority: str = "P2"  # P1, P2, P3
-    effort: str = "4h"
+    status: str = "pending"  # pending, in-progress, completed, cancelled
+    priority: str = "P2"     # P1 (High), P2 (Medium), P3 (Low)
+    effort: str = "4h"       # Estimated duration
     branch: Optional[str] = None
     tags: List[str] = field(default_factory=list)
     created: datetime = field(default_factory=datetime.now)
     phases: List[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializable representation."""
         return {
             "title": self.title,
             "description": self.description,
@@ -37,8 +54,8 @@ class Plan:
         }
 
     def to_frontmatter(self) -> str:
-        """Generate YAML frontmatter."""
-        tags_str = ', '.join(self.tags) if self.tags else ''
+        """Generates YAML frontmatter for inclusion in plan.md files."""
+        t_list = ", ".join(self.tags) if self.tags else ""
         return f"""---
 title: "{self.title}"
 description: "{self.description}"
@@ -46,34 +63,40 @@ status: {self.status}
 priority: {self.priority}
 effort: {self.effort}
 branch: {self.branch or 'main'}
-tags: [{tags_str}]
+tags: [{t_list}]
 created: {self.created.strftime('%Y-%m-%d')}
 ---"""
 
 
 @dataclass
 class TodoItem:
-    """Todo item for task tracking."""
+    """
+    ✅ Tactical Todo
+    
+    A simple task unit used for daily tracking and session state.
+    """
     id: str
     text: str
     completed: bool = False
     created_at: datetime = field(default_factory=datetime.now)
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def toggle(self) -> None:
-        """Toggle completion status."""
+    def toggle(self) -> bool:
+        """Switches completion state."""
         self.completed = not self.completed
+        return self.completed
 
     def complete(self) -> None:
-        """Mark as completed."""
+        """Forces completion state to True."""
         self.completed = True
 
     def to_markdown(self) -> str:
-        """Convert to markdown checkbox."""
-        checkbox = "[x]" if self.completed else "[ ]"
-        return f"- {checkbox} {self.text}"
+        """Returns Markdown checkbox string."""
+        box = "[x]" if self.completed else "[ ]"
+        return f"- {box} {self.text}"
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializable representation."""
         return {
             "id": self.id,
             "text": self.text,

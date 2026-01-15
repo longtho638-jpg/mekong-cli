@@ -1,17 +1,17 @@
 import unittest
 from unittest import mock
-from antigravity.core.jules_runner import run_jules_task, run_weekly_tasks, JULES_TASKS
+from antigravity.core.jules_runner import trigger_jules_mission, run_scheduled_maintenance, JULES_MISSIONS
 
 class TestJulesIntegration(unittest.TestCase):
 
     def test_run_jules_task_dry_run(self):
         """Test that running a task in dry_run mode returns True."""
-        result = run_jules_task("tests", dry_run=True)
+        result = trigger_jules_mission("tests", dry_run=True)
         self.assertTrue(result)
 
     def test_run_jules_task_unknown(self):
         """Test that running an unknown task returns False."""
-        result = run_jules_task("unknown_task")
+        result = trigger_jules_mission("unknown_task")
         self.assertFalse(result)
 
     @mock.patch("antigravity.core.jules_runner.subprocess.run")
@@ -23,12 +23,12 @@ class TestJulesIntegration(unittest.TestCase):
         mock_subprocess.return_value = mock_result
 
         # Run the task
-        result = run_jules_task("cleanup", dry_run=False)
+        result = trigger_jules_mission("cleanup", dry_run=False)
 
         # Assertions
         self.assertTrue(result)
 
-        expected_prompt = JULES_TASKS["cleanup"]["prompt"]
+        expected_prompt = JULES_MISSIONS["cleanup"]["prompt"]
         expected_cmd = f'gemini -p "/jules {expected_prompt}"'
 
         mock_subprocess.assert_called_with(
@@ -36,21 +36,20 @@ class TestJulesIntegration(unittest.TestCase):
             shell=True,
             capture_output=True,
             text=True,
-            timeout=120
+            timeout=180 # New timeout is 180
         )
 
-    @mock.patch("antigravity.core.jules_runner.run_jules_task")
+    @mock.patch("antigravity.core.jules_runner.trigger_jules_mission")
     @mock.patch("antigravity.core.jules_runner.datetime")
     def test_run_weekly_tasks_monday(self, mock_datetime, mock_run_jules_task):
         """Test that Monday schedules the 'tests' task."""
         # Setup mock datetime
-        # We need to mock datetime.now() -> object with strftime
         mock_now = mock.Mock()
         mock_now.strftime.return_value = "Monday"
         mock_datetime.now.return_value = mock_now
 
         # Run weekly tasks
-        run_weekly_tasks(dry_run=True)
+        run_scheduled_maintenance(dry_run=True)
 
         # Verify correct task was triggered
         mock_run_jules_task.assert_called_with("tests", True)

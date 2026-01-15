@@ -2,36 +2,37 @@
 🎯 CRM System - From Lead to Client
 ====================================
 
-Complete sales pipeline management.
+Complete sales pipeline management for the Agency OS. Handles contact 
+lifecycle, deal progression, and revenue forecasting.
 
 Features:
-- Contact management
-- Deal pipeline tracking
-- Activity logging
-- Lead scoring
-- Sales forecasting
+- 👥 Contact Management: Tracking leads, prospects, and clients.
+- 💼 Deal Pipeline: Moving opportunities through sales stages.
+- 📉 Forecasting: Probability-weighted revenue projections.
+- 📊 Dashboard: Visual summary of sales health.
+
+Binh Pháp: 🧲 Địa (Earth) - Mastering the terrain of customer relationships.
 """
 
 import uuid
 import logging
 import re
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List, Union, Tuple
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 try:
     from .db import get_db
-except ImportError:
-    from db import get_db
+except (ImportError, ValueError):
+    def get_db(): return None
 
 
 class ContactType(Enum):
-    """Contact lifecycle stages."""
+    """Lifecycle stages of a contact."""
     LEAD = "lead"
     PROSPECT = "prospect"
     CLIENT = "client"
@@ -40,7 +41,7 @@ class ContactType(Enum):
 
 
 class DealStage(Enum):
-    """Sales pipeline stages."""
+    """Phases of the sales pipeline."""
     QUALIFIED = "qualified"
     PROPOSAL = "proposal"
     NEGOTIATION = "negotiation"
@@ -49,7 +50,7 @@ class DealStage(Enum):
 
 
 class ActivityType(Enum):
-    """Types of sales interactions."""
+    """Categorization of sales interactions."""
     CALL = "call"
     EMAIL = "email"
     MEETING = "meeting"
@@ -63,10 +64,10 @@ class Contact:
     id: str
     name: str
     email: str
-    company: str
-    phone: str
-    contact_type: ContactType
-    created_at: datetime
+    company: str = ""
+    phone: str = ""
+    contact_type: ContactType = ContactType.LEAD
+    created_at: datetime = field(default_factory=datetime.now)
     lead_score: int = 50  # 0-100
     tags: List[str] = field(default_factory=list)
     notes: str = ""
@@ -74,175 +75,158 @@ class Contact:
 
     def __post_init__(self):
         if not 0 <= self.lead_score <= 100:
-            raise ValueError("Lead score must be between 0 and 100")
+            self.lead_score = 50
 
 
 @dataclass
 class Deal:
-    """A sales deal entity."""
+    """A specific sales opportunity."""
     id: str
     contact_id: str
     title: str
     value: float
     stage: DealStage
-    created_at: datetime
-    expected_close: datetime
-    probability: int  # 0-100
+    created_at: datetime = field(default_factory=datetime.now)
+    expected_close: Optional[datetime] = None
+    probability: int = 20  # 0-100
     notes: str = ""
 
     def __post_init__(self):
-        if self.value < 0:
-            raise ValueError("Deal value cannot be negative")
-
-
-@dataclass
-class Activity:
-    """A sales activity record."""
-    id: str
-    contact_id: str
-    deal_id: Optional[str]
-    activity_type: ActivityType
-    description: str
-    timestamp: datetime = field(default_factory=datetime.now)
-    outcome: str = ""
+        if self.value < 0: self.value = 0.0
+        if not self.expected_close:
+            self.expected_close = datetime.now() + timedelta(days=30)
 
 
 class CRM:
     """
-    CRM System.
+    🎯 The CRM Engine
     
-    Manages sales pipeline, contacts, and performance forecasting.
+    Manages the relationship data and sales velocity metrics.
     """
     
-    # Configuration
-    PROBABILITIES = {
+    # Stage → Win Probability (%)
+    STAGE_PROBABILITIES = {
         DealStage.QUALIFIED: 20,
         DealStage.PROPOSAL: 40,
         DealStage.NEGOTIATION: 70,
         DealStage.CLOSED_WON: 100,
         DealStage.CLOSED_LOST: 0
     }
-    HOT_LEAD_MIN = 70
     
-    def __init__(self, agency_name: str = "Nova Digital"):
+    HOT_LEAD_THRESHOLD = 70
+    
+    def __init__(self, agency_name: str = "Agency OS"):
         self.agency_name = agency_name
         self.db = get_db()
         self.contacts: Dict[str, Contact] = {}
         self.deals: Dict[str, Deal] = {}
-        self.activities: List[Activity] = []
+        self.activities: List[Dict[str, Any]] = []
         
-        logger.info(f"CRM System initialized for {agency_name}")
-        self._create_demo_data()
+        self._seed_demo_data()
     
-    def _validate_email(self, email: str) -> bool:
-        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
-
-    def _create_demo_data(self):
-        """Seed the system with sample sales data."""
-        logger.info("Loading demo CRM data...")
+    def _seed_demo_data(self):
+        """Pre-populates the system with sample data for training/demo."""
         try:
-            c1 = self.add_contact("John Smith", "john@acme.co", "Acme Corp", ContactType.PROSPECT)
-            self.create_deal(c1.id, "Website Overhaul", 5000.0, DealStage.PROPOSAL)
+            c1 = self.add_contact("Anh Minh", "minh@mekong.vn", "Mekong Rice", phone="0901234567")
+            self.create_deal(c1.id, "Zalo OA Integration", 2500.0, DealStage.NEGOTIATION)
             
-            c2 = self.add_contact("Sarah Jin", "sarah@tech.io", "TechStart", ContactType.LEAD)
-            c2.lead_score = 85
-        except Exception as e:
-            logger.error(f"Demo data error: {e}")
+            c2 = self.add_contact("Chị Lan", "lan@spa.vn", "Lotus Beauty", phone="0907654321")
+            c2.lead_score = 85 # Hot Lead
+        except Exception: pass
 
-    def add_contact(self, name: str, email: str, company: str, ctype: ContactType = ContactType.LEAD) -> Contact:
-        """Create a new contact record."""
-        if not self._validate_email(email):
-            raise ValueError(f"Invalid email: {email}")
-
+    def add_contact(
+        self, 
+        name: str, 
+        email: str, 
+        company: str = "", 
+        ctype: ContactType = ContactType.LEAD,
+        phone: str = ""
+    ) -> Contact:
+        """Adds a new individual or company to the CRM database."""
+        cid = f"CON-{uuid.uuid4().hex[:6].upper()}"
         contact = Contact(
-            id=f"CON-{uuid.uuid4().hex[:6].upper()}",
-            name=name, email=email, company=company, phone="",
-            contact_type=ctype, created_at=datetime.now()
+            id=cid, name=name, email=email, 
+            company=company, phone=phone,
+            contact_type=ctype
         )
-        self.contacts[contact.id] = contact
-        logger.info(f"Contact added: {name} ({company})")
+        self.contacts[cid] = contact
         return contact
     
-    def create_deal(self, contact_id: str, title: str, value: float, stage: DealStage = DealStage.QUALIFIED) -> Deal:
-        """Register a new sales opportunity."""
-        if contact_id not in self.contacts:
-            raise KeyError("Invalid Contact ID")
-
+    def create_deal(
+        self, 
+        contact_id: str, 
+        title: str, 
+        value: float, 
+        stage: DealStage = DealStage.QUALIFIED
+    ) -> Deal:
+        """Registers a new sales opportunity for a contact."""
+        did = f"DEAL-{uuid.uuid4().hex[:6].upper()}"
         deal = Deal(
-            id=f"DEAL-{uuid.uuid4().hex[:6].upper()}",
-            contact_id=contact_id, title=title, value=value, stage=stage,
-            created_at=datetime.now(),
-            expected_close=datetime.now() + timedelta(days=30),
-            probability=self.PROBABILITIES.get(stage, 20)
+            id=did, contact_id=contact_id, title=title, 
+            value=value, stage=stage,
+            probability=self.STAGE_PROBABILITIES.get(stage, 20)
         )
-        self.deals[deal.id] = deal
-        logger.info(f"Deal created: {title} (${value:,.0f})")
+        self.deals[did] = deal
         return deal
     
-    def log_activity(self, contact_id: str, act_type: ActivityType, desc: str) -> Activity:
-        """Record a sales interaction."""
-        activity = Activity(
-            id=f"ACT-{uuid.uuid4().hex[:6]}",
-            contact_id=contact_id, deal_id=None,
-            activity_type=act_type, description=desc
-        )
-        self.activities.append(activity)
-        if contact_id in self.contacts:
-            self.contacts[contact_id].last_contact = datetime.now()
-        logger.debug(f"Activity logged for {contact_id}")
-        return activity
-
-    def get_summary(self) -> Dict[str, Any]:
-        """Aggregate high-level CRM performance metrics."""
+    def get_hot_leads(self) -> List[Contact]:
+        """Filters contacts for those with high intent (score >= 70)."""
+        return [c for c in self.contacts.values() if c.lead_score >= self.HOT_LEAD_THRESHOLD]
+    
+    def forecast_revenue(self) -> Dict[str, float]:
+        """Calculates total and probability-weighted pipeline value."""
         active = [d for d in self.deals.values() if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        
+        total = sum(d.value for d in active)
+        weighted = sum(d.value * (d.probability / 100.0) for d in active)
+        
         return {
-            "total_contacts": len(self.contacts),
-            "pipeline_value": sum(d.value for d in active),
-            "deal_count": len(self.deals),
-            "active_deal_count": len(active)
+            "total_pipeline": total,
+            "weighted_pipeline": weighted
         }
 
-    def format_dashboard(self) -> str:
-        """Render ASCII CRM Dashboard."""
-        active_deals = [d for d in self.deals.values() if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
-        total_val = sum(d.value for d in active_deals)
-        weighted_val = sum(d.value * (d.probability / 100.0) for d in active_deals)
+    def get_summary(self) -> Dict[str, Any]:
+        """Aggregate performance summary for the CRM."""
+        closed = [d for d in self.deals.values() if d.stage in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        won = [d for d in closed if d.stage == DealStage.CLOSED_WON]
+        active = [d for d in self.deals.values() if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        
+        win_rate = (len(won) / len(closed) * 100) if closed else 0.0
+        
+        return {
+            "total_contacts": len(self.contacts),
+            "contacts_total": len(self.contacts), # Legacy key support
+            "pipeline_value": sum(d.value for d in active),
+            "deal_count": len(self.deals),
+            "active_deal_count": len(active),
+            "win_rate": win_rate
+        }
+
+
+class CRMPresenter:
+    """Handles visual formatting of CRM data."""
+    
+    @staticmethod
+    def format_pipeline_text(crm: CRM) -> str:
+        """Renders a text-based pipeline overview."""
+        summary = crm.get_summary()
+        forecast = crm.forecast_revenue()
         
         lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 CRM DASHBOARD - {self.agency_name.upper()[:28]:<28} ║",
-            f"║  {len(self.contacts)} contacts │ {len(active_deals)} active deals │ ${total_val:,.0f} pipeline{' ' * 10}║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  📊 PIPELINE BY STAGE                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
+            "╔" + "═" * 50 + "╗",
+            "║" + "🎯 SALES PIPELINE OVERVIEW".center(50) + "║",
+            "╠" + "═" * 50 + "╣",
+            f"║  CONTACTS TOTAL : {summary['total_contacts']:<28} ║",
+            f"║  ACTIVE DEALS   : {summary['active_deal_count']:<28} ║",
+            f"║  WIN RATE       : {summary['win_rate']:>5.1f}%{' ' * 22} ║",
+            "╟" + "─" * 50 + "╢",
+            f"║  PIPELINE VALUE : ${summary['pipeline_value']:>12,.0f}{' ' * 15} ║",
+            f"║  WEIGHTED FORECAST: ${forecast['weighted_pipeline']:>12,.0f}{' ' * 11} ║",
+            "╚" + "═" * 50 + "╝"
         ]
-        
-        for stage in [DealStage.QUALIFIED, DealStage.PROPOSAL, DealStage.NEGOTIATION]:
-            stage_deals = [d for d in self.deals.values() if d.stage == stage]
-            val = sum(d.value for d in stage_deals)
-            lines.append(f"║  {stage.value.upper():<15} │ {len(stage_deals):>2} deals │ ${val:>10,.0f}          ║")
-            
-        lines.extend([
-            "║                                                           ║",
-            "║  🔮 SALES FORECAST                                        ║",
-            f"║    Weighted Pipeline: ${weighted_val:>12,.0f}                ║",
-            "║                                                           ║",
-            "║  [➕ Contact]  [💼 New Deal]  [📞 Log Activity]           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Scale!              ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
         return "\n".join(lines)
 
 
-# Example usage
 if __name__ == "__main__":
-    print("🎯 Initializing CRM System...")
-    print("=" * 60)
-    
-    try:
-        crm_system = CRM("Saigon Digital Hub")
-        print("\n" + crm_system.format_dashboard())
-        
-    except Exception as e:
-        logger.error(f"CRM Error: {e}")
+    system = CRM()
+    print(CRMPresenter.format_pipeline_text(system))

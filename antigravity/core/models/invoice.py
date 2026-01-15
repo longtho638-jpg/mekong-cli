@@ -1,17 +1,28 @@
 """
-Invoice models for RevenueEngine.
+💰 Invoice Models - Revenue Tracking
+====================================
 
-Extracted from revenue_engine.py for clean architecture.
+Defines the data entities for financial transactions and forecasting. 
+Enables multi-currency billing and revenue performance analysis.
+
+Hierarchy:
+- InvoiceStatus: Payment lifecycle states.
+- Invoice: Transaction record.
+- Forecast: Revenue projection.
+
+Binh Pháp: 💰 Tài (Wealth) - Securing the harvest.
 """
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict, Any
 from enum import Enum
 
+# Standard 2026 Rate
+VND_RATE = 25000.0
 
 class InvoiceStatus(Enum):
-    """Invoice payment status."""
+    """Payment lifecycle states."""
     DRAFT = "draft"
     SENT = "sent"
     PAID = "paid"
@@ -21,68 +32,79 @@ class InvoiceStatus(Enum):
 
 @dataclass
 class Invoice:
-    """An invoice record."""
+    """
+    🧾 Client Invoice
+    
+    Captures a single billing event. Supports automated VND conversion 
+    and health monitoring (overdue status).
+    """
     id: Optional[int] = None
     client_name: str = ""
     amount: float = 0.0
     currency: str = "USD"
-    status: InvoiceStatus = InvoiceStatus.DRAFT
+    status: InvoiceStatus = field(default=InvoiceStatus.DRAFT)
     due_date: datetime = field(default_factory=lambda: datetime.now() + timedelta(days=14))
     paid_date: Optional[datetime] = None
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
 
     def get_amount_vnd(self) -> int:
-        """Get amount in VND (1 USD = 24,500 VND)."""
-        if self.currency == "VND":
+        """Calculates value in VND based on current projected rates."""
+        if self.currency.upper() == "VND":
             return int(self.amount)
-        return int(self.amount * 24500)
+        return int(self.amount * VND_RATE)
 
     def is_overdue(self) -> bool:
-        """Check if invoice is overdue."""
+        """Returns True if current time exceeds due date without payment."""
         if self.status == InvoiceStatus.PAID:
             return False
         return datetime.now() > self.due_date
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
             "id": self.id,
-            "client_name": self.client_name,
+            "client": self.client_name,
             "amount": self.amount,
             "currency": self.currency,
             "status": self.status.value,
-            "due_date": self.due_date.isoformat(),
-            "paid_date": self.paid_date.isoformat() if self.paid_date else None,
-            "notes": self.notes,
-            "created_at": self.created_at.isoformat()
+            "dates": {
+                "due": self.due_date.isoformat(),
+                "paid": self.paid_date.isoformat() if self.paid_date else None,
+                "created": self.created_at.isoformat()
+            },
+            "amount_vnd": self.get_amount_vnd()
         }
 
 
 @dataclass
 class Forecast:
-    """Revenue forecast."""
-    month: str
+    """
+    📈 Revenue Forecast
+    
+    Projects future performance and tracks variance against reality.
+    """
+    month: str # YYYY-MM
     projected: float
     actual: float = 0.0
     confidence: float = 0.8
 
-    def variance(self) -> float:
-        """Calculate variance from projection."""
+    def get_variance(self) -> float:
+        """Calculates absolute USD difference between reality and projection."""
         return self.actual - self.projected
 
-    def variance_percent(self) -> float:
-        """Calculate variance as percentage."""
-        if self.projected == 0:
-            return 0.0
-        return (self.variance() / self.projected) * 100
+    def get_variance_percent(self) -> float:
+        """Calculates variance as a percentage of projection."""
+        if self.projected == 0: return 0.0
+        return (self.get_variance() / self.projected) * 100
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
             "month": self.month,
             "projected": self.projected,
             "actual": self.actual,
             "confidence": self.confidence,
-            "variance": self.variance()
+            "variance": round(self.get_variance(), 2),
+            "variance_pct": round(self.get_variance_percent(), 1)
         }

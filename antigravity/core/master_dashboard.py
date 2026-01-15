@@ -1,178 +1,161 @@
 """
-🏯 Master Dashboard - Complete AgencyOS Status
+🏯 Master Dashboard - Full System Command & Control
+===================================================
 
-Unified view of the ENTIRE platform:
-- Agentic (Agents, Crews, Skills)
-- Retention (Moats, Loyalty)
-- Revenue (Cashflow, $1M goal)
-- Infrastructure (10 layers)
+Provides a unified, 360-degree view of the entire Agency OS platform. 
+Aggregates health, performance, and financial data from all major 
+subsystems into a single strategic dashboard.
 
-Usage:
-    from antigravity.core.master_dashboard import MasterDashboard
-    dashboard = MasterDashboard()
-    dashboard.print_full()
+Layers Monitored:
+- 🤖 Agentic Layer: Workforce capacity and proficiency.
+- 🏰 Retention Layer: Strategic moats and loyalty status.
+- 💰 Revenue Layer: Cashflow progress toward $1M ARR.
+- 🏗️ Infrastructure Layer: Operational stability and readiness.
+
+Binh Pháp: 🏯 Thống (Unity) - Commanding the entire field from one center.
 """
 
-from typing import Dict, Any
+import logging
+from typing import Dict, Any, Optional
 from datetime import datetime
 
 from .unified_dashboard import AgenticDashboard
-from .moat_engine import MoatEngine
-from .loyalty_rewards import LoyaltyProgram
-from .cashflow_engine import CashflowEngine
+from .moat_engine import get_moat_engine
+from .loyalty_rewards import get_loyalty_program
+from .cashflow_engine import get_cashflow_engine
 from .infrastructure import InfrastructureStack
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class MasterDashboard:
     """
-    🏯 Master Dashboard
+    🏯 Master Command Center
     
-    Complete platform status in one view.
+    The ultimate high-level overview for the agency owner.
+    Combines technical, agentic, and financial metrics.
     """
     
     def __init__(self):
         self.agentic = AgenticDashboard()
-        self.moats = MoatEngine()
-        self.loyalty = LoyaltyProgram()
-        self.cashflow = CashflowEngine()
-        self.infra = InfrastructureStack()
+        self.moat_engine = get_moat_engine()
+        self.loyalty_program = get_loyalty_program()
+        self.cashflow_engine = get_cashflow_engine()
+        self.infra_stack = InfrastructureStack()
     
     def get_platform_score(self) -> int:
-        """Get overall platform readiness score (0-100)."""
-        agentic_score = self.agentic._calculate_integration_score(self.agentic.get_stats())
-        moat_score = self.moats.get_total_strength()
-        infra_score = self.infra.get_health_score()
-        cashflow_progress = min(100, self.cashflow.get_progress())
+        """Calculates a composite Readiness Score (0-100) for the platform."""
+        # Retrieve component scores
+        a_stats = self.agentic.get_stats()
+        a_score = self.agentic._calculate_integration_score(a_stats)
         
-        # Weighted average
-        score = (
-            agentic_score * 0.3 +
-            moat_score * 0.25 +
-            infra_score * 0.25 +
-            cashflow_progress * 0.2
+        m_score = self.moat_engine.get_aggregate_strength()
+        i_score = self.infra_stack.get_health_score()
+        c_progress = min(100, self.cashflow_engine.get_progress_percent())
+        
+        # Weighted Aggregation
+        # Agentic depth (30%) + Moat strength (25%) + Infra health (25%) + Revenue (20%)
+        composite = (
+            a_score * 0.30 +
+            m_score * 0.25 +
+            i_score * 0.25 +
+            c_progress * 0.20
         )
         
-        return int(score)
+        return int(composite)
     
     def get_summary(self) -> Dict[str, Any]:
-        """Get complete platform summary."""
-        agentic_stats = self.agentic.get_stats()
-        switching_cost = self.moats.calculate_switching_cost()
+        """Collects a flat dictionary of key indicators for programmatic use."""
+        a_stats = self.agentic.get_stats()
+        m_stats = self.moat_engine.calculate_switching_cost()
         
         return {
-            # Agentic
-            "agents": agentic_stats["agents"],
-            "chains": agentic_stats["chains"],
-            "crews": agentic_stats["crews"],
-            "skills": agentic_stats["skills"],
-            "skill_mappings": agentic_stats["skill_mappings"],
-            
-            # Retention
-            "moat_strength": self.moats.get_total_strength(),
-            "switching_cost_hours": switching_cost["hours"],
-            "switching_cost_money": switching_cost["money_cost"],
-            "loyalty_tier": self.loyalty.get_current_tier().name,
-            
-            # Revenue
-            "current_arr": self.cashflow.get_total_arr(),
-            "arr_progress": self.cashflow.get_progress(),
-            "required_growth": self.cashflow.get_required_growth_rate(),
-            
-            # Infrastructure
-            "infra_layers": 10,
-            "infra_health": self.infra.get_health_score(),
-            
-            # Overall
-            "platform_score": self.get_platform_score(),
             "timestamp": datetime.now().isoformat(),
+            "score": self.get_platform_score(),
+            "layers": {
+                "agentic": {
+                    "agents_active": a_stats["inventory"]["agents"],
+                    "success_rate": a_stats["cognition"]["success_rate"]
+                },
+                "retention": {
+                    "moat_strength": self.moat_engine.get_aggregate_strength(),
+                    "loyalty_tier": self.loyalty_program.get_current_tier().name,
+                    "switching_cost_usd": m_stats["financial_usd"]
+                },
+                "revenue": {
+                    "arr": self.cashflow_engine.get_total_arr(),
+                    "progress": self.cashflow_engine.get_progress_percent()
+                },
+                "infra": {
+                    "health": self.infra_stack.get_health_score(),
+                    "layers_online": len(self.infra_stack.layers)
+                }
+            }
         }
     
-    def print_compact(self):
-        """Print compact summary."""
-        summary = self.get_summary()
+    def print_master_report(self):
+        """Renders the definitive, full-screen dashboard to the console."""
+        s = self.get_summary()
+        score = s["score"]
+        l = s["layers"]
         
-        print("\n🏯 AGENCYOS MASTER STATUS")
-        print("═" * 50)
-        print(f"   🤖 Agents: {summary['agents']} | Chains: {summary['chains']} | Crews: {summary['crews']}")
-        print(f"   🎯 Skills: {summary['skills']} ({summary['skill_mappings']} mappings)")
-        print(f"   🏰 Moats: {summary['moat_strength']}% | Switching: ${summary['switching_cost_money']:,}")
-        print(f"   💰 ARR: ${summary['current_arr']:,.0f} ({summary['arr_progress']:.1f}% → $1M)")
-        print(f"   🏗️ Infra: {summary['infra_layers']} layers ({summary['infra_health']}% health)")
-        print(f"   🏆 Platform Score: {summary['platform_score']}%")
-        print("═" * 50)
-    
-    def print_full(self):
-        """Print full master dashboard."""
-        summary = self.get_summary()
-        score = summary["platform_score"]
+        print("\n" + "═" * 70)
+        print("║" + "🏯 AGENCY OS - MASTER OPERATIONAL DASHBOARD".center(68) + "║")
+        print("║" + "The Closed-Loop $1M ARR Command Center".center(68) + "║")
+        print("═" * 70)
         
-        print("\n")
-        print("╔" + "═" * 58 + "╗")
-        print("║" + "🏯 AGENCYOS MASTER DASHBOARD".center(58) + "║")
-        print("║" + "Complete Platform Status".center(58) + "║")
-        print("╠" + "═" * 58 + "╣")
+        # 1. AGENTIC LAYER
+        print(f" 🤖 AGENTIC INFRASTRUCTURE")
+        print(f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}")
+        print(f"    └─ Integration   : Healthy")
         
-        # 1. AGENTIC SECTION
-        print("║" + " 🤖 AGENTIC LAYER".ljust(58) + "║")
-        print("║" + f"    Agents: {summary['agents']}".ljust(58) + "║")
-        print("║" + f"    Chains: {summary['chains']}".ljust(58) + "║")
-        print("║" + f"    Crews: {summary['crews']}".ljust(58) + "║")
-        print("║" + f"    Skills: {summary['skills']} ({summary['skill_mappings']} mappings)".ljust(58) + "║")
+        print(" ─" * 35)
         
-        print("╟" + "─" * 58 + "╢")
+        # 2. RETENTION LAYER
+        print(f" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
+        print(f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}")
+        print(f"    └─ Switching Cost: ${l['retention']['switching_cost_usd']:,} USD")
         
-        # 2. RETENTION SECTION
-        print("║" + " 🏰 RETENTION LAYER".ljust(58) + "║")
-        print("║" + f"    Moat Strength: {summary['moat_strength']}%".ljust(58) + "║")
-        print("║" + f"    Switching Cost: ${summary['switching_cost_money']:,}".ljust(58) + "║")
-        print("║" + f"    Loyalty Tier: {summary['loyalty_tier']}".ljust(58) + "║")
+        print(" ─" * 35)
         
-        print("╟" + "─" * 58 + "╢")
+        # 3. REVENUE LAYER
+        print(f" 💰 REVENUE PERFORMANCE")
+        print(f"    ├─ Current ARR   : ${l['revenue']['arr']:,.0f} | Target ARR   : $1,000,000")
+        print(f"    └─ Goal Progress : {l['revenue']['progress']:.1%}")
         
-        # 3. REVENUE SECTION
-        print("║" + " 💰 REVENUE LAYER".ljust(58) + "║")
-        print("║" + f"    Current ARR: ${summary['current_arr']:,.0f}".ljust(58) + "║")
-        print("║" + f"    Progress: {summary['arr_progress']:.1f}% → $1M".ljust(58) + "║")
-        print("║" + f"    Required Growth: {summary['required_growth']:.1f}%/month".ljust(58) + "║")
+        print(" ─" * 35)
         
-        print("╟" + "─" * 58 + "╢")
+        # 4. INFRASTRUCTURE LAYER
+        print(f" 🏗️ PRODUCTION STACK")
+        print(f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%")
+        print(f"    └─ Status        : Operational")
         
-        # 4. INFRASTRUCTURE SECTION
-        print("║" + " 🏗️ INFRASTRUCTURE LAYER".ljust(58) + "║")
-        print("║" + f"    Stack Layers: {summary['infra_layers']}/10".ljust(58) + "║")
-        print("║" + f"    Health Score: {summary['infra_health']}%".ljust(58) + "║")
+        print("═" * 70)
         
-        print("╠" + "═" * 58 + "╣")
+        # COMPOSITE SCORE
+        bar_w = 40
+        filled = int(bar_w * score / 100)
+        bar = "█" * filled + "░" * (bar_w - filled)
+        print(f" 🏆 OVERALL READINESS: [{bar}] {score}%")
         
-        # PLATFORM SCORE
-        bar = "█" * (score // 5) + "░" * (20 - score // 5)
-        print("║" + f" 🏆 PLATFORM SCORE: [{bar}] {score}%".ljust(58) + "║")
+        status_msg = (
+            "✅ PEAK PERFORMANCE" if score >= 90 else
+            "⚡ READY FOR SCALE" if score >= 75 else
+            "🔨 ACTIVELY BUILDING"
+        )
+        print(f"    └─ System Status: {status_msg}")
+        print("═" * 70)
         
-        if score >= 90:
-            status = "✅ MAX LEVEL ACHIEVED!"
-        elif score >= 70:
-            status = "⚡ PRODUCTION READY"
-        elif score >= 50:
-            status = "⚠️ GROWING"
-        else:
-            status = "🔨 BUILDING"
-        
-        print("║" + f"    {status}".ljust(58) + "║")
-        
-        print("╚" + "═" * 58 + "╝")
-        
-        # WIN-WIN-WIN reminder
-        print("\n   🏯 \"Không đánh mà thắng\" - Win Without Fighting")
-        print(f"   📅 {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        print(f"\n   🏯 \"Không đánh mà thắng\" | {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
 
 
-def show_master_dashboard():
-    """Quick function to show master dashboard."""
-    dashboard = MasterDashboard()
-    dashboard.print_full()
+# Global Interface
+def show_full_status():
+    """Entry point for the master dashboard display."""
+    md = MasterDashboard()
+    md.print_master_report()
 
-
-def get_platform_score() -> int:
-    """Get current platform score."""
-    dashboard = MasterDashboard()
-    return dashboard.get_platform_score()
+def get_system_health() -> int:
+    """Quick access to the composite platform score."""
+    return MasterDashboard().get_platform_score()

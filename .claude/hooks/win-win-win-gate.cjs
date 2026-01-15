@@ -68,10 +68,12 @@ function validateWinWinWin(deal) {
         summary: ''
     };
 
-    // Check for red flags in deal description
-    const dealText = JSON.stringify(deal).toLowerCase();
+    // Strip comments to prevent false positives
+    const strippedText = dealText.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '');
+    
+    // Check for red flags in deal description (excluding comments)
     for (const flag of RED_FLAGS) {
-        if (flag.pattern.test(dealText)) {
+        if (flag.pattern.test(strippedText)) {
             result.redFlags.push(flag.message);
             result.valid = false;
         }

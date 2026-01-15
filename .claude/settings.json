@@ -2,7 +2,7 @@
   "includeCoAuthoredBy": false,
   "statusLine": {
     "type": "command",
-    "command": "node .claude/statusline.cjs",
+    "command": "bash .claude/statusline.sh",
     "padding": 0
   },
   "hooks": {
