@@ -1,3 +1,16 @@
+## [2.4.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.3...v2.4.0-beta.4) (2026-01-15)
+
+
+### 🚀 Features
+
+* **skill:** expand ui-ux-pro-max with design patterns and component stacks ([0094348](https://github.com/claudekit/claudekit-engineer/commit/0094348bed048d650c5b970a18fbd20e243bdb59))
+* **skills:** added `react-best-practices` from Vercel ([61626a4](https://github.com/claudekit/claudekit-engineer/commit/61626a4fdcdd703b149e22a939a202c22f6443b0))
+
+
+### ♻️ Code Refactoring
+
+* **skill:** optimize ui-ux-pro-max search and core utilities ([6ded438](https://github.com/claudekit/claudekit-engineer/commit/6ded43835862e7ae5f02fcfef53b2a4e12820532))
+
 ## [2.4.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.2...v2.4.0-beta.3) (2026-01-15)
 
 
