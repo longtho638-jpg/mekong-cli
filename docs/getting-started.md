@@ -99,6 +99,40 @@ Anh sẽ thấy:
 
 ---
 
+## 6. Kết Nối Thanh Toán (Billing)
+
+Agency OS hỗ trợ thanh toán địa phương hóa tối ưu cho Đông Nam Á.
+
+### Việt Nam 🇻🇳 - PayOS
+1.  Đăng ký tại [my.payos.vn](https://my.payos.vn).
+2.  Lấy **Client ID** và **API Key**.
+3.  Cập nhật `.env`:
+    ```bash
+    PAYOS_CLIENT_ID=...
+    PAYOS_API_KEY=...
+    ```
+
+### Thái Lan 🇹🇭 - Omise
+Hỗ trợ PromptPay, TrueMoney.
+
+### Indo/Phil 🇮🇩🇵🇭 - Xendit
+Hỗ trợ OVO, GoPay, GCash.
+
+---
+
+## ❓ FAQ (Hỏi Nhanh Đáp Gọn)
+
+**Q: Agency OS có hỗ trợ tiếng Việt không?**
+A: **Có!** Toàn bộ giao diện và AI Agent đều ưu tiên Tiếng Việt ("Vietnamese First").
+
+**Q: Tôi có cần biết code không?**
+A: **Không nhất thiết.** Với lệnh `/cook`, AI sẽ code thay bạn. Tuy nhiên, biết chút ít sẽ giúp bạn "chỉ đạo" AI tốt hơn.
+
+**Q: Data của tôi nằm ở đâu?**
+A: Data nằm ngay trên máy của bạn (Local First) hoặc trên Cloud riêng của bạn (Supabase). Chúng tôi không sở hữu data của bạn.
+
+---
+
 ## 💡 Bí Kíp (Pro Tips)
 
 - **Gõ `/help`**: Để xem tất cả quyền năng.
