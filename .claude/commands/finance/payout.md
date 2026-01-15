@@ -1,15 +1,190 @@
 ---
-description: 💸 Payout Command - Rút tiền từ Polar.sh về PayPal/Bank
-argument-hint: [:polar|:stripe|:bank] [amount]
+description: 💸 Payout Command - Rút tiền từ Polar.sh về PayPal/USD
+argument-hint: [:wise|:payoneer|:bank] [amount]
 ---
 
-## Payout Overview
+## 🎯 Polar.sh → PayPal Solution
 
-Hướng dẫn rút tiền từ các nền tảng thanh toán.
+> **Vấn đề**: Polar.sh KHÔNG hỗ trợ PayPal trực tiếp
+> **Giải pháp**: Dùng **WISE** làm bridge!
 
-## ⚠️ Polar.sh → PayPal Flow
+---
 
-Polar.sh **KHÔNG** hỗ trợ PayPal trực tiếp. Luồng rút tiền:
+## 🥇 WISE Method (RECOMMENDED)
+
+### Flow
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Polar.sh   │ ──▶│   Stripe    │ ──▶│    WISE     │ ──▶│   PayPal    │
+│  Balance    │    │  Connect    │    │  USD Acct   │    │   Balance   │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+      💰              4-7 days           Instant           Instant
+```
+
+### Step-by-Step Setup
+
+#### 1️⃣ Create Wise Business Account
+
+1. Go to https://wise.com/business
+2. Sign up (free, no monthly fee)
+3. Verify identity (passport/ID)
+4. Get **USD balance** enabled
+
+#### 2️⃣ Get Wise USD Bank Details
+
+In Wise Dashboard:
+1. Go to **Balances** → **USD**
+2. Click **Account details**
+3. Copy these:
+   - **Routing number** (ACH)
+   - **Account number**
+   - **Bank name**: Community Federal Savings Bank
+
+#### 3️⃣ Update Stripe Connect
+
+1. Login to Stripe Dashboard
+2. Settings → Payouts → Bank Account
+3. Add new bank with Wise USD details
+4. Verify (Stripe sends 2 micro-deposits)
+
+#### 4️⃣ Request Polar Withdrawal
+
+1. Polar Dashboard → Balance
+2. Click Withdraw
+3. Funds go: Polar → Stripe → Wise (4-7 days)
+
+#### 5️⃣ Wise → PayPal
+
+1. In Wise: Send → PayPal email
+2. Or: Link Wise card to PayPal
+3. Instant transfer!
+
+### Fees Breakdown
+
+| Step | Fee |
+|------|-----|
+| Polar | 5% |
+| Stripe → Wise | $0.25 |
+| Wise → PayPal | 0.5-1% |
+| **Total** | ~6-7% |
+
+**Example**: $1,000 revenue
+- Polar fee: $50
+- Stripe: $0.25
+- Wise: $5
+- **Net to PayPal**: ~$945
+
+---
+
+## 🥈 Payoneer Alternative
+
+### Flow
+
+```
+Polar → Stripe → Payoneer USD → PayPal/Bank
+```
+
+### Setup
+
+1. Create Payoneer account: https://payoneer.com
+2. Get **Global Payment Service** → US Account
+3. Add to Stripe as payout bank
+4. Payoneer → PayPal
+
+### Fees
+
+| Step | Fee |
+|------|-----|
+| Payoneer receiving | Free |
+| Payoneer → PayPal | 1-2% |
+| Currency conversion | 1-2% |
+
+---
+
+## 🥉 Mercury/Relay (US Bank)
+
+If you have US LLC/business:
+
+1. Open Mercury or Relay bank account
+2. Connect to Stripe directly
+3. Transfer to PayPal from Mercury
+
+**Fees**: Lowest (just Polar 5%)
+
+---
+
+## ⚡ Quick Comparison
+
+| Method | Setup Time | Total Fees | Recommended |
+|--------|------------|------------|-------------|
+| **Wise** | 1-2 days | 6-7% | ✅ Best |
+| Payoneer | 2-3 days | 7-9% | OK |
+| US Bank | 1-2 weeks | 5-6% | If you have LLC |
+| VN Bank | 1 day | 6-8% | Not for you |
+
+---
+
+## 💡 Pro Tips
+
+### 1. Batch Withdrawals
+Rút ít lần, số tiền lớn hơn để giảm fixed fees.
+
+### 2. Keep USD
+Giữ USD trong Wise, chỉ chuyển PayPal khi cần.
+
+### 3. Wise Card
+Dùng Wise Debit Card để chi tiêu trực tiếp USD.
+
+### 4. Multi-Currency
+Wise hỗ trợ 50+ currencies - flexible cho travel.
+
+---
+
+## 🚀 Action Plan
+
+```bash
+# Today
+1. Sign up Wise Business ✅
+
+# Day 1-2  
+2. Verify identity ✅
+3. Get USD account details ✅
+
+# Day 3
+4. Update Stripe with Wise bank ✅
+5. Verify micro-deposits ✅
+
+# Ready!
+6. Request Polar withdrawal ✅
+7. Receive in Wise (4-7 days) ✅
+8. Transfer to PayPal (instant) ✅
+```
+
+---
+
+## CLI Commands
+
+```bash
+# Check Polar balance
+/finance "polar balance"
+
+# Request withdrawal
+/finance/payout "rút $500 về wise"
+
+# Check Wise balance
+/finance "wise balance"
+
+# Send to PayPal
+/finance/payout "wise → paypal $200"
+```
+
+---
+
+🏯 **Binh Pháp**: "Nước chảy qua khe đá - tiền chảy qua Wise!"
+
+> 🍬 **Anh không ở VN? No problem!** Wise + PayPal = Global Access!
+
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
