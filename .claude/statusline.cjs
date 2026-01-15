@@ -144,19 +144,20 @@ function renderSessionLines(ctx) {
   let locationPart = branchPart ? `${dirPart}  ${branchPart}` : dirPart;
   if (planPart) locationPart += `  ${planPart}`;
 
-  // Build session part: 🤖 model  contextBar%
+  // Build session part: 🤖 model  contextBar%  ⌛ time left (usage%)
   let sessionPart = `🤖 ${ctx.modelName}`;
   if (ctx.contextPercent > 0) {
     sessionPart += `  ${coloredBar(ctx.contextPercent, 12)} ${ctx.contextPercent}%`;
   }
-
-  // Build stats part
-  const statsItems = [];
+  // Add usage/reset info to session part (stays on line 1 with model - Claude Code only reads line 1)
   if (ctx.sessionText) {
-    let sessionStr = `⌛ ${ctx.sessionText.replace(' until reset', ' left')}`;
-    if (ctx.usagePercent != null) sessionStr += ` (${Math.round(ctx.usagePercent)}% used)`;
-    statsItems.push(sessionStr);
+    let usageStr = `⌛ ${ctx.sessionText.replace(' until reset', ' left')}`;
+    if (ctx.usagePercent != null) usageStr += ` (${Math.round(ctx.usagePercent)}% used)`;
+    sessionPart += `  ${usageStr}`;
   }
+
+  // Build stats part (only lines changed now)
+  const statsItems = [];
   // if (ctx.costText) statsItems.push(`💵 ${ctx.costText.replace(/(\.\d{2})\d+/, '$1')}`);
   if (ctx.linesAdded > 0 || ctx.linesRemoved > 0) {
     statsItems.push(`📝 ${green(`+${ctx.linesAdded}`)} ${red(`-${ctx.linesRemoved}`)}`);
@@ -168,38 +169,32 @@ function renderSessionLines(ctx) {
   const sessionLen = visibleLength(sessionPart);
   const statsLen = visibleLength(statsPart);
 
-  // Try combinations from most compact to most spread out
-  const allOneLine = `${locationPart}  ${sessionPart}  ${statsPart}`;
-  const locationSession = `${locationPart}  ${sessionPart}`;
+  // Layout priority: SESSION FIRST (Claude Code only reads line 1)
+  // Line 1: model + context + usage (most important for Claude Code)
+  // Line 2+: location, git, stats
+  const allOneLine = `${sessionPart}  ${locationPart}  ${statsPart}`;
+  const sessionLocation = `${sessionPart}  ${locationPart}`;
   const sessionStats = `${sessionPart}  ${statsPart}`;
 
   if (visibleLength(allOneLine) <= threshold && statsLen > 0) {
-    // Ultra-wide: everything on one line
+    // Ultra-wide: everything on one line (session first)
     lines.push(allOneLine);
-  } else if (visibleLength(locationSession) <= threshold) {
-    // Wide: location+session | stats (or session+stats if stats fit)
-    lines.push(locationSession);
+  } else if (visibleLength(sessionLocation) <= threshold) {
+    // Wide: session+location on line 1 | stats on line 2
+    lines.push(sessionLocation);
     if (statsLen > 0) lines.push(statsPart);
-  } else if (locationLen <= threshold) {
-    // Medium: location | session+stats or session | stats
+  } else if (sessionLen <= threshold) {
+    // Medium: session on line 1 | location on line 2 | stats on line 3
+    lines.push(sessionPart);
     lines.push(locationPart);
-    if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
-      lines.push(sessionStats);
-    } else {
-      lines.push(sessionPart);
-      if (statsLen > 0) lines.push(statsPart);
-    }
+    if (statsLen > 0) lines.push(statsPart);
   } else {
-    // Narrow: dir | branch | plan | session+stats or session | stats
+    // Narrow: session | dir | branch | stats (each on own line)
+    lines.push(sessionPart);
     lines.push(dirPart);
     if (branchPart) lines.push(branchPart);
     if (planPart) lines.push(planPart);
-    if (statsLen > 0 && visibleLength(sessionStats) <= threshold) {
-      lines.push(sessionStats);
-    } else {
-      lines.push(sessionPart);
-      if (statsLen > 0) lines.push(statsPart);
-    }
+    if (statsLen > 0) lines.push(statsPart);
   }
 
   return lines;
@@ -386,7 +381,7 @@ async function main() {
     try {
       const sessionId = data.session_id;
       if (sessionId) {
-        const sessionPath = `/tmp/ck-session-${sessionId}.json`;
+        const sessionPath = path.join(os.tmpdir(), `ck-session-${sessionId}.json`);
         if (fs.existsSync(sessionPath)) {
           const session = JSON.parse(fs.readFileSync(sessionPath, 'utf8'));
           const planPath = session.activePlan?.trim();
