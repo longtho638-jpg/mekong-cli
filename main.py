@@ -10,6 +10,7 @@ Primary Commands:
 - 🏗️ init: Bootstrap a new agency project.
 - 🎤 setup-vibe: Localize AI voice and regional tone.
 - 🔌 mcp-setup: Initialize Model Context Protocol servers.
+- ➕ mcp-install: Install new MCP servers (Supabase, Postgres, etc.)
 - 🚀 deploy: Production deployment to Cloud Run.
 - 🔐 activate: License lifecycle management.
 
@@ -67,6 +68,14 @@ def mcp_setup_cmd():
     """🔌 Thiết lập kết nối MCP (Model Context Protocol)."""
     from cli.config import setup_mcp
     setup_mcp()
+
+@app.command(name="mcp-install")
+def mcp_install_cmd(
+    url_or_name: str = typer.Argument(..., help="URL GitHub hoặc tên (vd: supabase)")
+):
+    """➕ Cài đặt thêm MCP Server mới."""
+    from cli.config import install_mcp
+    install_mcp(url_or_name)
 
 @app.command(name="vibes")
 def vibes_cmd_wrapper():
