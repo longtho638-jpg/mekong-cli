@@ -1,3 +1,21 @@
+## [2.4.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.4...v2.4.0-beta.5) (2026-01-15)
+
+
+### 🚀 Features
+
+* **hooks:** add context and usage section builders to context-builder ([865649c](https://github.com/claudekit/claudekit-engineer/commit/865649cc5860d559f3360536164b00ebc97ab173))
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** read session_id from hook input in dev-rules-reminder ([c9c9e3f](https://github.com/claudekit/claudekit-engineer/commit/c9c9e3ff6b216261057a790be28dd38c1f794251))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** simplify usage-context-awareness to cache-only writer ([5f44968](https://github.com/claudekit/claudekit-engineer/commit/5f449686d422aed4401e942a580dc9eb5894be9b))
+* **statusline:** prioritize session info on line 1 for claude code readability ([06e5b94](https://github.com/claudekit/claudekit-engineer/commit/06e5b949650478030f558a19188c7d155ce700a3))
+
 ## [2.4.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.3...v2.4.0-beta.4) (2026-01-15)
 
 
