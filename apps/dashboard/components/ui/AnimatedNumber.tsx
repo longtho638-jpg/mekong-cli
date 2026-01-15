@@ -30,7 +30,7 @@ export function AnimatedNumber({
 }: AnimatedNumberProps) {
     const [displayValue, setDisplayValue] = useState(0);
     const previousValue = useRef(0);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number>(0);
 
     useEffect(() => {
         const startValue = previousValue.current;

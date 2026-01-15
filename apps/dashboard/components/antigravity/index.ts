@@ -13,3 +13,7 @@ export { GuidedTour } from './GuidedTour';
 // Static exports (backward compatibility)
 export { AntigravityModules } from './AntigravityModules';
 export { VCReadinessCard } from './VCReadinessCard';
+
+// Unified Bridge Widget (NEW)
+export { UnifiedBridgeWidget } from './UnifiedBridgeWidget';
+

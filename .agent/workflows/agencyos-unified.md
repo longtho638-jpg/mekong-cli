@@ -159,3 +159,34 @@ Then reload: `source ~/.zshrc`
 - [ ] 👑 ANH (Owner): Portfolio growth + cash flow
 - [ ] 🏢 AGENCY: Moat building + process improvement
 - [ ] 🚀 CLIENT: 10x value delivery
+
+---
+
+## 🤖 Unified Bridge Integration
+
+Use the AgencyOS Unified Bridge for all external tool calls:
+
+### Quick Status Check
+// turbo
+```bash
+node .claude/scripts/agencyos-bridge.cjs status
+```
+
+### Gemini Integration
+// turbo
+```bash
+node .claude/scripts/agencyos-bridge.cjs gemini ask "Analyze this code"
+```
+
+### Git Worktree
+// turbo
+```bash
+node .claude/scripts/agencyos-bridge.cjs git create my-feature
+```
+
+Benefits:
+- ✅ Rate limiting tự động (15 RPM)
+- ✅ Retry với exponential backoff
+- ✅ Single entry point
+
+🍬 **Dễ như ăn kẹo!**

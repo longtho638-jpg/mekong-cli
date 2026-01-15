@@ -87,5 +87,30 @@ Now replaced by Agent Skills for better context efficiency.
 ## Cost Note
 Gemini API incurs costs. Skip this if you don't need vision/video analysis.
 
+## 🤖 Gemini CLI Bridge (NEW)
+
+Claude/Antigravity có thể điều khiển Gemini CLI thay anh với rate limiting tự động:
+
+### Quick Commands
+// turbo
+```bash
+# Kiểm tra status
+node .claude/scripts/gemini-bridge.cjs status
+
+# Hỏi Gemini
+node .claude/scripts/gemini-bridge.cjs ask "your question"
+
+# Phân tích hình
+node .claude/scripts/gemini-bridge.cjs vision ./image.png
+
+# Code review
+node .claude/scripts/gemini-bridge.cjs code ./file.js
+```
+
+### Features
+- ✅ Rate limiting: 15 requests/minute
+- ✅ Auto retry: Exponential backoff (2^n seconds)
+- ✅ Error handling: Tự động xử lý lỗi 429
+
 ## 🏯 Binh Pháp Alignment
 "用間篇" (Dụng Gián) - Intelligence - Leverage external tools for specialized capabilities.

@@ -26,26 +26,29 @@ export default [
             '@next/next': nextPlugin,
         },
         rules: {
-            // TypeScript strictness
-            '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+            // TypeScript strictness (HARDENED)
+            '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
             '@typescript-eslint/prefer-as-const': 'error',
+            '@typescript-eslint/no-non-null-assertion': 'warn',
+            '@typescript-eslint/consistent-type-imports': 'warn',
 
             // React rules
             'react/jsx-uses-react': 'off',
             'react/react-in-jsx-scope': 'off',
             'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
+            'react-hooks/exhaustive-deps': 'error',
 
             // Next.js rules
-            '@next/next/no-html-link-for-pages': 'warn',
+            '@next/next/no-html-link-for-pages': 'error',
 
-            // General code quality
-            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            // General code quality (HARDENED)
+            'no-console': ['error', { allow: ['warn', 'error'] }],
             'no-debugger': 'error',
             'eqeqeq': ['error', 'smart'],
             'prefer-const': 'error',
             'no-var': 'error',
+            'no-duplicate-imports': 'error',
         },
         settings: {
             react: {

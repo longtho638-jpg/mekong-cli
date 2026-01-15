@@ -25,7 +25,7 @@ try:
     from core.voice_clone import VoiceClone
     from core.telegram_bot import TelegramBot
     from core.api_keys import APIKeysManager
-    from core.crm import CRM
+    from core.modules.crm import CRM
     from core.web_designer import WebDesigner
 except ImportError as e:
     print(f"❌ Critical Import Error: {e}")

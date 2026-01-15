@@ -1,0 +1,315 @@
+#!/usr/bin/env node
+/**
+ * Gemini CLI Bridge
+ * 
+ * Bridges Claude/Antigravity to Gemini CLI with rate limiting and retry logic.
+ * 
+ * Usage:
+ *   node gemini-bridge.cjs <command> [args...]
+ * 
+ * Commands:
+ *   ask <prompt>      - Ask Gemini a text question
+ *   vision <file>     - Analyze image/video with Gemini
+ *   code <file>       - Code review/generation
+ *   status            - Check rate limit status
+ *   test-rate-limit   - Test rate limiting (mock)
+ *   
+ * 🏯 "Dụng Gián" - Use intelligence agents wisely
+ */
+
+const { execSync, spawn } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// =====================================================
+// CONFIGURATION
+// =====================================================
+
+const CONFIG = {
+    // Rate limiting
+    MAX_REQUESTS_PER_MINUTE: 15,
+    REQUEST_WINDOW_MS: 60 * 1000, // 1 minute
+
+    // Retry logic
+    MAX_RETRIES: 3,
+    INITIAL_BACKOFF_MS: 2000, // 2 seconds
+
+    // State file for tracking requests
+    STATE_FILE: path.join(__dirname, '.gemini-bridge-state.json'),
+
+    // Gemini CLI path
+    GEMINI_CLI: 'gemini',
+};
+
+// =====================================================
+// STATE MANAGEMENT
+// =====================================================
+
+function loadState() {
+    try {
+        if (fs.existsSync(CONFIG.STATE_FILE)) {
+            return JSON.parse(fs.readFileSync(CONFIG.STATE_FILE, 'utf-8'));
+        }
+    } catch (error) {
+        console.error('⚠️ Could not load state:', error.message);
+    }
+    return { requests: [], lastReset: Date.now() };
+}
+
+function saveState(state) {
+    try {
+        fs.writeFileSync(CONFIG.STATE_FILE, JSON.stringify(state, null, 2));
+    } catch (error) {
+        console.error('⚠️ Could not save state:', error.message);
+    }
+}
+
+function cleanOldRequests(state) {
+    const now = Date.now();
+    const cutoff = now - CONFIG.REQUEST_WINDOW_MS;
+    state.requests = state.requests.filter(ts => ts > cutoff);
+    return state;
+}
+
+// =====================================================
+// RATE LIMITING
+// =====================================================
+
+function canMakeRequest() {
+    let state = loadState();
+    state = cleanOldRequests(state);
+
+    const currentCount = state.requests.length;
+    const remaining = CONFIG.MAX_REQUESTS_PER_MINUTE - currentCount;
+
+    return {
+        allowed: currentCount < CONFIG.MAX_REQUESTS_PER_MINUTE,
+        remaining,
+        resetIn: CONFIG.REQUEST_WINDOW_MS - (Date.now() - (state.requests[0] || Date.now())),
+        currentCount,
+    };
+}
+
+function recordRequest() {
+    let state = loadState();
+    state = cleanOldRequests(state);
+    state.requests.push(Date.now());
+    saveState(state);
+}
+
+function waitForRateLimit() {
+    const status = canMakeRequest();
+    if (status.allowed) return Promise.resolve();
+
+    const waitMs = Math.min(status.resetIn + 1000, CONFIG.REQUEST_WINDOW_MS);
+    console.log(`⏳ Rate limit reached. Waiting ${Math.ceil(waitMs / 1000)}s...`);
+
+    return new Promise(resolve => setTimeout(resolve, waitMs));
+}
+
+// =====================================================
+// GEMINI CLI EXECUTION
+// =====================================================
+
+async function executeGemini(prompt, options = {}) {
+    const { retryCount = 0, timeout = 60000 } = options;
+
+    // Check rate limit
+    await waitForRateLimit();
+
+    const status = canMakeRequest();
+    if (!status.allowed) {
+        throw new Error('Rate limit exceeded after waiting');
+    }
+
+    // Record this request
+    recordRequest();
+
+    console.log(`🚀 Sending to Gemini... (${status.remaining - 1} requests remaining)`);
+
+    try {
+        // Execute Gemini CLI with prompt
+        const result = execSync(`${CONFIG.GEMINI_CLI} -p "${prompt.replace(/"/g, '\\"')}"`, {
+            encoding: 'utf-8',
+            timeout,
+            stdio: ['pipe', 'pipe', 'pipe'],
+        });
+
+        return { success: true, output: result.trim() };
+    } catch (error) {
+        // Check for rate limit error (429)
+        if (error.message && (error.message.includes('429') || error.message.includes('Too Many Requests'))) {
+            if (retryCount < CONFIG.MAX_RETRIES) {
+                const backoffMs = CONFIG.INITIAL_BACKOFF_MS * Math.pow(2, retryCount);
+                console.log(`⚠️ Rate limited by API. Retrying in ${backoffMs / 1000}s... (attempt ${retryCount + 1}/${CONFIG.MAX_RETRIES})`);
+
+                await new Promise(resolve => setTimeout(resolve, backoffMs));
+                return executeGemini(prompt, { ...options, retryCount: retryCount + 1 });
+            }
+        }
+
+        return {
+            success: false,
+            error: error.message,
+            stderr: error.stderr?.toString() || '',
+        };
+    }
+}
+
+// =====================================================
+// COMMANDS
+// =====================================================
+
+async function cmdAsk(prompt) {
+    if (!prompt) {
+        console.log('❌ Usage: gemini-bridge.cjs ask "your question"');
+        return;
+    }
+
+    const result = await executeGemini(prompt);
+
+    if (result.success) {
+        console.log('\n📝 Gemini Response:\n');
+        console.log(result.output);
+    } else {
+        console.log('❌ Error:', result.error);
+    }
+}
+
+async function cmdVision(filePath) {
+    if (!filePath) {
+        console.log('❌ Usage: gemini-bridge.cjs vision <file-path>');
+        return;
+    }
+
+    if (!fs.existsSync(filePath)) {
+        console.log('❌ File not found:', filePath);
+        return;
+    }
+
+    const prompt = `Analyze this image/video: ${filePath}`;
+    const result = await executeGemini(prompt);
+
+    if (result.success) {
+        console.log('\n🖼️ Vision Analysis:\n');
+        console.log(result.output);
+    } else {
+        console.log('❌ Error:', result.error);
+    }
+}
+
+async function cmdCode(filePath) {
+    if (!filePath) {
+        console.log('❌ Usage: gemini-bridge.cjs code <file-path>');
+        return;
+    }
+
+    if (!fs.existsSync(filePath)) {
+        console.log('❌ File not found:', filePath);
+        return;
+    }
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const prompt = `Review this code and suggest improvements:\n\n${content.substring(0, 4000)}`;
+
+    const result = await executeGemini(prompt);
+
+    if (result.success) {
+        console.log('\n💻 Code Review:\n');
+        console.log(result.output);
+    } else {
+        console.log('❌ Error:', result.error);
+    }
+}
+
+function cmdStatus() {
+    const status = canMakeRequest();
+
+    console.log('\n📊 Gemini CLI Bridge Status');
+    console.log('═══════════════════════════════════════');
+    console.log(`Rate Limit:     ${CONFIG.MAX_REQUESTS_PER_MINUTE} requests/minute`);
+    console.log(`Used:           ${status.currentCount}/${CONFIG.MAX_REQUESTS_PER_MINUTE}`);
+    console.log(`Remaining:      ${status.remaining}`);
+    console.log(`Reset In:       ${Math.ceil(status.resetIn / 1000)}s`);
+    console.log(`Status:         ${status.allowed ? '✅ Ready' : '⏳ Rate Limited'}`);
+    console.log('═══════════════════════════════════════\n');
+}
+
+async function cmdTestRateLimit() {
+    console.log('🧪 Testing rate limiting...\n');
+
+    for (let i = 1; i <= 5; i++) {
+        const status = canMakeRequest();
+        console.log(`Request ${i}: ${status.allowed ? '✅ Allowed' : '❌ Blocked'} (${status.remaining} remaining)`);
+
+        if (status.allowed) {
+            recordRequest();
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    console.log('\n✅ Rate limiting test complete');
+    cmdStatus();
+}
+
+function cmdHelp() {
+    console.log(`
+🏯 Gemini CLI Bridge - AgencyOS
+═══════════════════════════════════════
+
+Commands:
+  ask <prompt>        Ask Gemini a text question
+  vision <file>       Analyze image/video
+  code <file>         Code review/generation
+  status              Check rate limit status
+  test-rate-limit     Test rate limiting
+  help                Show this help
+
+Examples:
+  node gemini-bridge.cjs ask "Explain async/await in JavaScript"
+  node gemini-bridge.cjs vision ./screenshot.png
+  node gemini-bridge.cjs code ./src/app.js
+  node gemini-bridge.cjs status
+
+Configuration:
+  MAX_REQUESTS_PER_MINUTE: ${CONFIG.MAX_REQUESTS_PER_MINUTE}
+  MAX_RETRIES: ${CONFIG.MAX_RETRIES}
+  INITIAL_BACKOFF_MS: ${CONFIG.INITIAL_BACKOFF_MS}
+
+🏯 "Dụng Gián" - Use intelligence agents wisely
+    `);
+}
+
+// =====================================================
+// MAIN ENTRY POINT
+// =====================================================
+
+async function main() {
+    const args = process.argv.slice(2);
+    const command = args[0] || 'help';
+    const params = args.slice(1).join(' ');
+
+    switch (command) {
+        case 'ask':
+            await cmdAsk(params);
+            break;
+        case 'vision':
+            await cmdVision(params);
+            break;
+        case 'code':
+            await cmdCode(params);
+            break;
+        case 'status':
+            cmdStatus();
+            break;
+        case 'test-rate-limit':
+            await cmdTestRateLimit();
+            break;
+        case 'help':
+        default:
+            cmdHelp();
+    }
+}
+
+main().catch(console.error);

@@ -23,6 +23,25 @@
 
 ---
 
+## 🏯 Unified Bridge (NEW)
+
+**"Dễ như ăn kẹo!"** - 1 command cho tất cả
+
+| Command | Description |
+|---------|-------------|
+| `/bridge:status` | Check unified status |
+| `/bridge:gemini` | Gemini CLI integration |
+| `/bridge:git` | Git worktree |
+| `/bridge:help` | Show all commands |
+
+```bash
+# Quick start
+node .claude/scripts/agencyos-bridge.cjs status
+node .claude/scripts/agencyos-bridge.cjs gemini ask "Your question"
+```
+
+---
+
 ## 🛠️ Tech Commands (55)
 
 ### Code
