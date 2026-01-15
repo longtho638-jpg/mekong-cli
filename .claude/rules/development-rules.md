@@ -1,42 +1,38 @@
-# Development Rules
+# ⚖️ Development Rules - VIBE Standard
 
-**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
-**IMPORTANT:** You ALWAYS follow these principles: **YAGNI (You Aren't Gonna Need It) - KISS (Keep It Simple, Stupid) - DRY (Don't Repeat Yourself)**
+**"Quân pháp bất vị thân"** - Kỷ luật là sức mạnh của đội quân AI.
 
-## General
-- **File Naming**: Use kebab-case for file names with a meaningful name that describes the purpose of the file, doesn't matter if the file name is long, just make sure when LLMs read the file names while using Grep or other tools, they can understand the purpose of the file right away without reading the file content.
-- **File Size Management**: Keep individual code files under 200 lines for optimal context management
-  - Split large files into smaller, focused components/modules
-  - Use composition over inheritance for complex widgets
-  - Extract utility functions into separate modules
-  - Create dedicated service classes for business logic
-- When looking for docs, activate `docs-seeker` skill (`context7` reference) for exploring latest docs.
-- Use `gh` bash command to interact with Github features if needed
-- Use `psql` bash command to query Postgres database for debugging if needed
-- Use `ai-multimodal` skill for describing details of images, videos, documents, etc. if needed
-- Use `ai-multimodal` skill and `imagemagick` skill for generating and editing images, videos, documents, etc. if needed
-- Use `sequential-thinking` and `debugging` skills for sequential thinking, analyzing code, debugging, etc. if needed
-- **[IMPORTANT]** Follow the codebase structure and code standards in `./docs` during implementation.
-- **[IMPORTANT]** Do not just simulate the implementation or mocking them, always implement the real code.
+## 1. Nguyên Tắc Cốt Lõi (The Trinity)
+1.  **YAGNI (You Aren't Gonna Need It):** Không code thừa. Nếu chưa cần dùng ngay, đừng viết.
+2.  **KISS (Keep It Simple, Stupid):** Đơn giản nhất có thể. Code dễ đọc > Code thông minh.
+3.  **DRY (Don't Repeat Yourself):** Không lặp lại. Tách hàm, tách module.
 
-## Code Quality Guidelines
-- Read and follow codebase structure and code standards in `./docs`
-- Don't be too harsh on code linting, but **make sure there are no syntax errors and code are compilable**
-- Prioritize functionality and readability over strict style enforcement and code formatting
-- Use reasonable code quality standards that enhance developer productivity
-- Use try catch error handling & cover security standards
-- Use `code-reviewer` agent to review code after every implementation
+## 2. Quy Trình VIBE (VIBE Workflow)
+Mọi thay đổi code đều phải tuân thủ quy trình 6 bước:
+1.  **Detection:** Xác định `plan.md`.
+2.  **Analysis:** Phân tích task.
+3.  **Implementation:** Viết code.
+4.  **Testing:** Chạy `pytest` hoặc `npm test`. **BẮT BUỘC 100% PASS.**
+5.  **Review:** Tự đánh giá hoặc dùng `code-reviewer`.
+6.  **Finalize:** Commit và update docs.
 
-## Pre-commit/Push Rules
-- Run linting before commit
-- Run tests before push (DO NOT ignore failed tests just to pass the build or github actions)
-- Keep commits focused on the actual code changes
-- **DO NOT** commit and push any confidential information (such as dotenv files, API keys, database credentials, etc.) to git repository!
-- Create clean, professional commit messages without AI references. Use conventional commit format.
+## 3. Quản Lý File & Folder
+- **Naming:** `kebab-case` (ví dụ: `revenue-engine.py`, `client-magnet.ts`).
+- **Limit:** Tối đa **250 dòng/file**. Nếu dài hơn -> Refactor ngay lập tức.
+- **Plans:** Mọi kế hoạch phải nằm trong `plans/{date}-{slug}/`.
 
-## Code Implementation
-- Write clean, readable, and maintainable code
-- Follow established architectural patterns
-- Implement features according to specifications
-- Handle edge cases and error scenarios
-- **DO NOT** create new enhanced files, update to the existing files directly.
+## 4. Bảo Mật & An Toàn (Security First)
+- **Secrets:** KHÔNG BAO GIỜ commit `.env`, API Keys, Password.
+- **Privacy Hook:** Tôn trọng `privacy-block.cjs`. Nếu bị chặn, hãy hỏi người dùng.
+- **Data:** Không dùng dữ liệu thật của khách hàng để test. Dùng Mock Data.
+
+## 5. Cam Kết (Commit Standards)
+Sử dụng Conventional Commits:
+- `feat(scope): ...` - Tính năng mới.
+- `fix(scope): ...` - Sửa lỗi.
+- `refactor(scope): ...` - Tối ưu code.
+- `docs(scope): ...` - Cập nhật tài liệu.
+
+**Tuyệt đối không:** Commit code bị lỗi hoặc chưa qua test.
+
+> 🏯 **"Thắng từ trong chuẩn bị"** - Code sạch là code chiến thắng.

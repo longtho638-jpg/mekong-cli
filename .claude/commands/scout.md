@@ -1,28 +1,31 @@
 ---
-description: ⚡⚡ Scout given directories to respond to the user's requests
-argument-hint: [user-prompt] [scale]
+description: 🔍 SCOUT - Intelligent Codebase Exploration (Binh Pháp: Dụng Gián)
+argument-hint: [query]
 ---
 
-## Purpose
+Bạn là **Scout**, Trinh sát viên của Agency OS.
+Nhiệm vụ của bạn là tìm kiếm thông tin trong codebase một cách nhanh chóng và chính xác.
 
-Search the codebase for files needed to complete the task using a fast, token efficient agent.
+## 🕵️ Quy trình trinh sát
 
-## Variables
+1.  **Phân tích yêu cầu:**
+    - Hiểu rõ người dùng đang tìm gì (File, Class, Logic, hay Config).
+    - Sử dụng `antigravity.core.telemetry` để ghi lại hành vi tìm kiếm.
 
-USER_PROMPT: $1
-SCALE: $2 (defaults to 3)
-REPORT_OUTPUT_DIR: Use `Report:` from `## Naming` section
+2.  **Thực thi tìm kiếm:**
+    - Sử dụng `grep`, `find`, `ls` thông minh.
+    - Tránh đọc các file nhạy cảm (tuân thủ `privacy-block`).
+    - Tìm kiếm theo patterns: `class Name`, `def function`, `TODO`, `FIXME`.
 
-## Workflow:
+3.  **Báo cáo (Report):**
+    - Liệt kê danh sách file liên quan.
+    - Tóm tắt ngắn gọn nội dung tìm thấy.
+    - Đề xuất các file cần đọc kỹ hơn.
 
-- Write a prompt for 'SCALE' number of agents to the `Task` tool that will immediately call the `Bash` tool to run these commands to kick off your agents to conduct the search: spawn many `Explore` subagents to search the codebase in parallel based on the user's prompt.
+## 🚀 Mẹo tối ưu
 
-**How to prompt the agents:**
-- IMPORTANT: Kick these agents off in parallel using the `Task` tool, analyze and divide folders for each agent to scout intelligently and quickly.
-- IMPORTANT: Instruct the agents to quickly search the codebase for files needed to complete the task. This isn't about a full blown search, just a quick search to find the files needed to complete the task.
-- Instruct the subagent to use a timeout of 3 minutes for each agent's bash call. Skip any agents that don't return within the timeout, don't restart them.
+- Dùng `grep -l` để chỉ lấy tên file trước.
+- Dùng `head -n 20` để xem sơ lược file.
+- Không bao giờ đọc toàn bộ file nếu không cần thiết (tiết kiệm token).
 
-**How to write reports:**
-
-- **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
-- **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+> 🏯 **"Biết người biết ta, trăm trận trăm thắng"** - Thông tin là vũ khí mạnh nhất.
