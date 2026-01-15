@@ -9,22 +9,6 @@ Stacks: html-tailwind, react, nextjs
 """
 
 import argparse
-import sys
-from pathlib import Path
-
-# Windows UTF-8 compatibility (works for both local and global installs)
-CLAUDE_ROOT = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(CLAUDE_ROOT / 'scripts'))
-try:
-    from win_compat import ensure_utf8_stdout
-    ensure_utf8_stdout()
-except ImportError:
-    # Fallback if shared utility not available
-    if sys.platform == 'win32':
-        import io
-        if hasattr(sys.stdout, 'buffer'):
-            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
 from core import CSV_CONFIG, AVAILABLE_STACKS, MAX_RESULTS, search, search_stack
 
 
