@@ -93,7 +93,7 @@ class TestCRMPresenter:
         assert isinstance(text, str)
         assert "PIPELINE" in text
         assert "FORECAST" in text
-        assert "METRICS" in text
+        assert "CONTACTS" in text
 
 
 class TestAnalytics:

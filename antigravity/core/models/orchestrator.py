@@ -1,17 +1,30 @@
 """
-Orchestrator models for VIBEOrchestrator.
+💂 Orchestrator Models - Agent Task & Chain Definitions
+=======================================================
 
-Extracted from vibe_orchestrator.py for clean architecture.
+Defines the data structures for multi-agent coordination. Enables 
+precise tracking of individual agent missions and the aggregated 
+outcome of execution chains.
+
+Hierarchy:
+- AgentType: The registry of specialized AI personas.
+- AgentTask: A discrete unit of work for a single agent.
+- ChainResult: The telemetry and output of an orchestrated sequence.
+
+Binh Pháp: 💂 Tướng (Leadership) - Managing the specialized units.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Dict
 from enum import Enum
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class AgentType(Enum):
-    """Available agent types."""
+    """The roster of specialized AI agents in the Agency OS ecosystem."""
     PLANNER = "planner"
     RESEARCHER = "researcher"
     IMPLEMENTER = "implementer"
@@ -29,14 +42,19 @@ class AgentType(Enum):
 
 
 class ExecutionMode(Enum):
-    """Execution patterns."""
+    """Patterns for agent coordination."""
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
 
 
 @dataclass
 class AgentTask:
-    """Task for an agent to execute."""
+    """
+    🤖 Agent Mission
+    
+    Captures the context (prompt), execution state, and output 
+    of a single agent invocation.
+    """
     agent: AgentType
     prompt: str
     description: str
@@ -49,74 +67,78 @@ class AgentTask:
     completed_at: Optional[datetime] = None
 
     def start(self) -> None:
-        """Mark task as started."""
+        """Transitions the task to the active state."""
         self.status = "running"
         self.started_at = datetime.now()
 
     def complete(self, result: Any = None) -> None:
-        """Mark task as completed."""
+        """Transitions the task to the final success state."""
         self.status = "completed"
         self.result = result
         self.completed_at = datetime.now()
 
     def fail(self, error: str) -> None:
-        """Mark task as failed."""
+        """Transitions the task to the failure state with error details."""
         self.status = "failed"
         self.result = error
         self.completed_at = datetime.now()
 
-    def duration(self) -> float:
-        """Get task duration in seconds."""
+    def get_duration_seconds(self) -> float:
+        """Calculates total wall-clock time for the task."""
         if self.started_at and self.completed_at:
             return (self.completed_at - self.started_at).total_seconds()
         return 0.0
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
             "agent": self.agent.value,
-            "prompt": self.prompt[:100],
             "description": self.description,
-            "priority": self.priority,
             "status": self.status,
-            "result": str(self.result)[:200] if self.result else None,
-            "duration": self.duration()
+            "performance": {
+                "duration": round(self.get_duration_seconds(), 2),
+                "priority": self.priority
+            },
+            "output_preview": str(self.result)[:250] if self.result else None
         }
 
 
 @dataclass
 class ChainResult:
-    """Result from a chain of agent executions."""
+    """
+    ⛓️ Orchestration Outcome
+    
+    Aggregates results from multiple agent tasks into a single 
+    identifiable execution report.
+    """
     success: bool
     tasks: List[AgentTask] = field(default_factory=list)
     total_time: float = 0.0
     errors: List[str] = field(default_factory=list)
 
     def add_task(self, task: AgentTask) -> None:
-        """Add a task to the chain."""
+        """Appends a completed or failed task to the chain history."""
         self.tasks.append(task)
 
-    def add_error(self, error: str) -> None:
-        """Add an error."""
-        self.errors.append(error)
+    def add_error(self, message: str) -> None:
+        """Records a chain-level error and marks the chain as failed."""
+        self.errors.append(message)
         self.success = False
 
     @property
-    def completed_count(self) -> int:
-        """Count completed tasks."""
-        return len([t for t in self.tasks if t.status == "completed"])
+    def metrics(self) -> Dict[str, int]:
+        """Counts task outcomes for summary reporting."""
+        return {
+            "done": len([t for t in self.tasks if t.status == "completed"]),
+            "fail": len([t for t in self.tasks if t.status == "failed"]),
+            "total": len(self.tasks)
+        }
 
-    @property
-    def failed_count(self) -> int:
-        """Count failed tasks."""
-        return len([t for t in self.tasks if t.status == "failed"])
-
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
             "success": self.success,
-            "total_time": self.total_time,
-            "tasks_completed": self.completed_count,
-            "tasks_failed": self.failed_count,
+            "total_time_sec": round(self.total_time, 2),
+            "mission_metrics": self.metrics,
             "errors": self.errors
         }

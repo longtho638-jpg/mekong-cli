@@ -1,200 +1,91 @@
-# 🏯 Agency OS - The One-Person Unicorn Operating System
+# 🌊 Agency OS v2.5 - The One-Person Unicorn Operating System
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/agencyos-network/agency-os)
-[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
-[![Languages](https://img.shields.io/badge/languages-4-green.svg)](#languages)
-[![Regions](https://img.shields.io/badge/regions-4-purple.svg)](#regions)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-success.svg)](.github/workflows/deploy.yml)
+> **"Không đánh mà thắng"** - Win Without Fighting
+> *Production-Ready | AI-Native | Vietnam-First*
 
-> **"Win Without Fighting"** | 不戰而勝 | Không đánh mà thắng  
-> Build, scale, and franchise your agency globally.
+## 🚀 Overview
 
-**🌐 Official Domain: [agencyos.network](https://agencyos.network)**
+Agency OS là nền tảng quản trị Agency tự động hóa hoàn toàn (Autonomous Agency), được thiết kế để giúp **AgencyEr** (Chủ Agency 1 người) vận hành như một tập đoàn 50 nhân sự.
 
-## 🌍 Global Franchise Model
+Hệ thống được xây dựng trên kiến trúc **AntigravityKit** và vận hành bởi đội quân AI Agents tinh nhuệ.
 
-Agency OS enables you to run a profitable agency with:
-- **Short-term revenue**: SaaS affiliate income (fund operations)
-- **Long-term value**: Local client brand building (compound growth)
-- **Scalable model**: Franchise to other territories
+## 🏯 Binh Pháp Architecture (Lục Tướng)
 
-## ✨ Features
+| Agent | Vai Trò (Binh Pháp) | Nhiệm Vụ Chính |
+|-------|---------------------|----------------|
+| **Planner** | 🏯 Mưu Công (Strategy) | Phân tích mục tiêu, lập kế hoạch Manus 3-file. |
+| **Money Maker** | 💰 Tài (Wealth) | Tạo báo giá, invoice, kiểm soát dòng tiền $1M. |
+| **Client Magnet** | 🧲 Địa (Territory) | Thu hút, sàng lọc Lead (BANT), quản lý CRM. |
+| **Fullstack Dev** | ⚡ Quân Tranh (Speed) | Code, test, deploy tính năng (VIBE Workflow). |
+| **Strategist** | ☸️ Đạo (Way) | Cố vấn chiến lược, xây dựng 5 Hào bảo vệ (Moat). |
+| **Jules** | 🤖 Vô Vi (Automation) | Bảo trì tự động, vá lỗi, update deps. |
 
-| Feature | Description |
-|---------|-------------|
-| 🎯 **Market Analysis** | Analyze local market prices and trends |
-| 👥 **Customer Profiles** | Create detailed customer personas |
-| 📈 **Sales Strategy** | Build conversion-optimized playbooks |
-| 📋 **Marketing Plans** | Comprehensive marketing strategies |
-| 🌐 **i18n Ready** | Multi-language support (English, Vietnamese, more) |
-| 🚀 **Franchise Ready** | White-label for your territory |
+## 🛠️ Getting Started (WOW Experience)
 
-## 📦 Installation
-
+### 1. Khởi tạo & Cấu hình
 ```bash
-# Clone repo
-git clone https://github.com/your-org/agency-os.git
-cd agency-os
+# Cài đặt CLI
+pip install -e .
 
-# Install dependencies
-pip install -r requirements.txt
+# Thiết lập "Linh hồn" (Vibe & Tone)
+mekong setup-vibe --location "Cần Thơ" --tone "Chân thành"
 
-# Run demo
-python main.py
+# Kích hoạt Dashboard
+mekong status
 ```
 
-## 🚀 Quick Start
+### 2. Các Lệnh Quyền Lực (Slash Commands)
 
-### 1. Initialize Your Agency
+- **/cook**: Xây dựng tính năng tự động (Code & Deploy).
+  - *Ví dụ:* `/cook "Tạo landing page giới thiệu gạo ST25"`
+- **/plan**: Lập kế hoạch chiến lược chi tiết.
+  - *Ví dụ:* `/plan "Ra mắt dịch vụ SEO cho Spa"`
+- **/revenue**: Kiểm tra sức khỏe tài chính.
+  - *Ví dụ:* `/revenue` (Xem tiến độ $1M ARR)
+- **/antigravity**: Tổng quan hệ thống (Master Dashboard).
 
-```bash
-agency-os init my-agency
-cd my-agency
-```
+## 🛡️ The 5 Immortal Moats
 
-### 2. Configure Your Territory
+Hệ thống tự động tích lũy giá trị vào 5 Hào bảo vệ để Agency của bạn trở nên "bất khả xâm phạm":
 
-```bash
-agency-os setup
-# Select: Region, Language, Currency
-```
+1.  **📊 Data Moat**: Dữ liệu khách hàng, lịch sử dự án.
+2.  **🧠 Learning Moat**: AI học phong cách của bạn theo thời gian.
+3.  **🌐 Network Moat**: Mạng lưới đối tác và Affiliate.
+4.  **⚡ Workflow Moat**: Các quy trình tự động hóa độc quyền.
+5.  **🏯 Identity Moat**: Thương hiệu và bản sắc riêng (Agency DNA).
 
-### 3. Run Marketing Commands
+## ⚖️ Governance: WIN-WIN-WIN
 
-```bash
-agency-os /market-analysis "your niche"
-agency-os /customer-profile "your product"
-agency-os /sales-strategy "your service"
-```
-
-## 🌐 Localization
-
-Agency OS supports multiple languages:
-
-```python
-from locales import i18n, t
-
-# English (default)
-i18n.set_locale("en")
-print(t("common.welcome"))
-# → "Welcome to Agency OS"
-
-# Vietnamese
-i18n.set_locale("vi")
-print(t("common.welcome"))
-# → "Chào mừng đến với Agency OS"
-```
-
-## 💰 Franchise Model
-
-| Tier | Price | Territories |
-|------|-------|-------------|
-| **Starter** | $0 | Personal use only |
-| **Franchise** | $500/month | Up to 3 territories |
-| **Enterprise** | Custom | Unlimited |
-
-## 🏗 Architecture
-
-```
-Agency OS
-├── Core Engine
-│   ├── Market Analysis
-│   ├── Customer Profiling
-│   └── Strategy Generation
-├── Localization
-│   ├── English (Primary)
-│   └── 20+ Languages (Secondary)
-├── Franchise Portal
-│   ├── Territory Management
-│   ├── Revenue Tracking
-│   └── Performance Analytics
-└── SaaS Affiliate Stack
-    ├── SEMrush, Ahrefs, ConvertKit
-    └── Auto-commission tracking
-```
-
-## 📋 Commands (85+)
-
-### 🔥 Marketing (Hỏa Công)
-| Command | Description |
-|---------|-------------|
-| `/marketing` | Marketing hub dashboard |
-| `/marketing/social` | Generate social posts (FB/TikTok/X) |
-| `/marketing/email` | Email campaigns |
-| `/marketing/ads` | Ad copy generator |
-
-### 💼 Sales (Địa Hình)
-| Command | Description |
-|---------|-------------|
-| `/sales` | Sales pipeline hub |
-| `/sales/lead` | Lead generation |
-| `/sales/proposal` | Proposal generator |
-| `/sales/close` | Closing scripts |
-
-### 🎯 Affiliate (Mưu Công)
-| Command | Description |
-|---------|-------------|
-| `/affiliate` | Affiliate hub |
-| `/affiliate/scout` | Find programs |
-| `/affiliate/compare` | Compare commissions |
-
-### 🎬 Video (Hỏa Công)
-| Command | Description |
-|---------|-------------|
-| `/video` | Video production hub |
-| `/video/script` | Generate scripts |
-| `/video/publish` | Multi-platform publishing |
-
-### 💰 Finance (Hư Thực)
-| Command | Description |
-|---------|-------------|
-| `/finance` | Finance dashboard |
-| `/finance/invoice` | Invoice generator |
-| `/finance/expense` | Expense tracking |
-| `/finance/runway` | Runway calculator |
-
-### 🏯 Strategy (Kế Hoạch)
-| Command | Description |
-|---------|-------------|
-| `/binh-phap` | 13 Binh Pháp advisor |
-| `/okr` | OKR management |
-| `/sprint` | Sprint planning |
-| `/ship` | Deploy to production |
-
-### 🔍 Intelligence (Dụng Gián)
-| Command | Description |
-|---------|-------------|
-| `/intel` | Intelligence hub |
-| `/intel/competitor` | Competitor analysis |
-| `/intel/vc` | VC research |
-| `/fundraise` | Fundraising prep |
-
-### ⚙️ Operations
-| Command | Description |
-|---------|-------------|
-| `/ops` | Operations hub |
-| `/ops/billing` | Billing automation |
-| `/crisis` | Crisis management |
-
-> 📖 Full command reference: See `/help` or [docs.agencyos.network](https://docs.agencyos.network)
-
-## 🎯 Use Cases
-
-1. **Solo Agency Owner**: Automate your entire agency operations
-2. **Marketer**: Generate content, manage campaigns with AI
-3. **Sales Professional**: Close deals faster with AI proposals
-4. **Affiliate Marketer**: Find and promote 50+ PayPal programs
-5. **Franchise Network**: License to agencies worldwide
-
-## ⚔️ Binh Pháp Strategy
-
-> 不戰而勝 - Win Without Fighting
-
-- **以逸待劳**: Let franchisees do local work
-- **借刀殺人**: Use SaaS platforms for income
-- **遠交近攻**: Global network, local execution
+Mọi giao dịch đều phải vượt qua cổng kiểm soát **Tam Thắng**:
+1.  👑 **Owner WIN**: Có Equity & Cashflow.
+2.  🏢 **Agency WIN**: Xây được Moat & Hạ tầng.
+3.  🚀 **Client WIN**: Nhận giá trị gấp 10 lần (10x Value).
 
 ---
 
-© 2025 AgencyOS Network | 85+ Commands | 13 Binh Pháp Clusters | Built for Global Agencies
+## 📂 Project Structure
+
+```
+mekong-cli/
+├── antigravity/        # Core Engine (Python)
+│   ├── core/           # Logic (Revenue, CRM, Content...)
+│   ├── franchise/      # Franchise Manager
+│   └── platform/       # Data Moat System
+├── .claude/            # AI Brain (Context Engineering)
+│   ├── agents/         # Agent Personas
+│   ├── commands/       # Slash Command Prompts
+│   └── skills/         # Executable Skills
+├── cli/                # CLI Interface (Typer)
+└── docs/               # Documentation
+```
+
+## 🤝 Contributing
+
+Dự án tuân thủ tiêu chuẩn **VIBE Development**:
+- **YAGNI / KISS / DRY**: Đơn giản là sức mạnh.
+- **100% Test Coverage**: Không test, không merge.
+- **Vietnamese First**: Code comment và Docs ưu tiên Tiếng Việt.
+
+---
+
+*Generated by Agency OS v2.5 | 2026*

@@ -1,66 +1,35 @@
 ---
-description: 💰 Revenue Hub - all money commands in one place
-argument-hint: [quote|invoice|stats|proposal]
+description: 💰 REVENUE - Check $1M ARR progress and financial health (Binh Pháp: Tài)
 ---
 
-## Mission
+Bạn là **Money Maker**, đang hiển thị tình hình tài chính của Agency.
 
-Unified revenue command hub. No arguments = show menu.
+## 📊 Dashboard Dòng tiền
 
-## Auto-Mode
+1.  **💰 Doanh thu hiện tại:**
+    - Sử dụng `antigravity.core.cashflow_engine` để lấy dữ liệu ARR thực tế.
+    - Hiển thị tiến độ tới mục tiêu **$1,000,000 ARR 2026**.
 
-```
-/revenue
-```
+2.  **📈 Tăng trưởng cần thiết:**
+    - Tính toán tỷ lệ tăng trưởng hàng tháng (MoM) cần đạt để kịp tiến độ.
+    - Cảnh báo nếu khoảng cách (Gap) đang quá lớn.
 
-Shows menu:
-- quote - Generate client quote
-- invoice - Create invoice
-- proposal - Generate proposal
-- stats - Revenue dashboard
+3.  **📂 Phân loại nguồn thu:**
+    - **WellNexus**: Social Commerce.
+    - **Agency**: Retainer + Equity.
+    - **SaaS**: AI Tools.
+    - **Consulting**: Chiến lược.
 
-## Subcommands
+## ⚖️ Luật Tam Thắng (WIN-WIN-WIN)
 
-```
-/revenue quote      → Same as /quote
-/revenue invoice    → Create invoice
-/revenue proposal   → Generate proposal
-/revenue stats      → Show MRR/ARR dashboard
-```
+Báo cáo danh sách các Deal đang chờ duyệt và điểm số Alignment:
+- 👑 **Owner WIN**: Equity & Cash.
+- 🏢 **Agency WIN**: Moat & Cashflow.
+- 🚀 **Client WIN**: ROI > 10x.
 
-## Workflow
+## 🚀 Hành động đề xuất
 
-```bash
-# turbo
-PYTHONPATH=. python3 -c "
-from antigravity.core.revenue_engine import RevenueEngine
-from antigravity.core.money_maker import MoneyMaker
+- Nếu doanh thu thấp: Gợi ý lệnh `/client:add` hoặc `/content:viral`.
+- Nếu Deal chưa cân bằng: Gợi ý tái cấu trúc giá bằng Binh Pháp 13 chương.
 
-engine = RevenueEngine()
-mm = MoneyMaker()
-
-print('╔═══════════════════════════════════════════════════════════╗')
-print('║  💰 REVENUE HUB                                           ║')
-print('╠═══════════════════════════════════════════════════════════╣')
-print('║                                                           ║')
-print('║  Commands:                                                ║')
-print('║  /revenue quote     → Generate quote                     ║')
-print('║  /revenue invoice   → Create invoice                     ║')
-print('║  /revenue proposal  → Generate proposal                  ║')
-print('║  /revenue stats     → Dashboard                          ║')
-print('║                                                           ║')
-print('╠═══════════════════════════════════════════════════════════╣')
-
-# Show quick stats
-stats = engine.get_stats()
-goal = engine.get_goal_dashboard()
-print(f'║  MRR: \${stats[\"mrr\"]:>10,.0f}                                   ║')
-print(f'║  ARR: \${stats[\"arr\"]:>10,.0f}                                   ║')
-print(f'║  \$1M Goal: {goal[\"progress_percent\"]:>5.1f}%                                   ║')
-print('╚═══════════════════════════════════════════════════════════╝')
-"
-```
-
----
-
-💰 **One hub. All revenue operations.**
+> 🏯 **"Tài tụ nhân tán, tài tán nhân tụ"** - Quản lý tiền bạc là quản lý con người.

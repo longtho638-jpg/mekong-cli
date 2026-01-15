@@ -36,6 +36,10 @@ const PRIVACY_PATTERNS = [
   /\.key$/,               // Private keys
   /id_rsa/,               // SSH keys
   /id_ed25519/,           // SSH keys
+  /\.pypirc$/,            // PyPI config
+  /\.npmrc$/,             // NPM config
+  /\.aws\/credentials$/,  // AWS credentials
+  /\.config\/gcloud\//,   // Google Cloud config
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════

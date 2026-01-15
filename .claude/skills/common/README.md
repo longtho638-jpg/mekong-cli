@@ -28,27 +28,27 @@ The helper checks for `GEMINI_API_KEY` in this order:
 
 1. **Process environment variable** (recommended for development)
    ```bash
-   export GEMINI_API_KEY='your-api-key'
+   export GEMINI_API_KEY='<your_gemini_key>'
    ```
 
 2. **Project root `.env` file**
    ```bash
-   echo 'GEMINI_API_KEY=your-api-key' > .env
+   echo 'GEMINI_API_KEY=<your_gemini_key>' > .env
    ```
 
 3. **.claude/.env file**
    ```bash
-   echo 'GEMINI_API_KEY=your-api-key' > .claude/.env
+   echo 'GEMINI_API_KEY=<your_gemini_key>' > .claude/.env
    ```
 
 4. **.claude/skills/.env file** (shared across all Gemini skills)
    ```bash
-   echo 'GEMINI_API_KEY=your-api-key' > .claude/skills/.env
+   echo 'GEMINI_API_KEY=<your_gemini_key>' > .claude/skills/.env
    ```
 
 5. **Skill directory `.env` file**
    ```bash
-   echo 'GEMINI_API_KEY=your-api-key' > .claude/skills/your-skill/.env
+   echo 'GEMINI_API_KEY=<your_gemini_key>' > .claude/skills/your-skill/.env
    ```
 
 ### Vertex AI Support
