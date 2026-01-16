@@ -111,7 +111,7 @@ def cmd_client_add(name: str):
     magnet.qualify_lead(lead, budget=1000, score=70)
     
     # Convert to client
-    client = magnet.convert_to_client(lead)
+    magnet.convert_to_client(lead)
     
     print(f"\n✅ Client '{name}' added!")
     print(f"   🏢 Company: {company}")

@@ -482,10 +482,10 @@ def source_and_qualify_deals(channel: str = "product_hunt", limit: int = 5) -> D
         
         if qualification.get("qualified"):
             # Agent 4: Draft email
-            email = scout.draft_outreach_email(startup, score)
+            scout.draft_outreach_email(startup, score)
             
             # Agent 8: Track source
-            referral = scout.track_referral(
+            scout.track_referral(
                 f"deal-{datetime.now().strftime('%Y%m%d%H%M%S')}",
                 channel,
                 None

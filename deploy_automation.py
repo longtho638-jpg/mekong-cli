@@ -80,7 +80,7 @@ class DeployManager:
         env_flags = ",".join([f"{k}={v}" for k, v in valid_env.items()])
 
         # 2. Deploy to Cloud Run
-        with Status(f"[bold yellow]🏗️  Building & Deploying {self.service_name}...", console=console) as status:
+        with Status(f"[bold yellow]🏗️  Building & Deploying {self.service_name}...", console=console):
             cmd = [
                 "gcloud", "run", "deploy", self.service_name,
                 "--source", "./backend",

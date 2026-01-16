@@ -78,7 +78,7 @@ def root():
 
 @app.get("/metrics/win3")
 def win3_metrics():
-    qualified_deals = sum(1 for d in DEAL_PIPELINE if d["stage"] != "sourced")
+    sum(1 for d in DEAL_PIPELINE if d["stage"] != "sourced")
     return {
         "anh_win": {
             "visibility": "80%",

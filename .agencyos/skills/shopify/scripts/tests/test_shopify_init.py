@@ -95,7 +95,6 @@ ANOTHER_VALID=test
         """Test configuration loading priority."""
         skill_dir = tmp_path / "skill"
         skills_dir = tmp_path
-        claude_dir = tmp_path.parent
 
         skill_dir.mkdir(parents=True)
 

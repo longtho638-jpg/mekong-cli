@@ -123,7 +123,7 @@ class ContractGenerator:
     
     def format_contract(self, contract: Contract) -> str:
         """Render the contract as a clean, text-based document."""
-        end_date = contract.start_date + timedelta(days=30 * contract.duration_months)
+        contract.start_date + timedelta(days=30 * contract.duration_months)
         total_value = contract.monthly_fee * contract.duration_months
         
         lines = [

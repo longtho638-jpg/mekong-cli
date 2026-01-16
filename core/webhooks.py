@@ -120,7 +120,7 @@ class WebhookManager:
         """Format webhook dashboard."""
         active = sum(1 for w in self.webhooks.values() if w.active)
         total_deliveries = sum(w.deliveries for w in self.webhooks.values())
-        total_failures = sum(w.failures for w in self.webhooks.values())
+        sum(w.failures for w in self.webhooks.values())
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",

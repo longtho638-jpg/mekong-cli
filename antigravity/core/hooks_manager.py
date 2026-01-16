@@ -154,7 +154,7 @@ class HooksManager:
         Currently simulates JS hooks with Python logic for performance.
         """
         # Ensure hook file path is resolved relative to project root
-        hook_path = self.base_path / hook.file
+        self.base_path / hook.file
         
         result = {
             "hook": hook.name,

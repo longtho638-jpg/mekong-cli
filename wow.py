@@ -60,7 +60,7 @@ def check_wingman(console: Console, settings) -> int:
     score = 0
     
     # Voice Clone
-    vc = VoiceClone()
+    VoiceClone()
     vc_ready = bool(settings.ELEVENLABS_API_KEY)
     wingman_table.add_row(
         "🎙️ Voice Clone", 
@@ -70,7 +70,7 @@ def check_wingman(console: Console, settings) -> int:
     if vc_ready: score += 15
     
     # Telegram Bot
-    bot = TelegramBot()
+    TelegramBot()
     bot_ready = bool(settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID)
     wingman_table.add_row(
         "📱 Telegram Bot", 
@@ -107,7 +107,7 @@ def check_business_systems(console: Console, settings) -> int:
     if wd_ready: score += 10
     
     # Integrations
-    keys_mgr = APIKeysManager("Test Agency")
+    APIKeysManager("Test Agency")
     stripe_key = settings.STRIPE_SECRET_KEY
     biz_table.add_row(
         "💳 Payments", 
