@@ -1,13 +1,13 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Resend } from 'resend';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Email templates
 const templates = {
-    welcome: (data: { name: string; licenseKey: string; plan: string }) => ({
-        subject: '🎉 Welcome to AgencyOS - Your License Inside!',
-        html: `
+  welcome: (data: { name: string; licenseKey: string; plan: string }) => ({
+    subject: "🎉 Welcome to AgencyOS - Your License Inside!",
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +25,7 @@ const templates = {
         
         <!-- Main Card -->
         <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(245, 158, 11, 0.1)); border: 1px solid #27272a; border-radius: 16px; padding: 32px;">
-            <h2 style="color: #ffffff; margin: 0 0 16px 0;">Hello ${data.name || 'there'}! 👋</h2>
+            <h2 style="color: #ffffff; margin: 0 0 16px 0;">Hello ${data.name || "there"}! 👋</h2>
             <p style="color: #a1a1aa; line-height: 1.6;">
                 Thank you for joining AgencyOS <strong style="color: #22c55e;">${data.plan.toUpperCase()}</strong>! 
                 Your account is now active and ready to transform how you run your agency.
@@ -62,11 +62,11 @@ const templates = {
 </body>
 </html>
         `,
-    }),
+  }),
 
-    onboardingDay1: (data: { name: string }) => ({
-        subject: '🚀 Your first AgencyOS command',
-        html: `
+  onboardingDay1: (data: { name: string }) => ({
+    subject: "🚀 Your first AgencyOS command",
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -80,7 +80,7 @@ const templates = {
         </div>
         
         <div style="background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px;">
-            <h2 style="color: #ffffff; margin: 0 0 16px 0;">Hey ${data.name || 'there'}! 👋</h2>
+            <h2 style="color: #ffffff; margin: 0 0 16px 0;">Hey ${data.name || "there"}! 👋</h2>
             <p style="color: #a1a1aa; line-height: 1.6;">
                 Ready to save your first hour today? Let's try your first command!
             </p>
@@ -112,11 +112,11 @@ const templates = {
 </body>
 </html>
         `,
-    }),
+  }),
 
-    onboardingDay3: (data: { name: string }) => ({
-        subject: '⚡ 5 commands that save 10+ hours/week',
-        html: `
+  onboardingDay3: (data: { name: string }) => ({
+    subject: "⚡ 5 commands that save 10+ hours/week",
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -168,11 +168,11 @@ const templates = {
 </body>
 </html>
         `,
-    }),
+  }),
 
-    onboardingDay7: (data: { name: string; referralCode?: string }) => ({
-        subject: '💰 Earn 40% referring agencies',
-        html: `
+  onboardingDay7: (data: { name: string; referralCode?: string }) => ({
+    subject: "💰 Earn 40% referring agencies",
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -214,50 +214,58 @@ const templates = {
 </body>
 </html>
         `,
-    }),
+  }),
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
-    try {
-        const { to, template, data } = req.body;
+  try {
+    const { to, template, data } = req.body;
 
-        if (!to || !template) {
-            return res.status(400).json({ error: 'Missing required fields: to, template' });
-        }
-
-        const templateFn = templates[template as keyof typeof templates];
-        if (!templateFn) {
-            return res.status(400).json({
-                error: 'Invalid template',
-                available: Object.keys(templates)
-            });
-        }
-
-        const emailContent = templateFn(data || {});
-
-        const { data: result, error } = await resend.emails.send({
-            from: process.env.FROM_EMAIL || 'AgencyOS <hello@agencyos.network>',
-            to: to,
-            subject: emailContent.subject,
-            html: emailContent.html,
-        });
-
-        if (error) {
-            console.error('Resend error:', error);
-            return res.status(500).json({ error: 'Failed to send email', details: error });
-        }
-
-        return res.json({ success: true, id: result?.id });
-
-    } catch (error: any) {
-        console.error('Email send error:', error);
-        return res.status(500).json({ error: 'Email send failed', message: error.message });
+    if (!to || !template) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields: to, template" });
     }
+
+    const templateFn = templates[template as keyof typeof templates];
+    if (!templateFn) {
+      return res.status(400).json({
+        error: "Invalid template",
+        available: Object.keys(templates),
+      });
+    }
+
+    const emailContent = templateFn(data || {});
+
+    const { data: result, error } = await resend.emails.send({
+      from: process.env.FROM_EMAIL || "AgencyOS <hello@agencyos.network>",
+      to: to,
+      subject: emailContent.subject,
+      html: emailContent.html,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return res
+        .status(500)
+        .json({ error: "Failed to send email", details: error });
+    }
+
+    return res.json({ success: true, id: result?.id });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown email error";
+    console.error("Email send error:", errorMessage);
+    return res
+      .status(500)
+      .json({ error: "Email send failed", message: errorMessage });
+  }
 }
