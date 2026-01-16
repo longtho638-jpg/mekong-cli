@@ -16,7 +16,7 @@ WIN³ Integration:
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Dict, List, Optional
+from typing import Dict
 import redis
 import uvicorn
 from datetime import datetime

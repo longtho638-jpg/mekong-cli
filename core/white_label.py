@@ -12,10 +12,8 @@ Features:
 - Email templates
 """
 
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
 
 
 @dataclass 
@@ -112,7 +110,7 @@ class WhiteLabelBranding:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎨 WHITE-LABEL BRANDING                                  ║",
+            "║  🎨 WHITE-LABEL BRANDING                                  ║",
             f"║  {self.config.agency_name:<51}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  📝 Tagline: {self.config.tagline[:40]:<40}  ║",

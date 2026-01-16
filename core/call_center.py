@@ -15,7 +15,7 @@ Roles:
 import uuid
 import logging
 import re
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum

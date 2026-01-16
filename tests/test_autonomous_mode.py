@@ -5,12 +5,11 @@ Tests for Autonomous Mode system.
 import sys
 import os
 import pytest
-from datetime import datetime
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.autonomous_mode import AutonomousOrchestrator, AutonomousStatus, Task
+from antigravity.core.autonomous_mode import AutonomousOrchestrator, AutonomousStatus
 
 class TestAutonomousOrchestrator:
     

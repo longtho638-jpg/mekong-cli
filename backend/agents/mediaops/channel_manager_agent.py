@@ -3,7 +3,7 @@ Channel Manager Agent - Multi-Platform Distribution
 Manages content distribution across multiple channels.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum

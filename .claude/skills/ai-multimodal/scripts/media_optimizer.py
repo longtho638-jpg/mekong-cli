@@ -13,7 +13,6 @@ Features:
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -174,7 +173,7 @@ def optimize_video(
     cmd.append(output_path)
 
     if verbose:
-        print(f"\nOptimizing...")
+        print("\nOptimizing...")
         print(f"  Command: {' '.join(cmd)}")
 
     try:
@@ -232,7 +231,7 @@ def optimize_audio(
     ]
 
     if verbose:
-        print(f"\nOptimizing...")
+        print("\nOptimizing...")
 
     try:
         subprocess.run(cmd, check=True, capture_output=not verbose)

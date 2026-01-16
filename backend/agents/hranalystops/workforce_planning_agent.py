@@ -3,9 +3,9 @@ Workforce Planning Agent - Headcount & Forecasting
 Plans workforce needs and forecasts hiring.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from dataclasses import dataclass
+from typing import Dict
+from datetime import datetime
 from enum import Enum
 import random
 

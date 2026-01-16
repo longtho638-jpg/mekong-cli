@@ -17,14 +17,14 @@ Binh Pháp: 💂 Tướng (Leadership) - Commanding the agent workforce.
 
 import logging
 import time
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
 
 from .agent_chains import (
-    AGENT_CHAINS, AGENT_INVENTORY, AgentStep, 
-    get_chain, get_chain_summary, AgentCategory
+    AgentStep, 
+    get_chain
 )
 
 # Configure logging

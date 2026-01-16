@@ -3,8 +3,8 @@ Compensation Agent - Salary & Pay Equity Management
 Manages salary structures, benchmarking, and equity analysis.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import Dict
 from datetime import datetime
 from enum import Enum
 import random

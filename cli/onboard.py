@@ -90,7 +90,7 @@ def show_next_steps(dna: AgencyDNA, filepath: str):
 ╚═══════════════════════════════════════════════════════════╝
 """)
     
-    print(f"   📄 Business Plan saved to:")
+    print("   📄 Business Plan saved to:")
     print(f"      {filepath}")
     print()
     print("   🚀 NEXT STEPS:")

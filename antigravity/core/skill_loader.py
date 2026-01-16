@@ -15,7 +15,7 @@ Usage:
     print_skill_matrix()
 """
 
-from typing import Dict, List, Set, Optional
+from typing import Dict, List, Set
 from pathlib import Path
 
 # Base path for skills

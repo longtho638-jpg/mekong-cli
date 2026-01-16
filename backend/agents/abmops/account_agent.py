@@ -3,8 +3,8 @@ Account Agent - Target Account Management
 Manages target accounts, tiers, and ICP scoring.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -151,6 +151,6 @@ if __name__ == "__main__":
     
     # Stats
     stats = agent.get_stats()
-    print(f"\n📈 Stats:")
+    print("\n📈 Stats:")
     print(f"   Total: {stats['total_accounts']}")
     print(f"   Tier 1: {stats['tier_1']}")

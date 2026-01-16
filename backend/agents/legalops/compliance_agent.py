@@ -3,7 +3,7 @@ Compliance Agent - Regulatory & Policy Compliance
 Tracks regulatory requirements and compliance status.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

@@ -150,7 +150,7 @@ class InvoiceAutomation:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  💳 INVOICE AUTOMATION                                    ║",
+            "║  💳 INVOICE AUTOMATION                                    ║",
             f"║  ${stats['total_invoiced']:,.0f} total │ ${stats['outstanding']:,.0f} outstanding   ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📊 INVOICE SUMMARY                                       ║",

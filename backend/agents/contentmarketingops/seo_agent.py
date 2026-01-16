@@ -3,9 +3,9 @@ SEO Agent - Search Engine Optimization
 Manages keyword research, rankings, and technical SEO.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from dataclasses import dataclass
+from typing import List, Dict
+from datetime import datetime
 from enum import Enum
 import random
 

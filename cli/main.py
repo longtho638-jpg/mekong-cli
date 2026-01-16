@@ -22,7 +22,6 @@ Commands:
 import sys
 import os
 from rich.console import Console
-from rich.panel import Panel
 from rich.table import Table
 from rich.markdown import Markdown
 from cli.theme import get_theme
@@ -180,7 +179,7 @@ def run_invoice():
         system = InvoiceSystem()
         summary = system.get_summary()
         
-        print(f"📊 Invoice Summary:")
+        print("📊 Invoice Summary:")
         print(f"   Total: {summary['total_invoices']}")
         print(f"   Paid: {summary['paid']}")
         print(f"   Pending: {summary['pending']}")
@@ -316,7 +315,6 @@ def run_plan():
     print("\n📋 Task Plan (Manus 3-File Pattern)")
     print("-" * 50)
     
-    import os
     from pathlib import Path
     from datetime import datetime
     
@@ -356,10 +354,10 @@ Created: {datetime.now().strftime('%Y-%m-%d %H:%M')}
         if not notes.exists():
             notes.write_text("# Research Notes\n\n", encoding="utf-8")
         
-        print(f"   ✅ Created: plans/task_plan.md")
-        print(f"   ✅ Created: plans/notes.md")
+        print("   ✅ Created: plans/task_plan.md")
+        print("   ✅ Created: plans/notes.md")
         print(f"\n   Task: {task}")
-        print(f"\n   Next: mekong cook @plans/task_plan.md")
+        print("\n   Next: mekong cook @plans/task_plan.md")
     else:
         # Show current plan
         if task_plan.exists():
@@ -587,7 +585,7 @@ class {module_name.title()}Controller:
         print(f"   ✅ Created: core/controllers/{module_name}_controller.py")
         
         print(f"\n   🎉 Module '{module_name}' created successfully!")
-        print(f"\n   Next steps:")
+        print("\n   Next steps:")
         print(f"   1. Edit core/entities/{module_name}.py (add fields)")
         print(f"   2. Edit core/use_cases/create_{module_name}.py (business logic)")
         print(f"   3. Edit core/controllers/{module_name}_controller.py (API routes)")

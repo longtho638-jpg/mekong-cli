@@ -4,8 +4,7 @@ Manages quotas, attainment, and team performance.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
+from typing import List, Dict
 from enum import Enum
 
 
@@ -157,7 +156,7 @@ if __name__ == "__main__":
     
     # Team summary
     summary = agent.get_team_summary()
-    print(f"\n📈 Team Summary:")
+    print("\n📈 Team Summary:")
     print(f"   Quota: ${summary.total_quota:,.0f}")
     print(f"   Closed: ${summary.total_closed:,.0f}")
     print(f"   Attainment: {summary.attainment:.0f}%")

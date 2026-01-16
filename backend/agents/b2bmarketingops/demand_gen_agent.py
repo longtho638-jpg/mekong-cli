@@ -3,8 +3,8 @@ Demand Gen Agent - B2B Lead Generation
 Manages lead generation campaigns and MQLs.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     for i in range(50):
         agent.generate_lead(c1.id, f"lead{i}@company.com", f"Company {i}")
     
-    print(f"\n📊 Results:")
+    print("\n📊 Results:")
     print(f"   Leads: {c1.leads_generated}")
     print(f"   MQLs: {c1.mqls}")
     print(f"   MQL Rate: {c1.mql_rate:.0f}%")

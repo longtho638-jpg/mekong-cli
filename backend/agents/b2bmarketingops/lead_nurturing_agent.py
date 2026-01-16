@@ -4,8 +4,8 @@ Manages lead nurturing and handoff to sales.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from typing import List, Dict
+from datetime import datetime
 from enum import Enum
 import random
 
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     # Simulate
     agent.simulate_performance(s1.id)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Enrolled: {s1.enrolled}")
     print(f"   Completed: {s1.completed} ({s1.completion_rate:.0f}%)")
     print(f"   Converted: {s1.converted} ({s1.conversion_rate:.0f}%)")

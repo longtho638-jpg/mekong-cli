@@ -12,7 +12,7 @@ Features:
 - Communication hub
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -103,7 +103,7 @@ class ClientPortalPro:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 CLIENT PORTAL                                         ║",
+            "║  🎯 CLIENT PORTAL                                         ║",
             f"║  {portal.client_name:<50}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  🌐 URL: https://{portal.subdomain}.portal.agency          ║",
@@ -147,7 +147,7 @@ class ClientPortalPro:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎯 CLIENT PORTALS OVERVIEW                               ║",
+            "║  🎯 CLIENT PORTALS OVERVIEW                               ║",
             f"║  {len(self.portals)} portals │ {active} active │ {total_logins} total logins        ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  Client         │ Subdomain       │ Status  │ Logins    ║",

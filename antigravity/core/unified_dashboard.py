@@ -16,15 +16,15 @@ Binh Pháp: 🏯 Hình (Strategic Configuration) - Seeing the whole army.
 """
 
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 from .agent_chains import AGENT_INVENTORY, AGENT_CHAINS
 from .agent_crews import CREWS
-from .skill_loader import get_total_skills, get_total_mappings, get_skills_for_agent
+from .skill_loader import get_total_skills, get_total_mappings
 from .rules_loader import get_total_rules, get_total_assignments
 from .hooks_manager import HOOKS
 from .agent_memory import get_agent_memory
-from .coding_level import get_level, Level
+from .coding_level import get_level
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -114,13 +114,13 @@ class AgenticDashboard:
         print(f"     └─ Active Chains : {stats['inventory']['chains']}")
         
         # Section 2: IP
-        print(f"\n  🎯 INTELLECTUAL PROPERTY:")
+        print("\n  🎯 INTELLECTUAL PROPERTY:")
         print(f"     ├─ Specialized Skills : {stats['ip']['skills']}")
         print(f"     ├─ Governance Rules   : {stats['ip']['rules']}")
         print(f"     └─ Automation Hooks   : {stats['ip']['hooks']}")
         
         # Section 3: Cognition
-        print(f"\n  🧠 COGNITION & LEARNING:")
+        print("\n  🧠 COGNITION & LEARNING:")
         print(f"     ├─ Global History     : {stats['cognition']['memories']} records")
         print(f"     ├─ Learned Patterns   : {stats['cognition']['patterns']}")
         print(f"     └─ System Proficiency : {stats['cognition']['success_rate']:.1%}")

@@ -3,7 +3,7 @@ Opportunity Pipeline Agent - Strategic Deals
 Manages strategic opportunities and deal pipeline.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     agent.advance_stage(o2.id, OpportunityStage.NEGOTIATION)
     agent.advance_stage(o3.id, OpportunityStage.CLOSED_WON)
     
-    print(f"\n📊 Pipeline:")
+    print("\n📊 Pipeline:")
     for stage, opps in agent.get_pipeline().items():
         if opps:
             print(f"   {stage}: {len(opps)} deals")

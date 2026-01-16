@@ -332,13 +332,13 @@ shopify {project_type} deploy
             }
         }
         (project_dir / 'package.json').write_text(json.dumps(package_json, indent=2))
-        print(f"✓ Created package.json")
+        print("✓ Created package.json")
 
         print(f"\n✓ App '{app_name}' initialized successfully!")
-        print(f"\nNext steps:")
+        print("\nNext steps:")
         print(f"  cd {app_name}")
-        print(f"  npm install")
-        print(f"  shopify app dev")
+        print("  npm install")
+        print("  shopify app dev")
 
     def init_extension(self) -> None:
         """Initialize Shopify extension project."""
@@ -358,9 +358,9 @@ shopify {project_type} deploy
         self.create_readme(project_dir, "extension", extension_name)
 
         print(f"\n✓ Extension '{extension_name}' initialized successfully!")
-        print(f"\nNext steps:")
+        print("\nNext steps:")
         print(f"  cd {extension_name}")
-        print(f"  shopify app dev")
+        print("  shopify app dev")
 
     def init_theme(self) -> None:
         """Initialize Shopify theme project."""

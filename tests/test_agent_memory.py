@@ -5,13 +5,11 @@ Tests for Agent Memory system.
 import sys
 import os
 import pytest
-from pathlib import Path
-from datetime import datetime
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.agent_memory import AgentMemory, Memory, Pattern
+from antigravity.core.agent_memory import AgentMemory
 
 class TestAgentMemory:
     

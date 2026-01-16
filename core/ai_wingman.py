@@ -12,10 +12,8 @@ Features:
 - Notify on important events
 """
 
-import os
-import json
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 from datetime import datetime
 from enum import Enum
 from dataclasses import dataclass, field

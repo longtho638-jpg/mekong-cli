@@ -3,8 +3,7 @@ CRM Module - Service Logic
 """
 import uuid
 import logging
-from typing import Dict, List, Any, Optional
-from datetime import datetime
+from typing import Dict, List, Any
 
 from .entities import Contact, Deal, ContactType, DealStage
 try:

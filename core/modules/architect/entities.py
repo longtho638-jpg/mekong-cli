@@ -1,9 +1,9 @@
 """
 Architect Module - Entities
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import List, Dict
+from typing import List
 
 class ArchitectureType(Enum):
     SIMPLE_MODULAR = "Simple Modular"

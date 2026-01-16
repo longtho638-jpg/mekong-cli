@@ -5,7 +5,6 @@ Tests for Coding Level controller.
 import sys
 import os
 import pytest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 # Add parent to path
@@ -13,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.coding_level import (
     LEVELS,
-    CodingLevel,
     Level,
     get_level,
     set_level,

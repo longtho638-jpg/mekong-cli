@@ -3,8 +3,8 @@ Activity Tracker Agent - Sales Activity Logging
 Tracks calls, emails, meetings, and daily activities.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, date
 from enum import Enum
 import random
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     
     # Today stats
     stats = agent.get_today_stats()
-    print(f"\n📈 Today's Stats:")
+    print("\n📈 Today's Stats:")
     print(f"   Calls: {stats.calls}")
     print(f"   Emails: {stats.emails}")
     print(f"   Meetings: {stats.meetings}")

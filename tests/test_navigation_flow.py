@@ -10,11 +10,10 @@ Tests 100% of pages in the application:
 """
 
 import sys
-import os
 import asyncio
 import aiohttp
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import List
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum

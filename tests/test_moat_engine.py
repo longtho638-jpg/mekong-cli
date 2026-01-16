@@ -9,7 +9,7 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.moat_engine import MoatEngine, Moat
+from antigravity.core.moat_engine import MoatEngine
 
 class TestMoatEngine:
     

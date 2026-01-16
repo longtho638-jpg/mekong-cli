@@ -16,14 +16,13 @@ Binh Pháp: ⚡ Cửu Biến (Variations) - Adapting to the situation.
 '''
 
 import logging
-import time
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from .agent_crews import CREWS, run_crew, get_crew, CrewStatus
-from .agent_orchestrator import AgentOrchestrator, StepStatus
+from .agent_crews import run_crew, CrewStatus
+from .agent_orchestrator import AgentOrchestrator
 from .agent_memory import get_agent_memory
 
 # Configure logging
@@ -190,7 +189,7 @@ class AutonomousOrchestrator:
                 break # Critical failure stops the mission
             
             if self.verbose:
-                print(f"   ✓ Phase complete")
+                print("   ✓ Phase complete")
                 
             if interactive:
                 print(f"\n   [PAUSED] Mission objective {task.id} achieved. Proceed? (y/n)")

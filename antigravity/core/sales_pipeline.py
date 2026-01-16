@@ -11,10 +11,10 @@ Binh Pháp: 🧲 Thế Trận (Strategic Configuration) - Building momentum thro
 
 import logging
 from datetime import datetime
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Union
 
 from .models.deal import StartupDeal, DealStage
-from .config import DealTier, get_tier_pricing
+from .config import DealTier
 from .base import BaseEngine
 
 # Configure logging

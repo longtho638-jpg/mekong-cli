@@ -21,7 +21,6 @@ Binh Pháp Application:
 - Chapter 3 (Mưu Công): Win negotiations without fighting
 """
 
-import os
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pydantic import BaseModel

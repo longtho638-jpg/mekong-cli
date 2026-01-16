@@ -16,7 +16,7 @@ import uuid
 import logging
 import hashlib
 import re
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum

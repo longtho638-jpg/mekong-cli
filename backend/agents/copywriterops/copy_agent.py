@@ -4,7 +4,7 @@ Manages copy creation, variants, and performance.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -87,7 +87,7 @@ class CopyAgent:
         copy_id = f"copy_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
         
         variant = CopyVariant(
-            id=f"var_A",
+            id="var_A",
             text=initial_text
         )
         

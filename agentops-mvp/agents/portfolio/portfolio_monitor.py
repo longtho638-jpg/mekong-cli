@@ -21,7 +21,7 @@ ANH WIN Impact:
 import os
 import redis
 from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool

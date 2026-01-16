@@ -5,7 +5,6 @@ Tests for VIBE IDE Core system.
 import sys
 import os
 import pytest
-from pathlib import Path
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

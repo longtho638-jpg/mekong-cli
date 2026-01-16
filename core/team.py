@@ -12,8 +12,8 @@ Features:
 - Skill tracking
 """
 
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
+from typing import Dict, List
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 import uuid
@@ -173,7 +173,7 @@ class TeamPerformance:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  👥 TEAM LEADERBOARD                                      ║",
+            "║  👥 TEAM LEADERBOARD                                      ║",
             f"║  {self.agency_name:<51}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  Rank │ Name           │ Role      │ Score │ Projects   ║",

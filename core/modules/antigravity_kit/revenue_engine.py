@@ -3,7 +3,7 @@ Antigravity Kit - Revenue Engine Module
 Wrapper around Core Finance
 """
 from typing import Dict
-from core.modules.finance import FinancialReportsService, ProfitLoss
+from core.modules.finance import FinancialReportsService
 
 class RevenueEngine:
     """Powering the cash flow."""

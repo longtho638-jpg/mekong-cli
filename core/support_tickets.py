@@ -12,7 +12,7 @@ Features:
 - Response time SLA
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -118,7 +118,7 @@ class SupportTickets:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🎫 SUPPORT TICKETS                                       ║",
+            "║  🎫 SUPPORT TICKETS                                       ║",
             f"║  {stats['total']} total │ {stats['open']} open │ {stats['resolved']} resolved             ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📊 SLA TARGETS                                           ║",

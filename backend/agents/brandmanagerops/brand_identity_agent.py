@@ -4,9 +4,7 @@ Manages brand guidelines, tone of voice, and brand health.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
-from enum import Enum
+from typing import List, Dict
 import random
 
 
@@ -145,15 +143,15 @@ if __name__ == "__main__":
     print(f"📋 Guidelines: {g1.name}")
     print(f"   Version: {g1.version}")
     
-    print(f"\n🎨 Colors:")
+    print("\n🎨 Colors:")
     print(f"   Primary: {g1.colors.primary}")
     print(f"   Secondary: {g1.colors.secondary}")
     
-    print(f"\n📝 Typography:")
+    print("\n📝 Typography:")
     print(f"   Heading: {g1.typography.heading_font}")
     print(f"   Body: {g1.typography.body_font}")
     
-    print(f"\n🎯 Tone:")
+    print("\n🎯 Tone:")
     print(f"   Personality: {', '.join(g1.tone.personality)}")
     
     # Logo rules

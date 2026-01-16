@@ -3,9 +3,8 @@ Technical SEO Agent - Site Audits & Core Web Vitals
 Manages technical SEO audits, crawlability, and performance.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
-from datetime import datetime
 from enum import Enum
 import random
 

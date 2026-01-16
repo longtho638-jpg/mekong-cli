@@ -3,11 +3,10 @@ Forecast Agent - Revenue Forecasting
 Predicts revenue and analyzes pipeline trends.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
-import random
 
 
 class ForecastPeriod(Enum):
@@ -174,7 +173,7 @@ if __name__ == "__main__":
     # Generate forecast
     forecast = agent.generate_forecast(ForecastPeriod.MONTHLY)
     
-    print(f"📊 Monthly Forecast:")
+    print("📊 Monthly Forecast:")
     print(f"   Pipeline: ${forecast.pipeline_value:,.0f}")
     print(f"   Weighted: ${forecast.weighted_value:,.0f}")
     print(f"   Best Case: ${forecast.best_case:,.0f}")

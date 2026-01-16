@@ -8,7 +8,7 @@ def run_scout_cmd(feature: str = typer.Argument(..., help="Feature to analyze"))
     """
     Run Scout Agent to analyze a feature (for testing).
     """
-    console.print(f"\n[bold blue]🔍 Running Scout Agent...[/bold blue]")
+    console.print("\n[bold blue]🔍 Running Scout Agent...[/bold blue]")
     console.print(f"   Feature: {feature}")
     
     console.print("\n   [cyan]Scout would:[/cyan]")

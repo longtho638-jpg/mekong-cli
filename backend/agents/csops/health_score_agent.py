@@ -3,7 +3,7 @@ Health Score Agent - User Health & Churn Prediction
 Calculates health scores and identifies at-risk users.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

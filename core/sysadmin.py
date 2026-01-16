@@ -13,7 +13,7 @@ Roles:
 """
 
 from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 import uuid
@@ -189,7 +189,7 @@ class SysAdmin:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🔧 SYSTEMS ADMINISTRATOR                                 ║",
+            "║  🔧 SYSTEMS ADMINISTRATOR                                 ║",
             f"║  {stats['servers']} servers │ {stats['active_users']} users │ {stats['successful_backups']} backups    ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  🖥️ SERVERS                                               ║",

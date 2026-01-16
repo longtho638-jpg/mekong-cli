@@ -6,7 +6,6 @@ import sys
 import os
 import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,9 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.hooks_manager import (
     HooksManager,
     Hook,
-    HOOKS,
-    SUITE_TRIGGERS,
-    validate_deal
+    HOOKS
 )
 
 class TestHooksManager:

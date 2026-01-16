@@ -3,8 +3,8 @@ Influencer Discovery Agent - Search & Vetting
 Manages influencer discovery and audience analysis.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random

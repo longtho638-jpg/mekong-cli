@@ -9,12 +9,9 @@ Checks feature implementation, configuration, and readiness.
 
 import sys
 import os
-from datetime import datetime
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.progress import track
-from rich.layout import Layout
 from rich import box
 
 # Add core to path

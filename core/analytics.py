@@ -12,13 +12,11 @@ Features:
 - Financial forecasting
 """
 
-import os
-import json
 import random
 import logging
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 # Configure logging

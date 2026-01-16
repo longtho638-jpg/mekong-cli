@@ -4,7 +4,7 @@ Manages personalized outreach and engagement scoring.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -185,6 +185,6 @@ if __name__ == "__main__":
     print(f"   Response Rate: {p1.response_rate:.0f}%")
     
     # Engagement scores
-    print(f"\n⚡ Engagement Scores:")
+    print("\n⚡ Engagement Scores:")
     print(f"   acc_001: {agent.get_engagement_score('acc_001')}")
     print(f"   acc_002: {agent.get_engagement_score('acc_002')}")

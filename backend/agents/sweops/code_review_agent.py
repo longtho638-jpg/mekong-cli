@@ -5,7 +5,7 @@ Manages pull requests, reviews, and merge tracking.
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 import random
 
@@ -199,5 +199,5 @@ if __name__ == "__main__":
     # Merge
     agent.merge_pr(pr1.id)
     
-    print(f"\n🎉 Merged!")
+    print("\n🎉 Merged!")
     print(f"   Time to merge: {pr1.time_to_merge:.1f}h" if pr1.time_to_merge else "")

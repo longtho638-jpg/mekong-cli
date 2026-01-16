@@ -7,8 +7,7 @@ import os
 import shutil
 import subprocess
 import typer
-from pathlib import Path
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 from rich.console import Console
 from rich.panel import Panel
 from rich.status import Status

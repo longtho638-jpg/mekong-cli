@@ -13,9 +13,7 @@ Features:
 """
 
 import logging
-import json
-import uuid
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -99,7 +97,7 @@ class GuildConstitution:
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  Current: {cfg['icon']} {cfg['label']:<15} Trust: {score:>3}/100 {' ' * 14}║",
             "║  ───────────────────────────────────────────────────────  ║",
-            f"║  Privileges:                                              ║",
+            "║  Privileges:                                              ║",
             f"║    • Voting Rights: {'✅' if cfg['vote'] else '❌'}                                ",
             f"║    • Referral Fee:  {int(cfg['share']*100):>2}%                                 ║",
             "╠═══════════════════════════════════════════════════════════╣",

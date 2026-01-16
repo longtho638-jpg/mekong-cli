@@ -7,8 +7,6 @@ Initialize new Next.js project with best practices, TypeScript, and optimized co
 
 import argparse
 import json
-import os
-import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
@@ -492,12 +490,12 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/deploym
             self.create_config_files()
 
             print()
-            print(f"✓ Project initialized successfully!")
+            print("✓ Project initialized successfully!")
             print()
-            print(f"Next steps:")
+            print("Next steps:")
             print(f"  cd {self.name}")
-            print(f"  npm install")
-            print(f"  npm run dev")
+            print("  npm install")
+            print("  npm run dev")
             print()
 
         except Exception as e:

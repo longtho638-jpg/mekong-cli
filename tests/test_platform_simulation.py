@@ -6,18 +6,15 @@ Tests all 22 hubs and 161 agents for logic correctness.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from typing import Dict, Any
-from dataclasses import asdict
 
 # Import mock data factory
-from tests.fixtures.mock_data import MockDataFactory, MockClient, MockProject
+from tests.fixtures.mock_data import MockDataFactory
 
 # Import core modules
 from core.hybrid_router import HybridRouter, TaskType, TaskComplexity, route_task

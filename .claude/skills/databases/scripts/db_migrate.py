@@ -6,7 +6,6 @@ Generates and applies schema migrations with rollback support.
 
 import argparse
 import json
-import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime

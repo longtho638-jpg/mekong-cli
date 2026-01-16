@@ -4,9 +4,8 @@ Manages product positioning, value props, and differentiation.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
-from enum import Enum
 import random
 
 
@@ -164,7 +163,7 @@ if __name__ == "__main__":
     print(f"   Category: {p1.category}")
     print(f"   Target: {p1.target_audience}")
     
-    print(f"\n💬 Value Prop:")
+    print("\n💬 Value Prop:")
     print(f"   {p1.value_prop.headline}")
     print(f"   {p1.value_prop.subheadline}")
     

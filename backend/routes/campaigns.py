@@ -5,7 +5,7 @@ Full CRUD + Generation + Publishing
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 import uuid
 

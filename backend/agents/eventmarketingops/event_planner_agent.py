@@ -4,8 +4,8 @@ Manages event creation, venues, and coordination.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from typing import List, Dict
+from datetime import date
 from enum import Enum
 import random
 

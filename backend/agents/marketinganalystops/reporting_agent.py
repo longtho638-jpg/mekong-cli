@@ -176,7 +176,7 @@ if __name__ == "__main__":
     print(f"   Status: {r1.status.value}")
     
     # Show summary
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"   Revenue: ${r1.metrics_summary['revenue']:,}")
     print(f"   Leads: {r1.metrics_summary['leads']}")
     print(f"   ROAS: {r1.metrics_summary['roas']:.1f}x")

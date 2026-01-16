@@ -3,7 +3,7 @@ Engagement Manager Agent - Inbox & Sentiment
 Manages social interactions, comments, and sentiment analysis.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     print(f"📥 Inbox: {len(agent.inbox)} items")
     
     # Process high priority
-    print(f"\n🚨 High Priority Item:")
+    print("\n🚨 High Priority Item:")
     high_pri = [i for i in agent.inbox if i.priority == "high"][0]
     print(f"   User: {high_pri.user_handle}")
     print(f"   Content: {high_pri.content}")
@@ -149,11 +149,11 @@ if __name__ == "__main__":
     
     # Reply
     agent.reply_to_interaction(high_pri.id, suggestion)
-    print(f"   Status: Replied ✅")
+    print("   Status: Replied ✅")
     
     # Stats
     stats = agent.get_inbox_stats()
-    print(f"\n📊 Stats:")
+    print("\n📊 Stats:")
     print(f"   Pending: {stats['total_pending']}")
     print(f"   Positive: {stats['sentiment_positive']}")
     print(f"   Negative: {stats['sentiment_negative']}")

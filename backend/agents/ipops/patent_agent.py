@@ -3,7 +3,7 @@ Patent Agent - Patent Filings & Prosecution
 Manages patent applications, prosecution, and maintenance.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

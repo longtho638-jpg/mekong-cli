@@ -3,8 +3,8 @@ Proposal Module - Service Logic
 """
 import uuid
 import logging
-from typing import Dict, List, Any
-from .entities import Proposal, ServicePackage, ProposalStatus, ServiceTier
+from typing import Dict, List
+from .entities import Proposal, ServicePackage, ServiceTier
 
 logger = logging.getLogger(__name__)
 

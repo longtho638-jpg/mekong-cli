@@ -4,7 +4,7 @@ Manages product catalog, inventory, and pricing.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -186,6 +186,6 @@ if __name__ == "__main__":
     
     # Stats
     stats = agent.get_stats()
-    print(f"\n📊 Catalog Stats:")
+    print("\n📊 Catalog Stats:")
     print(f"   Active Products: {stats['active']}")
     print(f"   Total Stock: {stats['total_stock']}")

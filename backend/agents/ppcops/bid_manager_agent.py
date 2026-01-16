@@ -3,9 +3,8 @@ Bid Manager Agent - Smart Bidding & Pacing
 Manages bid strategies, budget pacing, and auction insights.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
+from dataclasses import dataclass
+from typing import List, Dict
 from enum import Enum
 import random
 
@@ -181,7 +180,7 @@ if __name__ == "__main__":
     print(f"   Status: {strat.status.value}")
     
     # Simulate optimization loop
-    print(f"\n🔄 Optimization Cycle:")
+    print("\n🔄 Optimization Cycle:")
     
     # Week 1: ROAS 350% (Below target)
     action = agent.optimize(cid, 350)
@@ -194,7 +193,7 @@ if __name__ == "__main__":
     print(f"   Status: {strat.status.value} (After learning)")
     
     # Auction insights
-    print(f"\n🕵️ Auction Insights:")
+    print("\n🕵️ Auction Insights:")
     insights = agent.get_auction_insights(cid)
     for i in insights:
         print(f"   {i.domain}: {i.impression_share:.1f}% Share, {i.top_of_page_rate:.1f}% Top")

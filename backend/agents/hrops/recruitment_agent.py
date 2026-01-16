@@ -3,9 +3,9 @@ Recruitment Agent - Hiring Pipeline Management
 Manages job postings, candidates, and offers.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from typing import Dict
+from datetime import datetime
 from enum import Enum
 import random
 

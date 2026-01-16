@@ -9,7 +9,7 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.client_magnet import ClientMagnet, LeadSource, LeadStatus, Lead
+from antigravity.core.client_magnet import ClientMagnet, LeadSource, LeadStatus
 
 class TestClientMagnet:
     

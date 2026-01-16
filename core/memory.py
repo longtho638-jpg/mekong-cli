@@ -9,10 +9,9 @@ Pattern: 3-layer workflow (search → timeline → get_observations)
 import sqlite3
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Optional, Union
-from dataclasses import dataclass, asdict
+from typing import List, Dict, Optional
+from dataclasses import dataclass
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

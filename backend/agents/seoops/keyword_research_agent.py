@@ -5,7 +5,6 @@ Manages keyword research, difficulty scoring, and SERP analysis.
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from datetime import datetime
 from enum import Enum
 import random
 
@@ -127,7 +126,7 @@ if __name__ == "__main__":
     
     # Show rankings
     rankings = agent.get_rankings()
-    print(f"\n📊 Rankings:")
+    print("\n📊 Rankings:")
     for kw in rankings[:3]:
         change = f"↑{kw.rank_change}" if kw.rank_change > 0 else f"↓{abs(kw.rank_change)}" if kw.rank_change < 0 else "→"
         print(f"   #{kw.current_rank} '{kw.keyword}' ({change})")
@@ -139,6 +138,6 @@ if __name__ == "__main__":
     
     # Stats
     stats = agent.get_stats()
-    print(f"\n📈 Stats:")
+    print("\n📈 Stats:")
     print(f"   Top 10: {stats['top_10']}")
     print(f"   Avg Difficulty: {stats['avg_difficulty']:.0f}%")

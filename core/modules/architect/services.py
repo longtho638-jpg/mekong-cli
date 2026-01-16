@@ -2,7 +2,6 @@
 Architect Module - Service Logic
 """
 import logging
-from typing import List
 from .entities import ArchitectureType, ProjectProfile, ArchitectureBlueprint
 
 logger = logging.getLogger(__name__)

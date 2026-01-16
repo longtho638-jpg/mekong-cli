@@ -49,15 +49,15 @@ def init(project_name: str):
     template_repo = TEMPLATE_REPO_PRO if is_pro else TEMPLATE_REPO_STARTER
     
     if is_pro:
-        console.print(f"   🔑 Pro/Enterprise tier detected")
-        console.print(f"   📦 Cloning Pro template (10 niches, white-label)...")
+        console.print("   🔑 Pro/Enterprise tier detected")
+        console.print("   📦 Cloning Pro template (10 niches, white-label)...")
     else:
-        console.print(f"   🆓 Starter tier (Upgrade for Pro features)")
-        console.print(f"   📦 Cloning Starter template (1 niche, basic features)...")
+        console.print("   🆓 Starter tier (Upgrade for Pro features)")
+        console.print("   📦 Cloning Starter template (1 niche, basic features)...")
 
     try:
         subprocess.run(["git", "clone", template_repo, str(project_name)], check=True)
-        console.print(f"   ✅ Template setup complete")
+        console.print("   ✅ Template setup complete")
         
         # Remove template git history
         git_dir = target_dir / ".git"
@@ -68,8 +68,8 @@ def init(project_name: str):
         console.print(f"\n[bold green]🚀 Project {project_name} created successfully![/bold green]")
         
         if tier == LicenseTier.STARTER:
-            console.print(f"\n   💡 [yellow]Want 10 niches + white-label? Upgrade to Pro:[/yellow]")
-            console.print(f"      [cyan]mekong activate --key mk_live_pro_xxxxx[/cyan]")
+            console.print("\n   💡 [yellow]Want 10 niches + white-label? Upgrade to Pro:[/yellow]")
+            console.print("      [cyan]mekong activate --key mk_live_pro_xxxxx[/cyan]")
         
         console.print(f"\nNext steps:\n  cd {project_name}\n  mekong setup-vibe")
         

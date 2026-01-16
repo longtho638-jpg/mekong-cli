@@ -3,8 +3,8 @@ Cost Tracker Agent - AI Spending Monitoring
 Tracks token usage, costs, and savings by provider.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
 import random
@@ -171,13 +171,13 @@ if __name__ == "__main__":
     
     # Savings
     savings = tracker.get_savings()
-    print(f"\n💚 Savings Analysis:")
+    print("\n💚 Savings Analysis:")
     print(f"   Actual: ${savings['actual_cost']}")
     print(f"   Baseline: ${savings['baseline_cost']}")
     print(f"   Saved: ${savings['savings']} ({savings['savings_percent']}%)")
     
     # By provider
-    print(f"\n📈 By Provider:")
+    print("\n📈 By Provider:")
     breakdown = tracker.get_by_provider()
     for provider, data in breakdown.items():
         if data['requests'] > 0:

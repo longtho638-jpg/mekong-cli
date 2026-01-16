@@ -2,9 +2,9 @@
 Finance Module - Service Logic
 """
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List
 
-from .entities import ProfitLoss, FinancialRatio, ReportPeriod
+from .entities import ProfitLoss, FinancialRatio
 
 logger = logging.getLogger(__name__)
 

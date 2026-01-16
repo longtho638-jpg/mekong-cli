@@ -6,11 +6,10 @@ Follows Binh Pháp Architecture for clean execution.
 
 import time
 import sys
-from typing import Callable, Any, Dict, List, Optional
+from typing import Callable, Any, Dict
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.live import Live
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 console = Console()
@@ -125,11 +124,11 @@ class AgencyOSDemo:
             analytics = AnalyticsDashboard()
             summary = analytics.get_summary()
             
-            console.print(f"📊 [bold]Revenue Metrics:[/bold]")
+            console.print("📊 [bold]Revenue Metrics:[/bold]")
             console.print(f"   MRR: [bold green]${summary['mrr']:,.0f}[/bold green] | ARR: [bold green]${summary['arr']:,.0f}[/bold green]")
             console.print(f"   Active Clients: {summary['clients']}")
         except Exception:
-            console.print(f"📊 [dim]Analytics Dashboard: MRR $5,000 | ARR $60,000 (Mock)[/dim]")
+            console.print("📊 [dim]Analytics Dashboard: MRR $5,000 | ARR $60,000 (Mock)[/dim]")
 
     def step_6_franchise(self):
         from core import FranchiseSystem
@@ -137,7 +136,7 @@ class AgencyOSDemo:
         hq = franchise.get_hq_revenue()
         stats = franchise.get_territory_stats()
         
-        console.print(f"🌍 [bold]Global Franchise System:[/bold]")
+        console.print("🌍 [bold]Global Franchise System:[/bold]")
         console.print(f"   • Territories: [cyan]{stats['total_territories']}[/cyan] ({stats['claimed']} claimed)")
         console.print(f"   • HQ Monthly Revenue: [green]{hq['monthly_platform_fees']}[/green]")
 

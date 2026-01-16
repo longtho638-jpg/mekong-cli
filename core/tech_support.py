@@ -14,7 +14,7 @@ Roles:
 
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 import uuid
 
@@ -125,7 +125,7 @@ class TechSupportSpecialist:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🔧 TECH SUPPORT SPECIALIST                               ║",
+            "║  🔧 TECH SUPPORT SPECIALIST                               ║",
             f"║  {stats['total']} issues │ {stats['open']} open │ {stats['resolved']} resolved           ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 OPEN ISSUES                                           ║",

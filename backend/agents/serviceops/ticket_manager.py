@@ -3,7 +3,7 @@ Ticket Manager Agent - Support Ticket Tracking
 Manages tickets, priority, and SLA compliance.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

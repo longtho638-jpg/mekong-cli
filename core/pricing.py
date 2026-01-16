@@ -13,9 +13,7 @@ Features:
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Union
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from enum import Enum
 
 # Configure logging
@@ -123,9 +121,9 @@ class PricingCalculator:
             f"║  Market Average:   ${rec.competitors_avg:>10,.0f} {' ' * 26}║",
             "║  ───────────────────────────────────────────────────────  ║",
             "║  💰 RECOMMENDED QUOTE:                                    ║",
-            f"║    ╔═════════════════════╗                                ║",
+            "║    ╔═════════════════════╗                                ║",
             f"║    ║  ${rec.recommended_price:^17,.0f}  ║                                ║",
-            f"║    ╚═════════════════════╝                                ║",
+            "║    ╚═════════════════════╝                                ║",
             "║                                                           ║",
             f"║  📈 Net Profit:    ${rec.recommended_price - rec.cost:>10,.0f} {' ' * 26}║",
             f"║  📊 Target Margin: {rec.profit_margin:>10.1%} {' ' * 26}║",

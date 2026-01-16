@@ -4,8 +4,7 @@ Manages Amazon advertising campaigns.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from typing import List, Dict
 from enum import Enum
 import random
 
@@ -195,7 +194,7 @@ if __name__ == "__main__":
     # Simulate
     agent.simulate_performance(c1.id)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Spend: ${c1.total_spend:,.0f}")
     print(f"   Sales: ${c1.total_sales:,.0f}")
     print(f"   ACOS: {c1.acos:.1f}%")
@@ -203,4 +202,4 @@ if __name__ == "__main__":
     
     # Optimize
     agent.optimize_bids(c1.id, target_acos=25)
-    print(f"\n✅ Bids optimized for 25% ACOS")
+    print("\n✅ Bids optimized for 25% ACOS")

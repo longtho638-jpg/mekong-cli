@@ -4,8 +4,8 @@ Manages content calendar and posting across social platforms.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date, time
+from typing import List, Dict
+from datetime import datetime, date
 from enum import Enum
 import random
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     print(f"   Hashtags: {p1.hashtags}")
     
     # Simulate publish
-    print(f"\n🚀 Publishing...")
+    print("\n🚀 Publishing...")
     agent.simulate_publishing(p1.id)
     
     print(f"   Status: {p1.status.value}")

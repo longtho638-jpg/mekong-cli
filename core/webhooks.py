@@ -12,12 +12,11 @@ Features:
 - Webhook logs
 """
 
-from typing import Dict, List, Any, Callable, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 import uuid
-import json
 
 
 class WebhookEvent(Enum):
@@ -125,7 +124,7 @@ class WebhookManager:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  🔔 WEBHOOK MANAGER                                       ║",
+            "║  🔔 WEBHOOK MANAGER                                       ║",
             f"║  {len(self.webhooks)} webhooks │ {active} active │ {total_deliveries} deliveries          ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📡 REGISTERED WEBHOOKS                                   ║",

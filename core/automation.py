@@ -14,7 +14,7 @@ Features:
 
 import uuid
 import logging
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum

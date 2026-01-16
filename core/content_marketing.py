@@ -17,11 +17,10 @@ Binh Pháp: 🔥 Hỏa Công (Disruption) - Overwhelming the market with content
 """
 
 import logging
-import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Optional
 from enum import Enum
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 
 # Configure logging
 logger = logging.getLogger(__name__)

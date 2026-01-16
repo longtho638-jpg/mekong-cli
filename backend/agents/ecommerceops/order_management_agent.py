@@ -193,6 +193,6 @@ if __name__ == "__main__":
     
     # Stats
     stats = agent.get_stats()
-    print(f"\n📊 Stats:")
+    print("\n📊 Stats:")
     print(f"   Total Revenue: ${stats['total_revenue']:.2f}")
     print(f"   Avg Order Value: ${stats['avg_order_value']:.2f}")

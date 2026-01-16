@@ -15,7 +15,7 @@ import uuid
 import logging
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 # Configure logging

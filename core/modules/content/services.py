@@ -2,7 +2,7 @@
 Content Module - Service Logic
 """
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List
 from .entities import ContentIdea, ContentPillar, ContentFormat
 from core.infrastructure.cache import CacheManager
 
@@ -78,7 +78,7 @@ class ContentGenerator:
                 {"title": f"0 to automated: {self.niche} case", "format": ContentFormat.CASE_STUDY, "hook": "Scaling without increasing overhead..."},
                 {"title": "Automations under $10/month", "format": ContentFormat.CAROUSEL, "hook": "Small price, massive leverage..."},
                 {"title": f"Auto-invoice for {self.agency_name}", "format": ContentFormat.TWITTER_THREAD, "hook": "Getting paid while you sleep..."},
-                {"title": f"Client onboarding automation", "format": ContentFormat.BLOG_POST, "hook": "Perfect first impressions on autopilot..."},
+                {"title": "Client onboarding automation", "format": ContentFormat.BLOG_POST, "hook": "Perfect first impressions on autopilot..."},
                 {"title": "My Telegram bot that runs agency", "format": ContentFormat.VIDEO_SHORT, "hook": "Command center in my pocket..."},
             ],
             ContentPillar.AGENCY_LIFE: [

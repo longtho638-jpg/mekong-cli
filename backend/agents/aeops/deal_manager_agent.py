@@ -3,7 +3,7 @@ Deal Manager Agent - Deal Lifecycle & Closing
 Manages the entire deal lifecycle from creation to close.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     agent.advance_stage(d2.id, DealStage.NEGOTIATION)
     agent.close_won(d3.id)
     
-    print(f"\n📊 Pipeline:")
+    print("\n📊 Pipeline:")
     for stage, deals in agent.get_pipeline().items():
         if deals:
             print(f"   {stage}: {len(deals)} deals")

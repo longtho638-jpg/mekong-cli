@@ -4,8 +4,7 @@ Manages Google Search, Display, and Video campaigns.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from typing import List, Dict
 from enum import Enum
 import random
 
@@ -201,7 +200,7 @@ if __name__ == "__main__":
     # Simulate
     agent.simulate_performance(c1.id)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Impressions: {c1.impressions:,}")
     print(f"   Clicks: {c1.clicks:,}")
     print(f"   Cost: ${c1.cost:,.0f}")
@@ -210,6 +209,6 @@ if __name__ == "__main__":
     print(f"   ROAS: {c1.roas:.1f}x")
     
     # Keyword stats
-    print(f"\n🔑 Top Keyword:")
+    print("\n🔑 Top Keyword:")
     top_kw = max(c1.keywords, key=lambda k: k.conversions)
     print(f"   '{top_kw.text}': QS {top_kw.quality_score}/10, {top_kw.conversions} conv")

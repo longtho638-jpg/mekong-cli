@@ -8,9 +8,9 @@ USP: Adapts AI tone and vocabulary to specific Vietnamese regions.
 - Gen Z: Trendy, slang-heavy.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 class VibeRegion(Enum):
     """Supported regional vibes."""

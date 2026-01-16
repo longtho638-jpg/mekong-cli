@@ -3,11 +3,9 @@ Analytics Agent - KPI Calculations & Metrics
 Tracks and calculates sales KPIs and metrics.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from typing import List, Dict
 from enum import Enum
-import random
 
 
 class MetricType(Enum):

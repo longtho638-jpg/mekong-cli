@@ -19,7 +19,6 @@ import logging
 import subprocess
 import argparse
 from datetime import datetime
-from typing import Optional, Dict, Any, List
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -77,12 +76,12 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
     cmd = f'gemini -p "/jules {mission["prompt"]}"'
     
     if dry_run:
-        print(f"\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:")
+        print("\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:")
         print(f"   $ {cmd}")
         return True
     
     try:
-        print(f"\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
+        print("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
         # Timeout is long because Jules might take time to initialize the task
         result = subprocess.run(
             cmd,
@@ -93,17 +92,17 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
         )
         
         if result.returncode == 0:
-            print(f"   ✅ Gửi nhiệm vụ thành công!")
-            print(f"   📋 Theo dõi tiến độ tại: https://jules.google.com")
+            print("   ✅ Gửi nhiệm vụ thành công!")
+            print("   📋 Theo dõi tiến độ tại: https://jules.google.com")
             return True
         else:
             print(f"   ❌ Lỗi hệ thống: {result.stderr}")
             return False
             
     except subprocess.TimeoutExpired:
-        print(f"   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
+        print("   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
         return True
-    except Exception as e:
+    except Exception:
         logger.exception("Critical failure in Jules Runner")
         return False
 

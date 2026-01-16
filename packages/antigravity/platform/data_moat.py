@@ -14,7 +14,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Dict, Optional
 from enum import Enum
-import json
 
 
 class InsightType(Enum):

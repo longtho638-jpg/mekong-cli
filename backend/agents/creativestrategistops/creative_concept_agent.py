@@ -4,7 +4,7 @@ Manages creative concepts, briefs, and idea generation.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random

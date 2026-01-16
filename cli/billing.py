@@ -28,7 +28,7 @@ def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
         license_data = validator.activate(key)
         tier = license_data["tier"]
         
-        console.print(f"\n[bold green]✅ License Activated![/bold green]")
+        console.print("\n[bold green]✅ License Activated![/bold green]")
         console.print(f"   Tier: [cyan]{tier.upper()}[/cyan]")
         console.print(f"   Activated: {license_data['activated_at']}")
         
@@ -58,7 +58,7 @@ def status_cmd():
         return
     
     tier = license_data["tier"]
-    console.print(f"\n[bold green]License Status[/bold green]")
+    console.print("\n[bold green]License Status[/bold green]")
     console.print(f"   Tier: [cyan]{tier.upper()}[/cyan]")
     console.print(f"   Activated: {license_data['activated_at']}")
     

@@ -19,7 +19,7 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.hybrid_router import HybridRouter, TaskType, TaskComplexity
+from core.hybrid_router import HybridRouter
 from core.vibe_tuner import VibeTuner, VibeRegion
 
 # Import routes

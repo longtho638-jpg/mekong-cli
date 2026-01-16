@@ -78,11 +78,11 @@ def cmd_start():
     dna_path.write_text(json.dumps(dna.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
     
     print(f"\n✅ Agency '{name}' created!")
-    print(f"   📁 Config saved: .antigravity/agency_dna.json")
+    print("   📁 Config saved: .antigravity/agency_dna.json")
     print(f"   🏷️ Tagline: {dna.get_tagline()}")
     print(f"   📦 Services: {len(dna.services)}")
-    print(f"\n🎉 You're ready to earn $!")
-    print(f"   Next: antigravity client:add \"Your First Client\"")
+    print("\n🎉 You're ready to earn $!")
+    print("   Next: antigravity client:add \"Your First Client\"")
 
 
 def cmd_client_add(name: str):
@@ -117,7 +117,7 @@ def cmd_client_add(name: str):
     print(f"   🏢 Company: {company}")
     print(f"   📧 Email: {email or 'N/A'}")
     print(f"   📱 Phone: {phone or 'N/A'}")
-    print(f"\n🎯 Next: Create a proposal for this client")
+    print("\n🎯 Next: Create a proposal for this client")
 
 
 def cmd_content_generate(count: int = 30):
@@ -149,7 +149,7 @@ def cmd_content_generate(count: int = 30):
     ideas_path.parent.mkdir(parents=True, exist_ok=True)
     ideas_data = [{"title": i.title, "type": i.content_type.value, "score": i.score} for i in ideas]
     ideas_path.write_text(json.dumps(ideas_data, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"   💾 Saved: .antigravity/content_ideas.json")
+    print("   💾 Saved: .antigravity/content_ideas.json")
 
 
 def cmd_stats():
@@ -224,7 +224,7 @@ def cmd_vibe_plan(title: str = "New Feature"):
     )
     
     print(f"\n✅ Plan created: {plan_file}")
-    print(f"   Next: Edit the plan and run vibe:code")
+    print("   Next: Edit the plan and run vibe:code")
 
 
 def cmd_vibe_status():

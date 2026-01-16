@@ -20,7 +20,7 @@ import concurrent.futures
 from datetime import datetime
 from typing import Callable, Dict, List, Any, Optional, Union
 
-from .models.orchestrator import AgentTask, AgentType, ChainResult, ExecutionMode
+from .models.orchestrator import AgentTask, AgentType, ChainResult
 from .base import BaseEngine
 
 # Configure logging

@@ -4,7 +4,7 @@ Manages competitor monitoring and market positioning.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random

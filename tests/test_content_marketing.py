@@ -59,7 +59,7 @@ class TestContentMarketing:
 
     def test_seo_keywords(self):
         """Test SEO keywords generation."""
-        from core.content_marketing import ContentMarketingStrategy, SearchIntent
+        from core.content_marketing import ContentMarketingStrategy
     
         gen = ContentMarketingStrategy()
         keywords = gen.generate_seo_keywords("digital agency")

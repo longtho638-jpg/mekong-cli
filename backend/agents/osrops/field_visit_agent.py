@@ -3,7 +3,7 @@ Field Visit Agent - Customer Visit Management
 Manages field visits, check-ins, and travel planning.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

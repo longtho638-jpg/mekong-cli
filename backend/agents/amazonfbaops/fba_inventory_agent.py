@@ -3,9 +3,9 @@ FBA Inventory Agent - Inventory & Storage Management
 Manages FBA inventory tracking and restock alerts.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from dataclasses import dataclass
+from typing import List, Dict
+from datetime import date
 from enum import Enum
 import random
 
