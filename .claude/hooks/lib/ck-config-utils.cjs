@@ -54,6 +54,11 @@ const DEFAULT_CONFIG = {
     packageManager: 'auto',
     framework: 'auto'
   },
+  skills: {
+    research: {
+      useGemini: true  // Toggle Gemini CLI usage in research skill
+    }
+  },
   assertions: []
 };
 
@@ -487,6 +492,8 @@ function loadConfig(options = {}) {
     // -1 = disabled (no injection, saves tokens)
     // 0-5 = inject corresponding level guidelines
     result.codingLevel = merged.codingLevel ?? -1;
+    // Skills configuration
+    result.skills = merged.skills || DEFAULT_CONFIG.skills;
 
     return sanitizeConfig(result, projectRoot);
   } catch (e) {
@@ -502,7 +509,8 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
     plan: { ...DEFAULT_CONFIG.plan },
     paths: { ...DEFAULT_CONFIG.paths },
     docs: { ...DEFAULT_CONFIG.docs },
-    codingLevel: -1  // Default: disabled (no injection, saves tokens)
+    codingLevel: -1,  // Default: disabled (no injection, saves tokens)
+    skills: { ...DEFAULT_CONFIG.skills }
   };
   if (includeLocale) {
     result.locale = { ...DEFAULT_CONFIG.locale };
