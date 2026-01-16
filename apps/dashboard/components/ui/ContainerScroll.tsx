@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useRef } from "react";
 import type { MotionValue } from "framer-motion";
@@ -11,7 +10,7 @@ export const ContainerScroll = ({
     children: React.ReactNode;
     titleComponent: string | React.ReactNode;
 }) => {
-    const containerRef = useRef<any>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
     });
@@ -56,7 +55,7 @@ export const ContainerScroll = ({
     );
 };
 
-export const Header = ({ translate, titleComponent }: any) => {
+export const Header = ({ translate, titleComponent }: { translate: MotionValue<number>; titleComponent: string | React.ReactNode }) => {
     return (
         <motion.div
             style={{

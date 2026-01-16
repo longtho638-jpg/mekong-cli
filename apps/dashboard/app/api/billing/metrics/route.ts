@@ -30,12 +30,12 @@ export async function GET() {
             try {
                 stripeMetrics = await calculateMRRMetrics();
             } catch (e) {
-                console.log('Stripe not configured, using database only');
+                // Stripe not configured, using database fallback
             }
         }
 
         // Get database metrics (graceful fallback if Supabase not configured)
-        let subscriptions: any[] = [];
+        let subscriptions: { plan: string; status: string }[] = [];
         try {
             const supabase = getSupabase();
             const { data, error } = await supabase
@@ -46,7 +46,7 @@ export async function GET() {
                 subscriptions = data;
             }
         } catch (e) {
-            console.log('Supabase not configured, using mock data');
+            // Supabase not configured, using mock fallback
         }
 
         // Calculate from database
