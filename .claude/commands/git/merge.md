@@ -1,5 +1,5 @@
 ---
-description: ⚠️ Merge code from one branch to another
+description: Merge code from one branch to another
 argument-hint: [branch] [from-branch]
 ---
 
@@ -9,6 +9,8 @@ TO_BRANCH: $1 (defaults to `main`)
 FROM_BRANCH: $2 (defaults to current branch)
 
 ## Workflow
+
+Use `git-manager` subagent to execute the merge workflow:
 
 ### Step 1: Sync with remote (CRITICAL)
 ```bash
@@ -27,7 +29,7 @@ git merge origin/{FROM_BRANCH} --no-ff -m "merge: {FROM_BRANCH} into {TO_BRANCH}
 
 ### Step 3: Resolve conflicts if any
 - If conflicts exist, resolve them
-- If you need more clarifications, use `AskUserQuestion` tool to ask the user for more details
+- If clarifications needed, report back to main agent to ask user with `AskUserQuestion` tool.
 - After resolution: `git add . && git commit`
 
 ### Step 4: Push merged result
@@ -36,6 +38,5 @@ git push origin {TO_BRANCH}
 ```
 
 ## Notes
-- If `gh` command is not available, instruct the user to install and authorize GitHub CLI first.
-- If you need more clarifications, use `AskUserQuestion` tool to ask the user for more details.
-- Always fetch and pull latest remote state before merging to avoid stale conflicts.
+- If `gh` unavailable, instruct user to install GitHub CLI first.
+- Always fetch and pull latest remote state before merging.
