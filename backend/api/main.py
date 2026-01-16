@@ -7,29 +7,32 @@ The central nervous system for Mekong-CLI and Agency OS.
 "Không đánh mà thắng" - Win Without Fighting
 """
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import os
 import sys
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 # Ensure parent is in path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 # Import Routers
 from backend.api.routers import (
-    i18n,
-    vietnam,
-    crm,
-    scheduler,
-    franchise,
     agents,
-    router as hybrid_router,
+    commands,  # 🏦 Braintree Payments
+    crm,
+    franchise,
+    i18n,
+    scheduler,
     vibes,
-    commands
+    vietnam,
 )
+from backend.api.routers import router as hybrid_router
 from backend.routes import antigravity
-from backend.websocket.routes import router as websocket_router
 from backend.websocket import manager as ws_manager
+from backend.websocket.routes import router as websocket_router
 
 # Initialize FastAPI
 app = FastAPI(
@@ -39,7 +42,7 @@ app = FastAPI(
     contact={
         "name": "Mekong HQ",
         "url": "https://agencyos.network",
-    }
+    },
 )
 
 # CORS middleware
@@ -63,6 +66,8 @@ app.include_router(vibes.router)
 app.include_router(commands.router)
 app.include_router(antigravity.router)  # 🚀 AntigravityKit API
 app.include_router(websocket_router)  # 🔄 WebSocket Real-time
+app.include_router(payments.router)  # 🏦 Braintree Payments
+
 
 # Root Endpoints
 @app.get("/")
@@ -74,8 +79,9 @@ def root():
         "version": "2.0.0",
         "binh_phap": "Không đánh mà thắng",
         "docs": "/docs",
-        "status": "operational"
+        "status": "operational",
     }
+
 
 @app.get("/health")
 def health():
@@ -89,14 +95,13 @@ def health():
             "hybrid_router": "loaded",
             "agents": "loaded",
             "antigravity": "loaded",
-            "websocket": "loaded"
+            "websocket": "loaded",
         },
-        "websocket": {
-            "connections": ws_manager.connection_count,
-            "endpoint": "/ws"
-        }
+        "websocket": {"connections": ws_manager.connection_count, "endpoint": "/ws"},
     }
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

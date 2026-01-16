@@ -18,6 +18,9 @@ httpx>=0.24.0
 python-dotenv>=1.0.0
 python-multipart>=0.0.6
 
+# Payments
+braintree>=4.0.0
+
 # Configuration
 pydantic-settings>=2.0.0
 
