@@ -37,6 +37,25 @@ REM Run SETUP.bat to install dependencies (only once)
 SETUP.bat
 ```
 
+### macOS Quick Start
+
+```bash
+# 1. Setup (one-time)
+cd scripts/antibridge
+chmod +x *.sh
+./SETUP_MAC.sh
+
+# 2. Open Antigravity with CDP
+./OPEN_ANTIGRAVITY_MAC.sh
+
+# 3. Start server
+./START_MAC.sh
+
+# 4. Access from phone
+# LAN: http://YOUR_MAC_IP:8000
+# Tailscale: http://100.x.x.x:8000 (run: tailscale ip -4)
+```
+
 ### 2. Start Antigravity with CDP
 
 ```batch
