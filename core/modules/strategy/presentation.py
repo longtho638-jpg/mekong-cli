@@ -1,6 +1,7 @@
 """
 Strategy Module - Presentation
 """
+from typing import List
 from .services import StrategyService
 from .entities import StrategicInsight
 
