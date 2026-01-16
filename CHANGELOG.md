@@ -1,3 +1,24 @@
+## [2.4.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.5...v2.4.0-beta.6) (2026-01-16)
+
+
+### 🚀 Features
+
+* **config:** add skills.research.useGemini toggle for Gemini CLI ([0659ae6](https://github.com/claudekit/claudekit-engineer/commit/0659ae6adecdfba5729ceafb68b2f7de396b876b))
+* **skill:** add copywriting skill with comprehensive references and utilities ([86be847](https://github.com/claudekit/claudekit-engineer/commit/86be8478941c60e7ef0a30b64b0378d1043a841c))
+* **skill:** add git operations skill with comprehensive workflow references ([e84c1b0](https://github.com/claudekit/claudekit-engineer/commit/e84c1b0523da1310a01fa71baa5bc34d3ef77229))
+* **skill:** implement design system generator for ui-ux-pro-max ([64ce03a](https://github.com/claudekit/claudekit-engineer/commit/64ce03a230df93d44076c6adfddf271ad280328b))
+* **skills:** added `web-design-guidelines` skill (Vercel) ([05920da](https://github.com/claudekit/claudekit-engineer/commit/05920dab2aa23ff0c1126fec4d0ca82ea1be29ea))
+
+
+### 📚 Documentation
+
+* **skill:** document design system generation in ui-ux-pro-max skill.md ([ebbad52](https://github.com/claudekit/claudekit-engineer/commit/ebbad52c8a95c8443fdf7b63798e73072e8d3641))
+
+
+### ⚡ Performance Improvements
+
+* **skill:** enhance context-engineering and git documentation ([ae5469e](https://github.com/claudekit/claudekit-engineer/commit/ae5469e00d5f4a6eed4f8b6ac494acc796612c6c))
+
 ## [2.4.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.4...v2.4.0-beta.5) (2026-01-15)
 
 
