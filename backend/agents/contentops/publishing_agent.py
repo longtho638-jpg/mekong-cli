@@ -38,7 +38,7 @@ class ScheduledPost:
     status: PublishStatus = PublishStatus.SCHEDULED
     published_at: Optional[datetime] = None
     engagement: Dict[str, int] = field(default_factory=dict)
-    
+
     @property
     def is_due(self) -> bool:
         return datetime.now() >= self.scheduled_at and self.status == PublishStatus.SCHEDULED
@@ -54,12 +54,12 @@ class PublishingAgent:
     - Scheduling
     - Analytics tracking
     """
-    
+
     def __init__(self):
         self.name = "Publishing"
         self.status = "ready"
         self.posts: Dict[str, ScheduledPost] = {}
-        
+
     def schedule(
         self,
         content_id: str,
@@ -69,7 +69,7 @@ class PublishingAgent:
     ) -> ScheduledPost:
         """Schedule content for publishing"""
         post_id = f"post_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         post = ScheduledPost(
             id=post_id,
             content_id=content_id,
@@ -77,19 +77,19 @@ class PublishingAgent:
             platform=platform,
             scheduled_at=scheduled_at
         )
-        
+
         self.posts[post_id] = post
         return post
-    
+
     def publish(self, post_id: str) -> ScheduledPost:
         """Publish scheduled post"""
         if post_id not in self.posts:
             raise ValueError(f"Post not found: {post_id}")
-            
+
         post = self.posts[post_id]
         post.status = PublishStatus.PUBLISHED
         post.published_at = datetime.now()
-        
+
         # Simulate engagement
         post.engagement = {
             "views": random.randint(100, 5000),
@@ -97,27 +97,27 @@ class PublishingAgent:
             "shares": random.randint(5, 100),
             "comments": random.randint(2, 50)
         }
-        
+
         return post
-    
+
     def get_calendar(self, days: int = 7) -> List[ScheduledPost]:
         """Get upcoming scheduled posts"""
         now = datetime.now()
         end = now + timedelta(days=days)
-        
+
         return sorted(
-            [p for p in self.posts.values() 
+            [p for p in self.posts.values()
              if p.status == PublishStatus.SCHEDULED and p.scheduled_at <= end],
             key=lambda x: x.scheduled_at
         )
-    
+
     def get_stats(self) -> Dict:
         """Get publishing statistics"""
         posts = list(self.posts.values())
         published = [p for p in posts if p.status == PublishStatus.PUBLISHED]
-        
+
         total_engagement = sum(sum(p.engagement.values()) for p in published)
-        
+
         return {
             "total_scheduled": len(posts),
             "published": len(published),
@@ -131,30 +131,30 @@ class PublishingAgent:
 # Demo
 if __name__ == "__main__":
     agent = PublishingAgent()
-    
+
     print("📅 Publishing Agent Demo\n")
-    
+
     # Schedule posts
     p1 = agent.schedule("C001", "10 Tips for Productivity", Platform.LINKEDIN, datetime.now() + timedelta(hours=2))
     p2 = agent.schedule("C001", "10 Tips for Productivity", Platform.TWITTER, datetime.now() + timedelta(hours=3))
     p3 = agent.schedule("C002", "Product Demo", Platform.YOUTUBE, datetime.now() + timedelta(days=1))
-    
+
     print(f"📋 Scheduled: {p1.content_title}")
     print(f"   Platform: {p1.platform.value}")
     print(f"   At: {p1.scheduled_at}")
-    
+
     # Publish
     agent.publish(p1.id)
     agent.publish(p2.id)
-    
+
     print(f"\n✅ Published: {p1.status.value}")
     print(f"   Engagement: {sum(p1.engagement.values())}")
-    
+
     # Calendar
     print("\n📅 Upcoming:")
     for post in agent.get_calendar():
         print(f"   {post.content_title} → {post.platform.value}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

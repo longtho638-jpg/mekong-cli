@@ -57,19 +57,19 @@ class SOPLibrary:
     
     Orchestrates the creation, categorization, and tracking of agency-wide operating standards.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.procedures: Dict[str, SOP] = {}
         logger.info(f"SOP Library initialized for {agency_name}")
         self._seed_defaults()
-    
+
     def _seed_defaults(self):
         """Seed the library with core agency standards."""
         logger.info("Seeding default agency SOPs...")
         self.add_sop("Client Onboarding", SOPCategory.ONBOARDING, "1. Welcome Call\n2. Setup Portal", "System")
         self.add_sop("Sales Discovery", SOPCategory.SALES, "1. Research\n2. Call\n3. Qualify", "System")
-    
+
     def add_sop(
         self,
         title: str,
@@ -85,7 +85,7 @@ class SOPLibrary:
         self.procedures[sop.id] = sop
         logger.info(f"SOP Registered: {title} ({category.value})")
         return sop
-    
+
     def track_view(self, sop_id: str) -> bool:
         """Increment the usage/view counter for a specific SOP."""
         if sop_id in self.procedures:
@@ -93,11 +93,11 @@ class SOPLibrary:
             logger.debug(f"SOP {sop_id} viewed.")
             return True
         return False
-    
+
     def format_dashboard(self) -> str:
         """Render the SOP Library Dashboard."""
         total = len(self.procedures)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📚 SOP LIBRARY DASHBOARD{' ' * 33}║",
@@ -106,13 +106,13 @@ class SOPLibrary:
             "║  📂 CORE OPERATING PROCEDURES                             ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         icons = {SOPCategory.SALES: "💼", SOPCategory.ONBOARDING: "👋", SOPCategory.PROJECTS: "📁"}
-        
+
         for s in list(self.procedures.values())[:5]:
             icon = icons.get(s.category, "📄")
             lines.append(f"║  {icon} {s.title[:20]:<20} │ {s.category.value:<12} │ {s.views:>5} views ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New SOP]  [🔍 Search]  [📤 Export All]  [⚙️ Setup]   ║",
@@ -127,14 +127,14 @@ class SOPLibrary:
 if __name__ == "__main__":
     print("📚 Initializing SOP System...")
     print("=" * 60)
-    
+
     try:
         lib = SOPLibrary("Saigon Digital Hub")
         # Record views
         for sid in lib.procedures:
             lib.track_view(sid)
-            
+
         print("\n" + lib.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"SOP Error: {e}")

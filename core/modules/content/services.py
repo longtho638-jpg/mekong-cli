@@ -14,17 +14,17 @@ class ContentGenerator:
     
     Generates tailored social media strategy based on Agency DNA.
     """
-    
+
     def __init__(self, agency_name: str, niche: str, location: str, skill: str):
         self.agency_name = agency_name
         self.niche = niche
         self.location = location
         self.skill = skill
         self.cache = CacheManager()
-        
+
         logger.info(f"Content Generator initialized for {agency_name} ({niche})")
         self.templates = self._load_templates()
-    
+
     def _load_templates(self) -> Dict[ContentPillar, List[Dict]]:
         """Load content templates mapped to variables."""
         cache_key = f"content_templates_{self.niche}_{self.location}"
@@ -94,12 +94,12 @@ class ContentGenerator:
                 {"title": "My favorite agency memes", "format": ContentFormat.VIDEO_SHORT, "hook": "Because if we don't laugh, we cry..."},
             ],
         }
-        
+
         # In a real scenario, these templates might be fetched from an API or DB
         # Caching them simulates saving that fetch time.
         self.cache.set(cache_key, templates)
         return templates
-    
+
     def generate_50_ideas(self) -> List[ContentIdea]:
         """Generate full set of 50 content ideas (10 per pillar)."""
         ideas = []
@@ -113,7 +113,7 @@ class ContentGenerator:
                     cta=f"Follow {self.agency_name} for more {self.niche} insights!"
                 )
                 ideas.append(idea)
-        
+
         logger.info(f"Successfully generated {len(ideas)} ideas.")
         return ideas
 

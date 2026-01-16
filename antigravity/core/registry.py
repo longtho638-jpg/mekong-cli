@@ -56,7 +56,7 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
-    
+
     # 🛠️ Dev Suite: Building and Shipping
     "dev": {
         "suite": "dev",
@@ -82,7 +82,7 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             "fix": {"agent": "debugger"},
         },
     },
-    
+
     # 🏯 Strategy Suite: Strategic Binh Pháp Planning
     "strategy": {
         "suite": "strategy",
@@ -102,7 +102,7 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
-    
+
     # 🧲 CRM Suite: Leads and Pipeline
     "crm": {
         "suite": "crm",
@@ -127,7 +127,7 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             }
         },
     },
-    
+
     # 🎨 Content Suite: Media and Viral Hooks
     "content": {
         "suite": "content",
@@ -167,17 +167,17 @@ SHORTCUTS: Dict[str, str] = {
     "test": "dev:test",
     "ship": "dev:ship",
     "fix": "dev:fix",
-    
+
     # Business
     "quote": "revenue:quote",
     "cash": "revenue:stats",
     "deal": "revenue:proposal",
-    
+
     # Strategy
     "plan": "strategy:plan",
     "binh-phap": "strategy:analyze",
     "win3": "strategy:win3",
-    
+
     # CRM
     "lead": "crm:add",
     "pipe": "crm:pipeline"
@@ -205,16 +205,16 @@ def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str]]:
     if cmd_input in SHORTCUTS:
         suite, sub = SHORTCUTS[cmd_input].split(":")
         return suite, sub
-        
+
     # 2. Check if it's suite:sub format
     if ":" in cmd_input:
         parts = cmd_input.split(":")
         return parts[0], parts[1]
-        
+
     # 3. Check if it's just a suite (default to list subcommands?)
     if cmd_input in COMMAND_REGISTRY:
         return cmd_input, None
-        
+
     return None, None
 
 
@@ -223,7 +223,7 @@ def get_agent_for_command(suite: str, sub: str) -> str:
     meta = get_command_metadata(suite, sub)
     if meta and "agent" in meta:
         return meta["agent"]
-    
+
     # Default fallback agents by suite
     fallbacks = {
         "dev": "fullstack-developer",
@@ -253,7 +253,7 @@ def print_command_map():
     print("\n" + "═" * 60)
     print("║" + "🏯 AGENCY OS - COMMAND REGISTRY".center(58) + "║")
     print("═" * 60)
-    
+
     for suite_id in list_suites():
         s = COMMAND_REGISTRY[suite_id]
         print(f"\n  {s['emoji']} {suite_id.upper()} - {s['description']}")
@@ -261,7 +261,7 @@ def print_command_map():
             meta = s["subcommands"][sub]
             agent_tag = f"[{meta.get('agent', 'system')}]"
             print(f"     └─ {sub:<15} {agent_tag}")
-            
+
     print("\n" + "─" * 60)
     print("  💡 Try using shortcuts: " + ", ".join(list(SHORTCUTS.keys())[:8]) + "...")
     print("═" * 60 + "\n")

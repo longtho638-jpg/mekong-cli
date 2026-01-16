@@ -118,18 +118,18 @@ class MoneyMaker(BaseEngine):
         """Constructs a new client proposal based on Binh Pháp modules."""
         if isinstance(tier, str):
             tier = ServiceTier(tier.lower())
-            
+
         service_list = []
         total_one_time = 0.0
         total_recurring = 0.0
 
         for chapter_id in chapters:
             if chapter_id not in BINH_PHAP_SERVICES: continue
-            
+
             svc = BINH_PHAP_SERVICES[chapter_id].copy()
             svc["chapter"] = chapter_id
             service_list.append(svc)
-            
+
             if svc.get("recurring"):
                 total_recurring += svc["price"]
             elif svc.get("quarterly"):
@@ -152,11 +152,11 @@ class MoneyMaker(BaseEngine):
             equity_percent=equity,
             success_fee_percent=profile["success_fee_pct"]
         )
-        
+
         # Validation before adding to history
         win3 = self.validate_win3(quote)
         quote.win3_validated = win3.is_valid
-        
+
         self.quotes.append(quote)
         self._next_id += 1
         logger.info(f"Generated quote #{quote.id} for {client_name} (Score: {win3.score})")
@@ -174,17 +174,17 @@ class MoneyMaker(BaseEngine):
         if quote.equity_percent <= 0 and quote.monthly_retainer < 1000:
             warnings.append("Low owner alignment (no equity + low cashflow)")
             score -= 30
-        
+
         # 2. 🏢 AGENCY WIN (Moat + Retainer)
         if quote.monthly_retainer < 2000 and quote.success_fee_percent < 1.0:
             warnings.append("Agency risk: Recurring revenue below sustainability threshold")
             score -= 20
-            
+
         # 3. 🚀 CLIENT WIN (Outcome + Value)
         if not quote.services:
             warnings.append("Zero client value: No services defined")
             score -= 50
-        
+
         # Ethical Boundaries
         if quote.equity_percent > 35:
             warnings.append("Equity too high: Risk of founder demotivation")
@@ -219,14 +219,14 @@ class MoneyMaker(BaseEngine):
         a_score = (authority / 100) * 20        # Authority weight 20%
         n_score = (need / 100) * 25             # Need weight 25%
         u_score = (urgency / 100) * 20          # Urgency weight 20%
-        
+
         final_score = int(b_score + a_score + n_score + u_score)
 
         if final_score >= 85:
             return final_score, "🔥 CRITICAL LEAD - Direct phone call", ServiceTier.GENERAL
         if final_score >= 65:
             return final_score, "🌡️ WARM LEAD - Send customized proposal", ServiceTier.WARRIOR
-        
+
         return final_score, "❄️ COLD LEAD - Automate follow-up sequence", ServiceTier.WARRIOR
 
     def get_pricing_catalog(self) -> str:
@@ -236,12 +236,12 @@ class MoneyMaker(BaseEngine):
             "║  🏯 BINH PHÁP 13-CHAPTER STRATEGIC CATALOG                ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for cid, info in BINH_PHAP_SERVICES.items():
             recurring_tag = "/mo" if info.get("recurring") else ""
             line = f"║ {cid:2}️⃣ {info['name']:<10} │ {info['label']:<25} │ ${info['price']:>6,}{recurring_tag} ║"
             lines.append(line)
-        
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
@@ -262,7 +262,7 @@ class MoneyMaker(BaseEngine):
     def format_quote_visual(self, quote: Quote) -> str:
         """ASCII representation of a proposal for CLI output."""
         win3 = self.validate_win3(quote)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📜 PROPOSAL #{quote.id:04d}                                     ║",
@@ -271,10 +271,10 @@ class MoneyMaker(BaseEngine):
             "╠═══════════════════════════════════════════════════════════╣",
             "║  STRATEGIC MODULES                                        ║",
         ]
-        
+
         for svc in quote.services:
             lines.append(f"║    {svc['chapter']:2}️⃣ {svc['label']:<35} ${svc['price']:>8,} ║")
-        
+
         lines.extend([
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  ONE-TIME INVESTMENT:                     ${quote.one_time_total:>12,.0f} ║",
@@ -285,5 +285,5 @@ class MoneyMaker(BaseEngine):
             f"║  Alignment Score:       {win3.score}/100                               ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)

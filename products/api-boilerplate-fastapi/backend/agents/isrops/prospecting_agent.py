@@ -18,7 +18,7 @@ class ProspectStatus(Enum):
     UNQUALIFIED = "unqualified"
 
 
-@dataclass 
+@dataclass
 class Prospect:
     """Sales prospect"""
     id: str
@@ -31,7 +31,7 @@ class Prospect:
     cadence_step: int = 0
     last_contacted: Optional[datetime] = None
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -56,7 +56,7 @@ class ProspectingAgent:
     - Call scripts
     - Cadence automation
     """
-    
+
     # Default cadence
     DEFAULT_CADENCE = [
         {"day": 1, "type": "email", "template": "intro"},
@@ -65,7 +65,7 @@ class ProspectingAgent:
         {"day": 7, "type": "linkedin", "template": "connect"},
         {"day": 10, "type": "call", "template": "final_attempt"},
     ]
-    
+
     # Email templates
     EMAIL_TEMPLATES = {
         "intro": """Chào {name},
@@ -85,13 +85,13 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
 
 {rep_name}"""
     }
-    
+
     def __init__(self):
         self.name = "Prospecting"
         self.status = "ready"
         self.prospects: Dict[str, Prospect] = {}
         self.cadences: Dict[str, Cadence] = {}
-        
+
     def add_prospect(
         self,
         name: str,
@@ -102,7 +102,7 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
     ) -> Prospect:
         """Add new prospect"""
         prospect_id = f"prospect_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         prospect = Prospect(
             id=prospect_id,
             name=name,
@@ -111,38 +111,38 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
             phone=phone,
             source=source
         )
-        
+
         self.prospects[prospect_id] = prospect
         return prospect
-    
+
     def advance_cadence(self, prospect_id: str) -> Prospect:
         """Move prospect to next cadence step"""
         if prospect_id not in self.prospects:
             raise ValueError(f"Prospect not found: {prospect_id}")
-            
+
         prospect = self.prospects[prospect_id]
         prospect.cadence_step += 1
         prospect.last_contacted = datetime.now()
-        
+
         if prospect.status == ProspectStatus.NEW:
             prospect.status = ProspectStatus.CONTACTED
-            
+
         return prospect
-    
+
     def get_email_content(self, prospect_id: str, template: str, rep_name: str) -> str:
         """Generate email from template"""
         if prospect_id not in self.prospects:
             raise ValueError(f"Prospect not found: {prospect_id}")
-            
+
         prospect = self.prospects[prospect_id]
         template_content = self.EMAIL_TEMPLATES.get(template, "")
-        
+
         return template_content.format(
             name=prospect.name,
             company=prospect.company,
             rep_name=rep_name
         )
-    
+
     def get_due_today(self) -> List[Prospect]:
         """Get prospects due for contact today"""
         # Simplified: return prospects in cadence
@@ -150,21 +150,21 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
             p for p in self.prospects.values()
             if p.cadence_step < len(self.DEFAULT_CADENCE) and p.status != ProspectStatus.QUALIFIED
         ]
-    
+
     def qualify(self, prospect_id: str, qualified: bool) -> Prospect:
         """Mark prospect as qualified/unqualified"""
         if prospect_id not in self.prospects:
             raise ValueError(f"Prospect not found: {prospect_id}")
-            
+
         prospect = self.prospects[prospect_id]
         prospect.status = ProspectStatus.QUALIFIED if qualified else ProspectStatus.UNQUALIFIED
-        
+
         return prospect
-    
+
     def get_stats(self) -> Dict:
         """Get prospecting stats"""
         prospects = list(self.prospects.values())
-        
+
         return {
             "total": len(prospects),
             "new": len([p for p in prospects if p.status == ProspectStatus.NEW]),
@@ -177,27 +177,27 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
 # Demo
 if __name__ == "__main__":
     agent = ProspectingAgent()
-    
+
     print("🎯 Prospecting Agent Demo\n")
-    
+
     # Add prospects
     p1 = agent.add_prospect("Nguyễn A", "TechCorp VN", "a@techcorp.vn", source="linkedin")
     p2 = agent.add_prospect("Trần B", "StartupX", "b@startupx.com", source="website")
-    
+
     print(f"📋 Added: {p1.name} ({p1.company})")
     print(f"📋 Added: {p2.name} ({p2.company})")
-    
+
     # Advance cadence
     agent.advance_cadence(p1.id)
     print(f"\n📧 Step {p1.cadence_step}: {agent.DEFAULT_CADENCE[0]}")
-    
+
     # Get email
     email = agent.get_email_content(p1.id, "intro", "Sales Rep")
     print(f"\n📝 Email Preview:\n{email[:100]}...")
-    
+
     # Qualify
     agent.qualify(p1.id, True)
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

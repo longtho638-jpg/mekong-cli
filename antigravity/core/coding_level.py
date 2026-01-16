@@ -145,11 +145,11 @@ def get_level_prompt(level: Optional[int] = None) -> str:
     """Get the coding style prompt for a level."""
     if level is None:
         level = _current_level
-    
+
     lvl = LEVELS.get(level)
     if not lvl:
         return ""
-    
+
     return f"""
 ## Coding Style: {lvl.name} (Level {lvl.level})
 
@@ -167,14 +167,14 @@ def load_level_style(level: Optional[int] = None, base_path: Path = STYLES_BASE_
     """Load the full style definition from file."""
     if level is None:
         level = _current_level
-    
+
     lvl = LEVELS.get(level)
     if not lvl:
         return ""
-    
+
     if isinstance(base_path, str):
         base_path = Path(base_path)
-        
+
     style_path = base_path / lvl.style_file
     if style_path.exists():
         try:
@@ -189,12 +189,12 @@ def print_levels():
     """Print all coding levels."""
     print("\n🎚️ CODING LEVELS")
     print("═" * 60)
-    
+
     for level, info in LEVELS.items():
         current = "⭐" if level == _current_level else "  "
         print(f"   {current} Level {level}: {info.name}")
         print(f"      └── {info.description}")
-    
+
     print()
     print(f"   Current: Level {_current_level} ({LEVELS[_current_level].name})")
     print("═" * 60)

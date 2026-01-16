@@ -110,7 +110,7 @@ class VibeBoardClient:
         payload = {}
         if status: payload["status"] = status
         if notes: payload["notes"] = notes
-        
+
         try:
             resp = await self.client.patch(f"/api/tasks/{task_id}", json=payload)
             resp.raise_for_status()
@@ -161,7 +161,7 @@ class AgentOrchestrator:
         logger.info(f"Syncing status for {agent_name} ({self.AGENTS.get(agent_name)})...")
         tasks = await self.client.list_tasks()
         agent_tasks = [t for t in tasks if t.agent_assigned == agent_name and t.status == "in_progress"]
-        
+
         for task in agent_tasks:
             # Simulate check: if task is done in agent runtime, update board
             # Here we just log

@@ -48,16 +48,16 @@ class StartupDeal:
     email: str = ""
     tier: DealTier = field(default=DealTier.WARRIOR)
     stage: DealStage = field(default=DealStage.LEAD)
-    
+
     # Financial Commitments (USD)
     retainer_monthly: float = 0.0
     equity_percent: float = 0.0
     success_fee_percent: float = 0.0
-    
+
     # Capital Milestones
     funding_target: float = 0.0
     valuation: float = 0.0
-    
+
     # Metadata & Tracking
     created_at: datetime = field(default_factory=datetime.now)
     closed_at: Optional[datetime] = None
@@ -69,11 +69,11 @@ class StartupDeal:
             pricing = get_tier_pricing(self.tier)
             # Match the refactored config keys (retainer_usd, success_fee_percent)
             self.retainer_monthly = pricing.get("retainer_usd", 0.0)
-            
+
             # Default to mid-range of equity
             range_val = pricing.get("equity_range", (0.0, 0.0))
             self.equity_percent = sum(range_val) / 2
-            
+
             self.success_fee_percent = pricing.get("success_fee_percent", 0.0)
 
     def get_annual_retainer(self) -> float:

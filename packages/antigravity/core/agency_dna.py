@@ -41,7 +41,7 @@ class Service:
     price_usd: float
     price_vnd: int = 0
     duration_days: int = 7
-    
+
     def __post_init__(self):
         # Auto-convert USD to VND (1 USD = 24,500 VND)
         if self.price_vnd == 0:
@@ -66,26 +66,26 @@ class AgencyDNA:
     location: str = "Vietnam"
     tone: Tone = Tone.FRIENDLY
     tier: PricingTier = PricingTier.STARTER
-    
+
     # Services
     services: List[Service] = field(default_factory=list)
-    
+
     # Contact
     email: str = ""
     phone: str = ""
     website: str = ""
-    
+
     # Social
     facebook: str = ""
     zalo: str = ""
     telegram: str = ""
-    
+
     def add_service(self, name: str, description: str, price_usd: float) -> Service:
         """Add a service offering."""
         service = Service(name=name, description=description, price_usd=price_usd)
         self.services.append(service)
         return service
-    
+
     def get_tagline(self) -> str:
         """Generate agency tagline based on niche and tone."""
         taglines = {
@@ -96,7 +96,7 @@ class AgencyDNA:
             Tone.PROFESSIONAL: f"Professional {self.niche} Solutions"
         }
         return taglines.get(self.tone, f"Expert in {self.niche}")
-    
+
     def to_dict(self) -> Dict:
         """Export DNA as dictionary."""
         return {

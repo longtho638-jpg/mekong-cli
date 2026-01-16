@@ -13,21 +13,21 @@ class IDEService:
     """
     Enforces the IDE configuration.
     """
-    
+
     def __init__(self, root_path: str = "."):
         self.root = Path(root_path)
         self.vscode_dir = self.root / ".vscode"
-        
+
     def sync_all(self) -> Dict[str, str]:
         """Syncs all configurations to disk."""
         self._ensure_vscode_dir()
-        
+
         results = {}
         results["settings"] = self._sync_settings()
         results["extensions"] = self._sync_extensions()
         results["editorconfig"] = self._sync_editorconfig()
         results["cursorrules"] = self._sync_cursorrules()
-        
+
         return results
 
     def _ensure_vscode_dir(self):
@@ -68,7 +68,7 @@ class IDEService:
         target = self.vscode_dir / "settings.json"
         if not target.exists():
             return False
-            
+
         try:
             with open(target, "r") as f:
                 current = json.load(f)
@@ -77,5 +77,5 @@ class IDEService:
                     return False
         except:
             return False
-            
+
         return True

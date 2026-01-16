@@ -39,7 +39,7 @@ class ContentPiece:
     traffic: int = 0
     leads: int = 0
     content_score: float = 0
-    
+
     @property
     def conversion_rate(self) -> float:
         return (self.leads / self.traffic * 100) if self.traffic > 0 else 0
@@ -65,26 +65,26 @@ class ContentStrategyAgent:
     - Performance analytics
     - Content scoring
     """
-    
+
     def __init__(self):
         self.name = "Content Strategy"
         self.status = "ready"
         self.content: Dict[str, ContentPiece] = {}
         self.clusters: Dict[str, TopicCluster] = {}
-        
+
     def create_cluster(self, name: str, pillar_page: str) -> TopicCluster:
         """Create topic cluster"""
         cluster_id = f"cluster_{random.randint(100,999)}"
-        
+
         cluster = TopicCluster(
             id=cluster_id,
             name=name,
             pillar_page=pillar_page
         )
-        
+
         self.clusters[cluster_id] = cluster
         return cluster
-    
+
     def add_content(
         self,
         title: str,
@@ -95,7 +95,7 @@ class ContentStrategyAgent:
     ) -> ContentPiece:
         """Add content to strategy"""
         content_id = f"content_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         content = ContentPiece(
             id=content_id,
             title=title,
@@ -104,18 +104,18 @@ class ContentStrategyAgent:
             target_keywords=target_keywords or [],
             publish_date=publish_date
         )
-        
+
         self.content[content_id] = content
         return content
-    
+
     def update_stage(self, content_id: str, stage: ContentStage) -> ContentPiece:
         """Update content stage"""
         if content_id not in self.content:
             raise ValueError(f"Content not found: {content_id}")
-            
+
         self.content[content_id].stage = stage
         return self.content[content_id]
-    
+
     def record_performance(
         self,
         content_id: str,
@@ -126,23 +126,23 @@ class ContentStrategyAgent:
         """Record content performance"""
         if content_id not in self.content:
             raise ValueError(f"Content not found: {content_id}")
-            
+
         content = self.content[content_id]
         content.traffic = traffic
         content.leads = leads
         content.content_score = content_score
-        
+
         return content
-    
+
     def get_by_stage(self, stage: ContentStage) -> List[ContentPiece]:
         """Get content by stage"""
         return [c for c in self.content.values() if c.stage == stage]
-    
+
     def get_stats(self) -> Dict:
         """Get content strategy statistics"""
         content = list(self.content.values())
         published = self.get_by_stage(ContentStage.PUBLISHED)
-        
+
         return {
             "total_content": len(content),
             "published": len(published),
@@ -157,15 +157,15 @@ class ContentStrategyAgent:
 # Demo
 if __name__ == "__main__":
     agent = ContentStrategyAgent()
-    
+
     print("📈 Content Strategy Agent Demo\n")
-    
+
     # Create cluster
     cluster = agent.create_cluster("Content Marketing", "/guides/content-marketing")
-    
+
     print(f"📚 Cluster: {cluster.name}")
     print(f"   Pillar: {cluster.pillar_page}")
-    
+
     # Add content
     c1 = agent.add_content(
         "Ultimate Guide to Content Marketing",
@@ -180,14 +180,14 @@ if __name__ == "__main__":
         cluster.name,
         ["content marketing tutorial"]
     )
-    
+
     print(f"\n📝 Content: {c1.title}")
     print(f"   Format: {c1.format.value}")
-    
+
     # Update and track
     agent.update_stage(c1.id, ContentStage.PUBLISHED)
     agent.record_performance(c1.id, traffic=5000, leads=150, content_score=85)
-    
+
     print("\n📊 Performance:")
     print(f"   Traffic: {c1.traffic}")
     print(f"   Leads: {c1.leads}")

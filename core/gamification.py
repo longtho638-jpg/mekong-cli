@@ -76,7 +76,7 @@ class GamificationEngine:
     
     Incentivizes agency growth through XP, levels, and milestone rewards.
     """
-    
+
     # Level configurations
     LEVELS: Dict[AgencyLevel, LevelConfig] = {
         AgencyLevel.BRONZE: LevelConfig(
@@ -95,11 +95,11 @@ class GamificationEngine:
             perks=["Financial coaching"]
         ),
     }
-    
+
     def __init__(self):
         self.agency_progress: Dict[str, AgencyProgress] = {}
         logger.info("Gamification Engine initialized.")
-    
+
     def create_progress(self, agency_id: str, name: str) -> AgencyProgress:
         """Initialize progress tracking for a new agency."""
         if not agency_id or not name:
@@ -114,7 +114,7 @@ class GamificationEngine:
         self.agency_progress[agency_id] = progress
         logger.info(f"Progress tracking created for {name}")
         return progress
-    
+
     def add_xp(self, agency_id: str, xp: int, reason: str) -> Optional[AgencyLevel]:
         """Add XP and check for level-up transitions."""
         if agency_id not in self.agency_progress: return None
@@ -123,7 +123,7 @@ class GamificationEngine:
         p = self.agency_progress[agency_id]
         p.xp_total += xp
         logger.info(f"XP Added to {p.agency_name}: +{xp} ({reason})")
-        
+
         # Calculate new level
         new_level = self._calculate_level(p.xp_total)
         if new_level != p.current_level:
@@ -131,24 +131,24 @@ class GamificationEngine:
             p.current_level = new_level
             logger.info(f"🎉 LEVEL UP: {p.agency_name} moved {old.value} -> {new_level.value}")
             return new_level
-            
+
         return None
-    
+
     def _calculate_level(self, xp: int) -> AgencyLevel:
         for level in reversed(list(AgencyLevel)):
             if level in self.LEVELS and xp >= self.LEVELS[level].xp_required:
                 return level
         return AgencyLevel.BRONZE
-    
+
     def format_dashboard(self, agency_id: str) -> str:
         """Render the Gamification Dashboard."""
         p = self.agency_progress.get(agency_id)
         if not p: return "No progress data found."
-        
+
         conf = self.LEVELS.get(p.current_level)
         bar_len = int((p.xp_total % 1000) / 100) # Simple 10-step progress
         bar = "█" * bar_len + "░" * (10 - bar_len)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🏆 AGENCY RANKING: {p.agency_name.upper()[:30]:<30}  ║",
@@ -159,23 +159,23 @@ class GamificationEngine:
             "║  🎖️ RECENT ACHIEVEMENTS                                   ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         if not p.achievements:
             lines.append("║    Start working to earn your first badge!                ║")
         else:
             for a in p.achievements[-3:]:
                 lines.append(f"║    {a.icon} {a.name:<25} │ {a.earned_at.strftime('%Y-%m-%d')}  ║")
-                
+
         lines.extend([
             "║                                                           ║",
             "║  🎁 LEVEL UNLOCKS                                         ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         if conf:
             for u in conf.unlocks:
                 lines.append(f"║    ✅ {u:<53}  ║")
-                
+
         lines.extend([
             "║                                                           ║",
             "║  [🏆 Leaderboard]  [🎖️ Badges]  [🎁 Rewards]  [⚙️ Setup]  ║",
@@ -190,17 +190,17 @@ class GamificationEngine:
 if __name__ == "__main__":
     print("🎮 Initializing Gamification Engine...")
     print("=" * 60)
-    
+
     try:
         engine = GamificationEngine()
         prog = engine.create_progress("A1", "Saigon Digital")
-        
+
         # Earn XP
         engine.add_xp("A1", 500, "First Client")
         # Add Achievement
         prog.achievements.append(Achievement("first_client", "First Client", "Signed #1", AchievementCategory.CLIENTS, "🤝"))
-        
+
         print("\n" + engine.format_dashboard("A1"))
-        
+
     except Exception as e:
         logger.error(f"Engine Error: {e}")

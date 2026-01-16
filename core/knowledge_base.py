@@ -66,13 +66,13 @@ class KnowledgeBase:
     
     Orchestrates the storage, retrieval, and categorization of institutional knowledge.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.resources: Dict[str, Resource] = {}
         logger.info(f"Knowledge Base initialized for {agency_name}")
         self._init_defaults()
-    
+
     def _init_defaults(self):
         """Seed the system with essential agency starting resources."""
         logger.info("Loading default knowledge assets...")
@@ -87,7 +87,7 @@ class KnowledgeBase:
             )
         except Exception as e:
             logger.error(f"Error seeding knowledge base: {e}")
-    
+
     def add_resource(
         self,
         title: str,
@@ -106,7 +106,7 @@ class KnowledgeBase:
         self.resources[res.id] = res
         logger.info(f"Resource indexed: {title} ({category.value})")
         return res
-    
+
     def search(self, query: str) -> List[Resource]:
         """Keyword search across titles, descriptions, and tags."""
         q = query.lower()
@@ -116,11 +116,11 @@ class KnowledgeBase:
         ]
         logger.debug(f"Search for '{query}' found {len(results)} matches.")
         return results
-    
+
     def format_dashboard(self) -> str:
         """Render the Knowledge Base Library Dashboard."""
         total = len(self.resources)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📚 KNOWLEDGE BASE - {self.agency_name.upper()[:30]:<30} ║",
@@ -129,23 +129,23 @@ class KnowledgeBase:
             "║  📂 ASSET REPOSITORY BY CATEGORY                          ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         icons = {
-            ResourceCategory.TEMPLATES: "📝", ResourceCategory.GUIDES: "📖", 
+            ResourceCategory.TEMPLATES: "📝", ResourceCategory.GUIDES: "📖",
             ResourceCategory.CHECKLISTS: "✅", ResourceCategory.SCRIPTS: "📜",
             ResourceCategory.PROCESSES: "⚙️", ResourceCategory.TRAINING: "🎓"
         }
-        
+
         # Display aggregated counts by category
         cat_counts = {}
         for r in self.resources.values():
             cat_counts[r.category] = cat_counts.get(r.category, 0) + 1
-            
+
         for cat in list(ResourceCategory):
             count = cat_counts.get(cat, 0)
             icon = icons.get(cat, "📁")
             lines.append(f"║  {icon} {cat.value.capitalize():<20} │ {count:>3} assets available      ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Asset]  [🔍 Search KB]  [📂 Export All]  [⚙️ Setup] ║",
@@ -160,10 +160,10 @@ class KnowledgeBase:
 if __name__ == "__main__":
     print("📚 Initializing Knowledge Base...")
     print("=" * 60)
-    
+
     try:
         kb_system = KnowledgeBase("Saigon Digital Hub")
         print("\n" + kb_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Library Error: {e}")

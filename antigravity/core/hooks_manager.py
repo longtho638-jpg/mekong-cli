@@ -88,12 +88,12 @@ class HooksManager:
     
     Orchestrates pre/post execution hooks for all agent actions.
     """
-    
+
     def __init__(self, base_path: Union[str, Path] = "."):
         self.base_path = Path(base_path)
         self.enabled = True
         self.results: List[Dict[str, Any]] = []
-    
+
     def run_pre_hooks(self, suite: str, context: Optional[Dict[str, Any]] = None) -> bool:
         """
         Run pre-execution hooks for a suite.
@@ -106,20 +106,20 @@ class HooksManager:
             True if all blocking hooks pass, False otherwise.
         """
         triggers = SUITE_TRIGGERS.get(suite, [])
-        
+
         for trigger in triggers:
             hooks = HOOKS.get(trigger, [])
             for hook in hooks:
                 result = self._run_hook(hook, context)
                 self.results.append(result)
-                
+
                 if hook.blocking and not result["passed"]:
                     print(f"❌ Hook blocked execution: {hook.name}")
                     print(f"   Reason: {result.get('output', 'Unknown error')}")
                     return False
-        
+
         return True
-    
+
     def run_win3_gate(self, deal: Dict[str, Any]) -> Dict[str, Any]:
         """
         Run WIN-WIN-WIN validation gate (Python Implementation).
@@ -130,7 +130,7 @@ class HooksManager:
             "scores": {},
             "message": "WIN-WIN-WIN validated"
         }
-        
+
         # Check each party
         parties = ["anh", "agency", "client"]
         for party in parties:
@@ -139,15 +139,15 @@ class HooksManager:
             score = sum(1 for v in party_data.values() if v)
             passed = score >= 2 # Threshold: at least 2 wins per party
             result["scores"][party] = {"score": score, "passed": passed}
-            
+
             if not passed:
                 result["valid"] = False
-        
+
         if not result["valid"]:
             result["message"] = "⚠️ WIN-WIN-WIN alignment failed. Each party needs at least 2 wins."
-        
+
         return result
-    
+
     def _run_hook(self, hook: Hook, context: Optional[Dict] = None) -> Dict[str, Any]:
         """
         Run a single hook.
@@ -155,14 +155,14 @@ class HooksManager:
         """
         # Ensure hook file path is resolved relative to project root
         self.base_path / hook.file
-        
+
         result = {
             "hook": hook.name,
             "passed": True,
             "output": "",
             "error": None
         }
-        
+
         # Simulated Hook Execution
         # In a full Node.js environment, we would subprocess.run(['node', hook_path])
         try:
@@ -180,20 +180,20 @@ class HooksManager:
                 # Check for sensitive data patterns
                 if context:
                     text_dump = json.dumps(context, default=str).lower()
-                    
+
                     # Simple regex patterns for secrets
                     patterns = [
                         r"sk-[a-zA-Z0-9]{20,}",  # OpenAI style keys
                         r"ghp_[a-zA-Z0-9]{20,}", # GitHub tokens
                         r"password\s*[:=]\s*['\"][^'\"]+['\"]" # Simple password fields
                     ]
-                    
+
                     for pattern in patterns:
                         if re.search(pattern, text_dump):
                             result["passed"] = False
                             result["output"] = "🔒 Sensitive data detected (API Key or Password)"
                             break
-                            
+
             # Other hooks are currently pass-through placeholders
             else:
                 result["passed"] = True
@@ -202,9 +202,9 @@ class HooksManager:
             result["passed"] = False
             result["error"] = str(e)
             result["output"] = f"Hook execution failed: {e}"
-        
+
         return result
-    
+
     def get_hooks_for_suite(self, suite: str) -> List[Hook]:
         """Get all hooks that will run for a specific suite."""
         triggers = SUITE_TRIGGERS.get(suite, [])
@@ -212,24 +212,24 @@ class HooksManager:
         for trigger in triggers:
             hooks.extend(HOOKS.get(trigger, []))
         return hooks
-    
+
     def print_hooks_status(self):
         """Print detailed hooks status."""
         print("\n🪝 HOOKS STATUS")
         print("═" * 50)
-        
+
         total_hooks = sum(len(h) for h in HOOKS.values())
         print(f"   Total Hooks: {total_hooks}")
         print(f"   Enabled: {'Yes' if self.enabled else 'No'}")
         print()
-        
+
         print("📋 HOOKS BY TRIGGER:")
         for trigger, hooks in HOOKS.items():
             print(f"   {trigger}:")
             for h in hooks:
                 status = "🛑 Blocking" if h.blocking else "ℹ️ Info"
                 print(f"      • {h.name:<20} [{status}]")
-        
+
         print("═" * 50)
 
 

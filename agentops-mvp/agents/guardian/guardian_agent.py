@@ -75,7 +75,7 @@ class GuardianAgent:
     - Aggressive pay-to-play
     - Founder vesting reset
     """
-    
+
     def __init__(self):
         self.red_flags = {
             "liquidation_preference_max": 1.5,  # Max acceptable
@@ -83,7 +83,7 @@ class GuardianAgent:
             "option_pool_max": 15,  # Max option pool
             "no_shop_max_days": 45,  # Max no-shop period
         }
-    
+
     # Agent 1: Term Sheet Parser
     @staticmethod
     def parse_term_sheet(document_text: str) -> Dict[str, Any]:
@@ -113,7 +113,7 @@ class GuardianAgent:
             "parsed_at": datetime.now().isoformat()
         }
         return terms
-    
+
     # Agent 2: Red Flag Detector
     def detect_red_flags(self, terms: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -127,7 +127,7 @@ class GuardianAgent:
         """
         red_flags = []
         walk_away = False
-        
+
         # Check liquidation preference
         liq_pref = terms.get("liquidation_preference", 1.0)
         if liq_pref >= 2.0:
@@ -145,7 +145,7 @@ class GuardianAgent:
                 "message": f"Liquidation preference {liq_pref}x is aggressive",
                 "binh_phap": "Negotiate to 1x non-participating"
             })
-        
+
         # Check anti-dilution
         anti_dilution = terms.get("anti_dilution", "weighted_average")
         if anti_dilution == "full_ratchet":
@@ -156,7 +156,7 @@ class GuardianAgent:
                 "binh_phap": "Chapter 6: Never accept full ratchet"
             })
             walk_away = True
-        
+
         # Check board control
         board = terms.get("board_seats", {})
         if board.get("investor", 0) > board.get("founder", 0):
@@ -167,7 +167,7 @@ class GuardianAgent:
                 "binh_phap": "Chapter 1: Never lose strategic control"
             })
             walk_away = True
-        
+
         # Check participation
         if terms.get("participation", False) and not terms.get("participating_cap"):
             red_flags.append({
@@ -176,7 +176,7 @@ class GuardianAgent:
                 "message": "Uncapped participation is double-dipping",
                 "binh_phap": "Negotiate for 3x cap or non-participating"
             })
-        
+
         # Check equity
         equity = terms.get("equity_percentage", 0)
         if equity > 30:
@@ -193,7 +193,7 @@ class GuardianAgent:
                 "message": f"Giving up {equity}% is above average for this stage",
                 "binh_phap": "Consider negotiating to 20% max"
             })
-        
+
         # Check option pool
         option_pool = terms.get("option_pool", 0)
         if option_pool > 15:
@@ -203,14 +203,14 @@ class GuardianAgent:
                 "message": f"Option pool of {option_pool}% dilutes founders excessively",
                 "binh_phap": "Negotiate to 10% or post-money pool"
             })
-        
+
         return {
             "total_flags": len(red_flags),
             "walk_away": walk_away,
             "red_flags": red_flags,
             "analyzed_at": datetime.now().isoformat()
         }
-    
+
     # Agent 3: Negotiation Advisor
     @staticmethod
     def suggest_counter_offer(terms: Dict[str, Any], red_flags: List[Dict]) -> Dict[str, Any]:
@@ -225,7 +225,7 @@ class GuardianAgent:
             Counter-offer suggestions
         """
         counter_offers = []
-        
+
         for flag in red_flags:
             if flag["type"] == "liquidation_preference":
                 counter_offers.append({
@@ -235,7 +235,7 @@ class GuardianAgent:
                     "rationale": "Industry standard is 1x non-participating",
                     "priority": "HIGH"
                 })
-            
+
             elif flag["type"] == "anti_dilution":
                 counter_offers.append({
                     "term": "Anti-Dilution",
@@ -244,7 +244,7 @@ class GuardianAgent:
                     "rationale": "Broad-based weighted average is market standard",
                     "priority": "CRITICAL"
                 })
-            
+
             elif flag["type"] == "participation":
                 counter_offers.append({
                     "term": "Participation",
@@ -253,7 +253,7 @@ class GuardianAgent:
                     "rationale": "Participating preferred is already generous to investors",
                     "priority": "HIGH"
                 })
-            
+
             elif flag["type"] == "equity":
                 current_equity = terms.get("equity_percentage", 0)
                 counter_offers.append({
@@ -263,7 +263,7 @@ class GuardianAgent:
                     "rationale": "Preserve founder ownership for future rounds",
                     "priority": "MEDIUM"
                 })
-            
+
             elif flag["type"] == "option_pool":
                 counter_offers.append({
                     "term": "Option Pool",
@@ -272,14 +272,14 @@ class GuardianAgent:
                     "rationale": "Post-money option pool shares dilution with investors",
                     "priority": "MEDIUM"
                 })
-        
+
         return {
             "total_counters": len(counter_offers),
             "counter_offers": counter_offers,
             "negotiation_strategy": "Start with highest priority items, be willing to compromise on medium priority",
             "generated_at": datetime.now().isoformat()
         }
-    
+
     # Agent 4: Market Comparator
     @staticmethod
     def compare_to_market(terms: Dict[str, Any], stage: str = "Seed") -> Dict[str, Any]:
@@ -312,10 +312,10 @@ class GuardianAgent:
                 "board": "2 founder, 1 investor, 1 independent"
             }
         }
-        
+
         benchmark = benchmarks.get(stage, benchmarks["Seed"])
         comparisons = []
-        
+
         # Compare each term
         val = terms.get("valuation_pre_money", 0)
         val_range = benchmark["valuation_range"]
@@ -325,7 +325,7 @@ class GuardianAgent:
             comparisons.append({"term": "Valuation", "status": "ABOVE_MARKET", "benchmark": f"${val_range[0]:,} - ${val_range[1]:,}"})
         else:
             comparisons.append({"term": "Valuation", "status": "MARKET", "benchmark": f"${val_range[0]:,} - ${val_range[1]:,}"})
-        
+
         equity = terms.get("equity_percentage", 0)
         eq_range = benchmark["equity_typical"]
         if equity < eq_range[0]:
@@ -334,20 +334,20 @@ class GuardianAgent:
             comparisons.append({"term": "Equity", "status": "UNFAVORABLE", "benchmark": f"{eq_range[0]}-{eq_range[1]}%"})
         else:
             comparisons.append({"term": "Equity", "status": "MARKET", "benchmark": f"{eq_range[0]}-{eq_range[1]}%"})
-        
+
         liq_pref = terms.get("liquidation_preference", 1.0)
         if liq_pref == benchmark["liq_pref_typical"]:
             comparisons.append({"term": "Liquidation Preference", "status": "MARKET", "benchmark": "1x"})
         elif liq_pref > benchmark["liq_pref_typical"]:
             comparisons.append({"term": "Liquidation Preference", "status": "UNFAVORABLE", "benchmark": "1x"})
-        
+
         return {
             "stage": stage,
             "comparisons": comparisons,
             "overall": "FAVORABLE" if all(c["status"] in ["MARKET", "FAVORABLE"] for c in comparisons) else "NEEDS_NEGOTIATION",
             "compared_at": datetime.now().isoformat()
         }
-    
+
     # Agent 5: Risk Scorer
     def calculate_risk_score(self, terms: Dict[str, Any], red_flags: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -362,7 +362,7 @@ class GuardianAgent:
         """
         score = 0
         factors = []
-        
+
         # Walk away flags = instant 10
         if red_flags.get("walk_away", False):
             return {
@@ -372,7 +372,7 @@ class GuardianAgent:
                 "recommendation": "DO NOT PROCEED. Negotiate or walk away.",
                 "calculated_at": datetime.now().isoformat()
             }
-        
+
         # Count red flags
         flag_count = red_flags.get("total_flags", 0)
         if flag_count >= 4:
@@ -381,17 +381,17 @@ class GuardianAgent:
         elif flag_count >= 2:
             score += 2
             factors.append("Some concerning terms")
-        
+
         # Check specific high-risk terms
         liq_pref = terms.get("liquidation_preference", 1.0)
         if liq_pref > 1.0:
             score += 2
             factors.append(f"Liquidation preference above 1x ({liq_pref}x)")
-        
+
         if terms.get("participation", False):
             score += 1
             factors.append("Participating preferred")
-        
+
         equity = terms.get("equity_percentage", 0)
         if equity > 25:
             score += 2
@@ -399,7 +399,7 @@ class GuardianAgent:
         elif equity > 20:
             score += 1
             factors.append(f"Above average equity ({equity}%)")
-        
+
         # Determine rating
         if score >= 8:
             rating = "VERY_HIGH"
@@ -416,7 +416,7 @@ class GuardianAgent:
         else:
             rating = "VERY_LOW"
             recommendation = "Excellent terms. Recommend proceeding."
-        
+
         return {
             "score": min(score, 10),
             "rating": rating,
@@ -424,10 +424,10 @@ class GuardianAgent:
             "recommendation": recommendation,
             "calculated_at": datetime.now().isoformat()
         }
-    
+
     # Agent 6: Auto-Responder
     @staticmethod
-    def draft_response(terms: Dict[str, Any], red_flags: Dict[str, Any], counter_offers: Dict[str, Any], 
+    def draft_response(terms: Dict[str, Any], red_flags: Dict[str, Any], counter_offers: Dict[str, Any],
                        risk_score: Dict[str, Any]) -> Dict[str, Any]:
         """
         Agent 6: Draft professional response email
@@ -442,7 +442,7 @@ class GuardianAgent:
             Draft email response
         """
         rating = risk_score.get("rating", "MEDIUM")
-        
+
         if rating == "WALK_AWAY":
             subject = "RE: Term Sheet - Unable to Proceed"
             body = """Dear [Investor Name],
@@ -457,7 +457,7 @@ At this time, we are unable to move forward with these terms. We would welcome t
 
 Best regards,
 [Founder Name]"""
-        
+
         elif rating in ["VERY_HIGH", "HIGH"]:
             subject = "RE: Term Sheet - Counter-Proposal"
             body = """Dear [Investor Name],
@@ -474,7 +474,7 @@ We look forward to discussing these points and finding mutually agreeable terms.
 
 Best regards,
 [Founder Name]"""
-        
+
         else:
             subject = "RE: Term Sheet - Proceeding with Minor Points"
             body = """Dear [Investor Name],
@@ -489,7 +489,7 @@ Please let us know your availability for a call to finalize these details.
 
 Best regards,
 [Founder Name]"""
-        
+
         return {
             "subject": subject,
             "body": body,
@@ -513,25 +513,25 @@ def review_term_sheet(document_text: str, stage: str = "Seed") -> Dict[str, Any]
     6. Draft response
     """
     guardian = GuardianAgent()
-    
+
     # Agent 1: Parse
     terms = guardian.parse_term_sheet(document_text)
-    
+
     # Agent 2: Red flags
     red_flags = guardian.detect_red_flags(terms)
-    
+
     # Agent 3: Counter offers
     counter_offers = guardian.suggest_counter_offer(terms, red_flags["red_flags"])
-    
+
     # Agent 4: Market comparison
     market_compare = guardian.compare_to_market(terms, stage)
-    
+
     # Agent 5: Risk score
     risk_score = guardian.calculate_risk_score(terms, red_flags)
-    
+
     # Agent 6: Draft response
     response = guardian.draft_response(terms, red_flags, counter_offers, risk_score)
-    
+
     return {
         "terms": terms,
         "red_flags": red_flags,
@@ -554,7 +554,7 @@ if __name__ == "__main__":
     Anti-dilution: Broad-based weighted average
     Board: 2 founders, 1 investor
     """
-    
+
     result = review_term_sheet(sample, "Seed")
     print(f"Risk Score: {result['risk_score']['score']}/10")
     print(f"Rating: {result['risk_score']['rating']}")

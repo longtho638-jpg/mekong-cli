@@ -44,19 +44,19 @@ class ConnectionManager:
     - Send to specific client
     - Heartbeat to keep connections alive
     """
-    
+
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
         self._connection_count = 0
         self._heartbeat_task = None
-    
+
     async def connect(self, websocket: WebSocket) -> str:
         """Accept new WebSocket connection and return client ID."""
         await websocket.accept()
         self._connection_count += 1
         client_id = f"client_{self._connection_count}_{datetime.now().strftime('%H%M%S')}"
         self.active_connections[client_id] = websocket
-        
+
         # Send welcome message
         await self.send_personal_message(client_id, {
             "type": EventType.CONNECTED,
@@ -64,14 +64,14 @@ class ConnectionManager:
             "message": "Connected to AntigravityKit WebSocket",
             "timestamp": datetime.now().isoformat()
         })
-        
+
         return client_id
-    
+
     def disconnect(self, client_id: str):
         """Remove client from active connections."""
         if client_id in self.active_connections:
             del self.active_connections[client_id]
-    
+
     async def send_personal_message(self, client_id: str, message: dict):
         """Send message to specific client."""
         if client_id in self.active_connections:
@@ -79,21 +79,21 @@ class ConnectionManager:
                 await self.active_connections[client_id].send_json(message)
             except Exception:
                 self.disconnect(client_id)
-    
+
     async def broadcast(self, message: dict):
         """Broadcast message to all connected clients."""
         disconnected = []
-        
+
         for client_id, connection in self.active_connections.items():
             try:
                 await connection.send_json(message)
             except Exception:
                 disconnected.append(client_id)
-        
+
         # Clean up disconnected clients
         for client_id in disconnected:
             self.disconnect(client_id)
-    
+
     async def broadcast_event(self, event_type: EventType, data: dict = None):
         """Broadcast typed event to all clients."""
         message = {
@@ -103,12 +103,12 @@ class ConnectionManager:
             "connections": len(self.active_connections)
         }
         await self.broadcast(message)
-    
+
     @property
     def connection_count(self) -> int:
         """Get number of active connections."""
         return len(self.active_connections)
-    
+
     async def start_heartbeat(self, interval: int = 30):
         """Start heartbeat to keep connections alive."""
         while True:
@@ -117,7 +117,7 @@ class ConnectionManager:
                 await self.broadcast_event(EventType.HEARTBEAT, {
                     "connections": self.connection_count
                 })
-    
+
     def get_status(self) -> dict:
         """Get connection manager status."""
         return {

@@ -29,7 +29,7 @@ class InvoiceItem:
     description: str
     quantity: int
     unit_price: float
-    
+
     @property
     def total(self) -> float:
         """Calculate line item total."""
@@ -49,15 +49,15 @@ class Invoice:
     due_date: datetime = field(default_factory=lambda: datetime.now() + timedelta(days=30))
     paid_at: Optional[datetime] = None
     notes: str = ""
-    
+
     @property
     def subtotal(self) -> float:
         return sum(item.total for item in self.items)
-    
+
     @property
     def tax(self) -> float:
         return self.subtotal * 0.10  # 10% Standard VAT
-    
+
     @property
     def total(self) -> float:
         return self.subtotal + self.tax

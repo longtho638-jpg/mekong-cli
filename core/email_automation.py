@@ -86,34 +86,34 @@ class EmailAutomation:
     
     Orchestrates templates, sequences, and scheduled deliveries for client nurture.
     """
-    
+
     def __init__(self, agency_name: str = "Nova Digital", owner_email: str = "hello@nova.digital"):
         self.agency_name = agency_name
         self.owner_email = owner_email
         self.templates: Dict[str, EmailTemplate] = {}
         self.sequences: Dict[str, EmailSequence] = {}
         self.scheduled: List[ScheduledEmail] = []
-        
+
         self.stats = {"sent": 0, "opened": 0, "active_sequences": 0}
-        
+
         logger.info(f"Email Automation initialized for {agency_name}")
         self._load_defaults()
-    
+
     def _validate_email(self, email: str) -> bool:
         return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
 
     def _load_defaults(self):
         """Seed the system with standard agency templates."""
         welcome_tpl = self.create_template(
-            "Welcome", "Welcome to {agency_name}! 🎉", 
-            "Hi {first_name}! Thanks for joining us at {agency_name}.", 
+            "Welcome", "Welcome to {agency_name}! 🎉",
+            "Hi {first_name}! Thanks for joining us at {agency_name}.",
             SequenceType.WELCOME
         )
         self.create_sequence(
-            "Onboarding Flow", SequenceType.WELCOME, 
+            "Onboarding Flow", SequenceType.WELCOME,
             [{"template_id": welcome_tpl.id, "delay_days": 0}]
         )
-    
+
     def create_template(self, name: str, subject: str, body: str, category: SequenceType) -> EmailTemplate:
         """Register a new reusable email template."""
         template = EmailTemplate(
@@ -123,7 +123,7 @@ class EmailAutomation:
         self.templates[template.id] = template
         logger.debug(f"Template created: {name}")
         return template
-    
+
     def create_sequence(self, name: str, seq_type: SequenceType, emails: List[Dict[str, Any]]) -> EmailSequence:
         """Define a new automated email sequence."""
         seq = EmailSequence(
@@ -134,7 +134,7 @@ class EmailAutomation:
         self.stats["active_sequences"] += 1
         logger.info(f"Sequence registered: {name} ({len(emails)} emails)")
         return seq
-    
+
     def enroll_contact(self, seq_id: str, email: str, name: str, vars: Optional[Dict] = None) -> bool:
         """Add a contact to an automated email sequence."""
         if seq_id not in self.sequences: return False
@@ -144,13 +144,13 @@ class EmailAutomation:
 
         seq = self.sequences[seq_id]
         seq.enrollments += 1
-        
+
         personalization = {
             "first_name": name.split()[0] if name else "there",
             "agency_name": self.agency_name
         }
         if vars: personalization.update(vars)
-        
+
         for cfg in seq.emails:
             scheduled = ScheduledEmail(
                 id=f"EM-{uuid.uuid4().hex[:8]}",
@@ -160,10 +160,10 @@ class EmailAutomation:
                 scheduled_for=datetime.now() + timedelta(days=cfg["delay_days"])
             )
             self.scheduled.append(scheduled)
-            
+
         logger.info(f"Enrolled {email} in {seq.name}")
         return True
-    
+
     def send_pending(self) -> int:
         """Simulate sending emails that are due."""
         now = datetime.now()
@@ -187,21 +187,21 @@ class EmailAutomation:
             "║  🔄 ACTIVE SEQUENCES                                      ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for s in list(self.sequences.values())[:5]:
             lines.append(f"║  🟢 {s.name:<25} │ {len(s.emails)} steps │ {s.enrollments:>3} enrolled  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  📋 UPCOMING DELIVERIES                                   ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         pending = [e for e in self.scheduled if e.status == EmailStatus.SCHEDULED]
         for e in pending[:3]:
             time_disp = e.scheduled_for.strftime("%Y-%m-%d")
             lines.append(f"║    📅 {time_disp} │ {e.recipient_email:<25} │ {e.id:<10}  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Seq]  [📋 Templates]  [🔄 Send Now]  [⚙️ Setup]  ║",
@@ -216,16 +216,16 @@ class EmailAutomation:
 if __name__ == "__main__":
     print("📧 Initializing Email Automation...")
     print("=" * 60)
-    
+
     try:
         email_system = EmailAutomation("Saigon Digital Hub")
-        
+
         # Enroll sample
         if email_system.sequences:
             sid = list(email_system.sequences.keys())[0]
             email_system.enroll_contact(sid, "test@client.co", "John Doe")
-            
+
         print("\n" + email_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Automation Error: {e}")

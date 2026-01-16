@@ -62,12 +62,12 @@ class ClientOnboardingFlow:
     
     Manages the initial stages of the client-agency relationship.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.onboardings: Dict[str, ClientOnboarding] = {}
         logger.info(f"Onboarding Flow initialized for {agency_name}")
-    
+
     def _validate_email(self, email: str) -> bool:
         """Basic email format validation."""
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -83,7 +83,7 @@ class ClientOnboardingFlow:
             OnboardingChecklist(OnboardingStep.STRATEGY_SESSION, "Strategy Session", "Define roadmap", due_days=5),
             OnboardingChecklist(OnboardingStep.DELIVERABLES_START, "Start Work", "Begin deliverables", due_days=7),
         ]
-    
+
     def start_onboarding(self, client_name: str, email: str) -> ClientOnboarding:
         """Initialize onboarding for a new client."""
         if not client_name:
@@ -101,12 +101,12 @@ class ClientOnboardingFlow:
         self.onboardings[onboarding.id] = onboarding
         logger.info(f"Started onboarding for {client_name} ({onboarding.id})")
         return onboarding
-    
+
     def complete_step(self, onboarding_id: str, step: OnboardingStep) -> bool:
         """Mark a specific step as finished."""
         if onboarding_id not in self.onboardings:
             return False
-            
+
         onboarding = self.onboardings[onboarding_id]
         for item in onboarding.checklist:
             if item.step == step:
@@ -115,30 +115,30 @@ class ClientOnboardingFlow:
                     item.completed_at = datetime.now()
                     logger.info(f"Step {step.value} complete for {onboarding.client_name}")
                 break
-        
+
         # Auto-complete onboarding if all steps are done
         if all(item.completed for item in onboarding.checklist):
             onboarding.completed_at = datetime.now()
             logger.info(f"ONBOARDING COMPLETE for {onboarding.client_name}!")
-        
+
         return True
-    
+
     def get_progress(self, onboarding: ClientOnboarding) -> float:
         """Calculate the percentage of completed steps."""
         if not onboarding.checklist:
             return 0.0
         completed = sum(1 for item in onboarding.checklist if item.completed)
         return (completed / len(onboarding.checklist) * 100.0)
-    
+
     def format_onboarding_detail(self, onboarding_id: str) -> str:
         """Render detail view for a specific onboarding."""
         if onboarding_id not in self.onboardings:
             return "❌ Onboarding record not found."
-            
+
         onb = self.onboardings[onboarding_id]
         progress = self.get_progress(onb)
         bar = "█" * int(progress / 10) + "░" * (10 - int(progress / 10))
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  👋 CLIENT ONBOARDING DETAIL{' ' * 31}║",
@@ -149,12 +149,12 @@ class ClientOnboardingFlow:
             "║  ✅ CHECKLIST                                             ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for item in onb.checklist:
             icon = "✅" if item.completed else "⬜"
             status = "Done" if item.completed else f"Day {item.due_days}"
             lines.append(f"║    {icon} {item.name:<25} │ {status:<15}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [📧 Reminder]  [📊 Details]  [✅ Mark Done]              ║",
@@ -162,13 +162,13 @@ class ClientOnboardingFlow:
             f"║  🏯 {self.agency_name[:40]:<40} - First Impression!  ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
-    
+
     def format_overview(self) -> str:
         """Render overview of all active onboardings."""
         in_progress = sum(1 for o in self.onboardings.values() if not o.completed_at)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  👋 ONBOARDING OVERVIEW{' ' * 36}║",
@@ -177,14 +177,14 @@ class ClientOnboardingFlow:
             "║  Client          │ Progress │ Status                     ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for onb in list(self.onboardings.values())[:5]:
             progress = self.get_progress(onb)
             bar = "█" * int(progress / 20) + "░" * (5 - int(progress / 20))
             status = "✅ Done  " if onb.completed_at else "🔄 Active"
             name_disp = (onb.client_name[:15] + '..') if len(onb.client_name) > 17 else onb.client_name
             lines.append(f"║  {name_disp:<15} │ {bar} {progress:>3.0f}% │ {status:<10}  ║")
-        
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
@@ -193,21 +193,21 @@ class ClientOnboardingFlow:
 if __name__ == "__main__":
     print("👋 Initializing Client Onboarding Flow...")
     print("=" * 60)
-    
+
     try:
         flow = ClientOnboardingFlow("Saigon Digital Hub")
-        
+
         # Start onboarding
         o1 = flow.start_onboarding("Sunrise Realty", "admin@sunrise.com")
         o2 = flow.start_onboarding("Coffee Lab", "hello@coffeelab.com")
-        
+
         # Complete some steps
         flow.complete_step(o1.id, OnboardingStep.WELCOME_CALL)
         flow.complete_step(o1.id, OnboardingStep.ACCOUNT_SETUP)
         flow.complete_step(o1.id, OnboardingStep.PORTAL_ACCESS)
-        
+
         print("\n" + flow.format_onboarding_detail(o1.id))
         print("\n" + flow.format_overview())
-        
+
     except Exception as e:
         logger.error(f"Runtime Error: {e}")

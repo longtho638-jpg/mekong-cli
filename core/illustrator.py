@@ -69,12 +69,12 @@ class Illustrator:
     
     Orchestrates the creation, tracking, and delivery of specialized illustration assets.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.projects: Dict[str, IllustrationProject] = {}
         logger.info(f"Illustrator system initialized for {agency_name}")
-    
+
     def create_project(
         self,
         name: str,
@@ -98,24 +98,24 @@ class Illustrator:
         self.projects[project.id] = project
         logger.info(f"Project created: {name} ({pieces} pieces)")
         return project
-    
+
     def mark_piece_complete(self, project_id: str) -> bool:
         """Increment completion count for a specific project."""
         if project_id not in self.projects: return False
-        
+
         p = self.projects[project_id]
         if p.completed < p.pieces:
             p.completed += 1
             logger.info(f"Piece completed for {p.name} ({p.completed}/{p.pieces})")
             return True
         return False
-    
+
     def format_dashboard(self) -> str:
         """Render the Illustrator Dashboard."""
         total_p = len(self.projects)
         total_pieces = sum(p.pieces for p in self.projects.values())
         done_pieces = sum(p.completed for p in self.projects.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  ✏️ ILLUSTRATOR DASHBOARD{' ' * 35}║",
@@ -124,19 +124,19 @@ class Illustrator:
             "║  🎨 ACTIVE PROJECTS                                       ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         type_icons = {
-            IllustrationType.HERO: "🖼️", IllustrationType.ICON_SET: "🔲", 
+            IllustrationType.HERO: "🖼️", IllustrationType.ICON_SET: "🔲",
             IllustrationType.CHARACTER: "👤", IllustrationType.PATTERN: "🔳"
         }
-        
+
         for p in list(self.projects.values())[:5]:
             icon = type_icons.get(p.illus_type, "🎨")
             prog = (p.completed / p.pieces) * 100
             bar = "█" * int(prog / 10) + "░" * (10 - int(prog / 10))
             name_disp = (p.name[:18] + '..') if len(p.name) > 20 else p.name
             lines.append(f"║  {icon} {name_disp:<20} │ {bar} │ {p.completed}/{p.pieces} done  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Project]  [🎨 Draw]  [📤 Export]  [⚙️ Settings]  ║",
@@ -144,7 +144,7 @@ class Illustrator:
             f"║  🏯 {self.agency_name[:40]:<40} - Stories!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -152,15 +152,15 @@ class Illustrator:
 if __name__ == "__main__":
     print("✏️ Initializing Illustrator...")
     print("=" * 60)
-    
+
     try:
         illus_system = Illustrator("Saigon Digital Hub")
-        
+
         # Seed
         p1 = illus_system.create_project("Heroes", "Sunrise", IllustrationType.HERO, IllustrationStyle.FLAT, 5)
         illus_system.mark_piece_complete(p1.id)
-        
+
         print("\n" + illus_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Illustrator Error: {e}")

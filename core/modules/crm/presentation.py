@@ -5,13 +5,13 @@ from .services import CRMService
 
 class CRMPresenter:
     """Handles visual formatting of CRM data."""
-    
+
     @staticmethod
     def format_pipeline_text(crm: CRMService) -> str:
         """Renders a text-based pipeline overview."""
         summary = crm.get_summary()
         forecast = crm.forecast_revenue()
-        
+
         lines = [
             "╔" + "═" * 50 + "╗",
             "║" + "🎯 SALES PIPELINE OVERVIEW".center(50) + "║",

@@ -43,25 +43,25 @@ class CoreWebVitals:
     lcp: float  # Largest Contentful Paint (seconds)
     fid: float  # First Input Delay (ms)
     cls: float  # Cumulative Layout Shift
-    
+
     @property
     def lcp_status(self) -> str:
         if self.lcp <= 2.5: return "good"
         if self.lcp <= 4.0: return "needs_improvement"
         return "poor"
-    
+
     @property
     def fid_status(self) -> str:
         if self.fid <= 100: return "good"
         if self.fid <= 300: return "needs_improvement"
         return "poor"
-    
+
     @property
     def cls_status(self) -> str:
         if self.cls <= 0.1: return "good"
         if self.cls <= 0.25: return "needs_improvement"
         return "poor"
-    
+
     @property
     def overall_status(self) -> str:
         statuses = [self.lcp_status, self.fid_status, self.cls_status]
@@ -80,17 +80,17 @@ class TechnicalSEOAgent:
     - Core Web Vitals
     - Schema markup validation
     """
-    
+
     def __init__(self):
         self.name = "Technical SEO"
         self.status = "ready"
         self.issues: List[SEOIssue] = []
         self.vitals: Optional[CoreWebVitals] = None
-        
+
     def run_audit(self, domain: str) -> List[SEOIssue]:
         """Run site audit"""
         self.issues = []
-        
+
         # Simulate finding issues
         issue_samples = [
             (IssueType.BROKEN_LINK, IssueSeverity.CRITICAL, "404 Not Found"),
@@ -100,7 +100,7 @@ class TechnicalSEOAgent:
             (IssueType.MISSING_ALT, IssueSeverity.INFO, "Image missing alt text"),
             (IssueType.MISSING_SCHEMA, IssueSeverity.INFO, "No structured data"),
         ]
-        
+
         num_issues = random.randint(3, 8)
         for i in range(num_issues):
             sample = random.choice(issue_samples)
@@ -112,9 +112,9 @@ class TechnicalSEOAgent:
                 description=sample[2]
             )
             self.issues.append(issue)
-            
+
         return self.issues
-    
+
     def check_core_web_vitals(self, url: str) -> CoreWebVitals:
         """Check Core Web Vitals"""
         self.vitals = CoreWebVitals(
@@ -123,19 +123,19 @@ class TechnicalSEOAgent:
             cls=random.uniform(0.01, 0.35)
         )
         return self.vitals
-    
+
     def fix_issue(self, issue_id: str) -> SEOIssue:
         """Mark issue as fixed"""
         issue = next((i for i in self.issues if i.id == issue_id), None)
         if issue:
             issue.is_fixed = True
         return issue
-    
+
     def get_health_score(self) -> int:
         """Calculate overall site health score 0-100"""
         if not self.issues:
             return 100
-            
+
         # Deduct points based on severity
         deductions = 0
         for issue in self.issues:
@@ -147,14 +147,14 @@ class TechnicalSEOAgent:
                 deductions += 5
             else:
                 deductions += 2
-                
+
         return max(0, 100 - deductions)
-    
+
     def get_stats(self) -> Dict:
         """Get audit statistics"""
         critical = len([i for i in self.issues if i.severity == IssueSeverity.CRITICAL and not i.is_fixed])
         warnings = len([i for i in self.issues if i.severity == IssueSeverity.WARNING and not i.is_fixed])
-        
+
         return {
             "health_score": self.get_health_score(),
             "total_issues": len(self.issues),
@@ -167,26 +167,26 @@ class TechnicalSEOAgent:
 # Demo
 if __name__ == "__main__":
     agent = TechnicalSEOAgent()
-    
+
     print("🔧 Technical SEO Agent Demo\n")
-    
+
     # Run audit
     issues = agent.run_audit("mekong.io")
     print(f"📋 Audit found: {len(issues)} issues")
-    
+
     # Show critical issues
     critical = [i for i in issues if i.severity == IssueSeverity.CRITICAL]
     print(f"\n🚨 Critical Issues: {len(critical)}")
     for issue in critical:
         print(f"   [{issue.issue_type.value}] {issue.url}")
         print(f"   → {issue.description}")
-    
+
     # Check Core Web Vitals
     vitals = agent.check_core_web_vitals("https://mekong.io")
     print(f"\n⚡ Core Web Vitals: {vitals.overall_status.upper()}")
     print(f"   LCP: {vitals.lcp:.2f}s ({vitals.lcp_status})")
     print(f"   FID: {vitals.fid:.0f}ms ({vitals.fid_status})")
     print(f"   CLS: {vitals.cls:.3f} ({vitals.cls_status})")
-    
+
     # Health score
     print(f"\n💚 Health Score: {agent.get_health_score()}/100")

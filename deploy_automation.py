@@ -25,18 +25,18 @@ class DeployManager:
     def validate_environment(self) -> bool:
         """Checks if all required tools and configs are present."""
         console.print("[bold blue]🔍 Pre-flight Checks...[/bold blue]")
-        
+
         required_tools = ["gcloud", "git"]
         for tool in required_tools:
             if not shutil.which(tool):
                 console.print(f"❌ [red]Required tool '{tool}' not found in PATH.[/red]")
                 return False
-        
+
         self.project_id = self._get_gcloud_project()
         if not self.project_id or self.project_id == "unknown":
             console.print("❌ [red]Google Cloud Project ID not set. Run: 'gcloud config set project <ID>'[/red]")
             return False
-            
+
         if not os.path.isdir("./backend"):
             console.print("❌ [red]Directory './backend' not found. Ensure you are in the project root.[/red]")
             return False
@@ -47,7 +47,7 @@ class DeployManager:
     def _get_gcloud_project(self) -> str:
         try:
             return subprocess.check_output(
-                ["gcloud", "config", "get-value", "project"], 
+                ["gcloud", "config", "get-value", "project"],
                 text=True, stderr=subprocess.DEVNULL
             ).strip()
         except (subprocess.CalledProcessError, FileNotFoundError):
@@ -57,7 +57,7 @@ class DeployManager:
         """Reads secrets from .env file."""
         if not os.path.exists(path):
             return {}
-        
+
         env_vars = {}
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
@@ -79,7 +79,7 @@ class DeployManager:
         env_vars = self.parse_env()
         if not env_vars:
             console.print("⚠️  [yellow].env file missing or empty. Deploying without custom secrets...[/yellow]")
-        
+
         valid_env = {k: v for k, v in env_vars.items() if v}
         env_flags = ",".join([f"{k}={v}" for k, v in valid_env.items()])
 
@@ -105,9 +105,9 @@ class DeployManager:
                     console.print("\n[bold red]❌ GCloud Deploy Failed[/bold red]")
                     console.print(process.stderr)
                     raise typer.Exit(1)
-                
+
                 console.print(f"\n✅ [bold green]{self.service_name} deployed successfully![/bold green]")
-                
+
             except Exception as e:
                 console.print(f"\n❌ [bold red]Unexpected error during deploy:[/bold red] {e}")
                 raise typer.Exit(1)

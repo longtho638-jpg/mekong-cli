@@ -14,7 +14,7 @@ def get_meetings():
     """Get upcoming meetings."""
     if not SCHEDULER_AVAILABLE:
         raise HTTPException(500, "Scheduler not available")
-    
+
     upcoming = scheduler.get_upcoming_meetings()
     return [
         {
@@ -33,5 +33,5 @@ def get_scheduler_stats():
     """Get scheduler statistics."""
     if not SCHEDULER_AVAILABLE:
         raise HTTPException(500, "Scheduler not available")
-    
+
     return scheduler.get_stats()

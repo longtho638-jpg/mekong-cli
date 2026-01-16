@@ -17,7 +17,7 @@ import argparse
 import sys
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -54,7 +54,7 @@ def activate_uitra(email: str) -> Dict[str, Any]:
     """
     logger.info(f"🔄 Connecting to License Core for {email}...")
     validator = LicenseValidator()
-    
+
     # Activate using the standardized logic in license.py
     # This ensures the key format matches what the validator expects
     try:
@@ -70,18 +70,18 @@ def display_success(email: str, result: Dict[str, Any]) -> None:
     Display formatted success message and quota details.
     """
     validator = LicenseValidator()
-    
+
     print("\n" + "=" * 50)
-    print(f"🏯  AGENCY OS: LICENSE ACTIVATED")
+    print("🏯  AGENCY OS: LICENSE ACTIVATED")
     print("=" * 50)
-    print(f"✅  Status:   ACTIVE")
+    print("✅  Status:   ACTIVE")
     print(f"📧  Email:    {email}")
     print(f"🔑  Key:      {result.get('key', 'N/A')}")
     print(f"🏆  Tier:     {result.get('tier', 'UNKNOWN').upper()}")
     print("-" * 50)
-    
+
     print("\n📊  PRO Tier Limits (Live Check):")
-    
+
     features_to_check = [
         ("max_daily_video", "Max Daily Video"),
         ("niches", "Niches"),
@@ -90,16 +90,16 @@ def display_success(email: str, result: Dict[str, Any]) -> None:
         ("team_members", "Team Members"),
         ("white_label", "White Label"),
     ]
-    
+
     for feature_key, display_name in features_to_check:
         quota = validator.check_quota(feature_key)
         limit = quota['limit']
-        
+
         # Format limit for display
         limit_str = "Unlimited" if limit == -1 else str(limit)
         if feature_key == "white_label":
              limit_str = "✅ Yes" if quota['allowed'] else "❌ No"
-             
+
         print(f"   • {display_name:<20}: {limit_str}")
 
     print("\n" + "=" * 50)
@@ -115,13 +115,13 @@ def main() -> None:
         epilog="Example:\n  python3 scripts/activate_uitra.py user@example.com"
     )
     parser.add_argument("email", help="Email address to associate with the license")
-    
+
     args = parser.parse_args()
 
     try:
         result = activate_uitra(args.email)
         display_success(args.email, result)
-    except Exception as e:
+    except Exception:
         # detailed error is already logged in activate_uitra
         sys.exit(1)
 

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 
-@dataclass 
+@dataclass
 class BrandColors:
     """Brand color scheme."""
     primary: str = "#2563EB"      # Blue
@@ -56,7 +56,7 @@ class WhiteLabelBranding:
     
     Customize Agency OS with your brand.
     """
-    
+
     # Pre-built color themes
     THEMES = {
         "ocean": BrandColors(primary="#0EA5E9", secondary="#06B6D4", accent="#F97316"),
@@ -65,7 +65,7 @@ class WhiteLabelBranding:
         "midnight": BrandColors(primary="#1E293B", secondary="#334155", accent="#3B82F6"),
         "royal": BrandColors(primary="#7C3AED", secondary="#8B5CF6", accent="#EC4899"),
     }
-    
+
     def __init__(self, agency_name: str, tagline: str = ""):
         self.config = BrandConfig(
             agency_name=agency_name,
@@ -73,22 +73,22 @@ class WhiteLabelBranding:
             colors=BrandColors(),
             assets=BrandAssets()
         )
-    
+
     def apply_theme(self, theme_name: str):
         """Apply a pre-built theme."""
         if theme_name in self.THEMES:
             self.config.colors = self.THEMES[theme_name]
-    
+
     def set_colors(self, **kwargs):
         """Set custom colors."""
         for key, value in kwargs.items():
             if hasattr(self.config.colors, key):
                 setattr(self.config.colors, key, value)
-    
+
     def set_logo(self, logo_url: str):
         """Set logo URL."""
         self.config.assets.logo_url = logo_url
-    
+
     def generate_css_variables(self) -> str:
         """Generate CSS custom properties."""
         return f""":root {{
@@ -103,11 +103,11 @@ class WhiteLabelBranding:
   --font-primary: '{self.config.font_primary}', sans-serif;
   --font-secondary: '{self.config.font_secondary}', sans-serif;
 }}"""
-    
+
     def format_preview(self) -> str:
         """Format brand preview."""
         c = self.config.colors
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║  🎨 WHITE-LABEL BRANDING                                  ║",
@@ -131,10 +131,10 @@ class WhiteLabelBranding:
             "║  🖼️ ASSETS                                                ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
+
         logo_status = "✅ Uploaded" if self.config.assets.logo_url else "⬜ Not set"
         favicon_status = "✅ Uploaded" if self.config.assets.favicon_url else "⬜ Not set"
-        
+
         lines.extend([
             f"║    Logo:    {logo_status:<43}  ║",
             f"║    Favicon: {favicon_status:<43}  ║",
@@ -147,22 +147,22 @@ class WhiteLabelBranding:
             f"║  🏯 {self.config.agency_name} - Your brand, your way!     ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
     branding = WhiteLabelBranding("Saigon Digital Hub", "Transform your business with AI")
-    
+
     print("🎨 White-Label Branding")
     print("=" * 60)
     print()
-    
+
     # Apply theme
     branding.apply_theme("ocean")
     branding.set_logo("https://example.com/logo.png")
-    
+
     print(branding.format_preview())
     print()
     print("📄 Generated CSS:")

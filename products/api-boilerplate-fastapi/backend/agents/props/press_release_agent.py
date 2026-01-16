@@ -39,7 +39,7 @@ class PressRelease:
     coverage_links: List[str] = field(default_factory=list)
     created_at: datetime = None
     distributed_at: Optional[datetime] = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -55,7 +55,7 @@ class PressReleaseAgent:
     - Track distribution
     - Monitor coverage
     """
-    
+
     # Company boilerplate
     BOILERPLATE = """
 **Về Mekong-CLI**
@@ -64,7 +64,7 @@ Mekong-CLI là nền tảng mã nguồn mở đầu tiên giúp tự động hó
 
 Website: mekong-cli.com | GitHub: github.com/mekong-cli
 """
-    
+
     # Release templates
     TEMPLATES = {
         ReleaseType.PRODUCT_LAUNCH: {
@@ -105,12 +105,12 @@ Email: press@mekong-cli.com
 """
         },
     }
-    
+
     def __init__(self):
         self.name = "Press Release"
         self.status = "ready"
         self.releases: Dict[str, PressRelease] = {}
-        
+
     def generate_release(
         self,
         release_type: ReleaseType,
@@ -120,9 +120,9 @@ Email: press@mekong-cli.com
     ) -> PressRelease:
         """Generate press release from template"""
         template = self.TEMPLATES.get(release_type, self.TEMPLATES[ReleaseType.PRODUCT_LAUNCH])
-        
+
         date = datetime.now().strftime("%d/%m/%Y")
-        
+
         headline = template["headline"].format(partner=partner)
         subheadline = template["subheadline"]
         body = template["body"].format(
@@ -131,9 +131,9 @@ Email: press@mekong-cli.com
             quote=quote,
             partner=partner
         )
-        
+
         release_id = f"PR-{datetime.now().strftime('%Y%m%d')}-{random.randint(100,999)}"
-        
+
         release = PressRelease(
             id=release_id,
             headline=headline,
@@ -142,53 +142,53 @@ Email: press@mekong-cli.com
             boilerplate=self.BOILERPLATE,
             release_type=release_type
         )
-        
+
         self.releases[release_id] = release
         return release
-    
+
     def approve(self, release_id: str) -> PressRelease:
         """Approve release for distribution"""
         if release_id not in self.releases:
             raise ValueError(f"Release not found: {release_id}")
-            
+
         release = self.releases[release_id]
         release.status = ReleaseStatus.APPROVED
         return release
-    
+
     def distribute(
-        self, 
-        release_id: str, 
+        self,
+        release_id: str,
         outlets: List[str] = None
     ) -> PressRelease:
         """Distribute to outlets"""
         if release_id not in self.releases:
             raise ValueError(f"Release not found: {release_id}")
-            
+
         if outlets is None:
             outlets = ["TechInAsia", "VnExpress", "Viblo", "Dev.to"]
-            
+
         release = self.releases[release_id]
         release.status = ReleaseStatus.DISTRIBUTED
         release.distribution_list = outlets
         release.distributed_at = datetime.now()
-        
+
         return release
-    
+
     def add_coverage(self, release_id: str, url: str) -> PressRelease:
         """Add coverage link"""
         if release_id not in self.releases:
             raise ValueError(f"Release not found: {release_id}")
-            
+
         release = self.releases[release_id]
         release.coverage_links.append(url)
         return release
-    
+
     def get_stats(self) -> Dict:
         """Get PR statistics"""
         releases = list(self.releases.values())
-        
+
         total_coverage = sum(len(r.coverage_links) for r in releases)
-        
+
         return {
             "total_releases": len(releases),
             "distributed": len([r for r in releases if r.status == ReleaseStatus.DISTRIBUTED]),
@@ -203,31 +203,31 @@ Email: press@mekong-cli.com
 # Demo
 if __name__ == "__main__":
     agent = PressReleaseAgent()
-    
+
     print("📰 Press Release Agent Demo\n")
-    
+
     # Generate release
     release = agent.generate_release(
         release_type=ReleaseType.PRODUCT_LAUNCH,
         city="Hồ Chí Minh",
         quote="Mekong-CLI sẽ democratize agency ownership cho mọi người."
     )
-    
+
     print(f"📄 Release: {release.id}")
     print(f"   Headline: {release.headline}")
     print(f"   Type: {release.release_type.value}")
-    
+
     # Approve and distribute
     agent.approve(release.id)
     agent.distribute(release.id)
-    
+
     print(f"\n✅ Status: {release.status.value}")
     print(f"   Distributed to: {', '.join(release.distribution_list)}")
-    
+
     # Add coverage
     agent.add_coverage(release.id, "https://techinasia.com/mekong-cli-launch")
     print(f"   Coverage: {len(release.coverage_links)} articles")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

@@ -77,13 +77,13 @@ class CustomerSuccessManager:
     
     Orchestrates the success journey, quarterly reviews, and proactive relationship building.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.success_plans: Dict[str, SuccessPlan] = {}
         self.qbrs: List[QBRRecord] = []
         logger.info(f"CSM System initialized for {agency_name}")
-    
+
     def create_success_plan(
         self,
         client_name: str,
@@ -108,12 +108,12 @@ class CustomerSuccessManager:
         self.success_plans[plan.id] = plan
         logger.info(f"Success plan created for {client_name} (CSM: {csm})")
         return plan
-    
+
     def advance_stage(self, plan_id: str) -> bool:
         """Move a client to the next stage in their success journey."""
         if plan_id not in self.success_plans:
             return False
-            
+
         plan = self.success_plans[plan_id]
         stages = list(SuccessStage)
         current_idx = stages.index(plan.stage)
@@ -122,7 +122,7 @@ class CustomerSuccessManager:
             logger.info(f"Stage advanced for {plan.client_name}: {plan.stage.value}")
             return True
         return False
-    
+
     def record_qbr(
         self,
         client_name: str,
@@ -144,11 +144,11 @@ class CustomerSuccessManager:
         self.qbrs.append(qbr)
         logger.info(f"QBR recorded for {client_name}")
         return qbr
-    
+
     def format_dashboard(self) -> str:
         """Render the CSM Dashboard."""
         avg_health = sum(p.health_score for p in self.success_plans.values()) / len(self.success_plans) if self.success_plans else 0.0
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🎯 CUSTOMER SUCCESS DASHBOARD{' ' * 31}║",
@@ -157,29 +157,29 @@ class CustomerSuccessManager:
             "║  📊 SUCCESS STAGE DISTRIBUTION                            ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         stage_icons = {
-            SuccessStage.ONBOARDING: "👋", SuccessStage.ADOPTION: "📈", 
-            SuccessStage.VALUE_REALIZATION: "💎", SuccessStage.GROWTH: "🚀", 
+            SuccessStage.ONBOARDING: "👋", SuccessStage.ADOPTION: "📈",
+            SuccessStage.VALUE_REALIZATION: "💎", SuccessStage.GROWTH: "🚀",
             SuccessStage.ADVOCACY: "⭐"
         }
-        
+
         for stage in SuccessStage:
             count = sum(1 for p in self.success_plans.values() if p.stage == stage)
             icon = stage_icons.get(stage, "📊")
             lines.append(f"║  {icon} {stage.value.replace('_', ' ').title():<25} │ {count:>3} clients        ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  👤 TOP CLIENT HEALTH                                     ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         eng_icons = {
-            EngagementLevel.CHAMPION: "⭐", EngagementLevel.ENGAGED: "🟢", 
+            EngagementLevel.CHAMPION: "⭐", EngagementLevel.ENGAGED: "🟢",
             EngagementLevel.PASSIVE: "🟡", EngagementLevel.DISENGAGED: "🔴"
         }
-        
+
         # Display top 4 healthy clients
         top_plans = sorted(self.success_plans.values(), key=lambda x: x.health_score, reverse=True)[:4]
         for p in top_plans:
@@ -187,7 +187,7 @@ class CustomerSuccessManager:
             s_icon = stage_icons.get(p.stage, "📊")
             name_disp = (p.client_name[:18] + '..') if len(p.client_name) > 20 else p.client_name
             lines.append(f"║  {e_icon} {name_disp:<18} │ {s_icon} {p.stage.value[:12]:<12} │ {p.health_score:>3}%  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [📋 Plan]  [📊 QBR Prep]  [📈 Health]  [⚙️ Settings]     ║",
@@ -195,7 +195,7 @@ class CustomerSuccessManager:
             f"║  🏯 {self.agency_name[:40]:<40} - Partner!           ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -203,19 +203,19 @@ class CustomerSuccessManager:
 if __name__ == "__main__":
     print("🎯 Initializing Customer Success Manager...")
     print("=" * 60)
-    
+
     try:
         csm_system = CustomerSuccessManager("Saigon Digital Hub")
-        
+
         # Create plans
         p1 = csm_system.create_success_plan("Sunrise Realty", "Alex", ["SEO +50%"], ["Audit"])
         p1.stage = SuccessStage.VALUE_REALIZATION
         p1.engagement = EngagementLevel.CHAMPION
         p1.health_score = 92
-        
+
         csm_system.create_success_plan("Coffee Lab", "Sarah", ["Brand Growth"], ["Guide"])
-        
+
         print("\n" + csm_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"CSM Error: {e}")

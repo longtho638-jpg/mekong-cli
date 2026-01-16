@@ -62,7 +62,7 @@ class Franchisee:
     total_royalties: float = 0.0
     clients_count: int = 0
     joined_at: datetime = field(default_factory=datetime.now)
-    
+
     def calculate_royalty(self, revenue: float) -> float:
         """Calculate royalty from revenue."""
         return revenue * self.royalty_rate
@@ -92,21 +92,21 @@ class FranchiseManager:
         manager.record_revenue(franchisee, 10000)
         # Royalty: $2,000 (20%)
     """
-    
+
     def __init__(self):
         self.franchisees: List[Franchisee] = []
         self._next_id = 1
-    
+
     def get_available_territories(self) -> List[Territory]:
         """Get territories with available capacity."""
         available = []
         for territory, capacity in TERRITORY_CAPACITY.items():
-            current_count = len([f for f in self.franchisees 
+            current_count = len([f for f in self.franchisees
                                if f.territory == territory and f.status == FranchiseStatus.ACTIVE])
             if current_count < capacity:
                 available.append(territory)
         return available
-    
+
     def add_franchisee(
         self,
         name: str,
@@ -118,7 +118,7 @@ class FranchiseManager:
         available = self.get_available_territories()
         if territory not in available:
             return None  # Territory at capacity
-        
+
         franchisee = Franchisee(
             id=self._next_id,
             name=name,
@@ -130,14 +130,14 @@ class FranchiseManager:
         self.franchisees.append(franchisee)
         self._next_id += 1
         return franchisee
-    
+
     def record_revenue(self, franchisee: Franchisee, revenue: float) -> float:
         """Record revenue and calculate royalty."""
         royalty = franchisee.calculate_royalty(revenue)
         franchisee.total_revenue += revenue
         franchisee.total_royalties += royalty
         return royalty
-    
+
     def get_network_stats(self) -> Dict:
         """Get network-wide statistics."""
         active = [f for f in self.franchisees if f.status == FranchiseStatus.ACTIVE]
@@ -149,7 +149,7 @@ class FranchiseManager:
             "total_royalties_collected": sum(f.total_royalties for f in self.franchisees),
             "avg_revenue_per_franchisee": sum(f.total_revenue for f in active) / len(active) if active else 0
         }
-    
+
     def get_territory_report(self) -> List[Dict]:
         """Get performance by territory."""
         report = []

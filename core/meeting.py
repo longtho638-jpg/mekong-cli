@@ -62,7 +62,7 @@ class Meeting:
     status: MeetingStatus = MeetingStatus.SCHEDULED
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
-    
+
     @property
     def end_time(self) -> datetime:
         return self.start_time + timedelta(minutes=self.duration_minutes)
@@ -74,20 +74,20 @@ class MeetingScheduler:
     
     Orchestrates calendar availability, booking logic, and client communication.
     """
-    
+
     DURATIONS = {
         MeetingType.DISCOVERY: 30, MeetingType.STRATEGY: 60,
         MeetingType.KICKOFF: 45, MeetingType.REVIEW: 30,
         MeetingType.SUPPORT: 15,
     }
-    
+
     def __init__(self, agency_name: str, timezone: str = "UTC"):
         self.agency_name = agency_name
         self.timezone = timezone
         self.meetings: Dict[str, Meeting] = {}
         self.working_hours = {"start": 9, "end": 17}  # 09:00 - 17:00
         logger.info(f"Meeting Scheduler initialized for {agency_name} ({timezone})")
-    
+
     def _validate_email(self, email: str) -> bool:
         return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
 
@@ -96,12 +96,12 @@ class MeetingScheduler:
         slots = []
         start = date.replace(hour=self.working_hours["start"], minute=0, second=0, microsecond=0)
         end = date.replace(hour=self.working_hours["end"], minute=0, second=0, microsecond=0)
-        
+
         current = start
         while current + timedelta(minutes=duration) <= end:
             slot_end = current + timedelta(minutes=duration)
             is_free = True
-            
+
             # Check overlap
             for m in self.meetings.values():
                 if m.status == MeetingStatus.CANCELLED: continue
@@ -109,12 +109,12 @@ class MeetingScheduler:
                 if current < m.end_time and slot_end > m.start_time:
                     is_free = False
                     break
-            
+
             slots.append(TimeSlot(current, slot_end, is_free))
             current += timedelta(minutes=30)
-            
+
         return slots
-    
+
     def book_meeting(
         self,
         meeting_type: MeetingType,
@@ -130,14 +130,14 @@ class MeetingScheduler:
         # Basic availability check
         duration = self.DURATIONS.get(meeting_type, 30)
         end_time = start_time + timedelta(minutes=duration)
-        
+
         for m in self.meetings.values():
             if m.status == MeetingStatus.CANCELLED: continue
             if start_time < m.end_time and end_time > m.start_time:
                 logger.warning(f"Slot conflict for {start_time}")
-                # In strict mode, we'd return None or raise error. 
+                # In strict mode, we'd return None or raise error.
                 # For this demo, we allow overbooking or assume pre-check passed.
-        
+
         meeting = Meeting(
             id=f"MTG-{uuid.uuid4().hex[:6].upper()}",
             type=meeting_type, client_name=client_name,
@@ -148,7 +148,7 @@ class MeetingScheduler:
         self.meetings[meeting.id] = meeting
         logger.info(f"Meeting booked: {meeting.id} for {client_name}")
         return meeting
-    
+
     def format_confirmation(self, meeting: Meeting) -> str:
         """Render ASCII booking confirmation."""
         lines = [
@@ -169,18 +169,18 @@ class MeetingScheduler:
 if __name__ == "__main__":
     print("📅 Initializing Scheduler...")
     print("=" * 60)
-    
+
     try:
         scheduler = MeetingScheduler("Saigon Digital Hub")
         tomorrow = datetime.now() + timedelta(days=1)
         slot_time = tomorrow.replace(hour=10, minute=0, second=0, microsecond=0)
-        
+
         mtg = scheduler.book_meeting(
-            MeetingType.DISCOVERY, "Hoang", "hoang@sunrise.vn", 
+            MeetingType.DISCOVERY, "Hoang", "hoang@sunrise.vn",
             slot_time, "Strategy Chat"
         )
         if mtg:
             print("\n" + scheduler.format_confirmation(mtg))
-            
+
     except Exception as e:
         logger.error(f"Scheduler Error: {e}")

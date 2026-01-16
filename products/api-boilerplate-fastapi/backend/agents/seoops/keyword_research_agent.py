@@ -28,13 +28,13 @@ class Keyword:
     current_rank: Optional[int] = None
     previous_rank: Optional[int] = None
     serp_features: List[SERPFeature] = field(default_factory=list)
-    
+
     @property
     def rank_change(self) -> int:
         if self.current_rank and self.previous_rank:
             return self.previous_rank - self.current_rank  # Positive = improved
         return 0
-    
+
     @property
     def opportunity_score(self) -> float:
         # High volume, low difficulty = high opportunity
@@ -53,12 +53,12 @@ class KeywordResearchAgent:
     - SERP feature detection
     - Competitor gap analysis
     """
-    
+
     def __init__(self):
         self.name = "Keyword Research"
         self.status = "ready"
         self.keywords: Dict[str, Keyword] = {}
-        
+
     def research_keyword(self, keyword: str) -> Keyword:
         """Research a keyword"""
         kw = Keyword(
@@ -69,19 +69,19 @@ class KeywordResearchAgent:
             current_rank=random.randint(1, 100) if random.random() > 0.3 else None,
             previous_rank=random.randint(1, 100) if random.random() > 0.3 else None
         )
-        
+
         # Add random SERP features
         all_features = list(SERPFeature)
         num_features = random.randint(0, 3)
         kw.serp_features = random.sample(all_features, num_features)
-        
+
         self.keywords[keyword] = kw
         return kw
-    
+
     def bulk_research(self, keywords: List[str]) -> List[Keyword]:
         """Research multiple keywords"""
         return [self.research_keyword(k) for k in keywords]
-    
+
     def get_opportunities(self, min_volume: int = 500, max_difficulty: int = 50) -> List[Keyword]:
         """Find keyword opportunities"""
         opportunities = []
@@ -89,20 +89,20 @@ class KeywordResearchAgent:
             if kw.search_volume >= min_volume and kw.difficulty <= max_difficulty:
                 opportunities.append(kw)
         return sorted(opportunities, key=lambda k: k.opportunity_score, reverse=True)
-    
+
     def get_rankings(self) -> List[Keyword]:
         """Get ranked keywords"""
         return sorted(
             [kw for kw in self.keywords.values() if kw.current_rank],
             key=lambda k: k.current_rank
         )
-    
+
     def get_stats(self) -> Dict:
         """Get keyword research statistics"""
         keywords = list(self.keywords.values())
         ranked = [k for k in keywords if k.current_rank]
         top10 = [k for k in ranked if k.current_rank <= 10]
-        
+
         return {
             "total_keywords": len(keywords),
             "ranked_keywords": len(ranked),
@@ -115,15 +115,15 @@ class KeywordResearchAgent:
 # Demo
 if __name__ == "__main__":
     agent = KeywordResearchAgent()
-    
+
     print("🔍 Keyword Research Agent Demo\n")
-    
+
     # Research keywords
     keywords = ["marketing automation", "crm software", "lead generation", "email marketing tools"]
     agent.bulk_research(keywords)
-    
+
     print(f"📋 Researched: {len(keywords)} keywords")
-    
+
     # Show rankings
     rankings = agent.get_rankings()
     print("\n📊 Rankings:")
@@ -131,11 +131,11 @@ if __name__ == "__main__":
         change = f"↑{kw.rank_change}" if kw.rank_change > 0 else f"↓{abs(kw.rank_change)}" if kw.rank_change < 0 else "→"
         print(f"   #{kw.current_rank} '{kw.keyword}' ({change})")
         print(f"      Vol: {kw.search_volume:,} | Diff: {kw.difficulty}%")
-    
+
     # Opportunities
     opps = agent.get_opportunities()
     print(f"\n💡 Opportunities: {len(opps)}")
-    
+
     # Stats
     stats = agent.get_stats()
     print("\n📈 Stats:")

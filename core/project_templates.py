@@ -73,13 +73,13 @@ class ProjectTemplates:
     
     Orchestrates the lifecycle of project blueprints, enabling rapid initialization of standardized services.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.templates: Dict[str, ProjectTemplate] = {}
         logger.info(f"Project Templates system initialized for {agency_name}")
         self._init_defaults()
-    
+
     def _init_defaults(self):
         """Seed the system with high-frequency project blueprints."""
         logger.info("Loading default agency templates...")
@@ -88,7 +88,7 @@ class ProjectTemplates:
             [TemplateTask("Audit", 7), TemplateTask("Keywords", 7)],
             [TemplateMilestone("Ready", 4, ["Report"])]
         )
-    
+
     def register_template(
         self,
         name: str,
@@ -108,7 +108,7 @@ class ProjectTemplates:
         self.templates[tpl.id] = tpl
         logger.info(f"Template registered: {name} ({category.value})")
         return tpl
-    
+
     def increment_usage(self, tpl_id: str) -> bool:
         """Track how many times a template has been used."""
         if tpl_id in self.templates:
@@ -116,11 +116,11 @@ class ProjectTemplates:
             logger.debug(f"Template {tpl_id} usage incremented")
             return True
         return False
-    
+
     def format_dashboard(self) -> str:
         """Render the Project Templates Dashboard."""
         total = len(self.templates)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📋 PROJECT TEMPLATE LIBRARY{' ' * 31}║",
@@ -129,16 +129,16 @@ class ProjectTemplates:
             "║  📂 AVAILABLE BLUEPRINTS                                  ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         icons = {
-            TemplateCategory.SEO: "🔍", TemplateCategory.WEBSITE: "🌐", 
+            TemplateCategory.SEO: "🔍", TemplateCategory.WEBSITE: "🌐",
             TemplateCategory.MARKETING: "📢", TemplateCategory.SOCIAL: "📱"
         }
-        
+
         for t in list(self.templates.values())[:5]:
             icon = icons.get(t.category, "📄")
             lines.append(f"║  {icon} {t.name[:20]:<20} │ {t.duration_weeks:>2} weeks │ Used: {t.times_used:>3} times ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Template]  [📂 Import]  [📤 Export Library]     ║",
@@ -153,15 +153,15 @@ class ProjectTemplates:
 if __name__ == "__main__":
     print("📋 Initializing Templates...")
     print("=" * 60)
-    
+
     try:
         tpl_system = ProjectTemplates("Saigon Digital Hub")
         # Record usage
         if tpl_system.templates:
             tid = list(tpl_system.templates.keys())[0]
             tpl_system.increment_usage(tid)
-            
+
         print("\n" + tpl_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Template Error: {e}")

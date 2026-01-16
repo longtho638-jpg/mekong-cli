@@ -37,18 +37,18 @@ class UserOnboarding:
     milestones: List[Milestone] = field(default_factory=list)
     started_at: datetime = None
     activated_at: Optional[datetime] = None
-    
+
     def __post_init__(self):
         if self.started_at is None:
             self.started_at = datetime.now()
-    
+
     @property
     def progress_percent(self) -> float:
         if not self.milestones:
             return 0
         completed = len([m for m in self.milestones if m.status == MilestoneStatus.COMPLETED])
         return round(completed / len(self.milestones) * 100, 1)
-    
+
     @property
     def is_activated(self) -> bool:
         return self.activated_at is not None
@@ -64,7 +64,7 @@ class OnboardingAgent:
     - Recommend tutorials
     - Mark activation
     """
-    
+
     # Default milestones
     DEFAULT_MILESTONES = [
         ("install", "Cài đặt CLI", "Chạy npm install -g mekong-cli"),
@@ -73,12 +73,12 @@ class OnboardingAgent:
         ("deploy", "Deploy lần đầu", "Chạy mekong deploy"),
         ("first_agent", "Chạy Agent đầu tiên", "Sử dụng Scout hoặc Editor"),
     ]
-    
+
     def __init__(self):
         self.name = "Onboarding"
         self.status = "ready"
         self.users: Dict[str, UserOnboarding] = {}
-        
+
     def start_onboarding(
         self,
         user_id: str,
@@ -96,7 +96,7 @@ class OnboardingAgent:
             )
             for i, (_, name, desc) in enumerate(self.DEFAULT_MILESTONES)
         ]
-        
+
         user = UserOnboarding(
             user_id=user_id,
             user_name=user_name,
@@ -104,59 +104,59 @@ class OnboardingAgent:
             plan=plan,
             milestones=milestones
         )
-        
+
         self.users[user_id] = user
         return user
-    
+
     def complete_milestone(self, user_id: str, milestone_id: str) -> UserOnboarding:
         """Mark milestone as completed"""
         if user_id not in self.users:
             raise ValueError(f"User not found: {user_id}")
-            
+
         user = self.users[user_id]
-        
+
         for milestone in user.milestones:
             if milestone.id == milestone_id:
                 milestone.status = MilestoneStatus.COMPLETED
                 milestone.completed_at = datetime.now()
                 break
-        
+
         # Check if activated (50%+ complete)
         if user.progress_percent >= 50 and not user.is_activated:
             user.activated_at = datetime.now()
-            
+
         return user
-    
+
     def get_next_milestone(self, user_id: str) -> Optional[Milestone]:
         """Get next pending milestone"""
         if user_id not in self.users:
             return None
-            
+
         user = self.users[user_id]
         for milestone in sorted(user.milestones, key=lambda m: m.order):
             if milestone.status == MilestoneStatus.PENDING:
                 return milestone
         return None
-    
+
     def get_checkin_message(self, user_id: str) -> str:
         """Generate personalized check-in message"""
         if user_id not in self.users:
             return "Chào bạn!"
-            
+
         user = self.users[user_id]
         next_m = self.get_next_milestone(user_id)
-        
+
         if user.progress_percent == 100:
             return f"🎉 Chúc mừng {user.user_name}! Bạn đã hoàn thành onboarding!"
         elif next_m:
             return f"Xin chào {user.user_name}! Bước tiếp theo: {next_m.name} - {next_m.description}"
         else:
             return f"Xin chào {user.user_name}! Bạn đang làm rất tốt!"
-    
+
     def get_stats(self) -> Dict:
         """Get onboarding statistics"""
         users = list(self.users.values())
-        
+
         return {
             "total_users": len(users),
             "activated": len([u for u in users if u.is_activated]),
@@ -171,9 +171,9 @@ class OnboardingAgent:
 # Demo
 if __name__ == "__main__":
     agent = OnboardingAgent()
-    
+
     print("🎯 Onboarding Agent Demo\n")
-    
+
     # Start onboarding
     user = agent.start_onboarding(
         user_id="user_001",
@@ -181,23 +181,23 @@ if __name__ == "__main__":
         email="a@email.com",
         plan="pro"
     )
-    
+
     print(f"👤 User: {user.user_name}")
     print(f"   Plan: {user.plan}")
     print(f"   Milestones: {len(user.milestones)}")
-    
+
     # Complete milestones
     agent.complete_milestone(user.user_id, "milestone_1")
     agent.complete_milestone(user.user_id, "milestone_2")
     agent.complete_milestone(user.user_id, "milestone_3")
-    
+
     print(f"\n📊 Progress: {user.progress_percent}%")
     print(f"✅ Activated: {user.is_activated}")
-    
+
     # Check-in
     msg = agent.get_checkin_message(user.user_id)
     print(f"\n💬 Check-in: {msg}")
-    
+
     # Stats
     print("\n📈 Stats:")
     stats = agent.get_stats()

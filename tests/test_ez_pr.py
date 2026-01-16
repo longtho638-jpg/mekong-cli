@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.ez_pr import EzPR
 
 class TestEzPR:
-    
+
     @patch("antigravity.core.ez_pr.PRManager")
     def test_help_command(self, mock_manager):
         """Test help message."""
@@ -28,7 +28,7 @@ class TestEzPR:
         # Mock get_open_prs to return empty
         instance = mock_manager.return_value
         instance.get_open_prs.return_value = []
-        
+
         ez = EzPR()
         output = ez.process("xem pr")
         assert "Không có PR nào" in output
@@ -40,11 +40,11 @@ class TestEzPR:
         pr1 = MagicMock()
         pr1.number = 123
         pr1.title = "Test PR"
-        
+
         instance = mock_manager.return_value
         instance.get_open_prs.return_value = [pr1]
         instance.can_auto_merge.return_value = (True, "Ready")
-        
+
         ez = EzPR()
         output = ez.process("check pr")
         assert "#123" in output

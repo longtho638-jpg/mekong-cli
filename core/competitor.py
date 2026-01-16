@@ -70,27 +70,27 @@ class CompetitorAnalysis:
     
     Identifies market gaps and competitive advantages by profiling industry rivals.
     """
-    
+
     def __init__(self, agency_name: str, niche: str, location: str):
         self.agency_name = agency_name
         self.niche = niche
         self.location = location
         self.competitors: List[Competitor] = []
         logger.info(f"Competitor Analysis initialized for {niche} in {location}")
-    
+
     def add_competitor(self, competitor: Competitor):
         """Register a competitor for analysis."""
         self.competitors.append(competitor)
         logger.info(f"Competitor added: {competitor.name} ({competitor.threat_level.value})")
-    
+
     def analyze_swot(self) -> Dict[str, List[str]]:
         """Generate dynamic SWOT based on current market knowledge."""
         # Opportunities are derived from competitor weaknesses
         opps = [
-            f"Capitalize on {c.name}'s weak {w.lower()}" 
+            f"Capitalize on {c.name}'s weak {w.lower()}"
             for c in self.competitors for w in c.weaknesses[:1]
         ]
-        
+
         return {
             "strengths": [
                 f"Specialized in {self.niche}",
@@ -107,7 +107,7 @@ class CompetitorAnalysis:
                 "Commoditization of basic services"
             ]
         }
-    
+
     def find_market_gaps(self) -> List[MarketGap]:
         """Identify strategic openings in the market."""
         gaps = [
@@ -134,19 +134,19 @@ class CompetitorAnalysis:
             )
         ]
         return sorted(gaps, key=lambda x: x.opportunity_score, reverse=True)
-    
+
     def format_analysis(self) -> str:
         """Render the Competitor Analysis Dashboard."""
         swot = self.analyze_swot()
         gaps = self.find_market_gaps()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🔍 COMPETITOR ANALYSIS: {self.niche.upper()[:30]:<30}  ║",
             f"║  Market: {self.location[:45]:<45}   ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         if self.competitors:
             lines.append("║  👥 COMPETITOR PROFILES                                   ║")
             lines.append("║  " + "─" * 57 + "  ║")
@@ -154,35 +154,35 @@ class CompetitorAnalysis:
                 t_icon = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}.get(c.threat_level.value, "⚪")
                 lines.append(f"║    {t_icon} {c.name:<25} ({c.size.value:<10})           ║")
             lines.append("║                                                           ║")
-        
+
         lines.append("╠═══════════════════════════════════════════════════════════╣")
         lines.append("║  📊 SWOT SUMMARY                                          ║")
         lines.append("║  " + "─" * 57 + "  ║")
-        
+
         for key, icon in [("strengths", "✅"), ("weaknesses", "⚠️"), ("opportunities", "🎯")]:
             lines.append(f"║    {icon} {key.upper():<50}  ║")
             for item in swot[key][:2]:
                 lines.append(f"║       • {item[:45]:<45}   ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  💎 TOP MARKET GAPS                                       ║",
             "║  " + "─" * 57 + "  ║",
         ])
-        
+
         for g in gaps[:2]:
             stars = "★" * g.opportunity_score + "☆" * (10 - g.opportunity_score)
             lines.append(f"║    🎯 {g.name:<20} Score: {stars}    ║")
             lines.append(f"║       Rec: {g.recommendation[:45]:<45}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  🏯 {self.agency_name[:40]:<40} - Win Without Fighting ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -190,10 +190,10 @@ class CompetitorAnalysis:
 if __name__ == "__main__":
     print("🔍 Initializing Competitor Analysis...")
     print("=" * 60)
-    
+
     try:
         analysis_tool = CompetitorAnalysis("Saigon Digital Hub", "Real Estate", "Ho Chi Minh City")
-        
+
         analysis_tool.add_competitor(Competitor(
             name="BigCity Ads",
             website="bigcity.vn",
@@ -201,8 +201,8 @@ if __name__ == "__main__":
             weaknesses=["Slow onboarding", "Confusing pricing"],
             threat_level=ThreatLevel.HIGH
         ))
-        
+
         print("\n" + analysis_tool.format_analysis())
-        
+
     except Exception as e:
         logger.error(f"Analysis Error: {e}")

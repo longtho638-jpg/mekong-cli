@@ -116,7 +116,7 @@ def get_tier_pricing(tier: Union[DealTier, str]) -> Dict[str, Any]:
             tier = DealTier(tier.lower())
         except ValueError:
             tier = DealTier.WARRIOR
-            
+
     return TIER_PRICING.get(tier, TIER_PRICING[DealTier.WARRIOR])
 
 

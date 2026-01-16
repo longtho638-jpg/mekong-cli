@@ -68,15 +68,15 @@ class EmailSequenceBuilder:
     
     Generates and manages automated email workflows for client nurturing and retention.
     """
-    
+
     def __init__(self, agency_name: str, niche: str):
         self.agency_name = agency_name
         self.niche = niche
         self.sequences: Dict[SequenceType, EmailSequence] = {}
-        
+
         logger.info(f"Email Sequence Builder initialized for {agency_name} ({niche})")
         self._create_default_sequences()
-    
+
     def _create_default_sequences(self):
         """Pre-populate with standard agency nurturing sequences."""
         # 1. Welcome sequence
@@ -99,7 +99,7 @@ class EmailSequenceBuilder:
                 )
             ]
         )
-        
+
         # 2. Onboarding sequence
         self.sequences[SequenceType.ONBOARDING] = EmailSequence(
             name="Client Onboarding",
@@ -115,34 +115,34 @@ class EmailSequenceBuilder:
             ]
         )
         logger.debug("Default sequences created successfully.")
-    
+
     def get_sequence(self, seq_type: SequenceType) -> Optional[EmailSequence]:
         """Fetch a specific sequence by its type."""
         return self.sequences.get(seq_type)
-    
+
     def format_sequence_view(self, seq_type: SequenceType) -> str:
         """Render a text-based overview of a sequence."""
         sequence = self.get_sequence(seq_type)
         if not sequence: return "Sequence not found."
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📧 EMAIL SEQUENCE: {sequence.name.upper()[:32]:<32}  ║",
             f"║  {sequence.description[:53]:<53}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for i, email in enumerate(sequence.emails, 1):
             delay_txt = "Immediate" if email.delay_days == 0 else f"Day {email.delay_days}"
             lines.append(f"║  {i}. {delay_txt:<15} │ Sub: {email.subject[:35]:<35} ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  📊 {len(sequence.emails)} steps │ {self.agency_name[:30]:<30}  ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -150,10 +150,10 @@ class EmailSequenceBuilder:
 if __name__ == "__main__":
     print("📧 Initializing Sequence Builder...")
     print("=" * 60)
-    
+
     try:
         builder = EmailSequenceBuilder("Saigon Digital Hub", "Real Estate")
         print("\n" + builder.format_sequence_view(SequenceType.WELCOME))
-        
+
     except Exception as e:
         logger.error(f"Builder Error: {e}")

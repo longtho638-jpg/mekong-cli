@@ -16,7 +16,7 @@ from antigravity.core.registry import (
 )
 
 class TestRegistry:
-    
+
     def test_registry_structure(self):
         """Verify registry categories."""
         suites = list_suites()
@@ -36,11 +36,11 @@ class TestRegistry:
         suite, sub = resolve_command("cook")
         assert suite == "dev"
         assert sub == "cook"
-        
+
         suite, sub = resolve_command("quote")
         assert suite == "revenue"
         assert sub == "quote"
-        
+
         suite, sub = resolve_command("invalid")
         assert suite is None
 

@@ -45,7 +45,7 @@ class KanbanSkill:
                 task_id = params.get("id")
                 if not task_id:
                     return {"status": "error", "message": "Missing task ID"}
-                
+
                 success = await self.client.update_task(
                     task_id=task_id,
                     status=params.get("status"),

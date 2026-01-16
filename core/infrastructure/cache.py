@@ -14,21 +14,21 @@ class CacheManager:
     Simple file-based caching for CLI operations.
     Useful for persisting Binh Phap analysis or API results between runs.
     """
-    
+
     def __init__(self, cache_dir: str = ".mekong/cache", ttl: int = 3600):
         self.cache_dir = Path.home() / cache_dir
         self.ttl = ttl
         self._ensure_dir()
-        
+
     def _ensure_dir(self):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        
+
     def get(self, key: str) -> Optional[Any]:
         """Retrieve a value from cache if valid."""
         file_path = self.cache_dir / f"{key}.json"
         if not file_path.exists():
             return None
-            
+
         try:
             data = json.loads(file_path.read_text())
             if time.time() - data['timestamp'] > self.ttl:
@@ -37,7 +37,7 @@ class CacheManager:
             return data['payload']
         except Exception:
             return None
-            
+
     def set(self, key: str, value: Any):
         """Save a value to cache."""
         file_path = self.cache_dir / f"{key}.json"

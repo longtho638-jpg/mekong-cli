@@ -68,12 +68,12 @@ class ContentWriter:
     
     Professional writing workflow for agency content production.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.content: Dict[str, ContentPiece] = {}
         logger.info(f"Content Writer system initialized for {agency_name}")
-    
+
     def create_content(
         self,
         title: str,
@@ -101,35 +101,35 @@ class ContentWriter:
         self.content[piece.id] = piece
         logger.info(f"Content piece created: {title} ({content_type.value})")
         return piece
-    
+
     def update_status(self, piece_id: str, status: ContentStatus) -> bool:
         """Advance the status of a content piece."""
         if piece_id not in self.content:
             logger.error(f"Piece ID {piece_id} not found")
             return False
-            
+
         piece = self.content[piece_id]
         old_status = piece.status
         piece.status = status
         logger.info(f"Piece '{piece.title}' status: {old_status.value} -> {status.value}")
         return True
-    
+
     def get_queue_stats(self) -> Dict[str, Any]:
         """Aggregate stats for the current writing queue."""
-        in_progress = [c for c in self.content.values() 
+        in_progress = [c for c in self.content.values()
                       if c.status not in [ContentStatus.APPROVED, ContentStatus.PUBLISHED]]
         total_words = sum(c.word_count for c in self.content.values())
-        
+
         return {
             "total_pieces": len(self.content),
             "in_progress_count": len(in_progress),
             "total_word_count": total_words
         }
-    
+
     def format_dashboard(self) -> str:
         """Render the Content Writer Dashboard."""
         stats = self.get_queue_stats()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  ✍️ CONTENT WRITER DASHBOARD{' ' * 31}║",
@@ -138,28 +138,28 @@ class ContentWriter:
             "║  📝 CURRENT QUEUE                                         ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         type_icons = {
-            ContentType.BLOG_POST: "📝", ContentType.WEBSITE_COPY: "🌐", 
-            ContentType.SOCIAL_POST: "📱", ContentType.EMAIL: "📧", 
-            ContentType.LANDING_PAGE: "📄", ContentType.NEWSLETTER: "📰", 
+            ContentType.BLOG_POST: "📝", ContentType.WEBSITE_COPY: "🌐",
+            ContentType.SOCIAL_POST: "📱", ContentType.EMAIL: "📧",
+            ContentType.LANDING_PAGE: "📄", ContentType.NEWSLETTER: "📰",
             ContentType.CASE_STUDY: "📊"
         }
         status_icons = {
-            ContentStatus.DRAFT: "📋", ContentStatus.WRITING: "✏️", 
-            ContentStatus.EDITING: "🔧", ContentStatus.REVIEW: "👁️", 
+            ContentStatus.DRAFT: "📋", ContentStatus.WRITING: "✏️",
+            ContentStatus.EDITING: "🔧", ContentStatus.REVIEW: "👁️",
             ContentStatus.APPROVED: "✅", ContentStatus.PUBLISHED: "🚀"
         }
-        
+
         # Display latest 5 pieces
         sorted_content = sorted(self.content.values(), key=lambda x: x.deadline)[:5]
         for p in sorted_content:
             t_icon = type_icons.get(p.content_type, "📝")
             s_icon = status_icons.get(p.status, "⚪")
             title_display = (p.title[:20] + '..') if len(p.title) > 22 else p.title
-            
+
             lines.append(f"║  {s_icon} {t_icon} {title_display:<22} │ {p.word_count:>5} words │ {p.client[:8]:<8}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [✏️ Write]  [🔧 Edit]  [📊 Workflow]  [⚙️ Settings]      ║",
@@ -167,7 +167,7 @@ class ContentWriter:
             f"║  🏯 {self.agency_name[:40]:<40} - Words That Convert! ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -175,19 +175,19 @@ class ContentWriter:
 if __name__ == "__main__":
     print("✍️ Initializing Content Writer...")
     print("=" * 60)
-    
+
     try:
         writer_system = ContentWriter("Saigon Digital Hub")
-        
+
         # Create pieces
         p1 = writer_system.create_content("10 Real Estate Tips", "Sunrise", ContentType.BLOG_POST, 1500)
         p2 = writer_system.create_content("Landing Page v1", "CoffeeCo", ContentType.LANDING_PAGE, 800)
-        
+
         # Progress status
         writer_system.update_status(p1.id, ContentStatus.WRITING)
         writer_system.update_status(p2.id, ContentStatus.REVIEW)
-        
+
         print("\n" + writer_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"System Error: {e}")

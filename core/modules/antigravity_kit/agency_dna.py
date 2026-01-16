@@ -12,7 +12,7 @@ class AgencyDNA:
     location: str
     vibe: str = "Professional"
     core_values: List[str] = field(default_factory=list)
-    
+
     def manifest(self) -> str:
         return f"🏯 {self.name} ({self.niche}) - Vibe: {self.vibe}"
 

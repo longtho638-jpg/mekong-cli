@@ -37,7 +37,7 @@ class Activity:
     duration_mins: int = 0
     notes: str = ""
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -64,7 +64,7 @@ class ActivityTrackerAgent:
     - Call analytics
     - Activity summaries
     """
-    
+
     # Daily goals
     DAILY_GOALS = {
         "calls": 50,
@@ -72,12 +72,12 @@ class ActivityTrackerAgent:
         "meetings": 3,
         "talk_time_mins": 120
     }
-    
+
     def __init__(self):
         self.name = "Activity Tracker"
         self.status = "ready"
         self.activities: List[Activity] = []
-        
+
     def log_call(
         self,
         prospect_id: str,
@@ -98,7 +98,7 @@ class ActivityTrackerAgent:
         )
         self.activities.append(activity)
         return activity
-    
+
     def log_email(
         self,
         prospect_id: str,
@@ -116,7 +116,7 @@ class ActivityTrackerAgent:
         )
         self.activities.append(activity)
         return activity
-    
+
     def log_meeting(
         self,
         prospect_id: str,
@@ -136,7 +136,7 @@ class ActivityTrackerAgent:
         )
         self.activities.append(activity)
         return activity
-    
+
     def get_today_stats(self) -> DailyStats:
         """Get today's activity stats"""
         today = date.today()
@@ -144,11 +144,11 @@ class ActivityTrackerAgent:
             a for a in self.activities
             if a.created_at.date() == today
         ]
-        
+
         calls = [a for a in today_activities if a.activity_type == ActivityType.CALL]
         emails = [a for a in today_activities if a.activity_type == ActivityType.EMAIL]
         meetings = [a for a in today_activities if a.activity_type == ActivityType.MEETING]
-        
+
         return DailyStats(
             date=today,
             calls=len(calls),
@@ -157,18 +157,18 @@ class ActivityTrackerAgent:
             talk_time_mins=sum(a.duration_mins for a in calls + meetings),
             connects=len([a for a in calls if a.outcome == ActivityOutcome.CONNECTED])
         )
-    
+
     def get_goal_progress(self) -> Dict:
         """Get progress towards daily goals"""
         stats = self.get_today_stats()
-        
+
         return {
             "calls": {"current": stats.calls, "goal": self.DAILY_GOALS["calls"], "percent": min(100, stats.calls / self.DAILY_GOALS["calls"] * 100)},
             "emails": {"current": stats.emails, "goal": self.DAILY_GOALS["emails"], "percent": min(100, stats.emails / self.DAILY_GOALS["emails"] * 100)},
             "meetings": {"current": stats.meetings, "goal": self.DAILY_GOALS["meetings"], "percent": min(100, stats.meetings / self.DAILY_GOALS["meetings"] * 100)},
             "talk_time": {"current": stats.talk_time_mins, "goal": self.DAILY_GOALS["talk_time_mins"], "percent": min(100, stats.talk_time_mins / self.DAILY_GOALS["talk_time_mins"] * 100)}
         }
-    
+
     def get_recent_activities(self, count: int = 10) -> List[Activity]:
         """Get most recent activities"""
         return sorted(self.activities, key=lambda a: a.created_at, reverse=True)[:count]
@@ -177,17 +177,17 @@ class ActivityTrackerAgent:
 # Demo
 if __name__ == "__main__":
     agent = ActivityTrackerAgent()
-    
+
     print("📊 Activity Tracker Agent Demo\n")
-    
+
     # Log activities
     agent.log_call("p1", "Nguyễn A", ActivityOutcome.CONNECTED, 12, "Great call")
     agent.log_call("p2", "Trần B", ActivityOutcome.NO_ANSWER, 0)
     agent.log_email("p1", "Nguyễn A", "Sent intro email")
     agent.log_meeting("p3", "Lê C", 30, "Discovery call")
-    
+
     print("✅ Logged 4 activities")
-    
+
     # Today stats
     stats = agent.get_today_stats()
     print("\n📈 Today's Stats:")
@@ -195,7 +195,7 @@ if __name__ == "__main__":
     print(f"   Emails: {stats.emails}")
     print(f"   Meetings: {stats.meetings}")
     print(f"   Talk Time: {stats.talk_time_mins} mins")
-    
+
     # Goal progress
     print("\n🎯 Goal Progress:")
     progress = agent.get_goal_progress()

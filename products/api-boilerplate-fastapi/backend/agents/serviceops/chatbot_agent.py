@@ -41,7 +41,7 @@ class Message:
     is_bot: bool = False
     intent: Optional[Intent] = None
     timestamp: datetime = None
-    
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
@@ -57,7 +57,7 @@ class Conversation:
     messages: List[Message] = field(default_factory=list)
     status: str = "open"  # open, resolved, escalated
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -73,7 +73,7 @@ class ChatbotAgent:
     - FAQ matching
     - Escalation to human
     """
-    
+
     # Intent keywords
     INTENT_KEYWORDS = {
         Intent.GREETING: ["hello", "hi", "xin chào", "chào", "hey"],
@@ -82,7 +82,7 @@ class ChatbotAgent:
         Intent.BUG_REPORT: ["lỗi", "bug", "error", "không hoạt động", "broken"],
         Intent.FEATURE_REQUEST: ["đề xuất", "feature", "thêm", "muốn có", "request"],
     }
-    
+
     # FAQ responses
     FAQ_RESPONSES = {
         Intent.GREETING: "Xin chào {name}! 👋 Mình là trợ lý AI của Mekong-CLI. Mình có thể giúp gì cho bạn?",
@@ -92,35 +92,35 @@ class ChatbotAgent:
         Intent.FEATURE_REQUEST: "💡 Ý tưởng hay! Mình đã ghi nhận đề xuất của bạn. Team sẽ xem xét trong sprint tiếp theo. Cảm ơn bạn!",
         Intent.UNKNOWN: "Mình chưa hiểu rõ ý bạn. Bạn có thể mô tả lại được không? Hoặc gõ 'help' để xem các tùy chọn.",
     }
-    
+
     def __init__(self, vibe: str = "mien-tay"):
         self.name = "Chatbot"
         self.status = "ready"
         self.vibe_tuner = VibeTuner(VibeRegion(vibe))
         self.conversations: Dict[str, Conversation] = {}
-        
+
     def classify_intent(self, message: str) -> Intent:
         """Classify message intent"""
         message_lower = message.lower()
-        
+
         for intent, keywords in self.INTENT_KEYWORDS.items():
             if any(kw in message_lower for kw in keywords):
                 return intent
-        
+
         return Intent.UNKNOWN
-    
+
     def generate_reply(self, intent: Intent, customer_name: str = "bạn") -> str:
         """Generate reply based on intent"""
         template = self.FAQ_RESPONSES.get(intent, self.FAQ_RESPONSES[Intent.UNKNOWN])
         reply = template.format(name=customer_name)
-        
+
         # Add vibe flavor
         config = self.vibe_tuner.config
         if config.local_words and random.random() > 0.5:
             reply += f" {random.choice(config.local_words)}"
-        
+
         return reply
-    
+
     def handle_message(
         self,
         channel: Channel,
@@ -130,7 +130,7 @@ class ChatbotAgent:
     ) -> Message:
         """Handle incoming message and generate reply"""
         conv_id = f"{channel.value}_{sender_id}"
-        
+
         # Get or create conversation
         if conv_id not in self.conversations:
             self.conversations[conv_id] = Conversation(
@@ -139,9 +139,9 @@ class ChatbotAgent:
                 customer_id=sender_id,
                 customer_name=sender_name
             )
-        
+
         conv = self.conversations[conv_id]
-        
+
         # Create customer message
         customer_msg = Message(
             id=f"msg_{int(datetime.now().timestamp())}",
@@ -151,7 +151,7 @@ class ChatbotAgent:
             intent=self.classify_intent(content)
         )
         conv.messages.append(customer_msg)
-        
+
         # Generate bot reply
         reply_text = self.generate_reply(customer_msg.intent, sender_name)
         bot_msg = Message(
@@ -162,28 +162,28 @@ class ChatbotAgent:
             is_bot=True
         )
         conv.messages.append(bot_msg)
-        
+
         return bot_msg
-    
+
     def should_escalate(self, conv_id: str) -> bool:
         """Check if should escalate to human"""
         if conv_id not in self.conversations:
             return False
-            
+
         conv = self.conversations[conv_id]
-        
+
         # Escalate if: 3+ unknown intents or bug report
         unknown_count = sum(1 for m in conv.messages if m.intent == Intent.UNKNOWN)
         has_bug = any(m.intent == Intent.BUG_REPORT for m in conv.messages)
-        
+
         return unknown_count >= 3 or has_bug
-    
+
     def get_stats(self) -> Dict:
         """Get chatbot statistics"""
         all_messages = []
         for conv in self.conversations.values():
             all_messages.extend([m for m in conv.messages if not m.is_bot])
-        
+
         return {
             "total_conversations": len(self.conversations),
             "total_messages": len(all_messages),
@@ -198,16 +198,16 @@ class ChatbotAgent:
 # Demo
 if __name__ == "__main__":
     bot = ChatbotAgent(vibe="mien-tay")
-    
+
     print("🤖 Chatbot Agent Demo\n")
-    
+
     # Simulate conversation
     messages = [
         ("Chào shop", "Nguyễn Văn A"),
         ("Giá Pro bao nhiêu?", "Nguyễn Văn A"),
         ("Có lỗi khi deploy", "Trần B"),
     ]
-    
+
     for content, name in messages:
         print(f"👤 {name}: {content}")
         reply = bot.handle_message(
@@ -218,7 +218,7 @@ if __name__ == "__main__":
         )
         print(f"🤖 Bot: {reply.content[:80]}...")
         print()
-    
+
     # Stats
     print("📊 Stats:")
     stats = bot.get_stats()

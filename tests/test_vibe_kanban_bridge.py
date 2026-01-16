@@ -31,7 +31,7 @@ async def test_create_task(mock_client):
         "updated_at": datetime.now().isoformat()
     }
     mock_response.raise_for_status = MagicMock()
-    
+
     # Mock the post method of the client instance
     client_instance = AsyncMock()
     client_instance.post.return_value = mock_response
@@ -39,10 +39,10 @@ async def test_create_task(mock_client):
 
     client = VibeBoardClient()
     # Manually attach mock instance because VibeBoardClient creates it in __init__
-    client.client = client_instance 
-    
+    client.client = client_instance
+
     task = await client.create_task("Test Task", "Desc", "planner", "P1")
-    
+
     assert task.id == "TASK-123"
     assert task.title == "Test Task"
     assert task.agent_assigned == "planner"
@@ -61,14 +61,14 @@ async def test_list_tasks(mock_client):
         }
     ]
     mock_response.raise_for_status = MagicMock()
-    
+
     client_instance = AsyncMock()
     client_instance.get.return_value = mock_response
     mock_client.return_value = client_instance
 
     client = VibeBoardClient()
     client.client = client_instance
-    
+
     tasks = await client.list_tasks()
     assert len(tasks) == 2
     assert tasks[0].title == "T1"
@@ -82,15 +82,15 @@ async def test_orchestrator_workload(mock_client):
         {"id": "3", "title": "T3", "agent_assigned": "money-maker", "status": "done", "priority": "P1", "created_at": datetime.now().isoformat(), "updated_at": datetime.now().isoformat()}
     ]
     mock_response.raise_for_status = MagicMock()
-    
+
     client_instance = AsyncMock()
     client_instance.get.return_value = mock_response
-    
+
     client = VibeBoardClient()
     client.client = client_instance
-    
+
     orchestrator = AgentOrchestrator(client)
     workload = await orchestrator.get_agent_workload()
-    
+
     assert workload["planner"] == 2
     assert workload["money-maker"] == 0 # Done tasks don't count as workload

@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.infrastructure import InfrastructureStack, StackLayer
 
 class TestInfrastructure:
-    
+
     def test_stack_initialization(self):
         """Verify all 10 layers are initialized."""
         stack = InfrastructureStack()
@@ -31,7 +31,7 @@ class TestInfrastructure:
         """Test updating layer status."""
         stack = InfrastructureStack()
         stack.update_layer(StackLayer.DATABASE, "running")
-        
+
         # 1 layer running (100), 9 layers configured (90)
         # Total = 100 + 810 = 910. 910 / 10 = 91
         assert stack.get_health_score() == 91

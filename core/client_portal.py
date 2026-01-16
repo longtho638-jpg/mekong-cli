@@ -99,14 +99,14 @@ class Project:
     tasks: List[ProjectTask] = field(default_factory=list)
     budget: float = 0.0
     spent: float = 0.0
-    
+
     @property
     def progress(self) -> float:
         if not self.tasks:
             return 0.0
         done = sum(1 for t in self.tasks if t.status == TaskStatus.DONE)
         return (done / len(self.tasks)) * 100.0
-    
+
     @property
     def is_on_budget(self) -> bool:
         return self.spent <= self.budget
@@ -124,7 +124,7 @@ class Invoice:
     paid_date: Optional[datetime] = None
     items: List[Dict[str, Any]] = field(default_factory=list)
     notes: str = ""
-    
+
     @property
     def is_overdue(self) -> bool:
         if self.status == InvoiceStatus.PAID:
@@ -132,7 +132,7 @@ class Invoice:
         return datetime.now() > self.due_date
 
 
-@dataclass 
+@dataclass
 class Message:
     """A message between agency and client."""
     id: str
@@ -149,14 +149,14 @@ class ClientPortal:
     
     Manages client interactions, projects, financials, and messaging.
     """
-    
+
     def __init__(self, agency_name: str = "Nova Digital"):
         self.agency_name = agency_name
         self.clients: Dict[str, Client] = {}
         self.projects: Dict[str, Project] = {}
         self.invoices: Dict[str, Invoice] = {}
         self.messages: Dict[str, List[Message]] = {}
-        
+
         self.stats = {
             "total_clients": 0,
             "active_clients": 0,
@@ -165,10 +165,10 @@ class ClientPortal:
             "total_invoiced": 0.0,
             "total_collected": 0.0
         }
-        
+
         logger.info(f"Client Portal initialized for {agency_name}")
         self._create_demo_data()
-    
+
     def _validate_email(self, email: str) -> bool:
         """Basic email format validation."""
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -178,23 +178,23 @@ class ClientPortal:
         """Generate unique portal access code."""
         raw = f"{client_id}{datetime.now().isoformat()}"
         return hashlib.sha256(raw.encode()).hexdigest()[:12].upper()
-    
+
     def _create_demo_data(self):
         """Pre-populate with sample agency data."""
         logger.info("Loading demo client portal data...")
         try:
             client = self.add_client("John Smith", "john@example.com", "Acme Corp", 2000.0)
             proj = self.create_project(client.id, "Website Redesign", "Complete overhauled branding", 5000.0)
-            
+
             tasks = [("Discovery", TaskStatus.DONE), ("Homepage", TaskStatus.IN_PROGRESS)]
             for name, status in tasks:
                 self.add_task(proj.id, name, f"Complete {name.lower()}", status)
-                
-            self.create_invoice(client.id, 2500.0, [{"name": "Phase 1", "amount": 2500.0}], 
+
+            self.create_invoice(client.id, 2500.0, [{"name": "Phase 1", "amount": 2500.0}],
                                 project_id=proj.id, status=InvoiceStatus.PAID)
         except Exception as e:
             logger.error(f"Demo data error: {e}")
-    
+
     def add_client(
         self,
         name: str,
@@ -219,15 +219,15 @@ class ClientPortal:
             notes=notes,
             monthly_retainer=monthly_retainer
         )
-        
+
         self.clients[client_id] = client
         self.messages[client_id] = []
         self.stats["total_clients"] += 1
         self.stats["active_clients"] += 1
-        
+
         logger.info(f"Client added to portal: {company}")
         return client
-    
+
     def create_project(
         self,
         client_id: str,
@@ -253,13 +253,13 @@ class ClientPortal:
             end_date=datetime.now() + timedelta(weeks=duration_weeks),
             budget=budget
         )
-        
+
         self.projects[project_id] = project
         self.stats["total_projects"] += 1
         self.stats["active_projects"] += 1
         logger.info(f"Project created: {name}")
         return project
-    
+
     def add_task(
         self,
         project_id: str,
@@ -270,18 +270,18 @@ class ClientPortal:
         """Add a trackable task to a project."""
         if project_id not in self.projects:
             return None
-        
+
         task = ProjectTask(
             id=f"TSK-{uuid.uuid4().hex[:6].upper()}",
             name=name,
             description=description,
             status=status
         )
-        
+
         self.projects[project_id].tasks.append(task)
         logger.debug(f"Task '{name}' added to {project_id}")
         return task
-    
+
     def create_invoice(
         self,
         client_id: str,
@@ -304,37 +304,37 @@ class ClientPortal:
             due_date=datetime.now() + timedelta(days=30),
             items=items
         )
-        
+
         self.invoices[invoice_id] = invoice
         self.stats["total_invoiced"] += amount
-        
+
         if status == InvoiceStatus.PAID:
             invoice.paid_date = datetime.now()
             self.stats["total_collected"] += amount
             if client_id in self.clients:
                 self.clients[client_id].total_spent += amount
-        
+
         logger.info(f"Invoice {invoice_id} created for {amount}")
         return invoice
-    
+
     def send_message(self, client_id: str, content: str, sender: str = "agency") -> bool:
         """Send a message within the portal."""
         if client_id not in self.messages:
             return False
-        
+
         msg = Message(id=f"MSG-{uuid.uuid4().hex[:8]}", client_id=client_id, sender=sender, content=content)
         self.messages[client_id].append(msg)
         logger.info(f"Message sent to {client_id} from {sender}")
         return True
-    
+
     def format_client_summary(self, client_id: str) -> str:
         """Render a text dashboard for a specific client."""
         client = self.clients.get(client_id)
         if not client: return "Client not found."
-        
+
         projects = [p for p in self.projects.values() if p.client_id == client_id]
         invoices = [i for i in self.invoices.values() if i.client_id == client_id]
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  👥 CLIENT PORTAL - {client.company[:30]:<30}  ║",
@@ -343,10 +343,10 @@ class ClientPortal:
             "║  ───────────────────────────────────────────────────────  ║",
             "║  📊 ACTIVE PROJECTS:                                      ║",
         ]
-        
+
         for p in projects:
             lines.append(f"║    • {p.name[:20]:<20} │ Progress: {p.progress:>3.0f}% │ {p.status.value:<10} ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  💰 FINANCIALS:                                           ║",
@@ -363,16 +363,16 @@ class ClientPortal:
 if __name__ == "__main__":
     print("👥 Initializing Client Portal...")
     print("=" * 60)
-    
+
     try:
         portal = ClientPortal("Saigon Digital Hub")
         # Get first client
         if portal.clients:
             cid = list(portal.clients.keys())[0]
             print("\n" + portal.format_client_summary(cid))
-            
+
             portal.send_message(cid, "Your design draft is ready!")
             print("\n📨 Unread Messages:", sum(1 for m in portal.messages[cid] if not m.read))
-            
+
     except Exception as e:
         logger.error(f"Runtime Error: {e}")

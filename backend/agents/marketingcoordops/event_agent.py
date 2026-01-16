@@ -50,11 +50,11 @@ class Event:
     capacity: int = 100
     attendees: List[Attendee] = field(default_factory=list)
     budget: float = 0
-    
+
     @property
     def registered(self) -> int:
         return len(self.attendees)
-    
+
     @property
     def fill_rate(self) -> float:
         return (self.registered / self.capacity * 100) if self.capacity > 0 else 0
@@ -70,12 +70,12 @@ class EventAgent:
     - Venue coordination
     - Attendee tracking
     """
-    
+
     def __init__(self):
         self.name = "Event"
         self.status = "ready"
         self.events: Dict[str, Event] = {}
-        
+
     def create_event(
         self,
         name: str,
@@ -87,7 +87,7 @@ class EventAgent:
     ) -> Event:
         """Create event"""
         event_id = f"evt_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         event = Event(
             id=event_id,
             name=name,
@@ -97,20 +97,20 @@ class EventAgent:
             capacity=capacity,
             budget=budget
         )
-        
+
         self.events[event_id] = event
         return event
-    
+
     def open_registration(self, event_id: str) -> Event:
         """Open event registration"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
-            
+
         event = self.events[event_id]
         event.status = EventStatus.REGISTRATION_OPEN
-        
+
         return event
-    
+
     def register_attendee(
         self,
         event_id: str,
@@ -121,13 +121,13 @@ class EventAgent:
         """Register attendee"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
-            
+
         event = self.events[event_id]
-        
+
         if event.registered >= event.capacity:
             event.status = EventStatus.SOLD_OUT
             raise ValueError("Event is sold out")
-        
+
         attendee = Attendee(
             id=f"att_{random.randint(1000,9999)}",
             name=name,
@@ -135,34 +135,34 @@ class EventAgent:
             company=company,
             registered_at=datetime.now()
         )
-        
+
         event.attendees.append(attendee)
-        
+
         if event.registered >= event.capacity:
             event.status = EventStatus.SOLD_OUT
-        
+
         return event
-    
+
     def start_event(self, event_id: str) -> Event:
         """Start event"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
-            
+
         event = self.events[event_id]
         event.status = EventStatus.IN_PROGRESS
-        
+
         return event
-    
+
     def complete_event(self, event_id: str) -> Event:
         """Complete event"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
-            
+
         event = self.events[event_id]
         event.status = EventStatus.COMPLETED
-        
+
         return event
-    
+
     def get_upcoming(self) -> List[Event]:
         """Get upcoming events"""
         today = date.today()
@@ -170,12 +170,12 @@ class EventAgent:
             [e for e in self.events.values() if e.date >= today],
             key=lambda x: x.date
         )
-    
+
     def get_stats(self) -> Dict:
         """Get event statistics"""
         events = list(self.events.values())
         completed = [e for e in events if e.status == EventStatus.COMPLETED]
-        
+
         return {
             "total_events": len(events),
             "upcoming": len(self.get_upcoming()),
@@ -188,9 +188,9 @@ class EventAgent:
 # Demo
 if __name__ == "__main__":
     agent = EventAgent()
-    
+
     print("🎪 Event Agent Demo\n")
-    
+
     # Create event
     from datetime import timedelta
     e1 = agent.create_event(
@@ -201,20 +201,20 @@ if __name__ == "__main__":
         capacity=500,
         budget=5000
     )
-    
+
     print(f"📋 Event: {e1.name}")
     print(f"   Type: {e1.event_type.value}")
     print(f"   Date: {e1.date}")
     print(f"   Capacity: {e1.capacity}")
-    
+
     # Register
     agent.open_registration(e1.id)
     agent.register_attendee(e1.id, "Nguyen A", "nguyen@example.com", "TechCorp")
     agent.register_attendee(e1.id, "Tran B", "tran@example.com", "StartupXYZ")
     agent.register_attendee(e1.id, "Le C", "le@example.com")
-    
+
     print(f"\n✅ Registered: {e1.registered}/{e1.capacity} ({e1.fill_rate:.0f}%)")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

@@ -64,13 +64,13 @@ class DataMoat:
         insights = moat.get_best_practices("Nông sản")
         # Returns: ["facebook posts perform 95% better", ...]
     """
-    
+
     def __init__(self):
         self.insights: List[Insight] = []
         self.benchmarks: Dict[str, Benchmark] = {}
         self.success_data: List[Dict] = []
         self._next_id = 1
-    
+
     def record_success(
         self,
         niche: str,
@@ -86,18 +86,18 @@ class DataMoat:
             "revenue": revenue,
             "timestamp": datetime.now().isoformat()
         })
-        
+
         # Update benchmarks
         if niche not in self.benchmarks:
             self.benchmarks[niche] = Benchmark(niche=niche)
-        
+
         benchmark = self.benchmarks[niche]
         benchmark.sample_size += 1
-        
+
         # Update top content types
         if content_type not in benchmark.top_content_types and performance_score >= 80:
             benchmark.top_content_types.append(content_type)
-    
+
     def add_insight(
         self,
         insight_type: InsightType,
@@ -118,17 +118,17 @@ class DataMoat:
         self.insights.append(insight)
         self._next_id += 1
         return insight
-    
+
     def get_best_practices(self, niche: str) -> List[Dict]:
         """Get best practices for a niche based on data."""
         practices = []
-        
+
         # Analyze success data
         niche_data = [d for d in self.success_data if d["niche"] == niche]
-        
+
         if not niche_data:
             return [{"tip": "Not enough data yet. Keep using the platform!", "confidence": 0}]
-        
+
         # Find top performing content types
         content_scores = {}
         for d in niche_data:
@@ -136,7 +136,7 @@ class DataMoat:
             if ct not in content_scores:
                 content_scores[ct] = []
             content_scores[ct].append(d["score"])
-        
+
         for ct, scores in content_scores.items():
             avg_score = sum(scores) / len(scores)
             practices.append({
@@ -146,41 +146,41 @@ class DataMoat:
                 "sample_size": len(scores),
                 "confidence": min(len(scores) * 10, 100)
             })
-        
+
         # Sort by score
         practices.sort(key=lambda x: x["avg_score"], reverse=True)
         return practices
-    
+
     def get_benchmark(self, niche: str) -> Optional[Benchmark]:
         """Get benchmark for a niche."""
         return self.benchmarks.get(niche)
-    
+
     def get_viral_patterns(self, niche: str) -> List[Dict]:
         """Get patterns that lead to viral content."""
         patterns = []
-        
+
         # Find high-performing content
-        viral_data = [d for d in self.success_data 
+        viral_data = [d for d in self.success_data
                      if d["niche"] == niche and d["score"] >= 90]
-        
+
         if viral_data:
             patterns.append({
                 "pattern": "High engagement content",
                 "count": len(viral_data),
                 "avg_score": sum(d["score"] for d in viral_data) / len(viral_data)
             })
-        
+
         return patterns
-    
+
     def get_moat_strength(self) -> Dict:
         """Calculate data moat strength."""
         total_data_points = len(self.success_data)
         unique_niches = len(set(d["niche"] for d in self.success_data))
         avg_confidence = sum(i.confidence for i in self.insights) / len(self.insights) if self.insights else 0
-        
+
         # Moat strength increases with data
         strength = min(total_data_points / 100, 100)  # Max 100%
-        
+
         return {
             "strength_score": strength,
             "total_data_points": total_data_points,

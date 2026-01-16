@@ -36,7 +36,7 @@ class AgencyOSDemo:
         """Executes a demo step with standardized rich formatting."""
         console.print(f"\n[bold blue][{num}/{self.total_steps}][/bold blue] [bold white]{title}[/bold white]")
         console.print("─" * 60)
-        
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
@@ -64,30 +64,30 @@ class AgencyOSDemo:
 
     def step_1_i18n(self):
         from locales import i18n, t
-        
+
         locales = i18n.get_available_locales()
         console.print(f"🌐 [cyan]Available Locales:[/cyan] {', '.join(locales)}")
-        
+
         # English
         i18n.set_locale("en")
         console.print(f"🇺🇸 [bold]English:[/bold] {t('common.welcome')}")
-        
+
         # Vietnamese
         i18n.set_locale("vi")
         console.print(f"🇻🇳 [bold]Tiếng Việt:[/bold] {t('common.welcome')}")
-        
+
         i18n.set_locale("en") # Reset
 
     def step_2_vietnam(self):
         from regions.vietnam import VietnamConfig, VietnamPricingEngine
-        
+
         config = VietnamConfig()
         table = Table(show_header=False, box=None)
         table.add_row("📍 Coverage", f"{config.coverage_type} ({len(config.provinces)} provinces)")
         table.add_row("💰 Currency", f"{config.primary_currency.value} + {config.local_currency.value}")
         table.add_row("📈 Rate", f"1 USD = {config.exchange_rate:,.0f} VND")
         console.print(table)
-        
+
         pricing = VietnamPricingEngine(config)
         console.print("\n[bold]Local Services (USD Equiv):[/bold]")
         console.print(f"   • SEO Basic: [green]{pricing.get_local_price('seo_basic', in_usd=True)}[/green]")
@@ -97,11 +97,11 @@ class AgencyOSDemo:
         from core import CRM
         crm = CRM()
         summary = crm.get_summary()
-        
+
         table = Table(title="Pipeline Summary", border_style="blue")
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="green")
-        
+
         table.add_row("Contacts", str(summary['contacts_total']))
         table.add_row("Deals", str(summary['deals_total']))
         table.add_row("Pipeline Value", f"${summary['pipeline_value']:,.0f}")
@@ -112,7 +112,7 @@ class AgencyOSDemo:
         from core import Scheduler
         scheduler = Scheduler()
         upcoming = scheduler.get_upcoming_meetings()
-        
+
         console.print(f"📅 [bold]Upcoming Meetings:[/bold] {len(upcoming)}")
         for m in upcoming[:3]:
             config = scheduler.meeting_types[m.meeting_type]
@@ -123,7 +123,7 @@ class AgencyOSDemo:
             from core import AnalyticsDashboard
             analytics = AnalyticsDashboard()
             summary = analytics.get_summary()
-            
+
             console.print("📊 [bold]Revenue Metrics:[/bold]")
             console.print(f"   MRR: [bold green]${summary['mrr']:,.0f}[/bold green] | ARR: [bold green]${summary['arr']:,.0f}[/bold green]")
             console.print(f"   Active Clients: {summary['clients']}")
@@ -135,7 +135,7 @@ class AgencyOSDemo:
         franchise = FranchiseSystem()
         hq = franchise.get_hq_revenue()
         stats = franchise.get_territory_stats()
-        
+
         console.print("🌍 [bold]Global Franchise System:[/bold]")
         console.print(f"   • Territories: [cyan]{stats['total_territories']}[/cyan] ({stats['claimed']} claimed)")
         console.print(f"   • HQ Monthly Revenue: [green]{hq['monthly_platform_fees']}[/green]")
@@ -164,7 +164,7 @@ class AgencyOSDemo:
         """Run the full demo sequence."""
         self.print_banner()
         time.sleep(0.5)
-        
+
         steps = [
             (1, "🌐 i18n - MULTI-LANGUAGE", self.step_1_i18n),
             (2, "🇻🇳 VIETNAM REGION CONFIG", self.step_2_vietnam),
@@ -173,11 +173,11 @@ class AgencyOSDemo:
             (5, "📊 ANALYTICS - REVENUE", self.step_5_analytics),
             (6, "🌍 FRANCHISE - GLOBAL NETWORK", self.step_6_franchise),
         ]
-        
+
         for num, title, func in steps:
             self.run_step(num, title, func)
             time.sleep(0.3)
-            
+
         self.print_final_summary()
 
 if __name__ == "__main__":

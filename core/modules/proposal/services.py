@@ -14,7 +14,7 @@ class ProposalGenerator:
     
     Automates the creation of high-conversion client proposals using Agency DNA and niche-specific templates.
     """
-    
+
     def __init__(self, agency_name: str, niche: str, location: str, skill: str):
         self.agency_name = agency_name
         self.niche = niche
@@ -22,7 +22,7 @@ class ProposalGenerator:
         self.skill = skill
         self.packages = self._init_packages()
         logger.info(f"Proposal Generator initialized for {agency_name} ({niche})")
-    
+
     def _init_packages(self) -> Dict[ServiceTier, ServicePackage]:
         """Blueprint for standard service tiers based on agency niche."""
         return {
@@ -33,7 +33,7 @@ class ProposalGenerator:
                 f"{self.niche} Growth", f"Scale your {self.niche} results", ["Ads", "Strategy"], 1500.0, 500.0
             )
         }
-    
+
     def create_proposal(
         self,
         client_name: str,
@@ -46,7 +46,7 @@ class ProposalGenerator:
             raise ValueError("Client name and email are mandatory")
 
         services = [self.packages[t] for t in tiers if t in self.packages]
-        
+
         prop = Proposal(
             id=f"PROP-{uuid.uuid4().hex[:6].upper()}",
             client_name=client_name, client_company=client_company, client_email=client_email,

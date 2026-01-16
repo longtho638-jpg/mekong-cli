@@ -25,8 +25,8 @@ RULES_BASE_DIR = Path(".claude/rules")
 # Defines which rules apply to which agents
 RULE_MAPPING: Dict[str, List[str]] = {
     "binh-phap-strategy.md": [
-        "binh-phap-strategist", 
-        "deal-closer", 
+        "binh-phap-strategist",
+        "deal-closer",
         "money-maker",
         "growth-strategist",
         "client-magnet",
@@ -103,7 +103,7 @@ def load_rules_for_agent(agent: str, base_path: Path = RULES_BASE_DIR) -> Dict[s
     """
     rule_names = get_rules_for_agent(agent)
     loaded = {}
-    
+
     # Ensure base_path is a Path object
     if isinstance(base_path, str):
         base_path = Path(base_path)
@@ -118,7 +118,7 @@ def load_rules_for_agent(agent: str, base_path: Path = RULES_BASE_DIR) -> Dict[s
         else:
             # Silent fail or log warning if strict mode?
             pass
-    
+
     return loaded
 
 
@@ -126,7 +126,7 @@ def get_rule_summary(rule_name: str, base_path: Path = RULES_BASE_DIR) -> str:
     """Get first 3 lines of a rule as summary."""
     if isinstance(base_path, str):
         base_path = Path(base_path)
-        
+
     rule_path = base_path / rule_name
     if rule_path.exists():
         try:
@@ -154,7 +154,7 @@ def print_rules_matrix():
     print(f"   Total Rules: {get_total_rules()}")
     print(f"   Total Assignments: {get_total_assignments()}")
     print()
-    
+
     print("📋 RULES BY FILE:")
     for rule, agents in RULE_MAPPING.items():
         # Handle wildcard
@@ -162,7 +162,7 @@ def print_rules_matrix():
              agents_display = ["ALL AGENTS"]
         else:
             agents_display = agents
-            
+
         agents_str = ", ".join(agents_display[:3])
         if len(agents_display) > 3:
             agents_str += f' +{len(agents_display)-3} more'

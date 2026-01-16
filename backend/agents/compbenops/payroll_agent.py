@@ -35,12 +35,12 @@ class PayrollEntry:
     net_pay: float = 0
     pay_date: date = None
     status: PayrollStatus = PayrollStatus.DRAFT
-    
+
     def __post_init__(self):
         if self.pay_date is None:
             self.pay_date = date.today()
         self.calculate_net()
-    
+
     def calculate_net(self):
         self.net_pay = self.gross_pay - sum(self.deductions.values())
 
@@ -56,7 +56,7 @@ class PayrollRun:
     total_deductions: float = 0
     total_net: float = 0
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -72,29 +72,29 @@ class PayrollAgent:
     - Calculate taxes
     - Track pay history
     """
-    
+
     # Default tax rates
     TAX_RATE = 0.20
     INSURANCE_RATE = 0.08
     RETIREMENT_RATE = 0.06
-    
+
     def __init__(self):
         self.name = "Payroll"
         self.status = "ready"
         self.runs: Dict[str, PayrollRun] = {}
-        
+
     def create_run(self, period: str) -> PayrollRun:
         """Create payroll run"""
         run_id = f"payroll_{period}_{random.randint(100,999)}"
-        
+
         run = PayrollRun(
             id=run_id,
             period=period
         )
-        
+
         self.runs[run_id] = run
         return run
-    
+
     def add_entry(
         self,
         run_id: str,
@@ -106,19 +106,19 @@ class PayrollAgent:
         """Add payroll entry"""
         if run_id not in self.runs:
             raise ValueError(f"Run not found: {run_id}")
-            
+
         entry_id = f"entry_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         # Calculate deductions
         deductions = {
             "Tax": gross_pay * self.TAX_RATE,
             "Insurance": gross_pay * self.INSURANCE_RATE,
             "Retirement": gross_pay * self.RETIREMENT_RATE
         }
-        
+
         if custom_deductions:
             deductions.update(custom_deductions)
-        
+
         entry = PayrollEntry(
             id=entry_id,
             employee_id=employee_id,
@@ -126,48 +126,48 @@ class PayrollAgent:
             gross_pay=gross_pay,
             deductions=deductions
         )
-        
+
         run = self.runs[run_id]
         run.entries.append(entry)
-        
+
         # Update totals
         run.total_gross += entry.gross_pay
         run.total_deductions += sum(entry.deductions.values())
         run.total_net += entry.net_pay
-        
+
         return entry
-    
+
     def process_run(self, run_id: str) -> PayrollRun:
         """Process payroll run"""
         if run_id not in self.runs:
             raise ValueError(f"Run not found: {run_id}")
-            
+
         run = self.runs[run_id]
         run.status = PayrollStatus.PROCESSING
-        
+
         for entry in run.entries:
             entry.status = PayrollStatus.PROCESSING
-        
+
         return run
-    
+
     def complete_run(self, run_id: str) -> PayrollRun:
         """Complete payroll run"""
         if run_id not in self.runs:
             raise ValueError(f"Run not found: {run_id}")
-            
+
         run = self.runs[run_id]
         run.status = PayrollStatus.PAID
-        
+
         for entry in run.entries:
             entry.status = PayrollStatus.PAID
-        
+
         return run
-    
+
     def get_stats(self) -> Dict:
         """Get payroll statistics"""
         runs = list(self.runs.values())
         completed = [r for r in runs if r.status == PayrollStatus.PAID]
-        
+
         return {
             "total_runs": len(runs),
             "completed": len(completed),
@@ -180,31 +180,31 @@ class PayrollAgent:
 # Demo
 if __name__ == "__main__":
     agent = PayrollAgent()
-    
+
     print("💳 Payroll Agent Demo\n")
-    
+
     # Create run
     run = agent.create_run("2024-12")
-    
+
     print(f"📋 Payroll Run: {run.period}")
-    
+
     # Add entries
     e1 = agent.add_entry(run.id, "EMP001", "Nguyen A", 2700)
     e2 = agent.add_entry(run.id, "EMP002", "Tran B", 1600)
     e3 = agent.add_entry(run.id, "EMP003", "Le C", 2200)
-    
+
     print(f"\n💰 Entry: {e1.employee_name}")
     print(f"   Gross: ${e1.gross_pay:,.0f}")
     print(f"   Deductions: ${sum(e1.deductions.values()):,.0f}")
     print(f"   Net: ${e1.net_pay:,.0f}")
-    
+
     # Process
     agent.process_run(run.id)
     agent.complete_run(run.id)
-    
+
     print(f"\n✅ Run Status: {run.status.value}")
     print(f"   Total Net: ${run.total_net:,.0f}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

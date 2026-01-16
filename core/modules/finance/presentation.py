@@ -5,15 +5,15 @@ from .entities import FinancialRatio
 from .services import FinancialReportsService
 
 class FinancePresenter:
-    
+
     @staticmethod
     def format_dashboard(service: FinancialReportsService) -> str:
         """Render the CFO Financial Dashboard."""
         if not service.pnl_history: return "No financial history data."
-        
+
         latest = service.pnl_history[0]
         overall_score = service.ratios.get("net_margin", FinancialRatio("", 0, 0)).value
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 FINANCIAL REPORTS - CFO DASHBOARD{' ' * 21}║",
@@ -30,13 +30,13 @@ class FinancePresenter:
             "║  📊 PERFORMANCE RATIOS                                    ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for r in service.ratios.values():
             status = "🟢" if r.value >= r.target else "🟡"
             bar_len = min(10, int(r.value / 10))
             bar = "█" * bar_len + "░" * (10 - bar_len)
             lines.append(f"║    {status} {r.name:<18} │ {bar} │ {r.value:>5.1f}{r.unit}  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [📊 P&L]  [📈 Trends]  [💰 Forecast]  [⚙️ Settings]      ║",

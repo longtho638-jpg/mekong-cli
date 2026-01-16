@@ -63,7 +63,7 @@ class PortfolioMonitorAgent:
     - Chapter 1 (Kế Hoạch): Know your battlefield (portfolio)
     - Chapter 6 (Hư Thực): Attack weaknesses (struggling startups)
     """
-    
+
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
         self.llm = ChatOpenAI(
@@ -72,7 +72,7 @@ class PortfolioMonitorAgent:
             openai_api_base="https://openrouter.ai/api/v1",
             openai_api_key=os.getenv("OPENROUTER_API_KEY"),
         )
-        
+
     def get_tools(self) -> List:
         """All 8 agent tools"""
         return [
@@ -85,7 +85,7 @@ class PortfolioMonitorAgent:
             self.predict_churn,
             self.recommend_interventions
         ]
-    
+
     # Agent 1: Metrics Scraper
     @staticmethod
     @tool
@@ -115,7 +115,7 @@ class PortfolioMonitorAgent:
             "scraped_at": datetime.now().isoformat(),
             "source": data_source
         }
-    
+
     # Agent 2: Burn Rate Tracker
     @staticmethod
     @tool
@@ -132,7 +132,7 @@ class PortfolioMonitorAgent:
             Runway analysis and recommendations
         """
         runway_months = cash_balance / monthly_burn if monthly_burn > 0 else 999
-        
+
         risk_level = "low"
         if runway_months < 6:
             risk_level = "critical"
@@ -140,7 +140,7 @@ class PortfolioMonitorAgent:
             risk_level = "high"
         elif runway_months < 18:
             risk_level = "medium"
-            
+
         return {
             "startup_id": startup_id,
             "cash_balance": cash_balance,
@@ -150,7 +150,7 @@ class PortfolioMonitorAgent:
             "recommendation": "Raise funding" if runway_months < 12 else "Healthy runway",
             "calculated_at": datetime.now().isoformat()
         }
-    
+
     # Agent 3: Alert Engine
     @staticmethod
     @tool
@@ -173,37 +173,37 @@ class PortfolioMonitorAgent:
                 "growth_rate_min": 10.0,
                 "ltv_cac_ratio_min": 3.0
             }
-        
+
         alerts = []
-        
+
         if metrics.get("runway_months", 999) < thresholds["runway_months_min"]:
             alerts.append({
                 "type": "runway",
                 "severity": "high",
                 "message": f"Runway below {thresholds['runway_months_min']} months"
             })
-            
+
         if metrics.get("churn_rate", 0) > thresholds["churn_rate_max"]:
             alerts.append({
                 "type": "churn",
                 "severity": "medium",
                 "message": f"Churn rate above {thresholds['churn_rate_max']}%"
             })
-            
+
         if metrics.get("growth_rate", 0) < thresholds["growth_rate_min"]:
             alerts.append({
                 "type": "growth",
                 "severity": "medium",
                 "message": f"Growth rate below {thresholds['growth_rate_min']}%"
             })
-            
+
         return {
             "startup_id": startup_id,
             "total_alerts": len(alerts),
             "alerts": alerts,
             "checked_at": datetime.now().isoformat()
         }
-    
+
     # Agent 4: Health Reporter
     @staticmethod
     @tool
@@ -221,7 +221,7 @@ class PortfolioMonitorAgent:
         # Calculate health score (0-100)
         score = 0
         factors = []
-        
+
         # Runway score (25 points max)
         runway = metrics.get("runway_months", 0)
         if runway >= 18:
@@ -235,7 +235,7 @@ class PortfolioMonitorAgent:
             factors.append("Low runway (+5)")
         else:
             factors.append("Critical runway (0)")
-            
+
         # Growth score (25 points max)
         growth = metrics.get("growth_rate", 0)
         if growth >= 20:
@@ -249,7 +249,7 @@ class PortfolioMonitorAgent:
             factors.append("Flat growth (+5)")
         else:
             factors.append("Negative growth (0)")
-            
+
         # LTV/CAC ratio (25 points max)
         ltv_cac = metrics.get("ltv", 0) / metrics.get("cac", 1)
         if ltv_cac >= 5:
@@ -263,7 +263,7 @@ class PortfolioMonitorAgent:
             factors.append("Break-even economics (+5)")
         else:
             factors.append("Negative economics (0)")
-            
+
         # Churn score (25 points max)
         churn = metrics.get("churn_rate", 100)
         if churn <= 2:
@@ -277,7 +277,7 @@ class PortfolioMonitorAgent:
             factors.append("Fair retention (+5)")
         else:
             factors.append("Poor retention (0)")
-            
+
         return {
             "startup_id": startup_id,
             "health_score": score,
@@ -285,7 +285,7 @@ class PortfolioMonitorAgent:
             "factors": factors,
             "report_date": datetime.now().isoformat()
         }
-    
+
     # Agent 5: Trend Analyzer
     @staticmethod
     @tool
@@ -303,10 +303,10 @@ class PortfolioMonitorAgent:
         # Calculate trends (simplified)
         if len(historical_data) < 2:
             return {"startup_id": startup_id, "error": "Insufficient data"}
-            
+
         latest = historical_data[-1]
         previous = historical_data[-2]
-        
+
         trends = {}
         for key in ["mrr", "growth_rate", "churn_rate", "burn_rate"]:
             if key in latest and key in previous:
@@ -317,14 +317,14 @@ class PortfolioMonitorAgent:
                     "change": round(change, 2),
                     "pct_change": round(pct_change, 1)
                 }
-                
+
         return {
             "startup_id": startup_id,
             "trends": trends,
             "analysis_period": "monthly",
             "analyzed_at": datetime.now().isoformat()
         }
-    
+
     # Agent 6: Benchmark Comparator
     @staticmethod
     @tool
@@ -349,10 +349,10 @@ class PortfolioMonitorAgent:
                 "burn_multiple": {"top_quartile": 1, "median": 1.5, "bottom_quartile": 2}
             }
         }
-        
+
         industry_bench = benchmarks.get(industry, benchmarks["SaaS"])
         comparisons = {}
-        
+
         for metric, values in industry_bench.items():
             if metric in metrics:
                 value = metrics[metric]
@@ -364,14 +364,14 @@ class PortfolioMonitorAgent:
                     comparisons[metric] = {"percentile": 25, "status": "Below median"}
                 else:
                     comparisons[metric] = {"percentile": 10, "status": "Bottom 25%"}
-                    
+
         return {
             "startup_id": startup_id,
             "industry": industry,
             "comparisons": comparisons,
             "compared_at": datetime.now().isoformat()
         }
-    
+
     # Agent 7: Churn Predictor
     @staticmethod
     @tool
@@ -390,7 +390,7 @@ class PortfolioMonitorAgent:
         # Simple prediction model
         risk_factors = []
         churn_probability = 0
-        
+
         # Runway risk
         if metrics.get("runway_months", 12) < 6:
             churn_probability += 40
@@ -398,7 +398,7 @@ class PortfolioMonitorAgent:
         elif metrics.get("runway_months", 12) < 12:
             churn_probability += 20
             risk_factors.append("Low runway (<12 months)")
-            
+
         # Growth risk
         if metrics.get("growth_rate", 0) < 0:
             churn_probability += 25
@@ -406,19 +406,19 @@ class PortfolioMonitorAgent:
         elif metrics.get("growth_rate", 0) < 10:
             churn_probability += 10
             risk_factors.append("Slow growth")
-            
+
         # Churn risk
         if metrics.get("churn_rate", 0) > 10:
             churn_probability += 20
             risk_factors.append("High churn (>10%)")
-            
+
         # Health score risk
         if health_score < 40:
             churn_probability += 15
             risk_factors.append("Poor health score")
-            
+
         churn_probability = min(churn_probability, 95)  # Cap at 95%
-        
+
         return {
             "startup_id": startup_id,
             "churn_probability": churn_probability,
@@ -427,7 +427,7 @@ class PortfolioMonitorAgent:
             "survival_probability": 100 - churn_probability,
             "predicted_at": datetime.now().isoformat()
         }
-    
+
     # Agent 8: Recommendation Engine
     @staticmethod
     @tool
@@ -444,7 +444,7 @@ class PortfolioMonitorAgent:
             Prioritized list of recommended actions
         """
         recommendations = []
-        
+
         # Process alerts
         for alert in alerts:
             if alert.get("type") == "runway":
@@ -468,7 +468,7 @@ class PortfolioMonitorAgent:
                     "timeline": "Within 2 weeks",
                     "binh_phap": "Chapter 5: Build momentum"
                 })
-                
+
         # Add churn-based recommendations
         if churn_probability > 60:
             recommendations.insert(0, {
@@ -484,7 +484,7 @@ class PortfolioMonitorAgent:
                 "timeline": "This week",
                 "binh_phap": "Chapter 8: Know when to pivot"
             })
-            
+
         return {
             "startup_id": startup_id,
             "total_recommendations": len(recommendations),
@@ -497,22 +497,22 @@ class PortfolioMonitorAgent:
 if __name__ == "__main__":
     redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
     agent = PortfolioMonitorAgent(redis_client)
-    
+
     # Test with sample startup
     startup_id = "startup-001"
-    
+
     # Agent 1: Scrape metrics
     metrics = agent.scrape_metrics(startup_id)
     print(f"Metrics: {metrics}")
-    
+
     # Agent 2: Track burn rate
     burn = agent.track_burn_rate(startup_id, 1000000, 80000)
     print(f"Burn Rate: {burn}")
-    
+
     # Agent 3: Check alerts
     alerts = agent.check_alerts(startup_id, {"runway_months": 10, "churn_rate": 6, "growth_rate": 8})
     print(f"Alerts: {alerts}")
-    
+
     # Agent 4: Health report
     health = agent.generate_health_report(startup_id, metrics)
     print(f"Health: {health}")

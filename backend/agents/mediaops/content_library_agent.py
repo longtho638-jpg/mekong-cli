@@ -37,7 +37,7 @@ class Asset:
     status: AssetStatus = AssetStatus.DRAFT
     usage_count: int = 0
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -53,12 +53,12 @@ class ContentLibraryAgent:
     - Track usage
     - Version control
     """
-    
+
     def __init__(self):
         self.name = "Content Library"
         self.status = "ready"
         self.assets: Dict[str, Asset] = {}
-        
+
     def upload(
         self,
         name: str,
@@ -69,7 +69,7 @@ class ContentLibraryAgent:
     ) -> Asset:
         """Upload new asset"""
         asset_id = f"asset_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         asset = Asset(
             id=asset_id,
             name=name,
@@ -80,53 +80,53 @@ class ContentLibraryAgent:
             size_bytes=size_bytes,
             status=AssetStatus.READY
         )
-        
+
         self.assets[asset_id] = asset
         return asset
-    
+
     def add_tags(self, asset_id: str, tags: List[str]) -> Asset:
         """Add tags to asset"""
         if asset_id not in self.assets:
             raise ValueError(f"Asset not found: {asset_id}")
-            
+
         asset = self.assets[asset_id]
         asset.tags.extend(tags)
         asset.tags = list(set(asset.tags))  # Dedupe
-        
+
         return asset
-    
+
     def search_by_tag(self, tag: str) -> List[Asset]:
         """Search assets by tag"""
         return [a for a in self.assets.values() if tag.lower() in [t.lower() for t in a.tags]]
-    
+
     def search_by_type(self, asset_type: AssetType) -> List[Asset]:
         """Search assets by type"""
         return [a for a in self.assets.values() if a.asset_type == asset_type]
-    
+
     def record_usage(self, asset_id: str) -> Asset:
         """Record asset usage"""
         if asset_id not in self.assets:
             raise ValueError(f"Asset not found: {asset_id}")
-            
+
         asset = self.assets[asset_id]
         asset.usage_count += 1
-        
+
         return asset
-    
+
     def archive(self, asset_id: str) -> Asset:
         """Archive asset"""
         if asset_id not in self.assets:
             raise ValueError(f"Asset not found: {asset_id}")
-            
+
         asset = self.assets[asset_id]
         asset.status = AssetStatus.ARCHIVED
-        
+
         return asset
-    
+
     def get_stats(self) -> Dict:
         """Get library statistics"""
         assets = list(self.assets.values())
-        
+
         return {
             "total": len(assets),
             "total_size_mb": sum(a.size_bytes for a in assets) / (1024 * 1024),
@@ -141,9 +141,9 @@ class ContentLibraryAgent:
 # Demo
 if __name__ == "__main__":
     agent = ContentLibraryAgent()
-    
+
     print("📚 Content Library Agent Demo\n")
-    
+
     # Upload assets
     img1 = agent.upload(
         name="hero_banner.jpg",
@@ -152,7 +152,7 @@ if __name__ == "__main__":
         tags=["landing", "hero", "marketing"],
         size_bytes=1024 * 500
     )
-    
+
     vid1 = agent.upload(
         name="demo_video.mp4",
         asset_type=AssetType.VIDEO,
@@ -160,22 +160,22 @@ if __name__ == "__main__":
         tags=["demo", "tutorial"],
         size_bytes=1024 * 1024 * 25
     )
-    
+
     print(f"📷 Uploaded: {img1.name}")
     print(f"   Tags: {', '.join(img1.tags)}")
-    
+
     print(f"\n🎬 Uploaded: {vid1.name}")
     print(f"   Size: {vid1.size_bytes / (1024*1024):.1f} MB")
-    
+
     # Record usage
     agent.record_usage(img1.id)
     agent.record_usage(img1.id)
     agent.record_usage(vid1.id)
-    
+
     # Search
     marketing = agent.search_by_tag("marketing")
     print(f"\n🔍 Marketing assets: {len(marketing)}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

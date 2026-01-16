@@ -71,21 +71,21 @@ class LeadScoring:
     
     Automates the prioritization of sales prospects based on budget, source, and strategic fit.
     """
-    
+
     # Weighting configuration
     WEIGHTS = {"budget": 0.30, "source": 0.25, "engagement": 0.25, "fit": 0.20}
-    
+
     SOURCE_VALS = {
         LeadSource.REFERRAL: 100, LeadSource.EVENT: 80,
         LeadSource.WEBSITE: 70, LeadSource.SOCIAL: 50,
         LeadSource.ADS: 40, LeadSource.COLD: 20
     }
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.leads: Dict[str, Lead] = {}
         logger.info(f"Lead Scoring initialized for {agency_name}")
-    
+
     def _validate_email(self, email: str) -> bool:
         return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
 
@@ -106,24 +106,24 @@ class LeadScoring:
             name=name, company=company, email=email,
             source=source, budget=float(budget)
         )
-        
+
         self.calculate_score(lead)
         self.leads[lead.id] = lead
         logger.info(f"Lead added: {name} ({company}). Score: {lead.score}")
         return lead
-    
+
     def calculate_score(self, lead: Lead):
         """Execute multi-factor scoring algorithm."""
         # 1. Budget Score
         b_score = 100 if lead.budget >= 10000 else 75 if lead.budget >= 5000 else 50 if lead.budget >= 2000 else 25
-        
+
         # 2. Source Value
         s_val = self.SOURCE_VALS.get(lead.source, 30)
-        
+
         # 3. Engagement & Fit (Simulated base)
         lead.engagement_score = min(100, 40 + int(lead.budget / 200))
         lead.fit_score = min(100, s_val + 10)
-        
+
         # Aggregate
         total = (
             b_score * self.WEIGHTS["budget"] +
@@ -132,16 +132,16 @@ class LeadScoring:
             lead.fit_score * self.WEIGHTS["fit"]
         )
         lead.score = int(total)
-    
+
     def get_hot_leads(self, threshold: int = 70) -> List[Lead]:
         """Filter leads that meet the hot priority threshold."""
         return [l for l in self.leads.values() if l.score >= threshold]
-    
+
     def format_dashboard(self) -> str:
         """Render the Lead Scoring Dashboard."""
         hot_leads = [l for l in self.leads.values() if l.score >= 70]
         avg_score = sum(l.score for l in self.leads.values()) / len(self.leads) if self.leads else 0
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🎯 LEAD SCORING DASHBOARD{' ' * 32}║",
@@ -150,11 +150,11 @@ class LeadScoring:
             "║  🔥 HIGH-PRIORITY PROSPECTS                               ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for l in sorted(hot_leads, key=lambda x: x.score, reverse=True)[:5]:
             bar = "█" * (l.score // 10) + "░" * (10 - l.score // 10)
             lines.append(f"║    {l.name[:15]:<15} │ {bar} │ {l.score:>3} points  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Lead]  [🎯 Re-score]  [📊 Analytics]  [⚙️ Weights] ║",
@@ -169,14 +169,14 @@ class LeadScoring:
 if __name__ == "__main__":
     print("🎯 Initializing Lead Scoring...")
     print("=" * 60)
-    
+
     try:
         system = LeadScoring("Saigon Digital Hub")
         # Seed
         system.add_lead("John Smith", "TechCorp", "john@tech.io", LeadSource.REFERRAL, 8000.0)
         system.add_lead("Anna Kim", "Enterprise", "anna@corp.co", LeadSource.EVENT, 15000.0)
-        
+
         print("\n" + system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Scoring Error: {e}")

@@ -13,15 +13,15 @@ from antigravity.core.proposal_generator import ProposalGenerator
 from antigravity.core.money_maker import MoneyMaker, ServiceTier
 
 class TestProposalGenerator:
-    
+
     def test_generate_proposal(self):
         """Test full proposal generation from quote."""
         mm = MoneyMaker()
         quote = mm.generate_quote("Test Corp", [1, 3, 5], ServiceTier.WARRIOR)
-        
+
         pg = ProposalGenerator()
         proposal = pg.generate_proposal(quote, "John Doe")
-        
+
         assert proposal.client_name == "Test Corp"
         assert proposal.client_contact == "John Doe"
         # Strategic Proposal: Test Corp
@@ -33,7 +33,7 @@ class TestProposalGenerator:
         """Test one-step proposal generation."""
         pg = ProposalGenerator()
         proposal = pg.quick_launch("Quick Corp", "Jane", [1, 2], ServiceTier.GENERAL)
-        
+
         assert proposal.client_name == "Quick Corp"
         assert "Tác Chiến" in proposal.markdown_content
         assert "GENERAL" in proposal.markdown_content
@@ -42,11 +42,11 @@ class TestProposalGenerator:
         """Test saving proposal to file."""
         pg = ProposalGenerator()
         proposal = pg.quick_launch("Save Corp", "Alice", [1], ServiceTier.WARRIOR)
-        
+
         # save_to_file uses Path and returns Path
         out_dir = str(tmp_path)
         path = pg.save_to_file(proposal, out_dir)
-        
+
         assert path.exists()
         content = path.read_text()
         assert "Strategic Proposal: Save Corp" in content

@@ -21,7 +21,7 @@ async def get_router_stats():
     """Get Hybrid Router statistics"""
     if not ROUTER_AVAILABLE:
         return {"error": "Hybrid Router not available"}
-        
+
     stats = hybrid_router.get_stats()
     return {
         "stats": stats,
@@ -40,7 +40,7 @@ async def route_task(request: CommandRequest):
 
     task_type, complexity = HybridRouter.analyze_task(request.prompt)
     result = hybrid_router.route(task_type, complexity, len(request.prompt.split()) * 2)
-    
+
     return {
         "provider": result.provider,
         "model": result.model,

@@ -70,7 +70,7 @@ class BaseModel:
         """
         # Shallow copy to avoid mutating original
         data_copy = data.copy()
-        
+
         # Convert identified datetime strings back to objects
         for key, value in data_copy.items():
             if isinstance(value, str):
@@ -80,12 +80,12 @@ class BaseModel:
                         data_copy[key] = datetime.fromisoformat(value)
                     except (ValueError, TypeError):
                         pass
-        
+
         # Filter out keys that don't exist in the dataclass fields
         # This prevents errors from legacy or external data
         valid_fields = {f.name for f in field_names(cls)}
         filtered_data = {k: v for k, v in data_copy.items() if k in valid_fields}
-        
+
         return cls(**filtered_data)
 
     def mark_updated(self) -> None:
@@ -147,7 +147,7 @@ class BaseEngine(ABC):
         path = self.get_data_path(filename)
         if not path.exists():
             return default if default is not None else {}
-        
+
         try:
             return json.loads(path.read_text(encoding='utf-8'))
         except Exception as e:

@@ -51,11 +51,11 @@ class Grievance:
     resolution: str = ""
     submitted_at: datetime = None
     resolved_at: Optional[datetime] = None
-    
+
     def __post_init__(self):
         if self.submitted_at is None:
             self.submitted_at = datetime.now()
-    
+
     @property
     def days_open(self) -> int:
         if self.resolved_at:
@@ -73,12 +73,12 @@ class GrievanceAgent:
     - Manage resolutions
     - Ensure policy compliance
     """
-    
+
     def __init__(self):
         self.name = "Grievance"
         self.status = "ready"
         self.cases: Dict[str, Grievance] = {}
-        
+
     def submit_grievance(
         self,
         title: str,
@@ -89,7 +89,7 @@ class GrievanceAgent:
     ) -> Grievance:
         """Submit new grievance"""
         case_id = f"grv_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         grievance = Grievance(
             id=case_id,
             title=title,
@@ -98,52 +98,52 @@ class GrievanceAgent:
             complainant_id=complainant_id,
             priority=priority
         )
-        
+
         self.cases[case_id] = grievance
         return grievance
-    
+
     def assign(self, case_id: str, assigned_to: str) -> Grievance:
         """Assign case to specialist"""
         if case_id not in self.cases:
             raise ValueError(f"Case not found: {case_id}")
-            
+
         case = self.cases[case_id]
         case.assigned_to = assigned_to
         case.status = GrievanceStatus.UNDER_REVIEW
-        
+
         return case
-    
+
     def update_status(self, case_id: str, status: GrievanceStatus) -> Grievance:
         """Update case status"""
         if case_id not in self.cases:
             raise ValueError(f"Case not found: {case_id}")
-            
+
         case = self.cases[case_id]
         case.status = status
-        
+
         return case
-    
+
     def resolve(self, case_id: str, resolution: str) -> Grievance:
         """Resolve case"""
         if case_id not in self.cases:
             raise ValueError(f"Case not found: {case_id}")
-            
+
         case = self.cases[case_id]
         case.status = GrievanceStatus.RESOLVED
         case.resolution = resolution
         case.resolved_at = datetime.now()
-        
+
         return case
-    
+
     def get_open_cases(self) -> List[Grievance]:
         """Get open cases"""
         return [c for c in self.cases.values() if c.status not in [GrievanceStatus.RESOLVED, GrievanceStatus.CLOSED]]
-    
+
     def get_stats(self) -> Dict:
         """Get grievance statistics"""
         cases = list(self.cases.values())
         resolved = [c for c in cases if c.status == GrievanceStatus.RESOLVED]
-        
+
         return {
             "total_cases": len(cases),
             "open": len(self.get_open_cases()),
@@ -157,9 +157,9 @@ class GrievanceAgent:
 # Demo
 if __name__ == "__main__":
     agent = GrievanceAgent()
-    
+
     print("🤝 Grievance Agent Demo\n")
-    
+
     # Submit grievances
     g1 = agent.submit_grievance(
         "Workplace harassment complaint",
@@ -175,18 +175,18 @@ if __name__ == "__main__":
         "EMP_002",
         Priority.MEDIUM
     )
-    
+
     print(f"📋 Case: {g1.title}")
     print(f"   Type: {g1.grievance_type.value}")
     print(f"   Priority: {g1.priority.value}")
-    
+
     # Process case
     agent.assign(g1.id, "ER_SPEC_001")
     agent.update_status(g1.id, GrievanceStatus.INVESTIGATING)
     agent.resolve(g1.id, "Investigation complete. Action taken.")
-    
+
     print(f"\n✅ Status: {g1.status.value}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

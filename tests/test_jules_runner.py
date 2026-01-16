@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.jules_runner import JULES_MISSIONS, trigger_jules_mission
 
 class TestJulesRunner:
-    
+
     def test_task_registry(self):
         """Verify standard tasks are registered."""
         assert "tests" in JULES_MISSIONS

@@ -62,14 +62,14 @@ class InfrastructureStack:
     Orchestrates the 'Strong Ground' policy. Ensures all 10 layers of 
     production infrastructure are correctly provisioned and monitored.
     """
-    
+
     def __init__(self):
         self.layers: Dict[StackLayer, LayerConfig] = {}
         self._initialize_default_stack()
-    
+
     def _initialize_default_stack(self):
         """Builds the Agency OS 'Golden Stack' defaults."""
-        
+
         # Mapping definition logic
         defaults = [
             (StackLayer.DATABASE, "Supabase (Postgres)", {"rls": True, "realtime": True}),
@@ -83,14 +83,14 @@ class InfrastructureStack:
             (StackLayer.CDN,      "Vercel Edge Network", {"caching": "Auto"}),
             (StackLayer.BACKUP,   "GitHub + Supabase", {"frequency": "Daily"})
         ]
-        
+
         for layer, provider, cfg in defaults:
             self.layers[layer] = LayerConfig(
                 layer=layer,
                 provider=provider,
                 config=cfg
             )
-    
+
     def get_health_score(self) -> int:
         """Calculates 0-100 system health score based on layer statuses."""
         weights = {
@@ -99,10 +99,10 @@ class InfrastructureStack:
             "warning": 50,
             "error": 0
         }
-        
+
         total = sum(weights.get(l.status, 0) for l in self.layers.values())
         return total // len(self.layers) if self.layers else 0
-    
+
     def update_layer(self, layer: StackLayer, status: str, provider: Optional[str] = None):
         """Updates the operational state of a specific stack layer."""
         if layer in self.layers:
@@ -127,11 +127,11 @@ class InfrastructureStack:
     def print_status_report(self):
         """Pretty-prints the full 10-layer stack report to the console."""
         score = self.get_health_score()
-        
+
         print("\n" + "═" * 65)
         print("║" + "🏗️ INFRASTRUCTURE STACK REPORT (10/10)".center(63) + "║")
         print("═" * 65)
-        
+
         icons = {
             StackLayer.DATABASE: "🗄️", StackLayer.SERVER: "🖥️",
             StackLayer.NETWORKING: "🌐", StackLayer.CLOUD: "☁️",
@@ -139,17 +139,17 @@ class InfrastructureStack:
             StackLayer.MONITORING: "📊", StackLayer.CONTAINERS: "📦",
             StackLayer.CDN: "⚡", StackLayer.BACKUP: "💾"
         }
-        
+
         status_colors = {"running": "🟢", "configured": "🔵", "warning": "🟡", "error": "🔴"}
-        
+
         for ltype, lcfg in self.layers.items():
             s_icon = status_colors.get(lcfg.status, "⚪")
             l_icon = icons.get(ltype, "•")
             print(f"  {l_icon} {ltype.value.upper():<12} | {s_icon} {lcfg.provider}")
-            
+
         print("\n" + "─" * 65)
         print(f"  🏆 STACK HEALTH: {score}%")
-        
+
         verdict = (
             "🚀 PRODUCTION READY" if score >= 90 else
             "⚠️ AT RISK - NEEDS CONFIG" if score >= 70 else

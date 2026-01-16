@@ -31,11 +31,11 @@ class HeadlessMode:
     The 'Quiet' mode for Agency OS. 
     Processes instructions without a persistent TUI/CLI session.
     """
-    
+
     def __init__(self, verbose: bool = False, output_format: str = "text"):
         self.verbose = verbose
         self.output_format = output_format  # 'text' or 'json'
-    
+
     def set_output_format(self, fmt: str):
         """Switches the response format."""
         if fmt.lower() in ["text", "json"]:
@@ -52,52 +52,52 @@ class HeadlessMode:
             "message": "",
             "error": None,
         }
-        
+
         try:
             # Routing Logic
             if instruction.startswith("/"):
                 data, msg = self._route_slash_command(instruction)
             else:
                 data, msg = self._process_natural_prompt(instruction)
-                
+
             result["data"] = data
             result["message"] = msg
-            
+
             # Format the final output string based on preference
             if self.output_format == "json":
                 result["output"] = json.dumps(data, indent=2, default=str)
             else:
                 result["output"] = msg
-                
+
         except Exception as e:
             logger.exception(f"Headless execution failed for: {instruction}")
             result["status"] = "error"
             result["error"] = str(e)
             result["output"] = f"❌ Execution Error: {e}"
-        
+
         return result
-    
+
     def _route_slash_command(self, cmd_str: str) -> Tuple[Any, str]:
         """Maps a slash command to its internal engine function."""
         cmd = cmd_str[1:].lower().strip()
         base = cmd.split(":")[0].split()[0]
-        
+
         # Core Command Map
         if base == "infra":
             from .infrastructure import InfrastructureStack
             stack = InfrastructureStack()
             return stack.get_layer_summary(), f"Infra Health: {stack.get_health_score()}%"
-            
+
         if base == "moats":
             from .moat_engine import get_moat_engine
             moat = get_moat_engine()
             return moat.calculate_switching_cost(), f"Moat Strength: {moat.get_aggregate_strength()}%"
-            
+
         if base == "revenue" or base == "cash":
             from .cashflow_engine import get_cashflow_engine
             cf = get_cashflow_engine()
             return {"arr": cf.get_total_arr(), "progress": cf.get_progress_percent()}, f"ARR: ${cf.get_total_arr():,.0f}"
-            
+
         if base == "agentic":
             from .unified_dashboard import AgenticDashboard
             stats = AgenticDashboard().get_stats()
@@ -107,17 +107,17 @@ class HeadlessMode:
             return {"tests": "passed", "count": 12}, "All validation tests passed ✅"
 
         return None, f"Command /{base} not supported in headless mode."
-    
+
     def _process_natural_prompt(self, prompt: str) -> Tuple[Any, str]:
         """Heuristic-based intent detection for raw text input."""
         p = prompt.lower()
-        
+
         if "quote" in p or "báo giá" in p:
             return {"type": "mock_quote", "val": 5000}, "Generated mock quote for prospect: $5,000"
-            
+
         if "status" in p or "tình hình" in p:
             return self._route_slash_command("/agentic")
-            
+
         return {"input": prompt}, f"Processed: {prompt}"
 
 
@@ -135,18 +135,18 @@ def main():
     parser = argparse.ArgumentParser(description="Agency OS Headless Mode")
     parser.add_argument("command", nargs="?", help="Instruction to execute")
     parser.add_argument("-f", "--format", choices=["text", "json"], default="text")
-    
+
     args = parser.parse_args()
-    
+
     # Support stdin piping
     instr = args.command
     if not instr and not sys.stdin.isatty():
         instr = sys.stdin.read().strip()
-        
+
     if not instr:
         parser.print_help()
         return
-        
+
     print(run_headless_mission(instr, args.format))
 
 

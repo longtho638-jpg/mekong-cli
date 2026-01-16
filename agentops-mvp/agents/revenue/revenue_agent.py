@@ -32,7 +32,7 @@ class RevenueAgent(BaseAgent):
     - Chapter 2 (Tác Chiến): Efficient resource management = automated billing
     - Chapter 5 (Thế Trận): Timing = payment reminders at optimal time
     """
-    
+
     def __init__(self, redis_client: redis.Redis):
         config = AgentConfig(
             name="revenue-agent",
@@ -41,7 +41,7 @@ class RevenueAgent(BaseAgent):
             temperature=0.3  # Low temperature for precise financial calculations
         )
         super().__init__(config, redis_client)
-        
+
     def _get_system_prompt(self) -> str:
         return """You are a Revenue Operations Agent for a venture capital agency.
 
@@ -73,7 +73,7 @@ Output format: Structured JSON with clear actions and amounts."""
             self._calculate_success_fee_tool(),
             self._generate_revenue_report_tool()
         ]
-    
+
     @staticmethod
     @tool
     def _create_invoice_tool():
@@ -99,7 +99,7 @@ Output format: Structured JSON with clear actions and amounts."""
                 Invoice details with ID and PDF link
             """
             invoice_id = f"INV-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
-            
+
             invoice = {
                 "invoice_id": invoice_id,
                 "client_name": client_name,
@@ -112,15 +112,15 @@ Output format: Structured JSON with clear actions and amounts."""
                 "notes": notes,
                 "pdf_url": f"/invoices/{invoice_id}.pdf"
             }
-            
+
             # TODO: Save to Supabase
             # TODO: Generate PDF
             # TODO: Send email to client
-            
+
             return invoice
-        
+
         return create_invoice
-    
+
     @staticmethod
     @tool
     def _check_payment_status_tool():
@@ -137,7 +137,7 @@ Output format: Structured JSON with clear actions and amounts."""
             """
             # TODO: Query Supabase for invoice
             # TODO: Check payment processor (Stripe/PayOS)
-            
+
             # Mock response for now
             return {
                 "invoice_id": invoice_id,
@@ -146,9 +146,9 @@ Output format: Structured JSON with clear actions and amounts."""
                 "days_overdue": 0,
                 "last_reminder_sent": None
             }
-        
+
         return check_payment_status
-    
+
     @staticmethod
     @tool
     def _send_payment_reminder_tool():
@@ -176,7 +176,7 @@ Output format: Structured JSON with clear actions and amounts."""
                 tone = "firm"
             else:
                 tone = "urgent"
-            
+
             reminder = {
                 "invoice_id": invoice_id,
                 "sent_to": client_email,
@@ -185,14 +185,14 @@ Output format: Structured JSON with clear actions and amounts."""
                 "days_overdue": days_overdue,
                 "message": f"Friendly reminder: Invoice {invoice_id} is {days_overdue} days overdue."
             }
-            
+
             # TODO: Send actual email via SendGrid/AWS SES
             # TODO: Log reminder in Supabase
-            
+
             return reminder
-        
+
         return send_payment_reminder
-    
+
     @staticmethod
     @tool
     def _calculate_success_fee_tool():
@@ -216,7 +216,7 @@ Output format: Structured JSON with clear actions and amounts."""
                 Success fee calculation details
             """
             fee_amount = funding_amount * (fee_percentage / 100)
-            
+
             calculation = {
                 "startup_name": startup_name,
                 "funding_round": funding_round,
@@ -226,14 +226,14 @@ Output format: Structured JSON with clear actions and amounts."""
                 "calculated_at": datetime.now().isoformat(),
                 "invoice_to_generate": True
             }
-            
+
             # TODO: Auto-generate invoice for this success fee
             # TODO: Notify team about successful funding
-            
+
             return calculation
-        
+
         return calculate_success_fee
-    
+
     @staticmethod
     @tool
     def _generate_revenue_report_tool():
@@ -255,7 +255,7 @@ Output format: Structured JSON with clear actions and amounts."""
             # TODO: Query all invoices for the month
             # TODO: Calculate totals by category
             # TODO: Compare to previous months
-            
+
             report = {
                 "period": f"{year}-{month}",
                 "total_revenue": 0,
@@ -271,22 +271,22 @@ Output format: Structured JSON with clear actions and amounts."""
                 "collection_rate": 0,
                 "generated_at": datetime.now().isoformat()
             }
-            
+
             return report
-        
+
         return generate_revenue_report
 
 
 # Example usage / testing
 if __name__ == "__main__":
     import asyncio
-    
+
     # Initialize Redis (mock for testing)
     redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
-    
+
     # Create Revenue Agent
     agent = RevenueAgent(redis_client)
-    
+
     # Example task: Generate invoice for retainer
     async def test_invoice_generation():
         task = AgentTask(
@@ -301,9 +301,9 @@ if __name__ == "__main__":
                 "notes": "Monthly retainer - December 2024"
             }
         )
-        
+
         result = await agent.execute_task(task)
         print(f"Invoice created: {result.result}")
-    
+
     # Run test
     asyncio.run(test_invoice_generation())

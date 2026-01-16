@@ -73,13 +73,13 @@ class CalendarSync:
     
     Orchestrates events across multiple calendar providers.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.connections: Dict[str, CalendarConnection] = {}
         self.events: List[CalendarEvent] = []
         logger.info(f"Calendar Sync initialized for {agency_name}")
-    
+
     def _validate_email(self, email: str) -> bool:
         """Basic email format validation."""
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -99,7 +99,7 @@ class CalendarSync:
         self.connections[conn.id] = conn
         logger.info(f"Connected {provider.value} calendar for {email}")
         return conn
-    
+
     def add_event(
         self,
         title: str,
@@ -121,15 +121,15 @@ class CalendarSync:
         self.events.append(event)
         logger.info(f"Added event: {title} ({start.strftime('%Y-%m-%d %H:%M')})")
         return event
-    
+
     def sync_all(self) -> Dict[str, int]:
         """Synchronize all pending events with connected providers."""
         results = {"synced": 0, "conflicts": 0, "failed": 0}
-        
+
         # Detect conflicts before syncing
         conflicts = self.detect_conflicts()
         conflict_event_ids = {e.id for pair in conflicts for e in pair}
-        
+
         for event in self.events:
             if event.id in conflict_event_ids:
                 event.sync_status = SyncStatus.CONFLICT
@@ -140,22 +140,22 @@ class CalendarSync:
                 # Simulate API call to provider
                 event.sync_status = SyncStatus.SYNCED
                 results["synced"] += 1
-        
+
         sync_time = datetime.now()
         for conn in self.connections.values():
             if conn.connected:
                 conn.last_sync = sync_time
                 conn.events_synced = results["synced"]
-        
+
         logger.info(f"Sync complete: {results['synced']} synced, {results['conflicts']} conflicts")
         return results
-    
+
     def detect_conflicts(self) -> List[Tuple[CalendarEvent, CalendarEvent]]:
         """Identify overlapping events."""
         conflicts = []
         # Sort by start time for efficient detection
         sorted_events = sorted(self.events, key=lambda x: x.start)
-        
+
         for i, e1 in enumerate(sorted_events):
             for e2 in sorted_events[i+1:]:
                 # If next event starts before current one ends, it's a conflict
@@ -164,15 +164,15 @@ class CalendarSync:
                 else:
                     # Since it's sorted, no more overlaps for e1 are possible
                     break
-        
+
         return conflicts
-    
+
     def format_dashboard(self) -> str:
         """Render Calendar Sync Dashboard."""
         connected_count = sum(1 for c in self.connections.values() if c.connected)
         total_events = len(self.events)
         conflict_count = len(self.detect_conflicts())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📅 CALENDAR SYNC{' ' * 42}║",
@@ -181,43 +181,43 @@ class CalendarSync:
             "║  🔗 CONNECTED CALENDARS                                   ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         provider_icons = {
             CalendarProvider.GOOGLE: "📆 Google",
             CalendarProvider.OUTLOOK: "📧 Outlook",
             CalendarProvider.APPLE: "🍎 Apple",
             CalendarProvider.INTERNAL: "🏢 Internal"
         }
-        
+
         for conn in self.connections.values():
             icon = provider_icons.get(conn.provider, "📅")
             status = "🟢" if conn.connected else "🔴"
             sync_time = conn.last_sync.strftime("%H:%M") if conn.last_sync else "Never"
             email_display = (conn.email[:23] + '..') if len(conn.email) > 25 else conn.email
-            
+
             lines.append(f"║  {status} {icon:<12} │ {email_display:<25} │ {sync_time:<5}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📋 UPCOMING EVENTS                                       ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         # Show top 4 upcoming events
         sorted_events = sorted(self.events, key=lambda x: x.start)[:4]
         for event in sorted_events:
             time_str = event.start.strftime("%m/%d %H:%M")
             status_map = {
-                SyncStatus.SYNCED: "✅", 
-                SyncStatus.PENDING: "⏳", 
+                SyncStatus.SYNCED: "✅",
+                SyncStatus.PENDING: "⏳",
                 SyncStatus.CONFLICT: "⚠️",
                 SyncStatus.FAILED: "❌"
             }
             s_icon = status_map.get(event.sync_status, "❓")
             title_display = (event.title[:32] + '..') if len(event.title) > 34 else event.title
-            
+
             lines.append(f"║    {s_icon} {time_str} - {title_display:<35}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [🔄 Sync Now]  [➕ Add Event]  [⚙️ Settings]              ║",
@@ -225,7 +225,7 @@ class CalendarSync:
             f"║  🏯 {self.agency_name[:40]:<40} - Scheduling!         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -233,28 +233,28 @@ class CalendarSync:
 if __name__ == "__main__":
     print("📅 Initializing Calendar Sync...")
     print("=" * 60)
-    
+
     try:
         sync = CalendarSync("Saigon Digital Hub")
-        
+
         # Connect calendars
         sync.connect(CalendarProvider.GOOGLE, "team@agency.com")
         sync.connect(CalendarProvider.OUTLOOK, "sales@agency.com")
-        
+
         # Add events
         now = datetime.now()
         sync.add_event("Client Kickoff", now + timedelta(hours=2), now + timedelta(hours=3))
         sync.add_event("Strategy Review", now + timedelta(hours=4), now + timedelta(hours=5))
-        
+
         # Add a conflict
         sync.add_event("Overlapping Meet", now + timedelta(hours=2, minutes=30), now + timedelta(hours=3, minutes=30))
-        
+
         sync.add_event("Team Standup", now + timedelta(days=1), now + timedelta(days=1, hours=1))
-        
+
         # Sync
         sync.sync_all()
-        
+
         print("\n" + sync.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Runtime Error: {e}")

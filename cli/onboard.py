@@ -48,7 +48,7 @@ def ask_question(question: str, example: str) -> str:
     print(f"\n{question}")
     print(f"   💡 Example: {example}")
     print()
-    
+
     while True:
         answer = input("   ▶ Your answer: ").strip()
         if answer:
@@ -68,17 +68,17 @@ def save_dna(dna: AgencyDNA, plan: str) -> str:
     # Create output directory
     output_dir = os.path.join(os.path.dirname(__file__), "generated")
     os.makedirs(output_dir, exist_ok=True)
-    
+
     # Create filename
     safe_name = dna.agency_name.lower().replace(" ", "_")
     timestamp = datetime.now().strftime("%Y%m%d")
     filename = f"{safe_name}_dna_{timestamp}.md"
     filepath = os.path.join(output_dir, filename)
-    
+
     # Write plan
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(plan)
-    
+
     return filepath
 
 
@@ -89,7 +89,7 @@ def show_next_steps(dna: AgencyDNA, filepath: str):
 ║  🎉 CONGRATULATIONS! YOUR AGENCY DNA IS READY!           ║
 ╚═══════════════════════════════════════════════════════════╝
 """)
-    
+
     print("   📄 Business Plan saved to:")
     print(f"      {filepath}")
     print()
@@ -115,35 +115,35 @@ def show_next_steps(dna: AgencyDNA, filepath: str):
 def main():
     """Main onboarding flow."""
     print_banner()
-    
+
     print("Welcome to Agency OS! 👋")
     print("Let's create your Agency DNA in just 5 minutes.")
     print("Answer 9 simple questions and get a full business plan.")
     print()
     input("Press ENTER to start...")
-    
+
     # Initialize generator
     generator = BusinessPlanGenerator()
     questions = generator.get_questions()
-    
+
     # Ask each question
     for i, q in enumerate(questions, 1):
         show_progress(i - 1, len(questions))
         answer = ask_question(q["question"], q["example"])
         generator.answer_question(q["id"], answer)
-    
+
     show_progress(len(questions), len(questions))
-    
+
     print("\n\n🔄 Generating your Agency DNA...")
     print("   This may take a moment...")
-    
+
     # Generate DNA
     dna = generator.generate_dna()
     plan = generator.format_full_plan(dna)
-    
+
     # Save to file
     filepath = save_dna(dna, plan)
-    
+
     # Show success
     show_next_steps(dna, filepath)
 

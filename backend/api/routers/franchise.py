@@ -15,7 +15,7 @@ def get_franchise_stats():
     """Get franchise network stats."""
     if not FRANCHISE_AVAILABLE:
         raise HTTPException(500, "Franchise not available")
-    
+
     return franchise.get_network_stats()
 
 @router.get("/hq-revenue")
@@ -23,7 +23,7 @@ def get_hq_revenue():
     """Get HQ revenue from franchises."""
     if not FRANCHISE_AVAILABLE:
         raise HTTPException(500, "Franchise not available")
-    
+
     return franchise.get_hq_revenue()
 
 @router.get("/territories")
@@ -31,11 +31,11 @@ def get_territories(country: Optional[str] = None):
     """Get franchise territories."""
     if not FRANCHISE_AVAILABLE:
         raise HTTPException(500, "Franchise not available")
-    
+
     territories = list(franchise.territories.values())
     if country:
         territories = [t for t in territories if t.country == country]
-    
+
     return [
         {
             "id": t.id,
@@ -53,7 +53,7 @@ def get_franchisees():
     """Get all franchisees."""
     if not FRANCHISE_AVAILABLE:
         raise HTTPException(500, "Franchise not available")
-    
+
     return [
         {
             "id": f.id,

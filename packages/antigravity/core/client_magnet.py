@@ -51,7 +51,7 @@ class Lead:
     budget: float = 0.0
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
-    
+
     def is_hot(self) -> bool:
         """Check if lead is hot (score >= 70)."""
         return self.score >= 70
@@ -80,11 +80,11 @@ class ClientMagnet:
         magnet.qualify_lead(lead, budget=5000, score=85)
         client = magnet.convert_to_client(lead)
     """
-    
+
     def __init__(self):
         self.leads: List[Lead] = []
         self.clients: List[Client] = []
-    
+
     def add_lead(
         self,
         name: str,
@@ -103,7 +103,7 @@ class ClientMagnet:
         )
         self.leads.append(lead)
         return lead
-    
+
     def qualify_lead(
         self,
         lead: Lead,
@@ -115,15 +115,15 @@ class ClientMagnet:
         lead.score = score
         lead.status = LeadStatus.QUALIFIED
         return lead
-    
+
     def get_hot_leads(self) -> List[Lead]:
         """Get all hot leads (score >= 70)."""
         return [l for l in self.leads if l.is_hot()]
-    
+
     def convert_to_client(self, lead: Lead) -> Client:
         """Convert a qualified lead to client."""
         lead.status = LeadStatus.WON
-        
+
         client = Client(
             name=lead.name,
             company=lead.company,
@@ -132,18 +132,18 @@ class ClientMagnet:
         )
         self.clients.append(client)
         return client
-    
+
     def get_pipeline_value(self) -> float:
         """Calculate total pipeline value."""
         return sum(l.budget for l in self.leads if l.status not in [LeadStatus.WON, LeadStatus.LOST])
-    
+
     def get_conversion_rate(self) -> float:
         """Calculate conversion rate (won / total closed)."""
         won = len([l for l in self.leads if l.status == LeadStatus.WON])
         lost = len([l for l in self.leads if l.status == LeadStatus.LOST])
         total = won + lost
         return (won / total * 100) if total > 0 else 0.0
-    
+
     def get_stats(self) -> Dict:
         """Get magnet statistics."""
         return {

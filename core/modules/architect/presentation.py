@@ -4,15 +4,15 @@ Architect Module - Presentation
 from .entities import ArchitectureBlueprint, ProjectProfile
 
 class ArchitectPresenter:
-    
+
     @staticmethod
     def display_blueprint(profile: ProjectProfile, blueprint: ArchitectureBlueprint) -> str:
         """Friendly output for the user."""
-        
+
         icon = "🏰"
         if "Simple" in blueprint.type.value: icon = "⛺"
         if "Clean" in blueprint.type.value: icon = "🏡"
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  {icon} ARCHITECT AGENT - BLUEPRINT GENERATED{' '*16}║",
@@ -24,10 +24,10 @@ class ArchitectPresenter:
             "║  📋 RECOMMENDED STRUCTURE:                                ",
             "║  ───────────────────────────────────────────────────────  ║"
         ]
-        
+
         for line in blueprint.folder_structure.strip().split('\n'):
             lines.append(f"║    {line:<51}    ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  💡 HOW TO VIBE CODE:                                     ",
@@ -38,5 +38,5 @@ class ArchitectPresenter:
             blueprint.system_prompt_snippet,
             "--- ✂️  END COPY ✂️  ---"
         ])
-        
+
         return "\n".join(lines)

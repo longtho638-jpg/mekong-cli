@@ -16,17 +16,17 @@ class ArchitectService:
         Heuristic analysis of the user request to determine complexity.
         """
         user_request_lower = user_request.lower()
-        
+
         # 1. Detect Keywords
         keywords = {
             ArchitectureType.HEXAGONAL_DDD: ["finance", "bank", "core", "microservice", "scale", "enterprise", "audit", "money"],
             ArchitectureType.CLEAN_ARCHITECTURE: ["saas", "platform", "crm", "dashboard", "users", "auth", "subscription"],
             ArchitectureType.SIMPLE_MODULAR: ["landing", "demo", "quick", "script", "bot", "tool", "mvp", "prototype"]
         }
-        
+
         detected = []
         score = 3  # Base score
-        
+
         for arch, keys in keywords.items():
             for key in keys:
                 if key in user_request_lower:
@@ -35,7 +35,7 @@ class ArchitectService:
                         score += 3
                     elif arch == ArchitectureType.CLEAN_ARCHITECTURE:
                         score += 1
-        
+
         # 2. Decide Architecture
         if score >= 8:
             arch = ArchitectureType.HEXAGONAL_DDD
@@ -46,7 +46,7 @@ class ArchitectService:
         else:
             arch = ArchitectureType.SIMPLE_MODULAR
             reason = "Low complexity or simple tool detected."
-            
+
         return ProjectProfile(
             raw_request=user_request,
             complexity_score=score,
@@ -72,7 +72,7 @@ src/
                 "Entities must be Plain Objects (no decorators).",
                 "Use Repositories for data access (Interfaces in Domain, Impl in Infra)."
             ]
-            
+
         elif profile.recommended_arch == ArchitectureType.CLEAN_ARCHITECTURE:
             structure = """
 src/
@@ -87,7 +87,7 @@ src/
                 "Separate Logic (Use Cases) from UI (Controllers).",
                 "Keep core independent of frameworks."
             ]
-            
+
         else:
             structure = """
 src/

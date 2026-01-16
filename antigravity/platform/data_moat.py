@@ -70,14 +70,14 @@ class DataMoat:
     The core intelligence engine that improves as more agencies join the network.
     Synchronizes local success patterns with global benchmarks.
     """
-    
+
     def __init__(self):
         self.insights: List[Insight] = []
         self.benchmarks: Dict[str, Benchmark] = {}
         self.success_data: List[Dict] = []
         self._next_id = 1
         self.db = get_db()
-    
+
     def record_success(
         self,
         niche: str,
@@ -99,19 +99,19 @@ class DataMoat:
             "timestamp": datetime.now().isoformat()
         }
         self.success_data.append(entry)
-        
+
         # Update local benchmarks
         if niche not in self.benchmarks:
             self.benchmarks[niche] = Benchmark(niche=niche)
-        
+
         benchmark = self.benchmarks[niche]
         benchmark.sample_size += 1
         benchmark.last_updated = datetime.now()
-        
+
         # Update top content types (80+ score threshold)
         if performance_score >= 80 and content_type not in benchmark.top_content_types:
             benchmark.top_content_types.append(content_type)
-            
+
         # Optional: Sync to Supabase usage_logs or dedicated intelligence table
         if self.db:
             try:
@@ -120,7 +120,7 @@ class DataMoat:
                 pass
             except Exception as e:
                 logger.error(f"Failed to sync data moat entry: {e}")
-    
+
     def add_insight(
         self,
         insight_type: InsightType,
@@ -141,17 +141,17 @@ class DataMoat:
         self.insights.append(insight)
         self._next_id += 1
         return insight
-    
+
     def get_best_practices(self, niche: str) -> List[Dict]:
         """
         Derive best practices for a niche based on accumulated success data.
         Returns sorted list of tips with confidence scores.
         """
         niche_data = [d for d in self.success_data if d["niche"] == niche]
-        
+
         if not niche_data:
             return [{"tip": "Insufficient data for this niche. Start recording successes to build intelligence.", "confidence": 0}]
-        
+
         # Group by content type
         content_stats = {}
         for d in niche_data:
@@ -159,15 +159,15 @@ class DataMoat:
             if ct not in content_stats:
                 content_stats[ct] = []
             content_stats[ct].append(d["score"])
-        
+
         practices = []
         for ct, scores in content_stats.items():
             avg_score = sum(scores) / len(scores)
             count = len(scores)
-            
+
             # Confidence grows with sample size (max 100)
             confidence = min(count * 15, 100)
-            
+
             practices.append({
                 "tip": f"✨ {ct.upper()} content is {avg_score:.0f}% effective in this niche.",
                 "content_type": ct,
@@ -175,30 +175,30 @@ class DataMoat:
                 "confidence": confidence,
                 "sample_size": count
             })
-        
+
         # Sort by average performance
         practices.sort(key=lambda x: x["avg_score"], reverse=True)
         return practices
-    
+
     def get_benchmark(self, niche: str) -> Optional[Benchmark]:
         """Retrieve benchmark data for a specific niche."""
         return self.benchmarks.get(niche)
-    
+
     def get_viral_patterns(self, niche: str) -> List[Dict]:
         """Identify specific patterns that consistently hit high scores (90+)."""
-        viral_entries = [d for d in self.success_data 
+        viral_entries = [d for d in self.success_data
                         if d["niche"] == niche and d["score"] >= 90]
-        
+
         if not viral_entries:
             return []
-            
+
         return [{
             "pattern": "High Engagement Outlier",
             "frequency": len(viral_entries),
             "avg_viral_score": sum(d["score"] for d in viral_entries) / len(viral_entries),
             "top_media": list(set(d["content_type"] for d in viral_entries))
         }]
-    
+
     def get_moat_strength(self) -> Dict[str, Any]:
         """
         Calculate the 'strength' of the data moat.
@@ -206,23 +206,23 @@ class DataMoat:
         """
         total_points = len(self.success_data)
         niches = len(self.benchmarks)
-        
+
         # Simple score: 1% per point up to 100%
         raw_score = min(total_points, 100)
-        
+
         # Multipliers
         variety_bonus = min(niches * 10, 50) # Bonus for variety
-        
+
         final_score = min(raw_score + variety_bonus, 100)
-        
+
         return {
             "strength_score": final_score,
             "data_points": total_points,
             "covered_niches": niches,
             "insights_count": len(self.insights),
             "defensibility": (
-                "🏯 CASTLE (High)" if final_score >= 70 else 
-                "🛡️ FORT (Medium)" if final_score >= 40 else 
+                "🏯 CASTLE (High)" if final_score >= 70 else
+                "🛡️ FORT (Medium)" if final_score >= 40 else
                 "🪵 STOCKADE (Low)"
             )
         }
@@ -242,7 +242,7 @@ class DataMoat:
             if isinstance(obj, (datetime, Enum)):
                 return str(obj)
             return obj
-            
+
         return json.dumps(state, default=serializer, indent=2)
 
 

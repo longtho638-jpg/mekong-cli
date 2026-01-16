@@ -35,17 +35,17 @@ def print_banner():
 def cmd_start():
     """Bootstrap a new agency (5-minute setup)."""
     from antigravity.core.agency_dna import AgencyDNA, Tone, PricingTier
-    
+
     print("\n🚀 BOOTSTRAP YOUR AGENCY")
     print("-" * 50)
-    
+
     # Quick setup
     print("\n📝 Quick Setup (Press Enter for defaults)\n")
-    
+
     name = input("   Agency name [My Agency]: ").strip() or "My Agency"
     niche = input("   Niche [Digital Marketing]: ").strip() or "Digital Marketing"
     location = input("   Location [Vietnam]: ").strip() or "Vietnam"
-    
+
     # Tone selection
     print("\n   Tone:")
     print("   1. Miền Tây (Southern)")
@@ -54,10 +54,10 @@ def cmd_start():
     print("   4. Friendly (English)")
     print("   5. Professional (English)")
     tone_choice = input("   Select [1]: ").strip() or "1"
-    
+
     tones = {"1": Tone.MIEN_TAY, "2": Tone.MIEN_BAC, "3": Tone.MIEN_TRUNG, "4": Tone.FRIENDLY, "5": Tone.PROFESSIONAL}
     tone = tones.get(tone_choice, Tone.MIEN_TAY)
-    
+
     # Create DNA
     dna = AgencyDNA(
         name=name,
@@ -66,17 +66,17 @@ def cmd_start():
         tone=tone,
         tier=PricingTier.STARTER
     )
-    
+
     # Add default services
     dna.add_service("Tư vấn chiến lược", f"Tư vấn chiến lược {niche}", 500)
     dna.add_service("Gói cơ bản", f"Dịch vụ {niche} cơ bản", 1000)
     dna.add_service("Gói chuyên nghiệp", f"Dịch vụ {niche} chuyên nghiệp", 2500)
-    
+
     # Save DNA
     dna_path = Path(".antigravity/agency_dna.json")
     dna_path.parent.mkdir(parents=True, exist_ok=True)
     dna_path.write_text(json.dumps(dna.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
-    
+
     print(f"\n✅ Agency '{name}' created!")
     print("   📁 Config saved: .antigravity/agency_dna.json")
     print(f"   🏷️ Tagline: {dna.get_tagline()}")
@@ -88,17 +88,17 @@ def cmd_start():
 def cmd_client_add(name: str):
     """Add a new client."""
     from antigravity.core.client_magnet import ClientMagnet, LeadSource
-    
+
     print(f"\n➕ Adding client: {name}")
     print("-" * 50)
-    
+
     magnet = ClientMagnet()
-    
+
     # Get optional info
     company = input("   Company []: ").strip() or name
     email = input("   Email []: ").strip()
     phone = input("   Phone []: ").strip()
-    
+
     lead = magnet.add_lead(
         name=name,
         company=company,
@@ -106,13 +106,13 @@ def cmd_client_add(name: str):
         phone=phone,
         source=LeadSource.REFERRAL
     )
-    
+
     # Auto-qualify with default score
     magnet.qualify_lead(lead, budget=1000, score=70)
-    
+
     # Convert to client
     magnet.convert_to_client(lead)
-    
+
     print(f"\n✅ Client '{name}' added!")
     print(f"   🏢 Company: {company}")
     print(f"   📧 Email: {email or 'N/A'}")
@@ -123,27 +123,27 @@ def cmd_client_add(name: str):
 def cmd_content_generate(count: int = 30):
     """Generate content ideas."""
     from antigravity.core.content_factory import ContentFactory
-    
+
     print(f"\n🎨 Generating {count} content ideas...")
     print("-" * 50)
-    
+
     # Load DNA for niche
     niche = "Digital Marketing"
     dna_path = Path(".antigravity/agency_dna.json")
     if dna_path.exists():
         dna_data = json.loads(dna_path.read_text(encoding="utf-8"))
         niche = dna_data.get("niche", niche)
-    
+
     factory = ContentFactory(niche=niche)
     ideas = factory.generate_ideas(count)
-    
+
     print(f"\n📝 Top {min(10, count)} Ideas (by virality score):\n")
     for i, idea in enumerate(ideas[:10], 1):
         print(f"   {i:2}. [{idea.score:3}] {idea}")
-    
+
     print(f"\n✅ Generated {len(ideas)} ideas for '{niche}'")
     print(f"   📊 Avg virality score: {sum(i.score for i in ideas) / len(ideas):.0f}")
-    
+
     # Save ideas
     ideas_path = Path(".antigravity/content_ideas.json")
     ideas_path.parent.mkdir(parents=True, exist_ok=True)
@@ -156,7 +156,7 @@ def cmd_stats():
     """Show dashboard stats."""
     print("\n📊 ANTIGRAVITYKIT DASHBOARD")
     print("-" * 50)
-    
+
     # Load DNA
     dna_path = Path(".antigravity/agency_dna.json")
     if dna_path.exists():
@@ -167,7 +167,7 @@ def cmd_stats():
         print(f"   📦 Services: {len(dna_data.get('services', []))}")
     else:
         print("\n   ⚠️ No agency configured. Run `antigravity start`")
-    
+
     # Load content ideas
     ideas_path = Path(".antigravity/content_ideas.json")
     if ideas_path.exists():
@@ -175,7 +175,7 @@ def cmd_stats():
         print(f"\n   📝 Content Ideas: {len(ideas)}")
         avg_score = sum(i.get('score', 0) for i in ideas) / len(ideas) if ideas else 0
         print(f"   📊 Avg Virality: {avg_score:.0f}/100")
-    
+
     print("\n" + "=" * 50)
     print("   🏯 'Không đánh mà thắng' - Win Without Fighting")
 
@@ -183,12 +183,12 @@ def cmd_stats():
 def cmd_vibe_code(plan_path: str = None):
     """Run VIBE 6-step development workflow."""
     from antigravity.core.vibe_workflow import VIBEWorkflow
-    
+
     print("\n🚀 VIBE CODE - 6-Step Development Workflow")
     print("-" * 50)
-    
+
     workflow = VIBEWorkflow()
-    
+
     # Step 0: Plan Detection
     plan = workflow.detect_plan(plan_path)
     if plan:
@@ -196,11 +196,11 @@ def cmd_vibe_code(plan_path: str = None):
     else:
         print("⚠️ No plan found. Create one with: vibe:plan")
         return
-    
+
     # Step 1: Analysis
     tasks = workflow.analyze_plan()
     print(f"✅ Step 1: Found {len(tasks)} tasks")
-    
+
     workflow.print_status()
     print("\n🏯 Run /code in your IDE to continue the workflow")
 
@@ -208,21 +208,21 @@ def cmd_vibe_code(plan_path: str = None):
 def cmd_vibe_plan(title: str = "New Feature"):
     """Create a new implementation plan."""
     from antigravity.core.vibe_ide import VIBEIDE
-    
+
     print("\n📝 VIBE PLAN - Create Implementation Plan")
     print("-" * 50)
-    
+
     ide = VIBEIDE()
-    
+
     description = input("   Description []: ").strip() or f"Implementation plan for {title}"
     priority = input("   Priority [P2]: ").strip() or "P2"
-    
+
     plan_file = ide.create_plan(
         title=title,
         description=description,
         priority=priority
     )
-    
+
     print(f"\n✅ Plan created: {plan_file}")
     print("   Next: Edit the plan and run vibe:code")
 
@@ -231,10 +231,10 @@ def cmd_vibe_status():
     """Show VIBE IDE dashboard."""
     from antigravity.core.vibe_ide import VIBEIDE
     from antigravity.core.vibe_orchestrator import VIBEOrchestrator
-    
+
     ide = VIBEIDE()
     orchestrator = VIBEOrchestrator()
-    
+
     ide.print_dashboard()
     orchestrator.print_status()
 
@@ -279,13 +279,13 @@ def cmd_help():
 def main():
     """Main AntigravityKit CLI entry point."""
     print_banner()
-    
+
     if len(sys.argv) < 2:
         cmd_help()
         return
-    
+
     command = sys.argv[1].lower()
-    
+
     # Route commands
     if command == "start":
         cmd_start()

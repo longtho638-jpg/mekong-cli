@@ -92,14 +92,14 @@ class NonprofitMarketing:
     
     Orchestrates cause-driven marketing initiatives and fundraising tracking.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.clients: Dict[str, NonprofitClient] = {}
         self.campaigns: Dict[str, DonationCampaign] = {}
         logger.info(f"Nonprofit Marketing system initialized for {agency_name}")
         self._init_defaults()
-    
+
     def _init_defaults(self):
         """Seed the system with sample non-profit data."""
         logger.info("Loading demo non-profit data...")
@@ -109,7 +109,7 @@ class NonprofitMarketing:
             self.update_campaign_progress(camp.id, 35000.0, 150)
         except Exception as e:
             logger.error(f"Demo data error: {e}")
-    
+
     def add_client(
         self,
         name: str,
@@ -129,7 +129,7 @@ class NonprofitMarketing:
         self.clients[client.id] = client
         logger.info(f"Nonprofit client added: {name} ({category.value})")
         return client
-    
+
     def create_campaign(
         self,
         client_id: str,
@@ -150,32 +150,32 @@ class NonprofitMarketing:
         )
         self.campaigns[campaign.id] = campaign
         self.clients[client_id].campaigns.append(campaign.id)
-        
+
         logger.info(f"Campaign created: {name} (Goal: ${goal:,.0f})")
         return campaign
-    
+
     def update_campaign_progress(self, campaign_id: str, raised: float, donors: int) -> bool:
         """Update fundraising metrics for a campaign."""
         if campaign_id not in self.campaigns: return False
-        
+
         camp = self.campaigns[campaign_id]
         camp.raised = raised
         camp.donors = donors
         camp.status = CampaignStatus.ACTIVE
-        
+
         # Update client aggregated stats
         client = self.clients.get(camp.client_id)
         if client:
             client.total_raised = sum(c.raised for c in self.campaigns.values() if c.client_id == client.id)
-            
+
         logger.info(f"Campaign {camp.name} updated: ${raised:,.0f} raised")
         return True
-    
+
     def format_dashboard(self) -> str:
         """Render the Nonprofit Marketing Dashboard."""
         total_raised = sum(c.raised for c in self.campaigns.values())
         active_camps = [c for c in self.campaigns.values() if c.status == CampaignStatus.ACTIVE]
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🙏 NONPROFIT MARKETING DASHBOARD{' ' * 25}║",
@@ -184,28 +184,28 @@ class NonprofitMarketing:
             "║  🏛️ ACTIVE CLIENTS                                        ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         cat_icons = {
             NonprofitCategory.RELIGIOUS: "⛪", NonprofitCategory.CHARITY: "💝",
             NonprofitCategory.EDUCATION: "📚", NonprofitCategory.ENVIRONMENT: "🌳"
         }
-        
+
         for c in list(self.clients.values())[:4]:
             icon = cat_icons.get(c.category, "🙏")
             name_disp = (c.name[:20] + '..') if len(c.name) > 22 else c.name
             lines.append(f"║  {icon} {name_disp:<22} │ ${c.monthly_retainer:>8,.0f}/mo │ ${c.total_raised:>8,.0f} raised ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  📊 CAMPAIGN PERFORMANCE                                  ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         for camp in active_camps[:3]:
             prog = (camp.raised / camp.goal) * 100
             bar = "█" * int(prog / 10) + "░" * (10 - int(prog / 10))
             lines.append(f"║    🎯 {camp.name[:18]:<18} │ {bar} │ {prog:>3.0f}% (${camp.raised:,.0f}) ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [🏛️ New Client]  [📢 Campaign]  [💰 Donation]  [⚙️ Setup] ║",
@@ -213,7 +213,7 @@ class NonprofitMarketing:
             f"║  🏯 {self.agency_name[:40]:<40} - Impact!            ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -221,7 +221,7 @@ class NonprofitMarketing:
 if __name__ == "__main__":
     print("🙏 Initializing Nonprofit System...")
     print("=" * 60)
-    
+
     try:
         np_system = NonprofitMarketing("Saigon Digital Hub")
         print("\n" + np_system.format_dashboard())

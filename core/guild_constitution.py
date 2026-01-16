@@ -52,17 +52,17 @@ class GuildConstitution:
     
     Manages membership governance, tier progression, and trust-based rewards.
     """
-    
+
     TIER_CONFIG = {
         GuildTier.LARVAE: {'min': 0, 'vote': False, 'share': 0.0, 'icon': '🥚', 'label': 'Larvae'},
         GuildTier.WORKER: {'min': 50, 'vote': True, 'share': 0.10, 'icon': '🐝', 'label': 'Worker Bee'},
         GuildTier.QUEEN: {'min': 85, 'vote': True, 'share': 0.20, 'icon': '👑', 'label': 'Queen Bee'}
     }
-    
+
     def __init__(self):
         self.members: Dict[str, GuildMember] = {}
         logger.info("Guild Constitution initialized.")
-    
+
     async def apply_membership(self, agency_name: str, email: str, web: str) -> str:
         """Process a new guild application."""
         if not agency_name or not email:
@@ -70,27 +70,27 @@ class GuildConstitution:
 
         logger.info(f"New application received: {agency_name}")
         return f"🏰 Application for {agency_name} is PENDING REVIEW."
-    
+
     def calculate_trust(self, member: GuildMember) -> int:
         """Derive trust score from contributions and history."""
         # Weighted calculation logic
         base = 50
         bonus = (member.contributions_count * 2) + (member.referrals_count * 5)
         return min(100, base + bonus)
-    
+
     def determine_tier(self, trust_score: int) -> GuildTier:
         """Map trust score to its corresponding tier."""
         if trust_score >= 85: return GuildTier.QUEEN
         if trust_score >= 50: return GuildTier.WORKER
         return GuildTier.LARVAE
-    
+
     def format_tier_status(self, member_id: str) -> str:
         """Render ASCII tier status report."""
         # Simulated lookup
         score = 67
         tier = self.determine_tier(score)
         cfg = self.TIER_CONFIG[tier]
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🎖️ GUILD TIER STATUS{' ' * 38}║",
@@ -122,10 +122,10 @@ def register_commands() -> Dict[str, Any]:
 if __name__ == "__main__":
     print("🏰 Initializing Constitution...")
     print("=" * 60)
-    
+
     try:
         constitution = GuildConstitution()
         print("\n" + constitution.format_tier_status("M1"))
-        
+
     except Exception as e:
         logger.error(f"Governance Error: {e}")

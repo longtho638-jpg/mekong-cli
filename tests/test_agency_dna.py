@@ -12,17 +12,17 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.agency_dna import AgencyDNA, Tone, Service
 
 class TestAgencyDNA:
-    
+
     def test_service_initialization(self):
         """Test service auto-conversion."""
         s = Service("Web Dev", "Build site", 1000.0)
         assert s.price_vnd == 25000000 # New rate 25,000
-        
+
     def test_agency_dna_tagline(self):
         """Test tagline generation for different tones."""
         dna = AgencyDNA(name="Mekong AI", niche="Gạo", tone=Tone.MIEN_TAY)
         assert "miền Tây" in dna.get_tagline()
-        
+
         dna.tone = Tone.MIEN_BAC
         assert "Thủ đô" in dna.get_tagline()
 

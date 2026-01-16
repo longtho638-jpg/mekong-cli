@@ -59,13 +59,13 @@ class ExpenseTracker:
     
     Manages agency operational costs, tracks vendor spending, and reports on monthly profitability.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.expenses: List[Expense] = []
         self.monthly_revenue: Dict[str, float] = {}
         logger.info(f"Expense Tracker initialized for {agency_name}")
-    
+
     def add_expense(
         self,
         description: str,
@@ -92,40 +92,40 @@ class ExpenseTracker:
             billable=billable,
             client_name=client_name
         )
-        
+
         self.expenses.append(expense)
         logger.info(f"Expense recorded: {description} (${amount:,.2f})")
         return expense
-    
+
     def set_monthly_revenue(self, month_key: str, amount: float):
         """Register gross revenue for a specific month (e.g. '2026-01')."""
         self.monthly_revenue[month_key] = float(amount)
         logger.debug(f"Revenue set for {month_key}: ${amount:,.0f}")
-    
+
     def calculate_profitability(self, month_key: str) -> Dict[str, Any]:
         """Compute net profit and margin for a given month."""
         revenue = self.monthly_revenue.get(month_key, 0.0)
-        
+
         # Filter and sum expenses
         monthly_exp = sum(
-            e.amount for e in self.expenses 
+            e.amount for e in self.expenses
             if e.date.strftime("%Y-%m") == month_key
         )
-        
+
         profit = revenue - monthly_exp
         margin = (profit / revenue * 100.0) if revenue > 0 else 0.0
-        
+
         return {
             "revenue": revenue,
             "expenses": monthly_exp,
             "net_profit": profit,
             "margin_pct": margin
         }
-    
+
     def format_dashboard(self, month_key: str) -> str:
         """Render the Expense & Profit Dashboard."""
         data = self.calculate_profitability(month_key)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  💸 FINANCIAL REPORT: {month_key:<35}  ║",
@@ -136,25 +136,25 @@ class ExpenseTracker:
             f"║    Total Expenses: ${data['expenses']:>12,.0f}                      ║",
             "║    ─────────────────────────────                          ║",
         ]
-        
+
         p_icon = "✅" if data['net_profit'] >= 0 else "🔴"
         lines.append(f"║    {p_icon} Net Profit:    ${data['net_profit']:>12,.0f} ({data['margin_pct']:.1f}% margin)  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📂 TOP EXPENSE CATEGORIES                                ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         # Aggregated Category View
         cat_map = {}
         for e in self.expenses:
             if e.date.strftime("%Y-%m") == month_key:
                 cat_map[e.category.value] = cat_map.get(e.category.value, 0.0) + e.amount
-        
+
         for cat, amt in sorted(cat_map.items(), key=lambda x: x[1], reverse=True)[:4]:
             lines.append(f"║    • {cat.title():<15} │ ${amt:>10,.0f}                      ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ Expense]  [📊 Full P&L]  [📑 Taxes]  [⚙️ Settings]   ║",
@@ -169,17 +169,17 @@ class ExpenseTracker:
 if __name__ == "__main__":
     print("💸 Initializing Expense Tracker...")
     print("=" * 60)
-    
+
     try:
         tracker = ExpenseTracker("Saigon Digital Hub")
         now_key = datetime.now().strftime("%Y-%m")
-        
+
         # Add data
         tracker.add_expense("Team Salaries", 8000.0, ExpenseCategory.PAYROLL, "Internal")
         tracker.add_expense("SaaS Suite", 300.0, ExpenseCategory.TOOLS, "Various")
         tracker.set_monthly_revenue(now_key, 12000.0)
-        
+
         print("\n" + tracker.format_dashboard(now_key))
-        
+
     except Exception as e:
         logger.error(f"Tracker Error: {e}")

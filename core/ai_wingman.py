@@ -69,7 +69,7 @@ class AIWingman:
     
     Automates interactions and notifications.
     """
-    
+
     def __init__(
         self,
         owner_profile: AgencyOwnerProfile,
@@ -79,7 +79,7 @@ class AIWingman:
         self.mode = mode
         self.notifications: List[Notification] = []
         self.response_templates = self._load_templates()
-        
+
         # Initialize stats
         self.stats = {
             "inquiries_handled": 0,
@@ -89,7 +89,7 @@ class AIWingman:
             "hours_saved": 0
         }
         logger.info(f"AI Wingman initialized for {owner_profile.agency_name} in {mode.value} mode")
-    
+
     def _load_templates(self) -> Dict[str, str]:
         """Load response templates."""
         return {
@@ -155,7 +155,7 @@ Best,
 {owner_name}
 {agency_name}"""
         }
-    
+
     def handle_inquiry(
         self,
         client_name: str,
@@ -188,7 +188,7 @@ Best,
             }
         )
         self.notifications.append(notif)
-        
+
         # Generate response
         response = self.response_templates["inquiry_ack"].format(
             client_name=client_name,
@@ -196,13 +196,13 @@ Best,
             service=service,
             owner_name=self.owner.name
         )
-        
+
         result = {
             "notification_id": notif.id,
             "response_draft": response,
             "action_taken": "none"
         }
-        
+
         if self.mode == WingmanMode.FULL_AUTO:
             result["action_taken"] = "sent_automatically"
             result["sent_to"] = client_email
@@ -215,9 +215,9 @@ Best,
         else:
             result["action_taken"] = "notification_only"
             logger.info("Passive mode: Notification only")
-        
+
         return result
-    
+
     def generate_proposal(
         self,
         client_name: str,
@@ -235,7 +235,7 @@ Best,
         logger.info(f"Generating proposal for {client_name}: {project_name}")
 
         services_list = "\n".join([f"- {s}" for s in services])
-        
+
         proposal = self.response_templates["proposal"].format(
             client_name=client_name,
             project_name=project_name,
@@ -248,17 +248,17 @@ Best,
             owner_name=self.owner.name,
             agency_name=self.owner.agency_name
         )
-        
+
         self.stats["proposals_sent"] += 1
         return proposal
-    
+
     def notify_payment(self, client_name: str, amount: float, project: str) -> Notification:
         """Create notification for received payment."""
         if amount <= 0:
              logger.warning(f"Received non-positive payment amount: {amount}")
 
         logger.info(f"Payment received: ${amount} from {client_name}")
-        
+
         notif = Notification(
             id=f"pay_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.PAYMENT,
@@ -275,7 +275,7 @@ Best,
         self.notifications.append(notif)
         self.stats["revenue_generated"] += amount
         return notif
-    
+
     def notify_milestone(self, title: str, description: str, priority: int = 3) -> Notification:
         """Create notification for milestone achieved."""
         logger.info(f"Milestone achieved: {title}")
@@ -289,21 +289,21 @@ Best,
         )
         self.notifications.append(notif)
         return notif
-    
+
     def get_pending_notifications(self, unread_only: bool = True) -> List[Notification]:
         """Get pending notifications."""
         if unread_only:
             return [n for n in self.notifications if not n.read]
         return self.notifications
-    
+
     def get_daily_summary(self) -> Dict[str, Any]:
         """Get daily summary report."""
         today = datetime.now().date()
         today_notifs = [
-            n for n in self.notifications 
+            n for n in self.notifications
             if n.timestamp.date() == today
         ]
-        
+
         return {
             "date": today.isoformat(),
             "total_notifications": len(today_notifs),
@@ -316,7 +316,7 @@ Best,
             "stats": self.stats,
             "mode": self.mode.value
         }
-    
+
     def format_for_telegram(self, notification: Notification) -> str:
         """Format notification for Telegram."""
         emoji_map = {
@@ -326,10 +326,10 @@ Best,
             NotificationType.MILESTONE: "🏆",
             NotificationType.ALERT: "🚨"
         }
-        
+
         emoji = emoji_map.get(notification.type, "📢")
         priority_stars = "⭐" * notification.priority
-        
+
         return f"""
 {emoji} *{notification.title}*
 {priority_stars}
@@ -349,14 +349,14 @@ if __name__ == "__main__":
         services=["SEO", "Content Marketing", "PPC Ads"],
         pricing_tier="premium"
     )
-    
+
     print("🤖 Initializing AI Wingman...")
     print("=" * 60)
-    
+
     try:
         # Initialize Wingman
         wingman = AIWingman(owner, mode=WingmanMode.SEMI_AUTO)
-        
+
         # Simulate an inquiry
         result = wingman.handle_inquiry(
             client_name="John Smith",
@@ -364,10 +364,10 @@ if __name__ == "__main__":
             service="SEO",
             message="Hi, I need help ranking my website for 'best coffee shop in NYC'"
         )
-        
+
         print("\n📩 Inquiry Handled:")
         print(f"   Action: {result['action_taken']}")
-        
+
         # Generate a proposal
         proposal = wingman.generate_proposal(
             client_name="John Smith",
@@ -378,16 +378,16 @@ if __name__ == "__main__":
             monthly_fee=500,
             timeline="8 weeks to page 1"
         )
-        
+
         print("\n📋 Proposal Generated (Snippet):")
         print("-" * 40)
         print(proposal[:200] + "...")
         print()
-        
+
         # Payment notification
         notif = wingman.notify_payment("John Smith", 1500, "NYC Coffee Shop SEO")
         print(wingman.format_for_telegram(notif))
-        
+
         # Daily summary
         summary = wingman.get_daily_summary()
         print("📊 Daily Summary:")

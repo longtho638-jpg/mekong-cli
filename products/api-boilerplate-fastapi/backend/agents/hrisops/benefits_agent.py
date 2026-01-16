@@ -51,7 +51,7 @@ class Enrollment:
     enrolled_at: Optional[datetime] = None
     effective_date: Optional[date] = None
     dependents: int = 0
-    
+
     def __post_init__(self):
         if self.enrolled_at is None:
             self.enrolled_at = datetime.now()
@@ -67,13 +67,13 @@ class BenefitsAgent:
     - Track claims
     - Open enrollment
     """
-    
+
     def __init__(self):
         self.name = "Benefits"
         self.status = "ready"
         self.plans: Dict[str, BenefitPlan] = {}
         self.enrollments: Dict[str, Enrollment] = {}
-        
+
     def add_plan(
         self,
         name: str,
@@ -84,7 +84,7 @@ class BenefitsAgent:
     ) -> BenefitPlan:
         """Add benefit plan"""
         plan_id = f"plan_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         plan = BenefitPlan(
             id=plan_id,
             name=name,
@@ -93,10 +93,10 @@ class BenefitsAgent:
             employer_contribution=employer_contribution,
             coverage=coverage
         )
-        
+
         self.plans[plan_id] = plan
         return plan
-    
+
     def enroll(
         self,
         employee_id: str,
@@ -108,10 +108,10 @@ class BenefitsAgent:
         """Enroll employee in plan"""
         if plan_id not in self.plans:
             raise ValueError(f"Plan not found: {plan_id}")
-            
+
         enrollment_id = f"enroll_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
         plan = self.plans[plan_id]
-        
+
         enrollment = Enrollment(
             id=enrollment_id,
             employee_id=employee_id,
@@ -122,35 +122,35 @@ class BenefitsAgent:
             effective_date=effective_date or date.today(),
             dependents=dependents
         )
-        
+
         self.enrollments[enrollment_id] = enrollment
         return enrollment
-    
+
     def waive(self, enrollment_id: str) -> Enrollment:
         """Waive benefit"""
         if enrollment_id not in self.enrollments:
             raise ValueError(f"Enrollment not found: {enrollment_id}")
-            
+
         enrollment = self.enrollments[enrollment_id]
         enrollment.status = EnrollmentStatus.WAIVED
-        
+
         return enrollment
-    
+
     def get_employee_benefits(self, employee_id: str) -> List[Enrollment]:
         """Get employee's enrollments"""
         return [e for e in self.enrollments.values() if e.employee_id == employee_id and e.status == EnrollmentStatus.ENROLLED]
-    
+
     def get_stats(self) -> Dict:
         """Get benefits statistics"""
         plans = list(self.plans.values())
         enrollments = list(self.enrollments.values())
         enrolled = [e for e in enrollments if e.status == EnrollmentStatus.ENROLLED]
-        
+
         total_cost = sum(
             self.plans[e.plan_id].monthly_cost * (1 + e.dependents * 0.5)
             for e in enrolled if e.plan_id in self.plans
         )
-        
+
         return {
             "total_plans": len(plans),
             "active_enrollments": len(enrolled),
@@ -163,27 +163,27 @@ class BenefitsAgent:
 # Demo
 if __name__ == "__main__":
     agent = BenefitsAgent()
-    
+
     print("💊 Benefits Agent Demo\n")
-    
+
     # Add plans
     p1 = agent.add_plan("Premium Health", PlanType.HEALTH, 500, 400, "Full coverage")
     p2 = agent.add_plan("Basic Dental", PlanType.DENTAL, 50, 50, "Basic coverage")
     p3 = agent.add_plan("401k Match", PlanType.RETIREMENT, 0, 0, "6% match")
-    
+
     print(f"📋 Plan: {p1.name}")
     print(f"   Type: {p1.plan_type.value}")
     print(f"   Cost: ${p1.monthly_cost}/mo")
     print(f"   Employer Pays: ${p1.employer_contribution}/mo")
-    
+
     # Enroll
     e1 = agent.enroll("EMP001", "Nguyen A", p1.id, dependents=2)
     e2 = agent.enroll("EMP001", "Nguyen A", p2.id)
     e3 = agent.enroll("EMP002", "Tran B", p1.id, dependents=1)
-    
+
     print(f"\n✅ Enrolled: {e1.employee_name} in {e1.plan_name}")
     print(f"   Dependents: {e1.dependents}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

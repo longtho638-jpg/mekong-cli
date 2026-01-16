@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.config import Currency, DealTier, get_tier_pricing, usd_to_vnd
 
 class TestConfig:
-    
+
     def test_currency_enums(self):
         """Verify supported currencies."""
         assert Currency.USD.value == "USD"
@@ -22,7 +22,7 @@ class TestConfig:
         """Verify tier pricing retrieval."""
         warrior = get_tier_pricing(DealTier.WARRIOR)
         assert warrior["retainer_usd"] == 2000
-        
+
         tuong_quan = get_tier_pricing(DealTier.TUONG_QUAN)
         assert tuong_quan["retainer_usd"] == 0
 

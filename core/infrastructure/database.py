@@ -38,7 +38,7 @@ class Database:
     Ensures a single active connection across the agency OS modules (Singleton).
     """
     _instance: Optional[Client] = None
-    
+
     @classmethod
     def get_client(cls) -> Optional[Client]:
         """
@@ -47,12 +47,12 @@ class Database:
         """
         if cls._instance:
             return cls._instance
-            
+
         settings = get_settings()
         if not settings:
             logger.debug("Settings not available. DB connection skipped.")
             return None
-        
+
         if settings.SUPABASE_URL and settings.SUPABASE_KEY:
             try:
                 cls._instance = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
@@ -63,7 +63,7 @@ class Database:
                 return None
         else:
             logger.debug("Database credentials missing in environment. DB features disabled.")
-        
+
         return None
 
 

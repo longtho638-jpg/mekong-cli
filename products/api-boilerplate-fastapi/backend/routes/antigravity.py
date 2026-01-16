@@ -24,7 +24,7 @@ demo_moat = None
 def init_demo_data():
     """Initialize demo data for all modules"""
     global demo_dna, demo_magnet, demo_engine, demo_factory, demo_franchise, demo_metrics, demo_moat
-    
+
     # AgencyDNA
     demo_dna = AgencyDNA(
         name="NovaAgency",
@@ -35,7 +35,7 @@ def init_demo_data():
     )
     demo_dna.add_service("Branding", "Brand identity for agricultural businesses", 2000)
     demo_dna.add_service("Marketing", "Digital marketing campaigns", 3000)
-    
+
     # ClientMagnet
     demo_magnet = ClientMagnet()
     for i in range(127):
@@ -49,20 +49,20 @@ def init_demo_data():
             demo_magnet.qualify_lead(lead, budget=5000, score=85)
         if i < 15:
             demo_magnet.convert_to_client(lead)
-    
+
     # RevenueEngine
     demo_engine = RevenueEngine()
     for i in range(156):
         inv = demo_engine.create_invoice(f"Client {i % 15}", 2000 + (i * 100), currency=Currency.USD)
         if i < 142:
             demo_engine.mark_paid(inv)
-    
+
     # ContentFactory
     demo_factory = ContentFactory(niche="Nông sản", tone="mien_tay")
     ideas = demo_factory.generate_ideas(87)
     for idea in ideas[:43]:
         demo_factory.create_post(idea)
-    
+
     # FranchiseManager
     demo_franchise = FranchiseManager()
     f1 = demo_franchise.add_franchisee("Anh Minh", "minh@test.com", territory=Territory.CAN_THO)
@@ -71,7 +71,7 @@ def init_demo_data():
     demo_franchise.record_revenue(f1.id, 15000)
     demo_franchise.record_revenue(f2.id, 12000)
     demo_franchise.record_revenue(f3.id, 18000)
-    
+
     # VCMetrics
     demo_metrics = VCMetrics(
         mrr=75000,
@@ -84,7 +84,7 @@ def init_demo_data():
         total_customers=150,
         stage=FundingStage.SEED
     )
-    
+
     # DataMoat
     demo_moat = DataMoat()
     demo_moat.record_success("Nông sản", "facebook", 94, revenue=800)
@@ -117,7 +117,7 @@ async def get_agency_dna() -> Dict[str, Any]:
     """Get AgencyDNA data"""
     if not demo_dna:
         raise HTTPException(status_code=404, detail="AgencyDNA not initialized")
-    
+
     return {
         "name": demo_dna.name,
         "niche": demo_dna.niche,
@@ -136,7 +136,7 @@ async def get_client_magnet() -> Dict[str, Any]:
     """Get ClientMagnet statistics"""
     if not demo_magnet:
         raise HTTPException(status_code=404, detail="ClientMagnet not initialized")
-    
+
     stats = demo_magnet.get_stats()
     return {
         **stats,
@@ -149,7 +149,7 @@ async def get_revenue_engine() -> Dict[str, Any]:
     """Get RevenueEngine metrics"""
     if not demo_engine:
         raise HTTPException(status_code=404, detail="RevenueEngine not initialized")
-    
+
     stats = demo_engine.get_stats()
     mrr = stats.get('mrr', 0)
     arr = stats.get('arr', 0)
@@ -171,7 +171,7 @@ async def get_content_factory() -> Dict[str, Any]:
     """Get ContentFactory data"""
     if not demo_factory:
         raise HTTPException(status_code=404, detail="ContentFactory not initialized")
-    
+
     stats = demo_factory.get_stats()
     return {
         **stats,
@@ -183,11 +183,11 @@ async def get_franchise_manager() -> Dict[str, Any]:
     """Get FranchiseManager statistics"""
     if not demo_franchise:
         raise HTTPException(status_code=404, detail="FranchiseManager not initialized")
-    
+
     stats = demo_franchise.get_network_stats()
     # Get active territories from franchisees
     active_territory_values = set(f.territory.value for f in demo_franchise.franchisees if f.status.value == 'active')
-    
+
     return {
         **stats,
         "total_territories": len(Territory),
@@ -206,7 +206,7 @@ async def get_vc_metrics() -> Dict[str, Any]:
     """Get VCMetrics score and metrics"""
     if not demo_metrics:
         raise HTTPException(status_code=404, detail="VCMetrics not initialized")
-    
+
     return {
         "score": demo_metrics.readiness_score(),
         "ltv_cac_ratio": demo_metrics.ltv_cac_ratio(),
@@ -228,10 +228,10 @@ async def get_data_moat() -> Dict[str, Any]:
     """Get DataMoat insights"""
     if not demo_moat:
         raise HTTPException(status_code=404, detail="DataMoat not initialized")
-    
+
     strength = demo_moat.get_moat_strength()
     practices = demo_moat.get_best_practices("Nông sản")
-    
+
     return {
         **strength,
         "best_practices": practices,

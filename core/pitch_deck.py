@@ -81,17 +81,17 @@ class PitchDeckGenerator:
     
     Orchestrates the structural design and content layout for high-stakes investor presentations.
     """
-    
+
     TEMPLATES: Dict[RoundType, List[SlideType]] = {
         RoundType.PRE_SEED: [SlideType.COVER, SlideType.PROBLEM, SlideType.SOLUTION, SlideType.MARKET, SlideType.TEAM, SlideType.ASK],
         RoundType.SEED: [SlideType.COVER, SlideType.PROBLEM, SlideType.SOLUTION, SlideType.MARKET, SlideType.TRACTION, SlideType.TEAM, SlideType.ASK]
     }
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.decks: Dict[str, PitchDeck] = {}
         logger.info(f"Pitch Deck Generator initialized for {agency_name}")
-    
+
     def create_deck(
         self,
         name: str,
@@ -105,20 +105,20 @@ class PitchDeckGenerator:
             company_name=name, round_type=round_t,
             tagline=tagline, target_raise=float(goal)
         )
-        
+
         # Hydrate slides
         template = self.TEMPLATES.get(round_t, self.TEMPLATES[RoundType.SEED])
         for i, stype in enumerate(template):
             deck.slides.append(PitchSlide(stype, stype.value.title(), order=i))
-            
+
         self.decks[deck.id] = deck
         logger.info(f"Deck created: {name} ({round_t.value})")
         return deck
-    
+
     def format_dashboard(self) -> str:
         """Render the Pitch Deck Dashboard."""
         total_goal = sum(d.target_raise for d in self.decks.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 PITCH DECK DASHBOARD{' ' * 33}║",
@@ -127,14 +127,14 @@ class PitchDeckGenerator:
             "║  🚀 ACTIVE FUNDRAISING PROJECTS                           ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         round_icons = {RoundType.PRE_SEED: "🌱", RoundType.SEED: "🌾", RoundType.SERIES_A: "🚀"}
-        
+
         for d in list(self.decks.values())[:5]:
             icon = round_icons.get(d.round_type, "📄")
             name_disp = (d.company_name[:18] + '..') if len(d.company_name) > 20 else d.company_name
             lines.append(f"║    {icon} {name_disp:<20} │ {len(d.slides)} slides │ ${d.target_raise:>10,.0f} ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [📊 Create Deck]  [📝 Content Editor]  [📤 Export PDF]   ║",
@@ -142,7 +142,7 @@ class PitchDeckGenerator:
             f"║  🏯 {self.agency_name[:40]:<40} - Funding!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -150,13 +150,13 @@ class PitchDeckGenerator:
 if __name__ == "__main__":
     print("📊 Initializing Deck System...")
     print("=" * 60)
-    
+
     try:
         gen = PitchDeckGenerator("Saigon Digital Hub")
         # Seed
         gen.create_deck("Acme AI", RoundType.SEED, "AI for good", 2000000.0)
-        
+
         print("\n" + gen.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Generator Error: {e}")

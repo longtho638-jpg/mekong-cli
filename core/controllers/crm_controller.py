@@ -11,10 +11,10 @@ from core.use_cases.create_deal import CreateDealUseCase
 
 class CRMController:
     """Controller for CRM operations."""
-    
+
     def __init__(self):
         self.create_deal_use_case = CreateDealUseCase()
-    
+
     def create_deal(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Handle create deal request.
@@ -32,7 +32,7 @@ class CRMController:
             value = request_data.get("value", 0.0)
             probability = request_data.get("probability", 50.0)
             contact_id = request_data.get("contact_id")
-            
+
             # Execute use case
             deal = self.create_deal_use_case.execute(
                 title=title,
@@ -41,7 +41,7 @@ class CRMController:
                 probability=probability,
                 contact_id=contact_id
             )
-            
+
             # Format response
             return {
                 "success": True,
@@ -55,7 +55,7 @@ class CRMController:
                     "weighted_value": deal.calculate_weighted_value()
                 }
             }
-        
+
         except ValueError as e:
             return {
                 "success": False,
