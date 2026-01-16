@@ -46,15 +46,15 @@ class TestimonialGenerator:
     
     Collect and showcase client testimonials.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.testimonials: List[Testimonial] = []
-    
+
     def add_testimonial(self, testimonial: Testimonial):
         """Add a testimonial."""
         self.testimonials.append(testimonial)
-    
+
     def generate_request_email(
         self,
         client_name: str,
@@ -85,17 +85,17 @@ Best,
 
 P.S. As a thank you, you'll get 10% off your next project! 💰
 """
-    
+
     def format_testimonial(self, testimonial: Testimonial) -> str:
         """Format single testimonial."""
         stars = "★" * testimonial.rating.value + "☆" * (5 - testimonial.rating.value)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  ⭐ {stars}                                            ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         # Quote (wrapped)
         quote = testimonial.quote
         while len(quote) > 50:
@@ -103,30 +103,30 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
             quote = quote[50:]
         if quote:
             lines.append(f"║  \"{quote}\"{'·' * (52 - len(quote))}║")
-        
+
         lines.append("║                                                           ║")
         lines.append(f"║  — {testimonial.client_name:<40}       ║")
         lines.append(f"║    {testimonial.role}, {testimonial.company:<35}  ║")
-        
+
         # Results
         if testimonial.results:
             lines.append("║                                                           ║")
             lines.append("║  📊 RESULTS:                                              ║")
             for key, value in list(testimonial.results.items())[:3]:
                 lines.append(f"║    ✓ {key}: {value:<40}  ║")
-        
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
-        
+
         return "\n".join(lines)
-    
+
     def format_showcase(self) -> str:
         """Format testimonial showcase."""
         if not self.testimonials:
             return "No testimonials yet!"
-        
+
         # Calculate average rating
         avg_rating = sum(t.rating.value for t in self.testimonials) / len(self.testimonials)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  ⭐ CLIENT TESTIMONIALS: {self.agency_name.upper()[:28]:<28}   ║",
@@ -134,7 +134,7 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
             f"║  Total Reviews: {len(self.testimonials):<38}   ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for t in self.testimonials[:3]:
             stars = "★" * t.rating.value
             quote_short = t.quote[:45] + "..." if len(t.quote) > 45 else t.quote
@@ -142,16 +142,16 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
             lines.append(f"║  {stars}                                             ║")
             lines.append(f"║  \"{quote_short}\"  ║")
             lines.append(f"║  — {t.client_name}, {t.company[:25]:<25}            ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "╠═══════════════════════════════════════════════════════════╣",
             f"║  🏯 {self.agency_name} - Trusted by {len(self.testimonials)}+ clients!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
-    
+
     def format_case_study(self, testimonial: Testimonial) -> str:
         """Format as mini case study."""
         lines = [
@@ -168,24 +168,24 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
             "",
             "## Results",
         ]
-        
+
         for key, value in testimonial.results.items():
             lines.append(f"- **{key}:** {value}")
-        
+
         lines.extend([
             "",
             "---",
             f"*Rating: {'★' * testimonial.rating.value}*",
             f"*{self.agency_name} - \"Không đánh mà thắng\"*",
         ])
-        
+
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
     generator = TestimonialGenerator("Saigon Digital Hub")
-    
+
     # Add sample testimonials
     generator.add_testimonial(Testimonial(
         client_name="Mr. Hoang",
@@ -199,7 +199,7 @@ if __name__ == "__main__":
             "ROI": "1500%"
         }
     ))
-    
+
     generator.add_testimonial(Testimonial(
         client_name="Ms. Linh",
         company="Coffee Lab",
@@ -212,7 +212,7 @@ if __name__ == "__main__":
             "Sales": "+85%"
         }
     ))
-    
+
     generator.add_testimonial(Testimonial(
         client_name="Dr. Pham",
         company="Dental Plus",
@@ -224,21 +224,21 @@ if __name__ == "__main__":
             "Online Bookings": "+200%"
         }
     ))
-    
+
     print("⭐ Testimonial Generator")
     print("=" * 60)
     print()
-    
+
     print("📧 Request Email Example:")
     print("-" * 40)
     print(generator.generate_request_email("Mr. Hoang", "SEO Campaign"))
     print()
-    
+
     print("⭐ Testimonial Showcase:")
     print("-" * 40)
     print(generator.format_showcase())
     print()
-    
+
     print("📊 Single Testimonial:")
     print("-" * 40)
     print(generator.format_testimonial(generator.testimonials[0]))

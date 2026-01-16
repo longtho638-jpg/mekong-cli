@@ -57,7 +57,7 @@ class TimeSlot:
     """A defined block of time for availability."""
     start: time
     end: time
-    
+
 
 @dataclass
 class MeetingTypeConfig:
@@ -91,7 +91,7 @@ class Scheduler:
     
     Orchestrates availability slots, conflict detection, and meeting lifecycle management.
     """
-    
+
     def __init__(self, owner: str = "Alex"):
         self.owner = owner
         self.availability: Dict[DayOfWeek, List[TimeSlot]] = {}
@@ -99,7 +99,7 @@ class Scheduler:
         self.configs = self._init_configs()
         logger.info(f"Scheduler initialized for {owner}")
         self._set_default_slots()
-    
+
     def _init_configs(self) -> Dict[MeetingType, MeetingTypeConfig]:
         """Blueprint for meeting durations."""
         return {
@@ -107,12 +107,12 @@ class Scheduler:
             MeetingType.PROPOSAL: MeetingTypeConfig(MeetingType.PROPOSAL, "Proposal Review", 45),
             MeetingType.KICKOFF: MeetingTypeConfig(MeetingType.KICKOFF, "Kickoff", 60)
         }
-    
+
     def _set_default_slots(self):
         """Standard 9-5 work availability."""
         for day in [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY]:
             self.availability[day] = [TimeSlot(time(9, 0), time(12, 0)), TimeSlot(time(13, 0), time(17, 0))]
-    
+
     def book_call(
         self,
         m_type: MeetingType,
@@ -123,7 +123,7 @@ class Scheduler:
         """Reserve a call slot and generate a link."""
         cfg = self.configs.get(m_type, self.configs[MeetingType.DISCOVERY])
         end = start + timedelta(minutes=cfg.duration_mins)
-        
+
         # Conflict check simulated for demo
         m = Meeting(
             id=f"MTG-{uuid.uuid4().hex[:6].upper()}",
@@ -133,7 +133,7 @@ class Scheduler:
         self.meetings[m.id] = m
         logger.info(f"Meeting booked: {name} on {start.strftime('%Y-%m-%d %H:%M')}")
         return m
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Aggregate scheduling performance data."""
         done = [m for m in self.meetings.values() if m.status == MeetingStatus.COMPLETED]
@@ -142,12 +142,12 @@ class Scheduler:
             "completed": len(done),
             "show_rate": (len(done) / len(self.meetings) * 100.0) if self.meetings else 0.0
         }
-    
+
     def format_dashboard(self) -> str:
         """Render the Scheduling Dashboard."""
         s = self.get_stats()
         upcoming = sorted([m for m in self.meetings.values() if m.start_time > datetime.now()], key=lambda x: x.start_time)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📅 SCHEDULER DASHBOARD - {self.owner.upper():<24} ║",
@@ -156,11 +156,11 @@ class Scheduler:
             "║  📆 UPCOMING CALLS                                        ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for m in upcoming[:5]:
             dt = m.start_time.strftime("%b %d %H:%M")
             lines.append(f"║  ⏰ {dt} │ {m.attendee_name[:15]:<15} │ {m.meeting_type.value:<12} ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ Book Call]  [📅 Set Availability]  [📊 Analytics]    ║",
@@ -175,14 +175,14 @@ class Scheduler:
 if __name__ == "__main__":
     print("📅 Initializing Scheduler...")
     print("=" * 60)
-    
+
     try:
         scheduler = Scheduler("Alex")
         # Seed
         now = datetime.now() + timedelta(days=1)
         scheduler.book_call(MeetingType.DISCOVERY, "John Doe", "john@corp.co", now)
-        
+
         print("\n" + scheduler.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Scheduler Error: {e}")

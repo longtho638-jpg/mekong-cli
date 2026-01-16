@@ -53,24 +53,24 @@ class JSONStore:
         Supports complex types through custom serialization.
         """
         path = self._resolve_path(key)
-        
+
         # Use a temporary file for atomic write
         fd, temp_path = tempfile.mkstemp(dir=self.data_dir, prefix=f"tmp_{key}_")
-        
+
         try:
             with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 json.dump(
-                    data, 
-                    f, 
-                    ensure_ascii=False, 
-                    indent=2, 
+                    data,
+                    f,
+                    ensure_ascii=False,
+                    indent=2,
                     default=self._serialize_complex_types
                 )
-            
+
             # Atomic swap
             os.replace(temp_path, path)
             return path
-            
+
         except Exception as e:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
@@ -82,7 +82,7 @@ class JSONStore:
         path = self._resolve_path(key)
         if not path.exists():
             return default
-            
+
         try:
             return json.loads(path.read_text(encoding='utf-8'))
         except json.JSONDecodeError as e:

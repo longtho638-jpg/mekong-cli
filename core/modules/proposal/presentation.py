@@ -5,7 +5,7 @@ from .services import ProposalGenerator
 from .entities import Proposal
 
 class ProposalPresenter:
-    
+
     @staticmethod
     def format_dashboard(generator: ProposalGenerator, prop: Proposal) -> str:
         """Render ASCII Proposal Preview."""
@@ -18,10 +18,10 @@ class ProposalPresenter:
             "║  ───────────────────────────────────────────────────────  ║",
             "║  PROPOSED SERVICES:                                       ║",
         ]
-        
+
         for s in prop.services:
             lines.append(f"║    📦 {s.name:<25} │ ${s.monthly_price:>10,.0f}/mo ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [📤 Send Proposal]  [📝 Edit Content]  [🎨 Branding]    ║",

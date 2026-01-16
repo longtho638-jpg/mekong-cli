@@ -5,15 +5,15 @@ from .services import InvoiceSystem
 
 class InvoicePresenter:
     """Handles visual formatting of Invoices."""
-    
+
     @staticmethod
     def format_invoice_ascii(system: InvoiceSystem, inv_id: str) -> str:
         """Render a specific invoice as a professional text document."""
         if inv_id not in system.invoices: return "Invoice not found."
-        
+
         inv = system.invoices[inv_id]
         sym = {"USD": "$", "VND": "₫"}.get(inv.currency.value, "$")
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🏯 {system.agency_name.upper()[:30]:<30} INVOICE  ║",
@@ -24,10 +24,10 @@ class InvoicePresenter:
             "║  ITEM DESCRIPTION                      QTY      TOTAL     ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for item in inv.items:
             lines.append(f"║  • {item.description[:30]:<30} {item.quantity:>3}  {sym}{item.total:>10,.0f} ║")
-            
+
         lines.extend([
             "║  ───────────────────────────────────────────────────────  ║",
             f"║  Subtotal: {sym}{inv.subtotal:>15,.0f} {' ' * 28}║",

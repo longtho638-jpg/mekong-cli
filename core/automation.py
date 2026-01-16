@@ -73,16 +73,16 @@ class AutomationEngine:
     
     Orchestrates workflows triggered by agency events.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.workflows: Dict[str, Workflow] = {}
         logger.info(f"Automation Engine initialized for {agency_name}")
         self._create_default_workflows()
-    
+
     def _create_default_workflows(self):
         """Pre-configure common agency workflows."""
-        
+
         # New client onboarding
         self.create_workflow(
             name="New Client Onboarding",
@@ -94,7 +94,7 @@ class AutomationEngine:
                 Action(ActionType.SEND_NOTIFICATION, {"message": "New client onboarded!", "channel": "slack"}, 0),
             ]
         )
-        
+
         # Invoice reminder
         self.create_workflow(
             name="Invoice Reminder",
@@ -105,7 +105,7 @@ class AutomationEngine:
                 Action(ActionType.SEND_NOTIFICATION, {"message": "Invoice overdue!", "channel": "email"}, 72),
             ]
         )
-        
+
         # Milestone celebration
         self.create_workflow(
             name="Milestone Celebration",
@@ -116,7 +116,7 @@ class AutomationEngine:
                 Action(ActionType.CREATE_TASK, {"title": "Review milestone", "assign": "pm"}, 0),
             ]
         )
-    
+
     def create_workflow(
         self,
         name: str,
@@ -135,11 +135,11 @@ class AutomationEngine:
             trigger=trigger,
             actions=actions
         )
-        
+
         self.workflows[workflow.id] = workflow
         logger.info(f"Workflow created: {name} (Trigger: {trigger.value})")
         return workflow
-    
+
     def run_workflow(self, workflow_id: str) -> List[str]:
         """
         Simulate workflow execution.
@@ -149,28 +149,28 @@ class AutomationEngine:
         if not workflow:
             logger.error(f"Workflow {workflow_id} not found")
             return ["Error: Workflow not found"]
-        
+
         if not workflow.enabled:
             logger.warning(f"Workflow {workflow.name} is disabled")
             return [f"Workflow {workflow.name} is disabled"]
 
         workflow.runs += 1
         logger.info(f"Executing workflow: {workflow.name} (Run #{workflow.runs})")
-        
+
         results = []
         for action in workflow.actions:
             delay_text = f" (+{action.delay_hours}h delay)" if action.delay_hours > 0 else ""
             status_msg = f"✅ {action.type.value}: {list(action.config.keys())}{delay_text}"
             results.append(status_msg)
             logger.debug(f"Action triggered: {action.type.value}")
-        
+
         return results
-    
+
     def format_dashboard(self) -> str:
         """Render Automation Dashboard."""
         active_count = sum(1 for w in self.workflows.values() if w.enabled)
         total_runs = sum(w.runs for w in self.workflows.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  ⚙️ AUTOMATION DASHBOARD{' ' * 35}║",
@@ -179,15 +179,15 @@ class AutomationEngine:
             "║  Workflow              │ Trigger        │ Actions │ Runs  ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         # Display top 5 workflows
         for w in list(self.workflows.values())[:5]:
             name_display = (w.name[:20] + '..') if len(w.name) > 22 else w.name
             trigger_display = w.trigger.value[:14]
             status_icon = "🟢" if w.enabled else "🔴"
-            
+
             lines.append(f"║  {status_icon} {name_display:<20} │ {trigger_display:<14} │ {len(w.actions):>7} │ {w.runs:>4}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  💡 Automations save 10+ hours/week!                      ║",
@@ -195,7 +195,7 @@ class AutomationEngine:
             f"║  🏯 {self.agency_name[:40]:<40} - Efficiency!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -203,15 +203,15 @@ class AutomationEngine:
 if __name__ == "__main__":
     print("⚙️ Initializing Automation Engine...")
     print("=" * 60)
-    
+
     try:
         engine = AutomationEngine("Saigon Digital Hub")
-        
+
         # Simulate running a workflow
         workflow = list(engine.workflows.values())[0]
         engine.run_workflow(workflow.id)
-        
+
         print("\n" + engine.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Runtime Error: {e}")

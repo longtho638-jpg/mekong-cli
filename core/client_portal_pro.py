@@ -59,12 +59,12 @@ class ClientPortalPro:
     
     Enhanced client experience.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.portals: Dict[str, ClientPortal] = {}
         self.activities: List[PortalActivity] = []
-    
+
     def create_portal(
         self,
         client_name: str,
@@ -84,7 +84,7 @@ class ClientPortalPro:
         )
         self.portals[portal.id] = portal
         return portal
-    
+
     def log_activity(self, portal: ClientPortal, action: str, section: PortalSection):
         """Log portal activity."""
         activity = PortalActivity(
@@ -96,11 +96,11 @@ class ClientPortalPro:
         self.activities.append(activity)
         portal.logins_count += 1
         portal.last_login = datetime.now()
-    
+
     def format_portal_preview(self, portal: ClientPortal) -> str:
         """Format portal preview."""
         last_login = portal.last_login.strftime("%Y-%m-%d") if portal.last_login else "Never"
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║  🎯 CLIENT PORTAL                                         ║",
@@ -113,7 +113,7 @@ class ClientPortalPro:
             "║  📋 ENABLED SECTIONS                                      ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
+
         section_icons = {
             PortalSection.DASHBOARD: "📊",
             PortalSection.PROJECTS: "📁",
@@ -122,11 +122,11 @@ class ClientPortalPro:
             PortalSection.MESSAGES: "💬",
             PortalSection.REPORTS: "📈"
         }
-        
+
         for section in portal.sections[:6]:
             icon = section_icons.get(section, "•")
             lines.append(f"║    {icon} {section.value.capitalize():<45}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             f"║  📅 Last Login: {last_login:<37}  ║",
@@ -137,14 +137,14 @@ class ClientPortalPro:
             f"║  🏯 {self.agency_name} - Client-first!                    ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
-    
+
     def format_overview(self) -> str:
         """Format portals overview."""
         active = sum(1 for p in self.portals.values() if p.last_login)
         total_logins = sum(p.logins_count for p in self.portals.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║  🎯 CLIENT PORTALS OVERVIEW                               ║",
@@ -153,13 +153,13 @@ class ClientPortalPro:
             "║  Client         │ Subdomain       │ Status  │ Logins    ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
+
         for portal in list(self.portals.values())[:5]:
             status = "🟢 Active" if portal.last_login else "⚪ New"
             lines.append(
                 f"║  {portal.client_name[:13]:<13} │ {portal.subdomain[:15]:<15} │ {status:<7} │ {portal.logins_count:>9} ║"
             )
-        
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
@@ -167,19 +167,19 @@ class ClientPortalPro:
 # Example usage
 if __name__ == "__main__":
     pro = ClientPortalPro("Saigon Digital Hub")
-    
+
     print("🎯 Client Portal Pro")
     print("=" * 60)
     print()
-    
+
     # Create portals
     portal1 = pro.create_portal("Sunrise Realty", "admin@sunrise.com")
     portal2 = pro.create_portal("Coffee Lab", "manager@coffeelab.com", primary_color="#8B4513")
-    
+
     # Log activity
     pro.log_activity(portal1, "Viewed dashboard", PortalSection.DASHBOARD)
     pro.log_activity(portal1, "Downloaded invoice", PortalSection.INVOICES)
-    
+
     print(pro.format_portal_preview(portal1))
     print()
     print(pro.format_overview())

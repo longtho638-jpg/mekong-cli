@@ -95,13 +95,13 @@ class TalentAcquisition:
     
     Build your dream team.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.jobs: Dict[str, JobPosting] = {}
         self.candidates: Dict[str, Candidate] = {}
         self.interviews: List[Interview] = []
-    
+
     def create_job(
         self,
         title: str,
@@ -121,12 +121,12 @@ class TalentAcquisition:
         )
         self.jobs[job.id] = job
         return job
-    
+
     def post_job(self, job: JobPosting):
         """Post a job (make it open)."""
         job.status = JobStatus.OPEN
         job.posted_at = datetime.now()
-    
+
     def add_candidate(
         self,
         name: str,
@@ -145,11 +145,11 @@ class TalentAcquisition:
         self.candidates[candidate.id] = candidate
         job.applications += 1
         return candidate
-    
+
     def move_candidate(self, candidate: Candidate, stage: CandidateStage):
         """Move candidate to new stage."""
         candidate.stage = stage
-    
+
     def schedule_interview(
         self,
         candidate: Candidate,
@@ -167,30 +167,30 @@ class TalentAcquisition:
         )
         self.interviews.append(interview)
         return interview
-    
+
     def complete_interview(self, interview: Interview, score: int, feedback: str = ""):
         """Complete an interview with feedback."""
         interview.completed = True
         interview.score = score
         interview.feedback = feedback
-    
+
     def hire_candidate(self, candidate: Candidate, job: JobPosting):
         """Hire a candidate."""
         candidate.stage = CandidateStage.HIRED
         job.status = JobStatus.FILLED
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get hiring statistics."""
         open_jobs = sum(1 for j in self.jobs.values() if j.status == JobStatus.OPEN)
         total_candidates = len(self.candidates)
         hired = sum(1 for c in self.candidates.values() if c.stage == CandidateStage.HIRED)
-        in_pipeline = sum(1 for c in self.candidates.values() 
+        in_pipeline = sum(1 for c in self.candidates.values()
                          if c.stage not in [CandidateStage.HIRED, CandidateStage.REJECTED])
         pending_interviews = sum(1 for i in self.interviews if not i.completed)
-        
+
         # Calculate average time to hire (simulated)
         avg_days = 14  # Would calculate from real data
-        
+
         return {
             "open_jobs": open_jobs,
             "total_candidates": total_candidates,
@@ -199,11 +199,11 @@ class TalentAcquisition:
             "pending_interviews": pending_interviews,
             "avg_days_to_hire": avg_days
         }
-    
+
     def format_dashboard(self) -> str:
         """Format talent acquisition dashboard."""
         stats = self.get_stats()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║  🔍 TALENT ACQUISITION                                    ║",
@@ -212,50 +212,50 @@ class TalentAcquisition:
             "║  📋 OPEN POSITIONS                                        ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
+
         status_icons = {"draft": "📝", "open": "🟢", "on_hold": "⏸️",
                        "closed": "🔴", "filled": "✅"}
         type_icons = {"full_time": "👔", "part_time": "⏰", "contract": "📄",
                      "internship": "🎓", "freelance": "💼"}
-        
+
         for job in list(self.jobs.values())[:4]:
             s_icon = status_icons.get(job.status.value, "⚪")
             t_icon = type_icons.get(job.job_type.value, "👔")
             lines.append(f"║  {s_icon} {t_icon} {job.title[:18]:<18} │ {job.applications:>3} apps │ {job.department[:8]:<8}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  👥 CANDIDATE PIPELINE                                    ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ])
-        
+
         stage_counts = {}
         for stage in CandidateStage:
             stage_counts[stage.value] = sum(1 for c in self.candidates.values() if c.stage == stage)
-        
+
         stage_icons = {"applied": "📥", "screening": "🔍", "interview": "🗣️",
                       "technical": "💻", "offer": "📋", "hired": "✅", "rejected": "❌"}
-        
-        for stage in [CandidateStage.APPLIED, CandidateStage.SCREENING, 
+
+        for stage in [CandidateStage.APPLIED, CandidateStage.SCREENING,
                      CandidateStage.INTERVIEW, CandidateStage.OFFER]:
             count = stage_counts.get(stage.value, 0)
             icon = stage_icons.get(stage.value, "⚪")
             bar = "█" * min(10, count) + "░" * (10 - min(10, count))
             lines.append(f"║    {icon} {stage.value.title():<12} │ {bar} │ {count:>3}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📅 UPCOMING INTERVIEWS                                   ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ])
-        
+
         pending = [i for i in self.interviews if not i.completed][:3]
         for interview in pending:
             candidate = self.candidates.get(interview.candidate_id)
             name = candidate.name if candidate else "Unknown"
             time = interview.scheduled_at.strftime("%b %d %H:%M")
             lines.append(f"║    🗣️ {name[:15]:<15} │ {interview.interviewer[:10]:<10} │ {time:<10}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📊 HIRING METRICS                                        ║",
@@ -269,36 +269,36 @@ class TalentAcquisition:
             f"║  🏯 {self.agency_name} - Hire the best!                   ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
     ta = TalentAcquisition("Saigon Digital Hub")
-    
+
     print("🔍 Talent Acquisition")
     print("=" * 60)
     print()
-    
+
     j1 = ta.create_job("Senior Developer", "Engineering", JobType.FULL_TIME, 2000, 4000)
     j2 = ta.create_job("UI/UX Designer", "Design", JobType.FULL_TIME, 1500, 3000)
     j3 = ta.create_job("Marketing Manager", "Marketing", JobType.FULL_TIME, 1800, 3500)
-    
+
     ta.post_job(j1)
     ta.post_job(j2)
     ta.post_job(j3)
-    
+
     c1 = ta.add_candidate("Alex Nguyen", "alex@email.com", j1, "linkedin")
     c2 = ta.add_candidate("Sarah Tran", "sarah@email.com", j1, "referral")
     c3 = ta.add_candidate("Mike Chen", "mike@email.com", j2, "website")
     c4 = ta.add_candidate("Lisa Pham", "lisa@email.com", j1, "linkedin")
-    
+
     ta.move_candidate(c1, CandidateStage.INTERVIEW)
     ta.move_candidate(c2, CandidateStage.SCREENING)
     ta.move_candidate(c3, CandidateStage.OFFER)
-    
+
     i1 = ta.schedule_interview(c1, "Khoa (CTO)", 24)
     i2 = ta.schedule_interview(c3, "Sarah (Design Lead)", 48)
-    
+
     print(ta.format_dashboard())

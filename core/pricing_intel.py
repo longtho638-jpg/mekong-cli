@@ -53,7 +53,7 @@ class PricingIntelligence:
     
     Orchestrates collective market intelligence to ensure fair and competitive agency pricing.
     """
-    
+
     # Predefined baseline rates
     BASELINES = {
         'landing_page': {'floor': 2500, 'median': 4200, 'top': 8500},
@@ -61,12 +61,12 @@ class PricingIntelligence:
         'web_app': {'floor': 15000, 'median': 45000, 'top': 150000},
         'seo_monthly': {'floor': 1500, 'median': 3500, 'top': 8000},
     }
-    
+
     def __init__(self):
         self.benchmarks: Dict[str, PricingBenchmark] = {}
         logger.info("Pricing Intelligence System initialized.")
         self._init_defaults()
-    
+
     def _init_defaults(self):
         """Seed the system with baseline benchmarks."""
         logger.info("Loading baseline market benchmarks...")
@@ -78,19 +78,19 @@ class PricingIntelligence:
                 top_rate=float(rates['top']),
                 sample_size=127 # Simulated
             )
-    
+
     def submit_project(self, sub: ProjectSubmission):
         """Register a new project data point into the collective set."""
         logger.info(f"New project data submitted for {sub.service_type}: ${sub.value:,.0f}")
         # In production: Update aggregates in DB
-    
+
     def format_benchmark_report(self, s_type: str) -> str:
         """Render ASCII benchmark report for a specific service."""
         if s_type not in self.benchmarks: return f"Service '{s_type}' not found."
-        
+
         b = self.benchmarks[s_type]
         name = s_type.replace('_', ' ').title()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 PRICING BENCHMARK - {name:<34} ║",
@@ -123,10 +123,10 @@ def register_commands() -> Dict[str, Any]:
 if __name__ == "__main__":
     print("💰 Initializing Pricing Intel...")
     print("=" * 60)
-    
+
     try:
         intel = PricingIntelligence()
         print("\n" + intel.format_benchmark_report("web_app"))
-        
+
     except Exception as e:
         logger.error(f"Intel Error: {e}")

@@ -93,8 +93,8 @@ class RevenueEngine(BaseEngine):
         thirty_days_ago = datetime.now() - timedelta(days=30)
         return sum(
             self._to_usd(inv.amount, inv.currency) for inv in self.invoices
-            if inv.status == InvoiceStatus.PAID 
-            and inv.paid_date 
+            if inv.status == InvoiceStatus.PAID
+            and inv.paid_date
             and inv.paid_date > thirty_days_ago
         )
 
@@ -120,7 +120,7 @@ class RevenueEngine(BaseEngine):
             # Compounding growth formula
             projected = mrr * ((1 + DEFAULT_GROWTH_RATE) ** i)
             forecasts.append(Forecast(
-                month=target_date.strftime("%Y-%m"), 
+                month=target_date.strftime("%Y-%m"),
                 projected=projected
             ))
 
@@ -142,16 +142,16 @@ class RevenueEngine(BaseEngine):
             "goals": self.get_goal_summary()
         }
 
-    # ============================================ 
+    # ============================================
     # $1M 2026 GOAL TRACKING
-    # ============================================ 
+    # ============================================
 
     def get_goal_summary(self) -> Dict[str, Any]:
         """Aggregates all metrics relevant to the $1M ARR target."""
         current_arr = self.get_arr()
         progress = min((current_arr / ARR_TARGET_2026) * 100, 100)
         gap = max(ARR_TARGET_2026 - current_arr, 0)
-        
+
         return {
             "current_arr": current_arr,
             "target_arr": ARR_TARGET_2026,
@@ -166,7 +166,7 @@ class RevenueEngine(BaseEngine):
             return 0
         if current_arr <= 0:
             return -1 # Undefined
-            
+
         # log(target / current) / log(1 + growth)
         return math.ceil(
             math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + DEFAULT_GROWTH_RATE)
@@ -177,22 +177,22 @@ class RevenueEngine(BaseEngine):
         stats = self.get_stats()
         f = stats["financials"]
         g = stats["goals"]
-        
+
         print("\n" + "═" * 65)
         print("║" + "💰 REVENUE ENGINE - PERFORMANCE DASHBOARD".center(63) + "║")
         print("═" * 65)
-        
+
         print(f"\n  💸 REVENUE: MRR: ${f['mrr']:,.0f} | ARR: ${f['arr']:,.0f}")
         print(f"  📂 INVOICES: Paid: {stats['volume']['paid_count']} | Outstanding: ${f['outstanding']:,.0f}")
-        
+
         # Goal Progress
         bar_w = 30
         filled = int(bar_w * g["progress_percent"] / 100)
         bar = "█" * filled + "░" * (bar_w - filled)
         print(f"\n  🎯 2026 GOAL: [{bar}] {g['progress_percent']}%")
         print(f"     └─ Gap to $1M: ${g['gap_usd']:,.0f}")
-        
+
         if g["months_to_goal"] > 0:
             print(f"     └─ Estimated Time to Goal: {g['months_to_goal']} months")
-            
+
         print("\n" + "═" * 65 + "\n")

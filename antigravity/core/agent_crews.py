@@ -84,7 +84,7 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("code-reviewer", "qa", ["code-review"]),
         skills_required=["planning", "frontend-development", "backend-development"],
     ),
-    
+
     # 💰 Revenue Accelerator Crew - Business growth
     "revenue_accelerator": Crew(
         name="Revenue Accelerator Crew",
@@ -99,7 +99,7 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("client-value", "qa", []),
         skills_required=["binh-phap-wisdom", "payment-integration"],
     ),
-    
+
     # 🎨 Content Machine Crew - Media production
     "content_machine": Crew(
         name="Content Machine Crew",
@@ -114,7 +114,7 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("growth-strategist", "qa", []),
         skills_required=["research", "brainstorming"],
     ),
-    
+
     # 🛠️ Dev Ops Crew - Infrastructure & CI/CD
     "dev_ops": Crew(
         name="DevOps Crew",
@@ -129,7 +129,7 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("code-reviewer", "qa", ["code-review"]),
         skills_required=["frontend-development", "backend-development", "databases"],
     ),
-    
+
     # 🏯 Strategy Crew - Strategic Binh Pháp analysis
     "strategy": Crew(
         name="Strategy Crew",
@@ -143,7 +143,7 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("money-maker", "qa", []),
         skills_required=["binh-phap-wisdom", "research", "planning"],
     ),
-    
+
     # 🐛 Debug Squad Crew - High-efficiency bug fixing
     "debug_squad": Crew(
         name="Debug Squad Crew",
@@ -175,7 +175,7 @@ def get_crew_summary(name: str) -> str:
     crew = get_crew(name)
     if not crew:
         return f"⚠️ Crew '{name}' not found."
-    
+
     lines = [
         f"👥 CREW: {crew.name}",
         f"   {crew.description}",
@@ -202,31 +202,31 @@ def run_crew(name: str, context: Optional[Dict[str, Any]] = None) -> CrewResult:
             total_steps=0,
             error=f"Crew '{name}' is not in the Agency OS roster."
         )
-    
+
     started_at = datetime.now()
     start_time = time.time()
-    
+
     # Total steps = Planning (1) + Workers (N) + QA (1)
     total_steps = 1 + len(crew.workers) + 1
-    
+
     logger.info(f"Activating crew: {crew.name}")
-    
+
     # Phase 1: Context & Planning
     logger.info(f"PHASE 1: {crew.lead.agent} is preparing the context...")
     time.sleep(0.1) # Simulating prep
-    
+
     # Phase 2: Parallel/Sequential Execution
     for i, worker in enumerate(crew.workers, 1):
         logger.info(f"PHASE 2.{i}: {worker.agent} executing assigned task...")
         time.sleep(0.05) # Simulating work
-    
+
     # Phase 3: Review & Gatekeeping
     logger.info(f"PHASE 3: {crew.qa.agent} performing final quality check...")
     time.sleep(0.1) # Simulating review
-    
+
     execution_time = time.time() - start_time
     completed_at = datetime.now()
-    
+
     return CrewResult(
         crew_name=name,
         status=CrewStatus.COMPLETED,

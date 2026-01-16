@@ -87,7 +87,7 @@ class ContractGenerator:
     
     Automates the creation of professional, legally-aligned service agreements.
     """
-    
+
     def __init__(self, agency_name: str, agency_email: str, agency_address: str):
         self.agency = ContractParty(
             name=agency_name,
@@ -96,7 +96,7 @@ class ContractGenerator:
             address=agency_address
         )
         logger.info(f"Contract Generator initialized for {agency_name}")
-    
+
     def create_contract(
         self,
         client: ContractParty,
@@ -120,12 +120,12 @@ class ContractGenerator:
         )
         logger.info(f"Contract {contract.id} generated for {client.company}")
         return contract
-    
+
     def format_contract(self, contract: Contract) -> str:
         """Render the contract as a clean, text-based document."""
         contract.start_date + timedelta(days=30 * contract.duration_months)
         total_value = contract.monthly_fee * contract.duration_months
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║              SERVICE AGREEMENT                            ║",
@@ -153,18 +153,18 @@ class ContractGenerator:
             "",
             "Services Included:",
         ]
-        
+
         for service in contract.scope.services:
             lines.append(f"  ✓ {service}")
-        
+
         lines.append("\nDeliverables:")
         for deliverable in contract.scope.deliverables:
             lines.append(f"  • {deliverable}")
-        
+
         lines.append("\nExclusions:")
         for exclusion in contract.scope.exclusions:
             lines.append(f"  ✗ {exclusion}")
-        
+
         lines.extend([
             f"\nTimeline: {contract.scope.timeline}",
             "",
@@ -196,7 +196,7 @@ class ContractGenerator:
             f"  🏯 {contract.agency.company} - \"Không đánh mà thắng\"",
             "═══════════════════════════════════════════════════════════",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -204,17 +204,17 @@ class ContractGenerator:
 if __name__ == "__main__":
     print("📄 Initializing Contract Generator...")
     print("=" * 60)
-    
+
     try:
         gen = ContractGenerator("Saigon Digital", "hello@saigon.vn", "HCM City")
-        
+
         c_party = ContractParty("Hoang", "Sunrise Realty", "hoang@sunrise.vn", "District 1")
         c_scope = ServiceScope(
             services=["SEO", "Ads"], deliverables=["Reports"], exclusions=["Video"], timeline="Monthly"
         )
-        
+
         agreement = gen.create_contract(c_party, c_scope, 2500.0)
         print("\n" + gen.format_contract(agreement))
-        
+
     except Exception as e:
         logger.error(f"Generation Error: {e}")

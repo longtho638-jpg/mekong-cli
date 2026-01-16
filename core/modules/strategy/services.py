@@ -12,17 +12,17 @@ class StrategyService:
     Binh Phap Strategic Engine.
     Analyzes business context against the 13 Chapters of Art of War.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
-        
+
     def analyze_situation(self, context: str) -> List[StrategicInsight]:
         """
         Perform a strategic analysis based on provided context.
         In a real scenario, this would use LLM. Here we use heuristics.
         """
         insights = []
-        
+
         # Chapter 1: Planning (Assess 5 Factors)
         insights.append(StrategicInsight(
             chapter=Chapter.PLANNING,
@@ -31,7 +31,7 @@ class StrategyService:
             action_items=["Define clear MVV (Mission/Vision/Values)", "Assess market timing (Heaven)"],
             score=85
         ))
-        
+
         # Chapter 3: Strategy (Win without fighting)
         insights.append(StrategicInsight(
             chapter=Chapter.STRATEGY,
@@ -40,7 +40,7 @@ class StrategyService:
             action_items=["Identify niche dominance", "Build proprietary data moat"],
             score=90
         ))
-        
+
         return insights
 
     def get_chapter_title(self, chapter: Chapter) -> str:

@@ -18,12 +18,12 @@ from antigravity.core.agent_crews import (
 )
 
 class TestAgentCrews:
-    
+
     def test_crew_definitions(self):
         """Verify crew definitions are valid."""
         assert "product_launch" in CREWS
         assert "revenue_accelerator" in CREWS
-        
+
         for name, crew in CREWS.items():
             assert crew.lead is not None
             assert len(crew.workers) > 0
@@ -33,7 +33,7 @@ class TestAgentCrews:
         """Test crew retrieval."""
         crew = get_crew("product_launch")
         assert crew.name == "Product Launch Crew"
-        
+
         assert get_crew("non_existent") is None
 
     def test_get_crew_summary(self):

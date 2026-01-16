@@ -81,13 +81,13 @@ class DigitalMerchandiser:
     
     Manages the visual presentation, themes, and conversion performance of digital storefronts.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.displays: Dict[str, ProductDisplay] = {}
         self.themes: Dict[str, StoreTheme] = {}
         logger.info(f"Digital Merchandiser system initialized for {agency_name}")
-    
+
     def create_display(
         self,
         store_id: str,
@@ -110,18 +110,18 @@ class DigitalMerchandiser:
         self.displays[display.id] = display
         logger.info(f"Created display: {name} for store {store_id}")
         return display
-    
+
     def launch_display(self, display_id: str) -> bool:
         """Mark a display as live."""
         if display_id not in self.displays:
             return False
-        
+
         d = self.displays[display_id]
         d.status = DisplayStatus.LIVE
         d.start_date = datetime.now()
         logger.info(f"Display {display_id} is now LIVE")
         return True
-    
+
     def register_theme(
         self,
         store_id: str,
@@ -139,7 +139,7 @@ class DigitalMerchandiser:
         self.themes[theme.id] = theme
         logger.info(f"Theme registered: {name} ({color})")
         return theme
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Aggregate visual merchandising performance metrics."""
         live = [d for d in self.displays.values() if d.status == DisplayStatus.LIVE]
@@ -148,14 +148,14 @@ class DigitalMerchandiser:
             "live": len(live),
             "total_themes": len(self.themes)
         }
-    
+
     def format_dashboard(self) -> str:
         """Render the Digital Merchandiser Dashboard."""
         live_count = sum(1 for d in self.displays.values() if d.status == DisplayStatus.LIVE)
         total_clicks = sum(d.clicks for d in self.displays.values())
         total_conv = sum(d.conversions for d in self.displays.values())
         avg_cvr = (total_conv / total_clicks * 100) if total_clicks else 0.0
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🎨 DIGITAL MERCHANDISER DASHBOARD{' ' * 28}║",
@@ -164,28 +164,28 @@ class DigitalMerchandiser:
             "║  🖼️ ACTIVE VISUAL DISPLAYS                                ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         type_icons = {
-            DisplayType.HOMEPAGE_HERO: "🏠", DisplayType.COLLECTION_BANNER: "📦", 
+            DisplayType.HOMEPAGE_HERO: "🏠", DisplayType.COLLECTION_BANNER: "📦",
             DisplayType.PRODUCT_FEATURE: "⭐", DisplayType.PROMO_POPUP: "🎉"
         }
-        
+
         for d in list(self.displays.values())[:5]:
             icon = type_icons.get(d.display_type, "🖼️")
             s_icon = "🟢" if d.status == DisplayStatus.LIVE else "⚪"
             name_disp = (d.name[:18] + '..') if len(d.name) > 20 else d.name
             lines.append(f"║  {s_icon} {icon} {name_disp:<20} │ {d.clicks:>5} clicks │ {d.conversion_rate:>4.1f}%  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  🎨 REGISTERED THEMES                                     ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         for t in list(self.themes.values())[:3]:
             name_disp = (t.name[:15] + '..') if len(t.name) > 17 else t.name
             lines.append(f"║    🎨 {name_disp:<17} │ {t.primary_color:<8} │ {t.layout:<10}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [🖼️ Create]  [🎨 Themes]  [📊 Analytics]  [⚙️ Settings]  ║",
@@ -193,7 +193,7 @@ class DigitalMerchandiser:
             f"║  🏯 {self.agency_name[:40]:<40} - Visual Win!        ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -201,19 +201,19 @@ class DigitalMerchandiser:
 if __name__ == "__main__":
     print("🎨 Initializing Merchandiser...")
     print("=" * 60)
-    
+
     try:
         merch = DigitalMerchandiser("Saigon Digital Hub")
-        
+
         # Seed
         d1 = merch.create_display("STORE-1", "Spring Hero", DisplayType.HOMEPAGE_HERO)
         merch.launch_display(d1.id)
         d1.clicks = 1000
         d1.conversions = 50
-        
+
         merch.register_theme("STORE-1", "Minimal Dark", "#000", "Inter")
-        
+
         print("\n" + merch.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Merch Error: {e}")

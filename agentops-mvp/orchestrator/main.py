@@ -61,12 +61,12 @@ AGENTS = {
 class TaskSubmission(BaseModel):
     agent_name: str
     input_data: Dict
-    
+
 class TaskResponse(BaseModel):
     task_id: str
     status: str
     created_at: str
-    
+
 class AgentMetrics(BaseModel):
     agent_name: str
     total_tasks: int
@@ -105,18 +105,18 @@ async def submit_task(
             status_code=404,
             detail=f"Agent '{submission.agent_name}' not found"
         )
-    
+
     # Create task
     task = AgentTask(
         task_id=f"task-{datetime.now().strftime('%Y%m%d%H%M%S')}",
         agent_name=submission.agent_name,
         input_data=submission.input_data
     )
-    
+
     # Execute task in background
     agent = AGENTS[submission.agent_name]
     background_tasks.add_task(agent.execute_task, task)
-    
+
     return TaskResponse(
         task_id=task.task_id,
         status=task.status,
@@ -129,10 +129,10 @@ async def get_task_status(task_id: str):
     """Get task status and result"""
     # Retrieve from Redis
     task_data = redis_client.get(f"task:{task_id}")
-    
+
     if not task_data:
         raise HTTPException(status_code=404, detail="Task not found")
-    
+
     return AgentTask.parse_raw(task_data)
 
 
@@ -148,10 +148,10 @@ async def get_agent_metrics(agent_name: str):
     """
     if agent_name not in AGENTS:
         raise HTTPException(status_code=404, detail="Agent not found")
-    
+
     agent = AGENTS[agent_name]
     metrics = agent.get_metrics()
-    
+
     return AgentMetrics(
         agent_name=agent_name,
         **metrics
@@ -169,7 +169,7 @@ async def get_win3_metrics():
     - STARTUP WIN: Protection, growth support
     """
     # TODO: Calculate real WIN³ metrics from agent data
-    
+
     return {
         "anh_win": {
             "portfolio_visibility": "95%",
@@ -199,7 +199,7 @@ async def health_check():
         redis_ok = True
     except:
         redis_ok = False
-    
+
     return {
         "status": "healthy" if redis_ok else "degraded",
         "redis": "connected" if redis_ok else "disconnected",

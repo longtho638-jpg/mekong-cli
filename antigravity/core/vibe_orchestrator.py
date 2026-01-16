@@ -65,11 +65,11 @@ class VIBEOrchestrator(BaseEngine):
         """Initializes a new task for the workforce."""
         if isinstance(agent, str):
             agent = AgentType(agent.lower())
-            
+
         task = AgentTask(
-            agent=agent, 
+            agent=agent,
             prompt=prompt,
-            description=description or f"Task for {agent.value}", 
+            description=description or f"Task for {agent.value}",
             priority=priority
         )
         self.task_queue.append(task)
@@ -79,7 +79,7 @@ class VIBEOrchestrator(BaseEngine):
         """Internal execution unit for a single agent task."""
         task.start()
         start_time = time.time()
-        
+
         try:
             handler = self.agent_handlers.get(task.agent)
             if handler:
@@ -89,14 +89,14 @@ class VIBEOrchestrator(BaseEngine):
                 # Default mock behavior if no handler registered
                 logger.warning(f"No handler for {task.agent.value}. Using mock completion.")
                 task.complete(f"MOCK_RESULT: {task.agent.value} processed prompt.")
-                
+
             duration = (time.time() - start_time) * 1000
             logger.info(f"Agent {task.agent.value} completed task in {duration:.0f}ms")
-            
+
         except Exception as e:
             logger.error(f"Agent {task.agent.value} failure: {e}")
             task.fail(str(e))
-            
+
         return task
 
     def execute_sequential(self, tasks: List[AgentTask]) -> ChainResult:
@@ -105,11 +105,11 @@ class VIBEOrchestrator(BaseEngine):
         result = ChainResult(success=True)
 
         print(f"⛓️  Executing Sequential Chain ({len(tasks)} tasks)...")
-        
+
         for task in tasks:
             self._process_single_task(task)
             result.add_task(task)
-            
+
             if task.status == "completed":
                 self.completed_history.append(task)
             else:
@@ -131,7 +131,7 @@ class VIBEOrchestrator(BaseEngine):
             for future in concurrent.futures.as_completed(futures):
                 task = futures[future]
                 result.add_task(task)
-                
+
                 if task.status == "completed":
                     self.completed_history.append(task)
                 else:
@@ -152,7 +152,7 @@ class VIBEOrchestrator(BaseEngine):
                 prompt=f"Goal: {objective} | Current Phase: {agent_type.value}",
                 description=f"Mission {blueprint_name}: {agent_type.value}"
             ))
-            
+
         return self.execute_sequential(tasks)
 
     def delegate(self, agent: Union[AgentType, str], prompt: str) -> AgentTask:

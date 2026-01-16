@@ -35,18 +35,18 @@ class Settings(BaseSettings):
     APP_NAME: str = Field(default="Mekong Agency OS", description="Official agency name")
     ENV: str = Field(default="development", description="Execution environment (dev/prod)")
     VERSION: str = Field(default="2.5.0", description="System version")
-    
+
     # --- Cloud Infrastructure (Supabase) ---
     SUPABASE_URL: Optional[str] = Field(default=None, description="Supabase project URL")
     SUPABASE_KEY: Optional[str] = Field(default=None, description="Supabase service role or anon key")
-    
+
     # --- AI Intelligence Providers ---
     OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API access key")
     GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API access key")
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, description="Anthropic API access key")
     OPENROUTER_API_KEY: Optional[str] = Field(default=None, description="OpenRouter API access key")
     ELEVENLABS_API_KEY: Optional[str] = Field(default=None, description="ElevenLabs voice synthesis key")
-    
+
     # --- Finance & Notifications ---
     STRIPE_SECRET_KEY: Optional[str] = Field(default=None, description="Stripe secret key for billing")
     TELEGRAM_BOT_TOKEN: Optional[str] = Field(default=None, description="Telegram bot API token")
@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     # --- Template Repositories ---
     TEMPLATE_REPO_STARTER: str = "https://github.com/longtho638-jpg/hybrid-agent-template.git"
     TEMPLATE_REPO_PRO: str = "https://github.com/longtho638-jpg/mekong-template-pro.git"
-    
+
     # Pydantic V2 Settings
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -81,13 +81,13 @@ def get_settings() -> Settings:
     Logs critical warnings if core infrastructure is unconfigured.
     """
     settings = Settings()
-    
+
     # Connectivity Checks
     if not settings.SUPABASE_URL:
         logger.warning("⚠️ SUPABASE_URL not configured. Database features may be disabled.")
     if not settings.GEMINI_API_KEY:
         logger.info("ℹ️ GEMINI_API_KEY missing. AI features will default to mock data.")
-        
+
     return settings
 
 

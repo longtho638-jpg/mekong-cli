@@ -8,7 +8,7 @@ def update_file_placeholders(file_path: Path, replacements: Dict[str, str]) -> b
     """Updates placeholders in a file with provided values."""
     if not file_path.exists():
         return False
-    
+
     try:
         content = file_path.read_text(encoding="utf-8")
         for key, value in replacements.items():

@@ -11,11 +11,11 @@ from core.entities.deal import Deal, DealStage
 
 class CreateDealUseCase:
     """Use case for creating a new deal."""
-    
+
     def __init__(self, deal_repository=None):
         """Initialize with optional repository."""
         self.deal_repository = deal_repository
-    
+
     def execute(
         self,
         title: str,
@@ -36,13 +36,13 @@ class CreateDealUseCase:
         # Validate inputs
         if not title or not company:
             raise ValueError("Title and company are required")
-        
+
         if value <= 0:
             raise ValueError("Value must be positive")
-        
+
         if not 0 <= probability <= 100:
             raise ValueError("Probability must be between 0 and 100")
-        
+
         # Create deal entity
         deal = Deal(
             title=title,
@@ -54,9 +54,9 @@ class CreateDealUseCase:
             created_at=datetime.now(),
             updated_at=datetime.now()
         )
-        
+
         # Persist if repository available
         if self.deal_repository:
             deal = self.deal_repository.save(deal)
-        
+
         return deal

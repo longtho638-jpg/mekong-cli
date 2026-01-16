@@ -56,7 +56,7 @@ class Invoice:
     paid_date: Optional[datetime] = None
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
-    
+
     def get_amount_vnd(self) -> int:
         """Get amount in VND (1 USD = 24,500 VND)."""
         if self.currency == Currency.VND:
@@ -71,7 +71,7 @@ class Forecast:
     projected: float
     actual: float = 0.0
     confidence: float = 0.8
-    
+
     def variance(self) -> float:
         """Calculate variance from projection."""
         return self.actual - self.projected
@@ -87,11 +87,11 @@ class RevenueEngine:
         engine.mark_paid(inv)
         print(engine.get_mrr())
     """
-    
+
     def __init__(self):
         self.invoices: List[Invoice] = []
         self._next_id = 1
-    
+
     def create_invoice(
         self,
         client_name: str,
@@ -110,18 +110,18 @@ class RevenueEngine:
         self.invoices.append(invoice)
         self._next_id += 1
         return invoice
-    
+
     def send_invoice(self, invoice: Invoice) -> Invoice:
         """Mark invoice as sent."""
         invoice.status = InvoiceStatus.SENT
         return invoice
-    
+
     def mark_paid(self, invoice: Invoice) -> Invoice:
         """Mark invoice as paid."""
         invoice.status = InvoiceStatus.PAID
         invoice.paid_date = datetime.now()
         return invoice
-    
+
     def get_total_revenue(self) -> float:
         """Get total revenue from paid invoices (in USD)."""
         return sum(
@@ -129,7 +129,7 @@ class RevenueEngine:
             for inv in self.invoices
             if inv.status == InvoiceStatus.PAID
         )
-    
+
     def get_mrr(self) -> float:
         """Get Monthly Recurring Revenue estimate."""
         # Simple approach: last 30 days paid invoices
@@ -139,11 +139,11 @@ class RevenueEngine:
             for inv in self.invoices
             if inv.status == InvoiceStatus.PAID and inv.paid_date and inv.paid_date > thirty_days_ago
         )
-    
+
     def get_arr(self) -> float:
         """Get Annual Recurring Revenue estimate."""
         return self.get_mrr() * 12
-    
+
     def get_outstanding(self) -> float:
         """Get total outstanding (unpaid) amount."""
         return sum(
@@ -151,22 +151,22 @@ class RevenueEngine:
             for inv in self.invoices
             if inv.status in [InvoiceStatus.SENT, InvoiceStatus.OVERDUE]
         )
-    
+
     def forecast_monthly(self, months: int = 3) -> List[Forecast]:
         """Generate monthly forecast."""
         mrr = self.get_mrr()
         growth_rate = 0.10  # 10% monthly growth assumption
-        
+
         forecasts = []
         current = datetime.now()
-        
+
         for i in range(months):
             month = (current + timedelta(days=30 * (i + 1))).strftime("%Y-%m")
             projected = mrr * ((1 + growth_rate) ** (i + 1))
             forecasts.append(Forecast(month=month, projected=projected))
-        
+
         return forecasts
-    
+
     def get_stats(self) -> Dict:
         """Get revenue statistics."""
         return {
@@ -177,17 +177,17 @@ class RevenueEngine:
             "arr": self.get_arr(),
             "outstanding": self.get_outstanding()
         }
-    
+
     # ===== $1M 2026 Goal Tracking =====
-    
+
     def get_goal_progress(self) -> float:
         """Get progress toward $1M ARR goal (0-100%)."""
         return min((self.get_arr() / ARR_TARGET_2026) * 100, 100)
-    
+
     def get_goal_gap(self) -> float:
         """Get remaining ARR needed to hit $1M goal."""
         return max(ARR_TARGET_2026 - self.get_arr(), 0)
-    
+
     def months_to_goal(self, growth_rate: float = 0.10) -> int:
         """
         Estimate months to hit $1M ARR at given monthly growth rate.
@@ -198,7 +198,7 @@ class RevenueEngine:
             return 0
         if current_arr <= 0 or growth_rate <= 0:
             return -1  # Cannot reach goal
-        
+
         import math
         # ARR * (1 + growth_rate)^n = target
         # n = log(target/ARR) / log(1 + growth_rate)
@@ -206,7 +206,7 @@ class RevenueEngine:
             math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + growth_rate)
         )
         return months
-    
+
     def get_goal_dashboard(self) -> Dict:
         """Get complete $1M 2026 goal dashboard."""
         return {

@@ -11,17 +11,17 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.agent_chains import (
-    AGENT_INVENTORY, 
-    AGENT_CHAINS, 
-    get_chain, 
-    get_chain_summary, 
+    AGENT_INVENTORY,
+    AGENT_CHAINS,
+    get_chain,
+    get_chain_summary,
     AgentCategory,
     AgentStep,
     AgentConfig
 )
 
 class TestAgentChains:
-    
+
     def test_inventory_structure(self):
         """Verify inventory has correct structure."""
         for name, info in AGENT_INVENTORY.items():
@@ -40,13 +40,13 @@ class TestAgentChains:
                 assert isinstance(step, AgentStep)
                 # Verify agent exists in inventory
                 assert step.agent in AGENT_INVENTORY
-                
+
     def test_get_chain(self):
         """Test get_chain retrieval."""
         chain = get_chain("dev", "cook")
         assert len(chain) > 0
         assert chain[0].agent == "planner"
-        
+
         # Test non-existent
         assert get_chain("invalid", "command") == []
 

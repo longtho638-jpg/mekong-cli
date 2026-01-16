@@ -70,7 +70,7 @@ class Franchisee:
     clients_count: int = 0
     joined_at: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def calculate_royalty(self, revenue: float) -> float:
         """Calculates the royalty amount for a given revenue stream."""
         return revenue * self.royalty_rate
@@ -83,23 +83,23 @@ class FranchiseManager:
     The brain of the Agency OS expansion model.
     Ensures optimal partner density and financial health across the network.
     """
-    
+
     def __init__(self):
         self.franchisees: List[Franchisee] = []
         self._next_id = 1
-    
+
     def get_available_territories(self) -> List[Territory]:
         """Identifies territories that have not yet reached partner capacity."""
         available = []
         for territory, capacity in TERRITORY_CAPACITY.items():
             # Only count active/pending partners against capacity
-            current_count = sum(1 for f in self.franchisees 
-                               if f.territory == territory and f.status in 
+            current_count = sum(1 for f in self.franchisees
+                               if f.territory == territory and f.status in
                                [FranchiseStatus.ACTIVE, FranchiseStatus.PENDING])
             if current_count < capacity:
                 available.append(territory)
         return available
-    
+
     def add_franchisee(
         self,
         name: str,
@@ -116,7 +116,7 @@ class FranchiseManager:
         if territory not in available:
             logger.warning(f"Registration failed: Territory {territory.value} is at capacity.")
             return None
-        
+
         franchisee = Franchisee(
             id=self._next_id,
             name=name,
@@ -130,7 +130,7 @@ class FranchiseManager:
         self._next_id += 1
         logger.info(f"Registered new partner: {name} in {territory.value}")
         return franchisee
-    
+
     def record_revenue(self, franchisee_id: int, revenue: float) -> float:
         """
         Records revenue for a specific partner and updates royalty totals.
@@ -139,16 +139,16 @@ class FranchiseManager:
         franchisee = next((f for f in self.franchisees if f.id == franchisee_id), None)
         if not franchisee:
             raise ValueError(f"Franchisee ID {franchisee_id} not found.")
-            
+
         royalty = franchisee.calculate_royalty(revenue)
         franchisee.total_revenue += revenue
         franchisee.total_royalties += royalty
         return royalty
-    
+
     def get_network_stats(self) -> Dict[str, Any]:
         """Calculates high-level metrics for the entire franchise network."""
         active = [f for f in self.franchisees if f.status == FranchiseStatus.ACTIVE]
-        
+
         return {
             "performance": {
                 "total_network_revenue": sum(f.total_revenue for f in self.franchisees),
@@ -164,7 +164,7 @@ class FranchiseManager:
                 "capacity_utilization": (len(self.franchisees) / sum(TERRITORY_CAPACITY.values())) * 100
             }
         }
-    
+
     def get_territory_report(self) -> List[Dict[str, Any]]:
         """Generates a detailed performance report broken down by territory."""
         report = []

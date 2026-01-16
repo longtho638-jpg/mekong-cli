@@ -13,64 +13,64 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class TestContentMarketing:
     """Tests for ContentMarketingStrategy module."""
-    
+
     def test_strategy_generation(self):
         """Test complete strategy generation."""
         from core.content_marketing import ContentMarketingStrategy
-        
+
         gen = ContentMarketingStrategy()
         strategy = gen.generate_strategy("digital agency")
-        
+
         assert strategy is not None
         assert strategy.business_type == "digital agency"
         assert strategy.created_at is not None
-    
+
     def test_content_pillars(self):
         """Test content pillars generation."""
         from core.content_marketing import ContentMarketingStrategy
-        
+
         gen = ContentMarketingStrategy()
         pillars = gen.generate_content_pillars("digital agency")
-        
+
         assert len(pillars) >= 5
         assert all(p.name for p in pillars)
         assert all(p.description for p in pillars)
         assert all(len(p.topics) > 0 for p in pillars)
-    
+
     def test_channel_strategy(self):
         """Test channel strategy generation."""
         from core.content_marketing import ContentMarketingStrategy, ContentChannel
-    
+
         gen = ContentMarketingStrategy()
         strategy = gen.generate_channel_strategy("digital agency")
-    
+
         assert len(strategy.channels) >= 2
         assert strategy.primary_channel == ContentChannel.LINKEDIN
 
     def test_content_calendar(self):
         """Test content calendar generation."""
         from core.content_marketing import ContentMarketingStrategy
-    
+
         gen = ContentMarketingStrategy()
         calendar = gen.generate_content_calendar("digital agency")
-    
+
         assert len(calendar.entries) == 4
         assert calendar.entries[0].day == "Monday"
 
     def test_seo_keywords(self):
         """Test SEO keywords generation."""
         from core.content_marketing import ContentMarketingStrategy
-    
+
         gen = ContentMarketingStrategy()
         keywords = gen.generate_seo_keywords("digital agency")
-    
+
         assert len(keywords) >= 1
         assert "automation" in keywords[0].keyword.lower()
 
     def test_performance_metrics(self):
         """Test performance metrics."""
         from core.content_marketing import ContentMarketingStrategy
-    
+
         gen = ContentMarketingStrategy()
         metrics = gen.get_performance_metrics()
         assert metrics.engagement_rate_target > 0
@@ -78,27 +78,27 @@ class TestContentMarketing:
     def test_format_strategy(self):
         """Test strategy formatting."""
         from core.content_marketing import ContentMarketingStrategy
-    
+
         gen = ContentMarketingStrategy()
         strategy = gen.generate_strategy("e-commerce blog")
         formatted = gen.format_strategy(strategy)
-    
+
         assert "STRATEGY FOR" in formatted
         assert "E-COMMERCE BLOG" in formatted
-    
+
     def test_different_business_types(self):
         """Test different business type templates."""
         from core.content_marketing import ContentMarketingStrategy
-        
+
         gen = ContentMarketingStrategy()
-        
+
         business_types = [
             "e-commerce blog",
             "B2B thought leadership",
             "local business social media",
             "digital agency"
         ]
-        
+
         for biz in business_types:
             strategy = gen.generate_strategy(biz)
             assert strategy.business_type == biz
@@ -109,10 +109,10 @@ def run_all_tests():
     """Run all tests and print results."""
     print("🧪 Running Content Marketing Tests...")
     print("=" * 50)
-    
+
     tests_passed = 0
     tests_failed = 0
-    
+
     test_obj = TestContentMarketing()
     test_methods = [
         ("Strategy generation", test_obj.test_strategy_generation),
@@ -124,7 +124,7 @@ def run_all_tests():
         ("Format strategy", test_obj.test_format_strategy),
         ("Business types", test_obj.test_different_business_types),
     ]
-    
+
     for name, test_func in test_methods:
         try:
             test_func()
@@ -133,15 +133,15 @@ def run_all_tests():
         except Exception as e:
             print(f"   ❌ {name}: {e}")
             tests_failed += 1
-    
+
     print("\n" + "=" * 50)
     print(f"📊 Results: {tests_passed} passed, {tests_failed} failed")
-    
+
     if tests_failed == 0:
         print("✅ ALL TESTS PASSED!")
     else:
         print("❌ SOME TESTS FAILED")
-    
+
     return tests_failed == 0
 
 

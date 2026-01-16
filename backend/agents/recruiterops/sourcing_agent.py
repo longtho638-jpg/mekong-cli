@@ -41,7 +41,7 @@ class TalentProfile:
     linkedin_url: str = ""
     notes: str = ""
     sourced_at: datetime = None
-    
+
     def __post_init__(self):
         if self.sourced_at is None:
             self.sourced_at = datetime.now()
@@ -57,12 +57,12 @@ class SourcingAgent:
     - Match skills
     - Track sources
     """
-    
+
     def __init__(self):
         self.name = "Sourcing"
         self.status = "ready"
         self.talents: Dict[str, TalentProfile] = {}
-        
+
     def discover(
         self,
         name: str,
@@ -74,7 +74,7 @@ class SourcingAgent:
     ) -> TalentProfile:
         """Discover new talent"""
         talent_id = f"talent_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         talent = TalentProfile(
             id=talent_id,
             name=name,
@@ -84,31 +84,31 @@ class SourcingAgent:
             source=source,
             match_score=match_score
         )
-        
+
         self.talents[talent_id] = talent
         return talent
-    
+
     def qualify(self, talent_id: str, match_score: int) -> TalentProfile:
         """Qualify talent with match score"""
         if talent_id not in self.talents:
             raise ValueError(f"Talent not found: {talent_id}")
-            
+
         talent = self.talents[talent_id]
         talent.status = TalentStatus.QUALIFIED
         talent.match_score = match_score
-        
+
         return talent
-    
+
     def add_to_pool(self, talent_id: str) -> TalentProfile:
         """Add to talent pool"""
         if talent_id not in self.talents:
             raise ValueError(f"Talent not found: {talent_id}")
-            
+
         talent = self.talents[talent_id]
         talent.status = TalentStatus.IN_POOL
-        
+
         return talent
-    
+
     def search_by_skills(self, skills: List[str]) -> List[TalentProfile]:
         """Search talents by skills"""
         matching = []
@@ -116,20 +116,20 @@ class SourcingAgent:
             if any(skill.lower() in [s.lower() for s in talent.skills] for skill in skills):
                 matching.append(talent)
         return sorted(matching, key=lambda t: t.match_score, reverse=True)
-    
+
     def get_by_source(self, source: CandidateSource) -> List[TalentProfile]:
         """Get talents by source"""
         return [t for t in self.talents.values() if t.source == source]
-    
+
     def get_stats(self) -> Dict:
         """Get sourcing statistics"""
         talents = list(self.talents.values())
-        
+
         source_breakdown = {
             s.value: len([t for t in talents if t.source == s])
             for s in CandidateSource
         }
-        
+
         return {
             "total_sourced": len(talents),
             "in_pool": len([t for t in talents if t.status == TalentStatus.IN_POOL]),
@@ -142,25 +142,25 @@ class SourcingAgent:
 # Demo
 if __name__ == "__main__":
     agent = SourcingAgent()
-    
+
     print("🔍 Sourcing Agent Demo\n")
-    
+
     # Discover talents
     t1 = agent.discover("Nguyen A", "a@email.com", "Senior Engineer", ["Python", "React", "AWS"], CandidateSource.LINKEDIN, 92)
     t2 = agent.discover("Tran B", "b@email.com", "Backend Dev", ["Python", "Django"], CandidateSource.GITHUB, 85)
     t3 = agent.discover("Le C", "c@email.com", "Full Stack", ["Node.js", "React"], CandidateSource.REFERRAL, 78)
-    
+
     print(f"📋 Talent: {t1.name}")
     print(f"   Title: {t1.title}")
     print(f"   Skills: {', '.join(t1.skills)}")
     print(f"   Match: {t1.match_score}%")
-    
+
     # Qualify and pool
     agent.qualify(t1.id, 95)
     agent.add_to_pool(t1.id)
-    
+
     print(f"\n✅ Status: {t1.status.value}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

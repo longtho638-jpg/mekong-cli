@@ -35,7 +35,7 @@ class VibeTuner:
     """
     Manages AI persona adaptation for local Vietnamese contexts.
     """
-    
+
     # Static configuration for all vibes
     VIBES: Dict[VibeRegion, VibeConfig] = {
         VibeRegion.MIEN_TAY: VibeConfig(
@@ -108,24 +108,24 @@ class VibeTuner:
     # Location mappings for auto-detection
     LOCATIONS_MAP = {
         VibeRegion.MIEN_TAY: [
-            "cần thơ", "can tho", "an giang", "đồng tháp", "vĩnh long", "bến tre", 
-            "tiền giang", "sóc trăng", "bạc liêu", "cà mau", "kiên giang", "hậu giang", 
+            "cần thơ", "can tho", "an giang", "đồng tháp", "vĩnh long", "bến tre",
+            "tiền giang", "sóc trăng", "bạc liêu", "cà mau", "kiên giang", "hậu giang",
             "sa đéc", "long an", "mekong"
         ],
         VibeRegion.MIEN_BAC: [
-            "hà nội", "ha noi", "hải phòng", "quảng ninh", "bắc ninh", "hải dương", 
+            "hà nội", "ha noi", "hải phòng", "quảng ninh", "bắc ninh", "hải dương",
             "hưng yên", "nam định", "thái bình", "ninh bình"
         ],
         VibeRegion.MIEN_TRUNG: [
-            "đà nẵng", "da nang", "huế", "quảng nam", "quảng ngãi", "bình định", 
+            "đà nẵng", "da nang", "huế", "quảng nam", "quảng ngãi", "bình định",
             "phú yên", "khánh hòa", "nghệ an", "hà tĩnh", "thanh hóa"
         ]
     }
-    
+
     def __init__(self, default_vibe: VibeRegion = VibeRegion.NEUTRAL):
         self.current_vibe = default_vibe
         self.config = self.VIBES[default_vibe]
-    
+
     def set_vibe(self, region: VibeRegion) -> VibeConfig:
         """Switch the current vibe."""
         if region not in self.VIBES:
@@ -133,14 +133,14 @@ class VibeTuner:
         self.current_vibe = region
         self.config = self.VIBES[region]
         return self.config
-    
+
     def get_system_prompt(self, additional_context: str = "") -> str:
         """Construct the full system prompt."""
         prompt = self.config.system_prompt
         if additional_context:
             prompt += f"\n\nBối cảnh thêm: {additional_context}"
         return prompt
-    
+
     def enhance_prompt(self, user_prompt: str) -> str:
         """Wrap user prompt with vibe context hints."""
         return (
@@ -149,21 +149,21 @@ class VibeTuner:
             f"[Keywords: {', '.join(self.config.local_words[:4])}... ]\n\n"
             f"{user_prompt}"
         )
-    
+
     @classmethod
     def from_location(cls, location: str) -> "VibeTuner":
         """Factory method to create a tuner based on a location string."""
         loc_lower = location.lower()
-        
+
         for region, keywords in cls.LOCATIONS_MAP.items():
             if any(k in loc_lower for k in keywords):
                 return cls(region)
-                
+
         return cls(VibeRegion.NEUTRAL)
 
 if __name__ == "__main__":
     print("🎤 Mekong-CLI Vibe Tuner Demo\n")
-    
+
     tuner = VibeTuner.from_location("Can Tho")
     print(f"Detected: {tuner.current_vibe.name}")
     print(f"Prompt: {tuner.get_system_prompt()}")

@@ -61,17 +61,17 @@ class LicenseManager:
     
     Generates, validates, and manages lifecycle of agency franchise licenses.
     """
-    
+
     PRICING = {
         LicenseTier.STARTER: {"monthly": 0.0, "territories": 1, "features": ["Personal use", "1 region"]},
         LicenseTier.FRANCHISE: {"monthly": 500.0, "territories": 3, "features": ["3 territories", "Priority support"]},
         LicenseTier.ENTERPRISE: {"monthly": 2000.0, "territories": 100, "features": ["Unlimited", "API access"]}
     }
-    
+
     def __init__(self):
         self.licenses: Dict[str, License] = {}
         logger.info("License Manager initialized.")
-    
+
     def generate_license_key(self, tier: LicenseTier) -> str:
         """Create a cryptographically unique license string."""
         prefix = {
@@ -79,11 +79,11 @@ class LicenseManager:
             LicenseTier.FRANCHISE: "AGOS-FR",
             LicenseTier.ENTERPRISE: "AGOS-EN"
         }[tier]
-        
+
         uid = uuid.uuid4().hex[:8].upper()
         chk = hashlib.md5(uid.encode()).hexdigest()[:4].upper()
         return f"{prefix}-{uid}-{chk}"
-    
+
     def activate_license(
         self,
         email: str,
@@ -97,7 +97,7 @@ class LicenseManager:
 
         key = self.generate_license_key(tier)
         cfg = self.PRICING[tier]
-        
+
         lic = License(
             key=key, tier=tier, status=LicenseStatus.ACTIVE,
             owner_email=email, owner_name=name,
@@ -106,34 +106,34 @@ class LicenseManager:
             expires_at=datetime.now() + timedelta(days=30 * duration_months),
             monthly_fee=cfg["monthly"]
         )
-        
+
         self.licenses[key] = lic
         logger.info(f"License activated for {name} ({tier.value})")
         return lic
-    
+
     def validate_license(self, key: str) -> Dict[str, Any]:
         """Check if a license key is valid and active."""
         if key not in self.licenses:
             logger.warning(f"Invalid license check: {key}")
             return {"valid": False, "error": "License key not found"}
-        
+
         lic = self.licenses[key]
-        
+
         if lic.expires_at and datetime.now() > lic.expires_at:
             lic.status = LicenseStatus.EXPIRED
             logger.warning(f"License expired: {key}")
             return {"valid": False, "error": "License expired"}
-        
+
         if lic.status != LicenseStatus.ACTIVE:
             return {"valid": False, "error": f"License is {lic.status.value}"}
-        
+
         return {
             "valid": True,
             "tier": lic.tier.value,
             "owner": lic.owner_name,
             "territories": lic.territories_allowed
         }
-    
+
     def format_pricing_table(self) -> str:
         """Render the pricing options table."""
         lines = [
@@ -141,13 +141,13 @@ class LicenseManager:
             "║  🎫 AGENCY OS - FRANCHISE PRICING                         ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for tier in LicenseTier:
             p = self.PRICING[tier]
             cost = "FREE" if p["monthly"] == 0 else f"${p['monthly']:,.0f}/mo"
             terr = f"{p['territories']} terr" if p['territories'] < 99 else "Unlimited"
             lines.append(f"║  {tier.value.upper():<12} │ {cost:<10} │ {terr:<15} ║")
-            
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
@@ -156,13 +156,13 @@ class LicenseManager:
 if __name__ == "__main__":
     print("🎫 Initializing License System...")
     print("=" * 60)
-    
+
     try:
         mgr = LicenseManager()
         lic = mgr.activate_license("partner@agency.com", "Partner One", LicenseTier.FRANCHISE)
-        
+
         print("\n" + mgr.format_pricing_table())
         print(f"\n✅ Active License: {lic.key}")
-        
+
     except Exception as e:
         logger.error(f"License Error: {e}")

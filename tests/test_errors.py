@@ -12,13 +12,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.errors import AntigravityError, ValidationError, WinWinWinError
 
 class TestErrors:
-    
+
     def test_base_error(self):
         """Test base error properties."""
         err = AntigravityError("Generic failure", code="TEST_FAIL")
         assert err.message == "Generic failure"
         assert err.code == "TEST_FAIL"
-        
+
         data = err.to_dict()
         assert data["error"] is True
         assert data["code"] == "TEST_FAIL"

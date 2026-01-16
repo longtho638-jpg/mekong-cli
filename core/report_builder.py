@@ -73,12 +73,12 @@ class ReportBuilder:
     
     Orchestrates the aggregation of business metrics into formatted reports for stakeholder analysis.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.archive: List[Report] = []
         logger.info(f"Report Builder initialized for {agency_name}")
-    
+
     def generate_report(
         self,
         name: str,
@@ -89,7 +89,7 @@ class ReportBuilder:
         """Execute report generation logic."""
         end = datetime.now()
         start = end - timedelta(days=days)
-        
+
         report = Report(
             id=f"RPT-{uuid.uuid4().hex[:6].upper()}",
             name=name, r_type=r_type,
@@ -98,25 +98,25 @@ class ReportBuilder:
         self.archive.append(report)
         logger.info(f"Report Generated: {name} ({r_type.value})")
         return report
-    
+
     def format_report(self, r: Report) -> str:
         """Render ASCII Report Dashboard."""
         period = f"{r.start_date.strftime('%b %d')} - {r.end_date.strftime('%b %d, %Y')}"
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 {r.name.upper()[:48]:<48}  ║",
             f"║  📅 {period:<48}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for m in r.metrics:
             trend = "↑" if m.change >= 0 else "↓"
             status = "🟢" if m.change >= 0 else "🔴"
             val_str = f"{m.value:>12,.1f}" if m.m_type != MetricType.PERCENTAGE else f"{m.value:>11.1f}%"
-            
+
             lines.append(f"║  {m.icon} {m.name:<18} │ {val_str} │ {status} {trend}{abs(m.change):>5.1f}%  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [📥 Export PDF]  [📧 Email Team]  [📊 Visualize]         ║",
@@ -131,7 +131,7 @@ class ReportBuilder:
 if __name__ == "__main__":
     print("📊 Initializing Report System...")
     print("=" * 60)
-    
+
     try:
         builder = ReportBuilder("Saigon Digital Hub")
         # Sample Metrics
@@ -140,8 +140,8 @@ if __name__ == "__main__":
             ReportMetric("Conversion Rate", 3.2, MetricType.PERCENTAGE, -1.5, "🎯")
         ]
         rpt = builder.generate_report("Monthly KPI", ReportType.REVENUE, m_list)
-        
+
         print("\n" + builder.format_report(rpt))
-        
+
     except Exception as e:
         logger.error(f"Report Error: {e}")

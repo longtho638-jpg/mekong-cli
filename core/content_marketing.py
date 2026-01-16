@@ -145,10 +145,10 @@ class ContentMarketingStrategy:
     
     Orchestrates the creation of high-impact disruptive content plans.
     """
-    
+
     def __init__(self):
         pass
-    
+
     def generate_strategy(self, business_type: str) -> ContentStrategy:
         """High-level entry point for full strategy generation."""
         return ContentStrategy(
@@ -160,7 +160,7 @@ class ContentMarketingStrategy:
             metrics=self.get_performance_metrics(),
             created_at=datetime.now()
         )
-    
+
     def generate_content_pillars(self, business_type: str) -> List[ContentPillar]:
         """Defines the core authority themes for the business."""
         # Standard set of 5 pillars for the Agency OS standard
@@ -189,7 +189,7 @@ class ContentMarketingStrategy:
         entries = []
         for week in range(1, 5):
             entries.append(CalendarEntry(
-                week=week, day="Monday", content_type=ContentType.BLOG_POST, 
+                week=week, day="Monday", content_type=ContentType.BLOG_POST,
                 topic="Strategy Launch", channel=ContentChannel.BLOG, pillar="Expertise"
             ))
         return ContentCalendar(entries=entries)
@@ -198,7 +198,7 @@ class ContentMarketingStrategy:
         """Identifies target keywords for search dominance."""
         return [
             SEOKeyword(
-                f"{business_type} automation", SearchIntent.TRANSACTIONAL, 
+                f"{business_type} automation", SearchIntent.TRANSACTIONAL,
                 "High", "1K-10K", "General"
             )
         ]

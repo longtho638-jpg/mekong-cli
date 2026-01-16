@@ -58,13 +58,13 @@ class CapacityDashboard:
     
     Provides insights into agency workload and resource availability.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.departments: Dict[str, DepartmentCapacity] = {}
         logger.info(f"Capacity Dashboard initialized for {agency_name}")
         self._load_defaults()
-    
+
     def _load_defaults(self):
         """Pre-populate with standard agency departments."""
         defaults = [
@@ -74,7 +74,7 @@ class CapacityDashboard:
             ("Content", 80.0, 65.0, 2, 10),
             ("Strategy", 80.0, 72.0, 2, 5),
         ]
-        
+
         for name, total, used, members, projects in defaults:
             try:
                 self.departments[name] = DepartmentCapacity(
@@ -86,7 +86,7 @@ class CapacityDashboard:
                 )
             except ValueError as e:
                 logger.error(f"Failed to load default department {name}: {e}")
-    
+
     def get_level(self, dept: DepartmentCapacity) -> CapacityLevel:
         """Determine the capacity level based on utilization."""
         util = dept.utilization
@@ -98,12 +98,12 @@ class CapacityDashboard:
             return CapacityLevel.HIGH
         else:
             return CapacityLevel.OVERLOADED
-    
+
     def get_bottlenecks(self) -> List[DepartmentCapacity]:
         """Identify departments at high or overloaded capacity."""
-        return [d for d in self.departments.values() 
+        return [d for d in self.departments.values()
                 if self.get_level(d) in [CapacityLevel.HIGH, CapacityLevel.OVERLOADED]]
-    
+
     def get_hiring_signals(self) -> List[str]:
         """Generate specific hiring recommendations."""
         signals = []
@@ -114,13 +114,13 @@ class CapacityDashboard:
             elif util > 85:
                 signals.append(f"🟠 WARNING: Expand {dept.name} team (at {util:.0f}%)")
         return signals
-    
+
     def format_dashboard(self) -> str:
         """Render Capacity Dashboard."""
         total_hours = sum(d.total_hours for d in self.departments.values())
         used_hours = sum(d.used_hours for d in self.departments.values())
         overall_util = (used_hours / total_hours * 100) if total_hours else 0.0
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 CAPACITY DASHBOARD{' ' * 41}║",
@@ -129,51 +129,51 @@ class CapacityDashboard:
             "║  📈 DEPARTMENT CAPACITY                                   ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         level_icons = {
-            CapacityLevel.UNDERLOADED: "🟢", 
-            CapacityLevel.OPTIMAL: "💚", 
-            CapacityLevel.HIGH: "🟠", 
+            CapacityLevel.UNDERLOADED: "🟢",
+            CapacityLevel.OPTIMAL: "💚",
+            CapacityLevel.HIGH: "🟠",
             CapacityLevel.OVERLOADED: "🔴"
         }
-        
+
         # Sort by utilization descending
         sorted_depts = sorted(self.departments.values(), key=lambda x: x.utilization, reverse=True)
-        
+
         for dept in sorted_depts:
             level = self.get_level(dept)
             icon = level_icons.get(level, "⚪")
             util = dept.utilization
             bar = "█" * int(min(100, util) / 10) + "░" * (10 - int(min(100, util) / 10))
-            
+
             lines.append(f"║  {icon} {dept.name:<12} │ {bar} │ {util:>3.0f}% │ {dept.members_count}👥  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  ⚠️ SIGNALS                                               ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         signals = self.get_hiring_signals()
         if signals:
             for signal in signals[:3]:
                 lines.append(f"║    {signal:<50}  ║")
         else:
             lines.append("║    ✅ All departments at healthy capacity              ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📋 BOTTLENECKS                                           ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         bottlenecks = self.get_bottlenecks()
         if bottlenecks:
             for dept in bottlenecks[:2]:
                 lines.append(f"║    🚨 {dept.name}: {dept.projects_count} projects, {dept.members_count} members         ║")
         else:
             lines.append("║    ✅ No bottlenecks detected                           ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [📊 Details]  [⚖️ Rebalance]  [👥 Hiring Plan]           ║",
@@ -181,7 +181,7 @@ class CapacityDashboard:
             f"║  🏯 {self.agency_name[:40]:<40} - Optimized!          ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -189,15 +189,15 @@ class CapacityDashboard:
 if __name__ == "__main__":
     print("📊 Initializing Capacity Dashboard...")
     print("=" * 60)
-    
+
     try:
         dash = CapacityDashboard("Saigon Digital Hub")
-        
+
         # Manually overload a department for demo
         if "Development" in dash.departments:
             dash.departments["Development"].used_hours = 198
-            
+
         print("\n" + dash.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Runtime Error: {e}")

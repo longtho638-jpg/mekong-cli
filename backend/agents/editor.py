@@ -25,7 +25,7 @@ class ContentDraft:
     vibe: str
     word_count: int = 0
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -43,22 +43,22 @@ class EditorAgent:
     - Format for platforms
     - Generate hashtags
     """
-    
+
     PLATFORM_FORMATS = {
         "facebook": {"max_chars": 2000, "hashtags": 5},
         "zalo": {"max_chars": 1000, "hashtags": 3},
         "twitter": {"max_chars": 280, "hashtags": 3},
         "blog": {"max_chars": 5000, "hashtags": 10},
     }
-    
+
     def __init__(self, vibe: str = "mien-tay"):
         self.name = "Editor"
         self.status = "ready"
         self.vibe_tuner = VibeTuner(VibeRegion(vibe))
-        
+
     def create_post(
-        self, 
-        topic: str, 
+        self,
+        topic: str,
         pillar: str,
         platform: str = "facebook"
     ) -> ContentDraft:
@@ -71,7 +71,7 @@ class EditorAgent:
             platform: Target platform
         """
         config = self.vibe_tuner.config
-        
+
         # Generate content with vibe
         templates = {
             "Code-to-Cashflow": f"""
@@ -110,9 +110,9 @@ Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if confi
 #VibeTuning #MekongCLI #LocalAI
 """,
         }
-        
+
         body = templates.get(pillar, f"📝 {topic}\n\n{config.tone}")
-        
+
         # Generate hashtags
         base_hashtags = ["MekongCLI", "AgencyAutomation", "AIVietnam"]
         pillar_tags = {
@@ -121,7 +121,7 @@ Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if confi
             "Local AI": ["VibeTuning", "LocalAI"],
         }
         hashtags = base_hashtags + pillar_tags.get(pillar, [])
-        
+
         return ContentDraft(
             title=topic,
             body=body.strip(),
@@ -130,10 +130,10 @@ Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if confi
             hashtags=hashtags[:self.PLATFORM_FORMATS[platform]["hashtags"]],
             vibe=self.vibe_tuner.current_vibe.value
         )
-    
+
     def batch_create(
-        self, 
-        topics: List[str], 
+        self,
+        topics: List[str],
         pillar: str,
         platforms: List[str] = ["facebook"]
     ) -> List[ContentDraft]:
@@ -148,16 +148,16 @@ Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if confi
 # Demo
 if __name__ == "__main__":
     editor = EditorAgent(vibe="mien-tay")
-    
+
     print("✏️ Editor Agent Demo\n")
-    
+
     # Create post
     post = editor.create_post(
         topic="Tiết kiệm $500/tháng với Hybrid Router",
         pillar="Code-to-Cashflow",
         platform="facebook"
     )
-    
+
     print(f"📝 Platform: {post.platform}")
     print(f"📌 Pillar: {post.pillar}")
     print(f"🎤 Vibe: {post.vibe}")

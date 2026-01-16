@@ -87,13 +87,13 @@ class StartupLauncher:
     
     Orchestrates the incubation of new agency products, from validation to high-scale launch.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.ventures: Dict[str, Venture] = {}
         self.milestones: List[VentureMilestone] = []
         logger.info(f"Startup Launcher initialized for {agency_name}")
-    
+
     def launch_venture(
         self,
         name: str,
@@ -110,22 +110,22 @@ class StartupLauncher:
         self.ventures[v.id] = v
         logger.info(f"Venture Launched: {name} ({v_type.value})")
         return v
-    
+
     def update_metrics(self, v_id: str, users: int, revenue: float) -> bool:
         """Log real-world usage and performance data for a venture."""
         if v_id not in self.ventures: return False
-        
+
         v = self.ventures[v_id]
         v.users = int(users)
         v.revenue = float(revenue)
         logger.debug(f"Metrics updated for {v.name}: {users} users, ${revenue:,.0f} rev")
         return True
-    
+
     def format_dashboard(self) -> str:
         """Render the Startup Launcher Dashboard."""
         total_inv = sum(v.investment for v in self.ventures.values())
         total_rev = sum(v.revenue for v in self.ventures.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🚀 STARTUP LAUNCHER DASHBOARD{' ' * 31}║",
@@ -134,13 +134,13 @@ class StartupLauncher:
             "║  🎯 INCUBATION PIPELINE                                   ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         icons = {VentureStage.IDEA: "💡", VentureStage.MVP: "🛠️", VentureStage.LAUNCH: "🚀", VentureStage.GROWTH: "📈"}
-        
+
         for v in list(self.ventures.values())[:5]:
             icon = icons.get(v.stage, "⚪")
             lines.append(f"║  {icon} {v.name[:18]:<18} │ {v.users:>8,} users │ {v.stage.value:<12} ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [🚀 Launch New]  [🧪 Experiment]  [📊 Growth Audit] [⚙️] ║",
@@ -155,15 +155,15 @@ class StartupLauncher:
 if __name__ == "__main__":
     print("🚀 Initializing Launcher System...")
     print("=" * 60)
-    
+
     try:
         launcher = StartupLauncher("Saigon Digital Hub")
         # Seed
         v = launcher.launch_venture("AgencyOS", "AI Hub", VentureType.SAAS)
         launcher.update_metrics(v.id, 1500, 25000.0)
         v.stage = VentureStage.GROWTH
-        
+
         print("\n" + launcher.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Launcher Error: {e}")

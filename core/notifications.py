@@ -74,12 +74,12 @@ class NotificationSystem:
     
     Manages automated client communication via templated alerts.
     """
-    
+
     def __init__(self):
         self.notifications: List[Notification] = []
         logger.info("Notification System initialized.")
         self.templates = self._load_templates()
-    
+
     def _load_templates(self) -> Dict[NotificationType, Dict[str, str]]:
         """Load default notification templates."""
         return {
@@ -92,7 +92,7 @@ class NotificationSystem:
                 "body": "Hi {client_name}, your invoice for {amount} is due on {due_date}."
             }
         }
-    
+
     def create_notification(
         self,
         n_type: NotificationType,
@@ -103,30 +103,30 @@ class NotificationSystem:
     ) -> Notification:
         """Execute template rendering and create a new notification."""
         tpl = self.templates.get(n_type, {"subject": "Alert", "body": "Default message"})
-        
+
         subject = tpl["subject"]
         body = tpl["body"]
-        
+
         # Safe interpolation
         for k, v in variables.items():
             subject = subject.replace(f"{{{k}}}", str(v))
             body = body.replace(f"{{{k}}}", str(v))
-        
+
         notification = Notification(
             id=f"NOT-{uuid.uuid4().hex[:6].upper()}",
             type=n_type, channel=channel, priority=priority,
             recipient=recipient, subject=subject, body=body
         )
-        
+
         self.notifications.append(notification)
         logger.info(f"Created {n_type.value} for {recipient} via {channel.value}")
         return notification
-    
+
     def format_notification(self, n: Notification) -> str:
         """Render a single notification record as ASCII."""
         p_icon = {Priority.LOW: "🔵", Priority.MEDIUM: "🟡", Priority.HIGH: "🟠", Priority.URGENT: "🔴"}.get(n.priority, "⚪")
         c_icon = {Channel.EMAIL: "📧", Channel.SMS: "📱", Channel.TELEGRAM: "💬", Channel.SLACK: "💼"}.get(n.channel, "📦")
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  {p_icon} {n.type.value.upper():<45}   ║",
@@ -135,10 +135,10 @@ class NotificationSystem:
             f"║  Sub: {n.subject[:45]:<45}  ║",
             "╠═══════════════════════════════════════════════════════════╣",
         ]
-        
+
         for line in n.body.split('\n')[:5]:
             lines.append(f"║  {line[:55]:<55}  ║")
-            
+
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
 
@@ -147,7 +147,7 @@ class NotificationSystem:
 if __name__ == "__main__":
     print("🔔 Initializing Notification System...")
     print("=" * 60)
-    
+
     try:
         sys = NotificationSystem()
         notif = sys.create_notification(
@@ -155,6 +155,6 @@ if __name__ == "__main__":
             {"agency_name": "AgencyOS", "client_name": "John", "company": "Acme"}
         )
         print("\n" + sys.format_notification(notif))
-        
+
     except Exception as e:
         logger.error(f"System Error: {e}")

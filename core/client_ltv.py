@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 class ClientTier(Enum):
     """Client tiers by LTV."""
     PLATINUM = "platinum"  # Top tier
-    GOLD = "gold"          
-    SILVER = "silver"      
-    BRONZE = "bronze"      
+    GOLD = "gold"
+    SILVER = "silver"
+    BRONZE = "bronze"
 
 
 @dataclass
@@ -56,13 +56,13 @@ class ClientLifetimeValue:
     
     Provides insights into client value over time and predicts future revenue.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.clients: Dict[str, ClientLTV] = {}
         logger.info(f"Client LTV Calculator initialized for {agency_name}")
         self._load_defaults()
-    
+
     def _load_defaults(self):
         """Pre-populate with sample client data for demonstration."""
         samples = [
@@ -72,12 +72,12 @@ class ClientLifetimeValue:
             ("Fashion Brand", 6, 12000.0, 2000.0),
             ("Restaurant Chain", 36, 85000.0, 4000.0),
         ]
-        
+
         for name, months, total, avg_monthly in samples:
             try:
                 ltv_val = self.calculate_ltv(avg_monthly, months)
                 tier_val = self.determine_tier(ltv_val)
-                
+
                 client = ClientLTV(
                     id=f"LTV-{uuid.uuid4().hex[:6].upper()}",
                     client_name=name,
@@ -91,7 +91,7 @@ class ClientLifetimeValue:
                 self.clients[client.id] = client
             except ValueError as e:
                 logger.error(f"Failed to load sample client {name}: {e}")
-    
+
     def calculate_ltv(
         self,
         avg_monthly: float,
@@ -104,15 +104,15 @@ class ClientLifetimeValue:
         """
         if avg_monthly < 0:
             raise ValueError("Monthly revenue must be positive")
-        
+
         # Ensure churn rate is within valid bounds
         safe_churn = max(0.01, min(1.0, churn_rate))
         avg_lifespan = 1 / safe_churn
-        
+
         # Calculate LTV, capped at 36 months for realistic agency forecasting
         actual_lifespan = min(avg_lifespan, 36.0)
         return avg_monthly * actual_lifespan
-    
+
     def determine_tier(self, ltv: float) -> ClientTier:
         """Categorize client based on their predicted value."""
         if ltv >= 100000:
@@ -123,27 +123,27 @@ class ClientLifetimeValue:
             return ClientTier.SILVER
         else:
             return ClientTier.BRONZE
-    
+
     def get_aggregate_stats(self) -> Dict[str, Any]:
         """Calculate high-level LTV metrics."""
         if not self.clients:
             return {"total_ltv": 0.0, "avg_ltv": 0.0, "avg_monthly": 0.0, "count": 0}
-            
+
         total_ltv = sum(c.predicted_ltv for c in self.clients.values())
         avg_ltv = total_ltv / len(self.clients)
         avg_monthly = sum(c.avg_monthly for c in self.clients.values()) / len(self.clients)
-        
+
         return {
             "total_ltv": total_ltv,
             "avg_ltv": avg_ltv,
             "avg_monthly": avg_monthly,
             "count": len(self.clients)
         }
-    
+
     def format_dashboard(self) -> str:
         """Render the Client LTV Dashboard."""
         stats = self.get_aggregate_stats()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  💎 CLIENT LIFETIME VALUE{' ' * 41}║",
@@ -152,40 +152,40 @@ class ClientLifetimeValue:
             "║  🏆 TOP CLIENT VALUE RANKING                              ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         tier_icons = {
-            ClientTier.PLATINUM: "💎", 
-            ClientTier.GOLD: "🥇", 
-            ClientTier.SILVER: "🥈", 
+            ClientTier.PLATINUM: "💎",
+            ClientTier.GOLD: "🥇",
+            ClientTier.SILVER: "🥈",
             ClientTier.BRONZE: "🥉"
         }
-        
+
         # Sort by predicted LTV descending
         sorted_clients = sorted(self.clients.values(), key=lambda x: x.predicted_ltv, reverse=True)[:5]
-        
+
         for c in sorted_clients:
             icon = tier_icons.get(c.tier, "⚪")
             # 10-block progress bar, scaled to $150k max for demo
             bar_len = int(min(10, (c.predicted_ltv / 15000)))
             bar = "█" * bar_len + "░" * (10 - bar_len)
             name_display = (c.client_name[:15] + '..') if len(c.client_name) > 17 else c.client_name
-            
+
             lines.append(f"║  {icon} {name_display:<17} │ {bar} │ ${c.predicted_ltv:>10,.0f}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  📊 LTV SEGMENTATION                                      ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         for tier in ClientTier:
             tier_clients = [c for c in self.clients.values() if c.tier == tier]
             count = len(tier_clients)
             total = sum(c.predicted_ltv for c in tier_clients)
             icon = tier_icons.get(tier, "⚪")
-            
+
             lines.append(f"║    {icon} {tier.value.capitalize():<10} │ {count:>2} clients │ ${total:>12,.0f}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             f"║  📈 Portfolio Avg Monthly: ${stats['avg_monthly']:>10,.0f}             ║",
@@ -195,7 +195,7 @@ class ClientLifetimeValue:
             f"║  🏯 {self.agency_name[:40]:<40} - Maximize Value!    ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -203,7 +203,7 @@ class ClientLifetimeValue:
 if __name__ == "__main__":
     print("💎 Initializing Client LTV System...")
     print("=" * 60)
-    
+
     try:
         ltv_system = ClientLifetimeValue("Saigon Digital Hub")
         print("\n" + ltv_system.format_dashboard())

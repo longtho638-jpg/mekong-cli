@@ -27,7 +27,7 @@ class Keyword:
     current_rank: int = 0
     previous_rank: int = 0
     target_url: str = ""
-    
+
     @property
     def rank_change(self) -> int:
         return self.previous_rank - self.current_rank
@@ -54,13 +54,13 @@ class SEOAgent:
     - Backlink analysis
     - Technical SEO audits
     """
-    
+
     def __init__(self):
         self.name = "SEO"
         self.status = "ready"
         self.keywords: Dict[str, Keyword] = {}
         self.backlinks: Dict[str, Backlink] = {}
-        
+
     def add_keyword(
         self,
         term: str,
@@ -70,7 +70,7 @@ class SEOAgent:
     ) -> Keyword:
         """Add keyword to track"""
         keyword_id = f"kw_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         keyword = Keyword(
             id=keyword_id,
             term=term,
@@ -78,21 +78,21 @@ class SEOAgent:
             difficulty=difficulty,
             target_url=target_url
         )
-        
+
         self.keywords[keyword_id] = keyword
         return keyword
-    
+
     def update_ranking(self, keyword_id: str, new_rank: int) -> Keyword:
         """Update keyword ranking"""
         if keyword_id not in self.keywords:
             raise ValueError(f"Keyword not found: {keyword_id}")
-            
+
         keyword = self.keywords[keyword_id]
         keyword.previous_rank = keyword.current_rank
         keyword.current_rank = new_rank
-        
+
         return keyword
-    
+
     def add_backlink(
         self,
         source_url: str,
@@ -102,7 +102,7 @@ class SEOAgent:
     ) -> Backlink:
         """Add backlink"""
         backlink_id = f"bl_{random.randint(100,999)}"
-        
+
         backlink = Backlink(
             id=backlink_id,
             source_url=source_url,
@@ -111,23 +111,23 @@ class SEOAgent:
             domain_authority=domain_authority,
             discovered_at=datetime.now()
         )
-        
+
         self.backlinks[backlink_id] = backlink
         return backlink
-    
+
     def get_top_keywords(self, limit: int = 10) -> List[Keyword]:
         """Get top ranking keywords"""
         ranked = [k for k in self.keywords.values() if k.current_rank > 0]
         return sorted(ranked, key=lambda x: x.current_rank)[:limit]
-    
+
     def get_stats(self) -> Dict:
         """Get SEO statistics"""
         keywords = list(self.keywords.values())
         backlinks = list(self.backlinks.values())
-        
+
         ranked = [k for k in keywords if k.current_rank > 0]
         top10 = [k for k in ranked if k.current_rank <= 10]
-        
+
         return {
             "total_keywords": len(keywords),
             "ranked_keywords": len(ranked),
@@ -141,31 +141,31 @@ class SEOAgent:
 # Demo
 if __name__ == "__main__":
     agent = SEOAgent()
-    
+
     print("🔍 SEO Agent Demo\n")
-    
+
     # Add keywords
     k1 = agent.add_keyword("content marketing", 5000, KeywordDifficulty.MEDIUM, "/blog/content-marketing")
     k2 = agent.add_keyword("seo tips", 3000, KeywordDifficulty.EASY, "/blog/seo-tips")
     k3 = agent.add_keyword("marketing automation", 8000, KeywordDifficulty.HARD, "/features")
-    
+
     print(f"📊 Keyword: {k1.term}")
     print(f"   Volume: {k1.volume}")
     print(f"   Difficulty: {k1.difficulty.value}")
-    
+
     # Update rankings
     agent.update_ranking(k1.id, 5)
     agent.update_ranking(k2.id, 3)
     agent.update_ranking(k3.id, 15)
-    
+
     # Backlinks
     agent.add_backlink("techblog.com", "/blog/content", "content marketing", 65)
     agent.add_backlink("marketingweek.com", "/features", "automation tool", 72)
-    
+
     print("\n📈 Rankings:")
     for kw in agent.get_top_keywords():
         print(f"   #{kw.current_rank}: {kw.term}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

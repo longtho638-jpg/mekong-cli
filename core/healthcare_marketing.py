@@ -93,16 +93,16 @@ class HealthcareMarketing:
     
     Orchestrates HIPAA-compliant marketing campaigns and client management for medical providers.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.clients: Dict[str, HealthcareClient] = {}
         self.campaigns: Dict[str, HealthcareCampaign] = {}
         self.checklists: Dict[str, HIPAAChecklist] = {}
-        
+
         logger.info(f"Healthcare Marketing system initialized for {agency_name}")
         self._init_defaults()
-    
+
     def _init_defaults(self):
         """Seed the system with sample medical clients."""
         logger.info("Loading demo healthcare client data...")
@@ -111,7 +111,7 @@ class HealthcareMarketing:
             self.create_hipaa_checklist(c1.id)
         except Exception as e:
             logger.error(f"Demo data error: {e}")
-    
+
     def add_client(
         self,
         name: str,
@@ -129,11 +129,11 @@ class HealthcareMarketing:
         self.clients[client.id] = client
         logger.info(f"Healthcare client added: {name} ({vertical.value})")
         return client
-    
+
     def create_hipaa_checklist(self, client_id: str) -> Optional[HIPAAChecklist]:
         """Initialize a HIPAA audit checklist for a client."""
         if client_id not in self.clients: return None
-        
+
         c = self.clients[client_id]
         checklist = HIPAAChecklist(
             id=f"HIP-{uuid.uuid4().hex[:6].upper()}",
@@ -147,29 +147,29 @@ class HealthcareMarketing:
         self.checklists[checklist.id] = checklist
         logger.debug(f"HIPAA checklist created for {c.name}")
         return checklist
-    
+
     def update_checklist(self, checklist_id: str, item: str, done: bool) -> bool:
         """Update a specific HIPAA requirement status."""
         if checklist_id not in self.checklists: return False
-        
+
         c = self.checklists[checklist_id]
         c.items[item] = done
-        
+
         # Recalculate status
         completed = sum(1 for v in c.items.values() if v)
         total = len(c.items)
         if completed == total: c.status = ComplianceStatus.COMPLIANT
         elif completed > 0: c.status = ComplianceStatus.IN_PROGRESS
-        
+
         c.last_reviewed = datetime.now()
         logger.info(f"HIPAA Item Updated: {item} -> {done}")
         return True
-    
+
     def format_dashboard(self) -> str:
         """Render the Healthcare Marketing Dashboard."""
         active_c = len(self.clients)
         total_rev = sum(c.monthly_retainer for c in self.clients.values())
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🏥 HEALTHCARE MARKETING DASHBOARD{' ' * 28}║",
@@ -178,27 +178,27 @@ class HealthcareMarketing:
             "║  🏥 MEDICAL CLIENTS STATUS                                ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         v_icons = {HealthcareVertical.DENTAL: "🦷", HealthcareVertical.MEDICAL: "🏥", HealthcareVertical.WELLNESS: "🧘"}
-        
+
         for c in list(self.clients.values())[:5]:
             icon = v_icons.get(c.vertical, "🏥")
             s_icon = "🟢" if c.hipaa_status == ComplianceStatus.COMPLIANT else "🟡"
             name_disp = (c.name[:20] + '..') if len(c.name) > 22 else c.name
             lines.append(f"║    {icon} {s_icon} {name_disp:<22} │ ${c.monthly_retainer:>8,.0f}/mo  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  📋 COMPLIANCE TRACKER                                    ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         for chk in list(self.checklists.values())[:3]:
             done = sum(1 for v in chk.items.values() if v)
             pct = (done / len(chk.items) * 100) if chk.items else 0
             bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
             lines.append(f"║    🛡️ {chk.client_name[:16]:<16} │ {bar} │ {pct:>3.0f}% compliant ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [🏥 New Client]  [📋 Audit HIPAA]  [📢 Campaigns]        ║",
@@ -213,15 +213,15 @@ class HealthcareMarketing:
 if __name__ == "__main__":
     print("🏥 Initializing Healthcare System...")
     print("=" * 60)
-    
+
     try:
         hm_system = HealthcareMarketing("Saigon Digital Hub")
         # Sample update
         if hm_system.checklists:
             hid = list(hm_system.checklists.keys())[0]
             hm_system.update_checklist(hid, "BAA signed", True)
-            
+
         print("\n" + hm_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Manager Error: {e}")

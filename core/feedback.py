@@ -51,7 +51,7 @@ class Feedback:
     comments: str = ""
     would_recommend: bool = True
     created_at: datetime = field(default_factory=datetime.now)
-    
+
     def __post_init__(self):
         if not 0 <= self.nps_score <= 10:
             raise ValueError("NPS score must be 0-10")
@@ -73,12 +73,12 @@ class FeedbackSystem:
     
     Tracks Net Promoter Score and multi-factor satisfaction metrics.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.feedbacks: List[Feedback] = []
         logger.info(f"Feedback System initialized for {agency_name}")
-    
+
     def collect_feedback(
         self,
         client_name: str,
@@ -98,20 +98,20 @@ class FeedbackSystem:
         self.feedbacks.append(fb)
         logger.info(f"Feedback collected from {client_name} ({client_company})")
         return fb
-    
+
     def calculate_nps(self) -> float:
         """Calculate aggregate Net Promoter Score."""
         if not self.feedbacks: return 0.0
-        
+
         promoters = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.PROMOTER)
         detractors = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.DETRACTOR)
         return ((promoters - detractors) / len(self.feedbacks)) * 100.0
-    
+
     def format_dashboard(self) -> str:
         """Render the Feedback Dashboard."""
         nps = self.calculate_nps()
         total = len(self.feedbacks)
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📊 FEEDBACK DASHBOARD{' ' * 36}║",
@@ -120,23 +120,23 @@ class FeedbackSystem:
             "║  🎯 LOYALTY SEGMENTS                                      ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for cat, icon in [(NPSCategory.PROMOTER, "🟢"), (NPSCategory.PASSIVE, "🟡"), (NPSCategory.DETRACTOR, "🔴")]:
             count = sum(1 for f in self.feedbacks if f.nps_category == cat)
             pct = (count / total * 100) if total else 0
             bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
             lines.append(f"║  {icon} {cat.value.capitalize():<12} │ {bar} │ {count:>3} clients ({pct:>3.0f}%)  ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  📝 RECENT COMMENTS                                       ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ])
-        
+
         for f in self.feedbacks[-2:]:
             com = (f.comments[:50] + '..') if len(f.comments) > 52 else f.comments
             lines.append(f"║  💬 \"{com:<53}\" ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [📊 Full Report]  [📝 Send Survey]  [⚙️ Settings]        ║",
@@ -151,13 +151,13 @@ class FeedbackSystem:
 if __name__ == "__main__":
     print("💬 Initializing Feedback System...")
     print("=" * 60)
-    
+
     try:
         f_system = FeedbackSystem("Saigon Digital Hub")
         f_system.collect_feedback("Hoang", "Sunrise", "Web", 10, {FeedbackCategory.QUALITY: 5}, "Great!")
         f_system.collect_feedback("Linh", "CoffeeCo", "SEO", 8, {FeedbackCategory.QUALITY: 4}, "Good work.")
-        
+
         print("\n" + f_system.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Feedback Error: {e}")

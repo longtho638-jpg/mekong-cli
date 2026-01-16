@@ -36,24 +36,24 @@ class MasterDashboard:
     The ultimate high-level overview for the agency owner.
     Combines technical, agentic, and financial metrics.
     """
-    
+
     def __init__(self):
         self.agentic = AgenticDashboard()
         self.moat_engine = get_moat_engine()
         self.loyalty_program = get_loyalty_program()
         self.cashflow_engine = get_cashflow_engine()
         self.infra_stack = InfrastructureStack()
-    
+
     def get_platform_score(self) -> int:
         """Calculates a composite Readiness Score (0-100) for the platform."""
         # Retrieve component scores
         a_stats = self.agentic.get_stats()
         a_score = self.agentic._calculate_integration_score(a_stats)
-        
+
         m_score = self.moat_engine.get_aggregate_strength()
         i_score = self.infra_stack.get_health_score()
         c_progress = min(100, self.cashflow_engine.get_progress_percent())
-        
+
         # Weighted Aggregation
         # Agentic depth (30%) + Moat strength (25%) + Infra health (25%) + Revenue (20%)
         composite = (
@@ -62,14 +62,14 @@ class MasterDashboard:
             i_score * 0.25 +
             c_progress * 0.20
         )
-        
+
         return int(composite)
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Collects a flat dictionary of key indicators for programmatic use."""
         a_stats = self.agentic.get_stats()
         m_stats = self.moat_engine.calculate_switching_cost()
-        
+
         return {
             "timestamp": datetime.now().isoformat(),
             "score": self.get_platform_score(),
@@ -93,52 +93,52 @@ class MasterDashboard:
                 }
             }
         }
-    
+
     def print_master_report(self):
         """Renders the definitive, full-screen dashboard to the console."""
         s = self.get_summary()
         score = s["score"]
         l = s["layers"]
-        
+
         print("\n" + "═" * 70)
         print("║" + "🏯 AGENCY OS - MASTER OPERATIONAL DASHBOARD".center(68) + "║")
         print("║" + "The Closed-Loop $1M ARR Command Center".center(68) + "║")
         print("═" * 70)
-        
+
         # 1. AGENTIC LAYER
         print(" 🤖 AGENTIC INFRASTRUCTURE")
         print(f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}")
         print("    └─ Integration   : Healthy")
-        
+
         print(" ─" * 35)
-        
+
         # 2. RETENTION LAYER
         print(" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
         print(f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}")
         print(f"    └─ Switching Cost: ${l['retention']['switching_cost_usd']:,} USD")
-        
+
         print(" ─" * 35)
-        
+
         # 3. REVENUE LAYER
         print(" 💰 REVENUE PERFORMANCE")
         print(f"    ├─ Current ARR   : ${l['revenue']['arr']:,.0f} | Target ARR   : $1,000,000")
         print(f"    └─ Goal Progress : {l['revenue']['progress']:.1%}")
-        
+
         print(" ─" * 35)
-        
+
         # 4. INFRASTRUCTURE LAYER
         print(" 🏗️ PRODUCTION STACK")
         print(f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%")
         print("    └─ Status        : Operational")
-        
+
         print("═" * 70)
-        
+
         # COMPOSITE SCORE
         bar_w = 40
         filled = int(bar_w * score / 100)
         bar = "█" * filled + "░" * (bar_w - filled)
         print(f" 🏆 OVERALL READINESS: [{bar}] {score}%")
-        
+
         status_msg = (
             "✅ PEAK PERFORMANCE" if score >= 90 else
             "⚡ READY FOR SCALE" if score >= 75 else
@@ -146,7 +146,7 @@ class MasterDashboard:
         )
         print(f"    └─ System Status: {status_msg}")
         print("═" * 70)
-        
+
         print(f"\n   🏯 \"Không đánh mà thắng\" | {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
 
 

@@ -41,7 +41,7 @@ class Service:
     price_usd: float
     price_vnd: int = 0
     duration_days: int = 7
-    
+
     def __post_init__(self):
         """Auto-conversion of USD to VND using updated rates."""
         # Standard rate: 1 USD ≈ 25,000 VND (2026 approximation)
@@ -63,13 +63,13 @@ class AgencyDNA:
     region: str = "South"
     tone: Tone = Tone.FRIENDLY
     tier: PricingTier = PricingTier.GROWTH
-    
+
     # Core specializations
     capabilities: List[str] = field(default_factory=lambda: ["AI Automation", "Lead Gen"])
-    
+
     # Service Catalog
     services: List[Service] = field(default_factory=list)
-    
+
     # Contact & Identity
     contact: Dict[str, str] = field(default_factory=lambda: {
         "email": "",
@@ -78,22 +78,22 @@ class AgencyDNA:
         "zalo": "",
         "telegram": ""
     })
-    
+
     # Social Handles
     social: Dict[str, str] = field(default_factory=dict)
-    
+
     def add_service(self, name: str, description: str, price_usd: float, duration: int = 7) -> Service:
         """Appends a new service to the agency's catalog."""
         service = Service(
-            name=name, 
-            description=description, 
+            name=name,
+            description=description,
             price_usd=price_usd,
             duration_days=duration
         )
         self.services.append(service)
         logger.info(f"Service added to DNA: {name} (${price_usd})")
         return service
-    
+
     def get_localized_voice(self) -> str:
         """Returns a description of the agent's voice for prompting."""
         profiles = {
@@ -104,7 +104,7 @@ class AgencyDNA:
             Tone.PROFESSIONAL: "Authoritative, data-driven, and corporate tone."
         }
         return profiles.get(self.tone, "Standard professional tone.")
-    
+
     def get_tagline(self) -> str:
         """Generates a contextual tagline for marketing materials."""
         if self.tone == Tone.MIEN_TAY:
@@ -113,9 +113,9 @@ class AgencyDNA:
             return f"Giải pháp {self.niche} tinh hoa - Đẳng cấp Thủ đô"
         elif self.tone == Tone.MIEN_TRUNG:
             return f"{self.niche} bền vững - Vững chãi miền Trung"
-        
+
         return f"Elite {self.niche} Experts | {self.location}"
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serializable dictionary for frontend and agent injection."""
         return {
@@ -133,8 +133,8 @@ class AgencyDNA:
             },
             "services": [
                 {
-                    "name": s.name, 
-                    "price_usd": s.price_usd, 
+                    "name": s.name,
+                    "price_usd": s.price_usd,
                     "price_vnd": s.price_vnd,
                     "duration": s.duration_days
                 } for s in self.services

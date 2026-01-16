@@ -150,7 +150,7 @@ class ProposalGenerator(BaseEngine):
         super().__init__(data_dir)
         self.proposals: List[Proposal] = []
         self._next_id = 1
-        
+
         # Agency context (Ideally loaded from AgencyDNA)
         self.agency_name = "Agency OS Partner"
         self.agency_phone = "+84 900 000 000"
@@ -170,23 +170,23 @@ class ProposalGenerator(BaseEngine):
     ) -> Proposal:
         '''Hydrates the proposal template with quote data.'''
         from .money_maker import MoneyMaker
-        
+
         mm = MoneyMaker()
         win3 = mm.validate_win3(quote)
-        
+
         # Build Table Rows
         rows = []
         for s in quote.services:
             p_tag = f"${s['price']:,}" + ("/mo" if s.get("recurring") else "")
             rows.append(f"| {s['chapter']} | {s['name']} | {s['label']} | {p_tag} |")
-        
+
         total_y1 = quote.one_time_total + (quote.monthly_retainer * 12)
-        
+
         # Format Warning Section
         warn_md = ""
         if win3.warnings:
             warn_md = "\n> [!CAUTION]\n> " + "\n> ".join(win3.warnings)
-            
+
         content = (template_override or PROPOSAL_TEMPLATE).format(
             client_name=quote.client_name,
             client_contact=client_contact,
@@ -210,7 +210,7 @@ class ProposalGenerator(BaseEngine):
             warnings_section=warn_md,
             proposal_id=self._next_id
         )
-        
+
         proposal = Proposal(
             id=self._next_id,
             client_name=quote.client_name,
@@ -218,7 +218,7 @@ class ProposalGenerator(BaseEngine):
             quote=quote,
             markdown_content=content
         )
-        
+
         self.proposals.append(proposal)
         self._next_id += 1
         logger.info(f"Proposal generated for {quote.client_name} (ID: {proposal.id})")
@@ -241,11 +241,11 @@ class ProposalGenerator(BaseEngine):
         '''Exports the proposal to a Markdown file.'''
         out_path = Path(output_dir)
         out_path.mkdir(parents=True, exist_ok=True)
-        
+
         slug = proposal.client_name.lower().replace(" ", "_")
         filename = f"proposal_{proposal.id:03d}_{slug}.md"
         full_path = out_path / filename
-        
+
         full_path.write_text(proposal.markdown_content, encoding="utf-8")
         return full_path
 

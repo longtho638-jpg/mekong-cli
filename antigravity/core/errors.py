@@ -33,9 +33,9 @@ class AntigravityError(Exception):
     """
 
     def __init__(
-        self, 
-        message: str, 
-        code: str = "SYSTEM_ERROR", 
+        self,
+        message: str,
+        code: str = "SYSTEM_ERROR",
         status_code: int = 500,
         details: Optional[Dict[str, Any]] = None
     ):
@@ -43,10 +43,10 @@ class AntigravityError(Exception):
         self.code = code
         self.status_code = status_code
         self.details = details or {}
-        
+
         # Log error automatically on creation
         logger.error(f"[{code}] {message} | Details: {self.details}")
-        
+
         super().__init__(self.message)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -67,7 +67,7 @@ class ValidationError(AntigravityError):
         details = {}
         if field: details["field"] = field
         if value: details["value"] = str(value)
-        
+
         super().__init__(
             message=message,
             code="VALIDATION_FAILED",

@@ -35,9 +35,9 @@ from .config import (
 
 # 4. Data Persistence (Updated names)
 from .persistence import (
-    JSONStore, 
+    JSONStore,
     get_persistence_store,
-    persist_save, 
+    persist_save,
     persist_load
 )
 
@@ -77,21 +77,21 @@ __all__ = [
     'BaseModel', 'BaseEngine',
     'AntigravityError', 'ValidationError', 'PersistenceError',
     'WinWinWinError', 'WorkflowError', 'ConfigError',
-    
+
     # Configuration
     'Currency', 'EXCHANGE_RATES', 'ARR_TARGET_2026',
     'DealTier', 'TIER_PRICING', 'MAX_FILE_LINES', 'DEFAULT_GROWTH_RATE',
-    
+
     # Persistence
     'JSONStore', 'get_persistence_store', 'persist_save', 'persist_load',
     'save_data', 'load_data',
-    
+
     # Operations
     'AgencyDNA', 'Tone', 'PricingTier', 'Service',
     'ClientMagnet', 'Lead', 'Client', 'LeadSource', 'LeadStatus',
     'ContentFactory', 'ContentIdea', 'ContentPiece', 'ContentType',
     'RevenueEngine', 'SalesPipeline',
-    
+
     # DX / VIBE
     'VIBEWorkflow', 'VIBEIDE', 'VIBEOrchestrator'
 ]

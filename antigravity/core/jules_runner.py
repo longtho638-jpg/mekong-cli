@@ -65,21 +65,21 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
     if mission_id not in JULES_MISSIONS:
         logger.error(f"Unknown mission: {mission_id}")
         return False
-    
+
     mission = JULES_MISSIONS[mission_id]
-    
+
     print(f"\n🤖 KHỞI TẠO NHIỆM VỤ JULES: {mission['label']}")
     print(f"   Mô tả    : {mission['description']}")
     print(f"   Lịch trình: {mission['schedule']}")
-    
+
     # Building the CLI command for Jules
     cmd = f'gemini -p "/jules {mission["prompt"]}"'
-    
+
     if dry_run:
         print("\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:")
         print(f"   $ {cmd}")
         return True
-    
+
     try:
         print("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
         # Timeout is long because Jules might take time to initialize the task
@@ -88,9 +88,9 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
             shell=True,
             capture_output=True,
             text=True,
-            timeout=180 
+            timeout=180
         )
-        
+
         if result.returncode == 0:
             print("   ✅ Gửi nhiệm vụ thành công!")
             print("   📋 Theo dõi tiến độ tại: https://jules.google.com")
@@ -98,7 +98,7 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
         else:
             print(f"   ❌ Lỗi hệ thống: {result.stderr}")
             return False
-            
+
     except subprocess.TimeoutExpired:
         print("   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
         return True
@@ -110,20 +110,20 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
 def run_scheduled_maintenance(dry_run: bool = False):
     """Identifies and runs the mission assigned to the current day."""
     day_en = datetime.now().strftime("%A")
-    
+
     schedule_map = {
         "Monday": "tests",
         "Wednesday": "lint",
         "Friday": "docs",
         "Saturday": "cleanup"
     }
-    
+
     mission = schedule_map.get(day_en)
-    
+
     if mission:
         print(f"📅 Hôm nay là {day_en}. Bắt đầu bảo trì định kỳ...")
         return trigger_jules_mission(mission, dry_run)
-    
+
     print(f"📅 Hôm nay ({day_en}) không có lịch bảo trì định kỳ.")
     return True
 
@@ -144,12 +144,12 @@ def list_mission_catalog():
     print("\n" + "═" * 60)
     print("║" + "🤖 DANH MỤC BẢO TRÌ TỰ ĐỘNG (JULES)".center(58) + "║")
     print("═" * 60)
-    
+
     for mid, m in JULES_MISSIONS.items():
         print(f"\n  🔹 {mid.upper()}: {m['label']}")
         print(f"     └─ {m['description']}")
         print(f"     └─ Lịch: {m['schedule']}")
-    
+
     print("\n" + "═" * 60 + "\n")
 
 
@@ -161,9 +161,9 @@ def main():
     parser.add_argument("-l", "--list", action="store_true", help="Xem danh mục nhiệm vụ")
     parser.add_argument("-s", "--status", action="store_true", help="Kiểm tra trạng thái Jules")
     parser.add_argument("--dry", action="store_true", help="Chạy thử không thực thi")
-    
+
     args = parser.parse_args()
-    
+
     if args.list:
         list_mission_catalog()
     elif args.status:

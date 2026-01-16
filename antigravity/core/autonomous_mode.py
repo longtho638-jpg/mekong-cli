@@ -66,7 +66,7 @@ class AutonomousOrchestrator:
     The 'Autopilot' mode for Agency OS.
     Handles complex, multi-step goals with minimal human guidance.
     """
-    
+
     def __init__(self, verbose: bool = True):
         self.verbose = verbose
         self.goal: Optional[str] = None
@@ -74,39 +74,39 @@ class AutonomousOrchestrator:
         self.status: AutonomousStatus = AutonomousStatus.IDLE
         self.memory = get_agent_memory()
         self.orchestrator = AgentOrchestrator(verbose=False)
-    
+
     def set_goal(self, goal: str):
         """Analyzes a new goal and generates an execution plan."""
         self.goal = goal
         self.status = AutonomousStatus.PLANNING
-        
+
         if self.verbose:
             print(f"\n🎯 MISSION OBJECTIVE: {goal}")
             print("═" * 60)
-        
+
         self.plan = ExecutionPlan(
             goal=goal,
             tasks=self._analyze_goal(goal)
         )
-        
+
         if self.verbose:
             print(f"📋 STRATEGIC PLAN ({len(self.plan.tasks)} phases):")
             for task in self.plan.tasks:
                 origin = f"Crew: {task.crew}" if task.crew else f"Chain: {task.chain}"
                 print(f"   {task.id}. {task.name:<25} | {origin}")
             print()
-    
+
     def _analyze_goal(self, goal: str) -> List[Task]:
         """Decomposes a goal into specialized tasks using heuristics."""
         g = goal.lower()
         tasks = []
         tid = 1
-        
+
         # 1. Strategy & Research (Always first for complex goals)
         if any(kw in g for kw in ["saas", "product", "launch", "business", "market"]):
             tasks.append(Task(tid, "Strategic Analysis", crew="strategy"))
             tid += 1
-            
+
         # 2. Execution Phase
         if any(kw in g for kw in ["build", "product", "feature", "code", "dev"]):
             tasks.append(Task(tid, "Implementation", crew="product_launch"))
@@ -114,7 +114,7 @@ class AutonomousOrchestrator:
         elif any(kw in g for kw in ["fix", "bug", "issue", "debug"]):
             tasks.append(Task(tid, "Resolution", crew="debug_squad"))
             tid += 1
-            
+
         # 3. Growth Phase
         if any(kw in g for kw in ["revenue", "sell", "sales", "money", "client"]):
             tasks.append(Task(tid, "Revenue Acceleration", crew="revenue_accelerator"))
@@ -122,16 +122,16 @@ class AutonomousOrchestrator:
         if any(kw in g for kw in ["content", "viral", "marketing", "social"]):
             tasks.append(Task(tid, "Content Generation", crew="content_machine"))
             tid += 1
-            
+
         # Fallback for generic goals
         if not tasks:
             tasks.append(Task(tid, "Planning & Discovery", crew="strategy"))
             tid += 1
             tasks.append(Task(tid, "General Execution", chain="dev:cook"))
             tid += 1
-            
+
         return tasks
-    
+
     def execute(self, interactive: bool = False) -> bool:
         """
         Runs the generated plan.
@@ -140,19 +140,19 @@ class AutonomousOrchestrator:
         if not self.plan or not self.plan.tasks:
             logger.error("Attempted to execute without a valid mission plan.")
             return False
-        
+
         self.status = AutonomousStatus.EXECUTING
         mission_success = True
-        
+
         if self.verbose:
             print("⚡ INITIATING AUTONOMOUS DEPLOYMENT")
             print("─" * 60)
-        
+
         for task in self.plan.tasks:
             task.status = "executing"
             if self.verbose:
                 print(f"📍 Phase {task.id}: {task.name}...")
-            
+
             # Execution Logic
             try:
                 if task.crew:
@@ -167,7 +167,7 @@ class AutonomousOrchestrator:
                     result = self.orchestrator.run(*task.chain.split(":"))
                     task.status = "completed" if result.success else "failed"
                     task.output = "Mission chain successful"
-                
+
                 # Persistence of experience
                 self.memory.remember(
                     agent="autonomous_orchestrator",
@@ -176,27 +176,27 @@ class AutonomousOrchestrator:
                     success=(task.status == "completed"),
                     tags=["autonomous", self.goal[:10]]
                 )
-                
+
             except Exception as e:
                 logger.exception(f"Mission failure during phase {task.name}")
                 task.status = "failed"
                 task.error = str(e)
-            
+
             if task.status == "failed":
                 mission_success = False
                 if self.verbose:
                     print(f"   ❌ Phase failed: {task.error or 'Unknown error'}")
                 break # Critical failure stops the mission
-            
+
             if self.verbose:
                 print("   ✓ Phase complete")
-                
+
             if interactive:
                 print(f"\n   [PAUSED] Mission objective {task.id} achieved. Proceed? (y/n)")
                 # Real implementation would wait for input here.
-        
+
         self.status = AutonomousStatus.COMPLETED if mission_success else AutonomousStatus.FAILED
-        
+
         if self.verbose:
             print("\n" + "═" * 60)
             status_icon = "✅" if mission_success else "⚠️"
@@ -204,7 +204,7 @@ class AutonomousOrchestrator:
             print(f"   Objective : {self.goal}")
             print(f"   Result    : {self.status.value.upper()}")
             print("═" * 60)
-            
+
         return mission_success
 
     def get_mission_report(self) -> Dict[str, Any]:
@@ -217,7 +217,7 @@ class AutonomousOrchestrator:
                 "phases_done": len([t for t in self.plan.tasks if t.status == "completed"]) if self.plan else 0
             },
             "timeline": [
-                {"id": t.id, "name": t.name, "status": t.status} 
+                {"id": t.id, "name": t.name, "status": t.status}
                 for t in (self.plan.tasks if self.plan else [])
             ]
         }

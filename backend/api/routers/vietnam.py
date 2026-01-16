@@ -15,7 +15,7 @@ def get_vietnam_config():
     """Get Vietnam region configuration."""
     if not VIETNAM_AVAILABLE:
         raise HTTPException(500, "Vietnam region not available")
-    
+
     return vietnam_config.get_summary()
 
 @router.get("/provinces")
@@ -23,7 +23,7 @@ def get_vietnam_provinces():
     """Get all Vietnam provinces."""
     if not VIETNAM_AVAILABLE:
         raise HTTPException(500, "Vietnam region not available")
-    
+
     return [
         {
             "code": p.code,
@@ -40,7 +40,7 @@ def get_vietnam_pricing():
     """Get Vietnam service pricing."""
     if not VIETNAM_AVAILABLE:
         raise HTTPException(500, "Vietnam region not available")
-    
+
     return {
         service: vietnam_pricing.get_local_price(service, in_usd=True)
         for service in vietnam_pricing.local_services.keys()
@@ -51,7 +51,7 @@ def convert_currency(usd: float = 100):
     """Convert USD to VND."""
     if not VIETNAM_AVAILABLE:
         raise HTTPException(500, "Vietnam region not available")
-    
+
     vnd = vietnam_config.convert_usd_to_vnd(usd)
     return {
         "usd": vietnam_config.format_usd(usd),

@@ -64,7 +64,7 @@ class HybridRouter:
     Dynamically routes to Anthropic, Google, or OpenRouter based on 
     performance needs and budget constraints.
     """
-    
+
     # 2026 Updated Provider Specs
     PROVIDERS: Dict[str, ProviderConfig] = {
         "openrouter/llama-3.1-8b": ProviderConfig(0.00005, 0.00005, 8192, ["fast", "cheap"]),
@@ -73,28 +73,28 @@ class HybridRouter:
         "google/gemini-2.5-pro": ProviderConfig(0.001, 0.004, 2097152, ["complex", "large_context"]),
         "anthropic/claude-3.5-sonnet": ProviderConfig(0.003, 0.015, 200000, ["code", "reasoning"])
     }
-    
+
     # Mapping (Type, Complexity) -> Provider Key
     ROUTING_TABLE: Dict[Tuple[TaskType, TaskComplexity], str] = {
         (TaskType.TEXT, TaskComplexity.SIMPLE): "openrouter/llama-3.1-8b",
         (TaskType.TEXT, TaskComplexity.MEDIUM): "openrouter/llama-3.1-70b",
         (TaskType.TEXT, TaskComplexity.COMPLEX): "google/gemini-2.0-flash", # Changed from Pro to Flash for speed/cost
-        
+
         (TaskType.CODE, TaskComplexity.SIMPLE): "google/gemini-2.0-flash", # Changed from Llama 70B
         (TaskType.CODE, TaskComplexity.MEDIUM): "google/gemini-2.0-flash",
         (TaskType.CODE, TaskComplexity.COMPLEX): "anthropic/claude-3.5-sonnet",
-        
+
         (TaskType.VISION, TaskComplexity.SIMPLE): "google/gemini-2.0-flash",
         (TaskType.VISION, TaskComplexity.MEDIUM): "google/gemini-2.0-flash",
         (TaskType.VISION, TaskComplexity.COMPLEX): "google/gemini-2.5-pro",
     }
-    
+
     def __init__(self, cost_optimize: bool = True):
         self.cost_optimize = cost_optimize
         self.total_savings = 0.0
         self.calls_count = 0
         logger.info("Hybrid Router initialized and online.")
-    
+
     def route(
         self,
         task_type: TaskType,
@@ -104,7 +104,7 @@ class HybridRouter:
     ) -> RoutingResult:
         """Determines the best AI provider for the given parameters."""
         self.calls_count += 1
-        
+
         # Priority 1: Check for manual override
         if override_provider and override_provider in self.PROVIDERS:
             provider = override_provider
@@ -117,18 +117,18 @@ class HybridRouter:
         else:
             provider = self.ROUTING_TABLE.get((task_type, complexity), "google/gemini-2.0-flash")
             reason = f"Automated optimization for {task_type.value}/{complexity.value}"
-            
+
         cost = self._estimate_cost(provider, context_len)
-        
+
         # Calculate savings (vs a baseline of Claude 3.5 Sonnet)
         baseline_cost = self._estimate_cost("anthropic/claude-3.5-sonnet", context_len)
         if baseline_cost > cost:
             self.total_savings += (baseline_cost - cost)
 
         return RoutingResult(
-            provider=provider, 
-            model=provider.split("/")[-1], 
-            estimated_cost=cost, 
+            provider=provider,
+            model=provider.split("/")[-1],
+            estimated_cost=cost,
             reason=reason
         )
 
@@ -151,20 +151,20 @@ class HybridRouter:
         p = prompt.lower()
         t = TaskType.TEXT
         c = TaskComplexity.MEDIUM
-        
+
         # Modality detection
-        if any(w in p for w in ["code", "script", "def ", "class ", "import ", "function"]): 
+        if any(w in p for w in ["code", "script", "def ", "class ", "import ", "function"]):
             t = TaskType.CODE
-        elif any(w in p for w in ["image", "picture", "draw", "look at", "see"]): 
+        elif any(w in p for w in ["image", "picture", "draw", "look at", "see"]):
             t = TaskType.VISION
-        
+
         # Complexity detection
         word_count = len(prompt.split())
         if word_count > 1000 or any(w in p for w in ["comprehensive", "detailed", "architectural", "analyze"]):
             c = TaskComplexity.COMPLEX
         elif word_count < 20:
             c = TaskComplexity.SIMPLE
-            
+
         return t, c
 
 
@@ -177,7 +177,7 @@ def route_task(prompt: str, router: Optional[HybridRouter] = None) -> RoutingRes
     """
     if router is None:
         router = HybridRouter()
-        
+
     t, c = router.analyze_task(prompt)
     return router.route(t, c, context_len=len(prompt.split()))
 

@@ -50,11 +50,11 @@ class Proposal:
     created_at: datetime = field(default_factory=datetime.now)
     valid_until: datetime = field(default_factory=lambda: datetime.now() + timedelta(days=14))
     notes: str = ""
-    
+
     @property
     def total_monthly(self) -> float:
         return sum(s.monthly_price for s in self.services)
-    
+
     @property
     def total_setup(self) -> float:
         return sum(s.setup_fee for s in self.services)

@@ -53,14 +53,14 @@ class AgencyCommandCenter:
     MILESTONE 100 - THE ULTIMATE DASHBOARD!
     Aggregates agency-wide health metrics and system statuses.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.quick_stats: List[QuickStat] = []
         self.systems: List[SystemHealth] = []
         logger.info(f"Command Center initialized for {agency_name}")
         self._load_current_data()
-    
+
     def _load_current_data(self):
         """Pre-populate with snapshot data."""
         self.quick_stats = [
@@ -71,7 +71,7 @@ class AgencyCommandCenter:
             QuickStat("NPS Score", "72", "↑ 5", "❤️"),
             QuickStat("Pipeline", "$125K", "↑ 18%", "🎯"),
         ]
-        
+
         self.systems = [
             SystemHealth("CRM", SystemStatus.OPERATIONAL),
             SystemHealth("Invoicing", SystemStatus.OPERATIONAL),
@@ -80,29 +80,29 @@ class AgencyCommandCenter:
             SystemHealth("Webhooks", SystemStatus.OPERATIONAL),
             SystemHealth("Calendar", SystemStatus.OPERATIONAL),
         ]
-    
+
     def get_pulse_status(self) -> str:
         """Evaluate overall agency momentum."""
         # Simulated health algorithm
         revenue_thriving = True
         churn_low = True
-        
+
         if revenue_thriving and churn_low:
             return "💚 THRIVING"
         elif revenue_thriving or churn_low:
             return "🟢 HEALTHY"
         else:
             return "🟡 CAUTION"
-    
+
     def format_command_center(self) -> str:
         """Render the complete Command Center Dashboard."""
         pulse = self.get_pulse_status()
         now_str = datetime.now().strftime("%b %d, %Y %H:%M")
-        
+
         border_top = "╔" + "═" * 70 + "╗"
         border_bottom = "╚" + "═" * 70 + "╝"
         sep = "╠" + "═" * 70 + "╣"
-        
+
         lines = [
             border_top,
             f"║  {self.agency_name.upper()[:60]:<60}         ║",
@@ -115,37 +115,37 @@ class AgencyCommandCenter:
             "║  📈 QUICK STATS                                                      ║",
             "║  " + "─" * 66 + "  ║",
         ]
-        
+
         # Grid layout for stats (2 columns)
         for i in range(0, len(self.quick_stats), 2):
             s1 = self.quick_stats[i]
             s2 = self.quick_stats[i + 1] if i + 1 < len(self.quick_stats) else None
-            
+
             c1 = f"{s1.icon} {s1.name}: {s1.value} {s1.trend}"
             if s2:
                 c2 = f"{s2.icon} {s2.name}: {s2.value} {s2.trend}"
                 lines.append(f"║    {c1:<30} │ {c2:<30}  ║")
             else:
                 lines.append(f"║    {c1:<66}  ║")
-        
+
         lines.extend([
             "║                                                                      ║",
             "║  🔧 SYSTEM STATUS                                                    ║",
             "║  " + "─" * 66 + "  ║",
         ])
-        
+
         status_map = {
-            SystemStatus.OPERATIONAL: "🟢", 
-            SystemStatus.DEGRADED: "🟡", 
+            SystemStatus.OPERATIONAL: "🟢",
+            SystemStatus.DEGRADED: "🟡",
             SystemStatus.DOWN: "🔴"
         }
-        
+
         # Grid for systems (3 columns)
         for i in range(0, len(self.systems), 3):
             row = self.systems[i:i+3]
             row_content = " │ ".join(f"{status_map.get(s.status, '⚪')} {s.name:<14}" for s in row)
             lines.append(f"║    {row_content:<66}  ║")
-        
+
         lines.extend([
             "║                                                                      ║",
             "║  🚀 QUICK ACTIONS                                                    ║",
@@ -164,7 +164,7 @@ class AgencyCommandCenter:
             "║                    \"Không đánh mà thắng\" 🏯                          ║",
             border_bottom,
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -172,7 +172,7 @@ class AgencyCommandCenter:
 if __name__ == "__main__":
     print("🏯 Initializing Command Center Dashboard...")
     print("=" * 72)
-    
+
     try:
         center = AgencyCommandCenter("Saigon Digital Hub")
         print("\n" + center.format_command_center())

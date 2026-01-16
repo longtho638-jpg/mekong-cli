@@ -54,7 +54,7 @@ class Investigation:
     findings: str = ""
     started_at: datetime = None
     completed_at: Optional[datetime] = None
-    
+
     def __post_init__(self):
         if self.started_at is None:
             self.started_at = datetime.now()
@@ -70,12 +70,12 @@ class InvestigationAgent:
     - Track interviews
     - Generate reports
     """
-    
+
     def __init__(self):
         self.name = "Investigation"
         self.status = "ready"
         self.investigations: Dict[str, Investigation] = {}
-        
+
     def start_investigation(
         self,
         title: str,
@@ -85,7 +85,7 @@ class InvestigationAgent:
     ) -> Investigation:
         """Start new investigation"""
         inv_id = f"inv_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        
+
         investigation = Investigation(
             id=inv_id,
             title=title,
@@ -93,21 +93,21 @@ class InvestigationAgent:
             related_case_id=related_case_id,
             lead_investigator=lead_investigator
         )
-        
+
         self.investigations[inv_id] = investigation
         return investigation
-    
+
     def add_evidence(self, inv_id: str, count: int = 1) -> Investigation:
         """Add evidence to investigation"""
         if inv_id not in self.investigations:
             raise ValueError(f"Investigation not found: {inv_id}")
-            
+
         inv = self.investigations[inv_id]
         inv.evidence_count += count
         inv.status = InvestigationStatus.EVIDENCE_GATHERING
-        
+
         return inv
-    
+
     def schedule_interview(
         self,
         inv_id: str,
@@ -118,7 +118,7 @@ class InvestigationAgent:
         """Schedule interview"""
         if inv_id not in self.investigations:
             raise ValueError(f"Investigation not found: {inv_id}")
-            
+
         inv = self.investigations[inv_id]
         interview = Interview(
             id=f"int_{random.randint(100,999)}",
@@ -128,30 +128,30 @@ class InvestigationAgent:
         )
         inv.interviews.append(interview)
         inv.status = InvestigationStatus.INTERVIEWS
-        
+
         return inv
-    
+
     def complete_investigation(self, inv_id: str, findings: str) -> Investigation:
         """Complete investigation with findings"""
         if inv_id not in self.investigations:
             raise ValueError(f"Investigation not found: {inv_id}")
-            
+
         inv = self.investigations[inv_id]
         inv.status = InvestigationStatus.COMPLETED
         inv.findings = findings
         inv.completed_at = datetime.now()
-        
+
         return inv
-    
+
     def get_active(self) -> List[Investigation]:
         """Get active investigations"""
         return [i for i in self.investigations.values() if i.status != InvestigationStatus.CLOSED]
-    
+
     def get_stats(self) -> Dict:
         """Get investigation statistics"""
         investigations = list(self.investigations.values())
         completed = [i for i in investigations if i.status == InvestigationStatus.COMPLETED]
-        
+
         return {
             "total_investigations": len(investigations),
             "active": len(self.get_active()),
@@ -164,9 +164,9 @@ class InvestigationAgent:
 # Demo
 if __name__ == "__main__":
     agent = InvestigationAgent()
-    
+
     print("🔍 Investigation Agent Demo\n")
-    
+
     # Start investigation
     i1 = agent.start_investigation(
         "Harassment Investigation",
@@ -174,23 +174,23 @@ if __name__ == "__main__":
         "GRV_001",
         "INV_SPEC_001"
     )
-    
+
     print(f"📋 Investigation: {i1.title}")
     print(f"   Type: {i1.incident_type.value}")
     print(f"   Lead: {i1.lead_investigator}")
-    
+
     # Add evidence and interviews
     agent.add_evidence(i1.id, 3)
     agent.schedule_interview(i1.id, "Witness A", "Colleague", datetime.now())
     agent.schedule_interview(i1.id, "Witness B", "Manager", datetime.now())
-    
+
     # Complete
     agent.complete_investigation(i1.id, "Findings confirmed. Recommend disciplinary action.")
-    
+
     print(f"\n✅ Status: {i1.status.value}")
     print(f"   Evidence: {i1.evidence_count}")
     print(f"   Interviews: {len(i1.interviews)}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

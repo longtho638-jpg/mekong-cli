@@ -67,13 +67,13 @@ class InvoiceAutomation:
     
     Automate invoicing.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.invoices: Dict[str, AutoInvoice] = {}
         self.schedules: Dict[str, RecurringSchedule] = {}
         self.late_fee_percent = 0.05
-    
+
     def create_invoice(
         self,
         client: str,
@@ -91,7 +91,7 @@ class InvoiceAutomation:
         )
         self.invoices[invoice.id] = invoice
         return invoice
-    
+
     def setup_recurring(
         self,
         client: str,
@@ -108,34 +108,34 @@ class InvoiceAutomation:
         )
         self.schedules[schedule.id] = schedule
         return schedule
-    
+
     def send_invoice(self, invoice: AutoInvoice):
         """Send an invoice."""
         invoice.status = InvoiceStatus.SENT
         invoice.sent_at = datetime.now()
-    
+
     def mark_paid(self, invoice: AutoInvoice):
         """Mark invoice as paid."""
         invoice.status = InvoiceStatus.PAID
         invoice.paid_at = datetime.now()
-    
+
     def send_reminder(self, invoice: AutoInvoice):
         """Send payment reminder."""
         invoice.reminder_count += 1
-    
+
     def get_overdue(self) -> List[AutoInvoice]:
         """Get overdue invoices."""
         now = datetime.now()
-        return [inv for inv in self.invoices.values() 
+        return [inv for inv in self.invoices.values()
                 if inv.due_date < now and inv.status not in [InvoiceStatus.PAID, InvoiceStatus.DRAFT]]
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get invoicing statistics."""
         total = sum(inv.amount for inv in self.invoices.values())
         paid = sum(inv.amount for inv in self.invoices.values() if inv.status == InvoiceStatus.PAID)
         outstanding = total - paid
         recurring = sum(s.amount for s in self.schedules.values() if s.active)
-        
+
         return {
             "total_invoiced": total,
             "paid": paid,
@@ -143,11 +143,11 @@ class InvoiceAutomation:
             "recurring_monthly": recurring,
             "overdue_count": len(self.get_overdue())
         }
-    
+
     def format_dashboard(self) -> str:
         """Format invoicing dashboard."""
         stats = self.get_stats()
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             "║  💳 INVOICE AUTOMATION                                    ║",
@@ -163,23 +163,23 @@ class InvoiceAutomation:
             "║  📋 RECENT INVOICES                                       ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ]
-        
+
         status_icons = {"draft": "📝", "sent": "📤", "viewed": "👀", "paid": "✅", "overdue": "🔴"}
-        
+
         for invoice in list(self.invoices.values())[-4:]:
             icon = status_icons.get(invoice.status.value, "📄")
             lines.append(f"║    {icon} {invoice.id:<10} │ {invoice.client[:15]:<15} │ ${invoice.amount:>8,.0f}  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  🔄 RECURRING SCHEDULES                                   ║",
             "║  ─────────────────────────────────────────────────────── ║",
         ])
-        
+
         for schedule in list(self.schedules.values())[:3]:
             status = "🟢" if schedule.active else "⚪"
             lines.append(f"║    {status} {schedule.client[:15]:<15} │ ${schedule.amount:>8,.0f}/mo │ {schedule.invoices_generated} sent  ║")
-        
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ New Invoice]  [⏰ Reminders]  [📊 Reports]            ║",
@@ -187,30 +187,30 @@ class InvoiceAutomation:
             f"║  🏯 {self.agency_name} - Get paid on time!                ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ])
-        
+
         return "\n".join(lines)
 
 
 # Example usage
 if __name__ == "__main__":
     automation = InvoiceAutomation("Saigon Digital Hub")
-    
+
     print("💳 Invoice Automation")
     print("=" * 60)
     print()
-    
+
     # Create invoices
     inv1 = automation.create_invoice("Sunrise Realty", 5000)
     inv2 = automation.create_invoice("Coffee Lab", 2500)
     inv3 = automation.create_invoice("Tech Startup", 8000)
-    
+
     # Send and pay some
     automation.send_invoice(inv1)
     automation.mark_paid(inv1)
     automation.send_invoice(inv2)
-    
+
     # Setup recurring
     automation.setup_recurring("Sunrise Realty", 3000)
     automation.setup_recurring("Fashion Brand", 2000)
-    
+
     print(automation.format_dashboard())

@@ -71,7 +71,7 @@ async def list_campaigns():
 async def create_campaign(data: CampaignCreate):
     """Create new campaign"""
     campaign_id = str(uuid.uuid4())[:8]
-    
+
     campaign = {
         "id": campaign_id,
         "name": data.name,
@@ -81,10 +81,10 @@ async def create_campaign(data: CampaignCreate):
         "posts_count": 0,
         "created_at": datetime.now().isoformat()
     }
-    
+
     campaigns_db[campaign_id] = campaign
     content_db[campaign_id] = []
-    
+
     return {"campaign": campaign, "message": "Campaign created"}
 
 
@@ -93,7 +93,7 @@ async def get_campaign(campaign_id: str):
     """Get campaign details"""
     if campaign_id not in campaigns_db:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    
+
     return {
         "campaign": campaigns_db[campaign_id],
         "content": content_db.get(campaign_id, [])
@@ -105,20 +105,20 @@ async def generate_content(campaign_id: str, count: int = 7):
     """Generate content using Quad-Agent pipeline"""
     if campaign_id not in campaigns_db:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    
+
     campaign = campaigns_db[campaign_id]
     pillar = campaign["pillar"]
     platforms = campaign["platforms"]
-    
+
     # Step 1: Scout generates ideas
     ideas = scout.generate_ideas(pillar, count)
-    
+
     # Step 2: Editor creates content for each idea
     generated = []
     for i, idea in enumerate(ideas):
         for platform in platforms:
             draft = editor.create_post(idea, pillar, platform)
-            
+
             content_item = {
                 "id": f"{campaign_id}_{i}_{platform}",
                 "title": draft.title,
@@ -130,12 +130,12 @@ async def generate_content(campaign_id: str, count: int = 7):
                 "status": "ready"
             }
             generated.append(content_item)
-    
+
     # Store content
     content_db[campaign_id] = generated
     campaigns_db[campaign_id]["posts_count"] = len(generated)
     campaigns_db[campaign_id]["status"] = "ready"
-    
+
     return {
         "campaign_id": campaign_id,
         "generated": len(generated),
@@ -149,12 +149,12 @@ async def publish_campaign(campaign_id: str):
     """Publish campaign content to platforms"""
     if campaign_id not in campaigns_db:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    
+
     content = content_db.get(campaign_id, [])
-    
+
     if not content:
         raise HTTPException(status_code=400, detail="No content to publish")
-    
+
     # Schedule via Community agent
     scheduled = []
     for item in content:
@@ -165,9 +165,9 @@ async def publish_campaign(campaign_id: str):
             "platform": platform.value,
             "scheduled_at": post.scheduled_at.isoformat()
         })
-    
+
     campaigns_db[campaign_id]["status"] = "scheduled"
-    
+
     return {
         "campaign_id": campaign_id,
         "scheduled": len(scheduled),
@@ -181,9 +181,9 @@ async def delete_campaign(campaign_id: str):
     """Delete campaign"""
     if campaign_id not in campaigns_db:
         raise HTTPException(status_code=404, detail="Campaign not found")
-    
+
     del campaigns_db[campaign_id]
     if campaign_id in content_db:
         del content_db[campaign_id]
-    
+
     return {"message": "Campaign deleted"}

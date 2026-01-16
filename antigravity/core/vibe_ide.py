@@ -40,10 +40,10 @@ class VIBEIDE(BaseEngine):
         self.workspace = Path(workspace)
         self.plans_dir = self.workspace / "plans"
         self.plans_dir.mkdir(exist_ok=True)
-        
+
         self.vibe_state_dir = self.workspace / ".antigravity" / "vibe"
         self.vibe_state_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.active_plan: Optional[Plan] = None
         self.todos: List[TodoItem] = []
 
@@ -68,10 +68,10 @@ class VIBEIDE(BaseEngine):
         plan_dir.mkdir(parents=True, exist_ok=True)
 
         plan = Plan(
-            title=title, 
+            title=title,
             description=description,
-            priority=priority, 
-            effort=effort, 
+            priority=priority,
+            effort=effort,
             tags=tags or []
         )
 
@@ -87,16 +87,16 @@ class VIBEIDE(BaseEngine):
             "\n## 🔍 Research Notes\n",
             "<!-- Store initial research findings here -->\n",
             f"\n---\n*Created by VIBE IDE on {datetime.now().strftime('%Y-%m-%d %H:%M')}*"
-        ]        
+        ]
         plan_file.write_text("\n".join(content), encoding="utf-8")
-        
+
         # Scaffold workspace
         (plan_dir / "research").mkdir(exist_ok=True)
         (plan_dir / "reports").mkdir(exist_ok=True)
 
         self.active_plan = plan
         self.set_active_plan(plan_file)
-        
+
         logger.info(f"New development plan created: {folder_name}")
         return plan_file
 
@@ -117,7 +117,7 @@ class VIBEIDE(BaseEngine):
                 })
             except Exception as e:
                 logger.warning(f"Failed to index plan {plan_file}: {e}")
-                
+
         return sorted(found_plans, key=lambda p: p["modified"], reverse=True)
 
     def _extract_title(self, path: Path) -> str:
@@ -147,7 +147,7 @@ class VIBEIDE(BaseEngine):
         if not path.exists():
             logger.error(f"Cannot activate non-existent plan: {plan_path}")
             return False
-            
+
         state_file = self.vibe_state_dir / "active_plan.ptr"
         state_file.write_text(str(path.absolute()), encoding="utf-8")
         return True
@@ -157,7 +157,7 @@ class VIBEIDE(BaseEngine):
     def add_todo(self, text: str, category: str = "general") -> TodoItem:
         """Appends a tactical task to the global todo list."""
         todo = TodoItem(
-            id=f"todo_{int(datetime.now().timestamp())}_{len(self.todos)}", 
+            id=f"todo_{int(datetime.now().timestamp())}_{len(self.todos)}",
             text=text
         )
         self.todos.append(todo)

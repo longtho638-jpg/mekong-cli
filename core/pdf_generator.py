@@ -54,12 +54,12 @@ class PDFGenerator:
     
     Orchestrates the creation, versioning, and formatting of agency documents.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.documents: List[PDFDocument] = []
         logger.info(f"PDF Generator initialized for {agency_name}")
-    
+
     def generate_document(
         self,
         doc_type: DocumentType,
@@ -77,14 +77,14 @@ class PDFGenerator:
         self.documents.append(doc)
         logger.info(f"PDF Generated: {title} ({doc_type.value})")
         return doc
-    
+
     def format_preview(self, doc: PDFDocument) -> str:
         """Render an ASCII preview of the document record."""
         icons = {
             DocumentType.PROPOSAL: "📝", DocumentType.CONTRACT: "📄",
             DocumentType.INVOICE: "💳", DocumentType.REPORT: "📊"
         }
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📄 PDF DOCUMENT PREVIEW{' ' * 34}║",
@@ -106,15 +106,15 @@ class PDFGenerator:
 if __name__ == "__main__":
     print("📄 Initializing PDF System...")
     print("=" * 60)
-    
+
     try:
         gen = PDFGenerator("Saigon Digital Hub")
         # Seed
         doc = gen.generate_document(
-            DocumentType.PROPOSAL, "Sunrise Realty", "SEO Overhaul", 
+            DocumentType.PROPOSAL, "Sunrise Realty", "SEO Overhaul",
             {"services": ["Ads", "SEO"]}, 3
         )
         print("\n" + gen.format_preview(doc))
-        
+
     except Exception as e:
         logger.error(f"PDF Error: {e}")

@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.vc.metrics import VCMetrics, FundingStage
 
 class TestVCMetrics:
-    
+
     def test_initialization(self):
         """Test metrics initialization."""
         metrics = VCMetrics(mrr=10000, total_customers=100)
@@ -23,7 +23,7 @@ class TestVCMetrics:
         """Test LTV/CAC ratio calculation."""
         metrics = VCMetrics(ltv=3000, cac=500)
         assert metrics.ltv_cac_ratio() == 6.0
-        
+
         # Zero CAC
         metrics.cac = 0
         assert metrics.ltv_cac_ratio() == 0.0
@@ -37,17 +37,17 @@ class TestVCMetrics:
         """Test VC readiness score calculation."""
         # Perfect Pre-Seed
         metrics = VCMetrics(
-            mrr=5000, 
-            growth_rate=20, 
-            ltv=2000, 
-            cac=1000, 
+            mrr=5000,
+            growth_rate=20,
+            ltv=2000,
+            cac=1000,
             net_margin=25,
             nrr=115,
             stage=FundingStage.PRE_SEED
         )
         # MRR: 30, Growth: 25, LTV/CAC: 25, Rule40: 10, NRR: 10 = 100
         assert metrics.readiness_score() == 100
-        
+
         # Poor Seed
         metrics.stage = FundingStage.SEED # Target MRR 25K
         metrics.mrr = 5000
@@ -59,7 +59,7 @@ class TestVCMetrics:
         """Test funding stage recommendation."""
         metrics = VCMetrics(mrr=5000)
         assert metrics.get_stage_recommendation() == FundingStage.PRE_SEED
-        
+
         metrics.mrr = 150000
         assert metrics.get_stage_recommendation() == FundingStage.SERIES_A
 

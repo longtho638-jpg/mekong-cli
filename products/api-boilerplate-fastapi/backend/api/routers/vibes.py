@@ -21,7 +21,7 @@ async def get_vibes():
     """List all available vibes"""
     if not VIBE_AVAILABLE:
         return {"error": "Vibe Tuner not available"}
-        
+
     return {
         "vibes": VibeTuner.list_vibes(),
         "current": vibe_tuner.current_vibe.value
@@ -45,7 +45,7 @@ async def set_vibe(request: VibeRequest):
                 "local_words": tuner.suggest_local_words(5)
             }
         }
-    
+
     # Set by region ID
     try:
         region = VibeRegion(request.region)

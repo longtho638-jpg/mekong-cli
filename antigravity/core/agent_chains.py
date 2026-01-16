@@ -76,7 +76,7 @@ AGENT_INVENTORY: Dict[str, AgentConfig] = {
     "git-manager":        AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "git-manager.md"),
     "database-admin":     AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "database-admin.md"),
     "mcp-manager":        AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "mcp-manager.md"),
-    
+
     # 💰 Business (8)
     "money-maker":          AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "money-maker.md"),
     "deal-closer":          AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "deal-closer.md"),
@@ -86,19 +86,19 @@ AGENT_INVENTORY: Dict[str, AgentConfig] = {
     "binh-phap-strategist": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "binh-phap-strategist.md"),
     "revenue-engine":       AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "revenue-engine.md"),
     "project-manager":      AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "project-manager.md"),
-    
+
     # 🎨 Content (5)
     "content-factory": AgentConfig(AgentCategory.CONTENT, AGENT_BASE_DIR / "content-factory.md"),
     "copywriter":      AgentConfig(AgentCategory.CONTENT, AGENT_BASE_DIR / "copywriter.md"),
     "docs-manager":    AgentConfig(AgentCategory.CONTENT, AGENT_BASE_DIR / "docs-manager.md"),
     "journal-writer":  AgentConfig(AgentCategory.CONTENT, AGENT_BASE_DIR / "journal-writer.md"),
     "researcher":      AgentConfig(AgentCategory.CONTENT, AGENT_BASE_DIR / "researcher.md"),
-    
+
     # 🖌️ Design (3)
     "ui-ux-designer": AgentConfig(AgentCategory.DESIGN, AGENT_BASE_DIR / "ui-ux-designer.md"),
     "flow-expert":    AgentConfig(AgentCategory.DESIGN, AGENT_BASE_DIR / "flow-expert.md"),
     "scout":          AgentConfig(AgentCategory.DESIGN, AGENT_BASE_DIR / "scout.md"),
-    
+
     # 🌐 External (2)
     "scout-external": AgentConfig(AgentCategory.EXTERNAL, AGENT_BASE_DIR / "scout-external.md"),
     "brainstormer":   AgentConfig(AgentCategory.EXTERNAL, AGENT_BASE_DIR / "brainstormer.md"),
@@ -134,7 +134,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("debugger", "quick_fix", "Apply quick fix"),
         AgentStep("tester", "verify", "Verify fix"),
     ],
-    
+
     # 💰 Revenue Suite
     "revenue:quote": [
         AgentStep("client-magnet", "qualify", "Qualify the client"),
@@ -155,7 +155,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("revenue-engine", "calculate", "Calculate metrics"),
         AgentStep("growth-strategist", "analyze", "Analyze trends"),
     ],
-    
+
     # 🏯 Strategy Suite
     "strategy:analyze": [
         AgentStep("researcher", "market_scan", "Scan market"),
@@ -170,7 +170,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("money-maker", "validate_win3", "Check WIN-WIN-WIN"),
         AgentStep("client-value", "assess", "Assess client value"),
     ],
-    
+
     # 🧲 CRM Suite
     "crm:leads": [
         AgentStep("client-magnet", "list_leads", "List all leads"),
@@ -184,7 +184,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("client-magnet", "add_lead", "Add new lead"),
         AgentStep("deal-closer", "qualify", "Initial qualification"),
     ],
-    
+
     # 🎨 Content Suite
     "content:ideas": [
         AgentStep("brainstormer", "generate", "Generate ideas"),
@@ -195,7 +195,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("copywriter", "write", "Write content"),
         AgentStep("content-factory", "optimize", "Optimize for engagement"),
     ],
-    
+
     # 📄 Docs Suite
     "docs:init": [
         AgentStep("scout", "scan", "Scan codebase"),
@@ -205,7 +205,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("docs-manager", "update", "Update documentation"),
         AgentStep("git-manager", "commit", "Commit changes"),
     ],
-    
+
     # 🔧 Git Suite
     "git:cm": [
         AgentStep("git-manager", "commit", "Stage and commit"),
@@ -218,7 +218,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("git-manager", "pr", "Create pull request"),
         AgentStep("code-reviewer", "summary", "Add PR summary"),
     ],
-    
+
     # 🐛 Fix Suite
     "fix:fast": [
         AgentStep("debugger", "quick_fix", "Apply quick fix"),
@@ -234,7 +234,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("fullstack-developer", "fix", "Fix CI issue"),
         AgentStep("git-manager", "push", "Push fix"),
     ],
-    
+
     # 🎨 Design Suite
     "design:fast": [
         AgentStep("ui-ux-designer", "quick_design", "Quick design"),
@@ -244,7 +244,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("ui-ux-designer", "design", "Create design"),
         AgentStep("flow-expert", "review", "Review flow"),
     ],
-    
+
     # 📊 Analytics Suite
     "analytics:dashboard": [
         AgentStep("growth-strategist", "metrics", "Calculate key metrics"),
@@ -253,7 +253,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("growth-strategist", "analyze", "Analyze data"),
         AgentStep("copywriter", "format", "Format report"),
     ],
-    
+
     # 🏢 Agency Suite
     "agency:dna": [
         AgentStep("client-magnet", "analyze_identity", "Analyze identity"),
@@ -262,7 +262,7 @@ AGENT_CHAINS: Dict[str, List[AgentStep]] = {
         AgentStep("growth-strategist", "score", "Calculate scorecard"),
         AgentStep("binh-phap-strategist", "assess", "Strategic assessment"),
     ],
-    
+
     # 🚀 Startup Suite
     "startup:pitch": [
         AgentStep("researcher", "market", "Market research"),
@@ -303,7 +303,7 @@ def get_chain_summary(suite: str, subcommand: str) -> str:
     chain = get_chain(suite, subcommand)
     if not chain:
         return f"⚠️ No chain defined for {suite}:{subcommand}"
-    
+
     lines = [f"🔗 Chain: /{suite}:{subcommand}"]
     for i, step in enumerate(chain, 1):
         opt = " (optional)" if step.optional else ""
@@ -350,7 +350,7 @@ def _get_agent_icon(agent_name: str) -> str:
     config = AGENT_INVENTORY.get(agent_name)
     if not config:
         return "❓"
-    
+
     icons = {
         AgentCategory.DEVELOPMENT: "🛠️",
         AgentCategory.BUSINESS: "💰",

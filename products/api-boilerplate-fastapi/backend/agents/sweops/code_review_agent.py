@@ -48,11 +48,11 @@ class PullRequest:
     reviews: List[Review] = field(default_factory=list)
     created_at: datetime = None
     merged_at: Optional[datetime] = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
-    
+
     @property
     def time_to_merge(self) -> Optional[float]:
         if self.merged_at:
@@ -70,12 +70,12 @@ class CodeReviewAgent:
     - Track review metrics
     - Monitor merge times
     """
-    
+
     def __init__(self):
         self.name = "Code Review"
         self.status = "ready"
         self.prs: Dict[str, PullRequest] = {}
-        
+
     def create_pr(
         self,
         title: str,
@@ -86,7 +86,7 @@ class CodeReviewAgent:
     ) -> PullRequest:
         """Create pull request"""
         pr_id = f"PR-{random.randint(100,999)}"
-        
+
         pr = PullRequest(
             id=pr_id,
             title=title,
@@ -95,27 +95,27 @@ class CodeReviewAgent:
             additions=additions,
             deletions=deletions
         )
-        
+
         self.prs[pr_id] = pr
         return pr
-    
+
     def assign_reviewer(self, pr_id: str, reviewer: str) -> PullRequest:
         """Assign reviewer to PR"""
         if pr_id not in self.prs:
             raise ValueError(f"PR not found: {pr_id}")
-            
+
         pr = self.prs[pr_id]
-        
+
         review = Review(
             id=f"review_{random.randint(100,999)}",
             reviewer=reviewer
         )
-        
+
         pr.reviews.append(review)
         pr.status = PRStatus.IN_REVIEW
-        
+
         return pr
-    
+
     def submit_review(
         self,
         pr_id: str,
@@ -126,15 +126,15 @@ class CodeReviewAgent:
         """Submit review"""
         if pr_id not in self.prs:
             raise ValueError(f"PR not found: {pr_id}")
-            
+
         pr = self.prs[pr_id]
-        
+
         for review in pr.reviews:
             if review.reviewer == reviewer:
                 review.result = result
                 review.comments = comments
                 review.reviewed_at = datetime.now()
-        
+
         # Update PR status
         if result == ReviewResult.APPROVED:
             all_approved = all(r.result == ReviewResult.APPROVED for r in pr.reviews)
@@ -142,27 +142,27 @@ class CodeReviewAgent:
                 pr.status = PRStatus.APPROVED
         elif result == ReviewResult.CHANGES_REQUESTED:
             pr.status = PRStatus.CHANGES_REQUESTED
-        
+
         return pr
-    
+
     def merge_pr(self, pr_id: str) -> PullRequest:
         """Merge PR"""
         if pr_id not in self.prs:
             raise ValueError(f"PR not found: {pr_id}")
-            
+
         pr = self.prs[pr_id]
         pr.status = PRStatus.MERGED
         pr.merged_at = datetime.now()
-        
+
         return pr
-    
+
     def get_stats(self) -> Dict:
         """Get review statistics"""
         prs = list(self.prs.values())
         merged = [p for p in prs if p.status == PRStatus.MERGED]
-        
+
         avg_ttm = sum(p.time_to_merge for p in merged if p.time_to_merge) / len(merged) if merged else 0
-        
+
         return {
             "total_prs": len(prs),
             "open": len([p for p in prs if p.status in [PRStatus.OPEN, PRStatus.IN_REVIEW]]),
@@ -175,29 +175,29 @@ class CodeReviewAgent:
 # Demo
 if __name__ == "__main__":
     agent = CodeReviewAgent()
-    
+
     print("🔃 Code Review Agent Demo\n")
-    
+
     # Create PRs
     pr1 = agent.create_pr("feat: add user auth", "nguyen_a", "feature/auth", additions=250, deletions=30)
     pr2 = agent.create_pr("fix: dashboard bug", "tran_b", "fix/dashboard", additions=15, deletions=8)
-    
+
     print(f"📋 PR: {pr1.id}")
     print(f"   Title: {pr1.title}")
     print(f"   Author: {pr1.author}")
     print(f"   Changes: +{pr1.additions} -{pr1.deletions}")
-    
+
     # Assign and review
     agent.assign_reviewer(pr1.id, "reviewer_1")
     agent.assign_reviewer(pr1.id, "reviewer_2")
     agent.submit_review(pr1.id, "reviewer_1", ReviewResult.APPROVED, comments=3)
     agent.submit_review(pr1.id, "reviewer_2", ReviewResult.APPROVED, comments=1)
-    
+
     print(f"\n✅ Status: {pr1.status.value}")
     print(f"   Reviews: {len(pr1.reviews)}")
-    
+
     # Merge
     agent.merge_pr(pr1.id)
-    
+
     print("\n🎉 Merged!")
     print(f"   Time to merge: {pr1.time_to_merge:.1f}h" if pr1.time_to_merge else "")

@@ -55,13 +55,13 @@ def activate_license(license_key: str) -> dict:
     """
     # Offline validation for demo
     # In production, this would call the API
-    
+
     if not validate_license_format(license_key):
         return {
             "success": False,
             "error": "Invalid license key format. Expected: AGENCYOS-XXXX-XXXX-XXXX"
         }
-    
+
     # Check for special first-100 codes (18-char format)
     if license_key.startswith("AGENCYOS-") and len(license_key) == 18:
         # Old format: AGENCYOS-XXXX-XXXX (18 chars) = 100% off
@@ -71,7 +71,7 @@ def activate_license(license_key: str) -> dict:
             "discount": 100,
             "message": "🎉 Lifetime FREE access activated!"
         }
-    
+
     # New format: AGENCYOS-XXXX-XXXX-XXXX (23 chars)
     return {
         "success": True,
@@ -82,11 +82,11 @@ def activate_license(license_key: str) -> dict:
 
 def save_config(license_key: str, activation_result: dict):
     """Save activation config to .agencyos/config.json"""
-    
+
     # Create config directory if not exists
     if not os.path.exists(CONFIG_DIR):
         os.makedirs(CONFIG_DIR)
-    
+
     config = {
         "license_key": license_key,
         "plan": activation_result.get("plan", "pro"),
@@ -101,10 +101,10 @@ def save_config(license_key: str, activation_result: dict):
             "agents": True
         }
     }
-    
+
     with open(CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
-    
+
     return config
 
 def print_success(result: dict):
@@ -161,23 +161,23 @@ def print_error(message: str):
 def main():
     """Main activation flow"""
     print_banner()
-    
+
     # Get license key from args or prompt
     if len(sys.argv) > 1:
         license_key = sys.argv[1].upper()
     else:
         print(f"{Colors.BOLD}Enter your license key:{Colors.RESET}")
         license_key = input("> ").strip().upper()
-    
+
     if not license_key:
         print_error("No license key provided.")
         sys.exit(1)
-    
+
     print(f"\n{Colors.CYAN}Validating license...{Colors.RESET}")
-    
+
     # Activate
     result = activate_license(license_key)
-    
+
     if result["success"]:
         # Save config
         save_config(license_key, result)

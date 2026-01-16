@@ -74,7 +74,7 @@ class DealFlowScoutAgent:
     - Chapter 3: Win deals without aggressive tactics
     - Chapter 13: Gather intel before engaging
     """
-    
+
     def __init__(self):
         self.binh_phap_criteria = {
             "chapter_1": "Kế Hoạch - Has solid strategy",
@@ -91,7 +91,7 @@ class DealFlowScoutAgent:
             "chapter_12": "Hỏa Công - Disruption ability",
             "chapter_13": "Dụng Gián - Competitive intel"
         }
-    
+
     # Agent 1: Startup Sourcer
     @staticmethod
     def source_startups(channel: str = "product_hunt", limit: int = 10) -> Dict[str, Any]:
@@ -136,14 +136,14 @@ class DealFlowScoutAgent:
                 "url": "https://example.com/startup3"
             }
         ]
-        
+
         return {
             "channel": channel,
             "count": len(startups[:limit]),
             "startups": startups[:limit],
             "sourced_at": datetime.now().isoformat()
         }
-    
+
     # Agent 2: Binh Pháp Scorer
     def score_startup(self, startup_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -157,14 +157,14 @@ class DealFlowScoutAgent:
         """
         scores = {}
         total = 0
-        
+
         # Score each chapter (1-10 scale)
         mrr = startup_data.get("mrr", 0)
         growth = startup_data.get("growth", 0)
-        
+
         # Chapter 1: Strategy (based on stage clarity)
         scores["chapter_1"] = 7 if startup_data.get("stage") else 3
-        
+
         # Chapter 2: Operations (based on MRR - runway indicator)
         if mrr >= 50000:
             scores["chapter_2"] = 9
@@ -174,11 +174,11 @@ class DealFlowScoutAgent:
             scores["chapter_2"] = 5
         else:
             scores["chapter_2"] = 3
-        
+
         # Chapter 3: Market position (industry relevance)
         hot_industries = ["AI/ML", "FinTech", "HealthTech", "Climate"]
         scores["chapter_3"] = 8 if startup_data.get("industry") in hot_industries else 5
-        
+
         # Chapter 5: Growth momentum
         if growth >= 30:
             scores["chapter_5"] = 9
@@ -188,18 +188,18 @@ class DealFlowScoutAgent:
             scores["chapter_5"] = 5
         else:
             scores["chapter_5"] = 2
-        
+
         # Chapter 7: Speed (growth rate indicator)
         scores["chapter_7"] = min(10, max(1, int(growth / 5)))
-        
+
         # Default scores for others
         for i in [4, 6, 8, 9, 10, 11, 12, 13]:
             scores[f"chapter_{i}"] = 5  # Default neutral
-        
+
         # Calculate total
         total = sum(scores.values())
         avg_score = total / 13
-        
+
         # Determine recommendation
         if avg_score >= 7:
             recommendation = "HIGH PRIORITY - Schedule call immediately"
@@ -210,7 +210,7 @@ class DealFlowScoutAgent:
         else:
             recommendation = "MONITOR - Not ready yet"
             priority = "low"
-        
+
         return {
             "startup": startup_data.get("name", "Unknown"),
             "scores": scores,
@@ -221,7 +221,7 @@ class DealFlowScoutAgent:
             "binh_phap_wisdom": self.binh_phap_criteria,
             "scored_at": datetime.now().isoformat()
         }
-    
+
     # Agent 3: Intro Scheduler
     @staticmethod
     def schedule_intro(startup_name: str, founder_email: str, preferred_times: List[str] = None) -> Dict[str, Any]:
@@ -239,7 +239,7 @@ class DealFlowScoutAgent:
         if preferred_times is None:
             # Default to next business day slots
             preferred_times = ["10:00 AM", "2:00 PM", "4:00 PM"]
-        
+
         # TODO: Integrate with Calendly/Google Calendar
         meeting = {
             "startup": startup_name,
@@ -250,9 +250,9 @@ class DealFlowScoutAgent:
             "status": "pending_confirmation",
             "scheduled_at": datetime.now().isoformat()
         }
-        
+
         return meeting
-    
+
     # Agent 4: Email Drafter
     @staticmethod
     def draft_outreach_email(startup_data: Dict[str, Any], binh_phap_score: Dict[str, Any]) -> Dict[str, Any]:
@@ -268,7 +268,7 @@ class DealFlowScoutAgent:
         """
         priority = binh_phap_score.get("priority", "medium")
         avg_score = binh_phap_score.get("average", 5)
-        
+
         if priority == "high":
             subject = f"Partnership opportunity for {startup_data.get('name')}"
             tone = "enthusiastic"
@@ -281,7 +281,7 @@ class DealFlowScoutAgent:
             subject = f"Keeping in touch - {startup_data.get('name')}"
             tone = "casual"
             urgency = "No rush, whenever you have time"
-        
+
         body = f"""Hi [Founder Name],
 
 I came across {startup_data.get('name')} on {startup_data.get('source', 'my research')} and was impressed by your {startup_data.get('industry')} solution.
@@ -308,7 +308,7 @@ Agency OS"""
             "binh_phap_score": avg_score,
             "drafted_at": datetime.now().isoformat()
         }
-    
+
     # Agent 5: Follow-up Bot
     @staticmethod
     def schedule_followup(deal_id: str, last_contact: datetime, response_status: str) -> Dict[str, Any]:
@@ -324,7 +324,7 @@ Agency OS"""
             Follow-up schedule
         """
         now = datetime.now()
-        
+
         if response_status == "no_response":
             # Follow up after 3 days, then 7 days, then 14 days
             next_followup = now + timedelta(days=3)
@@ -340,7 +340,7 @@ Agency OS"""
         else:
             next_followup = now + timedelta(days=30)
             action = "Monthly check-in"
-        
+
         return {
             "deal_id": deal_id,
             "next_followup": next_followup.isoformat(),
@@ -349,7 +349,7 @@ Agency OS"""
             "followup_count": 1,  # Track number of follow-ups
             "scheduled_at": datetime.now().isoformat()
         }
-    
+
     # Agent 6: Pipeline Manager
     @staticmethod
     def update_pipeline(deal_id: str, new_stage: DealStage, notes: str = "") -> Dict[str, Any]:
@@ -373,7 +373,7 @@ Agency OS"""
             "updated_by": "deal_flow_agent",
             "updated_at": datetime.now().isoformat()
         }
-    
+
     # Agent 7: Qualification Bot
     @staticmethod
     def qualify_lead(startup_data: Dict[str, Any], binh_phap_score: Dict[str, Any]) -> Dict[str, Any]:
@@ -389,29 +389,29 @@ Agency OS"""
         """
         qualified = True
         disqualify_reasons = []
-        
+
         # Check MRR minimum
         mrr = startup_data.get("mrr", 0)
         if mrr < 5000:
             disqualify_reasons.append("MRR below $5K threshold")
-        
+
         # Check growth
         growth = startup_data.get("growth", 0)
         if growth < 0:
             disqualify_reasons.append("Negative growth")
-        
+
         # Check Binh Phap score
         avg_score = binh_phap_score.get("average", 0)
         if avg_score < 4:
             disqualify_reasons.append("Low Binh Pháp score")
-        
+
         # Check stage fit
         stage = startup_data.get("stage", "")
         if stage not in ["Pre-seed", "Seed", "Series A"]:
             disqualify_reasons.append("Stage not in focus")
-        
+
         qualified = len(disqualify_reasons) == 0
-        
+
         return {
             "startup": startup_data.get("name"),
             "qualified": qualified,
@@ -419,7 +419,7 @@ Agency OS"""
             "recommendation": "PROCEED" if qualified else "PASS",
             "qualified_at": datetime.now().isoformat()
         }
-    
+
     # Agent 8: Referral Tracker
     @staticmethod
     def track_referral(deal_id: str, source_type: str, referrer_name: str = None) -> Dict[str, Any]:
@@ -442,7 +442,7 @@ Agency OS"""
             "cold_outreach": 3,
             "inbound": 7
         }
-        
+
         return {
             "deal_id": deal_id,
             "source_type": source_type,
@@ -468,29 +468,29 @@ def source_and_qualify_deals(channel: str = "product_hunt", limit: int = 5) -> D
     7. Track sources
     """
     scout = DealFlowScoutAgent()
-    
+
     # Agent 1: Source
     sourced = scout.source_startups(channel, limit)
-    
+
     results = []
     for startup in sourced.get("startups", []):
         # Agent 2: Score
         score = scout.score_startup(startup)
-        
+
         # Agent 7: Qualify
         qualification = scout.qualify_lead(startup, score)
-        
+
         if qualification.get("qualified"):
             # Agent 4: Draft email
             scout.draft_outreach_email(startup, score)
-            
+
             # Agent 8: Track source
             scout.track_referral(
                 f"deal-{datetime.now().strftime('%Y%m%d%H%M%S')}",
                 channel,
                 None
             )
-            
+
             results.append({
                 "startup": startup["name"],
                 "score": score["average"],
@@ -507,9 +507,9 @@ def source_and_qualify_deals(channel: str = "product_hunt", limit: int = 5) -> D
                 "qualified": False,
                 "reason": qualification["reasons"]
             })
-    
+
     qualified_count = sum(1 for r in results if r.get("qualified"))
-    
+
     return {
         "channel": channel,
         "total_sourced": len(results),

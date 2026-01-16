@@ -83,7 +83,7 @@ class EmpireBuilder:
     
     Automates the 0-to-1 process of launching a fully equipped digital agency.
     """
-    
+
     # Configuration constants
     PALETTES = {
         BrandStyle.CYBER: {"primary": "#00ff41", "secondary": "#0d1117", "accent": "#00bfff"},
@@ -92,7 +92,7 @@ class EmpireBuilder:
         BrandStyle.PROFESSIONAL: {"primary": "#1e40af", "secondary": "#f8fafc", "accent": "#0ea5e9"},
         BrandStyle.CREATIVE: {"primary": "#ec4899", "secondary": "#1e1b4b", "accent": "#a855f7"},
     }
-    
+
     FONTS = {
         BrandStyle.CYBER: ("JetBrains Mono", "Inter"),
         BrandStyle.MINIMAL: ("Inter", "Inter"),
@@ -100,17 +100,17 @@ class EmpireBuilder:
         BrandStyle.PROFESSIONAL: ("Roboto", "Open Sans"),
         BrandStyle.CREATIVE: ("Poppins", "Nunito"),
     }
-    
+
     NICHE_AGENTS = {
         AgencyNiche.SAAS_MARKETING: ["SEOAgent", "PPCAgent", "AnalyticsAgent"],
         AgencyNiche.ECOMMERCE: ["ProductAgent", "OrderAgent", "InventoryAgent"],
         AgencyNiche.LOCAL_BUSINESS: ["LocalSEOAgent", "GMBAgent", "ReviewAgent"],
     }
-    
+
     def __init__(self):
         self.agencies_created: List[AgencyConfig] = []
         logger.info("Empire Builder initialized.")
-    
+
     def generate_brand(
         self,
         name: str,
@@ -120,7 +120,7 @@ class EmpireBuilder:
         """Generate a complete brand kit based on niche and style."""
         palette = self.PALETTES.get(style, self.PALETTES[BrandStyle.PROFESSIONAL])
         fonts = self.FONTS.get(style, self.FONTS[BrandStyle.PROFESSIONAL])
-        
+
         return BrandIdentity(
             name=name,
             tagline=f"Empowering {niche.value.replace('_', ' ').title()} with AI",
@@ -132,7 +132,7 @@ class EmpireBuilder:
             style=style,
             logo_concept=f"Modern {style.value} monogram"
         )
-    
+
     def build_empire(
         self,
         name: str,
@@ -145,10 +145,10 @@ class EmpireBuilder:
 
         start = datetime.now()
         logger.info(f"Building empire: {name} in {niche.value}...")
-        
+
         brand = self.generate_brand(name, niche, style)
         agents = self.NICHE_AGENTS.get(niche, ["GeneralAgent"])
-        
+
         config = AgencyConfig(
             id=f"AGY-{uuid.uuid4().hex[:6].upper()}",
             name=name, niche=niche, brand=brand,
@@ -157,7 +157,7 @@ class EmpireBuilder:
             created_at=datetime.now(),
             setup_time_seconds=int((datetime.now() - start).total_seconds())
         )
-        
+
         self.agencies_created.append(config)
         logger.info(f"Empire built successfully for {name} in {config.setup_time_seconds}s")
         return config
@@ -184,11 +184,11 @@ class EmpireBuilder:
 if __name__ == "__main__":
     print("🏯 Empire Builder Startup...")
     print("=" * 60)
-    
+
     try:
         builder = EmpireBuilder()
         empire = builder.build_empire("Saigon Digital", AgencyNiche.SAAS_MARKETING, BrandStyle.MINIMAL)
         print("\n" + builder.format_summary(empire))
-        
+
     except Exception as e:
         logger.error(f"Empire Error: {e}")

@@ -47,7 +47,7 @@ class WinCheck:
     agency_win: str = ""
     startup_win: str = ""
     is_aligned: bool = False
-    
+
     def validate(self) -> bool:
         """All 3 parties must WIN for deal to proceed."""
         self.is_aligned = all([
@@ -67,36 +67,36 @@ class StartupDeal:
     email: str = ""
     tier: DealTier = DealTier.WARRIOR
     stage: DealStage = DealStage.LEAD
-    
+
     # Revenue components
     retainer_monthly: float = 0.0       # Monthly retainer (USD)
     equity_percent: float = 0.0         # Equity stake (%)
     success_fee_percent: float = 0.0    # Success fee on funding (%)
-    
+
     # Deal value
     funding_target: float = 0.0         # Target funding round
     estimated_valuation: float = 0.0    # Pre-money valuation
-    
+
     # WIN-WIN-WIN
     win_check: WinCheck = field(default_factory=WinCheck)
-    
+
     # Metadata
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
     closed_at: Optional[datetime] = None
-    
+
     def get_annual_retainer(self) -> float:
         """Calculate annual retainer revenue."""
         return self.retainer_monthly * 12
-    
+
     def get_equity_value(self) -> float:
         """Calculate equity value at current valuation."""
         return self.estimated_valuation * (self.equity_percent / 100)
-    
+
     def get_success_fee(self) -> float:
         """Calculate potential success fee."""
         return self.funding_target * (self.success_fee_percent / 100)
-    
+
     def get_total_deal_value(self) -> float:
         """Calculate total deal value (retainer + equity + success fee)."""
         return (
@@ -147,11 +147,11 @@ class SalesPipeline:
             startup_win="Strategic support + network"
         )
     """
-    
+
     def __init__(self):
         self.deals: List[StartupDeal] = []
         self._next_id = 1
-    
+
     def create_deal(
         self,
         startup_name: str,
@@ -161,7 +161,7 @@ class SalesPipeline:
     ) -> StartupDeal:
         """Create a new startup deal with tier pricing."""
         pricing = TIER_PRICING[tier]
-        
+
         deal = StartupDeal(
             id=self._next_id,
             startup_name=startup_name,
@@ -175,7 +175,7 @@ class SalesPipeline:
         self.deals.append(deal)
         self._next_id += 1
         return deal
-    
+
     def qualify_deal(
         self,
         deal: StartupDeal,
@@ -187,7 +187,7 @@ class SalesPipeline:
         deal.estimated_valuation = valuation if valuation else funding_target * 4  # 25% dilution assumption
         deal.stage = DealStage.DISCOVERY
         return deal
-    
+
     def check_win_win_win(
         self,
         deal: StartupDeal,
@@ -203,20 +203,20 @@ class SalesPipeline:
         deal.win_check.agency_win = agency_win
         deal.win_check.startup_win = startup_win
         return deal.win_check.validate()
-    
+
     def advance_stage(self, deal: StartupDeal, stage: DealStage) -> StartupDeal:
         """Move deal to next stage."""
         deal.stage = stage
         if stage == DealStage.CLOSED_WON:
             deal.closed_at = datetime.now()
         return deal
-    
+
     def close_deal(self, deal: StartupDeal, won: bool = True) -> StartupDeal:
         """Close a deal as won or lost."""
         deal.stage = DealStage.CLOSED_WON if won else DealStage.CLOSED_LOST
         deal.closed_at = datetime.now()
         return deal
-    
+
     def upgrade_tier(self, deal: StartupDeal, new_tier: DealTier) -> StartupDeal:
         """Upgrade startup to higher tier (e.g., WARRIOR → GENERAL)."""
         pricing = TIER_PRICING[new_tier]
@@ -225,18 +225,18 @@ class SalesPipeline:
         deal.equity_percent += pricing["equity_range"][0]  # Add additional equity
         deal.success_fee_percent = pricing["success_fee"]
         return deal
-    
+
     def get_active_deals(self) -> List[StartupDeal]:
         """Get all active (non-closed) deals."""
         return [d for d in self.deals if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
-    
+
     def get_pipeline_by_tier(self) -> Dict[DealTier, List[StartupDeal]]:
         """Group active deals by tier."""
         result = {tier: [] for tier in DealTier}
         for deal in self.get_active_deals():
             result[deal.tier].append(deal)
         return result
-    
+
     def get_total_arr(self) -> float:
         """Calculate total ARR from won deals."""
         return sum(
@@ -244,7 +244,7 @@ class SalesPipeline:
             for d in self.deals
             if d.stage == DealStage.CLOSED_WON
         )
-    
+
     def get_portfolio_equity_value(self) -> float:
         """Calculate total equity value across portfolio."""
         return sum(
@@ -252,14 +252,14 @@ class SalesPipeline:
             for d in self.deals
             if d.stage == DealStage.CLOSED_WON
         )
-    
+
     def get_pending_success_fees(self) -> float:
         """Calculate potential success fees from active deals."""
         return sum(
             d.get_success_fee()
             for d in self.get_active_deals()
         )
-    
+
     def forecast_annual_revenue(self) -> Dict:
         """
         Forecast annual revenue from all streams.
@@ -267,7 +267,7 @@ class SalesPipeline:
         """
         won_deals = [d for d in self.deals if d.stage == DealStage.CLOSED_WON]
         active_deals = self.get_active_deals()
-        
+
         return {
             "retainer_arr": self.get_total_arr(),
             "equity_value": self.get_portfolio_equity_value(),
@@ -277,13 +277,13 @@ class SalesPipeline:
             "active_deals_count": len(active_deals),
             "target_gap": 1_000_000 - self.get_total_arr()  # Gap to $1M target
         }
-    
+
     def get_stats(self) -> Dict:
         """Get pipeline statistics."""
         total = len(self.deals)
         won = len([d for d in self.deals if d.stage == DealStage.CLOSED_WON])
         lost = len([d for d in self.deals if d.stage == DealStage.CLOSED_LOST])
-        
+
         return {
             "total_deals": total,
             "active_deals": len(self.get_active_deals()),

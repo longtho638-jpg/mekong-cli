@@ -16,18 +16,18 @@ class InvoiceSystem:
     """
     Invoice and Billing System.
     """
-    
+
     def __init__(self, agency_name: str = "My Agency"):
         self.agency_name = agency_name
         self.db = get_db()
         self.invoices: Dict[str, Invoice] = {}
         logger.info(f"Invoice System initialized for {agency_name}")
-        
+
         if self.db:
             self._load_from_db()
         else:
             self._init_demo_data()
-    
+
     def _load_from_db(self):
         try:
             # Simplified load - In real world would need joins
@@ -36,7 +36,7 @@ class InvoiceSystem:
                 # Minimal hydration for dashboard count
                 # To fully hydrate we'd need to fetch items
                 inv = Invoice(
-                    id=r['id'], client_id=r.get('client_id', ''), 
+                    id=r['id'], client_id=r.get('client_id', ''),
                     client_name=r.get('client_name', 'Unknown'),
                     items=[], # Lazy load or separate fetch
                     currency=Currency.USD,
@@ -54,7 +54,7 @@ class InvoiceSystem:
             self.create_invoice("C1", "Acme Corp", [InvoiceItem("SEO Monthly", 1, 1500.0)])
         except Exception as e:
             logger.error(f"Demo data error: {e}")
-    
+
     def create_invoice(
         self,
         client_id: str,
@@ -81,14 +81,14 @@ class InvoiceSystem:
         paid = len([i for i in self.invoices.values() if i.status == InvoiceStatus.PAID])
         pending = len([i for i in self.invoices.values() if i.status in [InvoiceStatus.DRAFT, InvoiceStatus.SENT]])
         total_val = sum(i.total for i in self.invoices.values())
-        
+
         return {
             "total_invoices": total,
             "paid": paid,
             "pending": pending,
             "total_value_usd": f"${total_val:,.2f}"
         }
-    
+
     def format_invoice(self, invoice: Invoice) -> str:
         """Delegate formatting to Presenter (backward compat helper)."""
         from .presentation import InvoicePresenter

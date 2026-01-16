@@ -45,7 +45,7 @@ class PRManager:
     Automates the 'Ship' phase of the Agency OS workflow.
     Uses the GitHub CLI ('gh') for reliable remote operations.
     """
-    
+
     # Defaults for trusted autonomous contributors
     DEFAULT_TRUSTED_AUTHORS: Set = {
         "jules[bot]",
@@ -55,28 +55,28 @@ class PRManager:
         "github-actions[bot]",
         "renovate[bot]",
     }
-    
+
     def __init__(self, repo: str = "longtho638-jpg/mekong-cli"):
         self.repo = repo
         self.trusted_authors = self.DEFAULT_TRUSTED_AUTHORS.copy()
-    
+
     def get_open_prs(self) -> List[PullRequest]:
         """Queries GitHub for all currently open pull requests."""
         try:
             cmd = [
-                "gh", "pr", "list", 
+                "gh", "pr", "list",
                 "--repo", self.repo,
                 "--json", "number,title,author,state,mergeable,statusCheckRollup,url,createdAt"
             ]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-            
+
             if result.returncode != 0:
                 logger.error(f"GitHub CLI failure: {result.stderr}")
                 return []
-            
+
             data = json.loads(result.stdout)
             prs = []
-            
+
             for item in data:
                 # CI Validation Logic
                 checks = item.get("statusCheckRollup", []) or []
@@ -87,7 +87,7 @@ class PRManager:
                         c.get("conclusion") == "SUCCESS" or c.get("state") == "SUCCESS"
                         for c in checks
                     )
-                
+
                 prs.append(PullRequest(
                     number=item["number"],
                     title=item["title"],
@@ -100,36 +100,36 @@ class PRManager:
                     raw_data=item
                 ))
             return prs
-            
+
         except FileNotFoundError:
             logger.warning("GitHub CLI ('gh') not found. PR management disabled.")
             return []
         except Exception as e:
             logger.exception(f"Unexpected error fetching PRs: {e}")
             return []
-    
+
     def can_auto_merge(self, pr: PullRequest) -> Tuple[bool, str]:
         """Evaluates if a PR meets the safety and trust criteria for automation."""
         # 1. Trust Check
         if pr.author not in self.trusted_authors:
             return False, f"Author '{pr.author}' is not in the trusted automation list."
-        
+
         # 2. Conflict Check
         if not pr.mergeable:
             return False, "PR has merge conflicts or is currently blocked."
-        
+
         # 3. Quality Check (CI)
         if not pr.checks_passed:
             return False, "CI/CD checks have not passed or are still in progress."
-        
+
         return True, "Safety criteria met."
-    
+
     def merge_pr(self, pr_number: int, method: str = "squash") -> bool:
         """Executes the merge operation on GitHub."""
         try:
             cmd = ["gh", "pr", "merge", str(pr_number), f"--{method}", "--auto", "--delete-branch"]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-            
+
             if result.returncode == 0:
                 logger.info(f"Successfully merged PR #{pr_number}")
                 return True
@@ -139,12 +139,12 @@ class PRManager:
         except Exception as e:
             logger.error(f"Critical error during merge of PR #{pr_number}: {e}")
             return False
-    
+
     def check_and_merge_all(self, dry_run: bool = False) -> Dict[str, Any]:
         """Bulk operation to process and integrate all eligible changes."""
         prs = self.get_open_prs()
         report = {"total": len(prs), "merged": [], "eligible": [], "skipped": [], "errors": []}
-        
+
         for pr in prs:
             eligible, reason = self.can_auto_merge(pr)
             if eligible:
@@ -156,7 +156,7 @@ class PRManager:
                         report["errors"].append(pr.number)
             else:
                 report["skipped"].append({"id": pr.number, "reason": reason})
-                
+
         return report
 
     def add_trusted_author(self, username: str):
@@ -171,15 +171,15 @@ def get_pr_report() -> str:
     """Standardized visual status report for the CLI."""
     mgr = PRManager()
     prs = mgr.get_open_prs()
-    
+
     if not prs:
         return "📭 No pending changes found."
-        
+
     lines = [f"📂 OPEN PULL REQUESTS ({len(prs)})", "═" * 50]
     for pr in prs:
         eligible, reason = mgr.can_auto_merge(pr)
         status = "✅ READY" if eligible else f"⏸️ BLOCKED: {reason}"
         lines.append(f"#{pr.number:<4} | {pr.title[:40]}")
         lines.append(f"      └─ Author: {pr.author} | {status}")
-        
+
     return "\n".join(lines)

@@ -13,12 +13,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.headless import HeadlessMode
 
 class TestHeadless:
-    
+
     def test_prompt_execution(self):
         """Test simple prompt processing."""
         headless = HeadlessMode()
         result = headless.execute("Hello world")
-        
+
         assert result["status"] == "success"
         assert "Processed" in result["message"]
 
@@ -26,7 +26,7 @@ class TestHeadless:
         """Test routing of / commands."""
         headless = HeadlessMode()
         result = headless.execute("/infra")
-        
+
         assert result["status"] == "success"
         assert "Infra" in result["message"]
 
@@ -34,7 +34,7 @@ class TestHeadless:
         """Test JSON output capability."""
         headless = HeadlessMode(output_format="json")
         result = headless.execute("/infra")
-        
+
         # result["output"] should be a JSON string
         data = json.loads(result["output"])
         assert isinstance(data, list)

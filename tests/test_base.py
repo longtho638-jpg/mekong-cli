@@ -23,16 +23,16 @@ class MockEngine(BaseEngine):
         return {"status": "ok"}
 
 class TestBase:
-    
+
     def test_base_model_serialization(self):
         """Test BaseModel to_dict and from_dict."""
         m = MockModel(name="test", value=100)
         data = m.to_dict()
-        
+
         assert data["name"] == "test"
         assert data["value"] == 100
         assert isinstance(data["created_at"], str)
-        
+
         # Load back
         m2 = MockModel.from_dict(data)
         assert m2.name == "test"
@@ -44,7 +44,7 @@ class TestBase:
         engine = MockEngine(data_dir=str(tmp_path))
         data = {"hello": "world"}
         path = engine.save_data("test.json", data)
-        
+
         assert path.exists()
         loaded = engine.load_data("test.json")
         assert loaded["hello"] == "world"

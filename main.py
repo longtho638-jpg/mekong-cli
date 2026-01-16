@@ -9,7 +9,6 @@ Powered by Hybrid Agentic Architecture 2026.
 import sys
 import typer
 from rich.console import Console
-from rich.panel import Panel
 from core.constants import APP_NAME
 
 # --- CLI Initialization ---

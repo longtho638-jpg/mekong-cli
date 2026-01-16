@@ -48,19 +48,19 @@ class JapanConfig:
     """
     Japan region configuration.
     """
-    
+
     # Locale settings
     primary_locale: str = "en"
     secondary_locale: str = "ja"
-    
+
     # Currency settings
     primary_currency: Currency = Currency.USD
     local_currency: Currency = Currency.JPY
     exchange_rate: float = 150.0  # JPY per USD
-    
+
     # Coverage
     coverage_type: str = "nationwide"
-    
+
     # Major cities
     major_cities: List[str] = field(default_factory=lambda: [
         "Tokyo",
@@ -72,14 +72,14 @@ class JapanConfig:
         "Kobe",
         "Kyoto"
     ])
-    
+
     # Prefectures
     prefectures: List[Prefecture] = field(default_factory=list)
-    
+
     def __post_init__(self):
         if not self.prefectures:
             self.prefectures = self._load_prefectures()
-    
+
     def _load_prefectures(self) -> List[Prefecture]:
         """Load major Japanese prefectures."""
         return [
@@ -92,19 +92,19 @@ class JapanConfig:
             Prefecture("26", "Kyoto", "京都府", JapanRegion.KANSAI, 2600),
             Prefecture("28", "Hyogo", "兵庫県", JapanRegion.KANSAI, 5500),
         ]
-    
+
     def format_jpy(self, amount: float) -> str:
         """Format amount in JPY."""
         return f"¥{amount:,.0f}"
-    
+
     def format_usd(self, amount: float) -> str:
         """Format amount in USD."""
         return f"${amount:,.2f}"
-    
+
     def convert_usd_to_jpy(self, usd: float) -> float:
         """Convert USD to JPY."""
         return usd * self.exchange_rate
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Get region config summary."""
         return {
@@ -121,10 +121,10 @@ class JapanConfig:
 
 class JapanPricingEngine:
     """Pricing engine for Japan market."""
-    
+
     def __init__(self, config: JapanConfig):
         self.config = config
-        
+
         # Local service pricing (JPY)
         self.local_services = {
             "seo_basic": 50_000,      # ¥50,000/month
@@ -134,11 +134,11 @@ class JapanPricingEngine:
             "website": 300_000,       # ¥300,000 one-time
             "branding": 500_000,      # ¥500,000 package
         }
-    
+
     def get_local_price(self, service: str, in_usd: bool = False) -> str:
         """Get price for a local service."""
         jpy = self.local_services.get(service, 0)
-        
+
         if in_usd:
             usd = jpy / self.config.exchange_rate
             return f"{self.config.format_usd(usd)} ({self.config.format_jpy(jpy)})"
@@ -148,28 +148,28 @@ class JapanPricingEngine:
 # Example usage
 if __name__ == "__main__":
     config = JapanConfig()
-    
+
     print("🇯🇵 Japan Region Configuration")
     print("=" * 50)
     print()
-    
+
     summary = config.get_summary()
     print("📊 Coverage Summary:")
     for key, value in summary.items():
         print(f"   {key}: {value}")
     print()
-    
+
     print("🏙️ Major Cities:")
     for city in config.major_cities[:5]:
         print(f"   • {city}")
     print()
-    
+
     print("💱 Currency Conversion:")
     usd = 100
     jpy = config.convert_usd_to_jpy(usd)
     print(f"   {config.format_usd(usd)} = {config.format_jpy(jpy)}")
     print()
-    
+
     pricing = JapanPricingEngine(config)
     print("💰 Service Pricing:")
     for service in ["seo_basic", "website"]:

@@ -25,10 +25,10 @@ async def get_agents():
 async def run_agent(task: AgentTask):
     """Run a specific agent with a task"""
     valid_agents = ["scout", "editor", "director", "community", "market-analyst", "zalo-integrator", "local-copywriter"]
-    
+
     if task.agent_name.lower() not in valid_agents:
         raise HTTPException(status_code=400, detail=f"Unknown agent: {task.agent_name}")
-    
+
     # Simulate agent execution
     return {
         "status": "queued",

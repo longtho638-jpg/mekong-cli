@@ -3,7 +3,6 @@
 Handles Binh Phap analysis, planning and WIN-WIN-WIN validation.
 """
 
-import sys
 import typer
 from rich.console import Console
 from rich.panel import Panel
@@ -15,10 +14,10 @@ def analyze(idea: str = typer.Argument(..., help="Ý tưởng dự án hoặc b�
     try:
         from core.modules.strategy import StrategyService, StrategyPresenter
         console.print(f"\n[bold blue]🏯 Đang phân tích chiến lược cho:[/bold blue] {idea}...")
-        
+
         service = StrategyService(agency_name="Mekong Agency")
         insights = service.analyze_situation(idea)
-        
+
         console.print(StrategyPresenter.format_report(service, insights))
     except ImportError:
         console.print("[red]❌ Lỗi: Module chiến lược chưa được cài đặt.[/red]")

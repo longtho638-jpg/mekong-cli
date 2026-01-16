@@ -33,7 +33,7 @@ class Deal:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     notes: str = ""
-    
+
     def calculate_weighted_value(self) -> float:
         """Calculate weighted pipeline value."""
         return self.value * (self.probability / 100)

@@ -20,7 +20,7 @@ def get_crm_summary():
     """Get CRM summary."""
     if not CRM_AVAILABLE:
         raise HTTPException(500, "CRM not available")
-    
+
     return crm.get_summary()
 
 @router.get("/deals")
@@ -28,7 +28,7 @@ def get_crm_deals():
     """Get all deals."""
     if not CRM_AVAILABLE:
         raise HTTPException(500, "CRM not available")
-    
+
     return [
         {
             "id": d.id,
@@ -45,7 +45,7 @@ def get_crm_contacts():
     """Get all contacts."""
     if not CRM_AVAILABLE:
         raise HTTPException(500, "CRM not available")
-    
+
     return [
         {
             "id": c.id,
@@ -62,7 +62,7 @@ def get_hot_leads():
     """Get hot leads."""
     if not CRM_AVAILABLE:
         raise HTTPException(500, "CRM not available")
-    
+
     hot = crm.get_hot_leads()
     return [
         {

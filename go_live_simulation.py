@@ -106,7 +106,7 @@ def main():
     # Add recurring revenue
     inv_rec = rev_engine.create_invoice(lead.company, quote.monthly_retainer, notes="Retainer Month 1")
     rev_engine.mark_paid(inv_rec)
-    
+
     console.print(f"✅ Revenue Recognized: [bold]${rev_engine.get_total_revenue():,.0f}[/bold]")
     console.print(f"✅ New ARR: [bold]${rev_engine.get_arr():,.0f}[/bold]")
 

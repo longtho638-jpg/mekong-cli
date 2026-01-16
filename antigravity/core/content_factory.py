@@ -55,7 +55,7 @@ class ContentIdea:
     hook: str = ""
     keywords: List[str] = field(default_factory=list)
     virality_score: int = 0  # 0-100 predicted performance
-    
+
     def __str__(self) -> str:
         return f"[{self.content_type.value.upper()}] {self.title} (Score: {self.virality_score})"
 
@@ -80,13 +80,13 @@ class ContentFactory:
     Powers the 'Content Machine' crew. Turns agency niches into localized 
     stories that drive engagement and leads.
     """
-    
+
     def __init__(self, niche: str = "Digital Marketing", tone: str = "friendly"):
         self.niche = niche
         self.tone = tone
         self.ideas: List[ContentIdea] = []
         self.content_archive: List[ContentPiece] = []
-    
+
     def generate_ideas(self, count: int = 10) -> List[ContentIdea]:
         """Brainstorms new content concepts using specialized templates."""
         templates = {
@@ -111,12 +111,12 @@ class ContentFactory:
                 "🔥 Cơ hội cuối cùng để sở hữu gói {niche}"
             ]
         }
-        
+
         new_ideas = []
         for _ in range(count):
             c_type = random.choice([ContentType.FACEBOOK, ContentType.TIKTOK, ContentType.ZALO, ContentType.BLOG])
             template_list = templates.get(c_type, templates[ContentType.FACEBOOK])
-            
+
             title = random.choice(template_list).format(niche=self.niche)
             idea = ContentIdea(
                 title=title,
@@ -126,12 +126,12 @@ class ContentFactory:
             )
             new_ideas.append(idea)
             self.ideas.append(idea)
-            
+
         # Prioritize by predicted virality
         new_ideas.sort(key=lambda x: x.virality_score, reverse=True)
         logger.info(f"Generated {count} new content ideas for niche: {self.niche}")
         return new_ideas
-    
+
     def create_post(self, idea: ContentIdea) -> ContentPiece:
         """Hydrates a concept into a full content piece based on platform standards."""
         # Visual/Structure templates
@@ -144,32 +144,32 @@ class ContentFactory:
             "• Điểm nhấn 3: Kêu gọi hành động (CTA)\n\n",
             f"✨ Liên hệ ngay để được tư vấn {self.niche} chuyên sâu!"
         ]
-        
+
         if idea.content_type == ContentType.TIKTOK:
             body_parts.append("\n\n#fyp #viral #xuhuong #agencyos")
         elif idea.content_type == ContentType.FACEBOOK:
             body_parts.append(f"\n\n#marketing #{self.niche.replace(' ', '')}")
-            
+
         piece = ContentPiece(
             title=idea.title,
             body="".join(body_parts),
             content_type=idea.content_type,
             virality_score=idea.virality_score
         )
-        
+
         self.content_archive.append(piece)
         logger.debug(f"Content piece drafted: {piece.title}")
         return piece
-    
+
     def get_calendar(self, days: int = 7) -> List[Dict[str, Any]]:
         """Generates a scheduled posting timeline."""
         calendar = []
         start_date = datetime.now()
-        
+
         # Ensure we have enough ideas
         if len(self.ideas) < days:
             self.generate_ideas(days - len(self.ideas) + 5)
-            
+
         for i in range(days):
             idea = self.ideas[i]
             post_date = start_date + timedelta(days=i)
@@ -181,9 +181,9 @@ class ContentFactory:
                 "type": idea.content_type.value,
                 "virality": f"{idea.virality_score}%"
             })
-            
+
         return calendar
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Summarizes production performance."""
         return {

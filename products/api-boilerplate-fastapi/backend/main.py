@@ -125,10 +125,10 @@ async def get_agents():
 async def run_agent(task: AgentTask):
     """Run a specific agent with a task"""
     valid_agents = ["scout", "editor", "director", "community", "market-analyst", "zalo-integrator", "local-copywriter"]
-    
+
     if task.agent_name.lower() not in valid_agents:
         raise HTTPException(status_code=400, detail=f"Unknown agent: {task.agent_name}")
-    
+
     # Simulate agent execution
     return {
         "status": "queued",
@@ -160,7 +160,7 @@ async def route_task(request: CommandRequest):
     """Route a task to optimal AI provider"""
     task_type, complexity = HybridRouter.analyze_task(request.prompt)
     result = router.route(task_type, complexity, len(request.prompt.split()) * 2)
-    
+
     return {
         "provider": result.provider,
         "model": result.model,
@@ -199,7 +199,7 @@ async def set_vibe(request: VibeRequest):
                 "local_words": tuner.suggest_local_words(5)
             }
         }
-    
+
     # Set by region ID
     try:
         region = VibeRegion(request.region)

@@ -28,22 +28,22 @@ class ClientDNA:
     company_name: str
     company_domain: Optional[str] = None
     industry: Optional[str] = "Unknown"
-    
+
     # Payment DNA
     payment_score: int = 50 # 0-100
     avg_payment_days: int = 30
     payment_disputes_count: int = 0
     total_spent: float = 0.0
-    
+
     # Project DNA
     scope_creep_risk: float = 0.5 # 0.0 to 1.0
     avg_revision_requests: float = 2.0
     projects_count: int = 0
-    
+
     # Relationship DNA
     repeat_rate: float = 0.0
     referrals_given: int = 0
-    
+
     # Status
     blacklisted: bool = False
     blacklist_reason: Optional[str] = None
@@ -70,24 +70,24 @@ class ClientDNASystem:
     Aggregates peer reports to build behavioral profiles of clients.
     "Biết người biết ta, trăm trận không nguy."
     """
-    
+
     def __init__(self):
         self.name = "Client DNA System"
         self.reports: List[ClientReport] = []
         logger.info("Client DNA System initialized")
-    
+
     async def check_client(self, company_name: str) -> str:
         """Fetch summary DNA passport for a client (Demo Mode)."""
         if not company_name:
             return "❌ Error: Company name required."
-        
+
         logger.info(f"Querying DNA for: {company_name}")
-        
+
         # Simulated data aggregation
         score = 62
         risk = 87
         rec_rate = 185
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  🧬 CLIENT DNA PASSPORT{' ' * 36}║",
@@ -116,9 +116,9 @@ class ClientDNASystem:
             "║  🔒 Verified by 5 Agencies │ Last updated: 3d ago         ║",
             "╚═══════════════════════════════════════════════════════════╝",
         ]
-        
+
         return "\n".join(lines)
-    
+
     async def report_client(self, company_name: str) -> str:
         """Submit a new behavioral report (Interactive Template)."""
         logger.info(f"Report initiated for: {company_name}")
@@ -131,12 +131,12 @@ class ClientDNASystem:
         # In a real app, these values come from aggregated report data
         scope_risk = 0.87
         payment_lag = 45 # days
-        
+
         scope_premium = 0.15 if scope_risk > 0.7 else 0.0
         payment_premium = 0.08 if payment_lag > 30 else 0.0
-        
+
         final_rate = base_rate * (1 + scope_premium + payment_premium)
-        
+
         return {
             "base_rate": base_rate,
             "recommended_rate": final_rate,
@@ -169,12 +169,12 @@ if __name__ == "__main__":
     import asyncio
     print("🧬 Initializing Client DNA System...")
     print("=" * 60)
-    
+
     async def test():
         system = ClientDNASystem()
         result = await system.check_client("TechStartup XYZ")
         print("\n" + result)
-        
+
         rec = await system.get_rate_recommendation("cli_123")
         print(f"\n💡 AI Rate Tip: ${rec['recommended_rate']:.2f}/hr")
 

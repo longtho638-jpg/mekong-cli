@@ -45,18 +45,18 @@ class Telemetry:
     Captures and analyzes operational data to drive platform optimization.
     Maintains a rolling local history of events.
     '''
-    
+
     def __init__(self, storage_path: Union[str, Path] = ".antigravity/telemetry"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.event_file = self.storage_path / "events_v2.json"
-        
+
         self.events: List[Event] = []
         self.max_events = 5000
         self.enabled = True
-        
+
         self._load_events()
-    
+
     def track(
         self,
         category: str,
@@ -68,7 +68,7 @@ class Telemetry:
         '''Records an operational event to the telemetry buffer.'''
         if not self.enabled:
             return None
-            
+
         # Sanitize metadata
         safe_meta = {}
         if metadata:
@@ -85,32 +85,32 @@ class Telemetry:
             status=status,
             metadata=safe_meta
         )
-        
+
         self.events.append(event)
-        
+
         # Maintain buffer size
         if len(self.events) > self.max_events:
             self.events.pop(0)
-            
+
         self._save_events()
         return event
-    
+
     def get_summary(self, days: int = 7) -> Dict[str, Any]:
         '''Aggregates recent data into a strategic summary.'''
         cutoff = datetime.now() - timedelta(days=days)
         recent = [e for e in self.events if e.timestamp > cutoff]
-        
+
         if not recent:
             return {"status": "No data for this period."}
-            
+
         cat_counts = Counter(e.category for e in recent)
         act_counts = Counter(e.action for e in recent)
-        
+
         durations = [e.duration_ms for e in recent if e.duration_ms is not None]
         avg_dur = sum(durations) / len(durations) if durations else 0.0
-        
+
         fail_count = sum(1 for e in recent if e.status == "failed")
-        
+
         return {
             "period": f"Last {days} days",
             "volume": {
@@ -123,7 +123,7 @@ class Telemetry:
             "top_categories": dict(cat_counts.most_common(5)),
             "top_actions": dict(act_counts.most_common(10))
         }
-    
+
     def _save_events(self):
         '''Persists event buffer to JSON.'''
         try:
@@ -141,7 +141,7 @@ class Telemetry:
             self.event_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
         except Exception as e:
             logger.error(f"Telemetry save failed: {e}")
-            
+
     def _load_events(self):
         '''Loads events from disk on initialization.'''
         if not self.event_file.exists(): return
@@ -162,26 +162,26 @@ class Telemetry:
     def print_dashboard(self, days: int = 7):
         '''Visualizes telemetry insights in the terminal.'''
         s = self.get_summary(days)
-        
+
         print("\n" + "═" * 60)
         print("║" + "📊 AGENCY OS - TELEMETRY & INSIGHTS".center(58) + "║")
         print("═" * 60)
-        
+
         if "volume" not in s:
             print("   No operational data captured yet.")
             return
-            
+
         print(f"\n  📈 VOLUME: {s['volume']['total_events']} events | Error Rate: {s['volume']['error_rate']:.1f}%")
         print(f"  ⚡ VELOCITY: Avg Response {s['velocity']['avg_duration_ms']}ms")
-        
+
         print("\n  🎯 TOP COMMANDS:")
         for action, count in s["top_actions"].items():
             print(f"     • {action:<20} : {count} uses")
-            
+
         print("\n  📦 CATEGORIES:")
         for cat, count in s["top_categories"].items():
             print(f"     • {cat:<20} : {count} uses")
-            
+
         print("\n" + "═" * 60 + "\n")
 
 

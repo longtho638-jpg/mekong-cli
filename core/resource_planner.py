@@ -74,13 +74,13 @@ class ResourcePlanner:
     
     Orchestrates team availability, project assignments, and aggregate capacity management.
     """
-    
+
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
         self.members: Dict[str, TeamMember] = {}
         self.allocations: List[ResourceAllocation] = []
         logger.info(f"Resource Planner initialized for {agency_name}")
-    
+
     def add_team_member(
         self,
         name: str,
@@ -96,7 +96,7 @@ class ResourcePlanner:
         self.members[m.id] = m
         logger.info(f"Team member registered: {name} ({role})")
         return m
-    
+
     def assign_to_project(
         self,
         m_id: str,
@@ -105,7 +105,7 @@ class ResourcePlanner:
     ) -> Optional[ResourceAllocation]:
         """Allocate a team member to a specific project load."""
         if m_id not in self.members: return None
-        
+
         m = self.members[m_id]
         alloc = ResourceAllocation(
             id=f"ALC-{uuid.uuid4().hex[:6].upper()}",
@@ -115,13 +115,13 @@ class ResourcePlanner:
         m.allocated_hours += hours
         logger.info(f"Assigned {m.name} to {project} for {hours}h")
         return alloc
-    
+
     def format_dashboard(self) -> str:
         """Render the Resource Planning Dashboard."""
         total_cap = sum(m.weekly_hours for m in self.members.values())
         total_alc = sum(m.allocated_hours for m in self.members.values())
         util = (total_alc / total_cap * 100.0) if total_cap > 0 else 0.0
-        
+
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
             f"║  📅 RESOURCE PLANNER DASHBOARD{' ' * 31}║",
@@ -130,13 +130,13 @@ class ResourcePlanner:
             "║  👥 TEAM ALLOCATION STATUS                                ║",
             "║  ───────────────────────────────────────────────────────  ║",
         ]
-        
+
         for m in list(self.members.values())[:5]:
             m_util = (m.allocated_hours / m.weekly_hours * 100.0) if m.weekly_hours > 0 else 0.0
             icon = "🟢" if m_util < 80 else "🟡" if m_util <= 100 else "🔴"
             bar = "█" * int(m_util / 10) + "░" * int(10 - (m_util / 10))
             lines.append(f"║  {icon} {m.name[:12]:<12} │ {bar} │ {m_util:>5.1f}% │ {m.allocated_hours:>2.0f}h ║")
-            
+
         lines.extend([
             "║                                                           ║",
             "║  [➕ Member]  [📊 Forecast]  [⚖️ Balance Load]  [⚙️]      ║",
@@ -151,14 +151,14 @@ class ResourcePlanner:
 if __name__ == "__main__":
     print("📅 Initializing Planner System...")
     print("=" * 60)
-    
+
     try:
         planner = ResourcePlanner("Saigon Digital Hub")
         # Seed
         m = planner.add_team_member("Alex Chen", "Lead", [Skill.DEV], 40.0)
         planner.assign_to_project(m.id, "Core Refactor", 35.0)
-        
+
         print("\n" + planner.format_dashboard())
-        
+
     except Exception as e:
         logger.error(f"Planner Error: {e}")

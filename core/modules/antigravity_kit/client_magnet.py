@@ -7,15 +7,15 @@ from core.modules.crm import CRMService, Contact
 
 class ClientMagnet:
     """Attracts and retains clients."""
-    
+
     def __init__(self):
         self.crm = CRMService()
-        
+
     def attract_leads(self, count: int = 5) -> List[Contact]:
         """Simulates lead attraction."""
         # In a real kit, this would connect to ads/scrapers
         return [self.crm.add_contact(f"Lead {i}", f"lead{i}@market.com") for i in range(count)]
-        
+
     def get_pipeline_health(self) -> Dict[str, float]:
         """Returns the magnetic pull strength."""
         summary = self.crm.get_summary()

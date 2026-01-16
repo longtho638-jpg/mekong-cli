@@ -161,7 +161,7 @@ def review_term_sheet(review: TermSheetReview):
     red_flags = []
     walk_away = False
     risk_score = 0
-    
+
     if review.liquidation_preference >= 2.0:
         red_flags.append({"type": "liquidation_preference", "severity": "WALK_AWAY", "message": f"{review.liquidation_preference}x is predatory"})
         walk_away = True
@@ -169,20 +169,20 @@ def review_term_sheet(review: TermSheetReview):
     elif review.liquidation_preference > 1.0:
         red_flags.append({"type": "liquidation_preference", "severity": "HIGH", "message": f"{review.liquidation_preference}x above market"})
         risk_score += 3
-    
+
     if review.anti_dilution == "full_ratchet":
         red_flags.append({"type": "anti_dilution", "severity": "WALK_AWAY", "message": "Full ratchet is deal breaker"})
         walk_away = True
         risk_score = 10
-    
+
     if review.equity_percentage > 30:
         red_flags.append({"type": "equity", "severity": "HIGH", "message": f"{review.equity_percentage}% is excessive"})
         risk_score += 2
-    
+
     if review.participation:
         red_flags.append({"type": "participation", "severity": "MEDIUM", "message": "Participating preferred"})
         risk_score += 1
-    
+
     return {
         "walk_away": walk_away,
         "risk_score": min(risk_score, 10),
@@ -221,16 +221,16 @@ def get_pipeline():
 def score_startup(startup: StartupScore):
     """Score startup using Binh Pháp 13 principles"""
     scores = {}
-    
+
     # Chapter-based scoring
     scores["ch1_strategy"] = 7 if startup.stage else 3
     scores["ch2_operations"] = 9 if startup.mrr >= 50000 else 7 if startup.mrr >= 20000 else 5 if startup.mrr >= 5000 else 3
     scores["ch3_positioning"] = 8 if startup.industry in ["AI/ML", "FinTech", "HealthTech", "Climate"] else 5
     scores["ch5_momentum"] = 9 if startup.growth >= 30 else 7 if startup.growth >= 15 else 5 if startup.growth >= 0 else 2
     scores["ch7_speed"] = min(10, max(1, int(startup.growth / 5)))
-    
+
     avg = sum(scores.values()) / len(scores)
-    
+
     return {
         "startup": startup.name,
         "scores": scores,
@@ -288,13 +288,13 @@ def run_scout_agent():
     # Generate realistic startup discovery
     num_found = random.randint(2, 5)
     startups = []
-    
+
     for i in range(num_found):
         name = random.choice(STARTUP_NAMES) + f" {random.randint(1, 99)}"
         mrr = random.randint(5000, 80000)
         growth = random.randint(5, 50)
         binh_phap_score = round(random.uniform(5.0, 9.5), 1)
-        
+
         startups.append({
             "name": name,
             "industry": random.choice(INDUSTRIES),
@@ -305,9 +305,9 @@ def run_scout_agent():
             "priority": "🔥 HOT" if binh_phap_score >= 8 else "⭐ WARM" if binh_phap_score >= 6 else "📊 MONITOR",
             "source": random.choice(["Product Hunt", "Crunchbase", "TechCrunch", "X/Twitter"])
         })
-    
+
     hot_deals = sum(1 for s in startups if s["binh_phap_score"] >= 8)
-    
+
     return {
         "agent": "SCOUT-01",
         "action": "market_scan",

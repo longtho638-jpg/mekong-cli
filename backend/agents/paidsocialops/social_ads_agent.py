@@ -35,11 +35,11 @@ class AdSet:
     impressions: int = 0
     clicks: int = 0
     conversions: int = 0
-    
+
     @property
     def ctr(self) -> float:
         return (self.clicks / self.impressions * 100) if self.impressions > 0 else 0
-    
+
     @property
     def cpc(self) -> float:
         return self.spend / self.clicks if self.clicks > 0 else 0
@@ -57,15 +57,15 @@ class Campaign:
     ad_sets: List[AdSet] = field(default_factory=list)
     start_date: date = None
     end_date: date = None
-    
+
     @property
     def total_spend(self) -> float:
         return sum(ad.spend for ad in self.ad_sets)
-    
+
     @property
     def total_conversions(self) -> int:
         return sum(ad.conversions for ad in self.ad_sets)
-    
+
     @property
     def roas(self) -> float:
         revenue = self.total_conversions * 100  # Assume $100 per conversion
@@ -82,12 +82,12 @@ class SocialAdsAgent:
     - Budget allocation
     - Audience targeting
     """
-    
+
     def __init__(self):
         self.name = "Social Ads"
         self.status = "ready"
         self.campaigns: Dict[str, Campaign] = {}
-        
+
     def create_campaign(
         self,
         name: str,
@@ -99,7 +99,7 @@ class SocialAdsAgent:
     ) -> Campaign:
         """Create campaign"""
         campaign_id = f"camp_{random.randint(100,999)}"
-        
+
         campaign = Campaign(
             id=campaign_id,
             name=name,
@@ -109,10 +109,10 @@ class SocialAdsAgent:
             start_date=start_date,
             end_date=end_date
         )
-        
+
         self.campaigns[campaign_id] = campaign
         return campaign
-    
+
     def add_ad_set(
         self,
         campaign_id: str,
@@ -123,45 +123,45 @@ class SocialAdsAgent:
         """Add ad set to campaign"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
-            
+
         ad_set = AdSet(
             id=f"adset_{random.randint(100,999)}",
             name=name,
             audience=audience,
             budget_daily=budget_daily
         )
-        
+
         self.campaigns[campaign_id].ad_sets.append(ad_set)
         return self.campaigns[campaign_id]
-    
+
     def activate(self, campaign_id: str) -> Campaign:
         """Activate campaign"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
-            
+
         self.campaigns[campaign_id].status = AdStatus.ACTIVE
         return self.campaigns[campaign_id]
-    
+
     def simulate_performance(self, campaign_id: str) -> Campaign:
         """Simulate campaign performance"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
-            
+
         campaign = self.campaigns[campaign_id]
-        
+
         for ad in campaign.ad_sets:
             ad.spend = ad.budget_daily * random.uniform(0.8, 1.0)
             ad.impressions = int(ad.spend * random.uniform(100, 200))
             ad.clicks = int(ad.impressions * random.uniform(0.01, 0.05))
             ad.conversions = int(ad.clicks * random.uniform(0.05, 0.15))
-        
+
         return campaign
-    
+
     def get_stats(self) -> Dict:
         """Get advertising statistics"""
         campaigns = list(self.campaigns.values())
         active = [c for c in campaigns if c.status == AdStatus.ACTIVE]
-        
+
         return {
             "total_campaigns": len(campaigns),
             "active": len(active),
@@ -174,9 +174,9 @@ class SocialAdsAgent:
 # Demo
 if __name__ == "__main__":
     agent = SocialAdsAgent()
-    
+
     print("📱 Social Ads Agent Demo\n")
-    
+
     # Create campaign
     c1 = agent.create_campaign(
         "Q1 Brand Awareness",
@@ -184,20 +184,20 @@ if __name__ == "__main__":
         "Awareness",
         budget=5000
     )
-    
+
     # Add ad sets
     agent.add_ad_set(c1.id, "Professionals 25-35", "Interest: Tech", 100)
     agent.add_ad_set(c1.id, "Decision Makers", "Job Title: Manager+", 150)
-    
+
     print(f"📋 Campaign: {c1.name}")
     print(f"   Platform: {c1.platform.value}")
     print(f"   Budget: ${c1.budget_total:,.0f}")
     print(f"   Ad Sets: {len(c1.ad_sets)}")
-    
+
     # Activate and simulate
     agent.activate(c1.id)
     agent.simulate_performance(c1.id)
-    
+
     print("\n📊 Performance:")
     print(f"   Spend: ${c1.total_spend:,.0f}")
     print(f"   Conversions: {c1.total_conversions}")

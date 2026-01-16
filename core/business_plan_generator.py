@@ -72,13 +72,13 @@ class BusinessPlanGenerator:
     
     Transforms owner answers into a comprehensive 13-section business strategy.
     """
-    
+
     def __init__(self):
         self.questions = self._load_questions()
         self.templates = self._load_templates()
         self.current_answers: Dict[str, str] = {}
         logger.info("Business Plan Generator initialized")
-    
+
     def _load_questions(self) -> List[Dict[str, str]]:
         """Load core questions for the setup flow."""
         return [
@@ -92,7 +92,7 @@ class BusinessPlanGenerator:
             {"id": "language", "question": "🌐 Ngôn ngữ chính?", "example": "Tiếng Việt"},
             {"id": "currency", "question": "💱 Đơn vị tiền tệ chính?", "example": "VND"}
         ]
-    
+
     def _load_templates(self) -> Dict[PlanSection, str]:
         """Load templates for all 13 sections."""
         # Note: In a real AI app, these would be prompts for LLM.
@@ -113,25 +113,25 @@ class BusinessPlanGenerator:
             PlanSection.FOUNDER_WISDOM: "# 13. FOUNDER WISDOM\nStrategy: Win without fighting."
         }
         return t
-    
+
     def answer_question(self, question_id: str, answer: str):
         """Record an owner's answer with basic validation."""
         if not answer:
             logger.warning(f"Empty answer received for {question_id}")
         self.current_answers[question_id] = answer
         logger.debug(f"Question {question_id} answered")
-    
+
     def is_complete(self) -> bool:
         """Check if all mandatory questions are answered."""
         required = [q["id"] for q in self.questions]
         return all(q in self.current_answers for q in required)
-    
+
     def generate_dna(self) -> AgencyDNA:
         """Process answers and generate the final Agency DNA."""
         if not self.is_complete():
             logger.error("Attempted to generate DNA without all answers")
             raise ValueError("Incomplete answers")
-        
+
         dna = AgencyDNA(
             agency_name=self.current_answers.get("agency_name", ""),
             location=self.current_answers.get("location", ""),
@@ -143,7 +143,7 @@ class BusinessPlanGenerator:
             language=self.current_answers.get("language", ""),
             currency=self.current_answers.get("currency", "")
         )
-        
+
         # Build all 13 sections using the templates
         for section, template in self.templates.items():
             try:
@@ -151,10 +151,10 @@ class BusinessPlanGenerator:
             except KeyError as e:
                 logger.error(f"Template mapping error in {section.value}: {e}")
                 dna.sections[section.value] = f"Missing data for section: {e}"
-        
+
         logger.info(f"DNA generated successfully for {dna.agency_name}")
         return dna
-    
+
     def format_full_plan(self, dna: AgencyDNA) -> str:
         """Render the complete 13-section business plan as a string."""
         border = "═" * 60
@@ -165,20 +165,20 @@ class BusinessPlanGenerator:
             border,
             "",
         ]
-        
+
         # Add sections in order
         for section in PlanSection:
             content = dna.sections.get(section.value, "Section not generated.")
             lines.append(content)
             lines.append("-" * 40)
             lines.append("")
-        
+
         lines.extend([
             "🏯 \"Không đánh mà thắng\" - Win Without Fighting",
             f"Location: {dna.location} | Powered by Agency OS",
             border,
         ])
-        
+
         return "\n".join(lines)
 
 
@@ -186,10 +186,10 @@ class BusinessPlanGenerator:
 if __name__ == "__main__":
     print("📋 Initializing Business Plan Generator...")
     print("=" * 60)
-    
+
     try:
         gen = BusinessPlanGenerator()
-        
+
         # Simulated Answers
         answers = {
             "agency_name": "Saigon Digital Hub",
@@ -202,18 +202,18 @@ if __name__ == "__main__":
             "language": "Vietnamese",
             "currency": "VND"
         }
-        
+
         for q_id, val in answers.items():
             gen.answer_question(q_id, val)
-            
+
         if gen.is_complete():
             dna = gen.generate_dna()
             plan = gen.format_full_plan(dna)
-            
+
             print(f"\n✅ DNA Generated for {dna.agency_name}")
             print(f"📄 Sections completed: {len(dna.sections)}/13")
             print("\nPreview of Section 1:")
             print(dna.sections["customer_profile"])
-            
+
     except Exception as e:
         logger.error(f"Process Error: {e}")

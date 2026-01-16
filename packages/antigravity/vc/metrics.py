@@ -49,14 +49,14 @@ class MetricsSnapshot:
     cac: float = 0.0
     marketing_spend: float = 0.0
     timestamp: datetime = field(default_factory=datetime.now)
-    
+
     @property
     def net_mrr(self) -> float:
         """Net new MRR."""
         return self.new_mrr + self.expansion_mrr - self.churned_mrr
 
 
-@dataclass  
+@dataclass
 class VCMetrics:
     """
     VC-ready metrics dashboard.
@@ -76,44 +76,44 @@ class VCMetrics:
     mrr: float = 0.0
     arr: float = 0.0
     growth_rate: float = 0.0  # Monthly %
-    
+
     # Unit economics
     cac: float = 0.0          # Customer Acquisition Cost
     ltv: float = 0.0          # Lifetime Value
-    
+
     # Churn metrics
     churn_rate: float = 0.0   # Monthly churn %
     nrr: float = 100.0        # Net Revenue Retention %
-    
+
     # Efficiency metrics
     gross_margin: float = 80.0
     net_margin: float = 0.0
     burn_rate: float = 0.0
     runway_months: int = 0
-    
+
     # Customers
     total_customers: int = 0
     arpu: float = 0.0         # Average Revenue Per User
-    
+
     # Stage
     stage: FundingStage = FundingStage.PRE_SEED
-    
+
     def __post_init__(self):
         if self.mrr > 0:
             self.arr = self.mrr * 12
         if self.total_customers > 0 and self.mrr > 0:
             self.arpu = self.mrr / self.total_customers
-    
+
     def ltv_cac_ratio(self) -> float:
         """LTV/CAC ratio (should be >3x)."""
         if self.cac <= 0:
             return 0.0
         return self.ltv / self.cac
-    
+
     def rule_of_40(self) -> float:
         """Rule of 40 score (growth + margin > 40)."""
         return self.growth_rate + self.net_margin
-    
+
     def magic_number(self) -> float:
         """SaaS Magic Number (>0.75 is good)."""
         if self.cac <= 0:
@@ -121,43 +121,43 @@ class VCMetrics:
         # Simplified: Net New ARR / Sales & Marketing Spend
         net_new_arr = self.arr * (self.growth_rate / 100)
         return net_new_arr / (self.cac * self.total_customers) if self.total_customers > 0 else 0
-    
+
     def readiness_score(self) -> int:
         """Calculate VC readiness score (0-100)."""
         score = 0
         targets = STAGE_TARGETS.get(self.stage, STAGE_TARGETS[FundingStage.SEED])
-        
+
         # MRR score (30 points)
         if self.mrr >= targets["mrr"]:
             score += 30
         else:
             score += int(30 * (self.mrr / targets["mrr"]))
-        
+
         # Growth score (25 points)
         if self.growth_rate >= targets["growth"]:
             score += 25
         else:
             score += int(25 * (self.growth_rate / targets["growth"]))
-        
+
         # LTV/CAC score (25 points)
         ratio = self.ltv_cac_ratio()
         if ratio >= targets["ltv_cac"]:
             score += 25
         else:
             score += int(25 * (ratio / targets["ltv_cac"]))
-        
+
         # Rule of 40 (10 points)
         if self.rule_of_40() >= 40:
             score += 10
-        
+
         # NRR (10 points)
         if self.nrr >= 110:
             score += 10
         elif self.nrr >= 100:
             score += 5
-        
+
         return min(score, 100)
-    
+
     def get_stage_recommendation(self) -> FundingStage:
         """Recommend appropriate funding stage based on metrics."""
         if self.mrr >= 2000000:
@@ -170,29 +170,29 @@ class VCMetrics:
             return FundingStage.SEED
         else:
             return FundingStage.PRE_SEED
-    
+
     def get_gaps(self) -> List[str]:
         """Identify gaps to next funding stage."""
         gaps = []
         targets = STAGE_TARGETS.get(self.stage, STAGE_TARGETS[FundingStage.SEED])
-        
+
         if self.mrr < targets["mrr"]:
             gaps.append(f"MRR: ${self.mrr:,.0f} → ${targets['mrr']:,.0f}")
-        
+
         if self.growth_rate < targets["growth"]:
             gaps.append(f"Growth: {self.growth_rate:.0f}% → {targets['growth']}%")
-        
+
         if self.ltv_cac_ratio() < targets["ltv_cac"]:
             gaps.append(f"LTV/CAC: {self.ltv_cac_ratio():.1f}x → {targets['ltv_cac']}x")
-        
+
         if self.rule_of_40() < 40:
             gaps.append(f"Rule of 40: {self.rule_of_40():.0f} → 40")
-        
+
         if self.nrr < 110:
             gaps.append(f"NRR: {self.nrr:.0f}% → 110%")
-        
+
         return gaps
-    
+
     def to_dashboard(self) -> Dict:
         """Export as dashboard data."""
         return {

@@ -57,7 +57,7 @@ class WinCheck:
             raise WinWinWinError("Missing alignment: AGENCY must have a WIN.", "agency")
         if not self.client_win:
             raise WinWinWinError("Missing alignment: CLIENT must have a WIN.", "client")
-        
+
         self.is_aligned = True
         logger.info("WIN-WIN-WIN alignment validated successfully.")
         return True

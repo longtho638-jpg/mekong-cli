@@ -62,14 +62,14 @@ class SalesPipeline(BaseEngine):
     def advance_stage(self, deal_id: int, new_stage: Union[DealStage, str]) -> StartupDeal:
         """Moves a deal to the next phase of the engagement lifecycle."""
         deal = self._find_deal(deal_id)
-        
+
         if isinstance(new_stage, str):
             new_stage = DealStage(new_stage.lower())
-            
+
         deal.stage = new_stage
         if not deal.is_active():
             deal.closed_at = datetime.now()
-            
+
         logger.debug(f"Deal #{deal_id} advanced to {new_stage.value}")
         return deal
 
@@ -93,7 +93,7 @@ class SalesPipeline(BaseEngine):
         """Calculates aggregate financial metrics for the current pipeline."""
         active = self.get_active_deals()
         won = [d for d in self.deals if d.is_won()]
-        
+
         return {
             "funnel": {
                 "active_count": len(active),
@@ -130,19 +130,19 @@ class SalesPipeline(BaseEngine):
         """Visualizes the full startup sales funnel."""
         stats = self.get_stats()
         f = self.get_pipeline_breakdown()["financials"]
-        
+
         print("\n" + "═" * 65)
         print("║" + "🧲 STARTUP SALES PIPELINE - STRATEGIC OVERVIEW".center(63) + "║")
         print("═" * 65)
-        
+
         print(f"\n  🏆 PORTFOLIO VALUE: $ {(f['current_arr'] + f['equity_paper_value']):,.0f} USD")
         print(f"     └─ Cash ARR:     ${f['current_arr']:,.0f}")
         print(f"     └─ Equity Value: ${f['equity_paper_value']:,.0f}")
-        
+
         print("\n  📂 PIPELINE STATUS:")
         for tier_id, count in stats["pipeline_by_tier"].items():
             print(f"     • {tier_id.upper():<12} : {count} deals")
-            
+
         print("\n" + "─" * 65)
         print(f"  🚀 SUCCESS FEES PENDING: ${f['potential_success_fees']:,.0f} USD")
         print("═" * 65 + "\n")

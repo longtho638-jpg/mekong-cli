@@ -31,12 +31,12 @@ async def websocket_endpoint(websocket: WebSocket):
     - data_refresh: General refresh signal
     """
     client_id = await manager.connect(websocket)
-    
+
     try:
         while True:
             # Wait for messages from client
             data = await websocket.receive_json()
-            
+
             # Handle client messages
             if data.get("type") == "ping":
                 await manager.send_personal_message(client_id, {
@@ -53,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Client requests data refresh
                 from .server import emit_data_refresh
                 await emit_data_refresh()
-                
+
     except WebSocketDisconnect:
         manager.disconnect(client_id)
         await manager.broadcast_event(EventType.DISCONNECTED, {
