@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 'use client';
 
 import useSWR from 'swr';

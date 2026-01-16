@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 

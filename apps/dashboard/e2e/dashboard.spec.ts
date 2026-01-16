@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 import { test, expect } from '@playwright/test'
 
 test.describe('AgentOps Dashboard', () => {

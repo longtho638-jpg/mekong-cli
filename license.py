@@ -158,12 +158,25 @@ class LicenseValidator:
                 "max_daily_video": 1,
                 "niches": 1,
                 "white_label": False,
+                "monthly_api_calls": 1000,
+                "monthly_commands": 50,
+                "team_members": 1,
             },
-            LicenseTier.PRO: {"max_daily_video": 10, "niches": 10, "white_label": True},
+            LicenseTier.PRO: {
+                "max_daily_video": 10,
+                "niches": 10,
+                "white_label": True,
+                "monthly_api_calls": 10000,
+                "monthly_commands": 500,
+                "team_members": 5,
+            },
             LicenseTier.ENTERPRISE: {
                 "max_daily_video": -1,
                 "niches": -1,
                 "white_label": True,
+                "monthly_api_calls": -1,
+                "monthly_commands": -1,
+                "team_members": -1,
             },
         }
 

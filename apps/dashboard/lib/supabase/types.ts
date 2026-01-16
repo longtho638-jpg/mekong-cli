@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 // Agency OS Database Types
 // Auto-generated from Supabase schema
 
