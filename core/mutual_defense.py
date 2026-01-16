@@ -142,7 +142,7 @@ class MutualDefenseProtocol:
         
         for c in active_cases[:3]:
             # Vote bar
-            total_votes = c.votes_for + c.votes_against
+            c.votes_for + c.votes_against
             bar_len = 10
             fill = int((c.votes_for / c.votes_required) * bar_len) if c.votes_required else 0
             bar = "█" * fill + "░" * (bar_len - fill)

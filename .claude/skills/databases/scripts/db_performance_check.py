@@ -181,7 +181,7 @@ class PerformanceAnalyzer:
             coll = self.db[coll_name]
 
             # Check for collections scans
-            stats = coll.aggregate([
+            coll.aggregate([
                 {"$collStats": {"storageStats": {}}}
             ]).next()
 

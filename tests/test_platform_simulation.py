@@ -236,7 +236,7 @@ class TestPlatformIntegration:
     def test_routing_with_mock_data(self):
         """Test routing decisions with mock data scenarios."""
         router = HybridRouter()
-        factory = MockDataFactory()
+        MockDataFactory()
         
         # Simulate various task scenarios
         scenarios = [

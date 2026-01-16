@@ -127,7 +127,7 @@ class TestBackupManager:
         manager = BackupManager("mongodb", temp_backup_dir)
 
         with patch('shutil.make_archive') as mock_archive, \
-             patch('shutil.rmtree') as mock_rmtree:
+             patch('shutil.rmtree'):
 
             backup_info = manager.create_backup(
                 "mongodb://localhost",

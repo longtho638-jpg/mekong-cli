@@ -34,7 +34,7 @@ class TestSalesPipeline:
         """Test pipeline aggregation."""
         pipeline = SalesPipeline()
         d1 = pipeline.create_deal("S1", tier=DealTier.WARRIOR)
-        d2 = pipeline.create_deal("S2", tier=DealTier.GENERAL)
+        pipeline.create_deal("S2", tier=DealTier.GENERAL)
         
         pipeline.close_deal(d1.id, won=True) # Won
         

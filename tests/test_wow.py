@@ -94,7 +94,7 @@ def test_revenue_engine():
     
     # Create invoices
     inv1 = engine.create_invoice("ABC Corp", 5000)
-    inv2 = engine.create_invoice("XYZ Ltd", 3000)
+    engine.create_invoice("XYZ Ltd", 3000)
     
     # Mark paid
     engine.mark_paid(inv1)
@@ -204,9 +204,9 @@ def test_memory_system():
     memory = Memory()
     
     # Add observations
-    obs1 = memory.add_observation("Implemented AntigravityKit core modules", obs_type="code")
-    obs2 = memory.add_observation("Created franchise network with 8 territories", obs_type="decision")
-    obs3 = memory.add_observation("VCMetrics shows 75/100 readiness score", obs_type="note")
+    memory.add_observation("Implemented AntigravityKit core modules", obs_type="code")
+    memory.add_observation("Created franchise network with 8 territories", obs_type="decision")
+    memory.add_observation("VCMetrics shows 75/100 readiness score", obs_type="note")
     
     # Get timeline
     timeline = memory.get_timeline(limit=5)

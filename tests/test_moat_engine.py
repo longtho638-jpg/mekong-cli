@@ -23,7 +23,7 @@ class TestMoatEngine:
     def test_data_point_builds_strength(self, tmp_path):
         """Test that adding data increases moat strength."""
         engine = MoatEngine(storage_path=str(tmp_path))
-        initial_strength = engine.moats["data"].strength
+        engine.moats["data"].strength
         
         # Add 100 projects
         engine.add_data_point("projects", 100)
