@@ -21,11 +21,25 @@
 
 ```
 .agent/subagents/
+├── primary/    # 6 Primary Agents (Quick Access)
 ├── hubs/       # 18 Department Hubs
-├── core/       # 4 Core Utilities  
+├── core/       # 5 Core Utilities  
 ├── ops/        # 34 AgentOps
-└── mekongAgent/  # 30 MekongAgent Imports
+└── mekongAgent/  # 42 MekongAgent Imports
 ```
+
+---
+
+## 🎯 Primary Agents (Start Here)
+
+| Use Case | Agent | Command |
+|----------|-------|---------|
+| Plan a project | **Planner** | `mekong agent:planner` |
+| Write code | **Fullstack Dev** | `mekong agent:fullstack` |
+| Fix bugs | **Debugger** | `mekong agent:debugger` |
+| Create content | **Copywriter** | `mekong agent:copywriter` |
+| Design UI | **Designer** | `mekong agent:designer` |
+| Research market | **Scout** | `mekong agent:scout` |
 
 ---
 
