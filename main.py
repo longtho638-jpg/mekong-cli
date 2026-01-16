@@ -1,103 +1,60 @@
 #!/usr/bin/env python3
 """
-🌊 MEKONG-CLI: The Agency OS Command Line Interface
+🌊 MEKONG-CLI: The Unified Agency OS Command Center
 ===================================================
-
-"Deploy Your Agency in 15 Minutes."
+"Deploy Your Agency in 15 Minutes. Win Without Fighting."
 Powered by Hybrid Agentic Architecture 2026.
-
-Primary Commands:
-- 🏗️ init: Bootstrap a new agency project.
-- 🎤 setup-vibe: Localize AI voice and regional tone.
-- 🔌 mcp-setup: Initialize Model Context Protocol servers.
-- ➕ mcp-install: Install new MCP servers (Supabase, Postgres, etc.)
-- 🚀 deploy: Production deployment to Cloud Run.
-- 🔐 activate: License lifecycle management.
-
-Binh Pháp: ⚡ Quân Tranh (Speed) - Rapid deployment and execution.
 """
 
 import sys
 import typer
 from rich.console import Console
+from rich.panel import Panel
 from core.constants import APP_NAME
 
 # --- CLI Initialization ---
-
-# Typer provides a robust, type-safe CLI experience
 app = typer.Typer(
-    help=f"{APP_NAME}: The One-Person Unicorn Operating System",
+    help=f"🏯 {APP_NAME}: The One-Person Unicorn Operating System",
     no_args_is_help=True,
     add_completion=False,
     rich_markup_mode="rich"
 )
+
+# Sub-apps for better organization
+strategy_app = typer.Typer(help="🏯 Chiến lược Binh Pháp & Lập kế hoạch")
+dev_app = typer.Typer(help="🛠 Quy trình phát triển (Cook-Test-Ship)")
+mcp_app = typer.Typer(help="🔌 Quản lý Model Context Protocol (MCP)")
+
+app.add_typer(strategy_app, name="strategy")
+app.add_typer(dev_app, name="dev")
+app.add_typer(mcp_app, name="mcp")
+
 console = Console()
 
-# --- Command Registry (Lazy Loaded for Performance) ---
+def print_banner():
+    banner = """
+[bold primary]╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║   🌊 MEKONG-CLI & 🏯 AGENCY OS                            ║
+║                                                           ║
+║   The One-Person Unicorn Operating System                ║
+║   "Không đánh mà thắng" - Win Without Fighting           ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝[/bold primary]
+    """
+    console.print(banner)
+
+# --- Top Level Commands ---
 
 @app.command(name="init")
 def init_cmd(name: str = typer.Argument(..., help="Tên của dự án/agency mới")):
-    """🏗️ Khởi tạo dự án Agency OS mới."""
+    """🏗️ Khởi tạo dự án Agency OS mới từ template."""
     from cli.project import init
     init(name)
 
-@app.command(name="deploy")
-def deploy_cmd():
-    """🚀 Triển khai hệ thống lên Cloud Run (Production)."""
-    from cli.project import deploy_cmd
-    deploy_cmd()
-
-@app.command(name="setup-vibe")
-def setup_vibe_cmd(
-    niche: str = typer.Option(None, "--niche", "-n", help="Lĩnh vực kinh doanh mục tiêu"),
-    location: str = typer.Option(..., prompt="📍 Vị trí (VD: Cần Thơ, Hà Nội)", help="Địa phương hoạt động"),
-    tone: str = typer.Option("Bình dân, Chân thành", prompt="🎤 Giọng thương hiệu", help="Phong cách giao tiếp")
-):
-    """🎤 Tùy chỉnh 'linh hồn' AI (Voice & Tone) theo vùng miền."""
-    from cli.config import setup_vibe
-    setup_vibe(niche, location, tone)
-
-@app.command(name="generate-secrets")
-def generate_secrets_cmd():
-    """🔐 Khởi tạo file .env bảo mật (Chứa API Keys)."""
-    from cli.config import generate_secrets
-    generate_secrets()
-
-@app.command(name="mcp-setup")
-def mcp_setup_cmd():
-    """🔌 Thiết lập kết nối MCP (Model Context Protocol)."""
-    from cli.config import setup_mcp
-    setup_mcp()
-
-@app.command(name="mcp-install")
-def mcp_install_cmd(
-    url_or_name: str = typer.Argument(..., help="URL GitHub hoặc tên (vd: supabase)")
-):
-    """➕ Cài đặt thêm MCP Server mới."""
-    from cli.config import install_mcp
-    install_mcp(url_or_name)
-
-@app.command(name="vibes")
-def vibes_cmd_wrapper():
-    """📚 Xem danh sách các phong cách (Vibes) vùng miền có sẵn."""
-    from cli.config import vibes_cmd
-    vibes_cmd()
-
-@app.command(name="run-scout")
-def run_scout_cmd(feature: str = typer.Argument(..., help="Tính năng cần nghiên cứu")):
-    """🔍 Kích hoạt Agent Scout để nghiên cứu thị trường/codebase."""
-    from cli.agents import run_scout_cmd
-    run_scout_cmd(feature)
-
-@app.command(name="agents")
-def agents_cmd_wrapper():
-    """🤖 Hiển thị danh sách các AI Agents đang online."""
-    from cli.agents import agents_cmd
-    agents_cmd()
-
 @app.command(name="activate")
-def activate_cmd(key: str = typer.Argument(..., help="Mã kích hoạt bản quyền")):
-    """🔑 Kích hoạt bản quyền Mekong-CLI (Starter/Pro/Enterprise)."""
+def activate_cmd(key: str = typer.Option(..., "--key", "-k", prompt="Mã kích hoạt", help="Mã kích hoạt bản quyền")):
+    """🔑 Kích hoạt bản quyền (Starter/Pro/Enterprise)."""
     from cli.billing import activate_cmd
     activate_cmd(key)
 
@@ -107,15 +64,92 @@ def status_cmd():
     from cli.billing import status_cmd
     status_cmd()
 
-@app.command(name="costs")
-def costs_cmd():
-    """💰 Dự toán chi phí vận hành AI (Hybrid Router optimization)."""
-    from cli.billing import costs_cmd
-    costs_cmd()
+@app.command(name="setup-vibe")
+def setup_vibe_cmd(
+    location: str = typer.Option(..., prompt="📍 Vị trí (VD: Cần Thơ, Hà Nội)", help="Địa phương hoạt động"),
+    tone: str = typer.Option("Bình dân, Chân thành", prompt="🎤 Giọng thương hiệu", help="Phong cách giao tiếp")
+):
+    """🎤 Tùy chỉnh 'linh hồn' AI (Voice & Tone) theo vùng miền."""
+    from cli.config import setup_vibe
+    setup_vibe(None, location, tone)
 
-# --- Entry Point ---
+# --- Strategy Sub-commands ---
+
+@strategy_app.command(name="analyze")
+def strategy_analyze(idea: str = typer.Argument(..., help="Ý tưởng cần phân tích")):
+    """🏯 Phân tích chiến lược dự án theo Binh Pháp."""
+    from cli.strategy import analyze
+    analyze(idea)
+
+@strategy_app.command(name="plan")
+def strategy_plan(task: str = typer.Argument(..., help="Nhiệm vụ cần lập kế hoạch")):
+    """📋 Tạo Task Plan (kế hoạch tác chiến)."""
+    from cli.strategy import plan
+    plan(task)
+
+@strategy_app.command(name="win3")
+def strategy_win3():
+    """⚖️  Kiểm tra cân bằng WIN-WIN-WIN."""
+    from cli.strategy import win3
+    win3()
+
+# --- Dev Sub-commands ---
+
+@app.command(name="cook")
+def cook_cmd(feature: str = typer.Argument(..., help="Tính năng cần xây dựng")):
+    """🍳 Build: Kích hoạt Agent để xây dựng tính năng."""
+    from cli.developer import cook
+    cook(feature)
+
+@app.command(name="test")
+def test_cmd():
+    """🧪 Test: Chạy bộ kiểm thử tự động."""
+    from cli.developer import test
+    test()
+
+@app.command(name="ship")
+def ship_cmd():
+    """🚀 Ship: Triển khai sản phẩm lên Production."""
+    from cli.developer import ship
+    ship()
+
+# --- MCP Sub-commands ---
+
+@mcp_app.command(name="setup")
+def mcp_setup():
+    """🔌 Thiết lập kết nối MCP ban đầu."""
+    from cli.config import setup_mcp
+    setup_mcp()
+
+@mcp_app.command(name="install")
+def mcp_install(package: str = typer.Argument(..., help="Tên package hoặc URL GitHub")):
+    """➕ Cài đặt thêm MCP Server mới."""
+    from cli.config import install_mcp
+    install_mcp(package)
+
+# --- Utility Commands ---
+
+@app.command(name="agents")
+def agents_list():
+    """🤖 Danh sách AI Agents đang online."""
+    from cli.agents import agents_cmd
+    agents_cmd()
+
+@app.command(name="scaffold")
+def scaffold_cmd(request: str = typer.Argument(..., help="Yêu cầu kiến trúc")):
+    """🏗️ Scaffold: Tạo bản vẽ kiến trúc dự án (Architect Agent)."""
+    try:
+        from core.modules.architect import ArchitectService, ArchitectPresenter
+        service = ArchitectService()
+        profile = service.analyze_request(request)
+        blueprint = service.generate_blueprint(profile)
+        console.print(ArchitectPresenter.display_blueprint(profile, blueprint))
+    except ImportError:
+        console.print("[red]❌ Architect module not found.[/red]")
 
 if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        print_banner()
     try:
         app()
     except Exception as e:
