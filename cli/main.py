@@ -1248,6 +1248,31 @@ def run_scaffold():
         print(f"❌ Architect module not found: {e}")
 
 
+def run_ide():
+    """Manage Antigravity IDE configuration."""
+    if len(sys.argv) < 3 or sys.argv[2] != "sync":
+        print("Usage: agencyos ide sync")
+        print("  Enforces absolute synchronization of IDE settings.")
+        return
+
+    try:
+        from core.modules.ide import IDEService
+        service = IDEService()
+        
+        print("\n🔒 ANTIGRAVITY IDE SYNCHRONIZATION")
+        print("═" * 60)
+        
+        results = service.sync_all()
+        for key, msg in results.items():
+            print(f"{msg}")
+            
+        print("\n✅ Environment is now locked to AgencyOS standards.")
+        print("   Restart your editor to apply changes.")
+        
+    except ImportError as e:
+        print(f"❌ IDE module not found: {e}")
+
+
 def run_guide():
     """Show the Vibe Coding Manual for non-tech users."""
     print("\n🧘 VIBE CODING MANUAL (Quick Start)")
@@ -1320,6 +1345,7 @@ def main():
         "strategy": run_strategy,
         "kanban": run_kanban,
         "scaffold": run_scaffold,
+        "ide": run_ide,
         "guide": run_guide,
         "help": print_help,
     }
