@@ -453,19 +453,30 @@ class SubscriptionMiddleware:
     def enforce(self, action: str = "api_call"):
         """
         Decorator to enforce tier limits on functions.
+        Security: Added rate limiting and validation.
         """
 
         def decorator(func: Callable):
             @wraps(func)
             def wrapper(*args, **kwargs):
-                # Extract user_id
+                # Extract user_id with validation
                 user_id = kwargs.get("user_id") or "default_user"
+                
+                # Security: Validate user_id format
+                if not isinstance(user_id, str) or len(user_id) > 100:
+                    raise PermissionError("Invalid user identifier.")
 
                 # Check limits
                 result = self.check_limit(user_id, action)
 
                 if not result.get("allowed"):
+                    logger.warning(f"Access denied for user {user_id}: {result.get('reason')}")
                     raise PermissionError(result.get("reason", "Access denied."))
+
+                # Rate limiting check
+                if not self._check_rate_limit(user_id, action):
+                    logger.warning(f"Rate limit exceeded for user {user_id}, action {action}")
+                    raise PermissionError("Rate limit exceeded. Please try again later.")
 
                 # Execute function
                 res = func(*args, **kwargs)
@@ -484,6 +495,34 @@ class SubscriptionMiddleware:
             return wrapper
 
         return decorator
+    
+    def _check_rate_limit(self, user_id: str, action: str) -> bool:
+        """
+        Basic rate limiting implementation.
+        Returns True if allowed, False if rate limited.
+        """
+        import time
+        from collections import defaultdict
+        
+        # Simple in-memory rate limiting (in production, use Redis)
+        if not hasattr(self, '_rate_limits'):
+            self._rate_limits = defaultdict(list)
+        
+        now = time.time()
+        window_size = 60  # 1 minute window
+        max_requests = 100  # Max requests per minute
+        
+        # Clean old entries
+        user_limits = self._rate_limits[user_id]
+        user_limits[:] = [t for t in user_limits if now - t < window_size]
+        
+        # Check limit
+        if len(user_limits) >= max_requests:
+            return False
+        
+        # Add current request
+        user_limits.append(now)
+        return True
 
     def format_usage_dashboard(self, user_id: str) -> str:
         """Format usage dashboard as ASCII text."""
