@@ -1248,6 +1248,36 @@ def run_scaffold():
         print(f"❌ Architect module not found: {e}")
 
 
+def run_ui():
+    """Run UI Architect to generate MD3 components."""
+    try:
+        from core.modules.ui_architect import UIArchitectService
+        
+        if len(sys.argv) < 4:
+            print("Usage: agencyos ui <component|page> <name> [vibe]")
+            return
+
+        action = sys.argv[2] # component or page
+        name = sys.argv[3]
+        vibe = sys.argv[4] if len(sys.argv) > 4 else "Professional and clean"
+        
+        service = UIArchitectService()
+        
+        print("\n🎨 UI ARCHITECT (Material Design 3)")
+        print("═" * 60)
+        print(f"🎯 Target: {name} ({action})")
+        print(f"✨ Vibe: {vibe}")
+        print("─" * 60)
+        
+        prompt = service.generate_component_prompt(name, vibe)
+        
+        print(prompt)
+        print("\n👉 Copy the above prompt to your AI Editor to generate the code.")
+        
+    except ImportError as e:
+        print(f"❌ UI Architect module not found: {e}")
+
+
 def run_ide():
     """Manage Antigravity IDE configuration."""
     if len(sys.argv) < 3 or sys.argv[2] != "sync":
@@ -1346,6 +1376,7 @@ def main():
         "kanban": run_kanban,
         "scaffold": run_scaffold,
         "ide": run_ide,
+        "ui": run_ui,
         "guide": run_guide,
         "help": print_help,
     }

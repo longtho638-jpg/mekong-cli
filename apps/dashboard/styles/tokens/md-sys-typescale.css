@@ -1,0 +1,31 @@
+:root {
+  /* Display */
+  --md-sys-typescale-display-large-font: "JetBrains Mono", monospace;
+  --md-sys-typescale-display-large-weight: 400;
+  --md-sys-typescale-display-large-size: 57px;
+  --md-sys-typescale-display-large-line-height: 64px;
+
+  /* Headline */
+  --md-sys-typescale-headline-large-font: "JetBrains Mono", monospace;
+  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-large-size: 32px;
+  --md-sys-typescale-headline-large-line-height: 40px;
+
+  /* Title */
+  --md-sys-typescale-title-medium-font: "JetBrains Mono", monospace;
+  --md-sys-typescale-title-medium-weight: 500;
+  --md-sys-typescale-title-medium-size: 16px;
+  --md-sys-typescale-title-medium-line-height: 24px;
+
+  /* Body */
+  --md-sys-typescale-body-large-font: "JetBrains Mono", monospace;
+  --md-sys-typescale-body-large-weight: 400;
+  --md-sys-typescale-body-large-size: 16px;
+  --md-sys-typescale-body-large-line-height: 24px;
+
+  /* Label */
+  --md-sys-typescale-label-large-font: "JetBrains Mono", monospace;
+  --md-sys-typescale-label-large-weight: 500;
+  --md-sys-typescale-label-large-size: 14px;
+  --md-sys-typescale-label-large-line-height: 20px;
+}

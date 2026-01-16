@@ -1,0 +1,9 @@
+:root {
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-medium1: 200ms;
+  --md-sys-motion-duration-medium2: 250ms;
+  --md-sys-motion-duration-long1: 450ms;
+}
