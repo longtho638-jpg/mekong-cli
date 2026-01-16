@@ -16,10 +16,15 @@ from rich.console import Console
 from rich.markdown import Markdown
 
 # Use centralized import system
-from core.import_system import setup_imports
-setup_imports()
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from apps.cli.src.theme import get_theme
+# Try to import theme with fallback
+try:
+    from apps.cli.src.theme import get_theme
+except ImportError:
+    # Fallback for development
+    def get_theme():
+        return None
 
 class CommandProcessor:
     """Processes commands using modular architecture."""
