@@ -4,7 +4,7 @@ Manages lead routing, enrichment, and CRM sync.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     # Enrich
     agent.enrich_lead(l1.id)
     
-    print(f"\n🔍 Enriched Data:")
+    print("\n🔍 Enriched Data:")
     for k, v in l1.enriched_data.items():
         print(f"   {k}: {v}")
     

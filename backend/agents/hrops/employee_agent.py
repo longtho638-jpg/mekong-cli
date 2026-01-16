@@ -3,9 +3,9 @@ Employee Agent - Workforce & Performance Management
 Manages employee records, performance, and leave.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 import random
 

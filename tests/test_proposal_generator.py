@@ -5,13 +5,12 @@ Tests for Proposal Generator system.
 import sys
 import os
 import pytest
-from unittest.mock import MagicMock
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.proposal_generator import ProposalGenerator, Proposal
-from antigravity.core.money_maker import MoneyMaker, Quote, ServiceTier
+from antigravity.core.proposal_generator import ProposalGenerator
+from antigravity.core.money_maker import MoneyMaker, ServiceTier
 
 class TestProposalGenerator:
     

@@ -3,8 +3,8 @@ Team Agent - Marketing Team Management
 Manages team members, tasks, and performance.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # Complete
     agent.complete_task(t1.id)
     
-    print(f"\n📊 Stats:")
+    print("\n📊 Stats:")
     stats = agent.get_stats()
     print(f"   Team: {stats['total_members']}")
     print(f"   Utilization: {stats['avg_utilization']:.0f}%")

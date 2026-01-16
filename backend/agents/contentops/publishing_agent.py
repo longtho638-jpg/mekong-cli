@@ -5,7 +5,7 @@ Manages content calendar and multi-platform publishing.
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from enum import Enum
 import random
 

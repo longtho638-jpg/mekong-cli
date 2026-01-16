@@ -5,12 +5,11 @@ Tests for Telemetry system.
 import sys
 import os
 import pytest
-from datetime import datetime
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.telemetry import Telemetry, Event
+from antigravity.core.telemetry import Telemetry
 
 class TestTelemetry:
     

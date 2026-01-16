@@ -3,8 +3,8 @@ HR Data Agent - Employee Records & System Management
 Manages employee data, records, and system integrations.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, date
 from enum import Enum
 import random

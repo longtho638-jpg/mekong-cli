@@ -4,7 +4,7 @@ Manages influencer campaigns and performance tracking.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime, date
 from enum import Enum
 import random
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     agent.activate(c1.id)
     agent.simulate_performance(c1.id)
     
-    print(f"\n📊 Results:")
+    print("\n📊 Results:")
     print(f"   Reach: {c1.total_reach:,}")
     print(f"   Engagement: {c1.total_engagement:,}")
     print(f"   Spend: ${c1.spend:,.0f}")

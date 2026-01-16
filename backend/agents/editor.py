@@ -4,7 +4,7 @@ Transforms intel briefs into polished content.
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 import sys
 import os

@@ -5,7 +5,7 @@ Tests for Vibe Kanban Bridge
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime
-from antigravity.vibe_kanban_bridge import VibeBoardClient, TaskModel, AgentOrchestrator
+from antigravity.vibe_kanban_bridge import VibeBoardClient, AgentOrchestrator
 
 @pytest.fixture
 def anyio_backend():

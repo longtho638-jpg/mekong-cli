@@ -3,10 +3,8 @@ Territory Manager Agent - Geographic Sales Territory
 Manages territories, coverage, and route optimization.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
-from enum import Enum
+from dataclasses import dataclass
+from typing import List, Dict
 
 
 @dataclass

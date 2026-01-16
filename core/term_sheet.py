@@ -13,7 +13,7 @@ Features:
 - Founder-friendly scoring
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -271,7 +271,7 @@ class TermSheetAnalyzer:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📋 TERM SHEET ANALYZER                                   ║",
+            "║  📋 TERM SHEET ANALYZER                                   ║",
             f"║  {stats['total_term_sheets']} sheets │ {stats['avg_founder_score']:.0f}% founder-friendly  ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📊 ACTIVE TERM SHEETS                                    ║",

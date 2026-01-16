@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 from datetime import datetime
-from typing import Optional, List
 
 app = FastAPI(title="AgentOps MVP - WIN³ Complete", version="4.0.0")
 

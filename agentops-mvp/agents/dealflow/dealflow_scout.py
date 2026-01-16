@@ -22,8 +22,7 @@ Binh Pháp Application:
 - Chapter 13 (Dụng Gián): Intelligence gathering
 """
 
-import os
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from enum import Enum

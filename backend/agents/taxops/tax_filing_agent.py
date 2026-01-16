@@ -3,7 +3,7 @@ Tax Filing Agent - Tax Submission & Deadlines
 Manages tax filings, deadlines, and submissions.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

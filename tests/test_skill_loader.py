@@ -5,7 +5,6 @@ Tests for Skill Loader.
 import sys
 import os
 import pytest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 # Add parent to path
@@ -13,9 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.skill_loader import (
     SKILL_MAPPING,
-    get_skills_for_agent,
-    load_skills_for_agent,
-    get_total_skills
+    get_skills_for_agent
 )
 
 class TestSkillLoader:

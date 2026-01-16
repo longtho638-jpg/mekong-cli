@@ -3,7 +3,7 @@ CRM Module - Data Entities
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Any
+from typing import List, Optional
 from datetime import datetime, timedelta
 
 class ContactType(Enum):

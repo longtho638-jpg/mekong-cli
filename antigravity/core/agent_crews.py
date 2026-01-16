@@ -16,7 +16,7 @@ Binh Pháp: 🤝 Quân Tranh (Speed & Unity) - Efficient coordination.
 
 import logging
 import time
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
@@ -179,7 +179,7 @@ def get_crew_summary(name: str) -> str:
     lines = [
         f"👥 CREW: {crew.name}",
         f"   {crew.description}",
-        f"",
+        "",
         f"   Lead    : ⭐ {crew.lead.agent}",
         f"   Workers : {', '.join(w.agent for w in crew.workers)}",
         f"   QA      : 🔍 {crew.qa.agent}",

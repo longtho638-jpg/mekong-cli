@@ -19,7 +19,7 @@ import logging
 import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Any, Union
+from typing import List, Dict, Optional, Any
 from enum import Enum
 
 # Configure logging

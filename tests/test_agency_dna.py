@@ -9,7 +9,7 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.agency_dna import AgencyDNA, Tone, PricingTier, Service
+from antigravity.core.agency_dna import AgencyDNA, Tone, Service
 
 class TestAgencyDNA:
     

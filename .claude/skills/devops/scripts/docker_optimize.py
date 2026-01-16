@@ -13,10 +13,9 @@ Usage:
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 
 # Windows UTF-8 compatibility (works for both local and global installs)
 CLAUDE_ROOT = Path(__file__).parent.parent.parent.parent
@@ -246,7 +245,7 @@ class DockerfileAnalyzer:
         """
         print(f"\nDockerfile Analysis: {results['dockerfile']}")
         print(f"Total lines: {results['total_lines']}")
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"  Errors: {results['summary']['errors']}")
         print(f"  Warnings: {results['summary']['warnings']}")
         print(f"  Suggestions: {results['summary']['suggestions']}")

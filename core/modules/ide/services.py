@@ -1,11 +1,10 @@
 """
 IDE Module - Service Logic
 """
-import os
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict
 from .constants import VSCODE_SETTINGS, REQUIRED_EXTENSIONS, EDITOR_CONFIG, CURSOR_RULES
 
 logger = logging.getLogger(__name__)

@@ -10,7 +10,6 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.registry import (
-    COMMAND_REGISTRY,
     get_command_metadata,
     resolve_command,
     list_suites

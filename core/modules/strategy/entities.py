@@ -3,7 +3,7 @@ Strategy Module - Entities
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
+from typing import List
 
 class Chapter(Enum):
     PLANNING = 1

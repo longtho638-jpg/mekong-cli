@@ -3,7 +3,7 @@ Proposal Module - Data Entities
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional
+from typing import List
 from datetime import datetime, timedelta
 
 class ProposalStatus(Enum):

@@ -5,9 +5,8 @@ Handles HTTP requests for CRM operations.
 Clean Architecture Layer: Controllers
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 from core.use_cases.create_deal import CreateDealUseCase
-from core.entities.deal import Deal
 
 
 class CRMController:

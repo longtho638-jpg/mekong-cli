@@ -3,8 +3,8 @@ Sourcing Agent - Candidate Discovery & Talent Pools
 Discovers and manages candidate talent pools.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random

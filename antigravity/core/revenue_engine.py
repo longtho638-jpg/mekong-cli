@@ -17,7 +17,7 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 import logging
 import math
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from .models.invoice import Invoice, InvoiceStatus, Forecast
 from .config import Currency, EXCHANGE_RATES, ARR_TARGET_2026, DEFAULT_GROWTH_RATE

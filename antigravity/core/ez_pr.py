@@ -1,7 +1,6 @@
 "\n"
 
 import logging
-from typing import Optional, List, Dict, Any, Union
 from .pr_manager import PRManager
 
 # Configure logging

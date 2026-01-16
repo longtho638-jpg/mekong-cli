@@ -12,7 +12,7 @@ This module defines the core identity of your agency:
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from enum import Enum
 
 

@@ -17,7 +17,7 @@ Binh Pháp: 🎖️ Tướng (General) - Commanding the numbers.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Any
 from enum import Enum
 
 # Configure logging

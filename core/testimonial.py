@@ -12,7 +12,7 @@ Features:
 - Social proof showcase
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -138,7 +138,7 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
         for t in self.testimonials[:3]:
             stars = "★" * t.rating.value
             quote_short = t.quote[:45] + "..." if len(t.quote) > 45 else t.quote
-            lines.append(f"║                                                           ║")
+            lines.append("║                                                           ║")
             lines.append(f"║  {stars}                                             ║")
             lines.append(f"║  \"{quote_short}\"  ║")
             lines.append(f"║  — {t.client_name}, {t.company[:25]:<25}            ║")

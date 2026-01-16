@@ -18,7 +18,7 @@ Binh Pháp: 💂 Tướng (Leadership) - Choosing the right soldier for the miss
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Optional, Tuple, Any, Union, List
+from typing import Dict, Optional, Tuple, Any, List
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

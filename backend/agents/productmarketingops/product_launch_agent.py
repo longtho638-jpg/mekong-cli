@@ -4,7 +4,7 @@ Manages product launches, timelines, and success metrics.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime, date
 from enum import Enum
 import random

@@ -3,8 +3,8 @@ Thought Leadership Agent - B2B Content & Insights
 Manages whitepapers, reports, and gated content.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     for _ in range(50):
         agent.record_download(c1.id, is_lead=random.random() > 0.3)
     
-    print(f"\n📈 Performance:")
+    print("\n📈 Performance:")
     print(f"   Downloads: {c1.downloads}")
     print(f"   Leads: {c1.leads_generated}")
     print(f"   Conversion: {c1.conversion_rate:.0f}%")

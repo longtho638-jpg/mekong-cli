@@ -3,7 +3,7 @@ Partnership Agent - Partner Relationship Management
 Manages partnerships, co-marketing, and revenue sharing.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     agent.record_referral(p1.id, 8000)
     agent.record_referral(p2.id, 3000)
     
-    print(f"\n💰 Payouts:")
+    print("\n💰 Payouts:")
     print(f"   {p1.company}: ${agent.calculate_payout(p1.id):,.0f}")
     print(f"   {p2.company}: ${agent.calculate_payout(p2.id):,.0f}")
     

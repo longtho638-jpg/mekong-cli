@@ -16,7 +16,7 @@ Binh Pháp: 🏯 Thống (Unity) - Commanding the entire field from one center.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from datetime import datetime
 
 from .unified_dashboard import AgenticDashboard
@@ -106,30 +106,30 @@ class MasterDashboard:
         print("═" * 70)
         
         # 1. AGENTIC LAYER
-        print(f" 🤖 AGENTIC INFRASTRUCTURE")
+        print(" 🤖 AGENTIC INFRASTRUCTURE")
         print(f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}")
-        print(f"    └─ Integration   : Healthy")
+        print("    └─ Integration   : Healthy")
         
         print(" ─" * 35)
         
         # 2. RETENTION LAYER
-        print(f" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
+        print(" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
         print(f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}")
         print(f"    └─ Switching Cost: ${l['retention']['switching_cost_usd']:,} USD")
         
         print(" ─" * 35)
         
         # 3. REVENUE LAYER
-        print(f" 💰 REVENUE PERFORMANCE")
+        print(" 💰 REVENUE PERFORMANCE")
         print(f"    ├─ Current ARR   : ${l['revenue']['arr']:,.0f} | Target ARR   : $1,000,000")
         print(f"    └─ Goal Progress : {l['revenue']['progress']:.1%}")
         
         print(" ─" * 35)
         
         # 4. INFRASTRUCTURE LAYER
-        print(f" 🏗️ PRODUCTION STACK")
+        print(" 🏗️ PRODUCTION STACK")
         print(f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%")
-        print(f"    └─ Status        : Operational")
+        print("    └─ Status        : Operational")
         
         print("═" * 70)
         

@@ -223,26 +223,26 @@ def provide_setup_instructions():
 
     print("\n2. Configure the API key (choose one method):")
 
-    print(f"\n   Option A: User global config (recommended)")
-    print(f"   $ echo 'GEMINI_API_KEY=your-api-key-here' >> ~/.agencyos/.env")
+    print("\n   Option A: User global config (recommended)")
+    print("   $ echo 'GEMINI_API_KEY=your-api-key-here' >> ~/.agencyos/.env")
 
     script_dir = Path(__file__).parent
     skill_dir = script_dir.parent
 
-    print(f"\n   Option B: Skill-specific config")
+    print("\n   Option B: Skill-specific config")
     print(f"   $ cd {skill_dir}")
-    print(f"   $ cp .env.example .env")
-    print(f"   $ # Edit .env and add your API key")
+    print("   $ cp .env.example .env")
+    print("   $ # Edit .env and add your API key")
 
-    print(f"\n   Option C: Runtime environment (temporary)")
-    print(f"   $ export GEMINI_API_KEY='your-api-key-here'")
+    print("\n   Option C: Runtime environment (temporary)")
+    print("   $ export GEMINI_API_KEY='your-api-key-here'")
 
     print("\n3. Verify setup:")
     print(f"   $ python {Path(__file__)}")
 
     print("\n4. Debug if needed:")
-    print(f"   $ python ~/.agencyos/scripts/resolve_env.py --show-hierarchy --skill ai-multimodal")
-    print(f"   $ python ~/.agencyos/scripts/resolve_env.py GEMINI_API_KEY --skill ai-multimodal --verbose")
+    print("   $ python ~/.agencyos/scripts/resolve_env.py --show-hierarchy --skill ai-multimodal")
+    print("   $ python ~/.agencyos/scripts/resolve_env.py GEMINI_API_KEY --skill ai-multimodal --verbose")
 
 
 def main():

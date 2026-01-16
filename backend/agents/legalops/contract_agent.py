@@ -3,7 +3,7 @@ Contract Agent - Contract Lifecycle Management
 Manages contract drafting, review, and signatures.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

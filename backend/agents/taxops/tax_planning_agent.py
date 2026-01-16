@@ -3,7 +3,7 @@ Tax Planning Agent - Tax Optimization & Savings
 Analyzes tax strategies and identifies savings opportunities.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum

@@ -6,7 +6,7 @@ Central repository for all agency-wide constants, niches, and configurations.
 "Biết người biết ta, trăm trận không nguy."
 """
 
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple
 from enum import Enum
 
 # --- App Metadata ---

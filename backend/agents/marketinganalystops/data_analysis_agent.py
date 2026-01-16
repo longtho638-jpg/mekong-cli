@@ -4,8 +4,8 @@ Manages marketing data analysis, trends, and anomaly detection.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date, timedelta
+from typing import List, Dict
+from datetime import datetime
 from enum import Enum
 import random
 
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     print(f"📋 Aggregated: {len(metrics)} metrics")
     
     # Show key metrics
-    print(f"\n📈 Key Metrics:")
+    print("\n📈 Key Metrics:")
     for name in ["Revenue", "Conversion Rate", "ROAS"]:
         m = metrics[name]
         trend_icon = "↑" if m.trend == TrendDirection.UP else "↓" if m.trend == TrendDirection.DOWN else "→"
@@ -174,6 +174,6 @@ if __name__ == "__main__":
     
     # Stats
     stats = agent.get_stats()
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"   Positive Trends: {stats['positive_trends']}")
     print(f"   Negative Trends: {stats['negative_trends']}")

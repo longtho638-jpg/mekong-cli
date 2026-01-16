@@ -4,7 +4,7 @@ Manages content strategy, topic clusters, and performance.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime, date
 from enum import Enum
 import random
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     agent.update_stage(c1.id, ContentStage.PUBLISHED)
     agent.record_performance(c1.id, traffic=5000, leads=150, content_score=85)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Traffic: {c1.traffic}")
     print(f"   Leads: {c1.leads}")
     print(f"   CVR: {c1.conversion_rate:.1f}%")

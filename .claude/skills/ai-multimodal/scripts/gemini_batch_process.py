@@ -478,14 +478,14 @@ def generate_video_veo(
             print(f"  Generating video with Veo: {model}")
             print(f"  Config: {resolution}, {aspect_ratio}")
             if first_frame:
-                print(f"  First frame: provided")
+                print("  First frame: provided")
             if last_frame:
-                print(f"  Last frame: provided (interpolation mode)")
+                print("  Last frame: provided (interpolation mode)")
 
         start = time.time()
 
         if verbose:
-            print(f"  Starting video generation (this may take 11s-6min)...")
+            print("  Starting video generation (this may take 11s-6min)...")
 
         # Call generate_videos with image parameter for first frame
         operation = client.models.generate_videos(
@@ -778,7 +778,7 @@ def batch_process(
     # For generation tasks without input files, process once
     if task == 'generate' and not files:
         if verbose:
-            print(f"\nGenerating image from prompt...")
+            print("\nGenerating image from prompt...")
 
         # Use Imagen 4 API for imagen models
         if model.startswith('imagen-') or model in IMAGEN_MODELS:
@@ -844,7 +844,7 @@ def batch_process(
 
     elif task == 'generate-video' and not files:
         if verbose:
-            print(f"\nGenerating video from prompt...")
+            print("\nGenerating video from prompt...")
 
         result = generate_video_veo(
             client=client,
@@ -897,12 +897,12 @@ def batch_process(
                     if new_client:
                         client = new_client
                         if verbose:
-                            print(f"  Retrying with rotated key...")
+                            print("  Retrying with rotated key...")
                         continue
                     else:
                         # All keys exhausted - mark result with clear error
                         if verbose:
-                            print(f"  ⚠ All API keys exhausted (on cooldown)", file=sys.stderr)
+                            print("  ⚠ All API keys exhausted (on cooldown)", file=sys.stderr)
                         result['error'] = "All API keys exhausted (rate limited). Try again later."
                 break
 

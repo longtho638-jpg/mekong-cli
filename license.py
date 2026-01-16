@@ -3,7 +3,6 @@ License validation module for Mekong-CLI.
 Handles tier-based access control (Starter/Pro/Enterprise) and local license management.
 """
 
-import hashlib
 import json
 from datetime import datetime
 from pathlib import Path

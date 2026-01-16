@@ -12,7 +12,7 @@ Roles:
 - Press releases
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -109,7 +109,7 @@ class Journalist:
         
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
-            f"║  📰 JOURNALIST                                            ║",
+            "║  📰 JOURNALIST                                            ║",
             f"║  {len(self.stories)} stories │ {active} active │ {published} published         ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  📋 STORY BOARD                                           ║",

@@ -3,7 +3,7 @@ Account Manager Agent - Client Relationships & Growth
 Manages account portfolio and relationship health.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum

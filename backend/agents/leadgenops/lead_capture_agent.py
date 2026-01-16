@@ -4,7 +4,7 @@ Manages lead capture forms and conversion optimization.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     # Simulate traffic
     agent.simulate_traffic(f1.id, 1000)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Views: {f1.views}")
     print(f"   Submissions: {f1.submissions}")
     print(f"   Conversion: {f1.conversion_rate:.1f}%")

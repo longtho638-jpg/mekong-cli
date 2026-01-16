@@ -19,7 +19,7 @@ import logging
 import json
 import os
 from typing import Dict, List, Any, Optional, Union
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 

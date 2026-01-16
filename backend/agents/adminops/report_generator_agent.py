@@ -4,7 +4,7 @@ Generates weekly/monthly reports and KPI summaries.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
 import random

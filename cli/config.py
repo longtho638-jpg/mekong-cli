@@ -1,6 +1,4 @@
-import json
 import subprocess
-import os
 from pathlib import Path
 import typer
 from rich.console import Console
@@ -20,7 +18,7 @@ def setup_vibe(
     """
     Customize the Agent's soul (.gemini/GEMINI.md) for a specific niche.
     """
-    console.print(f"\n[bold blue]🎨 Setup Vibe:[/bold blue]")
+    console.print("\n[bold blue]🎨 Setup Vibe:[/bold blue]")
     
     # Interactive niche selection if not provided
     if not niche:

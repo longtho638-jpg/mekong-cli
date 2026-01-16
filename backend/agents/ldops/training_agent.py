@@ -3,8 +3,8 @@ Training Agent - Learning & Course Management
 Manages training courses, learning paths, and completions.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import Dict, Optional
 from datetime import datetime
 from enum import Enum
 import random

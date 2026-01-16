@@ -84,8 +84,8 @@ class DirectorAgent:
         scene_templates = [
             f"Vấn đề: Nhiều người gặp khó khăn với {topic}",
             f"Giải pháp: Mekong-CLI giúp bạn {topic} trong 15 phút",
-            f"Demo: Gõ 'mekong init' và xem kết quả",
-            f"Kết quả: Tiết kiệm 70% chi phí, tự động hóa hoàn toàn",
+            "Demo: Gõ 'mekong init' và xem kết quả",
+            "Kết quả: Tiết kiệm 70% chi phí, tự động hóa hoàn toàn",
         ]
         
         # CTA templates
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     print(f"📝 Script: {script.title}")
     print(f"🎯 Platform: {script.platform} ({script.duration_sec}s)")
     print(f"\n🪝 Hook: {script.hook}")
-    print(f"\n📍 Scenes:")
+    print("\n📍 Scenes:")
     for i, scene in enumerate(script.scenes, 1):
         print(f"   {i}. {scene}")
     print(f"\n🔔 CTA: {script.cta}")

@@ -4,8 +4,8 @@ Manages paid campaigns across platforms.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from typing import List, Dict
+from datetime import date
 from enum import Enum
 import random
 
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     agent.activate(c1.id)
     agent.simulate_performance(c1.id)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Spend: ${c1.total_spend:,.0f}")
     print(f"   Conversions: {c1.total_conversions}")
     print(f"   ROAS: {c1.roas:.1f}x")

@@ -4,8 +4,7 @@ Manages campaign optimization and performance analysis.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
+from typing import List, Dict
 from enum import Enum
 import random
 

@@ -3,9 +3,8 @@ HR Analytics Agent - Workforce Metrics & Analysis
 Analyzes HR data, turnover, and workforce metrics.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from dataclasses import dataclass
+from typing import Dict
 from enum import Enum
 import random
 

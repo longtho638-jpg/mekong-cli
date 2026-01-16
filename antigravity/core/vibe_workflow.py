@@ -21,7 +21,6 @@ import logging
 import subprocess
 from pathlib import Path
 from typing import List, Dict, Optional, Any, Union
-from datetime import datetime
 
 from .models.workflow import Task, TaskStatus, WorkflowStep, CodeReviewResult
 from .base import BaseEngine
@@ -221,7 +220,7 @@ class VIBEWorkflow(BaseEngine):
             logger.info(f"Successfully shipped changes: {commit_msg}")
         except subprocess.CalledProcessError as e:
             logger.error(f"Git operation failed: {e}")
-        except Exception as e:
+        except Exception:
             logger.exception("Shipment failed")
 
         return report

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.loyalty_rewards import LoyaltyProgram, TIERS
+from antigravity.core.loyalty_rewards import LoyaltyProgram
 
 class TestLoyaltyRewards:
     

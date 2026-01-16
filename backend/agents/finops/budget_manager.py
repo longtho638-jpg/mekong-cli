@@ -3,9 +3,9 @@ Budget Manager Agent - Spending Limits & Alerts
 Manages budgets, enforces limits, and sends notifications.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Callable
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from typing import List, Dict
+from datetime import datetime
 from enum import Enum
 
 
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     ai_budget = manager.create_budget("AI Costs", limit=100.0, period="monthly")
     marketing_budget = manager.create_budget("Marketing", limit=50.0, period="monthly")
     
-    print(f"📋 Created Budgets:")
+    print("📋 Created Budgets:")
     print(f"   {ai_budget.name}: ${ai_budget.limit}/month")
     print(f"   {marketing_budget.name}: ${marketing_budget.limit}/month")
     

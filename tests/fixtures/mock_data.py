@@ -11,8 +11,7 @@ Generates realistic test data for:
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -5,12 +5,11 @@ Tests for Data Moat system.
 import sys
 import os
 import pytest
-from datetime import datetime
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.platform.data_moat import DataMoat, InsightType, Insight
+from antigravity.platform.data_moat import DataMoat, InsightType
 
 class TestDataMoat:
     

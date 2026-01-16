@@ -25,7 +25,7 @@ def load_yaml(filename):
     path = SCRIPT_DIR / filename
     if not path.exists():
         print(f"Error: {path} not found", file=sys.stderr)
-        print(f"Hint: Run scan_skills.py or scan_commands.py first to generate data files", file=sys.stderr)
+        print("Hint: Run scan_skills.py or scan_commands.py first to generate data files", file=sys.stderr)
         sys.exit(1)
     return yaml.safe_load(path.read_text(encoding='utf-8'))
 

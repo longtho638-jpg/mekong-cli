@@ -20,7 +20,7 @@ import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, asdict, field
 from datetime import datetime
-from typing import Dict, List, Any, Optional, TypeVar, Type, Union
+from typing import Dict, Any, Optional, TypeVar, Type, Union
 from pathlib import Path
 
 # Configure logging

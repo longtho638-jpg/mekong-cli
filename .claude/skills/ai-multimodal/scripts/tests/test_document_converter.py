@@ -5,7 +5,7 @@ Tests for document_converter.py
 import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, mock_open
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 

@@ -4,13 +4,11 @@ Tests for shopify_init.py
 Run with: pytest test_shopify_init.py -v --cov=shopify_init --cov-report=term-missing
 """
 
-import os
 import sys
 import json
 import pytest
-import subprocess
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open, MagicMock
+from unittest.mock import Mock, patch
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

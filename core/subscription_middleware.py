@@ -15,20 +15,23 @@ Features:
 
 import logging
 import json
-from typing import Optional, Dict, Any, Callable, Union, List
+from typing import Optional, Dict, Any, Callable
 from functools import wraps
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-import os
 
 try:
-    from .db import get_db
+    from core.infrastructure.database import get_db
     from .config import get_settings
 except ImportError:
-    from db import get_db
-    from config import get_settings
+    try:
+        from core.config import get_settings
+        from core.infrastructure.database import get_db
+    except ImportError:
+        def get_db(): return None
+        def get_settings(): return None
 
 # Configure logging
 logger = logging.getLogger(__name__)

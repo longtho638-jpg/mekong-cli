@@ -6,7 +6,7 @@ Agency OS v2.0 - WIN-WIN-WIN Testing
 import pytest
 import asyncio
 from typing import Generator
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 
 # ========== Async Fixtures ==========

@@ -3,7 +3,7 @@ Benefits Agent - Benefits Enrollment & Administration
 Manages employee benefits, enrollments, and claims.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime, date
 from enum import Enum

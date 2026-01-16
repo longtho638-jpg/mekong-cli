@@ -9,12 +9,12 @@ Implements the "Agent Skill" pattern.
 import sys
 import json
 import asyncio
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 # Add project root to path
 sys.path.insert(0, ".")
 
-from antigravity.vibe_kanban_bridge import VibeBoardClient, TaskModel
+from antigravity.vibe_kanban_bridge import VibeBoardClient
 
 class KanbanSkill:
     """

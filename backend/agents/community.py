@@ -170,7 +170,7 @@ class CommunityAgent:
             post.published_at = datetime.now()
             post.status = "published"
             return True
-        except Exception as e:
+        except Exception:
             post.status = "failed"
             return False
     

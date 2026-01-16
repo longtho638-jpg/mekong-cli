@@ -14,8 +14,6 @@ Example:
 import sys
 import os
 import json
-import urllib.request
-import urllib.error
 from datetime import datetime
 
 # Configuration

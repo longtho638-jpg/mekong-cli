@@ -15,7 +15,6 @@ import os
 import logging
 from typing import List, Optional, Dict, Literal
 from datetime import datetime
-import asyncio
 
 import httpx
 from pydantic import BaseModel, Field

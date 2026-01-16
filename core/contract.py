@@ -14,8 +14,7 @@ Features:
 
 import uuid
 import logging
-import re
-from typing import Dict, List, Any, Optional, Union
+from typing import List
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -137,12 +136,12 @@ class ContractGenerator:
             "                      CONTRACT PARTIES",
             "═══════════════════════════════════════════════════════════",
             "",
-            f"SERVICE PROVIDER (\"Agency\"):",
+            "SERVICE PROVIDER (\"Agency\"):",
             f"  {contract.agency.company}",
             f"  {contract.agency.address}",
             f"  {contract.agency.email}",
             "",
-            f"CLIENT:",
+            "CLIENT:",
             f"  {contract.client.company}",
             f"  Contact: {contract.client.name}",
             f"  {contract.client.address}",

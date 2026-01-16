@@ -3,7 +3,7 @@ Attendee Management Agent - Registrations & Check-ins
 Manages event attendees, registrations, and lead capture.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
@@ -145,10 +145,10 @@ if __name__ == "__main__":
     a2 = agent.register_attendee(event_id, "john@startup.io", "John Smith", "Startup Inc", "Developer")
     a3 = agent.register_attendee(event_id, "bob@enterprise.com", "Bob Wilson", "Enterprise Co", "VP Engineering")
     
-    print(f"📋 Registered: 3 attendees")
+    print("📋 Registered: 3 attendees")
     
     # Show lead scoring
-    print(f"\n🎯 Lead Scoring:")
+    print("\n🎯 Lead Scoring:")
     for a in [a1, a2, a3]:
         print(f"   {a.name} ({a.title}): {a.lead_score.value}")
     
@@ -157,12 +157,12 @@ if __name__ == "__main__":
     agent.confirm_registration(a2.id)
     agent.check_in(a1.id)
     
-    print(f"\n✅ Check-in:")
+    print("\n✅ Check-in:")
     print(f"   {a1.name}: {a1.status.value} at {a1.checked_in_at.strftime('%H:%M')}")
     
     # Stats
     stats = agent.get_stats(event_id)
-    print(f"\n📊 Stats:")
+    print("\n📊 Stats:")
     print(f"   Registrations: {stats['total_registrations']}")
     print(f"   Confirmed: {stats['confirmed']}")
     print(f"   Checked In: {stats['checked_in']}")

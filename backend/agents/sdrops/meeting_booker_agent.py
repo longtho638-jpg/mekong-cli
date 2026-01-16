@@ -3,8 +3,8 @@ Meeting Booker Agent - Calendar & Scheduling
 Handles meeting scheduling, confirmations, and tracking.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
 import random

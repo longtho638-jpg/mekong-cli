@@ -15,12 +15,11 @@ Binh Pháp: 🏰 Nền Tảng (Foundation) - Building secure and reliable storag
 import logging
 import json
 import os
-import shutil
 import tempfile
 from pathlib import Path
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, TypeVar, Type, Union
+from typing import Any, List, Optional, TypeVar, Union
 from dataclasses import is_dataclass, asdict
 
 from .errors import PersistenceError

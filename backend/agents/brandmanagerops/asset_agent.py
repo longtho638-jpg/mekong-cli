@@ -4,7 +4,7 @@ Manages brand assets, versioning, and usage tracking.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from enum import Enum
 import random

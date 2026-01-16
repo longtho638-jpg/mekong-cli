@@ -3,9 +3,9 @@ Campaign Manager Agent - Cross-Channel Orchestration
 Manages marketing campaigns across multiple channels.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
+from dataclasses import dataclass
+from typing import List, Dict
+from datetime import date
 from enum import Enum
 import random
 
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     # Simulate
     agent.simulate_performance(c1.id)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Spend: ${c1.spend:,.0f}")
     print(f"   Revenue: ${c1.revenue:,.0f}")
     print(f"   ROAS: {c1.roas:.1f}x")

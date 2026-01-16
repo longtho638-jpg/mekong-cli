@@ -5,7 +5,6 @@ Business logic for creating new deals.
 Clean Architecture Layer: Use Cases
 """
 
-from typing import Dict, Any
 from datetime import datetime
 from core.entities.deal import Deal, DealStage
 

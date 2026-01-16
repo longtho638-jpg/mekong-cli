@@ -5,9 +5,8 @@ Tracks user progress through onboarding journey.
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-import random
 
 
 class MilestoneStatus(Enum):

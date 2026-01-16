@@ -20,7 +20,6 @@ import sys
 import time
 from rich.console import Console
 from rich.panel import Panel
-from rich.markdown import Markdown
 
 # Import Core Engines
 from antigravity.core.agency_dna import AgencyDNA, Tone, PricingTier

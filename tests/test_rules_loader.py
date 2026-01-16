@@ -5,7 +5,6 @@ Tests for Rules Loader.
 import sys
 import os
 import pytest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 # Add parent to path
@@ -14,8 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from antigravity.core.rules_loader import (
     RULE_MAPPING,
     get_rules_for_agent,
-    load_rules_for_agent,
-    get_total_rules
+    load_rules_for_agent
 )
 
 class TestRulesLoader:

@@ -3,8 +3,8 @@ Demo Manager Agent - Product Demo Scheduling
 Manages product demos, scripts, and outcomes.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from dataclasses import dataclass
+from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
 import random

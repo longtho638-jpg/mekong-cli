@@ -3,9 +3,8 @@ Infrastructure - Cache System
 """
 import json
 import logging
-import os
 import time
-from typing import Any, Optional, Dict
+from typing import Any, Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)

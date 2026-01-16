@@ -18,9 +18,9 @@ Binh Pháp: 💎 Tín (Trust) - Rewarding loyalty over time.
 
 import logging
 import json
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Any, Union
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Dict, Optional, Union
 from pathlib import Path
 
 # Configure logging
@@ -197,7 +197,7 @@ class LoyaltyProgram:
             print(f"\n  🎯 MỤC TIÊU TIẾP THEO: {next_t.name}")
             print(f"     └─Còn {remaining} tháng để nâng cấp lên mức ưu đãi {next_t.discount_rate:.0%}")
         else:
-            print(f"\n  👑 CHÚC MỪNG! Anh đã đạt cấp độ tối cao của Agency OS.")
+            print("\n  👑 CHÚC MỪNG! Anh đã đạt cấp độ tối cao của Agency OS.")
             
         print("\n" + "═" * 60 + "\n")
 

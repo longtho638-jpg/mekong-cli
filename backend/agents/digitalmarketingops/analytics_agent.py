@@ -3,9 +3,8 @@ Analytics Agent - Data Aggregation & ROI
 Manages aggregated marketing analytics and performance metrics.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
-from datetime import datetime
 from enum import Enum
 import random
 
@@ -136,14 +135,14 @@ if __name__ == "__main__":
     # Aggregate data
     data = agent.aggregate_data()
     
-    print(f"📈 Aggregate Performance:")
+    print("📈 Aggregate Performance:")
     print(f"   Total Spend: ${data['total_spend']:,.0f}")
     print(f"   Total Revenue: ${data['total_revenue']:,.0f}")
     print(f"   Total ROAS: {data['total_roas']:.1f}x")
     print(f"   CAC: ${data['cac']:.0f}")
     print(f"   LTV: ${data['ltv']:.0f} (LTV:CAC = {data['ltv']/data['cac']:.1f}x)")
     
-    print(f"\n📺 Top Channels by ROAS:")
+    print("\n📺 Top Channels by ROAS:")
     top_channels = agent.get_top_channels(MetricType.ROAS)
     for c in top_channels[:3]:
         print(f"   {c.channel}: {c.roas:.1f}x (${c.revenue:,.0f} rev)")

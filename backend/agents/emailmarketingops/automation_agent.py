@@ -4,8 +4,8 @@ Manages automated email sequences and triggers.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
+from typing import List, Dict
+from datetime import datetime
 from enum import Enum
 import random
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     agent.activate(a1.id)
     agent.simulate_enrollment(a1.id, 500)
     
-    print(f"\n📊 Performance:")
+    print("\n📊 Performance:")
     print(f"   Enrolled: {a1.enrolled}")
     print(f"   Completed: {a1.completed} ({a1.completion_rate:.0f}%)")
     print(f"   Total Sent: {a1.total_sent}")

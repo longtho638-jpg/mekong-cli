@@ -3,7 +3,7 @@ Insights Agent - Trend Detection & Recommendations
 Analyzes data for trends and generates insights.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum

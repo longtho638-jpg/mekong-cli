@@ -7,14 +7,13 @@ Run: python3 -m pytest tests/test_subscription_middleware.py -v
 import sys
 import os
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 from datetime import datetime
-from pathlib import Path
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.subscription_middleware import SubscriptionMiddleware, SubscriptionTier, TierLimits
+from core.subscription_middleware import SubscriptionMiddleware, SubscriptionTier
 
 class TestSubscriptionMiddleware:
     
