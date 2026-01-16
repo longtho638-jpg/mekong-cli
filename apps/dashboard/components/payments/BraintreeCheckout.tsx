@@ -206,7 +206,7 @@ export function BraintreeCheckout({
           ${
             loading || processing
               ? 'bg-white/10 cursor-not-allowed'
-              : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl'
+              : 'bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl'
           }
         `}
       >

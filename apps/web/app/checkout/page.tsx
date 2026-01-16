@@ -164,7 +164,7 @@ function CheckoutForm() {
 
 export default function CheckoutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white py-20">
+    <div className="min-h-screen bg-linear-to-b from-slate-900 to-slate-800 text-white py-20">
       <div className="container mx-auto px-6 max-w-2xl">
         <h1 className="text-4xl font-bold mb-8 text-center">Thanh Toán</h1>
 

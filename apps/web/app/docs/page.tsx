@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white py-20">
+    <div className="min-h-screen bg-linear-to-b from-slate-900 to-slate-800 text-white py-20">
       <div className="container mx-auto px-6 max-w-4xl">
         <h1 className="text-5xl font-bold mb-12">Tài Liệu</h1>
 
