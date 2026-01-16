@@ -1,7 +1,7 @@
 [tool.ruff]
-# Only check for fatal errors (F), not style (E)
-select = ["F"]
-ignore = ["F401", "F811", "F821", "F822", "F823", "F841"]  # Allow dynamic patterns
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
@@ -30,8 +30,6 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
-    "packages",
-    "external",
 ]
 
 line-length = 88
