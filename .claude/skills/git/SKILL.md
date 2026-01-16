@@ -7,6 +7,12 @@ version: 1.0.0
 # Git Operations
 
 Execute git workflows via `git-manager` subagent to isolate verbose output.
+Activate `context-engineering` skill.
+
+**IMPORTANT:**
+- Sacrifice grammar for the sake of concision.
+- Ensure token efficiency while maintaining high quality.
+- Pass these rules to subagents.
 
 ## Arguments
 - `cm`: Stage files & create commits
