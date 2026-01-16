@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
 /**
  * Usage Analytics API
  * Real-time usage data from Supabase
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
             period: { days, startDate: startDate.toISOString() },
             timestamp: new Date().toISOString(),
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Return mock data if Supabase fails
         return NextResponse.json({
             success: true,
@@ -138,9 +138,10 @@ export async function POST(request: NextRequest) {
         if (error) throw error;
 
         return NextResponse.json({ success: true, data });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: message },
             { status: 500 }
         );
     }

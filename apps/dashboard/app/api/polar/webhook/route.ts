@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     try {
         const event: WebhookEvent = JSON.parse(rawBody)
 
-        console.log('Polar webhook received:', event.type)
+        // Webhook event received: event.type (log suppressed in production)
 
         const supabase = await createClient()
 
@@ -106,16 +106,16 @@ export async function POST(request: Request) {
 
             case 'checkout.created':
                 // Log checkout started
-                console.log('Checkout created:', event.data.id)
+                // Checkout created: event.data.id (log suppressed)
                 break
 
             case 'order.created':
                 // Handle one-time purchase
-                console.log('Order created:', event.data.id)
+                // Order created: event.data.id (log suppressed)
                 break
 
             default:
-                console.log('Unhandled webhook event:', event.type)
+                // Unhandled webhook event: event.type
         }
 
         return NextResponse.json({ received: true })
