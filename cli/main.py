@@ -21,8 +21,14 @@ Commands:
 
 import sys
 import os
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.markdown import Markdown
+from cli.theme import get_theme
 
-import json
+# Initialize Console with AgencyOS Theme
+console = Console(theme=get_theme())
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,8 +36,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def print_banner():
     """Print main banner."""
-    print("""
-╔═══════════════════════════════════════════════════════════╗
+    banner_text = """
+[bold primary]╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
 ║   🏯 AGENCY OS - COMMAND CENTER                          ║
 ║                                                           ║
@@ -40,36 +46,38 @@ def print_banner():
 ║                                                           ║
 ║   🌐 agencyos.network                                    ║
 ║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-    """)
+╚═══════════════════════════════════════════════════════════╝[/bold primary]
+    """
+    console.print(banner_text)
 
 
 def print_help():
     """Print help menu."""
-    print("""
-╔═══════════════════════════════════════════════════════════╗
-║  📚 AVAILABLE COMMANDS                                    ║
-╠═══════════════════════════════════════════════════════════╣
-║  🚀 START HERE (Quy trình Vibe Coding):                   ║
-║  🧘 guide       Hướng dẫn sử dụng cho người mới           ║
-║  🏗️  scaffold    Tạo bản vẽ kiến trúc (Architecture)       ║
-║  📋 kanban      Quản lý task và agent                     ║
-║                                                           ║
-║  🎯 CORE COMMANDS:                                        ║
-║  🏯 binh-phap   Phân tích chiến lược dự án                ║
-║  🍳 cook        Xây dựng tính năng (AI Agent)             ║
-║  🚀 ship        Deploy sản phẩm                           ║
-║                                                           ║
-║  ⚡ UTILITIES:                                            ║
-║  📝 proposal    Tạo Proposal khách hàng                   ║
-║  🎨 content     Tạo Content Marketing                     ║
-║  💳 invoice     Tạo Invoice                               ║
-║  📊 analytics   Xem chỉ số kinh doanh                     ║
-║                                                           ║
-╠═══════════════════════════════════════════════════════════╣
-║  Usage: agencyos [command]                                ║
-╚═══════════════════════════════════════════════════════════╝
-    """)
+    table = Table(title="[bold white]📚 AVAILABLE COMMANDS[/bold white]", border_style="panel.border", box=None, header_style="bold secondary")
+    
+    table.add_column("Command", style="command")
+    table.add_column("Description", style="white")
+    
+    table.add_row("", "")
+    table.add_row("[bold secondary]🚀 START HERE[/bold secondary]", "")
+    table.add_row("guide", "Hướng dẫn sử dụng cho người mới")
+    table.add_row("scaffold", "Tạo bản vẽ kiến trúc (Architecture)")
+    table.add_row("kanban", "Quản lý task và agent")
+    
+    table.add_row("", "")
+    table.add_row("[bold secondary]🎯 CORE COMMANDS[/bold secondary]", "")
+    table.add_row("binh-phap", "Phân tích chiến lược dự án")
+    table.add_row("cook", "Xây dựng tính năng (AI Agent)")
+    table.add_row("ship", "Deploy sản phẩm")
+    
+    table.add_row("", "")
+    table.add_row("[bold secondary]⚡ UTILITIES[/bold secondary]", "")
+    table.add_row("proposal", "Tạo Proposal khách hàng")
+    table.add_row("content", "Tạo Content Marketing")
+    table.add_row("invoice", "Tạo Invoice")
+    
+    console.print(table)
+    console.print("\n[dim]Usage: agencyos [command][/dim]")
 
 
 def run_onboard():
@@ -1305,25 +1313,26 @@ def run_ide():
 
 def run_guide():
     """Show the Vibe Coding Manual for non-tech users."""
-    print("\n🧘 VIBE CODING MANUAL (Quick Start)")
-    print("═" * 60)
-    print("""
-1. 🏗️  SCAFFOLD (Bản vẽ):
-   $ agencyos scaffold "Tôi muốn làm app [ABC]"
+    manual = """
+# 🧘 VIBE CODING MANUAL (Quick Start)
+
+**1. 🏗️  SCAFFOLD (Bản vẽ):**
+   `$ agencyos scaffold "Tôi muốn làm app [ABC]"`
    -> Copy Prompt trả về -> Paste vào AI.
 
-2. 🤖 CODE (Thợ xây):
+**2. 🤖 CODE (Thợ xây):**
    AI sẽ tự viết code theo cấu trúc chuẩn.
 
-3. 📋 KANBAN (Quản lý):
-   $ agencyos kanban create "Review module X"
-   $ agencyos kanban board
+**3. 📋 KANBAN (Quản lý):**
+   `$ agencyos kanban create "Review module X"`
+   `$ agencyos kanban board`
 
-4. 🚀 SHIP (Vận hành):
-   $ agencyos ship
+**4. 🚀 SHIP (Vận hành):**
+   `$ agencyos ship`
 
-👉 Xem chi tiết: docs/VIBE_CODING_MANUAL.md
-    """)
+👉 Xem chi tiết: `docs/VIBE_CODING_MANUAL.md`
+    """
+    console.print(Markdown(manual))
 
 
 def main():

@@ -1,0 +1,49 @@
+:root {
+  /* ==================================== */
+  /* System Colors (Mapped to Ref)        */
+  /* Default: Dark Mode (AgencyOS)        */
+  /* ==================================== */
+
+  /* Primary */
+  --md-sys-color-primary: var(--md-ref-palette-primary-80);
+  --md-sys-color-on-primary: var(--md-ref-palette-primary-20);
+  --md-sys-color-primary-container: var(--md-ref-palette-primary-30);
+  --md-sys-color-on-primary-container: var(--md-ref-palette-primary-90);
+
+  /* Secondary */
+  --md-sys-color-secondary: var(--md-ref-palette-secondary-80);
+  --md-sys-color-on-secondary: var(--md-ref-palette-secondary-20);
+  --md-sys-color-secondary-container: var(--md-ref-palette-secondary-30);
+  --md-sys-color-on-secondary-container: var(--md-ref-palette-secondary-90);
+
+  /* Tertiary */
+  --md-sys-color-tertiary: var(--md-ref-palette-tertiary-80);
+  --md-sys-color-on-tertiary: var(--md-ref-palette-tertiary-20);
+  --md-sys-color-tertiary-container: var(--md-ref-palette-tertiary-30);
+  --md-sys-color-on-tertiary-container: var(--md-ref-palette-tertiary-90);
+
+  /* Error */
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+
+  /* Background & Surface */
+  --md-sys-color-background: var(--md-ref-palette-neutral-10);
+  --md-sys-color-on-background: var(--md-ref-palette-neutral-90);
+  --md-sys-color-surface: var(--md-ref-palette-neutral-10);
+  --md-sys-color-on-surface: var(--md-ref-palette-neutral-90);
+  
+  /* Surface Variants */
+  --md-sys-color-surface-variant: var(--md-ref-palette-neutral-variant-30);
+  --md-sys-color-on-surface-variant: var(--md-ref-palette-neutral-variant-80);
+  --md-sys-color-outline: var(--md-ref-palette-neutral-variant-60);
+  --md-sys-color-outline-variant: var(--md-ref-palette-neutral-variant-30);
+
+  /* Surface Container (New in M3) */
+  --md-sys-color-surface-container-lowest: var(--md-ref-palette-neutral-0); /* #000 */
+  --md-sys-color-surface-container-low: var(--md-ref-palette-neutral-10);
+  --md-sys-color-surface-container: var(--md-ref-palette-neutral-20);
+  --md-sys-color-surface-container-high: var(--md-ref-palette-neutral-30);
+  --md-sys-color-surface-container-highest: var(--md-ref-palette-neutral-40);
+}
