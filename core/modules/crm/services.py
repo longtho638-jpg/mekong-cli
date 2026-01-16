@@ -38,17 +38,41 @@ class CRMService:
         self.contacts: Dict[str, Contact] = {}
         self.deals: Dict[str, Deal] = {}
         
-        self._seed_demo_data()
-    
-    def _seed_demo_data(self):
-        """Pre-populates the system with sample data for training/demo."""
+        # Load data from DB if available, else seed demo
+        if self.db:
+            self._load_from_db()
+        else:
+            self._seed_demo_data()
+
+    def _load_from_db(self):
+        """Hydrate state from Supabase."""
         try:
-            c1 = self.add_contact("Anh Minh", "minh@mekong.vn", "Mekong Rice", phone="0901234567")
-            self.create_deal(c1.id, "Zalo OA Integration", 2500.0, DealStage.NEGOTIATION)
+            # Load Contacts
+            res = self.db.table("contacts").select("*").execute()
+            for record in res.data:
+                # Map snake_case DB to model
+                contact = Contact(
+                    id=record['id'], name=record['name'], email=record['email'],
+                    company=record.get('company', ''), phone=record.get('phone', ''),
+                    lead_score=record.get('lead_score', 50)
+                )
+                self.contacts[contact.id] = contact
             
-            c2 = self.add_contact("Chị Lan", "lan@spa.vn", "Lotus Beauty", phone="0907654321")
-            c2.lead_score = 85 # Hot Lead
-        except Exception: pass
+            # Load Deals
+            res_deals = self.db.table("deals").select("*").execute()
+            for record in res_deals.data:
+                deal = Deal(
+                    id=record['id'], contact_id=record['contact_id'],
+                    title=record['title'], value=float(record['value']),
+                    stage=DealStage(record['stage']) if record['stage'] in DealStage._value2member_map_ else DealStage.QUALIFIED,
+                    probability=record.get('probability', 20)
+                )
+                self.deals[deal.id] = deal
+                
+            logger.info(f"✅ CRM: Loaded {len(self.contacts)} contacts and {len(self.deals)} deals from DB.")
+        except Exception as e:
+            logger.error(f"❌ CRM Load Error: {e}")
+            self._seed_demo_data() # Fallback
 
     def add_contact(
         self, 
@@ -66,6 +90,19 @@ class CRMService:
             contact_type=ctype
         )
         self.contacts[cid] = contact
+        
+        # Persist if DB enabled
+        if self.db:
+            try:
+                data = {
+                    "id": contact.id, "name": contact.name, "email": contact.email,
+                    "company": contact.company, "phone": contact.phone,
+                    "contact_type": contact.contact_type.value, "lead_score": contact.lead_score
+                }
+                self.db.table("contacts").insert(data).execute()
+            except Exception as e:
+                logger.error(f"Failed to persist contact: {e}")
+                
         return contact
     
     def create_deal(
