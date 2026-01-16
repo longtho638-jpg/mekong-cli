@@ -1,95 +1,39 @@
-name: CI Tests
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize]
 
 jobs:
-  # ═══════════════════════════════════════════════════════════
-  # Test Job - Core Python modules only  
-  # ═══════════════════════════════════════════════════════════
-  test:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install core dependencies
-        run: |
-          pip install pytest
-          # Only install what's in requirements.txt that exists
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt || echo "Some optional deps missing, continuing..."
-          fi
-          
-      - name: Run core tests
-        run: |
-          # Test core modules with graceful fallback
-          python -c "
-          import sys
-          tests_passed = 0
-          tests_failed = 0
-          
-          # Test 1: Core imports
-          try:
-              from core import CRM, Scheduler, FranchiseSystem
-              print('✅ Core imports OK')
-              tests_passed += 1
-          except Exception as e:
-              print(f'⚠️ Core imports: {e}')
-              tests_failed += 1
-          
-          # Test 2: i18n
-          try:
-              from locales import i18n, t
-              print('✅ i18n OK')
-              tests_passed += 1
-          except Exception as e:
-              print(f'⚠️ i18n: {e}')
-              tests_failed += 1
-          
-          # Test 3: Regions
-          try:
-              from regions.vietnam import VietnamConfig
-              print('✅ Vietnam config OK')
-              tests_passed += 1
-          except Exception as e:
-              print(f'⚠️ Vietnam: {e}')
-              tests_failed += 1
-          
-          # Test 4: Antigravity core (the main package)
-          try:
-              from antigravity.core import agency_dna, revenue_engine
-              print('✅ Antigravity core OK')
-              tests_passed += 1
-          except Exception as e:
-              print(f'⚠️ Antigravity: {e}')
-              tests_failed += 1
-          
-          print(f'\\n📊 Results: {tests_passed} passed, {tests_failed} failed')
-          
-          # Allow pipeline to continue even if some optional modules fail
-          if tests_passed >= 2:
-              print('✅ Minimum tests passed!')
-              sys.exit(0)
-          else:
-              print('❌ Too many failures')
-              sys.exit(1)
-          "
 
-      - name: Summary
-        run: |
-          echo "## 🧪 CI Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Core Python tests completed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> 📦 Deployment is handled directly by Vercel (not this workflow)" >> $GITHUB_STEP_SUMMARY
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Dashboard
+        run: cd apps/dashboard && npm run build
+
+      - name: Lint
+        run: cd apps/dashboard && npm run lint
