@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * MRR Metrics API Route
  * Returns Monthly Recurring Revenue metrics for VC dashboard

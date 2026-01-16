@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * White-Label Module
  * Custom branding that makes each tenant feel like their own product

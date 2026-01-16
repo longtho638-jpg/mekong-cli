@@ -36,4 +36,4 @@ jobs:
         run: cd apps/dashboard && npm run build
 
       - name: Lint
-        run: cd apps/dashboard && npm run lint
+        run: cd apps/dashboard && npx eslint .

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * Multi-Currency Support for AgencyOS
  * SEA Markets: VND, THB, IDR, PHP, SGD

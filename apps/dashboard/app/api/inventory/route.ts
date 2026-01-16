@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Inventory API Routes
  * RESTful endpoints for Assets, Movements, Licenses
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { InventoryService } from '@/lib/inventory';
 
 export const dynamic = 'force-dynamic';

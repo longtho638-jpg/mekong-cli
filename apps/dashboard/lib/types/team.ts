@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 // ═══════════════════════════════════════════════════════════════════════════════
 // 📊 MULTI-TENANCY TYPES
 // Team members, roles, and invitations

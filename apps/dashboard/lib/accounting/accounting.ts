@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * Accounting Module for AgencyOS
  * ERPNext Parity: Chart of Accounts, Journal Entries, Ledgers

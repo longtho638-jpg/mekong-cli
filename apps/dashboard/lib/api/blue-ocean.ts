@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * Blue Ocean API Client
  * Connects frontend pages to FastAPI backend

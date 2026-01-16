@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { StatCard } from '@/components/ui/stat-card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { HealthBar } from '@/components/ui/health-bar';
 
 // Types
 interface Agent {
@@ -118,56 +121,3 @@ export default function AgentOpsPage() {
   );
 }
 
-// Components
-function StatCard({ title, value, color }: { title: string; value: string; color: string }) {
-  const colorMap: Record<string, string> = {
-    emerald: 'from-emerald-500 to-emerald-700',
-    blue: 'from-blue-500 to-blue-700',
-    purple: 'from-purple-500 to-purple-700',
-    teal: 'from-teal-500 to-teal-700',
-  };
-
-  return (
-    <div className={`bg-gradient-to-br ${colorMap[color]} rounded-xl p-4`}>
-      <p className="text-sm text-white/70">{title}</p>
-      <p className="text-2xl font-bold">{value}</p>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: 'active' | 'idle' | 'offline' }) {
-  const styles = {
-    active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50',
-    idle: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
-    offline: 'bg-red-500/20 text-red-400 border-red-500/50',
-  };
-
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs border ${styles[status]}`}>
-      {status}
-    </span>
-  );
-}
-
-function HealthBar({ label, value }: { label: string; value: number }) {
-  const getColor = (v: number) => {
-    if (v < 50) return 'bg-emerald-500';
-    if (v < 80) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between text-sm mb-1">
-        <span>{label}</span>
-        <span>{value}%</span>
-      </div>
-      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${getColor(value)} transition-all duration-500`}
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
-  );
-}

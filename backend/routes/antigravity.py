@@ -68,9 +68,9 @@ def init_demo_data():
     f1 = demo_franchise.add_franchisee("Anh Minh", "minh@test.com", territory=Territory.CAN_THO)
     f2 = demo_franchise.add_franchisee("Chị Lan", "lan@test.com", territory=Territory.DA_NANG)
     f3 = demo_franchise.add_franchisee("Anh Tuấn", "tuan@test.com", territory=Territory.HA_NOI)
-    demo_franchise.record_revenue(f1, 15000)
-    demo_franchise.record_revenue(f2, 12000)
-    demo_franchise.record_revenue(f3, 18000)
+    demo_franchise.record_revenue(f1.id, 15000)
+    demo_franchise.record_revenue(f2.id, 12000)
+    demo_franchise.record_revenue(f3.id, 18000)
     
     # VCMetrics
     demo_metrics = VCMetrics(
@@ -80,7 +80,6 @@ def init_demo_data():
         ltv=3000,
         churn_rate=3,
         nrr=112,
-        gross_margin=80,
         net_margin=15,
         total_customers=150,
         stage=FundingStage.SEED

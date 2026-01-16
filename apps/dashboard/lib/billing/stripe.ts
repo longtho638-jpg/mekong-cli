@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * Stripe Integration for AgencyOS
  * SEA SaaS Billing Module

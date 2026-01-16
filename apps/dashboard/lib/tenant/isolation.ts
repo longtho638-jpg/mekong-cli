@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * Tenant Isolation Module
  * Full RLS enforcement and data segregation

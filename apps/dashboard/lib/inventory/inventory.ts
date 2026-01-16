@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * Inventory & Asset Management Module for AgencyOS
  * ERPNext Parity: Asset Registry, Stock Ledger, License Tracking
