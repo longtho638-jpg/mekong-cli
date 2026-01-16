@@ -5,22 +5,48 @@ import uuid
 import logging
 from typing import Dict, List, Any
 from .entities import Invoice, InvoiceItem, Currency, InvoiceStatus
+try:
+    from core.infrastructure.database import get_db
+except (ImportError, ValueError):
+    def get_db(): return None
 
 logger = logging.getLogger(__name__)
 
 class InvoiceSystem:
     """
     Invoice and Billing System.
-    
-    Manages professional client billing, tax calculation, and payment reconciliation.
     """
     
     def __init__(self, agency_name: str = "My Agency"):
         self.agency_name = agency_name
+        self.db = get_db()
         self.invoices: Dict[str, Invoice] = {}
         logger.info(f"Invoice System initialized for {agency_name}")
-        self._init_demo_data()
+        
+        if self.db:
+            self._load_from_db()
+        else:
+            self._init_demo_data()
     
+    def _load_from_db(self):
+        try:
+            # Simplified load - In real world would need joins
+            res = self.db.table("invoices").select("*").execute()
+            for r in res.data:
+                # Minimal hydration for dashboard count
+                # To fully hydrate we'd need to fetch items
+                inv = Invoice(
+                    id=r['id'], client_id=r.get('client_id', ''), 
+                    client_name=r.get('client_name', 'Unknown'),
+                    items=[], # Lazy load or separate fetch
+                    currency=Currency.USD,
+                    status=InvoiceStatus(r['status']) if r['status'] in InvoiceStatus._value2member_map_ else InvoiceStatus.DRAFT
+                )
+                self.invoices[inv.id] = inv
+        except Exception as e:
+            logger.error(f"Invoice DB Error: {e}")
+            self._init_demo_data()
+
     def _init_demo_data(self):
         """Seed the system with sample invoices."""
         logger.info("Loading demo invoice data...")
