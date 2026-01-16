@@ -44,13 +44,29 @@ class CheckoutResponse(BaseModel):
     message: str
 
 
-# Braintree Gateway Configuration
+# Braintree Gateway Configuration - Security fix: Validate all credentials
 def get_gateway():
     """Tạo Braintree gateway từ environment variables."""
     if not BRAINTREE_AVAILABLE:
         return None
 
+    # Security: Validate all required environment variables
+    required_vars = ["BRAINTREE_MERCHANT_ID", "BRAINTREE_PUBLIC_KEY", "BRAINTREE_PRIVATE_KEY"]
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Missing required environment variables: {', '.join(missing_vars)}"
+        )
+
     env = os.getenv("BRAINTREE_ENV", "sandbox")
+    if env not in ["sandbox", "production"]:
+        raise HTTPException(
+            status_code=500,
+            detail="BRAINTREE_ENV must be 'sandbox' or 'production'"
+        )
+
     environment = (
         braintree.Environment.Sandbox
         if env == "sandbox"
@@ -60,9 +76,9 @@ def get_gateway():
     return braintree.BraintreeGateway(
         braintree.Configuration(
             environment=environment,
-            merchant_id=os.getenv("BRAINTREE_MERCHANT_ID", ""),
-            public_key=os.getenv("BRAINTREE_PUBLIC_KEY", ""),
-            private_key=os.getenv("BRAINTREE_PRIVATE_KEY", ""),
+            merchant_id=os.getenv("BRAINTREE_MERCHANT_ID"),
+            public_key=os.getenv("BRAINTREE_PUBLIC_KEY"),
+            private_key=os.getenv("BRAINTREE_PRIVATE_KEY"),
         )
     )
 

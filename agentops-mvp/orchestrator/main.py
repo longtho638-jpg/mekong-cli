@@ -31,12 +31,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS for frontend integration
+# CORS for frontend integration - Security fix: Environment-based origins
+import os
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8080").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Restrict in production
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 

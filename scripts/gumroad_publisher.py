@@ -36,27 +36,37 @@ def save_config(config):
 
 
 def setup():
-    """Interactive setup for Gumroad API."""
+    """Interactive setup for Gumroad API with environment variable support."""
     print()
     print("🛒 Gumroad Publisher Setup")
     print("=" * 50)
     print()
-    print("To get your Access Token:")
-    print("1. Go to: https://app.gumroad.com/settings/advanced")
-    print("2. Scroll to 'Applications'")
-    print("3. Click 'Create Application' or use existing")
-    print("4. Copy the 'Access Token'")
-    print()
-
-    token = input("Paste your Access Token: ").strip()
+    
+    # Check for environment variable first (more secure)
+    token = os.getenv("GUMROAD_ACCESS_TOKEN")
+    
+    if not token:
+        print("To get your Access Token:")
+        print("1. Go to: https://app.gumroad.com/settings/advanced")
+        print("2. Scroll to 'Applications'")
+        print("3. Click 'Create Application' or use existing")
+        print("4. Copy 'Access Token'")
+        print("5. Set as environment variable: export GUMROAD_ACCESS_TOKEN='your_token'")
+        print()
+        print("Or enter manually (less secure):")
+        token = input("Paste your Access Token: ").strip()
 
     if not token:
-        print("❌ Token is required")
+        print("❌ Token is required. Set GUMROAD_ACCESS_TOKEN environment variable.")
         return False
 
     # Verify token
     print("\n🔍 Verifying token...")
-    resp = requests.get(f"{GUMROAD_API}/user?access_token={token}")
+    try:
+        resp = requests.get(f"{GUMROAD_API}/user?access_token={token}", timeout=10)
+    except requests.RequestException as e:
+        print(f"❌ Network error: {e}")
+        return False
 
     if resp.status_code != 200:
         print(f"❌ Invalid token: {resp.text}")
@@ -68,6 +78,7 @@ def setup():
 
     print(f"✅ Authenticated as: {name} ({email})")
 
+    # Save config (for backward compatibility)
     config = {"access_token": token, "email": email, "name": name}
     save_config(config)
     return True
@@ -75,12 +86,15 @@ def setup():
 
 def enable_product(product_id: str):
     """Enable/publish a product on Gumroad."""
-    config = get_config()
-    if not config:
-        print("❌ Not configured. Run: python gumroad_publisher.py --setup")
-        return False
-
-    token = config["access_token"]
+    # Security: Prefer environment variable over config file
+    token = os.getenv("GUMROAD_ACCESS_TOKEN")
+    
+    if not token:
+        config = get_config()
+        if not config:
+            print("❌ Not configured. Set GUMROAD_ACCESS_TOKEN environment variable or run: python gumroad_publisher.py --setup")
+            return False
+        token = config["access_token"]
 
     print(f"\n🚀 Publishing product: {product_id}")
     resp = requests.put(
@@ -105,12 +119,15 @@ def publish_product(
     preview_url: str = None,
 ):
     """Publish a product to Gumroad."""
-    config = get_config()
-    if not config:
-        print("❌ Not configured. Run: python gumroad_publisher.py --setup")
-        return None
-
-    token = config["access_token"]
+    # Security: Prefer environment variable over config file
+    token = os.getenv("GUMROAD_ACCESS_TOKEN")
+    
+    if not token:
+        config = get_config()
+        if not config:
+            print("❌ Not configured. Set GUMROAD_ACCESS_TOKEN environment variable or run: python gumroad_publisher.py --setup")
+            return None
+        token = config["access_token"]
 
     # Create product
     print(f"\n📦 Creating product: {name}")
@@ -216,12 +233,15 @@ npm run dev
 
 def list_products():
     """List all products."""
-    config = get_config()
-    if not config:
-        print("❌ Not configured. Run: python gumroad_publisher.py --setup")
-        return
-
-    token = config["access_token"]
+    # Security: Prefer environment variable over config file
+    token = os.getenv("GUMROAD_ACCESS_TOKEN")
+    
+    if not token:
+        config = get_config()
+        if not config:
+            print("❌ Not configured. Set GUMROAD_ACCESS_TOKEN environment variable or run: python gumroad_publisher.py --setup")
+            return
+        token = config["access_token"]
     resp = requests.get(f"{GUMROAD_API}/products?access_token={token}")
 
     if resp.status_code != 200:
