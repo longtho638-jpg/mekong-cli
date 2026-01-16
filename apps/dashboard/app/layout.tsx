@@ -20,7 +20,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="vi" className={`${outfit.variable} dark`}>
+        <html lang="vi" className={`${outfit.variable} dark`} suppressHydrationWarning>
             <head>
                 {/* Removed JetBrains Mono manual link in favor of next/font */}
             </head>
