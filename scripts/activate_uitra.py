@@ -13,89 +13,116 @@ Usage:
 WIN-WIN-WIN: User gets PRO features, system tracks licensed users correctly.
 """
 
+import argparse
 import sys
-import os
+import logging
 from pathlib import Path
+from typing import Dict, Any, Optional
 
-# Add parent directory to path to import license.py
-current_dir = Path(__file__).resolve().parent
-parent_dir = current_dir.parent
-sys.path.append(str(parent_dir))
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger("activate_uitra")
+
+def setup_path() -> None:
+    """
+    Ensure the project root is in sys.path to allow imports.
+    """
+    current_dir = Path(__file__).resolve().parent
+    project_root = current_dir.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+setup_path()
 
 try:
     from license import LicenseValidator, LicenseTier
 except ImportError:
-    # Fallback for when running from root
-    sys.path.append(os.getcwd())
-    from license import LicenseValidator, LicenseTier
+    logger.error("❌ Critical Error: Could not import 'license' module.")
+    logger.error("   Ensure you are running this from the project root or 'scripts/' directory.")
+    sys.exit(1)
 
 
-def activate_uitra(email: str) -> dict:
+def activate_uitra(email: str) -> Dict[str, Any]:
     """
     Activate UItra (PRO tier) license for email using the core LicenseValidator.
+    
+    Args:
+        email: User's email address.
+        
+    Returns:
+        Dict: Activation result containing key, tier, etc.
     """
-    print(f"🔄 Connecting to License Core...")
+    logger.info(f"🔄 Connecting to License Core for {email}...")
     validator = LicenseValidator()
     
     # Activate using the standardized logic in license.py
-    # This ensures the key format matches what the validator expects (4 parts)
-    license_data = validator.activate_by_email(email, tier=LicenseTier.PRO)
+    # This ensures the key format matches what the validator expects
+    try:
+        license_data = validator.activate_by_email(email, tier=LicenseTier.PRO)
+        return license_data
+    except Exception as e:
+        logger.error(f"❌ Activation Logic Failed: {e}")
+        raise
+
+
+def display_success(email: str, result: Dict[str, Any]) -> None:
+    """
+    Display formatted success message and quota details.
+    """
+    validator = LicenseValidator()
     
-    return license_data
-
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python3 activate_uitra.py <email>")
-        print("Example: python3 activate_uitra.py billwill.mentor@gmail.com")
-        sys.exit(1)
-
-    email = sys.argv[1]
-
-    print(f"🏯 Activating UItra (PRO) license for: {email}")
+    print("\n" + "=" * 50)
+    print(f"🏯  AGENCY OS: LICENSE ACTIVATED")
     print("=" * 50)
+    print(f"✅  Status:   ACTIVE")
+    print(f"📧  Email:    {email}")
+    print(f"🔑  Key:      {result.get('key', 'N/A')}")
+    print(f"🏆  Tier:     {result.get('tier', 'UNKNOWN').upper()}")
+    print("-" * 50)
+    
+    print("\n📊  PRO Tier Limits (Live Check):")
+    
+    features_to_check = [
+        ("max_daily_video", "Max Daily Video"),
+        ("niches", "Niches"),
+        ("monthly_api_calls", "API Calls/Month"),
+        ("monthly_commands", "Commands/Month"),
+        ("team_members", "Team Members"),
+        ("white_label", "White Label"),
+    ]
+    
+    for feature_key, display_name in features_to_check:
+        quota = validator.check_quota(feature_key)
+        limit = quota['limit']
+        
+        # Format limit for display
+        limit_str = "Unlimited" if limit == -1 else str(limit)
+        if feature_key == "white_label":
+             limit_str = "✅ Yes" if quota['allowed'] else "❌ No"
+             
+        print(f"   • {display_name:<20}: {limit_str}")
+
+    print("\n" + "=" * 50)
+    print("📁  License saved to: ~/.mekong/license.json")
+    print("🚀  Now restart Antigravity IDE to apply changes!")
+    print("=" * 50 + "\n")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Activate UItra (PRO) license for Mekong-CLI.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Example:\n  python3 scripts/activate_uitra.py user@example.com"
+    )
+    parser.add_argument("email", help="Email address to associate with the license")
+    
+    args = parser.parse_args()
 
     try:
-        result = activate_uitra(email)
-        
-        # Re-instantiate validator to check quotas for display
-        validator = LicenseValidator()
-        # Refresh data from disk/memory
-        
-        print("✅ License activated!")
-        print(f"   Key: {result['key']}")
-        print(f"   Tier: {result['tier'].upper()}")
-        print(f"   Email: {email}") # Email is part of the key generation logic now
-        print(f"   Status: {result['status']}")
-        print()
-        
-        print("📊 PRO Tier Limits (Live Check):")
-        
-        # Check specific features to display limits
-        api_quota = validator.check_quota("monthly_api_calls") # Note: license.py currently misses this key in limits dict, but let's check standard ones
-        video_quota = validator.check_quota("max_daily_video")
-        niches_quota = validator.check_quota("niches")
-        
-        # For display purposes, if the limit isn't in license.py yet, we show the implied PRO defaults
-        # or we update license.py. For now, we display what we can check.
-        
-        print(f"   Max Daily Video: {video_quota['limit']}")
-        print(f"   Niches: {video_quota['limit']}")
-        print(f"   White Label: {'✅' if validator.check_quota('white_label')['allowed'] else '❌'}")
-        
-        # Hardcoded display for features not yet in license.py's check_quota map 
-        # (To maintain the UX expectation from the original script until license.py is fully updated)
-        print(f"   API Calls: 10,000/month (Standard PRO)")
-        print(f"   Commands: 500/month (Standard PRO)")
-        print(f"   Team Members: 5 (Standard PRO)")
-        
-        print()
-        print("📁 License saved to: ~/.mekong/license.json")
-        print()
-        print("🚀 Now restart Antigravity IDE to apply changes!")
-        
+        result = activate_uitra(args.email)
+        display_success(args.email, result)
     except Exception as e:
-        print(f"❌ Activation Failed: {e}")
+        # detailed error is already logged in activate_uitra
         sys.exit(1)
 
 

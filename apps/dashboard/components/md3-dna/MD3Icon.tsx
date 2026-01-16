@@ -61,7 +61,7 @@ export function MD3Icon({
 
   if (!IconComponent) {
     if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
+       
       console.warn(`MD3Icon: Icon "${name}" not found in Lucide`)
     }
     return null

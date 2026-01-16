@@ -37,6 +37,10 @@ class DeployManager:
             console.print("❌ [red]Google Cloud Project ID not set. Run: 'gcloud config set project <ID>'[/red]")
             return False
             
+        if not os.path.isdir("./backend"):
+            console.print("❌ [red]Directory './backend' not found. Ensure you are in the project root.[/red]")
+            return False
+
         console.print(f"   ✅ Project: [green]{self.project_id}[/green]")
         return True
 

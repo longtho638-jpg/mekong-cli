@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 // AgentOps API Service - Connect Frontend to AgentOps MVP
 // Base URL: http://localhost:8000
 

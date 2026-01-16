@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
+ 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 📊 AGENCY OS - DATA TYPES
 // Matches Supabase schema from 20251219_init_schema.sql
