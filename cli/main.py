@@ -22,6 +22,8 @@ Commands:
 import sys
 import os
 
+import json
+
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -48,41 +50,24 @@ def print_help():
 ╔═══════════════════════════════════════════════════════════╗
 ║  📚 AVAILABLE COMMANDS                                    ║
 ╠═══════════════════════════════════════════════════════════╣
+║  🚀 START HERE (Quy trình Vibe Coding):                   ║
+║  🧘 guide       Hướng dẫn sử dụng cho người mới           ║
+║  🏗️  scaffold    Tạo bản vẽ kiến trúc (Architecture)       ║
+║  📋 kanban      Quản lý task và agent                     ║
 ║                                                           ║
-║  🎯 onboard     Create your Agency DNA                   ║
-║  📝 proposal         Generate client proposal             ║
-║  🎨 content           Generate 50 content ideas            ║
-║  🎯 content-marketing Full content strategy                ║
-║  💳 invoice           Create client invoice                ║
-║  🎮 demo              Run full demonstration               ║
+║  🎯 CORE COMMANDS:                                        ║
+║  🏯 binh-phap   Phân tích chiến lược dự án                ║
+║  🍳 cook        Xây dựng tính năng (AI Agent)             ║
+║  🚀 ship        Deploy sản phẩm                           ║
 ║                                                           ║
-║  ⚡ WORKFLOW COMMANDS:                                    ║
-║  📋 workflow    List all available workflows              ║
-║  🎯 crm         Quick CRM access                          ║
-║  📊 analytics   Analytics dashboard                       ║
-║  📝 plan        Create task plan (Manus pattern)          ║
-║  📝 notes       Add/view research notes                   ║
-║  🧠 mem         Memory system (search/add/timeline)       ║
-║  📦 module      Module system (KuckIt pattern)            ║
-║                                                           ║
-║  🏯 FULL-STACK WORKFLOW (Binh Pháp):                      ║
-║  🏯 binh-phap   Strategic analysis (Ngũ Sự)               ║
-║  🍳 cook        Build with agent orchestration            ║
-║  🧪 test        Run test suite                            ║
-║  🚀 ship        Deploy to production                      ║
-║  🏗️  deploy      Infrastructure deployment                 ║
-║  📊 monitor     Error tracking & performance              ║
-║  🔥 marketing   Viral campaign (Hỏa Công)                 ║
-║  🕵️  intel       Competitor intelligence (Dụng Gián)       ║
-║                                                           ║
-║  💼 BUSINESS COMMANDS:                                    ║
-║  📋 business-plan Generate complete business plan         ║
-║  👥 customer-profile Build customer persona               ║
-║                                                           ║
-║  ❓ help        Show this help menu                       ║
+║  ⚡ UTILITIES:                                            ║
+║  📝 proposal    Tạo Proposal khách hàng                   ║
+║  🎨 content     Tạo Content Marketing                     ║
+║  💳 invoice     Tạo Invoice                               ║
+║  📊 analytics   Xem chỉ số kinh doanh                     ║
 ║                                                           ║
 ╠═══════════════════════════════════════════════════════════╣
-║  Usage: python3 cli/main.py [command]                     ║
+║  Usage: agencyos [command]                                ║
 ╚═══════════════════════════════════════════════════════════╝
     """)
 
@@ -1197,6 +1182,95 @@ def run_agencyos():
     print("═" * 60)
 
 
+def run_kanban():
+    """Run Vibe Kanban CLI commands."""
+    print("\n📋 KANBAN COMMAND CENTER")
+    print("═" * 60)
+    
+    # Simple argument parsing for MVP
+    # python3 cli/main.py kanban <action> <params_json>
+    # e.g., python3 cli/main.py kanban list '{"status": "todo"}'
+    
+    if len(sys.argv) < 3:
+        print("Usage: agencyos kanban <action> [params_json]")
+        print("Actions: list, create, update")
+        print("\nExamples:")
+        print("  agencyos kanban list '{\"status\": \"todo\"}'")
+        print("  agencyos kanban create '{\"title\": \"New Task\", \"agent\": \"planner\"}'")
+        return
+
+    action = sys.argv[2]
+    params = sys.argv[3] if len(sys.argv) > 3 else "{}"
+    
+    try:
+        # Import the skill directly to run it
+        # We need to ensure the path is correct for the skill to import antigravity
+        skill_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".agencyos", "skills", "kanban.py")
+        
+        # We can import it dynamically or just call the run_skill function if we import it
+        # Let's try importing the module dynamically
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("kanban_skill", skill_path)
+        if spec and spec.loader:
+            kanban_module = importlib.util.module_from_spec(spec)
+            sys.modules["kanban_skill"] = kanban_module
+            spec.loader.exec_module(kanban_module)
+            
+            # Execute
+            result = kanban_module.run_skill(action, params)
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"❌ Could not load skill from {skill_path}")
+
+    except Exception as e:
+        print(f"❌ Error running kanban command: {e}")
+
+
+def run_scaffold():
+    """Run Architect Agent to scaffold project structure."""
+    try:
+        from core.modules.architect import ArchitectService, ArchitectPresenter
+        
+        # Get user request
+        if len(sys.argv) > 2:
+            request = " ".join(sys.argv[2:])
+        else:
+            print("\n🏯 Usage: agencyos scaffold \"I want to build a [Project Idea]\"")
+            return
+
+        service = ArchitectService()
+        profile = service.analyze_request(request)
+        blueprint = service.generate_blueprint(profile)
+        
+        print(ArchitectPresenter.display_blueprint(profile, blueprint))
+        
+    except ImportError as e:
+        print(f"❌ Architect module not found: {e}")
+
+
+def run_guide():
+    """Show the Vibe Coding Manual for non-tech users."""
+    print("\n🧘 VIBE CODING MANUAL (Quick Start)")
+    print("═" * 60)
+    print("""
+1. 🏗️  SCAFFOLD (Bản vẽ):
+   $ agencyos scaffold "Tôi muốn làm app [ABC]"
+   -> Copy Prompt trả về -> Paste vào AI.
+
+2. 🤖 CODE (Thợ xây):
+   AI sẽ tự viết code theo cấu trúc chuẩn.
+
+3. 📋 KANBAN (Quản lý):
+   $ agencyos kanban create "Review module X"
+   $ agencyos kanban board
+
+4. 🚀 SHIP (Vận hành):
+   $ agencyos ship
+
+👉 Xem chi tiết: docs/VIBE_CODING_MANUAL.md
+    """)
+
+
 def main():
     """Main CLI entry point."""
     print_banner()
@@ -1244,6 +1318,9 @@ def main():
         "rev": run_revenue,  # Alias
         "dev": run_dev,
         "strategy": run_strategy,
+        "kanban": run_kanban,
+        "scaffold": run_scaffold,
+        "guide": run_guide,
         "help": print_help,
     }
     
