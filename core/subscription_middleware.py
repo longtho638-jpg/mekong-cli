@@ -6,7 +6,7 @@ DEPRECATED: This module is kept for backward compatibility.
 Use core.subscription module instead.
 
 The original 580-line middleware has been refactored into:
-- core.subscription/ (modular architecture)  
+- core.subscription/ (modular architecture)
 - Single responsibility per file
 - Clean separation of concerns
 - Better error handling
@@ -21,28 +21,32 @@ import warnings
 # Import the new modular implementation
 from .subscription import (
     SubscriptionManager,
-    manager,
-    get_subscription,
     check_limit,
-    validate_license,
     enforce,
+    get_subscription,
+    manager,
+    validate_license,
 )
+
+# Import tier-related items for backward compatibility
+from .subscription.models.subscription import SubscriptionTier
+
 
 # Legacy compatibility wrapper
 class SubscriptionMiddleware:
     """Legacy compatibility wrapper for the old SubscriptionMiddleware."""
-    
+
     def __init__(self, local_app_dir: str = ".mekong"):
         warnings.warn(
             "SubscriptionMiddleware is deprecated. Use SubscriptionManager from core.subscription instead.",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         self._manager = SubscriptionManager(local_app_dir)
-        
+
         # Legacy attributes for compatibility
         self.usage_tracker = self._manager.usage_tracker
-        self.db = getattr(self._manager.remote_validator, 'db', None)
+        self.db = getattr(self._manager.remote_validator, "db", None)
         self._subscription_cache = {}
         self.local_license_path = self._manager.local_validator.local_license_path
 
@@ -87,28 +91,49 @@ class SubscriptionMiddleware:
 
     def record_usage(self, user_id: str, action: str, agency_id=None, **metadata):
         """Legacy compatibility method."""
-        from .subscription.models.usage import UsageEvent
         from datetime import datetime
-        
+
+        from .subscription.models.usage import UsageEvent
+
         event = UsageEvent(
             user_id=user_id,
             action=action,
             timestamp=datetime.now(),
             agency_id=agency_id,
             command=metadata.get("command"),
-            metadata=metadata
+            metadata=metadata,
         )
         return self.usage_tracker.record_usage(event)
 
 
-# Create global instance for backward compatibility
-middleware = SubscriptionMiddleware()
+# Lazy-load global instance for backward compatibility
+_middleware_instance = None
+
+
+def get_middleware():
+    """Get the legacy middleware instance (lazy-loaded)."""
+    global _middleware_instance
+    if _middleware_instance is None:
+        _middleware_instance = SubscriptionMiddleware()
+    return _middleware_instance
+
+
+# Backward compatibility alias (defer creation until access)
+class _LazyMiddleware:
+    """Lazy wrapper to avoid deprecation warning during import."""
+
+    def __getattr__(self, name):
+        return getattr(get_middleware(), name)
+
+
+middleware = _LazyMiddleware()
 
 # Export all legacy symbols for compatibility
 __all__ = [
     "SubscriptionMiddleware",
+    "SubscriptionTier",
     "middleware",
-    "SubscriptionManager", 
+    "SubscriptionManager",
     "manager",
     "get_subscription",
     "check_limit",
