@@ -1,91 +1,75 @@
-# 🌊 Agency OS v2.5 - The One-Person Unicorn Operating System
+# 🏯 AgencyOS - Antigravity IDE
 
-> **"Không đánh mà thắng"** - Win Without Fighting
-> *Production-Ready | AI-Native | Vietnam-First*
+> **"Không đánh mà thắng" - Win Without Fighting**
+> The first AI-Native IDE for Solopreneurs & Agencies.
 
-## 🚀 Overview
+[![AgencyOS](https://img.shields.io/badge/Agency-OS-emerald)](https://agencyos.network)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean-blue)](docs/architecture/top-tier-repos.md)
 
-Agency OS là nền tảng quản trị Agency tự động hóa hoàn toàn (Autonomous Agency), được thiết kế để giúp **AgencyEr** (Chủ Agency 1 người) vận hành như một tập đoàn 50 nhân sự.
+## 🌟 Giới Thiệu (Introduction)
 
-Hệ thống được xây dựng trên kiến trúc **AntigravityKit** và vận hành bởi đội quân AI Agents tinh nhuệ.
+AgencyOS không chỉ là một CLI tool, nó là một **Hệ Điều Hành** (Operating System) giúp bạn biến ý tưởng thành phần mềm, và phần mềm thành doanh thu.
 
-## 🏯 Binh Pháp Architecture (Lục Tướng)
-
-| Agent | Vai Trò (Binh Pháp) | Nhiệm Vụ Chính |
-|-------|---------------------|----------------|
-| **Planner** | 🏯 Mưu Công (Strategy) | Phân tích mục tiêu, lập kế hoạch Manus 3-file. |
-| **Money Maker** | 💰 Tài (Wealth) | Tạo báo giá, invoice, kiểm soát dòng tiền $1M. |
-| **Client Magnet** | 🧲 Địa (Territory) | Thu hút, sàng lọc Lead (BANT), quản lý CRM. |
-| **Fullstack Dev** | ⚡ Quân Tranh (Speed) | Code, test, deploy tính năng (VIBE Workflow). |
-| **Strategist** | ☸️ Đạo (Way) | Cố vấn chiến lược, xây dựng 5 Hào bảo vệ (Moat). |
-| **Jules** | 🤖 Vô Vi (Automation) | Bảo trì tự động, vá lỗi, update deps. |
-
-## 🛠️ Getting Started (WOW Experience)
-
-### 1. Khởi tạo & Cấu hình
-```bash
-# Cài đặt CLI
-pip install -e .
-
-# Thiết lập "Linh hồn" (Vibe & Tone)
-mekong setup-vibe --location "Cần Thơ" --tone "Chân thành"
-
-# Kích hoạt Dashboard
-mekong status
-```
-
-### 2. Các Lệnh Quyền Lực (Slash Commands)
-
-- **/cook**: Xây dựng tính năng tự động (Code & Deploy).
-  - *Ví dụ:* `/cook "Tạo landing page giới thiệu gạo ST25"`
-- **/plan**: Lập kế hoạch chiến lược chi tiết.
-  - *Ví dụ:* `/plan "Ra mắt dịch vụ SEO cho Spa"`
-- **/revenue**: Kiểm tra sức khỏe tài chính.
-  - *Ví dụ:* `/revenue` (Xem tiến độ $1M ARR)
-- **/antigravity**: Tổng quan hệ thống (Master Dashboard).
-
-## 🛡️ The 5 Immortal Moats
-
-Hệ thống tự động tích lũy giá trị vào 5 Hào bảo vệ để Agency của bạn trở nên "bất khả xâm phạm":
-
-1.  **📊 Data Moat**: Dữ liệu khách hàng, lịch sử dự án.
-2.  **🧠 Learning Moat**: AI học phong cách của bạn theo thời gian.
-3.  **🌐 Network Moat**: Mạng lưới đối tác và Affiliate.
-4.  **⚡ Workflow Moat**: Các quy trình tự động hóa độc quyền.
-5.  **🏯 Identity Moat**: Thương hiệu và bản sắc riêng (Agency DNA).
-
-## ⚖️ Governance: WIN-WIN-WIN
-
-Mọi giao dịch đều phải vượt qua cổng kiểm soát **Tam Thắng**:
-1.  👑 **Owner WIN**: Có Equity & Cashflow.
-2.  🏢 **Agency WIN**: Xây được Moat & Hạ tầng.
-3.  🚀 **Client WIN**: Nhận giá trị gấp 10 lần (10x Value).
+Được xây dựng trên triết lý **Binh Pháp**, AgencyOS cung cấp:
+1.  **Kiến Trúc Sư (Architect):** Tự động thiết kế structure chuẩn (Clean Arch/DDD).
+2.  **Quản Lý (Kanban):** Theo dõi tiến độ task.
+3.  **Doanh Thu (Revenue):** CRM, Invoice, Proposal tích hợp sẵn.
 
 ---
 
-## 📂 Project Structure
+## 🚀 Bắt Đầu Ngay (Quick Start)
+
+Dành cho người mới (Non-tech friendly):
+
+### 1. Cài đặt
+```bash
+git clone https://github.com/your-repo/mekong-cli.git
+cd mekong-cli
+# Setup Kanban (Optional but recommended)
+./scripts/setup_vibe_kanban.sh
+```
+
+### 2. Vibe Coding Flow (Quy Trình Chuẩn)
+
+1.  **Khởi tạo ý tưởng:**
+    ```bash
+    agencyos scaffold "Tôi muốn làm nền tảng học trực tuyến (LMS)"
+    ```
+    *Copy Prompt nhận được và paste vào AI của bạn.*
+
+2.  **Quản lý công việc:**
+    ```bash
+    agencyos kanban board
+    ```
+
+3.  **Vận hành:**
+    ```bash
+    agencyos crm      # Quản lý khách hàng
+    agencyos revenue  # Xem doanh thu
+    ```
+
+👉 **Xem hướng dẫn chi tiết:** `agencyos guide` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
+
+---
+
+## 📂 Cấu Trúc Dự Án
 
 ```
 mekong-cli/
-├── antigravity/        # Core Engine (Python)
-│   ├── core/           # Logic (Revenue, CRM, Content...)
-│   ├── franchise/      # Franchise Manager
-│   └── platform/       # Data Moat System
-├── .claude/            # AI Brain (Context Engineering)
-│   ├── agents/         # Agent Personas
-│   ├── commands/       # Slash Command Prompts
-│   └── skills/         # Executable Skills
-├── cli/                # CLI Interface (Typer)
+├── antigravity/        # Core Modules
+├── apps/               # Frontend (Next.js Dashboard)
+├── cli/                # Command Line Interface
+├── core/               # Business Logic (CRM, Finance...)
+│   ├── modules/        # Modular Architecture
+│   └── infrastructure/ # DB & Cache
 └── docs/               # Documentation
 ```
 
-## 🤝 Contributing
+## 🧠 Tài Nguyên (Resources)
 
-Dự án tuân thủ tiêu chuẩn **VIBE Development**:
-- **YAGNI / KISS / DRY**: Đơn giản là sức mạnh.
-- **100% Test Coverage**: Không test, không merge.
-- **Vietnamese First**: Code comment và Docs ưu tiên Tiếng Việt.
+*   [Kiến Trúc Chuẩn (Top Tier Repos)](docs/architecture/top-tier-repos.md)
+*   [Vibe Coding Manual](docs/VIBE_CODING_MANUAL.md)
 
 ---
 
-*Generated by Agency OS v2.5 | 2026*
+*Built with ❤️ by Mekong AI.*
