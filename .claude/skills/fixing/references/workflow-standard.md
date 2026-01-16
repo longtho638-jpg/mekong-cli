@@ -65,12 +65,12 @@ See `references/review-cycle.md` for mode-specific handling.
 
 ### Step 6: Finalize
 - Report summary to user
-- Ask to commit via `git-manager`
+- Ask to commit via `git-manager` subagent
 - Update docs if needed via `docs-manager`
 
 **Output:** `✓ Step 6: Complete - [action]`
 
-## Skills Activated
+## Skills/Subagents Activated
 
 | Step | Skills/Subagents |
 |------|------------------|
