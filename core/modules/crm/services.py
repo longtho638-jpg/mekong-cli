@@ -74,6 +74,16 @@ class CRMService:
             logger.error(f"❌ CRM Load Error: {e}")
             self._seed_demo_data() # Fallback
 
+    def _seed_demo_data(self):
+        """Pre-populates the system with sample data for training/demo."""
+        try:
+            c1 = self.add_contact("Anh Minh", "minh@mekong.vn", "Mekong Rice", phone="0901234567")
+            self.create_deal(c1.id, "Zalo OA Integration", 2500.0, DealStage.NEGOTIATION)
+            
+            c2 = self.add_contact("Chị Lan", "lan@spa.vn", "Lotus Beauty", phone="0907654321")
+            c2.lead_score = 85 # Hot Lead
+        except Exception: pass
+
     def add_contact(
         self, 
         name: str, 
