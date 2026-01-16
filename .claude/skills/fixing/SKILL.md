@@ -10,7 +10,7 @@ Unified skill for fixing issues of any complexity with intelligent routing.
 
 ## Step 0: Mode Selection
 
-**First action:** Use `AskUserQuestion` to determine workflow mode:
+**First action:** If there is no "auto" keyword in the request, use `AskUserQuestion` to determine workflow mode:
 
 | Option | Recommend When | Behavior |
 |--------|----------------|----------|
@@ -31,13 +31,13 @@ Classify before routing. See `references/complexity-assessment.md`.
 | **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |
 | **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |
 
-## Skill Activation Matrix
+## Skill/Subagent Activation Matrix
 
 See `references/skill-activation-matrix.md` for complete matrix.
 
 **Always activate:** `debugging` (all workflows)
 **Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`
-**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `git-manager`
+**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`
 **Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification
 
 ## Output Format
@@ -62,4 +62,11 @@ Load as needed:
 - `references/workflow-deep.md` - Deep: research + brainstorm + plan
 - `references/review-cycle.md` - Review logic (autonomous vs HITL)
 - `references/skill-activation-matrix.md` - When to activate each skill
-- `references/parallel-exploration.md` - Parallel Explore/Bash patterns
+- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns
+
+**Specialized Workflows:**
+- `references/workflow-ci.md` - GitHub Actions/CI failures
+- `references/workflow-logs.md` - Application log analysis
+- `references/workflow-test.md` - Test suite failures
+- `references/workflow-types.md` - TypeScript type errors
+- `references/workflow-ui.md` - Visual/UI issues (requires design skills)

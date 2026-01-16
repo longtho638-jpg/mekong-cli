@@ -40,15 +40,15 @@ Prompt: "Quick review of fix for [issue]. Check: correctness, security, no regre
 ### Step 4: Complete
 Report summary to user.
 
-**If autonomous mode:** Ask to commit via `git-manager` if score >= 9.0
+**If autonomous mode:** Ask to commit via `git-manager` subagent if score >= 9.0
 **If HITL mode:** Ask user next action
 
 **Output:** `✓ Step 4: Complete - [action]`
 
-## Skills Activated
+## Skills/Subagents Activated
 
 - `debugging` - Always (Step 1)
-- Parallel `Bash` - Verification (Step 2)
+- Parallel `git-manager` - Verification (Step 2)
 - `code-reviewer` subagent - Always (Step 3)
 - `context-engineering` - If dealing with AI/LLM code
 

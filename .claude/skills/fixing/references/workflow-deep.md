@@ -67,13 +67,13 @@ See `references/review-cycle.md` for mode-specific handling.
 **Output:** `✓ Step 7: Review [score]/10 - [status]`
 
 ### Step 8: Finalize
-- Use `project-manager` to update roadmap
-- Use `docs-manager` for documentation
-- Use `git-manager` for commit
+- Use `project-manager` subagent to update roadmap
+- Use `docs-manager` subagent for documentation
+- Use `git-manager` subagent for commit
 
 **Output:** `✓ Step 8: Complete - [actions taken]`
 
-## Skills Activated
+## Skills/Subagents Activated
 
 | Step | Skills/Subagents |
 |------|------------------|
@@ -84,7 +84,7 @@ See `references/review-cycle.md` for mode-specific handling.
 | 5 | `problem-solving`, `sequential-thinking`, `context-engineering`, parallel `Bash` |
 | 6 | `tester` |
 | 7 | `code-reviewer` |
-| 8 | `project-manager`, `docs-manager`, `git-manager` |
+| 8 | `project-manager`, `docs-manager`, `Bash` |
 
 **Rules:** Don't skip steps. Validate before proceeding. One phase at a time.
 **Frontend:** Use `chrome`, `chrome-devtools` or any relevant skills/tools to verify. 

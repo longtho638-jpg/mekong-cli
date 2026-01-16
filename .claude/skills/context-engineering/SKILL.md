@@ -28,6 +28,11 @@ Context engineering curates the smallest high-signal token set for LLM tasks. Th
 4. **Isolation prevents degradation** - Partition work across sub-agents
 5. **Measure before optimizing** - Know your baseline
 
+**IMPORTANT:**
+- Sacrifice grammar for the sake of concision.
+- Ensure token efficiency while maintaining high quality.
+- Pass these rules to subagents.
+
 ## Quick Reference
 
 | Topic | When to Use | Reference |
