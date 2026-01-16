@@ -4,7 +4,8 @@ import { DashboardShell } from '@/components/DashboardShell'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const isDashboard = pathname?.startsWith('/dashboard')
+    // Check for dashboard in root or strict locale prefix (e.g. /en/dashboard)
+    const isDashboard = pathname ? /^\/([a-z]{2}\/)?dashboard/.test(pathname) : false
 
     if (isDashboard) {
         return <DashboardShell>{children}</DashboardShell>

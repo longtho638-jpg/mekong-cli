@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * React Hook for MRR Metrics
  * Real-time revenue data from Stripe

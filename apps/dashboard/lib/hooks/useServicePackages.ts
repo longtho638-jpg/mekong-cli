@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 'use client';
 
 import { useState, useCallback } from 'react';

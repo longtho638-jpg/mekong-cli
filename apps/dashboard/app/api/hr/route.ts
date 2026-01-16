@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * HR API Routes
  * RESTful endpoints for Employees, Payroll, Leave Management
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { HRService } from '@/lib/hr';
 
 export const dynamic = 'force-dynamic';

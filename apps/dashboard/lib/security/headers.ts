@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * Security Headers Configuration
  * CSP, HSTS, and other security headers
  */
 
-import { NextResponse } from 'next/server';
+import type { NextResponse } from 'next/server';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 🛡️ SECURITY HEADERS

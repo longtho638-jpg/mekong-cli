@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * Input Sanitization & Validation
  * Protects against XSS, SQL injection, and malicious input

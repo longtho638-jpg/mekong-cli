@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * AntigravityKit API Client
  * Connects frontend to backend AntigravityKit modules

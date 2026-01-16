@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 'use client'
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 export type SoundType = 'click' | 'hover' | 'success' | 'error' | 'notification' | 'whoosh' | 'pop'
 

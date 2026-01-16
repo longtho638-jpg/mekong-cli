@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {

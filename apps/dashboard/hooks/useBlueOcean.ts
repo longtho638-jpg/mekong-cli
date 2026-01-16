@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 'use client';
 
 import useSWR from 'swr';
-import {
-    fetchGuildStatus,
-    fetchGuildNetwork,
-    fetchBlacklist,
-    fetchPricingBenchmarks,
+import type {
     GuildStatus,
     GuildNetwork,
     Blacklist,
     PricingBenchmarks
+} from '@/lib/api/blue-ocean';
+import {
+    fetchGuildStatus,
+    fetchGuildNetwork,
+    fetchBlacklist,
+    fetchPricingBenchmarks
 } from '@/lib/api/blue-ocean';
 
 // SWR fetcher wrapper

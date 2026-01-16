@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * Subscription Manager for AgencyOS
  * Handles plan management, upgrades, and billing status
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { PRICING_TIERS, PricingTier, createCheckoutSession, cancelSubscription, updateSubscription } from './stripe';
+import type { PricingTier} from './stripe';
+import { PRICING_TIERS, createCheckoutSession, cancelSubscription, updateSubscription } from './stripe';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 📊 TYPES

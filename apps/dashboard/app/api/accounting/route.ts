@@ -3,7 +3,8 @@
  * RESTful endpoints for Chart of Accounts, Journal Entries, Reports
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { AccountingService } from '@/lib/accounting';
 
 // Force dynamic for SSR

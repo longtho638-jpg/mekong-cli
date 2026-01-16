@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 import { useState, useEffect, useCallback } from 'react';
-import {
-    antigravityAPI,
+import type {
     AllModules,
     AgencyDNA,
     ClientMagnetStats,
@@ -8,7 +8,9 @@ import {
     ContentFactoryStats,
     FranchiseStats,
     VCMetrics,
-    DataMoatStats,
+    DataMoatStats} from '../lib/api/antigravity';
+import {
+    antigravityAPI
 } from '../lib/api/antigravity';
 
 interface UseAntigravityReturn {

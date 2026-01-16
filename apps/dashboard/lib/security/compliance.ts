@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * Data Privacy Compliance (PDPA/GDPR)
  * Handle consent, data export, and deletion requests

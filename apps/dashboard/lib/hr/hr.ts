@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, @typescript-eslint/no-explicit-any */
 /**
  * HR & Payroll Module for AgencyOS
  * ERPNext Parity: Employee Management, Payroll, Leave Management

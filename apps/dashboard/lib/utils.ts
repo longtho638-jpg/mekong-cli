@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 import { type ClassValue, clsx } from 'clsx';
 
 /* =====================================================

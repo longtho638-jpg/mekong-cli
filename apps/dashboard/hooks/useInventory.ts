@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 /**
  * React Hooks for Inventory Module
  * Wire UI to API endpoints

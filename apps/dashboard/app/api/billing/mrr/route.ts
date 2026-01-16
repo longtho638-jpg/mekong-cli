@@ -3,7 +3,8 @@
  * Fetches live MRR from Stripe subscriptions
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
