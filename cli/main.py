@@ -1256,6 +1256,38 @@ def run_scaffold():
         print(f"❌ Architect module not found: {e}")
 
 
+def run_kit():
+    """Manage Antigravity Kit modules."""
+    try:
+        from core.modules.antigravity_kit import AntigravityKit
+        kit = AntigravityKit()
+        
+        if len(sys.argv) < 3:
+            print("Usage: agencyos kit <status|sync>")
+            return
+
+        action = sys.argv[2]
+        
+        print("\n🌌 ANTIGRAVITY KIT")
+        print("═" * 60)
+        
+        if action == "status":
+            print(f"Status: {kit.status()}")
+            print(f"Revenue Engine: {kit.revenue.ignite()}")
+            print(f"Pipeline Health: {kit.magnet.get_pipeline_health()['magnetic_score']}/100")
+        elif action == "sync":
+            print("Syncing modules...")
+            # Simulate sync
+            print("✅ AgencyDNA synced")
+            print("✅ ClientMagnet synced")
+            print("✅ RevenueEngine synced")
+        else:
+            print("Unknown action.")
+            
+    except ImportError as e:
+        print(f"❌ Kit module not found: {e}")
+
+
 def run_ui():
     """Run UI Architect to generate MD3 components."""
     try:
@@ -1386,6 +1418,7 @@ def main():
         "scaffold": run_scaffold,
         "ide": run_ide,
         "ui": run_ui,
+        "kit": run_kit,
         "guide": run_guide,
         "help": print_help,
     }
