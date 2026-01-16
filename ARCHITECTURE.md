@@ -1,6 +1,6 @@
 # 🏯 Unified Agent Architecture
 
-> **Version**: v3.1.0-vibe-coding | **Date**: 2026-01-16
+> **Version**: v3.1.1 | **Date**: 2026-01-17
 > **ClaudeKit-Engineer** + **Antigravity IDE** Unified Framework
 
 ---
@@ -26,8 +26,27 @@ mekong-cli/
 │   ├── skills/                 # Quick skills (6 categories)
 │   └── crews/                  # Multi-agent crews
 │
+├── products/                   # 📦 Product Catalog (NEW)
+│   ├── ai-skills-pack/         # $27
+│   ├── vietnamese-agency-kit/  # $67
+│   ├── agencyos-pro/           # $197
+│   └── agencyos-enterprise/    # $497
+│
 └── GEMINI.md                   # Shared memory (both read)
 ```
+
+---
+
+## 📦 Product Catalog
+
+| Tier       | Product             | Price |
+| ---------- | ------------------- | ----- |
+| FREE       | VSCode Pack         | $0    |
+| Basic      | AI Skills, Auth     | $27   |
+| Pro        | AgencyOS Pro        | $197  |
+| Enterprise | AgencyOS Enterprise | $497  |
+
+**Total Catalog Value:** $983+
 
 ---
 
@@ -41,30 +60,6 @@ mekong-cli/
 
 ---
 
-## 🎯 Command Mapping
-
-| Action      | Claude Command | Gemini Workflow        |
-| ----------- | -------------- | ---------------------- |
-| Development | `/cook`        | `/agencyos-unified`    |
-| Planning    | `/plan`        | `/feature-development` |
-| Testing     | `/test`        | `/bug-fixing`          |
-| Research    | `/scout`       | `/mvp-launch`          |
-| Cloudflare  | `/cloudflare`  | `/cf-easy`             |
-
----
-
-## 🧠 Skills Mapping
-
-| Domain       | `.claude/skills/`      | `.agent/skills/` |
-| ------------ | ---------------------- | ---------------- |
-| AI           | `ai-multimodal/`       | `ai/`            |
-| Backend      | `backend-development/` | `backend/`       |
-| Frontend     | `frontend-design/`     | `frontend/`      |
-| Integrations | `payment-integration/` | `integrations/`  |
-| Tools        | `mcp-builder/`         | `tools/`         |
-
----
-
 ## 📊 Statistics
 
 | Metric    | Claude | Gemini       | Total |
@@ -72,7 +67,7 @@ mekong-cli/
 | Agents    | 22     | 106          | 128   |
 | Skills    | 39     | 6 categories | 45+   |
 | Workflows | 11     | 29           | 40    |
-| Hooks     | 6      | —            | 6     |
+| Products  | —      | —            | 12    |
 
 ---
 
@@ -81,12 +76,6 @@ mekong-cli/
 > **"Bất chiến nhi khuất nhân chi binh"**
 > Win without fighting - the highest form of victory.
 
-Both IDEs share the Binh Pháp philosophy:
-
-- **WIN-WIN-WIN** validation before every action
-- **Ngũ Sự** assessment for major decisions
-- **13 Chapters** framework for strategic guidance
-
 ---
 
-_Unified Architecture by AgencyOS | Synced on January 16, 2026_
+_Unified Architecture by AgencyOS | v3.1.1 | January 17, 2026_
