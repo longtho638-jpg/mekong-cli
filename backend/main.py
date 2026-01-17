@@ -17,6 +17,8 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from backend.core.config import settings
+
 # Import existing routes
 from backend.routes.campaigns import router as campaigns_router
 from backend.routes.agentops import router as agentops_router
@@ -43,7 +45,7 @@ from backend.models.vibe import VibeRequest
 app = FastAPI(
     title="Mekong-CLI API - Refactored",
     description="🌊 Deploy Your Agency in 15 Minutes - Backend API with Clean Architecture",
-    version="2.0.0",
+    version=settings.VERSION,
 )
 
 # Mount existing routes
@@ -51,10 +53,9 @@ app.include_router(campaigns_router)
 app.include_router(agentops_router)
 
 # CORS middleware - Environment-based configuration
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8080").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],

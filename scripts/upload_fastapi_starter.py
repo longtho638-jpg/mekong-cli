@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Upload FastAPI Starter to Gumroad."""
 
+import os
 from pathlib import Path
 
 import requests
 
-TOKEN = "6rzTtCiZiEt0zxZHdpM3Ad_AwsGug2DfzXD6Mv6nHgU"
+TOKEN = os.getenv("GUMROAD_TOKEN")
+if not TOKEN:
+    print("❌ Error: GUMROAD_TOKEN environment variable not set.")
+    exit(1)
 API = "https://api.gumroad.com/v2"
 
 # Create product
