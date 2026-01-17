@@ -1,5 +1,11 @@
 """
 Infrastructure Module Export
 """
-from .database import Database, get_db
+try:
+    from .database import Database, get_db
+except ImportError:
+    Database = None
+    get_db = None
+
 from .cache import CacheManager
+from .notifications import NotificationService

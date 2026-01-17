@@ -89,7 +89,7 @@ def check_sales():
     last_count = state.get("last_sales_count", 0)
 
     if current_count > last_count:
-        new_sales = current_count - last_count
+        current_count - last_count
         # Get last sale details
         if SALES_LOG.exists():
             with open(SALES_LOG) as f:
