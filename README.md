@@ -33,22 +33,28 @@ cd mekong-cli
 
 1.  **Khởi tạo ý tưởng:**
     ```bash
-    agencyos scaffold "Tôi muốn làm nền tảng học trực tuyến (LMS)"
+    python3 main.py scaffold "Tôi muốn làm nền tảng học trực tuyến (LMS)"
     ```
-    *Copy Prompt nhận được và paste vào AI của bạn.*
 
-2.  **Quản lý công việc:**
+2.  **Quản lý Vận Hành (Ops):**
     ```bash
-    agencyos kanban board
+    python3 main.py ops watch      # Giám sát hệ thống
+    python3 main.py ops quota      # Kiểm tra hạn mức AI
     ```
 
-3.  **Vận hành:**
+3.  **Kinh Doanh & Doanh Thu:**
     ```bash
-    agencyos crm      # Quản lý khách hàng
-    agencyos revenue  # Xem doanh thu
+    python3 main.py outreach add "Client Name" "email@example.com"
+    python3 main.py sales proposal-create ghost_cto "email@example.com"
+    python3 main.py finance invoice-create "Client Name" 5000 "Ghost CTO"
     ```
 
-👉 **Xem hướng dẫn chi tiết:** `agencyos guide` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
+4.  **Marketing & Content:**
+    ```bash
+    python3 main.py content generate tweet agencyos
+    ```
+
+👉 **Xem hướng dẫn chi tiết:** `python3 main.py --help` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
 
 ---
 
