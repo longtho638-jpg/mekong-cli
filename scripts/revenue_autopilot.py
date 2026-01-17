@@ -143,6 +143,9 @@ def cmd_status():
         "payment_hub.py",
         "ghost_cto.py",
         "strategic_consultant.py",
+        "passive_income.py",
+        "broadcast_cli.py",
+        "outreach_cli.py",
     ]
     for s in scripts:
         exists = (SCRIPTS_DIR / s).exists()
@@ -175,6 +178,8 @@ def cmd_daily():
         ("Sync Gumroad Products", "gumroad_publisher.py", ["--list"]),
         ("Payment Hub Status", "payment_hub.py", ["status"]),
         ("Revenue Check", "payment_hub.py", ["revenue"]),
+        ("SEO Content Gen", "passive_income.py", ["seo", "1"]),  # 1 post/day
+        ("Lead Pipeline", "outreach_cli.py", ["list"]),
     ]
 
     results = []
@@ -206,6 +211,7 @@ def cmd_weekly():
         ("Ghost CTO Report (7 days)", "ghost_cto.py", ["--days", "7"]),
         ("Batch Publish Products", "gumroad_publisher.py", ["--batch"]),
         ("Venture Portfolio Report", "payment_hub.py", ["venture"]),
+        ("Gumroad Optimization", "passive_income.py", ["optimize"]),
     ]
 
     results = []
@@ -250,6 +256,8 @@ def cmd_report():
         ("Ghost CTO", "ghost_cto.py", ["--days", "7"]),
         ("Revenue P&L", "payment_hub.py", ["revenue"]),
         ("Venture Portfolio", "payment_hub.py", ["venture"]),
+        ("Passive Income", "passive_income.py", ["status"]),
+        ("Outreach Stats", "outreach_cli.py", ["stats"]),
     ]
 
     for name, script, args in reports:
@@ -257,6 +265,8 @@ def cmd_report():
         ok, output = run_script(script, args)
         if ok:
             print(f"   {GREEN}✅ Done{RESET}")
+            # Show output for review
+            print(output)
         else:
             print(f"   {RED}❌ Failed{RESET}")
 
