@@ -50,6 +50,15 @@ class GumroadWebhookHandler(BaseHTTPRequestHandler):
         print(f"   Email: {email}")
         print(f"   Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
 
+        # Send push notification
+        try:
+            subprocess.run(
+                ["python3", "scripts/notification_hub.py", "sale"],
+                cwd=Path(__file__).parent.parent,
+            )
+        except:
+            pass
+
         # Auto-update revenue tracker
         subprocess.run(
             [
@@ -63,7 +72,7 @@ class GumroadWebhookHandler(BaseHTTPRequestHandler):
         )
 
         # Log to file
-        log_file = Path(".mekong/sales.log")
+        log_file = Path.home() / ".mekong/sales.log"
         log_file.parent.mkdir(parents=True, exist_ok=True)
         with open(log_file, "a") as f:
             f.write(f"{datetime.now().isoformat()}|{product}|{price}|{email}\n")
