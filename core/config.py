@@ -46,6 +46,15 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, description="Anthropic API access key")
     OPENROUTER_API_KEY: Optional[str] = Field(default=None, description="OpenRouter API access key")
     ELEVENLABS_API_KEY: Optional[str] = Field(default=None, description="ElevenLabs voice synthesis key")
+    
+    # Default AI Models Configuration (Cost & Capabilities)
+    AI_MODELS: dict = Field(default={
+        "openrouter/llama-3.1-8b": {"cost_input": 0.00005, "cost_output": 0.00005, "max_tokens": 8192, "strengths": ["fast", "cheap"]},
+        "openrouter/llama-3.1-70b": {"cost_input": 0.0003, "cost_output": 0.0003, "max_tokens": 16384, "strengths": ["reasoning"]},
+        "google/gemini-2.0-flash": {"cost_input": 0.0001, "cost_output": 0.0004, "max_tokens": 1048576, "strengths": ["multimodal", "fast"]},
+        "google/gemini-2.5-pro": {"cost_input": 0.001, "cost_output": 0.004, "max_tokens": 2097152, "strengths": ["complex", "large_context"]},
+        "anthropic/claude-3.5-sonnet": {"cost_input": 0.003, "cost_output": 0.015, "max_tokens": 200000, "strengths": ["code", "reasoning"]}
+    }, description="AI Model definitions")
 
     # --- Finance & Notifications ---
     STRIPE_SECRET_KEY: Optional[str] = Field(default=None, description="Stripe secret key for billing")
