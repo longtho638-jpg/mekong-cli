@@ -3,7 +3,7 @@
  * Standardized secure error responses with proper HTTP status codes
  */
 
-import type { NextRequest } from 'next/server'
+import type { NextRequest, NextResponse } from 'next/server'
 import { NextResponse as NextResponseClass } from 'next/server'
 import { z } from 'zod'
 import { securityLogger } from './logger'
