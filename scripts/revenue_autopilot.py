@@ -66,11 +66,20 @@ def load_credentials():
         "paypal_secret": os.getenv("PAYPAL_CLIENT_SECRET", ""),
     }
 
-    # Fallback to config file
-    if CREDENTIALS_FILE.exists() and not any(creds.values()):
+    # Fallback to gumroad.json (legacy format)
+    gumroad_json = CONFIG_DIR / "gumroad.json"
+    if gumroad_json.exists() and not creds["gumroad"]:
+        with open(gumroad_json) as f:
+            data = json.load(f)
+            creds["gumroad"] = data.get("access_token", "")
+
+    # Fallback to credentials.json (new format)
+    if CREDENTIALS_FILE.exists():
         with open(CREDENTIALS_FILE) as f:
             saved = json.load(f)
-            creds.update(saved)
+            for key in ["gumroad", "paypal_client", "paypal_secret"]:
+                if not creds.get(key) and saved.get(key):
+                    creds[key] = saved[key]
 
     return creds
 
