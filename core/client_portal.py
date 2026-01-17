@@ -1,200 +1,81 @@
 """
-👥 Client Portal - Share Progress with Clients
-===============================================
+👥 Refactored Client Portal - Main Interface
+============================================
 
-Give your clients a professional portal to:
-- View project status
-- Track deliverables
-- See invoices
-- Download assets
-- Message you directly
-
-This is the KILLER feature that makes agencies look 10x more professional.
+Main interface sử dụng refactored services với MVC pattern.
 """
 
-import uuid
 import logging
-import hashlib
-import re
-from typing import Optional, Dict, Any, List
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from enum import Enum
+from typing import Dict, Any, List, Optional
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+try:
+    from .services.client_portal_service import (
+        ClientPortalService, Client, Project, Invoice, Message,
+        ClientStatus, ProjectStatus, TaskStatus, InvoiceStatus
+    )
+    from .repositories.client_portal_repository import ClientPortalRepository
+    from .presenters.client_portal_presenter import ClientPortalPresenter
+except ImportError:
+    # Fallback for direct execution
+    from services.client_portal_service import (
+        ClientPortalService, Client, Project, Invoice, Message,
+        ClientStatus, ProjectStatus, TaskStatus, InvoiceStatus
+    )
+    from repositories.client_portal_repository import ClientPortalRepository
+    from presenters.client_portal_presenter import ClientPortalPresenter
+
 logger = logging.getLogger(__name__)
-
-class ClientStatus(Enum):
-    """Client lifecycle status."""
-    LEAD = "lead"
-    PROSPECT = "prospect"
-    ACTIVE = "active"
-    PAUSED = "paused"
-    CHURNED = "churned"
-
-
-class ProjectStatus(Enum):
-    """Project status."""
-    PLANNING = "planning"
-    IN_PROGRESS = "in_progress"
-    REVIEW = "review"
-    COMPLETED = "completed"
-    ON_HOLD = "on_hold"
-
-
-class TaskStatus(Enum):
-    """Task status."""
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    REVIEW = "review"
-    DONE = "done"
-
-
-class InvoiceStatus(Enum):
-    """Invoice status."""
-    DRAFT = "draft"
-    SENT = "sent"
-    PAID = "paid"
-    OVERDUE = "overdue"
-
-
-@dataclass
-class Client:
-    """A client in the portal."""
-    id: str
-    name: str
-    email: str
-    company: str
-    status: ClientStatus
-    created_at: datetime
-    portal_code: str  # Access code for client portal
-    notes: str = ""
-    monthly_retainer: float = 0.0
-    total_spent: float = 0.0
-
-
-@dataclass
-class ProjectTask:
-    """A task within a project."""
-    id: str
-    name: str
-    description: str
-    status: TaskStatus
-    due_date: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    assignee: str = "Team"
-
-
-@dataclass
-class Project:
-    """A client project record."""
-    id: str
-    client_id: str
-    name: str
-    description: str
-    status: ProjectStatus
-    start_date: datetime
-    end_date: Optional[datetime] = None
-    tasks: List[ProjectTask] = field(default_factory=list)
-    budget: float = 0.0
-    spent: float = 0.0
-
-    @property
-    def progress(self) -> float:
-        if not self.tasks:
-            return 0.0
-        done = sum(1 for t in self.tasks if t.status == TaskStatus.DONE)
-        return (done / len(self.tasks)) * 100.0
-
-    @property
-    def is_on_budget(self) -> bool:
-        return self.spent <= self.budget
-
-
-@dataclass
-class Invoice:
-    """A client invoice record."""
-    id: str
-    client_id: str
-    project_id: Optional[str]
-    amount: float
-    status: InvoiceStatus
-    due_date: datetime
-    paid_date: Optional[datetime] = None
-    items: List[Dict[str, Any]] = field(default_factory=list)
-    notes: str = ""
-
-    @property
-    def is_overdue(self) -> bool:
-        if self.status == InvoiceStatus.PAID:
-            return False
-        return datetime.now() > self.due_date
-
-
-@dataclass
-class Message:
-    """A message between agency and client."""
-    id: str
-    client_id: str
-    sender: str  # "agency" or "client"
-    content: str
-    timestamp: datetime = field(default_factory=datetime.now)
-    read: bool = False
-
 
 class ClientPortal:
     """
-    Client Portal System.
+    Refactored Client Portal với MVC architecture.
     
-    Manages client interactions, projects, financials, and messaging.
+    Sử dụng service layer pattern với clear separation of concerns:
+    - Service: Business logic
+    - Repository: Data access
+    - Presenter: UI formatting
     """
-
+    
     def __init__(self, agency_name: str = "Nova Digital"):
-        self.agency_name = agency_name
-        self.clients: Dict[str, Client] = {}
-        self.projects: Dict[str, Project] = {}
-        self.invoices: Dict[str, Invoice] = {}
-        self.messages: Dict[str, List[Message]] = {}
-
-        self.stats = {
-            "total_clients": 0,
-            "active_clients": 0,
-            "total_projects": 0,
-            "active_projects": 0,
-            "total_invoiced": 0.0,
-            "total_collected": 0.0
-        }
-
+        # Khởi tạo layers
+        self.service = ClientPortalService(agency_name)
+        self.repository = ClientPortalRepository()
+        self.presenter = ClientPortalPresenter(agency_name)
+        
+        # Load existing data
+        self.clients = self.repository.load_clients()
+        self.projects = self.repository.load_projects()
+        self.invoices = self.repository.load_invoices()
+        self.messages = self.repository.load_messages()
+        self.service.stats = self.repository.load_stats()
+        
+        # Create demo data nếu empty
+        if not self.clients:
+            self._create_demo_data()
+        
         logger.info(f"Client Portal initialized for {agency_name}")
-        self._create_demo_data()
-
-    def _validate_email(self, email: str) -> bool:
-        """Basic email format validation."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return bool(re.match(pattern, email))
-
-    def _generate_portal_code(self, client_id: str) -> str:
-        """Generate unique portal access code."""
-        raw = f"{client_id}{datetime.now().isoformat()}"
-        return hashlib.sha256(raw.encode()).hexdigest()[:12].upper()
-
+    
     def _create_demo_data(self):
-        """Pre-populate with sample agency data."""
+        """Tạo demo data cho testing."""
         logger.info("Loading demo client portal data...")
         try:
             client = self.add_client("John Smith", "john@example.com", "Acme Corp", 2000.0)
-            proj = self.create_project(client.id, "Website Redesign", "Complete overhauled branding", 5000.0)
-
+            project = self.create_project(client.id, "Website Redesign", "Complete overhauled branding", 5000.0)
+            
             tasks = [("Discovery", TaskStatus.DONE), ("Homepage", TaskStatus.IN_PROGRESS)]
             for name, status in tasks:
-                self.add_task(proj.id, name, f"Complete {name.lower()}", status)
-
-            self.create_invoice(client.id, 2500.0, [{"name": "Phase 1", "amount": 2500.0}],
-                                project_id=proj.id, status=InvoiceStatus.PAID)
+                self.add_task(project.id, name, f"Complete {name.lower()}", status)
+            
+            self.create_invoice(
+                client.id, 
+                2500.0, 
+                [{"name": "Phase 1", "amount": 2500.0}],
+                project_id=project.id, 
+                status=InvoiceStatus.PAID
+            )
         except Exception as e:
             logger.error(f"Demo data error: {e}")
-
+    
     def add_client(
         self,
         name: str,
@@ -203,31 +84,34 @@ class ClientPortal:
         monthly_retainer: float = 0.0,
         notes: str = ""
     ) -> Client:
-        """Register a new portal-accessible client."""
-        if not self._validate_email(email):
-            raise ValueError(f"Invalid email: {email}")
-
-        client_id = f"CLI-{uuid.uuid4().hex[:8].upper()}"
-        client = Client(
-            id=client_id,
+        """Thêm client mới với validation."""
+        # Validate input
+        errors = self.presenter.validate_client_data(name, email, company)
+        if errors:
+            raise ValueError(f"Validation errors: {'; '.join(errors)}")
+        
+        # Create client entity
+        client = self.service.create_client_entity(
             name=name,
             email=email,
             company=company,
-            status=ClientStatus.ACTIVE,
-            created_at=datetime.now(),
-            portal_code=self._generate_portal_code(client_id),
-            notes=notes,
-            monthly_retainer=monthly_retainer
+            monthly_retainer=monthly_retainer,
+            notes=notes
         )
-
-        self.clients[client_id] = client
-        self.messages[client_id] = []
-        self.stats["total_clients"] += 1
-        self.stats["active_clients"] += 1
-
+        
+        # Save to repository
+        self.clients[client.id] = client
+        self.messages[client.id] = []
+        self.repository.save_clients(self.clients)
+        self.repository.save_messages(self.messages)
+        
+        # Update stats
+        self.service.update_client_stats(1, 1)
+        self.repository.save_stats(self.service.stats)
+        
         logger.info(f"Client added to portal: {company}")
         return client
-
+    
     def create_project(
         self,
         client_id: str,
@@ -236,52 +120,66 @@ class ClientPortal:
         budget: float,
         duration_weeks: int = 4
     ) -> Project:
-        """Initiate a new project for a client."""
+        """Tạo project mới."""
         if client_id not in self.clients:
             raise KeyError("Client not found")
-        if budget < 0:
-            raise ValueError("Budget cannot be negative")
-
-        project_id = f"PRJ-{uuid.uuid4().hex[:8].upper()}"
-        project = Project(
-            id=project_id,
+        
+        # Validate input
+        errors = self.presenter.validate_project_data(name, description, budget)
+        if errors:
+            raise ValueError(f"Validation errors: {'; '.join(errors)}")
+        
+        # Create project entity
+        project = self.service.create_project_entity(
             client_id=client_id,
             name=name,
             description=description,
-            status=ProjectStatus.IN_PROGRESS,
-            start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(weeks=duration_weeks),
-            budget=budget
+            budget=budget,
+            duration_weeks=duration_weeks
         )
-
-        self.projects[project_id] = project
-        self.stats["total_projects"] += 1
-        self.stats["active_projects"] += 1
+        
+        # Save to repository
+        self.projects[project.id] = project
+        self.repository.save_projects(self.projects)
+        
+        # Update stats
+        self.service.update_project_stats(1, 1)
+        self.repository.save_stats(self.service.stats)
+        
         logger.info(f"Project created: {name}")
         return project
-
+    
     def add_task(
         self,
         project_id: str,
         name: str,
         description: str,
-        status: TaskStatus = TaskStatus.TODO
-    ) -> Optional[ProjectTask]:
-        """Add a trackable task to a project."""
+        status: TaskStatus = TaskStatus.TODO,
+        due_date: Optional = None,
+        assignee: str = "Team"
+    ) -> Optional:
+        """Thêm task vào project."""
         if project_id not in self.projects:
             return None
-
-        task = ProjectTask(
-            id=f"TSK-{uuid.uuid4().hex[:6].upper()}",
+        
+        # Create task entity
+        task = self.service.create_task_entity(
             name=name,
             description=description,
-            status=status
+            status=status,
+            due_date=due_date,
+            assignee=assignee
         )
-
+        
+        # Add to project
         self.projects[project_id].tasks.append(task)
+        
+        # Save to repository
+        self.repository.save_projects(self.projects)
+        
         logger.debug(f"Task '{name}' added to {project_id}")
         return task
-
+    
     def create_invoice(
         self,
         client_id: str,
@@ -290,89 +188,153 @@ class ClientPortal:
         project_id: Optional[str] = None,
         status: InvoiceStatus = InvoiceStatus.DRAFT
     ) -> Invoice:
-        """Generate a new invoice record."""
-        if amount < 0:
-            raise ValueError("Amount cannot be negative")
-
-        invoice_id = f"INV-{datetime.now().strftime('%Y%m')}-{uuid.uuid4().hex[:4].upper()}"
-        invoice = Invoice(
-            id=invoice_id,
+        """Tạo invoice mới."""
+        # Validate input
+        errors = self.presenter.validate_invoice_data(amount, items)
+        if errors:
+            raise ValueError(f"Validation errors: {'; '.join(errors)}")
+        
+        # Create invoice entity
+        invoice = self.service.create_invoice_entity(
             client_id=client_id,
-            project_id=project_id,
             amount=amount,
-            status=status,
-            due_date=datetime.now() + timedelta(days=30),
-            items=items
+            items=items,
+            project_id=project_id,
+            status=status
         )
-
-        self.invoices[invoice_id] = invoice
-        self.stats["total_invoiced"] += amount
-
-        if status == InvoiceStatus.PAID:
-            invoice.paid_date = datetime.now()
-            self.stats["total_collected"] += amount
-            if client_id in self.clients:
-                self.clients[client_id].total_spent += amount
-
-        logger.info(f"Invoice {invoice_id} created for {amount}")
+        
+        # Save to repository
+        self.invoices[invoice.id] = invoice
+        self.repository.save_invoices(self.invoices)
+        self.repository.save_stats(self.service.stats)
+        
+        # Update client total spent if paid
+        if status == InvoiceStatus.PAID and client_id in self.clients:
+            self.clients[client_id].total_spent += amount
+            self.repository.save_clients(self.clients)
+        
+        logger.info(f"Invoice {invoice.id} created for {amount}")
         return invoice
-
+    
     def send_message(self, client_id: str, content: str, sender: str = "agency") -> bool:
-        """Send a message within the portal."""
+        """Gửi message trong portal."""
         if client_id not in self.messages:
             return False
-
-        msg = Message(id=f"MSG-{uuid.uuid4().hex[:8]}", client_id=client_id, sender=sender, content=content)
-        self.messages[client_id].append(msg)
+        
+        # Create message entity
+        message = self.service.create_message_entity(
+            client_id=client_id,
+            content=content,
+            sender=sender
+        )
+        
+        # Save to repository
+        self.messages[client_id].append(message)
+        self.repository.save_messages(self.messages)
+        
         logger.info(f"Message sent to {client_id} from {sender}")
         return True
-
+    
+    def get_client_projects(self, client_id: str) -> List[Project]:
+        """Lấy projects của client."""
+        return [p for p in self.projects.values() if p.client_id == client_id]
+    
+    def get_client_invoices(self, client_id: str) -> List[Invoice]:
+        """Lấy invoices của client."""
+        return [i for i in self.invoices.values() if i.client_id == client_id]
+    
+    def get_client_messages(self, client_id: str, unread_only: bool = False) -> List[Message]:
+        """Lấy messages của client."""
+        if client_id not in self.messages:
+            return []
+        
+        messages = self.messages[client_id]
+        if unread_only:
+            return [m for m in messages if not m.read]
+        return messages
+    
+    def mark_messages_read(self, client_id: str, message_ids: List[str]) -> bool:
+        """Đánh dấu messages đã đọc."""
+        if client_id not in self.messages:
+            return False
+        
+        updated = False
+        for message in self.messages[client_id]:
+            if message.id in message_ids:
+                message.read = True
+                updated = True
+        
+        if updated:
+            self.repository.save_messages(self.messages)
+        
+        return updated
+    
     def format_client_summary(self, client_id: str) -> str:
-        """Render a text dashboard for a specific client."""
+        """Format client summary cho display."""
         client = self.clients.get(client_id)
-        if not client: return "Client not found."
-
-        projects = [p for p in self.projects.values() if p.client_id == client_id]
-        invoices = [i for i in self.invoices.values() if i.client_id == client_id]
-
-        lines = [
-            "╔═══════════════════════════════════════════════════════════╗",
-            f"║  👥 CLIENT PORTAL - {client.company[:30]:<30}  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  Contact: {client.name:<25} Status: {client.status.value:<10}  ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-            "║  📊 ACTIVE PROJECTS:                                      ║",
-        ]
-
-        for p in projects:
-            lines.append(f"║    • {p.name[:20]:<20} │ Progress: {p.progress:>3.0f}% │ {p.status.value:<10} ║")
-
-        lines.extend([
-            "║                                                           ║",
-            "║  💰 FINANCIALS:                                           ║",
-            f"║    Total Invoiced: ${sum(i.amount for i in invoices):>10,.2f}                    ║",
-            f"║    Total Paid:     ${client.total_spent:>10,.2f}                    ║",
-            "║                                                           ║",
-            "║  [📂 Files]  [💬 Messages]  [📅 Meetings]  [💳 Billing]  ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
-        return "\n".join(lines)
-
-
-# Example usage
-if __name__ == "__main__":
-    print("👥 Initializing Client Portal...")
-    print("=" * 60)
-
-    try:
-        portal = ClientPortal("Saigon Digital Hub")
-        # Get first client
-        if portal.clients:
-            cid = list(portal.clients.keys())[0]
-            print("\n" + portal.format_client_summary(cid))
-
-            portal.send_message(cid, "Your design draft is ready!")
-            print("\n📨 Unread Messages:", sum(1 for m in portal.messages[cid] if not m.read))
-
-    except Exception as e:
-        logger.error(f"Runtime Error: {e}")
+        if not client:
+            return "Client not found."
+        
+        projects = self.get_client_projects(client_id)
+        invoices = self.get_client_invoices(client_id)
+        
+        return self.presenter.format_client_summary(client, projects, invoices)
+    
+    def format_dashboard_summary(self) -> str:
+        """Format dashboard summary."""
+        return self.presenter.format_dashboard_summary(self.service.stats)
+    
+    def format_project_details(self, project_id: str) -> str:
+        """Format project details."""
+        project = self.projects.get(project_id)
+        if not project:
+            return "Project not found."
+        
+        return self.presenter.format_project_details(project)
+    
+    def format_invoice_details(self, invoice_id: str) -> str:
+        """Format invoice details."""
+        invoice = self.invoices.get(invoice_id)
+        if not invoice:
+            return "Invoice not found."
+        
+        return self.presenter.format_invoice_details(invoice)
+    
+    def get_all_clients(self) -> List[Client]:
+        """Lấy tất cả clients."""
+        return list(self.clients.values())
+    
+    def get_all_projects(self) -> List[Project]:
+        """Lấy tất cả projects."""
+        return list(self.projects.values())
+    
+    def get_all_invoices(self) -> List[Invoice]:
+        """Lấy tất cả invoices."""
+        return list(self.invoices.values())
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Lấy thống kê."""
+        return self.service.get_stats()
+    
+    def delete_client(self, client_id: str) -> bool:
+        """Xóa client và related data."""
+        if client_id not in self.clients:
+            return False
+        
+        # Remove client
+        del self.clients[client_id]
+        
+        # Remove related messages
+        if client_id in self.messages:
+            del self.messages[client_id]
+        
+        # Update stats
+        self.service.update_client_stats(-1, -1)
+        
+        # Save changes
+        self.repository.save_clients(self.clients)
+        self.repository.save_messages(self.messages)
+        self.repository.save_stats(self.service.stats)
+        
+        logger.info(f"Client {client_id} deleted")
+        return True

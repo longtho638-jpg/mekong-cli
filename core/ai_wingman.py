@@ -1,161 +1,67 @@
 """
-🤖 AI Wingman - Your 24/7 Agency Assistant
+🤖 Refactored AI Wingman - Main Interface
 ==========================================
 
-Works while you sleep. Responds to clients. Never gets tired.
-
-Features:
-- Auto-respond to inquiries
-- Generate proposals
-- Schedule meetings
-- Track leads
-- Notify on important events
+Main interface sử dụng refactored services với clean architecture.
 """
 
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
-from enum import Enum
-from dataclasses import dataclass, field
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+try:
+    from .services.ai_wingman_service import (
+        AIWingmanService, AgencyOwnerProfile, WingmanMode, 
+        NotificationType, Notification, OpenAIProvider, AnthropicProvider
+    )
+    from .services.template_engine import DefaultTemplateProvider, TemplateEngine
+    from .repositories.ai_wingman_repository import AIWingmanRepository
+except ImportError:
+    # Fallback for direct execution
+    from services.ai_wingman_service import (
+        AIWingmanService, AgencyOwnerProfile, WingmanMode, 
+        NotificationType, Notification, OpenAIProvider, AnthropicProvider
+    )
+    from services.template_engine import DefaultTemplateProvider, TemplateEngine
+    from repositories.ai_wingman_repository import AIWingmanRepository
+
 logger = logging.getLogger(__name__)
-
-class WingmanMode(Enum):
-    """Operating modes for AI Wingman."""
-    PASSIVE = "passive"       # Just monitor and notify
-    SEMI_AUTO = "semi_auto"   # Draft replies, await approval
-    FULL_AUTO = "full_auto"   # Auto-respond within guidelines
-
-
-class NotificationType(Enum):
-    """Types of notifications."""
-    LEAD = "lead"
-    PAYMENT = "payment"
-    INQUIRY = "inquiry"
-    MILESTONE = "milestone"
-    ALERT = "alert"
-
-
-@dataclass
-class AgencyOwnerProfile:
-    """Profile for personalization."""
-    name: str
-    agency_name: str
-    timezone: str = "UTC"
-    response_style: str = "professional"
-    services: List[str] = field(default_factory=lambda: ["SEO", "Content", "PPC"])
-    pricing_tier: str = "premium"
-    working_hours: Dict[str, str] = field(default_factory=lambda: {"start": "09:00", "end": "18:00"})
-
-
-@dataclass
-class Notification:
-    """A notification event."""
-    id: str
-    type: NotificationType
-    title: str
-    message: str
-    priority: int  # 1-5, 5 being most urgent
-    timestamp: datetime
-    data: Dict[str, Any] = field(default_factory=dict)
-    read: bool = False
-
 
 class AIWingman:
     """
-    Your 24/7 AI Assistant System.
+    Refactored AI Wingman với clean architecture.
     
-    Automates interactions and notifications.
+    Sử dụng service layer pattern với clear separation of concerns.
     """
-
+    
     def __init__(
         self,
         owner_profile: AgencyOwnerProfile,
-        mode: WingmanMode = WingmanMode.SEMI_AUTO
+        mode: WingmanMode = WingmanMode.SEMI_AUTO,
+        provider_type: str = "openai"
     ):
-        self.owner = owner_profile
-        self.mode = mode
-        self.notifications: List[Notification] = []
-        self.response_templates = self._load_templates()
-
-        # Initialize stats
-        self.stats = {
-            "inquiries_handled": 0,
-            "proposals_sent": 0,
-            "meetings_scheduled": 0,
-            "revenue_generated": 0.0,
-            "hours_saved": 0
-        }
-        logger.info(f"AI Wingman initialized for {owner_profile.agency_name} in {mode.value} mode")
-
-    def _load_templates(self) -> Dict[str, str]:
-        """Load response templates."""
-        return {
-            "inquiry_ack": """Hi {client_name}!
-
-Thanks for reaching out to {agency_name}! 
-
-I've received your inquiry about {service} and I'm excited to help.
-
-I'll get back to you within 24 hours with a detailed proposal.
-
-Best,
-{owner_name}
-{agency_name}""",
-
-            "proposal": """# Proposal for {client_name}
-
-## Project: {project_name}
-
-### Overview
-{project_description}
-
-### Services Included
-{services_list}
-
-### Investment
-- **One-time setup:** ${setup_fee}
-- **Monthly retainer:** ${monthly_fee}/month
-
-### Timeline
-{timeline}
-
-### Next Steps
-1. Review this proposal
-2. Schedule a call: {calendar_link}
-3. Get started!
-
-Best regards,
-{owner_name}
-{agency_name}""",
-
-            "meeting_confirm": """Hi {client_name}!
-
-Great news! Your meeting is confirmed:
-
-📅 Date: {date}
-⏰ Time: {time} ({timezone})
-📍 Location: {location}
-
-See you then!
-
-{owner_name}""",
-
-            "payment_thanks": """Hi {client_name}!
-
-Thank you for your payment of ${amount}! 🎉
-
-I've received it and will continue delivering amazing results for {project_name}.
-
-Your next invoice will be on {next_invoice_date}.
-
-Best,
-{owner_name}
-{agency_name}"""
-        }
-
+        # Khởi tạo core service
+        self.service = AIWingmanService(owner_profile, mode)
+        
+        # Khởi tạo template engine
+        template_provider = DefaultTemplateProvider()
+        self.template_engine = TemplateEngine(template_provider)
+        
+        # Khởi tạo repository
+        self.repository = AIWingmanRepository()
+        
+        # Load existing data
+        self.service.notifications = self.repository.load_notifications()
+        self.service.stats = self.repository.load_stats()
+        
+        # Setup AI provider
+        if provider_type == "openai":
+            self.service.set_provider(OpenAIProvider("dummy_key"))  # TODO: Load from config
+        elif provider_type == "anthropic":
+            self.service.set_provider(AnthropicProvider("dummy_key"))  # TODO: Load from config
+        
+        logger.info(f"AI Wingman initialized for {owner_profile.agency_name}")
+    
     def handle_inquiry(
         self,
         client_name: str,
@@ -164,15 +70,17 @@ Best,
         message: str
     ) -> Dict[str, Any]:
         """
-        Handle an incoming client inquiry.
+        Xử lý inquiry từ client.
+        
+        Returns:
+            Dict với thông tin về kết quả xử lý
         """
         if not client_email or "@" not in client_email:
-             logger.warning(f"Invalid email received from {client_name}")
-             # We proceed but log warning
-
+            logger.warning(f"Invalid email received from {client_name}")
+        
         logger.info(f"Handling inquiry from {client_name} regarding {service}")
-
-        # Create notification
+        
+        # Tạo notification
         notif = Notification(
             id=f"inq_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.INQUIRY,
@@ -187,37 +95,46 @@ Best,
                 "message": message
             }
         )
-        self.notifications.append(notif)
-
+        
+        self.service.add_notification(notif)
+        
         # Generate response
-        response = self.response_templates["inquiry_ack"].format(
-            client_name=client_name,
-            agency_name=self.owner.agency_name,
-            service=service,
-            owner_name=self.owner.name
-        )
-
+        try:
+            response = self.template_engine.render_inquiry_acknowledgment({
+                "client_name": client_name,
+                "agency_name": self.service.owner.agency_name,
+                "service": service,
+                "owner_name": self.service.owner.name
+            })
+        except Exception as e:
+            logger.error(f"Failed to render response: {e}")
+            response = f"Thank you for your inquiry, {client_name}! We'll get back to you soon."
+        
         result = {
             "notification_id": notif.id,
             "response_draft": response,
             "action_taken": "none"
         }
-
-        if self.mode == WingmanMode.FULL_AUTO:
+        
+        if self.service.can_auto_respond():
             result["action_taken"] = "sent_automatically"
             result["sent_to"] = client_email
-            self.stats["inquiries_handled"] += 1
+            self.service.update_stats("inquiries_handled", 1)
             logger.info("Auto-response sent")
-        elif self.mode == WingmanMode.SEMI_AUTO:
+        elif self.service.needs_approval():
             result["action_taken"] = "awaiting_approval"
             result["approval_required"] = True
             logger.info("Response drafted, awaiting approval")
         else:
             result["action_taken"] = "notification_only"
             logger.info("Passive mode: Notification only")
-
+        
+        # Save changes
+        self.repository.save_notifications(self.service.notifications)
+        self.repository.save_stats(self.service.stats)
+        
         return result
-
+    
     def generate_proposal(
         self,
         client_name: str,
@@ -228,37 +145,43 @@ Best,
         monthly_fee: float,
         timeline: str = "4-6 weeks"
     ) -> str:
-        """Generate a professional proposal."""
+        """Generate professional proposal."""
         if setup_fee < 0 or monthly_fee < 0:
             raise ValueError("Fees cannot be negative")
-
+        
         logger.info(f"Generating proposal for {client_name}: {project_name}")
-
+        
         services_list = "\n".join([f"- {s}" for s in services])
-
-        proposal = self.response_templates["proposal"].format(
-            client_name=client_name,
-            project_name=project_name,
-            project_description=project_description,
-            services_list=services_list,
-            setup_fee=setup_fee,
-            monthly_fee=monthly_fee,
-            timeline=timeline,
-            calendar_link=f"https://cal.com/{self.owner.agency_name.lower().replace(' ', '')}",
-            owner_name=self.owner.name,
-            agency_name=self.owner.agency_name
-        )
-
-        self.stats["proposals_sent"] += 1
-        return proposal
-
+        
+        try:
+            proposal = self.template_engine.render_proposal({
+                "client_name": client_name,
+                "project_name": project_name,
+                "project_description": project_description,
+                "services_list": services_list,
+                "setup_fee": setup_fee,
+                "monthly_fee": monthly_fee,
+                "timeline": timeline,
+                "calendar_link": f"https://cal.com/{self.service.owner.agency_name.lower().replace(' ', '')}",
+                "owner_name": self.service.owner.name,
+                "agency_name": self.service.owner.agency_name
+            })
+            
+            self.service.update_stats("proposals_sent", 1)
+            self.repository.save_stats(self.service.stats)
+            
+            return proposal
+        except Exception as e:
+            logger.error(f"Failed to generate proposal: {e}")
+            raise
+    
     def notify_payment(self, client_name: str, amount: float, project: str) -> Notification:
-        """Create notification for received payment."""
+        """Tạo notification cho payment received."""
         if amount <= 0:
-             logger.warning(f"Received non-positive payment amount: {amount}")
-
+            logger.warning(f"Received non-positive payment amount: {amount}")
+        
         logger.info(f"Payment received: ${amount} from {client_name}")
-
+        
         notif = Notification(
             id=f"pay_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.PAYMENT,
@@ -272,13 +195,20 @@ Best,
                 "project": project
             }
         )
-        self.notifications.append(notif)
-        self.stats["revenue_generated"] += amount
+        
+        self.service.add_notification(notif)
+        self.service.update_stats("revenue_generated", amount)
+        
+        # Save changes
+        self.repository.save_notifications(self.service.notifications)
+        self.repository.save_stats(self.service.stats)
+        
         return notif
-
+    
     def notify_milestone(self, title: str, description: str, priority: int = 3) -> Notification:
-        """Create notification for milestone achieved."""
+        """Tạo notification cho milestone."""
         logger.info(f"Milestone achieved: {title}")
+        
         notif = Notification(
             id=f"mile_{datetime.now().strftime('%Y%m%d%H%M%S')}",
             type=NotificationType.MILESTONE,
@@ -287,23 +217,24 @@ Best,
             priority=priority,
             timestamp=datetime.now()
         )
-        self.notifications.append(notif)
+        
+        self.service.add_notification(notif)
+        self.repository.save_notifications(self.service.notifications)
+        
         return notif
-
+    
     def get_pending_notifications(self, unread_only: bool = True) -> List[Notification]:
         """Get pending notifications."""
-        if unread_only:
-            return [n for n in self.notifications if not n.read]
-        return self.notifications
-
+        return self.service.get_pending_notifications(unread_only)
+    
     def get_daily_summary(self) -> Dict[str, Any]:
         """Get daily summary report."""
         today = datetime.now().date()
         today_notifs = [
-            n for n in self.notifications
+            n for n in self.service.notifications
             if n.timestamp.date() == today
         ]
-
+        
         return {
             "date": today.isoformat(),
             "total_notifications": len(today_notifs),
@@ -313,12 +244,12 @@ Best,
                 "milestones": len([n for n in today_notifs if n.type == NotificationType.MILESTONE]),
                 "alerts": len([n for n in today_notifs if n.type == NotificationType.ALERT])
             },
-            "stats": self.stats,
-            "mode": self.mode.value
+            "stats": self.service.stats,
+            "mode": self.service.mode.value
         }
-
+    
     def format_for_telegram(self, notification: Notification) -> str:
-        """Format notification for Telegram."""
+        """Format notification cho Telegram."""
         emoji_map = {
             NotificationType.LEAD: "🎯",
             NotificationType.PAYMENT: "💰",
@@ -326,10 +257,10 @@ Best,
             NotificationType.MILESTONE: "🏆",
             NotificationType.ALERT: "🚨"
         }
-
+        
         emoji = emoji_map.get(notification.type, "📢")
         priority_stars = "⭐" * notification.priority
-
+        
         return f"""
 {emoji} *{notification.title}*
 {priority_stars}
@@ -338,62 +269,3 @@ Best,
 
 🕐 {notification.timestamp.strftime('%Y-%m-%d %H:%M')}
 """
-
-
-# Example usage
-if __name__ == "__main__":
-    # Create owner profile
-    owner = AgencyOwnerProfile(
-        name="Alex",
-        agency_name="Nova Digital",
-        services=["SEO", "Content Marketing", "PPC Ads"],
-        pricing_tier="premium"
-    )
-
-    print("🤖 Initializing AI Wingman...")
-    print("=" * 60)
-
-    try:
-        # Initialize Wingman
-        wingman = AIWingman(owner, mode=WingmanMode.SEMI_AUTO)
-
-        # Simulate an inquiry
-        result = wingman.handle_inquiry(
-            client_name="John Smith",
-            client_email="john@example.com",
-            service="SEO",
-            message="Hi, I need help ranking my website for 'best coffee shop in NYC'"
-        )
-
-        print("\n📩 Inquiry Handled:")
-        print(f"   Action: {result['action_taken']}")
-
-        # Generate a proposal
-        proposal = wingman.generate_proposal(
-            client_name="John Smith",
-            project_name="NYC Coffee Shop SEO",
-            project_description="Complete SEO optimization to rank #1 for local coffee keywords",
-            services=["Technical SEO Audit", "Local SEO Optimization", "Content Strategy"],
-            setup_fee=1500,
-            monthly_fee=500,
-            timeline="8 weeks to page 1"
-        )
-
-        print("\n📋 Proposal Generated (Snippet):")
-        print("-" * 40)
-        print(proposal[:200] + "...")
-        print()
-
-        # Payment notification
-        notif = wingman.notify_payment("John Smith", 1500, "NYC Coffee Shop SEO")
-        print(wingman.format_for_telegram(notif))
-
-        # Daily summary
-        summary = wingman.get_daily_summary()
-        print("📊 Daily Summary:")
-        print(f"   Inquiries: {summary['by_type']['inquiries']}")
-        print(f"   Payments: {summary['by_type']['payments']}")
-        print(f"   Revenue: ${summary['stats']['revenue_generated']:.2f}")
-
-    except Exception as e:
-        logger.error(f"Runtime Error: {e}")
