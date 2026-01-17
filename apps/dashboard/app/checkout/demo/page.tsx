@@ -1,13 +1,13 @@
 'use client'
 
 /**
- * 💳 Trang Demo Thanh Toán Braintree
- * ==================================
+ * 💳 Trang Demo Thanh Toán PayPal SDK v6
+ * ======================================
  * Demo checkout với nhiều mức giá.
  */
 
 import { useState } from 'react'
-import { BraintreeCheckout } from '@/components/payments'
+import { PayPalCheckout } from '@/components/payments'
 
 const PRODUCTS = [
   {
@@ -31,8 +31,8 @@ export default function CheckoutDemoPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-white mb-2">💳 Demo Thanh Toán Braintree</h1>
-          <p className="text-white/60">Chọn sản phẩm và thử thanh toán (mock mode)</p>
+          <h1 className="text-3xl font-bold text-white mb-2">💳 Demo Thanh Toán PayPal</h1>
+          <p className="text-white/60">Chọn sản phẩm và thử thanh toán (SDK v6)</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -77,14 +77,14 @@ export default function CheckoutDemoPage() {
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">💳 Thanh Toán</h2>
 
-            <BraintreeCheckout
+            <PayPalCheckout
               amount={selectedProduct.price}
               description={selectedProduct.name}
-              onSuccess={txn => {
-                setLastTransaction(txn)
+              onSuccess={(txn: { orderId: string; status: string; amount: string }) => {
+                setLastTransaction({ id: txn.orderId, message: `Paid $${txn.amount}` })
               }}
               onError={() => {
-                // Error is displayed in BraintreeCheckout component
+                // Error is displayed in PayPalCheckout component
               }}
             />
           </div>
@@ -93,10 +93,10 @@ export default function CheckoutDemoPage() {
         {/* Info */}
         <div className="mt-12 text-center text-white/40 text-sm">
           <p>
-            🔧 Đang ở chế độ <strong>Mock</strong> - Không thu tiền thật
+            🔧 Đang ở chế độ <strong>Sandbox</strong> - Không thu tiền thật
           </p>
           <p className="mt-1">
-            Cấu hình Braintree trong <code>.env</code> để bật thanh toán thật
+            Cấu hình PayPal trong <code>.env</code> để bật thanh toán thật
           </p>
         </div>
       </div>

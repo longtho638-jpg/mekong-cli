@@ -18,19 +18,15 @@ from rich.markdown import Markdown
 # Use centralized import system
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-# Try to import theme with fallback
-try:
-    from apps.cli.src.theme import get_theme
-except ImportError:
-    # Fallback for development
-    def get_theme():
-        return None
+# Simple theme fallback
+def get_theme():
+    return None
 
 class CommandProcessor:
     """Processes commands using modular architecture."""
     
     def __init__(self):
-        self.console = Console(theme=get_theme())
+        self.console = Console()
         self.commands_dir = Path(__file__).parent / "commands"
         self._commands_cache = {}
     

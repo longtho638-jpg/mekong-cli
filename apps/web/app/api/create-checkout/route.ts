@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         : process.env.POLAR_ENTERPRISE_PRODUCT_ID!;
 
     const checkout = await polar.checkouts.create({
-      products: [{ id: productId }],
+      products: [productId],
       successUrl: `${req.headers.get("origin")}/success?checkout_id={CHECKOUT_ID}&email=${email}`,
       customerEmail: email,
       metadata: {
