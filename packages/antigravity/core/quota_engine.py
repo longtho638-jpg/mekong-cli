@@ -470,7 +470,9 @@ class QuotaEngine:
 
     def _get_mock_quota(self) -> List[QuotaModel]:
         """Return full model list matching vscode-antigravity-cockpit."""
-        now = datetime.now()
+        from datetime import timezone
+
+        now = datetime.now(timezone.utc)
         return [
             # Chat sessions
             QuotaModel(
