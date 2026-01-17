@@ -35,7 +35,7 @@ def setup_path() -> None:
 setup_path()
 
 try:
-    from license import LicenseValidator, LicenseTier
+    from core.licensing import LicenseValidator, LicenseTier
 except ImportError:
     logger.error("❌ Critical Error: Could not import 'license' module.")
     logger.error("   Ensure you are running this from the project root or 'scripts/' directory.")
