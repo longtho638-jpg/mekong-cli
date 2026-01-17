@@ -58,7 +58,6 @@ function getRedisClient(): Redis {
       host: process.env.REDIS_HOST || 'localhost',
       port: parseInt(process.env.REDIS_PORT || '6379'),
       password: process.env.REDIS_PASSWORD,
-      retryDelayOnClusterDown: 100,
       maxRetriesPerRequest: 3,
       lazyConnect: true,
       // Enable TLS in production
@@ -66,11 +65,11 @@ function getRedisClient(): Redis {
     })
 
     redisClient.on('error', error => {
-      console.error('Redis connection error:', error)
+      // Error logged via security logger in operations
     })
 
     redisClient.on('connect', () => {
-      console.info('Redis connected successfully')
+      // Connection success logged via security logger in operations
     })
   }
   return redisClient
