@@ -70,7 +70,7 @@ def setup_vibe_cmd(
     tone: str = typer.Option("Bình dân, Chân thành", prompt="🎤 Giọng thương hiệu", help="Phong cách giao tiếp")
 ):
     """🎤 Tùy chỉnh 'linh hồn' AI (Voice & Tone) theo vùng miền."""
-    from cli.config import setup_vibe
+    from cli.commands.vibe import setup_vibe
     setup_vibe(None, location, tone)
 
 # --- Strategy Sub-commands ---
@@ -118,13 +118,13 @@ def ship_cmd():
 @mcp_app.command(name="setup")
 def mcp_setup():
     """🔌 Thiết lập kết nối MCP ban đầu."""
-    from cli.config import setup_mcp
+    from cli.commands.mcp import setup_mcp
     setup_mcp()
 
 @mcp_app.command(name="install")
 def mcp_install(package: str = typer.Argument(..., help="Tên package hoặc URL GitHub")):
     """➕ Cài đặt thêm MCP Server mới."""
-    from cli.config import install_mcp
+    from cli.commands.mcp import install_mcp
     install_mcp(package)
 
 # --- Utility Commands ---

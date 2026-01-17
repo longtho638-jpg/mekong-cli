@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     TEMPLATE_REPO_STARTER: str = "https://github.com/longtho638-jpg/hybrid-agent-template.git"
     TEMPLATE_REPO_PRO: str = "https://github.com/longtho638-jpg/mekong-template-pro.git"
 
+    # --- System Paths ---
+    # Defaults to ~/.agencyos for unified architecture
+    LICENSE_DIR_NAME: str = ".agencyos"
+
     # Pydantic V2 Settings
     model_config = SettingsConfigDict(
         env_file=".env",

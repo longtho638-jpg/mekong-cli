@@ -6,7 +6,7 @@ from rich.panel import Panel
 from core.constants import PROVIDERS_COSTS
 
 try:
-    from license import LicenseValidator, LicenseTier
+    from core.licensing import LicenseValidator, LicenseTier
 except ImportError:
     LicenseValidator = None
     LicenseTier = None
