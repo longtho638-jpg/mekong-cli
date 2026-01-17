@@ -1,0 +1,38 @@
+# Gemini CLI Ignore File
+# Prevents scanning large directories that cause API payload errors
+
+# Package managers
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+coverage/
+
+# IDE & system
+.git/
+.DS_Store
+*.log
+
+# Large data files
+*.sqlite
+*.db
+*.csv
+*.json.bak
+
+# Sensitive files (already in .gitignore but explicit)
+.env
+.env.*
+*.pem
+*.key
+
+# Cache directories
+.cache/
+.npm/
+.yarn/

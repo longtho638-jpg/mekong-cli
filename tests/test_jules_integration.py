@@ -1,5 +1,6 @@
 import unittest
 from unittest import mock
+from unittest.mock import patch, MagicMock
 from antigravity.core.jules_runner import trigger_jules_mission, run_scheduled_maintenance, JULES_MISSIONS
 
 class TestJulesIntegration(unittest.TestCase):
@@ -14,29 +15,25 @@ class TestJulesIntegration(unittest.TestCase):
         result = trigger_jules_mission("unknown_task")
         self.assertFalse(result)
 
-    @mock.patch("antigravity.core.jules_runner.subprocess.run")
+    @patch("subprocess.run")
     def test_run_jules_task_success(self, mock_subprocess):
-        """Test that running a task calls the correct command."""
-        # Setup mock to return success
-        mock_result = mock.Mock()
+        """Test successful execution of a scheduled task."""
+        # Setup mock
+        mock_result = MagicMock()
         mock_result.returncode = 0
+        mock_result.stdout = "Task started"
         mock_subprocess.return_value = mock_result
 
-        # Run the task
-        result = trigger_jules_mission("cleanup", dry_run=False)
+        # Execute
+        result = trigger_jules_mission("cleanup")
 
-        # Assertions
+        # Verify
         self.assertTrue(result)
-
-        expected_prompt = JULES_MISSIONS["cleanup"]["prompt"]
-        expected_cmd = f'gemini -p "/jules {expected_prompt}"'
-
         mock_subprocess.assert_called_with(
-            expected_cmd,
-            shell=True,
+            ["gemini", "-p", "/jules remove all unused imports, dead code, and console.log statements"],
             capture_output=True,
             text=True,
-            timeout=180 # New timeout is 180
+            timeout=180
         )
 
     @mock.patch("antigravity.core.jules_runner.trigger_jules_mission")

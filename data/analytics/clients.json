@@ -1,0 +1,52 @@
+{
+  "CLI-0001": {
+    "client_id": "CLI-0001",
+    "client_name": "Acme Corp",
+    "total_revenue": 15000.0,
+    "projects_count": 3,
+    "avg_project_value": 5000.0,
+    "lifetime_value": 37500.0,
+    "months_active": 16,
+    "health_score": 84.82150571510562
+  },
+  "CLI-0002": {
+    "client_id": "CLI-0002",
+    "client_name": "TechStart Inc",
+    "total_revenue": 8500.0,
+    "projects_count": 2,
+    "avg_project_value": 4250.0,
+    "lifetime_value": 21250.0,
+    "months_active": 16,
+    "health_score": 72.40323591666025
+  },
+  "CLI-0003": {
+    "client_id": "CLI-0003",
+    "client_name": "GrowthLab",
+    "total_revenue": 22000.0,
+    "projects_count": 5,
+    "avg_project_value": 4400.0,
+    "lifetime_value": 55000.0,
+    "months_active": 17,
+    "health_score": 83.13364542739039
+  },
+  "CLI-0004": {
+    "client_id": "CLI-0004",
+    "client_name": "LocalBiz",
+    "total_revenue": 4500.0,
+    "projects_count": 1,
+    "avg_project_value": 4500.0,
+    "lifetime_value": 11250.0,
+    "months_active": 9,
+    "health_score": 80.83630087497973
+  },
+  "CLI-0005": {
+    "client_id": "CLI-0005",
+    "client_name": "ScaleUp Co",
+    "total_revenue": 12000.0,
+    "projects_count": 2,
+    "avg_project_value": 6000.0,
+    "lifetime_value": 30000.0,
+    "months_active": 15,
+    "health_score": 86.10070142118357
+  }
+}

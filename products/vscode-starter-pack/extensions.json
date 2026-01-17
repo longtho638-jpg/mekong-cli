@@ -1,0 +1,27 @@
+{
+  "recommendations": [
+    // === CODING ESSENTIALS ===
+    "github.copilot",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+
+    // === THEMES & ICONS ===
+    "zhuangtongfa.material-theme",
+    "pkief.material-icon-theme",
+
+    // === GIT ===
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // === PRODUCTIVITY ===
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "usernamehw.errorlens",
+    "wayou.vscode-todo-highlight",
+
+    // === LANGUAGE SPECIFIC ===
+    "ms-python.python",
+    "ms-python.vscode-pylance"
+  ]
+}

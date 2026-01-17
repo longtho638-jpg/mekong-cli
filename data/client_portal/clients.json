@@ -1,0 +1,26 @@
+{
+  "CLI-E6C6F156": {
+    "id": "CLI-E6C6F156",
+    "name": "John Smith",
+    "email": "john@example.com",
+    "company": "Acme Corp",
+    "status": "active",
+    "created_at": "2026-01-17T21:14:29.840607",
+    "portal_code": "1F8D1D48AE0E",
+    "notes": "",
+    "monthly_retainer": 2000.0,
+    "total_spent": 2500.0
+  },
+  "CLI-4BC7CF50": {
+    "id": "CLI-4BC7CF50",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "company": "Test Corp",
+    "status": "active",
+    "created_at": "2026-01-17T21:14:29.841732",
+    "portal_code": "2E7FD15F3AED",
+    "notes": "",
+    "monthly_retainer": 2000.0,
+    "total_spent": 0.0
+  }
+}

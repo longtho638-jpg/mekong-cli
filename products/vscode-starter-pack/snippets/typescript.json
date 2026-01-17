@@ -1,0 +1,32 @@
+{
+  "TypeScript Interface": {
+    "prefix": "int",
+    "body": ["interface ${1:Name} {", "  $0", "}"]
+  },
+  "TypeScript Type": {
+    "prefix": "typ",
+    "body": ["type ${1:Name} = ${0}"]
+  },
+  "Async Function": {
+    "prefix": "afn",
+    "body": [
+      "async function ${1:name}(${2:params}): Promise<${3:void}> {",
+      "  $0",
+      "}"
+    ]
+  },
+  "Arrow Function": {
+    "prefix": "af",
+    "body": ["const ${1:name} = (${2:params}) => {", "  $0", "}"]
+  },
+  "Try Catch": {
+    "prefix": "tc",
+    "body": [
+      "try {",
+      "  $0",
+      "} catch (error) {",
+      "  console.error(error)",
+      "}"
+    ]
+  }
+}

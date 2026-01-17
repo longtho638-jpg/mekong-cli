@@ -1,0 +1,143 @@
+{
+  "run_id": "20260117_180215",
+  "timestamp": "2026-01-17T18:02:21.672364",
+  "results": {
+    "1": {
+      "phase": "Codebase Analysis",
+      "success": true,
+      "results": [
+        {
+          "success": true,
+          "data": {
+            "success": true,
+            "data": {
+              "path": ".",
+              "depth": 5,
+              "stats": {
+                "files": 150,
+                "directories": 25,
+                "lines_of_code": 15000,
+                "languages": [
+                  "Python",
+                  "TypeScript",
+                  "JavaScript"
+                ]
+              },
+              "health": {
+                "test_coverage": 75,
+                "lint_score": 92,
+                "complexity": "moderate"
+              }
+            },
+            "message": "Codebase analysis complete",
+            "timestamp": "2026-01-17T18:02:15.994854"
+          },
+          "status_code": 200
+        },
+        {
+          "success": true,
+          "output": "    2428\n",
+          "returncode": 0
+        },
+        {
+          "success": true,
+          "output": "    3129 total\n",
+          "returncode": 0
+        }
+      ]
+    },
+    "2": {
+      "phase": "Test Suite Verification",
+      "success": true,
+      "results": [
+        {
+          "success": true,
+          "output": "backend/tests/test_scout.py::TestIntelBrief::test_intel_brief_creation PASSED [ 34%]\nbackend/tests/test_scout.py::TestScoutAgent::test_agent_init PASSED      [ 38%]\nbackend/tests/test_scout.py::TestScoutAgent::test_get_trending PASSED    [ 42%]\nbackend/tests/test_scout.py::TestScoutAgent::test_get_trending_max PASSED [ 46%]\nbackend/tests/test_scout.py::TestScoutAgent::test_research_returns_intel_brief PASSED [ 50%]\nbackend/tests/test_scout.py::TestScoutAgent::test_research_has_trends PASSED [ 53%]\nbackend/tests/test_scout.py::TestScoutAgent::test_research_has_content_angles PASSED [ 57%]\nbackend/tests/test_scout.py::TestScoutAgent::test_generate_ideas PASSED  [ 61%]\nbackend/tests/test_scout.py::TestScoutAgent::test_generate_ideas_unknown_pillar PASSED [ 65%]\nbackend/tests/test_scout.py::TestScoutAgentWinWinWin::test_research_provides_actionable_intelligence PASSED [ 69%]\nbackend/tests/test_sdrops.py::TestLeadQualifierAgent::test_agent_initialization PASSED [ 73%]\nbackend/tests/test_sdrops.py::TestLeadQualifierAgent::test_add_lead_creates_lead PASSED [ 76%]\nbackend/tests/test_sdrops.py::TestLeadQualifierAgent::test_score_bant_returns_score PASSED [ 80%]\nbackend/tests/test_sdrops.py::TestLeadQualifierAgent::test_qualification_status_assignment PASSED [ 84%]\nbackend/tests/test_sdrops.py::TestMeetingBookerAgent::test_agent_initialization PASSED [ 88%]\nbackend/tests/test_sdrops.py::TestMeetingBookerAgent::test_book_returns_meeting PASSED [ 92%]\nbackend/tests/test_sdrops.py::TestMeetingBookerAgent::test_meeting_has_required_fields PASSED [ 96%]\nbackend/tests/test_sdrops.py::TestSDROpsWinWinWin::test_sdr_pipeline_benefits_all PASSED [100%]\n\n============================== 26 passed in 0.05s ==============================\n",
+          "returncode": 0
+        }
+      ]
+    },
+    "3": {
+      "phase": "Import Optimization",
+      "success": true,
+      "results": [
+        {
+          "success": true,
+          "output": "backend/api/routers/crm.py:            from core import CRM\nbackend/api/routers/franchise.py:    from core import FranchiseSystem\nbackend/api/routers/scheduler.py:    from core import Scheduler\n",
+          "returncode": 0
+        }
+      ]
+    },
+    "4": {
+      "phase": "Customer Funnel Setup",
+      "success": true,
+      "results": [
+        {
+          "success": true,
+          "data": {
+            "success": true,
+            "data": {
+              "tools": [
+                {
+                  "name": "antigravity_status",
+                  "description": "Get Antigravity system status",
+                  "category": "system"
+                },
+                {
+                  "name": "get_agency_dna",
+                  "description": "Get agency identity and branding",
+                  "category": "core"
+                },
+                {
+                  "name": "get_revenue_metrics",
+                  "description": "Get revenue tracking metrics",
+                  "category": "business"
+                },
+                {
+                  "name": "get_vc_score",
+                  "description": "Get VC readiness score",
+                  "category": "business"
+                },
+                {
+                  "name": "generate_content",
+                  "description": "Generate marketing content",
+                  "category": "content"
+                },
+                {
+                  "name": "add_lead",
+                  "description": "Add lead to CRM",
+                  "category": "crm"
+                },
+                {
+                  "name": "win_win_win_check",
+                  "description": "Validate WIN-WIN-WIN framework",
+                  "category": "strategy"
+                }
+              ],
+              "count": 7
+            },
+            "message": "MCP tools listed",
+            "timestamp": "2026-01-17T18:02:21.595507"
+          },
+          "status_code": 200
+        },
+        {
+          "success": true,
+          "output": "{\"status\":\"ready\",\"endpoint\":\"/api/webhooks/gumroad\",\"customers_count\":0,\"purchases_count\":0}",
+          "returncode": 0
+        }
+      ]
+    },
+    "5": {
+      "phase": "Revenue Dashboard",
+      "success": true,
+      "results": [
+        {
+          "success": true,
+          "output": "\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u2551            \ud83d\udcb0 REVENUE ENGINE - PERFORMANCE DASHBOARD           \u2551\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n  \ud83d\udcb8 REVENUE: MRR: $0 | ARR: $0\n  \ud83d\udcc2 INVOICES: Paid: 0 | Outstanding: $0\n\n  \ud83c\udfaf 2026 GOAL: [\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 0.0%\n     \u2514\u2500 Gap to $1M: $1,000,000\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n",
+          "returncode": 0
+        }
+      ]
+    }
+  }
+}

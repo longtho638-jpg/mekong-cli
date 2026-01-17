@@ -85,7 +85,7 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
         # Timeout is long because Jules might take time to initialize the task
         # Security: Use argument list to prevent command injection
         result = subprocess.run(
-            ["gemini", "-p", f"/jules {mission_name}"],
+            ["gemini", "-p", f"/jules {mission['prompt']}"],
             capture_output=True,
             text=True,
             timeout=180
