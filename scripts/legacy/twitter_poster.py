@@ -79,7 +79,7 @@ def post_via_api(tweets):
         print("❌ tweepy not installed. Run: pip install tweepy")
         return False
 
-    bearer_token = os.environ.get("TWITTER_BEARER_TOKEN")
+    os.environ.get("TWITTER_BEARER_TOKEN")
     api_key = os.environ.get("TWITTER_API_KEY")
     api_secret = os.environ.get("TWITTER_API_SECRET")
     access_token = os.environ.get("TWITTER_ACCESS_TOKEN")
