@@ -1,130 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { PLAN_LIMITS } from "@/lib/polar/client";
-import crypto from "crypto";
+import { createClient } from "@supabase/supabase-js";
 
-// Verify webhook signature using HMAC
-function verifyWebhookSignature(
-  payload: string,
-  signature: string | null,
-  secret: string,
-): boolean {
-  if (!signature || !secret) return false;
-
-  try {
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(payload, "utf8")
-      .digest("hex");
-
-    return crypto.timingSafeEqual(
-      Buffer.from(signature, "hex"),
-      Buffer.from(expectedSignature, "hex"),
-    );
-  } catch (error) {
-    console.error("Signature verification error:", error);
-    return false;
-  }
-}
-
-// Polar webhook handler
+// PayPal webhook handler
+// POST /api/billing/webhook
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.text(); // Get raw body for signature verification
-    const signature = request.headers.get("polar-signature");
+    const body = await request.json();
+    const eventType = body.event_type;
 
-    // Verify webhook signature
-    const webhookSecret = process.env.POLAR_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      console.error("POLAR_WEBHOOK_SECRET not configured");
-      return NextResponse.json(
-        { error: "Webhook not properly configured" },
-        { status: 500 },
-      );
-    }
+    // Initialize Supabase admin client
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
 
-    const isValid = verifyWebhookSignature(body, signature, webhookSecret);
-    if (!isValid) {
-      console.error("Invalid webhook signature");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-    }
+    switch (eventType) {
+      case "PAYMENT.CAPTURE.COMPLETED":
+        // Payment was successful
+        const captureId = body.resource?.id;
+        const payerEmail = body.resource?.payer?.email_address;
+        const amount = body.resource?.amount?.value;
 
-    const data = JSON.parse(body);
+        console.log(
+          `[PayPal Webhook] Payment captured: ${captureId} - $${amount} from ${payerEmail}`,
+        );
 
-    const supabase = await createClient();
-    const event = body.type;
-    const data = body.data;
-
-    switch (event) {
-      case "subscription.created":
-      case "subscription.updated": {
-        const orgId = data.metadata?.organization_id;
-        if (!orgId) break;
-
-        // Determine plan from product
-        let plan = "starter";
-        if (data.product?.name?.toLowerCase().includes("pro")) plan = "pro";
-        if (data.product?.name?.toLowerCase().includes("agency"))
-          plan = "agency";
-
-        const limits = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS];
-
-        await supabase
-          .from("organizations")
-          .update({
-            plan,
-            polar_subscription_id: data.id,
-            polar_customer_id: data.customer_id,
-            newsletters_limit: limits.newsletters,
-            subscribers_limit: limits.subscribers,
-            emails_limit: limits.emails_per_month,
-          })
-          .eq("id", orgId);
-
+        // Could update organization here if needed
         break;
-      }
 
-      case "subscription.canceled":
-      case "subscription.revoked": {
-        const orgId = data.metadata?.organization_id;
-        if (!orgId) break;
+      case "PAYMENT.CAPTURE.DENIED":
+      case "PAYMENT.CAPTURE.REFUNDED":
+        // Payment failed or refunded
+        const failedOrderId = body.resource?.id;
+        console.log(`[PayPal Webhook] Payment ${eventType}: ${failedOrderId}`);
 
-        // Downgrade to free
-        const limits = PLAN_LIMITS.free;
+        // Could downgrade subscription here
+        break;
 
+      case "BILLING.SUBSCRIPTION.CANCELLED":
+        // Subscription cancelled
+        const subscriptionId = body.resource?.id;
+        console.log(
+          `[PayPal Webhook] Subscription cancelled: ${subscriptionId}`,
+        );
+
+        // Downgrade to free plan
         await supabase
           .from("organizations")
           .update({
             plan: "free",
-            polar_subscription_id: null,
-            newsletters_limit: limits.newsletters,
-            subscribers_limit: limits.subscribers,
-            emails_limit: limits.emails_per_month,
+            updated_at: new Date().toISOString(),
           })
-          .eq("id", orgId);
-
+          .eq("paypal_order_id", subscriptionId);
         break;
-      }
-
-      case "checkout.created": {
-        // User started checkout - tracked silently
-        break;
-      }
-
-      case "checkout.updated": {
-        // Checkout completed or failed - subscription webhook handles the update
-        break;
-      }
 
       default:
-      // Unhandled events are ignored silently
+        console.log(`[PayPal Webhook] Unhandled event: ${eventType}`);
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("[PayPal Webhook] Error:", error);
     return NextResponse.json(
-      { error: "Webhook processing failed" },
+      { error: "Webhook handler failed" },
       { status: 500 },
     );
   }
