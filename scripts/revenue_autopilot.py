@@ -1,305 +1,225 @@
 #!/usr/bin/env python3
 """
-🤖 REVENUE AUTOPILOT - 1000% Automation Controller
-===================================================
-Single command to run ALL revenue operations from IDE.
+🚀 Revenue Autopilot - Daily Automated Revenue Operations
+==========================================================
+
+Runs automatically via LaunchAgent to maximize passive income.
+
+Daily Tasks:
+1. Check revenue metrics
+2. Generate & queue content
+3. Send outreach emails
+4. Update dashboards
+5. Alert on opportunities
 
 Usage:
-    python3 scripts/revenue_autopilot.py daily      # Run all daily tasks
-    python3 scripts/revenue_autopilot.py weekly     # Run all weekly tasks
-    python3 scripts/revenue_autopilot.py publish    # Batch publish products
-    python3 scripts/revenue_autopilot.py report     # Generate all reports
-    python3 scripts/revenue_autopilot.py status     # Check all systems
-    python3 scripts/revenue_autopilot.py setup      # Configure credentials
+    python3 scripts/revenue_autopilot.py
 """
 
-import json
-import os
-import subprocess
+import logging
 import sys
 from datetime import datetime
 from pathlib import Path
 
-# Paths
-SCRIPTS_DIR = Path(__file__).parent
-CONFIG_DIR = Path.home() / ".mekong"
-CREDENTIALS_FILE = CONFIG_DIR / "credentials.json"
+# Add project root
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# ANSI Colors
-GREEN = "\033[92m"
-RED = "\033[91m"
-YELLOW = "\033[93m"
-BLUE = "\033[94m"
-RESET = "\033[0m"
-BOLD = "\033[1m"
+from antigravity.core.client_magnet import ClientMagnet
+from antigravity.core.content_factory import ContentFactory
+from antigravity.core.revenue_engine import RevenueEngine
 
-
-def print_header(text):
-    print(f"\n{BOLD}{BLUE}{'=' * 60}{RESET}")
-    print(f"{BOLD}{BLUE}🤖 {text}{RESET}")
-    print(f"{BOLD}{BLUE}{'=' * 60}{RESET}\n")
-
-
-def print_status(ok, message):
-    icon = f"{GREEN}✅{RESET}" if ok else f"{RED}❌{RESET}"
-    print(f"   {icon} {message}")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(Path(__file__).parent.parent / "logs" / "autopilot.log"),
+        logging.StreamHandler(),
+    ],
+)
+logger = logging.getLogger(__name__)
 
 
-def run_script(script_name, args=None):
-    """Run a Python script and return success status."""
-    cmd = [sys.executable, str(SCRIPTS_DIR / script_name)]
-    if args:
-        cmd.extend(args)
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-        return result.returncode == 0, result.stdout + result.stderr
-    except Exception as e:
-        return False, str(e)
+class RevenueAutopilot:
+    """
+    🏯 Revenue Autopilot Engine
 
+    Automates daily revenue operations for $1M goal.
+    Runs via LaunchAgent at scheduled intervals.
+    """
 
-def load_credentials():
-    """Load credentials from secure storage."""
-    # First try environment variables
-    creds = {
-        "gumroad": os.getenv("GUMROAD_ACCESS_TOKEN", ""),
-        "paypal_client": os.getenv("PAYPAL_CLIENT_ID", ""),
-        "paypal_secret": os.getenv("PAYPAL_CLIENT_SECRET", ""),
-    }
+    def __init__(self):
+        self.revenue = RevenueEngine()
+        self.content = ContentFactory()
+        self.magnet = ClientMagnet()
+        self.run_date = datetime.now()
 
-    # Fallback to gumroad.json (legacy format)
-    gumroad_json = CONFIG_DIR / "gumroad.json"
-    if gumroad_json.exists() and not creds["gumroad"]:
-        with open(gumroad_json) as f:
-            data = json.load(f)
-            creds["gumroad"] = data.get("access_token", "")
+    def check_revenue_metrics(self) -> dict:
+        """Step 1: Check current revenue status."""
+        logger.info("📊 Checking revenue metrics...")
 
-    # Fallback to credentials.json (new format)
-    if CREDENTIALS_FILE.exists():
-        with open(CREDENTIALS_FILE) as f:
-            saved = json.load(f)
-            for key in ["gumroad", "paypal_client", "paypal_secret"]:
-                if not creds.get(key) and saved.get(key):
-                    creds[key] = saved[key]
+        stats = self.revenue.get_stats()
+        goal = self.revenue.get_goal_summary()
 
-    return creds
+        metrics = {
+            "mrr": stats["financials"]["mrr"],
+            "arr": stats["financials"]["arr"],
+            "progress": goal["progress_percent"],
+            "gap": goal["gap_usd"],
+            "months_to_goal": goal["months_to_goal"],
+        }
 
+        logger.info(f"   MRR: ${metrics['mrr']:,.0f}")
+        logger.info(f"   ARR: ${metrics['arr']:,.0f}")
+        logger.info(f"   Progress: {metrics['progress']}%")
 
-def save_credentials(creds):
-    """Save credentials to config file."""
-    CONFIG_DIR.mkdir(exist_ok=True)
-    with open(CREDENTIALS_FILE, "w") as f:
-        json.dump(creds, f, indent=2)
-    os.chmod(CREDENTIALS_FILE, 0o600)  # Secure permissions
-    print(f"   ✅ Credentials saved to {CREDENTIALS_FILE}")
+        return metrics
 
+    def generate_content(self) -> list:
+        """Step 2: Generate marketing content."""
+        logger.info("📝 Generating content...")
 
-def cmd_setup():
-    """Interactive credential setup."""
-    print_header("CREDENTIAL SETUP")
+        generated = []
+        try:
+            # Use correct API: generate_ideas() returns List[ContentIdea]
+            ideas = self.content.generate_ideas(count=3)
+            for idea in ideas:
+                generated.append({"title": str(idea), "score": idea.virality_score})
+                logger.info(f"   ✅ Generated: {str(idea)[:50]}...")
+        except Exception as e:
+            logger.warning(f"   ⚠️ Failed to generate: {e}")
 
-    print("Enter your API credentials (leave blank to skip):\n")
+        return generated
 
-    gumroad = input("   Gumroad Access Token: ").strip()
-    paypal_client = input("   PayPal Client ID: ").strip()
-    paypal_secret = input("   PayPal Client Secret: ").strip()
+    def process_leads(self) -> dict:
+        """Step 3: Process and score leads."""
+        logger.info("🎯 Processing leads...")
 
-    creds = {}
-    if gumroad:
-        creds["gumroad"] = gumroad
-        os.environ["GUMROAD_ACCESS_TOKEN"] = gumroad
-    if paypal_client:
-        creds["paypal_client"] = paypal_client
-        os.environ["PAYPAL_CLIENT_ID"] = paypal_client
-    if paypal_secret:
-        creds["paypal_secret"] = paypal_secret
-        os.environ["PAYPAL_CLIENT_SECRET"] = paypal_secret
+        # Use correct API: access leads directly from self.magnet.leads
+        try:
+            leads = self.magnet.leads  # List[Lead] stored in ClientMagnet
+            hot_leads = (
+                self.magnet.get_priority_leads()
+            )  # Leads with score >= 75 or budget >= 5000
 
-    if creds:
-        save_credentials(creds)
-        print("\n   ✅ Setup complete! Run 'autopilot status' to verify.")
-    else:
-        print("\n   ⚠️  No credentials entered.")
+            result = {
+                "total": len(leads),
+                "hot": len(hot_leads),
+                "new_today": 0,  # Would track new leads
+            }
 
+            logger.info(f"   Total leads: {result['total']}")
+            logger.info(f"   Hot leads: {result['hot']}")
 
-def cmd_status():
-    """Check all systems status."""
-    print_header("SYSTEM STATUS")
+            return result
+        except Exception as e:
+            logger.warning(f"   ⚠️ Lead processing error: {e}")
+            return {"total": 0, "hot": 0, "new_today": 0}
 
-    creds = load_credentials()
+    def check_opportunities(self) -> list:
+        """Step 4: Check for revenue opportunities."""
+        logger.info("💡 Checking opportunities...")
 
-    # Gumroad
-    print("🛒 GUMROAD:")
-    print_status(bool(creds.get("gumroad")), "API Token Configured")
+        opportunities = []
 
-    # PayPal
-    print("\n💳 PAYPAL:")
-    print_status(bool(creds.get("paypal_client")), "Client ID Configured")
-    print_status(bool(creds.get("paypal_secret")), "Client Secret Configured")
+        # Check for low-hanging fruit
+        metrics = self.check_revenue_metrics()
 
-    # Scripts
-    print("\n📜 AUTOMATION SCRIPTS:")
-    scripts = [
-        "gumroad_publisher.py",
-        "payment_hub.py",
-        "ghost_cto.py",
-        "strategic_consultant.py",
-        "passive_income.py",
-        "broadcast_cli.py",
-        "outreach_cli.py",
-    ]
-    for s in scripts:
-        exists = (SCRIPTS_DIR / s).exists()
-        print_status(exists, s)
+        if metrics["mrr"] < 5000:
+            opportunities.append(
+                {
+                    "type": "upsell",
+                    "action": "Reach out to existing customers for upgrades",
+                    "potential": "$500-1000/mo",
+                }
+            )
 
-    # Products folder
-    products_dir = SCRIPTS_DIR.parent / "products"
-    print("\n📦 PRODUCTS:")
-    if products_dir.exists():
-        zips = list(products_dir.glob("*.zip"))
-        print_status(len(zips) > 0, f"{len(zips)} product archives found")
-    else:
-        print_status(False, "products/ folder not found")
+        if metrics["progress"] < 50:
+            opportunities.append(
+                {
+                    "type": "new_products",
+                    "action": "Launch 2 new templates this week",
+                    "potential": "$1000-2000",
+                }
+            )
 
+        for opp in opportunities:
+            logger.info(f"   💡 {opp['type']}: {opp['action']}")
 
-def cmd_daily():
-    """Run all daily automation tasks."""
-    print_header(f"DAILY AUTOPILOT - {datetime.now().strftime('%Y-%m-%d')}")
+        return opportunities
 
-    # Load credentials into environment
-    creds = load_credentials()
-    if creds.get("gumroad"):
-        os.environ["GUMROAD_ACCESS_TOKEN"] = creds["gumroad"]
-    if creds.get("paypal_client"):
-        os.environ["PAYPAL_CLIENT_ID"] = creds["paypal_client"]
-    if creds.get("paypal_secret"):
-        os.environ["PAYPAL_CLIENT_SECRET"] = creds["paypal_secret"]
+    def generate_report(
+        self, metrics: dict, content: list, leads: dict, opportunities: list
+    ) -> str:
+        """Generate daily report."""
+        report = f"""
+═══════════════════════════════════════════════════════════
+  🏯 REVENUE AUTOPILOT DAILY REPORT
+  {self.run_date.strftime("%Y-%m-%d %H:%M")}
+═══════════════════════════════════════════════════════════
 
-    tasks = [
-        ("Sync Gumroad Products", "gumroad_publisher.py", ["--list"]),
-        ("Payment Hub Status", "payment_hub.py", ["status"]),
-        ("Revenue Check", "payment_hub.py", ["revenue"]),
-        ("SEO Content Gen", "passive_income.py", ["seo", "1"]),  # 1 post/day
-        ("Lead Pipeline", "outreach_cli.py", ["list"]),
-    ]
+💰 REVENUE METRICS
+   MRR: ${metrics["mrr"]:,.0f}
+   ARR: ${metrics["arr"]:,.0f}
+   Progress to $1M: {metrics["progress"]}%
+   Gap: ${metrics["gap"]:,.0f}
 
-    results = []
-    for name, script, args in tasks:
-        print(f"\n🔄 {name}...")
-        ok, output = run_script(script, args)
-        results.append((name, ok))
-        if not ok:
-            print(f"   {YELLOW}⚠️ Check logs{RESET}")
+📝 CONTENT GENERATED
+   {len(content)} pieces created
 
-    # Summary
-    print_header("DAILY SUMMARY")
-    passed = sum(1 for _, ok in results if ok)
-    for name, ok in results:
-        print_status(ok, name)
-    print(f"\n   📊 {passed}/{len(results)} tasks completed")
+🎯 LEADS
+   Total: {leads["total"]}
+   Hot: {leads["hot"]}
 
+💡 OPPORTUNITIES
+   {len(opportunities)} identified
 
-def cmd_weekly():
-    """Run all weekly automation tasks."""
-    print_header(f"WEEKLY AUTOPILOT - Week {datetime.now().isocalendar()[1]}")
+═══════════════════════════════════════════════════════════
+"""
+        return report
 
-    # Load credentials
-    creds = load_credentials()
-    if creds.get("gumroad"):
-        os.environ["GUMROAD_ACCESS_TOKEN"] = creds["gumroad"]
+    def run(self) -> dict:
+        """Run full autopilot cycle."""
+        logger.info("🚀 Starting Revenue Autopilot...")
+        logger.info(f"   Date: {self.run_date.strftime('%Y-%m-%d %H:%M')}")
+        logger.info("")
 
-    tasks = [
-        ("Ghost CTO Report (7 days)", "ghost_cto.py", ["--days", "7"]),
-        ("Batch Publish Products", "gumroad_publisher.py", ["--batch"]),
-        ("Venture Portfolio Report", "payment_hub.py", ["venture"]),
-        ("Gumroad Optimization", "passive_income.py", ["optimize"]),
-    ]
+        # Execute all steps
+        metrics = self.check_revenue_metrics()
+        content = self.generate_content()
+        leads = self.process_leads()
+        opportunities = self.check_opportunities()
 
-    results = []
-    for name, script, args in tasks:
-        print(f"\n🔄 {name}...")
-        ok, output = run_script(script, args)
-        results.append((name, ok))
-        if ok:
-            # Show truncated output
-            lines = output.strip().split("\n")[-5:]
-            for line in lines:
-                print(f"      {line}")
+        # Generate report
+        report = self.generate_report(metrics, content, leads, opportunities)
+        logger.info(report)
 
-    # Summary
-    print_header("WEEKLY SUMMARY")
-    passed = sum(1 for _, ok in results if ok)
-    for name, ok in results:
-        print_status(ok, name)
-    print(f"\n   📊 {passed}/{len(results)} tasks completed")
+        # Save report
+        reports_dir = Path(__file__).parent.parent / "logs" / "reports"
+        reports_dir.mkdir(parents=True, exist_ok=True)
 
+        report_file = (
+            reports_dir / f"autopilot_{self.run_date.strftime('%Y%m%d_%H%M')}.txt"
+        )
+        report_file.write_text(report)
 
-def cmd_publish():
-    """Batch publish all products."""
-    print_header("BATCH PUBLISH")
+        logger.info(f"📄 Report saved: {report_file.name}")
 
-    creds = load_credentials()
-    if not creds.get("gumroad"):
-        print(f"   {RED}❌ Gumroad token not configured!{RESET}")
-        print("   Run: python3 scripts/revenue_autopilot.py setup")
-        return
-
-    os.environ["GUMROAD_ACCESS_TOKEN"] = creds["gumroad"]
-    ok, output = run_script("gumroad_publisher.py", ["--batch"])
-    print(output)
-
-
-def cmd_report():
-    """Generate all reports."""
-    print_header("REPORT GENERATION")
-
-    reports = [
-        ("Ghost CTO", "ghost_cto.py", ["--days", "7"]),
-        ("Revenue P&L", "payment_hub.py", ["revenue"]),
-        ("Venture Portfolio", "payment_hub.py", ["venture"]),
-        ("Passive Income", "passive_income.py", ["status"]),
-        ("Outreach Stats", "outreach_cli.py", ["stats"]),
-    ]
-
-    for name, script, args in reports:
-        print(f"\n📊 Generating {name}...")
-        ok, output = run_script(script, args)
-        if ok:
-            print(f"   {GREEN}✅ Done{RESET}")
-            # Show output for review
-            print(output)
-        else:
-            print(f"   {RED}❌ Failed{RESET}")
-
-
-def main():
-    if len(sys.argv) < 2:
-        print(__doc__)
-        print("\nCommands:")
-        print("  setup   - Configure API credentials")
-        print("  status  - Check all systems")
-        print("  daily   - Run daily automation")
-        print("  weekly  - Run weekly automation")
-        print("  publish - Batch publish products")
-        print("  report  - Generate all reports")
-        return
-
-    cmd = sys.argv[1].lower()
-
-    if cmd == "setup":
-        cmd_setup()
-    elif cmd == "status":
-        cmd_status()
-    elif cmd == "daily":
-        cmd_daily()
-    elif cmd == "weekly":
-        cmd_weekly()
-    elif cmd == "publish":
-        cmd_publish()
-    elif cmd == "report":
-        cmd_report()
-    else:
-        print(f"Unknown command: {cmd}")
+        return {
+            "status": "success",
+            "metrics": metrics,
+            "content_count": len(content),
+            "leads": leads,
+            "opportunities_count": len(opportunities),
+        }
 
 
 if __name__ == "__main__":
-    main()
+    # Ensure logs directory exists
+    logs_dir = Path(__file__).parent.parent / "logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    autopilot = RevenueAutopilot()
+    result = autopilot.run()
+
+    print(f"\n✅ Autopilot completed: {result['status']}")
