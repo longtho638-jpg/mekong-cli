@@ -545,6 +545,192 @@ class PayPalAIAgent:
             print(f"\n✅ Subscription {subscription_id} cancelled!\n")
         return result
 
+    # ========== WEBHOOKS MANAGEMENT ==========
+
+    # All supported webhook events
+    WEBHOOK_EVENTS = [
+        # Payments
+        "PAYMENT.CAPTURE.COMPLETED",
+        "PAYMENT.CAPTURE.DENIED",
+        "PAYMENT.CAPTURE.REFUNDED",
+        "PAYMENT.CAPTURE.REVERSED",
+        "PAYMENT.SALE.COMPLETED",
+        "PAYMENT.SALE.REFUNDED",
+        # Orders
+        "CHECKOUT.ORDER.COMPLETED",
+        "CHECKOUT.ORDER.APPROVED",
+        # Subscriptions
+        "BILLING.SUBSCRIPTION.CREATED",
+        "BILLING.SUBSCRIPTION.ACTIVATED",
+        "BILLING.SUBSCRIPTION.CANCELLED",
+        "BILLING.SUBSCRIPTION.SUSPENDED",
+        "BILLING.SUBSCRIPTION.PAYMENT.FAILED",
+        # Plans
+        "BILLING.PLAN.CREATED",
+        "BILLING.PLAN.UPDATED",
+        "BILLING.PLAN.ACTIVATED",
+        # Disputes
+        "CUSTOMER.DISPUTE.CREATED",
+        "CUSTOMER.DISPUTE.RESOLVED",
+        # Invoices
+        "INVOICING.INVOICE.PAID",
+        "INVOICING.INVOICE.CANCELLED",
+        "INVOICING.INVOICE.CREATED",
+        # Catalog
+        "CATALOG.PRODUCT.CREATED",
+        "CATALOG.PRODUCT.UPDATED",
+    ]
+
+    def webhook_list(self):
+        """List all configured webhooks."""
+        result = self._api("GET", "/v1/notifications/webhooks")
+
+        print("\n🔔 WEBHOOKS")
+        print("=" * 70)
+
+        if not result or not result.get("webhooks"):
+            print("  ℹ️  No webhooks configured")
+        else:
+            for wh in result.get("webhooks", []):
+                wh_id = wh.get("id", "N/A")
+                url = wh.get("url", "N/A")
+                events_count = len(wh.get("event_types", []))
+                print(f"  🔔 {wh_id}")
+                print(f"     URL: {url}")
+                print(f"     Events: {events_count}")
+                print()
+
+        print("=" * 70 + "\n")
+        return result
+
+    def webhook_create(self, url: str, events: list = None):
+        """
+        Create a new webhook.
+
+        Args:
+            url: Webhook endpoint URL (must be HTTPS)
+            events: List of event types to subscribe, or None for all
+        """
+        if events is None:
+            events = self.WEBHOOK_EVENTS
+
+        event_types = [{"name": e} for e in events]
+
+        data = {
+            "url": url,
+            "event_types": event_types,
+        }
+
+        result = self._api("POST", "/v1/notifications/webhooks", data)
+
+        if result:
+            webhook_id = result.get("id")
+            print("\n✅ Webhook Created!")
+            print(f"   ID: {webhook_id}")
+            print(f"   URL: {url}")
+            print(f"   Events: {len(events)}")
+            print()
+            print("📋 Add to .env:")
+            print(f"   PAYPAL_WEBHOOK_ID={webhook_id}")
+            print()
+
+            # Auto-append to .env if it exists
+            env_file = Path(".env")
+            if env_file.exists():
+                content = env_file.read_text()
+                if "PAYPAL_WEBHOOK_ID" not in content:
+                    with open(env_file, "a") as f:
+                        f.write(
+                            f"\n# PayPal Webhook (auto-created)\nPAYPAL_WEBHOOK_ID={webhook_id}\n"
+                        )
+                    print("✅ Automatically added to .env!\n")
+                else:
+                    print("⚠️ PAYPAL_WEBHOOK_ID already exists in .env\n")
+
+        return result
+
+    def webhook_get(self, webhook_id: str):
+        """Get webhook details."""
+        result = self._api("GET", f"/v1/notifications/webhooks/{webhook_id}")
+
+        if result:
+            print(f"\n🔔 Webhook: {webhook_id}")
+            print(f"   URL: {result.get('url')}")
+            print("   Events:")
+            for event in result.get("event_types", []):
+                print(f"     • {event.get('name')}")
+            print()
+
+        return result
+
+    def webhook_delete(self, webhook_id: str):
+        """Delete a webhook."""
+        result = self._api("DELETE", f"/v1/notifications/webhooks/{webhook_id}")
+
+        if result:
+            print(f"\n✅ Webhook {webhook_id} deleted!\n")
+
+        return result
+
+    def webhook_setup(self, base_url: str = None):
+        """
+        One-command webhook setup.
+        Creates webhook with all events and saves ID to .env.
+
+        Args:
+            base_url: Your server URL (e.g., https://api.example.com)
+        """
+        if not base_url:
+            base_url = os.environ.get("PAYPAL_WEBHOOK_URL") or os.environ.get(
+                "API_BASE_URL"
+            )
+
+        if not base_url:
+            print("\n❌ No base URL provided!")
+            print("   Usage: webhook setup https://your-domain.com")
+            print("   Or set PAYPAL_WEBHOOK_URL in .env\n")
+            return None
+
+        # Ensure HTTPS
+        if not base_url.startswith("https://"):
+            print("\n⚠️ PayPal requires HTTPS webhook URLs")
+            print("   For local testing, use ngrok or similar\n")
+            return None
+
+        # Build webhook URL
+        webhook_url = f"{base_url.rstrip('/')}/webhooks/paypal/"
+
+        print(f"\n🔧 Setting up webhook at: {webhook_url}")
+        print(f"   Mode: {self.mode}")
+        print(f"   Events: {len(self.WEBHOOK_EVENTS)}")
+        print()
+
+        return self.webhook_create(webhook_url)
+
+    def webhook_simulate(self, event_type: str = "PAYMENT.CAPTURE.COMPLETED"):
+        """Simulate a webhook event (sandbox only)."""
+        if self.mode != "sandbox":
+            print("\n❌ Webhook simulation only works in sandbox mode\n")
+            return None
+
+        webhook_id = os.environ.get("PAYPAL_WEBHOOK_ID")
+        if not webhook_id:
+            print("\n❌ PAYPAL_WEBHOOK_ID not set in .env\n")
+            return None
+
+        data = {
+            "webhook_id": webhook_id,
+            "event_type": event_type,
+        }
+
+        result = self._api("POST", "/v1/notifications/simulate-event", data)
+
+        if result:
+            print(f"\n✅ Simulated event: {event_type}")
+            print(f"   Event ID: {result.get('id')}\n")
+
+        return result
+
     # ========== STATUS ==========
 
     def status(self):
@@ -578,6 +764,7 @@ class PayPalAIAgent:
         print("  report    transactions [--days=N]")
         print("  shipment  create <order_id> <tracking> <carrier>")
         print("  subscription  plans | create-plan <product_id> <name> <price>")
+        print("  webhook   list | setup <url> | delete <id> | simulate")
         print("  status")
         print("-" * 60)
         print()
@@ -688,6 +875,26 @@ def main():
         else:
             print(
                 "Usage: subscription plans | create-plan <product_id> <name> <price> | create <plan_id> <email>"
+            )
+
+    # Webhooks
+    elif category == "webhook":
+        if action == "list":
+            agent.webhook_list()
+        elif action == "setup" and args:
+            agent.webhook_setup(args[0])
+        elif action == "create" and args:
+            agent.webhook_create(args[0])
+        elif action == "get" and args:
+            agent.webhook_get(args[0])
+        elif action == "delete" and args:
+            agent.webhook_delete(args[0])
+        elif action == "simulate":
+            event = args[0] if args else "PAYMENT.CAPTURE.COMPLETED"
+            agent.webhook_simulate(event)
+        else:
+            print(
+                "Usage: webhook list | setup <https://url> | delete <id> | simulate [event_type]"
             )
 
     else:
