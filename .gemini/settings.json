@@ -1,5 +1,16 @@
 {
   "general": {
     "previewFeatures": true
+  },
+  "mcpServers": {
+    "paypal": {
+      "command": "npx",
+      "args": ["-y", "@paypal/mcp", "--tools=all"],
+      "env": {
+        "PAYPAL_CLIENT_ID": "${PAYPAL_CLIENT_ID}",
+        "PAYPAL_CLIENT_SECRET": "${PAYPAL_CLIENT_SECRET}",
+        "PAYPAL_ENVIRONMENT": "SANDBOX"
+      }
+    }
   }
 }

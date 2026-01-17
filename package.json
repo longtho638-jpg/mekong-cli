@@ -16,5 +16,8 @@
   "packageManager": "pnpm@8.15.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@paypal/agent-toolkit": "^1.8.0"
   }
 }
