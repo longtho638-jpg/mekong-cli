@@ -17,6 +17,8 @@ sys.path.insert(
     0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
 
+from backend.core.config import settings
+
 # Import routers (only those not refactored yet)
 from backend.api.middleware.metrics import setup_metrics
 
@@ -50,35 +52,17 @@ from backend.websocket.routes import router as websocket_router
 app = FastAPI(
     title="🏯 Agency OS Unified API - Refactored",
     description="The One-Person Unicorn Operating System API with Clean Architecture",
-    version="2.1.0",
+    version=settings.VERSION,
     contact={
         "name": "Mekong HQ",
         "url": "https://agencyos.network",
     },
 )
 
-
-# CORS middleware with secure origins
-def get_allowed_origins():
-    """Get allowed origins from environment or use secure defaults."""
-    env_origins = os.getenv("ALLOWED_ORIGINS", "")
-    if env_origins:
-        return [origin.strip() for origin in env_origins.split(",") if origin.strip()]
-
-    # Default secure origins based on environment
-    env = os.getenv("ENVIRONMENT", "development")
-    if env == "production":
-        return ["https://agencyos.network", "https://www.agencyos.network"]
-    elif env == "staging":
-        return ["https://staging.agencyos.network"]
-    else:
-        return ["http://localhost:3000", "http://localhost:8000"]
-
-
 # Add middleware in correct order
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_allowed_origins(),
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
@@ -119,7 +103,7 @@ def root():
     return {
         "name": "Agency OS Unified API - Refactored",
         "tagline": "The One-Person Unicorn Operating System with Clean Architecture",
-        "version": "2.1.0",
+        "version": settings.VERSION,
         "binh_phap": "Không đánh mà thắng",
         "docs": "/docs",
         "status": "operational",
