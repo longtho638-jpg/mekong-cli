@@ -132,11 +132,20 @@ def cmd_help():
   {GREEN}mekong leads{RESET}        View lead pipeline
   {GREEN}mekong publish{RESET}      Publish to Gumroad
   {GREEN}mekong content{RESET}      Generate marketing copy
+  {GREEN}mekong broadcast{RESET}    Distribute content (Twitter/Dev.to/Blog)
   {GREEN}mekong invoice{RESET}      Create invoice
   {GREEN}mekong status{RESET}       System health check
 
 {YELLOW}Tip:{RESET} Add alias to ~/.zshrc for quick access
 """)
+
+
+def cmd_broadcast(args):
+    """Broadcast content."""
+    if len(args) < 1:
+        print("Usage: mekong broadcast <file.md> [channels]")
+        return
+    run("broadcast_cli.py", ["post"] + args)
 
 
 def main():
@@ -158,6 +167,7 @@ def main():
         "outreach": lambda: cmd_outreach(),
         "status": lambda: cmd_status(),
         "webhook": lambda: cmd_webhook(),
+        "broadcast": lambda: cmd_broadcast(args),
         "help": lambda: cmd_help(),
         "dashboard": lambda: cmd_dashboard(),
     }
