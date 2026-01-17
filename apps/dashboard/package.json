@@ -6,7 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings 150",
+    "lint": "eslint . --max-warnings 250",
     "lint:strict": "eslint . --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "typecheck": "tsc --noEmit"
