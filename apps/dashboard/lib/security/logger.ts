@@ -197,6 +197,7 @@ class SecurityLogger {
     const prefix = `[${entry.level.toUpperCase()}]${emoji}`
     const eventTag = entry.event ? `[${entry.event.toUpperCase()}]` : ''
 
+    // eslint-disable-next-line no-console
     console.log(`${prefix} ${eventTag} ${entry.message}`, {
       id: entry.id,
       timestamp: entry.timestamp,
@@ -262,7 +263,7 @@ class SecurityLogger {
 
   // Public logging methods
   async log(
-    level: string,
+    level: LogLevel,
     event: SecurityEvent | undefined,
     message: string,
     context: any = {}
@@ -372,5 +373,6 @@ process.on('SIGINT', async () => {
   await securityLogger.close()
 })
 
-export { SecurityLogger, SecurityEventEnum as SecurityEvent, LogLevelEnum as LogLevel, LogEntry }
+export { SecurityLogger, SecurityEventEnum as SecurityEvent, LogLevelEnum as LogLevel }
+export type { LogEntry as LogEntryType }
 export default securityLogger

@@ -3,8 +3,8 @@
  * Standardized secure error responses with proper HTTP status codes
  */
 
-import type { NextRequest, NextResponse } from 'next/server'
-import { NextResponse as NextResponseClass } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { securityLogger } from './logger'
 
@@ -12,7 +12,7 @@ import { securityLogger } from './logger'
 // 📊 ERROR TYPES & SCHEMAS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export const ErrorCode = z.enum([
+const ErrorCodeEnum = z.enum([
   // Client errors (4xx)
   'BAD_REQUEST',
   'UNAUTHORIZED',
@@ -47,10 +47,10 @@ export const ErrorCode = z.enum([
   'QUOTA_EXCEEDED',
   'ACCOUNT_SUSPENDED',
 ])
-export type ErrorCode = z.infer<typeof ErrorCode>
+export type ErrorCode = z.infer<typeof ErrorCodeEnum>
 
-export const ErrorCategory = z.enum(['CLIENT', 'SERVER', 'SECURITY', 'BUSINESS', 'EXTERNAL'])
-export type ErrorCategory = z.infer<typeof ErrorCategory>
+const ErrorCategoryEnum = z.enum(['CLIENT', 'SERVER', 'SECURITY', 'BUSINESS', 'EXTERNAL'])
+export type ErrorCategory = z.infer<typeof ErrorCategoryEnum>
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 🚨 ERROR CLASSES
@@ -297,15 +297,16 @@ class ErrorHandler {
     } else if (error.category === 'CLIENT') {
       await securityLogger.warn(`Client error: ${error.userMessage}`, logData)
     } else {
+      const errorMessage = error instanceof BaseError ? error.userMessage : 'Internal server error'
       await securityLogger.error(
-        `Server error: ${error.userMessage}`,
-        error instanceof Error ? error : new Error(error.userMessage),
+        `Server error: ${errorMessage}`,
+        error instanceof Error ? error : new Error(errorMessage),
         logData
       )
     }
   }
 
-  private async createErrorResponse(error: BaseError, requestId: string): NextResponse {
+  private createErrorResponse(error: BaseError, requestId: string): NextResponse {
     const response: any = {
       error: error.code,
       message: error.userMessage,
@@ -322,7 +323,7 @@ class ErrorHandler {
       response.stack = error.stack
     }
 
-    return NextResponseClass.json(response, {
+    return NextResponse.json(response, {
       status: error.statusCode,
       headers: {
         'X-Request-ID': requestId,
@@ -356,16 +357,10 @@ class ErrorHandler {
 
   static fromExternalServiceError(
     service: string,
-    error: any,
+    error: unknown,
     operation: string
   ): ExternalServiceError {
-    const sanitizedError = {
-      service,
-      operation,
-      status: error.status,
-      message: error.message?.substring(0, 100) || 'Unknown service error',
-    }
-
+    const errorObj = error as { status?: number; message?: string }
     return new ExternalServiceError(service, `${service} ${operation} failed`)
   }
 
