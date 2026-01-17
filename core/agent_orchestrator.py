@@ -6,7 +6,6 @@ Real-time orchestration of Claude and Gemini agents.
 Integrates with BridgeSync for unified agent discovery.
 """
 
-import os
 import sys
 import logging
 from pathlib import Path
@@ -80,7 +79,7 @@ class WorkflowOrchestrator:
         """
         Execute standard workflow: Plan -> Research -> Implement -> Test
         """
-        print(f"\n🚀 [bold blue]Executing AgencyOS Workflow[/bold blue]")
+        print("\n🚀 [bold blue]Executing AgencyOS Workflow[/bold blue]")
         print(f"📝 Task: {task_description}")
         print("=" * 60)
         

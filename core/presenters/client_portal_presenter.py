@@ -6,8 +6,7 @@ Presentation layer cho client portal với formatting và display logic.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+from typing import Dict, Any, List
 
 try:
     from ..services.client_portal_service import Client, Project, Invoice, ClientStatus

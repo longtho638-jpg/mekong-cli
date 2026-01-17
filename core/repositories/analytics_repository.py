@@ -18,7 +18,7 @@ try:
     )
 except ImportError:
     from services.analytics_service import (
-        RevenueEntry, ClientMetrics, MetricPeriod, RevenueType
+        RevenueEntry, ClientMetrics, RevenueType
     )
 
 logger = logging.getLogger(__name__)

@@ -7,7 +7,6 @@ Presentation layer cho analytics với clean display formatting.
 
 import logging
 from typing import Dict, Any, List
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
