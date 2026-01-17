@@ -14,5 +14,10 @@
     },
     "peerDependencies": {
         "react": "^18.0.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.8",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.17"
     }
 }

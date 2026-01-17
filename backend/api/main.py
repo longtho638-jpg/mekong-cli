@@ -1,15 +1,13 @@
 """
-🏯 AGENCY OS - Unified Backend API
-==================================
+🏯 AGENCY OS - Unified Backend API - Refactored
+Clean Architecture with Service Layer and Controller Pattern
 
 The central nervous system for Mekong-CLI and Agency OS.
-
 "Không đánh mà thắng" - Win Without Fighting
 """
 
 import os
 import sys
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,27 +16,26 @@ sys.path.insert(
     0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
 
-# Import Routers
+# Import routers (only those not refactored yet)
 from backend.api.routers import (
-    agents,
-    commands,  # 🏦 Braintree Payments
     crm,
     franchise,
     i18n,
     scheduler,
-    vibes,
     vietnam,
 )
-from backend.api.routers import router as hybrid_router
+from backend.api.routers.router import router as hybrid_router
 from backend.routes import antigravity
-from backend.websocket import manager as ws_manager
 from backend.websocket.routes import router as websocket_router
+
+# Import unified main router (refactored backend)
+from backend.main import app as backend_app
 
 # Initialize FastAPI
 app = FastAPI(
-    title="🏯 Agency OS API",
-    description="The One-Person Unicorn Operating System API",
-    version="2.0.0",
+    title="🏯 Agency OS Unified API - Refactored",
+    description="The One-Person Unicorn Operating System API with Clean Architecture",
+    version="2.1.0",
     contact={
         "name": "Mekong HQ",
         "url": "https://agencyos.network",
@@ -48,7 +45,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # TODO: Make configurable like main.py
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,26 +57,30 @@ app.include_router(vietnam.router)
 app.include_router(crm.router)
 app.include_router(scheduler.router)
 app.include_router(franchise.router)
-app.include_router(agents.router)
-app.include_router(hybrid_router.router)
-app.include_router(vibes.router)
-app.include_router(commands.router)
+app.include_router(hybrid_router)
 app.include_router(antigravity.router)  # 🚀 AntigravityKit API
 app.include_router(websocket_router)  # 🔄 WebSocket Real-time
-app.include_router(payments.router)  # 🏦 Braintree Payments
+
+# Mount the refactored backend app under /backend prefix to avoid conflicts
+app.mount("/backend", backend_app)
 
 
 # Root Endpoints
 @app.get("/")
 def root():
-    """API root - Agency OS info."""
+    """API root - Agency OS info with refactored architecture."""
     return {
-        "name": "Agency OS Unified API",
-        "tagline": "The One-Person Unicorn Operating System",
-        "version": "2.0.0",
+        "name": "Agency OS Unified API - Refactored",
+        "tagline": "The One-Person Unicorn Operating System with Clean Architecture",
+        "version": "2.1.0",
         "binh_phap": "Không đánh mà thắng",
         "docs": "/docs",
         "status": "operational",
+        "architecture": {
+            "backend": "/backend/* (refactored with clean arch)",
+            "legacy": "/api/* (being migrated)",
+            "websocket": "/ws (real-time)"
+        }
     }
 
 
@@ -93,15 +94,14 @@ def health():
             "vietnam": "loaded",
             "crm": "loaded",
             "hybrid_router": "loaded",
-            "agents": "loaded",
             "antigravity": "loaded",
             "websocket": "loaded",
+            "backend_refactored": "active"
         },
-        "websocket": {"connections": ws_manager.connection_count, "endpoint": "/ws"},
+        "architecture": "clean_architecture_with_service_layer"
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)
