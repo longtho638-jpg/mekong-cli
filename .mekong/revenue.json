@@ -1,0 +1,17 @@
+{
+  "last_updated": "2026-01-17T09:16:44.335540",
+  "total": 37.0,
+  "platforms": {
+    "gumroad": 37.0,
+    "polar": 0,
+    "consulting": 0
+  },
+  "history": [
+    {
+      "date": "2026-01-17T09:16:44.335532",
+      "amount": 37.0,
+      "platform": "gumroad",
+      "note": "FastAPI Starter Template"
+    }
+  ]
+}
