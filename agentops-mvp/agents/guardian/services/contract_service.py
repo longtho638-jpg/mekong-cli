@@ -1,8 +1,11 @@
 """Contract service for guardian agent"""
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from datetime import datetime
-from ..models.contract import TermSheetTerms, RedFlag
+try:
+    from ..models.contract import TermSheetTerms, RedFlag
+except ImportError:
+    from agentops_mvp.agents.guardian.models.contract import TermSheetTerms, RedFlag
 
 
 class ContractService:
@@ -52,7 +55,7 @@ class ContractService:
         
         return validation_errors
     
-    def analyze_liquidation_preference(self, liq_pref: float) -> Dict[str, Any]:
+    def analyze_liquidation_preference(self, liq_pref: float) -> Optional[Dict[str, Any]]:
         """Analyze liquidation preference terms"""
         if liq_pref >= 2.0:
             return {
@@ -71,7 +74,7 @@ class ContractService:
         
         return None
     
-    def analyze_anti_dilution(self, anti_dilution: str) -> Dict[str, Any]:
+    def analyze_anti_dilution(self, anti_dilution: str) -> Optional[Dict[str, Any]]:
         """Analyze anti-dilution protection"""
         if anti_dilution == "full_ratchet":
             return {

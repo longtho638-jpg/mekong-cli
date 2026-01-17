@@ -1,0 +1,61 @@
+{
+  "agencyos cook": {
+    "agent": "cook",
+    "workflow": "primary-workflow.md",
+    "description": "Execute cooking recipe workflow"
+  },
+  "agencyos scaffold": {
+    "agent": "architect",
+    "workflow": "primary-workflow.md",
+    "description": "Generate project scaffolding"
+  },
+  "agencyos kanban": {
+    "agent": "kanban-manager",
+    "workflow": "kanban-workflow.md",
+    "description": "Manage kanban board"
+  },
+  "agencyos crm": {
+    "agent": "crm-manager",
+    "workflow": "crm-workflow.md",
+    "description": "Manage CRM operations"
+  },
+  "agencyos revenue": {
+    "agent": "revenue-manager",
+    "workflow": "revenue-workflow.md",
+    "description": "View revenue analytics"
+  },
+  "agencyos build": {
+    "agent": "build-engineer",
+    "workflow": "build-workflow.md",
+    "description": "Build and deploy project"
+  },
+  "agencyos test": {
+    "agent": "tester",
+    "workflow": "testing-workflow.md",
+    "description": "Run comprehensive tests"
+  },
+  "agencyos deploy": {
+    "agent": "devops-engineer",
+    "workflow": "deployment-workflow.md",
+    "description": "Deploy to production"
+  },
+  "agencyos review": {
+    "agent": "code-reviewer",
+    "workflow": "code-review-workflow.md",
+    "description": "Review code changes"
+  },
+  "agencyos plan": {
+    "agent": "planner",
+    "workflow": "primary-workflow.md",
+    "description": "Create implementation plan"
+  },
+  "/skill": {
+    "type": "skill_activation",
+    "description": "Activate specific skill"
+  },
+  "help": {
+    "agent": "help-system",
+    "workflow": "help-workflow.md",
+    "description": "Show help and documentation"
+  }
+}
