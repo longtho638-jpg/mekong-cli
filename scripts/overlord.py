@@ -23,44 +23,87 @@ BLUE = "\033[94m"
 RESET = "\033[0m"
 
 
-def run(cmd, show=True):
-    """Run command and return output."""
+def run(cmd, show=True, use_shell=False):
+    """Run command safely and return output."""
     if show:
-        print(f"{BLUE}▶ {cmd}{RESET}")
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        if isinstance(cmd, str):
+            print(f"{BLUE}▶ {cmd}{RESET}")
+        else:
+            print(f"{BLUE}▶ {' '.join(cmd)}{RESET}")
+    
+    if use_shell:
+        # Only use shell for complex commands with pipes that can't be converted
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    else:
+        # Safe: Split command into arguments or use list directly
+        if isinstance(cmd, str):
+            cmd_parts = cmd.split()
+            result = subprocess.run(cmd_parts, capture_output=True, text=True)
+        else:
+            result = subprocess.run(cmd, capture_output=True, text=True)
+    
     return result.stdout.strip(), result.returncode == 0
+
+
+def run_safe_pytest_test():
+    """Run pytest safely without shell pipes."""
+    try:
+        result = subprocess.run(
+            ["python3", "-m", "pytest", "tests/test_wow.py", "-v", "--tb=short"],
+            capture_output=True,
+            text=True
+        )
+        
+        # Get last lines of output using Python
+        lines = result.stdout.strip().split('\n')
+        last_lines = '\n'.join(lines[-5:]) if lines else ""
+        
+        return last_lines, result.returncode == 0
+    except Exception as e:
+        return str(e), False
+
+
+def run_silent_command(cmd_list):
+    """Run command silently without shell."""
+    try:
+        result = subprocess.run(
+            cmd_list,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip(), result.returncode == 0
+    except Exception as e:
+        return str(e), False
 
 
 def cmd_daily():
     """Morning dashboard."""
-    run("python3 scripts/auto_daily.py", show=False)
-    output, _ = run("python3 scripts/auto_daily.py", show=False)
+    run(["python3", "scripts/auto_daily.py"], show=False)
+    output, _ = run(["python3", "scripts/auto_daily.py"], show=False)
     print(output)
 
 
 def cmd_tweet():
     """Generate tweets from commits."""
-    output, _ = run("python3 scripts/git_to_tweet.py", show=False)
+    output, _ = run(["python3", "scripts/git_to_tweet.py"], show=False)
     print(output)
 
 
 def cmd_revenue():
     """Show revenue dashboard."""
-    output, _ = run("python3 scripts/revenue_tracker.py", show=False)
+    output, _ = run(["python3", "scripts/revenue_tracker.py"], show=False)
     print(output)
 
 
 def cmd_products():
     """Show product stats."""
-    output, _ = run("python3 scripts/product_stats.py", show=False)
+    output, _ = run(["python3", "scripts/product_stats.py"], show=False)
     print(output)
 
 
 def cmd_test():
     """Run test suite."""
-    output, ok = run(
-        "python3 -m pytest tests/test_wow.py -v --tb=short 2>&1 | tail -5", show=False
-    )
+    output, ok = run_safe_pytest_test()
     if ok and "passed" in output:
         print(f"{GREEN}✅ Tests Passing{RESET}")
     else:
@@ -74,9 +117,7 @@ def cmd_ship():
 
     # 1. Tests
     print("1️⃣ Running tests...")
-    output, ok = run(
-        "python3 -m pytest tests/test_wow.py -v --tb=short 2>&1 | tail -3", show=False
-    )
+    output, ok = run_safe_pytest_test()
     if "passed" in output:
         print(f"   {GREEN}✅ Tests passed{RESET}")
     else:
@@ -86,15 +127,15 @@ def cmd_ship():
 
     # 2. Git status
     print("2️⃣ Checking git status...")
-    output, _ = run("git status --short", show=False)
+    output, _ = run(["git", "status", "--short"], show=False)
     if not output:
         print("   📦 Nothing to commit")
         return
     print(f"   📝 {len(output.split(chr(10)))} files changed")
 
-    # 3. Generate tweet
+    # 3. Generate tweet (run silently without shell)
     print("3️⃣ Generating content...")
-    run("python3 scripts/git_to_tweet.py > /dev/null 2>&1", show=False)
+    run_silent_command(["python3", "scripts/git_to_tweet.py"])
     print("   🐦 Tweet draft ready")
 
     # 4. Summary

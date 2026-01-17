@@ -52,6 +52,7 @@ class Memory:
 
     def _init_db(self):
         """Initialize SQLite database with FTS5 for full-text search."""
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -107,6 +108,7 @@ class Memory:
             # Auto-summarize (simple truncate for now)
             summary = content[:100] + "..." if len(content) > 100 else content
 
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -119,7 +121,7 @@ class Memory:
             obs_id = cursor.lastrowid
             conn.commit()
             logger.debug(f"Added observation {obs_id} ({obs_type})")
-            return obs_id
+            return obs_id if obs_id is not None else -1
         except sqlite3.Error as e:
             logger.error(f"Failed to add observation: {e}")
             return -1
@@ -136,6 +138,7 @@ class Memory:
         Search memory using FTS5 full-text search.
         Returns compact index (~50-100 tokens/result).
         """
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             conn.row_factory = sqlite3.Row
@@ -155,7 +158,7 @@ class Memory:
                 params.append(obs_type)
 
             sql += " ORDER BY o.created_at DESC LIMIT ?"
-            params.append(limit)
+            params.append(str(limit))
 
             cursor.execute(sql, params)
             results = [dict(row) for row in cursor.fetchall()]
@@ -170,20 +173,29 @@ class Memory:
         """
         Fetch full observation details by IDs.
         This is the final layer - fetch details ONLY for filtered IDs.
+        Security: Parameterized queries to prevent SQL injection.
         """
         if not ids: return []
 
+        # Validate input IDs to prevent injection
+        if not all(isinstance(id_, int) and id_ > 0 for id_ in ids):
+            logger.error("Invalid observation IDs provided")
+            return []
+
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
+            # Security: Use parameterized query to prevent SQL injection
             placeholders = ','.join('?' * len(ids))
-            cursor.execute(f"""
+            sql = f"""
                 SELECT * FROM observations
                 WHERE id IN ({placeholders})
                 ORDER BY created_at DESC
-            """, ids)
+            """
+            cursor.execute(sql, ids)
 
             results = [Observation(**dict(row)) for row in cursor.fetchall()]
             return results
@@ -199,6 +211,7 @@ class Memory:
         limit: int = 20
     ) -> List[Dict]:
         """Get chronological timeline of observations."""
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             conn.row_factory = sqlite3.Row
@@ -234,6 +247,7 @@ class Memory:
 
     def export_json(self, output_path: Path):
         """Export all observations to JSON."""
+        conn = None
         try:
             conn = sqlite3.connect(self.db_path)
             conn.row_factory = sqlite3.Row
