@@ -1,10 +1,10 @@
-from typing import Dict, Optional
-from backend.core.paypal_sdk import PayPalSDK
+from typing import Dict
+from core.finance.paypal_sdk.base import PayPalSDK
 
 class PaymentService:
     """
     Unified Payment Service
-    Currently powers PayPal v6. Can be extended for others.
+    Uses Core PayPal SDK.
     """
     
     def __init__(self):
