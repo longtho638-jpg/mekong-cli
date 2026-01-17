@@ -190,6 +190,7 @@ Usage:
         load_env()
         apis = {
             "Gumroad": bool(os.environ.get("GUMROAD_ACCESS_TOKEN")),
+            "PayPal": bool(os.environ.get("PAYPAL_CLIENT_ID")),
             "Polar": bool(os.environ.get("POLAR_ACCESS_TOKEN")),
             "Twitter": bool(os.environ.get("TWITTER_API_KEY")),
             "Discord": bool(os.environ.get("DISCORD_WEBHOOK_URL")),
