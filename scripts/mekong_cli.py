@@ -132,6 +132,7 @@ def cmd_help():
   {GREEN}mekong leads{RESET}        View lead pipeline
   {GREEN}mekong publish{RESET}      Publish to Gumroad
   {GREEN}mekong content{RESET}      Generate marketing copy
+  {GREEN}mekong campaign{RESET}     Auto-generate 7-day Launch Campaign
   {GREEN}mekong broadcast{RESET}    Distribute content (Twitter/Dev.to/Blog)
   {GREEN}mekong invoice{RESET}      Create invoice
   {GREEN}mekong status{RESET}       System health check
@@ -146,6 +147,14 @@ def cmd_broadcast(args):
         print("Usage: mekong broadcast <file.md> [channels]")
         return
     run("broadcast_cli.py", ["post"] + args)
+
+
+def cmd_campaign(args):
+    """Manage campaigns."""
+    if len(args) < 1:
+        print("Usage: mekong campaign <launch|list> [args...]")
+        return
+    run("campaign_manager.py", args)
 
 
 def main():
@@ -168,6 +177,7 @@ def main():
         "status": lambda: cmd_status(),
         "webhook": lambda: cmd_webhook(),
         "broadcast": lambda: cmd_broadcast(args),
+        "campaign": lambda: cmd_campaign(args),
         "help": lambda: cmd_help(),
         "dashboard": lambda: cmd_dashboard(),
     }

@@ -301,6 +301,11 @@ def batch_publish_all(products_dir: str = "products"):
             "price": 2700,
             "desc": "AI development skills",
         },
+        "admin-dashboard-pro": {
+            "name": "Admin Dashboard Pro",
+            "price": 4700,
+            "desc": "Premium Next.js 14 Admin Dashboard with Kanban & Charts. Source Code.",
+        },
     }
     CATALOG.update(RETAIL_CATALOG)
 
