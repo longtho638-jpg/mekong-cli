@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Topic is required' }, { status: 400 })
     }
 
-    // TODO: Integrate with OpenAI/Gemini
-    // For now, return a structured demo response
+    // NOTE: Production will integrate with OpenAI/Gemini
+    // Demo mode returns structured response for preview
 
     const lengthGuide = {
       short: '2-3 sections, ~300 words',
