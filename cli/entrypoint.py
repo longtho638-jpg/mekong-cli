@@ -25,11 +25,25 @@ strategy_app = typer.Typer(help="🏯 Chiến lược Binh Pháp & Lập kế ho
 dev_app = typer.Typer(help="🛠 Quy trình phát triển (Cook-Test-Ship)")
 mcp_app = typer.Typer(help="🔌 Quản lý Model Context Protocol (MCP)")
 revenue_app = typer.Typer(help="💰 Quản lý Doanh thu & Autopilot")
+outreach_app = typer.Typer(help="📧 Quản lý Lead & Outreach")
+content_app = typer.Typer(help="✍️ Tạo nội dung Marketing")
 
 app.add_typer(strategy_app, name="strategy")
 app.add_typer(dev_app, name="dev")
 app.add_typer(mcp_app, name="mcp")
 app.add_typer(revenue_app, name="revenue")
+
+# Lazy load commands to avoid circular imports if any, but Typer handles it well
+# We need to import the app objects from the command modules if we defined them there
+# But I defined them in cli/commands/*.py as 'outreach_app' and 'content_app'
+# I need to import them or define them here and add commands.
+# Let's import the apps from the modules.
+
+from cli.commands.outreach import outreach_app
+from cli.commands.content import content_app
+
+app.add_typer(outreach_app, name="outreach")
+app.add_typer(content_app, name="content")
 
 
 def print_banner():
