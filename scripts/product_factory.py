@@ -70,6 +70,41 @@ PRODUCT_SPECS = {
         "description": "Complete Venture Operating System source code",
         "private": True,
     },
+    # NEW PRODUCTS - Phase 4 Expansion
+    "crm-starter": {
+        "name": "CRM Starter Kit",
+        "price": 4700,  # $47
+        "source": [
+            "backend/api/routers/crm.py",
+            "scripts/outreach_cli.py",
+            "scripts/proposal_generator.py",
+        ],
+        "description": "Lightweight CRM with lead pipeline and outreach automation",
+    },
+    "quota-engine": {
+        "name": "AI Quota Monitor",
+        "price": 2700,  # $27
+        "source": ["packages/antigravity/core/quota_engine.py"],
+        "description": "Real-time AI model quota monitoring with alerts",
+    },
+    "report-generator": {
+        "name": "Client Report Generator",
+        "price": 3700,  # $37
+        "source": ["scripts/weekly_report.py", "scripts/empire_watcher.py"],
+        "description": "Automated weekly client reports with health scoring",
+    },
+    "seo-writer": {
+        "name": "SEO Blog Writer",
+        "price": 4700,  # $47
+        "source": ["scripts/seo_writer.py"],
+        "description": "AI-powered SEO blog content generator with templates",
+    },
+    "contract-generator": {
+        "name": "Contract Generator Pro",
+        "price": 3700,  # $37
+        "source": ["scripts/contract_generator.py", "scripts/invoice_generator.py"],
+        "description": "Professional service contracts with auto-population",
+    },
 }
 
 
