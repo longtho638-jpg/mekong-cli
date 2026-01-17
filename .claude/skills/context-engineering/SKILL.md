@@ -1,12 +1,8 @@
 ---
 name: context-engineering
 description: >-
-  Master context engineering for AI agent systems. Use when designing agent architectures,
-  debugging context failures, optimizing token usage, implementing memory systems,
-  building multi-agent coordination, evaluating agent performance, or developing
-  LLM-powered pipelines. Covers context fundamentals, degradation patterns, optimization
-  techniques (compaction, masking, caching), compression strategies, memory architectures,
-  multi-agent patterns, LLM-as-Judge evaluation, tool design, and project development.
+  Check context usage limits, monitor time remaining, optimize token consumption, debug context failures.
+  Use when asking about context percentage, rate limits, usage warnings, context optimization, agent architectures, memory systems.
 version: 1.0.0
 ---
 
@@ -32,6 +28,11 @@ Context engineering curates the smallest high-signal token set for LLM tasks. Th
 4. **Isolation prevents degradation** - Partition work across sub-agents
 5. **Measure before optimizing** - Know your baseline
 
+**IMPORTANT:**
+- Sacrifice grammar for the sake of concision.
+- Ensure token efficiency while maintaining high quality.
+- Pass these rules to subagents.
+
 ## Quick Reference
 
 | Topic | When to Use | Reference |
@@ -45,6 +46,7 @@ Context engineering curates the smallest high-signal token set for LLM tasks. Th
 | **Evaluation** | Testing agents, LLM-as-Judge, metrics | [evaluation.md](./references/evaluation.md) |
 | **Tool Design** | Tool consolidation, description engineering | [tool-design.md](./references/tool-design.md) |
 | **Pipelines** | Project development, batch processing | [project-development.md](./references/project-development.md) |
+| **Runtime Awareness** | Usage limits, context window monitoring | [runtime-awareness.md](./references/runtime-awareness.md) |
 
 ## Key Metrics
 
@@ -79,6 +81,25 @@ Context engineering curates the smallest high-signal token set for LLM tasks. Th
 6. Validate with probe-based evaluation
 7. Monitor KV-cache hit rates in production
 8. Start minimal, add complexity only when proven necessary
+
+## Runtime Awareness
+
+The system automatically injects usage awareness via PostToolUse hook:
+
+```xml
+<usage-awareness>
+Claude Usage Limits: 5h=45%, 7d=32%
+Context Window Usage: 67%
+</usage-awareness>
+```
+
+**Thresholds:**
+- 70%: WARNING - consider optimization/compaction
+- 90%: CRITICAL - immediate action needed
+
+**Data Sources:**
+- Usage limits: Anthropic OAuth API (`https://api.anthropic.com/api/oauth/usage`)
+- Context window: Statusline temp file (`/tmp/ck-context-{session_id}.json`)
 
 ## Scripts
 

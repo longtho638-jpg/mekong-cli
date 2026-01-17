@@ -1,3 +1,95 @@
+## [2.4.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.5...v2.4.0-beta.6) (2026-01-16)
+
+
+### 🚀 Features
+
+* **config:** add skills.research.useGemini toggle for Gemini CLI ([0659ae6](https://github.com/claudekit/claudekit-engineer/commit/0659ae6adecdfba5729ceafb68b2f7de396b876b))
+* **skill:** add copywriting skill with comprehensive references and utilities ([86be847](https://github.com/claudekit/claudekit-engineer/commit/86be8478941c60e7ef0a30b64b0378d1043a841c))
+* **skill:** add git operations skill with comprehensive workflow references ([e84c1b0](https://github.com/claudekit/claudekit-engineer/commit/e84c1b0523da1310a01fa71baa5bc34d3ef77229))
+* **skill:** implement design system generator for ui-ux-pro-max ([64ce03a](https://github.com/claudekit/claudekit-engineer/commit/64ce03a230df93d44076c6adfddf271ad280328b))
+* **skills:** added `web-design-guidelines` skill (Vercel) ([05920da](https://github.com/claudekit/claudekit-engineer/commit/05920dab2aa23ff0c1126fec4d0ca82ea1be29ea))
+
+
+### 📚 Documentation
+
+* **skill:** document design system generation in ui-ux-pro-max skill.md ([ebbad52](https://github.com/claudekit/claudekit-engineer/commit/ebbad52c8a95c8443fdf7b63798e73072e8d3641))
+
+
+### ⚡ Performance Improvements
+
+* **skill:** enhance context-engineering and git documentation ([ae5469e](https://github.com/claudekit/claudekit-engineer/commit/ae5469e00d5f4a6eed4f8b6ac494acc796612c6c))
+
+## [2.4.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.4...v2.4.0-beta.5) (2026-01-15)
+
+
+### 🚀 Features
+
+* **hooks:** add context and usage section builders to context-builder ([865649c](https://github.com/claudekit/claudekit-engineer/commit/865649cc5860d559f3360536164b00ebc97ab173))
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** read session_id from hook input in dev-rules-reminder ([c9c9e3f](https://github.com/claudekit/claudekit-engineer/commit/c9c9e3ff6b216261057a790be28dd38c1f794251))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** simplify usage-context-awareness to cache-only writer ([5f44968](https://github.com/claudekit/claudekit-engineer/commit/5f449686d422aed4401e942a580dc9eb5894be9b))
+* **statusline:** prioritize session info on line 1 for claude code readability ([06e5b94](https://github.com/claudekit/claudekit-engineer/commit/06e5b949650478030f558a19188c7d155ce700a3))
+
+## [2.4.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.3...v2.4.0-beta.4) (2026-01-15)
+
+
+### 🚀 Features
+
+* **skill:** expand ui-ux-pro-max with design patterns and component stacks ([0094348](https://github.com/claudekit/claudekit-engineer/commit/0094348bed048d650c5b970a18fbd20e243bdb59))
+* **skills:** added `react-best-practices` from Vercel ([61626a4](https://github.com/claudekit/claudekit-engineer/commit/61626a4fdcdd703b149e22a939a202c22f6443b0))
+
+
+### ♻️ Code Refactoring
+
+* **skill:** optimize ui-ux-pro-max search and core utilities ([6ded438](https://github.com/claudekit/claudekit-engineer/commit/6ded43835862e7ae5f02fcfef53b2a4e12820532))
+
+## [2.4.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.2...v2.4.0-beta.3) (2026-01-15)
+
+
+### 🚀 Features
+
+* **hooks:** add usage-context-awareness hook for limit monitoring ([1944a0c](https://github.com/claudekit/claudekit-engineer/commit/1944a0c72f5963624660fac7cb510fa9bbe3c2e1))
+* **opencode:** add opencode configuration and skills ([0adfd45](https://github.com/claudekit/claudekit-engineer/commit/0adfd456fc46abfc2e2ebccf0f25f9a3e6c1d197))
+* **skills:** add fixing skill for bug classification and resolution ([1745741](https://github.com/claudekit/claudekit-engineer/commit/17457417cffea18016d4b4dc15bb34723630ad1b))
+* **skills:** add runtime awareness to context-engineering skill ([aa65316](https://github.com/claudekit/claudekit-engineer/commit/aa653161ca34f8d53c4642f2043323c478a948e4))
+* **statusline:** export context data for hooks consumption ([bb5057c](https://github.com/claudekit/claudekit-engineer/commit/bb5057c365ba5b4510dbd2d9faa59504507ccbce))
+
+
+### 📚 Documentation
+
+* add Claude CLI usage limits API reference ([8347b13](https://github.com/claudekit/claudekit-engineer/commit/8347b131a0b795e00fb94a3e1dce9f7c9d2b5b97))
+
+
+### ♻️ Code Refactoring
+
+* **skills:** shorten skill descriptions for token efficiency ([632411b](https://github.com/claudekit/claudekit-engineer/commit/632411b91e77ca45e6dc9ae1174814e87ae5c533))
+
+
+### ⚡ Performance Improvements
+
+* **skill:** upgrade `db-design` skill from Viet's contribution ([51cc63a](https://github.com/claudekit/claudekit-engineer/commit/51cc63a7b62f57ffafdc9eba8f8c937081312164))
+
+## [2.4.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.1...v2.4.0-beta.2) (2026-01-14)
+
+
+### 🚀 Features
+
+* **rules:** add mandatory delegation context for cross-project work ([4fd2c34](https://github.com/claudekit/claudekit-engineer/commit/4fd2c34994f4e9edac6515d3877ad91290c40169)), closes [#342](https://github.com/claudekit/claudekit-engineer/issues/342)
+
+## [2.4.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0-beta.1) (2026-01-13)
+
+
+### 🚀 Features
+
+* integrate code-simplifier agent with PostToolUse hook ([d8adf1a](https://github.com/claudekit/claudekit-engineer/commit/d8adf1a5303bdefe894963d0e3918b99edbe2915))
+
 ## [2.3.2](https://github.com/claudekit/claudekit-engineer/compare/v2.3.1...v2.3.2) (2026-01-12)
 
 

@@ -31,7 +31,8 @@ async function main() {
     const payload = JSON.parse(stdin);
     if (wasRecentlyInjected(payload.transcript_path)) process.exit(0);
 
-    const sessionId = process.env.CK_SESSION_ID || null;
+    // Get session ID from hook input or env var
+    const sessionId = payload.session_id || process.env.CK_SESSION_ID || null;
 
     // Issue #327: Use CWD as base for subdirectory workflow support
     // The baseDir is passed to buildReminderContext for absolute path resolution

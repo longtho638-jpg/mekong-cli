@@ -34,6 +34,11 @@
           {
             "type": "command",
             "command": "node .claude/hooks/dev-rules-reminder.cjs"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/usage-context-awareness.cjs",
+            "timeout": 30
           }
         ]
       }
@@ -49,6 +54,26 @@
           {
             "type": "command",
             "command": "node .claude/hooks/privacy-block.cjs"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-edit-simplify-reminder.cjs"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/usage-context-awareness.cjs"
           }
         ]
       }
