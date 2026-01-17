@@ -9,7 +9,7 @@ Endpoints:
 - /api/vibes - Vibe operations via VibeController
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import sys
 import os
@@ -17,7 +17,7 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.core.config import settings
+from backend.api.config import settings
 
 # Import existing routes
 from backend.routes.campaigns import router as campaigns_router
