@@ -52,6 +52,8 @@ exclude = [
     "tests",
     # Final root files
     "validate_refactor.py",
+    "test_tunnel_performance.py",
+    "test_*.py",
 ]
 
 line-length = 88
