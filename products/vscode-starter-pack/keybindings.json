@@ -1,0 +1,43 @@
+[
+  // === FILE NAVIGATION ===
+  { "key": "cmd+p", "command": "workbench.action.quickOpen" },
+  { "key": "cmd+shift+p", "command": "workbench.action.showCommands" },
+  { "key": "cmd+b", "command": "workbench.action.toggleSidebarVisibility" },
+  { "key": "cmd+j", "command": "workbench.action.togglePanel" },
+
+  // === EDITOR ===
+  { "key": "cmd+d", "command": "editor.action.addSelectionToNextFindMatch" },
+  { "key": "cmd+shift+l", "command": "editor.action.selectHighlights" },
+  { "key": "alt+up", "command": "editor.action.moveLinesUpAction" },
+  { "key": "alt+down", "command": "editor.action.moveLinesDownAction" },
+  { "key": "shift+alt+up", "command": "editor.action.copyLinesUpAction" },
+  { "key": "shift+alt+down", "command": "editor.action.copyLinesDownAction" },
+  { "key": "cmd+shift+k", "command": "editor.action.deleteLines" },
+
+  // === MULTI-CURSOR ===
+  {
+    "key": "alt+click",
+    "command": "editor.action.insertCursorAtEndOfEachLineSelected"
+  },
+  { "key": "cmd+alt+up", "command": "editor.action.insertCursorAbove" },
+  { "key": "cmd+alt+down", "command": "editor.action.insertCursorBelow" },
+
+  // === CODE ===
+  { "key": "cmd+.", "command": "editor.action.quickFix" },
+  { "key": "f12", "command": "editor.action.revealDefinition" },
+  { "key": "shift+f12", "command": "editor.action.goToReferences" },
+  { "key": "f2", "command": "editor.action.rename" },
+  { "key": "cmd+shift+o", "command": "workbench.action.gotoSymbol" },
+
+  // === TERMINAL ===
+  { "key": "ctrl+`", "command": "workbench.action.terminal.toggleTerminal" },
+  { "key": "ctrl+shift+`", "command": "workbench.action.terminal.new" },
+
+  // === GIT ===
+  { "key": "cmd+shift+g", "command": "workbench.view.scm" },
+  {
+    "key": "cmd+enter",
+    "command": "git.commitAll",
+    "when": "inputFocus && scmRepository"
+  }
+]

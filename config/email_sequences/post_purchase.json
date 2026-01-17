@@ -1,0 +1,32 @@
+{
+  "day_0": {
+    "template": "welcome",
+    "subject": "Welcome! Your License Details",
+    "goal": "activation",
+    "content_type": "html"
+  },
+  "day_3": {
+    "template": "tutorial",
+    "subject": "Getting Started Tutorial",
+    "goal": "engagement",
+    "content_type": "video"
+  },
+  "day_7": {
+    "template": "community",
+    "subject": "Join Our Community",
+    "goal": "stickiness",
+    "content_type": "invitation"
+  },
+  "day_14": {
+    "template": "upsell",
+    "subject": "Upgrade to Pro Features",
+    "goal": "revenue",
+    "content_type": "offer"
+  },
+  "day_30": {
+    "template": "feedback",
+    "subject": "How Are We Doing?",
+    "goal": "product",
+    "content_type": "survey"
+  }
+}

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>📊 Antigravity Quota Dashboard</title>
+        <style>
+            :root {
+                --bg-primary: #0d1117;
+                --bg-secondary: #161b22;
+                --bg-card: #21262d;
+                --text-primary: #c9d1d9;
+                --text-secondary: #8b949e;
+                --accent-green: #3fb950;
+                --accent-yellow: #d29922;
+                --accent-red: #f85149;
+                --accent-blue: #58a6ff;
+                --border-color: #30363d;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Oxygen, Ubuntu, sans-serif;
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                min-height: 100vh;
+                padding: 24px;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .header h1 {
+                font-size: 24px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .header-actions {
+                display: flex;
+                gap: 12px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+                background: var(--bg-secondary);
+                color: var(--text-primary);
+                cursor: pointer;
+                font-size: 14px;
+                transition: all 0.2s;
+            }
+
+            .btn:hover {
+                background: var(--bg-card);
+                border-color: var(--accent-blue);
+            }
+
+            .btn-primary {
+                background: var(--accent-blue);
+                border-color: var(--accent-blue);
+                color: #fff;
+            }
+
+            .status-bar {
+                background: var(--bg-secondary);
+                padding: 16px 20px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .status-text {
+                font-size: 18px;
+                font-weight: 500;
+            }
+
+            .last-updated {
+                color: var(--text-secondary);
+                font-size: 14px;
+            }
+
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+
+            .card {
+                background: var(--bg-card);
+                border-radius: 12px;
+                padding: 20px;
+                border: 1px solid var(--border-color);
+                transition: all 0.2s;
+            }
+
+            .card:hover {
+                border-color: var(--accent-blue);
+                transform: translateY(-2px);
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .model-name {
+                font-size: 16px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .status-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+
+            .status-normal {
+                background: var(--accent-green);
+            }
+            .status-warning {
+                background: var(--accent-yellow);
+            }
+            .status-critical {
+                background: var(--accent-red);
+                animation: pulse 1.5s infinite;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+
+            .pool-badge {
+                font-size: 11px;
+                padding: 4px 8px;
+                background: var(--bg-secondary);
+                border-radius: 4px;
+                color: var(--text-secondary);
+            }
+
+            .progress-container {
+                margin-bottom: 12px;
+            }
+
+            .progress-bar {
+                height: 8px;
+                background: var(--bg-secondary);
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .progress-fill {
+                height: 100%;
+                border-radius: 4px;
+                transition: width 0.5s ease;
+            }
+
+            .progress-fill.normal {
+                background: var(--accent-green);
+            }
+            .progress-fill.warning {
+                background: var(--accent-yellow);
+            }
+            .progress-fill.critical {
+                background: var(--accent-red);
+            }
+
+            .progress-text {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                margin-top: 8px;
+            }
+
+            .percent {
+                font-weight: 600;
+                font-size: 28px;
+            }
+
+            .countdown {
+                color: var(--text-secondary);
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .capabilities {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 12px;
+            }
+
+            .cap-tag {
+                font-size: 11px;
+                padding: 4px 8px;
+                background: var(--bg-primary);
+                border-radius: 4px;
+                color: var(--text-secondary);
+            }
+
+            .alerts-section {
+                margin-top: 32px;
+                padding: 20px;
+                background: rgba(248, 81, 73, 0.1);
+                border: 1px solid var(--accent-red);
+                border-radius: 12px;
+            }
+
+            .alerts-section.hidden {
+                display: none;
+            }
+
+            .alerts-title {
+                color: var(--accent-red);
+                font-weight: 600;
+                margin-bottom: 12px;
+            }
+
+            .alert-item {
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(248, 81, 73, 0.2);
+            }
+
+            .alert-item:last-child {
+                border-bottom: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>📊 Antigravity Quota Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn" onclick="toggleGrouping()">
+                    Toggle Grouping
+                </button>
+                <button class="btn btn-primary" onclick="refresh()">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-text" id="status-bar-text">
+                🟢 Claude Sonnet: 85%
+            </div>
+            <div class="last-updated" id="last-updated">
+                Last updated: --:--
+            </div>
+        </div>
+
+        <div class="cards-grid" id="cards-container">
+            <!-- Cards will be dynamically generated -->
+        </div>
+
+        <div class="alerts-section hidden" id="alerts-section">
+            <div class="alerts-title">⚠️ Critical Alerts</div>
+            <div id="alerts-list"></div>
+        </div>
+
+        <script>
+            // Mock data - replace with actual API call
+            const mockData = {
+                models: [
+                    {
+                        id: "claude-sonnet",
+                        name: "Claude Sonnet",
+                        remaining_percent: 85,
+                        threshold_level: "normal",
+                        countdown: "4h 39m",
+                        reset_time: "18:46",
+                        pool_id: "claude-pool",
+                        capabilities: ["text", "code", "vision"],
+                        context_window: 200000,
+                    },
+                    {
+                        id: "claude-opus",
+                        name: "Claude Opus",
+                        remaining_percent: 45,
+                        threshold_level: "normal",
+                        countdown: "2h 14m",
+                        reset_time: "16:21",
+                        pool_id: "claude-pool",
+                        capabilities: ["text", "code", "vision", "analysis"],
+                        context_window: 200000,
+                    },
+                    {
+                        id: "gemini-pro",
+                        name: "Gemini 2.5 Pro",
+                        remaining_percent: 92,
+                        threshold_level: "normal",
+                        countdown: "5h 59m",
+                        reset_time: "20:06",
+                        pool_id: "gemini-pool",
+                        capabilities: ["text", "code", "vision", "video"],
+                        context_window: 1000000,
+                    },
+                    {
+                        id: "gemini-flash",
+                        name: "Gemini Flash",
+                        remaining_percent: 8,
+                        threshold_level: "critical",
+                        countdown: "24m",
+                        reset_time: "14:31",
+                        pool_id: "gemini-pool",
+                        capabilities: ["text", "code"],
+                        context_window: 128000,
+                    },
+                ],
+                alerts: {
+                    criticals: ["Gemini Flash"],
+                    warnings: [],
+                },
+            };
+
+            function renderCards(data) {
+                const container = document.getElementById("cards-container");
+                container.innerHTML = "";
+
+                data.models.forEach((model) => {
+                    const statusClass = model.threshold_level;
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.innerHTML = `
+                    <div class="card-header">
+                        <div class="model-name">
+                            <span class="status-dot status-${statusClass}"></span>
+                            ${model.name}
+                        </div>
+                        <span class="pool-badge">${model.pool_id || "ungrouped"}</span>
+                    </div>
+                    <div class="percent">${model.remaining_percent}%</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill ${statusClass}" style="width: ${model.remaining_percent}%"></div>
+                        </div>
+                    </div>
+                    <div class="countdown">
+                        ⏱️ Reset in ${model.countdown} (${model.reset_time})
+                    </div>
+                    <div class="capabilities">
+                        ${model.capabilities.map((c) => `<span class="cap-tag">${c}</span>`).join("")}
+                    </div>
+                `;
+                    container.appendChild(card);
+                });
+
+                // Update status bar with lowest model
+                const lowest = data.models.reduce((a, b) =>
+                    a.remaining_percent < b.remaining_percent ? a : b,
+                );
+                const emoji =
+                    lowest.threshold_level === "critical"
+                        ? "🔴"
+                        : lowest.threshold_level === "warning"
+                          ? "🟡"
+                          : "🟢";
+                document.getElementById("status-bar-text").textContent =
+                    `${emoji} ${lowest.name}: ${lowest.remaining_percent}%`;
+
+                // Update alerts
+                const alertsSection = document.getElementById("alerts-section");
+                const alertsList = document.getElementById("alerts-list");
+                if (data.alerts.criticals.length > 0) {
+                    alertsSection.classList.remove("hidden");
+                    alertsList.innerHTML = data.alerts.criticals
+                        .map(
+                            (name) =>
+                                `<div class="alert-item">🔴 ${name} quota critically low!</div>`,
+                        )
+                        .join("");
+                } else {
+                    alertsSection.classList.add("hidden");
+                }
+
+                // Update timestamp
+                document.getElementById("last-updated").textContent =
+                    `Last updated: ${new Date().toLocaleTimeString()}`;
+            }
+
+            function refresh() {
+                // In production, fetch from API
+                renderCards(mockData);
+            }
+
+            function toggleGrouping() {
+                // Toggle grouping logic
+                console.log("Toggle grouping");
+            }
+
+            // Initial render
+            refresh();
+
+            // Auto-refresh every 2 minutes
+            setInterval(refresh, 120000);
+        </script>
+    </body>
+</html>

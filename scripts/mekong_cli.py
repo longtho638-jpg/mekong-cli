@@ -156,6 +156,53 @@ def cmd_campaign(args):
         return
     run("campaign_manager.py", args)
 
+def cmd_test():
+    """Run test suite."""
+    print(f"{BLUE}▶ Running tests...{RESET}")
+    # Run pytest directly via subprocess to avoid shell/pipe issues
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"], 
+        capture_output=True, 
+        text=True,
+        cwd=PROJECT_DIR
+    )
+    
+    if result.returncode == 0:
+        print(f"{GREEN}✅ Tests passed{RESET}")
+    else:
+        print(f"{YELLOW}⚠️ Tests failed{RESET}")
+        # Print only last few lines or failure summary
+        print(result.stdout)
+        print(result.stderr)
+    return result.returncode == 0
+
+def cmd_ship():
+    """Full ship pipeline: test → commit → push."""
+    print(f"\n{BOLD}🏯 SHIP PIPELINE{RESET}\n")
+
+    # 1. Tests
+    print("1️⃣ Running tests...")
+    if not cmd_test():
+        print(f"   {YELLOW}🛑 Aborting ship due to test failures.{RESET}")
+        return
+
+    # 2. Git status
+    print("2️⃣ Checking git status...")
+    result = subprocess.run(["git", "status", "--short"], capture_output=True, text=True)
+    if not result.stdout.strip():
+        print("   📦 Nothing to commit")
+        return
+    print(f"   📝 Changes detected:\n{result.stdout}")
+
+    # 3. Generate tweet (optional)
+    # print("3️⃣ Generating content...")
+    # run("git_to_tweet.py", show=False)
+    # print("   🐦 Tweet draft ready")
+
+    # 4. Instructions
+    print(f"\n{GREEN}✅ Ready to ship!{RESET}")
+    print("\nRun: git add -A && git commit -m 'feat: ...' && git push")
+
 
 def main():
     if len(sys.argv) < 2:
@@ -180,6 +227,8 @@ def main():
         "campaign": lambda: cmd_campaign(args),
         "help": lambda: cmd_help(),
         "dashboard": lambda: cmd_dashboard(),
+        "test": lambda: cmd_test(),
+        "ship": lambda: cmd_ship(),
     }
 
     if cmd in commands:

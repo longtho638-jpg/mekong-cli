@@ -140,7 +140,11 @@ export function PayPalCheckout({
       }
 
       // Real PayPal flow - redirect to PayPal
-      const approvalUrl = `https://www.sandbox.paypal.com/checkoutnow?token=${orderId}`
+      const paypalHost =
+        process.env.NEXT_PUBLIC_PAYPAL_MODE === 'live'
+          ? 'https://www.paypal.com'
+          : 'https://www.sandbox.paypal.com'
+      const approvalUrl = `${paypalHost}/checkoutnow?token=${orderId}`
       window.location.href = approvalUrl
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Lỗi thanh toán'

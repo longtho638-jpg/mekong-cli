@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mekong.quota-auto</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/quota_peekaboo.py</string>
+        <string>auto</string>
+        <string>--threshold</string>
+        <string>30</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/macbookprom1/mekong-cli</string>
+    
+    <key>StartInterval</key>
+    <integer>600</integer>
+
+    
+    <key>StandardOutPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/quota-auto.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/quota-auto.error.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <false/>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

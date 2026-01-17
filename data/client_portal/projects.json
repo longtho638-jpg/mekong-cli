@@ -1,0 +1,45 @@
+{
+  "PRJ-79BE7385": {
+    "id": "PRJ-79BE7385",
+    "client_id": "CLI-E6C6F156",
+    "name": "Website Redesign",
+    "description": "Complete overhauled branding",
+    "status": "in_progress",
+    "start_date": "2026-01-17T21:14:29.840981",
+    "end_date": "2026-02-14T21:14:29.840982",
+    "tasks": [
+      {
+        "id": "TSK-077724",
+        "name": "Discovery",
+        "description": "Complete discovery",
+        "status": "done",
+        "due_date": null,
+        "completed_at": null,
+        "assignee": "Team"
+      },
+      {
+        "id": "TSK-7AF84B",
+        "name": "Homepage",
+        "description": "Complete homepage",
+        "status": "in_progress",
+        "due_date": null,
+        "completed_at": null,
+        "assignee": "Team"
+      }
+    ],
+    "budget": 5000.0,
+    "spent": 0.0
+  },
+  "PRJ-2C99EB62": {
+    "id": "PRJ-2C99EB62",
+    "client_id": "CLI-4BC7CF50",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-17T21:14:29.841972",
+    "end_date": "2026-02-14T21:14:29.841973",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
+  }
+}
