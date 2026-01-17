@@ -7,7 +7,7 @@ Quản lý lưu trữ notifications và stats cho AI Wingman.
 
 import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 from pathlib import Path
 

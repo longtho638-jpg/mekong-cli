@@ -16,7 +16,7 @@ import os
 import secrets
 import re
 import logging
-from typing import Dict, Any, Optional, List, Tuple, Union
+from typing import Dict, Any, Optional, List, Tuple
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass

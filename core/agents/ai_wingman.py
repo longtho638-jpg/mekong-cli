@@ -6,7 +6,7 @@ Main interface sử dụng refactored services với clean architecture.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 
 try:

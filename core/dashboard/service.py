@@ -6,7 +6,7 @@ Aggregates data from various engines (Revenue, Leads, Automation)
 to provide a single view of the agency's health.
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 from antigravity.core.revenue_engine import RevenueEngine
 from antigravity.core.client_magnet import ClientMagnet
 from core.automation.autopilot import RevenueAutopilotService

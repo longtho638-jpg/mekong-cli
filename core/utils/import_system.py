@@ -7,10 +7,8 @@ Centralized import management to eliminate sys.path abuse.
 Sets up proper package structure and handles imports cleanly.
 """
 
-import os
 import sys
 from pathlib import Path
-from typing import Optional, Set
 
 class ImportManager:
     """Manages imports without sys.path abuse."""

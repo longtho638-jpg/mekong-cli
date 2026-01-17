@@ -19,7 +19,7 @@ except ImportError:
     # Fallback for direct execution
     from services.client_portal_service import (
         ClientPortalService, Client, Project, Invoice, Message,
-        ClientStatus, ProjectStatus, TaskStatus, InvoiceStatus
+        TaskStatus, InvoiceStatus
     )
     from repositories.client_portal_repository import ClientPortalRepository
     from presenters.client_portal_presenter import ClientPortalPresenter

@@ -6,7 +6,7 @@ Main interface sử dụng refactored services với clean architecture.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 try:
     from .services.analytics_service import (
@@ -17,7 +17,7 @@ try:
 except ImportError:
     # Fallback for direct execution
     from services.analytics_service import (
-        AnalyticsCalculationEngine, MetricPeriod, RevenueType, RevenueEntry
+        AnalyticsCalculationEngine, MetricPeriod, RevenueEntry
     )
     from repositories.analytics_repository import AnalyticsRepository
     from presenters.analytics_presenter import AnalyticsPresenter

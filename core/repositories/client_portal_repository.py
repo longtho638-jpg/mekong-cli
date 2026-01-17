@@ -7,7 +7,7 @@ Repository pattern cho client portal data persistence.
 
 import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 from pathlib import Path
 

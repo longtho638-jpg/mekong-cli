@@ -15,9 +15,7 @@ Usage: python3 core/security/validate_phase2_fixes.py
 
 import os
 import sys
-import ast
 import re
-import subprocess
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 
@@ -165,7 +163,6 @@ class SecurityValidator:
                 arg_list_matches = re.findall(arg_list_pattern, content)
                 
                 # Look for safe subprocess patterns
-                has_use_shell_param = 'use_shell=' in content
                 has_safe_functions = ('run_safe_pytest' in content or 
                                     'run_silent_command' in content)
                 
@@ -465,19 +462,19 @@ class SecurityValidator:
         print(f"\n{BOLD}📋 SECURITY RECOMMENDATIONS:{RESET}")
         
         if not sql_passed:
-            print(f"   - Fix SQL injection vulnerabilities in database operations")
+            print("   - Fix SQL injection vulnerabilities in database operations")
         
         if not cmd_passed:
-            print(f"   - Replace shell=True with argument lists in subprocess calls")
+            print("   - Replace shell=True with argument lists in subprocess calls")
         
         if not api_passed:
-            print(f"   - Implement authentication and rate limiting on API endpoints")
+            print("   - Implement authentication and rate limiting on API endpoints")
         
         if not env_passed:
-            print(f"   - Set up secure environment variable management")
+            print("   - Set up secure environment variable management")
         
         if not system_test:
-            print(f"   - Fix security system implementation issues")
+            print("   - Fix security system implementation issues")
         
         if score >= 90:
             print(f"   {GREEN}✅ Excellent security posture! Proceed to Phase 3.{RESET}")
