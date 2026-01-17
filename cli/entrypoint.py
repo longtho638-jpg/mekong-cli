@@ -21,13 +21,15 @@ app = typer.Typer(
 )
 
 # Sub-apps
-strategy_app = typer.Typer(help="🏯 chiến lược Binh Pháp & Lập kế hoạch")
+strategy_app = typer.Typer(help="🏯 Chiến lược Binh Pháp & Lập kế hoạch")
 dev_app = typer.Typer(help="🛠 Quy trình phát triển (Cook-Test-Ship)")
 mcp_app = typer.Typer(help="🔌 Quản lý Model Context Protocol (MCP)")
+revenue_app = typer.Typer(help="💰 Quản lý Doanh thu & Autopilot")
 
 app.add_typer(strategy_app, name="strategy")
 app.add_typer(dev_app, name="dev")
 app.add_typer(mcp_app, name="mcp")
+app.add_typer(revenue_app, name="revenue")
 
 
 def print_banner():
@@ -45,6 +47,12 @@ def print_banner():
     console.print(banner)
 
 # --- Top Level Commands ---
+
+@app.command(name="dashboard")
+def dashboard_cmd():
+    """📊 Xem Master Dashboard (Doanh thu, Leads, KPI)."""
+    from cli.commands.dashboard import show_dashboard
+    show_dashboard()
 
 @app.command(name="init")
 def init_cmd(name: str = typer.Argument(..., help="Tên của dự án/agency mới")):
@@ -126,6 +134,20 @@ def mcp_install(package: str = typer.Argument(..., help="Tên package hoặc URL
     """➕ Cài đặt thêm MCP Server mới."""
     from cli.commands.mcp import install_mcp
     install_mcp(package)
+
+# --- Revenue Sub-commands ---
+
+@revenue_app.command(name="autopilot")
+def revenue_autopilot():
+    """🚀 Chạy Revenue Autopilot (Content, Outreach, Metrics)."""
+    from cli.commands.revenue import run_autopilot
+    run_autopilot()
+
+@revenue_app.command(name="report")
+def revenue_report():
+    """📈 Xem báo cáo doanh thu mới nhất."""
+    from cli.commands.revenue import show_report
+    show_report()
 
 # --- Utility Commands ---
 
