@@ -4,7 +4,195 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { logger } from '../utils/logger'
+import { securityLogger } from './logger'
+import Redis from 'ioredis'
+import crypto from 'crypto'
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 🔒 SECURE JOB QUEUE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+interface SecureJob {
+  id: string
+  type: string
+  payload: any
+  jobToken: string
+  userId?: string
+  queuedAt: string
+  expiresAt: string
+  attempts: number
+  maxAttempts: number
+  status: 'pending' | 'processing' | 'completed' | 'failed'
+}
+
+class SecureJobQueue {
+  private redis: Redis
+  private jobSecret: string
+
+  constructor() {
+    this.jobSecret = process.env.JOB_SECRET || crypto.randomBytes(32).toString('hex')
+    this.redis = new Redis({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT || '6379'),
+      password: process.env.REDIS_PASSWORD,
+      retryDelayOnFailover: 100,
+      maxRetriesPerRequest: 3,
+      lazyConnect: true,
+    })
+  }
+
+  generateJobToken(requestId: string, jobType: string): string {
+    const payload = `${requestId}:${jobType}:${Date.now()}`
+    return crypto.createHmac('sha256', this.jobSecret).update(payload).digest('hex')
+  }
+
+  verifyJobToken(token: string, requestId: string, jobType: string): boolean {
+    const expectedToken = this.generateJobToken(requestId, jobType)
+    // Use constant-time comparison to prevent timing attacks
+    return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expectedToken))
+  }
+
+  async enqueue(jobType: string, payload: any): Promise<string> {
+    const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    const job: SecureJob = {
+      id: jobId,
+      type: jobType,
+      payload,
+      jobToken: payload.jobToken,
+      userId: payload.userId,
+      queuedAt: payload.queuedAt,
+      expiresAt: payload.expiresAt,
+      attempts: 0,
+      maxAttempts: 3,
+      status: 'pending',
+    }
+
+    // Store job in Redis with TTL
+    await this.redis.setex(
+      `job:${jobId}`,
+      24 * 60 * 60, // 24 hours TTL
+      JSON.stringify(job)
+    )
+
+    // Add to job queue
+    await this.redis.lpush(`queue:${jobType}`, jobId)
+
+    return jobId
+  }
+
+  async dequeue(jobType: string): Promise<SecureJob | null> {
+    const jobId = await this.redis.brpoplpush(
+      `queue:${jobType}`,
+      `processing:${jobType}`,
+      10 // 10 second timeout
+    )
+
+    if (!jobId) return null
+
+    const jobData = await this.redis.get(`job:${jobId}`)
+    if (!jobData) return null
+
+    const job: SecureJob = JSON.parse(jobData)
+
+    // Check if job has expired
+    if (new Date(job.expiresAt) < new Date()) {
+      await this.redis.del(`job:${jobId}`)
+      return null
+    }
+
+    // Verify job token
+    if (!this.verifyJobToken(job.jobToken, job.payload.requestId, job.type)) {
+      await securityLogger.security('malicious_request', 'Invalid job token detected', { jobId })
+      await this.redis.del(`job:${jobId}`)
+      return null
+    }
+
+    // Update job status
+    job.status = 'processing'
+    job.attempts++
+
+    await this.redis.setex(`job:${jobId}`, 24 * 60 * 60, JSON.stringify(job))
+
+    return job
+  }
+
+  async completeJob(jobId: string, result?: any): Promise<void> {
+    const jobData = await this.redis.get(`job:${jobId}`)
+    if (!jobData) return
+
+    const job: SecureJob = JSON.parse(jobData)
+    job.status = 'completed'
+
+    await this.redis.setex(
+      `job:${jobId}`,
+      7 * 24 * 60 * 60, // Keep for 7 days for audit
+      JSON.stringify(job)
+    )
+
+    // Remove from processing queue
+    await this.redis.lrem(`processing:${job.type}`, 1, jobId)
+
+    await securityLogger.security('admin_action', 'Background job completed', {
+      jobId,
+      jobType: job.type,
+      userId: job.userId,
+    })
+  }
+
+  async failJob(jobId: string, error: Error): Promise<void> {
+    const jobData = await this.redis.get(`job:${jobId}`)
+    if (!jobData) return
+
+    const job: SecureJob = JSON.parse(jobData)
+
+    if (job.attempts >= job.maxAttempts) {
+      job.status = 'failed'
+
+      await securityLogger.error('Background job failed permanently', error, {
+        jobId,
+        jobType: job.type,
+        userId: job.userId,
+        attempts: job.attempts,
+      })
+    } else {
+      // Requeue for retry
+      await this.redis.lpush(`queue:${job.type}`, jobId)
+    }
+
+    // Remove from processing queue
+    await this.redis.lrem(`processing:${job.type}`, 1, jobId)
+
+    await this.redis.setex(`job:${jobId}`, 24 * 60 * 60, JSON.stringify(job))
+  }
+
+  async getJobStatus(jobId: string): Promise<SecureJob | null> {
+    const jobData = await this.redis.get(`job:${jobId}`)
+    return jobData ? JSON.parse(jobData) : null
+  }
+
+  async cleanupExpiredJobs(): Promise<number> {
+    const patterns = ['job:*']
+    let cleanedCount = 0
+
+    for (const pattern of patterns) {
+      const keys = await this.redis.keys(pattern)
+
+      for (const key of keys) {
+        const jobData = await this.redis.get(key)
+        if (jobData) {
+          const job: SecureJob = JSON.parse(jobData)
+          if (new Date(job.expiresAt) < new Date()) {
+            await this.redis.del(key)
+            cleanedCount++
+          }
+        }
+      }
+    }
+
+    return cleanedCount
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 📊 TYPES
@@ -115,12 +303,18 @@ export const COMPLIANCE_RULES: Record<
 
 export class ComplianceService {
   private supabase
+  private secureJobQueue: SecureJobQueue
 
   constructor() {
     this.supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_KEY!
     )
+    this.secureJobQueue = new SecureJobQueue()
+  }
+
+  private generateJobToken(requestId: string, jobType: string): string {
+    return this.secureJobQueue.generateJobToken(requestId, jobType)
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -231,8 +425,27 @@ export class ComplianceService {
   }
 
   private async queueExportJob(requestId: string): Promise<void> {
-    // In production, this would queue a background job via Redis/SQS
-    logger.security('Data export job queued', { requestId })
+    // Secure background job with authentication and authorization
+    const jobToken = this.generateJobToken(requestId, 'data_export')
+
+    try {
+      await this.secureJobQueue.enqueue('data_export', {
+        requestId,
+        jobToken,
+        userId: requestId, // Will be resolved in job processor
+        jobType: 'data_export',
+        queuedAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+      })
+
+      await securityLogger.security('data_export', 'Data export job queued securely', {
+        requestId,
+        jobToken: jobToken.substring(0, 10) + '***',
+      })
+    } catch (error) {
+      securityLogger.error('Failed to queue export job', error as Error, { requestId })
+      throw new Error('Failed to queue export job')
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -283,8 +496,27 @@ export class ComplianceService {
   }
 
   private async queueDeletionJob(requestId: string): Promise<void> {
-    // In production, this would queue a background job via Redis/SQS
-    logger.security('Data deletion job queued', { requestId })
+    // Secure background job with authentication and authorization
+    const jobToken = this.generateJobToken(requestId, 'data_deletion')
+
+    try {
+      await this.secureJobQueue.enqueue('data_deletion', {
+        requestId,
+        jobToken,
+        userId: requestId, // Will be resolved in job processor
+        jobType: 'data_deletion',
+        queuedAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+      })
+
+      await securityLogger.security('data_deletion', 'Data deletion job queued securely', {
+        requestId,
+        jobToken: jobToken.substring(0, 10) + '***',
+      })
+    } catch (error) {
+      securityLogger.error('Failed to queue deletion job', error as Error, { requestId })
+      throw new Error('Failed to queue deletion job')
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────────

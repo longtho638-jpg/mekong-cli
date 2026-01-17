@@ -83,9 +83,9 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
     try:
         print("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
         # Timeout is long because Jules might take time to initialize the task
+        # Security: Use argument list to prevent command injection
         result = subprocess.run(
-            cmd,
-            shell=True,
+            ["gemini", "-p", f"/jules {mission_name}"],
             capture_output=True,
             text=True,
             timeout=180
@@ -130,10 +130,15 @@ def run_scheduled_maintenance(dry_run: bool = False):
 
 def check_jules_status():
     """Queries the current status of all Jules tasks."""
-    cmd = 'gemini -p "/jules what is the status of my tasks?"'
     print("🔍 Đang kiểm tra trạng thái nhiệm vụ...")
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+        # Security: Use argument list to prevent command injection
+        result = subprocess.run(
+            ["gemini", "-p", "/jules what is the status of my tasks?"],
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
         print(result.stdout)
     except Exception as e:
         print(f"❌ Lỗi khi kiểm tra: {e}")

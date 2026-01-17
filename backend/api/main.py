@@ -42,12 +42,27 @@ app = FastAPI(
     },
 )
 
-# CORS middleware
+# CORS middleware with secure origins
+def get_allowed_origins():
+    """Get allowed origins from environment or use secure defaults."""
+    env_origins = os.getenv("ALLOWED_ORIGINS", "")
+    if env_origins:
+        return [origin.strip() for origin in env_origins.split(",") if origin.strip()]
+    
+    # Default secure origins based on environment
+    env = os.getenv("ENVIRONMENT", "development")
+    if env == "production":
+        return ["https://agencyos.network", "https://www.agencyos.network"]
+    elif env == "staging":
+        return ["https://staging.agencyos.network"]
+    else:
+        return ["http://localhost:3000", "http://localhost:8000"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Make configurable like main.py
+    allow_origins=get_allowed_origins(),
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
 

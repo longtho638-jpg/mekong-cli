@@ -30,19 +30,23 @@ def main():
 
     all_ok = True
 
-    # 1. Git
-    result = subprocess.run("git status", shell=True, capture_output=True)
+    # 1. Git - Fixed: Use argument list instead of shell=True
+    result = subprocess.run(["git", "status"], capture_output=True)
     all_ok &= check("Git repository", result.returncode == 0)
 
-    # 2. Python
-    result = subprocess.run("python3 --version", shell=True, capture_output=True)
+    # 2. Python - Fixed: Use argument list instead of shell=True
+    result = subprocess.run(["python3", "--version"], capture_output=True)
     all_ok &= check("Python 3", result.returncode == 0)
 
-    # 3. Tests
+    # 3. Tests - Fixed: Replace shell pipe with Python processing
     result = subprocess.run(
-        "python3 -m pytest tests/test_wow.py -v --tb=short 2>&1 | grep -q passed",
-        shell=True,
+        ["python3", "-m", "pytest", "tests/test_wow.py", "-v", "--tb=short"],
+        capture_output=True,
+        text=True
     )
+    # Check if tests passed using Python instead of shell grep
+    tests_passed = result.returncode == 0 and "passed" in result.stdout
+    all_ok &= check("Tests passing", tests_passed)
     all_ok &= check("Tests passing", result.returncode == 0)
 
     # 4. Scripts

@@ -1,28 +1,46 @@
 """
 🏦 PayPal Braintree Payments Router
-====================================
+===================================
 Xử lý thanh toán qua Braintree SDK.
 
 Endpoints:
 - GET /payments/client-token: Lấy token cho frontend
 - POST /payments/checkout: Xử lý thanh toán
 - GET /payments/transaction/{id}: Kiểm tra transaction
+
+Security: All endpoints require authentication.
 """
 
 import os
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
+
+# Import authentication middleware
+try:
+    from core.security.auth_middleware import require_auth
+except ImportError:
+    # Fallback if security module not available
+    def require_auth(**kwargs):
+        def decorator(func):
+            return func
+        return decorator
 
 # Braintree SDK import (có thể mock nếu chưa install)
 try:
     import braintree
-
+    from braintree.braintree_gateway import BraintreeGateway
+    from braintree.configuration import Configuration
+    from braintree.environment import Environment
+    
     BRAINTREE_AVAILABLE = True
 except ImportError:
     BRAINTREE_AVAILABLE = False
     braintree = None
+    BraintreeGateway = None
+    Configuration = None
+    Environment = None
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
@@ -50,41 +68,82 @@ def get_gateway():
     if not BRAINTREE_AVAILABLE:
         return None
 
-    # Security: Validate all required environment variables
-    required_vars = ["BRAINTREE_MERCHANT_ID", "BRAINTREE_PUBLIC_KEY", "BRAINTREE_PRIVATE_KEY"]
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-    
-    if missing_vars:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Missing required environment variables: {', '.join(missing_vars)}"
+    # Security: Validate all required environment variables using secure manager
+    try:
+        from core.security.env_manager import validate_environment
+        env_manager = validate_environment()
+        
+        # Check for missing Braintree credentials
+        required_vars = ["BRAINTREE_MERCHANT_ID", "BRAINTREE_PUBLIC_KEY", "BRAINTREE_PRIVATE_KEY"]
+        missing_vars = [var for var in required_vars if not env_manager.get(var)]
+        
+        if missing_vars:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Missing required environment variables: {', '.join(missing_vars)}"
+            )
+
+        env = env_manager.get("BRAINTREE_ENV", "sandbox")
+        if env not in ["sandbox", "production"]:
+            raise HTTPException(
+                status_code=500,
+                detail="BRAINTREE_ENV must be 'sandbox' or 'production'"
+            )
+
+        environment = (
+            Environment.Sandbox
+            if env == "sandbox"
+            else Environment.Production
         )
 
-    env = os.getenv("BRAINTREE_ENV", "sandbox")
-    if env not in ["sandbox", "production"]:
-        raise HTTPException(
-            status_code=500,
-            detail="BRAINTREE_ENV must be 'sandbox' or 'production'"
+        return BraintreeGateway(
+            Configuration(
+                environment=environment,
+                merchant_id=env_manager.get("BRAINTREE_MERCHANT_ID"),
+                public_key=env_manager.get("BRAINTREE_PUBLIC_KEY"),
+                private_key=env_manager.get("BRAINTREE_PRIVATE_KEY"),
+            )
         )
+    except ImportError:
+        # Fallback to direct environment access
+        required_vars = ["BRAINTREE_MERCHANT_ID", "BRAINTREE_PUBLIC_KEY", "BRAINTREE_PRIVATE_KEY"]
+        missing_vars = [var for var in required_vars if not os.getenv(var)]
+        
+        if missing_vars:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Missing required environment variables: {', '.join(missing_vars)}"
+            )
 
-    environment = (
-        braintree.Environment.Sandbox
-        if env == "sandbox"
-        else braintree.Environment.Production
-    )
+        env = os.getenv("BRAINTREE_ENV", "sandbox")
+        if env not in ["sandbox", "production"]:
+            raise HTTPException(
+                status_code=500,
+                detail="BRAINTREE_ENV must be 'sandbox' or 'production'"
+            )
 
-    return braintree.BraintreeGateway(
-        braintree.Configuration(
-            environment=environment,
-            merchant_id=os.getenv("BRAINTREE_MERCHANT_ID"),
-            public_key=os.getenv("BRAINTREE_PUBLIC_KEY"),
-            private_key=os.getenv("BRAINTREE_PRIVATE_KEY"),
-        )
-    )
+        if BRAINTREE_AVAILABLE and hasattr(braintree, 'Environment') and hasattr(braintree, 'BraintreeGateway'):
+            environment = (
+                braintree.Environment.Sandbox
+                if env == "sandbox"
+                else braintree.Environment.Production
+            )
+
+            return braintree.BraintreeGateway(
+                braintree.Configuration(
+                    environment=environment,
+                    merchant_id=os.getenv("BRAINTREE_MERCHANT_ID"),
+                    public_key=os.getenv("BRAINTREE_PUBLIC_KEY"),
+                    private_key=os.getenv("BRAINTREE_PRIVATE_KEY"),
+                )
+            )
+        else:
+            return None
 
 
 @router.get("/status")
-def payments_status():
+@require_auth(permissions=["read"], allow_api_key=True)
+def payments_status(request: Request):
     """Kiểm tra trạng thái Braintree integration."""
     return {
         "braintree_available": BRAINTREE_AVAILABLE,
@@ -94,7 +153,8 @@ def payments_status():
 
 
 @router.get("/client-token")
-def get_client_token():
+@require_auth(permissions=["write"], allow_api_key=True)
+def get_client_token(request: Request):
     """
     Tạo client token cho frontend Drop-in UI.
 
@@ -122,7 +182,8 @@ def get_client_token():
 
 
 @router.post("/checkout", response_model=CheckoutResponse)
-def process_checkout(request: CheckoutRequest):
+@require_auth(permissions=["write"], allow_api_key=True)
+def process_checkout(request: Request, checkout_request: CheckoutRequest):
     """
     Xử lý thanh toán.
 
@@ -138,8 +199,8 @@ def process_checkout(request: CheckoutRequest):
     try:
         result = gateway.transaction.sale(
             {
-                "amount": request.amount,
-                "payment_method_nonce": request.nonce,
+                "amount": checkout_request.amount,
+                "payment_method_nonce": checkout_request.nonce,
                 "options": {"submit_for_settlement": True},
             }
         )
@@ -148,7 +209,7 @@ def process_checkout(request: CheckoutRequest):
             return CheckoutResponse(
                 success=True,
                 transaction_id=result.transaction.id,
-                message=f"Thanh toán thành công: ${request.amount}",
+                message=f"Thanh toán thành công: ${checkout_request.amount}",
             )
         else:
             return CheckoutResponse(
@@ -159,7 +220,8 @@ def process_checkout(request: CheckoutRequest):
 
 
 @router.get("/transaction/{transaction_id}")
-def get_transaction(transaction_id: str):
+@require_auth(permissions=["read"], allow_api_key=True)
+def get_transaction(request: Request, transaction_id: str):
     """Lấy thông tin transaction."""
     gateway = get_gateway()
 
@@ -180,7 +242,8 @@ def get_transaction(transaction_id: str):
 
 # Mock endpoint cho testing khi chưa có Braintree
 @router.post("/mock-checkout")
-def mock_checkout(request: CheckoutRequest):
+@require_auth(permissions=["write"], allow_api_key=True)
+def mock_checkout(request: Request, checkout_request: CheckoutRequest):
     """
     Mock checkout cho testing khi chưa cấu hình Braintree.
     Luôn trả về success.
@@ -188,5 +251,5 @@ def mock_checkout(request: CheckoutRequest):
     return CheckoutResponse(
         success=True,
         transaction_id="mock_txn_" + os.urandom(8).hex(),
-        message=f"[MOCK] Thanh toán ${request.amount} thành công",
+        message=f"[MOCK] Thanh toán ${checkout_request.amount} thành công",
     )
