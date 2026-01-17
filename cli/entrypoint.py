@@ -29,6 +29,7 @@ outreach_app = typer.Typer(help="📧 Quản lý Lead & Outreach")
 content_app = typer.Typer(help="✍️ Tạo nội dung Marketing")
 finance_app = typer.Typer(help="💰 Quản lý Tài chính")
 sales_app = typer.Typer(help="💼 Quản lý Sales & Sản phẩm")
+ops_app = typer.Typer(help="👁️ Operations & Monitoring")
 
 app.add_typer(strategy_app, name="strategy")
 app.add_typer(dev_app, name="dev")
@@ -39,11 +40,13 @@ from cli.commands.outreach import outreach_app
 from cli.commands.content import content_app
 from cli.commands.finance import finance_app
 from cli.commands.sales import sales_app
+from cli.commands.ops import ops_app
 
 app.add_typer(outreach_app, name="outreach")
 app.add_typer(content_app, name="content")
 app.add_typer(finance_app, name="finance")
 app.add_typer(sales_app, name="sales")
+app.add_typer(ops_app, name="ops")
 
 
 def print_banner():
