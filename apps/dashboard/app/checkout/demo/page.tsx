@@ -27,7 +27,7 @@ export default function CheckoutDemoPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-8">
+    <div className="min-h-screen bg-linear-to-b from-slate-900 to-slate-950 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -82,10 +82,9 @@ export default function CheckoutDemoPage() {
               description={selectedProduct.name}
               onSuccess={txn => {
                 setLastTransaction(txn)
-                console.log('Payment success:', txn)
               }}
-              onError={err => {
-                console.error('Payment error:', err)
+              onError={() => {
+                // Error is displayed in BraintreeCheckout component
               }}
             />
           </div>
