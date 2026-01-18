@@ -1,3 +1,10 @@
+## [2.4.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.7...v2.4.0-beta.8) (2026-01-18)
+
+
+### 🚀 Features
+
+* **skill:** add web-testing skill for comprehensive test automation ([bc42ca3](https://github.com/claudekit/claudekit-engineer/commit/bc42ca3a068ee4ce6a7ae8e2264cc1e16233945d))
+
 ## [2.4.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.6...v2.4.0-beta.7) (2026-01-18)
 
 
