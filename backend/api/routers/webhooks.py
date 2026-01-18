@@ -47,11 +47,24 @@ def generate_license_key(email: str, product_id: str) -> str:
     return hashlib.sha256(base.encode()).hexdigest()[:24].upper()
 
 
+from core.infrastructure.notifications import NotificationService, NotificationType, Channel
+
 async def send_welcome_email(customer: dict):
     """Send welcome email with license and portal link."""
     logger.info(f"📧 Sending welcome email to {customer['email']}")
-    # TODO: Integrate with email provider (SendGrid/Postmark)
-    # For now, just log
+    
+    notifier = NotificationService()
+    notifier.create_notification(
+        n_type=NotificationType.WELCOME,
+        channel=Channel.EMAIL,
+        recipient=customer['email'],
+        variables={
+            "client_name": customer.get("email").split("@")[0],
+            "agency_name": "AgencyOS",
+            "company": "Customer"
+        }
+    )
+    
     logger.info(f"   License: {customer['license_key']}")
     logger.info(
         f"   Portal: https://platform.billmentor.com/activate?key={customer['license_key']}"
