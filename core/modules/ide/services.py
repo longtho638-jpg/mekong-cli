@@ -78,7 +78,7 @@ class IDEService:
                 # Check for marker
                 if current.get("agencyos.mode") != "antigravity":
                     return False
-        except:
+        except Exception:
             return False
 
         return True

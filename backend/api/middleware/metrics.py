@@ -8,6 +8,7 @@ Includes HTTP requests, tenant usage, and business metrics.
 
 import logging
 import time
+from typing import TYPE_CHECKING
 
 from fastapi import Request, Response
 from fastapi.responses import Response as FastAPIResponse
@@ -15,6 +16,9 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from prometheus_client import Counter as PromCounter
 from prometheus_client import Gauge as PromGauge
 from prometheus_client import Histogram as PromHistogram
+
+if TYPE_CHECKING:
+    from fastapi import FastAPI
 
 logger = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@
 Agent Service - Business logic for agent operations
 """
 
+from datetime import datetime
 from typing import Any, Dict
 
 from backend.models.agent import AgentResponse, AgentTask
