@@ -1,29 +1,3 @@
-## [2.4.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.8...v2.4.0-beta.9) (2026-01-18)
-
-
-### 🚀 Features
-
-* **release:** add explicit release rules for minor/patch version bumps ([24706fb](https://github.com/claudekit/claudekit-engineer/commit/24706fb1f5db73ca0c6cf4b06f186c42de438f0a))
-
-## [2.4.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.7...v2.4.0-beta.8) (2026-01-18)
-
-
-### 🚀 Features
-
-* **skill:** add web-testing skill for comprehensive test automation ([bc42ca3](https://github.com/claudekit/claudekit-engineer/commit/bc42ca3a068ee4ce6a7ae8e2264cc1e16233945d))
-
-## [2.4.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.6...v2.4.0-beta.7) (2026-01-18)
-
-
-### 🚀 Features
-
-* **skill:** add web-testing skill with comprehensive testing workflows ([34cd3c1](https://github.com/claudekit/claudekit-engineer/commit/34cd3c12328dd01bf2b1f4dd93becbf6298a16a8))
-
-
-### 📚 Documentation
-
-* **skill:** enhance devops skill with kubernetes reference documentation ([14f6e7b](https://github.com/claudekit/claudekit-engineer/commit/14f6e7b85101894005d0c8f2150dbf9f32e4d6b0))
-
 ## [2.4.0](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0) (2026-01-17)
 
 
@@ -69,6 +43,45 @@
 
 * **skill:** enhance context-engineering and git documentation ([ae5469e](https://github.com/claudekit/claudekit-engineer/commit/ae5469e00d5f4a6eed4f8b6ac494acc796612c6c))
 * **skill:** upgrade `db-design` skill from Viet's contribution ([51cc63a](https://github.com/claudekit/claudekit-engineer/commit/51cc63a7b62f57ffafdc9eba8f8c937081312164))
+
+## [2.4.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.5...v2.4.0-beta.6) (2026-01-16)
+
+
+### 🚀 Features
+
+* **config:** add skills.research.useGemini toggle for Gemini CLI ([0659ae6](https://github.com/claudekit/claudekit-engineer/commit/0659ae6adecdfba5729ceafb68b2f7de396b876b))
+* **skill:** add copywriting skill with comprehensive references and utilities ([86be847](https://github.com/claudekit/claudekit-engineer/commit/86be8478941c60e7ef0a30b64b0378d1043a841c))
+* **skill:** add git operations skill with comprehensive workflow references ([e84c1b0](https://github.com/claudekit/claudekit-engineer/commit/e84c1b0523da1310a01fa71baa5bc34d3ef77229))
+* **skill:** implement design system generator for ui-ux-pro-max ([64ce03a](https://github.com/claudekit/claudekit-engineer/commit/64ce03a230df93d44076c6adfddf271ad280328b))
+* **skills:** added `web-design-guidelines` skill (Vercel) ([05920da](https://github.com/claudekit/claudekit-engineer/commit/05920dab2aa23ff0c1126fec4d0ca82ea1be29ea))
+
+
+### 📚 Documentation
+
+* **skill:** document design system generation in ui-ux-pro-max skill.md ([ebbad52](https://github.com/claudekit/claudekit-engineer/commit/ebbad52c8a95c8443fdf7b63798e73072e8d3641))
+
+
+### ⚡ Performance Improvements
+
+* **skill:** enhance context-engineering and git documentation ([ae5469e](https://github.com/claudekit/claudekit-engineer/commit/ae5469e00d5f4a6eed4f8b6ac494acc796612c6c))
+
+## [2.4.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.4...v2.4.0-beta.5) (2026-01-15)
+
+
+### 🚀 Features
+
+* **hooks:** add context and usage section builders to context-builder ([865649c](https://github.com/claudekit/claudekit-engineer/commit/865649cc5860d559f3360536164b00ebc97ab173))
+
+
+### 🐞 Bug Fixes
+
+* **hooks:** read session_id from hook input in dev-rules-reminder ([c9c9e3f](https://github.com/claudekit/claudekit-engineer/commit/c9c9e3ff6b216261057a790be28dd38c1f794251))
+
+
+### ♻️ Code Refactoring
+
+* **hooks:** simplify usage-context-awareness to cache-only writer ([5f44968](https://github.com/claudekit/claudekit-engineer/commit/5f449686d422aed4401e942a580dc9eb5894be9b))
+* **statusline:** prioritize session info on line 1 for claude code readability ([06e5b94](https://github.com/claudekit/claudekit-engineer/commit/06e5b949650478030f558a19188c7d155ce700a3))
 
 ## [2.4.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.3...v2.4.0-beta.4) (2026-01-15)
 
