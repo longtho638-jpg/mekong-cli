@@ -6,6 +6,7 @@ Clean Architecture Layer: Use Cases
 """
 
 from datetime import datetime
+
 from core.entities.deal import Deal, DealStage
 
 
@@ -22,11 +23,11 @@ class CreateDealUseCase:
         company: str,
         value: float,
         probability: float = 50.0,
-        contact_id: int = None
+        contact_id: int = None,
     ) -> Deal:
         """
         Create a new deal.
-        
+
         Business Rules:
         - Title and company are required
         - Value must be positive
@@ -52,7 +53,7 @@ class CreateDealUseCase:
             stage=DealStage.QUALIFIED,
             contact_id=contact_id,
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         )
 
         # Persist if repository available

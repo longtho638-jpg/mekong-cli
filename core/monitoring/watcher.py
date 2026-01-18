@@ -4,11 +4,13 @@ Empire Watcher Service
 Monitors business metrics and alerts on changes.
 """
 
-import time
 import json
+import time
 from pathlib import Path
+
 from core.config import get_settings
 from core.infrastructure.notifications import NotificationService
+
 
 class EmpireWatcher:
     def __init__(self):
@@ -16,7 +18,7 @@ class EmpireWatcher:
         self.root_dir = Path.home() / settings.LICENSE_DIR_NAME
         self.notifier = NotificationService()
         self.state_file = self.root_dir / "watcher_state.json"
-        
+
     def _load_state(self):
         if self.state_file.exists():
             try:
@@ -37,15 +39,15 @@ class EmpireWatcher:
 
         with open(leads_file) as f:
             leads = json.load(f)
-            
+
         state = self._load_state()
         last_count = state.get("leads_count", 0)
         current_count = len(leads)
-        
+
         if current_count > last_count:
             diff = current_count - last_count
             self.notifier.send("New Lead", f"{diff} new leads detected!", "success")
-            
+
         state["leads_count"] = current_count
         self._save_state(state)
 

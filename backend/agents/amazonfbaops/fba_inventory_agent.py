@@ -3,11 +3,11 @@ FBA Inventory Agent - Inventory & Storage Management
 Manages FBA inventory tracking and restock alerts.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import date
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class InventoryStatus(Enum):
@@ -21,6 +21,7 @@ class InventoryStatus(Enum):
 @dataclass
 class FBAProduct:
     """FBA product"""
+
     id: str
     asin: str
     sku: str
@@ -46,7 +47,7 @@ class FBAProduct:
 class FBAInventoryAgent:
     """
     FBA Inventory Agent - Quản lý Kho FBA
-    
+
     Responsibilities:
     - Inventory tracking
     - Restock alerts
@@ -60,15 +61,10 @@ class FBAInventoryAgent:
         self.products: Dict[str, FBAProduct] = {}
 
     def add_product(
-        self,
-        asin: str,
-        sku: str,
-        name: str,
-        units: int = 0,
-        reorder_point: int = 50
+        self, asin: str, sku: str, name: str, units: int = 0, reorder_point: int = 50
     ) -> FBAProduct:
         """Add FBA product"""
-        product_id = f"fba_{random.randint(1000,9999)}"
+        product_id = f"fba_{random.randint(1000, 9999)}"
 
         product = FBAProduct(
             id=product_id,
@@ -76,7 +72,7 @@ class FBAInventoryAgent:
             sku=sku,
             name=name,
             units_available=units,
-            reorder_point=reorder_point
+            reorder_point=reorder_point,
         )
 
         # Calculate fees
@@ -147,7 +143,7 @@ class FBAInventoryAgent:
             "low_stock": len([p for p in products if p.status == InventoryStatus.LOW_STOCK]),
             "out_of_stock": len([p for p in products if p.status == InventoryStatus.OUT_OF_STOCK]),
             "total_fba_fees": sum(p.fba_fee for p in products),
-            "total_storage_fees": sum(p.storage_fee for p in products)
+            "total_storage_fees": sum(p.storage_fee for p in products),
         }
 
 

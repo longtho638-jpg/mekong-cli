@@ -9,14 +9,15 @@ Tests 100% of pages in the application:
 - Complete closed-loop: Homepage → Admin → Settings → Homepage
 """
 
-import sys
 import asyncio
-import aiohttp
-from pathlib import Path
-from typing import List
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
+from typing import List
+
+import aiohttp
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -25,6 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # ═══════════════════════════════════════════════════════════════════════════════
 # 📍 ROUTE DEFINITIONS
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class RouteGroup(Enum):
     APP = "(app)"
@@ -35,6 +37,7 @@ class RouteGroup(Enum):
 @dataclass
 class RouteResult:
     """Result of testing a single route."""
+
     path: str
     status_code: int
     response_time_ms: float
@@ -45,6 +48,7 @@ class RouteResult:
 @dataclass
 class NavigationTestReport:
     """Complete test report."""
+
     total_routes: int = 0
     passed: int = 0
     failed: int = 0
@@ -63,13 +67,11 @@ class NavigationTestReport:
 # Complete list of all AgencyOS routes
 ALL_ROUTES = [
     # Route Groups
-    "/landing",      # (marketing)
-    "/admin",        # (app)
-    "/settings",     # (app)
-
+    "/landing",  # (marketing)
+    "/admin",  # (app)
+    "/settings",  # (app)
     # Main Hubs
     "/hubs",
-
     # Department Hubs (Alphabetical - 87 routes)
     "/abm",
     "/ae",
@@ -156,7 +158,6 @@ ALL_ROUTES = [
     "/team",
     "/video",
     "/warroom",
-
     # VC Sub-routes (4 routes)
     "/vc/cap-table",
     "/vc/dealflow",
@@ -166,19 +167,20 @@ ALL_ROUTES = [
 
 # Closed-Loop Flow (the expected navigation sequence)
 CLOSED_LOOP_FLOW = [
-    "/",            # Homepage (Entry)
-    "/landing",     # Marketing Landing
-    "/hubs",        # Hub Directory
-    "/crm",         # Sample Hub Page
-    "/admin",       # Admin Dashboard
-    "/settings",    # Settings Page
-    "/",            # Back to Homepage (Loop Complete)
+    "/",  # Homepage (Entry)
+    "/landing",  # Marketing Landing
+    "/hubs",  # Hub Directory
+    "/crm",  # Sample Hub Page
+    "/admin",  # Admin Dashboard
+    "/settings",  # Settings Page
+    "/",  # Back to Homepage (Loop Complete)
 ]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🧪 NAVIGATION TESTER
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class NavigationFlowTester:
     """E2E Navigation Flow Tester for AgencyOS."""
@@ -211,23 +213,15 @@ class NavigationFlowTester:
                     status_code=response.status,
                     response_time_ms=round(elapsed, 2),
                     success=success,
-                    error="" if success else f"HTTP {response.status}"
+                    error="" if success else f"HTTP {response.status}",
                 )
         except asyncio.TimeoutError:
             return RouteResult(
-                path=path,
-                status_code=0,
-                response_time_ms=10000,
-                success=False,
-                error="Timeout"
+                path=path, status_code=0, response_time_ms=10000, success=False, error="Timeout"
             )
         except aiohttp.ClientError as e:
             return RouteResult(
-                path=path,
-                status_code=0,
-                response_time_ms=0,
-                success=False,
-                error=str(e)
+                path=path, status_code=0, response_time_ms=0, success=False, error=str(e)
             )
 
     async def test_all_routes(self) -> NavigationTestReport:
@@ -241,7 +235,7 @@ class NavigationFlowTester:
         async with aiohttp.ClientSession(connector=connector) as session:
             # Test routes in batches of 10
             for i in range(0, len(ALL_ROUTES), 10):
-                batch = ALL_ROUTES[i:i+10]
+                batch = ALL_ROUTES[i : i + 10]
                 tasks = [self._test_route(session, path) for path in batch]
                 results = await asyncio.gather(*tasks)
 
@@ -293,11 +287,13 @@ class NavigationFlowTester:
         else:
             lines.append("║  ✅ ALL ROUTES PASSED!                                    ║")
 
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  🏯 AgencyOS - Complete Navigation Flow Verified          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "╠═══════════════════════════════════════════════════════════╣",
+                "║  🏯 AgencyOS - Complete Navigation Flow Verified          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -305,6 +301,7 @@ class NavigationFlowTester:
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🚀 MAIN EXECUTION
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 async def main():
     """Run the navigation flow test."""
@@ -317,7 +314,9 @@ async def main():
     # Test closed-loop flow first
     print("📍 Testing Closed-Loop Flow...")
     loop_results = await tester.test_closed_loop()
-    print(f"   ✓ Closed-loop: {sum(1 for r in loop_results if r.success)}/{len(loop_results)} steps passed")
+    print(
+        f"   ✓ Closed-loop: {sum(1 for r in loop_results if r.success)}/{len(loop_results)} steps passed"
+    )
     print()
 
     # Test all routes

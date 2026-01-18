@@ -2,8 +2,9 @@
 Tests for Unified Dashboard.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.unified_dashboard import AgenticDashboard
 
-class TestUnifiedDashboard:
 
+class TestUnifiedDashboard:
     def test_get_stats(self):
         """Test aggregation of statistics."""
         dashboard = AgenticDashboard()
@@ -32,7 +33,8 @@ class TestUnifiedDashboard:
 
         assert 0 <= score <= 100
         # Given current state, score should be quite high
-        assert score >= 30 # Adjusted threshold for new formula
+        assert score >= 30  # Adjusted threshold for new formula
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

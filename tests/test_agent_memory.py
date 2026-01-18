@@ -2,8 +2,9 @@
 Tests for Agent Memory system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.agent_memory import AgentMemory
 
-class TestAgentMemory:
 
+class TestAgentMemory:
     def test_remember_and_recall(self, tmp_path):
         """Test basic remember and recall functionality."""
         memory_sys = AgentMemory(storage_path=str(tmp_path))
@@ -23,7 +24,7 @@ class TestAgentMemory:
             context={"file": "main.py", "error": "ImportError"},
             outcome="Fixed by adding import",
             success=True,
-            patterns=["missing_import"]
+            patterns=["missing_import"],
         )
 
         # Recall
@@ -63,6 +64,7 @@ class TestAgentMemory:
         m2 = AgentMemory(storage_path=storage)
         assert len(m2.memories) == 1
         assert m2.memories[0].agent == "tester"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

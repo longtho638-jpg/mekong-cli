@@ -3,15 +3,15 @@ Controllers module for backend clean architecture
 """
 
 from .agent_controller import AgentController
-from .command_controller import CommandController
-from .vibe_controller import VibeController
-from .router_controller import RouterController
 from .agentops_controller import AgentOpsController
+from .command_controller import CommandController
+from .router_controller import RouterController
+from .vibe_controller import VibeController
 
 __all__ = [
     "AgentController",
     "CommandController",
-    "VibeController", 
+    "VibeController",
     "RouterController",
-    "AgentOpsController"
+    "AgentOpsController",
 ]

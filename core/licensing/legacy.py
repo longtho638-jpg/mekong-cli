@@ -6,24 +6,26 @@ Manage franchise licenses with tier-based access.
 
 Tiers:
 - Starter: $0 - Personal use only
-- Franchise: $500/month - Up to 3 territories  
+- Franchise: $500/month - Up to 3 territories
 - Enterprise: $2000/month - Unlimited territories
 """
 
 import hashlib
-import uuid
 import logging
-from typing import Optional, Dict, Any
-from datetime import datetime, timedelta
+import uuid
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class LicenseTier(Enum):
     """Franchise partnership levels."""
+
     STARTER = "starter"
     FRANCHISE = "franchise"
     ENTERPRISE = "enterprise"
@@ -31,6 +33,7 @@ class LicenseTier(Enum):
 
 class LicenseStatus(Enum):
     """Lifecycle status of a license."""
+
     ACTIVE = "active"
     EXPIRED = "expired"
     SUSPENDED = "suspended"
@@ -40,6 +43,7 @@ class LicenseStatus(Enum):
 @dataclass
 class License:
     """A digital license entity record."""
+
     key: str
     tier: LicenseTier
     status: LicenseStatus
@@ -58,14 +62,26 @@ class License:
 class LicenseManager:
     """
     License Management System.
-    
+
     Generates, validates, and manages lifecycle of agency franchise licenses.
     """
 
     PRICING = {
-        LicenseTier.STARTER: {"monthly": 0.0, "territories": 1, "features": ["Personal use", "1 region"]},
-        LicenseTier.FRANCHISE: {"monthly": 500.0, "territories": 3, "features": ["3 territories", "Priority support"]},
-        LicenseTier.ENTERPRISE: {"monthly": 2000.0, "territories": 100, "features": ["Unlimited", "API access"]}
+        LicenseTier.STARTER: {
+            "monthly": 0.0,
+            "territories": 1,
+            "features": ["Personal use", "1 region"],
+        },
+        LicenseTier.FRANCHISE: {
+            "monthly": 500.0,
+            "territories": 3,
+            "features": ["3 territories", "Priority support"],
+        },
+        LicenseTier.ENTERPRISE: {
+            "monthly": 2000.0,
+            "territories": 100,
+            "features": ["Unlimited", "API access"],
+        },
     }
 
     def __init__(self):
@@ -77,7 +93,7 @@ class LicenseManager:
         prefix = {
             LicenseTier.STARTER: "AGOS-ST",
             LicenseTier.FRANCHISE: "AGOS-FR",
-            LicenseTier.ENTERPRISE: "AGOS-EN"
+            LicenseTier.ENTERPRISE: "AGOS-EN",
         }[tier]
 
         uid = uuid.uuid4().hex[:8].upper()
@@ -89,7 +105,7 @@ class LicenseManager:
         email: str,
         name: str,
         tier: LicenseTier = LicenseTier.FRANCHISE,
-        duration_months: int = 12
+        duration_months: int = 12,
     ) -> License:
         """Provision a new license for a partner."""
         if not email or not name:
@@ -99,12 +115,15 @@ class LicenseManager:
         cfg = self.PRICING[tier]
 
         lic = License(
-            key=key, tier=tier, status=LicenseStatus.ACTIVE,
-            owner_email=email, owner_name=name,
+            key=key,
+            tier=tier,
+            status=LicenseStatus.ACTIVE,
+            owner_email=email,
+            owner_name=name,
             territories_allowed=cfg["territories"],
             activated_at=datetime.now(),
             expires_at=datetime.now() + timedelta(days=30 * duration_months),
-            monthly_fee=cfg["monthly"]
+            monthly_fee=cfg["monthly"],
         )
 
         self.licenses[key] = lic
@@ -131,7 +150,7 @@ class LicenseManager:
             "valid": True,
             "tier": lic.tier.value,
             "owner": lic.owner_name,
-            "territories": lic.territories_allowed
+            "territories": lic.territories_allowed,
         }
 
     def format_pricing_table(self) -> str:
@@ -145,7 +164,7 @@ class LicenseManager:
         for tier in LicenseTier:
             p = self.PRICING[tier]
             cost = "FREE" if p["monthly"] == 0 else f"${p['monthly']:,.0f}/mo"
-            terr = f"{p['territories']} terr" if p['territories'] < 99 else "Unlimited"
+            terr = f"{p['territories']} terr" if p["territories"] < 99 else "Unlimited"
             lines.append(f"║  {tier.value.upper():<12} │ {cost:<10} │ {terr:<15} ║")
 
         lines.append("╚═══════════════════════════════════════════════════════════╝")

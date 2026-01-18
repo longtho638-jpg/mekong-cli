@@ -12,19 +12,21 @@ Features:
 - Notification workflows
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class TriggerType(Enum):
     """Automation trigger types."""
+
     NEW_CLIENT = "new_client"
     NEW_PROJECT = "new_project"
     INVOICE_DUE = "invoice_due"
@@ -35,6 +37,7 @@ class TriggerType(Enum):
 
 class ActionType(Enum):
     """Automation action types."""
+
     SEND_EMAIL = "send_email"
     CREATE_TASK = "create_task"
     SEND_NOTIFICATION = "send_notification"
@@ -45,6 +48,7 @@ class ActionType(Enum):
 @dataclass
 class Action:
     """An automation action entity."""
+
     type: ActionType
     config: Dict[str, Any]
     delay_hours: int = 0
@@ -57,6 +61,7 @@ class Action:
 @dataclass
 class Workflow:
     """An automation workflow entity."""
+
     id: str
     name: str
     description: str
@@ -70,7 +75,7 @@ class Workflow:
 class AutomationEngine:
     """
     Automation Engine System.
-    
+
     Orchestrates workflows triggered by agency events.
     """
 
@@ -90,9 +95,17 @@ class AutomationEngine:
             trigger=TriggerType.NEW_CLIENT,
             actions=[
                 Action(ActionType.SEND_EMAIL, {"template": "welcome_email", "to": "client"}, 0),
-                Action(ActionType.CREATE_TASK, {"title": "Schedule kickoff call", "assign": "account_manager"}, 0),
-                Action(ActionType.SEND_NOTIFICATION, {"message": "New client onboarded!", "channel": "slack"}, 0),
-            ]
+                Action(
+                    ActionType.CREATE_TASK,
+                    {"title": "Schedule kickoff call", "assign": "account_manager"},
+                    0,
+                ),
+                Action(
+                    ActionType.SEND_NOTIFICATION,
+                    {"message": "New client onboarded!", "channel": "slack"},
+                    0,
+                ),
+            ],
         )
 
         # Invoice reminder
@@ -102,8 +115,12 @@ class AutomationEngine:
             trigger=TriggerType.INVOICE_DUE,
             actions=[
                 Action(ActionType.SEND_EMAIL, {"template": "invoice_reminder", "to": "client"}, 0),
-                Action(ActionType.SEND_NOTIFICATION, {"message": "Invoice overdue!", "channel": "email"}, 72),
-            ]
+                Action(
+                    ActionType.SEND_NOTIFICATION,
+                    {"message": "Invoice overdue!", "channel": "email"},
+                    72,
+                ),
+            ],
         )
 
         # Milestone celebration
@@ -112,17 +129,17 @@ class AutomationEngine:
             description="Celebrate and notify when milestones are completed",
             trigger=TriggerType.MILESTONE_COMPLETE,
             actions=[
-                Action(ActionType.SEND_NOTIFICATION, {"message": "Milestone completed! 🎉", "channel": "slack"}, 0),
+                Action(
+                    ActionType.SEND_NOTIFICATION,
+                    {"message": "Milestone completed! 🎉", "channel": "slack"},
+                    0,
+                ),
                 Action(ActionType.CREATE_TASK, {"title": "Review milestone", "assign": "pm"}, 0),
-            ]
+            ],
         )
 
     def create_workflow(
-        self,
-        name: str,
-        description: str,
-        trigger: TriggerType,
-        actions: List[Action]
+        self, name: str, description: str, trigger: TriggerType, actions: List[Action]
     ) -> Workflow:
         """Create and register a new workflow."""
         if not name:
@@ -133,7 +150,7 @@ class AutomationEngine:
             name=name,
             description=description,
             trigger=trigger,
-            actions=actions
+            actions=actions,
         )
 
         self.workflows[workflow.id] = workflow
@@ -182,19 +199,23 @@ class AutomationEngine:
 
         # Display top 5 workflows
         for w in list(self.workflows.values())[:5]:
-            name_display = (w.name[:20] + '..') if len(w.name) > 22 else w.name
+            name_display = (w.name[:20] + "..") if len(w.name) > 22 else w.name
             trigger_display = w.trigger.value[:14]
             status_icon = "🟢" if w.enabled else "🔴"
 
-            lines.append(f"║  {status_icon} {name_display:<20} │ {trigger_display:<14} │ {len(w.actions):>7} │ {w.runs:>4}  ║")
+            lines.append(
+                f"║  {status_icon} {name_display:<20} │ {trigger_display:<14} │ {len(w.actions):>7} │ {w.runs:>4}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  💡 Automations save 10+ hours/week!                      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Efficiency!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  💡 Automations save 10+ hours/week!                      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Efficiency!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

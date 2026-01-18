@@ -70,18 +70,18 @@ class TierService:
     def check_limit(self, tier: SubscriptionTier, action: str, current_usage: int) -> Dict:
         """Check if action is within tier limits."""
         limits = self.get_limits(tier)
-        
+
         limit_map = {
             "api_call": limits.monthly_api_calls,
             "command_exec": limits.monthly_commands,
             "video_gen": limits.max_daily_video,
         }
-        
+
         limit = limit_map.get(action, -1)
-        
+
         if limit == -1:  # Unlimited
             return {"allowed": True, "remaining": -1, "limit": -1, "current": current_usage}
-        
+
         if current_usage >= limit:
             return {
                 "allowed": False,
@@ -90,7 +90,7 @@ class TierService:
                 "limit": limit,
                 "current": current_usage,
             }
-        
+
         return {
             "allowed": True,
             "remaining": limit - current_usage,
@@ -101,13 +101,13 @@ class TierService:
     def check_feature_access(self, tier: SubscriptionTier, feature: str) -> Dict:
         """Check if tier has access to a feature."""
         limits = self.get_limits(tier)
-        
+
         feature_map = {
             "api_access": (limits.api_access, "API access", "pro"),
             "white_label": (limits.white_label, "White-label", "franchise"),
             "priority_support": (limits.priority_support, "Priority support", "pro"),
         }
-        
+
         if feature in feature_map:
             has_access, name, req_tier = feature_map[feature]
             if not has_access:
@@ -117,7 +117,7 @@ class TierService:
                     "required_tier": req_tier,
                 }
             return {"allowed": True}
-        
+
         # Default: allow if unknown feature
         return {"allowed": True}
 
@@ -130,8 +130,8 @@ class TierService:
             SubscriptionTier.FRANCHISE,
             SubscriptionTier.ENTERPRISE,
         ]
-        
+
         current_index = tier_hierarchy.index(current_tier)
         target_index = tier_hierarchy.index(target_tier)
-        
+
         return target_index > current_index

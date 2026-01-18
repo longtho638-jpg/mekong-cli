@@ -13,16 +13,18 @@ Features:
 """
 
 import logging
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class MetricCategory(Enum):
     """Metric categories."""
+
     FINANCIAL = "financial"
     CLIENTS = "clients"
     OPERATIONS = "operations"
@@ -32,6 +34,7 @@ class MetricCategory(Enum):
 
 class Grade(Enum):
     """Performance grades."""
+
     A = "A"  # Excellent (90%+)
     B = "B"  # Good (75-89%)
     C = "C"  # Needs work (60-74%)
@@ -41,6 +44,7 @@ class Grade(Enum):
 @dataclass
 class KPI:
     """A key performance indicator entity."""
+
     name: str
     category: MetricCategory
     current: float
@@ -56,7 +60,7 @@ class KPI:
 class AgencyScorecard:
     """
     Agency Scorecard System.
-    
+
     Manages and visualizes Key Performance Indicators.
     """
 
@@ -92,20 +96,16 @@ class AgencyScorecard:
             ("Monthly Revenue", MetricCategory.FINANCIAL, 45000, 50000, "$", 12.0),
             ("Profit Margin", MetricCategory.FINANCIAL, 42, 40, "%", 5.0),
             ("Cash Flow", MetricCategory.FINANCIAL, 28000, 25000, "$", 8.0),
-
             # Clients
             ("Client Count", MetricCategory.CLIENTS, 15, 18, "", 2.0),
             ("NPS Score", MetricCategory.CLIENTS, 72, 70, "", 5.0),
             ("Retention Rate", MetricCategory.CLIENTS, 92, 90, "%", 3.0),
-
             # Operations
             ("Utilization", MetricCategory.OPERATIONS, 82, 80, "%", 4.0),
             ("On-Time Delivery", MetricCategory.OPERATIONS, 88, 90, "%", -2.0),
-
             # Team
             ("Team Size", MetricCategory.TEAM, 12, 12, "", 0.0),
             ("Revenue/Employee", MetricCategory.TEAM, 3750, 3500, "$", 7.0),
-
             # Growth
             ("Lead Conversion", MetricCategory.GROWTH, 28, 30, "%", 3.0),
             ("MRR Growth", MetricCategory.GROWTH, 8, 10, "%", 2.0),
@@ -118,7 +118,7 @@ class AgencyScorecard:
         """Get KPI achievement percentage. Handles zero targets."""
         if kpi.target == 0:
             return 100.0 if kpi.current >= 0 else 0.0
-        return (kpi.current / kpi.target * 100.0)
+        return kpi.current / kpi.target * 100.0
 
     def get_grade(self, kpi: KPI) -> Grade:
         """Get KPI grade based on achievement."""
@@ -135,7 +135,7 @@ class AgencyScorecard:
     def get_overall_grade(self) -> Grade:
         """Get overall agency grade."""
         if not self.kpis:
-            return Grade.C # Default neutral
+            return Grade.C  # Default neutral
 
         avg_achievement = sum(self.get_achievement(k) for k in self.kpis) / len(self.kpis)
         if avg_achievement >= 90:
@@ -151,12 +151,7 @@ class AgencyScorecard:
         """Format agency scorecard dashboard."""
         overall = self.get_overall_grade()
 
-        grade_colors = {
-            Grade.A: "🟢",
-            Grade.B: "💚",
-            Grade.C: "🟡",
-            Grade.D: "🔴"
-        }
+        grade_colors = {Grade.A: "🟢", Grade.B: "💚", Grade.C: "🟡", Grade.D: "🔴"}
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -177,7 +172,7 @@ class AgencyScorecard:
             MetricCategory.CLIENTS: "👥",
             MetricCategory.OPERATIONS: "⚙️",
             MetricCategory.TEAM: "👨‍💼",
-            MetricCategory.GROWTH: "📈"
+            MetricCategory.GROWTH: "📈",
         }
 
         for category, kpis in categories.items():
@@ -186,7 +181,7 @@ class AgencyScorecard:
             lines.append(f"║  {icon} {cat_name:<50}  ║")
             lines.append("║  ───────────────────────────────────────────────────────  ║")
 
-            for kpi in kpis[:3]: # Limit to 3 per category for UI balance
+            for kpi in kpis[:3]:  # Limit to 3 per category for UI balance
                 grade = self.get_grade(kpi)
                 trend_icon = "↑" if kpi.trend > 0 else ("↓" if kpi.trend < 0 else "→")
 
@@ -194,16 +189,20 @@ class AgencyScorecard:
                 target_str = f"{kpi.target:,.0f}{kpi.unit}"
 
                 # Format: [Grade] [Name] | [Value]/[Target] | [Trend]
-                lines.append(f"║    {grade_colors.get(grade, '⚪')} {kpi.name[:18]:<18} │ {value_str:>9} / {target_str:<9} │ {trend_icon}{abs(kpi.trend):>2.0f}%   ║")
+                lines.append(
+                    f"║    {grade_colors.get(grade, '⚪')} {kpi.name[:18]:<18} │ {value_str:>9} / {target_str:<9} │ {trend_icon}{abs(kpi.trend):>2.0f}%   ║"
+                )
 
             lines.append("║                                                           ║")
 
-        lines.extend([
-            "║  [📊 Details]  [📈 Trends]  [🎯 Set Goals]                ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Performance!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║  [📊 Details]  [📈 Trends]  [🎯 Set Goals]                ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Performance!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

@@ -3,11 +3,11 @@ Social Ads Agent - Paid Social Advertising
 Manages paid campaigns across platforms.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import date
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class Platform(Enum):
@@ -27,6 +27,7 @@ class AdStatus(Enum):
 @dataclass
 class AdSet:
     """Ad set"""
+
     id: str
     name: str
     audience: str
@@ -48,6 +49,7 @@ class AdSet:
 @dataclass
 class Campaign:
     """Paid social campaign"""
+
     id: str
     name: str
     platform: Platform
@@ -75,7 +77,7 @@ class Campaign:
 class SocialAdsAgent:
     """
     Social Ads Agent - Quảng cáo Paid Social
-    
+
     Responsibilities:
     - Platform campaigns
     - Ad sets & creatives
@@ -95,10 +97,10 @@ class SocialAdsAgent:
         objective: str,
         budget: float,
         start_date: date = None,
-        end_date: date = None
+        end_date: date = None,
     ) -> Campaign:
         """Create campaign"""
-        campaign_id = f"camp_{random.randint(100,999)}"
+        campaign_id = f"camp_{random.randint(100, 999)}"
 
         campaign = Campaign(
             id=campaign_id,
@@ -107,28 +109,24 @@ class SocialAdsAgent:
             objective=objective,
             budget_total=budget,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
         )
 
         self.campaigns[campaign_id] = campaign
         return campaign
 
     def add_ad_set(
-        self,
-        campaign_id: str,
-        name: str,
-        audience: str,
-        budget_daily: float
+        self, campaign_id: str, name: str, audience: str, budget_daily: float
     ) -> Campaign:
         """Add ad set to campaign"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
 
         ad_set = AdSet(
-            id=f"adset_{random.randint(100,999)}",
+            id=f"adset_{random.randint(100, 999)}",
             name=name,
             audience=audience,
-            budget_daily=budget_daily
+            budget_daily=budget_daily,
         )
 
         self.campaigns[campaign_id].ad_sets.append(ad_set)
@@ -167,7 +165,7 @@ class SocialAdsAgent:
             "active": len(active),
             "total_spend": sum(c.total_spend for c in campaigns),
             "total_conversions": sum(c.total_conversions for c in campaigns),
-            "avg_roas": sum(c.roas for c in campaigns) / len(campaigns) if campaigns else 0
+            "avg_roas": sum(c.roas for c in campaigns) / len(campaigns) if campaigns else 0,
         }
 
 
@@ -178,12 +176,7 @@ if __name__ == "__main__":
     print("📱 Social Ads Agent Demo\n")
 
     # Create campaign
-    c1 = agent.create_campaign(
-        "Q1 Brand Awareness",
-        Platform.META,
-        "Awareness",
-        budget=5000
-    )
+    c1 = agent.create_campaign("Q1 Brand Awareness", Platform.META, "Awareness", budget=5000)
 
     # Add ad sets
     agent.add_ad_set(c1.id, "Professionals 25-35", "Interest: Tech", 100)

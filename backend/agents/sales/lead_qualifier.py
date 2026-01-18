@@ -3,17 +3,17 @@ Lead Qualifier Agent - Lead Scoring & Qualification
 Auto-scores and qualifies incoming leads.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class LeadSource(Enum):
-    INBOUND = "inbound"      # GitHub, Blog
+    INBOUND = "inbound"  # GitHub, Blog
     AFFILIATE = "affiliate"  # Partner referrals
-    ZALO = "zalo"            # Zalo OA
+    ZALO = "zalo"  # Zalo OA
     FACEBOOK = "facebook"
     DIRECT = "direct"
 
@@ -28,6 +28,7 @@ class LeadStatus(Enum):
 @dataclass
 class Lead:
     """Sales lead"""
+
     id: str
     name: str
     email: Optional[str] = None
@@ -48,7 +49,7 @@ class Lead:
 class LeadQualifierAgent:
     """
     Lead Qualifier Agent - Đánh giá & Lọc Lead
-    
+
     Responsibilities:
     - Score leads (0-100)
     - Auto-qualify based on criteria
@@ -80,10 +81,10 @@ class LeadQualifierAgent:
         phone: Optional[str] = None,
         source: LeadSource = LeadSource.INBOUND,
         company: Optional[str] = None,
-        interest: Optional[str] = None
+        interest: Optional[str] = None,
     ) -> Lead:
         """Create a new lead"""
-        lead_id = f"lead_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        lead_id = f"lead_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         lead = Lead(
             id=lead_id,
@@ -92,7 +93,7 @@ class LeadQualifierAgent:
             phone=phone,
             source=source,
             company=company,
-            interest=interest
+            interest=interest,
         )
 
         self.leads_db[lead_id] = lead
@@ -146,10 +147,7 @@ class LeadQualifierAgent:
             "qualified": len([l for l in leads if l.status == LeadStatus.QUALIFIED]),
             "nurturing": len([l for l in leads if l.status == LeadStatus.NURTURING]),
             "avg_score": sum(l.score for l in leads) / len(leads) if leads else 0,
-            "by_source": {
-                s.value: len([l for l in leads if l.source == s])
-                for s in LeadSource
-            }
+            "by_source": {s.value: len([l for l in leads if l.source == s]) for s in LeadSource},
         }
 
 
@@ -166,14 +164,10 @@ if __name__ == "__main__":
         phone="0901234567",
         source=LeadSource.AFFILIATE,
         company="TechVN Co.",
-        interest="Mekong-CLI for agency"
+        interest="Mekong-CLI for agency",
     )
 
-    lead2 = agent.create_lead(
-        name="Trần B",
-        email="b@gmail.com",
-        source=LeadSource.FACEBOOK
-    )
+    lead2 = agent.create_lead(name="Trần B", email="b@gmail.com", source=LeadSource.FACEBOOK)
 
     # Qualify leads
     agent.qualify(lead1.id)

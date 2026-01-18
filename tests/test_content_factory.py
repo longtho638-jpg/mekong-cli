@@ -2,8 +2,9 @@
 Tests for Content Factory system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.content_factory import ContentFactory, ContentType
 
-class TestContentFactory:
 
+class TestContentFactory:
     def test_generate_ideas(self):
         """Test random idea generation."""
         factory = ContentFactory(niche="Gạo ST25")
@@ -41,6 +42,7 @@ class TestContentFactory:
         assert "date" in calendar[0]
         assert "title" in calendar[0]
         assert "virality" in calendar[0]
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

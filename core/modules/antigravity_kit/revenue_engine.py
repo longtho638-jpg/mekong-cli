@@ -2,8 +2,11 @@
 Antigravity Kit - Revenue Engine Module
 Wrapper around Core Finance
 """
+
 from typing import Dict
+
 from core.modules.finance import FinancialReportsService
+
 
 class RevenueEngine:
     """Powering the cash flow."""
@@ -24,15 +27,15 @@ class RevenueEngine:
         return {
             "mrr": latest.revenue,
             "arr": latest.revenue * 12,
-            "margin": (latest.net_income / latest.revenue * 100) if latest.revenue else 0
+            "margin": (latest.net_income / latest.revenue * 100) if latest.revenue else 0,
         }
 
     def get_goal_dashboard(self) -> Dict:
         """Visual goal tracking."""
         stats = self.get_stats()
-        goal = 1000000 # 1M ARR
+        goal = 1000000  # 1M ARR
         return {
-            "current_arr": stats['arr'],
+            "current_arr": stats["arr"],
             "goal_arr": goal,
-            "progress_percent": (stats['arr'] / goal) * 100
+            "progress_percent": (stats["arr"] / goal) * 100,
         }

@@ -10,8 +10,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List
 
+
 class VibeRegion(Enum):
     """Supported regional vibes."""
+
     MIEN_TAY = "mien-tay"
     MIEN_BAC = "mien-bac"
     MIEN_TRUNG = "mien-trung"
@@ -19,9 +21,11 @@ class VibeRegion(Enum):
     PROFESSIONAL = "professional"
     NEUTRAL = "neutral"
 
+
 @dataclass
 class VibeConfig:
     """Configuration for a specific vibe profile."""
+
     region: VibeRegion
     tone: str
     style: str
@@ -29,6 +33,7 @@ class VibeConfig:
     avoid_words: List[str]
     system_prompt: str
     replacements: Dict[str, str]
+
 
 class VibeTuner:
     """
@@ -44,7 +49,7 @@ class VibeTuner:
             local_words=["hen", "nghen", "dạ", "tui", "bà con"],
             avoid_words=["nhé", "ạ"],
             system_prompt="Bạn là người miền Tây chính gốc. Nói chuyện thân thiện, dùng từ địa phương tự nhiên.",
-            replacements={"tôi": "tui", "nhé": "nghen", "không": "hổng"}
+            replacements={"tôi": "tui", "nhé": "nghen", "không": "hổng"},
         ),
         VibeRegion.MIEN_BAC: VibeConfig(
             region=VibeRegion.MIEN_BAC,
@@ -53,7 +58,7 @@ class VibeTuner:
             local_words=["ạ", "nhé", "vâng"],
             avoid_words=["hen", "nghen"],
             system_prompt="Bạn nói giọng Hà Nội chuẩn mực. Dùng kính ngữ phù hợp.",
-            replacements={"nghen": "nhé", "tui": "tôi"}
+            replacements={"nghen": "nhé", "tui": "tôi"},
         ),
         VibeRegion.MIEN_TRUNG: VibeConfig(
             region=VibeRegion.MIEN_TRUNG,
@@ -62,7 +67,7 @@ class VibeTuner:
             local_words=["mô", "tê", "răng", "rứa"],
             avoid_words=[],
             system_prompt="Bạn là người miền Trung thật thà.",
-            replacements={"đâu": "mô", "kia": "tê", "sao": "răng", "vậy": "rứa"}
+            replacements={"đâu": "mô", "kia": "tê", "sao": "răng", "vậy": "rứa"},
         ),
         VibeRegion.GEN_Z: VibeConfig(
             region=VibeRegion.GEN_Z,
@@ -71,7 +76,7 @@ class VibeTuner:
             local_words=["chill", "vibe", "flex", "no cap"],
             avoid_words=["kính thưa"],
             system_prompt="Bạn là Gen Z authentic. Nói chuyện trendy, mix tiếng Anh-Việt.",
-            replacements={"đồng ý": "chốt đơn", "tuyệt vời": "đỉnh chóp"}
+            replacements={"đồng ý": "chốt đơn", "tuyệt vời": "đỉnh chóp"},
         ),
         VibeRegion.PROFESSIONAL: VibeConfig(
             region=VibeRegion.PROFESSIONAL,
@@ -80,7 +85,7 @@ class VibeTuner:
             local_words=["giải pháp", "hiệu quả"],
             avoid_words=["slang"],
             system_prompt="Bạn là chuyên gia tư vấn chuyên nghiệp.",
-            replacements={}
+            replacements={},
         ),
         VibeRegion.NEUTRAL: VibeConfig(
             region=VibeRegion.NEUTRAL,
@@ -89,14 +94,14 @@ class VibeTuner:
             local_words=[],
             avoid_words=[],
             system_prompt="Bạn nói tiếng Việt chuẩn phổ thông.",
-            replacements={}
-        )
+            replacements={},
+        ),
     }
 
     LOCATIONS_MAP = {
         VibeRegion.MIEN_TAY: ["cần thơ", "can tho", "mekong", "long an"],
         VibeRegion.MIEN_BAC: ["hà nội", "ha noi", "hải phòng"],
-        VibeRegion.MIEN_TRUNG: ["đà nẵng", "da nang", "huế"]
+        VibeRegion.MIEN_TRUNG: ["đà nẵng", "da nang", "huế"],
     }
 
     def __init__(self, default_vibe: VibeRegion = VibeRegion.NEUTRAL):

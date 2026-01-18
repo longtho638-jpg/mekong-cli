@@ -2,10 +2,11 @@
 Tests for Coding Level controller.
 """
 
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,13 +15,13 @@ from antigravity.core.coding_level import (
     LEVELS,
     Level,
     get_level,
-    set_level,
     get_level_prompt,
-    load_level_style
+    load_level_style,
+    set_level,
 )
 
-class TestCodingLevel:
 
+class TestCodingLevel:
     def test_levels_configuration(self):
         """Verify levels configuration."""
         assert len(LEVELS) == 6
@@ -60,6 +61,7 @@ class TestCodingLevel:
 
         content = load_level_style(3, base_path="mock/path")
         assert content == "# Senior Style"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -3,10 +3,10 @@ HR Analytics Agent - Workforce Metrics & Analysis
 Analyzes HR data, turnover, and workforce metrics.
 """
 
-from dataclasses import dataclass
-from typing import Dict
-from enum import Enum
 import random
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict
 
 
 class MetricType(Enum):
@@ -20,6 +20,7 @@ class MetricType(Enum):
 @dataclass
 class HRMetric:
     """HR metric data point"""
+
     id: str
     metric_type: MetricType
     value: float
@@ -32,7 +33,7 @@ class HRMetric:
 class HRAnalyticsAgent:
     """
     HR Analytics Agent - Phân tích Nhân sự
-    
+
     Responsibilities:
     - Track workforce metrics
     - Analyze turnover
@@ -51,10 +52,10 @@ class HRAnalyticsAgent:
         value: float,
         period: str,
         department: str = "ALL",
-        target: float = 0
+        target: float = 0,
     ) -> HRMetric:
         """Record HR metric"""
-        metric_id = f"metric_{metric_type.value}_{period}_{random.randint(100,999)}"
+        metric_id = f"metric_{metric_type.value}_{period}_{random.randint(100, 999)}"
 
         # Calculate trend from previous period
         trend = self._calculate_trend(metric_type, value, department)
@@ -66,7 +67,7 @@ class HRAnalyticsAgent:
             period=period,
             department=department,
             target=target,
-            trend=trend
+            trend=trend,
         )
 
         self.metrics[metric_id] = metric
@@ -74,8 +75,11 @@ class HRAnalyticsAgent:
 
     def _calculate_trend(self, metric_type: MetricType, current: float, department: str) -> float:
         """Calculate trend vs previous period"""
-        previous = [m for m in self.metrics.values()
-                    if m.metric_type == metric_type and m.department == department]
+        previous = [
+            m
+            for m in self.metrics.values()
+            if m.metric_type == metric_type and m.department == department
+        ]
         if previous:
             last = sorted(previous, key=lambda x: x.period)[-1]
             if last.value > 0:
@@ -97,7 +101,7 @@ class HRAnalyticsAgent:
         return {
             "rate": avg_rate,
             "target": avg_target,
-            "status": "on_target" if avg_rate <= avg_target else "above_target"
+            "status": "on_target" if avg_rate <= avg_target else "above_target",
         }
 
     def get_headcount_by_department(self) -> Dict[str, float]:
@@ -117,7 +121,7 @@ class HRAnalyticsAgent:
             "total_metrics": len(metrics),
             "metric_types": len(set(m.metric_type for m in metrics)),
             "departments_tracked": len(set(m.department for m in metrics if m.department != "ALL")),
-            "periods_tracked": len(set(m.period for m in metrics))
+            "periods_tracked": len(set(m.period for m in metrics)),
         }
 
 

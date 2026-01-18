@@ -3,7 +3,7 @@
 ===================================================
 
 Automates the generation of strategic, localized content for multiple channels.
-Bridges the gap between raw data and audience engagement by applying 
+Bridges the gap between raw data and audience engagement by applying
 specialized templates and regional tones.
 
 Capabilities:
@@ -19,14 +19,16 @@ import logging
 import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class ContentType(Enum):
     """Supported distribution channels."""
+
     BLOG = "blog"
     FACEBOOK = "facebook"
     TIKTOK = "tiktok"
@@ -39,6 +41,7 @@ class ContentType(Enum):
 
 class ContentStatus(Enum):
     """Workflow states for content pieces."""
+
     IDEA = "idea"
     DRAFT = "draft"
     REVIEW = "review"
@@ -49,6 +52,7 @@ class ContentStatus(Enum):
 @dataclass
 class ContentIdea:
     """A conceptual seed for a future content piece."""
+
     title: str
     topic: str = ""
     content_type: ContentType = ContentType.FACEBOOK
@@ -63,6 +67,7 @@ class ContentIdea:
 @dataclass
 class ContentPiece:
     """A drafted or completed content artifact."""
+
     title: str
     body: str = ""
     content_type: ContentType = ContentType.FACEBOOK
@@ -76,8 +81,8 @@ class ContentPiece:
 class ContentFactory:
     """
     🎨 Content Production Engine
-    
-    Powers the 'Content Machine' crew. Turns agency niches into localized 
+
+    Powers the 'Content Machine' crew. Turns agency niches into localized
     stories that drive engagement and leads.
     """
 
@@ -95,26 +100,28 @@ class ContentFactory:
                 "Tại sao {niche} của bạn chưa hiệu quả? (và cách khắc phục)",
                 "Câu chuyện thành công: Từ 0 đến 100 triệu với {niche}",
                 "{niche} 2026: Xu hướng nào sẽ thống trị?",
-                "Sai lầm lớn nhất khi làm {niche} (bạn có mắc không?)"
+                "Sai lầm lớn nhất khi làm {niche} (bạn có mắc không?)",
             ],
             ContentType.TIKTOK: [
                 "3 giây để hiểu {niche}! #viral #fyp",
                 "POV: Bạn làm {niche} đúng cách 😱",
                 "Trend {niche} mà ai cũng phải biết!",
                 "Sự thật dark về {niche} 🤫",
-                "Tips {niche} cực xịn cho người bận rộn"
+                "Tips {niche} cực xịn cho người bận rộn",
             ],
             ContentType.ZALO: [
                 "📢 [TIN NHANH] Cập nhật thị trường {niche}",
                 "💡 Mẹo nhỏ {niche} hôm nay cho bà con",
                 "🎁 Quà tặng đặc biệt: Cẩm nang {niche}",
-                "🔥 Cơ hội cuối cùng để sở hữu gói {niche}"
-            ]
+                "🔥 Cơ hội cuối cùng để sở hữu gói {niche}",
+            ],
         }
 
         new_ideas = []
         for _ in range(count):
-            c_type = random.choice([ContentType.FACEBOOK, ContentType.TIKTOK, ContentType.ZALO, ContentType.BLOG])
+            c_type = random.choice(
+                [ContentType.FACEBOOK, ContentType.TIKTOK, ContentType.ZALO, ContentType.BLOG]
+            )
             template_list = templates.get(c_type, templates[ContentType.FACEBOOK])
 
             title = random.choice(template_list).format(niche=self.niche)
@@ -122,7 +129,7 @@ class ContentFactory:
                 title=title,
                 topic=self.niche,
                 content_type=c_type,
-                virality_score=random.randint(60, 98)
+                virality_score=random.randint(60, 98),
             )
             new_ideas.append(idea)
             self.ideas.append(idea)
@@ -142,7 +149,7 @@ class ContentFactory:
             "• Điểm nhấn 1: Giá trị cốt lõi\n",
             "• Điểm nhấn 2: Lợi ích khách hàng\n",
             "• Điểm nhấn 3: Kêu gọi hành động (CTA)\n\n",
-            f"✨ Liên hệ ngay để được tư vấn {self.niche} chuyên sâu!"
+            f"✨ Liên hệ ngay để được tư vấn {self.niche} chuyên sâu!",
         ]
 
         if idea.content_type == ContentType.TIKTOK:
@@ -154,7 +161,7 @@ class ContentFactory:
             title=idea.title,
             body="".join(body_parts),
             content_type=idea.content_type,
-            virality_score=idea.virality_score
+            virality_score=idea.virality_score,
         )
 
         self.content_archive.append(piece)
@@ -173,14 +180,16 @@ class ContentFactory:
         for i in range(days):
             idea = self.ideas[i]
             post_date = start_date + timedelta(days=i)
-            calendar.append({
-                "id": i + 1,
-                "date": post_date.strftime("%Y-%m-%d"),
-                "time": "09:00 AM",
-                "title": idea.title,
-                "type": idea.content_type.value,
-                "virality": f"{idea.virality_score}%"
-            })
+            calendar.append(
+                {
+                    "id": i + 1,
+                    "date": post_date.strftime("%Y-%m-%d"),
+                    "time": "09:00 AM",
+                    "title": idea.title,
+                    "type": idea.content_type.value,
+                    "virality": f"{idea.virality_score}%",
+                }
+            )
 
         return calendar
 
@@ -189,11 +198,13 @@ class ContentFactory:
         return {
             "inventory": {
                 "total_ideas": len(self.ideas),
-                "drafts_completed": len(self.content_archive)
+                "drafts_completed": len(self.content_archive),
             },
             "quality": {
-                "avg_virality": sum(i.virality_score for i in self.ideas) / len(self.ideas) if self.ideas else 0
-            }
+                "avg_virality": sum(i.virality_score for i in self.ideas) / len(self.ideas)
+                if self.ideas
+                else 0
+            },
         }
 
 

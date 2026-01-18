@@ -3,12 +3,18 @@ IPOps Agents Package
 Patent + Trademark
 """
 
-from .patent_agent import PatentAgent, Patent, PatentStatus, PatentType
-from .trademark_agent import TrademarkAgent, Trademark, TrademarkStatus, TrademarkClass
+from .patent_agent import Patent, PatentAgent, PatentStatus, PatentType
+from .trademark_agent import Trademark, TrademarkAgent, TrademarkClass, TrademarkStatus
 
 __all__ = [
     # Patent
-    "PatentAgent", "Patent", "PatentStatus", "PatentType",
+    "PatentAgent",
+    "Patent",
+    "PatentStatus",
+    "PatentType",
     # Trademark
-    "TrademarkAgent", "Trademark", "TrademarkStatus", "TrademarkClass",
+    "TrademarkAgent",
+    "Trademark",
+    "TrademarkStatus",
+    "TrademarkClass",
 ]

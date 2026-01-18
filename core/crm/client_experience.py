@@ -11,20 +11,22 @@ Features:
 - Invoice tracking
 """
 
-import uuid
 import logging
 import re
-from typing import Optional, Dict, Any, List
-from datetime import datetime
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ProjectStatus(Enum):
     """Project lifecycle status."""
+
     DISCOVERY = "discovery"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
@@ -33,6 +35,7 @@ class ProjectStatus(Enum):
 
 class ServiceType(Enum):
     """Service categories offered by the agency."""
+
     SEO = "seo"
     PPC = "ppc"
     CONTENT = "content"
@@ -44,6 +47,7 @@ class ServiceType(Enum):
 @dataclass
 class Client:
     """An agency client entity."""
+
     id: str
     company: str
     contact_name: str
@@ -57,6 +61,7 @@ class Client:
 @dataclass
 class Project:
     """A client project record."""
+
     id: str
     client_id: str
     name: str
@@ -76,6 +81,7 @@ class Project:
 @dataclass
 class Report:
     """A generated performance report for a client."""
+
     id: str
     client_id: str
     project_id: str
@@ -87,7 +93,7 @@ class Report:
 class ClientExperience:
     """
     Client Experience System.
-    
+
     Manages client onboarding, project transparency, and professional reporting.
     """
 
@@ -102,7 +108,7 @@ class ClientExperience:
 
     def _validate_email(self, email: str) -> bool:
         """Simple email format validation."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return bool(re.match(pattern, email))
 
     def _create_demo_data(self):
@@ -113,7 +119,7 @@ class ClientExperience:
                 company="Saigon Coffee Co.",
                 contact_name="Nguyen Van Minh",
                 contact_email="minh@saigoncoffee.vn",
-                industry="F&B"
+                industry="F&B",
             )
 
             project = self.create_project(
@@ -121,7 +127,7 @@ class ClientExperience:
                 name="SEO Strategy",
                 service=ServiceType.SEO,
                 budget=5000.0,
-                deliverables=["Keyword Research", "Technical Audit"]
+                deliverables=["Keyword Research", "Technical Audit"],
             )
 
             project.progress = 65
@@ -130,11 +136,7 @@ class ClientExperience:
             logger.error(f"Demo data error: {e}")
 
     def onboard_client(
-        self,
-        company: str,
-        contact_name: str,
-        contact_email: str,
-        **kwargs
+        self, company: str, contact_name: str, contact_email: str, **kwargs
     ) -> Client:
         """Register a new agency client."""
         if not self._validate_email(contact_email):
@@ -146,7 +148,7 @@ class ClientExperience:
             company=company,
             contact_name=contact_name,
             contact_email=contact_email,
-            **kwargs
+            **kwargs,
         )
 
         self.clients[client.id] = client
@@ -159,7 +161,7 @@ class ClientExperience:
         name: str,
         service: ServiceType,
         budget: float = 0.0,
-        deliverables: Optional[List[str]] = None
+        deliverables: Optional[List[str]] = None,
     ) -> Project:
         """Launch a new project for an onboarded client."""
         if client_id not in self.clients:
@@ -172,7 +174,7 @@ class ClientExperience:
             name=name,
             service=service,
             budget=budget,
-            deliverables=deliverables or []
+            deliverables=deliverables or [],
         )
 
         self.projects[project.id] = project
@@ -187,7 +189,7 @@ class ClientExperience:
         metrics = {
             "traffic": {"value": 12500, "change": "+15%"},
             "leads": {"value": 45, "change": "+22%"},
-            "roi": {"value": "3.2x", "change": "+0.4x"}
+            "roi": {"value": "3.2x", "change": "+0.4x"},
         }
 
         report = Report(
@@ -195,7 +197,7 @@ class ClientExperience:
             client_id=client_id,
             project_id=project_id,
             period=period,
-            metrics=metrics
+            metrics=metrics,
         )
 
         self.reports.append(report)
@@ -219,7 +221,9 @@ class ClientExperience:
 
             lines.append(f"║  🏢 {client.company[:40]:<40}         ║")
             lines.append(f"║    👤 Contact: {client.contact_name:<30}         ║")
-            lines.append(f"║    📊 Status:  {active_count} Active │ {avg_prog:>3.0f}% Progress │ ${total_inv:>8,.0f} ║")
+            lines.append(
+                f"║    📊 Status:  {active_count} Active │ {avg_prog:>3.0f}% Progress │ ${total_inv:>8,.0f} ║"
+            )
             lines.append("║  " + "─" * 57 + "  ║")
 
         lines.append("║  [📂 Files]  [💬 Messages]  [📅 Meetings]  [💳 Billing]  ║")

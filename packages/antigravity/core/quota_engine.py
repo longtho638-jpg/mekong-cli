@@ -450,9 +450,7 @@ class QuotaEngine:
             capabilities.append("code")
 
             # Determine model ID and name
-            model_id = item.get("modelOrAlias", {}).get(
-                "model", item.get("id", "unknown")
-            )
+            model_id = item.get("modelOrAlias", {}).get("model", item.get("id", "unknown"))
             model_name = item.get("label", item.get("name", "Unknown Model"))
 
             models.append(
@@ -647,19 +645,11 @@ class QuotaEngine:
                 ungrouped.append(model)
 
         # Find models needing alerts
-        warnings = [
-            m for m in self._models if m.threshold_level == ThresholdLevel.WARNING
-        ]
-        criticals = [
-            m for m in self._models if m.threshold_level == ThresholdLevel.CRITICAL
-        ]
+        warnings = [m for m in self._models if m.threshold_level == ThresholdLevel.WARNING]
+        criticals = [m for m in self._models if m.threshold_level == ThresholdLevel.CRITICAL]
 
         # Find lowest quota model for status bar
-        lowest = (
-            min(self._models, key=lambda m: m.remaining_percent)
-            if self._models
-            else None
-        )
+        lowest = min(self._models, key=lambda m: m.remaining_percent) if self._models else None
 
         return {
             "models": [self._model_to_dict(m) for m in self._models],
@@ -669,9 +659,7 @@ class QuotaEngine:
                 "warnings": [m.model_name for m in warnings],
                 "criticals": [m.model_name for m in criticals],
             },
-            "status_bar": lowest.format_status(StatusFormat.FULL)
-            if lowest
-            else "No data",
+            "status_bar": lowest.format_status(StatusFormat.FULL) if lowest else "No data",
             "last_fetch": self._last_fetch.isoformat() if self._last_fetch else None,
         }
 
@@ -742,19 +730,11 @@ class QuotaEngine:
                 lines.append(f"{emoji} {name:<35} {percent:>6.2f}%")
             elif format_type == "table":
                 # Table format matching original extension exactly
-                reset_str = (
-                    f"→ {countdown} ({reset_time})"
-                    if countdown != "--"
-                    else "→ Unknown"
-                )
+                reset_str = f"→ {countdown} ({reset_time})" if countdown != "--" else "→ Unknown"
                 lines.append(f"{emoji} {name:<35} {bar} {percent:>6.2f}% {reset_str}")
             else:
                 # Full format with all details
-                reset_str = (
-                    f"→ {countdown} ({reset_time})"
-                    if countdown != "--"
-                    else "→ Unknown"
-                )
+                reset_str = f"→ {countdown} ({reset_time})" if countdown != "--" else "→ Unknown"
                 lines.append(f"{emoji} {name:<35} {bar} {percent:>6.2f}% {reset_str}")
 
         lines.append("=" * 60)
@@ -763,9 +743,7 @@ class QuotaEngine:
         status_models = []
         for model in status["models"][:3]:  # Top 3 for status bar
             emoji = model["status_emoji"]
-            name_short = (
-                model["name"].split()[0] if " " in model["name"] else model["name"][:10]
-            )
+            name_short = model["name"].split()[0] if " " in model["name"] else model["name"][:10]
             percent = int(model["remaining_percent"])
             status_models.append(f"{emoji} {name_short}: {percent}%")
 

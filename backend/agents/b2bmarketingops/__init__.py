@@ -3,12 +3,19 @@ B2BMarketingOps Agents Package
 Demand Gen + Lead Nurturing
 """
 
-from .demand_gen_agent import DemandGenAgent, DemandGenCampaign, Lead, Channel, LeadStage
-from .lead_nurturing_agent import LeadNurturingAgent, NurtureSequence, NurtureStep, NurtureStatus
+from .demand_gen_agent import Channel, DemandGenAgent, DemandGenCampaign, Lead, LeadStage
+from .lead_nurturing_agent import LeadNurturingAgent, NurtureSequence, NurtureStatus, NurtureStep
 
 __all__ = [
     # Demand Gen
-    "DemandGenAgent", "DemandGenCampaign", "Lead", "Channel", "LeadStage",
+    "DemandGenAgent",
+    "DemandGenCampaign",
+    "Lead",
+    "Channel",
+    "LeadStage",
     # Lead Nurturing
-    "LeadNurturingAgent", "NurtureSequence", "NurtureStep", "NurtureStatus",
+    "LeadNurturingAgent",
+    "NurtureSequence",
+    "NurtureStep",
+    "NurtureStatus",
 ]

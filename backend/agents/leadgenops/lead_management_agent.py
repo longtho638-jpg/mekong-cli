@@ -3,11 +3,11 @@ Lead Management Agent - Routing & Enrichment
 Manages lead routing, enrichment, and CRM sync.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class LeadStatus(Enum):
@@ -27,6 +27,7 @@ class RoutingRule(Enum):
 @dataclass
 class ManagedLead:
     """Managed lead"""
+
     id: str
     email: str
     company: str = ""
@@ -45,7 +46,7 @@ class ManagedLead:
 class LeadManagementAgent:
     """
     Lead Management Agent - Quản lý Leads
-    
+
     Responsibilities:
     - Lead routing
     - Data enrichment
@@ -68,14 +69,9 @@ class LeadManagementAgent:
                 lead.status = LeadStatus.DUPLICATE
                 return lead
 
-        lead_id = f"mgd_{random.randint(1000,9999)}"
+        lead_id = f"mgd_{random.randint(1000, 9999)}"
 
-        lead = ManagedLead(
-            id=lead_id,
-            email=email,
-            company=company,
-            score=random.randint(20, 80)
-        )
+        lead = ManagedLead(id=lead_id, email=email, company=company, score=random.randint(20, 80))
 
         self.leads[lead_id] = lead
         return lead
@@ -92,7 +88,7 @@ class LeadManagementAgent:
             "company_size": random.choice(["1-50", "51-200", "201-500", "500+"]),
             "industry": random.choice(["Tech", "Finance", "Healthcare", "Retail"]),
             "revenue": random.choice(["<$1M", "$1-10M", "$10-50M", "$50M+"]),
-            "linkedin": f"linkedin.com/company/{lead.company.lower().replace(' ', '-')}"
+            "linkedin": f"linkedin.com/company/{lead.company.lower().replace(' ', '-')}",
         }
 
         lead.status = LeadStatus.ENRICHED
@@ -123,7 +119,7 @@ class LeadManagementAgent:
             raise ValueError(f"Lead not found: {lead_id}")
 
         lead = self.leads[lead_id]
-        lead.crm_id = f"CRM_{random.randint(10000,99999)}"
+        lead.crm_id = f"CRM_{random.randint(10000, 99999)}"
         lead.status = LeadStatus.SYNCED
 
         return lead
@@ -134,11 +130,17 @@ class LeadManagementAgent:
 
         return {
             "total_leads": len(leads),
-            "enriched": len([l for l in leads if l.status in [LeadStatus.ENRICHED, LeadStatus.ROUTED, LeadStatus.SYNCED]]),
+            "enriched": len(
+                [
+                    l
+                    for l in leads
+                    if l.status in [LeadStatus.ENRICHED, LeadStatus.ROUTED, LeadStatus.SYNCED]
+                ]
+            ),
             "routed": len([l for l in leads if l.status in [LeadStatus.ROUTED, LeadStatus.SYNCED]]),
             "synced": len([l for l in leads if l.status == LeadStatus.SYNCED]),
             "duplicates": len([l for l in leads if l.status == LeadStatus.DUPLICATE]),
-            "avg_score": sum(l.score for l in leads) / len(leads) if leads else 0
+            "avg_score": sum(l.score for l in leads) / len(leads) if leads else 0,
         }
 
 

@@ -13,13 +13,16 @@ Usage:
 
 import json
 import subprocess
-from pathlib import Path
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Default MCP config locations
 PROJECT_MCP_CONFIG = Path(".claude/mcp.json")  # Project local
-USER_MCP_CONFIG = Path.home() / "Library/Application Support/Claude/claude_desktop_config.json" # macOS default
+USER_MCP_CONFIG = (
+    Path.home() / "Library/Application Support/Claude/claude_desktop_config.json"
+)  # macOS default
+
 
 @dataclass
 class MCPServerConfig:
@@ -27,10 +30,11 @@ class MCPServerConfig:
     args: List[str]
     env: Dict[str, str] = field(default_factory=dict)
 
+
 class MCPManager:
     """
     🔌 MCP Server Manager
-    
+
     Handles configuration and installation of MCP servers.
     """
 
@@ -41,7 +45,7 @@ class MCPManager:
         elif PROJECT_MCP_CONFIG.exists():
             self.config_path = PROJECT_MCP_CONFIG
         else:
-            self.config_path = PROJECT_MCP_CONFIG # Default to creating local
+            self.config_path = PROJECT_MCP_CONFIG  # Default to creating local
 
         self.config: Dict[str, Any] = self._load_config()
 
@@ -74,7 +78,7 @@ class MCPManager:
         self.config["mcpServers"][name] = {
             "command": config.command,
             "args": config.args,
-            "env": config.env
+            "env": config.env,
         }
         self._save_config()
 
@@ -89,10 +93,7 @@ class MCPManager:
         server_config = MCPServerConfig(
             command="npx",
             args=["-y", "@supabase/mcp"],  # Official package
-            env={
-                "SUPABASE_URL": f"https://{project_ref}.supabase.co",
-                "SUPABASE_KEY": api_key
-            }
+            env={"SUPABASE_URL": f"https://{project_ref}.supabase.co", "SUPABASE_KEY": api_key},
         )
 
         self.add_server("supabase", server_config)
@@ -116,7 +117,7 @@ class MCPManager:
         if (install_dir / "package.json").exists():
             print("📦 Detected Node.js project. Installing dependencies...")
             subprocess.run(["npm", "install"], cwd=install_dir, check=True)
-            subprocess.run(["npm", "run", "build"], cwd=install_dir, check=False) # Try build
+            subprocess.run(["npm", "run", "build"], cwd=install_dir, check=False)  # Try build
 
             # Assume entry point is build/index.js or src/index.ts executed via node
             # This is heuristic and might need adjustment per repo
@@ -132,20 +133,24 @@ class MCPManager:
                 cmd = "npx"
                 args = ["ts-node", str((install_dir / "src/index.ts").absolute())]
 
-        elif (install_dir / "pyproject.toml").exists() or (install_dir / "requirements.txt").exists():
+        elif (install_dir / "pyproject.toml").exists() or (
+            install_dir / "requirements.txt"
+        ).exists():
             print("🐍 Detected Python project. Setting up venv...")
             subprocess.run([sys.executable, "-m", "venv", ".venv"], cwd=install_dir, check=True)
 
             pip_cmd = str(install_dir / ".venv/bin/pip")
             if (install_dir / "requirements.txt").exists():
-                subprocess.run([pip_cmd, "install", "-r", "requirements.txt"], cwd=install_dir, check=True)
+                subprocess.run(
+                    [pip_cmd, "install", "-r", "requirements.txt"], cwd=install_dir, check=True
+                )
             if (install_dir / "pyproject.toml").exists():
                 subprocess.run([pip_cmd, "install", "."], cwd=install_dir, check=True)
 
             # Assume entry point - needs heuristic or user input usually
             # For now, default to running the module if typical structure
             cmd = str(install_dir / ".venv/bin/python")
-            args = ["main.py"] # Placeholder
+            args = ["main.py"]  # Placeholder
 
         else:
             print("❌ Could not detect project type (Node/Python). Manual setup required.")
@@ -153,6 +158,7 @@ class MCPManager:
 
         self.add_server(repo_name, MCPServerConfig(command=cmd, args=args))
         print(f"✅ Installed {repo_name} from source.")
+
 
 # Global instance
 mcp_manager = MCPManager()

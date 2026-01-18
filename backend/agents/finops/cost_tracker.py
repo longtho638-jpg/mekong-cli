@@ -3,11 +3,11 @@ Cost Tracker Agent - AI Spending Monitoring
 Tracks token usage, costs, and savings by provider.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class Provider(Enum):
@@ -20,6 +20,7 @@ class Provider(Enum):
 @dataclass
 class UsageRecord:
     """Single API usage record"""
+
     id: str
     provider: Provider
     tokens_in: int
@@ -40,7 +41,7 @@ class UsageRecord:
 class CostTrackerAgent:
     """
     Cost Tracker Agent - Theo dõi Chi phí AI
-    
+
     Responsibilities:
     - Track token usage per request
     - Calculate costs by provider
@@ -50,10 +51,10 @@ class CostTrackerAgent:
 
     # Cost per 1M tokens (USD)
     PRICING = {
-        Provider.OPENROUTER: 0.06,      # Llama 3.1 8B
-        Provider.GEMINI_FLASH: 0.075,   # Gemini Flash
-        Provider.GEMINI_PRO: 1.25,      # Gemini Pro
-        Provider.CLAUDE_SONNET: 3.00,   # Claude Sonnet
+        Provider.OPENROUTER: 0.06,  # Llama 3.1 8B
+        Provider.GEMINI_FLASH: 0.075,  # Gemini Flash
+        Provider.GEMINI_PRO: 1.25,  # Gemini Pro
+        Provider.CLAUDE_SONNET: 3.00,  # Claude Sonnet
     }
 
     # Baseline cost (if everything went to Claude)
@@ -65,23 +66,19 @@ class CostTrackerAgent:
         self.records: List[UsageRecord] = []
 
     def track(
-        self,
-        provider: Provider,
-        tokens_in: int,
-        tokens_out: int,
-        task_type: str = "general"
+        self, provider: Provider, tokens_in: int, tokens_out: int, task_type: str = "general"
     ) -> UsageRecord:
         """Track a single API usage"""
         total_tokens = tokens_in + tokens_out
         cost = (total_tokens / 1_000_000) * self.PRICING[provider]
 
         record = UsageRecord(
-            id=f"usage_{int(datetime.now().timestamp())}_{random.randint(100,999)}",
+            id=f"usage_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             provider=provider,
             tokens_in=tokens_in,
             tokens_out=tokens_out,
             cost=cost,
-            task_type=task_type
+            task_type=task_type,
         )
 
         self.records.append(record)
@@ -114,7 +111,7 @@ class CostTrackerAgent:
             "baseline_cost": round(baseline_cost, 4),
             "savings": round(savings, 4),
             "savings_percent": round(savings_pct, 1),
-            "total_tokens": total_tokens
+            "total_tokens": total_tokens,
         }
 
     def get_by_provider(self, days: int = 30) -> Dict[str, Dict]:
@@ -129,7 +126,9 @@ class CostTrackerAgent:
                 "requests": len(provider_records),
                 "tokens": sum(r.total_tokens for r in provider_records),
                 "cost": round(sum(r.cost for r in provider_records), 4),
-                "percent": round(len(provider_records) / len(period_records) * 100, 1) if period_records else 0
+                "percent": round(len(provider_records) / len(period_records) * 100, 1)
+                if period_records
+                else 0,
             }
 
         return breakdown
@@ -139,16 +138,15 @@ class CostTrackerAgent:
         trend = []
         for i in range(days):
             date = datetime.now().date() - timedelta(days=i)
-            day_records = [
-                r for r in self.records
-                if r.timestamp.date() == date
-            ]
-            trend.append({
-                "date": str(date),
-                "cost": round(sum(r.cost for r in day_records), 4),
-                "tokens": sum(r.total_tokens for r in day_records),
-                "requests": len(day_records)
-            })
+            day_records = [r for r in self.records if r.timestamp.date() == date]
+            trend.append(
+                {
+                    "date": str(date),
+                    "cost": round(sum(r.cost for r in day_records), 4),
+                    "tokens": sum(r.total_tokens for r in day_records),
+                    "requests": len(day_records),
+                }
+            )
         return list(reversed(trend))
 
 
@@ -180,5 +178,5 @@ if __name__ == "__main__":
     print("\n📈 By Provider:")
     breakdown = tracker.get_by_provider()
     for provider, data in breakdown.items():
-        if data['requests'] > 0:
+        if data["requests"] > 0:
             print(f"   {provider}: {data['requests']} requests, ${data['cost']}")

@@ -3,11 +3,11 @@ Event Planner Agent - Events & Scheduling
 Manages event creation, venues, and coordination.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import date
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class EventType(Enum):
@@ -29,6 +29,7 @@ class EventStatus(Enum):
 @dataclass
 class Speaker:
     """Event speaker"""
+
     id: str
     name: str
     title: str
@@ -38,6 +39,7 @@ class Speaker:
 @dataclass
 class Event:
     """Marketing event"""
+
     id: str
     name: str
     event_type: EventType
@@ -59,7 +61,7 @@ class Event:
 class EventPlannerAgent:
     """
     Event Planner Agent - Lập kế hoạch Sự kiện
-    
+
     Responsibilities:
     - Event creation & scheduling
     - Venue management
@@ -79,10 +81,10 @@ class EventPlannerAgent:
         event_date: date,
         venue: str,
         capacity: int,
-        budget: float = 0
+        budget: float = 0,
     ) -> Event:
         """Create new event"""
-        event_id = f"evt_{random.randint(1000,9999)}"
+        event_id = f"evt_{random.randint(1000, 9999)}"
 
         event = Event(
             id=event_id,
@@ -91,24 +93,18 @@ class EventPlannerAgent:
             date=event_date,
             venue=venue,
             capacity=capacity,
-            budget=budget
+            budget=budget,
         )
 
         self.events[event_id] = event
         return event
 
-    def add_speaker(
-        self,
-        event_id: str,
-        name: str,
-        title: str,
-        company: str
-    ) -> Event:
+    def add_speaker(self, event_id: str, name: str, title: str, company: str) -> Event:
         """Add speaker to event"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
 
-        speaker_id = f"spk_{random.randint(100,999)}"
+        speaker_id = f"spk_{random.randint(100, 999)}"
         speaker = Speaker(id=speaker_id, name=name, title=title, company=company)
 
         self.events[event_id].speakers.append(speaker)
@@ -145,7 +141,7 @@ class EventPlannerAgent:
             "total_events": len(events),
             "scheduled": len(scheduled),
             "total_budget": sum(e.budget for e in events),
-            "total_registrations": sum(e.registrations for e in events)
+            "total_registrations": sum(e.registrations for e in events),
         }
 
 
@@ -164,7 +160,7 @@ if __name__ == "__main__":
         date.today() + timedelta(days=30),
         "Grand Convention Center",
         500,
-        25000
+        25000,
     )
 
     print(f"📋 Event: {e1.name}")

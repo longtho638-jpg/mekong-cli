@@ -4,9 +4,9 @@ Calculates health scores and identifies at-risk users.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class RiskLevel(Enum):
@@ -18,14 +18,15 @@ class RiskLevel(Enum):
 @dataclass
 class UserHealth:
     """User health profile"""
+
     user_id: str
     user_name: str
 
     # Score components (0-100 each)
-    usage_score: int = 0      # 40% weight
+    usage_score: int = 0  # 40% weight
     engagement_score: int = 0  # 30% weight
-    support_score: int = 0     # 20% weight
-    tenure_score: int = 0      # 10% weight
+    support_score: int = 0  # 20% weight
+    tenure_score: int = 0  # 10% weight
 
     last_active: Optional[datetime] = None
     signup_date: Optional[datetime] = None
@@ -38,10 +39,10 @@ class UserHealth:
     def health_score(self) -> int:
         """Calculate weighted health score"""
         score = (
-            self.usage_score * 0.4 +
-            self.engagement_score * 0.3 +
-            self.support_score * 0.2 +
-            self.tenure_score * 0.1
+            self.usage_score * 0.4
+            + self.engagement_score * 0.3
+            + self.support_score * 0.2
+            + self.tenure_score * 0.1
         )
         return int(score)
 
@@ -59,7 +60,7 @@ class UserHealth:
 class HealthScoreAgent:
     """
     Health Score Agent - Theo dõi sức khỏe người dùng
-    
+
     Responsibilities:
     - Calculate health scores
     - Predict churn risk
@@ -80,28 +81,21 @@ class HealthScoreAgent:
         self.users: Dict[str, UserHealth] = {}
 
     def create_profile(
-        self,
-        user_id: str,
-        user_name: str,
-        signup_date: datetime = None
+        self, user_id: str, user_name: str, signup_date: datetime = None
     ) -> UserHealth:
         """Create health profile for user"""
         profile = UserHealth(
             user_id=user_id,
             user_name=user_name,
             signup_date=signup_date,
-            last_active=datetime.now()
+            last_active=datetime.now(),
         )
 
         self.users[user_id] = profile
         return profile
 
     def update_scores(
-        self,
-        user_id: str,
-        usage: int = None,
-        engagement: int = None,
-        support: int = None
+        self, user_id: str, usage: int = None, engagement: int = None, support: int = None
     ) -> UserHealth:
         """Update score components"""
         if user_id not in self.users:
@@ -141,17 +135,15 @@ class HealthScoreAgent:
     def get_at_risk_users(self) -> List[UserHealth]:
         """Get users at risk of churn"""
         return [
-            u for u in self.users.values()
+            u
+            for u in self.users.values()
             if u.risk_level in [RiskLevel.AT_RISK, RiskLevel.CRITICAL]
         ]
 
     def get_inactive_users(self, days: int = 7) -> List[UserHealth]:
         """Get users inactive for X days"""
         cutoff = datetime.now() - timedelta(days=days)
-        return [
-            u for u in self.users.values()
-            if u.last_active and u.last_active < cutoff
-        ]
+        return [u for u in self.users.values() if u.last_active and u.last_active < cutoff]
 
     def generate_alert(self, user_id: str) -> Optional[str]:
         """Generate retention alert for user"""

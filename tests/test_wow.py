@@ -203,15 +203,11 @@ def test_memory_system():
     print("\n🧠 TEST 8: Memory System")
     print("-" * 50)
 
-    from core.memory.memory import AgentMemory
-
     memory = Memory()
 
     # Add observations
     memory.add_observation("Implemented AntigravityKit core modules", obs_type="code")
-    memory.add_observation(
-        "Created franchise network with 8 territories", obs_type="decision"
-    )
+    memory.add_observation("Created franchise network with 8 territories", obs_type="decision")
     memory.add_observation("VCMetrics shows 75/100 readiness score", obs_type="note")
 
     # Get timeline
@@ -291,9 +287,7 @@ def print_summary(results):
         print(f"   {status} | {test_name}")
 
     print("\n" + "─" * 60)
-    print(
-        f"\n   📊 Platform Health: {passed}/{total} tests passed ({passed / total * 100:.0f}%)"
-    )
+    print(f"\n   📊 Platform Health: {passed}/{total} tests passed ({passed / total * 100:.0f}%)")
 
     if passed == total:
         print("\n   🎊 ALL SYSTEMS GO! ANTIGRAVITYKIT IS WOW! 🎊\n")

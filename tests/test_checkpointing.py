@@ -2,8 +2,9 @@
 Tests for Checkpointing system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.checkpointing import Checkpoint
 
-class TestCheckpointing:
 
+class TestCheckpointing:
     def test_save_and_list(self, tmp_path):
         """Test saving and listing checkpoints."""
         cp_sys = Checkpoint(storage_path=str(tmp_path))
@@ -52,6 +53,7 @@ class TestCheckpointing:
         cp2 = Checkpoint(storage_path=storage)
         assert len(cp2.list()) == 1
         assert cp2.list()[0].name == "p1"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -12,20 +12,22 @@ Features:
 - Conversion prediction
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class LeadStage(Enum):
     """Lifecycle stages of a sales lead."""
+
     NEW = "new"
     CONTACTED = "contacted"
     QUALIFIED = "qualified"
@@ -37,6 +39,7 @@ class LeadStage(Enum):
 
 class LeadSource(Enum):
     """Origins of incoming leads."""
+
     WEBSITE = "website"
     REFERRAL = "referral"
     SOCIAL = "social"
@@ -48,6 +51,7 @@ class LeadSource(Enum):
 @dataclass
 class Lead:
     """A sales lead entity record."""
+
     id: str
     name: str
     company: str
@@ -68,7 +72,7 @@ class Lead:
 class LeadScoring:
     """
     Lead Scoring System.
-    
+
     Automates the prioritization of sales prospects based on budget, source, and strategic fit.
     """
 
@@ -76,9 +80,12 @@ class LeadScoring:
     WEIGHTS = {"budget": 0.30, "source": 0.25, "engagement": 0.25, "fit": 0.20}
 
     SOURCE_VALS = {
-        LeadSource.REFERRAL: 100, LeadSource.EVENT: 80,
-        LeadSource.WEBSITE: 70, LeadSource.SOCIAL: 50,
-        LeadSource.ADS: 40, LeadSource.COLD: 20
+        LeadSource.REFERRAL: 100,
+        LeadSource.EVENT: 80,
+        LeadSource.WEBSITE: 70,
+        LeadSource.SOCIAL: 50,
+        LeadSource.ADS: 40,
+        LeadSource.COLD: 20,
     }
 
     def __init__(self, agency_name: str):
@@ -87,15 +94,10 @@ class LeadScoring:
         logger.info(f"Lead Scoring initialized for {agency_name}")
 
     def _validate_email(self, email: str) -> bool:
-        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+        return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
 
     def add_lead(
-        self,
-        name: str,
-        company: str,
-        email: str,
-        source: LeadSource,
-        budget: float = 0.0
+        self, name: str, company: str, email: str, source: LeadSource, budget: float = 0.0
     ) -> Lead:
         """Register and immediately score a new sales lead."""
         if not self._validate_email(email):
@@ -103,8 +105,11 @@ class LeadScoring:
 
         lead = Lead(
             id=f"LEAD-{uuid.uuid4().hex[:6].upper()}",
-            name=name, company=company, email=email,
-            source=source, budget=float(budget)
+            name=name,
+            company=company,
+            email=email,
+            source=source,
+            budget=float(budget),
         )
 
         self.calculate_score(lead)
@@ -115,7 +120,15 @@ class LeadScoring:
     def calculate_score(self, lead: Lead):
         """Execute multi-factor scoring algorithm."""
         # 1. Budget Score
-        b_score = 100 if lead.budget >= 10000 else 75 if lead.budget >= 5000 else 50 if lead.budget >= 2000 else 25
+        b_score = (
+            100
+            if lead.budget >= 10000
+            else 75
+            if lead.budget >= 5000
+            else 50
+            if lead.budget >= 2000
+            else 25
+        )
 
         # 2. Source Value
         s_val = self.SOURCE_VALS.get(lead.source, 30)
@@ -126,10 +139,10 @@ class LeadScoring:
 
         # Aggregate
         total = (
-            b_score * self.WEIGHTS["budget"] +
-            s_val * self.WEIGHTS["source"] +
-            lead.engagement_score * self.WEIGHTS["engagement"] +
-            lead.fit_score * self.WEIGHTS["fit"]
+            b_score * self.WEIGHTS["budget"]
+            + s_val * self.WEIGHTS["source"]
+            + lead.engagement_score * self.WEIGHTS["engagement"]
+            + lead.fit_score * self.WEIGHTS["fit"]
         )
         lead.score = int(total)
 
@@ -155,13 +168,15 @@ class LeadScoring:
             bar = "█" * (l.score // 10) + "░" * (10 - l.score // 10)
             lines.append(f"║    {l.name[:15]:<15} │ {bar} │ {l.score:>3} points  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Lead]  [🎯 Re-score]  [📊 Analytics]  [⚙️ Weights] ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Focus!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Lead]  [🎯 Re-score]  [📊 Analytics]  [⚙️ Weights] ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Focus!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

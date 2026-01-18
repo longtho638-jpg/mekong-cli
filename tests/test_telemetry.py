@@ -2,8 +2,9 @@
 Tests for Telemetry system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.telemetry import Telemetry
 
-class TestTelemetry:
 
+class TestTelemetry:
     def test_track_event(self, tmp_path):
         """Test event tracking and storage."""
         tel = Telemetry(storage_path=str(tmp_path))
@@ -43,6 +44,7 @@ class TestTelemetry:
         t2 = Telemetry(storage_path=storage)
         assert len(t2.events) == 1
         assert t2.events[0].action == "init"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -1,6 +1,7 @@
 "\n"
 
 import logging
+
 from .pr_manager import PRManager
 
 # Configure logging
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 class EzPR:
     """
     🍬 EZ PR - The Simplified Git Operator
-    
+
     Acts as a bridge between the complex Git/GitHub workflow and the user.
     Uses basic intent detection to map natural language to PR actions.
     """
@@ -20,7 +21,7 @@ class EzPR:
         "check": ["check", "xem", "kiểm tra", "show", "list", "pending", "đang chờ", "trạng thái"],
         "merge_all": ["merge all", "gộp tất cả", "hợp nhất hết", "tự động gộp", "auto", "tự động"],
         "merge_dry": ["merge", "gộp", "hợp nhất", "thử gộp"],
-        "help": ["help", "giúp", "hướng dẫn", "?", "làm sao"]
+        "help": ["help", "giúp", "hướng dẫn", "?", "làm sao"],
     }
 
     def __init__(self):
@@ -102,7 +103,7 @@ class EzPR:
             "conflicts": "Có xung đột code (cần dev xử lý)",
             "CI checks": "Đang đợi hệ thống kiểm tra (CI)",
             "not passed": "Hệ thống kiểm tra báo lỗi (CI fail)",
-            "draft": "Vẫn đang là bản nháp"
+            "draft": "Vẫn đang là bản nháp",
         }
 
         for eng, vn in mapping.items():
@@ -127,14 +128,17 @@ Chào Anh! Đây là cách Anh có thể duyệt các thay đổi từ AI:
   ✅ Không bị trùng lặp hay xung đột với code hiện tại.
 """
 
+
 # Interface Helpers
 def ez_process(cmd: str) -> str:
     """Single point of entry for EZ PR processing."""
     return EzPR().process(cmd)
 
+
 def quick_check():
     """Quick Vietnamese check command."""
     print(ez_process("xem pr"))
+
 
 def quick_merge():
     """Quick Vietnamese merge command."""

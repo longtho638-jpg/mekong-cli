@@ -19,19 +19,21 @@ from datetime import datetime
 @dataclass
 class BrandColors:
     """Brand color scheme."""
-    primary: str = "#2563EB"      # Blue
-    secondary: str = "#7C3AED"    # Purple
-    accent: str = "#F59E0B"       # Amber
-    background: str = "#FFFFFF"   # White
-    text: str = "#1F2937"         # Gray-800
-    success: str = "#10B981"      # Green
-    warning: str = "#F59E0B"      # Amber
-    error: str = "#EF4444"        # Red
+
+    primary: str = "#2563EB"  # Blue
+    secondary: str = "#7C3AED"  # Purple
+    accent: str = "#F59E0B"  # Amber
+    background: str = "#FFFFFF"  # White
+    text: str = "#1F2937"  # Gray-800
+    success: str = "#10B981"  # Green
+    warning: str = "#F59E0B"  # Amber
+    error: str = "#EF4444"  # Red
 
 
 @dataclass
 class BrandAssets:
     """Brand assets."""
+
     logo_url: str = ""
     favicon_url: str = ""
     cover_image_url: str = ""
@@ -40,6 +42,7 @@ class BrandAssets:
 @dataclass
 class BrandConfig:
     """Complete brand configuration."""
+
     agency_name: str
     tagline: str
     colors: BrandColors
@@ -53,7 +56,7 @@ class BrandConfig:
 class WhiteLabelBranding:
     """
     White-Label Branding System.
-    
+
     Customize Agency OS with your brand.
     """
 
@@ -71,7 +74,7 @@ class WhiteLabelBranding:
             agency_name=agency_name,
             tagline=tagline or f"{agency_name} - Powered by Agency OS",
             colors=BrandColors(),
-            assets=BrandAssets()
+            assets=BrandAssets(),
         )
 
     def apply_theme(self, theme_name: str):
@@ -135,18 +138,20 @@ class WhiteLabelBranding:
         logo_status = "✅ Uploaded" if self.config.assets.logo_url else "⬜ Not set"
         favicon_status = "✅ Uploaded" if self.config.assets.favicon_url else "⬜ Not set"
 
-        lines.extend([
-            f"║    Logo:    {logo_status:<43}  ║",
-            f"║    Favicon: {favicon_status:<43}  ║",
-            "║                                                           ║",
-            "║  🎭 AVAILABLE THEMES                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            "║    🌊 Ocean  │  🌲 Forest  │  🌅 Sunset                   ║",
-            "║    🌙 Midnight  │  👑 Royal                              ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.config.agency_name} - Your brand, your way!     ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                f"║    Logo:    {logo_status:<43}  ║",
+                f"║    Favicon: {favicon_status:<43}  ║",
+                "║                                                           ║",
+                "║  🎭 AVAILABLE THEMES                                      ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+                "║    🌊 Ocean  │  🌲 Forest  │  🌅 Sunset                   ║",
+                "║    🌙 Midnight  │  👑 Royal                              ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.config.agency_name} - Your brand, your way!     ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

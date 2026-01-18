@@ -1,4 +1,4 @@
-'''
+"""
 🎁 Loyalty Rewards - Tenure-Based Benefits
 ==========================================
 
@@ -14,21 +14,23 @@ Tiers:
 - 👑 Diamond: Revenue sharing & 20% Discount.
 
 Binh Pháp: 💎 Tín (Trust) - Rewarding loyalty over time.
-'''
+"""
 
-import logging
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict, Optional, Union
 from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class LoyaltyTier:
     """Definition of a specific loyalty bracket and its associated perks."""
+
     id: str
     name: str
     emoji: str
@@ -45,7 +47,7 @@ TIERS: Dict[str, LoyaltyTier] = {
         emoji="🥉",
         min_months=0,
         discount_rate=0.0,
-        benefits=["Hỗ trợ cơ bản (Email)", "Tham gia cộng đồng Agency OS"]
+        benefits=["Hỗ trợ cơ bản (Email)", "Tham gia cộng đồng Agency OS"],
     ),
     "silver": LoyaltyTier(
         id="silver",
@@ -53,7 +55,7 @@ TIERS: Dict[str, LoyaltyTier] = {
         emoji="🥈",
         min_months=12,
         discount_rate=0.05,
-        benefits=["Ưu đãi 5% dịch vụ", "Hỗ trợ ưu tiên", "Cập nhật tính năng sớm"]
+        benefits=["Ưu đãi 5% dịch vụ", "Hỗ trợ ưu tiên", "Cập nhật tính năng sớm"],
     ),
     "gold": LoyaltyTier(
         id="gold",
@@ -61,7 +63,12 @@ TIERS: Dict[str, LoyaltyTier] = {
         emoji="🥇",
         min_months=24,
         discount_rate=0.10,
-        benefits=["Ưu đãi 10% dịch vụ", "VIP support 24/7", "Trải nghiệm bản Beta", "Quảng bá thương hiệu"]
+        benefits=[
+            "Ưu đãi 10% dịch vụ",
+            "VIP support 24/7",
+            "Trải nghiệm bản Beta",
+            "Quảng bá thương hiệu",
+        ],
     ),
     "platinum": LoyaltyTier(
         id="platinum",
@@ -69,7 +76,7 @@ TIERS: Dict[str, LoyaltyTier] = {
         emoji="💎",
         min_months=36,
         discount_rate=0.15,
-        benefits=["Ưu đãi 15% dịch vụ", "Cố vấn chiến lược 1-1", "Yêu cầu tính năng riêng"]
+        benefits=["Ưu đãi 15% dịch vụ", "Cố vấn chiến lược 1-1", "Yêu cầu tính năng riêng"],
     ),
     "diamond": LoyaltyTier(
         id="diamond",
@@ -77,7 +84,12 @@ TIERS: Dict[str, LoyaltyTier] = {
         emoji="👑",
         min_months=60,
         discount_rate=0.20,
-        benefits=["Ưu đãi 20% dịch vụ", "Chia sẻ doanh thu hệ thống", "Ban cố vấn chiến lược", "Tùy biến module tối cao"]
+        benefits=[
+            "Ưu đãi 20% dịch vụ",
+            "Chia sẻ doanh thu hệ thống",
+            "Ban cố vấn chiến lược",
+            "Tùy biến module tối cao",
+        ],
     ),
 }
 
@@ -85,8 +97,8 @@ TIERS: Dict[str, LoyaltyTier] = {
 class LoyaltyProgram:
     """
     🎁 Loyalty & Tenure Engine
-    
-    Calculates and persists user loyalty status based on start date 
+
+    Calculates and persists user loyalty status based on start date
     and total ecosystem revenue.
     """
 
@@ -109,7 +121,7 @@ class LoyaltyProgram:
     def get_tenure_months(self) -> int:
         """Calculates total months elapsed since registration."""
         delta = datetime.now() - self.start_date
-        return int(delta.days / 30.44) # Average month length
+        return int(delta.days / 30.44)  # Average month length
 
     def get_current_tier(self) -> LoyaltyTier:
         """Determines the highest eligible tier based on tenure."""
@@ -152,7 +164,7 @@ class LoyaltyProgram:
                 "start_date": self.start_date.isoformat(),
                 "revenue_usd": self.total_revenue_usd,
                 "referrals": self.referral_count,
-                "last_updated": datetime.now().isoformat()
+                "last_updated": datetime.now().isoformat(),
             }
             self.data_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         except Exception as e:
@@ -195,7 +207,9 @@ class LoyaltyProgram:
         if next_t:
             remaining = next_t.min_months - months
             print(f"\n  🎯 MỤC TIÊU TIẾP THEO: {next_t.name}")
-            print(f"     └─Còn {remaining} tháng để nâng cấp lên mức ưu đãi {next_t.discount_rate:.0%}")
+            print(
+                f"     └─Còn {remaining} tháng để nâng cấp lên mức ưu đãi {next_t.discount_rate:.0%}"
+            )
         else:
             print("\n  👑 CHÚC MỪNG! Anh đã đạt cấp độ tối cao của Agency OS.")
 

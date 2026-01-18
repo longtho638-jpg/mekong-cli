@@ -3,11 +3,11 @@ Tax Filing Agent - Tax Submission & Deadlines
 Manages tax filings, deadlines, and submissions.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class FilingStatus(Enum):
@@ -31,6 +31,7 @@ class FilingType(Enum):
 @dataclass
 class TaxFiling:
     """Tax filing"""
+
     id: str
     name: str
     filing_type: FilingType
@@ -53,13 +54,16 @@ class TaxFiling:
 
     @property
     def is_overdue(self) -> bool:
-        return datetime.now() > self.due_date and self.status not in [FilingStatus.SUBMITTED, FilingStatus.ACCEPTED]
+        return datetime.now() > self.due_date and self.status not in [
+            FilingStatus.SUBMITTED,
+            FilingStatus.ACCEPTED,
+        ]
 
 
 class TaxFilingAgent:
     """
     Tax Filing Agent - Quản lý Kê khai Thuế
-    
+
     Responsibilities:
     - Track filing deadlines
     - Manage submissions
@@ -78,10 +82,10 @@ class TaxFilingAgent:
         filing_type: FilingType,
         period: str,
         due_date: datetime,
-        amount_due: float = 0.0
+        amount_due: float = 0.0,
     ) -> TaxFiling:
         """Create new tax filing"""
-        filing_id = f"filing_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        filing_id = f"filing_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         filing = TaxFiling(
             id=filing_id,
@@ -89,7 +93,7 @@ class TaxFilingAgent:
             filing_type=filing_type,
             period=period,
             due_date=due_date,
-            amount_due=amount_due
+            amount_due=amount_due,
         )
 
         self.filings[filing_id] = filing
@@ -123,7 +127,8 @@ class TaxFilingAgent:
     def get_upcoming(self, days: int = 30) -> List[TaxFiling]:
         """Get upcoming deadlines"""
         return [
-            f for f in self.filings.values()
+            f
+            for f in self.filings.values()
             if 0 <= f.days_until_due <= days and f.status == FilingStatus.PENDING
         ]
 
@@ -138,11 +143,13 @@ class TaxFilingAgent:
         return {
             "total_filings": len(filings),
             "pending": len([f for f in filings if f.status == FilingStatus.PENDING]),
-            "submitted": len([f for f in filings if f.status in [FilingStatus.SUBMITTED, FilingStatus.ACCEPTED]]),
+            "submitted": len(
+                [f for f in filings if f.status in [FilingStatus.SUBMITTED, FilingStatus.ACCEPTED]]
+            ),
             "overdue": len(self.get_overdue()),
             "total_due": sum(f.amount_due for f in filings),
             "total_paid": sum(f.amount_paid for f in filings),
-            "upcoming_30_days": len(self.get_upcoming(30))
+            "upcoming_30_days": len(self.get_upcoming(30)),
         }
 
 
@@ -153,9 +160,19 @@ if __name__ == "__main__":
     print("🧾 Tax Filing Agent Demo\n")
 
     # Create filings
-    f1 = agent.create_filing("Corporate Tax Q4", FilingType.CORPORATE_INCOME, "Q4 2024", datetime.now() + timedelta(days=15), 25000)
-    f2 = agent.create_filing("VAT Monthly", FilingType.VAT, "Dec 2024", datetime.now() + timedelta(days=5), 8500)
-    f3 = agent.create_filing("Payroll Tax", FilingType.PAYROLL, "Dec 2024", datetime.now() + timedelta(days=10), 12000)
+    f1 = agent.create_filing(
+        "Corporate Tax Q4",
+        FilingType.CORPORATE_INCOME,
+        "Q4 2024",
+        datetime.now() + timedelta(days=15),
+        25000,
+    )
+    f2 = agent.create_filing(
+        "VAT Monthly", FilingType.VAT, "Dec 2024", datetime.now() + timedelta(days=5), 8500
+    )
+    f3 = agent.create_filing(
+        "Payroll Tax", FilingType.PAYROLL, "Dec 2024", datetime.now() + timedelta(days=10), 12000
+    )
 
     print(f"📋 Filing: {f1.name}")
     print(f"   Type: {f1.filing_type.value}")

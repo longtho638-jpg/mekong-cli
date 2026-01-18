@@ -4,10 +4,12 @@ router = APIRouter(prefix="/api/scheduler", tags=["Scheduler"])
 
 try:
     from core import Scheduler
+
     scheduler = Scheduler()
     SCHEDULER_AVAILABLE = True
 except ImportError:
     SCHEDULER_AVAILABLE = False
+
 
 @router.get("/meetings")
 def get_meetings():
@@ -23,10 +25,11 @@ def get_meetings():
             "attendee": m.attendee_name,
             "start": m.start_time.isoformat(),
             "end": m.end_time.isoformat(),
-            "link": m.meeting_link
+            "link": m.meeting_link,
         }
         for m in upcoming
     ]
+
 
 @router.get("/stats")
 def get_scheduler_stats():

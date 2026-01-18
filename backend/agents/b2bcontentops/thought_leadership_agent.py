@@ -3,11 +3,11 @@ Thought Leadership Agent - B2B Content & Insights
 Manages whitepapers, reports, and gated content.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class ContentType(Enum):
@@ -28,6 +28,7 @@ class ContentStatus(Enum):
 @dataclass
 class ThoughtLeadershipContent:
     """B2B thought leadership content"""
+
     id: str
     title: str
     content_type: ContentType
@@ -52,7 +53,7 @@ class ThoughtLeadershipContent:
 class ThoughtLeadershipAgent:
     """
     Thought Leadership Agent - Nội dung B2B
-    
+
     Responsibilities:
     - Whitepapers
     - Industry reports
@@ -71,10 +72,10 @@ class ThoughtLeadershipAgent:
         content_type: ContentType,
         topic: str,
         author: str = "",
-        gated: bool = True
+        gated: bool = True,
     ) -> ThoughtLeadershipContent:
         """Create thought leadership content"""
-        content_id = f"tl_{random.randint(100,999)}"
+        content_id = f"tl_{random.randint(100, 999)}"
 
         content = ThoughtLeadershipContent(
             id=content_id,
@@ -82,7 +83,7 @@ class ThoughtLeadershipAgent:
             content_type=content_type,
             topic=topic,
             author=author,
-            gated=gated
+            gated=gated,
         )
 
         self.content[content_id] = content
@@ -118,7 +119,9 @@ class ThoughtLeadershipAgent:
             "published": len(published),
             "total_downloads": sum(c.downloads for c in contents),
             "total_leads": sum(c.leads_generated for c in contents),
-            "avg_conversion": sum(c.conversion_rate for c in published) / len(published) if published else 0
+            "avg_conversion": sum(c.conversion_rate for c in published) / len(published)
+            if published
+            else 0,
         }
 
 
@@ -133,14 +136,10 @@ if __name__ == "__main__":
         "2024 State of B2B Marketing",
         ContentType.REPORT,
         "Marketing Trends",
-        author="Marketing Team"
+        author="Marketing Team",
     )
 
-    c2 = agent.create_content(
-        "Ultimate Guide to ABM",
-        ContentType.GUIDE,
-        "Account-Based Marketing"
-    )
+    c2 = agent.create_content("Ultimate Guide to ABM", ContentType.GUIDE, "Account-Based Marketing")
 
     print(f"📋 Content: {c1.title}")
     print(f"   Type: {c1.content_type.value}")

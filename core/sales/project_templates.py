@@ -12,18 +12,20 @@ Features:
 - Milestone presets
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class TemplateCategory(Enum):
     """Business domains for project templates."""
+
     SEO = "seo"
     WEBSITE = "website"
     MARKETING = "marketing"
@@ -35,6 +37,7 @@ class TemplateCategory(Enum):
 @dataclass
 class TemplateTask:
     """A task definition within a template."""
+
     name: str
     duration_days: int
     dependencies: List[str] = field(default_factory=list)
@@ -43,6 +46,7 @@ class TemplateTask:
 @dataclass
 class TemplateMilestone:
     """A project milestone within a template."""
+
     name: str
     week: int
     deliverables: List[str] = field(default_factory=list)
@@ -51,6 +55,7 @@ class TemplateMilestone:
 @dataclass
 class ProjectTemplate:
     """A comprehensive project blueprint entity."""
+
     id: str
     name: str
     category: TemplateCategory
@@ -70,7 +75,7 @@ class ProjectTemplate:
 class ProjectTemplates:
     """
     Project Templates System.
-    
+
     Orchestrates the lifecycle of project blueprints, enabling rapid initialization of standardized services.
     """
 
@@ -84,9 +89,12 @@ class ProjectTemplates:
         """Seed the system with high-frequency project blueprints."""
         logger.info("Loading default agency templates...")
         self.register_template(
-            "SEO Sprint", TemplateCategory.SEO, "High-intensity SEO audit", 4,
+            "SEO Sprint",
+            TemplateCategory.SEO,
+            "High-intensity SEO audit",
+            4,
             [TemplateTask("Audit", 7), TemplateTask("Keywords", 7)],
-            [TemplateMilestone("Ready", 4, ["Report"])]
+            [TemplateMilestone("Ready", 4, ["Report"])],
         )
 
     def register_template(
@@ -96,14 +104,17 @@ class ProjectTemplates:
         desc: str,
         weeks: int,
         tasks: Optional[List[TemplateTask]] = None,
-        milestones: Optional[List[TemplateMilestone]] = None
+        milestones: Optional[List[TemplateMilestone]] = None,
     ) -> ProjectTemplate:
         """Create and store a new project blueprint."""
         tpl = ProjectTemplate(
             id=f"TPL-{uuid.uuid4().hex[:6].upper()}",
-            name=name, category=category, description=desc,
-            duration_weeks=weeks, tasks=tasks or [],
-            milestones=milestones or []
+            name=name,
+            category=category,
+            description=desc,
+            duration_weeks=weeks,
+            tasks=tasks or [],
+            milestones=milestones or [],
         )
         self.templates[tpl.id] = tpl
         logger.info(f"Template registered: {name} ({category.value})")
@@ -131,21 +142,27 @@ class ProjectTemplates:
         ]
 
         icons = {
-            TemplateCategory.SEO: "🔍", TemplateCategory.WEBSITE: "🌐",
-            TemplateCategory.MARKETING: "📢", TemplateCategory.SOCIAL: "📱"
+            TemplateCategory.SEO: "🔍",
+            TemplateCategory.WEBSITE: "🌐",
+            TemplateCategory.MARKETING: "📢",
+            TemplateCategory.SOCIAL: "📱",
         }
 
         for t in list(self.templates.values())[:5]:
             icon = icons.get(t.category, "📄")
-            lines.append(f"║  {icon} {t.name[:20]:<20} │ {t.duration_weeks:>2} weeks │ Used: {t.times_used:>3} times ║")
+            lines.append(
+                f"║  {icon} {t.name[:20]:<20} │ {t.duration_weeks:>2} weeks │ Used: {t.times_used:>3} times ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Template]  [📂 Import]  [📤 Export Library]     ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Scale Faster!     ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Template]  [📂 Import]  [📤 Export Library]     ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Scale Faster!     ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

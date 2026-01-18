@@ -30,7 +30,7 @@ def notify_macos(title, message, sound="default"):
     try:
         subprocess.run(["osascript", "-e", script], capture_output=True)
         return True
-    except:
+    except Exception:
         return False
 
 

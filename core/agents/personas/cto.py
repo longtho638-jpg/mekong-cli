@@ -12,19 +12,21 @@ Roles:
 - Team scaling
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class InitiativeStatus(Enum):
     """Strategic technology initiative status."""
+
     IDEATION = "ideation"
     PLANNING = "planning"
     DEVELOPMENT = "development"
@@ -34,6 +36,7 @@ class InitiativeStatus(Enum):
 
 class TechStack(Enum):
     """Technology stack categories."""
+
     FRONTEND = "frontend"
     BACKEND = "backend"
     DATABASE = "database"
@@ -45,6 +48,7 @@ class TechStack(Enum):
 @dataclass
 class TechInitiative:
     """A high-level technology project entity."""
+
     id: str
     name: str
     description: str
@@ -57,6 +61,7 @@ class TechInitiative:
 @dataclass
 class TechDecision:
     """An Architecture Decision Record (ADR)."""
+
     id: str
     title: str
     context: str
@@ -69,6 +74,7 @@ class TechDecision:
 @dataclass
 class TechDebt:
     """Technical debt tracking record."""
+
     id: str
     title: str
     area: TechStack
@@ -84,7 +90,7 @@ class TechDebt:
 class CTO:
     """
     Chief Technology Officer System.
-    
+
     Manages technical strategy, architecture decisions, and debt reduction.
     """
 
@@ -97,12 +103,7 @@ class CTO:
         logger.info(f"CTO System initialized for {agency_name}")
 
     def add_initiative(
-        self,
-        name: str,
-        description: str,
-        impact: str = "high",
-        owner: str = "CTO",
-        months: int = 6
+        self, name: str, description: str, impact: str = "high", owner: str = "CTO", months: int = 6
     ) -> TechInitiative:
         """Register a new strategic technology initiative."""
         if not name:
@@ -114,18 +115,14 @@ class CTO:
             description=description,
             impact=impact,
             owner=owner,
-            target_date=datetime.now() + timedelta(days=months * 30)
+            target_date=datetime.now() + timedelta(days=months * 30),
         )
         self.initiatives[initiative.id] = initiative
         logger.info(f"New Initiative: {name} (Target: {months}mo)")
         return initiative
 
     def record_decision(
-        self,
-        title: str,
-        context: str,
-        decision: str,
-        consequences: str
+        self, title: str, context: str, decision: str, consequences: str
     ) -> TechDecision:
         """Document an architectural decision record (ADR)."""
         adr = TechDecision(
@@ -133,18 +130,14 @@ class CTO:
             title=title,
             context=context,
             decision=decision,
-            consequences=consequences
+            consequences=consequences,
         )
         self.decisions.append(adr)
         logger.info(f"ADR recorded: {title}")
         return adr
 
     def add_tech_debt(
-        self,
-        title: str,
-        area: TechStack,
-        severity: str,
-        effort_days: int
+        self, title: str, area: TechStack, severity: str, effort_days: int
     ) -> TechDebt:
         """Track identifying technical debt."""
         debt = TechDebt(
@@ -152,7 +145,7 @@ class CTO:
             title=title,
             area=area,
             severity=severity,
-            effort_days=effort_days
+            effort_days=effort_days,
         )
         self.tech_debt[debt.id] = debt
         logger.warning(f"TECH DEBT LOGGED: {title} ({severity})")
@@ -175,7 +168,7 @@ class CTO:
             "active": len(active_ini),
             "decisions": len(self.decisions),
             "tech_debt": len(open_debt),
-            "debt_days": debt_effort
+            "debt_days": debt_effort,
         }
 
     def format_dashboard(self) -> str:
@@ -195,39 +188,52 @@ class CTO:
 
         # Display latest 4 initiatives
         for ini in list(self.initiatives.values())[:4]:
-            s_icon = {"ideation": "💡", "planning": "📋", "development": "🔧", "launched": "🚀"}.get(ini.status.value, "⚪")
+            s_icon = {
+                "ideation": "💡",
+                "planning": "📋",
+                "development": "🔧",
+                "launched": "🚀",
+            }.get(ini.status.value, "⚪")
             impact_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(ini.impact, "⚪")
-            name_disp = (ini.name[:20] + '..') if len(ini.name) > 22 else ini.name
+            name_disp = (ini.name[:20] + "..") if len(ini.name) > 22 else ini.name
             lines.append(f"║  {s_icon} {impact_icon} {name_disp:<22} │ {ini.owner[:8]:<8}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 AGENCY TECH STACK                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 AGENCY TECH STACK                                     ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for stack, techs in list(self.tech_stack.items())[:3]:
             if techs:
                 tech_list = ", ".join(techs[:3])
                 lines.append(f"║    📦 {stack.value.upper():<10} │ {tech_list:<35}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  ⚠️ PRIORITY TECH DEBT                                    ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  ⚠️ PRIORITY TECH DEBT                                    ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for debt in sorted(open_debt, key=lambda x: x.effort_days, reverse=True)[:3]:
             sev_icon = {"critical": "🔴", "high": "🟠", "medium": "🟡"}.get(debt.severity, "⚪")
-            lines.append(f"║    {sev_icon} {debt.title[:25]:<25} │ {debt.effort_days:>2} days effort  ║")
+            lines.append(
+                f"║    {sev_icon} {debt.title[:25]:<25} │ {debt.effort_days:>2} days effort  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🎯 Strategy]  [📋 ADRs]  [⚠️ Tech Debt]  [📦 Stack]     ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Execution!         ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🎯 Strategy]  [📋 ADRs]  [⚠️ Tech Debt]  [📦 Stack]     ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Execution!         ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

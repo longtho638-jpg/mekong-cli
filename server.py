@@ -8,9 +8,10 @@ Wrapper for the Unified Backend API.
 Run: python3 server.py
 """
 
-import uvicorn
 import os
 import sys
+
+import uvicorn
 
 # Ensure module visibility
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

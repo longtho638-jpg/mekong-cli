@@ -3,11 +3,11 @@ Asset Agent - Digital Asset Management
 Manages brand assets, versioning, and usage tracking.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class AssetType(Enum):
@@ -28,6 +28,7 @@ class AssetStatus(Enum):
 @dataclass
 class Asset:
     """Brand asset"""
+
     id: str
     name: str
     asset_type: AssetType
@@ -49,7 +50,7 @@ class Asset:
 class AssetAgent:
     """
     Asset Agent - Quản lý Tài sản Thương hiệu
-    
+
     Responsibilities:
     - Asset library
     - Version control
@@ -63,21 +64,13 @@ class AssetAgent:
         self.assets: Dict[str, Asset] = {}
 
     def add_asset(
-        self,
-        name: str,
-        asset_type: AssetType,
-        file_path: str,
-        tags: List[str] = None
+        self, name: str, asset_type: AssetType, file_path: str, tags: List[str] = None
     ) -> Asset:
         """Add asset to library"""
-        asset_id = f"asset_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        asset_id = f"asset_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         asset = Asset(
-            id=asset_id,
-            name=name,
-            asset_type=asset_type,
-            file_path=file_path,
-            tags=tags or []
+            id=asset_id, name=name, asset_type=asset_type, file_path=file_path, tags=tags or []
         )
 
         self.assets[asset_id] = asset
@@ -127,7 +120,7 @@ class AssetAgent:
             "total_assets": len(assets),
             "approved": len(approved),
             "total_usage": sum(a.usage_count for a in assets),
-            "by_type": {t.value: len(self.search_by_type(t)) for t in AssetType}
+            "by_type": {t.value: len(self.search_by_type(t)) for t in AssetType},
         }
 
 
@@ -138,9 +131,13 @@ if __name__ == "__main__":
     print("📂 Asset Agent Demo\n")
 
     # Add assets
-    a1 = agent.add_asset("Primary Logo", AssetType.LOGO, "/assets/logo-primary.svg", ["logo", "primary"])
+    a1 = agent.add_asset(
+        "Primary Logo", AssetType.LOGO, "/assets/logo-primary.svg", ["logo", "primary"]
+    )
     a2 = agent.add_asset("Icon Set", AssetType.ICON, "/assets/icons.svg", ["icons", "ui"])
-    a3 = agent.add_asset("Email Template", AssetType.TEMPLATE, "/assets/email-template.html", ["email", "template"])
+    a3 = agent.add_asset(
+        "Email Template", AssetType.TEMPLATE, "/assets/email-template.html", ["email", "template"]
+    )
     a4 = agent.add_asset("Product Hero", AssetType.IMAGE, "/assets/hero.png", ["product", "hero"])
 
     print(f"📋 Asset: {a1.name}")

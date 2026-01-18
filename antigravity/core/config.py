@@ -2,7 +2,7 @@
 ⚙️ AntigravityKit - Core Configuration
 ======================================
 
-Centralized registry for global constants, financial targets, and 
+Centralized registry for global constants, financial targets, and
 operational standards across the Agency OS ecosystem.
 
 Topics:
@@ -15,24 +15,25 @@ Binh Pháp: 📋 Pháp (Process) - Maintaining order through standards.
 """
 
 from enum import Enum
-from typing import Dict, Any, List, Union
-
+from typing import Any, Dict, List, Union
 
 # ============================================================
 # 💸 EXCHANGE RATES (2026 Projections)
 # ============================================================
 
+
 class Currency(Enum):
     """Supported transaction currencies."""
+
     USD = "USD"
-    VND = "VND" # Primary
-    THB = "THB" # Regional Expansion
+    VND = "VND"  # Primary
+    THB = "THB"  # Regional Expansion
 
 
 # Live rates (Static snapshot for simulation)
 EXCHANGE_RATES: Dict[Currency, float] = {
     Currency.USD: 1.0,
-    Currency.VND: 25000.0, # Updated rate
+    Currency.VND: 25000.0,  # Updated rate
     Currency.THB: 35.0,
 }
 
@@ -42,17 +43,19 @@ EXCHANGE_RATES: Dict[Currency, float] = {
 # ============================================================
 
 ARR_TARGET_2026 = 1_000_000  # $1M ARR (The Unicorn Goal)
-ARR_TARGET_2030 = 10_000_000 # $10M ARR (Scale Stage)
+ARR_TARGET_2030 = 10_000_000  # $10M ARR (Scale Stage)
 
 
 # ============================================================
 # 🏢 COMMERCIAL TIERS (Binh Pháp Revenue Model)
 # ============================================================
 
+
 class DealTier(Enum):
     """Client engagement levels based on strategic depth."""
-    WARRIOR = "warrior"        # Tier 1: Pre-Seed/Seed
-    GENERAL = "general"        # Tier 2: Series A
+
+    WARRIOR = "warrior"  # Tier 1: Pre-Seed/Seed
+    GENERAL = "general"  # Tier 2: Series A
     TUONG_QUAN = "tuong_quan"  # Tier 3: Venture Studio / Co-Founder
 
 
@@ -62,22 +65,22 @@ TIER_PRICING: Dict[DealTier, Dict[str, Any]] = {
         "retainer_usd": 2000,
         "equity_range": (5.0, 8.0),
         "success_fee_percent": 2.0,
-        "description": "Foundational support for early-stage teams."
+        "description": "Foundational support for early-stage teams.",
     },
     DealTier.GENERAL: {
         "label": "GENERAL (Scaling)",
         "retainer_usd": 5000,
         "equity_range": (3.0, 5.0),
         "success_fee_percent": 1.5,
-        "description": "Strategic advisory and growth acceleration."
+        "description": "Strategic advisory and growth acceleration.",
     },
     DealTier.TUONG_QUAN: {
         "label": "TƯỚNG QUÂN (Venture Studio)",
         "retainer_usd": 0,  # Deferred until funding/revenue
         "equity_range": (15.0, 30.0),
-        "success_fee_percent": 0.0, # Focused on shared exit
-        "description": "Full co-founder partnership and resource sharing."
-    }
+        "success_fee_percent": 0.0,  # Focused on shared exit
+        "description": "Full co-founder partnership and resource sharing.",
+    },
 }
 
 
@@ -85,9 +88,9 @@ TIER_PRICING: Dict[DealTier, Dict[str, Any]] = {
 # 🛠️ DEVELOPMENT & QUALITY STANDARDS
 # ============================================================
 
-MAX_FILE_LINES = 250      # Encourage modularity (KISS)
-MAX_METHOD_COMPLEXITY = 15 # Cyclomatic threshold
-DEFAULT_GROWTH_RATE = 0.15 # 15% Monthly target
+MAX_FILE_LINES = 250  # Encourage modularity (KISS)
+MAX_METHOD_COMPLEXITY = 15  # Cyclomatic threshold
+DEFAULT_GROWTH_RATE = 0.15  # 15% Monthly target
 
 
 # ============================================================
@@ -101,13 +104,14 @@ WORKFLOW_STEPS: List[str] = [
     "parallel_implementation",
     "verification_testing",
     "peer_code_review",
-    "final_deployment"
+    "final_deployment",
 ]
 
 
 # ============================================================
 # 🔍 HELPERS
 # ============================================================
+
 
 def get_tier_pricing(tier: Union[DealTier, str]) -> Dict[str, Any]:
     """Retrieves commercial terms for a specific deal tier."""

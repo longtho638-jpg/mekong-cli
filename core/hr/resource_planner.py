@@ -12,19 +12,21 @@ Features:
 - Capacity forecasting
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class Skill(Enum):
     """Core competencies within the agency team."""
+
     SEO = "seo"
     PPC = "ppc"
     CONTENT = "content"
@@ -35,6 +37,7 @@ class Skill(Enum):
 
 class AllocationStatus(Enum):
     """Categorization of individual resource load."""
+
     AVAILABLE = "available"
     PARTIALLY = "partially"
     BOOKED = "booked"
@@ -44,6 +47,7 @@ class AllocationStatus(Enum):
 @dataclass
 class TeamMember:
     """An agency team member entity record."""
+
     id: str
     name: str
     role: str
@@ -60,6 +64,7 @@ class TeamMember:
 @dataclass
 class ResourceAllocation:
     """A project assignment record entity."""
+
     id: str
     member_id: str
     project_name: str
@@ -71,7 +76,7 @@ class ResourceAllocation:
 class ResourcePlanner:
     """
     Resource Planning System.
-    
+
     Orchestrates team availability, project assignments, and aggregate capacity management.
     """
 
@@ -82,34 +87,33 @@ class ResourcePlanner:
         logger.info(f"Resource Planner initialized for {agency_name}")
 
     def add_team_member(
-        self,
-        name: str,
-        role: str,
-        skills: List[Skill],
-        hours: float = 40.0
+        self, name: str, role: str, skills: List[Skill], hours: float = 40.0
     ) -> TeamMember:
         """Register a new member in the workforce database."""
         m = TeamMember(
             id=f"TM-{uuid.uuid4().hex[:6].upper()}",
-            name=name, role=role, skills=skills, weekly_hours=hours
+            name=name,
+            role=role,
+            skills=skills,
+            weekly_hours=hours,
         )
         self.members[m.id] = m
         logger.info(f"Team member registered: {name} ({role})")
         return m
 
     def assign_to_project(
-        self,
-        m_id: str,
-        project: str,
-        hours: float
+        self, m_id: str, project: str, hours: float
     ) -> Optional[ResourceAllocation]:
         """Allocate a team member to a specific project load."""
-        if m_id not in self.members: return None
+        if m_id not in self.members:
+            return None
 
         m = self.members[m_id]
         alloc = ResourceAllocation(
             id=f"ALC-{uuid.uuid4().hex[:6].upper()}",
-            member_id=m_id, project_name=project, hours=float(hours)
+            member_id=m_id,
+            project_name=project,
+            hours=float(hours),
         )
         self.allocations.append(alloc)
         m.allocated_hours += hours
@@ -135,15 +139,19 @@ class ResourcePlanner:
             m_util = (m.allocated_hours / m.weekly_hours * 100.0) if m.weekly_hours > 0 else 0.0
             icon = "🟢" if m_util < 80 else "🟡" if m_util <= 100 else "🔴"
             bar = "█" * int(m_util / 10) + "░" * int(10 - (m_util / 10))
-            lines.append(f"║  {icon} {m.name[:12]:<12} │ {bar} │ {m_util:>5.1f}% │ {m.allocated_hours:>2.0f}h ║")
+            lines.append(
+                f"║  {icon} {m.name[:12]:<12} │ {bar} │ {m_util:>5.1f}% │ {m.allocated_hours:>2.0f}h ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Member]  [📊 Forecast]  [⚖️ Balance Load]  [⚙️]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Optimized!       ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ Member]  [📊 Forecast]  [⚖️ Balance Load]  [⚙️]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Optimized!       ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

@@ -1,6 +1,7 @@
 """
 Infrastructure Module Export
 """
+
 try:
     from .database import Database, get_db
 except ImportError:

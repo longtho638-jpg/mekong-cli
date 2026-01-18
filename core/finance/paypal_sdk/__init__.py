@@ -1,14 +1,16 @@
-from typing import Dict, Optional
-import os
-import requests
 import base64
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Dict, Optional
+
+import requests
 
 # Import sub-modules
 from .orders import Orders
 from .payments import Payments
 from .webhooks import Webhooks
+
 
 def load_env():
     """Load .env file."""
@@ -19,10 +21,11 @@ def load_env():
                 key, val = line.split("=", 1)
                 os.environ.setdefault(key.strip(), val.strip())
 
+
 class PayPalSDK:
     """
     🛡️ PayPal SDK - Modular Edition
-    
+
     Modules:
         - orders: Orders v2
         - payments: Payments v2
@@ -53,19 +56,13 @@ class PayPalSDK:
 
     def _get_token(self) -> Optional[str]:
         """Get OAuth access token."""
-        if (
-            self._access_token
-            and self._token_expiry
-            and datetime.now() < self._token_expiry
-        ):
+        if self._access_token and self._token_expiry and datetime.now() < self._token_expiry:
             return self._access_token
 
         if not self.client_id or not self.client_secret:
             return None
 
-        auth = base64.b64encode(
-            f"{self.client_id}:{self.client_secret}".encode()
-        ).decode()
+        auth = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
 
         try:
             response = requests.post(
@@ -75,7 +72,7 @@ class PayPalSDK:
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
                 data="grant_type=client_credentials",
-                timeout=10
+                timeout=10,
             )
 
             if response.status_code == 200:

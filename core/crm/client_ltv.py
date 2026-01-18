@@ -12,19 +12,21 @@ Features:
 - Revenue prediction
 """
 
-import uuid
 import logging
-from typing import Dict, Any
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ClientTier(Enum):
     """Client tiers by LTV."""
+
     PLATINUM = "platinum"  # Top tier
     GOLD = "gold"
     SILVER = "silver"
@@ -34,6 +36,7 @@ class ClientTier(Enum):
 @dataclass
 class ClientLTV:
     """Client lifetime value record entity."""
+
     id: str
     client_name: str
     start_date: datetime
@@ -53,7 +56,7 @@ class ClientLTV:
 class ClientLifetimeValue:
     """
     Client Lifetime Value Calculator System.
-    
+
     Provides insights into client value over time and predicts future revenue.
     """
 
@@ -86,17 +89,14 @@ class ClientLifetimeValue:
                     avg_monthly=avg_monthly,
                     retention_months=months,
                     predicted_ltv=ltv_val,
-                    tier=tier_val
+                    tier=tier_val,
                 )
                 self.clients[client.id] = client
             except ValueError as e:
                 logger.error(f"Failed to load sample client {name}: {e}")
 
     def calculate_ltv(
-        self,
-        avg_monthly: float,
-        months: int = 24,
-        churn_rate: float = 0.05
+        self, avg_monthly: float, months: int = 24, churn_rate: float = 0.05
     ) -> float:
         """
         Calculate predicted Lifetime Value.
@@ -137,7 +137,7 @@ class ClientLifetimeValue:
             "total_ltv": total_ltv,
             "avg_ltv": avg_ltv,
             "avg_monthly": avg_monthly,
-            "count": len(self.clients)
+            "count": len(self.clients),
         }
 
     def format_dashboard(self) -> str:
@@ -157,26 +157,30 @@ class ClientLifetimeValue:
             ClientTier.PLATINUM: "💎",
             ClientTier.GOLD: "🥇",
             ClientTier.SILVER: "🥈",
-            ClientTier.BRONZE: "🥉"
+            ClientTier.BRONZE: "🥉",
         }
 
         # Sort by predicted LTV descending
-        sorted_clients = sorted(self.clients.values(), key=lambda x: x.predicted_ltv, reverse=True)[:5]
+        sorted_clients = sorted(self.clients.values(), key=lambda x: x.predicted_ltv, reverse=True)[
+            :5
+        ]
 
         for c in sorted_clients:
             icon = tier_icons.get(c.tier, "⚪")
             # 10-block progress bar, scaled to $150k max for demo
             bar_len = int(min(10, (c.predicted_ltv / 15000)))
             bar = "█" * bar_len + "░" * (10 - bar_len)
-            name_display = (c.client_name[:15] + '..') if len(c.client_name) > 17 else c.client_name
+            name_display = (c.client_name[:15] + "..") if len(c.client_name) > 17 else c.client_name
 
             lines.append(f"║  {icon} {name_display:<17} │ {bar} │ ${c.predicted_ltv:>10,.0f}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 LTV SEGMENTATION                                      ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 LTV SEGMENTATION                                      ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for tier in ClientTier:
             tier_clients = [c for c in self.clients.values() if c.tier == tier]
@@ -184,17 +188,21 @@ class ClientLifetimeValue:
             total = sum(c.predicted_ltv for c in tier_clients)
             icon = tier_icons.get(tier, "⚪")
 
-            lines.append(f"║    {icon} {tier.value.capitalize():<10} │ {count:>2} clients │ ${total:>12,.0f}  ║")
+            lines.append(
+                f"║    {icon} {tier.value.capitalize():<10} │ {count:>2} clients │ ${total:>12,.0f}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            f"║  📈 Portfolio Avg Monthly: ${stats['avg_monthly']:>10,.0f}             ║",
-            "║                                                           ║",
-            "║  [📊 Cohort Analysis]  [📈 Trends]  [🎯 Upsell Plan]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Maximize Value!    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                f"║  📈 Portfolio Avg Monthly: ${stats['avg_monthly']:>10,.0f}             ║",
+                "║                                                           ║",
+                "║  [📊 Cohort Analysis]  [📈 Trends]  [🎯 Upsell Plan]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Maximize Value!    ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

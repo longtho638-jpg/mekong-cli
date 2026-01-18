@@ -1,11 +1,14 @@
 """
 Strategy Module - Service Logic (Binh Phap Hub)
 """
+
 import logging
 from typing import List
+
 from .entities import Chapter, StrategicInsight
 
 logger = logging.getLogger(__name__)
+
 
 class StrategyService:
     """
@@ -24,22 +27,29 @@ class StrategyService:
         insights = []
 
         # Chapter 1: Planning (Assess 5 Factors)
-        insights.append(StrategicInsight(
-            chapter=Chapter.PLANNING,
-            title="Initial Assessment (Kế)",
-            content="Before battle, calculations must be made in the temple.",
-            action_items=["Define clear MVV (Mission/Vision/Values)", "Assess market timing (Heaven)"],
-            score=85
-        ))
+        insights.append(
+            StrategicInsight(
+                chapter=Chapter.PLANNING,
+                title="Initial Assessment (Kế)",
+                content="Before battle, calculations must be made in the temple.",
+                action_items=[
+                    "Define clear MVV (Mission/Vision/Values)",
+                    "Assess market timing (Heaven)",
+                ],
+                score=85,
+            )
+        )
 
         # Chapter 3: Strategy (Win without fighting)
-        insights.append(StrategicInsight(
-            chapter=Chapter.STRATEGY,
-            title="Strategic Attack (Mưu Công)",
-            content="The supreme art of war is to subdue the enemy without fighting.",
-            action_items=["Identify niche dominance", "Build proprietary data moat"],
-            score=90
-        ))
+        insights.append(
+            StrategicInsight(
+                chapter=Chapter.STRATEGY,
+                title="Strategic Attack (Mưu Công)",
+                content="The supreme art of war is to subdue the enemy without fighting.",
+                action_items=["Identify niche dominance", "Build proprietary data moat"],
+                score=90,
+            )
+        )
 
         return insights
 
@@ -57,6 +67,6 @@ class StrategyService:
             Chapter.TERRAIN: "Terrain",
             Chapter.SITUATIONS: "The Nine Situations",
             Chapter.DISRUPTION: "The Attack by Fire",
-            Chapter.INTELLIGENCE: "The Use of Spies"
+            Chapter.INTELLIGENCE: "The Use of Spies",
         }
         return titles.get(chapter, "Unknown")

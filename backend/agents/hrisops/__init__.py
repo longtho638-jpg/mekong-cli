@@ -3,12 +3,19 @@ HRISOps Agents Package
 HR Data + Benefits
 """
 
-from .hr_data_agent import HRDataAgent, EmployeeRecord, RecordStatus, DataType
-from .benefits_agent import BenefitsAgent, BenefitPlan, Enrollment, EnrollmentStatus, PlanType
+from .benefits_agent import BenefitPlan, BenefitsAgent, Enrollment, EnrollmentStatus, PlanType
+from .hr_data_agent import DataType, EmployeeRecord, HRDataAgent, RecordStatus
 
 __all__ = [
     # HR Data
-    "HRDataAgent", "EmployeeRecord", "RecordStatus", "DataType",
+    "HRDataAgent",
+    "EmployeeRecord",
+    "RecordStatus",
+    "DataType",
     # Benefits
-    "BenefitsAgent", "BenefitPlan", "Enrollment", "EnrollmentStatus", "PlanType",
+    "BenefitsAgent",
+    "BenefitPlan",
+    "Enrollment",
+    "EnrollmentStatus",
+    "PlanType",
 ]

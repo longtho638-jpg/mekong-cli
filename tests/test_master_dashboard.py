@@ -2,8 +2,9 @@
 Tests for Master Dashboard system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.master_dashboard import MasterDashboard
 
-class TestMasterDashboard:
 
+class TestMasterDashboard:
     def test_summary_aggregation(self):
         """Test that summary combines all layers."""
         dashboard = MasterDashboard()
@@ -36,6 +37,7 @@ class TestMasterDashboard:
         assert 0 <= score <= 100
         # Should be reasonable starting point
         assert score > 10
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

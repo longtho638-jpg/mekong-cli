@@ -4,8 +4,8 @@ Tracks and calculates sales KPIs and metrics.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict
 from enum import Enum
+from typing import Dict, List
 
 
 class MetricType(Enum):
@@ -18,6 +18,7 @@ class MetricType(Enum):
 @dataclass
 class KPI:
     """Key Performance Indicator"""
+
     name: str
     value: float
     target: float
@@ -41,6 +42,7 @@ class KPI:
 @dataclass
 class FunnelStage:
     """Conversion funnel stage"""
+
     name: str
     count: int
     value: float
@@ -49,7 +51,7 @@ class FunnelStage:
 class AnalyticsAgent:
     """
     Analytics Agent - Phân tích KPIs
-    
+
     Responsibilities:
     - Calculate KPIs
     - Aggregate metrics
@@ -64,32 +66,17 @@ class AnalyticsAgent:
         self.funnel: List[FunnelStage] = []
 
     def set_kpi(
-        self,
-        name: str,
-        value: float,
-        target: float,
-        unit: str = "",
-        period: str = "MTD"
+        self, name: str, value: float, target: float, unit: str = "", period: str = "MTD"
     ) -> KPI:
         """Set or update a KPI"""
-        kpi = KPI(
-            name=name,
-            value=value,
-            target=target,
-            unit=unit,
-            period=period
-        )
+        kpi = KPI(name=name, value=value, target=target, unit=unit, period=period)
         self.kpis[name] = kpi
         return kpi
 
     def build_funnel(self, stages: List[Dict]) -> List[FunnelStage]:
         """Build conversion funnel"""
         self.funnel = [
-            FunnelStage(
-                name=stage["name"],
-                count=stage["count"],
-                value=stage.get("value", 0)
-            )
+            FunnelStage(name=stage["name"], count=stage["count"], value=stage.get("value", 0))
             for stage in stages
         ]
         return self.funnel
@@ -115,7 +102,7 @@ class AnalyticsAgent:
             "current": current,
             "previous": previous,
             "change": round(change, 1),
-            "direction": "up" if change > 0 else "down" if change < 0 else "flat"
+            "direction": "up" if change > 0 else "down" if change < 0 else "flat",
         }
 
     def get_kpi_summary(self) -> Dict:
@@ -131,7 +118,7 @@ class AnalyticsAgent:
             "on_target": on_target,
             "at_risk": at_risk,
             "behind": behind,
-            "avg_attainment": sum(k.attainment for k in kpis) / len(kpis) if kpis else 0
+            "avg_attainment": sum(k.attainment for k in kpis) / len(kpis) if kpis else 0,
         }
 
 
@@ -152,13 +139,15 @@ if __name__ == "__main__":
         print(f"   {kpi.name}: {kpi.value}/{kpi.target} ({kpi.attainment:.0f}%) - {kpi.status}")
 
     # Build funnel
-    agent.build_funnel([
-        {"name": "Leads", "count": 500, "value": 250000},
-        {"name": "MQLs", "count": 150, "value": 150000},
-        {"name": "SQLs", "count": 75, "value": 112500},
-        {"name": "Opportunities", "count": 40, "value": 80000},
-        {"name": "Closed Won", "count": 15, "value": 45000},
-    ])
+    agent.build_funnel(
+        [
+            {"name": "Leads", "count": 500, "value": 250000},
+            {"name": "MQLs", "count": 150, "value": 150000},
+            {"name": "SQLs", "count": 75, "value": 112500},
+            {"name": "Opportunities", "count": 40, "value": 80000},
+            {"name": "Closed Won", "count": 15, "value": 45000},
+        ]
+    )
 
     print("\n🔻 Funnel Conversions:")
     for stage, rate in agent.get_conversion_rates().items():

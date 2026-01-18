@@ -3,11 +3,11 @@ Compensation Agent - Salary & Pay Equity Management
 Manages salary structures, benchmarking, and equity analysis.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class JobLevel(Enum):
@@ -24,6 +24,7 @@ class JobLevel(Enum):
 @dataclass
 class SalaryBand:
     """Salary band for a job level"""
+
     id: str
     level: JobLevel
     job_family: str
@@ -36,6 +37,7 @@ class SalaryBand:
 @dataclass
 class EmployeeCompensation:
     """Employee compensation record"""
+
     id: str
     employee_id: str
     name: str
@@ -53,7 +55,7 @@ class EmployeeCompensation:
 class CompensationAgent:
     """
     Compensation Agent - Quản lý Lương thưởng
-    
+
     Responsibilities:
     - Manage salary structures
     - Analyze pay equity
@@ -73,7 +75,7 @@ class CompensationAgent:
         job_family: str,
         min_salary: float,
         mid_salary: float,
-        max_salary: float
+        max_salary: float,
     ) -> SalaryBand:
         """Create salary band"""
         band_id = f"band_{level.value}_{job_family}"
@@ -84,7 +86,7 @@ class CompensationAgent:
             job_family=job_family,
             min_salary=min_salary,
             mid_salary=mid_salary,
-            max_salary=max_salary
+            max_salary=max_salary,
         )
 
         self.bands[band_id] = band
@@ -98,10 +100,10 @@ class CompensationAgent:
         level: JobLevel,
         base_salary: float,
         bonus_target: float = 10,
-        equity_value: float = 0
+        equity_value: float = 0,
     ) -> EmployeeCompensation:
         """Add employee compensation"""
-        comp_id = f"comp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        comp_id = f"comp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         # Calculate compa-ratio
         band_key = f"band_{level.value}_{job_family}"
@@ -118,7 +120,7 @@ class CompensationAgent:
             base_salary=base_salary,
             bonus_target=bonus_target,
             equity_value=equity_value,
-            compa_ratio=compa_ratio
+            compa_ratio=compa_ratio,
         )
 
         self.employees[comp_id] = comp
@@ -140,7 +142,7 @@ class CompensationAgent:
             "avg_compa_ratio": sum(e.compa_ratio for e in employees) / len(employees),
             "below_market": len(below),
             "above_market": len(above),
-            "at_market": len(employees) - len(below) - len(above)
+            "at_market": len(employees) - len(below) - len(above),
         }
 
     def get_stats(self) -> Dict:
@@ -150,9 +152,13 @@ class CompensationAgent:
         return {
             "total_employees": len(employees),
             "total_payroll": sum(e.base_salary for e in employees),
-            "avg_salary": sum(e.base_salary for e in employees) / len(employees) if employees else 0,
-            "avg_compa_ratio": sum(e.compa_ratio for e in employees) / len(employees) if employees else 0,
-            "total_bonus_liability": sum(e.base_salary * e.bonus_target / 100 for e in employees)
+            "avg_salary": sum(e.base_salary for e in employees) / len(employees)
+            if employees
+            else 0,
+            "avg_compa_ratio": sum(e.compa_ratio for e in employees) / len(employees)
+            if employees
+            else 0,
+            "total_bonus_liability": sum(e.base_salary * e.bonus_target / 100 for e in employees),
         }
 
 
@@ -171,7 +177,9 @@ if __name__ == "__main__":
     print(f"   Midpoint: ${b1.mid_salary:,.0f}")
 
     # Add employees
-    e1 = agent.add_employee("EMP001", "Nguyen A", "Engineering", JobLevel.SENIOR, 2700, bonus_target=15)
+    e1 = agent.add_employee(
+        "EMP001", "Nguyen A", "Engineering", JobLevel.SENIOR, 2700, bonus_target=15
+    )
     e2 = agent.add_employee("EMP002", "Tran B", "Engineering", JobLevel.MID, 1600, bonus_target=10)
     e3 = agent.add_employee("EMP003", "Le C", "Engineering", JobLevel.SENIOR, 2200, bonus_target=15)
 

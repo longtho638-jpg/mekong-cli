@@ -3,22 +3,22 @@
 ===========================================
 
 Orchestrates hooks that run before and after agent actions.
-Integrates governance gates (WIN-WIN-WIN), security checks (Privacy Block), 
+Integrates governance gates (WIN-WIN-WIN), security checks (Privacy Block),
 and workflow automation.
 
 Usage:
     from antigravity.core.hooks_manager import HooksManager
-    
+
     hooks = HooksManager()
     if not hooks.run_pre_hooks("revenue", context):
         print("Aborted by hook")
 """
 
-from typing import Dict, List, Any, Optional, Union
-from dataclasses import dataclass
-from pathlib import Path
 import json
 import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Base path for hooks
 HOOKS_BASE_DIR = Path(".claude/hooks")
@@ -27,8 +27,8 @@ HOOKS_BASE_DIR = Path(".claude/hooks")
 @dataclass
 class Hook:
     """
-    Single hook definition. 
-    
+    Single hook definition.
+
     Attributes:
         name: Unique identifier for the hook
         file: Relative path to the hook script (e.g., .cjs or .py)
@@ -36,6 +36,7 @@ class Hook:
         category: Domain category (revenue, code, research, session)
         blocking: If True, failure halts the entire workflow
     """
+
     name: str
     file: Path
     trigger: str
@@ -47,10 +48,22 @@ class Hook:
 # Maps trigger_point -> List[Hook]
 HOOKS: Dict[str, List[Hook]] = {
     "pre_revenue": [
-        Hook("win-win-win-gate", HOOKS_BASE_DIR / "win-win-win-gate.cjs", "pre", "revenue", blocking=True),
+        Hook(
+            "win-win-win-gate",
+            HOOKS_BASE_DIR / "win-win-win-gate.cjs",
+            "pre",
+            "revenue",
+            blocking=True,
+        ),
     ],
     "pre_code": [
-        Hook("dev-rules-reminder", HOOKS_BASE_DIR / "dev-rules-reminder.cjs", "pre", "code", blocking=False),
+        Hook(
+            "dev-rules-reminder",
+            HOOKS_BASE_DIR / "dev-rules-reminder.cjs",
+            "pre",
+            "code",
+            blocking=False,
+        ),
         Hook("privacy-block", HOOKS_BASE_DIR / "privacy-block.cjs", "pre", "code", blocking=True),
     ],
     "pre_research": [
@@ -60,7 +73,9 @@ HOOKS: Dict[str, List[Hook]] = {
         Hook("session-init", HOOKS_BASE_DIR / "session-init.cjs", "pre", "session", blocking=False),
     ],
     "spawn_subagent": [
-        Hook("subagent-init", HOOKS_BASE_DIR / "subagent-init.cjs", "pre", "subagent", blocking=False),
+        Hook(
+            "subagent-init", HOOKS_BASE_DIR / "subagent-init.cjs", "pre", "subagent", blocking=False
+        ),
     ],
 }
 
@@ -85,7 +100,7 @@ SUITE_TRIGGERS: Dict[str, List[str]] = {
 class HooksManager:
     """
     🪝 Hooks Manager
-    
+
     Orchestrates pre/post execution hooks for all agent actions.
     """
 
@@ -97,11 +112,11 @@ class HooksManager:
     def run_pre_hooks(self, suite: str, context: Optional[Dict[str, Any]] = None) -> bool:
         """
         Run pre-execution hooks for a suite.
-        
+
         Args:
             suite: The command suite being executed (e.g., 'revenue')
             context: Data context to pass to hooks
-            
+
         Returns:
             True if all blocking hooks pass, False otherwise.
         """
@@ -125,11 +140,7 @@ class HooksManager:
         Run WIN-WIN-WIN validation gate (Python Implementation).
         Validates that all 3 parties (Anh, Agency, Client) have sufficient wins.
         """
-        result = {
-            "valid": True,
-            "scores": {},
-            "message": "WIN-WIN-WIN validated"
-        }
+        result = {"valid": True, "scores": {}, "message": "WIN-WIN-WIN validated"}
 
         # Check each party
         parties = ["anh", "agency", "client"]
@@ -137,7 +148,7 @@ class HooksManager:
             party_data = deal.get(party, {})
             # Score is count of truthy values in the party's dict
             score = sum(1 for v in party_data.values() if v)
-            passed = score >= 2 # Threshold: at least 2 wins per party
+            passed = score >= 2  # Threshold: at least 2 wins per party
             result["scores"][party] = {"score": score, "passed": passed}
 
             if not passed:
@@ -156,12 +167,7 @@ class HooksManager:
         # Ensure hook file path is resolved relative to project root
         self.base_path / hook.file
 
-        result = {
-            "hook": hook.name,
-            "passed": True,
-            "output": "",
-            "error": None
-        }
+        result = {"hook": hook.name, "passed": True, "output": "", "error": None}
 
         # Simulated Hook Execution
         # In a full Node.js environment, we would subprocess.run(['node', hook_path])
@@ -184,8 +190,8 @@ class HooksManager:
                     # Simple regex patterns for secrets
                     patterns = [
                         r"sk-[a-zA-Z0-9]{20,}",  # OpenAI style keys
-                        r"ghp_[a-zA-Z0-9]{20,}", # GitHub tokens
-                        r"password\s*[:=]\s*['\"][^'\"]+['\"]" # Simple password fields
+                        r"ghp_[a-zA-Z0-9]{20,}",  # GitHub tokens
+                        r"password\s*[:=]\s*['\"][^'\"]+['\"]",  # Simple password fields
                     ]
 
                     for pattern in patterns:

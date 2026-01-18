@@ -12,15 +12,16 @@ Roles:
 - Backup management
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class ServerStatus(Enum):
     """Server status."""
+
     RUNNING = "running"
     STOPPED = "stopped"
     MAINTENANCE = "maintenance"
@@ -29,6 +30,7 @@ class ServerStatus(Enum):
 
 class ServerType(Enum):
     """Server types."""
+
     WEB = "web"
     DATABASE = "database"
     APPLICATION = "application"
@@ -38,6 +40,7 @@ class ServerType(Enum):
 
 class BackupStatus(Enum):
     """Backup status."""
+
     SCHEDULED = "scheduled"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -47,6 +50,7 @@ class BackupStatus(Enum):
 @dataclass
 class Server:
     """A server."""
+
     id: str
     name: str
     server_type: ServerType
@@ -61,6 +65,7 @@ class Server:
 @dataclass
 class UserAccount:
     """A user account."""
+
     id: str
     username: str
     email: str
@@ -73,6 +78,7 @@ class UserAccount:
 @dataclass
 class Backup:
     """A backup job."""
+
     id: str
     name: str
     server_id: str
@@ -85,7 +91,7 @@ class Backup:
 class SysAdmin:
     """
     Systems Administrator.
-    
+
     Manage IT systems.
     """
 
@@ -103,7 +109,7 @@ class SysAdmin:
         cpu: float = 20,
         memory: float = 40,
         disk: float = 50,
-        uptime: int = 30
+        uptime: int = 30,
     ) -> Server:
         """Add a server."""
         server = Server(
@@ -114,7 +120,7 @@ class SysAdmin:
             cpu_percent=cpu,
             memory_percent=memory,
             disk_percent=disk,
-            uptime_days=uptime
+            uptime_days=uptime,
         )
         self.servers[server.id] = server
         return server
@@ -124,11 +130,7 @@ class SysAdmin:
         server.status = status
 
     def add_user(
-        self,
-        username: str,
-        email: str,
-        department: str,
-        role: str = "user"
+        self, username: str, email: str, department: str, role: str = "user"
     ) -> UserAccount:
         """Add a user account."""
         user = UserAccount(
@@ -136,7 +138,7 @@ class SysAdmin:
             username=username,
             email=email,
             department=department,
-            role=role
+            role=role,
         )
         self.users[user.id] = user
         return user
@@ -145,18 +147,13 @@ class SysAdmin:
         """Deactivate user account."""
         user.active = False
 
-    def schedule_backup(
-        self,
-        name: str,
-        server: Server,
-        hours_interval: int = 24
-    ) -> Backup:
+    def schedule_backup(self, name: str, server: Server, hours_interval: int = 24) -> Backup:
         """Schedule a backup."""
         backup = Backup(
             id=f"BKP-{uuid.uuid4().hex[:6].upper()}",
             name=name,
             server_id=server.id,
-            next_run=datetime.now() + timedelta(hours=hours_interval)
+            next_run=datetime.now() + timedelta(hours=hours_interval),
         )
         self.backups.append(backup)
         return backup
@@ -180,7 +177,7 @@ class SysAdmin:
             "users": len(self.users),
             "active_users": active_users,
             "backups": len(self.backups),
-            "successful_backups": successful_backups
+            "successful_backups": successful_backups,
         }
 
     def format_dashboard(self) -> str:
@@ -203,41 +200,53 @@ class SysAdmin:
             s_icon = status_icons.get(server.status.value, "⚪")
             t_icon = type_icons.get(server.server_type.value, "🖥️")
 
-            lines.append(f"║  {s_icon} {t_icon} {server.name[:12]:<12} │ CPU:{server.cpu_percent:>3.0f}% │ MEM:{server.memory_percent:>3.0f}% │ {server.uptime_days}d  ║")
+            lines.append(
+                f"║  {s_icon} {t_icon} {server.name[:12]:<12} │ CPU:{server.cpu_percent:>3.0f}% │ MEM:{server.memory_percent:>3.0f}% │ {server.uptime_days}d  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  👥 USER ACCOUNTS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  👥 USER ACCOUNTS                                         ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         role_icons = {"admin": "👑", "user": "👤", "guest": "👻"}
 
         for user in list(self.users.values())[:3]:
             icon = role_icons.get(user.role, "👤")
             status = "✅" if user.active else "❌"
-            lines.append(f"║  {status} {icon} {user.username[:12]:<12} │ {user.department[:12]:<12} │ {user.email[:15]:<15}  ║")
+            lines.append(
+                f"║  {status} {icon} {user.username[:12]:<12} │ {user.department[:12]:<12} │ {user.email[:15]:<15}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  💾 BACKUPS                                               ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  💾 BACKUPS                                               ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         backup_icons = {"scheduled": "⏰", "running": "🔄", "completed": "✅", "failed": "❌"}
 
         for backup in self.backups[-3:]:
             icon = backup_icons.get(backup.status.value, "⚪")
             last = backup.last_run.strftime("%Y-%m-%d") if backup.last_run else "Never"
-            lines.append(f"║  {icon} {backup.name[:15]:<15} │ {backup.size_gb:>5.1f}GB │ {last:<12}  ║")
+            lines.append(
+                f"║  {icon} {backup.name[:15]:<15} │ {backup.size_gb:>5.1f}GB │ {last:<12}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🖥️ Servers]  [👥 Users]  [💾 Backups]                   ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Systems running smoothly!        ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🖥️ Servers]  [👥 Users]  [💾 Backups]                   ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Systems running smoothly!        ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

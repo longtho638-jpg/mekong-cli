@@ -2,18 +2,19 @@
 Tests for Proposal Generator system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.proposal_generator import ProposalGenerator
 from antigravity.core.money_maker import MoneyMaker, ServiceTier
+from antigravity.core.proposal_generator import ProposalGenerator
+
 
 class TestProposalGenerator:
-
     def test_generate_proposal(self):
         """Test full proposal generation from quote."""
         mm = MoneyMaker()
@@ -50,6 +51,7 @@ class TestProposalGenerator:
         assert path.exists()
         content = path.read_text()
         assert "Strategic Proposal: Save Corp" in content
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

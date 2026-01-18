@@ -3,11 +3,11 @@ Content Scheduler Agent - Multi-Platform Scheduling
 Manages content calendar and posting across social platforms.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class SocialPlatform(Enum):
@@ -28,6 +28,7 @@ class PostStatus(Enum):
 @dataclass
 class SocialPost:
     """Social media post"""
+
     id: str
     content: str
     platforms: List[SocialPlatform]
@@ -48,7 +49,7 @@ class SocialPost:
 class ContentSchedulerAgent:
     """
     Content Scheduler Agent - Lên lịch nội dung
-    
+
     Responsibilities:
     - Multi-platform scheduling
     - Content calendar management
@@ -66,16 +67,19 @@ class ContentSchedulerAgent:
         content: str,
         platforms: List[SocialPlatform],
         scheduled_time: datetime,
-        media_urls: List[str] = None
+        media_urls: List[str] = None,
     ) -> SocialPost:
         """Schedule a new post"""
-        post_id = f"post_{random.randint(1000,9999)}"
+        post_id = f"post_{random.randint(1000, 9999)}"
 
         # Auto-generate hashtags based on content (simulated)
         hashtags = []
-        if "launch" in content.lower(): hashtags.append("#NewLaunch")
-        if "tech" in content.lower(): hashtags.append("#TechNews")
-        if "mekong" in content.lower(): hashtags.append("#MekongCLI")
+        if "launch" in content.lower():
+            hashtags.append("#NewLaunch")
+        if "tech" in content.lower():
+            hashtags.append("#TechNews")
+        if "mekong" in content.lower():
+            hashtags.append("#MekongCLI")
 
         post = SocialPost(
             id=post_id,
@@ -84,7 +88,7 @@ class ContentSchedulerAgent:
             scheduled_time=scheduled_time,
             status=PostStatus.SCHEDULED,
             media_urls=media_urls or [],
-            hashtags=hashtags
+            hashtags=hashtags,
         )
 
         self.posts[post_id] = post
@@ -129,7 +133,7 @@ class ContentSchedulerAgent:
             "total_posts": len(posts),
             "scheduled": len(scheduled),
             "published": len(published),
-            "total_engagement": sum(p.engagement_score for p in published)
+            "total_engagement": sum(p.engagement_score for p in published),
         }
 
 
@@ -146,7 +150,7 @@ if __name__ == "__main__":
     p1 = agent.schedule_post(
         "Excited to announce the new Mekong CLI update! 🚀 #DevTools",
         [SocialPlatform.TWITTER, SocialPlatform.LINKEDIN],
-        now + timedelta(hours=2)
+        now + timedelta(hours=2),
     )
 
     print(f"📋 Post: {p1.content}")

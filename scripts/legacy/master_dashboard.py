@@ -50,7 +50,7 @@ def run_script(script, args=None):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         return result.stdout
-    except:
+    except Exception:
         return ""
 
 

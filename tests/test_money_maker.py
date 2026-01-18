@@ -2,8 +2,9 @@
 Tests for Money Maker system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.money_maker import MoneyMaker, ServiceTier
 
-class TestMoneyMaker:
 
+class TestMoneyMaker:
     def test_generate_quote(self):
         """Test quote generation with Binh Phap chapters."""
         mm = MoneyMaker()
@@ -48,6 +49,7 @@ class TestMoneyMaker:
         assert score >= 85
         assert "CRITICAL" in action
         assert tier == ServiceTier.GENERAL
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

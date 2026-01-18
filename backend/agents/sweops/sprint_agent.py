@@ -3,11 +3,11 @@ Sprint Agent - Sprint Planning & Velocity Tracking
 Manages sprints, backlog, and team velocity.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date, timedelta
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime, timedelta
+from enum import Enum
+from typing import Dict, List
 
 
 class SprintStatus(Enum):
@@ -26,6 +26,7 @@ class TaskStatus(Enum):
 @dataclass
 class Task:
     """Sprint task/story"""
+
     id: str
     title: str
     points: int
@@ -36,6 +37,7 @@ class Task:
 @dataclass
 class Sprint:
     """Sprint"""
+
     id: str
     name: str
     start_date: date
@@ -61,7 +63,7 @@ class Sprint:
 class SprintAgent:
     """
     Sprint Agent - Quản lý Sprint
-    
+
     Responsibilities:
     - Sprint planning
     - Backlog management
@@ -74,44 +76,28 @@ class SprintAgent:
         self.status = "ready"
         self.sprints: Dict[str, Sprint] = {}
 
-    def create_sprint(
-        self,
-        name: str,
-        start_date: date,
-        duration_days: int = 14
-    ) -> Sprint:
+    def create_sprint(self, name: str, start_date: date, duration_days: int = 14) -> Sprint:
         """Create sprint"""
-        sprint_id = f"sprint_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        sprint_id = f"sprint_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         sprint = Sprint(
             id=sprint_id,
             name=name,
             start_date=start_date,
-            end_date=start_date + timedelta(days=duration_days)
+            end_date=start_date + timedelta(days=duration_days),
         )
 
         self.sprints[sprint_id] = sprint
         return sprint
 
-    def add_task(
-        self,
-        sprint_id: str,
-        title: str,
-        points: int,
-        assignee: str = ""
-    ) -> Task:
+    def add_task(self, sprint_id: str, title: str, points: int, assignee: str = "") -> Task:
         """Add task to sprint"""
         if sprint_id not in self.sprints:
             raise ValueError(f"Sprint not found: {sprint_id}")
 
-        task_id = f"task_{random.randint(1000,9999)}"
+        task_id = f"task_{random.randint(1000, 9999)}"
 
-        task = Task(
-            id=task_id,
-            title=title,
-            points=points,
-            assignee=assignee
-        )
+        task = Task(id=task_id, title=title, points=points, assignee=assignee)
 
         sprint = self.sprints[sprint_id]
         sprint.tasks.append(task)
@@ -168,7 +154,7 @@ class SprintAgent:
             "active": len([s for s in sprints if s.status == SprintStatus.ACTIVE]),
             "avg_velocity": sum(s.velocity for s in completed) / len(completed) if completed else 0,
             "total_points": sum(s.committed_points for s in sprints),
-            "completed_points": sum(s.completed_points for s in sprints)
+            "completed_points": sum(s.completed_points for s in sprints),
         }
 
 

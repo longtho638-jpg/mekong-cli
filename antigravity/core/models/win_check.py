@@ -2,8 +2,8 @@
 ⚖️ WIN-WIN-WIN Alignment Framework
 ==================================
 
-Implements the mandatory 3-way alignment check required by the Agency OS 
-Constitution. Every strategic decision or deal must create value for all 
+Implements the mandatory 3-way alignment check required by the Agency OS
+Constitution. Every strategic decision or deal must create value for all
 three primary stakeholders to proceed.
 
 Stakeholders:
@@ -17,16 +17,18 @@ Binh Pháp: ⚖️ Đạo (Way) - Alignment of purpose and benefit.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Dict, Any
 from enum import Enum
+from typing import Any, Dict, Optional
 
 from ..errors import WinWinWinError
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class WinType(Enum):
     """The three pillars of the WIN-WIN-WIN architecture."""
+
     ANH = "anh"
     AGENCY = "agency"
     CLIENT = "client"
@@ -36,10 +38,11 @@ class WinType(Enum):
 class WinCheck:
     """
     ⚖️ Governance Validation Gate
-    
+
     Verifies that all three parties have identified wins.
     Acts as a compliance filter for the revenue and strategy engines.
     """
+
     anh_win: str = ""
     agency_win: str = ""
     client_win: str = ""
@@ -48,7 +51,7 @@ class WinCheck:
 
     def validate(self) -> bool:
         """
-        Enforces the alignment rules. 
+        Enforces the alignment rules.
         Raises WinWinWinError if any party lacks a defined WIN.
         """
         if not self.anh_win:
@@ -71,9 +74,12 @@ class WinCheck:
 
     def get_failing_stakeholder(self) -> Optional[str]:
         """Identifies the first party that lacks a defined WIN."""
-        if not self.anh_win: return "anh"
-        if not self.agency_win: return "agency"
-        if not self.client_win: return "client"
+        if not self.anh_win:
+            return "anh"
+        if not self.agency_win:
+            return "agency"
+        if not self.client_win:
+            return "client"
         return None
 
     def to_dict(self) -> Dict[str, Any]:
@@ -83,10 +89,10 @@ class WinCheck:
             "pillars": {
                 "owner": self.anh_win,
                 "agency": self.agency_win,
-                "client": self.client_win
+                "client": self.client_win,
             },
             "timestamp": self.checked_at.isoformat(),
-            "failing_party": self.get_failing_stakeholder()
+            "failing_party": self.get_failing_stakeholder(),
         }
 
     def print_visual_check(self) -> None:

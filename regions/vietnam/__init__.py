@@ -12,27 +12,30 @@ Features:
 """
 
 import os
-from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 
 class Currency(Enum):
     """Supported currencies."""
+
     VND = "VND"  # Vietnamese Dong
     USD = "USD"  # US Dollar
 
 
 class VietnamRegion(Enum):
     """Vietnam regions."""
-    NORTH = "north"       # Bắc Bộ
-    CENTRAL = "central"   # Trung Bộ
-    SOUTH = "south"       # Nam Bộ
+
+    NORTH = "north"  # Bắc Bộ
+    CENTRAL = "central"  # Trung Bộ
+    SOUTH = "south"  # Nam Bộ
 
 
 @dataclass
 class Province:
     """A Vietnamese province."""
+
     code: str
     name_en: str
     name_vi: str
@@ -44,7 +47,7 @@ class Province:
 class VietnamConfig:
     """
     Vietnam region configuration.
-    
+
     Covers entire Vietnam (63 provinces), not just ĐBSCL.
     Supports dual currency (VND + USD) for local + SaaS income.
     """
@@ -55,25 +58,27 @@ class VietnamConfig:
 
     # Currency settings
     primary_currency: Currency = Currency.USD  # SaaS affiliate
-    local_currency: Currency = Currency.VND    # Local clients
+    local_currency: Currency = Currency.VND  # Local clients
     exchange_rate: float = 24500.0  # VND per USD (update regularly)
 
     # Coverage
     coverage_type: str = "nationwide"  # Not just ĐBSCL
 
     # Major cities for targeting
-    major_cities: List[str] = field(default_factory=lambda: [
-        "Hanoi",
-        "Ho Chi Minh City",
-        "Da Nang",
-        "Hai Phong",
-        "Can Tho",
-        "Bien Hoa",
-        "Hue",
-        "Nha Trang",
-        "Vung Tau",
-        "Da Lat"
-    ])
+    major_cities: List[str] = field(
+        default_factory=lambda: [
+            "Hanoi",
+            "Ho Chi Minh City",
+            "Da Nang",
+            "Hai Phong",
+            "Can Tho",
+            "Bien Hoa",
+            "Hue",
+            "Nha Trang",
+            "Vung Tau",
+            "Da Lat",
+        ]
+    )
 
     # All 63 provinces
     provinces: List[Province] = field(default_factory=list)
@@ -91,14 +96,12 @@ class VietnamConfig:
             Province("QN", "Quang Ninh", "Quảng Ninh", VietnamRegion.NORTH, 1320),
             Province("BN", "Bac Ninh", "Bắc Ninh", VietnamRegion.NORTH, 1368),
             Province("HD", "Hai Duong", "Hải Dương", VietnamRegion.NORTH, 1895),
-
             # Central Vietnam (Trung Bộ)
             Province("DN", "Da Nang", "Đà Nẵng", VietnamRegion.CENTRAL, 1134),
             Province("TH", "Hue", "Huế", VietnamRegion.CENTRAL, 1128),
             Province("KH", "Khanh Hoa", "Khánh Hòa", VietnamRegion.CENTRAL, 1231),
             Province("QNA", "Quang Nam", "Quảng Nam", VietnamRegion.CENTRAL, 1495),
             Province("BDH", "Binh Dinh", "Bình Định", VietnamRegion.CENTRAL, 1485),
-
             # Southern Vietnam (Nam Bộ)
             Province("HCM", "Ho Chi Minh City", "TP. Hồ Chí Minh", VietnamRegion.SOUTH, 9000),
             Province("BD", "Binh Duong", "Bình Dương", VietnamRegion.SOUTH, 2426),
@@ -146,14 +149,14 @@ class VietnamConfig:
             "major_cities": len(self.major_cities),
             "currencies": [self.primary_currency.value, self.local_currency.value],
             "locales": [self.primary_locale, self.secondary_locale],
-            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} VND"
+            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} VND",
         }
 
 
 class VietnamPricingEngine:
     """
     Pricing engine for Vietnam market.
-    
+
     Handles dual-currency pricing:
     - SaaS affiliate commissions in USD
     - Local client services in VND
@@ -164,20 +167,20 @@ class VietnamPricingEngine:
 
         # Local service pricing (VND)
         self.local_services = {
-            "seo_basic": 5_000_000,      # 5M VND/month
-            "seo_pro": 15_000_000,       # 15M VND/month
-            "content_pack": 3_000_000,   # 3M VND/10 posts
-            "social_mgmt": 8_000_000,    # 8M VND/month
-            "ppc_mgmt": 10_000_000,      # 10M VND/month (+ ad spend)
-            "website": 25_000_000,       # 25M VND one-time
-            "branding": 50_000_000,      # 50M VND package
+            "seo_basic": 5_000_000,  # 5M VND/month
+            "seo_pro": 15_000_000,  # 15M VND/month
+            "content_pack": 3_000_000,  # 3M VND/10 posts
+            "social_mgmt": 8_000_000,  # 8M VND/month
+            "ppc_mgmt": 10_000_000,  # 10M VND/month (+ ad spend)
+            "website": 25_000_000,  # 25M VND one-time
+            "branding": 50_000_000,  # 50M VND package
         }
 
         # SaaS affiliate rates (USD)
         self.saas_commissions = {
-            "ahrefs": 0.20,        # 20% recurring
-            "semrush": 0.40,       # 40% recurring
-            "convertkit": 0.30,    # 30% recurring
+            "ahrefs": 0.20,  # 20% recurring
+            "semrush": 0.40,  # 40% recurring
+            "convertkit": 0.30,  # 30% recurring
             "activecampaign": 0.30,
             "getresponse": 0.33,
         }
@@ -191,7 +194,9 @@ class VietnamPricingEngine:
             return f"{self.config.format_usd(usd)} ({self.config.format_vnd(vnd)})"
         return self.config.format_vnd(vnd)
 
-    def estimate_saas_income(self, referrals_per_month: int = 10, avg_value: float = 100) -> Dict[str, Any]:
+    def estimate_saas_income(
+        self, referrals_per_month: int = 10, avg_value: float = 100
+    ) -> Dict[str, Any]:
         """Estimate monthly SaaS affiliate income."""
         total_usd = 0
         breakdown = {}
@@ -204,7 +209,7 @@ class VietnamPricingEngine:
         return {
             "total_usd": self.config.format_usd(total_usd),
             "total_vnd": self.config.format_vnd(self.config.convert_usd_to_vnd(total_usd)),
-            "breakdown": {k: self.config.format_usd(v) for k, v in breakdown.items()}
+            "breakdown": {k: self.config.format_usd(v) for k, v in breakdown.items()},
         }
 
 

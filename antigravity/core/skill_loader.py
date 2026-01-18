@@ -7,16 +7,16 @@ Manages the distribution of 40+ specialized skills across the agent workforce.
 
 Usage:
     from antigravity.core.skill_loader import load_skills_for_agent
-    
+
     # Get skills as text
     skills_dict = load_skills_for_agent("fullstack-developer")
-    
+
     # Print matrix
     print_skill_matrix()
 """
 
-from typing import Dict, List, Set
 from pathlib import Path
+from typing import Dict, List, Set
 
 # Base path for skills
 SKILLS_BASE_DIR = Path(".claude/skills")
@@ -26,65 +26,58 @@ SKILLS_BASE_DIR = Path(".claude/skills")
 SKILL_MAPPING: Dict[str, List[str]] = {
     # 🛠️ Development Skills
     "frontend-development": ["fullstack-developer", "ui-ux-designer"],
-    "backend-development":  ["fullstack-developer", "database-admin"],
-    "databases":            ["database-admin", "fullstack-developer"],
-    "debugging":            ["debugger", "fullstack-developer"],
-    "code-review":          ["code-reviewer"],
-    "vibe-development":     ["fullstack-developer"],
-    "vibe-testing":         ["tester"],
-    "devops":               ["fullstack-developer", "git-manager"],
-    "web-frameworks":       ["fullstack-developer"],
-    "mobile-development":   ["fullstack-developer"],
-    "threejs":              ["ui-ux-designer", "fullstack-developer"],
-    "mcp-builder":          ["mcp-manager"],
-    "mcp-management":       ["mcp-manager"],
-
+    "backend-development": ["fullstack-developer", "database-admin"],
+    "databases": ["database-admin", "fullstack-developer"],
+    "debugging": ["debugger", "fullstack-developer"],
+    "code-review": ["code-reviewer"],
+    "vibe-development": ["fullstack-developer"],
+    "vibe-testing": ["tester"],
+    "devops": ["fullstack-developer", "git-manager"],
+    "web-frameworks": ["fullstack-developer"],
+    "mobile-development": ["fullstack-developer"],
+    "threejs": ["ui-ux-designer", "fullstack-developer"],
+    "mcp-builder": ["mcp-manager"],
+    "mcp-management": ["mcp-manager"],
     # 🎨 Design Skills
-    "ui-ux-pro-max":   ["ui-ux-designer"],
-    "ui-styling":      ["ui-ux-designer"],
+    "ui-ux-pro-max": ["ui-ux-designer"],
+    "ui-styling": ["ui-ux-designer"],
     "frontend-design": ["ui-ux-designer"],
-
     # 🧠 Planning & Research Skills
-    "planning":            ["planner", "project-manager"],
-    "brainstorming":       ["brainstormer"],
-    "research":            ["researcher", "scout-external"],
+    "planning": ["planner", "project-manager"],
+    "brainstorming": ["brainstormer"],
+    "research": ["researcher", "scout-external"],
     "sequential-thinking": ["planner", "researcher"],
-    "problem-solving":     ["debugger", "planner"],
+    "problem-solving": ["debugger", "planner"],
     "context-engineering": ["planner", "researcher"],
-
     # 📄 Content Skills
-    "document-skills":       ["docs-manager", "copywriter"],
-    "docs-seeker":           ["docs-manager", "researcher"],
+    "document-skills": ["docs-manager", "copywriter"],
+    "docs-seeker": ["docs-manager", "researcher"],
     "markdown-novel-viewer": ["docs-manager"],
-
     # 🤖 AI Skills
-    "ai-artist":           ["ui-ux-designer", "content-factory"],
-    "ai-multimodal":       ["researcher", "content-factory"],
-    "google-adk-python":   ["fullstack-developer"],
-
+    "ai-artist": ["ui-ux-designer", "content-factory"],
+    "ai-multimodal": ["researcher", "content-factory"],
+    "google-adk-python": ["fullstack-developer"],
     # 🎥 Media Skills
     "media-processing": ["content-factory"],
-    "mermaidjs-v11":    ["docs-manager", "planner"],
-
+    "mermaidjs-v11": ["docs-manager", "planner"],
     # 💰 Business Skills
-    "binh-phap-wisdom":    ["binh-phap-strategist", "deal-closer", "money-maker"],
-    "vietnamese-agency":   ["client-magnet", "deal-closer"],
+    "binh-phap-wisdom": ["binh-phap-strategist", "deal-closer", "money-maker"],
+    "vietnamese-agency": ["client-magnet", "deal-closer"],
     "payment-integration": ["money-maker", "fullstack-developer"],
-    "shopify":             ["fullstack-developer"],
-
+    "shopify": ["fullstack-developer"],
     # 🔐 Auth Skills
-    "better-auth":     ["fullstack-developer"],
+    "better-auth": ["fullstack-developer"],
     "chrome-devtools": ["debugger", "tester"],
-
     # 📂 Project Skills
-    "plans-kanban":  ["project-manager", "planner"],
+    "plans-kanban": ["project-manager", "planner"],
     "skill-creator": ["planner"],
-    "repomix":       ["researcher", "scout"],
+    "repomix": ["researcher", "scout"],
 }
 
 
 # Reverse mapping: Agent → Skills (Computed once)
 AGENT_SKILLS: Dict[str, Set[str]] = {}
+
 
 def _build_reverse_mapping():
     """Build the AGENT_SKILLS cache."""
@@ -93,6 +86,7 @@ def _build_reverse_mapping():
             if agent not in AGENT_SKILLS:
                 AGENT_SKILLS[agent] = set()
             AGENT_SKILLS[agent].add(skill)
+
 
 # Initialize mapping on import
 _build_reverse_mapping()
@@ -112,11 +106,11 @@ def load_skills_for_agent(agent: str, base_path: Path = SKILLS_BASE_DIR) -> Dict
     """
     Load skill content for an agent.
     Checks SKILL.md first, then README.md.
-    
+
     Args:
         agent: Agent ID
         base_path: Directory containing skill folders
-        
+
     Returns:
         Dict[skill_name, skill_content]
     """

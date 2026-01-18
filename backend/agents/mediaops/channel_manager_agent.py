@@ -3,11 +3,11 @@ Channel Manager Agent - Multi-Platform Distribution
 Manages content distribution across multiple channels.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class ChannelType(Enum):
@@ -28,6 +28,7 @@ class ChannelStatus(Enum):
 @dataclass
 class Channel:
     """Social/media channel"""
+
     id: str
     name: str
     channel_type: ChannelType
@@ -45,6 +46,7 @@ class Channel:
 @dataclass
 class Publication:
     """Published content"""
+
     id: str
     asset_id: str
     channel_id: str
@@ -63,7 +65,7 @@ class Publication:
 class ChannelManagerAgent:
     """
     Channel Manager Agent - Phân phối Đa nền tảng
-    
+
     Responsibilities:
     - Connect channels
     - Publish to multiple platforms
@@ -77,31 +79,16 @@ class ChannelManagerAgent:
         self.channels: Dict[str, Channel] = {}
         self.publications: Dict[str, Publication] = {}
 
-    def connect_channel(
-        self,
-        name: str,
-        channel_type: ChannelType,
-        followers: int = 0
-    ) -> Channel:
+    def connect_channel(self, name: str, channel_type: ChannelType, followers: int = 0) -> Channel:
         """Connect a new channel"""
-        channel_id = f"channel_{channel_type.value}_{random.randint(100,999)}"
+        channel_id = f"channel_{channel_type.value}_{random.randint(100, 999)}"
 
-        channel = Channel(
-            id=channel_id,
-            name=name,
-            channel_type=channel_type,
-            followers=followers
-        )
+        channel = Channel(id=channel_id, name=name, channel_type=channel_type, followers=followers)
 
         self.channels[channel_id] = channel
         return channel
 
-    def publish_to_channel(
-        self,
-        asset_id: str,
-        channel_id: str,
-        caption: str
-    ) -> Publication:
+    def publish_to_channel(self, asset_id: str, channel_id: str, caption: str) -> Publication:
         """Publish asset to a channel"""
         if channel_id not in self.channels:
             raise ValueError(f"Channel not found: {channel_id}")
@@ -109,27 +96,20 @@ class ChannelManagerAgent:
         channel = self.channels[channel_id]
         channel.posts_count += 1
 
-        pub_id = f"pub_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        pub_id = f"pub_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         # Generate mock URL
         url = f"https://{channel.channel_type.value}.com/post/{pub_id}"
 
         pub = Publication(
-            id=pub_id,
-            asset_id=asset_id,
-            channel_id=channel_id,
-            caption=caption,
-            url=url
+            id=pub_id, asset_id=asset_id, channel_id=channel_id, caption=caption, url=url
         )
 
         self.publications[pub_id] = pub
         return pub
 
     def cross_post(
-        self,
-        asset_id: str,
-        caption: str,
-        channel_ids: List[str] = None
+        self, asset_id: str, caption: str, channel_ids: List[str] = None
     ) -> List[Publication]:
         """Publish to multiple channels"""
         if channel_ids is None:
@@ -146,11 +126,7 @@ class ChannelManagerAgent:
         return publications
 
     def update_metrics(
-        self,
-        pub_id: str,
-        views: int = 0,
-        likes: int = 0,
-        shares: int = 0
+        self, pub_id: str, views: int = 0, likes: int = 0, shares: int = 0
     ) -> Publication:
         """Update publication metrics"""
         if pub_id not in self.publications:
@@ -178,7 +154,7 @@ class ChannelManagerAgent:
             "posts": len(pubs),
             "total_views": sum(p.views for p in pubs),
             "total_likes": sum(p.likes for p in pubs),
-            "engagement_rate": f"{channel.engagement_rate}%"
+            "engagement_rate": f"{channel.engagement_rate}%",
         }
 
     def get_all_stats(self) -> Dict:
@@ -187,13 +163,12 @@ class ChannelManagerAgent:
 
         return {
             "total_channels": len(self.channels),
-            "connected": len([c for c in self.channels.values() if c.status == ChannelStatus.CONNECTED]),
+            "connected": len(
+                [c for c in self.channels.values() if c.status == ChannelStatus.CONNECTED]
+            ),
             "total_publications": len(pubs),
             "total_reach": sum(c.followers for c in self.channels.values()),
-            "by_channel": {
-                c.channel_type.value: c.posts_count
-                for c in self.channels.values()
-            }
+            "by_channel": {c.channel_type.value: c.posts_count for c in self.channels.values()},
         }
 
 
@@ -216,7 +191,7 @@ if __name__ == "__main__":
     print("\n🚀 Cross-posting...")
     pubs = agent.cross_post(
         asset_id="asset_001",
-        caption="🎉 Mekong-CLI v1.0 ra mắt! Deploy agency trong 15 phút #MekongCLI"
+        caption="🎉 Mekong-CLI v1.0 ra mắt! Deploy agency trong 15 phút #MekongCLI",
     )
     print(f"   Published to {len(pubs)} channels")
 

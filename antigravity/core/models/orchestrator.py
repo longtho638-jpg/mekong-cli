@@ -2,8 +2,8 @@
 💂 Orchestrator Models - Agent Task & Chain Definitions
 =======================================================
 
-Defines the data structures for multi-agent coordination. Enables 
-precise tracking of individual agent missions and the aggregated 
+Defines the data structures for multi-agent coordination. Enables
+precise tracking of individual agent missions and the aggregated
 outcome of execution chains.
 
 Hierarchy:
@@ -17,14 +17,16 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the specialized units.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Any, List, Dict
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class AgentType(Enum):
     """The roster of specialized AI agents in the Agency OS ecosystem."""
+
     PLANNER = "planner"
     RESEARCHER = "researcher"
     IMPLEMENTER = "implementer"
@@ -43,6 +45,7 @@ class AgentType(Enum):
 
 class ExecutionMode(Enum):
     """Patterns for agent coordination."""
+
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
 
@@ -51,10 +54,11 @@ class ExecutionMode(Enum):
 class AgentTask:
     """
     🤖 Agent Mission
-    
-    Captures the context (prompt), execution state, and output 
+
+    Captures the context (prompt), execution state, and output
     of a single agent invocation.
     """
+
     agent: AgentType
     prompt: str
     description: str
@@ -97,9 +101,9 @@ class AgentTask:
             "status": self.status,
             "performance": {
                 "duration": round(self.get_duration_seconds(), 2),
-                "priority": self.priority
+                "priority": self.priority,
             },
-            "output_preview": str(self.result)[:250] if self.result else None
+            "output_preview": str(self.result)[:250] if self.result else None,
         }
 
 
@@ -107,10 +111,11 @@ class AgentTask:
 class ChainResult:
     """
     ⛓️ Orchestration Outcome
-    
-    Aggregates results from multiple agent tasks into a single 
+
+    Aggregates results from multiple agent tasks into a single
     identifiable execution report.
     """
+
     success: bool
     tasks: List[AgentTask] = field(default_factory=list)
     total_time: float = 0.0
@@ -131,7 +136,7 @@ class ChainResult:
         return {
             "done": len([t for t in self.tasks if t.status == "completed"]),
             "fail": len([t for t in self.tasks if t.status == "failed"]),
-            "total": len(self.tasks)
+            "total": len(self.tasks),
         }
 
     def to_dict(self) -> Dict[str, Any]:
@@ -140,5 +145,5 @@ class ChainResult:
             "success": self.success,
             "total_time_sec": round(self.total_time, 2),
             "mission_metrics": self.metrics,
-            "errors": self.errors
+            "errors": self.errors,
         }

@@ -2,8 +2,9 @@
 Tests for VIBE IDE Core system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,15 +12,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.vibe_ide import VIBEIDE
 
-class TestVIBEIDE:
 
+class TestVIBEIDE:
     def test_create_plan(self, tmp_path):
         """Test plan generation and file creation."""
         ide = VIBEIDE(workspace=str(tmp_path))
         plan_file = ide.create_plan(
-            title="Refactor Core",
-            description="Clean up technical debt",
-            priority="P1"
+            title="Refactor Core", description="Clean up technical debt", priority="P1"
         )
 
         assert plan_file.exists()
@@ -48,6 +47,7 @@ class TestVIBEIDE:
         plans = ide.list_plans()
         assert len(plans) == 2
         assert any(p["title"] == "P1" for p in plans)
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

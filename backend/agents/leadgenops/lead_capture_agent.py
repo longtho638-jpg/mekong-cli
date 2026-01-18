@@ -3,11 +3,11 @@ Lead Capture Agent - Forms & Landing Pages
 Manages lead capture forms and conversion optimization.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class FormType(Enum):
@@ -21,6 +21,7 @@ class FormType(Enum):
 @dataclass
 class FormField:
     """Form field"""
+
     name: str
     field_type: str
     required: bool = True
@@ -29,6 +30,7 @@ class FormField:
 @dataclass
 class CaptureForm:
     """Lead capture form"""
+
     id: str
     name: str
     form_type: FormType
@@ -50,6 +52,7 @@ class CaptureForm:
 @dataclass
 class CapturedLead:
     """Captured lead"""
+
     id: str
     email: str
     form_id: str
@@ -64,7 +67,7 @@ class CapturedLead:
 class LeadCaptureAgent:
     """
     Lead Capture Agent - Thu thập Leads
-    
+
     Responsibilities:
     - Form management
     - Landing pages
@@ -79,14 +82,10 @@ class LeadCaptureAgent:
         self.leads: List[CapturedLead] = []
 
     def create_form(
-        self,
-        name: str,
-        form_type: FormType,
-        page_url: str,
-        fields: List[dict] = None
+        self, name: str, form_type: FormType, page_url: str, fields: List[dict] = None
     ) -> CaptureForm:
         """Create capture form"""
-        form_id = f"form_{random.randint(100,999)}"
+        form_id = f"form_{random.randint(100, 999)}"
 
         form_fields = [
             FormField(f["name"], f.get("type", "text"), f.get("required", True))
@@ -94,11 +93,7 @@ class LeadCaptureAgent:
         ]
 
         form = CaptureForm(
-            id=form_id,
-            name=name,
-            form_type=form_type,
-            page_url=page_url,
-            fields=form_fields
+            id=form_id, name=name, form_type=form_type, page_url=page_url, fields=form_fields
         )
 
         self.forms[form_id] = form
@@ -112,21 +107,13 @@ class LeadCaptureAgent:
         self.forms[form_id].views += 1
         return self.forms[form_id]
 
-    def capture_lead(
-        self,
-        form_id: str,
-        email: str,
-        data: Dict = None
-    ) -> CapturedLead:
+    def capture_lead(self, form_id: str, email: str, data: Dict = None) -> CapturedLead:
         """Capture lead from form"""
         if form_id not in self.forms:
             raise ValueError(f"Form not found: {form_id}")
 
         lead = CapturedLead(
-            id=f"lead_{random.randint(1000,9999)}",
-            email=email,
-            form_id=form_id,
-            data=data or {}
+            id=f"lead_{random.randint(1000, 9999)}", email=email, form_id=form_id, data=data or {}
         )
 
         self.leads.append(lead)
@@ -159,7 +146,7 @@ class LeadCaptureAgent:
             "total_forms": len(forms),
             "total_views": sum(f.views for f in forms),
             "total_leads": len(self.leads),
-            "avg_conversion": sum(f.conversion_rate for f in forms) / len(forms) if forms else 0
+            "avg_conversion": sum(f.conversion_rate for f in forms) / len(forms) if forms else 0,
         }
 
 
@@ -177,8 +164,8 @@ if __name__ == "__main__":
         [
             {"name": "email", "type": "email"},
             {"name": "company", "type": "text"},
-            {"name": "role", "type": "select"}
-        ]
+            {"name": "role", "type": "select"},
+        ],
     )
 
     print(f"📋 Form: {f1.name}")

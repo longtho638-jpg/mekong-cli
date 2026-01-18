@@ -12,15 +12,16 @@ Roles:
 - Press releases
 """
 
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Dict, List
 
 
 class StoryType(Enum):
     """Story types."""
+
     NEWS = "news"
     FEATURE = "feature"
     INTERVIEW = "interview"
@@ -31,6 +32,7 @@ class StoryType(Enum):
 
 class StoryStatus(Enum):
     """Story status."""
+
     PITCHED = "pitched"
     RESEARCHING = "researching"
     INTERVIEWING = "interviewing"
@@ -42,6 +44,7 @@ class StoryStatus(Enum):
 @dataclass
 class Story:
     """A news story."""
+
     id: str
     headline: str
     client: str
@@ -57,7 +60,7 @@ class Story:
 class Journalist:
     """
     Journalist System.
-    
+
     News and stories workflow.
     """
 
@@ -72,7 +75,7 @@ class Journalist:
         story_type: StoryType,
         journalist: str = "",
         publication: str = "",
-        due_days: int = 3
+        due_days: int = 3,
     ) -> Story:
         """Pitch a new story."""
         story = Story(
@@ -83,7 +86,7 @@ class Journalist:
             sources=[],
             journalist=journalist,
             publication=publication,
-            deadline=datetime.now() + timedelta(days=due_days)
+            deadline=datetime.now() + timedelta(days=due_days),
         )
         self.stories[story.id] = story
         return story
@@ -116,35 +119,55 @@ class Journalist:
             "║  ─────────────────────────────────────────────────────── ║",
         ]
 
-        type_icons = {"news": "📰", "feature": "⭐", "interview": "🎤",
-                     "opinion": "💭", "review": "📝", "press_release": "📢"}
-        status_icons = {"pitched": "💡", "researching": "🔍", "interviewing": "🎤",
-                       "writing": "✏️", "fact_check": "✅", "published": "🚀"}
+        type_icons = {
+            "news": "📰",
+            "feature": "⭐",
+            "interview": "🎤",
+            "opinion": "💭",
+            "review": "📝",
+            "press_release": "📢",
+        }
+        status_icons = {
+            "pitched": "💡",
+            "researching": "🔍",
+            "interviewing": "🎤",
+            "writing": "✏️",
+            "fact_check": "✅",
+            "published": "🚀",
+        }
 
         for story in list(self.stories.values())[:5]:
             t_icon = type_icons.get(story.story_type.value, "📰")
             s_icon = status_icons.get(story.status.value, "⚪")
 
-            lines.append(f"║  {s_icon} {t_icon} {story.headline[:22]:<22} │ {len(story.sources)} sources │ {story.client[:8]:<8}  ║")
+            lines.append(
+                f"║  {s_icon} {t_icon} {story.headline[:22]:<22} │ {len(story.sources)} sources │ {story.client[:8]:<8}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY TYPE                                               ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 BY TYPE                                               ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         for stype in list(StoryType)[:4]:
             count = sum(1 for s in self.stories.values() if s.story_type == stype)
             icon = type_icons.get(stype.value, "📰")
-            lines.append(f"║    {icon} {stype.value.replace('_', ' ').title():<15} │ {count:>2} stories               ║")
+            lines.append(
+                f"║    {icon} {stype.value.replace('_', ' ').title():<15} │ {count:>2} stories               ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [💡 Pitch]  [🔍 Research]  [✏️ Write]                    ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Truth that resonates!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [💡 Pitch]  [🔍 Research]  [✏️ Write]                    ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Truth that resonates!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -157,8 +180,12 @@ if __name__ == "__main__":
     print("=" * 60)
     print()
 
-    s1 = journalist.pitch_story("New Office Opening", "Sunrise Realty", StoryType.NEWS, "Alex", "VN Express")
-    s2 = journalist.pitch_story("Founder Interview", "Coffee Lab", StoryType.INTERVIEW, "Sarah", "Forbes VN")
+    s1 = journalist.pitch_story(
+        "New Office Opening", "Sunrise Realty", StoryType.NEWS, "Alex", "VN Express"
+    )
+    s2 = journalist.pitch_story(
+        "Founder Interview", "Coffee Lab", StoryType.INTERVIEW, "Sarah", "Forbes VN"
+    )
     s3 = journalist.pitch_story("Tech Trends 2025", "Tech Startup", StoryType.FEATURE, "Alex")
 
     # Add sources and update

@@ -3,11 +3,11 @@ Competitive Agent - Competitor Tracking & SWOT Analysis
 Manages competitor monitoring and market positioning.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class ThreatLevel(Enum):
@@ -20,6 +20,7 @@ class ThreatLevel(Enum):
 @dataclass
 class SWOT:
     """SWOT analysis"""
+
     strengths: List[str] = field(default_factory=list)
     weaknesses: List[str] = field(default_factory=list)
     opportunities: List[str] = field(default_factory=list)
@@ -29,6 +30,7 @@ class SWOT:
 @dataclass
 class Competitor:
     """Competitor profile"""
+
     id: str
     name: str
     website: str
@@ -48,7 +50,7 @@ class Competitor:
 class CompetitiveAgent:
     """
     Competitive Agent - Phân tích Đối thủ
-    
+
     Responsibilities:
     - Competitor tracking
     - SWOT analysis
@@ -66,17 +68,17 @@ class CompetitiveAgent:
         name: str,
         website: str,
         threat_level: ThreatLevel = ThreatLevel.MEDIUM,
-        market_share: float = 0
+        market_share: float = 0,
     ) -> Competitor:
         """Add competitor"""
-        comp_id = f"comp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        comp_id = f"comp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         competitor = Competitor(
             id=comp_id,
             name=name,
             website=website,
             threat_level=threat_level,
-            market_share=market_share
+            market_share=market_share,
         )
 
         self.competitors[comp_id] = competitor
@@ -98,7 +100,7 @@ class CompetitiveAgent:
         strengths: List[str] = None,
         weaknesses: List[str] = None,
         opportunities: List[str] = None,
-        threats: List[str] = None
+        threats: List[str] = None,
     ) -> Competitor:
         """Update SWOT analysis"""
         if comp_id not in self.competitors:
@@ -144,7 +146,7 @@ class CompetitiveAgent:
             "high_threat": len(self.get_by_threat_level(ThreatLevel.HIGH)),
             "critical_threat": len(self.get_by_threat_level(ThreatLevel.CRITICAL)),
             "total_market_share": sum(c.market_share for c in comps),
-            "avg_features": sum(len(c.features) for c in comps) / len(comps) if comps else 0
+            "avg_features": sum(len(c.features) for c in comps) / len(comps) if comps else 0,
         }
 
 
@@ -173,7 +175,7 @@ if __name__ == "__main__":
         strengths=["Strong brand", "Large user base"],
         weaknesses=["High pricing", "Poor support"],
         opportunities=["Emerging markets"],
-        threats=["New regulations"]
+        threats=["New regulations"],
     )
 
     print(f"\n📊 SWOT for {c1.name}:")

@@ -75,6 +75,5 @@ def get_hot_leads():
         raise HTTPException(500, "CRM not available")
     hot = crm.get_hot_leads()
     return [
-        {"id": c.id, "name": c.name, "company": c.company, "lead_score": c.lead_score}
-        for c in hot
+        {"id": c.id, "name": c.name, "company": c.company, "lead_score": c.lead_score} for c in hot
     ]

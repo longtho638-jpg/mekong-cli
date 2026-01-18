@@ -2,8 +2,9 @@
 Tests for Infrastructure system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.infrastructure import InfrastructureStack, StackLayer
 
-class TestInfrastructure:
 
+class TestInfrastructure:
     def test_stack_initialization(self):
         """Verify all 10 layers are initialized."""
         stack = InfrastructureStack()
@@ -35,6 +36,7 @@ class TestInfrastructure:
         # 1 layer running (100), 9 layers configured (90)
         # Total = 100 + 810 = 910. 910 / 10 = 91
         assert stack.get_health_score() == 91
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

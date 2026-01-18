@@ -3,11 +3,11 @@ SEO Agent - Search Engine Optimization
 Manages keyword research, rankings, and technical SEO.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class KeywordDifficulty(Enum):
@@ -20,6 +20,7 @@ class KeywordDifficulty(Enum):
 @dataclass
 class Keyword:
     """SEO keyword"""
+
     id: str
     term: str
     volume: int
@@ -36,6 +37,7 @@ class Keyword:
 @dataclass
 class Backlink:
     """Backlink"""
+
     id: str
     source_url: str
     target_url: str
@@ -47,7 +49,7 @@ class Backlink:
 class SEOAgent:
     """
     SEO Agent - Tối ưu Công cụ Tìm kiếm
-    
+
     Responsibilities:
     - Keyword research
     - Ranking tracking
@@ -62,21 +64,13 @@ class SEOAgent:
         self.backlinks: Dict[str, Backlink] = {}
 
     def add_keyword(
-        self,
-        term: str,
-        volume: int,
-        difficulty: KeywordDifficulty,
-        target_url: str = ""
+        self, term: str, volume: int, difficulty: KeywordDifficulty, target_url: str = ""
     ) -> Keyword:
         """Add keyword to track"""
-        keyword_id = f"kw_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        keyword_id = f"kw_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         keyword = Keyword(
-            id=keyword_id,
-            term=term,
-            volume=volume,
-            difficulty=difficulty,
-            target_url=target_url
+            id=keyword_id, term=term, volume=volume, difficulty=difficulty, target_url=target_url
         )
 
         self.keywords[keyword_id] = keyword
@@ -94,14 +88,10 @@ class SEOAgent:
         return keyword
 
     def add_backlink(
-        self,
-        source_url: str,
-        target_url: str,
-        anchor_text: str,
-        domain_authority: int
+        self, source_url: str, target_url: str, anchor_text: str, domain_authority: int
     ) -> Backlink:
         """Add backlink"""
-        backlink_id = f"bl_{random.randint(100,999)}"
+        backlink_id = f"bl_{random.randint(100, 999)}"
 
         backlink = Backlink(
             id=backlink_id,
@@ -109,7 +99,7 @@ class SEOAgent:
             target_url=target_url,
             anchor_text=anchor_text,
             domain_authority=domain_authority,
-            discovered_at=datetime.now()
+            discovered_at=datetime.now(),
         )
 
         self.backlinks[backlink_id] = backlink
@@ -134,7 +124,9 @@ class SEOAgent:
             "top_10": len(top10),
             "avg_rank": sum(k.current_rank for k in ranked) / len(ranked) if ranked else 0,
             "total_backlinks": len(backlinks),
-            "avg_da": sum(b.domain_authority for b in backlinks) / len(backlinks) if backlinks else 0
+            "avg_da": sum(b.domain_authority for b in backlinks) / len(backlinks)
+            if backlinks
+            else 0,
         }
 
 
@@ -145,7 +137,9 @@ if __name__ == "__main__":
     print("🔍 SEO Agent Demo\n")
 
     # Add keywords
-    k1 = agent.add_keyword("content marketing", 5000, KeywordDifficulty.MEDIUM, "/blog/content-marketing")
+    k1 = agent.add_keyword(
+        "content marketing", 5000, KeywordDifficulty.MEDIUM, "/blog/content-marketing"
+    )
     k2 = agent.add_keyword("seo tips", 3000, KeywordDifficulty.EASY, "/blog/seo-tips")
     k3 = agent.add_keyword("marketing automation", 8000, KeywordDifficulty.HARD, "/features")
 

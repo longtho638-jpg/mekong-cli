@@ -1,7 +1,9 @@
 """
 Invoice Module - Presentation Layer
 """
+
 from .services import InvoiceSystem
+
 
 class InvoicePresenter:
     """Handles visual formatting of Invoices."""
@@ -9,7 +11,8 @@ class InvoicePresenter:
     @staticmethod
     def format_invoice_ascii(system: InvoiceSystem, inv_id: str) -> str:
         """Render a specific invoice as a professional text document."""
-        if inv_id not in system.invoices: return "Invoice not found."
+        if inv_id not in system.invoices:
+            return "Invoice not found."
 
         inv = system.invoices[inv_id]
         sym = {"USD": "$", "VND": "₫"}.get(inv.currency.value, "$")
@@ -26,15 +29,19 @@ class InvoicePresenter:
         ]
 
         for item in inv.items:
-            lines.append(f"║  • {item.description[:30]:<30} {item.quantity:>3}  {sym}{item.total:>10,.0f} ║")
+            lines.append(
+                f"║  • {item.description[:30]:<30} {item.quantity:>3}  {sym}{item.total:>10,.0f} ║"
+            )
 
-        lines.extend([
-            "║  ───────────────────────────────────────────────────────  ║",
-            f"║  Subtotal: {sym}{inv.subtotal:>15,.0f} {' ' * 28}║",
-            f"║  VAT (10%): {sym}{inv.tax:>14,.0f} {' ' * 28}║",
-            f"║  TOTAL DUE: {sym}{inv.total:>14,.0f} {' ' * 28}║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  [💳 Pay Online]  [📥 Download PDF]  [📧 Send Reminder]   ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║  ───────────────────────────────────────────────────────  ║",
+                f"║  Subtotal: {sym}{inv.subtotal:>15,.0f} {' ' * 28}║",
+                f"║  VAT (10%): {sym}{inv.tax:>14,.0f} {' ' * 28}║",
+                f"║  TOTAL DUE: {sym}{inv.total:>14,.0f} {' ' * 28}║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                "║  [💳 Pay Online]  [📥 Download PDF]  [📧 Send Reminder]   ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)

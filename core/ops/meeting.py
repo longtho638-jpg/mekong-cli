@@ -12,20 +12,22 @@ Features:
 - Calendar integration ready
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class MeetingType(Enum):
     """Categories of client meetings."""
+
     DISCOVERY = "discovery"
     STRATEGY = "strategy"
     KICKOFF = "kickoff"
@@ -35,6 +37,7 @@ class MeetingType(Enum):
 
 class MeetingStatus(Enum):
     """Lifecycle status of a meeting."""
+
     SCHEDULED = "scheduled"
     CONFIRMED = "confirmed"
     COMPLETED = "completed"
@@ -45,6 +48,7 @@ class MeetingStatus(Enum):
 @dataclass
 class TimeSlot:
     """A calendar availability slot."""
+
     start: datetime
     end: datetime
     available: bool = True
@@ -53,6 +57,7 @@ class TimeSlot:
 @dataclass
 class Meeting:
     """A scheduled meeting entity."""
+
     id: str
     type: MeetingType
     client_name: str
@@ -71,13 +76,15 @@ class Meeting:
 class MeetingScheduler:
     """
     Meeting Scheduler System.
-    
+
     Orchestrates calendar availability, booking logic, and client communication.
     """
 
     DURATIONS = {
-        MeetingType.DISCOVERY: 30, MeetingType.STRATEGY: 60,
-        MeetingType.KICKOFF: 45, MeetingType.REVIEW: 30,
+        MeetingType.DISCOVERY: 30,
+        MeetingType.STRATEGY: 60,
+        MeetingType.KICKOFF: 45,
+        MeetingType.REVIEW: 30,
         MeetingType.SUPPORT: 15,
     }
 
@@ -89,7 +96,7 @@ class MeetingScheduler:
         logger.info(f"Meeting Scheduler initialized for {agency_name} ({timezone})")
 
     def _validate_email(self, email: str) -> bool:
-        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+        return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
 
     def get_available_slots(self, date: datetime, duration: int = 30) -> List[TimeSlot]:
         """Calculate open calendar slots for a given day."""
@@ -104,7 +111,8 @@ class MeetingScheduler:
 
             # Check overlap
             for m in self.meetings.values():
-                if m.status == MeetingStatus.CANCELLED: continue
+                if m.status == MeetingStatus.CANCELLED:
+                    continue
                 # Overlap logic: (StartA < EndB) and (EndA > StartB)
                 if current < m.end_time and slot_end > m.start_time:
                     is_free = False
@@ -121,7 +129,7 @@ class MeetingScheduler:
         client_name: str,
         client_email: str,
         start_time: datetime,
-        notes: str = ""
+        notes: str = "",
     ) -> Optional[Meeting]:
         """Reserve a specific time slot for a client."""
         if not self._validate_email(client_email):
@@ -132,7 +140,8 @@ class MeetingScheduler:
         end_time = start_time + timedelta(minutes=duration)
 
         for m in self.meetings.values():
-            if m.status == MeetingStatus.CANCELLED: continue
+            if m.status == MeetingStatus.CANCELLED:
+                continue
             if start_time < m.end_time and end_time > m.start_time:
                 logger.warning(f"Slot conflict for {start_time}")
                 # In strict mode, we'd return None or raise error.
@@ -140,10 +149,13 @@ class MeetingScheduler:
 
         meeting = Meeting(
             id=f"MTG-{uuid.uuid4().hex[:6].upper()}",
-            type=meeting_type, client_name=client_name,
-            client_email=client_email, start_time=start_time,
-            duration_minutes=duration, status=MeetingStatus.SCHEDULED,
-            notes=notes
+            type=meeting_type,
+            client_name=client_name,
+            client_email=client_email,
+            start_time=start_time,
+            duration_minutes=duration,
+            status=MeetingStatus.SCHEDULED,
+            notes=notes,
         )
         self.meetings[meeting.id] = meeting
         logger.info(f"Meeting booked: {meeting.id} for {client_name}")
@@ -176,8 +188,7 @@ if __name__ == "__main__":
         slot_time = tomorrow.replace(hour=10, minute=0, second=0, microsecond=0)
 
         mtg = scheduler.book_meeting(
-            MeetingType.DISCOVERY, "Hoang", "hoang@sunrise.vn",
-            slot_time, "Strategy Chat"
+            MeetingType.DISCOVERY, "Hoang", "hoang@sunrise.vn", slot_time, "Strategy Chat"
         )
         if mtg:
             print("\n" + scheduler.format_confirmation(mtg))

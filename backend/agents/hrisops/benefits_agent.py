@@ -3,11 +3,11 @@ Benefits Agent - Benefits Enrollment & Administration
 Manages employee benefits, enrollments, and claims.
 """
 
-from dataclasses import dataclass
-from typing import List, Dict, Optional
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List, Optional
 
 
 class EnrollmentStatus(Enum):
@@ -30,6 +30,7 @@ class PlanType(Enum):
 @dataclass
 class BenefitPlan:
     """Benefit plan"""
+
     id: str
     name: str
     plan_type: PlanType
@@ -42,6 +43,7 @@ class BenefitPlan:
 @dataclass
 class Enrollment:
     """Employee benefit enrollment"""
+
     id: str
     employee_id: str
     employee_name: str
@@ -60,7 +62,7 @@ class Enrollment:
 class BenefitsAgent:
     """
     Benefits Agent - Quản lý Phúc lợi
-    
+
     Responsibilities:
     - Manage benefit plans
     - Handle enrollments
@@ -80,10 +82,10 @@ class BenefitsAgent:
         plan_type: PlanType,
         monthly_cost: float,
         employer_contribution: float,
-        coverage: str
+        coverage: str,
     ) -> BenefitPlan:
         """Add benefit plan"""
-        plan_id = f"plan_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        plan_id = f"plan_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         plan = BenefitPlan(
             id=plan_id,
@@ -91,7 +93,7 @@ class BenefitsAgent:
             plan_type=plan_type,
             monthly_cost=monthly_cost,
             employer_contribution=employer_contribution,
-            coverage=coverage
+            coverage=coverage,
         )
 
         self.plans[plan_id] = plan
@@ -103,13 +105,13 @@ class BenefitsAgent:
         employee_name: str,
         plan_id: str,
         dependents: int = 0,
-        effective_date: date = None
+        effective_date: date = None,
     ) -> Enrollment:
         """Enroll employee in plan"""
         if plan_id not in self.plans:
             raise ValueError(f"Plan not found: {plan_id}")
 
-        enrollment_id = f"enroll_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        enrollment_id = f"enroll_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
         plan = self.plans[plan_id]
 
         enrollment = Enrollment(
@@ -120,7 +122,7 @@ class BenefitsAgent:
             plan_name=plan.name,
             status=EnrollmentStatus.ENROLLED,
             effective_date=effective_date or date.today(),
-            dependents=dependents
+            dependents=dependents,
         )
 
         self.enrollments[enrollment_id] = enrollment
@@ -138,7 +140,11 @@ class BenefitsAgent:
 
     def get_employee_benefits(self, employee_id: str) -> List[Enrollment]:
         """Get employee's enrollments"""
-        return [e for e in self.enrollments.values() if e.employee_id == employee_id and e.status == EnrollmentStatus.ENROLLED]
+        return [
+            e
+            for e in self.enrollments.values()
+            if e.employee_id == employee_id and e.status == EnrollmentStatus.ENROLLED
+        ]
 
     def get_stats(self) -> Dict:
         """Get benefits statistics"""
@@ -148,7 +154,8 @@ class BenefitsAgent:
 
         total_cost = sum(
             self.plans[e.plan_id].monthly_cost * (1 + e.dependents * 0.5)
-            for e in enrolled if e.plan_id in self.plans
+            for e in enrolled
+            if e.plan_id in self.plans
         )
 
         return {
@@ -156,7 +163,9 @@ class BenefitsAgent:
             "active_enrollments": len(enrolled),
             "total_dependents": sum(e.dependents for e in enrolled),
             "monthly_cost": total_cost,
-            "enrollment_rate": f"{len(enrolled)/len(enrollments)*100:.0f}%" if enrollments else "0%"
+            "enrollment_rate": f"{len(enrolled) / len(enrollments) * 100:.0f}%"
+            if enrollments
+            else "0%",
         }
 
 

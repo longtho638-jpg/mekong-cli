@@ -12,19 +12,21 @@ Features:
 - Headcount trends
 """
 
-import uuid
 import logging
-from typing import Dict, Any
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class AttritionRisk(Enum):
     """Employee attrition risk levels."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -33,6 +35,7 @@ class AttritionRisk(Enum):
 
 class Department(Enum):
     """Agency departments."""
+
     ENGINEERING = "engineering"
     DESIGN = "design"
     MARKETING = "marketing"
@@ -45,6 +48,7 @@ class Department(Enum):
 @dataclass
 class Employee:
     """An employee record entity."""
+
     id: str
     name: str
     department: Department
@@ -66,6 +70,7 @@ class Employee:
 @dataclass
 class HRMetric:
     """A specific HR performance indicator snapshot."""
+
     name: str
     current: float
     previous: float
@@ -76,7 +81,7 @@ class HRMetric:
 class HRAnalytics:
     """
     HR Analytics System.
-    
+
     Orchestrates people data analysis, performance tracking, and organizational health metrics.
     """
 
@@ -109,7 +114,7 @@ class HRAnalytics:
         role: str,
         salary: float,
         enps: int = 0,
-        performance: int = 3
+        performance: int = 3,
     ) -> Employee:
         """Register a new employee and assess initial risk profile."""
         if not name or not role:
@@ -117,15 +122,22 @@ class HRAnalytics:
 
         emp = Employee(
             id=f"EMP-{uuid.uuid4().hex[:6].upper()}",
-            name=name, department=department, role=role,
+            name=name,
+            department=department,
+            role=role,
             hire_date=datetime.now() - timedelta(days=180),
-            salary=salary, enps_score=enps, performance_score=performance
+            salary=salary,
+            enps_score=enps,
+            performance_score=performance,
         )
 
         # Attrition Risk Logic
-        if enps < 20 and performance < 3: emp.attrition_risk = AttritionRisk.CRITICAL
-        elif enps < 40: emp.attrition_risk = AttritionRisk.HIGH
-        elif enps < 60: emp.attrition_risk = AttritionRisk.MEDIUM
+        if enps < 20 and performance < 3:
+            emp.attrition_risk = AttritionRisk.CRITICAL
+        elif enps < 40:
+            emp.attrition_risk = AttritionRisk.HIGH
+        elif enps < 60:
+            emp.attrition_risk = AttritionRisk.MEDIUM
 
         self.employees[emp.id] = emp
         logger.info(f"Employee added: {name} to {department.value}")
@@ -134,7 +146,8 @@ class HRAnalytics:
     def get_aggregate_stats(self) -> Dict[str, Any]:
         """Calculate high-level organizational metrics."""
         count = len(self.employees)
-        if not count: return {"headcount": 0}
+        if not count:
+            return {"headcount": 0}
 
         avg_enps = sum(e.enps_score for e in self.employees.values()) / count
         avg_salary = sum(e.salary for e in self.employees.values()) / count
@@ -143,7 +156,7 @@ class HRAnalytics:
             "headcount": count,
             "avg_enps": avg_enps,
             "avg_salary": avg_salary,
-            "tenure_months": 6.0 # Demo constant
+            "tenure_months": 6.0,  # Demo constant
         }
 
     def format_dashboard(self) -> str:
@@ -159,7 +172,13 @@ class HRAnalytics:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        dept_icons = {"engineering": "💻", "design": "🎨", "marketing": "📢", "sales": "💰", "operations": "⚙️"}
+        dept_icons = {
+            "engineering": "💻",
+            "design": "🎨",
+            "marketing": "📢",
+            "sales": "💰",
+            "operations": "⚙️",
+        }
 
         # Aggregate headcount
         counts = {}
@@ -171,24 +190,30 @@ class HRAnalytics:
             bar = "█" * c + "░" * (10 - min(10, c))
             lines.append(f"║    {icon} {dept.value.title():<12} │ {bar} │ {c:>3}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🏆 TOP PERFORMERS                                        ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🏆 TOP PERFORMERS                                        ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
-        top_staff = sorted(self.employees.values(), key=lambda x: x.performance_score, reverse=True)[:3]
+        top_staff = sorted(
+            self.employees.values(), key=lambda x: x.performance_score, reverse=True
+        )[:3]
         for e in top_staff:
             stars = "★" * e.performance_score + "☆" * (5 - e.performance_score)
             lines.append(f"║    {e.name[:18]:<18} │ {stars} │ {e.role[:15]:<15} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 Full Report]  [👥 Directory]  [📈 Trends]  [⚙️ Setup] ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Culture!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 Full Report]  [👥 Directory]  [📈 Trends]  [⚙️ Setup] ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Culture!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

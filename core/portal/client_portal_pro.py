@@ -12,15 +12,16 @@ Features:
 - Communication hub
 """
 
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Dict, List, Optional
 
 
 class PortalSection(Enum):
     """Portal sections."""
+
     DASHBOARD = "dashboard"
     PROJECTS = "projects"
     INVOICES = "invoices"
@@ -32,6 +33,7 @@ class PortalSection(Enum):
 @dataclass
 class ClientPortal:
     """A client portal."""
+
     id: str
     client_name: str
     email: str
@@ -46,6 +48,7 @@ class ClientPortal:
 @dataclass
 class PortalActivity:
     """Portal activity log."""
+
     id: str
     portal_id: str
     action: str
@@ -56,7 +59,7 @@ class PortalActivity:
 class ClientPortalPro:
     """
     Client Portal Pro.
-    
+
     Enhanced client experience.
     """
 
@@ -71,7 +74,7 @@ class ClientPortalPro:
         email: str,
         subdomain: str = "",
         logo_url: str = "",
-        primary_color: str = "#0EA5E9"
+        primary_color: str = "#0EA5E9",
     ) -> ClientPortal:
         """Create a client portal."""
         portal = ClientPortal(
@@ -80,7 +83,7 @@ class ClientPortalPro:
             email=email,
             subdomain=subdomain or client_name.lower().replace(" ", "-"),
             logo_url=logo_url,
-            primary_color=primary_color
+            primary_color=primary_color,
         )
         self.portals[portal.id] = portal
         return portal
@@ -91,7 +94,7 @@ class ClientPortalPro:
             id=f"ACT-{uuid.uuid4().hex[:6].upper()}",
             portal_id=portal.id,
             action=action,
-            section=section
+            section=section,
         )
         self.activities.append(activity)
         portal.logins_count += 1
@@ -120,23 +123,25 @@ class ClientPortalPro:
             PortalSection.INVOICES: "💳",
             PortalSection.DOCUMENTS: "📄",
             PortalSection.MESSAGES: "💬",
-            PortalSection.REPORTS: "📈"
+            PortalSection.REPORTS: "📈",
         }
 
         for section in portal.sections[:6]:
             icon = section_icons.get(section, "•")
             lines.append(f"║    {icon} {section.value.capitalize():<45}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            f"║  📅 Last Login: {last_login:<37}  ║",
-            f"║  🔢 Total Logins: {portal.logins_count:<34}  ║",
-            "║                                                           ║",
-            "║  [🔗 Copy Link]  [⚙️ Settings]  [📧 Invite]               ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Client-first!                    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                f"║  📅 Last Login: {last_login:<37}  ║",
+                f"║  🔢 Total Logins: {portal.logins_count:<34}  ║",
+                "║                                                           ║",
+                "║  [🔗 Copy Link]  [⚙️ Settings]  [📧 Invite]               ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Client-first!                    ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

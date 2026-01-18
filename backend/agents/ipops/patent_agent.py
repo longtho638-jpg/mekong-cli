@@ -3,11 +3,11 @@ Patent Agent - Patent Filings & Prosecution
 Manages patent applications, prosecution, and maintenance.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class PatentStatus(Enum):
@@ -31,6 +31,7 @@ class PatentType(Enum):
 @dataclass
 class Patent:
     """Patent application"""
+
     id: str
     title: str
     application_number: str
@@ -60,7 +61,7 @@ class Patent:
 class PatentAgent:
     """
     Patent Agent - Quản lý Bằng sáng chế
-    
+
     Responsibilities:
     - File patent applications
     - Track prosecution
@@ -79,11 +80,11 @@ class PatentAgent:
         patent_type: PatentType,
         inventors: List[str],
         claims: int = 1,
-        attorney: str = ""
+        attorney: str = "",
     ) -> Patent:
         """File new patent application"""
-        patent_id = f"patent_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        app_number = f"VN{datetime.now().year}{random.randint(10000,99999)}"
+        patent_id = f"patent_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
+        app_number = f"VN{datetime.now().year}{random.randint(10000, 99999)}"
 
         patent = Patent(
             id=patent_id,
@@ -94,7 +95,7 @@ class PatentAgent:
             status=PatentStatus.FILED,
             filing_date=datetime.now(),
             claims=claims,
-            attorney=attorney
+            attorney=attorney,
         )
 
         self.patents[patent_id] = patent
@@ -110,8 +111,8 @@ class PatentAgent:
 
         if status == PatentStatus.GRANTED:
             patent.grant_date = datetime.now()
-            patent.expiry_date = datetime.now() + timedelta(days=20*365)
-            patent.next_maintenance_fee = datetime.now() + timedelta(days=4*365)
+            patent.expiry_date = datetime.now() + timedelta(days=20 * 365)
+            patent.next_maintenance_fee = datetime.now() + timedelta(days=4 * 365)
 
         return patent
 
@@ -121,7 +122,7 @@ class PatentAgent:
             raise ValueError(f"Patent not found: {patent_id}")
 
         patent = self.patents[patent_id]
-        patent.next_maintenance_fee = datetime.now() + timedelta(days=4*365)
+        patent.next_maintenance_fee = datetime.now() + timedelta(days=4 * 365)
 
         return patent
 
@@ -131,7 +132,11 @@ class PatentAgent:
 
     def get_pending(self) -> List[Patent]:
         """Get pending patents"""
-        return [p for p in self.patents.values() if p.status in [PatentStatus.FILED, PatentStatus.PENDING, PatentStatus.EXAMINATION]]
+        return [
+            p
+            for p in self.patents.values()
+            if p.status in [PatentStatus.FILED, PatentStatus.PENDING, PatentStatus.EXAMINATION]
+        ]
 
     def get_stats(self) -> Dict:
         """Get patent statistics"""
@@ -142,7 +147,9 @@ class PatentAgent:
             "granted": len(self.get_granted()),
             "pending": len(self.get_pending()),
             "total_claims": sum(p.claims for p in patents),
-            "maintenance_due": len([p for p in patents if p.next_maintenance_fee and p.days_until_maintenance <= 90])
+            "maintenance_due": len(
+                [p for p in patents if p.next_maintenance_fee and p.days_until_maintenance <= 90]
+            ),
         }
 
 
@@ -153,8 +160,16 @@ if __name__ == "__main__":
     print("📜 Patent Agent Demo\n")
 
     # File patents
-    p1 = agent.file_patent("AI-Powered Sales Agent", PatentType.UTILITY, ["Nguyen A", "Tran B"], claims=15, attorney="IP_001")
-    p2 = agent.file_patent("Dashboard UI Design", PatentType.DESIGN, ["Le C"], claims=1, attorney="IP_001")
+    p1 = agent.file_patent(
+        "AI-Powered Sales Agent",
+        PatentType.UTILITY,
+        ["Nguyen A", "Tran B"],
+        claims=15,
+        attorney="IP_001",
+    )
+    p2 = agent.file_patent(
+        "Dashboard UI Design", PatentType.DESIGN, ["Le C"], claims=1, attorney="IP_001"
+    )
 
     print(f"📋 Patent: {p1.title}")
     print(f"   App #: {p1.application_number}")

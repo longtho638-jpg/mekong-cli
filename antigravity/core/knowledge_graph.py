@@ -133,9 +133,7 @@ class KnowledgeGraph:
             logger.error(f"Failed to index {file_path}: {e}")
             return []
 
-    def _extract_entities(
-        self, tree: ast.AST, file_path: str, content: str
-    ) -> List[CodeEntity]:
+    def _extract_entities(self, tree: ast.AST, file_path: str, content: str) -> List[CodeEntity]:
         """Extract entities from AST."""
         entities = []
 
@@ -179,9 +177,7 @@ class KnowledgeGraph:
                     )
                 )
 
-            elif isinstance(node, ast.FunctionDef) or isinstance(
-                node, ast.AsyncFunctionDef
-            ):
+            elif isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
                 # Check if it's a method
                 parent = self._find_parent_class(tree, node)
                 entity_type = EntityType.METHOD if parent else EntityType.FUNCTION
@@ -215,9 +211,7 @@ class KnowledgeGraph:
 
             elif isinstance(node, ast.ImportFrom):
                 for alias in node.names:
-                    full_name = (
-                        f"{node.module}.{alias.name}" if node.module else alias.name
-                    )
+                    full_name = f"{node.module}.{alias.name}" if node.module else alias.name
                     entity = CodeEntity(
                         id=self._make_id(file_path, full_name, "import"),
                         name=full_name,
@@ -252,9 +246,7 @@ class KnowledgeGraph:
             args.append(arg.arg)
         return f"({', '.join(args)})"
 
-    def _find_parent_class(
-        self, tree: ast.AST, target: ast.AST
-    ) -> Optional[ast.ClassDef]:
+    def _find_parent_class(self, tree: ast.AST, target: ast.AST) -> Optional[ast.ClassDef]:
         """Find parent class of a node."""
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
@@ -366,9 +358,7 @@ class KnowledgeGraph:
     def get_relationships(self, entity_id: str) -> List[Relationship]:
         """Get relationships for an entity."""
         return [
-            r
-            for r in self.relationships
-            if r.source_id == entity_id or r.target_id == entity_id
+            r for r in self.relationships if r.source_id == entity_id or r.target_id == entity_id
         ]
 
     def get_dependencies(self, file_path: str) -> List[str]:

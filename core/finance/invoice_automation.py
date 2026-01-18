@@ -12,15 +12,16 @@ Features:
 - Late fee calculation
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class InvoiceType(Enum):
     """Invoice types."""
+
     ONE_TIME = "one_time"
     RECURRING = "recurring"
     MILESTONE = "milestone"
@@ -28,6 +29,7 @@ class InvoiceType(Enum):
 
 class InvoiceStatus(Enum):
     """Invoice status."""
+
     DRAFT = "draft"
     SENT = "sent"
     VIEWED = "viewed"
@@ -38,6 +40,7 @@ class InvoiceStatus(Enum):
 @dataclass
 class AutoInvoice:
     """An automated invoice."""
+
     id: str
     client: str
     amount: float
@@ -52,6 +55,7 @@ class AutoInvoice:
 @dataclass
 class RecurringSchedule:
     """A recurring invoice schedule."""
+
     id: str
     client: str
     amount: float
@@ -64,7 +68,7 @@ class RecurringSchedule:
 class InvoiceAutomation:
     """
     Invoice Automation.
-    
+
     Automate invoicing.
     """
 
@@ -79,7 +83,7 @@ class InvoiceAutomation:
         client: str,
         amount: float,
         invoice_type: InvoiceType = InvoiceType.ONE_TIME,
-        due_days: int = 30
+        due_days: int = 30,
     ) -> AutoInvoice:
         """Create an invoice."""
         invoice = AutoInvoice(
@@ -87,16 +91,13 @@ class InvoiceAutomation:
             client=client,
             amount=amount,
             invoice_type=invoice_type,
-            due_date=datetime.now() + timedelta(days=due_days)
+            due_date=datetime.now() + timedelta(days=due_days),
         )
         self.invoices[invoice.id] = invoice
         return invoice
 
     def setup_recurring(
-        self,
-        client: str,
-        amount: float,
-        frequency: str = "monthly"
+        self, client: str, amount: float, frequency: str = "monthly"
     ) -> RecurringSchedule:
         """Setup recurring invoices."""
         schedule = RecurringSchedule(
@@ -104,7 +105,7 @@ class InvoiceAutomation:
             client=client,
             amount=amount,
             frequency=frequency,
-            next_date=datetime.now() + timedelta(days=30)
+            next_date=datetime.now() + timedelta(days=30),
         )
         self.schedules[schedule.id] = schedule
         return schedule
@@ -126,8 +127,11 @@ class InvoiceAutomation:
     def get_overdue(self) -> List[AutoInvoice]:
         """Get overdue invoices."""
         now = datetime.now()
-        return [inv for inv in self.invoices.values()
-                if inv.due_date < now and inv.status not in [InvoiceStatus.PAID, InvoiceStatus.DRAFT]]
+        return [
+            inv
+            for inv in self.invoices.values()
+            if inv.due_date < now and inv.status not in [InvoiceStatus.PAID, InvoiceStatus.DRAFT]
+        ]
 
     def get_stats(self) -> Dict[str, Any]:
         """Get invoicing statistics."""
@@ -141,7 +145,7 @@ class InvoiceAutomation:
             "paid": paid,
             "outstanding": outstanding,
             "recurring_monthly": recurring,
-            "overdue_count": len(self.get_overdue())
+            "overdue_count": len(self.get_overdue()),
         }
 
     def format_dashboard(self) -> str:
@@ -168,25 +172,33 @@ class InvoiceAutomation:
 
         for invoice in list(self.invoices.values())[-4:]:
             icon = status_icons.get(invoice.status.value, "📄")
-            lines.append(f"║    {icon} {invoice.id:<10} │ {invoice.client[:15]:<15} │ ${invoice.amount:>8,.0f}  ║")
+            lines.append(
+                f"║    {icon} {invoice.id:<10} │ {invoice.client[:15]:<15} │ ${invoice.amount:>8,.0f}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🔄 RECURRING SCHEDULES                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🔄 RECURRING SCHEDULES                                   ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         for schedule in list(self.schedules.values())[:3]:
             status = "🟢" if schedule.active else "⚪"
-            lines.append(f"║    {status} {schedule.client[:15]:<15} │ ${schedule.amount:>8,.0f}/mo │ {schedule.invoices_generated} sent  ║")
+            lines.append(
+                f"║    {status} {schedule.client[:15]:<15} │ ${schedule.amount:>8,.0f}/mo │ {schedule.invoices_generated} sent  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Invoice]  [⏰ Reminders]  [📊 Reports]            ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Get paid on time!                ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Invoice]  [⏰ Reminders]  [📊 Reports]            ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Get paid on time!                ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

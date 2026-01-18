@@ -232,8 +232,7 @@ class AlertManager:
                     # Log alert
                     log_fn = (
                         logger.critical
-                        if alert.severity
-                        in [AlertSeverity.CRITICAL, AlertSeverity.VIRAL]
+                        if alert.severity in [AlertSeverity.CRITICAL, AlertSeverity.VIRAL]
                         else logger.warning
                     )
                     log_fn(

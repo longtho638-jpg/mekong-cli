@@ -3,11 +3,11 @@ Field Visit Agent - Customer Visit Management
 Manages field visits, check-ins, and travel planning.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class VisitStatus(Enum):
@@ -29,6 +29,7 @@ class VisitType(Enum):
 @dataclass
 class Visit:
     """Field visit"""
+
     id: str
     customer_name: str
     company: str
@@ -56,7 +57,7 @@ class Visit:
 class FieldVisitAgent:
     """
     Field Visit Agent - Quản lý Thăm Khách hàng
-    
+
     Responsibilities:
     - Schedule customer visits
     - Check-in/check-out tracking
@@ -75,10 +76,10 @@ class FieldVisitAgent:
         company: str,
         address: str,
         visit_type: VisitType,
-        scheduled_at: datetime
+        scheduled_at: datetime,
     ) -> Visit:
         """Schedule a new field visit"""
-        visit_id = f"visit_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        visit_id = f"visit_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         visit = Visit(
             id=visit_id,
@@ -86,7 +87,7 @@ class FieldVisitAgent:
             company=company,
             address=address,
             visit_type=visit_type,
-            scheduled_at=scheduled_at
+            scheduled_at=scheduled_at,
         )
 
         self.visits[visit_id] = visit
@@ -119,16 +120,14 @@ class FieldVisitAgent:
     def get_today_visits(self) -> List[Visit]:
         """Get today's scheduled visits"""
         today = datetime.now().date()
-        return [
-            v for v in self.visits.values()
-            if v.scheduled_at.date() == today
-        ]
+        return [v for v in self.visits.values() if v.scheduled_at.date() == today]
 
     def get_upcoming(self, days: int = 7) -> List[Visit]:
         """Get upcoming visits"""
         cutoff = datetime.now() + timedelta(days=days)
         return [
-            v for v in self.visits.values()
+            v
+            for v in self.visits.values()
             if v.scheduled_at <= cutoff and v.status == VisitStatus.SCHEDULED
         ]
 
@@ -141,8 +140,10 @@ class FieldVisitAgent:
             "total_visits": len(visits),
             "completed": len(completed),
             "scheduled": len([v for v in visits if v.status == VisitStatus.SCHEDULED]),
-            "avg_duration_mins": sum(v.duration_mins for v in completed) / len(completed) if completed else 0,
-            "today": len(self.get_today_visits())
+            "avg_duration_mins": sum(v.duration_mins for v in completed) / len(completed)
+            if completed
+            else 0,
+            "today": len(self.get_today_visits()),
         }
 
 
@@ -154,13 +155,19 @@ if __name__ == "__main__":
 
     # Schedule visits
     v1 = agent.schedule_visit(
-        "Nguyễn A", "TechCorp VN", "123 Nguyễn Huệ, Q1, HCM",
-        VisitType.DEMO, datetime.now() + timedelta(hours=2)
+        "Nguyễn A",
+        "TechCorp VN",
+        "123 Nguyễn Huệ, Q1, HCM",
+        VisitType.DEMO,
+        datetime.now() + timedelta(hours=2),
     )
 
     v2 = agent.schedule_visit(
-        "Trần B", "StartupX", "456 Lê Lợi, Q1, HCM",
-        VisitType.FOLLOW_UP, datetime.now() + timedelta(hours=4)
+        "Trần B",
+        "StartupX",
+        "456 Lê Lợi, Q1, HCM",
+        VisitType.FOLLOW_UP,
+        datetime.now() + timedelta(hours=4),
     )
 
     print(f"📅 Visit: {v1.company} ({v1.visit_type.value})")

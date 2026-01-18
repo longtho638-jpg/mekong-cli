@@ -1,10 +1,12 @@
 """
 UI Architect Module - Service Logic
 """
+
 import logging
 from typing import Dict
 
 logger = logging.getLogger(__name__)
+
 
 class UIArchitectService:
     """
@@ -42,5 +44,5 @@ EXAMPLE:
         return {
             "primary": "var(--md-sys-color-primary)",
             "surface": "var(--md-sys-color-surface)",
-            "shape-m": "var(--md-sys-shape-corner-medium)"
+            "shape-m": "var(--md-sys-shape-corner-medium)",
         }

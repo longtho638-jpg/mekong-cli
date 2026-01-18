@@ -15,5 +15,5 @@ __author__ = "AgencyOS Team"
 
 from antigravity.core.agency_dna import AgencyDNA
 from antigravity.core.client_magnet import ClientMagnet
-from antigravity.core.revenue_engine import RevenueEngine
 from antigravity.core.content_factory import ContentFactory
+from antigravity.core.revenue_engine import RevenueEngine

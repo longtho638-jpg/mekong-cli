@@ -1,25 +1,25 @@
 import typer
-from pathlib import Path
-from datetime import datetime
 from rich.console import Console
 
 console = Console()
 content_app = typer.Typer(help="✍️ Tạo nội dung Marketing")
 
+
 @content_app.command("generate")
 def generate_content(
     type: str = typer.Argument(..., help="Type: tweet, email, landing, all"),
-    product: str = typer.Argument("agencyos", help="Product key")
+    product: str = typer.Argument("agencyos", help="Product key"),
 ):
     """Generate marketing content."""
     from core.content.service import ContentService
+
     service = ContentService()
-    
+
     if type == "all":
         types = ["tweet", "email", "landing"]
     else:
         types = [type]
-        
+
     for t in types:
         if t == "tweet":
             tweets = service.generate_tweet(product)
@@ -37,10 +37,12 @@ def generate_content(
 
     console.print(f"\n[green]✅ Content generated for {product}[/green]")
 
+
 @content_app.command("products")
 def list_products():
     """List available products."""
     from core.content.service import ContentService
+
     service = ContentService()
     products = service.get_products()
     for key, p in products.items():

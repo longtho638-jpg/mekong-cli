@@ -170,9 +170,7 @@ class ConsoleExporter(SpanExporter):
 
     def export(self, spans: List[Span]) -> bool:
         for span in spans:
-            logger.info(
-                f"📍 Span: {span.name} ({span.duration_ms:.2f}ms) - {span.status.value}"
-            )
+            logger.info(f"📍 Span: {span.name} ({span.duration_ms:.2f}ms) - {span.status.value}")
         return True
 
 
@@ -254,9 +252,7 @@ class DistributedTracer:
             attributes=attributes or {},
         )
 
-        trace = Trace(
-            trace_id=trace_id, root_span_id=span_id, service_name=self.service_name
-        )
+        trace = Trace(trace_id=trace_id, root_span_id=span_id, service_name=self.service_name)
         trace.add_span(span)
 
         with self._lock:
@@ -311,9 +307,7 @@ class DistributedTracer:
             # Update average
             total = self.metrics["spans_created"]
             current_avg = self.metrics["avg_duration_ms"]
-            self.metrics["avg_duration_ms"] = (
-                current_avg * (total - 1) + span.duration_ms
-            ) / total
+            self.metrics["avg_duration_ms"] = (current_avg * (total - 1) + span.duration_ms) / total
 
         # Export
         for exporter in self.exporters:

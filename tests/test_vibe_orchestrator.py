@@ -2,17 +2,18 @@
 Tests for VIBE Orchestrator system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.vibe_orchestrator import VIBEOrchestrator, AgentType
+from antigravity.core.vibe_orchestrator import AgentType, VIBEOrchestrator
+
 
 class TestVIBEOrchestrator:
-
     def test_task_creation(self):
         """Test task queuing."""
         orc = VIBEOrchestrator()
@@ -46,6 +47,7 @@ class TestVIBEOrchestrator:
 
         assert task.result == "Processed: Test the app"
         assert task.status == "completed"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

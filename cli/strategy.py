@@ -9,10 +9,12 @@ from rich.panel import Panel
 
 console = Console()
 
+
 def analyze(idea: str = typer.Argument(..., help="Ý tưởng dự án hoặc bài toán kinh doanh")):
     """🏯 Phân tích chiến lược dự án theo Binh Pháp (Ngũ Sự)."""
     try:
-        from core.modules.strategy import StrategyService, StrategyPresenter
+        from core.modules.strategy import StrategyPresenter, StrategyService
+
         console.print(f"\n[bold blue]🏯 Đang phân tích chiến lược cho:[/bold blue] {idea}...")
 
         service = StrategyService(agency_name="Mekong Agency")
@@ -21,6 +23,7 @@ def analyze(idea: str = typer.Argument(..., help="Ý tưởng dự án hoặc b�
         console.print(StrategyPresenter.format_report(service, insights))
     except ImportError:
         console.print("[red]❌ Lỗi: Module chiến lược chưa được cài đặt.[/red]")
+
 
 def plan(task: str = typer.Argument(..., help="Nhiệm vụ cần lập kế hoạch")):
     """📋 Tạo kế hoạch tác chiến (Task Plan) theo pattern Manus."""
@@ -44,7 +47,13 @@ Created: {datetime.now().strftime("%Y-%m-%d %H:%M")}
 - [ ] Phase 4: Bàn giao (Ship)
 """
     task_plan.write_text(content, encoding="utf-8")
-    console.print(Panel(f"✅ Đã khởi tạo kế hoạch tại: [cyan]plans/task_plan.md[/cyan]\n🎯 Nhiệm vụ: {task}", title="📋 Planning"))
+    console.print(
+        Panel(
+            f"✅ Đã khởi tạo kế hoạch tại: [cyan]plans/task_plan.md[/cyan]\n🎯 Nhiệm vụ: {task}",
+            title="📋 Planning",
+        )
+    )
+
 
 def win3():
     """🛡️ Kiểm tra sự cân bằng WIN-WIN-WIN cho dự án."""

@@ -4,9 +4,9 @@ Predicts revenue and analyzes pipeline trends.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List
 
 
 class ForecastPeriod(Enum):
@@ -18,6 +18,7 @@ class ForecastPeriod(Enum):
 @dataclass
 class DealForecast:
     """Deal forecast entry"""
+
     deal_id: str
     company: str
     value: float
@@ -33,6 +34,7 @@ class DealForecast:
 @dataclass
 class Forecast:
     """Revenue forecast"""
+
     id: str
     period: ForecastPeriod
     start_date: datetime
@@ -51,7 +53,7 @@ class Forecast:
 class ForecastAgent:
     """
     Forecast Agent - Dự báo Doanh thu
-    
+
     Responsibilities:
     - Calculate revenue forecasts
     - Analyze pipeline trends
@@ -72,7 +74,7 @@ class ForecastAgent:
         value: float,
         probability: float,
         close_date: datetime,
-        stage: str
+        stage: str,
     ) -> DealForecast:
         """Add deal to forecast"""
         deal = DealForecast(
@@ -81,15 +83,12 @@ class ForecastAgent:
             value=value,
             probability=probability,
             close_date=close_date,
-            stage=stage
+            stage=stage,
         )
         self.deals.append(deal)
         return deal
 
-    def generate_forecast(
-        self,
-        period: ForecastPeriod = ForecastPeriod.MONTHLY
-    ) -> Forecast:
+    def generate_forecast(self, period: ForecastPeriod = ForecastPeriod.MONTHLY) -> Forecast:
         """Generate revenue forecast"""
         now = datetime.now()
 
@@ -104,10 +103,7 @@ class ForecastAgent:
             end = now + timedelta(days=90)
 
         # Filter deals in period
-        period_deals = [
-            d for d in self.deals
-            if start <= d.close_date <= end
-        ]
+        period_deals = [d for d in self.deals if start <= d.close_date <= end]
 
         pipeline = sum(d.value for d in period_deals)
         weighted = sum(d.weighted_value for d in period_deals)
@@ -127,7 +123,7 @@ class ForecastAgent:
             pipeline_value=pipeline,
             weighted_value=weighted,
             best_case=best_case,
-            worst_case=worst_case
+            worst_case=worst_case,
         )
 
         self.forecasts[forecast_id] = forecast
@@ -137,16 +133,19 @@ class ForecastAgent:
         """Get forecast trend"""
         trend = []
         for i in range(months):
-            month_start = datetime.now() + timedelta(days=30*i)
+            month_start = datetime.now() + timedelta(days=30 * i)
             month_deals = [
-                d for d in self.deals
+                d
+                for d in self.deals
                 if month_start <= d.close_date < month_start + timedelta(days=30)
             ]
-            trend.append({
-                "month": month_start.strftime("%b"),
-                "pipeline": sum(d.value for d in month_deals),
-                "weighted": sum(d.weighted_value for d in month_deals)
-            })
+            trend.append(
+                {
+                    "month": month_start.strftime("%b"),
+                    "pipeline": sum(d.value for d in month_deals),
+                    "weighted": sum(d.weighted_value for d in month_deals),
+                }
+            )
         return trend
 
     def get_stats(self) -> Dict:
@@ -155,7 +154,9 @@ class ForecastAgent:
             "total_pipeline": sum(d.value for d in self.deals),
             "weighted_pipeline": sum(d.weighted_value for d in self.deals),
             "active_deals": len(self.deals),
-            "avg_probability": sum(d.probability for d in self.deals) / len(self.deals) if self.deals else 0
+            "avg_probability": sum(d.probability for d in self.deals) / len(self.deals)
+            if self.deals
+            else 0,
         }
 
 
@@ -166,9 +167,13 @@ if __name__ == "__main__":
     print("📈 Forecast Agent Demo\n")
 
     # Add deals
-    agent.add_deal("deal_1", "TechCorp", 10000, 80, datetime.now() + timedelta(days=10), "Negotiation")
+    agent.add_deal(
+        "deal_1", "TechCorp", 10000, 80, datetime.now() + timedelta(days=10), "Negotiation"
+    )
     agent.add_deal("deal_2", "StartupX", 5000, 60, datetime.now() + timedelta(days=20), "Proposal")
-    agent.add_deal("deal_3", "Enterprise", 25000, 40, datetime.now() + timedelta(days=45), "Discovery")
+    agent.add_deal(
+        "deal_3", "Enterprise", 25000, 40, datetime.now() + timedelta(days=45), "Discovery"
+    )
 
     # Generate forecast
     forecast = agent.generate_forecast(ForecastPeriod.MONTHLY)

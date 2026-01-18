@@ -3,11 +3,11 @@ Copy Agent - Copywriting & A/B Testing
 Manages copy creation, variants, and performance.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class CopyType(Enum):
@@ -30,6 +30,7 @@ class CopyStatus(Enum):
 @dataclass
 class CopyVariant:
     """Copy variant for A/B testing"""
+
     id: str
     text: str
     impressions: int = 0
@@ -48,6 +49,7 @@ class CopyVariant:
 @dataclass
 class Copy:
     """Copy piece"""
+
     id: str
     name: str
     copy_type: CopyType
@@ -64,7 +66,7 @@ class Copy:
 class CopyAgent:
     """
     Copy Agent - Quản lý Copywriting
-    
+
     Responsibilities:
     - Copy creation
     - Headline variants
@@ -77,26 +79,13 @@ class CopyAgent:
         self.status = "ready"
         self.copies: Dict[str, Copy] = {}
 
-    def create_copy(
-        self,
-        name: str,
-        copy_type: CopyType,
-        initial_text: str
-    ) -> Copy:
+    def create_copy(self, name: str, copy_type: CopyType, initial_text: str) -> Copy:
         """Create copy with initial variant"""
-        copy_id = f"copy_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        copy_id = f"copy_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        variant = CopyVariant(
-            id="var_A",
-            text=initial_text
-        )
+        variant = CopyVariant(id="var_A", text=initial_text)
 
-        copy = Copy(
-            id=copy_id,
-            name=name,
-            copy_type=copy_type,
-            variants=[variant]
-        )
+        copy = Copy(id=copy_id, name=name, copy_type=copy_type, variants=[variant])
 
         self.copies[copy_id] = copy
         return copy
@@ -107,12 +96,9 @@ class CopyAgent:
             raise ValueError(f"Copy not found: {copy_id}")
 
         copy = self.copies[copy_id]
-        variant_letter = chr(ord('A') + len(copy.variants))
+        variant_letter = chr(ord("A") + len(copy.variants))
 
-        variant = CopyVariant(
-            id=f"var_{variant_letter}",
-            text=text
-        )
+        variant = CopyVariant(id=f"var_{variant_letter}", text=text)
 
         copy.variants.append(variant)
         return copy
@@ -127,7 +113,9 @@ class CopyAgent:
 
         return copy
 
-    def record_metrics(self, copy_id: str, variant_id: str, impressions: int, clicks: int, conversions: int) -> Copy:
+    def record_metrics(
+        self, copy_id: str, variant_id: str, impressions: int, clicks: int, conversions: int
+    ) -> Copy:
         """Record variant metrics"""
         if copy_id not in self.copies:
             raise ValueError(f"Copy not found: {copy_id}")
@@ -163,7 +151,7 @@ class CopyAgent:
             "total_copies": len(copies),
             "testing": len([c for c in copies if c.status == CopyStatus.TESTING]),
             "winners": len([c for c in copies if c.status == CopyStatus.WINNER]),
-            "total_variants": sum(len(c.variants) for c in copies)
+            "total_variants": sum(len(c.variants) for c in copies),
         }
 
 

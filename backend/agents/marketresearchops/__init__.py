@@ -3,12 +3,19 @@ MarketResearchOps Agents Package
 Research + Competitive
 """
 
-from .research_agent import ResearchAgent, Study, Insight, StudyType, StudyStatus
-from .competitive_agent import CompetitiveAgent, Competitor, SWOT, ThreatLevel
+from .competitive_agent import SWOT, CompetitiveAgent, Competitor, ThreatLevel
+from .research_agent import Insight, ResearchAgent, Study, StudyStatus, StudyType
 
 __all__ = [
     # Research
-    "ResearchAgent", "Study", "Insight", "StudyType", "StudyStatus",
+    "ResearchAgent",
+    "Study",
+    "Insight",
+    "StudyType",
+    "StudyStatus",
     # Competitive
-    "CompetitiveAgent", "Competitor", "SWOT", "ThreatLevel",
+    "CompetitiveAgent",
+    "Competitor",
+    "SWOT",
+    "ThreatLevel",
 ]

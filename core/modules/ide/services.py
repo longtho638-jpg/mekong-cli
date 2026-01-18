@@ -1,13 +1,16 @@
 """
 IDE Module - Service Logic
 """
+
 import json
 import logging
 from pathlib import Path
 from typing import Dict
-from .constants import VSCODE_SETTINGS, REQUIRED_EXTENSIONS, EDITOR_CONFIG, CURSOR_RULES
+
+from .constants import CURSOR_RULES, EDITOR_CONFIG, REQUIRED_EXTENSIONS, VSCODE_SETTINGS
 
 logger = logging.getLogger(__name__)
+
 
 class IDEService:
     """

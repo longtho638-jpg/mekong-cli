@@ -2,8 +2,8 @@
 🌊 Workflow Models - The Development Cycle
 ==========================================
 
-Defines the data structures for orchestrating the high-velocity 'Manus Pattern' 
-development cycle. Tracks individual tasks, workflow stages, and code 
+Defines the data structures for orchestrating the high-velocity 'Manus Pattern'
+development cycle. Tracks individual tasks, workflow stages, and code
 quality metrics.
 
 Hierarchy:
@@ -18,14 +18,16 @@ Binh Pháp: 📋 Pháp (Process) - Maintaining the order of the build.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List, Dict, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class WorkflowStep(Enum):
     """The standard 6-step cycle for building Agency OS features."""
+
     PLAN_DETECTION = 0
     ANALYSIS = 1
     IMPLEMENTATION = 2
@@ -36,6 +38,7 @@ class WorkflowStep(Enum):
 
 class TaskStatus(Enum):
     """Execution states for individual work units."""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -47,9 +50,10 @@ class TaskStatus(Enum):
 class Task:
     """
     🛠️ Build Task
-    
+
     A single identifiable unit of work extracted from a strategic plan.
     """
+
     id: str
     name: str
     description: str
@@ -92,8 +96,8 @@ class Task:
             "performance": {
                 "created": self.created_at.isoformat(),
                 "done": self.completed_at.isoformat() if self.completed_at else None,
-                "duration_min": round(self.get_duration_minutes(), 1)
-            }
+                "duration_min": round(self.get_duration_minutes(), 1),
+            },
         }
 
 
@@ -101,11 +105,12 @@ class Task:
 class CodeReviewResult:
     """
     🔍 Code Review Scorecard
-    
+
     Captures the results of static analysis and quality checks.
     Acts as the final gatekeeper before deployment (SHIP).
     """
-    score: int = 10 # Start with perfect score
+
+    score: int = 10  # Start with perfect score
     critical_issues: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     suggestions: List[str] = field(default_factory=list)
@@ -132,9 +137,6 @@ class CodeReviewResult:
         return {
             "passed": self.passed,
             "score": self.score,
-            "gates": {
-                "critical": self.critical_issues,
-                "warnings": self.warnings
-            },
-            "suggestions": self.suggestions
+            "gates": {"critical": self.critical_issues, "warnings": self.warnings},
+            "suggestions": self.suggestions,
         }

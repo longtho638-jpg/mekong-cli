@@ -47,24 +47,25 @@ def generate_license_key(email: str, product_id: str) -> str:
     return hashlib.sha256(base.encode()).hexdigest()[:24].upper()
 
 
-from core.infrastructure.notifications import NotificationService, NotificationType, Channel
+from core.infrastructure.notifications import Channel, NotificationService, NotificationType
+
 
 async def send_welcome_email(customer: dict):
     """Send welcome email with license and portal link."""
     logger.info(f"📧 Sending welcome email to {customer['email']}")
-    
+
     notifier = NotificationService()
     notifier.create_notification(
         n_type=NotificationType.WELCOME,
         channel=Channel.EMAIL,
-        recipient=customer['email'],
+        recipient=customer["email"],
         variables={
             "client_name": customer.get("email").split("@")[0],
             "agency_name": "AgencyOS",
-            "company": "Customer"
-        }
+            "company": "Customer",
+        },
     )
-    
+
     logger.info(f"   License: {customer['license_key']}")
     logger.info(
         f"   Portal: https://platform.billmentor.com/activate?key={customer['license_key']}"
@@ -73,14 +74,10 @@ async def send_welcome_email(customer: dict):
 
 async def process_purchase(purchase: GumroadPurchase):
     """Process Gumroad purchase and create platform account."""
-    logger.info(
-        f"💰 Processing purchase: {purchase.email} bought {purchase.product_name}"
-    )
+    logger.info(f"💰 Processing purchase: {purchase.email} bought {purchase.product_name}")
 
     # Generate license key if not provided
-    license_key = purchase.license_key or generate_license_key(
-        purchase.email, purchase.product_id
-    )
+    license_key = purchase.license_key or generate_license_key(purchase.email, purchase.product_id)
 
     # Create customer record
     customer = {
@@ -95,9 +92,7 @@ async def process_purchase(purchase: GumroadPurchase):
     }
 
     _customers[purchase.email] = customer
-    _purchases.append(
-        {**customer, "price": purchase.price, "currency": purchase.currency}
-    )
+    _purchases.append({**customer, "price": purchase.price, "currency": purchase.currency})
 
     # Send welcome email
     await send_welcome_email(customer)

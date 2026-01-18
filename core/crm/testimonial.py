@@ -12,14 +12,15 @@ Features:
 - Social proof showcase
 """
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class Rating(Enum):
     """Star rating."""
+
     ONE = 1
     TWO = 2
     THREE = 3
@@ -30,6 +31,7 @@ class Rating(Enum):
 @dataclass
 class Testimonial:
     """A client testimonial."""
+
     client_name: str
     company: str
     role: str
@@ -43,7 +45,7 @@ class Testimonial:
 class TestimonialGenerator:
     """
     Testimonial Generator.
-    
+
     Collect and showcase client testimonials.
     """
 
@@ -55,11 +57,7 @@ class TestimonialGenerator:
         """Add a testimonial."""
         self.testimonials.append(testimonial)
 
-    def generate_request_email(
-        self,
-        client_name: str,
-        project_name: str
-    ) -> str:
+    def generate_request_email(self, client_name: str, project_name: str) -> str:
         """Generate testimonial request email."""
         return f"""Subject: Quick favor? Share your experience with {self.agency_name}
 
@@ -99,10 +97,10 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
         # Quote (wrapped)
         quote = testimonial.quote
         while len(quote) > 50:
-            lines.append(f"║  \"{quote[:50]}\"              ║")
+            lines.append(f'║  "{quote[:50]}"              ║')
             quote = quote[50:]
         if quote:
-            lines.append(f"║  \"{quote}\"{'·' * (52 - len(quote))}║")
+            lines.append(f'║  "{quote}"{"·" * (52 - len(quote))}║')
 
         lines.append("║                                                           ║")
         lines.append(f"║  — {testimonial.client_name:<40}       ║")
@@ -140,15 +138,17 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
             quote_short = t.quote[:45] + "..." if len(t.quote) > 45 else t.quote
             lines.append("║                                                           ║")
             lines.append(f"║  {stars}                                             ║")
-            lines.append(f"║  \"{quote_short}\"  ║")
+            lines.append(f'║  "{quote_short}"  ║')
             lines.append(f"║  — {t.client_name}, {t.company[:25]:<25}            ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Trusted by {len(self.testimonials)}+ clients!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Trusted by {len(self.testimonials)}+ clients!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -157,7 +157,7 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
         lines = [
             f"# 📊 Case Study: {testimonial.company}",
             "",
-            f"> \"{testimonial.quote}\"",
+            f'> "{testimonial.quote}"',
             f"> — {testimonial.client_name}, {testimonial.role}",
             "",
             "## Challenge",
@@ -172,12 +172,14 @@ P.S. As a thank you, you'll get 10% off your next project! 💰
         for key, value in testimonial.results.items():
             lines.append(f"- **{key}:** {value}")
 
-        lines.extend([
-            "",
-            "---",
-            f"*Rating: {'★' * testimonial.rating.value}*",
-            f"*{self.agency_name} - \"Không đánh mà thắng\"*",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                f"*Rating: {'★' * testimonial.rating.value}*",
+                f'*{self.agency_name} - "Không đánh mà thắng"*',
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -187,43 +189,38 @@ if __name__ == "__main__":
     generator = TestimonialGenerator("Saigon Digital Hub")
 
     # Add sample testimonials
-    generator.add_testimonial(Testimonial(
-        client_name="Mr. Hoang",
-        company="Sunrise Realty",
-        role="CEO",
-        rating=Rating.FIVE,
-        quote="Saigon Digital Hub transformed our marketing. Traffic up 200%, leads up 300%. Best investment we ever made!",
-        results={
-            "Traffic Increase": "+200%",
-            "Lead Generation": "+300%",
-            "ROI": "1500%"
-        }
-    ))
+    generator.add_testimonial(
+        Testimonial(
+            client_name="Mr. Hoang",
+            company="Sunrise Realty",
+            role="CEO",
+            rating=Rating.FIVE,
+            quote="Saigon Digital Hub transformed our marketing. Traffic up 200%, leads up 300%. Best investment we ever made!",
+            results={"Traffic Increase": "+200%", "Lead Generation": "+300%", "ROI": "1500%"},
+        )
+    )
 
-    generator.add_testimonial(Testimonial(
-        client_name="Ms. Linh",
-        company="Coffee Lab",
-        role="Founder",
-        rating=Rating.FIVE,
-        quote="They understand our local market perfectly. Our social following tripled in 3 months!",
-        results={
-            "Social Followers": "+300%",
-            "Engagement Rate": "+150%",
-            "Sales": "+85%"
-        }
-    ))
+    generator.add_testimonial(
+        Testimonial(
+            client_name="Ms. Linh",
+            company="Coffee Lab",
+            role="Founder",
+            rating=Rating.FIVE,
+            quote="They understand our local market perfectly. Our social following tripled in 3 months!",
+            results={"Social Followers": "+300%", "Engagement Rate": "+150%", "Sales": "+85%"},
+        )
+    )
 
-    generator.add_testimonial(Testimonial(
-        client_name="Dr. Pham",
-        company="Dental Plus",
-        role="Director",
-        rating=Rating.FOUR,
-        quote="Professional team, great results. Highly recommend for any business!",
-        results={
-            "New Patients": "+45%",
-            "Online Bookings": "+200%"
-        }
-    ))
+    generator.add_testimonial(
+        Testimonial(
+            client_name="Dr. Pham",
+            company="Dental Plus",
+            role="Director",
+            rating=Rating.FOUR,
+            quote="Professional team, great results. Highly recommend for any business!",
+            results={"New Patients": "+45%", "Online Bookings": "+200%"},
+        )
+    )
 
     print("⭐ Testimonial Generator")
     print("=" * 60)

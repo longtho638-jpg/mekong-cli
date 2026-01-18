@@ -2,8 +2,8 @@
 🏯 Agent Orchestrator - Auto-Execute Agent Chains
 ================================================
 
-The central execution engine for Agency OS. It maps commands to optimal 
-specialized agents, manages their execution state, and 
+The central execution engine for Agency OS. It maps commands to optimal
+specialized agents, manages their execution state, and
 tracks performance metrics.
 
 Key Responsibilities:
@@ -17,21 +17,20 @@ Binh Pháp: 💂 Tướng (Leadership) - Commanding the agent workforce.
 
 import logging
 import time
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
-from .agent_chains import (
-    AgentStep,
-    get_chain
-)
+from .agent_chains import AgentStep, get_chain
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class StepStatus(Enum):
     """Execution status of an individual agent step."""
+
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -42,6 +41,7 @@ class StepStatus(Enum):
 @dataclass
 class StepResult:
     """Detailed output and metadata for a single agent action."""
+
     agent: str
     action: str
     status: StepStatus
@@ -53,6 +53,7 @@ class StepResult:
 @dataclass
 class ChainResult:
     """Aggregated results from a full agent chain execution."""
+
     suite: str
     subcommand: str
     steps: List[StepResult] = field(default_factory=list)
@@ -65,8 +66,8 @@ class ChainResult:
 class AgentOrchestrator:
     """
     🏯 Agent Orchestrator
-    
-    The master conductor of AI workflows. 
+
+    The master conductor of AI workflows.
     It ensures that complex tasks are broken down and handled by the best agents.
     """
 
@@ -75,10 +76,7 @@ class AgentOrchestrator:
         self.history: List[ChainResult] = []
 
     def run(
-        self,
-        suite: str,
-        subcommand: str,
-        context: Optional[Dict[str, Any]] = None
+        self, suite: str, subcommand: str, context: Optional[Dict[str, Any]] = None
     ) -> ChainResult:
         """
         Executes the optimized agent chain for a specific command suite.
@@ -89,11 +87,7 @@ class AgentOrchestrator:
             logger.warning(f"No execution chain defined for {suite}:{subcommand}")
             return self._empty_result(suite, subcommand)
 
-        result = ChainResult(
-            suite=suite,
-            subcommand=subcommand,
-            started_at=datetime.now()
-        )
+        result = ChainResult(suite=suite, subcommand=subcommand, started_at=datetime.now())
 
         if self.verbose:
             self._print_header(suite, subcommand, len(chain))
@@ -112,8 +106,7 @@ class AgentOrchestrator:
 
         # Chain success = all non-optional steps completed
         result.success = all(
-            r.status in [StepStatus.COMPLETED, StepStatus.SKIPPED]
-            for r in result.steps
+            r.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for r in result.steps
         )
 
         self.history.append(result)
@@ -124,11 +117,7 @@ class AgentOrchestrator:
         return result
 
     def _execute_step(
-        self,
-        step: AgentStep,
-        index: int,
-        total: int,
-        context: Optional[Dict[str, Any]]
+        self, step: AgentStep, index: int, total: int, context: Optional[Dict[str, Any]]
     ) -> StepResult:
         """Invokes an individual agent and captures the result."""
         start_time = time.time()
@@ -139,7 +128,7 @@ class AgentOrchestrator:
         try:
             # INTERFACE POINT: Real agent invocation would happen here.
             # For this prototype, we simulate a successful execution.
-            time.sleep(0.01) # Simulated network/processing latency
+            time.sleep(0.01)  # Simulated network/processing latency
 
             output = f"Simulated output for {step.action}"
             status = StepStatus.COMPLETED
@@ -162,7 +151,7 @@ class AgentOrchestrator:
             status=status,
             output=output,
             duration_ms=duration,
-            error=error
+            error=error,
         )
 
     def _print_header(self, suite: str, subcommand: str, steps: int):
@@ -183,10 +172,7 @@ class AgentOrchestrator:
     def _empty_result(self, suite: str, subcommand: str) -> ChainResult:
         """Fallback result for missing configurations."""
         return ChainResult(
-            suite=suite,
-            subcommand=subcommand,
-            success=False,
-            started_at=datetime.now()
+            suite=suite, subcommand=subcommand, success=False, started_at=datetime.now()
         )
 
     def get_stats(self) -> Dict[str, Any]:
@@ -203,7 +189,7 @@ class AgentOrchestrator:
             "total_runs": total,
             "success_rate": (successful / total * 100) if total > 0 else 0,
             "agent_usage": agent_usage,
-            "session_duration_ms": sum(r.total_duration_ms for r in self.history)
+            "session_duration_ms": sum(r.total_duration_ms for r in self.history),
         }
 
 

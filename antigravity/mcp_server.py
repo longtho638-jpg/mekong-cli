@@ -219,9 +219,7 @@ class AntigravityMCPServer:
                     },
                     message="Agency DNA retrieved",
                 )
-            return MCPResponse(
-                success=False, data=None, message="AgencyDNA not initialized"
-            )
+            return MCPResponse(success=False, data=None, message="AgencyDNA not initialized")
 
         elif name == "get_revenue_metrics":
             if self.engine:
@@ -235,9 +233,7 @@ class AntigravityMCPServer:
                     },
                     message="Revenue metrics retrieved",
                 )
-            return MCPResponse(
-                success=False, data=None, message="RevenueEngine not initialized"
-            )
+            return MCPResponse(success=False, data=None, message="RevenueEngine not initialized")
 
         elif name == "get_vc_score":
             if self.metrics:
@@ -254,9 +250,7 @@ class AntigravityMCPServer:
                     },
                     message="VC readiness score calculated",
                 )
-            return MCPResponse(
-                success=False, data=None, message="VCMetrics not initialized"
-            )
+            return MCPResponse(success=False, data=None, message="VCMetrics not initialized")
 
         elif name == "generate_content":
             content_type = arguments.get("type", "tweet")
@@ -325,9 +319,7 @@ class AntigravityMCPServer:
             )
 
         else:
-            return MCPResponse(
-                success=False, data=None, message=f"Unknown tool: {name}"
-            )
+            return MCPResponse(success=False, data=None, message=f"Unknown tool: {name}")
 
 
 async def main():
@@ -358,9 +350,7 @@ async def main():
 
     print("🏯 Starting Antigravity MCP Server...")
     async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream, write_stream, server.create_initialization_options()
-        )
+        await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 if __name__ == "__main__":

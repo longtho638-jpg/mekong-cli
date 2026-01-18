@@ -4,11 +4,13 @@ router = APIRouter(prefix="/api/vietnam", tags=["Vietnam Region"])
 
 try:
     from regions.vietnam import VietnamConfig, VietnamPricingEngine
+
     vietnam_config = VietnamConfig()
     vietnam_pricing = VietnamPricingEngine(vietnam_config)
     VIETNAM_AVAILABLE = True
 except ImportError:
     VIETNAM_AVAILABLE = False
+
 
 @router.get("/config")
 def get_vietnam_config():
@@ -17,6 +19,7 @@ def get_vietnam_config():
         raise HTTPException(500, "Vietnam region not available")
 
     return vietnam_config.get_summary()
+
 
 @router.get("/provinces")
 def get_vietnam_provinces():
@@ -30,10 +33,11 @@ def get_vietnam_provinces():
             "name_en": p.name_en,
             "name_vi": p.name_vi,
             "region": p.region.value,
-            "population_k": p.population
+            "population_k": p.population,
         }
         for p in vietnam_config.provinces
     ]
+
 
 @router.get("/pricing")
 def get_vietnam_pricing():
@@ -46,6 +50,7 @@ def get_vietnam_pricing():
         for service in vietnam_pricing.local_services.keys()
     }
 
+
 @router.get("/convert")
 def convert_currency(usd: float = 100):
     """Convert USD to VND."""
@@ -56,5 +61,5 @@ def convert_currency(usd: float = 100):
     return {
         "usd": vietnam_config.format_usd(usd),
         "vnd": vietnam_config.format_vnd(vnd),
-        "rate": vietnam_config.exchange_rate
+        "rate": vietnam_config.exchange_rate,
     }

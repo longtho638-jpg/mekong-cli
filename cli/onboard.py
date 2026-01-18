@@ -22,7 +22,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from core.strategy.business_plan_generator import BusinessPlanGenerator, AgencyDNA
+    from core.strategy.business_plan_generator import AgencyDNA, BusinessPlanGenerator
 except ImportError:
     print("❌ Could not import BusinessPlanGenerator. Run from mekong-cli directory.")
     sys.exit(1)
@@ -107,7 +107,7 @@ def show_next_steps(dna: AgencyDNA, filepath: str):
     print(f"   💰 Goal: {dna.dream_revenue}")
     print()
     print("   ════════════════════════════════════════════")
-    print("   🏯 \"Không đánh mà thắng\" - Win Without Fighting")
+    print('   🏯 "Không đánh mà thắng" - Win Without Fighting')
     print("   🌐 agencyos.network")
     print("   ════════════════════════════════════════════")
 

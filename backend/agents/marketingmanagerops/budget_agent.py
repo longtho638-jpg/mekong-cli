@@ -3,10 +3,10 @@ Budget Agent - Marketing Budget Management
 Manages budget allocation, spend tracking, and ROI.
 """
 
-from dataclasses import dataclass
-from typing import List, Dict
-from enum import Enum
 import random
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict, List
 
 
 class BudgetCategory(Enum):
@@ -21,6 +21,7 @@ class BudgetCategory(Enum):
 @dataclass
 class BudgetLine:
     """Budget line item"""
+
     id: str
     category: BudgetCategory
     name: str
@@ -44,7 +45,7 @@ class BudgetLine:
 class BudgetAgent:
     """
     Budget Agent - Quản lý Ngân sách Marketing
-    
+
     Responsibilities:
     - Budget allocation
     - Spend tracking
@@ -58,21 +59,11 @@ class BudgetAgent:
         self.total_budget = total_budget
         self.budget_lines: Dict[str, BudgetLine] = {}
 
-    def allocate(
-        self,
-        category: BudgetCategory,
-        name: str,
-        amount: float
-    ) -> BudgetLine:
+    def allocate(self, category: BudgetCategory, name: str, amount: float) -> BudgetLine:
         """Allocate budget"""
-        line_id = f"budget_{random.randint(100,999)}"
+        line_id = f"budget_{random.randint(100, 999)}"
 
-        line = BudgetLine(
-            id=line_id,
-            category=category,
-            name=name,
-            allocated=amount
-        )
+        line = BudgetLine(id=line_id, category=category, name=name, allocated=amount)
 
         self.budget_lines[line_id] = line
         return line
@@ -106,8 +97,12 @@ class BudgetAgent:
             "spent": total_spent,
             "remaining": self.total_budget - total_spent,
             "revenue": total_revenue,
-            "overall_roi": ((total_revenue - total_spent) / total_spent * 100) if total_spent > 0 else 0,
-            "by_category": {cat.value: sum(l.spent for l in self.get_by_category(cat)) for cat in BudgetCategory}
+            "overall_roi": ((total_revenue - total_spent) / total_spent * 100)
+            if total_spent > 0
+            else 0,
+            "by_category": {
+                cat.value: sum(l.spent for l in self.get_by_category(cat)) for cat in BudgetCategory
+            },
         }
 
 

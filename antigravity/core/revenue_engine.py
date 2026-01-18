@@ -2,7 +2,7 @@
 💰 RevenueEngine - Financial Performance & Forecasting
 ======================================================
 
-The operational heart of the Agency OS financial system. Tracks invoices, 
+The operational heart of the Agency OS financial system. Tracks invoices,
 calculates MRR/ARR, and monitors progress toward the $1M 2026 milestone.
 
 Key Performance Indicators:
@@ -17,11 +17,11 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 import logging
 import math
 from datetime import datetime, timedelta
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
-from .models.invoice import Invoice, InvoiceStatus, Forecast
-from .config import Currency, EXCHANGE_RATES, ARR_TARGET_2026, DEFAULT_GROWTH_RATE
 from .base import BaseEngine
+from .config import ARR_TARGET_2026, DEFAULT_GROWTH_RATE, EXCHANGE_RATES, Currency
+from .models.invoice import Forecast, Invoice, InvoiceStatus
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 class RevenueEngine(BaseEngine):
     """
     💰 Revenue Management Engine
-    
-    Automates invoicing and provides a real-time financial cockpit 
+
+    Automates invoicing and provides a real-time financial cockpit
     for the agency owner.
     """
 
@@ -41,11 +41,7 @@ class RevenueEngine(BaseEngine):
         self._next_id = 1
 
     def create_invoice(
-        self,
-        client_name: str,
-        amount: float,
-        currency: str = "USD",
-        notes: str = ""
+        self, client_name: str, amount: float, currency: str = "USD", notes: str = ""
     ) -> Invoice:
         """Generates a new invoice entity in DRAFT state."""
         invoice = Invoice(
@@ -54,7 +50,7 @@ class RevenueEngine(BaseEngine):
             amount=amount,
             currency=currency,
             notes=notes,
-            status=InvoiceStatus.DRAFT
+            status=InvoiceStatus.DRAFT,
         )
         self.invoices.append(invoice)
         self._next_id += 1
@@ -70,7 +66,9 @@ class RevenueEngine(BaseEngine):
         """Records a successful payment and sets the payment date."""
         invoice.status = InvoiceStatus.PAID
         invoice.paid_date = datetime.now()
-        logger.info(f"💰 Payment received: Invoice #{invoice.id} (${invoice.amount} {invoice.currency})")
+        logger.info(
+            f"💰 Payment received: Invoice #{invoice.id} (${invoice.amount} {invoice.currency})"
+        )
         return invoice
 
     def _to_usd(self, amount: float, currency: str) -> float:
@@ -84,7 +82,8 @@ class RevenueEngine(BaseEngine):
     def get_total_revenue(self) -> float:
         """Aggregates all-time PAID revenue in USD."""
         return sum(
-            self._to_usd(inv.amount, inv.currency) for inv in self.invoices
+            self._to_usd(inv.amount, inv.currency)
+            for inv in self.invoices
             if inv.status == InvoiceStatus.PAID
         )
 
@@ -92,7 +91,8 @@ class RevenueEngine(BaseEngine):
         """Calculates current Monthly Recurring Revenue (active in last 30 days)."""
         thirty_days_ago = datetime.now() - timedelta(days=30)
         return sum(
-            self._to_usd(inv.amount, inv.currency) for inv in self.invoices
+            self._to_usd(inv.amount, inv.currency)
+            for inv in self.invoices
             if inv.status == InvoiceStatus.PAID
             and inv.paid_date
             and inv.paid_date > thirty_days_ago
@@ -105,7 +105,8 @@ class RevenueEngine(BaseEngine):
     def get_outstanding_usd(self) -> float:
         """Total unpaid value currently in the SENT or OVERDUE state."""
         return sum(
-            self._to_usd(inv.amount, inv.currency) for inv in self.invoices
+            self._to_usd(inv.amount, inv.currency)
+            for inv in self.invoices
             if inv.status in [InvoiceStatus.SENT, InvoiceStatus.OVERDUE]
         )
 
@@ -119,10 +120,7 @@ class RevenueEngine(BaseEngine):
             target_date = current + timedelta(days=30 * i)
             # Compounding growth formula
             projected = mrr * ((1 + DEFAULT_GROWTH_RATE) ** i)
-            forecasts.append(Forecast(
-                month=target_date.strftime("%Y-%m"),
-                projected=projected
-            ))
+            forecasts.append(Forecast(month=target_date.strftime("%Y-%m"), projected=projected))
 
         return forecasts
 
@@ -131,15 +129,15 @@ class RevenueEngine(BaseEngine):
         return {
             "volume": {
                 "total_invoices": len(self.invoices),
-                "paid_count": len([i for i in self.invoices if i.status == InvoiceStatus.PAID])
+                "paid_count": len([i for i in self.invoices if i.status == InvoiceStatus.PAID]),
             },
             "financials": {
                 "total_revenue_usd": self.get_total_revenue(),
                 "mrr": self.get_mrr(),
                 "arr": self.get_arr(),
-                "outstanding": self.get_outstanding_usd()
+                "outstanding": self.get_outstanding_usd(),
             },
-            "goals": self.get_goal_summary()
+            "goals": self.get_goal_summary(),
         }
 
     # ============================================
@@ -157,7 +155,7 @@ class RevenueEngine(BaseEngine):
             "target_arr": ARR_TARGET_2026,
             "progress_percent": round(progress, 1),
             "gap_usd": gap,
-            "months_to_goal": self._calculate_months_to_goal(current_arr)
+            "months_to_goal": self._calculate_months_to_goal(current_arr),
         }
 
     def _calculate_months_to_goal(self, current_arr: float) -> int:
@@ -165,7 +163,7 @@ class RevenueEngine(BaseEngine):
         if current_arr >= ARR_TARGET_2026:
             return 0
         if current_arr <= 0:
-            return -1 # Undefined
+            return -1  # Undefined
 
         # log(target / current) / log(1 + growth)
         return math.ceil(
@@ -183,7 +181,9 @@ class RevenueEngine(BaseEngine):
         print("═" * 65)
 
         print(f"\n  💸 REVENUE: MRR: ${f['mrr']:,.0f} | ARR: ${f['arr']:,.0f}")
-        print(f"  📂 INVOICES: Paid: {stats['volume']['paid_count']} | Outstanding: ${f['outstanding']:,.0f}")
+        print(
+            f"  📂 INVOICES: Paid: {stats['volume']['paid_count']} | Outstanding: ${f['outstanding']:,.0f}"
+        )
 
         # Goal Progress
         bar_w = 30

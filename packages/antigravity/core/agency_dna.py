@@ -12,30 +12,33 @@ This module defines the core identity of your agency:
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict
 from enum import Enum
+from typing import Dict, List
 
 
 class Tone(Enum):
     """Brand voice tones."""
+
     PROFESSIONAL = "professional"
     FRIENDLY = "friendly"
-    MIEN_TAY = "mien_tay"      # Miền Tây - Southern Vietnam
-    MIEN_BAC = "mien_bac"      # Miền Bắc - Northern Vietnam
+    MIEN_TAY = "mien_tay"  # Miền Tây - Southern Vietnam
+    MIEN_BAC = "mien_bac"  # Miền Bắc - Northern Vietnam
     MIEN_TRUNG = "mien_trung"  # Miền Trung - Central Vietnam
 
 
 class PricingTier(Enum):
     """Pricing tiers."""
-    STARTER = "starter"         # $0-500/project
-    GROWTH = "growth"           # $500-2000/project
+
+    STARTER = "starter"  # $0-500/project
+    GROWTH = "growth"  # $500-2000/project
     PROFESSIONAL = "professional"  # $2000-5000/project
-    ENTERPRISE = "enterprise"   # $5000+/project
+    ENTERPRISE = "enterprise"  # $5000+/project
 
 
 @dataclass
 class Service:
     """A service offering."""
+
     name: str
     description: str
     price_usd: float
@@ -52,7 +55,7 @@ class Service:
 class AgencyDNA:
     """
     Your agency's unique identity.
-    
+
     Example:
         dna = AgencyDNA(
             name="Nova Digital",
@@ -61,6 +64,7 @@ class AgencyDNA:
             tone=Tone.MIEN_TAY
         )
     """
+
     name: str = "My Agency"
     niche: str = "Digital Marketing"
     location: str = "Vietnam"
@@ -93,7 +97,7 @@ class AgencyDNA:
             Tone.MIEN_BAC: f"Chuyên gia {self.niche} - Chất lượng Hà Nội",
             Tone.MIEN_TRUNG: f"Chuyên gia {self.niche} - Đẳng cấp Miền Trung",
             Tone.FRIENDLY: f"Your Partner in {self.niche}",
-            Tone.PROFESSIONAL: f"Professional {self.niche} Solutions"
+            Tone.PROFESSIONAL: f"Professional {self.niche} Solutions",
         }
         return taglines.get(self.tone, f"Expert in {self.niche}")
 
@@ -109,10 +113,6 @@ class AgencyDNA:
                 {"name": s.name, "price_usd": s.price_usd, "price_vnd": s.price_vnd}
                 for s in self.services
             ],
-            "contact": {
-                "email": self.email,
-                "phone": self.phone,
-                "website": self.website
-            },
-            "tagline": self.get_tagline()
+            "contact": {"email": self.email, "phone": self.phone, "website": self.website},
+            "tagline": self.get_tagline(),
         }

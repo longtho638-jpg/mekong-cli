@@ -3,7 +3,7 @@
 ======================================================
 
 Enables programmatic execution of Agency OS commands for CI/CD, scripting,
-and multi-agent orchestration. Provides standardized output in both 
+and multi-agent orchestration. Provides standardized output in both
 human-readable text and machine-parseable JSON.
 
 Modes:
@@ -14,11 +14,11 @@ Modes:
 Binh Pháp: 🤖 Vô Vi (Non-Action) - Automation that runs itself.
 """
 
-import sys
-import logging
 import argparse
 import json
-from typing import Dict, Any, Tuple
+import logging
+import sys
+from typing import Any, Dict, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 class HeadlessMode:
     """
     🤖 Headless Execution Engine
-    
-    The 'Quiet' mode for Agency OS. 
+
+    The 'Quiet' mode for Agency OS.
     Processes instructions without a persistent TUI/CLI session.
     """
 
@@ -85,21 +85,31 @@ class HeadlessMode:
         # Core Command Map
         if base == "infra":
             from .infrastructure import InfrastructureStack
+
             stack = InfrastructureStack()
             return stack.get_layer_summary(), f"Infra Health: {stack.get_health_score()}%"
 
         if base == "moats":
             from .moat_engine import get_moat_engine
+
             moat = get_moat_engine()
-            return moat.calculate_switching_cost(), f"Moat Strength: {moat.get_aggregate_strength()}%"
+            return (
+                moat.calculate_switching_cost(),
+                f"Moat Strength: {moat.get_aggregate_strength()}%",
+            )
 
         if base == "revenue" or base == "cash":
             from .cashflow_engine import get_cashflow_engine
+
             cf = get_cashflow_engine()
-            return {"arr": cf.get_total_arr(), "progress": cf.get_progress_percent()}, f"ARR: ${cf.get_total_arr():,.0f}"
+            return {
+                "arr": cf.get_total_arr(),
+                "progress": cf.get_progress_percent(),
+            }, f"ARR: ${cf.get_total_arr():,.0f}"
 
         if base == "agentic":
             from .unified_dashboard import AgenticDashboard
+
             stats = AgenticDashboard().get_stats()
             return stats, f"Agents Active: {stats['inventory']['agents']}"
 
@@ -122,6 +132,7 @@ class HeadlessMode:
 
 
 # --- Global Interface ---
+
 
 def run_headless_mission(command: str, fmt: str = "text") -> str:
     """Entry point for automated missions."""

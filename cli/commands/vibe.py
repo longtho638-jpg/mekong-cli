@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import typer
 from rich.console import Console
 from rich.prompt import Prompt
@@ -8,10 +9,11 @@ from core.shared.utils import update_file_placeholders
 
 console = Console()
 
+
 def setup_vibe(
     niche: str = typer.Option(None, help="Target Niche (or select interactively)"),
     location: str = typer.Option(..., prompt="Location (e.g., Can Tho)"),
-    tone: str = typer.Option("Bình dân, Chân thành", prompt="Brand Tone")
+    tone: str = typer.Option("Bình dân, Chân thành", prompt="Brand Tone"),
 ):
     """
     Customize the Agent's soul (.gemini/GEMINI.md) for a specific niche.
@@ -37,12 +39,7 @@ def setup_vibe(
         console.print("[bold red]Error:[/bold red] Not a valid Mekong project root.")
         raise typer.Exit(code=1)
 
-    replacements = {
-        "project_name": cwd.name,
-        "niche": niche,
-        "location": location,
-        "tone": tone
-    }
+    replacements = {"project_name": cwd.name, "niche": niche, "location": location, "tone": tone}
 
     # Update config files
     if update_file_placeholders(config_path, replacements):
@@ -52,6 +49,7 @@ def setup_vibe(
         console.print("   ✅ Infused local vibe into GEMINI.md")
 
     console.print("\n[bold green]✨ Vibe Setup Complete![/bold green]")
+
 
 def vibes_cmd():
     """

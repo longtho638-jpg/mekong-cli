@@ -3,11 +3,11 @@ Lead Nurturing Agent - Nurture Sequences & Scoring
 Manages lead nurturing and handoff to sales.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class NurtureStatus(Enum):
@@ -20,6 +20,7 @@ class NurtureStatus(Enum):
 @dataclass
 class NurtureStep:
     """Nurture sequence step"""
+
     id: str
     name: str
     delay_days: int
@@ -31,6 +32,7 @@ class NurtureStep:
 @dataclass
 class NurtureSequence:
     """Lead nurture sequence"""
+
     id: str
     name: str
     target_segment: str
@@ -52,7 +54,7 @@ class NurtureSequence:
 class LeadNurturingAgent:
     """
     Lead Nurturing Agent - Nuôi dưỡng Leads
-    
+
     Responsibilities:
     - Nurture sequences
     - Lead scoring
@@ -66,29 +68,16 @@ class LeadNurturingAgent:
         self.sequences: Dict[str, NurtureSequence] = {}
         self.lead_scores: Dict[str, int] = {}
 
-    def create_sequence(
-        self,
-        name: str,
-        target_segment: str
-    ) -> NurtureSequence:
+    def create_sequence(self, name: str, target_segment: str) -> NurtureSequence:
         """Create nurture sequence"""
-        seq_id = f"nurture_{random.randint(100,999)}"
+        seq_id = f"nurture_{random.randint(100, 999)}"
 
-        sequence = NurtureSequence(
-            id=seq_id,
-            name=name,
-            target_segment=target_segment
-        )
+        sequence = NurtureSequence(id=seq_id, name=name, target_segment=target_segment)
 
         self.sequences[seq_id] = sequence
         return sequence
 
-    def add_step(
-        self,
-        sequence_id: str,
-        name: str,
-        delay_days: int
-    ) -> NurtureSequence:
+    def add_step(self, sequence_id: str, name: str, delay_days: int) -> NurtureSequence:
         """Add step to nurture sequence"""
         if sequence_id not in self.sequences:
             raise ValueError(f"Sequence not found: {sequence_id}")
@@ -96,7 +85,7 @@ class LeadNurturingAgent:
         step = NurtureStep(
             id=f"step_{len(self.sequences[sequence_id].steps) + 1}",
             name=name,
-            delay_days=delay_days
+            delay_days=delay_days,
         )
 
         self.sequences[sequence_id].steps.append(step)
@@ -144,7 +133,7 @@ class LeadNurturingAgent:
             "lead_id": lead_id,
             "score": score,
             "ready_for_sales": score >= 50,
-            "handoff_date": datetime.now().isoformat()
+            "handoff_date": datetime.now().isoformat(),
         }
 
     def get_stats(self) -> Dict:
@@ -157,7 +146,9 @@ class LeadNurturingAgent:
             "active": len(active),
             "total_enrolled": sum(s.enrolled for s in sequences),
             "total_converted": sum(s.converted for s in sequences),
-            "avg_conversion": sum(s.conversion_rate for s in sequences) / len(sequences) if sequences else 0
+            "avg_conversion": sum(s.conversion_rate for s in sequences) / len(sequences)
+            if sequences
+            else 0,
         }
 
 

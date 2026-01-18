@@ -8,17 +8,16 @@ Handles validation, rate limiting, and usage tracking.
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, Optional
-
 from functools import wraps
+from typing import Any, Callable, Dict, Optional
 
 from .models.subscription import Subscription, SubscriptionTier
 from .models.usage import UsageEvent
+from .services.rate_limiter import RateLimiter
+from .services.tier_service import TierService
+from .services.usage_tracker import UsageTracker
 from .validators.local_validator import LocalValidator
 from .validators.remote_validator import RemoteValidator
-from .services.tier_service import TierService
-from .services.rate_limiter import RateLimiter
-from .services.usage_tracker import UsageTracker
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ class SubscriptionManager:
         self.tier_service = TierService()
         self.rate_limiter = RateLimiter()
         self.usage_tracker = UsageTracker()
-        
+
         self._subscription_cache: Dict[str, Dict[str, Any]] = {}
 
     def get_subscription(self, user_id: str) -> Subscription:
@@ -51,15 +50,13 @@ class SubscriptionManager:
         # Default subscription if none found
         if not subscription:
             subscription = Subscription(
-                user_id=user_id,
-                tier=SubscriptionTier.STARTER,
-                source="default"
+                user_id=user_id, tier=SubscriptionTier.STARTER, source="default"
             )
 
         # Update cache
         self._subscription_cache[user_id] = {
             "subscription": subscription,
-            "_cached_at": datetime.now()
+            "_cached_at": datetime.now(),
         }
 
         return subscription
@@ -68,16 +65,16 @@ class SubscriptionManager:
         """Check if user is within their tier limits."""
         subscription = self.get_subscription(user_id)
         tier = subscription.tier
-        
+
         # Get current usage
         usage = self.usage_tracker.get_monthly_usage(subscription.agency_id or user_id)
-        
+
         if action in ["api_call", "command_exec"]:
             current = usage.api_calls if action == "api_call" else usage.commands
             return self.tier_service.check_limit(tier, action, current)
         elif action in ["api_access", "white_label", "priority_support"]:
             return self.tier_service.check_feature_access(tier, action)
-        
+
         return {"allowed": True}
 
     def validate_license(self, license_key: str, email: Optional[str] = None) -> Dict:
@@ -86,23 +83,24 @@ class SubscriptionManager:
         local_result = self.local_validator.validate_license(license_key, email)
         if local_result["valid"]:
             return local_result
-        
+
         # Try remote validation
         remote_result = self.remote_validator.validate_license(license_key, email)
         if remote_result["valid"]:
             return remote_result
-        
+
         # Return local result if both fail (better error message)
         return local_result
 
     def enforce(self, action: str = "api_call"):
         """Decorator to enforce tier limits on functions."""
+
         def decorator(func: Callable):
             @wraps(func)
             def wrapper(*args, **kwargs):
                 # Extract user_id
                 user_id = kwargs.get("user_id") or "default_user"
-                
+
                 # Security: Validate user_id format
                 if not isinstance(user_id, str) or len(user_id) > 100:
                     raise PermissionError("Invalid user identifier.")
@@ -128,13 +126,14 @@ class SubscriptionManager:
                     action=action,
                     timestamp=datetime.now(),
                     agency_id=subscription.agency_id,
-                    command=kwargs.get("command") or func.__name__
+                    command=kwargs.get("command") or func.__name__,
                 )
                 self.usage_tracker.record_usage(event)
 
                 return result
 
             return wrapper
+
         return decorator
 
     def get_usage_dashboard(self, user_id: str) -> str:
@@ -183,11 +182,9 @@ class SubscriptionManager:
         """Check quota and return warnings if approaching limits."""
         subscription = self.get_subscription(user_id)
         limits = self.tier_service.get_limits(subscription.tier)
-        
-        warnings = self.usage_tracker.get_usage_warnings(
-            user_id, subscription.tier, limits
-        )
-        
+
+        warnings = self.usage_tracker.get_usage_warnings(user_id, subscription.tier, limits)
+
         return {
             "has_warning": warnings.has_warning,
             "is_critical": warnings.is_critical,

@@ -3,11 +3,11 @@ Account Manager Agent - Client Relationships & Growth
 Manages account portfolio and relationship health.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class AccountTier(Enum):
@@ -26,6 +26,7 @@ class AccountHealth(Enum):
 @dataclass
 class Account:
     """Client account"""
+
     id: str
     name: str
     company: str
@@ -52,7 +53,7 @@ class Account:
 class AccountManagerAgent:
     """
     Account Manager Agent - Quản lý Tài khoản
-    
+
     Responsibilities:
     - Track account portfolio
     - Monitor relationship health
@@ -65,7 +66,7 @@ class AccountManagerAgent:
         AccountTier.ENTERPRISE: 50000,
         AccountTier.MID_MARKET: 20000,
         AccountTier.SMB: 5000,
-        AccountTier.STARTUP: 0
+        AccountTier.STARTUP: 0,
     }
 
     def __init__(self):
@@ -73,15 +74,9 @@ class AccountManagerAgent:
         self.status = "ready"
         self.accounts: Dict[str, Account] = {}
 
-    def add_account(
-        self,
-        name: str,
-        company: str,
-        arr: float,
-        renewal_days: int = 365
-    ) -> Account:
+    def add_account(self, name: str, company: str, arr: float, renewal_days: int = 365) -> Account:
         """Add new account"""
-        account_id = f"account_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        account_id = f"account_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         # Determine tier based on ARR
         tier = AccountTier.STARTUP
@@ -97,7 +92,7 @@ class AccountManagerAgent:
             tier=tier,
             arr=arr,
             renewal_date=datetime.now() + timedelta(days=renewal_days),
-            last_contact=datetime.now()
+            last_contact=datetime.now(),
         )
 
         self.accounts[account_id] = account
@@ -138,13 +133,16 @@ class AccountManagerAgent:
     def get_renewals_due(self, days: int = 90) -> List[Account]:
         """Get accounts with renewals due"""
         return [
-            a for a in self.accounts.values()
-            if a.renewal_date and a.days_until_renewal <= days
+            a for a in self.accounts.values() if a.renewal_date and a.days_until_renewal <= days
         ]
 
     def get_at_risk(self) -> List[Account]:
         """Get at-risk accounts"""
-        return [a for a in self.accounts.values() if a.health in [AccountHealth.AT_RISK, AccountHealth.CRITICAL]]
+        return [
+            a
+            for a in self.accounts.values()
+            if a.health in [AccountHealth.AT_RISK, AccountHealth.CRITICAL]
+        ]
 
     def get_stats(self) -> Dict:
         """Get portfolio statistics"""
@@ -156,7 +154,7 @@ class AccountManagerAgent:
             "healthy": len([a for a in accounts if a.health == AccountHealth.HEALTHY]),
             "at_risk": len([a for a in accounts if a.health == AccountHealth.AT_RISK]),
             "upsell_pipeline": sum(a.upsell_potential for a in accounts),
-            "renewals_90_days": len(self.get_renewals_due(90))
+            "renewals_90_days": len(self.get_renewals_due(90)),
         }
 
 

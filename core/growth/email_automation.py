@@ -12,20 +12,22 @@ Features:
 - Open/click tracking
 """
 
-import uuid
 import logging
 import re
-from typing import Optional, Dict, Any, List
-from datetime import datetime, timedelta
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SequenceType(Enum):
     """Categories for automated email sequences."""
+
     WELCOME = "welcome"
     ONBOARDING = "onboarding"
     NURTURE = "nurture"
@@ -36,6 +38,7 @@ class SequenceType(Enum):
 
 class EmailStatus(Enum):
     """Current state of a scheduled or sent email."""
+
     PENDING = "pending"
     SCHEDULED = "scheduled"
     SENT = "sent"
@@ -47,6 +50,7 @@ class EmailStatus(Enum):
 @dataclass
 class EmailTemplate:
     """An email template entity."""
+
     id: str
     name: str
     subject: str
@@ -58,6 +62,7 @@ class EmailTemplate:
 @dataclass
 class ScheduledEmail:
     """A single email scheduled for delivery."""
+
     id: str
     template_id: str
     recipient_email: str
@@ -72,6 +77,7 @@ class ScheduledEmail:
 @dataclass
 class EmailSequence:
     """An automated workflow of multiple emails."""
+
     id: str
     name: str
     type: SequenceType
@@ -83,7 +89,7 @@ class EmailSequence:
 class EmailAutomation:
     """
     Email Automation Engine System.
-    
+
     Orchestrates templates, sequences, and scheduled deliveries for client nurture.
     """
 
@@ -100,44 +106,55 @@ class EmailAutomation:
         self._load_defaults()
 
     def _validate_email(self, email: str) -> bool:
-        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+        return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
 
     def _load_defaults(self):
         """Seed the system with standard agency templates."""
         welcome_tpl = self.create_template(
-            "Welcome", "Welcome to {agency_name}! 🎉",
+            "Welcome",
+            "Welcome to {agency_name}! 🎉",
             "Hi {first_name}! Thanks for joining us at {agency_name}.",
-            SequenceType.WELCOME
+            SequenceType.WELCOME,
         )
         self.create_sequence(
-            "Onboarding Flow", SequenceType.WELCOME,
-            [{"template_id": welcome_tpl.id, "delay_days": 0}]
+            "Onboarding Flow",
+            SequenceType.WELCOME,
+            [{"template_id": welcome_tpl.id, "delay_days": 0}],
         )
 
-    def create_template(self, name: str, subject: str, body: str, category: SequenceType) -> EmailTemplate:
+    def create_template(
+        self, name: str, subject: str, body: str, category: SequenceType
+    ) -> EmailTemplate:
         """Register a new reusable email template."""
         template = EmailTemplate(
             id=f"TPL-{uuid.uuid4().hex[:6].upper()}",
-            name=name, subject=subject, body=body, category=category
+            name=name,
+            subject=subject,
+            body=body,
+            category=category,
         )
         self.templates[template.id] = template
         logger.debug(f"Template created: {name}")
         return template
 
-    def create_sequence(self, name: str, seq_type: SequenceType, emails: List[Dict[str, Any]]) -> EmailSequence:
+    def create_sequence(
+        self, name: str, seq_type: SequenceType, emails: List[Dict[str, Any]]
+    ) -> EmailSequence:
         """Define a new automated email sequence."""
         seq = EmailSequence(
-            id=f"SEQ-{uuid.uuid4().hex[:6].upper()}",
-            name=name, type=seq_type, emails=emails
+            id=f"SEQ-{uuid.uuid4().hex[:6].upper()}", name=name, type=seq_type, emails=emails
         )
         self.sequences[seq.id] = seq
         self.stats["active_sequences"] += 1
         logger.info(f"Sequence registered: {name} ({len(emails)} emails)")
         return seq
 
-    def enroll_contact(self, seq_id: str, email: str, name: str, vars: Optional[Dict] = None) -> bool:
+    def enroll_contact(
+        self, seq_id: str, email: str, name: str, vars: Optional[Dict] = None
+    ) -> bool:
         """Add a contact to an automated email sequence."""
-        if seq_id not in self.sequences: return False
+        if seq_id not in self.sequences:
+            return False
         if not self._validate_email(email):
             logger.error(f"Invalid email for enrollment: {email}")
             return False
@@ -147,17 +164,19 @@ class EmailAutomation:
 
         personalization = {
             "first_name": name.split()[0] if name else "there",
-            "agency_name": self.agency_name
+            "agency_name": self.agency_name,
         }
-        if vars: personalization.update(vars)
+        if vars:
+            personalization.update(vars)
 
         for cfg in seq.emails:
             scheduled = ScheduledEmail(
                 id=f"EM-{uuid.uuid4().hex[:8]}",
                 template_id=cfg["template_id"],
-                recipient_email=email, recipient_name=name,
+                recipient_email=email,
+                recipient_name=name,
                 personalization=personalization,
-                scheduled_for=datetime.now() + timedelta(days=cfg["delay_days"])
+                scheduled_for=datetime.now() + timedelta(days=cfg["delay_days"]),
             )
             self.scheduled.append(scheduled)
 
@@ -189,26 +208,32 @@ class EmailAutomation:
         ]
 
         for s in list(self.sequences.values())[:5]:
-            lines.append(f"║  🟢 {s.name:<25} │ {len(s.emails)} steps │ {s.enrollments:>3} enrolled  ║")
+            lines.append(
+                f"║  🟢 {s.name:<25} │ {len(s.emails)} steps │ {s.enrollments:>3} enrolled  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 UPCOMING DELIVERIES                                   ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 UPCOMING DELIVERIES                                   ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         pending = [e for e in self.scheduled if e.status == EmailStatus.SCHEDULED]
         for e in pending[:3]:
             time_disp = e.scheduled_for.strftime("%Y-%m-%d")
             lines.append(f"║    📅 {time_disp} │ {e.recipient_email:<25} │ {e.id:<10}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Seq]  [📋 Templates]  [🔄 Send Now]  [⚙️ Setup]  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Nurture!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Seq]  [📋 Templates]  [🔄 Send Now]  [⚙️ Setup]  ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Nurture!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

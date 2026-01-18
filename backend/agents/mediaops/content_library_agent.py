@@ -3,11 +3,11 @@ Content Library Agent - Media Asset Management
 Manages images, videos, and content assets.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class AssetType(Enum):
@@ -27,6 +27,7 @@ class AssetStatus(Enum):
 @dataclass
 class Asset:
     """Media asset"""
+
     id: str
     name: str
     asset_type: AssetType
@@ -46,7 +47,7 @@ class Asset:
 class ContentLibraryAgent:
     """
     Content Library Agent - Quản lý Media
-    
+
     Responsibilities:
     - Upload and store assets
     - Tag and categorize
@@ -65,20 +66,20 @@ class ContentLibraryAgent:
         asset_type: AssetType,
         url: str,
         tags: List[str] = None,
-        size_bytes: int = 0
+        size_bytes: int = 0,
     ) -> Asset:
         """Upload new asset"""
-        asset_id = f"asset_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        asset_id = f"asset_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         asset = Asset(
             id=asset_id,
             name=name,
             asset_type=asset_type,
             url=url,
-            thumbnail_url=f"{url.rsplit('.', 1)[0]}_thumb.jpg" if '.' in url else None,
+            thumbnail_url=f"{url.rsplit('.', 1)[0]}_thumb.jpg" if "." in url else None,
             tags=tags or [],
             size_bytes=size_bytes,
-            status=AssetStatus.READY
+            status=AssetStatus.READY,
         )
 
         self.assets[asset_id] = asset
@@ -131,10 +132,9 @@ class ContentLibraryAgent:
             "total": len(assets),
             "total_size_mb": sum(a.size_bytes for a in assets) / (1024 * 1024),
             "by_type": {
-                at.value: len([a for a in assets if a.asset_type == at])
-                for at in AssetType
+                at.value: len([a for a in assets if a.asset_type == at]) for at in AssetType
             },
-            "most_used": sorted(assets, key=lambda a: a.usage_count, reverse=True)[:5]
+            "most_used": sorted(assets, key=lambda a: a.usage_count, reverse=True)[:5],
         }
 
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
         asset_type=AssetType.IMAGE,
         url="https://storage.mekong-cli.com/hero_banner.jpg",
         tags=["landing", "hero", "marketing"],
-        size_bytes=1024 * 500
+        size_bytes=1024 * 500,
     )
 
     vid1 = agent.upload(
@@ -158,14 +158,14 @@ if __name__ == "__main__":
         asset_type=AssetType.VIDEO,
         url="https://storage.mekong-cli.com/demo_video.mp4",
         tags=["demo", "tutorial"],
-        size_bytes=1024 * 1024 * 25
+        size_bytes=1024 * 1024 * 25,
     )
 
     print(f"📷 Uploaded: {img1.name}")
     print(f"   Tags: {', '.join(img1.tags)}")
 
     print(f"\n🎬 Uploaded: {vid1.name}")
-    print(f"   Size: {vid1.size_bytes / (1024*1024):.1f} MB")
+    print(f"   Size: {vid1.size_bytes / (1024 * 1024):.1f} MB")
 
     # Record usage
     agent.record_usage(img1.id)

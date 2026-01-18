@@ -2,8 +2,8 @@
 💂 VIBE Orchestrator - Agent Orchestration Protocol
 ===================================================
 
-Manages the parallel and sequential coordination of AI agents within the 
-VIBE ecosystem. Ensures that complex multi-step missions are executed with 
+Manages the parallel and sequential coordination of AI agents within the
+VIBE ecosystem. Ensures that complex multi-step missions are executed with
 maximal efficiency and full telemetry tracking.
 
 Orchestration Patterns:
@@ -14,14 +14,14 @@ Orchestration Patterns:
 Binh Pháp: 💂 Tướng (Leadership) - Orchestrating the specialized units.
 """
 
+import concurrent.futures
 import logging
 import time
-import concurrent.futures
 from datetime import datetime
-from typing import Callable, Dict, List, Any, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from .models.orchestrator import AgentTask, AgentType, ChainResult
 from .base import BaseEngine
+from .models.orchestrator import AgentTask, AgentType, ChainResult
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class VIBEOrchestrator(BaseEngine):
     """
     💂 VIBE Agent Orchestrator
-    
+
     The master conductor for the Agency OS AI workforce.
     Integrates with Python handlers to execute agent prompts.
     """
@@ -40,7 +40,7 @@ class VIBEOrchestrator(BaseEngine):
         "feature": [AgentType.PLANNER, AgentType.IMPLEMENTER, AgentType.TESTER, AgentType.REVIEWER],
         "research": [AgentType.RESEARCHER, AgentType.PLANNER],
         "bugfix": [AgentType.DEBUGGER, AgentType.IMPLEMENTER, AgentType.TESTER],
-        "docs": [AgentType.DOCS_MANAGER, AgentType.PROJECT_MANAGER]
+        "docs": [AgentType.DOCS_MANAGER, AgentType.PROJECT_MANAGER],
     }
 
     def __init__(self, max_workers: int = 4):
@@ -60,7 +60,7 @@ class VIBEOrchestrator(BaseEngine):
         agent: Union[AgentType, str],
         prompt: str,
         description: Optional[str] = None,
-        priority: int = 1
+        priority: int = 1,
     ) -> AgentTask:
         """Initializes a new task for the workforce."""
         if isinstance(agent, str):
@@ -70,7 +70,7 @@ class VIBEOrchestrator(BaseEngine):
             agent=agent,
             prompt=prompt,
             description=description or f"Task for {agent.value}",
-            priority=priority
+            priority=priority,
         )
         self.task_queue.append(task)
         return task
@@ -147,11 +147,13 @@ class VIBEOrchestrator(BaseEngine):
 
         tasks = []
         for agent_type in self.STANDARD_CHAINS[blueprint_name]:
-            tasks.append(self.create_task(
-                agent=agent_type,
-                prompt=f"Goal: {objective} | Current Phase: {agent_type.value}",
-                description=f"Mission {blueprint_name}: {agent_type.value}"
-            ))
+            tasks.append(
+                self.create_task(
+                    agent=agent_type,
+                    prompt=f"Goal: {objective} | Current Phase: {agent_type.value}",
+                    description=f"Mission {blueprint_name}: {agent_type.value}",
+                )
+            )
 
         return self.execute_sequential(tasks)
 
@@ -165,10 +167,10 @@ class VIBEOrchestrator(BaseEngine):
         return {
             "orchestration": {
                 "active_blueprints": list(self.STANDARD_CHAINS.keys()),
-                "total_completed": len(self.completed_history)
+                "total_completed": len(self.completed_history),
             },
             "agents": {
                 "handlers_online": len(self.agent_handlers),
-                "types_supported": [t.value for t in AgentType]
-            }
+                "types_supported": [t.value for t in AgentType],
+            },
         }

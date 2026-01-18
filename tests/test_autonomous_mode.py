@@ -2,8 +2,9 @@
 Tests for Autonomous Mode system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.autonomous_mode import AutonomousOrchestrator, AutonomousStatus
 
-class TestAutonomousOrchestrator:
 
+class TestAutonomousOrchestrator:
     def test_set_goal_and_planning(self):
         """Test goal analysis and plan creation."""
         auto = AutonomousOrchestrator(verbose=False)
@@ -42,6 +43,7 @@ class TestAutonomousOrchestrator:
         report = auto.get_mission_report()
         assert report["mission"]["goal"] == "Build feature"
         assert report["mission"]["phases_total"] > 0
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

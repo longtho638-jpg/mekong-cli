@@ -6,30 +6,30 @@ Multi-language support for global franchise model.
 
 Usage:
     from locales import i18n, t
-    
+
     # Initialize with default locale
     i18n.set_locale("en")
-    
+
     # Get translation
     print(t("common.welcome"))
     # → "Welcome to Agency OS"
-    
+
     # Switch locale
     i18n.set_locale("vi")
     print(t("common.welcome"))
     # → "Chào mừng đến với Agency OS"
 """
 
-import os
 import json
-from typing import Optional, Dict, Any
+import os
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 
 class I18n:
     """
     Internationalization handler.
-    
+
     Supports:
     - Multiple locales (en, vi, etc.)
     - Nested key access (e.g., "common.welcome")
@@ -49,7 +49,7 @@ class I18n:
     def _load_all_locales(self):
         """Load all available locale files."""
         for locale_dir in self.locales_dir.iterdir():
-            if locale_dir.is_dir() and not locale_dir.name.startswith('_'):
+            if locale_dir.is_dir() and not locale_dir.name.startswith("_"):
                 locale_code = locale_dir.name
                 self._load_locale(locale_code)
 
@@ -83,12 +83,12 @@ class I18n:
     def translate(self, key: str, locale: Optional[str] = None, **kwargs) -> str:
         """
         Get translation for a key.
-        
+
         Args:
             key: Dot-separated key (e.g., "common.welcome")
             locale: Override locale (optional)
             **kwargs: Variables to interpolate
-            
+
         Returns:
             Translated string or key if not found
         """
@@ -99,10 +99,7 @@ class I18n:
 
         # Fallback to English
         if result is None and target_locale != self.fallback_locale:
-            result = self._get_nested(
-                self.translations.get(self.fallback_locale, {}),
-                key
-            )
+            result = self._get_nested(self.translations.get(self.fallback_locale, {}), key)
 
         # Return key if not found
         if result is None:
@@ -133,6 +130,7 @@ class I18n:
 
 # Global instance
 i18n = I18n()
+
 
 # Shortcut function
 def t(key: str, **kwargs) -> str:

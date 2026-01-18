@@ -3,11 +3,11 @@ Publishing Agent - Content Scheduling & Distribution
 Manages content calendar and multi-platform publishing.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class PublishStatus(Enum):
@@ -30,6 +30,7 @@ class Platform(Enum):
 @dataclass
 class ScheduledPost:
     """Scheduled content post"""
+
     id: str
     content_id: str
     content_title: str
@@ -47,7 +48,7 @@ class ScheduledPost:
 class PublishingAgent:
     """
     Publishing Agent - Xuất bản Nội dung
-    
+
     Responsibilities:
     - Content calendar
     - Multi-platform publishing
@@ -61,21 +62,17 @@ class PublishingAgent:
         self.posts: Dict[str, ScheduledPost] = {}
 
     def schedule(
-        self,
-        content_id: str,
-        content_title: str,
-        platform: Platform,
-        scheduled_at: datetime
+        self, content_id: str, content_title: str, platform: Platform, scheduled_at: datetime
     ) -> ScheduledPost:
         """Schedule content for publishing"""
-        post_id = f"post_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        post_id = f"post_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         post = ScheduledPost(
             id=post_id,
             content_id=content_id,
             content_title=content_title,
             platform=platform,
-            scheduled_at=scheduled_at
+            scheduled_at=scheduled_at,
         )
 
         self.posts[post_id] = post
@@ -95,7 +92,7 @@ class PublishingAgent:
             "views": random.randint(100, 5000),
             "likes": random.randint(10, 500),
             "shares": random.randint(5, 100),
-            "comments": random.randint(2, 50)
+            "comments": random.randint(2, 50),
         }
 
         return post
@@ -106,9 +103,12 @@ class PublishingAgent:
         end = now + timedelta(days=days)
 
         return sorted(
-            [p for p in self.posts.values()
-             if p.status == PublishStatus.SCHEDULED and p.scheduled_at <= end],
-            key=lambda x: x.scheduled_at
+            [
+                p
+                for p in self.posts.values()
+                if p.status == PublishStatus.SCHEDULED and p.scheduled_at <= end
+            ],
+            key=lambda x: x.scheduled_at,
         )
 
     def get_stats(self) -> Dict:
@@ -124,7 +124,9 @@ class PublishingAgent:
             "pending": len([p for p in posts if p.status == PublishStatus.SCHEDULED]),
             "total_engagement": total_engagement,
             "avg_engagement": total_engagement / len(published) if published else 0,
-            "by_platform": {p.value: len([post for post in posts if post.platform == p]) for p in Platform}
+            "by_platform": {
+                p.value: len([post for post in posts if post.platform == p]) for p in Platform
+            },
         }
 
 
@@ -135,9 +137,15 @@ if __name__ == "__main__":
     print("📅 Publishing Agent Demo\n")
 
     # Schedule posts
-    p1 = agent.schedule("C001", "10 Tips for Productivity", Platform.LINKEDIN, datetime.now() + timedelta(hours=2))
-    p2 = agent.schedule("C001", "10 Tips for Productivity", Platform.TWITTER, datetime.now() + timedelta(hours=3))
-    p3 = agent.schedule("C002", "Product Demo", Platform.YOUTUBE, datetime.now() + timedelta(days=1))
+    p1 = agent.schedule(
+        "C001", "10 Tips for Productivity", Platform.LINKEDIN, datetime.now() + timedelta(hours=2)
+    )
+    p2 = agent.schedule(
+        "C001", "10 Tips for Productivity", Platform.TWITTER, datetime.now() + timedelta(hours=3)
+    )
+    p3 = agent.schedule(
+        "C002", "Product Demo", Platform.YOUTUBE, datetime.now() + timedelta(days=1)
+    )
 
     print(f"📋 Scheduled: {p1.content_title}")
     print(f"   Platform: {p1.platform.value}")

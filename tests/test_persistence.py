@@ -2,8 +2,9 @@
 Tests for Persistence layer.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.persistence import JSONStore
 
-class TestPersistence:
 
+class TestPersistence:
     def test_json_store_operations(self, tmp_path):
         """Test basic CRUD operations in JSONStore."""
         store = JSONStore(data_dir=str(tmp_path))
@@ -41,6 +42,7 @@ class TestPersistence:
     def test_serialization_helpers(self, tmp_path):
         """Test serialization of datetime and custom objects."""
         from datetime import datetime
+
         store = JSONStore(data_dir=str(tmp_path))
 
         now = datetime.now()
@@ -56,6 +58,7 @@ class TestPersistence:
         store = JSONStore(data_dir=str(tmp_path))
         assert store.save("atomic", {"v": 1}).exists()
         assert store.load("atomic")["v"] == 1
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

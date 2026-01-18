@@ -122,8 +122,7 @@ class CodeGuardian:
 
         # Compile regex patterns
         self._compiled_patterns = {
-            name: re.compile(pattern)
-            for name, pattern in self.SECURITY_PATTERNS.items()
+            name: re.compile(pattern) for name, pattern in self.SECURITY_PATTERNS.items()
         }
 
         logger.info("🛡️ CodeGuardian initialized")
@@ -198,9 +197,7 @@ class CodeGuardian:
                 )
                 self.anomalies[anomaly.id] = anomaly
 
-                logger.warning(
-                    f"📊 Performance anomaly: {name} is {deviation:.1%} off baseline"
-                )
+                logger.warning(f"📊 Performance anomaly: {name} is {deviation:.1%} off baseline")
 
                 # Trigger rollback if critical
                 if deviation > self.anomaly_threshold * 2 and self.enable_auto_rollback:

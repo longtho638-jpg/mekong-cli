@@ -11,18 +11,20 @@ Creates a compounding Data Moat for the Agency OS:
 Binh Pháp: 🕵️ Dụng Gián (Intelligence) - Turning information into a moat.
 """
 
+import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Any
 from enum import Enum
-import json
+from typing import Any, Dict, List, Optional
 
 try:
     from ..core.db import get_db
 except (ImportError, ValueError):
     # Fallback if not in package context
-    def get_db(): return None
+    def get_db():
+        return None
+
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -30,17 +32,19 @@ logger = logging.getLogger(__name__)
 
 class InsightType(Enum):
     """Types of market intelligence."""
-    BENCHMARK = "benchmark"      # Performance benchmarks
-    VIRAL_PATTERN = "viral"      # What makes content viral
-    MARKET_TREND = "trend"       # Market trends
-    COMPETITOR = "competitor"    # Competitor intelligence
-    BEST_PRACTICE = "practice"   # What works
-    STRATEGIC = "strategic"      # Binh Pháp execution patterns
+
+    BENCHMARK = "benchmark"  # Performance benchmarks
+    VIRAL_PATTERN = "viral"  # What makes content viral
+    MARKET_TREND = "trend"  # Market trends
+    COMPETITOR = "competitor"  # Competitor intelligence
+    BEST_PRACTICE = "practice"  # What works
+    STRATEGIC = "strategic"  # Binh Pháp execution patterns
 
 
 @dataclass
 class Insight:
     """A piece of market intelligence."""
+
     id: Optional[int] = None
     type: InsightType = InsightType.BENCHMARK
     niche: str = ""
@@ -54,6 +58,7 @@ class Insight:
 @dataclass
 class Benchmark:
     """Performance benchmark for a specific niche."""
+
     niche: str
     avg_revenue: float = 0.0
     avg_clients: int = 0
@@ -66,7 +71,7 @@ class Benchmark:
 class DataMoat:
     """
     🏯 Data Moat
-    
+
     The core intelligence engine that improves as more agencies join the network.
     Synchronizes local success patterns with global benchmarks.
     """
@@ -84,7 +89,7 @@ class DataMoat:
         content_type: str,
         performance_score: int,
         revenue: float = 0.0,
-        metadata: Optional[Dict] = None
+        metadata: Optional[Dict] = None,
     ):
         """
         Record a successful pattern for system learning.
@@ -96,7 +101,7 @@ class DataMoat:
             "score": performance_score,
             "revenue": revenue,
             "metadata": metadata or {},
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         self.success_data.append(entry)
 
@@ -127,7 +132,7 @@ class DataMoat:
         niche: str,
         title: str,
         data: Dict,
-        confidence: float = 50.0
+        confidence: float = 50.0,
     ) -> Insight:
         """Add a strategic market insight."""
         insight = Insight(
@@ -136,7 +141,7 @@ class DataMoat:
             niche=niche,
             title=title,
             data=data,
-            confidence=confidence
+            confidence=confidence,
         )
         self.insights.append(insight)
         self._next_id += 1
@@ -150,7 +155,12 @@ class DataMoat:
         niche_data = [d for d in self.success_data if d["niche"] == niche]
 
         if not niche_data:
-            return [{"tip": "Insufficient data for this niche. Start recording successes to build intelligence.", "confidence": 0}]
+            return [
+                {
+                    "tip": "Insufficient data for this niche. Start recording successes to build intelligence.",
+                    "confidence": 0,
+                }
+            ]
 
         # Group by content type
         content_stats = {}
@@ -168,13 +178,15 @@ class DataMoat:
             # Confidence grows with sample size (max 100)
             confidence = min(count * 15, 100)
 
-            practices.append({
-                "tip": f"✨ {ct.upper()} content is {avg_score:.0f}% effective in this niche.",
-                "content_type": ct,
-                "avg_score": avg_score,
-                "confidence": confidence,
-                "sample_size": count
-            })
+            practices.append(
+                {
+                    "tip": f"✨ {ct.upper()} content is {avg_score:.0f}% effective in this niche.",
+                    "content_type": ct,
+                    "avg_score": avg_score,
+                    "confidence": confidence,
+                    "sample_size": count,
+                }
+            )
 
         # Sort by average performance
         practices.sort(key=lambda x: x["avg_score"], reverse=True)
@@ -186,18 +198,19 @@ class DataMoat:
 
     def get_viral_patterns(self, niche: str) -> List[Dict]:
         """Identify specific patterns that consistently hit high scores (90+)."""
-        viral_entries = [d for d in self.success_data
-                        if d["niche"] == niche and d["score"] >= 90]
+        viral_entries = [d for d in self.success_data if d["niche"] == niche and d["score"] >= 90]
 
         if not viral_entries:
             return []
 
-        return [{
-            "pattern": "High Engagement Outlier",
-            "frequency": len(viral_entries),
-            "avg_viral_score": sum(d["score"] for d in viral_entries) / len(viral_entries),
-            "top_media": list(set(d["content_type"] for d in viral_entries))
-        }]
+        return [
+            {
+                "pattern": "High Engagement Outlier",
+                "frequency": len(viral_entries),
+                "avg_viral_score": sum(d["score"] for d in viral_entries) / len(viral_entries),
+                "top_media": list(set(d["content_type"] for d in viral_entries)),
+            }
+        ]
 
     def get_moat_strength(self) -> Dict[str, Any]:
         """
@@ -211,7 +224,7 @@ class DataMoat:
         raw_score = min(total_points, 100)
 
         # Multipliers
-        variety_bonus = min(niches * 10, 50) # Bonus for variety
+        variety_bonus = min(niches * 10, 50)  # Bonus for variety
 
         final_score = min(raw_score + variety_bonus, 100)
 
@@ -221,10 +234,12 @@ class DataMoat:
             "covered_niches": niches,
             "insights_count": len(self.insights),
             "defensibility": (
-                "🏯 CASTLE (High)" if final_score >= 70 else
-                "🛡️ FORT (Medium)" if final_score >= 40 else
-                "🪵 STOCKADE (Low)"
-            )
+                "🏯 CASTLE (High)"
+                if final_score >= 70
+                else "🛡️ FORT (Medium)"
+                if final_score >= 40
+                else "🪵 STOCKADE (Low)"
+            ),
         }
 
     def export_intelligence(self) -> str:
@@ -234,9 +249,10 @@ class DataMoat:
             "insights": [vars(i) for i in self.insights],
             "metadata": {
                 "exported_at": datetime.now().isoformat(),
-                "moat_strength": self.get_moat_strength()
-            }
+                "moat_strength": self.get_moat_strength(),
+            },
         }
+
         # Helper to handle non-serializable objects like Enums/datetimes
         def serializer(obj):
             if isinstance(obj, (datetime, Enum)):

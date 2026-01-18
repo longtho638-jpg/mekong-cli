@@ -230,9 +230,7 @@ class RevenueAI:
         with self._lock:
             self.predictions[customer_id] = prediction
 
-        logger.info(
-            f"📊 Churn prediction for {customer.name}: {risk.value} ({probability:.0%})"
-        )
+        logger.info(f"📊 Churn prediction for {customer.name}: {risk.value} ({probability:.0%})")
         return prediction
 
     def _generate_retention_actions(
@@ -274,9 +272,7 @@ class RevenueAI:
 
             if current_tier in upgrade_options:
                 next_tier = upgrade_options[current_tier]
-                price_increase = (
-                    self.TIERS[next_tier]["price"] - self.TIERS[current_tier]["price"]
-                )
+                price_increase = self.TIERS[next_tier]["price"] - self.TIERS[current_tier]["price"]
 
                 recommendations.append(
                     UpsellRecommendation(
@@ -291,7 +287,7 @@ class RevenueAI:
         # Annual plan opportunity
         days_since_signup = (time.time() - customer.signup_date) / 86400
         if days_since_signup > 90 and days_since_signup < 365:
-            annual_savings = customer.mrr * 2  # 2 months free
+            customer.mrr * 2  # 2 months free
 
             recommendations.append(
                 UpsellRecommendation(
@@ -319,9 +315,7 @@ class RevenueAI:
         with self._lock:
             self.recommendations[customer_id] = recommendations
 
-        logger.info(
-            f"💡 Found {len(recommendations)} upsell opportunities for {customer.name}"
-        )
+        logger.info(f"💡 Found {len(recommendations)} upsell opportunities for {customer.name}")
         return recommendations
 
     def optimize_price(
@@ -335,9 +329,7 @@ class RevenueAI:
         demand_data = demand_data or {}
 
         # Calculate price elasticity estimate
-        avg_demand = (
-            sum(demand_data.values()) / len(demand_data) if demand_data else 1.0
-        )
+        avg_demand = sum(demand_data.values()) / len(demand_data) if demand_data else 1.0
 
         # Price optimization logic
         if avg_demand > 1.2:  # High demand
@@ -368,15 +360,11 @@ class RevenueAI:
 
         # Count at-risk customers
         at_risk = sum(
-            1
-            for p in self.predictions.values()
-            if p.risk in [ChurnRisk.CRITICAL, ChurnRisk.HIGH]
+            1 for p in self.predictions.values() if p.risk in [ChurnRisk.CRITICAL, ChurnRisk.HIGH]
         )
 
         # Estimate churn rate from predictions
-        high_risk_count = sum(
-            1 for p in self.predictions.values() if p.probability > 0.5
-        )
+        high_risk_count = sum(1 for p in self.predictions.values() if p.probability > 0.5)
         churn_rate = high_risk_count / max(len(self.customers), 1)
 
         metrics = RevenueMetrics(

@@ -3,7 +3,7 @@
 ===============================================
 
 Provides long-term persistence and pattern recognition for AI agents.
-Agents store their experiences, successes, and failures to optimize future 
+Agents store their experiences, successes, and failures to optimize future
 decision-making and improve the Agency OS 'intelligence moat'.
 
 Features:
@@ -14,19 +14,21 @@ Features:
 Binh Pháp: 🧠 Trí (Wisdom) - Learning from experience.
 """
 
-import logging
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Any, Set
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Set
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class Memory:
     """A single record of an agent's execution experience."""
+
     agent: str
     context: Dict[str, Any]
     outcome: str
@@ -39,6 +41,7 @@ class Memory:
 @dataclass
 class Pattern:
     """A recognized behavioral pattern and its statistical performance."""
+
     agent: str
     pattern: str
     success_rate: float
@@ -49,7 +52,7 @@ class Pattern:
 class AgentMemory:
     """
     🧠 Agent Memory System
-    
+
     The brain's hippocampus for the Agency OS.
     Maintains a rolling buffer of experiences and derives behavioral patterns.
     """
@@ -71,7 +74,7 @@ class AgentMemory:
         outcome: str,
         success: bool = True,
         patterns: Optional[List[str]] = None,
-        tags: Optional[List[str]] = None
+        tags: Optional[List[str]] = None,
     ) -> Memory:
         """
         Records a new experience into the memory buffer.
@@ -83,7 +86,7 @@ class AgentMemory:
             outcome=outcome,
             success=success,
             patterns=patterns or [],
-            tags=set(tags or [])
+            tags=set(tags or []),
         )
 
         # Keep buffer manageable (last 2000 memories)
@@ -109,7 +112,8 @@ class AgentMemory:
         if query:
             q = query.lower()
             agent_memories = [
-                m for m in agent_memories
+                m
+                for m in agent_memories
                 if q in str(m.context).lower() or q in m.outcome.lower() or q in "".join(m.tags)
             ]
 
@@ -131,9 +135,7 @@ class AgentMemory:
         patterns = self.get_patterns(agent)
         # Sort by success rate then occurrences
         sorted_patterns = sorted(
-            patterns,
-            key=lambda p: (p.success_rate, p.occurrences),
-            reverse=True
+            patterns, key=lambda p: (p.success_rate, p.occurrences), reverse=True
         )
         return sorted_patterns[:limit]
 
@@ -152,22 +154,21 @@ class AgentMemory:
                 return
 
         # Initialize new pattern
-        self.patterns[agent].append(Pattern(
-            agent=agent,
-            pattern=pattern_str,
-            success_rate=1.0 if success else 0.0,
-            occurrences=1,
-            last_seen=datetime.now()
-        ))
+        self.patterns[agent].append(
+            Pattern(
+                agent=agent,
+                pattern=pattern_str,
+                success_rate=1.0 if success else 0.0,
+                occurrences=1,
+                last_seen=datetime.now(),
+            )
+        )
 
     def _save_memories(self):
         """Persists current memory state to a JSON file."""
         try:
             data = {
-                "metadata": {
-                    "last_updated": datetime.now().isoformat(),
-                    "version": "2.0"
-                },
+                "metadata": {"last_updated": datetime.now().isoformat(), "version": "2.0"},
                 "memories": [
                     {
                         "agent": m.agent,
@@ -176,10 +177,10 @@ class AgentMemory:
                         "success": m.success,
                         "timestamp": m.timestamp.isoformat(),
                         "patterns": m.patterns,
-                        "tags": list(m.tags)
+                        "tags": list(m.tags),
                     }
                     for m in self.memories
-                ]
+                ],
             }
             self.memory_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
         except Exception as e:
@@ -200,7 +201,7 @@ class AgentMemory:
                     success=m["success"],
                     timestamp=datetime.fromisoformat(m["timestamp"]),
                     patterns=m.get("patterns", []),
-                    tags=set(m.get("tags", []))
+                    tags=set(m.get("tags", [])),
                 )
                 self.memories.append(memory)
 
@@ -219,13 +220,15 @@ class AgentMemory:
             "total_patterns": sum(len(p) for p in self.patterns.values()),
             "global_success_rate": (
                 sum(1 for m in self.memories if m.success) / len(self.memories)
-                if self.memories else 0.0
-            )
+                if self.memories
+                else 0.0
+            ),
         }
 
 
 # Singleton Management
 _global_memory = None
+
 
 def get_agent_memory() -> AgentMemory:
     """Access the shared agent memory system."""

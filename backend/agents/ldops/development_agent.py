@@ -3,11 +3,11 @@ Development Agent - Skills & Career Development
 Manages skills assessment, career paths, and development plans.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class SkillLevel(Enum):
@@ -26,6 +26,7 @@ class CareerTrack(Enum):
 @dataclass
 class Skill:
     """Employee skill"""
+
     id: str
     name: str
     category: str
@@ -37,6 +38,7 @@ class Skill:
 @dataclass
 class DevelopmentPlan:
     """Employee development plan"""
+
     id: str
     employee_id: str
     employee_name: str
@@ -61,7 +63,7 @@ class DevelopmentPlan:
 class DevelopmentAgent:
     """
     Development Agent - Phát triển Nghề nghiệp
-    
+
     Responsibilities:
     - Assess skills
     - Plan career paths
@@ -69,7 +71,12 @@ class DevelopmentAgent:
     - Track development
     """
 
-    LEVEL_ORDER = [SkillLevel.BEGINNER, SkillLevel.INTERMEDIATE, SkillLevel.ADVANCED, SkillLevel.EXPERT]
+    LEVEL_ORDER = [
+        SkillLevel.BEGINNER,
+        SkillLevel.INTERMEDIATE,
+        SkillLevel.ADVANCED,
+        SkillLevel.EXPERT,
+    ]
 
     def __init__(self):
         self.name = "Development"
@@ -82,10 +89,10 @@ class DevelopmentAgent:
         employee_name: str,
         career_track: CareerTrack,
         current_role: str,
-        target_role: str
+        target_role: str,
     ) -> DevelopmentPlan:
         """Create development plan"""
-        plan_id = f"plan_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        plan_id = f"plan_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         plan = DevelopmentPlan(
             id=plan_id,
@@ -93,7 +100,7 @@ class DevelopmentAgent:
             employee_name=employee_name,
             career_track=career_track,
             current_role=current_role,
-            target_role=target_role
+            target_role=target_role,
         )
 
         self.plans[plan_id] = plan
@@ -105,13 +112,13 @@ class DevelopmentAgent:
         name: str,
         category: str,
         current_level: SkillLevel,
-        target_level: SkillLevel
+        target_level: SkillLevel,
     ) -> Skill:
         """Add skill to development plan"""
         if plan_id not in self.plans:
             raise ValueError(f"Plan not found: {plan_id}")
 
-        skill_id = f"skill_{random.randint(100,999)}"
+        skill_id = f"skill_{random.randint(100, 999)}"
 
         # Calculate gap
         current_idx = self.LEVEL_ORDER.index(current_level)
@@ -124,7 +131,7 @@ class DevelopmentAgent:
             category=category,
             current_level=current_level,
             target_level=target_level,
-            gap=gap
+            gap=gap,
         )
 
         plan = self.plans[plan_id]
@@ -158,13 +165,15 @@ class DevelopmentAgent:
         for plan in self.plans.values():
             for skill in plan.skills:
                 if skill.gap > 0:
-                    gaps.append({
-                        "employee": plan.employee_name,
-                        "skill": skill.name,
-                        "current": skill.current_level.value,
-                        "target": skill.target_level.value,
-                        "gap": skill.gap
-                    })
+                    gaps.append(
+                        {
+                            "employee": plan.employee_name,
+                            "skill": skill.name,
+                            "current": skill.current_level.value,
+                            "target": skill.target_level.value,
+                            "gap": skill.gap,
+                        }
+                    )
         return sorted(gaps, key=lambda x: x["gap"], reverse=True)
 
     def get_stats(self) -> Dict:
@@ -178,7 +187,7 @@ class DevelopmentAgent:
             "total_skills": len(all_skills),
             "skill_gaps": len(gaps),
             "avg_progress": sum(p.progress for p in plans) / len(plans) if plans else 0,
-            "completed_plans": len([p for p in plans if p.progress >= 100])
+            "completed_plans": len([p for p in plans if p.progress >= 100]),
         }
 
 
@@ -189,7 +198,9 @@ if __name__ == "__main__":
     print("🚀 Development Agent Demo\n")
 
     # Create plan
-    p1 = agent.create_plan("EMP001", "Nguyen A", CareerTrack.INDIVIDUAL_CONTRIBUTOR, "Mid Engineer", "Senior Engineer")
+    p1 = agent.create_plan(
+        "EMP001", "Nguyen A", CareerTrack.INDIVIDUAL_CONTRIBUTOR, "Mid Engineer", "Senior Engineer"
+    )
 
     print(f"📋 Plan: {p1.employee_name}")
     print(f"   Track: {p1.career_track.value}")
@@ -198,7 +209,9 @@ if __name__ == "__main__":
     # Add skills
     agent.add_skill(p1.id, "Python", "Technical", SkillLevel.INTERMEDIATE, SkillLevel.ADVANCED)
     agent.add_skill(p1.id, "System Design", "Technical", SkillLevel.BEGINNER, SkillLevel.ADVANCED)
-    agent.add_skill(p1.id, "Leadership", "Soft Skills", SkillLevel.BEGINNER, SkillLevel.INTERMEDIATE)
+    agent.add_skill(
+        p1.id, "Leadership", "Soft Skills", SkillLevel.BEGINNER, SkillLevel.INTERMEDIATE
+    )
 
     print(f"\n📊 Skills Added: {len(p1.skills)}")
     print(f"   Progress: {p1.progress}%")

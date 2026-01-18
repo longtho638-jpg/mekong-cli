@@ -1,12 +1,14 @@
 """
 Strategy Module - Presentation
 """
+
 from typing import List
-from .services import StrategyService
+
 from .entities import StrategicInsight
+from .services import StrategyService
+
 
 class StrategyPresenter:
-
     @staticmethod
     def format_report(service: StrategyService, insights: List[StrategicInsight]) -> str:
         lines = [
@@ -16,7 +18,9 @@ class StrategyPresenter:
         ]
 
         for insight in insights:
-            lines.append(f"║  📜 CH.{insight.chapter.value:02d}: {service.get_chapter_title(insight.chapter):<33} ║")
+            lines.append(
+                f"║  📜 CH.{insight.chapter.value:02d}: {service.get_chapter_title(insight.chapter):<33} ║"
+            )
             lines.append("║  " + "─" * 57 + "  ║")
             lines.append(f"║  💡 {insight.title:<50} ║")
             lines.append(f"║     {insight.content[:50]:<50} ║")
@@ -31,4 +35,3 @@ class StrategyPresenter:
 
         lines.append("╚═══════════════════════════════════════════════════════════╝")
         return "\n".join(lines)
-

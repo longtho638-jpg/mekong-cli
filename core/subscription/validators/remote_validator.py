@@ -16,10 +16,13 @@ except ImportError:
         from core.config import get_settings
         from core.infrastructure.database import get_db
     except ImportError:
+
         def get_db():
             return None
+
         def get_settings():
             return None
+
 
 from ..models.subscription import Subscription, SubscriptionTier
 from .base_validator import BaseValidator
@@ -40,13 +43,9 @@ class RemoteValidator(BaseValidator):
 
         try:
             response = (
-                self.db.from_("subscriptions")
-                .select("*")
-                .eq("user_id", user_id)
-                .single()
-                .execute()
+                self.db.from_("subscriptions").select("*").eq("user_id", user_id).single().execute()
             )
-            
+
             if response.data:
                 data = response.data
                 return Subscription(
@@ -54,11 +53,11 @@ class RemoteValidator(BaseValidator):
                     tier=SubscriptionTier.from_str(data.get("tier", "starter")),
                     status=data.get("status", "active"),
                     agency_id=data.get("agency_id", user_id),
-                    source="supabase"
+                    source="supabase",
                 )
         except Exception as e:
             logger.debug(f"Could not fetch subscription from DB for {user_id}: {e}")
-            
+
         return None
 
     def validate_license(self, license_key: str, email: Optional[str] = None) -> Dict:
@@ -67,17 +66,13 @@ class RemoteValidator(BaseValidator):
             return {"valid": False, "reason": "No database connection."}
 
         try:
-            query = (
-                self.db.from_("licenses")
-                .select("*")
-                .eq("license_key", license_key)
-            )
-            
+            query = self.db.from_("licenses").select("*").eq("license_key", license_key)
+
             if email:
                 query = query.eq("email", email)
 
             response = query.execute()
-            
+
             if response.data:
                 data = response.data[0]
                 if data.get("status") == "active":
@@ -101,11 +96,19 @@ class RemoteValidator(BaseValidator):
         """Check tier feature access using remote logic."""
         # Remote validation follows same logic as local
         feature_requirements = {
-            "api_access": [SubscriptionTier.PRO, SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
+            "api_access": [
+                SubscriptionTier.PRO,
+                SubscriptionTier.FRANCHISE,
+                SubscriptionTier.ENTERPRISE,
+            ],
             "white_label": [SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
-            "priority_support": [SubscriptionTier.PRO, SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
+            "priority_support": [
+                SubscriptionTier.PRO,
+                SubscriptionTier.FRANCHISE,
+                SubscriptionTier.ENTERPRISE,
+            ],
         }
-        
+
         return tier in feature_requirements.get(feature, [SubscriptionTier.FREE])
 
     def update_subscription(self, user_id: str, updates: Dict) -> bool:

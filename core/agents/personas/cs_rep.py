@@ -12,19 +12,21 @@ Roles:
 - Ticket management
 """
 
-import uuid
 import logging
-from typing import Dict, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class InquiryType(Enum):
     """Common categories for customer inquiries."""
+
     GENERAL = "general"
     BILLING = "billing"
     PRODUCT = "product"
@@ -35,6 +37,7 @@ class InquiryType(Enum):
 
 class InquiryStatus(Enum):
     """Lifecycle status of an inquiry."""
+
     NEW = "new"
     RESPONDED = "responded"
     PENDING_CLIENT = "pending_client"
@@ -45,6 +48,7 @@ class InquiryStatus(Enum):
 @dataclass
 class CustomerInquiry:
     """A customer inquiry entity."""
+
     id: str
     client: str
     inquiry_type: InquiryType
@@ -59,7 +63,7 @@ class CustomerInquiry:
 class CustomerServiceRep:
     """
     Customer Service Rep System.
-    
+
     Manages incoming client requests and resolution workflow.
     """
 
@@ -70,10 +74,7 @@ class CustomerServiceRep:
         logger.info(f"CS Rep System initialized for {agency_name} (Rep: {rep_name})")
 
     def receive_inquiry(
-        self,
-        client: str,
-        inquiry_type: InquiryType,
-        message: str
+        self, client: str, inquiry_type: InquiryType, message: str
     ) -> CustomerInquiry:
         """Log a new incoming client request."""
         if not client or not message:
@@ -84,7 +85,7 @@ class CustomerServiceRep:
             client=client,
             inquiry_type=inquiry_type,
             message=message,
-            rep=self.rep_name
+            rep=self.rep_name,
         )
         self.inquiries[inquiry.id] = inquiry
         logger.info(f"Inquiry received: {client} ({inquiry_type.value})")
@@ -114,9 +115,14 @@ class CustomerServiceRep:
 
     def format_dashboard(self) -> str:
         """Render the CS Rep Dashboard."""
-        active_queue = [i for i in self.inquiries.values()
-                       if i.status in [InquiryStatus.NEW, InquiryStatus.PENDING_CLIENT]]
-        resolved_count = sum(1 for i in self.inquiries.values() if i.status == InquiryStatus.RESOLVED)
+        active_queue = [
+            i
+            for i in self.inquiries.values()
+            if i.status in [InquiryStatus.NEW, InquiryStatus.PENDING_CLIENT]
+        ]
+        resolved_count = sum(
+            1 for i in self.inquiries.values() if i.status == InquiryStatus.RESOLVED
+        )
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -128,29 +134,35 @@ class CustomerServiceRep:
         ]
 
         type_icons = {
-            InquiryType.GENERAL: "❓", InquiryType.BILLING: "💳",
-            InquiryType.PRODUCT: "📦", InquiryType.COMPLAINT: "😔",
-            InquiryType.FEEDBACK: "💬"
+            InquiryType.GENERAL: "❓",
+            InquiryType.BILLING: "💳",
+            InquiryType.PRODUCT: "📦",
+            InquiryType.COMPLAINT: "😔",
+            InquiryType.FEEDBACK: "💬",
         }
         status_icons = {
-            InquiryStatus.NEW: "🆕", InquiryStatus.RESPONDED: "💬",
-            InquiryStatus.PENDING_CLIENT: "⏳", InquiryStatus.RESOLVED: "✅"
+            InquiryStatus.NEW: "🆕",
+            InquiryStatus.RESPONDED: "💬",
+            InquiryStatus.PENDING_CLIENT: "⏳",
+            InquiryStatus.RESOLVED: "✅",
         }
 
         for i in active_queue[:5]:
             t_icon = type_icons.get(i.inquiry_type, "📋")
             s_icon = status_icons.get(i.status, "⚪")
-            client_disp = (i.client[:15] + '..') if len(i.client) > 17 else i.client
-            msg_disp = (i.message[:22] + '..') if len(i.message) > 24 else i.message
+            client_disp = (i.client[:15] + "..") if len(i.client) > 17 else i.client
+            msg_disp = (i.message[:22] + "..") if len(i.message) > 24 else i.message
             lines.append(f"║  {s_icon} {t_icon} {client_disp:<17} │ {msg_disp:<24}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📥 View Queue]  [💬 Respond]  [⬆️ Escalate]  [✅ Resolve]║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Helpful!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📥 View Queue]  [💬 Respond]  [⬆️ Escalate]  [✅ Resolve]║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Helpful!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

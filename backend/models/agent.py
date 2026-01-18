@@ -2,12 +2,12 @@
 Agent-related Pydantic models
 """
 
-from typing import Optional
 from pydantic import BaseModel, Field
 
 
 class AgentTask(BaseModel):
     """Task for an agent"""
+
     agent_name: str = Field(..., description="Name of the agent to execute task")
     task: str = Field(..., description="Task description")
     priority: str = Field(default="normal", description="Task priority")
@@ -15,6 +15,7 @@ class AgentTask(BaseModel):
 
 class AgentResponse(BaseModel):
     """Response from agent execution"""
+
     status: str = Field(..., description="Execution status")
     agent: str = Field(..., description="Agent name")
     task: str = Field(..., description="Original task")

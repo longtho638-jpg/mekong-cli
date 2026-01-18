@@ -3,12 +3,18 @@ SAOps Agents Package
 Analytics + Insights
 """
 
-from .analytics_agent import AnalyticsAgent, KPI, FunnelStage, MetricType
-from .insights_agent import InsightsAgent, Insight, InsightType, InsightPriority
+from .analytics_agent import KPI, AnalyticsAgent, FunnelStage, MetricType
+from .insights_agent import Insight, InsightPriority, InsightsAgent, InsightType
 
 __all__ = [
     # Analytics
-    "AnalyticsAgent", "KPI", "FunnelStage", "MetricType",
+    "AnalyticsAgent",
+    "KPI",
+    "FunnelStage",
+    "MetricType",
     # Insights
-    "InsightsAgent", "Insight", "InsightType", "InsightPriority",
+    "InsightsAgent",
+    "Insight",
+    "InsightType",
+    "InsightPriority",
 ]

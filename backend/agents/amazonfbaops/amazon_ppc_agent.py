@@ -3,10 +3,10 @@ Amazon PPC Agent - Sponsored Ads & ACOS
 Manages Amazon advertising campaigns.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List
 
 
 class CampaignType(Enum):
@@ -31,6 +31,7 @@ class MatchType(Enum):
 @dataclass
 class Keyword:
     """PPC keyword"""
+
     keyword: str
     match_type: MatchType
     bid: float
@@ -51,6 +52,7 @@ class Keyword:
 @dataclass
 class PPCCampaign:
     """Amazon PPC campaign"""
+
     id: str
     name: str
     campaign_type: CampaignType
@@ -78,7 +80,7 @@ class PPCCampaign:
 class AmazonPPCAgent:
     """
     Amazon PPC Agent - Quảng cáo Amazon
-    
+
     Responsibilities:
     - Sponsored Products
     - ACOS optimization
@@ -92,30 +94,20 @@ class AmazonPPCAgent:
         self.campaigns: Dict[str, PPCCampaign] = {}
 
     def create_campaign(
-        self,
-        name: str,
-        campaign_type: CampaignType,
-        daily_budget: float
+        self, name: str, campaign_type: CampaignType, daily_budget: float
     ) -> PPCCampaign:
         """Create PPC campaign"""
-        campaign_id = f"ppc_{random.randint(1000,9999)}"
+        campaign_id = f"ppc_{random.randint(1000, 9999)}"
 
         campaign = PPCCampaign(
-            id=campaign_id,
-            name=name,
-            campaign_type=campaign_type,
-            daily_budget=daily_budget
+            id=campaign_id, name=name, campaign_type=campaign_type, daily_budget=daily_budget
         )
 
         self.campaigns[campaign_id] = campaign
         return campaign
 
     def add_keyword(
-        self,
-        campaign_id: str,
-        keyword: str,
-        match_type: MatchType,
-        bid: float
+        self, campaign_id: str, keyword: str, match_type: MatchType, bid: float
     ) -> PPCCampaign:
         """Add keyword to campaign"""
         if campaign_id not in self.campaigns:
@@ -167,7 +159,7 @@ class AmazonPPCAgent:
             "total_spend": sum(c.total_spend for c in campaigns),
             "total_sales": sum(c.total_sales for c in campaigns),
             "avg_acos": sum(c.acos for c in active) / len(active) if active else 0,
-            "avg_roas": sum(c.roas for c in active) / len(active) if active else 0
+            "avg_roas": sum(c.roas for c in active) / len(active) if active else 0,
         }
 
 

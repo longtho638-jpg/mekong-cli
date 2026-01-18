@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 # Global manager instance
 manager = SubscriptionManager()
 
+
 # Legacy compatibility functions
 def get_subscription(user_id: str) -> Dict[str, Any]:
     """Get subscription details in legacy format."""
@@ -31,13 +32,16 @@ def get_subscription(user_id: str) -> Dict[str, Any]:
         "source": sub.source,
     }
 
+
 def check_limit(user_id: str, action: str) -> Dict[str, Any]:
     """Check subscription limits."""
     return manager.check_limit(user_id, action)
 
+
 def validate_license(license_key: str, email: Optional[str] = None) -> Dict:
     """Validate license key."""
     return manager.validate_license(license_key, email)
+
 
 def enforce(action: str = "api_call"):
     """Enforce subscription limits as decorator."""

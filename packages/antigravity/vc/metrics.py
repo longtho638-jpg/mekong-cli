@@ -12,17 +12,18 @@ Tracks key metrics:
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict
 from enum import Enum
+from typing import Dict, List
 
 
 class FundingStage(Enum):
     """Startup funding stages."""
-    PRE_SEED = "pre_seed"      # $0-500K
-    SEED = "seed"              # $500K-2M
-    SERIES_A = "series_a"      # $2M-15M
-    SERIES_B = "series_b"      # $15M-50M
-    SERIES_C = "series_c"      # $50M+
+
+    PRE_SEED = "pre_seed"  # $0-500K
+    SEED = "seed"  # $500K-2M
+    SERIES_A = "series_a"  # $2M-15M
+    SERIES_B = "series_b"  # $15M-50M
+    SERIES_C = "series_c"  # $50M+
 
 
 # Target metrics by stage
@@ -38,6 +39,7 @@ STAGE_TARGETS = {
 @dataclass
 class MetricsSnapshot:
     """Monthly metrics snapshot."""
+
     month: str  # YYYY-MM
     mrr: float = 0.0
     new_mrr: float = 0.0
@@ -60,30 +62,31 @@ class MetricsSnapshot:
 class VCMetrics:
     """
     VC-ready metrics dashboard.
-    
+
     Example:
         metrics = VCMetrics()
         metrics.mrr = 50000
         metrics.growth_rate = 15
         metrics.cac = 200
         metrics.ltv = 2400
-        
+
         print(metrics.rule_of_40())       # 15 + X = ?
         print(metrics.ltv_cac_ratio())    # 12x
         print(metrics.readiness_score())  # 72/100
     """
+
     # Revenue metrics
     mrr: float = 0.0
     arr: float = 0.0
     growth_rate: float = 0.0  # Monthly %
 
     # Unit economics
-    cac: float = 0.0          # Customer Acquisition Cost
-    ltv: float = 0.0          # Lifetime Value
+    cac: float = 0.0  # Customer Acquisition Cost
+    ltv: float = 0.0  # Lifetime Value
 
     # Churn metrics
-    churn_rate: float = 0.0   # Monthly churn %
-    nrr: float = 100.0        # Net Revenue Retention %
+    churn_rate: float = 0.0  # Monthly churn %
+    nrr: float = 100.0  # Net Revenue Retention %
 
     # Efficiency metrics
     gross_margin: float = 80.0
@@ -93,7 +96,7 @@ class VCMetrics:
 
     # Customers
     total_customers: int = 0
-    arpu: float = 0.0         # Average Revenue Per User
+    arpu: float = 0.0  # Average Revenue Per User
 
     # Stage
     stage: FundingStage = FundingStage.PRE_SEED
@@ -196,31 +199,24 @@ class VCMetrics:
     def to_dashboard(self) -> Dict:
         """Export as dashboard data."""
         return {
-            "revenue": {
-                "mrr": self.mrr,
-                "arr": self.arr,
-                "growth_rate": self.growth_rate
-            },
+            "revenue": {"mrr": self.mrr, "arr": self.arr, "growth_rate": self.growth_rate},
             "unit_economics": {
                 "cac": self.cac,
                 "ltv": self.ltv,
                 "ltv_cac_ratio": self.ltv_cac_ratio(),
-                "arpu": self.arpu
+                "arpu": self.arpu,
             },
-            "churn": {
-                "churn_rate": self.churn_rate,
-                "nrr": self.nrr
-            },
+            "churn": {"churn_rate": self.churn_rate, "nrr": self.nrr},
             "efficiency": {
                 "gross_margin": self.gross_margin,
                 "net_margin": self.net_margin,
                 "rule_of_40": self.rule_of_40(),
-                "magic_number": self.magic_number()
+                "magic_number": self.magic_number(),
             },
             "readiness": {
                 "score": self.readiness_score(),
                 "current_stage": self.stage.value,
                 "recommended_stage": self.get_stage_recommendation().value,
-                "gaps": self.get_gaps()
-            }
+                "gaps": self.get_gaps(),
+            },
         }

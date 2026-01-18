@@ -12,15 +12,16 @@ Features:
 - Hiring metrics
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class JobStatus(Enum):
     """Job posting status."""
+
     DRAFT = "draft"
     OPEN = "open"
     ON_HOLD = "on_hold"
@@ -30,6 +31,7 @@ class JobStatus(Enum):
 
 class CandidateStage(Enum):
     """Candidate pipeline stages."""
+
     APPLIED = "applied"
     SCREENING = "screening"
     INTERVIEW = "interview"
@@ -41,6 +43,7 @@ class CandidateStage(Enum):
 
 class JobType(Enum):
     """Job types."""
+
     FULL_TIME = "full_time"
     PART_TIME = "part_time"
     CONTRACT = "contract"
@@ -51,6 +54,7 @@ class JobType(Enum):
 @dataclass
 class JobPosting:
     """A job posting."""
+
     id: str
     title: str
     department: str
@@ -65,6 +69,7 @@ class JobPosting:
 @dataclass
 class Candidate:
     """A job candidate."""
+
     id: str
     name: str
     email: str
@@ -79,6 +84,7 @@ class Candidate:
 @dataclass
 class Interview:
     """An interview scheduled."""
+
     id: str
     candidate_id: str
     interviewer: str
@@ -92,7 +98,7 @@ class Interview:
 class TalentAcquisition:
     """
     Talent Acquisition System.
-    
+
     Build your dream team.
     """
 
@@ -108,7 +114,7 @@ class TalentAcquisition:
         department: str,
         job_type: JobType = JobType.FULL_TIME,
         salary_min: float = 0,
-        salary_max: float = 0
+        salary_max: float = 0,
     ) -> JobPosting:
         """Create a job posting."""
         job = JobPosting(
@@ -117,7 +123,7 @@ class TalentAcquisition:
             department=department,
             job_type=job_type,
             salary_min=salary_min,
-            salary_max=salary_max
+            salary_max=salary_max,
         )
         self.jobs[job.id] = job
         return job
@@ -128,11 +134,7 @@ class TalentAcquisition:
         job.posted_at = datetime.now()
 
     def add_candidate(
-        self,
-        name: str,
-        email: str,
-        job: JobPosting,
-        source: str = "website"
+        self, name: str, email: str, job: JobPosting, source: str = "website"
     ) -> Candidate:
         """Add a new candidate."""
         candidate = Candidate(
@@ -140,7 +142,7 @@ class TalentAcquisition:
             name=name,
             email=email,
             job_id=job.id,
-            source=source
+            source=source,
         )
         self.candidates[candidate.id] = candidate
         job.applications += 1
@@ -155,7 +157,7 @@ class TalentAcquisition:
         candidate: Candidate,
         interviewer: str,
         hours_from_now: int = 24,
-        interview_type: str = "video"
+        interview_type: str = "video",
     ) -> Interview:
         """Schedule an interview."""
         interview = Interview(
@@ -163,7 +165,7 @@ class TalentAcquisition:
             candidate_id=candidate.id,
             interviewer=interviewer,
             scheduled_at=datetime.now() + timedelta(hours=hours_from_now),
-            interview_type=interview_type
+            interview_type=interview_type,
         )
         self.interviews.append(interview)
         return interview
@@ -184,8 +186,11 @@ class TalentAcquisition:
         open_jobs = sum(1 for j in self.jobs.values() if j.status == JobStatus.OPEN)
         total_candidates = len(self.candidates)
         hired = sum(1 for c in self.candidates.values() if c.stage == CandidateStage.HIRED)
-        in_pipeline = sum(1 for c in self.candidates.values()
-                         if c.stage not in [CandidateStage.HIRED, CandidateStage.REJECTED])
+        in_pipeline = sum(
+            1
+            for c in self.candidates.values()
+            if c.stage not in [CandidateStage.HIRED, CandidateStage.REJECTED]
+        )
         pending_interviews = sum(1 for i in self.interviews if not i.completed)
 
         # Calculate average time to hire (simulated)
@@ -197,7 +202,7 @@ class TalentAcquisition:
             "hired": hired,
             "in_pipeline": in_pipeline,
             "pending_interviews": pending_interviews,
-            "avg_days_to_hire": avg_days
+            "avg_days_to_hire": avg_days,
         }
 
     def format_dashboard(self) -> str:
@@ -213,62 +218,87 @@ class TalentAcquisition:
             "║  ─────────────────────────────────────────────────────── ║",
         ]
 
-        status_icons = {"draft": "📝", "open": "🟢", "on_hold": "⏸️",
-                       "closed": "🔴", "filled": "✅"}
-        type_icons = {"full_time": "👔", "part_time": "⏰", "contract": "📄",
-                     "internship": "🎓", "freelance": "💼"}
+        status_icons = {"draft": "📝", "open": "🟢", "on_hold": "⏸️", "closed": "🔴", "filled": "✅"}
+        type_icons = {
+            "full_time": "👔",
+            "part_time": "⏰",
+            "contract": "📄",
+            "internship": "🎓",
+            "freelance": "💼",
+        }
 
         for job in list(self.jobs.values())[:4]:
             s_icon = status_icons.get(job.status.value, "⚪")
             t_icon = type_icons.get(job.job_type.value, "👔")
-            lines.append(f"║  {s_icon} {t_icon} {job.title[:18]:<18} │ {job.applications:>3} apps │ {job.department[:8]:<8}  ║")
+            lines.append(
+                f"║  {s_icon} {t_icon} {job.title[:18]:<18} │ {job.applications:>3} apps │ {job.department[:8]:<8}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  👥 CANDIDATE PIPELINE                                    ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  👥 CANDIDATE PIPELINE                                    ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         stage_counts = {}
         for stage in CandidateStage:
             stage_counts[stage.value] = sum(1 for c in self.candidates.values() if c.stage == stage)
 
-        stage_icons = {"applied": "📥", "screening": "🔍", "interview": "🗣️",
-                      "technical": "💻", "offer": "📋", "hired": "✅", "rejected": "❌"}
+        stage_icons = {
+            "applied": "📥",
+            "screening": "🔍",
+            "interview": "🗣️",
+            "technical": "💻",
+            "offer": "📋",
+            "hired": "✅",
+            "rejected": "❌",
+        }
 
-        for stage in [CandidateStage.APPLIED, CandidateStage.SCREENING,
-                     CandidateStage.INTERVIEW, CandidateStage.OFFER]:
+        for stage in [
+            CandidateStage.APPLIED,
+            CandidateStage.SCREENING,
+            CandidateStage.INTERVIEW,
+            CandidateStage.OFFER,
+        ]:
             count = stage_counts.get(stage.value, 0)
             icon = stage_icons.get(stage.value, "⚪")
             bar = "█" * min(10, count) + "░" * (10 - min(10, count))
             lines.append(f"║    {icon} {stage.value.title():<12} │ {bar} │ {count:>3}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📅 UPCOMING INTERVIEWS                                   ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📅 UPCOMING INTERVIEWS                                   ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         pending = [i for i in self.interviews if not i.completed][:3]
         for interview in pending:
             candidate = self.candidates.get(interview.candidate_id)
             name = candidate.name if candidate else "Unknown"
             time = interview.scheduled_at.strftime("%b %d %H:%M")
-            lines.append(f"║    🗣️ {name[:15]:<15} │ {interview.interviewer[:10]:<10} │ {time:<10}  ║")
+            lines.append(
+                f"║    🗣️ {name[:15]:<15} │ {interview.interviewer[:10]:<10} │ {time:<10}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 HIRING METRICS                                        ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    ⏱️ Avg Days to Hire:    {stats['avg_days_to_hire']:>3}                          ║",
-            f"║    📥 Total Candidates:    {stats['total_candidates']:>3}                          ║",
-            f"║    ✅ Total Hired:         {stats['hired']:>3}                          ║",
-            "║                                                           ║",
-            "║  [📋 Jobs]  [👥 Candidates]  [📅 Interviews]              ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Hire the best!                   ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 HIRING METRICS                                        ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+                f"║    ⏱️ Avg Days to Hire:    {stats['avg_days_to_hire']:>3}                          ║",
+                f"║    📥 Total Candidates:    {stats['total_candidates']:>3}                          ║",
+                f"║    ✅ Total Hired:         {stats['hired']:>3}                          ║",
+                "║                                                           ║",
+                "║  [📋 Jobs]  [👥 Candidates]  [📅 Interviews]              ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Hire the best!                   ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

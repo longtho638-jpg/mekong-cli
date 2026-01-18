@@ -97,12 +97,8 @@ class ViralDefense:
     def _init_triggers(self):
         """Initialize auto-scale triggers."""
         self.triggers = {
-            "cpu_high": ScaleTrigger(
-                "cpu_high", "cpu_usage", 80.0, ScaleAction.SCALE_UP, 120
-            ),
-            "cpu_low": ScaleTrigger(
-                "cpu_low", "cpu_usage", 30.0, ScaleAction.SCALE_DOWN, 300
-            ),
+            "cpu_high": ScaleTrigger("cpu_high", "cpu_usage", 80.0, ScaleAction.SCALE_UP, 120),
+            "cpu_low": ScaleTrigger("cpu_low", "cpu_usage", 30.0, ScaleAction.SCALE_DOWN, 300),
             "queue_high": ScaleTrigger(
                 "queue_high", "queue_depth", 100.0, ScaleAction.ADD_WORKERS, 60
             ),
@@ -263,9 +259,7 @@ class ViralDefense:
                 name: {
                     "threshold": t.threshold,
                     "action": t.action.value,
-                    "last_triggered": t.last_triggered.isoformat()
-                    if t.last_triggered
-                    else None,
+                    "last_triggered": t.last_triggered.isoformat() if t.last_triggered else None,
                 }
                 for name, t in self.triggers.items()
             },

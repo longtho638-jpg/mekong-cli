@@ -1,7 +1,9 @@
-import os
 import base64
-import requests
+import os
 from datetime import datetime, timedelta
+
+import requests
+
 
 class PayPalClient:
     """PayPal REST API client."""
@@ -25,9 +27,7 @@ class PayPalClient:
         if self._access_token:
             return self._access_token
 
-        auth = base64.b64encode(
-            f"{self.client_id}:{self.client_secret}".encode()
-        ).decode()
+        auth = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
 
         try:
             resp = requests.post(

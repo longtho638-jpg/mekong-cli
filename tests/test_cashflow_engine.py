@@ -2,8 +2,9 @@
 Tests for Cashflow Engine system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.cashflow_engine import CashflowEngine, RevenueStream
 
-class TestCashflowEngine:
 
+class TestCashflowEngine:
     def test_add_revenue(self, tmp_path):
         """Test adding revenue and ARR calculation."""
         engine = CashflowEngine(storage_path=str(tmp_path))
@@ -22,7 +23,7 @@ class TestCashflowEngine:
 
         # ARR should be 12000
         assert engine.get_total_arr() == 12000.0
-        assert engine.get_progress_percent() == 1.2 # 12000 / 1M
+        assert engine.get_progress_percent() == 1.2  # 12000 / 1M
 
     def test_currency_conversion(self, tmp_path):
         """Test VND to USD conversion."""
@@ -45,6 +46,7 @@ class TestCashflowEngine:
         # If months left is 12 (pre-2026), rate is approx 5.9%
         # If we are in 2026 (Jan), months left is 12, same result.
         assert 5.0 < rate < 10.0
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

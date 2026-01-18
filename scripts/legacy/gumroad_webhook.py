@@ -56,7 +56,7 @@ class GumroadWebhookHandler(BaseHTTPRequestHandler):
                 ["python3", "scripts/notification_hub.py", "sale"],
                 cwd=Path(__file__).parent.parent,
             )
-        except:
+        except Exception:
             pass
 
         # Auto-update revenue tracker

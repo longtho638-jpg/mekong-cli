@@ -12,19 +12,21 @@ Features:
 - Profit calculation
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ExpenseCategory(Enum):
     """Common expense categories."""
+
     TOOLS = "tools"
     MARKETING = "marketing"
     PAYROLL = "payroll"
@@ -37,6 +39,7 @@ class ExpenseCategory(Enum):
 @dataclass
 class Expense:
     """An individual expense record entity."""
+
     id: str
     description: str
     amount: float
@@ -56,7 +59,7 @@ class Expense:
 class ExpenseTracker:
     """
     Expense Tracker System.
-    
+
     Manages agency operational costs, tracks vendor spending, and reports on monthly profitability.
     """
 
@@ -75,7 +78,7 @@ class ExpenseTracker:
         date: Optional[datetime] = None,
         recurring: bool = False,
         billable: bool = False,
-        client_name: Optional[str] = None
+        client_name: Optional[str] = None,
     ) -> Expense:
         """Log a new expense entry."""
         if amount <= 0:
@@ -90,7 +93,7 @@ class ExpenseTracker:
             date=date or datetime.now(),
             recurring=recurring,
             billable=billable,
-            client_name=client_name
+            client_name=client_name,
         )
 
         self.expenses.append(expense)
@@ -107,10 +110,7 @@ class ExpenseTracker:
         revenue = self.monthly_revenue.get(month_key, 0.0)
 
         # Filter and sum expenses
-        monthly_exp = sum(
-            e.amount for e in self.expenses
-            if e.date.strftime("%Y-%m") == month_key
-        )
+        monthly_exp = sum(e.amount for e in self.expenses if e.date.strftime("%Y-%m") == month_key)
 
         profit = revenue - monthly_exp
         margin = (profit / revenue * 100.0) if revenue > 0 else 0.0
@@ -119,7 +119,7 @@ class ExpenseTracker:
             "revenue": revenue,
             "expenses": monthly_exp,
             "net_profit": profit,
-            "margin_pct": margin
+            "margin_pct": margin,
         }
 
     def format_dashboard(self, month_key: str) -> str:
@@ -137,14 +137,18 @@ class ExpenseTracker:
             "║    ─────────────────────────────                          ║",
         ]
 
-        p_icon = "✅" if data['net_profit'] >= 0 else "🔴"
-        lines.append(f"║    {p_icon} Net Profit:    ${data['net_profit']:>12,.0f} ({data['margin_pct']:.1f}% margin)  ║")
+        p_icon = "✅" if data["net_profit"] >= 0 else "🔴"
+        lines.append(
+            f"║    {p_icon} Net Profit:    ${data['net_profit']:>12,.0f} ({data['margin_pct']:.1f}% margin)  ║"
+        )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📂 TOP EXPENSE CATEGORIES                                ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📂 TOP EXPENSE CATEGORIES                                ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         # Aggregated Category View
         cat_map = {}
@@ -155,13 +159,15 @@ class ExpenseTracker:
         for cat, amt in sorted(cat_map.items(), key=lambda x: x[1], reverse=True)[:4]:
             lines.append(f"║    • {cat.title():<15} │ ${amt:>10,.0f}                      ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Expense]  [📊 Full P&L]  [📑 Taxes]  [⚙️ Settings]   ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ Expense]  [📊 Full P&L]  [📑 Taxes]  [⚙️ Settings]   ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

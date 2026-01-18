@@ -152,9 +152,7 @@ class TunnelOptimizer:
         # Connection pool with httpx
         self.httpx_client = httpx.AsyncClient(
             base_url=base_url,
-            limits=httpx.Limits(
-                max_connections=max_connections, max_keepalive_connections=20
-            ),
+            limits=httpx.Limits(max_connections=max_connections, max_keepalive_connections=20),
             timeout=httpx.Timeout(10.0, connect=2.0),
             http2=True,
         )
@@ -220,11 +218,7 @@ class TunnelOptimizer:
                 result = {"data": response.text, "status_code": response.status_code}
 
             # Cache successful GET requests
-            if (
-                use_cache
-                and method.upper() in ["GET", "HEAD"]
-                and response.status_code == 200
-            ):
+            if use_cache and method.upper() in ["GET", "HEAD"] and response.status_code == 200:
                 cache_ttl = ttl or self._get_default_ttl(endpoint)
                 self.cache.set(method, endpoint, result, cache_ttl, params)
 
@@ -322,8 +316,7 @@ class TunnelOptimizer:
                 "hits": self.metrics.cache_hits,
                 "misses": self.metrics.cache_misses,
                 "hit_rate": (
-                    self.metrics.cache_hits
-                    / (self.metrics.cache_hits + self.metrics.cache_misses)
+                    self.metrics.cache_hits / (self.metrics.cache_hits + self.metrics.cache_misses)
                     if (self.metrics.cache_hits + self.metrics.cache_misses) > 0
                     else 0
                 )
@@ -335,15 +328,8 @@ class TunnelOptimizer:
                 "new_count": self.metrics.connection_new_count,
                 "reuse_rate": (
                     self.metrics.connection_reuse_count
-                    / (
-                        self.metrics.connection_reuse_count
-                        + self.metrics.connection_new_count
-                    )
-                    if (
-                        self.metrics.connection_reuse_count
-                        + self.metrics.connection_new_count
-                    )
-                    > 0
+                    / (self.metrics.connection_reuse_count + self.metrics.connection_new_count)
+                    if (self.metrics.connection_reuse_count + self.metrics.connection_new_count) > 0
                     else 0
                 )
                 * 100,

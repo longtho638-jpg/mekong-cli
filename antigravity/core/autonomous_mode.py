@@ -1,4 +1,4 @@
-'''
+"""
 🚀 Autonomous Mode - Goal-Based Execution
 =========================================
 
@@ -13,23 +13,25 @@ Mission Workflow:
 4. Iterate: Adjust next tasks based on results.
 
 Binh Pháp: ⚡ Cửu Biến (Variations) - Adapting to the situation.
-'''
+"""
 
 import logging
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
-from .agent_crews import run_crew, CrewStatus
-from .agent_orchestrator import AgentOrchestrator
+from .agent_crews import CrewStatus, run_crew
 from .agent_memory import get_agent_memory
+from .agent_orchestrator import AgentOrchestrator
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class AutonomousStatus(Enum):
     """Execution states for the autonomous orchestrator."""
+
     IDLE = "idle"
     PLANNING = "planning"
     EXECUTING = "executing"
@@ -42,6 +44,7 @@ class AutonomousStatus(Enum):
 @dataclass
 class Task:
     """A unit of work within an autonomous mission."""
+
     id: int
     name: str
     crew: Optional[str] = None
@@ -54,6 +57,7 @@ class Task:
 @dataclass
 class ExecutionPlan:
     """A structured sequence of tasks to achieve a specific goal."""
+
     goal: str
     tasks: List[Task] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
@@ -62,7 +66,7 @@ class ExecutionPlan:
 class AutonomousOrchestrator:
     """
     🚀 Autonomous Mission Orchestrator
-    
+
     The 'Autopilot' mode for Agency OS.
     Handles complex, multi-step goals with minimal human guidance.
     """
@@ -84,10 +88,7 @@ class AutonomousOrchestrator:
             print(f"\n🎯 MISSION OBJECTIVE: {goal}")
             print("═" * 60)
 
-        self.plan = ExecutionPlan(
-            goal=goal,
-            tasks=self._analyze_goal(goal)
-        )
+        self.plan = ExecutionPlan(goal=goal, tasks=self._analyze_goal(goal))
 
         if self.verbose:
             print(f"📋 STRATEGIC PLAN ({len(self.plan.tasks)} phases):")
@@ -174,7 +175,7 @@ class AutonomousOrchestrator:
                     context={"mission": self.goal, "phase": task.name},
                     outcome=f"Status: {task.status}",
                     success=(task.status == "completed"),
-                    tags=["autonomous", self.goal[:10]]
+                    tags=["autonomous", self.goal[:10]],
                 )
 
             except Exception as e:
@@ -186,7 +187,7 @@ class AutonomousOrchestrator:
                 mission_success = False
                 if self.verbose:
                     print(f"   ❌ Phase failed: {task.error or 'Unknown error'}")
-                break # Critical failure stops the mission
+                break  # Critical failure stops the mission
 
             if self.verbose:
                 print("   ✓ Phase complete")
@@ -214,12 +215,14 @@ class AutonomousOrchestrator:
                 "goal": self.goal,
                 "status": self.status.value,
                 "phases_total": len(self.plan.tasks) if self.plan else 0,
-                "phases_done": len([t for t in self.plan.tasks if t.status == "completed"]) if self.plan else 0
+                "phases_done": len([t for t in self.plan.tasks if t.status == "completed"])
+                if self.plan
+                else 0,
             },
             "timeline": [
                 {"id": t.id, "name": t.name, "status": t.status}
                 for t in (self.plan.tasks if self.plan else [])
-            ]
+            ],
         }
 
 

@@ -4,7 +4,8 @@ Agency OS v2.0 - WIN-WIN-WIN Testing
 """
 
 import pytest
-from backend.agents.scout import ScoutAgent, TrendItem, IntelBrief
+
+from backend.agents.scout import IntelBrief, ScoutAgent, TrendItem
 
 
 class TestTrendItem:
@@ -12,11 +13,7 @@ class TestTrendItem:
 
     def test_trend_item_creation(self):
         """Test basic TrendItem creation"""
-        trend = TrendItem(
-            title="AI Agent frameworks",
-            source="Product Hunt",
-            score=95.0
-        )
+        trend = TrendItem(title="AI Agent frameworks", source="Product Hunt", score=95.0)
         assert trend.title == "AI Agent frameworks"
         assert trend.source == "Product Hunt"
         assert trend.score == 95.0
@@ -25,10 +22,7 @@ class TestTrendItem:
     def test_trend_item_with_url(self):
         """Test TrendItem with optional URL"""
         trend = TrendItem(
-            title="Test Trend",
-            source="Twitter",
-            score=80.0,
-            url="https://example.com"
+            title="Test Trend", source="Twitter", score=80.0, url="https://example.com"
         )
         assert trend.url == "https://example.com"
 
@@ -40,10 +34,7 @@ class TestIntelBrief:
         """Test basic IntelBrief creation"""
         trends = [TrendItem("Trend 1", "Source", 90.0)]
         brief = IntelBrief(
-            topic="AI automation",
-            trends=trends,
-            competitors=["A", "B"],
-            content_angles=["Angle 1"]
+            topic="AI automation", trends=trends, competitors=["A", "B"], content_angles=["Angle 1"]
         )
         assert brief.topic == "AI automation"
         assert len(brief.trends) == 1

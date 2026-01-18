@@ -12,15 +12,16 @@ Features:
 - VC relationship scoring
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class InvestorType(Enum):
     """Investor type."""
+
     ANGEL = "angel"
     SEED_VC = "seed_vc"
     SERIES_A_VC = "series_a_vc"
@@ -31,6 +32,7 @@ class InvestorType(Enum):
 
 class PipelineStage(Enum):
     """Investor pipeline stage."""
+
     RESEARCH = "research"
     OUTREACH = "outreach"
     INTRO_MEETING = "intro_meeting"
@@ -43,6 +45,7 @@ class PipelineStage(Enum):
 
 class InteractionType(Enum):
     """Investor interaction type."""
+
     EMAIL = "email"
     CALL = "call"
     MEETING = "meeting"
@@ -53,6 +56,7 @@ class InteractionType(Enum):
 @dataclass
 class Investor:
     """An investor contact."""
+
     id: str
     name: str
     firm: str
@@ -71,6 +75,7 @@ class Investor:
 @dataclass
 class Interaction:
     """An investor interaction."""
+
     id: str
     investor_id: str
     interaction_type: InteractionType
@@ -83,6 +88,7 @@ class Interaction:
 @dataclass
 class DueDiligenceItem:
     """A due diligence checklist item."""
+
     category: str
     item: str
     status: str = "pending"  # pending, in_progress, complete
@@ -92,7 +98,7 @@ class DueDiligenceItem:
 class InvestorRelations:
     """
     Investor Relations Manager.
-    
+
     Track and manage VC relationships.
     """
 
@@ -108,14 +114,46 @@ class InvestorRelations:
         """Initialize demo data."""
         # Add sample investors
         investors_data = [
-            ("Sarah Chen", "Pillar VC", InvestorType.SEED_VC, 500_000, 2_000_000,
-             ["SaaS", "AI", "Enterprise"], PipelineStage.PARTNER_MEETING, 75),
-            ("John Smith", "Andreessen Horowitz", InvestorType.SERIES_A_VC, 5_000_000, 15_000_000,
-             ["AI", "Infrastructure"], PipelineStage.RESEARCH, 20),
-            ("Mike Nguyen", "Angel Investor", InvestorType.ANGEL, 25_000, 100_000,
-             ["Vietnam", "B2B"], PipelineStage.CLOSED, 90),
-            ("Lisa Park", "First Round Capital", InvestorType.SEED_VC, 1_000_000, 3_000_000,
-             ["SaaS", "Developer Tools"], PipelineStage.OUTREACH, 35),
+            (
+                "Sarah Chen",
+                "Pillar VC",
+                InvestorType.SEED_VC,
+                500_000,
+                2_000_000,
+                ["SaaS", "AI", "Enterprise"],
+                PipelineStage.PARTNER_MEETING,
+                75,
+            ),
+            (
+                "John Smith",
+                "Andreessen Horowitz",
+                InvestorType.SERIES_A_VC,
+                5_000_000,
+                15_000_000,
+                ["AI", "Infrastructure"],
+                PipelineStage.RESEARCH,
+                20,
+            ),
+            (
+                "Mike Nguyen",
+                "Angel Investor",
+                InvestorType.ANGEL,
+                25_000,
+                100_000,
+                ["Vietnam", "B2B"],
+                PipelineStage.CLOSED,
+                90,
+            ),
+            (
+                "Lisa Park",
+                "First Round Capital",
+                InvestorType.SEED_VC,
+                1_000_000,
+                3_000_000,
+                ["SaaS", "Developer Tools"],
+                PipelineStage.OUTREACH,
+                35,
+            ),
         ]
 
         for name, firm, inv_type, min_check, max_check, focus, stage, score in investors_data:
@@ -154,7 +192,7 @@ class InvestorRelations:
         investor_type: InvestorType,
         check_size_min: float = 0,
         check_size_max: float = 0,
-        focus_areas: List[str] = None
+        focus_areas: List[str] = None,
     ) -> Investor:
         """Add an investor to the pipeline."""
         investor = Investor(
@@ -164,7 +202,7 @@ class InvestorRelations:
             investor_type=investor_type,
             check_size_min=check_size_min,
             check_size_max=check_size_max,
-            focus_areas=focus_areas or []
+            focus_areas=focus_areas or [],
         )
         self.investors[investor.id] = investor
         self.interactions[investor.id] = []
@@ -176,7 +214,7 @@ class InvestorRelations:
         interaction_type: InteractionType,
         summary: str,
         outcome: str = "",
-        next_steps: str = ""
+        next_steps: str = "",
     ) -> Interaction:
         """Log an interaction with an investor."""
         interaction = Interaction(
@@ -186,7 +224,7 @@ class InvestorRelations:
             date=datetime.now(),
             summary=summary,
             outcome=outcome,
-            next_steps=next_steps
+            next_steps=next_steps,
         )
 
         if investor_id in self.interactions:
@@ -242,7 +280,7 @@ class InvestorRelations:
             "by_type": by_type,
             "pipeline_value": total_potential,
             "closed_count": closed_count,
-            "dd_progress": dd_complete / len(self.dd_checklist) * 100 if self.dd_checklist else 0
+            "dd_progress": dd_complete / len(self.dd_checklist) * 100 if self.dd_checklist else 0,
         }
 
     def format_dashboard(self) -> str:
@@ -259,44 +297,57 @@ class InvestorRelations:
         ]
 
         stage_icons = {
-            "research": "🔍", "outreach": "📧", "intro_meeting": "☕",
-            "partner_meeting": "🤝", "due_diligence": "📋",
-            "term_sheet": "📝", "closed": "✅", "passed": "❌"
+            "research": "🔍",
+            "outreach": "📧",
+            "intro_meeting": "☕",
+            "partner_meeting": "🤝",
+            "due_diligence": "📋",
+            "term_sheet": "📝",
+            "closed": "✅",
+            "passed": "❌",
         }
 
-        for stage, count in stats['by_stage'].items():
+        for stage, count in stats["by_stage"].items():
             icon = stage_icons.get(stage, "⚪")
             bar = "█" * min(count * 3, 20)
-            lines.append(f"║    {icon} {stage.replace('_', ' ').title():<15} │ {bar:<15} {count:>2}  ║")
+            lines.append(
+                f"║    {icon} {stage.replace('_', ' ').title():<15} │ {bar:<15} {count:>2}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🎯 HOT INVESTORS                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🎯 HOT INVESTORS                                         ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         hot_investors = sorted(
             [inv for inv in self.investors.values() if inv.stage != PipelineStage.PASSED],
             key=lambda x: x.relationship_score,
-            reverse=True
+            reverse=True,
         )[:4]
 
         for inv in hot_investors:
-            score_bar = "●" * (inv.relationship_score // 20) + "○" * (5 - inv.relationship_score // 20)
+            score_bar = "●" * (inv.relationship_score // 20) + "○" * (
+                5 - inv.relationship_score // 20
+            )
             lines.append(f"║    {inv.name:<18} │ {inv.firm[:12]:<12} │ {score_bar}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 DUE DILIGENCE                                         ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-            f"║    Progress: {stats['dd_progress']:.0f}%                                       ║",
-            "║    ████████░░░░░░░░░░ 12 items                           ║",
-            "║                                                           ║",
-            "║  [📊 Pipeline]  [📧 Outreach]  [📋 DD Tracker]            ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Build relationships!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 DUE DILIGENCE                                         ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+                f"║    Progress: {stats['dd_progress']:.0f}%                                       ║",
+                "║    ████████░░░░░░░░░░ 12 items                           ║",
+                "║                                                           ║",
+                "║  [📊 Pipeline]  [📧 Outreach]  [📋 DD Tracker]            ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Build relationships!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

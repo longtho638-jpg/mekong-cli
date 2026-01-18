@@ -12,15 +12,16 @@ Roles:
 - Documentation
 """
 
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional
 
 
 class IssuePriority(Enum):
     """Issue priority levels."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -29,6 +30,7 @@ class IssuePriority(Enum):
 
 class IssueCategory(Enum):
     """Issue categories."""
+
     BUG = "bug"
     CONFIGURATION = "configuration"
     INTEGRATION = "integration"
@@ -39,6 +41,7 @@ class IssueCategory(Enum):
 
 class IssueStatus(Enum):
     """Issue status."""
+
     NEW = "new"
     INVESTIGATING = "investigating"
     IN_PROGRESS = "in_progress"
@@ -50,6 +53,7 @@ class IssueStatus(Enum):
 @dataclass
 class TechIssue:
     """A technical support issue."""
+
     id: str
     client: str
     title: str
@@ -65,7 +69,7 @@ class TechIssue:
 class TechSupportSpecialist:
     """
     Technical Support Specialist.
-    
+
     Expert troubleshooting.
     """
 
@@ -79,7 +83,7 @@ class TechSupportSpecialist:
         title: str,
         category: IssueCategory,
         priority: IssuePriority,
-        specialist: str = ""
+        specialist: str = "",
     ) -> TechIssue:
         """Create a tech support issue."""
         issue = TechIssue(
@@ -88,7 +92,7 @@ class TechSupportSpecialist:
             title=title,
             category=category,
             priority=priority,
-            specialist=specialist
+            specialist=specialist,
         )
         self.issues[issue.id] = issue
         return issue
@@ -102,7 +106,11 @@ class TechSupportSpecialist:
 
     def get_open_issues(self) -> List[TechIssue]:
         """Get open issues."""
-        return [i for i in self.issues.values() if i.status not in [IssueStatus.RESOLVED, IssueStatus.CLOSED]]
+        return [
+            i
+            for i in self.issues.values()
+            if i.status not in [IssueStatus.RESOLVED, IssueStatus.CLOSED]
+        ]
 
     def get_stats(self) -> Dict[str, Any]:
         """Get support stats."""
@@ -116,7 +124,7 @@ class TechSupportSpecialist:
             "total": len(self.issues),
             "open": len(self.get_open_issues()),
             "resolved": len(resolved),
-            "avg_resolution_hours": avg_resolution
+            "avg_resolution_hours": avg_resolution,
         }
 
     def format_dashboard(self) -> str:
@@ -133,33 +141,55 @@ class TechSupportSpecialist:
         ]
 
         priority_icons = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
-        status_icons = {"new": "🆕", "investigating": "🔍", "in_progress": "🔄", "awaiting_info": "⏳", "resolved": "✅", "closed": "📁"}
+        status_icons = {
+            "new": "🆕",
+            "investigating": "🔍",
+            "in_progress": "🔄",
+            "awaiting_info": "⏳",
+            "resolved": "✅",
+            "closed": "📁",
+        }
 
         for issue in list(self.get_open_issues())[:5]:
             p_icon = priority_icons.get(issue.priority.value, "⚪")
             s_icon = status_icons.get(issue.status.value, "⚪")
 
-            lines.append(f"║  {p_icon} {s_icon} {issue.title[:22]:<22} │ {issue.client[:12]:<12}  ║")
+            lines.append(
+                f"║  {p_icon} {s_icon} {issue.title[:22]:<22} │ {issue.client[:12]:<12}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY CATEGORY                                           ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 BY CATEGORY                                           ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
-        cat_icons = {"bug": "🐛", "configuration": "⚙️", "integration": "🔗", "performance": "⚡", "access": "🔑", "other": "📋"}
+        cat_icons = {
+            "bug": "🐛",
+            "configuration": "⚙️",
+            "integration": "🔗",
+            "performance": "⚡",
+            "access": "🔑",
+            "other": "📋",
+        }
         for cat in list(IssueCategory)[:4]:
             count = sum(1 for i in self.issues.values() if i.category == cat)
             icon = cat_icons.get(cat.value, "📋")
-            lines.append(f"║    {icon} {cat.value.capitalize():<15} │ {count:>2} issues                 ║")
+            lines.append(
+                f"║    {icon} {cat.value.capitalize():<15} │ {count:>2} issues                 ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🆕 New Issue]  [🔍 Diagnose]  [✅ Resolve]              ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Expert troubleshooting!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🆕 New Issue]  [🔍 Diagnose]  [✅ Resolve]              ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Expert troubleshooting!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -172,10 +202,26 @@ if __name__ == "__main__":
     print("=" * 60)
     print()
 
-    i1 = tss.create_issue("Sunrise Realty", "Website loading slow", IssueCategory.PERFORMANCE, IssuePriority.HIGH, "Alex")
-    i2 = tss.create_issue("Coffee Lab", "Analytics not tracking", IssueCategory.INTEGRATION, IssuePriority.MEDIUM, "Sam")
-    i3 = tss.create_issue("Tech Startup", "Login not working", IssueCategory.BUG, IssuePriority.CRITICAL, "Alex")
-    i4 = tss.create_issue("Fashion Brand", "Can't access portal", IssueCategory.ACCESS, IssuePriority.HIGH, "Sam")
+    i1 = tss.create_issue(
+        "Sunrise Realty",
+        "Website loading slow",
+        IssueCategory.PERFORMANCE,
+        IssuePriority.HIGH,
+        "Alex",
+    )
+    i2 = tss.create_issue(
+        "Coffee Lab",
+        "Analytics not tracking",
+        IssueCategory.INTEGRATION,
+        IssuePriority.MEDIUM,
+        "Sam",
+    )
+    i3 = tss.create_issue(
+        "Tech Startup", "Login not working", IssueCategory.BUG, IssuePriority.CRITICAL, "Alex"
+    )
+    i4 = tss.create_issue(
+        "Fashion Brand", "Can't access portal", IssueCategory.ACCESS, IssuePriority.HIGH, "Sam"
+    )
 
     # Update statuses
     tss.update_status(i1, IssueStatus.INVESTIGATING)

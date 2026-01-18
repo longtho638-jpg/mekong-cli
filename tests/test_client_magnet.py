@@ -2,8 +2,9 @@
 Tests for Client Magnet system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.client_magnet import ClientMagnet, LeadSource, LeadStatus
 
-class TestClientMagnet:
 
+class TestClientMagnet:
     def test_add_lead(self):
         """Test adding a lead."""
         magnet = ClientMagnet()
@@ -50,18 +51,19 @@ class TestClientMagnet:
 
         # Add 3 leads
         l1 = magnet.add_lead("L1")
-        magnet.qualify_lead(l1, budget=1000) # Qualified
+        magnet.qualify_lead(l1, budget=1000)  # Qualified
 
         l2 = magnet.add_lead("L2")
         magnet.qualify_lead(l2, budget=2000)
-        magnet.convert_to_client(l2) # Won
+        magnet.convert_to_client(l2)  # Won
 
         l3 = magnet.add_lead("L3")
-        l3.status = LeadStatus.LOST # Lost
+        l3.status = LeadStatus.LOST  # Lost
 
         summary = magnet.get_pipeline_summary()
-        assert summary["financials"]["raw_value"] == 1000 # Only L1 is in pipeline
-        assert summary["metrics"]["conversion_rate"] == 50.0 # 1 won / (1 won + 1 lost)
+        assert summary["financials"]["raw_value"] == 1000  # Only L1 is in pipeline
+        assert summary["metrics"]["conversion_rate"] == 50.0  # 1 won / (1 won + 1 lost)
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -17,13 +17,16 @@ except ImportError:
         from core.config import get_settings
         from core.infrastructure.database import get_db
     except ImportError:
+
         def get_db():
             return None
+
         def get_settings():
             return None
 
-from ..models.usage import UsageEvent, MonthlyUsage, UsageWarning
+
 from ..models.subscription import SubscriptionTier, TierLimits
+from ..models.usage import MonthlyUsage, UsageEvent, UsageWarning
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +57,8 @@ class UsageTracker:
         if self.db:
             try:
                 # Use the RPC function defined in migration
-                response = self.db.rpc(
-                    "get_monthly_usage", {"p_agency_id": agency_id}
-                ).execute()
-                
+                response = self.db.rpc("get_monthly_usage", {"p_agency_id": agency_id}).execute()
+
                 if response.data and len(response.data) > 0:
                     data = response.data[0]
                     usage = MonthlyUsage(
@@ -77,7 +78,7 @@ class UsageTracker:
             "cost_cents": usage.cost_cents,
         }
         self._cache_timestamp[agency_id] = datetime.now()
-        
+
         return usage
 
     def record_usage(self, event: UsageEvent) -> bool:
@@ -85,13 +86,18 @@ class UsageTracker:
         # Update local cache for immediate feedback
         target_id = event.agency_id or event.user_id
         if target_id not in self._usage_cache:
-            self._usage_cache[target_id] = {"api_calls": 0, "commands": 0, "tokens_used": 0, "cost_cents": 0}
+            self._usage_cache[target_id] = {
+                "api_calls": 0,
+                "commands": 0,
+                "tokens_used": 0,
+                "cost_cents": 0,
+            }
 
         if event.action == "api_call":
             self._usage_cache[target_id]["api_calls"] += 1
         elif event.action == "command_exec":
             self._usage_cache[target_id]["commands"] += 1
-        
+
         self._usage_cache[target_id]["tokens_used"] += event.tokens_used
         self._usage_cache[target_id]["cost_cents"] += event.cost_cents
 
@@ -117,7 +123,9 @@ class UsageTracker:
 
         return False
 
-    def get_usage_warnings(self, user_id: str, tier: SubscriptionTier, limits: TierLimits) -> UsageWarning:
+    def get_usage_warnings(
+        self, user_id: str, tier: SubscriptionTier, limits: TierLimits
+    ) -> UsageWarning:
         """Check quota and return warning if approaching limit (>80%)."""
         agency_id = user_id  # This should come from subscription
         usage = self.get_monthly_usage(agency_id)

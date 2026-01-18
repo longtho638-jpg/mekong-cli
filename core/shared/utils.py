@@ -1,8 +1,10 @@
 from pathlib import Path
 from typing import Dict
+
 from rich.console import Console
 
 console = Console()
+
 
 def update_file_placeholders(file_path: Path, replacements: Dict[str, str]) -> bool:
     """Updates placeholders in a file with provided values."""

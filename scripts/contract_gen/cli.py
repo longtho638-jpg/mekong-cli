@@ -1,8 +1,9 @@
 import argparse
 import logging
 import sys
-from .templates import TEMPLATES
+
 from .generator import generate_contract
+from .templates import TEMPLATES
 
 # Colors (ANSI)
 BOLD = "\033[1m"
@@ -14,8 +15,9 @@ RESET = "\033[0m"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
+
 
 def list_templates():
     """List available contract templates."""
@@ -27,10 +29,11 @@ def list_templates():
         print(f"{CYAN}{key:<15}{RESET} | {template.formatted_price:<10} | {template.title}")
     print("=" * 60)
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Contract Generator - Binh Pháp Venture Studio",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
@@ -47,16 +50,16 @@ def main():
         # Check if first arg is a known template key (legacy mode)
         if sys.argv[1] in TEMPLATES:
             args = argparse.Namespace(
-                command="generate", 
-                template=sys.argv[1], 
-                email=sys.argv[2] if len(sys.argv) > 2 else None
+                command="generate",
+                template=sys.argv[1],
+                email=sys.argv[2] if len(sys.argv) > 2 else None,
             )
             if not args.email:
-                 print(f"{RED}❌ Error: Email is required for legacy mode.{RESET}")
-                 print(f"Usage: {sys.argv[0]} {sys.argv[1]} <email>")
-                 sys.exit(1)
+                print(f"{RED}❌ Error: Email is required for legacy mode.{RESET}")
+                print(f"Usage: {sys.argv[0]} {sys.argv[1]} <email>")
+                sys.exit(1)
         else:
-             args = parser.parse_args()
+            args = parser.parse_args()
     else:
         args = parser.parse_args()
 
@@ -66,6 +69,7 @@ def main():
         generate_contract(args.template, args.email)
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()

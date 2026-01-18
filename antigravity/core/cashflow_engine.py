@@ -3,7 +3,7 @@
 ================================================
 
 Monitors and projects agency revenue against the $1M ARR 2026 milestone.
-Provides real-time visibility into growth rates, churn impacts, and 
+Provides real-time visibility into growth rates, churn impacts, and
 required performance to hit the target.
 
 Features:
@@ -15,13 +15,13 @@ Features:
 Binh Pháp: 💰 Tài (Wealth) - Managing the lifeblood of the agency.
 """
 
-import logging
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Union
-from pathlib import Path
 from enum import Enum
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -37,17 +37,19 @@ EXCHANGE_RATES = {"USD": 1.0, "VND": 25000.0, "THB": 35.0}
 
 class RevenueStream(Enum):
     """Core revenue buckets for Agency OS."""
-    WELLNEXUS = "wellnexus"      # Social Commerce Platform
-    AGENCY = "agency"            # Agency Services (Retainer + Equity)
-    SAAS = "saas"                # AI / SaaS Products
-    CONSULTING = "consulting"    # High-ticket Strategy
-    AFFILIATE = "affiliate"      # Partner Revenue
-    EXIT = "exit"                # Liquidity Events
+
+    WELLNEXUS = "wellnexus"  # Social Commerce Platform
+    AGENCY = "agency"  # Agency Services (Retainer + Equity)
+    SAAS = "saas"  # AI / SaaS Products
+    CONSULTING = "consulting"  # High-ticket Strategy
+    AFFILIATE = "affiliate"  # Partner Revenue
+    EXIT = "exit"  # Liquidity Events
 
 
 @dataclass
 class Revenue:
     """A single revenue transaction or commitment."""
+
     id: str
     stream: RevenueStream
     amount_usd: float
@@ -62,6 +64,7 @@ class Revenue:
 @dataclass
 class RevenueGoal:
     """Target allocation per revenue stream."""
+
     stream: RevenueStream
     target_arr: float
     current_arr: float = 0.0
@@ -80,7 +83,7 @@ class RevenueGoal:
 class CashflowEngine:
     """
     💰 Cashflow Management System
-    
+
     The financial cockpit for the solo unicorn journey.
     """
 
@@ -97,10 +100,10 @@ class CashflowEngine:
         """Distributes the $1M goal across diversified streams."""
         return {
             RevenueStream.WELLNEXUS: RevenueGoal(RevenueStream.WELLNEXUS, 300_000),
-            RevenueStream.AGENCY:    RevenueGoal(RevenueStream.AGENCY,    400_000),
-            RevenueStream.SAAS:      RevenueGoal(RevenueStream.SAAS,      200_000),
+            RevenueStream.AGENCY: RevenueGoal(RevenueStream.AGENCY, 400_000),
+            RevenueStream.SAAS: RevenueGoal(RevenueStream.SAAS, 200_000),
             RevenueStream.CONSULTING: RevenueGoal(RevenueStream.CONSULTING, 80_000),
-            RevenueStream.AFFILIATE:  RevenueGoal(RevenueStream.AFFILIATE,  20_000),
+            RevenueStream.AFFILIATE: RevenueGoal(RevenueStream.AFFILIATE, 20_000),
         }
 
     def add_revenue(
@@ -110,7 +113,7 @@ class CashflowEngine:
         currency: str = "USD",
         recurring: bool = False,
         client: Optional[str] = None,
-        description: str = ""
+        description: str = "",
     ) -> Revenue:
         """Adds a revenue entry and updates the dashboard state."""
         # Normalize stream type
@@ -133,7 +136,7 @@ class CashflowEngine:
             date=datetime.now(),
             recurring=recurring,
             client=client,
-            description=description
+            description=description,
         )
 
         self.revenues.append(entry)
@@ -154,12 +157,13 @@ class CashflowEngine:
 
         for rev in self.revenues:
             goal = self.goals.get(rev.stream)
-            if not goal: continue
+            if not goal:
+                continue
 
             if rev.recurring:
                 # Only count recurring if it happened in last 30 days (active)
                 if rev.date >= thirty_days_ago:
-                    goal.current_arr += (rev.amount_usd * 12)
+                    goal.current_arr += rev.amount_usd * 12
             else:
                 # One-time revenue counts toward ARR for the current period
                 goal.current_arr += rev.amount_usd
@@ -188,10 +192,10 @@ class CashflowEngine:
         elif now.year == 2026:
             months_left = 12 - now.month + 1
         else:
-            months_left = 1 # Already past 2026?
+            months_left = 1  # Already past 2026?
 
         if current_mrr <= 0:
-            return 100.0 # High growth needed
+            return 100.0  # High growth needed
 
         if current_mrr >= target_mrr:
             return 0.0
@@ -215,10 +219,10 @@ class CashflowEngine:
                         "date": r.date.isoformat(),
                         "rec": r.recurring,
                         "client": r.client,
-                        "desc": r.description
+                        "desc": r.description,
                     }
                     for r in self.revenues
-                ]
+                ],
             }
             self.revenue_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
         except Exception as e:
@@ -232,17 +236,19 @@ class CashflowEngine:
         try:
             data = json.loads(self.revenue_file.read_text(encoding="utf-8"))
             for r in data.get("revenues", []):
-                self.revenues.append(Revenue(
-                    id=r["id"],
-                    stream=RevenueStream(r["stream"]),
-                    amount_usd=r["usd"],
-                    amount_original=r["orig"],
-                    currency=r["cur"],
-                    date=datetime.fromisoformat(r["date"]),
-                    recurring=r["rec"],
-                    client=r.get("client"),
-                    description=r.get("desc", "")
-                ))
+                self.revenues.append(
+                    Revenue(
+                        id=r["id"],
+                        stream=RevenueStream(r["stream"]),
+                        amount_usd=r["usd"],
+                        amount_original=r["orig"],
+                        currency=r["cur"],
+                        date=datetime.fromisoformat(r["date"]),
+                        recurring=r["rec"],
+                        client=r.get("client"),
+                        description=r.get("desc", ""),
+                    )
+                )
             self._recalculate_progress()
         except Exception as e:
             logger.warning(f"Cashflow data loading failed: {e}")
@@ -274,13 +280,15 @@ class CashflowEngine:
             s_bar = "█" * s_filled + "░" * (15 - s_filled)
             icon = {
                 RevenueStream.WELLNEXUS: "🌐",
-                RevenueStream.AGENCY:    "🏢",
-                RevenueStream.SAAS:      "🤖",
+                RevenueStream.AGENCY: "🏢",
+                RevenueStream.SAAS: "🤖",
                 RevenueStream.CONSULTING: "💼",
-                RevenueStream.AFFILIATE:  "🔗",
+                RevenueStream.AFFILIATE: "🔗",
             }.get(stream, "💰")
 
-            print(f"  {icon} {stream.value.upper():<12} | [{s_bar}] ${goal.current_arr:,.0f} / ${goal.target_arr:,.0f}")
+            print(
+                f"  {icon} {stream.value.upper():<12} | [{s_bar}] ${goal.current_arr:,.0f} / ${goal.target_arr:,.0f}"
+            )
 
         print("\n" + "═" * 65)
         if progress >= 100:
@@ -288,12 +296,13 @@ class CashflowEngine:
         elif progress >= 50:
             print("║  ⚡ Momentum Building. Focus on scaling the winning stream. ║")
         else:
-            print(f"║  🚀 Target: ${ (ARR_TARGET_2026/12):,.0f} MRR. Keep building the moat! ║")
+            print(f"║  🚀 Target: ${(ARR_TARGET_2026 / 12):,.0f} MRR. Keep building the moat! ║")
         print("═" * 65 + "\n")
 
 
 # Global Instance
 _engine = None
+
 
 def get_cashflow_engine() -> CashflowEngine:
     """Access the shared cashflow tracking engine."""

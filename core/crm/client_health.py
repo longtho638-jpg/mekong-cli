@@ -12,27 +12,30 @@ Features:
 - Proactive alerts
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class HealthLevel(Enum):
     """Client health levels."""
-    EXCELLENT = "excellent" # 80-100
-    GOOD = "good"           # 60-79
-    AT_RISK = "at_risk"     # 40-59
-    CRITICAL = "critical"   # < 40
+
+    EXCELLENT = "excellent"  # 80-100
+    GOOD = "good"  # 60-79
+    AT_RISK = "at_risk"  # 40-59
+    CRITICAL = "critical"  # < 40
 
 
 class RiskFactor(Enum):
     """Behavioral risk factors."""
+
     LOW_ENGAGEMENT = "low_engagement"
     MISSED_PAYMENTS = "missed_payments"
     DECLINING_RESULTS = "declining_results"
@@ -43,6 +46,7 @@ class RiskFactor(Enum):
 @dataclass
 class ClientHealth:
     """Client health snapshot entity."""
+
     id: str
     client_name: str
     overall_score: int  # 0-100
@@ -56,8 +60,13 @@ class ClientHealth:
 
     def __post_init__(self):
         # Validate all scores are within 0-100
-        for score in [self.overall_score, self.engagement_score, self.payment_score,
-                      self.results_score, self.communication_score]:
+        for score in [
+            self.overall_score,
+            self.engagement_score,
+            self.payment_score,
+            self.results_score,
+            self.communication_score,
+        ]:
             if not 0 <= score <= 100:
                 raise ValueError(f"Score {score} out of range (0-100)")
 
@@ -65,17 +74,12 @@ class ClientHealth:
 class ClientHealthScore:
     """
     Client Health Score System.
-    
+
     Predicts churn by monitoring engagement, payment, results, and communication.
     """
 
     # Weight configuration for overall score
-    WEIGHTS = {
-        "engagement": 0.25,
-        "payment": 0.25,
-        "results": 0.30,
-        "communication": 0.20
-    }
+    WEIGHTS = {"engagement": 0.25, "payment": 0.25, "results": 0.30, "communication": 0.20}
 
     def __init__(self, agency_name: str):
         self.agency_name = agency_name
@@ -88,7 +92,7 @@ class ClientHealthScore:
         engagement: int = 80,
         payment: int = 100,
         results: int = 70,
-        communication: int = 85
+        communication: int = 85,
     ) -> ClientHealth:
         """Analyze and record client health."""
         if not name:
@@ -96,10 +100,10 @@ class ClientHealthScore:
 
         # Calculate overall score based on weights
         overall = int(
-            engagement * self.WEIGHTS["engagement"] +
-            payment * self.WEIGHTS["payment"] +
-            results * self.WEIGHTS["results"] +
-            communication * self.WEIGHTS["communication"]
+            engagement * self.WEIGHTS["engagement"]
+            + payment * self.WEIGHTS["payment"]
+            + results * self.WEIGHTS["results"]
+            + communication * self.WEIGHTS["communication"]
         )
 
         # Determine level
@@ -114,10 +118,14 @@ class ClientHealthScore:
 
         # Risk factor detection
         risks = []
-        if engagement < 50: risks.append(RiskFactor.LOW_ENGAGEMENT)
-        if payment < 70: risks.append(RiskFactor.MISSED_PAYMENTS)
-        if results < 50: risks.append(RiskFactor.DECLINING_RESULTS)
-        if communication < 50: risks.append(RiskFactor.COMMUNICATION_GAP)
+        if engagement < 50:
+            risks.append(RiskFactor.LOW_ENGAGEMENT)
+        if payment < 70:
+            risks.append(RiskFactor.MISSED_PAYMENTS)
+        if results < 50:
+            risks.append(RiskFactor.DECLINING_RESULTS)
+        if communication < 50:
+            risks.append(RiskFactor.COMMUNICATION_GAP)
 
         client = ClientHealth(
             id=f"CHK-{uuid.uuid4().hex[:6].upper()}",
@@ -129,7 +137,7 @@ class ClientHealthScore:
             results_score=results,
             communication_score=communication,
             risk_factors=risks,
-            last_contact=datetime.now() - timedelta(days=int(100 - engagement) // 10)
+            last_contact=datetime.now() - timedelta(days=int(100 - engagement) // 10),
         )
 
         self.clients[client.id] = client
@@ -138,7 +146,11 @@ class ClientHealthScore:
 
     def get_at_risk(self) -> List[ClientHealth]:
         """Filter clients requiring immediate attention."""
-        return [c for c in self.clients.values() if c.health_level in [HealthLevel.AT_RISK, HealthLevel.CRITICAL]]
+        return [
+            c
+            for c in self.clients.values()
+            if c.health_level in [HealthLevel.AT_RISK, HealthLevel.CRITICAL]
+        ]
 
     def format_dashboard(self) -> str:
         """Render Health Dashboard."""
@@ -158,48 +170,63 @@ class ClientHealthScore:
             HealthLevel.EXCELLENT: "🟢",
             HealthLevel.GOOD: "🟡",
             HealthLevel.AT_RISK: "🟠",
-            HealthLevel.CRITICAL: "🔴"
+            HealthLevel.CRITICAL: "🔴",
         }
 
         # Sort by score
-        sorted_clients = sorted(self.clients.values(), key=lambda x: x.overall_score, reverse=True)[:5]
+        sorted_clients = sorted(self.clients.values(), key=lambda x: x.overall_score, reverse=True)[
+            :5
+        ]
         for c in sorted_clients:
             icon = level_icons.get(c.health_level, "⚪")
             bar = "█" * (c.overall_score // 10) + "░" * (10 - c.overall_score // 10)
             lines.append(f"║  {icon} {c.client_name[:15]:<15} │ {bar} │ {c.overall_score:>3}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🚨 URGENT: AT-RISK CLIENTS                               ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🚨 URGENT: AT-RISK CLIENTS                               ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         if not at_risk:
             lines.append("║    ✅ All clients are currently healthy!                  ║")
         else:
             for c in at_risk[:3]:
                 # Shorten risk factor names
-                risk_str = ", ".join(r.value.split('_')[0] for r in c.risk_factors[:2])
+                risk_str = ", ".join(r.value.split("_")[0] for r in c.risk_factors[:2])
                 lines.append(f"║    🔴 {c.client_name[:15]:<15} │ {risk_str:<25}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📈 AVERAGE METRICS                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📈 AVERAGE METRICS                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         if total:
-            def avg(attr): return sum(getattr(c, attr) for c in self.clients.values()) // total
-            lines.append(f"║    📊 Engagement: {avg('engagement_score'):>3}  │  💳 Payment: {avg('payment_score'):>3}      ║")
-            lines.append(f"║    📈 Results:    {avg('results_score'):>3}  │  💬 Comms:   {avg('communication_score'):>3}      ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 Details]  [📧 Outreach]  [📅 Schedule Check-in]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Health!              ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+            def avg(attr):
+                return sum(getattr(c, attr) for c in self.clients.values()) // total
+
+            lines.append(
+                f"║    📊 Engagement: {avg('engagement_score'):>3}  │  💳 Payment: {avg('payment_score'):>3}      ║"
+            )
+            lines.append(
+                f"║    📈 Results:    {avg('results_score'):>3}  │  💬 Comms:   {avg('communication_score'):>3}      ║"
+            )
+
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 Details]  [📧 Outreach]  [📅 Schedule Check-in]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Health!              ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -213,9 +240,13 @@ if __name__ == "__main__":
         health = ClientHealthScore("Saigon Digital Hub")
 
         # Add diverse clients
-        health.add_client("Sunrise Realty", engagement=90, payment=100, results=85, communication=95)
+        health.add_client(
+            "Sunrise Realty", engagement=90, payment=100, results=85, communication=95
+        )
         health.add_client("Coffee Lab", engagement=75, payment=100, results=70, communication=80)
-        health.add_client("Tech Startup VN", engagement=60, payment=80, results=55, communication=60)
+        health.add_client(
+            "Tech Startup VN", engagement=60, payment=80, results=55, communication=60
+        )
         health.add_client("Fashion Brand", engagement=40, payment=60, results=35, communication=45)
 
         print("\n" + health.format_dashboard())

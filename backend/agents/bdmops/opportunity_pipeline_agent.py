@@ -3,11 +3,11 @@ Opportunity Pipeline Agent - Strategic Deals
 Manages strategic opportunities and deal pipeline.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class OpportunityStage(Enum):
@@ -29,6 +29,7 @@ class OpportunityType(Enum):
 @dataclass
 class Opportunity:
     """Strategic opportunity"""
+
     id: str
     name: str
     company: str
@@ -56,14 +57,14 @@ STAGE_PROBABILITIES = {
     OpportunityStage.PROPOSAL: 50,
     OpportunityStage.NEGOTIATION: 75,
     OpportunityStage.CLOSED_WON: 100,
-    OpportunityStage.CLOSED_LOST: 0
+    OpportunityStage.CLOSED_LOST: 0,
 }
 
 
 class OpportunityPipelineAgent:
     """
     Opportunity Pipeline Agent - Quản lý Cơ hội
-    
+
     Responsibilities:
     - Track strategic opportunities
     - Manage deal stages
@@ -83,10 +84,10 @@ class OpportunityPipelineAgent:
         opportunity_type: OpportunityType,
         value: float,
         owner: str = "",
-        close_days: int = 90
+        close_days: int = 90,
     ) -> Opportunity:
         """Create new opportunity"""
-        opp_id = f"opp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        opp_id = f"opp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         opportunity = Opportunity(
             id=opp_id,
@@ -96,7 +97,7 @@ class OpportunityPipelineAgent:
             value=value,
             owner=owner,
             close_date=datetime.now() + timedelta(days=close_days),
-            probability=STAGE_PROBABILITIES[OpportunityStage.IDENTIFIED]
+            probability=STAGE_PROBABILITIES[OpportunityStage.IDENTIFIED],
         )
 
         self.opportunities[opp_id] = opportunity
@@ -127,15 +128,18 @@ class OpportunityPipelineAgent:
 
     def get_forecast(self) -> Dict:
         """Get revenue forecast"""
-        active = [o for o in self.opportunities.values()
-                  if o.stage not in [OpportunityStage.CLOSED_WON, OpportunityStage.CLOSED_LOST]]
+        active = [
+            o
+            for o in self.opportunities.values()
+            if o.stage not in [OpportunityStage.CLOSED_WON, OpportunityStage.CLOSED_LOST]
+        ]
         won = self.get_by_stage(OpportunityStage.CLOSED_WON)
 
         return {
             "pipeline_value": sum(o.value for o in active),
             "weighted_value": sum(o.weighted_value for o in active),
             "closed_won": sum(o.value for o in won),
-            "opportunities_count": len(active)
+            "opportunities_count": len(active),
         }
 
     def get_stats(self) -> Dict:
@@ -151,7 +155,7 @@ class OpportunityPipelineAgent:
             "won": len(won),
             "lost": len(lost),
             "win_rate": f"{win_rate:.0f}%",
-            **self.get_forecast()
+            **self.get_forecast(),
         }
 
 
@@ -162,9 +166,15 @@ if __name__ == "__main__":
     print("💼 Opportunity Pipeline Agent Demo\n")
 
     # Create opportunities
-    o1 = agent.create_opportunity("Enterprise Deal", "BigCorp", OpportunityType.ENTERPRISE, 50000, "BDM_001")
-    o2 = agent.create_opportunity("Partner Integration", "TechCo", OpportunityType.PARTNERSHIP, 25000, "BDM_001")
-    o3 = agent.create_opportunity("Expansion Deal", "Existing Client", OpportunityType.EXPANSION, 15000, "BDM_002")
+    o1 = agent.create_opportunity(
+        "Enterprise Deal", "BigCorp", OpportunityType.ENTERPRISE, 50000, "BDM_001"
+    )
+    o2 = agent.create_opportunity(
+        "Partner Integration", "TechCo", OpportunityType.PARTNERSHIP, 25000, "BDM_001"
+    )
+    o3 = agent.create_opportunity(
+        "Expansion Deal", "Existing Client", OpportunityType.EXPANSION, 15000, "BDM_002"
+    )
 
     print(f"📋 Opportunity: {o1.name}")
     print(f"   Value: ${o1.value:,.0f}")

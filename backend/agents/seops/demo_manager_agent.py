@@ -3,11 +3,11 @@ Demo Manager Agent - Product Demo Scheduling
 Manages product demos, scripts, and outcomes.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class DemoType(Enum):
@@ -29,6 +29,7 @@ class DemoOutcome(Enum):
 @dataclass
 class Demo:
     """Product demo"""
+
     id: str
     prospect: str
     company: str
@@ -48,7 +49,7 @@ class Demo:
 class DemoManagerAgent:
     """
     Demo Manager Agent - Quản lý Demo Sản phẩm
-    
+
     Responsibilities:
     - Schedule product demos
     - Track demo outcomes
@@ -63,22 +64,22 @@ class DemoManagerAgent:
             "2. Pain point discussion (5 min)",
             "3. Quick product overview (10 min)",
             "4. Q&A (5 min)",
-            "5. Next steps (3 min)"
+            "5. Next steps (3 min)",
         ],
         DemoType.TECHNICAL: [
             "1. Architecture overview (5 min)",
             "2. Live coding demo (15 min)",
             "3. Integration walkthrough (10 min)",
             "4. Technical Q&A (10 min)",
-            "5. POC discussion (5 min)"
+            "5. POC discussion (5 min)",
         ],
         DemoType.EXECUTIVE: [
             "1. Business case (5 min)",
             "2. ROI presentation (10 min)",
             "3. Product highlights (10 min)",
             "4. Customer success stories (5 min)",
-            "5. Pricing discussion (10 min)"
-        ]
+            "5. Pricing discussion (10 min)",
+        ],
     }
 
     def __init__(self):
@@ -93,10 +94,10 @@ class DemoManagerAgent:
         demo_type: DemoType,
         scheduled_at: datetime,
         se_assigned: str,
-        deal_size: float = 0.0
+        deal_size: float = 0.0,
     ) -> Demo:
         """Schedule a new demo"""
-        demo_id = f"demo_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        demo_id = f"demo_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         demo = Demo(
             id=demo_id,
@@ -105,7 +106,7 @@ class DemoManagerAgent:
             demo_type=demo_type,
             scheduled_at=scheduled_at,
             se_assigned=se_assigned,
-            deal_size=deal_size
+            deal_size=deal_size,
         )
 
         self.demos[demo_id] = demo
@@ -130,7 +131,8 @@ class DemoManagerAgent:
         """Get upcoming demos"""
         cutoff = datetime.now() + timedelta(days=days)
         return [
-            d for d in self.demos.values()
+            d
+            for d in self.demos.values()
             if d.scheduled_at <= cutoff and d.outcome == DemoOutcome.SCHEDULED
         ]
 
@@ -142,15 +144,25 @@ class DemoManagerAgent:
         """Get demo statistics"""
         demos = list(self.demos.values())
         positive = len([d for d in demos if d.outcome == DemoOutcome.POSITIVE])
-        completed = len([d for d in demos if d.outcome in [DemoOutcome.POSITIVE, DemoOutcome.NEGATIVE, DemoOutcome.COMPLETED]])
+        completed = len(
+            [
+                d
+                for d in demos
+                if d.outcome in [DemoOutcome.POSITIVE, DemoOutcome.NEGATIVE, DemoOutcome.COMPLETED]
+            ]
+        )
 
         return {
             "total_demos": len(demos),
             "scheduled": len([d for d in demos if d.outcome == DemoOutcome.SCHEDULED]),
             "completed": completed,
             "positive": positive,
-            "conversion_rate": f"{positive/completed*100:.0f}%" if completed > 0 else "0%",
-            "pipeline_value": sum(d.deal_size for d in demos if d.outcome in [DemoOutcome.SCHEDULED, DemoOutcome.POSITIVE])
+            "conversion_rate": f"{positive / completed * 100:.0f}%" if completed > 0 else "0%",
+            "pipeline_value": sum(
+                d.deal_size
+                for d in demos
+                if d.outcome in [DemoOutcome.SCHEDULED, DemoOutcome.POSITIVE]
+            ),
         }
 
 
@@ -167,7 +179,7 @@ if __name__ == "__main__":
         demo_type=DemoType.TECHNICAL,
         scheduled_at=datetime.now() + timedelta(days=2),
         se_assigned="SE_001",
-        deal_size=5000
+        deal_size=5000,
     )
 
     demo2 = agent.schedule_demo(
@@ -176,7 +188,7 @@ if __name__ == "__main__":
         demo_type=DemoType.DISCOVERY,
         scheduled_at=datetime.now() + timedelta(days=1),
         se_assigned="SE_001",
-        deal_size=2000
+        deal_size=2000,
     )
 
     print(f"📅 Demo: {demo1.company}")

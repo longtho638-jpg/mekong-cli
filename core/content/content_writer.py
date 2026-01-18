@@ -12,19 +12,21 @@ Roles:
 - Email content
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ContentType(Enum):
     """Content types."""
+
     BLOG_POST = "blog_post"
     WEBSITE_COPY = "website_copy"
     SOCIAL_POST = "social_post"
@@ -36,6 +38,7 @@ class ContentType(Enum):
 
 class ContentStatus(Enum):
     """Content status lifecycle."""
+
     DRAFT = "draft"
     WRITING = "writing"
     EDITING = "editing"
@@ -47,6 +50,7 @@ class ContentStatus(Enum):
 @dataclass
 class ContentPiece:
     """A content piece record entity."""
+
     id: str
     title: str
     client: str
@@ -65,7 +69,7 @@ class ContentPiece:
 class ContentWriter:
     """
     Content Writer System.
-    
+
     Professional writing workflow for agency content production.
     """
 
@@ -82,7 +86,7 @@ class ContentWriter:
         word_count: int,
         writer: str = "",
         keywords: Optional[List[str]] = None,
-        due_days: int = 5
+        due_days: int = 5,
     ) -> ContentPiece:
         """Initialize a new content piece in the queue."""
         if not title or not client:
@@ -96,7 +100,7 @@ class ContentWriter:
             word_count=word_count,
             writer=writer,
             keywords=keywords or [],
-            deadline=datetime.now() + timedelta(days=due_days)
+            deadline=datetime.now() + timedelta(days=due_days),
         )
         self.content[piece.id] = piece
         logger.info(f"Content piece created: {title} ({content_type.value})")
@@ -116,14 +120,17 @@ class ContentWriter:
 
     def get_queue_stats(self) -> Dict[str, Any]:
         """Aggregate stats for the current writing queue."""
-        in_progress = [c for c in self.content.values()
-                      if c.status not in [ContentStatus.APPROVED, ContentStatus.PUBLISHED]]
+        in_progress = [
+            c
+            for c in self.content.values()
+            if c.status not in [ContentStatus.APPROVED, ContentStatus.PUBLISHED]
+        ]
         total_words = sum(c.word_count for c in self.content.values())
 
         return {
             "total_pieces": len(self.content),
             "in_progress_count": len(in_progress),
-            "total_word_count": total_words
+            "total_word_count": total_words,
         }
 
     def format_dashboard(self) -> str:
@@ -140,15 +147,21 @@ class ContentWriter:
         ]
 
         type_icons = {
-            ContentType.BLOG_POST: "📝", ContentType.WEBSITE_COPY: "🌐",
-            ContentType.SOCIAL_POST: "📱", ContentType.EMAIL: "📧",
-            ContentType.LANDING_PAGE: "📄", ContentType.NEWSLETTER: "📰",
-            ContentType.CASE_STUDY: "📊"
+            ContentType.BLOG_POST: "📝",
+            ContentType.WEBSITE_COPY: "🌐",
+            ContentType.SOCIAL_POST: "📱",
+            ContentType.EMAIL: "📧",
+            ContentType.LANDING_PAGE: "📄",
+            ContentType.NEWSLETTER: "📰",
+            ContentType.CASE_STUDY: "📊",
         }
         status_icons = {
-            ContentStatus.DRAFT: "📋", ContentStatus.WRITING: "✏️",
-            ContentStatus.EDITING: "🔧", ContentStatus.REVIEW: "👁️",
-            ContentStatus.APPROVED: "✅", ContentStatus.PUBLISHED: "🚀"
+            ContentStatus.DRAFT: "📋",
+            ContentStatus.WRITING: "✏️",
+            ContentStatus.EDITING: "🔧",
+            ContentStatus.REVIEW: "👁️",
+            ContentStatus.APPROVED: "✅",
+            ContentStatus.PUBLISHED: "🚀",
         }
 
         # Display latest 5 pieces
@@ -156,17 +169,21 @@ class ContentWriter:
         for p in sorted_content:
             t_icon = type_icons.get(p.content_type, "📝")
             s_icon = status_icons.get(p.status, "⚪")
-            title_display = (p.title[:20] + '..') if len(p.title) > 22 else p.title
+            title_display = (p.title[:20] + "..") if len(p.title) > 22 else p.title
 
-            lines.append(f"║  {s_icon} {t_icon} {title_display:<22} │ {p.word_count:>5} words │ {p.client[:8]:<8}  ║")
+            lines.append(
+                f"║  {s_icon} {t_icon} {title_display:<22} │ {p.word_count:>5} words │ {p.client[:8]:<8}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [✏️ Write]  [🔧 Edit]  [📊 Workflow]  [⚙️ Settings]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Words That Convert! ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [✏️ Write]  [🔧 Edit]  [📊 Workflow]  [⚙️ Settings]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Words That Convert! ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -180,8 +197,12 @@ if __name__ == "__main__":
         writer_system = ContentWriter("Saigon Digital Hub")
 
         # Create pieces
-        p1 = writer_system.create_content("10 Real Estate Tips", "Sunrise", ContentType.BLOG_POST, 1500)
-        p2 = writer_system.create_content("Landing Page v1", "CoffeeCo", ContentType.LANDING_PAGE, 800)
+        p1 = writer_system.create_content(
+            "10 Real Estate Tips", "Sunrise", ContentType.BLOG_POST, 1500
+        )
+        p2 = writer_system.create_content(
+            "Landing Page v1", "CoffeeCo", ContentType.LANDING_PAGE, 800
+        )
 
         # Progress status
         writer_system.update_status(p1.id, ContentStatus.WRITING)

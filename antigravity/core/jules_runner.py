@@ -1,9 +1,9 @@
-'''
+"""
 🤖 Jules Runner - Automated Technical Debt Management
 =====================================================
 
-Orchestrates automated maintenance missions using the Jules AI agent. 
-Automatically schedules and executes tasks for test generation, linting, 
+Orchestrates automated maintenance missions using the Jules AI agent.
+Automatically schedules and executes tasks for test generation, linting,
 documentation, and dependency updates.
 
 Core Missions:
@@ -13,11 +13,11 @@ Core Missions:
 - 📦 Deps: Patching security vulnerabilities in dependencies.
 
 Binh Pháp: 🤖 Vô Vi (Automation) - Maintaining the army without effort.
-'''
+"""
 
+import argparse
 import logging
 import subprocess
-import argparse
 from datetime import datetime
 
 # Configure logging
@@ -88,7 +88,7 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
             ["gemini", "-p", f"/jules {mission['prompt']}"],
             capture_output=True,
             text=True,
-            timeout=180
+            timeout=180,
         )
 
         if result.returncode == 0:
@@ -111,12 +111,7 @@ def run_scheduled_maintenance(dry_run: bool = False):
     """Identifies and runs the mission assigned to the current day."""
     day_en = datetime.now().strftime("%A")
 
-    schedule_map = {
-        "Monday": "tests",
-        "Wednesday": "lint",
-        "Friday": "docs",
-        "Saturday": "cleanup"
-    }
+    schedule_map = {"Monday": "tests", "Wednesday": "lint", "Friday": "docs", "Saturday": "cleanup"}
 
     mission = schedule_map.get(day_en)
 
@@ -137,7 +132,7 @@ def check_jules_status():
             ["gemini", "-p", "/jules what is the status of my tasks?"],
             capture_output=True,
             text=True,
-            timeout=60
+            timeout=60,
         )
         print(result.stdout)
     except Exception as e:
@@ -161,7 +156,9 @@ def list_mission_catalog():
 def main():
     """CLI Interface for Jules Runner."""
     parser = argparse.ArgumentParser(description="Agency OS - Jules Runner")
-    parser.add_argument("-m", "--mission", help="ID của nhiệm vụ cần chạy (tests, lint, docs, etc.)")
+    parser.add_argument(
+        "-m", "--mission", help="ID của nhiệm vụ cần chạy (tests, lint, docs, etc.)"
+    )
     parser.add_argument("-a", "--auto", action="store_true", help="Chạy nhiệm vụ theo lịch hôm nay")
     parser.add_argument("-l", "--list", action="store_true", help="Xem danh mục nhiệm vụ")
     parser.add_argument("-s", "--status", action="store_true", help="Kiểm tra trạng thái Jules")

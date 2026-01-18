@@ -3,11 +3,11 @@ Research Agent - Market Studies & Trend Analysis
 Manages market research studies, surveys, and insights.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class StudyType(Enum):
@@ -28,6 +28,7 @@ class StudyStatus(Enum):
 @dataclass
 class Insight:
     """Research insight"""
+
     id: str
     title: str
     description: str
@@ -38,6 +39,7 @@ class Insight:
 @dataclass
 class Study:
     """Market research study"""
+
     id: str
     title: str
     study_type: StudyType
@@ -53,13 +55,15 @@ class Study:
 
     @property
     def completion_rate(self) -> float:
-        return (self.respondents / self.target_respondents * 100) if self.target_respondents > 0 else 0
+        return (
+            (self.respondents / self.target_respondents * 100) if self.target_respondents > 0 else 0
+        )
 
 
 class ResearchAgent:
     """
     Research Agent - Nghiên cứu Thị trường
-    
+
     Responsibilities:
     - Market studies
     - Survey management
@@ -73,19 +77,13 @@ class ResearchAgent:
         self.studies: Dict[str, Study] = {}
 
     def create_study(
-        self,
-        title: str,
-        study_type: StudyType,
-        target_respondents: int = 100
+        self, title: str, study_type: StudyType, target_respondents: int = 100
     ) -> Study:
         """Create research study"""
-        study_id = f"study_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        study_id = f"study_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         study = Study(
-            id=study_id,
-            title=title,
-            study_type=study_type,
-            target_respondents=target_respondents
+            id=study_id, title=title, study_type=study_type, target_respondents=target_respondents
         )
 
         self.studies[study_id] = study
@@ -122,11 +120,11 @@ class ResearchAgent:
         study = self.studies[study_id]
 
         insight = Insight(
-            id=f"insight_{random.randint(100,999)}",
+            id=f"insight_{random.randint(100, 999)}",
             title=title,
             description=description,
             impact=impact,
-            source=study.title
+            source=study.title,
         )
 
         study.insights.append(insight)
@@ -151,7 +149,7 @@ class ResearchAgent:
             "total_studies": len(studies),
             "completed": len(completed),
             "total_respondents": sum(s.respondents for s in studies),
-            "total_insights": sum(len(s.insights) for s in studies)
+            "total_insights": sum(len(s.insights) for s in studies),
         }
 
 

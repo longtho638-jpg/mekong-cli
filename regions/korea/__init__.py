@@ -10,13 +10,14 @@ Features:
 - Korea-wide coverage
 """
 
-from typing import Dict, Any, List
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List
 
 
 class Currency(Enum):
     """Supported currencies."""
+
     KRW = "KRW"  # Korean Won
     USD = "USD"  # US Dollar
 
@@ -24,6 +25,7 @@ class Currency(Enum):
 @dataclass
 class Province:
     """A Korean province/city."""
+
     code: str
     name_en: str
     name_ko: str
@@ -49,16 +51,18 @@ class KoreaConfig:
     coverage_type: str = "nationwide"
 
     # Major cities
-    major_cities: List[str] = field(default_factory=lambda: [
-        "Seoul",
-        "Busan",
-        "Incheon",
-        "Daegu",
-        "Daejeon",
-        "Gwangju",
-        "Ulsan",
-        "Suwon"
-    ])
+    major_cities: List[str] = field(
+        default_factory=lambda: [
+            "Seoul",
+            "Busan",
+            "Incheon",
+            "Daegu",
+            "Daejeon",
+            "Gwangju",
+            "Ulsan",
+            "Suwon",
+        ]
+    )
 
     # Provinces
     provinces: List[Province] = field(default_factory=list)
@@ -102,7 +106,7 @@ class KoreaConfig:
             "major_cities": len(self.major_cities),
             "currencies": [self.primary_currency.value, self.local_currency.value],
             "locales": [self.primary_locale, self.secondary_locale],
-            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} KRW"
+            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} KRW",
         }
 
 
@@ -114,12 +118,12 @@ class KoreaPricingEngine:
 
         # Local service pricing (KRW)
         self.local_services = {
-            "seo_basic": 500_000,      # ₩500,000/month
-            "seo_pro": 1_500_000,      # ₩1,500,000/month
-            "content_pack": 300_000,   # ₩300,000/10 posts
-            "social_mgmt": 800_000,    # ₩800,000/month
-            "website": 3_000_000,      # ₩3,000,000 one-time
-            "branding": 5_000_000,     # ₩5,000,000 package
+            "seo_basic": 500_000,  # ₩500,000/month
+            "seo_pro": 1_500_000,  # ₩1,500,000/month
+            "content_pack": 300_000,  # ₩300,000/10 posts
+            "social_mgmt": 800_000,  # ₩800,000/month
+            "website": 3_000_000,  # ₩3,000,000 one-time
+            "branding": 5_000_000,  # ₩5,000,000 package
         }
 
     def get_local_price(self, service: str, in_usd: bool = False) -> str:

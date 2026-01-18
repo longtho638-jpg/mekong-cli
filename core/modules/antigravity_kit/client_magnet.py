@@ -2,8 +2,11 @@
 Antigravity Kit - Client Magnet Module
 Wrapper around Core CRM
 """
-from typing import List, Dict
-from core.modules.crm import CRMService, Contact
+
+from typing import Dict, List
+
+from core.modules.crm import Contact, CRMService
+
 
 class ClientMagnet:
     """Attracts and retains clients."""
@@ -20,6 +23,6 @@ class ClientMagnet:
         """Returns the magnetic pull strength."""
         summary = self.crm.get_summary()
         return {
-            "magnetic_score": min(100, summary['total_contacts'] * 10),
-            "pipeline_value": summary['pipeline_value']
+            "magnetic_score": min(100, summary["total_contacts"] * 10),
+            "pipeline_value": summary["pipeline_value"],
         }

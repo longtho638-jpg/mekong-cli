@@ -12,19 +12,21 @@ Features:
 - Markdown content support
 """
 
-import uuid
 import logging
-from typing import Dict
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SOPCategory(Enum):
     """Business domains for standard procedures."""
+
     SALES = "sales"
     ONBOARDING = "onboarding"
     PROJECTS = "projects"
@@ -36,6 +38,7 @@ class SOPCategory(Enum):
 @dataclass
 class SOP:
     """A single Standard Operating Procedure entity record."""
+
     id: str
     title: str
     category: SOPCategory
@@ -54,7 +57,7 @@ class SOP:
 class SOPLibrary:
     """
     SOP Management System.
-    
+
     Orchestrates the creation, categorization, and tracking of agency-wide operating standards.
     """
 
@@ -67,20 +70,26 @@ class SOPLibrary:
     def _seed_defaults(self):
         """Seed the library with core agency standards."""
         logger.info("Seeding default agency SOPs...")
-        self.add_sop("Client Onboarding", SOPCategory.ONBOARDING, "1. Welcome Call\n2. Setup Portal", "System")
-        self.add_sop("Sales Discovery", SOPCategory.SALES, "1. Research\n2. Call\n3. Qualify", "System")
+        self.add_sop(
+            "Client Onboarding",
+            SOPCategory.ONBOARDING,
+            "1. Welcome Call\n2. Setup Portal",
+            "System",
+        )
+        self.add_sop(
+            "Sales Discovery", SOPCategory.SALES, "1. Research\n2. Call\n3. Qualify", "System"
+        )
 
     def add_sop(
-        self,
-        title: str,
-        category: SOPCategory,
-        content: str,
-        author: str = "Expert AI"
+        self, title: str, category: SOPCategory, content: str, author: str = "Expert AI"
     ) -> SOP:
         """Register a new procedure in the library."""
         sop = SOP(
             id=f"SOP-{uuid.uuid4().hex[:6].upper()}",
-            title=title, category=category, content=content, author=author
+            title=title,
+            category=category,
+            content=content,
+            author=author,
         )
         self.procedures[sop.id] = sop
         logger.info(f"SOP Registered: {title} ({category.value})")
@@ -111,15 +120,19 @@ class SOPLibrary:
 
         for s in list(self.procedures.values())[:5]:
             icon = icons.get(s.category, "📄")
-            lines.append(f"║  {icon} {s.title[:20]:<20} │ {s.category.value:<12} │ {s.views:>5} views ║")
+            lines.append(
+                f"║  {icon} {s.title[:20]:<20} │ {s.category.value:<12} │ {s.views:>5} views ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New SOP]  [🔍 Search]  [📤 Export All]  [⚙️ Setup]   ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Scale Up!        ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New SOP]  [🔍 Search]  [📤 Export All]  [⚙️ Setup]   ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Scale Up!        ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

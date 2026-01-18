@@ -3,11 +3,11 @@ Investigation Agent - Workplace Incident Investigation
 Manages incident investigations and evidence collection.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class InvestigationStatus(Enum):
@@ -32,6 +32,7 @@ class IncidentType(Enum):
 @dataclass
 class Interview:
     """Investigation interview"""
+
     id: str
     interviewee_name: str
     role: str
@@ -43,6 +44,7 @@ class Interview:
 @dataclass
 class Investigation:
     """Workplace investigation"""
+
     id: str
     title: str
     incident_type: IncidentType
@@ -63,7 +65,7 @@ class Investigation:
 class InvestigationAgent:
     """
     Investigation Agent - Điều tra Sự cố
-    
+
     Responsibilities:
     - Investigate incidents
     - Collect evidence
@@ -77,21 +79,17 @@ class InvestigationAgent:
         self.investigations: Dict[str, Investigation] = {}
 
     def start_investigation(
-        self,
-        title: str,
-        incident_type: IncidentType,
-        related_case_id: str,
-        lead_investigator: str
+        self, title: str, incident_type: IncidentType, related_case_id: str, lead_investigator: str
     ) -> Investigation:
         """Start new investigation"""
-        inv_id = f"inv_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        inv_id = f"inv_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         investigation = Investigation(
             id=inv_id,
             title=title,
             incident_type=incident_type,
             related_case_id=related_case_id,
-            lead_investigator=lead_investigator
+            lead_investigator=lead_investigator,
         )
 
         self.investigations[inv_id] = investigation
@@ -109,11 +107,7 @@ class InvestigationAgent:
         return inv
 
     def schedule_interview(
-        self,
-        inv_id: str,
-        interviewee_name: str,
-        role: str,
-        scheduled_at: datetime
+        self, inv_id: str, interviewee_name: str, role: str, scheduled_at: datetime
     ) -> Investigation:
         """Schedule interview"""
         if inv_id not in self.investigations:
@@ -121,10 +115,10 @@ class InvestigationAgent:
 
         inv = self.investigations[inv_id]
         interview = Interview(
-            id=f"int_{random.randint(100,999)}",
+            id=f"int_{random.randint(100, 999)}",
             interviewee_name=interviewee_name,
             role=role,
-            scheduled_at=scheduled_at
+            scheduled_at=scheduled_at,
         )
         inv.interviews.append(interview)
         inv.status = InvestigationStatus.INTERVIEWS
@@ -157,7 +151,7 @@ class InvestigationAgent:
             "active": len(self.get_active()),
             "completed": len(completed),
             "total_interviews": sum(len(i.interviews) for i in investigations),
-            "total_evidence": sum(i.evidence_count for i in investigations)
+            "total_evidence": sum(i.evidence_count for i in investigations),
         }
 
 
@@ -169,10 +163,7 @@ if __name__ == "__main__":
 
     # Start investigation
     i1 = agent.start_investigation(
-        "Harassment Investigation",
-        IncidentType.MISCONDUCT,
-        "GRV_001",
-        "INV_SPEC_001"
+        "Harassment Investigation", IncidentType.MISCONDUCT, "GRV_001", "INV_SPEC_001"
     )
 
     print(f"📋 Investigation: {i1.title}")

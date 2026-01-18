@@ -1,5 +1,7 @@
 from typing import Dict, Optional
+
 from .base import PayPalBase
+
 
 class Payments(PayPalBase):
     """Payments API v2 - /v2/payments"""
@@ -30,9 +32,7 @@ class Payments(PayPalBase):
 
     def void_authorization(self, authorization_id: str) -> Optional[Dict]:
         """Void an authorization."""
-        return self._api(
-            "POST", f"/v2/payments/authorizations/{authorization_id}/void", {}
-        )
+        return self._api("POST", f"/v2/payments/authorizations/{authorization_id}/void", {})
 
     def capture_authorization(
         self,
@@ -44,6 +44,4 @@ class Payments(PayPalBase):
         data = {}
         if amount:
             data["amount"] = {"currency_code": currency, "value": str(amount)}
-        return self._api(
-            "POST", f"/v2/payments/authorizations/{authorization_id}/capture", data
-        )
+        return self._api("POST", f"/v2/payments/authorizations/{authorization_id}/capture", data)

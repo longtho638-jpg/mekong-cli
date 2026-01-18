@@ -3,14 +3,15 @@ Brand Identity Agent - Brand Guidelines & Visual Identity
 Manages brand guidelines, tone of voice, and brand health.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
 import random
+from dataclasses import dataclass, field
+from typing import Dict, List
 
 
 @dataclass
 class ColorPalette:
     """Brand color palette"""
+
     primary: str
     secondary: str
     accent: str
@@ -21,6 +22,7 @@ class ColorPalette:
 @dataclass
 class Typography:
     """Brand typography"""
+
     heading_font: str
     body_font: str
     display_font: str
@@ -29,6 +31,7 @@ class Typography:
 @dataclass
 class ToneOfVoice:
     """Brand tone of voice"""
+
     personality: List[str]
     dos: List[str]
     donts: List[str]
@@ -37,6 +40,7 @@ class ToneOfVoice:
 @dataclass
 class BrandGuideline:
     """Brand guidelines"""
+
     id: str
     name: str
     version: str
@@ -50,7 +54,7 @@ class BrandGuideline:
 class BrandIdentityAgent:
     """
     Brand Identity Agent - Quản lý Nhận diện Thương hiệu
-    
+
     Responsibilities:
     - Brand guidelines
     - Visual identity
@@ -63,13 +67,9 @@ class BrandIdentityAgent:
         self.status = "ready"
         self.guidelines: Dict[str, BrandGuideline] = {}
 
-    def create_guidelines(
-        self,
-        name: str,
-        version: str = "1.0"
-    ) -> BrandGuideline:
+    def create_guidelines(self, name: str, version: str = "1.0") -> BrandGuideline:
         """Create brand guidelines"""
-        guide_id = f"brand_{random.randint(100,999)}"
+        guide_id = f"brand_{random.randint(100, 999)}"
 
         guideline = BrandGuideline(
             id=guide_id,
@@ -80,18 +80,16 @@ class BrandIdentityAgent:
                 secondary="#00bfff",
                 accent="#ffd700",
                 background="#050505",
-                text="#ffffff"
+                text="#ffffff",
             ),
             typography=Typography(
-                heading_font="JetBrains Mono",
-                body_font="Inter",
-                display_font="Outfit"
+                heading_font="JetBrains Mono", body_font="Inter", display_font="Outfit"
             ),
             tone=ToneOfVoice(
                 personality=["Professional", "Approachable", "Innovative"],
                 dos=["Be clear", "Be helpful", "Be confident"],
-                donts=["Don't use jargon", "Don't be pushy"]
-            )
+                donts=["Don't use jargon", "Don't be pushy"],
+            ),
         )
 
         self.guidelines[guide_id] = guideline
@@ -127,7 +125,9 @@ class BrandIdentityAgent:
 
         return {
             "total_guidelines": len(guidelines),
-            "avg_health": sum(g.brand_health_score for g in guidelines) / len(guidelines) if guidelines else 0
+            "avg_health": sum(g.brand_health_score for g in guidelines) / len(guidelines)
+            if guidelines
+            else 0,
         }
 
 

@@ -17,25 +17,27 @@ Binh Pháp: 🎖️ Tướng (General) - Commanding the numbers.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Any
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class FundingStage(Enum):
     """Startup funding stages based on standard VC milestones."""
-    PRE_SEED = "pre_seed"      # $0-500K Raised | Validation
-    SEED = "seed"              # $500K-2M Raised | Product-Market Fit
-    SERIES_A = "series_a"      # $2M-15M Raised | Scaling
-    SERIES_B = "series_b"      # $15M-50M Raised | Expansion
-    SERIES_C = "series_c"      # $50M+ Raised | Maturity/Late Stage
+
+    PRE_SEED = "pre_seed"  # $0-500K Raised | Validation
+    SEED = "seed"  # $500K-2M Raised | Product-Market Fit
+    SERIES_A = "series_a"  # $2M-15M Raised | Scaling
+    SERIES_B = "series_b"  # $15M-50M Raised | Expansion
+    SERIES_C = "series_c"  # $50M+ Raised | Maturity/Late Stage
 
 
 # Industry standard targets for B2B SaaS by stage
 STAGE_TARGETS = {
     FundingStage.PRE_SEED: {"mrr": 5000, "growth": 20, "ltv_cac": 2.0},
-    FundingStage.SEED:     {"mrr": 25000, "growth": 25, "ltv_cac": 3.0},
+    FundingStage.SEED: {"mrr": 25000, "growth": 25, "ltv_cac": 3.0},
     FundingStage.SERIES_A: {"mrr": 100000, "growth": 20, "ltv_cac": 3.0},
     FundingStage.SERIES_B: {"mrr": 500000, "growth": 15, "ltv_cac": 4.0},
     FundingStage.SERIES_C: {"mrr": 2000000, "growth": 10, "ltv_cac": 5.0},
@@ -45,6 +47,7 @@ STAGE_TARGETS = {
 @dataclass
 class MetricsSnapshot:
     """Monthly performance snapshot for historical tracking."""
+
     month: str  # YYYY-MM
     mrr: float = 0.0
     new_mrr: float = 0.0
@@ -66,7 +69,7 @@ class MetricsSnapshot:
 class VCMetrics:
     """
     🎖️ VC Metrics Engine
-    
+
     Analyzes agency performance against industry benchmarks.
     """
 
@@ -80,7 +83,7 @@ class VCMetrics:
         churn_rate: float = 0.0,
         nrr: float = 100.0,
         net_margin: float = 0.0,
-        stage: FundingStage = FundingStage.PRE_SEED
+        stage: FundingStage = FundingStage.PRE_SEED,
     ):
         self.mrr = mrr
         self.growth_rate = growth_rate
@@ -95,7 +98,7 @@ class VCMetrics:
         # Computed fields
         self.arr = mrr * 12
         self.arpu = mrr / total_customers if total_customers > 0 else 0.0
-        self.gross_margin = 80.0 # Default SaaS margin
+        self.gross_margin = 80.0  # Default SaaS margin
 
     def ltv_cac_ratio(self) -> float:
         """
@@ -129,7 +132,7 @@ class VCMetrics:
 
     def readiness_score(self) -> int:
         """
-        Calculates a composite score (0-100) of VC readiness based on 
+        Calculates a composite score (0-100) of VC readiness based on
         current stage targets.
         """
         score = 0
@@ -187,7 +190,9 @@ class VCMetrics:
             gaps.append(f"Growth: Increase by {targets['growth'] - self.growth_rate:.1f}% monthly")
 
         if self.ltv_cac_ratio() < targets["ltv_cac"]:
-            gaps.append(f"Efficiency: Improve LTV/CAC from {self.ltv_cac_ratio():.1f}x to {targets['ltv_cac']}x")
+            gaps.append(
+                f"Efficiency: Improve LTV/CAC from {self.ltv_cac_ratio():.1f}x to {targets['ltv_cac']}x"
+            )
 
         return gaps
 
@@ -197,24 +202,21 @@ class VCMetrics:
             "summary": {
                 "score": self.readiness_score(),
                 "stage": self.stage.value,
-                "recommended": self.get_stage_recommendation().value
+                "recommended": self.get_stage_recommendation().value,
             },
             "revenue": {
                 "mrr": self.mrr,
                 "arr": self.arr,
                 "growth": self.growth_rate,
-                "arpu": self.arpu
+                "arpu": self.arpu,
             },
             "efficiency": {
                 "ltv_cac": round(self.ltv_cac_ratio(), 2),
                 "rule_of_40": round(self.rule_of_40(), 2),
-                "magic_number": round(self.magic_number(), 2)
+                "magic_number": round(self.magic_number(), 2),
             },
-            "retention": {
-                "churn": self.churn_rate,
-                "nrr": self.nrr
-            },
-            "gaps": self.get_gaps()
+            "retention": {"churn": self.churn_rate, "nrr": self.nrr},
+            "gaps": self.get_gaps(),
         }
 
 

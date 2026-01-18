@@ -3,11 +3,11 @@ Case Study Agent - Customer Success Stories
 Manages case studies, ROI metrics, and success patterns.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class CaseStudyStatus(Enum):
@@ -20,6 +20,7 @@ class CaseStudyStatus(Enum):
 @dataclass
 class ROIMetric:
     """ROI metric"""
+
     name: str
     value: str
     improvement: str
@@ -28,6 +29,7 @@ class ROIMetric:
 @dataclass
 class CaseStudy:
     """Customer case study"""
+
     id: str
     customer: str
     industry: str
@@ -49,7 +51,7 @@ class CaseStudy:
 class CaseStudyAgent:
     """
     Case Study Agent - Câu chuyện Khách hàng
-    
+
     Responsibilities:
     - Customer stories
     - ROI metrics
@@ -63,15 +65,10 @@ class CaseStudyAgent:
         self.case_studies: Dict[str, CaseStudy] = {}
 
     def create_case_study(
-        self,
-        customer: str,
-        industry: str,
-        title: str,
-        challenge: str,
-        solution: str
+        self, customer: str, industry: str, title: str, challenge: str, solution: str
     ) -> CaseStudy:
         """Create case study"""
-        cs_id = f"cs_{random.randint(100,999)}"
+        cs_id = f"cs_{random.randint(100, 999)}"
 
         case_study = CaseStudy(
             id=cs_id,
@@ -79,19 +76,13 @@ class CaseStudyAgent:
             industry=industry,
             title=title,
             challenge=challenge,
-            solution=solution
+            solution=solution,
         )
 
         self.case_studies[cs_id] = case_study
         return case_study
 
-    def add_roi_metric(
-        self,
-        cs_id: str,
-        name: str,
-        value: str,
-        improvement: str
-    ) -> CaseStudy:
+    def add_roi_metric(self, cs_id: str, name: str, value: str, improvement: str) -> CaseStudy:
         """Add ROI metric"""
         if cs_id not in self.case_studies:
             raise ValueError(f"Case study not found: {cs_id}")
@@ -141,7 +132,7 @@ class CaseStudyAgent:
             "published": len(published),
             "total_views": sum(cs.views for cs in case_studies),
             "total_downloads": sum(cs.downloads for cs in case_studies),
-            "industries": len(set(cs.industry for cs in case_studies))
+            "industries": len(set(cs.industry for cs in case_studies)),
         }
 
 
@@ -157,7 +148,7 @@ if __name__ == "__main__":
         industry="Technology",
         title="How Acme Corp Increased Revenue 3x",
         challenge="Manual processes slowing growth",
-        solution="Implemented automation platform"
+        solution="Implemented automation platform",
     )
 
     print(f"📋 Case Study: {cs1.title}")

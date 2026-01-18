@@ -14,8 +14,10 @@ from typing import Any, Dict, Optional
 
 from core.config import get_settings
 
+
 class LicenseTier:
     """Enumeration of available license tiers."""
+
     STARTER = "starter"
     PRO = "pro"
     ENTERPRISE = "enterprise"
@@ -39,14 +41,12 @@ class LicenseValidator:
         try:
             self.license_dir.mkdir(parents=True, exist_ok=True)
         except OSError as e:
-            raise RuntimeError(
-                f"Could not create license directory at {self.license_dir}: {e}"
-            )
+            raise RuntimeError(f"Could not create license directory at {self.license_dir}: {e}")
 
     def activate(self, license_key: str) -> Dict[str, Any]:
         """
         Activate license key and store it locally.
-        
+
         Security fixes:
         - Input sanitization
         - Additional validation
@@ -67,55 +67,49 @@ class LicenseValidator:
         """
         if not license_key or not isinstance(license_key, str):
             raise ValueError("License key is required and must be a string")
-            
+
         license_key = license_key.strip()
-        
+
         # Security: Validate key length
         if len(license_key) < 10 or len(license_key) > 200:
             raise ValueError("Invalid license key length")
-        
+
         # Security: Sanitize input
-        license_key = ''.join(c for c in license_key if c.isalnum() or c in '-_')
-        
+        license_key = "".join(c for c in license_key if c.isalnum() or c in "-_")
+
         tier = LicenseTier.STARTER
 
         # Format 1: AgencyOS Professional Key
         if license_key.startswith("AGENCYOS-"):
             parts = license_key.split("-")
             if len(parts) < 4:
-                raise ValueError(
-                    "Invalid AgencyOS key format. Expected 'AGENCYOS-XXXX-XXXX-XXXX'."
-                )
-            
+                raise ValueError("Invalid AgencyOS key format. Expected 'AGENCYOS-XXXX-XXXX-XXXX'.")
+
             # Security: Validate each part
             for i, part in enumerate(parts):
                 if i > 0 and (len(part) < 2 or len(part) > 50):
-                    raise ValueError(f"Invalid format in part {i+1} of license key")
-            
+                    raise ValueError(f"Invalid format in part {i + 1} of license key")
+
             tier = LicenseTier.PRO
 
         # Format 2: Internal live key
         elif license_key.startswith("mk_live_"):
             parts = license_key.split("_")
             if len(parts) < 4:
-                raise ValueError(
-                    "Invalid internal key format. Expected 'mk_live_<tier>_<hash>'."
-                )
+                raise ValueError("Invalid internal key format. Expected 'mk_live_<tier>_<hash>'.")
 
             tier = parts[2]
             if tier not in LicenseTier.all_tiers():
                 raise ValueError(
                     f"Invalid tier: '{tier}'. Must be one of {LicenseTier.all_tiers()}."
                 )
-            
+
             # Security: Validate hash part
             if len(parts) < 4 or len(parts[3]) < 8:
                 raise ValueError("Invalid hash in internal key format")
 
         else:
-            raise ValueError(
-                "Invalid license key format. Use 'AGENCYOS-XXXX...' or 'mk_live_...'."
-            )
+            raise ValueError("Invalid license key format. Use 'AGENCYOS-XXXX...' or 'mk_live_...'.")
 
         # 3. Create license object
         license_data = {
@@ -137,7 +131,7 @@ class LicenseValidator:
             raise RuntimeError(f"Failed to save license file: {e}")
 
         return license_data
-    
+
     def _get_machine_id(self) -> str:
         """Generate a machine-specific ID for license binding."""
         try:
@@ -242,7 +236,7 @@ class LicenseValidator:
             "used": used_amount,
             "tier": tier,
         }
-    
+
     def _get_usage(self, feature: str) -> int:
         """Basic usage tracking implementation."""
         # For now, return 0. In production, integrate with database

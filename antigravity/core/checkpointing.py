@@ -15,20 +15,22 @@ State Includes:
 Binh Pháp: 🏰 Cửu Địa (Nine Terrains) - Knowing when to hold and when to move.
 """
 
-import logging
 import json
+import logging
 import os
-from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class SessionState:
     """A point-in-time snapshot of the Agency OS operational data."""
+
     name: str
     timestamp: datetime = field(default_factory=datetime.now)
     description: str = ""
@@ -39,9 +41,9 @@ class SessionState:
 class Checkpoint:
     """
     💾 Checkpoint Manager
-    
+
     The 'Save Game' system for agency operations.
-    Useful for creating recovery points before major architectural or 
+    Useful for creating recovery points before major architectural or
     financial changes.
     """
 
@@ -58,13 +60,15 @@ class Checkpoint:
         Gathers current system state and persists it to a unique checkpoint file.
         """
         # Ensure name is filesystem friendly
-        safe_name = "".join(c for c in name if c.isalnum() or c in (' ', '_')).replace(' ', '_').lower()
+        safe_name = (
+            "".join(c for c in name if c.isalnum() or c in (" ", "_")).replace(" ", "_").lower()
+        )
 
         state = SessionState(
             name=safe_name,
             timestamp=datetime.now(),
             description=description or f"Manual checkpoint: {name}",
-            data=self._gather_system_state()
+            data=self._gather_system_state(),
         )
 
         # Persistence
@@ -91,7 +95,8 @@ class Checkpoint:
         # Load full data if missing from index
         if not checkpoint.data:
             checkpoint = self._load_checkpoint_file(name)
-            if not checkpoint: return False
+            if not checkpoint:
+                return False
 
         # APPLICATION POINT: In production, this would re-initialize engines
         self._apply_state(checkpoint.data)
@@ -120,35 +125,33 @@ class Checkpoint:
 
     def _gather_system_state(self) -> Dict[str, Any]:
         """Orchestrates data gathering from all Agency OS modules."""
-        state = {
-            "metadata": {
-                "created_at": datetime.now().isoformat(),
-                "os": os.name
-            }
-        }
+        state = {"metadata": {"created_at": datetime.now().isoformat(), "os": os.name}}
 
         # 1. Moat Engine State
         try:
             from .moat_engine import moat_engine
+
             state["moat"] = moat_engine.get_stats()
-        except ImportError: pass
+        except ImportError:
+            pass
 
         # 2. Cashflow State
         try:
             from .cashflow_engine import get_cashflow_engine
+
             cf = get_cashflow_engine()
-            state["cashflow"] = {
-                "arr": cf.get_total_arr(),
-                "progress": cf.get_progress_percent()
-            }
-        except Exception: pass
+            state["cashflow"] = {"arr": cf.get_total_arr(), "progress": cf.get_progress_percent()}
+        except Exception:
+            pass
 
         # 3. Memory State
         try:
             from .agent_memory import get_agent_memory
+
             mem = get_agent_memory()
             state["memory"] = mem.get_stats()
-        except Exception: pass
+        except Exception:
+            pass
 
         return state
 
@@ -160,7 +163,7 @@ class Checkpoint:
 
     def _write_checkpoint_file(self, state: SessionState):
         """Physical write of state to a dedicated JSON file."""
-        ts = state.timestamp.strftime('%Y%m%d_%H%M%S')
+        ts = state.timestamp.strftime("%Y%m%d_%H%M%S")
         filename = f"cp_{state.name}_{ts}.json"
         path = self.storage_path / filename
 
@@ -169,7 +172,7 @@ class Checkpoint:
             "description": state.description,
             "timestamp": state.timestamp.isoformat(),
             "version": state.version,
-            "data": state.data
+            "data": state.data,
         }
 
         path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
@@ -177,7 +180,8 @@ class Checkpoint:
     def _load_checkpoint_file(self, name: str) -> Optional[SessionState]:
         """Loads full data for a specific checkpoint name."""
         files = list(self.storage_path.glob(f"cp_{name}_*.json"))
-        if not files: return None
+        if not files:
+            return None
 
         # Take most recent if multiple exist for same name
         target_file = sorted(files)[-1]
@@ -188,7 +192,7 @@ class Checkpoint:
                 timestamp=datetime.fromisoformat(raw["timestamp"]),
                 description=raw.get("description", ""),
                 data=raw.get("data", {}),
-                version=raw.get("version", "1.0")
+                version=raw.get("version", "1.0"),
             )
         except Exception as e:
             logger.error(f"Failed to read checkpoint file {target_file.name}: {e}")
@@ -202,28 +206,27 @@ class Checkpoint:
     def _save_index(self):
         """Saves the metadata index for fast listing."""
         index = [
-            {
-                "name": cp.name,
-                "ts": cp.timestamp.isoformat(),
-                "desc": cp.description
-            }
+            {"name": cp.name, "ts": cp.timestamp.isoformat(), "desc": cp.description}
             for cp in self.checkpoints
         ]
         self.index_file.write_text(json.dumps(index, indent=2), encoding="utf-8")
 
     def _load_index(self):
         """Loads checkpoint metadata on startup."""
-        if not self.index_file.exists(): return
+        if not self.index_file.exists():
+            return
 
         try:
             data = json.loads(self.index_file.read_text(encoding="utf-8"))
             for item in data:
-                self.checkpoints.append(SessionState(
-                    name=item["name"],
-                    timestamp=datetime.fromisoformat(item["ts"]),
-                    description=item.get("desc", ""),
-                    data={} # Lazy load full data
-                ))
+                self.checkpoints.append(
+                    SessionState(
+                        name=item["name"],
+                        timestamp=datetime.fromisoformat(item["ts"]),
+                        description=item.get("desc", ""),
+                        data={},  # Lazy load full data
+                    )
+                )
         except Exception:
             pass
 

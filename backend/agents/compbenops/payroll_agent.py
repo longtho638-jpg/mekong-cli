@@ -3,11 +3,11 @@ Payroll Agent - Payroll Processing & Management
 Manages payroll runs, deductions, and pay history.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class PayrollStatus(Enum):
@@ -27,6 +27,7 @@ class DeductionType(Enum):
 @dataclass
 class PayrollEntry:
     """Individual payroll entry"""
+
     id: str
     employee_id: str
     employee_name: str
@@ -48,6 +49,7 @@ class PayrollEntry:
 @dataclass
 class PayrollRun:
     """Payroll run batch"""
+
     id: str
     period: str  # e.g., "2024-12"
     entries: List[PayrollEntry] = field(default_factory=list)
@@ -65,7 +67,7 @@ class PayrollRun:
 class PayrollAgent:
     """
     Payroll Agent - Xử lý Bảng lương
-    
+
     Responsibilities:
     - Process payroll runs
     - Manage deductions
@@ -85,12 +87,9 @@ class PayrollAgent:
 
     def create_run(self, period: str) -> PayrollRun:
         """Create payroll run"""
-        run_id = f"payroll_{period}_{random.randint(100,999)}"
+        run_id = f"payroll_{period}_{random.randint(100, 999)}"
 
-        run = PayrollRun(
-            id=run_id,
-            period=period
-        )
+        run = PayrollRun(id=run_id, period=period)
 
         self.runs[run_id] = run
         return run
@@ -101,19 +100,19 @@ class PayrollAgent:
         employee_id: str,
         employee_name: str,
         gross_pay: float,
-        custom_deductions: Dict[str, float] = None
+        custom_deductions: Dict[str, float] = None,
     ) -> PayrollEntry:
         """Add payroll entry"""
         if run_id not in self.runs:
             raise ValueError(f"Run not found: {run_id}")
 
-        entry_id = f"entry_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        entry_id = f"entry_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         # Calculate deductions
         deductions = {
             "Tax": gross_pay * self.TAX_RATE,
             "Insurance": gross_pay * self.INSURANCE_RATE,
-            "Retirement": gross_pay * self.RETIREMENT_RATE
+            "Retirement": gross_pay * self.RETIREMENT_RATE,
         }
 
         if custom_deductions:
@@ -124,7 +123,7 @@ class PayrollAgent:
             employee_id=employee_id,
             employee_name=employee_name,
             gross_pay=gross_pay,
-            deductions=deductions
+            deductions=deductions,
         )
 
         run = self.runs[run_id]
@@ -173,7 +172,9 @@ class PayrollAgent:
             "completed": len(completed),
             "total_paid": sum(r.total_net for r in completed),
             "total_deductions": sum(r.total_deductions for r in completed),
-            "avg_net_pay": sum(r.total_net for r in runs) / sum(len(r.entries) for r in runs) if runs else 0
+            "avg_net_pay": sum(r.total_net for r in runs) / sum(len(r.entries) for r in runs)
+            if runs
+            else 0,
         }
 
 

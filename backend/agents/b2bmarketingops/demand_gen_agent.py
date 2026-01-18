@@ -3,11 +3,11 @@ Demand Gen Agent - B2B Lead Generation
 Manages lead generation campaigns and MQLs.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class Channel(Enum):
@@ -31,6 +31,7 @@ class LeadStage(Enum):
 @dataclass
 class Lead:
     """B2B Lead"""
+
     id: str
     email: str
     company: str
@@ -47,6 +48,7 @@ class Lead:
 @dataclass
 class DemandGenCampaign:
     """Demand generation campaign"""
+
     id: str
     name: str
     channel: Channel
@@ -67,7 +69,7 @@ class DemandGenCampaign:
 class DemandGenAgent:
     """
     Demand Gen Agent - Tạo nhu cầu B2B
-    
+
     Responsibilities:
     - Lead generation campaigns
     - MQL tracking
@@ -82,45 +84,32 @@ class DemandGenAgent:
         self.leads: Dict[str, Lead] = {}
 
     def create_campaign(
-        self,
-        name: str,
-        channel: Channel,
-        target_mqls: int,
-        budget: float
+        self, name: str, channel: Channel, target_mqls: int, budget: float
     ) -> DemandGenCampaign:
         """Create demand gen campaign"""
-        campaign_id = f"dg_{random.randint(100,999)}"
+        campaign_id = f"dg_{random.randint(100, 999)}"
 
         campaign = DemandGenCampaign(
-            id=campaign_id,
-            name=name,
-            channel=channel,
-            target_mqls=target_mqls,
-            cost=budget
+            id=campaign_id, name=name, channel=channel, target_mqls=target_mqls, cost=budget
         )
 
         self.campaigns[campaign_id] = campaign
         return campaign
 
-    def generate_lead(
-        self,
-        campaign_id: str,
-        email: str,
-        company: str
-    ) -> Lead:
+    def generate_lead(self, campaign_id: str, email: str, company: str) -> Lead:
         """Generate lead from campaign"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
 
         campaign = self.campaigns[campaign_id]
-        lead_id = f"lead_{random.randint(1000,9999)}"
+        lead_id = f"lead_{random.randint(1000, 9999)}"
 
         lead = Lead(
             id=lead_id,
             email=email,
             company=company,
             channel=campaign.channel,
-            score=random.randint(0, 100)
+            score=random.randint(0, 100),
         )
 
         self.leads[lead_id] = lead
@@ -152,7 +141,7 @@ class DemandGenAgent:
             "total_leads": len(leads),
             "total_mqls": len(mqls),
             "avg_mql_rate": sum(c.mql_rate for c in campaigns) / len(campaigns) if campaigns else 0,
-            "total_cost": sum(c.cost for c in campaigns)
+            "total_cost": sum(c.cost for c in campaigns),
         }
 
 

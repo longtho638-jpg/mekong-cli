@@ -3,10 +3,10 @@ Analytics Agent - Data Aggregation & ROI
 Manages aggregated marketing analytics and performance metrics.
 """
 
-from dataclasses import dataclass
-from typing import List, Dict, Optional
-from enum import Enum
 import random
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict, List, Optional
 
 
 class MetricType(Enum):
@@ -22,6 +22,7 @@ class MetricType(Enum):
 @dataclass
 class ChannelMetrics:
     """Performance metrics by channel"""
+
     channel: str
     spend: float = 0
     revenue: float = 0
@@ -46,7 +47,7 @@ class ChannelMetrics:
 class AnalyticsAgent:
     """
     Analytics Agent - Phân tích Hiệu quả Tiếp thị
-    
+
     Responsibilities:
     - Data aggregation (Social, Email, Search, etc.)
     - ROI & ROAS calculation
@@ -74,10 +75,11 @@ class AnalyticsAgent:
                 spend = spend * 0.1  # Low cost channels
 
             roas = random.uniform(2.0, 8.0)
-            if channel == "Email": roas *= 2.0  # Email usually has high ROAS
+            if channel == "Email":
+                roas *= 2.0  # Email usually has high ROAS
 
             revenue = spend * roas
-            conversions = int(revenue / random.randint(50, 200)) # AOV varies
+            conversions = int(revenue / random.randint(50, 200))  # AOV varies
 
             metrics = ChannelMetrics(
                 channel=channel,
@@ -86,7 +88,7 @@ class AnalyticsAgent:
                 impressions=random.randint(10000, 500000),
                 clicks=random.randint(500, 20000),
                 conversions=conversions,
-                leads=int(conversions * random.uniform(2.0, 5.0))
+                leads=int(conversions * random.uniform(2.0, 5.0)),
             )
 
             self.metrics[channel] = metrics
@@ -97,7 +99,11 @@ class AnalyticsAgent:
 
         # Calculate aggregate metrics
         cac = total_spend / total_conversions if total_conversions > 0 else 0
-        ltv = random.uniform(3.0, 5.0) * (total_revenue / total_conversions) if total_conversions > 0 else 0
+        ltv = (
+            random.uniform(3.0, 5.0) * (total_revenue / total_conversions)
+            if total_conversions > 0
+            else 0
+        )
 
         return {
             "metrics": self.metrics,
@@ -105,7 +111,7 @@ class AnalyticsAgent:
             "ltv": ltv,
             "total_spend": total_spend,
             "total_revenue": total_revenue,
-            "total_roas": total_revenue / total_spend if total_spend > 0 else 0
+            "total_roas": total_revenue / total_spend if total_spend > 0 else 0,
         }
 
     def get_channel_performance(self, channel: str) -> Optional[ChannelMetrics]:
@@ -140,7 +146,7 @@ if __name__ == "__main__":
     print(f"   Total Revenue: ${data['total_revenue']:,.0f}")
     print(f"   Total ROAS: {data['total_roas']:.1f}x")
     print(f"   CAC: ${data['cac']:.0f}")
-    print(f"   LTV: ${data['ltv']:.0f} (LTV:CAC = {data['ltv']/data['cac']:.1f}x)")
+    print(f"   LTV: ${data['ltv']:.0f} (LTV:CAC = {data['ltv'] / data['cac']:.1f}x)")
 
     print("\n📺 Top Channels by ROAS:")
     top_channels = agent.get_top_channels(MetricType.ROAS)

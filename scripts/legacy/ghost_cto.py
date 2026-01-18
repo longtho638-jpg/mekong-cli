@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 def run_git(cmd):
     try:
         return subprocess.check_output(cmd, shell=True).decode("strip")
-    except:
+    except Exception:
         return ""
 
 

@@ -3,11 +3,11 @@ Workforce Planning Agent - Headcount & Forecasting
 Plans workforce needs and forecasts hiring.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class PlanStatus(Enum):
@@ -27,6 +27,7 @@ class PlanType(Enum):
 @dataclass
 class HeadcountPlan:
     """Workforce headcount plan"""
+
     id: str
     department: str
     plan_type: PlanType
@@ -57,7 +58,7 @@ class HeadcountPlan:
 class WorkforcePlanningAgent:
     """
     Workforce Planning Agent - Lập kế hoạch Nhân lực
-    
+
     Responsibilities:
     - Plan headcount
     - Forecast hiring needs
@@ -77,10 +78,10 @@ class WorkforcePlanningAgent:
         current_headcount: int,
         target_headcount: int,
         fiscal_year: str,
-        budget: float = 0
+        budget: float = 0,
     ) -> HeadcountPlan:
         """Create headcount plan"""
-        plan_id = f"plan_{department}_{fiscal_year}_{random.randint(100,999)}"
+        plan_id = f"plan_{department}_{fiscal_year}_{random.randint(100, 999)}"
 
         plan = HeadcountPlan(
             id=plan_id,
@@ -89,7 +90,7 @@ class WorkforcePlanningAgent:
             current_headcount=current_headcount,
             target_headcount=target_headcount,
             fiscal_year=fiscal_year,
-            budget=budget
+            budget=budget,
         )
 
         self.plans[plan_id] = plan
@@ -121,7 +122,11 @@ class WorkforcePlanningAgent:
 
     def forecast_hiring(self, months: int = 12) -> Dict:
         """Forecast hiring needs"""
-        plans = [p for p in self.plans.values() if p.status in [PlanStatus.APPROVED, PlanStatus.IN_PROGRESS]]
+        plans = [
+            p
+            for p in self.plans.values()
+            if p.status in [PlanStatus.APPROVED, PlanStatus.IN_PROGRESS]
+        ]
 
         total_gap = sum(p.gap for p in plans)
         monthly_target = total_gap / months if months > 0 else 0
@@ -130,7 +135,7 @@ class WorkforcePlanningAgent:
             "total_open": total_gap,
             "monthly_target": int(monthly_target),
             "total_budget": sum(p.budget for p in plans),
-            "departments": len(set(p.department for p in plans))
+            "departments": len(set(p.department for p in plans)),
         }
 
     def get_stats(self) -> Dict:
@@ -143,7 +148,7 @@ class WorkforcePlanningAgent:
             "active": len(active),
             "total_target": sum(p.target_headcount for p in plans),
             "total_filled": sum(p.filled for p in plans),
-            "total_budget": sum(p.budget for p in plans)
+            "total_budget": sum(p.budget for p in plans),
         }
 
 

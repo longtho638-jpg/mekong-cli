@@ -3,11 +3,11 @@ Creative Concept Agent - Campaign Concepts & Ideas
 Manages creative concepts, briefs, and idea generation.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class ConceptStatus(Enum):
@@ -21,6 +21,7 @@ class ConceptStatus(Enum):
 @dataclass
 class CreativeBrief:
     """Creative brief"""
+
     objective: str
     target_audience: str
     key_message: str
@@ -31,6 +32,7 @@ class CreativeBrief:
 @dataclass
 class Concept:
     """Creative concept"""
+
     id: str
     name: str
     campaign: str
@@ -48,7 +50,7 @@ class Concept:
 class CreativeConceptAgent:
     """
     Creative Concept Agent - Ý tưởng Sáng tạo
-    
+
     Responsibilities:
     - Campaign concepts
     - Creative briefs
@@ -69,25 +71,20 @@ class CreativeConceptAgent:
         target_audience: str,
         key_message: str,
         tone: str,
-        deliverables: List[str]
+        deliverables: List[str],
     ) -> Concept:
         """Create creative concept"""
-        concept_id = f"concept_{random.randint(100,999)}"
+        concept_id = f"concept_{random.randint(100, 999)}"
 
         brief = CreativeBrief(
             objective=objective,
             target_audience=target_audience,
             key_message=key_message,
             tone=tone,
-            deliverables=deliverables
+            deliverables=deliverables,
         )
 
-        concept = Concept(
-            id=concept_id,
-            name=name,
-            campaign=campaign,
-            brief=brief
-        )
+        concept = Concept(id=concept_id, name=name, campaign=campaign, brief=brief)
 
         self.concepts[concept_id] = concept
         return concept
@@ -129,7 +126,7 @@ class CreativeConceptAgent:
             "approved": len(approved),
             "in_review": len([c for c in concepts if c.status == ConceptStatus.REVIEW]),
             "avg_score": sum(c.score for c in approved) / len(approved) if approved else 0,
-            "total_ideas": sum(len(c.ideas) for c in concepts)
+            "total_ideas": sum(len(c.ideas) for c in concepts),
         }
 
 
@@ -147,7 +144,7 @@ if __name__ == "__main__":
         target_audience="Young professionals 25-35",
         key_message="Innovation meets lifestyle",
         tone="Fresh, Energetic, Bold",
-        deliverables=["Video Ad", "Social Posts", "Email Banner"]
+        deliverables=["Video Ad", "Social Posts", "Email Banner"],
     )
 
     print(f"📋 Concept: {c1.name}")

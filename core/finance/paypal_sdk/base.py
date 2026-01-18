@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 
+
 class PayPalBase:
     """Base class for PayPal API modules."""
 

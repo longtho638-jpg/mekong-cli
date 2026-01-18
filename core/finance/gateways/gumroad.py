@@ -1,5 +1,7 @@
 import os
+
 import requests
+
 
 class GumroadClient:
     """Gumroad API client."""

@@ -12,19 +12,21 @@ Features:
 - Cancellation policy
 """
 
-import uuid
 import logging
-from typing import List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ContractType(Enum):
     """Contract types."""
+
     RETAINER = "retainer"
     PROJECT = "project"
     CONSULTING = "consulting"
@@ -32,6 +34,7 @@ class ContractType(Enum):
 
 class PaymentTerms(Enum):
     """Payment terms configuration."""
+
     NET_15 = "net_15"
     NET_30 = "net_30"
     DUE_ON_RECEIPT = "due_on_receipt"
@@ -41,6 +44,7 @@ class PaymentTerms(Enum):
 @dataclass
 class ContractParty:
     """A party involved in the legal agreement."""
+
     name: str
     company: str
     email: str
@@ -54,6 +58,7 @@ class ContractParty:
 @dataclass
 class ServiceScope:
     """Detailed scope of services and deliverables."""
+
     services: List[str]
     deliverables: List[str]
     exclusions: List[str]
@@ -63,6 +68,7 @@ class ServiceScope:
 @dataclass
 class Contract:
     """A complete contract document entity."""
+
     id: str
     type: ContractType
     agency: ContractParty
@@ -84,16 +90,13 @@ class Contract:
 class ContractGenerator:
     """
     Contract Generator System.
-    
+
     Automates the creation of professional, legally-aligned service agreements.
     """
 
     def __init__(self, agency_name: str, agency_email: str, agency_address: str):
         self.agency = ContractParty(
-            name=agency_name,
-            company=agency_name,
-            email=agency_email,
-            address=agency_address
+            name=agency_name, company=agency_name, email=agency_email, address=agency_address
         )
         logger.info(f"Contract Generator initialized for {agency_name}")
 
@@ -104,7 +107,7 @@ class ContractGenerator:
         monthly_fee: float,
         contract_type: ContractType = ContractType.RETAINER,
         payment_terms: PaymentTerms = PaymentTerms.NET_30,
-        duration_months: int = 6
+        duration_months: int = 6,
     ) -> Contract:
         """Execute the contract generation logic."""
         contract = Contract(
@@ -116,7 +119,7 @@ class ContractGenerator:
             monthly_fee=float(monthly_fee),
             payment_terms=payment_terms,
             start_date=datetime.now(),
-            duration_months=duration_months
+            duration_months=duration_months,
         )
         logger.info(f"Contract {contract.id} generated for {client.company}")
         return contract
@@ -136,7 +139,7 @@ class ContractGenerator:
             "                      CONTRACT PARTIES",
             "═══════════════════════════════════════════════════════════",
             "",
-            "SERVICE PROVIDER (\"Agency\"):",
+            'SERVICE PROVIDER ("Agency"):',
             f"  {contract.agency.company}",
             f"  {contract.agency.address}",
             f"  {contract.agency.email}",
@@ -165,37 +168,39 @@ class ContractGenerator:
         for exclusion in contract.scope.exclusions:
             lines.append(f"  ✗ {exclusion}")
 
-        lines.extend([
-            f"\nTimeline: {contract.scope.timeline}",
-            "",
-            "═══════════════════════════════════════════════════════════",
-            "                    FINANCIAL TERMS",
-            "═══════════════════════════════════════════════════════════",
-            "",
-            f"  Contract Type: {contract.type.value.capitalize()}",
-            f"  Monthly Fee:   ${contract.monthly_fee:,.0f}",
-            f"  Duration:      {contract.duration_months} months",
-            f"  Total Value:   ${total_value:,.0f}",
-            f"  Payment Terms: {contract.payment_terms.value.replace('_', ' ').title()}",
-            "",
-            "═══════════════════════════════════════════════════════════",
-            "                    TERMS & CONDITIONS",
-            "═══════════════════════════════════════════════════════════",
-            "1. CANCELLATION: Either party may cancel with 30 days notice.",
-            "2. LATE PAYMENT: 1.5% interest per month on overdue amounts.",
-            "3. OWNERSHIP: All deliverables become client property upon payment.",
-            "",
-            "═══════════════════════════════════════════════════════════",
-            "                      SIGNATURES",
-            "═══════════════════════════════════════════════════════════",
-            f"AGENCY: {contract.agency.company}",
-            "Signature: _________________________  Date: ______________\n",
-            f"CLIENT: {contract.client.company}",
-            "Signature: _________________________  Date: ______________",
-            "═══════════════════════════════════════════════════════════",
-            f"  🏯 {contract.agency.company} - \"Không đánh mà thắng\"",
-            "═══════════════════════════════════════════════════════════",
-        ])
+        lines.extend(
+            [
+                f"\nTimeline: {contract.scope.timeline}",
+                "",
+                "═══════════════════════════════════════════════════════════",
+                "                    FINANCIAL TERMS",
+                "═══════════════════════════════════════════════════════════",
+                "",
+                f"  Contract Type: {contract.type.value.capitalize()}",
+                f"  Monthly Fee:   ${contract.monthly_fee:,.0f}",
+                f"  Duration:      {contract.duration_months} months",
+                f"  Total Value:   ${total_value:,.0f}",
+                f"  Payment Terms: {contract.payment_terms.value.replace('_', ' ').title()}",
+                "",
+                "═══════════════════════════════════════════════════════════",
+                "                    TERMS & CONDITIONS",
+                "═══════════════════════════════════════════════════════════",
+                "1. CANCELLATION: Either party may cancel with 30 days notice.",
+                "2. LATE PAYMENT: 1.5% interest per month on overdue amounts.",
+                "3. OWNERSHIP: All deliverables become client property upon payment.",
+                "",
+                "═══════════════════════════════════════════════════════════",
+                "                      SIGNATURES",
+                "═══════════════════════════════════════════════════════════",
+                f"AGENCY: {contract.agency.company}",
+                "Signature: _________________________  Date: ______________\n",
+                f"CLIENT: {contract.client.company}",
+                "Signature: _________________________  Date: ______________",
+                "═══════════════════════════════════════════════════════════",
+                f'  🏯 {contract.agency.company} - "Không đánh mà thắng"',
+                "═══════════════════════════════════════════════════════════",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -210,7 +215,10 @@ if __name__ == "__main__":
 
         c_party = ContractParty("Hoang", "Sunrise Realty", "hoang@sunrise.vn", "District 1")
         c_scope = ServiceScope(
-            services=["SEO", "Ads"], deliverables=["Reports"], exclusions=["Video"], timeline="Monthly"
+            services=["SEO", "Ads"],
+            deliverables=["Reports"],
+            exclusions=["Video"],
+            timeline="Monthly",
         )
 
         agreement = gen.create_contract(c_party, c_scope, 2500.0)

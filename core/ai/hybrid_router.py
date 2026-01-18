@@ -8,21 +8,25 @@ Optimizes AI workload by dispatching tasks to the most cost-effective provider.
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Optional, Tuple, Any, List
+from typing import Dict, List, Optional, Tuple
+
 from core.config import get_settings
 
 logger = logging.getLogger(__name__)
+
 
 class TaskComplexity(Enum):
     SIMPLE = "simple"
     MEDIUM = "medium"
     COMPLEX = "complex"
 
+
 class TaskType(Enum):
     TEXT = "text"
     CODE = "code"
     VISION = "vision"
     AUDIO = "audio"
+
 
 @dataclass
 class ProviderConfig:
@@ -31,12 +35,14 @@ class ProviderConfig:
     max_tokens: int
     strengths: List[str]
 
+
 @dataclass
 class RoutingResult:
     provider: str
     model: str
     estimated_cost: float
     reason: str
+
 
 class HybridRouter:
     def __init__(self):
@@ -54,7 +60,7 @@ class HybridRouter:
                 cost_input=data["cost_input"],
                 cost_output=data["cost_output"],
                 max_tokens=data["max_tokens"],
-                strengths=data["strengths"]
+                strengths=data["strengths"],
             )
         return providers
 
@@ -63,7 +69,7 @@ class HybridRouter:
         task_type: TaskType,
         complexity: TaskComplexity,
         context_len: int = 0,
-        override_provider: Optional[str] = None
+        override_provider: Optional[str] = None,
     ) -> RoutingResult:
         self.calls_count += 1
 
@@ -78,19 +84,20 @@ class HybridRouter:
             provider = "anthropic/claude-3.5-sonnet"
             reason = "Complex coding task"
         elif complexity == TaskComplexity.SIMPLE:
-            provider = "google/gemini-2.0-flash" # Default cheap/fast
+            provider = "google/gemini-2.0-flash"  # Default cheap/fast
             reason = "Simple task optimization"
         else:
-            provider = "google/gemini-2.0-flash" # Fallback
+            provider = "google/gemini-2.0-flash"  # Fallback
             reason = "Default routing"
 
         cost = self._estimate_cost(provider, context_len)
         return RoutingResult(provider, provider.split("/")[-1], cost, reason)
 
     def _estimate_cost(self, provider: str, tokens: int) -> float:
-        if provider not in self.providers: return 0.0
+        if provider not in self.providers:
+            return 0.0
         cfg = self.providers[provider]
-        return (tokens / 1000) * (cfg.cost_input) # Approximate input cost
+        return (tokens / 1000) * (cfg.cost_input)  # Approximate input cost
 
     @staticmethod
     def analyze_task(prompt: str) -> Tuple[TaskType, TaskComplexity]:
@@ -102,6 +109,7 @@ class HybridRouter:
         if len(prompt) > 1000:
             c = TaskComplexity.COMPLEX
         return t, c
+
 
 def route_task(prompt: str) -> RoutingResult:
     router = HybridRouter()

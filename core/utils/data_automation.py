@@ -12,19 +12,21 @@ Roles:
 - Integration sync
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class WorkflowStatus(Enum):
     """Execution status of an automation workflow."""
+
     ACTIVE = "active"
     PAUSED = "paused"
     ERROR = "error"
@@ -33,6 +35,7 @@ class WorkflowStatus(Enum):
 
 class DataSource(Enum):
     """Available data sources and destinations."""
+
     CRM = "crm"
     SPREADSHEET = "spreadsheet"
     API = "api"
@@ -43,6 +46,7 @@ class DataSource(Enum):
 
 class TriggerType(Enum):
     """Types of triggers that initiate automation."""
+
     SCHEDULE = "schedule"
     WEBHOOK = "webhook"
     EVENT = "event"
@@ -52,6 +56,7 @@ class TriggerType(Enum):
 @dataclass
 class AutomationWorkflow:
     """An automation workflow entity."""
+
     id: str
     name: str
     source: DataSource
@@ -67,6 +72,7 @@ class AutomationWorkflow:
 @dataclass
 class DataImport:
     """A single data import batch entity."""
+
     id: str
     source: str
     destination: str
@@ -84,6 +90,7 @@ class DataImport:
 @dataclass
 class IntegrationSync:
     """A continuous integration sync between two applications."""
+
     id: str
     app_a: str
     app_b: str
@@ -96,7 +103,7 @@ class IntegrationSync:
 class DataAutomationSpecialist:
     """
     Data Automation Specialist System.
-    
+
     Zero manual data work by orchestrating workflows, imports, and integrations.
     """
 
@@ -108,11 +115,7 @@ class DataAutomationSpecialist:
         logger.info(f"Data Automation system initialized for {agency_name}")
 
     def create_workflow(
-        self,
-        name: str,
-        source: DataSource,
-        destination: DataSource,
-        trigger: TriggerType
+        self, name: str, source: DataSource, destination: DataSource, trigger: TriggerType
     ) -> AutomationWorkflow:
         """Register a new automated data workflow."""
         if not name:
@@ -120,7 +123,10 @@ class DataAutomationSpecialist:
 
         workflow = AutomationWorkflow(
             id=f"WFL-{uuid.uuid4().hex[:6].upper()}",
-            name=name, source=source, destination=destination, trigger=trigger
+            name=name,
+            source=source,
+            destination=destination,
+            trigger=trigger,
         )
         self.workflows[workflow.id] = workflow
         logger.info(f"Workflow created: {name} ({source.value} -> {destination.value})")
@@ -147,8 +153,7 @@ class DataAutomationSpecialist:
     def setup_sync(self, app_a: str, app_b: str, sync_type: str = "two_way") -> IntegrationSync:
         """Define a persistent sync connection between two external apps."""
         sync = IntegrationSync(
-            id=f"SNC-{uuid.uuid4().hex[:6].upper()}",
-            app_a=app_a, app_b=app_b, sync_type=sync_type
+            id=f"SNC-{uuid.uuid4().hex[:6].upper()}", app_a=app_a, app_b=app_b, sync_type=sync_type
         )
         self.syncs[sync.id] = sync
         logger.info(f"Sync established: {app_a} {sync_type} {app_b}")
@@ -164,7 +169,7 @@ class DataAutomationSpecialist:
             "workflow_count": len(self.workflows),
             "total_records": total_recs,
             "error_rate": (total_errs / total_runs * 100) if total_runs else 0.0,
-            "sync_count": len(self.syncs)
+            "sync_count": len(self.syncs),
         }
 
     def format_dashboard(self) -> str:
@@ -181,33 +186,48 @@ class DataAutomationSpecialist:
         ]
 
         status_icons = {"active": "🟢", "paused": "⏸️", "error": "🔴", "disabled": "⚪"}
-        src_icons = {"crm": "👥", "spreadsheet": "📊", "api": "🔌", "email": "📧", "form": "📝", "database": "🗄️"}
+        src_icons = {
+            "crm": "👥",
+            "spreadsheet": "📊",
+            "api": "🔌",
+            "email": "📧",
+            "form": "📝",
+            "database": "🗄️",
+        }
 
         for w in list(self.workflows.values())[:5]:
             s_icon = status_icons.get(w.status.value, "⚪")
             src_icon = src_icons.get(w.source.value, "📦")
             dst_icon = src_icons.get(w.destination.value, "📦")
-            name_disp = (w.name[:15] + '..') if len(w.name) > 17 else w.name
+            name_disp = (w.name[:15] + "..") if len(w.name) > 17 else w.name
 
-            lines.append(f"║  {s_icon} {name_disp:<17} │ {src_icon}→{dst_icon} │ {w.records_processed:>6} recs  ║")
+            lines.append(
+                f"║  {s_icon} {name_disp:<17} │ {src_icon}→{dst_icon} │ {w.records_processed:>6} recs  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🔗 APP INTEGRATIONS                                      ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🔗 APP INTEGRATIONS                                      ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for s in list(self.syncs.values())[:3]:
             arr = "↔️" if s.sync_type == "two_way" else "→ "
-            lines.append(f"║  🟢 {s.app_a[:10]:<10} {arr} {s.app_b[:10]:<10} │ {s.synced_records:>6} records synced ║")
+            lines.append(
+                f"║  🟢 {s.app_a[:10]:<10} {arr} {s.app_b[:10]:<10} │ {s.synced_records:>6} records synced ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [⚡ Workflows]  [🔗 Syncs]  [📥 Manual Import]          ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Automation!        ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [⚡ Workflows]  [🔗 Syncs]  [📥 Manual Import]          ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Automation!        ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -221,7 +241,9 @@ if __name__ == "__main__":
         das_system = DataAutomationSpecialist("Saigon Digital Hub")
 
         # Create and run
-        w1 = das_system.create_workflow("Leads", DataSource.FORM, DataSource.CRM, TriggerType.WEBHOOK)
+        w1 = das_system.create_workflow(
+            "Leads", DataSource.FORM, DataSource.CRM, TriggerType.WEBHOOK
+        )
         das_system.execute_workflow(w1.id, 500, 2)
 
         das_system.setup_sync("Stripe", "QuickBooks")

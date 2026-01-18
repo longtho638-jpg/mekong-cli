@@ -1,17 +1,18 @@
 import typer
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
+from rich.table import Table
 
 from core.constants import PROVIDERS_COSTS
 
 try:
-    from core.licensing import LicenseValidator, LicenseTier
+    from core.licensing import LicenseTier, LicenseValidator
 except ImportError:
     LicenseValidator = None
     LicenseTier = None
 
 console = Console()
+
 
 def _get_license_validator():
     """Lazy load license validator."""
@@ -19,6 +20,7 @@ def _get_license_validator():
         console.print("[red]Error: license module not found.[/red]")
         raise typer.Exit(code=1)
     return LicenseValidator()
+
 
 def _display_quota_table(validator, tier: str):
     """Helper to display quota limits."""
@@ -37,15 +39,16 @@ def _display_quota_table(validator, tier: str):
 
     for feature_key, display_name in features_to_check:
         quota = validator.check_quota(feature_key)
-        limit = quota['limit']
+        limit = quota["limit"]
 
         limit_str = "Unlimited" if limit == -1 else str(limit)
         if feature_key == "white_label":
-             limit_str = "✅ Yes" if quota['allowed'] else "❌ No"
+            limit_str = "✅ Yes" if quota["allowed"] else "❌ No"
 
         table.add_row(display_name, limit_str)
 
     console.print(table)
+
 
 def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
     """
@@ -58,7 +61,12 @@ def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
         license_data = validator.activate(key)
         tier = license_data["tier"]
 
-        console.print(Panel(f"[bold green]✅ License Activated![/bold green]\n\nTier: [cyan]{tier.upper()}[/cyan]\nActivated: {license_data['activated_at']}", expand=False))
+        console.print(
+            Panel(
+                f"[bold green]✅ License Activated![/bold green]\n\nTier: [cyan]{tier.upper()}[/cyan]\nActivated: {license_data['activated_at']}",
+                expand=False,
+            )
+        )
 
         _display_quota_table(validator, tier)
 
@@ -68,6 +76,7 @@ def activate_cmd(key: str = typer.Option(..., prompt="License Key")):
         console.print(f"\n[bold red]❌ Activation Failed:[/bold red] {e}")
         raise typer.Exit(code=1)
 
+
 def status_cmd():
     """
     Show current license status and quota.
@@ -76,7 +85,9 @@ def status_cmd():
     license_data = validator.get_license()
 
     if not license_data:
-        console.print(Panel("[yellow]⚠️  No license activated (using Starter tier)[/yellow]", expand=False))
+        console.print(
+            Panel("[yellow]⚠️  No license activated (using Starter tier)[/yellow]", expand=False)
+        )
         _display_quota_table(validator, "starter")
         console.print("\n[bold]Upgrade:[/bold] [cyan]mekong activate <key>[/cyan]")
         return
@@ -88,6 +99,7 @@ def status_cmd():
     console.print("-" * 30)
 
     _display_quota_table(validator, tier)
+
 
 def costs_cmd():
     """

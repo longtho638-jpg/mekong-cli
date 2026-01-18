@@ -6,13 +6,15 @@ Handles gcloud builds, secret injection, and Supabase linking for Google Cloud R
 import os
 import shutil
 import subprocess
-import typer
 from typing import Dict, Optional
+
+import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.status import Status
 
 console = Console()
+
 
 class DeployManager:
     """Handles the deployment lifecycle of Agency OS services."""
@@ -34,11 +36,15 @@ class DeployManager:
 
         self.project_id = self._get_gcloud_project()
         if not self.project_id or self.project_id == "unknown":
-            console.print("❌ [red]Google Cloud Project ID not set. Run: 'gcloud config set project <ID>'[/red]")
+            console.print(
+                "❌ [red]Google Cloud Project ID not set. Run: 'gcloud config set project <ID>'[/red]"
+            )
             return False
 
         if not os.path.isdir("./backend"):
-            console.print("❌ [red]Directory './backend' not found. Ensure you are in the project root.[/red]")
+            console.print(
+                "❌ [red]Directory './backend' not found. Ensure you are in the project root.[/red]"
+            )
             return False
 
         console.print(f"   ✅ Project: [green]{self.project_id}[/green]")
@@ -47,8 +53,7 @@ class DeployManager:
     def _get_gcloud_project(self) -> str:
         try:
             return subprocess.check_output(
-                ["gcloud", "config", "get-value", "project"],
-                text=True, stderr=subprocess.DEVNULL
+                ["gcloud", "config", "get-value", "project"], text=True, stderr=subprocess.DEVNULL
             ).strip()
         except (subprocess.CalledProcessError, FileNotFoundError):
             return "unknown"
@@ -70,7 +75,9 @@ class DeployManager:
 
     def run(self):
         """Executes the full deployment pipeline."""
-        console.print(Panel("[bold green]🚀 STARTING DEPLOYMENT PIPELINE[/bold green]", expand=False))
+        console.print(
+            Panel("[bold green]🚀 STARTING DEPLOYMENT PIPELINE[/bold green]", expand=False)
+        )
 
         if not self.validate_environment():
             raise typer.Exit(1)
@@ -78,22 +85,35 @@ class DeployManager:
         # 1. Prepare Secrets
         env_vars = self.parse_env()
         if not env_vars:
-            console.print("⚠️  [yellow].env file missing or empty. Deploying without custom secrets...[/yellow]")
+            console.print(
+                "⚠️  [yellow].env file missing or empty. Deploying without custom secrets...[/yellow]"
+            )
 
         valid_env = {k: v for k, v in env_vars.items() if v}
         env_flags = ",".join([f"{k}={v}" for k, v in valid_env.items()])
 
         # 2. Deploy to Cloud Run
-        with Status(f"[bold yellow]🏗️  Building & Deploying {self.service_name}...", console=console):
+        with Status(
+            f"[bold yellow]🏗️  Building & Deploying {self.service_name}...", console=console
+        ):
             cmd = [
-                "gcloud", "run", "deploy", self.service_name,
-                "--source", "./backend",
-                "--project", self.project_id,
-                "--region", self.region,
+                "gcloud",
+                "run",
+                "deploy",
+                self.service_name,
+                "--source",
+                "./backend",
+                "--project",
+                self.project_id,
+                "--region",
+                self.region,
                 "--allow-unauthenticated",
-                "--memory", "2Gi",
-                "--cpu", "2",
-                "--timeout", "900"
+                "--memory",
+                "2Gi",
+                "--cpu",
+                "2",
+                "--timeout",
+                "900",
             ]
             if env_flags:
                 cmd.extend(["--set-env-vars", env_flags])
@@ -106,7 +126,9 @@ class DeployManager:
                     console.print(process.stderr)
                     raise typer.Exit(1)
 
-                console.print(f"\n✅ [bold green]{self.service_name} deployed successfully![/bold green]")
+                console.print(
+                    f"\n✅ [bold green]{self.service_name} deployed successfully![/bold green]"
+                )
 
             except Exception as e:
                 console.print(f"\n❌ [bold red]Unexpected error during deploy:[/bold red] {e}")
@@ -117,10 +139,12 @@ class DeployManager:
             if typer.confirm("\n📦 Run Supabase migrations?"):
                 subprocess.run(["supabase", "db", "push"])
 
+
 def run_deploy():
     """Wrapper for CLI command."""
     manager = DeployManager()
     manager.run()
+
 
 if __name__ == "__main__":
     run_deploy()

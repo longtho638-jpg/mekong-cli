@@ -2,18 +2,19 @@
 Tests for Loyalty Rewards system.
 """
 
-import sys
 import os
-import pytest
+import sys
 from datetime import datetime, timedelta
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.loyalty_rewards import LoyaltyProgram
 
-class TestLoyaltyRewards:
 
+class TestLoyaltyRewards:
     def test_tier_progression(self, tmp_path):
         """Test tier assignment based on tenure."""
         program = LoyaltyProgram(storage_path=str(tmp_path))
@@ -42,12 +43,13 @@ class TestLoyaltyRewards:
     def test_next_tier_info(self, tmp_path):
         """Test next tier tracking."""
         program = LoyaltyProgram(storage_path=str(tmp_path))
-        program.register(datetime.now()) # New
+        program.register(datetime.now())  # New
 
         next_tier = program.get_next_tier()
         assert next_tier.name == "Silver Agent"
         # Current tenure is 0 months, Silver needs 12.
         assert next_tier.min_months - program.get_tenure_months() == 12
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

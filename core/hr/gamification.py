@@ -9,14 +9,16 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class AgencyLevel(Enum):
     """Agency growth tiers."""
+
     BRONZE = "bronze"
     SILVER = "silver"
     GOLD = "gold"
@@ -26,6 +28,7 @@ class AgencyLevel(Enum):
 
 class AchievementCategory(Enum):
     """Categories for rewarding milestones."""
+
     REVENUE = "revenue"
     CONTENT = "content"
     CLIENTS = "clients"
@@ -36,6 +39,7 @@ class AchievementCategory(Enum):
 @dataclass
 class Achievement:
     """An earned achievement badge entity."""
+
     id: str
     name: str
     description: str
@@ -48,6 +52,7 @@ class Achievement:
 @dataclass
 class LevelConfig:
     """Configuration for a specific agency level."""
+
     level: AgencyLevel
     min_revenue: float
     xp_required: int
@@ -59,6 +64,7 @@ class LevelConfig:
 @dataclass
 class AgencyProgress:
     """Agency's current gamification state."""
+
     agency_id: str
     agency_name: str
     current_level: AgencyLevel
@@ -73,26 +79,35 @@ class AgencyProgress:
 class GamificationEngine:
     """
     Gamification System.
-    
+
     Incentivizes agency growth through XP, levels, and milestone rewards.
     """
 
     # Level configurations
     LEVELS: Dict[AgencyLevel, LevelConfig] = {
         AgencyLevel.BRONZE: LevelConfig(
-            level=AgencyLevel.BRONZE, min_revenue=0, xp_required=0,
-            unlocks=["SEOAgent", "ContentAgent"], badge_color="#CD7F32",
-            perks=["Basic agents"]
+            level=AgencyLevel.BRONZE,
+            min_revenue=0,
+            xp_required=0,
+            unlocks=["SEOAgent", "ContentAgent"],
+            badge_color="#CD7F32",
+            perks=["Basic agents"],
         ),
         AgencyLevel.SILVER: LevelConfig(
-            level=AgencyLevel.SILVER, min_revenue=1000, xp_required=1000,
-            unlocks=["DirectorAgent", "VideoAgent"], badge_color="#C0C0C0",
-            perks=["Video production"]
+            level=AgencyLevel.SILVER,
+            min_revenue=1000,
+            xp_required=1000,
+            unlocks=["DirectorAgent", "VideoAgent"],
+            badge_color="#C0C0C0",
+            perks=["Video production"],
         ),
         AgencyLevel.GOLD: LevelConfig(
-            level=AgencyLevel.GOLD, min_revenue=5000, xp_required=5000,
-            unlocks=["CFOAgent", "LegalAgent"], badge_color="#FFD700",
-            perks=["Financial coaching"]
+            level=AgencyLevel.GOLD,
+            min_revenue=5000,
+            xp_required=5000,
+            unlocks=["CFOAgent", "LegalAgent"],
+            badge_color="#FFD700",
+            perks=["Financial coaching"],
         ),
     }
 
@@ -106,10 +121,12 @@ class GamificationEngine:
             raise ValueError("Agency ID and name are required")
 
         progress = AgencyProgress(
-            agency_id=agency_id, agency_name=name,
+            agency_id=agency_id,
+            agency_name=name,
             current_level=AgencyLevel.BRONZE,
-            xp_total=0, xp_to_next_level=1000,
-            achievements=[]
+            xp_total=0,
+            xp_to_next_level=1000,
+            achievements=[],
         )
         self.agency_progress[agency_id] = progress
         logger.info(f"Progress tracking created for {name}")
@@ -117,8 +134,10 @@ class GamificationEngine:
 
     def add_xp(self, agency_id: str, xp: int, reason: str) -> Optional[AgencyLevel]:
         """Add XP and check for level-up transitions."""
-        if agency_id not in self.agency_progress: return None
-        if xp < 0: raise ValueError("XP cannot be negative")
+        if agency_id not in self.agency_progress:
+            return None
+        if xp < 0:
+            raise ValueError("XP cannot be negative")
 
         p = self.agency_progress[agency_id]
         p.xp_total += xp
@@ -143,10 +162,11 @@ class GamificationEngine:
     def format_dashboard(self, agency_id: str) -> str:
         """Render the Gamification Dashboard."""
         p = self.agency_progress.get(agency_id)
-        if not p: return "No progress data found."
+        if not p:
+            return "No progress data found."
 
         conf = self.LEVELS.get(p.current_level)
-        bar_len = int((p.xp_total % 1000) / 100) # Simple 10-step progress
+        bar_len = int((p.xp_total % 1000) / 100)  # Simple 10-step progress
         bar = "█" * bar_len + "░" * (10 - bar_len)
 
         lines = [
@@ -166,23 +186,27 @@ class GamificationEngine:
             for a in p.achievements[-3:]:
                 lines.append(f"║    {a.icon} {a.name:<25} │ {a.earned_at.strftime('%Y-%m-%d')}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🎁 LEVEL UNLOCKS                                         ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🎁 LEVEL UNLOCKS                                         ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         if conf:
             for u in conf.unlocks:
                 lines.append(f"║    ✅ {u:<53}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🏆 Leaderboard]  [🎖️ Badges]  [🎁 Rewards]  [⚙️ Setup]  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {p.agency_name[:40]:<40} - Level Up!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🏆 Leaderboard]  [🎖️ Badges]  [🎁 Rewards]  [⚙️ Setup]  ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {p.agency_name[:40]:<40} - Level Up!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 
@@ -198,7 +222,11 @@ if __name__ == "__main__":
         # Earn XP
         engine.add_xp("A1", 500, "First Client")
         # Add Achievement
-        prog.achievements.append(Achievement("first_client", "First Client", "Signed #1", AchievementCategory.CLIENTS, "🤝"))
+        prog.achievements.append(
+            Achievement(
+                "first_client", "First Client", "Signed #1", AchievementCategory.CLIENTS, "🤝"
+            )
+        )
 
         print("\n" + engine.format_dashboard("A1"))
 

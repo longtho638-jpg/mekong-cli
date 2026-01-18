@@ -12,19 +12,21 @@ Roles:
 - Promotion displays
 """
 
-import uuid
 import logging
-from typing import Dict, Any, Optional
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class DisplayType(Enum):
     """Types of visual display components."""
+
     HOMEPAGE_HERO = "homepage_hero"
     COLLECTION_BANNER = "collection_banner"
     PRODUCT_FEATURE = "product_feature"
@@ -34,6 +36,7 @@ class DisplayType(Enum):
 
 class DisplayStatus(Enum):
     """Current state of a display item."""
+
     DRAFT = "draft"
     SCHEDULED = "scheduled"
     LIVE = "live"
@@ -43,6 +46,7 @@ class DisplayStatus(Enum):
 @dataclass
 class ProductDisplay:
     """A visual product display entity."""
+
     id: str
     store_id: str
     name: str
@@ -60,13 +64,15 @@ class ProductDisplay:
     @property
     def conversion_rate(self) -> float:
         """Calculate CVR based on recorded engagement."""
-        if self.clicks <= 0: return 0.0
+        if self.clicks <= 0:
+            return 0.0
         return (self.conversions / self.clicks) * 100.0
 
 
 @dataclass
 class StoreTheme:
     """Store theme configuration record."""
+
     id: str
     store_id: str
     name: str
@@ -78,7 +84,7 @@ class StoreTheme:
 class DigitalMerchandiser:
     """
     Digital Merchandiser System.
-    
+
     Manages the visual presentation, themes, and conversion performance of digital storefronts.
     """
 
@@ -89,11 +95,7 @@ class DigitalMerchandiser:
         logger.info(f"Digital Merchandiser system initialized for {agency_name}")
 
     def create_display(
-        self,
-        store_id: str,
-        name: str,
-        display_type: DisplayType,
-        days_active: int = 7
+        self, store_id: str, name: str, display_type: DisplayType, days_active: int = 7
     ) -> ProductDisplay:
         """Create a new visual display record."""
         if not store_id or not name:
@@ -105,7 +107,7 @@ class DigitalMerchandiser:
             name=name,
             display_type=display_type,
             start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(days=days_active)
+            end_date=datetime.now() + timedelta(days=days_active),
         )
         self.displays[display.id] = display
         logger.info(f"Created display: {name} for store {store_id}")
@@ -123,18 +125,16 @@ class DigitalMerchandiser:
         return True
 
     def register_theme(
-        self,
-        store_id: str,
-        name: str,
-        color: str,
-        font: str,
-        layout: str = "standard"
+        self, store_id: str, name: str, color: str, font: str, layout: str = "standard"
     ) -> StoreTheme:
         """Define a new visual theme for a storefront."""
         theme = StoreTheme(
             id=f"THM-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id, name=name,
-            primary_color=color, font_family=font, layout=layout
+            store_id=store_id,
+            name=name,
+            primary_color=color,
+            font_family=font,
+            layout=layout,
         )
         self.themes[theme.id] = theme
         logger.info(f"Theme registered: {name} ({color})")
@@ -146,7 +146,7 @@ class DigitalMerchandiser:
         return {
             "total_displays": len(self.displays),
             "live": len(live),
-            "total_themes": len(self.themes)
+            "total_themes": len(self.themes),
         }
 
     def format_dashboard(self) -> str:
@@ -166,33 +166,41 @@ class DigitalMerchandiser:
         ]
 
         type_icons = {
-            DisplayType.HOMEPAGE_HERO: "🏠", DisplayType.COLLECTION_BANNER: "📦",
-            DisplayType.PRODUCT_FEATURE: "⭐", DisplayType.PROMO_POPUP: "🎉"
+            DisplayType.HOMEPAGE_HERO: "🏠",
+            DisplayType.COLLECTION_BANNER: "📦",
+            DisplayType.PRODUCT_FEATURE: "⭐",
+            DisplayType.PROMO_POPUP: "🎉",
         }
 
         for d in list(self.displays.values())[:5]:
             icon = type_icons.get(d.display_type, "🖼️")
             s_icon = "🟢" if d.status == DisplayStatus.LIVE else "⚪"
-            name_disp = (d.name[:18] + '..') if len(d.name) > 20 else d.name
-            lines.append(f"║  {s_icon} {icon} {name_disp:<20} │ {d.clicks:>5} clicks │ {d.conversion_rate:>4.1f}%  ║")
+            name_disp = (d.name[:18] + "..") if len(d.name) > 20 else d.name
+            lines.append(
+                f"║  {s_icon} {icon} {name_disp:<20} │ {d.clicks:>5} clicks │ {d.conversion_rate:>4.1f}%  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🎨 REGISTERED THEMES                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🎨 REGISTERED THEMES                                     ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for t in list(self.themes.values())[:3]:
-            name_disp = (t.name[:15] + '..') if len(t.name) > 17 else t.name
+            name_disp = (t.name[:15] + "..") if len(t.name) > 17 else t.name
             lines.append(f"║    🎨 {name_disp:<17} │ {t.primary_color:<8} │ {t.layout:<10}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🖼️ Create]  [🎨 Themes]  [📊 Analytics]  [⚙️ Settings]  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Visual Win!        ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🖼️ Create]  [🎨 Themes]  [📊 Analytics]  [⚙️ Settings]  ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Visual Win!        ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

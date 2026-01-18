@@ -4,8 +4,8 @@ Tests for Content Marketing Strategy Generator.
 Run: python3 -m pytest tests/test_content_marketing.py -v
 """
 
-import sys
 import os
+import sys
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,7 +39,7 @@ class TestContentMarketing:
 
     def test_channel_strategy(self):
         """Test channel strategy generation."""
-        from core.growth.content_marketing import ContentMarketingStrategy, ContentChannel
+        from core.growth.content_marketing import ContentChannel, ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         strategy = gen.generate_channel_strategy("digital agency")
@@ -96,7 +96,7 @@ class TestContentMarketing:
             "e-commerce blog",
             "B2B thought leadership",
             "local business social media",
-            "digital agency"
+            "digital agency",
         ]
 
         for biz in business_types:

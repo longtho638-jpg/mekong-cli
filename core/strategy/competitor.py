@@ -13,16 +13,18 @@ Features:
 """
 
 import logging
-from typing import Dict, List
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class CompetitorSize(Enum):
     """Competitor size based on team/revenue."""
+
     SMALL = "small"
     MEDIUM = "medium"
     LARGE = "large"
@@ -31,6 +33,7 @@ class CompetitorSize(Enum):
 
 class ThreatLevel(Enum):
     """Estimated threat level to our agency."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -40,6 +43,7 @@ class ThreatLevel(Enum):
 @dataclass
 class Competitor:
     """A competitor profile entity."""
+
     name: str
     website: str
     size: CompetitorSize
@@ -57,6 +61,7 @@ class Competitor:
 @dataclass
 class MarketGap:
     """A market opportunity gap record."""
+
     name: str
     description: str
     opportunity_score: int  # 1-10
@@ -67,7 +72,7 @@ class MarketGap:
 class CompetitorAnalysis:
     """
     Competitor Analysis System.
-    
+
     Identifies market gaps and competitive advantages by profiling industry rivals.
     """
 
@@ -88,24 +93,19 @@ class CompetitorAnalysis:
         # Opportunities are derived from competitor weaknesses
         opps = [
             f"Capitalize on {c.name}'s weak {w.lower()}"
-            for c in self.competitors for w in c.weaknesses[:1]
+            for c in self.competitors
+            for w in c.weaknesses[:1]
         ]
 
         return {
             "strengths": [
                 f"Specialized in {self.niche}",
                 "AI-powered automation workflows",
-                f"Local expertise in {self.location}"
+                f"Local expertise in {self.location}",
             ],
-            "weaknesses": [
-                "Early stage market presence",
-                "Fewer established case studies"
-            ],
+            "weaknesses": ["Early stage market presence", "Fewer established case studies"],
             "opportunities": opps or [f"Growing {self.niche} demand in {self.location}"],
-            "threats": [
-                "Established local incumbents",
-                "Commoditization of basic services"
-            ]
+            "threats": ["Established local incumbents", "Commoditization of basic services"],
         }
 
     def find_market_gaps(self) -> List[MarketGap]:
@@ -116,22 +116,22 @@ class CompetitorAnalysis:
                 description="Rivals lack integrated automation",
                 opportunity_score=9,
                 difficulty="Medium",
-                recommendation="Position as the hyper-efficient agency"
+                recommendation="Position as the hyper-efficient agency",
             ),
             MarketGap(
                 name="Transparent ROI",
                 description="Competitors have black-box reporting",
                 opportunity_score=8,
                 difficulty="Low",
-                recommendation="Offer real-time client dashboards"
+                recommendation="Offer real-time client dashboards",
             ),
             MarketGap(
                 name="Niche Authority",
                 description=f"No clear leader for {self.niche} in {self.location}",
                 opportunity_score=7,
                 difficulty="Medium",
-                recommendation="Double down on specific niche content"
-            )
+                recommendation="Double down on specific niche content",
+            ),
         ]
         return sorted(gaps, key=lambda x: x.opportunity_score, reverse=True)
 
@@ -151,7 +151,9 @@ class CompetitorAnalysis:
             lines.append("║  👥 COMPETITOR PROFILES                                   ║")
             lines.append("║  " + "─" * 57 + "  ║")
             for c in self.competitors[:3]:
-                t_icon = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}.get(c.threat_level.value, "⚪")
+                t_icon = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}.get(
+                    c.threat_level.value, "⚪"
+                )
                 lines.append(f"║    {t_icon} {c.name:<25} ({c.size.value:<10})           ║")
             lines.append("║                                                           ║")
 
@@ -164,24 +166,28 @@ class CompetitorAnalysis:
             for item in swot[key][:2]:
                 lines.append(f"║       • {item[:45]:<45}   ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            "║  💎 TOP MARKET GAPS                                       ║",
-            "║  " + "─" * 57 + "  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                "║  💎 TOP MARKET GAPS                                       ║",
+                "║  " + "─" * 57 + "  ║",
+            ]
+        )
 
         for g in gaps[:2]:
             stars = "★" * g.opportunity_score + "☆" * (10 - g.opportunity_score)
             lines.append(f"║    🎯 {g.name:<20} Score: {stars}    ║")
             lines.append(f"║       Rec: {g.recommendation[:45]:<45}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Win Without Fighting ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Win Without Fighting ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -194,13 +200,15 @@ if __name__ == "__main__":
     try:
         analysis_tool = CompetitorAnalysis("Saigon Digital Hub", "Real Estate", "Ho Chi Minh City")
 
-        analysis_tool.add_competitor(Competitor(
-            name="BigCity Ads",
-            website="bigcity.vn",
-            size=CompetitorSize.LARGE,
-            weaknesses=["Slow onboarding", "Confusing pricing"],
-            threat_level=ThreatLevel.HIGH
-        ))
+        analysis_tool.add_competitor(
+            Competitor(
+                name="BigCity Ads",
+                website="bigcity.vn",
+                size=CompetitorSize.LARGE,
+                weaknesses=["Slow onboarding", "Confusing pricing"],
+                threat_level=ThreatLevel.HIGH,
+            )
+        )
 
         print("\n" + analysis_tool.format_analysis())
 

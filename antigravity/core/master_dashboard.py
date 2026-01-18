@@ -2,8 +2,8 @@
 🏯 Master Dashboard - Full System Command & Control
 ===================================================
 
-Provides a unified, 360-degree view of the entire Agency OS platform. 
-Aggregates health, performance, and financial data from all major 
+Provides a unified, 360-degree view of the entire Agency OS platform.
+Aggregates health, performance, and financial data from all major
 subsystems into a single strategic dashboard.
 
 Layers Monitored:
@@ -16,14 +16,14 @@ Binh Pháp: 🏯 Thống (Unity) - Commanding the entire field from one center.
 """
 
 import logging
-from typing import Dict, Any
 from datetime import datetime
+from typing import Any, Dict
 
-from .unified_dashboard import AgenticDashboard
-from .moat_engine import get_moat_engine
-from .loyalty_rewards import get_loyalty_program
 from .cashflow_engine import get_cashflow_engine
 from .infrastructure import InfrastructureStack
+from .loyalty_rewards import get_loyalty_program
+from .moat_engine import get_moat_engine
+from .unified_dashboard import AgenticDashboard
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class MasterDashboard:
     """
     🏯 Master Command Center
-    
+
     The ultimate high-level overview for the agency owner.
     Combines technical, agentic, and financial metrics.
     """
@@ -56,12 +56,7 @@ class MasterDashboard:
 
         # Weighted Aggregation
         # Agentic depth (30%) + Moat strength (25%) + Infra health (25%) + Revenue (20%)
-        composite = (
-            a_score * 0.30 +
-            m_score * 0.25 +
-            i_score * 0.25 +
-            c_progress * 0.20
-        )
+        composite = a_score * 0.30 + m_score * 0.25 + i_score * 0.25 + c_progress * 0.20
 
         return int(composite)
 
@@ -76,22 +71,22 @@ class MasterDashboard:
             "layers": {
                 "agentic": {
                     "agents_active": a_stats["inventory"]["agents"],
-                    "success_rate": a_stats["cognition"]["success_rate"]
+                    "success_rate": a_stats["cognition"]["success_rate"],
                 },
                 "retention": {
                     "moat_strength": self.moat_engine.get_aggregate_strength(),
                     "loyalty_tier": self.loyalty_program.get_current_tier().name,
-                    "switching_cost_usd": m_stats["financial_usd"]
+                    "switching_cost_usd": m_stats["financial_usd"],
                 },
                 "revenue": {
                     "arr": self.cashflow_engine.get_total_arr(),
-                    "progress": self.cashflow_engine.get_progress_percent()
+                    "progress": self.cashflow_engine.get_progress_percent(),
                 },
                 "infra": {
                     "health": self.infra_stack.get_health_score(),
-                    "layers_online": len(self.infra_stack.layers)
-                }
-            }
+                    "layers_online": len(self.infra_stack.layers),
+                },
+            },
         }
 
     def print_master_report(self):
@@ -107,14 +102,18 @@ class MasterDashboard:
 
         # 1. AGENTIC LAYER
         print(" 🤖 AGENTIC INFRASTRUCTURE")
-        print(f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}")
+        print(
+            f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}"
+        )
         print("    └─ Integration   : Healthy")
 
         print(" ─" * 35)
 
         # 2. RETENTION LAYER
         print(" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
-        print(f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}")
+        print(
+            f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}"
+        )
         print(f"    └─ Switching Cost: ${l['retention']['switching_cost_usd']:,} USD")
 
         print(" ─" * 35)
@@ -128,7 +127,9 @@ class MasterDashboard:
 
         # 4. INFRASTRUCTURE LAYER
         print(" 🏗️ PRODUCTION STACK")
-        print(f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%")
+        print(
+            f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%"
+        )
         print("    └─ Status        : Operational")
 
         print("═" * 70)
@@ -140,14 +141,16 @@ class MasterDashboard:
         print(f" 🏆 OVERALL READINESS: [{bar}] {score}%")
 
         status_msg = (
-            "✅ PEAK PERFORMANCE" if score >= 90 else
-            "⚡ READY FOR SCALE" if score >= 75 else
-            "🔨 ACTIVELY BUILDING"
+            "✅ PEAK PERFORMANCE"
+            if score >= 90
+            else "⚡ READY FOR SCALE"
+            if score >= 75
+            else "🔨 ACTIVELY BUILDING"
         )
         print(f"    └─ System Status: {status_msg}")
         print("═" * 70)
 
-        print(f"\n   🏯 \"Không đánh mà thắng\" | {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
+        print(f'\n   🏯 "Không đánh mà thắng" | {datetime.now().strftime("%Y-%m-%d %H:%M")}\n')
 
 
 # Global Interface
@@ -155,6 +158,7 @@ def show_full_status():
     """Entry point for the master dashboard display."""
     md = MasterDashboard()
     md.print_master_report()
+
 
 def get_system_health() -> int:
     """Quick access to the composite platform score."""

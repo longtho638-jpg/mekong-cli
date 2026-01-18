@@ -3,11 +3,11 @@ Product Catalog Agent - Products & Inventory
 Manages product catalog, inventory, and pricing.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class ProductStatus(Enum):
@@ -20,6 +20,7 @@ class ProductStatus(Enum):
 @dataclass
 class ProductVariant:
     """Product variant"""
+
     id: str
     name: str  # e.g., "Size: Large, Color: Blue"
     sku: str
@@ -30,6 +31,7 @@ class ProductVariant:
 @dataclass
 class Product:
     """E-commerce product"""
+
     id: str
     name: str
     description: str
@@ -56,7 +58,7 @@ class Product:
 class ProductCatalogAgent:
     """
     Product Catalog Agent - Quản lý Sản phẩm
-    
+
     Responsibilities:
     - Product CRUD operations
     - Inventory tracking
@@ -70,46 +72,31 @@ class ProductCatalogAgent:
         self.products: Dict[str, Product] = {}
 
     def create_product(
-        self,
-        name: str,
-        description: str,
-        category: str,
-        base_price: float
+        self, name: str, description: str, category: str, base_price: float
     ) -> Product:
         """Create new product"""
-        product_id = f"prod_{random.randint(1000,9999)}"
+        product_id = f"prod_{random.randint(1000, 9999)}"
 
         product = Product(
             id=product_id,
             name=name,
             description=description,
             category=category,
-            base_price=base_price
+            base_price=base_price,
         )
 
         self.products[product_id] = product
         return product
 
     def add_variant(
-        self,
-        product_id: str,
-        name: str,
-        sku: str,
-        price: float,
-        stock: int
+        self, product_id: str, name: str, sku: str, price: float, stock: int
     ) -> Product:
         """Add variant to product"""
         if product_id not in self.products:
             raise ValueError(f"Product not found: {product_id}")
 
-        variant_id = f"var_{random.randint(100,999)}"
-        variant = ProductVariant(
-            id=variant_id,
-            name=name,
-            sku=sku,
-            price=price,
-            stock=stock
-        )
+        variant_id = f"var_{random.randint(100, 999)}"
+        variant = ProductVariant(id=variant_id, name=name, sku=sku, price=price, stock=stock)
 
         self.products[product_id].variants.append(variant)
         return self.products[product_id]
@@ -150,7 +137,7 @@ class ProductCatalogAgent:
             "total_products": len(products),
             "active": len(active),
             "total_stock": sum(p.total_stock for p in products),
-            "low_stock": len(self.get_low_stock())
+            "low_stock": len(self.get_low_stock()),
         }
 
 
@@ -165,7 +152,7 @@ if __name__ == "__main__":
         "Wireless Earbuds Pro",
         "Premium wireless earbuds with noise cancellation",
         "Electronics",
-        99.99
+        99.99,
     )
 
     print(f"📋 Product: {p1.name}")

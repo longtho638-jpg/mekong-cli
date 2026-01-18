@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 from pathlib import Path
+
 import typer
 from rich.console import Console
 
@@ -8,8 +9,8 @@ from core.config import get_settings
 from core.constants import APP_NAME
 
 try:
-    from deploy_automation import run_deploy
     from core.licensing import LicenseTier, LicenseValidator
+    from deploy_automation import run_deploy
 except ImportError:
     run_deploy = None
     LicenseTier = None
@@ -21,12 +22,14 @@ TEMPLATE_REPO_PRO = settings.TEMPLATE_REPO_PRO
 
 console = Console()
 
+
 def _get_license_validator():
     """Lazy load license validator."""
     if LicenseValidator is None:
         console.print("[red]Error: license module not found.[/red]")
         raise typer.Exit(code=1)
     return LicenseValidator()
+
 
 def init(project_name: str):
     """
@@ -79,6 +82,7 @@ def init(project_name: str):
     except Exception as e:
         console.print(f"[bold red]Failed:[/bold red] {e}")
         raise typer.Exit(code=1)
+
 
 def deploy_cmd():
     """

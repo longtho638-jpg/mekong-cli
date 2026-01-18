@@ -12,15 +12,16 @@ Features:
 - Webhook logs
 """
 
-from typing import Dict, List, Any
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Any, Dict, List
 
 
 class WebhookEvent(Enum):
     """Webhook event types."""
+
     CLIENT_CREATED = "client.created"
     CLIENT_UPDATED = "client.updated"
     PROJECT_CREATED = "project.created"
@@ -34,6 +35,7 @@ class WebhookEvent(Enum):
 @dataclass
 class Webhook:
     """A webhook endpoint."""
+
     id: str
     url: str
     events: List[WebhookEvent]
@@ -47,6 +49,7 @@ class Webhook:
 @dataclass
 class WebhookDelivery:
     """A webhook delivery attempt."""
+
     id: str
     webhook_id: str
     event: WebhookEvent
@@ -59,7 +62,7 @@ class WebhookDelivery:
 class WebhookManager:
     """
     Webhook Manager.
-    
+
     Manage real-time event webhooks.
     """
 
@@ -68,18 +71,13 @@ class WebhookManager:
         self.webhooks: Dict[str, Webhook] = {}
         self.deliveries: List[WebhookDelivery] = []
 
-    def register(
-        self,
-        url: str,
-        events: List[WebhookEvent],
-        secret: str = ""
-    ) -> Webhook:
+    def register(self, url: str, events: List[WebhookEvent], secret: str = "") -> Webhook:
         """Register a new webhook."""
         webhook = Webhook(
             id=f"WH-{uuid.uuid4().hex[:6].upper()}",
             url=url,
             events=events,
-            secret=secret or f"whsec_{uuid.uuid4().hex[:16]}"
+            secret=secret or f"whsec_{uuid.uuid4().hex[:16]}",
         )
 
         self.webhooks[webhook.id] = webhook
@@ -103,7 +101,7 @@ class WebhookManager:
                 event=event,
                 payload=payload,
                 status_code=status_code,
-                success=success
+                success=success,
             )
 
             self.deliveries.append(delivery)
@@ -138,20 +136,24 @@ class WebhookManager:
 
             lines.append(f"║  {status} {url:<35} ({events} events)  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 AVAILABLE EVENTS                                      ║",
-            "║  ─────────────────────────────────────────────────────── ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 AVAILABLE EVENTS                                      ║",
+                "║  ─────────────────────────────────────────────────────── ║",
+            ]
+        )
 
         for event in list(WebhookEvent)[:6]:
             lines.append(f"║    • {event.value:<50}  ║")
 
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name} - Real-time everything!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name} - Real-time everything!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -167,11 +169,11 @@ if __name__ == "__main__":
     # Register webhooks
     manager.register(
         "https://app.example.com/webhooks/stripe",
-        [WebhookEvent.INVOICE_PAID, WebhookEvent.PAYMENT_RECEIVED]
+        [WebhookEvent.INVOICE_PAID, WebhookEvent.PAYMENT_RECEIVED],
     )
     manager.register(
         "https://slack.com/api/incoming-webhook",
-        [WebhookEvent.CLIENT_CREATED, WebhookEvent.PROJECT_COMPLETED]
+        [WebhookEvent.CLIENT_CREATED, WebhookEvent.PROJECT_COMPLETED],
     )
 
     # Dispatch event

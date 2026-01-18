@@ -3,11 +3,11 @@ Automation Agent - Email Automation & Drip Campaigns
 Manages automated email sequences and triggers.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class TriggerType(Enum):
@@ -28,6 +28,7 @@ class AutomationStatus(Enum):
 @dataclass
 class EmailStep:
     """Automation email step"""
+
     id: str
     subject: str
     delay_hours: int
@@ -39,6 +40,7 @@ class EmailStep:
 @dataclass
 class Automation:
     """Email automation/drip campaign"""
+
     id: str
     name: str
     trigger: TriggerType
@@ -59,7 +61,7 @@ class Automation:
 class AutomationAgent:
     """
     Automation Agent - Tự động hóa Email
-    
+
     Responsibilities:
     - Drip campaigns
     - Trigger workflows
@@ -72,29 +74,16 @@ class AutomationAgent:
         self.status = "ready"
         self.automations: Dict[str, Automation] = {}
 
-    def create_automation(
-        self,
-        name: str,
-        trigger: TriggerType
-    ) -> Automation:
+    def create_automation(self, name: str, trigger: TriggerType) -> Automation:
         """Create automation"""
-        auto_id = f"auto_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        auto_id = f"auto_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        automation = Automation(
-            id=auto_id,
-            name=name,
-            trigger=trigger
-        )
+        automation = Automation(id=auto_id, name=name, trigger=trigger)
 
         self.automations[auto_id] = automation
         return automation
 
-    def add_step(
-        self,
-        automation_id: str,
-        subject: str,
-        delay_hours: int
-    ) -> Automation:
+    def add_step(self, automation_id: str, subject: str, delay_hours: int) -> Automation:
         """Add email step to automation"""
         if automation_id not in self.automations:
             raise ValueError(f"Automation not found: {automation_id}")
@@ -102,9 +91,7 @@ class AutomationAgent:
         automation = self.automations[automation_id]
 
         step = EmailStep(
-            id=f"step_{len(automation.steps) + 1}",
-            subject=subject,
-            delay_hours=delay_hours
+            id=f"step_{len(automation.steps) + 1}", subject=subject, delay_hours=delay_hours
         )
 
         automation.steps.append(step)
@@ -147,7 +134,7 @@ class AutomationAgent:
             "total_enrolled": sum(a.enrolled for a in automations),
             "total_completed": sum(a.completed for a in automations),
             "total_emails_sent": sum(a.total_sent for a in automations),
-            "avg_completion": sum(a.completion_rate for a in active) / len(active) if active else 0
+            "avg_completion": sum(a.completion_rate for a in active) / len(active) if active else 0,
         }
 
 

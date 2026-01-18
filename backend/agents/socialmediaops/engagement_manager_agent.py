@@ -3,11 +3,11 @@ Engagement Manager Agent - Inbox & Sentiment
 Manages social interactions, comments, and sentiment analysis.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class InteractionType(Enum):
@@ -26,6 +26,7 @@ class Sentiment(Enum):
 @dataclass
 class SocialInteraction:
     """Social media interaction"""
+
     id: str
     platform: str
     user_handle: str
@@ -35,13 +36,13 @@ class SocialInteraction:
     sentiment: Sentiment
     is_replied: bool = False
     reply_content: Optional[str] = None
-    priority: str = "normal" # low, normal, high
+    priority: str = "normal"  # low, normal, high
 
 
 class EngagementManagerAgent:
     """
     Engagement Manager Agent - Quản lý Tương tác
-    
+
     Responsibilities:
     - Unified inbox (Comments, DMs)
     - Sentiment analysis
@@ -55,14 +56,10 @@ class EngagementManagerAgent:
         self.inbox: List[SocialInteraction] = []
 
     def ingest_interaction(
-        self,
-        platform: str,
-        user_handle: str,
-        content: str,
-        interaction_type: InteractionType
+        self, platform: str, user_handle: str, content: str, interaction_type: InteractionType
     ) -> SocialInteraction:
         """Ingest new interaction"""
-        interaction_id = f"int_{random.randint(1000,9999)}"
+        interaction_id = f"int_{random.randint(1000, 9999)}"
 
         # Simulated Sentiment Analysis
         sentiment = Sentiment.NEUTRAL
@@ -83,7 +80,7 @@ class EngagementManagerAgent:
             type=interaction_type,
             timestamp=datetime.now(),
             sentiment=sentiment,
-            priority=priority
+            priority=priority,
         )
 
         self.inbox.append(interaction)
@@ -119,7 +116,7 @@ class EngagementManagerAgent:
             "total_pending": total - replied,
             "response_rate": (replied / total * 100) if total > 0 else 0,
             "sentiment_positive": positive,
-            "sentiment_negative": negative
+            "sentiment_negative": negative,
         }
 
 
@@ -130,9 +127,21 @@ if __name__ == "__main__":
     print("💬 Engagement Manager Agent Demo\n")
 
     # Ingest interactions
-    i1 = agent.ingest_interaction("twitter", "@dev_guru", "Mekong CLI is awesome! Loved the new update.", InteractionType.MENTION)
-    i2 = agent.ingest_interaction("linkedin", "@recruiter_jane", "Can you DM me about enterprise pricing?", InteractionType.COMMENT)
-    i3 = agent.ingest_interaction("twitter", "@angry_user", "My build is broken. This sucks.", InteractionType.MENTION)
+    i1 = agent.ingest_interaction(
+        "twitter",
+        "@dev_guru",
+        "Mekong CLI is awesome! Loved the new update.",
+        InteractionType.MENTION,
+    )
+    i2 = agent.ingest_interaction(
+        "linkedin",
+        "@recruiter_jane",
+        "Can you DM me about enterprise pricing?",
+        InteractionType.COMMENT,
+    )
+    i3 = agent.ingest_interaction(
+        "twitter", "@angry_user", "My build is broken. This sucks.", InteractionType.MENTION
+    )
 
     print(f"📥 Inbox: {len(agent.inbox)} items")
 

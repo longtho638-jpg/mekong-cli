@@ -2,17 +2,18 @@
 Tests for VC Metrics system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.vc.metrics import VCMetrics, FundingStage
+from antigravity.vc.metrics import FundingStage, VCMetrics
+
 
 class TestVCMetrics:
-
     def test_initialization(self):
         """Test metrics initialization."""
         metrics = VCMetrics(mrr=10000, total_customers=100)
@@ -43,17 +44,17 @@ class TestVCMetrics:
             cac=1000,
             net_margin=25,
             nrr=115,
-            stage=FundingStage.PRE_SEED
+            stage=FundingStage.PRE_SEED,
         )
         # MRR: 30, Growth: 25, LTV/CAC: 25, Rule40: 10, NRR: 10 = 100
         assert metrics.readiness_score() == 100
 
         # Poor Seed
-        metrics.stage = FundingStage.SEED # Target MRR 25K
+        metrics.stage = FundingStage.SEED  # Target MRR 25K
         metrics.mrr = 5000
         score = metrics.readiness_score()
         assert score < 100
-        assert score >= 30 # still gets partial for 5K/25K * 30
+        assert score >= 30  # still gets partial for 5K/25K * 30
 
     def test_stage_recommendation(self):
         """Test funding stage recommendation."""
@@ -62,6 +63,7 @@ class TestVCMetrics:
 
         metrics.mrr = 150000
         assert metrics.get_stage_recommendation() == FundingStage.SERIES_A
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

@@ -2,18 +2,19 @@
 Tests for EZ PR system.
 """
 
-import sys
 import os
-import pytest
+import sys
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.ez_pr import EzPR
 
-class TestEzPR:
 
+class TestEzPR:
     @patch("antigravity.core.ez_pr.PRManager")
     def test_help_command(self, mock_manager):
         """Test help message."""
@@ -49,6 +50,7 @@ class TestEzPR:
         output = ez.process("check pr")
         assert "#123" in output
         assert "Sẵn sàng" in output
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

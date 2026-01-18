@@ -13,17 +13,19 @@ Features:
 """
 
 import logging
-from typing import Dict, Any
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any, Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class PricingBenchmark:
     """Pricing benchmark data entity for a service."""
+
     service_type: str
     floor_rate: float
     median_rate: float
@@ -40,6 +42,7 @@ class PricingBenchmark:
 @dataclass
 class ProjectSubmission:
     """Anonymized project data submission entity."""
+
     service_type: str
     value: float
     complexity: str  # simple, medium, complex
@@ -50,16 +53,16 @@ class ProjectSubmission:
 class PricingIntelligence:
     """
     Pricing Intelligence System.
-    
+
     Orchestrates collective market intelligence to ensure fair and competitive agency pricing.
     """
 
     # Predefined baseline rates
     BASELINES = {
-        'landing_page': {'floor': 2500, 'median': 4200, 'top': 8500},
-        'website_design': {'floor': 5000, 'median': 12000, 'top': 35000},
-        'web_app': {'floor': 15000, 'median': 45000, 'top': 150000},
-        'seo_monthly': {'floor': 1500, 'median': 3500, 'top': 8000},
+        "landing_page": {"floor": 2500, "median": 4200, "top": 8500},
+        "website_design": {"floor": 5000, "median": 12000, "top": 35000},
+        "web_app": {"floor": 15000, "median": 45000, "top": 150000},
+        "seo_monthly": {"floor": 1500, "median": 3500, "top": 8000},
     }
 
     def __init__(self):
@@ -73,10 +76,10 @@ class PricingIntelligence:
         for s_type, rates in self.BASELINES.items():
             self.benchmarks[s_type] = PricingBenchmark(
                 service_type=s_type,
-                floor_rate=float(rates['floor']),
-                median_rate=float(rates['median']),
-                top_rate=float(rates['top']),
-                sample_size=127 # Simulated
+                floor_rate=float(rates["floor"]),
+                median_rate=float(rates["median"]),
+                top_rate=float(rates["top"]),
+                sample_size=127,  # Simulated
             )
 
     def submit_project(self, sub: ProjectSubmission):
@@ -86,10 +89,11 @@ class PricingIntelligence:
 
     def format_benchmark_report(self, s_type: str) -> str:
         """Render ASCII benchmark report for a specific service."""
-        if s_type not in self.benchmarks: return f"Service '{s_type}' not found."
+        if s_type not in self.benchmarks:
+            return f"Service '{s_type}' not found."
 
         b = self.benchmarks[s_type]
-        name = s_type.replace('_', ' ').title()
+        name = s_type.replace("_", " ").title()
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -115,9 +119,10 @@ def register_commands() -> Dict[str, Any]:
     return {
         "/pricing": {
             "handler": system.format_benchmark_report,
-            "description": "View market rate benchmarks"
+            "description": "View market rate benchmarks",
         }
     }
+
 
 # Example usage
 if __name__ == "__main__":

@@ -4,11 +4,12 @@ Proposal Service
 Generate service proposals.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict
-from core.outreach.repository import OutreachRepository
+from typing import Optional
+
 from core.config import get_settings
+from core.outreach.repository import OutreachRepository
 
 TEMPLATES = {
     "ghost_cto": {
@@ -19,8 +20,8 @@ TEMPLATES = {
         "deliverables": [
             "Weekly Engineering Velocity Reports",
             "Monthly Architecture Review",
-            "On-demand Support"
-        ]
+            "On-demand Support",
+        ],
     },
     "venture": {
         "title": "Venture Architecture",
@@ -31,10 +32,11 @@ TEMPLATES = {
         "deliverables": [
             "Technical Architecture Design",
             "MVP Development Oversight",
-            "Hiring Support"
-        ]
+            "Hiring Support",
+        ],
     },
 }
+
 
 class ProposalService:
     def __init__(self):
@@ -51,7 +53,7 @@ class ProposalService:
         # Load lead from repository
         leads = self.outreach_repo.load_leads()
         lead = next((l for l in leads if l["email"] == email), None)
-        
+
         if not lead:
             lead = {"name": "Client", "company": "Your Company", "email": email}
 
@@ -61,16 +63,18 @@ class ProposalService:
         filepath = self.proposals_dir / filename
 
         content = f"# {template['title']}\n\n**Prepared for**: {lead['name']} @ {lead['company']}\n**Date**: {datetime.now().strftime('%B %d, %Y')}\n\n---\n\n## Overview\n{template['scope']}\n\n## Deliverables\n"
-        for d in template['deliverables']:
+        for d in template["deliverables"]:
             content += f"- {d}\n"
 
-        content += f"\n---\n## Investment\n**${template['price']:,}** {template.get('duration', '')}\n"
+        content += (
+            f"\n---\n## Investment\n**${template['price']:,}** {template.get('duration', '')}\n"
+        )
         if template.get("equity"):
             content += f"**Equity**: {template['equity']}\n"
 
         with open(filepath, "w") as f:
             f.write(content)
-            
+
         return str(filepath)
 
     def list_templates(self):

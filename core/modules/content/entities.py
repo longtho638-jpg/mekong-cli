@@ -1,11 +1,14 @@
 """
 Content Module - Data Entities
 """
+
 from dataclasses import dataclass
 from enum import Enum
 
+
 class ContentPillar(Enum):
     """5 Content Pillars for agency growth."""
+
     CODE_TO_CASHFLOW = "code_to_cashflow"
     SOLOPRENEUR_MINDSET = "solopreneur_mindset"
     LOCAL_AI = "local_ai"
@@ -15,6 +18,7 @@ class ContentPillar(Enum):
 
 class ContentFormat(Enum):
     """Standard social media formats."""
+
     TWITTER_THREAD = "Twitter Thread"
     CAROUSEL = "Carousel Post"
     VIDEO_SHORT = "Short Video"
@@ -26,6 +30,7 @@ class ContentFormat(Enum):
 @dataclass
 class ContentIdea:
     """A content idea entity."""
+
     pillar: ContentPillar
     title: str
     hook: str

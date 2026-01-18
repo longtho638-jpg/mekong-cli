@@ -14,11 +14,11 @@ from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from .models.subscription import Subscription, SubscriptionTier
+from .services.rate_limiter import RateLimiter
+from .services.tier_service import TierService
+from .services.usage_tracker import UsageEvent, UsageTracker
 from .validators.local_validator import LocalValidator
 from .validators.remote_validator import RemoteValidator
-from .services.tier_service import TierService
-from .services.rate_limiter import RateLimiter
-from .services.usage_tracker import UsageTracker, UsageEvent
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class SubscriptionMiddleware(BaseHTTPMiddleware):
         self.tier_service = TierService()
         self.rate_limiter = RateLimiter()
         self.usage_tracker = UsageTracker()
-        
+
         self._subscription_cache: Dict[str, Dict] = {}
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
@@ -44,39 +44,38 @@ class SubscriptionMiddleware(BaseHTTPMiddleware):
             # Allow non-authenticated requests to certain endpoints
             if self._is_public_endpoint(request.url.path):
                 return await call_next(request)
-            
+
             return Response(
                 content='{"error": "Authentication required"}',
                 status_code=401,
-                media_type="application/json"
+                media_type="application/json",
             )
 
         # Get subscription
         subscription = await self._get_subscription(user_id)
-        
+
         # Check rate limits
         action = self._get_action_from_request(request)
         if not self.rate_limiter.check_rate_limit(user_id, action):
             return Response(
                 content='{"error": "Rate limit exceeded"}',
                 status_code=429,
-                media_type="application/json"
+                media_type="application/json",
             )
 
         # Check tier limits
         tier = subscription.tier
         usage = self.usage_tracker.get_monthly_usage(subscription.agency_id or user_id)
-        
+
         if action in ["api_call", "command_exec"]:
             limit_check = self.tier_service.check_limit(
-                tier, action, 
-                usage.api_calls if action == "api_call" else usage.commands
+                tier, action, usage.api_calls if action == "api_call" else usage.commands
             )
             if not limit_check["allowed"]:
                 return Response(
                     content=f'{{"error": "{limit_check["reason"]}"}}',
                     status_code=403,
-                    media_type="application/json"
+                    media_type="application/json",
                 )
 
         # Process request
@@ -89,7 +88,7 @@ class SubscriptionMiddleware(BaseHTTPMiddleware):
                 action=action,
                 timestamp=datetime.now(),
                 agency_id=subscription.agency_id,
-                command=self._get_command_from_request(request)
+                command=self._get_command_from_request(request),
             )
             self.usage_tracker.record_usage(event)
 
@@ -113,14 +112,14 @@ class SubscriptionMiddleware(BaseHTTPMiddleware):
     def _get_action_from_request(self, request: Request) -> str:
         """Determine action type from request."""
         path = request.url.path
-        
+
         if "/api/" in path:
             return "api_call"
         elif "/command/" in path:
             return "command_exec"
         elif "/video/" in path:
             return "video_gen"
-        
+
         return "api_call"  # Default
 
     def _get_command_from_request(self, request: Request) -> Optional[str]:
@@ -144,15 +143,13 @@ class SubscriptionMiddleware(BaseHTTPMiddleware):
         # Default subscription if none found
         if not subscription:
             subscription = Subscription(
-                user_id=user_id,
-                tier=SubscriptionTier.STARTER,
-                source="default"
+                user_id=user_id, tier=SubscriptionTier.STARTER, source="default"
             )
 
         # Update cache
         self._subscription_cache[user_id] = {
             "subscription": subscription,
-            "_cached_at": datetime.now()
+            "_cached_at": datetime.now(),
         }
 
         return subscription

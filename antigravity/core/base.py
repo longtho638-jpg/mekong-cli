@@ -2,7 +2,7 @@
 🏗️ AntigravityKit - Base Architecture
 =====================================
 
-Provides the foundational classes for the entire Antigravity system. 
+Provides the foundational classes for the entire Antigravity system.
 Ensures consistent serialization, directory management, and telemetry support
 across all core engines and data entities.
 
@@ -14,29 +14,30 @@ Core Components:
 Binh Pháp: 🏰 Nền Tảng (Foundation) - Building on solid ground.
 """
 
-import logging
 import json
+import logging
 import uuid
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Dict, Any, Optional, TypeVar, Type, Union
 from pathlib import Path
+from typing import Any, Dict, Optional, Type, TypeVar, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T', bound='BaseModel')
+T = TypeVar("T", bound="BaseModel")
 
 
 @dataclass
 class BaseModel:
     """
     🏗️ Base Model
-    
-    The standard data entity for Agency OS. 
+
+    The standard data entity for Agency OS.
     Inheriting classes get automatic ID generation and timestamping.
     """
+
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: Optional[datetime] = None
@@ -75,7 +76,7 @@ class BaseModel:
         for key, value in data_copy.items():
             if isinstance(value, str):
                 # Simple heuristic for ISO dates
-                if len(value) >= 19 and (value[10] == 'T' or value[10] == ' '):
+                if len(value) >= 19 and (value[10] == "T" or value[10] == " "):
                     try:
                         data_copy[key] = datetime.fromisoformat(value)
                     except (ValueError, TypeError):
@@ -96,13 +97,14 @@ class BaseModel:
 def field_names(cls):
     """Helper to get dataclass field names."""
     import dataclasses
+
     return dataclasses.fields(cls)
 
 
 class BaseEngine(ABC):
     """
     ⚙️ Base Engine
-    
+
     The foundational logic container. Handles data persistence,
     configuration loading, and exposes standard performance metrics.
     """
@@ -126,16 +128,16 @@ class BaseEngine(ABC):
         path = self.get_data_path(filename)
         try:
             # Handle list of BaseModels or single BaseModel
-            if hasattr(data, 'to_dict'):
+            if hasattr(data, "to_dict"):
                 serializable = data.to_dict()
             elif isinstance(data, list):
-                serializable = [i.to_dict() if hasattr(i, 'to_dict') else i for i in data]
+                serializable = [i.to_dict() if hasattr(i, "to_dict") else i for i in data]
             else:
                 serializable = data
 
             path.write_text(
                 json.dumps(serializable, ensure_ascii=False, indent=2, default=str),
-                encoding='utf-8'
+                encoding="utf-8",
             )
             return path
         except Exception as e:
@@ -149,7 +151,7 @@ class BaseEngine(ABC):
             return default if default is not None else {}
 
         try:
-            return json.loads(path.read_text(encoding='utf-8'))
+            return json.loads(path.read_text(encoding="utf-8"))
         except Exception as e:
             logger.warning(f"Failed to load data from {filename}: {e}")
             return default if default is not None else {}

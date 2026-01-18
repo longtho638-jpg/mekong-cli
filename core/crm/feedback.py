@@ -12,19 +12,21 @@ Features:
 - Improvement insights
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class FeedbackCategory(Enum):
     """Specific areas of agency performance."""
+
     COMMUNICATION = "communication"
     QUALITY = "quality"
     TIMELINESS = "timeliness"
@@ -34,14 +36,16 @@ class FeedbackCategory(Enum):
 
 class NPSCategory(Enum):
     """NPS loyalty segments."""
-    DETRACTOR = "detractor"      # 0-6
-    PASSIVE = "passive"          # 7-8
-    PROMOTER = "promoter"        # 9-10
+
+    DETRACTOR = "detractor"  # 0-6
+    PASSIVE = "passive"  # 7-8
+    PROMOTER = "promoter"  # 9-10
 
 
 @dataclass
 class Feedback:
     """A client feedback record entity."""
+
     id: str
     client_name: str
     client_company: str
@@ -62,15 +66,17 @@ class Feedback:
     @property
     def nps_category(self) -> NPSCategory:
         """Categorize responder based on NPS score."""
-        if self.nps_score <= 6: return NPSCategory.DETRACTOR
-        if self.nps_score <= 8: return NPSCategory.PASSIVE
+        if self.nps_score <= 6:
+            return NPSCategory.DETRACTOR
+        if self.nps_score <= 8:
+            return NPSCategory.PASSIVE
         return NPSCategory.PROMOTER
 
 
 class FeedbackSystem:
     """
     Feedback System.
-    
+
     Tracks Net Promoter Score and multi-factor satisfaction metrics.
     """
 
@@ -86,14 +92,17 @@ class FeedbackSystem:
         project_name: str,
         nps_score: int,
         category_scores: Dict[FeedbackCategory, int],
-        comments: str = ""
+        comments: str = "",
     ) -> Feedback:
         """Register a new piece of client feedback."""
         fb = Feedback(
             id=f"FB-{uuid.uuid4().hex[:6].upper()}",
-            client_name=client_name, client_company=client_company,
-            project_name=project_name, nps_score=nps_score,
-            category_scores=category_scores, comments=comments
+            client_name=client_name,
+            client_company=client_company,
+            project_name=project_name,
+            nps_score=nps_score,
+            category_scores=category_scores,
+            comments=comments,
         )
         self.feedbacks.append(fb)
         logger.info(f"Feedback collected from {client_name} ({client_company})")
@@ -101,7 +110,8 @@ class FeedbackSystem:
 
     def calculate_nps(self) -> float:
         """Calculate aggregate Net Promoter Score."""
-        if not self.feedbacks: return 0.0
+        if not self.feedbacks:
+            return 0.0
 
         promoters = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.PROMOTER)
         detractors = sum(1 for f in self.feedbacks if f.nps_category == NPSCategory.DETRACTOR)
@@ -121,29 +131,39 @@ class FeedbackSystem:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        for cat, icon in [(NPSCategory.PROMOTER, "🟢"), (NPSCategory.PASSIVE, "🟡"), (NPSCategory.DETRACTOR, "🔴")]:
+        for cat, icon in [
+            (NPSCategory.PROMOTER, "🟢"),
+            (NPSCategory.PASSIVE, "🟡"),
+            (NPSCategory.DETRACTOR, "🔴"),
+        ]:
             count = sum(1 for f in self.feedbacks if f.nps_category == cat)
             pct = (count / total * 100) if total else 0
             bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
-            lines.append(f"║  {icon} {cat.value.capitalize():<12} │ {bar} │ {count:>3} clients ({pct:>3.0f}%)  ║")
+            lines.append(
+                f"║  {icon} {cat.value.capitalize():<12} │ {bar} │ {count:>3} clients ({pct:>3.0f}%)  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📝 RECENT COMMENTS                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📝 RECENT COMMENTS                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for f in self.feedbacks[-2:]:
-            com = (f.comments[:50] + '..') if len(f.comments) > 52 else f.comments
-            lines.append(f"║  💬 \"{com:<53}\" ║")
+            com = (f.comments[:50] + "..") if len(f.comments) > 52 else f.comments
+            lines.append(f'║  💬 "{com:<53}" ║')
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 Full Report]  [📝 Send Survey]  [⚙️ Settings]        ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Feedback!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 Full Report]  [📝 Send Survey]  [⚙️ Settings]        ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Feedback!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 
@@ -154,8 +174,12 @@ if __name__ == "__main__":
 
     try:
         f_system = FeedbackSystem("Saigon Digital Hub")
-        f_system.collect_feedback("Hoang", "Sunrise", "Web", 10, {FeedbackCategory.QUALITY: 5}, "Great!")
-        f_system.collect_feedback("Linh", "CoffeeCo", "SEO", 8, {FeedbackCategory.QUALITY: 4}, "Good work.")
+        f_system.collect_feedback(
+            "Hoang", "Sunrise", "Web", 10, {FeedbackCategory.QUALITY: 5}, "Great!"
+        )
+        f_system.collect_feedback(
+            "Linh", "CoffeeCo", "SEO", 8, {FeedbackCategory.QUALITY: 4}, "Good work."
+        )
 
         print("\n" + f_system.format_dashboard())
 

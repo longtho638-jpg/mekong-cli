@@ -29,9 +29,7 @@ class ExecuteRequest(BaseModel):
 
     action: str = Field(..., description="Action to execute")
     target: Optional[str] = Field(None, description="Target file or path")
-    params: Optional[Dict[str, Any]] = Field(
-        default_factory=dict, description="Action parameters"
-    )
+    params: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Action parameters")
 
 
 class AnalyzeRequest(BaseModel):
@@ -140,9 +138,7 @@ async def execute_action(request: ExecuteRequest) -> CodeResponse:
     # Validate action
     valid_actions = ["read", "write", "test", "lint", "format", "build"]
     if request.action not in valid_actions:
-        raise HTTPException(
-            status_code=400, detail=f"Invalid action. Valid: {valid_actions}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid action. Valid: {valid_actions}")
 
     # Simulate action execution
     result = {
@@ -153,9 +149,7 @@ async def execute_action(request: ExecuteRequest) -> CodeResponse:
         "output": f"Action '{request.action}' completed successfully",
     }
 
-    return CodeResponse(
-        success=True, data=result, message=f"Executed: {request.action}"
-    )
+    return CodeResponse(success=True, data=result, message=f"Executed: {request.action}")
 
 
 @router.post("/analyze")
@@ -175,9 +169,7 @@ async def analyze_codebase(request: AnalyzeRequest) -> CodeResponse:
         "health": {"test_coverage": 75, "lint_score": 92, "complexity": "moderate"},
     }
 
-    return CodeResponse(
-        success=True, data=analysis, message="Codebase analysis complete"
-    )
+    return CodeResponse(success=True, data=analysis, message="Codebase analysis complete")
 
 
 @router.post("/suggest")
@@ -191,9 +183,7 @@ async def get_suggestions(request: SuggestRequest) -> CodeResponse:
         "document": "Add docstrings explaining parameters, return values, and usage examples.",
     }
 
-    suggestion = suggestion_types.get(
-        request.type, "Review the code for potential improvements."
-    )
+    suggestion = suggestion_types.get(request.type, "Review the code for potential improvements.")
 
     return CodeResponse(
         success=True,

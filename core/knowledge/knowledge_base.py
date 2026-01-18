@@ -12,19 +12,21 @@ Features:
 - Quick access commands
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ResourceCategory(Enum):
     """Broad categories for agency intellectual property."""
+
     TEMPLATES = "templates"
     GUIDES = "guides"
     CHECKLISTS = "checklists"
@@ -35,6 +37,7 @@ class ResourceCategory(Enum):
 
 class ResourceType(Enum):
     """Format of the knowledge asset."""
+
     DOCUMENT = "document"
     VIDEO = "video"
     SPREADSHEET = "spreadsheet"
@@ -44,6 +47,7 @@ class ResourceType(Enum):
 @dataclass
 class Resource:
     """A single knowledge asset record entity."""
+
     id: str
     title: str
     category: ResourceCategory
@@ -63,7 +67,7 @@ class Resource:
 class KnowledgeBase:
     """
     Knowledge Base System.
-    
+
     Orchestrates the storage, retrieval, and categorization of institutional knowledge.
     """
 
@@ -78,12 +82,20 @@ class KnowledgeBase:
         logger.info("Loading default knowledge assets...")
         try:
             self.add_resource(
-                "Client Onboarding", ResourceCategory.CHECKLISTS, ResourceType.CHECKLIST,
-                "Steps for new accounts", "1. Welcome 2. Kickoff 3. Contract", ["setup"]
+                "Client Onboarding",
+                ResourceCategory.CHECKLISTS,
+                ResourceType.CHECKLIST,
+                "Steps for new accounts",
+                "1. Welcome 2. Kickoff 3. Contract",
+                ["setup"],
             )
             self.add_resource(
-                "Sales Script", ResourceCategory.SCRIPTS, ResourceType.DOCUMENT,
-                "Discovery call guide", "Hello, I am calling from...", ["sales"]
+                "Sales Script",
+                ResourceCategory.SCRIPTS,
+                ResourceType.DOCUMENT,
+                "Discovery call guide",
+                "Hello, I am calling from...",
+                ["sales"],
             )
         except Exception as e:
             logger.error(f"Error seeding knowledge base: {e}")
@@ -95,13 +107,17 @@ class KnowledgeBase:
         res_type: ResourceType,
         description: str,
         content: str,
-        tags: List[str]
+        tags: List[str],
     ) -> Resource:
         """Register a new asset into the knowledge base."""
         res = Resource(
             id=f"KB-{uuid.uuid4().hex[:6].upper()}",
-            title=title, category=category, type=res_type,
-            description=description, content=content, tags=tags
+            title=title,
+            category=category,
+            type=res_type,
+            description=description,
+            content=content,
+            tags=tags,
         )
         self.resources[res.id] = res
         logger.info(f"Resource indexed: {title} ({category.value})")
@@ -111,8 +127,11 @@ class KnowledgeBase:
         """Keyword search across titles, descriptions, and tags."""
         q = query.lower()
         results = [
-            r for r in self.resources.values()
-            if q in r.title.lower() or q in r.description.lower() or any(q in t.lower() for t in r.tags)
+            r
+            for r in self.resources.values()
+            if q in r.title.lower()
+            or q in r.description.lower()
+            or any(q in t.lower() for t in r.tags)
         ]
         logger.debug(f"Search for '{query}' found {len(results)} matches.")
         return results
@@ -131,9 +150,12 @@ class KnowledgeBase:
         ]
 
         icons = {
-            ResourceCategory.TEMPLATES: "📝", ResourceCategory.GUIDES: "📖",
-            ResourceCategory.CHECKLISTS: "✅", ResourceCategory.SCRIPTS: "📜",
-            ResourceCategory.PROCESSES: "⚙️", ResourceCategory.TRAINING: "🎓"
+            ResourceCategory.TEMPLATES: "📝",
+            ResourceCategory.GUIDES: "📖",
+            ResourceCategory.CHECKLISTS: "✅",
+            ResourceCategory.SCRIPTS: "📜",
+            ResourceCategory.PROCESSES: "⚙️",
+            ResourceCategory.TRAINING: "🎓",
         }
 
         # Display aggregated counts by category
@@ -144,15 +166,19 @@ class KnowledgeBase:
         for cat in list(ResourceCategory):
             count = cat_counts.get(cat, 0)
             icon = icons.get(cat, "📁")
-            lines.append(f"║  {icon} {cat.value.capitalize():<20} │ {count:>3} assets available      ║")
+            lines.append(
+                f"║  {icon} {cat.value.capitalize():<20} │ {count:>3} assets available      ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Asset]  [🔍 Search KB]  [📂 Export All]  [⚙️ Setup] ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Wisdom!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Asset]  [🔍 Search KB]  [📂 Export All]  [⚙️ Setup] ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Wisdom!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

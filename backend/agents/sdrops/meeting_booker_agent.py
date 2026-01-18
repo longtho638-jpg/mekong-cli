@@ -3,11 +3,11 @@ Meeting Booker Agent - Calendar & Scheduling
 Handles meeting scheduling, confirmations, and tracking.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class MeetingStatus(Enum):
@@ -28,6 +28,7 @@ class MeetingType(Enum):
 @dataclass
 class Meeting:
     """Scheduled meeting"""
+
     id: str
     lead_name: str
     company: str
@@ -47,7 +48,7 @@ class Meeting:
 class MeetingBookerAgent:
     """
     Meeting Booker Agent - Đặt lịch Họp
-    
+
     Responsibilities:
     - Schedule meetings
     - Send confirmations
@@ -70,10 +71,10 @@ class MeetingBookerAgent:
         meeting_type: MeetingType,
         scheduled_at: datetime,
         ae_assigned: str,
-        duration_mins: int = 30
+        duration_mins: int = 30,
     ) -> Meeting:
         """Book a new meeting"""
-        meeting_id = f"meeting_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        meeting_id = f"meeting_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         meeting = Meeting(
             id=meeting_id,
@@ -82,7 +83,7 @@ class MeetingBookerAgent:
             meeting_type=meeting_type,
             scheduled_at=scheduled_at,
             ae_assigned=ae_assigned,
-            duration_mins=duration_mins
+            duration_mins=duration_mins,
         )
 
         self.meetings[meeting_id] = meeting
@@ -122,17 +123,16 @@ class MeetingBookerAgent:
     def get_today_meetings(self) -> List[Meeting]:
         """Get today's meetings"""
         today = datetime.now().date()
-        return [
-            m for m in self.meetings.values()
-            if m.scheduled_at.date() == today
-        ]
+        return [m for m in self.meetings.values() if m.scheduled_at.date() == today]
 
     def get_upcoming(self, days: int = 7) -> List[Meeting]:
         """Get upcoming meetings"""
         cutoff = datetime.now() + timedelta(days=days)
         return [
-            m for m in self.meetings.values()
-            if m.scheduled_at <= cutoff and m.status in [MeetingStatus.SCHEDULED, MeetingStatus.CONFIRMED]
+            m
+            for m in self.meetings.values()
+            if m.scheduled_at <= cutoff
+            and m.status in [MeetingStatus.SCHEDULED, MeetingStatus.CONFIRMED]
         ]
 
     def get_stats(self) -> Dict:
@@ -143,11 +143,19 @@ class MeetingBookerAgent:
 
         return {
             "total_meetings": len(meetings),
-            "scheduled": len([m for m in meetings if m.status in [MeetingStatus.SCHEDULED, MeetingStatus.CONFIRMED]]),
+            "scheduled": len(
+                [
+                    m
+                    for m in meetings
+                    if m.status in [MeetingStatus.SCHEDULED, MeetingStatus.CONFIRMED]
+                ]
+            ),
             "completed": completed,
             "no_shows": no_shows,
-            "show_rate": f"{completed/(completed+no_shows)*100:.0f}%" if (completed + no_shows) > 0 else "100%",
-            "today": len(self.get_today_meetings())
+            "show_rate": f"{completed / (completed + no_shows) * 100:.0f}%"
+            if (completed + no_shows) > 0
+            else "100%",
+            "today": len(self.get_today_meetings()),
         }
 
 
@@ -159,12 +167,18 @@ if __name__ == "__main__":
 
     # Book meetings
     m1 = agent.book(
-        "Nguyễn A", "TechCorp VN", MeetingType.DISCOVERY,
-        datetime.now() + timedelta(hours=2), "AE_001"
+        "Nguyễn A",
+        "TechCorp VN",
+        MeetingType.DISCOVERY,
+        datetime.now() + timedelta(hours=2),
+        "AE_001",
     )
     m2 = agent.book(
-        "Trần B", "StartupX", MeetingType.DEMO,
-        datetime.now() + timedelta(days=1, hours=3), "AE_001"
+        "Trần B",
+        "StartupX",
+        MeetingType.DEMO,
+        datetime.now() + timedelta(days=1, hours=3),
+        "AE_001",
     )
 
     print(f"📋 Meeting: {m1.company}")

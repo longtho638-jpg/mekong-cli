@@ -3,11 +3,11 @@ Grievance Agent - Complaint Handling & Resolution
 Manages employee complaints and case resolutions.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class GrievanceStatus(Enum):
@@ -40,6 +40,7 @@ class Priority(Enum):
 @dataclass
 class Grievance:
     """Employee grievance case"""
+
     id: str
     title: str
     description: str
@@ -66,7 +67,7 @@ class Grievance:
 class GrievanceAgent:
     """
     Grievance Agent - Xử lý Khiếu nại
-    
+
     Responsibilities:
     - Intake complaints
     - Track cases
@@ -85,10 +86,10 @@ class GrievanceAgent:
         description: str,
         grievance_type: GrievanceType,
         complainant_id: str,
-        priority: Priority = Priority.MEDIUM
+        priority: Priority = Priority.MEDIUM,
     ) -> Grievance:
         """Submit new grievance"""
-        case_id = f"grv_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        case_id = f"grv_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         grievance = Grievance(
             id=case_id,
@@ -96,7 +97,7 @@ class GrievanceAgent:
             description=description,
             grievance_type=grievance_type,
             complainant_id=complainant_id,
-            priority=priority
+            priority=priority,
         )
 
         self.cases[case_id] = grievance
@@ -137,7 +138,11 @@ class GrievanceAgent:
 
     def get_open_cases(self) -> List[Grievance]:
         """Get open cases"""
-        return [c for c in self.cases.values() if c.status not in [GrievanceStatus.RESOLVED, GrievanceStatus.CLOSED]]
+        return [
+            c
+            for c in self.cases.values()
+            if c.status not in [GrievanceStatus.RESOLVED, GrievanceStatus.CLOSED]
+        ]
 
     def get_stats(self) -> Dict:
         """Get grievance statistics"""
@@ -148,9 +153,11 @@ class GrievanceAgent:
             "total_cases": len(cases),
             "open": len(self.get_open_cases()),
             "resolved": len(resolved),
-            "resolution_rate": f"{len(resolved)/len(cases)*100:.0f}%" if cases else "0%",
-            "avg_days_to_resolve": sum(c.days_open for c in resolved) / len(resolved) if resolved else 0,
-            "critical": len([c for c in cases if c.priority == Priority.CRITICAL])
+            "resolution_rate": f"{len(resolved) / len(cases) * 100:.0f}%" if cases else "0%",
+            "avg_days_to_resolve": sum(c.days_open for c in resolved) / len(resolved)
+            if resolved
+            else 0,
+            "critical": len([c for c in cases if c.priority == Priority.CRITICAL]),
         }
 
 
@@ -166,14 +173,14 @@ if __name__ == "__main__":
         "Description of incident...",
         GrievanceType.HARASSMENT,
         "EMP_001",
-        Priority.HIGH
+        Priority.HIGH,
     )
     g2 = agent.submit_grievance(
         "Pay discrepancy issue",
         "Description...",
         GrievanceType.COMPENSATION,
         "EMP_002",
-        Priority.MEDIUM
+        Priority.MEDIUM,
     )
 
     print(f"📋 Case: {g1.title}")

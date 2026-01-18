@@ -12,19 +12,21 @@ Roles:
 - Incident response
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class RiskLevel(Enum):
     """Security risk and severity levels."""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -33,17 +35,13 @@ class RiskLevel(Enum):
     @property
     def weight(self) -> int:
         """Numeric weight for risk score calculations."""
-        mapping = {
-            RiskLevel.CRITICAL: 10,
-            RiskLevel.HIGH: 7,
-            RiskLevel.MEDIUM: 4,
-            RiskLevel.LOW: 2
-        }
+        mapping = {RiskLevel.CRITICAL: 10, RiskLevel.HIGH: 7, RiskLevel.MEDIUM: 4, RiskLevel.LOW: 2}
         return mapping[self]
 
 
 class SecurityDomain(Enum):
     """Security domains for classification."""
+
     DATA_PROTECTION = "data_protection"
     ACCESS_CONTROL = "access_control"
     NETWORK = "network"
@@ -54,6 +52,7 @@ class SecurityDomain(Enum):
 
 class IncidentStatus(Enum):
     """Security incident lifecycle status."""
+
     DETECTED = "detected"
     INVESTIGATING = "investigating"
     CONTAINED = "contained"
@@ -64,19 +63,21 @@ class IncidentStatus(Enum):
 @dataclass
 class SecurityRisk:
     """A security risk record entity."""
+
     id: str
     title: str
     domain: SecurityDomain
     risk_level: RiskLevel
     description: str
     mitigation: str = ""
-    status: str = "open" # open, mitigated
+    status: str = "open"  # open, mitigated
     identified_at: datetime = field(default_factory=datetime.now)
 
 
 @dataclass
 class SecurityIncident:
     """A security incident record entity."""
+
     id: str
     title: str
     severity: RiskLevel
@@ -89,6 +90,7 @@ class SecurityIncident:
 @dataclass
 class ComplianceItem:
     """A compliance requirement entity."""
+
     id: str
     standard: str  # e.g., GDPR, SOC2, ISO27001
     requirement: str
@@ -99,7 +101,7 @@ class ComplianceItem:
 class CISO:
     """
     Chief Information Security Officer System.
-    
+
     Manages agency security posture, risk register, and incident response.
     """
 
@@ -111,11 +113,7 @@ class CISO:
         logger.info(f"CISO System initialized for {agency_name}")
 
     def identify_risk(
-        self,
-        title: str,
-        domain: SecurityDomain,
-        risk_level: RiskLevel,
-        description: str
+        self, title: str, domain: SecurityDomain, risk_level: RiskLevel, description: str
     ) -> SecurityRisk:
         """Add a new risk to the register."""
         if not title:
@@ -126,7 +124,7 @@ class CISO:
             title=title,
             domain=domain,
             risk_level=risk_level,
-            description=description
+            description=description,
         )
         self.risks[risk.id] = risk
         logger.warning(f"SECURITY RISK IDENTIFIED: {title} ({risk_level.value})")
@@ -144,17 +142,14 @@ class CISO:
         return True
 
     def report_incident(
-        self,
-        title: str,
-        severity: RiskLevel,
-        affected_systems: Optional[List[str]] = None
+        self, title: str, severity: RiskLevel, affected_systems: Optional[List[str]] = None
     ) -> SecurityIncident:
         """Declare a security incident."""
         incident = SecurityIncident(
             id=f"INC-{uuid.uuid4().hex[:6].upper()}",
             title=title,
             severity=severity,
-            affected_systems=affected_systems or []
+            affected_systems=affected_systems or [],
         )
         self.incidents.append(incident)
         logger.critical(f"INCIDENT REPORTED: {title} ({severity.value})")
@@ -174,9 +169,7 @@ class CISO:
     def add_compliance(self, standard: str, requirement: str) -> ComplianceItem:
         """Register a compliance standard requirement."""
         item = ComplianceItem(
-            id=f"CMP-{uuid.uuid4().hex[:6].upper()}",
-            standard=standard,
-            requirement=requirement
+            id=f"CMP-{uuid.uuid4().hex[:6].upper()}", standard=standard, requirement=requirement
         )
         self.compliance[item.id] = item
         return item
@@ -188,7 +181,9 @@ class CISO:
 
         # Risk Score (Lower is better, then inverted)
         total_risk_weight = sum(r.risk_level.weight for r in self.risks.values())
-        mitigated_weight = sum(r.risk_level.weight for r in self.risks.values() if r.status == "mitigated")
+        mitigated_weight = sum(
+            r.risk_level.weight for r in self.risks.values() if r.status == "mitigated"
+        )
 
         risk_score = (mitigated_weight / total_risk_weight * 50) if total_risk_weight > 0 else 50
 
@@ -217,31 +212,35 @@ class CISO:
             RiskLevel.CRITICAL: "🔴",
             RiskLevel.HIGH: "🟠",
             RiskLevel.MEDIUM: "🟡",
-            RiskLevel.LOW: "🟢"
+            RiskLevel.LOW: "🟢",
         }
         status_icons = {"open": "⚡", "mitigated": "✅"}
 
         # Show top 4 risks
-        sorted_risks = sorted(self.risks.values(), key=lambda x: (x.status == "mitigated", -x.risk_level.weight))[:4]
+        sorted_risks = sorted(
+            self.risks.values(), key=lambda x: (x.status == "mitigated", -x.risk_level.weight)
+        )[:4]
         for r in sorted_risks:
             r_icon = risk_icons.get(r.risk_level, "⚪")
             s_icon = status_icons.get(r.status, "⚪")
-            title_display = (r.title[:25] + '..') if len(r.title) > 27 else r.title
+            title_display = (r.title[:25] + "..") if len(r.title) > 27 else r.title
 
             lines.append(f"║  {r_icon} {s_icon} {title_display:<27} │ {r.domain.value[:12]:<12}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🚨 INCIDENT STATUS                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🚨 INCIDENT STATUS                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         incident_icons = {
             IncidentStatus.DETECTED: "🆕",
             IncidentStatus.INVESTIGATING: "🔍",
             IncidentStatus.CONTAINED: "🛡️",
             IncidentStatus.RESOLVED: "✅",
-            IncidentStatus.POST_MORTEM: "📋"
+            IncidentStatus.POST_MORTEM: "📋",
         }
 
         active_inc = [i for i in self.incidents if i.status != IncidentStatus.RESOLVED][:3]
@@ -251,27 +250,33 @@ class CISO:
             for inc in active_inc:
                 r_icon = risk_icons.get(inc.severity, "⚪")
                 s_icon = incident_icons.get(inc.status, "⚪")
-                title_display = (inc.title[:25] + '..') if len(inc.title) > 27 else inc.title
-                lines.append(f"║  {r_icon} {s_icon} {title_display:<27} │ {len(inc.affected_systems):>2} systems  ║")
+                title_display = (inc.title[:25] + "..") if len(inc.title) > 27 else inc.title
+                lines.append(
+                    f"║  {r_icon} {s_icon} {title_display:<27} │ {len(inc.affected_systems):>2} systems  ║"
+                )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 COMPLIANCE STATUS                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 COMPLIANCE STATUS                                     ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for c in list(self.compliance.values())[:3]:
             c_status = "✅" if c.status == "compliant" else "⚠️" if c.status == "pending" else "❌"
-            req_display = (c.requirement[:28] + '..') if len(c.requirement) > 30 else c.requirement
+            req_display = (c.requirement[:28] + "..") if len(c.requirement) > 30 else c.requirement
             lines.append(f"║  {c_status} {c.standard:<12} │ {req_display:<30} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🔍 Audit]  [📊 Report]  [🔐 Policies]                   ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Security!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🔍 Audit]  [📊 Report]  [🔐 Policies]                   ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Security!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -285,14 +290,31 @@ if __name__ == "__main__":
         ciso = CISO("Saigon Digital Hub")
 
         # Identify risks
-        r1 = ciso.identify_risk("Weak password policy", SecurityDomain.ACCESS_CONTROL, RiskLevel.HIGH, "Users have weak passwords")
-        r2 = ciso.identify_risk("Unpatched servers", SecurityDomain.NETWORK, RiskLevel.CRITICAL, "3 servers need updates")
-        r3 = ciso.identify_risk("No backup encryption", SecurityDomain.DATA_PROTECTION, RiskLevel.MEDIUM, "Backups not encrypted")
+        r1 = ciso.identify_risk(
+            "Weak password policy",
+            SecurityDomain.ACCESS_CONTROL,
+            RiskLevel.HIGH,
+            "Users have weak passwords",
+        )
+        r2 = ciso.identify_risk(
+            "Unpatched servers",
+            SecurityDomain.NETWORK,
+            RiskLevel.CRITICAL,
+            "3 servers need updates",
+        )
+        r3 = ciso.identify_risk(
+            "No backup encryption",
+            SecurityDomain.DATA_PROTECTION,
+            RiskLevel.MEDIUM,
+            "Backups not encrypted",
+        )
 
         ciso.mitigate_risk(r1.id, "Implemented password policy")
 
         # Report incident
-        inc = ciso.report_incident("Phishing attempt detected", RiskLevel.HIGH, ["Email Server", "Workstations"])
+        inc = ciso.report_incident(
+            "Phishing attempt detected", RiskLevel.HIGH, ["Email Server", "Workstations"]
+        )
         ciso.update_incident(inc.id, IncidentStatus.INVESTIGATING)
 
         # Add compliance

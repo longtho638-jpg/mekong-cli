@@ -1,7 +1,9 @@
 """
 PayPal Webhook Event Handlers Service
 """
-from typing import Dict, Any
+
+from typing import Dict
+
 
 class PaymentEventHandler:
     """Handle payment-related events."""
@@ -53,9 +55,7 @@ class OrderEventHandler:
         order_id = resource.get("id")
         purchase_units = resource.get("purchase_units", [{}])
         amount = (
-            purchase_units[0].get("amount", {}).get("value", "0.00")
-            if purchase_units
-            else "0.00"
+            purchase_units[0].get("amount", {}).get("value", "0.00") if purchase_units else "0.00"
         )
         print(f"📦 Order Completed: {order_id} - ${amount}")
         return {"action": "order_completed", "order_id": order_id, "amount": amount}

@@ -2,17 +2,18 @@
 Tests for VIBE Workflow system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.vibe_workflow import VIBEWorkflow, WorkflowStep, TaskStatus
+from antigravity.core.vibe_workflow import TaskStatus, VIBEWorkflow, WorkflowStep
+
 
 class TestVIBEWorkflow:
-
     def test_plan_detection(self, tmp_path):
         """Test finding a plan file."""
         plans_dir = tmp_path / "plans"
@@ -66,6 +67,7 @@ class TestVIBEWorkflow:
         stats = wf.get_stats()
         assert "current_step" in stats
         assert stats["tasks"]["total"] == 0
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

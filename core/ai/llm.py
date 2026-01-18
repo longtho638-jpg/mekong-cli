@@ -4,18 +4,19 @@ Unified LLM Client
 Simple wrapper to execute prompts against configured providers.
 """
 
-import os
 import logging
 from typing import Optional
+
 from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
+
 class LLMClient:
     def __init__(self):
         self.settings = get_settings()
-        self.provider = "gemini" # Default
-        
+        self.provider = "gemini"  # Default
+
         # Check available keys
         if self.settings.GEMINI_API_KEY:
             self.provider = "gemini"
@@ -38,24 +39,20 @@ class LLMClient:
         except Exception as e:
             logger.error(f"LLM Error: {e}")
             return f"Error executing task: {e}"
-        
+
         return "[MOCK LLM] Provider not implemented yet"
 
     def _call_gemini(self, prompt: str, system: Optional[str]) -> str:
         try:
             from google import genai
             from google.genai import types
-            
+
             client = genai.Client(api_key=self.settings.GEMINI_API_KEY)
-            
-            config = types.GenerateContentConfig(
-                system_instruction=system
-            ) if system else None
+
+            config = types.GenerateContentConfig(system_instruction=system) if system else None
 
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt,
-                config=config
+                model="gemini-2.0-flash", contents=prompt, config=config
             )
             return response.text
         except ImportError:
