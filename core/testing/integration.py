@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
+
 class IntegrationTester:
     def __init__(self, project_root: Path):
         self.project_root = project_root
