@@ -33,12 +33,14 @@ finance_app = typer.Typer(help="💰 Quản lý Tài chính")
 sales_app = typer.Typer(help="💼 Quản lý Sales & Sản phẩm")
 ops_app = typer.Typer(help="👁️ Operations & Monitoring")
 setup_app = typer.Typer(help="⚙️ Setup & Configuration")
+bridge_app = typer.Typer(help="🌉 Bridge Sync: Claude <-> AgencyOS")
 
 app.add_typer(strategy_app, name="strategy")
 app.add_typer(dev_app, name="dev")
 app.add_typer(mcp_app, name="mcp")
 app.add_typer(revenue_app, name="revenue")
 
+from cli.commands.bridge import bridge_app
 from cli.commands.content import content_app
 from cli.commands.finance import finance_app
 from cli.commands.ops import ops_app
@@ -52,6 +54,7 @@ app.add_typer(finance_app, name="finance")
 app.add_typer(sales_app, name="sales")
 app.add_typer(ops_app, name="ops")
 app.add_typer(setup_app, name="setup")
+app.add_typer(bridge_app, name="bridge")
 
 
 def print_banner():
