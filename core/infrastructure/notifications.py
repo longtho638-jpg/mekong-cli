@@ -78,7 +78,7 @@ class NotificationService:
         script = f'display notification "{message}" with title "{title}" sound name "{sound}"'
         try:
             subprocess.run(["osascript", "-e", script], capture_output=True)
-        except:
+        except Exception:
             pass
 
     def _log_event(self, event_type: str, data: Dict):
@@ -87,7 +87,7 @@ class NotificationService:
             try:
                 with open(self.events_file) as f:
                     events = json.load(f)
-            except:
+            except Exception:
                 pass
 
         event = {

@@ -138,7 +138,7 @@ class LicenseValidator:
             # Create machine fingerprint
             machine_data = f"{platform.node()}-{platform.system()}-{platform.machine()}"
             return hashlib.sha256(machine_data.encode()).hexdigest()[:16]
-        except:
+        except Exception:
             # Fallback to random UUID if machine info unavailable
             return str(uuid.uuid4())[:16]
 

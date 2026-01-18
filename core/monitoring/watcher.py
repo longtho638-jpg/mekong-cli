@@ -24,7 +24,7 @@ class EmpireWatcher:
             try:
                 with open(self.state_file) as f:
                     return json.load(f)
-            except:
+            except Exception:
                 pass
         return {}
 
