@@ -1,0 +1,243 @@
+#!/usr/bin/env python3
+"""
+🏯 MEKONG CLI - Unified Command Center
+=======================================
+One command to rule them all.
+
+Usage:
+    mekong                      # Show dashboard
+    mekong daily                # Morning routine
+    mekong revenue              # Revenue report
+    mekong leads                # Lead pipeline
+    mekong publish              # Publish products
+    mekong content <product>    # Generate content
+    mekong invoice <client> <amt> <desc>  # Create invoice
+    mekong outreach             # Lead outreach
+    mekong notify <message>     # Send notification
+    mekong status               # System status
+    mekong help                 # Show help
+
+Alias Setup:
+    echo 'alias mekong="python3 ~/mekong-cli/scripts/mekong_cli.py"' >> ~/.zshrc
+    source ~/.zshrc
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+# Paths
+SCRIPTS_DIR = Path(__file__).parent
+PROJECT_DIR = SCRIPTS_DIR.parent
+
+# Colors
+BOLD = "\033[1m"
+GREEN = "\033[92m"
+BLUE = "\033[94m"
+YELLOW = "\033[93m"
+CYAN = "\033[96m"
+RESET = "\033[0m"
+
+
+def run(script, args=None, show=True):
+    """Run a script and return output."""
+    cmd = [sys.executable, str(SCRIPTS_DIR / script)]
+    if args:
+        cmd.extend(args)
+
+    if show:
+        result = subprocess.run(cmd, cwd=PROJECT_DIR)
+        return result.returncode == 0
+    else:
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=PROJECT_DIR)
+        return result.stdout, result.returncode == 0
+
+
+def header():
+    print(f"""
+{BOLD}{BLUE}╔══════════════════════════════════════════════════════════╗
+║  🏯 MEKONG CLI - Revenue Automation Command Center       ║
+╚══════════════════════════════════════════════════════════╝{RESET}
+""")
+
+
+def cmd_dashboard():
+    """Show master dashboard."""
+    run("master_dashboard.py")
+
+
+def cmd_daily():
+    """Run daily automation."""
+    run("revenue_autopilot.py", ["daily"])
+
+
+def cmd_revenue():
+    """Show revenue report."""
+    run("payment_hub.py", ["revenue"])
+
+
+def cmd_leads():
+    """Show leads pipeline."""
+    run("outreach_cli.py", ["stats"])
+
+
+def cmd_publish():
+    """Batch publish products."""
+    run("revenue_autopilot.py", ["publish"])
+
+
+def cmd_content(product="agencyos"):
+    """Generate marketing content."""
+    run("ai_content.py", ["all", product])
+
+
+def cmd_invoice(args):
+    """Create invoice."""
+    if len(args) < 3:
+        print("Usage: mekong invoice <client> <amount> <description>")
+        return
+    run("invoice_generator.py", ["create"] + args)
+
+
+def cmd_outreach():
+    """Show outreach tools."""
+    run("outreach_cli.py", ["list"])
+
+
+def cmd_notify(message):
+    """Send notification."""
+    from notification_hub import send_notification
+
+    send_notification("info", "Mekong CLI", message)
+
+
+def cmd_status():
+    """Show system status."""
+    run("revenue_autopilot.py", ["status"])
+
+
+def cmd_webhook():
+    """Start webhook server."""
+    run("gumroad_webhook.py")
+
+
+def cmd_help():
+    """Show help."""
+    print(__doc__)
+    print(f"""
+{BOLD}Quick Commands:{RESET}
+  {GREEN}mekong{RESET}              Dashboard overview
+  {GREEN}mekong daily{RESET}        Run morning automation
+  {GREEN}mekong revenue{RESET}      Check revenue
+  {GREEN}mekong leads{RESET}        View lead pipeline
+  {GREEN}mekong publish{RESET}      Publish to Gumroad
+  {GREEN}mekong content{RESET}      Generate marketing copy
+  {GREEN}mekong campaign{RESET}     Auto-generate 7-day Launch Campaign
+  {GREEN}mekong broadcast{RESET}    Distribute content (Twitter/Dev.to/Blog)
+  {GREEN}mekong invoice{RESET}      Create invoice
+  {GREEN}mekong status{RESET}       System health check
+
+{YELLOW}Tip:{RESET} Add alias to ~/.zshrc for quick access
+""")
+
+
+def cmd_broadcast(args):
+    """Broadcast content."""
+    if len(args) < 1:
+        print("Usage: mekong broadcast <file.md> [channels]")
+        return
+    run("broadcast_cli.py", ["post"] + args)
+
+
+def cmd_campaign(args):
+    """Manage campaigns."""
+    if len(args) < 1:
+        print("Usage: mekong campaign <launch|list> [args...]")
+        return
+    run("campaign_manager.py", args)
+
+def cmd_test():
+    """Run test suite."""
+    print(f"{BLUE}▶ Running tests...{RESET}")
+    # Run pytest directly via subprocess to avoid shell/pipe issues
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"], 
+        capture_output=True, 
+        text=True,
+        cwd=PROJECT_DIR
+    )
+    
+    if result.returncode == 0:
+        print(f"{GREEN}✅ Tests passed{RESET}")
+    else:
+        print(f"{YELLOW}⚠️ Tests failed{RESET}")
+        # Print only last few lines or failure summary
+        print(result.stdout)
+        print(result.stderr)
+    return result.returncode == 0
+
+def cmd_ship():
+    """Full ship pipeline: test → commit → push."""
+    print(f"\n{BOLD}🏯 SHIP PIPELINE{RESET}\n")
+
+    # 1. Tests
+    print("1️⃣ Running tests...")
+    if not cmd_test():
+        print(f"   {YELLOW}🛑 Aborting ship due to test failures.{RESET}")
+        return
+
+    # 2. Git status
+    print("2️⃣ Checking git status...")
+    result = subprocess.run(["git", "status", "--short"], capture_output=True, text=True)
+    if not result.stdout.strip():
+        print("   📦 Nothing to commit")
+        return
+    print(f"   📝 Changes detected:\n{result.stdout}")
+
+    # 3. Generate tweet (optional)
+    # print("3️⃣ Generating content...")
+    # run("git_to_tweet.py", show=False)
+    # print("   🐦 Tweet draft ready")
+
+    # 4. Instructions
+    print(f"\n{GREEN}✅ Ready to ship!{RESET}")
+    print("\nRun: git add -A && git commit -m 'feat: ...' && git push")
+
+
+def main():
+    if len(sys.argv) < 2:
+        header()
+        cmd_dashboard()
+        return
+
+    cmd = sys.argv[1].lower()
+    args = sys.argv[2:]
+
+    commands = {
+        "daily": cmd_daily,
+        "revenue": lambda: cmd_revenue(),
+        "leads": lambda: cmd_leads(),
+        "publish": lambda: cmd_publish(),
+        "content": lambda: cmd_content(args[0] if args else "agencyos"),
+        "invoice": lambda: cmd_invoice(args),
+        "outreach": lambda: cmd_outreach(),
+        "status": lambda: cmd_status(),
+        "webhook": lambda: cmd_webhook(),
+        "broadcast": lambda: cmd_broadcast(args),
+        "campaign": lambda: cmd_campaign(args),
+        "help": lambda: cmd_help(),
+        "dashboard": lambda: cmd_dashboard(),
+        "test": lambda: cmd_test(),
+        "ship": lambda: cmd_ship(),
+    }
+
+    if cmd in commands:
+        header()
+        commands[cmd]()
+    else:
+        print(f"Unknown command: {cmd}")
+        cmd_help()
+
+
+if __name__ == "__main__":
+    main()
