@@ -3,6 +3,7 @@ import sys
 import time
 from pathlib import Path
 from rich.console import Console
+from rich.table import Table
 
 console = Console()
 ops_app = typer.Typer(help="👁️ Operations & Monitoring")
@@ -97,8 +98,10 @@ def network_optimize(
         console.print(f"Tailscale: {'[green]✅ Online[/green]' if ts.get('online') else '[red]❌ Offline[/red]'}")
         console.print(f"Exit Node: {'[green]✅ Active[/green]' if ts.get('exit_node_active') else '[yellow]❌ Disabled[/yellow]'}")
         
-        console.print(f"\n📍 Colo: {report['colo']}")
-        console.print(f"⏱️ Ping: {report['latency']}ms")
+        console.print(f"\n📍 IP: {report['ip_info']}")
+        console.print(f"📍 Colo: {report['colo']}")
+        console.print(f"⏱️ Ping (1.1.1.1): {report['latency']}ms")
+        console.print(f"⏱️ Google: {report['google_latency']:.0f}ms")
         
         quality_color = {"EXCELLENT": "green", "GOOD": "blue", "POOR": "red"}
         q_color = quality_color.get(report['quality'], "white")
@@ -115,3 +118,61 @@ def network_optimize(
             console.print("\n[dim]Stopped.[/dim]")
     else:
         optimizer.optimize()
+
+@ops_app.command("network-turbo")
+def network_turbo():
+    """🚀 Run Viettel/SGN Turbo Mode optimization."""
+    from core.ops.network import NetworkOptimizer
+    optimizer = NetworkOptimizer()
+    console.print("[bold magenta]🚀 Activatiing VIETTEL TURBO MODE...[/bold magenta]")
+    if optimizer.turbo_mode():
+        console.print("[green]✅ Turbo Mode Activated Successfully![/green]")
+    else:
+        console.print("[red]❌ Turbo Mode Failed. Try 'network-bypass' for alternatives.[/red]")
+
+@ops_app.command("network-scan")
+def network_scan():
+    """🔍 Scan WARP endpoints for lowest latency."""
+    from core.ops.network import NetworkOptimizer
+    optimizer = NetworkOptimizer()
+    
+    console.print("[cyan]🔍 Scanning endpoints...[/cyan]")
+    results = optimizer.scan_endpoints()
+    
+    table = Table(title="📊 Top Endpoints")
+    table.add_column("Endpoint", style="bold")
+    table.add_column("Latency (UDP)", justify="right")
+    
+    for ip, port, lat in results[:10]:
+        color = "green" if lat < 50 else "yellow"
+        table.add_row(f"{ip}:{port}", f"[{color}]{lat:.1f}ms[/{color}]")
+        
+    console.print(table)
+
+@ops_app.command("network-bypass")
+def network_bypass():
+    """🛡️ Show ISP Bypass Solutions (Manual)."""
+    console.print("\n[bold]🏯 VIETTEL BYPASS TOOLKIT - Binh Pháp[/bold]")
+    console.print("=" * 60)
+    console.print(""")
+
+1. 🥇 [bold]OUTLINE VPN[/bold] (Best for Viettel)
+   → Self-host on DigitalOcean Singapore ($5/mo)
+   → Protocol: Shadowsocks (hard to detect/block)
+   → Install: [cyan]brew install --cask outline-client[/cyan]
+
+2. 🥈 [bold]TAILSCALE + MULLVAD[/bold]
+   → Enable Mullvad integration in Tailscale Admin
+   → Choose exit node: Singapore or Tokyo
+   → No self-hosting needed
+
+3. 🥉 [bold]VPS + WIREGUARD[/bold]
+   → Buy VPS Singapore (Vultr/DO/Linode ~$5/mo)
+   → Install WireGuard 1-click script
+   → Direct tunnel, fast
+
+4. 💡 [bold]QUICK FIXES[/bold] (no VPS needed):
+   → Run: [green]main.py ops network-turbo[/green]
+   → Google DNS: 8.8.8.8, 8.8.4.4
+   → Cloudflare DNS: 1.1.1.1, 1.0.0.1
+""")
