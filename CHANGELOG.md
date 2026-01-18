@@ -1,3 +1,10 @@
+## [2.4.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.8...v2.4.0-beta.9) (2026-01-18)
+
+
+### 🚀 Features
+
+* **release:** add explicit release rules for minor/patch version bumps ([24706fb](https://github.com/claudekit/claudekit-engineer/commit/24706fb1f5db73ca0c6cf4b06f186c42de438f0a))
+
 ## [2.4.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.7...v2.4.0-beta.8) (2026-01-18)
 
 
