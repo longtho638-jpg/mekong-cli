@@ -1,3 +1,15 @@
+## [2.4.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0-beta.6...v2.4.0-beta.7) (2026-01-18)
+
+
+### 🚀 Features
+
+* **skill:** add web-testing skill with comprehensive testing workflows ([34cd3c1](https://github.com/claudekit/claudekit-engineer/commit/34cd3c12328dd01bf2b1f4dd93becbf6298a16a8))
+
+
+### 📚 Documentation
+
+* **skill:** enhance devops skill with kubernetes reference documentation ([14f6e7b](https://github.com/claudekit/claudekit-engineer/commit/14f6e7b85101894005d0c8f2150dbf9f32e4d6b0))
+
 ## [2.4.0](https://github.com/claudekit/claudekit-engineer/compare/v2.3.2...v2.4.0) (2026-01-17)
 
 
