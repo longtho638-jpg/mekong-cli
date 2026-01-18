@@ -36,3 +36,38 @@ def create_proposal(
         console.print(f"[green]✅ Proposal generated:[/green] {path}")
     else:
         console.print("[red]❌ Template not found[/red]")
+
+@sales_app.command("contract-create")
+def create_contract(
+    client: str = typer.Argument(..., help="Client Company Name"),
+    fee: float = typer.Argument(..., help="Monthly Fee"),
+    months: int = typer.Option(6, help="Duration in months"),
+    output: str = typer.Option(None, help="Output file path")
+):
+    """Generate a service contract."""
+    from core.legal.generator import ContractGenerator, ContractParty, ServiceScope, ContractType, PaymentTerms
+    
+    # Defaults
+    agency = ContractParty("Mekong Admin", "Mekong Agency OS", "admin@mekong.os", "HQ")
+    client_party = ContractParty("Representative", client, "email@example.com", "Address TBD")
+    
+    scope = ServiceScope(
+        services=["Strategy", "Execution"],
+        deliverables=["Reports"],
+        exclusions=["Ads"],
+        timeline="Monthly"
+    )
+    
+    gen = ContractGenerator(agency)
+    contract = gen.generate(
+        client_party, scope, fee, ContractType.RETAINER, PaymentTerms.NET_30, months
+    )
+    
+    text = gen.format_text(contract)
+    
+    if output:
+        from pathlib import Path
+        Path(output).write_text(text, encoding="utf-8")
+        console.print(f"[green]✅ Contract saved to {output}[/green]")
+    else:
+        console.print(text)
