@@ -51,7 +51,7 @@ Reference external instruction files in `opencode.json`:
 
 ```json
 {
-  "instructions": ["docs/*.md", ".opencode/agent/*.md"]
+  "instructions": ["docs/*.md", ".opencode/agents/*.md"]
 }
 ```
 
