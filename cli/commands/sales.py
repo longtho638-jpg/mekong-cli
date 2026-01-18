@@ -95,7 +95,13 @@ def create_contract(
     output: str = typer.Option(None, help="Output file path")
 ):
     """Generate a service contract."""
-    from core.legal.generator import ContractGenerator, ContractParty, ServiceScope, ContractType, PaymentTerms
+    from core.legal.generator import (
+        ContractGenerator,
+        ContractParty,
+        ContractType,
+        PaymentTerms,
+        ServiceScope,
+    )
     
     # Defaults
     agency = ContractParty("Mekong Admin", "Mekong Agency OS", "admin@mekong.os", "HQ")
