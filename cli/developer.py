@@ -5,6 +5,7 @@ Handles the build-test-ship lifecycle with Agentic Orchestration.
 
 import subprocess
 import time
+from pathlib import Path
 
 import typer
 from rich.console import Console
@@ -38,24 +39,55 @@ def cook(feature: str = typer.Argument(..., help="Tính năng cần xây dựng"
     )
 
 
-def test():
+def test(
+    integration: bool = typer.Option(False, "--integration", "-i", help="Run integration tests")
+):
     """🧪 Test: Chạy bộ kiểm thử tự động và xác minh chất lượng code."""
     console.print("\n[bold blue]🧪 Đang chạy kiểm thử hệ thống...[/bold blue]\n")
 
+    # 1. Run Unit Tests
     try:
-        # Giả lập chạy test_wow.py hoặc pytest
-        result = subprocess.run(["python3", "tests/test_wow.py"], capture_output=True, text=True)
-        if result.returncode == 0:
-            console.print(result.stdout)
-            console.print("\n[bold green]✅ Tất cả kiểm thử đã vượt qua![/bold green]")
+        console.print("Running [cyan]pytest[/cyan]...")
+        # Check if tests directory exists
+        if not Path("tests").exists() and not Path("backend/tests").exists():
+             console.print("[yellow]⚠️  No 'tests' directory found. Skipping unit tests.[/yellow]")
         else:
-            console.print("[red]⚠️  Có lỗi trong quá trình kiểm thử:[/red]")
-            console.print(result.stderr)
+            result = subprocess.run(["pytest"], capture_output=True, text=True)
+            if result.returncode == 0:
+                console.print(result.stdout)
+                console.print("[bold green]✅ Unit tests passed![/bold green]")
+            else:
+                console.print("[red]⚠️  Unit tests failed:[/red]")
+                console.print(result.stderr or result.stdout)
     except FileNotFoundError:
-        console.print(
-            "[yellow]⚠️  Không tìm thấy file tests/test_wow.py. Chạy pytest thay thế...[/yellow]"
-        )
-        subprocess.run(["pytest"])
+        console.print("[red]❌ pytest not found. Install it with `pip install pytest`.[/red]")
+
+    # 2. Run Integration Tests (Optional)
+    if integration:
+        console.print("\n[bold blue]🔗 Running Integration Tests...[/bold blue]")
+        try:
+            from core.testing.integration import IntegrationTester
+            tester = IntegrationTester(Path.cwd())
+            results = tester.run_all()
+            
+            # Display results summary
+            failed = False
+            for category, data in results.items():
+                console.print(f"\n[bold]{category.replace('_', ' ').title()}[/bold]")
+                for k, v in data.items():
+                    if k in ["components_created", "sample_skills_verified", "sample_mappings_tested"]:
+                        continue # Skip detailed lists for CLI summary
+                    icon = "✅" if v else "❌"
+                    if isinstance(v, bool) and not v: failed = True
+                    console.print(f"  {icon} {k}: {v}")
+            
+            if failed:
+                console.print("\n[red]❌ Integration tests failed.[/red]")
+            else:
+                console.print("\n[bold green]✅ Integration tests passed![/bold green]")
+
+        except ImportError:
+            console.print("[red]❌ Core testing module not found.[/red]")
 
 
 def ship():
@@ -64,6 +96,11 @@ def ship():
         "\n[bold magenta]🚀 Đang chuẩn bị cất cánh (Ship to Production)...[/bold magenta]\n"
     )
 
-    from deploy_automation import run_deploy
-
-    run_deploy()
+    try:
+        from core.ops.deploy import DeployManager
+        manager = DeployManager()
+        manager.run()
+    except ImportError:
+        console.print("[red]❌ Deploy module not found.[/red]")
+    except Exception as e:
+        console.print(f"[red]❌ Deploy failed: {e}[/red]")
