@@ -1,6 +1,7 @@
 import typer
 import sys
 import time
+import subprocess
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
@@ -176,3 +177,45 @@ def network_bypass():
    → Google DNS: 8.8.8.8, 8.8.4.4
    → Cloudflare DNS: 1.1.1.1, 1.0.0.1
 """)
+
+@ops_app.command("health")
+def health_check():
+    """🩺 Run System Health Check."""
+    console.print("\n[bold]🩺 SYSTEM HEALTH CHECK[/bold]")
+    console.print("=" * 40)
+
+    all_ok = True
+
+    # 1. Git
+    result = subprocess.run(["git", "status"], capture_output=True)
+    is_git_ok = result.returncode == 0
+    console.print(f"  {'[green]✅[/green]' if is_git_ok else '[red]❌[/red]'} Git Repository")
+    all_ok &= is_git_ok
+
+    # 2. Python
+    result = subprocess.run(["python3", "--version"], capture_output=True)
+    is_python_ok = result.returncode == 0
+    console.print(f"  {'[green]✅[/green]' if is_python_ok else '[red]❌[/red]'} Python 3 Environment")
+    all_ok &= is_python_ok
+
+    # 3. Core Modules
+    modules = ["core", "cli", "backend"]
+    for mod in modules:
+        is_mod_ok = Path(mod).exists() and Path(f"{mod}/__init__.py").exists() if mod != "backend" else Path(mod).exists()
+        console.print(f"  {'[green]✅[/green]' if is_mod_ok else '[red]❌[/red]'} Module: {mod}")
+        all_ok &= is_mod_ok
+
+    # 4. Products
+    products = list(Path("products").glob("*.zip"))
+    is_prod_ok = len(products) > 0
+    console.print(f"  {'[green]✅[/green]' if is_prod_ok else '[yellow]⚠️[/yellow]'} Products ({len(products)} found)")
+    # Not failing health check if products missing, just warning
+
+    console.print("=" * 40)
+    if all_ok:
+        console.print("[bold green]✅ ALL SYSTEMS OPERATIONAL[/bold green]\n")
+    else:
+        console.print("[bold yellow]⚠️  SOME ISSUES DETECTED[/bold yellow]\n")
+    
+    if not all_ok:
+        raise typer.Exit(code=1)
