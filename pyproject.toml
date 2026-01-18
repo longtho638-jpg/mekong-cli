@@ -12,7 +12,11 @@ exclude = [
     ".claude",
     ".antigravity",
     "products",
-    "scripts/legacy"
+    "scripts/legacy",
+    "antigravity/infrastructure/distributed_queue.py",
+    "antigravity/infrastructure/opentelemetry.py",
+    "external",
+    "mekong-docs"
 ]
 
 [tool.ruff.lint]

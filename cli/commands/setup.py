@@ -43,7 +43,7 @@ def activate_license(
     """
     Activate UItra (PRO tier) license for email.
     """
-    from core.licensing import LicenseValidator, LicenseTier
+    from core.licensing import LicenseTier, LicenseValidator
 
     console.print(f"🔄 Connecting to License Core for {email}...")
     validator = LicenseValidator()

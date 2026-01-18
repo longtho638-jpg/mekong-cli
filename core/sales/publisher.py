@@ -5,10 +5,8 @@ Handles batch publishing of AgencyOS products to Gumroad.
 """
 
 import os
-import json
 from pathlib import Path
-from typing import List, Dict, Optional, Any
-from core.config import get_settings
+from typing import Any, Dict, List
 
 # Product Definitions
 PRODUCTS = [
@@ -140,7 +138,7 @@ class GumroadPublisher:
         if not self.token:
             raise ValueError("GUMROAD_ACCESS_TOKEN not set")
             
-        import requests # Import here to avoid dependency if just doing dry run
+        import requests  # Import here to avoid dependency if just doing dry run
         
         results = []
         for product in PRODUCTS:
