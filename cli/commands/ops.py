@@ -32,6 +32,12 @@ def test_notify(message: str):
     notifier = NotificationService()
     notifier.send("Manual Alert", message, "info")
 
+@ops_app.command("wow")
+def check_wow():
+    """Run WOW Factor Analysis."""
+    from core.monitoring.wow import run_wow_check
+    run_wow_check()
+
 @ops_app.command("quota")
 def monitor_quota(
     watch: bool = typer.Option(False, "--watch", "-w", help="Live monitoring mode"),
