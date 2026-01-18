@@ -8,6 +8,7 @@ Main interface sử dụng refactored services với clean architecture.
 import logging
 from typing import Dict, Any, List
 from datetime import datetime
+from core.config import get_settings
 
 try:
     from .services.ai_wingman_service import (
@@ -40,6 +41,8 @@ class AIWingman:
         mode: WingmanMode = WingmanMode.SEMI_AUTO,
         provider_type: str = "openai"
     ):
+        self.settings = get_settings()
+        
         # Khởi tạo core service
         self.service = AIWingmanService(owner_profile, mode)
         
@@ -56,9 +59,11 @@ class AIWingman:
         
         # Setup AI provider
         if provider_type == "openai":
-            self.service.set_provider(OpenAIProvider("dummy_key"))  # TODO: Load from config
+            key = self.settings.OPENAI_API_KEY or "dummy_key"
+            self.service.set_provider(OpenAIProvider(key))
         elif provider_type == "anthropic":
-            self.service.set_provider(AnthropicProvider("dummy_key"))  # TODO: Load from config
+            key = self.settings.ANTHROPIC_API_KEY or "dummy_key"
+            self.service.set_provider(AnthropicProvider(key))
         
         logger.info(f"AI Wingman initialized for {owner_profile.agency_name}")
     

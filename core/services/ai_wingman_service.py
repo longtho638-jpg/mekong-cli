@@ -11,6 +11,7 @@ from datetime import datetime
 from enum import Enum
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+from core.ai.llm import LLMClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -67,34 +68,30 @@ class AIProvider(ABC):
         pass
 
 class OpenAIProvider(AIProvider):
-    """OpenAI provider implementation."""
+    """OpenAI provider implementation via Unified LLMClient."""
     
     def __init__(self, api_key: str):
-        self.api_key = api_key
-        logger.info("OpenAI provider initialized")
+        self.client = LLMClient()
     
     async def generate_response(self, prompt: str, context: Dict[str, Any]) -> str:
-        # TODO: Implement OpenAI API call
-        return f"OpenAI response for: {prompt[:50]}..."
+        return self.client.complete(prompt, system_instruction="You are AI Wingman.")
     
     async def analyze_inquiry(self, message: str) -> Dict[str, Any]:
-        # TODO: Implement inquiry analysis
-        return {"sentiment": "neutral", "urgency": "medium"}
+        response = self.client.complete(f"Analyze this inquiry: {message}. Return JSON.")
+        return {"raw": response, "sentiment": "neutral"} # Mock parsing
 
 class AnthropicProvider(AIProvider):
-    """Anthropic provider implementation."""
+    """Anthropic provider implementation via Unified LLMClient."""
     
     def __init__(self, api_key: str):
-        self.api_key = api_key
-        logger.info("Anthropic provider initialized")
+        self.client = LLMClient()
     
     async def generate_response(self, prompt: str, context: Dict[str, Any]) -> str:
-        # TODO: Implement Anthropic API call
-        return f"Anthropic response for: {prompt[:50]}..."
+        return self.client.complete(prompt, system_instruction="You are AI Wingman.")
     
     async def analyze_inquiry(self, message: str) -> Dict[str, Any]:
-        # TODO: Implement inquiry analysis
-        return {"sentiment": "positive", "urgency": "low"}
+        response = self.client.complete(f"Analyze this inquiry: {message}. Return JSON.")
+        return {"raw": response, "sentiment": "neutral"} # Mock parsing
 
 class AIWingmanService:
     """Core AI Wingman service với provider abstraction."""
