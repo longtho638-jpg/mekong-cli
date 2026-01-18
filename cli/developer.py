@@ -40,7 +40,7 @@ def cook(feature: str = typer.Argument(..., help="Tính năng cần xây dựng"
 
 
 def test(
-    integration: bool = typer.Option(False, "--integration", "-i", help="Run integration tests")
+    integration: bool = typer.Option(False, "--integration", "-i", help="Run integration tests"),
 ):
     """🧪 Test: Chạy bộ kiểm thử tự động và xác minh chất lượng code."""
     console.print("\n[bold blue]🧪 Đang chạy kiểm thử hệ thống...[/bold blue]\n")
@@ -50,7 +50,7 @@ def test(
         console.print("Running [cyan]pytest[/cyan]...")
         # Check if tests directory exists
         if not Path("tests").exists() and not Path("backend/tests").exists():
-             console.print("[yellow]⚠️  No 'tests' directory found. Skipping unit tests.[/yellow]")
+            console.print("[yellow]⚠️  No 'tests' directory found. Skipping unit tests.[/yellow]")
         else:
             result = subprocess.run(["pytest"], capture_output=True, text=True)
             if result.returncode == 0:
@@ -67,20 +67,26 @@ def test(
         console.print("\n[bold blue]🔗 Running Integration Tests...[/bold blue]")
         try:
             from core.testing.integration import IntegrationTester
+
             tester = IntegrationTester(Path.cwd())
             results = tester.run_all()
-            
+
             # Display results summary
             failed = False
             for category, data in results.items():
                 console.print(f"\n[bold]{category.replace('_', ' ').title()}[/bold]")
                 for k, v in data.items():
-                    if k in ["components_created", "sample_skills_verified", "sample_mappings_tested"]:
-                        continue # Skip detailed lists for CLI summary
+                    if k in [
+                        "components_created",
+                        "sample_skills_verified",
+                        "sample_mappings_tested",
+                    ]:
+                        continue  # Skip detailed lists for CLI summary
                     icon = "✅" if v else "❌"
-                    if isinstance(v, bool) and not v: failed = True
+                    if isinstance(v, bool) and not v:
+                        failed = True
                     console.print(f"  {icon} {k}: {v}")
-            
+
             if failed:
                 console.print("\n[red]❌ Integration tests failed.[/red]")
             else:
@@ -98,6 +104,7 @@ def ship():
 
     try:
         from core.ops.deploy import DeployManager
+
         manager = DeployManager()
         manager.run()
     except ImportError:
