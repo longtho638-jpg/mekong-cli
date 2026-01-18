@@ -23,6 +23,56 @@ def build_product(key: str = typer.Argument(..., help="Product Key")):
     except Exception as e:
         console.print(f"[red]❌ Build failed:[/red] {e}")
 
+@sales_app.command("products-publish")
+def publish_products(
+    dry_run: bool = typer.Option(True, "--dry-run/--execute", help="Preview or execute publishing"),
+):
+    """Batch publish products to Gumroad."""
+    from core.sales.publisher import GumroadPublisher
+    
+    publisher = GumroadPublisher()
+    
+    if dry_run:
+        info = publisher.dry_run()
+        console.print("\n[bold]🏯 GUMROAD BATCH PUBLISHER (Dry Run)[/bold]")
+        console.print("=" * 60)
+        
+        if info["missing_files"]:
+            console.print("[red]❌ Missing Files:[/red]")
+            for f in info["missing_files"]:
+                console.print(f"   - {f}")
+            console.print("\n[yellow]⚠️  Run 'products-build' to generate these files first.[/yellow]")
+            return
+
+        for i, p in enumerate(info["products"], 1):
+            console.print(f"{i}. [bold]{p['name']}[/bold]")
+            console.print(f"   Price: ${p['price']/100:.2f}")
+            console.print(f"   ZIP: {p['zip_path']}")
+            console.print()
+            
+        console.print(f"📊 Total Value: ${info['total_value']:.2f}")
+        
+        if not info["has_token"]:
+            console.print("\n[yellow]⚠️  GUMROAD_ACCESS_TOKEN not set in environment.[/yellow]")
+        else:
+            console.print("\n[green]✅ Token detected. Ready to publish.[/green]")
+            
+        console.print("\nRun with [bold]--execute[/bold] to publish.")
+    else:
+        try:
+            console.print("[bold]🚀 Publishing to Gumroad...[/bold]")
+            results = publisher.publish_all()
+            
+            console.print("\n[bold]Publishing Report:[/bold]")
+            for res in results:
+                if res["status"] == "success":
+                    console.print(f"✅ {res['name']} -> {res['url']}")
+                else:
+                    console.print(f"❌ {res['name']} -> {res['error']}")
+                    
+        except ValueError as e:
+            console.print(f"[red]Error: {e}[/red]")
+
 @sales_app.command("proposal-create")
 def create_proposal(
     template: str = typer.Argument(..., help="ghost_cto | venture"),
