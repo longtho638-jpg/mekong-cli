@@ -64,7 +64,7 @@ def seed_leads():
         with open(LEADS_FILE) as f:
             try:
                 existing = json.load(f)
-            except:
+            except Exception:
                 pass
 
     # Just append new ones if not exist

@@ -3,11 +3,11 @@ Campaign Manager Agent - Cross-Channel Orchestration
 Manages marketing campaigns across multiple channels.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import date
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class Channel(Enum):
@@ -29,6 +29,7 @@ class CampaignStatus(Enum):
 @dataclass
 class MarketingCampaign:
     """Marketing campaign"""
+
     id: str
     name: str
     channels: List[Channel]
@@ -53,7 +54,7 @@ class MarketingCampaign:
 class CampaignManagerAgent:
     """
     Campaign Manager Agent - Quản lý Chiến dịch Đa kênh
-    
+
     Responsibilities:
     - Cross-channel orchestration
     - Marketing calendar
@@ -67,15 +68,10 @@ class CampaignManagerAgent:
         self.campaigns: Dict[str, MarketingCampaign] = {}
 
     def create_campaign(
-        self,
-        name: str,
-        channels: List[Channel],
-        start_date: date,
-        end_date: date,
-        budget: float
+        self, name: str, channels: List[Channel], start_date: date, end_date: date, budget: float
     ) -> MarketingCampaign:
         """Create marketing campaign"""
-        campaign_id = f"mkt_{random.randint(100,999)}"
+        campaign_id = f"mkt_{random.randint(100, 999)}"
 
         campaign = MarketingCampaign(
             id=campaign_id,
@@ -84,7 +80,7 @@ class CampaignManagerAgent:
             start_date=start_date,
             end_date=end_date,
             budget=budget,
-            tasks_total=random.randint(5, 15)
+            tasks_total=random.randint(5, 15),
         )
 
         self.campaigns[campaign_id] = campaign
@@ -113,13 +109,17 @@ class CampaignManagerAgent:
         campaign = self.campaigns[campaign_id]
 
         # Simulate spend and revenue
-        progress_factor = campaign.tasks_completed / campaign.tasks_total if campaign.tasks_total > 0 else 0
+        progress_factor = (
+            campaign.tasks_completed / campaign.tasks_total if campaign.tasks_total > 0 else 0
+        )
         campaign.spend = campaign.budget * progress_factor * random.uniform(0.9, 1.1)
 
         # ROAS varies by channel mix
         base_roas = 2.5
-        if Channel.EMAIL in campaign.channels: base_roas += 1.0 # High ROI
-        if Channel.SEARCH in campaign.channels: base_roas += 0.5
+        if Channel.EMAIL in campaign.channels:
+            base_roas += 1.0  # High ROI
+        if Channel.SEARCH in campaign.channels:
+            base_roas += 0.5
 
         campaign.revenue = campaign.spend * base_roas * random.uniform(0.8, 1.2)
 
@@ -139,7 +139,7 @@ class CampaignManagerAgent:
             "active": len(active),
             "total_budget": sum(c.budget for c in campaigns),
             "total_spend": sum(c.spend for c in campaigns),
-            "total_revenue": sum(c.revenue for c in campaigns)
+            "total_revenue": sum(c.revenue for c in campaigns),
         }
 
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         [Channel.EMAIL, Channel.SOCIAL, Channel.SEARCH],
         start,
         start + timedelta(days=30),
-        50000
+        50000,
     )
 
     print(f"📋 Campaign: {c1.name}")

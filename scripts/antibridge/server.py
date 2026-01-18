@@ -48,16 +48,12 @@ class AntiBridgeHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            self.wfile.write(
-                json.dumps({"success": True, "response": response}).encode("utf-8")
-            )
+            self.wfile.write(json.dumps({"success": True, "response": response}).encode("utf-8"))
         except Exception as e:
             self.send_response(500)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(
-                json.dumps({"success": False, "error": str(e)}).encode("utf-8")
-            )
+            self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
 
     def process_command(self, message: str) -> str:
         """Process incoming command with WOW responses."""
@@ -283,7 +279,7 @@ Cảm ơn bạn đã nhắn tin!
                 cwd=str(Path.home() / "mekong-cli"),
             )
             return result.stdout.strip()
-        except:
+        except Exception:
             return ""
 
     def do_OPTIONS(self):
@@ -304,23 +300,19 @@ def get_ips():
     tailscale_ip = None
     try:
         local_ip = (
-            subprocess.check_output(
-                ["ipconfig", "getifaddr", "en0"], stderr=subprocess.DEVNULL
-            )
+            subprocess.check_output(["ipconfig", "getifaddr", "en0"], stderr=subprocess.DEVNULL)
             .decode()
             .strip()
         )
-    except:
+    except Exception:
         pass
     try:
         tailscale_ip = (
-            subprocess.check_output(
-                ["tailscale", "ip", "-4"], stderr=subprocess.DEVNULL
-            )
+            subprocess.check_output(["tailscale", "ip", "-4"], stderr=subprocess.DEVNULL)
             .decode()
             .strip()
         )
-    except:
+    except Exception:
         pass
     return local_ip, tailscale_ip
 

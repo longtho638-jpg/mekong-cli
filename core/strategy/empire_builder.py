@@ -9,19 +9,21 @@ One-command setup for complete agency infrastructure:
 - Agent activation
 """
 
-import uuid
 import logging
-from typing import List
-from datetime import datetime
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
+from typing import List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class AgencyNiche(Enum):
     """Business niches for automated agency setup."""
+
     SAAS_MARKETING = "saas_marketing"
     ECOMMERCE = "ecommerce"
     LOCAL_BUSINESS = "local_business"
@@ -34,16 +36,18 @@ class AgencyNiche(Enum):
 
 class BrandStyle(Enum):
     """Visual style themes."""
-    CYBER = "cyber"           # Matrix green, dark, tech
-    MINIMAL = "minimal"       # Clean, white space
-    BOLD = "bold"             # Vibrant colors, striking
+
+    CYBER = "cyber"  # Matrix green, dark, tech
+    MINIMAL = "minimal"  # Clean, white space
+    BOLD = "bold"  # Vibrant colors, striking
     PROFESSIONAL = "professional"  # Corporate, trust
-    CREATIVE = "creative"     # Playful, colorful
+    CREATIVE = "creative"  # Playful, colorful
 
 
 @dataclass
 class BrandIdentity:
     """Generated brand identity entity."""
+
     name: str
     tagline: str
     primary_color: str
@@ -58,6 +62,7 @@ class BrandIdentity:
 @dataclass
 class LegalDocument:
     """Generated legal document entity."""
+
     doc_type: str
     title: str
     content: str
@@ -67,6 +72,7 @@ class LegalDocument:
 @dataclass
 class AgencyConfig:
     """Complete agency configuration record."""
+
     id: str
     name: str
     niche: AgencyNiche
@@ -80,7 +86,7 @@ class AgencyConfig:
 class EmpireBuilder:
     """
     Empire in a Box System.
-    
+
     Automates the 0-to-1 process of launching a fully equipped digital agency.
     """
 
@@ -89,7 +95,11 @@ class EmpireBuilder:
         BrandStyle.CYBER: {"primary": "#00ff41", "secondary": "#0d1117", "accent": "#00bfff"},
         BrandStyle.MINIMAL: {"primary": "#1a1a1a", "secondary": "#ffffff", "accent": "#6366f1"},
         BrandStyle.BOLD: {"primary": "#ff5f56", "secondary": "#1f2937", "accent": "#fbbf24"},
-        BrandStyle.PROFESSIONAL: {"primary": "#1e40af", "secondary": "#f8fafc", "accent": "#0ea5e9"},
+        BrandStyle.PROFESSIONAL: {
+            "primary": "#1e40af",
+            "secondary": "#f8fafc",
+            "accent": "#0ea5e9",
+        },
         BrandStyle.CREATIVE: {"primary": "#ec4899", "secondary": "#1e1b4b", "accent": "#a855f7"},
     }
 
@@ -112,10 +122,7 @@ class EmpireBuilder:
         logger.info("Empire Builder initialized.")
 
     def generate_brand(
-        self,
-        name: str,
-        niche: AgencyNiche,
-        style: BrandStyle = BrandStyle.CYBER
+        self, name: str, niche: AgencyNiche, style: BrandStyle = BrandStyle.CYBER
     ) -> BrandIdentity:
         """Generate a complete brand kit based on niche and style."""
         palette = self.PALETTES.get(style, self.PALETTES[BrandStyle.PROFESSIONAL])
@@ -130,14 +137,11 @@ class EmpireBuilder:
             font_heading=fonts[0],
             font_body=fonts[1],
             style=style,
-            logo_concept=f"Modern {style.value} monogram"
+            logo_concept=f"Modern {style.value} monogram",
         )
 
     def build_empire(
-        self,
-        name: str,
-        niche: AgencyNiche,
-        style: BrandStyle = BrandStyle.CYBER
+        self, name: str, niche: AgencyNiche, style: BrandStyle = BrandStyle.CYBER
     ) -> AgencyConfig:
         """Execute the full agency setup pipeline."""
         if not name:
@@ -151,11 +155,13 @@ class EmpireBuilder:
 
         config = AgencyConfig(
             id=f"AGY-{uuid.uuid4().hex[:6].upper()}",
-            name=name, niche=niche, brand=brand,
+            name=name,
+            niche=niche,
+            brand=brand,
             agents_activated=agents,
-            legal_docs=[], # Placeholder for real generator
+            legal_docs=[],  # Placeholder for real generator
             created_at=datetime.now(),
-            setup_time_seconds=int((datetime.now() - start).total_seconds())
+            setup_time_seconds=int((datetime.now() - start).total_seconds()),
         )
 
         self.agencies_created.append(config)
@@ -187,7 +193,9 @@ if __name__ == "__main__":
 
     try:
         builder = EmpireBuilder()
-        empire = builder.build_empire("Saigon Digital", AgencyNiche.SAAS_MARKETING, BrandStyle.MINIMAL)
+        empire = builder.build_empire(
+            "Saigon Digital", AgencyNiche.SAAS_MARKETING, BrandStyle.MINIMAL
+        )
         print("\n" + builder.format_summary(empire))
 
     except Exception as e:

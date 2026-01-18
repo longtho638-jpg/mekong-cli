@@ -2,8 +2,8 @@
 🛠️ IDE Models - Planning & Productivity
 =======================================
 
-Defines the core data structures for developer experience (DX). 
-Enables structured implementation planning using Markdown frontmatter 
+Defines the core data structures for developer experience (DX).
+Enables structured implementation planning using Markdown frontmatter
 and lightweight task tracking.
 
 Hierarchy:
@@ -16,24 +16,26 @@ Binh Pháp: 🛠️ Khí (Tools) - Organizing the workshop.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class Plan:
     """
     📜 Strategic Implementation Plan
-    
-    Acts as the blueprint for an agent mission. 
+
+    Acts as the blueprint for an agent mission.
     Can be serialized to Markdown frontmatter for human/AI collaboration.
     """
+
     title: str
     description: str
     status: str = "pending"  # pending, in-progress, completed, cancelled
-    priority: str = "P2"     # P1 (High), P2 (Medium), P3 (Low)
-    effort: str = "4h"       # Estimated duration
+    priority: str = "P2"  # P1 (High), P2 (Medium), P3 (Low)
+    effort: str = "4h"  # Estimated duration
     branch: Optional[str] = None
     tags: List[str] = field(default_factory=list)
     created: datetime = field(default_factory=datetime.now)
@@ -50,7 +52,7 @@ class Plan:
             "branch": self.branch,
             "tags": self.tags,
             "created": self.created.isoformat(),
-            "phases": self.phases
+            "phases": self.phases,
         }
 
     def to_frontmatter(self) -> str:
@@ -62,9 +64,9 @@ description: "{self.description}"
 status: {self.status}
 priority: {self.priority}
 effort: {self.effort}
-branch: {self.branch or 'main'}
+branch: {self.branch or "main"}
 tags: [{t_list}]
-created: {self.created.strftime('%Y-%m-%d')}
+created: {self.created.strftime("%Y-%m-%d")}
 ---"""
 
 
@@ -72,9 +74,10 @@ created: {self.created.strftime('%Y-%m-%d')}
 class TodoItem:
     """
     ✅ Tactical Todo
-    
+
     A simple task unit used for daily tracking and session state.
     """
+
     id: str
     text: str
     completed: bool = False
@@ -101,5 +104,5 @@ class TodoItem:
             "id": self.id,
             "text": self.text,
             "completed": self.completed,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
         }

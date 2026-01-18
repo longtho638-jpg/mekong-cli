@@ -1,11 +1,14 @@
 """
 Finance Module - Data Entities
 """
+
 from dataclasses import dataclass
 from enum import Enum
 
+
 class ReportPeriod(Enum):
     """Reporting timeframes."""
+
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     YEARLY = "yearly"
@@ -14,6 +17,7 @@ class ReportPeriod(Enum):
 @dataclass
 class ProfitLoss:
     """Profit & Loss statement entity."""
+
     period: str
     revenue: float
     cogs: float
@@ -30,6 +34,7 @@ class ProfitLoss:
 @dataclass
 class FinancialRatio:
     """A financial performance ratio record."""
+
     name: str
     value: float
     target: float

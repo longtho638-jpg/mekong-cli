@@ -3,11 +3,11 @@ Recruitment Agent - Hiring Pipeline Management
 Manages job postings, candidates, and offers.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class CandidateStage(Enum):
@@ -31,6 +31,7 @@ class JobStatus(Enum):
 @dataclass
 class Candidate:
     """Job candidate"""
+
     id: str
     name: str
     email: str
@@ -49,6 +50,7 @@ class Candidate:
 @dataclass
 class Job:
     """Job posting"""
+
     id: str
     title: str
     department: str
@@ -67,7 +69,7 @@ class Job:
 class RecruitmentAgent:
     """
     Recruitment Agent - Quản lý Tuyển dụng
-    
+
     Responsibilities:
     - Post jobs
     - Track candidates
@@ -87,10 +89,10 @@ class RecruitmentAgent:
         department: str,
         location: str,
         salary_range: str,
-        hiring_manager: str = ""
+        hiring_manager: str = "",
     ) -> Job:
         """Create job posting"""
-        job_id = f"job_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        job_id = f"job_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         job = Job(
             id=job_id,
@@ -99,29 +101,17 @@ class RecruitmentAgent:
             location=location,
             salary_range=salary_range,
             status=JobStatus.OPEN,
-            hiring_manager=hiring_manager
+            hiring_manager=hiring_manager,
         )
 
         self.jobs[job_id] = job
         return job
 
-    def add_candidate(
-        self,
-        name: str,
-        email: str,
-        job_id: str,
-        rating: int = 0
-    ) -> Candidate:
+    def add_candidate(self, name: str, email: str, job_id: str, rating: int = 0) -> Candidate:
         """Add candidate to pipeline"""
-        candidate_id = f"candidate_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        candidate_id = f"candidate_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        candidate = Candidate(
-            id=candidate_id,
-            name=name,
-            email=email,
-            job_id=job_id,
-            rating=rating
-        )
+        candidate = Candidate(id=candidate_id, name=name, email=email, job_id=job_id, rating=rating)
 
         self.candidates[candidate_id] = candidate
 
@@ -170,9 +160,15 @@ class RecruitmentAgent:
         return {
             "open_jobs": len([j for j in jobs if j.status == JobStatus.OPEN]),
             "total_candidates": len(candidates),
-            "in_pipeline": len([c for c in candidates if c.stage not in [CandidateStage.HIRED, CandidateStage.REJECTED]]),
+            "in_pipeline": len(
+                [
+                    c
+                    for c in candidates
+                    if c.stage not in [CandidateStage.HIRED, CandidateStage.REJECTED]
+                ]
+            ),
             "hired": len([c for c in candidates if c.stage == CandidateStage.HIRED]),
-            "avg_rating": sum(c.rating for c in candidates) / len(candidates) if candidates else 0
+            "avg_rating": sum(c.rating for c in candidates) / len(candidates) if candidates else 0,
         }
 
 
@@ -183,7 +179,9 @@ if __name__ == "__main__":
     print("📋 Recruitment Agent Demo\n")
 
     # Create jobs
-    j1 = agent.create_job("Senior Engineer", "Engineering", "Ho Chi Minh", "$2000-3000", "Manager_001")
+    j1 = agent.create_job(
+        "Senior Engineer", "Engineering", "Ho Chi Minh", "$2000-3000", "Manager_001"
+    )
     j2 = agent.create_job("Product Manager", "Product", "Ha Noi", "$2500-3500", "Manager_002")
 
     print(f"📋 Job: {j1.title}")

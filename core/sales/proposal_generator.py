@@ -12,19 +12,21 @@ Features:
 - Profit-focused pricing logic
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ServiceType(Enum):
     """Categorization of offered professional services."""
+
     SEO = "seo"
     CONTENT = "content"
     PPC = "ppc"
@@ -35,6 +37,7 @@ class ServiceType(Enum):
 
 class ProjectTier(Enum):
     """Scaling tiers for projects."""
+
     STARTER = "starter"
     GROWTH = "growth"
     SCALE = "scale"
@@ -43,6 +46,7 @@ class ProjectTier(Enum):
 
 class ProposalStatus(Enum):
     """Lifecycle status of a proposal."""
+
     DRAFT = "draft"
     SENT = "sent"
     ACCEPTED = "accepted"
@@ -52,6 +56,7 @@ class ProposalStatus(Enum):
 @dataclass
 class ServicePackage:
     """A standard service offering blueprint."""
+
     service_type: ServiceType
     name: str
     description: str
@@ -63,6 +68,7 @@ class ServicePackage:
 @dataclass
 class ProposalItem:
     """A specific line item in a generated proposal."""
+
     name: str
     price: float
     description: str = ""
@@ -71,6 +77,7 @@ class ProposalItem:
 @dataclass
 class Proposal:
     """A complete proposal document entity."""
+
     id: str
     client_name: str
     project_name: str
@@ -94,7 +101,7 @@ class Proposal:
 class ProposalGenerator:
     """
     Smart Proposal Generation System.
-    
+
     Orchestrates service selection, tier-based pricing adjustments, and professional output formatting.
     """
 
@@ -103,7 +110,7 @@ class ProposalGenerator:
         ProjectTier.STARTER: 0.75,
         ProjectTier.GROWTH: 1.0,
         ProjectTier.SCALE: 1.5,
-        ProjectTier.ENTERPRISE: 2.5
+        ProjectTier.ENTERPRISE: 2.5,
     }
 
     def __init__(self, agency_name: str):
@@ -116,13 +123,21 @@ class ProposalGenerator:
         """Blueprint for standard agency offerings."""
         return {
             ServiceType.SEO: ServicePackage(
-                ServiceType.SEO, "SEO Growth", "Rank higher on Google",
-                ["Audit", "Backlinks"], 1500.0, 20
+                ServiceType.SEO,
+                "SEO Growth",
+                "Rank higher on Google",
+                ["Audit", "Backlinks"],
+                1500.0,
+                20,
             ),
             ServiceType.WEB_DEV: ServicePackage(
-                ServiceType.WEB_DEV, "Web Build", "Custom high-speed site",
-                ["Design", "Dev", "Launch"], 3500.0, 40
-            )
+                ServiceType.WEB_DEV,
+                "Web Build",
+                "Custom high-speed site",
+                ["Design", "Dev", "Launch"],
+                3500.0,
+                40,
+            ),
         }
 
     def create_proposal(
@@ -130,7 +145,7 @@ class ProposalGenerator:
         client: str,
         project: str,
         services: List[ServiceType],
-        tier: ProjectTier = ProjectTier.GROWTH
+        tier: ProjectTier = ProjectTier.GROWTH,
     ) -> Proposal:
         """Initialize a new professional proposal project."""
         multiplier = self.TIER_FACTORS.get(tier, 1.0)
@@ -139,15 +154,19 @@ class ProposalGenerator:
         for stype in services:
             if stype in self.catalog:
                 pkg = self.catalog[stype]
-                items.append(ProposalItem(
-                    name=pkg.name,
-                    price=pkg.base_price * multiplier,
-                    description=pkg.description
-                ))
+                items.append(
+                    ProposalItem(
+                        name=pkg.name,
+                        price=pkg.base_price * multiplier,
+                        description=pkg.description,
+                    )
+                )
 
         proposal = Proposal(
             id=f"PROP-{uuid.uuid4().hex[:6].upper()}",
-            client_name=client, project_name=project, items=items
+            client_name=client,
+            project_name=project,
+            items=items,
         )
         self.active_proposals[proposal.id] = proposal
         logger.info(f"Proposal created: {proposal.id} for {client}")
@@ -155,7 +174,8 @@ class ProposalGenerator:
 
     def format_summary(self, p_id: str) -> str:
         """Render ASCII Proposal Summary Dashboard."""
-        if p_id not in self.active_proposals: return "Proposal not found."
+        if p_id not in self.active_proposals:
+            return "Proposal not found."
 
         p = self.active_proposals[p_id]
 
@@ -172,13 +192,15 @@ class ProposalGenerator:
         for item in p.items:
             lines.append(f"║    • {item.name:<25} │ ${item.price:>10,.0f}          ║")
 
-        lines.extend([
-            "║  ───────────────────────────────────────────────────────  ║",
-            f"║  💰 TOTAL INVESTMENT: ${p.total_value:>15,.0f} {' ' * 18}║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Scale!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║  ───────────────────────────────────────────────────────  ║",
+                f"║  💰 TOTAL INVESTMENT: ${p.total_value:>15,.0f} {' ' * 18}║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Scale!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 
@@ -191,8 +213,10 @@ if __name__ == "__main__":
         system = ProposalGenerator("Saigon Digital Hub")
         # Generate
         prop = system.create_proposal(
-            "Acme Corp", "Digital Transformation",
-            [ServiceType.SEO, ServiceType.WEB_DEV], ProjectTier.SCALE
+            "Acme Corp",
+            "Digital Transformation",
+            [ServiceType.SEO, ServiceType.WEB_DEV],
+            ProjectTier.SCALE,
         )
 
         print("\n" + system.format_summary(prop.id))

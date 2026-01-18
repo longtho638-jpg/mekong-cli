@@ -3,10 +3,10 @@ Keyword Research Agent - Search Volume & Rankings
 Manages keyword research, difficulty scoring, and SERP analysis.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List, Optional
 
 
 class SERPFeature(Enum):
@@ -21,6 +21,7 @@ class SERPFeature(Enum):
 @dataclass
 class Keyword:
     """SEO Keyword"""
+
     keyword: str
     search_volume: int
     difficulty: int  # 0-100
@@ -46,7 +47,7 @@ class Keyword:
 class KeywordResearchAgent:
     """
     Keyword Research Agent - Nghiên cứu Từ khóa
-    
+
     Responsibilities:
     - Search volume analysis
     - Keyword difficulty scoring
@@ -67,7 +68,7 @@ class KeywordResearchAgent:
             difficulty=random.randint(10, 90),
             cpc=random.uniform(0.5, 15.0),
             current_rank=random.randint(1, 100) if random.random() > 0.3 else None,
-            previous_rank=random.randint(1, 100) if random.random() > 0.3 else None
+            previous_rank=random.randint(1, 100) if random.random() > 0.3 else None,
         )
 
         # Add random SERP features
@@ -93,8 +94,7 @@ class KeywordResearchAgent:
     def get_rankings(self) -> List[Keyword]:
         """Get ranked keywords"""
         return sorted(
-            [kw for kw in self.keywords.values() if kw.current_rank],
-            key=lambda k: k.current_rank
+            [kw for kw in self.keywords.values() if kw.current_rank], key=lambda k: k.current_rank
         )
 
     def get_stats(self) -> Dict:
@@ -107,8 +107,10 @@ class KeywordResearchAgent:
             "total_keywords": len(keywords),
             "ranked_keywords": len(ranked),
             "top_10": len(top10),
-            "avg_difficulty": sum(k.difficulty for k in keywords) / len(keywords) if keywords else 0,
-            "total_volume": sum(k.search_volume for k in keywords)
+            "avg_difficulty": sum(k.difficulty for k in keywords) / len(keywords)
+            if keywords
+            else 0,
+            "total_volume": sum(k.search_volume for k in keywords),
         }
 
 
@@ -128,7 +130,13 @@ if __name__ == "__main__":
     rankings = agent.get_rankings()
     print("\n📊 Rankings:")
     for kw in rankings[:3]:
-        change = f"↑{kw.rank_change}" if kw.rank_change > 0 else f"↓{abs(kw.rank_change)}" if kw.rank_change < 0 else "→"
+        change = (
+            f"↑{kw.rank_change}"
+            if kw.rank_change > 0
+            else f"↓{abs(kw.rank_change)}"
+            if kw.rank_change < 0
+            else "→"
+        )
         print(f"   #{kw.current_rank} '{kw.keyword}' ({change})")
         print(f"      Vol: {kw.search_volume:,} | Diff: {kw.difficulty}%")
 

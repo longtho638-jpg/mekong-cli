@@ -4,12 +4,13 @@ Manages territories, coverage, and route optimization.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import Dict, List
 
 
 @dataclass
 class Territory:
     """Sales territory"""
+
     id: str
     name: str
     region: str
@@ -27,6 +28,7 @@ class Territory:
 @dataclass
 class RouteStop:
     """Route stop"""
+
     customer: str
     address: str
     priority: int
@@ -36,7 +38,7 @@ class RouteStop:
 class TerritoryManagerAgent:
     """
     Territory Manager Agent - Quản lý Địa bàn
-    
+
     Responsibilities:
     - Territory assignment
     - Coverage tracking
@@ -50,11 +52,7 @@ class TerritoryManagerAgent:
         self.territories: Dict[str, Territory] = {}
 
     def create_territory(
-        self,
-        name: str,
-        region: str,
-        assigned_rep: str,
-        revenue_target: float = 0.0
+        self, name: str, region: str, assigned_rep: str, revenue_target: float = 0.0
     ) -> Territory:
         """Create a new territory"""
         territory_id = f"territory_{name.lower().replace(' ', '_')}"
@@ -64,13 +62,15 @@ class TerritoryManagerAgent:
             name=name,
             region=region,
             assigned_rep=assigned_rep,
-            revenue_target=revenue_target
+            revenue_target=revenue_target,
         )
 
         self.territories[territory_id] = territory
         return territory
 
-    def update_coverage(self, territory_id: str, customer_count: int, coverage_percent: float) -> Territory:
+    def update_coverage(
+        self, territory_id: str, customer_count: int, coverage_percent: float
+    ) -> Territory:
         """Update territory coverage"""
         if territory_id not in self.territories:
             raise ValueError(f"Territory not found: {territory_id}")
@@ -98,7 +98,7 @@ class TerritoryManagerAgent:
                 customer=stop["customer"],
                 address=stop["address"],
                 priority=stop.get("priority", 1),
-                estimated_time_mins=stop.get("time_mins", 30)
+                estimated_time_mins=stop.get("time_mins", 30),
             )
             for stop in stops
         ]
@@ -118,8 +118,12 @@ class TerritoryManagerAgent:
             "total_territories": len(territories),
             "total_customers": sum(t.customer_count for t in territories),
             "total_revenue": sum(t.revenue_actual for t in territories),
-            "avg_coverage": sum(t.coverage_percent for t in territories) / len(territories) if territories else 0,
-            "avg_attainment": sum(t.attainment for t in territories) / len(territories) if territories else 0
+            "avg_coverage": sum(t.coverage_percent for t in territories) / len(territories)
+            if territories
+            else 0,
+            "avg_attainment": sum(t.attainment for t in territories) / len(territories)
+            if territories
+            else 0,
         }
 
 
@@ -149,11 +153,13 @@ if __name__ == "__main__":
         print(f"   {t.name}: {t.attainment:.0f}% ({t.coverage_percent}% coverage)")
 
     # Plan route
-    route = agent.plan_route([
-        {"customer": "Client A", "address": "123 Nguyen Hue", "priority": 2},
-        {"customer": "Client B", "address": "456 Le Loi", "priority": 1},
-        {"customer": "Client C", "address": "789 Dong Khoi", "priority": 3},
-    ])
+    route = agent.plan_route(
+        [
+            {"customer": "Client A", "address": "123 Nguyen Hue", "priority": 2},
+            {"customer": "Client B", "address": "456 Le Loi", "priority": 1},
+            {"customer": "Client C", "address": "789 Dong Khoi", "priority": 3},
+        ]
+    )
 
     print("\n🛣️ Route:")
     for i, stop in enumerate(route, 1):

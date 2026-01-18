@@ -2,28 +2,31 @@
 Tests for Base classes.
 """
 
-import sys
 import os
-import pytest
-from datetime import datetime
+import sys
 from dataclasses import dataclass
+from datetime import datetime
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.base import BaseModel, BaseEngine
+from antigravity.core.base import BaseEngine, BaseModel
+
 
 @dataclass
 class MockModel(BaseModel):
     name: str = ""
     value: int = 0
 
+
 class MockEngine(BaseEngine):
     def get_stats(self):
         return {"status": "ok"}
 
-class TestBase:
 
+class TestBase:
     def test_base_model_serialization(self):
         """Test BaseModel to_dict and from_dict."""
         m = MockModel(name="test", value=100)
@@ -48,6 +51,7 @@ class TestBase:
         assert path.exists()
         loaded = engine.load_data("test.json")
         assert loaded["hello"] == "world"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

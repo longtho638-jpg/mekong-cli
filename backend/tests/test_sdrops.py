@@ -58,9 +58,7 @@ class TestLeadQualifierAgent:
         lead = agent.add_lead("Low Score", "Small Co", "low@small.com", "Intern")
 
         # Low score should disqualify
-        scored_lead = agent.score_bant(
-            lead_id=lead.id, budget=5, authority=5, need=10, timeline=5
-        )
+        scored_lead = agent.score_bant(lead_id=lead.id, budget=5, authority=5, need=10, timeline=5)
 
         assert scored_lead.bant.total == 25
         assert scored_lead.status == QualificationStatus.DISQUALIFIED

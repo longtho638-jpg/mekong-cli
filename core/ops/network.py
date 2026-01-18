@@ -107,7 +107,7 @@ class NetworkOptimizer:
                 "exit_node_active": exit_node.get("Online", False),
                 "exit_node_id": exit_node.get("ID"),
             }
-        except:
+        except Exception:
             return {"online": False, "exit_node": None}
 
     def get_ping_latency(self, target: str = PING_TARGET) -> float:
@@ -121,7 +121,7 @@ class NetworkOptimizer:
                 if "avg" in line:
                     parts = line.split("=")[1].strip().split("/")
                     return float(parts[1])
-        except:
+        except Exception:
             pass
         return 999.0
 
@@ -133,7 +133,7 @@ class NetworkOptimizer:
         )
         try:
             return float(output) * 1000
-        except:
+        except Exception:
             return 9999.0
 
     def get_cloudflare_colo(self) -> str:
@@ -154,7 +154,7 @@ class NetworkOptimizer:
             try:
                 data = json.loads(output)
                 return f"{data.get('ip')} ({data.get('city')}, {data.get('country')})"
-            except:
+            except Exception:
                 pass
         return "Unknown"
 
@@ -316,7 +316,7 @@ class NetworkOptimizer:
                 latency = (time.time() - start) * 1000
                 sock.close()
                 return (ip, port, latency)
-            except:
+            except Exception:
                 return (ip, port, 9999.0)
 
         results = []

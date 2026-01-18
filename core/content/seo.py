@@ -6,7 +6,6 @@ Generates SEO-optimized blog content.
 
 import random
 from typing import Dict, List, Optional
-from datetime import datetime
 
 SEO_TOPICS = [
     {
@@ -21,6 +20,7 @@ SEO_TOPICS = [
     },
 ]
 
+
 class SEOService:
     def list_ideas(self) -> List[Dict]:
         return SEO_TOPICS
@@ -29,15 +29,15 @@ class SEOService:
         topic = next((t for t in SEO_TOPICS if t["topic"] == topic_str), None)
         if not topic:
             topic = random.choice(SEO_TOPICS)
-            
+
         title = f"The Ultimate Guide to {topic['topic']}"
         content = f"""# {title}
 
-**Target Audience**: {topic['audience']}
-**Keywords**: {', '.join(topic['keywords'])}
+**Target Audience**: {topic["audience"]}
+**Keywords**: {", ".join(topic["keywords"])}
 
 ## Introduction
-{topic['topic']} is changing the landscape of business...
+{topic["topic"]} is changing the landscape of business...
 
 ## Key Strategies
 1. Strategy A
@@ -46,8 +46,4 @@ class SEOService:
 ## Conclusion
 Start implementing today.
 """
-        return {
-            "title": title,
-            "content": content,
-            "slug": title.lower().replace(" ", "-")
-        }
+        return {"title": title, "content": content, "slug": title.lower().replace(" ", "-")}

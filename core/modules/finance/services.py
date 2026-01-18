@@ -1,17 +1,19 @@
 """
 Finance Module - Service Logic
 """
+
 import logging
 from typing import Dict, List
 
-from .entities import ProfitLoss, FinancialRatio
+from .entities import FinancialRatio, ProfitLoss
 
 logger = logging.getLogger(__name__)
+
 
 class FinancialReportsService:
     """
     Financial Reports System.
-    
+
     Orchestrates financial data aggregation, ratio calculation, and CFO-level reporting.
     """
 
@@ -30,19 +32,13 @@ class FinancialReportsService:
             # Add latest
             self.add_pnl("Dec 2025", 85000.0, 25000.0, 35000.0)
             # Add previous manually
-            self.pnl_history.append(ProfitLoss(
-                "Nov 2025", 78000.0, 23000.0, 55000.0, 33000.0, 22000.0, 22000.0
-            ))
+            self.pnl_history.append(
+                ProfitLoss("Nov 2025", 78000.0, 23000.0, 55000.0, 33000.0, 22000.0, 22000.0)
+            )
         except Exception as e:
             logger.error(f"Demo data error: {e}")
 
-    def add_pnl(
-        self,
-        period: str,
-        revenue: float,
-        cogs: float,
-        op_expenses: float
-    ) -> ProfitLoss:
+    def add_pnl(self, period: str, revenue: float, cogs: float, op_expenses: float) -> ProfitLoss:
         """Register a new Profit & Loss statement for a specific period."""
         if revenue < 0 or cogs < 0 or op_expenses < 0:
             raise ValueError("Financial figures must be non-negative")
@@ -51,9 +47,13 @@ class FinancialReportsService:
         income = gross - op_expenses
 
         pnl = ProfitLoss(
-            period=period, revenue=revenue, cogs=cogs,
-            gross_profit=gross, operating_expenses=op_expenses,
-            operating_income=income, net_income=income
+            period=period,
+            revenue=revenue,
+            cogs=cogs,
+            gross_profit=gross,
+            operating_expenses=op_expenses,
+            operating_income=income,
+            net_income=income,
         )
         self.pnl_history.insert(0, pnl)
         self.recalculate_all_ratios()
@@ -62,13 +62,18 @@ class FinancialReportsService:
 
     def recalculate_all_ratios(self):
         """Update financial KPIs based on the latest history."""
-        if not self.pnl_history: return
+        if not self.pnl_history:
+            return
 
         latest = self.pnl_history[0]
         rev = max(1.0, latest.revenue)
 
-        self.ratios["gross_margin"] = FinancialRatio("Gross Margin", (latest.gross_profit / rev) * 100, 70, "%")
-        self.ratios["net_margin"] = FinancialRatio("Net Margin", (latest.net_income / rev) * 100, 25, "%")
+        self.ratios["gross_margin"] = FinancialRatio(
+            "Gross Margin", (latest.gross_profit / rev) * 100, 70, "%"
+        )
+        self.ratios["net_margin"] = FinancialRatio(
+            "Net Margin", (latest.net_income / rev) * 100, 25, "%"
+        )
 
         if len(self.pnl_history) > 1:
             prev_rev = max(1.0, self.pnl_history[1].revenue)
@@ -81,4 +86,5 @@ class FinancialReportsService:
         """Render the CFO Financial Dashboard (Delegated to Presenter)."""
         # Avoid circular import at module level
         from .presentation import FinancePresenter
+
         return FinancePresenter.format_dashboard(self)

@@ -3,11 +3,11 @@ Design Agent - Design Briefs & Production
 Manages design workflow, production, and deliverables.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class DesignType(Enum):
@@ -30,6 +30,7 @@ class DesignStatus(Enum):
 @dataclass
 class DesignProject:
     """Design project"""
+
     id: str
     name: str
     design_type: DesignType
@@ -49,7 +50,7 @@ class DesignProject:
 class DesignAgent:
     """
     Design Agent - Quản lý Thiết kế
-    
+
     Responsibilities:
     - Design briefs
     - Production tracking
@@ -68,10 +69,10 @@ class DesignAgent:
         design_type: DesignType,
         concept_id: str,
         designer: str = "",
-        due_date: date = None
+        due_date: date = None,
     ) -> DesignProject:
         """Create design project"""
-        project_id = f"design_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        project_id = f"design_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         project = DesignProject(
             id=project_id,
@@ -79,7 +80,7 @@ class DesignAgent:
             design_type=design_type,
             concept_id=concept_id,
             designer=designer,
-            due_date=due_date
+            due_date=due_date,
         )
 
         self.projects[project_id] = project
@@ -146,7 +147,7 @@ class DesignAgent:
             "in_progress": len([p for p in projects if p.status == DesignStatus.IN_PROGRESS]),
             "in_review": len([p for p in projects if p.status == DesignStatus.REVIEW]),
             "delivered": len(delivered),
-            "avg_revisions": sum(p.revisions for p in projects) / len(projects) if projects else 0
+            "avg_revisions": sum(p.revisions for p in projects) / len(projects) if projects else 0,
         }
 
 
@@ -158,12 +159,13 @@ if __name__ == "__main__":
 
     # Create project
     from datetime import timedelta
+
     p1 = agent.create_project(
         name="Summer Splash Video",
         design_type=DesignType.VIDEO,
         concept_id="concept_123",
         designer="Designer A",
-        due_date=date.today() + timedelta(days=7)
+        due_date=date.today() + timedelta(days=7),
     )
 
     print(f"📋 Project: {p1.name}")

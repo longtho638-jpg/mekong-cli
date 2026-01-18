@@ -3,11 +3,11 @@ Reporting Agent - Reports & Insights
 Manages automated report generation and insight extraction.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List, Optional
 
 
 class ReportType(Enum):
@@ -28,6 +28,7 @@ class ReportStatus(Enum):
 @dataclass
 class Insight:
     """Marketing insight"""
+
     id: str
     title: str
     description: str
@@ -39,6 +40,7 @@ class Insight:
 @dataclass
 class Report:
     """Marketing report"""
+
     id: str
     title: str
     report_type: ReportType
@@ -54,7 +56,7 @@ class Report:
 class ReportingAgent:
     """
     Reporting Agent - Báo cáo Marketing
-    
+
     Responsibilities:
     - Automated report generation
     - Executive summaries
@@ -68,21 +70,17 @@ class ReportingAgent:
         self.reports: Dict[str, Report] = {}
 
     def create_report(
-        self,
-        title: str,
-        report_type: ReportType,
-        period_start: date,
-        period_end: date
+        self, title: str, report_type: ReportType, period_start: date, period_end: date
     ) -> Report:
         """Create new report"""
-        report_id = f"rpt_{random.randint(1000,9999)}"
+        report_id = f"rpt_{random.randint(1000, 9999)}"
 
         report = Report(
             id=report_id,
             title=title,
             report_type=report_type,
             period_start=period_start,
-            period_end=period_end
+            period_end=period_end,
         )
 
         self.reports[report_id] = report
@@ -103,25 +101,47 @@ class ReportingAgent:
             "conversion_rate": random.uniform(2.5, 4.5),
             "roas": random.uniform(3.0, 5.0),
             "top_channel": random.choice(["Email", "Search", "Social"]),
-            "top_campaign": "Q4 Holiday Sale"
+            "top_campaign": "Q4 Holiday Sale",
         }
 
         # Generate insights
         insight_templates = [
-            ("Revenue Surge", "Revenue increased by 27% compared to previous period", "high", "Scale top campaigns"),
-            ("Email Performance", "Email channel shows highest ROAS at 8.5x", "high", "Increase email budget"),
-            ("Mobile Traffic", "Mobile traffic now accounts for 65% of sessions", "medium", "Optimize mobile UX"),
-            ("Lead Quality", "MQL to SQL conversion improved by 15%", "medium", "Document best practices"),
+            (
+                "Revenue Surge",
+                "Revenue increased by 27% compared to previous period",
+                "high",
+                "Scale top campaigns",
+            ),
+            (
+                "Email Performance",
+                "Email channel shows highest ROAS at 8.5x",
+                "high",
+                "Increase email budget",
+            ),
+            (
+                "Mobile Traffic",
+                "Mobile traffic now accounts for 65% of sessions",
+                "medium",
+                "Optimize mobile UX",
+            ),
+            (
+                "Lead Quality",
+                "MQL to SQL conversion improved by 15%",
+                "medium",
+                "Document best practices",
+            ),
         ]
 
         num_insights = random.randint(2, 4)
-        for i, (title, desc, impact, action) in enumerate(random.sample(insight_templates, num_insights)):
+        for i, (title, desc, impact, action) in enumerate(
+            random.sample(insight_templates, num_insights)
+        ):
             insight = Insight(
-                id=f"ins_{random.randint(100,999)}",
+                id=f"ins_{random.randint(100, 999)}",
                 title=title,
                 description=desc,
                 impact=impact,
-                action=action
+                action=action,
             )
             report.insights.append(insight)
 
@@ -146,7 +166,7 @@ class ReportingAgent:
         return {
             "total_reports": len(reports),
             "sent": len([r for r in reports if r.status == ReportStatus.SENT]),
-            "total_insights": sum(len(r.insights) for r in reports)
+            "total_insights": sum(len(r.insights) for r in reports),
         }
 
 
@@ -161,10 +181,7 @@ if __name__ == "__main__":
     # Create report
     today = date.today()
     r1 = agent.create_report(
-        "Weekly Marketing Report",
-        ReportType.WEEKLY,
-        today - timedelta(days=7),
-        today
+        "Weekly Marketing Report", ReportType.WEEKLY, today - timedelta(days=7), today
     )
 
     print(f"📋 Report: {r1.title}")

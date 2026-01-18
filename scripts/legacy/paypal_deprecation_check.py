@@ -150,7 +150,7 @@ def scan_directory(directory: Path) -> Dict[str, List]:
                                 "api": api_name,
                             }
                         )
-            except:
+            except Exception:
                 pass
 
     return results

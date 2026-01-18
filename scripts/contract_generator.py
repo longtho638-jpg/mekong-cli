@@ -13,19 +13,22 @@ Usage:
 
 import sys
 from pathlib import Path
-from typing import List, Optional
 
 # Add project root to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import typer
 from rich.console import Console
-from rich.logging import RichHandler
-from rich.prompt import Prompt, FloatPrompt, IntPrompt
 from rich.panel import Panel
+from rich.prompt import FloatPrompt, IntPrompt, Prompt
 
-from core.legal.generator import \
-    Contract, ContractParty, ServiceScope, ContractType, PaymentTerms, ContractGenerator
+from core.legal.generator import (
+    ContractGenerator,
+    ContractParty,
+    ContractType,
+    PaymentTerms,
+    ServiceScope,
+)
 
 # --- Configuration & Setup ---
 
@@ -36,10 +39,11 @@ console = Console()
 app = typer.Typer(
     help=f"{APP_NAME} - Professional Agreement System",
     add_completion=False,
-    rich_markup_mode="rich"
+    rich_markup_mode="rich",
 )
 
 # --- CLI Commands ---
+
 
 @app.command()
 def generate(
@@ -56,21 +60,19 @@ def generate(
     # Defaults for quick generation
     agency = ContractParty("Mekong Admin", "Mekong Agency OS", "admin@mekong.os", "HQ")
     client = ContractParty(client_name, client_company, client_email, "TBD")
-    
+
     scope = ServiceScope(
         services=["Strategy Consulting", "Implementation"],
         deliverables=["Weekly Reports", "Monthly Review"],
         exclusions=["Ad Spend", "Third Party Tools"],
-        timeline="Monthly Retainer"
+        timeline="Monthly Retainer",
     )
-    
+
     gen = ContractGenerator(agency)
-    contract = gen.generate(
-        client, scope, fee, ContractType.RETAINER, PaymentTerms.NET_30, months
-    )
-    
+    contract = gen.generate(client, scope, fee, ContractType.RETAINER, PaymentTerms.NET_30, months)
+
     text = gen.format_text(contract)
-    
+
     if output:
         output.write_text(text, encoding="utf-8")
         console.print(f"[green]✅ Contract saved to {output}[/green]")
@@ -83,7 +85,11 @@ def interactive():
     """
     🤝 Interactive Mode: Step-by-step contract builder.
     """
-    console.print(Panel(f"[bold blue]Welcome to {APP_NAME}[/bold blue]\n[italic]Let's build a Win-Win-Win agreement.[/italic]"))
+    console.print(
+        Panel(
+            f"[bold blue]Welcome to {APP_NAME}[/bold blue]\n[italic]Let's build a Win-Win-Win agreement.[/italic]"
+        )
+    )
 
     # Agency Details (could be loaded from config)
     agency_name = Prompt.ask("Agency Name", default="Mekong Agency")
@@ -100,31 +106,38 @@ def interactive():
 
     # Contract Details
     console.print("\n[bold]Agreement Details[/bold]")
-    c_type_str = Prompt.ask("Contract Type", choices=[t.value for t in ContractType], default="retainer")
+    c_type_str = Prompt.ask(
+        "Contract Type", choices=[t.value for t in ContractType], default="retainer"
+    )
     c_type = ContractType(c_type_str)
-    
+
     fee = FloatPrompt.ask("Monthly Fee ($)")
     months = IntPrompt.ask("Duration (months)", default=6)
-    
-    pay_term_str = Prompt.ask("Payment Terms", choices=[t.value for t in PaymentTerms], default="net_30")
+
+    pay_term_str = Prompt.ask(
+        "Payment Terms", choices=[t.value for t in PaymentTerms], default="net_30"
+    )
     pay_term = PaymentTerms(pay_term_str)
 
     # Scope
     console.print("\n[bold]Scope of Work (comma separated)[/bold]")
     services = [s.strip() for s in Prompt.ask("Services").split(",")]
     deliverables = [s.strip() for s in Prompt.ask("Deliverables").split(",")]
-    exclusions = [s.strip() for s in Prompt.ask("Exclusions", default="Ad Spend, Software Licenses").split(",")]
+    exclusions = [
+        s.strip()
+        for s in Prompt.ask("Exclusions", default="Ad Spend, Software Licenses").split(",")
+    ]
 
     scope = ServiceScope(services, deliverables, exclusions, "As agreed")
 
     # Generate
     gen = ContractGenerator(agency)
     contract = gen.generate(client, scope, fee, c_type, pay_term, months)
-    
+
     text = gen.format_text(contract)
-    
+
     console.print(Panel(text, title="Preview", border_style="green"))
-    
+
     if Prompt.ask("Save this contract?", choices=["y", "n"], default="y") == "y":
         filename = f"contract_{c_company.replace(' ', '_').lower()}.txt"
         Path(filename).write_text(text, encoding="utf-8")

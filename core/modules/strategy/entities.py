@@ -1,9 +1,11 @@
 """
 Strategy Module - Entities
 """
+
 from dataclasses import dataclass
 from enum import Enum
 from typing import List
+
 
 class Chapter(Enum):
     PLANNING = 1
@@ -19,6 +21,7 @@ class Chapter(Enum):
     SITUATIONS = 11
     DISRUPTION = 12
     INTELLIGENCE = 13
+
 
 @dataclass
 class StrategicInsight:

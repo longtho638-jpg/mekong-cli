@@ -7,7 +7,7 @@ Agency chỉ cần trả lời câu hỏi → AI viết full Business Plan.
 
 Architecture: 13 Sections (based on MEKONG-CLI.txt)
 1. Customer Profile
-2. Business Plan  
+2. Business Plan
 3. Market Research
 4. Brand Identity
 5. Marketing Message
@@ -21,19 +21,21 @@ Architecture: 13 Sections (based on MEKONG-CLI.txt)
 13. Founder Wisdom
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class PlanSection(Enum):
     """13 Business Plan sections."""
+
     CUSTOMER_PROFILE = "customer_profile"
     BUSINESS_PLAN = "business_plan"
     MARKET_RESEARCH = "market_research"
@@ -52,6 +54,7 @@ class PlanSection(Enum):
 @dataclass
 class AgencyDNA:
     """The Agency DNA - core identity from Q&A."""
+
     agency_name: str
     location: str
     niche: str
@@ -69,7 +72,7 @@ class AgencyDNA:
 class BusinessPlanGenerator:
     """
     Agentic Business Plan Generator.
-    
+
     Transforms owner answers into a comprehensive 13-section business strategy.
     """
 
@@ -82,15 +85,43 @@ class BusinessPlanGenerator:
     def _load_questions(self) -> List[Dict[str, str]]:
         """Load core questions for the setup flow."""
         return [
-            {"id": "agency_name", "question": "🏯 Tên Agency của bạn là gì?", "example": "Saigon Digital Hub"},
-            {"id": "location", "question": "📍 Agency hoạt động ở đâu?", "example": "Ho Chi Minh City, Vietnam"},
-            {"id": "niche", "question": "🎯 Bạn chuyên về lĩnh vực nào?", "example": "Real Estate Marketing"},
-            {"id": "target_audience", "question": "👥 Khách hàng mục tiêu là ai?", "example": "Chủ dự án BĐS"},
-            {"id": "dream_revenue", "question": "💰 Mục tiêu doanh thu mỗi tháng?", "example": "$10,000/month"},
-            {"id": "unique_skill", "question": "⚡ Kỹ năng/thế mạnh đặc biệt?", "example": "Ads Optimization"},
-            {"id": "local_vibe", "question": "🎤 Giọng điệu (Voice & Tone)?", "example": "Chuyên nghiệp & Gần gũi"},
+            {
+                "id": "agency_name",
+                "question": "🏯 Tên Agency của bạn là gì?",
+                "example": "Saigon Digital Hub",
+            },
+            {
+                "id": "location",
+                "question": "📍 Agency hoạt động ở đâu?",
+                "example": "Ho Chi Minh City, Vietnam",
+            },
+            {
+                "id": "niche",
+                "question": "🎯 Bạn chuyên về lĩnh vực nào?",
+                "example": "Real Estate Marketing",
+            },
+            {
+                "id": "target_audience",
+                "question": "👥 Khách hàng mục tiêu là ai?",
+                "example": "Chủ dự án BĐS",
+            },
+            {
+                "id": "dream_revenue",
+                "question": "💰 Mục tiêu doanh thu mỗi tháng?",
+                "example": "$10,000/month",
+            },
+            {
+                "id": "unique_skill",
+                "question": "⚡ Kỹ năng/thế mạnh đặc biệt?",
+                "example": "Ads Optimization",
+            },
+            {
+                "id": "local_vibe",
+                "question": "🎤 Giọng điệu (Voice & Tone)?",
+                "example": "Chuyên nghiệp & Gần gũi",
+            },
             {"id": "language", "question": "🌐 Ngôn ngữ chính?", "example": "Tiếng Việt"},
-            {"id": "currency", "question": "💱 Đơn vị tiền tệ chính?", "example": "VND"}
+            {"id": "currency", "question": "💱 Đơn vị tiền tệ chính?", "example": "VND"},
         ]
 
     def _load_templates(self) -> Dict[PlanSection, str]:
@@ -110,7 +141,7 @@ class BusinessPlanGenerator:
             PlanSection.PR_PLAN: "# 10. PR PLAN\nThought leadership in {niche}.",
             PlanSection.GROWTH_PLAN: "# 11. GROWTH PLAN\nScale {agency_name} globally.",
             PlanSection.RAISING_CAPITAL: "# 12. RAISING CAPITAL\nValuation based on {dream_revenue} ARR.",
-            PlanSection.FOUNDER_WISDOM: "# 13. FOUNDER WISDOM\nStrategy: Win without fighting."
+            PlanSection.FOUNDER_WISDOM: "# 13. FOUNDER WISDOM\nStrategy: Win without fighting.",
         }
         return t
 
@@ -141,7 +172,7 @@ class BusinessPlanGenerator:
             unique_skill=self.current_answers.get("unique_skill", ""),
             local_vibe=self.current_answers.get("local_vibe", ""),
             language=self.current_answers.get("language", ""),
-            currency=self.current_answers.get("currency", "")
+            currency=self.current_answers.get("currency", ""),
         )
 
         # Build all 13 sections using the templates
@@ -173,11 +204,13 @@ class BusinessPlanGenerator:
             lines.append("-" * 40)
             lines.append("")
 
-        lines.extend([
-            "🏯 \"Không đánh mà thắng\" - Win Without Fighting",
-            f"Location: {dna.location} | Powered by Agency OS",
-            border,
-        ])
+        lines.extend(
+            [
+                '🏯 "Không đánh mà thắng" - Win Without Fighting',
+                f"Location: {dna.location} | Powered by Agency OS",
+                border,
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -200,7 +233,7 @@ if __name__ == "__main__":
             "unique_skill": "Facebook Ads",
             "local_vibe": "Professional",
             "language": "Vietnamese",
-            "currency": "VND"
+            "currency": "VND",
         }
 
         for q_id, val in answers.items():

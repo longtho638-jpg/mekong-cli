@@ -3,11 +3,11 @@ Outreach Agent - Media Relations & Pitching
 Manages media contacts and automated pitch sequences.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, Optional
 
 
 class ContactType(Enum):
@@ -29,6 +29,7 @@ class PitchStatus(Enum):
 @dataclass
 class MediaContact:
     """Media contact for outreach"""
+
     id: str
     name: str
     outlet: str
@@ -42,6 +43,7 @@ class MediaContact:
 @dataclass
 class Pitch:
     """Outreach pitch"""
+
     id: str
     contact_id: str
     subject: str
@@ -60,7 +62,7 @@ class Pitch:
 class OutreachAgent:
     """
     Outreach Agent - Quan hệ Báo chí
-    
+
     Responsibilities:
     - Manage media contacts
     - Generate pitch templates
@@ -114,7 +116,7 @@ Key points:
 Có phù hợp với editorial calendar của bạn không?
 
 Thanks,
-"""
+""",
     }
 
     def __init__(self):
@@ -124,15 +126,10 @@ Thanks,
         self.pitches: Dict[str, Pitch] = {}
 
     def add_contact(
-        self,
-        name: str,
-        outlet: str,
-        email: str,
-        contact_type: ContactType,
-        beat: str
+        self, name: str, outlet: str, email: str, contact_type: ContactType, beat: str
     ) -> MediaContact:
         """Add a media contact"""
-        contact_id = f"contact_{len(self.contacts)+1}"
+        contact_id = f"contact_{len(self.contacts) + 1}"
 
         contact = MediaContact(
             id=contact_id,
@@ -140,17 +137,14 @@ Thanks,
             outlet=outlet,
             email=email,
             contact_type=contact_type,
-            beat=beat
+            beat=beat,
         )
 
         self.contacts[contact_id] = contact
         return contact
 
     def generate_pitch(
-        self,
-        contact_id: str,
-        template: str = "product_launch",
-        subject: str = "Mekong-CLI Launch"
+        self, contact_id: str, template: str = "product_launch", subject: str = "Mekong-CLI Launch"
     ) -> Pitch:
         """Generate pitch from template"""
         if contact_id not in self.contacts:
@@ -159,19 +153,10 @@ Thanks,
         contact = self.contacts[contact_id]
         template_body = self.TEMPLATES.get(template, self.TEMPLATES["product_launch"])
 
-        body = template_body.format(
-            name=contact.name,
-            outlet=contact.outlet,
-            subject=subject
-        )
+        body = template_body.format(name=contact.name, outlet=contact.outlet, subject=subject)
 
-        pitch_id = f"pitch_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        pitch = Pitch(
-            id=pitch_id,
-            contact_id=contact_id,
-            subject=subject,
-            body=body
-        )
+        pitch_id = f"pitch_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
+        pitch = Pitch(id=pitch_id, contact_id=contact_id, subject=subject, body=body)
 
         self.pitches[pitch_id] = pitch
         return pitch
@@ -202,7 +187,7 @@ Thanks,
             "opened": len([p for p in pitches if p.status == PitchStatus.OPENED]),
             "replied": len([p for p in pitches if p.status == PitchStatus.REPLIED]),
             "covered": len([p for p in pitches if p.status == PitchStatus.COVERED]),
-            "response_rate": "25%"  # Mock
+            "response_rate": "25%",  # Mock
         }
 
 
@@ -218,7 +203,7 @@ if __name__ == "__main__":
         outlet="TechInAsia Vietnam",
         email="ngocanh@techinasia.com",
         contact_type=ContactType.JOURNALIST,
-        beat="Startups, AI"
+        beat="Startups, AI",
     )
 
     contact2 = agent.add_contact(
@@ -226,7 +211,7 @@ if __name__ == "__main__":
         outlet="GDG Saigon",
         email="tuan@gdg.vn",
         contact_type=ContactType.PARTNER,
-        beat="Developer events"
+        beat="Developer events",
     )
 
     print(f"👤 Added: {contact1.name} ({contact1.outlet})")

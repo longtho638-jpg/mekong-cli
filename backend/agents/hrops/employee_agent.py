@@ -3,11 +3,11 @@ Employee Agent - Workforce & Performance Management
 Manages employee records, performance, and leave.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class EmployeeStatus(Enum):
@@ -30,6 +30,7 @@ class Department(Enum):
 @dataclass
 class Employee:
     """Employee record"""
+
     id: str
     name: str
     email: str
@@ -57,7 +58,7 @@ class Employee:
 class EmployeeAgent:
     """
     Employee Agent - Quản lý Nhân viên
-    
+
     Responsibilities:
     - Manage employee records
     - Track performance
@@ -77,10 +78,10 @@ class EmployeeAgent:
         department: Department,
         title: str,
         salary: float,
-        manager_id: Optional[str] = None
+        manager_id: Optional[str] = None,
     ) -> Employee:
         """Add new employee"""
-        emp_id = f"emp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        emp_id = f"emp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         employee = Employee(
             id=emp_id,
@@ -90,7 +91,7 @@ class EmployeeAgent:
             title=title,
             salary=salary,
             manager_id=manager_id,
-            status=EmployeeStatus.PROBATION
+            status=EmployeeStatus.PROBATION,
         )
 
         self.employees[emp_id] = employee
@@ -134,7 +135,9 @@ class EmployeeAgent:
 
     def get_top_performers(self, count: int = 5) -> List[Employee]:
         """Get top performers"""
-        return sorted(self.employees.values(), key=lambda e: e.performance_score, reverse=True)[:count]
+        return sorted(self.employees.values(), key=lambda e: e.performance_score, reverse=True)[
+            :count
+        ]
 
     def get_stats(self) -> Dict:
         """Get employee statistics"""
@@ -145,9 +148,11 @@ class EmployeeAgent:
             "total_employees": len(employees),
             "active": len(active),
             "on_leave": len([e for e in employees if e.status == EmployeeStatus.ON_LEAVE]),
-            "avg_performance": sum(e.performance_score for e in employees) / len(employees) if employees else 0,
+            "avg_performance": sum(e.performance_score for e in employees) / len(employees)
+            if employees
+            else 0,
             "total_payroll": sum(e.salary for e in active),
-            "departments": len(set(e.department for e in employees))
+            "departments": len(set(e.department for e in employees)),
         }
 
 
@@ -158,7 +163,9 @@ if __name__ == "__main__":
     print("👥 Employee Agent Demo\n")
 
     # Add employees
-    e1 = agent.add_employee("Nguyen A", "a@company.vn", Department.ENGINEERING, "Senior Engineer", 2500)
+    e1 = agent.add_employee(
+        "Nguyen A", "a@company.vn", Department.ENGINEERING, "Senior Engineer", 2500
+    )
     e2 = agent.add_employee("Tran B", "b@company.vn", Department.PRODUCT, "Product Manager", 3000)
     e3 = agent.add_employee("Le C", "c@company.vn", Department.SALES, "Account Executive", 2000)
 

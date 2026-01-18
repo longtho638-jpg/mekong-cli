@@ -3,15 +3,16 @@ Director Agent - Video Production
 Creates video scripts and manages voiceover/rendering.
 """
 
-from dataclasses import dataclass
-from typing import List, Optional
-from datetime import datetime
 import random
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Optional
 
 
 @dataclass
 class VideoScript:
     """Video script with scenes"""
+
     title: str
     hook: str  # First 3 seconds
     scenes: List[str]
@@ -24,6 +25,7 @@ class VideoScript:
 @dataclass
 class VideoAsset:
     """Generated video asset"""
+
     script: VideoScript
     voiceover_url: Optional[str] = None
     video_url: Optional[str] = None
@@ -39,7 +41,7 @@ class VideoAsset:
 class DirectorAgent:
     """
     Director Agent - Đạo diễn Video
-    
+
     Responsibilities:
     - Create video scripts
     - Generate voiceover (ElevenLabs)
@@ -59,14 +61,11 @@ class DirectorAgent:
         self.status = "ready"
 
     def create_script(
-        self,
-        topic: str,
-        platform: str = "tiktok",
-        duration: int = 30
+        self, topic: str, platform: str = "tiktok", duration: int = 30
     ) -> VideoScript:
         """
         Create video script for given topic.
-        
+
         Args:
             topic: Video topic
             platform: Target platform
@@ -97,7 +96,7 @@ class DirectorAgent:
 
         # Build voiceover text
         hook = random.choice(hooks)
-        scenes = scene_templates[:min(4, duration // 10)]
+        scenes = scene_templates[: min(4, duration // 10)]
         cta = random.choice(ctas)
 
         voiceover_parts = [hook] + scenes + [cta]
@@ -110,7 +109,7 @@ class DirectorAgent:
             cta=cta,
             duration_sec=duration,
             platform=platform,
-            voiceover_text=voiceover_text
+            voiceover_text=voiceover_text,
         )
 
     def generate_asset(self, script: VideoScript) -> VideoAsset:
@@ -124,7 +123,7 @@ class DirectorAgent:
             voiceover_url=f"https://storage.example.com/voice_{script.title[:10]}.mp3",
             video_url=f"https://storage.example.com/video_{script.title[:10]}.mp4",
             thumbnail_url=f"https://storage.example.com/thumb_{script.title[:10]}.jpg",
-            status="ready"
+            status="ready",
         )
 
 
@@ -135,11 +134,7 @@ if __name__ == "__main__":
     print("🎬 Director Agent Demo\n")
 
     # Create script
-    script = director.create_script(
-        topic="Tiết kiệm chi phí AI",
-        platform="tiktok",
-        duration=30
-    )
+    script = director.create_script(topic="Tiết kiệm chi phí AI", platform="tiktok", duration=30)
 
     print(f"📝 Script: {script.title}")
     print(f"🎯 Platform: {script.platform} ({script.duration_sec}s)")

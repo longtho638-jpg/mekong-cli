@@ -7,7 +7,7 @@ Manage and build sellable assets.
 import zipfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict
 
 # Product Definitions
 PRODUCT_SPECS = {
@@ -44,6 +44,7 @@ PRODUCT_SPECS = {
     },
 }
 
+
 class ProductCatalogService:
     def __init__(self):
         self.root_dir = Path.cwd()
@@ -64,12 +65,12 @@ class ProductCatalogService:
                 src_path = self.root_dir / src
                 if src_path.exists():
                     sources_exist.append(str(src_path))
-            
+
             if sources_exist:
                 found.append({"key": key, "name": spec["name"], "sources": sources_exist})
             else:
                 missing.append({"key": key, "name": spec["name"]})
-        
+
         return {"found": found, "missing": missing}
 
     def build_product(self, key: str) -> str:
@@ -87,15 +88,17 @@ class ProductCatalogService:
                 src_path = self.root_dir / src
                 if not src_path.exists():
                     continue
-                
+
                 if src_path.is_file():
                     zf.write(src_path, src_path.name)
                 else:
                     for file in src_path.rglob("*"):
-                        if file.is_file() and not any(p in str(file) for p in ["__pycache__", ".git", "node_modules", ".env"]):
+                        if file.is_file() and not any(
+                            p in str(file) for p in ["__pycache__", ".git", "node_modules", ".env"]
+                        ):
                             arcname = str(file.relative_to(src_path.parent))
                             zf.write(file, arcname)
-            
+
             # README
             readme = f"# {spec['name']}\n\n{spec['description']}\n\nBuilt with AgencyOS"
             zf.writestr("README.md", readme)

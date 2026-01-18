@@ -3,11 +3,11 @@ Data Analysis Agent - Metrics & Trends
 Manages marketing data analysis, trends, and anomaly detection.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class MetricCategory(Enum):
@@ -27,6 +27,7 @@ class TrendDirection(Enum):
 @dataclass
 class Metric:
     """Marketing metric"""
+
     name: str
     category: MetricCategory
     current_value: float
@@ -51,6 +52,7 @@ class Metric:
 @dataclass
 class Anomaly:
     """Detected anomaly in metrics"""
+
     metric_name: str
     expected_value: float
     actual_value: float
@@ -62,7 +64,7 @@ class Anomaly:
 class DataAnalysisAgent:
     """
     Data Analysis Agent - Phân tích Dữ liệu Marketing
-    
+
     Responsibilities:
     - Metrics aggregation
     - Trend analysis
@@ -101,7 +103,7 @@ class DataAnalysisAgent:
                 category=category,
                 current_value=current,
                 previous_value=previous,
-                unit=unit
+                unit=unit,
             )
 
         return self.metrics
@@ -120,7 +122,7 @@ class DataAnalysisAgent:
                     expected_value=metric.previous_value,
                     actual_value=metric.current_value,
                     deviation_percent=deviation,
-                    severity=severity
+                    severity=severity,
                 )
                 self.anomalies.append(anomaly)
 
@@ -134,7 +136,7 @@ class DataAnalysisAgent:
             "category": category.value,
             "metrics_count": len(cat_metrics),
             "positive_trends": len([m for m in cat_metrics if m.trend == TrendDirection.UP]),
-            "negative_trends": len([m for m in cat_metrics if m.trend == TrendDirection.DOWN])
+            "negative_trends": len([m for m in cat_metrics if m.trend == TrendDirection.DOWN]),
         }
 
     def get_stats(self) -> Dict:
@@ -145,7 +147,7 @@ class DataAnalysisAgent:
             "total_metrics": len(metrics),
             "anomalies": len(self.anomalies),
             "positive_trends": len([m for m in metrics if m.trend == TrendDirection.UP]),
-            "negative_trends": len([m for m in metrics if m.trend == TrendDirection.DOWN])
+            "negative_trends": len([m for m in metrics if m.trend == TrendDirection.DOWN]),
         }
 
 
@@ -163,8 +165,12 @@ if __name__ == "__main__":
     print("\n📈 Key Metrics:")
     for name in ["Revenue", "Conversion Rate", "ROAS"]:
         m = metrics[name]
-        trend_icon = "↑" if m.trend == TrendDirection.UP else "↓" if m.trend == TrendDirection.DOWN else "→"
-        print(f"   {m.name}: {m.unit}{m.current_value:,.1f} ({trend_icon} {m.change_percent:+.1f}%)")
+        trend_icon = (
+            "↑" if m.trend == TrendDirection.UP else "↓" if m.trend == TrendDirection.DOWN else "→"
+        )
+        print(
+            f"   {m.name}: {m.unit}{m.current_value:,.1f} ({trend_icon} {m.change_percent:+.1f}%)"
+        )
 
     # Detect anomalies
     anomalies = agent.detect_anomalies()

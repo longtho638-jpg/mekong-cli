@@ -99,9 +99,7 @@ def cmd_install():
             print("\n📅 SCHEDULE:")
             print("   Daily at 8:00 AM: revenue_autopilot.py daily")
             print("\n💡 Logs: ~/.mekong/logs/autopilot.log")
-            print(
-                f"\n🧪 To test now: launchctl start {PLIST_NAME.replace('.plist', '')}"
-            )
+            print(f"\n🧪 To test now: launchctl start {PLIST_NAME.replace('.plist', '')}")
         else:
             print(f"  ❌ Failed to load: {result.stderr}")
     except Exception as e:

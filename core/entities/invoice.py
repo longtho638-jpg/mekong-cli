@@ -12,6 +12,7 @@ from typing import Optional
 @dataclass
 class Invoice:
     """Core invoice entity."""
+
     id: Optional[int] = None
     name: str = ""
     # Add your fields here

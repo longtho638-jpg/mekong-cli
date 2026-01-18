@@ -3,11 +3,11 @@ Insights Agent - Trend Detection & Recommendations
 Analyzes data for trends and generates insights.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class InsightType(Enum):
@@ -27,6 +27,7 @@ class InsightPriority(Enum):
 @dataclass
 class Insight:
     """Data insight"""
+
     id: str
     title: str
     description: str
@@ -44,7 +45,7 @@ class Insight:
 class InsightsAgent:
     """
     Insights Agent - Phát hiện Xu hướng
-    
+
     Responsibilities:
     - Detect trends
     - Identify anomalies
@@ -60,20 +61,18 @@ class InsightsAgent:
         self.status = "ready"
         self.insights: List[Insight] = []
 
-    def analyze_trend(
-        self,
-        metric_name: str,
-        values: List[float]
-    ) -> Insight:
+    def analyze_trend(self, metric_name: str, values: List[float]) -> Insight:
         """Analyze trend in data"""
         if len(values) < 2:
             return None
 
         # Simple trend detection
-        avg_first_half = sum(values[:len(values)//2]) / (len(values)//2)
-        avg_second_half = sum(values[len(values)//2:]) / (len(values) - len(values)//2)
+        avg_first_half = sum(values[: len(values) // 2]) / (len(values) // 2)
+        avg_second_half = sum(values[len(values) // 2 :]) / (len(values) - len(values) // 2)
 
-        change = ((avg_second_half - avg_first_half) / avg_first_half * 100) if avg_first_half > 0 else 0
+        change = (
+            ((avg_second_half - avg_first_half) / avg_first_half * 100) if avg_first_half > 0 else 0
+        )
 
         if change > 10:
             direction = "upward"
@@ -86,23 +85,20 @@ class InsightsAgent:
             priority = InsightPriority.LOW
 
         insight = Insight(
-            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100,999)}",
+            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             title=f"{metric_name} shows {direction} trend",
             description=f"{metric_name} has changed by {change:.1f}% over the analyzed period.",
             insight_type=InsightType.TREND,
             priority=priority,
             metric=metric_name,
-            recommendation=f"{'Maintain momentum' if change > 0 else 'Investigate root cause'} for {metric_name}."
+            recommendation=f"{'Maintain momentum' if change > 0 else 'Investigate root cause'} for {metric_name}.",
         )
 
         self.insights.append(insight)
         return insight
 
     def detect_anomaly(
-        self,
-        metric_name: str,
-        current_value: float,
-        baseline: float
+        self, metric_name: str, current_value: float, baseline: float
     ) -> Optional[Insight]:
         """Detect anomaly in metric"""
         if baseline == 0:
@@ -117,34 +113,30 @@ class InsightsAgent:
         priority = InsightPriority.CRITICAL if deviation > 0.5 else InsightPriority.HIGH
 
         insight = Insight(
-            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100,999)}",
+            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             title=f"Anomaly detected in {metric_name}",
-            description=f"{metric_name} is {deviation*100:.0f}% {direction} baseline ({current_value} vs {baseline}).",
+            description=f"{metric_name} is {deviation * 100:.0f}% {direction} baseline ({current_value} vs {baseline}).",
             insight_type=InsightType.ANOMALY,
             priority=priority,
             metric=metric_name,
-            recommendation=f"Immediate attention needed for {metric_name}."
+            recommendation=f"Immediate attention needed for {metric_name}.",
         )
 
         self.insights.append(insight)
         return insight
 
     def generate_opportunity(
-        self,
-        title: str,
-        description: str,
-        metric: str,
-        recommendation: str
+        self, title: str, description: str, metric: str, recommendation: str
     ) -> Insight:
         """Generate opportunity insight"""
         insight = Insight(
-            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100,999)}",
+            id=f"insight_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             title=title,
             description=description,
             insight_type=InsightType.OPPORTUNITY,
             priority=InsightPriority.MEDIUM,
             metric=metric,
-            recommendation=recommendation
+            recommendation=recommendation,
         )
 
         self.insights.append(insight)
@@ -166,9 +158,8 @@ class InsightsAgent:
             "high": len(self.get_by_priority(InsightPriority.HIGH)),
             "medium": len(self.get_by_priority(InsightPriority.MEDIUM)),
             "by_type": {
-                t.value: len([i for i in self.insights if i.insight_type == t])
-                for t in InsightType
-            }
+                t.value: len([i for i in self.insights if i.insight_type == t]) for t in InsightType
+            },
         }
 
 
@@ -195,7 +186,7 @@ if __name__ == "__main__":
         "High-value segment underserved",
         "Enterprise segment shows 40% less coverage than potential.",
         "Enterprise Coverage",
-        "Increase SDR focus on enterprise accounts."
+        "Increase SDR focus on enterprise accounts.",
     )
 
     # Summary

@@ -12,20 +12,22 @@ Features:
 - Performance tracking
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Any, Optional
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class OutreachTrigger(Enum):
     """Outreach triggers."""
+
     NEW_LEAD = "new_lead"
     WEBSITE_VISIT = "website_visit"
     PROPOSAL_SENT = "proposal_sent"
@@ -35,6 +37,7 @@ class OutreachTrigger(Enum):
 
 class EmailStatus(Enum):
     """Email status."""
+
     PENDING = "pending"
     SENT = "sent"
     OPENED = "opened"
@@ -46,6 +49,7 @@ class EmailStatus(Enum):
 @dataclass
 class OutreachEmail:
     """An outreach email entity."""
+
     id: str
     recipient: str
     subject: str
@@ -59,6 +63,7 @@ class OutreachEmail:
 @dataclass
 class OutreachSequence:
     """An email sequence configuration."""
+
     id: str
     name: str
     trigger: OutreachTrigger
@@ -72,7 +77,7 @@ class OutreachSequence:
 class AutomatedOutreach:
     """
     Automated Outreach System.
-    
+
     Manages lead nurturing and email campaign sequences.
     """
 
@@ -85,7 +90,7 @@ class AutomatedOutreach:
 
     def _validate_email(self, email: str) -> bool:
         """Simple regex validation for email."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return bool(re.match(pattern, email))
 
     def _load_defaults(self):
@@ -104,16 +109,12 @@ class AutomatedOutreach:
                 emails_count=count,
                 delay_days=delays,
                 sent_count=int(50 + len(name) * 5),
-                reply_rate=round(0.15 + len(name) * 0.01, 2)
+                reply_rate=round(0.15 + len(name) * 0.01, 2),
             )
             self.sequences[seq.id] = seq
 
     def send_email(
-        self,
-        recipient: str,
-        subject: str,
-        body: str,
-        sequence: OutreachSequence
+        self, recipient: str, subject: str, body: str, sequence: OutreachSequence
     ) -> OutreachEmail:
         """
         Simulate sending an outreach email.
@@ -132,7 +133,7 @@ class AutomatedOutreach:
             body=body,
             sequence_name=sequence.name,
             status=EmailStatus.SENT,
-            sent_at=datetime.now()
+            sent_at=datetime.now(),
         )
 
         self.emails.append(email)
@@ -143,14 +144,18 @@ class AutomatedOutreach:
     def get_stats(self) -> Dict[str, Any]:
         """Calculate performance statistics."""
         total = len(self.emails)
-        engaged = sum(1 for e in self.emails if e.status in [EmailStatus.OPENED, EmailStatus.CLICKED, EmailStatus.REPLIED])
+        engaged = sum(
+            1
+            for e in self.emails
+            if e.status in [EmailStatus.OPENED, EmailStatus.CLICKED, EmailStatus.REPLIED]
+        )
         replied = sum(1 for e in self.emails if e.status == EmailStatus.REPLIED)
 
         return {
             "total_sent": total,
             "open_rate": (engaged / total * 100) if total else 0.0,
             "reply_rate": (replied / total * 100) if total else 0.0,
-            "active_sequences": sum(1 for s in self.sequences.values() if s.active)
+            "active_sequences": sum(1 for s in self.sequences.values() if s.active),
         }
 
     def format_dashboard(self) -> str:
@@ -171,25 +176,29 @@ class AutomatedOutreach:
             OutreachTrigger.NO_RESPONSE: "⏰",
             OutreachTrigger.PROPOSAL_SENT: "📝",
             OutreachTrigger.WEBSITE_VISIT: "🌐",
-            OutreachTrigger.MEETING_BOOKED: "📅"
+            OutreachTrigger.MEETING_BOOKED: "📅",
         }
 
         for seq in self.sequences.values():
             icon = trigger_icons.get(seq.trigger, "📧")
             status = "🟢" if seq.active else "⚪"
-            lines.append(f"║  {status} {icon} {seq.name:<18} │ {seq.emails_count} emails │ {seq.reply_rate*100:>2.0f}% reply  ║")
+            lines.append(
+                f"║  {status} {icon} {seq.name:<18} │ {seq.emails_count} emails │ {seq.reply_rate * 100:>2.0f}% reply  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 PERFORMANCE                                           ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-            f"║    📤 Emails Sent:    {stats['total_sent']:>5}                            ║",
-            f"║    📬 Engagement:     {stats['open_rate']:>5.1f}%                           ║",
-            f"║    💬 Reply Rate:     {stats['reply_rate']:>5.1f}%                           ║",
-            "║                                                           ║",
-            "║  📋 RECENT ACTIVITY                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 PERFORMANCE                                           ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+                f"║    📤 Emails Sent:    {stats['total_sent']:>5}                            ║",
+                f"║    📬 Engagement:     {stats['open_rate']:>5.1f}%                           ║",
+                f"║    💬 Reply Rate:     {stats['reply_rate']:>5.1f}%                           ║",
+                "║                                                           ║",
+                "║  📋 RECENT ACTIVITY                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         status_icons = {
             EmailStatus.PENDING: "⏳",
@@ -197,22 +206,28 @@ class AutomatedOutreach:
             EmailStatus.OPENED: "📬",
             EmailStatus.CLICKED: "🔗",
             EmailStatus.REPLIED: "💬",
-            EmailStatus.BOUNCED: "❌"
+            EmailStatus.BOUNCED: "❌",
         }
 
         for email in self.emails[-3:]:
             icon = status_icons.get(email.status, "📧")
-            recipient_display = (email.recipient[:18] + '..') if len(email.recipient) > 20 else email.recipient
-            subject_display = (email.subject[:20] + '..') if len(email.subject) > 22 else email.subject
+            recipient_display = (
+                (email.recipient[:18] + "..") if len(email.recipient) > 20 else email.recipient
+            )
+            subject_display = (
+                (email.subject[:20] + "..") if len(email.subject) > 22 else email.subject
+            )
             lines.append(f"║    {icon} {recipient_display:<20} │ {subject_display:<22}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Sequence]  [📊 Analytics]  [⚙️ Settings]         ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Nurture!             ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Sequence]  [📊 Analytics]  [⚙️ Settings]         ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Nurture!             ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

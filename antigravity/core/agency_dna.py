@@ -10,32 +10,36 @@ Binh Pháp: ☸️ Đạo (Way) - Alignment of purpose and vision.
 
 import logging
 from dataclasses import dataclass, field
-from typing import List, Dict, Any
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class Tone(Enum):
     """Regional and professional brand voice archetypes."""
+
     PROFESSIONAL = "professional"
     FRIENDLY = "friendly"
-    MIEN_TAY = "mien_tay"      # Southern: Warm, sincere, humble
-    MIEN_BAC = "mien_bac"      # Northern: Formal, precise, elegant
+    MIEN_TAY = "mien_tay"  # Southern: Warm, sincere, humble
+    MIEN_BAC = "mien_bac"  # Northern: Formal, precise, elegant
     MIEN_TRUNG = "mien_trung"  # Central: Hardworking, resilient, simple
 
 
 class PricingTier(Enum):
     """Standardized service pricing brackets."""
-    STARTER = "starter"           # Solo project focus
-    GROWTH = "growth"             # Scaling agency focus
-    PROFESSIONAL = "professional" # High-ticket boutique
-    ENTERPRISE = "enterprise"     # Venture-backed / Corporate
+
+    STARTER = "starter"  # Solo project focus
+    GROWTH = "growth"  # Scaling agency focus
+    PROFESSIONAL = "professional"  # High-ticket boutique
+    ENTERPRISE = "enterprise"  # Venture-backed / Corporate
 
 
 @dataclass
 class Service:
     """Represents a specific product or service offering."""
+
     name: str
     description: str
     price_usd: float
@@ -53,10 +57,11 @@ class Service:
 class AgencyDNA:
     """
     🧬 Agency DNA
-    
+
     The single source of truth for agency identity.
     Used by AI agents to personalize content, proposals, and communication.
     """
+
     name: str = "Unicorn Agency"
     niche: str = "Full-stack Automation"
     location: str = "Ho Chi Minh City"
@@ -71,24 +76,25 @@ class AgencyDNA:
     services: List[Service] = field(default_factory=list)
 
     # Contact & Identity
-    contact: Dict[str, str] = field(default_factory=lambda: {
-        "email": "",
-        "phone": "",
-        "website": "",
-        "zalo": "",
-        "telegram": ""
-    })
+    contact: Dict[str, str] = field(
+        default_factory=lambda: {
+            "email": "",
+            "phone": "",
+            "website": "",
+            "zalo": "",
+            "telegram": "",
+        }
+    )
 
     # Social Handles
     social: Dict[str, str] = field(default_factory=dict)
 
-    def add_service(self, name: str, description: str, price_usd: float, duration: int = 7) -> Service:
+    def add_service(
+        self, name: str, description: str, price_usd: float, duration: int = 7
+    ) -> Service:
         """Appends a new service to the agency's catalog."""
         service = Service(
-            name=name,
-            description=description,
-            price_usd=price_usd,
-            duration_days=duration
+            name=name, description=description, price_usd=price_usd, duration_days=duration
         )
         self.services.append(service)
         logger.info(f"Service added to DNA: {name} (${price_usd})")
@@ -101,7 +107,7 @@ class AgencyDNA:
             Tone.MIEN_BAC: "Trang trọng, chỉn chu, lễ phép, dùng từ 'vâng', 'ạ', 'xin phép'.",
             Tone.MIEN_TRUNG: "Thẳng thắn, kiên cường, mộc mạc, đậm chất miền Trung.",
             Tone.FRIENDLY: "Modern, approachable, and supportive tone.",
-            Tone.PROFESSIONAL: "Authoritative, data-driven, and corporate tone."
+            Tone.PROFESSIONAL: "Authoritative, data-driven, and corporate tone.",
         }
         return profiles.get(self.tone, "Standard professional tone.")
 
@@ -124,22 +130,23 @@ class AgencyDNA:
                 "niche": self.niche,
                 "location": self.location,
                 "tagline": self.get_tagline(),
-                "voice": self.get_localized_voice()
+                "voice": self.get_localized_voice(),
             },
             "configuration": {
                 "tone": self.tone.value,
                 "tier": self.tier.value,
-                "capabilities": self.capabilities
+                "capabilities": self.capabilities,
             },
             "services": [
                 {
                     "name": s.name,
                     "price_usd": s.price_usd,
                     "price_vnd": s.price_vnd,
-                    "duration": s.duration_days
-                } for s in self.services
+                    "duration": s.duration_days,
+                }
+                for s in self.services
             ],
-            "contact": self.contact
+            "contact": self.contact,
         }
 
 

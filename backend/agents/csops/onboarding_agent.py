@@ -4,9 +4,9 @@ Tracks user progress through onboarding journey.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class MilestoneStatus(Enum):
@@ -19,6 +19,7 @@ class MilestoneStatus(Enum):
 @dataclass
 class Milestone:
     """Onboarding milestone"""
+
     id: str
     name: str
     description: str
@@ -30,6 +31,7 @@ class Milestone:
 @dataclass
 class UserOnboarding:
     """User onboarding progress"""
+
     user_id: str
     user_name: str
     email: str
@@ -57,7 +59,7 @@ class UserOnboarding:
 class OnboardingAgent:
     """
     Onboarding Agent - Hướng dẫn người dùng mới
-    
+
     Responsibilities:
     - Track milestone completion
     - Send check-in messages
@@ -80,29 +82,16 @@ class OnboardingAgent:
         self.users: Dict[str, UserOnboarding] = {}
 
     def start_onboarding(
-        self,
-        user_id: str,
-        user_name: str,
-        email: str,
-        plan: str = "starter"
+        self, user_id: str, user_name: str, email: str, plan: str = "starter"
     ) -> UserOnboarding:
         """Start onboarding for new user"""
         milestones = [
-            Milestone(
-                id=f"milestone_{i+1}",
-                name=name,
-                description=desc,
-                order=i+1
-            )
+            Milestone(id=f"milestone_{i + 1}", name=name, description=desc, order=i + 1)
             for i, (_, name, desc) in enumerate(self.DEFAULT_MILESTONES)
         ]
 
         user = UserOnboarding(
-            user_id=user_id,
-            user_name=user_name,
-            email=email,
-            plan=plan,
-            milestones=milestones
+            user_id=user_id, user_name=user_name, email=email, plan=plan, milestones=milestones
         )
 
         self.users[user_id] = user
@@ -149,7 +138,9 @@ class OnboardingAgent:
         if user.progress_percent == 100:
             return f"🎉 Chúc mừng {user.user_name}! Bạn đã hoàn thành onboarding!"
         elif next_m:
-            return f"Xin chào {user.user_name}! Bước tiếp theo: {next_m.name} - {next_m.description}"
+            return (
+                f"Xin chào {user.user_name}! Bước tiếp theo: {next_m.name} - {next_m.description}"
+            )
         else:
             return f"Xin chào {user.user_name}! Bạn đang làm rất tốt!"
 
@@ -164,7 +155,7 @@ class OnboardingAgent:
             "by_plan": {
                 plan: len([u for u in users if u.plan == plan])
                 for plan in ["starter", "pro", "enterprise"]
-            }
+            },
         }
 
 
@@ -176,10 +167,7 @@ if __name__ == "__main__":
 
     # Start onboarding
     user = agent.start_onboarding(
-        user_id="user_001",
-        user_name="Nguyễn Văn A",
-        email="a@email.com",
-        plan="pro"
+        user_id="user_001", user_name="Nguyễn Văn A", email="a@email.com", plan="pro"
     )
 
     print(f"👤 User: {user.user_name}")

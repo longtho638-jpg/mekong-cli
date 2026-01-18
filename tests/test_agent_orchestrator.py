@@ -2,8 +2,9 @@
 Tests for Agent Orchestrator system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.agent_orchestrator import AgentOrchestrator, StepStatus
 
-class TestAgentOrchestrator:
 
+class TestAgentOrchestrator:
     def test_run_valid_chain(self):
         """Test running a valid agent chain."""
         orchestrator = AgentOrchestrator(verbose=False)
@@ -42,6 +43,7 @@ class TestAgentOrchestrator:
         assert stats["total_runs"] == 2
         assert stats["success_rate"] == 100.0
         assert "planner" in stats["agent_usage"]
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

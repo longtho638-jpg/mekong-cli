@@ -10,15 +10,16 @@ Features:
 🏯 Binh Pháp: Thế Trận (Momentum) - Continuous flow
 """
 
+import random
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class ContentType(Enum):
     """Types of content."""
+
     BLOG = "blog"
     FACEBOOK = "facebook"
     TIKTOK = "tiktok"
@@ -30,6 +31,7 @@ class ContentType(Enum):
 
 class ContentStatus(Enum):
     """Content production status."""
+
     IDEA = "idea"
     DRAFT = "draft"
     REVIEW = "review"
@@ -40,6 +42,7 @@ class ContentStatus(Enum):
 @dataclass
 class ContentIdea:
     """A content idea."""
+
     title: str
     topic: str = ""
     content_type: ContentType = ContentType.FACEBOOK
@@ -54,6 +57,7 @@ class ContentIdea:
 @dataclass
 class ContentPiece:
     """A piece of content."""
+
     title: str
     body: str = ""
     content_type: ContentType = ContentType.FACEBOOK
@@ -66,7 +70,7 @@ class ContentPiece:
 class ContentFactory:
     """
     Mass content production engine.
-    
+
     Example:
         factory = ContentFactory(niche="Nông sản")
         ideas = factory.generate_ideas(30)
@@ -118,7 +122,7 @@ class ContentFactory:
                 "🎁 Ưu đãi đặc biệt {niche}",
                 "📊 Báo cáo {niche} tuần này",
                 "🔥 Hot: Xu hướng {niche} mới",
-            ]
+            ],
         }
 
         ideas = []
@@ -132,7 +136,7 @@ class ContentFactory:
                 title=title,
                 topic=self.niche,
                 content_type=content_type,
-                score=random.randint(40, 95)
+                score=random.randint(40, 95),
             )
             ideas.append(idea)
             self.ideas.append(idea)
@@ -158,10 +162,7 @@ class ContentFactory:
         body = template.format(title=idea.title, topic=idea.topic, niche=self.niche)
 
         content = ContentPiece(
-            title=idea.title,
-            body=intro + body,
-            content_type=idea.content_type,
-            score=idea.score
+            title=idea.title, body=intro + body, content_type=idea.content_type, score=idea.score
         )
         self.content.append(content)
         return content
@@ -172,14 +173,16 @@ class ContentFactory:
         ideas = self.ideas[:days] if len(self.ideas) >= days else self.generate_ideas(days)
 
         for i, idea in enumerate(ideas[:days]):
-            date = datetime.now().replace(hour=10) + __import__('datetime').timedelta(days=i)
-            calendar.append({
-                "date": date.strftime("%Y-%m-%d"),
-                "time": "10:00",
-                "title": idea.title,
-                "type": idea.content_type.value,
-                "score": idea.score
-            })
+            date = datetime.now().replace(hour=10) + __import__("datetime").timedelta(days=i)
+            calendar.append(
+                {
+                    "date": date.strftime("%Y-%m-%d"),
+                    "time": "10:00",
+                    "title": idea.title,
+                    "type": idea.content_type.value,
+                    "score": idea.score,
+                }
+            )
 
         return calendar
 
@@ -189,5 +192,5 @@ class ContentFactory:
             "total_ideas": len(self.ideas),
             "total_content": len(self.content),
             "published": len([c for c in self.content if c.status == ContentStatus.PUBLISHED]),
-            "avg_score": sum(i.score for i in self.ideas) / len(self.ideas) if self.ideas else 0
+            "avg_score": sum(i.score for i in self.ideas) / len(self.ideas) if self.ideas else 0,
         }

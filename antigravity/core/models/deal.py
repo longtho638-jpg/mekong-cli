@@ -2,8 +2,8 @@
 📋 Deal Models - Startup Opportunities
 ======================================
 
-Defines the data structures for managing high-growth startup deals within 
-the Agency OS sales pipeline. Supports automated pricing based on the 
+Defines the data structures for managing high-growth startup deals within
+the Agency OS sales pipeline. Supports automated pricing based on the
 Binh Pháp engagement tiers.
 
 Hierarchy:
@@ -16,16 +16,18 @@ Binh Pháp: 📋 Hình (Configuration) - Structuring the deal for success.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Dict, Any
 from enum import Enum
+from typing import Any, Dict, Optional
 
 from ..config import DealTier, get_tier_pricing
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class DealStage(Enum):
     """Workflow stages for a startup engagement."""
+
     LEAD = "lead"
     DISCOVERY = "discovery"
     PROPOSAL = "proposal"
@@ -38,10 +40,11 @@ class DealStage(Enum):
 class StartupDeal:
     """
     📋 Startup Engagement Deal
-    
+
     Captures all strategic and financial parameters of a client relationship.
     Automatically applies tier-based pricing if defaults are not overridden.
     """
+
     id: Optional[int] = None
     startup_name: str = ""
     founder_name: str = ""
@@ -90,11 +93,7 @@ class StartupDeal:
 
     def get_aggregate_value(self) -> float:
         """Estimates total first-year financial impact (LTV)."""
-        return (
-            self.get_annual_retainer() +
-            self.get_equity_value() +
-            self.get_success_fee_value()
-        )
+        return self.get_annual_retainer() + self.get_equity_value() + self.get_success_fee_value()
 
     def is_won(self) -> bool:
         """Returns True if the contract is signed."""
@@ -115,15 +114,12 @@ class StartupDeal:
             "financials": {
                 "mrr": self.retainer_monthly,
                 "equity": self.equity_percent,
-                "success_fee": self.success_fee_percent
+                "success_fee": self.success_fee_percent,
             },
-            "milestones": {
-                "funding": self.funding_target,
-                "valuation": self.valuation
-            },
+            "milestones": {"funding": self.funding_target, "valuation": self.valuation},
             "aggregate_value": self.get_aggregate_value(),
             "timestamps": {
                 "created": self.created_at.isoformat(),
-                "closed": self.closed_at.isoformat() if self.closed_at else None
-            }
+                "closed": self.closed_at.isoformat() if self.closed_at else None,
+            },
         }

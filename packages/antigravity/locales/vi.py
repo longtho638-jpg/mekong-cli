@@ -3,7 +3,7 @@ Vietnamese localization for AntigravityKit.
 
 Supports:
 - Miền Tây (Southern)
-- Miền Bắc (Northern)  
+- Miền Bắc (Northern)
 - Miền Trung (Central)
 """
 

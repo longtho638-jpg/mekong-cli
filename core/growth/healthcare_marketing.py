@@ -12,19 +12,21 @@ Features:
 - Patient acquisition funnels
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ComplianceStatus(Enum):
     """Specific compliance readiness levels."""
+
     NOT_STARTED = "not_started"
     IN_PROGRESS = "in_progress"
     COMPLIANT = "compliant"
@@ -33,6 +35,7 @@ class ComplianceStatus(Enum):
 
 class HealthcareVertical(Enum):
     """Specialized healthcare domains."""
+
     DENTAL = "dental"
     MEDICAL = "medical"
     MENTAL_HEALTH = "mental_health"
@@ -43,6 +46,7 @@ class HealthcareVertical(Enum):
 
 class CampaignType(Enum):
     """Healthcare-specific marketing strategies."""
+
     PATIENT_ACQUISITION = "patient_acquisition"
     BRAND_AWARENESS = "brand_awareness"
     SERVICE_PROMOTION = "service_promotion"
@@ -52,6 +56,7 @@ class CampaignType(Enum):
 @dataclass
 class HIPAAChecklist:
     """A HIPAA compliance audit record."""
+
     id: str
     client_name: str
     items: Dict[str, bool] = field(default_factory=dict)
@@ -62,6 +67,7 @@ class HIPAAChecklist:
 @dataclass
 class HealthcareClient:
     """A healthcare industry client entity."""
+
     id: str
     name: str
     vertical: HealthcareVertical
@@ -77,6 +83,7 @@ class HealthcareClient:
 @dataclass
 class HealthcareCampaign:
     """A healthcare-specific marketing campaign record."""
+
     id: str
     client_id: str
     name: str
@@ -90,7 +97,7 @@ class HealthcareCampaign:
 class HealthcareMarketing:
     """
     Healthcare Marketing System.
-    
+
     Orchestrates HIPAA-compliant marketing campaigns and client management for medical providers.
     """
 
@@ -113,10 +120,7 @@ class HealthcareMarketing:
             logger.error(f"Demo data error: {e}")
 
     def add_client(
-        self,
-        name: str,
-        vertical: HealthcareVertical,
-        monthly_retainer: float = 0.0
+        self, name: str, vertical: HealthcareVertical, monthly_retainer: float = 0.0
     ) -> HealthcareClient:
         """Register a new medical provider as a client."""
         if not name:
@@ -124,7 +128,9 @@ class HealthcareMarketing:
 
         client = HealthcareClient(
             id=f"HCC-{uuid.uuid4().hex[:6].upper()}",
-            name=name, vertical=vertical, monthly_retainer=monthly_retainer
+            name=name,
+            vertical=vertical,
+            monthly_retainer=monthly_retainer,
         )
         self.clients[client.id] = client
         logger.info(f"Healthcare client added: {name} ({vertical.value})")
@@ -132,17 +138,14 @@ class HealthcareMarketing:
 
     def create_hipaa_checklist(self, client_id: str) -> Optional[HIPAAChecklist]:
         """Initialize a HIPAA audit checklist for a client."""
-        if client_id not in self.clients: return None
+        if client_id not in self.clients:
+            return None
 
         c = self.clients[client_id]
         checklist = HIPAAChecklist(
             id=f"HIP-{uuid.uuid4().hex[:6].upper()}",
             client_name=c.name,
-            items={
-                "BAA signed": False,
-                "PHI handling reviewed": False,
-                "Data encrypted": False
-            }
+            items={"BAA signed": False, "PHI handling reviewed": False, "Data encrypted": False},
         )
         self.checklists[checklist.id] = checklist
         logger.debug(f"HIPAA checklist created for {c.name}")
@@ -150,7 +153,8 @@ class HealthcareMarketing:
 
     def update_checklist(self, checklist_id: str, item: str, done: bool) -> bool:
         """Update a specific HIPAA requirement status."""
-        if checklist_id not in self.checklists: return False
+        if checklist_id not in self.checklists:
+            return False
 
         c = self.checklists[checklist_id]
         c.items[item] = done
@@ -158,8 +162,10 @@ class HealthcareMarketing:
         # Recalculate status
         completed = sum(1 for v in c.items.values() if v)
         total = len(c.items)
-        if completed == total: c.status = ComplianceStatus.COMPLIANT
-        elif completed > 0: c.status = ComplianceStatus.IN_PROGRESS
+        if completed == total:
+            c.status = ComplianceStatus.COMPLIANT
+        elif completed > 0:
+            c.status = ComplianceStatus.IN_PROGRESS
 
         c.last_reviewed = datetime.now()
         logger.info(f"HIPAA Item Updated: {item} -> {done}")
@@ -179,19 +185,27 @@ class HealthcareMarketing:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        v_icons = {HealthcareVertical.DENTAL: "🦷", HealthcareVertical.MEDICAL: "🏥", HealthcareVertical.WELLNESS: "🧘"}
+        v_icons = {
+            HealthcareVertical.DENTAL: "🦷",
+            HealthcareVertical.MEDICAL: "🏥",
+            HealthcareVertical.WELLNESS: "🧘",
+        }
 
         for c in list(self.clients.values())[:5]:
             icon = v_icons.get(c.vertical, "🏥")
             s_icon = "🟢" if c.hipaa_status == ComplianceStatus.COMPLIANT else "🟡"
-            name_disp = (c.name[:20] + '..') if len(c.name) > 22 else c.name
-            lines.append(f"║    {icon} {s_icon} {name_disp:<22} │ ${c.monthly_retainer:>8,.0f}/mo  ║")
+            name_disp = (c.name[:20] + "..") if len(c.name) > 22 else c.name
+            lines.append(
+                f"║    {icon} {s_icon} {name_disp:<22} │ ${c.monthly_retainer:>8,.0f}/mo  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 COMPLIANCE TRACKER                                    ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 COMPLIANCE TRACKER                                    ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for chk in list(self.checklists.values())[:3]:
             done = sum(1 for v in chk.items.values() if v)
@@ -199,13 +213,15 @@ class HealthcareMarketing:
             bar = "█" * int(pct / 10) + "░" * (10 - int(pct / 10))
             lines.append(f"║    🛡️ {chk.client_name[:16]:<16} │ {bar} │ {pct:>3.0f}% compliant ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🏥 New Client]  [📋 Audit HIPAA]  [📢 Campaigns]        ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Safety!            ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🏥 New Client]  [📋 Audit HIPAA]  [📢 Campaigns]        ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Safety!            ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

@@ -2,19 +2,22 @@
 Unified Dashboard Service
 =========================
 
-Aggregates data from various engines (Revenue, Leads, Automation) 
+Aggregates data from various engines (Revenue, Leads, Automation)
 to provide a single view of the agency's health.
 """
 
-from typing import Dict, Any, List
-from antigravity.core.revenue_engine import RevenueEngine
 from antigravity.core.client_magnet import ClientMagnet
+from antigravity.core.revenue_engine import RevenueEngine
+from typing import Any, Dict
+
 from core.automation.autopilot import RevenueAutopilotService
+
 
 class DashboardService:
     """
     Unified Dashboard Service
     """
+
     def __init__(self):
         self.revenue = RevenueEngine()
         self.magnet = ClientMagnet()
@@ -33,7 +36,7 @@ class DashboardService:
                 data = self.revenue.load_data("invoices.json")
                 if data and hasattr(self.revenue, "invoices") and not self.revenue.invoices:
                     # Logic to rehydrate objects would go here
-                    pass 
+                    pass
             except Exception:
                 pass
 
@@ -47,15 +50,12 @@ class DashboardService:
 
     def get_automation_status(self) -> Dict[str, Any]:
         """Get status of automation jobs."""
-        return {
-            "autopilot": "active", 
-            "last_run": self.autopilot.run_date.isoformat()
-        }
+        return {"autopilot": "active", "last_run": self.autopilot.run_date.isoformat()}
 
     def get_master_view(self) -> Dict[str, Any]:
         """Get complete dashboard data."""
         return {
             "revenue": self.get_revenue_summary(),
             "leads": self.get_leads_summary(),
-            "automation": self.get_automation_status()
+            "automation": self.get_automation_status(),
         }

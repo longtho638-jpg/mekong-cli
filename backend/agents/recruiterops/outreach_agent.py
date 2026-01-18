@@ -3,11 +3,11 @@ Outreach Agent - Email Sequences & Engagement
 Manages candidate outreach and communication.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class OutreachStatus(Enum):
@@ -29,6 +29,7 @@ class SequenceStep(Enum):
 @dataclass
 class OutreachCampaign:
     """Outreach email campaign"""
+
     id: str
     candidate_name: str
     candidate_email: str
@@ -56,7 +57,7 @@ class OutreachCampaign:
 class OutreachAgent:
     """
     Outreach Agent - Liên hệ Ứng viên
-    
+
     Responsibilities:
     - Send email sequences
     - Track responses
@@ -69,7 +70,7 @@ class OutreachAgent:
         SequenceStep.INITIAL: 3,
         SequenceStep.FOLLOW_UP_1: 5,
         SequenceStep.FOLLOW_UP_2: 7,
-        SequenceStep.FINAL: 0
+        SequenceStep.FINAL: 0,
     }
 
     def __init__(self):
@@ -78,19 +79,16 @@ class OutreachAgent:
         self.campaigns: Dict[str, OutreachCampaign] = {}
 
     def create_campaign(
-        self,
-        candidate_name: str,
-        candidate_email: str,
-        job_title: str
+        self, candidate_name: str, candidate_email: str, job_title: str
     ) -> OutreachCampaign:
         """Create outreach campaign"""
-        campaign_id = f"outreach_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        campaign_id = f"outreach_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         campaign = OutreachCampaign(
             id=campaign_id,
             candidate_name=candidate_name,
             candidate_email=candidate_email,
-            job_title=job_title
+            job_title=job_title,
         )
 
         self.campaigns[campaign_id] = campaign
@@ -151,24 +149,31 @@ class OutreachAgent:
         """Get campaigns needing follow-up"""
         now = datetime.now()
         return [
-            c for c in self.campaigns.values()
-            if c.next_follow_up and c.next_follow_up <= now and c.status not in [OutreachStatus.REPLIED, OutreachStatus.BOUNCED]
+            c
+            for c in self.campaigns.values()
+            if c.next_follow_up
+            and c.next_follow_up <= now
+            and c.status not in [OutreachStatus.REPLIED, OutreachStatus.BOUNCED]
         ]
 
     def get_stats(self) -> Dict:
         """Get outreach statistics"""
         campaigns = list(self.campaigns.values())
         sent = [c for c in campaigns if c.status != OutreachStatus.DRAFT]
-        opened = [c for c in campaigns if c.status in [OutreachStatus.OPENED, OutreachStatus.REPLIED]]
+        opened = [
+            c for c in campaigns if c.status in [OutreachStatus.OPENED, OutreachStatus.REPLIED]
+        ]
         replied = [c for c in campaigns if c.status == OutreachStatus.REPLIED]
 
         return {
             "total_campaigns": len(campaigns),
             "sent": len(sent),
-            "open_rate": f"{len(opened)/len(sent)*100:.0f}%" if sent else "0%",
-            "reply_rate": f"{len(replied)/len(sent)*100:.0f}%" if sent else "0%",
+            "open_rate": f"{len(opened) / len(sent) * 100:.0f}%" if sent else "0%",
+            "reply_rate": f"{len(replied) / len(sent) * 100:.0f}%" if sent else "0%",
             "pending_follow_ups": len(self.get_pending_follow_ups()),
-            "avg_response_time": sum(c.response_time_hours for c in replied) / len(replied) if replied else 0
+            "avg_response_time": sum(c.response_time_hours for c in replied) / len(replied)
+            if replied
+            else 0,
         }
 
 

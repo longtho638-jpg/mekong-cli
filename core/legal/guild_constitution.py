@@ -13,16 +13,18 @@ Features:
 """
 
 import logging
-from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class GuildTier(Enum):
     """Guild membership levels."""
+
     LARVAE = "larvae"
     WORKER = "worker"
     QUEEN = "queen"
@@ -31,11 +33,12 @@ class GuildTier(Enum):
 @dataclass
 class GuildMember:
     """A guild member entity."""
+
     id: str
     email: str
     agency_name: str
     tier: GuildTier
-    trust_score: int = 50 # 0-100
+    trust_score: int = 50  # 0-100
     contributions_count: int = 0
     referrals_count: int = 0
     status: str = "active"
@@ -49,14 +52,26 @@ class GuildMember:
 class GuildConstitution:
     """
     Guild Constitution System.
-    
+
     Manages membership governance, tier progression, and trust-based rewards.
     """
 
     TIER_CONFIG = {
-        GuildTier.LARVAE: {'min': 0, 'vote': False, 'share': 0.0, 'icon': '🥚', 'label': 'Larvae'},
-        GuildTier.WORKER: {'min': 50, 'vote': True, 'share': 0.10, 'icon': '🐝', 'label': 'Worker Bee'},
-        GuildTier.QUEEN: {'min': 85, 'vote': True, 'share': 0.20, 'icon': '👑', 'label': 'Queen Bee'}
+        GuildTier.LARVAE: {"min": 0, "vote": False, "share": 0.0, "icon": "🥚", "label": "Larvae"},
+        GuildTier.WORKER: {
+            "min": 50,
+            "vote": True,
+            "share": 0.10,
+            "icon": "🐝",
+            "label": "Worker Bee",
+        },
+        GuildTier.QUEEN: {
+            "min": 85,
+            "vote": True,
+            "share": 0.20,
+            "icon": "👑",
+            "label": "Queen Bee",
+        },
     }
 
     def __init__(self):
@@ -80,8 +95,10 @@ class GuildConstitution:
 
     def determine_tier(self, trust_score: int) -> GuildTier:
         """Map trust score to its corresponding tier."""
-        if trust_score >= 85: return GuildTier.QUEEN
-        if trust_score >= 50: return GuildTier.WORKER
+        if trust_score >= 85:
+            return GuildTier.QUEEN
+        if trust_score >= 50:
+            return GuildTier.WORKER
         return GuildTier.LARVAE
 
     def format_tier_status(self, member_id: str) -> str:
@@ -99,7 +116,7 @@ class GuildConstitution:
             "║  ───────────────────────────────────────────────────────  ║",
             "║  Privileges:                                              ║",
             f"║    • Voting Rights: {'✅' if cfg['vote'] else '❌'}                                ",
-            f"║    • Referral Fee:  {int(cfg['share']*100):>2}%                                 ║",
+            f"║    • Referral Fee:  {int(cfg['share'] * 100):>2}%                                 ║",
             "╠═══════════════════════════════════════════════════════════╣",
             "║  [🏆 Leaderboard]  [🛡️ Protection]  [💎 Rewards]          ║",
             "╚═══════════════════════════════════════════════════════════╝",
@@ -114,9 +131,10 @@ def register_commands() -> Dict[str, Any]:
     return {
         "/guild tier": {
             "handler": system.format_tier_status,
-            "description": "Check current guild standing"
+            "description": "Check current guild standing",
         }
     }
+
 
 # Example usage
 if __name__ == "__main__":

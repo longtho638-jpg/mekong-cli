@@ -3,11 +3,11 @@ Order Management Agent - Orders & Fulfillment
 Manages order processing, fulfillment, and returns.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class OrderStatus(Enum):
@@ -23,6 +23,7 @@ class OrderStatus(Enum):
 @dataclass
 class OrderItem:
     """Order line item"""
+
     product_id: str
     product_name: str
     variant_name: str
@@ -37,6 +38,7 @@ class OrderItem:
 @dataclass
 class Order:
     """E-commerce order"""
+
     id: str
     customer_email: str
     items: List[OrderItem] = field(default_factory=list)
@@ -56,7 +58,7 @@ class Order:
 class OrderManagementAgent:
     """
     Order Management Agent - Quản lý Đơn hàng
-    
+
     Responsibilities:
     - Order processing pipeline
     - Fulfillment tracking
@@ -71,12 +73,9 @@ class OrderManagementAgent:
 
     def create_order(self, customer_email: str) -> Order:
         """Create new order"""
-        order_id = f"ORD-{random.randint(10000,99999)}"
+        order_id = f"ORD-{random.randint(10000, 99999)}"
 
-        order = Order(
-            id=order_id,
-            customer_email=customer_email
-        )
+        order = Order(id=order_id, customer_email=customer_email)
 
         self.orders[order_id] = order
         return order
@@ -88,7 +87,7 @@ class OrderManagementAgent:
         product_name: str,
         variant_name: str,
         quantity: int,
-        unit_price: float
+        unit_price: float,
     ) -> Order:
         """Add item to order"""
         if order_id not in self.orders:
@@ -99,7 +98,7 @@ class OrderManagementAgent:
             product_name=product_name,
             variant_name=variant_name,
             quantity=quantity,
-            unit_price=unit_price
+            unit_price=unit_price,
         )
 
         order = self.orders[order_id]
@@ -155,7 +154,7 @@ class OrderManagementAgent:
             "total_orders": len(orders),
             "total_revenue": sum(o.total for o in delivered),
             "avg_order_value": sum(o.total for o in delivered) / len(delivered) if delivered else 0,
-            "pending": len([o for o in orders if o.status == OrderStatus.PENDING])
+            "pending": len([o for o in orders if o.status == OrderStatus.PENDING]),
         }
 
 

@@ -1,5 +1,7 @@
-from typing import Dict, Optional, List
+from typing import Dict, List, Optional
+
 from .base import PayPalBase
+
 
 class Orders(PayPalBase):
     """Orders API v2 - /v2/checkout/orders"""

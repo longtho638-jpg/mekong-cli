@@ -3,11 +3,11 @@ Event Agent - Event Planning & Management
 Manages events, registration, and attendee tracking.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class EventType(Enum):
@@ -31,6 +31,7 @@ class EventStatus(Enum):
 @dataclass
 class Attendee:
     """Event attendee"""
+
     id: str
     name: str
     email: str
@@ -41,6 +42,7 @@ class Attendee:
 @dataclass
 class Event:
     """Marketing event"""
+
     id: str
     name: str
     event_type: EventType
@@ -63,7 +65,7 @@ class Event:
 class EventAgent:
     """
     Event Agent - Quản lý Sự kiện
-    
+
     Responsibilities:
     - Event planning
     - Registration management
@@ -83,10 +85,10 @@ class EventAgent:
         event_date: date,
         venue: str,
         capacity: int = 100,
-        budget: float = 0
+        budget: float = 0,
     ) -> Event:
         """Create event"""
-        event_id = f"evt_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        event_id = f"evt_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         event = Event(
             id=event_id,
@@ -95,7 +97,7 @@ class EventAgent:
             date=event_date,
             venue=venue,
             capacity=capacity,
-            budget=budget
+            budget=budget,
         )
 
         self.events[event_id] = event
@@ -111,13 +113,7 @@ class EventAgent:
 
         return event
 
-    def register_attendee(
-        self,
-        event_id: str,
-        name: str,
-        email: str,
-        company: str = ""
-    ) -> Event:
+    def register_attendee(self, event_id: str, name: str, email: str, company: str = "") -> Event:
         """Register attendee"""
         if event_id not in self.events:
             raise ValueError(f"Event not found: {event_id}")
@@ -129,11 +125,11 @@ class EventAgent:
             raise ValueError("Event is sold out")
 
         attendee = Attendee(
-            id=f"att_{random.randint(1000,9999)}",
+            id=f"att_{random.randint(1000, 9999)}",
             name=name,
             email=email,
             company=company,
-            registered_at=datetime.now()
+            registered_at=datetime.now(),
         )
 
         event.attendees.append(attendee)
@@ -166,10 +162,7 @@ class EventAgent:
     def get_upcoming(self) -> List[Event]:
         """Get upcoming events"""
         today = date.today()
-        return sorted(
-            [e for e in self.events.values() if e.date >= today],
-            key=lambda x: x.date
-        )
+        return sorted([e for e in self.events.values() if e.date >= today], key=lambda x: x.date)
 
     def get_stats(self) -> Dict:
         """Get event statistics"""
@@ -181,7 +174,7 @@ class EventAgent:
             "upcoming": len(self.get_upcoming()),
             "completed": len(completed),
             "total_attendees": sum(e.registered for e in events),
-            "avg_fill_rate": sum(e.fill_rate for e in events) / len(events) if events else 0
+            "avg_fill_rate": sum(e.fill_rate for e in events) / len(events) if events else 0,
         }
 
 
@@ -193,13 +186,14 @@ if __name__ == "__main__":
 
     # Create event
     from datetime import timedelta
+
     e1 = agent.create_event(
         "Product Launch Webinar",
         EventType.WEBINAR,
         date.today() + timedelta(days=14),
         "Zoom",
         capacity=500,
-        budget=5000
+        budget=5000,
     )
 
     print(f"📋 Event: {e1.name}")

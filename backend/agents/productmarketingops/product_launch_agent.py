@@ -3,11 +3,11 @@ Product Launch Agent - GTM Planning & Launch Execution
 Manages product launches, timelines, and success metrics.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class LaunchType(Enum):
@@ -28,6 +28,7 @@ class LaunchStatus(Enum):
 @dataclass
 class Milestone:
     """Launch milestone"""
+
     name: str
     due_date: date
     completed: bool = False
@@ -36,6 +37,7 @@ class Milestone:
 @dataclass
 class Launch:
     """Product launch"""
+
     id: str
     name: str
     product: str
@@ -61,7 +63,7 @@ class Launch:
 class ProductLaunchAgent:
     """
     Product Launch Agent - Ra mắt Sản phẩm
-    
+
     Responsibilities:
     - Launch planning
     - GTM execution
@@ -75,21 +77,17 @@ class ProductLaunchAgent:
         self.launches: Dict[str, Launch] = {}
 
     def create_launch(
-        self,
-        name: str,
-        product: str,
-        launch_type: LaunchType,
-        launch_date: date
+        self, name: str, product: str, launch_type: LaunchType, launch_date: date
     ) -> Launch:
         """Create product launch"""
-        launch_id = f"launch_{random.randint(100,999)}"
+        launch_id = f"launch_{random.randint(100, 999)}"
 
         launch = Launch(
             id=launch_id,
             name=name,
             product=product,
             launch_type=launch_type,
-            launch_date=launch_date
+            launch_date=launch_date,
         )
 
         self.launches[launch_id] = launch
@@ -142,8 +140,14 @@ class ProductLaunchAgent:
         return {
             "total_launches": len(launches),
             "launched": len(launched),
-            "in_progress": len([l for l in launches if l.status in [LaunchStatus.PLANNING, LaunchStatus.PRE_LAUNCH]]),
-            "avg_progress": sum(l.progress for l in launches) / len(launches) if launches else 0
+            "in_progress": len(
+                [
+                    l
+                    for l in launches
+                    if l.status in [LaunchStatus.PLANNING, LaunchStatus.PRE_LAUNCH]
+                ]
+            ),
+            "avg_progress": sum(l.progress for l in launches) / len(launches) if launches else 0,
         }
 
 
@@ -160,7 +164,7 @@ if __name__ == "__main__":
         name="Product X 2.0",
         product="Product X",
         launch_type=LaunchType.MAJOR,
-        launch_date=date.today() + timedelta(days=30)
+        launch_date=date.today() + timedelta(days=30),
     )
 
     print(f"📋 Launch: {l1.name}")

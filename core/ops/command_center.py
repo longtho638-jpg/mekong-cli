@@ -13,17 +13,19 @@ Features:
 """
 
 import logging
-from typing import List
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SystemStatus(Enum):
     """System availability status."""
+
     OPERATIONAL = "operational"
     DEGRADED = "degraded"
     DOWN = "down"
@@ -32,6 +34,7 @@ class SystemStatus(Enum):
 @dataclass
 class QuickStat:
     """A single dashboard metric entity."""
+
     name: str
     value: str
     trend: str
@@ -41,6 +44,7 @@ class QuickStat:
 @dataclass
 class SystemHealth:
     """Health status record for a system component."""
+
     name: str
     status: SystemStatus
     message: str = ""
@@ -49,7 +53,7 @@ class SystemHealth:
 class AgencyCommandCenter:
     """
     Agency Command Center System.
-    
+
     MILESTONE 100 - THE ULTIMATE DASHBOARD!
     Aggregates agency-wide health metrics and system statuses.
     """
@@ -128,42 +132,46 @@ class AgencyCommandCenter:
             else:
                 lines.append(f"║    {c1:<66}  ║")
 
-        lines.extend([
-            "║                                                                      ║",
-            "║  🔧 SYSTEM STATUS                                                    ║",
-            "║  " + "─" * 66 + "  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                                      ║",
+                "║  🔧 SYSTEM STATUS                                                    ║",
+                "║  " + "─" * 66 + "  ║",
+            ]
+        )
 
         status_map = {
             SystemStatus.OPERATIONAL: "🟢",
             SystemStatus.DEGRADED: "🟡",
-            SystemStatus.DOWN: "🔴"
+            SystemStatus.DOWN: "🔴",
         }
 
         # Grid for systems (3 columns)
         for i in range(0, len(self.systems), 3):
-            row = self.systems[i:i+3]
+            row = self.systems[i : i + 3]
             row_content = " │ ".join(f"{status_map.get(s.status, '⚪')} {s.name:<14}" for s in row)
             lines.append(f"║    {row_content:<66}  ║")
 
-        lines.extend([
-            "║                                                                      ║",
-            "║  🚀 QUICK ACTIONS                                                    ║",
-            "║  " + "─" * 66 + "  ║",
-            "║    [📝 Proposal] [💳 Invoice] [📅 Meeting] [👤 Client] [📊 Report]   ║",
-            "║                                                                      ║",
-            "║  📋 TODAY'S PRIORITIES                                               ║",
-            "║  " + "─" * 66 + "  ║",
-            "║    🔴 Overdue Invoice #INV-003 - follow up                           ║",
-            "║    🟠 Coffee Lab proposal deadline tomorrow                          ║",
-            "║    🟢 Team standup at 2:00 PM                                        ║",
-            sep,
-            "║   🏆 MILESTONE 100 ACHIEVED! 🏆                                      ║",
-            "║   65 Modules │ 53 Commits │ 50,000+ Lines │ Agency OS Core           ║",
-            "║                                                                      ║",
-            "║                    \"Không đánh mà thắng\" 🏯                          ║",
-            border_bottom,
-        ])
+        lines.extend(
+            [
+                "║                                                                      ║",
+                "║  🚀 QUICK ACTIONS                                                    ║",
+                "║  " + "─" * 66 + "  ║",
+                "║    [📝 Proposal] [💳 Invoice] [📅 Meeting] [👤 Client] [📊 Report]   ║",
+                "║                                                                      ║",
+                "║  📋 TODAY'S PRIORITIES                                               ║",
+                "║  " + "─" * 66 + "  ║",
+                "║    🔴 Overdue Invoice #INV-003 - follow up                           ║",
+                "║    🟠 Coffee Lab proposal deadline tomorrow                          ║",
+                "║    🟢 Team standup at 2:00 PM                                        ║",
+                sep,
+                "║   🏆 MILESTONE 100 ACHIEVED! 🏆                                      ║",
+                "║   65 Modules │ 53 Commits │ 50,000+ Lines │ Agency OS Core           ║",
+                "║                                                                      ║",
+                '║                    "Không đánh mà thắng" 🏯                          ║',
+                border_bottom,
+            ]
+        )
 
         return "\n".join(lines)
 

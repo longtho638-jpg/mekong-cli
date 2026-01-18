@@ -12,28 +12,31 @@ Features:
 - Calendar sync ready
 """
 
-import uuid
 import logging
-from typing import Dict, Any, List
-from datetime import datetime, timedelta, time
+import uuid
 from dataclasses import dataclass
+from datetime import datetime, time, timedelta
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class MeetingType(Enum):
     """Supported meeting categories."""
-    DISCOVERY = "discovery"      # 30 min
-    PROPOSAL = "proposal"        # 45 min
-    KICKOFF = "kickoff"          # 60 min
-    CHECK_IN = "check_in"        # 15 min
-    STRATEGY = "strategy"        # 60 min
+
+    DISCOVERY = "discovery"  # 30 min
+    PROPOSAL = "proposal"  # 45 min
+    KICKOFF = "kickoff"  # 60 min
+    CHECK_IN = "check_in"  # 15 min
+    STRATEGY = "strategy"  # 60 min
 
 
 class MeetingStatus(Enum):
     """Lifecycle status of a scheduled call."""
+
     SCHEDULED = "scheduled"
     CONFIRMED = "confirmed"
     COMPLETED = "completed"
@@ -43,6 +46,7 @@ class MeetingStatus(Enum):
 
 class DayOfWeek(Enum):
     """Indices for days of the week."""
+
     MONDAY = 0
     TUESDAY = 1
     WEDNESDAY = 2
@@ -55,6 +59,7 @@ class DayOfWeek(Enum):
 @dataclass
 class TimeSlot:
     """A defined block of time for availability."""
+
     start: time
     end: time
 
@@ -62,6 +67,7 @@ class TimeSlot:
 @dataclass
 class MeetingTypeConfig:
     """Configuration for a meeting duration and buffer."""
+
     m_type: MeetingType
     name: str
     duration_mins: int
@@ -71,6 +77,7 @@ class MeetingTypeConfig:
 @dataclass
 class Meeting:
     """A scheduled meeting record entity."""
+
     id: str
     meeting_type: MeetingType
     attendee_name: str
@@ -88,7 +95,7 @@ class Meeting:
 class Scheduler:
     """
     Meeting Scheduling System.
-    
+
     Orchestrates availability slots, conflict detection, and meeting lifecycle management.
     """
 
@@ -105,21 +112,24 @@ class Scheduler:
         return {
             MeetingType.DISCOVERY: MeetingTypeConfig(MeetingType.DISCOVERY, "Discovery", 30),
             MeetingType.PROPOSAL: MeetingTypeConfig(MeetingType.PROPOSAL, "Proposal Review", 45),
-            MeetingType.KICKOFF: MeetingTypeConfig(MeetingType.KICKOFF, "Kickoff", 60)
+            MeetingType.KICKOFF: MeetingTypeConfig(MeetingType.KICKOFF, "Kickoff", 60),
         }
 
     def _set_default_slots(self):
         """Standard 9-5 work availability."""
-        for day in [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY]:
-            self.availability[day] = [TimeSlot(time(9, 0), time(12, 0)), TimeSlot(time(13, 0), time(17, 0))]
+        for day in [
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+        ]:
+            self.availability[day] = [
+                TimeSlot(time(9, 0), time(12, 0)),
+                TimeSlot(time(13, 0), time(17, 0)),
+            ]
 
-    def book_call(
-        self,
-        m_type: MeetingType,
-        name: str,
-        email: str,
-        start: datetime
-    ) -> Meeting:
+    def book_call(self, m_type: MeetingType, name: str, email: str, start: datetime) -> Meeting:
         """Reserve a call slot and generate a link."""
         cfg = self.configs.get(m_type, self.configs[MeetingType.DISCOVERY])
         end = start + timedelta(minutes=cfg.duration_mins)
@@ -127,12 +137,23 @@ class Scheduler:
         # Conflict check simulated for demo
         m = Meeting(
             id=f"MTG-{uuid.uuid4().hex[:6].upper()}",
-            meeting_type=m_type, attendee_name=name, attendee_email=email,
-            start_time=start, end_time=end, link=f"https://meet.google.com/{uuid.uuid4().hex[:10]}"
+            meeting_type=m_type,
+            attendee_name=name,
+            attendee_email=email,
+            start_time=start,
+            end_time=end,
+            link=f"https://meet.google.com/{uuid.uuid4().hex[:10]}",
         )
         self.meetings[m.id] = m
         logger.info(f"Meeting booked: {name} on {start.strftime('%Y-%m-%d %H:%M')}")
         return m
+
+    def get_upcoming_meetings(self) -> List[Meeting]:
+        """Get list of upcoming meetings sorted by time."""
+        return sorted(
+            [m for m in self.meetings.values() if m.start_time > datetime.now()],
+            key=lambda x: x.start_time,
+        )
 
     def get_stats(self) -> Dict[str, Any]:
         """Aggregate scheduling performance data."""
@@ -140,13 +161,16 @@ class Scheduler:
         return {
             "total": len(self.meetings),
             "completed": len(done),
-            "show_rate": (len(done) / len(self.meetings) * 100.0) if self.meetings else 0.0
+            "show_rate": (len(done) / len(self.meetings) * 100.0) if self.meetings else 0.0,
         }
 
     def format_dashboard(self) -> str:
         """Render the Scheduling Dashboard."""
         s = self.get_stats()
-        upcoming = sorted([m for m in self.meetings.values() if m.start_time > datetime.now()], key=lambda x: x.start_time)
+        upcoming = sorted(
+            [m for m in self.meetings.values() if m.start_time > datetime.now()],
+            key=lambda x: x.start_time,
+        )
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -161,13 +185,15 @@ class Scheduler:
             dt = m.start_time.strftime("%b %d %H:%M")
             lines.append(f"║  ⏰ {dt} │ {m.attendee_name[:15]:<15} │ {m.meeting_type.value:<12} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Book Call]  [📅 Set Availability]  [📊 Analytics]    ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.owner[:40]:<40} - Be Punctual!      ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ Book Call]  [📅 Set Availability]  [📊 Analytics]    ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.owner[:40]:<40} - Be Punctual!      ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

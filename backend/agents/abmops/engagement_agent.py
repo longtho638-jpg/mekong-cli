@@ -3,11 +3,11 @@ Engagement Agent - ABM Engagement & Plays
 Manages personalized outreach and engagement scoring.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class PlayType(Enum):
@@ -30,6 +30,7 @@ class TouchpointType(Enum):
 @dataclass
 class Touchpoint:
     """Engagement touchpoint"""
+
     id: str
     account_id: str
     touchpoint_type: TouchpointType
@@ -45,6 +46,7 @@ class Touchpoint:
 @dataclass
 class Play:
     """ABM play"""
+
     id: str
     name: str
     play_type: PlayType
@@ -65,7 +67,7 @@ class Play:
 class EngagementAgent:
     """
     Engagement Agent - Tương tác ABM
-    
+
     Responsibilities:
     - Personalized plays
     - Multi-touch campaigns
@@ -81,19 +83,13 @@ class EngagementAgent:
         self.engagement_scores: Dict[str, float] = {}
 
     def create_play(
-        self,
-        name: str,
-        play_type: PlayType,
-        target_accounts: List[str] = None
+        self, name: str, play_type: PlayType, target_accounts: List[str] = None
     ) -> Play:
         """Create ABM play"""
-        play_id = f"play_{random.randint(100,999)}"
+        play_id = f"play_{random.randint(100, 999)}"
 
         play = Play(
-            id=play_id,
-            name=name,
-            play_type=play_type,
-            target_accounts=target_accounts or []
+            id=play_id, name=name, play_type=play_type, target_accounts=target_accounts or []
         )
 
         self.plays[play_id] = play
@@ -104,16 +100,16 @@ class EngagementAgent:
         account_id: str,
         touchpoint_type: TouchpointType,
         description: str,
-        play_id: str = None
+        play_id: str = None,
     ) -> Touchpoint:
         """Add engagement touchpoint"""
-        tp_id = f"tp_{random.randint(1000,9999)}"
+        tp_id = f"tp_{random.randint(1000, 9999)}"
 
         touchpoint = Touchpoint(
             id=tp_id,
             account_id=account_id,
             touchpoint_type=touchpoint_type,
-            description=description
+            description=description,
         )
 
         self.touchpoints.append(touchpoint)
@@ -132,8 +128,9 @@ class EngagementAgent:
             touchpoint.response = True
 
             # Update engagement score
-            self.engagement_scores[touchpoint.account_id] = \
+            self.engagement_scores[touchpoint.account_id] = (
                 self.engagement_scores.get(touchpoint.account_id, 0) + 10
+            )
 
             # Update play
             if play_id and play_id in self.plays:
@@ -154,7 +151,7 @@ class EngagementAgent:
             "total_touchpoints": len(self.touchpoints),
             "total_responses": sum(1 for t in self.touchpoints if t.response),
             "avg_response_rate": sum(p.response_rate for p in plays) / len(plays) if plays else 0,
-            "engaged_accounts": len(self.engagement_scores)
+            "engaged_accounts": len(self.engagement_scores),
         }
 
 

@@ -3,11 +3,11 @@ Code Review Agent - PR Management & Review Metrics
 Manages pull requests, reviews, and merge tracking.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class PRStatus(Enum):
@@ -28,6 +28,7 @@ class ReviewResult(Enum):
 @dataclass
 class Review:
     """Code review"""
+
     id: str
     reviewer: str
     result: ReviewResult = ReviewResult.PENDING
@@ -38,6 +39,7 @@ class Review:
 @dataclass
 class PullRequest:
     """Pull request"""
+
     id: str
     title: str
     author: str
@@ -63,7 +65,7 @@ class PullRequest:
 class CodeReviewAgent:
     """
     Code Review Agent - Quản lý Code Review
-    
+
     Responsibilities:
     - Manage PRs
     - Assign reviewers
@@ -77,15 +79,10 @@ class CodeReviewAgent:
         self.prs: Dict[str, PullRequest] = {}
 
     def create_pr(
-        self,
-        title: str,
-        author: str,
-        branch: str,
-        additions: int = 0,
-        deletions: int = 0
+        self, title: str, author: str, branch: str, additions: int = 0, deletions: int = 0
     ) -> PullRequest:
         """Create pull request"""
-        pr_id = f"PR-{random.randint(100,999)}"
+        pr_id = f"PR-{random.randint(100, 999)}"
 
         pr = PullRequest(
             id=pr_id,
@@ -93,7 +90,7 @@ class CodeReviewAgent:
             author=author,
             branch=branch,
             additions=additions,
-            deletions=deletions
+            deletions=deletions,
         )
 
         self.prs[pr_id] = pr
@@ -106,10 +103,7 @@ class CodeReviewAgent:
 
         pr = self.prs[pr_id]
 
-        review = Review(
-            id=f"review_{random.randint(100,999)}",
-            reviewer=reviewer
-        )
+        review = Review(id=f"review_{random.randint(100, 999)}", reviewer=reviewer)
 
         pr.reviews.append(review)
         pr.status = PRStatus.IN_REVIEW
@@ -117,11 +111,7 @@ class CodeReviewAgent:
         return pr
 
     def submit_review(
-        self,
-        pr_id: str,
-        reviewer: str,
-        result: ReviewResult,
-        comments: int = 0
+        self, pr_id: str, reviewer: str, result: ReviewResult, comments: int = 0
     ) -> PullRequest:
         """Submit review"""
         if pr_id not in self.prs:
@@ -161,14 +151,16 @@ class CodeReviewAgent:
         prs = list(self.prs.values())
         merged = [p for p in prs if p.status == PRStatus.MERGED]
 
-        avg_ttm = sum(p.time_to_merge for p in merged if p.time_to_merge) / len(merged) if merged else 0
+        avg_ttm = (
+            sum(p.time_to_merge for p in merged if p.time_to_merge) / len(merged) if merged else 0
+        )
 
         return {
             "total_prs": len(prs),
             "open": len([p for p in prs if p.status in [PRStatus.OPEN, PRStatus.IN_REVIEW]]),
             "merged": len(merged),
             "avg_time_to_merge": f"{avg_ttm:.1f}h",
-            "total_reviews": sum(len(p.reviews) for p in prs)
+            "total_reviews": sum(len(p.reviews) for p in prs),
         }
 
 
@@ -179,8 +171,12 @@ if __name__ == "__main__":
     print("🔃 Code Review Agent Demo\n")
 
     # Create PRs
-    pr1 = agent.create_pr("feat: add user auth", "nguyen_a", "feature/auth", additions=250, deletions=30)
-    pr2 = agent.create_pr("fix: dashboard bug", "tran_b", "fix/dashboard", additions=15, deletions=8)
+    pr1 = agent.create_pr(
+        "feat: add user auth", "nguyen_a", "feature/auth", additions=250, deletions=30
+    )
+    pr2 = agent.create_pr(
+        "fix: dashboard bug", "tran_b", "fix/dashboard", additions=15, deletions=8
+    )
 
     print(f"📋 PR: {pr1.id}")
     print(f"   Title: {pr1.title}")

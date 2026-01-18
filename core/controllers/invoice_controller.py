@@ -5,7 +5,8 @@ Handles HTTP requests for invoice operations.
 Clean Architecture Layer: Controllers
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 from core.use_cases.create_invoice import CreateInvoiceUseCase
 
 
@@ -21,9 +22,6 @@ class InvoiceController:
             name = request_data.get("name", "")
             entity = self.create_use_case.execute(name)
 
-            return {
-                "success": True,
-                "data": {"id": entity.id, "name": entity.name}
-            }
+            return {"success": True, "data": {"id": entity.id, "name": entity.name}}
         except Exception as e:
             return {"success": False, "error": str(e)}

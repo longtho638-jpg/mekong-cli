@@ -12,19 +12,21 @@ Features:
 - Trend analysis
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class CostType(Enum):
     """Categories of project-specific expenses."""
+
     LABOR = "labor"
     SOFTWARE = "software"
     CONTRACTOR = "contractor"
@@ -34,15 +36,17 @@ class CostType(Enum):
 
 class ProfitLevel(Enum):
     """Profitability benchmarks."""
-    LOSS = "loss"          # < 0%
-    LOW = "low"            # 0-20%
-    HEALTHY = "healthy"    # 20-40%
-    EXCELLENT = "excellent" # > 40%
+
+    LOSS = "loss"  # < 0%
+    LOW = "low"  # 0-20%
+    HEALTHY = "healthy"  # 20-40%
+    EXCELLENT = "excellent"  # > 40%
 
 
 @dataclass
 class Cost:
     """A single project cost item entity."""
+
     type: CostType
     amount: float
     description: str
@@ -55,6 +59,7 @@ class Cost:
 @dataclass
 class ProjectPnL:
     """A project profit and loss record entity."""
+
     id: str
     project_name: str
     client: str
@@ -72,14 +77,15 @@ class ProjectPnL:
 
     @property
     def margin_pct(self) -> float:
-        if self.revenue <= 0: return 0.0
+        if self.revenue <= 0:
+            return 0.0
         return (self.net_profit / self.revenue) * 100.0
 
 
 class ProfitMarginTracker:
     """
     Profit Margin Tracker System.
-    
+
     Orchestrates the tracking of project-level costs and revenue to derive granular profitability insights.
     """
 
@@ -88,16 +94,13 @@ class ProfitMarginTracker:
         self.projects: Dict[str, ProjectPnL] = {}
         logger.info(f"Profit Margin Tracker initialized for {agency_name}")
 
-    def register_project(
-        self,
-        name: str,
-        client: str,
-        revenue: float
-    ) -> ProjectPnL:
+    def register_project(self, name: str, client: str, revenue: float) -> ProjectPnL:
         """Initialize a new project P&L record."""
         p = ProjectPnL(
             id=f"PRJ-{uuid.uuid4().hex[:6].upper()}",
-            project_name=name, client=client, revenue=float(revenue)
+            project_name=name,
+            client=client,
+            revenue=float(revenue),
         )
         self.projects[p.id] = p
         logger.info(f"Project P&L created: {name} (${revenue:,.0f})")
@@ -129,22 +132,39 @@ class ProfitMarginTracker:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        icons = {ProfitLevel.EXCELLENT: "💚", ProfitLevel.HEALTHY: "🟢", ProfitLevel.LOW: "🟠", ProfitLevel.LOSS: "🔴"}
+        icons = {
+            ProfitLevel.EXCELLENT: "💚",
+            ProfitLevel.HEALTHY: "🟢",
+            ProfitLevel.LOW: "🟠",
+            ProfitLevel.LOSS: "🔴",
+        }
 
         for p in sorted(self.projects.values(), key=lambda x: x.margin_pct, reverse=True)[:5]:
             # Determine level
-            lvl = ProfitLevel.EXCELLENT if p.margin_pct > 40 else ProfitLevel.HEALTHY if p.margin_pct >= 20 else ProfitLevel.LOW if p.margin_pct >= 0 else ProfitLevel.LOSS
+            lvl = (
+                ProfitLevel.EXCELLENT
+                if p.margin_pct > 40
+                else ProfitLevel.HEALTHY
+                if p.margin_pct >= 20
+                else ProfitLevel.LOW
+                if p.margin_pct >= 0
+                else ProfitLevel.LOSS
+            )
             icon = icons.get(lvl, "⚪")
             bar = "█" * int(max(0, p.margin_pct / 10)) + "░" * int(max(0, 5 - (p.margin_pct / 10)))
-            lines.append(f"║  {icon} {p.project_name[:15]:<15} │ {bar} │ {p.margin_pct:>5.1f}% │ ${p.net_profit:>8,.0f}  ║")
+            lines.append(
+                f"║  {icon} {p.project_name[:15]:<15} │ {bar} │ {p.margin_pct:>5.1f}% │ ${p.net_profit:>8,.0f}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ Project]  [💸 Add Cost]  [📈 Full Report]  [⚙️]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ Project]  [💸 Add Cost]  [📈 Full Report]  [⚙️]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

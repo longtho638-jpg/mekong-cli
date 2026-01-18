@@ -3,23 +3,25 @@ Campaign API Routes
 Full CRUD + Generation + Publishing
 """
 
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import List
-from datetime import datetime
-import uuid
+import os
 
 # Import agents
 import sys
-import os
+import uuid
+from datetime import datetime
+from typing import List
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from backend.agents import ScoutAgent, EditorAgent, DirectorAgent, CommunityAgent, Platform
-
+from backend.agents import CommunityAgent, DirectorAgent, EditorAgent, Platform, ScoutAgent
 
 router = APIRouter(prefix="/api/campaigns", tags=["Campaigns"])
 
 # ============ Models ============
+
 
 class CampaignCreate(BaseModel):
     name: str
@@ -58,13 +60,11 @@ community = CommunityAgent()
 
 # ============ Routes ============
 
+
 @router.get("/")
 async def list_campaigns():
     """List all campaigns"""
-    return {
-        "campaigns": list(campaigns_db.values()),
-        "total": len(campaigns_db)
-    }
+    return {"campaigns": list(campaigns_db.values()), "total": len(campaigns_db)}
 
 
 @router.post("/")
@@ -79,7 +79,7 @@ async def create_campaign(data: CampaignCreate):
         "platforms": data.platforms,
         "status": "draft",
         "posts_count": 0,
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().isoformat(),
     }
 
     campaigns_db[campaign_id] = campaign
@@ -94,10 +94,7 @@ async def get_campaign(campaign_id: str):
     if campaign_id not in campaigns_db:
         raise HTTPException(status_code=404, detail="Campaign not found")
 
-    return {
-        "campaign": campaigns_db[campaign_id],
-        "content": content_db.get(campaign_id, [])
-    }
+    return {"campaign": campaigns_db[campaign_id], "content": content_db.get(campaign_id, [])}
 
 
 @router.post("/{campaign_id}/generate")
@@ -127,7 +124,7 @@ async def generate_content(campaign_id: str, count: int = 7):
                 "pillar": pillar,
                 "hashtags": draft.hashtags,
                 "vibe": draft.vibe,
-                "status": "ready"
+                "status": "ready",
             }
             generated.append(content_item)
 
@@ -140,7 +137,7 @@ async def generate_content(campaign_id: str, count: int = 7):
         "campaign_id": campaign_id,
         "generated": len(generated),
         "content": generated[:3],  # Preview first 3
-        "message": f"Generated {len(generated)} posts"
+        "message": f"Generated {len(generated)} posts",
     }
 
 
@@ -160,11 +157,13 @@ async def publish_campaign(campaign_id: str):
     for item in content:
         platform = Platform(item["platform"])
         post = community.schedule_post(item["body"], platform)
-        scheduled.append({
-            "id": post.id,
-            "platform": platform.value,
-            "scheduled_at": post.scheduled_at.isoformat()
-        })
+        scheduled.append(
+            {
+                "id": post.id,
+                "platform": platform.value,
+                "scheduled_at": post.scheduled_at.isoformat(),
+            }
+        )
 
     campaigns_db[campaign_id]["status"] = "scheduled"
 
@@ -172,7 +171,7 @@ async def publish_campaign(campaign_id: str):
         "campaign_id": campaign_id,
         "scheduled": len(scheduled),
         "posts": scheduled[:3],
-        "message": "Campaign scheduled for publishing"
+        "message": "Campaign scheduled for publishing",
     }
 
 

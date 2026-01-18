@@ -1,13 +1,16 @@
 """
 Proposal Module - Data Entities
 """
+
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
 from typing import List
-from datetime import datetime, timedelta
+
 
 class ProposalStatus(Enum):
     """Lifecycle status of a client proposal."""
+
     DRAFT = "draft"
     SENT = "sent"
     VIEWED = "viewed"
@@ -17,6 +20,7 @@ class ProposalStatus(Enum):
 
 class ServiceTier(Enum):
     """Pricing tiers for service packages."""
+
     STARTER = "starter"
     GROWTH = "growth"
     SCALE = "scale"
@@ -25,6 +29,7 @@ class ServiceTier(Enum):
 @dataclass
 class ServicePackage:
     """A defined service offering entity."""
+
     name: str
     description: str
     deliverables: List[str]
@@ -39,6 +44,7 @@ class ServicePackage:
 @dataclass
 class Proposal:
     """A complete proposal document entity."""
+
     id: str
     client_name: str
     client_company: str

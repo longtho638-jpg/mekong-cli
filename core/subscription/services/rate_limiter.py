@@ -6,8 +6,8 @@ Service for managing API rate limits per user.
 Basic in-memory implementation with room for Redis upgrade.
 """
 
-import time
 import logging
+import time
 from collections import defaultdict
 from typing import Dict
 
@@ -31,18 +31,18 @@ class RateLimiter:
         config = self._rate_limits_config.get(action, self._rate_limits_config["api_call"])
         window_size = config["window_size"]
         max_requests = config["max_requests"]
-        
+
         now = time.time()
         user_limits = self._rate_limits[user_id]
-        
+
         # Clean old entries outside the window
         user_limits[:] = [t for t in user_limits if now - t < window_size]
-        
+
         # Check if user exceeded limit
         if len(user_limits) >= max_requests:
             logger.warning(f"Rate limit exceeded for user {user_id}, action {action}")
             return False
-        
+
         # Add current request timestamp
         user_limits.append(now)
         return True
@@ -52,16 +52,16 @@ class RateLimiter:
         config = self._rate_limits_config.get(action, self._rate_limits_config["api_call"])
         window_size = config["window_size"]
         max_requests = config["max_requests"]
-        
+
         now = time.time()
         user_limits = self._rate_limits.get(user_id, [])
-        
+
         # Clean old entries
         user_limits[:] = [t for t in user_limits if now - t < window_size]
-        
+
         remaining = max(0, max_requests - len(user_limits))
         reset_time = max(user_limits + [now - window_size + 1]) if user_limits else now
-        
+
         return {
             "remaining": remaining,
             "limit": max_requests,
@@ -88,6 +88,6 @@ class RateLimiter:
         """Clean up expired entries across all users."""
         now = time.time()
         max_window = max(config["window_size"] for config in self._rate_limits_config.values())
-        
+
         for user_id, timestamps in self._rate_limits.items():
             self._rate_limits[user_id] = [t for t in timestamps if now - t < max_window]

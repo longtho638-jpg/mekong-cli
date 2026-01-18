@@ -10,10 +10,10 @@ Commands:
 🏯 "Dễ như ăn kẹo" - Easy as candy
 """
 
-import sys
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
 
 def print_banner():
@@ -34,7 +34,7 @@ def print_banner():
 
 def cmd_start():
     """Bootstrap a new agency (5-minute setup)."""
-    from antigravity.core.agency_dna import AgencyDNA, Tone, PricingTier
+    from antigravity.core.agency_dna import AgencyDNA, PricingTier, Tone
 
     print("\n🚀 BOOTSTRAP YOUR AGENCY")
     print("-" * 50)
@@ -55,17 +55,17 @@ def cmd_start():
     print("   5. Professional (English)")
     tone_choice = input("   Select [1]: ").strip() or "1"
 
-    tones = {"1": Tone.MIEN_TAY, "2": Tone.MIEN_BAC, "3": Tone.MIEN_TRUNG, "4": Tone.FRIENDLY, "5": Tone.PROFESSIONAL}
+    tones = {
+        "1": Tone.MIEN_TAY,
+        "2": Tone.MIEN_BAC,
+        "3": Tone.MIEN_TRUNG,
+        "4": Tone.FRIENDLY,
+        "5": Tone.PROFESSIONAL,
+    }
     tone = tones.get(tone_choice, Tone.MIEN_TAY)
 
     # Create DNA
-    dna = AgencyDNA(
-        name=name,
-        niche=niche,
-        location=location,
-        tone=tone,
-        tier=PricingTier.STARTER
-    )
+    dna = AgencyDNA(name=name, niche=niche, location=location, tone=tone, tier=PricingTier.STARTER)
 
     # Add default services
     dna.add_service("Tư vấn chiến lược", f"Tư vấn chiến lược {niche}", 500)
@@ -82,7 +82,7 @@ def cmd_start():
     print(f"   🏷️ Tagline: {dna.get_tagline()}")
     print(f"   📦 Services: {len(dna.services)}")
     print("\n🎉 You're ready to earn $!")
-    print("   Next: antigravity client:add \"Your First Client\"")
+    print('   Next: antigravity client:add "Your First Client"')
 
 
 def cmd_client_add(name: str):
@@ -100,11 +100,7 @@ def cmd_client_add(name: str):
     phone = input("   Phone []: ").strip()
 
     lead = magnet.add_lead(
-        name=name,
-        company=company,
-        email=email,
-        phone=phone,
-        source=LeadSource.REFERRAL
+        name=name, company=company, email=email, phone=phone, source=LeadSource.REFERRAL
     )
 
     # Auto-qualify with default score
@@ -173,7 +169,7 @@ def cmd_stats():
     if ideas_path.exists():
         ideas = json.loads(ideas_path.read_text(encoding="utf-8"))
         print(f"\n   📝 Content Ideas: {len(ideas)}")
-        avg_score = sum(i.get('score', 0) for i in ideas) / len(ideas) if ideas else 0
+        avg_score = sum(i.get("score", 0) for i in ideas) / len(ideas) if ideas else 0
         print(f"   📊 Avg Virality: {avg_score:.0f}/100")
 
     print("\n" + "=" * 50)

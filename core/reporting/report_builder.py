@@ -12,19 +12,21 @@ Features:
 - ASCII dashboard output
 """
 
-import uuid
 import logging
-from typing import List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ReportType(Enum):
     """Categories of generated reports."""
+
     REVENUE = "revenue"
     CLIENTS = "clients"
     PROJECTS = "projects"
@@ -35,6 +37,7 @@ class ReportType(Enum):
 
 class MetricType(Enum):
     """Mathematical nature of a report metric."""
+
     SUM = "sum"
     AVERAGE = "average"
     COUNT = "count"
@@ -44,6 +47,7 @@ class MetricType(Enum):
 @dataclass
 class ReportMetric:
     """A specific data point record entity."""
+
     name: str
     value: float
     m_type: MetricType
@@ -54,6 +58,7 @@ class ReportMetric:
 @dataclass
 class Report:
     """A generated report document entity."""
+
     id: str
     name: str
     r_type: ReportType
@@ -70,7 +75,7 @@ class Report:
 class ReportBuilder:
     """
     Report Building System.
-    
+
     Orchestrates the aggregation of business metrics into formatted reports for stakeholder analysis.
     """
 
@@ -80,11 +85,7 @@ class ReportBuilder:
         logger.info(f"Report Builder initialized for {agency_name}")
 
     def generate_report(
-        self,
-        name: str,
-        r_type: ReportType,
-        metrics: List[ReportMetric],
-        days: int = 30
+        self, name: str, r_type: ReportType, metrics: List[ReportMetric], days: int = 30
     ) -> Report:
         """Execute report generation logic."""
         end = datetime.now()
@@ -92,8 +93,11 @@ class ReportBuilder:
 
         report = Report(
             id=f"RPT-{uuid.uuid4().hex[:6].upper()}",
-            name=name, r_type=r_type,
-            metrics=metrics, start_date=start, end_date=end
+            name=name,
+            r_type=r_type,
+            metrics=metrics,
+            start_date=start,
+            end_date=end,
         )
         self.archive.append(report)
         logger.info(f"Report Generated: {name} ({r_type.value})")
@@ -113,17 +117,23 @@ class ReportBuilder:
         for m in r.metrics:
             trend = "↑" if m.change >= 0 else "↓"
             status = "🟢" if m.change >= 0 else "🔴"
-            val_str = f"{m.value:>12,.1f}" if m.m_type != MetricType.PERCENTAGE else f"{m.value:>11.1f}%"
+            val_str = (
+                f"{m.value:>12,.1f}" if m.m_type != MetricType.PERCENTAGE else f"{m.value:>11.1f}%"
+            )
 
-            lines.append(f"║  {m.icon} {m.name:<18} │ {val_str} │ {status} {trend}{abs(m.change):>5.1f}%  ║")
+            lines.append(
+                f"║  {m.icon} {m.name:<18} │ {val_str} │ {status} {trend}{abs(m.change):>5.1f}%  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📥 Export PDF]  [📧 Email Team]  [📊 Visualize]         ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Insights!       ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📥 Export PDF]  [📧 Email Team]  [📊 Visualize]         ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Insights!       ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 
@@ -137,7 +147,7 @@ if __name__ == "__main__":
         # Sample Metrics
         m_list = [
             ReportMetric("Total Revenue", 45000.0, MetricType.SUM, 12.5, "💰"),
-            ReportMetric("Conversion Rate", 3.2, MetricType.PERCENTAGE, -1.5, "🎯")
+            ReportMetric("Conversion Rate", 3.2, MetricType.PERCENTAGE, -1.5, "🎯"),
         ]
         rpt = builder.generate_report("Monthly KPI", ReportType.REVENUE, m_list)
 

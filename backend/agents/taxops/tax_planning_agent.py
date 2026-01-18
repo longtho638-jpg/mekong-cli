@@ -3,11 +3,11 @@ Tax Planning Agent - Tax Optimization & Savings
 Analyzes tax strategies and identifies savings opportunities.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class StrategyType(Enum):
@@ -28,6 +28,7 @@ class StrategyPriority(Enum):
 @dataclass
 class TaxStrategy:
     """Tax optimization strategy"""
+
     id: str
     name: str
     strategy_type: StrategyType
@@ -48,7 +49,7 @@ class TaxStrategy:
 class TaxPlanningAgent:
     """
     Tax Planning Agent - Lập kế hoạch Thuế
-    
+
     Responsibilities:
     - Tax optimization
     - Deduction analysis
@@ -68,10 +69,10 @@ class TaxPlanningAgent:
         description: str,
         potential_savings: float,
         priority: StrategyPriority = StrategyPriority.MEDIUM,
-        deadline: Optional[datetime] = None
+        deadline: Optional[datetime] = None,
     ) -> TaxStrategy:
         """Add tax strategy"""
-        strategy_id = f"strategy_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        strategy_id = f"strategy_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         strategy = TaxStrategy(
             id=strategy_id,
@@ -80,7 +81,7 @@ class TaxPlanningAgent:
             description=description,
             potential_savings=potential_savings,
             priority=priority,
-            deadline=deadline
+            deadline=deadline,
         )
 
         self.strategies[strategy_id] = strategy
@@ -121,7 +122,9 @@ class TaxPlanningAgent:
             "pending": len(pending),
             "potential_savings": sum(s.potential_savings for s in pending),
             "actual_savings": sum(s.actual_savings for s in implemented),
-            "savings_rate": f"{sum(s.actual_savings for s in implemented) / sum(s.potential_savings for s in strategies) * 100:.0f}%" if strategies else "0%"
+            "savings_rate": f"{sum(s.actual_savings for s in implemented) / sum(s.potential_savings for s in strategies) * 100:.0f}%"
+            if strategies
+            else "0%",
         }
 
 
@@ -133,19 +136,25 @@ if __name__ == "__main__":
 
     # Add strategies
     s1 = agent.add_strategy(
-        "R&D Tax Credit", StrategyType.CREDIT,
+        "R&D Tax Credit",
+        StrategyType.CREDIT,
         "Claim R&D credits for software development",
-        15000, StrategyPriority.HIGH
+        15000,
+        StrategyPriority.HIGH,
     )
     s2 = agent.add_strategy(
-        "Equipment Depreciation", StrategyType.DEDUCTION,
+        "Equipment Depreciation",
+        StrategyType.DEDUCTION,
         "Accelerated depreciation for new equipment",
-        8000, StrategyPriority.MEDIUM
+        8000,
+        StrategyPriority.MEDIUM,
     )
     s3 = agent.add_strategy(
-        "Startup Incentive", StrategyType.INCENTIVE,
+        "Startup Incentive",
+        StrategyType.INCENTIVE,
         "Vietnamese startup tax incentive program",
-        12000, StrategyPriority.HIGH
+        12000,
+        StrategyPriority.HIGH,
     )
 
     print(f"📋 Strategy: {s1.name}")

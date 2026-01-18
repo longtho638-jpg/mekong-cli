@@ -1,13 +1,15 @@
 import subprocess
+from antigravity.core.mcp_manager import MCPManager, MCPServerConfig
 from pathlib import Path
+
 import typer
 from rich.console import Console
 from rich.prompt import Prompt
 
 from core.constants import MCP_PACKAGES
-from antigravity.core.mcp_manager import MCPManager, MCPServerConfig
 
 console = Console()
+
 
 def setup_mcp():
     """
@@ -31,10 +33,10 @@ def setup_mcp():
 
         # Verify configuration or create default if missing
         if not mcp_config.exists():
-             console.print("   ⚠️ Config not found, creating default...")
-             manager = MCPManager(mcp_config)
-             # Add default servers if needed or leave empty
-             manager._save_config()
+            console.print("   ⚠️ Config not found, creating default...")
+            manager = MCPManager(mcp_config)
+            # Add default servers if needed or leave empty
+            manager._save_config()
 
         console.print(f"\n   📋 Configured MCP Servers at {mcp_config}")
 
@@ -46,6 +48,7 @@ def setup_mcp():
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(code=1)
+
 
 def install_mcp(
     url_or_name: str = typer.Argument(..., help="GitHub URL or known alias (e.g. 'supabase')"),
@@ -71,9 +74,6 @@ def install_mcp(
     else:
         # Assume it's an npm package name
         console.print(f"   📦 Installing npm package: {url_or_name}")
-        server_config = MCPServerConfig(
-            command="npx",
-            args=["-y", url_or_name]
-        )
+        server_config = MCPServerConfig(command="npx", args=["-y", url_or_name])
         manager.add_server(url_or_name.split("/")[-1], server_config)
         console.print(f"✅ Installed {url_or_name}")

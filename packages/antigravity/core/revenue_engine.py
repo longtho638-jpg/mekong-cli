@@ -12,12 +12,13 @@ Features:
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class InvoiceStatus(Enum):
     """Invoice payment status."""
+
     DRAFT = "draft"
     SENT = "sent"
     PAID = "paid"
@@ -27,6 +28,7 @@ class InvoiceStatus(Enum):
 
 class Currency(Enum):
     """Supported currencies."""
+
     USD = "USD"
     VND = "VND"
     THB = "THB"  # Thailand expansion 2026
@@ -47,6 +49,7 @@ ARR_TARGET_2026 = 1_000_000
 @dataclass
 class Invoice:
     """An invoice record."""
+
     id: Optional[int] = None
     client_name: str = ""
     amount: float = 0.0
@@ -67,6 +70,7 @@ class Invoice:
 @dataclass
 class Forecast:
     """Revenue forecast."""
+
     month: str
     projected: float
     actual: float = 0.0
@@ -80,7 +84,7 @@ class Forecast:
 class RevenueEngine:
     """
     Track and optimize revenue.
-    
+
     Example:
         engine = RevenueEngine()
         inv = engine.create_invoice("ABC Corp", 1500)
@@ -93,19 +97,11 @@ class RevenueEngine:
         self._next_id = 1
 
     def create_invoice(
-        self,
-        client_name: str,
-        amount: float,
-        currency: Currency = Currency.USD,
-        notes: str = ""
+        self, client_name: str, amount: float, currency: Currency = Currency.USD, notes: str = ""
     ) -> Invoice:
         """Create a new invoice."""
         invoice = Invoice(
-            id=self._next_id,
-            client_name=client_name,
-            amount=amount,
-            currency=currency,
-            notes=notes
+            id=self._next_id, client_name=client_name, amount=amount, currency=currency, notes=notes
         )
         self.invoices.append(invoice)
         self._next_id += 1
@@ -137,7 +133,9 @@ class RevenueEngine:
         return sum(
             inv.amount if inv.currency == Currency.USD else inv.amount / 24500
             for inv in self.invoices
-            if inv.status == InvoiceStatus.PAID and inv.paid_date and inv.paid_date > thirty_days_ago
+            if inv.status == InvoiceStatus.PAID
+            and inv.paid_date
+            and inv.paid_date > thirty_days_ago
         )
 
     def get_arr(self) -> float:
@@ -175,7 +173,7 @@ class RevenueEngine:
             "total_revenue_usd": self.get_total_revenue(),
             "mrr": self.get_mrr(),
             "arr": self.get_arr(),
-            "outstanding": self.get_outstanding()
+            "outstanding": self.get_outstanding(),
         }
 
     # ===== $1M 2026 Goal Tracking =====
@@ -200,11 +198,10 @@ class RevenueEngine:
             return -1  # Cannot reach goal
 
         import math
+
         # ARR * (1 + growth_rate)^n = target
         # n = log(target/ARR) / log(1 + growth_rate)
-        months = math.ceil(
-            math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + growth_rate)
-        )
+        months = math.ceil(math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + growth_rate))
         return months
 
     def get_goal_dashboard(self) -> Dict:
@@ -216,5 +213,5 @@ class RevenueEngine:
             "gap_usd": self.get_goal_gap(),
             "months_to_goal": self.months_to_goal(),
             "mrr": self.get_mrr(),
-            "forecast_12m": self.get_mrr() * 12 * (1.10 ** 12)  # 10% growth for 12 months
+            "forecast_12m": self.get_mrr() * 12 * (1.10**12),  # 10% growth for 12 months
         }

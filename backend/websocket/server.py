@@ -10,15 +10,17 @@ Features:
 🏯 Binh Pháp: Tốc chiến tốc quyết - Real-time speed
 """
 
-from fastapi import WebSocket
-from typing import Dict
 import asyncio
 from datetime import datetime
 from enum import Enum
+from typing import Dict
+
+from fastapi import WebSocket
 
 
 class EventType(str, Enum):
     """WebSocket event types"""
+
     CONNECTED = "connected"
     DISCONNECTED = "disconnected"
     LEAD_ADDED = "lead_added"
@@ -37,7 +39,7 @@ class EventType(str, Enum):
 class ConnectionManager:
     """
     Manages WebSocket connections for real-time updates.
-    
+
     Features:
     - Track active connections
     - Broadcast to all clients
@@ -58,12 +60,15 @@ class ConnectionManager:
         self.active_connections[client_id] = websocket
 
         # Send welcome message
-        await self.send_personal_message(client_id, {
-            "type": EventType.CONNECTED,
-            "client_id": client_id,
-            "message": "Connected to AntigravityKit WebSocket",
-            "timestamp": datetime.now().isoformat()
-        })
+        await self.send_personal_message(
+            client_id,
+            {
+                "type": EventType.CONNECTED,
+                "client_id": client_id,
+                "message": "Connected to AntigravityKit WebSocket",
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
         return client_id
 
@@ -100,7 +105,7 @@ class ConnectionManager:
             "type": event_type,
             "data": data or {},
             "timestamp": datetime.now().isoformat(),
-            "connections": len(self.active_connections)
+            "connections": len(self.active_connections),
         }
         await self.broadcast(message)
 
@@ -114,16 +119,16 @@ class ConnectionManager:
         while True:
             await asyncio.sleep(interval)
             if self.active_connections:
-                await self.broadcast_event(EventType.HEARTBEAT, {
-                    "connections": self.connection_count
-                })
+                await self.broadcast_event(
+                    EventType.HEARTBEAT, {"connections": self.connection_count}
+                )
 
     def get_status(self) -> dict:
         """Get connection manager status."""
         return {
             "active_connections": self.connection_count,
             "client_ids": list(self.active_connections.keys()),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 

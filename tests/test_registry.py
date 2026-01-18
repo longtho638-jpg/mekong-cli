@@ -2,21 +2,18 @@
 Tests for Command Registry.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.registry import (
-    get_command_metadata,
-    resolve_command,
-    list_suites
-)
+from antigravity.core.registry import get_command_metadata, list_suites, resolve_command
+
 
 class TestRegistry:
-
     def test_registry_structure(self):
         """Verify registry categories."""
         suites = list_suites()
@@ -43,6 +40,7 @@ class TestRegistry:
 
         suite, sub = resolve_command("invalid")
         assert suite is None
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

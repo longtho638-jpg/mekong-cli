@@ -2,22 +2,19 @@
 Tests for Rules Loader.
 """
 
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.rules_loader import (
-    RULE_MAPPING,
-    get_rules_for_agent,
-    load_rules_for_agent
-)
+from antigravity.core.rules_loader import RULE_MAPPING, get_rules_for_agent, load_rules_for_agent
+
 
 class TestRulesLoader:
-
     def test_rule_mapping_structure(self):
         """Verify rule mapping structure."""
         assert isinstance(RULE_MAPPING, dict)
@@ -55,6 +52,7 @@ class TestRulesLoader:
 
         assert len(content) > 0
         assert "development-rules.md" in content or "primary-workflow.md" in content
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

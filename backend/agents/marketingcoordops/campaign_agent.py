@@ -3,11 +3,11 @@ Campaign Agent - Marketing Campaign Management
 Manages campaigns, budgets, and channel coordination.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class CampaignStatus(Enum):
@@ -30,6 +30,7 @@ class ChannelType(Enum):
 @dataclass
 class Channel:
     """Marketing channel"""
+
     type: ChannelType
     budget: float
     spent: float = 0
@@ -39,6 +40,7 @@ class Channel:
 @dataclass
 class Campaign:
     """Marketing campaign"""
+
     id: str
     name: str
     objective: str
@@ -63,7 +65,7 @@ class Campaign:
 class CampaignAgent:
     """
     Campaign Agent - Quản lý Chiến dịch
-    
+
     Responsibilities:
     - Campaign management
     - Budget tracking
@@ -82,10 +84,10 @@ class CampaignAgent:
         objective: str,
         budget: float,
         start_date: date = None,
-        end_date: date = None
+        end_date: date = None,
     ) -> Campaign:
         """Create campaign"""
-        campaign_id = f"camp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        campaign_id = f"camp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         campaign = Campaign(
             id=campaign_id,
@@ -93,7 +95,7 @@ class CampaignAgent:
             objective=objective,
             budget=budget,
             start_date=start_date or date.today(),
-            end_date=end_date
+            end_date=end_date,
         )
 
         self.campaigns[campaign_id] = campaign
@@ -121,7 +123,9 @@ class CampaignAgent:
 
         return campaign
 
-    def record_spend(self, campaign_id: str, amount: float, leads: int = 0, conversions: int = 0) -> Campaign:
+    def record_spend(
+        self, campaign_id: str, amount: float, leads: int = 0, conversions: int = 0
+    ) -> Campaign:
         """Record campaign spend"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
@@ -154,7 +158,7 @@ class CampaignAgent:
             "total_budget": sum(c.budget for c in campaigns),
             "total_spent": sum(c.spent for c in campaigns),
             "total_leads": sum(c.leads for c in campaigns),
-            "total_conversions": sum(c.conversions for c in campaigns)
+            "total_conversions": sum(c.conversions for c in campaigns),
         }
 
 

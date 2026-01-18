@@ -3,11 +3,11 @@ Sourcing Agent - Candidate Discovery & Talent Pools
 Discovers and manages candidate talent pools.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class CandidateSource(Enum):
@@ -30,6 +30,7 @@ class TalentStatus(Enum):
 @dataclass
 class TalentProfile:
     """Sourced candidate profile"""
+
     id: str
     name: str
     email: str
@@ -50,7 +51,7 @@ class TalentProfile:
 class SourcingAgent:
     """
     Sourcing Agent - Tìm kiếm Ứng viên
-    
+
     Responsibilities:
     - Discover candidates
     - Build talent pools
@@ -70,10 +71,10 @@ class SourcingAgent:
         title: str,
         skills: List[str],
         source: CandidateSource,
-        match_score: int = 0
+        match_score: int = 0,
     ) -> TalentProfile:
         """Discover new talent"""
-        talent_id = f"talent_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        talent_id = f"talent_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         talent = TalentProfile(
             id=talent_id,
@@ -82,7 +83,7 @@ class SourcingAgent:
             title=title,
             skills=skills,
             source=source,
-            match_score=match_score
+            match_score=match_score,
         )
 
         self.talents[talent_id] = talent
@@ -126,16 +127,17 @@ class SourcingAgent:
         talents = list(self.talents.values())
 
         source_breakdown = {
-            s.value: len([t for t in talents if t.source == s])
-            for s in CandidateSource
+            s.value: len([t for t in talents if t.source == s]) for s in CandidateSource
         }
 
         return {
             "total_sourced": len(talents),
             "in_pool": len([t for t in talents if t.status == TalentStatus.IN_POOL]),
             "avg_match_score": sum(t.match_score for t in talents) / len(talents) if talents else 0,
-            "top_source": max(source_breakdown, key=source_breakdown.get) if source_breakdown else None,
-            "by_source": source_breakdown
+            "top_source": max(source_breakdown, key=source_breakdown.get)
+            if source_breakdown
+            else None,
+            "by_source": source_breakdown,
         }
 
 
@@ -146,9 +148,20 @@ if __name__ == "__main__":
     print("🔍 Sourcing Agent Demo\n")
 
     # Discover talents
-    t1 = agent.discover("Nguyen A", "a@email.com", "Senior Engineer", ["Python", "React", "AWS"], CandidateSource.LINKEDIN, 92)
-    t2 = agent.discover("Tran B", "b@email.com", "Backend Dev", ["Python", "Django"], CandidateSource.GITHUB, 85)
-    t3 = agent.discover("Le C", "c@email.com", "Full Stack", ["Node.js", "React"], CandidateSource.REFERRAL, 78)
+    t1 = agent.discover(
+        "Nguyen A",
+        "a@email.com",
+        "Senior Engineer",
+        ["Python", "React", "AWS"],
+        CandidateSource.LINKEDIN,
+        92,
+    )
+    t2 = agent.discover(
+        "Tran B", "b@email.com", "Backend Dev", ["Python", "Django"], CandidateSource.GITHUB, 85
+    )
+    t3 = agent.discover(
+        "Le C", "c@email.com", "Full Stack", ["Node.js", "React"], CandidateSource.REFERRAL, 78
+    )
 
     print(f"📋 Talent: {t1.name}")
     print(f"   Title: {t1.title}")

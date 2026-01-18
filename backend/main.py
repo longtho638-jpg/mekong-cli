@@ -4,42 +4,42 @@ Clean Architecture with Service Layer and Controller Pattern
 
 Endpoints:
 - /api/agents - Agent operations via AgentController
-- /api/commands/* - Mekong commands via CommandController  
+- /api/commands/* - Mekong commands via CommandController
 - /api/router - Hybrid routing via RouterController
 - /api/vibes - Vibe operations via VibeController
 """
 
+import os
+import sys
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import sys
-import os
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.api.config import settings
 
-# Import existing routes
-from backend.routes.campaigns import router as campaigns_router
-from backend.routes.agentops import router as agentops_router
-
-# Import services
-from backend.services.agent_service import AgentService
-from backend.services.command_service import CommandService
-from backend.services.vibe_service import VibeService
-from backend.services.router_service import RouterService
-
 # Import controllers
 from backend.controllers.agent_controller import AgentController
 from backend.controllers.command_controller import CommandController
-from backend.controllers.vibe_controller import VibeController
 from backend.controllers.router_controller import RouterController
+from backend.controllers.vibe_controller import VibeController
 
 # Import models
 from backend.models.agent import AgentTask
 from backend.models.command import CommandRequest
 from backend.models.vibe import VibeRequest
+from backend.routes.agentops import router as agentops_router
 
+# Import existing routes
+from backend.routes.campaigns import router as campaigns_router
+
+# Import services
+from backend.services.agent_service import AgentService
+from backend.services.command_service import CommandService
+from backend.services.router_service import RouterService
+from backend.services.vibe_service import VibeService
 
 # Initialize FastAPI
 app = FastAPI(
@@ -76,6 +76,7 @@ router_controller = RouterController(router_service)
 
 # ============ Health ============
 
+
 @app.get("/")
 async def root():
     """Health check"""
@@ -84,7 +85,7 @@ async def root():
         "service": "mekong-cli-api",
         "version": "2.0.0",
         "architecture": "clean_architecture",
-        "tagline": "Deploy Your Agency in 15 Minutes"
+        "tagline": "Deploy Your Agency in 15 Minutes",
     }
 
 
@@ -95,15 +96,16 @@ async def health():
         "status": "healthy",
         "services": {
             "agent_service": "active",
-            "command_service": "active", 
+            "command_service": "active",
             "vibe_service": "active",
             "router_service": "active",
-            "controllers": "active"
-        }
+            "controllers": "active",
+        },
     }
 
 
 # ============ Agents ============
+
 
 @app.get("/api/agents")
 async def get_agents():
@@ -119,6 +121,7 @@ async def run_agent(task: AgentTask):
 
 # ============ Hybrid Router ============
 
+
 @app.get("/api/router/stats")
 async def get_router_stats():
     """Get Hybrid Router statistics via RouterController"""
@@ -132,6 +135,7 @@ async def route_task(request: CommandRequest):
 
 
 # ============ Vibe Tuner ============
+
 
 @app.get("/api/vibes")
 async def get_vibes():
@@ -152,6 +156,7 @@ async def get_vibe_prompt(context: str = ""):
 
 
 # ============ Commands (14 Mekong Commands) ============
+
 
 @app.post("/api/commands/khach-hang")
 async def cmd_khach_hang(request: CommandRequest):
@@ -241,4 +246,5 @@ async def cmd_tiep_thi(request: CommandRequest):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -12,20 +12,22 @@ Features:
 - Conflict detection
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Optional, Tuple
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class CalendarProvider(Enum):
     """Calendar providers."""
+
     GOOGLE = "google"
     OUTLOOK = "outlook"
     APPLE = "apple"
@@ -34,6 +36,7 @@ class CalendarProvider(Enum):
 
 class SyncStatus(Enum):
     """Sync status."""
+
     SYNCED = "synced"
     PENDING = "pending"
     FAILED = "failed"
@@ -43,6 +46,7 @@ class SyncStatus(Enum):
 @dataclass
 class CalendarEvent:
     """A calendar event entity."""
+
     id: str
     title: str
     start: datetime
@@ -59,6 +63,7 @@ class CalendarEvent:
 @dataclass
 class CalendarConnection:
     """A connected external calendar account."""
+
     id: str
     provider: CalendarProvider
     email: str
@@ -70,7 +75,7 @@ class CalendarConnection:
 class CalendarSync:
     """
     Calendar Sync Manager System.
-    
+
     Orchestrates events across multiple calendar providers.
     """
 
@@ -82,7 +87,7 @@ class CalendarSync:
 
     def _validate_email(self, email: str) -> bool:
         """Basic email format validation."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return bool(re.match(pattern, email))
 
     def connect(self, provider: CalendarProvider, email: str) -> CalendarConnection:
@@ -92,9 +97,7 @@ class CalendarSync:
             raise ValueError(f"Invalid email: {email}")
 
         conn = CalendarConnection(
-            id=f"CAL-{uuid.uuid4().hex[:6].upper()}",
-            provider=provider,
-            email=email
+            id=f"CAL-{uuid.uuid4().hex[:6].upper()}", provider=provider, email=email
         )
         self.connections[conn.id] = conn
         logger.info(f"Connected {provider.value} calendar for {email}")
@@ -105,7 +108,7 @@ class CalendarSync:
         title: str,
         start: datetime,
         end: datetime,
-        provider: CalendarProvider = CalendarProvider.INTERNAL
+        provider: CalendarProvider = CalendarProvider.INTERNAL,
     ) -> CalendarEvent:
         """Add a new event to the calendar."""
         if not title:
@@ -116,7 +119,7 @@ class CalendarSync:
             title=title,
             start=start,
             end=end,
-            provider=provider
+            provider=provider,
         )
         self.events.append(event)
         logger.info(f"Added event: {title} ({start.strftime('%Y-%m-%d %H:%M')})")
@@ -157,7 +160,7 @@ class CalendarSync:
         sorted_events = sorted(self.events, key=lambda x: x.start)
 
         for i, e1 in enumerate(sorted_events):
-            for e2 in sorted_events[i+1:]:
+            for e2 in sorted_events[i + 1 :]:
                 # If next event starts before current one ends, it's a conflict
                 if e2.start < e1.end:
                     conflicts.append((e1, e2))
@@ -186,22 +189,24 @@ class CalendarSync:
             CalendarProvider.GOOGLE: "📆 Google",
             CalendarProvider.OUTLOOK: "📧 Outlook",
             CalendarProvider.APPLE: "🍎 Apple",
-            CalendarProvider.INTERNAL: "🏢 Internal"
+            CalendarProvider.INTERNAL: "🏢 Internal",
         }
 
         for conn in self.connections.values():
             icon = provider_icons.get(conn.provider, "📅")
             status = "🟢" if conn.connected else "🔴"
             sync_time = conn.last_sync.strftime("%H:%M") if conn.last_sync else "Never"
-            email_display = (conn.email[:23] + '..') if len(conn.email) > 25 else conn.email
+            email_display = (conn.email[:23] + "..") if len(conn.email) > 25 else conn.email
 
             lines.append(f"║  {status} {icon:<12} │ {email_display:<25} │ {sync_time:<5}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 UPCOMING EVENTS                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 UPCOMING EVENTS                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         # Show top 4 upcoming events
         sorted_events = sorted(self.events, key=lambda x: x.start)[:4]
@@ -211,20 +216,22 @@ class CalendarSync:
                 SyncStatus.SYNCED: "✅",
                 SyncStatus.PENDING: "⏳",
                 SyncStatus.CONFLICT: "⚠️",
-                SyncStatus.FAILED: "❌"
+                SyncStatus.FAILED: "❌",
             }
             s_icon = status_map.get(event.sync_status, "❓")
-            title_display = (event.title[:32] + '..') if len(event.title) > 34 else event.title
+            title_display = (event.title[:32] + "..") if len(event.title) > 34 else event.title
 
             lines.append(f"║    {s_icon} {time_str} - {title_display:<35}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🔄 Sync Now]  [➕ Add Event]  [⚙️ Settings]              ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Scheduling!         ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🔄 Sync Now]  [➕ Add Event]  [⚙️ Settings]              ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Scheduling!         ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -247,7 +254,11 @@ if __name__ == "__main__":
         sync.add_event("Strategy Review", now + timedelta(hours=4), now + timedelta(hours=5))
 
         # Add a conflict
-        sync.add_event("Overlapping Meet", now + timedelta(hours=2, minutes=30), now + timedelta(hours=3, minutes=30))
+        sync.add_event(
+            "Overlapping Meet",
+            now + timedelta(hours=2, minutes=30),
+            now + timedelta(hours=3, minutes=30),
+        )
 
         sync.add_event("Team Standup", now + timedelta(days=1), now + timedelta(days=1, hours=1))
 

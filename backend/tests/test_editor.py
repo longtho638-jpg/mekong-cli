@@ -63,9 +63,7 @@ class TestEditorAgent:
     def test_batch_create_multiple_posts(self, agent):
         """Test batch creation of multiple posts"""
         topics = ["AI automation", "Local-first apps"]
-        drafts = agent.batch_create(
-            topics=topics, pillar="Local AI", platforms=["facebook"]
-        )
+        drafts = agent.batch_create(topics=topics, pillar="Local AI", platforms=["facebook"])
         assert len(drafts) == 2
         assert all(isinstance(d, ContentDraft) for d in drafts)
 

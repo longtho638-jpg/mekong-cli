@@ -4,16 +4,18 @@ Base Class for Agency OS Unified Demo.
 Follows Binh Pháp Architecture for clean execution.
 """
 
-import time
 import sys
+import time
 from datetime import datetime
-from typing import Callable, Any, Dict
+from typing import Any, Callable, Dict
+
 from rich.console import Console
 from rich.panel import Panel
-from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.table import Table
 
 console = Console()
+
 
 class AgencyOSDemo:
     """
@@ -35,7 +37,9 @@ class AgencyOSDemo:
 
     def run_step(self, num: int, title: str, func: Callable[[], Any]):
         """Executes a demo step with standardized rich formatting."""
-        console.print(f"\n[bold blue][{num}/{self.total_steps}][/bold blue] [bold white]{title}[/bold white]")
+        console.print(
+            f"\n[bold blue][{num}/{self.total_steps}][/bold blue] [bold white]{title}[/bold white]"
+        )
         console.print("─" * 60)
 
         with Progress(
@@ -59,6 +63,7 @@ class AgencyOSDemo:
         # We assume i18n is in core.shared or we skip if legacy
         try:
             from core.shared import i18n
+
             # Mock if not fully implemented in new structure or use basic print
             console.print("🌐 [cyan]Locales:[/cyan] en, vi")
             console.print("🇺🇸 [bold]English:[/bold] Welcome to Agency OS")
@@ -75,37 +80,45 @@ class AgencyOSDemo:
         console.print(table)
 
     def step_3_crm(self):
-        from core.crm.csm import CustomerSuccessManager, SuccessStage, EngagementLevel
+        from core.crm.csm import CustomerSuccessManager
+
         csm = CustomerSuccessManager("Demo Agency")
         csm.create_success_plan("TechCorp", "Alice", ["Growth"], ["Q1 Review"])
-        
+
         console.print(csm.format_dashboard())
 
     def step_4_scheduler(self):
-        from core.ops.scheduler import Scheduler, MeetingType
+        from core.ops.scheduler import MeetingType, Scheduler
+
         scheduler = Scheduler()
         # Seed a meeting
         scheduler.book_call(MeetingType.DISCOVERY, "Lead", "lead@test.com", datetime.now())
-        
+
         upcoming = scheduler.get_upcoming_meetings()
         console.print(f"📅 [bold]Upcoming Meetings:[/bold] {len(upcoming)}")
         for m in upcoming[:3]:
-            console.print(f"   • [cyan]{m.start_time.strftime('%b %d, %H:%M')}[/cyan] - {m.meeting_type.value}")
+            console.print(
+                f"   • [cyan]{m.start_time.strftime('%b %d, %H:%M')}[/cyan] - {m.meeting_type.value}"
+            )
 
     def step_5_analytics(self):
         from core.finance.revenue_forecasting import RevenueForecasting
+
         engine = RevenueForecasting()
         engine.add_source("Retainer A", 5000, 0.05)
         forecasts = engine.generate(6)
-        
-        console.print(f"📊 [bold]Revenue Forecast (6mo):[/bold]")
+
+        console.print("📊 [bold]Revenue Forecast (6mo):[/bold]")
         console.print(f"   Next Month: [bold green]${forecasts[0].predicted:,.0f}[/bold green]")
-        console.print(f"   6 Month Total: [bold green]${sum(f.predicted for f in forecasts):,.0f}[/bold green]")
+        console.print(
+            f"   6 Month Total: [bold green]${sum(f.predicted for f in forecasts):,.0f}[/bold green]"
+        )
 
     def step_6_franchise(self):
         from core.franchise.franchise import FranchiseSystem
+
         franchise = FranchiseSystem()
-        
+
         # Use built-in dashboard
         console.print(franchise.format_dashboard())
 
@@ -121,7 +134,7 @@ class AgencyOSDemo:
 [gold1]"Không đánh mà thắng" 🏯[/gold1]
             """,
             title="[bold]🏆 AGENCY OS DEMO COMPLETE[/bold]",
-            border_style="gold1"
+            border_style="gold1",
         )
         console.print("\n", summary_panel)
 
@@ -144,6 +157,7 @@ class AgencyOSDemo:
             time.sleep(0.3)
 
         self.print_final_summary()
+
 
 if __name__ == "__main__":
     demo = AgencyOSDemo()

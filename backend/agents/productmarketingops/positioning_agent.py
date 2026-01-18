@@ -3,15 +3,16 @@ Positioning Agent - Product Positioning & Messaging
 Manages product positioning, value props, and differentiation.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime
 import random
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List
 
 
 @dataclass
 class ValueProposition:
     """Value proposition"""
+
     headline: str
     subheadline: str
     benefits: List[str]
@@ -21,6 +22,7 @@ class ValueProposition:
 @dataclass
 class MessagingPillar:
     """Messaging pillar"""
+
     name: str
     key_message: str
     supporting_points: List[str]
@@ -30,6 +32,7 @@ class MessagingPillar:
 @dataclass
 class Positioning:
     """Product positioning"""
+
     id: str
     product: str
     category: str
@@ -48,7 +51,7 @@ class Positioning:
 class PositioningAgent:
     """
     Positioning Agent - Định vị Sản phẩm
-    
+
     Responsibilities:
     - Product positioning
     - Messaging framework
@@ -69,16 +72,13 @@ class PositioningAgent:
         headline: str,
         subheadline: str,
         benefits: List[str],
-        proof_points: List[str]
+        proof_points: List[str],
     ) -> Positioning:
         """Create product positioning"""
-        pos_id = f"pos_{random.randint(100,999)}"
+        pos_id = f"pos_{random.randint(100, 999)}"
 
         value_prop = ValueProposition(
-            headline=headline,
-            subheadline=subheadline,
-            benefits=benefits,
-            proof_points=proof_points
+            headline=headline, subheadline=subheadline, benefits=benefits, proof_points=proof_points
         )
 
         positioning = Positioning(
@@ -86,7 +86,7 @@ class PositioningAgent:
             product=product,
             category=category,
             target_audience=target_audience,
-            value_prop=value_prop
+            value_prop=value_prop,
         )
 
         self.positionings[pos_id] = positioning
@@ -98,7 +98,7 @@ class PositioningAgent:
         name: str,
         key_message: str,
         supporting_points: List[str],
-        target_audience: str
+        target_audience: str,
     ) -> Positioning:
         """Add messaging pillar"""
         if pos_id not in self.positionings:
@@ -108,7 +108,7 @@ class PositioningAgent:
             name=name,
             key_message=key_message,
             supporting_points=supporting_points,
-            target_audience=target_audience
+            target_audience=target_audience,
         )
 
         self.positionings[pos_id].pillars.append(pillar)
@@ -138,7 +138,10 @@ class PositioningAgent:
             "total_positionings": len(positionings),
             "total_pillars": sum(len(p.pillars) for p in positionings),
             "total_differentiators": sum(len(p.differentiators) for p in positionings),
-            "avg_benefits": sum(len(p.value_prop.benefits) for p in positionings) / len(positionings) if positionings else 0
+            "avg_benefits": sum(len(p.value_prop.benefits) for p in positionings)
+            / len(positionings)
+            if positionings
+            else 0,
         }
 
 
@@ -156,7 +159,7 @@ if __name__ == "__main__":
         headline="Marketing automation that scales with you",
         subheadline="From startup to enterprise, one platform",
         benefits=["Save 10+ hours/week", "Increase leads by 3x", "Easy setup"],
-        proof_points=["Used by 5000+ companies", "4.9 rating on G2"]
+        proof_points=["Used by 5000+ companies", "4.9 rating on G2"],
     )
 
     print(f"📋 Positioning: {p1.product}")
@@ -173,7 +176,7 @@ if __name__ == "__main__":
         "Efficiency",
         "Do more with less",
         ["Automated workflows", "AI-powered suggestions"],
-        "Marketing Ops"
+        "Marketing Ops",
     )
 
     agent.add_pillar(
@@ -181,7 +184,7 @@ if __name__ == "__main__":
         "Scale",
         "Grow without limits",
         ["Unlimited contacts", "Enterprise features"],
-        "Growth Leaders"
+        "Growth Leaders",
     )
 
     # Differentiators

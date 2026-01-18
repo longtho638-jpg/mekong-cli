@@ -3,11 +3,11 @@ POC Tracker Agent - Proof of Concept Management
 Tracks POCs, success criteria, and conversions.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class POCStage(Enum):
@@ -21,6 +21,7 @@ class POCStage(Enum):
 @dataclass
 class SuccessCriterion:
     """POC success criterion"""
+
     id: str
     description: str
     met: bool = False
@@ -30,6 +31,7 @@ class SuccessCriterion:
 @dataclass
 class POC:
     """Proof of Concept"""
+
     id: str
     company: str
     contact: str
@@ -60,7 +62,7 @@ class POC:
 class POCTrackerAgent:
     """
     POC Tracker Agent - Quản lý POC
-    
+
     Responsibilities:
     - Create and track POCs
     - Manage success criteria
@@ -80,10 +82,10 @@ class POCTrackerAgent:
         use_case: str,
         deal_value: float,
         duration_days: int = 14,
-        se_assigned: str = ""
+        se_assigned: str = "",
     ) -> POC:
         """Create new POC"""
-        poc_id = f"poc_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        poc_id = f"poc_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         poc = POC(
             id=poc_id,
@@ -94,7 +96,7 @@ class POCTrackerAgent:
             start_date=datetime.now(),
             end_date=datetime.now() + timedelta(days=duration_days),
             se_assigned=se_assigned,
-            stage=POCStage.IN_PROGRESS
+            stage=POCStage.IN_PROGRESS,
         )
 
         self.pocs[poc_id] = poc
@@ -106,10 +108,7 @@ class POCTrackerAgent:
             raise ValueError(f"POC not found: {poc_id}")
 
         poc = self.pocs[poc_id]
-        criterion = SuccessCriterion(
-            id=f"crit_{len(poc.criteria)+1}",
-            description=description
-        )
+        criterion = SuccessCriterion(id=f"crit_{len(poc.criteria) + 1}", description=description)
         poc.criteria.append(criterion)
 
         return poc
@@ -140,7 +139,9 @@ class POCTrackerAgent:
 
     def get_active(self) -> List[POC]:
         """Get active POCs"""
-        return [p for p in self.pocs.values() if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]]
+        return [
+            p for p in self.pocs.values() if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]
+        ]
 
     def get_stats(self) -> Dict:
         """Get POC statistics"""
@@ -153,9 +154,11 @@ class POCTrackerAgent:
             "active": len(self.get_active()),
             "won": won,
             "lost": len([p for p in pocs if p.stage == POCStage.LOST]),
-            "win_rate": f"{won/closed*100:.0f}%" if closed > 0 else "0%",
-            "pipeline_value": sum(p.deal_value for p in pocs if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]),
-            "won_value": sum(p.deal_value for p in pocs if p.stage == POCStage.WON)
+            "win_rate": f"{won / closed * 100:.0f}%" if closed > 0 else "0%",
+            "pipeline_value": sum(
+                p.deal_value for p in pocs if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]
+            ),
+            "won_value": sum(p.deal_value for p in pocs if p.stage == POCStage.WON),
         }
 
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
         use_case="Marketing Automation",
         deal_value=10000,
         duration_days=14,
-        se_assigned="SE_001"
+        se_assigned="SE_001",
     )
 
     print(f"📋 POC: {poc.company}")

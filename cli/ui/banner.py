@@ -4,6 +4,7 @@ Displays the main application banner.
 """
 
 from rich.console import Console
+
 from cli.theme import get_theme
 
 

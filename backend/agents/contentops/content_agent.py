@@ -3,11 +3,11 @@ Content Agent - Content Creation & Ideation
 Manages content drafts, ideas, and assets.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class ContentStatus(Enum):
@@ -31,6 +31,7 @@ class ContentType(Enum):
 @dataclass
 class Content:
     """Content piece"""
+
     id: str
     title: str
     content_type: ContentType
@@ -51,7 +52,7 @@ class Content:
 class ContentAgent:
     """
     Content Agent - Quản lý Nội dung
-    
+
     Responsibilities:
     - Content ideation
     - Draft management
@@ -70,10 +71,10 @@ class ContentAgent:
         content_type: ContentType,
         author: str,
         description: str = "",
-        tags: List[str] = None
+        tags: List[str] = None,
     ) -> Content:
         """Create content piece"""
-        content_id = f"content_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        content_id = f"content_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         content = Content(
             id=content_id,
@@ -81,7 +82,7 @@ class ContentAgent:
             content_type=content_type,
             author=author,
             description=description,
-            tags=tags or []
+            tags=tags or [],
         )
 
         self.content[content_id] = content
@@ -122,7 +123,9 @@ class ContentAgent:
             "ideas": len(self.get_by_status(ContentStatus.IDEA)),
             "drafts": len(self.get_by_status(ContentStatus.DRAFT)),
             "published": len(self.get_by_status(ContentStatus.PUBLISHED)),
-            "by_type": {t.value: len([c for c in content if c.content_type == t]) for t in ContentType}
+            "by_type": {
+                t.value: len([c for c in content if c.content_type == t]) for t in ContentType
+            },
         }
 
 
@@ -138,19 +141,12 @@ if __name__ == "__main__":
         ContentType.BLOG,
         "Nguyen A",
         "Helpful tips for remote workers",
-        ["productivity", "work-from-home"]
+        ["productivity", "work-from-home"],
     )
     c2 = agent.create_content(
-        "Product Demo Video",
-        ContentType.VIDEO,
-        "Tran B",
-        "Showcase new features"
+        "Product Demo Video", ContentType.VIDEO, "Tran B", "Showcase new features"
     )
-    c3 = agent.create_content(
-        "Weekly Newsletter",
-        ContentType.EMAIL,
-        "Le C"
-    )
+    c3 = agent.create_content("Weekly Newsletter", ContentType.EMAIL, "Le C")
 
     print(f"📝 Content: {c1.title}")
     print(f"   Type: {c1.content_type.value}")

@@ -1,7 +1,9 @@
 """
 CRM Module - Presentation Layer
 """
+
 from .services import CRMService
+
 
 class CRMPresenter:
     """Handles visual formatting of CRM data."""
@@ -22,6 +24,6 @@ class CRMPresenter:
             "╟" + "─" * 50 + "╢",
             f"║  PIPELINE VALUE : ${summary['pipeline_value']:>12,.0f}{' ' * 15} ║",
             f"║  WEIGHTED FORECAST: ${forecast['weighted_pipeline']:>12,.0f}{' ' * 11} ║",
-            "╚" + "═" * 50 + "╝"
+            "╚" + "═" * 50 + "╝",
         ]
         return "\n".join(lines)

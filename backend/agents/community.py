@@ -4,9 +4,9 @@ Handles scheduling, publishing, and community interaction.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class Platform(Enum):
@@ -20,6 +20,7 @@ class Platform(Enum):
 @dataclass
 class ScheduledPost:
     """Scheduled content post"""
+
     id: str
     content: str
     platform: Platform
@@ -32,6 +33,7 @@ class ScheduledPost:
 @dataclass
 class WeeklySchedule:
     """Weekly content schedule"""
+
     week_start: datetime
     posts: List[ScheduledPost]
     platforms: List[Platform]
@@ -40,7 +42,7 @@ class WeeklySchedule:
 class CommunityAgent:
     """
     Community Agent - Đăng bài & Tương tác
-    
+
     Responsibilities:
     - Schedule posts
     - Publish to platforms
@@ -72,14 +74,11 @@ class CommunityAgent:
         self.scheduled_posts: List[ScheduledPost] = []
 
     def schedule_post(
-        self,
-        content: str,
-        platform: Platform,
-        scheduled_at: Optional[datetime] = None
+        self, content: str, platform: Platform, scheduled_at: Optional[datetime] = None
     ) -> ScheduledPost:
         """
         Schedule a post for publishing.
-        
+
         Args:
             content: Post content
             platform: Target platform
@@ -102,23 +101,21 @@ class CommunityAgent:
                 )
 
         post = ScheduledPost(
-            id=f"post_{len(self.scheduled_posts)+1}_{int(datetime.now().timestamp())}",
+            id=f"post_{len(self.scheduled_posts) + 1}_{int(datetime.now().timestamp())}",
             content=content,
             platform=platform,
-            scheduled_at=scheduled_at
+            scheduled_at=scheduled_at,
         )
 
         self.scheduled_posts.append(post)
         return post
 
     def create_weekly_schedule(
-        self,
-        contents: List[str],
-        platforms: List[Platform] = None
+        self, contents: List[str], platforms: List[Platform] = None
     ) -> WeeklySchedule:
         """
         Create a week's worth of scheduled posts.
-        
+
         Args:
             contents: List of content pieces
             platforms: Target platforms (defaults to FB + Zalo)
@@ -144,18 +141,12 @@ class CommunityAgent:
 
                 if scheduled_at > now:
                     post = self.schedule_post(
-                        content=contents[content_idx],
-                        platform=platform,
-                        scheduled_at=scheduled_at
+                        content=contents[content_idx], platform=platform, scheduled_at=scheduled_at
                     )
                     posts.append(post)
                     content_idx += 1
 
-        return WeeklySchedule(
-            week_start=week_start,
-            posts=posts,
-            platforms=platforms
-        )
+        return WeeklySchedule(week_start=week_start, posts=posts, platforms=platforms)
 
     def publish(self, post: ScheduledPost) -> bool:
         """
@@ -178,8 +169,7 @@ class CommunityAgent:
         """Get all pending posts"""
         now = datetime.now()
         return [
-            p for p in self.scheduled_posts
-            if p.status == "scheduled" and p.scheduled_at <= now
+            p for p in self.scheduled_posts if p.status == "scheduled" and p.scheduled_at <= now
         ]
 
     def get_analytics(self) -> Dict:
@@ -193,7 +183,7 @@ class CommunityAgent:
             "by_platform": {
                 platform.value: len([p for p in published if p.platform == platform])
                 for platform in Platform
-            }
+            },
         }
 
 
@@ -206,7 +196,7 @@ if __name__ == "__main__":
     # Schedule single post
     post = community.schedule_post(
         content="🚀 Mekong-CLI ra mắt! Deploy agency trong 15 phút #MekongCLI",
-        platform=Platform.FACEBOOK
+        platform=Platform.FACEBOOK,
     )
     print(f"📅 Scheduled: {post.content[:50]}...")
     print(f"   Platform: {post.platform.value}")
@@ -227,7 +217,9 @@ if __name__ == "__main__":
     print(f"   Posts scheduled: {len(schedule.posts)}")
 
     for p in schedule.posts[:3]:
-        print(f"   • {p.scheduled_at.strftime('%a %H:%M')} [{p.platform.value}]: {p.content[:30]}...")
+        print(
+            f"   • {p.scheduled_at.strftime('%a %H:%M')} [{p.platform.value}]: {p.content[:30]}..."
+        )
 
     # Analytics
     print("\n📊 Analytics:")

@@ -3,11 +3,11 @@ Deal Manager Agent - Deal Lifecycle & Closing
 Manages the entire deal lifecycle from creation to close.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class DealStage(Enum):
@@ -30,6 +30,7 @@ class DealPriority(Enum):
 @dataclass
 class Deal:
     """Sales deal"""
+
     id: str
     name: str
     company: str
@@ -58,14 +59,14 @@ STAGE_PROBABILITIES = {
     DealStage.NEGOTIATION: 75,
     DealStage.VERBAL_COMMIT: 90,
     DealStage.CLOSED_WON: 100,
-    DealStage.CLOSED_LOST: 0
+    DealStage.CLOSED_LOST: 0,
 }
 
 
 class DealManagerAgent:
     """
     Deal Manager Agent - Quản lý Deals
-    
+
     Responsibilities:
     - Create and track deals
     - Manage deal stages
@@ -84,10 +85,10 @@ class DealManagerAgent:
         company: str,
         value: float,
         close_days: int = 30,
-        priority: DealPriority = DealPriority.MEDIUM
+        priority: DealPriority = DealPriority.MEDIUM,
     ) -> Deal:
         """Create new deal"""
-        deal_id = f"deal_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        deal_id = f"deal_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         deal = Deal(
             id=deal_id,
@@ -96,7 +97,7 @@ class DealManagerAgent:
             value=value,
             priority=priority,
             close_date=datetime.now() + timedelta(days=close_days),
-            probability=STAGE_PROBABILITIES[DealStage.DISCOVERY]
+            probability=STAGE_PROBABILITIES[DealStage.DISCOVERY],
         )
 
         self.deals[deal_id] = deal
@@ -133,15 +134,18 @@ class DealManagerAgent:
 
     def get_forecast(self) -> Dict:
         """Get revenue forecast"""
-        active = [d for d in self.deals.values()
-                  if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        active = [
+            d
+            for d in self.deals.values()
+            if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]
+        ]
         won = [d for d in self.deals.values() if d.stage == DealStage.CLOSED_WON]
 
         return {
             "pipeline_value": sum(d.value for d in active),
             "weighted_value": sum(d.weighted_value for d in active),
             "closed_won": sum(d.value for d in won),
-            "deal_count": len(active)
+            "deal_count": len(active),
         }
 
     def get_stats(self) -> Dict:
@@ -157,7 +161,7 @@ class DealManagerAgent:
             "won": len(won),
             "lost": len(lost),
             "win_rate": f"{win_rate:.0f}%",
-            **self.get_forecast()
+            **self.get_forecast(),
         }
 
 

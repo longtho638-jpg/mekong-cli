@@ -284,7 +284,7 @@ def schedule_campaign(slug, start_date=None):
         with open(QUEUE_FILE) as f:
             try:
                 queue = json.load(f)
-            except:
+            except Exception:
                 queue = []
     else:
         queue = []
@@ -316,7 +316,7 @@ def schedule_campaign(slug, start_date=None):
                 try:
                     _, frontmatter, content = raw_content.split("---", 2)
                     content = content.strip()
-                except:
+                except Exception:
                     content = raw_content
             else:
                 content = raw_content

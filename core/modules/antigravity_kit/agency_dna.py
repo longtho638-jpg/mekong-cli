@@ -1,12 +1,15 @@
 """
 Antigravity Kit - Agency DNA Module
 """
+
 from dataclasses import dataclass, field
 from typing import List
+
 
 @dataclass
 class AgencyDNA:
     """The genetic code of the agency."""
+
     name: str
     niche: str
     location: str
@@ -15,6 +18,7 @@ class AgencyDNA:
 
     def manifest(self) -> str:
         return f"🏯 {self.name} ({self.niche}) - Vibe: {self.vibe}"
+
 
 class IdentityService:
     def __init__(self):

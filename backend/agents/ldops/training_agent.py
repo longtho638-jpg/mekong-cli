@@ -3,11 +3,11 @@ Training Agent - Learning & Course Management
 Manages training courses, learning paths, and completions.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, Optional
 
 
 class CourseStatus(Enum):
@@ -32,6 +32,7 @@ class CourseType(Enum):
 @dataclass
 class Course:
     """Training course"""
+
     id: str
     title: str
     description: str
@@ -45,6 +46,7 @@ class Course:
 @dataclass
 class Enrollment:
     """Course enrollment"""
+
     id: str
     employee_id: str
     employee_name: str
@@ -63,7 +65,7 @@ class Enrollment:
 class TrainingAgent:
     """
     Training Agent - Quản lý Đào tạo
-    
+
     Responsibilities:
     - Manage courses
     - Track learning paths
@@ -78,37 +80,28 @@ class TrainingAgent:
         self.enrollments: Dict[str, Enrollment] = {}
 
     def create_course(
-        self,
-        title: str,
-        description: str,
-        course_type: CourseType,
-        duration_hours: float
+        self, title: str, description: str, course_type: CourseType, duration_hours: float
     ) -> Course:
         """Create training course"""
-        course_id = f"course_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        course_id = f"course_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         course = Course(
             id=course_id,
             title=title,
             description=description,
             course_type=course_type,
-            duration_hours=duration_hours
+            duration_hours=duration_hours,
         )
 
         self.courses[course_id] = course
         return course
 
-    def enroll(
-        self,
-        employee_id: str,
-        employee_name: str,
-        course_id: str
-    ) -> Enrollment:
+    def enroll(self, employee_id: str, employee_name: str, course_id: str) -> Enrollment:
         """Enroll employee in course"""
         if course_id not in self.courses:
             raise ValueError(f"Course not found: {course_id}")
 
-        enrollment_id = f"enroll_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        enrollment_id = f"enroll_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
         course = self.courses[course_id]
 
         enrollment = Enrollment(
@@ -116,7 +109,7 @@ class TrainingAgent:
             employee_id=employee_id,
             employee_name=employee_name,
             course_id=course_id,
-            course_title=course.title
+            course_title=course.title,
         )
 
         self.enrollments[enrollment_id] = enrollment
@@ -154,8 +147,10 @@ class TrainingAgent:
             "total_courses": len(courses),
             "total_enrollments": len(enrollments),
             "completed": len(completed),
-            "completion_rate": f"{len(completed)/len(enrollments)*100:.0f}%" if enrollments else "0%",
-            "total_hours": sum(c.duration_hours * c.completions for c in courses)
+            "completion_rate": f"{len(completed) / len(enrollments) * 100:.0f}%"
+            if enrollments
+            else "0%",
+            "total_hours": sum(c.duration_hours * c.completions for c in courses),
         }
 
 
@@ -167,7 +162,9 @@ if __name__ == "__main__":
 
     # Create courses
     c1 = agent.create_course("Python Fundamentals", "Learn Python basics", CourseType.MANDATORY, 8)
-    c2 = agent.create_course("AWS Certification Prep", "Prepare for AWS exam", CourseType.CERTIFICATION, 40)
+    c2 = agent.create_course(
+        "AWS Certification Prep", "Prepare for AWS exam", CourseType.CERTIFICATION, 40
+    )
 
     print(f"📖 Course: {c1.title}")
     print(f"   Type: {c1.course_type.value}")

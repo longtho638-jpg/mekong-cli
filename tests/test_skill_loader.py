@@ -2,21 +2,19 @@
 Tests for Skill Loader.
 """
 
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.skill_loader import (
-    SKILL_MAPPING,
-    get_skills_for_agent
-)
+from antigravity.core.skill_loader import SKILL_MAPPING, get_skills_for_agent
+
 
 class TestSkillLoader:
-
     def test_skill_mapping_structure(self):
         """Verify skill mapping structure."""
         assert isinstance(SKILL_MAPPING, dict)
@@ -55,6 +53,7 @@ class TestSkillLoader:
         # Let's mock the actual function logic by mocking Path object behavior directly
         # in the context of the test execution
         pass
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

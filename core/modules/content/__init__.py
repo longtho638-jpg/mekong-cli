@@ -1,6 +1,7 @@
 """
 Content Module Export
 """
-from .entities import ContentIdea, ContentPillar, ContentFormat
-from .services import ContentGenerator
+
+from .entities import ContentFormat, ContentIdea, ContentPillar
 from .presentation import ContentPresenter
+from .services import ContentGenerator

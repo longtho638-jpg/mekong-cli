@@ -1,6 +1,8 @@
-from typing import Dict, Optional, List
 import os
+from typing import Dict, List, Optional
+
 from .base import PayPalBase
+
 
 class Webhooks(PayPalBase):
     """Webhooks API - /v1/notifications/webhooks"""

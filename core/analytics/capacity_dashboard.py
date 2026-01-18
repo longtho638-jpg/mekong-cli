@@ -13,25 +13,28 @@ Features:
 """
 
 import logging
-from typing import Dict, List
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class CapacityLevel(Enum):
     """Capacity levels."""
+
     UNDERLOADED = "underloaded"  # < 60%
-    OPTIMAL = "optimal"          # 60-85%
-    HIGH = "high"                # 85-95%
-    OVERLOADED = "overloaded"    # > 95%
+    OPTIMAL = "optimal"  # 60-85%
+    HIGH = "high"  # 85-95%
+    OVERLOADED = "overloaded"  # > 95%
 
 
 @dataclass
 class DepartmentCapacity:
     """Capacity for a department entity."""
+
     name: str
     total_hours: float
     used_hours: float
@@ -55,7 +58,7 @@ class DepartmentCapacity:
 class CapacityDashboard:
     """
     Capacity Dashboard System.
-    
+
     Provides insights into agency workload and resource availability.
     """
 
@@ -82,7 +85,7 @@ class CapacityDashboard:
                     total_hours=total,
                     used_hours=used,
                     members_count=members,
-                    projects_count=projects
+                    projects_count=projects,
                 )
             except ValueError as e:
                 logger.error(f"Failed to load default department {name}: {e}")
@@ -101,8 +104,11 @@ class CapacityDashboard:
 
     def get_bottlenecks(self) -> List[DepartmentCapacity]:
         """Identify departments at high or overloaded capacity."""
-        return [d for d in self.departments.values()
-                if self.get_level(d) in [CapacityLevel.HIGH, CapacityLevel.OVERLOADED]]
+        return [
+            d
+            for d in self.departments.values()
+            if self.get_level(d) in [CapacityLevel.HIGH, CapacityLevel.OVERLOADED]
+        ]
 
     def get_hiring_signals(self) -> List[str]:
         """Generate specific hiring recommendations."""
@@ -134,7 +140,7 @@ class CapacityDashboard:
             CapacityLevel.UNDERLOADED: "🟢",
             CapacityLevel.OPTIMAL: "💚",
             CapacityLevel.HIGH: "🟠",
-            CapacityLevel.OVERLOADED: "🔴"
+            CapacityLevel.OVERLOADED: "🔴",
         }
 
         # Sort by utilization descending
@@ -146,13 +152,17 @@ class CapacityDashboard:
             util = dept.utilization
             bar = "█" * int(min(100, util) / 10) + "░" * (10 - int(min(100, util) / 10))
 
-            lines.append(f"║  {icon} {dept.name:<12} │ {bar} │ {util:>3.0f}% │ {dept.members_count}👥  ║")
+            lines.append(
+                f"║  {icon} {dept.name:<12} │ {bar} │ {util:>3.0f}% │ {dept.members_count}👥  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  ⚠️ SIGNALS                                               ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  ⚠️ SIGNALS                                               ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         signals = self.get_hiring_signals()
         if signals:
@@ -161,26 +171,32 @@ class CapacityDashboard:
         else:
             lines.append("║    ✅ All departments at healthy capacity              ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📋 BOTTLENECKS                                           ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📋 BOTTLENECKS                                           ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         bottlenecks = self.get_bottlenecks()
         if bottlenecks:
             for dept in bottlenecks[:2]:
-                lines.append(f"║    🚨 {dept.name}: {dept.projects_count} projects, {dept.members_count} members         ║")
+                lines.append(
+                    f"║    🚨 {dept.name}: {dept.projects_count} projects, {dept.members_count} members         ║"
+                )
         else:
             lines.append("║    ✅ No bottlenecks detected                           ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 Details]  [⚖️ Rebalance]  [👥 Hiring Plan]           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Optimized!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 Details]  [⚖️ Rebalance]  [👥 Hiring Plan]           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Optimized!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

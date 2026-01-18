@@ -2,8 +2,8 @@
 🌊 VIBE Workflow Engine - Strategic Development Cycle
 =====================================================
 
-Implements the high-velocity 'Manus Pattern' development cycle within the 
-Agency OS. Ensures every change is planned, implemented, verified, and 
+Implements the high-velocity 'Manus Pattern' development cycle within the
+Agency OS. Ensures every change is planned, implemented, verified, and
 reviewed before deployment.
 
 Standard Cycle:
@@ -20,11 +20,11 @@ Binh Pháp: 📋 Pháp (Process) - Disciplined execution leads to victory.
 import logging
 import subprocess
 from pathlib import Path
-from typing import List, Dict, Optional, Any, Union
+from typing import Any, Dict, List, Optional, Union
 
-from .models.workflow import Task, TaskStatus, WorkflowStep, CodeReviewResult
 from .base import BaseEngine
 from .config import MAX_FILE_LINES
+from .models.workflow import CodeReviewResult, Task, TaskStatus, WorkflowStep
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class VIBEWorkflow(BaseEngine):
     """
     🌊 VIBE Development Engine
-    
+
     Orchestrates the 6-step cycle for building features and fixing bugs.
     Integrates with the local filesystem and git repository.
     """
@@ -99,12 +99,14 @@ class VIBEWorkflow(BaseEngine):
                     status = TaskStatus.COMPLETED if "[x]" in line else TaskStatus.PENDING
                     name = line.replace("- [ ]", "").replace("- [x]", "").strip()
 
-                    tasks.append(Task(
-                        id=f"task-{task_counter}",
-                        name=name,
-                        description=f"Automated extraction from {self.current_plan.name}",
-                        status=status
-                    ))
+                    tasks.append(
+                        Task(
+                            id=f"task-{task_counter}",
+                            name=name,
+                            description=f"Automated extraction from {self.current_plan.name}",
+                            status=status,
+                        )
+                    )
                     task_counter += 1
 
             self.tasks = tasks
@@ -139,18 +141,13 @@ class VIBEWorkflow(BaseEngine):
         """Executes the test suite and captures results for the quality gate."""
         print(f"🧪 Running verification: `{command}`...")
         try:
-            result = subprocess.run(
-                command.split(),
-                capture_output=True,
-                text=True,
-                timeout=300
-            )
+            result = subprocess.run(command.split(), capture_output=True, text=True, timeout=300)
 
             self.test_results = {
                 "passed": result.returncode == 0,
                 "exit_code": result.returncode,
                 "summary": result.stdout[-500:] if result.stdout else "",
-                "errors": result.stderr[-500:] if result.stderr else ""
+                "errors": result.stderr[-500:] if result.stderr else "",
             }
 
             if self.test_results["passed"]:
@@ -173,7 +170,8 @@ class VIBEWorkflow(BaseEngine):
 
         for f in files:
             path = Path(f)
-            if not path.exists(): continue
+            if not path.exists():
+                continue
 
             try:
                 content = path.read_text(encoding="utf-8")
@@ -231,10 +229,10 @@ class VIBEWorkflow(BaseEngine):
             "current_step": self.current_step.name,
             "tasks": {
                 "total": len(self.tasks),
-                "done": len([t for t in self.tasks if t.status == TaskStatus.COMPLETED])
+                "done": len([t for t in self.tasks if t.status == TaskStatus.COMPLETED]),
             },
             "quality": {
                 "tests_passed": self.test_results.get("passed", False),
-                "review_score": self.review_result.score if self.review_result else 0
-            }
+                "review_score": self.review_result.score if self.review_result else 0,
+            },
         }

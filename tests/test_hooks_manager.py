@@ -2,22 +2,19 @@
 Tests for Hooks Manager.
 """
 
-import sys
 import os
-import pytest
+import sys
 from pathlib import Path
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.hooks_manager import (
-    HooksManager,
-    Hook,
-    HOOKS
-)
+from antigravity.core.hooks_manager import HOOKS, Hook, HooksManager
+
 
 class TestHooksManager:
-
     def test_hook_structure(self):
         """Verify hook structure."""
         for trigger, hook_list in HOOKS.items():
@@ -46,8 +43,7 @@ class TestHooksManager:
         # Should block sensitive data (using a long enough key to match regex)
         context = {"code": "api_key = 'sk-abcdefghijklmnopqrstuvwxyz012345'"}
         result = manager._run_hook(
-            Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True),
-            context
+            Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True), context
         )
         assert result["passed"] is False
         assert "Sensitive data" in result["output"]
@@ -55,8 +51,7 @@ class TestHooksManager:
         # Should pass safe data
         safe_context = {"code": "print('hello')"}
         result = manager._run_hook(
-            Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True),
-            safe_context
+            Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True), safe_context
         )
         assert result["passed"] is True
 
@@ -68,7 +63,7 @@ class TestHooksManager:
         bad_deal = {
             "anh": {"equity": True},
             "agency": {"cash": True},
-            "client": {} # Missing wins
+            "client": {},  # Missing wins
         }
         result = manager.run_win3_gate(bad_deal)
         assert result["valid"] is False
@@ -77,10 +72,11 @@ class TestHooksManager:
         good_deal = {
             "anh": {"equity": True, "cash": True},
             "agency": {"moat": True, "retainer": True},
-            "client": {"value": True, "growth": True}
+            "client": {"value": True, "growth": True},
         }
         result = manager.run_win3_gate(good_deal)
         assert result["valid"] is True
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

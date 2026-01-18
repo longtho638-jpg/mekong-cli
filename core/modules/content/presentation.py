@@ -1,12 +1,14 @@
 """
 Content Module - Presentation Layer
 """
+
 from typing import List
-from .services import ContentGenerator
+
 from .entities import ContentIdea, ContentPillar
+from .services import ContentGenerator
+
 
 class ContentPresenter:
-
     @staticmethod
     def format_calendar_view(generator: ContentGenerator, ideas: List[ContentIdea]) -> str:
         """Render ASCII content calendar."""
@@ -27,13 +29,17 @@ class ContentPresenter:
                 title_short = (idea.title[:40] + "..") if len(idea.title) > 42 else idea.title
                 lines.append(f"║    {j}. {title_short:<50} ║")
 
-            lines.append(f"║    ...+{len(pillar_ideas) - 3} more ideas                                  ║")
+            lines.append(
+                f"║    ...+{len(pillar_ideas) - 3} more ideas                                  ║"
+            )
             lines.append("║                                                           ║")
 
-        lines.extend([
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  ⚖️ TOTAL: {len(ideas)} IDEAS READY FOR MULTI-CHANNEL POSTING    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  ⚖️ TOTAL: {len(ideas)} IDEAS READY FOR MULTI-CHANNEL POSTING    ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)

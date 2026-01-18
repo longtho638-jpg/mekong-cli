@@ -148,9 +148,7 @@ class SelfImproveEngine:
         )
         return pattern_key
 
-    def _generate_solution(
-        self, error: Exception, context: Dict[str, Any] = None
-    ) -> str:
+    def _generate_solution(self, error: Exception, context: Dict[str, Any] = None) -> str:
         """Generate solution suggestion for error."""
         error_type = type(error).__name__
 
@@ -279,9 +277,7 @@ class SelfImproveEngine:
             while True:
                 try:
                     # Get high-confidence suggestions
-                    suggestions = self.get_suggestions(
-                        min_confidence=self.min_confidence
-                    )
+                    suggestions = self.get_suggestions(min_confidence=self.min_confidence)
 
                     for suggestion in suggestions:
                         if suggestion.auto_apply and not suggestion.applied:
@@ -340,9 +336,7 @@ class SelfImproveEngine:
         return {
             "total_learnings": len(self.learnings),
             "total_suggestions": len(self.suggestions),
-            "applied_improvements": sum(
-                1 for s in self.suggestions.values() if s.applied
-            ),
+            "applied_improvements": sum(1 for s in self.suggestions.values() if s.applied),
             "profiles_tracked": len(self.profiles),
             "error_patterns": len(self._error_patterns),
         }

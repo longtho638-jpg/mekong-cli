@@ -12,19 +12,21 @@ Roles:
 - Character design
 """
 
-import uuid
 import logging
-from typing import Dict
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class IllustrationStyle(Enum):
     """Visual styles for illustrations."""
+
     FLAT = "flat"
     LINE_ART = "line_art"
     ISOMETRIC = "isometric"
@@ -35,6 +37,7 @@ class IllustrationStyle(Enum):
 
 class IllustrationType(Enum):
     """Categorization of illustration work."""
+
     HERO = "hero"
     SPOT = "spot"
     ICON_SET = "icon_set"
@@ -46,6 +49,7 @@ class IllustrationType(Enum):
 @dataclass
 class IllustrationProject:
     """An individual illustration project record."""
+
     id: str
     name: str
     client: str
@@ -66,7 +70,7 @@ class IllustrationProject:
 class Illustrator:
     """
     Illustrator System.
-    
+
     Orchestrates the creation, tracking, and delivery of specialized illustration assets.
     """
 
@@ -83,7 +87,7 @@ class Illustrator:
         style: IllustrationStyle,
         pieces: int,
         illustrator: str = "Illustrator AI",
-        due_days: int = 7
+        due_days: int = 7,
     ) -> IllustrationProject:
         """Register a new illustration project."""
         if not name or not client:
@@ -91,9 +95,13 @@ class Illustrator:
 
         project = IllustrationProject(
             id=f"ILL-{uuid.uuid4().hex[:6].upper()}",
-            name=name, client=client, illus_type=illus_type,
-            style=style, pieces=int(pieces), illustrator=illustrator,
-            deadline=datetime.now() + timedelta(days=due_days)
+            name=name,
+            client=client,
+            illus_type=illus_type,
+            style=style,
+            pieces=int(pieces),
+            illustrator=illustrator,
+            deadline=datetime.now() + timedelta(days=due_days),
         )
         self.projects[project.id] = project
         logger.info(f"Project created: {name} ({pieces} pieces)")
@@ -101,7 +109,8 @@ class Illustrator:
 
     def mark_piece_complete(self, project_id: str) -> bool:
         """Increment completion count for a specific project."""
-        if project_id not in self.projects: return False
+        if project_id not in self.projects:
+            return False
 
         p = self.projects[project_id]
         if p.completed < p.pieces:
@@ -126,24 +135,28 @@ class Illustrator:
         ]
 
         type_icons = {
-            IllustrationType.HERO: "🖼️", IllustrationType.ICON_SET: "🔲",
-            IllustrationType.CHARACTER: "👤", IllustrationType.PATTERN: "🔳"
+            IllustrationType.HERO: "🖼️",
+            IllustrationType.ICON_SET: "🔲",
+            IllustrationType.CHARACTER: "👤",
+            IllustrationType.PATTERN: "🔳",
         }
 
         for p in list(self.projects.values())[:5]:
             icon = type_icons.get(p.illus_type, "🎨")
             prog = (p.completed / p.pieces) * 100
             bar = "█" * int(prog / 10) + "░" * (10 - int(prog / 10))
-            name_disp = (p.name[:18] + '..') if len(p.name) > 20 else p.name
+            name_disp = (p.name[:18] + "..") if len(p.name) > 20 else p.name
             lines.append(f"║  {icon} {name_disp:<20} │ {bar} │ {p.completed}/{p.pieces} done  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [➕ New Project]  [🎨 Draw]  [📤 Export]  [⚙️ Settings]  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Stories!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [➕ New Project]  [🎨 Draw]  [📤 Export]  [⚙️ Settings]  ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Stories!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -157,7 +170,9 @@ if __name__ == "__main__":
         illus_system = Illustrator("Saigon Digital Hub")
 
         # Seed
-        p1 = illus_system.create_project("Heroes", "Sunrise", IllustrationType.HERO, IllustrationStyle.FLAT, 5)
+        p1 = illus_system.create_project(
+            "Heroes", "Sunrise", IllustrationType.HERO, IllustrationStyle.FLAT, 5
+        )
         illus_system.mark_piece_complete(p1.id)
 
         print("\n" + illus_system.format_dashboard())

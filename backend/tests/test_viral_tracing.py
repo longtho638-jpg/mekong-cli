@@ -83,9 +83,7 @@ class TestTrace:
 
     def test_trace_creation(self):
         """Test creating a trace."""
-        trace = Trace(
-            trace_id="trace001", root_span_id="root001", service_name="test_service"
-        )
+        trace = Trace(trace_id="trace001", root_span_id="root001", service_name="test_service")
 
         assert trace.trace_id == "trace001"
         assert len(trace.spans) == 0
@@ -103,9 +101,7 @@ class TestTrace:
         """Test getting root span."""
         trace = Trace(trace_id="t", root_span_id="root", service_name="svc")
         root = Span(trace_id="t", span_id="root", name="root_op")
-        child = Span(
-            trace_id="t", span_id="child", name="child_op", parent_span_id="root"
-        )
+        child = Span(trace_id="t", span_id="child", name="child_op", parent_span_id="root")
 
         trace.add_span(root)
         trace.add_span(child)

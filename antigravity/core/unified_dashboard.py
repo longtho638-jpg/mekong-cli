@@ -2,8 +2,8 @@
 🏯 Unified Agentic Dashboard - Complete System Overview
 ======================================================
 
-Combines all agentic subsystems into one unified strategic view. 
-Provides visibility into the AI workforce, specialized skills, 
+Combines all agentic subsystems into one unified strategic view.
+Provides visibility into the AI workforce, specialized skills,
 governance rules, and long-term learning performance.
 
 Components Analyzed:
@@ -16,15 +16,15 @@ Binh Pháp: 🏯 Hình (Strategic Configuration) - Seeing the whole army.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
-from .agent_chains import AGENT_INVENTORY, AGENT_CHAINS
+from .agent_chains import AGENT_CHAINS, AGENT_INVENTORY
 from .agent_crews import CREWS
-from .skill_loader import get_total_skills, get_total_mappings
-from .rules_loader import get_total_rules, get_total_assignments
-from .hooks_manager import HOOKS
 from .agent_memory import get_agent_memory
 from .coding_level import get_level
+from .hooks_manager import HOOKS
+from .rules_loader import get_total_assignments, get_total_rules
+from .skill_loader import get_total_mappings, get_total_skills
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class AgenticDashboard:
     """
     🏯 Unified Agentic Dashboard
-    
+
     The master control room for the Agency OS AI infrastructure.
     """
 
@@ -47,24 +47,21 @@ class AgenticDashboard:
             "inventory": {
                 "agents": len(AGENT_INVENTORY),
                 "chains": len(AGENT_CHAINS),
-                "crews": len(CREWS)
+                "crews": len(CREWS),
             },
             "ip": {
                 "skills": get_total_skills(),
                 "skill_mappings": get_total_mappings(),
                 "rules": get_total_rules(),
                 "rule_assignments": get_total_assignments(),
-                "hooks": sum(len(h) for h in HOOKS.values())
+                "hooks": sum(len(h) for h in HOOKS.values()),
             },
             "cognition": {
                 "memories": m_stats["total_records"],
                 "patterns": m_stats["total_patterns"],
-                "success_rate": m_stats["global_success_rate"]
+                "success_rate": m_stats["global_success_rate"],
             },
-            "configuration": {
-                "coding_level": level.level,
-                "level_name": level.name
-            }
+            "configuration": {"coding_level": level.level, "level_name": level.name},
         }
 
     def _calculate_integration_score(self, stats: Dict[str, Any]) -> int:
@@ -73,10 +70,7 @@ class AgenticDashboard:
         Weights based on system maturity benchmarks.
         """
         # Targets for 100% score
-        TARGETS = {
-            "agents": 26, "chains": 34, "crews": 6,
-            "skills": 41, "rules": 6, "hooks": 5
-        }
+        TARGETS = {"agents": 26, "chains": 34, "crews": 6, "skills": 41, "rules": 6, "hooks": 5}
 
         score = 0.0
         inv = stats["inventory"]
@@ -110,7 +104,9 @@ class AgenticDashboard:
         print("═" * 65)
 
         # Section 1: Workforce
-        print(f"\n  🤖 WORKFORCE: {stats['inventory']['agents']} Agents | {stats['inventory']['crews']} Specialized Crews")
+        print(
+            f"\n  🤖 WORKFORCE: {stats['inventory']['agents']} Agents | {stats['inventory']['crews']} Specialized Crews"
+        )
         print(f"     └─ Active Chains : {stats['inventory']['chains']}")
 
         # Section 2: IP
@@ -138,9 +134,11 @@ class AgenticDashboard:
         print(f"  🏆 AGENTIC POWER SCORE: [{bar}] {power_score}%")
 
         verdict = (
-            "🎊 SUPREME ORCHESTRATION" if power_score >= 90 else
-            "✅ ROBUST INTEGRATION" if power_score >= 75 else
-            "⚠️ EVOLVING SYSTEM"
+            "🎊 SUPREME ORCHESTRATION"
+            if power_score >= 90
+            else "✅ ROBUST INTEGRATION"
+            if power_score >= 75
+            else "⚠️ EVOLVING SYSTEM"
         )
         print(f"     └─ Verdict: {verdict}")
         print("═" * 65 + "\n")

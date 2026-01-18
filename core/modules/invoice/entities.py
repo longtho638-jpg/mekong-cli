@@ -1,13 +1,16 @@
 """
 Invoice Module - Data Entities
 """
+
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
 from typing import List, Optional
-from datetime import datetime, timedelta
+
 
 class InvoiceStatus(Enum):
     """Lifecycle status of a billable invoice."""
+
     DRAFT = "draft"
     SENT = "sent"
     PAID = "paid"
@@ -17,6 +20,7 @@ class InvoiceStatus(Enum):
 
 class Currency(Enum):
     """Supported transaction currencies."""
+
     USD = "USD"
     VND = "VND"
     JPY = "JPY"
@@ -26,6 +30,7 @@ class Currency(Enum):
 @dataclass
 class InvoiceItem:
     """A single line item record on an invoice."""
+
     description: str
     quantity: int
     unit_price: float
@@ -39,6 +44,7 @@ class InvoiceItem:
 @dataclass
 class Invoice:
     """An invoice entity record."""
+
     id: str
     client_id: str
     client_name: str

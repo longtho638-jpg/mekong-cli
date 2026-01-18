@@ -1,10 +1,10 @@
 import unittest
+from antigravity.core.jules_runner import run_scheduled_maintenance, trigger_jules_mission
 from unittest import mock
-from unittest.mock import patch, MagicMock
-from antigravity.core.jules_runner import trigger_jules_mission, run_scheduled_maintenance
+from unittest.mock import MagicMock, patch
+
 
 class TestJulesIntegration(unittest.TestCase):
-
     def test_run_jules_task_dry_run(self):
         """Test that running a task in dry_run mode returns True."""
         result = trigger_jules_mission("tests", dry_run=True)
@@ -30,10 +30,14 @@ class TestJulesIntegration(unittest.TestCase):
         # Verify
         self.assertTrue(result)
         mock_subprocess.assert_called_with(
-            ["gemini", "-p", "/jules remove all unused imports, dead code, and console.log statements"],
+            [
+                "gemini",
+                "-p",
+                "/jules remove all unused imports, dead code, and console.log statements",
+            ],
             capture_output=True,
             text=True,
-            timeout=180
+            timeout=180,
         )
 
     @mock.patch("antigravity.core.jules_runner.trigger_jules_mission")
@@ -50,6 +54,7 @@ class TestJulesIntegration(unittest.TestCase):
 
         # Verify correct task was triggered
         mock_run_jules_task.assert_called_with("tests", True)
+
 
 if __name__ == "__main__":
     unittest.main()

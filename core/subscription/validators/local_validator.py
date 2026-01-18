@@ -31,14 +31,14 @@ class LocalValidator(BaseValidator):
         try:
             with open(self.local_license_path, "r", encoding="utf-8") as f:
                 local_data = json.load(f)
-                
+
             return Subscription(
                 user_id=user_id,
                 tier=SubscriptionTier.from_str(local_data.get("tier", "starter")),
                 status=local_data.get("status", "active"),
                 license_key=local_data.get("key"),
                 agency_id=local_data.get("agency_id"),
-                source="local_file"
+                source="local_file",
             )
         except Exception as e:
             logger.warning(f"Could not read local license: {e}")
@@ -63,11 +63,19 @@ class LocalValidator(BaseValidator):
         """Check tier feature access using local logic."""
         # Simple feature mapping for local validation
         feature_requirements = {
-            "api_access": [SubscriptionTier.PRO, SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
+            "api_access": [
+                SubscriptionTier.PRO,
+                SubscriptionTier.FRANCHISE,
+                SubscriptionTier.ENTERPRISE,
+            ],
             "white_label": [SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
-            "priority_support": [SubscriptionTier.PRO, SubscriptionTier.FRANCHISE, SubscriptionTier.ENTERPRISE],
+            "priority_support": [
+                SubscriptionTier.PRO,
+                SubscriptionTier.FRANCHISE,
+                SubscriptionTier.ENTERPRISE,
+            ],
         }
-        
+
         return tier in feature_requirements.get(feature, [SubscriptionTier.FREE])
 
     def save_license(self, license_data: Dict) -> bool:

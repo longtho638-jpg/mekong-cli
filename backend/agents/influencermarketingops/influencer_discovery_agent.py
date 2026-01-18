@@ -3,11 +3,11 @@ Influencer Discovery Agent - Search & Vetting
 Manages influencer discovery and audience analysis.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class Platform(Enum):
@@ -19,16 +19,17 @@ class Platform(Enum):
 
 
 class InfluencerTier(Enum):
-    NANO = "nano"           # 1K-10K
-    MICRO = "micro"         # 10K-50K
-    MID = "mid"             # 50K-500K
-    MACRO = "macro"         # 500K-1M
-    MEGA = "mega"           # 1M+
+    NANO = "nano"  # 1K-10K
+    MICRO = "micro"  # 10K-50K
+    MID = "mid"  # 50K-500K
+    MACRO = "macro"  # 500K-1M
+    MEGA = "mega"  # 1M+
 
 
 @dataclass
 class Influencer:
     """Influencer profile"""
+
     id: str
     name: str
     handle: str
@@ -49,7 +50,7 @@ class Influencer:
 class InfluencerDiscoveryAgent:
     """
     Influencer Discovery Agent - Tìm kiếm Influencer
-    
+
     Responsibilities:
     - Influencer search
     - Audience analysis
@@ -63,10 +64,7 @@ class InfluencerDiscoveryAgent:
         self.influencers: Dict[str, Influencer] = {}
 
     def discover(
-        self,
-        platform: Platform,
-        niche: str,
-        min_followers: int = 1000
+        self, platform: Platform, niche: str, min_followers: int = 1000
     ) -> List[Influencer]:
         """Discover influencers"""
         discovered = []
@@ -86,14 +84,14 @@ class InfluencerDiscoveryAgent:
                 tier = InfluencerTier.MICRO
 
             influencer = Influencer(
-                id=f"inf_{random.randint(1000,9999)}",
-                name=f"Influencer {i+1}",
-                handle=f"@influencer_{i+1}",
+                id=f"inf_{random.randint(1000, 9999)}",
+                name=f"Influencer {i + 1}",
+                handle=f"@influencer_{i + 1}",
                 platform=platform,
                 tier=tier,
                 followers=followers,
                 engagement_rate=random.uniform(1.0, 8.0),
-                niche=niche
+                niche=niche,
             )
 
             self.influencers[influencer.id] = influencer
@@ -129,8 +127,10 @@ class InfluencerDiscoveryAgent:
         return {
             "total_influencers": len(influencers),
             "verified": len(verified),
-            "avg_engagement": sum(i.engagement_rate for i in influencers) / len(influencers) if influencers else 0,
-            "avg_score": sum(i.score for i in influencers) / len(influencers) if influencers else 0
+            "avg_engagement": sum(i.engagement_rate for i in influencers) / len(influencers)
+            if influencers
+            else 0,
+            "avg_score": sum(i.score for i in influencers) / len(influencers) if influencers else 0,
         }
 
 

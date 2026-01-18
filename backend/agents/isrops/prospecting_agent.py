@@ -3,11 +3,11 @@ Prospecting Agent - Lead Discovery & Cadences
 Manages prospecting activities and email sequences.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class ProspectStatus(Enum):
@@ -21,6 +21,7 @@ class ProspectStatus(Enum):
 @dataclass
 class Prospect:
     """Sales prospect"""
+
     id: str
     name: str
     company: str
@@ -40,6 +41,7 @@ class Prospect:
 @dataclass
 class Cadence:
     """Outreach cadence"""
+
     id: str
     name: str
     steps: List[Dict]  # {day, type, template}
@@ -49,7 +51,7 @@ class Cadence:
 class ProspectingAgent:
     """
     Prospecting Agent - Tìm kiếm Khách hàng
-    
+
     Responsibilities:
     - Discover and enrich leads
     - Manage email sequences
@@ -83,7 +85,7 @@ Tôi muốn follow up email trước. Bạn đã có cơ hội xem qua chưa?
 
 Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
 
-{rep_name}"""
+{rep_name}""",
     }
 
     def __init__(self):
@@ -93,23 +95,13 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
         self.cadences: Dict[str, Cadence] = {}
 
     def add_prospect(
-        self,
-        name: str,
-        company: str,
-        email: str,
-        phone: str = "",
-        source: str = "inbound"
+        self, name: str, company: str, email: str, phone: str = "", source: str = "inbound"
     ) -> Prospect:
         """Add new prospect"""
-        prospect_id = f"prospect_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        prospect_id = f"prospect_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         prospect = Prospect(
-            id=prospect_id,
-            name=name,
-            company=company,
-            email=email,
-            phone=phone,
-            source=source
+            id=prospect_id, name=name, company=company, email=email, phone=phone, source=source
         )
 
         self.prospects[prospect_id] = prospect
@@ -138,16 +130,15 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
         template_content = self.EMAIL_TEMPLATES.get(template, "")
 
         return template_content.format(
-            name=prospect.name,
-            company=prospect.company,
-            rep_name=rep_name
+            name=prospect.name, company=prospect.company, rep_name=rep_name
         )
 
     def get_due_today(self) -> List[Prospect]:
         """Get prospects due for contact today"""
         # Simplified: return prospects in cadence
         return [
-            p for p in self.prospects.values()
+            p
+            for p in self.prospects.values()
             if p.cadence_step < len(self.DEFAULT_CADENCE) and p.status != ProspectStatus.QUALIFIED
         ]
 
@@ -170,7 +161,9 @@ Demo nhanh 15 phút sẽ giúp bạn thấy được tiềm năng tiết kiệm.
             "new": len([p for p in prospects if p.status == ProspectStatus.NEW]),
             "contacted": len([p for p in prospects if p.status == ProspectStatus.CONTACTED]),
             "qualified": len([p for p in prospects if p.status == ProspectStatus.QUALIFIED]),
-            "conversion_rate": f"{len([p for p in prospects if p.status == ProspectStatus.QUALIFIED])/len(prospects)*100:.0f}%" if prospects else "0%"
+            "conversion_rate": f"{len([p for p in prospects if p.status == ProspectStatus.QUALIFIED]) / len(prospects) * 100:.0f}%"
+            if prospects
+            else "0%",
         }
 
 

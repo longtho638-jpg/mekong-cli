@@ -4,8 +4,8 @@
 Domain logic for generating professional agreements.
 """
 
-import uuid
 import logging
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -13,8 +13,10 @@ from typing import List
 
 logger = logging.getLogger("mekong.legal")
 
+
 class ContractType(str, Enum):
     """Types of standard agency contracts."""
+
     RETAINER = "retainer"
     PROJECT = "project"
     CONSULTING = "consulting"
@@ -23,6 +25,7 @@ class ContractType(str, Enum):
 
 class PaymentTerms(str, Enum):
     """Payment schedule configurations."""
+
     NET_15 = "net_15"
     NET_30 = "net_30"
     DUE_ON_RECEIPT = "due_on_receipt"
@@ -32,6 +35,7 @@ class PaymentTerms(str, Enum):
 @dataclass
 class ContractParty:
     """Represents a party (Agency or Client) in the contract."""
+
     name: str
     company: str
     email: str
@@ -39,12 +43,13 @@ class ContractParty:
 
     def __post_init__(self):
         if not self.email or "@" not in self.email:
-             logger.warning(f"⚠️  Potential invalid email for {self.company}: {self.email}")
+            logger.warning(f"⚠️  Potential invalid email for {self.company}: {self.email}")
 
 
 @dataclass
 class ServiceScope:
     """Defines what is included and excluded in the agreement."""
+
     services: List[str]
     deliverables: List[str]
     exclusions: List[str]
@@ -54,6 +59,7 @@ class ServiceScope:
 @dataclass
 class Contract:
     """The complete contract document."""
+
     id: str
     type: ContractType
     agency: ContractParty
@@ -89,11 +95,11 @@ class ContractGenerator:
         monthly_fee: float,
         contract_type: ContractType,
         payment_terms: PaymentTerms,
-        duration_months: int
+        duration_months: int,
     ) -> Contract:
         """Creates a Contract object."""
         contract_id = f"AGR-{uuid.uuid4().hex[:6].upper()}"
-        
+
         contract = Contract(
             id=contract_id,
             type=contract_type,
@@ -103,13 +109,13 @@ class ContractGenerator:
             monthly_fee=monthly_fee,
             payment_terms=payment_terms,
             start_date=datetime.now(),
-            duration_months=duration_months
+            duration_months=duration_months,
         )
         return contract
 
     def format_text(self, contract: Contract) -> str:
         """Renders the contract as a text document with ASCII formatting."""
-        
+
         def format_list(items: List[str], bullet: str) -> str:
             return "\n".join([f"  {bullet} {item}" for item in items]) if items else "  (None)"
 
@@ -179,7 +185,7 @@ class ContractGenerator:
             "Signature: _________________________  Date: ______________",
             "",
             "═══════════════════════════════════════════════════════════",
-            f"  🏯 {contract.agency.company} - \"Không đánh mà thắng\"",
+            f'  🏯 {contract.agency.company} - "Không đánh mà thắng"',
             "═══════════════════════════════════════════════════════════",
         ]
         return "\n".join(lines)

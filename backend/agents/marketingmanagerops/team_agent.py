@@ -3,11 +3,11 @@ Team Agent - Marketing Team Management
 Manages team members, tasks, and performance.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class TaskStatus(Enum):
@@ -20,6 +20,7 @@ class TaskStatus(Enum):
 @dataclass
 class TeamMember:
     """Marketing team member"""
+
     id: str
     name: str
     role: str
@@ -35,6 +36,7 @@ class TeamMember:
 @dataclass
 class MarketingTask:
     """Marketing task"""
+
     id: str
     title: str
     assignee_id: str
@@ -46,7 +48,7 @@ class MarketingTask:
 class TeamAgent:
     """
     Team Agent - Quản lý Team Marketing
-    
+
     Responsibilities:
     - Team management
     - Task assignment
@@ -62,37 +64,24 @@ class TeamAgent:
 
     def add_member(self, name: str, role: str, capacity: int = 40) -> TeamMember:
         """Add team member"""
-        member_id = f"member_{random.randint(100,999)}"
+        member_id = f"member_{random.randint(100, 999)}"
 
-        member = TeamMember(
-            id=member_id,
-            name=name,
-            role=role,
-            capacity=capacity
-        )
+        member = TeamMember(id=member_id, name=name, role=role, capacity=capacity)
 
         self.members[member_id] = member
         return member
 
     def assign_task(
-        self,
-        title: str,
-        assignee_id: str,
-        hours: int,
-        due_date: datetime = None
+        self, title: str, assignee_id: str, hours: int, due_date: datetime = None
     ) -> MarketingTask:
         """Assign task to team member"""
         if assignee_id not in self.members:
             raise ValueError(f"Member not found: {assignee_id}")
 
-        task_id = f"task_{random.randint(1000,9999)}"
+        task_id = f"task_{random.randint(1000, 9999)}"
 
         task = MarketingTask(
-            id=task_id,
-            title=title,
-            assignee_id=assignee_id,
-            hours=hours,
-            due_date=due_date
+            id=task_id, title=title, assignee_id=assignee_id, hours=hours, due_date=due_date
         )
 
         self.tasks[task_id] = task
@@ -124,7 +113,7 @@ class TeamAgent:
             "avg_utilization": sum(m.utilization for m in members) / len(members) if members else 0,
             "total_tasks": len(tasks),
             "completed": len([t for t in tasks if t.status == TaskStatus.DONE]),
-            "in_progress": len([t for t in tasks if t.status == TaskStatus.IN_PROGRESS])
+            "in_progress": len([t for t in tasks if t.status == TaskStatus.IN_PROGRESS]),
         }
 
 

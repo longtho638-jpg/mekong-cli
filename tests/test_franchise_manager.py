@@ -2,8 +2,9 @@
 Tests for Franchise Manager system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.franchise.manager import FranchiseManager, Territory
 
-class TestFranchiseManager:
 
+class TestFranchiseManager:
     def test_add_franchisee(self):
         """Test adding franchisees with capacity limits."""
         manager = FranchiseManager()
@@ -32,7 +33,7 @@ class TestFranchiseManager:
         f = manager.add_franchisee("Anh Minh", territory=Territory.HCM)
 
         royalty = manager.record_revenue(f.id, 10000.0)
-        assert royalty == 2000.0 # 20%
+        assert royalty == 2000.0  # 20%
         assert f.total_revenue == 10000.0
         assert f.total_royalties == 2000.0
 
@@ -49,6 +50,7 @@ class TestFranchiseManager:
         assert stats["network_size"]["total_partners"] == 2
         assert stats["performance"]["total_network_revenue"] == 8000
         assert stats["performance"]["total_royalties_collected"] == 1600
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

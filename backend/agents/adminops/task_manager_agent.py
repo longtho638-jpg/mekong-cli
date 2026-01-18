@@ -3,11 +3,11 @@ Task Manager Agent - Project & Task Tracking
 Manages tasks, projects, and team assignments.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class TaskPriority(Enum):
@@ -27,6 +27,7 @@ class TaskStatus(Enum):
 @dataclass
 class Task:
     """Task item"""
+
     id: str
     title: str
     description: str
@@ -52,6 +53,7 @@ class Task:
 @dataclass
 class Project:
     """Project container"""
+
     id: str
     name: str
     description: str
@@ -66,7 +68,7 @@ class Project:
 class TaskManagerAgent:
     """
     Task Manager Agent - Quản lý Công việc
-    
+
     Responsibilities:
     - Create and assign tasks
     - Track due dates
@@ -82,13 +84,9 @@ class TaskManagerAgent:
 
     def create_project(self, name: str, description: str) -> Project:
         """Create new project"""
-        project_id = f"proj_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        project_id = f"proj_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        project = Project(
-            id=project_id,
-            name=name,
-            description=description
-        )
+        project = Project(id=project_id, name=name, description=description)
 
         self.projects[project_id] = project
         return project
@@ -100,10 +98,10 @@ class TaskManagerAgent:
         project_id: Optional[str] = None,
         assignee: Optional[str] = None,
         priority: TaskPriority = TaskPriority.MEDIUM,
-        due_days: int = 7
+        due_days: int = 7,
     ) -> Task:
         """Create new task"""
-        task_id = f"task_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        task_id = f"task_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         task = Task(
             id=task_id,
@@ -112,7 +110,7 @@ class TaskManagerAgent:
             project_id=project_id,
             assignee=assignee,
             priority=priority,
-            due_date=datetime.now() + timedelta(days=due_days)
+            due_date=datetime.now() + timedelta(days=due_days),
         )
 
         self.tasks[task_id] = task
@@ -160,15 +158,15 @@ class TaskManagerAgent:
         return {
             "total_tasks": len(tasks),
             "total_projects": len(self.projects),
-            "by_status": {
-                s.value: len([t for t in tasks if t.status == s])
-                for s in TaskStatus
-            },
+            "by_status": {s.value: len([t for t in tasks if t.status == s]) for s in TaskStatus},
             "overdue": len(self.get_overdue()),
-            "completed_today": len([
-                t for t in tasks
-                if t.completed_at and t.completed_at.date() == datetime.now().date()
-            ])
+            "completed_today": len(
+                [
+                    t
+                    for t in tasks
+                    if t.completed_at and t.completed_at.date() == datetime.now().date()
+                ]
+            ),
         }
 
 
@@ -179,10 +177,7 @@ if __name__ == "__main__":
     print("📋 Task Manager Agent Demo\n")
 
     # Create project
-    project = agent.create_project(
-        name="Mekong CLI v1.0",
-        description="First release of CLI"
-    )
+    project = agent.create_project(name="Mekong CLI v1.0", description="First release of CLI")
     print(f"📁 Project: {project.name}")
 
     # Create tasks
@@ -192,7 +187,7 @@ if __name__ == "__main__":
         project_id=project.id,
         assignee="dev_001",
         priority=TaskPriority.HIGH,
-        due_days=3
+        due_days=3,
     )
 
     task2 = agent.create_task(
@@ -200,7 +195,7 @@ if __name__ == "__main__":
         description="Create user docs",
         project_id=project.id,
         priority=TaskPriority.MEDIUM,
-        due_days=7
+        due_days=7,
     )
 
     print(f"\n✅ Task: {task1.title}")

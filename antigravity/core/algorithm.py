@@ -143,9 +143,7 @@ class AntigravityAlgorithm:
             if context.quantity > 1:
                 bulk_discount = min(0.30, context.quantity * 0.05)
                 discount += bulk_discount
-                breakdown.append(
-                    f"Bulk ({context.quantity}): -{int(bulk_discount * 100)}%"
-                )
+                breakdown.append(f"Bulk ({context.quantity}): -{int(bulk_discount * 100)}%")
 
             if context.discount_code:
                 discount += 0.10
@@ -261,9 +259,7 @@ class AntigravityAlgorithm:
             "growth_rate": growth_rate,
             "target_1m": target_1m,
             "gap_to_1m": round(gap, 2),
-            "months_to_1m": round(months_to_goal, 1)
-            if months_to_goal != float("inf")
-            else "∞",
+            "months_to_1m": round(months_to_goal, 1) if months_to_goal != float("inf") else "∞",
             "on_track": gap <= 0,
         }
 
@@ -289,9 +285,7 @@ def get_algorithm() -> AntigravityAlgorithm:
 
 
 # Convenience functions
-def calculate_price(
-    base_price: float, context: PricingContext = None
-) -> Dict[str, Any]:
+def calculate_price(base_price: float, context: PricingContext = None) -> Dict[str, Any]:
     """Calculate price using global algorithm."""
     return _algorithm.calculate_price(base_price, context)
 

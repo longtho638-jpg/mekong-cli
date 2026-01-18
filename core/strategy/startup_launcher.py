@@ -12,19 +12,21 @@ Roles:
 - Growth metrics
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class VentureStage(Enum):
     """Phases of venture development."""
+
     IDEA = "idea"
     VALIDATION = "validation"
     MVP = "mvp"
@@ -36,6 +38,7 @@ class VentureStage(Enum):
 
 class VentureType(Enum):
     """Categorization of agency-spawned entities."""
+
     PRODUCT = "product"
     SERVICE = "service"
     SAAS = "saas"
@@ -45,6 +48,7 @@ class VentureType(Enum):
 
 class MilestoneStatus(Enum):
     """Lifecycle status of a venture milestone."""
+
     NOT_STARTED = "not_started"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -54,6 +58,7 @@ class MilestoneStatus(Enum):
 @dataclass
 class Venture:
     """A new venture or product entity record."""
+
     id: str
     name: str
     tagline: str
@@ -73,6 +78,7 @@ class Venture:
 @dataclass
 class VentureMilestone:
     """A critical objective record for a venture."""
+
     id: str
     venture_id: str
     title: str
@@ -84,7 +90,7 @@ class VentureMilestone:
 class StartupLauncher:
     """
     Startup Launcher System.
-    
+
     Orchestrates the incubation of new agency products, from validation to high-scale launch.
     """
 
@@ -95,17 +101,15 @@ class StartupLauncher:
         logger.info(f"Startup Launcher initialized for {agency_name}")
 
     def launch_venture(
-        self,
-        name: str,
-        tagline: str,
-        v_type: VentureType,
-        leads: Optional[List[str]] = None
+        self, name: str, tagline: str, v_type: VentureType, leads: Optional[List[str]] = None
     ) -> Venture:
         """Initialize a new venture project in the incubator."""
         v = Venture(
             id=f"VNT-{uuid.uuid4().hex[:6].upper()}",
-            name=name, tagline=tagline,
-            venture_type=v_type, leads=leads or []
+            name=name,
+            tagline=tagline,
+            venture_type=v_type,
+            leads=leads or [],
         )
         self.ventures[v.id] = v
         logger.info(f"Venture Launched: {name} ({v_type.value})")
@@ -113,7 +117,8 @@ class StartupLauncher:
 
     def update_metrics(self, v_id: str, users: int, revenue: float) -> bool:
         """Log real-world usage and performance data for a venture."""
-        if v_id not in self.ventures: return False
+        if v_id not in self.ventures:
+            return False
 
         v = self.ventures[v_id]
         v.users = int(users)
@@ -135,19 +140,28 @@ class StartupLauncher:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        icons = {VentureStage.IDEA: "💡", VentureStage.MVP: "🛠️", VentureStage.LAUNCH: "🚀", VentureStage.GROWTH: "📈"}
+        icons = {
+            VentureStage.IDEA: "💡",
+            VentureStage.MVP: "🛠️",
+            VentureStage.LAUNCH: "🚀",
+            VentureStage.GROWTH: "📈",
+        }
 
         for v in list(self.ventures.values())[:5]:
             icon = icons.get(v.stage, "⚪")
-            lines.append(f"║  {icon} {v.name[:18]:<18} │ {v.users:>8,} users │ {v.stage.value:<12} ║")
+            lines.append(
+                f"║  {icon} {v.name[:18]:<18} │ {v.users:>8,} users │ {v.stage.value:<12} ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🚀 Launch New]  [🧪 Experiment]  [📊 Growth Audit] [⚙️] ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Ship Fast!       ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🚀 Launch New]  [🧪 Experiment]  [📊 Growth Audit] [⚙️] ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Ship Fast!       ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

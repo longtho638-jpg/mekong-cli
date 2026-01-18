@@ -2,7 +2,7 @@
 🏯 Command Registry - Suite & Agent Mapping
 ===========================================
 
-The central routing table for Agency OS. It maps CLI commands to their 
+The central routing table for Agency OS. It maps CLI commands to their
 backing Python modules, classes, and the ideal AI agents for execution.
 
 Key Hierarchies:
@@ -14,7 +14,7 @@ Binh Pháp: 💂 Pháp (Process) - Maintaining the chain of command.
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -34,29 +34,28 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
                 "module": "antigravity.core.money_maker",
                 "class": "MoneyMaker",
                 "method": "generate_quote",
-                "agent": "money-maker"
+                "agent": "money-maker",
             },
             "invoice": {
                 "module": "antigravity.core.revenue_engine",
                 "class": "RevenueEngine",
                 "method": "create_invoice",
-                "agent": "revenue-engine"
+                "agent": "revenue-engine",
             },
             "proposal": {
                 "module": "antigravity.core.proposal_generator",
                 "class": "ProposalGenerator",
                 "method": "generate_proposal",
-                "agent": "copywriter"
+                "agent": "copywriter",
             },
             "stats": {
                 "module": "antigravity.core.cashflow_engine",
                 "class": "CashflowEngine",
                 "method": "get_stats",
-                "agent": "revenue-engine"
+                "agent": "revenue-engine",
             },
         },
     },
-
     # 🛠️ Dev Suite: Building and Shipping
     "dev": {
         "suite": "dev",
@@ -82,7 +81,6 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             "fix": {"agent": "debugger"},
         },
     },
-
     # 🏯 Strategy Suite: Strategic Binh Pháp Planning
     "strategy": {
         "suite": "strategy",
@@ -98,11 +96,10 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
                 "module": "antigravity.core.money_maker",
                 "class": "MoneyMaker",
                 "method": "validate_win3",
-                "agent": "deal-closer"
+                "agent": "deal-closer",
             },
         },
     },
-
     # 🧲 CRM Suite: Leads and Pipeline
     "crm": {
         "suite": "crm",
@@ -112,22 +109,21 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             "pipeline": {
                 "module": "antigravity.core.client_magnet",
                 "class": "ClientMagnet",
-                "method": "get_pipeline_summary"
+                "method": "get_pipeline_summary",
             },
             "add": {
                 "module": "antigravity.core.client_magnet",
                 "class": "ClientMagnet",
                 "method": "add_lead",
-                "agent": "client-magnet"
+                "agent": "client-magnet",
             },
             "stats": {
                 "module": "antigravity.core.client_magnet",
                 "class": "ClientMagnet",
-                "method": "get_stats"
-            }
+                "method": "get_stats",
+            },
         },
     },
-
     # 🎨 Content Suite: Media and Viral Hooks
     "content": {
         "suite": "content",
@@ -138,20 +134,20 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
                 "module": "antigravity.core.content_factory",
                 "class": "ContentFactory",
                 "method": "generate_ideas",
-                "agent": "brainstormer"
+                "agent": "brainstormer",
             },
             "draft": {
                 "module": "antigravity.core.content_factory",
                 "class": "ContentFactory",
                 "method": "create_post",
-                "agent": "copywriter"
+                "agent": "copywriter",
             },
             "calendar": {
                 "module": "antigravity.core.content_factory",
                 "class": "ContentFactory",
                 "method": "get_calendar",
-                "agent": "content-factory"
-            }
+                "agent": "content-factory",
+            },
         },
     },
 }
@@ -167,26 +163,24 @@ SHORTCUTS: Dict[str, str] = {
     "test": "dev:test",
     "ship": "dev:ship",
     "fix": "dev:fix",
-
     # Business
     "quote": "revenue:quote",
     "cash": "revenue:stats",
     "deal": "revenue:proposal",
-
     # Strategy
     "plan": "strategy:plan",
     "binh-phap": "strategy:analyze",
     "win3": "strategy:win3",
-
     # CRM
     "lead": "crm:add",
-    "pipe": "crm:pipeline"
+    "pipe": "crm:pipeline",
 }
 
 
 # ============================================================
 # REGISTRY API
 # ============================================================
+
 
 def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:
     """Retrieves all configuration data for a specific command."""
@@ -230,7 +224,7 @@ def get_agent_for_command(suite: str, sub: str) -> str:
         "revenue": "money-maker",
         "strategy": "binh-phap-strategist",
         "crm": "client-magnet",
-        "content": "content-factory"
+        "content": "content-factory",
     }
     return fallbacks.get(suite, "assistant")
 

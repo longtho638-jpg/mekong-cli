@@ -3,11 +3,11 @@ Lead Qualifier Agent - BANT Scoring & Qualification
 Qualifies leads using BANT methodology and prepares for AE handoff.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class QualificationStatus(Enum):
@@ -20,6 +20,7 @@ class QualificationStatus(Enum):
 @dataclass
 class BANTScore:
     """BANT scoring"""
+
     budget: int = 0  # 0-25
     authority: int = 0  # 0-25
     need: int = 0  # 0-25
@@ -44,6 +45,7 @@ class BANTScore:
 @dataclass
 class Lead:
     """Sales lead"""
+
     id: str
     name: str
     company: str
@@ -63,7 +65,7 @@ class Lead:
 class LeadQualifierAgent:
     """
     Lead Qualifier Agent - Chấm điểm BANT
-    
+
     Responsibilities:
     - Score leads using BANT
     - Qualify/disqualify leads
@@ -79,34 +81,17 @@ class LeadQualifierAgent:
         self.status = "ready"
         self.leads: Dict[str, Lead] = {}
 
-    def add_lead(
-        self,
-        name: str,
-        company: str,
-        email: str,
-        title: str
-    ) -> Lead:
+    def add_lead(self, name: str, company: str, email: str, title: str) -> Lead:
         """Add new lead to queue"""
-        lead_id = f"lead_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        lead_id = f"lead_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        lead = Lead(
-            id=lead_id,
-            name=name,
-            company=company,
-            email=email,
-            title=title
-        )
+        lead = Lead(id=lead_id, name=name, company=company, email=email, title=title)
 
         self.leads[lead_id] = lead
         return lead
 
     def score_bant(
-        self,
-        lead_id: str,
-        budget: int,
-        authority: int,
-        need: int,
-        timeline: int
+        self, lead_id: str, budget: int, authority: int, need: int, timeline: int
     ) -> Lead:
         """Score lead using BANT"""
         if lead_id not in self.leads:
@@ -117,7 +102,7 @@ class LeadQualifierAgent:
             budget=min(25, max(0, budget)),
             authority=min(25, max(0, authority)),
             need=min(25, max(0, need)),
-            timeline=min(25, max(0, timeline))
+            timeline=min(25, max(0, timeline)),
         )
 
         # Auto-qualify based on score
@@ -153,7 +138,13 @@ class LeadQualifierAgent:
     def get_stats(self) -> Dict:
         """Get qualification stats"""
         leads = list(self.leads.values())
-        qualified = len([l for l in leads if l.status in [QualificationStatus.QUALIFIED, QualificationStatus.HANDED_OFF]])
+        qualified = len(
+            [
+                l
+                for l in leads
+                if l.status in [QualificationStatus.QUALIFIED, QualificationStatus.HANDED_OFF]
+            ]
+        )
 
         return {
             "total_leads": len(leads),
@@ -161,7 +152,7 @@ class LeadQualifierAgent:
             "qualified": qualified,
             "disqualified": len([l for l in leads if l.status == QualificationStatus.DISQUALIFIED]),
             "handed_off": len([l for l in leads if l.status == QualificationStatus.HANDED_OFF]),
-            "qualification_rate": f"{qualified/len(leads)*100:.0f}%" if leads else "0%"
+            "qualification_rate": f"{qualified / len(leads) * 100:.0f}%" if leads else "0%",
         }
 
 

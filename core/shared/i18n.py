@@ -13,16 +13,18 @@ Features:
 """
 
 import logging
-from typing import Dict
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class Language(Enum):
     """Supported business languages."""
+
     EN = "en"
     VI = "vi"
     ES = "es"
@@ -35,6 +37,7 @@ class Language(Enum):
 @dataclass
 class LanguageConfig:
     """Configuration metadata for a language."""
+
     code: str
     name: str
     native_name: str
@@ -45,7 +48,7 @@ class LanguageConfig:
 class I18nManager:
     """
     Internationalization Manager System.
-    
+
     Orchestrates localized content and system translations across the Agency OS.
     """
 
@@ -116,13 +119,15 @@ class I18nManager:
             sel = "●" if lang == self.current_lang else "○"
             lines.append(f"║  {sel} {cfg.flag} {cfg.native_name:<15} ({cfg.code}) {' ' * 30} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [🌐 Change Language]  [📝 Edit Translations]  [⚙️ Setup] ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 Global Agency OS - \"World is Local\"{' ' * 19}║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [🌐 Change Language]  [📝 Edit Translations]  [⚙️ Setup] ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f'║  🏯 Global Agency OS - "World is Local"{" " * 19}║',
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
 
 

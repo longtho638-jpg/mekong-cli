@@ -12,19 +12,21 @@ Features:
 - Notification preferences
 """
 
-import uuid
 import logging
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class NotificationChannel(Enum):
     """Available delivery channels for notifications."""
+
     APP = "app"
     EMAIL = "email"
     SLACK = "slack"
@@ -34,6 +36,7 @@ class NotificationChannel(Enum):
 
 class NotificationPriority(Enum):
     """Urgency levels for notifications."""
+
     LOW = "low"
     NORMAL = "normal"
     HIGH = "high"
@@ -42,6 +45,7 @@ class NotificationPriority(Enum):
 
 class NotificationType(Enum):
     """Categories of system and business events."""
+
     CLIENT = "client"
     PROJECT = "project"
     INVOICE = "invoice"
@@ -52,6 +56,7 @@ class NotificationType(Enum):
 @dataclass
 class Notification:
     """An individual notification entity."""
+
     id: str
     title: str
     message: str
@@ -69,7 +74,7 @@ class Notification:
 class NotificationCenter:
     """
     Notification Center System.
-    
+
     Orchestrates the dispatch, tracking, and user preference management for all agency alerts.
     """
 
@@ -90,15 +95,18 @@ class NotificationCenter:
         title: str,
         message: str,
         n_type: NotificationType,
-        priority: NotificationPriority = NotificationPriority.NORMAL
+        priority: NotificationPriority = NotificationPriority.NORMAL,
     ) -> Notification:
         """Create and dispatch a new notification based on configured channels."""
         channels = self.preferences.get(n_type, [NotificationChannel.APP])
 
         notification = Notification(
             id=f"NTF-{uuid.uuid4().hex[:6].upper()}",
-            title=title, message=message, type=n_type,
-            priority=priority, channels=channels
+            title=title,
+            message=message,
+            type=n_type,
+            priority=priority,
+            channels=channels,
         )
 
         self.notifications.append(notification)
@@ -121,7 +129,11 @@ class NotificationCenter:
     def format_dashboard(self) -> str:
         """Render the Notification Center Dashboard."""
         unread = self.get_unread_count()
-        urgent = sum(1 for n in self.notifications if n.priority == NotificationPriority.URGENT and not n.read)
+        urgent = sum(
+            1
+            for n in self.notifications
+            if n.priority == NotificationPriority.URGENT and not n.read
+        )
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -142,13 +154,15 @@ class NotificationCenter:
             t = t_icons.get(n.type.value, "📋")
             lines.append(f"║  {read_st} {p} {t} {n.title[:45]:<45} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [✓ Mark All Read]  [⚙️ Settings]  [🗑️ Clear Cache]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Stay Updated!      ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [✓ Mark All Read]  [⚙️ Settings]  [🗑️ Clear Cache]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Stay Updated!      ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -162,7 +176,12 @@ if __name__ == "__main__":
         center = NotificationCenter("Saigon Digital Hub")
 
         # Seed
-        center.send("New Lead", "Sunrise Realty interested", NotificationType.CLIENT, NotificationPriority.HIGH)
+        center.send(
+            "New Lead",
+            "Sunrise Realty interested",
+            NotificationType.CLIENT,
+            NotificationPriority.HIGH,
+        )
         center.send("System Update", "V2.5.0 deployed", NotificationType.SYSTEM)
 
         print("\n" + center.format_dashboard())

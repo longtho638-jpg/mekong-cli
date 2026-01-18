@@ -87,9 +87,7 @@ class AntigravityMCPServer:
                 "description": "Run tests via Antigravity",
                 "inputSchema": {
                     "type": "object",
-                    "properties": {
-                        "path": {"type": "string", "default": "backend/tests/"}
-                    },
+                    "properties": {"path": {"type": "string", "default": "backend/tests/"}},
                 },
             },
             {
@@ -99,9 +97,7 @@ class AntigravityMCPServer:
             },
         ]
 
-    async def call_antigravity(
-        self, endpoint: str, method: str = "GET", data: Dict = None
-    ) -> Dict:
+    async def call_antigravity(self, endpoint: str, method: str = "GET", data: Dict = None) -> Dict:
         """Call Antigravity API."""
         if not self.session:
             self.session = ClientSession()
@@ -162,9 +158,7 @@ class AntigravityMCPServer:
             )
             return {
                 "passed": result.returncode == 0,
-                "output": result.stdout[-2000:]
-                if result.stdout
-                else result.stderr[-2000:],
+                "output": result.stdout[-2000:] if result.stdout else result.stderr[-2000:],
             }
 
         elif tool_name == "antigravity_status":
@@ -192,9 +186,7 @@ class AntigravityMCPServer:
             while True:
                 await asyncio.sleep(30)
                 await resp.send(
-                    json.dumps(
-                        {"type": "ping", "timestamp": datetime.now().isoformat()}
-                    )
+                    json.dumps({"type": "ping", "timestamp": datetime.now().isoformat()})
                 )
 
     async def rpc_handler(self, request):
@@ -225,9 +217,7 @@ class AntigravityMCPServer:
                         "jsonrpc": "2.0",
                         "id": data.get("id"),
                         "result": {
-                            "content": [
-                                {"type": "text", "text": json.dumps(result, indent=2)}
-                            ]
+                            "content": [{"type": "text", "text": json.dumps(result, indent=2)}]
                         },
                     }
                 )

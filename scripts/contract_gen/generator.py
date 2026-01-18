@@ -3,8 +3,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from .models import ContractTemplate
 from .loader import load_lead
+from .models import ContractTemplate
 from .templates import TEMPLATES
 
 logger = logging.getLogger("ContractGen")
@@ -18,11 +18,14 @@ RESET = "\033[0m"
 
 CONTRACTS_DIR = Path.home() / "mekong-cli/contracts"
 
-def generate_markdown_content(template: ContractTemplate, lead: Dict[str, Any], date_str: str) -> str:
+
+def generate_markdown_content(
+    template: ContractTemplate, lead: Dict[str, Any], date_str: str
+) -> str:
     """Generates the Markdown content for the contract."""
     effective_date = datetime.now().strftime("%B %d, %Y")
     company_slug = lead.get("company", "CLIENT").replace(" ", "_").upper()
-    
+
     # Use triple quotes for multi-line string to avoid quote escaping issues
     content = f"""# {template.title}
 
@@ -33,9 +36,9 @@ def generate_markdown_content(template: ContractTemplate, lead: Dict[str, Any], 
 ## Parties
 
 **Provider**: Binh Pháp Venture Studio  
-**Client**: {lead.get('name', 'Valued Client')}  
-**Company**: {lead.get('company', 'N/A')}  
-**Email**: {lead.get('email', 'N/A')} 
+**Client**: {lead.get("name", "Valued Client")}  
+**Company**: {lead.get("company", "N/A")}  
+**Email**: {lead.get("email", "N/A")} 
 
 ---
 
@@ -63,6 +66,7 @@ This Agreement is effective as of **{effective_date}**.
 
     content += f"\n---\n\n{template.scope}\n\n---\n\n## Payment Terms\n\n1. **Due Date**: Payment due within 7 days of invoice.\n2. **Method**: Bank transfer or PayPal.\n3. **Late Payment**: 1.5% interest per month on overdue amounts.\n\n---\n\n## Confidentiality\n\nBoth parties agree to maintain confidentiality of all proprietary information\nshared during the engagement.\n\n---\n\n## Termination\n\nEither party may terminate this Agreement with 30 days written notice.\n\n---\n\n## Signatures\n\n**Provider**:  \nName: _________________________  \nDate: _________________________  \n\n**Client**:  \nName: _________________________  \nDate: _________________________\n\n---\n\n*Contract generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}*\n"
     return content
+
 
 def generate_contract(template_key: str, email: str) -> Optional[Path]:
     """Generate a contract for a lead."""

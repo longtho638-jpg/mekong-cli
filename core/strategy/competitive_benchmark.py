@@ -13,16 +13,18 @@ Features:
 """
 
 import logging
-from typing import List
 from dataclasses import dataclass
 from enum import Enum
+from typing import List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class BenchmarkCategory(Enum):
     """Benchmark categories for metrics classification."""
+
     PRICING = "pricing"
     GROWTH = "growth"
     PROFITABILITY = "profitability"
@@ -32,6 +34,7 @@ class BenchmarkCategory(Enum):
 
 class Percentile(Enum):
     """Percentile rankings based on performance."""
+
     TOP_10 = "top_10"
     TOP_25 = "top_25"
     MEDIAN = "median"
@@ -41,6 +44,7 @@ class Percentile(Enum):
 @dataclass
 class Benchmark:
     """An industry benchmark record entity."""
+
     metric: str
     category: BenchmarkCategory
     your_value: float
@@ -50,13 +54,15 @@ class Benchmark:
 
     def __post_init__(self):
         if self.industry_avg > self.top_performers:
-            logger.warning(f"Consistency issue in '{self.metric}': Industry Avg ({self.industry_avg}) > Top Performers ({self.top_performers})")
+            logger.warning(
+                f"Consistency issue in '{self.metric}': Industry Avg ({self.industry_avg}) > Top Performers ({self.top_performers})"
+            )
 
 
 class CompetitiveBenchmarking:
     """
     Competitive Benchmarking System.
-    
+
     Provides context by comparing agency metrics against global and local industry benchmarks.
     """
 
@@ -86,7 +92,9 @@ class CompetitiveBenchmarking:
         """Determine the percentile ranking for a specific benchmark."""
         if benchmark.your_value >= benchmark.top_performers:
             return Percentile.TOP_10
-        elif benchmark.your_value >= (benchmark.industry_avg + (benchmark.top_performers - benchmark.industry_avg) * 0.5):
+        elif benchmark.your_value >= (
+            benchmark.industry_avg + (benchmark.top_performers - benchmark.industry_avg) * 0.5
+        ):
             return Percentile.TOP_25
         elif benchmark.your_value >= benchmark.industry_avg:
             return Percentile.MEDIAN
@@ -114,7 +122,7 @@ class CompetitiveBenchmarking:
             Percentile.TOP_10: "🥇",
             Percentile.TOP_25: "🥈",
             Percentile.MEDIAN: "🔵",
-            Percentile.BOTTOM_25: "⚪"
+            Percentile.BOTTOM_25: "⚪",
         }
 
         for b in self.benchmarks[:8]:
@@ -126,30 +134,42 @@ class CompetitiveBenchmarking:
             top_str = f"{b.top_performers:,.0f}{b.unit}"
 
             # Extract rank text safely
-            rank_text = p.value.replace("top_", "Top ").replace("median", "Median").replace("bottom_25", "Btm 25")
+            rank_text = (
+                p.value.replace("top_", "Top ")
+                .replace("median", "Median")
+                .replace("bottom_25", "Btm 25")
+            )
 
-            lines.append(f"║  {b.metric[:15]:<15} │ {val_str:>6} │ {avg_str:>6} │ {top_str:>6} │ {icon} {rank_text:<7} ║")
+            lines.append(
+                f"║  {b.metric[:15]:<15} │ {val_str:>6} │ {avg_str:>6} │ {top_str:>6} │ {icon} {rank_text:<7} ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  💡 GROWTH OPPORTUNITIES                                  ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  💡 GROWTH OPPORTUNITIES                                  ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         # Identify top 3 gaps
         gaps = sorted(self.benchmarks, key=lambda x: self.get_gap_to_top(x), reverse=True)
         for b in gaps[:3]:
             gap = self.get_gap_to_top(b)
             if gap > 0:
-                lines.append(f"║    📈 {b.metric:<15}: +{gap:,.0f}{b.unit} to reach top performance{' ' * 10}║")
+                lines.append(
+                    f"║    📈 {b.metric:<15}: +{gap:,.0f}{b.unit} to reach top performance{' ' * 10}║"
+                )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 Full Report]  [🎯 Set Targets]  [📈 Track Progress]  ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Be Competitive!    ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 Full Report]  [🎯 Set Targets]  [📈 Track Progress]  ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Be Competitive!    ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

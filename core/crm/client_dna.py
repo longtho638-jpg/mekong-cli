@@ -13,30 +13,32 @@ Features:
 """
 
 import logging
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ClientDNA:
     """Client DNA passport data entity."""
+
     id: str
     company_name: str
     company_domain: Optional[str] = None
     industry: Optional[str] = "Unknown"
 
     # Payment DNA
-    payment_score: int = 50 # 0-100
+    payment_score: int = 50  # 0-100
     avg_payment_days: int = 30
     payment_disputes_count: int = 0
     total_spent: float = 0.0
 
     # Project DNA
-    scope_creep_risk: float = 0.5 # 0.0 to 1.0
+    scope_creep_risk: float = 0.5  # 0.0 to 1.0
     avg_revision_requests: float = 2.0
     projects_count: int = 0
 
@@ -54,11 +56,12 @@ class ClientDNA:
 @dataclass
 class ClientReport:
     """An individual report submitted by a guild member."""
+
     id: str
     client_id: str
     reporter_id: str
     report_type: str  # payment, scope, comms, warning, positive
-    rating: int = 3 # 1-5
+    rating: int = 3  # 1-5
     notes: str = ""
     timestamp: datetime = field(default_factory=datetime.now)
 
@@ -66,7 +69,7 @@ class ClientReport:
 class ClientDNASystem:
     """
     Client DNA Passport System.
-    
+
     Aggregates peer reports to build behavioral profiles of clients.
     "Biết người biết ta, trăm trận không nguy."
     """
@@ -106,8 +109,8 @@ class ClientDNASystem:
             "╠═══════════════════════════════════════════════════════════╣",
             "║  ⚠️ GUILD WARNINGS                                         ║",
             "║  ───────────────────────────────────────────────────────  ║",
-            "║  \"Expects agency pricing, enterprise scope.\" - Alpha      ║",
-            "║  \"Endless revisions if scope isn't locked.\"  - Beta       ║",
+            '║  "Expects agency pricing, enterprise scope." - Alpha      ║',
+            '║  "Endless revisions if scope isn\'t locked."  - Beta       ║',
             "║                                                           ║",
             "║  💰 RATE RECOMMENDATION                                   ║",
             f"║    Standard: $150/hr │ Target: ${rec_rate}/hr (+23%)         ║",
@@ -130,7 +133,7 @@ class ClientDNASystem:
         base_rate = 150.0
         # In a real app, these values come from aggregated report data
         scope_risk = 0.87
-        payment_lag = 45 # days
+        payment_lag = 45  # days
 
         scope_premium = 0.15 if scope_risk > 0.7 else 0.0
         payment_premium = 0.08 if payment_lag > 30 else 0.0
@@ -140,11 +143,8 @@ class ClientDNASystem:
         return {
             "base_rate": base_rate,
             "recommended_rate": final_rate,
-            "premiums": {
-                "scope": scope_premium,
-                "payment": payment_premium
-            },
-            "security_required": True if payment_lag > 30 else False
+            "premiums": {"scope": scope_premium, "payment": payment_premium},
+            "security_required": True if payment_lag > 30 else False,
         }
 
 
@@ -156,17 +156,19 @@ def register_commands() -> Dict[str, Any]:
         "/client": {
             "handler": system.check_client,
             "description": "Access Client DNA Passport system",
-            "usage": "/client [Company Name]"
+            "usage": "/client [Company Name]",
         },
         "/client report": {
             "handler": system.report_client,
-            "description": "Submit behavioral intelligence on a client"
-        }
+            "description": "Submit behavioral intelligence on a client",
+        },
     }
+
 
 # Entry point for direct testing
 if __name__ == "__main__":
     import asyncio
+
     print("🧬 Initializing Client DNA System...")
     print("=" * 60)
 

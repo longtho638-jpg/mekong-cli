@@ -1,6 +1,7 @@
 """
 Proposal Module Export
 """
-from .entities import Proposal, ServicePackage, ProposalStatus, ServiceTier
-from .services import ProposalGenerator
+
+from .entities import Proposal, ProposalStatus, ServicePackage, ServiceTier
 from .presentation import ProposalPresenter
+from .services import ProposalGenerator

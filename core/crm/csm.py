@@ -12,19 +12,21 @@ Roles:
 - Advocacy development
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SuccessStage(Enum):
     """Client success lifecycle stages."""
+
     ONBOARDING = "onboarding"
     ADOPTION = "adoption"
     VALUE_REALIZATION = "value_realization"
@@ -34,6 +36,7 @@ class SuccessStage(Enum):
 
 class EngagementLevel(Enum):
     """Client engagement categories."""
+
     CHAMPION = "champion"
     ENGAGED = "engaged"
     PASSIVE = "passive"
@@ -43,6 +46,7 @@ class EngagementLevel(Enum):
 @dataclass
 class SuccessPlan:
     """A strategic success roadmap for a client."""
+
     id: str
     client_name: str
     csm: str
@@ -62,6 +66,7 @@ class SuccessPlan:
 @dataclass
 class QBRRecord:
     """A record of a Quarterly Business Review meeting."""
+
     id: str
     client_name: str
     date: datetime
@@ -74,7 +79,7 @@ class QBRRecord:
 class CustomerSuccessManager:
     """
     Customer Success Manager System.
-    
+
     Orchestrates the success journey, quarterly reviews, and proactive relationship building.
     """
 
@@ -85,11 +90,7 @@ class CustomerSuccessManager:
         logger.info(f"CSM System initialized for {agency_name}")
 
     def create_success_plan(
-        self,
-        client_name: str,
-        csm: str,
-        goals: List[str],
-        milestones: List[str]
+        self, client_name: str, csm: str, goals: List[str], milestones: List[str]
     ) -> SuccessPlan:
         """Create a new strategic success plan."""
         if not client_name or not csm:
@@ -103,7 +104,7 @@ class CustomerSuccessManager:
             goals=goals,
             milestones=milestones,
             risks=[],
-            engagement=EngagementLevel.ENGAGED
+            engagement=EngagementLevel.ENGAGED,
         )
         self.success_plans[plan.id] = plan
         logger.info(f"Success plan created for {client_name} (CSM: {csm})")
@@ -129,7 +130,7 @@ class CustomerSuccessManager:
         achievements: List[str],
         challenges: List[str],
         next_goals: List[str],
-        satisfaction: int
+        satisfaction: int,
     ) -> QBRRecord:
         """Log the outcome of a Quarterly Business Review."""
         qbr = QBRRecord(
@@ -139,7 +140,7 @@ class CustomerSuccessManager:
             achievements=achievements,
             challenges=challenges,
             next_quarter_goals=next_goals,
-            satisfaction=satisfaction
+            satisfaction=satisfaction,
         )
         self.qbrs.append(qbr)
         logger.info(f"QBR recorded for {client_name}")
@@ -147,7 +148,11 @@ class CustomerSuccessManager:
 
     def format_dashboard(self) -> str:
         """Render the CSM Dashboard."""
-        avg_health = sum(p.health_score for p in self.success_plans.values()) / len(self.success_plans) if self.success_plans else 0.0
+        avg_health = (
+            sum(p.health_score for p in self.success_plans.values()) / len(self.success_plans)
+            if self.success_plans
+            else 0.0
+        )
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -159,42 +164,56 @@ class CustomerSuccessManager:
         ]
 
         stage_icons = {
-            SuccessStage.ONBOARDING: "👋", SuccessStage.ADOPTION: "📈",
-            SuccessStage.VALUE_REALIZATION: "💎", SuccessStage.GROWTH: "🚀",
-            SuccessStage.ADVOCACY: "⭐"
+            SuccessStage.ONBOARDING: "👋",
+            SuccessStage.ADOPTION: "📈",
+            SuccessStage.VALUE_REALIZATION: "💎",
+            SuccessStage.GROWTH: "🚀",
+            SuccessStage.ADVOCACY: "⭐",
         }
 
         for stage in SuccessStage:
             count = sum(1 for p in self.success_plans.values() if p.stage == stage)
             icon = stage_icons.get(stage, "📊")
-            lines.append(f"║  {icon} {stage.value.replace('_', ' ').title():<25} │ {count:>3} clients        ║")
+            lines.append(
+                f"║  {icon} {stage.value.replace('_', ' ').title():<25} │ {count:>3} clients        ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  👤 TOP CLIENT HEALTH                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  👤 TOP CLIENT HEALTH                                     ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         eng_icons = {
-            EngagementLevel.CHAMPION: "⭐", EngagementLevel.ENGAGED: "🟢",
-            EngagementLevel.PASSIVE: "🟡", EngagementLevel.DISENGAGED: "🔴"
+            EngagementLevel.CHAMPION: "⭐",
+            EngagementLevel.ENGAGED: "🟢",
+            EngagementLevel.PASSIVE: "🟡",
+            EngagementLevel.DISENGAGED: "🔴",
         }
 
         # Display top 4 healthy clients
-        top_plans = sorted(self.success_plans.values(), key=lambda x: x.health_score, reverse=True)[:4]
+        top_plans = sorted(self.success_plans.values(), key=lambda x: x.health_score, reverse=True)[
+            :4
+        ]
         for p in top_plans:
             e_icon = eng_icons.get(p.engagement, "⚪")
             s_icon = stage_icons.get(p.stage, "📊")
-            name_disp = (p.client_name[:18] + '..') if len(p.client_name) > 20 else p.client_name
-            lines.append(f"║  {e_icon} {name_disp:<18} │ {s_icon} {p.stage.value[:12]:<12} │ {p.health_score:>3}%  ║")
+            name_disp = (p.client_name[:18] + "..") if len(p.client_name) > 20 else p.client_name
+            lines.append(
+                f"║  {e_icon} {name_disp:<18} │ {s_icon} {p.stage.value[:12]:<12} │ {p.health_score:>3}%  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📋 Plan]  [📊 QBR Prep]  [📈 Health]  [⚙️ Settings]     ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Partner!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📋 Plan]  [📊 QBR Prep]  [📈 Health]  [⚙️ Settings]     ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Partner!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

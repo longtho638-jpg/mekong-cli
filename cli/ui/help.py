@@ -5,6 +5,7 @@ Displays command information and usage.
 
 from rich.console import Console
 from rich.table import Table
+
 from cli.theme import get_theme
 
 

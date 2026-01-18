@@ -11,7 +11,7 @@ REQUIRED_EXTENSIONS = [
     "bradlc.vscode-tailwindcss",
     "tamasfe.even-better-toml",
     "redhat.vscode-yaml",
-    "usernamehw.errorlens"  # Giúp newbie thấy lỗi ngay
+    "usernamehw.errorlens",  # Giúp newbie thấy lỗi ngay
 ]
 
 # Settings chuẩn (Không cho phép user sửa tay trong workspace)
@@ -22,8 +22,8 @@ VSCODE_SETTINGS = {
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.codeActionsOnSave": {
             "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
-        }
+            "source.organizeImports": "explicit",
+        },
     },
     "editor.tabSize": 4,
     "editor.rulers": [88, 120],
@@ -31,11 +31,11 @@ VSCODE_SETTINGS = {
         "**/.git": True,
         "**/.DS_Store": True,
         "**/__pycache__": True,
-        "**/.pytest_cache": True
+        "**/.pytest_cache": True,
     },
     "terminal.integrated.defaultProfile.osx": "zsh",
     "workbench.iconTheme": "material-icon-theme",
-    "agencyos.mode": "antigravity"  # Marker
+    "agencyos.mode": "antigravity",  # Marker
 }
 
 # EditorConfig chuẩn

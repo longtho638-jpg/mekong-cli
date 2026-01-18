@@ -6,20 +6,22 @@ Storage: SQLite for persistence
 Pattern: 3-layer workflow (search → timeline → get_observations)
 """
 
-import sqlite3
 import json
 import logging
-from pathlib import Path
-from typing import List, Dict, Optional
+import sqlite3
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class Observation:
     """A memory observation."""
+
     id: Optional[int] = None
     session_id: str = ""
     type: str = "note"  # 'code', 'error', 'decision', 'note'
@@ -31,7 +33,7 @@ class Observation:
 class Memory:
     """
     AgencyOS Memory System.
-    
+
     Persists contextual observations using SQLite with Full-Text Search (FTS5).
     """
 
@@ -91,14 +93,15 @@ class Memory:
         except sqlite3.Error as e:
             logger.critical(f"Memory DB Init Failed: {e}")
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
 
     def add_observation(
         self,
         content: str,
         obs_type: str = "note",
         session_id: str = "default",
-        summary: Optional[str] = None
+        summary: Optional[str] = None,
     ) -> int:
         """Add a new memory observation."""
         if not content:
@@ -113,10 +116,13 @@ class Memory:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO observations (session_id, type, content, summary)
                 VALUES (?, ?, ?, ?)
-            """, (session_id, obs_type, content, summary))
+            """,
+                (session_id, obs_type, content, summary),
+            )
 
             obs_id = cursor.lastrowid
             conn.commit()
@@ -126,13 +132,11 @@ class Memory:
             logger.error(f"Failed to add observation: {e}")
             return -1
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
 
     def search_memory(
-        self,
-        query: str,
-        limit: int = 10,
-        obs_type: Optional[str] = None
+        self, query: str, limit: int = 10, obs_type: Optional[str] = None
     ) -> List[Dict]:
         """
         Search memory using FTS5 full-text search.
@@ -167,7 +171,8 @@ class Memory:
             logger.error(f"Search failed: {e}")
             return []
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
 
     def get_observations(self, ids: List[int]) -> List[Observation]:
         """
@@ -175,7 +180,8 @@ class Memory:
         This is the final layer - fetch details ONLY for filtered IDs.
         Security: Parameterized queries to prevent SQL injection.
         """
-        if not ids: return []
+        if not ids:
+            return []
 
         # Validate input IDs to prevent injection
         if not all(isinstance(id_, int) and id_ > 0 for id_ in ids):
@@ -189,7 +195,7 @@ class Memory:
             cursor = conn.cursor()
 
             # Security: Use parameterized query to prevent SQL injection
-            placeholders = ','.join('?' * len(ids))
+            placeholders = ",".join("?" * len(ids))
             sql = f"""
                 SELECT * FROM observations
                 WHERE id IN ({placeholders})
@@ -203,13 +209,10 @@ class Memory:
             logger.error(f"Failed to get observations: {e}")
             return []
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
 
-    def get_timeline(
-        self,
-        session_id: Optional[str] = None,
-        limit: int = 20
-    ) -> List[Dict]:
+    def get_timeline(self, session_id: Optional[str] = None, limit: int = 20) -> List[Dict]:
         """Get chronological timeline of observations."""
         conn = None
         try:
@@ -218,20 +221,26 @@ class Memory:
             cursor = conn.cursor()
 
             if session_id:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT id, type, summary, created_at
                     FROM observations
                     WHERE session_id = ?
                     ORDER BY created_at DESC
                     LIMIT ?
-                """, (session_id, limit))
+                """,
+                    (session_id, limit),
+                )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT id, type, summary, created_at
                     FROM observations
                     ORDER BY created_at DESC
                     LIMIT ?
-                """, (limit,))
+                """,
+                    (limit,),
+                )
 
             results = [dict(row) for row in cursor.fetchall()]
             return results
@@ -239,7 +248,8 @@ class Memory:
             logger.error(f"Timeline fetch failed: {e}")
             return []
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
 
     def get_recent(self, limit: int = 10) -> List[Dict]:
         """Get recent observations."""
@@ -263,7 +273,9 @@ class Memory:
             logger.error(f"Export failed: {e}")
             return 0
         finally:
-            if conn: conn.close()
+            if conn:
+                conn.close()
+
 
 if __name__ == "__main__":
     print("🧠 Initializing Memory...")

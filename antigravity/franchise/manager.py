@@ -16,14 +16,16 @@ Binh Pháp: 🗺️ Địa Hình (Terrain) - Understanding and controlling the t
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class FranchiseStatus(Enum):
     """Lifecycle stages of a franchise partner."""
+
     PENDING = "pending"
     ACTIVE = "active"
     SUSPENDED = "suspended"
@@ -32,6 +34,7 @@ class FranchiseStatus(Enum):
 
 class Territory(Enum):
     """Core operational territories in Vietnam."""
+
     CAN_THO = "can_tho"
     DA_NANG = "da_nang"
     HA_NOI = "ha_noi"
@@ -58,6 +61,7 @@ TERRITORY_CAPACITY = {
 @dataclass
 class Franchisee:
     """Represents a franchise partner's data and financial performance."""
+
     id: Optional[int] = None
     name: str = ""
     email: str = ""
@@ -79,7 +83,7 @@ class Franchisee:
 class FranchiseManager:
     """
     🏢 Franchise Network Manager
-    
+
     The brain of the Agency OS expansion model.
     Ensures optimal partner density and financial health across the network.
     """
@@ -93,9 +97,12 @@ class FranchiseManager:
         available = []
         for territory, capacity in TERRITORY_CAPACITY.items():
             # Only count active/pending partners against capacity
-            current_count = sum(1 for f in self.franchisees
-                               if f.territory == territory and f.status in
-                               [FranchiseStatus.ACTIVE, FranchiseStatus.PENDING])
+            current_count = sum(
+                1
+                for f in self.franchisees
+                if f.territory == territory
+                and f.status in [FranchiseStatus.ACTIVE, FranchiseStatus.PENDING]
+            )
             if current_count < capacity:
                 available.append(territory)
         return available
@@ -106,7 +113,7 @@ class FranchiseManager:
         email: str = "",
         phone: str = "",
         territory: Territory = Territory.HCM,
-        royalty_rate: Optional[float] = None
+        royalty_rate: Optional[float] = None,
     ) -> Optional[Franchisee]:
         """
         Attempts to register a new franchise partner.
@@ -124,7 +131,7 @@ class FranchiseManager:
             phone=phone,
             territory=territory,
             status=FranchiseStatus.ACTIVE,
-            royalty_rate=royalty_rate or 0.20
+            royalty_rate=royalty_rate or 0.20,
         )
         self.franchisees.append(franchisee)
         self._next_id += 1
@@ -153,16 +160,19 @@ class FranchiseManager:
             "performance": {
                 "total_network_revenue": sum(f.total_revenue for f in self.franchisees),
                 "total_royalties_collected": sum(f.total_royalties for f in self.franchisees),
-                "avg_revenue_per_partner": sum(f.total_revenue for f in active) / len(active) if active else 0
+                "avg_revenue_per_partner": sum(f.total_revenue for f in active) / len(active)
+                if active
+                else 0,
             },
             "network_size": {
                 "total_partners": len(self.franchisees),
                 "active_partners": len(active),
-                "territories_covered": len(set(f.territory for f in active))
+                "territories_covered": len(set(f.territory for f in active)),
             },
             "growth": {
-                "capacity_utilization": (len(self.franchisees) / sum(TERRITORY_CAPACITY.values())) * 100
-            }
+                "capacity_utilization": (len(self.franchisees) / sum(TERRITORY_CAPACITY.values()))
+                * 100
+            },
         }
 
     def get_territory_report(self) -> List[Dict[str, Any]]:
@@ -170,13 +180,17 @@ class FranchiseManager:
         report = []
         for territory in Territory:
             partners = [f for f in self.franchisees if f.territory == territory]
-            report.append({
-                "territory": territory.value,
-                "status": "AT_CAPACITY" if len(partners) >= TERRITORY_CAPACITY[territory] else "AVAILABLE",
-                "partner_count": len(partners),
-                "revenue": sum(f.total_revenue for f in partners),
-                "royalties": sum(f.total_royalties for f in partners)
-            })
+            report.append(
+                {
+                    "territory": territory.value,
+                    "status": "AT_CAPACITY"
+                    if len(partners) >= TERRITORY_CAPACITY[territory]
+                    else "AVAILABLE",
+                    "partner_count": len(partners),
+                    "revenue": sum(f.total_revenue for f in partners),
+                    "royalties": sum(f.total_royalties for f in partners),
+                }
+            )
         return report
 
 

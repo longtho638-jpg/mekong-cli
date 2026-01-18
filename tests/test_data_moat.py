@@ -2,8 +2,9 @@
 Tests for Data Moat system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
@@ -11,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.platform.data_moat import DataMoat, InsightType
 
-class TestDataMoat:
 
+class TestDataMoat:
     def test_record_success(self):
         """Test recording success data."""
         moat = DataMoat()
@@ -32,10 +33,7 @@ class TestDataMoat:
         """Test adding insights."""
         moat = DataMoat()
         insight = moat.add_insight(
-            InsightType.MARKET_TREND,
-            "fish-seafood",
-            "Rising demand in Can Tho",
-            {"volume": 1000}
+            InsightType.MARKET_TREND, "fish-seafood", "Rising demand in Can Tho", {"volume": 1000}
         )
 
         assert insight.id == 1
@@ -67,8 +65,9 @@ class TestDataMoat:
             moat.record_success("niche", "content", 80)
 
         strength = moat.get_moat_strength()
-        assert strength["strength_score"] == 60 # 50 (points) + 10 (1 niche)
+        assert strength["strength_score"] == 60  # 50 (points) + 10 (1 niche)
         assert "FORT" in strength["defensibility"]
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

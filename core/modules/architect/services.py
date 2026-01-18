@@ -1,10 +1,13 @@
 """
 Architect Module - Service Logic
 """
+
 import logging
-from .entities import ArchitectureType, ProjectProfile, ArchitectureBlueprint
+
+from .entities import ArchitectureBlueprint, ArchitectureType, ProjectProfile
 
 logger = logging.getLogger(__name__)
+
 
 class ArchitectService:
     """
@@ -19,9 +22,35 @@ class ArchitectService:
 
         # 1. Detect Keywords
         keywords = {
-            ArchitectureType.HEXAGONAL_DDD: ["finance", "bank", "core", "microservice", "scale", "enterprise", "audit", "money"],
-            ArchitectureType.CLEAN_ARCHITECTURE: ["saas", "platform", "crm", "dashboard", "users", "auth", "subscription"],
-            ArchitectureType.SIMPLE_MODULAR: ["landing", "demo", "quick", "script", "bot", "tool", "mvp", "prototype"]
+            ArchitectureType.HEXAGONAL_DDD: [
+                "finance",
+                "bank",
+                "core",
+                "microservice",
+                "scale",
+                "enterprise",
+                "audit",
+                "money",
+            ],
+            ArchitectureType.CLEAN_ARCHITECTURE: [
+                "saas",
+                "platform",
+                "crm",
+                "dashboard",
+                "users",
+                "auth",
+                "subscription",
+            ],
+            ArchitectureType.SIMPLE_MODULAR: [
+                "landing",
+                "demo",
+                "quick",
+                "script",
+                "bot",
+                "tool",
+                "mvp",
+                "prototype",
+            ],
         }
 
         detected = []
@@ -52,7 +81,7 @@ class ArchitectService:
             complexity_score=score,
             detected_keywords=detected,
             recommended_arch=arch,
-            reasoning=reason
+            reasoning=reason,
         )
 
     def generate_blueprint(self, profile: ProjectProfile) -> ArchitectureBlueprint:
@@ -70,7 +99,7 @@ src/
             rules = [
                 "Dependency Rule: Source code dependencies can only point inwards.",
                 "Entities must be Plain Objects (no decorators).",
-                "Use Repositories for data access (Interfaces in Domain, Impl in Infra)."
+                "Use Repositories for data access (Interfaces in Domain, Impl in Infra).",
             ]
 
         elif profile.recommended_arch == ArchitectureType.CLEAN_ARCHITECTURE:
@@ -85,7 +114,7 @@ src/
 """
             rules = [
                 "Separate Logic (Use Cases) from UI (Controllers).",
-                "Keep core independent of frameworks."
+                "Keep core independent of frameworks.",
             ]
 
         else:
@@ -95,10 +124,7 @@ src/
   ├── utils/
   └── main.py
 """
-            rules = [
-                "Keep it simple.",
-                "Group by feature/module."
-            ]
+            rules = ["Keep it simple.", "Group by feature/module."]
 
         prompt_snippet = f"""
 ACT AS AN EXPERT ARCHITECT.
@@ -108,7 +134,7 @@ FOLDER STRUCTURE:
 {structure}
 
 RULES:
-{chr(10).join(['- ' + r for r in rules])}
+{chr(10).join(["- " + r for r in rules])}
 
 REASONING:
 {profile.reasoning}
@@ -117,5 +143,5 @@ REASONING:
             type=profile.recommended_arch,
             folder_structure=structure,
             core_rules=rules,
-            system_prompt_snippet=prompt_snippet
+            system_prompt_snippet=prompt_snippet,
         )

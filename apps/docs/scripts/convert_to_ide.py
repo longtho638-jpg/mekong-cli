@@ -10,6 +10,7 @@ from pathlib import Path
 
 DOCS_DIR = "/Users/macbookprom1/Documents/mekong-hq/mekong-cli/mekong-docs/src/content/docs/docs"
 
+
 def add_ide_block(content: str, url_path: str) -> str:
     """Add IDE-executable block after frontmatter if not present."""
 
@@ -28,7 +29,7 @@ def add_ide_block(content: str, url_path: str) -> str:
             new_frontmatter = frontmatter.rstrip() + "\nai_executable: true\n"
 
             # Find title in body
-            title_match = re.search(r'^#\s+(.+)$', body, re.MULTILINE)
+            title_match = re.search(r"^#\s+(.+)$", body, re.MULTILINE)
             if title_match:
                 title_end = title_match.end()
 
@@ -48,6 +49,7 @@ Execute: https://agencyos.network{url_path}
                 return "---" + new_frontmatter + "---" + new_body
 
     return None
+
 
 def process_directory(base_dir: str, url_prefix: str):
     """Process all .md files in directory recursively."""
@@ -80,6 +82,7 @@ def process_directory(base_dir: str, url_prefix: str):
                     skipped += 1
 
     return converted, skipped
+
 
 if __name__ == "__main__":
     print("🔄 Converting docs to IDE-executable format...")

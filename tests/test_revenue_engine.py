@@ -2,18 +2,19 @@
 Tests for Revenue Engine system.
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.revenue_engine import RevenueEngine
 from antigravity.core.models.invoice import InvoiceStatus
+from antigravity.core.revenue_engine import RevenueEngine
+
 
 class TestRevenueEngine:
-
     def test_invoice_lifecycle(self):
         """Test creating and paying an invoice."""
         engine = RevenueEngine()
@@ -42,13 +43,14 @@ class TestRevenueEngine:
     def test_goal_tracking(self):
         """Test $1M goal calculations."""
         engine = RevenueEngine()
-        inv = engine.create_invoice("Big Client", 50000.0) # $50K recurring
+        inv = engine.create_invoice("Big Client", 50000.0)  # $50K recurring
         engine.mark_paid(inv)
 
         # MRR = 50K, ARR = 600K
         summary = engine.get_goal_summary()
-        assert summary["progress_percent"] == 60.0 # 600K / 1M
+        assert summary["progress_percent"] == 60.0  # 600K / 1M
         assert summary["gap_usd"] == 400000.0
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

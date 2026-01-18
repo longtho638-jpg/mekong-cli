@@ -7,8 +7,10 @@ import json
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 from core.config import get_settings
+
 
 class InvoiceService:
     def __init__(self):
@@ -66,23 +68,23 @@ class InvoiceService:
 
     def _generate_markdown(self, invoice: Dict[str, Any]):
         path = self.invoices_output_dir / f"{invoice['id']}.md"
-        content = f"""# 🏯 INVOICE {invoice['id']}
+        content = f"""# 🏯 INVOICE {invoice["id"]}
 
-**To**: {invoice['client']}  
-**Date**: {invoice['created'][:10]}  
-**Due**: {invoice['due_date']}
+**To**: {invoice["client"]}  
+**Date**: {invoice["created"][:10]}  
+**Due**: {invoice["due_date"]}
 
 ---
 
 | Description | Amount |
 |:---|---:|
-| {invoice['description']} | **${invoice['amount']:,.2f}** |
+| {invoice["description"]} | **${invoice["amount"]:,.2f}** |
 
 ---
 
-## Total: **${invoice['amount']:,.2f} USD**
+## Total: **${invoice["amount"]:,.2f} USD**
 
-**Payment Link**: [{invoice['payment_link']}]({invoice['payment_link']})
+**Payment Link**: [{invoice["payment_link"]}]({invoice["payment_link"]})
 """
         with open(path, "w") as f:
             f.write(content)

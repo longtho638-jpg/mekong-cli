@@ -7,97 +7,87 @@ Nối cầu CLI commands với .claude agent workflows
 import json
 from pathlib import Path
 
+
 class ClaudeBridge:
     def __init__(self, project_root: str):
         self.project_root = Path(project_root)
         self.bridge_dir = self.project_root / "claude_bridge"
         self.claude_dir = self.project_root / ".claude"
         self.skills_dir = self.project_root / ".claude-skills"
-        
+
         # Command to workflow mappings
         self.command_mappings = {
             # AgencyOS CLI → Agent workflows
             "agencyos cook": {
                 "agent": "cook",
                 "workflow": "primary-workflow.md",
-                "description": "Execute cooking recipe workflow"
+                "description": "Execute cooking recipe workflow",
             },
             "agencyos scaffold": {
-                "agent": "architect", 
+                "agent": "architect",
                 "workflow": "primary-workflow.md",
-                "description": "Generate project scaffolding"
+                "description": "Generate project scaffolding",
             },
             "agencyos kanban": {
                 "agent": "kanban-manager",
-                "workflow": "kanban-workflow.md", 
-                "description": "Manage kanban board"
+                "workflow": "kanban-workflow.md",
+                "description": "Manage kanban board",
             },
             "agencyos crm": {
                 "agent": "crm-manager",
                 "workflow": "crm-workflow.md",
-                "description": "Manage CRM operations"
+                "description": "Manage CRM operations",
             },
             "agencyos revenue": {
                 "agent": "revenue-manager",
                 "workflow": "revenue-workflow.md",
-                "description": "View revenue analytics"
+                "description": "View revenue analytics",
             },
             "agencyos build": {
                 "agent": "build-engineer",
                 "workflow": "build-workflow.md",
-                "description": "Build and deploy project"
+                "description": "Build and deploy project",
             },
             "agencyos test": {
                 "agent": "tester",
                 "workflow": "testing-workflow.md",
-                "description": "Run comprehensive tests"
+                "description": "Run comprehensive tests",
             },
             "agencyos deploy": {
                 "agent": "devops-engineer",
-                "workflow": "deployment-workflow.md", 
-                "description": "Deploy to production"
+                "workflow": "deployment-workflow.md",
+                "description": "Deploy to production",
             },
             "agencyos review": {
                 "agent": "code-reviewer",
                 "workflow": "code-review-workflow.md",
-                "description": "Review code changes"
+                "description": "Review code changes",
             },
             "agencyos plan": {
                 "agent": "planner",
                 "workflow": "primary-workflow.md",
-                "description": "Create implementation plan"
+                "description": "Create implementation plan",
             },
-            
             # Skill activations
-            "/skill": {
-                "type": "skill_activation",
-                "description": "Activate specific skill"
-            },
-            
+            "/skill": {"type": "skill_activation", "description": "Activate specific skill"},
             # Default mappings
             "help": {
                 "agent": "help-system",
                 "workflow": "help-workflow.md",
-                "description": "Show help and documentation"
-            }
+                "description": "Show help and documentation",
+            },
         }
-        
+
         # Context management
         self.context_store = {}
-        
+
     def create_bridge_structure(self):
         """Tạo cấu trúc cho bridge system"""
-        directories = [
-            "workflows",
-            "context", 
-            "reports",
-            "mappers",
-            "executors"
-        ]
-        
+        directories = ["workflows", "context", "reports", "mappers", "executors"]
+
         for dir_name in directories:
             (self.bridge_dir / dir_name).mkdir(parents=True, exist_ok=True)
-            
+
     def create_command_mapper(self):
         """Tạo command mapper"""
         mapper_content = '''#!/usr/bin/env python3
@@ -162,10 +152,10 @@ class CommandMapper:
         self.mappings[command] = mapping
         self.save_mappings()
 '''
-        
+
         mapper_path = self.bridge_dir / "mappers" / "command_mapper.py"
         mapper_path.write_text(mapper_content)
-        
+
     def create_workflow_executor(self):
         """Tạo workflow executor"""
         executor_content = '''#!/usr/bin/env python3
@@ -290,10 +280,10 @@ class WorkflowExecutor:
         report_file = self.reports_dir / f"{execution_id}.json"
         report_file.write_text(json.dumps(result, indent=2, default=str))
 '''
-        
+
         executor_path = self.bridge_dir / "executors" / "workflow_executor.py"
         executor_path.write_text(executor_content)
-        
+
     def create_context_manager(self):
         """Tạo context manager"""
         context_content = '''#!/usr/bin/env python3
@@ -370,10 +360,10 @@ class ContextManager:
             active_skills.remove(skill_name)
             self.update_shared_context({"active_skills": active_skills})
 '''
-        
+
         context_path = self.bridge_dir / "context_manager.py"
         context_path.write_text(context_content)
-        
+
     def create_reporting_system(self):
         """Tạo reporting system"""
         reporting_content = '''#!/usr/bin/env python3
@@ -405,7 +395,7 @@ class ReportingSystem:
             try:
                 report = json.loads(report_file.read_text())
                 reports.append(report)
-            except:
+            except Exception:
                 continue
                 
         # Calculate statistics
@@ -424,7 +414,7 @@ class ReportingSystem:
                     dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
                     if dt > cutoff_time:
                         recent.append(report)
-                except:
+                except Exception:
                     continue
                     
         # Command usage stats
@@ -466,7 +456,7 @@ class ReportingSystem:
             try:
                 report = json.loads(report_file.read_text())
                 reports.append(report)
-            except:
+            except Exception:
                 continue
                 
         return reports
@@ -510,49 +500,50 @@ class ReportingSystem:
         if summary['most_used_skill']:
             print(f"Most used skill: {summary['most_used_skill']}")
 '''
-        
+
         reporting_path = self.bridge_dir / "reporting_system.py"
         reporting_path.write_text(reporting_content)
-        
+
     def save_command_mappings(self):
         """Save command mappings to JSON"""
         mappings_file = self.bridge_dir / "command_mappings.json"
         mappings_file.write_text(json.dumps(self.command_mappings, indent=2))
-        
+
     def run(self):
         """Setup complete bridge system"""
         print("🚀 Setting up Claude Bridge System...")
-        
+
         # Create directory structure
         self.create_bridge_structure()
-        
+
         # Create components
         self.create_command_mapper()
         self.create_workflow_executor()
         self.create_context_manager()
         self.create_reporting_system()
-        
+
         # Save mappings
         self.save_command_mappings()
-        
+
         print("✅ Claude Bridge System setup complete!")
-        
+
         return {
             "bridge_dir": str(self.bridge_dir),
             "components": [
                 "command_mapper",
-                "workflow_executor", 
+                "workflow_executor",
                 "context_manager",
-                "reporting_system"
+                "reporting_system",
             ],
-            "command_mappings_count": len(self.command_mappings)
+            "command_mappings_count": len(self.command_mappings),
         }
+
 
 if __name__ == "__main__":
     project_root = "/Users/macbookprom1/mekong-cli"
     bridge = ClaudeBridge(project_root)
     result = bridge.run()
-    
+
     print("\\n📈 Summary:")
     print(f"- Bridge directory: {result['bridge_dir']}")
     print(f"- Components created: {len(result['components'])}")

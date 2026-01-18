@@ -12,20 +12,22 @@ Roles:
 - Follow-ups
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Any
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class CallType(Enum):
     """Call types."""
+
     INBOUND = "inbound"
     OUTBOUND = "outbound"
     FOLLOW_UP = "follow_up"
@@ -34,6 +36,7 @@ class CallType(Enum):
 
 class CallOutcome(Enum):
     """Call outcomes."""
+
     RESOLVED = "resolved"
     FOLLOW_UP_NEEDED = "follow_up_needed"
     ESCALATED = "escalated"
@@ -45,6 +48,7 @@ class CallOutcome(Enum):
 @dataclass
 class CallLog:
     """A call log record entity."""
+
     id: str
     client: str
     phone: str
@@ -63,6 +67,7 @@ class CallLog:
 @dataclass
 class ScheduledCallback:
     """A scheduled callback record."""
+
     id: str
     client: str
     phone: str
@@ -74,7 +79,7 @@ class ScheduledCallback:
 class CallCenterAgent:
     """
     Call Center Agent System.
-    
+
     Manages telephony interactions and callback schedules.
     """
 
@@ -88,7 +93,7 @@ class CallCenterAgent:
     def _validate_phone(self, phone: str) -> bool:
         """Simple phone number validation."""
         # Allow numbers, plus, spaces, and dashes
-        return bool(re.match(r'^\+?[\d\s\-]{7,20}$', phone))
+        return bool(re.match(r"^\+?[\d\s\-]{7,20}$", phone))
 
     def log_call(
         self,
@@ -97,7 +102,7 @@ class CallCenterAgent:
         call_type: CallType,
         duration_seconds: int,
         outcome: CallOutcome,
-        notes: str
+        notes: str,
     ) -> CallLog:
         """Record a completed call."""
         if not client:
@@ -113,18 +118,14 @@ class CallCenterAgent:
             duration_seconds=duration_seconds,
             outcome=outcome,
             notes=notes,
-            agent=self.agent_name
+            agent=self.agent_name,
         )
         self.calls.append(call)
         logger.info(f"Call logged: {client} ({call_type.value}) - {outcome.value}")
         return call
 
     def schedule_callback(
-        self,
-        client: str,
-        phone: str,
-        scheduled_time: datetime,
-        reason: str
+        self, client: str, phone: str, scheduled_time: datetime, reason: str
     ) -> ScheduledCallback:
         """Register a future callback."""
         if scheduled_time < datetime.now():
@@ -135,7 +136,7 @@ class CallCenterAgent:
             client=client,
             phone=phone,
             scheduled_time=scheduled_time,
-            reason=reason
+            reason=reason,
         )
         self.callbacks.append(callback)
         logger.info(f"Callback scheduled: {client} at {scheduled_time.strftime('%H:%M')}")
@@ -167,7 +168,7 @@ class CallCenterAgent:
             "total_duration": total_duration,
             "avg_duration": avg_duration,
             "pending_callbacks": len(self.get_pending_callbacks()),
-            "resolved": sum(1 for c in today_calls if c.outcome == CallOutcome.RESOLVED)
+            "resolved": sum(1 for c in today_calls if c.outcome == CallOutcome.RESOLVED),
         }
 
     def format_dashboard(self) -> str:
@@ -194,7 +195,7 @@ class CallCenterAgent:
             CallType.INBOUND: "📥",
             CallType.OUTBOUND: "📤",
             CallType.FOLLOW_UP: "🔄",
-            CallType.SCHEDULED: "📅"
+            CallType.SCHEDULED: "📅",
         }
         outcome_icons = {
             CallOutcome.RESOLVED: "✅",
@@ -202,7 +203,7 @@ class CallCenterAgent:
             CallOutcome.ESCALATED: "⬆️",
             CallOutcome.NO_ANSWER: "❌",
             CallOutcome.VOICEMAIL: "📧",
-            CallOutcome.CALLBACK_REQUESTED: "📞"
+            CallOutcome.CALLBACK_REQUESTED: "📞",
         }
 
         # Show last 4 calls
@@ -210,31 +211,37 @@ class CallCenterAgent:
             t_icon = type_icons.get(call.call_type, "📞")
             o_icon = outcome_icons.get(call.outcome, "⚪")
             dur_str = f"{call.duration_seconds // 60}:{call.duration_seconds % 60:02d}"
-            client_display = (call.client[:15] + '..') if len(call.client) > 17 else call.client
-            note_display = (call.notes[:15] + '..') if len(call.notes) > 17 else call.notes
+            client_display = (call.client[:15] + "..") if len(call.client) > 17 else call.client
+            note_display = (call.notes[:15] + "..") if len(call.notes) > 17 else call.notes
 
-            lines.append(f"║  {t_icon} {o_icon} {client_display:<17} │ {dur_str:>5} │ {note_display:<17}  ║")
+            lines.append(
+                f"║  {t_icon} {o_icon} {client_display:<17} │ {dur_str:>5} │ {note_display:<17}  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📅 PENDING CALLBACKS                                     ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📅 PENDING CALLBACKS                                     ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         # Show top 3 pending callbacks
         for cb in self.get_pending_callbacks()[:3]:
             time_str = cb.scheduled_time.strftime("%H:%M")
-            client_display = (cb.client[:15] + '..') if len(cb.client) > 17 else cb.client
-            reason_display = (cb.reason[:18] + '..') if len(cb.reason) > 20 else cb.reason
+            client_display = (cb.client[:15] + "..") if len(cb.client) > 17 else cb.client
+            reason_display = (cb.reason[:18] + "..") if len(cb.reason) > 20 else cb.reason
             lines.append(f"║    📞 {client_display:<17} │ {time_str} │ {reason_display:<20}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📞 Log Call]  [📅 Schedule]  [📊 Reports]               ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Voice!              ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📞 Log Call]  [📅 Schedule]  [📊 Reports]               ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Voice!              ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -247,14 +254,49 @@ if __name__ == "__main__":
     try:
         agent = CallCenterAgent("Saigon Digital Hub", "Mike")
 
-        agent.log_call("Sunrise Realty", "+84123456789", CallType.INBOUND, 245, CallOutcome.RESOLVED, "Billing question")
-        agent.log_call("Coffee Lab", "+84987654321", CallType.OUTBOUND, 180, CallOutcome.FOLLOW_UP_NEEDED, "Proposal follow-up")
-        agent.log_call("Tech Startup", "+84555666777", CallType.INBOUND, 310, CallOutcome.ESCALATED, "Complaint delay")
-        agent.log_call("Fashion Brand", "+84111222333", CallType.OUTBOUND, 0, CallOutcome.NO_ANSWER, "Renewal call")
+        agent.log_call(
+            "Sunrise Realty",
+            "+84123456789",
+            CallType.INBOUND,
+            245,
+            CallOutcome.RESOLVED,
+            "Billing question",
+        )
+        agent.log_call(
+            "Coffee Lab",
+            "+84987654321",
+            CallType.OUTBOUND,
+            180,
+            CallOutcome.FOLLOW_UP_NEEDED,
+            "Proposal follow-up",
+        )
+        agent.log_call(
+            "Tech Startup",
+            "+84555666777",
+            CallType.INBOUND,
+            310,
+            CallOutcome.ESCALATED,
+            "Complaint delay",
+        )
+        agent.log_call(
+            "Fashion Brand",
+            "+84111222333",
+            CallType.OUTBOUND,
+            0,
+            CallOutcome.NO_ANSWER,
+            "Renewal call",
+        )
 
         # Schedule callbacks
-        agent.schedule_callback("Fashion Brand", "+84111222333", datetime.now() + timedelta(hours=2), "Renewal discussion")
-        agent.schedule_callback("Coffee Lab", "+84987654321", datetime.now() + timedelta(hours=4), "Proposal details")
+        agent.schedule_callback(
+            "Fashion Brand",
+            "+84111222333",
+            datetime.now() + timedelta(hours=2),
+            "Renewal discussion",
+        )
+        agent.schedule_callback(
+            "Coffee Lab", "+84987654321", datetime.now() + timedelta(hours=4), "Proposal details"
+        )
 
         print("\n" + agent.format_dashboard())
 

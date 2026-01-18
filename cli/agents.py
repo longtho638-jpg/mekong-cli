@@ -1,8 +1,10 @@
 import typer
 from rich.console import Console
-from core.constants import APP_NAME, AGENTS_CORE, AGENTS_MEKONG
+
+from core.constants import AGENTS_CORE, AGENTS_MEKONG, APP_NAME
 
 console = Console()
+
 
 def run_scout_cmd(feature: str = typer.Argument(..., help="Feature to analyze")):
     """
@@ -17,6 +19,7 @@ def run_scout_cmd(feature: str = typer.Argument(..., help="Feature to analyze"))
     console.print("   • Scan Reddit via Fetch MCP")
     console.print("   • Generate summary via OpenRouter (fast tier)")
     console.print("\n   [yellow]Note: Full execution requires backend running[/yellow]")
+
 
 def agents_cmd():
     """

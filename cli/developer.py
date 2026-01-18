@@ -3,13 +3,15 @@
 Handles the build-test-ship lifecycle with Agentic Orchestration.
 """
 
-import time
-import typer
 import subprocess
+import time
+
+import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 console = Console()
+
 
 def cook(feature: str = typer.Argument(..., help="Tính năng cần xây dựng")):
     """🍳 Build: Kích hoạt Agent Orchestration để viết code và xây dựng tính năng."""
@@ -22,14 +24,19 @@ def cook(feature: str = typer.Argument(..., help="Tính năng cần xây dựng"
         ("Reviewer", "Kiểm tra logic & Security..."),
     ]
 
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+    with Progress(
+        SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
+    ) as progress:
         for agent, desc in steps:
             task = progress.add_task(description=f"🤖 {agent}: {desc}", total=None)
-            time.sleep(1) # Giả lập Agent đang làm việc
+            time.sleep(1)  # Giả lập Agent đang làm việc
             progress.remove_task(task)
             console.print(f"   [green]✓[/green] {agent}: Xong")
 
-    console.print("\n[bold green]✅ Đã 'nấu' xong! Tiếp theo hãy chạy: [cyan]mekong test[/cyan][/bold green]")
+    console.print(
+        "\n[bold green]✅ Đã 'nấu' xong! Tiếp theo hãy chạy: [cyan]mekong test[/cyan][/bold green]"
+    )
+
 
 def test():
     """🧪 Test: Chạy bộ kiểm thử tự động và xác minh chất lượng code."""
@@ -45,12 +52,18 @@ def test():
             console.print("[red]⚠️  Có lỗi trong quá trình kiểm thử:[/red]")
             console.print(result.stderr)
     except FileNotFoundError:
-        console.print("[yellow]⚠️  Không tìm thấy file tests/test_wow.py. Chạy pytest thay thế...[/yellow]")
+        console.print(
+            "[yellow]⚠️  Không tìm thấy file tests/test_wow.py. Chạy pytest thay thế...[/yellow]"
+        )
         subprocess.run(["pytest"])
+
 
 def ship():
     """🚀 Ship: Triển khai (Deploy) sản phẩm lên môi trường Production."""
-    console.print("\n[bold magenta]🚀 Đang chuẩn bị cất cánh (Ship to Production)...[/bold magenta]\n")
+    console.print(
+        "\n[bold magenta]🚀 Đang chuẩn bị cất cánh (Ship to Production)...[/bold magenta]\n"
+    )
 
     from deploy_automation import run_deploy
+
     run_deploy()

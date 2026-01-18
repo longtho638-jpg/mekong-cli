@@ -17,11 +17,13 @@ from dataclasses import dataclass
 from enum import Enum
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class ServiceType(Enum):
     """Categorization of growth services."""
+
     SEO = "seo"
     PPC = "ppc"
     SOCIAL = "social"
@@ -32,6 +34,7 @@ class ServiceType(Enum):
 @dataclass
 class ClientMetrics:
     """Snapshot of a client's current performance data."""
+
     monthly_traffic: int
     conversion_rate: float  # e.g. 0.02 for 2%
     avg_order_value: float
@@ -46,6 +49,7 @@ class ClientMetrics:
 @dataclass
 class ROIProjection:
     """Derived results of an ROI simulation."""
+
     service: ServiceType
     investment: float
     current_revenue: float
@@ -58,7 +62,7 @@ class ROIProjection:
 class ROICalculator:
     """
     ROI Calculation System.
-    
+
     Orchestrates the mathematical modeling of marketing improvements to demonstrate potential value.
     """
 
@@ -66,7 +70,7 @@ class ROICalculator:
     BENCHMARKS = {
         ServiceType.SEO: {"traffic_up": 0.50, "cvr_up": 0.10, "fee": 1500.0},
         ServiceType.PPC: {"traffic_up": 0.80, "cvr_up": 0.15, "fee": 2000.0},
-        ServiceType.EMAIL: {"traffic_up": 0.10, "cvr_up": 0.20, "fee": 800.0}
+        ServiceType.EMAIL: {"traffic_up": 0.10, "cvr_up": 0.20, "fee": 800.0},
     }
 
     def __init__(self, agency_name: str = "Saigon Digital"):
@@ -74,10 +78,7 @@ class ROICalculator:
         logger.info(f"ROI Calculator initialized for {agency_name}")
 
     def simulate_roi(
-        self,
-        metrics: ClientMetrics,
-        service: ServiceType,
-        horizon_mo: int = 12
+        self, metrics: ClientMetrics, service: ServiceType, horizon_mo: int = 12
     ) -> ROIProjection:
         """Execute simulation logic for a specific growth service."""
         b = self.BENCHMARKS.get(service, {"traffic_up": 0.3, "cvr_up": 0.05, "fee": 1000.0})
@@ -100,9 +101,13 @@ class ROICalculator:
 
         logger.info(f"ROI Projection for {service.value}: {roi:.1f}%")
         return ROIProjection(
-            service=service, investment=b["fee"], current_revenue=curr_rev,
-            projected_revenue=p_rev, revenue_increase=mo_inc,
-            roi_percentage=roi, payback_months=payback
+            service=service,
+            investment=b["fee"],
+            current_revenue=curr_rev,
+            projected_revenue=p_rev,
+            revenue_increase=mo_inc,
+            roi_percentage=roi,
+            payback_months=payback,
         )
 
     def format_report(self, p: ROIProjection) -> str:

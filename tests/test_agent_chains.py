@@ -2,26 +2,27 @@
 Tests for Agent Chains configuration.
 """
 
-import sys
 import os
-import pytest
+import sys
 from pathlib import Path
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.agent_chains import (
-    AGENT_INVENTORY,
     AGENT_CHAINS,
+    AGENT_INVENTORY,
+    AgentCategory,
+    AgentConfig,
+    AgentStep,
     get_chain,
     get_chain_summary,
-    AgentCategory,
-    AgentStep,
-    AgentConfig
 )
 
-class TestAgentChains:
 
+class TestAgentChains:
     def test_inventory_structure(self):
         """Verify inventory has correct structure."""
         for name, info in AGENT_INVENTORY.items():
@@ -29,7 +30,9 @@ class TestAgentChains:
             assert isinstance(info, AgentConfig)
             assert isinstance(info.category, AgentCategory)
             assert isinstance(info.file, Path)
-            assert str(info.file).startswith(".claude/agents/") or str(info.file).startswith(".claude\\agents\\")
+            assert str(info.file).startswith(".claude/agents/") or str(info.file).startswith(
+                ".claude\\agents\\"
+            )
 
     def test_chains_structure(self):
         """Verify chains are valid."""
@@ -57,7 +60,8 @@ class TestAgentChains:
         # Check for presence of key elements, allowing for formatting differences
         assert "planner" in summary
         assert "Analyze requirements" in summary
-        assert "🛠️" in summary # Check for icon
+        assert "🛠️" in summary  # Check for icon
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

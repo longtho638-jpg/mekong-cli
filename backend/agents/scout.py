@@ -3,14 +3,16 @@ Scout Agent - Intelligence & Research
 Collects market trends, competitor data, and content ideas.
 """
 
-from dataclasses import dataclass
-from typing import List, Optional
-from datetime import datetime
 import random
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Optional
+
 
 @dataclass
 class TrendItem:
     """Trending topic or signal"""
+
     title: str
     source: str
     score: float  # 0-100 relevance
@@ -25,6 +27,7 @@ class TrendItem:
 @dataclass
 class IntelBrief:
     """Intelligence brief from Scout Agent"""
+
     topic: str
     trends: List[TrendItem]
     competitors: List[str]
@@ -39,7 +42,7 @@ class IntelBrief:
 class ScoutAgent:
     """
     Scout Agent - Thu thập thông tin thị trường
-    
+
     Responsibilities:
     - Web scraping (Product Hunt, X, Reddit)
     - Competitor monitoring
@@ -61,7 +64,7 @@ class ScoutAgent:
         "Solopreneur Mindset",
         "Local AI",
         "Automation Hacks",
-        "Agency Life"
+        "Agency Life",
     ]
 
     def __init__(self):
@@ -71,7 +74,7 @@ class ScoutAgent:
     def research(self, topic: str, depth: str = "quick") -> IntelBrief:
         """
         Research a topic and generate intelligence brief.
-        
+
         Args:
             topic: Topic to research
             depth: "quick" (5 min) or "deep" (30 min)
@@ -80,11 +83,9 @@ class ScoutAgent:
         trends = []
         for title, source, score in self.SAMPLE_TRENDS:
             if topic.lower() in title.lower() or random.random() > 0.5:
-                trends.append(TrendItem(
-                    title=title,
-                    source=source,
-                    score=score + random.randint(-10, 10)
-                ))
+                trends.append(
+                    TrendItem(title=title, source=source, score=score + random.randint(-10, 10))
+                )
 
         # Generate content angles based on pillars
         angles = []
@@ -95,15 +96,12 @@ class ScoutAgent:
             topic=topic,
             trends=sorted(trends, key=lambda x: x.score, reverse=True)[:5],
             competitors=["Competitor A", "Competitor B"],
-            content_angles=angles
+            content_angles=angles,
         )
 
     def get_trending(self, count: int = 5) -> List[TrendItem]:
         """Get current trending topics"""
-        return [
-            TrendItem(title=t[0], source=t[1], score=t[2])
-            for t in self.SAMPLE_TRENDS[:count]
-        ]
+        return [TrendItem(title=t[0], source=t[1], score=t[2]) for t in self.SAMPLE_TRENDS[:count]]
 
     def generate_ideas(self, pillar: str, count: int = 10) -> List[str]:
         """Generate content ideas for a pillar"""

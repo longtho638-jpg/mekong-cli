@@ -3,11 +3,11 @@ Brand Voice Agent - Brand Guidelines & Tone Consistency
 Manages brand voice, tone templates, and style checks.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class ToneType(Enum):
@@ -29,6 +29,7 @@ class VoiceScore(Enum):
 @dataclass
 class BrandGuideline:
     """Brand voice guideline"""
+
     id: str
     category: str
     rule: str
@@ -39,6 +40,7 @@ class BrandGuideline:
 @dataclass
 class VoiceTemplate:
     """Pre-approved voice template"""
+
     id: str
     name: str
     tone: ToneType
@@ -49,6 +51,7 @@ class VoiceTemplate:
 @dataclass
 class VoiceCheck:
     """Voice consistency check result"""
+
     id: str
     copy_text: str
     score: VoiceScore
@@ -63,7 +66,7 @@ class VoiceCheck:
 class BrandVoiceAgent:
     """
     Brand Voice Agent - Quản lý Thương hiệu
-    
+
     Responsibilities:
     - Brand guidelines
     - Tone consistency
@@ -80,42 +83,26 @@ class BrandVoiceAgent:
         self.brand_tones: List[ToneType] = [ToneType.PROFESSIONAL, ToneType.FRIENDLY]
 
     def add_guideline(
-        self,
-        category: str,
-        rule: str,
-        examples: List[str] = None,
-        avoid: List[str] = None
+        self, category: str, rule: str, examples: List[str] = None, avoid: List[str] = None
     ) -> BrandGuideline:
         """Add brand guideline"""
-        guide_id = f"guide_{random.randint(100,999)}"
+        guide_id = f"guide_{random.randint(100, 999)}"
 
         guideline = BrandGuideline(
-            id=guide_id,
-            category=category,
-            rule=rule,
-            examples=examples or [],
-            avoid=avoid or []
+            id=guide_id, category=category, rule=rule, examples=examples or [], avoid=avoid or []
         )
 
         self.guidelines[guide_id] = guideline
         return guideline
 
     def add_template(
-        self,
-        name: str,
-        tone: ToneType,
-        template: str,
-        use_case: str
+        self, name: str, tone: ToneType, template: str, use_case: str
     ) -> VoiceTemplate:
         """Add voice template"""
-        template_id = f"tpl_{random.randint(100,999)}"
+        template_id = f"tpl_{random.randint(100, 999)}"
 
         voice_template = VoiceTemplate(
-            id=template_id,
-            name=name,
-            tone=tone,
-            template=template,
-            use_case=use_case
+            id=template_id, name=name, tone=tone, template=template, use_case=use_case
         )
 
         self.templates[template_id] = voice_template
@@ -123,7 +110,7 @@ class BrandVoiceAgent:
 
     def check_voice(self, copy_text: str) -> VoiceCheck:
         """Check copy against brand voice"""
-        check_id = f"check_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        check_id = f"check_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         # Simulate voice check
         feedback = []
@@ -144,12 +131,7 @@ class BrandVoiceAgent:
             feedback.append("Copy aligns with brand voice guidelines")
             score = VoiceScore.GOOD
 
-        check = VoiceCheck(
-            id=check_id,
-            copy_text=copy_text,
-            score=score,
-            feedback=feedback
-        )
+        check = VoiceCheck(id=check_id, copy_text=copy_text, score=score, feedback=feedback)
 
         self.checks[check_id] = check
         return check
@@ -164,7 +146,7 @@ class BrandVoiceAgent:
             "total_checks": len(checks),
             "excellent": len([c for c in checks if c.score == VoiceScore.EXCELLENT]),
             "good": len([c for c in checks if c.score == VoiceScore.GOOD]),
-            "needs_work": len([c for c in checks if c.score == VoiceScore.NEEDS_WORK])
+            "needs_work": len([c for c in checks if c.score == VoiceScore.NEEDS_WORK]),
         }
 
 
@@ -179,7 +161,7 @@ if __name__ == "__main__":
         "Tone",
         "Be professional but approachable",
         examples=["We're here to help you succeed"],
-        avoid=["URGENT!", "Act NOW!!!"]
+        avoid=["URGENT!", "Act NOW!!!"],
     )
 
     print(f"📋 Guideline: {g1.category}")
@@ -190,7 +172,7 @@ if __name__ == "__main__":
         "Welcome Email",
         ToneType.FRIENDLY,
         "Welcome to {company}! We're excited to have you...",
-        "New user onboarding"
+        "New user onboarding",
     )
 
     print(f"\n📝 Template: {t1.name}")

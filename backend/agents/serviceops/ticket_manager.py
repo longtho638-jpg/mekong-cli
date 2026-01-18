@@ -3,11 +3,11 @@ Ticket Manager Agent - Support Ticket Tracking
 Manages tickets, priority, and SLA compliance.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class Priority(Enum):
@@ -28,6 +28,7 @@ class TicketStatus(Enum):
 @dataclass
 class Ticket:
     """Support ticket"""
+
     id: str
     subject: str
     description: str
@@ -67,7 +68,7 @@ class Ticket:
 class TicketManagerAgent:
     """
     Ticket Manager Agent - Quản lý Ticket hỗ trợ
-    
+
     Responsibilities:
     - Create tickets from conversations
     - Assign priority based on content
@@ -104,10 +105,10 @@ class TicketManagerAgent:
         description: str,
         customer_id: str,
         customer_name: str,
-        channel: str = "zalo"
+        channel: str = "zalo",
     ) -> Ticket:
         """Create a new support ticket"""
-        ticket_id = f"TKT-{datetime.now().strftime('%Y%m%d')}-{random.randint(1000,9999)}"
+        ticket_id = f"TKT-{datetime.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
 
         ticket = Ticket(
             id=ticket_id,
@@ -116,7 +117,7 @@ class TicketManagerAgent:
             customer_id=customer_id,
             customer_name=customer_name,
             channel=channel,
-            priority=self.detect_priority(f"{subject} {description}")
+            priority=self.detect_priority(f"{subject} {description}"),
         )
 
         self.tickets[ticket_id] = ticket
@@ -163,7 +164,9 @@ class TicketManagerAgent:
 
         avg_resolution = None
         if resolved:
-            total_mins = sum(t.resolution_time.total_seconds() / 60 for t in resolved if t.resolution_time)
+            total_mins = sum(
+                t.resolution_time.total_seconds() / 60 for t in resolved if t.resolution_time
+            )
             avg_resolution = total_mins / len(resolved) if resolved else 0
 
         return {
@@ -174,9 +177,8 @@ class TicketManagerAgent:
             "sla_breached": len(self.get_sla_breached()),
             "avg_resolution_mins": round(avg_resolution, 1) if avg_resolution else None,
             "by_priority": {
-                p.value: len([t for t in all_tickets if t.priority == p])
-                for p in Priority
-            }
+                p.value: len([t for t in all_tickets if t.priority == p]) for p in Priority
+            },
         }
 
 
@@ -192,7 +194,7 @@ if __name__ == "__main__":
         description="Khi chạy mekong deploy thì bị lỗi timeout",
         customer_id="user_001",
         customer_name="Nguyễn Văn A",
-        channel="zalo"
+        channel="zalo",
     )
 
     ticket2 = manager.create_ticket(
@@ -200,7 +202,7 @@ if __name__ == "__main__":
         description="Công ty tôi muốn dùng cho 50 người",
         customer_id="user_002",
         customer_name="Trần B",
-        channel="email"
+        channel="email",
     )
 
     print(f"📋 Ticket 1: {ticket1.id}")

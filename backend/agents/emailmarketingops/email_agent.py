@@ -3,11 +3,11 @@ Email Agent - Email Campaign Management
 Manages email campaigns, lists, and deliverability.
 """
 
+import random
 from dataclasses import dataclass
-from typing import Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict
 
 
 class CampaignStatus(Enum):
@@ -21,6 +21,7 @@ class CampaignStatus(Enum):
 @dataclass
 class EmailList:
     """Email list"""
+
     id: str
     name: str
     subscribers: int
@@ -36,6 +37,7 @@ class EmailList:
 @dataclass
 class EmailCampaign:
     """Email campaign"""
+
     id: str
     name: str
     subject: str
@@ -66,7 +68,7 @@ class EmailCampaign:
 class EmailAgent:
     """
     Email Agent - Quản lý Email Marketing
-    
+
     Responsibilities:
     - Email campaigns
     - List management
@@ -82,33 +84,20 @@ class EmailAgent:
 
     def create_list(self, name: str, subscribers: int) -> EmailList:
         """Create email list"""
-        list_id = f"list_{random.randint(100,999)}"
+        list_id = f"list_{random.randint(100, 999)}"
 
         email_list = EmailList(
-            id=list_id,
-            name=name,
-            subscribers=subscribers,
-            active=int(subscribers * 0.95)
+            id=list_id, name=name, subscribers=subscribers, active=int(subscribers * 0.95)
         )
 
         self.lists[list_id] = email_list
         return email_list
 
-    def create_campaign(
-        self,
-        name: str,
-        subject: str,
-        list_id: str
-    ) -> EmailCampaign:
+    def create_campaign(self, name: str, subject: str, list_id: str) -> EmailCampaign:
         """Create email campaign"""
-        campaign_id = f"camp_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        campaign_id = f"camp_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
-        campaign = EmailCampaign(
-            id=campaign_id,
-            name=name,
-            subject=subject,
-            list_id=list_id
-        )
+        campaign = EmailCampaign(id=campaign_id, name=name, subject=subject, list_id=list_id)
 
         self.campaigns[campaign_id] = campaign
         return campaign
@@ -144,7 +133,7 @@ class EmailAgent:
             "total_lists": len(self.lists),
             "total_subscribers": sum(l.subscribers for l in self.lists.values()),
             "avg_open_rate": sum(c.open_rate for c in sent) / len(sent) if sent else 0,
-            "avg_click_rate": sum(c.click_rate for c in sent) / len(sent) if sent else 0
+            "avg_click_rate": sum(c.click_rate for c in sent) / len(sent) if sent else 0,
         }
 
 

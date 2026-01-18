@@ -3,7 +3,7 @@
 ================================================
 
 Orchestrates the acquisition and relationship management of startup clients.
-Enforces engagement tiers (Warrior → General → Tướng Quân) and tracks 
+Enforces engagement tiers (Warrior → General → Tướng Quân) and tracks
 aggregate portfolio value including equity and success fees.
 
 Binh Pháp: 🧲 Thế Trận (Strategic Configuration) - Building momentum through partnerships.
@@ -11,11 +11,11 @@ Binh Pháp: 🧲 Thế Trận (Strategic Configuration) - Building momentum thro
 
 import logging
 from datetime import datetime
-from typing import List, Dict, Any, Union
+from typing import Any, Dict, List, Union
 
-from .models.deal import StartupDeal, DealStage
-from .config import DealTier
 from .base import BaseEngine
+from .config import DealTier
+from .models.deal import DealStage, StartupDeal
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class SalesPipeline(BaseEngine):
     """
     🧲 Startup CRM & Deal Engine
-    
+
     The strategic cockpit for managing the agency's most valuable partnerships.
     """
 
@@ -38,7 +38,7 @@ class SalesPipeline(BaseEngine):
         startup_name: str,
         founder_name: str = "",
         email: str = "",
-        tier: Union[DealTier, str] = DealTier.WARRIOR
+        tier: Union[DealTier, str] = DealTier.WARRIOR,
     ) -> StartupDeal:
         """Initializes a new opportunity in the pipeline."""
         if isinstance(tier, str):
@@ -52,7 +52,7 @@ class SalesPipeline(BaseEngine):
             startup_name=startup_name,
             founder_name=founder_name,
             email=email,
-            tier=tier
+            tier=tier,
         )
         self.deals.append(deal)
         self._next_id += 1
@@ -98,13 +98,13 @@ class SalesPipeline(BaseEngine):
             "funnel": {
                 "active_count": len(active),
                 "won_count": len(won),
-                "conversion_rate": (len(won) / len(self.deals) * 100) if self.deals else 0
+                "conversion_rate": (len(won) / len(self.deals) * 100) if self.deals else 0,
             },
             "financials": {
                 "current_arr": sum(d.get_annual_retainer() for d in won),
                 "equity_paper_value": sum(d.get_equity_value() for d in won),
-                "potential_success_fees": sum(d.get_success_fee_value() for d in active)
-            }
+                "potential_success_fees": sum(d.get_success_fee_value() for d in active),
+            },
         }
 
     def get_stats(self) -> Dict[str, Any]:
@@ -116,7 +116,7 @@ class SalesPipeline(BaseEngine):
             "won_deals": breakdown["funnel"]["won_count"],
             "total_arr": breakdown["financials"]["current_arr"],
             "equity_value": breakdown["financials"]["equity_paper_value"],
-            "pipeline_by_tier": self._group_by_tier(self.deals)
+            "pipeline_by_tier": self._group_by_tier(self.deals),
         }
 
     def _group_by_tier(self, deals: List[StartupDeal]) -> Dict[str, int]:

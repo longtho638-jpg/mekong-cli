@@ -98,7 +98,7 @@ class TaskQueue:
         try:
             self._queue.put_nowait(task)
             return True
-        except:
+        except Exception:
             logger.warning(f"Queue full, rejecting task {task.id}")
             return False
 
@@ -222,9 +222,7 @@ class ScaleManager:
         self.enqueue_task("webhooks", task)
         return task.id
 
-    def enqueue_email(
-        self, email_type: str, recipient: str, data: Dict[str, Any]
-    ) -> str:
+    def enqueue_email(self, email_type: str, recipient: str, data: Dict[str, Any]) -> str:
         """Convenience method for email tasks."""
         import uuid
 
@@ -272,9 +270,7 @@ class ScaleManager:
             "connection_pools": {
                 name: pool.get_stats() for name, pool in self.connection_pools.items()
             },
-            "task_queues": {
-                name: queue.get_stats() for name, queue in self.task_queues.items()
-            },
+            "task_queues": {name: queue.get_stats() for name, queue in self.task_queues.items()},
             "worker_pools": {
                 name: {"size": wp.size, "active": wp.active_workers}
                 for name, wp in self.worker_pools.items()

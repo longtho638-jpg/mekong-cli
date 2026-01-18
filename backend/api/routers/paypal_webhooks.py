@@ -11,15 +11,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from backend.core.paypal_sdk import PayPalSDK
 from fastapi import APIRouter, Header, HTTPException, Request
 
-from backend.core.paypal_sdk import PayPalSDK
 from backend.services.webhook_handlers import EVENT_HANDLERS_MAP
 
 router = APIRouter(prefix="/webhooks/paypal", tags=["PayPal Webhooks"])
 
 # Initialize SDK for verification
 sdk = PayPalSDK()
+
 
 @router.post("/")
 async def handle_webhook(
@@ -66,9 +67,9 @@ async def handle_webhook(
                 auth_algo=paypal_auth_algo or "",
                 transmission_sig=paypal_transmission_sig or "",
                 webhook_id=webhook_id,
-                webhook_event=event_data 
+                webhook_event=event_data,
             )
-            
+
             # Check verification result
             if verify_response and verify_response.get("verification_status") == "SUCCESS":
                 print("✅ Signature Verified")
@@ -105,6 +106,7 @@ async def handle_webhook(
         f.write(json.dumps(log_entry) + "\n")
 
     return {"status": "received", "event_type": event_type, "result": result}
+
 
 @router.get("/status")
 async def webhook_status():

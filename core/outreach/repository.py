@@ -6,9 +6,10 @@ Persistence layer for leads and outreach tracking.
 
 import json
 from pathlib import Path
-from typing import List, Dict, Any, Optional
-from datetime import datetime
+from typing import Any, Dict, List
+
 from core.config import get_settings
+
 
 class OutreachRepository:
     def __init__(self):
@@ -38,7 +39,7 @@ class OutreachRepository:
         # Check duplicate by email
         if any(l["email"] == lead["email"] for l in leads):
             return False
-        
+
         leads.append(lead)
         self.save_leads(leads)
         return True
@@ -51,7 +52,7 @@ class OutreachRepository:
                 lead.update(updates)
                 updated = True
                 break
-        
+
         if updated:
             self.save_leads(leads)
         return updated

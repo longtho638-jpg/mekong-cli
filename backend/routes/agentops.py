@@ -4,9 +4,10 @@ Using Service Layer and Controller Pattern for Clean Architecture
 """
 
 from fastapi import APIRouter
-from backend.services.agentops_service import AgentOpsService
+
 from backend.controllers.agentops_controller import AgentOpsController
 from backend.models.agentops import OpsExecuteRequest
+from backend.services.agentops_service import AgentOpsService
 
 router = APIRouter(prefix="/api/agentops", tags=["AgentOps"])
 
@@ -57,6 +58,7 @@ async def get_categories_summary():
 
 
 # ============ Binh Phap Integration ============
+
 
 @router.get("/binh-phap/chapters")
 async def get_binh_phap_chapters():

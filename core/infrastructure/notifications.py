@@ -1,7 +1,7 @@
 """
 🔔 Notification Infrastructure
 ==============================
-Unified Notification Service handling both system alerts (macOS/Logs) 
+Unified Notification Service handling both system alerts (macOS/Logs)
 and business alerts (Templates/Channels).
 """
 
@@ -9,14 +9,16 @@ import json
 import logging
 import subprocess
 import uuid
-from typing import Dict, List, Optional, Any
-from datetime import datetime
-from pathlib import Path
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
+from pathlib import Path
+from typing import Dict, List, Optional
+
 from core.config import get_settings
 
 logger = logging.getLogger(__name__)
+
 
 # --- Enums from Legacy System ---
 class NotificationType(Enum):
@@ -26,20 +28,23 @@ class NotificationType(Enum):
     INVOICE_SENT = "invoice_sent"
     WELCOME = "welcome"
     MILESTONE = "milestone"
-    SYSTEM_ALERT = "system_alert" # Added for ops
+    SYSTEM_ALERT = "system_alert"  # Added for ops
+
 
 class Channel(Enum):
     EMAIL = "email"
     SMS = "sms"
     TELEGRAM = "telegram"
     SLACK = "slack"
-    SYSTEM = "system" # Added for ops
+    SYSTEM = "system"  # Added for ops
+
 
 class Priority(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
+
 
 @dataclass
 class Notification:
@@ -51,6 +56,7 @@ class Notification:
     subject: str
     body: str
     created_at: datetime = field(default_factory=datetime.now)
+
 
 class NotificationService:
     """
@@ -88,11 +94,11 @@ class NotificationService:
             "type": event_type,
             "data": data,
             "timestamp": datetime.now().isoformat(),
-            "seen": False
+            "seen": False,
         }
         events.append(event)
-        events = events[-100:] # Keep last 100
-        
+        events = events[-100:]  # Keep last 100
+
         with open(self.events_file, "w") as f:
             json.dump(events, f, indent=2)
 
@@ -117,7 +123,7 @@ class NotificationService:
         channel: Channel,
         recipient: str,
         variables: Dict[str, str],
-        priority: Priority = Priority.MEDIUM
+        priority: Priority = Priority.MEDIUM,
     ) -> Notification:
         """
         Advanced interface for Business Logic (CRM, Finance).
@@ -125,7 +131,7 @@ class NotificationService:
         # Simple template logic
         subject = f"Notification: {n_type.value}"
         body = str(variables)
-        
+
         # In a real system, load templates here
         if n_type == NotificationType.WELCOME:
             subject = f"Welcome {variables.get('client_name', '')}!"
@@ -133,14 +139,19 @@ class NotificationService:
 
         notification = Notification(
             id=f"NOT-{uuid.uuid4().hex[:6].upper()}",
-            type=n_type, channel=channel, priority=priority,
-            recipient=recipient, subject=subject, body=body
+            type=n_type,
+            channel=channel,
+            priority=priority,
+            recipient=recipient,
+            subject=subject,
+            body=body,
         )
-        
+
         self.notifications.append(notification)
         self.send(subject, body, "info", {"recipient": recipient, "channel": channel.value})
-        
+
         return notification
+
 
 # Backward compatibility alias if needed
 NotificationSystem = NotificationService

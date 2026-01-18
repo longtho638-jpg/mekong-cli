@@ -5,8 +5,8 @@ Tests CRM, Analytics, and CRMPresenter.
 Run: python3 -m pytest tests/test_core_modules.py -v
 """
 
-import sys
 import os
+import sys
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -32,10 +32,7 @@ class TestCRM:
         initial_count = len(crm.contacts)
 
         contact = crm.add_contact(
-            name="Test User",
-            email="test@example.com",
-            company="Test Corp",
-            phone="+84123456789"
+            name="Test User", email="test@example.com", company="Test Corp", phone="+84123456789"
         )
 
         assert len(crm.contacts) == initial_count + 1
@@ -63,10 +60,10 @@ class TestCRM:
         crm = CRM()
         forecast = crm.forecast_revenue()
 
-        assert 'total_pipeline' in forecast
-        assert 'weighted_pipeline' in forecast
-        assert forecast['total_pipeline'] >= 0
-        assert forecast['weighted_pipeline'] >= 0
+        assert "total_pipeline" in forecast
+        assert "weighted_pipeline" in forecast
+        assert forecast["total_pipeline"] >= 0
+        assert forecast["weighted_pipeline"] >= 0
 
     def test_crm_get_summary(self):
         """Test CRM summary generation."""
@@ -75,8 +72,8 @@ class TestCRM:
         crm = CRM()
         summary = crm.get_summary()
 
-        assert 'win_rate' in summary
-        assert 'contacts_total' in summary
+        assert "win_rate" in summary
+        assert "contacts_total" in summary
 
 
 class TestCRMPresenter:

@@ -3,11 +3,11 @@ Press Release Agent - PR Content Generation
 Generates and distributes press releases.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class ReleaseType(Enum):
@@ -28,6 +28,7 @@ class ReleaseStatus(Enum):
 @dataclass
 class PressRelease:
     """Press release document"""
+
     id: str
     headline: str
     subheadline: str
@@ -48,7 +49,7 @@ class PressRelease:
 class PressReleaseAgent:
     """
     Press Release Agent - Tạo Thông cáo Báo chí
-    
+
     Responsibilities:
     - Generate press releases
     - Manage boilerplate
@@ -85,7 +86,7 @@ Website: mekong-cli.com | GitHub: github.com/mekong-cli
 
 **Thông tin liên hệ:**
 Email: press@mekong-cli.com
-"""
+""",
         },
         ReleaseType.PARTNERSHIP: {
             "headline": "Mekong-CLI Hợp Tác với {partner} Mở Rộng Hệ Sinh Thái",
@@ -102,7 +103,7 @@ Email: press@mekong-cli.com
 **Quote:**
 
 "{quote}"
-"""
+""",
         },
     }
 
@@ -116,7 +117,7 @@ Email: press@mekong-cli.com
         release_type: ReleaseType,
         city: str = "Hồ Chí Minh",
         quote: str = "Chúng tôi tin rằng AI sẽ democratize agency ownership.",
-        partner: str = "Google Developer Groups"
+        partner: str = "Google Developer Groups",
     ) -> PressRelease:
         """Generate press release from template"""
         template = self.TEMPLATES.get(release_type, self.TEMPLATES[ReleaseType.PRODUCT_LAUNCH])
@@ -125,14 +126,9 @@ Email: press@mekong-cli.com
 
         headline = template["headline"].format(partner=partner)
         subheadline = template["subheadline"]
-        body = template["body"].format(
-            city=city,
-            date=date,
-            quote=quote,
-            partner=partner
-        )
+        body = template["body"].format(city=city, date=date, quote=quote, partner=partner)
 
-        release_id = f"PR-{datetime.now().strftime('%Y%m%d')}-{random.randint(100,999)}"
+        release_id = f"PR-{datetime.now().strftime('%Y%m%d')}-{random.randint(100, 999)}"
 
         release = PressRelease(
             id=release_id,
@@ -140,7 +136,7 @@ Email: press@mekong-cli.com
             subheadline=subheadline,
             body=body,
             boilerplate=self.BOILERPLATE,
-            release_type=release_type
+            release_type=release_type,
         )
 
         self.releases[release_id] = release
@@ -155,11 +151,7 @@ Email: press@mekong-cli.com
         release.status = ReleaseStatus.APPROVED
         return release
 
-    def distribute(
-        self,
-        release_id: str,
-        outlets: List[str] = None
-    ) -> PressRelease:
+    def distribute(self, release_id: str, outlets: List[str] = None) -> PressRelease:
         """Distribute to outlets"""
         if release_id not in self.releases:
             raise ValueError(f"Release not found: {release_id}")
@@ -194,9 +186,8 @@ Email: press@mekong-cli.com
             "distributed": len([r for r in releases if r.status == ReleaseStatus.DISTRIBUTED]),
             "total_coverage": total_coverage,
             "by_type": {
-                rt.value: len([r for r in releases if r.release_type == rt])
-                for rt in ReleaseType
-            }
+                rt.value: len([r for r in releases if r.release_type == rt]) for rt in ReleaseType
+            },
         }
 
 
@@ -210,7 +201,7 @@ if __name__ == "__main__":
     release = agent.generate_release(
         release_type=ReleaseType.PRODUCT_LAUNCH,
         city="Hồ Chí Minh",
-        quote="Mekong-CLI sẽ democratize agency ownership cho mọi người."
+        quote="Mekong-CLI sẽ democratize agency ownership cho mọi người.",
     )
 
     print(f"📄 Release: {release.id}")

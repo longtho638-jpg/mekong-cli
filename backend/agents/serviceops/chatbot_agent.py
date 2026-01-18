@@ -3,16 +3,18 @@ Chatbot Agent - AI-Powered Customer Support
 Auto-replies with Vibe Tuning and intent classification.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime
-from enum import Enum
+import os
 import random
 import sys
-import os
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Dict, List, Optional
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from core.growth.vibe_tuner import VibeTuner, VibeRegion
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+)
+from core.growth.vibe_tuner import VibeRegion, VibeTuner
 
 
 class Intent(Enum):
@@ -34,6 +36,7 @@ class Channel(Enum):
 @dataclass
 class Message:
     """Chat message"""
+
     id: str
     channel: Channel
     sender_id: str
@@ -50,6 +53,7 @@ class Message:
 @dataclass
 class Conversation:
     """Conversation thread"""
+
     id: str
     channel: Channel
     customer_id: str
@@ -66,7 +70,7 @@ class Conversation:
 class ChatbotAgent:
     """
     Chatbot Agent - Hỗ trợ khách hàng AI
-    
+
     Responsibilities:
     - Auto-reply with Vibe Tuning
     - Intent classification
@@ -122,11 +126,7 @@ class ChatbotAgent:
         return reply
 
     def handle_message(
-        self,
-        channel: Channel,
-        sender_id: str,
-        sender_name: str,
-        content: str
+        self, channel: Channel, sender_id: str, sender_name: str, content: str
     ) -> Message:
         """Handle incoming message and generate reply"""
         conv_id = f"{channel.value}_{sender_id}"
@@ -134,10 +134,7 @@ class ChatbotAgent:
         # Get or create conversation
         if conv_id not in self.conversations:
             self.conversations[conv_id] = Conversation(
-                id=conv_id,
-                channel=channel,
-                customer_id=sender_id,
-                customer_name=sender_name
+                id=conv_id, channel=channel, customer_id=sender_id, customer_name=sender_name
             )
 
         conv = self.conversations[conv_id]
@@ -148,7 +145,7 @@ class ChatbotAgent:
             channel=channel,
             sender_id=sender_id,
             content=content,
-            intent=self.classify_intent(content)
+            intent=self.classify_intent(content),
         )
         conv.messages.append(customer_msg)
 
@@ -159,7 +156,7 @@ class ChatbotAgent:
             channel=channel,
             sender_id="bot",
             content=reply_text,
-            is_bot=True
+            is_bot=True,
         )
         conv.messages.append(bot_msg)
 
@@ -191,7 +188,7 @@ class ChatbotAgent:
                 intent.value: len([m for m in all_messages if m.intent == intent])
                 for intent in Intent
             },
-            "resolution_rate": "85%"  # Mock
+            "resolution_rate": "85%",  # Mock
         }
 
 
@@ -214,7 +211,7 @@ if __name__ == "__main__":
             channel=Channel.ZALO,
             sender_id=name.lower().replace(" ", "_"),
             sender_name=name,
-            content=content
+            content=content,
         )
         print(f"🤖 Bot: {reply.content[:80]}...")
         print()

@@ -3,11 +3,11 @@ Attendee Management Agent - Registrations & Check-ins
 Manages event attendees, registrations, and lead capture.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class RegistrationStatus(Enum):
@@ -27,6 +27,7 @@ class LeadScore(Enum):
 @dataclass
 class Attendee:
     """Event attendee"""
+
     id: str
     event_id: str
     email: str
@@ -42,7 +43,7 @@ class Attendee:
 class AttendeeManagementAgent:
     """
     Attendee Management Agent - Quản lý Người tham dự
-    
+
     Responsibilities:
     - Registration processing
     - Check-in tracking
@@ -56,15 +57,10 @@ class AttendeeManagementAgent:
         self.attendees: Dict[str, Attendee] = {}
 
     def register_attendee(
-        self,
-        event_id: str,
-        email: str,
-        name: str,
-        company: str,
-        title: str
+        self, event_id: str, email: str, name: str, company: str, title: str
     ) -> Attendee:
         """Register new attendee"""
-        attendee_id = f"att_{random.randint(1000,9999)}"
+        attendee_id = f"att_{random.randint(1000, 9999)}"
 
         # Score lead based on title
         lead_score = LeadScore.COLD
@@ -81,7 +77,7 @@ class AttendeeManagementAgent:
             name=name,
             company=company,
             title=title,
-            lead_score=lead_score
+            lead_score=lead_score,
         )
 
         self.attendees[attendee_id] = attendee
@@ -117,9 +113,17 @@ class AttendeeManagementAgent:
 
     def get_stats(self, event_id: str = None) -> Dict:
         """Get attendee statistics"""
-        attendees = self.get_event_attendees(event_id) if event_id else list(self.attendees.values())
+        attendees = (
+            self.get_event_attendees(event_id) if event_id else list(self.attendees.values())
+        )
 
-        confirmed = len([a for a in attendees if a.status in [RegistrationStatus.CONFIRMED, RegistrationStatus.CHECKED_IN]])
+        confirmed = len(
+            [
+                a
+                for a in attendees
+                if a.status in [RegistrationStatus.CONFIRMED, RegistrationStatus.CHECKED_IN]
+            ]
+        )
         checked_in = len([a for a in attendees if a.status == RegistrationStatus.CHECKED_IN])
         hot_leads = len([a for a in attendees if a.lead_score == LeadScore.HOT])
 
@@ -128,7 +132,7 @@ class AttendeeManagementAgent:
             "confirmed": confirmed,
             "checked_in": checked_in,
             "check_in_rate": (checked_in / confirmed * 100) if confirmed > 0 else 0,
-            "hot_leads": hot_leads
+            "hot_leads": hot_leads,
         }
 
 
@@ -142,8 +146,12 @@ if __name__ == "__main__":
 
     # Register attendees
     a1 = agent.register_attendee(event_id, "jane@techcorp.com", "Jane Doe", "TechCorp", "CTO")
-    a2 = agent.register_attendee(event_id, "john@startup.io", "John Smith", "Startup Inc", "Developer")
-    a3 = agent.register_attendee(event_id, "bob@enterprise.com", "Bob Wilson", "Enterprise Co", "VP Engineering")
+    a2 = agent.register_attendee(
+        event_id, "john@startup.io", "John Smith", "Startup Inc", "Developer"
+    )
+    a3 = agent.register_attendee(
+        event_id, "bob@enterprise.com", "Bob Wilson", "Enterprise Co", "VP Engineering"
+    )
 
     print("📋 Registered: 3 attendees")
 

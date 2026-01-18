@@ -12,20 +12,22 @@ Roles:
 - Customer engagement
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Any
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SaleStatus(Enum):
     """Sale lifecycle status."""
+
     CART = "cart"
     CHECKOUT = "checkout"
     PAID = "paid"
@@ -35,6 +37,7 @@ class SaleStatus(Enum):
 
 class CartStatus(Enum):
     """Cart recovery lifecycle status."""
+
     ABANDONED = "abandoned"
     RECOVERED = "recovered"
     EXPIRED = "expired"
@@ -43,6 +46,7 @@ class CartStatus(Enum):
 @dataclass
 class Sale:
     """A single e-commerce sale transaction entity."""
+
     id: str
     store_id: str
     customer: str
@@ -62,6 +66,7 @@ class Sale:
 @dataclass
 class AbandonedCart:
     """An abandoned cart record for recovery operations."""
+
     id: str
     store_id: str
     customer_email: str
@@ -78,7 +83,7 @@ class AbandonedCart:
 class EcommerceSales:
     """
     E-commerce Sales System.
-    
+
     Orchestrates transaction tracking and automated cart recovery workflows.
     """
 
@@ -89,15 +94,10 @@ class EcommerceSales:
         logger.info(f"E-commerce Sales system initialized for {agency_name}")
 
     def _validate_email(self, email: str) -> bool:
-        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+        return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
 
     def record_sale(
-        self,
-        store_id: str,
-        customer: str,
-        amount: float,
-        items_count: int,
-        source: str = "direct"
+        self, store_id: str, customer: str, amount: float, items_count: int, source: str = "direct"
     ) -> Sale:
         """Log a successful sale transaction."""
         if not customer:
@@ -105,27 +105,27 @@ class EcommerceSales:
 
         sale = Sale(
             id=f"SAL-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id, customer=customer,
-            amount=amount, items_count=items_count,
-            source=source, status=SaleStatus.PAID
+            store_id=store_id,
+            customer=customer,
+            amount=amount,
+            items_count=items_count,
+            source=source,
+            status=SaleStatus.PAID,
         )
         self.sales.append(sale)
         logger.info(f"Sale recorded: {customer} (${amount:,.2f}) via {source}")
         return sale
 
-    def log_abandoned_cart(
-        self,
-        store_id: str,
-        email: str,
-        value: float
-    ) -> AbandonedCart:
+    def log_abandoned_cart(self, store_id: str, email: str, value: float) -> AbandonedCart:
         """Register a cart for potential recovery."""
         if not self._validate_email(email):
             raise ValueError(f"Invalid email: {email}")
 
         cart = AbandonedCart(
             id=f"CRT-{uuid.uuid4().hex[:6].upper()}",
-            store_id=store_id, customer_email=email, cart_value=value
+            store_id=store_id,
+            customer_email=email,
+            cart_value=value,
         )
         self.abandoned_carts.append(cart)
         logger.info(f"Abandoned cart logged: {email} (${value:,.0f})")
@@ -134,7 +134,9 @@ class EcommerceSales:
     def get_sales_stats(self, days: int = 30) -> Dict[str, Any]:
         """Aggregate sales and recovery performance data."""
         cutoff = datetime.now() - timedelta(days=days)
-        recent_sales = [s for s in self.sales if s.created_at >= cutoff and s.status == SaleStatus.PAID]
+        recent_sales = [
+            s for s in self.sales if s.created_at >= cutoff and s.status == SaleStatus.PAID
+        ]
 
         revenue = sum(s.amount for s in recent_sales)
         aov = (revenue / len(recent_sales)) if recent_sales else 0.0
@@ -145,7 +147,9 @@ class EcommerceSales:
             "sales_count": len(recent_sales),
             "total_revenue": revenue,
             "avg_order_value": aov,
-            "recovery_rate": (len(recovered_carts) / len(self.abandoned_carts) * 100) if self.abandoned_carts else 0.0
+            "recovery_rate": (len(recovered_carts) / len(self.abandoned_carts) * 100)
+            if self.abandoned_carts
+            else 0.0,
         }
 
     def format_dashboard(self) -> str:
@@ -163,21 +167,27 @@ class EcommerceSales:
 
         # Display latest 4 sales
         for sale in self.sales[-4:]:
-            icon = {"direct": "🌐", "email": "📧", "ad": "📢", "social": "📱"}.get(sale.source, "💰")
-            cust_disp = (sale.customer[:12] + '..') if len(sale.customer) > 14 else sale.customer
-            lines.append(f"║  ✅ {icon} {cust_disp:<14} │ ${sale.amount:>8,.0f} │ {sale.items_count:>2} items  ║")
+            icon = {"direct": "🌐", "email": "📧", "ad": "📢", "social": "📱"}.get(
+                sale.source, "💰"
+            )
+            cust_disp = (sale.customer[:12] + "..") if len(sale.customer) > 14 else sale.customer
+            lines.append(
+                f"║  ✅ {icon} {cust_disp:<14} │ ${sale.amount:>8,.0f} │ {sale.items_count:>2} items  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  🛒 RECOVERY TRACKER                                      ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-            f"║    📊 Recovery Rate:  {s['recovery_rate']:>6.1f}%                       ║",
-            "║                                                           ║",
-            "║  [💰 Sales]  [🛒 Carts]  [📊 Conversion]  [⚙️ Settings]   ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  🛒 RECOVERY TRACKER                                      ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+                f"║    📊 Recovery Rate:  {s['recovery_rate']:>6.1f}%                       ║",
+                "║                                                           ║",
+                "║  [💰 Sales]  [🛒 Carts]  [📊 Conversion]  [⚙️ Settings]   ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Profits!           ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

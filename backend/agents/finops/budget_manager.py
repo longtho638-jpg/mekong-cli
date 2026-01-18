@@ -4,9 +4,9 @@ Manages budgets, enforces limits, and sends notifications.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List
 
 
 class AlertLevel(Enum):
@@ -18,6 +18,7 @@ class AlertLevel(Enum):
 @dataclass
 class Budget:
     """Budget configuration"""
+
     id: str
     name: str
     limit: float  # USD
@@ -43,6 +44,7 @@ class Budget:
 @dataclass
 class Alert:
     """Budget alert"""
+
     id: str
     budget_id: str
     level: AlertLevel
@@ -58,7 +60,7 @@ class Alert:
 class BudgetManagerAgent:
     """
     Budget Manager Agent - Quản lý Ngân sách
-    
+
     Responsibilities:
     - Set spending limits
     - Track usage against limits
@@ -80,21 +82,11 @@ class BudgetManagerAgent:
         self.alerts: List[Alert] = []
         self.throttled: bool = False
 
-    def create_budget(
-        self,
-        name: str,
-        limit: float,
-        period: str = "monthly"
-    ) -> Budget:
+    def create_budget(self, name: str, limit: float, period: str = "monthly") -> Budget:
         """Create a new budget"""
         budget_id = f"budget_{name.lower().replace(' ', '_')}"
 
-        budget = Budget(
-            id=budget_id,
-            name=name,
-            limit=limit,
-            period=period
-        )
+        budget = Budget(id=budget_id, name=name, limit=limit, period=period)
 
         self.budgets[budget_id] = budget
         return budget
@@ -122,7 +114,7 @@ class BudgetManagerAgent:
             "remaining": budget.remaining,
             "usage_percent": budget.usage_percent,
             "alerts": [a.message for a in alerts_triggered],
-            "throttled": should_throttle
+            "throttled": should_throttle,
         }
 
     def _check_alerts(self, budget: Budget) -> List[Alert]:
@@ -136,8 +128,7 @@ class BudgetManagerAgent:
             if budget.usage_percent >= threshold:
                 # Check if already alerted for this threshold
                 existing = [
-                    a for a in self.alerts
-                    if a.budget_id == budget.id and a.threshold == threshold
+                    a for a in self.alerts if a.budget_id == budget.id and a.threshold == threshold
                 ]
 
                 if not existing:
@@ -146,7 +137,7 @@ class BudgetManagerAgent:
                         budget_id=budget.id,
                         level=level,
                         message=f"⚠️ {budget.name}: {threshold}% of ${budget.limit} budget used",
-                        threshold=threshold
+                        threshold=threshold,
                     )
                     self.alerts.append(alert)
                     triggered.append(alert)
@@ -189,14 +180,16 @@ class BudgetManagerAgent:
                     "spent": b.spent,
                     "remaining": b.remaining,
                     "usage_percent": round(b.usage_percent, 1),
-                    "period": b.period
+                    "period": b.period,
                 }
                 for b in self.budgets.values()
             ],
             "total_limit": sum(b.limit for b in self.budgets.values()),
             "total_spent": sum(b.spent for b in self.budgets.values()),
-            "active_alerts": len([a for a in self.alerts if a.level in [AlertLevel.WARNING, AlertLevel.CRITICAL]]),
-            "throttled": self.throttled
+            "active_alerts": len(
+                [a for a in self.alerts if a.level in [AlertLevel.WARNING, AlertLevel.CRITICAL]]
+            ),
+            "throttled": self.throttled,
         }
 
 
@@ -222,7 +215,7 @@ if __name__ == "__main__":
 
     result2 = manager.record_spending(ai_budget.id, 40.0)
     print(f"   AI: Spent $40 → {result2['usage_percent']:.0f}% used")
-    if result2['alerts']:
+    if result2["alerts"]:
         print(f"   🚨 Alerts: {result2['alerts']}")
 
     # Check if can spend more

@@ -7,12 +7,13 @@ Clean Architecture Layer: Entities
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
 
 class DealStage(Enum):
     """Deal stages in the sales pipeline."""
+
     QUALIFIED = "qualified"
     PROPOSAL = "proposal"
     NEGOTIATION = "negotiation"
@@ -23,6 +24,7 @@ class DealStage(Enum):
 @dataclass
 class Deal:
     """Core deal entity."""
+
     id: Optional[int] = None
     title: str = ""
     company: str = ""

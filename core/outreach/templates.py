@@ -50,7 +50,6 @@ Bill
 🏯 AgencyOS
 """,
     },
-    
     # --- Urgent / Follow-up Templates ---
     "alex": {
         "subject": "Ghost CTO Proposal - Ready to Start Monday",

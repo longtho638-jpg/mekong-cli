@@ -3,20 +3,21 @@ Editor Agent - Content Creation
 Transforms intel briefs into polished content.
 """
 
-from dataclasses import dataclass
-from typing import List
-from datetime import datetime
-import sys
 import os
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List
 
 # Import VibeTuner for localized content
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from core.growth.vibe_tuner import VibeTuner, VibeRegion
+from core.growth.vibe_tuner import VibeRegion, VibeTuner
 
 
 @dataclass
 class ContentDraft:
     """Generated content piece"""
+
     title: str
     body: str
     platform: str  # facebook, zalo, blog, twitter
@@ -36,7 +37,7 @@ class ContentDraft:
 class EditorAgent:
     """
     Editor Agent - Biên tập nội dung
-    
+
     Responsibilities:
     - Transform briefs into content
     - Apply Vibe Tuning
@@ -56,15 +57,10 @@ class EditorAgent:
         self.status = "ready"
         self.vibe_tuner = VibeTuner(VibeRegion(vibe))
 
-    def create_post(
-        self,
-        topic: str,
-        pillar: str,
-        platform: str = "facebook"
-    ) -> ContentDraft:
+    def create_post(self, topic: str, pillar: str, platform: str = "facebook") -> ContentDraft:
         """
         Create a social media post.
-        
+
         Args:
             topic: Topic to write about
             pillar: Content pillar (Code-to-Cashflow, etc.)
@@ -77,14 +73,14 @@ class EditorAgent:
             "Code-to-Cashflow": f"""
 🚀 {topic}
 
-Hôm nay mình chia sẻ cách tiết kiệm chi phí khi build agency {config.local_words[0] if config.local_words else ''}!
+Hôm nay mình chia sẻ cách tiết kiệm chi phí khi build agency {config.local_words[0] if config.local_words else ""}!
 
 💡 Key takeaways:
 • Hybrid Router giúp tiết kiệm 70% chi phí AI
 • Mekong-CLI deploy trong 15 phút
 • Không cần thuê developer
 
-Bạn đã thử chưa? Comment bên dưới {config.local_words[1] if len(config.local_words) > 1 else ''} 👇
+Bạn đã thử chưa? Comment bên dưới {config.local_words[1] if len(config.local_words) > 1 else ""} 👇
 """,
             "Solopreneur Mindset": f"""
 💪 {topic}
@@ -103,7 +99,7 @@ Ai đang làm agency 1 người? 🙋‍♂️
 
 Tại sao AI cần nói giọng địa phương?
 
-Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if config.local_words else 'nghen'}"
+Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if config.local_words else "nghen"}"
 
 → Kết nối với khách hàng tốt hơn!
 
@@ -127,15 +123,12 @@ Demo: ChatGPT nói "Anh ơi" vs Mekong-CLI nói "{config.local_words[0] if confi
             body=body.strip(),
             platform=platform,
             pillar=pillar,
-            hashtags=hashtags[:self.PLATFORM_FORMATS[platform]["hashtags"]],
-            vibe=self.vibe_tuner.current_vibe.value
+            hashtags=hashtags[: self.PLATFORM_FORMATS[platform]["hashtags"]],
+            vibe=self.vibe_tuner.current_vibe.value,
         )
 
     def batch_create(
-        self,
-        topics: List[str],
-        pillar: str,
-        platforms: List[str] = ["facebook"]
+        self, topics: List[str], pillar: str, platforms: List[str] = ["facebook"]
     ) -> List[ContentDraft]:
         """Create multiple content pieces"""
         drafts = []
@@ -155,7 +148,7 @@ if __name__ == "__main__":
     post = editor.create_post(
         topic="Tiết kiệm $500/tháng với Hybrid Router",
         pillar="Code-to-Cashflow",
-        platform="facebook"
+        platform="facebook",
     )
 
     print(f"📝 Platform: {post.platform}")

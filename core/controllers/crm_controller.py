@@ -5,7 +5,8 @@ Handles HTTP requests for CRM operations.
 Clean Architecture Layer: Controllers
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 from core.use_cases.create_deal import CreateDealUseCase
 
 
@@ -18,10 +19,10 @@ class CRMController:
     def create_deal(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Handle create deal request.
-        
+
         Args:
             request_data: Dict with title, company, value, probability
-        
+
         Returns:
             Response dict with created deal data
         """
@@ -39,7 +40,7 @@ class CRMController:
                 company=company,
                 value=value,
                 probability=probability,
-                contact_id=contact_id
+                contact_id=contact_id,
             )
 
             # Format response
@@ -52,17 +53,11 @@ class CRMController:
                     "value": deal.value,
                     "stage": deal.stage.value,
                     "probability": deal.probability,
-                    "weighted_value": deal.calculate_weighted_value()
-                }
+                    "weighted_value": deal.calculate_weighted_value(),
+                },
             }
 
         except ValueError as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
         except Exception as e:
-            return {
-                "success": False,
-                "error": f"Internal error: {str(e)}"
-            }
+            return {"success": False, "error": f"Internal error: {str(e)}"}

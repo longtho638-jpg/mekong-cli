@@ -3,11 +3,11 @@ Account Agent - Target Account Management
 Manages target accounts, tiers, and ICP scoring.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List
 
 
 class AccountTier(Enum):
@@ -27,6 +27,7 @@ class AccountStage(Enum):
 @dataclass
 class Account:
     """Target account"""
+
     id: str
     name: str
     industry: str
@@ -46,7 +47,7 @@ class Account:
 class AccountAgent:
     """
     Account Agent - Quản lý Tài khoản Mục tiêu
-    
+
     Responsibilities:
     - Target accounts
     - Account tiers
@@ -65,10 +66,10 @@ class AccountAgent:
         industry: str,
         tier: AccountTier,
         annual_revenue: str = "",
-        employees: int = 0
+        employees: int = 0,
     ) -> Account:
         """Add target account"""
-        account_id = f"acc_{random.randint(100,999)}"
+        account_id = f"acc_{random.randint(100, 999)}"
 
         account = Account(
             id=account_id,
@@ -76,7 +77,7 @@ class AccountAgent:
             industry=industry,
             tier=tier,
             annual_revenue=annual_revenue,
-            employees=employees
+            employees=employees,
         )
 
         self.accounts[account_id] = account
@@ -120,7 +121,7 @@ class AccountAgent:
             "tier_2": len(self.get_by_tier(AccountTier.TIER_2)),
             "tier_3": len(self.get_by_tier(AccountTier.TIER_3)),
             "avg_icp_score": sum(a.icp_score for a in accounts) / len(accounts) if accounts else 0,
-            "total_contacts": sum(a.contacts for a in accounts)
+            "total_contacts": sum(a.contacts for a in accounts),
         }
 
 

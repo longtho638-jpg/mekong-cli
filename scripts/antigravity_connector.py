@@ -110,10 +110,10 @@ async def main():
     list_parser.add_argument("--dir", default=".", help="Directory to list")
 
     # Tools command
-    tools_parser = subparsers.add_parser("tools", help="Get available tools")
+    subparsers.add_parser("tools", help="Get available tools")
 
     # Status command
-    status_parser = subparsers.add_parser("status", help="Get API status")
+    subparsers.add_parser("status", help="Get API status")
 
     # Analyze command
     analyze_parser = subparsers.add_parser("analyze", help="Analyze codebase")
@@ -132,9 +132,7 @@ async def main():
 
     # Execute command
     if args.command == "create":
-        result = await connector.create_file(
-            args.filepath, args.content or "", args.purpose
-        )
+        result = await connector.create_file(args.filepath, args.content or "", args.purpose)
         print(json.dumps(result, indent=2))
 
     elif args.command == "read":
@@ -165,9 +163,7 @@ async def main():
             )
             print(json.dumps(result, indent=2))
         except json.JSONDecodeError:
-            print(
-                json.dumps({"success": False, "error": "Invalid JSON data"}, indent=2)
-            )
+            print(json.dumps({"success": False, "error": "Invalid JSON data"}, indent=2))
 
     else:
         parser.print_help()

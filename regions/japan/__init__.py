@@ -10,19 +10,21 @@ Features:
 - Japan-wide coverage
 """
 
-from typing import Dict, Any, List
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List
 
 
 class Currency(Enum):
     """Supported currencies."""
+
     JPY = "JPY"  # Japanese Yen
     USD = "USD"  # US Dollar
 
 
 class JapanRegion(Enum):
     """Japan regions."""
+
     HOKKAIDO = "hokkaido"
     TOHOKU = "tohoku"
     KANTO = "kanto"
@@ -36,6 +38,7 @@ class JapanRegion(Enum):
 @dataclass
 class Prefecture:
     """A Japanese prefecture."""
+
     code: str
     name_en: str
     name_jp: str
@@ -62,16 +65,18 @@ class JapanConfig:
     coverage_type: str = "nationwide"
 
     # Major cities
-    major_cities: List[str] = field(default_factory=lambda: [
-        "Tokyo",
-        "Osaka",
-        "Nagoya",
-        "Yokohama",
-        "Fukuoka",
-        "Sapporo",
-        "Kobe",
-        "Kyoto"
-    ])
+    major_cities: List[str] = field(
+        default_factory=lambda: [
+            "Tokyo",
+            "Osaka",
+            "Nagoya",
+            "Yokohama",
+            "Fukuoka",
+            "Sapporo",
+            "Kobe",
+            "Kyoto",
+        ]
+    )
 
     # Prefectures
     prefectures: List[Prefecture] = field(default_factory=list)
@@ -115,7 +120,7 @@ class JapanConfig:
             "major_cities": len(self.major_cities),
             "currencies": [self.primary_currency.value, self.local_currency.value],
             "locales": [self.primary_locale, self.secondary_locale],
-            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} JPY"
+            "exchange_rate": f"1 USD = {self.exchange_rate:,.0f} JPY",
         }
 
 
@@ -127,12 +132,12 @@ class JapanPricingEngine:
 
         # Local service pricing (JPY)
         self.local_services = {
-            "seo_basic": 50_000,      # ¥50,000/month
-            "seo_pro": 150_000,       # ¥150,000/month
-            "content_pack": 30_000,   # ¥30,000/10 posts
-            "social_mgmt": 80_000,    # ¥80,000/month
-            "website": 300_000,       # ¥300,000 one-time
-            "branding": 500_000,      # ¥500,000 package
+            "seo_basic": 50_000,  # ¥50,000/month
+            "seo_pro": 150_000,  # ¥150,000/month
+            "content_pack": 30_000,  # ¥30,000/10 posts
+            "social_mgmt": 80_000,  # ¥80,000/month
+            "website": 300_000,  # ¥300,000 one-time
+            "branding": 500_000,  # ¥500,000 package
         }
 
     def get_local_price(self, service: str, in_usd: bool = False) -> str:

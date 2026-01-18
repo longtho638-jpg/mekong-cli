@@ -2,7 +2,7 @@
 💰 Invoice Models - Revenue Tracking
 ====================================
 
-Defines the data entities for financial transactions and forecasting. 
+Defines the data entities for financial transactions and forecasting.
 Enables multi-currency billing and revenue performance analysis.
 
 Hierarchy:
@@ -15,14 +15,16 @@ Binh Pháp: 💰 Tài (Wealth) - Securing the harvest.
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
 from enum import Enum
+from typing import Any, Dict, Optional
 
 # Standard 2026 Rate
 VND_RATE = 25000.0
 
+
 class InvoiceStatus(Enum):
     """Payment lifecycle states."""
+
     DRAFT = "draft"
     SENT = "sent"
     PAID = "paid"
@@ -34,10 +36,11 @@ class InvoiceStatus(Enum):
 class Invoice:
     """
     🧾 Client Invoice
-    
-    Captures a single billing event. Supports automated VND conversion 
+
+    Captures a single billing event. Supports automated VND conversion
     and health monitoring (overdue status).
     """
+
     id: Optional[int] = None
     client_name: str = ""
     amount: float = 0.0
@@ -71,9 +74,9 @@ class Invoice:
             "dates": {
                 "due": self.due_date.isoformat(),
                 "paid": self.paid_date.isoformat() if self.paid_date else None,
-                "created": self.created_at.isoformat()
+                "created": self.created_at.isoformat(),
             },
-            "amount_vnd": self.get_amount_vnd()
+            "amount_vnd": self.get_amount_vnd(),
         }
 
 
@@ -81,10 +84,11 @@ class Invoice:
 class Forecast:
     """
     📈 Revenue Forecast
-    
+
     Projects future performance and tracks variance against reality.
     """
-    month: str # YYYY-MM
+
+    month: str  # YYYY-MM
     projected: float
     actual: float = 0.0
     confidence: float = 0.8
@@ -95,7 +99,8 @@ class Forecast:
 
     def get_variance_percent(self) -> float:
         """Calculates variance as a percentage of projection."""
-        if self.projected == 0: return 0.0
+        if self.projected == 0:
+            return 0.0
         return (self.get_variance() / self.projected) * 100
 
     def to_dict(self) -> Dict[str, Any]:
@@ -106,5 +111,5 @@ class Forecast:
             "actual": self.actual,
             "confidence": self.confidence,
             "variance": round(self.get_variance(), 2),
-            "variance_pct": round(self.get_variance_percent(), 1)
+            "variance_pct": round(self.get_variance_percent(), 1),
         }

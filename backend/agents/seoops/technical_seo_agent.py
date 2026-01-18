@@ -3,10 +3,10 @@ Technical SEO Agent - Site Audits & Core Web Vitals
 Manages technical SEO audits, crawlability, and performance.
 """
 
-from dataclasses import dataclass
-from typing import List, Dict, Optional
-from enum import Enum
 import random
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict, List, Optional
 
 
 class IssueSeverity(Enum):
@@ -29,6 +29,7 @@ class IssueType(Enum):
 @dataclass
 class SEOIssue:
     """SEO audit issue"""
+
     id: str
     url: str
     issue_type: IssueType
@@ -40,40 +41,49 @@ class SEOIssue:
 @dataclass
 class CoreWebVitals:
     """Core Web Vitals metrics"""
+
     lcp: float  # Largest Contentful Paint (seconds)
     fid: float  # First Input Delay (ms)
     cls: float  # Cumulative Layout Shift
 
     @property
     def lcp_status(self) -> str:
-        if self.lcp <= 2.5: return "good"
-        if self.lcp <= 4.0: return "needs_improvement"
+        if self.lcp <= 2.5:
+            return "good"
+        if self.lcp <= 4.0:
+            return "needs_improvement"
         return "poor"
 
     @property
     def fid_status(self) -> str:
-        if self.fid <= 100: return "good"
-        if self.fid <= 300: return "needs_improvement"
+        if self.fid <= 100:
+            return "good"
+        if self.fid <= 300:
+            return "needs_improvement"
         return "poor"
 
     @property
     def cls_status(self) -> str:
-        if self.cls <= 0.1: return "good"
-        if self.cls <= 0.25: return "needs_improvement"
+        if self.cls <= 0.1:
+            return "good"
+        if self.cls <= 0.25:
+            return "needs_improvement"
         return "poor"
 
     @property
     def overall_status(self) -> str:
         statuses = [self.lcp_status, self.fid_status, self.cls_status]
-        if all(s == "good" for s in statuses): return "good"
-        if "poor" in statuses: return "poor"
+        if all(s == "good" for s in statuses):
+            return "good"
+        if "poor" in statuses:
+            return "poor"
         return "needs_improvement"
 
 
 class TechnicalSEOAgent:
     """
     Technical SEO Agent - Kiểm tra Kỹ thuật SEO
-    
+
     Responsibilities:
     - Site audit (404s, redirects)
     - Crawlability check
@@ -105,11 +115,11 @@ class TechnicalSEOAgent:
         for i in range(num_issues):
             sample = random.choice(issue_samples)
             issue = SEOIssue(
-                id=f"issue_{i+1}",
-                url=f"https://{domain}/page-{random.randint(1,50)}",
+                id=f"issue_{i + 1}",
+                url=f"https://{domain}/page-{random.randint(1, 50)}",
                 issue_type=sample[0],
                 severity=sample[1],
-                description=sample[2]
+                description=sample[2],
             )
             self.issues.append(issue)
 
@@ -120,7 +130,7 @@ class TechnicalSEOAgent:
         self.vitals = CoreWebVitals(
             lcp=random.uniform(1.0, 5.0),
             fid=random.uniform(50, 400),
-            cls=random.uniform(0.01, 0.35)
+            cls=random.uniform(0.01, 0.35),
         )
         return self.vitals
 
@@ -152,15 +162,19 @@ class TechnicalSEOAgent:
 
     def get_stats(self) -> Dict:
         """Get audit statistics"""
-        critical = len([i for i in self.issues if i.severity == IssueSeverity.CRITICAL and not i.is_fixed])
-        warnings = len([i for i in self.issues if i.severity == IssueSeverity.WARNING and not i.is_fixed])
+        critical = len(
+            [i for i in self.issues if i.severity == IssueSeverity.CRITICAL and not i.is_fixed]
+        )
+        warnings = len(
+            [i for i in self.issues if i.severity == IssueSeverity.WARNING and not i.is_fixed]
+        )
 
         return {
             "health_score": self.get_health_score(),
             "total_issues": len(self.issues),
             "critical": critical,
             "warnings": warnings,
-            "vitals_status": self.vitals.overall_status if self.vitals else "unknown"
+            "vitals_status": self.vitals.overall_status if self.vitals else "unknown",
         }
 
 

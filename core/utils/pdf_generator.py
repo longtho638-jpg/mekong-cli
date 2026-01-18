@@ -12,19 +12,21 @@ Features:
 - Export to PDF format
 """
 
-import uuid
 import logging
-from typing import Dict, List, Any
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class DocumentType(Enum):
     """Supported document types for PDF generation."""
+
     PROPOSAL = "proposal"
     CONTRACT = "contract"
     INVOICE = "invoice"
@@ -35,6 +37,7 @@ class DocumentType(Enum):
 @dataclass
 class PDFDocument:
     """A generated PDF document record entity."""
+
     id: str
     type: DocumentType
     title: str
@@ -51,7 +54,7 @@ class PDFDocument:
 class PDFGenerator:
     """
     PDF Generation System.
-    
+
     Orchestrates the creation, versioning, and formatting of agency documents.
     """
 
@@ -66,13 +69,16 @@ class PDFGenerator:
         client: str,
         title: str,
         payload: Dict[str, Any],
-        pages: int = 1
+        pages: int = 1,
     ) -> PDFDocument:
         """Execute document generation logic."""
         doc = PDFDocument(
             id=f"PDF-{uuid.uuid4().hex[:6].upper()}",
-            type=doc_type, title=title, client_name=client,
-            content=payload, pages=pages
+            type=doc_type,
+            title=title,
+            client_name=client,
+            content=payload,
+            pages=pages,
         )
         self.documents.append(doc)
         logger.info(f"PDF Generated: {title} ({doc_type.value})")
@@ -81,8 +87,10 @@ class PDFGenerator:
     def format_preview(self, doc: PDFDocument) -> str:
         """Render an ASCII preview of the document record."""
         icons = {
-            DocumentType.PROPOSAL: "📝", DocumentType.CONTRACT: "📄",
-            DocumentType.INVOICE: "💳", DocumentType.REPORT: "📊"
+            DocumentType.PROPOSAL: "📝",
+            DocumentType.CONTRACT: "📄",
+            DocumentType.INVOICE: "💳",
+            DocumentType.REPORT: "📊",
         }
 
         lines = [
@@ -111,8 +119,7 @@ if __name__ == "__main__":
         gen = PDFGenerator("Saigon Digital Hub")
         # Seed
         doc = gen.generate_document(
-            DocumentType.PROPOSAL, "Sunrise Realty", "SEO Overhaul",
-            {"services": ["Ads", "SEO"]}, 3
+            DocumentType.PROPOSAL, "Sunrise Realty", "SEO Overhaul", {"services": ["Ads", "SEO"]}, 3
         )
         print("\n" + gen.format_preview(doc))
 

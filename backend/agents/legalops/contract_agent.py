@@ -3,11 +3,11 @@ Contract Agent - Contract Lifecycle Management
 Manages contract drafting, review, and signatures.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class ContractStatus(Enum):
@@ -32,6 +32,7 @@ class ContractType(Enum):
 @dataclass
 class Contract:
     """Legal contract"""
+
     id: str
     name: str
     counterparty: str
@@ -58,7 +59,7 @@ class Contract:
 class ContractAgent:
     """
     Contract Agent - Quản lý Hợp đồng
-    
+
     Responsibilities:
     - Draft contracts
     - Manage review workflow
@@ -78,10 +79,10 @@ class ContractAgent:
         contract_type: ContractType,
         value: float = 0.0,
         duration_days: int = 365,
-        assigned_lawyer: str = ""
+        assigned_lawyer: str = "",
     ) -> Contract:
         """Create new contract"""
-        contract_id = f"contract_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        contract_id = f"contract_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         contract = Contract(
             id=contract_id,
@@ -91,7 +92,7 @@ class ContractAgent:
             value=value,
             start_date=datetime.now(),
             end_date=datetime.now() + timedelta(days=duration_days),
-            assigned_lawyer=assigned_lawyer
+            assigned_lawyer=assigned_lawyer,
         )
 
         self.contracts[contract_id] = contract
@@ -128,7 +129,8 @@ class ContractAgent:
     def get_expiring_soon(self, days: int = 90) -> List[Contract]:
         """Get contracts expiring soon"""
         return [
-            c for c in self.contracts.values()
+            c
+            for c in self.contracts.values()
             if c.status == ContractStatus.SIGNED and 0 < c.days_until_expiry <= days
         ]
 
@@ -140,9 +142,11 @@ class ContractAgent:
             "total_contracts": len(contracts),
             "active": len([c for c in contracts if c.status == ContractStatus.SIGNED]),
             "pending_review": len(self.get_pending_review()),
-            "pending_signature": len([c for c in contracts if c.status == ContractStatus.PENDING_SIGNATURE]),
+            "pending_signature": len(
+                [c for c in contracts if c.status == ContractStatus.PENDING_SIGNATURE]
+            ),
             "total_value": sum(c.value for c in contracts if c.status == ContractStatus.SIGNED),
-            "expiring_90_days": len(self.get_expiring_soon(90))
+            "expiring_90_days": len(self.get_expiring_soon(90)),
         }
 
 
@@ -153,9 +157,15 @@ if __name__ == "__main__":
     print("📄 Contract Agent Demo\n")
 
     # Create contracts
-    c1 = agent.create_contract("Enterprise MSA", "BigCorp", ContractType.MSA, 150000, assigned_lawyer="Legal_001")
-    c2 = agent.create_contract("NDA - TechCo", "TechCo", ContractType.NDA, assigned_lawyer="Legal_002")
-    c3 = agent.create_contract("SOW Phase 1", "StartupX", ContractType.SOW, 50000, assigned_lawyer="Legal_001")
+    c1 = agent.create_contract(
+        "Enterprise MSA", "BigCorp", ContractType.MSA, 150000, assigned_lawyer="Legal_001"
+    )
+    c2 = agent.create_contract(
+        "NDA - TechCo", "TechCo", ContractType.NDA, assigned_lawyer="Legal_002"
+    )
+    c3 = agent.create_contract(
+        "SOW Phase 1", "StartupX", ContractType.SOW, 50000, assigned_lawyer="Legal_001"
+    )
 
     print(f"📋 Contract: {c1.name}")
     print(f"   Type: {c1.contract_type.value}")

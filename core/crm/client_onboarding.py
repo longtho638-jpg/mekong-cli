@@ -12,20 +12,22 @@ Features:
 - Progress visualization
 """
 
-import uuid
 import logging
 import re
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class OnboardingStep(Enum):
     """Onboarding steps."""
+
     WELCOME_CALL = "welcome_call"
     ACCOUNT_SETUP = "account_setup"
     PORTAL_ACCESS = "portal_access"
@@ -37,6 +39,7 @@ class OnboardingStep(Enum):
 @dataclass
 class OnboardingChecklist:
     """Onboarding checklist item entity."""
+
     step: OnboardingStep
     name: str
     description: str
@@ -48,6 +51,7 @@ class OnboardingChecklist:
 @dataclass
 class ClientOnboarding:
     """Client onboarding record entity."""
+
     id: str
     client_name: str
     email: str
@@ -59,7 +63,7 @@ class ClientOnboarding:
 class ClientOnboardingFlow:
     """
     Client Onboarding Flow System.
-    
+
     Manages the initial stages of the client-agency relationship.
     """
 
@@ -70,18 +74,30 @@ class ClientOnboardingFlow:
 
     def _validate_email(self, email: str) -> bool:
         """Basic email format validation."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return bool(re.match(pattern, email))
 
     def _create_default_checklist(self) -> List[OnboardingChecklist]:
         """Generate the standard onboarding roadmap."""
         return [
-            OnboardingChecklist(OnboardingStep.WELCOME_CALL, "Welcome Call", "Schedule initial call", due_days=1),
-            OnboardingChecklist(OnboardingStep.ACCOUNT_SETUP, "Account Setup", "Create client account", due_days=1),
-            OnboardingChecklist(OnboardingStep.PORTAL_ACCESS, "Portal Access", "Send portal login", due_days=2),
-            OnboardingChecklist(OnboardingStep.KICKOFF_MEETING, "Kickoff Meeting", "Team introduction", due_days=3),
-            OnboardingChecklist(OnboardingStep.STRATEGY_SESSION, "Strategy Session", "Define roadmap", due_days=5),
-            OnboardingChecklist(OnboardingStep.DELIVERABLES_START, "Start Work", "Begin deliverables", due_days=7),
+            OnboardingChecklist(
+                OnboardingStep.WELCOME_CALL, "Welcome Call", "Schedule initial call", due_days=1
+            ),
+            OnboardingChecklist(
+                OnboardingStep.ACCOUNT_SETUP, "Account Setup", "Create client account", due_days=1
+            ),
+            OnboardingChecklist(
+                OnboardingStep.PORTAL_ACCESS, "Portal Access", "Send portal login", due_days=2
+            ),
+            OnboardingChecklist(
+                OnboardingStep.KICKOFF_MEETING, "Kickoff Meeting", "Team introduction", due_days=3
+            ),
+            OnboardingChecklist(
+                OnboardingStep.STRATEGY_SESSION, "Strategy Session", "Define roadmap", due_days=5
+            ),
+            OnboardingChecklist(
+                OnboardingStep.DELIVERABLES_START, "Start Work", "Begin deliverables", due_days=7
+            ),
         ]
 
     def start_onboarding(self, client_name: str, email: str) -> ClientOnboarding:
@@ -96,7 +112,7 @@ class ClientOnboardingFlow:
             id=f"ONB-{uuid.uuid4().hex[:6].upper()}",
             client_name=client_name,
             email=email,
-            checklist=self._create_default_checklist()
+            checklist=self._create_default_checklist(),
         )
         self.onboardings[onboarding.id] = onboarding
         logger.info(f"Started onboarding for {client_name} ({onboarding.id})")
@@ -128,7 +144,7 @@ class ClientOnboardingFlow:
         if not onboarding.checklist:
             return 0.0
         completed = sum(1 for item in onboarding.checklist if item.completed)
-        return (completed / len(onboarding.checklist) * 100.0)
+        return completed / len(onboarding.checklist) * 100.0
 
     def format_onboarding_detail(self, onboarding_id: str) -> str:
         """Render detail view for a specific onboarding."""
@@ -155,13 +171,15 @@ class ClientOnboardingFlow:
             status = "Done" if item.completed else f"Day {item.due_days}"
             lines.append(f"║    {icon} {item.name:<25} │ {status:<15}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📧 Reminder]  [📊 Details]  [✅ Mark Done]              ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - First Impression!  ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📧 Reminder]  [📊 Details]  [✅ Mark Done]              ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - First Impression!  ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -182,7 +200,9 @@ class ClientOnboardingFlow:
             progress = self.get_progress(onb)
             bar = "█" * int(progress / 20) + "░" * (5 - int(progress / 20))
             status = "✅ Done  " if onb.completed_at else "🔄 Active"
-            name_disp = (onb.client_name[:15] + '..') if len(onb.client_name) > 17 else onb.client_name
+            name_disp = (
+                (onb.client_name[:15] + "..") if len(onb.client_name) > 17 else onb.client_name
+            )
             lines.append(f"║  {name_disp:<15} │ {bar} {progress:>3.0f}% │ {status:<10}  ║")
 
         lines.append("╚═══════════════════════════════════════════════════════════╝")

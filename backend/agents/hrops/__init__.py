@@ -3,12 +3,19 @@ HROps Agents Package
 Recruitment + Employee
 """
 
-from .recruitment_agent import RecruitmentAgent, Job, Candidate, JobStatus, CandidateStage
-from .employee_agent import EmployeeAgent, Employee, EmployeeStatus, Department
+from .employee_agent import Department, Employee, EmployeeAgent, EmployeeStatus
+from .recruitment_agent import Candidate, CandidateStage, Job, JobStatus, RecruitmentAgent
 
 __all__ = [
     # Recruitment
-    "RecruitmentAgent", "Job", "Candidate", "JobStatus", "CandidateStage",
+    "RecruitmentAgent",
+    "Job",
+    "Candidate",
+    "JobStatus",
+    "CandidateStage",
     # Employee
-    "EmployeeAgent", "Employee", "EmployeeStatus", "Department",
+    "EmployeeAgent",
+    "Employee",
+    "EmployeeStatus",
+    "Department",
 ]

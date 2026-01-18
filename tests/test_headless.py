@@ -2,18 +2,19 @@
 Tests for Headless Mode.
 """
 
-import sys
-import os
-import pytest
 import json
+import os
+import sys
+
+import pytest
 
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.core.headless import HeadlessMode
 
-class TestHeadless:
 
+class TestHeadless:
     def test_prompt_execution(self):
         """Test simple prompt processing."""
         headless = HeadlessMode()
@@ -39,6 +40,7 @@ class TestHeadless:
         data = json.loads(result["output"])
         assert isinstance(data, list)
         assert len(data) == 10
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

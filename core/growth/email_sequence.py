@@ -13,17 +13,19 @@ Features:
 """
 
 import logging
-from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class SequenceType(Enum):
     """Email sequence categories."""
+
     WELCOME = "welcome"
     ONBOARDING = "onboarding"
     NURTURE = "nurture"
@@ -33,6 +35,7 @@ class SequenceType(Enum):
 
 class EmailTrigger(Enum):
     """Event triggers for sequence steps."""
+
     SIGNUP = "signup"
     PURCHASE = "purchase"
     DAY_DELAY = "day_delay"
@@ -42,6 +45,7 @@ class EmailTrigger(Enum):
 @dataclass
 class Email:
     """An individual email within a sequence."""
+
     subject: str
     body: str
     delay_days: int
@@ -55,6 +59,7 @@ class Email:
 @dataclass
 class EmailSequence:
     """A collection of emails forming a strategic workflow."""
+
     name: str
     type: SequenceType
     description: str
@@ -65,7 +70,7 @@ class EmailSequence:
 class EmailSequenceBuilder:
     """
     Email Sequence Builder System.
-    
+
     Generates and manages automated email workflows for client nurturing and retention.
     """
 
@@ -89,15 +94,15 @@ class EmailSequenceBuilder:
                     subject=f"Welcome to {self.agency_name}! 🎉",
                     body=f"Hi {{{{name}}}}! Thanks for joining our {self.niche} community.",
                     delay_days=0,
-                    trigger=EmailTrigger.SIGNUP
+                    trigger=EmailTrigger.SIGNUP,
                 ),
                 Email(
                     subject="Expert Strategy for you",
                     body="Sharing our secret sauce for growth...",
                     delay_days=2,
-                    trigger=EmailTrigger.DAY_DELAY
-                )
-            ]
+                    trigger=EmailTrigger.DAY_DELAY,
+                ),
+            ],
         )
 
         # 2. Onboarding sequence
@@ -110,9 +115,9 @@ class EmailSequenceBuilder:
                     subject="🎉 Welcome aboard! What's next?",
                     body="Here's your onboarding roadmap...",
                     delay_days=0,
-                    trigger=EmailTrigger.PURCHASE
+                    trigger=EmailTrigger.PURCHASE,
                 )
-            ]
+            ],
         )
         logger.debug("Default sequences created successfully.")
 
@@ -123,7 +128,8 @@ class EmailSequenceBuilder:
     def format_sequence_view(self, seq_type: SequenceType) -> str:
         """Render a text-based overview of a sequence."""
         sequence = self.get_sequence(seq_type)
-        if not sequence: return "Sequence not found."
+        if not sequence:
+            return "Sequence not found."
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -136,12 +142,14 @@ class EmailSequenceBuilder:
             delay_txt = "Immediate" if email.delay_days == 0 else f"Day {email.delay_days}"
             lines.append(f"║  {i}. {delay_txt:<15} │ Sub: {email.subject[:35]:<35} ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📊 {len(sequence.emails)} steps │ {self.agency_name[:30]:<30}  ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  📊 {len(sequence.emails)} steps │ {self.agency_name[:30]:<30}  ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

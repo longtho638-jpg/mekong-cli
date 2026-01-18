@@ -2,8 +2,8 @@
 🔀 PR Manager - Automated Change Integration
 ============================================
 
-Orchestrates the automated merging of Pull Requests from trusted sources. 
-Ensures system stability by enforcing CI pass requirements and conflict 
+Orchestrates the automated merging of Pull Requests from trusted sources.
+Ensures system stability by enforcing CI pass requirements and conflict
 checks before any merge operation.
 
 Key Sources:
@@ -14,19 +14,21 @@ Key Sources:
 Binh Pháp: ⚡ Quân Tranh (Unity) - Seamlessly integrating improvements.
 """
 
+import json
 import logging
 import subprocess
-import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Any, Tuple, Set
+from typing import Any, Dict, List, Set, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class PullRequest:
     """Detailed information for a single GitHub Pull Request."""
+
     number: int
     title: str
     author: str
@@ -41,7 +43,7 @@ class PullRequest:
 class PRManager:
     """
     🔀 PR Orchestration Engine
-    
+
     Automates the 'Ship' phase of the Agency OS workflow.
     Uses the GitHub CLI ('gh') for reliable remote operations.
     """
@@ -64,9 +66,13 @@ class PRManager:
         """Queries GitHub for all currently open pull requests."""
         try:
             cmd = [
-                "gh", "pr", "list",
-                "--repo", self.repo,
-                "--json", "number,title,author,state,mergeable,statusCheckRollup,url,createdAt"
+                "gh",
+                "pr",
+                "list",
+                "--repo",
+                self.repo,
+                "--json",
+                "number,title,author,state,mergeable,statusCheckRollup,url,createdAt",
             ]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -88,17 +94,19 @@ class PRManager:
                         for c in checks
                     )
 
-                prs.append(PullRequest(
-                    number=item["number"],
-                    title=item["title"],
-                    author=item["author"]["login"],
-                    state=item["state"],
-                    mergeable=(item.get("mergeable") == "MERGEABLE"),
-                    checks_passed=checks_ok,
-                    url=item["url"],
-                    created_at=datetime.fromisoformat(item["createdAt"].replace('Z', '+00:00')),
-                    raw_data=item
-                ))
+                prs.append(
+                    PullRequest(
+                        number=item["number"],
+                        title=item["title"],
+                        author=item["author"]["login"],
+                        state=item["state"],
+                        mergeable=(item.get("mergeable") == "MERGEABLE"),
+                        checks_passed=checks_ok,
+                        url=item["url"],
+                        created_at=datetime.fromisoformat(item["createdAt"].replace("Z", "+00:00")),
+                        raw_data=item,
+                    )
+                )
             return prs
 
         except FileNotFoundError:
@@ -166,6 +174,7 @@ class PRManager:
 
 
 # --- Integration Helpers ---
+
 
 def get_pr_report() -> str:
     """Standardized visual status report for the CLI."""

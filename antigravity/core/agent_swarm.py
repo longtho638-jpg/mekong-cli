@@ -332,9 +332,7 @@ class AgentSwarm:
 
         # Calculate throughput
         recent_completions = [
-            t
-            for t in self.tasks.values()
-            if t.completed_at and (time.time() - t.completed_at) < 60
+            t for t in self.tasks.values() if t.completed_at and (time.time() - t.completed_at) < 60
         ]
         self.metrics.throughput_per_minute = len(recent_completions)
 
@@ -378,16 +376,12 @@ def get_swarm(max_workers: int = 10) -> AgentSwarm:
 
 
 # Convenience functions
-def register_agent(
-    name: str, handler: Callable, role: AgentRole = AgentRole.WORKER
-) -> str:
+def register_agent(name: str, handler: Callable, role: AgentRole = AgentRole.WORKER) -> str:
     """Register an agent with the swarm."""
     return get_swarm().register_agent(name, handler, role)
 
 
-def submit_task(
-    name: str, payload: Any, priority: TaskPriority = TaskPriority.NORMAL
-) -> str:
+def submit_task(name: str, payload: Any, priority: TaskPriority = TaskPriority.NORMAL) -> str:
     """Submit a task to the swarm."""
     return get_swarm().submit_task(name, payload, priority)
 

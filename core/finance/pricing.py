@@ -17,11 +17,13 @@ from dataclasses import dataclass
 from enum import Enum
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class PricingStrategy(Enum):
     """Business strategies for calculating price."""
+
     COST_PLUS = "cost_plus"
     MARKET_BASED = "market_based"
     VALUE_BASED = "value_based"
@@ -29,6 +31,7 @@ class PricingStrategy(Enum):
 
 class ServiceComplexity(Enum):
     """Degree of difficulty/intensity for a service."""
+
     SIMPLE = "simple"
     MODERATE = "moderate"
     COMPLEX = "complex"
@@ -38,6 +41,7 @@ class ServiceComplexity(Enum):
 @dataclass
 class CostBreakdown:
     """Labor and overhead expenses for a service entity."""
+
     hours_required: float
     hourly_rate: float
     tools_cost: float
@@ -53,6 +57,7 @@ class CostBreakdown:
 @dataclass
 class PriceRecommendation:
     """Strategic price recommendation record."""
+
     service_name: str
     cost: float
     recommended_price: float
@@ -64,7 +69,7 @@ class PriceRecommendation:
 class PricingCalculator:
     """
     Pricing Calculator System.
-    
+
     Orchestrates cost analysis and strategic pricing to maximize agency profitability.
     """
 
@@ -86,7 +91,7 @@ class PricingCalculator:
         service_name: str,
         costs: CostBreakdown,
         complexity: ServiceComplexity,
-        value_bonus: float = 1.0
+        value_bonus: float = 1.0,
     ) -> PriceRecommendation:
         """Execute comprehensive pricing strategy logic."""
         if not service_name:
@@ -100,15 +105,20 @@ class PricingCalculator:
 
         # 3. Strategic Selection
         recommended = max(cost_plus, market) * value_bonus
-        strategy = PricingStrategy.VALUE_BASED if value_bonus > 1.0 else PricingStrategy.MARKET_BASED
+        strategy = (
+            PricingStrategy.VALUE_BASED if value_bonus > 1.0 else PricingStrategy.MARKET_BASED
+        )
 
         margin = (recommended - costs.total_cost) / recommended
         logger.info(f"Price recommended for {service_name}: ${recommended:,.0f} ({strategy.value})")
 
         return PriceRecommendation(
-            service_name=service_name, cost=costs.total_cost,
-            recommended_price=recommended, profit_margin=margin,
-            competitors_avg=market, strategy_used=strategy
+            service_name=service_name,
+            cost=costs.total_cost,
+            recommended_price=recommended,
+            profit_margin=margin,
+            competitors_avg=market,
+            strategy_used=strategy,
         )
 
     def format_recommendation(self, rec: PriceRecommendation) -> str:

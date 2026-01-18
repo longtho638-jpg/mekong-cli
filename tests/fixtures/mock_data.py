@@ -9,52 +9,131 @@ Generates realistic test data for:
 """
 
 import random
-from datetime import datetime, timedelta
-from typing import Dict, List, Any
 from dataclasses import dataclass
-
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 📊 MOCK DATA TEMPLATES
 # ═══════════════════════════════════════════════════════════════════════════════
 
 COMPANY_PREFIXES = [
-    "Tech", "Cloud", "Digital", "Smart", "AI", "Data", "Cyber", "Neo",
-    "Future", "Next", "Ultra", "Prime", "Elite", "Apex", "Core"
+    "Tech",
+    "Cloud",
+    "Digital",
+    "Smart",
+    "AI",
+    "Data",
+    "Cyber",
+    "Neo",
+    "Future",
+    "Next",
+    "Ultra",
+    "Prime",
+    "Elite",
+    "Apex",
+    "Core",
 ]
 
 COMPANY_SUFFIXES = [
-    "Solutions", "Labs", "Systems", "Group", "Corp", "Inc", "Co",
-    "Ventures", "Partners", "Studios", "Dynamics", "Works", "Hub"
+    "Solutions",
+    "Labs",
+    "Systems",
+    "Group",
+    "Corp",
+    "Inc",
+    "Co",
+    "Ventures",
+    "Partners",
+    "Studios",
+    "Dynamics",
+    "Works",
+    "Hub",
 ]
 
 INDUSTRIES = [
-    "Technology", "Healthcare", "Finance", "E-commerce", "Real Estate",
-    "Education", "Manufacturing", "Logistics", "Marketing", "Legal",
-    "Consulting", "SaaS", "Fintech", "Proptech", "Edtech"
+    "Technology",
+    "Healthcare",
+    "Finance",
+    "E-commerce",
+    "Real Estate",
+    "Education",
+    "Manufacturing",
+    "Logistics",
+    "Marketing",
+    "Legal",
+    "Consulting",
+    "SaaS",
+    "Fintech",
+    "Proptech",
+    "Edtech",
 ]
 
 PROJECT_TYPES = [
-    "Website Redesign", "Mobile App", "CRM Implementation", "Marketing Campaign",
-    "Brand Strategy", "SEO Optimization", "Social Media", "Analytics Setup",
-    "AI Integration", "Automation", "Cloud Migration", "Security Audit"
+    "Website Redesign",
+    "Mobile App",
+    "CRM Implementation",
+    "Marketing Campaign",
+    "Brand Strategy",
+    "SEO Optimization",
+    "Social Media",
+    "Analytics Setup",
+    "AI Integration",
+    "Automation",
+    "Cloud Migration",
+    "Security Audit",
 ]
 
 FIRST_NAMES = [
-    "Khoa", "Minh", "Huy", "Tuan", "Hung", "Duc", "Long", "Thang",
-    "Lan", "Linh", "Mai", "Trang", "Ngoc", "Anh", "Hoa", "Thao",
-    "James", "Michael", "Sarah", "Emily", "David", "Chris", "Alex", "Sam"
+    "Khoa",
+    "Minh",
+    "Huy",
+    "Tuan",
+    "Hung",
+    "Duc",
+    "Long",
+    "Thang",
+    "Lan",
+    "Linh",
+    "Mai",
+    "Trang",
+    "Ngoc",
+    "Anh",
+    "Hoa",
+    "Thao",
+    "James",
+    "Michael",
+    "Sarah",
+    "Emily",
+    "David",
+    "Chris",
+    "Alex",
+    "Sam",
 ]
 
 LAST_NAMES = [
-    "Nguyen", "Tran", "Le", "Pham", "Hoang", "Vu", "Dang", "Bui",
-    "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller"
+    "Nguyen",
+    "Tran",
+    "Le",
+    "Pham",
+    "Hoang",
+    "Vu",
+    "Dang",
+    "Bui",
+    "Smith",
+    "Johnson",
+    "Williams",
+    "Brown",
+    "Jones",
+    "Garcia",
+    "Miller",
 ]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🏭 FACTORY CLASSES
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 @dataclass
 class MockClient:
@@ -128,7 +207,7 @@ class MockDataFactory:
             contact_email=f"{contact_first.lower()}.{contact_last.lower()}@{company_name.lower().replace(' ', '')}.com",
             ltv=round(random.uniform(5000, 500000), 2),
             health_score=random.randint(50, 100),
-            created_at=datetime.now() - timedelta(days=random.randint(30, 730))
+            created_at=datetime.now() - timedelta(days=random.randint(30, 730)),
         )
 
     def generate_project(self, client_id: str) -> MockProject:
@@ -147,7 +226,7 @@ class MockDataFactory:
             status=status,
             start_date=start_date,
             end_date=start_date + timedelta(days=random.randint(30, 180)),
-            completion_pct=random.randint(0, 100) if status != "completed" else 100
+            completion_pct=random.randint(0, 100) if status != "completed" else 100,
         )
 
     def generate_venture(self) -> MockVenture:
@@ -163,16 +242,25 @@ class MockDataFactory:
             stage=random.choice(stages),
             revenue=round(random.uniform(0, 1000000), 2),
             users=random.randint(0, 50000),
-            founders=[f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}" for _ in range(random.randint(1, 3))]
+            founders=[
+                f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}"
+                for _ in range(random.randint(1, 3))
+            ],
         )
 
     def generate_okr(self) -> MockOKR:
         """Generate a single mock OKR."""
         self._okr_counter += 1
         objectives = [
-            "Increase MRR to $100K", "Launch mobile app", "Expand to 3 new markets",
-            "Achieve 90% customer satisfaction", "Reduce churn to 5%", "Hire 10 engineers",
-            "Reach 10K active users", "Close Series A", "Achieve SOC2 compliance"
+            "Increase MRR to $100K",
+            "Launch mobile app",
+            "Expand to 3 new markets",
+            "Achieve 90% customer satisfaction",
+            "Reduce churn to 5%",
+            "Hire 10 engineers",
+            "Reach 10K active users",
+            "Close Series A",
+            "Achieve SOC2 compliance",
         ]
         pillars = ["GROWTH", "PRODUCT", "OPERATIONS", "FINANCE", "TEAM"]
 
@@ -185,8 +273,8 @@ class MockDataFactory:
             key_results=[
                 f"KR1: {random.choice(['Hit', 'Achieve', 'Complete'])} metric by {random.randint(20, 150)}%",
                 f"KR2: {random.choice(['Launch', 'Ship', 'Deploy'])} feature by Q{random.randint(1, 4)}",
-                f"KR3: {random.choice(['Reduce', 'Increase', 'Maintain'])} rate to {random.randint(5, 95)}%"
-            ]
+                f"KR3: {random.choice(['Reduce', 'Increase', 'Maintain'])} rate to {random.randint(5, 95)}%",
+            ],
         )
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -197,7 +285,9 @@ class MockDataFactory:
         """Generate bulk clients."""
         return [self.generate_client() for _ in range(count)]
 
-    def generate_projects(self, clients: List[MockClient], projects_per_client: int = 2) -> List[MockProject]:
+    def generate_projects(
+        self, clients: List[MockClient], projects_per_client: int = 2
+    ) -> List[MockProject]:
         """Generate bulk projects for clients."""
         projects = []
         for client in clients:
@@ -235,8 +325,8 @@ class MockDataFactory:
                 "total_ltv": sum(c.ltv for c in clients),
                 "avg_health_score": sum(c.health_score for c in clients) / len(clients),
                 "total_budget": sum(p.budget for p in projects),
-                "total_venture_revenue": sum(v.revenue for v in ventures)
-            }
+                "total_venture_revenue": sum(v.revenue for v in ventures),
+            },
         }
 
 

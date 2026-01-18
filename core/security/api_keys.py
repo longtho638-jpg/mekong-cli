@@ -12,19 +12,21 @@ Features:
 - Key rotation reminders
 """
 
-import uuid
 import logging
-from typing import Dict, List, Optional
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class IntegrationType(Enum):
     """Integration types."""
+
     PAYMENT = "payment"
     EMAIL = "email"
     ANALYTICS = "analytics"
@@ -35,6 +37,7 @@ class IntegrationType(Enum):
 
 class KeyStatus(Enum):
     """API key status."""
+
     ACTIVE = "active"
     INACTIVE = "inactive"
     EXPIRED = "expired"
@@ -44,6 +47,7 @@ class KeyStatus(Enum):
 @dataclass
 class APIKey:
     """An API key entry entity."""
+
     id: str
     name: str
     service: str
@@ -59,7 +63,7 @@ class APIKey:
 class APIKeysManager:
     """
     API Keys Manager System.
-    
+
     Securely tracks API keys (metadata only) and usage.
     """
 
@@ -69,7 +73,11 @@ class APIKeysManager:
         "paypal": {"name": "PayPal", "type": IntegrationType.PAYMENT, "icon": "💰"},
         "mailchimp": {"name": "Mailchimp", "type": IntegrationType.EMAIL, "icon": "📧"},
         "sendgrid": {"name": "SendGrid", "type": IntegrationType.EMAIL, "icon": "✉️"},
-        "google_analytics": {"name": "Google Analytics", "type": IntegrationType.ANALYTICS, "icon": "📊"},
+        "google_analytics": {
+            "name": "Google Analytics",
+            "type": IntegrationType.ANALYTICS,
+            "icon": "📊",
+        },
         "hubspot": {"name": "HubSpot", "type": IntegrationType.CRM, "icon": "🔶"},
         "facebook": {"name": "Facebook", "type": IntegrationType.SOCIAL, "icon": "📘"},
         "twitter": {"name": "Twitter/X", "type": IntegrationType.SOCIAL, "icon": "🐦"},
@@ -90,12 +98,7 @@ class APIKeysManager:
             return "****" + key[-4:]
         return key[:4] + "****" + key[-4:]
 
-    def add_key(
-        self,
-        service: str,
-        api_key: str,
-        expires_days: int = 365
-    ) -> APIKey:
+    def add_key(self, service: str, api_key: str, expires_days: int = 365) -> APIKey:
         """
         Add an API key entry.
         Note: Ideally, only the masked version or hash should be stored here.
@@ -103,11 +106,9 @@ class APIKeysManager:
         if not api_key:
             raise ValueError("API key cannot be empty")
 
-        integration = self.INTEGRATIONS.get(service, {
-            "name": service.capitalize(),
-            "type": IntegrationType.CRM,
-            "icon": "🔑"
-        })
+        integration = self.INTEGRATIONS.get(
+            service, {"name": service.capitalize(), "type": IntegrationType.CRM, "icon": "🔑"}
+        )
 
         key_entry = APIKey(
             id=f"KEY-{uuid.uuid4().hex[:6].upper()}",
@@ -116,7 +117,7 @@ class APIKeysManager:
             type=integration["type"],
             key_masked=self._mask_key(api_key),
             status=KeyStatus.ACTIVE,
-            expires_at=datetime.now() + timedelta(days=expires_days)
+            expires_at=datetime.now() + timedelta(days=expires_days),
         )
 
         self.keys[key_entry.id] = key_entry
@@ -136,7 +137,8 @@ class APIKeysManager:
         """Get keys expiring within N days."""
         threshold = datetime.now() + timedelta(days=days)
         return [
-            k for k in self.keys.values()
+            k
+            for k in self.keys.values()
             if k.expires_at and k.expires_at <= threshold and k.status == KeyStatus.ACTIVE
         ]
 
@@ -162,7 +164,7 @@ class APIKeysManager:
             KeyStatus.ACTIVE: "🟢",
             KeyStatus.INACTIVE: "🟡",
             KeyStatus.EXPIRED: "🔴",
-            KeyStatus.REVOKED: "⛔"
+            KeyStatus.REVOKED: "⛔",
         }
 
         for key in list(self.keys.values())[:8]:
@@ -174,23 +176,25 @@ class APIKeysManager:
 
             days_left = "∞"
             if key.expires_at:
-                 days = (key.expires_at - datetime.now()).days
-                 days_left = str(days)
+                days = (key.expires_at - datetime.now()).days
+                days_left = str(days)
 
             lines.append(
                 f"║  {name:<13} │ {masked:<13} │ {status:<7} │ {uses:>4} │ {days_left:>5} ║"
             )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  ⚠️ Security Tips:                                        ║",
-            "║    • Rotate keys every 90 days                            ║",
-            "║    • Never share keys in plain text                       ║",
-            "║    • Use environment variables                            ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Secure!               ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  ⚠️ Security Tips:                                        ║",
+                "║    • Rotate keys every 90 days                            ║",
+                "║    • Never share keys in plain text                       ║",
+                "║    • Use environment variables                            ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Secure!               ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 

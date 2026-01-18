@@ -2,8 +2,8 @@
 🛠️ VIBE IDE Core - Developer Experience Module
 ==============================================
 
-The primary interface for managing development state within the Agency OS. 
-Handles the lifecycle of implementation plans, task tracking, and 
+The primary interface for managing development state within the Agency OS.
+Handles the lifecycle of implementation plans, task tracking, and
 workspace organization for both human and AI developers.
 
 Features:
@@ -16,12 +16,12 @@ Binh Pháp: 🛠️ Khí (Tools) - Sharpening the weapons before battle.
 """
 
 import logging
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Optional, Any, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
-from .models.ide import Plan, TodoItem
 from .base import BaseEngine
+from .models.ide import Plan, TodoItem
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 class VIBEIDE(BaseEngine):
     """
     🛠️ VIBE Developer Experience Engine
-    
-    Manages the 'workbench' of the Agency OS. 
+
+    Manages the 'workbench' of the Agency OS.
     Synchronizes strategic intent (plans) with tactical execution (todos).
     """
 
@@ -53,7 +53,7 @@ class VIBEIDE(BaseEngine):
         description: str,
         priority: str = "P2",
         effort: str = "4h",
-        tags: Optional[List[str]] = None
+        tags: Optional[List[str]] = None,
     ) -> Path:
         """
         Initializes a new implementation plan folder and Markdown file.
@@ -61,18 +61,14 @@ class VIBEIDE(BaseEngine):
         """
         # Naming convention: YYMMDD-HHMM-slug
         ts = datetime.now().strftime("%y%m%d-%H%M")
-        slug = "".join(c for c in title.lower() if c.isalnum() or c == ' ').replace(' ', '-')[:30]
+        slug = "".join(c for c in title.lower() if c.isalnum() or c == " ").replace(" ", "-")[:30]
         folder_name = f"{ts}-{slug}"
 
         plan_dir = self.plans_dir / folder_name
         plan_dir.mkdir(parents=True, exist_ok=True)
 
         plan = Plan(
-            title=title,
-            description=description,
-            priority=priority,
-            effort=effort,
-            tags=tags or []
+            title=title, description=description, priority=priority, effort=effort, tags=tags or []
         )
 
         plan_file = plan_dir / "plan.md"
@@ -86,7 +82,7 @@ class VIBEIDE(BaseEngine):
             "- [ ] Phase 3: Verification and testing",
             "\n## 🔍 Research Notes\n",
             "<!-- Store initial research findings here -->\n",
-            f"\n---\n*Created by VIBE IDE on {datetime.now().strftime('%Y-%m-%d %H:%M')}*"
+            f"\n---\n*Created by VIBE IDE on {datetime.now().strftime('%Y-%m-%d %H:%M')}*",
         ]
         plan_file.write_text("\n".join(content), encoding="utf-8")
 
@@ -102,19 +98,22 @@ class VIBEIDE(BaseEngine):
 
     def list_plans(self) -> List[Dict[str, Any]]:
         """Scans the workspace for all available plan documents."""
-        if not self.plans_dir.exists(): return []
+        if not self.plans_dir.exists():
+            return []
 
         found_plans = []
         for plan_file in self.plans_dir.glob("**/plan.md"):
             try:
                 # Basic metadata extraction
                 stat = plan_file.stat()
-                found_plans.append({
-                    "id": plan_file.parent.name,
-                    "title": self._extract_title(plan_file),
-                    "path": str(plan_file),
-                    "modified": datetime.fromtimestamp(stat.st_mtime)
-                })
+                found_plans.append(
+                    {
+                        "id": plan_file.parent.name,
+                        "title": self._extract_title(plan_file),
+                        "path": str(plan_file),
+                        "modified": datetime.fromtimestamp(stat.st_mtime),
+                    }
+                )
             except Exception as e:
                 logger.warning(f"Failed to index plan {plan_file}: {e}")
 
@@ -129,7 +128,8 @@ class VIBEIDE(BaseEngine):
                     return line.split(":", 1)[1].strip().strip('"')
                 if line.startswith("# "):
                     return line.replace("# ", "").strip()
-        except Exception: pass
+        except Exception:
+            pass
         return path.parent.name
 
     def get_active_plan_path(self) -> Optional[Path]:
@@ -138,7 +138,8 @@ class VIBEIDE(BaseEngine):
         if state_file.exists():
             ptr = state_file.read_text().strip()
             path = Path(ptr)
-            if path.exists(): return path
+            if path.exists():
+                return path
         return None
 
     def set_active_plan(self, plan_path: Union[str, Path]) -> bool:
@@ -156,10 +157,7 @@ class VIBEIDE(BaseEngine):
 
     def add_todo(self, text: str, category: str = "general") -> TodoItem:
         """Appends a tactical task to the global todo list."""
-        todo = TodoItem(
-            id=f"todo_{int(datetime.now().timestamp())}_{len(self.todos)}",
-            text=text
-        )
+        todo = TodoItem(id=f"todo_{int(datetime.now().timestamp())}_{len(self.todos)}", text=text)
         self.todos.append(todo)
         return todo
 
@@ -177,10 +175,10 @@ class VIBEIDE(BaseEngine):
         return {
             "workspace": {
                 "plans_total": len(self.list_plans()),
-                "has_active_plan": self.get_active_plan_path() is not None
+                "has_active_plan": self.get_active_plan_path() is not None,
             },
             "tasks": {
                 "pending": len([t for t in self.todos if not t.completed]),
-                "completed": len([t for t in self.todos if t.completed])
-            }
+                "completed": len([t for t in self.todos if t.completed]),
+            },
         }

@@ -4,8 +4,7 @@ AI Content Service
 Generates marketing content (Tweets, Emails, Landing Pages) from templates.
 """
 
-from typing import Dict, List, Any
-from datetime import datetime
+from typing import Dict, List
 
 PRODUCTS = {
     "agencyos": {
@@ -41,6 +40,7 @@ PRODUCTS = {
         "audience": "Pre-seed/Seed founders",
     },
 }
+
 
 class ContentService:
     def get_products(self) -> Dict[str, Dict]:

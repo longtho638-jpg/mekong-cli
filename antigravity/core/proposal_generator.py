@@ -1,9 +1,9 @@
-'''
+"""
 📄 ProposalGenerator - Professional Proposal Builder
 ===================================================
 
-Automates the creation of high-impact strategic proposals based on the 
-13-Chapter Binh Pháp framework. Ensures all documents are professionally 
+Automates the creation of high-impact strategic proposals based on the
+13-Chapter Binh Pháp framework. Ensures all documents are professionally
 formatted and reflect the Agency OS core values.
 
 Features:
@@ -13,13 +13,13 @@ Features:
 - Persistence: Tracks all generated proposals.
 
 Binh Pháp: 📄 Kế (Strategy) - Creating the map before the march.
-'''
+"""
 
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from .base import BaseEngine
 from .money_maker import Quote, ServiceTier
@@ -27,9 +27,11 @@ from .money_maker import Quote, ServiceTier
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class Proposal:
-    '''A generated client-ready proposal document.'''
+    """A generated client-ready proposal document."""
+
     id: int
     client_name: str
     client_contact: str
@@ -40,7 +42,7 @@ class Proposal:
     status: str = "draft"
 
 
-PROPOSAL_TEMPLATE = '''# 📜 Strategic Proposal: {client_name}
+PROPOSAL_TEMPLATE = """# 📜 Strategic Proposal: {client_name}
 
 > **Engagement Tier:** {tier_label}
 > **Prepared by {agency_name}** | {date}
@@ -136,15 +138,15 @@ Mọi sự hợp tác tại Agency OS đều phải vượt qua bài kiểm tra 
 **{agency_name}**
 Zalo/Phone: {agency_phone}
 Email: {agency_email}
-'''
+"""
 
 
 class ProposalGenerator(BaseEngine):
-    '''
+    """
     🏢 Proposal Generation Engine
-    
+
     Transforms financial quotes into high-conversion strategic documents.
-    '''
+    """
 
     def __init__(self, data_dir: str = ".antigravity"):
         super().__init__(data_dir)
@@ -157,18 +159,15 @@ class ProposalGenerator(BaseEngine):
         self.agency_email = "hq@agencyos.network"
 
     def set_agency_context(self, name: str, phone: str, email: str):
-        '''Overrides default agency contact info.'''
+        """Overrides default agency contact info."""
         self.agency_name = name
         self.agency_phone = phone
         self.agency_email = email
 
     def generate_proposal(
-        self,
-        quote: Quote,
-        client_contact: str,
-        template_override: Optional[str] = None
+        self, quote: Quote, client_contact: str, template_override: Optional[str] = None
     ) -> Proposal:
-        '''Hydrates the proposal template with quote data.'''
+        """Hydrates the proposal template with quote data."""
         from .money_maker import MoneyMaker
 
         mm = MoneyMaker()
@@ -208,7 +207,7 @@ class ProposalGenerator(BaseEngine):
             alignment_score=win3.score,
             alignment_emoji="✅" if win3.is_valid else "⚠️",
             warnings_section=warn_md,
-            proposal_id=self._next_id
+            proposal_id=self._next_id,
         )
 
         proposal = Proposal(
@@ -216,7 +215,7 @@ class ProposalGenerator(BaseEngine):
             client_name=quote.client_name,
             client_contact=client_contact,
             quote=quote,
-            markdown_content=content
+            markdown_content=content,
         )
 
         self.proposals.append(proposal)
@@ -229,16 +228,17 @@ class ProposalGenerator(BaseEngine):
         client_name: str,
         contact: str,
         chapter_ids: List[int],
-        tier: Union[ServiceTier, str] = ServiceTier.WARRIOR
+        tier: Union[ServiceTier, str] = ServiceTier.WARRIOR,
     ) -> Proposal:
-        '''One-call quote and proposal generation.'''
+        """One-call quote and proposal generation."""
         from .money_maker import MoneyMaker
+
         mm = MoneyMaker()
         quote = mm.generate_quote(client_name, chapter_ids, tier)
         return self.generate_proposal(quote, contact)
 
     def save_to_file(self, proposal: Proposal, output_dir: str = "proposals") -> Path:
-        '''Exports the proposal to a Markdown file.'''
+        """Exports the proposal to a Markdown file."""
         out_path = Path(output_dir)
         out_path.mkdir(parents=True, exist_ok=True)
 
@@ -250,8 +250,8 @@ class ProposalGenerator(BaseEngine):
         return full_path
 
     def get_stats(self) -> Dict[str, Any]:
-        '''Insight into proposal volume and conversion values.'''
+        """Insight into proposal volume and conversion values."""
         return {
             "volume": len(self.proposals),
-            "pipeline_value_usd": sum(p.quote.one_time_total for p in self.proposals)
+            "pipeline_value_usd": sum(p.quote.one_time_total for p in self.proposals),
         }

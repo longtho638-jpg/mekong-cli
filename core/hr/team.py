@@ -12,15 +12,16 @@ Features:
 - Skill tracking
 """
 
-from typing import Dict, List
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Dict, List
 
 
 class Role(Enum):
     """Team member roles."""
+
     OWNER = "owner"
     MANAGER = "manager"
     DESIGNER = "designer"
@@ -33,6 +34,7 @@ class Role(Enum):
 @dataclass
 class TeamMember:
     """A team member."""
+
     id: str
     name: str
     email: str
@@ -62,7 +64,7 @@ class TeamMember:
 class TeamPerformance:
     """
     Team Performance Tracker.
-    
+
     Track and analyze team productivity.
     """
 
@@ -71,12 +73,7 @@ class TeamPerformance:
         self.members: Dict[str, TeamMember] = {}
 
     def add_member(
-        self,
-        name: str,
-        email: str,
-        role: Role,
-        skills: List[str],
-        hourly_rate: float
+        self, name: str, email: str, role: Role, skills: List[str], hourly_rate: float
     ) -> TeamMember:
         """Add a team member."""
         member = TeamMember(
@@ -86,7 +83,7 @@ class TeamPerformance:
             role=role,
             skills=skills,
             hourly_rate=hourly_rate,
-            start_date=datetime.now()
+            start_date=datetime.now(),
         )
 
         self.members[member.id] = member
@@ -98,7 +95,7 @@ class TeamPerformance:
         projects: int = 0,
         hours: float = 0,
         revenue: float = 0,
-        rating: float = 0
+        rating: float = 0,
     ):
         """Update member statistics."""
         member = self.members.get(member_id)
@@ -118,7 +115,7 @@ class TeamPerformance:
             Role.DEVELOPER: "💻",
             Role.MARKETER: "📢",
             Role.COPYWRITER: "✍️",
-            Role.SUPPORT: "🤝"
+            Role.SUPPORT: "🤝",
         }
 
         score = member.productivity_score
@@ -155,20 +152,20 @@ class TeamPerformance:
 
         # Skills
         skills_str = ", ".join(member.skills[:4])
-        lines.extend([
-            "║                                                           ║",
-            f"║  🛠️ {skills_str:<48}  ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                f"║  🛠️ {skills_str:<48}  ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
     def format_leaderboard(self) -> str:
         """Format team leaderboard."""
         sorted_members = sorted(
-            self.members.values(),
-            key=lambda m: m.productivity_score,
-            reverse=True
+            self.members.values(), key=lambda m: m.productivity_score, reverse=True
         )
 
         lines = [
@@ -182,29 +179,33 @@ class TeamPerformance:
 
         medals = ["🥇", "🥈", "🥉"]
         for i, member in enumerate(sorted_members[:5]):
-            rank = medals[i] if i < 3 else f" {i+1}"
+            rank = medals[i] if i < 3 else f" {i + 1}"
             name = member.name[:14]
             role = member.role.value[:9]
             score = f"{member.productivity_score:.0f}%"
             projects = str(member.projects_completed)
 
-            lines.append(
-                f"║  {rank:<4} │ {name:<14} │ {role:<9} │ {score:>5} │ {projects:>10} ║"
-            )
+            lines.append(f"║  {rank:<4} │ {name:<14} │ {role:<9} │ {score:>5} │ {projects:>10} ║")
 
         # Summary
         total_hours = sum(m.hours_logged for m in self.members.values())
         total_revenue = sum(m.revenue_generated for m in self.members.values())
-        avg_score = sum(m.productivity_score for m in self.members.values()) / len(self.members) if self.members else 0
+        avg_score = (
+            sum(m.productivity_score for m in self.members.values()) / len(self.members)
+            if self.members
+            else 0
+        )
 
-        lines.extend([
-            "║                                                           ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  📊 Team Stats: {len(self.members)} members | {total_hours:.0f}h logged           ║",
-            f"║  💰 Total Revenue: ${total_revenue:>12,.0f}                      ║",
-            f"║  📈 Avg Productivity: {avg_score:.0f}%                              ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  📊 Team Stats: {len(self.members)} members | {total_hours:.0f}h logged           ║",
+                f"║  💰 Total Revenue: ${total_revenue:>12,.0f}                      ║",
+                f"║  📈 Avg Productivity: {avg_score:.0f}%                              ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -218,10 +219,18 @@ if __name__ == "__main__":
     print()
 
     # Add team members
-    m1 = team.add_member("Mai Nguyen", "mai@agency.com", Role.DESIGNER, ["Figma", "UI/UX", "Branding"], 50)
-    m2 = team.add_member("Tuan Le", "tuan@agency.com", Role.DEVELOPER, ["React", "Node.js", "Python"], 60)
-    m3 = team.add_member("Linh Tran", "linh@agency.com", Role.MARKETER, ["SEO", "Ads", "Analytics"], 45)
-    m4 = team.add_member("Hoang Pham", "hoang@agency.com", Role.COPYWRITER, ["Content", "SEO", "Email"], 40)
+    m1 = team.add_member(
+        "Mai Nguyen", "mai@agency.com", Role.DESIGNER, ["Figma", "UI/UX", "Branding"], 50
+    )
+    m2 = team.add_member(
+        "Tuan Le", "tuan@agency.com", Role.DEVELOPER, ["React", "Node.js", "Python"], 60
+    )
+    m3 = team.add_member(
+        "Linh Tran", "linh@agency.com", Role.MARKETER, ["SEO", "Ads", "Analytics"], 45
+    )
+    m4 = team.add_member(
+        "Hoang Pham", "hoang@agency.com", Role.COPYWRITER, ["Content", "SEO", "Email"], 40
+    )
 
     # Update stats
     team.update_stats(m1.id, projects=8, hours=160, revenue=8000, rating=4.8)

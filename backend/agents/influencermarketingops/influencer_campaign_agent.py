@@ -3,11 +3,11 @@ Influencer Campaign Agent - Campaigns & ROI
 Manages influencer campaigns and performance tracking.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class CampaignStatus(Enum):
@@ -29,6 +29,7 @@ class ContentType(Enum):
 @dataclass
 class Deliverable:
     """Campaign deliverable"""
+
     id: str
     influencer_id: str
     content_type: ContentType
@@ -42,6 +43,7 @@ class Deliverable:
 @dataclass
 class InfluencerCampaign:
     """Influencer campaign"""
+
     id: str
     name: str
     objective: str
@@ -70,7 +72,7 @@ class InfluencerCampaign:
 class InfluencerCampaignAgent:
     """
     Influencer Campaign Agent - Quản lý Chiến dịch
-    
+
     Responsibilities:
     - Campaign management
     - Content tracking
@@ -89,10 +91,10 @@ class InfluencerCampaignAgent:
         objective: str,
         budget: float,
         start_date: date = None,
-        end_date: date = None
+        end_date: date = None,
     ) -> InfluencerCampaign:
         """Create influencer campaign"""
-        campaign_id = f"icamp_{random.randint(100,999)}"
+        campaign_id = f"icamp_{random.randint(100, 999)}"
 
         campaign = InfluencerCampaign(
             id=campaign_id,
@@ -100,7 +102,7 @@ class InfluencerCampaignAgent:
             objective=objective,
             budget=budget,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
         )
 
         self.campaigns[campaign_id] = campaign
@@ -115,19 +117,16 @@ class InfluencerCampaignAgent:
         return self.campaigns[campaign_id]
 
     def add_deliverable(
-        self,
-        campaign_id: str,
-        influencer_id: str,
-        content_type: ContentType
+        self, campaign_id: str, influencer_id: str, content_type: ContentType
     ) -> InfluencerCampaign:
         """Add deliverable to campaign"""
         if campaign_id not in self.campaigns:
             raise ValueError(f"Campaign not found: {campaign_id}")
 
         deliverable = Deliverable(
-            id=f"del_{random.randint(1000,9999)}",
+            id=f"del_{random.randint(1000, 9999)}",
             influencer_id=influencer_id,
-            content_type=content_type
+            content_type=content_type,
         )
 
         self.campaigns[campaign_id].deliverables.append(deliverable)
@@ -172,7 +171,7 @@ class InfluencerCampaignAgent:
             "completed": len(completed),
             "total_spend": sum(c.spend for c in campaigns),
             "total_reach": sum(c.total_reach for c in campaigns),
-            "avg_roi": sum(c.roi for c in completed) / len(completed) if completed else 0
+            "avg_roi": sum(c.roi for c in completed) / len(completed) if completed else 0,
         }
 
 
@@ -183,11 +182,7 @@ if __name__ == "__main__":
     print("📋 Influencer Campaign Agent Demo\n")
 
     # Create campaign
-    c1 = agent.create_campaign(
-        "Summer Product Launch",
-        "Awareness",
-        budget=10000
-    )
+    c1 = agent.create_campaign("Summer Product Launch", "Awareness", budget=10000)
 
     print(f"📋 Campaign: {c1.name}")
     print(f"   Objective: {c1.objective}")

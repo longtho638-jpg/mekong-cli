@@ -2,8 +2,8 @@
 💾 Persistence - Multi-Format Data Storage
 ==========================================
 
-Provides robust, atomic data persistence for all Agency OS modules. 
-Handles serialization of complex types (datetimes, enums, models) and 
+Provides robust, atomic data persistence for all Agency OS modules.
+Handles serialization of complex types (datetimes, enums, models) and
 ensures data integrity during concurrent operations.
 
 Primary Storage: 📦 JSON (Local)
@@ -12,29 +12,29 @@ Future Support:  ☁️ Supabase / Postgres
 Binh Pháp: 🏰 Nền Tảng (Foundation) - Building secure and reliable storage.
 """
 
-import logging
 import json
+import logging
 import os
 import tempfile
-from pathlib import Path
+from dataclasses import asdict, is_dataclass
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Any, List, Optional, TypeVar, Union
-from dataclasses import is_dataclass, asdict
 
 from .errors import PersistenceError
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class JSONStore:
     """
     📦 Atomic JSON Storage
-    
-    Ensures that data is written successfully to a temporary file 
+
+    Ensures that data is written successfully to a temporary file
     before replacing the target file, preventing corruption.
     """
 
@@ -44,7 +44,7 @@ class JSONStore:
 
     def _resolve_path(self, key: str) -> Path:
         """Determines the full filesystem path for a given storage key."""
-        filename = key if key.endswith('.json') else f"{key}.json"
+        filename = key if key.endswith(".json") else f"{key}.json"
         return self.data_dir / filename
 
     def save(self, key: str, data: Any) -> Path:
@@ -58,13 +58,9 @@ class JSONStore:
         fd, temp_path = tempfile.mkstemp(dir=self.data_dir, prefix=f"tmp_{key}_")
 
         try:
-            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
                 json.dump(
-                    data,
-                    f,
-                    ensure_ascii=False,
-                    indent=2,
-                    default=self._serialize_complex_types
+                    data, f, ensure_ascii=False, indent=2, default=self._serialize_complex_types
                 )
 
             # Atomic swap
@@ -75,7 +71,9 @@ class JSONStore:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
             logger.error(f"Persistence write failure for {key}: {e}")
-            raise PersistenceError(f"Failed to save data for {key}: {e}", operation="write", path=path)
+            raise PersistenceError(
+                f"Failed to save data for {key}: {e}", operation="write", path=path
+            )
 
     def load(self, key: str, default: Any = None) -> Any:
         """Retrieves and parses data from disk."""
@@ -84,13 +82,15 @@ class JSONStore:
             return default
 
         try:
-            return json.loads(path.read_text(encoding='utf-8'))
+            return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             logger.warning(f"Data corruption detected in {key}: {e}")
             return default
         except Exception as e:
             logger.error(f"Persistence read failure for {key}: {e}")
-            raise PersistenceError(f"Failed to load data for {key}: {e}", operation="read", path=path)
+            raise PersistenceError(
+                f"Failed to load data for {key}: {e}", operation="read", path=path
+            )
 
     def exists(self, key: str) -> bool:
         """Checks for the existence of a data file."""
@@ -121,9 +121,9 @@ class JSONStore:
             return obj.value
         if is_dataclass(obj):
             return asdict(obj)
-        if hasattr(obj, 'to_dict'):
+        if hasattr(obj, "to_dict"):
             return obj.to_dict()
-        if hasattr(obj, '__dict__'):
+        if hasattr(obj, "__dict__"):
             return obj.__dict__
         return str(obj)
 
@@ -131,6 +131,7 @@ class JSONStore:
 # --- Unified Access Points ---
 
 _primary_store: Optional[JSONStore] = None
+
 
 def get_persistence_store(directory: Optional[str] = None) -> JSONStore:
     """Singleton access to the primary persistence layer."""

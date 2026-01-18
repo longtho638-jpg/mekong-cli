@@ -6,19 +6,19 @@ Automates daily revenue operations for the agency.
 """
 
 import logging
-from datetime import datetime
-from typing import Dict, List, Any
-
 from antigravity.core.client_magnet import ClientMagnet
 from antigravity.core.content_factory import ContentFactory
 from antigravity.core.revenue_engine import RevenueEngine
+from datetime import datetime
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
+
 
 class RevenueAutopilotService:
     """
     🏯 Revenue Autopilot Engine
-    
+
     Automates daily revenue operations for $1M goal.
     """
 
@@ -71,7 +71,7 @@ class RevenueAutopilotService:
             return {
                 "total": len(leads),
                 "hot": len(hot_leads),
-                "new_today": 0, 
+                "new_today": 0,
             }
         except Exception as e:
             logger.warning(f"Lead processing error: {e}")
@@ -84,18 +84,22 @@ class RevenueAutopilotService:
         opportunities = []
 
         if metrics["mrr"] < 5000:
-            opportunities.append({
-                "type": "upsell",
-                "action": "Reach out to existing customers for upgrades",
-                "potential": "$500-1000/mo",
-            })
+            opportunities.append(
+                {
+                    "type": "upsell",
+                    "action": "Reach out to existing customers for upgrades",
+                    "potential": "$500-1000/mo",
+                }
+            )
 
         if metrics["progress"] < 50:
-            opportunities.append({
-                "type": "new_products",
-                "action": "Launch 2 new templates this week",
-                "potential": "$1000-2000",
-            })
+            opportunities.append(
+                {
+                    "type": "new_products",
+                    "action": "Launch 2 new templates this week",
+                    "potential": "$1000-2000",
+                }
+            )
 
         return opportunities
 
@@ -136,12 +140,12 @@ class RevenueAutopilotService:
         leads = self.process_leads()
         opportunities = self.check_opportunities(metrics)
         report = self.generate_report(metrics, content, leads, opportunities)
-        
+
         return {
             "status": "success",
             "metrics": metrics,
             "content": content,
             "leads": leads,
             "opportunities": opportunities,
-            "report": report
+            "report": report,
         }

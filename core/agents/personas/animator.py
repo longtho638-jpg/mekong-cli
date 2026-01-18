@@ -12,19 +12,21 @@ Roles:
 - UI animations
 """
 
-import uuid
 import logging
-from typing import Dict
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 class AnimationType(Enum):
     """Animation types."""
+
     MOTION_GRAPHICS = "motion_graphics"
     CHARACTER_2D = "character_2d"
     CHARACTER_3D = "character_3d"
@@ -35,6 +37,7 @@ class AnimationType(Enum):
 
 class AnimationStatus(Enum):
     """Animation status."""
+
     STORYBOARD = "storyboard"
     ANIMATING = "animating"
     RENDERING = "rendering"
@@ -45,6 +48,7 @@ class AnimationStatus(Enum):
 @dataclass
 class AnimationProject:
     """An animation project entity."""
+
     id: str
     name: str
     client: str
@@ -64,7 +68,7 @@ class AnimationProject:
 class Animator:
     """
     Animator System.
-    
+
     Manages animation projects and pipeline.
     """
 
@@ -81,7 +85,7 @@ class Animator:
         duration_seconds: int,
         fps: int = 30,
         animator: str = "",
-        due_days: int = 14
+        due_days: int = 14,
     ) -> AnimationProject:
         """Create a new animation project."""
         if duration_seconds <= 0:
@@ -97,7 +101,7 @@ class Animator:
             duration_seconds=duration_seconds,
             fps=fps,
             animator=animator,
-            deadline=datetime.now() + timedelta(days=due_days)
+            deadline=datetime.now() + timedelta(days=due_days),
         )
         self.projects[project.id] = project
         logger.info(f"Project created: {name} for {client} ({anim_type.value})")
@@ -129,14 +133,14 @@ class Animator:
             AnimationType.CHARACTER_3D: "🧊",
             AnimationType.UI_ANIMATION: "📱",
             AnimationType.LOGO_REVEAL: "✨",
-            AnimationType.EXPLAINER: "💡"
+            AnimationType.EXPLAINER: "💡",
         }
         status_icons = {
             AnimationStatus.STORYBOARD: "📋",
             AnimationStatus.ANIMATING: "🎬",
             AnimationStatus.RENDERING: "⚙️",
             AnimationStatus.REVIEW: "👁️",
-            AnimationStatus.DELIVERED: "📤"
+            AnimationStatus.DELIVERED: "📤",
         }
 
         for project in list(self.projects.values())[:5]:
@@ -144,38 +148,50 @@ class Animator:
             s_icon = status_icons.get(project.status, "⚪")
             frames = project.total_frames
 
-            lines.append(f"║  {s_icon} {t_icon} {project.name[:16]:<16} │ {project.duration_seconds:>3}s │ {frames:>4}f │ {project.fps}fps  ║")
+            lines.append(
+                f"║  {s_icon} {t_icon} {project.name[:16]:<16} │ {project.duration_seconds:>3}s │ {frames:>4}f │ {project.fps}fps  ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 BY TYPE                                               ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 BY TYPE                                               ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for atype in list(AnimationType)[:4]:
             count = sum(1 for p in self.projects.values() if p.anim_type == atype)
             icon = type_icons.get(atype, "🎬")
-            lines.append(f"║    {icon} {atype.value.replace('_', ' ').capitalize():<18} │ {count:>2} projects       ║")
+            lines.append(
+                f"║    {icon} {atype.value.replace('_', ' ').capitalize():<18} │ {count:>2} projects       ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  📊 PIPELINE STATUS                                       ║",
-            "║  ───────────────────────────────────────────────────────  ║",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  📊 PIPELINE STATUS                                       ║",
+                "║  ───────────────────────────────────────────────────────  ║",
+            ]
+        )
 
         for status in AnimationStatus:
             count = sum(1 for p in self.projects.values() if p.status == status)
             icon = status_icons.get(status, "⚪")
-            bar = "█" * count + "░" * max(0, 3 - count) # Simple visual bar
-            lines.append(f"║    {icon} {status.value.capitalize():<12} │ {bar} │ {count:>2}                ║")
+            bar = "█" * count + "░" * max(0, 3 - count)  # Simple visual bar
+            lines.append(
+                f"║    {icon} {status.value.capitalize():<12} │ {bar} │ {count:>2}                ║"
+            )
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📋 Storyboard]  [🎬 Animate]  [⚙️ Render]               ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {self.agency_name[:40]:<40} - Captivating!          ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📋 Storyboard]  [🎬 Animate]  [⚙️ Render]               ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {self.agency_name[:40]:<40} - Captivating!          ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -188,10 +204,18 @@ if __name__ == "__main__":
     try:
         anim = Animator("Saigon Digital Hub")
 
-        p1 = anim.create_project("Logo Intro", "Sunrise Realty", AnimationType.LOGO_REVEAL, 5, 60, "Max")
-        p2 = anim.create_project("Product Explainer", "Coffee Lab", AnimationType.EXPLAINER, 60, 30, "Zoe")
-        p3 = anim.create_project("App UI Motion", "Tech Startup", AnimationType.UI_ANIMATION, 15, 60, "Max")
-        p4 = anim.create_project("Social Ads", "Fashion Brand", AnimationType.MOTION_GRAPHICS, 30, 30, "Zoe")
+        p1 = anim.create_project(
+            "Logo Intro", "Sunrise Realty", AnimationType.LOGO_REVEAL, 5, 60, "Max"
+        )
+        p2 = anim.create_project(
+            "Product Explainer", "Coffee Lab", AnimationType.EXPLAINER, 60, 30, "Zoe"
+        )
+        p3 = anim.create_project(
+            "App UI Motion", "Tech Startup", AnimationType.UI_ANIMATION, 15, 60, "Max"
+        )
+        p4 = anim.create_project(
+            "Social Ads", "Fashion Brand", AnimationType.MOTION_GRAPHICS, 30, 30, "Zoe"
+        )
 
         # Update statuses
         anim.update_status(p1, AnimationStatus.ANIMATING)

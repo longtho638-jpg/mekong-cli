@@ -2,8 +2,8 @@
 ⚠️ AntigravityKit - Unified Error Handling
 ==========================================
 
-Defines custom exception classes for the Agency OS ecosystem. 
-Enables semantic error reporting, automated recovery logic, and 
+Defines custom exception classes for the Agency OS ecosystem.
+Enables semantic error reporting, automated recovery logic, and
 consistent telemetry across modules.
 
 Hierarchy:
@@ -18,7 +18,7 @@ Binh Pháp: 🏰 Pháp (Process) - Correcting errors systematically.
 """
 
 import logging
-from typing import Optional, Dict, Any, Union
+from typing import Any, Dict, Optional, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 class AntigravityError(Exception):
     """
     ⚠️ Base Exception
-    
-    The root of all Agency OS errors. Supports status codes 
+
+    The root of all Agency OS errors. Supports status codes
     and detailed metadata for agent debugging.
     """
 
@@ -37,7 +37,7 @@ class AntigravityError(Exception):
         message: str,
         code: str = "SYSTEM_ERROR",
         status_code: int = 500,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         self.message = message
         self.code = code
@@ -56,7 +56,7 @@ class AntigravityError(Exception):
             "code": self.code,
             "message": self.message,
             "status_code": self.status_code,
-            "details": self.details
+            "details": self.details,
         }
 
 
@@ -65,14 +65,13 @@ class ValidationError(AntigravityError):
 
     def __init__(self, message: str, field: Optional[str] = None, value: Any = None):
         details = {}
-        if field: details["field"] = field
-        if value: details["value"] = str(value)
+        if field:
+            details["field"] = field
+        if value:
+            details["value"] = str(value)
 
         super().__init__(
-            message=message,
-            code="VALIDATION_FAILED",
-            status_code=400,
-            details=details
+            message=message, code="VALIDATION_FAILED", status_code=400, details=details
         )
         self.field = field
 
@@ -80,12 +79,14 @@ class ValidationError(AntigravityError):
 class PersistenceError(AntigravityError):
     """Raised when disk or database operations fail."""
 
-    def __init__(self, message: str, operation: str = "write", path: Optional[Union[str, Any]] = None):
+    def __init__(
+        self, message: str, operation: str = "write", path: Optional[Union[str, Any]] = None
+    ):
         super().__init__(
             message=message,
             code="STORAGE_FAILURE",
             status_code=507,
-            details={"op": operation, "path": str(path)}
+            details={"op": operation, "path": str(path)},
         )
 
 
@@ -100,7 +101,7 @@ class WinWinWinError(AntigravityError):
             message=message,
             code="WIN_WIN_WIN_MISALIGNMENT",
             status_code=403,
-            details={"losing_party": failing_party}
+            details={"losing_party": failing_party},
         )
         self.losing_party = failing_party
 
@@ -113,7 +114,7 @@ class WorkflowError(AntigravityError):
             message=message,
             code="ORCHESTRATION_ERROR",
             status_code=422,
-            details={"agent": agent, "task": task}
+            details={"agent": agent, "task": task},
         )
 
 
@@ -125,5 +126,5 @@ class ConfigError(AntigravityError):
             message=message,
             code="CONFIGURATION_MISSING",
             status_code=500,
-            details={"missing_key": key}
+            details={"missing_key": key},
         )

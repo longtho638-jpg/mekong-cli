@@ -3,11 +3,11 @@ Content Strategy Agent - Content Planning & Analytics
 Manages content strategy, topic clusters, and performance.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class ContentFormat(Enum):
@@ -29,6 +29,7 @@ class ContentStage(Enum):
 @dataclass
 class ContentPiece:
     """Content piece in strategy"""
+
     id: str
     title: str
     format: ContentFormat
@@ -48,6 +49,7 @@ class ContentPiece:
 @dataclass
 class TopicCluster:
     """Topic cluster"""
+
     id: str
     name: str
     pillar_page: str
@@ -58,7 +60,7 @@ class TopicCluster:
 class ContentStrategyAgent:
     """
     Content Strategy Agent - Chiến lược Nội dung
-    
+
     Responsibilities:
     - Content planning
     - Topic clusters
@@ -74,13 +76,9 @@ class ContentStrategyAgent:
 
     def create_cluster(self, name: str, pillar_page: str) -> TopicCluster:
         """Create topic cluster"""
-        cluster_id = f"cluster_{random.randint(100,999)}"
+        cluster_id = f"cluster_{random.randint(100, 999)}"
 
-        cluster = TopicCluster(
-            id=cluster_id,
-            name=name,
-            pillar_page=pillar_page
-        )
+        cluster = TopicCluster(id=cluster_id, name=name, pillar_page=pillar_page)
 
         self.clusters[cluster_id] = cluster
         return cluster
@@ -91,10 +89,10 @@ class ContentStrategyAgent:
         content_format: ContentFormat,
         topic_cluster: str,
         target_keywords: List[str] = None,
-        publish_date: date = None
+        publish_date: date = None,
     ) -> ContentPiece:
         """Add content to strategy"""
-        content_id = f"content_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        content_id = f"content_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         content = ContentPiece(
             id=content_id,
@@ -102,7 +100,7 @@ class ContentStrategyAgent:
             format=content_format,
             topic_cluster=topic_cluster,
             target_keywords=target_keywords or [],
-            publish_date=publish_date
+            publish_date=publish_date,
         )
 
         self.content[content_id] = content
@@ -117,11 +115,7 @@ class ContentStrategyAgent:
         return self.content[content_id]
 
     def record_performance(
-        self,
-        content_id: str,
-        traffic: int,
-        leads: int = 0,
-        content_score: float = 0
+        self, content_id: str, traffic: int, leads: int = 0, content_score: float = 0
     ) -> ContentPiece:
         """Record content performance"""
         if content_id not in self.content:
@@ -149,8 +143,10 @@ class ContentStrategyAgent:
             "in_production": len(self.get_by_stage(ContentStage.PRODUCTION)),
             "total_traffic": sum(c.traffic for c in published),
             "total_leads": sum(c.leads for c in published),
-            "avg_score": sum(c.content_score for c in published) / len(published) if published else 0,
-            "clusters": len(self.clusters)
+            "avg_score": sum(c.content_score for c in published) / len(published)
+            if published
+            else 0,
+            "clusters": len(self.clusters),
         }
 
 
@@ -172,13 +168,13 @@ if __name__ == "__main__":
         ContentFormat.BLOG,
         cluster.name,
         ["content marketing", "content strategy"],
-        date.today()
+        date.today(),
     )
     c2 = agent.add_content(
         "Content Marketing Tutorial",
         ContentFormat.VIDEO,
         cluster.name,
-        ["content marketing tutorial"]
+        ["content marketing tutorial"],
     )
 
     print(f"\n📝 Content: {c1.title}")

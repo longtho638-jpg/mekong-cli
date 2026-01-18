@@ -3,11 +3,11 @@ Deal Closer Agent - Pipeline & Opportunity Management
 Tracks deals through stages and automates follow-ups.
 """
 
+import random
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class DealStage(Enum):
@@ -21,6 +21,7 @@ class DealStage(Enum):
 @dataclass
 class Deal:
     """Sales deal/opportunity"""
+
     id: str
     lead_id: str
     title: str
@@ -43,7 +44,7 @@ class Deal:
 class DealCloserAgent:
     """
     Deal Closer Agent - Quản lý Pipeline
-    
+
     Responsibilities:
     - Track deals through stages
     - Calculate probability
@@ -66,21 +67,13 @@ class DealCloserAgent:
         self.deals_db: Dict[str, Deal] = {}
 
     def create_deal(
-        self,
-        lead_id: str,
-        title: str,
-        value: float,
-        expected_close: Optional[datetime] = None
+        self, lead_id: str, title: str, value: float, expected_close: Optional[datetime] = None
     ) -> Deal:
         """Create a deal from qualified lead"""
-        deal_id = f"deal_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        deal_id = f"deal_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         deal = Deal(
-            id=deal_id,
-            lead_id=lead_id,
-            title=title,
-            value=value,
-            expected_close=expected_close
+            id=deal_id, lead_id=lead_id, title=title, value=value, expected_close=expected_close
         )
 
         self.deals_db[deal_id] = deal
@@ -124,8 +117,11 @@ class DealCloserAgent:
 
     def get_forecast(self) -> Dict:
         """Get revenue forecast"""
-        open_deals = [d for d in self.deals_db.values()
-                      if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]]
+        open_deals = [
+            d
+            for d in self.deals_db.values()
+            if d.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]
+        ]
 
         weighted_value = sum(d.value * d.probability / 100 for d in open_deals)
         total_value = sum(d.value for d in open_deals)
@@ -138,7 +134,7 @@ class DealCloserAgent:
             "weighted_forecast": weighted_value,
             "closed_won": won_value,
             "open_deals": len(open_deals),
-            "win_rate": len(won_deals) / len(self.deals_db) * 100 if self.deals_db else 0
+            "win_rate": len(won_deals) / len(self.deals_db) * 100 if self.deals_db else 0,
         }
 
 
@@ -149,17 +145,9 @@ if __name__ == "__main__":
     print("🤝 Deal Closer Agent Demo\n")
 
     # Create deals
-    deal1 = agent.create_deal(
-        lead_id="lead_001",
-        title="TechVN Agency Setup",
-        value=2000
-    )
+    deal1 = agent.create_deal(lead_id="lead_001", title="TechVN Agency Setup", value=2000)
 
-    deal2 = agent.create_deal(
-        lead_id="lead_002",
-        title="Marketing Hub",
-        value=5000
-    )
+    deal2 = agent.create_deal(lead_id="lead_002", title="Marketing Hub", value=5000)
 
     # Update stages
     agent.update_stage(deal1.id, DealStage.PROPOSAL)

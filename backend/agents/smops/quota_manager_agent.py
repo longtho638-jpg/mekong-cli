@@ -4,8 +4,8 @@ Manages quotas, attainment, and team performance.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict
 from enum import Enum
+from typing import Dict, List
 
 
 class Period(Enum):
@@ -17,6 +17,7 @@ class Period(Enum):
 @dataclass
 class SalesRep:
     """Sales representative"""
+
     id: str
     name: str
     territory: str
@@ -35,6 +36,7 @@ class SalesRep:
 @dataclass
 class TeamQuota:
     """Team quota summary"""
+
     period: Period
     total_quota: float
     total_closed: float
@@ -48,7 +50,7 @@ class TeamQuota:
 class QuotaManagerAgent:
     """
     Quota Manager Agent - Quản lý Chỉ tiêu
-    
+
     Responsibilities:
     - Assign quotas
     - Track attainment
@@ -62,20 +64,9 @@ class QuotaManagerAgent:
         self.reps: Dict[str, SalesRep] = {}
         self.period = Period.QUARTERLY
 
-    def add_rep(
-        self,
-        rep_id: str,
-        name: str,
-        territory: str,
-        quota: float
-    ) -> SalesRep:
+    def add_rep(self, rep_id: str, name: str, territory: str, quota: float) -> SalesRep:
         """Add sales rep with quota"""
-        rep = SalesRep(
-            id=rep_id,
-            name=name,
-            territory=territory,
-            quota=quota
-        )
+        rep = SalesRep(id=rep_id, name=name, territory=territory, quota=quota)
         self.reps[rep_id] = rep
         return rep
 
@@ -113,7 +104,7 @@ class QuotaManagerAgent:
             period=self.period,
             total_quota=sum(r.quota for r in reps),
             total_closed=sum(r.closed for r in reps),
-            reps=reps
+            reps=reps,
         )
 
     def get_stats(self) -> Dict:
@@ -130,7 +121,7 @@ class QuotaManagerAgent:
             "team_attainment": f"{summary.attainment:.0f}%",
             "on_track": on_track,
             "at_risk": len(reps) - on_track,
-            "top_performer": self.get_leaderboard()[0].name if reps else None
+            "top_performer": self.get_leaderboard()[0].name if reps else None,
         }
 
 

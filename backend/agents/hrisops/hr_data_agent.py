@@ -3,11 +3,11 @@ HR Data Agent - Employee Records & System Management
 Manages employee data, records, and system integrations.
 """
 
-from dataclasses import dataclass
-from typing import List, Dict
-from datetime import datetime, date
-from enum import Enum
 import random
+from dataclasses import dataclass
+from datetime import date, datetime
+from enum import Enum
+from typing import Dict, List
 
 
 class RecordStatus(Enum):
@@ -28,6 +28,7 @@ class DataType(Enum):
 @dataclass
 class EmployeeRecord:
     """Employee HRIS record"""
+
     id: str
     employee_id: str
     name: str
@@ -49,7 +50,7 @@ class EmployeeRecord:
 class HRDataAgent:
     """
     HR Data Agent - Quản lý Dữ liệu Nhân sự
-    
+
     Responsibilities:
     - Manage employee records
     - Validate data integrity
@@ -71,10 +72,10 @@ class HRDataAgent:
         position: str,
         hire_date: date,
         manager_id: str = "",
-        location: str = ""
+        location: str = "",
     ) -> EmployeeRecord:
         """Create employee record"""
-        record_id = f"rec_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        record_id = f"rec_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         record = EmployeeRecord(
             id=record_id,
@@ -86,7 +87,9 @@ class HRDataAgent:
             hire_date=hire_date,
             manager_id=manager_id,
             location=location,
-            data_complete=self._calculate_completeness(name, email, department, position, manager_id, location)
+            data_complete=self._calculate_completeness(
+                name, email, department, position, manager_id, location
+            ),
         )
 
         self.records[record_id] = record
@@ -123,7 +126,11 @@ class HRDataAgent:
 
     def get_by_department(self, department: str) -> List[EmployeeRecord]:
         """Get records by department"""
-        return [r for r in self.records.values() if r.department == department and r.status == RecordStatus.ACTIVE]
+        return [
+            r
+            for r in self.records.values()
+            if r.department == department and r.status == RecordStatus.ACTIVE
+        ]
 
     def get_incomplete(self, threshold: float = 80) -> List[EmployeeRecord]:
         """Get records with incomplete data"""
@@ -137,9 +144,11 @@ class HRDataAgent:
         return {
             "total_records": len(records),
             "active": len(active),
-            "avg_completeness": sum(r.data_complete for r in records) / len(records) if records else 0,
+            "avg_completeness": sum(r.data_complete for r in records) / len(records)
+            if records
+            else 0,
             "incomplete": len(self.get_incomplete()),
-            "departments": len(set(r.department for r in active))
+            "departments": len(set(r.department for r in active)),
         }
 
 
@@ -150,9 +159,29 @@ if __name__ == "__main__":
     print("🖥️ HR Data Agent Demo\n")
 
     # Create records
-    r1 = agent.create_record("EMP001", "Nguyen A", "a@company.vn", "Engineering", "Senior Engineer", date(2022, 1, 15), "MGR001", "Ho Chi Minh")
-    r2 = agent.create_record("EMP002", "Tran B", "b@company.vn", "Product", "Product Manager", date(2023, 3, 1), "MGR002", "Ha Noi")
-    r3 = agent.create_record("EMP003", "Le C", "c@company.vn", "Sales", "Account Executive", date(2024, 6, 1))
+    r1 = agent.create_record(
+        "EMP001",
+        "Nguyen A",
+        "a@company.vn",
+        "Engineering",
+        "Senior Engineer",
+        date(2022, 1, 15),
+        "MGR001",
+        "Ho Chi Minh",
+    )
+    r2 = agent.create_record(
+        "EMP002",
+        "Tran B",
+        "b@company.vn",
+        "Product",
+        "Product Manager",
+        date(2023, 3, 1),
+        "MGR002",
+        "Ha Noi",
+    )
+    r3 = agent.create_record(
+        "EMP003", "Le C", "c@company.vn", "Sales", "Account Executive", date(2024, 6, 1)
+    )
 
     print(f"📋 Record: {r1.name}")
     print(f"   Employee ID: {r1.employee_id}")

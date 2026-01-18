@@ -1,13 +1,15 @@
 """
 Infrastructure - Cache System
 """
+
 import json
 import logging
 import time
-from typing import Any, Optional
 from pathlib import Path
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
 
 class CacheManager:
     """
@@ -31,10 +33,10 @@ class CacheManager:
 
         try:
             data = json.loads(file_path.read_text())
-            if time.time() - data['timestamp'] > self.ttl:
-                file_path.unlink() # Expired
+            if time.time() - data["timestamp"] > self.ttl:
+                file_path.unlink()  # Expired
                 return None
-            return data['payload']
+            return data["payload"]
         except Exception:
             return None
 
@@ -42,10 +44,7 @@ class CacheManager:
         """Save a value to cache."""
         file_path = self.cache_dir / f"{key}.json"
         try:
-            data = {
-                'timestamp': time.time(),
-                'payload': value
-            }
+            data = {"timestamp": time.time(), "payload": value}
             file_path.write_text(json.dumps(data))
         except Exception as e:
             logger.warning(f"Failed to cache {key}: {e}")

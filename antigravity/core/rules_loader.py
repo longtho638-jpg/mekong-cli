@@ -7,16 +7,16 @@ Ensures compliance with AgencyOS governance and coding standards.
 
 Usage:
     from antigravity.core.rules_loader import load_rules_for_agent
-    
+
     # Get rules as text
     rules_dict = load_rules_for_agent("fullstack-developer")
-    
+
     # Print matrix
     print_rules_matrix()
 """
 
-from typing import Dict, List, Set
 from pathlib import Path
+from typing import Dict, List, Set
 
 # Base path for rules
 RULES_BASE_DIR = Path(".claude/rules")
@@ -30,7 +30,7 @@ RULE_MAPPING: Dict[str, List[str]] = {
         "money-maker",
         "growth-strategist",
         "client-magnet",
-        "revenue-engine"
+        "revenue-engine",
     ],
     "development-rules.md": [
         "fullstack-developer",
@@ -39,19 +39,10 @@ RULE_MAPPING: Dict[str, List[str]] = {
         "code-reviewer",
         "database-admin",
         "mcp-manager",
-        "git-manager"
+        "git-manager",
     ],
-    "documentation-management.md": [
-        "docs-manager",
-        "journal-writer",
-        "content-factory"
-    ],
-    "orchestration-protocol.md": [
-        "project-manager",
-        "planner",
-        "scout",
-        "brainstormer"
-    ],
+    "documentation-management.md": ["docs-manager", "journal-writer", "content-factory"],
+    "orchestration-protocol.md": ["project-manager", "planner", "scout", "brainstormer"],
     "primary-workflow.md": [
         # Applied to ALL agents
         "*",
@@ -60,12 +51,13 @@ RULE_MAPPING: Dict[str, List[str]] = {
         "fullstack-developer",
         "ui-ux-designer",
         "tester",
-        "frontend-developer" # Future agent
+        "frontend-developer",  # Future agent
     ],
 }
 
 # Reverse mapping: Agent → Rules (Computed once)
 AGENT_RULES: Dict[str, Set[str]] = {}
+
 
 def _build_reverse_mapping():
     """Build the AGENT_RULES cache."""
@@ -74,6 +66,7 @@ def _build_reverse_mapping():
             if agent not in AGENT_RULES:
                 AGENT_RULES[agent] = set()
             AGENT_RULES[agent].add(rule)
+
 
 # Initialize mapping on import
 _build_reverse_mapping()
@@ -93,11 +86,11 @@ def get_rules_for_agent(agent: str) -> List[str]:
 def load_rules_for_agent(agent: str, base_path: Path = RULES_BASE_DIR) -> Dict[str, str]:
     """
     Load rule content for an agent.
-    
+
     Args:
         agent: Agent ID (e.g. 'fullstack-developer')
         base_path: Directory containing rule files
-        
+
     Returns:
         Dict[rule_filename, rule_content]
     """
@@ -130,8 +123,8 @@ def get_rule_summary(rule_name: str, base_path: Path = RULES_BASE_DIR) -> str:
     rule_path = base_path / rule_name
     if rule_path.exists():
         try:
-            lines = rule_path.read_text(encoding="utf-8").split('\n')[:3]
-            return '\n'.join(lines)
+            lines = rule_path.read_text(encoding="utf-8").split("\n")[:3]
+            return "\n".join(lines)
         except Exception:
             return "Error reading rule"
     return "Rule not found"
@@ -159,13 +152,13 @@ def print_rules_matrix():
     for rule, agents in RULE_MAPPING.items():
         # Handle wildcard
         if "*" in agents:
-             agents_display = ["ALL AGENTS"]
+            agents_display = ["ALL AGENTS"]
         else:
             agents_display = agents
 
         agents_str = ", ".join(agents_display[:3])
         if len(agents_display) > 3:
-            agents_str += f' +{len(agents_display)-3} more'
+            agents_str += f" +{len(agents_display) - 3} more"
         print(f"   {rule}")
         print(f"      └── {agents_str}")
     print()
@@ -178,7 +171,7 @@ def print_agent_rules(agent: str):
     print("─" * 40)
     if rules:
         for rule in rules:
-            summary = get_rule_summary(rule).split('\n')[0].strip('# ').strip()
+            summary = get_rule_summary(rule).split("\n")[0].strip("# ").strip()
             print(f"   • {rule:<30} | {summary}")
     else:
         print("   No rules assigned")

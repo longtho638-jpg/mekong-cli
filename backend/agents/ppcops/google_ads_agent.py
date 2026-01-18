@@ -3,10 +3,10 @@ Google Ads Agent - Search, Display & Video
 Manages Google Search, Display, and Video campaigns.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict
-from enum import Enum
 import random
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List
 
 
 class AdType(Enum):
@@ -25,6 +25,7 @@ class KeywordMatch(Enum):
 @dataclass
 class PPCKeyword:
     """PPC Keyword"""
+
     text: str
     match_type: KeywordMatch
     quality_score: int = 0
@@ -45,6 +46,7 @@ class PPCKeyword:
 @dataclass
 class GoogleAdsCampaign:
     """Google Ads campaign"""
+
     id: str
     name: str
     ad_type: AdType
@@ -69,7 +71,7 @@ class GoogleAdsCampaign:
 class GoogleAdsAgent:
     """
     Google Ads Agent - Quảng cáo Google
-    
+
     Responsibilities:
     - Search, Display, Video campaigns
     - Keyword management
@@ -82,30 +84,19 @@ class GoogleAdsAgent:
         self.status = "ready"
         self.campaigns: Dict[str, GoogleAdsCampaign] = {}
 
-    def create_campaign(
-        self,
-        name: str,
-        ad_type: AdType,
-        budget: float
-    ) -> GoogleAdsCampaign:
+    def create_campaign(self, name: str, ad_type: AdType, budget: float) -> GoogleAdsCampaign:
         """Create Google Ads campaign"""
-        campaign_id = f"gads_{random.randint(100,999)}"
+        campaign_id = f"gads_{random.randint(100, 999)}"
 
         campaign = GoogleAdsCampaign(
-            id=campaign_id,
-            name=name,
-            ad_type=ad_type,
-            budget_daily=budget
+            id=campaign_id, name=name, ad_type=ad_type, budget_daily=budget
         )
 
         self.campaigns[campaign_id] = campaign
         return campaign
 
     def add_keyword(
-        self,
-        campaign_id: str,
-        text: str,
-        match_type: KeywordMatch
+        self, campaign_id: str, text: str, match_type: KeywordMatch
     ) -> GoogleAdsCampaign:
         """Add keyword to campaign"""
         if campaign_id not in self.campaigns:
@@ -115,7 +106,7 @@ class GoogleAdsAgent:
             text=text,
             match_type=match_type,
             quality_score=random.randint(5, 10),  # Initial quality score
-            cpc=random.uniform(0.5, 5.0)
+            cpc=random.uniform(0.5, 5.0),
         )
 
         self.campaigns[campaign_id].keywords.append(keyword)
@@ -173,7 +164,10 @@ class GoogleAdsAgent:
             "total_spend": total_spend,
             "total_revenue": total_rev,
             "global_roas": total_rev / total_spend if total_spend > 0 else 0,
-            "avg_qs": sum(k.quality_score for c in campaigns for k in c.keywords) / sum(len(c.keywords) for c in campaigns) if campaigns else 0
+            "avg_qs": sum(k.quality_score for c in campaigns for k in c.keywords)
+            / sum(len(c.keywords) for c in campaigns)
+            if campaigns
+            else 0,
         }
 
 

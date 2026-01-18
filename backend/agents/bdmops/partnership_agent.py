@@ -3,11 +3,11 @@ Partnership Agent - Partner Relationship Management
 Manages partnerships, co-marketing, and revenue sharing.
 """
 
+import random
 from dataclasses import dataclass
-from typing import List, Dict, Optional
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Dict, List, Optional
 
 
 class PartnerType(Enum):
@@ -27,6 +27,7 @@ class PartnerStatus(Enum):
 @dataclass
 class Partner:
     """Business partner"""
+
     id: str
     name: str
     company: str
@@ -47,7 +48,7 @@ class Partner:
 class PartnershipAgent:
     """
     Partnership Agent - Quản lý Đối tác
-    
+
     Responsibilities:
     - Partner onboarding
     - Relationship tracking
@@ -60,7 +61,7 @@ class PartnershipAgent:
         PartnerType.REFERRAL: 15.0,
         PartnerType.RESELLER: 25.0,
         PartnerType.TECHNOLOGY: 10.0,
-        PartnerType.STRATEGIC: 20.0
+        PartnerType.STRATEGIC: 20.0,
     }
 
     def __init__(self):
@@ -69,14 +70,10 @@ class PartnershipAgent:
         self.partners: Dict[str, Partner] = {}
 
     def add_partner(
-        self,
-        name: str,
-        company: str,
-        partner_type: PartnerType,
-        contact_email: str = ""
+        self, name: str, company: str, partner_type: PartnerType, contact_email: str = ""
     ) -> Partner:
         """Add new partner"""
-        partner_id = f"partner_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
+        partner_id = f"partner_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
 
         partner = Partner(
             id=partner_id,
@@ -84,7 +81,7 @@ class PartnershipAgent:
             company=company,
             partner_type=partner_type,
             contact_email=contact_email,
-            revenue_share=self.REVENUE_SHARES.get(partner_type, 10.0)
+            revenue_share=self.REVENUE_SHARES.get(partner_type, 10.0),
         )
 
         self.partners[partner_id] = partner
@@ -134,7 +131,7 @@ class PartnershipAgent:
             "active": len(active),
             "total_referrals": sum(p.total_referrals for p in partners),
             "total_revenue": sum(p.total_revenue for p in partners),
-            "total_payouts": sum(self.calculate_payout(p.id) for p in partners)
+            "total_payouts": sum(self.calculate_payout(p.id) for p in partners),
         }
 
 
@@ -145,7 +142,9 @@ if __name__ == "__main__":
     print("🤝 Partnership Agent Demo\n")
 
     # Add partners
-    p1 = agent.add_partner("GDG Vietnam", "Google Developer Groups", PartnerType.STRATEGIC, "gdg@google.com")
+    p1 = agent.add_partner(
+        "GDG Vietnam", "Google Developer Groups", PartnerType.STRATEGIC, "gdg@google.com"
+    )
     p2 = agent.add_partner("TechAgency", "Tech Consulting", PartnerType.RESELLER, "partner@tech.vn")
 
     print(f"📋 Partner: {p1.company}")

@@ -2,7 +2,7 @@
 🏗️ Supabase Client - Core Database Connection
 =============================================
 
-Centralized connection manager for the Agency OS cloud infrastructure. 
+Centralized connection manager for the Agency OS cloud infrastructure.
 Provides a singleton instance of the Supabase client for all core modules.
 
 Usage:
@@ -16,7 +16,8 @@ Binh Pháp: 🏰 Nền Tảng (Foundation) - Ensuring reliable access to the dat
 
 import logging
 from typing import Optional
-from supabase import create_client, Client
+
+from supabase import Client, create_client
 
 try:
     from .config import get_settings
@@ -25,7 +26,10 @@ except (ImportError, ValueError):
     try:
         from config import get_settings
     except ImportError:
-        def get_settings(): return None
+
+        def get_settings():
+            return None
+
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -34,9 +38,10 @@ logger = logging.getLogger(__name__)
 class Database:
     """
     🏗️ Supabase Database Manager
-    
+
     Ensures a single active connection across the agency OS modules (Singleton).
     """
+
     _instance: Optional[Client] = None
 
     @classmethod

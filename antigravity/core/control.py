@@ -78,9 +78,7 @@ class CircuitBreaker:
                 elapsed = (datetime.now() - self.last_failure).seconds
                 if elapsed >= self.recovery_timeout:
                     self.state = CircuitState.HALF_OPEN
-                    logger.info(
-                        f"🟡 Circuit HALF-OPEN for {self.service} - testing recovery"
-                    )
+                    logger.info(f"🟡 Circuit HALF-OPEN for {self.service} - testing recovery")
                     return True
             return False
 
@@ -138,13 +136,9 @@ class ControlCenter:
         """Initialize default feature flags."""
         defaults = [
             FeatureFlag("gumroad_webhook", True, 100, [], "Gumroad purchase webhook"),
-            FeatureFlag(
-                "email_sequence", True, 100, [], "Post-purchase email sequence"
-            ),
+            FeatureFlag("email_sequence", True, 100, [], "Post-purchase email sequence"),
             FeatureFlag("revenue_autopilot", True, 100, [], "Daily revenue automation"),
-            FeatureFlag(
-                "prometheus_metrics", True, 100, [], "Prometheus metrics endpoint"
-            ),
+            FeatureFlag("prometheus_metrics", True, 100, [], "Prometheus metrics endpoint"),
             FeatureFlag("viral_mode", False, 0, [], "Emergency viral scaling mode"),
         ]
 
@@ -214,17 +208,11 @@ class ControlCenter:
 
         return self.governors[resource].check_rate()
 
-    def set_rate_limit(
-        self, resource: str, max_requests: int, window_seconds: int = 60
-    ):
+    def set_rate_limit(self, resource: str, max_requests: int, window_seconds: int = 60):
         """Configure rate limit for resource."""
         with self._lock:
-            self.governors[resource] = RateGovernor(
-                resource, max_requests, window_seconds
-            )
-            logger.info(
-                f"📊 Rate limit set: {resource} = {max_requests}/{window_seconds}s"
-            )
+            self.governors[resource] = RateGovernor(resource, max_requests, window_seconds)
+            logger.info(f"📊 Rate limit set: {resource} = {max_requests}/{window_seconds}s")
 
     # Status
     def get_status(self) -> Dict[str, Any]:

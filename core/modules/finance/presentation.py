@@ -1,15 +1,17 @@
 """
 Finance Module - Presentation Layer
 """
+
 from .entities import FinancialRatio
 from .services import FinancialReportsService
 
-class FinancePresenter:
 
+class FinancePresenter:
     @staticmethod
     def format_dashboard(service: FinancialReportsService) -> str:
         """Render the CFO Financial Dashboard."""
-        if not service.pnl_history: return "No financial history data."
+        if not service.pnl_history:
+            return "No financial history data."
 
         latest = service.pnl_history[0]
         overall_score = service.ratios.get("net_margin", FinancialRatio("", 0, 0)).value
@@ -37,11 +39,13 @@ class FinancePresenter:
             bar = "█" * bar_len + "░" * (10 - bar_len)
             lines.append(f"║    {status} {r.name:<18} │ {bar} │ {r.value:>5.1f}{r.unit}  ║")
 
-        lines.extend([
-            "║                                                           ║",
-            "║  [📊 P&L]  [📈 Trends]  [💰 Forecast]  [⚙️ Settings]      ║",
-            "╠═══════════════════════════════════════════════════════════╣",
-            f"║  🏯 {service.agency_name[:40]:<40} - Big Picture!      ║",
-            "╚═══════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "║                                                           ║",
+                "║  [📊 P&L]  [📈 Trends]  [💰 Forecast]  [⚙️ Settings]      ║",
+                "╠═══════════════════════════════════════════════════════════╣",
+                f"║  🏯 {service.agency_name[:40]:<40} - Big Picture!      ║",
+                "╚═══════════════════════════════════════════════════════════╝",
+            ]
+        )
         return "\n".join(lines)
