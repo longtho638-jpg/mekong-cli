@@ -54,6 +54,7 @@ exclude = [
     "validate_refactor.py",
     "test_tunnel_performance.py",
     "test_*.py",
+    "demo.py",
 ]
 
 line-length = 88
