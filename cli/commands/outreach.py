@@ -3,7 +3,6 @@ import subprocess
 import urllib.parse
 from rich.console import Console
 from rich.table import Table
-from core.outreach.service import OutreachService
 
 console = Console()
 outreach_app = typer.Typer(help="📧 Quản lý Lead & Outreach")
@@ -15,6 +14,7 @@ def add_lead(
     company: str = typer.Argument("Your Company", help="Company Name")
 ):
     """Add a new lead to the pipeline."""
+    from core.outreach.service import OutreachService
     service = OutreachService()
     if service.add_lead(name, email, company):
         console.print(f"[green]✅ Added lead:[/green] {name} <{email}> @ {company}")
@@ -24,6 +24,7 @@ def add_lead(
 @outreach_app.command("list")
 def list_leads():
     """List all leads in the pipeline."""
+    from core.outreach.service import OutreachService
     service = OutreachService()
     leads = service.list_leads()
     
@@ -57,6 +58,7 @@ def draft_email(
     template: str = typer.Option("ghost_cto", help="Template name")
 ):
     """Draft an outreach email."""
+    from core.outreach.service import OutreachService
     service = OutreachService()
     result = service.generate_email(email, template)
     
@@ -77,6 +79,7 @@ def send_email(
     template: str = typer.Option("ghost_cto", help="Template name")
 ):
     """Send email via default mail client."""
+    from core.outreach.service import OutreachService
     service = OutreachService()
     result = service.generate_email(email, template)
     
@@ -97,6 +100,7 @@ def send_email(
 @outreach_app.command("stats")
 def show_stats():
     """Show outreach pipeline statistics."""
+    from core.outreach.service import OutreachService
     service = OutreachService()
     stats = service.get_stats()
     
