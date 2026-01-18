@@ -74,3 +74,44 @@ def generate_secrets():
     """Interactive secret generation (.env)."""
     from cli.commands.setup import generate_secrets as gen
     gen()
+
+@ops_app.command("network-optimize")
+def network_optimize(
+    status_only: bool = typer.Option(False, "--status", help="Only show status without optimizing"),
+    daemon: bool = typer.Option(False, "--daemon", help="Run in continuous daemon mode")
+):
+    """Optimize network connectivity (WARP/Tailscale)."""
+    from core.ops.network import NetworkOptimizer
+    
+    optimizer = NetworkOptimizer()
+    
+    if status_only:
+        report = optimizer.get_status_report()
+        console.print("\n[bold]🌐 Network Status[/bold]")
+        console.print("=" * 40)
+        
+        warp = report["warp"]
+        console.print(f"WARP: {'[green]✅ Connected[/green]' if warp['connected'] else '[red]❌ Disconnected[/red]'}")
+        
+        ts = report["tailscale"]
+        console.print(f"Tailscale: {'[green]✅ Online[/green]' if ts.get('online') else '[red]❌ Offline[/red]'}")
+        console.print(f"Exit Node: {'[green]✅ Active[/green]' if ts.get('exit_node_active') else '[yellow]❌ Disabled[/yellow]'}")
+        
+        console.print(f"\n📍 Colo: {report['colo']}")
+        console.print(f"⏱️ Ping: {report['latency']}ms")
+        
+        quality_color = {"EXCELLENT": "green", "GOOD": "blue", "POOR": "red"}
+        q_color = quality_color.get(report['quality'], "white")
+        console.print(f"✅ Quality: [{q_color}]{report['quality']}[/{q_color}]")
+        return
+
+    if daemon:
+        console.print("[bold cyan]🚀 Starting Network Optimizer Daemon...[/bold cyan]")
+        try:
+            while True:
+                optimizer.optimize()
+                time.sleep(60)
+        except KeyboardInterrupt:
+            console.print("\n[dim]Stopped.[/dim]")
+    else:
+        optimizer.optimize()
