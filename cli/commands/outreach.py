@@ -52,6 +52,17 @@ def list_leads():
     
     console.print(table)
 
+@outreach_app.command("templates")
+def list_templates():
+    """List available email templates."""
+    from core.outreach.service import OutreachService
+    service = OutreachService()
+    templates = service.list_templates()
+    
+    console.print("\n[bold]📧 AVAILABLE TEMPLATES[/bold]")
+    for t in templates:
+        console.print(f"  • {t}")
+
 @outreach_app.command("draft")
 def draft_email(
     email: str = typer.Argument(..., help="Lead Email"),
@@ -60,10 +71,13 @@ def draft_email(
     """Draft an outreach email."""
     from core.outreach.service import OutreachService
     service = OutreachService()
+    
+    # Check if lead exists, if not, warn user
     result = service.generate_email(email, template)
     
     if not result:
-        console.print(f"[red]❌ Error generating email. Check email and template.[/red]")
+        console.print(f"[red]❌ Error generating email. Lead not found or template invalid.[/red]")
+        console.print("Tip: Add lead first using `outreach add` or check template name.")
         return
 
     console.print("\n[bold blue]📧 DRAFT EMAIL[/bold blue]")
