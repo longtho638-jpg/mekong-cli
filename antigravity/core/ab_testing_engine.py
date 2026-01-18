@@ -349,7 +349,7 @@ class AdvancedABTestEngine:
 
         # Calculate conversion rates
         control_rate = conversions[0] / test.sample_size if test.sample_size > 0 else 0
-        best_rate = max(conversions) / test.sample_size if test.sample_size > 0 else 0
+        max(conversions) / test.sample_size if test.sample_size > 0 else 0
 
         # Calculate effect size (Cohen's d)
         if control_rate > 0:
@@ -431,7 +431,7 @@ class AdvancedABTestEngine:
 
         # Error rate check (simplified)
         if test.sample_size > 100:
-            total_conversions = sum(test.conversions.values())
+            sum(test.conversions.values())
             # Check if any variant has extremely poor performance
             min_conversions = min(test.conversions.values())
             max_conversions = max(test.conversions.values())
