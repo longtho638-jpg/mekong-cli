@@ -155,8 +155,7 @@ def network_bypass():
     """🛡️ Show ISP Bypass Solutions (Manual)."""
     console.print("\n[bold]🏯 VIETTEL BYPASS TOOLKIT - Binh Pháp[/bold]")
     console.print("=" * 60)
-    console.print(""")
-
+    console.print("""
 1. 🥇 [bold]OUTLINE VPN[/bold] (Best for Viettel)
    → Self-host on DigitalOcean Singapore ($5/mo)
    → Protocol: Shadowsocks (hard to detect/block)
@@ -218,4 +217,19 @@ def health_check():
         console.print("[bold yellow]⚠️  SOME ISSUES DETECTED[/bold yellow]\n")
     
     if not all_ok:
+        raise typer.Exit(code=1)
+
+@ops_app.command("deploy")
+def deploy_backend(
+    service: str = typer.Option("agent-backend", help="Cloud Run Service Name"),
+    region: str = typer.Option("asia-southeast1", help="GCP Region")
+):
+    """🚀 Deploy backend to Google Cloud Run."""
+    from core.ops.deploy import DeployManager
+    
+    try:
+        manager = DeployManager(service_name=service, region=region)
+        manager.run()
+    except Exception as e:
+        console.print(f"[red]Deploy failed:[/red] {e}")
         raise typer.Exit(code=1)

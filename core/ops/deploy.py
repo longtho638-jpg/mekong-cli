@@ -8,7 +8,6 @@ import shutil
 import subprocess
 from typing import Dict, Optional
 
-import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.status import Status
@@ -80,7 +79,7 @@ class DeployManager:
         )
 
         if not self.validate_environment():
-            raise typer.Exit(1)
+            raise RuntimeError("Environment validation failed")
 
         # 1. Prepare Secrets
         env_vars = self.parse_env()
@@ -119,12 +118,12 @@ class DeployManager:
                 cmd.extend(["--set-env-vars", env_flags])
 
             try:
-                # Use subprocess.Popen for streaming or run for simple execution
+                # Use subprocess.run for execution
                 process = subprocess.run(cmd, capture_output=True, text=True)
                 if process.returncode != 0:
                     console.print("\n[bold red]❌ GCloud Deploy Failed[/bold red]")
                     console.print(process.stderr)
-                    raise typer.Exit(1)
+                    raise RuntimeError("Deployment failed")
 
                 console.print(
                     f"\n✅ [bold green]{self.service_name} deployed successfully![/bold green]"
@@ -132,19 +131,10 @@ class DeployManager:
 
             except Exception as e:
                 console.print(f"\n❌ [bold red]Unexpected error during deploy:[/bold red] {e}")
-                raise typer.Exit(1)
+                raise
 
         # 3. DB Migrations
         if shutil.which("supabase") and os.path.exists("supabase"):
-            if typer.confirm("\n📦 Run Supabase migrations?"):
-                subprocess.run(["supabase", "db", "push"])
-
-
-def run_deploy():
-    """Wrapper for CLI command."""
-    manager = DeployManager()
-    manager.run()
-
-
-if __name__ == "__main__":
-    run_deploy()
+             console.print("\n📦 Skipping automated Supabase migrations (manual confirmation required in CLI context).")
+             # In a real CI/CD, this would be automated, but for CLI tool, maybe just log it.
+             # Or we can expose it as a separate step.
