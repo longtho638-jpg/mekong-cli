@@ -96,7 +96,7 @@ class BidManagerAgent:
 
         return {
             "pacing_percent": pacing,
-            "spend": c.current_spend,
+            "spend": current_spend,
             "budget": daily_budget,
             "recommendation": recommendation,
         }

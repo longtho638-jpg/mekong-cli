@@ -1,8 +1,9 @@
-import typer
+import subprocess
 import sys
 import time
-import subprocess
 from pathlib import Path
+
+import typer
 from rich.console import Console
 from rich.table import Table
 

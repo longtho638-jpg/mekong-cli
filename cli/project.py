@@ -9,8 +9,9 @@ from core.config import get_settings
 from core.constants import APP_NAME
 
 try:
-    from core.licensing import LicenseTier, LicenseValidator
     from deploy_automation import run_deploy
+
+    from core.licensing import LicenseTier, LicenseValidator
 except ImportError:
     run_deploy = None
     LicenseTier = None
