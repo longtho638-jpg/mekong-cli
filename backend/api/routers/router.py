@@ -7,7 +7,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 try:
-    from core.hybrid_router import HybridRouter
+    from core.ai.hybrid_router import HybridRouter
     hybrid_router = HybridRouter()
     ROUTER_AVAILABLE = True
 except ImportError:

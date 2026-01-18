@@ -196,7 +196,6 @@ class TunnelOptimizer:
         """Make optimized HTTP request."""
 
         start_time = time.time()
-        full_url = f"{self.base_url}{endpoint}"
 
         # Check cache first
         if use_cache and method.upper() in ["GET", "HEAD"]:

@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.prompt import Prompt
 
 from core.constants import NICHE_DESCRIPTIONS, NICHES, VIBES
-from core.utils import update_file_placeholders
+from core.shared.utils import update_file_placeholders
 
 console = Console()
 

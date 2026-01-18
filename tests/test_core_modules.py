@@ -101,7 +101,7 @@ class TestAnalytics:
     def test_analytics_initialization(self):
         """Test Analytics initializes correctly."""
         try:
-            from core.analytics import Analytics
+            from core.analytics.analytics import AnalyticsDashboard
 
             analytics = Analytics()
             assert analytics.mrr >= 0

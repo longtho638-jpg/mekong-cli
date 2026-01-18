@@ -221,7 +221,7 @@ class TestHubLogic:
 
     def test_hybrid_router_import(self):
         """Test HybridRouter is always available."""
-        from core.hybrid_router import HybridRouter
+from core.ai.hybrid_router import HybridRouter
         router = HybridRouter()
         assert router is not None
 

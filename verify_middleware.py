@@ -6,7 +6,7 @@ from pprint import pprint
 sys.path.insert(0, os.getcwd())
 
 try:
-    from core.subscription_middleware import SubscriptionMiddleware, SubscriptionTier
+    from core.finance.subscription_middleware import SubscriptionMiddleware, SubscriptionTier
 
     print("✅ Imported SubscriptionMiddleware")
 except ImportError as e:

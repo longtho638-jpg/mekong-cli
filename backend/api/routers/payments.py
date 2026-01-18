@@ -6,7 +6,7 @@ Replaces legacy Braintree router.
 """
 
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from backend.services.payment_service import PaymentService

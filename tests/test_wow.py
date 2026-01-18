@@ -203,7 +203,7 @@ def test_memory_system():
     print("\n🧠 TEST 8: Memory System")
     print("-" * 50)
 
-    from core.memory import Memory
+    from core.memory.memory import AgentMemory
 
     memory = Memory()
 

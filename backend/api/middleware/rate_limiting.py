@@ -6,13 +6,11 @@ Implements configurable rate limiting for API endpoints.
 Supports tenant-specific limits and different limits by plan.
 """
 
-import os
 import time
-from typing import Dict, Any
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from fastapi import Request, HTTPException, Response
+from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 import logging
 
