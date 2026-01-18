@@ -1,3 +1,10 @@
+## [2.5.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.1...v2.5.0-beta.2) (2026-01-18)
+
+
+### 🚀 Features
+
+* **commands:** add mandatory /clear reminder after planning workflow ([c89478c](https://github.com/claudekit/claudekit-engineer/commit/c89478cd91e45db8a39b99bc072793201e0660a1)), closes [#355](https://github.com/claudekit/claudekit-engineer/issues/355)
+
 ## [2.5.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.4.0...v2.5.0-beta.1) (2026-01-18)
 
 
