@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 from unittest.mock import patch, MagicMock
-from antigravity.core.jules_runner import trigger_jules_mission, run_scheduled_maintenance, JULES_MISSIONS
+from antigravity.core.jules_runner import trigger_jules_mission, run_scheduled_maintenance
 
 class TestJulesIntegration(unittest.TestCase):
 

@@ -7,7 +7,6 @@ Includes HTTP requests, tenant usage, and business metrics.
 """
 
 import time
-from typing import Dict, Counter, Histogram, Gauge
 from prometheus_client import Counter as PromCounter, Histogram as PromHistogram, Gauge as PromGauge, generate_latest, CONTENT_TYPE_LATEST
 from fastapi import Request, Response
 from fastapi.responses import Response as FastAPIResponse

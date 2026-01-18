@@ -21,7 +21,7 @@ try:
     from core.config import get_settings
     from core.voice_clone import VoiceClone
     from core.telegram_bot import TelegramBot
-    from core.api_keys import APIKeysManager
+    from core.security.api_keys import APIKeyManager
     from core.modules.crm import CRM
     from core.web_designer import WebDesigner
 except ImportError as e:

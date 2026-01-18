@@ -1,7 +1,4 @@
-import sys
-from pathlib import Path
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 # Ensure imports work
 from core.licensing import LicenseValidator, LicenseTier
@@ -14,7 +11,7 @@ def test_license_validator_import():
     assert LicenseTier.STARTER == "starter"
 
 def test_license_validator_init():
-    with patch("core.licensing.validator.Path") as mock_path:
+    with patch("core.licensing.validator.Path"):
         validator = LicenseValidator()
         assert validator is not None
 

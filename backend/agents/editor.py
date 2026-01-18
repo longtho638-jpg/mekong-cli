@@ -11,7 +11,7 @@ import os
 
 # Import VibeTuner for localized content
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from core.vibe_tuner import VibeTuner, VibeRegion
+from core.growth.vibe_tuner import VibeTuner, VibeRegion
 
 
 @dataclass

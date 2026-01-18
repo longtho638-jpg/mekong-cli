@@ -16,7 +16,7 @@ class TestContentMarketing:
 
     def test_strategy_generation(self):
         """Test complete strategy generation."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         strategy = gen.generate_strategy("digital agency")
@@ -27,7 +27,7 @@ class TestContentMarketing:
 
     def test_content_pillars(self):
         """Test content pillars generation."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         pillars = gen.generate_content_pillars("digital agency")
@@ -39,7 +39,7 @@ class TestContentMarketing:
 
     def test_channel_strategy(self):
         """Test channel strategy generation."""
-        from core.content_marketing import ContentMarketingStrategy, ContentChannel
+        from core.growth.content_marketing import ContentMarketingStrategy, ContentChannel
 
         gen = ContentMarketingStrategy()
         strategy = gen.generate_channel_strategy("digital agency")
@@ -49,7 +49,7 @@ class TestContentMarketing:
 
     def test_content_calendar(self):
         """Test content calendar generation."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         calendar = gen.generate_content_calendar("digital agency")
@@ -59,7 +59,7 @@ class TestContentMarketing:
 
     def test_seo_keywords(self):
         """Test SEO keywords generation."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         keywords = gen.generate_seo_keywords("digital agency")
@@ -69,7 +69,7 @@ class TestContentMarketing:
 
     def test_performance_metrics(self):
         """Test performance metrics."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         metrics = gen.get_performance_metrics()
@@ -77,7 +77,7 @@ class TestContentMarketing:
 
     def test_format_strategy(self):
         """Test strategy formatting."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
         strategy = gen.generate_strategy("e-commerce blog")
@@ -88,7 +88,7 @@ class TestContentMarketing:
 
     def test_different_business_types(self):
         """Test different business type templates."""
-        from core.content_marketing import ContentMarketingStrategy
+        from core.growth.content_marketing import ContentMarketingStrategy
 
         gen = ContentMarketingStrategy()
 

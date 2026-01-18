@@ -7,7 +7,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 try:
-    from core.vibe_tuner import VibeTuner, VibeRegion
+    from core.growth.vibe_tuner import VibeTuner, VibeRegion
     vibe_tuner = VibeTuner()
     VIBE_AVAILABLE = True
 except ImportError:

@@ -22,7 +22,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from core.business_plan_generator import BusinessPlanGenerator, AgencyDNA
+    from core.strategy.business_plan_generator import BusinessPlanGenerator, AgencyDNA
 except ImportError:
     print("❌ Could not import BusinessPlanGenerator. Run from mekong-cli directory.")
     sys.exit(1)
