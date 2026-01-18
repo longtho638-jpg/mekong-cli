@@ -7,53 +7,7 @@ Business logic for lead outreach and templates.
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from .repository import OutreachRepository
-
-TEMPLATES = {
-    "ghost_cto": {
-        "subject": "Quick question about {company}'s engineering velocity",
-        "body": """Hi {name},
-
-I noticed {company} is growing fast. Congrats!
-
-Quick question: How are you tracking your engineering team's velocity and output?
-
-I've been helping startups like yours with "Ghost CTO" services - basically fractional technical oversight without the full-time cost.
-
-Here's a sample of what I provide weekly:
-- Dev velocity reports (commits, PRs, cycle time)
-- Technical debt identification
-- Architecture recommendations
-
-Would you be open to a 15-min call to see if this could help {company}?
-
-Best,
-Bill
-
-P.S. I've attached a sample CTO report from a similar-sized team.
-""",
-    },
-    "strategy_session": {
-        "subject": "Binh Pháp Strategy Session for {company}",
-        "body": """Hi {name},
-
-I came across {company} and was impressed by what you're building.
-
-I specialize in strategic consulting for startups using the "Binh Pháp" framework (applying Sun Tzu's Art of War to modern business strategy).
-
-I'm offering a complimentary 30-min strategy session where we'll:
-- Analyze your competitive moat
-- Identify strategic vulnerabilities
-- Map your path to market dominance
-
-Would you be interested in scheduling a session this week?
-
-Best,
-Bill
-
-🏯 AgencyOS
-""",
-    },
-}
+from .templates import TEMPLATES
 
 class OutreachService:
     def __init__(self):
@@ -76,12 +30,18 @@ class OutreachService:
 
     def get_template(self, name: str) -> Optional[Dict[str, str]]:
         return TEMPLATES.get(name)
+    
+    def list_templates(self) -> List[str]:
+        return list(TEMPLATES.keys())
 
     def generate_email(self, email: str, template_name: str) -> Optional[Dict[str, str]]:
         leads = self.repo.load_leads()
         lead = next((l for l in leads if l["email"] == email), None)
         
         if not lead:
+            # Fallback for ad-hoc emails if lead not found (optional, but good for "quick_outreach")
+            # For now, let's just return None to enforce lead usage, or maybe create a dummy lead?
+            # Let's enforce lead existence for safety.
             return None
             
         template = self.get_template(template_name)
@@ -90,11 +50,22 @@ class OutreachService:
 
         # Safe formatting using default values if keys missing
         safe_lead = {k: v or "" for k, v in lead.items()}
+        # Ensure 'company' and 'name' are at least strings
+        if 'company' not in safe_lead: safe_lead['company'] = "your company"
+        if 'name' not in safe_lead: safe_lead['name'] = "there"
         
+        try:
+            subject = template["subject"].format(**safe_lead)
+            body = template["body"].format(**safe_lead)
+        except KeyError as e:
+            # If template uses keys not in lead, fallback
+            subject = template["subject"]
+            body = template["body"] + f"\n[System Note: Missing data for {e}]"
+
         return {
             "to": f"{lead['name']} <{lead['email']}>",
-            "subject": template["subject"].format(**safe_lead),
-            "body": template["body"].format(**safe_lead),
+            "subject": subject,
+            "body": body,
             "email_raw": lead["email"]
         }
 
