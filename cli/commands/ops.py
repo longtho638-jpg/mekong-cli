@@ -3,19 +3,6 @@ import sys
 import time
 from pathlib import Path
 from rich.console import Console
-from core.monitoring.watcher import EmpireWatcher
-from core.infrastructure.notifications import NotificationService
-
-# Try to import QuotaEngine
-try:
-    from antigravity.core.quota_engine import QuotaEngine
-except ImportError:
-    # Fallback if package structure is different
-    try:
-        sys.path.insert(0, str(Path(__file__).parents[3]))
-        from packages.antigravity.core.quota_engine import QuotaEngine
-    except ImportError:
-        QuotaEngine = None
 
 console = Console()
 ops_app = typer.Typer(help="👁️ Operations & Monitoring")
@@ -23,12 +10,14 @@ ops_app = typer.Typer(help="👁️ Operations & Monitoring")
 @ops_app.command("watch")
 def start_watch():
     """Start the Empire Watcher."""
+    from core.monitoring.watcher import EmpireWatcher
     watcher = EmpireWatcher()
     watcher.watch()
 
 @ops_app.command("notify")
 def test_notify(message: str):
     """Send a test notification."""
+    from core.infrastructure.notifications import NotificationService
     notifier = NotificationService()
     notifier.send("Manual Alert", message, "info")
 
@@ -44,6 +33,16 @@ def monitor_quota(
     fmt: str = typer.Option("full", "--format", "-f", help="Output format: full, compact, json")
 ):
     """Monitor AI model quotas."""
+    # Try to import QuotaEngine
+    try:
+        from antigravity.core.quota_engine import QuotaEngine
+    except ImportError:
+        try:
+            sys.path.insert(0, str(Path(__file__).parents[3]))
+            from packages.antigravity.core.quota_engine import QuotaEngine
+        except ImportError:
+            QuotaEngine = None
+
     if not QuotaEngine:
         console.print("[red]❌ QuotaEngine not found.[/red]")
         return
@@ -65,7 +64,13 @@ def monitor_quota(
     else:
         console.print(engine.format_cli_output(fmt))
         status = engine.get_current_status()
-        if status.get("alerts", {{}}).get("criticals"):
+        if status.get("alerts", {}).get("criticals"):
             console.print("\n[bold red]⚠️  CRITICAL QUOTA ALERTS:[/bold red]")
             for model in status["alerts"]["criticals"]:
-                console.print(f"   🔴 {{model}}")
+                console.print(f"   🔴 {model}")
+
+@ops_app.command("secrets")
+def generate_secrets():
+    """Interactive secret generation (.env)."""
+    from cli.commands.setup import generate_secrets as gen
+    gen()

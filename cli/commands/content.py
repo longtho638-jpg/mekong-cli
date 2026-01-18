@@ -2,10 +2,9 @@ import typer
 from pathlib import Path
 from datetime import datetime
 from rich.console import Console
-from core.content.service import ContentService
 
 console = Console()
-content_app = typer.Typer(help="✍️ Tạo nội dung Marketing (Tweets, Email, Landing)")
+content_app = typer.Typer(help="✍️ Tạo nội dung Marketing")
 
 @content_app.command("generate")
 def generate_content(
@@ -13,6 +12,7 @@ def generate_content(
     product: str = typer.Argument("agencyos", help="Product key")
 ):
     """Generate marketing content."""
+    from core.content.service import ContentService
     service = ContentService()
     
     if type == "all":
@@ -40,6 +40,7 @@ def generate_content(
 @content_app.command("products")
 def list_products():
     """List available products."""
+    from core.content.service import ContentService
     service = ContentService()
     products = service.get_products()
     for key, p in products.items():

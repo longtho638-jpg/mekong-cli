@@ -1,9 +1,6 @@
 import typer
 from rich.console import Console
 from rich.table import Table
-from core.finance.invoicing import InvoiceService
-from core.finance.gateways.paypal import PayPalClient
-from core.finance.gateways.gumroad import GumroadClient
 
 console = Console()
 finance_app = typer.Typer(help="💰 Quản lý Tài chính (Invoice, PayPal, Gumroad)")
@@ -17,6 +14,7 @@ def invoice_create(
     description: str = typer.Argument(..., help="Description")
 ):
     """Create a new invoice."""
+    from core.finance.invoicing import InvoiceService
     service = InvoiceService()
     inv = service.create_invoice(client, amount, description)
     console.print(f"[green]✅ Invoice {inv['id']} created[/green] for ${amount}")
@@ -24,6 +22,7 @@ def invoice_create(
 @finance_app.command("invoice-list")
 def invoice_list():
     """List all invoices."""
+    from core.finance.invoicing import InvoiceService
     service = InvoiceService()
     invoices = service.load_invoices()
     
@@ -48,6 +47,9 @@ def invoice_list():
 @finance_app.command("status")
 def hub_status():
     """Check payment gateway status."""
+    from core.finance.gateways.paypal import PayPalClient
+    from core.finance.gateways.gumroad import GumroadClient
+    
     pp = PayPalClient()
     gr = GumroadClient()
     
@@ -60,6 +62,9 @@ def hub_status():
 @finance_app.command("revenue")
 def hub_revenue():
     """Check aggregated revenue."""
+    from core.finance.gateways.paypal import PayPalClient
+    from core.finance.gateways.gumroad import GumroadClient
+    
     pp = PayPalClient()
     gr = GumroadClient()
     
