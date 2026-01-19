@@ -1,41 +1,49 @@
 {
-    "redirects": [
-        {
-            "source": "/app",
-            "destination": "/app/dashboard",
-            "permanent": false
-        }
-    ],
-    "rewrites": [
-        {
-            "source": "/docs/:path*",
-            "destination": "/:path*"
-        },
-        {
-            "source": "/app/:path*",
-            "destination": "https://dashboard-rm4rowo86-minh-longs-projects-f5c82c9b.vercel.app/:path*"
-        },
-        {
-            "source": "/api/:path*",
-            "destination": "https://api.agencyos.network/:path*"
-        },
-        {
-            "source": "/en/:path*",
-            "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/en/:path*"
-        },
-        {
-            "source": "/vi/:path*",
-            "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/vi/:path*"
-        },
-        {
-            "source": "/zh/:path*",
-            "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/zh/:path*"
-        }
-    ],
-    "crons": [
-        {
-            "path": "/api/cron/emails",
-            "schedule": "0 * * * *"
-        }
-    ]
+  "redirects": [
+    {
+      "source": "/app",
+      "destination": "/app/dashboard",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/docs/:path*",
+      "destination": "/:path*"
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "https://dashboard-rm4rowo86-minh-longs-projects-f5c82c9b.vercel.app/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://api.agencyos.network/:path*"
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/en/:path*"
+    },
+    {
+      "source": "/vi/:path*",
+      "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/vi/:path*"
+    },
+    {
+      "source": "/zh/:path*",
+      "destination": "https://frontend-fjfbga9f0-minh-longs-projects-f5c82c9b.vercel.app/zh/:path*"
+    },
+    {
+      "source": "/newsletter",
+      "destination": "https://newsletter-saas-one.vercel.app"
+    },
+    {
+      "source": "/newsletter/:path*",
+      "destination": "https://newsletter-saas-one.vercel.app/:path*"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/emails",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
