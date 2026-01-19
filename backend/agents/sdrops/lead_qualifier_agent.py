@@ -129,20 +129,20 @@ class LeadQualifierAgent:
 
     def get_queue(self) -> List[Lead]:
         """Get pending leads"""
-        return [l for l in self.leads.values() if l.status == QualificationStatus.PENDING]
+        return [lead for lead in self.leads.values() if lead.status == QualificationStatus.PENDING]
 
     def get_qualified(self) -> List[Lead]:
         """Get qualified leads awaiting handoff"""
-        return [l for l in self.leads.values() if l.status == QualificationStatus.QUALIFIED]
+        return [lead for lead in self.leads.values() if lead.status == QualificationStatus.QUALIFIED]
 
     def get_stats(self) -> Dict:
         """Get qualification stats"""
         leads = list(self.leads.values())
         qualified = len(
             [
-                l
-                for l in leads
-                if l.status in [QualificationStatus.QUALIFIED, QualificationStatus.HANDED_OFF]
+                lead
+                for lead in leads
+                if lead.status in [QualificationStatus.QUALIFIED, QualificationStatus.HANDED_OFF]
             ]
         )
 
@@ -150,8 +150,8 @@ class LeadQualifierAgent:
             "total_leads": len(leads),
             "pending": len(self.get_queue()),
             "qualified": qualified,
-            "disqualified": len([l for l in leads if l.status == QualificationStatus.DISQUALIFIED]),
-            "handed_off": len([l for l in leads if l.status == QualificationStatus.HANDED_OFF]),
+            "disqualified": len([lead for lead in leads if lead.status == QualificationStatus.DISQUALIFIED]),
+            "handed_off": len([lead for lead in leads if lead.status == QualificationStatus.HANDED_OFF]),
             "qualification_rate": f"{qualified / len(leads) * 100:.0f}%" if leads else "0%",
         }
 

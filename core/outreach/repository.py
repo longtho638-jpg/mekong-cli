@@ -37,7 +37,7 @@ class OutreachRepository:
     def add_lead(self, lead: Dict[str, Any]):
         leads = self.load_leads()
         # Check duplicate by email
-        if any(l["email"] == lead["email"] for l in leads):
+        if any(existing["email"] == lead["email"] for existing in leads):
             return False
 
         leads.append(lead)

@@ -134,7 +134,7 @@ class DemandGenAgent:
         """Get demand gen statistics"""
         campaigns = list(self.campaigns.values())
         leads = list(self.leads.values())
-        mqls = [l for l in leads if l.stage == LeadStage.MQL]
+        mqls = [lead for lead in leads if lead.stage == LeadStage.MQL]
 
         return {
             "total_campaigns": len(campaigns),

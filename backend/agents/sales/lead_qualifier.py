@@ -137,17 +137,17 @@ class LeadQualifierAgent:
 
     def get_qualified_leads(self) -> List[Lead]:
         """Get all qualified leads"""
-        return [l for l in self.leads_db.values() if l.status == LeadStatus.QUALIFIED]
+        return [lead for lead in self.leads_db.values() if lead.status == LeadStatus.QUALIFIED]
 
     def get_stats(self) -> Dict:
         """Get lead statistics"""
         leads = list(self.leads_db.values())
         return {
             "total": len(leads),
-            "qualified": len([l for l in leads if l.status == LeadStatus.QUALIFIED]),
-            "nurturing": len([l for l in leads if l.status == LeadStatus.NURTURING]),
-            "avg_score": sum(l.score for l in leads) / len(leads) if leads else 0,
-            "by_source": {s.value: len([l for l in leads if l.source == s]) for s in LeadSource},
+            "qualified": len([lead for lead in leads if lead.status == LeadStatus.QUALIFIED]),
+            "nurturing": len([lead for lead in leads if lead.status == LeadStatus.NURTURING]),
+            "avg_score": sum(lead.score for lead in leads) / len(leads) if leads else 0,
+            "by_source": {s.value: len([lead for lead in leads if lead.source == s]) for s in LeadSource},
         }
 
 

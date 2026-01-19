@@ -132,15 +132,15 @@ class LeadManagementAgent:
             "total_leads": len(leads),
             "enriched": len(
                 [
-                    l
-                    for l in leads
-                    if l.status in [LeadStatus.ENRICHED, LeadStatus.ROUTED, LeadStatus.SYNCED]
+                    lead
+                    for lead in leads
+                    if lead.status in [LeadStatus.ENRICHED, LeadStatus.ROUTED, LeadStatus.SYNCED]
                 ]
             ),
-            "routed": len([l for l in leads if l.status in [LeadStatus.ROUTED, LeadStatus.SYNCED]]),
-            "synced": len([l for l in leads if l.status == LeadStatus.SYNCED]),
-            "duplicates": len([l for l in leads if l.status == LeadStatus.DUPLICATE]),
-            "avg_score": sum(l.score for l in leads) / len(leads) if leads else 0,
+            "routed": len([lead for lead in leads if lead.status in [LeadStatus.ROUTED, LeadStatus.SYNCED]]),
+            "synced": len([lead for lead in leads if lead.status == LeadStatus.SYNCED]),
+            "duplicates": len([lead for lead in leads if lead.status == LeadStatus.DUPLICATE]),
+            "avg_score": sum(lead.score for lead in leads) / len(leads) if leads else 0,
         }
 
 

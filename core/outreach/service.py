@@ -38,7 +38,7 @@ class OutreachService:
 
     def generate_email(self, email: str, template_name: str) -> Optional[Dict[str, str]]:
         leads = self.repo.load_leads()
-        lead = next((l for l in leads if l["email"] == email), None)
+        lead = next((item for item in leads if item["email"] == email), None)
 
         if not lead:
             # Fallback for ad-hoc emails if lead not found (optional, but good for "quick_outreach")

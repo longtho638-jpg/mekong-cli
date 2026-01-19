@@ -135,19 +135,19 @@ class ProductLaunchAgent:
     def get_stats(self) -> Dict:
         """Get launch statistics"""
         launches = list(self.launches.values())
-        launched = [l for l in launches if l.status == LaunchStatus.LAUNCHED]
+        launched = [lead for lead in launches if lead.status == LaunchStatus.LAUNCHED]
 
         return {
             "total_launches": len(launches),
             "launched": len(launched),
             "in_progress": len(
                 [
-                    l
-                    for l in launches
-                    if l.status in [LaunchStatus.PLANNING, LaunchStatus.PRE_LAUNCH]
+                    lead
+                    for lead in launches
+                    if lead.status in [LaunchStatus.PLANNING, LaunchStatus.PRE_LAUNCH]
                 ]
             ),
-            "avg_progress": sum(l.progress for l in launches) / len(launches) if launches else 0,
+            "avg_progress": sum(lead.progress for lead in launches) / len(launches) if launches else 0,
         }
 
 

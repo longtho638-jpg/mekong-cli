@@ -148,12 +148,12 @@ class LeadScoring:
 
     def get_hot_leads(self, threshold: int = 70) -> List[Lead]:
         """Filter leads that meet the hot priority threshold."""
-        return [l for l in self.leads.values() if l.score >= threshold]
+        return [lead for lead in self.leads.values() if lead.score >= threshold]
 
     def format_dashboard(self) -> str:
         """Render the Lead Scoring Dashboard."""
-        hot_leads = [l for l in self.leads.values() if l.score >= 70]
-        avg_score = sum(l.score for l in self.leads.values()) / len(self.leads) if self.leads else 0
+        hot_leads = [lead for lead in self.leads.values() if lead.score >= 70]
+        avg_score = sum(lead.score for lead in self.leads.values()) / len(self.leads) if self.leads else 0
 
         lines = [
             "╔═══════════════════════════════════════════════════════════╗",
@@ -164,9 +164,9 @@ class LeadScoring:
             "║  ───────────────────────────────────────────────────────  ║",
         ]
 
-        for l in sorted(hot_leads, key=lambda x: x.score, reverse=True)[:5]:
-            bar = "█" * (l.score // 10) + "░" * (10 - l.score // 10)
-            lines.append(f"║    {l.name[:15]:<15} │ {bar} │ {l.score:>3} points  ║")
+        for lead in sorted(hot_leads, key=lambda x: x.score, reverse=True)[:5]:
+            bar = "█" * (lead.score // 10) + "░" * (10 - lead.score // 10)
+            lines.append(f"║    {lead.name[:15]:<15} │ {bar} │ {lead.score:>3} points  ║")
 
         lines.extend(
             [
