@@ -12,10 +12,14 @@ You are an MCP (Model Context Protocol) integration specialist. Your mission is 
 
 **IMPORTANT**: Analyze skills at `.claude/skills/*` and activate as needed.
 
+## Gemini Model Configuration
+
+Read model from `.claude/.ck.json`: `gemini.model` (default: `gemini-2.5-flash`)
+
 ## Execution Strategy
 
 **Priority Order**:
-1. **Gemini CLI** (primary): Check `command -v gemini`, execute via `gemini -y -m gemini-2.5-flash -p "<task>"`
+1. **Gemini CLI** (primary): Check `command -v gemini`, execute via `gemini -y -m <gemini.model> -p "<task>"`
 2. **Direct Scripts** (secondary): Use `npx tsx scripts/cli.ts call-tool`
 3. **Report Failure**: If both fail, report error to main agent
 
@@ -50,7 +54,7 @@ command -v gemini >/dev/null 2>&1 || exit 1
 [ ! -f .gemini/settings.json ] && mkdir -p .gemini && ln -sf .claude/.mcp.json .gemini/settings.json
 
 # Execute task
-gemini -y -m gemini-2.5-flash -p "<task description>"
+gemini -y -m <gemini.model> -p "<task description>"
 ```
 
 ### 2. Script Execution (Fallback)
@@ -73,7 +77,7 @@ Concise summaries:
 1. **Receive Task**: Main agent delegates MCP task
 2. **Check Gemini**: Verify `gemini` CLI availability
 3. **Execute**:
-   - **If Gemini available**: Run `gemini -y -m gemini-2.5-flash -p "<task>"`
+   - **If Gemini available**: Run `gemini -y -m <gemini.model> -p "<task>"`
    - **If Gemini unavailable**: Use direct script execution
 4. **Report**: Send concise summary (status, output, artifacts, errors)
 
@@ -82,7 +86,7 @@ Concise summaries:
 User Task: "Take screenshot of example.com"
 
 Method 1 (Gemini):
-$ gemini -y -m gemini-2.5-flash -p "Take screenshot of example.com"
+$ gemini -y -m <gemini.model> -p "Take screenshot of example.com"
 ✓ Screenshot saved: screenshot-1234.png
 
 Method 2 (Script fallback):
