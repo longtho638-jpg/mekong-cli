@@ -2,34 +2,38 @@
 🏯 Agent Chains - Auto-Orchestration Definitions
 ================================================
 
-Maps each suite:subcommand to an optimal agent chain.
-Acts as the central registry for all AgencyOS agents and their file mappings.
+Provides agent configuration and chain management with YAML-driven chains.
 
 Features:
-- Static type checking for agent inventory
-- Validation of .claude/agent/*.md file existence
-- Chain definitions for all primary workflows
+- Agent inventory with file mappings
+- Category-based organization
+- YAML-based chain definitions (replaces 275+ lines of hardcoded chains)
+- Validation and registry
 
 Usage:
-    from antigravity.core.agent_chains import get_chain, validate_inventory
+    from antigravity.core.agent_chains import get_chain, validate_inventory, AGENT_INVENTORY
 
-    # Get execution chain
+    # Get execution chain (now loaded from YAML)
     chain = get_chain("dev", "cook")
 
-    # Validate configuration
+    # Validate agent inventory
     missing = validate_inventory()
 """
 
+import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional
 
+from .chains import Chain, ChainLoader, ChainValidator
+
+# Base path for agents
+AGENT_BASE_DIR = Path(".claude/agents")
+
 
 class AgentCategory(Enum):
-    """
-    Categorization for agents to organize the workbench.
-    """
+    """Categorization for agents to organize the workbench."""
 
     DEVELOPMENT = "development"
     BUSINESS = "business"
@@ -45,35 +49,11 @@ class AgentConfig(NamedTuple):
     file: Path
 
 
-@dataclass
-class AgentStep:
-    """
-    Single step in an agent chain.
-
-    Attributes:
-        agent: ID of the agent (key in AGENT_INVENTORY)
-        action: Semantic action name (for logging/planning)
-        description: Human-readable description
-        optional: If True, failure in this step doesn't halt the chain
-    """
-
-    agent: str
-    action: str
-    description: str
-    optional: bool = False
-
-
-# Base path for agents (can be overridden via env if needed)
-AGENT_BASE_DIR = Path(".claude/agents")
-
-
 # Agent Inventory (26 total)
 # Maps agent_id -> AgentConfig
 AGENT_INVENTORY: Dict[str, AgentConfig] = {
     # 🛠️ Development (8)
-    "fullstack-developer": AgentConfig(
-        AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "fullstack-developer.md"
-    ),
+    "fullstack-developer": AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "fullstack-developer.md"),
     "planner": AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "planner.md"),
     "tester": AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "tester.md"),
     "code-reviewer": AgentConfig(AgentCategory.DEVELOPMENT, AGENT_BASE_DIR / "code-reviewer.md"),
@@ -86,12 +66,8 @@ AGENT_INVENTORY: Dict[str, AgentConfig] = {
     "deal-closer": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "deal-closer.md"),
     "client-magnet": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "client-magnet.md"),
     "client-value": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "client-value.md"),
-    "growth-strategist": AgentConfig(
-        AgentCategory.BUSINESS, AGENT_BASE_DIR / "growth-strategist.md"
-    ),
-    "binh-phap-strategist": AgentConfig(
-        AgentCategory.BUSINESS, AGENT_BASE_DIR / "binh-phap-strategist.md"
-    ),
+    "growth-strategist": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "growth-strategist.md"),
+    "binh-phap-strategist": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "binh-phap-strategist.md"),
     "revenue-engine": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "revenue-engine.md"),
     "project-manager": AgentConfig(AgentCategory.BUSINESS, AGENT_BASE_DIR / "project-manager.md"),
     # 🎨 Content (5)
@@ -109,210 +85,69 @@ AGENT_INVENTORY: Dict[str, AgentConfig] = {
     "brainstormer": AgentConfig(AgentCategory.EXTERNAL, AGENT_BASE_DIR / "brainstormer.md"),
 }
 
-
-# Agent Chains - Maps suite:subcommand to agent sequence
-AGENT_CHAINS: Dict[str, List[AgentStep]] = {
-    # 🛠️ Dev Suite
-    "dev:cook": [
-        AgentStep("planner", "analyze", "Analyze requirements and create plan"),
-        AgentStep("researcher", "best_practices", "Research best practices"),
-        AgentStep("fullstack-developer", "implement", "Build the feature"),
-        AgentStep("tester", "verify", "Run tests"),
-        AgentStep("code-reviewer", "review", "Review code quality"),
-        AgentStep("git-manager", "commit", "Commit changes"),
-    ],
-    "dev:test": [
-        AgentStep("tester", "run_tests", "Execute test suite"),
-        AgentStep("debugger", "analyze_failures", "Analyze any failures", optional=True),
-    ],
-    "dev:ship": [
-        AgentStep("tester", "verify", "Final verification"),
-        AgentStep("git-manager", "push", "Push to remote"),
-    ],
-    "dev:debug": [
-        AgentStep("debugger", "investigate", "Investigate the issue"),
-        AgentStep("researcher", "solutions", "Research solutions"),
-        AgentStep("fullstack-developer", "fix", "Apply fix"),
-        AgentStep("tester", "verify", "Verify fix"),
-    ],
-    "dev:fix": [
-        AgentStep("debugger", "quick_fix", "Apply quick fix"),
-        AgentStep("tester", "verify", "Verify fix"),
-    ],
-    # 💰 Revenue Suite
-    "revenue:quote": [
-        AgentStep("client-magnet", "qualify", "Qualify the client"),
-        AgentStep("money-maker", "price", "Calculate pricing"),
-        AgentStep("deal-closer", "validate", "Validate WIN-WIN-WIN"),
-    ],
-    "revenue:invoice": [
-        AgentStep("money-maker", "generate_invoice", "Create invoice"),
-        AgentStep("revenue-engine", "track", "Track in system"),
-    ],
-    "revenue:proposal": [
-        AgentStep("researcher", "client_research", "Research client"),
-        AgentStep("money-maker", "quote", "Generate quote"),
-        AgentStep("copywriter", "write", "Write proposal"),
-        AgentStep("deal-closer", "validate", "Validate alignment"),
-    ],
-    "revenue:stats": [
-        AgentStep("revenue-engine", "calculate", "Calculate metrics"),
-        AgentStep("growth-strategist", "analyze", "Analyze trends"),
-    ],
-    # 🏯 Strategy Suite
-    "strategy:analyze": [
-        AgentStep("researcher", "market_scan", "Scan market"),
-        AgentStep("binh-phap-strategist", "analyze", "Apply Binh Pháp"),
-        AgentStep("growth-strategist", "recommend", "Growth recommendations"),
-    ],
-    "strategy:plan": [
-        AgentStep("planner", "create_plan", "Create implementation plan"),
-        AgentStep("project-manager", "schedule", "Define milestones"),
-    ],
-    "strategy:win3": [
-        AgentStep("money-maker", "validate_win3", "Check WIN-WIN-WIN"),
-        AgentStep("client-value", "assess", "Assess client value"),
-    ],
-    # 🧲 CRM Suite
-    "crm:leads": [
-        AgentStep("client-magnet", "list_leads", "List all leads"),
-        AgentStep("deal-closer", "score", "Score leads"),
-    ],
-    "crm:pipeline": [
-        AgentStep("client-magnet", "pipeline", "Show pipeline"),
-        AgentStep("growth-strategist", "forecast", "Forecast conversions"),
-    ],
-    "crm:add": [
-        AgentStep("client-magnet", "add_lead", "Add new lead"),
-        AgentStep("deal-closer", "qualify", "Initial qualification"),
-    ],
-    # 🎨 Content Suite
-    "content:ideas": [
-        AgentStep("brainstormer", "generate", "Generate ideas"),
-        AgentStep("content-factory", "prioritize", "Prioritize by virality"),
-    ],
-    "content:write": [
-        AgentStep("researcher", "topic_research", "Research topic"),
-        AgentStep("copywriter", "write", "Write content"),
-        AgentStep("content-factory", "optimize", "Optimize for engagement"),
-    ],
-    # 📄 Docs Suite
-    "docs:init": [
-        AgentStep("scout", "scan", "Scan codebase"),
-        AgentStep("docs-manager", "init", "Initialize docs"),
-    ],
-    "docs:update": [
-        AgentStep("docs-manager", "update", "Update documentation"),
-        AgentStep("git-manager", "commit", "Commit changes"),
-    ],
-    # 🔧 Git Suite
-    "git:cm": [
-        AgentStep("git-manager", "commit", "Stage and commit"),
-    ],
-    "git:cp": [
-        AgentStep("git-manager", "commit", "Commit"),
-        AgentStep("git-manager", "push", "Push"),
-    ],
-    "git:pr": [
-        AgentStep("git-manager", "pr", "Create pull request"),
-        AgentStep("code-reviewer", "summary", "Add PR summary"),
-    ],
-    # 🐛 Fix Suite
-    "fix:fast": [
-        AgentStep("debugger", "quick_fix", "Apply quick fix"),
-    ],
-    "fix:hard": [
-        AgentStep("debugger", "deep_investigate", "Deep investigation"),
-        AgentStep("researcher", "solutions", "Research solutions"),
-        AgentStep("fullstack-developer", "fix", "Apply fix"),
-        AgentStep("tester", "regression", "Regression test"),
-    ],
-    "fix:ci": [
-        AgentStep("debugger", "analyze_ci", "Analyze CI logs"),
-        AgentStep("fullstack-developer", "fix", "Fix CI issue"),
-        AgentStep("git-manager", "push", "Push fix"),
-    ],
-    # 🎨 Design Suite
-    "design:fast": [
-        AgentStep("ui-ux-designer", "quick_design", "Quick design"),
-    ],
-    "design:good": [
-        AgentStep("researcher", "inspiration", "Research inspiration"),
-        AgentStep("ui-ux-designer", "design", "Create design"),
-        AgentStep("flow-expert", "review", "Review flow"),
-    ],
-    # 📊 Analytics Suite
-    "analytics:dashboard": [
-        AgentStep("growth-strategist", "metrics", "Calculate key metrics"),
-    ],
-    "analytics:report": [
-        AgentStep("growth-strategist", "analyze", "Analyze data"),
-        AgentStep("copywriter", "format", "Format report"),
-    ],
-    # 🏢 Agency Suite
-    "agency:dna": [
-        AgentStep("client-magnet", "analyze_identity", "Analyze identity"),
-    ],
-    "agency:scorecard": [
-        AgentStep("growth-strategist", "score", "Calculate scorecard"),
-        AgentStep("binh-phap-strategist", "assess", "Strategic assessment"),
-    ],
-    # 🚀 Startup Suite
-    "startup:pitch": [
-        AgentStep("researcher", "market", "Market research"),
-        AgentStep("binh-phap-strategist", "position", "Strategic positioning"),
-        AgentStep("copywriter", "pitch", "Write pitch"),
-    ],
-    "startup:deck": [
-        AgentStep("researcher", "data", "Gather data"),
-        AgentStep("copywriter", "narrative", "Create narrative"),
-        AgentStep("ui-ux-designer", "design", "Design slides"),
-    ],
-    "startup:vc": [
-        AgentStep("growth-strategist", "metrics", "VC metrics"),
-        AgentStep("money-maker", "valuation", "Valuation prep"),
-    ],
-}
+# Global chain loader (lazy init)
+_chain_loader: Optional[ChainLoader] = None
 
 
-def get_chain(suite: str, subcommand: str) -> List[AgentStep]:
+def _get_chain_loader() -> ChainLoader:
+    """Get or create global chain loader."""
+    global _chain_loader
+    if _chain_loader is None:
+        # Look for chains.yaml in core/config
+        config_path = Path(__file__).parent / "config" / "chains.yaml"
+        if not config_path.exists():
+            # Fallback to environment variable or default
+            config_path = Path(os.getenv("CHAINS_CONFIG", "config/chains.yaml"))
+
+        _chain_loader = ChainLoader(config_path)
+
+    return _chain_loader
+
+
+def get_chain(suite: str, subcommand: str) -> Optional[Chain]:
     """
-    Get agent chain for a command.
+    Get agent chain for a command (loaded from YAML).
 
     Args:
         suite: Command suite (e.g., 'dev', 'revenue')
         subcommand: Specific command (e.g., 'cook', 'quote')
 
     Returns:
-        List of AgentStep objects
+        Chain object or None if not found
     """
-    key = f"{suite}:{subcommand}"
-    return AGENT_CHAINS.get(key, [])
+    loader = _get_chain_loader()
+    return loader.get_chain_by_parts(suite, subcommand)
 
 
 def get_chain_summary(suite: str, subcommand: str) -> str:
     """
-    Get a formatted summary of the chain.
+    Get formatted summary of the chain.
+
+    Args:
+        suite: Command suite
+        subcommand: Specific command
+
+    Returns:
+        Formatted string summary
     """
-    chain = get_chain(suite, subcommand)
-    if not chain:
-        return f"⚠️ No chain defined for {suite}:{subcommand}"
-
-    lines = [f"🔗 Chain: /{suite}:{subcommand}"]
-    for i, step in enumerate(chain, 1):
-        opt = " (optional)" if step.optional else ""
-        icon = _get_agent_icon(step.agent)
-        lines.append(f"   {i}. {icon} {step.agent:<20} → {step.description}{opt}")
-    return "\n".join(lines)
+    loader = _get_chain_loader()
+    name = f"{suite}:{subcommand}"
+    return loader.get_chain_summary(name)
 
 
-def list_all_chains() -> Dict[str, int]:
-    """List all chains with step counts."""
-    return {k: len(v) for k, v in AGENT_CHAINS.items()}
+def list_all_chains() -> List[str]:
+    """
+    List all available chains.
+
+    Returns:
+        List of chain names
+    """
+    loader = _get_chain_loader()
+    return loader.list_chains()
 
 
 def get_agents_by_category(category: AgentCategory) -> List[str]:
-    """Get agents by category."""
+    """Get agents filtered by category."""
     return [name for name, config in AGENT_INVENTORY.items() if config.category == category]
 
 
@@ -324,10 +159,10 @@ def get_agent_file(agent_name: str) -> Optional[Path]:
 
 def validate_inventory() -> List[str]:
     """
-    Check if all configured agent files actually exist on disk.
+    Check if all configured agent files exist on disk.
 
     Returns:
-        List of missing agent names.
+        List of missing agent names
     """
     missing = []
     for name, config in AGENT_INVENTORY.items():
@@ -336,17 +171,28 @@ def validate_inventory() -> List[str]:
     return missing
 
 
-def _get_agent_icon(agent_name: str) -> str:
-    """Helper to get icon for agent."""
-    config = AGENT_INVENTORY.get(agent_name)
-    if not config:
-        return "❓"
+def validate_chains() -> List[str]:
+    """
+    Validate chain configuration.
 
-    icons = {
-        AgentCategory.DEVELOPMENT: "🛠️",
-        AgentCategory.BUSINESS: "💰",
-        AgentCategory.CONTENT: "🎨",
-        AgentCategory.DESIGN: "🖌️",
-        AgentCategory.EXTERNAL: "🌐",
-    }
-    return icons.get(config.category, "🤖")
+    Returns:
+        List of validation errors (empty if valid)
+    """
+    loader = _get_chain_loader()
+    validator = ChainValidator(agent_inventory=AGENT_INVENTORY)
+    return validator.validate_config(loader.config_path)
+
+
+__all__ = [
+    "AgentCategory",
+    "AgentConfig",
+    "AGENT_INVENTORY",
+    "AGENT_BASE_DIR",
+    "get_chain",
+    "get_chain_summary",
+    "list_all_chains",
+    "get_agents_by_category",
+    "get_agent_file",
+    "validate_inventory",
+    "validate_chains",
+]
