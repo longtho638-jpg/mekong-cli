@@ -1,0 +1,205 @@
+"""
+ML Inference - Prediction and inference pipeline.
+=================================================
+
+Contains:
+- Conversion rate prediction
+- Viral multiplier calculation
+- Statistical optimization fallback
+- Performance scoring
+"""
+
+import logging
+import time
+from typing import Any, Dict
+
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import PolynomialFeatures
+
+from .models import ML_AVAILABLE, TF_AVAILABLE, TORCH_AVAILABLE, MLOptimizationResult
+from .training import extract_enhanced_features
+
+logger = logging.getLogger(__name__)
+
+
+def predict_conversion_rate_ml(
+    price: float, features: Dict[str, Any], models: dict
+) -> float:
+    """
+    Predict conversion rate using ML models.
+
+    Args:
+        price: Price point
+        features: Feature dictionary
+        models: Dictionary of trained models
+
+    Returns:
+        Predicted conversion rate
+    """
+    if not ML_AVAILABLE or "neural_pricing" not in models:
+        # Simple heuristic fallback
+        return 0.05 + 0.1 * features.get("demand_factor", 1.0)
+
+    feature_vector = extract_enhanced_features(price, features)
+
+    try:
+        if TF_AVAILABLE:
+            model = models["neural_pricing"]
+            prediction = model.predict(feature_vector.reshape(1, -1))
+            return float(prediction[0][0])
+        elif TORCH_AVAILABLE:
+            import torch
+
+            model = models["neural_pricing"]
+            with torch.no_grad():
+                prediction = model(torch.tensor(feature_vector, dtype=torch.float32))
+                return float(prediction[0])
+
+    except Exception as e:
+        logger.error(f"ML prediction failed: {e}")
+        return 0.1  # Fallback conversion rate
+
+    return 0.1
+
+
+def calculate_viral_multiplier(features: Dict[str, Any]) -> float:
+    """
+    Calculate advanced viral multiplier.
+
+    Args:
+        features: Feature dictionary with viral factors
+
+    Returns:
+        Viral multiplier value
+    """
+    base_viral = features.get("viral_coefficient", 1.0)
+
+    # Advanced viral factors
+    social_share_factor = 1 + features.get("social_shares", 0) * 0.01
+    referral_potential = 1 + features.get("referral_rate", 0) * 0.05
+    content_virality = features.get("content_virality", 1.0)
+
+    # Time-based viral amplification
+    current_hour = time.localtime().tm_hour
+    time_multiplier = 1.0
+    if 18 <= current_hour <= 22:  # Prime viral hours
+        time_multiplier = 1.5
+    elif 6 <= current_hour <= 9:  # Morning viral hours
+        time_multiplier = 1.2
+
+    return (
+        base_viral
+        * social_share_factor
+        * referral_potential
+        * content_virality
+        * time_multiplier
+    )
+
+
+def calculate_statistical_optimization(
+    base_price: float, features: Dict[str, Any], models: dict, training_data: list
+) -> MLOptimizationResult:
+    """
+    Fallback statistical optimization when AI models unavailable.
+
+    Args:
+        base_price: Base price point
+        features: Feature dictionary
+        models: Dictionary of models
+        training_data: Historical training data
+
+    Returns:
+        MLOptimizationResult with optimization details
+    """
+    # Enhanced feature engineering
+    feature_vector = extract_enhanced_features(base_price, features)
+
+    # Polynomial features for non-linear relationships
+    poly_features = PolynomialFeatures(degree=2, include_bias=False)
+    feature_poly = poly_features.fit_transform(feature_vector.reshape(1, -1))
+
+    # Use ensemble model
+    if "ensemble" in models:
+        try:
+            X = np.hstack([feature_vector.reshape(1, -1), feature_poly])
+            y = np.array([features.get("conversion_rate", 0.1)])
+
+            # Cross-validation for robustness
+            scores = cross_val_score(models["ensemble"], X, y, cv=5, scoring="r2")
+
+            # Fit on full dataset
+            models["ensemble"].fit(X, y)
+
+            # Predict optimal price
+            test_prices = np.linspace(base_price * 0.5, base_price * 2.0, 20)
+            X_test = np.hstack(
+                [
+                    test_prices.reshape(-1, 1),
+                    poly_features.transform(test_prices.reshape(-1, 1)),
+                ]
+            )
+
+            predictions = models["ensemble"].predict(X_test)
+            optimal_idx = np.argmax(predictions)
+            optimal_price = test_prices[optimal_idx]
+
+            return MLOptimizationResult(
+                optimal_price=float(optimal_price),
+                confidence_score=float(np.mean(scores)),
+                predicted_conversion_rate=float(predictions[optimal_idx]),
+                viral_multiplier=calculate_viral_multiplier(features),
+                strategy_used="ensemble_statistical",
+                optimization_features=[
+                    "polynomial_features",
+                    "cross_validation",
+                    "ensemble_model",
+                ],
+                training_data_points=len(training_data),
+            )
+
+        except Exception as e:
+            logger.error(f"Statistical optimization failed: {e}")
+            return MLOptimizationResult(
+                optimal_price=base_price,
+                confidence_score=0.5,
+                predicted_conversion_rate=0.1,
+                viral_multiplier=1.0,
+                strategy_used="fallback_simple",
+                optimization_features=["basic_optimization"],
+                training_data_points=0,
+            )
+
+    return MLOptimizationResult(
+        optimal_price=base_price,
+        confidence_score=0.5,
+        predicted_conversion_rate=0.1,
+        viral_multiplier=1.0,
+        strategy_used="statistical_fallback",
+        optimization_features=["basic_features"],
+        training_data_points=0,
+    )
+
+
+def calculate_performance_score(game_changing_metrics: dict) -> float:
+    """
+    Calculate overall performance score.
+
+    Args:
+        game_changing_metrics: Dictionary of performance metrics
+
+    Returns:
+        Performance score (0-100)
+    """
+    base_score = 50.0
+
+    viral_score = min(game_changing_metrics["viral_multiplier_achieved"] * 10, 100)
+    quantum_score = min(game_changing_metrics["quantum_optimizations"] * 2, 100)
+    ai_score = min(game_changing_metrics["ai_agent_decisions"] * 1, 100)
+
+    confidence_bonus = min(game_changing_metrics["confidence_improvements"] * 100, 50)
+
+    return (
+        min(base_score + viral_score + quantum_score + ai_score + confidence_bonus, 1000.0)
+        / 10.0
+    )
