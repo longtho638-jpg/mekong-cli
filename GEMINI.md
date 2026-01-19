@@ -5,6 +5,40 @@
 
 ---
 
+## ☢️ NUCLEAR WEAPONIZATION RULE (BẮT BUỘC)
+
+> **"Mọi thứ Anh đưa → Antigravity biến thành VŨ KHÍ HẠT NHÂN"**
+
+### Protocol:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  INPUT từ Anh              →  OUTPUT từ Antigravity         │
+├─────────────────────────────────────────────────────────────┤
+│  External tool (n8n)       →  Antigravity-native engine     │
+│  Simple idea               →  Weaponized implementation     │
+│  Basic workflow            →  Closed-loop automation        │
+│  Any framework             →  Integrated into mekong-cli    │
+│  External SaaS             →  Self-hosted + $0 cost         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Execution Rules:
+
+1. **KHÔNG dùng external tools** nếu Antigravity có thể thay thế
+2. **KHÔNG phụ thuộc API costs** nếu có local processing available
+3. **LUÔN maximize** bằng quota_engine.py và workflow_engine.py
+4. **LUÔN integrate** vào mekong-cli ecosystem
+5. **LUÔN save knowledge** vào Knowledge Base sau mỗi session
+
+### Reference Knowledge:
+
+- `scripts/vibeos/workflow_engine.py` - Workflow automation
+- `packages/antigravity/core/quota_engine.py` - API quota management
+- `~/.gemini/antigravity/knowledge/` - Accumulated intelligence
+
+---
+
 ## ⚡ AUTO-ACCEPT MODE (DEFAULT ON)
 
 > **QUAN TRỌNG: Mặc định BẬT - Agent tự động chạy lệnh không hỏi**
@@ -341,42 +375,34 @@ Sync checklist hàng ngày:
 
 _Updated: 2026-01-07 | AntigravityKit v1.0.0_
 
-
 ## 🌉 Bridge Sync Status (Last Run: Sun Jan 18 00:55:59 +07 2026)
 
 - **MCP Config**: Checked
 - **Agent Parity**:
-  - Claude: 24
-  - Gemini: 105
-  - Missing in Gemini: 17 (e.g., content-factory, growth-strategist, journal-writer...)
-
-
+    - Claude: 24
+    - Gemini: 105
+    - Missing in Gemini: 17 (e.g., content-factory, growth-strategist, journal-writer...)
 
 ## 🌉 Bridge Sync Status (Last Run: Sun Jan 18 01:50:17 +07 2026)
 
 - **MCP Config**: Checked
 - **Agent Parity**:
-  - Claude: 24
-  - Gemini: 105
-  - Missing in Gemini: 17 (e.g., client-magnet, git-manager, tester...)
-
-
+    - Claude: 24
+    - Gemini: 105
+    - Missing in Gemini: 17 (e.g., client-magnet, git-manager, tester...)
 
 ## 🌉 Bridge Sync Status (Last Run: Sun Jan 18 11:21:36 +07 2026)
 
 - **MCP Config**: Checked
 - **Agent Parity**:
-  - Claude: 24
-  - Gemini: 105
-  - Missing in Gemini: 17 (e.g., money-maker, client-magnet, content-agent...)
-
-
+    - Claude: 24
+    - Gemini: 105
+    - Missing in Gemini: 17 (e.g., money-maker, client-magnet, content-agent...)
 
 ## 🌉 Bridge Sync Status (Last Run: Sun Jan 18 22:22:42 +07 2026)
 
 - **MCP Config**: Checked
 - **Agent Parity**:
-  - Claude: 24
-  - Gemini: 105
-  - Missing in Gemini: 17 (e.g., mcp-manager, git-manager, journal-writer...)
-
+    - Claude: 24
+    - Gemini: 105
+    - Missing in Gemini: 17 (e.g., mcp-manager, git-manager, journal-writer...)
