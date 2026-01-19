@@ -25,6 +25,15 @@ gh run list --limit 1 --json conclusion --jq '.[0].conclusion' | grep -q "succes
 python3 -m ruff check . --quiet 2>/dev/null && echo "✅ Ruff: 0 errors" || echo "⚠️ Run: ruff check . --fix"
 ```
 
+### Step 0.5: Security Armor (--armor flag)
+
+// turbo
+
+```bash
+cd /Users/macbookprom1/mekong-cli
+python3 scripts/vibeos/security_armor.py --dry-run
+```
+
 ### Step 1: Run Validation
 
 // turbo
