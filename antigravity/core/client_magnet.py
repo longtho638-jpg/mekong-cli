@@ -138,7 +138,7 @@ class ClientMagnet:
 
     def get_priority_leads(self) -> List[Lead]:
         """Filters the pipeline for high-value/high-intent prospects."""
-        return [l for l in self.leads if l.is_priority()]
+        return [lead for lead in self.leads if lead.is_priority()]
 
     def convert_to_client(self, lead: Lead) -> Client:
         """Promotes a lead to a Client entity after a successful close (WON)."""
@@ -159,22 +159,24 @@ class ClientMagnet:
     def get_pipeline_summary(self) -> Dict[str, Any]:
         """Calculates current financial health of the sales pipeline."""
         # Pipeline excludes final states (WON/LOST)
-        active_leads = [l for l in self.leads if l.status not in [LeadStatus.WON, LeadStatus.LOST]]
+        active_leads = [
+            lead for lead in self.leads if lead.status not in [LeadStatus.WON, LeadStatus.LOST]
+        ]
 
         return {
             "financials": {
-                "raw_value": sum(l.budget for l in active_leads),
-                "weighted_value": sum(l.budget * (l.score / 100) for l in active_leads),
+                "raw_value": sum(lead.budget for lead in active_leads),
+                "weighted_value": sum(lead.budget * (lead.score / 100) for lead in active_leads),
             },
             "metrics": {
                 "total_active": len(active_leads),
                 "conversion_rate": self._calculate_conversion_rate(),
-                "avg_lead_score": sum(l.score for l in active_leads) / len(active_leads)
+                "avg_lead_score": sum(lead.score for lead in active_leads) / len(active_leads)
                 if active_leads
                 else 0,
             },
             "stages": {
-                stage.value: len([l for l in active_leads if l.status == stage])
+                stage.value: len([lead for lead in active_leads if lead.status == stage])
                 for stage in LeadStatus
                 if stage not in [LeadStatus.WON, LeadStatus.LOST]
             },
@@ -182,8 +184,8 @@ class ClientMagnet:
 
     def _calculate_conversion_rate(self) -> float:
         """Efficiency metric: WON vs total closed deals."""
-        won = len([l for l in self.leads if l.status == LeadStatus.WON])
-        lost = len([l for l in self.leads if l.status == LeadStatus.LOST])
+        won = len([lead for lead in self.leads if lead.status == LeadStatus.WON])
+        lost = len([lead for lead in self.leads if lead.status == LeadStatus.LOST])
         total_closed = won + lost
         return (won / total_closed * 100) if total_closed > 0 else 0.0
 
