@@ -27,13 +27,6 @@ strategy_app = typer.Typer(help="🏯 Chiến lược Binh Pháp & Lập kế ho
 dev_app = typer.Typer(help="🛠 Quy trình phát triển (Cook-Test-Ship)")
 mcp_app = typer.Typer(help="🔌 Quản lý Model Context Protocol (MCP)")
 revenue_app = typer.Typer(help="💰 Quản lý Doanh thu & Autopilot")
-outreach_app = typer.Typer(help="📧 Quản lý Lead & Outreach")
-content_app = typer.Typer(help="✍️ Tạo nội dung Marketing")
-finance_app = typer.Typer(help="💰 Quản lý Tài chính")
-sales_app = typer.Typer(help="💼 Quản lý Sales & Sản phẩm")
-ops_app = typer.Typer(help="👁️ Operations & Monitoring")
-setup_app = typer.Typer(help="⚙️ Setup & Configuration")
-bridge_app = typer.Typer(help="🌉 Bridge Sync: Claude <-> AgencyOS")
 
 app.add_typer(strategy_app, name="strategy")
 app.add_typer(dev_app, name="dev")
