@@ -12,10 +12,20 @@ import crypto from 'crypto'
 // 🔒 SECURE JOB QUEUE
 // ═══════════════════════════════════════════════════════════════════════════════
 
+interface JobPayload {
+  requestId: string
+  jobToken: string
+  userId?: string
+  jobType: string
+  queuedAt: string
+  expiresAt: string
+  [key: string]: unknown
+}
+
 interface SecureJob {
   id: string
   type: string
-  payload: any
+  payload: JobPayload
   jobToken: string
   userId?: string
   queuedAt: string
@@ -51,7 +61,7 @@ class SecureJobQueue {
     return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expectedToken))
   }
 
-  async enqueue(jobType: string, payload: any): Promise<string> {
+  async enqueue(jobType: string, payload: JobPayload): Promise<string> {
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
     const job: SecureJob = {
@@ -116,7 +126,7 @@ class SecureJobQueue {
     return job
   }
 
-  async completeJob(jobId: string, result?: any): Promise<void> {
+  async completeJob(jobId: string, _result?: Record<string, unknown>): Promise<void> {
     const jobData = await this.redis.get(`job:${jobId}`)
     if (!jobData) return
 
