@@ -12,6 +12,19 @@ import {
  * Security: Verifies PayPal webhook signatures to prevent spoofing
  * Idempotency: Tracks processed events to prevent duplicates
  */
+
+// Validate environment variables at module load time
+const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID;
+if (!PAYPAL_WEBHOOK_ID || !PAYPAL_WEBHOOK_ID.startsWith("WH-")) {
+  throw new Error("Invalid PAYPAL_WEBHOOK_ID format (expected: WH-...)");
+}
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_URL environment variable is required");
+}
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error("SUPABASE_SERVICE_ROLE_KEY environment variable is required");
+}
+
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const eventId = crypto.randomUUID(); // For logging/tracing
@@ -21,7 +34,6 @@ export async function POST(request: NextRequest) {
     const bodyText = await request.text();
     const body = JSON.parse(bodyText);
     const eventType = body.event_type;
-    const webhookId = process.env.PAYPAL_WEBHOOK_ID!;
 
     console.log(`[PayPal Webhook ${eventId}] Received event: ${eventType}`);
 
@@ -42,13 +54,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // SECURITY: Replay protection - reject webhooks older than 5 minutes
+    const transmissionTime = new Date(webhookHeaders.transmissionTime);
+    const now = new Date();
+    const ageInMinutes = (now.getTime() - transmissionTime.getTime()) / 60000;
+
+    if (ageInMinutes > 5 || ageInMinutes < -1) {
+      console.error(
+        `[PayPal Webhook ${eventId}] Webhook replay detected - transmission age: ${ageInMinutes.toFixed(2)} minutes`,
+      );
+      return NextResponse.json(
+        { error: "Expired or future-dated webhook" },
+        { status: 401 },
+      );
+    }
+
     const isValid = await verifyPayPalWebhookSignature({
       transmissionId: webhookHeaders.transmissionId,
       transmissionTime: webhookHeaders.transmissionTime,
       certUrl: webhookHeaders.certUrl,
       authAlgo: webhookHeaders.authAlgo,
       transmissionSig: webhookHeaders.transmissionSig,
-      webhookId,
+      webhookId: PAYPAL_WEBHOOK_ID,
       webhookEvent: body,
     });
 
@@ -68,25 +95,29 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    // IDEMPOTENCY: Check if event already processed
-    const { data: existingEvent } = await supabase
+    // IDEMPOTENCY: Check if event already processed using INSERT with conflict handling
+    // This prevents race conditions (TOCTOU) by using database-level uniqueness
+    const { error: insertError } = await supabase
       .from("webhook_events")
-      .select("id")
-      .eq("event_id", body.id)
+      .insert({
+        event_id: body.id,
+        event_type: eventType,
+        payload: body,
+        processed_at: new Date().toISOString(),
+      })
+      .select()
       .single();
 
-    if (existingEvent) {
-      console.log(`[PayPal Webhook ${eventId}] Event already processed: ${body.id}`);
-      return NextResponse.json({ received: true, duplicate: true });
+    if (insertError) {
+      // Check if error is due to duplicate key (idempotency)
+      if (insertError.code === "23505" || insertError.message?.includes("duplicate")) {
+        console.log(`[PayPal Webhook ${eventId}] Event already processed (idempotent): ${body.id}`);
+        return NextResponse.json({ received: true, duplicate: true });
+      }
+      // Other database errors should be logged and handled
+      console.error(`[PayPal Webhook ${eventId}] Failed to log event:`, insertError.message);
+      // Continue processing even if audit log fails (degraded mode)
     }
-
-    // Log webhook event for audit trail
-    await supabase.from("webhook_events").insert({
-      event_id: body.id,
-      event_type: eventType,
-      payload: body,
-      processed_at: new Date().toISOString(),
-    });
 
     // Process webhook based on event type
     switch (eventType) {
@@ -145,10 +176,30 @@ async function handlePaymentCaptured(
 ) {
   const captureId = body.resource?.id;
   const payerEmail = body.resource?.payer?.email_address;
-  const amount = body.resource?.amount?.value;
+  const amountStr = body.resource?.amount?.value;
 
+  // INPUT VALIDATION: Validate payment data
+  if (!captureId || !/^[A-Z0-9]+$/i.test(captureId)) {
+    console.error(`[PayPal Webhook ${eventId}] Invalid capture ID format`);
+    return;
+  }
+
+  const amount = parseFloat(amountStr);
+  if (isNaN(amount) || amount <= 0) {
+    console.error(`[PayPal Webhook ${eventId}] Invalid payment amount`);
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (payerEmail && !emailRegex.test(payerEmail)) {
+    console.error(`[PayPal Webhook ${eventId}] Invalid payer email format`);
+    return;
+  }
+
+  // SECURITY: Redact sensitive data in logs
+  const redactedEmail = payerEmail ? payerEmail.replace(/(.{2}).*@/, "$1***@") : "unknown";
   console.log(
-    `[PayPal Webhook ${eventId}] Payment captured: ${captureId} - $${amount} from ${payerEmail}`,
+    `[PayPal Webhook ${eventId}] Payment captured: ${captureId.slice(0, 8)}... - [AMOUNT_REDACTED] from ${redactedEmail}`,
   );
 
   // Update organization payment status

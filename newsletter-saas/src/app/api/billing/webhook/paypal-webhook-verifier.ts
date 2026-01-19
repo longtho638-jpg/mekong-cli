@@ -46,6 +46,13 @@ export async function verifyPayPalWebhookSignature(
       return false;
     }
 
+    // SECURITY: Whitelist allowed algorithms to prevent algorithm substitution attacks
+    const ALLOWED_ALGORITHMS = ["SHA256withRSA", "RSA-SHA256"];
+    if (!ALLOWED_ALGORITHMS.includes(authAlgo)) {
+      console.error("[PayPal Webhook] Invalid auth algorithm:", authAlgo);
+      return false;
+    }
+
     // Fetch public key certificate from PayPal
     const certResponse = await fetch(certUrl);
     if (!certResponse.ok) {
