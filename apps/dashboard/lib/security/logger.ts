@@ -97,11 +97,11 @@ class DataSanitizer {
     this.sanitizeFields = sanitizeFields
   }
 
-  sanitize<T>(obj: T): T {
+  sanitize<T extends Record<string, unknown>>(obj: T): T {
     if (!obj || typeof obj !== 'object') return obj
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.sanitize(item)) as unknown as T
+      return obj.map(item => this.sanitize(item as Record<string, unknown>)) as unknown as T
     }
 
     const sanitized: Record<string, unknown> = {}
@@ -109,12 +109,12 @@ class DataSanitizer {
       if (this.shouldSanitize(key)) {
         sanitized[key] = '[REDACTED]'
       } else if (typeof value === 'object' && value !== null) {
-        sanitized[key] = this.sanitize(value)
+        sanitized[key] = this.sanitize(value as Record<string, unknown>)
       } else {
         sanitized[key] = value
       }
     }
-    return sanitized
+    return sanitized as T
   }
 
   private shouldSanitize(key: string): boolean {
