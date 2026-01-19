@@ -156,7 +156,7 @@ class VideoOptimizer:
             return False
 
         if self.verbose:
-            print("\nInput video info:")
+            print(f"\nInput video info:")
             print(f"  Resolution: {info.width}x{info.height}")
             print(f"  FPS: {info.fps:.2f}")
             print(f"  Bitrate: {info.bitrate // 1000} kbps")
@@ -245,7 +245,7 @@ class VideoOptimizer:
             # Get output info
             output_info = self.get_video_info(output_path)
             if output_info and self.verbose:
-                print("\nOutput video info:")
+                print(f"\nOutput video info:")
                 print(f"  Resolution: {output_info.width}x{output_info.height}")
                 print(f"  FPS: {output_info.fps:.2f}")
                 print(f"  Bitrate: {output_info.bitrate // 1000} kbps")

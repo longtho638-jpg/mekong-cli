@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications, OR when they provide screenshots/images/designs to replicate or draw inspiration from. For screenshot inputs, extracts design guidelines first using ai-multimodal analysis, then implements code following those guidelines. Generates creative, polished code that avoids generic AI aesthetics.
+description: Create polished frontend interfaces from designs/screenshots with high design quality. Use for web components, pages, replicating UI designs, extracting design guidelines, avoiding AI slop aesthetics.
 license: Complete terms in LICENSE.txt
 ---
 

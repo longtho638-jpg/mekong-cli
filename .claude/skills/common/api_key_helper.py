@@ -369,6 +369,7 @@ def get_client(skill_dir: Optional[Path] = None):
     if vertex_config['use_vertex']:
         # Use Vertex AI
         import vertexai
+        from vertexai.generative_models import GenerativeModel
 
         if not vertex_config['project_id']:
             print("\n❌ Error: VERTEX_PROJECT_ID required when GEMINI_USE_VERTEX=true!", file=sys.stderr)
@@ -377,7 +378,7 @@ def get_client(skill_dir: Optional[Path] = None):
             print("   Or add to .env file: VERTEX_PROJECT_ID=your-project-id", file=sys.stderr)
             sys.exit(1)
 
-        print("✓ Using Vertex AI endpoint", file=sys.stderr)
+        print(f"✓ Using Vertex AI endpoint", file=sys.stderr)
         print(f"  Project: {vertex_config['project_id']}", file=sys.stderr)
         print(f"  Location: {vertex_config['location']}", file=sys.stderr)
 
@@ -405,6 +406,6 @@ if __name__ == '__main__':
     # Test Vertex AI config
     vertex_config = get_vertex_config()
     if vertex_config['use_vertex']:
-        print("\n✓ Vertex AI enabled:")
+        print(f"\n✓ Vertex AI enabled:")
         print(f"  Project: {vertex_config['project_id']}")
         print(f"  Location: {vertex_config['location']}")
