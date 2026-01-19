@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Git Worktree Manager for ClaudeKit
+ * Git Worktree Manager for AgencyOS
  * Cross-platform Node.js script for creating isolated git worktrees
  *
  * Usage: node worktree.cjs <command> [options]

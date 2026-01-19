@@ -4,7 +4,7 @@ This file provides guidance to OpenCode when working with code in this repositor
 
 ## Project Overview
 
-**Name:** claudekit-engineer
+**Name:** mekong-cli
 **Type:** Node.js/TypeScript
 **Description:** A comprehensive boilerplate template for building professional software projects with **CLI Coding Agents** (**Claude Code** and **Open Code**). This template provides a complete development environment with AI-powered agent orchestration, automated workflows, and intelligent project management.
 
