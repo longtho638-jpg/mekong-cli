@@ -15,6 +15,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@agencyos/ui": "workspace:*",
     "@material/web": "^2.4.1",
     "@playwright/test": "^1.57.0",
     "@polar-sh/sdk": "^0.41.5",
