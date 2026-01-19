@@ -194,21 +194,58 @@ function detectBaseBranch(cwd) {
 
 // Find the topmost superproject by walking up the directory tree
 // This handles submodules within monorepos - worktrees go to the root monorepo
+// Safety limit prevents infinite loops in edge cases (max 10 levels deep)
+const MAX_SUPERPROJECT_DEPTH = 10;
+
 function findTopmostSuperproject(gitRoot) {
   let current = gitRoot;
   let topmost = gitRoot;
+  let depth = 0;
 
-  // Keep walking up while we find superprojects
-  while (true) {
+  // Keep walking up while we find superprojects (with safety limit)
+  while (depth < MAX_SUPERPROJECT_DEPTH) {
     const result = git('rev-parse --show-superproject-working-tree', { silent: true, cwd: current });
     if (!result.success || !result.output) {
       break; // No more superprojects above
     }
     topmost = result.output;
     current = result.output;
+    depth++;
   }
 
   return topmost;
+}
+
+// Validate that a path can be used as worktree root (exists or can be created)
+function validateWorktreeRoot(rootPath) {
+  const resolved = path.resolve(rootPath);
+
+  // Check if path exists and is a directory
+  if (fs.existsSync(resolved)) {
+    const stat = fs.statSync(resolved);
+    if (!stat.isDirectory()) {
+      return { valid: false, error: `Path exists but is not a directory: ${resolved}` };
+    }
+    return { valid: true, path: resolved };
+  }
+
+  // Check if parent directory exists (we can create the worktree dir)
+  const parent = path.dirname(resolved);
+  if (fs.existsSync(parent)) {
+    const parentStat = fs.statSync(parent);
+    if (!parentStat.isDirectory()) {
+      return { valid: false, error: `Parent path is not a directory: ${parent}` };
+    }
+    return { valid: true, path: resolved };
+  }
+
+  // Parent doesn't exist - check if grandparent exists (allows mkdir -p one level)
+  const grandparent = path.dirname(parent);
+  if (fs.existsSync(grandparent)) {
+    return { valid: true, path: resolved };
+  }
+
+  return { valid: false, error: `Cannot create worktree directory: parent path does not exist: ${parent}` };
 }
 
 // Determine the worktree root directory with priority:
@@ -219,7 +256,13 @@ function findTopmostSuperproject(gitRoot) {
 function getWorktreeRoot(gitRoot, isMonorepo, explicitRoot = null) {
   // Priority 0: Explicit --worktree-root flag (Claude's decision)
   if (explicitRoot) {
-    return { dir: path.resolve(explicitRoot), source: '--worktree-root flag' };
+    const validation = validateWorktreeRoot(explicitRoot);
+    if (!validation.valid) {
+      outputError('INVALID_WORKTREE_ROOT', validation.error, {
+        suggestion: 'Provide a valid directory path that exists or can be created'
+      });
+    }
+    return { dir: validation.path, source: '--worktree-root flag' };
   }
 
   // Priority 1: Environment variable override
