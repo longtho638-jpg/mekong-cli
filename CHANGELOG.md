@@ -1,3 +1,26 @@
+## [2.5.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.3...v2.5.0-beta.4) (2026-01-19)
+
+
+### 🚀 Features
+
+* **worktree:** add --worktree-root flag for Claude-driven decisions ([003cd43](https://github.com/claudekit/claudekit-engineer/commit/003cd4350293941b03bc6d12787f1170d02471d2))
+
+
+### 🐞 Bug Fixes
+
+* **worktree:** add validation, safety limits, and tests for robustness ([cb05c3f](https://github.com/claudekit/claudekit-engineer/commit/cb05c3fef595556615ff3056e3bba18d11b57466))
+* **worktree:** consistent location via superproject detection ([cadb65a](https://github.com/claudekit/claudekit-engineer/commit/cadb65a8b32d80a0415c65680a5af447ce038991)), closes [#345](https://github.com/claudekit/claudekit-engineer/issues/345)
+
+
+### 📚 Documentation
+
+* **worktree:** restore detailed dependency install examples ([eeeba94](https://github.com/claudekit/claudekit-engineer/commit/eeeba9405850eff95589ecdff14cda42a6976817))
+
+
+### ✅ Tests
+
+* **worktree:** add comprehensive edge case and user scenario tests ([e52dd54](https://github.com/claudekit/claudekit-engineer/commit/e52dd54bb91f807342a47c8043eef6b55a555e7c))
+
 ## [2.5.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.2...v2.5.0-beta.3) (2026-01-19)
 
 
