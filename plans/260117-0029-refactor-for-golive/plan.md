@@ -105,18 +105,28 @@
    - Test suite with React Testing Library
 ```
 
-#### **Phase 4: Utility & Foundation**
+#### **Phase 4: Utility & Foundation** ✅ DONE (2026-01-19)
 
 ```
-7. /external/vibe-kanban/frontend/src/lib/utils.ts
+7. /external/vibe-kanban/frontend/src/lib/utils.ts ✅ COMPLETED
    - Fix: Enable tailwind merge deduplication
    - Add: Consistent styling utilities
    - Impact: Entire frontend styling
 
-8. /external/vibe-kanban/frontend/src/components/ui-new/actions/index.ts (1,017 lines)
+8. /external/vibe-kanban/frontend/src/components/ui-new/actions/index.ts (1,017 lines) ✅ COMPLETED
    - Split: Action categories into separate modules
    - Add: Lazy loading, tree-shaking
    - Impact: Bundle size optimization
+
+   Completion Notes:
+   - utils.ts: Enabled tailwind-merge with custom class groups for new design system
+   - Configured deduplication for text-brand, bg-primary, and all custom classes
+   - actions/index.ts: Split into 10 modular files (45-153 lines each)
+   - Created category modules: types, helpers, workspace, navigation, diff-view, layout, context-bar, git, script
+   - Extracted git helpers (handleGitConflicts, checkAndPromptRebase, showRebaseDialog)
+   - All files under 200-line limit
+   - Lazy loading enabled via named exports for tree-shaking
+   - Backward compatibility maintained via index.ts facade
 ```
 
 ### **MEDIUM PRIORITY (Documentation & UX)**
@@ -330,7 +340,9 @@ Gate 5: Documentation Complete ✅
 - ✅ Phase 3: Financial Systems (DONE - 2026-01-19)
   - accounting.ts refactored: 621 → 6 modular files (ledger, journal, reports)
   - UnifiedBridgeWidget.tsx: Real API + error boundaries
-- ⏳ Phase 4: Utility & Foundation (Pending)
+- ✅ Phase 4: Utility & Foundation (DONE - 2026-01-19)
+  - utils.ts: Enabled tailwind-merge deduplication
+  - actions/index.ts refactored: 1,017 → 10 modular files (45-153 lines each)
 - ⏳ Phase 5: Documentation System (Pending)
 - ⏳ Phase 6: .claude Infrastructure (Pending)
 - ⏳ Phase 7: CLI Tooling (Pending)
