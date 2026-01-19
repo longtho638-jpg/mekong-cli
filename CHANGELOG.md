@@ -1,3 +1,15 @@
+## [2.5.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.2...v2.5.0-beta.3) (2026-01-19)
+
+
+### 🚀 Features
+
+* **mcp:** add MCP manager agent and CLI integration support ([5bf9a9d](https://github.com/claudekit/claudekit-engineer/commit/5bf9a9de040b2fab608e5d4aaf91f663e54130ee))
+
+
+### 📚 Documentation
+
+* **web-testing:** add comprehensive testing references and guidelines ([a45da0a](https://github.com/claudekit/claudekit-engineer/commit/a45da0a6512f1331d2855166e7b50960a84f9bc2))
+
 ## [2.5.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.1...v2.5.0-beta.2) (2026-01-18)
 
 
