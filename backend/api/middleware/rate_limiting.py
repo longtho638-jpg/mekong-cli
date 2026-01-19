@@ -8,18 +8,16 @@ Supports tenant-specific limits and different limits by plan.
 
 import logging
 import time
-from typing import TYPE_CHECKING
 
-from fastapi import Request, Response
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-if TYPE_CHECKING:
-    from fastapi import FastAPI
-
 from .multitenant import get_current_tenant
+
+logger = logging.getLogger(__name__)
 
 logger = logging.getLogger(__name__)
 
