@@ -15,12 +15,13 @@ from fastapi.middleware.cors import CORSMiddleware
 # Ensure parent is in path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from backend.api.config import settings
+# REFACTORED: Use new centralized config
+from backend.api.config.settings import settings
 
 # Import routers (only those not refactored yet)
 from backend.api.middleware.metrics import setup_metrics
 
-# Import middleware for multi-tenant, rate limiting, and metrics
+# Import middleware for multi-tenant, rate limiting, metrics, and validation
 from backend.api.middleware.multitenant import (
     MultiTenantMiddleware,
     setup_tenant_routes,
@@ -29,6 +30,7 @@ from backend.api.middleware.rate_limiting import (
     setup_rate_limit_routes,
     setup_rate_limiting,
 )
+from backend.api.middleware.validation import ValidationMiddleware
 from backend.api.routers import code as code_router
 from backend.api.routers import (
     crm,
@@ -50,7 +52,8 @@ from backend.websocket.routes import router as websocket_router
 app = FastAPI(
     title="🏯 Agency OS Unified API - Refactored",
     description="The One-Person Unicorn Operating System API with Clean Architecture",
-    version=settings.VERSION,
+    version=settings.api_version,  # Use config
+    debug=settings.debug,  # Use config
     contact={
         "name": "Mekong HQ",
         "url": "https://agencyos.network",
@@ -60,18 +63,26 @@ app = FastAPI(
 # Add middleware in correct order
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=settings.allowed_origins,  # Use config
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
 
+# Add validation middleware (REFACTORED: New security layer)
+if settings.enable_validation:
+    app.add_middleware(ValidationMiddleware)
+
 # Add multi-tenant middleware
-app.add_middleware(MultiTenantMiddleware)
+if settings.enable_multitenant:
+    app.add_middleware(MultiTenantMiddleware)
 
 # Setup rate limiting and metrics
-setup_rate_limiting(app)
-setup_metrics(app)
+if settings.enable_rate_limiting:
+    setup_rate_limiting(app)
+
+if settings.enable_metrics:
+    setup_metrics(app)
 
 # Include Routers
 app.include_router(i18n.router)
@@ -101,10 +112,11 @@ def root():
     return {
         "name": "Agency OS Unified API - Refactored",
         "tagline": "The One-Person Unicorn Operating System with Clean Architecture",
-        "version": settings.VERSION,
+        "version": settings.api_version,  # Use config
         "binh_phap": "Không đánh mà thắng",
         "docs": "/docs",
         "status": "operational",
+        "environment": settings.environment,  # Use config
         "architecture": {
             "backend": "/backend/* (refactored with clean arch)",
             "legacy": "/api/* (being migrated)",

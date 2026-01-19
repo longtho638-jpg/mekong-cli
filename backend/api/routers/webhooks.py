@@ -15,22 +15,16 @@ from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel
 
+# REFACTORED: Use centralized config and schemas
+from backend.api.config.settings import settings
+from backend.api.schemas.webhooks import GumroadPurchase
+
 router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 logger = logging.getLogger(__name__)
 
 
-class GumroadPurchase(BaseModel):
-    """Gumroad purchase webhook payload."""
-
-    email: str
-    product_id: str
-    product_name: str
-    price: float
-    currency: str = "USD"
-    sale_id: str
-    license_key: Optional[str] = None
-    purchaser_id: Optional[str] = None
-    timestamp: str = None
+# DEPRECATED: Model moved to backend.api.schemas.webhooks
+# Kept for backward compatibility - remove in future version
 
 
 # In-memory store (replace with database in production)
@@ -84,9 +78,9 @@ async def send_welcome_email(customer: dict):
     )
 
     logger.info(f"   License: {customer['license_key']}")
-    logger.info(
-        f"   Portal: https://platform.billmentor.com/activate?key={customer['license_key']}"
-    )
+    # REFACTORED: Use config for portal URL
+    portal_url = f"{settings.webhook_portal_url}/activate?key={customer['license_key']}"
+    logger.info(f"   Portal: {portal_url}")
 
 
 async def process_purchase(purchase: GumroadPurchase):
