@@ -89,16 +89,30 @@ class LicenseManager:
         logger.info("License Manager initialized.")
 
     def generate_license_key(self, tier: LicenseTier) -> str:
-        """Create a cryptographically unique license string."""
-        prefix = {
-            LicenseTier.STARTER: "AGOS-ST",
-            LicenseTier.FRANCHISE: "AGOS-FR",
-            LicenseTier.ENTERPRISE: "AGOS-EN",
-        }[tier]
+        """
+        Create a cryptographically unique license string.
 
-        uid = uuid.uuid4().hex[:8].upper()
-        chk = hashlib.md5(uid.encode()).hexdigest()[:4].upper()
-        return f"{prefix}-{uid}-{chk}"
+        DEPRECATED: Use core.licensing.generator.license_generator instead.
+        This method is kept for backward compatibility.
+        """
+        import warnings
+        from core.licensing.generator import license_generator
+
+        warnings.warn(
+            "LicenseManager.generate_license_key is deprecated. "
+            "Use core.licensing.generator.license_generator instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+
+        # Map tier enum to string
+        tier_map = {
+            LicenseTier.STARTER: "starter",
+            LicenseTier.FRANCHISE: "franchise",
+            LicenseTier.ENTERPRISE: "enterprise",
+        }
+
+        return license_generator.generate(format='agencyos', tier=tier_map[tier])
 
     def activate_license(
         self,

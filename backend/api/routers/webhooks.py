@@ -39,12 +39,29 @@ _purchases = []
 
 
 def generate_license_key(email: str, product_id: str) -> str:
-    """Generate unique license key for customer."""
-    import hashlib
-    import secrets
+    """
+    Generate unique license key for customer.
 
-    base = f"{email}:{product_id}:{secrets.token_hex(8)}"
-    return hashlib.sha256(base.encode()).hexdigest()[:24].upper()
+    DEPRECATED: Use core.licensing.generator.license_generator instead.
+    This function is kept for backward compatibility.
+    """
+    import warnings
+    from core.licensing.generator import license_generator
+
+    warnings.warn(
+        "webhooks.generate_license_key is deprecated. "
+        "Use core.licensing.generator.license_generator instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
+    # Use unified generator with Mekong format
+    return license_generator.generate(
+        format='mekong',
+        tier='pro',  # Default tier for webhook purchases
+        email=email,
+        product_id=product_id
+    )
 
 
 from core.infrastructure.notifications import Channel, NotificationService, NotificationType
