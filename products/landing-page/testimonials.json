@@ -1,0 +1,50 @@
+{
+  "testimonials": [
+    {
+      "name": "Alex Nguyen",
+      "role": "Founder, StartupVN",
+      "avatar": "https://i.pravatar.cc/100?img=1",
+      "quote": "AgencyOS saved me 40+ hours/month. The AI automation is a game-changer.",
+      "rating": 5,
+      "product": "AgencyOS Pro"
+    },
+    {
+      "name": "Sarah Chen",
+      "role": "CTO, TechCorp",
+      "avatar": "https://i.pravatar.cc/100?img=5",
+      "quote": "Best investment for our agency. ROI in the first week.",
+      "rating": 5,
+      "product": "AgencyOS Enterprise"
+    },
+    {
+      "name": "Minh Tran",
+      "role": "Solo Developer",
+      "avatar": "https://i.pravatar.cc/100?img=3",
+      "quote": "The VSCode pack alone was worth it. Now I'm on Pro!",
+      "rating": 5,
+      "product": "VSCode Starter Pack"
+    },
+    {
+      "name": "Lisa Park",
+      "role": "Digital Agency Owner",
+      "avatar": "https://i.pravatar.cc/100?img=9",
+      "quote": "From 0 to $50K MRR with AgencyOS workflows.",
+      "rating": 5,
+      "product": "AgencyOS Pro"
+    },
+    {
+      "name": "David Kim",
+      "role": "Freelance Developer",
+      "avatar": "https://i.pravatar.cc/100?img=12",
+      "quote": "AI Skills Pack is essential. Works perfectly with Claude and Gemini.",
+      "rating": 5,
+      "product": "AI Skills Pack"
+    }
+  ],
+  "stats": {
+    "total_customers": 127,
+    "total_revenue": 15420,
+    "avg_rating": 4.9,
+    "countries": 12
+  }
+}
