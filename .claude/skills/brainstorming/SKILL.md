@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Collaborative solution brainstorming with brutal honesty, multi-approach analysis, principle-driven recommendations. Use for ideation, architecture decisions, technical debates, feature exploration, problem-solving, trade-off analysis, feasibility assessment, and design discussions.
+description: Brainstorm solutions with trade-off analysis and brutal honesty. Use for ideation, architecture decisions, technical debates, feature exploration, feasibility assessment, design discussions.
 license: MIT
 version: 1.0.0
 ---

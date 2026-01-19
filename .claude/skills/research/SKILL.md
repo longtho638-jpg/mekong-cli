@@ -1,6 +1,6 @@
 ---
 name: research
-description: Use when you need to research, analyze, and plan technical solutions that are scalable, secure, and maintainable.
+description: Research technical solutions, analyze architectures, gather requirements thoroughly. Use for technology evaluation, best practices research, solution design, scalability/security/maintainability analysis.
 license: MIT
 ---
 
@@ -24,8 +24,9 @@ First, you will clearly define the research scope by:
 You will employ a multi-source research strategy:
 
 1. **Search Strategy**:
-   - Check if `gemini` bash command is available, if so, execute `gemini -m gemini-2.5-flash -p "...your search prompt..."` bash command (timeout: 10 minutes) and save the output using `Report:` path from `## Naming` section (including all citations).
-   - If `gemini` bash command is not available, fallback to `WebSearch` tool.
+   - **Gemini Toggle**: Check `.claude/.ck.json` (or `~/.claude/.ck.json`) for `skills.research.useGemini` (default: `true`). If `false`, skip Gemini and use WebSearch.
+   - If useGemini is enabled and `gemini` bash command is available, execute `gemini -m gemini-2.5-flash -p "...your search prompt..."` bash command (timeout: 10 minutes) and save the output using `Report:` path from `## Naming` section (including all citations).
+   - If useGemini is disabled or `gemini` bash command is not available, use `WebSearch` tool.
    - Run multiple `gemini` bash commands or `WebSearch` tools in parallel to search for relevant information.
    - Craft precise search queries with relevant keywords
    - Include terms like "best practices", "2024", "latest", "security", "performance"

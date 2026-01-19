@@ -7,9 +7,10 @@ Convert existing monorepo to Turborepo with intelligent pipeline generation.
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 
 
 class TurborepoMigrator:

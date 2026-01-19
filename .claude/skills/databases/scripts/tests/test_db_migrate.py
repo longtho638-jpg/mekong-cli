@@ -1,10 +1,11 @@
 """Tests for db_migrate.py"""
 
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 

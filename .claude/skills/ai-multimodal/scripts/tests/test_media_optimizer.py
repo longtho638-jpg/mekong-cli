@@ -5,7 +5,7 @@ Tests for media_optimizer.py
 import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 import json
 
 sys.path.insert(0, str(Path(__file__).parent.parent))

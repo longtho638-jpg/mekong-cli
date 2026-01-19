@@ -7,13 +7,14 @@ Supports compression, scheduling, and verification.
 import argparse
 import gzip
 import json
+import os
 import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -103,7 +104,7 @@ class BackupManager:
             # Compress if requested
             if compress:
                 archive_path = backup_path.with_suffix(".tar.gz")
-                print("Compressing backup...")
+                print(f"Compressing backup...")
                 shutil.make_archive(str(backup_path), "gztar", backup_path)
                 shutil.rmtree(backup_path)
                 backup_path = archive_path
