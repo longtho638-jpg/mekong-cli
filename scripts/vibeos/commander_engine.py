@@ -74,7 +74,58 @@ class CommanderEngine:
 
     def __init__(self):
         self.project_root = Path(__file__).parent.parent.parent
-        self.systems = ["vercel", "supabase", "github", "jules"]
+        self.systems = ["vercel", "supabase", "github", "jules", "proxy", "taskmaster"]
+
+    async def check_taskmaster(self) -> SystemStatus:
+        """Check Task Master AI status via MCP."""
+        try:
+            # Check if task-master-ai is configured in MCP
+            mcp_config = self.project_root / ".claude" / "mcp.json"
+            if mcp_config.exists():
+                import json as json_mod
+
+                with open(mcp_config) as f:
+                    config = json_mod.load(f)
+                    if "task-master-ai" in config.get("mcpServers", {}):
+                        # Check for active tasks
+                        tasks_file = self.project_root / "tasks" / "tasks.json"
+                        if tasks_file.exists():
+                            with open(tasks_file) as tf:
+                                tasks = json_mod.load(tf)
+                                pending = len(
+                                    [
+                                        t
+                                        for t in tasks.get("tasks", [])
+                                        if t.get("status") == "pending"
+                                    ]
+                                )
+                                doing = len(
+                                    [
+                                        t
+                                        for t in tasks.get("tasks", [])
+                                        if t.get("status") == "in-progress"
+                                    ]
+                                )
+                                return SystemStatus(
+                                    name="taskmaster",
+                                    status=InfraStatus.HEALTHY,
+                                    message=f"{doing} active, {pending} pending tasks",
+                                    details={"active": doing, "pending": pending},
+                                )
+                        return SystemStatus(
+                            name="taskmaster",
+                            status=InfraStatus.HEALTHY,
+                            message="Task Master configured (no tasks.json)",
+                        )
+            return SystemStatus(
+                name="taskmaster", status=InfraStatus.UNKNOWN, message="Task Master not configured"
+            )
+        except Exception as e:
+            return SystemStatus(
+                name="taskmaster",
+                status=InfraStatus.WARNING,
+                message=f"Task Master check error: {str(e)}",
+            )
 
     async def check_vercel(self) -> SystemStatus:
         """Check Vercel deployment status."""
@@ -257,18 +308,19 @@ class CommanderEngine:
             return SystemStatus(name="proxy", status=InfraStatus.ERROR, message="Proxy not running")
 
     async def full_status(self) -> Dict[str, SystemStatus]:
-        """Get status of all systems."""
+        """Get status of all systems (6-system monitoring)."""
         results = await asyncio.gather(
             self.check_proxy(),
             self.check_vercel(),
             self.check_supabase(),
             self.check_github_ci(),
             self.check_jules(),
+            self.check_taskmaster(),
             return_exceptions=True,
         )
 
         status_dict = {}
-        system_names = ["proxy", "vercel", "supabase", "github", "jules"]
+        system_names = ["proxy", "vercel", "supabase", "github", "jules", "taskmaster"]
 
         for i, result in enumerate(results):
             if isinstance(result, Exception):
