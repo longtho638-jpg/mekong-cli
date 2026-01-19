@@ -93,7 +93,7 @@ class MasterDashboard:
         """Renders the definitive, full-screen dashboard to the console."""
         s = self.get_summary()
         score = s["score"]
-        l = s["layers"]
+        layers = s["layers"]
 
         print("\n" + "═" * 70)
         print("║" + "🏯 AGENCY OS - MASTER OPERATIONAL DASHBOARD".center(68) + "║")
@@ -103,7 +103,7 @@ class MasterDashboard:
         # 1. AGENTIC LAYER
         print(" 🤖 AGENTIC INFRASTRUCTURE")
         print(
-            f"    ├─ Agents Active : {l['agentic']['agents_active']:<5} | Success Rate : {l['agentic']['success_rate']:.1%}"
+            f"    ├─ Agents Active : {layers['agentic']['agents_active']:<5} | Success Rate : {layers['agentic']['success_rate']:.1%}"
         )
         print("    └─ Integration   : Healthy")
 
@@ -112,23 +112,23 @@ class MasterDashboard:
         # 2. RETENTION LAYER
         print(" 🏰 STRATEGIC DEFENSIBILITY (MOATS)")
         print(
-            f"    ├─ Moat Strength : {l['retention']['moat_strength']}% | Loyalty Tier : {l['retention']['loyalty_tier']}"
+            f"    ├─ Moat Strength : {layers['retention']['moat_strength']}% | Loyalty Tier : {layers['retention']['loyalty_tier']}"
         )
-        print(f"    └─ Switching Cost: ${l['retention']['switching_cost_usd']:,} USD")
+        print(f"    └─ Switching Cost: ${layers['retention']['switching_cost_usd']:,} USD")
 
         print(" ─" * 35)
 
         # 3. REVENUE LAYER
         print(" 💰 REVENUE PERFORMANCE")
-        print(f"    ├─ Current ARR   : ${l['revenue']['arr']:,.0f} | Target ARR   : $1,000,000")
-        print(f"    └─ Goal Progress : {l['revenue']['progress']:.1%}")
+        print(f"    ├─ Current ARR   : ${layers['revenue']['arr']:,.0f} | Target ARR   : $1,000,000")
+        print(f"    └─ Goal Progress : {layers['revenue']['progress']:.1%}")
 
         print(" ─" * 35)
 
         # 4. INFRASTRUCTURE LAYER
         print(" 🏗️ PRODUCTION STACK")
         print(
-            f"    ├─ Stack Layers  : {l['infra']['layers_online']}/10  | Health Score : {l['infra']['health']}%"
+            f"    ├─ Stack Layers  : {layers['infra']['layers_online']}/10  | Health Score : {layers['infra']['health']}%"
         )
         print("    └─ Status        : Operational")
 
