@@ -1,7 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
+import { apiPost } from '../lib/api-client';
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+interface ChatRequest {
+  messages: { role: string; content: string }[];
+}
+
+interface ChatResponse {
   content: string;
 }
 
@@ -37,24 +46,43 @@ export function AIChat() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call when backend is available
-      // For now, show placeholder response
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const requestPayload: ChatRequest = {
+        messages: messages
+          .filter((m) => m.role !== 'system')
+          .concat(userMessage)
+          .map((m) => ({ role: m.role, content: m.content })),
+      };
+
+      const result = await apiPost<ChatRequest, ChatResponse>(
+        '/api/chat',
+        requestPayload,
+        {
+          maxRetries: 2,
+          initialDelay: 1000,
+        }
+      );
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
 
       const aiResponse: Message = {
         role: 'assistant',
-        content:
-          'AI responses will be available once the OpenRouter integration is complete with a backend API. This is a placeholder response showing the UI functionality.',
+        content: result.data?.content || 'No response generated.',
       };
 
       setMessages((prev) => [...prev, aiResponse]);
     } catch (error) {
       console.error('Error sending message:', error);
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'Sorry, I encountered an error. Please try again.';
+
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again.',
+          content: errorMessage,
         },
       ]);
     } finally {
