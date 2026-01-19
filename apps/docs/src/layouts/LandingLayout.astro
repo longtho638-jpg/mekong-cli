@@ -797,7 +797,7 @@ const {
     display: inline-flex;
     align-items: center;
     padding: 10px 20px;
-    background: #22c55e;
+    background: #16a34a; /* Darker green for better contrast with white text */
     color: white;
     text-decoration: none;
     font-size: 0.875rem;
@@ -894,7 +894,9 @@ const {
     top: 72px;
     left: 0;
     right: 0;
-    background: rgba(10, 10, 10, 0.98);
+    background: rgb(10, 10, 10); /* Solid background to prevent text overlap */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--color-border);
     padding: 16px 24px;
     flex-direction: column;
@@ -1032,6 +1034,11 @@ const {
   /* Smooth scroll */
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Fix sticky header overlap on anchor navigation */
+  :target {
+    scroll-margin-top: 88px;
   }
 
   /* Selection color */
