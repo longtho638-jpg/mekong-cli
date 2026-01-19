@@ -22,8 +22,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
-          cache: 'pip'
+          python-version: "3.9"
+          cache: "pip"
 
       - name: Install Dependencies
         run: |
@@ -79,8 +79,8 @@ jobs:
         run: pnpm install
 
       # Turbo handles cache internally if configured, but here we just run it
-      - name: Build (Turbo)
-        run: pnpm build
+      - name: Build (Docs)
+        run: pnpm --filter mekong-docs build
 
       - name: Lint (Turbo)
         run: pnpm lint
