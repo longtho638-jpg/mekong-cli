@@ -105,6 +105,61 @@
 
 ---
 
+## 🔄 ENHANCED PHASES (6-10)
+
+### **INFRASTRUCTURE (Week 2)**
+
+#### **[Phase 6: .claude Infrastructure Refactoring](phase-06-claude-infrastructure.md)**
+
+**Status:** Pending | **Priority:** P1 | **Effort:** 12h
+
+- Resolve command/agent duplication (scout.md in commands AND agents)
+- Document config precedence (.claude/rules vs $HOME/.claude)
+- Optimize skill storage (eliminate 50MB duplication via symlinks)
+- Consolidate workflow files (kanban-workflow.md + kanban-agent-flow.md)
+
+#### **[Phase 7: CLI Tooling Optimization](phase-07-cli-optimization.md)**
+
+**Status:** Pending | **Priority:** P1 | **Effort:** 16h
+
+- Split ops.py (235 lines) → 3 modules (network, monitoring, deployment)
+- Extract command registry pattern from entrypoint.py (251 → 80 lines)
+- Unify license key generation (2 implementations → 1 core module)
+- Add subprocess safety wrappers (prevent command injection)
+
+### **CORE REFACTORING (Week 3)**
+
+#### **[Phase 8: Core Business Logic](phase-08-core-business-logic.md)**
+
+**Status:** Pending | **Priority:** P0 | **Effort:** 44h
+
+- Split control_enhanced.py (672 lines) → 4 modules (redis, flags, circuit breaker, analytics)
+- Split knowledge_graph.py (429 lines) → 3 modules (extractor, search, AST parser)
+- Refactor agent_chains.py (353 → 80 lines + YAML config)
+- Add input validation to money_maker.py (Pydantic models)
+
+#### **[Phase 9: Backend API Layer](phase-09-backend-api-layer.md)**
+
+**Status:** Pending | **Priority:** P1 | **Effort:** 28h
+
+- Extract 20+ hardcoded configs to Pydantic Settings
+- Unify duplicate endpoint categorization (metrics.py + rate_limiting.py)
+- Consolidate Pydantic models (schemas.py vs models/vibe.py)
+- Add input validation middleware (XSS/SQL injection prevention)
+
+### **QUALITY ASSURANCE (Week 4)**
+
+#### **[Phase 10: Testing & Quality Gates](phase-10-testing-quality-gates.md)**
+
+**Status:** Pending | **Priority:** P0 | **Effort:** 70h
+
+- Achieve >80% test coverage (unit + integration + E2E)
+- Implement regression test suite (payment, subscription, webhooks)
+- Set up Lighthouse CI (Performance >90, A11y >95)
+- Bundle size optimization (1.5MB → <1MB, -30% reduction)
+
+---
+
 ## 🔧 REFACTORING STANDARDS
 
 ### **Code Quality Standards**
@@ -200,12 +255,32 @@ Gate 5: Documentation Complete ✅
 
 ## 📈 SUCCESS METRICS
 
-### **Technical Metrics**
+### **Technical Metrics (All 10 Phases)**
 
-- **Technical debt:** 67 → 0 TODO/FIXME items
-- **Code complexity:** Average 10 → 5 per function
-- **Bundle size:** 1.5MB → < 1MB
-- **Performance score:** 65 → 90+ Lighthouse
+**Code Quality:**
+- Technical debt: 67 → 0 TODO/FIXME items
+- Files >250 lines: 14 → 0
+- Files >500 lines: 1 → 0
+- Code complexity: Average 10 → 5 per function
+- Duplicate implementations: 4 pairs → 0
+
+**Performance:**
+- Bundle size: 1.5MB → <1MB (-30%)
+- Lighthouse Performance: 65 → 90+
+- Test coverage: Unknown → >80%
+- API response time: Optimized caching
+
+**Architecture:**
+- Hardcoded configs: 20+ → 0 (all in settings.py)
+- Config precedence: Undocumented → Fully documented
+- Skill storage: 50MB duplication → 0 (symlinks)
+- Modular structure: 100% SRP compliance
+
+**Security:**
+- Webhook verification: Partial → 100% enforced
+- Input validation: 0% → 100% coverage
+- Subprocess security: Unsafe → All sanitized
+- SECRET_KEY: Default → Required in env
 
 ### **Business Metrics**
 
@@ -214,7 +289,23 @@ Gate 5: Documentation Complete ✅
 - **Developer velocity:** +40% after refactoring
 - **Maintenance cost:** -60% technical debt
 
+### **Phase Completion Status**
+
+- ✅ Phase 1: Payment Security (Pending)
+- ✅ Phase 2: Monolithic Decomposition (Pending)
+- ✅ Phase 3: Financial Systems (Pending)
+- ✅ Phase 4: Utility & Foundation (Pending)
+- ✅ Phase 5: Documentation System (Pending)
+- ✅ Phase 6: .claude Infrastructure (Pending)
+- ✅ Phase 7: CLI Tooling (Pending)
+- ✅ Phase 8: Core Business Logic (Pending)
+- ✅ Phase 9: Backend API Layer (Pending)
+- ✅ Phase 10: Testing & Quality Gates (Pending)
+
+**Total Estimated Effort:** 210+ hours (4-6 weeks with team)
+
 ---
 
 _Created: 2025-01-17_
-_Status: Active_
+_Updated: 2026-01-19 (Enhanced with Phases 6-10)_
+_Status: Active - Comprehensive 10-Phase Refactoring Plan_

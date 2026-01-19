@@ -220,9 +220,11 @@ export class SubscriptionManager {
     const tier = PRICING_TIERS[subscription.plan]
 
     // Get actual usage from database
-    const [teamCount, projectCount] = await Promise.all([
+    const [teamCount, projectCount, storageBytes, apiCallCount] = await Promise.all([
       this.getTeamMemberCount(tenantId),
       this.getProjectCount(tenantId),
+      this.getStorageUsage(tenantId),
+      this.getAPIUsage(tenantId),
     ])
 
     return {
@@ -235,12 +237,12 @@ export class SubscriptionManager {
         limit: tier.limits.projects,
       },
       storage: {
-        used: 0, // TODO: Calculate from storage
+        used: storageBytes,
         limit: parseFloat(tier.limits.storage),
         unit: tier.limits.storage.replace(/[0-9]/g, ''),
       },
       apiCalls: {
-        used: 0, // TODO: Track API usage
+        used: apiCallCount,
         limit: tier.limits.apiCalls,
       },
     }
@@ -274,6 +276,47 @@ export class SubscriptionManager {
       .from('projects')
       .select('*', { count: 'exact', head: true })
       .eq('tenant_id', tenantId)
+
+    return count || 0
+  }
+
+  /**
+   * Calculate total storage usage across all projects for tenant
+   * Returns storage in bytes
+   */
+  private async getStorageUsage(tenantId: string): Promise<number> {
+    // Query projects table for file storage aggregation
+    const { data, error } = await this.supabase
+      .from('projects')
+      .select('storage_bytes')
+      .eq('tenant_id', tenantId)
+
+    if (error || !data) return 0
+
+    // Sum up all storage_bytes across projects
+    return data.reduce((total, project) => total + (project.storage_bytes || 0), 0)
+  }
+
+  /**
+   * Get API call count for current billing period
+   * Tracks usage from api_usage table with period filtering
+   */
+  private async getAPIUsage(tenantId: string): Promise<number> {
+    const subscription = await this.getSubscription(tenantId)
+    if (!subscription) return 0
+
+    // Get usage within current billing period
+    const { count, error } = await this.supabase
+      .from('api_usage')
+      .select('*', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId)
+      .gte('created_at', subscription.currentPeriodStart.toISOString())
+      .lte('created_at', subscription.currentPeriodEnd.toISOString())
+
+    if (error) {
+      console.error('Failed to fetch API usage:', error)
+      return 0
+    }
 
     return count || 0
   }

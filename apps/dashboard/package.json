@@ -9,7 +9,10 @@
     "lint": "eslint . --max-warnings 250",
     "lint:strict": "eslint . --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@material/web": "^2.4.1",
