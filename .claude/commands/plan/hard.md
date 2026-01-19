@@ -45,6 +45,15 @@ After plan creation, offer validation interview to confirm decisions before impl
 **If mode is `prompt`:** Use `AskUserQuestion` tool with options above.
 **If user chooses validation or mode is `auto`:** Execute `/plan:validate {plan-path}` SlashCommand.
 
+## Context Reminder (MANDATORY)
+
+**IMPORTANT:** If user skips validation (chooses "No" or mode is `off`), you MUST remind them:
+
+> **Best Practice:** Run `/clear` before implementing to start with fresh context.
+> Then run `/code {plan-path}` to begin implementation.
+
+This reminder is **NON-NEGOTIABLE** when validation is skipped.
+
 ## Output Requirements
 
 **Plan Directory Structure** (use `Plan dir:` from `## Naming` section)

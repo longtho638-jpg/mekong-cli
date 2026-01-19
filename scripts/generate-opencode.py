@@ -329,7 +329,7 @@ Reference external instruction files in `opencode.json`:
 
 ```json
 {{
-  "instructions": ["docs/*.md", ".opencode/agent/*.md"]
+  "instructions": ["docs/*.md", ".opencode/agents/*.md"]
 }}
 ```
 
@@ -653,9 +653,9 @@ def main():
     # Create directories
     dirs_to_create = [
         opencode_dir,
-        opencode_dir / "agent",
-        opencode_dir / "command",
-        opencode_dir / "skill",
+        opencode_dir / "agents",
+        opencode_dir / "commands",
+        opencode_dir / "skills",
     ]
 
     for dir_path in dirs_to_create:
@@ -692,7 +692,7 @@ def main():
         print("\nConverting agents...")
         for agent_file in claude_agents_dir.glob("*.md"):
             agent_name = agent_file.stem
-            output_path = opencode_dir / "agent" / f"{agent_name}.md"
+            output_path = opencode_dir / "agents" / f"{agent_name}.md"
 
             if output_path.exists() and not args.force:
                 if args.verbose:
@@ -737,7 +737,7 @@ def main():
             path_parts[-1] = path_parts[-1].replace(".md", "")
             # Join with dashes for flat command name
             cmd_name = "-".join(path_parts) if len(path_parts) > 1 else path_parts[0]
-            output_path = opencode_dir / "command" / f"{cmd_name}.md"
+            output_path = opencode_dir / "commands" / f"{cmd_name}.md"
 
             if output_path.exists() and not args.force:
                 if args.verbose:
@@ -765,9 +765,9 @@ def main():
 
         print(f"  Converted {converted_count} commands")
 
-    # Copy skills from .claude/skills/ to .opencode/skill/
+    # Copy skills from .claude/skills/ to .opencode/skills/
     claude_skills_dir = claude_dir / "skills"
-    opencode_skills_dir = opencode_dir / "skill"
+    opencode_skills_dir = opencode_dir / "skills"
     if claude_skills_dir.exists():
         print("\nCopying skills...")
         skill_count = 0
@@ -869,9 +869,9 @@ def main():
     print("=" * 50)
     print(f"\nGenerated files:")
     print(f"  - AGENTS.md (project instructions)")
-    print(f"  - .opencode/agent/*.md (converted agents)")
-    print(f"  - .opencode/command/*.md (converted commands)")
-    print(f"  - .opencode/skill/*/ (copied skills)")
+    print(f"  - .opencode/agents/*.md (converted agents)")
+    print(f"  - .opencode/commands/*.md (converted commands)")
+    print(f"  - .opencode/skills/*/ (copied skills)")
     print(f"  - .opencode/workflows/*.md (copied workflows)")
     print(f"  - .opencode/scripts/* (copied scripts)")
     print(f"  - .opencode/.env.example (if exists)")

@@ -28,6 +28,15 @@ Use `planner` subagent to:
 4. Gathers all information and create an implementation plan of this task.
 5. Ask user to review the plan.
 
+## Context Reminder (MANDATORY)
+
+**IMPORTANT:** After plan creation, you MUST remind the user:
+
+> **Best Practice:** Run `/clear` before implementing to start with fresh context.
+> Then run `/code {plan-path}` to begin implementation.
+
+This reminder is **NON-NEGOTIABLE** - always output it after presenting the plan.
+
 ## Output Requirements
 
 **Plan Directory Structure** (use `Plan dir:` from `## Naming` section)
