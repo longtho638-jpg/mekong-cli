@@ -67,7 +67,7 @@ app.add_middleware(
 )
 
 # Add multi-tenant middleware
-app.middleware("http")(MultiTenantMiddleware().dispatch)
+app.add_middleware(MultiTenantMiddleware)
 
 # Setup rate limiting and metrics
 setup_rate_limiting(app)

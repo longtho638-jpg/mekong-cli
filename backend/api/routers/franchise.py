@@ -7,10 +7,15 @@ router = APIRouter(prefix="/api/franchise", tags=["Franchise"])
 try:
     from core import FranchiseSystem
 
-    franchise = FranchiseSystem()
-    FRANCHISE_AVAILABLE = True
+    if FranchiseSystem is not None:
+        franchise = FranchiseSystem()
+        FRANCHISE_AVAILABLE = True
+    else:
+        FRANCHISE_AVAILABLE = False
+        franchise = None
 except ImportError:
     FRANCHISE_AVAILABLE = False
+    franchise = None
 
 
 @router.get("/stats")
