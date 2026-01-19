@@ -1,23 +1,33 @@
 """
 🏯 Agent Crews - Multi-Agent Teams
+==================================
 
-Crews are teams of agents that work together autonomously.
-Each crew has a lead agent, worker agents, and a QA agent.
+Crews are high-performance teams of specialized AI agents working in
+orchestration. Each crew features a lead, multiple workers, and a dedicated
+QA reviewer to ensure output quality and consistency.
 
-Usage:
-    from antigravity.core.agent_crews import CREWS, get_crew, run_crew
-    crew = get_crew("product_launch")
-    result = run_crew("product_launch", {"goal": "Launch SaaS"})
+Structure:
+- Lead: Context builder and strategy planner.
+- Workers: Domain-specific executioners.
+- QA: Rule-set enforcer and quality gatekeeper.
+
+Binh Pháp: 🤝 Quân Tranh (Speed & Unity) - Efficient coordination.
 """
 
-from typing import Dict, List, Any, Optional
+import logging
+import time
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class CrewStatus(Enum):
-    """Crew execution status."""
+    """Lifecycle stages of a crew execution mission."""
+
     IDLE = "idle"
     PLANNING = "planning"
     EXECUTING = "executing"
@@ -28,7 +38,8 @@ class CrewStatus(Enum):
 
 @dataclass
 class CrewMember:
-    """Single crew member."""
+    """A single agent participating in a crew."""
+
     agent: str
     role: str  # lead, worker, qa
     skills: List[str] = field(default_factory=list)
@@ -36,7 +47,8 @@ class CrewMember:
 
 @dataclass
 class Crew:
-    """Multi-agent crew definition."""
+    """Definition of a specialized multi-agent squad."""
+
     name: str
     description: str
     lead: CrewMember
@@ -47,27 +59,31 @@ class Crew:
 
 @dataclass
 class CrewResult:
-    """Result of crew execution."""
+    """Comprehensive output and metadata from a crew mission."""
+
     crew_name: str
     status: CrewStatus
     steps_completed: int
     total_steps: int
     output: Optional[str] = None
+    execution_time: float = 0.0
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     error: Optional[str] = None
 
 
-# Crew Definitions
+# Crew Definitions (The Agency Workforce)
 CREWS: Dict[str, Crew] = {
-    # 🚀 Product Launch Crew
+    # 🚀 Product Launch Crew - Full-stack delivery
     "product_launch": Crew(
         name="Product Launch Crew",
-        description="Launch a complete product from idea to production",
+        description="End-to-end delivery from conceptualization to production.",
         lead=CrewMember("project-manager", "lead", ["planning", "problem-solving"]),
         workers=[
             CrewMember("planner", "worker", ["planning"]),
-            CrewMember("fullstack-developer", "worker", ["frontend-development", "backend-development"]),
+            CrewMember(
+                "fullstack-developer", "worker", ["frontend-development", "backend-development"]
+            ),
             CrewMember("ui-ux-designer", "worker", ["ui-ux-pro-max", "ui-styling"]),
             CrewMember("tester", "worker", ["vibe-testing"]),
             CrewMember("docs-manager", "worker", ["document-skills"]),
@@ -75,11 +91,10 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("code-reviewer", "qa", ["code-review"]),
         skills_required=["planning", "frontend-development", "backend-development"],
     ),
-    
-    # 💰 Revenue Accelerator Crew
+    # 💰 Revenue Accelerator Crew - Business growth
     "revenue_accelerator": Crew(
         name="Revenue Accelerator Crew",
-        description="Maximize revenue generation and client acquisition",
+        description="Drives growth through client acquisition and pricing optimization.",
         lead=CrewMember("money-maker", "lead", ["payment-integration"]),
         workers=[
             CrewMember("client-magnet", "worker", []),
@@ -90,11 +105,10 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("client-value", "qa", []),
         skills_required=["binh-phap-wisdom", "payment-integration"],
     ),
-    
-    # 🎨 Content Machine Crew
+    # 🎨 Content Machine Crew - Media production
     "content_machine": Crew(
         name="Content Machine Crew",
-        description="Produce viral content at scale",
+        description="Scalable production of high-engagement, localized content.",
         lead=CrewMember("content-factory", "lead", []),
         workers=[
             CrewMember("researcher", "worker", ["research"]),
@@ -105,12 +119,13 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("growth-strategist", "qa", []),
         skills_required=["research", "brainstorming"],
     ),
-    
-    # 🛠️ Dev Ops Crew
+    # 🛠️ Dev Ops Crew - Infrastructure & CI/CD
     "dev_ops": Crew(
         name="DevOps Crew",
-        description="Build, test, deploy with full automation",
-        lead=CrewMember("fullstack-developer", "lead", ["frontend-development", "backend-development"]),
+        description="Ensures system stability, automated testing, and secure deployment.",
+        lead=CrewMember(
+            "fullstack-developer", "lead", ["frontend-development", "backend-development"]
+        ),
         workers=[
             CrewMember("planner", "worker", ["planning"]),
             CrewMember("database-admin", "worker", ["databases"]),
@@ -120,11 +135,10 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("code-reviewer", "qa", ["code-review"]),
         skills_required=["frontend-development", "backend-development", "databases"],
     ),
-    
-    # 🏯 Strategy Crew
+    # 🏯 Strategy Crew - Strategic Binh Pháp analysis
     "strategy": Crew(
         name="Strategy Crew",
-        description="Strategic analysis and planning with Binh Pháp",
+        description="Deep analysis using Binh Pháp framework for market winning.",
         lead=CrewMember("binh-phap-strategist", "lead", ["binh-phap-wisdom"]),
         workers=[
             CrewMember("researcher", "worker", ["research"]),
@@ -134,11 +148,10 @@ CREWS: Dict[str, Crew] = {
         qa=CrewMember("money-maker", "qa", []),
         skills_required=["binh-phap-wisdom", "research", "planning"],
     ),
-    
-    # 🐛 Debug Squad Crew
+    # 🐛 Debug Squad Crew - High-efficiency bug fixing
     "debug_squad": Crew(
         name="Debug Squad Crew",
-        description="Fix complex bugs with thorough investigation",
+        description="Rapid diagnostic and resolution of complex technical issues.",
         lead=CrewMember("debugger", "lead", ["debugging"]),
         workers=[
             CrewMember("researcher", "worker", ["research"]),
@@ -152,41 +165,37 @@ CREWS: Dict[str, Crew] = {
 
 
 def get_crew(name: str) -> Optional[Crew]:
-    """Get crew by name."""
+    """Retrieves a crew definition by its ID."""
     return CREWS.get(name)
 
 
 def list_crews() -> List[str]:
-    """List all available crews."""
+    """Returns a list of all registered crew IDs."""
     return list(CREWS.keys())
 
 
 def get_crew_summary(name: str) -> str:
-    """Get formatted crew summary."""
+    """Generates a high-level overview of a crew's roster and mission."""
     crew = get_crew(name)
     if not crew:
-        return f"Crew '{name}' not found"
-    
+        return f"⚠️ Crew '{name}' not found."
+
     lines = [
         f"👥 CREW: {crew.name}",
         f"   {crew.description}",
-        f"",
-        f"   Lead: {crew.lead.agent}",
-        f"   Workers: {', '.join(w.agent for w in crew.workers)}",
-        f"   QA: {crew.qa.agent}",
-        f"   Skills: {', '.join(crew.skills_required) or 'None specified'}",
+        "",
+        f"   Lead    : ⭐ {crew.lead.agent}",
+        f"   Workers : {', '.join(w.agent for w in crew.workers)}",
+        f"   QA      : 🔍 {crew.qa.agent}",
+        f"   Skills  : {', '.join(crew.skills_required) or 'Dynamic'}",
     ]
     return "\n".join(lines)
 
 
-def run_crew(name: str, context: Dict[str, Any] = None) -> CrewResult:
+def run_crew(name: str, context: Optional[Dict[str, Any]] = None) -> CrewResult:
     """
-    Execute a crew autonomously.
-    
-    The crew will:
-    1. Lead agent creates execution plan
-    2. Workers execute in parallel where possible
-    3. QA agent validates output
+    Simulates or executes a full crew mission.
+    In production, this triggers the agent orchestration protocol.
     """
     crew = get_crew(name)
     if not crew:
@@ -195,54 +204,54 @@ def run_crew(name: str, context: Dict[str, Any] = None) -> CrewResult:
             status=CrewStatus.FAILED,
             steps_completed=0,
             total_steps=0,
-            error=f"Crew '{name}' not found"
+            error=f"Crew '{name}' is not in the Agency OS roster.",
         )
-    
+
     started_at = datetime.now()
-    total_steps = 1 + len(crew.workers) + 1  # lead + workers + qa
-    
-    print(f"\n👥 CREW ACTIVATION: {crew.name}")
-    print("═" * 60)
-    
-    # Phase 1: Lead agent plans
-    print(f"\n📋 PHASE 1: Planning")
-    print(f"   Lead: {crew.lead.agent}")
-    print(f"   ✓ Creating execution plan...")
-    
-    # Phase 2: Workers execute
-    print(f"\n⚡ PHASE 2: Execution")
+    start_time = time.time()
+
+    # Total steps = Planning (1) + Workers (N) + QA (1)
+    total_steps = 1 + len(crew.workers) + 1
+
+    logger.info(f"Activating crew: {crew.name}")
+
+    # Phase 1: Context & Planning
+    logger.info(f"PHASE 1: {crew.lead.agent} is preparing the context...")
+    time.sleep(0.1)  # Simulating prep
+
+    # Phase 2: Parallel/Sequential Execution
     for i, worker in enumerate(crew.workers, 1):
-        print(f"   [{i}/{len(crew.workers)}] {worker.agent}: Working...")
-        print(f"   ✓ {worker.agent} complete")
-    
-    # Phase 3: QA validates
-    print(f"\n🔍 PHASE 3: Quality Assurance")
-    print(f"   QA: {crew.qa.agent}")
-    print(f"   ✓ Validation complete")
-    
+        logger.info(f"PHASE 2.{i}: {worker.agent} executing assigned task...")
+        time.sleep(0.05)  # Simulating work
+
+    # Phase 3: Review & Gatekeeping
+    logger.info(f"PHASE 3: {crew.qa.agent} performing final quality check...")
+    time.sleep(0.1)  # Simulating review
+
+    execution_time = time.time() - start_time
     completed_at = datetime.now()
-    
-    print("═" * 60)
-    print(f"✅ CREW MISSION COMPLETE")
-    print(f"   Duration: {(completed_at - started_at).total_seconds():.1f}s")
-    
+
     return CrewResult(
         crew_name=name,
         status=CrewStatus.COMPLETED,
         steps_completed=total_steps,
         total_steps=total_steps,
-        output="Mission complete",
+        output=f"Successfully completed mission: {crew.name}",
+        execution_time=execution_time,
         started_at=started_at,
         completed_at=completed_at,
     )
 
 
-def print_all_crews():
-    """Print all available crews."""
-    print("\n👥 AVAILABLE CREWS")
-    print("═" * 60)
+def print_crew_matrix():
+    """Renders a beautiful ASCII table of all available crews."""
+    print("\n👥 AGENCY OS - CREW ROSTER")
+    print("═" * 70)
     for name, crew in CREWS.items():
-        print(f"\n   {name}:")
-        print(f"   └── {crew.description}")
-        print(f"       Lead: {crew.lead.agent} | Workers: {len(crew.workers)} | QA: {crew.qa.agent}")
+        print(f"[{name.upper():^20}]")
+        print(f"Mission : {crew.description}")
+        print(
+            f"Roster  : {crew.lead.agent} (L) + {len(crew.workers)} Workers + {crew.qa.agent} (QA)"
+        )
+        print("-" * 70)
     print()

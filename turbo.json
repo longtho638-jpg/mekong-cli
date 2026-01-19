@@ -3,6 +3,10 @@
     "globalDependencies": [
         "**/.env.*local"
     ],
+    "globalEnv": [
+        "NODE_ENV",
+        "VERCEL_ENV"
+    ],
     "pipeline": {
         "build": {
             "dependsOn": [
@@ -12,12 +16,20 @@
                 "dist/**",
                 ".next/**",
                 "!.next/cache/**"
-            ]
+            ],
+            "cache": true
         },
         "lint": {
-            "dependsOn": [
-                "^lint"
-            ]
+            "outputs": [],
+            "cache": true
+        },
+        "lint:strict": {
+            "outputs": [],
+            "cache": true
+        },
+        "typecheck": {
+            "outputs": [],
+            "cache": true
         },
         "dev": {
             "cache": false,
@@ -27,7 +39,13 @@
             "dependsOn": [
                 "^build"
             ],
-            "outputs": []
+            "outputs": [
+                "coverage/**"
+            ],
+            "cache": true
+        },
+        "clean": {
+            "cache": false
         }
     }
 }

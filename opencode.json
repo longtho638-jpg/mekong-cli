@@ -1,0 +1,10 @@
+{
+  "instructions": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "docs/*.md",
+    ".opencode/agent/*.md"
+  ],
+  "$schema": "https://opencode.ai/config.json"
+}

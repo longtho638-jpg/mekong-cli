@@ -1,0 +1,33 @@
+{
+  "Python Function": {
+    "prefix": "def",
+    "body": [
+      "def ${1:function_name}(${2:params}):",
+      "    \"\"\"${3:Docstring}\"\"\"",
+      "    $0"
+    ]
+  },
+  "Python Class": {
+    "prefix": "class",
+    "body": [
+      "class ${1:ClassName}:",
+      "    \"\"\"${2:Docstring}\"\"\"",
+      "    ",
+      "    def __init__(self${3:, params}):",
+      "        $0"
+    ]
+  },
+  "Python Main": {
+    "prefix": "main",
+    "body": ["if __name__ == \"__main__\":", "    $0"]
+  },
+  "Python Try Except": {
+    "prefix": "try",
+    "body": [
+      "try:",
+      "    $0",
+      "except Exception as e:",
+      "    print(f\"Error: {e}\")"
+    ]
+  }
+}

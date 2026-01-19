@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Ship your first feature in 15 minutes with Mekong-CLI
+description: Start Vibe Coding in 5 minutes with AgencyOS.
 section: getting-started
 category: getting-started
 order: 4
@@ -18,200 +18,93 @@ ai_executable: true
 Execute: https://agencyos.network/docs/getting-started/quick-start
 ```
 
-
-
-Ship your first agency automation in 15 minutes with Mekong-CLI.
-
-## Video Demo
-
-<div style="text-align: center; padding: 3rem; background: var(--color-bg-tertiary); border-radius: 0.75rem; border: 1px solid var(--color-border); margin-bottom: 1rem;"><div style="font-size: 3rem; margin-bottom: 1rem;">🌊</div><h3 style="margin: 0 0 0.5rem 0;">Demo Video Coming Soon</h3><p style="margin: 0; color: var(--color-text-muted);">Check our documentation to get started</p></div>
+Ready to experience **Vibe Coding**? This guide will take you from "Zero" to "Architect" in under 5 minutes.
 
 ## Prerequisites
 
-- Mekong-CLI installed (`python main.py --help` works)
-- Python 3.8+
-- Project initialized
+*   **Terminal:** Any terminal (iTerm2, PowerShell, VSCode Terminal).
+*   **AI Editor:** Recommended: [Cursor](https://cursor.sh/), [Windsurf](https://codeium.com/windsurf), or just Claude.ai.
+*   **Git:** Installed on your machine.
 
-**Don't have these?** See [Installation Guide](/docs/getting-started/installation)
+## Step 1: Install AgencyOS
 
-## Your First Agency Project
-
-### Step 1: Initialize Project
+Clone the repository and set up the environment.
 
 ```bash
-# Clone and setup
-git clone https://github.com/longtho638-jpg/mekong-cli.git
-cd mekong-cli
-pip install -r requirements.txt
+# 1. Clone the repo
+git clone https://github.com/longtho638-jpg/mekong-cli.git agency-os
+cd agency-os
 
-# Initialize new agency project
-python main.py init my-agency
-cd my-agency
+# 2. Install dependencies (Automated)
+./scripts/setup_vibe_kanban.sh
+
+# 3. Verify installation
+python3 cli/main.py --help
 ```
 
-**Created:**
-- Project directory from template
-- Configuration files
-- Agent setup files
+> **Tip:** You can alias `python3 cli/main.py` to `agencyos` in your shell for faster access.
 
-### Step 2: Configure Your Vibe
+## Step 2: The "Vibe Coding" Workflow
 
-```bash
-# Set up regional voice/tone
-python main.py setup-vibe --location "Can Tho"
-```
+Now, let's build something real. Imagine you want to build a **Task Management SaaS**.
 
-**Select your niche:**
-| # | Niche | Description |
-|---|-------|-------------|
-| 1 | 🌾 rice-trading | Lúa Gạo |
-| 2 | 🐟 fish-seafood | Cá Tra |
-| 3 | 🛋️ furniture | Nội Thất |
-| 4 | 🏗️ construction | Vật Liệu XD |
-| 5 | 🚜 agriculture | Máy Nông Nghiệp |
+### 1. 🏗️ Create the Blueprint (Scaffold)
 
-### Step 3: Check Your AI Agents
+Instead of writing code from scratch, let the **Architect Agent** design it for you.
 
 ```bash
-python main.py agents
+python3 cli/main.py scaffold "I want to build a Task Management SaaS with subscription billing"
 ```
 
 **Output:**
-```
-🌊 MEKONG-CLI AI Agents
+You will see a "Blueprint" containing:
+*   **Architecture:** Clean Architecture (Recommended).
+*   **Structure:** `src/core`, `src/infra`, `src/app`.
+*   **System Prompt:** A text block between `✂️ COPY BELOW THIS LINE ✂️`.
 
-   Quad-Agent System:
-      🔍 Scout: Thu thập thông tin [Ready]
-      ✏️ Editor: Biên tập nội dung [Ready]
-      🎬 Director: Đạo diễn video [Ready]
-      🤝 Community: Đăng bài & tương tác [Ready]
+### 2. 🤖 Feed the AI (Code)
 
-   Mekong-Specific Agents:
-      📊 Market Analyst: Phân tích giá nông sản [Ready]
-      💬 Zalo Integrator: Tích hợp Zalo OA [Ready]
-      🎤 Local Copywriter: Content giọng địa phương [Ready]
+1.  **Copy** the System Prompt generated in the previous step.
+2.  **Open** your AI Editor (Cursor/Claude).
+3.  **Paste** the prompt and hit Enter.
 
-   Total: 7 agents ready
-```
+*Watch as the AI generates the folder structure and core files exactly as designed.*
 
-### Step 4: Setup Secrets
+### 3. 📋 Manage the Work (Kanban)
+
+Don't let the AI wander. Assign specific tasks.
 
 ```bash
-python main.py generate-secrets
+# Initialize the board
+python3 cli/main.py kanban create "Setup Authentication Module" --agent fullstack-dev --priority P1
+
+# Check the board
+python3 cli/main.py kanban board
 ```
 
-**Prompts for:**
-- SUPABASE_URL
-- SUPABASE_KEY  
-- GOOGLE_API_KEY
-- OPENROUTER_API_KEY
-- ELEVENLABS_API_KEY
+### 4. 🚀 Ship It
 
-### Step 5: Activate License (Optional)
+When you are ready to deploy:
 
 ```bash
-# For Pro features
-python main.py activate --key mk_live_xxxxx
+python3 cli/main.py ship
 ```
-
-### Step 6: Deploy
-
-```bash
-python main.py deploy
-```
-
-## CLI vs Slash Commands
-
-> **Important**: Mekong-CLI and AgencyOS IDE slash commands are different systems.
-
-| Feature | Mekong-CLI | AgencyOS IDE |
-|---------|------------|-------------|
-| **Entry** | `python main.py` | Slash commands `/cook` |
-| **Runs in** | Any terminal | AgencyOS IDE IDE |
-| **Focus** | Agency automation | Development workflows |
-| **Commands** | `init`, `agents`, `deploy` | `/cook`, `/plan`, `/fix` |
-
-**Slash commands** (`/cook`, `/plan`, `/fix`) require **AgencyOS IDE IDE** with AgencyOS installed.
-
-**Mekong-CLI** is a standalone Python CLI for agency automation.
-
-## What Just Happened?
-
-**Traditional approach** (8-12 hours):
-1. Research tools and templates (2h)
-2. Setup configuration (2h)
-3. Configure integrations (2h)
-4. Build automations (3h)
-5. Debug issues (2h)
-
-**Mekong-CLI approach** (15 minutes):
-1. Clone + Install (2 min)
-2. Init project (1 min)
-3. Configure vibe (2 min)
-4. Setup secrets (5 min)
-5. Deploy (5 min)
-
-**Time saved**: 8+ hours → **~3000% faster**
 
 ## Available Commands
 
-```bash
-# Project Management
-python main.py init <name>           # Initialize project
-python main.py setup-vibe            # Configure AI voice/tone
-python main.py generate-secrets      # Create .env file
-python main.py mcp-setup             # Setup MCP servers
+| Command | Description |
+| :--- | :--- |
+| `scaffold` | Generate Architecture Blueprint & AI Prompts |
+| `kanban` | Manage tasks and agents on the board |
+| `guide` | Show the built-in Vibe Coding Manual |
+| `binh-phap` | Analyze project strategy |
+| `ship` | Deploy to production |
 
-# Deployment
-python main.py deploy                # Deploy to Cloud Run
+## What's Next?
 
-# License
-python main.py activate --key KEY   # Activate license
-python main.py status               # Show license status
-
-# Info & Debug
-python main.py agents               # Show AI agents
-python main.py costs                # Show cost analysis
-python main.py vibes                # Show vibe options
-python main.py run-scout <feature>  # Test Scout agent
-```
-
-## Next Steps
-
-1. 📖 **[CLI Reference](/docs/docs/cli)** - All 11 commands documented
-2. 🤖 **[AI Agents](/docs/agents)** - Meet your 7 AI agents
-3. 🏯 **[Binh Pháp Strategy](/docs/docs/binh-phap)** - Win-without-fighting approach
-4. 💰 **[ROI Calculator](/roi-calculator)** - Calculate your savings
-
-## Common Questions
-
-**Q: Does it work with my tech stack?**
-A: Mekong-CLI is Python-based and stack-agnostic. It automates agency operations, not code generation.
-
-**Q: What if I want code generation features?**
-A: Install AgencyOS in AgencyOS IDE IDE for `/cook`, `/plan`, `/fix` commands.
-
-**Q: Do I need API keys?**
-A: For basic features, no. For advanced (Gemini, ElevenLabs), yes.
+*   📖 **[Architecture Guide](/docs/architecture/top-tier-repos)**: Deep dive into the patterns.
+*   🧘 **[Vibe Manual](/docs/getting-started/introduction)**: Master the mindset.
 
 ---
 
-**You just set up agency automation in 15 minutes.** Traditional tools can't do that.
-
-**Ready to automate?** Your AI team is waiting.
-
----
-
-## 🏯 Binh Pháp Alignment
-
-> **軍爭篇** (Quân Tranh) - Speed - Quick execution
-
-### Zero-Effort Commands
-
-| Gõ lệnh | Auto-execute |
-|---------|--------------|
-| `/init` | Tự setup AgencyOS |
-| `/plan` | Tự tạo plan |
-| `/ship` | Tự deploy |
-
-📖 [Xem tất cả Commands](/docs/commands)
+**Congratulations!** You are now an AgencyOS Architect. 🏯

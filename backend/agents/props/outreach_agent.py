@@ -3,11 +3,11 @@ Outreach Agent - Media Relations & Pitching
 Manages media contacts and automated pitch sequences.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
-from enum import Enum
 import random
+from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
+from typing import Dict, Optional
 
 
 class ContactType(Enum):
@@ -29,6 +29,7 @@ class PitchStatus(Enum):
 @dataclass
 class MediaContact:
     """Media contact for outreach"""
+
     id: str
     name: str
     outlet: str
@@ -42,6 +43,7 @@ class MediaContact:
 @dataclass
 class Pitch:
     """Outreach pitch"""
+
     id: str
     contact_id: str
     subject: str
@@ -51,7 +53,7 @@ class Pitch:
     opened_at: Optional[datetime] = None
     replied_at: Optional[datetime] = None
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
@@ -60,14 +62,14 @@ class Pitch:
 class OutreachAgent:
     """
     Outreach Agent - Quan hệ Báo chí
-    
+
     Responsibilities:
     - Manage media contacts
     - Generate pitch templates
     - Track pitch status
     - Follow-up automation
     """
-    
+
     # Pitch templates
     TEMPLATES = {
         "product_launch": """
@@ -114,87 +116,70 @@ Key points:
 Có phù hợp với editorial calendar của bạn không?
 
 Thanks,
-"""
+""",
     }
-    
+
     def __init__(self):
         self.name = "Outreach"
         self.status = "ready"
         self.contacts: Dict[str, MediaContact] = {}
         self.pitches: Dict[str, Pitch] = {}
-        
+
     def add_contact(
-        self,
-        name: str,
-        outlet: str,
-        email: str,
-        contact_type: ContactType,
-        beat: str
+        self, name: str, outlet: str, email: str, contact_type: ContactType, beat: str
     ) -> MediaContact:
         """Add a media contact"""
-        contact_id = f"contact_{len(self.contacts)+1}"
-        
+        contact_id = f"contact_{len(self.contacts) + 1}"
+
         contact = MediaContact(
             id=contact_id,
             name=name,
             outlet=outlet,
             email=email,
             contact_type=contact_type,
-            beat=beat
+            beat=beat,
         )
-        
+
         self.contacts[contact_id] = contact
         return contact
-    
+
     def generate_pitch(
-        self,
-        contact_id: str,
-        template: str = "product_launch",
-        subject: str = "Mekong-CLI Launch"
+        self, contact_id: str, template: str = "product_launch", subject: str = "Mekong-CLI Launch"
     ) -> Pitch:
         """Generate pitch from template"""
         if contact_id not in self.contacts:
             raise ValueError(f"Contact not found: {contact_id}")
-            
+
         contact = self.contacts[contact_id]
         template_body = self.TEMPLATES.get(template, self.TEMPLATES["product_launch"])
-        
-        body = template_body.format(
-            name=contact.name,
-            outlet=contact.outlet,
-            subject=subject
-        )
-        
-        pitch_id = f"pitch_{int(datetime.now().timestamp())}_{random.randint(100,999)}"
-        pitch = Pitch(
-            id=pitch_id,
-            contact_id=contact_id,
-            subject=subject,
-            body=body
-        )
-        
+
+        body = template_body.format(name=contact.name, outlet=contact.outlet, subject=subject)
+
+        pitch_id = f"pitch_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
+        pitch = Pitch(id=pitch_id, contact_id=contact_id, subject=subject, body=body)
+
         self.pitches[pitch_id] = pitch
         return pitch
-    
+
     def send_pitch(self, pitch_id: str) -> Pitch:
         """Mark pitch as sent"""
         if pitch_id not in self.pitches:
             raise ValueError(f"Pitch not found: {pitch_id}")
-            
+
         pitch = self.pitches[pitch_id]
         pitch.status = PitchStatus.SENT
         pitch.sent_at = datetime.now()
-        
+
         # Update contact last_contacted
         if pitch.contact_id in self.contacts:
             self.contacts[pitch.contact_id].last_contacted = datetime.now()
-            
+
         return pitch
-    
+
     def get_stats(self) -> Dict:
         """Get outreach statistics"""
         pitches = list(self.pitches.values())
-        
+
         return {
             "total_contacts": len(self.contacts),
             "total_pitches": len(pitches),
@@ -202,45 +187,45 @@ Thanks,
             "opened": len([p for p in pitches if p.status == PitchStatus.OPENED]),
             "replied": len([p for p in pitches if p.status == PitchStatus.REPLIED]),
             "covered": len([p for p in pitches if p.status == PitchStatus.COVERED]),
-            "response_rate": "25%"  # Mock
+            "response_rate": "25%",  # Mock
         }
 
 
 # Demo
 if __name__ == "__main__":
     agent = OutreachAgent()
-    
+
     print("📰 Outreach Agent Demo\n")
-    
+
     # Add contacts
     contact1 = agent.add_contact(
         name="Ngọc Anh",
         outlet="TechInAsia Vietnam",
         email="ngocanh@techinasia.com",
         contact_type=ContactType.JOURNALIST,
-        beat="Startups, AI"
+        beat="Startups, AI",
     )
-    
+
     contact2 = agent.add_contact(
         name="Minh Tuấn",
         outlet="GDG Saigon",
         email="tuan@gdg.vn",
         contact_type=ContactType.PARTNER,
-        beat="Developer events"
+        beat="Developer events",
     )
-    
+
     print(f"👤 Added: {contact1.name} ({contact1.outlet})")
     print(f"👤 Added: {contact2.name} ({contact2.outlet})")
-    
+
     # Generate pitch
     pitch = agent.generate_pitch(contact1.id, "product_launch")
     print(f"\n📧 Generated Pitch: {pitch.subject}")
     print(f"   Preview: {pitch.body[:80]}...")
-    
+
     # Send
     agent.send_pitch(pitch.id)
     print(f"✅ Status: {pitch.status.value}")
-    
+
     # Stats
     print("\n📊 Stats:")
     stats = agent.get_stats()

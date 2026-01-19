@@ -3,13 +3,14 @@ Pytest Configuration for Backend Tests
 Agency OS v2.0 - WIN-WIN-WIN Testing
 """
 
-import pytest
 import asyncio
 from typing import Generator
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
+import pytest
 
 # ========== Async Fixtures ==========
+
 
 @pytest.fixture(scope="session")
 def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -20,6 +21,7 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
 
 
 # ========== Mock Fixtures ==========
+
 
 @pytest.fixture
 def mock_llm_response():
@@ -40,6 +42,7 @@ def mock_async_client():
 
 
 # ========== Sample Data Fixtures ==========
+
 
 @pytest.fixture
 def sample_lead():
@@ -80,9 +83,12 @@ def sample_meeting():
 
 # ========== WIN-WIN-WIN Verification ==========
 
+
 @pytest.fixture
 def win_check():
     """Helper to verify WIN-WIN-WIN outcomes in tests."""
+
     def check(owner_benefit: str, agency_benefit: str, startup_benefit: str) -> bool:
         return all([owner_benefit, agency_benefit, startup_benefit])
+
     return check

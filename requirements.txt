@@ -18,11 +18,17 @@ httpx>=0.24.0
 python-dotenv>=1.0.0
 python-multipart>=0.0.6
 
+# Payments
+braintree>=4.0.0
+
 # Configuration
 pydantic-settings>=2.0.0
 
 # Database (optional)
-# supabase>=2.0.0
+supabase>=2.0.0
+
+# AI SDKs
+google-genai>=0.3.0
 
 # Testing (optional)
 # pytest>=7.0.0

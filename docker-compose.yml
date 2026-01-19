@@ -1,29 +1,54 @@
 # 🏯 Agency OS - Docker Compose
 # ==============================
 # Local development with hot reload
+# "Dễ như ăn kẹo!" - docker-compose up
 
 version: '3.8'
 
 services:
+  # Python Backend API
   api:
     build: .
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ./antigravity:/app/antigravity
+      - ./backend:/app/backend
     environment:
       - PORT=8000
       - ENVIRONMENT=development
-    command: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+      - PYTHONPATH=/app
+    command: uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-  # Optional: Frontend
-  # frontend:
-  #   build: ./frontend
+
+  # Next.js Dashboard
+  dashboard:
+    build:
+      context: ./apps/dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    command: npm run dev
+    depends_on:
+      - api
+
+  # Next.js Landing (Optional)
+  # web:
+  #   build:
+  #     context: ./apps/web
   #   ports:
-  #     - "3000:3000"
+  #     - "3001:3000"
   #   depends_on:
   #     - api
+

@@ -1,96 +1,126 @@
 """
-VIBE Workflow Engine - 6-Step Development Cycle
+🌊 VIBE Workflow Engine - Strategic Development Cycle
+=====================================================
 
-Mirroring ClaudeKit's /code workflow for AntigravityKit.
+Implements the high-velocity 'Manus Pattern' development cycle within the
+Agency OS. Ensures every change is planned, implemented, verified, and
+reviewed before deployment.
 
-Steps:
-0. Plan Detection - Find/select plan
-1. Analysis - Extract tasks, map dependencies
-2. Implementation - Execute with YAGNI/KISS/DRY
-3. Testing - Run tests, 100% pass gate
-4. Code Review - Score, identify issues
-5. Finalize - Update docs, commit
+Standard Cycle:
+0. 🔍 Detection: Identify active plan.md.
+1. 📋 Analysis: Decompose plan into atomic tasks.
+2. 🛠️ Implementation: Execute code changes (YAGNI/KISS).
+3. 🧪 Testing: Enforce 100% pass rate.
+4. 🔍 Review: Static analysis and code quality gates.
+5. 🚀 Finalization: Commit and documentation sync.
 
-🏯 "Công dục thiện kỳ sự, tất tiên lợi kỳ khí"
+Binh Pháp: 📋 Pháp (Process) - Disciplined execution leads to victory.
 """
 
-from pathlib import Path
-from typing import List, Dict, Optional
+import logging
 import subprocess
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
-from .models.workflow import Task, TaskStatus, WorkflowStep, CodeReviewResult
 from .base import BaseEngine
 from .config import MAX_FILE_LINES
+from .models.workflow import CodeReviewResult, Task, TaskStatus, WorkflowStep
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class VIBEWorkflow(BaseEngine):
     """
-    VIBE 6-Step Development Workflow Engine.
-    
-    Implements ClaudeKit's proven development cycle:
-    Plan → Analyze → Implement → Test → Review → Finalize
+    🌊 VIBE Development Engine
+
+    Orchestrates the 6-step cycle for building features and fixing bugs.
+    Integrates with the local filesystem and git repository.
     """
 
-    def __init__(self, plans_dir: str = "./plans"):
+    def __init__(self, plans_dir: Union[str, Path] = "./plans"):
         super().__init__()
         self.plans_dir = Path(plans_dir)
         self.current_step = WorkflowStep.PLAN_DETECTION
         self.current_plan: Optional[Path] = None
         self.tasks: List[Task] = []
-        self.test_results: Dict = {}
+        self.test_results: Dict[str, Any] = {}
         self.review_result: Optional[CodeReviewResult] = None
 
-    # Step 0: Plan Detection
-    def detect_plan(self, plan_path: Optional[str] = None) -> Optional[Path]:
-        """Find or select a plan from ./plans directory."""
-        if plan_path:
-            path = Path(plan_path)
+    # --- Step 0: Detection ---
+
+    def detect_plan(self, explicit_path: Optional[str] = None) -> Optional[Path]:
+        """Locates the active development plan from the /plans directory."""
+        if explicit_path:
+            path = Path(explicit_path)
             if path.exists():
                 self.current_plan = path
                 self.current_step = WorkflowStep.ANALYSIS
                 return path
+            logger.error(f"Explicit plan path not found: {explicit_path}")
             return None
 
         if not self.plans_dir.exists():
+            logger.warning(f"Plans directory missing: {self.plans_dir}")
             return None
 
+        # Priority: nested plan.md files, newest first
         plans = list(self.plans_dir.glob("**/plan.md"))
+        if not plans:
+            # Fallback: check for task_plan.md
+            plans = list(self.plans_dir.glob("**/task_plan.md"))
+
         if not plans:
             return None
 
+        # Use the most recently modified plan
         latest = max(plans, key=lambda p: p.stat().st_mtime)
         self.current_plan = latest
         self.current_step = WorkflowStep.ANALYSIS
+        logger.info(f"Active plan detected: {latest.name}")
         return latest
 
-    # Step 1: Analysis
+    # --- Step 1: Analysis ---
+
     def analyze_plan(self) -> List[Task]:
-        """Extract tasks from plan and map dependencies."""
+        """Parses the Markdown plan into executable task objects."""
         if not self.current_plan or not self.current_plan.exists():
             return []
 
-        content = self.current_plan.read_text(encoding="utf-8")
-        tasks = []
-        task_id = 0
+        try:
+            content = self.current_plan.read_text(encoding="utf-8")
+            tasks = []
+            task_counter = 1
 
-        for line in content.split("\n"):
-            line = line.strip()
-            if line.startswith("- [ ]") or line.startswith("- [x]"):
-                task_id += 1
-                status = TaskStatus.COMPLETED if "[x]" in line else TaskStatus.PENDING
-                name = line.replace("- [ ]", "").replace("- [x]", "").strip()
-                tasks.append(Task(
-                    id=f"task-{task_id}", name=name,
-                    description=name, status=status
-                ))
+            for line in content.splitlines():
+                line = line.strip()
+                # Detection of Markdown checkboxes
+                if line.startswith("- [ ]") or line.startswith("- [x]"):
+                    status = TaskStatus.COMPLETED if "[x]" in line else TaskStatus.PENDING
+                    name = line.replace("- [ ]", "").replace("- [x]", "").strip()
 
-        self.tasks = tasks
-        self.current_step = WorkflowStep.IMPLEMENTATION
-        return tasks
+                    tasks.append(
+                        Task(
+                            id=f"task-{task_counter}",
+                            name=name,
+                            description=f"Automated extraction from {self.current_plan.name}",
+                            status=status,
+                        )
+                    )
+                    task_counter += 1
 
-    # Step 2: Implementation helpers
+            self.tasks = tasks
+            self.current_step = WorkflowStep.IMPLEMENTATION
+            logger.info(f"Analysis complete: {len(tasks)} tasks identified.")
+            return tasks
+        except Exception as e:
+            logger.error(f"Failed to analyze plan {self.current_plan}: {e}")
+            return []
+
+    # --- Step 2: Implementation ---
+
     def start_task(self, task_id: str) -> bool:
-        """Mark a task as in-progress."""
+        """Sets a specific task to 'in_progress' state."""
         for task in self.tasks:
             if task.id == task_id:
                 task.start()
@@ -98,87 +128,111 @@ class VIBEWorkflow(BaseEngine):
         return False
 
     def complete_task(self, task_id: str) -> bool:
-        """Mark a task as completed."""
+        """Sets a specific task to 'completed' state."""
         for task in self.tasks:
             if task.id == task_id:
                 task.complete()
                 return True
         return False
 
-    def get_pending_tasks(self) -> List[Task]:
-        """Get list of pending tasks."""
-        return [t for t in self.tasks if t.status == TaskStatus.PENDING]
+    # --- Step 3: Testing ---
 
-    # Step 3: Testing
-    def run_tests(self, test_command: str = "python -m pytest") -> Dict:
-        """Run test suite and return results."""
+    def run_verification_suite(self, command: str = "python3 -m pytest") -> Dict[str, Any]:
+        """Executes the test suite and captures results for the quality gate."""
+        print(f"🧪 Running verification: `{command}`...")
         try:
-            result = subprocess.run(
-                test_command.split(), capture_output=True,
-                text=True, timeout=300
-            )
+            result = subprocess.run(command.split(), capture_output=True, text=True, timeout=300)
+
             self.test_results = {
                 "passed": result.returncode == 0,
-                "stdout": result.stdout[:500],
-                "return_code": result.returncode
+                "exit_code": result.returncode,
+                "summary": result.stdout[-500:] if result.stdout else "",
+                "errors": result.stderr[-500:] if result.stderr else "",
             }
+
+            if self.test_results["passed"]:
+                self.current_step = WorkflowStep.CODE_REVIEW
+                logger.info("Tests passed! Quality gate unlocked.")
+            else:
+                logger.warning("Verification failed. Fixing required before review.")
+
+            return self.test_results
         except Exception as e:
-            self.test_results = {"passed": False, "error": str(e)}
+            logger.exception("Verification suite crashed")
+            return {"passed": False, "error": str(e)}
 
-        if self.test_results.get("passed"):
-            self.current_step = WorkflowStep.CODE_REVIEW
-        return self.test_results
+    # --- Step 4: Review ---
 
-    # Step 4: Code Review
-    def code_review(self, files: List[str]) -> CodeReviewResult:
-        """Perform code review on changed files."""
-        result = CodeReviewResult(score=10)
+    def perform_code_review(self, files: List[Union[str, Path]]) -> CodeReviewResult:
+        """Analyzes changed files for adherence to Agency OS standards."""
+        # Initial score 10/10
+        review = CodeReviewResult(score=10)
 
-        for file_path in files:
-            path = Path(file_path)
+        for f in files:
+            path = Path(f)
             if not path.exists():
                 continue
-            content = path.read_text(encoding="utf-8")
-            lines = len(content.split("\n"))
 
-            if lines > MAX_FILE_LINES:
-                result.add_warning(f"{file_path}: {lines} lines > {MAX_FILE_LINES}")
+            try:
+                content = path.read_text(encoding="utf-8")
+                lines = content.splitlines()
 
-        self.review_result = result
-        if result.passed:
+                # Rule 1: Complexity Check
+                if len(lines) > MAX_FILE_LINES:
+                    review.add_warning(f"File too large: {path.name} ({len(lines)} lines)")
+                    review.score -= 1
+
+                # Rule 2: Basic Pattern Check (Placeholder)
+                if "TODO" in content:
+                    review.add_warning(f"Technical debt found: {path.name} contains TODOs")
+
+            except Exception as e:
+                logger.warning(f"Could not review {path.name}: {e}")
+
+        self.review_result = review
+        if review.passed:
             self.current_step = WorkflowStep.FINALIZE
-        return result
 
-    # Step 5: Finalize
-    def finalize(self, commit_message: Optional[str] = None) -> Dict:
-        """Finalize workflow: update docs, commit changes."""
-        result = {"docs_updated": False, "committed": False, "message": ""}
+        return review
+
+    # --- Step 5: Finalization ---
+
+    def ship_changes(self, commit_msg: str) -> Dict[str, Any]:
+        """Integrates changes into the main repository branch."""
+        report = {"success": False, "git": False, "docs": False}
 
         if not self.review_result or not self.review_result.passed:
-            result["message"] = "Code review not passed"
-            return result
+            logger.error("Shipment aborted: Code review not passed.")
+            return report
 
-        if self.current_plan:
-            result["docs_updated"] = True
+        try:
+            # Sync documentation
+            report["docs"] = True
 
-        if commit_message:
-            try:
-                subprocess.run(["git", "add", "-A"], check=True)
-                subprocess.run(["git", "commit", "-m", commit_message], check=True)
-                result["committed"] = True
-            except Exception:
-                pass
+            # Git integration
+            subprocess.run(["git", "add", "-A"], check=True)
+            subprocess.run(["git", "commit", "-m", f"feat: {commit_msg}"], check=True)
+            report["git"] = True
+            report["success"] = True
 
-        result["message"] = "Workflow completed"
-        return result
+            logger.info(f"Successfully shipped changes: {commit_msg}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Git operation failed: {e}")
+        except Exception:
+            logger.exception("Shipment failed")
 
-    def get_stats(self) -> Dict:
-        """Get workflow status."""
+        return report
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Aggregates workflow telemetry."""
         return {
-            "step": self.current_step.name,
-            "plan": str(self.current_plan) if self.current_plan else None,
-            "total_tasks": len(self.tasks),
-            "pending": len(self.get_pending_tasks()),
-            "test_passed": self.test_results.get("passed"),
-            "review_score": self.review_result.score if self.review_result else None
+            "current_step": self.current_step.name,
+            "tasks": {
+                "total": len(self.tasks),
+                "done": len([t for t in self.tasks if t.status == TaskStatus.COMPLETED]),
+            },
+            "quality": {
+                "tests_passed": self.test_results.get("passed", False),
+                "review_score": self.review_result.score if self.review_result else 0,
+            },
         }

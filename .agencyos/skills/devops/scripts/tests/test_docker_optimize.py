@@ -5,7 +5,6 @@ Run with: pytest test_docker_optimize.py -v
 """
 
 import pytest
-import json
 from pathlib import Path
 import sys
 

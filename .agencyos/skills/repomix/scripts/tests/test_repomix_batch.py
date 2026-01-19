@@ -9,8 +9,7 @@ import sys
 import json
 import subprocess
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open, MagicMock
-import pytest
+from unittest.mock import Mock, patch
 
 # Add parent directory to path to import the module
 sys.path.insert(0, str(Path(__file__).parent.parent))

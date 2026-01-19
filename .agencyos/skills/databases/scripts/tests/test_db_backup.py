@@ -4,7 +4,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, call
+from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
@@ -127,7 +127,7 @@ class TestBackupManager:
         manager = BackupManager("mongodb", temp_backup_dir)
 
         with patch('shutil.make_archive') as mock_archive, \
-             patch('shutil.rmtree') as mock_rmtree:
+             patch('shutil.rmtree'):
 
             backup_info = manager.create_backup(
                 "mongodb://localhost",

@@ -1,38 +1,34 @@
 """
-SalesPipeline - Startup client CRM and deal tracking.
+🧲 SalesPipeline - High-Growth Client Management
+================================================
 
-Features:
-- Deal stage tracking (Warrior → General → Tướng Quân)
-- Revenue forecasting by tier
-- WIN-WIN-WIN alignment check
+Orchestrates the acquisition and relationship management of startup clients.
+Enforces engagement tiers (Warrior → General → Tướng Quân) and tracks
+aggregate portfolio value including equity and success fees.
 
-🏯 Binh Pháp: Tướng (General) - Leadership and Command
+Binh Pháp: 🧲 Thế Trận (Strategic Configuration) - Building momentum through partnerships.
 """
 
+import logging
 from datetime import datetime
-from typing import List, Dict
+from typing import Any, Dict, List, Union
 
-from .models.deal import StartupDeal, DealStage
-from .models.win_check import WinCheck
-from .config import DealTier, TIER_PRICING, get_tier_pricing
 from .base import BaseEngine
+from .config import DealTier
+from .models.deal import DealStage, StartupDeal
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class SalesPipeline(BaseEngine):
     """
-    Startup client CRM and deal tracking.
-    
-    Example:
-        pipeline = SalesPipeline()
-        deal = pipeline.create_deal(
-            startup_name="HealthTech VN",
-            founder_name="Nguyen Van A",
-            tier=DealTier.WARRIOR
-        )
-        pipeline.check_win_win_win(deal, "Equity", "Cash", "Strategy")
+    🧲 Startup CRM & Deal Engine
+
+    The strategic cockpit for managing the agency's most valuable partnerships.
     """
 
-    def __init__(self, data_dir: str = ".antigravity"):
+    def __init__(self, data_dir: str = ".antigravity/crm"):
         super().__init__(data_dir)
         self.deals: List[StartupDeal] = []
         self._next_id = 1
@@ -42,121 +38,115 @@ class SalesPipeline(BaseEngine):
         startup_name: str,
         founder_name: str = "",
         email: str = "",
-        tier: DealTier = DealTier.WARRIOR
+        tier: Union[DealTier, str] = DealTier.WARRIOR,
     ) -> StartupDeal:
-        """Create a new startup deal with tier pricing."""
+        """Initializes a new opportunity in the pipeline."""
+        if isinstance(tier, str):
+            try:
+                tier = DealTier(tier.lower())
+            except ValueError:
+                tier = DealTier.WARRIOR
+
         deal = StartupDeal(
             id=self._next_id,
             startup_name=startup_name,
             founder_name=founder_name,
             email=email,
-            tier=tier
+            tier=tier,
         )
         self.deals.append(deal)
         self._next_id += 1
+        logger.info(f"Deal registered: {startup_name} ({tier.value})")
         return deal
 
-    def qualify_deal(
-        self,
-        deal: StartupDeal,
-        funding_target: float = 0.0,
-        valuation: float = 0.0
-    ) -> StartupDeal:
-        """Qualify deal with funding and valuation data."""
-        deal.funding_target = funding_target
-        deal.valuation = valuation
-        deal.stage = DealStage.DISCOVERY
+    def advance_stage(self, deal_id: int, new_stage: Union[DealStage, str]) -> StartupDeal:
+        """Moves a deal to the next phase of the engagement lifecycle."""
+        deal = self._find_deal(deal_id)
+
+        if isinstance(new_stage, str):
+            new_stage = DealStage(new_stage.lower())
+
+        deal.stage = new_stage
+        if not deal.is_active():
+            deal.closed_at = datetime.now()
+
+        logger.debug(f"Deal #{deal_id} advanced to {new_stage.value}")
         return deal
 
-    def check_win_win_win(
-        self,
-        deal: StartupDeal,
-        anh_win: str,
-        agency_win: str,
-        startup_win: str
-    ) -> WinCheck:
-        """Check WIN-WIN-WIN alignment before proceeding."""
-        check = WinCheck(
-            anh_win=anh_win,
-            agency_win=agency_win,
-            startup_win=startup_win
-        )
-        check.validate()
-        return check
+    def close_deal(self, deal_id: int, won: bool = True) -> StartupDeal:
+        """Terminates the sales cycle with a WON or LOST outcome."""
+        stage = DealStage.CLOSED_WON if won else DealStage.CLOSED_LOST
+        return self.advance_stage(deal_id, stage)
 
-    def advance_stage(self, deal: StartupDeal, stage: DealStage) -> StartupDeal:
-        """Move deal to next stage."""
-        deal.stage = stage
-        return deal
-
-    def close_deal(self, deal: StartupDeal, won: bool = True) -> StartupDeal:
-        """Close a deal as won or lost."""
-        deal.stage = DealStage.CLOSED_WON if won else DealStage.CLOSED_LOST
-        deal.closed_at = datetime.now()
-        return deal
-
-    def upgrade_tier(self, deal: StartupDeal, new_tier: DealTier) -> StartupDeal:
-        """Upgrade startup to higher tier."""
-        deal.tier = new_tier
-        pricing = get_tier_pricing(new_tier)
-        deal.retainer_monthly = pricing["retainer"]
-        deal.equity_percent += sum(pricing["equity_range"]) / 2
-        deal.success_fee_percent = pricing["success_fee"]
+    def _find_deal(self, deal_id: int) -> StartupDeal:
+        """Helper to locate a deal in the active roster."""
+        deal = next((d for d in self.deals if d.id == deal_id), None)
+        if not deal:
+            raise ValueError(f"Deal ID {deal_id} not found in pipeline.")
         return deal
 
     def get_active_deals(self) -> List[StartupDeal]:
-        """Get all active (non-closed) deals."""
+        """Returns all deals currently in negotiation or discovery."""
         return [d for d in self.deals if d.is_active()]
 
-    def get_pipeline_by_tier(self) -> Dict[str, List[StartupDeal]]:
-        """Group active deals by tier."""
-        result = {tier.value: [] for tier in DealTier}
-        for deal in self.get_active_deals():
-            result[deal.tier.value].append(deal)
-        return result
+    def get_pipeline_breakdown(self) -> Dict[str, Any]:
+        """Calculates aggregate financial metrics for the current pipeline."""
+        active = self.get_active_deals()
+        won = [d for d in self.deals if d.is_won()]
 
-    def get_total_arr(self) -> float:
-        """Calculate total ARR from won deals."""
-        return sum(
-            d.get_annual_retainer() for d in self.deals
-            if d.is_won()
-        )
-
-    def get_portfolio_equity_value(self) -> float:
-        """Calculate total equity value across portfolio."""
-        return sum(
-            d.get_equity_value() for d in self.deals
-            if d.is_won()
-        )
-
-    def get_pending_success_fees(self) -> float:
-        """Calculate potential success fees from active deals."""
-        return sum(
-            d.get_success_fee() for d in self.get_active_deals()
-        )
-
-    def forecast_annual_revenue(self) -> Dict:
-        """Forecast annual revenue from all streams."""
         return {
-            "retainer_arr": self.get_total_arr(),
-            "equity_value": self.get_portfolio_equity_value(),
-            "pending_fees": self.get_pending_success_fees(),
-            "total_projected": (
-                self.get_total_arr() +
-                self.get_portfolio_equity_value() +
-                self.get_pending_success_fees()
-            )
+            "funnel": {
+                "active_count": len(active),
+                "won_count": len(won),
+                "conversion_rate": (len(won) / len(self.deals) * 100) if self.deals else 0,
+            },
+            "financials": {
+                "current_arr": sum(d.get_annual_retainer() for d in won),
+                "equity_paper_value": sum(d.get_equity_value() for d in won),
+                "potential_success_fees": sum(d.get_success_fee_value() for d in active),
+            },
         }
 
-    def get_stats(self) -> Dict:
-        """Get pipeline statistics."""
+    def get_stats(self) -> Dict[str, Any]:
+        """Engine-standard performance statistics."""
+        breakdown = self.get_pipeline_breakdown()
         return {
             "total_deals": len(self.deals),
-            "active_deals": len(self.get_active_deals()),
-            "won_deals": len([d for d in self.deals if d.is_won()]),
-            "total_arr": self.get_total_arr(),
-            "equity_value": self.get_portfolio_equity_value(),
-            "pipeline_by_tier": {
-                k: len(v) for k, v in self.get_pipeline_by_tier().items()
-            }
+            "active_deals": breakdown["funnel"]["active_count"],
+            "won_deals": breakdown["funnel"]["won_count"],
+            "total_arr": breakdown["financials"]["current_arr"],
+            "equity_value": breakdown["financials"]["equity_paper_value"],
+            "pipeline_by_tier": self._group_by_tier(self.deals),
         }
+
+    def _group_by_tier(self, deals: List[StartupDeal]) -> Dict[str, int]:
+        """Helper to count deals per engagement tier."""
+        counts = {tier.value: 0 for tier in DealTier}
+        for d in deals:
+            counts[d.tier.value] += 1
+        return counts
+
+    def print_pipeline_report(self):
+        """Visualizes the full startup sales funnel."""
+        stats = self.get_stats()
+        f = self.get_pipeline_breakdown()["financials"]
+
+        print("\n" + "═" * 65)
+        print("║" + "🧲 STARTUP SALES PIPELINE - STRATEGIC OVERVIEW".center(63) + "║")
+        print("═" * 65)
+
+        print(f"\n  🏆 PORTFOLIO VALUE: $ {(f['current_arr'] + f['equity_paper_value']):,.0f} USD")
+        print(f"     └─ Cash ARR:     ${f['current_arr']:,.0f}")
+        print(f"     └─ Equity Value: ${f['equity_paper_value']:,.0f}")
+
+        print("\n  📂 PIPELINE STATUS:")
+        for tier_id, count in stats["pipeline_by_tier"].items():
+            print(f"     • {tier_id.upper():<12} : {count} deals")
+
+        print("\n" + "─" * 65)
+        print(f"  🚀 SUCCESS FEES PENDING: ${f['potential_success_fees']:,.0f} USD")
+        print("═" * 65 + "\n")
+
+
+# Global Interface
+sales_pipeline = SalesPipeline()

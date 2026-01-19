@@ -1,0 +1,75 @@
+# 🏯 6 Autonomous Crews - AgencyOS
+# Multi-agent orchestration configs
+
+crews:
+  # 1. Revenue Crew
+  revenue:
+    name: "Revenue Crew"
+    agents:
+      - type: "mrr-tracker"
+        goal: "Track MRR growth"
+      - type: "churn-detector"
+        goal: "Identify churn risks"
+      - type: "upsell-finder"
+        goal: "Find upsell opportunities"
+    schedule: "0 9 * * *"  # Daily 9am
+
+  # 2. Growth Crew
+  growth:
+    name: "Growth Crew"
+    agents:
+      - type: "lead-scorer"
+        goal: "Score incoming leads"
+      - type: "outreach-bot"
+        goal: "Automate outreach"
+      - type: "content-scheduler"
+        goal: "Schedule content"
+    schedule: "0 8 * * 1-5"  # Weekdays 8am
+
+  # 3. Operations Crew
+  operations:
+    name: "Operations Crew"
+    agents:
+      - type: "task-prioritizer"
+        goal: "Prioritize daily tasks"
+      - type: "deadline-watcher"
+        goal: "Watch deadlines"
+      - type: "resource-allocator"
+        goal: "Allocate resources"
+    schedule: "0 7 * * *"  # Daily 7am
+
+  # 4. Quality Crew
+  quality:
+    name: "Quality Crew"
+    agents:
+      - type: "code-reviewer"
+        goal: "Review PRs"
+      - type: "test-runner"
+        goal: "Run test suites"
+      - type: "debt-scanner"
+        goal: "Scan tech debt"
+    schedule: "0 0 * * 0"  # Sundays
+
+  # 5. Intelligence Crew
+  intelligence:
+    name: "Intelligence Crew"
+    agents:
+      - type: "market-watcher"
+        goal: "Watch market trends"
+      - type: "competitor-tracker"
+        goal: "Track competitors"
+      - type: "insight-generator"
+        goal: "Generate insights"
+    schedule: "0 6 * * 1"  # Mondays 6am
+
+  # 6. Support Crew
+  support:
+    name: "Support Crew"
+    agents:
+      - type: "ticket-router"
+        goal: "Route support tickets"
+      - type: "faq-responder"
+        goal: "Auto-respond FAQs"
+      - type: "escalation-handler"
+        goal: "Handle escalations"
+    schedule: "*/30 * * * *"  # Every 30min

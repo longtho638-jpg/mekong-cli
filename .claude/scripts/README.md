@@ -2,6 +2,37 @@
 
 Centralized utility scripts for Claude Code skills.
 
+---
+
+## 🏯 AgencyOS Unified Bridge (NEW)
+
+Master entry point for all AgencyOS bridges. **"Dễ như ăn kẹo!"**
+
+### Quick Start
+```bash
+# Check status
+node .claude/scripts/agencyos-bridge.cjs status
+
+# Ask Gemini
+node .claude/scripts/agencyos-bridge.cjs gemini ask "Your question"
+
+# Git worktree
+node .claude/scripts/agencyos-bridge.cjs git create my-feature
+
+# Show help
+node .claude/scripts/agencyos-bridge.cjs help
+```
+
+### Features
+| Feature | Description |
+|---------|-------------|
+| 🔄 Rate Limiting | 15 requests/minute (shared) |
+| ♻️ Auto Retry | Exponential backoff |
+| 📊 Status Dashboard | Unified monitoring |
+| 🎯 Single Entry | 1 command for all |
+
+---
+
 ## Installation
 
 Install required dependencies:

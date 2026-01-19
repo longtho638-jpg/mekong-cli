@@ -172,7 +172,7 @@ def convert_file(
         return True
 
     try:
-        result = subprocess.run(
+        subprocess.run(
             cmd,
             stdout=subprocess.PIPE if not verbose else None,
             stderr=subprocess.PIPE if not verbose else None,

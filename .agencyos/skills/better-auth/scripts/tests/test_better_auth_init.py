@@ -8,13 +8,13 @@ Target: >80% coverage
 import sys
 import pytest
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open, MagicMock
+from unittest.mock import patch
 from io import StringIO
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from better_auth_init import BetterAuthInit, EnvConfig, main
+from better_auth_init import BetterAuthInit, main
 
 
 @pytest.fixture

@@ -1,7 +1,9 @@
 from fastapi import APIRouter
+
 from backend.api.schemas import CommandRequest
 
 router = APIRouter(prefix="/api/commands", tags=["Mekong Commands"])
+
 
 @router.post("/khach-hang")
 async def cmd_khach_hang(request: CommandRequest):
@@ -11,8 +13,9 @@ async def cmd_khach_hang(request: CommandRequest):
         "section": "§1 Customer Profile",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "buyer_personas"
+        "output_format": "buyer_personas",
     }
+
 
 @router.post("/ke-hoach-kinh-doanh")
 async def cmd_ke_hoach_kinh_doanh(request: CommandRequest):
@@ -22,8 +25,9 @@ async def cmd_ke_hoach_kinh_doanh(request: CommandRequest):
         "section": "§2 Business Plan",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "business_model_canvas"
+        "output_format": "business_model_canvas",
     }
+
 
 @router.post("/nghien-cuu-thi-truong")
 async def cmd_nghien_cuu_thi_truong(request: CommandRequest):
@@ -33,8 +37,9 @@ async def cmd_nghien_cuu_thi_truong(request: CommandRequest):
         "section": "§3 Market Research",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "tam_sam_som"
+        "output_format": "tam_sam_som",
     }
+
 
 @router.post("/nhan-dien-thuong-hieu")
 async def cmd_nhan_dien_thuong_hieu(request: CommandRequest):
@@ -44,8 +49,9 @@ async def cmd_nhan_dien_thuong_hieu(request: CommandRequest):
         "section": "§4 Brand Identity",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "brand_guidelines"
+        "output_format": "brand_guidelines",
     }
+
 
 @router.post("/thong-diep-tiep-thi")
 async def cmd_thong_diep_tiep_thi(request: CommandRequest):
@@ -55,8 +61,9 @@ async def cmd_thong_diep_tiep_thi(request: CommandRequest):
         "section": "§5 Marketing Message",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "usp_cta"
+        "output_format": "usp_cta",
     }
+
 
 @router.post("/ke-hoach-tiep-thi")
 async def cmd_ke_hoach_tiep_thi(request: CommandRequest):
@@ -66,8 +73,9 @@ async def cmd_ke_hoach_tiep_thi(request: CommandRequest):
         "section": "§6 Marketing Plan",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "plg_strategy"
+        "output_format": "plg_strategy",
     }
+
 
 @router.post("/noi-dung-tiep-thi")
 async def cmd_noi_dung_tiep_thi(request: CommandRequest):
@@ -77,8 +85,9 @@ async def cmd_noi_dung_tiep_thi(request: CommandRequest):
         "section": "§7 Marketing Content",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "website_landing_copy"
+        "output_format": "website_landing_copy",
     }
+
 
 @router.post("/y-tuong-social-media")
 async def cmd_y_tuong_social_media(request: CommandRequest):
@@ -88,8 +97,9 @@ async def cmd_y_tuong_social_media(request: CommandRequest):
         "section": "§8 Social Media",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "50_ideas_5_pillars"
+        "output_format": "50_ideas_5_pillars",
     }
+
 
 @router.post("/chien-luoc-ban-hang")
 async def cmd_chien_luoc_ban_hang(request: CommandRequest):
@@ -99,8 +109,9 @@ async def cmd_chien_luoc_ban_hang(request: CommandRequest):
         "section": "§9 Sales Strategy",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "gtm_channels"
+        "output_format": "gtm_channels",
     }
+
 
 @router.post("/ke-hoach-pr")
 async def cmd_ke_hoach_pr(request: CommandRequest):
@@ -110,8 +121,9 @@ async def cmd_ke_hoach_pr(request: CommandRequest):
         "section": "§10 PR Plan",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "strategic_partners"
+        "output_format": "strategic_partners",
     }
+
 
 @router.post("/ke-hoach-tang-truong")
 async def cmd_ke_hoach_tang_truong(request: CommandRequest):
@@ -121,8 +133,9 @@ async def cmd_ke_hoach_tang_truong(request: CommandRequest):
         "section": "§11 Growth Plan",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "bullseye_viral"
+        "output_format": "bullseye_viral",
     }
+
 
 @router.post("/nong-san")
 async def cmd_nong_san(request: CommandRequest):
@@ -132,8 +145,9 @@ async def cmd_nong_san(request: CommandRequest):
         "section": "Local Market",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "price_analysis"
+        "output_format": "price_analysis",
     }
+
 
 @router.post("/ban-hang")
 async def cmd_ban_hang(request: CommandRequest):
@@ -143,8 +157,9 @@ async def cmd_ban_hang(request: CommandRequest):
         "section": "Sales Ops",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "funnel_optimization"
+        "output_format": "funnel_optimization",
     }
+
 
 @router.post("/tiep-thi")
 async def cmd_tiep_thi(request: CommandRequest):
@@ -154,5 +169,5 @@ async def cmd_tiep_thi(request: CommandRequest):
         "section": "Marketing Ops",
         "status": "processing",
         "prompt": request.prompt,
-        "output_format": "campaign_automation"
+        "output_format": "campaign_automation",
     }

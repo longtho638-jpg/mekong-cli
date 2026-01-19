@@ -1,13 +1,16 @@
-from fastapi import APIRouter, HTTPException
-from backend.api.schemas import VibeRequest
-import sys
 import os
+import sys
+
+from fastapi import APIRouter, HTTPException
+
+from backend.api.schemas import VibeRequest
 
 # Ensure core is reachable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 try:
-    from core.vibe_tuner import VibeTuner, VibeRegion
+    from core.growth.vibe_tuner import VibeRegion, VibeTuner
+
     vibe_tuner = VibeTuner()
     VIBE_AVAILABLE = True
 except ImportError:
@@ -16,16 +19,15 @@ except ImportError:
 
 router = APIRouter(prefix="/api/vibes", tags=["Vibe Tuner"])
 
+
 @router.get("")
 async def get_vibes():
     """List all available vibes"""
     if not VIBE_AVAILABLE:
         return {"error": "Vibe Tuner not available"}
-        
-    return {
-        "vibes": VibeTuner.list_vibes(),
-        "current": vibe_tuner.current_vibe.value
-    }
+
+    return {"vibes": VibeTuner.list_vibes(), "current": vibe_tuner.current_vibe.value}
+
 
 @router.post("/set")
 async def set_vibe(request: VibeRequest):
@@ -42,10 +44,10 @@ async def set_vibe(request: VibeRequest):
             "config": {
                 "tone": tuner.config.tone,
                 "style": tuner.config.style,
-                "local_words": tuner.suggest_local_words(5)
-            }
+                "local_words": tuner.suggest_local_words(5),
+            },
         }
-    
+
     # Set by region ID
     try:
         region = VibeRegion(request.region)
@@ -55,11 +57,12 @@ async def set_vibe(request: VibeRequest):
             "config": {
                 "tone": config.tone,
                 "style": config.style,
-                "local_words": config.local_words[:5]
-            }
+                "local_words": config.local_words[:5],
+            },
         }
     except ValueError:
         raise HTTPException(status_code=400, detail=f"Unknown vibe: {request.region}")
+
 
 @router.get("/prompt")
 async def get_vibe_prompt(context: str = ""):
@@ -69,5 +72,5 @@ async def get_vibe_prompt(context: str = ""):
 
     return {
         "vibe": vibe_tuner.current_vibe.value,
-        "system_prompt": vibe_tuner.get_system_prompt(context)
+        "system_prompt": vibe_tuner.get_system_prompt(context),
     }

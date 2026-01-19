@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@import './tokens/md-ref-palette.css';
+@import './tokens/md-sys-color.css';
+@import './tokens/md-sys-shape.css';
+@import './tokens/md-sys-typescale.css';
+@import './tokens/md-sys-elevation.css';
+@import './tokens/md-sys-motion.css';
+@import './tokens/md-sys-state.css';
+
+/* M3 Utility Classes (Tailwind-like but Native) */
+.m3-display-large {
+  font-family: var(--md-sys-typescale-display-large-font);
+  font-weight: var(--md-sys-typescale-display-large-weight);
+  font-size: var(--md-sys-typescale-display-large-size);
+  line-height: var(--md-sys-typescale-display-large-line-height);
+}
+
+.m3-headline-large {
+  font-family: var(--md-sys-typescale-headline-large-font);
+  font-weight: var(--md-sys-typescale-headline-large-weight);
+  font-size: var(--md-sys-typescale-headline-large-size);
+  line-height: var(--md-sys-typescale-headline-large-line-height);
+}
+
+.m3-label-large {
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  font-size: var(--md-sys-typescale-label-large-size);
+  line-height: var(--md-sys-typescale-label-large-line-height);
+}
+
+.m3-surface {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.m3-surface-container {
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+}

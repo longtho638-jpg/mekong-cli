@@ -1,26 +1,37 @@
 """
-ProposalGenerator - Professional Proposal Builder.
+📄 ProposalGenerator - Professional Proposal Builder
+===================================================
+
+Automates the creation of high-impact strategic proposals based on the
+13-Chapter Binh Pháp framework. Ensures all documents are professionally
+formatted and reflect the Agency OS core values.
 
 Features:
-- Binh Pháp 13-chapter structured proposals
-- WIN-WIN-WIN alignment verification
-- Tiered pricing templates
-- Markdown & PDF export
+- Markdown-based Templating: Ready for PDF export.
+- WIN-WIN-WIN Alignment: Visualizes value for all parties.
+- Localized Messaging: Vietnamese-first executive summaries.
+- Persistence: Tracks all generated proposals.
 
-🏯 Binh Pháp: "Bất chiến nhi khuất nhân chi binh" - Win without fighting
+Binh Pháp: 📄 Kế (Strategy) - Creating the map before the march.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from .base import BaseEngine
-from .money_maker import Quote, ServiceTier, BINH_PHAP_PRICING, TIER_PRICING
+from .money_maker import Quote, ServiceTier
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 @dataclass
 class Proposal:
-    """Client proposal."""
+    """A generated client-ready proposal document."""
+
     id: int
     client_name: str
     client_contact: str
@@ -31,10 +42,11 @@ class Proposal:
     status: str = "draft"
 
 
-PROPOSAL_TEMPLATE = '''# 📜 Proposal for {client_name}
+PROPOSAL_TEMPLATE = """# 📜 Strategic Proposal: {client_name}
 
-> **{agency_name}** | {date}
-> Valid until: {valid_until}
+> **Engagement Tier:** {tier_label}
+> **Prepared by {agency_name}** | {date}
+> Proposal ID: #{proposal_id:04d} | Valid until: {valid_until}
 
 ---
 
@@ -42,285 +54,204 @@ PROPOSAL_TEMPLATE = '''# 📜 Proposal for {client_name}
 
 Chào **{client_contact}**,
 
-Cảm ơn anh/chị đã tin tưởng **{agency_name}**. Dưới đây là đề xuất hợp tác theo phương pháp **Binh Pháp WIN-WIN-WIN** - đảm bảo cả hai bên cùng thắng.
+Cảm ơn Anh đã tin tưởng và kết nối cùng **{agency_name}**. Dựa trên mục tiêu tăng trưởng của Anh, chúng tôi đề xuất lộ trình hợp tác theo phương pháp **Binh Pháp WIN-WIN-WIN** - đảm bảo sự bền vững và đột phá cho cả hai bên.
 
 ---
 
-## 📦 Service Package
+## 📦 Giải Pháp Chiến Lược (Strategic Modules)
 
-| Chapter | Service | Description | Price |
-|---------|---------|-------------|-------|
+Chúng tôi đã lựa chọn các module Binh Pháp tối ưu nhất cho giai đoạn này:
+
+| Module | Dịch Vụ | Chi Tiết | Đầu Tư |
+|--------|---------|----------|--------|
 {service_table}
 
 ---
 
-## 💰 Pricing Breakdown
+## 💰 Cơ Cấu Hợp Tác (Engagement Model)
 
-### One-Time Investment
-| Item | Amount |
-|------|--------|
-| Project Services | ${project_total:,.0f} |
+### 1. Đầu Tư Ban Đầu (One-Time)
+| Hạng mục | Giá trị |
+|----------|---------|
+| Tổng các Module thực thi | ${project_total:,.0f} |
 
-### Recurring Investment
-| Item | Amount |
-|------|--------|
-| Monthly Retainer | ${monthly_retainer:,.0f}/month |
-| Duration | 6 months minimum |
+### 2. Đồng Hành Hàng Tháng (Retainer)
+| Hạng mục | Giá trị |
+|----------|---------|
+| Phí quản lý & vận hành | ${monthly_retainer:,.0f}/tháng |
+| Thời hạn tối thiểu | 06 tháng |
 
-### Equity Alignment
-| Component | Value |
-|-----------|-------|
-| Equity Stake | {equity_percent:.1f}% |
-| Success Fee | {success_fee:.1f}% of funding round |
+### 3. Chia Sẻ Thành Quả (Equity & Success)
+| Hạng mục | Tỷ lệ |
+|----------|-------|
+| Cổ phần chiến lược (Equity) | {equity_percent:.1f}% |
+| Phí thành công (Success Fee) | {success_fee:.1f}% của vòng gọi vốn tiếp theo |
 
-**Total Year 1 Value: ${total_year1:,.0f}**
+**Ước tính giá trị năm đầu tiên: ${total_year1:,.0f}**
 
 ---
 
-## 🏯 WIN-WIN-WIN Alignment
+## 🏯 WIN-WIN-WIN Alignment Check
 
-Theo triết lý Binh Pháp, mọi deal phải tạo giá trị cho cả 3 bên:
+Mọi sự hợp tác tại Agency OS đều phải vượt qua bài kiểm tra "Tam Thắng":
 
-### 👑 Your WIN (Client)
+### 👑 WIN Của Anh (Client)
 {client_win}
 
-### 🏢 Our WIN (Agency)
+### 🏢 WIN Của Agency
 {agency_win}
 
-### 🎯 Aligned WIN
+### 🎯 OWNER WIN (Sự Gắn Kết)
 {owner_win}
 
-**Alignment Score: {alignment_score}/100** {alignment_emoji}
+**Điểm Cân Bằng (Alignment Score): {alignment_score}/100** {alignment_emoji}
 
 {warnings_section}
 
 ---
 
-## 📋 Terms & Timeline
+## 📋 Điều Khoản & Lộ Trình
 
-### Payment Terms
-- 50% upfront upon signing
-- 50% upon project completion
-- Monthly retainer billed on the 1st
+### Thanh Toán
+- 50% Ngay sau khi ký hợp đồng.
+- 50% Sau khi hoàn thành các module chiến lược.
+- Retainer hàng tháng thanh toán vào ngày 05 mỗi tháng.
 
-### Timeline
-| Phase | Duration |
-|-------|----------|
-| Discovery | Week 1 |
-| Strategy | Week 2-3 |
-| Execution | Week 4+ |
-
-### What's Included
-{services_included}
+### Lộ Trình Thực Thi
+- **Tuần 1:** Khám phá (Discovery) & Thiết lập DNA.
+- **Tuần 2-3:** Xây dựng Moat & Huấn luyện AI Agents.
+- **Tuần 4+:** Triển khai đa kênh & Tăng trưởng.
 
 ---
 
-## ✍️ Next Steps
+## ✍️ Bước Tiếp Theo
 
-1. **Review** this proposal
-2. **Schedule** a call to discuss any questions
-3. **Sign** the agreement
-4. **Start** our journey to success
+1. **Phản hồi:** Anh vui lòng xem qua và cho ý kiến về các module đề xuất.
+2. **Hợp đồng:** Chúng tôi sẽ gửi bản thảo hợp đồng điện tử sau khi thống nhất.
+3. **Kích hoạt:** Bắt đầu hành trình chinh phục cột mốc mới.
 
 ---
 
 > 🏯 **"Bất chiến nhi khuất nhân chi binh"**
-> *Win without fighting - We succeed when you succeed*
+> *Thắng mà không cần đánh - Chúng tôi chỉ thắng khi Anh thắng.*
 
 **{agency_name}**
-Phone: {agency_phone}
+Zalo/Phone: {agency_phone}
 Email: {agency_email}
-
----
-
-*Proposal ID: #{proposal_id:04d} | Generated: {date}*
-'''
+"""
 
 
 class ProposalGenerator(BaseEngine):
     """
-    Professional Proposal Builder.
-    
-    Example:
-        pg = ProposalGenerator()
-        proposal = pg.generate_proposal(quote, "John Doe")
-        print(proposal.markdown_content)
+    🏢 Proposal Generation Engine
+
+    Transforms financial quotes into high-conversion strategic documents.
     """
 
     def __init__(self, data_dir: str = ".antigravity"):
         super().__init__(data_dir)
         self.proposals: List[Proposal] = []
         self._next_id = 1
-        
-        # Agency defaults (can be configured)
-        self.agency_name = "NovaAgency"
-        self.agency_phone = "+84 123 456 789"
-        self.agency_email = "hello@novaagency.vn"
 
-    def configure_agency(
-        self,
-        name: str,
-        phone: str = "",
-        email: str = ""
-    ):
-        """Configure agency details."""
+        # Agency context (Ideally loaded from AgencyDNA)
+        self.agency_name = "Agency OS Partner"
+        self.agency_phone = "+84 900 000 000"
+        self.agency_email = "hq@agencyos.network"
+
+    def set_agency_context(self, name: str, phone: str, email: str):
+        """Overrides default agency contact info."""
         self.agency_name = name
-        if phone:
-            self.agency_phone = phone
-        if email:
-            self.agency_email = email
+        self.agency_phone = phone
+        self.agency_email = email
 
     def generate_proposal(
-        self,
-        quote: Quote,
-        client_contact: str,
-        custom_template: Optional[str] = None
+        self, quote: Quote, client_contact: str, template_override: Optional[str] = None
     ) -> Proposal:
-        """
-        Generate full proposal from quote.
-        
-        Args:
-            quote: Quote object from MoneyMaker
-            client_contact: Contact person name
-            custom_template: Optional custom Markdown template
-        """
+        """Hydrates the proposal template with quote data."""
         from .money_maker import MoneyMaker
-        
+
         mm = MoneyMaker()
         win3 = mm.validate_win3(quote)
-        
-        # Build service table
-        service_rows = []
-        for svc in quote.services:
-            price_str = f"${svc['price']:,}"
-            if svc.get("recurring"):
-                price_str += "/mo"
-            elif svc.get("quarterly"):
-                price_str += "/qtr"
-            service_rows.append(
-                f"| {svc['chapter']}️⃣ {svc['name']} | {svc['service']} | - | {price_str} |"
-            )
-        
-        # Calculate year 1 total
-        total_year1 = quote.total_amount + (quote.recurring_monthly * 12)
-        
-        # Services included list
-        services_included = "\n".join([
-            f"- ✅ {svc['service']}" for svc in quote.services
-        ])
-        
-        # Warnings section
-        warnings_section = ""
+
+        # Build Table Rows
+        rows = []
+        for s in quote.services:
+            p_tag = f"${s['price']:,}" + ("/mo" if s.get("recurring") else "")
+            rows.append(f"| {s['chapter']} | {s['name']} | {s['label']} | {p_tag} |")
+
+        total_y1 = quote.one_time_total + (quote.monthly_retainer * 12)
+
+        # Format Warning Section
+        warn_md = ""
         if win3.warnings:
-            warnings_section = "\n> [!WARNING]\n> " + "\n> ".join(win3.warnings)
-        
-        # Generate content
-        template = custom_template or PROPOSAL_TEMPLATE
-        content = template.format(
+            warn_md = "\n> [!CAUTION]\n> " + "\n> ".join(win3.warnings)
+
+        content = (template_override or PROPOSAL_TEMPLATE).format(
             client_name=quote.client_name,
             client_contact=client_contact,
+            tier_label=quote.tier.value.upper(),
             agency_name=self.agency_name,
             agency_phone=self.agency_phone,
             agency_email=self.agency_email,
             date=datetime.now().strftime("%Y-%m-%d"),
             valid_until=(datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d"),
-            service_table="\n".join(service_rows),
-            project_total=quote.total_amount,
-            monthly_retainer=quote.recurring_monthly,
+            service_table="\n".join(rows),
+            project_total=quote.one_time_total,
+            monthly_retainer=quote.monthly_retainer,
             equity_percent=quote.equity_percent,
             success_fee=quote.success_fee_percent,
-            total_year1=total_year1,
-            client_win=f"- {len(quote.services)} premium services\n- ${quote.total_amount:,.0f} project value\n- Strategic growth support",
-            agency_win=f"- ${quote.recurring_monthly:,.0f}/month recurring\n- {quote.success_fee_percent:.1f}% success alignment\n- Portfolio diversification",
-            owner_win=f"- {quote.equity_percent:.1f}% equity upside\n- Sustainable cash flow\n- Long-term partnership",
-            alignment_score=win3.alignment_score,
+            total_year1=total_y1,
+            client_win=f"- Nhận {len(quote.services)} module chiến lược cao cấp\n- Giá trị dự án thực tế ${quote.one_time_total:,.0f}\n- Đội ngũ AI Agent vận hành 24/7",
+            agency_win=f"- Dòng tiền ổn định ${quote.monthly_retainer:,.0f}/tháng\n- Cam kết phí thành công {quote.success_fee_percent:.1f}%\n- Xây dựng Portfolio uy tín",
+            owner_win=f"- Upside từ cổ phần {quote.equity_percent:.1f}%\n- Quan hệ đối tác chiến lược dài hạn\n- Legacy vững chắc",
+            alignment_score=win3.score,
             alignment_emoji="✅" if win3.is_valid else "⚠️",
-            warnings_section=warnings_section,
-            services_included=services_included,
-            proposal_id=self._next_id
+            warnings_section=warn_md,
+            proposal_id=self._next_id,
         )
-        
+
         proposal = Proposal(
             id=self._next_id,
             client_name=quote.client_name,
             client_contact=client_contact,
             quote=quote,
-            markdown_content=content
+            markdown_content=content,
         )
-        
+
         self.proposals.append(proposal)
         self._next_id += 1
+        logger.info(f"Proposal generated for {quote.client_name} (ID: {proposal.id})")
         return proposal
 
-    def quick_proposal(
+    def quick_launch(
         self,
         client_name: str,
-        client_contact: str,
+        contact: str,
         chapter_ids: List[int],
-        tier: ServiceTier = ServiceTier.WARRIOR
+        tier: Union[ServiceTier, str] = ServiceTier.WARRIOR,
     ) -> Proposal:
-        """
-        Generate proposal in one step.
-        
-        Args:
-            client_name: Company name
-            client_contact: Contact person
-            chapter_ids: Binh Pháp chapters (1-13)
-            tier: Service tier
-        """
+        """One-call quote and proposal generation."""
         from .money_maker import MoneyMaker
-        
+
         mm = MoneyMaker()
         quote = mm.generate_quote(client_name, chapter_ids, tier)
-        return self.generate_proposal(quote, client_contact)
+        return self.generate_proposal(quote, contact)
 
-    def get_chapter_menu(self) -> str:
-        """Get formatted chapter selection menu."""
-        lines = [
-            "📜 **Select Chapters for Proposal**\n",
-            "| # | Chapter | Service | Price |",
-            "|---|---------|---------|-------|",
-        ]
-        
-        for cid, info in BINH_PHAP_PRICING.items():
-            price_str = f"${info['price']:,}"
-            if info.get("recurring"):
-                price_str += "/mo"
-            elif info.get("quarterly"):
-                price_str += "/qtr"
-            lines.append(f"| {cid} | {info['name']} | {info['service']} | {price_str} |")
-        
-        lines.extend([
-            "",
-            "**Tiers:**",
-            "- 🗡️ WARRIOR (Pre-Seed): $2K/mo + 5-8% equity",
-            "- ⚔️ GENERAL (Series A): $5K/mo + 3-5% equity", 
-            "- 🏯 TƯỚNG QUÂN (Studio): Deferred + 15-30% equity",
-        ])
-        
-        return "\n".join(lines)
+    def save_to_file(self, proposal: Proposal, output_dir: str = "proposals") -> Path:
+        """Exports the proposal to a Markdown file."""
+        out_path = Path(output_dir)
+        out_path.mkdir(parents=True, exist_ok=True)
 
-    def save_proposal(self, proposal: Proposal, filepath: str = "") -> str:
-        """Save proposal to Markdown file."""
-        if not filepath:
-            filepath = f"proposal_{proposal.id:04d}_{proposal.client_name.replace(' ', '_')}.md"
-        
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(proposal.markdown_content)
-        
-        return filepath
+        slug = proposal.client_name.lower().replace(" ", "_")
+        filename = f"proposal_{proposal.id:03d}_{slug}.md"
+        full_path = out_path / filename
 
-    def get_stats(self) -> Dict:
-        """Get proposal statistics."""
+        full_path.write_text(proposal.markdown_content, encoding="utf-8")
+        return full_path
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Insight into proposal volume and conversion values."""
         return {
-            "total_proposals": len(self.proposals),
-            "total_value": sum(p.quote.total_amount for p in self.proposals),
-            "avg_deal_size": (
-                sum(p.quote.total_amount for p in self.proposals) / len(self.proposals)
-                if self.proposals else 0
-            ),
-            "by_tier": {
-                tier.value: sum(1 for p in self.proposals if p.quote.tier == tier)
-                for tier in ServiceTier
-            }
+            "volume": len(self.proposals),
+            "pipeline_value_usd": sum(p.quote.one_time_total for p in self.proposals),
         }

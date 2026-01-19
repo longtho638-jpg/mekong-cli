@@ -6,12 +6,13 @@ Central repository for all agency-wide constants, niches, and configurations.
 "Biết người biết ta, trăm trận không nguy."
 """
 
-from typing import Dict, List, Tuple, Any
 from enum import Enum
+from typing import Dict, List, Tuple
 
 # --- App Metadata ---
 APP_NAME = "🌊 MEKONG-CLI"
 APP_VERSION = "2.5.0"
+
 
 # --- Industry Niches ---
 class Niche(Enum):
@@ -26,6 +27,7 @@ class Niche(Enum):
     AUTOMOTIVE = "automotive"
     EDUCATION = "education"
 
+
 NICHES: Dict[str, str] = {
     "1": Niche.RICE_TRADING.value,
     "2": Niche.FISH_SEAFOOD.value,
@@ -36,7 +38,7 @@ NICHES: Dict[str, str] = {
     "7": Niche.RESTAURANTS.value,
     "8": Niche.BEAUTY_SPA.value,
     "9": Niche.AUTOMOTIVE.value,
-    "10": Niche.EDUCATION.value
+    "10": Niche.EDUCATION.value,
 }
 
 NICHE_DESCRIPTIONS: List[str] = [
@@ -49,7 +51,7 @@ NICHE_DESCRIPTIONS: List[str] = [
     "🍜 restaurants (Nhà Hàng)",
     "💅 beauty-spa (Thẩm Mỹ Viện)",
     "🚗 automotive (Ô Tô)",
-    "📚 education (Trung Tâm Học)"
+    "📚 education (Trung Tâm Học)",
 ]
 
 # --- Cultural Vibes ---
@@ -70,9 +72,24 @@ AGENTS_CORE = [
 ]
 
 AGENTS_MEKONG = [
-    {"name": "Market Analyst", "role": "Phân tích giá nông sản ĐBSCL", "status": "Ready", "icon": "📊"},
-    {"name": "Zalo Integrator", "role": "Tích hợp Zalo OA/Mini App", "status": "Ready", "icon": "💬"},
-    {"name": "Local Copywriter", "role": "Viết content giọng địa phương", "status": "Ready", "icon": "🎤"},
+    {
+        "name": "Market Analyst",
+        "role": "Phân tích giá nông sản ĐBSCL",
+        "status": "Ready",
+        "icon": "📊",
+    },
+    {
+        "name": "Zalo Integrator",
+        "role": "Tích hợp Zalo OA/Mini App",
+        "status": "Ready",
+        "icon": "💬",
+    },
+    {
+        "name": "Local Copywriter",
+        "role": "Viết content giọng địa phương",
+        "status": "Ready",
+        "icon": "🎤",
+    },
 ]
 
 # --- Provider Costs (Token Pricing) ---
@@ -88,5 +105,5 @@ PROVIDERS_COSTS = [
 MCP_PACKAGES = [
     "@anthropic/mcp-server-filesystem",
     "@anthropic/mcp-server-fetch",
-    "@anthropic/mcp-server-playwright"
+    "@anthropic/mcp-server-playwright",
 ]

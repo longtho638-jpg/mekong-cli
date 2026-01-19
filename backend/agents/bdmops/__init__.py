@@ -3,12 +3,23 @@ BDMOps Agents Package
 Partnership + Opportunity Pipeline
 """
 
-from .partnership_agent import PartnershipAgent, Partner, PartnerType, PartnerStatus
-from .opportunity_pipeline_agent import OpportunityPipelineAgent, Opportunity, OpportunityStage, OpportunityType
+from .opportunity_pipeline_agent import (
+    Opportunity,
+    OpportunityPipelineAgent,
+    OpportunityStage,
+    OpportunityType,
+)
+from .partnership_agent import Partner, PartnershipAgent, PartnerStatus, PartnerType
 
 __all__ = [
     # Partnership
-    "PartnershipAgent", "Partner", "PartnerType", "PartnerStatus",
+    "PartnershipAgent",
+    "Partner",
+    "PartnerType",
+    "PartnerStatus",
     # Opportunity Pipeline
-    "OpportunityPipelineAgent", "Opportunity", "OpportunityStage", "OpportunityType",
+    "OpportunityPipelineAgent",
+    "Opportunity",
+    "OpportunityStage",
+    "OpportunityType",
 ]

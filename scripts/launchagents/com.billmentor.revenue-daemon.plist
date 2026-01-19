@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.billmentor.revenue-daemon</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/solo_revenue_daemon.py</string>
+        <string>run</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/macbookprom1/mekong-cli</string>
+    
+    <!-- Run every hour -->
+    <key>StartInterval</key>
+    <integer>3600</integer>
+    
+    <!-- Also run at specific times -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <!-- 9 AM - Lead generation -->
+        <dict>
+            <key>Hour</key>
+            <integer>9</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <!-- 10 AM - Outreach -->
+        <dict>
+            <key>Hour</key>
+            <integer>10</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <!-- 11 AM - Follow-ups -->
+        <dict>
+            <key>Hour</key>
+            <integer>11</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <!-- 6 PM - Daily report -->
+        <dict>
+            <key>Hour</key>
+            <integer>18</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/revenue-daemon.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/revenue-daemon-error.log</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/macbookprom1/mekong-cli</string>
+    </dict>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>

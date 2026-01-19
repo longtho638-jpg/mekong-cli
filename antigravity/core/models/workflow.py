@@ -1,17 +1,33 @@
 """
-Workflow models for VIBEWorkflow.
+🌊 Workflow Models - The Development Cycle
+==========================================
 
-Extracted from vibe_workflow.py for clean architecture.
+Defines the data structures for orchestrating the high-velocity 'Manus Pattern'
+development cycle. Tracks individual tasks, workflow stages, and code
+quality metrics.
+
+Hierarchy:
+- WorkflowStep: The 6 phases of the build cycle.
+- TaskStatus: Operational states of a work unit.
+- Task: A discrete executable component of a plan.
+- CodeReviewResult: The quality scorecard for deployments.
+
+Binh Pháp: 📋 Pháp (Process) - Maintaining the order of the build.
 """
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class WorkflowStep(Enum):
-    """6-step development workflow."""
+    """The standard 6-step cycle for building Agency OS features."""
+
     PLAN_DETECTION = 0
     ANALYSIS = 1
     IMPLEMENTATION = 2
@@ -21,7 +37,8 @@ class WorkflowStep(Enum):
 
 
 class TaskStatus(Enum):
-    """Task status states."""
+    """Execution states for individual work units."""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -31,77 +48,95 @@ class TaskStatus(Enum):
 
 @dataclass
 class Task:
-    """A single task in the workflow."""
+    """
+    🛠️ Build Task
+
+    A single identifiable unit of work extracted from a strategic plan.
+    """
+
     id: str
     name: str
     description: str
-    status: TaskStatus = TaskStatus.PENDING
-    step: WorkflowStep = WorkflowStep.IMPLEMENTATION
+    status: TaskStatus = field(default=TaskStatus.PENDING)
+    step: WorkflowStep = field(default=WorkflowStep.IMPLEMENTATION)
     dependencies: List[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None
 
+    def start(self) -> None:
+        """Transitions task to active development."""
+        self.status = TaskStatus.IN_PROGRESS
+        logger.debug(f"Task started: {self.name} ({self.id})")
+
     def complete(self) -> None:
-        """Mark task as completed."""
+        """Transitions task to completion and records time."""
         self.status = TaskStatus.COMPLETED
         self.completed_at = datetime.now()
+        logger.debug(f"Task completed: {self.name}")
 
-    def start(self) -> None:
-        """Mark task as in progress."""
-        self.status = TaskStatus.IN_PROGRESS
-
-    def block(self, reason: str = "") -> None:
-        """Mark task as blocked."""
+    def block(self, reason: str = "Unknown") -> None:
+        """Marks task as blocked and appends reason to description."""
         self.status = TaskStatus.BLOCKED
         self.description = f"{self.description} [BLOCKED: {reason}]"
+        logger.warning(f"Task blocked: {self.id} | Reason: {reason}")
 
-    def is_done(self) -> bool:
-        """Check if task is completed."""
-        return self.status == TaskStatus.COMPLETED
+    def get_duration_minutes(self) -> float:
+        """Calculates total processing time."""
+        if self.created_at and self.completed_at:
+            return (self.completed_at - self.created_at).total_seconds() / 60
+        return 0.0
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
             "id": self.id,
             "name": self.name,
-            "description": self.description,
             "status": self.status.value,
-            "step": self.step.value,
-            "dependencies": self.dependencies,
-            "created_at": self.created_at.isoformat(),
-            "completed_at": self.completed_at.isoformat() if self.completed_at else None
+            "phase": self.step.name,
+            "performance": {
+                "created": self.created_at.isoformat(),
+                "done": self.completed_at.isoformat() if self.completed_at else None,
+                "duration_min": round(self.get_duration_minutes(), 1),
+            },
         }
 
 
 @dataclass
 class CodeReviewResult:
-    """Code review scoring result."""
-    score: int  # 0-10
+    """
+    🔍 Code Review Scorecard
+
+    Captures the results of static analysis and quality checks.
+    Acts as the final gatekeeper before deployment (SHIP).
+    """
+
+    score: int = 10  # Start with perfect score
     critical_issues: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     suggestions: List[str] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
-        """Check if review passed (no critical issues, score >= 7)."""
+        """Returns True if no critical issues found and score is acceptable."""
         return len(self.critical_issues) == 0 and self.score >= 7
 
     def add_critical(self, issue: str) -> None:
-        """Add critical issue."""
+        """Registers a blocking issue and significantly reduces the score."""
         self.critical_issues.append(issue)
-        self.score = max(0, self.score - 2)
+        self.score = max(0, self.score - 3)
+        logger.error(f"Critical review finding: {issue}")
 
     def add_warning(self, warning: str) -> None:
-        """Add warning."""
+        """Registers a non-blocking issue and slightly reduces the score."""
         self.warnings.append(warning)
         self.score = max(0, self.score - 1)
+        logger.warning(f"Review warning: {warning}")
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation."""
         return {
+            "passed": self.passed,
             "score": self.score,
-            "critical_issues": self.critical_issues,
-            "warnings": self.warnings,
+            "gates": {"critical": self.critical_issues, "warnings": self.warnings},
             "suggestions": self.suggestions,
-            "passed": self.passed
         }

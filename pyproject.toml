@@ -1,0 +1,49 @@
+[tool.ruff]
+line-length = 100
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "dist",
+    "build",
+    "__pycache__",
+    ".agencyos",
+    ".claude",
+    ".antigravity",
+    "products",
+    "scripts/legacy",
+    "antigravity/infrastructure/distributed_queue.py",
+    "antigravity/infrastructure/opentelemetry.py",
+    "external",
+    "mekong-docs"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501", "E741", "E722", "F401"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "E402"]  # Intentional re-exports
+"cli/entrypoint.py" = ["E402"]  # Imports after app setup
+"backend/api/routers/webhooks.py" = ["E402"]
+"antigravity/core/ab_testing_engine.py" = ["F401"]  # Optional deps
+"antigravity/core/ml_optimizer.py" = ["F401"]  # Optional deps
+"core/analytics/analytics.py" = ["F401"]
+"core/monitoring/wow.py" = ["F401"]  # Import tests
+"core/portal/client_portal.py" = ["F401"]
+"core/repositories/analytics_repository.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    "products",
+    "scripts/legacy"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

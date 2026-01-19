@@ -1,49 +1,66 @@
 """
-🏯 Command Registry - Maps Core Modules to CLI Commands
+🏯 Command Registry - Suite & Agent Mapping
+===========================================
 
-This registry connects Python modules to their corresponding
-command suites and subcommands.
+The central routing table for Agency OS. It maps CLI commands to their
+backing Python modules, classes, and the ideal AI agents for execution.
 
-Usage:
-    from antigravity.core.registry import COMMAND_REGISTRY, get_command_module
+Key Hierarchies:
+- Suites: Logical groupings of business functions (Revenue, Dev, Strategy).
+- Subcommands: Specific tasks within a suite.
+- Shortcuts: One-word aliases for common operations.
+
+Binh Pháp: 💂 Pháp (Process) - Maintaining the chain of command.
 """
 
-from typing import Dict, Any, Optional
+import logging
+from typing import Any, Dict, List, Optional, Tuple
 
-# Core Module → Suite Mapping
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# ============================================================
+# COMMAND REGISTRY DEFINITION
+# ============================================================
+
 COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
-    # 💰 Revenue Suite
+    # 💰 Revenue Suite: Money and Deals
     "revenue": {
         "suite": "revenue",
-        "description": "Revenue operations",
+        "emoji": "💰",
+        "description": "Financial operations and client deals.",
         "subcommands": {
             "quote": {
                 "module": "antigravity.core.money_maker",
                 "class": "MoneyMaker",
                 "method": "generate_quote",
+                "agent": "money-maker",
             },
             "invoice": {
                 "module": "antigravity.core.revenue_engine",
                 "class": "RevenueEngine",
                 "method": "create_invoice",
+                "agent": "revenue-engine",
             },
             "proposal": {
                 "module": "antigravity.core.proposal_generator",
                 "class": "ProposalGenerator",
                 "method": "generate_proposal",
+                "agent": "copywriter",
             },
             "stats": {
-                "module": "antigravity.core.revenue_engine",
-                "class": "RevenueEngine",
+                "module": "antigravity.core.cashflow_engine",
+                "class": "CashflowEngine",
                 "method": "get_stats",
+                "agent": "revenue-engine",
             },
         },
     },
-    
-    # 🛠️ Dev Suite
+    # 🛠️ Dev Suite: Building and Shipping
     "dev": {
         "suite": "dev",
-        "description": "Development cycle",
+        "emoji": "🛠️",
+        "description": "Software development lifecycle.",
         "subcommands": {
             "cook": {
                 "module": "antigravity.core.vibe_workflow",
@@ -60,195 +77,185 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
                 "class": "VIBEWorkflow",
                 "agent": "git-manager",
             },
-            "debug": {
-                "agent": "debugger",
-            },
-            "fix": {
-                "agent": "debugger",
-            },
+            "debug": {"agent": "debugger"},
+            "fix": {"agent": "debugger"},
         },
     },
-    
-    # 🏯 Strategy Suite
+    # 🏯 Strategy Suite: Strategic Binh Pháp Planning
     "strategy": {
         "suite": "strategy",
-        "description": "Binh Pháp planning",
+        "emoji": "🏯",
+        "description": "Binh Pháp strategic analysis.",
         "subcommands": {
             "analyze": {
                 "module": "core.binh_phap",
                 "agent": "binh-phap-strategist",
             },
-            "plan": {
-                "agent": "planner",
-            },
+            "plan": {"agent": "planner"},
             "win3": {
                 "module": "antigravity.core.money_maker",
                 "class": "MoneyMaker",
                 "method": "validate_win3",
+                "agent": "deal-closer",
             },
         },
     },
-    
-    # 🧲 CRM Suite
+    # 🧲 CRM Suite: Leads and Pipeline
     "crm": {
         "suite": "crm",
-        "description": "CRM operations",
+        "emoji": "🧲",
+        "description": "Customer relationship management.",
         "subcommands": {
-            "leads": {
-                "module": "core.crm",
-                "class": "CRM",
-            },
             "pipeline": {
-                "module": "antigravity.core.sales_pipeline",
-                "class": "SalesPipeline",
-            },
-            "contacts": {
                 "module": "antigravity.core.client_magnet",
                 "class": "ClientMagnet",
+                "method": "get_pipeline_summary",
             },
             "add": {
                 "module": "antigravity.core.client_magnet",
                 "class": "ClientMagnet",
                 "method": "add_lead",
+                "agent": "client-magnet",
+            },
+            "stats": {
+                "module": "antigravity.core.client_magnet",
+                "class": "ClientMagnet",
+                "method": "get_stats",
             },
         },
     },
-    
-    # 🎨 Content Suite
+    # 🎨 Content Suite: Media and Viral Hooks
     "content": {
         "suite": "content",
-        "description": "Content creation",
+        "emoji": "🎨",
+        "description": "Scalable media production.",
         "subcommands": {
             "ideas": {
                 "module": "antigravity.core.content_factory",
                 "class": "ContentFactory",
                 "method": "generate_ideas",
+                "agent": "brainstormer",
             },
-            "write": {
-                "module": "core.content_generator",
-                "class": "ContentGenerator",
+            "draft": {
+                "module": "antigravity.core.content_factory",
+                "class": "ContentFactory",
+                "method": "create_post",
+                "agent": "copywriter",
             },
             "calendar": {
                 "module": "antigravity.core.content_factory",
                 "class": "ContentFactory",
-            },
-            "enhance": {
-                "module": "core.content_marketing",
-                "class": "ContentMarketing",
-            },
-        },
-    },
-    
-    # 📊 Analytics Suite
-    "analytics": {
-        "suite": "analytics",
-        "description": "Data & reporting",
-        "subcommands": {
-            "dashboard": {
-                "module": "core.analytics",
-                "class": "Analytics",
-            },
-            "report": {
-                "module": "core.analytics",
-                "class": "Analytics",
-                "method": "generate_report",
-            },
-            "export": {
-                "module": "core.analytics",
-                "class": "Analytics",
-                "method": "export_data",
-            },
-        },
-    },
-    
-    # 🏢 Agency Suite
-    "agency": {
-        "suite": "agency",
-        "description": "Agency management",
-        "subcommands": {
-            "dna": {
-                "module": "antigravity.core.agency_dna",
-                "class": "AgencyDNA",
-            },
-            "scorecard": {
-                "module": "core.agency_scorecard",
-                "class": "AgencyScorecard",
-            },
-            "clients": {
-                "module": "antigravity.core.client_magnet",
-                "class": "ClientMagnet",
-                "method": "get_clients",
-            },
-            "stats": {
-                "module": "core.analytics",
-                "class": "Analytics",
-            },
-        },
-    },
-    
-    # 🚀 Startup Suite
-    "startup": {
-        "suite": "startup",
-        "description": "Startup tools",
-        "subcommands": {
-            "launch": {
-                "module": "core.startup_launcher",
-                "class": "StartupLauncher",
-            },
-            "pitch": {
-                "module": "core.pitch_deck",
-                "class": "PitchDeck",
-            },
-            "deck": {
-                "module": "core.pitch_deck",
-                "class": "PitchDeck",
-                "method": "generate",
-            },
-            "vc": {
-                "module": "core.vc_hub",
-                "class": "VCHub",
+                "method": "get_calendar",
+                "agent": "content-factory",
             },
         },
     },
 }
 
 
-# Shortcut → Suite mapping
+# ============================================================
+# SHORTCUTS & ALIASES
+# ============================================================
+
 SHORTCUTS: Dict[str, str] = {
+    # Dev
     "cook": "dev:cook",
     "test": "dev:test",
     "ship": "dev:ship",
+    "fix": "dev:fix",
+    # Business
     "quote": "revenue:quote",
-    "invoice": "revenue:invoice",
-    "proposal": "revenue:proposal",
+    "cash": "revenue:stats",
+    "deal": "revenue:proposal",
+    # Strategy
     "plan": "strategy:plan",
     "binh-phap": "strategy:analyze",
-    "debug": "dev:debug",
-    "fix": "dev:fix",
+    "win3": "strategy:win3",
+    # CRM
+    "lead": "crm:add",
+    "pipe": "crm:pipeline",
 }
 
 
-def get_command_module(suite: str, subcommand: str) -> Optional[Dict[str, Any]]:
-    """Get module info for a command."""
-    if suite in COMMAND_REGISTRY:
-        subs = COMMAND_REGISTRY[suite].get("subcommands", {})
-        if subcommand in subs:
-            return subs[subcommand]
-    return None
+# ============================================================
+# REGISTRY API
+# ============================================================
 
 
-def resolve_shortcut(shortcut: str) -> Optional[str]:
-    """Resolve a shortcut to its full suite:subcommand form."""
-    return SHORTCUTS.get(shortcut)
+def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:
+    """Retrieves all configuration data for a specific command."""
+    suite_data = COMMAND_REGISTRY.get(suite.lower())
+    if not suite_data:
+        return None
+    return suite_data.get("subcommands", {}).get(sub.lower())
 
 
-def list_suites() -> list:
-    """List all available suites."""
-    return list(COMMAND_REGISTRY.keys())
+def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Normalizes command input. Supports shortcuts or 'suite:sub' format.
+    Returns: (suite, subcommand)
+    """
+    # 1. Check if it's a direct shortcut
+    if cmd_input in SHORTCUTS:
+        suite, sub = SHORTCUTS[cmd_input].split(":")
+        return suite, sub
+
+    # 2. Check if it's suite:sub format
+    if ":" in cmd_input:
+        parts = cmd_input.split(":")
+        return parts[0], parts[1]
+
+    # 3. Check if it's just a suite (default to list subcommands?)
+    if cmd_input in COMMAND_REGISTRY:
+        return cmd_input, None
+
+    return None, None
 
 
-def list_subcommands(suite: str) -> list:
-    """List all subcommands for a suite."""
-    if suite in COMMAND_REGISTRY:
-        return list(COMMAND_REGISTRY[suite].get("subcommands", {}).keys())
-    return []
+def get_agent_for_command(suite: str, sub: str) -> str:
+    """Identifies the best agent to lead a specific command."""
+    meta = get_command_metadata(suite, sub)
+    if meta and "agent" in meta:
+        return meta["agent"]
+
+    # Default fallback agents by suite
+    fallbacks = {
+        "dev": "fullstack-developer",
+        "revenue": "money-maker",
+        "strategy": "binh-phap-strategist",
+        "crm": "client-magnet",
+        "content": "content-factory",
+    }
+    return fallbacks.get(suite, "assistant")
+
+
+def list_suites() -> List[str]:
+    """Returns all available top-level command categories."""
+    return sorted(list(COMMAND_REGISTRY.keys()))
+
+
+def list_subcommands(suite: str) -> List[str]:
+    """Returns all available subcommands for a specific category."""
+    suite_data = COMMAND_REGISTRY.get(suite.lower())
+    if not suite_data:
+        return []
+    return sorted(list(suite_data.get("subcommands", {}).keys()))
+
+
+def print_command_map():
+    """Visualizes the command hierarchy for the user."""
+    print("\n" + "═" * 60)
+    print("║" + "🏯 AGENCY OS - COMMAND REGISTRY".center(58) + "║")
+    print("═" * 60)
+
+    for suite_id in list_suites():
+        s = COMMAND_REGISTRY[suite_id]
+        print(f"\n  {s['emoji']} {suite_id.upper()} - {s['description']}")
+        for sub in list_subcommands(suite_id):
+            meta = s["subcommands"][sub]
+            agent_tag = f"[{meta.get('agent', 'system')}]"
+            print(f"     └─ {sub:<15} {agent_tag}")
+
+    print("\n" + "─" * 60)
+    print("  💡 Try using shortcuts: " + ", ".join(list(SHORTCUTS.keys())[:8]) + "...")
+    print("═" * 60 + "\n")

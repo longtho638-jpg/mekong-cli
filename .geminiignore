@@ -1,0 +1,61 @@
+# Gemini CLI Ignore File
+# Prevents scanning large directories that cause API payload errors
+
+# Package managers - ALL nested directories
+**/node_modules/
+**/node_modules/**
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/pycache/
+
+# Specific large subdirectories
+mekong-docs/
+wellnexus-frontend/node_modules/
+apps/*/node_modules/
+packages/*/node_modules/
+
+# Build outputs
+**/dist/
+**/build/
+**/.next/
+**/out/
+**/coverage/
+**/.vercel/
+
+# IDE & system
+.git/
+**/.DS_Store
+**/*.log
+.idea/
+.vscode/
+
+# Large data files
+**/*.sqlite
+**/*.db
+**/*.csv
+**/*.json.bak
+**/*.min.js
+**/*.min.css
+**/*.map
+
+# Sensitive files
+.env
+.env.*
+**/*.pem
+**/*.key
+**/*.p12
+
+# Cache directories
+**/.cache/
+**/.npm/
+**/.yarn/
+**/.turbo/
+**/.parcel-cache/
+
+# Test & coverage
+**/node_modules/.cache/
+**/.nyc_output/
+**/cypress/videos/
+**/cypress/screenshots/

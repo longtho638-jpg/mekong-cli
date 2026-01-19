@@ -1,0 +1,62 @@
+-- 🏯 AgencyOS Core Schema
+-- "Hành Quân" - Organizing the data forces
+
+-- 1. CRM Module
+create table if not exists contacts (
+    id text primary key, -- UUID string from Python or Gen Random
+    name text not null,
+    email text,
+    company text,
+    phone text,
+    contact_type text default 'lead', -- lead, prospect, client
+    lead_score integer default 50,
+    tags text[],
+    notes text,
+    created_at timestamptz default now(),
+    updated_at timestamptz default now()
+);
+
+create table if not exists deals (
+    id text primary key,
+    contact_id text references contacts(id),
+    title text not null,
+    value numeric(12, 2) default 0,
+    stage text default 'qualified', -- qualified, proposal, negotiation, closed_won
+    probability integer default 20,
+    expected_close timestamptz,
+    created_at timestamptz default now()
+);
+
+-- 2. Finance Module
+create table if not exists invoices (
+    id text primary key,
+    client_id text references contacts(id),
+    client_name text,
+    currency text default 'USD',
+    status text default 'draft', -- draft, sent, paid
+    total_amount numeric(12, 2) default 0,
+    due_date timestamptz,
+    paid_at timestamptz,
+    created_at timestamptz default now()
+);
+
+create table if not exists invoice_items (
+    id uuid primary key default gen_random_uuid(),
+    invoice_id text references invoices(id) on delete cascade,
+    description text not null,
+    quantity integer default 1,
+    unit_price numeric(12, 2) default 0,
+    total numeric(12, 2) generated always as (quantity * unit_price) stored
+);
+
+-- 3. Enable RLS (Security)
+alter table contacts enable row level security;
+alter table deals enable row level security;
+alter table invoices enable row level security;
+alter table invoice_items enable row level security;
+
+-- Policy: Allow all for now (Dev Mode) - Production should lock this down
+create policy "Enable all access for anon" on contacts for all using (true);
+create policy "Enable all access for anon" on deals for all using (true);
+create policy "Enable all access for anon" on invoices for all using (true);
+create policy "Enable all access for anon" on invoice_items for all using (true);

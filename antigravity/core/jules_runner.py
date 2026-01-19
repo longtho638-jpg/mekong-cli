@@ -1,184 +1,179 @@
 """
-🤖 Jules Runner - Automated Tech Debt Cleanup
+🤖 Jules Runner - Automated Technical Debt Management
+=====================================================
 
-Run Jules tasks locally with scheduling support.
+Orchestrates automated maintenance missions using the Jules AI agent.
+Automatically schedules and executes tasks for test generation, linting,
+documentation, and dependency updates.
 
-Usage:
-    python -m antigravity.core.jules_runner --task tests
-    python -m antigravity.core.jules_runner --weekly
+Core Missions:
+- 🧪 Tests: Ensuring high coverage for new features.
+- 🖋️ Lint: Enforcing Python and TypeScript standards.
+- 📄 Docs: Keeping docstrings and READMEs synchronized.
+- 📦 Deps: Patching security vulnerabilities in dependencies.
+
+Binh Pháp: 🤖 Vô Vi (Automation) - Maintaining the army without effort.
 """
 
-import subprocess
 import argparse
+import logging
+import subprocess
 from datetime import datetime
-from typing import Optional
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
-# Jules task templates
-JULES_TASKS = {
+# Standard Jules Mission Templates
+JULES_MISSIONS = {
     "tests": {
-        "name": "Add Unit Tests",
+        "label": "Tạo Unit Tests tự động",
+        "description": "Bổ sung unit tests cho các file core mới.",
         "prompt": "add comprehensive unit tests for all new files in antigravity/core/ that don't have tests",
-        "schedule": "Monday",
+        "schedule": "Thứ Hai (Monday)",
     },
     "lint": {
-        "name": "Fix Lint Errors", 
+        "label": "Sửa lỗi Type & Lint",
+        "description": "Chuẩn hóa Python type hints và fix TS 'any' types.",
         "prompt": "fix all TypeScript any types and Python type hints in the codebase",
-        "schedule": "Wednesday",
+        "schedule": "Thứ Tư (Wednesday)",
     },
     "docs": {
-        "name": "Update Documentation",
+        "label": "Cập nhật Tài liệu (Docs)",
+        "description": "Bổ sung docstrings và hướng dẫn sử dụng module.",
         "prompt": "add docstrings to all Python functions missing documentation in antigravity/core/",
-        "schedule": "Friday",
-    },
-    "deps": {
-        "name": "Update Dependencies",
-        "prompt": "update all npm and pip dependencies to latest stable versions with security patches",
-        "schedule": "Monthly (1st)",
+        "schedule": "Thứ Sáu (Friday)",
     },
     "security": {
-        "name": "Security Scan",
+        "label": "Quét & Vá bảo mật",
+        "description": "Kiểm tra lỗ hổng npm/pip và thông tin nhạy cảm.",
         "prompt": "fix all security vulnerabilities from npm audit and scan for hardcoded secrets",
-        "schedule": "Monthly (15th)",
+        "schedule": "Hàng tháng (Ngày 15)",
     },
     "cleanup": {
-        "name": "Code Cleanup",
+        "label": "Dọn dẹp mã nguồn",
+        "description": "Xóa code thừa, imports không dùng và log rác.",
         "prompt": "remove all unused imports, dead code, and console.log statements",
-        "schedule": "Weekly",
+        "schedule": "Cuối tuần (Saturday)",
     },
 }
 
 
-def run_jules_task(task_type: str, dry_run: bool = False) -> bool:
+def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
     """
-    Run a Jules task.
-    
-    Args:
-        task_type: Type of task (tests, lint, docs, deps, security)
-        dry_run: If True, just print command without running
-    
-    Returns:
-        True if successful
+    Submits a specific maintenance mission to the Jules agent.
     """
-    if task_type not in JULES_TASKS:
-        print(f"❌ Unknown task type: {task_type}")
-        print(f"   Available: {', '.join(JULES_TASKS.keys())}")
+    if mission_id not in JULES_MISSIONS:
+        logger.error(f"Unknown mission: {mission_id}")
         return False
-    
-    task = JULES_TASKS[task_type]
-    
-    print(f"\n🤖 JULES TASK: {task['name']}")
-    print(f"   Schedule: {task['schedule']}")
-    print(f"   Prompt: {task['prompt'][:50]}...")
-    print("")
-    
-    # Build command
-    cmd = f'gemini -p "/jules {task["prompt"]}"'
-    
+
+    mission = JULES_MISSIONS[mission_id]
+
+    print(f"\n🤖 KHỞI TẠO NHIỆM VỤ JULES: {mission['label']}")
+    print(f"   Mô tả    : {mission['description']}")
+    print(f"   Lịch trình: {mission['schedule']}")
+
+    # Building the CLI command for Jules
+    cmd = f'gemini -p "/jules {mission["prompt"]}"'
+
     if dry_run:
-        print(f"   [DRY RUN] Would execute:")
+        print("\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:")
         print(f"   $ {cmd}")
         return True
-    
+
     try:
-        print(f"   Executing...")
+        print("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
+        # Timeout is long because Jules might take time to initialize the task
+        # Security: Use argument list to prevent command injection
         result = subprocess.run(
-            cmd,
-            shell=True,
+            ["gemini", "-p", f"/jules {mission['prompt']}"],
             capture_output=True,
             text=True,
-            timeout=120  # 2 min timeout for initial request
+            timeout=180,
         )
-        
+
         if result.returncode == 0:
-            print(f"   ✅ Task submitted successfully!")
-            print(f"   📋 Check status with: /jules what is the status?")
+            print("   ✅ Gửi nhiệm vụ thành công!")
+            print("   📋 Theo dõi tiến độ tại: https://jules.google.com")
             return True
         else:
-            print(f"   ❌ Error: {result.stderr}")
+            print(f"   ❌ Lỗi hệ thống: {result.stderr}")
             return False
-            
+
     except subprocess.TimeoutExpired:
-        print(f"   ⏱️ Task submitted (running in background)")
+        print("   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
         return True
-    except Exception as e:
-        print(f"   ❌ Error: {e}")
+    except Exception:
+        logger.exception("Critical failure in Jules Runner")
         return False
 
 
-def run_weekly_tasks(dry_run: bool = False):
-    """Run appropriate task based on current day."""
-    day = datetime.now().strftime("%A")
-    
-    day_map = {
-        "Monday": "tests",
-        "Tuesday": None,
-        "Wednesday": "lint",
-        "Thursday": None,
-        "Friday": "docs",
-        "Saturday": "cleanup",
-        "Sunday": None,
-    }
-    
-    task = day_map.get(day)
-    
-    if task:
-        print(f"📅 {day} - Running scheduled task: {task}")
-        return run_jules_task(task, dry_run)
-    else:
-        print(f"📅 {day} - No scheduled task")
-        return True
+def run_scheduled_maintenance(dry_run: bool = False):
+    """Identifies and runs the mission assigned to the current day."""
+    day_en = datetime.now().strftime("%A")
+
+    schedule_map = {"Monday": "tests", "Wednesday": "lint", "Friday": "docs", "Saturday": "cleanup"}
+
+    mission = schedule_map.get(day_en)
+
+    if mission:
+        print(f"📅 Hôm nay là {day_en}. Bắt đầu bảo trì định kỳ...")
+        return trigger_jules_mission(mission, dry_run)
+
+    print(f"📅 Hôm nay ({day_en}) không có lịch bảo trì định kỳ.")
+    return True
 
 
-def check_status():
-    """Check Jules task status."""
-    cmd = 'gemini -p "/jules what is the status of my tasks?"'
-    
+def check_jules_status():
+    """Queries the current status of all Jules tasks."""
+    print("🔍 Đang kiểm tra trạng thái nhiệm vụ...")
     try:
+        # Security: Use argument list to prevent command injection
         result = subprocess.run(
-            cmd,
-            shell=True,
+            ["gemini", "-p", "/jules what is the status of my tasks?"],
             capture_output=True,
             text=True,
-            timeout=60
+            timeout=60,
         )
         print(result.stdout)
     except Exception as e:
-        print(f"❌ Error checking status: {e}")
+        print(f"❌ Lỗi khi kiểm tra: {e}")
 
 
-def list_tasks():
-    """List available Jules tasks."""
-    print("\n🤖 AVAILABLE JULES TASKS")
-    print("=" * 50)
-    
-    for key, task in JULES_TASKS.items():
-        print(f"\n  {key}:")
-        print(f"    Name: {task['name']}")
-        print(f"    Schedule: {task['schedule']}")
-        print(f"    Prompt: {task['prompt'][:60]}...")
-    
-    print("\n" + "=" * 50)
+def list_mission_catalog():
+    """Displays all possible automated maintenance missions."""
+    print("\n" + "═" * 60)
+    print("║" + "🤖 DANH MỤC BẢO TRÌ TỰ ĐỘNG (JULES)".center(58) + "║")
+    print("═" * 60)
+
+    for mid, m in JULES_MISSIONS.items():
+        print(f"\n  🔹 {mid.upper()}: {m['label']}")
+        print(f"     └─ {m['description']}")
+        print(f"     └─ Lịch: {m['schedule']}")
+
+    print("\n" + "═" * 60 + "\n")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Jules Task Runner")
-    parser.add_argument("--task", "-t", help="Task type to run")
-    parser.add_argument("--weekly", action="store_true", help="Run weekly scheduled task")
-    parser.add_argument("--list", "-l", action="store_true", help="List available tasks")
-    parser.add_argument("--status", "-s", action="store_true", help="Check task status")
-    parser.add_argument("--dry-run", action="store_true", help="Print command without running")
-    
+    """CLI Interface for Jules Runner."""
+    parser = argparse.ArgumentParser(description="Agency OS - Jules Runner")
+    parser.add_argument(
+        "-m", "--mission", help="ID của nhiệm vụ cần chạy (tests, lint, docs, etc.)"
+    )
+    parser.add_argument("-a", "--auto", action="store_true", help="Chạy nhiệm vụ theo lịch hôm nay")
+    parser.add_argument("-l", "--list", action="store_true", help="Xem danh mục nhiệm vụ")
+    parser.add_argument("-s", "--status", action="store_true", help="Kiểm tra trạng thái Jules")
+    parser.add_argument("--dry", action="store_true", help="Chạy thử không thực thi")
+
     args = parser.parse_args()
-    
+
     if args.list:
-        list_tasks()
+        list_mission_catalog()
     elif args.status:
-        check_status()
-    elif args.weekly:
-        run_weekly_tasks(args.dry_run)
-    elif args.task:
-        run_jules_task(args.task, args.dry_run)
+        check_jules_status()
+    elif args.auto:
+        run_scheduled_maintenance(args.dry)
+    elif args.mission:
+        trigger_jules_mission(args.mission, args.dry)
     else:
         parser.print_help()
 

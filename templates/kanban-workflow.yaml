@@ -1,0 +1,53 @@
+# Kanban Workflow Template
+# Defines agent responsibilities and sync intervals.
+
+workflow_name: "AgencyOS Standard"
+version: "1.0"
+
+agents:
+  - name: planner
+    role: "Mưu Công"
+    responsibilities:
+      - "Analyze requirements"
+      - "Create task breakdown"
+    sync_interval_sec: 60
+
+  - name: money-maker
+    role: "Tài"
+    responsibilities:
+      - "Revenue optimization"
+      - "Pricing strategy"
+    sync_interval_sec: 300
+
+  - name: client-magnet
+    role: "Địa"
+    responsibilities:
+      - "Lead generation"
+      - "Outreach"
+    sync_interval_sec: 120
+
+  - name: fullstack-dev
+    role: "Quân Tranh"
+    responsibilities:
+      - "Implementation"
+      - "Testing"
+    sync_interval_sec: 30
+
+  - name: strategist
+    role: "Đạo"
+    responsibilities:
+      - "Alignment check"
+      - "Vibe tuning"
+    sync_interval_sec: 600
+
+  - name: jules
+    role: "Vô Vi"
+    responsibilities:
+      - "Code maintenance"
+      - "Refactoring"
+    sync_interval_sec: 300
+
+settings:
+  kanban_url: "http://localhost:3000"
+  auto_assign: true
+  notify_on_complete: true

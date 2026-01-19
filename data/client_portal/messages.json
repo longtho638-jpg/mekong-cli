@@ -1,0 +1,13 @@
+{
+  "CLI-E6C6F156": [],
+  "CLI-4BC7CF50": [
+    {
+      "id": "MSG-0d8acaf9",
+      "client_id": "CLI-4BC7CF50",
+      "sender": "agency",
+      "content": "Your project is ready for review!",
+      "timestamp": "2026-01-17T21:14:29.842420",
+      "read": false
+    }
+  ]
+}

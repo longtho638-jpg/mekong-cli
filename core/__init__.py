@@ -132,7 +132,7 @@ except ImportError:
 __all__ = [
     "VibeTuner",
     "CRM",
-    "Scheduler", 
+    "Scheduler",
     "AnalyticsDashboard",
     "AIWingman",
     "FranchiseSystem",
@@ -158,5 +158,3 @@ __all__ = [
     # Newsletter Hub
     "NewsletterHub",
 ]
-
-

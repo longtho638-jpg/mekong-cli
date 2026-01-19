@@ -1,94 +1,69 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { PLAN_LIMITS } from '@/lib/polar/client'
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-// Polar webhook handler
+// PayPal webhook handler
+// POST /api/billing/webhook
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json()
-        const signature = request.headers.get('polar-signature')
+  try {
+    const body = await request.json();
+    const eventType = body.event_type;
 
-        // In production, verify webhook signature
-        // const isValid = verifyWebhookSignature(body, signature, process.env.POLAR_WEBHOOK_SECRET)
+    // Initialize Supabase admin client
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
 
-        const supabase = await createClient()
-        const event = body.type
-        const data = body.data
+    switch (eventType) {
+      case "PAYMENT.CAPTURE.COMPLETED":
+        // Payment was successful
+        const captureId = body.resource?.id;
+        const payerEmail = body.resource?.payer?.email_address;
+        const amount = body.resource?.amount?.value;
 
-        console.log('Polar webhook:', event)
+        console.log(
+          `[PayPal Webhook] Payment captured: ${captureId} - $${amount} from ${payerEmail}`,
+        );
 
-        switch (event) {
-            case 'subscription.created':
-            case 'subscription.updated': {
-                const orgId = data.metadata?.organization_id
-                if (!orgId) break
+        // Could update organization here if needed
+        break;
 
-                // Determine plan from product
-                let plan = 'starter'
-                if (data.product?.name?.toLowerCase().includes('pro')) plan = 'pro'
-                if (data.product?.name?.toLowerCase().includes('agency')) plan = 'agency'
+      case "PAYMENT.CAPTURE.DENIED":
+      case "PAYMENT.CAPTURE.REFUNDED":
+        // Payment failed or refunded
+        const failedOrderId = body.resource?.id;
+        console.log(`[PayPal Webhook] Payment ${eventType}: ${failedOrderId}`);
 
-                const limits = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS]
+        // Could downgrade subscription here
+        break;
 
-                await supabase
-                    .from('organizations')
-                    .update({
-                        plan,
-                        polar_subscription_id: data.id,
-                        polar_customer_id: data.customer_id,
-                        newsletters_limit: limits.newsletters,
-                        subscribers_limit: limits.subscribers,
-                        emails_limit: limits.emails_per_month,
-                    })
-                    .eq('id', orgId)
+      case "BILLING.SUBSCRIPTION.CANCELLED":
+        // Subscription cancelled
+        const subscriptionId = body.resource?.id;
+        console.log(
+          `[PayPal Webhook] Subscription cancelled: ${subscriptionId}`,
+        );
 
-                break
-            }
+        // Downgrade to free plan
+        await supabase
+          .from("organizations")
+          .update({
+            plan: "free",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("paypal_order_id", subscriptionId);
+        break;
 
-            case 'subscription.canceled':
-            case 'subscription.revoked': {
-                const orgId = data.metadata?.organization_id
-                if (!orgId) break
-
-                // Downgrade to free
-                const limits = PLAN_LIMITS.free
-
-                await supabase
-                    .from('organizations')
-                    .update({
-                        plan: 'free',
-                        polar_subscription_id: null,
-                        newsletters_limit: limits.newsletters,
-                        subscribers_limit: limits.subscribers,
-                        emails_limit: limits.emails_per_month,
-                    })
-                    .eq('id', orgId)
-
-                break
-            }
-
-            case 'checkout.created': {
-                // User started checkout - could track for analytics
-                console.log('Checkout started:', data.id)
-                break
-            }
-
-            case 'checkout.updated': {
-                // Checkout completed or failed
-                if (data.status === 'succeeded') {
-                    console.log('Checkout succeeded:', data.id)
-                    // Subscription webhook will handle the actual update
-                }
-                break
-            }
-
-            default:
-                console.log('Unhandled webhook event:', event)
-        }
-
-        return NextResponse.json({ received: true })
-    } catch (error) {
-        console.error('Webhook error:', error)
-        return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
+      default:
+        console.log(`[PayPal Webhook] Unhandled event: ${eventType}`);
     }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("[PayPal Webhook] Error:", error);
+    return NextResponse.json(
+      { error: "Webhook handler failed" },
+      { status: 500 },
+    );
+  }
 }

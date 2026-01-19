@@ -1,46 +1,30 @@
 ---
-description: 🏯 AntigravityKit meta-command - Access all agency functions
-argument-hint: [subcommand]
+description: 🏯 ANTIGRAVITY - Master Platform Dashboard
 ---
 
-## AntigravityKit Commands
+Hiển thị trạng thái toàn diện của hệ thống Agency OS.
 
-Access all AntigravityKit functions for Southeast Asian agency management.
+## 🏯 Master Dashboard
 
-### Available Subcommands
+Triệu hồi `antigravity.core.master_dashboard.MasterDashboard` để hiển thị:
 
-| Command | Description |
-|---------|-------------|
-| `/agency-start` | Bootstrap new agency (5-minute setup) |
-| `/client-add "Name"` | Add and qualify new client |
-| `/content-ideas [count]` | Generate viral content ideas |
-| `/agency-stats` | Show agency dashboard |
+1.  **🤖 Lớp Agentic:** Trình độ và sự tích hợp của quân đoàn AI.
+2.  **🏰 Lớp Retention:** Sức mạnh của 5 Hào bảo vệ (Moats).
+3.  **💰 Lớp Revenue:** Tiến độ dòng tiền $1M.
+4.  **🏗️ Lớp Infra:** Sức khỏe của hệ thống 10 tầng.
 
-### Agent Delegation
+## 🏆 Platform Score
 
-| Agent | Use Case |
-|-------|----------|
-| `binh-phap-strategist` | Strategic planning, WIN-WIN-WIN |
-| `client-magnet` | Lead generation, CRM |
-| `revenue-engine` | Financial tracking |
-| `content-factory` | Viral content creation |
+Hiển thị điểm số **Readiness Score (0-100)**.
+- **90+**: Sẵn sàng scale toàn cầu.
+- **70+**: Đã ổn định để chạy production.
+- **Dưới 50**: Cần tập trung xây dựng nền tảng.
 
-### Quick Actions
+## 🛡️ Hào bảo vệ (Moats)
 
-1. **New Agency**: `/agency-start`
-2. **Add Client**: `/client-add "ABC Corp"`
-3. **Get Ideas**: `/content-ideas 30`
-4. **View Stats**: `/agency-stats`
+Chi tiết chi phí rời bỏ (Switching Cost) để giữ chân khách hàng:
+- Bao nhiêu giờ dữ liệu sẽ mất?
+- Bao nhiêu kết nối mạng lưới sẽ đứt gãy?
+- Bao nhiêu tri thức AI sẽ biến mất?
 
-### Python CLI (Direct)
-
-```bash
-python -m antigravity.cli start
-python -m antigravity.cli client:add "Client Name"
-python -m antigravity.cli content:generate 30
-python -m antigravity.cli stats
-```
-
----
-
-🏯 **"Dễ như ăn kẹo"** - Easy as candy
+> 🏯 **"Không đánh mà thắng"** - Trạng thái WOW tối cao của Agency OS.

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AgencyOS - Build Your $1M Agency in 2026</title>
+        <meta
+            name="description"
+            content="Complete toolkit for solopreneurs and agencies. From VSCode setup to enterprise dashboard. Start free today."
+        />
+        <style>
+            :root {
+                --primary: #6366f1;
+                --primary-dark: #4f46e5;
+                --secondary: #10b981;
+                --dark: #0f172a;
+                --light: #f8fafc;
+                --gray: #64748b;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: #f8fafc;
+                min-height: 100vh;
+            }
+
+            .hero {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 80px 20px;
+                text-align: center;
+            }
+
+            .badge {
+                display: inline-block;
+                background: rgba(99, 102, 241, 0.2);
+                border: 1px solid var(--primary);
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                margin-bottom: 24px;
+            }
+
+            h1 {
+                font-size: clamp(2.5rem, 5vw, 4rem);
+                font-weight: 800;
+                margin-bottom: 24px;
+                background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .subtitle {
+                font-size: 1.25rem;
+                color: var(--gray);
+                max-width: 600px;
+                margin: 0 auto 48px;
+                line-height: 1.6;
+            }
+
+            .cta-group {
+                display: flex;
+                gap: 16px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 64px;
+            }
+
+            .btn {
+                padding: 16px 32px;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: none;
+            }
+
+            .btn-primary {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary) 0%,
+                    var(--primary-dark) 100%
+                );
+                color: white;
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+            }
+
+            .btn-secondary {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 24px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .product-card {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                padding: 24px;
+                transition: all 0.3s ease;
+            }
+
+            .product-card:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: var(--primary);
+                transform: translateY(-4px);
+            }
+
+            .product-badge {
+                display: inline-block;
+                background: var(--secondary);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-bottom: 16px;
+            }
+
+            .product-badge.free {
+                background: var(--secondary);
+            }
+            .product-badge.popular {
+                background: var(--primary);
+            }
+            .product-badge.enterprise {
+                background: #f59e0b;
+            }
+
+            .product-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .product-desc {
+                color: var(--gray);
+                font-size: 14px;
+                margin-bottom: 16px;
+                line-height: 1.5;
+            }
+
+            .product-price {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--secondary);
+            }
+
+            .product-price span {
+                font-size: 14px;
+                color: var(--gray);
+                font-weight: 400;
+            }
+
+            .email-section {
+                max-width: 600px;
+                margin: 80px auto;
+                padding: 48px;
+                background: rgba(99, 102, 241, 0.1);
+                border: 1px solid var(--primary);
+                border-radius: 24px;
+                text-align: center;
+            }
+
+            .email-section h2 {
+                font-size: 1.75rem;
+                margin-bottom: 16px;
+            }
+
+            .email-section p {
+                color: var(--gray);
+                margin-bottom: 24px;
+            }
+
+            .email-form {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .email-input {
+                flex: 1;
+                min-width: 250px;
+                padding: 16px 20px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                background: rgba(0, 0, 0, 0.3);
+                color: white;
+                font-size: 16px;
+            }
+
+            .email-input::placeholder {
+                color: var(--gray);
+            }
+
+            .social-proof {
+                display: flex;
+                gap: 48px;
+                justify-content: center;
+                margin: 48px 0;
+                flex-wrap: wrap;
+            }
+
+            .stat {
+                text-align: center;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            .stat-label {
+                color: var(--gray);
+                font-size: 14px;
+            }
+
+            footer {
+                text-align: center;
+                padding: 48px 20px;
+                color: var(--gray);
+                font-size: 14px;
+            }
+
+            footer a {
+                color: var(--primary);
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="hero">
+            <span class="badge">🏯 Binh Pháp Venture Studio</span>
+            <h1>Build Your $1M Agency<br />with AI-Powered Tools</h1>
+            <p class="subtitle">
+                Complete toolkit for solopreneurs and agencies. From free VSCode
+                setup to enterprise dashboard. Everything you need to scale from
+                $0 to $1M ARR.
+            </p>
+
+            <div class="cta-group">
+                <a
+                    href="https://billmentor.gumroad.com/l/wtehzm"
+                    class="btn btn-primary"
+                >
+                    🎁 Get Free Starter Pack
+                </a>
+                <a href="#products" class="btn btn-secondary">
+                    View All Products →
+                </a>
+            </div>
+
+            <div class="social-proof">
+                <div class="stat">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Products</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">$0</div>
+                    <div class="stat-label">Starter Price</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Support</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="products" class="products-grid">
+            <div class="product-card">
+                <span class="product-badge free">FREE</span>
+                <h3 class="product-title">VSCode Starter Pack</h3>
+                <p class="product-desc">
+                    Perfect VSCode setup with 20+ extensions, shortcuts, and
+                    React snippets.
+                </p>
+                <div class="product-price">$0 <span>/ forever</span></div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">STARTER</span>
+                <h3 class="product-title">AI Skills Pack</h3>
+                <p class="product-desc">
+                    9 professional AI skills for Claude and Gemini. Frontend,
+                    backend, AI multimodal.
+                </p>
+                <div class="product-price">$27</div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">STARTER</span>
+                <h3 class="product-title">Auth Starter - Supabase</h3>
+                <p class="product-desc">
+                    Complete auth system with OAuth, protected routes, session
+                    management.
+                </p>
+                <div class="product-price">$27</div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge popular">POPULAR</span>
+                <h3 class="product-title">Admin Dashboard Lite</h3>
+                <p class="product-desc">
+                    Clean dashboard with charts, tables, dark mode. Next.js 15 +
+                    Recharts.
+                </p>
+                <div class="product-price">$47</div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge popular">POPULAR</span>
+                <h3 class="product-title">AgencyOS Pro</h3>
+                <p class="product-desc">
+                    Complete agency platform with CRM, invoicing, project
+                    management.
+                </p>
+                <div class="product-price">$197</div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge enterprise">ENTERPRISE</span>
+                <h3 class="product-title">AgencyOS Enterprise</h3>
+                <p class="product-desc">
+                    Multi-team platform with franchise support, white-label,
+                    full automation.
+                </p>
+                <div class="product-price">$497</div>
+            </div>
+        </section>
+
+        <section class="email-section">
+            <h2>🎯 Get Weekly Agency Tips</h2>
+            <p>Join 1,000+ founders getting actionable tips every Tuesday.</p>
+            <form
+                class="email-form"
+                action="https://formspree.io/f/YOUR_FORM_ID"
+                method="POST"
+            >
+                <input
+                    type="email"
+                    name="email"
+                    class="email-input"
+                    placeholder="Enter your email"
+                    required
+                />
+                <button type="submit" class="btn btn-primary">
+                    Subscribe Free
+                </button>
+            </form>
+        </section>
+
+        <footer>
+            <p>
+                🏯 Built with Binh Pháp by
+                <a href="https://billmentor.gumroad.com">BillMentor</a>
+            </p>
+            <p>© 2026 Agency OS. All rights reserved.</p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,1055 @@
+[
+  {
+    "id": "REV-0000",
+    "amount": 2186.047075054797,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0001",
+    "amount": 728.5166585496034,
+    "type": "service",
+    "client_id": "CLI-0006",
+    "description": "Service revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0002",
+    "amount": 2166.268016952471,
+    "type": "retainer",
+    "client_id": "CLI-0002",
+    "description": "Retainer revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0003",
+    "amount": 1473.020964552072,
+    "type": "service",
+    "client_id": "CLI-0001",
+    "description": "Service revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0004",
+    "amount": 1965.9664341937341,
+    "type": "retainer",
+    "client_id": "CLI-0008",
+    "description": "Retainer revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0005",
+    "amount": 3232.4066558968716,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0006",
+    "amount": 2446.495803583243,
+    "type": "service",
+    "client_id": "CLI-0004",
+    "description": "Service revenue",
+    "date": "2026-01-17T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0007",
+    "amount": 2778.345287596419,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0008",
+    "amount": 1571.6964988078123,
+    "type": "service",
+    "client_id": "CLI-0010",
+    "description": "Service revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0009",
+    "amount": 2300.742277368742,
+    "type": "retainer",
+    "client_id": "CLI-0002",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0010",
+    "amount": 2478.4522809978093,
+    "type": "retainer",
+    "client_id": "CLI-0010",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0011",
+    "amount": 3474.768064787084,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0012",
+    "amount": 581.8702808900534,
+    "type": "retainer",
+    "client_id": "CLI-0006",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0013",
+    "amount": 3066.7437686698645,
+    "type": "retainer",
+    "client_id": "CLI-0009",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0014",
+    "amount": 1426.2935423079618,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0015",
+    "amount": 3072.3141244481208,
+    "type": "retainer",
+    "client_id": "CLI-0007",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0016",
+    "amount": 3419.85401075637,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0017",
+    "amount": 1203.0525590489747,
+    "type": "service",
+    "client_id": "CLI-0002",
+    "description": "Service revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0018",
+    "amount": 1803.8121455597932,
+    "type": "service",
+    "client_id": "CLI-0002",
+    "description": "Service revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0019",
+    "amount": 649.6649815603367,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0020",
+    "amount": 1828.390555099873,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-12-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0021",
+    "amount": 3140.977315104877,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-11-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0022",
+    "amount": 2930.5006091470277,
+    "type": "retainer",
+    "client_id": "CLI-0010",
+    "description": "Retainer revenue",
+    "date": "2025-11-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0023",
+    "amount": 323.7345941020531,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-11-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0024",
+    "amount": 1509.9526140831786,
+    "type": "service",
+    "client_id": "CLI-0007",
+    "description": "Service revenue",
+    "date": "2025-11-18T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0025",
+    "amount": 1399.2094841116286,
+    "type": "retainer",
+    "client_id": "CLI-0007",
+    "description": "Retainer revenue",
+    "date": "2025-11-18T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0026",
+    "amount": 401.60021122068787,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0027",
+    "amount": 458.492241219918,
+    "type": "retainer",
+    "client_id": "CLI-0006",
+    "description": "Retainer revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0028",
+    "amount": 2278.0984009412455,
+    "type": "retainer",
+    "client_id": "CLI-0001",
+    "description": "Retainer revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0029",
+    "amount": 2779.7352595731286,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0030",
+    "amount": 2422.9687142358644,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0031",
+    "amount": 729.702918711917,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0032",
+    "amount": 675.1119445622186,
+    "type": "retainer",
+    "client_id": "CLI-0010",
+    "description": "Retainer revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0033",
+    "amount": 1071.2307527862838,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0034",
+    "amount": 875.1517133573387,
+    "type": "service",
+    "client_id": "CLI-0007",
+    "description": "Service revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0035",
+    "amount": 3047.0852505622984,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0036",
+    "amount": 337.9941104775233,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0037",
+    "amount": 539.5629657653984,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0038",
+    "amount": 1535.647546933046,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0039",
+    "amount": 2723.4330293729668,
+    "type": "service",
+    "client_id": "CLI-0010",
+    "description": "Service revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0040",
+    "amount": 2531.290418202642,
+    "type": "retainer",
+    "client_id": "CLI-0008",
+    "description": "Retainer revenue",
+    "date": "2025-10-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0041",
+    "amount": 1819.140148197119,
+    "type": "service",
+    "client_id": "CLI-0005",
+    "description": "Service revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0042",
+    "amount": 1117.1167299794142,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0043",
+    "amount": 1809.588062335911,
+    "type": "service",
+    "client_id": "CLI-0009",
+    "description": "Service revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0044",
+    "amount": 1031.1160757360522,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0045",
+    "amount": 1510.8038840917484,
+    "type": "retainer",
+    "client_id": "CLI-0007",
+    "description": "Retainer revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0046",
+    "amount": 1754.3332615465558,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0047",
+    "amount": 2075.9133676350543,
+    "type": "service",
+    "client_id": "CLI-0001",
+    "description": "Service revenue",
+    "date": "2025-09-19T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0048",
+    "amount": 1031.6468722406953,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0049",
+    "amount": 945.0235036057725,
+    "type": "retainer",
+    "client_id": "CLI-0009",
+    "description": "Retainer revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0050",
+    "amount": 1453.3254620235055,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0051",
+    "amount": 149.44998149304928,
+    "type": "retainer",
+    "client_id": "CLI-0004",
+    "description": "Retainer revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0052",
+    "amount": 1814.7534502523629,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0053",
+    "amount": 2367.465476690475,
+    "type": "service",
+    "client_id": "CLI-0006",
+    "description": "Service revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0054",
+    "amount": 981.9709124693798,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0055",
+    "amount": 439.36680753153604,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0056",
+    "amount": 2791.5129218383486,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2025-08-20T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0057",
+    "amount": 1310.515258814304,
+    "type": "retainer",
+    "client_id": "CLI-0007",
+    "description": "Retainer revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0058",
+    "amount": 2244.009410675654,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0059",
+    "amount": 2300.6187305743056,
+    "type": "service",
+    "client_id": "CLI-0006",
+    "description": "Service revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0060",
+    "amount": 731.0546847312115,
+    "type": "retainer",
+    "client_id": "CLI-0008",
+    "description": "Retainer revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0061",
+    "amount": 2559.4169364447166,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0062",
+    "amount": 923.3995536250153,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0063",
+    "amount": 202.12060497043592,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0064",
+    "amount": 960.5166501871473,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0065",
+    "amount": 1631.7192372961529,
+    "type": "retainer",
+    "client_id": "CLI-0002",
+    "description": "Retainer revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0066",
+    "amount": 1203.91795087553,
+    "type": "service",
+    "client_id": "CLI-0002",
+    "description": "Service revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0067",
+    "amount": 2263.0865181181375,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0068",
+    "amount": 310.3762464056366,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-07-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0069",
+    "amount": 1884.0448874525475,
+    "type": "retainer",
+    "client_id": "CLI-0008",
+    "description": "Retainer revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0070",
+    "amount": 421.2792608978494,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0071",
+    "amount": 1853.0308503214246,
+    "type": "service",
+    "client_id": "CLI-0007",
+    "description": "Service revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0072",
+    "amount": 497.9937760582651,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0073",
+    "amount": 1905.0511864585126,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0074",
+    "amount": 1733.0865757946192,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-06-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0075",
+    "amount": 1932.4682203682987,
+    "type": "retainer",
+    "client_id": "CLI-0003",
+    "description": "Retainer revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0076",
+    "amount": 1469.0620519584782,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0077",
+    "amount": 1407.0480360035936,
+    "type": "retainer",
+    "client_id": "CLI-0009",
+    "description": "Retainer revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0078",
+    "amount": 2151.3063322375733,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0079",
+    "amount": 1194.8558168987577,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0080",
+    "amount": 698.9092655448309,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-05-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0081",
+    "amount": 2019.4576955046575,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0082",
+    "amount": 1943.2141494116888,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0083",
+    "amount": 684.737115131914,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0084",
+    "amount": 2116.022858598758,
+    "type": "service",
+    "client_id": "CLI-0001",
+    "description": "Service revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0085",
+    "amount": 1711.7454608995004,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0086",
+    "amount": 1525.2057557100836,
+    "type": "retainer",
+    "client_id": "CLI-0004",
+    "description": "Retainer revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0087",
+    "amount": 712.2033593507689,
+    "type": "retainer",
+    "client_id": "CLI-0009",
+    "description": "Retainer revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0088",
+    "amount": 327.8400589215418,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0089",
+    "amount": 1574.7346379001606,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0090",
+    "amount": 1751.476990934092,
+    "type": "service",
+    "client_id": "CLI-0003",
+    "description": "Service revenue",
+    "date": "2025-04-22T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0091",
+    "amount": 458.7772644914546,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0092",
+    "amount": 1236.0327688463306,
+    "type": "service",
+    "client_id": "CLI-0005",
+    "description": "Service revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0093",
+    "amount": 1056.89116654043,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0094",
+    "amount": 399.955698478817,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0095",
+    "amount": 1897.0458758375798,
+    "type": "service",
+    "client_id": "CLI-0001",
+    "description": "Service revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0096",
+    "amount": 308.7839300840024,
+    "type": "retainer",
+    "client_id": "CLI-0002",
+    "description": "Retainer revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0097",
+    "amount": 133.14517899069645,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0098",
+    "amount": 1655.9327404169733,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0099",
+    "amount": 1625.010789164589,
+    "type": "service",
+    "client_id": "CLI-0006",
+    "description": "Service revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0100",
+    "amount": 1882.6713929898626,
+    "type": "service",
+    "client_id": "CLI-0008",
+    "description": "Service revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0101",
+    "amount": 1303.2337903174007,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0102",
+    "amount": 1649.490500188453,
+    "type": "retainer",
+    "client_id": "CLI-0005",
+    "description": "Retainer revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0103",
+    "amount": 1737.643973905793,
+    "type": "retainer",
+    "client_id": "CLI-0009",
+    "description": "Retainer revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0104",
+    "amount": 933.9088004857451,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0105",
+    "amount": 754.5601084418192,
+    "type": "service",
+    "client_id": "CLI-0007",
+    "description": "Service revenue",
+    "date": "2025-03-23T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0106",
+    "amount": 957.801751917285,
+    "type": "retainer",
+    "client_id": "CLI-0002",
+    "description": "Retainer revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0107",
+    "amount": 432.0146355706836,
+    "type": "service",
+    "client_id": "CLI-0007",
+    "description": "Service revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0108",
+    "amount": 1058.9579009104136,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0109",
+    "amount": 456.96614706251194,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0110",
+    "amount": 1261.612483895418,
+    "type": "template",
+    "client_id": null,
+    "description": "Template revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0111",
+    "amount": 1327.7291532621164,
+    "type": "retainer",
+    "client_id": "CLI-0008",
+    "description": "Retainer revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": true
+  },
+  {
+    "id": "REV-0112",
+    "amount": 853.3455015530124,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0113",
+    "amount": 797.5661495932972,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0114",
+    "amount": 1414.902670170199,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0115",
+    "amount": 493.6287107197875,
+    "type": "referral",
+    "client_id": null,
+    "description": "Referral revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  },
+  {
+    "id": "REV-0116",
+    "amount": 345.4409737510896,
+    "type": "affiliate",
+    "client_id": null,
+    "description": "Affiliate revenue",
+    "date": "2025-02-21T21:14:29.846780",
+    "recurring": false
+  }
+]

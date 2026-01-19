@@ -8,9 +8,11 @@ Endpoints:
 🏯 Binh Pháp: Real-time intelligence
 """
 
+from typing import Any, Dict
+
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from typing import Dict, Any
-from .server import manager, EventType
+
+from .server import EventType, manager
 
 router = APIRouter(prefix="/ws", tags=["websocket"])
 
@@ -19,9 +21,9 @@ router = APIRouter(prefix="/ws", tags=["websocket"])
 async def websocket_endpoint(websocket: WebSocket):
     """
     Main WebSocket endpoint for real-time updates.
-    
+
     Connect: ws://localhost:8000/ws
-    
+
     Events received:
     - connected: Initial connection confirmation
     - lead_added: New lead added
@@ -31,35 +33,34 @@ async def websocket_endpoint(websocket: WebSocket):
     - data_refresh: General refresh signal
     """
     client_id = await manager.connect(websocket)
-    
+
     try:
         while True:
             # Wait for messages from client
             data = await websocket.receive_json()
-            
+
             # Handle client messages
             if data.get("type") == "ping":
-                await manager.send_personal_message(client_id, {
-                    "type": "pong",
-                    "client_id": client_id
-                })
+                await manager.send_personal_message(
+                    client_id, {"type": "pong", "client_id": client_id}
+                )
             elif data.get("type") == "subscribe":
                 # Client can subscribe to specific events
-                await manager.send_personal_message(client_id, {
-                    "type": "subscribed",
-                    "events": data.get("events", ["all"])
-                })
+                await manager.send_personal_message(
+                    client_id, {"type": "subscribed", "events": data.get("events", ["all"])}
+                )
             elif data.get("type") == "request_refresh":
                 # Client requests data refresh
                 from .server import emit_data_refresh
+
                 await emit_data_refresh()
-                
+
     except WebSocketDisconnect:
         manager.disconnect(client_id)
-        await manager.broadcast_event(EventType.DISCONNECTED, {
-            "client_id": client_id,
-            "remaining_connections": manager.connection_count
-        })
+        await manager.broadcast_event(
+            EventType.DISCONNECTED,
+            {"client_id": client_id, "remaining_connections": manager.connection_count},
+        )
 
 
 @router.get("/status")
@@ -72,7 +73,7 @@ async def get_websocket_status() -> Dict[str, Any]:
 async def broadcast_message(message: Dict[str, Any]) -> Dict[str, str]:
     """
     Broadcast a message to all connected clients.
-    
+
     Body:
     {
         "type": "custom_event",
@@ -80,17 +81,14 @@ async def broadcast_message(message: Dict[str, Any]) -> Dict[str, str]:
     }
     """
     await manager.broadcast(message)
-    return {
-        "status": "success",
-        "sent_to": manager.connection_count
-    }
+    return {"status": "success", "sent_to": manager.connection_count}
 
 
 @router.post("/trigger/{event_type}")
 async def trigger_event(event_type: str, data: Dict[str, Any] = None) -> Dict[str, str]:
     """
     Trigger a specific event type for testing.
-    
+
     Available events:
     - lead_added
     - invoice_paid
@@ -100,13 +98,6 @@ async def trigger_event(event_type: str, data: Dict[str, Any] = None) -> Dict[st
     try:
         event = EventType(event_type)
         await manager.broadcast_event(event, data or {})
-        return {
-            "status": "success",
-            "event": event_type,
-            "sent_to": manager.connection_count
-        }
+        return {"status": "success", "event": event_type, "sent_to": manager.connection_count}
     except ValueError:
-        return {
-            "status": "error",
-            "message": f"Unknown event type: {event_type}"
-        }
+        return {"status": "error", "message": f"Unknown event type: {event_type}"}

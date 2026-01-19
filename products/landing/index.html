@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BillMentor - Agency Templates & Tools</title>
+        <meta
+            name="description"
+            content="Premium templates and tools to build your $1M+ agency. Binh Pháp Framework included."
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                background: linear-gradient(
+                    135deg,
+                    #0a0a1a 0%,
+                    #1a1a3a 50%,
+                    #0a0a1a 100%
+                );
+                color: #fff;
+                min-height: 100vh;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Hero Section */
+            .hero {
+                text-align: center;
+                padding: 80px 20px;
+                background: radial-gradient(
+                    circle at center,
+                    rgba(139, 92, 246, 0.1) 0%,
+                    transparent 50%
+                );
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+                background: linear-gradient(135deg, #ffd700, #ff6b6b, #ffd700);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 20px;
+            }
+
+            .hero p {
+                font-size: 1.25rem;
+                color: #a0a0c0;
+                max-width: 600px;
+                margin: 0 auto 40px;
+            }
+
+            .cta-btn {
+                display: inline-block;
+                padding: 16px 40px;
+                background: linear-gradient(135deg, #ffd700, #ff8c00);
+                color: #000;
+                font-weight: 700;
+                font-size: 1.1rem;
+                border-radius: 50px;
+                text-decoration: none;
+                transition:
+                    transform 0.3s,
+                    box-shadow 0.3s;
+            }
+
+            .cta-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+            }
+
+            /* Products Grid */
+            .products {
+                padding: 60px 20px;
+            }
+
+            .products h2 {
+                text-align: center;
+                font-size: 2rem;
+                margin-bottom: 40px;
+                color: #ffd700;
+            }
+
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 24px;
+            }
+
+            .product-card {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                padding: 24px;
+                transition:
+                    transform 0.3s,
+                    border-color 0.3s;
+            }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                border-color: #ffd700;
+            }
+
+            .product-card h3 {
+                font-size: 1.25rem;
+                margin-bottom: 10px;
+            }
+
+            .product-card p {
+                color: #a0a0c0;
+                margin-bottom: 16px;
+                font-size: 0.9rem;
+            }
+
+            .product-price {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #ffd700;
+            }
+
+            .product-price.free {
+                color: #4ade80;
+            }
+
+            /* Bundles */
+            .bundles {
+                padding: 60px 20px;
+                background: rgba(255, 215, 0, 0.02);
+            }
+
+            .bundle-card {
+                background: linear-gradient(
+                    135deg,
+                    rgba(139, 92, 246, 0.2),
+                    rgba(255, 215, 0, 0.1)
+                );
+                border: 2px solid #ffd700;
+                border-radius: 20px;
+                padding: 40px;
+                margin-bottom: 24px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .bundle-badge {
+                position: absolute;
+                top: 20px;
+                right: -30px;
+                background: #ff6b6b;
+                color: #fff;
+                padding: 8px 40px;
+                font-weight: 700;
+                font-size: 0.8rem;
+                transform: rotate(45deg);
+            }
+
+            /* Footer */
+            footer {
+                text-align: center;
+                padding: 40px 20px;
+                color: #606080;
+            }
+
+            footer a {
+                color: #ffd700;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="hero">
+            <div class="container">
+                <h1>🏯 BillMentor</h1>
+                <p>
+                    Premium templates and tools to build your $1M+ agency using
+                    the ancient Binh Pháp (Art of War) framework.
+                </p>
+                <a href="https://billmentor.gumroad.com" class="cta-btn"
+                    >Browse Store →</a
+                >
+
+                <!-- Email Capture Form -->
+                <div class="email-capture" style="margin-top: 40px">
+                    <p style="color: #a0a0c0; margin-bottom: 16px">
+                        🎁 Get FREE VSCode Starter Pack + 7-day email course
+                    </p>
+                    <form
+                        id="leadForm"
+                        style="
+                            display: flex;
+                            gap: 12px;
+                            justify-content: center;
+                            flex-wrap: wrap;
+                        "
+                    >
+                        <input
+                            type="email"
+                            id="emailInput"
+                            placeholder="your@email.com"
+                            required
+                            style="
+                                padding: 14px 24px;
+                                border-radius: 50px;
+                                border: 2px solid rgba(255, 215, 0, 0.3);
+                                background: rgba(255, 255, 255, 0.05);
+                                color: #fff;
+                                font-size: 1rem;
+                                min-width: 280px;
+                            "
+                        />
+                        <button
+                            type="submit"
+                            style="
+                                padding: 14px 32px;
+                                background: linear-gradient(
+                                    135deg,
+                                    #4ade80,
+                                    #22c55e
+                                );
+                                color: #000;
+                                font-weight: 700;
+                                border: none;
+                                border-radius: 50px;
+                                cursor: pointer;
+                                transition: transform 0.3s;
+                            "
+                        >
+                            Get Free Access →
+                        </button>
+                    </form>
+                    <p
+                        id="formMessage"
+                        style="color: #4ade80; margin-top: 12px; display: none"
+                    ></p>
+                </div>
+
+                <script>
+                    document
+                        .getElementById("leadForm")
+                        .addEventListener("submit", async (e) => {
+                            e.preventDefault();
+                            const email =
+                                document.getElementById("emailInput").value;
+                            const msg = document.getElementById("formMessage");
+
+                            try {
+                                // Send to webhook (local or production)
+                                const webhookUrl =
+                                    window.location.hostname === "localhost"
+                                        ? "http://localhost:8888/webhook/gumroad"
+                                        : "https://are-until-ver-estimated.trycloudflare.com/webhook/gumroad";
+
+                                await fetch(webhookUrl, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/x-www-form-urlencoded",
+                                    },
+                                    body: new URLSearchParams({
+                                        email: email,
+                                        product_id: "vscode-starter-pack",
+                                        product_name:
+                                            "VSCode Starter Pack (Free)",
+                                        price: "0",
+                                        sale_id: "lead-" + Date.now(),
+                                    }),
+                                });
+
+                                msg.textContent =
+                                    "✅ Check your email! Redirecting to download...";
+                                msg.style.display = "block";
+
+                                setTimeout(() => {
+                                    window.location.href =
+                                        "https://billmentor.gumroad.com/l/vscode-starter";
+                                }, 2000);
+                            } catch (err) {
+                                msg.textContent =
+                                    "✅ Redirecting to download...";
+                                msg.style.display = "block";
+                                window.location.href =
+                                    "https://billmentor.gumroad.com/l/vscode-starter";
+                            }
+                        });
+                </script>
+            </div>
+        </div>
+
+        <section class="products">
+            <div class="container">
+                <h2>📦 Individual Templates</h2>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <h3>🆓 VSCode Starter Pack</h3>
+                        <p>
+                            Settings, extensions, and snippets for productive
+                            coding.
+                        </p>
+                        <span class="product-price free">FREE</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🧠 AI Skills Pack</h3>
+                        <p>
+                            10 premium Claude/Cursor skills for AI development.
+                        </p>
+                        <span class="product-price">$27</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🔐 Auth Starter (Supabase)</h3>
+                        <p>Production-ready authentication with Supabase.</p>
+                        <span class="product-price">$27</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🐍 FastAPI Starter</h3>
+                        <p>Production-ready Python API boilerplate.</p>
+                        <span class="product-price">$37</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🎨 Landing Page Kit</h3>
+                        <p>High-converting landing page templates.</p>
+                        <span class="product-price">$37</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>📊 Admin Dashboard</h3>
+                        <p>React dashboard with charts and CRM.</p>
+                        <span class="product-price">$47</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🚀 Vibe Starter</h3>
+                        <p>Complete Next.js + Tailwind starter.</p>
+                        <span class="product-price">$47</span>
+                    </div>
+                    <div class="product-card">
+                        <h3>🏯 Vietnamese Agency Kit</h3>
+                        <p>Binh Pháp framework + Vietnam tax tools.</p>
+                        <span class="product-price">$67</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bundles">
+            <div class="container">
+                <h2>🚀 Bundles (Best Value)</h2>
+                <div class="bundle-card">
+                    <div class="bundle-badge">80% OFF</div>
+                    <h3>AgencyOS Pro</h3>
+                    <p>All templates + Dashboard + Binh Pháp Framework</p>
+                    <span class="product-price">$197</span>
+                    <span
+                        style="
+                            color: #606080;
+                            text-decoration: line-through;
+                            margin-left: 10px;
+                        "
+                        >$986</span
+                    >
+                </div>
+                <div class="bundle-card">
+                    <div class="bundle-badge">62% OFF</div>
+                    <h3>AgencyOS Enterprise</h3>
+                    <p>
+                        Everything in Pro + Multi-team + White-label + Priority
+                        Support
+                    </p>
+                    <span class="product-price">$497</span>
+                    <span
+                        style="
+                            color: #606080;
+                            text-decoration: line-through;
+                            margin-left: 10px;
+                        "
+                        >$1,297</span
+                    >
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>
+                Made with ❤️ by
+                <a href="mailto:billwill.mentor@gmail.com">BillMentor</a>
+            </p>
+            <p style="margin-top: 10px">
+                🏯 "Bất chiến nhi thắng" - Win without fighting
+            </p>
+        </footer>
+    </body>
+</html>

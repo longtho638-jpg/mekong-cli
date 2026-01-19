@@ -88,8 +88,8 @@ def scan_skills(base_path: Path) -> List[Dict]:
 def categorize_skill(name: str, description: str, content: str) -> str:
     """Categorize skill based on name and content."""
     lower_name = name.lower()
-    lower_desc = description.lower()
-    lower_content = content[:500].lower()
+    description.lower()
+    content[:500].lower()
 
     # AI/ML
     if any(x in lower_name for x in ['ai-', 'gemini', 'multimodal', 'adk']):

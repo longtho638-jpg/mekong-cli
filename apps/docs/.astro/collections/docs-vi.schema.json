@@ -1,0 +1,66 @@
+{
+  "$ref": "#/definitions/docs-vi",
+  "definitions": {
+    "docs-vi": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 160
+        },
+        "section": {
+          "type": "string",
+          "enum": [
+            "getting-started",
+            "docs",
+            "workflows",
+            "tools",
+            "changelog",
+            "support"
+          ]
+        },
+        "category": {
+          "type": "string"
+        },
+        "order": {
+          "type": "number",
+          "default": 999
+        },
+        "published": {
+          "type": "boolean",
+          "default": true
+        },
+        "lastUpdated": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "section"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

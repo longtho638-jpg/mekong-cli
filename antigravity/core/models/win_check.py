@@ -1,89 +1,109 @@
 """
-WIN-WIN-WIN check models.
+⚖️ WIN-WIN-WIN Alignment Framework
+==================================
 
-Extracted from sales_pipeline.py for clean architecture.
+Implements the mandatory 3-way alignment check required by the Agency OS
+Constitution. Every strategic decision or deal must create value for all
+three primary stakeholders to proceed.
+
+Stakeholders:
+- 👑 ANH (Owner): Strategic equity and sustainable cash flow.
+- 🏢 AGENCY: Operational IP, infrastructure, and brand moat.
+- 🚀 CLIENT: 10x value, strategic protection, and market winning.
+
+Binh Pháp: ⚖️ Đạo (Way) - Alignment of purpose and benefit.
 """
 
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from ..errors import WinWinWinError
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 
 class WinType(Enum):
-    """WIN-WIN-WIN stakeholder types."""
-    ANH = "anh"          # Owner
-    AGENCY = "agency"    # Agency
-    STARTUP = "startup"  # Client/Startup
+    """The three pillars of the WIN-WIN-WIN architecture."""
+
+    ANH = "anh"
+    AGENCY = "agency"
+    CLIENT = "client"
 
 
 @dataclass
 class WinCheck:
     """
-    WIN-WIN-WIN alignment verification.
-    
-    All 3 parties must WIN for deal to proceed:
-    - 👑 ANH (Owner): Portfolio equity + cash flow
-    - 🏢 AGENCY: Deal flow + knowledge + infrastructure
-    - 🚀 STARTUP: Protection + strategy + network
+    ⚖️ Governance Validation Gate
+
+    Verifies that all three parties have identified wins.
+    Acts as a compliance filter for the revenue and strategy engines.
     """
+
     anh_win: str = ""
     agency_win: str = ""
-    startup_win: str = ""
+    client_win: str = ""
     is_aligned: bool = False
+    checked_at: datetime = field(default_factory=datetime.now)
 
     def validate(self) -> bool:
         """
-        All 3 parties must WIN for deal to proceed.
-        Raises WinWinWinError if validation fails.
+        Enforces the alignment rules.
+        Raises WinWinWinError if any party lacks a defined WIN.
         """
         if not self.anh_win:
-            raise WinWinWinError("ANH (Owner) không WIN", "anh")
+            raise WinWinWinError("Missing alignment: ANH (Owner) must have a WIN.", "anh")
         if not self.agency_win:
-            raise WinWinWinError("AGENCY không WIN", "agency")
-        if not self.startup_win:
-            raise WinWinWinError("STARTUP không WIN", "startup")
-        
+            raise WinWinWinError("Missing alignment: AGENCY must have a WIN.", "agency")
+        if not self.client_win:
+            raise WinWinWinError("Missing alignment: CLIENT must have a WIN.", "client")
+
         self.is_aligned = True
+        logger.info("WIN-WIN-WIN alignment validated successfully.")
         return True
 
-    def is_valid(self) -> bool:
-        """Check if all parties WIN (no exception)."""
+    def check_valid(self) -> bool:
+        """Returns True if the deal is aligned, False otherwise (no exception)."""
         try:
             return self.validate()
         except WinWinWinError:
             return False
 
-    def get_losing_party(self) -> Optional[str]:
-        """Get the first party that is not winning."""
+    def get_failing_stakeholder(self) -> Optional[str]:
+        """Identifies the first party that lacks a defined WIN."""
         if not self.anh_win:
             return "anh"
         if not self.agency_win:
             return "agency"
-        if not self.startup_win:
-            return "startup"
+        if not self.client_win:
+            return "client"
         return None
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary."""
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation for deal records."""
         return {
-            "anh_win": self.anh_win,
-            "agency_win": self.agency_win,
-            "startup_win": self.startup_win,
-            "is_aligned": self.is_aligned,
-            "losing_party": self.get_losing_party()
+            "status": "aligned" if self.is_aligned else "misaligned",
+            "pillars": {
+                "owner": self.anh_win,
+                "agency": self.agency_win,
+                "client": self.client_win,
+            },
+            "timestamp": self.checked_at.isoformat(),
+            "failing_party": self.get_failing_stakeholder(),
         }
 
-    def print_check(self) -> None:
-        """Print formatted WIN check."""
-        print("""
-┌───────────────────────────────────────────────────┐
-│  WIN-WIN-WIN Alignment Check                      │
-├───────────────────────────────────────────────────┤""")
-        print(f"│  👑 ANH: {self.anh_win[:40]:<40} │")
-        print(f"│  🏢 AGENCY: {self.agency_win[:37]:<37} │")
-        print(f"│  🚀 STARTUP: {self.startup_win[:36]:<36} │")
-        status = "✅ ALIGNED" if self.is_aligned else "❌ NOT ALIGNED"
-        print(f"│  Status: {status:<40} │")
-        print("└───────────────────────────────────────────────────┘")
+    def print_visual_check(self) -> None:
+        """Renders a visual alignment card to the console."""
+        print("\n" + "┌" + "─" * 50 + "┐")
+        print("│" + "⚖️  WIN-WIN-WIN ALIGNMENT GATE".center(50) + "│")
+        print("├" + "─" * 50 + "┤")
+        print(f"│ 👑 OWNER WIN  : {self.anh_win[:35]:<35} │")
+        print(f"│ 🏢 AGENCY WIN : {self.agency_win[:35]:<35} │")
+        print(f"│ 🚀 CLIENT WIN : {self.client_win[:35]:<35} │")
+        print("├" + "─" * 50 + "┤")
+        status = "✅ ALIGNED" if self.is_aligned else "❌ MISALIGNED"
+        print(f"│ STATUS        : {status:<35} │")
+        print("└" + "─" * 50 + "┘")

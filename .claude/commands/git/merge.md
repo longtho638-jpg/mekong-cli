@@ -1,41 +1,51 @@
 ---
-description: ⚠️ Merge code from one branch to another
-argument-hint: [branch] [from-branch]
+description: Safe merge with conflict detection and resolution
 ---
 
-## Variables
+// turbo
 
-TO_BRANCH: $1 (defaults to `main`)
-FROM_BRANCH: $2 (defaults to current branch)
+# /merge - Safe Merge
 
-## Workflow
+Merge branches with automatic conflict detection and resolution helpers.
 
-### Step 1: Sync with remote (CRITICAL)
-```bash
-git fetch origin
-git checkout {TO_BRANCH}
-git pull origin {TO_BRANCH}
+## Usage
+
+```
+/merge [source-branch]
+/merge --from main
 ```
 
-### Step 2: Merge from REMOTE tracking branch
-```bash
-# Use origin/{FROM_BRANCH} to merge remote state, not local WIP
-git merge origin/{FROM_BRANCH} --no-ff -m "merge: {FROM_BRANCH} into {TO_BRANCH}"
+## Claude Prompt Template
+
+```
+Safe merge workflow:
+
+1. Fetch latest: git fetch origin
+2. Check for conflicts: git merge --no-commit --no-ff {source}
+3. If conflicts:
+   - List conflicting files
+   - For each file, analyze conflict markers
+   - Suggest resolution strategy
+   - Offer to auto-resolve if possible
+4. If no conflicts:
+   - Complete merge: git merge {source} -m "🔀 merge: {source} into {current}"
+5. Run tests to verify
+6. Report status
+
+Abort if tests fail: git merge --abort
 ```
 
-**Why `origin/{FROM_BRANCH}`:** Ensures merging only committed+pushed changes, not local uncommitted work.
+## Example Output
 
-### Step 3: Resolve conflicts if any
-- If conflicts exist, resolve them
-- If you need more clarifications, use `AskUserQuestion` tool to ask the user for more details
-- After resolution: `git add . && git commit`
-
-### Step 4: Push merged result
-```bash
-git push origin {TO_BRANCH}
 ```
+🔀 Merging: main → feature/auth
 
-## Notes
-- If `gh` command is not available, instruct the user to install and authorize GitHub CLI first.
-- If you need more clarifications, use `AskUserQuestion` tool to ask the user for more details.
-- Always fetch and pull latest remote state before merging to avoid stale conflicts.
+⚠️ Conflicts detected: 2 files
+   1. src/auth.ts - BOTH modified
+   2. package.json - version conflict
+
+🔧 Auto-resolved: package.json (took ours)
+📝 Manual needed: src/auth.ts
+
+Run /fix-conflicts to continue.
+```

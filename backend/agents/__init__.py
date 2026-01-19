@@ -3,18 +3,25 @@ Backend Agents Package
 Quad-Agent System for Marketing Automation
 """
 
-from .scout import ScoutAgent, TrendItem, IntelBrief
-from .editor import EditorAgent, ContentDraft
-from .director import DirectorAgent, VideoScript, VideoAsset
-from .community import CommunityAgent, ScheduledPost, Platform
+from .community import CommunityAgent, Platform, ScheduledPost
+from .director import DirectorAgent, VideoAsset, VideoScript
+from .editor import ContentDraft, EditorAgent
+from .scout import IntelBrief, ScoutAgent, TrendItem
 
 __all__ = [
     # Scout
-    "ScoutAgent", "TrendItem", "IntelBrief",
+    "ScoutAgent",
+    "TrendItem",
+    "IntelBrief",
     # Editor
-    "EditorAgent", "ContentDraft",
+    "EditorAgent",
+    "ContentDraft",
     # Director
-    "DirectorAgent", "VideoScript", "VideoAsset",
+    "DirectorAgent",
+    "VideoScript",
+    "VideoAsset",
     # Community
-    "CommunityAgent", "ScheduledPost", "Platform",
+    "CommunityAgent",
+    "ScheduledPost",
+    "Platform",
 ]

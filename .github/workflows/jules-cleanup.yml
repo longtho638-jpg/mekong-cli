@@ -1,9 +1,10 @@
 name: 🤖 Jules Tech Debt Cleanup
 
 on:
+  # Weekly on Monday at 9 AM UTC (4 PM Vietnam)
   schedule:
-    # Every Monday at 9 AM UTC (4 PM Vietnam)
     - cron: '0 9 * * 1'
+  # Manual trigger
   workflow_dispatch:
     inputs:
       task_type:
@@ -18,57 +19,80 @@ on:
           - deps
           - security
 
+env:
+  # Note: Jules tasks are handled through jules.google.com
+  # This workflow just tracks and reports status
+  JULES_ENABLED: true
+
 jobs:
-  jules-cleanup:
+  jules-status:
+    name: 🤖 Jules Status Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install Gemini CLI
-        run: npm install -g @anthropic/gemini-cli
-      
-      - name: Install Jules Extension
+      - name: Check Jules configuration
         run: |
-          gemini extensions install https://github.com/gemini-cli-extensions/jules --auto-update
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      
-      - name: Run Jules Task
+          echo "## 🤖 Jules Tech Debt Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Config | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Repository | longtho638-jpg/mekong-cli |" >> $GITHUB_STEP_SUMMARY
+          echo "| Schedule | Weekly Monday 4PM VN |" >> $GITHUB_STEP_SUMMARY
+          echo "| Task Type | ${{ github.event.inputs.task_type || 'tests' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for tech debt indicators
+          echo "### 📊 Code Quality Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Count TODO/FIXME
+          TODO_COUNT=$(grep -r "TODO\|FIXME\|HACK\|XXX" --include="*.py" --include="*.ts" --include="*.tsx" . 2>/dev/null | wc -l || echo 0)
+          echo "| TODOs/FIXMEs | $TODO_COUNT |" >> $GITHUB_STEP_SUMMARY
+          
+          # Count any types in Python
+          ANY_COUNT=$(grep -r ": any\|: Any" --include="*.py" . 2>/dev/null | wc -l || echo 0)
+          echo "| Any types | $ANY_COUNT |" >> $GITHUB_STEP_SUMMARY
+          
+          # Count test files
+          TEST_COUNT=$(find . -name "test_*.py" -o -name "*_test.py" 2>/dev/null | wc -l || echo 0)
+          echo "| Test files | $TEST_COUNT |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Jules status check complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> 🔗 Manage Jules tasks at: https://jules.google.com" >> $GITHUB_STEP_SUMMARY
+
+      - name: Generate task suggestion
         run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Suggested Jules Task" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
           case "${{ github.event.inputs.task_type || 'tests' }}" in
             tests)
-              echo "Running: Add unit tests"
-              gemini -p "/jules add unit tests for any functions missing tests in antigravity/core/"
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              echo "Add unit tests for any functions missing tests in antigravity/core/" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
               ;;
             lint)
-              echo "Running: Fix lint errors"
-              gemini -p "/jules fix all TypeScript and Python type errors"
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              echo "Fix all TypeScript and Python type errors" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
               ;;
             docs)
-              echo "Running: Update documentation"
-              gemini -p "/jules add missing docstrings to all public functions"
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              echo "Add missing docstrings to all public functions" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
               ;;
             deps)
-              echo "Running: Update dependencies"
-              gemini -p "/jules update all dependencies to latest stable versions"
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              echo "Update all dependencies to latest stable versions" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
               ;;
             security)
-              echo "Running: Security fixes"
-              gemini -p "/jules fix all security vulnerabilities"
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+              echo "Fix all security vulnerabilities" >> $GITHUB_STEP_SUMMARY
+              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
               ;;
           esac
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
-      
-      - name: Check Jules Status
-        run: |
-          sleep 60
-          gemini -p "/jules what is the status of my latest task?"
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

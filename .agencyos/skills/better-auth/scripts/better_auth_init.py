@@ -10,7 +10,6 @@ Supports multiple databases, ORMs, and authentication methods.
 
 import os
 import sys
-import json
 import secrets
 from pathlib import Path
 from typing import Optional, Dict, Any, List
@@ -182,7 +181,7 @@ class BetterAuthInit:
             return {
                 "type": "mysql",
                 "import": "import { createPool } from 'mysql2/promise';",
-                "config": f"database: createPool({{ connectionString: process.env.DATABASE_URL }})",
+                "config": "database: createPool({ connectionString: process.env.DATABASE_URL })",
                 "env_var": ("DATABASE_URL", db_url)
             }
         else:
@@ -420,7 +419,7 @@ export const auth = betterAuth({{
         print("=" * 50)
 
         # Load existing env
-        env_vars = self._load_env_files()
+        self._load_env_files()
 
         # Prompt for configuration
         db_config = self.prompt_database()

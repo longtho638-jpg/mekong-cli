@@ -1,172 +1,151 @@
 """
 🏯 Unified Agentic Dashboard - Complete System Overview
+======================================================
 
-Combines all agentic subsystems into one unified view:
-- Agents, Chains, Crews
-- Skills, Rules, Hooks
-- Memory, Autonomous Mode
-- Coding Level
+Combines all agentic subsystems into one unified strategic view.
+Provides visibility into the AI workforce, specialized skills,
+governance rules, and long-term learning performance.
 
-Usage:
-    from antigravity.core.unified_dashboard import AgenticDashboard
-    dashboard = AgenticDashboard()
-    dashboard.print_full()
+Components Analyzed:
+- 🤖 Workforce: Agents, Crews, and Chains.
+- 🎯 Intellectual Property: Skills and Rules.
+- 🧠 Cognitive health: Memory and Success Rates.
+- 🎚️ Style control: Coding Level and Persona.
+
+Binh Pháp: 🏯 Hình (Strategic Configuration) - Seeing the whole army.
 """
 
-from typing import Dict, Any
+import logging
+from typing import Any, Dict
 
-from .agent_chains import AGENT_INVENTORY, AGENT_CHAINS
+from .agent_chains import AGENT_CHAINS, AGENT_INVENTORY
 from .agent_crews import CREWS
-from .skill_loader import get_total_skills, get_total_mappings, AGENT_SKILLS
-from .rules_loader import get_total_rules, get_total_assignments
+from .agent_memory import get_agent_memory
+from .coding_level import get_level
 from .hooks_manager import HOOKS
-from .agent_memory import get_memory
-from .coding_level import get_level, LEVELS
+from .rules_loader import get_total_assignments, get_total_rules
+from .skill_loader import get_total_mappings, get_total_skills
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class AgenticDashboard:
     """
     🏯 Unified Agentic Dashboard
-    
-    Complete visibility into the AI workforce.
+
+    The master control room for the Agency OS AI infrastructure.
     """
-    
+
     def get_stats(self) -> Dict[str, Any]:
-        """Get complete agentic statistics."""
-        memory = get_memory()
-        memory_stats = memory.get_stats()
-        
-        return {
-            # Core
-            "agents": len(AGENT_INVENTORY),
-            "chains": len(AGENT_CHAINS),
-            "crews": len(CREWS),
-            
-            # Skills & Rules
-            "skills": get_total_skills(),
-            "skill_mappings": get_total_mappings(),
-            "rules": get_total_rules(),
-            "rule_assignments": get_total_assignments(),
-            
-            # Hooks
-            "hooks": sum(len(h) for h in HOOKS.values()),
-            "hook_triggers": len(HOOKS),
-            
-            # Memory
-            "memories": memory_stats["total_memories"],
-            "patterns_learned": memory_stats["total_patterns"],
-            "success_rate": memory_stats["overall_success_rate"],
-            
-            # Level
-            "coding_level": get_level().level,
-            "coding_level_name": get_level().name,
-        }
-    
-    def print_summary(self):
-        """Print compact summary."""
-        stats = self.get_stats()
-        
-        print("\n🏯 AGENTIC SUMMARY")
-        print("═" * 50)
-        print(f"   Agents: {stats['agents']} | Chains: {stats['chains']} | Crews: {stats['crews']}")
-        print(f"   Skills: {stats['skills']} ({stats['skill_mappings']} mappings)")
-        print(f"   Rules: {stats['rules']} | Hooks: {stats['hooks']}")
-        print(f"   Level: {stats['coding_level']} ({stats['coding_level_name']})")
-        print("═" * 50)
-    
-    def print_full(self):
-        """Print full dashboard."""
-        stats = self.get_stats()
-        
-        print("\n" + "═" * 60)
-        print("║" + "🏯 AGENCYOS AGENTIC DASHBOARD".center(58) + "║")
-        print("═" * 60)
-        
-        # Core Stats
-        print("\n📊 CORE COMPONENTS")
-        print("─" * 40)
-        print(f"   🤖 Agents:     {stats['agents']}")
-        print(f"   🔗 Chains:     {stats['chains']}")
-        print(f"   👥 Crews:      {stats['crews']}")
-        
-        # Skills & Rules
-        print("\n🎯 SKILLS & RULES")
-        print("─" * 40)
-        print(f"   🎯 Skills:     {stats['skills']} ({stats['skill_mappings']} mappings)")
-        print(f"   📜 Rules:      {stats['rules']} ({stats['rule_assignments']} assignments)")
-        print(f"   🪝 Hooks:      {stats['hooks']} ({stats['hook_triggers']} triggers)")
-        
-        # Memory
-        print("\n🧠 MEMORY & LEARNING")
-        print("─" * 40)
-        print(f"   📝 Memories:   {stats['memories']}")
-        print(f"   🎓 Patterns:   {stats['patterns_learned']}")
-        print(f"   ✅ Success:    {stats['success_rate']:.0%}")
-        
-        # Level
-        print("\n🎚️ CODING LEVEL")
-        print("─" * 40)
+        """Aggregates statistics from all agentic subsystems."""
+        memory = get_agent_memory()
+        m_stats = memory.get_stats()
         level = get_level()
-        print(f"   Level {level.level}: {level.name}")
-        print(f"   {level.description}")
-        
-        # Integration Score
-        total_score = self._calculate_integration_score(stats)
-        print("\n" + "═" * 60)
-        print(f"║ 🏆 INTEGRATION SCORE: {total_score}%".ljust(59) + "║")
-        print("═" * 60)
-        
-        if total_score >= 95:
-            print("   🎊 MAXIMUM AGENTIC POWER ACHIEVED!")
-        elif total_score >= 80:
-            print("   ✅ Excellent integration")
-        elif total_score >= 60:
-            print("   ⚠️ Good, room for improvement")
-        else:
-            print("   ❌ Integration incomplete")
-        
-        print()
-    
-    def _calculate_integration_score(self, stats: Dict) -> int:
-        """Calculate overall integration percentage."""
-        max_agents = 26
-        max_chains = 34
-        max_crews = 6
-        max_skills = 41
-        max_rules = 6
-        max_hooks = 6
-        
-        score = 0
-        score += min(100, (stats['agents'] / max_agents) * 100) * 0.2
-        score += min(100, (stats['chains'] / max_chains) * 100) * 0.15
-        score += min(100, (stats['crews'] / max_crews) * 100) * 0.15
-        score += min(100, (stats['skills'] / max_skills) * 100) * 0.2
-        score += min(100, (stats['rules'] / max_rules) * 100) * 0.15
-        score += min(100, (stats['hooks'] / max_hooks) * 100) * 0.15
-        
-        return int(score)
-    
-    def print_crews_quick(self):
-        """Print quick crew summary."""
-        print("\n👥 CREWS")
-        for name, crew in CREWS.items():
-            print(f"   {name}: {len(crew.workers)} workers")
-    
-    def print_top_agents(self, limit: int = 5):
-        """Print top agents by skills."""
-        print("\n🏆 TOP AGENTS BY SKILLS")
-        top = sorted(AGENT_SKILLS.items(), key=lambda x: len(x[1]), reverse=True)[:limit]
-        for agent, skills in top:
-            print(f"   {agent}: {len(skills)} skills")
+
+        return {
+            "inventory": {
+                "agents": len(AGENT_INVENTORY),
+                "chains": len(AGENT_CHAINS),
+                "crews": len(CREWS),
+            },
+            "ip": {
+                "skills": get_total_skills(),
+                "skill_mappings": get_total_mappings(),
+                "rules": get_total_rules(),
+                "rule_assignments": get_total_assignments(),
+                "hooks": sum(len(h) for h in HOOKS.values()),
+            },
+            "cognition": {
+                "memories": m_stats["total_records"],
+                "patterns": m_stats["total_patterns"],
+                "success_rate": m_stats["global_success_rate"],
+            },
+            "configuration": {"coding_level": level.level, "level_name": level.name},
+        }
+
+    def _calculate_integration_score(self, stats: Dict[str, Any]) -> int:
+        """
+        Calculates an overall 'Agentic Power' score (0-100%).
+        Weights based on system maturity benchmarks.
+        """
+        # Targets for 100% score
+        TARGETS = {"agents": 26, "chains": 34, "crews": 6, "skills": 41, "rules": 6, "hooks": 5}
+
+        score = 0.0
+        inv = stats["inventory"]
+        ip = stats["ip"]
+        cog = stats["cognition"]
+
+        # 1. Workforce Depth (35%)
+        score += min(inv["agents"] / TARGETS["agents"], 1.0) * 15
+        score += min(inv["chains"] / TARGETS["chains"], 1.0) * 10
+        score += min(inv["crews"] / TARGETS["crews"], 1.0) * 10
+
+        # 2. Intellectual Property (35%)
+        score += min(ip["skills"] / TARGETS["skills"], 1.0) * 15
+        score += min(ip["rules"] / TARGETS["rules"], 1.0) * 10
+        score += min(ip["hooks"] / TARGETS["hooks"], 1.0) * 10
+
+        # 3. Learning & Experience (30%)
+        score += min(cog["memories"] / 100, 1.0) * 10  # 100 memories baseline
+        score += cog["success_rate"] * 20
+
+        return int(min(score, 100))
+
+    def print_full_dashboard(self):
+        """Renders the complete visual dashboard to the console."""
+        stats = self.get_stats()
+        power_score = self._calculate_integration_score(stats)
+        level = get_level()
+
+        print("\n" + "═" * 65)
+        print("║" + "🏯 AGENCY OS - UNIFIED AGENTIC WORKBENCH".center(63) + "║")
+        print("═" * 65)
+
+        # Section 1: Workforce
+        print(
+            f"\n  🤖 WORKFORCE: {stats['inventory']['agents']} Agents | {stats['inventory']['crews']} Specialized Crews"
+        )
+        print(f"     └─ Active Chains : {stats['inventory']['chains']}")
+
+        # Section 2: IP
+        print("\n  🎯 INTELLECTUAL PROPERTY:")
+        print(f"     ├─ Specialized Skills : {stats['ip']['skills']}")
+        print(f"     ├─ Governance Rules   : {stats['ip']['rules']}")
+        print(f"     └─ Automation Hooks   : {stats['ip']['hooks']}")
+
+        # Section 3: Cognition
+        print("\n  🧠 COGNITION & LEARNING:")
+        print(f"     ├─ Global History     : {stats['cognition']['memories']} records")
+        print(f"     ├─ Learned Patterns   : {stats['cognition']['patterns']}")
+        print(f"     └─ System Proficiency : {stats['cognition']['success_rate']:.1%}")
+
+        # Section 4: Configuration
+        print(f"\n  🎚️ MODE: {level.name} (Level {level.level})")
+        print(f"     └─ {level.description}")
+
+        # Footer: Power Score
+        print("\n" + "─" * 65)
+        bar_w = 30
+        filled = int(bar_w * power_score / 100)
+        bar = "█" * filled + "░" * (bar_w - filled)
+
+        print(f"  🏆 AGENTIC POWER SCORE: [{bar}] {power_score}%")
+
+        verdict = (
+            "🎊 SUPREME ORCHESTRATION"
+            if power_score >= 90
+            else "✅ ROBUST INTEGRATION"
+            if power_score >= 75
+            else "⚠️ EVOLVING SYSTEM"
+        )
+        print(f"     └─ Verdict: {verdict}")
+        print("═" * 65 + "\n")
 
 
-def show_dashboard():
-    """Quick function to show dashboard."""
+# Global Interface
+def show_agentic_status():
+    """Quick console display of the dashboard."""
     dashboard = AgenticDashboard()
-    dashboard.print_full()
-
-
-def get_integration_score() -> int:
-    """Get current integration score."""
-    dashboard = AgenticDashboard()
-    return dashboard._calculate_integration_score(dashboard.get_stats())
+    dashboard.print_full_dashboard()
