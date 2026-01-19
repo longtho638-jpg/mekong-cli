@@ -151,7 +151,7 @@ class VibeAgencyEngine:
             # Use existing urgent_outreach script
             import subprocess
 
-            result = subprocess.run(
+            subprocess.run(
                 ["python3", "scripts/urgent_outreach.py", "--count"],
                 cwd=self.project_root,
                 capture_output=True,
@@ -204,7 +204,7 @@ class VibeAgencyEngine:
         try:
             from antigravity.core.client_magnet import ClientMagnet
 
-            cm = ClientMagnet()
+            ClientMagnet()
             # Would add to CRM here
             return True
         except ImportError:

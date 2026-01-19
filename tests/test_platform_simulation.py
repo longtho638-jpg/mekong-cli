@@ -13,16 +13,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
 
+# Import core modules
+from core.hybrid_router import HybridRouter, TaskComplexity, TaskType, route_task
+
 # Import mock data factory
 from tests.fixtures.mock_data import MockDataFactory
-
-# Import core modules
-from core.hybrid_router import HybridRouter, TaskType, TaskComplexity, route_task
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🧪 HYBRID ROUTER TESTS
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestHybridRouter:
     """Test suite for HybridRouter AI task routing."""
@@ -74,7 +74,7 @@ class TestHybridRouter:
             TaskType.TEXT,
             TaskComplexity.SIMPLE,
             100,
-            override_provider="anthropic/claude-3.5-sonnet"
+            override_provider="anthropic/claude-3.5-sonnet",
         )
         assert result.provider == "anthropic/claude-3.5-sonnet"
         assert result.reason == "Manual override"
@@ -116,6 +116,7 @@ class TestHybridRouter:
 # 🏭 MOCK DATA FACTORY TESTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 class TestMockDataFactory:
     """Test suite for mock data generation."""
 
@@ -129,9 +130,21 @@ class TestMockDataFactory:
         assert client.id.startswith("CLI-")
         assert client.name is not None
         assert client.industry in [
-            "Technology", "Healthcare", "Finance", "E-commerce", "Real Estate",
-            "Education", "Manufacturing", "Logistics", "Marketing", "Legal",
-            "Consulting", "SaaS", "Fintech", "Proptech", "Edtech"
+            "Technology",
+            "Healthcare",
+            "Finance",
+            "E-commerce",
+            "Real Estate",
+            "Education",
+            "Manufacturing",
+            "Logistics",
+            "Marketing",
+            "Legal",
+            "Consulting",
+            "SaaS",
+            "Fintech",
+            "Proptech",
+            "Edtech",
         ]
         assert 5000 <= client.ltv <= 500000
         assert 50 <= client.health_score <= 100
@@ -197,6 +210,7 @@ class TestMockDataFactory:
 # 🏢 HUB LOGIC TESTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 class TestHubLogic:
     """Test suite for Hub initialization and logic."""
 
@@ -204,6 +218,7 @@ class TestHubLogic:
         """Test EntrepreneurHub can be imported."""
         try:
             from core.entrepreneur_hub import EntrepreneurHub
+
             hub = EntrepreneurHub("Test Agency")
             assert hub is not None
             assert hub.agency_name == "Test Agency"
@@ -214,6 +229,7 @@ class TestHubLogic:
         """Test StrategyOfficer can be imported."""
         try:
             from core.strategy_officer import StrategyOfficer
+
             officer = StrategyOfficer("Test Agency")
             assert officer is not None
         except ImportError as e:
@@ -221,7 +237,8 @@ class TestHubLogic:
 
     def test_hybrid_router_import(self):
         """Test HybridRouter is always available."""
-from core.ai.hybrid_router import HybridRouter
+        from core.ai.hybrid_router import HybridRouter
+
         router = HybridRouter()
         assert router is not None
 
@@ -229,6 +246,7 @@ from core.ai.hybrid_router import HybridRouter
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🔄 INTEGRATION TESTS
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestPlatformIntegration:
     """Integration tests across platform modules."""

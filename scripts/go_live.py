@@ -6,7 +6,6 @@ Verifies the integrity of the 10x Refactored Codebase.
 
 import subprocess
 import sys
-import os
 from datetime import datetime
 from pathlib import Path
 

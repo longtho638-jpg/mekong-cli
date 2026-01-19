@@ -186,7 +186,7 @@ class RevenueAgent:
         print("=" * 60)
 
         # Check Gumroad
-        sales = self.check_sales()
+        self.check_sales()
 
         # Load state
         print("\n💰 CUMULATIVE STATS:")
