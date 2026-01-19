@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mekong.revenue-agent</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/macbookprom1/mekong-cli/.venv/bin/python3</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/revenue_agent.py</string>
+        <string>--cycle</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/macbookprom1/mekong-cli</string>
+    
+    <!-- Run every 30 minutes -->
+    <key>StartInterval</key>
+    <integer>1800</integer>
+    
+    <!-- Also run at startup -->
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <!-- Keep alive -->
+    <key>KeepAlive</key>
+    <false/>
+    
+    <!-- Environment -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/macbookprom1/mekong-cli</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/Users/macbookprom1/mekong-cli/.venv/bin</string>
+    </dict>
+    
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/revenue-agent.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/revenue-agent-error.log</string>
+</dict>
+</plist>
