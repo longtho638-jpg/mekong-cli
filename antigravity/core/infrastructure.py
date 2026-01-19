@@ -94,7 +94,7 @@ class InfrastructureStack:
         """Calculates 0-100 system health score based on layer statuses."""
         weights = {"running": 100, "configured": 90, "warning": 50, "error": 0}
 
-        total = sum(weights.get(l.status, 0) for l in self.layers.values())
+        total = sum(weights.get(lead.status, 0) for lead in self.layers.values())
         return total // len(self.layers) if self.layers else 0
 
     def update_layer(self, layer: StackLayer, status: str, provider: Optional[str] = None):
@@ -110,12 +110,12 @@ class InfrastructureStack:
         """Returns a flat list of layer status for dashboards."""
         return [
             {
-                "id": l.layer.value,
-                "provider": l.provider,
-                "status": l.status,
-                "health": "OK" if l.status in ["running", "configured"] else "FAIL",
+                "id": lead.layer.value,
+                "provider": lead.provider,
+                "status": lead.status,
+                "health": "OK" if lead.status in ["running", "configured"] else "FAIL",
             }
-            for l in self.layers.values()
+            for lead in self.layers.values()
         ]
 
     def print_status_report(self):

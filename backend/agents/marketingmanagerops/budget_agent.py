@@ -81,15 +81,15 @@ class BudgetAgent:
 
     def get_by_category(self, category: BudgetCategory) -> List[BudgetLine]:
         """Get budget lines by category"""
-        return [l for l in self.budget_lines.values() if l.category == category]
+        return [lead for lead in self.budget_lines.values() if lead.category == category]
 
     def get_stats(self) -> Dict:
         """Get budget statistics"""
         lines = list(self.budget_lines.values())
 
-        total_allocated = sum(l.allocated for l in lines)
-        total_spent = sum(l.spent for l in lines)
-        total_revenue = sum(l.revenue for l in lines)
+        total_allocated = sum(lead.allocated for lead in lines)
+        total_spent = sum(lead.spent for lead in lines)
+        total_revenue = sum(lead.revenue for lead in lines)
 
         return {
             "total_budget": self.total_budget,
@@ -101,7 +101,7 @@ class BudgetAgent:
             if total_spent > 0
             else 0,
             "by_category": {
-                cat.value: sum(l.spent for l in self.get_by_category(cat)) for cat in BudgetCategory
+                cat.value: sum(lead.spent for lead in self.get_by_category(cat)) for cat in BudgetCategory
             },
         }
 

@@ -52,7 +52,7 @@ class ProposalService:
 
         # Load lead from repository
         leads = self.outreach_repo.load_leads()
-        lead = next((l for l in leads if l["email"] == email), None)
+        lead = next((item for item in leads if item["email"] == email), None)
 
         if not lead:
             lead = {"name": "Client", "company": "Your Company", "email": email}

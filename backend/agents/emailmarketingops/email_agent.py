@@ -131,7 +131,7 @@ class EmailAgent:
             "total_campaigns": len(campaigns),
             "sent": len(sent),
             "total_lists": len(self.lists),
-            "total_subscribers": sum(l.subscribers for l in self.lists.values()),
+            "total_subscribers": sum(lead.subscribers for lead in self.lists.values()),
             "avg_open_rate": sum(c.open_rate for c in sent) / len(sent) if sent else 0,
             "avg_click_rate": sum(c.click_rate for c in sent) / len(sent) if sent else 0,
         }

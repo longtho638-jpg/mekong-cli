@@ -317,14 +317,14 @@ class SelfImproveEngine:
         try:
             data = [
                 {
-                    "id": l.id,
-                    "source": l.source.value,
-                    "pattern": l.pattern,
-                    "solution": l.solution,
-                    "confidence": l.confidence,
-                    "occurrences": l.occurrences,
+                    "id": lead.id,
+                    "source": lead.source.value,
+                    "pattern": lead.pattern,
+                    "solution": lead.solution,
+                    "confidence": lead.confidence,
+                    "occurrences": lead.occurrences,
                 }
-                for l in self.learnings.values()
+                for lead in self.learnings.values()
             ]
             with open(path, "w") as f:
                 json.dump(data, f, indent=2)

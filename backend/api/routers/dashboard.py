@@ -106,13 +106,13 @@ async def get_leads():
     leads = load_json_file("leads.json")
     return [
         Lead(
-            name=l.get("name", ""),
-            email=l.get("email", ""),
-            company=l.get("company", ""),
-            stage=l.get("stage", "new"),
-            added=l.get("added", "")[:10] if l.get("added") else None,
+            name=lead.get("name", ""),
+            email=lead.get("email", ""),
+            company=lead.get("company", ""),
+            stage=lead.get("stage", "new"),
+            added=lead.get("added", "")[:10] if lead.get("added") else None,
         )
-        for l in leads
+        for lead in leads
     ]
 
 
