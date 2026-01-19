@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "$id": "https://claudekit.dev/schemas/ck-config.schema.json",
+  "$id": "https://claudekit.cc/schemas/ck-config.schema.json",
   "title": "ClaudeKit Configuration",
   "description": "Configuration schema for ClaudeKit Engineer .ck.json files",
   "type": "object",

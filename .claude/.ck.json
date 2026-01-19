@@ -11,14 +11,22 @@
     "issuePrefix": "GH-",
     "reportsDir": "reports",
     "resolution": {
-      "order": ["session", "branch"],
+      "order": [
+        "session",
+        "branch"
+      ],
       "branchPattern": "(?:feat|fix|chore|refactor|docs)/(?:[^/]+/)?(.+)"
     },
     "validation": {
       "mode": "prompt",
       "minQuestions": 3,
       "maxQuestions": 8,
-      "focusAreas": ["assumptions", "risks", "tradeoffs", "architecture"]
+      "focusAreas": [
+        "assumptions",
+        "risks",
+        "tradeoffs",
+        "architecture"
+      ]
     }
   },
   "paths": {
@@ -39,7 +47,7 @@
     "framework": "auto"
   },
   "gemini": {
-    "model": "gemini-2.5-flash"
+    "model": "gemini-3.0-flash"
   },
   "skills": {
     "research": {
