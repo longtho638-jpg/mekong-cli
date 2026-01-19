@@ -1,0 +1,208 @@
+# 🏯 Agent Chains Configuration
+# ================================
+#
+# Maps each suite:subcommand to an optimal agent chain.
+# This YAML-driven approach replaces 275+ lines of hardcoded Python definitions.
+
+chains:
+  # 🛠️ Dev Suite
+  - name: dev:cook
+    description: Build a feature end-to-end
+    agents:
+      - agent: planner
+        action: analyze
+        description: Analyze requirements and create plan
+      - agent: researcher
+        action: best_practices
+        description: Research best practices
+      - agent: fullstack-developer
+        action: implement
+        description: Build the feature
+      - agent: tester
+        action: verify
+        description: Run tests
+      - agent: code-reviewer
+        action: review
+        description: Review code quality
+      - agent: git-manager
+        action: commit
+        description: Commit changes
+
+  - name: dev:test
+    description: Run test suite
+    agents:
+      - agent: tester
+        action: run_tests
+        description: Execute test suite
+      - agent: debugger
+        action: analyze_failures
+        description: Analyze any failures
+        optional: true
+
+  - name: dev:ship
+    description: Deploy to production
+    agents:
+      - agent: tester
+        action: verify
+        description: Final verification
+      - agent: git-manager
+        action: push
+        description: Push to remote
+
+  - name: dev:debug
+    description: Debug and fix issues
+    agents:
+      - agent: debugger
+        action: investigate
+        description: Investigate the issue
+      - agent: researcher
+        action: solutions
+        description: Research solutions
+      - agent: fullstack-developer
+        action: fix
+        description: Apply fix
+      - agent: tester
+        action: verify
+        description: Verify fix
+
+  # 💰 Revenue Suite
+  - name: revenue:quote
+    description: Generate client quote
+    agents:
+      - agent: client-magnet
+        action: qualify
+        description: Qualify the client
+      - agent: money-maker
+        action: price
+        description: Calculate pricing
+      - agent: deal-closer
+        action: validate
+        description: Validate WIN-WIN-WIN
+
+  - name: revenue:proposal
+    description: Create full proposal
+    agents:
+      - agent: researcher
+        action: client_research
+        description: Research client
+      - agent: money-maker
+        action: quote
+        description: Generate quote
+      - agent: copywriter
+        action: write
+        description: Write proposal
+      - agent: deal-closer
+        action: validate
+        description: Validate alignment
+
+  # 🏯 Strategy Suite
+  - name: strategy:analyze
+    description: Strategic analysis
+    agents:
+      - agent: researcher
+        action: market_scan
+        description: Scan market
+      - agent: binh-phap-strategist
+        action: analyze
+        description: Apply Binh Pháp
+      - agent: growth-strategist
+        action: recommend
+        description: Growth recommendations
+
+  # 🎨 Content Suite
+  - name: content:write
+    description: Write content
+    agents:
+      - agent: researcher
+        action: topic_research
+        description: Research topic
+      - agent: copywriter
+        action: write
+        description: Write content
+      - agent: content-factory
+        action: optimize
+        description: Optimize for engagement
+
+  # 📄 Docs Suite
+  - name: docs:init
+    description: Initialize documentation
+    agents:
+      - agent: scout
+        action: scan
+        description: Scan codebase
+      - agent: docs-manager
+        action: init
+        description: Initialize docs
+
+  - name: docs:update
+    description: Update documentation
+    agents:
+      - agent: docs-manager
+        action: update
+        description: Update documentation
+      - agent: git-manager
+        action: commit
+        description: Commit changes
+
+  # 🔧 Git Suite
+  - name: git:cm
+    description: Commit changes
+    agents:
+      - agent: git-manager
+        action: commit
+        description: Stage and commit
+
+  - name: git:pr
+    description: Create pull request
+    agents:
+      - agent: git-manager
+        action: pr
+        description: Create pull request
+      - agent: code-reviewer
+        action: summary
+        description: Add PR summary
+
+  # 🐛 Fix Suite
+  - name: fix:fast
+    description: Quick fix
+    agents:
+      - agent: debugger
+        action: quick_fix
+        description: Apply quick fix
+
+  - name: fix:hard
+    description: Deep investigation and fix
+    agents:
+      - agent: debugger
+        action: deep_investigate
+        description: Deep investigation
+      - agent: researcher
+        action: solutions
+        description: Research solutions
+      - agent: fullstack-developer
+        action: fix
+        description: Apply fix
+      - agent: tester
+        action: regression
+        description: Regression test
+
+  # 🎨 Design Suite
+  - name: design:fast
+    description: Quick design
+    agents:
+      - agent: ui-ux-designer
+        action: quick_design
+        description: Quick design
+
+  - name: design:good
+    description: High-quality design
+    agents:
+      - agent: researcher
+        action: inspiration
+        description: Research inspiration
+      - agent: ui-ux-designer
+        action: design
+        description: Create design
+      - agent: flow-expert
+        action: review
+        description: Review flow
