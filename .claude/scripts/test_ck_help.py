@@ -79,14 +79,14 @@ def main():
     test(
         "1.1 Empty input → overview",
         "",
-        expect_contains=["ClaudeKit Commands", "Quick Start"],
+        expect_contains=["AgencyOS Commands", "Quick Start"],
         expect_type="category-guide"
     )
 
     test(
         "1.2 Single space → overview",
         " ",
-        expect_contains=["ClaudeKit Commands"],
+        expect_contains=["AgencyOS Commands"],
         expect_type="category-guide"
     )
 
@@ -161,7 +161,7 @@ def main():
         ("integrate", "Integration"),
         ("skill", "Skill Management"),
         ("scout", "Codebase Exploration"),
-        ("config", "ClaudeKit Configuration"),
+        ("config", "AgencyOS Configuration"),
         ("coding-level", "Coding Level"),
         ("worktree", "Git Worktrees"),
         ("kanban", "AI Orchestration"),
@@ -306,14 +306,14 @@ def main():
     test(
         "6.1 'config' → comprehensive docs",
         "config",
-        expect_contains=["ClaudeKit Configuration", ".ck.json"],
+        expect_contains=["AgencyOS Configuration", ".ck.json"],
         expect_type="comprehensive-docs"
     )
 
     test(
         "6.2 '.ck.json' → comprehensive docs",
         ".ck.json",
-        expect_contains=["ClaudeKit Configuration"],
+        expect_contains=["AgencyOS Configuration"],
         expect_type="comprehensive-docs"
     )
 

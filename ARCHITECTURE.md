@@ -1,7 +1,7 @@
 # 🏯 Unified Agent Architecture
 
 > **Version**: v3.2.0 | **Date**: 2026-01-19
-> **ClaudeKit-Engineer** + **Antigravity IDE** Unified Framework
+> **AgencyOS Framework** + **Antigravity IDE** Unified Framework
 > **Status**: PRODUCTION READY | Zero Technical Debt
 
 ---
@@ -10,7 +10,7 @@
 
 ```
 mekong-cli/
-├── .claude/                    # ClaudeKit-Engineer (for Claude Code)
+├── .claude/                    # AgencyOS Framework (for Claude Code)
 │   ├── agents/                 # 22 persona-based agents
 │   ├── commands/               # 24 slash commands
 │   ├── hooks/                  # Session & privacy hooks

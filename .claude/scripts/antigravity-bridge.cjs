@@ -2,7 +2,7 @@
 /**
  * AntigravityKit Bridge
  * 
- * Bridges ClaudeKit agents to AntigravityKit Python modules.
+ * Bridges AgencyOS agents to AntigravityKit Python modules.
  * 
  * Usage:
  *   node antigravity-bridge.cjs <command> [args...]
