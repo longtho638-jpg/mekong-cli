@@ -203,6 +203,8 @@ def test_memory_system():
     print("\n🧠 TEST 8: Memory System")
     print("-" * 50)
 
+    from antigravity.platform.memory import Memory
+
     memory = Memory()
 
     # Add observations

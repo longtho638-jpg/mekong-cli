@@ -100,7 +100,7 @@ class TestAnalytics:
         try:
             from core.analytics.analytics import AnalyticsDashboard
 
-            analytics = Analytics()
+            analytics = AnalyticsDashboard()
             assert analytics.mrr >= 0
             assert analytics.arr >= 0
         except ImportError:
