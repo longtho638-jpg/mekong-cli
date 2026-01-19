@@ -97,14 +97,14 @@ class DataSanitizer {
     this.sanitizeFields = sanitizeFields
   }
 
-  sanitize(obj: any): any {
+  sanitize<T>(obj: T): T {
     if (!obj || typeof obj !== 'object') return obj
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.sanitize(item))
+      return obj.map(item => this.sanitize(item)) as unknown as T
     }
 
-    const sanitized: any = {}
+    const sanitized: Record<string, unknown> = {}
     for (const [key, value] of Object.entries(obj)) {
       if (this.shouldSanitize(key)) {
         sanitized[key] = '[REDACTED]'
@@ -157,7 +157,7 @@ class SecurityLogger {
     level: LogLevel,
     event: SecurityEvent | undefined,
     message: string,
-    context: any = {}
+    context: Record<string, unknown> = {}
   ): LogEntry {
     const sanitizedContext = this.sanitizer.sanitize(context)
 
@@ -167,6 +167,8 @@ class SecurityLogger {
       level,
       event,
       message,
+      severity: 5,
+      tags: [],
       ...sanitizedContext,
     }
   }
@@ -221,7 +223,7 @@ class SecurityLogger {
   private async writeToFile(entry: LogEntry): Promise<void> {
     // In production, this would write to structured log files
     // For now, we'll simulate file logging
-    const logLine = JSON.stringify(entry) + '\n'
+    const _logLine = JSON.stringify(entry) + '\n'
     // Implementation would go here
   }
 
@@ -266,7 +268,7 @@ class SecurityLogger {
     level: LogLevel,
     event: SecurityEvent | undefined,
     message: string,
-    context: any = {}
+    context: Record<string, unknown> = {}
   ): Promise<void> {
     if (!this.shouldLog(level)) return
 
@@ -283,19 +285,23 @@ class SecurityLogger {
   }
 
   // Convenience methods
-  async debug(message: string, context: any = {}): Promise<void> {
+  async debug(message: string, context: Record<string, unknown> = {}): Promise<void> {
     await this.log('debug', undefined, message, context)
   }
 
-  async info(message: string, context: any = {}): Promise<void> {
+  async info(message: string, context: Record<string, unknown> = {}): Promise<void> {
     await this.log('info', undefined, message, context)
   }
 
-  async warn(message: string, context: any = {}): Promise<void> {
+  async warn(message: string, context: Record<string, unknown> = {}): Promise<void> {
     await this.log('warn', undefined, message, context)
   }
 
-  async error(message: string, error?: Error, context: any = {}): Promise<void> {
+  async error(
+    message: string,
+    error?: Error,
+    context: Record<string, unknown> = {}
+  ): Promise<void> {
     await this.log('error', 'system_error', message, {
       ...context,
       error: error?.message,
@@ -303,16 +309,24 @@ class SecurityLogger {
     })
   }
 
-  async critical(message: string, context: any = {}): Promise<void> {
+  async critical(message: string, context: Record<string, unknown> = {}): Promise<void> {
     await this.log('critical', undefined, message, context)
   }
 
   // Security-specific methods
-  async security(event: SecurityEvent, message: string, context: any = {}): Promise<void> {
+  async security(
+    event: SecurityEvent,
+    message: string,
+    context: Record<string, unknown> = {}
+  ): Promise<void> {
     await this.log('warn', event, message, context)
   }
 
-  async authentication(success: boolean, userId?: string, context: any = {}): Promise<void> {
+  async authentication(
+    success: boolean,
+    userId?: string,
+    context: Record<string, unknown> = {}
+  ): Promise<void> {
     const event = success ? 'authentication_success' : 'authentication_failure'
     await this.log(
       success ? 'info' : 'warn',
@@ -327,7 +341,7 @@ class SecurityLogger {
     userId: string,
     resource: string,
     action: string,
-    context: any = {}
+    context: Record<string, unknown> = {}
   ): Promise<void> {
     const event = success ? undefined : 'authorization_failure'
     const level = success ? 'debug' : 'warn'
@@ -340,7 +354,12 @@ class SecurityLogger {
     )
   }
 
-  async audit(action: string, resource: string, userId: string, context: any = {}): Promise<void> {
+  async audit(
+    action: string,
+    resource: string,
+    userId: string,
+    context: Record<string, unknown> = {}
+  ): Promise<void> {
     await this.log('info', 'admin_action', `Audit: ${action} on ${resource}`, {
       userId,
       resource,
