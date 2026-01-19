@@ -34,6 +34,10 @@ class TriggerType(Enum):
     GUMROAD_SALE = "gumroad_sale"
     NEW_LEAD = "new_lead"
     EMAIL_RECEIVED = "email_received"
+    # Newsletter-specific triggers
+    NEWSLETTER_SUBSCRIBE = "newsletter_subscribe"
+    NEWSLETTER_UPGRADE = "newsletter_upgrade"
+    NEWSLETTER_LIMIT_HIT = "newsletter_limit_hit"
 
 
 class ActionType(Enum):
@@ -47,6 +51,11 @@ class ActionType(Enum):
     GENERATE_CONTENT = "generate_content"
     DELAY = "delay"
     CONDITION = "condition"
+    # Closed-loop specific actions
+    GENERATE_LICENSE = "generate_license"
+    CREATE_PLATFORM_ACCOUNT = "create_platform_account"
+    UPGRADE_SUBSCRIBER_TIER = "upgrade_subscriber_tier"
+    SYNC_TO_CRM = "sync_to_crm"
 
 
 @dataclass
@@ -97,6 +106,11 @@ class WorkflowEngine:
             ActionType.GENERATE_CONTENT: self._action_generate_content,
             ActionType.DELAY: self._action_delay,
             ActionType.CONDITION: self._action_condition,
+            # Closed-loop handlers
+            ActionType.GENERATE_LICENSE: self._action_generate_license,
+            ActionType.CREATE_PLATFORM_ACCOUNT: self._action_create_platform_account,
+            ActionType.UPGRADE_SUBSCRIBER_TIER: self._action_upgrade_tier,
+            ActionType.SYNC_TO_CRM: self._action_sync_crm,
         }
 
     def _load_workflows(self):
@@ -195,9 +209,9 @@ class WorkflowEngine:
     def _action_send_email(self, config: dict, ctx: dict) -> dict:
         """Send email action."""
         to = config.get("to", ctx.get("email", ""))
-        subject = config.get("subject", "")
-        print(f"     📧 Email to: {to}")
-        return {"sent": True, "to": to}
+        email_subject = config.get("subject", "")
+        print(f"     📧 Email to: {to} | Subject: {email_subject}")
+        return {"sent": True, "to": to, "subject": email_subject}
 
     def _action_send_slack(self, config: dict, ctx: dict) -> dict:
         """Send Slack message."""
@@ -235,6 +249,127 @@ class WorkflowEngine:
         condition = config.get("if", "")
         print(f"     🔀 Condition: {condition}")
         return {"evaluated": True, "condition": condition}
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # ☢️ CLOSED-LOOP ACTION HANDLERS (Nuclear Weaponization)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def _action_generate_license(self, config: dict, ctx: dict) -> dict:
+        """Generate SHA-256 license key for Gumroad customers."""
+        import hashlib
+        import secrets
+
+        email = ctx.get("email", config.get("email", ""))
+        product_id = ctx.get("product_id", config.get("product_id", ""))
+        random_hex = secrets.token_hex(8)
+
+        # SHA-256 license key: hash(email + product_id + random)
+        raw = f"{email}:{product_id}:{random_hex}"
+        license_key = hashlib.sha256(raw.encode()).hexdigest()[:32].upper()
+        formatted_key = "-".join([license_key[i : i + 8] for i in range(0, 32, 8)])
+
+        print(f"     🔑 License generated: {formatted_key[:12]}...")
+
+        # Store in context for downstream nodes
+        ctx["license_key"] = formatted_key
+        ctx["license_raw"] = raw
+
+        return {"generated": True, "license_key": formatted_key, "email": email}
+
+    def _action_create_platform_account(self, config: dict, ctx: dict) -> dict:
+        """Create AgencyOS platform account from Gumroad purchase."""
+        email = ctx.get("email", config.get("email", ""))
+        product = ctx.get("product_name", config.get("product", ""))
+        license_key = ctx.get("license_key", "")
+
+        # Determine tier based on product price
+        price = float(ctx.get("price", config.get("price", 0)))
+        tier = "free"
+        if price >= 97:
+            tier = "pro"
+        elif price >= 27:
+            tier = "starter"
+
+        print(f"     👤 Platform account: {email} ({tier})")
+
+        # Store customer data for persistence
+        customer_data = {
+            "email": email,
+            "tier": tier,
+            "product": product,
+            "license_key": license_key,
+            "created_at": datetime.now().isoformat(),
+        }
+
+        # Save to local customer store
+        customers_file = Path.home() / ".mekong" / "customers.json"
+        customers_file.parent.mkdir(parents=True, exist_ok=True)
+
+        customers = []
+        if customers_file.exists():
+            customers = json.loads(customers_file.read_text())
+        customers.append(customer_data)
+        customers_file.write_text(json.dumps(customers, indent=2))
+
+        ctx["customer_tier"] = tier
+        return {"created": True, "email": email, "tier": tier}
+
+    def _action_upgrade_tier(self, config: dict, ctx: dict) -> dict:
+        """Upgrade newsletter subscriber tier."""
+        email = ctx.get("email", config.get("email", ""))
+        new_tier = config.get("tier", "starter")
+        subscriber_limit = config.get("subscriber_limit", 1000)
+
+        print(f"     ⬆️ Tier upgrade: {email} → {new_tier} ({subscriber_limit} subs)")
+
+        # Update customer file
+        customers_file = Path.home() / ".mekong" / "customers.json"
+        if customers_file.exists():
+            customers = json.loads(customers_file.read_text())
+            for c in customers:
+                if c.get("email") == email:
+                    c["tier"] = new_tier
+                    c["subscriber_limit"] = subscriber_limit
+                    c["upgraded_at"] = datetime.now().isoformat()
+            customers_file.write_text(json.dumps(customers, indent=2))
+
+        return {"upgraded": True, "email": email, "tier": new_tier}
+
+    def _action_sync_crm(self, config: dict, ctx: dict) -> dict:
+        """Sync customer to CRM (leads.json)."""
+        email = ctx.get("email", config.get("email", ""))
+        name = ctx.get("name", email.split("@")[0])
+        status = config.get("status", "customer")
+
+        print(f"     📊 CRM sync: {name} ({status})")
+
+        # Add to leads.json
+        leads_file = Path.home() / ".mekong" / "leads.json"
+        leads_file.parent.mkdir(parents=True, exist_ok=True)
+
+        leads = []
+        if leads_file.exists():
+            leads = json.loads(leads_file.read_text())
+
+        # Check if lead already exists
+        existing = next((lead for lead in leads if lead.get("email") == email), None)
+        if existing:
+            existing["status"] = status
+            existing["updated_at"] = datetime.now().isoformat()
+        else:
+            leads.append(
+                {
+                    "name": name,
+                    "email": email,
+                    "status": status,
+                    "source": "gumroad",
+                    "created_at": datetime.now().isoformat(),
+                }
+            )
+
+        leads_file.write_text(json.dumps(leads, indent=2))
+
+        return {"synced": True, "email": email, "status": status}
 
     # ═══════════════════════════════════════════════════════════════════════
     # 📋 WORKFLOW TEMPLATES
@@ -319,6 +454,123 @@ class WorkflowEngine:
         )
         return wf
 
+    def create_gumroad_closed_loop_workflow(self) -> Workflow:
+        """Template: Full closed-loop Gumroad → Platform workflow."""
+        wf = Workflow(
+            id="gumroad_closed_loop",
+            name="☢️ Gumroad → AgencyOS Closed-Loop",
+            trigger=TriggerType.GUMROAD_SALE,
+            nodes=[
+                WorkflowNode(
+                    id="generate_license",
+                    type=ActionType.GENERATE_LICENSE,
+                    config={},
+                    next_nodes=["create_account"],
+                ),
+                WorkflowNode(
+                    id="create_account",
+                    type=ActionType.CREATE_PLATFORM_ACCOUNT,
+                    config={},
+                    next_nodes=["sync_crm"],
+                ),
+                WorkflowNode(
+                    id="sync_crm",
+                    type=ActionType.SYNC_TO_CRM,
+                    config={"status": "customer"},
+                    next_nodes=["notify_slack"],
+                ),
+                WorkflowNode(
+                    id="notify_slack",
+                    type=ActionType.SEND_SLACK,
+                    config={"channel": "#sales", "message": "🎉 New customer!"},
+                    next_nodes=["send_welcome"],
+                ),
+                WorkflowNode(
+                    id="send_welcome",
+                    type=ActionType.SEND_EMAIL,
+                    config={"subject": "Welcome! Your license key is ready"},
+                ),
+            ],
+        )
+        return wf
+
+    def create_newsletter_subscribe_workflow(self) -> Workflow:
+        """Template: Newsletter subscription workflow."""
+        wf = Workflow(
+            id="newsletter_subscribe_workflow",
+            name="📧 Newsletter Subscribe → Platform",
+            trigger=TriggerType.NEWSLETTER_SUBSCRIBE,
+            nodes=[
+                WorkflowNode(
+                    id="create_subscriber",
+                    type=ActionType.CREATE_PLATFORM_ACCOUNT,
+                    config={"tier": "free"},
+                    next_nodes=["sync_crm"],
+                ),
+                WorkflowNode(
+                    id="sync_crm",
+                    type=ActionType.SYNC_TO_CRM,
+                    config={"status": "subscriber"},
+                    next_nodes=["send_welcome"],
+                ),
+                WorkflowNode(
+                    id="send_welcome",
+                    type=ActionType.SEND_EMAIL,
+                    config={"subject": "Welcome to Mekong Mail!"},
+                    next_nodes=["wait_7days"],
+                ),
+                WorkflowNode(
+                    id="wait_7days",
+                    type=ActionType.DELAY,
+                    config={"seconds": 7 * 24 * 60 * 60},
+                    next_nodes=["send_upgrade_prompt"],
+                ),
+                WorkflowNode(
+                    id="send_upgrade_prompt",
+                    type=ActionType.SEND_EMAIL,
+                    config={
+                        "subject": "🚀 Upgrade to Starter ($9/mo)",
+                        "template": "upgrade_prompt",
+                    },
+                ),
+            ],
+        )
+        return wf
+
+    def create_newsletter_limit_hit_workflow(self) -> Workflow:
+        """Template: Newsletter subscriber limit reached workflow."""
+        wf = Workflow(
+            id="newsletter_limit_hit_workflow",
+            name="⚠️ Newsletter Limit Hit → Upgrade",
+            trigger=TriggerType.NEWSLETTER_LIMIT_HIT,
+            nodes=[
+                WorkflowNode(
+                    id="send_limit_warning",
+                    type=ActionType.SEND_EMAIL,
+                    config={
+                        "subject": "You've hit your subscriber limit!",
+                        "template": "limit_warning",
+                    },
+                    next_nodes=["wait_3days"],
+                ),
+                WorkflowNode(
+                    id="wait_3days",
+                    type=ActionType.DELAY,
+                    config={"seconds": 3 * 24 * 60 * 60},
+                    next_nodes=["send_discount"],
+                ),
+                WorkflowNode(
+                    id="send_discount",
+                    type=ActionType.SEND_EMAIL,
+                    config={
+                        "subject": "🎁 50% off Starter tier - UPGRADE50",
+                        "template": "discount_offer",
+                    },
+                ),
+            ],
+        )
+        return wf
+
     # ═══════════════════════════════════════════════════════════════════════
     # 🎮 CLI INTERFACE
     # ═══════════════════════════════════════════════════════════════════════
@@ -341,6 +593,10 @@ class WorkflowEngine:
             self.create_gumroad_sale_workflow(),
             self.create_lead_nurture_workflow(),
             self.create_content_pipeline_workflow(),
+            # Closed-loop workflows (Nuclear Weaponization)
+            self.create_gumroad_closed_loop_workflow(),
+            self.create_newsletter_subscribe_workflow(),
+            self.create_newsletter_limit_hit_workflow(),
         ]
 
         for wf in templates:

@@ -94,7 +94,41 @@ async def process_purchase(purchase: GumroadPurchase):
     _customers[purchase.email] = customer
     _purchases.append({**customer, "price": purchase.price, "currency": purchase.currency})
 
-    # Send welcome email
+    # ☢️ NUCLEAR WEAPONIZATION: Trigger Workflow Engine
+    try:
+        import sys
+        from pathlib import Path
+
+        # Add project root to path
+        project_root = Path(__file__).parent.parent.parent.parent
+        sys.path.insert(0, str(project_root))
+
+        from scripts.vibeos.workflow_engine import WorkflowEngine
+
+        engine = WorkflowEngine()
+
+        # Ensure templates are installed
+        if "gumroad_closed_loop" not in engine.workflows:
+            engine.install_templates()
+
+        # Execute closed-loop workflow with purchase context
+        context = {
+            "email": purchase.email,
+            "product_id": purchase.product_id,
+            "product_name": purchase.product_name,
+            "price": purchase.price,
+            "sale_id": purchase.sale_id,
+            "license_key": license_key,
+        }
+
+        engine.execute("gumroad_closed_loop", context)
+        logger.info(f"☢️ Workflow triggered for {purchase.email}")
+
+    except Exception as e:
+        logger.error(f"⚠️ Workflow execution failed: {e}")
+        # Continue with legacy flow as fallback
+
+    # Legacy: Send welcome email
     await send_welcome_email(customer)
 
     logger.info(f"✅ Customer created: {purchase.email} with license {license_key}")
