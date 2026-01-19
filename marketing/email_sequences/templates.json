@@ -1,0 +1,25 @@
+{
+  "templates": {
+    "upgrade_prompt": {
+      "subject": "🚀 Ready to scale? Upgrade to {{tier_name}}",
+      "html": "<div style='font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;'><h1 style='color: #1a1a1a;'>Time to level up, {{name}}!</h1><p style='color: #666; font-size: 16px;'>You've been crushing it with {{current_tier}}. Here's what you're missing in {{tier_name}}:</p><ul style='color: #333;'><li>{{benefit_1}}</li><li>{{benefit_2}}</li><li>{{benefit_3}}</li></ul><a href='{{upgrade_url}}' style='display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; font-weight: bold; text-decoration: none; border-radius: 50px; margin: 20px 0;'>Upgrade Now →</a><p style='color: #999; font-size: 14px;'>Questions? Reply to this email.</p></div>"
+    },
+    "limit_warning": {
+      "subject": "⚠️ You've hit your subscriber limit",
+      "html": "<div style='font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;'><h1 style='color: #1a1a1a;'>Heads up, {{name}}!</h1><p style='color: #666; font-size: 16px;'>You've reached <strong>{{current_count}}/{{limit}}</strong> subscribers on your {{current_tier}} plan.</p><p style='color: #666;'>Upgrade to {{next_tier}} to unlock:</p><ul><li>{{subscriber_limit}} subscribers</li><li>Advanced analytics</li><li>Custom branding</li></ul><a href='{{upgrade_url}}' style='display: inline-block; padding: 16px 32px; background: #ff6b6b; color: #fff; font-weight: bold; text-decoration: none; border-radius: 50px;'>Upgrade to {{next_tier}} →</a></div>"
+    },
+    "discount_offer": {
+      "subject": "🎁 {{discount_percent}}% off - Last chance!",
+      "html": "<div style='font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;'><h1 style='color: #1a1a1a;'>Special offer for you, {{name}}</h1><p style='color: #666; font-size: 18px;'>Use code <strong style='color: #ffd700;'>{{discount_code}}</strong> for {{discount_percent}}% off {{product_name}}.</p><p style='color: #ff6b6b; font-weight: bold;'>Expires in 24 hours!</p><a href='{{checkout_url}}?code={{discount_code}}' style='display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #4ade80, #22c55e); color: #000; font-weight: bold; text-decoration: none; border-radius: 50px;'>Claim {{discount_percent}}% Off →</a></div>"
+    },
+    "welcome": {
+      "subject": "🎉 Welcome to {{product_name}}!",
+      "html": "<div style='font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;'><h1 style='color: #1a1a1a;'>Welcome, {{name}}! 🎉</h1><p style='color: #666; font-size: 16px;'>Thanks for joining {{product_name}}. Here's what happens next:</p><ol style='color: #333;'><li><strong>Download</strong>: <a href='{{download_url}}'>Click here to download</a></li><li><strong>Setup</strong>: Follow the README for quick start</li><li><strong>Support</strong>: Reply to any email for help</li></ol><p style='color: #666;'>Your license key: <code style='background: #f4f4f4; padding: 4px 8px;'>{{license_key}}</code></p><a href='{{docs_url}}' style='display: inline-block; padding: 16px 32px; background: #8b5cf6; color: #fff; font-weight: bold; text-decoration: none; border-radius: 50px;'>Read Documentation →</a></div>"
+    }
+  },
+  "config": {
+    "sender_name": "BillMentor",
+    "sender_email": "billwill.mentor@gmail.com",
+    "reply_to": "billwill.mentor@gmail.com"
+  }
+}

@@ -1,34 +1,107 @@
-# AgencyOS Documentation Index
+# 📚 BillMentor Documentation Hub
 
-## 📚 Documentation Structure
+Welcome to the official documentation for BillMentor products.
 
-### 🎯 Standards & Guidelines
-- [Integrated Standards](./standards/integrated-standards.md)
-- [VIBE Development Standards](./standards/vibe-development-standards.md)
-- [Claude Standards](./standards/claude-standards.md)
+## 🏠 Quick Links
 
-### 🔄 Workflows  
-- [Workflows Index](./workflows/README.md)
-- [Primary Workflow](./workflows/primary-workflow.md)
-- [Development Rules](./workflows/development-rules.md)
-
-### 📖 Project Documentation
-- [Project Overview](./project-overview-pdr.md)
-- [Code Standards](./code-standards.md)
-- [System Architecture](./system-architecture.md)
-- [Design Guidelines](./design-guidelines.md)
-- [Deployment Guide](./deployment-guide.md)
-- [Project Roadmap](./project-roadmap.md)
-
-### 🔧 Reference
-- [Skills Registry](../.claude-skills/README.md)
-
-## 🚀 Quick Start
-
-1. **New to AgencyOS?** Start with Project Overview
-2. **Ready to code?** Read Integrated Standards  
-3. **Need guidance?** Check Workflows Index
+| Product         | Documentation       | Support                     |
+| :-------------- | :------------------ | :-------------------------- |
+| AgencyOS Pro    | [Docs](/agencyos)   | [Help](/support/agencyos)   |
+| FastAPI Starter | [Docs](/fastapi)    | [Help](/support/fastapi)    |
+| Admin Dashboard | [Docs](/dashboard)  | [Help](/support/dashboard)  |
+| Mekong Mail     | [Docs](/newsletter) | [Help](/support/newsletter) |
 
 ---
 
-*Documentation managed by unified documentation manager*
+## 🚀 Getting Started
+
+### 1. Download Your Product
+
+After purchase, you'll receive an email with:
+
+- Download link (valid for 30 days)
+- License key
+- Quick start guide
+
+### 2. Install Dependencies
+
+```bash
+# For Python products
+pip install -r requirements.txt
+
+# For Node.js products
+npm install
+```
+
+### 3. Configure Environment
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+### 4. Run the Project
+
+```bash
+# Python
+python main.py
+
+# Node.js
+npm run dev
+```
+
+---
+
+## 📖 Product Documentation
+
+### AgencyOS Pro
+
+- [Installation Guide](/agencyos/install)
+- [Binh Pháp Framework](/agencyos/binh-phap)
+- [CRM Setup](/agencyos/crm)
+- [Automation Workflows](/agencyos/workflows)
+
+### FastAPI Starter
+
+- [Quick Start](/fastapi/quickstart)
+- [Authentication](/fastapi/auth)
+- [Database (Supabase)](/fastapi/database)
+- [Deployment](/fastapi/deploy)
+
+### Admin Dashboard
+
+- [Components Library](/dashboard/components)
+- [Theming](/dashboard/theming)
+- [Charts & Analytics](/dashboard/charts)
+
+---
+
+## 🛟 Support
+
+| Channel       | Response Time |
+| :------------ | :------------ |
+| Email         | 24-48 hours   |
+| Discord       | Same day      |
+| GitHub Issues | 48-72 hours   |
+
+### Contact
+
+- **Email**: billwill.mentor@gmail.com
+- **Discord**: [Join Server](https://discord.gg/billmentor)
+- **Twitter**: [@billmentor](https://twitter.com/billmentor)
+
+---
+
+## 📄 License
+
+All products are licensed under the BillMentor Commercial License.
+
+- ✅ Use in unlimited personal/commercial projects
+- ✅ Modify and customize
+- ❌ Redistribute or resell
+- ❌ Share license key
+
+---
+
+_Last updated: January 2026_
