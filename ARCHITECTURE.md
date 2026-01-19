@@ -1,7 +1,8 @@
 # 🏯 Unified Agent Architecture
 
-> **Version**: v3.1.1 | **Date**: 2026-01-17
+> **Version**: v3.2.0 | **Date**: 2026-01-19
 > **ClaudeKit-Engineer** + **Antigravity IDE** Unified Framework
+> **Status**: PRODUCTION READY | Zero Technical Debt
 
 ---
 
@@ -11,7 +12,7 @@
 mekong-cli/
 ├── .claude/                    # ClaudeKit-Engineer (for Claude Code)
 │   ├── agents/                 # 22 persona-based agents
-│   ├── commands/               # 11 slash commands
+│   ├── commands/               # 24 slash commands
 │   ├── hooks/                  # Session & privacy hooks
 │   ├── skills/                 # 39+ deep skill modules
 │   └── settings.json           # Claude-specific config
@@ -22,11 +23,12 @@ mekong-cli/
 │   │   ├── hubs/               # Department hubs (18)
 │   │   ├── ops/                # Operations agents (34)
 │   │   └── mekongAgent/        # Community imports (42)
-│   ├── workflows/              # 29 agentic workflows
+│   ├── workflows/              # 40 agentic workflows
 │   ├── skills/                 # Quick skills (6 categories)
 │   └── crews/                  # Multi-agent crews
 │
-├── products/                   # 📦 Product Catalog (NEW)
+├── products/                   # 📦 Product Catalog
+│   ├── vscode-starter-pack/    # $0 (Lead Magnet)
 │   ├── ai-skills-pack/         # $27
 │   ├── vietnamese-agency-kit/  # $67
 │   ├── agencyos-pro/           # $197
@@ -46,7 +48,7 @@ mekong-cli/
 | Pro        | AgencyOS Pro        | $197  |
 | Enterprise | AgencyOS Enterprise | $497  |
 
-**Total Catalog Value:** $983+
+**Total Catalog Value:** $916+
 
 ---
 
@@ -66,8 +68,8 @@ mekong-cli/
 | --------- | ------ | ------------ | ----- |
 | Agents    | 22     | 106          | 128   |
 | Skills    | 39     | 6 categories | 45+   |
-| Workflows | 11     | 29           | 40    |
-| Products  | —      | —            | 12    |
+| Workflows | 24     | 40           | 64    |
+| Products  | —      | —            | 15    |
 
 ---
 
@@ -78,4 +80,4 @@ mekong-cli/
 
 ---
 
-_Unified Architecture by AgencyOS | v3.1.1 | January 17, 2026_
+_Unified Architecture by AgencyOS | v3.2.0 | January 19, 2026_
