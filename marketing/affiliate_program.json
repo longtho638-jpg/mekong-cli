@@ -1,0 +1,95 @@
+{
+  "program": {
+    "name": "BillMentor Affiliate Program",
+    "commission_rate": 20,
+    "cookie_duration_days": 30,
+    "min_payout": 50,
+    "payout_method": ["PayPal", "bank_transfer"],
+    "payout_schedule": "Monthly (15th)"
+  },
+  "tiers": [
+    {
+      "name": "Starter Affiliate",
+      "min_sales": 0,
+      "commission_rate": 20,
+      "benefits": ["20% commission", "Affiliate dashboard", "Email support"]
+    },
+    {
+      "name": "Pro Affiliate",
+      "min_sales": 10,
+      "commission_rate": 25,
+      "benefits": ["25% commission", "Priority support", "Custom landing pages"]
+    },
+    {
+      "name": "Elite Affiliate",
+      "min_sales": 50,
+      "commission_rate": 30,
+      "benefits": [
+        "30% commission",
+        "Dedicated manager",
+        "Co-marketing opportunities"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": "vscode-starter",
+      "name": "VSCode Starter Pack",
+      "price": 0,
+      "commission": 0,
+      "note": "Lead magnet - no commission but counts toward tier"
+    },
+    {
+      "id": "ai-skills-pack",
+      "name": "AI Skills Pack",
+      "price": 27,
+      "commission": 5.4
+    },
+    {
+      "id": "auth-starter",
+      "name": "Auth Starter (Supabase)",
+      "price": 27,
+      "commission": 5.4
+    },
+    {
+      "id": "fastapi-starter",
+      "name": "FastAPI Starter",
+      "price": 37,
+      "commission": 7.4
+    },
+    {
+      "id": "landing-page-kit",
+      "name": "Landing Page Kit",
+      "price": 37,
+      "commission": 7.4
+    },
+    {
+      "id": "dashboard-lite",
+      "name": "Admin Dashboard Lite",
+      "price": 47,
+      "commission": 9.4
+    },
+    {
+      "id": "agencyos-pro",
+      "name": "AgencyOS Pro",
+      "price": 197,
+      "commission": 39.4
+    },
+    {
+      "id": "agencyos-enterprise",
+      "name": "AgencyOS Enterprise",
+      "price": 497,
+      "commission": 99.4
+    }
+  ],
+  "links": {
+    "signup": "https://billmentor.gumroad.com/affiliates",
+    "dashboard": "https://gumroad.com/affiliates",
+    "terms": "https://billmentor.com/affiliate-terms"
+  },
+  "marketing_assets": {
+    "banners": ["728x90", "300x250", "160x600"],
+    "social_posts": "Pre-written Twitter/LinkedIn posts",
+    "email_swipes": "Copy-paste email templates"
+  }
+}

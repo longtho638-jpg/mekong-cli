@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Mekong Mail - Newsletter Platform for Creators</title>
+        <meta
+            name="description"
+            content="Simple, powerful newsletter platform. Start free with 100 subscribers. No credit card required."
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: #fff;
+                min-height: 100vh;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Hero */
+            .hero {
+                text-align: center;
+                padding: 100px 20px 60px;
+            }
+            .hero h1 {
+                font-size: 3.5rem;
+                background: linear-gradient(135deg, #22c55e, #10b981);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 20px;
+            }
+            .hero p {
+                font-size: 1.25rem;
+                color: #94a3b8;
+                max-width: 600px;
+                margin: 0 auto 40px;
+            }
+
+            /* Pricing */
+            .pricing {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 24px;
+                padding: 60px 20px;
+            }
+            .plan {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 32px;
+                transition:
+                    transform 0.3s,
+                    border-color 0.3s;
+            }
+            .plan:hover {
+                transform: translateY(-5px);
+                border-color: #22c55e;
+            }
+            .plan.featured {
+                border-color: #22c55e;
+                background: linear-gradient(
+                    135deg,
+                    rgba(34, 197, 94, 0.1),
+                    rgba(16, 185, 129, 0.05)
+                );
+            }
+            .plan h3 {
+                font-size: 1.5rem;
+                margin-bottom: 8px;
+            }
+            .plan .price {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #22c55e;
+            }
+            .plan .price span {
+                font-size: 1rem;
+                color: #94a3b8;
+            }
+            .plan ul {
+                list-style: none;
+                margin: 24px 0;
+            }
+            .plan ul li {
+                padding: 8px 0;
+                color: #cbd5e1;
+            }
+            .plan ul li::before {
+                content: "✓ ";
+                color: #22c55e;
+            }
+            .plan .cta {
+                display: block;
+                width: 100%;
+                padding: 14px;
+                background: linear-gradient(135deg, #22c55e, #10b981);
+                color: #000;
+                font-weight: 700;
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                text-decoration: none;
+                text-align: center;
+                transition: transform 0.3s;
+            }
+            .plan .cta:hover {
+                transform: scale(1.02);
+            }
+
+            /* Features */
+            .features {
+                padding: 60px 20px;
+                text-align: center;
+            }
+            .features h2 {
+                font-size: 2rem;
+                margin-bottom: 40px;
+                color: #22c55e;
+            }
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 32px;
+            }
+            .feature {
+                padding: 24px;
+            }
+            .feature .icon {
+                font-size: 2.5rem;
+                margin-bottom: 16px;
+            }
+            .feature h4 {
+                margin-bottom: 8px;
+            }
+            .feature p {
+                color: #94a3b8;
+                font-size: 0.9rem;
+            }
+
+            /* Footer */
+            footer {
+                text-align: center;
+                padding: 40px 20px;
+                color: #64748b;
+            }
+            footer a {
+                color: #22c55e;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="hero">
+            <div class="container">
+                <h1>📧 Mekong Mail</h1>
+                <p>
+                    Simple, powerful newsletter platform for creators. Start
+                    free with 100 subscribers. No credit card required.
+                </p>
+            </div>
+        </div>
+
+        <section class="pricing">
+            <div class="container" style="display: contents">
+                <div class="plan">
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/month</span></div>
+                    <ul>
+                        <li>100 subscribers</li>
+                        <li>1 newsletter</li>
+                        <li>Basic analytics</li>
+                        <li>Mekong branding</li>
+                    </ul>
+                    <a href="#signup" class="cta">Start Free →</a>
+                </div>
+
+                <div class="plan featured">
+                    <h3>Starter ⭐</h3>
+                    <div class="price">$9<span>/month</span></div>
+                    <ul>
+                        <li>1,000 subscribers</li>
+                        <li>Unlimited newsletters</li>
+                        <li>Advanced analytics</li>
+                        <li>Remove branding</li>
+                        <li>Custom domain</li>
+                    </ul>
+                    <a
+                        href="https://billmentor.gumroad.com/l/mekong-mail-starter"
+                        class="cta"
+                        >Get Starter →</a
+                    >
+                </div>
+
+                <div class="plan">
+                    <h3>Pro</h3>
+                    <div class="price">$29<span>/month</span></div>
+                    <ul>
+                        <li>5,000 subscribers</li>
+                        <li>AgencyOS integration</li>
+                        <li>A/B testing</li>
+                        <li>API access</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a
+                        href="https://billmentor.gumroad.com/l/mekong-mail-pro"
+                        class="cta"
+                        >Get Pro →</a
+                    >
+                </div>
+
+                <div class="plan">
+                    <h3>Scale</h3>
+                    <div class="price">$99<span>/month</span></div>
+                    <ul>
+                        <li>Unlimited subscribers</li>
+                        <li>White-label</li>
+                        <li>Multi-team</li>
+                        <li>Dedicated support</li>
+                        <li>SLA guarantee</li>
+                    </ul>
+                    <a
+                        href="https://billmentor.gumroad.com/l/mekong-mail-scale"
+                        class="cta"
+                        >Get Scale →</a
+                    >
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>Why Mekong Mail?</h2>
+                <div class="feature-grid">
+                    <div class="feature">
+                        <div class="icon">⚡</div>
+                        <h4>Blazing Fast</h4>
+                        <p>Send to 10K subscribers in under a minute.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">📊</div>
+                        <h4>Real Analytics</h4>
+                        <p>Open rates, click tracking, growth metrics.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">🔗</div>
+                        <h4>AgencyOS Integration</h4>
+                        <p>Connect with your CRM and workflows.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">🚀</div>
+                        <h4>Viral Growth</h4>
+                        <p>Built-in referral system to grow faster.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>
+                Part of the
+                <a href="https://agencyos.network">AgencyOS</a> ecosystem
+            </p>
+            <p style="margin-top: 10px">
+                📧 Mekong Mail - "Bất chiến nhi thắng"
+            </p>
+        </footer>
+    </body>
+</html>
