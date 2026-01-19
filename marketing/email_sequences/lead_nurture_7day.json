@@ -1,0 +1,89 @@
+{
+  "name": "Lead Nurture 7-Day Sequence",
+  "trigger": "email_signup",
+  "emails": [
+    {
+      "day": 0,
+      "subject": "🎁 Your FREE VSCode Starter Pack is ready!",
+      "template": "welcome",
+      "content": {
+        "heading": "Welcome to the BillMentor family!",
+        "body": "Here's your download link for the VSCode Starter Pack. Inside you'll find pre-configured settings, productivity extensions, and code snippets that will 10x your output.",
+        "cta_text": "Download Now →",
+        "cta_url": "https://billmentor.gumroad.com/l/vscode-starter"
+      }
+    },
+    {
+      "day": 1,
+      "subject": "🏯 The secret weapon: Binh Pháp Framework",
+      "template": "value",
+      "content": {
+        "heading": "Why 10 products, $0 marketing?",
+        "body": "I built $1M revenue potential using ancient strategy. The Binh Pháp (Art of War) framework teaches 'Win Without Fighting' - meaning products that sell themselves through value, not ads.",
+        "cta_text": "Learn the Framework →",
+        "cta_url": "https://billmentor.gumroad.com"
+      }
+    },
+    {
+      "day": 3,
+      "subject": "🐍 FastAPI in 5 minutes (your next skill)",
+      "template": "education",
+      "content": {
+        "heading": "Build APIs like a pro",
+        "body": "Python + FastAPI is the fastest way to build production APIs. Our starter template has auth, CORS, rate limiting, and Supabase integration ready to go.",
+        "cta_text": "Get FastAPI Starter ($37) →",
+        "cta_url": "https://billmentor.gumroad.com/l/fastapi-starter"
+      }
+    },
+    {
+      "day": 5,
+      "subject": "📊 This dashboard took 6 months to build",
+      "template": "case_study",
+      "content": {
+        "heading": "Admin Dashboard Pro - now yours in 5 minutes",
+        "body": "React + TypeScript + Charts + CRM + Analytics. All the features you need to run a modern agency. I built this over 6 months of client work.",
+        "cta_text": "Get Dashboard Lite ($47) →",
+        "cta_url": "https://billmentor.gumroad.com/l/dashboard-lite"
+      }
+    },
+    {
+      "day": 7,
+      "subject": "🔥 LAST CHANCE: 50% off AgencyOS Pro",
+      "template": "urgency",
+      "content": {
+        "heading": "Your exclusive discount expires in 24 hours",
+        "body": "Everything in one bundle: All templates + Dashboard + Binh Pháp Framework. Use code WELCOME50 for 50% off. Regular price returns tomorrow.",
+        "cta_text": "Get 50% Off Now →",
+        "cta_url": "https://billmentor.gumroad.com/l/agencyos-pro?code=WELCOME50",
+        "discount_code": "WELCOME50"
+      }
+    },
+    {
+      "day": 10,
+      "subject": "🏆 Success story: From 0 to $3K/month",
+      "template": "social_proof",
+      "content": {
+        "heading": "How I landed my first $3K retainer",
+        "body": "Using the Ghost CTO framework, I positioned myself as a technical partner, not just a developer. Now I charge $3K/month for strategic guidance. Here's exactly how...",
+        "cta_text": "Read the Full Story →",
+        "cta_url": "https://billmentor.gumroad.com"
+      }
+    },
+    {
+      "day": 14,
+      "subject": "🎯 Still thinking about it?",
+      "template": "winback",
+      "content": {
+        "heading": "One more chance",
+        "body": "I noticed you haven't grabbed AgencyOS Pro yet. Reply to this email with your biggest challenge - I'll personally help you decide if it's right for you.",
+        "cta_text": "Reply Now",
+        "cta_url": "mailto:billwill.mentor@gmail.com"
+      }
+    }
+  ],
+  "metadata": {
+    "created": "2026-01-19",
+    "version": "1.0.0",
+    "conversion_target": "agencyos-pro"
+  }
+}

@@ -190,6 +190,111 @@
                 <a href="https://billmentor.gumroad.com" class="cta-btn"
                     >Browse Store →</a
                 >
+
+                <!-- Email Capture Form -->
+                <div class="email-capture" style="margin-top: 40px">
+                    <p style="color: #a0a0c0; margin-bottom: 16px">
+                        🎁 Get FREE VSCode Starter Pack + 7-day email course
+                    </p>
+                    <form
+                        id="leadForm"
+                        style="
+                            display: flex;
+                            gap: 12px;
+                            justify-content: center;
+                            flex-wrap: wrap;
+                        "
+                    >
+                        <input
+                            type="email"
+                            id="emailInput"
+                            placeholder="your@email.com"
+                            required
+                            style="
+                                padding: 14px 24px;
+                                border-radius: 50px;
+                                border: 2px solid rgba(255, 215, 0, 0.3);
+                                background: rgba(255, 255, 255, 0.05);
+                                color: #fff;
+                                font-size: 1rem;
+                                min-width: 280px;
+                            "
+                        />
+                        <button
+                            type="submit"
+                            style="
+                                padding: 14px 32px;
+                                background: linear-gradient(
+                                    135deg,
+                                    #4ade80,
+                                    #22c55e
+                                );
+                                color: #000;
+                                font-weight: 700;
+                                border: none;
+                                border-radius: 50px;
+                                cursor: pointer;
+                                transition: transform 0.3s;
+                            "
+                        >
+                            Get Free Access →
+                        </button>
+                    </form>
+                    <p
+                        id="formMessage"
+                        style="color: #4ade80; margin-top: 12px; display: none"
+                    ></p>
+                </div>
+
+                <script>
+                    document
+                        .getElementById("leadForm")
+                        .addEventListener("submit", async (e) => {
+                            e.preventDefault();
+                            const email =
+                                document.getElementById("emailInput").value;
+                            const msg = document.getElementById("formMessage");
+
+                            try {
+                                // Send to webhook (local or production)
+                                const webhookUrl =
+                                    window.location.hostname === "localhost"
+                                        ? "http://localhost:8888/webhook/gumroad"
+                                        : "https://are-until-ver-estimated.trycloudflare.com/webhook/gumroad";
+
+                                await fetch(webhookUrl, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/x-www-form-urlencoded",
+                                    },
+                                    body: new URLSearchParams({
+                                        email: email,
+                                        product_id: "vscode-starter-pack",
+                                        product_name:
+                                            "VSCode Starter Pack (Free)",
+                                        price: "0",
+                                        sale_id: "lead-" + Date.now(),
+                                    }),
+                                });
+
+                                msg.textContent =
+                                    "✅ Check your email! Redirecting to download...";
+                                msg.style.display = "block";
+
+                                setTimeout(() => {
+                                    window.location.href =
+                                        "https://billmentor.gumroad.com/l/vscode-starter";
+                                }, 2000);
+                            } catch (err) {
+                                msg.textContent =
+                                    "✅ Redirecting to download...";
+                                msg.style.display = "block";
+                                window.location.href =
+                                    "https://billmentor.gumroad.com/l/vscode-starter";
+                            }
+                        });
+                </script>
             </div>
         </div>
 

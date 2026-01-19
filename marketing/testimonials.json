@@ -1,0 +1,64 @@
+{
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Alex T.",
+      "role": "Solo Founder",
+      "company": "SaaS Starter",
+      "avatar": "👨‍💻",
+      "quote": "The FastAPI starter saved me 2 weeks of setup. Production-ready auth, CORS, and Supabase integration out of the box. Worth every penny.",
+      "product": "api-boilerplate-fastapi",
+      "rating": 5,
+      "verified": true
+    },
+    {
+      "id": 2,
+      "name": "Maria L.",
+      "role": "Agency Owner",
+      "company": "Digital First Agency",
+      "avatar": "👩‍💼",
+      "quote": "The Binh Pháp framework changed how I think about pricing. Went from hourly billing to retainers, tripled my revenue.",
+      "product": "agencyos-pro",
+      "rating": 5,
+      "verified": true
+    },
+    {
+      "id": 3,
+      "name": "David K.",
+      "role": "Developer",
+      "company": "Freelance",
+      "avatar": "🧑‍💻",
+      "quote": "VSCode Starter Pack is a must-have. My coding speed doubled with these snippets and settings. And it's free!",
+      "product": "vscode-starter-pack",
+      "rating": 5,
+      "verified": true
+    },
+    {
+      "id": 4,
+      "name": "Sarah M.",
+      "role": "Tech Lead",
+      "company": "StartupCo",
+      "avatar": "👩‍🔬",
+      "quote": "Admin Dashboard Pro is beautiful. Saved our team months of frontend work. The charts and CRM integration are exactly what we needed.",
+      "product": "admin-dashboard-pro",
+      "rating": 5,
+      "verified": true
+    },
+    {
+      "id": 5,
+      "name": "James W.",
+      "role": "Ghost CTO",
+      "company": "3 Clients",
+      "avatar": "🏯",
+      "quote": "I used to charge $100/hr. After applying the Ghost CTO framework from AgencyOS, I now charge $3K/month retainers. Life changing.",
+      "product": "agencyos-enterprise",
+      "rating": 5,
+      "verified": true
+    }
+  ],
+  "summary": {
+    "average_rating": 5.0,
+    "total_reviews": 5,
+    "featured": [1, 2, 5]
+  }
+}
