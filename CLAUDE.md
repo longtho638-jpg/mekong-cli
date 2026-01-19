@@ -20,6 +20,17 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
+## Configuration Precedence
+
+The project follows a clear configuration hierarchy to resolve conflicts:
+
+1. `.claude/config/` (Project overrides - HIGHEST priority)
+2. `.claude/rules/` (Project defaults)
+3. `$HOME/.claude/workflows/` (Global defaults)
+4. Built-in defaults (LOWEST priority)
+
+See `./.claude/config/precedence.md` for detailed documentation on config resolution.
+
 ## Hook Response Protocol
 
 ### Privacy Block Hook (`@@PRIVACY_PROMPT@@`)

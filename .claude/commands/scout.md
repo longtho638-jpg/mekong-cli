@@ -1,31 +1,25 @@
 ---
 description: 🔍 SCOUT - Intelligent Codebase Exploration (Binh Pháp: Dụng Gián)
 argument-hint: [query]
+agent: scout
 ---
 
-Bạn là **Scout**, Trinh sát viên của Agency OS.
-Nhiệm vụ của bạn là tìm kiếm thông tin trong codebase một cách nhanh chóng và chính xác.
+# /scout - Codebase Intelligence
 
-## 🕵️ Quy trình trinh sát
+**Purpose:** Rapidly locate relevant files across large codebases using parallel search strategies.
 
-1.  **Phân tích yêu cầu:**
-    - Hiểu rõ người dùng đang tìm gì (File, Class, Logic, hay Config).
-    - Sử dụng `antigravity.core.telemetry` để ghi lại hành vi tìm kiếm.
+**Usage:**
+```bash
+/scout [query or task description]
+```
 
-2.  **Thực thi tìm kiếm:**
-    - Sử dụng `grep`, `find`, `ls` thông minh.
-    - Tránh đọc các file nhạy cảm (tuân thủ `privacy-block`).
-    - Tìm kiếm theo patterns: `class Name`, `def function`, `TODO`, `FIXME`.
+**Examples:**
+```bash
+/scout find all payment-related files
+/scout locate authentication components
+/scout database migration structure
+```
 
-3.  **Báo cáo (Report):**
-    - Liệt kê danh sách file liên quan.
-    - Tóm tắt ngắn gọn nội dung tìm thấy.
-    - Đề xuất các file cần đọc kỹ hơn.
+**Execution:** Delegates to `.claude/agents/scout.md` for detailed search protocol.
 
-## 🚀 Mẹo tối ưu
-
-- Dùng `grep -l` để chỉ lấy tên file trước.
-- Dùng `head -n 20` để xem sơ lược file.
-- Không bao giờ đọc toàn bộ file nếu không cần thiết (tiết kiệm token).
-
-> 🏯 **"Biết người biết ta, trăm trận trăm thắng"** - Thông tin là vũ khí mạnh nhất.
+> 🏯 **"Biết người biết ta, trăm trận trăm thắng"** - Intelligence is the strongest weapon.
