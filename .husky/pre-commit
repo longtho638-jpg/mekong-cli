@@ -1,0 +1,27 @@
+#!/bin/sh
+# 🏯 PRE-COMMIT HOOK - Binh Pháp CI Protection Layer 1
+# Runs BEFORE commit is created
+
+echo "🔍 Pre-commit: Running quick checks..."
+
+# Python lint (if ruff available)
+if command -v ruff &> /dev/null; then
+    echo "   → Ruff lint..."
+    ruff check . --fix --quiet || {
+        echo "❌ Ruff lint failed. Fix errors before committing."
+        exit 1
+    }
+fi
+
+# TypeScript check (dashboard only - quick)
+if [ -f "apps/dashboard/tsconfig.json" ]; then
+    echo "   → TypeScript check..."
+    cd apps/dashboard
+    pnpm exec tsc --noEmit --skipLibCheck 2>/dev/null || {
+        echo "❌ TypeScript errors found. Fix before committing."
+        exit 1
+    }
+    cd ../..
+fi
+
+echo "✅ Pre-commit passed"

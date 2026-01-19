@@ -1,0 +1,43 @@
+#!/bin/sh
+# 🏯 PRE-PUSH HOOK - Binh Pháp CI Protection Layer 2
+# Runs BEFORE code is pushed to remote
+
+echo ""
+echo "🚀 Pre-push: Validating before GitHub..."
+echo "============================================"
+
+# Check if we're pushing to main
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" = "main" ]; then
+    echo "   → Pushing to main - running full validation..."
+    
+    # Build check (turbo)
+    echo "   → Building all packages..."
+    pnpm build 2>&1 | tail -5
+    
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "❌ BUILD FAILED - Push blocked!"
+        echo "   Fix build errors before pushing to main."
+        echo "============================================"
+        exit 1
+    fi
+    
+    # Python tests (if pytest available)
+    if [ -d "backend/tests" ]; then
+        echo "   → Running Python tests..."
+        python3 -m pytest backend/tests -q --tb=no 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "❌ Python tests failed - Push blocked!"
+            exit 1
+        fi
+    fi
+    
+    echo ""
+    echo "✅ Pre-push validation passed!"
+    echo "   Safe to push to GitHub."
+    echo "============================================"
+else
+    echo "   → Branch: $BRANCH (non-main, skipping full build)"
+    echo "✅ Pre-push passed"
+fi
