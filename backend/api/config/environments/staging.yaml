@@ -1,0 +1,24 @@
+# Staging Environment Configuration
+# Load this with: ENVIRONMENT=staging in .env
+
+environment: staging
+debug: false
+
+# Allowed hosts
+allowed_hosts:
+  - "staging.agencyos.network"
+  - "staging.billmentor.com"
+
+# CORS origins
+allowed_origins:
+  - "https://staging.agencyos.network"
+
+# URLs
+backend_url: "https://staging.agencyos.network"
+frontend_url: "https://staging.agencyos.network"
+
+# Feature flags
+enable_metrics: true
+enable_rate_limiting: true
+enable_multitenant: true
+enable_validation: true

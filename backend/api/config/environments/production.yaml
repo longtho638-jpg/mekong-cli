@@ -1,0 +1,31 @@
+# Production Environment Configuration
+# Load this with: ENVIRONMENT=production in .env
+
+environment: production
+debug: false
+
+# Allowed hosts
+allowed_hosts:
+  - "api.agencyos.network"
+  - "platform.billmentor.com"
+
+# CORS origins
+allowed_origins:
+  - "https://agencyos.network"
+  - "https://www.agencyos.network"
+  - "https://app.billmentor.com"
+
+# Backend URL
+backend_url: "https://api.agencyos.network"
+
+# Frontend URL
+frontend_url: "https://agencyos.network"
+
+# Webhook portal
+webhook_portal_url: "https://platform.billmentor.com"
+
+# Feature flags
+enable_metrics: true
+enable_rate_limiting: true
+enable_multitenant: true
+enable_validation: true

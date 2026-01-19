@@ -1,26 +1,35 @@
+"""
+DEPRECATED: This file is deprecated.
+
+Use backend.api.schemas instead (directory).
+
+Kept for backward compatibility only.
+"""
+
+import warnings
 from typing import Optional
 
 from pydantic import BaseModel
 
+# Import from new centralized location
+from backend.api.schemas import (
+    AgentTask,
+    CommandRequest,
+    VibeRequest,
+    VibeResponse,
+)
 
-class CommandRequest(BaseModel):
-    """Base request for command execution"""
+warnings.warn(
+    "backend.api.schemas.py is deprecated. Import from backend.api.schemas (directory) instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
-    prompt: str
-    vibe: Optional[str] = "neutral"
-    override_provider: Optional[str] = None
+# Re-export for backward compatibility
+__all__ = [
+    "CommandRequest",
+    "AgentTask",
+    "VibeRequest",
+    "VibeResponse",
+]
 
-
-class AgentTask(BaseModel):
-    """Task for an agent"""
-
-    agent_name: str
-    task: str
-    priority: str = "normal"
-
-
-class VibeRequest(BaseModel):
-    """Request to set vibe"""
-
-    region: str
-    location: Optional[str] = None

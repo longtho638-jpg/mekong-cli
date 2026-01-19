@@ -16,6 +16,9 @@ from prometheus_client import Counter as PromCounter
 from prometheus_client import Gauge as PromGauge
 from prometheus_client import Histogram as PromHistogram
 
+from backend.api.config.settings import settings
+from backend.api.utils.endpoint_categorization import extract_endpoint_name
+
 logger = logging.getLogger(__name__)
 
 # HTTP Metrics
@@ -27,7 +30,7 @@ http_request_duration = PromHistogram(
     "http_request_duration_seconds",
     "HTTP request duration in seconds",
     ["method", "endpoint", "tenant_id"],
-    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0],
+    buckets=settings.metrics_buckets,  # Use config instead of hardcoded
 )
 
 # Tenant Metrics
@@ -123,20 +126,12 @@ class MetricsCollector:
         active_tenants.set(tenant_count)
 
     def _extract_endpoint(self, request: Request) -> str:
-        """Extract endpoint from request path."""
-        path = request.url.path
+        """
+        Extract endpoint from request path.
 
-        # Clean up path for metrics
-        if "?" in path:
-            path = path.split("?")[0]
-
-        # Replace IDs with placeholders
-        parts = path.split("/")
-        for i, part in enumerate(parts):
-            if part.isdigit() or "-" in part and len(part) > 10:
-                parts[i] = "{id}"
-
-        return "/".join(parts)
+        REFACTORED: Now uses shared utility function.
+        """
+        return extract_endpoint_name(request.url.path)
 
 
 # Global metrics collector

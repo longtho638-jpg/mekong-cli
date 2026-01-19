@@ -1,0 +1,22 @@
+# Development Environment Configuration
+# This is the default when ENVIRONMENT is not set
+
+environment: development
+debug: true
+
+# Allowed origins for local development
+allowed_origins:
+  - "http://localhost:3000"
+  - "http://localhost:8000"
+  - "http://localhost:8080"
+  - "http://127.0.0.1:3000"
+
+# Local URLs
+backend_url: "http://localhost:8000"
+frontend_url: "http://localhost:3000"
+
+# Feature flags (all enabled for testing)
+enable_metrics: true
+enable_rate_limiting: false  # Disabled for dev convenience
+enable_multitenant: true
+enable_validation: true

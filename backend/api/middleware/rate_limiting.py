@@ -15,36 +15,28 @@ from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from .multitenant import get_current_tenant
+from backend.api.config.settings import settings
+from backend.api.utils.endpoint_categorization import (
+    categorize_endpoint,
+    get_rate_limit_key,
+    should_skip_rate_limit,
+)
 
-logger = logging.getLogger(__name__)
+from .multitenant import get_current_tenant
 
 logger = logging.getLogger(__name__)
 
 # Initialize rate limiter with memory backend
 limiter = Limiter(key_func=get_remote_address)
 
-# Rate limits by tenant plan
-PLAN_LIMITS = {
-    "free": {
-        "default": "100/minute",
-        "api": "50/minute",
-        "webhooks": "10/minute",
-        "code": "20/minute",
-    },
-    "pro": {
-        "default": "500/minute",
-        "api": "200/minute",
-        "webhooks": "50/minute",
-        "code": "100/minute",
-    },
-    "enterprise": {
-        "default": "1000/minute",
-        "api": "500/minute",
-        "webhooks": "100/minute",
-        "code": "200/minute",
-    },
-}
+# Rate limits by tenant plan - USE CONFIG INSTEAD OF HARDCODED VALUES
+# This will be replaced by settings.rate_limits_by_plan
+
+
+def get_plan_limits():
+    """Get rate limits from config (replaces hardcoded PLAN_LIMITS)."""
+    return settings.rate_limits_by_plan
+
 
 # Default limits for unauthenticated requests
 DEFAULT_LIMITS = {
@@ -56,17 +48,28 @@ DEFAULT_LIMITS = {
 
 
 def get_tenant_limit(request: Request) -> str:
-    """Get rate limit based on tenant plan."""
+    """
+    Get rate limit based on tenant plan.
+
+    REFACTORED: Now uses shared categorization and config-based limits.
+    """
     try:
         tenant = get_current_tenant(request)
         plan = tenant.plan
 
-        # Get endpoint category from request path
-        path = request.url.path
-        category = get_endpoint_category(path)
+        # Get endpoint category using shared utility
+        category = categorize_endpoint(request.url.path, request.method)
 
-        limits = PLAN_LIMITS.get(plan, PLAN_LIMITS["free"])
-        limit = limits.get(category, limits["default"])
+        # Skip rate limiting for health/docs
+        if should_skip_rate_limit(category):
+            return "1000/minute"  # Very high limit = effectively no limit
+
+        # Get rate limit key
+        rate_key = get_rate_limit_key(category)
+
+        # Get limits from config
+        limits = get_plan_limits().get(plan, get_plan_limits()["free"])
+        limit = limits.get(rate_key, limits["default"])
 
         logger.debug(f"Rate limit for tenant {tenant.tenant_id} ({plan}): {limit}")
         return limit
@@ -74,23 +77,33 @@ def get_tenant_limit(request: Request) -> str:
     except Exception as e:
         # Fallback to default limits
         logger.debug(f"Unable to get tenant limit, using default: {e}")
-        path = request.url.path
-        category = get_endpoint_category(path)
-        return DEFAULT_LIMITS.get(category, DEFAULT_LIMITS["default"])
+        category = categorize_endpoint(request.url.path, request.method)
+
+        if should_skip_rate_limit(category):
+            return "1000/minute"
+
+        rate_key = get_rate_limit_key(category)
+        return DEFAULT_LIMITS.get(rate_key, DEFAULT_LIMITS["default"])
 
 
 def get_endpoint_category(path: str) -> str:
-    """Categorize endpoint for rate limiting."""
-    if "/health" in path or "/metrics" in path:
-        return "health"
-    elif "/docs" in path or "/openapi" in path:
-        return "docs"
-    elif "/webhooks" in path:
-        return "webhooks"
-    elif "/code" in path or "/api" in path:
-        return "api"
-    else:
-        return "default"
+    """
+    DEPRECATED: Use categorize_endpoint from utils instead.
+
+    This function is kept for backward compatibility.
+    """
+    import warnings
+    from backend.api.utils.endpoint_categorization import categorize_endpoint
+
+    warnings.warn(
+        "get_endpoint_category is deprecated. Use categorize_endpoint from utils instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
+    category = categorize_endpoint(path)
+    # Map enum to string for backward compatibility
+    return get_rate_limit_key(category)
 
 
 def custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
