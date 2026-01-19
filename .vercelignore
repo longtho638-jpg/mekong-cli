@@ -1,0 +1,16 @@
+# 🏯 Vercel Ignore - Monorepo Strategy
+# Block root deployment, force to apps/docs
+
+# Ignore everything at root
+/*
+
+# Allow only apps/docs
+!apps/
+!apps/docs/
+!apps/docs/**
+
+# Also allow these config files if needed
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!turbo.json
