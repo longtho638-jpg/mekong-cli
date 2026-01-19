@@ -1,4 +1,5 @@
 {
+  "$schema": "./schemas/ck-config.schema.json",
   "codingLevel": -1,
   "privacyBlock": true,
   "docs": {
@@ -36,6 +37,9 @@
     "type": "auto",
     "packageManager": "auto",
     "framework": "auto"
+  },
+  "gemini": {
+    "model": "gemini-2.5-flash"
   },
   "skills": {
     "research": {
