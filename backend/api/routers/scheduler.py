@@ -5,10 +5,15 @@ router = APIRouter(prefix="/api/scheduler", tags=["Scheduler"])
 try:
     from core import Scheduler
 
-    scheduler = Scheduler()
-    SCHEDULER_AVAILABLE = True
+    if Scheduler is not None:
+        scheduler = Scheduler()
+        SCHEDULER_AVAILABLE = True
+    else:
+        SCHEDULER_AVAILABLE = False
+        scheduler = None
 except ImportError:
     SCHEDULER_AVAILABLE = False
+    scheduler = None
 
 
 @router.get("/meetings")

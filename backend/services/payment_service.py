@@ -1,6 +1,6 @@
 from typing import Dict
 
-from core.finance.paypal_sdk.base import PayPalSDK
+from core.finance.paypal_sdk import PayPalSDK
 
 
 class PaymentService:
