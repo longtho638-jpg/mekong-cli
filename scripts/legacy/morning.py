@@ -60,9 +60,9 @@ def main():
     steps = [
         ("1️⃣  Git Pull", ["git", "pull", "origin", "main"], False),
         ("2️⃣  Run Tests", None, False),  # Will use run_safe_pytest_with_tail
-        ("3️⃣  Product Stats", ["python3", "scripts/product_stats.py"], False),
-        ("4️⃣  Generate Tweet", ["python3", "scripts/git_to_tweet.py"], False),
-        ("5️⃣  Revenue Check", ["python3", "scripts/revenue_tracker.py"], False),
+        ("3️⃣  Product Stats", ["python3", "scripts/legacy/product_stats.py"], False),
+        ("4️⃣  Generate Tweet", ["python3", "scripts/legacy/git_to_tweet.py"], False),
+        ("5️⃣  Revenue Check", ["python3", "scripts/legacy/revenue_tracker.py"], False),
     ]
 
     for name, cmd, use_shell in steps:

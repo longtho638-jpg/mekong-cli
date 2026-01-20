@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple
 
 # --- App Metadata ---
 APP_NAME = "🌊 MEKONG-CLI"
-APP_VERSION = "2.5.0"
+APP_VERSION = "0.2.0"
 
 
 # --- Industry Niches ---

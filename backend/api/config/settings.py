@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     # Application Metadata
     # ========================================
     project_name: str = Field(default="Agency OS", description="Project name")
-    api_version: str = Field(default="2.1.0", description="API version")
+    api_version: str = Field(default="0.2.0", description="API version")
     api_v1_str: str = Field(default="/api", description="API v1 prefix")
     environment: str = Field(default="development", description="Environment: development/staging/production")
     debug: bool = Field(default=False, description="Debug mode")

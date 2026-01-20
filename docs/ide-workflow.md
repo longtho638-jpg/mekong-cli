@@ -9,33 +9,25 @@
 Open terminal in IDE -> Run:
 
 ```bash
-python3 scripts/morning.py
+python3 scripts/legacy/morning.py
 ```
 
-This does:
-
-1. Git pull
-2. Run tests
-3. Show product stats
-4. Generate tweet drafts
-5. Show revenue
+*Note: This legacy script handles the full sequential pipeline including git operations.*
 
 ---
 
 ## 🐦 Post to Twitter
 
-### Option A: API (Zero-Touch)
+### Option A: mekong CLI (Recommended)
 
 ```bash
-# Set keys in .env first
-python3 scripts/twitter_poster.py --post
+mekong content generate tweet --product agencyos
 ```
 
-### Option B: Preview in IDE
+### Option B: API (Zero-Touch Legacy)
 
 ```bash
-python3 scripts/twitter_poster.py
-# Then use browser_subagent if needed
+python3 scripts/legacy/twitter_poster.py --post
 ```
 
 ---
@@ -44,10 +36,13 @@ python3 scripts/twitter_poster.py
 
 ```bash
 # List products
-python3 scripts/gumroad_publisher.py --list
+mekong sales products-list
 
-# Publish specific product
-python3 scripts/gumroad_publisher.py products/ai-skills-pack
+# Build product ZIP
+mekong sales products-build <product-key>
+
+# Publish to Gumroad
+mekong sales products-publish --execute
 ```
 
 ---
@@ -55,11 +50,11 @@ python3 scripts/gumroad_publisher.py products/ai-skills-pack
 ## 💰 Track Revenue
 
 ```bash
-# View dashboard
-python3 scripts/revenue_tracker.py
+# View report
+mekong revenue report
 
-# Add sale
-python3 scripts/revenue_tracker.py add 47 gumroad "First sale!"
+# Add sale (Legacy)
+python3 scripts/legacy/revenue_tracker.py add 47 gumroad "First sale!"
 ```
 
 ---
@@ -67,19 +62,20 @@ python3 scripts/revenue_tracker.py add 47 gumroad "First sale!"
 ## 🩺 Health Check
 
 ```bash
-python3 scripts/health.py
+mekong ops health
 ```
 
 ---
 
 ## 🎯 Daily Commands Summary
 
-| Time  | Command                      | Purpose      |
-| ----- | ---------------------------- | ------------ |
-| 09:00 | `morning.py`                 | Start day    |
-| 09:30 | `twitter_poster.py --post`   | Post content |
-| 10:00 | `gumroad_publisher.py`       | Publish      |
-| EOD   | `revenue_tracker.py add ...` | Track sale   |
+| Time  | Command                              | Purpose      |
+| ----- | ------------------------------------ | ------------ |
+| 09:00 | `scripts/legacy/morning.py`          | Start day    |
+| 09:30 | `mekong content generate tweet`      | Post content |
+| 10:00 | `mekong sales products-publish`      | Publish      |
+| EOD   | `mekong revenue report`              | Track status |
+
 
 ---
 

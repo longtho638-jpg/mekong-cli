@@ -6,18 +6,14 @@
 
 ## [0.2.0] - 2026-01-20
 
-### 10x Refactor Completion
+### 10x Refactor & Go-Live Verification
 - **Modularization**: 100% compliance with < 200 LOC rule across all core and agent modules.
 - **Security**: Hardened infrastructure by removing insecure defaults and serialization.
-- **Testing**: Split oversized test suites into logical components (Core vs. Advanced).
-- **Cleanup**: Removed legacy demo code and redundant script artifacts.
-
-### Added
-- Split `backend/tests/test_viral_tracing.py` into `test_viral_tracing_core.py` and `test_viral_tracing_advanced.py`.
-
-### Changed
-- Optimized `backend/agents/erops/grievance_agent.py` to meet LOC standards.
-- Optimized `backend/agents/hrisops/benefits_agent.py` to meet LOC standards.
+- **CLI Enhancement**: Unified all workflows into the `mekong` CLI tool.
+- **Documentation**: Updated `ide-workflow.md` to reflect new CLI-first approach.
+- **Path Verification**: Repaired 15+ broken script references across documentation and security validators.
+- **Installation**: Verified `pip install -e .` integrity and CLI entry point stability.
+- **Version Bump**: Official transition to v0.2.0 for production readiness.
 
 ## [0.1.1] - 2026-01-20
 

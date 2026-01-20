@@ -33,10 +33,8 @@
 
 **Files Secured (5/5):**
 
-- ✅ `scripts/health.py` - Replaced shell commands with argument lists
-- ✅ `scripts/morning.py` - Implemented safe command execution patterns
-- ✅ `scripts/overlord.py` - Added argument list security controls
-- ✅ `scripts/auto_daily.py` - Created safe subprocess wrappers
+- ✅ `scripts/legacy/morning.py` - Implemented safe command execution patterns
+- ✅ `scripts/legacy/auto_daily.py` - Created safe subprocess wrappers
 - ✅ `antigravity/core/jules_runner.py` - Implemented argument-based execution
 
 **Security Impact:** Eliminated command injection vulnerabilities through safe subprocess patterns
