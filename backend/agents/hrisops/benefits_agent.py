@@ -167,35 +167,3 @@ class BenefitsAgent:
             if enrollments
             else "0%",
         }
-
-
-# Demo
-if __name__ == "__main__":
-    agent = BenefitsAgent()
-
-    print("💊 Benefits Agent Demo\n")
-
-    # Add plans
-    p1 = agent.add_plan("Premium Health", PlanType.HEALTH, 500, 400, "Full coverage")
-    p2 = agent.add_plan("Basic Dental", PlanType.DENTAL, 50, 50, "Basic coverage")
-    p3 = agent.add_plan("401k Match", PlanType.RETIREMENT, 0, 0, "6% match")
-
-    print(f"📋 Plan: {p1.name}")
-    print(f"   Type: {p1.plan_type.value}")
-    print(f"   Cost: ${p1.monthly_cost}/mo")
-    print(f"   Employer Pays: ${p1.employer_contribution}/mo")
-
-    # Enroll
-    e1 = agent.enroll("EMP001", "Nguyen A", p1.id, dependents=2)
-    e2 = agent.enroll("EMP001", "Nguyen A", p2.id)
-    e3 = agent.enroll("EMP002", "Tran B", p1.id, dependents=1)
-
-    print(f"\n✅ Enrolled: {e1.employee_name} in {e1.plan_name}")
-    print(f"   Dependents: {e1.dependents}")
-
-    # Stats
-    print("\n📊 Stats:")
-    stats = agent.get_stats()
-    print(f"   Active Enrollments: {stats['active_enrollments']}")
-    print(f"   Total Dependents: {stats['total_dependents']}")
-    print(f"   Monthly Cost: ${stats['monthly_cost']:,.0f}")

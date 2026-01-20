@@ -4,6 +4,33 @@
 
 ---
 
+## [0.2.0] - 2026-01-20
+
+### 10x Refactor Completion
+- **Modularization**: 100% compliance with < 200 LOC rule across all core and agent modules.
+- **Security**: Hardened infrastructure by removing insecure defaults and serialization.
+- **Testing**: Split oversized test suites into logical components (Core vs. Advanced).
+- **Cleanup**: Removed legacy demo code and redundant script artifacts.
+
+### Added
+- Split `backend/tests/test_viral_tracing.py` into `test_viral_tracing_core.py` and `test_viral_tracing_advanced.py`.
+
+### Changed
+- Optimized `backend/agents/erops/grievance_agent.py` to meet LOC standards.
+- Optimized `backend/agents/hrisops/benefits_agent.py` to meet LOC standards.
+
+## [0.1.1] - 2026-01-20
+
+### Added
+- Completed Batch 4 Modularization phase
+
+### Changed
+- Refactored `agent_memory/storage.py` into modular backends and retrieval logic
+- Modularized `agent_orchestrator/engine.py` into delegator and monitor components
+- Split `distributed_queue/queue_manager.py` into producer and consumer modules
+- Refactored 5+ backend services and agents exceeding 200 LOC
+- Achieved 100% compliance with the 200-line rule across core and backend layers
+
 ## [0.1.0] - 2026-01-20
 
 **Initial Release** - Production-ready Agency Operating System with Vietnamese-first design and Binh Pháp strategic framework.
