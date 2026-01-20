@@ -10,6 +10,7 @@ Binh Pháp: "Tri kỷ tri bỉ" - Know yourself, know your enemy
 
 from .decorators import self_improving
 from .engine import SelfImproveEngine, get_self_improve_engine
+from .persistence import load_learnings, save_learnings
 from .types import (
     ImprovementSuggestion,
     ImprovementType,
@@ -27,4 +28,6 @@ __all__ = [
     "LearningSource",
     "get_self_improve_engine",
     "self_improving",
+    "load_learnings",
+    "save_learnings",
 ]

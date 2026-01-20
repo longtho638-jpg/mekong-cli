@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import {
   verifyPayPalWebhookSignature,
   extractPayPalWebhookHeaders,
 } from "./paypal-webhook-verifier";
+
+type PayPalWebhookBody = Record<string, unknown>;
 
 /**
  * PayPal webhook handler with signature verification
@@ -80,7 +82,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (!isValid) {
-      console.error(`[PayPal Webhook ${eventId}] Invalid signature - potential spoofing attempt`);
+      console.error(
+        `[PayPal Webhook ${eventId}] Invalid signature - potential spoofing attempt`,
+      );
       return NextResponse.json(
         { error: "Invalid webhook signature" },
         { status: 401 },
@@ -110,12 +114,20 @@ export async function POST(request: NextRequest) {
 
     if (insertError) {
       // Check if error is due to duplicate key (idempotency)
-      if (insertError.code === "23505" || insertError.message?.includes("duplicate")) {
-        console.log(`[PayPal Webhook ${eventId}] Event already processed (idempotent): ${body.id}`);
+      if (
+        insertError.code === "23505" ||
+        insertError.message?.includes("duplicate")
+      ) {
+        console.log(
+          `[PayPal Webhook ${eventId}] Event already processed (idempotent): ${body.id}`,
+        );
         return NextResponse.json({ received: true, duplicate: true });
       }
       // Other database errors should be logged and handled
-      console.error(`[PayPal Webhook ${eventId}] Failed to log event:`, insertError.message);
+      console.error(
+        `[PayPal Webhook ${eventId}] Failed to log event:`,
+        insertError.message,
+      );
       // Continue processing even if audit log fails (degraded mode)
     }
 
@@ -139,16 +151,23 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`[PayPal Webhook ${eventId}] Unhandled event: ${eventType}`);
+        console.log(
+          `[PayPal Webhook ${eventId}] Unhandled event: ${eventType}`,
+        );
     }
 
     const duration = Date.now() - startTime;
-    console.log(`[PayPal Webhook ${eventId}] Processed successfully in ${duration}ms`);
+    console.log(
+      `[PayPal Webhook ${eventId}] Processed successfully in ${duration}ms`,
+    );
 
     return NextResponse.json({ received: true });
   } catch (error) {
     const duration = Date.now() - startTime;
-    console.error(`[PayPal Webhook ${eventId}] Error after ${duration}ms:`, error);
+    console.error(
+      `[PayPal Webhook ${eventId}] Error after ${duration}ms:`,
+      error,
+    );
 
     // Return 200 to prevent PayPal retries for malformed requests
     if (error instanceof SyntaxError) {
@@ -170,8 +189,8 @@ export async function POST(request: NextRequest) {
  * Handle successful payment capture
  */
 async function handlePaymentCaptured(
-  supabase: any,
-  body: any,
+  supabase: SupabaseClient,
+  body: PayPalWebhookBody,
   eventId: string,
 ) {
   const captureId = body.resource?.id;
@@ -197,7 +216,9 @@ async function handlePaymentCaptured(
   }
 
   // SECURITY: Redact sensitive data in logs
-  const redactedEmail = payerEmail ? payerEmail.replace(/(.{2}).*@/, "$1***@") : "unknown";
+  const redactedEmail = payerEmail
+    ? payerEmail.replace(/(.{2}).*@/, "$1***@")
+    : "unknown";
   console.log(
     `[PayPal Webhook ${eventId}] Payment captured: ${captureId.slice(0, 8)}... - [AMOUNT_REDACTED] from ${redactedEmail}`,
   );
@@ -210,10 +231,16 @@ async function handlePaymentCaptured(
       last_payment_amount: amount,
       updated_at: new Date().toISOString(),
     })
-    .eq("paypal_order_id", body.resource?.supplementary_data?.related_ids?.order_id);
+    .eq(
+      "paypal_order_id",
+      body.resource?.supplementary_data?.related_ids?.order_id,
+    );
 
   if (error) {
-    console.error(`[PayPal Webhook ${eventId}] Failed to update organization:`, error);
+    console.error(
+      `[PayPal Webhook ${eventId}] Failed to update organization:`,
+      error,
+    );
   }
 }
 
@@ -221,13 +248,15 @@ async function handlePaymentCaptured(
  * Handle failed or refunded payment
  */
 async function handlePaymentFailed(
-  supabase: any,
-  body: any,
+  supabase: SupabaseClient,
+  body: PayPalWebhookBody,
   eventType: string,
   eventId: string,
 ) {
   const failedOrderId = body.resource?.id;
-  console.log(`[PayPal Webhook ${eventId}] Payment ${eventType}: ${failedOrderId}`);
+  console.log(
+    `[PayPal Webhook ${eventId}] Payment ${eventType}: ${failedOrderId}`,
+  );
 
   // Could implement downgrade logic here
   // For now, just log the event
@@ -237,12 +266,14 @@ async function handlePaymentFailed(
  * Handle subscription cancellation
  */
 async function handleSubscriptionCancelled(
-  supabase: any,
-  body: any,
+  supabase: SupabaseClient,
+  body: PayPalWebhookBody,
   eventId: string,
 ) {
   const subscriptionId = body.resource?.id;
-  console.log(`[PayPal Webhook ${eventId}] Subscription cancelled: ${subscriptionId}`);
+  console.log(
+    `[PayPal Webhook ${eventId}] Subscription cancelled: ${subscriptionId}`,
+  );
 
   // Downgrade to free plan
   const { error } = await supabase
@@ -255,7 +286,10 @@ async function handleSubscriptionCancelled(
     .eq("paypal_subscription_id", subscriptionId);
 
   if (error) {
-    console.error(`[PayPal Webhook ${eventId}] Failed to downgrade organization:`, error);
+    console.error(
+      `[PayPal Webhook ${eventId}] Failed to downgrade organization:`,
+      error,
+    );
   }
 }
 
@@ -263,14 +297,16 @@ async function handleSubscriptionCancelled(
  * Handle subscription activation
  */
 async function handleSubscriptionActivated(
-  supabase: any,
-  body: any,
+  supabase: SupabaseClient,
+  body: PayPalWebhookBody,
   eventId: string,
 ) {
   const subscriptionId = body.resource?.id;
   const planId = body.resource?.plan_id;
 
-  console.log(`[PayPal Webhook ${eventId}] Subscription activated: ${subscriptionId}`);
+  console.log(
+    `[PayPal Webhook ${eventId}] Subscription activated: ${subscriptionId}`,
+  );
 
   // Map PayPal plan ID to internal plan
   const planMapping: Record<string, string> = {
@@ -291,6 +327,9 @@ async function handleSubscriptionActivated(
     .eq("paypal_subscription_id", subscriptionId);
 
   if (error) {
-    console.error(`[PayPal Webhook ${eventId}] Failed to activate subscription:`, error);
+    console.error(
+      `[PayPal Webhook ${eventId}] Failed to activate subscription:`,
+      error,
+    );
   }
 }
