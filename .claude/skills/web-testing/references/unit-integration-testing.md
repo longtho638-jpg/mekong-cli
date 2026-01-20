@@ -1,12 +1,42 @@
 # Unit & Integration Testing
 
-## Framework Selection
+## Framework Comparison
 
 | Framework | Speed | Best For |
 |-----------|-------|----------|
-| Vitest | Fastest | Modern projects |
-| Jest | Fast | React/CRA |
-| Mocha | Raw speed | Node.js/APIs |
+| Vitest | Fastest | Modern projects, Vite |
+| Jest | Fast | React/CRA legacy |
+| Bun test | Ultra-fast | Bun projects |
+
+## Vitest Setup
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    environment: 'jsdom', // or 'happy-dom'
+    globals: true,
+    coverage: { reporter: ['text', 'json', 'html'] },
+  },
+});
+```
+
+## Vitest Browser Mode (Real Browser)
+
+```typescript
+// vitest.config.ts - higher fidelity than jsdom
+export default defineConfig({
+  test: {
+    browser: {
+      enabled: true,
+      name: 'chromium',
+      provider: 'playwright',
+    },
+  },
+});
+```
+
+**When to use:** Complex DOM interactions, CSS testing, browser APIs
 
 ## Test Structure (AAA)
 
@@ -65,12 +95,28 @@ describe('User API', () => {
 ## Test Naming
 
 ```typescript
-// Good
+// Good - describes behavior
 it('should return 200 when valid token provided');
 it('should throw ValidationError when email invalid');
 
-// Bad
+// Bad - vague
 it('test1');
+it('works');
+```
+
+## Mocking
+
+```typescript
+import { vi } from 'vitest';
+
+// Mock module
+vi.mock('./api', () => ({
+  fetchUser: vi.fn().mockResolvedValue({ name: 'John' })
+}));
+
+// Spy
+const spy = vi.spyOn(console, 'log');
+expect(spy).toHaveBeenCalledWith('message');
 ```
 
 ## Coverage Targets
@@ -88,4 +134,5 @@ npx vitest run              # Run all
 npx vitest                  # Watch mode
 npx vitest run --coverage   # Coverage
 npx vitest run -u           # Update snapshots
+npx vitest --browser        # Browser mode
 ```

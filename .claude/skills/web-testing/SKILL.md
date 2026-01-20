@@ -2,7 +2,7 @@
 name: web-testing
 description: Web testing with Playwright, Vitest, k6. E2E/unit/integration/load/security/visual/a11y testing. Use for test automation, flakiness, Core Web Vitals, mobile gestures, cross-browser.
 license: Apache-2.0
-version: 2.0.0
+version: 3.0.0
 ---
 
 # Web Testing Skill
@@ -20,59 +20,68 @@ npx @axe-core/cli https://example.com  # Accessibility
 npx lighthouse https://example.com     # Performance
 ```
 
-## Testing Pyramid (70-20-10)
+## Testing Strategy (Choose Your Model)
 
-| Layer | Ratio | Framework | Speed |
-|-------|-------|-----------|-------|
-| Unit | 70% | Vitest/Jest | <50ms |
-| Integration | 20% | Vitest + fixtures | 100-500ms |
-| E2E | 10% | Playwright | 5-30s |
+| Model | Structure | Best For |
+|-------|-----------|----------|
+| Pyramid | Unit 70% > Integration 20% > E2E 10% | Monoliths |
+| Trophy | Integration-heavy | Modern SPAs |
+| Honeycomb | Contract-centric | Microservices |
 
-## When to Use
-
-- **Unit**: Functions, utilities, state logic
-- **Integration**: API endpoints, database ops, modules
-- **E2E**: Critical flows (login, checkout, payment)
-- **Load**: Pre-release performance validation
-- **Security**: Pre-deploy vulnerability scanning
-- **Visual**: UI regression detection
+→ `./references/testing-pyramid-strategy.md`
 
 ## Reference Documentation
 
 ### Core Testing
-- `./references/unit-integration-testing.md` - Unit/integration patterns
-- `./references/e2e-testing-playwright.md` - Playwright E2E workflows
-- `./references/component-testing.md` - React/Vue/Angular component testing
-- `./references/testing-pyramid-strategy.md` - Test ratios, priority matrix
+- `./references/unit-integration-testing.md` - Vitest, browser mode, AAA
+- `./references/e2e-testing-playwright.md` - Fixtures, sharding, selectors
+- `./references/playwright-component-testing.md` - CT patterns (production-ready)
+- `./references/component-testing.md` - React/Vue/Angular patterns
+
+### Test Infrastructure
+- `./references/test-data-management.md` - Factories, fixtures, seeding
+- `./references/database-testing.md` - Testcontainers, transactions
+- `./references/ci-cd-testing-workflows.md` - GitHub Actions, sharding
+- `./references/contract-testing.md` - Pact, MSW patterns
 
 ### Cross-Browser & Mobile
 - `./references/cross-browser-checklist.md` - Browser/device matrix
 - `./references/mobile-gesture-testing.md` - Touch, swipe, orientation
-- `./references/shadow-dom-testing.md` - Web components testing
-
-### Interactive & Forms
-- `./references/interactive-testing-patterns.md` - Forms, keyboard, drag-drop
-- `./references/functional-testing-checklist.md` - Feature testing
 
 ### Performance & Quality
 - `./references/performance-core-web-vitals.md` - LCP/CLS/INP, Lighthouse CI
 - `./references/visual-regression.md` - Screenshot comparison
 - `./references/test-flakiness-mitigation.md` - Stability strategies
 
-### Accessibility
-- `./references/accessibility-testing.md` - WCAG checklist, axe-core
-
-### Security
-- `./references/security-testing-overview.md` - OWASP Top 10, tools
+### Accessibility & Security
+- `./references/accessibility-testing.md` - WCAG, axe-core
+- `./references/security-testing-overview.md` - OWASP Top 10
 - `./references/security-checklists.md` - Auth, API, headers
-- `./references/vulnerability-payloads.md` - SQL/XSS/CSRF payloads
 
 ### API & Load
-- `./references/api-testing.md` - API test patterns
-- `./references/load-testing-k6.md` - k6 load test patterns
+- `./references/api-testing.md` - Supertest, GraphQL
+- `./references/load-testing-k6.md` - k6 patterns
 
 ### Checklists
 - `./references/pre-release-checklist.md` - Complete release checklist
+- `./references/functional-testing-checklist.md` - Feature testing
+
+## Scripts
+
+### Initialize Playwright Project
+```bash
+node ./scripts/init-playwright.js [--ct] [--dir <path>]
+```
+Creates best-practice Playwright setup: config, fixtures, example tests.
+
+### Analyze Test Results
+```bash
+node ./scripts/analyze-test-results.js \
+  --playwright test-results/results.json \
+  --vitest coverage/vitest.json \
+  --output markdown
+```
+Parses Playwright/Vitest/JUnit results into unified summary.
 
 ## CI/CD Integration
 
