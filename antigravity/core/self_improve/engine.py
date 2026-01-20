@@ -2,13 +2,12 @@
 Self-Improvement Engine Logic.
 """
 import hashlib
-import json
 import logging
-import os
 import threading
 import time
 from typing import Any, Dict, List, Optional
 
+from .persistence import load_learnings, save_learnings
 from .types import (
     ImprovementSuggestion,
     ImprovementType,
@@ -35,16 +34,13 @@ class SelfImproveEngine:
         self.enable_auto_apply = enable_auto_apply
         self.min_confidence = min_confidence
 
-        self.learnings: Dict[str, LearningEntry] = {}
+        self.learnings: Dict[str, LearningEntry] = load_learnings()
         self.suggestions: Dict[str, ImprovementSuggestion] = {}
         self.profiles: Dict[str, PerformanceProfile] = {}
 
         self._lock = threading.Lock()
         self._error_patterns: Dict[str, int] = {}
         self._optimization_history: List[Dict] = []
-
-        # Load existing learnings
-        self._load_learnings()
 
         logger.info("🧠 SelfImproveEngine initialized")
 
@@ -219,7 +215,7 @@ class SelfImproveEngine:
                             self.apply_suggestion(suggestion.id)
 
                     # Save learnings
-                    self._save_learnings()
+                    save_learnings(self.learnings)
 
                 except Exception as e:
                     logger.error(f"Optimization loop error: {e}")
@@ -228,43 +224,7 @@ class SelfImproveEngine:
 
         thread = threading.Thread(target=loop, daemon=True)
         thread.start()
-        logger.info("🔄 Optimization loop started")
-
-    def _load_learnings(self):
-        """Load learnings from file."""
-        path = os.path.expanduser("~/.antigravity/learnings.json")
-        if os.path.exists(path):
-            try:
-                with open(path, "r") as f:
-                    data = json.load(f)
-                    for item in data:
-                        learning = LearningEntry(**item)
-                        self.learnings[learning.id] = learning
-                logger.info(f"📖 Loaded {len(self.learnings)} learnings")
-            except Exception as e:
-                logger.error(f"Failed to load learnings: {e}")
-
-    def _save_learnings(self):
-        """Save learnings to file."""
-        path = os.path.expanduser("~/.antigravity/learnings.json")
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-
-        try:
-            data = [
-                {
-                    "id": lead.id,
-                    "source": lead.source.value,
-                    "pattern": lead.pattern,
-                    "solution": lead.solution,
-                    "confidence": lead.confidence,
-                    "occurrences": lead.occurrences,
-                }
-                for lead in self.learnings.values()
-            ]
-            with open(path, "w") as f:
-                json.dump(data, f, indent=2)
-        except Exception as e:
-            logger.error(f"Failed to save learnings: {e}")
+        logger.info("Optimization loop started")
 
     def get_status(self) -> Dict[str, Any]:
         """Get engine status."""
