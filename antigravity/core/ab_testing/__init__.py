@@ -25,6 +25,12 @@ from .reporting import (
     generate_active_tests_summary,
     generate_test_analytics,
 )
+from .time_utils import (
+    SECONDS_PER_DAY,
+    SECONDS_PER_WEEK,
+    is_early_stopped,
+    seconds_to_days,
+)
 from .traffic import TrafficAllocator
 
 # Convenience functions using global engine
@@ -75,6 +81,11 @@ __all__ = [
     # Enums
     "TestResult",
     "AllocationStrategy",
+    # Time utilities
+    "SECONDS_PER_DAY",
+    "SECONDS_PER_WEEK",
+    "seconds_to_days",
+    "is_early_stopped",
     # Functions
     "create_multivariate_test",
     "update_test_metrics",

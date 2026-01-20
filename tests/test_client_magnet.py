@@ -4,6 +4,7 @@ Tests for Client Magnet system.
 
 import os
 import sys
+import tempfile
 
 import pytest
 
@@ -14,18 +15,18 @@ from antigravity.core.client_magnet import ClientMagnet, LeadSource, LeadStatus
 
 
 class TestClientMagnet:
-    def test_add_lead(self):
+    def test_add_lead(self, tmp_path):
         """Test adding a lead."""
-        magnet = ClientMagnet()
+        magnet = ClientMagnet(data_dir=str(tmp_path / "client_magnet"))
         lead = magnet.add_lead("John Doe", company="ACME", source=LeadSource.WEBSITE)
 
         assert len(magnet.leads) == 1
         assert lead.name == "John Doe"
         assert lead.status == LeadStatus.NEW
 
-    def test_qualify_lead(self):
+    def test_qualify_lead(self, tmp_path):
         """Test lead qualification logic."""
-        magnet = ClientMagnet()
+        magnet = ClientMagnet(data_dir=str(tmp_path / "client_magnet"))
         lead = magnet.add_lead("Jane")
 
         magnet.qualify_lead(lead, budget=5000, score=80)
@@ -34,9 +35,9 @@ class TestClientMagnet:
         assert lead.is_priority() is True
         assert lead.status == LeadStatus.QUALIFIED
 
-    def test_convert_client(self):
+    def test_convert_client(self, tmp_path):
         """Test conversion from lead to client."""
-        magnet = ClientMagnet()
+        magnet = ClientMagnet(data_dir=str(tmp_path / "client_magnet"))
         lead = magnet.add_lead("Client Lead")
         magnet.qualify_lead(lead, budget=1000)
 
@@ -45,9 +46,9 @@ class TestClientMagnet:
         assert client.name == "Client Lead"
         assert lead.status == LeadStatus.WON
 
-    def test_pipeline_stats(self):
+    def test_pipeline_stats(self, tmp_path):
         """Test pipeline value and conversion calculations."""
-        magnet = ClientMagnet()
+        magnet = ClientMagnet(data_dir=str(tmp_path / "client_magnet"))
 
         # Add 3 leads
         l1 = magnet.add_lead("L1")

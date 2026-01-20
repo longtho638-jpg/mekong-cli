@@ -13,7 +13,7 @@ import json
 import logging
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from .redis_client import RedisClient
 
@@ -35,16 +35,16 @@ class AnalyticsEvent:
     event_name: str
     user_id: str
     timestamp: datetime
-    properties: Dict[str, Any]
+    properties: Dict[str, object]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, object]:
         """Convert to dictionary for storage."""
         data = asdict(self)
         data["timestamp"] = self.timestamp.isoformat()
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AnalyticsEvent":
+    def from_dict(cls, data: Dict[str, object]) -> "AnalyticsEvent":
         """Create from dictionary."""
         data["timestamp"] = datetime.fromisoformat(data["timestamp"])
         return cls(**data)
@@ -67,7 +67,7 @@ class AnalyticsTracker:
         logger.info(f"AnalyticsTracker initialized (buffer_size={buffer_size})")
 
     def track(
-        self, event_name: str, user_id: str, properties: Optional[Dict[str, Any]] = None
+        self, event_name: str, user_id: str, properties: Optional[Dict[str, object]] = None
     ) -> AnalyticsEvent:
         """
         Track an analytics event.
@@ -219,7 +219,7 @@ class AnalyticsTracker:
         except Exception as e:
             logger.error(f"Error storing event {event.event_name}: {e}")
 
-    def get_summary(self, days: int = 7) -> Dict[str, Any]:
+    def get_summary(self, days: int = 7) -> Dict[str, object]:
         """
         Get analytics summary for the last N days.
 

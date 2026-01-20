@@ -1,0 +1,19 @@
+{
+  "version": "3.0.0",
+  "name": "agency-cli",
+  "description": "Agency OS Max Level WOW - Enterprise Agency Platform with Binh Pháp Integration. 1 Person = 1 Professional Agency.",
+  "buildDate": "2026-01-14T02:08:00.000Z",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agencyos/agency-cli.git"
+  },
+  "dna": {
+    "source": "mekong-engineer v1.20.1",
+    "philosophy": "Binh Pháp 孫子兵法 + WIN-WIN-WIN"
+  },
+  "download": {
+    "lastDownloadedAt": null,
+    "downloadedBy": null,
+    "installCount": 0
+  }
+}

@@ -1,5 +1,5 @@
 """
-🧠 Agent Memory System Logic
+Agent Memory System Logic
 ============================
 
 The brain's hippocampus for the Agency OS.
@@ -12,15 +12,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
+from antigravity.core.mixins import StatsMixin
+from antigravity.core.patterns import singleton_factory
 from .models import Memory, Pattern
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 
-class AgentMemory:
+class AgentMemory(StatsMixin):
     """
-    🧠 Agent Memory System
+    Agent Memory System
 
     The brain's hippocampus for the Agency OS.
     Maintains a rolling buffer of experiences and derives behavioral patterns.
@@ -214,7 +216,7 @@ class AgentMemory:
         except Exception as e:
             logger.warning(f"Failed to load agent memories (may be corrupt or old version): {e}")
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> Dict[str, Any]:
         """Calculates global memory usage and health statistics."""
         return {
             "total_records": len(self.memories),
@@ -228,13 +230,7 @@ class AgentMemory:
         }
 
 
-# Singleton Management
-_global_memory = None
-
-
+@singleton_factory
 def get_agent_memory() -> AgentMemory:
     """Access the shared agent memory system."""
-    global _global_memory
-    if _global_memory is None:
-        _global_memory = AgentMemory()
-    return _global_memory
+    return AgentMemory()

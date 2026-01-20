@@ -4,7 +4,7 @@ Coordinaties ML, A/B testing, and traditional pricing strategies.
 """
 import time
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from .types import (
     EnhancedPricingContext,
@@ -15,6 +15,8 @@ from .types import (
 from .ml_engine import MLEngine
 from .ab_testing import ABTestEngine
 from .analytics import AnalyticsEngine
+from .strategies import PricingStrategyEngine
+from .confidence import ConfidenceScorer
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +31,8 @@ class MaxLevelAntigravityAlgorithm:
         self.ml_engine = MLEngine()
         self.ab_engine = ABTestEngine()
         self.analytics_engine = AnalyticsEngine()
+        self.strategy_engine = PricingStrategyEngine()
+        self.confidence_scorer = ConfidenceScorer()
 
     def calculate_optimized_price(
         self,
@@ -77,9 +81,7 @@ class MaxLevelAntigravityAlgorithm:
                 # Fallback if test not found
                 pass
 
-        # Use ML optimization if available and no AB test result (or combined?)
-        # Original logic: if ab_test_id -> do AB. elif ML -> do ML. else -> traditional.
-
+        # Use ML optimization if available and no AB test result
         if result.get("optimization_type") == "ab_testing":
             pass
         elif strategy == PricingStrategy.ML_OPTIMIZED:
@@ -88,18 +90,21 @@ class MaxLevelAntigravityAlgorithm:
                 result.update(ml_result)
             else:
                  # Fallback to traditional if ML fails
-                enhanced_result = self._calculate_enhanced_traditional_price(context, PricingStrategy.VIRAL_COEFFICIENT)
+                enhanced_result = self.strategy_engine.calculate_price(context, PricingStrategy.VIRAL_COEFFICIENT)
                 result.update(enhanced_result)
 
         # Fallback to enhanced traditional pricing
         elif result.get("optimization_type") is None:
-            enhanced_result = self._calculate_enhanced_traditional_price(context, strategy)
+            enhanced_result = self.strategy_engine.calculate_price(context, strategy)
             result.update(enhanced_result)
 
         # Add confidence scoring
-        confidence = self._calculate_prediction_confidence(result)
+        confidence = self.confidence_scorer.calculate_confidence(
+            result,
+            conversion_sample_size=len(self.conversion_data)
+        )
         result["confidence"] = confidence.value
-        result["confidence_score"] = self._confidence_to_numeric(confidence)
+        result["confidence_score"] = self.confidence_scorer.confidence_to_numeric(confidence)
 
         # Store for learning
         self.pricing_history.append(
@@ -115,100 +120,6 @@ class MaxLevelAntigravityAlgorithm:
         )
 
         return result
-
-    def _calculate_enhanced_traditional_price(
-        self, context: EnhancedPricingContext, strategy: PricingStrategy
-    ) -> Dict[str, Any]:
-        """Calculate price using enhanced traditional methods."""
-
-        base_price = context.base_price
-        features = context.features
-        price = base_price
-
-        if strategy == PricingStrategy.VIRAL_COEFFICIENT:
-            # Enhanced viral coefficient with multiple factors
-            viral_boost = 1 + (features.get("viral_coefficient", 1.0) - 1) * 0.7
-
-            # Time-based viral amplification
-            time_multiplier = 1.0
-            if features.get("time_factor", 1.0) > 1.5:  # High urgency
-                time_multiplier *= 1.2
-
-            # Demand-based viral pricing
-            demand_multiplier = 1 + features.get("demand_factor", 0.0) * 0.5
-
-            price = base_price * viral_boost * time_multiplier * demand_multiplier
-
-            # Early adopter discount for viral spread
-            if features.get("viral_coefficient", 1.0) > 2.0:
-                price *= 0.85  # 15% discount to fuel viral growth
-
-        elif strategy == PricingStrategy.PENETRATION:
-            # Penetration pricing with competitor awareness
-            competitor_price = features.get("competitor_price", base_price)
-            if competitor_price > 0:
-                price = min(competitor_price * 0.9, base_price)  # 10% cheaper than competitor
-            else:
-                price = base_price * 0.7  # 30% discount for market entry
-
-        return {
-            "final_price": price,
-            "optimization_type": "enhanced_traditional",
-            "strategy_factors": {
-                "viral_coefficient": features.get("viral_coefficient", 1.0),
-                "time_factor": features.get("time_factor", 1.0),
-                "demand_factor": features.get("demand_factor", 0.0),
-            },
-        }
-
-    def _calculate_prediction_confidence(self, result: Dict[str, Any]) -> ModelConfidence:
-        """Calculate confidence score for prediction."""
-        confidence_score = 0.0
-
-        # ML-based confidence
-        if result.get("optimization_type") == "ml_optimized":
-            ml_data = result.get("ml_optimization", {})
-            if ml_data:
-                predicted_conversion = ml_data.get("predicted_conversion", 0.5)
-                confidence_score = min(predicted_conversion * 2, 1.0)  # Convert to confidence
-
-        # A/B test confidence based on sample size
-        elif result.get("ab_test"):
-            ab_data = result.get("ab_test", {})
-            if ab_data:
-                # Higher confidence with more data
-                sample_size = len(self.conversion_data)
-                confidence_score = min(sample_size / 100, 1.0)
-
-        # Traditional pricing confidence
-        else:
-            # Based on feature completeness
-            features = result.get("strategy_factors", {})
-            feature_completeness = len([v for v in features.values() if v > 0])
-            confidence_score = min(feature_completeness / 4, 1.0)
-
-        # Map to confidence levels
-        if confidence_score >= 0.9:
-            return ModelConfidence.VERY_HIGH
-        elif confidence_score >= 0.8:
-            return ModelConfidence.HIGH
-        elif confidence_score >= 0.65:
-            return ModelConfidence.MEDIUM
-        elif confidence_score >= 0.5:
-            return ModelConfidence.LOW
-        else:
-            return ModelConfidence.VERY_LOW
-
-    def _confidence_to_numeric(self, confidence: ModelConfidence) -> float:
-        """Convert confidence enum to numeric score."""
-        confidence_map = {
-            ModelConfidence.VERY_LOW: 0.25,
-            ModelConfidence.LOW: 0.5,
-            ModelConfidence.MEDIUM: 0.75,
-            ModelConfidence.HIGH: 0.85,
-            ModelConfidence.VERY_HIGH: 0.95,
-        }
-        return confidence_map.get(confidence, 0.5)
 
     def track_conversion(
         self,
@@ -230,14 +141,6 @@ class MaxLevelAntigravityAlgorithm:
             experiment_id=experiment_id,
             confidence_score=confidence_score,
         )
-
-        # We assume c.variant might be needed by AB engine,
-        # but in this refactor we keep it simple as per original structure
-        # If needed, we would attach variant info to conversion data here
-        if experiment_id:
-             # Try to find variant from user segment if that was the logic
-             # Or just store as is
-             pass
 
         self.conversion_data.append(conversion)
 

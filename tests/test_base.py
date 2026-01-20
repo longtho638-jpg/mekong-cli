@@ -22,7 +22,7 @@ class MockModel(BaseModel):
 
 
 class MockEngine(BaseEngine):
-    def get_stats(self):
+    def _collect_stats(self):
         return {"status": "ok"}
 
 

@@ -8,7 +8,7 @@ Enums and dataclasses for swarm components.
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 
 class AgentRole(Enum):
@@ -48,11 +48,11 @@ class SwarmTask:
 
     id: str
     name: str
-    payload: Any
+    payload: object  # Generic payload - specific tasks should use typed payloads
     priority: TaskPriority = TaskPriority.NORMAL
     status: TaskStatus = TaskStatus.PENDING
     assigned_agent: Optional[str] = None
-    result: Optional[Any] = None
+    result: Optional[object] = None
     error: Optional[str] = None
     created_at: float = field(default_factory=time.time)
     started_at: Optional[float] = None

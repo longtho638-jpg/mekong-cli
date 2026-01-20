@@ -18,7 +18,9 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
+
+from antigravity.core.types import HookResultDict, Win3ResultDict, HookContextDict, DealContextDict
 
 # Base path for hooks
 HOOKS_BASE_DIR = Path(".claude/hooks")
@@ -107,9 +109,9 @@ class HooksManager:
     def __init__(self, base_path: Union[str, Path] = "."):
         self.base_path = Path(base_path)
         self.enabled = True
-        self.results: List[Dict[str, Any]] = []
+        self.results: List[HookResultDict] = []
 
-    def run_pre_hooks(self, suite: str, context: Optional[Dict[str, Any]] = None) -> bool:
+    def run_pre_hooks(self, suite: str, context: Optional[HookContextDict] = None) -> bool:
         """
         Run pre-execution hooks for a suite.
 
@@ -135,12 +137,12 @@ class HooksManager:
 
         return True
 
-    def run_win3_gate(self, deal: Dict[str, Any]) -> Dict[str, Any]:
+    def run_win3_gate(self, deal: DealContextDict) -> Win3ResultDict:
         """
         Run WIN-WIN-WIN validation gate (Python Implementation).
         Validates that all 3 parties (Anh, Agency, Client) have sufficient wins.
         """
-        result = {"valid": True, "scores": {}, "message": "WIN-WIN-WIN validated"}
+        result: Win3ResultDict = {"valid": True, "scores": {}, "message": "WIN-WIN-WIN validated"}
 
         # Check each party
         parties = ["anh", "agency", "client"]
@@ -159,7 +161,7 @@ class HooksManager:
 
         return result
 
-    def _run_hook(self, hook: Hook, context: Optional[Dict] = None) -> Dict[str, Any]:
+    def _run_hook(self, hook: Hook, context: Optional[HookContextDict] = None) -> HookResultDict:
         """
         Run a single hook.
         Currently simulates JS hooks with Python logic for performance.
@@ -167,7 +169,7 @@ class HooksManager:
         # Ensure hook file path is resolved relative to project root
         self.base_path / hook.file
 
-        result = {"hook": hook.name, "passed": True, "output": "", "error": None}
+        result: HookResultDict = {"hook": hook.name, "passed": True, "output": "", "error": None}
 
         # Simulated Hook Execution
         # In a full Node.js environment, we would subprocess.run(['node', hook_path])

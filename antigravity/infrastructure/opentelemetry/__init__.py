@@ -42,6 +42,7 @@ from .models import (
 
 from .span import Span
 
+# Import from new modular packages
 from .exporters import (
     BaseExporter,
     OTLPExporter,

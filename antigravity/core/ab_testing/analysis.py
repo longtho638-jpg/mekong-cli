@@ -106,26 +106,26 @@ class StatisticalAnalyzer:
                 if pooled_rate > 0:
                     d = (variant_rate - control_rate) / pooled_rate
                     effect_sizes.append(abs(d))
-            else:
-                effect_sizes = [0] * len(variants)
+        else:
+            effect_sizes = [0] * len(variants)
 
-            max_effect_size = max(effect_sizes) if effect_sizes else 0
-            test.effect_size = max_effect_size
+        max_effect_size = max(effect_sizes) if effect_sizes else 0
+        test.effect_size = max_effect_size
 
-            # Determine winner (basic)
-            if max_effect_size > 0.02:  # Minimum detectable effect
-                best_variant_idx = effect_sizes.index(max_effect_size)
-                test.test_result = [TestResult.VARIANT_WINS, TestResult.CONTROL_WINS][
-                    best_variant_idx
-                ]
-            else:
-                test.test_result = TestResult.INCONCLUSIVE
+        # Determine winner (basic)
+        if max_effect_size > 0.02:  # Minimum detectable effect
+            best_variant_idx = effect_sizes.index(max_effect_size)
+            test.test_result = [TestResult.VARIANT_WINS, TestResult.CONTROL_WINS][
+                best_variant_idx
+            ]
+        else:
+            test.test_result = TestResult.INCONCLUSIVE
 
-            # Update variant data
-            for variant_name, variant_data in test.conversions.items():
-                variant_data.statistical_significance = (
-                    test.test_result != TestResult.INCONCLUSIVE
-                )
+        # Update variant data
+        for variant_name, variant_data in test.conversions.items():
+            variant_data.statistical_significance = (
+                test.test_result != TestResult.INCONCLUSIVE
+            )
 
     def calculate_effect_size(self, conversions: List[int]) -> float:
         """Calculate effect size using Cohen's d."""

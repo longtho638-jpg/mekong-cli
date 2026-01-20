@@ -1,5 +1,5 @@
 """
-🎛️ MAX LEVEL Antigravity Control Center - Remote Config & Analytics
+MAX LEVEL Antigravity Control Center - Remote Config & Analytics
 ================================================================
 
 Enhanced control system orchestration layer that coordinates:
@@ -13,8 +13,10 @@ This module provides a simplified interface to the modular control subsystems.
 
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
+from antigravity.core.mixins import StatsMixin
+from antigravity.core.patterns import singleton_factory
 from .analytics import AnalyticsEvent, AnalyticsTracker
 from .circuit_breaker import CircuitBreaker
 from .feature_flags import FeatureFlag, FeatureFlagManager
@@ -23,7 +25,7 @@ from .redis_client import REDIS_AVAILABLE, RedisClient
 logger = logging.getLogger(__name__)
 
 
-class EnhancedControlCenter:
+class EnhancedControlCenter(StatsMixin):
     """Enhanced control center orchestrating all control subsystems."""
 
     def __init__(self, redis_url: Optional[str] = None):
@@ -106,7 +108,7 @@ class EnhancedControlCenter:
         return is_enabled
 
     def track_event(
-        self, event_name: str, user_id: str, properties: Optional[Dict[str, Any]] = None
+        self, event_name: str, user_id: str, properties: Optional[Dict[str, object]] = None
     ) -> AnalyticsEvent:
         """
         Track an analytics event.
@@ -150,7 +152,7 @@ class EnhancedControlCenter:
 
         return self.circuit_breakers[name]
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> Dict[str, object]:
         """
         Get comprehensive control center statistics.
 
@@ -186,10 +188,7 @@ class EnhancedControlCenter:
         logger.info("EnhancedControlCenter closed")
 
 
-# Global instance
-_control_center: Optional[EnhancedControlCenter] = None
-
-
+@singleton_factory
 def get_control_center(redis_url: Optional[str] = None) -> EnhancedControlCenter:
     """
     Get global control center instance.
@@ -200,10 +199,7 @@ def get_control_center(redis_url: Optional[str] = None) -> EnhancedControlCenter
     Returns:
         EnhancedControlCenter instance
     """
-    global _control_center
-    if _control_center is None:
-        _control_center = EnhancedControlCenter(redis_url)
-    return _control_center
+    return EnhancedControlCenter(redis_url)
 
 
 # Convenience functions for backward compatibility

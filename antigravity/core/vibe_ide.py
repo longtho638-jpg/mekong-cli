@@ -18,10 +18,11 @@ Binh Pháp: 🛠️ Khí (Tools) - Sharpening the weapons before battle.
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from .base import BaseEngine
 from .models.ide import Plan, TodoItem
+from .types import IDEStatsDict, PlanListItemDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -96,7 +97,7 @@ class VIBEIDE(BaseEngine):
         logger.info(f"New development plan created: {folder_name}")
         return plan_file
 
-    def list_plans(self) -> List[Dict[str, Any]]:
+    def list_plans(self) -> List[PlanListItemDict]:
         """Scans the workspace for all available plan documents."""
         if not self.plans_dir.exists():
             return []
@@ -170,7 +171,7 @@ class VIBEIDE(BaseEngine):
                 return True
         return False
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> IDEStatsDict:
         """Telemetry for the IDE engine."""
         return {
             "workspace": {

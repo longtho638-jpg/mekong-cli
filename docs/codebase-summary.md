@@ -1,47 +1,68 @@
 # Codebase Summary
-> Updated: January 18, 2026
+> Updated: January 20, 2026
 
-## 🏯 Architecture Overview
+## Architecture Overview
 
-AgencyOS uses a **Domain-Driven Design (DDD)** approach, organizing business logic into 16 semantic packages within `core/`. The CLI and Backend API act as interfaces to this core logic.
+AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architecture. All files comply with 200-line limit.
 
-### 📂 Core Domains (`core/`)
+### Antigravity Core (`antigravity/core/`)
 
-| Package | Purpose | Key Modules |
+| Module | Purpose | Structure |
 | :--- | :--- | :--- |
-| **agents** | AI Personas & Orchestration | `agent_orchestrator.py`, `personas/` |
-| **ai** | AI Intelligence | `hybrid_router.py` (Model Routing) |
-| **analytics** | Data Analysis | `analytics.py`, `capacity_dashboard.py` |
-| **automation** | Workflow Automation | `autopilot.py` (Revenue Autopilot) |
-| **content** | Content Generation | `service.py`, `seo.py` |
-| **crm** | Customer Relationship | `csm.py`, `client_portal.py` |
-| **dashboard** | Unified Reporting | `service.py` |
-| **finance** | Financial Management | `invoicing.py`, `gateways/`, `revenue_forecasting.py` |
-| **franchise** | Franchise System | `franchise.py` |
-| **growth** | Marketing & Growth | `content_marketing.py`, `vibe_tuner.py` |
-| **hr** | Team Management | `agency_scorecard.py`, `team.py` |
-| **infrastructure** | Technical Infra | `notifications.py`, `database.py` |
-| **legal** | Legal Documents | `contract.py` |
-| **monitoring** | System Monitoring | `watcher.py` (Empire Watcher) |
-| **ops** | Operations | `scheduler.py` |
-| **outreach** | Sales Outreach | `service.py`, `repository.py` |
-| **sales** | Product & Proposals | `catalog.py`, `proposals.py` |
+| **ab_testing** | A/B Testing Engine | `engine.py`, `analysis.py`, `reporting.py`, `time_utils.py` |
+| **agent_orchestrator** | Agent Coordination | `engine.py`, `analytics.py`, `reporting.py` |
+| **agent_swarm** | Multi-Agent Systems | `engine.py`, `registry.py`, `task_manager.py`, `shortcuts.py` |
+| **algorithm** | Algorithm Framework | `core.py`, `confidence.py`, `strategies.py` |
+| **cashflow_engine** | Cash Flow Management | `engine.py`, `analytics.py`, `dashboard.py`, `persistence.py` |
+| **client_magnet** | Lead Generation | `engine.py`, `analytics.py`, `persistence.py`, `scoring.py` |
+| **code_guardian** | Code Quality | `guardian.py`, `monitor.py`, `rollback.py`, `scanner.py` |
+| **content_factory** | Content Generation | `engine.py`, `ideation.py`, `production.py`, `scheduling.py` |
+| **ml/models** | ML Models | `base.py`, `classifiers.py`, `regressors.py`, `utils.py`, `config.py` |
+| **moat_engine** | Competitive Moat | `engine.py`, `dashboard.py`, `definitions.py`, `persistence.py`, `strategy.py` |
+| **money_maker** | Revenue Generation | `engine.py`, `governance.py`, `qualification.py`, `quoting.py` |
+| **proposal_generator** | Proposal Creation | `engine.py`, `analytics.py`, `builder.py`, `persistence.py` |
+| **revenue/ai** | Revenue AI | `engine.py`, `forecasting.py`, `goals.py`, `reporting.py` |
+| **mixins** | Reusable Behaviors | StatsMixin, PersistenceMixin |
+| **patterns** | Shared Patterns | singleton_factory, BasePersistence |
+| **types** | Type Definitions | TypedDict, Protocol definitions |
 
-### 🔌 Interfaces
+### Infrastructure (`antigravity/infrastructure/`)
 
-*   **CLI (`cli/`)**: Built with **Typer**. Entry point: `main.py` -> `cli/entrypoint.py`.
-*   **Backend (`backend/`)**: Built with **FastAPI**. Entry point: `backend/main.py`.
+| Module | Purpose | Structure |
+| :--- | :--- | :--- |
+| **opentelemetry/tracer** | Tracing | `base.py`, `context.py`, `decorators.py`, `spans.py` |
+| **opentelemetry/processors** | Span Processing | `base.py`, `batch.py`, `filtering.py`, `sampling.py` |
+| **opentelemetry/exporters** | Data Export | `base.py`, `console.py`, `otlp.py`, `jaeger.py` |
+| **scale** | Scaling Infrastructure | `base.py`, `horizontal.py`, `vertical.py`, `metrics.py` |
 
-### 🛠️ Scripts (`scripts/`)
+### CLI Layer (`cli/` and `antigravity/cli/`)
 
-*   `ops/`: Operational scripts (start server, setup).
-*   `legacy/`: Archived scripts from previous versions.
+| Module | Purpose |
+| :--- | :--- |
+| **cli/entrypoint.py** | Main CLI entry point |
+| **cli/commands/** | Command modules (dev, mcp, revenue, strategy, utility) |
+| **antigravity/cli/app.py** | CLI application factory |
+| **antigravity/cli/commands.py** | Command definitions |
+| **antigravity/cli/utils.py** | CLI utilities |
 
-## 🚀 Key Workflows
+### Interfaces
 
-1.  **Revenue Autopilot**: `core.automation.autopilot` runs daily checks on revenue and leads.
-2.  **Hybrid Routing**: `core.ai.hybrid_router` optimizes AI costs by selecting the best model (Gemini/Claude/Llama).
-3.  **Agent Orchestration**: `core.agent_orchestrator` manages AI agents defined in Markdown.
+*   **CLI**: Built with **Typer**. Entry: `main.py` -> `cli/entrypoint.py`
+*   **Backend**: Built with **FastAPI**. Entry: `backend/main.py`
+
+### Key Workflows
+
+1.  **Revenue Autopilot**: `core.automation.autopilot` - daily revenue/lead checks
+2.  **Hybrid Routing**: `core.ai.hybrid_router` - AI model optimization
+3.  **Agent Orchestration**: `core.agent_orchestrator` - markdown-defined agents
+
+### Code Quality Metrics
+
+| Metric | Value |
+| :--- | :--- |
+| Max file lines | 200 |
+| Type coverage | High (TypedDict/Protocol) |
+| Test coverage | 100% pass rate |
 
 ---
-*Generated by AgencyOS Refactoring Engine*
+*Generated by AgencyOS Refactoring Engine - January 20, 2026*

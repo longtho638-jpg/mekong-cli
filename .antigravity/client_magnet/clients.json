@@ -1,0 +1,216 @@
+{
+  "metadata": {
+    "last_updated": "2026-01-20T12:09:59.339051"
+  },
+  "clients": [
+    {
+      "id": "cli_1768882857",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:20:57.785036"
+    },
+    {
+      "id": "cli_1768882857",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:20:57.793563"
+    },
+    {
+      "id": "cli_1768884842",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:54:02.515177"
+    },
+    {
+      "id": "cli_1768884875",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:54:35.694734"
+    },
+    {
+      "id": "cli_1768884938",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:55:38.004882"
+    },
+    {
+      "id": "cli_1768884961",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:56:01.095984"
+    },
+    {
+      "id": "cli_1768884961",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:56:01.099917"
+    },
+    {
+      "id": "cli_1768884966",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:56:06.801047"
+    },
+    {
+      "id": "cli_1768884966",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:56:06.805855"
+    },
+    {
+      "id": "cli_1768884996",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:56:36.395362"
+    },
+    {
+      "id": "cli_1768885022",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T11:57:02.297920"
+    },
+    {
+      "id": "cli_1768885408",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:03:28.538984"
+    },
+    {
+      "id": "cli_1768885408",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:03:28.546099"
+    },
+    {
+      "id": "cli_1768885416",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:03:36.997981"
+    },
+    {
+      "id": "cli_1768885417",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:03:37.006503"
+    },
+    {
+      "id": "cli_1768885792",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:09:52.517697"
+    },
+    {
+      "id": "cli_1768885792",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:09:52.523227"
+    },
+    {
+      "id": "cli_1768885799",
+      "name": "Client Lead",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 1000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:09:59.331087"
+    },
+    {
+      "id": "cli_1768885799",
+      "name": "L2",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 2000,
+      "active_projects": 0,
+      "joined_at": "2026-01-20T12:09:59.337890"
+    }
+  ]
+}

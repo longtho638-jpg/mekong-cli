@@ -53,30 +53,33 @@ class BillingHandler:
             print("❌ Invoice module not found.")
 
     def _create_proposal(self, args: List[str]) -> None:
-        """Create new proposal."""
+        """Create new proposal using antigravity.core.proposal_generator."""
         print("\n📝 Proposal Generator")
         print("-" * 50)
 
         try:
-            from core.modules.proposal import ProposalGenerator, ServiceTier
+            from antigravity.core.proposal_generator import ProposalGenerator
+            from antigravity.core.money_maker import ServiceTier
 
-            generator = ProposalGenerator(
-                agency_name="Your Agency",
-                niche="Digital Marketing",
-                location="Your City",
-                skill="Your Skill",
+            generator = ProposalGenerator()
+            generator.set_agency_context(
+                name="Your Agency",
+                phone="+84 900 000 000",
+                email="contact@agency.com",
             )
 
-            proposal = generator.create_proposal(
+            # quick_launch generates quote + proposal in one call
+            # chapter_ids: 1=Strategy, 5=Growth Consulting (see BINH_PHAP_SERVICES)
+            proposal = generator.quick_launch(
                 client_name="Demo Client",
-                client_company="Demo Company",
-                client_email="demo@example.com",
-                tiers=[ServiceTier.GROWTH],
+                contact="demo@example.com",
+                chapter_ids=[1, 5],
+                tier=ServiceTier.WARRIOR,
             )
 
-            print(generator.format_proposal(proposal))
-        except ImportError:
-            print("❌ Proposal module not found.")
+            print(proposal.markdown_content)
+        except ImportError as e:
+            print(f"❌ Proposal module not found: {e}")
 
     def _show_stats(self) -> None:
         """Show billing statistics."""

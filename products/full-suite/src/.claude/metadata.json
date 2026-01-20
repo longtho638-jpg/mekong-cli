@@ -1,0 +1,15 @@
+{
+  "version": "4.0.0-agencyos",
+  "name": "agencyos-vibe-coding",
+  "description": "🏯 AgencyOS VIBE CODING - Kiếm tiền dễ như ăn kẹo | Unified agentic framework for mekong-cli",
+  "buildDate": "2026-01-20T00:13:00.000Z",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longtho638-jpg/mekong-cli.git"
+  },
+  "download": {
+    "lastDownloadedAt": null,
+    "downloadedBy": null,
+    "installCount": 0
+  }
+}
