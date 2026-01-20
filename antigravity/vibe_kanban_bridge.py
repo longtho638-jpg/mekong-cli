@@ -24,7 +24,7 @@ logger = logging.getLogger("antigravity.core")
 
 # Constants
 VIBE_KANBAN_URL = os.getenv("VIBE_KANBAN_URL", "http://localhost:3000")
-VIBE_KANBAN_TOKEN = os.getenv("VIBE_KANBAN_TOKEN", "default_token")
+VIBE_KANBAN_TOKEN = os.getenv("VIBE_KANBAN_TOKEN")  # No default - must be set explicitly
 
 # --- Models ---
 
@@ -70,9 +70,16 @@ class TaskModel(BaseModel):
 class VibeBoardClient:
     """
     Async HTTP Client for Vibe Kanban Board.
+
+    Requires VIBE_KANBAN_TOKEN environment variable or explicit token parameter.
     """
 
-    def __init__(self, hostname: str = VIBE_KANBAN_URL, token: str = VIBE_KANBAN_TOKEN):
+    def __init__(self, hostname: str = VIBE_KANBAN_URL, token: Optional[str] = VIBE_KANBAN_TOKEN):
+        if not token:
+            raise ValueError(
+                "VIBE_KANBAN_TOKEN environment variable is required. "
+                "Set it in your environment or pass token parameter explicitly."
+            )
         self.base_url = hostname
         self.headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         self.client = httpx.AsyncClient(base_url=self.base_url, headers=self.headers, timeout=10.0)

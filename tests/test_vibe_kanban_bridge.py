@@ -41,7 +41,7 @@ async def test_create_task(mock_client):
     client_instance.post.return_value = mock_response
     mock_client.return_value = client_instance
 
-    client = VibeBoardClient()
+    client = VibeBoardClient(token="test-token-for-testing")
     # Manually attach mock instance because VibeBoardClient creates it in __init__
     client.client = client_instance
 
@@ -81,7 +81,7 @@ async def test_list_tasks(mock_client):
     client_instance.get.return_value = mock_response
     mock_client.return_value = client_instance
 
-    client = VibeBoardClient()
+    client = VibeBoardClient(token="test-token-for-testing")
     client.client = client_instance
 
     tasks = await client.list_tasks()
@@ -126,7 +126,7 @@ async def test_orchestrator_workload(mock_client):
     client_instance = AsyncMock()
     client_instance.get.return_value = mock_response
 
-    client = VibeBoardClient()
+    client = VibeBoardClient(token="test-token-for-testing")
     client.client = client_instance
 
     orchestrator = AgentOrchestrator(client)
@@ -134,3 +134,15 @@ async def test_orchestrator_workload(mock_client):
 
     assert workload["planner"] == 2
     assert workload["money-maker"] == 0  # Done tasks don't count as workload
+
+
+def test_missing_token_raises_error():
+    """Security test: VibeBoardClient must raise ValueError when token is missing."""
+    with pytest.raises(ValueError, match="VIBE_KANBAN_TOKEN environment variable is required"):
+        VibeBoardClient(token=None)
+
+
+def test_empty_token_raises_error():
+    """Security test: VibeBoardClient must raise ValueError when token is empty string."""
+    with pytest.raises(ValueError, match="VIBE_KANBAN_TOKEN environment variable is required"):
+        VibeBoardClient(token="")
