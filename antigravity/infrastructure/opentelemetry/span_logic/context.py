@@ -1,17 +1,23 @@
 """
 Span context and relationship management.
 """
-from typing import Optional
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
 
 from .models import TraceId
+
+if TYPE_CHECKING:
+    from ..span import Span
 
 
 class SpanContext:
     def __init__(self, trace_id: TraceId):
         self.trace_id = trace_id
-        self.parent_span: Optional['Span'] = None
+        self.parent_span: Optional["Span"] = None
 
-    def set_parent(self, parent_span: 'Span') -> None:
+    def set_parent(self, parent_span: "Span") -> None:
         """Set parent span for this span."""
         self.parent_span = parent_span
         if parent_span and parent_span.trace_id:

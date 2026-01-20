@@ -21,7 +21,7 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-ignore = ["E501", "E741", "E722", "F401", "E402", "E701"]  # E402: imports after path, E701: one-liners
+ignore = ["E501", "E741", "E722", "F401", "E402", "E701", "E702"]  # E402: imports, E701/E702: one-liners
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "E402"]  # Intentional re-exports
