@@ -206,7 +206,7 @@ export function AnimatedAntigravityModules() {
             description: 'Proprietary intelligence',
             status: 'active' as const,
             metrics: moat ? [
-                { label: 'Data Points', value: moat.data_points.toLocaleString() },
+                { label: 'Data Points', value: new Intl.NumberFormat('en-US').format(moat.data_points) },
                 { label: 'Insights', value: moat.insights_generated.toString() },
                 { label: 'Defensibility', value: moat.defensibility },
             ] : undefined

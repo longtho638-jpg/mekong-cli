@@ -36,7 +36,7 @@ export function LiveVCReadinessCard() {
         { label: 'LTV/CAC Ratio', value: `${vc.ltv_cac_ratio.toFixed(1)}x`, status: 'good' },
         { label: 'Rule of 40', value: `${vc.rule_of_40.toFixed(0)}%`, status: vc.rule_of_40 >= 40 ? 'good' : 'warning' },
         { label: 'NRR', value: `${vc.nrr}%`, status: 'good' },
-        { label: 'MRR', value: `$${vc.mrr.toLocaleString()}`, status: 'good' },
+        { label: 'MRR', value: `$${new Intl.NumberFormat('en-US').format(vc.mrr)}`, status: 'good' },
         { label: 'Growth Rate', value: `${vc.growth_rate}%`, status: vc.growth_rate >= 20 ? 'good' : 'warning' },
         { label: 'Stage', value: vc.stage, status: 'info' }
     ];
