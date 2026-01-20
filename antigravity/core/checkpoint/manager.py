@@ -1,35 +1,26 @@
 """
 Checkpoint Manager - Core checkpoint operations.
-
-The 'Save Game' system for agency operations.
-Useful for creating recovery points before major architectural or
-financial changes.
-
-Binh Phap: Cuu Dia (Nine Terrains) - Knowing when to hold and when to move.
 """
-
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 from .models import SessionState
 from .storage import CheckpointStorage
+from .serializer import CheckpointSerializer
 
 logger = logging.getLogger(__name__)
 
-
 class Checkpoint:
     """
-    Checkpoint Manager
-
-    The 'Save Game' system for agency operations.
+    Checkpoint Manager (Facade)
     """
 
     def __init__(self, storage_path: Union[str, Path] = ".antigravity/checkpoints"):
         self.storage = CheckpointStorage(Path(storage_path))
         self.checkpoints: List[SessionState] = self.storage.load_index()
+        self.serializer = CheckpointSerializer()
 
     def save(self, name: str, description: Optional[str] = None) -> SessionState:
         """Gathers current system state and persists it to a unique checkpoint file."""
@@ -42,7 +33,7 @@ class Checkpoint:
             name=safe_name,
             timestamp=datetime.now(),
             description=description or f"Manual checkpoint: {name}",
-            data=self._gather_system_state(),
+            data=self.serializer.gather_system_state(),
         )
 
         # Persistence
@@ -69,8 +60,7 @@ class Checkpoint:
             if not checkpoint:
                 return False
 
-        # APPLICATION POINT: In production, this would re-initialize engines
-        self._apply_state(checkpoint.data)
+        self.serializer.apply_state(checkpoint.data)
 
         logger.info(f"System state restored to: {name} (from {checkpoint.timestamp.isoformat()})")
         return True
@@ -94,39 +84,6 @@ class Checkpoint:
             return True
         return False
 
-    def _gather_system_state(self) -> Dict[str, Any]:
-        """Orchestrates data gathering from all Agency OS modules."""
-        state = {"metadata": {"created_at": datetime.now().isoformat(), "os": os.name}}
-
-        # 1. Moat Engine State
-        try:
-            from ..moat_engine import moat_engine
-            state["moat"] = moat_engine.get_stats()
-        except ImportError:
-            pass
-
-        # 2. Cashflow State
-        try:
-            from ..cashflow_engine import get_cashflow_engine
-            cf = get_cashflow_engine()
-            state["cashflow"] = {"arr": cf.get_total_arr(), "progress": cf.get_progress_percent()}
-        except Exception:
-            pass
-
-        # 3. Memory State
-        try:
-            from ..agent_memory import get_agent_memory
-            mem = get_agent_memory()
-            state["memory"] = mem.get_stats()
-        except Exception:
-            pass
-
-        return state
-
-    def _apply_state(self, data: Dict[str, Any]):
-        """Logic to inject restored data back into running engines."""
-        logger.debug(f"Restoring {len(data)} system domains...")
-
     def print_history(self, limit: int = 10):
         """Pretty-prints the checkpoint history to the console."""
         history = self.list()
@@ -142,7 +99,6 @@ class Checkpoint:
                 if cp.description:
                     print(f"      - {cp.description}")
         print("=" * 60 + "\n")
-
 
 # Global Interface
 def create_checkpoint(name: str, desc: Optional[str] = None):
