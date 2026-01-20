@@ -1,12 +1,12 @@
 """
-💰 Revenue AI - Intelligent Revenue Optimization
-=================================================
+Revenue AI - Intelligent Revenue Optimization
+==============================================
 
 NOTE: This is a facade for backward compatibility.
-The actual implementation has been moved to antigravity.core.revenue_ai package.
+The actual implementation has been moved to antigravity.core.revenue package.
 """
 
-from antigravity.core.revenue_ai import (
+from antigravity.core.revenue import (
     RevenueAI,
     CustomerProfile,
     ChurnPrediction,

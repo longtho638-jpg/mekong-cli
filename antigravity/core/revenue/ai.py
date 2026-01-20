@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class RevenueAI:
     """
-    💰 AI-Driven Revenue Optimization
+    AI-Driven Revenue Optimization
 
     Features:
     - Churn prediction and prevention
@@ -49,7 +49,7 @@ class RevenueAI:
         self._metrics_history: List[RevenueMetrics] = []
         self._model_weights = self._initialize_weights()
 
-        logger.info("💰 RevenueAI initialized")
+        logger.info("RevenueAI initialized")
 
     def _initialize_weights(self) -> Dict[str, float]:
         """Initialize churn prediction model weights."""
@@ -66,7 +66,7 @@ class RevenueAI:
         """Add or update customer profile."""
         with self._lock:
             self.customers[profile.id] = profile
-        logger.debug(f"👤 Customer added: {profile.name}")
+        logger.debug(f"Customer added: {profile.name}")
 
     def predict_churn(self, customer_id: str) -> Optional[ChurnPrediction]:
         """Predict churn risk for a customer."""
@@ -145,7 +145,7 @@ class RevenueAI:
         with self._lock:
             self.predictions[customer_id] = prediction
 
-        logger.info(f"📊 Churn prediction for {customer.name}: {risk.value} ({probability:.0%})")
+        logger.info(f"Churn prediction for {customer.name}: {risk.value} ({probability:.0%})")
         return prediction
 
     def _generate_retention_actions(
@@ -202,8 +202,6 @@ class RevenueAI:
         # Annual plan opportunity
         days_since_signup = (time.time() - customer.signup_date) / 86400
         if days_since_signup > 90 and days_since_signup < 365:
-            # customer.mrr * 2  # 2 months free - Dead code in original, ignored
-
             recommendations.append(
                 UpsellRecommendation(
                     customer_id=customer_id,
@@ -230,7 +228,7 @@ class RevenueAI:
         with self._lock:
             self.recommendations[customer_id] = recommendations
 
-        logger.info(f"💡 Found {len(recommendations)} upsell opportunities for {customer.name}")
+        logger.info(f"Found {len(recommendations)} upsell opportunities for {customer.name}")
         return recommendations
 
     def optimize_price(
