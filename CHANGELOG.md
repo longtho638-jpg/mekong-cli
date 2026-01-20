@@ -1,3 +1,30 @@
+## [2.5.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.4...v2.5.0-beta.5) (2026-01-20)
+
+
+### 🚀 Features
+
+* **skills:** add cook skill for task orchestration ([458b32f](https://github.com/claudekit/claudekit-engineer/commit/458b32f1d6742bfbee300b431b47241a88e793c6))
+* **skills:** add gkg skill for semantic code analysis ([b3c2767](https://github.com/claudekit/claudekit-engineer/commit/b3c2767fcd49e392c7bb9af2a0d248c54ce067cc))
+* **skills:** add scout skill for codebase file discovery ([18e0274](https://github.com/claudekit/claudekit-engineer/commit/18e0274e68a1104c98672631146077ef47dd0f7a))
+* **web-testing:** add Playwright test automation scripts ([e56728a](https://github.com/claudekit/claudekit-engineer/commit/e56728ac157ee7444f44a20937f453bdae0eb92c))
+
+
+### 📚 Documentation
+
+* **commands:** update docs commands with improved instructions ([bc29733](https://github.com/claudekit/claudekit-engineer/commit/bc2973301e10ae15d5152aad6a369ec33eae42b7))
+* **mcp:** update Gemini CLI integration reference ([654f03c](https://github.com/claudekit/claudekit-engineer/commit/654f03cd66f0511ef861ff8b307922319dc13ae9))
+* **skill-creator:** add quality criteria reference documentation ([b448fa3](https://github.com/claudekit/claudekit-engineer/commit/b448fa39cb9421ae397cd9484039fd63d87a982f))
+* **skills:** add frontend-design workflow references ([64af261](https://github.com/claudekit/claudekit-engineer/commit/64af26179e0a03ba7db893014c318a161c82e225))
+* **skills:** update skill-creator with improved guidelines ([c06a3c8](https://github.com/claudekit/claudekit-engineer/commit/c06a3c8d520c343ed7211404c79f9c366b48a2fa))
+* **web-testing:** add comprehensive testing framework references and guidelines ([d356cbb](https://github.com/claudekit/claudekit-engineer/commit/d356cbb89f2788fac43eebbe1b1988c6c7de521a))
+
+
+### ♻️ Code Refactoring
+
+* **agents:** remove deprecated scout agent definitions ([e07a855](https://github.com/claudekit/claudekit-engineer/commit/e07a855ddff4d32ae2070d13739f3a8acad024cc))
+* **commands:** archive deprecated commands to commands-archived ([a7fec39](https://github.com/claudekit/claudekit-engineer/commit/a7fec391576ea7446053094b52f89495544556a2))
+* **skills:** rename brainstorming to brainstorm ([7ef3c20](https://github.com/claudekit/claudekit-engineer/commit/7ef3c205f7002291d459008b586e9f9b34e1a994))
+
 ## [2.5.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.3...v2.5.0-beta.4) (2026-01-19)
 
 
