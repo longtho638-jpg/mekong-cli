@@ -1,6 +1,7 @@
 """
 OpenTelemetry Span Facade.
 """
+
 from typing import Any, Dict, List, Optional
 
 from .models import Event, SpanKind, SpanStatus, TraceId
@@ -18,7 +19,7 @@ class Span(SpanLifecycle, SpanContext, SpanAttributes):
         kind: SpanKind,
         operation_name: str,
         service_name: str,
-        resource_name: str
+        resource_name: str,
     ):
         SpanLifecycle.__init__(self)
         SpanContext.__init__(self, trace_id)
@@ -29,14 +30,19 @@ class Span(SpanLifecycle, SpanContext, SpanAttributes):
         self.service_name = service_name
         self.resource_name = resource_name
 
-    def finish(self, status: SpanStatus = SpanStatus.FINISHED, end_time: Optional[float] = None) -> None:
-        super().finish(status, end_time)
+    def add_event(self, event: Event) -> None:
+        """Add event to span, auto-setting span_id from trace_id."""
+        super().add_event(event, self.trace_id.trace_id)
+
+    def finish(
+        self, status: SpanStatus = SpanStatus.FINISHED, end_time: Optional[float] = None
+    ) -> None:
+        """Finish the span and record completion event."""
+        SpanLifecycle.finish(self, status, end_time)
         completion_event = Event(
-            name="span.end",
-            attributes={"status": status.value},
-            timestamp=self.end_time
+            name="span.end", attributes={"status": status.value}, timestamp=self.end_time
         )
-        self.add_event(completion_event, self.trace_id.trace_id)
+        super().add_event(completion_event, self.trace_id.trace_id)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert span to dictionary for serialization."""
@@ -53,7 +59,7 @@ class Span(SpanLifecycle, SpanContext, SpanAttributes):
             "duration": self.get_duration(),
             "events": [event.to_dict() for event in self.events],
             "tags": self.tags,
-            "attributes": self.attributes
+            "attributes": self.attributes,
         }
 
     def __repr__(self) -> str:
