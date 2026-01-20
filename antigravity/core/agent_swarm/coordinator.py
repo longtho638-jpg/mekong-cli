@@ -1,19 +1,26 @@
+from __future__ import annotations
+
 import logging
 import time
 from antigravity.core.types import SwarmStatusDict
-from typing import Callable, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 from .enums import AgentRole, TaskPriority
 from .models import SwarmMetrics
 from .state import SwarmState
 
+if TYPE_CHECKING:
+    from . import AgentSwarm
+
 logger = logging.getLogger(__name__)
+
 
 class SwarmCoordinator:
     """
     Coordinates agent registration and status reporting for the swarm.
     """
-    def __init__(self, swarm: 'AgentSwarm', state: SwarmState):
+
+    def __init__(self, swarm: "AgentSwarm", state: SwarmState):
         self.swarm = swarm
         self.state = state
 
@@ -36,7 +43,9 @@ class SwarmCoordinator:
     def get_metrics(self) -> SwarmMetrics:
         """Get swarm metrics."""
         if self.state.task_times:
-            self.state.metrics.avg_task_time = sum(self.state.task_times) / len(self.state.task_times)
+            self.state.metrics.avg_task_time = sum(self.state.task_times) / len(
+                self.state.task_times
+            )
 
         # Calculate throughput
         all_tasks = self.swarm.task_manager.tasks.values()
