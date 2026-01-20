@@ -1,27 +1,26 @@
 """
-Agent Orchestrator Engine
-===========================
+Agent Orchestrator Engine (Facade)
+==================================
 
 The central execution engine for Agency OS. It maps commands to optimal
 specialized agents, manages their execution state, and tracks performance metrics.
 """
 
 import logging
-import time
 from antigravity.core.agent_chains import get_chain
-from antigravity.core.chains import AgentStep
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.types import HookContextDict, OrchestratorStatsDict
 from datetime import datetime
 from typing import Dict, List, Optional
 
 from .analytics import OrchestratorAnalytics
-from .models import ChainResult, StepResult, StepStatus
+from .models import ChainResult, StepStatus
 from .reporting import OrchestratorReporting
+from .delegator import OrchestratorDelegator
+from .monitor import OrchestratorMonitor
 
 # Configure logging
 logger = logging.getLogger(__name__)
-
 
 class AgentOrchestrator(StatsMixin):
     """
@@ -38,6 +37,8 @@ class AgentOrchestrator(StatsMixin):
         # Sub-components
         self.reporting = OrchestratorReporting()
         self.analytics = OrchestratorAnalytics()
+        self.delegator = OrchestratorDelegator(verbose=verbose, reporting=self.reporting)
+        self.monitor = OrchestratorMonitor(analytics=self.analytics)
 
     def run(
         self, suite: str, subcommand: str, context: Optional[HookContextDict] = None
@@ -59,7 +60,7 @@ class AgentOrchestrator(StatsMixin):
             self.reporting.print_header(suite, subcommand, len(chain))
 
         for i, step in enumerate(chain, 1):
-            step_res = self._execute_step(step, i, len(chain), context)
+            step_res = self.delegator.execute_step(step, i, len(chain), context)
             result.steps.append(step_res)
 
             # Critical Path Logic: Stop on failure unless step is optional
@@ -69,11 +70,7 @@ class AgentOrchestrator(StatsMixin):
 
         result.completed_at = datetime.now()
         result.total_duration_ms = (result.completed_at - result.started_at).total_seconds() * 1000
-
-        # Chain success = all non-optional steps completed
-        result.success = all(
-            r.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for r in result.steps
-        )
+        result.success = self.monitor.check_chain_success(result.steps)
 
         self.history.append(result)
 
@@ -81,44 +78,6 @@ class AgentOrchestrator(StatsMixin):
             self.reporting.print_summary(result)
 
         return result
-
-    def _execute_step(
-        self, step: AgentStep, index: int, total: int, context: Optional[HookContextDict]
-    ) -> StepResult:
-        """Invokes an individual agent and captures the result."""
-        start_time = time.time()
-
-        if self.verbose:
-            self.reporting.print_step_start(step, index, total)
-
-        try:
-            # INTERFACE POINT: Real agent invocation would happen here.
-            # For this prototype, we simulate a successful execution.
-            time.sleep(0.01)  # Simulated network/processing latency
-
-            output = f"Simulated output for {step.action}"
-            status = StepStatus.COMPLETED
-            error = None
-
-        except Exception as e:
-            logger.exception(f"Agent {step.agent} failed during {step.action}")
-            output = None
-            status = StepStatus.FAILED
-            error = str(e)
-
-        duration = (time.time() - start_time) * 1000
-
-        if self.verbose and status == StepStatus.COMPLETED:
-            self.reporting.print_step_success(duration)
-
-        return StepResult(
-            agent=step.agent,
-            action=step.action,
-            status=status,
-            output=output,
-            duration_ms=duration,
-            error=error,
-        )
 
     def _empty_result(self, suite: str, subcommand: str) -> ChainResult:
         """Fallback result for missing configurations."""
@@ -128,8 +87,7 @@ class AgentOrchestrator(StatsMixin):
 
     def _collect_stats(self) -> OrchestratorStatsDict:
         """Aggregates performance data from the current session."""
-        return self.analytics.get_stats(self.history)
-
+        return self.monitor.get_session_stats(self.history)
 
 # Quick Access Function
 def execute_chain(suite: str, subcommand: str, context: Optional[Dict] = None) -> ChainResult:
