@@ -5,7 +5,9 @@ POC Tracker Agent - Proof of Concept Management (Refactored)
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List
-from .models import POCStage, SuccessCriterion, POC
+
+from .models import POC, POCStage, SuccessCriterion
+
 
 class POCTrackerAgent:
     """

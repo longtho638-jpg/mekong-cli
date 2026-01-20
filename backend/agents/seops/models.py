@@ -6,6 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
+
 class POCStage(Enum):
     PROPOSED = "proposed"
     IN_PROGRESS = "in_progress"

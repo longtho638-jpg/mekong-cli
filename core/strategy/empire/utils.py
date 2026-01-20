@@ -1,5 +1,6 @@
 from .models import AgencyConfig
 
+
 def format_empire_summary(config: AgencyConfig) -> str:
     """Render a text summary of the new empire."""
     lines = [

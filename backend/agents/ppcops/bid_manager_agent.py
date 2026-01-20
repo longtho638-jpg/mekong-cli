@@ -4,7 +4,9 @@ Bid Manager Agent - Smart Bidding & Pacing (Refactored)
 
 import random
 from typing import Dict, List
-from .models import BidStrategyType, OptimizationStatus, BidStrategy, AuctionInsight
+
+from .models import AuctionInsight, BidStrategy, BidStrategyType, OptimizationStatus
+
 
 class BidManagerAgent:
     """

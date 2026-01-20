@@ -6,6 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
+
 class ComplianceStatus(Enum):
     COMPLIANT = "compliant"
     PARTIAL = "partial"

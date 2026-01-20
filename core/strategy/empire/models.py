@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 
+
 class AgencyNiche(Enum):
     """Business niches for automated agency setup."""
     SAAS_MARKETING = "saas_marketing"

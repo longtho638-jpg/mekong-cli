@@ -5,11 +5,11 @@
 This file is now a proxy for the modularized version in ./legacy_logic/
 Please import from core.licensing.legacy_logic instead.
 """
-import warnings
 import logging
+import warnings
 
-from .legacy_logic.models import LicenseTier, LicenseStatus, License
 from .legacy_logic.manager import LicenseEngine
+from .legacy_logic.models import License, LicenseStatus, LicenseTier
 from .legacy_logic.utils import format_pricing_table
 
 # Issue a deprecation warning

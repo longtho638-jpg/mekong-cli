@@ -5,7 +5,9 @@ Activity Tracker Agent - Sales Activity Logging (Refactored)
 import random
 from datetime import date
 from typing import Dict, List
-from .models import ActivityType, ActivityOutcome, Activity, DailyStats
+
+from .models import Activity, ActivityOutcome, ActivityType, DailyStats
+
 
 class ActivityTrackerAgent:
     """

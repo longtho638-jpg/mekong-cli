@@ -3,10 +3,13 @@ AgentOps Service - Business logic for AgentOps operations (Facade)
 """
 
 from typing import Any, Dict
+
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
-from .registry import OpsRegistry
+
 from .executor import OpsExecutor
+from .registry import OpsRegistry
 from .reporting import OpsReporting
+
 
 class AgentOpsService:
     """Service for managing AgentOps operations"""
