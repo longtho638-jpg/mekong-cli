@@ -9,9 +9,9 @@ from .backends.base import QueueBackend
 from .backends.memory_backend import MemoryBackend
 from .backends.redis_backend import RedisBackend
 from .config import DEFAULT_FALLBACK_TO_MEMORY, DEFAULT_REDIS_URL
+from .consumer import QueueConsumer
 from .models import Job, JobPriority, QueueStats
 from .producer import QueueProducer
-from .consumer import QueueConsumer
 
 logger = logging.getLogger(__name__)
 
@@ -52,20 +52,20 @@ class QueueManager:
             logger.error("Redis unavailable and fallback disabled.")
             self.backend = None
 
-    def submit_job(self, **kwargs) -> Optional[str]:
-        return self.producer.submit_job(**kwargs)
+    def submit_job(self, *args, **kwargs) -> Optional[str]:
+        return self.producer.submit_job(*args, **kwargs)
 
-    def get_next_job(self, **kwargs) -> Optional[Job]:
-        return self.consumer.get_next_job(**kwargs)
+    def get_next_job(self, *args, **kwargs) -> Optional[Job]:
+        return self.consumer.get_next_job(*args, **kwargs)
 
-    def complete_job(self, **kwargs) -> bool:
-        return self.consumer.complete_job(**kwargs)
+    def complete_job(self, *args, **kwargs) -> bool:
+        return self.consumer.complete_job(*args, **kwargs)
 
-    def fail_job(self, **kwargs) -> bool:
-        return self.consumer.fail_job(**kwargs)
+    def fail_job(self, *args, **kwargs) -> bool:
+        return self.consumer.fail_job(*args, **kwargs)
 
-    def timeout_job(self, **kwargs) -> bool:
-        return self.consumer.timeout_job(**kwargs)
+    def timeout_job(self, *args, **kwargs) -> bool:
+        return self.consumer.timeout_job(*args, **kwargs)
 
     def get_stats(self) -> QueueStats:
         """Get current queue statistics."""

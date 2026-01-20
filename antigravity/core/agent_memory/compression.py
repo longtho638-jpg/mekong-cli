@@ -3,6 +3,7 @@ Memory Compression Logic
 """
 from typing import Any, Dict, List
 
+
 def compress_memory_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """
     Compresses memory data by removing redundant fields or

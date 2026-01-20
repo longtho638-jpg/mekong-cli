@@ -3,6 +3,7 @@ Queue Consumer - Handles job retrieval and completion
 """
 import logging
 from typing import Any, Optional
+
 from .models import Job, JobPriority, JobStatus
 
 logger = logging.getLogger(__name__)

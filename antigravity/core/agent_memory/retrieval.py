@@ -4,6 +4,7 @@ Memory Retrieval Logic
 from datetime import datetime
 from typing import Any, Dict, List
 
+
 def parse_memories(data: Dict[str, Any], Memory_class) -> List[Any]:
     """Parses raw data into Memory objects."""
     memories = []
