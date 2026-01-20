@@ -1,0 +1,12 @@
+{
+  "test-server": [
+    {
+      "name": "fetch-data",
+      "description": "Fetches data from a URL"
+    },
+    {
+      "name": "analyze-code",
+      "description": "Analyzes code for bugs"
+    }
+  ]
+}

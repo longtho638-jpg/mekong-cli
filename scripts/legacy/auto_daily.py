@@ -89,7 +89,7 @@ def main():
 
     # 3. Product Stats
     print_header("📦 PRODUCT CATALOG")
-    output, ok = run_cmd(["python3", "scripts/product_stats.py"])
+    output, ok = run_cmd(["python3", "scripts/legacy/product_stats.py"])
     print(output)
 
     # 4. Pending Actions

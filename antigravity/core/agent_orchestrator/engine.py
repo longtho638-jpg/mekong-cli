@@ -18,6 +18,7 @@ from .delegator import OrchestratorDelegator
 from .models import ChainResult, StepStatus
 from .monitor import OrchestratorMonitor
 from .reporting import OrchestratorReporting
+from antigravity.core.algorithm.validation import validate_win3_logic
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -45,7 +46,28 @@ class AgentOrchestrator(StatsMixin):
     ) -> ChainResult:
         """
         Executes the optimized agent chain for a specific command suite.
+        Includes a mandatory WIN-WIN-WIN validation gate for revenue/strategic suites.
         """
+        # 1. Strategic Gate: WIN-WIN-WIN Validation
+        if suite in ["revenue", "strategy", "crm"]:
+            # Extract win details from context if available, otherwise use placeholders
+            context = context or {}
+            win_check = validate_win3_logic(
+                action=f"{suite}:{subcommand}",
+                anh_win=context.get("anh_win", "Strategy aligned"),
+                agency_win=context.get("agency_win", "Operations improved"),
+                startup_win=context.get("startup_win", "Client value delivered")
+            )
+
+            if not win_check.is_valid:
+                logger.error(f"Execution blocked by WIN-WIN-WIN Gate: {', '.join(win_check.violations)}")
+                result = self._empty_result(suite, subcommand)
+                result.success = False
+                result.output = f"BLOCKED: {win_check.violations[0]}"
+                self.history.append(result)
+                return result
+
+        # 2. Chain Execution
         chain = get_chain(suite, subcommand)
 
         if not chain:

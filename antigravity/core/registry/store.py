@@ -136,6 +136,35 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
     },
 }
 
+# ============================================================
+# DYNAMIC REGISTRY INTERFACE
+# ============================================================
+
+def register_command(suite: str, sub: str, metadata: Dict[str, Any]):
+    """Registers a new subcommand dynamically."""
+    if suite not in COMMAND_REGISTRY:
+        COMMAND_REGISTRY[suite] = {
+            "suite": suite,
+            "emoji": "package",
+            "description": f"Dynamic suite for {suite}",
+            "subcommands": {},
+        }
+    COMMAND_REGISTRY[suite]["subcommands"][sub] = metadata
+
+def register_suite(suite: str, emoji: str, description: str):
+    """Registers a new command suite."""
+    if suite not in COMMAND_REGISTRY:
+        COMMAND_REGISTRY[suite] = {
+            "suite": suite,
+            "emoji": emoji,
+            "description": description,
+            "subcommands": {},
+        }
+    else:
+        COMMAND_REGISTRY[suite]["emoji"] = emoji
+        COMMAND_REGISTRY[suite]["description"] = description
+
+
 
 # ============================================================
 # SHORTCUTS & ALIASES

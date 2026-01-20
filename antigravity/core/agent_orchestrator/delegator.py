@@ -5,9 +5,10 @@ import logging
 import time
 from antigravity.core.chains import AgentStep
 from antigravity.core.types import HookContextDict
-from typing import Optional
+from typing import Optional, Any, Dict
 
 from .models import StepResult, StepStatus
+from antigravity.core.agent_memory.blackboard import blackboard
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +29,23 @@ class OrchestratorDelegator:
             self.reporting.print_step_start(step, index, total)
 
         try:
-            # INTERFACE POINT: Real agent invocation would happen here.
-            # For this prototype, we simulate a successful execution.
-            time.sleep(0.01)  # Simulated network/processing latency
+            # 1. Prepare context from Blackboard
+            # Agents can access shared data via namespaces
+            shared_context = blackboard.get_namespace("global")
+            if context:
+                shared_context.update(context)
 
-            output = f"Simulated output for {step.action}"
+            # INTERFACE POINT: Real agent invocation would happen here.
+            # We simulate agent execution and result capturing.
+            time.sleep(0.01)
+
+            # Simulation: Agent might write to blackboard
+            output = f"Executed {step.action} using {step.agent}"
+
+            # Store output in blackboard for next steps
+            blackboard.set(f"last_output_{step.agent}", output)
+            blackboard.set(f"step_{index}_result", output)
+
             status = StepStatus.COMPLETED
             error = None
 

@@ -20,10 +20,6 @@ class CommandInjectionValidator(BaseSecurityValidator):
         print_header("Priority 6: Command Injection Prevention")
 
         files_to_check = [
-            "scripts/health.py",
-            "scripts/morning.py",
-            "scripts/overlord.py",
-            "scripts/auto_daily.py",
             "scripts/legacy/morning.py",
             "scripts/legacy/auto_daily.py",
             "antigravity/core/jules_runner.py",

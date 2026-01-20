@@ -76,12 +76,19 @@ class MCPManager:
         if "mcpServers" not in self.config:
             self.config["mcpServers"] = {}
 
-        self.config["mcpServers"][name] = {
+        server_entry = {
             "command": config.command,
             "args": config.args,
             "env": config.env,
         }
+        self.config["mcpServers"][name] = server_entry
         self._save_config()
+
+        # Update Tool Catalog (Lazy probe - in real scenario we would connect and list tools)
+        from .registry.mcp_catalog import mcp_catalog
+        # For now, we register the server config.
+        # Actual tool indexing usually happens via a 'refresh' command that connects to the server.
+        mcp_catalog.register_server(name, server_entry, [])
 
     def install_supabase(self, project_ref: str, api_key: str):
         """
