@@ -1,19 +1,15 @@
 """
-Swarm Coordinator - Multi-Agent Parallel Execution
-===================================================
-
-Central coordinator for swarm intelligence.
-Distributes work across multiple agents with load balancing.
-
-Binh Phap: "Da muu thien doan" - Many minds, better decisions
+Swarm Coordinator - Multi-Agent Parallel Execution.
+Central coordinator distributing work across agents with load balancing.
 """
 
 import logging
 import threading
 import time
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from antigravity.core.types import SwarmStatusDict
+from .coordination import build_status_dict, calculate_throughput
 from .messaging import TaskQueue
 from .types import AgentRole, SwarmMetrics, TaskPriority, TaskStatus
 from .workers import WorkerPool
@@ -22,15 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentSwarm:
-    """
-    Multi-Agent Swarm with Parallel Execution.
-
-    Features:
-    - Parallel task distribution
-    - Load balancing across agents
-    - Swarm intelligence for decisions
-    - Fault tolerance and recovery
-    """
+    """Multi-Agent Swarm with parallel execution, load balancing, and fault tolerance."""
 
     def __init__(self, max_workers: int = 10, enable_metrics: bool = True) -> None:
         self.max_workers = max_workers
@@ -158,41 +146,14 @@ class AgentSwarm:
     def get_metrics(self) -> SwarmMetrics:
         """Get swarm metrics."""
         self.metrics.avg_task_time = self._worker_pool.get_avg_task_time()
-
-        # Calculate throughput
-        all_tasks = self._task_queue.get_all_tasks()
-        recent_completions = [
-            t
-            for t in all_tasks.values()
-            if t.completed_at and (time.time() - t.completed_at) < 60
-        ]
-        self.metrics.throughput_per_minute = len(recent_completions)
-
+        self.metrics.throughput_per_minute = calculate_throughput(self._task_queue)
         return self.metrics
 
     def get_status(self) -> SwarmStatusDict:
         """Get swarm status."""
-        return {
-            "running": self._running,
-            "agents": {
-                a.id: {
-                    "name": a.name,
-                    "role": a.role.value,
-                    "busy": a.is_busy,
-                    "completed": a.tasks_completed,
-                    "failed": a.tasks_failed,
-                }
-                for a in self._worker_pool.agents.values()
-            },
-            "pending_tasks": self._task_queue.get_pending_count(),
-            "metrics": {
-                "total_agents": self.metrics.total_agents,
-                "busy_agents": self.metrics.busy_agents,
-                "completed_tasks": self.metrics.completed_tasks,
-                "failed_tasks": self.metrics.failed_tasks,
-                "avg_task_time": self.metrics.avg_task_time,
-            },
-        }
+        return build_status_dict(
+            self._running, self._worker_pool, self._task_queue, self.metrics
+        )
 
     # Expose internal components for advanced usage
     @property

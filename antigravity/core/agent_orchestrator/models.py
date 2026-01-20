@@ -8,7 +8,7 @@ Data models for the Agent Orchestrator system.
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, List, Optional
+from typing import List, Optional
 
 
 class StepStatus(Enum):
@@ -28,7 +28,7 @@ class StepResult:
     agent: str
     action: str
     status: StepStatus
-    output: Optional[Any] = None
+    output: object = None  # Step output, can be any type
     duration_ms: float = 0.0
     error: Optional[str] = None
 

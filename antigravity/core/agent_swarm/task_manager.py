@@ -5,7 +5,7 @@ import logging
 import threading
 import time
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from .enums import TaskPriority, TaskStatus
 from .models import SwarmTask
@@ -24,7 +24,7 @@ class TaskManager:
     def submit_task(
         self,
         name: str,
-        payload: Any,
+        payload: object,
         priority: TaskPriority = TaskPriority.NORMAL,
         timeout_seconds: int = 300,
     ) -> str:
@@ -89,7 +89,7 @@ class TaskManager:
 
     def get_task_result(
         self, task_id: str, wait: bool = True, timeout: float = None
-    ) -> Optional[Any]:
+    ) -> object:
         """Get task result."""
         task = self.get_task(task_id)
         if not task:

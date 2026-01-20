@@ -49,6 +49,12 @@ from .responses import (
     TestResultDict,
     ShipResultDict,
     AnalyticsSummaryDict,
+    AgentTaskDict,
+    TaskPerformanceDict,
+    ChainMetricsDict,
+    ChainResultDict,
+    SpanEventDict,
+    SpanDict,
 )
 from .config import (
     TierPricingDict,
@@ -59,6 +65,12 @@ from .protocols import (
     Serializable,
     Configurable,
     HasStatus,
+)
+from .generics import (
+    T,
+    PayloadT,
+    ResultT,
+    ConfigT,
 )
 
 __all__ = [
@@ -102,6 +114,12 @@ __all__ = [
     "TestResultDict",
     "ShipResultDict",
     "AnalyticsSummaryDict",
+    "AgentTaskDict",
+    "TaskPerformanceDict",
+    "ChainMetricsDict",
+    "ChainResultDict",
+    "SpanEventDict",
+    "SpanDict",
     # Config TypedDicts
     "TierPricingDict",
     "VariantConfigDict",
@@ -110,4 +128,9 @@ __all__ = [
     "Serializable",
     "Configurable",
     "HasStatus",
+    # Generics
+    "T",
+    "PayloadT",
+    "ResultT",
+    "ConfigT",
 ]

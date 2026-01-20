@@ -1,66 +1,21 @@
-"""
-Analytics Tracker - Event Tracking & Metrics
-=============================================
-
-Provides analytics tracking with:
-- Event recording
-- Metrics aggregation
-- Redis-backed persistence
-- Time-series data management
-"""
+"""Analytics Tracker - Event tracking with Redis-backed persistence and metrics aggregation."""
 
 import json
 import logging
-from dataclasses import asdict, dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
-from .redis_client import RedisClient
+from ..redis_client import RedisClient
+from .models import AnalyticsEvent
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class AnalyticsEvent:
-    """
-    Analytics event data structure.
-
-    Attributes:
-        event_name: Event identifier (e.g., 'user_login', 'feature_used')
-        user_id: User identifier
-        timestamp: Event timestamp
-        properties: Additional event properties
-    """
-
-    event_name: str
-    user_id: str
-    timestamp: datetime
-    properties: Dict[str, object]
-
-    def to_dict(self) -> Dict[str, object]:
-        """Convert to dictionary for storage."""
-        data = asdict(self)
-        data["timestamp"] = self.timestamp.isoformat()
-        return data
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, object]) -> "AnalyticsEvent":
-        """Create from dictionary."""
-        data["timestamp"] = datetime.fromisoformat(data["timestamp"])
-        return cls(**data)
 
 
 class AnalyticsTracker:
     """Event tracking with Redis backend."""
 
     def __init__(self, redis_client: Optional[RedisClient] = None, buffer_size: int = 100):
-        """
-        Initialize analytics tracker.
-
-        Args:
-            redis_client: Optional Redis client for persistence
-            buffer_size: Maximum events to buffer before flush
-        """
+        """Initialize analytics tracker with optional Redis client and buffer size."""
         self.redis = redis_client
         self.buffer_size = buffer_size
         self.event_buffer: List[AnalyticsEvent] = []
@@ -120,12 +75,10 @@ class AnalyticsTracker:
         key = f"analytics:{event_name}:{target_date}"
 
         try:
-            # Get hash data from Redis
             data = self.redis.client.hgetall(key)
             if not data:
                 return {"count": 0}
 
-            # Convert bytes to int
             metrics = {}
             for field, value in data.items():
                 try:
@@ -139,9 +92,7 @@ class AnalyticsTracker:
             logger.error(f"Error retrieving metrics for {event_name}: {e}")
             return {"count": 0}
 
-    def get_recent_events(
-        self, event_name: str, limit: int = 100
-    ) -> List[AnalyticsEvent]:
+    def get_recent_events(self, event_name: str, limit: int = 100) -> List[AnalyticsEvent]:
         """
         Get recent events for an event type.
 
@@ -153,11 +104,9 @@ class AnalyticsTracker:
             List of AnalyticsEvent objects
         """
         if not self.redis:
-            # Return from buffer only
             return [e for e in self.event_buffer if e.event_name == event_name][:limit]
 
         try:
-            # Get from Redis list
             key = f"analytics:events:{event_name}"
             event_data = self.redis.client.lrange(key, 0, limit - 1)
 
@@ -193,12 +142,7 @@ class AnalyticsTracker:
             logger.error(f"Error flushing events: {e}")
 
     def _store_event(self, event: AnalyticsEvent):
-        """
-        Store event in Redis.
-
-        Args:
-            event: AnalyticsEvent to store
-        """
+        """Store event in Redis."""
         if not self.redis:
             return
 
@@ -249,9 +193,3 @@ class AnalyticsTracker:
             summary["events"][event_name] = total
 
         return summary
-
-
-# Import timedelta for get_summary
-from datetime import timedelta
-
-__all__ = ["AnalyticsEvent", "AnalyticsTracker"]

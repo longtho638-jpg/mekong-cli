@@ -1,14 +1,6 @@
 """
-MAX LEVEL Antigravity Control Center - Remote Config & Analytics
-================================================================
-
-Enhanced control system orchestration layer that coordinates:
-- Remote configuration via Redis/Environment variables
-- Feature flag analytics with detailed usage tracking
-- Advanced circuit breaker patterns with predictive failure detection
-- Distributed configuration management
-
-This module provides a simplified interface to the modular control subsystems.
+Enhanced Control Center - Remote Config & Analytics orchestration layer.
+Coordinates feature flags, analytics tracking, and circuit breakers.
 """
 
 import logging
@@ -202,19 +194,5 @@ def get_control_center(redis_url: Optional[str] = None) -> EnhancedControlCenter
     return EnhancedControlCenter(redis_url)
 
 
-# Convenience functions for backward compatibility
-def set_feature_flag(
-    flag_name: str,
-    enabled: bool,
-    rollout_percentage: int = 100,
-    user_whitelist: Optional[list] = None,
-) -> FeatureFlag:
-    """Set feature flag (convenience function)."""
-    return get_control_center().set_feature_flag(
-        flag_name, enabled, rollout_percentage, user_whitelist
-    )
-
-
-def is_feature_enabled(flag_name: str, user_id: Optional[str] = None) -> bool:
-    """Check if feature is enabled (convenience function)."""
-    return get_control_center().is_feature_enabled(flag_name, user_id)
+# Re-export convenience functions from helpers for backward compatibility
+from .helpers import is_feature_enabled, set_feature_flag

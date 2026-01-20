@@ -1,97 +1,24 @@
 """
-🎁 Loyalty Rewards - Tenure-Based Benefits
+Loyalty Rewards - Tenure-Based Benefits
 ==========================================
 
 Rewards AgencyEr based on their commitment and duration within the Agency OS
 ecosystem. The program encourages long-term retention and growth through
 tiered discounts and exclusive operational benefits.
 
-Tiers:
-- 🥉 Bronze: Entry level benefits.
-- 🥈 Silver: Priority support & 5% Discount.
-- 🥇 Gold: Beta access & 10% Discount.
-- 💎 Platinum: Strategic advisory & 15% Discount.
-- 👑 Diamond: Revenue sharing & 20% Discount.
-
-Binh Pháp: 💎 Tín (Trust) - Rewarding loyalty over time.
+Binh Phap: Tin (Trust) - Rewarding loyalty over time.
 """
 
 import json
 import logging
-from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
+
+from .loyalty_tiers import LoyaltyTier, TIERS, get_tier_by_tenure, get_next_tier as _get_next_tier
 
 # Configure logging
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class LoyaltyTier:
-    """Definition of a specific loyalty bracket and its associated perks."""
-
-    id: str
-    name: str
-    emoji: str
-    min_months: int
-    discount_rate: float
-    benefits: List[str]
-
-
-# Global Tier Registry
-TIERS: Dict[str, LoyaltyTier] = {
-    "bronze": LoyaltyTier(
-        id="bronze",
-        name="Bronze Agent",
-        emoji="🥉",
-        min_months=0,
-        discount_rate=0.0,
-        benefits=["Hỗ trợ cơ bản (Email)", "Tham gia cộng đồng Agency OS"],
-    ),
-    "silver": LoyaltyTier(
-        id="silver",
-        name="Silver Agent",
-        emoji="🥈",
-        min_months=12,
-        discount_rate=0.05,
-        benefits=["Ưu đãi 5% dịch vụ", "Hỗ trợ ưu tiên", "Cập nhật tính năng sớm"],
-    ),
-    "gold": LoyaltyTier(
-        id="gold",
-        name="Gold Agent",
-        emoji="🥇",
-        min_months=24,
-        discount_rate=0.10,
-        benefits=[
-            "Ưu đãi 10% dịch vụ",
-            "VIP support 24/7",
-            "Trải nghiệm bản Beta",
-            "Quảng bá thương hiệu",
-        ],
-    ),
-    "platinum": LoyaltyTier(
-        id="platinum",
-        name="Platinum Agent",
-        emoji="💎",
-        min_months=36,
-        discount_rate=0.15,
-        benefits=["Ưu đãi 15% dịch vụ", "Cố vấn chiến lược 1-1", "Yêu cầu tính năng riêng"],
-    ),
-    "diamond": LoyaltyTier(
-        id="diamond",
-        name="Diamond Agent",
-        emoji="👑",
-        min_months=60,
-        discount_rate=0.20,
-        benefits=[
-            "Ưu đãi 20% dịch vụ",
-            "Chia sẻ doanh thu hệ thống",
-            "Ban cố vấn chiến lược",
-            "Tùy biến module tối cao",
-        ],
-    ),
-}
 
 
 class LoyaltyProgram:
@@ -125,27 +52,11 @@ class LoyaltyProgram:
 
     def get_current_tier(self) -> LoyaltyTier:
         """Determines the highest eligible tier based on tenure."""
-        months = self.get_tenure_months()
-
-        # Default to lowest
-        current = TIERS["bronze"]
-        # Find highest qualifying
-        for tier in TIERS.values():
-            if months >= tier.min_months:
-                if tier.min_months >= current.min_months:
-                    current = tier
-        return current
+        return get_tier_by_tenure(self.get_tenure_months())
 
     def get_next_tier(self) -> Optional[LoyaltyTier]:
         """Identifies the next milestone tier."""
-        months = self.get_tenure_months()
-
-        # Sort tiers by requirement
-        sorted_tiers = sorted(TIERS.values(), key=lambda t: t.min_months)
-        for tier in sorted_tiers:
-            if tier.min_months > months:
-                return tier
-        return None
+        return _get_next_tier(self.get_tenure_months())
 
     def record_transaction(self, amount_usd: float):
         """Adds revenue to the total lifetime value (LTV) tracker."""

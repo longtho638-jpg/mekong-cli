@@ -1,7 +1,7 @@
 """
 Agent Swarm Shortcuts - Convenience functions for swarm operations.
 """
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 
 from .engine import AgentSwarm
 from .enums import AgentRole, TaskPriority
@@ -32,7 +32,7 @@ def register_agent(
 
 
 def submit_task(
-    name: str, payload: Any, priority: TaskPriority = TaskPriority.NORMAL
+    name: str, payload: object, priority: TaskPriority = TaskPriority.NORMAL
 ) -> str:
     """Submit a task to the swarm."""
     return get_swarm().submit_task(name, payload, priority)
@@ -40,7 +40,7 @@ def submit_task(
 
 def get_task_result(
     task_id: str, wait: bool = True, timeout: Optional[float] = None
-) -> Optional[Any]:
+) -> object:
     """Get task result."""
     return get_swarm().get_task_result(task_id, wait=wait, timeout=timeout)
 

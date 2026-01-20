@@ -1,12 +1,6 @@
 """
-🎛️ Control Center - Centralized Platform Governance
-==================================================
-
-The central nervous system for Agency OS reliability and feature management.
-Unifies feature flags, circuit breakers, and rate limiting into a single
-control plane.
-
-Binh Pháp: "Pháp" - Rules and governance for stable operations.
+Control Center - Centralized Platform Governance.
+Unifies feature flags, circuit breakers, and rate limiting into a single control plane.
 """
 
 import logging
@@ -21,13 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class ControlCenter:
-    """
-    🎛️ Centralized Control for Platform Operations
-
-    - Feature flags: Enable/disable features remotely via FeatureFlagManager
-    - Circuit breakers: Prevent cascade failures via CircuitBreaker
-    - Rate governors: Prevent runaway costs via RateGovernor
-    """
+    """Centralized Control for Platform Operations - flags, breakers, and governors."""
 
     def __init__(self):
         # Components

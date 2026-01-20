@@ -1,21 +1,11 @@
 """
-📊 Telemetry - Performance Monitoring & Insights
-===============================================
+Telemetry - Performance Monitoring & Insights
+==============================================
 
 Provides non-invasive, localized usage tracking for Agency OS.
-Enables analysis of command frequency, agent performance, and system
-health without compromising user privacy (no data leaves the local machine).
-
-Core Metrics:
-- ⚡ Velocity: Duration of commands and agent executions.
-- 📉 Frequency: Most used suites and subcommands.
-- 🤖 Agent Efficiency: Success/Failure ratios per agent.
-- 💾 Health: Resource consumption and data volume.
-
-Binh Pháp: 📋 Sát (Observation) - Understanding the ground through data.
+No data leaves the local machine.
 """
 
-import json
 import logging
 from collections import Counter
 from dataclasses import dataclass, field
@@ -23,7 +13,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-# Configure logging
+from .telemetry_exporters import load_events, print_dashboard, save_events
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,12 +31,7 @@ class Event:
 
 
 class Telemetry:
-    """
-    📊 Telemetry Service
-
-    Captures and analyzes operational data to drive platform optimization.
-    Maintains a rolling local history of events.
-    """
+    """Telemetry Service - Captures operational data for optimization."""
 
     def __init__(self, storage_path: Union[str, Path] = ".antigravity/telemetry"):
         self.storage_path = Path(storage_path)
@@ -56,7 +42,7 @@ class Telemetry:
         self.max_events = 5000
         self.enabled = True
 
-        self._load_events()
+        self.events = load_events(self.event_file)
 
     def track(
         self,
@@ -70,16 +56,11 @@ class Telemetry:
         if not self.enabled:
             return None
 
-        # Sanitize metadata
+        # Sanitize metadata - redact sensitive fields
         safe_meta = {}
         if metadata:
             for k, v in metadata.items():
-                if (
-                    "key" in k.lower()
-                    or "secret" in k.lower()
-                    or "token" in k.lower()
-                    or "password" in k.lower()
-                ):
+                if any(x in k.lower() for x in ["key", "secret", "token", "password"]):
                     safe_meta[k] = "[REDACTED]"
                 else:
                     safe_meta[k] = v
@@ -98,7 +79,7 @@ class Telemetry:
         if len(self.events) > self.max_events:
             self.events.pop(0)
 
-        self._save_events()
+        save_events(self.events, self.event_file)
         return event
 
     def get_summary(self, days: int = 7) -> Dict[str, Any]:
@@ -128,70 +109,9 @@ class Telemetry:
             "top_actions": dict(act_counts.most_common(10)),
         }
 
-    def _save_events(self):
-        """Persists event buffer to JSON."""
-        try:
-            data = [
-                {
-                    "c": e.category,
-                    "a": e.action,
-                    "t": e.timestamp.isoformat(),
-                    "d": e.duration_ms,
-                    "s": e.status,
-                    "m": e.metadata,
-                }
-                for e in self.events
-            ]
-            self.event_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        except Exception as e:
-            logger.error(f"Telemetry save failed: {e}")
-
-    def _load_events(self):
-        """Loads events from disk on initialization."""
-        if not self.event_file.exists():
-            return
-        try:
-            raw = json.loads(self.event_file.read_text(encoding="utf-8"))
-            for e in raw:
-                self.events.append(
-                    Event(
-                        category=e["c"],
-                        action=e["a"],
-                        timestamp=datetime.fromisoformat(e["t"]),
-                        duration_ms=e.get("d"),
-                        status=e.get("s", "success"),
-                        metadata=e.get("m", {}),
-                    )
-                )
-        except Exception as e:
-            logger.warning(f"Telemetry load failed: {e}")
-
     def print_dashboard(self, days: int = 7):
         """Visualizes telemetry insights in the terminal."""
-        s = self.get_summary(days)
-
-        print("\n" + "═" * 60)
-        print("║" + "📊 AGENCY OS - TELEMETRY & INSIGHTS".center(58) + "║")
-        print("═" * 60)
-
-        if "volume" not in s:
-            print("   No operational data captured yet.")
-            return
-
-        print(
-            f"\n  📈 VOLUME: {s['volume']['total_events']} events | Error Rate: {s['volume']['error_rate']:.1f}%"
-        )
-        print(f"  ⚡ VELOCITY: Avg Response {s['velocity']['avg_duration_ms']}ms")
-
-        print("\n  🎯 TOP COMMANDS:")
-        for action, count in s["top_actions"].items():
-            print(f"     • {action:<20} : {count} uses")
-
-        print("\n  📦 CATEGORIES:")
-        for cat, count in s["top_categories"].items():
-            print(f"     • {cat:<20} : {count} uses")
-
-        print("\n" + "═" * 60 + "\n")
+        print_dashboard(self.get_summary(days))
 
 
 # Global Singleton

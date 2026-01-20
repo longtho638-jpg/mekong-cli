@@ -3,7 +3,7 @@ Agent Swarm Models.
 """
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 from .enums import AgentRole, TaskPriority, TaskStatus
 
@@ -14,11 +14,11 @@ class SwarmTask:
 
     id: str
     name: str
-    payload: Any
+    payload: object  # Task payload, can be any type
     priority: TaskPriority = TaskPriority.NORMAL
     status: TaskStatus = TaskStatus.PENDING
     assigned_agent: Optional[str] = None
-    result: Optional[Any] = None
+    result: object = None  # Task result, can be any type
     error: Optional[str] = None
     created_at: float = field(default_factory=time.time)
     started_at: Optional[float] = None

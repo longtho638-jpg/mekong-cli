@@ -11,7 +11,9 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.hooks_manager import HOOKS, Hook, HooksManager
+from antigravity.core.hooks_manager import HooksManager
+from antigravity.core.hook_registry import HOOKS, Hook
+from antigravity.core.hook_executor import execute_hook
 
 
 class TestHooksManager:
@@ -38,11 +40,9 @@ class TestHooksManager:
 
     def test_privacy_block(self):
         """Test privacy hook logic."""
-        manager = HooksManager()
-
         # Should block sensitive data (using a long enough key to match regex)
         context = {"code": "api_key = 'sk-abcdefghijklmnopqrstuvwxyz012345'"}
-        result = manager._run_hook(
+        result = execute_hook(
             Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True), context
         )
         assert result["passed"] is False
@@ -50,7 +50,7 @@ class TestHooksManager:
 
         # Should pass safe data
         safe_context = {"code": "print('hello')"}
-        result = manager._run_hook(
+        result = execute_hook(
             Hook("privacy-block", Path("mock.js"), "pre", "code", blocking=True), safe_context
         )
         assert result["passed"] is True

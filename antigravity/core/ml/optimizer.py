@@ -1,23 +1,19 @@
-"""
-ML Optimizer - Main orchestration class.
-========================================
-
-Central MLOptimizer class that coordinates:
-- Model initialization and management
-- AI-powered pricing optimization
-- A/B testing integration
-- Performance analytics
-"""
+"""ML Optimizer - Main orchestration class for AI-powered pricing optimization."""
 
 import logging
-import time
 from typing import Any, Dict
 
+from .analytics import (
+    create_default_metrics,
+    generate_analytics_report,
+    update_metrics,
+)
 from .inference import (
-    calculate_performance_score,
     calculate_statistical_optimization,
-    calculate_viral_multiplier,
     predict_conversion_rate_ml,
+)
+from .scoring import (
+    calculate_viral_multiplier,
 )
 from .models import (
     ML_AVAILABLE,
@@ -56,14 +52,7 @@ class MLOptimizer:
         self.model_save_path = "data/antigravity_ml_models"
 
         # Game-changing metrics
-        self.game_changing_metrics = {
-            "viral_multiplier_achieved": 0.0,
-            "quantum_optimizations": 0,
-            "ai_agent_decisions": 0,
-            "blockchain_transactions": 0,
-            "total_ml_predictions": 0,
-            "confidence_improvements": 0,
-        }
+        self.game_changing_metrics = create_default_metrics()
 
         # Initialize advanced models
         self._initialize_advanced_models()
@@ -186,17 +175,9 @@ class MLOptimizer:
             feature: Feature category to update
             value: Value to add
         """
-        if feature == GameChangingFeature.VIRAL_EXPANSION:
-            self.game_changing_metrics["viral_multiplier_achieved"] += value
-        elif feature == GameChangingFeature.QUANTUM_PRICING:
-            self.game_changing_metrics["quantum_optimizations"] += int(value)
-        elif feature == GameChangingFeature.AI_AGENTS:
-            self.game_changing_metrics["ai_agent_decisions"] += int(value)
-        elif feature == GameChangingFeature.BLOCKCHAIN_INTEGRATION:
-            self.game_changing_metrics["blockchain_transactions"] += int(value)
-
-        self.game_changing_metrics["total_ml_predictions"] += 1
-        self.game_changing_metrics["confidence_improvements"] += 0.01
+        self.game_changing_metrics = update_metrics(
+            self.game_changing_metrics, feature, value
+        )
 
     def get_game_changing_analytics(self) -> Dict[str, Any]:
         """
@@ -205,23 +186,9 @@ class MLOptimizer:
         Returns:
             Analytics dictionary with all metrics
         """
-        return {
-            "timestamp": time.time(),
-            "game_changing_features": {
-                "viral_multiplier_achieved": self.game_changing_metrics[
-                    "viral_multiplier_achieved"
-                ],
-                "quantum_optimizations": self.game_changing_metrics["quantum_optimizations"],
-                "ai_agent_decisions": self.game_changing_metrics["ai_agent_decisions"],
-                "blockchain_transactions": self.game_changing_metrics["blockchain_transactions"],
-                "total_ml_predictions": self.game_changing_metrics["total_ml_predictions"],
-                "confidence_improvements": self.game_changing_metrics["confidence_improvements"],
-            },
-            "models_loaded": {
-                name: type(model).__name__ if hasattr(model, "__name__") else "unknown"
-                for name, model in self.models.items()
-            },
-            "ai_agents_active": len(self.ai_agents),
-            "quantum_states": len(self.quantum_states),
-            "performance_score": calculate_performance_score(self.game_changing_metrics),
-        }
+        return generate_analytics_report(
+            self.game_changing_metrics,
+            self.models,
+            self.ai_agents,
+            self.quantum_states,
+        )

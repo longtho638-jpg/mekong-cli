@@ -9,39 +9,13 @@ Provides feature flag management with:
 - In-memory caching
 """
 
-import hashlib
 import logging
-from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from .redis_client import RedisClient
+from .flag_evaluation import FeatureFlag, is_user_in_rollout
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class FeatureFlag:
-    """
-    Feature flag configuration.
-
-    Attributes:
-        name: Unique flag identifier
-        enabled: Whether feature is globally enabled
-        rollout_percentage: Percentage of users to enable (0-100)
-        user_whitelist: List of user IDs to always enable
-        metadata: Additional configuration data
-    """
-
-    name: str
-    enabled: bool
-    rollout_percentage: int = 100
-    user_whitelist: List[str] = field(default_factory=list)
-    metadata: Dict = field(default_factory=dict)
-
-    def __post_init__(self):
-        """Validate rollout percentage."""
-        if not 0 <= self.rollout_percentage <= 100:
-            raise ValueError("rollout_percentage must be between 0 and 100")
 
 
 class FeatureFlagManager:
@@ -131,70 +105,33 @@ class FeatureFlagManager:
         # Check rollout percentage
         if flag.rollout_percentage < 100:
             if not user_id:
-                # No user ID, can't determine rollout
                 return False
-
-            return self._is_in_rollout(user_id, flag.rollout_percentage)
+            return is_user_in_rollout(user_id, flag.rollout_percentage)
 
         return True
 
     def get_flag(self, flag_name: str) -> Optional[FeatureFlag]:
-        """
-        Get feature flag configuration.
-
-        Args:
-            flag_name: Flag identifier
-
-        Returns:
-            FeatureFlag or None if not found
-        """
+        """Get feature flag configuration."""
         return self._get_flag(flag_name)
 
     def delete_flag(self, flag_name: str) -> bool:
-        """
-        Delete a feature flag.
-
-        Args:
-            flag_name: Flag identifier
-
-        Returns:
-            True if flag was deleted
-        """
-        # Remove from cache
+        """Delete a feature flag."""
         if flag_name in self.cache:
             del self.cache[flag_name]
-
-        # Remove from Redis
         if self.redis:
             self.redis.delete(f"feature_flag:{flag_name}")
-
         logger.info(f"Feature flag deleted: {flag_name}")
         return True
 
     def list_flags(self) -> Dict[str, FeatureFlag]:
-        """
-        Get all feature flags.
-
-        Returns:
-            Dictionary of flag_name -> FeatureFlag
-        """
+        """Get all feature flags."""
         return self.cache.copy()
 
     def _get_flag(self, name: str) -> Optional[FeatureFlag]:
-        """
-        Get flag from cache or Redis.
-
-        Args:
-            name: Flag identifier
-
-        Returns:
-            FeatureFlag or None if not found
-        """
-        # Check cache first
+        """Get flag from cache or Redis."""
         if name in self.cache:
             return self.cache[name]
 
-        # Try Redis if available
         if self.redis:
             data = self.redis.get(f"feature_flag:{name}")
             if data:
@@ -206,31 +143,12 @@ class FeatureFlagManager:
                         user_whitelist=data.get("user_whitelist", []),
                         metadata=data.get("metadata", {}),
                     )
-                    # Update cache
                     self.cache[name] = flag
                     return flag
                 except (KeyError, TypeError, ValueError) as e:
                     logger.error(f"Invalid flag data for {name}: {e}")
 
         return None
-
-    def _is_in_rollout(self, user_id: str, percentage: int) -> bool:
-        """
-        Deterministic rollout based on user_id hash.
-
-        Args:
-            user_id: User identifier
-            percentage: Rollout percentage (0-100)
-
-        Returns:
-            True if user is in rollout group
-        """
-        if not user_id:
-            return False
-
-        # Use consistent hashing for deterministic results
-        hash_val = int(hashlib.md5(user_id.encode()).hexdigest(), 16) % 100
-        return hash_val < percentage
 
 
 __all__ = ["FeatureFlag", "FeatureFlagManager"]
