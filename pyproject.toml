@@ -21,7 +21,7 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-ignore = ["E501", "E741", "E722", "F401"]
+ignore = ["E501", "E741", "E722", "F401", "E402", "E701"]  # E402: imports after path, E701: one-liners
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "E402"]  # Intentional re-exports
@@ -33,6 +33,11 @@ ignore = ["E501", "E741", "E722", "F401"]
 "core/monitoring/wow.py" = ["F401"]  # Import tests
 "core/portal/client_portal.py" = ["F401"]
 "core/repositories/analytics_repository.py" = ["F401"]
+"scripts/*.py" = ["E402"]  # Scripts set up sys.path before imports
+"scripts/**/*.py" = ["E402"]  # Nested scripts
+"tests/*.py" = ["E402"]  # Test files may import after setup
+"tests/**/*.py" = ["E402"]  # Nested test files
+
 
 [tool.mypy]
 python_version = "3.9"
