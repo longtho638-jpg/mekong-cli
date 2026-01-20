@@ -10,7 +10,7 @@ Features:
 🏯 "Không đánh mà thắng" - Win Without Fighting
 """
 
-__version__ = "1.0.0"
+__version__ = "0.1.0"
 __author__ = "AgencyOS Team"
 
 from antigravity.core.agency_dna import AgencyDNA
