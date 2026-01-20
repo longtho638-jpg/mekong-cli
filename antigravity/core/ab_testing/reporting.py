@@ -11,6 +11,7 @@ import time
 from typing import Any, Dict
 
 from .models import StatisticalTest, TestResult
+from .time_utils import is_early_stopped, seconds_to_days
 from .traffic import TrafficAllocator
 
 
@@ -35,7 +36,7 @@ def calculate_final_metrics(test: StatisticalTest) -> Dict[str, Any]:
         "total_conversions": total_conversions,
         "total_sample_size": total_sample_size,
         "total_revenue": total_revenue,
-        "test_duration_days": test_duration / (24 * 3600),
+        "test_duration_days": seconds_to_days(test_duration),
         "conversion_rate": total_conversions / total_sample_size if total_sample_size > 0 else 0,
         "revenue_per_user": total_revenue / total_sample_size if total_sample_size > 0 else 0.0,
         "winner": winner_variants[0] if winner_variants else None,
@@ -45,8 +46,7 @@ def calculate_final_metrics(test: StatisticalTest) -> Dict[str, Any]:
             variant: getattr(test.conversions.get(variant, {}), "confidence_interval", None)
             for variant in test.conversions.keys()
         },
-        "early_stopped": test.end_time is not None
-        and (test.end_time - test.start_time) < 7 * 24 * 3600,
+        "early_stopped": is_early_stopped(test.start_time, test.end_time),
     }
 
 
@@ -66,7 +66,7 @@ def generate_test_analytics(
         "conversion_rate": sum(test.conversions.values()) / test.sample_size
         if test.sample_size > 0
         else 0,
-        "duration_days": (time.time() - test.start_time) / (24 * 3600),
+        "duration_days": seconds_to_days(time.time() - test.start_time),
         "statistical_significance": test.statistical_significance,
         "effect_size": test.effect_size,
         "test_result": test.test_result,
@@ -80,8 +80,7 @@ def generate_test_analytics(
         "traffic_allocation_performance": traffic_allocator.get_performance(test.test_id)
         if traffic_allocator
         else None,
-        "early_stopped": test.end_time is not None
-        and (test.end_time - test.start_time) < 7 * 24 * 3600,
+        "early_stopped": is_early_stopped(test.start_time, test.end_time),
     }
 
 
@@ -96,7 +95,7 @@ def generate_active_tests_summary(
             "name": test.name,
             "sample_size": test.sample_size,
             "conversions": test.conversions,
-            "duration_days": (time.time() - test.start_time) / (24 * 3600),
+            "duration_days": seconds_to_days(time.time() - test.start_time),
             "statistical_significance": test.statistical_significance,
             "status": "active",
         }

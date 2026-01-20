@@ -162,7 +162,7 @@ class VIBEOrchestrator(BaseEngine):
         task = self.create_task(agent, prompt)
         return self._process_single_task(task)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> Dict[str, Any]:
         """Orchestration health and volume metrics."""
         return {
             "orchestration": {

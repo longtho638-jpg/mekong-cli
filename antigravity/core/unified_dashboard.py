@@ -16,7 +16,7 @@ Binh Pháp: 🏯 Hình (Strategic Configuration) - Seeing the whole army.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Dict
 
 from .agent_chains import AGENT_CHAINS, AGENT_INVENTORY
 from .agent_crews import CREWS
@@ -25,6 +25,7 @@ from .coding_level import get_level
 from .hooks_manager import HOOKS
 from .rules_loader import get_total_assignments, get_total_rules
 from .skill_loader import get_total_mappings, get_total_skills
+from .types import AgenticDashboardStatsDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class AgenticDashboard:
     The master control room for the Agency OS AI infrastructure.
     """
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> AgenticDashboardStatsDict:
         """Aggregates statistics from all agentic subsystems."""
         memory = get_agent_memory()
         m_stats = memory.get_stats()
@@ -64,7 +65,7 @@ class AgenticDashboard:
             "configuration": {"coding_level": level.level, "level_name": level.name},
         }
 
-    def _calculate_integration_score(self, stats: Dict[str, Any]) -> int:
+    def _calculate_integration_score(self, stats: AgenticDashboardStatsDict) -> int:
         """
         Calculates an overall 'Agentic Power' score (0-100%).
         Weights based on system maturity benchmarks.

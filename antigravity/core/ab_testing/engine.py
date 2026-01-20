@@ -16,6 +16,7 @@ from .analysis import StatisticalAnalyzer
 from .experiments import ExperimentManager
 from .models import AllocationStrategy, STATISTICAL_LIBS_AVAILABLE, StatisticalTest
 from .reporting import calculate_final_metrics, generate_active_tests_summary, generate_test_analytics
+from .time_utils import MIN_ANALYSIS_DAYS, seconds_to_days
 from .traffic import TrafficAllocator
 
 logger = logging.getLogger(__name__)
@@ -63,8 +64,6 @@ class AdvancedABTestEngine:
             return
 
         test = self.active_tests[test_id]
-        if not test:
-            return
 
         # Update conversions and revenue
         if conversion:
@@ -84,9 +83,9 @@ class AdvancedABTestEngine:
 
     def _perform_realtime_analysis(self, test: StatisticalTest) -> None:
         """Perform real-time statistical analysis."""
-        days_elapsed = (time.time() - test.start_time) / (24 * 3600)
+        days_elapsed = seconds_to_days(time.time() - test.start_time)
 
-        if test.sample_size < 20 or days_elapsed < 1:
+        if test.sample_size < 20 or days_elapsed < MIN_ANALYSIS_DAYS:
             return  # Need more data
 
         if STATISTICAL_LIBS_AVAILABLE:

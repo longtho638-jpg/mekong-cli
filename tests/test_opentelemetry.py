@@ -971,7 +971,7 @@ class TestOTLPExporter:
         exporter = OTLPExporter(endpoint="http://localhost:4317")
         assert exporter.config.endpoint == "http://localhost:4317"
 
-    @patch('antigravity.infrastructure.opentelemetry.exporters.requests')
+    @patch('antigravity.infrastructure.opentelemetry.exporters.base.requests')
     def test_export_spans_success(self, mock_requests):
         """Test successful span export with mocked requests."""
         mock_response = Mock()
@@ -985,7 +985,7 @@ class TestOTLPExporter:
         assert result is True
         mock_requests.request.assert_called_once()
 
-    @patch('antigravity.infrastructure.opentelemetry.exporters.requests')
+    @patch('antigravity.infrastructure.opentelemetry.exporters.base.requests')
     def test_export_spans_failure(self, mock_requests):
         """Test failed span export with mocked requests."""
         mock_response = Mock()
@@ -1007,7 +1007,7 @@ class TestOTLPExporter:
         result = exporter.export_spans([])
         assert result is True
 
-    @patch('antigravity.infrastructure.opentelemetry.exporters.requests')
+    @patch('antigravity.infrastructure.opentelemetry.exporters.base.requests')
     def test_export_metrics_success(self, mock_requests):
         """Test successful metrics export with mocked requests."""
         mock_response = Mock()
@@ -1035,7 +1035,7 @@ class TestJaegerExporter:
         assert exporter.config.endpoint == "http://localhost:14268"
         assert exporter.service_name == "test-service"
 
-    @patch('antigravity.infrastructure.opentelemetry.exporters.requests')
+    @patch('antigravity.infrastructure.opentelemetry.exporters.base.requests')
     def test_export_spans_success(self, mock_requests):
         """Test successful span export with mocked requests."""
         mock_response = Mock()
@@ -1099,7 +1099,7 @@ class TestExportProcessor:
         processor.add_span(span_data)
         assert len(processor.export_queue) == 1
 
-    @patch('antigravity.infrastructure.opentelemetry.exporters.requests')
+    @patch('antigravity.infrastructure.opentelemetry.exporters.base.requests')
     def test_process_export_batch(self, mock_requests):
         """Test processing export batch with mocked exporter."""
         mock_response = Mock()

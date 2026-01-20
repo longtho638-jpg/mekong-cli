@@ -20,11 +20,12 @@ Binh Pháp: 📋 Pháp (Process) - Disciplined execution leads to victory.
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from .base import BaseEngine
 from .config import MAX_FILE_LINES
 from .models.workflow import CodeReviewResult, Task, TaskStatus, WorkflowStep
+from .types import VIBEWorkflowStatsDict, TestResultDict, ShipResultDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -44,7 +45,7 @@ class VIBEWorkflow(BaseEngine):
         self.current_step = WorkflowStep.PLAN_DETECTION
         self.current_plan: Optional[Path] = None
         self.tasks: List[Task] = []
-        self.test_results: Dict[str, Any] = {}
+        self.test_results: Dict[str, object] = {}
         self.review_result: Optional[CodeReviewResult] = None
 
     # --- Step 0: Detection ---
@@ -137,7 +138,7 @@ class VIBEWorkflow(BaseEngine):
 
     # --- Step 3: Testing ---
 
-    def run_verification_suite(self, command: str = "python3 -m pytest") -> Dict[str, Any]:
+    def run_verification_suite(self, command: str = "python3 -m pytest") -> Dict[str, object]:
         """Executes the test suite and captures results for the quality gate."""
         print(f"🧪 Running verification: `{command}`...")
         try:
@@ -197,7 +198,7 @@ class VIBEWorkflow(BaseEngine):
 
     # --- Step 5: Finalization ---
 
-    def ship_changes(self, commit_msg: str) -> Dict[str, Any]:
+    def ship_changes(self, commit_msg: str) -> Dict[str, object]:
         """Integrates changes into the main repository branch."""
         report = {"success": False, "git": False, "docs": False}
 
@@ -223,7 +224,7 @@ class VIBEWorkflow(BaseEngine):
 
         return report
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> VIBEWorkflowStatsDict:
         """Aggregates workflow telemetry."""
         return {
             "current_step": self.current_step.name,

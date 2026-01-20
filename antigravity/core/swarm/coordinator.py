@@ -11,8 +11,9 @@ Binh Phap: "Da muu thien doan" - Many minds, better decisions
 import logging
 import threading
 import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
+from antigravity.core.types import SwarmStatusDict
 from .messaging import TaskQueue
 from .types import AgentRole, SwarmMetrics, TaskPriority, TaskStatus
 from .workers import WorkerPool
@@ -63,7 +64,7 @@ class AgentSwarm:
     def submit_task(
         self,
         name: str,
-        payload: Any,
+        payload: object,
         priority: TaskPriority = TaskPriority.NORMAL,
         timeout_seconds: int = 300,
     ) -> str:
@@ -169,7 +170,7 @@ class AgentSwarm:
 
         return self.metrics
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> SwarmStatusDict:
         """Get swarm status."""
         return {
             "running": self._running,
@@ -195,12 +196,12 @@ class AgentSwarm:
 
     # Expose internal components for advanced usage
     @property
-    def tasks(self) -> Dict[str, Any]:
+    def tasks(self) -> Dict[str, object]:
         """Access to tasks dict for backward compatibility."""
         return self._task_queue.tasks
 
     @property
-    def agents(self) -> Dict[str, Any]:
+    def agents(self) -> Dict[str, object]:
         """Access to agents dict for backward compatibility."""
         return self._worker_pool.agents
 

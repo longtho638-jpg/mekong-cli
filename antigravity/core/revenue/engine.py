@@ -15,13 +15,15 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 """
 
 import logging
-import math
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 from ..base import BaseEngine
-from ..config import ARR_TARGET_2026, DEFAULT_GROWTH_RATE, EXCHANGE_RATES, Currency
+from ..config import EXCHANGE_RATES, Currency
 from ..models.invoice import Forecast, Invoice, InvoiceStatus
+from .forecasting import RevenueForecasting
+from .goals import GoalTracker
+from .reporting import RevenueReporting
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -39,6 +41,11 @@ class RevenueEngine(BaseEngine):
         super().__init__(data_dir)
         self.invoices: List[Invoice] = []
         self._next_id = 1
+
+        # Sub-components
+        self.forecaster = RevenueForecasting()
+        self.goal_tracker = GoalTracker()
+        self.reporter = RevenueReporting()
 
     def create_invoice(
         self, client_name: str, amount: float, currency: str = "USD", notes: str = ""
@@ -112,19 +119,9 @@ class RevenueEngine(BaseEngine):
 
     def forecast_growth(self, months: int = 6) -> List[Forecast]:
         """Projects future revenue based on current MRR and default growth rates."""
-        mrr = self.get_mrr()
-        forecasts = []
-        current = datetime.now()
+        return self.forecaster.forecast_growth(self.get_mrr(), months)
 
-        for i in range(1, months + 1):
-            target_date = current + timedelta(days=30 * i)
-            # Compounding growth formula
-            projected = mrr * ((1 + DEFAULT_GROWTH_RATE) ** i)
-            forecasts.append(Forecast(month=target_date.strftime("%Y-%m"), projected=projected))
-
-        return forecasts
-
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> Dict[str, Any]:
         """Provides high-level performance metrics for the engine."""
         return {
             "volume": {
@@ -146,53 +143,8 @@ class RevenueEngine(BaseEngine):
 
     def get_goal_summary(self) -> Dict[str, Any]:
         """Aggregates all metrics relevant to the $1M ARR target."""
-        current_arr = self.get_arr()
-        progress = min((current_arr / ARR_TARGET_2026) * 100, 100)
-        gap = max(ARR_TARGET_2026 - current_arr, 0)
-
-        return {
-            "current_arr": current_arr,
-            "target_arr": ARR_TARGET_2026,
-            "progress_percent": round(progress, 1),
-            "gap_usd": gap,
-            "months_to_goal": self._calculate_months_to_goal(current_arr),
-        }
-
-    def _calculate_months_to_goal(self, current_arr: float) -> int:
-        """Estimates time to milestone based on growth velocity."""
-        if current_arr >= ARR_TARGET_2026:
-            return 0
-        if current_arr <= 0:
-            return -1  # Undefined
-
-        # log(target / current) / log(1 + growth)
-        return math.ceil(
-            math.log(ARR_TARGET_2026 / current_arr) / math.log(1 + DEFAULT_GROWTH_RATE)
-        )
+        return self.goal_tracker.get_goal_summary(self.get_arr())
 
     def print_dashboard(self):
         """ASCII dashboard for terminal reporting."""
-        stats = self.get_stats()
-        f = stats["financials"]
-        g = stats["goals"]
-
-        print("\n" + "═" * 65)
-        print("║" + "💰 REVENUE ENGINE - PERFORMANCE DASHBOARD".center(63) + "║")
-        print("═" * 65)
-
-        print(f"\n  💸 REVENUE: MRR: ${f['mrr']:,.0f} | ARR: ${f['arr']:,.0f}")
-        print(
-            f"  📂 INVOICES: Paid: {stats['volume']['paid_count']} | Outstanding: ${f['outstanding']:,.0f}"
-        )
-
-        # Goal Progress
-        bar_w = 30
-        filled = int(bar_w * g["progress_percent"] / 100)
-        bar = "█" * filled + "░" * (bar_w - filled)
-        print(f"\n  🎯 2026 GOAL: [{bar}] {g['progress_percent']}%")
-        print(f"     └─ Gap to $1M: ${g['gap_usd']:,.0f}")
-
-        if g["months_to_goal"] > 0:
-            print(f"     └─ Estimated Time to Goal: {g['months_to_goal']} months")
-
-        print("\n" + "═" * 65 + "\n")
+        self.reporter.print_dashboard(self.get_stats())

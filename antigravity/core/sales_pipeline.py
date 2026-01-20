@@ -11,11 +11,12 @@ Binh Pháp: 🧲 Thế Trận (Strategic Configuration) - Building momentum thro
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
 from .base import BaseEngine
 from .config import DealTier
 from .models.deal import DealStage, StartupDeal
+from .types import PipelineBreakdownDict, PipelineStatsDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ class SalesPipeline(BaseEngine):
         """Returns all deals currently in negotiation or discovery."""
         return [d for d in self.deals if d.is_active()]
 
-    def get_pipeline_breakdown(self) -> Dict[str, Any]:
+    def get_pipeline_breakdown(self) -> PipelineBreakdownDict:
         """Calculates aggregate financial metrics for the current pipeline."""
         active = self.get_active_deals()
         won = [d for d in self.deals if d.is_won()]
@@ -107,7 +108,7 @@ class SalesPipeline(BaseEngine):
             },
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> PipelineStatsDict:
         """Engine-standard performance statistics."""
         breakdown = self.get_pipeline_breakdown()
         return {

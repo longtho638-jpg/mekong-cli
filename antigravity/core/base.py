@@ -21,7 +21,9 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, Type, TypeVar, Union
+from typing import Dict, Optional, Type, TypeVar, Union
+
+from .mixins import StatsMixin
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -41,15 +43,15 @@ class BaseModel:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: Optional[datetime] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, object] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, object]:
         """Deep serialization of the model into a dictionary."""
         data = asdict(self)
         # Type conversion for JSON compatibility
         return self._serialize_nested(data)
 
-    def _serialize_nested(self, obj: Any) -> Any:
+    def _serialize_nested(self, obj: object) -> object:
         """Helper to handle nested objects and datetimes during serialization."""
         if isinstance(obj, datetime):
             return obj.isoformat()
@@ -64,7 +66,7 @@ class BaseModel:
         return json.dumps(self.to_dict(), ensure_ascii=False, indent=indent)
 
     @classmethod
-    def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
+    def from_dict(cls: Type[T], data: Dict[str, object]) -> T:
         """
         Deserializes a dictionary into a model instance.
         Handles ISO datetime strings and type mapping.
@@ -101,12 +103,13 @@ def field_names(cls):
     return dataclasses.fields(cls)
 
 
-class BaseEngine(ABC):
+class BaseEngine(StatsMixin, ABC):
     """
-    ⚙️ Base Engine
+    Base Engine
 
     The foundational logic container. Handles data persistence,
     configuration loading, and exposes standard performance metrics.
+    Uses StatsMixin for standardized stats interface.
     """
 
     def __init__(self, data_dir: Union[str, Path] = ".antigravity"):
@@ -115,15 +118,15 @@ class BaseEngine(ABC):
         self.start_time = datetime.now()
 
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
-        """Aggregates and returns engine-specific telemetry and performance data."""
+    def _collect_stats(self) -> Dict[str, object]:
+        """Override to provide engine-specific telemetry and performance data."""
         pass
 
     def get_data_path(self, filename: str) -> Path:
         """Resolves a filename within the engine's managed data directory."""
         return self.data_dir / filename
 
-    def save_data(self, filename: str, data: Any) -> Path:
+    def save_data(self, filename: str, data: object) -> Path:
         """Persists any serializable object to a JSON file."""
         path = self.get_data_path(filename)
         try:
@@ -144,7 +147,7 @@ class BaseEngine(ABC):
             logger.error(f"Failed to save engine data to {filename}: {e}")
             raise
 
-    def load_data(self, filename: str, default: Any = None) -> Any:
+    def load_data(self, filename: str, default: Optional[object] = None) -> object:
         """Retrieves and parses JSON data from the engine's directory."""
         path = self.get_data_path(filename)
         if not path.exists():
