@@ -41,7 +41,28 @@ Mọi hoạt động của Claude Code CLI **PHẢI** tham chiếu đến 2 ngu�
 - **@[.claude]** (`.claude/`): Chứa cấu hình Agents, Commands, và Workflows.
 - **@[.claude-skills]** (`.claude-skills/`): Chứa các kỹ năng chuyên sâu (Skills).
 
-### 4. 🔮 QUANTUM ACTIVATION PROTOCOL (SESSION START)
+### 4. 🧩 MCP SERVER CATALOG (ANTIGRAVITY ENGINE)
+
+> **"Hệ thần kinh trung ương - 14 MCP Servers"**
+
+| Server | Role | Description |
+|--------|------|-------------|
+| `agency_server` | **CORE** | Operations, Vertical Engines (Healthcare/Fintech/SaaS) |
+| `coding_server` | **CORE** | Implementation, Testing, Git Ops |
+| `commander_server` | **CORE** | System Health, Verification, High-level Audit |
+| `marketing_server` | **GROWTH** | Content Generation, Lead Magnet, SEO |
+| `network_server` | **GROWTH** | Social Media, Outreach, Connections |
+| `revenue_server` | **GROWTH** | Financials, Invoicing, Revenue Tracking |
+| `solo_revenue_server` | **GROWTH** | Specialized Solo-Founder Revenue Models |
+| `orchestrator_server` | **OPS** | Agent Coordination, Task Delegation |
+| `quota_server` | **OPS** | Cost Management, Token Quotas, Proxy |
+| `recovery_server` | **OPS** | Disaster Recovery, Rollbacks |
+| `security_server` | **OPS** | Auth, Permissions, Secrets, Compliance |
+| `sync_server` | **OPS** | Bridge Sync (Claude <-> Gemini) |
+| `ui_server` | **UI** | MD3 Compliance, Component Generation |
+| `workflow_server` | **UI** | Process Automation, State Management |
+
+### 5. 🔮 QUANTUM ACTIVATION PROTOCOL (SESSION START)
 
 > **"Lượng Tử Hóa - Load toàn bộ context trong một lệnh"**
 
