@@ -5,7 +5,19 @@ import {
   extractPayPalWebhookHeaders,
 } from "./paypal-webhook-verifier";
 
-type PayPalWebhookBody = Record<string, unknown>;
+interface PayPalResource {
+  id?: string;
+  payer?: { email_address?: string };
+  amount?: { value?: string };
+  supplementary_data?: { related_ids?: { order_id?: string } };
+  plan_id?: string;
+}
+
+interface PayPalWebhookBody {
+  id?: string;
+  event_type?: string;
+  resource?: PayPalResource;
+}
 
 /**
  * PayPal webhook handler with signature verification

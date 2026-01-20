@@ -8,6 +8,7 @@ import time
 from typing import Any, Dict, List, Optional
 
 from .persistence import load_learnings, save_learnings
+from .profiling import create_performance_suggestion, update_profile
 from .types import (
     ImprovementSuggestion,
     ImprovementType,
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class SelfImproveEngine:
     """
-    🧠 AI Self-Improvement Engine
+    AI Self-Improvement Engine
 
     Features:
     - Learn from errors and fix patterns
@@ -42,7 +43,7 @@ class SelfImproveEngine:
         self._error_patterns: Dict[str, int] = {}
         self._optimization_history: List[Dict] = []
 
-        logger.info("🧠 SelfImproveEngine initialized")
+        logger.info("SelfImproveEngine initialized")
 
     def learn_from_error(self, error: Exception, context: Dict[str, Any] = None) -> str:
         """Learn from an error occurrence."""
@@ -75,7 +76,7 @@ class SelfImproveEngine:
             self._suggest_improvement_for_error(pattern_key, error, context)
 
         logger.info(
-            f"📚 Learned from error: {error_type} (count: {self._error_patterns[pattern_key]})"
+            f"Learned from error: {error_type} (count: {self._error_patterns[pattern_key]})"
         )
         return pattern_key
 
@@ -121,51 +122,19 @@ class SelfImproveEngine:
         with self._lock:
             self.suggestions[suggestion.id] = suggestion
 
-        logger.info(f"💡 Improvement suggested: {suggestion.description}")
+        logger.info(f"Improvement suggested: {suggestion.description}")
 
     def profile_function(self, name: str, execution_time: float, success: bool):
         """Profile a function execution."""
         with self._lock:
-            if name not in self.profiles:
-                self.profiles[name] = PerformanceProfile(name=name)
+            update_profile(self.profiles, name, execution_time, success)
 
-            profile = self.profiles[name]
-            profile.call_count += 1
-
-            # Update average
-            profile.avg_execution_time = (
-                profile.avg_execution_time * (profile.call_count - 1) + execution_time
-            ) / profile.call_count
-
-            # Update p99 (simplified)
-            profile.p99_execution_time = max(profile.p99_execution_time, execution_time)
-
-            # Update error rate
-            if not success:
-                current_errors = profile.error_rate * (profile.call_count - 1)
-                profile.error_rate = (current_errors + 1) / profile.call_count
-
-            profile.last_updated = time.time()
-
-        # Check for performance issues
-        if execution_time > 1.0:  # > 1 second
-            self._suggest_performance_improvement(name, execution_time)
-
-    def _suggest_performance_improvement(self, name: str, execution_time: float):
-        """Suggest performance improvement for slow function."""
-        suggestion = ImprovementSuggestion(
-            id=f"perf_{name}_{int(time.time())}",
-            type=ImprovementType.PERFORMANCE,
-            target=name,
-            description=f"Optimize slow function {name} ({execution_time:.2f}s)",
-            confidence=0.7,
-            impact_score=execution_time,
-        )
-
-        with self._lock:
-            self.suggestions[suggestion.id] = suggestion
-
-        logger.warning(f"🐢 Slow function detected: {name} ({execution_time:.2f}s)")
+        # Check for performance issues and create suggestion if needed
+        suggestion = create_performance_suggestion(name, execution_time)
+        if suggestion:
+            with self._lock:
+                self.suggestions[suggestion.id] = suggestion
+            logger.warning(f"Slow function detected: {name} ({execution_time:.2f}s)")
 
     def get_suggestions(
         self, type_filter: ImprovementType = None, min_confidence: float = 0.0
@@ -198,7 +167,7 @@ class SelfImproveEngine:
             }
         )
 
-        logger.info(f"✨ Applied improvement: {suggestion.description}")
+        logger.info(f"Applied improvement: {suggestion.description}")
         return True
 
     def run_optimization_loop(self, interval_seconds: int = 3600):
