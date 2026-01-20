@@ -12,13 +12,9 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from packages.antigravity.core.quota import (
-    QuotaEngine,
-    QuotaModel,
-    QuotaPool,
-    StatusFormat,
-    ThresholdLevel,
-)
+from antigravity.mcp_servers.quota_server.engine import QuotaEngine
+from antigravity.mcp_servers.quota_server.models import QuotaModel, QuotaPool
+from antigravity.mcp_servers.quota_server.enums import StatusFormat, ThresholdLevel
 
 
 class TestQuotaModel:

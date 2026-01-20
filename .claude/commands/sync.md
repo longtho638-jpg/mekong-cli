@@ -2,52 +2,29 @@
 description: Check FE-BE API synchronization status
 ---
 
-# /sync - FE-BE Sync Checker
+# /sync - Sync Command
 
-> **Verify Frontend-Backend API connection**
+> **MCP Integration**: Routes to `sync_server`
 
-## Quick Check
-
-// turbo
+## Usage
 
 ```bash
-python3 scripts/vibeos/fe_be_sync.py
+/sync
 ```
 
-## What It Shows
+## Features
 
-- **FE API Calls**: Endpoints called from agentops-api.ts
-- **BE Endpoints**: All FastAPI routes
-- **Sync Status**: Connection verification
+- Verifies API contract alignment
+- Checks Type definitions
+- Validates Endpoints
+
+## MCP Tools
+
+- `sync_server.check_sync_status`
+- `sync_server.sync_bridge`
 
 ## Architecture
 
-```
-┌──────────────────┐     ┌──────────────────┐
-│   FRONTEND       │     │   BACKEND        │
-│   localhost:3000 │────▶│   localhost:8000 │
-├──────────────────┤     ├──────────────────┤
-│ agentops-api.ts  │     │ FastAPI routers  │
-│ useAgentsAPI.ts  │     │ 58 endpoints     │
-└──────────────────┘     └──────────────────┘
-```
+Ensures `agentops-api.ts` (Frontend) matches `FastAPI` (Backend).
 
-## Run Backend
-
-// turbo
-
-```bash
-python3 server.py
-```
-
-## Run Frontend
-
-// turbo
-
-```bash
-cd apps/dashboard && pnpm dev
-```
-
-## 🏯 Binh Pháp
-
-> "Thượng hạ đồng dục" - Top-down alignment wins.
+> 🏯 **"Thượng hạ đồng dục"** - Top-down alignment wins.

@@ -134,6 +134,24 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
+    # Ops Suite: System Monitoring and Quotas
+    "ops": {
+        "suite": "ops",
+        "emoji": "gear",
+        "description": "System operations and quota management.",
+        "subcommands": {
+            "quota": {
+                "module": "antigravity.core.ops_engine",
+                "class": "OpsEngine",
+                "method": "get_quota_status",
+            },
+            "health": {
+                "module": "antigravity.core.ops_engine",
+                "class": "OpsEngine",
+                "method": "check_health",
+            },
+        },
+    },
 }
 
 # ============================================================

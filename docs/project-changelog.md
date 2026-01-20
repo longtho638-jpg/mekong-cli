@@ -4,110 +4,41 @@
 
 ---
 
+## [2.0.0-beta] - 2026-01-20
+
+### Specialization & Vertical Engines
+- **Vertical Engines**: Implemented `antigravity.core.verticals` package with domain-specific logic for:
+    - **Healthcare**: HIPAA compliance checks, BAA generation, telehealth latency validation.
+    - **Fintech**: PCI-DSS security audits, KYC tier validation, transaction idempotency checks.
+    - **SaaS**: Multi-tenancy provisioning, subscription proration, churn risk assessment.
+- **Auditor**: Added `VerticalAuditor` for centralized compliance and security auditing across all verticals.
+- **Integration**: Updated `AgencyHandler` and `CommandRouter` to support specialized `/audit` and `/onboard` workflows.
+
+### CI/CD & Reliability
+- **CLI Verification**: Updated GitHub Actions to install the `mekong-cli` package and verify the `mekong` entry point.
+- **Test Stability**: Fixed 10+ import issues and missing rule references to achieve a 100% test pass rate (328/328).
+- **Rule Registry**: Enhanced `RuleRegistry` to recursively scan directories, supporting complex rule hierarchies.
+
+### Versioning & Polish
+- **Version Sync**: Synchronized `antigravity/__init__.py` and `setup.py` to v0.2.0 (Stable Base) with beta features on top.
+- **Knowledge Manifest**: Updated `QUANTUM_MANIFEST.md` with 118 automated rules and capability bridges.
+
+## [1.9.1-beta] - 2026-01-20
+
+### Rule Expansion Phase 2
+- **Development Rules**: Added 25 new rule files in `.claude/rules/02-development/`.
+- **Operations Rules**: Added 25 new rule files in `.claude/rules/03-operations/`.
+
+## [1.9.0-beta] - 2026-01-20
+
+### Antigravity Integration
+- **Features**: Unified Command Registry, Automated Knowledge Layer, Scalable MCP Layer, Agent Swarm Expansion, Nuclear Weaponization.
+
 ## [0.2.0] - 2026-01-20
 
 ### 10x Refactor & Go-Live Verification
 - **Modularization**: 100% compliance with < 200 LOC rule across all core and agent modules.
-- **Security**: Hardened infrastructure by removing insecure defaults and serialization.
-- **CLI Enhancement**: Unified all workflows into the `mekong` CLI tool.
-- **Documentation**: Updated `ide-workflow.md` to reflect new CLI-first approach.
-- **Path Verification**: Repaired 15+ broken script references across documentation and security validators.
-- **Installation**: Verified `pip install -e .` integrity and CLI entry point stability.
-- **Version Bump**: Official transition to v0.2.0 for production readiness.
-
-## [0.1.1] - 2026-01-20
-
-### Added
-- Completed Batch 4 Modularization phase
-
-### Changed
-- Refactored `agent_memory/storage.py` into modular backends and retrieval logic
-- Modularized `agent_orchestrator/engine.py` into delegator and monitor components
-- Split `distributed_queue/queue_manager.py` into producer and consumer modules
-- Refactored 5+ backend services and agents exceeding 200 LOC
-- Achieved 100% compliance with the 200-line rule across core and backend layers
-
-## [0.1.0] - 2026-01-20
-
-**Initial Release** - Production-ready Agency Operating System with Vietnamese-first design and Binh Pháp strategic framework.
-
-### Architecture Refactoring
-
-**200-Line Rule Compliance**
-- All Python files refactored to under 200 lines for maintainability
-- 15+ oversized files modularized into 30+ focused modules
-- Zero files violate line count limits
-
-**Infrastructure Layer**
-- Modularized OpenTelemetry: tracer (599→4 files), processors (586→4 files), exporters (525→4 files)
-- Refactored distributed queue scale module (317→4 files)
-
-**Core Engines**
-- Split ML models (327→5 files) and Revenue AI (314→4 files)
-- Modularized 12 core engines: ab_testing, agent_orchestrator, agent_swarm, algorithm, cashflow_engine, client_magnet, code_guardian, content_factory, moat_engine, money_maker, proposal_generator, revenue
-
-**CLI Layer**
-- Split entrypoint (251 lines) into 5 command modules
-- Refactored antigravity CLI (308 lines) into 5 focused modules
-
-### Type Safety & Patterns
-
-**Type System**
-- Added `antigravity/core/types/` with TypedDict and Protocol definitions
-- Replaced `Dict[str, Any]` with strongly-typed alternatives
-- Reduced files using Any type from 20+ to minimal usage
-
-**Code Reusability**
-- Added `antigravity/core/mixins/` for reusable behaviors (StatsMixin)
-- Added `antigravity/core/patterns/` for shared patterns (singleton_factory, BasePersistence)
-
-### Security Hardening
-
-**Vulnerability Fixes**
-- Replaced insecure `pickle` with safe `JSON` serialization in Redis backend (RCE mitigation)
-- Removed insecure default token fallback in VIBE Kanban bridge
-- Enhanced `.gitignore` to exclude `.env.production`, `.env.staging`, `*.pem`, `*.key`, `secrets.json`
-
-### Deployment Readiness
-
-**Package Distribution**
-- Production-ready `setup.py` with proper dependency management
-- Entry points configured for `mekong` CLI
-- Package includes templates, skills, and configuration files
-- Supports both development (`pip install -e .`) and production installation
-
-**Performance Validation**
-- Verified no blocking I/O in critical async paths
-- Validated configuration in `pyproject.toml` and `setup.py`
-
-### Testing & Verification
-
-**Quality Metrics**
-- 326 tests passing (100% pass rate)
-- No regressions across all modules
-- New test coverage for agent_swarm, algorithm_core, code_guardian
-
-**Before/After Comparison**
-| Metric | Before | After |
-|--------|--------|-------|
-| Files > 200 lines | 15+ | 0 |
-| Files using Any type | 20+ | Minimal |
-| New modules created | - | 30+ |
-| Test pass rate | - | 100% |
-| Security vulnerabilities | 2 critical | 0 |
+- **Security**: Hardened infrastructure by removing insecure defaults.
 
 ---
-
-## Previous Updates
-
-### [2026-01-18] - Self-improve Engine Enhancements
-- Enhanced self-improvement capabilities
-- Type safety improvements in mekong-docs and newsletter-saas
-
-### [2026-01-17] - Security Updates
-- Added centralized CORS config with allowed origins
-- 100% type safety achieved (0 any types)
-
----
-
-*Generated by AgencyOS Refactoring Engine*
+*Generated by Antigravity OS Specialist*

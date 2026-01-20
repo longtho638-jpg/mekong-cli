@@ -32,3 +32,20 @@ class OrchestratorReporting:
         status_text = "MISSION COMPLETE" if result.success else "MISSION FAILED"
         print(f"   {icon} {status_text} | Total Time: {result.total_duration_ms:.0f}ms")
         print("═" * 60)
+
+    def export_mermaid(self, result: ChainResult) -> str:
+        """Exports the execution trace as a Mermaid diagram."""
+        lines = ["graph TD"]
+        lines.append("    Start((Start)) --> Step1")
+
+        for i, step in enumerate(result.steps, 1):
+            status_icon = "✅" if step.status == StepStatus.COMPLETED else "❌"
+            label = f"{step.agent}\n({step.action})\n{status_icon}"
+            lines.append(f'    Step{i}["{label}"]')
+
+            if i < len(result.steps):
+                lines.append(f"    Step{i} --> Step{i+1}")
+            else:
+                lines.append(f"    Step{i} --> End((End))")
+
+        return "\n".join(lines)

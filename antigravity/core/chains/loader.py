@@ -9,7 +9,7 @@ Replaces hardcoded Python chain definitions with data-driven config.
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -22,16 +22,24 @@ class AgentStep:
     Single step in an agent chain.
 
     Attributes:
-        agent: Agent identifier (must exist in AGENT_INVENTORY)
+        agent: Agent identifier (must exist in AGENT_INVENTORY). If None, might be a control step.
         action: Semantic action name (for logging/planning)
         description: Human-readable description
         optional: If True, failure doesn't halt the chain
+        id: Unique identifier for this step (for goto/branching)
+        parallel: List of AgentStep objects to execute in parallel
+        condition: Expression to evaluate for conditional execution
+        next_step: ID of the next step to execute (for non-linear flow)
     """
 
-    agent: str
-    action: str
-    description: str
+    agent: Optional[str] = None
+    action: str = ""
+    description: str = ""
     optional: bool = False
+    id: Optional[str] = None
+    parallel: Optional[List["AgentStep"]] = None
+    condition: Optional[str] = None
+    next_step: Optional[str] = None
 
 
 @dataclass
@@ -43,11 +51,13 @@ class Chain:
         name: Chain identifier (e.g., "dev:cook")
         description: Human-readable description
         agents: List of AgentStep objects defining the workflow
+        metadata: Additional configuration for the chain
     """
 
     name: str
     description: str
     agents: List[AgentStep]
+    metadata: Dict[str, Any] = None
 
 
 class ChainLoader:
@@ -64,6 +74,23 @@ class ChainLoader:
         self.chains: Dict[str, Chain] = {}
         self._load_config()
         logger.info(f"ChainLoader initialized from {config_path}")
+
+    def _parse_agent_step(self, step_def: Dict[str, Any]) -> AgentStep:
+        """Recursively parses an agent step definition."""
+        parallel_steps = None
+        if "parallel" in step_def:
+            parallel_steps = [self._parse_agent_step(s) for s in step_def["parallel"]]
+
+        return AgentStep(
+            agent=step_def.get("agent"),
+            action=step_def.get("action", ""),
+            description=step_def.get("description", ""),
+            optional=step_def.get("optional", False),
+            id=step_def.get("id"),
+            parallel=parallel_steps,
+            condition=step_def.get("condition"),
+            next_step=step_def.get("next_step"),
+        )
 
     def _load_config(self):
         """Load and parse chains.yaml."""
@@ -83,12 +110,7 @@ class ChainLoader:
             for chain_def in config["chains"]:
                 try:
                     agents = [
-                        AgentStep(
-                            agent=agent_def["agent"],
-                            action=agent_def["action"],
-                            description=agent_def["description"],
-                            optional=agent_def.get("optional", False),
-                        )
+                        self._parse_agent_step(agent_def)
                         for agent_def in chain_def.get("agents", [])
                     ]
 
@@ -96,6 +118,7 @@ class ChainLoader:
                         name=chain_def["name"],
                         description=chain_def["description"],
                         agents=agents,
+                        metadata=chain_def.get("metadata", {}),
                     )
 
                     self.chains[chain.name] = chain

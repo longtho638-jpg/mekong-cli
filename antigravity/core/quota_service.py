@@ -1,58 +1,55 @@
 """
-Quota Service - Bridge to the centralized Quota Engine.
-Provides a high-level API for sub-agents to query and optimize model usage.
+Quota Service - Bridge to Antigravity Quota Engine
+=================================================
+
+Provides a unified interface for agents to check model quotas and optimize 
+token usage based on the current economic status.
 """
-import sys
+
+import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Add packages to path to ensure we can import from packages/antigravity
-packages_path = Path(__file__).parent.parent.parent / "packages"
-if str(packages_path) not in sys.path:
-    sys.path.append(str(packages_path))
+from antigravity.mcp_servers.quota_server.engine import QuotaEngine
 
-try:
-    from antigravity.core.quota.engine import QuotaEngine
-    from antigravity.core.quota.enums import StatusFormat
-    HAS_QUOTA_PACKAGE = True
-except ImportError:
-    HAS_QUOTA_PACKAGE = False
+logger = logging.getLogger(__name__)
 
 class QuotaService:
     """
-    Centralized economic core for Agency OS.
-    Manages model quotas and routing to maximize Gemini 1M efficiency.
+    Service wrapper for QuotaEngine to be used within the AgencyOS context.
     """
     def __init__(self):
-        if HAS_QUOTA_PACKAGE:
-            self.engine = QuotaEngine()
-        else:
-            self.engine = None
-
+        self.engine = QuotaEngine()
+    
     def get_status(self) -> Dict[str, Any]:
-        """Returns the current status of all model quotas."""
-        if not self.engine:
-            return {"error": "Quota package not available"}
+        """Returns the current quota status across all pools."""
         return self.engine.get_current_status()
-
-    def get_summary(self) -> str:
-        """Returns a formatted string summary for the CLI."""
-        if not self.engine:
-            return "⚠️ Quota Engine not installed."
+    
+    def get_cli_report(self) -> str:
+        """Returns a formatted CLI report of the quota status."""
         return self.engine.format_cli_output(format_type="full")
-
-    def optimize_routing(self, task_type: str) -> str:
+    
+    def get_optimal_model(self, task_type: str = "general") -> str:
         """
-        Suggests the best model for a given task based on remaining quota.
-        Prioritizes Gemini 1M for long-context tasks.
+        Recommends the best model to use based on remaining quota.
+        Favors Gemini 1M models for speed and cost efficiency.
         """
-        # Basic heuristic for optimization
         status = self.get_status()
-        if "error" in status:
-            return "gemini-3-flash" # Default
-
-        # Logic to pick the healthiest model pool
-        return "gemini-3-flash[1m]"
+        models = status.get("models", [])
+        
+        # Simple logic: Find Gemini models with most quota
+        gemini_models = [m for m in models if "name" in m and "gemini" in m["name"].lower()]
+        if gemini_models:
+            # Sort by remaining percent descending
+            best = sorted(gemini_models, key=lambda x: x.get("remaining_percent", 0), reverse=True)[0]
+            return best["name"]
+        
+        # Fallback to any model with most quota
+        if models:
+            best = sorted(models, key=lambda x: x.get("remaining_percent", 0), reverse=True)[0]
+            return best["name"]
+            
+        return "gemini-3-flash" # Default
 
 # Global singleton
 quota_service = QuotaService()

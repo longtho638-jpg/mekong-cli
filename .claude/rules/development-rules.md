@@ -1,3 +1,10 @@
+---
+title: "Development Rules - VIBE Standard"
+priority: P1
+tags: [development, coding-standards, vibe]
+agents: [*]
+---
+
 # ⚖️ Development Rules - VIBE Standard
 
 **"Quân pháp bất vị thân"** - Kỷ luật là sức mạnh của đội quân AI.

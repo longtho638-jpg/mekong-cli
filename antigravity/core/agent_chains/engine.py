@@ -52,9 +52,16 @@ def get_chain(suite: str, subcommand: str) -> List[AgentStep]:
     Returns:
         List of AgentStep objects (empty list if not found)
     """
-    loader = _get_chain_loader()
-    chain = loader.get_chain_by_parts(suite, subcommand)
+    chain = get_chain_obj(suite, subcommand)
     return chain.agents if chain else []
+
+
+def get_chain_obj(suite: str, subcommand: str) -> Optional[Chain]:
+    """
+    Get full chain object.
+    """
+    loader = _get_chain_loader()
+    return loader.get_chain_by_parts(suite, subcommand)
 
 
 def get_chain_summary(suite: str, subcommand: str) -> str:

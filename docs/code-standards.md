@@ -1,20 +1,47 @@
 # Code Standards & Codebase Structure
 
-**Last Updated**: 2025-10-26
-**Version**: 1.8.0
-**Applies To**: All code within AgencyOS Engine project
+**Last Updated**: 2026-01-20
+**Version**: 1.9.0-beta
+**Applies To**: All code within Mekong CLI (Antigravity Powered)
 
 ## Overview
 
-This document defines coding standards, file organization patterns, naming conventions, and best practices for AgencyOS Engine. All code must adhere to these standards to ensure consistency, maintainability, and quality.
+This document defines coding standards, file organization patterns, naming conventions, and best practices for AgencyOS Engine. All code must adhere to these standards to ensure consistency, maintainability, and quality, following the **Google Antigravity 2026** standards.
+
+## 🏯 Binh Pháp Strategy Standards
+
+### WIN-WIN-WIN Validation (MANDATORY)
+Before EVERY major decision or strategic recommendation, you MUST validate:
+1. 👑 **ANH (Owner) WIN gì?**
+2. 🏢 **AGENCY WIN gì?**
+3. 🚀 **STARTUP/CLIENT WIN gì?**
+
+❌ If any party LOSES → STOP.
+✅ All 3 WIN → PROCEED.
+
+## Rule Hierarchy & Expansion
+
+The project uses a structured rule hierarchy located in `.claude/rules/`:
+
+1.  **00-core/**: Essential project rules (Security, Quota, Win-Win-Win).
+2.  **01-strategy/**: Business and strategic patterns (13 Chapters).
+3.  **02-development/**: Technical standards for implementation.
+    - `typescript/`: Standards for TS/React development.
+    - `python/`: Standards for Python/FastAPI development.
+    - `testing/`: Unit, Integration, and E2E testing protocols.
+4.  **03-operations/**: Infrastructure and deployment standards.
+    - `ci-cd/`: Automation and pipeline rules.
+    - `deployment/`: Strategy-specific deployment rules.
+    - `monitoring/`: Observability and reliability standards.
+
+All developers MUST comply with the rules defined in these directories.
 
 ## Core Development Principles
 
-### YAGNI (You Aren't Gonna Need It)
-- Avoid over-engineering and premature optimization
-- Implement features only when needed
-- Don't build infrastructure for hypothetical future requirements
-- Start simple, refactor when necessary
+### 200-Line Rule (STRICT)
+- **Maximum file size**: 200 lines of code.
+- Files exceeding 200 lines MUST be refactored/modularized immediately.
+- This ensures files are self-documenting and optimized for AI tools (Grep, Glob, Search).
 
 ### KISS (Keep It Simple, Stupid)
 - Prefer simple, straightforward solutions

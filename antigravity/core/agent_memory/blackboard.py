@@ -3,8 +3,9 @@ Shared Blackboard - Thread-safe state sharing for agent swarms.
 Allows agents to read and write shared context during complex task execution.
 """
 import threading
-from typing import Any, Dict, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 
 class Blackboard:
     """
@@ -15,6 +16,32 @@ class Blackboard:
         self._data: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.RLock()
         self._history: List[Dict[str, Any]] = []
+
+    def scope(self, namespace: str = "global"):
+        """Context manager for thread-safe access to a namespace."""
+        class BlackboardScope:
+            def __init__(self, bb, ns):
+                self.bb = bb
+                self.ns = ns
+            def __enter__(self):
+                self.bb._lock.acquire()
+                return self.bb.get_namespace(self.ns)
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                self.bb._lock.release()
+        return BlackboardScope(self, namespace)
+
+    def update(self, data: Dict[str, Any], namespace: str = "global"):
+        """Updates multiple keys at once."""
+        with self._lock:
+            for k, v in data.items():
+                self.set(k, v, namespace)
+
+    def increment(self, key: str, amount: int = 1, namespace: str = "global"):
+        """Atomically increments a numeric value."""
+        with self._lock:
+            val = self.get(key, namespace, 0)
+            if isinstance(val, (int, float)):
+                self.set(key, val + amount, namespace)
 
     def set(self, key: str, value: Any, namespace: str = "global"):
         """Sets a value in the blackboard."""

@@ -1,14 +1,28 @@
 # Project Overview & Product Development Requirements (PDR)
 
 **Project Name**: AgencyOS Engine
-**Version**: 1.8.0
-**Last Updated**: 2025-10-26
-**Status**: Active Development
-**Repository**: https://github.com/agencyos/agencyos-engineer
+**Version**: 1.9.0-beta
+**Last Updated**: 2026-01-20
+**Status**: Antigravity Integration (v1.9.0-beta)
+**Repository**: https://github.com/longtho638-jpg/mekong-cli
 
 ## Executive Summary
 
-AgencyOS Engine is a comprehensive boilerplate template that revolutionizes software development by integrating AI-powered CLI coding agents (Claude Code and Open Code) into the development workflow. It provides a complete orchestration framework where specialized AI agents collaborate to handle planning, implementation, testing, code review, documentation, and project management.
+AgencyOS Engine is a comprehensive boilerplate template that revolutionizes software development by integrating AI-powered CLI coding agents into the development workflow. With the **Antigravity Integration (v1.9.0-beta)**, the engine now features a Unified Command Registry, Automated Knowledge Layer, and a Scalable MCP Layer for enhanced nuclear-grade weaponization of development tools.
+
+## Antigravity Weaponization (New in v1.9.0)
+
+### 1. Nuclear Weaponization
+- **Quota Engine**: Optimized cost management for Gemini Models using `quota_engine.py` and `antigravity-claude-proxy`.
+- **Win-Win-Win Gate**: Mandatory validation protocol for every business and strategic decision.
+
+### 2. Quantum Activation Protocol
+- **Lượng Tử Hóa**: Session-start context loading via `QUANTUM_MANIFEST.md`.
+- **Efficiency**: Reduces 10+ file reads at session start, maximizing 1M context efficiency.
+
+### 3. Unified Command Registry
+- **Python + MCP**: Seamless integration of Python-based core logic with Model Context Protocol (MCP) tools.
+- **Lazy Loading**: Scalable MCP layer with TTL and Catalog management.
 
 ## Project Purpose
 

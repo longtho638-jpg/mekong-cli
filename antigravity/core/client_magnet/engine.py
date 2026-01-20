@@ -110,6 +110,34 @@ class ClientMagnet(BaseEngine):
             "conversion_rate": summary["metrics"]["conversion_rate"],
         }
 
+    def process_leads(self) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Simulates the processing of leads from various sources.
+        In a real implementation, this would connect to external APIs.
+        """
+        # For simulation, ensure we have some leads
+        if not self.leads:
+            self.add_lead("Tech Corp", "Tech Corp Inc", "contact@techcorp.com", "555-0101", "linkedin")
+            self.add_lead("Startup Studio", "Studio X", "founder@studiox.com", "555-0102", "referral")
+            self.add_lead("Legacy Biz", "Old Co", "info@oldco.com", "555-0103", "cold_email")
+
+        # Convert to dict representation
+        leads_data = []
+        for lead in self.leads:
+            # Calculate score if not present
+            if not hasattr(lead, 'score') or lead.score is None:
+                self.qualify_lead(lead)
+
+            leads_data.append({
+                "name": lead.name,
+                "company": lead.company,
+                "email": lead.email,
+                "score": getattr(lead, 'score', 0),
+                "status": lead.status.value if hasattr(lead.status, 'value') else str(lead.status)
+            })
+
+        return {"all": leads_data}
+
     def _save_state(self):
         """Persists current state to disk."""
         self.persistence.save(self.leads, self.clients)

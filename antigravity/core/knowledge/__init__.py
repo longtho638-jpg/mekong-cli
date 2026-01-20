@@ -16,6 +16,8 @@ from .graph import (
     index_codebase,
     search_code,
 )
+from .manifest_generator import generate_manifest
+from .rules import RuleRegistry, rule_registry
 from .search_engine import SearchEngine, SearchResult
 from .types import CodeEntity, EntityType, Relationship, RelationType
 
@@ -32,4 +34,7 @@ __all__ = [
     "index_codebase",
     "search_code",
     "get_dependencies",
+    "RuleRegistry",
+    "rule_registry",
+    "generate_manifest",
 ]

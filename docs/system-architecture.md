@@ -1,12 +1,29 @@
 # System Architecture
 
-**Last Updated**: 2025-12-10
-**Version**: 1.20.0-beta.12
-**Project**: AgencyOS Engine
+**Last Updated**: 2026-01-20
+**Version**: 1.9.0-beta
+**Project**: AgencyOS Engine (Antigravity Integrated)
 
 ## Overview
 
-AgencyOS Engine implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol. The system enables developers to leverage AI assistance throughout the entire software development lifecycle - from planning and implementation to testing, review, and deployment.
+AgencyOS Engine implements a multi-agent AI orchestration architecture where specialized agents collaborate through a file-based communication protocol. With the **Antigravity v1.9.0** update, the system introduces a Unified Command Registry and an enhanced Knowledge Layer for autonomous operation.
+
+## Antigravity Architecture Extensions
+
+### 1. Unified Command Registry (`antigravity/core/registry/`)
+- **Metadata Management**: Centralized store for command signatures and capabilities.
+- **Discovery Engine**: Automated detection of Python commands and MCP tools.
+- **MCP Catalog**: Specialized registry for lazy-loading MCP capabilities.
+
+### 2. Knowledge Layer (`antigravity/core/knowledge/`)
+- **Quantum Manifest**: Auto-generation of `QUANTUM_MANIFEST.md` for session-wide context.
+- **Entity Extractor**: AST-based analysis of codebase entities for the knowledge graph.
+- **Graph Engine**: Relationship mapping between agents, skills, and code modules.
+
+### 3. MCP Orchestrator (`antigravity/core/mcp_orchestrator.py`)
+- **Orchestration**: Manages the lifecycle of MCP servers and tool execution.
+- **Lazy Loading**: On-demand activation of specialized tools to conserve memory and tokens.
+- **TTL Management**: Automatic cleanup of inactive tool sessions.
 
 ## Architectural Pattern
 

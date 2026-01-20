@@ -32,6 +32,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install ruff pytest anyio httpx
+          pip install -e .
+
+      - name: Verify CLI Entry Point
+        run: mekong --help
 
       - name: Lint (Ruff)
         run: ruff check .
