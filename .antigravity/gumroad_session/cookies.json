@@ -1,0 +1,72 @@
+[
+  {
+    "name": "_GRECAPTCHA",
+    "value": "09AKhCRwjugZ02ltRUR87aArn4UQqc_3TavX9LvOQe8bqjy0EtQISywG2NVq_GM2oPfEUWU5KAq8lr8IYJu69pjnw",
+    "domain": "www.google.com",
+    "path": "/recaptcha",
+    "expires": 1784441866.77494,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "_gumroad_guid",
+    "value": "924554a2-4397-493f-90bb-19eb77a7dddd",
+    "domain": ".gumroad.com",
+    "path": "/",
+    "expires": 1803449855.303588,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga_6LJN6D94N6",
+    "value": "GS2.1.s1768889857$o1$g0$t1768889857$j60$l0$h0",
+    "domain": ".gumroad.com",
+    "path": "/",
+    "expires": 1803449857.990733,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "_ga",
+    "value": "GA1.1.955756230.1768889858",
+    "domain": ".gumroad.com",
+    "path": "/",
+    "expires": 1803449857.990882,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "remember_user_token",
+    "value": "eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc3lOVGcwT0RJME4xMHNJaVF5WVNReE1TUldTaTVSV2pOYVNYVm9PRFp5YjJFNFMzVTBUMkV1SWl3aU1UYzJPRGc0T1RnM01pNDBPVFF6TWpFMklsMD0iLCJleHAiOiIyMDI2LTAyLTIwVDA2OjE3OjUyLjQ5NFoiLCJwdXIiOiJjb29raWUucmVtZW1iZXJfdXNlcl90b2tlbiJ9fQ%3D%3D--62a0918e96b08ea3e19e4fd2b1573403c895d839",
+    "domain": ".gumroad.com",
+    "path": "/",
+    "expires": 1771568272.623309,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "XSRF-TOKEN",
+    "value": "tZHBkEiiVfPNjJqng_EChNJahhGTOLrZJnmLcmlr_c0pdc4WBsvGvhTzvXI-CCu4dsvICYN0kqeyQaHKZtVT1Q",
+    "domain": "gumroad.com",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_gumroad_app_session",
+    "value": "M9Tkh%2BQfI1zX8qKSaRFXGpQZimV6Dyb5w7t9%2FPoRovle4VIxNQyQFjBYwWVO7QLVn61TeyBP5DfUIAyWX%2BF6CnfeyddIK7o0DFashvQT4bL5kz2sZRox8rUN3S4DCk5NIPvoijE9mmLKm5zvN7iG0l2nkD2qIChSlojmkdPMw0Ktgxud6WAZrnjclzM2YzP%2FpxcMC8NC%2FHrq0omiSax5yXMRx4ydjZizKh4opX0ePE9H3gCmaP9Flmds03e3sjzzLAv9VOt9g9PlVmiAvOOGojuBtfB9OfB%2BPQ706kblVyqHSbwJN5Tmxnnr9TkCgDzFaOz7Hw4SQFV6SXxL45BhEhpQ4IFJ4Gtnn8PG%2BL0kal56t0umsEjuIAPiRYDFW05u%2BC6x1n5KHLfRGDbDFdL1Qys6dfFXvULDorGTNwGOE0eebRG0kldfpZ%2FisU9euvkijZF1GGFsjwDbAKSrA7FsIn%2B9hSdwv6nv1LMhkVx1U2A3dgSMflsoX2n7fqlLQjNkwc10Frx0vK5cxzQCSeHPhBr8yKuCOQ8F1XtcAsRu%2FSt0asaygOghQ4fk0xKwfsK6mm%2B3duFK3g6BFMIi0cYJr%2BRNn6Gtrg%3D%3D--XCg1POOfuS4F7Eqp--MPBr9054d7JRgDcMM67AKg%3D%3D",
+    "domain": ".gumroad.com",
+    "path": "/",
+    "expires": 1771568273.132255,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  }
+]

@@ -2,8 +2,8 @@
 Redis Backend for Distributed Queue.
 """
 
+import json
 import logging
-import pickle
 import time
 from typing import Any, Optional, List
 
@@ -51,8 +51,8 @@ class RedisBackend(QueueBackend):
             return False
 
         try:
-            # Serialize job
-            job_data = pickle.dumps(job)
+            # Serialize job using safe JSON serialization
+            job_data = json.dumps(job.to_json()).encode("utf-8")
 
             # Determine queue key
             queue_name = PRIORITY_QUEUES.get(job.priority, "normal_jobs")
@@ -91,7 +91,8 @@ class RedisBackend(QueueBackend):
                 # result is a tuple (queue_name, data)
                 queue_name_bytes, job_data = result
 
-                job = pickle.loads(job_data)
+                # Deserialize using safe JSON (replaces insecure pickle.loads)
+                job = Job.from_json(json.loads(job_data.decode("utf-8")))
 
                 # Update job state
                 job.status = JobStatus.RUNNING
@@ -131,7 +132,7 @@ class RedisBackend(QueueBackend):
             # Store completed job result for persistence/querying
             # Expire after 1 hour to prevent memory leaks
             key = f"job:{job.job_id}"
-            job_data = pickle.dumps(job)
+            job_data = json.dumps(job.to_json()).encode("utf-8")
 
             pipe = self.client.pipeline()
             pipe.setex(key, 3600, job_data)
@@ -171,8 +172,8 @@ class RedisBackend(QueueBackend):
             job.priority = new_priority_enum
             job.worker_id = None
 
-            # Serialize
-            job_data = pickle.dumps(job)
+            # Serialize using safe JSON
+            job_data = json.dumps(job.to_json()).encode("utf-8")
 
             queue_name = PRIORITY_QUEUES.get(new_priority_enum, "background_jobs")
 
@@ -198,7 +199,7 @@ class RedisBackend(QueueBackend):
 
         try:
             job.status = JobStatus.DEAD_LETTER
-            job_data = pickle.dumps(job)
+            job_data = json.dumps(job.to_json()).encode("utf-8")
 
             self.client.lpush("dead_letter_queue", job_data)
             self.client.incr("stats:dead_letter_jobs")

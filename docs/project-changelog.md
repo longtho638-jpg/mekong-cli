@@ -4,6 +4,13 @@
 
 ---
 
+## [2026-01-20] - Phase 3: Security Hardening
+
+### Security Improvements
+- **Remote Code Execution Mitigation**: Replaced insecure `pickle` serialization with safe `JSON` serialization in `antigravity/infrastructure/distributed_queue/backends/redis_backend.py`.
+- **Credential Protection**: Removed insecure default token fallback in `antigravity/vibe_kanban_bridge.py` to prevent silent failures with weak credentials.
+- **Secrets Management**: Updated `.gitignore` to strictly exclude production environment files (`.env.production`, `.env.staging`, `*.pem`, `*.key`, `secrets.json`).
+
 ## [2026-01-20] - Core Architecture Refactoring (Phase 2 Complete)
 
 ### Summary

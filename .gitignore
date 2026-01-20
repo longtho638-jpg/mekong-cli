@@ -26,3 +26,11 @@ node_modules
 .next/
 .gemini/settings.json
 .env*.local
+
+# Secrets & Environment Files (Security Hardening)
+.env.production
+.env.staging
+.env.test
+*.pem
+*.key
+secrets.json

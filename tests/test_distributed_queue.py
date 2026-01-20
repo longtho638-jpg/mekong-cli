@@ -23,13 +23,16 @@ def test_job_defaults():
     assert job.created_at > 0
 
 def test_job_serialization():
-    # Ensure Job is pickle-able (used by backends)
-    import pickle
+    # Ensure Job is serializable using safe JSON (replaces insecure pickle)
+    import json
     job = Job(job_id="123", name="test", data={"a": 1})
-    data = pickle.dumps(job)
-    job2 = pickle.loads(data)
+    data = json.dumps(job.to_json())
+    job2 = Job.from_json(json.loads(data))
     assert job2.job_id == job.job_id
     assert job2.data == job.data
+    assert job2.name == job.name
+    assert job2.priority == job.priority
+    assert job2.status == job.status
 
 # -----------------------------------------------------------------------------
 # Memory Backend Tests
