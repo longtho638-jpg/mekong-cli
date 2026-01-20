@@ -67,7 +67,7 @@ Gemini CLI automatically loads this file when executed in this project directory
 
 Claude Code uses `/use-mcp` command to delegate MCP operations to you. The workflow:
 
-1. Claude Code sends task via stdin: `echo "task" | gemini -y -m gemini-2.5-flash`
+1. Claude Code sends task via stdin: `echo "task" | gemini -y -m <gemini.model>`
 2. You execute the appropriate MCP tool(s)
 3. You return ONLY the JSON response
 4. Claude Code parses the JSON and continues its work

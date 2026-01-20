@@ -15,11 +15,11 @@ RELEVANT_FILE_OUTPUT_DIR: Use `Report:` from `## Naming` section
 
 ## Configuration
 
-Read Gemini model from `.claude/.ck.json`: `gemini.model` (default: `gemini-2.5-flash`)
+Read Gemini model from `.claude/.ck.json`: `gemini.model` (default: `gemini-3.0-flash`)
 
 ## Workflow:
 - Write a prompt for 'SCALE' number of agents to the `Task` tool that will immediately call the `Bash` tool to run these commands to kick off your agents to conduct the search:
-  - `gemini -p "[prompt]" --model <gemini.model>` (if count <= 3)
+  - `gemini -y -m <gemini.model> "[prompt]"` (if count <= 3)
   - `opencode run "[prompt]" --model opencode/grok-code` (if count > 3 and count < 6)
   - if count >= 6, spawn `Explore` subagents to search the codebase in parallel
 

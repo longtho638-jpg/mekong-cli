@@ -1,7 +1,8 @@
 ---
 name: skill-creator
-description: Create or update Claude skills with specialized knowledge and workflows. Use for new skills, skill references, skill scripts, optimizing existing skills, extending Claude's capabilities.
+description: Create or update Claude skills. Use for new skills, skill references, skill scripts, optimizing existing skills, extending Claude's capabilities.
 license: Complete terms in LICENSE.txt
+version: 2.0.0
 ---
 
 # Skill Creator
@@ -50,7 +51,7 @@ Every skill consists of a required SKILL.md file and optional bundled resources:
 #### Requirements (**IMPORTANT**)
 
 - Skill should be combined into specific topics, for example: `cloudflare`, `cloudflare-r2`, `cloudflare-workers`, `docker`, `gcloud` should be combined into `devops`
-- `SKILL.md` should be **less than 100 lines** and include the references of related markdown files and scripts.
+- `SKILL.md` should be **less than 150 lines** and include the references of related markdown files and scripts.
 - Each script or referenced markdown file should be also **less than 150 lines**, remember that you can always split them into multiple files (**progressive disclosure** principle).
 - Descriptions in metadata of `SKILL.md` files should be both concise (**less than 200 characters**) and still contains enough usecases of the references and scripts, this will help skills can be activated automatically during the implementation process of Claude Code.
 - **Referenced markdowns**:
@@ -65,7 +66,7 @@ Every skill consists of a required SKILL.md file and optional bundled resources:
 
 **IMPORTANT:**
 - Always keep in mind that `SKILL.md` and reference files should be token consumption efficient, so that **progressive disclosure** can be leveraged at best.
-- `SKILL.md` should be **less than 100 lines**
+- `SKILL.md` should be **less than 150 lines**
 - Referenced markdown files should be also **less than 150 lines**, remember that you can always split them into multiple files (**progressive disclosure** principle).
 - Referenced scripts: no limit on length, just make sure it works, no compile issues, no runtime issues, no dependencies issues, no environment issues, no platform issues.
 
@@ -75,7 +76,7 @@ Better **context engineering**: leverage **progressive disclosure** technique of
 #### SKILL.md (required)
 
 **File name:** `SKILL.md` (uppercase)
-**File size:** Under 100 lines, if you need more, split it to multiple files (<150 lines each) in `references` folder.
+**File size:** Under 150 lines, if you need more, split it to multiple files (<150 lines each) in `references` folder.
 `SKILL.md` is always short and concise, straight to the point, treat it as a quick reference guide.
 
 **Metadata Quality:** The `name` and `description` (**MUST be under 200 characters**) in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it, DO NOT sound generic, vague or educational. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
@@ -142,6 +143,8 @@ Skip this step only when the skill's usage patterns are already clearly understo
 
 To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
 
+Use `AskUserQuestion` tool to gather user feedback and validate understanding.
+
 For example, when building an image-editor skill, relevant questions include:
 
 - "What functionality should the image-editor skill support? Editing, rotating, anything else?"
@@ -153,24 +156,43 @@ To avoid overwhelming users, avoid asking too many questions in a single message
 
 Conclude this step when there is a clear sense of the functionality the skill should support.
 
-### Step 2: Planning the Reusable Skill Contents
+### Step 2: Research on The Internet
+
+An effective skill is a subset of real-life workflows from professional workflows and case studies, so it's important to research on the internet to understand the current state of the art and best practices.
+
+Activate `/docs-seeker` skill to search for documentation if needed.
+
+If you receive a lot of URLs or files, use multiple `WebFetch` tools and `Explore` subagents to explore them in parallel, then report back to main agent.
+
+Activate `/research` skill to research for:
+- Best practices & industry standards
+- Existing CLI tools (executable via `npx`, `bunx` or `pipx`) and their usage patterns
+- Workflows & success case studies
+- Common patterns, use cases & examples
+- Edge cases, potential pitfalls & avoidance strategies
+
+Write down the reports from the research to be used in the next step.
+
+### Step 3: Planning the Reusable Skill Contents
 
 To turn concrete examples into an effective skill, analyze each example by:
 
 1. Considering how to execute on the example from scratch
-2. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly
+2. Prefer existing CLI tools' execution (via `npx`, `bunx` or `pipx`) over writing custom code
+3. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly
+4. Analyze the current skills catalog to avoid duplicating functionality, re-using existing skills where possible.
 
-Example: When building a `pdf-editor` skill to handle queries like "Help me rotate this PDF," the analysis shows:
+**Example:** When building a `pdf-editor` skill to handle queries like "Help me rotate this PDF," the analysis shows:
 
 1. Rotating a PDF requires re-writing the same code each time
 2. A `scripts/rotate_pdf.py` script would be helpful to store in the skill
 
-Example: When designing a `frontend-webapp-builder` skill for queries like "Build me a todo app" or "Build me a dashboard to track my steps," the analysis shows:
+**Example:** When designing a `frontend-webapp-builder` skill for queries like "Build me a todo app" or "Build me a dashboard to track my steps," the analysis shows:
 
 1. Writing a frontend webapp requires the same boilerplate HTML/React each time
 2. An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill
 
-Example: When building a `big-query` skill to handle queries like "How many users have logged in today?" the analysis shows:
+**Example:** When building a `big-query` skill to handle queries like "How many users have logged in today?" the analysis shows:
 
 1. Querying BigQuery requires re-discovering the table schemas and relationships each time
 2. A `references/schema.md` file documenting the table schemas would be helpful to store in the skill
@@ -178,9 +200,9 @@ Example: When building a `big-query` skill to handle queries like "How many user
 To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.
 
 - Make sure scripts respect `.env` file follow this order: `process.env` > `.claude/skills/docs-seeker/.env` > `.claude/skills/.env` > `.claude/.env`
-- Make sure scripts have tests.
+- Make sure scripts have tests, run all tests and ensure they pass. DO NOT SKIP THIS STEP.
 
-### Step 3: Initializing the Skill
+### Step 4: Initializing the Skill
 
 At this point, it is time to actually create the skill.
 
@@ -203,7 +225,7 @@ The script:
 
 After initialization, customize or remove the generated SKILL.md and example files as needed.
 
-### Step 4: Edit the Skill
+### Step 5: Edit the Skill
 
 When editing the (newly-generated or existing) skill, remember that the skill is being created for another instance of Claude to use. Focus on including information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.
 
@@ -256,8 +278,19 @@ After testing the skill, users may request improvements. Often this happens righ
 **Iteration workflow:**
 1. Use the skill on real tasks
 2. Notice struggles or inefficiencies
-3. Identify how SKILL.md or bundled resources should be updated
-4. Implement changes and test again
+3. Notice token usage and performance
+4. Identify how SKILL.md or bundled resources should be updated
+5. Implement changes and test again
+
+## Validation Criteria
+
+Detailed validation criteria for evaluating skills:
+
+- **Quick checklist**: `references/validation-checklist.md`
+- **Metadata quality**: `references/metadata-quality-criteria.md`
+- **Token efficiency**: `references/token-efficiency-criteria.md`
+- **Script quality**: `references/script-quality-criteria.md`
+- **Structure & organization**: `references/structure-organization-criteria.md`
 
 ## References
 - [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills.md)

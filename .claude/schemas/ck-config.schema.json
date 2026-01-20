@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "$id": "https://claudekit.dev/schemas/ck-config.schema.json",
+  "$id": "https://claudekit.cc/schemas/ck-config.schema.json",
   "title": "ClaudeKit Configuration",
   "description": "Configuration schema for ClaudeKit Engineer .ck.json files",
   "type": "object",
@@ -269,7 +269,7 @@
             "gemini-3.0-pro",
             "gemini-3.0-flash"
           ],
-          "default": "gemini-2.5-flash",
+          "default": "gemini-3.0-flash",
           "description": "Gemini model to use for CLI commands"
         }
       },

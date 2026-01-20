@@ -68,7 +68,7 @@ Analyze FILE GROUPS. Split into multiple commits if ANY:
 **B) Multi Commit (split required):**
 Execute delegation to analyze and create split groups:
 ```bash
-gemini -y -p "Analyze these files and create logical commit groups: $(git diff --cached --name-status). Rules: 1) Group by type (feat/fix/docs/chore/deps/ci). 2) Group by scope if same type. 3) Never mix deps with code. 4) Never mix config with features. Output format: GROUP1: type(scope): description | file1,file2,file3 | GROUP2: ... Max 4 groups. <72 chars per message." --model gemini-2.5-flash
+gemini -y -m <gemini.model> "Analyze these files and create logical commit groups: $(git diff --cached --name-status). Rules: 1) Group by type (feat/fix/docs/chore/deps/ci). 2) Group by scope if same type. 3) Never mix deps with code. 4) Never mix config with features. Output format: GROUP1: type(scope): description | file1,file2,file3 | GROUP2: ... Max 4 groups. <72 chars per message."
 ```
 
 **Parse output into groups:**
@@ -92,7 +92,7 @@ gemini -y -p "Analyze these files and create logical commit groups: $(git diff -
 
 **B) Single Commit - Complex (LINES > 30 OR FILES > 3):**
 ```bash
-gemini -y -p "Create conventional commit from this diff: $(git diff --cached | head -300). Format: type(scope): description. Types: feat|fix|docs|chore|refactor|perf|test|build|ci. <72 chars. Focus on WHAT changed. No AI attribution." --model gemini-2.5-flash
+gemini -y -m <gemini.model> "Create conventional commit from this diff: $(git diff --cached | head -300). Format: type(scope): description. Types: feat|fix|docs|chore|refactor|perf|test|build|ci. <72 chars. Focus on WHAT changed. No AI attribution."
 ```
 
 **C) Multi Commit:**
@@ -160,7 +160,7 @@ git diff origin/$BASE...origin/$HEAD --stat 2>/dev/null || echo "No remote diff 
 
 ### PR TOOL 2: Generate PR title and body
 ```bash
-gemini -y -p "Create PR title and body from these commits: $(git log origin/$BASE...origin/$HEAD --oneline). Title: conventional commit format <72 chars. NO release/version numbers in title. Body: ## Summary with 2-3 bullet points, ## Test plan with checklist. No AI attribution." --model gemini-2.5-flash
+gemini -y -m <gemini.model> "Create PR title and body from these commits: $(git log origin/$BASE...origin/$HEAD --oneline). Title: conventional commit format <72 chars. NO release/version numbers in title. Body: ## Summary with 2-3 bullet points, ## Test plan with checklist. No AI attribution."
 ```
 
 **If gemini unavailable:** Create from commit list yourself.
