@@ -2,9 +2,11 @@
 Compliance Agent engine logic.
 """
 import random
-from typing import Dict, List
 from datetime import datetime, timedelta
-from .models import ComplianceItem, RegulationType, ComplianceStatus, RiskLevel
+from typing import Dict, List
+
+from .models import ComplianceItem, ComplianceStatus, RegulationType, RiskLevel
+
 
 class ComplianceEngine:
     def __init__(self):

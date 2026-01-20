@@ -1,10 +1,12 @@
 """
 AgentOps Service core logic and registry.
 """
-import os
 import logging
+import os
 from typing import Any, Dict
+
 from backend.models.agentops import OpsStatus
+
 from .enums import OpsCategory
 
 logger = logging.getLogger(__name__)

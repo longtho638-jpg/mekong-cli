@@ -4,7 +4,9 @@ Activity Tracker core engine logic.
 import random
 from datetime import date, datetime
 from typing import Dict, List
-from .models import Activity, ActivityType, ActivityOutcome, DailyStats
+
+from .models import Activity, ActivityOutcome, ActivityType, DailyStats
+
 
 class ActivityEngine:
     DAILY_GOALS = {"calls": 50, "emails": 30, "meetings": 3, "talk_time_mins": 120}
