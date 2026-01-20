@@ -1,19 +1,23 @@
 """
 Self-Improvement Engine Logic.
 """
-import hashlib
 import logging
 import threading
 import time
 from typing import Any, Dict, List, Optional
 
+from .error_learning import (
+    create_error_improvement_suggestion,
+    create_learning_entry,
+    generate_pattern_key,
+)
 from .persistence import load_learnings, save_learnings
 from .profiling import create_performance_suggestion, update_profile
+from .suggestions import apply_suggestion_logic, get_filtered_suggestions
 from .types import (
     ImprovementSuggestion,
     ImprovementType,
     LearningEntry,
-    LearningSource,
     PerformanceProfile,
 )
 
@@ -48,10 +52,7 @@ class SelfImproveEngine:
     def learn_from_error(self, error: Exception, context: Dict[str, Any] = None) -> str:
         """Learn from an error occurrence."""
         error_type = type(error).__name__
-        error_msg = str(error)
-
-        # Create pattern signature
-        pattern_key = hashlib.md5(f"{error_type}:{error_msg}".encode()).hexdigest()[:12]
+        pattern_key = generate_pattern_key(error)
 
         with self._lock:
             if pattern_key in self._error_patterns:
@@ -60,15 +61,7 @@ class SelfImproveEngine:
                     self.learnings[pattern_key].occurrences += 1
             else:
                 self._error_patterns[pattern_key] = 1
-
-                # Create learning entry
-                learning = LearningEntry(
-                    id=pattern_key,
-                    source=LearningSource.ERROR_LOGS,
-                    pattern=f"{error_type}: {error_msg[:100]}",
-                    solution=self._generate_solution(error, context),
-                    confidence=0.5,
-                )
+                learning = create_learning_entry(pattern_key, error, context)
                 self.learnings[pattern_key] = learning
 
         # Generate improvement if pattern occurs frequently
@@ -80,49 +73,22 @@ class SelfImproveEngine:
         )
         return pattern_key
 
-    def _generate_solution(self, error: Exception, context: Dict[str, Any] = None) -> str:
-        """Generate solution suggestion for error."""
-        error_type = type(error).__name__
-
-        solutions = {
-            "KeyError": "Add null check or provide default value",
-            "TypeError": "Validate input types before operation",
-            "ValueError": "Add input validation",
-            "AttributeError": "Check object existence before accessing attribute",
-            "IndexError": "Validate list bounds before accessing",
-            "ZeroDivisionError": "Add zero check before division",
-            "TimeoutError": "Increase timeout or add retry logic",
-            "ConnectionError": "Add retry with exponential backoff",
-        }
-
-        return solutions.get(error_type, f"Handle {error_type} with try-except")
-
     def _suggest_improvement_for_error(
         self, pattern_key: str, error: Exception, context: Dict[str, Any] = None
     ):
         """Generate improvement suggestion for recurring error."""
         learning = self.learnings.get(pattern_key)
-        if not learning:
-            return
-
-        # Calculate confidence based on occurrences
-        confidence = min(0.5 + (learning.occurrences * 0.1), 0.95)
-        learning.confidence = confidence
-
-        suggestion = ImprovementSuggestion(
-            id=f"imp_{pattern_key}",
-            type=ImprovementType.RELIABILITY,
-            target=context.get("file", "unknown") if context else "unknown",
-            description=f"Fix recurring {type(error).__name__}: {learning.solution}",
-            confidence=confidence,
-            impact_score=learning.occurrences * 0.2,
-            auto_apply=self.enable_auto_apply and confidence >= self.min_confidence,
+        suggestion = create_error_improvement_suggestion(
+            learning=learning,
+            error=error,
+            context=context,
+            enable_auto_apply=self.enable_auto_apply,
+            min_confidence=self.min_confidence,
         )
 
-        with self._lock:
-            self.suggestions[suggestion.id] = suggestion
-
-        logger.info(f"Improvement suggested: {suggestion.description}")
+        if suggestion:
+            with self._lock:
+                self.suggestions[suggestion.id] = suggestion
 
     def profile_function(self, name: str, execution_time: float, success: bool):
         """Profile a function execution."""
@@ -140,33 +106,21 @@ class SelfImproveEngine:
         self, type_filter: ImprovementType = None, min_confidence: float = 0.0
     ) -> List[ImprovementSuggestion]:
         """Get improvement suggestions."""
-        suggestions = list(self.suggestions.values())
-
-        if type_filter:
-            suggestions = [s for s in suggestions if s.type == type_filter]
-
-        suggestions = [s for s in suggestions if s.confidence >= min_confidence]
-
-        return sorted(suggestions, key=lambda s: s.impact_score, reverse=True)
+        with self._lock:
+            return get_filtered_suggestions(
+                self.suggestions, type_filter, min_confidence
+            )
 
     def apply_suggestion(self, suggestion_id: str) -> bool:
         """Apply an improvement suggestion."""
+        with self._lock:
+            entry = apply_suggestion_logic(self.suggestions, suggestion_id)
+            if entry is None:
+                return False
+
+            self._optimization_history.append(entry)
+
         suggestion = self.suggestions.get(suggestion_id)
-        if not suggestion:
-            return False
-
-        # In real implementation, this would modify code
-        suggestion.applied = True
-
-        self._optimization_history.append(
-            {
-                "id": suggestion_id,
-                "type": suggestion.type.value,
-                "target": suggestion.target,
-                "applied_at": time.time(),
-            }
-        )
-
         logger.info(f"Applied improvement: {suggestion.description}")
         return True
 
