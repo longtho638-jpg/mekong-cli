@@ -27,6 +27,49 @@ from .inventory import AGENT_INVENTORY, AGENT_BASE_DIR
 from .models import AgentCategory, AgentConfig
 
 
+class _AgentChainsProxy(dict):
+    """
+    Lazy-loading proxy for AGENT_CHAINS.
+    Provides backward compatibility by exposing chains as Dict[str, List[AgentStep]].
+    """
+    _initialized = False
+
+    def _ensure_loaded(self):
+        if not self._initialized:
+            loader = _get_chain_loader()
+            for name, chain in loader.chains.items():
+                self[name] = chain.agents
+            self._initialized = True
+
+    def __getitem__(self, key):
+        self._ensure_loaded()
+        return super().__getitem__(key)
+
+    def __iter__(self):
+        self._ensure_loaded()
+        return super().__iter__()
+
+    def __len__(self):
+        self._ensure_loaded()
+        return super().__len__()
+
+    def items(self):
+        self._ensure_loaded()
+        return super().items()
+
+    def keys(self):
+        self._ensure_loaded()
+        return super().keys()
+
+    def values(self):
+        self._ensure_loaded()
+        return super().values()
+
+
+# Backward-compatible AGENT_CHAINS dict
+AGENT_CHAINS = _AgentChainsProxy()
+
+
 # Backward compatibility aliases for testing
 def register_chain(suite: str, subcommand: str, agents: list):
     """
@@ -47,6 +90,7 @@ __all__ = [
     "AgentConfig",
     "AGENT_INVENTORY",
     "AGENT_BASE_DIR",
+    "AGENT_CHAINS",  # Backward-compatible chains dict
     "get_chain",
     "get_chain_summary",
     "list_all_chains",

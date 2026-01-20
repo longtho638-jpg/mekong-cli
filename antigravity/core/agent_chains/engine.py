@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import List, Optional
 
-from antigravity.core.chains import Chain, ChainLoader, ChainValidator
+from antigravity.core.chains import Chain, ChainLoader, ChainValidator, AgentStep
 from .inventory import AGENT_INVENTORY, AGENT_BASE_DIR
 from .models import AgentCategory
 
@@ -41,7 +41,7 @@ def _get_chain_loader() -> ChainLoader:
     return _chain_loader
 
 
-def get_chain(suite: str, subcommand: str) -> Optional[Chain]:
+def get_chain(suite: str, subcommand: str) -> List[AgentStep]:
     """
     Get agent chain for a command (loaded from YAML).
 
@@ -50,10 +50,11 @@ def get_chain(suite: str, subcommand: str) -> Optional[Chain]:
         subcommand: Specific command (e.g., 'cook', 'quote')
 
     Returns:
-        Chain object or None if not found
+        List of AgentStep objects (empty list if not found)
     """
     loader = _get_chain_loader()
-    return loader.get_chain_by_parts(suite, subcommand)
+    chain = loader.get_chain_by_parts(suite, subcommand)
+    return chain.agents if chain else []
 
 
 def get_chain_summary(suite: str, subcommand: str) -> str:
@@ -69,7 +70,18 @@ def get_chain_summary(suite: str, subcommand: str) -> str:
     """
     loader = _get_chain_loader()
     name = f"{suite}:{subcommand}"
-    return loader.get_chain_summary(name)
+    chain = loader.get_chain(name)
+
+    if not chain:
+        return f"No chain defined for /{name}"
+
+    # Format with leading slash as expected by backward-compatible API
+    lines = [f"🔗 Chain: /{name} - {chain.description}"]
+    for i, step in enumerate(chain.agents, 1):
+        opt = " (optional)" if step.optional else ""
+        lines.append(f"   {i}. 🛠️ {step.agent:<20} → {step.description}{opt}")
+
+    return "\n".join(lines)
 
 
 def list_all_chains() -> List[str]:
