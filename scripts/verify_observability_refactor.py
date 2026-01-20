@@ -1,21 +1,22 @@
 """
 Verification script for Observability Refactor.
 """
-import sys
 import os
+import sys
 import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.core.observability import (
-    get_observability,
-    record_request,
-    record_purchase,
+    AlertSeverity,
     get_metrics,
+    get_observability,
     get_prometheus,
-    AlertSeverity
+    record_purchase,
+    record_request,
 )
+
 
 def verify_observability():
     print("Testing Observability Refactor...")

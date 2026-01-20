@@ -96,6 +96,7 @@ class LicenseManager:
         This method is kept for backward compatibility.
         """
         import warnings
+
         from core.licensing.generator import license_generator
 
         warnings.warn(

@@ -1,11 +1,11 @@
 """
 Verification script for Proposal Generator Refactor.
 """
-import sys
-import os
 import logging
-from pathlib import Path
+import os
 import shutil
+import sys
+from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -13,8 +13,9 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.proposal_generator import ProposalGenerator, Proposal
 from antigravity.core.money_maker import MoneyMaker, ServiceTier
+from antigravity.core.proposal_generator import Proposal, ProposalGenerator
+
 
 def verify_proposal_generator():
     print("Testing Proposal Generator Refactor...")
@@ -25,7 +26,7 @@ def verify_proposal_generator():
         shutil.rmtree(output_dir)
 
     pg = ProposalGenerator()
-    mm = MoneyMaker()
+    MoneyMaker()
 
     # 1. Test Quick Launch (Integration with MoneyMaker)
     print("\n1. Testing Quick Launch...")

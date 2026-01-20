@@ -1,21 +1,22 @@
 """
 Verification script for Viral Defense Refactor.
 """
-import sys
 import os
+import sys
 import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.infrastructure.viral_defense import (
-    get_defense,
-    check_triggers,
-    is_feature_enabled,
-    degradable,
     DefenseLevel,
-    ScaleAction
+    ScaleAction,
+    check_triggers,
+    degradable,
+    get_defense,
+    is_feature_enabled,
 )
+
 
 def test_viral_defense_flow():
     print("Testing Viral Defense Refactor...")

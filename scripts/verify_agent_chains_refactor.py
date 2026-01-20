@@ -1,9 +1,9 @@
 """
 Verification script for Agent Chains Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -13,11 +13,12 @@ logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.agent_chains import (
     AGENT_INVENTORY,
+    AgentStep,
     get_chain,
     register_chain,
-    AgentStep,
-    validate_inventory
+    validate_inventory,
 )
+
 
 def verify_agent_chains():
     print("Testing Agent Chains Refactor...")

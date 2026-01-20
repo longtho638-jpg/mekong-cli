@@ -6,9 +6,9 @@ Central coordinator distributing work across agents with load balancing.
 import logging
 import threading
 import time
+from antigravity.core.types import SwarmStatusDict
 from typing import Any, Callable, Dict, List, Optional
 
-from antigravity.core.types import SwarmStatusDict
 from .coordination import build_status_dict, calculate_throughput
 from .messaging import TaskQueue
 from .types import AgentRole, SwarmMetrics, TaskPriority, TaskStatus

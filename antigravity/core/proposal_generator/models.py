@@ -5,10 +5,9 @@
 Data models for the Proposal Generator system.
 """
 
+from antigravity.core.money_maker import Quote
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-
-from antigravity.core.money_maker import Quote
 
 
 @dataclass

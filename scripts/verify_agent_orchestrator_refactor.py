@@ -1,24 +1,21 @@
 """
 Verification script for Agent Orchestrator Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
-from antigravity.core.chains import Chain, AgentStep
 from antigravity.core.agent_chains import _get_chain_loader
+from antigravity.core.chains import AgentStep, Chain
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.agent_orchestrator import (
-    AgentOrchestrator,
-    execute_chain,
-    StepStatus
-)
+from antigravity.core.agent_orchestrator import AgentOrchestrator, StepStatus, execute_chain
+
 
 def verify_agent_orchestrator():
     print("Testing Agent Orchestrator Refactor...")

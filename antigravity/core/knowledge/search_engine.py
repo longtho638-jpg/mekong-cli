@@ -13,8 +13,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, List, Set
 
+from .search_indexing import evict_entity, index_entity_keywords
 from .types import CodeEntity
-from .search_indexing import index_entity_keywords, evict_entity
 
 logger = logging.getLogger(__name__)
 

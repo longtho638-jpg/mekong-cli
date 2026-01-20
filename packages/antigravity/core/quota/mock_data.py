@@ -3,6 +3,7 @@ from typing import List
 
 from .models import QuotaModel
 
+
 class MockQuotaGenerator:
     """Generates mock quota data for testing and development."""
 

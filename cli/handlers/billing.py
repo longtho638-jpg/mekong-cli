@@ -58,8 +58,8 @@ class BillingHandler:
         print("-" * 50)
 
         try:
-            from antigravity.core.proposal_generator import ProposalGenerator
             from antigravity.core.money_maker import ServiceTier
+            from antigravity.core.proposal_generator import ProposalGenerator
 
             generator = ProposalGenerator()
             generator.set_agency_context(

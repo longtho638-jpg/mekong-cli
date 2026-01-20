@@ -9,16 +9,17 @@ All agents inherit from this base class which provides:
 - Monitoring hooks
 """
 
-from typing import Any, Dict, List, Optional
-from abc import ABC, abstractmethod
-from langchain.agents import AgentExecutor, create_openai_functions_agent
-from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from pydantic import BaseModel, Field
-import redis
 import json
 import os
+from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import redis
+from langchain.agents import AgentExecutor, create_openai_functions_agent
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
 
 # Attempt to import centralized settings
 try:

@@ -1,7 +1,9 @@
 
-import pytest
-from pathlib import Path
 from antigravity.core.moat_engine.engine import MoatEngine, get_moat_engine
+from pathlib import Path
+
+import pytest
+
 
 @pytest.fixture
 def moat_engine(tmp_path):
@@ -41,7 +43,7 @@ def test_record_learning(moat_engine):
     assert moat_engine.moats["learning"].strength > initial_strength
 
 def test_add_workflow(moat_engine):
-    initial_strength = moat_engine.moats["workflow"].strength
+    moat_engine.moats["workflow"].strength
 
     moat_engine.add_workflow(count=5)
 

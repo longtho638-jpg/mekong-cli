@@ -1,9 +1,10 @@
 """Contract service for guardian agent"""
 
-from typing import Dict, List, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 try:
-    from ..models.contract import TermSheetTerms, RedFlag
+    from ..models.contract import RedFlag, TermSheetTerms
 except ImportError:
     pass
 

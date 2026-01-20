@@ -1,10 +1,7 @@
 """Guardian models module"""
 
-from .contract import (
-    TermSheetTerms, RedFlag, CounterOffer, 
-    MarketComparison, ContractAnalysis
-)
-from .risk import RiskLevel, RiskAssessment, RiskThresholds
+from .contract import ContractAnalysis, CounterOffer, MarketComparison, RedFlag, TermSheetTerms
+from .risk import RiskAssessment, RiskLevel, RiskThresholds
 
 __all__ = [
     "TermSheetTerms",

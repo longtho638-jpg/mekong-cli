@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 
 from .lifecycle import EarlyWinnerPredictor
 from .models import (
-    ABVariant,
     STATISTICAL_LIBS_AVAILABLE,
+    ABVariant,
     StatisticalTest,
     TestResult,
 )

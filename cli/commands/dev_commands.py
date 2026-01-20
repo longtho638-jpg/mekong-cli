@@ -5,7 +5,6 @@ Contains cook/test/ship commands for development workflow.
 """
 
 import typer
-
 from rich.console import Console
 
 console = Console()

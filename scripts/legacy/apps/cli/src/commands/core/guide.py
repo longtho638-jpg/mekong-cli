@@ -9,6 +9,7 @@ User guide and onboarding.
 from rich.console import Console
 from rich.markdown import Markdown
 
+
 def main():
     """Show user guide."""
     console = Console()

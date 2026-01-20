@@ -1,9 +1,9 @@
 """
 Verification script for Revenue Engine Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 from datetime import datetime, timedelta
 
 # Add project root to path
@@ -13,6 +13,7 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.revenue_engine import RevenueEngine
+
 
 def verify_revenue_engine():
     print("Testing Revenue Engine Refactor...")

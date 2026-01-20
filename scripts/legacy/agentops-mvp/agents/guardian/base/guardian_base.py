@@ -1,7 +1,8 @@
 """Base guardian class with common functionality"""
 
-from typing import Dict, List, Any
 from datetime import datetime
+from typing import Any, Dict, List
+
 from ..services.contract_service import ContractService
 from ..services.market_service import MarketService
 

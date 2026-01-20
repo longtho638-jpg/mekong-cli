@@ -2,6 +2,7 @@
 import os
 import sys
 
+
 def count_lines(filepath):
     """Count lines in a file, skipping empty lines and comments if needed.
     For now, we count all lines as per the strict 200 LOC rule.
@@ -9,7 +10,7 @@ def count_lines(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return sum(1 for line in f)
-    except Exception as e:
+    except Exception:
         # print(f"Error reading {filepath}: {e}", file=sys.stderr)
         return 0
 

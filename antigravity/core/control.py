@@ -12,17 +12,17 @@ The actual implementation has been moved to antigravity.core.control package.
 """
 
 from antigravity.core.control import (
+    CircuitBreaker,
+    CircuitBreakerError,
+    CircuitState,
     ControlCenter,
     FeatureFlag,
     FeatureFlagManager,
-    CircuitBreaker,
-    CircuitState,
-    CircuitBreakerError,
     RateGovernor,
-    get_control,
-    is_enabled,
     check_breaker,
     check_rate,
+    get_control,
+    is_enabled,
     protected,
 )
 

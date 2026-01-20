@@ -1,25 +1,26 @@
 """
 Verification script for Agent Swarm Refactor.
 """
-import sys
 import os
-import time
+import sys
 import threading
+import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.core.agent_swarm import (
-    get_swarm,
-    register_agent,
-    submit_task,
-    get_task_result,
-    start_swarm,
-    stop_swarm,
     AgentRole,
     TaskPriority,
-    TaskStatus
+    TaskStatus,
+    get_swarm,
+    get_task_result,
+    register_agent,
+    start_swarm,
+    stop_swarm,
+    submit_task,
 )
+
 
 def test_handler(payload):
     print(f"   Agent processing: {payload}")

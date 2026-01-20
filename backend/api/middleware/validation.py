@@ -109,7 +109,7 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                                 }
                             )
 
-                    except Exception as e:
+                    except Exception:
                         # Invalid JSON - let FastAPI handle it
                         pass
 

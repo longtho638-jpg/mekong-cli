@@ -23,47 +23,47 @@ from antigravity.infrastructure.opentelemetry import (
     DEFAULT_OTLP_ENDPOINT,
     DEFAULT_PROMETHEUS_GATEWAY,
     DEFAULT_SERVICE_NAME,
-    TracerConfig,
-    ExporterConfig,
-    SamplingConfig,
     AgentConfig,
-    # Models
-    SpanKind,
-    SpanStatus,
-    TraceId,
-    Event,
-    Metric,
-    # Span
-    Span,
     # Exporters
     BaseExporter,
-    OTLPExporter,
-    JaegerExporter,
-    ExportProcessor,
-    export_spans,
-    export_metrics,
-    # Tracing Agent
-    TracingAgent,
     # Processors
     BaseProcessor,
-    SpanProcessor,
-    MetricsProcessor,
-    ExportLoopProcessor,
-    PerformanceAnalyzer,
-    create_span_processor_loop,
-    create_metrics_processor_loop,
-    create_export_processor_loop,
     # Tracer
     DistributedTracer,
-    # Global Instance
-    distributed_tracer,
+    Event,
+    ExporterConfig,
+    ExportLoopProcessor,
+    ExportProcessor,
+    JaegerExporter,
+    Metric,
+    MetricsProcessor,
+    OTLPExporter,
+    PerformanceAnalyzer,
+    SamplingConfig,
+    # Span
+    Span,
+    # Models
+    SpanKind,
+    SpanProcessor,
+    SpanStatus,
+    TraceId,
+    TracerConfig,
+    # Tracing Agent
+    TracingAgent,
+    create_export_processor_loop,
+    create_metrics_processor_loop,
     # Convenience Functions
     create_span,
-    trace_request,
-    trace_ai_operation,
+    create_span_processor_loop,
+    # Global Instance
+    distributed_tracer,
+    export_metrics,
+    export_spans,
     get_tracing_analytics,
     register_tracing_agent,
     shutdown,
+    trace_ai_operation,
+    trace_request,
 )
 
 __all__ = [

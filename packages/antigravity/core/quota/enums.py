@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class StatusFormat(Enum):
     """Status bar display formats (6 formats from vscode-antigravity-cockpit)."""
 

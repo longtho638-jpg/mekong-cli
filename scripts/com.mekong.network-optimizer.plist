@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mekong.network-optimizer</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/network_optimizer.py</string>
+        <string>optimize</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/macbookprom1/mekong-cli</string>
+    
+    <!-- Run every 4 hours (14400 seconds) -->
+    <key>StartInterval</key>
+    <integer>14400</integer>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/network-optimizer.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/macbookprom1/.mekong/logs/network-optimizer.error.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <false/>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

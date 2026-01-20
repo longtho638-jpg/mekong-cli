@@ -11,12 +11,10 @@ Usage:
 
 import json
 import re
+from antigravity.core.hook_registry import Hook
+from antigravity.core.types import DealContextDict, HookContextDict, HookResultDict, Win3ResultDict
 from pathlib import Path
 from typing import Optional
-
-from antigravity.core.hook_registry import Hook
-from antigravity.core.types import HookResultDict, Win3ResultDict, HookContextDict, DealContextDict
-
 
 # Sensitive data patterns for privacy checks
 SENSITIVE_PATTERNS = [

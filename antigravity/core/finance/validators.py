@@ -10,14 +10,16 @@ from decimal import Decimal
 from typing import Optional
 
 try:
-    from pydantic import BaseModel, Field, field_validator, ConfigDict
+    from pydantic import BaseModel, ConfigDict, Field, field_validator
     PYDANTIC_AVAILABLE = True
 except ImportError:
     # Fallback for systems without pydantic
     PYDANTIC_AVAILABLE = False
     BaseModel = object
-    Field = lambda **kwargs: None
-    field_validator = lambda *args, **kwargs: lambda f: f
+    def Field(**kwargs):
+        return None
+    def field_validator(*args, **kwargs):
+        return lambda f: f
     ConfigDict = dict
 
 

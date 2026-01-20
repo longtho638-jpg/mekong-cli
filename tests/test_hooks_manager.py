@@ -11,9 +11,9 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.hooks_manager import HooksManager
-from antigravity.core.hook_registry import HOOKS, Hook
 from antigravity.core.hook_executor import execute_hook
+from antigravity.core.hook_registry import HOOKS, Hook
+from antigravity.core.hooks_manager import HooksManager
 
 
 class TestHooksManager:

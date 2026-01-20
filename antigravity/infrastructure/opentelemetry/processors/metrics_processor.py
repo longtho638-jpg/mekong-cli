@@ -5,10 +5,10 @@ OpenTelemetry Metrics Processor Module
 Metrics aggregation for distributed tracing.
 """
 
-import time
 import logging
-from typing import Dict, Any, List, Callable
+import time
 from collections import deque
+from typing import Any, Callable, Dict, List
 
 from .base import BaseProcessor
 

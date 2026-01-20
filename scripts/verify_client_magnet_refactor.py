@@ -1,9 +1,9 @@
 """
 Verification script for Client Magnet Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 from datetime import datetime
 
 # Add project root to path
@@ -12,13 +12,8 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.client_magnet import (
-    client_magnet,
-    LeadSource,
-    LeadStatus,
-    Lead,
-    Client
-)
+from antigravity.core.client_magnet import Client, Lead, LeadSource, LeadStatus, client_magnet
+
 
 def verify_client_magnet():
     print("Testing Client Magnet Refactor...")

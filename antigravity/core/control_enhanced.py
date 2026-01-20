@@ -9,16 +9,16 @@ The actual implementation has been moved to antigravity.core.control.enhanced pa
 """
 
 from antigravity.core.control.enhanced import (
-    EnhancedControlCenter,
-    get_control_center,
-    set_feature_flag,
-    is_feature_enabled,
-    RedisClient,
-    FeatureFlag,
-    FeatureFlagManager,
-    CircuitBreaker,
     AnalyticsEvent,
     AnalyticsTracker,
+    CircuitBreaker,
+    EnhancedControlCenter,
+    FeatureFlag,
+    FeatureFlagManager,
+    RedisClient,
+    get_control_center,
+    is_feature_enabled,
+    set_feature_flag,
 )
 
 __all__ = [

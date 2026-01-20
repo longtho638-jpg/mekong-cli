@@ -1,10 +1,10 @@
 """
 Verification script for Cashflow Engine Refactor.
 """
-import sys
-import os
 import logging
+import os
 import shutil
+import sys
 from datetime import datetime, timedelta
 
 # Add project root to path
@@ -13,7 +13,8 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.cashflow_engine import get_cashflow_engine, CashflowEngine, RevenueStream
+from antigravity.core.cashflow_engine import CashflowEngine, RevenueStream, get_cashflow_engine
+
 
 def verify_cashflow_engine():
     print("Testing Cashflow Engine Refactor...")
@@ -38,7 +39,7 @@ def verify_cashflow_engine():
     print("\n2. Testing Revenue Recording...")
 
     # Add One-time Agency Revenue
-    rev1 = engine.add_revenue(
+    engine.add_revenue(
         stream=RevenueStream.AGENCY,
         amount=5000.0,
         currency="USD",
@@ -48,7 +49,7 @@ def verify_cashflow_engine():
     )
 
     # Add Recurring SaaS Revenue
-    rev2 = engine.add_revenue(
+    engine.add_revenue(
         stream="saas", # Test string input
         amount=100.0,
         currency="USD",
@@ -59,7 +60,7 @@ def verify_cashflow_engine():
 
     # Add VND Revenue (Exchange Rate 25000)
     # 25,000,000 VND = $1,000 USD
-    rev3 = engine.add_revenue(
+    engine.add_revenue(
         stream=RevenueStream.CONSULTING,
         amount=25_000_000.0,
         currency="VND",

@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 # Add root to path
 sys.path.append(os.getcwd())
@@ -7,9 +7,9 @@ sys.path.append(os.getcwd())
 try:
     print("Attempting to import from facade...")
     from antigravity.core.algorithm_enhanced import (
-        enhanced_algorithm,
+        PricingStrategy,
         calculate_optimized_price,
-        PricingStrategy
+        enhanced_algorithm,
     )
     print("✅ Import successful!")
 

@@ -14,18 +14,17 @@ Usage:
         print("Aborted by hook")
 """
 
-from pathlib import Path
-from typing import Dict, List, Optional, Union
-
+from antigravity.core.hook_executor import execute_hook, run_win3_gate
 from antigravity.core.hook_registry import (
-    Hook,
     HOOKS,
     SUITE_TRIGGERS,
+    Hook,
     get_hooks_for_trigger,
     get_triggers_for_suite,
 )
-from antigravity.core.hook_executor import execute_hook, run_win3_gate
-from antigravity.core.types import HookResultDict, Win3ResultDict, HookContextDict, DealContextDict
+from antigravity.core.types import DealContextDict, HookContextDict, HookResultDict, Win3ResultDict
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 
 class HooksManager:

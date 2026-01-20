@@ -1,0 +1,24 @@
+16:59:00 [WARN] [pagefind] Output type `server` does not produce static *.html pages in its output and thus will not work with astro-pagefind integration.
+16:59:01 [types] Generated 1ms
+16:59:01 [content] Syncing content
+[Shiki] The language "env" doesn't exist, falling back to "plaintext".
+[Shiki] The language "env" doesn't exist, falling back to "plaintext".
+16:59:08 [WARN] [glob-loader] Duplicate id "docs/commands" found in /Users/macbookprom1/mekong-cli/apps/docs/src/content/docs-vi/docs/commands/index.md. Later items with the same id will overwrite earlier ones.
+[Shiki] The language "env" doesn't exist, falling back to "plaintext".
+[Shiki] The language "env" doesn't exist, falling back to "plaintext".
+16:59:13 [WARN] [glob-loader] Duplicate id "docs/cli" found in /Users/macbookprom1/mekong-cli/apps/docs/src/content/docs/docs/cli/index.md. Later items with the same id will overwrite earlier ones.
+[Shiki] The language "code" doesn't exist, falling back to "plaintext".
+[Shiki] The language "code" doesn't exist, falling back to "plaintext".
+16:59:13 [WARN] [glob-loader] Duplicate id "docs/commands" found in /Users/macbookprom1/mekong-cli/apps/docs/src/content/docs/docs/commands/index.md. Later items with the same id will overwrite earlier ones.
+[Shiki] The language "code" doesn't exist, falling back to "plaintext".
+[Shiki] The language "code" doesn't exist, falling back to "plaintext".
+[Shiki] The language "env" doesn't exist, falling back to "plaintext".
+16:59:18 [content] Synced content
+16:59:18 [vite] Re-optimizing dependencies because vite config has changed
+
+ astro  v5.16.11 ready in 18198 ms
+
+┃ Local    http://localhost:4321/
+┃ Network  use --host to expose
+
+16:59:18 watching for file changes...

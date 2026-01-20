@@ -1,9 +1,9 @@
 """
 Verification script for Agency DNA Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -11,13 +11,8 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.agency_dna import (
-    AgencyDNA,
-    Service,
-    Tone,
-    PricingTier,
-    create_starter_dna
-)
+from antigravity.core.agency_dna import AgencyDNA, PricingTier, Service, Tone, create_starter_dna
+
 
 def verify_agency_dna():
     print("Testing Agency DNA Refactor...")

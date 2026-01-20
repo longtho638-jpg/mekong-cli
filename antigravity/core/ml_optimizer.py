@@ -18,43 +18,43 @@ Usage remains unchanged:
 
 # Re-export everything from the modular ml package
 from antigravity.core.ml import (
-    # Main class and instance
-    MLOptimizer,
-    ml_optimizer,
-    # Convenience functions
-    calculate_ai_optimized_price,
-    create_advanced_ab_test,
-    get_game_changing_analytics,
-    update_game_changing_metrics,
+    # Availability flags
+    ML_AVAILABLE,
+    TF_AVAILABLE,
+    TORCH_AVAILABLE,
     # Models and dataclasses
     ABTestAdvanced,
     AIPricingAgent,
     ConversionPredictor,
     GameChangingFeature,
     MLOptimizationResult,
+    # Main class and instance
+    MLOptimizer,
     PricingMode,
     QuantumOptimizer,
-    # Model factories
-    create_ensemble_model,
-    create_pytorch_model,
-    create_sklearn_model,
-    create_tensorflow_model,
     # Training utilities
     analyze_market_conditions,
+    # Convenience functions
+    calculate_ai_optimized_price,
     calculate_immediate_reward,
-    create_ab_test,
-    create_polynomial_features,
-    extract_enhanced_features,
-    get_recent_performance,
     # Inference utilities
     calculate_performance_score,
     calculate_statistical_optimization,
     calculate_viral_multiplier,
+    create_ab_test,
+    create_advanced_ab_test,
+    # Model factories
+    create_ensemble_model,
+    create_polynomial_features,
+    create_pytorch_model,
+    create_sklearn_model,
+    create_tensorflow_model,
+    extract_enhanced_features,
+    get_game_changing_analytics,
+    get_recent_performance,
+    ml_optimizer,
     predict_conversion_rate_ml,
-    # Availability flags
-    ML_AVAILABLE,
-    TF_AVAILABLE,
-    TORCH_AVAILABLE,
+    update_game_changing_metrics,
 )
 
 __all__ = [

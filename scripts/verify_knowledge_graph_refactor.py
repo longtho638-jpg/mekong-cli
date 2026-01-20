@@ -1,10 +1,10 @@
 """
 Verification script for Knowledge Graph Refactor.
 """
-import sys
-import os
-import tempfile
 import logging
+import os
+import sys
+import tempfile
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -13,13 +13,14 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.knowledge_graph import (
+    CodeEntity,
+    EntityType,
+    get_dependencies,
     get_knowledge_graph,
     index_codebase,
     search_code,
-    get_dependencies,
-    EntityType,
-    CodeEntity
 )
+
 
 def verify_knowledge_graph():
     print("Testing Knowledge Graph Refactor...")

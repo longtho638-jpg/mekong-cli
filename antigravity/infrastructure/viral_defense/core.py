@@ -7,16 +7,16 @@ import threading
 from datetime import datetime
 from typing import Any, Dict, List
 
-from .models import DefenseLevel, DegradationRule, ScaleAction, ScaleTrigger
 from .defaults import (
-    CPU_SCALE_UP,
     CPU_SCALE_DOWN,
+    CPU_SCALE_UP,
     MEMORY_ALERT,
     QUEUE_DEPTH_SCALE,
     STATIC_FALLBACK_HTML,
     get_default_degradation_rules,
     get_default_triggers,
 )
+from .models import DefenseLevel, DegradationRule, ScaleAction, ScaleTrigger
 
 logger = logging.getLogger(__name__)
 

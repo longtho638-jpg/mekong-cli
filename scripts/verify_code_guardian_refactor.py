@@ -1,9 +1,9 @@
 """
 Verification script for Code Guardian Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 import time
 from datetime import datetime
 
@@ -14,15 +14,16 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.code_guardian import (
-    get_guardian,
     CodeGuardian,
+    GuardianAction,
     SecurityThreat,
     ThreatLevel,
-    GuardianAction,
-    scan_code,
+    create_rollback_point,
+    get_guardian,
     monitor_metric,
-    create_rollback_point
+    scan_code,
 )
+
 
 def verify_code_guardian():
     print("Testing Code Guardian Refactor...")

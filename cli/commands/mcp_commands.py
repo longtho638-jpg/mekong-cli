@@ -5,7 +5,6 @@ Contains Model Context Protocol management commands.
 """
 
 import typer
-
 from rich.console import Console
 
 console = Console()

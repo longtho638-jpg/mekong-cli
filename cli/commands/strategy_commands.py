@@ -5,7 +5,6 @@ Contains strategy analysis and planning commands (Binh Phap).
 """
 
 import typer
-
 from rich.console import Console
 
 console = Console()

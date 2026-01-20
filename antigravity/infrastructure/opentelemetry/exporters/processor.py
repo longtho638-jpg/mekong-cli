@@ -5,10 +5,10 @@ OpenTelemetry Export Processor Module
 Background processor for batching and exporting telemetry data.
 """
 
-import time
 import logging
-from typing import Dict, Any, List, Optional
+import time
 from collections import deque
+from typing import Any, Dict, List, Optional
 
 from .base import BaseExporter
 

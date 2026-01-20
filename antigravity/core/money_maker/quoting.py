@@ -2,10 +2,9 @@
 Money Maker Quoting Logic.
 """
 import logging
+from antigravity.core.finance import sanitize_client_name
 from decimal import Decimal
 from typing import List, Optional, Union
-
-from antigravity.core.finance import sanitize_client_name
 
 from .governance import Win3Governance
 from .models import (

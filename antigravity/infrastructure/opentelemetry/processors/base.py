@@ -5,11 +5,11 @@ OpenTelemetry Base Processor Module
 Abstract base class for background processors.
 """
 
-import time
 import logging
 import threading
-from typing import Optional
+import time
 from abc import ABC, abstractmethod
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 

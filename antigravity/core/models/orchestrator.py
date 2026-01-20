@@ -15,12 +15,11 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the specialized units.
 """
 
 import logging
+from antigravity.core.types import AgentTaskDict, ChainMetricsDict, ChainResultDict
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional
-
-from antigravity.core.types import AgentTaskDict, ChainMetricsDict, ChainResultDict
 
 # Configure logging
 logger = logging.getLogger(__name__)

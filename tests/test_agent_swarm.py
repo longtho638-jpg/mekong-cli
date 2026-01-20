@@ -1,9 +1,11 @@
 
 import time
-import pytest
 from antigravity.core.agent_swarm.engine import AgentSwarm
 from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority, TaskStatus
 from antigravity.core.agent_swarm.models import SwarmAgent, SwarmTask
+
+import pytest
+
 
 @pytest.fixture
 def swarm():

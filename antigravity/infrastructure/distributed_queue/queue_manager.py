@@ -6,11 +6,11 @@ import logging
 import time
 from typing import Any, Dict, Optional
 
-from .models import Job, JobPriority, JobStatus, QueueStats
-from .config import DEFAULT_REDIS_URL, DEFAULT_FALLBACK_TO_MEMORY, DEFAULT_JOB_TIMEOUTS
 from .backends.base import QueueBackend
 from .backends.memory_backend import MemoryBackend
 from .backends.redis_backend import RedisBackend
+from .config import DEFAULT_FALLBACK_TO_MEMORY, DEFAULT_JOB_TIMEOUTS, DEFAULT_REDIS_URL
+from .models import Job, JobPriority, JobStatus, QueueStats
 
 logger = logging.getLogger(__name__)
 

@@ -14,8 +14,12 @@ from typing import Any, Dict
 
 from .analysis import StatisticalAnalyzer
 from .experiments import ExperimentManager
-from .models import AllocationStrategy, STATISTICAL_LIBS_AVAILABLE, StatisticalTest
-from .reporting import calculate_final_metrics, generate_active_tests_summary, generate_test_analytics
+from .models import STATISTICAL_LIBS_AVAILABLE, AllocationStrategy, StatisticalTest
+from .reporting import (
+    calculate_final_metrics,
+    generate_active_tests_summary,
+    generate_test_analytics,
+)
 from .time_utils import MIN_ANALYSIS_DAYS, seconds_to_days
 from .traffic import TrafficAllocator
 

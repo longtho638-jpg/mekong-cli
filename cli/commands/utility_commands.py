@@ -5,7 +5,6 @@ Contains miscellaneous utility commands (agents, scaffold, dashboard, etc.).
 """
 
 import typer
-
 from rich.console import Console
 
 console = Console()

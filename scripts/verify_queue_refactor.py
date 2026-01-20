@@ -1,21 +1,22 @@
 """
 Verification script for Distributed Queue Refactor.
 """
+import os
 import sys
 import time
-import os
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.infrastructure.distributed_queue import (
-    submit_job,
-    get_next_job,
-    complete_job,
-    get_queue_stats,
     JobPriority,
-    JobStatus
+    JobStatus,
+    complete_job,
+    get_next_job,
+    get_queue_stats,
+    submit_job,
 )
+
 
 def test_queue_flow():
     print("Testing Distributed Queue Refactor...")

@@ -7,19 +7,19 @@ The actual implementation has been moved to antigravity.core.agent_swarm package
 """
 
 from antigravity.core.agent_swarm import (
+    AgentRole,
     AgentSwarm,
     SwarmAgent,
-    SwarmTask,
     SwarmMetrics,
-    AgentRole,
+    SwarmTask,
     TaskPriority,
     TaskStatus,
     get_swarm,
-    register_agent,
-    submit_task,
     get_task_result,
+    register_agent,
     start_swarm,
     stop_swarm,
+    submit_task,
 )
 
 __all__ = [

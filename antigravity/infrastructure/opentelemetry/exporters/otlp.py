@@ -6,9 +6,9 @@ OpenTelemetry Protocol (OTLP) exporter implementation.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
-from ..config import ExporterConfig, DEFAULT_OTLP_ENDPOINT
+from ..config import DEFAULT_OTLP_ENDPOINT, ExporterConfig
 from ..models import Metric
 from .base import BaseExporter
 

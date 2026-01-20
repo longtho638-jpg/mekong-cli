@@ -21,10 +21,11 @@ Binh Pháp Application:
 - Chapter 3 (Mưu Công): Win negotiations without fighting
 """
 
-from typing import Dict, List, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel
 
 
 class RiskLevel(str, Enum):

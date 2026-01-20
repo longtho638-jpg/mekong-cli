@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 
 from .models import QuotaModel
 
+
 class QuotaParser:
     """Parses raw quota data into QuotaModel objects."""
 

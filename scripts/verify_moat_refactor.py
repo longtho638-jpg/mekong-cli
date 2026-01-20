@@ -1,10 +1,10 @@
 """
 Verification script for Moat Engine Refactor.
 """
-import sys
-import os
 import logging
+import os
 import shutil
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -13,7 +13,8 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.moat_engine import get_moat_engine, MoatEngine
+from antigravity.core.moat_engine import MoatEngine, get_moat_engine
+
 
 def verify_moat_engine():
     print("Testing Moat Engine Refactor...")

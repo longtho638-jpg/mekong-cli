@@ -10,7 +10,7 @@ Binh Pháp: "Dùng Cầu" - Bridge Configuration
 
 import os
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict

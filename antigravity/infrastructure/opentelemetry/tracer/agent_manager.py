@@ -7,7 +7,7 @@ Extracted from tracer.py for modularization.
 """
 
 import logging
-from typing import Dict, Any, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:
     from ..tracing_agent import TracingAgent

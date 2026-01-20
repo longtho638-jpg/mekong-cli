@@ -6,10 +6,9 @@ Handles failure/success counting and state transition logic.
 """
 
 import logging
+from antigravity.core.control.circuit_states import CircuitState
 from datetime import datetime, timedelta
 from typing import Optional
-
-from antigravity.core.control.circuit_states import CircuitState
 
 logger = logging.getLogger(__name__)
 

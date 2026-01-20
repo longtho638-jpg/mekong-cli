@@ -9,9 +9,9 @@ import time
 from typing import TYPE_CHECKING, Dict, List
 
 if TYPE_CHECKING:
+    from .messaging import TaskQueue
     from .types import SwarmMetrics
     from .workers import WorkerPool
-    from .messaging import TaskQueue
 
 
 def calculate_throughput(task_queue: "TaskQueue") -> int:

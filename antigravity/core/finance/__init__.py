@@ -5,8 +5,8 @@ Finance Module - Input Validation & Security
 Financial validation models and security utilities for MoneyMaker.
 """
 
+from .security import detect_suspicious_pricing, sanitize_client_name, validate_amount
 from .validators import PricingInput, RevenueCalculation, Win3ValidationInput
-from .security import validate_amount, sanitize_client_name, detect_suspicious_pricing
 
 __all__ = [
     "PricingInput",

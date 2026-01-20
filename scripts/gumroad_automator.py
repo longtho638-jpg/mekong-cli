@@ -92,7 +92,7 @@ def load_cookies(page: Page) -> bool:
     return False
 
 
-def login_gumroad(page: Page, email: str, password: str) -> bool:
+def login_gumroad(page: Page, email: str, password: str, interactive: bool = False) -> bool:
     """Login to Gumroad with improved debugging."""
     print("\n🔐 Logging in to Gumroad...")
 
@@ -112,7 +112,11 @@ def login_gumroad(page: Page, email: str, password: str) -> bool:
 
     # Fresh login
     page.goto(GUMROAD_LOGIN_URL)
-    page.wait_for_load_state("networkidle", timeout=10000)
+    if interactive:
+        print("   👀 Interactive mode: Waiting for page load...")
+        time.sleep(2)
+    else:
+        page.wait_for_load_state("networkidle", timeout=10000)
 
     # Debug screenshot
     page.screenshot(path=str(DEBUG_DIR / "01_login_page.png"))
@@ -145,6 +149,18 @@ def login_gumroad(page: Page, email: str, password: str) -> bool:
         if submit_btn:
             submit_btn.click()
             print("   ⏳ Submitting login...")
+
+        if interactive:
+            print(f"\n{'=' * 60}")
+            print("⚠️  HEADED MODE DETECTED: CAPTCHA BREAKPOINT")
+            print(f"{'=' * 60}")
+            print("1. Please solve the CAPTCHA in the browser manually.")
+            print("2. Ensure you are fully logged in (Dashboard visible).")
+            print("3. Return here and press ENTER to save cookies.")
+            print(f"{'=' * 60}\n")
+            input("   ⌨️  Press ENTER to continue after login...")
+            save_cookies(page)  # Force save in interactive mode
+            return True
 
         # Wait for navigation
         page.wait_for_load_state("networkidle", timeout=15000)
@@ -204,16 +220,34 @@ def upload_thumbnail(page: Page, image_path: Path, dry_run: bool = False) -> boo
         print(f"   📷 [DRY-RUN] Would upload: {image_path.name}")
         return True
 
-    try:
-        # Look for file input (cover image)
-        file_input = page.locator('input[type="file"][accept*="image"]').first
-        if file_input:
-            file_input.set_input_files(str(image_path))
-            time.sleep(2)
-            print(f"   📷 Uploaded: {image_path.name}")
-            return True
-    except Exception as e:
-        print(f"   ⚠️ Thumbnail upload error: {e}")
+    selectors = [
+        "input.file-input",
+        'input[type="file"][accept*="image"]',
+        'input[type="file"]',  # Fallback to any file input
+        'div.product-cover-image input[type="file"]',
+    ]
+
+    for selector in selectors:
+        try:
+            print(f"   🔍 Trying selector: {selector}")
+            file_input = page.locator(selector).first
+            # Wait briefly to see if it attaches
+            if file_input.count() > 0:
+                file_input.set_input_files(str(image_path))
+                time.sleep(2)
+                print(f"   📷 Uploaded: {image_path.name}")
+                return True
+        except Exception:
+            continue
+
+    print("   ⚠️ Could not find file input for thumbnail")
+
+    # Debug dump
+    debug_html = PROJECT_ROOT / ".antigravity" / "debug" / "upload_fail.html"
+    debug_html.parent.mkdir(parents=True, exist_ok=True)
+    with open(debug_html, "w") as f:
+        f.write(page.content())
+    print(f"   💾 Dumped HTML to {debug_html.name}")
 
     return False
 
@@ -378,7 +412,7 @@ def run_automation(
 
         # Login (skip in dry-run without credentials)
         if email and password:
-            if not login_gumroad(page, email, password):
+            if not login_gumroad(page, email, password, interactive=not headless):
                 browser.close()
                 return
         elif not dry_run:

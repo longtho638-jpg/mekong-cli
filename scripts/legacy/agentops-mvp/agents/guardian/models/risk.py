@@ -1,7 +1,8 @@
 """Risk models for guardian agent"""
 
-from typing import List
 from enum import Enum
+from typing import List
+
 from pydantic import BaseModel
 
 

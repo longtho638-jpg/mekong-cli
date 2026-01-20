@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 from .enums import StatusFormat, ThresholdLevel
+
 
 @dataclass
 class QuotaModel:

@@ -4,7 +4,8 @@ Handles performance analysis and reporting.
 """
 from typing import Any, Dict, List
 
-from .types import ConversionData, MLModel, ABTestConfig
+from .types import ABTestConfig, ConversionData, MLModel
+
 
 class AnalyticsEngine:
     """Handles analytics and reporting."""

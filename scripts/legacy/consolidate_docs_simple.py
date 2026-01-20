@@ -6,6 +6,7 @@ Documentation Consolidation - Simple Version
 import shutil
 from pathlib import Path
 
+
 def consolidate_docs():
     """Consolidate documentation systems"""
     project_root = Path("/Users/macbookprom1/mekong-cli")

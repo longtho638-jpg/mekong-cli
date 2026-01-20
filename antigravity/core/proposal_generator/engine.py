@@ -7,11 +7,11 @@ Automates the creation of high-impact strategic proposals based on the
 """
 
 import logging
+from antigravity.core.base import BaseEngine
+from antigravity.core.money_maker import MoneyMaker, Quote, ServiceTier
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from antigravity.core.base import BaseEngine
-from antigravity.core.money_maker import MoneyMaker, Quote, ServiceTier
 from .analytics import ProposalAnalytics
 from .builder import ProposalBuilder
 from .models import Proposal

@@ -12,18 +12,14 @@ Usage:
     from antigravity.core.ml import MLOptimizer, calculate_ai_optimized_price
 """
 
-from .inference import (
-    calculate_statistical_optimization,
-    predict_conversion_rate_ml,
-)
-from .scoring import (
-    calculate_performance_score,
-    calculate_viral_multiplier,
-)
 from .analytics import (
     create_default_metrics,
     generate_analytics_report,
     update_metrics,
+)
+from .inference import (
+    calculate_statistical_optimization,
+    predict_conversion_rate_ml,
 )
 from .models import (
     ML_AVAILABLE,
@@ -42,6 +38,10 @@ from .models import (
     create_tensorflow_model,
 )
 from .optimizer import MLOptimizer
+from .scoring import (
+    calculate_performance_score,
+    calculate_viral_multiplier,
+)
 from .training import (
     analyze_market_conditions,
     calculate_immediate_reward,

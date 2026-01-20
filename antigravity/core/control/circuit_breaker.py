@@ -11,10 +11,9 @@ Implements the circuit breaker pattern for:
 
 import logging
 import threading
-from typing import Callable, Type, TypeVar
-
-from antigravity.core.control.circuit_states import CircuitState, CircuitBreakerError
 from antigravity.core.control.circuit_metrics import CircuitMetrics
+from antigravity.core.control.circuit_states import CircuitBreakerError, CircuitState
+from typing import Callable, Type, TypeVar
 
 logger = logging.getLogger(__name__)
 

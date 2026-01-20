@@ -1,9 +1,9 @@
 """
 Verification script for Content Factory Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 from datetime import datetime
 
 # Add project root to path
@@ -13,12 +13,13 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.content_factory import (
-    content_factory,
-    ContentType,
-    ContentStatus,
     ContentIdea,
-    ContentPiece
+    ContentPiece,
+    ContentStatus,
+    ContentType,
+    content_factory,
 )
+
 
 def verify_content_factory():
     print("Testing Content Factory Refactor...")
