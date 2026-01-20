@@ -1,11 +1,32 @@
 """
-Self-Improvement Models.
+Self-Improvement Types - Enums and Models.
+
+Combined from enums.py and models.py for cleaner module structure.
 """
 import time
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Optional
 
-from .enums import ImprovementType, LearningSource
+
+class ImprovementType(Enum):
+    """Types of improvements."""
+
+    PERFORMANCE = "performance"
+    SECURITY = "security"
+    RELIABILITY = "reliability"
+    READABILITY = "readability"
+    SCALABILITY = "scalability"
+
+
+class LearningSource(Enum):
+    """Sources of learning data."""
+
+    ERROR_LOGS = "error_logs"
+    METRICS = "metrics"
+    USER_FEEDBACK = "user_feedback"
+    BENCHMARKS = "benchmarks"
+    CODE_ANALYSIS = "code_analysis"
 
 
 @dataclass

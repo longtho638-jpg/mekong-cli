@@ -275,12 +275,14 @@ export function createValidationMiddleware(config: ValidationConfig) {
   return async (
     request: NextRequest,
     context: { params?: Record<string, string> } = {}
-  ): Promise<{ success: true; data: any } | { success: false; error: NextResponse }> => {
+  ): Promise<
+    { success: true; data: Record<string, unknown> } | { success: false; error: NextResponse }
+  > => {
     try {
-      const validatedData: any = {}
+      const validatedData: Record<string, unknown> = {}
 
       // Parse request body
-      let body: any = {}
+      let body: Record<string, unknown> = {}
       if (config.body && ['POST', 'PUT', 'PATCH'].includes(request.method)) {
         try {
           body = await request.json()
