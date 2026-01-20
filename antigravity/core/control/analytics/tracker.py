@@ -1,129 +1,59 @@
 """Analytics Tracker - Event tracking with Redis-backed persistence and metrics aggregation."""
 
-import json
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date
 from typing import Dict, List, Optional
 
 from ..redis_client import RedisClient
+from .collectors import EventCollector
+from .exporters import RedisExporter
+from .metrics import MetricsEngine
 from .models import AnalyticsEvent
 
 logger = logging.getLogger(__name__)
 
-
 class AnalyticsTracker:
-    """Event tracking with Redis backend."""
+    """Event tracking with Redis backend (Facade)."""
 
     def __init__(self, redis_client: Optional[RedisClient] = None, buffer_size: int = 100):
         """Initialize analytics tracker with optional Redis client and buffer size."""
         self.redis = redis_client
-        self.buffer_size = buffer_size
-        self.event_buffer: List[AnalyticsEvent] = []
+        self.collector = EventCollector(buffer_size=buffer_size)
+        self.exporter = RedisExporter(redis_client)
+        self.metrics_engine = MetricsEngine(redis_client)
         logger.info(f"AnalyticsTracker initialized (buffer_size={buffer_size})")
+
+    @property
+    def event_buffer(self) -> List[AnalyticsEvent]:
+        return self.collector.event_buffer
 
     def track(
         self, event_name: str, user_id: str, properties: Optional[Dict[str, object]] = None
     ) -> AnalyticsEvent:
-        """
-        Track an analytics event.
-
-        Args:
-            event_name: Event identifier
-            user_id: User identifier
-            properties: Additional event properties
-
-        Returns:
-            Created AnalyticsEvent
-        """
-        event = AnalyticsEvent(
-            event_name=event_name,
-            user_id=user_id,
-            timestamp=datetime.now(),
-            properties=properties or {},
-        )
-
-        # Add to buffer
-        self.event_buffer.append(event)
+        """Track an analytics event."""
+        event = self.collector.collect(event_name, user_id, properties)
 
         # Store immediately if Redis available
         if self.redis:
-            self._store_event(event)
+            self.exporter.store_event(event)
 
         # Flush buffer if full
-        if len(self.event_buffer) >= self.buffer_size:
+        if self.collector.is_buffer_full:
             self.flush()
 
         logger.debug(f"Event tracked: {event_name} (user={user_id})")
         return event
 
     def get_metrics(self, event_name: str, target_date: Optional[date] = None) -> Dict[str, int]:
-        """
-        Get metrics for an event on a specific date.
-
-        Args:
-            event_name: Event identifier
-            target_date: Date to query (default: today)
-
-        Returns:
-            Dictionary with metric counts
-        """
-        if not self.redis:
-            logger.warning("Redis not available, cannot retrieve metrics")
-            return {"count": 0}
-
-        target_date = target_date or date.today()
-        key = f"analytics:{event_name}:{target_date}"
-
-        try:
-            data = self.redis.client.hgetall(key)
-            if not data:
-                return {"count": 0}
-
-            metrics = {}
-            for field, value in data.items():
-                try:
-                    metrics[field] = int(value)
-                except (ValueError, TypeError):
-                    metrics[field] = 0
-
-            return metrics
-
-        except Exception as e:
-            logger.error(f"Error retrieving metrics for {event_name}: {e}")
-            return {"count": 0}
+        """Get metrics for an event on a specific date."""
+        return self.metrics_engine.get_event_metrics(event_name, target_date)
 
     def get_recent_events(self, event_name: str, limit: int = 100) -> List[AnalyticsEvent]:
-        """
-        Get recent events for an event type.
-
-        Args:
-            event_name: Event identifier
-            limit: Maximum number of events to return
-
-        Returns:
-            List of AnalyticsEvent objects
-        """
-        if not self.redis:
+        """Get recent events for an event type."""
+        redis_events = self.exporter.get_recent_events(event_name, limit)
+        if not redis_events:
             return [e for e in self.event_buffer if e.event_name == event_name][:limit]
-
-        try:
-            key = f"analytics:events:{event_name}"
-            event_data = self.redis.client.lrange(key, 0, limit - 1)
-
-            events = []
-            for data in event_data:
-                try:
-                    event_dict = json.loads(data)
-                    events.append(AnalyticsEvent.from_dict(event_dict))
-                except (json.JSONDecodeError, KeyError, ValueError) as e:
-                    logger.error(f"Invalid event data: {e}")
-                    continue
-
-            return events
-
-        except Exception as e:
-            logger.error(f"Error retrieving events for {event_name}: {e}")
-            return []
+        return redis_events
 
     def flush(self):
         """Flush event buffer to Redis."""
@@ -131,65 +61,32 @@ class AnalyticsTracker:
             return
 
         try:
-            flushed = len(self.event_buffer)
+            flushed_count = len(self.event_buffer)
             for event in self.event_buffer:
-                self._store_event(event)
+                self.exporter.store_event(event)
 
-            self.event_buffer.clear()
-            logger.info(f"Flushed {flushed} events to Redis")
+            self.collector.clear_buffer()
+            logger.info(f"Flushed {flushed_count} events to Redis")
 
         except Exception as e:
             logger.error(f"Error flushing events: {e}")
 
     def _store_event(self, event: AnalyticsEvent):
-        """Store event in Redis."""
-        if not self.redis:
-            return
-
-        try:
-            # Increment daily counter
-            date_key = f"analytics:{event.event_name}:{event.timestamp.date()}"
-            self.redis.client.hincrby(date_key, "count", 1)
-            self.redis.client.expire(date_key, 30 * 24 * 3600)  # 30 days TTL
-
-            # Store event details in list
-            events_key = f"analytics:events:{event.event_name}"
-            event_json = json.dumps(event.to_dict())
-            self.redis.client.lpush(events_key, event_json)
-
-            # Trim list to last 1000 events
-            self.redis.client.ltrim(events_key, 0, 999)
-
-        except Exception as e:
-            logger.error(f"Error storing event {event.event_name}: {e}")
+        """Store event in Redis (Legacy internal method)."""
+        self.exporter.store_event(event)
 
     def get_summary(self, days: int = 7) -> Dict[str, object]:
-        """
-        Get analytics summary for the last N days.
-
-        Args:
-            days: Number of days to include
-
-        Returns:
-            Dictionary with summary statistics
-        """
-        summary = {
-            "buffer_size": len(self.event_buffer),
-            "redis_available": self.redis is not None,
-            "events": {},
-        }
-
+        """Get analytics summary for the last N days."""
         # Get unique event names from buffer
         event_names = set(e.event_name for e in self.event_buffer)
 
-        # Add counts for each event
-        for event_name in event_names:
-            total = 0
-            for i in range(days):
-                target_date = date.today() - timedelta(days=i)
-                metrics = self.get_metrics(event_name, target_date)
-                total += metrics.get("count", 0)
+        # Add event names that might be in Redis (this is a bit limited in the legacy version too)
+        # In a real system we'd query Redis for keys, but we follow legacy logic here.
 
-            summary["events"][event_name] = total
+        summary_counts = self.metrics_engine.get_summary(event_names, days)
 
-        return summary
+        return {
+            "buffer_size": len(self.event_buffer),
+            "redis_available": self.redis is not None,
+            "events": summary_counts,
+        }

@@ -1,7 +1,8 @@
 import logging
 import time
-from typing import Callable, List, Optional
 from antigravity.core.types import SwarmStatusDict
+from typing import Callable, List, Optional
+
 from .enums import AgentRole, TaskPriority
 from .models import SwarmMetrics
 from .state import SwarmState

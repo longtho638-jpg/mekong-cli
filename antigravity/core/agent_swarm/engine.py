@@ -5,12 +5,12 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List, Optional
 
+from .coordinator import SwarmCoordinator
 from .enums import AgentRole, TaskPriority
 from .executor import TaskExecutor
 from .registry import AgentRegistry
-from .task_manager import TaskManager
 from .state import SwarmState
-from .coordinator import SwarmCoordinator
+from .task_manager import TaskManager
 
 logger = logging.getLogger(__name__)
 
