@@ -6,10 +6,10 @@ import logging
 import time
 from collections import defaultdict, deque
 from threading import Lock
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
-from ..models import Job, JobStatus, JobPriority, QueueStats
-from ..config import PRIORITY_QUEUES, PRIORITY_ORDER
+from ..config import PRIORITY_ORDER, PRIORITY_QUEUES
+from ..models import Job, JobPriority, JobStatus, QueueStats
 from .base import QueueBackend
 
 logger = logging.getLogger(__name__)

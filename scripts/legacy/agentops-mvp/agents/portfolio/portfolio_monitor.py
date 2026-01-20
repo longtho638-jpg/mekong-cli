@@ -19,12 +19,13 @@ ANH WIN Impact:
 """
 
 import os
-import redis
-from typing import Dict, List, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel
-from langchain_openai import ChatOpenAI
+from typing import Any, Dict, List, Optional
+
+import redis
 from langchain.tools import tool
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
 
 
 class StartupMetrics(BaseModel):

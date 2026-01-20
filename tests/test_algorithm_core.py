@@ -1,9 +1,11 @@
 """
 Tests for Antigravity Algorithm Core.
 """
-import pytest
 from antigravity.core.algorithm.core import MaxLevelAntigravityAlgorithm
 from antigravity.core.algorithm.types import EnhancedPricingContext, PricingStrategy
+
+import pytest
+
 
 @pytest.fixture
 def algo():

@@ -7,14 +7,14 @@ Maintains a rolling buffer of experiences and derives behavioral patterns.
 """
 
 import logging
+from antigravity.core.mixins import StatsMixin
+from antigravity.core.patterns import singleton_factory
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from antigravity.core.mixins import StatsMixin
-from antigravity.core.patterns import singleton_factory
 from .models import Memory, Pattern
-from .storage import save_memories, load_memories
+from .storage import load_memories, save_memories
 
 # Configure logging
 logger = logging.getLogger(__name__)

@@ -1,23 +1,24 @@
 """
 Verification script for Tracing Refactor.
 """
-import sys
 import os
+import sys
 import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.core.tracing import (
-    start_trace,
-    start_span,
+    SpanKind,
+    SpanStatus,
     end_span,
     get_trace_id,
-    trace_function,
     get_tracer,
-    SpanStatus,
-    SpanKind
+    start_span,
+    start_trace,
+    trace_function,
 )
+
 
 @trace_function("decorated_operation")
 def decorated_function(arg):

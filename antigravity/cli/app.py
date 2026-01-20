@@ -5,7 +5,6 @@ Main entry point and command routing for the CLI.
 """
 
 import sys
-
 from antigravity.cli.commands import (
     cmd_client_add,
     cmd_content_generate,

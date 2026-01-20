@@ -1,10 +1,10 @@
 """
 Verification script for Self-Improve Refactor.
 """
-import sys
-import os
-import time
 import logging
+import os
+import sys
+import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -13,11 +13,12 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.self_improve import (
+    ImprovementType,
+    LearningSource,
     get_self_improve_engine,
     self_improving,
-    ImprovementType,
-    LearningSource
 )
+
 
 def verify_self_improve():
     print("Testing Self-Improve Refactor...")

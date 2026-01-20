@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional
 from .agent_crews import CrewStatus, run_crew
 from .agent_memory import get_agent_memory
 from .agent_orchestrator import AgentOrchestrator
-from .autonomous_models import AutonomousStatus, Task, ExecutionPlan
+from .autonomous_models import AutonomousStatus, ExecutionPlan, Task
 
 # Configure logging
 logger = logging.getLogger(__name__)

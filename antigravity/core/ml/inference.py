@@ -13,8 +13,8 @@ from typing import Any, Dict
 import numpy as np
 
 from .models import ML_AVAILABLE, TF_AVAILABLE, TORCH_AVAILABLE, MLOptimizationResult
-from .training import extract_enhanced_features
 from .scoring import calculate_viral_multiplier
+from .training import extract_enhanced_features
 
 logger = logging.getLogger(__name__)
 

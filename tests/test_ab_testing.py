@@ -9,8 +9,6 @@ Tests the A/B testing engine including:
 - Statistical models and enums
 """
 
-import pytest
-
 from antigravity.core.ab_testing import (
     ABVariant,
     AdvancedABTestEngine,
@@ -24,6 +22,8 @@ from antigravity.core.ab_testing import (
     update_test_metrics,
 )
 
+import pytest
+
 
 class TestModuleImports:
     """Test that both import paths work correctly."""
@@ -32,16 +32,36 @@ class TestModuleImports:
         """Verify legacy import path (ab_testing_engine) works."""
         from antigravity.core.ab_testing_engine import (
             ABVariant as LegacyABVariant,
+        )
+        from antigravity.core.ab_testing_engine import (
             AdvancedABTestEngine as LegacyEngine,
+        )
+        from antigravity.core.ab_testing_engine import (
             AllocationStrategy as LegacyAllocationStrategy,
+        )
+        from antigravity.core.ab_testing_engine import (
             StatisticalAnalyzer,
-            StatisticalTest as LegacyStatisticalTest,
-            TestResult as LegacyTestResult,
             TrafficAllocator,
+        )
+        from antigravity.core.ab_testing_engine import (
+            StatisticalTest as LegacyStatisticalTest,
+        )
+        from antigravity.core.ab_testing_engine import (
+            TestResult as LegacyTestResult,
+        )
+        from antigravity.core.ab_testing_engine import (
             advanced_ab_engine as legacy_engine,
+        )
+        from antigravity.core.ab_testing_engine import (
             create_multivariate_test as legacy_create,
+        )
+        from antigravity.core.ab_testing_engine import (
             get_active_tests_summary as legacy_summary,
+        )
+        from antigravity.core.ab_testing_engine import (
             get_test_analytics as legacy_analytics,
+        )
+        from antigravity.core.ab_testing_engine import (
             update_test_metrics as legacy_update,
         )
 
@@ -62,16 +82,36 @@ class TestModuleImports:
         """Verify modular import path (ab_testing) works."""
         from antigravity.core.ab_testing import (
             ABVariant as ModularABVariant,
+        )
+        from antigravity.core.ab_testing import (
             AdvancedABTestEngine as ModularEngine,
+        )
+        from antigravity.core.ab_testing import (
             AllocationStrategy as ModularAllocationStrategy,
+        )
+        from antigravity.core.ab_testing import (
             StatisticalAnalyzer,
-            StatisticalTest as ModularStatisticalTest,
-            TestResult as ModularTestResult,
             TrafficAllocator,
+        )
+        from antigravity.core.ab_testing import (
+            StatisticalTest as ModularStatisticalTest,
+        )
+        from antigravity.core.ab_testing import (
+            TestResult as ModularTestResult,
+        )
+        from antigravity.core.ab_testing import (
             advanced_ab_engine as modular_engine,
+        )
+        from antigravity.core.ab_testing import (
             create_multivariate_test as modular_create,
+        )
+        from antigravity.core.ab_testing import (
             get_active_tests_summary as modular_summary,
+        )
+        from antigravity.core.ab_testing import (
             get_test_analytics as modular_analytics,
+        )
+        from antigravity.core.ab_testing import (
             update_test_metrics as modular_update,
         )
 

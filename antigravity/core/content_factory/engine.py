@@ -8,10 +8,10 @@ specialized templates and regional tones.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
-
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
+from typing import Any, Dict, List, Optional
+
 from .ideation import ContentIdeator
 from .models import ContentIdea, ContentPiece
 from .production import ContentProducer

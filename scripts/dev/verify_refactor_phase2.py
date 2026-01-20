@@ -1,6 +1,6 @@
-import sys
-import os
 import importlib
+import os
+import sys
 
 # Add root to path explicitly
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))

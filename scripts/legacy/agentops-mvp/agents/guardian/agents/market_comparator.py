@@ -1,6 +1,7 @@
 """Market comparator agent"""
 
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 from ..base.guardian_base import GuardianBase
 
 

@@ -7,12 +7,13 @@ Exports:
 - Global functions: submit_job, get_next_job, complete_job
 """
 
-from .models import Job, JobStatus, JobPriority, QueueStats
+from typing import Any
+
+from .backends.memory_backend import MemoryBackend
+from .config import DEFAULT_REDIS_URL
+from .models import Job, JobPriority, JobStatus, QueueStats
 from .queue_manager import QueueManager
 from .worker import QueueWorker
-from .config import DEFAULT_REDIS_URL
-from .backends.memory_backend import MemoryBackend
-from typing import Any
 
 # Re-export modules
 __all__ = [

@@ -4,7 +4,7 @@ DEPRECATED: Use the modular structure in __init__.py instead
 This file maintains backward compatibility while the modular structure is preferred.
 """
 
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Import new modular structure
 from . import GuardianAgent as ModularGuardianAgent

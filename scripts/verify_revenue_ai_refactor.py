@@ -1,22 +1,23 @@
 """
 Verification script for Revenue AI Refactor.
 """
-import sys
 import os
+import sys
 import time
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 from antigravity.core.revenue_ai import (
-    get_revenue_ai,
-    predict_churn,
-    detect_upsell,
-    get_revenue_metrics,
-    CustomerProfile,
     ChurnRisk,
-    UpsellOpportunity
+    CustomerProfile,
+    UpsellOpportunity,
+    detect_upsell,
+    get_revenue_ai,
+    get_revenue_metrics,
+    predict_churn,
 )
+
 
 def test_revenue_ai_flow():
     print("Testing Revenue AI Refactor...")

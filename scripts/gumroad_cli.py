@@ -486,10 +486,10 @@ Examples:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # session command
-    session_p = subparsers.add_parser("session", help="Start login session (interactive)")
+    subparsers.add_parser("session", help="Start login session (interactive)")
 
     # verify command
-    verify_p = subparsers.add_parser("verify", help="Verify saved session")
+    subparsers.add_parser("verify", help="Verify saved session")
 
     # update command
     update_p = subparsers.add_parser("update", help="Update products (headless)")
@@ -498,7 +498,7 @@ Examples:
     update_p.add_argument("--dry-run", action="store_true", help="Test mode")
 
     # list command
-    list_p = subparsers.add_parser("list", help="List all products")
+    subparsers.add_parser("list", help="List all products")
 
     args = parser.parse_args()
 

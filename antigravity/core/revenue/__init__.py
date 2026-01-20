@@ -9,8 +9,8 @@ The operational heart of the Agency OS financial system. Combines:
 
 from typing import List, Optional
 
-from .engine import RevenueEngine
 from .ai import RevenueAI
+from .engine import RevenueEngine
 from .models import (
     ChurnPrediction,
     ChurnRisk,

@@ -12,9 +12,6 @@ from .inference import (
     calculate_statistical_optimization,
     predict_conversion_rate_ml,
 )
-from .scoring import (
-    calculate_viral_multiplier,
-)
 from .models import (
     ML_AVAILABLE,
     TF_AVAILABLE,
@@ -27,6 +24,9 @@ from .models import (
     create_pytorch_model,
     create_sklearn_model,
     create_tensorflow_model,
+)
+from .scoring import (
+    calculate_viral_multiplier,
 )
 from .training import (
     analyze_market_conditions,

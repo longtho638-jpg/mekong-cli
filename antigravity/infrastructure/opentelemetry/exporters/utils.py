@@ -6,12 +6,12 @@ Convenience functions for direct export.
 """
 
 import logging
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from ..config import DEFAULT_OTLP_ENDPOINT
 from ..models import Metric
-from .otlp import OTLPExporter
 from .jaeger import JaegerExporter
+from .otlp import OTLPExporter
 
 logger = logging.getLogger(__name__)
 

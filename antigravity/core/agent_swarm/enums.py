@@ -3,6 +3,7 @@ Agent Swarm Enums.
 """
 from enum import Enum
 
+
 class AgentRole(Enum):
     """Agent roles in the swarm."""
 

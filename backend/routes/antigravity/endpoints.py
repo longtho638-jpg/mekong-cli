@@ -2,10 +2,10 @@
 Antigravity API Endpoints
 """
 
+from antigravity.franchise.manager import Territory
 from datetime import datetime
 from typing import Any, Dict
 
-from antigravity.franchise.manager import Territory
 from fastapi import APIRouter, HTTPException
 
 from . import demo

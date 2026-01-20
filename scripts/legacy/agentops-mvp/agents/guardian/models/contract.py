@@ -1,6 +1,7 @@
 """Contract models for guardian agent"""
 
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel
 
 

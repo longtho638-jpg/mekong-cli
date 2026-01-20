@@ -6,10 +6,10 @@ Auto-scale, degrade gracefully, never crash.
 """
 
 import logging
-from typing import Callable, Dict, List, Any
+from typing import Any, Callable, Dict, List
 
-from .models import DefenseLevel, ScaleAction, ScaleTrigger, DegradationRule
 from .core import ViralDefense
+from .models import DefenseLevel, DegradationRule, ScaleAction, ScaleTrigger
 
 logger = logging.getLogger(__name__)
 

@@ -15,19 +15,19 @@ The actual implementation has been moved to antigravity.core.agent_chains packag
 """
 
 from antigravity.core.agent_chains import (
+    AGENT_BASE_DIR,
+    AGENT_INVENTORY,
     AgentCategory,
     AgentConfig,
-    AGENT_INVENTORY,
-    AGENT_BASE_DIR,
+    AgentStep,
+    get_agent_file,
+    get_agents_by_category,
     get_chain,
     get_chain_summary,
     list_all_chains,
-    get_agents_by_category,
-    get_agent_file,
-    validate_inventory,
-    validate_chains,
     register_chain,
-    AgentStep,
+    validate_chains,
+    validate_inventory,
 )
 
 __all__ = [

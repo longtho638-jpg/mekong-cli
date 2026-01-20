@@ -1,11 +1,10 @@
 """
 Tracing Models.
 """
+from antigravity.core.types import SpanDict
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Union
-
-from antigravity.core.types import SpanDict
 
 from .enums import SpanKind, SpanStatus
 

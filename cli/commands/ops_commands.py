@@ -12,12 +12,12 @@ Module Structure:
 All commands remain backward compatible.
 """
 
-import typer
-
 # Import split command modules using absolute imports to avoid circular dependency
 # Since this file is now ops_commands.py, we can safely import from ops/ directory
 import sys
 from pathlib import Path
+
+import typer
 
 # Ensure cli is in path
 cli_path = Path(__file__).parent.parent.parent

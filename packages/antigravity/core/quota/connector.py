@@ -8,6 +8,7 @@ import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional
 
+
 class QuotaConnector:
     """
     Handles connection to local Antigravity Language Server.

@@ -1,57 +1,57 @@
 [
   {
     "name": "_GRECAPTCHA",
-    "value": "09AKhCRwjugZ02ltRUR87aArn4UQqc_3TavX9LvOQe8bqjy0EtQISywG2NVq_GM2oPfEUWU5KAq8lr8IYJu69pjnw",
+    "value": "09AKhCRwiAg56xXC3Qy7fmPDgiuBkvR6nbnkNCYit7I50wCbmP9zYsl4srhyuFzR_NML5dNH81BPucNXBBT8E3-s8",
     "domain": "www.google.com",
     "path": "/recaptcha",
-    "expires": 1784441866.77494,
+    "expires": 1784445713.074795,
     "httpOnly": true,
     "secure": true,
     "sameSite": "None"
   },
   {
     "name": "_gumroad_guid",
-    "value": "924554a2-4397-493f-90bb-19eb77a7dddd",
+    "value": "8d618745-1009-4e97-8208-20c30210df32",
     "domain": ".gumroad.com",
     "path": "/",
-    "expires": 1803449855.303588,
+    "expires": 1803453695.777677,
     "httpOnly": true,
     "secure": true,
     "sameSite": "Lax"
   },
   {
     "name": "_ga_6LJN6D94N6",
-    "value": "GS2.1.s1768889857$o1$g0$t1768889857$j60$l0$h0",
+    "value": "GS2.1.s1768893696$o1$g0$t1768893696$j60$l0$h0",
     "domain": ".gumroad.com",
     "path": "/",
-    "expires": 1803449857.990733,
+    "expires": 1803453696.84879,
     "httpOnly": false,
     "secure": true,
     "sameSite": "None"
   },
   {
     "name": "_ga",
-    "value": "GA1.1.955756230.1768889858",
+    "value": "GA1.1.1576229340.1768893697",
     "domain": ".gumroad.com",
     "path": "/",
-    "expires": 1803449857.990882,
+    "expires": 1803453696.848944,
     "httpOnly": false,
     "secure": true,
     "sameSite": "None"
   },
   {
     "name": "remember_user_token",
-    "value": "eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc3lOVGcwT0RJME4xMHNJaVF5WVNReE1TUldTaTVSV2pOYVNYVm9PRFp5YjJFNFMzVTBUMkV1SWl3aU1UYzJPRGc0T1RnM01pNDBPVFF6TWpFMklsMD0iLCJleHAiOiIyMDI2LTAyLTIwVDA2OjE3OjUyLjQ5NFoiLCJwdXIiOiJjb29raWUucmVtZW1iZXJfdXNlcl90b2tlbiJ9fQ%3D%3D--62a0918e96b08ea3e19e4fd2b1573403c895d839",
+    "value": "eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc3lOVGcwT0RJME4xMHNJaVF5WVNReE1TUldTaTVSV2pOYVNYVm9PRFp5YjJFNFMzVTBUMkV1SWl3aU1UYzJPRGc1TXpjeU1DNHpOREF6TVRnM0lsMD0iLCJleHAiOiIyMDI2LTAyLTIwVDA3OjIyOjAwLjM0MFoiLCJwdXIiOiJjb29raWUucmVtZW1iZXJfdXNlcl90b2tlbiJ9fQ%3D%3D--e00d081e30d19262bcf934b4f9c18471971dd7aa",
     "domain": ".gumroad.com",
     "path": "/",
-    "expires": 1771568272.623309,
+    "expires": 1771572120.465375,
     "httpOnly": true,
     "secure": true,
     "sameSite": "Lax"
   },
   {
     "name": "XSRF-TOKEN",
-    "value": "tZHBkEiiVfPNjJqng_EChNJahhGTOLrZJnmLcmlr_c0pdc4WBsvGvhTzvXI-CCu4dsvICYN0kqeyQaHKZtVT1Q",
+    "value": "ysxiNTb4ScCYrdlY2gEtJHpgRmX6_ciPOhBw2_-dlCJ7hAfNY-n0yM79_UKpTvP9Z0ZKei-2Mzp8BGU_nXY6rA",
     "domain": "gumroad.com",
     "path": "/",
     "expires": -1,
@@ -61,10 +61,10 @@
   },
   {
     "name": "_gumroad_app_session",
-    "value": "M9Tkh%2BQfI1zX8qKSaRFXGpQZimV6Dyb5w7t9%2FPoRovle4VIxNQyQFjBYwWVO7QLVn61TeyBP5DfUIAyWX%2BF6CnfeyddIK7o0DFashvQT4bL5kz2sZRox8rUN3S4DCk5NIPvoijE9mmLKm5zvN7iG0l2nkD2qIChSlojmkdPMw0Ktgxud6WAZrnjclzM2YzP%2FpxcMC8NC%2FHrq0omiSax5yXMRx4ydjZizKh4opX0ePE9H3gCmaP9Flmds03e3sjzzLAv9VOt9g9PlVmiAvOOGojuBtfB9OfB%2BPQ706kblVyqHSbwJN5Tmxnnr9TkCgDzFaOz7Hw4SQFV6SXxL45BhEhpQ4IFJ4Gtnn8PG%2BL0kal56t0umsEjuIAPiRYDFW05u%2BC6x1n5KHLfRGDbDFdL1Qys6dfFXvULDorGTNwGOE0eebRG0kldfpZ%2FisU9euvkijZF1GGFsjwDbAKSrA7FsIn%2B9hSdwv6nv1LMhkVx1U2A3dgSMflsoX2n7fqlLQjNkwc10Frx0vK5cxzQCSeHPhBr8yKuCOQ8F1XtcAsRu%2FSt0asaygOghQ4fk0xKwfsK6mm%2B3duFK3g6BFMIi0cYJr%2BRNn6Gtrg%3D%3D--XCg1POOfuS4F7Eqp--MPBr9054d7JRgDcMM67AKg%3D%3D",
+    "value": "IISwqDLl7uCWYUB6pC%2BUkqXJfgpDgC7uRQHldlA9rJ%2BAomBdKlG%2FhE0dufrOYENe0UWJ3%2BtXx6o0zZsoizNiyIUWDBHWJrKN7fob1Rkf7akfpSG%2FBRaDeDpJdePUO7uNQokCiHD7HzQH3ffAluH7kYJfAp%2BdGC1MGxP4FrksX7fGiUQW1jtLPV4F2NZrvKOFySzON9LonfPxQdVRHqXUatqWHJn16251%2FBA4wCbYUIqkhwItYLN9Fvg%2F%2B5l0URaKzxHtyQ%2Fe5TbHZsOVDE%2BBVaLNzZcalVdiJMWHK%2FitBqyTLM%2BbYDuOfIpeEkM2EfPpEVhelQ7eNvq9snU2t2suxjrVax7akWQUTALLyamr7%2F7sRfkSEB%2BfO8BN8aGGF7pwZYExV2mQmJXp1zJ%2FRy2tselkZJET6%2FXuwELYwr74SQp6wAON3OImhLIBhRK8dYZUaaOv4ALvIv0cTk3KP%2Bbg9kki89GwGRwYQxFDkokxNP0xBi6IDVUH2BtNEt%2BtvsMYjM%2FjewpRHriecT6HEIronvzfgeflfVwsCpXFI0FrHVeDVcT9UmvpRA9NUMKWBHTIksC1BkOMlh68rpUFT4mv2bT9qhTwBQ%3D%3D--IHADeeCwMdXqaJKs--ym%2BnAqHkS%2BqIPUt4YAvwdw%3D%3D",
     "domain": ".gumroad.com",
     "path": "/",
-    "expires": 1771568273.132255,
+    "expires": 1771572120.05962,
     "httpOnly": true,
     "secure": true,
     "sameSite": "Lax"

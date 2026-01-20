@@ -3,7 +3,7 @@ Base Backend Interface for Distributed Queue.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Any, List
+from typing import Any, List, Optional
 
 from ..models import Job, QueueStats
 

@@ -13,17 +13,18 @@ WIN³ Integration:
 - Provides dashboard data
 """
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from datetime import datetime
 from typing import Dict
+
 import redis
 import uvicorn
-from datetime import datetime
+from agents.base_agent import AgentTask
 
 # Import agents
 from agents.revenue.revenue_agent import RevenueAgent
-from agents.base_agent import AgentTask
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI(
     title="AgentOps MVP API",
@@ -33,6 +34,7 @@ app = FastAPI(
 
 # CORS for frontend integration - Security fix: Environment-based origins
 import os
+
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8080").split(",")
 app.add_middleware(
     CORSMiddleware,

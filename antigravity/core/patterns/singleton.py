@@ -4,7 +4,7 @@ Singleton Factory Pattern - Centralized singleton management.
 Reduces boilerplate for the common pattern of lazy-initialized module singletons.
 """
 
-from typing import TypeVar, Callable, Optional
+from typing import Callable, Optional, TypeVar
 
 T = TypeVar("T")
 

@@ -23,10 +23,10 @@ app = typer.Typer(
 )
 
 # Import and register command sub-apps
-from cli.commands.strategy_commands import strategy_app
+from cli.commands.dev_commands import register_dev_commands
 from cli.commands.mcp_commands import mcp_app
 from cli.commands.revenue_commands import revenue_app
-from cli.commands.dev_commands import register_dev_commands
+from cli.commands.strategy_commands import strategy_app
 from cli.commands.utility_commands import register_utility_commands
 
 # Add sub-typers

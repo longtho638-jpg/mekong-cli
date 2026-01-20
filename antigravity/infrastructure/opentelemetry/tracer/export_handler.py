@@ -8,8 +8,8 @@ Extracted from tracer.py for modularization.
 
 import logging
 import threading
-from typing import Dict, Any, List, Optional
 from collections import deque
+from typing import Any, Dict, List, Optional
 
 from ..config import TracerConfig
 
@@ -42,9 +42,9 @@ class ExportHandlerMixin:
         Uses factory functions from processors module for proper implementation.
         """
         from ..processors import (
-            create_span_processor_loop,
-            create_metrics_processor_loop,
             create_export_processor_loop,
+            create_metrics_processor_loop,
+            create_span_processor_loop,
         )
 
         # Create shutdown flag accessor

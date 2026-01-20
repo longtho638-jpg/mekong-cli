@@ -13,13 +13,13 @@ Processors:
 """
 
 from .base import BaseProcessor
-from .span_processor import SpanProcessor, create_span_processor_loop
-from .metrics_processor import MetricsProcessor, create_metrics_processor_loop
 from .export_processor import (
     ExportLoopProcessor,
     PerformanceAnalyzer,
     create_export_processor_loop,
 )
+from .metrics_processor import MetricsProcessor, create_metrics_processor_loop
+from .span_processor import SpanProcessor, create_span_processor_loop
 
 __all__ = [
     "BaseProcessor",

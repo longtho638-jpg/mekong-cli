@@ -1,13 +1,13 @@
 """Span creation, tracing, and finishing operations for DistributedTracer."""
 
-import json
 import hashlib
+import json
 import logging
 import threading
-from typing import Dict, Any, List, Optional
 from collections import deque
+from typing import Any, Dict, List, Optional
 
-from ..models import SpanKind, SpanStatus, TraceId, Event
+from ..models import Event, SpanKind, SpanStatus, TraceId
 from ..span import Span
 
 logger = logging.getLogger(__name__)

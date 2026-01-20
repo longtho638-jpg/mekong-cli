@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, List
 
+
 class QuotaFormatter:
     """Handles formatting of quota status for CLI output."""
 

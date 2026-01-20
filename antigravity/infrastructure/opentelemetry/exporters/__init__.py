@@ -12,10 +12,10 @@ Exporters:
 """
 
 from .base import BaseExporter
-from .otlp import OTLPExporter
 from .jaeger import JaegerExporter
+from .otlp import OTLPExporter
 from .processor import ExportProcessor
-from .utils import export_spans, export_metrics
+from .utils import export_metrics, export_spans
 
 __all__ = [
     "BaseExporter",

@@ -1,22 +1,18 @@
 """
 Verification script for Agent Crews Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
+
 # Add project root to path
 sys.path.insert(0, os.getcwd())
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.agent_crews import (
-    get_crew,
-    list_crews,
-    run_crew,
-    CrewStatus,
-    CREWS
-)
+from antigravity.core.agent_crews import CREWS, CrewStatus, get_crew, list_crews, run_crew
+
 
 def verify_agent_crews():
     print("Testing Agent Crews Refactor...")

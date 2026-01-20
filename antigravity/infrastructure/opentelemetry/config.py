@@ -8,7 +8,6 @@ Default endpoints and configuration dataclasses for distributed tracing.
 from dataclasses import dataclass, field
 from typing import Optional
 
-
 # Default Endpoints
 DEFAULT_JAEGER_ENDPOINT = "http://localhost:14268/api/traces"
 DEFAULT_OTLP_ENDPOINT = "http://localhost:4317"

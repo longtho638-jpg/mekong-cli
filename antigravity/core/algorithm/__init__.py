@@ -6,34 +6,33 @@ This package provides:
 - AntigravityAlgorithm: Base algorithm (BANT, WIN-WIN-WIN, pricing)
 - MaxLevelAntigravityAlgorithm: Enhanced ML-powered algorithm (A/B testing, ML optimization)
 """
-from .types import (
-    PricingStrategy,
-    ABTestVariant,
-    ModelConfidence,
-    ABTestConfig,
-    MLModel,
-    ConversionData,
-    EnhancedPricingContext,
-    # Merged from models.py
-    WinType,
-    LeadData,
-    LeadScore,
-    PricingContext,
-    WinResult,
-)
+# Enhanced ML-powered algorithm from core.py
+from .core import MaxLevelAntigravityAlgorithm
 
 # Base algorithm from engine.py
 from .engine import (
     AntigravityAlgorithm,
-    get_algorithm,
     calculate_price,
+    forecast_revenue,
+    get_algorithm,
     score_lead,
     validate_win3,
-    forecast_revenue,
 )
-
-# Enhanced ML-powered algorithm from core.py
-from .core import MaxLevelAntigravityAlgorithm
+from .types import (
+    ABTestConfig,
+    ABTestVariant,
+    ConversionData,
+    EnhancedPricingContext,
+    LeadData,
+    LeadScore,
+    MLModel,
+    ModelConfidence,
+    PricingContext,
+    PricingStrategy,
+    WinResult,
+    # Merged from models.py
+    WinType,
+)
 
 # Re-export everything
 __all__ = [

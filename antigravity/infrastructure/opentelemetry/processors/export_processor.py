@@ -1,9 +1,9 @@
 """Export processing and performance analysis for distributed tracing."""
 
-import time
 import logging
-from typing import Dict, Any, List, Optional, Callable
+import time
 from collections import deque
+from typing import Any, Callable, Dict, List, Optional
 
 from .base import BaseProcessor
 

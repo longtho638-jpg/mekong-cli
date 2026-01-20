@@ -1,6 +1,7 @@
 """Red flag detector agent"""
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 from ..base.guardian_base import GuardianBase
 
 

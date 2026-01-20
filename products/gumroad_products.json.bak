@@ -1,0 +1,151 @@
+{
+  "version": "1.0",
+  "updated": "2026-01-20",
+  "store_url": "https://billmentor.gumroad.com",
+  "products": [
+    {
+      "id": "vscode-starter-pack",
+      "gumroad_id": "HOZOhp_tXc3g1rj3zeIgJw==",
+      "action": "update",
+      "title": "[FREE] 🚀 VSCode Starter Pack - 15 Essential Extensions & Settings for 10x Velocity",
+      "price": 0,
+      "thumbnail": "vscode-starter-pack-cover.png",
+      "tags": [
+        "vscode",
+        "productivity",
+        "developer tools",
+        "extensions",
+        "settings",
+        "coding",
+        "workflow"
+      ],
+      "description": "🚀 **10x Your Coding Speed with the Ultimate VSCode Setup!**\n\nStop wasting time configuring your editor. This starter pack includes the exact settings, extensions, and snippets used by senior engineers to maximize focus and minimize friction.\n\n### 📦 What's Inside:\n- ✅ **Optimized `settings.json`**: Performance-tuned for low latency and high readability.\n- ✅ **Power-User Keybindings**: 100+ shortcuts to keep your hands on the keyboard.\n- ✅ **15 Curated Extensions**: Only the essentials—GitLens, Copilot, Prettier, and more.\n- ✅ **Custom Snippets**: Reusable templates for TypeScript, React, and Python.\n\n### ⚡ Why You Need This:\nSetting up a professional environment takes hours. With this pack, you're ready in 60 seconds. Perfect for new developers, teams standardizing environments, or anyone wanting a productivity boost.\n\n**FREE for a limited time! Download now and start coding like a pro.**\n\n---\n*Part of the AgencyOS Ecosystem. Built for performance.*"
+    },
+    {
+      "id": "vibe-starter",
+      "gumroad_id": "ckK9j521kLXGy4r09YfSlg==",
+      "action": "update",
+      "title": "🌊 VIBE Coding Starter Kit - Master Claude Code & Agentic Workflows",
+      "price": 2700,
+      "thumbnail": "vibe-starter-cover.png",
+      "tags": [
+        "claude code",
+        "vibe coding",
+        "ai agent",
+        "automation",
+        "productivity",
+        "developer tools",
+        "slash commands"
+      ],
+      "description": "🌊 **Master the VIBE Coding Revolution with Claude Code!**\n\nTurn your terminal into a superpower. The VIBE Starter Kit provides the foundation for agentic development, allowing you to build, test, and ship at the speed of thought.\n\n### 🚀 Professional Feature Set:\n- 🛠️ **20 Slash Commands**: `/plan`, `/cook`, `/ship`, `/test`, `/revenue`—complete automated workflows.\n- 📊 **Custom Statusline**: Real-time session info & context tracking directly in your CLI.\n- 🛡️ **Professional Hooks**: Session initialization, privacy blocks, and development guardrails.\n- ⚙️ **Optimized .ck.json**: Centralized configuration for project detection and plan naming.\n\n### 🏯 Built on Binh Pháp WIN-WIN-WIN:\nDesigned for efficiency that benefits everyone—Owner, Agency, and Client. No more technical debt; just high-velocity delivery.\n\n### 📦 Structure:\n- `.claude/commands/`: The brain of your automation.\n- `.claude/hooks/`: The safety and efficiency layer.\n\n**Instant Download. Lifetime Updates. Support for Claude 3.5 & 3.7.**"
+    },
+    {
+      "id": "ai-skills-pack",
+      "gumroad_id": "GvCfWlEr7Puqm1E8ZH5b3w==",
+      "action": "update",
+      "title": "🧠 AI Skills Pack (80% OFF) - Premium Claude/Cursor Skills for AI Power-Users",
+      "price": 2700,
+      "thumbnail": "ai-skills-pack-cover.png",
+      "tags": [
+        "ai skills",
+        "claude",
+        "cursor",
+        "prompt engineering",
+        "mcp",
+        "ai agent",
+        "productivity"
+      ],
+      "description": "🧠 **Upgrade Your AI Agents with Professional Skills!**\n\nDon't just prompt—engineer behavior. This pack includes 10 high-fidelity 'Skills' compatible with Claude Desktop, Cursor, and any MCP-enabled environment.\n\n### 🎓 Included Skills:\n- 🖼️ **ai-multimodal**: Seamless Gemini + OpenAI vision integration.\n- 🛠️ **context-engineering**: Advanced prompt optimization techniques.\n- ⛓️ **sequential-thinking**: Step-by-step reasoning for complex tasks.\n- 🔍 **code-review**: Automated high-standard quality checks.\n- 🎯 **planning**: AI-assisted project mapping and execution.\n\n### 💰 80% OFF - Limited Time Offer\nTotal Value: $135 | **You Pay: $27**\n\n**Ready to use in 30 seconds. Just copy to your `.claude/skills` directory and start building.**"
+    },
+    {
+      "id": "fastapi-starter",
+      "gumroad_id": "3wxkBqnuYCNyJU5n2pZo0A==",
+      "action": "update",
+      "title": "⚡ FastAPI Starter Pro - Production-Ready Backend (JWT, CRUD, Docker)",
+      "price": 4700,
+      "thumbnail": "fastapi-starter-cover.png",
+      "tags": [
+        "fastapi",
+        "python",
+        "api",
+        "backend",
+        "authentication",
+        "docker",
+        "database"
+      ],
+      "description": "⚡ **Deploy Your Python API in Minutes, Not Days!**\n\nThe FastAPI Starter Pro is a battle-tested foundation for modern backends. No fluff, just production-ready code with best practices built-in.\n\n### 🛠️ Core Features:\n- 🔐 **JWT Authentication**: Secure, stateless auth with refresh tokens.\n- 📝 **Generic CRUD**: Reusable patterns to speed up feature development.\n- 🗄️ **SQLAlchemy 2.0**: Async ORM with Alembic migrations ready.\n- 🐳 **Dockerized**: One-command deployment with `docker-compose`.\n- ✅ **Full Test Suite**: 90%+ coverage with Pytest.\n\n### 📂 What You Get:\nClean architecture following the repository pattern, auto-generated Swagger docs, and Pydantic v2 validation.\n\n**Stop reinventing the wheel. Start building your SaaS today.**"
+    },
+    {
+      "id": "auth-starter-supabase",
+      "gumroad_id": "yuLO4eo65yEftXwUfsZIJQ==",
+      "action": "update",
+      "title": "🔐 Auth Starter Supabase - Next.js 15 + Enterprise OAuth Complete",
+      "price": 4700,
+      "thumbnail": "auth-starter-cover.png",
+      "tags": [
+        "nextjs",
+        "supabase",
+        "authentication",
+        "oauth",
+        "react",
+        "typescript",
+        "saas"
+      ],
+      "description": "🔐 **The Last Authentication Template You'll Ever Need!**\n\nBuilt for Next.js 15 and Supabase, this starter kit handles the most complex part of your app so you can focus on building features.\n\n### ✨ High-Performance Features:\n- 🔑 **Multi-Provider OAuth**: Google, GitHub, and Discord support.\n- 🛡️ **Middleware Protection**: Secure routes at the edge for zero latency.\n- 👤 **Unified User Profile**: Profile management, avatars, and settings.\n- 🎨 **MD3 Design System**: Beautiful, responsive forms in dark mode.\n- 📧 **Enterprise Email Flow**: Password reset, magic links, and verification.\n\n**Compatible with Server Components and the new App Router. Lifetime Updates.**"
+    },
+    {
+      "id": "vietnamese-agency-kit",
+      "gumroad_id": "VUNl7d-L0ysrttD77GTL1g==",
+      "action": "update",
+      "title": "🏯 Vietnamese Agency Kit (Thực Chiến) - Hợp Đồng & Binh Pháp $1M",
+      "price": 6700,
+      "thumbnail": "vietnamese-agency-kit-cover.png",
+      "tags": [
+        "vietnam",
+        "agency",
+        "binh pháp",
+        "business",
+        "contracts",
+        "tax",
+        "freelancer"
+      ],
+      "description": "🏯 **Xây dựng Agency $1M tại Việt Nam với Binh Pháp Tôn Tử!**\n\nBộ công cụ tối thượng dành cho Digital Agency và Freelancer tại thị trường Việt Nam. Không chỉ là template, đây là hệ thống vận hành thực chiến.\n\n### 🏮 Nội dung bao gồm:\n- 📜 **Hợp đồng chuẩn VN**: MSA, NDA, SOW (Song ngữ/Tiếng Việt).\n- 📉 **Tax Calculator**: Tự động tính thuế TNCN/TNDN mới nhất.\n- 🏯 **Binh Pháp Framework**: 13 chương chiến lược chiếm lĩnh thị trường.\n- 📧 **10+ Email Templates**: Từ chốt deal đến nhắc nợ chuyên nghiệp.\n- 🛡️ **WIN-WIN-WIN Gate**: Quy trình thẩm định dự án 'Không Đánh Mà Thắng'.\n\n**Tiết kiệm 200+ giờ soạn thảo và hàng ngàn USD chi phí tư vấn pháp lý.**"
+    },
+    {
+      "id": "agencyos-pro",
+      "gumroad_id": "-rFe5nsRbuxwoVTezlHZGw==",
+      "action": "update",
+      "title": "💎 AgencyOS Pro - The All-in-One Multi-Team Operating System",
+      "price": 19700,
+      "thumbnail": "agencyos-pro-cover.png",
+      "tags": [
+        "agency",
+        "business os",
+        "automation",
+        "saas",
+        "dashboard",
+        "crm",
+        "templates"
+      ],
+      "description": "🏢 **Run Your Entire Agency Like a Fortune 500 Company!**\n\nAgencyOS Pro is the definitive operating system for modern AI agencies. It combines performance, strategy, and automation into a single, unified codebase.\n\n### 💎 The Ultimate Bundle ($1,200+ Value):\n- 🚀 **Full Template Suite**: All Starters (FastAPI, Next.js, VSCode, VIBE).\n- 📈 **Revenue Dashboard**: Real-time financial tracking and MRR metrics.\n- 🤝 **Client CRM**: Advanced pipeline management with automated follow-ups.\n- 🧠 **AI Extensions**: Custom agents for content, sales, and coding.\n\n### 🏯 Strategy First:\nIncludes the full Binh Pháp Venture Studio playbook for scaling to $1M ARR with zero technical debt.\n\n**Instant Access. Commercial License. Priority Performance.**"
+    },
+    {
+      "id": "agencyos-enterprise",
+      "gumroad_id": "HCDHRNOSbYpjlbiA6vmBlA==",
+      "action": "update",
+      "title": "👑 AgencyOS Enterprise - White-Label Platform for Scaling Agencies",
+      "price": 49700,
+      "thumbnail": "agencyos-enterprise-cover.png",
+      "tags": [
+        "enterprise",
+        "white-label",
+        "saas",
+        "agency",
+        "platform",
+        "dashboard",
+        "scale"
+      ],
+      "description": "👑 **The Gold Standard for Enterprise Agency Excellence!**\n\nScale beyond boundaries. AgencyOS Enterprise is designed for high-growth firms, franchise networks, and multi-team organizations.\n\n### 🚀 Enterprise-Only Features:\n- ⚪ **White-Labeling**: Remove our branding, add yours. Fully customizable.\n- 👥 **Multi-Team Governance**: Granular permissions and team-specific dashboards.\n- 🌐 **Custom Domain Engine**: Deploy client portals to any domain automatically.\n- 📞 **1:1 Onboarding**: Dedicated strategist to help you set up your ecosystem.\n- 🛠️ **Source Code Access**: Full control over every line of code.\n\n### 💰 Maximize Valuation:\nBuilt to make your agency 'exit-ready' with structured data, clean audits, and scalable IP.\n\n**The ultimate choice for serious founders. Priority 24/7 Support included.**"
+    }
+  ]
+}

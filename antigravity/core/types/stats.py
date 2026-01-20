@@ -2,7 +2,7 @@
 Stats TypedDicts - Typed dictionaries for statistics and metrics.
 """
 
-from typing import TypedDict, Dict
+from typing import Dict, TypedDict
 
 
 class StatsDict(TypedDict, total=False):

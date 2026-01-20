@@ -5,10 +5,10 @@ OpenTelemetry Base Exporter Module
 Abstract base class for telemetry exporters.
 """
 
-import time
 import logging
+import time
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 try:
     import requests

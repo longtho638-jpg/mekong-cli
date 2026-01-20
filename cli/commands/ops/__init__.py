@@ -3,6 +3,13 @@ Operations command modules - split from monolithic ops.py.
 
 Main CLI app is in ops_commands.py to avoid import conflicts.
 """
+# Load ops_commands module
+import importlib.util
+
+# Import ops_app from the main commands file
+import sys
+from pathlib import Path
+
 from .deployment import deploy_backend_cmd
 from .monitoring import health_check_cmd, monitor_quota_cmd, watch_cmd, wow_check_cmd
 from .network import (
@@ -12,12 +19,6 @@ from .network import (
     network_turbo_cmd,
 )
 
-# Import ops_app from the main commands file
-import sys
-from pathlib import Path
-
-# Load ops_commands module
-import importlib.util
 ops_commands_path = Path(__file__).parent.parent / "ops_commands.py"
 spec = importlib.util.spec_from_file_location("ops_commands", ops_commands_path)
 ops_commands = importlib.util.module_from_spec(spec)

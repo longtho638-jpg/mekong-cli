@@ -7,16 +7,16 @@ The actual implementation has been moved to antigravity.infrastructure.viral_def
 """
 
 from antigravity.infrastructure.viral_defense import (
-    ViralDefense,
     DefenseLevel,
+    DegradationRule,
     ScaleAction,
     ScaleTrigger,
-    DegradationRule,
-    get_defense,
+    ViralDefense,
     check_triggers,
-    is_feature_enabled,
-    get_defense_status,
     degradable,
+    get_defense,
+    get_defense_status,
+    is_feature_enabled,
 )
 
 # Re-export for backward compatibility

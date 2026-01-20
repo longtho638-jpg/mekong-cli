@@ -15,26 +15,26 @@ Usage (legacy, still supported):
 
 # Re-export everything from the modular ab_testing package
 from antigravity.core.ab_testing import (
+    ABVariant,
     # Classes
     AdvancedABTestEngine,
-    advanced_ab_engine,
-    StatisticalTest,
-    ABVariant,
-    StatisticalAnalyzer,
-    TrafficAllocator,
-    ExperimentManager,
+    AllocationStrategy,
     EarlyWinnerPredictor,
+    ExperimentManager,
+    StatisticalAnalyzer,
+    StatisticalTest,
     # Enums
     TestResult,
-    AllocationStrategy,
+    TrafficAllocator,
+    advanced_ab_engine,
+    calculate_final_metrics,
     # Functions
     create_multivariate_test,
-    update_test_metrics,
-    get_test_analytics,
-    get_active_tests_summary,
-    calculate_final_metrics,
-    generate_test_analytics,
     generate_active_tests_summary,
+    generate_test_analytics,
+    get_active_tests_summary,
+    get_test_analytics,
+    update_test_metrics,
 )
 
 __all__ = [

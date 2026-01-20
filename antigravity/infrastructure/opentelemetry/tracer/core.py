@@ -13,25 +13,24 @@ Features:
 - Background processors for async export
 """
 
-import time
 import logging
 import threading
-from typing import Dict, Any, List, Optional
+import time
 from collections import defaultdict, deque
+from typing import Any, Dict, List, Optional
 
-from ..models import SpanStatus
-from ..span import Span
 from ..config import (
-    TracerConfig,
     DEFAULT_JAEGER_ENDPOINT,
     DEFAULT_OTLP_ENDPOINT,
     DEFAULT_PROMETHEUS_GATEWAY,
     DEFAULT_SERVICE_NAME,
+    TracerConfig,
 )
-
+from ..models import SpanStatus
+from ..span import Span
 from .agent_manager import AgentManagerMixin
-from .span_operations import SpanOperationsMixin
 from .export_handler import ExportHandlerMixin
+from .span_operations import SpanOperationsMixin
 
 logger = logging.getLogger(__name__)
 

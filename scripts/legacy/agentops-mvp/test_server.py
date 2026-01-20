@@ -1,8 +1,9 @@
+from datetime import datetime
+
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import uvicorn
-from datetime import datetime
 
 app = FastAPI(title="AgentOps MVP - WIN³ Complete", version="4.0.0")
 

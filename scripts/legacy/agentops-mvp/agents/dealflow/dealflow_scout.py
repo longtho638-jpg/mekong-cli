@@ -22,10 +22,11 @@ Binh Pháp Application:
 - Chapter 13 (Dụng Gián): Intelligence gathering
 """
 
-from typing import Dict, List, Any
 from datetime import datetime, timedelta
-from pydantic import BaseModel
 from enum import Enum
+from typing import Any, Dict, List
+
+from pydantic import BaseModel
 
 
 class DealStage(str, Enum):

@@ -7,18 +7,18 @@ The actual implementation has been moved to antigravity.core.revenue package.
 """
 
 from antigravity.core.revenue import (
-    RevenueAI,
-    CustomerProfile,
     ChurnPrediction,
-    UpsellRecommendation,
-    PricingRecommendation,
-    RevenueMetrics,
     ChurnRisk,
+    CustomerProfile,
+    PricingRecommendation,
+    RevenueAI,
+    RevenueMetrics,
     UpsellOpportunity,
-    get_revenue_ai,
-    predict_churn,
+    UpsellRecommendation,
     detect_upsell,
+    get_revenue_ai,
     get_revenue_metrics,
+    predict_churn,
 )
 
 __all__ = [

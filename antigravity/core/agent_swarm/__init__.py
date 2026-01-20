@@ -1,9 +1,9 @@
 """
 Agent Swarm Package.
 """
+from .engine import AgentSwarm
 from .enums import AgentRole, TaskPriority, TaskStatus
 from .models import SwarmAgent, SwarmMetrics, SwarmTask
-from .engine import AgentSwarm
 from .shortcuts import (
     get_swarm,
     get_task_result,

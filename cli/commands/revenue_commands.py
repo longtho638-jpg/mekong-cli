@@ -5,7 +5,6 @@ Contains revenue management and autopilot commands.
 """
 
 import typer
-
 from rich.console import Console
 
 console = Console()

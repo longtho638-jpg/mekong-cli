@@ -9,6 +9,7 @@ Follows .claude workflow integration patterns.
 
 import sys
 from pathlib import Path
+
 from rich.console import Console
 
 # Add parent to path for imports

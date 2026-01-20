@@ -1,9 +1,9 @@
 """
 Verification script for Money Maker Refactor.
 """
-import sys
-import os
 import logging
+import os
+import sys
 from decimal import Decimal
 
 # Add project root to path
@@ -13,12 +13,13 @@ sys.path.insert(0, os.getcwd())
 logging.basicConfig(level=logging.INFO)
 
 from antigravity.core.money_maker import (
+    BINH_PHAP_SERVICES,
     MoneyMaker,
     Quote,
     ServiceTier,
     Win3Result,
-    BINH_PHAP_SERVICES
 )
+
 
 def verify_money_maker():
     print("Testing Money Maker Refactor...")

@@ -15,45 +15,44 @@ All network requests are mocked to avoid actual HTTP calls.
 """
 
 import time
-import pytest
-from unittest.mock import patch, MagicMock, Mock
-from collections import deque
-
 from antigravity.infrastructure.opentelemetry import (
-    # Config
-    TracerConfig,
-    ExporterConfig,
-    SamplingConfig,
-    AgentConfig,
     DEFAULT_JAEGER_ENDPOINT,
     DEFAULT_OTLP_ENDPOINT,
     DEFAULT_PROMETHEUS_GATEWAY,
     DEFAULT_SERVICE_NAME,
-    # Models
-    SpanKind,
-    SpanStatus,
-    TraceId,
-    Event,
-    Metric,
-    # Span
-    Span,
-    # Tracer
-    DistributedTracer,
-    # Tracing Agent
-    TracingAgent,
-    # Processors
-    BaseProcessor,
-    SpanProcessor,
-    MetricsProcessor,
-    ExportLoopProcessor,
-    PerformanceAnalyzer,
+    AgentConfig,
     # Exporters
     BaseExporter,
-    OTLPExporter,
-    JaegerExporter,
+    # Processors
+    BaseProcessor,
+    # Tracer
+    DistributedTracer,
+    Event,
+    ExporterConfig,
+    ExportLoopProcessor,
     ExportProcessor,
+    JaegerExporter,
+    Metric,
+    MetricsProcessor,
+    OTLPExporter,
+    PerformanceAnalyzer,
+    SamplingConfig,
+    # Span
+    Span,
+    # Models
+    SpanKind,
+    SpanProcessor,
+    SpanStatus,
+    TraceId,
+    # Config
+    TracerConfig,
+    # Tracing Agent
+    TracingAgent,
 )
+from collections import deque
+from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 
 # =============================================================================
 # Test: Configuration Dataclasses

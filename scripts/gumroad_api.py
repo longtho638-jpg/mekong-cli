@@ -367,7 +367,7 @@ Examples:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # list command
-    list_p = subparsers.add_parser("list", help="List products from Gumroad API")
+    subparsers.add_parser("list", help="List products from Gumroad API")
 
     # update command
     update_p = subparsers.add_parser("update", help="Update products via API")
@@ -376,7 +376,7 @@ Examples:
     update_p.add_argument("--dry-run", action="store_true", help="Test mode")
 
     # sync command
-    sync_p = subparsers.add_parser("sync", help="Sync local JSON with Gumroad IDs")
+    subparsers.add_parser("sync", help="Sync local JSON with Gumroad IDs")
 
     args = parser.parse_args()
 

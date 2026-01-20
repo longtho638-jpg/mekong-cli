@@ -7,14 +7,15 @@ and latency tracking features.
 """
 
 import asyncio
-import time
-import sys
 import os
+import sys
+import time
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.api.tunnel import TunnelOptimizer, get_optimized_tools, get_optimized_status
+from backend.api.tunnel import TunnelOptimizer, get_optimized_status, get_optimized_tools
+
 
 async def test_tunnel_performance():
     """Test tunnel performance with concurrent requests."""

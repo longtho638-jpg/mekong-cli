@@ -2,14 +2,20 @@
 Tests for Distributed Queue System.
 """
 
-import pytest
 import time
-from unittest.mock import MagicMock, patch, ANY
-from antigravity.infrastructure.distributed_queue.models import Job, JobStatus, JobPriority, QueueStats
-from antigravity.infrastructure.distributed_queue.queue_manager import QueueManager
+from antigravity.infrastructure.distributed_queue import DistributedQueue
 from antigravity.infrastructure.distributed_queue.backends.memory_backend import MemoryBackend
 from antigravity.infrastructure.distributed_queue.backends.redis_backend import RedisBackend
-from antigravity.infrastructure.distributed_queue import DistributedQueue
+from antigravity.infrastructure.distributed_queue.models import (
+    Job,
+    JobPriority,
+    JobStatus,
+    QueueStats,
+)
+from antigravity.infrastructure.distributed_queue.queue_manager import QueueManager
+from unittest.mock import ANY, MagicMock, patch
+
+import pytest
 
 # -----------------------------------------------------------------------------
 # Model Tests
@@ -166,7 +172,7 @@ def test_facade_legacy_completion():
     jid = dq.submit_job("test", {})
 
     # Simulate picking up job outside of facade (or verifying state)
-    job = dq.get_next_job("w1")
+    dq.get_next_job("w1")
 
     # Complete using just ID (legacy style)
     dq.complete_job(jid, success=True)

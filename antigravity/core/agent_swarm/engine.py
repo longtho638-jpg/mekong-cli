@@ -4,10 +4,9 @@ Agent Swarm Engine.
 import logging
 import threading
 import time
+from antigravity.core.types import SwarmStatusDict
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List, Optional
-
-from antigravity.core.types import SwarmStatusDict
 
 from .enums import AgentRole, TaskPriority
 from .executor import TaskExecutor

@@ -299,25 +299,25 @@ def process_product_v2(page: Page, product: dict, dry_run: bool) -> bool:
         print("   ❌ Failed to navigate to edit page")
         return False
 
-    # 1. Update Title
-    title = product.get("title", "")
-    if title:
-        try:
+    # 1. Update SEO (Title, Description, Price, Tags)
+    try:
+        updated_seo = False
+
+        # Title
+        title = product.get("title", "")
+        if title:
             title_input = page.locator('input[name*="name"]').first
             if title_input.is_visible(timeout=5000):
                 title_input.click()
-                # Use keyboard to select all and delete to be safe
                 page.keyboard.press("Meta+A")
                 page.keyboard.press("Backspace")
                 title_input.fill(title)
+                updated_seo = True
                 print("   📝 Updated title")
-        except Exception as e:
-            print(f"   ⚠️ Title update: {str(e)[:50]}")
 
-    # 2. Update Description
-    desc = product.get("description", "")
-    if desc:
-        try:
+        # Description
+        desc = product.get("description", "")
+        if desc:
             desc_selectors = [
                 'textarea[name*="description"]',
                 ".ProseMirror",
@@ -331,88 +331,104 @@ def process_product_v2(page: Page, product: dict, dry_run: bool) -> bool:
                         el.click()
                         page.keyboard.press("Meta+A")
                         page.keyboard.press("Backspace")
-                        # Some editors need type() instead of fill()
                         if "ProseMirror" in selector or "contenteditable" in selector:
                             el.type(desc)
                         else:
                             el.fill(desc)
+                        updated_seo = True
                         print("   📄 Updated description")
                         break
                 except:
                     continue
-        except Exception as e:
-            print(f"   ⚠️ Description update: {str(e)[:50]}")
 
-    # 3. Update Price
-    price = product.get("price")
-    if price is not None:
-        price_dollars = price / 100 if price > 0 else 0
-        try:
+        # Price
+        price = product.get("price")
+        if price is not None:
+            price_dollars = price / 100 if price > 0 else 0
             price_input = page.locator('input[name*="price"]').first
             if price_input.is_visible(timeout=3000):
                 price_input.fill(str(price_dollars))
+                updated_seo = True
                 print(f"   💰 Set price: ${price_dollars}")
-        except Exception as e:
-            print(f"   ⚠️ Price update: {str(e)[:50]}")
 
-    # 4. Update Tags (SEO)
-    tags = product.get("tags", [])
-    if tags:
-        try:
-            print("   🏷️ Updating tags...")
-            # Locate the tags input - usually an input within a tags-input component
+        # Tags
+        tags = product.get("tags", [])
+        if tags:
             tag_input = page.locator(
                 'input[placeholder*="Tag"], input[aria-label*="Tag"], .tags-input input'
             ).first
             if tag_input.is_visible(timeout=3000):
-                # Clear existing tags if possible (often tricky in custom UI)
-                # For now, let's just add missing ones or try to fill
                 for tag in tags:
                     tag_input.fill(tag)
                     page.keyboard.press("Enter")
+                updated_seo = True
                 print(f"   ✅ Added {len(tags)} tags")
-        except Exception as e:
-            print(f"   ⚠️ Tags update: {str(e)[:50]}")
 
-    # 5. Update Cover Image (Thumbnail)
+        # Save SEO first
+        if updated_seo:
+            save_btn = page.locator(
+                'button:has-text("Save"), button:has-text("Update"), .save-button'
+            ).first
+            if save_btn.is_visible(timeout=5000):
+                save_btn.click()
+                print("   💾 Saved SEO data")
+                time.sleep(3)
+    except Exception as e:
+        print(f"   ⚠️ SEO Update failed: {str(e)[:50]}")
+
+    # 2. Update Thumbnail (Separately)
     thumbnail_name = product.get("thumbnail")
     if thumbnail_name:
         thumb_path = THUMBNAILS_DIR / thumbnail_name
         if thumb_path.exists():
             try:
-                print(f"   🖼️ Uploading cover: {thumbnail_name}...")
-                # Find the upload button or file input
-                # Gumroad often has a "Computer" button for uploads
+                print(f"   🖼️ Attempting thumbnail upload: {thumbnail_name}...")
+                # Try to click the "Computer" or "Upload" button first to reveal the input
+                upload_buttons = [
+                    'button:has-text("Computer")',
+                    'button:has-text("Upload")',
+                    ".cover-image-upload-button",
+                    '[aria-label="Upload cover image"]',
+                ]
+                for btn_selector in upload_buttons:
+                    try:
+                        btn = page.locator(btn_selector).first
+                        if btn.is_visible(timeout=2000):
+                            btn.click()
+                            time.sleep(1)
+                            break
+                    except:
+                        continue
+
+                # Now set the file
                 file_input = page.locator('input[type="file"]').first
                 if file_input:
-                    file_input.set_input_files(str(thumb_path))
+                    file_input.set_input_files(str(thumb_path.absolute()))
                     print("   ✅ Thumbnail uploaded")
-                    time.sleep(3)  # Wait for upload
+                    time.sleep(5)  # Wait for upload
+
+                    # Save again after thumbnail
+                    save_btn = page.locator(
+                        'button:has-text("Save"), button:has-text("Update"), .save-button'
+                    ).first
+                    if save_btn.is_visible(timeout=5000):
+                        save_btn.click()
+                        print("   💾 Saved Thumbnail")
+                        time.sleep(3)
             except Exception as e:
-                print(f"   ⚠️ Thumbnail upload: {str(e)[:50]}")
-        else:
-            print(f"   ⚠️ Thumbnail not found: {thumb_path}")
+                print(f"   ⚠️ Thumbnail upload skipped: {str(e)[:50]}")
 
-    # 6. Save Changes
+    # 3. Final Publish (if needed)
     try:
-        save_btn = page.locator(
-            'button:has-text("Save"), button:has-text("Update"), .save-button'
+        publish_btn = page.locator(
+            'button:has-text("Publish"), button:has-text("Publish and Save")'
         ).first
-        if save_btn.is_visible(timeout=5000):
-            save_btn.click()
-            print("   💾 Saving...")
-            time.sleep(5)  # Wait for save to complete
-
-            # Check for "Publish" button if it's currently a draft
-            publish_btn = page.locator('button:has-text("Publish")').first
-            if publish_btn.is_visible(timeout=3000):
-                publish_btn.click()
-                print("   🚀 Published!")
-                time.sleep(3)
-        else:
-            print("   ❌ Save button not found")
-    except Exception as e:
-        print(f"   ⚠️ Save/Publish: {str(e)[:50]}")
+        if publish_btn.is_visible(timeout=3000):
+            publish_btn.click()
+            print("   🚀 Published!")
+            time.sleep(3)
+    except:
+        pass
 
     return True
 

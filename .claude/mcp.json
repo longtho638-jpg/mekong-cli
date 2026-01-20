@@ -1,10 +1,5 @@
 {
   "mcpServers": {
-    "antigravity": {
-      "command": "python",
-      "args": ["-m", "antigravity.mcp_server"],
-      "env": {}
-    },
     "task-master-ai": {
       "command": "npx",
       "args": ["-y", "task-master-ai"],

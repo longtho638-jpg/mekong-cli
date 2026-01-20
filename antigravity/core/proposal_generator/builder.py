@@ -2,10 +2,10 @@
 📄 Proposal Builder Logic
 """
 import logging
+from antigravity.core.money_maker import MoneyMaker, Quote
 from datetime import datetime, timedelta
 from typing import Optional
 
-from antigravity.core.money_maker import MoneyMaker, Quote
 from .models import Proposal
 from .templates import PROPOSAL_TEMPLATE
 

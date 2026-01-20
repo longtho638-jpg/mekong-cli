@@ -14,16 +14,16 @@ Features:
 from antigravity.core.chains import AgentStep, Chain
 
 from .engine import (
+    _get_chain_loader,  # Exported for testing/verification
+    get_agent_file,
+    get_agents_by_category,
     get_chain,
     get_chain_summary,
     list_all_chains,
-    get_agents_by_category,
-    get_agent_file,
-    validate_inventory,
     validate_chains,
-    _get_chain_loader,  # Exported for testing/verification
+    validate_inventory,
 )
-from .inventory import AGENT_INVENTORY, AGENT_BASE_DIR
+from .inventory import AGENT_BASE_DIR, AGENT_INVENTORY
 from .models import AgentCategory, AgentConfig
 
 

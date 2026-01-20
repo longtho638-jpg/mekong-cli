@@ -10,11 +10,12 @@ Critical Agent for Immediate ROI
 Priority: HIGHEST
 """
 
-from typing import Dict, List, Any
 from datetime import datetime
-from langchain.tools import tool
-from agents.base_agent import BaseAgent, AgentConfig, AgentTask
+from typing import Any, Dict, List
+
 import redis
+from agents.base_agent import AgentConfig, AgentTask, BaseAgent
+from langchain.tools import tool
 
 
 class RevenueAgent(BaseAgent):

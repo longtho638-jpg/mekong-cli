@@ -1,11 +1,11 @@
 """
 Verification script for Agent Memory Refactor.
 """
-import sys
-import os
 import logging
-from datetime import datetime
+import os
 import shutil
+import sys
+from datetime import datetime
 
 # Add project root to path
 sys.path.insert(0, os.getcwd())
@@ -13,7 +13,8 @@ sys.path.insert(0, os.getcwd())
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-from antigravity.core.agent_memory import get_agent_memory, AgentMemory
+from antigravity.core.agent_memory import AgentMemory, get_agent_memory
+
 
 def verify_agent_memory():
     print("Testing Agent Memory Refactor...")

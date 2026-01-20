@@ -5,10 +5,10 @@ OpenTelemetry Span Processor Module
 Span buffering and processing for distributed tracing.
 """
 
-import time
 import logging
-from typing import Dict, Any, List, Callable
+import time
 from collections import deque
+from typing import Any, Callable, Dict, List
 
 from ..models import SpanKind, SpanStatus, TraceId
 from ..span import Span

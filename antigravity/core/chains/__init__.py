@@ -8,7 +8,7 @@ Config-driven agent chain management with:
 - Registry and loader
 """
 
-from .loader import Chain, ChainLoader, AgentStep
+from .loader import AgentStep, Chain, ChainLoader
 from .validator import ChainValidator
 
 __all__ = ["Chain", "ChainLoader", "AgentStep", "ChainValidator"]

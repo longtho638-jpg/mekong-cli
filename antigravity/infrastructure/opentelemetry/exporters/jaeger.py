@@ -6,9 +6,9 @@ Jaeger-compatible trace exporter implementation.
 """
 
 import logging
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
-from ..config import ExporterConfig, DEFAULT_JAEGER_ENDPOINT
+from ..config import DEFAULT_JAEGER_ENDPOINT, ExporterConfig
 from ..models import Metric
 from .base import BaseExporter
 

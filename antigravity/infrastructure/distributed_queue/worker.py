@@ -5,10 +5,10 @@ Queue Worker - Background job processing logic.
 import logging
 import threading
 import time
-from typing import Callable, Optional, Any
+from typing import Any, Callable, Optional
 
-from .queue_manager import QueueManager
 from .config import DEFAULT_JOB_TIMEOUTS
+from .queue_manager import QueueManager
 
 logger = logging.getLogger(__name__)
 

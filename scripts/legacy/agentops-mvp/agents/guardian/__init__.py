@@ -16,15 +16,15 @@ STARTUP WIN Impact:
 6. Auto-Responder - Draft response emails
 """
 
-from typing import Dict, List, Any
 from datetime import datetime
+from typing import Any, Dict, List
 
-from .agents.term_sheet_parser import TermSheetParser
-from .agents.red_flag_detector import RedFlagDetector
-from .agents.negotiation_advisor import NegotiationAdvisor
-from .agents.market_comparator import MarketComparator
-from .agents.risk_scorer import RiskScorer
 from .agents.auto_responder import AutoResponder
+from .agents.market_comparator import MarketComparator
+from .agents.negotiation_advisor import NegotiationAdvisor
+from .agents.red_flag_detector import RedFlagDetector
+from .agents.risk_scorer import RiskScorer
+from .agents.term_sheet_parser import TermSheetParser
 
 
 class GuardianAgent:

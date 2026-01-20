@@ -12,8 +12,8 @@ Provides feature flag management with:
 import logging
 from typing import Dict, List, Optional
 
-from .redis_client import RedisClient
 from .flag_evaluation import FeatureFlag, is_user_in_rollout
+from .redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
 

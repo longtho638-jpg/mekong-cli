@@ -6,11 +6,11 @@ Core logic for agent chain management, loading, and validation.
 """
 
 import os
+from antigravity.core.chains import AgentStep, Chain, ChainLoader, ChainValidator
 from pathlib import Path
 from typing import List, Optional
 
-from antigravity.core.chains import Chain, ChainLoader, ChainValidator, AgentStep
-from .inventory import AGENT_INVENTORY, AGENT_BASE_DIR
+from .inventory import AGENT_BASE_DIR, AGENT_INVENTORY
 from .models import AgentCategory
 
 # Global chain loader (lazy init)

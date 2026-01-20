@@ -5,10 +5,10 @@ Coordinates feature flags, analytics tracking, and circuit breakers.
 
 import logging
 import os
-from typing import Dict, Optional
-
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
+from typing import Dict, Optional
+
 from .analytics import AnalyticsEvent, AnalyticsTracker
 from .circuit_breaker import CircuitBreaker
 from .feature_flags import FeatureFlag, FeatureFlagManager

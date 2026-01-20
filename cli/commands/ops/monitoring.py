@@ -19,7 +19,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from cli.utils.subprocess_safe import run_safe, SubprocessError
+from cli.utils.subprocess_safe import SubprocessError, run_safe
 
 console = Console()
 

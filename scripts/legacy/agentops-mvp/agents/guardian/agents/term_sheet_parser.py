@@ -1,11 +1,12 @@
 """Term sheet parser agent"""
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 try:
     from ..base.guardian_base import GuardianBase
 except ImportError:
-    import sys
     import os
+    import sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     from agentops_mvp.agents.guardian.base.guardian_base import GuardianBase
 
