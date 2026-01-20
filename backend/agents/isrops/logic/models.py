@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
 
+
 class ActivityType(Enum):
     CALL = "call"
     EMAIL = "email"

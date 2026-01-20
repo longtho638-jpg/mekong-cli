@@ -2,8 +2,10 @@
 Activity Tracker Agent Facade.
 """
 from typing import Dict, List
-from .models import ActivityType, ActivityOutcome, Activity, DailyStats
+
 from .engine import ActivityEngine
+from .models import Activity, ActivityOutcome, ActivityType, DailyStats
+
 
 class ActivityTrackerAgent(ActivityEngine):
     """Refactored Activity Tracker Agent."""

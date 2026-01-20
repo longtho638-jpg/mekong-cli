@@ -2,8 +2,10 @@
 Compliance Agent Facade.
 """
 from typing import Dict
-from .models import ComplianceStatus, RegulationType, RiskLevel, ComplianceItem
+
 from .engine import ComplianceEngine
+from .models import ComplianceItem, ComplianceStatus, RegulationType, RiskLevel
+
 
 class ComplianceAgent(ComplianceEngine):
     """Refactored Compliance Agent."""
