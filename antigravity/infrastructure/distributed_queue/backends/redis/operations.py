@@ -1,19 +1,23 @@
 """
 Redis Job Operations (Submit, Fetch, Complete).
 """
+
 import json
 import logging
 import time
 from typing import Any, Optional
 
-from ..models import PRIORITY_ORDER, PRIORITY_QUEUES, Job, JobPriority, JobStatus
+from ...config import PRIORITY_ORDER, PRIORITY_QUEUES
+from ...models import Job, JobPriority, JobStatus
 from .manager import RedisManager
 
 logger = logging.getLogger(__name__)
 
+
 class RedisOperations(RedisManager):
     def submit_job(self, job: Job) -> bool:
-        if not self.enabled: return False
+        if not self.enabled:
+            return False
         try:
             job_data = json.dumps(job.to_json()).encode("utf-8")
             queue_name = PRIORITY_QUEUES.get(job.priority, "normal_jobs")
@@ -27,7 +31,8 @@ class RedisOperations(RedisManager):
             return False
 
     def get_next_job(self, worker_id: str, timeout: Optional[float] = None) -> Optional[Job]:
-        if not self.enabled: return None
+        if not self.enabled:
+            return None
         try:
             keys = [PRIORITY_QUEUES[p] for p in PRIORITY_ORDER if p in PRIORITY_QUEUES]
             wait_time = int(timeout) if timeout is not None else 5
@@ -48,12 +53,16 @@ class RedisOperations(RedisManager):
             return None
 
     def complete_job(self, job: Job, success: bool, result: Any = None, error: str = None) -> bool:
-        if not self.enabled: return False
+        if not self.enabled:
+            return False
         try:
             job.status = JobStatus.COMPLETED if success else JobStatus.FAILED
             job.completed_at = time.time()
-            if error: job.metadata["error"] = error; job.failed_at = time.time()
-            elif result is not None: job.metadata["result"] = result
+            if error:
+                job.metadata["error"] = error
+                job.failed_at = time.time()
+            elif result is not None:
+                job.metadata["result"] = result
             job.worker_id = None
             key = f"job:{job.job_id}"
             job_data = json.dumps(job.to_json()).encode("utf-8")

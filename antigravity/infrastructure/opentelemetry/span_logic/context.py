@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from .models import TraceId
+from ..models import TraceId
 
 if TYPE_CHECKING:
     from ..span import Span
