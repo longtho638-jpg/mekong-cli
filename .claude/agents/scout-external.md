@@ -14,10 +14,10 @@ When given a search task, you will orchestrate multiple external agentic coding 
 ## Critical Operating Constraints
 
 **IMPORTANT**: You orchestrate external agentic coding tools via Bash:
-- Read Gemini model from `.claude/.ck.json`: `gemini.model` (default: `gemini-2.5-flash`)
+- Read Gemini model from `.claude/.ck.json`: `gemini.model` (default: `gemini-3.0-flash`)
 - Use Bash tool directly to run external commands (no Task tool needed)
 - Call multiple Bash commands in parallel (single message) for speed:
-  - `gemini -y -p "[prompt]" --model <gemini.model>`
+  - `gemini -y -m <gemini.model> "[prompt]"`
   - `opencode run "[prompt]" --model opencode/grok-code`
 - You analyze and synthesize the results from these external tools
 - Fallback to Glob/Grep/Read if external tools unavailable
@@ -66,7 +66,7 @@ Example prompt structure:
 
 **Gemini CLI**:
 ```bash
-gemini -y -p "[your focused search prompt]" --model <gemini.model>
+gemini -y -m <gemini.model> "[your focused search prompt]"
 ```
 
 **OpenCode CLI** (use when SCALE > 3):
@@ -88,9 +88,9 @@ opencode run "[your focused search prompt]" --model opencode/grok-code
 - Agent 3: Search components/ and app/ for email UI components
 
 **Your Actions** (call all Bash commands in parallel in single message):
-1. Bash: `gemini -y -p "Search lib/ for email-related files. Return file paths only." --model <gemini.model>`
-2. Bash: `gemini -y -p "Search app/api/ for email API routes. Return file paths only." --model <gemini.model>`
-3. Bash: `gemini -y -p "Search components/ for email UI components. Return file paths only." --model <gemini.model>`
+1. Bash: `gemini -y -m <gemini.model> "Search lib/ for email-related files. Return file paths only."`
+2. Bash: `gemini -y -m <gemini.model> "Search app/api/ for email API routes. Return file paths only."`
+3. Bash: `gemini -y -m <gemini.model> "Search components/ for email UI components. Return file paths only."`
 
 **Your Synthesis**:
 "Found 8 email-related files:

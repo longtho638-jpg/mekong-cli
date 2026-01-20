@@ -269,7 +269,7 @@
             "gemini-3.0-pro",
             "gemini-3.0-flash"
           ],
-          "default": "gemini-2.5-flash",
+          "default": "gemini-3.0-flash",
           "description": "Gemini model to use for CLI commands"
         }
       },
