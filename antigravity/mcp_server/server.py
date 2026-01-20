@@ -4,8 +4,6 @@ Antigravity MCP Server Implementation.
 
 from typing import Any, Dict, List
 
-from .models import MCPResponse
-from .tools import get_tools
 from .handlers import (
     handle_add_lead,
     handle_antigravity_status,
@@ -15,6 +13,8 @@ from .handlers import (
     handle_get_vc_score,
     handle_win_win_win_check,
 )
+from .models import MCPResponse
+from .tools import get_tools
 
 # Import Antigravity modules
 try:
@@ -41,7 +41,7 @@ class AntigravityMCPServer:
 
     def __init__(self):
         self.name = "antigravity"
-        self.version = "1.0.0"
+        self.version = "0.1.0"
         self.has_antigravity = HAS_ANTIGRAVITY
 
         # Initialize Antigravity modules if available
