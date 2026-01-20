@@ -22,4 +22,3 @@ class GoogleAdsEngine:
         kw = PPCKeyword(text=text, match_type=match_type, quality_score=random.randint(5, 10), cpc=random.uniform(0.5, 5.0))
         self.campaigns[campaign_id].keywords.append(kw)
         return self.campaigns[campaign_id]
-精

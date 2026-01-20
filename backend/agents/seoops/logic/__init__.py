@@ -18,4 +18,3 @@ class TechnicalSEOAgent(SEOEngine):
         return {"total_issues": len(self.issues), "health_score": 85}
 
 __all__ = ['TechnicalSEOAgent', 'IssueSeverity', 'IssueType', 'SEOIssue', 'CoreWebVitals']
-精

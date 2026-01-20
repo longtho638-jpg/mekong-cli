@@ -21,4 +21,3 @@ class SEOEngine:
     def check_vitals(self, url: str) -> CoreWebVitals:
         self.vitals = CoreWebVitals(lcp=random.uniform(1.0, 3.0), fid=random.uniform(50, 150), cls=random.uniform(0.01, 0.15))
         return self.vitals
-精
