@@ -16,8 +16,12 @@ class AgentOrchestrator:
         """Get task count per agent, excluding completed tasks."""
         tasks = await self.client.list_tasks()
         workload = defaultdict(int)
+        # First pass: register all agents with 0
         for task in tasks:
-            # Count only non-done tasks as workload
+            if task.agent_assigned not in workload:
+                workload[task.agent_assigned] = 0
+        # Second pass: count only non-done tasks as workload
+        for task in tasks:
             if task.status != "done":
                 workload[task.agent_assigned] += 1
         return dict(workload)
