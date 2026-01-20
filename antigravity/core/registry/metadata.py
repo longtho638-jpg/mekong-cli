@@ -2,7 +2,9 @@
 Registry Metadata - Command information and agent mapping.
 """
 from typing import Any, Dict, List, Optional
+
 from .store import COMMAND_REGISTRY
+
 
 def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:
     """Retrieves all configuration data for a specific command."""

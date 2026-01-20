@@ -6,6 +6,7 @@ This file now serves as a proxy for the modularized registry store.
 Please import from .store instead.
 """
 import warnings
+
 from .store import COMMAND_REGISTRY, SHORTCUTS
 
 # Issue a deprecation warning

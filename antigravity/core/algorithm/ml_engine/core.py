@@ -5,10 +5,10 @@ import logging
 from typing import Any, Dict, List
 
 from ..types import EnhancedPricingContext
+from .inference import InferenceEngine
+from .model_registry import ModelRegistry
 from .persistence import ModelPersistence
 from .training import ModelTrainer
-from .model_registry import ModelRegistry
-from .inference import InferenceEngine
 
 logger = logging.getLogger(__name__)
 

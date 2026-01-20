@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from .models import SessionState
-from .storage import CheckpointStorage
 from .serializer import CheckpointSerializer
+from .storage import CheckpointStorage
 
 logger = logging.getLogger(__name__)
 
