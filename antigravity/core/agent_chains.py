@@ -23,6 +23,7 @@ from antigravity.core.agent_chains import (
     get_agent_file,
     get_agents_by_category,
     get_chain,
+    get_chain_obj,
     get_chain_summary,
     list_all_chains,
     register_chain,

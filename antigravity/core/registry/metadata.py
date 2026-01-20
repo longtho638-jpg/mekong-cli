@@ -3,8 +3,8 @@ Registry Metadata - Command information and agent mapping.
 """
 from typing import Any, Dict, List, Optional
 
-from .store import COMMAND_REGISTRY
 from .mcp_catalog import mcp_catalog
+from .store import COMMAND_REGISTRY
 
 
 def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:

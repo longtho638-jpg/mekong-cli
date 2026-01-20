@@ -13,7 +13,7 @@ from antigravity.core.patterns import singleton_factory
 from typing import Any, Dict, List, Optional
 
 from .ideation import ContentIdeator
-from .models import ContentIdea, ContentPiece
+from .models import ContentIdea, ContentPiece, ContentType
 from .production import ContentProducer
 from .scheduling import ContentScheduler
 
@@ -51,6 +51,17 @@ class ContentFactory(StatsMixin):
         piece = self.producer.create_post(idea)
         self.content_archive.append(piece)
         return piece
+
+    def write_article(self, topic: str) -> str:
+        """Writes a full article on a given topic."""
+        idea = ContentIdea(
+            title=topic,
+            topic=topic,
+            content_type=ContentType.BLOG,
+            virality_score=85
+        )
+        piece = self.create_post(idea)
+        return piece.body
 
     def get_calendar(self, days: int = 7) -> List[Dict[str, Any]]:
         """Generates a scheduled posting timeline."""

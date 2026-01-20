@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List
 
-from .rules import find_parent_class, get_function_signature, get_node_name, make_entity_id
+from .ast_rules import find_parent_class, get_function_signature, get_node_name, make_entity_id
 from .types import CodeEntity, EntityType, Relationship, RelationType
 
 logger = logging.getLogger(__name__)

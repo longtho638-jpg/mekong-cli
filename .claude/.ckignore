@@ -21,3 +21,4 @@ target
 # VCS & Coverage
 .git
 coverage
+!build

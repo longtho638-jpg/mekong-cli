@@ -109,6 +109,20 @@ WORKFLOW_STEPS: List[str] = [
 
 
 # ============================================================
+# 🔮 QUANTUM & MODEL CONFIGURATION
+# ============================================================
+
+# Model Routing (Quota Engine defaults)
+DEFAULT_MODEL = "gemini-3-flash"
+PREMIUM_MODEL = "gemini-3-pro-high"
+
+# Proxy Configuration
+AI_PROXY_URL = "http://localhost:8080"
+AI_PROXY_ENABLED = True
+AI_PROXY_TIMEOUT = 30
+
+
+# ============================================================
 # 🔍 HELPERS
 # ============================================================
 

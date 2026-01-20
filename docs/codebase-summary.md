@@ -3,12 +3,15 @@
 
 ## Architecture Overview
 
-AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architecture. All files comply with 200-line limit.
+AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architecture. All files comply with the **200-line limit** (Antigravity Standard).
 
 ### Antigravity Core (`antigravity/core/`)
 
 | Module | Purpose | Structure |
 | :--- | :--- | :--- |
+| **registry** | Command & MCP Registry | `api.py`, `commands.py`, `discovery.py`, `mcp_catalog.py`, `store.py` |
+| **knowledge** | Automated Knowledge Layer | `graph.py`, `manifest_generator.py`, `search_engine.py`, `entity_extractor.py` |
+| **mcp_orchestrator** | MCP Lifecycle Manager | `mcp_orchestrator.py` |
 | **ab_testing** | A/B Testing Engine | `engine.py`, `analysis.py`, `reporting.py`, `time_utils.py` |
 | **agent_orchestrator** | Agent Coordination | `engine.py`, `analytics.py`, `reporting.py` |
 | **agent_swarm** | Multi-Agent Systems | `engine.py`, `registry.py`, `task_manager.py`, `shortcuts.py` |
@@ -25,6 +28,7 @@ AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architectur
 | **mixins** | Reusable Behaviors | StatsMixin, PersistenceMixin |
 | **patterns** | Shared Patterns | singleton_factory, BasePersistence |
 | **types** | Type Definitions | TypedDict, Protocol definitions |
+| **rules** | Rule Expansion (v2) | `00-core/`, `01-strategy/`, `02-development/`, `03-operations/` |
 
 ### Infrastructure (`antigravity/infrastructure/`)
 

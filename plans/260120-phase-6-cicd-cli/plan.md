@@ -1,7 +1,7 @@
 ---
 title: "Phase 6: CI/CD Optimization & CLI Verification"
 description: "Ensure the mekong CLI entry point is correctly installed and verified in the CI environment."
-status: pending
+status: complete
 priority: P1
 effort: 1h
 branch: main
@@ -9,14 +9,14 @@ tags: [cicd, cli, quality-assurance]
 created: 2026-01-20
 ---
 
-# 📜 Phase 6: CI/CD Optimization & CLI Verification
+# 📜 Phase 6: CI/CD Optimization & CLI Verification (COMPLETE)
 
 > Ensure the `mekong` CLI command is accessible and functional in the CI pipeline, aligning the build process with the `setup.py` package definition.
 
 ## 📋 Execution Tasks
-- [ ] Phase 1: Local Verification
-- [ ] Phase 2: CI Configuration Update
-- [ ] Phase 3: Validation
+- [x] Phase 1: Local Verification
+- [x] Phase 2: CI Configuration Update
+- [x] Phase 3: Validation
 
 ## 🔍 Context
 Currently, the CI workflow (`.github/workflows/ci.yml`) installs dependencies using `requirements.txt` but does not install the `mekong-cli` package itself. This means the `entry_points` defined in `setup.py` are not tested. We need to install the package (in editable mode or standard mode) within the CI environment to ensure the `mekong` command maps correctly to `cli.entrypoint:main`.
@@ -42,7 +42,3 @@ Currently, the CI workflow (`.github/workflows/ci.yml`) installs dependencies us
 - **Action:** Add a new step "Verify CLI Entry Point".
 - **Command:** `mekong --help`
 - **Success Criteria:** The step passes without error, outputting the help text.
-
-## 📝 Unresolved Questions
-- Should we completely replace `pip install -r requirements.txt` with `pip install .`?
-    - *Decision:* We will keep `pip install -r requirements.txt` for now to ensure we have all pinned dev dependencies (like `ruff`, `pytest` which might not be in `install_requires` of `setup.py` yet) before installing the package. `setup.py` currently excludes tests.

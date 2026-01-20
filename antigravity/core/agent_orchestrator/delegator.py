@@ -3,12 +3,12 @@ Orchestrator Delegator - Logic for executing individual steps
 """
 import logging
 import time
+from antigravity.core.agent_memory.blackboard import blackboard
 from antigravity.core.chains import AgentStep
 from antigravity.core.types import HookContextDict
-from typing import Optional, Any, Dict
+from typing import Any, Dict, List, Optional
 
 from .models import StepResult, StepStatus
-from antigravity.core.agent_memory.blackboard import blackboard
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,10 @@ class OrchestratorDelegator:
 
             # Store output in blackboard for next steps
             blackboard.set(f"last_output_{step.agent}", output)
-            blackboard.set(f"step_{index}_result", output)
+            if step.id:
+                blackboard.set(f"step_{step.id}_result", output)
+            else:
+                blackboard.set(f"step_{index}_result", output)
 
             status = StepStatus.COMPLETED
             error = None
@@ -67,4 +70,40 @@ class OrchestratorDelegator:
             output=output,
             duration_ms=duration,
             error=error,
+        )
+
+    def execute_parallel(
+        self, steps: List[AgentStep], index: int, total: int, context: Optional[HookContextDict]
+    ) -> StepResult:
+        """Executes multiple agent steps in parallel using a thread pool."""
+        import threading
+        from concurrent.futures import ThreadPoolExecutor
+
+        start_time = time.time()
+        logger.info(f"🚀 Executing {len(steps)} steps in parallel")
+
+        results = []
+        with ThreadPoolExecutor(max_workers=len(steps)) as executor:
+            futures = [
+                executor.submit(self.execute_step, step, index, total, context)
+                for step in steps
+            ]
+            for future in futures:
+                results.append(future.result())
+
+        duration = (time.time() - start_time) * 1000
+
+        # Determine overall status
+        failed = any(r.status == StepStatus.FAILED for r in results)
+        status = StepStatus.FAILED if failed else StepStatus.COMPLETED
+
+        combined_output = f"Parallel execution of {len(steps)} steps completed. Results: {[r.status.value for r in results]}"
+
+        return StepResult(
+            agent="parallel-executor",
+            action="parallel-execution",
+            status=status,
+            output=combined_output,
+            duration_ms=duration,
+            error="One or more parallel steps failed" if failed else None,
         )

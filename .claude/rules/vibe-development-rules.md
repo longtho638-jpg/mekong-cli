@@ -1,3 +1,10 @@
+---
+title: "VIBE Development Rules"
+priority: P1
+tags: [development, vibe, standards]
+agents: [*]
+---
+
 # VIBE Development Rules
 
 > **VIBE-specific rules extending ClaudeKit development standards**

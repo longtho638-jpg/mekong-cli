@@ -1,8 +1,8 @@
 """
 Manifest Generator - Automated updates for QUANTUM_MANIFEST.md.
 """
+from antigravity.core.knowledge.rules import rule_registry
 from pathlib import Path
-from antigravity.core.knowledge.rule_registry import rule_registry
 
 MANIFEST_PATH = Path(".claude/docs/QUANTUM_MANIFEST.md")
 
@@ -20,8 +20,8 @@ TEMPLATE = """# 🔮 QUANTUM MANIFEST - Antigravity Context Core
 
 ## 🤖 AGENT ARMY (Dynamic Inventory)
 
-| Rule File | Applied Agents |
-|-----------|----------------|
+| Rule File | Priority | Applied Agents |
+|-----------|----------|----------------|
 {agent_mapping_section}
 
 ---
@@ -59,17 +59,28 @@ def generate_manifest():
 
     # 1. Rules Section
     rules_section = ""
-    for name, meta in rule_registry.rules.items():
-        rules_section += f"### {meta.get('title', name)}\n"
+    # Sort rules by priority (P0 first) then name
+    sorted_rules = sorted(
+        rule_registry.rules.items(),
+        key=lambda x: (x[1].get('priority', 'P2'), x[0])
+    )
+
+    for name, meta in sorted_rules:
+        priority = meta.get('priority', 'P2')
+        priority_emoji = "🚨" if priority == "P0" else "⚠️" if priority == "P1" else "ℹ️"
+
+        rules_section += f"### {priority_emoji} {meta.get('title', name)}\n"
         rules_section += f"- **File**: `{name}`\n"
+        rules_section += f"- **Priority**: `{priority}`\n"
         rules_section += f"- **Tags**: `{', '.join(meta.get('tags', []))}`\n"
         rules_section += f"- **Agents**: `{', '.join(meta.get('agents', []))}`\n\n"
 
     # 2. Agent Mapping Section
     mapping_section = ""
-    for name, meta in rule_registry.rules.items():
-        agents = ", ".join([f"`{a}`" for a in meta.get("agents", [])])
-        mapping_section += f"| `{name}` | {agents} |\n"
+    for name, meta in sorted_rules:
+        agents = ", ".join([f"`{a}`" for a in meta.get("agents", ["*"])])
+        priority = meta.get('priority', 'P2')
+        mapping_section += f"| `{name}` | `{priority}` | {agents} |\n"
 
     content = TEMPLATE.format(
         rules_section=rules_section,

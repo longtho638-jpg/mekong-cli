@@ -2,56 +2,29 @@
 description: Auto-recover failed systems with one command
 ---
 
-# /recover - Auto-Recovery Engine
+# /recover - Auto-Recovery Command
 
-> **Automatically fix common infrastructure issues**
+> **MCP Integration**: Routes to `recovery_server`
 
-## Quick Recovery
-
-// turbo
+## Usage
 
 ```bash
-python3 scripts/vibeos/auto_recovery.py --auto
+/recover [target]
 ```
 
-## Proxy Only
+## Targets
 
-// turbo
+- `proxy`: Restart Antigravity Proxy
+- `db`: Reset database connections
+- `ci`: Retry failed CI jobs
 
-```bash
-python3 scripts/vibeos/auto_recovery.py --proxy
-```
+## MCP Tools
 
-## Daemon Mode (5-min intervals)
+- `recovery_server.auto_recover`
+- `recovery_server.diagnose_system`
 
-```bash
-python3 scripts/vibeos/auto_recovery.py --daemon
-```
+## Automation
 
-## What It Does
+Can be run in daemon mode to automatically heal self-healing infrastructure.
 
-| System        | Auto-Recovery   |
-| ------------- | --------------- |
-| **Proxy**     | ✅ Auto-restart |
-| **GitHub CI** | ℹ️ Suggestions  |
-| **Vercel**    | ℹ️ Suggestions  |
-| **Supabase**  | ℹ️ Suggestions  |
-
-## Example Output
-
-```
-🏯 AUTO-RECOVERY ENGINE v5.0
-==================================================
-
-⚠️ Found 1 anomalie(s) - attempting recovery...
-
-🔧 Executing recovery for proxy: Run: antigravity-claude-proxy start
-   ✅ Proxy started
-
---------------------------------------------------
-Recovery complete
-```
-
-## 🏯 Binh Pháp
-
-> "Tiên phát chế nhân" - Strike first, recover fast.
+> 🔧 **"Tiên phát chế nhân"** - Strike first, recover fast.

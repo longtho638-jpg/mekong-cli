@@ -1,3 +1,10 @@
+---
+title: "Rule: MD3 Strict Mode"
+priority: P2
+tags: [ui, design, material-design-3]
+agents: [ui-ux-designer, frontend-developer]
+---
+
 # 🎨 Rule: MD3 Strict Mode
 
 > **Reference:** https://m3.material.io/

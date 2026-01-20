@@ -1,12 +1,750 @@
 {
-  "test-server": [
-    {
-      "name": "fetch-data",
-      "description": "Fetches data from a URL"
+  "tools": {
+    "server_0": [
+      {
+        "name": "echo_tool",
+        "description": "Echoes input"
+      }
+    ],
+    "server_1": [
+      {
+        "name": "echo_tool",
+        "description": "Echoes input"
+      }
+    ],
+    "server_2": [
+      {
+        "name": "echo_tool",
+        "description": "Echoes input"
+      }
+    ],
+    "server_3": [
+      {
+        "name": "echo_tool",
+        "description": "Echoes input"
+      }
+    ],
+    "server_4": [
+      {
+        "name": "echo_tool",
+        "description": "Echoes input"
+      }
+    ],
+    "dummy-server": [
+      {
+        "name": "dummy-tool",
+        "description": "A tool for testing registry integration",
+        "inputSchema": {
+          "type": "object"
+        }
+      }
+    ],
+    "workflow": [
+      {
+        "name": "list_workflows",
+        "description": "List all available workflows",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "execute_workflow",
+        "description": "Execute a specific workflow by ID",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workflow_id": {
+              "type": "string",
+              "description": "ID of the workflow to execute"
+            },
+            "context": {
+              "type": "object",
+              "description": "Optional execution context data"
+            }
+          },
+          "required": [
+            "workflow_id"
+          ]
+        }
+      },
+      {
+        "name": "create_workflow",
+        "description": "Create a new workflow",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "trigger_type": {
+              "type": "string",
+              "enum": [
+                "manual",
+                "cron",
+                "webhook",
+                "gumroad_sale",
+                "new_lead",
+                "email_received",
+                "newsletter_subscribe",
+                "newsletter_upgrade",
+                "newsletter_limit_hit"
+              ]
+            },
+            "trigger_config": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "name",
+            "trigger_type"
+          ]
+        }
+      }
+    ],
+    "revenue": [
+      {
+        "name": "check_sales",
+        "description": "Check Gumroad for new sales and update revenue stats",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "nurture_leads",
+        "description": "Process leads and send follow-ups if needed",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "generate_content",
+        "description": "Generate marketing content ideas",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "description": "Number of ideas to generate",
+              "default": 3
+            }
+          }
+        }
+      },
+      {
+        "name": "get_report",
+        "description": "Get current revenue and performance report",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ],
+    "solo_revenue": [
+      {
+        "name": "get_status",
+        "description": "Get status of the revenue daemon and its tasks",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "execute_task",
+        "description": "Execute a specific revenue task by ID",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string",
+              "description": "ID of the task to execute"
+            },
+            "override_config": {
+              "type": "object",
+              "description": "Optional configuration overrides"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        }
+      },
+      {
+        "name": "run_all_tasks",
+        "description": "Run all enabled tasks sequentially",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "list_tasks",
+        "description": "List all available task IDs",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ],
+    "commander": [
+      {
+        "name": "get_dashboard",
+        "description": "Get full system status dashboard and anomalies",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "check_system",
+        "description": "Check health of a specific system",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "system_name": {
+              "type": "string",
+              "description": "Name of system (vercel, supabase, github, jules, proxy, taskmaster)"
+            }
+          },
+          "required": [
+            "system_name"
+          ]
+        }
+      }
+    ],
+    "quota": [
+      {
+        "name": "get_status",
+        "description": "Get current comprehensive quota status",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "get_cli_report",
+        "description": "Get formatted CLI report of quota status",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "format_type": {
+              "type": "string",
+              "description": "Format type: full, compact, table, or json",
+              "enum": [
+                "full",
+                "compact",
+                "table",
+                "json"
+              ],
+              "default": "full"
+            }
+          }
+        }
+      },
+      {
+        "name": "get_optimal_model",
+        "description": "Get the recommended model to use based on quota",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_type": {
+              "type": "string",
+              "description": "Type of task (general, code, vision)",
+              "default": "general"
+            }
+          }
+        }
+      }
+    ],
+    "marketing": [
+      {
+        "name": "content_pipeline",
+        "description": "Run full content production pipeline (Topic -> Research -> Content -> SEO -> Social)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string",
+              "description": "Content topic or keyword"
+            }
+          },
+          "required": [
+            "topic"
+          ]
+        }
+      },
+      {
+        "name": "lead_pipeline",
+        "description": "Run lead generation and qualification pipeline",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "generate_ideas",
+        "description": "Generate content ideas",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "description": "Number of ideas to generate",
+              "default": 3
+            }
+          }
+        }
+      }
+    ],
+    "coding": [
+      {
+        "name": "build",
+        "description": "Run full build pipeline (Analyze -> Code -> Test -> Lint)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "feature": {
+              "type": "string",
+              "description": "Feature name or description"
+            }
+          },
+          "required": [
+            "feature"
+          ]
+        }
+      },
+      {
+        "name": "ship",
+        "description": "Ship current changes (Lint -> Test -> Commit -> Push -> Deploy)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "Commit message"
+            }
+          }
+        }
+      }
+    ],
+    "agency": [
+      {
+        "name": "onboard_client",
+        "description": "Run client onboarding pipeline (Contract -> Invoice -> Portal -> Welcome)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Client/company name"
+            },
+            "vertical": {
+              "type": "string",
+              "description": "Optional vertical name (healthcare, fintech, saas)"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "name": "validate_win",
+        "description": "Validate decision against WIN-WIN-WIN framework",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "description": "Decision or opportunity to evaluate"
+            }
+          },
+          "required": [
+            "decision"
+          ]
+        }
+      },
+      {
+        "name": "audit_client",
+        "description": "Run a vertical-specific audit for a client (Healthcare, Fintech, SaaS)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "client_name": {
+              "type": "string",
+              "description": "Client/company name"
+            },
+            "vertical": {
+              "type": "string",
+              "description": "Vertical name (healthcare, fintech, saas)"
+            },
+            "system_config": {
+              "type": "object",
+              "description": "Optional system configuration to audit"
+            }
+          },
+          "required": [
+            "client_name",
+            "vertical"
+          ]
+        }
+      },
+      {
+        "name": "outreach_pipeline",
+        "description": "Run urgent outreach campaign",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ],
+    "security": [
+      {
+        "name": "run_security_gates",
+        "description": "Run all security and quality gates (Ruff, TypeScript, Pytest). Returns a formatted report.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "dry_run": {
+              "type": "boolean",
+              "description": "Run in dry-run mode (no actual execution)",
+              "default": false
+            }
+          }
+        }
+      },
+      {
+        "name": "check_lint",
+        "description": "Check code linting status.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "check_types",
+        "description": "Check TypeScript type safety.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "check_tests",
+        "description": "Run unit tests.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ],
+    "network": [
+      {
+        "name": "get_network_status",
+        "description": "Get current network status report.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "optimize_network",
+        "description": "Auto-optimize network settings: 1. Enable WARP+DoH 2. Find fastest endpoint 3. Apply settings",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "enable_doh",
+        "description": "Enable WARP+DoH mode.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "set_endpoint",
+        "description": "Set WARP endpoint (e.g., 162.159.193.1:4500).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "description": "The endpoint to set"
+            }
+          },
+          "required": [
+            "endpoint"
+          ]
+        }
+      }
+    ],
+    "orchestrator": [
+      {
+        "name": "execute_command",
+        "description": "Execute a VibeOS command.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Command name (e.g., 'money', 'build')"
+            },
+            "args": {
+              "type": "string",
+              "description": "Optional arguments string"
+            }
+          },
+          "required": [
+            "command"
+          ]
+        }
+      }
+    ],
+    "recovery": [
+      {
+        "name": "auto_recover",
+        "description": "Check system health and attempt auto-recovery for any failures.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "recover_system",
+        "description": "Attempt to recover a specific system manually.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "system": {
+              "type": "string",
+              "description": "System to recover (e.g., proxy, github)"
+            }
+          },
+          "required": [
+            "system"
+          ]
+        }
+      }
+    ],
+    "sync": [
+      {
+        "name": "check_sync",
+        "description": "Check synchronization between Frontend API calls and Backend endpoints. Returns a report of detected routes.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ],
+    "ui": [
+      {
+        "name": "check_ui",
+        "description": "Check @agencyos/ui package version, components, and integration status.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    ]
+  },
+  "servers": {
+    "server_0": {
+      "command": "/Users/macbookprom1/mekong-cli/.venv/bin/python3",
+      "args": [
+        "/tmp/mock_mcp_server.py"
+      ]
     },
-    {
-      "name": "analyze-code",
-      "description": "Analyzes code for bugs"
+    "server_1": {
+      "command": "/Users/macbookprom1/mekong-cli/.venv/bin/python3",
+      "args": [
+        "/tmp/mock_mcp_server.py"
+      ]
+    },
+    "server_2": {
+      "command": "/Users/macbookprom1/mekong-cli/.venv/bin/python3",
+      "args": [
+        "/tmp/mock_mcp_server.py"
+      ]
+    },
+    "server_3": {
+      "command": "/Users/macbookprom1/mekong-cli/.venv/bin/python3",
+      "args": [
+        "/tmp/mock_mcp_server.py"
+      ]
+    },
+    "server_4": {
+      "command": "/Users/macbookprom1/mekong-cli/.venv/bin/python3",
+      "args": [
+        "/tmp/mock_mcp_server.py"
+      ]
+    },
+    "dummy-server": {
+      "command": "echo"
+    },
+    "workflow": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.workflow_server"
+      ]
+    },
+    "revenue": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.revenue_server"
+      ]
+    },
+    "solo_revenue": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.solo_revenue_server"
+      ]
+    },
+    "commander": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.commander_server"
+      ]
+    },
+    "quota": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.quota_server"
+      ]
+    },
+    "marketing": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.marketing_server"
+      ]
+    },
+    "coding": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.coding_server"
+      ]
+    },
+    "agency": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.agency_server"
+      ]
+    },
+    "security": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.security_server"
+      ]
+    },
+    "network": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.network_server"
+      ]
+    },
+    "orchestrator": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.orchestrator_server"
+      ]
+    },
+    "recovery": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.recovery_server"
+      ]
+    },
+    "sync": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.sync_server"
+      ]
+    },
+    "ui": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "antigravity.mcp_servers.ui_server"
+      ]
     }
-  ]
+  },
+  "metadata": {
+    "server_0": {
+      "probed": true
+    },
+    "server_1": {
+      "probed": true
+    },
+    "server_2": {
+      "probed": true
+    },
+    "server_3": {
+      "probed": true
+    },
+    "server_4": {
+      "probed": true
+    },
+    "dummy-server": {
+      "probed": true,
+      "last_probed": "\"/Users/macbookprom1/mekong-cli\""
+    },
+    "workflow": {
+      "probed": true
+    },
+    "revenue": {
+      "probed": true
+    },
+    "solo_revenue": {
+      "probed": true
+    },
+    "commander": {
+      "probed": true
+    },
+    "quota": {
+      "probed": true
+    },
+    "marketing": {
+      "probed": true
+    },
+    "coding": {
+      "probed": true
+    },
+    "agency": {
+      "probed": true
+    },
+    "security": {
+      "probed": true
+    },
+    "network": {
+      "probed": true
+    },
+    "orchestrator": {
+      "probed": true
+    },
+    "recovery": {
+      "probed": true
+    },
+    "sync": {
+      "probed": true
+    },
+    "ui": {
+      "probed": true
+    }
+  }
 }

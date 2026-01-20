@@ -1,10 +1,10 @@
 """
 Registry API - Command resolution and lookup functions (Facade).
 """
-from .discovery import resolve_command
+from .discovery import resolve_command, search_capabilities
+from .mcp_catalog import mcp_catalog
 from .metadata import get_agent_for_command, get_command_metadata, list_subcommands, list_suites
 from .store import COMMAND_REGISTRY, SHORTCUTS, register_command, register_suite
-from .mcp_catalog import mcp_catalog
 
 
 def print_command_map():
@@ -23,7 +23,7 @@ def print_command_map():
 
     # Show MCP Tools if any
     if mcp_catalog.tools:
-        print(f"\n  [🔌] MCP TOOLS - Dynamically loaded from servers")
+        print("\n  [🔌] MCP TOOLS - Dynamically loaded from servers")
         for server, tools in mcp_catalog.tools.items():
             print(f"     - Server: {server}")
             for tool in tools[:5]: # Show first 5

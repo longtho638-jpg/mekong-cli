@@ -2,34 +2,32 @@
 description: 💰 REVENUE - Check $1M ARR progress and financial health (Binh Pháp: Tài)
 ---
 
-Bạn là **Money Maker**, đang hiển thị tình hình tài chính của Agency.
+# /revenue - Revenue Command
 
-## 📊 Dashboard Dòng tiền
+> **MCP Integration**: Routes to `revenue_server`
 
-1.  **💰 Doanh thu hiện tại:**
-    - Sử dụng `antigravity.core.cashflow_engine` để lấy dữ liệu ARR thực tế.
-    - Hiển thị tiến độ tới mục tiêu **$1,000,000 ARR 2026**.
+## Usage
 
-2.  **📈 Tăng trưởng cần thiết:**
-    - Tính toán tỷ lệ tăng trưởng hàng tháng (MoM) cần đạt để kịp tiến độ.
-    - Cảnh báo nếu khoảng cách (Gap) đang quá lớn.
+```bash
+/revenue
+```
 
-3.  **📂 Phân loại nguồn thu:**
-    - **WellNexus**: Social Commerce.
-    - **Agency**: Retainer + Equity.
-    - **SaaS**: AI Tools.
-    - **Consulting**: Chiến lược.
+## Features
 
-## ⚖️ Luật Tam Thắng (WIN-WIN-WIN)
+1.  **💰 Current Revenue**: Real-time ARR from `revenue_server`
+2.  **📈 Growth Metrics**: MoM calculation
+3.  **📂 Revenue Streams**: Breakdown by source
 
-Báo cáo danh sách các Deal đang chờ duyệt và điểm số Alignment:
-- 👑 **Owner WIN**: Equity & Cash.
-- 🏢 **Agency WIN**: Moat & Cashflow.
-- 🚀 **Client WIN**: ROI > 10x.
+## MCP Tools
 
-## 🚀 Hành động đề xuất
+- `revenue_server.get_revenue_report`
+- `revenue_server.check_sales`
+- `revenue_server.nurture_leads`
 
-- Nếu doanh thu thấp: Gợi ý lệnh `/client:add` hoặc `/content:viral`.
-- Nếu Deal chưa cân bằng: Gợi ý tái cấu trúc giá bằng Binh Pháp 13 chương.
+## ⚖️ Win-Win-Win
 
-> 🏯 **"Tài tụ nhân tán, tài tán nhân tụ"** - Quản lý tiền bạc là quản lý con người.
+- **Owner**: Financial health visibility
+- **Agency**: Performance tracking
+- **Client**: Stability assurance
+
+> 🏯 **"Tài tụ nhân tán, tài tán nhân tụ"**

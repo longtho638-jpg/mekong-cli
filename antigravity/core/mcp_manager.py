@@ -86,9 +86,8 @@ class MCPManager:
 
         # Update Tool Catalog (Lazy probe - in real scenario we would connect and list tools)
         from .registry.mcp_catalog import mcp_catalog
-        # For now, we register the server config.
-        # Actual tool indexing usually happens via a 'refresh' command that connects to the server.
-        mcp_catalog.register_server(name, server_entry, [])
+        # For now, we register the server config without tools to mark it as unprobed.
+        mcp_catalog.register_server(name, server_entry, None)
 
     def install_supabase(self, project_ref: str, api_key: str):
         """

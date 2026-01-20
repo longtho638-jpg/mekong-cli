@@ -1,3 +1,10 @@
+---
+title: "Binh Pháp Strategy Rule"
+priority: P0
+tags: [strategy, business, win-win-win]
+agents: [binh-phap-strategist, revenue-engine, client-magnet, fullstack-developer]
+---
+
 # Binh Pháp Strategy Rule
 
 > **"Thượng binh phạt mưu"** - The supreme art of war is to subdue the enemy without fighting.

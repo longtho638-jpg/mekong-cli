@@ -1,10 +1,10 @@
 """
 Registry Discovery - Command resolution and normalization.
 """
-from typing import Optional, Tuple, Dict, Any
+from typing import Any, Dict, Optional, Tuple
 
-from .store import COMMAND_REGISTRY, SHORTCUTS
 from .mcp_catalog import mcp_catalog
+from .store import COMMAND_REGISTRY, SHORTCUTS
 
 
 def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optional[Dict[str, Any]]]:
@@ -45,6 +45,43 @@ def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optio
         return "mcp", cmd_input, tool_info
 
     return None, None, None
+
+def search_capabilities(query: str) -> Dict[str, Any]:
+    """
+    Search for capabilities across both local registry and MCP tools.
+    """
+    results = {
+        "local": [],
+        "mcp": []
+    }
+
+    # Search Local Registry
+    query_lower = query.lower()
+    for suite_name, suite_data in COMMAND_REGISTRY.items():
+        # Search suite description
+        if query_lower in suite_data.get("description", "").lower():
+            results["local"].append({
+                "type": "suite",
+                "name": suite_name,
+                "description": suite_data.get("description")
+            })
+
+        # Search subcommands
+        for sub_name, sub_meta in suite_data.get("subcommands", {}).items():
+            # In a real app, we'd check subcommand description if available in metadata
+            # For now, we check the name and inferred description
+            if query_lower in sub_name.lower():
+                results["local"].append({
+                    "type": "command",
+                    "name": f"{suite_name}:{sub_name}",
+                    "description": f"Command in {suite_name}"
+                })
+
+    # Search MCP Catalog
+    mcp_results = mcp_catalog.search_tools(query)
+    results["mcp"] = mcp_results
+
+    return results
 
 def _get_local_meta(suite: str, sub: str) -> Optional[Dict[str, Any]]:
     """Helper to get metadata from COMMAND_REGISTRY."""

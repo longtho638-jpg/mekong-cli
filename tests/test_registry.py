@@ -30,16 +30,18 @@ class TestRegistry:
 
     def test_resolve_shortcut(self):
         """Test shortcut resolution."""
-        suite, sub = resolve_command("cook")
+        # resolve_command returns (suite, sub, metadata)
+        suite, sub, meta = resolve_command("cook")
         assert suite == "dev"
         assert sub == "cook"
 
-        suite, sub = resolve_command("quote")
+        suite, sub, meta = resolve_command("quote")
         assert suite == "revenue"
         assert sub == "quote"
 
-        suite, sub = resolve_command("invalid")
+        suite, sub, meta = resolve_command("invalid")
         assert suite is None
+        assert sub is None
 
 
 if __name__ == "__main__":

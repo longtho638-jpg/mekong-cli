@@ -5,10 +5,11 @@ Handles lazy-loading, process monitoring, and TTL-based termination.
 import asyncio
 import json
 import logging
+import os
 import subprocess
 import time
-from typing import Any, Dict, List, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .registry.mcp_catalog import mcp_catalog
 
@@ -32,7 +33,8 @@ class MCPProcess:
             return
 
         cmd = [self.config["command"]] + self.config["args"]
-        env = self.config.get("env", {})
+        env = os.environ.copy()
+        env.update(self.config.get("env", {}))
 
         logger.info(f"🚀 Starting MCP Server: {self.name} ({' '.join(cmd)})")
         self.process = subprocess.Popen(
@@ -97,24 +99,64 @@ class MCPOrchestrator:
     Central manager for all active MCP processes.
     Enforces TTL and resource limits.
     """
-    def __init__(self, ttl_seconds: int = 300):
+    def __init__(self, ttl_seconds: int = 300, max_concurrent: int = 10):
         self.processes: Dict[str, MCPProcess] = {}
         self.ttl = ttl_seconds
+        self.max_concurrent = max_concurrent
         self._monitor_task = None
 
     async def get_process(self, server_name: str) -> Optional[MCPProcess]:
         """Retrieves or creates a process for the given server."""
-        if server_name in self.processes:
-            return self.processes[server_name]
+        if server_name not in self.processes:
+            config = mcp_catalog.get_server_config(server_name)
+            if not config:
+                logger.error(f"Unknown MCP server: {server_name}")
+                return None
+            self.processes[server_name] = MCPProcess(server_name, config)
 
-        config = mcp_catalog.get_server_config(server_name)
-        if not config:
-            logger.error(f"Unknown MCP server: {server_name}")
-            return None
+        proc = self.processes[server_name]
 
-        proc = MCPProcess(server_name, config)
-        self.processes[server_name] = proc
+        if not proc.is_alive():
+            # Enforce max concurrency limit (LRU eviction) before starting
+            active_processes = [p for p in self.processes.values() if p.is_alive()]
+            while len(active_processes) >= self.max_concurrent:
+                # Sort by last_used and stop the oldest one
+                oldest = sorted(active_processes, key=lambda p: p.last_used)[0]
+                logger.info(f"♻️ Max concurrent servers reached ({self.max_concurrent}). Evicting {oldest.name}")
+                await oldest.stop()
+                active_processes = [p for p in self.processes.values() if p.is_alive()]
+
+            await proc.start()
+
         return proc
+
+    async def probe_server(self, server_name: str) -> List[Dict[str, Any]]:
+        """Starts a server briefly to list its tools."""
+        proc = await self.get_process(server_name)
+        if not proc:
+            return []
+
+        # MCP standard tools/list call
+        request = {
+            "jsonrpc": "2.0",
+            "id": "probe",
+            "method": "tools/list",
+            "params": {}
+        }
+
+        try:
+            proc.process.stdin.write(json.dumps(request) + "\n")
+            proc.process.stdin.flush()
+            line = proc.process.stdout.readline()
+            if line:
+                response = json.loads(line)
+                tools = response.get("result", {}).get("tools", [])
+                mcp_catalog.mark_probed(server_name, tools)
+                return tools
+        except Exception as e:
+            logger.error(f"Failed to probe server {server_name}: {e}")
+
+        return []
 
     async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """Resolves tool to server and executes it."""

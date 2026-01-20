@@ -1,3 +1,10 @@
+---
+title: "Project Documentation Management"
+priority: P2
+tags: [documentation, management, roadmap]
+agents: [project-manager, docs-manager]
+---
+
 # Project Documentation Management
 
 ### Roadmap & Changelog Maintenance

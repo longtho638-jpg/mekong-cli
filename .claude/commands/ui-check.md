@@ -2,51 +2,29 @@
 description: Check UI package version and integration status
 ---
 
-# /ui-check - UI Version Checker
+# /ui-check - UI Command
 
-> **Verify @agencyos/ui package and app integration**
+> **MCP Integration**: Routes to `ui_server`
 
-## Quick Check
-
-// turbo
+## Usage
 
 ```bash
-python3 scripts/vibeos/ui_checker.py
+/ui-check
 ```
 
-## What It Shows
+## Features
 
-- **@agencyos/ui version** and components list
-- **Dashboard integration** status
-- **Recent commits** to UI package
+- Verifies `@agencyos/ui` version
+- Lists available components
+- Checks integration status
 
-## Example Output
+## MCP Tools
 
-```
-🎨 UI VERSION CHECKER
-==================================================
+- `ui_server.check_ui_version`
+- `ui_server.list_components`
 
-📦 @agencyos/ui
-   Version: 1.0.0
-   Components: 3
-      → button
-      → card
-      → stat-card
+## Standards
 
-📊 Dashboard Integration
-   ✅ @agencyos/ui: workspace:*
-```
+Enforces MD3 (Material Design 3) compliance.
 
-## Install in App
-
-```bash
-# Dashboard
-cd apps/dashboard && pnpm add @agencyos/ui@workspace:*
-
-# Newsletter
-cd newsletter-saas && pnpm add @agencyos/ui@workspace:*
-```
-
-## 🏯 Binh Pháp
-
-> "Thống nhất là sức mạnh" - Unified UI = consistent UX.
+> 🎨 **"Thống nhất là sức mạnh"** - Unified UI = consistent UX.
