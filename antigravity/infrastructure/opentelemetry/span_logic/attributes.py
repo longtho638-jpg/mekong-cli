@@ -1,10 +1,11 @@
 """
 Span attributes, tags, and events management.
 """
+
 import time
 from typing import Any, Dict, List
 
-from .models import Event
+from ..models import Event
 
 
 class SpanAttributes:

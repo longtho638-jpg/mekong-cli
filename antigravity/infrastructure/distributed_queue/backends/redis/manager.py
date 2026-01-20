@@ -1,22 +1,25 @@
 """
 Redis Connection and Core Operations.
 """
+
 import json
 import logging
 import time
 from typing import Any, List, Optional
 
+from ...config import DEFAULT_REDIS_URL, PRIORITY_ORDER, PRIORITY_QUEUES
+from ...models import Job, JobPriority, JobStatus, QueueStats
 from ..base import QueueBackend
-from ..config import DEFAULT_REDIS_URL, PRIORITY_ORDER, PRIORITY_QUEUES
-from ..models import Job, JobPriority, JobStatus, QueueStats
 
 logger = logging.getLogger(__name__)
 
 try:
     import redis
+
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
+
 
 class RedisManager:
     def __init__(self, redis_url: str = DEFAULT_REDIS_URL):
