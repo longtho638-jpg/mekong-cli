@@ -7,7 +7,7 @@ from typing import Any, Dict
 from fastapi import HTTPException
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
-from backend.services.agentops_service import AgentOpsService
+from backend.services.agentops import AgentOpsService
 
 
 class AgentOpsController:

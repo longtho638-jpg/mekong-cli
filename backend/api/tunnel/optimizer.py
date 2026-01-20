@@ -1,137 +1,20 @@
 """
-Antigravity API Tunnel - High Performance Connection Tunnel
-======================================================
-
-Implements Cloudflare 1.1.1.1 WAR-inspired performance optimizations:
-- Connection pooling with persistent HTTP connections
-- Async operations with parallel request batching
-- Response caching with TTL
-- Comprehensive latency tracking and metrics
+Tunnel optimizer implementation.
 """
 
 import asyncio
-import hashlib
-import json
 import logging
 import time
-from collections import defaultdict, deque
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from collections import deque
+from typing import Any, Dict, List
 
 import aiohttp
 import httpx
 
+from .cache import ResponseCache
+from .metrics import TunnelMetrics
+
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class TunnelMetrics:
-    """Tunnel performance metrics."""
-
-    requests_total: int = 0
-    requests_success: int = 0
-    requests_failed: int = 0
-    avg_response_time: float = 0.0
-    p99_response_time: float = 0.0
-    slow_requests_count: int = 0  # >100ms
-    cache_hits: int = 0
-    cache_misses: int = 0
-    connection_reuse_count: int = 0
-    connection_new_count: int = 0
-
-    def record_request(self, duration: float, success: bool, from_cache: bool = False):
-        """Record request metrics."""
-        self.requests_total += 1
-
-        if success:
-            self.requests_success += 1
-        else:
-            self.requests_failed += 1
-
-        # Update average response time
-        if self.requests_total == 1:
-            self.avg_response_time = duration
-        else:
-            self.avg_response_time = (
-                self.avg_response_time * (self.requests_total - 1) + duration
-            ) / self.requests_total
-
-        # Track slow requests (>100ms)
-        if duration > 0.1:  # 100ms
-            self.slow_requests_count += 1
-            logger.warning(f"Slow request: {duration:.3f}s")
-
-        # Track cache hits
-        if from_cache:
-            self.cache_hits += 1
-        else:
-            self.cache_misses += 1
-
-
-@dataclass
-class CacheEntry:
-    """Cache entry with TTL."""
-
-    data: Any
-    timestamp: float
-    ttl: float
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if cache entry is expired."""
-        return time.time() > (self.timestamp + self.ttl)
-
-
-class ResponseCache:
-    """In-memory response cache with TTL."""
-
-    def __init__(self, max_size: int = 1000):
-        self.cache: Dict[str, CacheEntry] = {}
-        self.max_size = max_size
-        self.access_times: Dict[str, float] = defaultdict(float)
-
-    def _generate_key(self, method: str, url: str, params: Dict = None) -> str:
-        """Generate cache key."""
-        cache_data = {"method": method, "url": url, "params": params or {}}
-        cache_str = json.dumps(cache_data, sort_keys=True)
-        return hashlib.md5(cache_str.encode()).hexdigest()
-
-    def get(self, method: str, url: str, params: Dict = None) -> Optional[Any]:
-        """Get cached response."""
-        key = self._generate_key(method, url, params)
-
-        if key not in self.cache:
-            return None
-
-        entry = self.cache[key]
-
-        if entry.is_expired:
-            del self.cache[key]
-            if key in self.access_times:
-                del self.access_times[key]
-            return None
-
-        # Update access time for LRU
-        self.access_times[key] = time.time()
-        return entry.data
-
-    def set(self, method: str, url: str, data: Any, ttl: float, params: Dict = None):
-        """Set cache entry."""
-        key = self._generate_key(method, url, params)
-
-        # Remove oldest entry if cache is full
-        if len(self.cache) >= self.max_size:
-            oldest_key = min(self.access_times.items(), key=lambda x: x[1])[0]
-            del self.cache[oldest_key]
-            del self.access_times[oldest_key]
-
-        self.cache[key] = CacheEntry(data=data, timestamp=time.time(), ttl=ttl)
-        self.access_times[key] = time.time()
-
-    def clear(self):
-        """Clear all cache entries."""
-        self.cache.clear()
-        self.access_times.clear()
 
 
 class TunnelOptimizer:
@@ -346,61 +229,3 @@ class TunnelOptimizer:
         """Close tunnel and cleanup resources."""
         await self.httpx_client.aclose()
         logger.info("TunnelOptimizer closed")
-
-
-# Global tunnel instance - lazy initialization to avoid event loop issues
-_tunnel: Optional[TunnelOptimizer] = None
-
-
-def get_tunnel() -> TunnelOptimizer:
-    """Get or create tunnel instance (lazy initialization)."""
-    global _tunnel
-    if _tunnel is None:
-        _tunnel = TunnelOptimizer()
-    return _tunnel
-
-
-# Backward compatibility alias
-tunnel = None  # Will be set on first async access
-
-
-# Tunnel management functions
-async def get_optimized_tools() -> Dict[str, Any]:
-    """Get API tools with caching."""
-    return await get_tunnel().request("GET", "/api/code/tools", use_cache=True)
-
-
-async def get_optimized_status() -> Dict[str, Any]:
-    """Get API status with caching."""
-    return await get_tunnel().request("GET", "/api/code/status", use_cache=True)
-
-
-async def pre_warm_tunnel():
-    """Pre-warm tunnel connections."""
-    await get_tunnel().pre_warm_connections()
-
-
-def get_tunnel_metrics() -> Dict[str, Any]:
-    """Get tunnel performance metrics."""
-    t = get_tunnel()
-    return t.get_metrics_summary()
-
-
-async def shutdown_tunnel():
-    """Shutdown tunnel gracefully."""
-    global _tunnel
-    if _tunnel is not None:
-        await _tunnel.close()
-        _tunnel = None
-
-
-# Export tunnel interface
-__all__ = [
-    "TunnelOptimizer",
-    "tunnel",
-    "get_optimized_tools",
-    "get_optimized_status",
-    "pre_warm_tunnel",
-    "get_tunnel_metrics",
-    "shutdown_tunnel",
-]

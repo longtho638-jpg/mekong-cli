@@ -130,6 +130,7 @@ class ExperimentManager:
             test_result=None,
             effect_size=None,
             bayes_factor=None,
+            variants=variants_data,
         )
 
         logger.info(f"Created multivariate A/B test: {test_id} with {len(variants)} variants")
@@ -165,27 +166,36 @@ class ExperimentManager:
         if not conversions or sum(conversions) == 0:
             return TestResult.INCONCLUSIVE
 
+        best_variant_idx = 0
+
         if test.statistical_significance and STATISTICAL_LIBS_AVAILABLE:
-            best_variant_idx = 0
             best_score = 0.0
 
             for i in range(len(variants)):
-                variant_data = test.conversions.get(variants[i])
-                if hasattr(variant_data, "confidence_interval") and variant_data.confidence_interval:
+                variant_name = variants[i]
+                variant_data = test.variants.get(variant_name)
+
+                if variant_data and variant_data.confidence_interval:
                     ci_width = variant_data.confidence_interval[1] - variant_data.confidence_interval[0]
                     score = 1.0 / ci_width if ci_width > 0 else 0
 
                     if score > best_score:
                         best_score = score
                         best_variant_idx = i
-
-            return [TestResult.VARIANT_WINS, TestResult.CONTROL_WINS][best_variant_idx]
         else:
             conversion_rates = [
                 c / test.sample_size if test.sample_size > 0 else 0 for c in conversions
             ]
+            if not conversion_rates:
+                return TestResult.INCONCLUSIVE
             best_variant_idx = conversion_rates.index(max(conversion_rates))
-            return [TestResult.VARIANT_WINS, TestResult.CONTROL_WINS][best_variant_idx]
+
+        # Assume index 0 is control, others are variants
+        # This handles multivariate tests correctly
+        if best_variant_idx == 0:
+            return TestResult.CONTROL_WINS
+        else:
+            return TestResult.VARIANT_WINS
 
 
 __all__ = ["ExperimentManager", "EarlyWinnerPredictor"]

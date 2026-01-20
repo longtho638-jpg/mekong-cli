@@ -67,7 +67,8 @@ class AdvancedABTestEngine:
             return
 
         # Update conversions and revenue
-        test.conversions[variant_name] += 1
+        if conversion:
+            test.conversions[variant_name] += 1
         test.revenue[variant_name] += revenue
         test.sample_size += 1
 

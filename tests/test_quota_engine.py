@@ -12,7 +12,7 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from packages.antigravity.core.quota_engine import (
+from packages.antigravity.core.quota import (
     QuotaEngine,
     QuotaModel,
     QuotaPool,

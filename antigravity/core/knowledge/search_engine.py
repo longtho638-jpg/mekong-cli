@@ -147,6 +147,9 @@ class SearchEngine:
         name_words = re.findall(r"[A-Z][a-z]+|[a-z]+|[0-9]+", entity.name)
         keywords.update(w.lower() for w in name_words if len(w) > 1)
 
+        # Add full name lowercased to allow exact matches
+        keywords.add(entity.name.lower())
+
         # Extract keywords from docstring (limited)
         if entity.docstring:
             doc_words = re.findall(r"\w+", entity.docstring.lower())

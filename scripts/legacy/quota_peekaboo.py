@@ -206,7 +206,7 @@ class PeekabooQuotaManager:
 
         # First try to get quota from our internal engine
         try:
-            from packages.antigravity.core.quota_engine import QuotaEngine
+            from packages.antigravity.core.quota import QuotaEngine
 
             engine = QuotaEngine()
             status = engine.get_current_status()

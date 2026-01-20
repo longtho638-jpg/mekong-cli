@@ -1,18 +1,30 @@
 """
-🎛 Antigravity Control Module
-==============================
+🎛️ Control Center Module
+========================
 
-Modular control system with:
-- Redis client for distributed configuration
-- Feature flags with analytics
-- Circuit breaker for fault tolerance
-- Analytics tracking
+Centralized control layer for the entire platform.
+Unifies feature flags, circuit breakers, and rate governors.
 """
 
-from .redis_client import RedisClient, REDIS_AVAILABLE
-from .feature_flags import FeatureFlag, FeatureFlagManager
-from .circuit_breaker import CircuitBreaker, CircuitState
 from .analytics import AnalyticsEvent, AnalyticsTracker
+from .center import (
+    ControlCenter,
+    check_breaker,
+    check_rate,
+    get_control,
+    is_enabled,
+    protected,
+)
+from .circuit_breaker import CircuitBreaker, CircuitBreakerError, CircuitState
+from .enhanced import (
+    EnhancedControlCenter,
+    get_control_center,
+    is_feature_enabled,
+    set_feature_flag,
+)
+from .feature_flags import FeatureFlag, FeatureFlagManager
+from .rate_governor import RateGovernor
+from .redis_client import REDIS_AVAILABLE, RedisClient
 
 __all__ = [
     "RedisClient",
@@ -21,6 +33,18 @@ __all__ = [
     "FeatureFlagManager",
     "CircuitBreaker",
     "CircuitState",
+    "CircuitBreakerError",
+    "RateGovernor",
+    "ControlCenter",
+    "get_control",
+    "is_enabled",
+    "check_breaker",
+    "check_rate",
+    "protected",
     "AnalyticsEvent",
     "AnalyticsTracker",
+    "EnhancedControlCenter",
+    "get_control_center",
+    "is_feature_enabled",
+    "set_feature_flag",
 ]

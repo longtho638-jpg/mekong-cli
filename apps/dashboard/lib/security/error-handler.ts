@@ -307,7 +307,7 @@ class ErrorHandler {
   }
 
   private createErrorResponse(error: BaseError, requestId: string): NextResponse {
-    const response: any = {
+    const response: Record<string, unknown> = {
       error: error.code,
       message: error.userMessage,
       requestId,
@@ -345,11 +345,12 @@ class ErrorHandler {
     return new ValidationError('Input validation failed', { fieldErrors })
   }
 
-  static fromDatabaseError(error: any, operation: string): DatabaseError {
+  static fromDatabaseError(error: unknown, operation: string): DatabaseError {
+    const errorObj = error as { message?: string; code?: string }
     const sanitizedError = {
       operation,
-      message: error.message?.substring(0, 100) || 'Unknown database error',
-      code: error.code,
+      message: errorObj.message?.substring(0, 100) || 'Unknown database error',
+      code: errorObj.code,
     }
 
     return new DatabaseError(`Database ${operation} failed`, sanitizedError)
@@ -384,9 +385,9 @@ class ErrorHandler {
 export const errorHandler = new ErrorHandler()
 
 export function withErrorHandler(
-  handler: (request: NextRequest, context?: any) => Promise<NextResponse>
+  handler: (request: NextRequest, context?: Record<string, unknown>) => Promise<NextResponse>
 ) {
-  return async (request: NextRequest, context?: any): Promise<NextResponse> => {
+  return async (request: NextRequest, context?: Record<string, unknown>): Promise<NextResponse> => {
     try {
       return await handler(request, context)
     } catch (error) {

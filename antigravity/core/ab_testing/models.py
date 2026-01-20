@@ -64,6 +64,7 @@ class StatisticalTest:
     sample_size: int = 0
     conversions: Dict[str, int] = field(default_factory=dict)
     revenue: Dict[str, float] = field(default_factory=dict)
+    variants: Dict[str, "ABVariant"] = field(default_factory=dict)
     start_time: float = 0.0
     end_time: Optional[float] = None
     statistical_significance: bool = False

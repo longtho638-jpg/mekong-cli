@@ -14,13 +14,24 @@ import time
 from typing import Any, Dict
 
 import numpy as np
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import PolynomialFeatures
 
 from .models import ML_AVAILABLE, TF_AVAILABLE, TORCH_AVAILABLE, MLOptimizationResult
-from .training import extract_enhanced_features
+from .training import extract_enhanced_features, create_polynomial_features
 
 logger = logging.getLogger(__name__)
+
+# Optional sklearn imports with fallback
+SKLEARN_AVAILABLE = False
+PolynomialFeatures = None
+cross_val_score = None
+
+try:
+    from sklearn.model_selection import cross_val_score
+    from sklearn.preprocessing import PolynomialFeatures
+
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    logger.warning("sklearn not available for inference, using fallbacks")
 
 
 def predict_conversion_rate_ml(
@@ -112,6 +123,18 @@ def calculate_statistical_optimization(
     Returns:
         MLOptimizationResult with optimization details
     """
+    # If sklearn not available, return simple fallback
+    if not SKLEARN_AVAILABLE:
+        return MLOptimizationResult(
+            optimal_price=base_price,
+            confidence_score=0.5,
+            predicted_conversion_rate=0.1,
+            viral_multiplier=calculate_viral_multiplier(features),
+            strategy_used="no_sklearn_fallback",
+            optimization_features=["basic_features"],
+            training_data_points=len(training_data),
+        )
+
     # Enhanced feature engineering
     feature_vector = extract_enhanced_features(base_price, features)
 
@@ -125,8 +148,26 @@ def calculate_statistical_optimization(
             X = np.hstack([feature_vector.reshape(1, -1), feature_poly])
             y = np.array([features.get("conversion_rate", 0.1)])
 
-            # Cross-validation for robustness
-            scores = cross_val_score(models["ensemble"], X, y, cv=5, scoring="r2")
+            # Cross-validation for robustness (requires at least 10 samples)
+            min_samples_for_cv = 10
+            if len(training_data) >= min_samples_for_cv:
+                # Build dataset from training data for CV
+                X_train_list = [X]
+                y_train_list = [y[0]]
+                for record in training_data[-min_samples_for_cv:]:
+                    record_features = record.get("features", {})
+                    record_price = record.get("price", base_price)
+                    record_fv = extract_enhanced_features(record_price, record_features)
+                    record_poly = poly_features.transform(record_fv.reshape(1, -1))
+                    X_train_list.append(np.hstack([record_fv.reshape(1, -1), record_poly]))
+                    y_train_list.append(record.get("conversion_rate", 0.1))
+                X_cv = np.vstack(X_train_list)
+                y_cv = np.array(y_train_list)
+                scores = cross_val_score(models["ensemble"], X_cv, y_cv, cv=5, scoring="r2")
+            else:
+                # Not enough samples for CV, use default score
+                logger.debug(f"Skipping CV: only {len(training_data)} samples (need {min_samples_for_cv})")
+                scores = np.array([0.5])  # Default moderate confidence
 
             # Fit on full dataset
             models["ensemble"].fit(X, y)

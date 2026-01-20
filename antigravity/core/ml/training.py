@@ -9,13 +9,24 @@ Contains:
 - Market analysis utilities
 """
 
+import logging
 import time
 from typing import Any, Dict
 
 import numpy as np
-from sklearn.preprocessing import PolynomialFeatures
 
 from .models import ABTestAdvanced
+
+logger = logging.getLogger(__name__)
+
+# Optional sklearn import with fallback
+try:
+    from sklearn.preprocessing import PolynomialFeatures
+
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    logger.warning("sklearn not available, using fallback polynomial features")
 
 
 def extract_enhanced_features(base_price: float, features: Dict[str, Any]) -> np.ndarray:
@@ -57,8 +68,13 @@ def create_polynomial_features(feature_vector: np.ndarray, degree: int = 2) -> n
     Returns:
         Polynomial feature array
     """
-    poly_features = PolynomialFeatures(degree=degree, include_bias=False)
-    return poly_features.fit_transform(feature_vector.reshape(1, -1))
+    if SKLEARN_AVAILABLE:
+        poly_features = PolynomialFeatures(degree=degree, include_bias=False)
+        return poly_features.fit_transform(feature_vector.reshape(1, -1))
+    else:
+        # Fallback: simple quadratic features (x, x^2)
+        x = feature_vector.reshape(1, -1)
+        return np.hstack([x, x**2])
 
 
 def get_recent_performance(training_data: list) -> Dict[str, float]:
