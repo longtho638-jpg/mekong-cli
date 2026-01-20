@@ -1,8 +1,9 @@
 import json
 import logging
 from typing import Optional
-from .models import AnalyticsEvent
+
 from ..redis_client import RedisClient
+from .models import AnalyticsEvent
 
 logger = logging.getLogger(__name__)
 

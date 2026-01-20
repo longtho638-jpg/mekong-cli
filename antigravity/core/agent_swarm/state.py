@@ -1,6 +1,8 @@
 import threading
 from typing import List
+
 from .models import SwarmMetrics
+
 
 class SwarmState:
     """
