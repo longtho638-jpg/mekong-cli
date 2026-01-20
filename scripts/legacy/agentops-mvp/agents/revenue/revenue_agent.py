@@ -309,8 +309,9 @@ Output format: Structured JSON with clear actions and amounts."""
     def _query_invoice_from_db(self, invoice_id: str) -> Dict[str, Any]:
         """Query invoice from database."""
         try:
+            import json
             data = self.redis_client.get(f"invoice:{invoice_id}")
-            return eval(data) if data else {}
+            return json.loads(data) if data else {}
         except Exception as e:
             print(f"Error querying invoice: {e}")
             return {}

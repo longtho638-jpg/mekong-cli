@@ -3,84 +3,11 @@ AgentOps Service - Business logic for AgentOps operations
 """
 
 import os
-from enum import Enum
 from typing import Any, Dict
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse, OpsStatus
 
-
-class OpsCategory(str, Enum):
-    """All AgentOps categories aligned with agencyos.network DNA"""
-
-    # Sales
-    SDR = "sdrops"
-    AE = "aeops"
-    SA = "saops"
-    ISR = "isrops"
-    OSR = "osrops"
-    BDM = "bdmops"
-    SALES = "sales"
-    LEADGEN = "leadgenops"
-
-    # Marketing
-    SEO = "seoops"
-    PPC = "ppcops"
-    SOCIAL_MEDIA = "socialmediaops"
-    CONTENT = "contentops"
-    CONTENT_MARKETING = "contentmarketingops"
-    EMAIL_MARKETING = "emailmarketingops"
-    INFLUENCER = "influencermarketingops"
-    PAID_SOCIAL = "paidsocialops"
-    BRAND = "brandmanagerops"
-    PRODUCT_MARKETING = "productmarketingops"
-    DIGITAL_MARKETING = "digitalmarketingops"
-    B2B_CONTENT = "b2bcontentops"
-    B2B_MARKETING = "b2bmarketingops"
-    MARKETING_MANAGER = "marketingmanagerops"
-    MARKETING_ANALYST = "marketinganalystops"
-    MARKETING_COORD = "marketingcoordops"
-    MARKET_RESEARCH = "marketresearchops"
-    EVENT_MARKETING = "eventmarketingops"
-    ABM = "abmops"
-    PR = "props"
-
-    # Creative
-    COPYWRITER = "copywriterops"
-    CREATIVE_STRATEGIST = "creativestrategistops"
-    MEDIA = "mediaops"
-
-    # HR
-    HR = "hrops"
-    RECRUITER = "recruiterops"
-    LD = "ldops"
-    HRIS = "hrisops"
-    HR_ANALYST = "hranalystops"
-    COMPBEN = "compbenops"
-
-    # Finance
-    FIN = "finops"
-    TAX = "taxops"
-
-    # Engineering
-    SWE = "sweops"
-    SE = "seops"
-
-    # Support
-    CS = "csops"
-    SERVICE = "serviceops"
-
-    # Legal
-    LEGAL = "legalops"
-    IP = "ipops"
-
-    # Admin
-    ADMIN = "adminops"
-    ER = "erops"
-
-    # Ecommerce
-    ECOMMERCE = "ecommerceops"
-    AMAZON_FBA = "amazonfbaops"
-    SM = "smops"  # Store Manager
+from .enums import OpsCategory
 
 
 class AgentOpsService:
@@ -92,7 +19,12 @@ class AgentOpsService:
 
     def _initialize_ops_registry(self):
         """Initialize all ops from enum"""
-        base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        # Calculate base path relative to this file
+        # this file is in backend/services/agentops/service.py
+        # root is ../../../
+        base_path = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        )
 
         for ops in OpsCategory:
             agents_count = self._count_agents(ops.value, base_path)
@@ -108,7 +40,9 @@ class AgentOpsService:
         ops_path = os.path.join(base_path, "backend", "agents", ops_name)
 
         if os.path.exists(ops_path):
-            py_files = [f for f in os.listdir(ops_path) if f.endswith(".py") and f != "__init__.py"]
+            py_files = [
+                f for f in os.listdir(ops_path) if f.endswith(".py") and f != "__init__.py"
+            ]
             return len(py_files)
         return 0
 
@@ -171,7 +105,9 @@ class AgentOpsService:
         return {
             "total_ops": len(self.ops_registry),
             "total_agents": total_agents,
-            "categories": {k: [o.model_dump() for o in v] for k, v in categories.items()},
+            "categories": {
+                k: [o.model_dump() for o in v] for k, v in categories.items()
+            },
             "status": "all_ready",
         }
 
@@ -209,10 +145,14 @@ class AgentOpsService:
 
     async def get_health_check(self) -> Dict[str, Any]:
         """Get health check for AgentOps system"""
-        healthy_count = sum(1 for ops in self.ops_registry.values() if ops.status == "ready")
+        healthy_count = sum(
+            1 for ops in self.ops_registry.values() if ops.status == "ready"
+        )
 
         return {
-            "status": "healthy" if healthy_count == len(self.ops_registry) else "degraded",
+            "status": "healthy"
+            if healthy_count == len(self.ops_registry)
+            else "degraded",
             "total_ops": len(self.ops_registry),
             "healthy_ops": healthy_count,
             "message": f"AgentOps: {healthy_count}/{len(self.ops_registry)} ready",

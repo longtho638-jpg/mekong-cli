@@ -7,7 +7,7 @@ from fastapi import APIRouter
 
 from backend.controllers.agentops_controller import AgentOpsController
 from backend.models.agentops import OpsExecuteRequest
-from backend.services.agentops_service import AgentOpsService
+from backend.services.agentops import AgentOpsService
 
 router = APIRouter(prefix="/api/agentops", tags=["AgentOps"])
 

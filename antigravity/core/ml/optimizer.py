@@ -107,7 +107,7 @@ class MLOptimizer:
         Returns:
             MLOptimizationResult with optimization details
         """
-        if not ML_AVAILABLE:
+        if not ML_AVAILABLE or "pricing_agent" not in self.ai_agents:
             return calculate_statistical_optimization(
                 base_price, features, self.models, self.training_data
             )

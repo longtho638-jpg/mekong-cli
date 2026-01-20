@@ -214,5 +214,35 @@ class CircuitBreaker:
             logger.info("Manual circuit breaker reset triggered")
             self._reset()
 
+    # Manual Control Methods (for ControlCenter integration)
+    def can_execute(self) -> bool:
+        """
+        Check if execution is allowed.
+        Transitions to HALF_OPEN if timeout has passed.
+        """
+        with self.lock:
+            if self.state == CircuitState.CLOSED:
+                return True
+
+            if self.state == CircuitState.HALF_OPEN:
+                return True
+
+            if self.state == CircuitState.OPEN:
+                if self._should_attempt_reset():
+                    logger.info("Circuit transitioning to HALF_OPEN for recovery attempt")
+                    self.state = CircuitState.HALF_OPEN
+                    return True
+                return False
+
+            return False
+
+    def record_failure(self):
+        """Record a failure manually."""
+        self._on_failure()
+
+    def record_success(self):
+        """Record a success manually."""
+        self._on_success()
+
 
 __all__ = ["CircuitBreaker", "CircuitState", "CircuitBreakerError"]

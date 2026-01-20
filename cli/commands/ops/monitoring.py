@@ -39,11 +39,11 @@ def monitor_quota_cmd(
     """📊 Monitor AI model quotas."""
     # Try to import QuotaEngine
     try:
-        from antigravity.core.quota_engine import QuotaEngine
+        from antigravity.core.quota import QuotaEngine
     except ImportError:
         try:
             sys.path.insert(0, str(Path(__file__).parents[3]))
-            from packages.antigravity.core.quota_engine import QuotaEngine
+            from packages.antigravity.core.quota import QuotaEngine
         except ImportError:
             QuotaEngine = None
 
