@@ -18,7 +18,9 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
+
+from antigravity.core.types import AgentTaskDict, ChainMetricsDict, ChainResultDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -65,7 +67,7 @@ class AgentTask:
     priority: int = 1
     timeout: int = 300  # seconds
     dependencies: List[str] = field(default_factory=list)
-    result: Any = None
+    result: object = None  # Can be success result or error string
     status: str = "pending"  # pending, running, completed, failed
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
@@ -75,7 +77,7 @@ class AgentTask:
         self.status = "running"
         self.started_at = datetime.now()
 
-    def complete(self, result: Any = None) -> None:
+    def complete(self, result: object = None) -> None:
         """Transitions the task to the final success state."""
         self.status = "completed"
         self.result = result
@@ -93,7 +95,7 @@ class AgentTask:
             return (self.completed_at - self.started_at).total_seconds()
         return 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> AgentTaskDict:
         """Provides a serializable representation."""
         return {
             "agent": self.agent.value,
@@ -131,7 +133,7 @@ class ChainResult:
         self.success = False
 
     @property
-    def metrics(self) -> Dict[str, int]:
+    def metrics(self) -> ChainMetricsDict:
         """Counts task outcomes for summary reporting."""
         return {
             "done": len([t for t in self.tasks if t.status == "completed"]),
@@ -139,7 +141,7 @@ class ChainResult:
             "total": len(self.tasks),
         }
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> ChainResultDict:
         """Provides a serializable representation."""
         return {
             "success": self.success,

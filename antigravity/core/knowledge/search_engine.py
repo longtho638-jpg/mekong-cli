@@ -10,11 +10,11 @@ Provides fast search over code entities with:
 """
 
 import logging
-import re
 from dataclasses import dataclass
 from typing import Dict, List, Set
 
 from .types import CodeEntity
+from .search_indexing import index_entity_keywords, evict_entity
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +46,7 @@ class SearchEngine:
         logger.info(f"SearchEngine initialized (max_size={max_index_size})")
 
     def add_entity(self, entity: CodeEntity):
-        """
-        Add entity to index.
-
-        Args:
-            entity: CodeEntity to index
-        """
+        """Add entity to index."""
         # Check size limit
         if self.entity_count >= self.max_index_size:
             self._evict_oldest()
@@ -61,22 +56,12 @@ class SearchEngine:
         self.entity_count += 1
 
         # Index keywords
-        self._index_entity(entity)
+        self.index = index_entity_keywords(entity, self.index)
 
         logger.debug(f"Indexed entity: {entity.name} ({entity.type.value})")
 
     def search(self, query: str, entity_type: str = None, limit: int = 10) -> List[SearchResult]:
-        """
-        Search indexed entities.
-
-        Args:
-            query: Search query
-            entity_type: Optional filter by entity type
-            limit: Maximum results to return
-
-        Returns:
-            List of SearchResult objects sorted by relevance
-        """
+        """Search indexed entities."""
         query_words = set(query.lower().split())
         results = []
 
@@ -134,45 +119,8 @@ class SearchEngine:
         self.entity_count = 0
         logger.info("Search index cleared")
 
-    def _index_entity(self, entity: CodeEntity):
-        """
-        Add entity to keyword index.
-
-        Args:
-            entity: Entity to index
-        """
-        keywords = set()
-
-        # Extract keywords from name (camelCase/snake_case)
-        name_words = re.findall(r"[A-Z][a-z]+|[a-z]+|[0-9]+", entity.name)
-        keywords.update(w.lower() for w in name_words if len(w) > 1)
-
-        # Add full name lowercased to allow exact matches
-        keywords.add(entity.name.lower())
-
-        # Extract keywords from docstring (limited)
-        if entity.docstring:
-            doc_words = re.findall(r"\w+", entity.docstring.lower())
-            # Limit docstring keywords to prevent index bloat
-            keywords.update(w for w in doc_words[:50] if len(w) > 3)
-
-        # Add to index
-        for keyword in keywords:
-            if keyword not in self.index:
-                self.index[keyword] = set()
-            self.index[keyword].add(entity.id)
-
     def _calculate_relevance(self, entity: CodeEntity, query_words: Set[str]) -> tuple[float, List[str]]:
-        """
-        Calculate relevance score for entity.
-
-        Args:
-            entity: Entity to score
-            query_words: Set of query words
-
-        Returns:
-            Tuple of (relevance_score, match_descriptions)
-        """
+        """Calculate relevance score for entity."""
         relevance = 0.0
         matches = []
 
@@ -201,11 +149,7 @@ class SearchEngine:
         return relevance, matches
 
     def _evict_oldest(self):
-        """
-        Evict oldest entity when index is full.
-
-        Uses simple FIFO eviction (could be enhanced to LRU).
-        """
+        """Evict oldest entity when index is full."""
         if not self.entities:
             return
 
@@ -213,16 +157,9 @@ class SearchEngine:
         oldest_id = next(iter(self.entities))
         oldest_entity = self.entities[oldest_id]
 
-        # Remove from entities
-        del self.entities[oldest_id]
+        # Evict using helper
+        self.entities, self.index = evict_entity(oldest_id, self.entities, self.index)
         self.entity_count -= 1
-
-        # Remove from index
-        for keyword_set in self.index.values():
-            keyword_set.discard(oldest_id)
-
-        # Clean empty keywords
-        self.index = {k: v for k, v in self.index.items() if v}
 
         logger.debug(f"Evicted entity: {oldest_entity.name}")
 

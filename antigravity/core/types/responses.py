@@ -91,3 +91,61 @@ class PlanItemDict(TypedDict):
     status: str
     created_at: str
     phases: List[str]
+
+
+class TaskPerformanceDict(TypedDict):
+    """Performance metrics for an agent task."""
+
+    duration: float
+    priority: int
+
+
+class AgentTaskDict(TypedDict):
+    """Serialized AgentTask representation."""
+
+    agent: str
+    description: str
+    status: str
+    performance: TaskPerformanceDict
+    output_preview: Optional[str]
+
+
+class ChainMetricsDict(TypedDict):
+    """Metrics for chain result."""
+
+    done: int
+    fail: int
+    total: int
+
+
+class ChainResultDict(TypedDict):
+    """Serialized ChainResult representation."""
+
+    success: bool
+    total_time_sec: float
+    mission_metrics: ChainMetricsDict
+    errors: List[str]
+
+
+class SpanEventDict(TypedDict):
+    """Serialized SpanEvent representation."""
+
+    name: str
+    timestamp: str
+    attributes: Dict[str, object]
+
+
+class SpanDict(TypedDict):
+    """Serialized Span representation for export."""
+
+    traceId: str
+    spanId: str
+    parentSpanId: Optional[str]
+    name: str
+    kind: str
+    status: str
+    startTime: str
+    endTime: Optional[str]
+    duration_ms: float
+    attributes: Dict[str, object]
+    events: List[SpanEventDict]

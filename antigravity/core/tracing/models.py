@@ -3,16 +3,21 @@ Tracing Models.
 """
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, Union
+
+from antigravity.core.types import SpanDict
 
 from .enums import SpanKind, SpanStatus
+
+# Span attribute value type - primitives that can be serialized
+SpanAttributeValue = Union[str, int, float, bool, None]
 
 @dataclass
 class SpanEvent:
     """Event within a span."""
     name: str
     timestamp: datetime = field(default_factory=datetime.now)
-    attributes: Dict[str, Any] = field(default_factory=dict)
+    attributes: Dict[str, SpanAttributeValue] = field(default_factory=dict)
 
 @dataclass
 class Span:
@@ -29,7 +34,7 @@ class Span:
     status: SpanStatus = SpanStatus.UNSET
     start_time: datetime = field(default_factory=datetime.now)
     end_time: Optional[datetime] = None
-    attributes: Dict[str, Any] = field(default_factory=dict)
+    attributes: Dict[str, SpanAttributeValue] = field(default_factory=dict)
     events: List[SpanEvent] = field(default_factory=list)
 
     @property
@@ -43,7 +48,7 @@ class Span:
         """Add event to span."""
         self.events.append(SpanEvent(name, attributes=attributes or {}))
 
-    def set_attribute(self, key: str, value: Any):
+    def set_attribute(self, key: str, value: SpanAttributeValue):
         """Set span attribute."""
         self.attributes[key] = value
 
@@ -58,7 +63,7 @@ class Span:
         self.end_time = datetime.now()
         self.status = status
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> SpanDict:
         """Convert to dictionary for export."""
         return {
             "traceId": self.trace_id,

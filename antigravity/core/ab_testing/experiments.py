@@ -1,76 +1,22 @@
 """
 AB Testing Experiments - Experiment management.
 
-Handles experiment lifecycle:
-- Test creation with multivariate support
-- Metrics updates with real-time analysis
-- Early stopping detection and execution
-- Winner determination
+Handles experiment lifecycle: test creation, metrics updates, early stopping, winner determination.
 """
 
 import logging
 import time
-from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
+from .lifecycle import EarlyWinnerPredictor
 from .models import (
     ABVariant,
-    AllocationStrategy,
     STATISTICAL_LIBS_AVAILABLE,
     StatisticalTest,
     TestResult,
 )
 
 logger = logging.getLogger(__name__)
-
-
-class EarlyWinnerPredictor:
-    """Predicts early winners based on historical test patterns."""
-
-    def __init__(self):
-        self.historical_patterns: List[Dict[str, Any]] = []
-
-    def train(self, historical_tests: List[StatisticalTest]) -> None:
-        """Train on historical A/B test patterns."""
-        for test in historical_tests:
-            if test.test_result and test.conversions:
-                pattern = {
-                    "test_duration": (test.end_time or 0) - test.start_time,
-                    "sample_size": test.sample_size,
-                    "effect_size": test.effect_size,
-                    "test_result": test.test_result,
-                    "traffic_allocation": sum(test.conversions.values()),
-                    "variant_performance": test.conversions,
-                }
-                self.historical_patterns.append(pattern)
-
-    def predict_winner(
-        self, current_test: StatisticalTest, days_elapsed: float
-    ) -> Optional[str]:
-        """Predict early winner based on patterns."""
-        if not self.historical_patterns:
-            return None
-
-        similar_tests = []
-        for pattern in self.historical_patterns:
-            if (
-                abs(pattern["effect_size"] - (current_test.effect_size or 0)) < 0.05
-                and abs(pattern["test_duration"] - days_elapsed) < 2.0
-            ):
-                similar_tests.append(pattern)
-
-        if not similar_tests:
-            return None
-
-        votes: Dict[TestResult, int] = defaultdict(int)
-        for pattern in similar_tests:
-            votes[pattern["test_result"]] += 1
-
-        if not votes:
-            return None
-
-        winner = max(votes.items(), key=lambda x: x[1])
-        return winner
 
 
 class ExperimentManager:
@@ -152,7 +98,6 @@ class ExperimentManager:
         if test.sample_size > 100:
             min_conversions = min(test.conversions.values())
             max_conversions = max(test.conversions.values())
-
             if max_conversions > 10 * min_conversions and min_conversions / max_conversions < 0.1:
                 return True
 
@@ -170,15 +115,12 @@ class ExperimentManager:
 
         if test.statistical_significance and STATISTICAL_LIBS_AVAILABLE:
             best_score = 0.0
-
             for i in range(len(variants)):
                 variant_name = variants[i]
                 variant_data = test.variants.get(variant_name)
-
                 if variant_data and variant_data.confidence_interval:
                     ci_width = variant_data.confidence_interval[1] - variant_data.confidence_interval[0]
                     score = 1.0 / ci_width if ci_width > 0 else 0
-
                     if score > best_score:
                         best_score = score
                         best_variant_idx = i
@@ -190,8 +132,6 @@ class ExperimentManager:
                 return TestResult.INCONCLUSIVE
             best_variant_idx = conversion_rates.index(max(conversion_rates))
 
-        # Assume index 0 is control, others are variants
-        # This handles multivariate tests correctly
         if best_variant_idx == 0:
             return TestResult.CONTROL_WINS
         else:

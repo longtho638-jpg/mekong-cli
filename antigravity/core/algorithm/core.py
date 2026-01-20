@@ -17,6 +17,12 @@ from .ab_testing import ABTestEngine
 from .analytics import AnalyticsEngine
 from .strategies import PricingStrategyEngine
 from .confidence import ConfidenceScorer
+from .utils import (
+    build_ab_tests_data,
+    build_conversion_data,
+    build_ml_models_data,
+    build_pricing_optimization_data,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -150,51 +156,11 @@ class MaxLevelAntigravityAlgorithm:
 
     def get_optimization_analytics(self) -> Dict[str, Any]:
         """Get comprehensive optimization analytics."""
-
-        # Gather data from sub-engines
-        ml_models_data = {
-            name: {
-                "type": model.model_type,
-                "features": model.features,
-                "last_trained": model.last_trained,
-                "accuracy": model.accuracy,
-            }
-            for name, model in self.ml_engine.models.items()
-        }
-
-        ab_tests_data = {
-            test_id: {
-                "name": config.name,
-                "variants": config.variants,
-                "traffic_split": config.traffic_split,
-                "duration_days": (time.time() - config.start_time) / (24 * 3600),
-                "status": "active"
-                if not config.end_time or time.time() < config.end_time
-                else "completed",
-            }
-            for test_id, config in self.ab_engine.ab_tests.items()
-        }
-
-        recent_conversions = len(
-            [c for c in self.conversion_data if time.time() - c.timestamp < 86400]
-        )
-
         return {
-            "ml_models": ml_models_data,
-            "ab_tests": ab_tests_data,
-            "conversion_data": {
-                "total_conversions": len(self.conversion_data),
-                "conversion_rate": len([c for c in self.conversion_data if c.conversion])
-                / max(len(self.conversion_data), 1),
-                "avg_conversion_value": self.analytics_engine.calculate_avg_revenue(self.conversion_data),
-                "recent_conversions": recent_conversions,
-            },
-            "pricing_optimization": {
-                "total_calculations": len(self.pricing_history),
-                "avg_confidence": sum(c.get("confidence_score", 0.5) for c in self.pricing_history)
-                / max(len(self.pricing_history), 1),
-                "strategy_performance": self.analytics_engine.analyze_strategy_performance(self.pricing_history),
-            },
+            "ml_models": build_ml_models_data(self.ml_engine),
+            "ab_tests": build_ab_tests_data(self.ab_engine),
+            "conversion_data": build_conversion_data(self.conversion_data, self.analytics_engine),
+            "pricing_optimization": build_pricing_optimization_data(self.pricing_history, self.analytics_engine),
         }
 
     # Proxy methods for AB Engine that were originally in this class

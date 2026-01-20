@@ -1,20 +1,20 @@
 """
-🌊 VIBE Workflow Engine - Strategic Development Cycle
-=====================================================
+VIBE Workflow Engine - Strategic Development Cycle
+===================================================
 
 Implements the high-velocity 'Manus Pattern' development cycle within the
 Agency OS. Ensures every change is planned, implemented, verified, and
 reviewed before deployment.
 
 Standard Cycle:
-0. 🔍 Detection: Identify active plan.md.
-1. 📋 Analysis: Decompose plan into atomic tasks.
-2. 🛠️ Implementation: Execute code changes (YAGNI/KISS).
-3. 🧪 Testing: Enforce 100% pass rate.
-4. 🔍 Review: Static analysis and code quality gates.
-5. 🚀 Finalization: Commit and documentation sync.
+0. Detection: Identify active plan.md.
+1. Analysis: Decompose plan into atomic tasks.
+2. Implementation: Execute code changes (YAGNI/KISS).
+3. Testing: Enforce 100% pass rate.
+4. Review: Static analysis and code quality gates.
+5. Finalization: Commit and documentation sync.
 
-Binh Pháp: 📋 Pháp (Process) - Disciplined execution leads to victory.
+Binh Phap: Phap (Process) - Disciplined execution leads to victory.
 """
 
 import logging
@@ -23,9 +23,9 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 from .base import BaseEngine
-from .config import MAX_FILE_LINES
 from .models.workflow import CodeReviewResult, Task, TaskStatus, WorkflowStep
-from .types import VIBEWorkflowStatsDict, TestResultDict, ShipResultDict
+from .types import VIBEWorkflowStatsDict
+from .workflow_steps import detect_active_plan, parse_plan_tasks, perform_file_review
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 class VIBEWorkflow(BaseEngine):
     """
-    🌊 VIBE Development Engine
+    VIBE Development Engine
 
     Orchestrates the 6-step cycle for building features and fixing bugs.
     Integrates with the local filesystem and git repository.
@@ -52,71 +52,22 @@ class VIBEWorkflow(BaseEngine):
 
     def detect_plan(self, explicit_path: Optional[str] = None) -> Optional[Path]:
         """Locates the active development plan from the /plans directory."""
-        if explicit_path:
-            path = Path(explicit_path)
-            if path.exists():
-                self.current_plan = path
-                self.current_step = WorkflowStep.ANALYSIS
-                return path
-            logger.error(f"Explicit plan path not found: {explicit_path}")
-            return None
-
-        if not self.plans_dir.exists():
-            logger.warning(f"Plans directory missing: {self.plans_dir}")
-            return None
-
-        # Priority: nested plan.md files, newest first
-        plans = list(self.plans_dir.glob("**/plan.md"))
-        if not plans:
-            # Fallback: check for task_plan.md
-            plans = list(self.plans_dir.glob("**/task_plan.md"))
-
-        if not plans:
-            return None
-
-        # Use the most recently modified plan
-        latest = max(plans, key=lambda p: p.stat().st_mtime)
-        self.current_plan = latest
-        self.current_step = WorkflowStep.ANALYSIS
-        logger.info(f"Active plan detected: {latest.name}")
-        return latest
+        plan = detect_active_plan(self.plans_dir, explicit_path)
+        if plan:
+            self.current_plan = plan
+            self.current_step = WorkflowStep.ANALYSIS
+        return plan
 
     # --- Step 1: Analysis ---
 
     def analyze_plan(self) -> List[Task]:
         """Parses the Markdown plan into executable task objects."""
-        if not self.current_plan or not self.current_plan.exists():
+        if not self.current_plan:
             return []
-
-        try:
-            content = self.current_plan.read_text(encoding="utf-8")
-            tasks = []
-            task_counter = 1
-
-            for line in content.splitlines():
-                line = line.strip()
-                # Detection of Markdown checkboxes
-                if line.startswith("- [ ]") or line.startswith("- [x]"):
-                    status = TaskStatus.COMPLETED if "[x]" in line else TaskStatus.PENDING
-                    name = line.replace("- [ ]", "").replace("- [x]", "").strip()
-
-                    tasks.append(
-                        Task(
-                            id=f"task-{task_counter}",
-                            name=name,
-                            description=f"Automated extraction from {self.current_plan.name}",
-                            status=status,
-                        )
-                    )
-                    task_counter += 1
-
-            self.tasks = tasks
+        self.tasks = parse_plan_tasks(self.current_plan)
+        if self.tasks:
             self.current_step = WorkflowStep.IMPLEMENTATION
-            logger.info(f"Analysis complete: {len(tasks)} tasks identified.")
-            return tasks
-        except Exception as e:
-            logger.error(f"Failed to analyze plan {self.current_plan}: {e}")
-            return []
+        return self.tasks
 
     # --- Step 2: Implementation ---
 
@@ -140,7 +91,7 @@ class VIBEWorkflow(BaseEngine):
 
     def run_verification_suite(self, command: str = "python3 -m pytest") -> Dict[str, object]:
         """Executes the test suite and captures results for the quality gate."""
-        print(f"🧪 Running verification: `{command}`...")
+        print(f"[TEST] Running verification: `{command}`...")
         try:
             result = subprocess.run(command.split(), capture_output=True, text=True, timeout=300)
 
@@ -166,35 +117,10 @@ class VIBEWorkflow(BaseEngine):
 
     def perform_code_review(self, files: List[Union[str, Path]]) -> CodeReviewResult:
         """Analyzes changed files for adherence to Agency OS standards."""
-        # Initial score 10/10
-        review = CodeReviewResult(score=10)
-
-        for f in files:
-            path = Path(f)
-            if not path.exists():
-                continue
-
-            try:
-                content = path.read_text(encoding="utf-8")
-                lines = content.splitlines()
-
-                # Rule 1: Complexity Check
-                if len(lines) > MAX_FILE_LINES:
-                    review.add_warning(f"File too large: {path.name} ({len(lines)} lines)")
-                    review.score -= 1
-
-                # Rule 2: Basic Pattern Check (Placeholder)
-                if "TODO" in content:
-                    review.add_warning(f"Technical debt found: {path.name} contains TODOs")
-
-            except Exception as e:
-                logger.warning(f"Could not review {path.name}: {e}")
-
-        self.review_result = review
-        if review.passed:
+        self.review_result = perform_file_review(files)
+        if self.review_result.passed:
             self.current_step = WorkflowStep.FINALIZE
-
-        return review
+        return self.review_result
 
     # --- Step 5: Finalization ---
 

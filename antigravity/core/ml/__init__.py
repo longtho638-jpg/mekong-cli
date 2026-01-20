@@ -13,10 +13,17 @@ Usage:
 """
 
 from .inference import (
-    calculate_performance_score,
     calculate_statistical_optimization,
-    calculate_viral_multiplier,
     predict_conversion_rate_ml,
+)
+from .scoring import (
+    calculate_performance_score,
+    calculate_viral_multiplier,
+)
+from .analytics import (
+    create_default_metrics,
+    generate_analytics_report,
+    update_metrics,
 )
 from .models import (
     ML_AVAILABLE,

@@ -1,33 +1,24 @@
 """
-🏯 Command Registry - Suite & Agent Mapping
-===========================================
+Command Registry - Data Definitions
+====================================
 
-The central routing table for Agency OS. It maps CLI commands to their
-backing Python modules, classes, and the ideal AI agents for execution.
+Contains the COMMAND_REGISTRY and SHORTCUTS dictionaries that define
+the command structure for Agency OS.
 
-Key Hierarchies:
-- Suites: Logical groupings of business functions (Revenue, Dev, Strategy).
-- Subcommands: Specific tasks within a suite.
-- Shortcuts: One-word aliases for common operations.
-
-Binh Pháp: 💂 Pháp (Process) - Maintaining the chain of command.
+Binh Phap: Phap (Process) - Maintaining the chain of command.
 """
 
-import logging
-from typing import Any, Dict, List, Optional, Tuple
-
-# Configure logging
-logger = logging.getLogger(__name__)
+from typing import Any, Dict
 
 # ============================================================
 # COMMAND REGISTRY DEFINITION
 # ============================================================
 
 COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
-    # 💰 Revenue Suite: Money and Deals
+    # Revenue Suite: Money and Deals
     "revenue": {
         "suite": "revenue",
-        "emoji": "💰",
+        "emoji": "money_bag",
         "description": "Financial operations and client deals.",
         "subcommands": {
             "quote": {
@@ -56,10 +47,10 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
-    # 🛠️ Dev Suite: Building and Shipping
+    # Dev Suite: Building and Shipping
     "dev": {
         "suite": "dev",
-        "emoji": "🛠️",
+        "emoji": "hammer_and_wrench",
         "description": "Software development lifecycle.",
         "subcommands": {
             "cook": {
@@ -81,11 +72,11 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             "fix": {"agent": "debugger"},
         },
     },
-    # 🏯 Strategy Suite: Strategic Binh Pháp Planning
+    # Strategy Suite: Strategic Binh Phap Planning
     "strategy": {
         "suite": "strategy",
-        "emoji": "🏯",
-        "description": "Binh Pháp strategic analysis.",
+        "emoji": "japanese_castle",
+        "description": "Binh Phap strategic analysis.",
         "subcommands": {
             "analyze": {
                 "module": "core.binh_phap",
@@ -100,10 +91,10 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
-    # 🧲 CRM Suite: Leads and Pipeline
+    # CRM Suite: Leads and Pipeline
     "crm": {
         "suite": "crm",
-        "emoji": "🧲",
+        "emoji": "magnet",
         "description": "Customer relationship management.",
         "subcommands": {
             "pipeline": {
@@ -124,10 +115,10 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
             },
         },
     },
-    # 🎨 Content Suite: Media and Viral Hooks
+    # Content Suite: Media and Viral Hooks
     "content": {
         "suite": "content",
-        "emoji": "🎨",
+        "emoji": "art",
         "description": "Scalable media production.",
         "subcommands": {
             "ideas": {
@@ -175,87 +166,3 @@ SHORTCUTS: Dict[str, str] = {
     "lead": "crm:add",
     "pipe": "crm:pipeline",
 }
-
-
-# ============================================================
-# REGISTRY API
-# ============================================================
-
-
-def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:
-    """Retrieves all configuration data for a specific command."""
-    suite_data = COMMAND_REGISTRY.get(suite.lower())
-    if not suite_data:
-        return None
-    return suite_data.get("subcommands", {}).get(sub.lower())
-
-
-def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str]]:
-    """
-    Normalizes command input. Supports shortcuts or 'suite:sub' format.
-    Returns: (suite, subcommand)
-    """
-    # 1. Check if it's a direct shortcut
-    if cmd_input in SHORTCUTS:
-        suite, sub = SHORTCUTS[cmd_input].split(":")
-        return suite, sub
-
-    # 2. Check if it's suite:sub format
-    if ":" in cmd_input:
-        parts = cmd_input.split(":")
-        return parts[0], parts[1]
-
-    # 3. Check if it's just a suite (default to list subcommands?)
-    if cmd_input in COMMAND_REGISTRY:
-        return cmd_input, None
-
-    return None, None
-
-
-def get_agent_for_command(suite: str, sub: str) -> str:
-    """Identifies the best agent to lead a specific command."""
-    meta = get_command_metadata(suite, sub)
-    if meta and "agent" in meta:
-        return meta["agent"]
-
-    # Default fallback agents by suite
-    fallbacks = {
-        "dev": "fullstack-developer",
-        "revenue": "money-maker",
-        "strategy": "binh-phap-strategist",
-        "crm": "client-magnet",
-        "content": "content-factory",
-    }
-    return fallbacks.get(suite, "assistant")
-
-
-def list_suites() -> List[str]:
-    """Returns all available top-level command categories."""
-    return sorted(list(COMMAND_REGISTRY.keys()))
-
-
-def list_subcommands(suite: str) -> List[str]:
-    """Returns all available subcommands for a specific category."""
-    suite_data = COMMAND_REGISTRY.get(suite.lower())
-    if not suite_data:
-        return []
-    return sorted(list(suite_data.get("subcommands", {}).keys()))
-
-
-def print_command_map():
-    """Visualizes the command hierarchy for the user."""
-    print("\n" + "═" * 60)
-    print("║" + "🏯 AGENCY OS - COMMAND REGISTRY".center(58) + "║")
-    print("═" * 60)
-
-    for suite_id in list_suites():
-        s = COMMAND_REGISTRY[suite_id]
-        print(f"\n  {s['emoji']} {suite_id.upper()} - {s['description']}")
-        for sub in list_subcommands(suite_id):
-            meta = s["subcommands"][sub]
-            agent_tag = f"[{meta.get('agent', 'system')}]"
-            print(f"     └─ {sub:<15} {agent_tag}")
-
-    print("\n" + "─" * 60)
-    print("  💡 Try using shortcuts: " + ", ".join(list(SHORTCUTS.keys())[:8]) + "...")
-    print("═" * 60 + "\n")

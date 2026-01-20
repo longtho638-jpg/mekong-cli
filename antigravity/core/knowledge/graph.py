@@ -178,38 +178,10 @@ class KnowledgeGraph:
         logger.info("Knowledge graph cleared")
 
 
-# Global instance
-_graph: Optional[KnowledgeGraph] = None
-
-
-def get_knowledge_graph(root_path: str = None, max_index_size: int = 10000) -> KnowledgeGraph:
-    """
-    Get global knowledge graph instance.
-
-    Args:
-        root_path: Optional root path (only used on first call)
-        max_index_size: Maximum index size (only used on first call)
-
-    Returns:
-        KnowledgeGraph instance
-    """
-    global _graph
-    if _graph is None:
-        _graph = KnowledgeGraph(root_path, max_index_size)
-    return _graph
-
-
-# Convenience functions
-def index_codebase(path: str = None) -> int:
-    """Index entire codebase."""
-    return get_knowledge_graph().index_directory(Path(path) if path else None)
-
-
-def search_code(query: str, limit: int = 10) -> List[SearchResult]:
-    """Search the codebase."""
-    return get_knowledge_graph().search(query, limit)
-
-
-def get_dependencies(file_path: str) -> List[str]:
-    """Get file dependencies."""
-    return get_knowledge_graph().get_dependencies(file_path)
+# Re-export convenience functions for backward compatibility
+from .operations import (
+    get_dependencies,
+    get_knowledge_graph,
+    index_codebase,
+    search_code,
+)

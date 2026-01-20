@@ -6,15 +6,15 @@ The brain's hippocampus for the Agency OS.
 Maintains a rolling buffer of experiences and derives behavioral patterns.
 """
 
-import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
 from .models import Memory, Pattern
+from .storage import save_memories, load_memories
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -104,7 +104,6 @@ class AgentMemory(StatsMixin):
     def get_best_patterns(self, agent: str, limit: int = 5) -> List[Pattern]:
         """Returns the most successful patterns for an agent (high success rate)."""
         patterns = self.get_patterns(agent)
-        # Sort by success rate then occurrences
         sorted_patterns = sorted(
             patterns, key=lambda p: (p.success_rate, p.occurrences), reverse=True
         )
@@ -137,84 +136,16 @@ class AgentMemory(StatsMixin):
 
     def _save_memories(self):
         """Persists current memory state and learned patterns to a JSON file."""
-        try:
-            data = {
-                "metadata": {"last_updated": datetime.now().isoformat(), "version": "2.1"},
-                "memories": [
-                    {
-                        "agent": m.agent,
-                        "context": m.context,
-                        "outcome": m.outcome,
-                        "success": m.success,
-                        "timestamp": m.timestamp.isoformat(),
-                        "patterns": m.patterns,
-                        "tags": list(m.tags),
-                    }
-                    for m in self.memories
-                ],
-                "patterns": {
-                    agent: [
-                        {
-                            "pattern": p.pattern,
-                            "success_rate": p.success_rate,
-                            "occurrences": p.occurrences,
-                            "last_seen": p.last_seen.isoformat(),
-                        }
-                        for p in p_list
-                    ]
-                    for agent, p_list in self.patterns.items()
-                },
-            }
-            self.memory_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        except Exception as e:
-            logger.error(f"Failed to save agent memories: {e}")
+        save_memories(self.memory_file, self.memories, self.patterns)
 
     def _load_memories(self):
         """Loads memories and patterns from disk if the file exists."""
-        if not self.memory_file.exists():
-            return
-
-        try:
-            data = json.loads(self.memory_file.read_text(encoding="utf-8"))
-
-            # Load Memories
-            for m in data.get("memories", []):
-                memory = Memory(
-                    agent=m["agent"],
-                    context=m["context"],
-                    outcome=m["outcome"],
-                    success=m["success"],
-                    timestamp=datetime.fromisoformat(m["timestamp"]),
-                    patterns=m.get("patterns", []),
-                    tags=set(m.get("tags", [])),
-                )
-                self.memories.append(memory)
-
-            # Load Patterns
-            # Prefer loading explicitly saved patterns (v2.1+)
-            saved_patterns = data.get("patterns", {})
-            if saved_patterns:
-                for agent, p_list in saved_patterns.items():
-                    self.patterns[agent] = []
-                    for p_data in p_list:
-                        self.patterns[agent].append(
-                            Pattern(
-                                agent=agent,
-                                pattern=p_data["pattern"],
-                                success_rate=p_data["success_rate"],
-                                occurrences=p_data["occurrences"],
-                                last_seen=datetime.fromisoformat(p_data["last_seen"]),
-                            )
-                        )
-            else:
-                # Backward compatibility: Rebuild patterns from loaded memories
-                # This handles data from version 2.0 or earlier
-                for memory in self.memories:
-                    for pattern_str in memory.patterns:
-                        self._update_pattern(memory.agent, pattern_str, memory.success)
-
-        except Exception as e:
-            logger.warning(f"Failed to load agent memories (may be corrupt or old version): {e}")
+        self.memories, self.patterns = load_memories(self.memory_file, Memory, Pattern)
+        # Rebuild patterns from memories if not saved (backward compat)
+        if self.memories and not self.patterns:
+            for memory in self.memories:
+                for pattern_str in memory.patterns:
+                    self._update_pattern(memory.agent, pattern_str, memory.success)
 
     def _collect_stats(self) -> Dict[str, Any]:
         """Calculates global memory usage and health statistics."""

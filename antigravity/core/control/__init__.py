@@ -6,7 +6,7 @@ Centralized control layer for the entire platform.
 Unifies feature flags, circuit breakers, and rate governors.
 """
 
-from .analytics import AnalyticsEvent, AnalyticsTracker
+from .analytics import AnalyticsEvent, AnalyticsTracker  # Now a package
 from .center import (
     ControlCenter,
     check_breaker,
