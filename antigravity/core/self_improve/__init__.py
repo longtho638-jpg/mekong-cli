@@ -10,8 +10,13 @@ Binh Pháp: "Tri kỷ tri bỉ" - Know yourself, know your enemy
 
 from .decorators import self_improving
 from .engine import SelfImproveEngine, get_self_improve_engine
-from .enums import ImprovementType, LearningSource
-from .models import ImprovementSuggestion, LearningEntry, PerformanceProfile
+from .types import (
+    ImprovementSuggestion,
+    ImprovementType,
+    LearningEntry,
+    LearningSource,
+    PerformanceProfile,
+)
 
 __all__ = [
     "SelfImproveEngine",

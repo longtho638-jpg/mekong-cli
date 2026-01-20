@@ -9,8 +9,13 @@ import threading
 import time
 from typing import Any, Dict, List, Optional
 
-from .enums import ImprovementType, LearningSource
-from .models import ImprovementSuggestion, LearningEntry, PerformanceProfile
+from .types import (
+    ImprovementSuggestion,
+    ImprovementType,
+    LearningEntry,
+    LearningSource,
+    PerformanceProfile,
+)
 
 logger = logging.getLogger(__name__)
 
