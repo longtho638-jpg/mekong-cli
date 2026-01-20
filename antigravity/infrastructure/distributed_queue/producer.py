@@ -3,6 +3,7 @@ Queue Producer - Handles job submission
 """
 import logging
 from typing import Any, Dict, Optional
+
 from .models import Job, JobPriority
 
 logger = logging.getLogger(__name__)

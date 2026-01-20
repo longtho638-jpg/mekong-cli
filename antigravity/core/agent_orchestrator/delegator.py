@@ -3,10 +3,11 @@ Orchestrator Delegator - Logic for executing individual steps
 """
 import logging
 import time
-from typing import Optional
 from antigravity.core.chains import AgentStep
-from .models import StepResult, StepStatus
 from antigravity.core.types import HookContextDict
+from typing import Optional
+
+from .models import StepResult, StepStatus
 
 logger = logging.getLogger(__name__)
 
