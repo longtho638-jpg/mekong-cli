@@ -3,6 +3,7 @@ ML Inference - Prediction and price optimization logic.
 """
 import logging
 from typing import Any, Dict
+
 from ..types import EnhancedPricingContext
 from .model_registry import ModelRegistry
 

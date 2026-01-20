@@ -2,8 +2,9 @@
 Registry API - Command resolution and lookup functions (Facade).
 """
 from .discovery import resolve_command
-from .metadata import get_command_metadata, get_agent_for_command, list_suites, list_subcommands
+from .metadata import get_agent_for_command, get_command_metadata, list_subcommands, list_suites
 from .store import COMMAND_REGISTRY, SHORTCUTS
+
 
 def print_command_map():
     """Visualizes the command hierarchy for the user."""

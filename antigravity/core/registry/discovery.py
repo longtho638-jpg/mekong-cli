@@ -2,7 +2,9 @@
 Registry Discovery - Command resolution and normalization.
 """
 from typing import Optional, Tuple
+
 from .store import COMMAND_REGISTRY, SHORTCUTS
+
 
 def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str]]:
     """

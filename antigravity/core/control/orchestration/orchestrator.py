@@ -1,11 +1,12 @@
 import logging
 import os
-from typing import Dict, Optional
 from antigravity.core.mixins import StatsMixin
+from typing import Dict, Optional
+
 from .analytics import AnalyticsTracker
 from .circuit_breaker import CircuitBreaker
-from .feature_flags import FeatureFlagManager, FeatureFlag
-from .redis_client import RedisClient, REDIS_AVAILABLE
+from .feature_flags import FeatureFlag, FeatureFlagManager
+from .redis_client import REDIS_AVAILABLE, RedisClient
 
 logger = logging.getLogger(__name__)
 

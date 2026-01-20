@@ -3,6 +3,7 @@ ML Model Registry - Default model definitions and registration logic.
 """
 import logging
 from typing import Dict
+
 from ..types import MLModel
 
 logger = logging.getLogger(__name__)
