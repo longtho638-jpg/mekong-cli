@@ -3,8 +3,11 @@ AgentOps Registry - Management of ops and agent counts
 """
 import os
 from typing import Dict
+
 from backend.models.agentops import OpsStatus
+
 from .enums import OpsCategory
+
 
 class OpsRegistry:
     """Manages the registration and discovery of AgentOps modules."""

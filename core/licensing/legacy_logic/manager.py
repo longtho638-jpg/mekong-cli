@@ -1,9 +1,9 @@
 import logging
 import warnings
 from datetime import datetime, timedelta
-from typing import Dict, Any
+from typing import Any, Dict
 
-from .models import License, LicenseTier, LicenseStatus
+from .models import License, LicenseStatus, LicenseTier
 
 logger = logging.getLogger(__name__)
 

@@ -5,7 +5,9 @@ Compliance Agent - Regulatory & Policy Compliance (Refactored)
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List
-from .models import ComplianceStatus, RiskLevel, RegulationType, ComplianceItem
+
+from .models import ComplianceItem, ComplianceStatus, RegulationType, RiskLevel
+
 
 class ComplianceAgent:
     """

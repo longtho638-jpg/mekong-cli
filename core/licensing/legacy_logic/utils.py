@@ -1,5 +1,6 @@
 from .models import LicenseTier
 
+
 def format_pricing_table(pricing_config: dict) -> str:
     """Render the pricing options table."""
     lines = [

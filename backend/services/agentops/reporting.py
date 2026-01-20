@@ -3,6 +3,7 @@ AgentOps Reporting - Logic for listing and summaries
 """
 from typing import Any, Dict
 
+
 class OpsReporting:
     """Generates reports and summaries for the AgentOps system."""
 

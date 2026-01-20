@@ -4,6 +4,7 @@ Bid Manager Models
 from dataclasses import dataclass
 from enum import Enum
 
+
 class BidStrategyType(Enum):
     MANUAL_CPC = "manual_cpc"
     TARGET_CPA = "target_cpa"

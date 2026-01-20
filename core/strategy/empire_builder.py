@@ -5,11 +5,11 @@
 This file is now a proxy for the modularized version in ./empire/
 Please import from core.strategy.empire instead.
 """
-import warnings
 import logging
+import warnings
 
-from .empire.models import AgencyNiche, BrandStyle, BrandIdentity, LegalDocument, AgencyConfig
 from .empire.engine import EmpireEngine
+from .empire.models import AgencyConfig, AgencyNiche, BrandIdentity, BrandStyle, LegalDocument
 from .empire.utils import format_empire_summary
 
 # Issue a deprecation warning
