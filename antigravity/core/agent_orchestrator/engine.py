@@ -48,10 +48,10 @@ class AgentOrchestrator:
         result = ChainResult(suite=suite, subcommand=subcommand, started_at=datetime.now())
 
         if self.verbose:
-            self._print_header(suite, subcommand, len(chain.agents))
+            self._print_header(suite, subcommand, len(chain))
 
-        for i, step in enumerate(chain.agents, 1):
-            step_res = self._execute_step(step, i, len(chain.agents), context)
+        for i, step in enumerate(chain, 1):
+            step_res = self._execute_step(step, i, len(chain), context)
             result.steps.append(step_res)
 
             # Critical Path Logic: Stop on failure unless step is optional
