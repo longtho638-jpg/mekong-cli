@@ -18,4 +18,3 @@ class ChannelManagerAgent(ChannelEngine):
         return {"total_channels": len(self.channels), "total_publications": len(self.publications)}
 
 __all__ = ['ChannelManagerAgent', 'ChannelType', 'ChannelStatus', 'Channel', 'Publication']
-精

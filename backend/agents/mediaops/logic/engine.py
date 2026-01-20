@@ -26,4 +26,3 @@ class ChannelEngine:
         self.publications[pid] = pub
         self.channels[channel_id].posts_count += 1
         return pub
-精

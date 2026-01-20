@@ -18,4 +18,3 @@ class RecruitmentAgent(RecruitmentEngine):
         return {"open_jobs": len([j for j in self.jobs.values() if j.status == JobStatus.OPEN]), "total_candidates": len(self.candidates)}
 
 __all__ = ['RecruitmentAgent', 'CandidateStage', 'JobStatus', 'Candidate', 'Job']
-精

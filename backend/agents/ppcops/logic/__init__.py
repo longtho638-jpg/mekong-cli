@@ -18,4 +18,3 @@ class GoogleAdsAgent(GoogleAdsEngine):
         return {"total_campaigns": len(self.campaigns), "total_keywords": sum(len(c.keywords) for c in self.campaigns.values())}
 
 __all__ = ['GoogleAdsAgent', 'AdType', 'KeywordMatch', 'GoogleAdsCampaign', 'PPCKeyword']
-精

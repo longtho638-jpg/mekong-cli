@@ -19,4 +19,3 @@ class HealthScoreAgent(HealthEngine):
         return {"total": len(users), "avg_score": sum(u.health_score for u in users) / len(users) if users else 0}
 
 __all__ = ['HealthScoreAgent', 'RiskLevel', 'UserHealth']
-精

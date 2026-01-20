@@ -25,4 +25,3 @@ class RecruitmentEngine:
         self.candidates[cid] = candidate
         if job_id in self.jobs: self.jobs[job_id].candidates_count += 1
         return candidate
-精
