@@ -6,7 +6,7 @@ Please import from backend.agents.community_logic instead.
 """
 import warnings
 
-from .community_logic import CommunityAgent, Platform
+from .community_logic import CommunityAgent, Platform, ScheduledPost
 
 # Issue a deprecation warning
 warnings.warn(
