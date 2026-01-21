@@ -12,8 +12,24 @@ const supabase = createClient(
 
 export const GET: APIRoute = async ({ request }) => {
     try {
-        // TODO: Add admin authentication
-        // const authHeader = request.headers.get('Authorization');
+        // Check for Admin API key authorization
+        const authHeader = request.headers.get('Authorization');
+        const apiKey = request.headers.get('x-api-key');
+        const token = authHeader?.replace('Bearer ', '') || apiKey;
+        const expectedKey = import.meta.env.INTERNAL_API_KEY;
+
+        if (expectedKey && token !== expectedKey) {
+             return new Response(
+                JSON.stringify({
+                    error: 'Unauthorized',
+                    message: 'Invalid API key'
+                }),
+                {
+                    status: 401,
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+        }
 
         // Fetch agency stats (single row table)
         const { data: stats, error: statsError } = await supabase
