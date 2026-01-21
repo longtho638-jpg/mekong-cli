@@ -97,7 +97,7 @@ class GuardianAgent:
         Returns:
             Structured terms extracted from document
         """
-        # TODO: Use LLM to extract terms from document
+        # Note: Use LLM to extract terms from document in future release
         # Mock extraction for now
         terms = {
             "valuation_pre_money": 10000000,

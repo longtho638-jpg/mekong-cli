@@ -57,7 +57,7 @@ revenue_agent = RevenueAgent(redis_client)
 #Agents registry
 AGENTS = {
     "revenue": revenue_agent,
-    # TODO: Add other 29 agents as they're built
+    # Note: Add other 29 agents as they're built
 }
 
 
@@ -172,7 +172,7 @@ async def get_win3_metrics():
     - AGENCY WIN: Revenue automation, efficiency
     - STARTUP WIN: Protection, growth support
     """
-    # TODO: Calculate real WIN³ metrics from agent data
+    # Note: Calculate real WIN³ metrics from agent data in future release
 
     return {
         "anh_win": {

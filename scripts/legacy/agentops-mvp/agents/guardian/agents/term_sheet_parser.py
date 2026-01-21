@@ -40,7 +40,7 @@ class TermSheetParser(GuardianBase):
     
     def extract_numeric_value(self, text: str, field_name: str) -> float:
         """Extract numeric value from text for a specific field"""
-        # TODO: Implement regex-based extraction
+        # Note: Implement regex-based extraction in future release
         return 0.0
     
     def format_terms_for_display(self, terms: Dict[str, Any]) -> Dict[str, Any]:

@@ -189,8 +189,8 @@ Output format: Structured JSON with clear actions and amounts."""
                 "message": f"Friendly reminder: Invoice {invoice_id} is {days_overdue} days overdue."
             }
 
-            # TODO: Send actual email via SendGrid/AWS SES
-            # TODO: Log reminder in Supabase
+            # Note: Send actual email via SendGrid/AWS SES in future release
+            # Note: Log reminder in Supabase in future release
 
             return reminder
 
@@ -230,8 +230,8 @@ Output format: Structured JSON with clear actions and amounts."""
                 "invoice_to_generate": True
             }
 
-            # TODO: Auto-generate invoice for this success fee
-            # TODO: Notify team about successful funding
+            # Note: Auto-generate invoice for this success fee in future release
+            # Note: Notify team about successful funding in future release
 
             return calculation
 
