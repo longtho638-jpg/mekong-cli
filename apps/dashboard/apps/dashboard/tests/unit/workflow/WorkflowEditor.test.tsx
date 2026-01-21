@@ -6,7 +6,7 @@ import React from 'react'
 // Mock React Flow since it uses ResizeObserver which might not be available in JSDOM
 jest.mock('reactflow', () => ({
   __esModule: true,
-  default: ({ nodes, edges, children }: any) => (
+  default: ({ nodes, edges, children }: { nodes: unknown[]; edges: unknown[]; children: React.ReactNode }) => (
     <div data-testid="react-flow">
       {nodes?.length} nodes
       {children}

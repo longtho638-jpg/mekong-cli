@@ -37,8 +37,19 @@ const TEAM_MEMBERS = [
 // 📊 MRR HISTORY (12 months)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function generateMRRHistory() {
-    const history = [];
+interface MRRHistory {
+    month: string;
+    total_mrr: number;
+    new_mrr: number;
+    expansion_mrr: number;
+    churned_mrr: number;
+    total_customers: number;
+    new_customers: number;
+    churned_customers: number;
+}
+
+function generateMRRHistory(): MRRHistory[] {
+    const history: MRRHistory[] = [];
     const now = new Date();
     const startMRR = 1200; // Starting MRR 12 months ago
 
@@ -66,8 +77,18 @@ function generateMRRHistory() {
 // 📈 USAGE EVENTS (30 days)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function generateUsageEvents(tenantId: string) {
-    const events = [];
+interface UsageEvent {
+    tenant_id: string;
+    user_id: string;
+    event_type: string;
+    event_name: string;
+    page_url: string;
+    session_id: string;
+    created_at: string;
+}
+
+function generateUsageEvents(tenantId: string): UsageEvent[] {
+    const events: UsageEvent[] = [];
     const eventTypes = ['page_view', 'feature_use', 'action'];
     const features = [
         'dashboard_view', 'hub_open', 'agent_run', 'report_generate',
@@ -113,8 +134,18 @@ function generateUsageEvents(tenantId: string) {
 // 💳 SUBSCRIPTIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function generateSubscriptions() {
-    const subscriptions = [];
+interface Subscription {
+    tenant_id: string;
+    plan: string;
+    status: string;
+    currency: string;
+    created_at: string;
+    current_period_start: string;
+    current_period_end: string;
+}
+
+function generateSubscriptions(): Subscription[] {
+    const subscriptions: Subscription[] = [];
     const plans = { FREE: 80, PRO: 45, ENTERPRISE: 12 }; // Distribution
 
     let id = 1;
@@ -146,11 +177,11 @@ function generateSubscriptions() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 async function seedDemoData() {
-    console.log('🌱 Seeding demo data...\n');
+    console.info('🌱 Seeding demo data...\n');
 
     try {
         // 1. Create demo tenant
-        console.log('1️⃣ Creating demo tenant...');
+        console.info('1️⃣ Creating demo tenant...');
         await supabase.from('tenants').upsert({
             id: DEMO_TENANT.id,
             name: DEMO_TENANT.name,
@@ -158,10 +189,10 @@ async function seedDemoData() {
             plan: DEMO_TENANT.plan,
             settings: {},
         });
-        console.log('   ✅ Demo tenant created\n');
+        console.info('   ✅ Demo tenant created\n');
 
         // 2. Add team members
-        console.log('2️⃣ Adding team members...');
+        console.info('2️⃣ Adding team members...');
         for (const member of TEAM_MEMBERS) {
             await supabase.from('tenant_members').upsert({
                 tenant_id: DEMO_TENANT.id,
@@ -171,41 +202,41 @@ async function seedDemoData() {
                 status: 'active',
             });
         }
-        console.log(`   ✅ ${TEAM_MEMBERS.length} team members added\n`);
+        console.info(`   ✅ ${TEAM_MEMBERS.length} team members added\n`);
 
         // 3. Seed MRR history
-        console.log('3️⃣ Seeding MRR history...');
+        console.info('3️⃣ Seeding MRR history...');
         const mrrHistory = generateMRRHistory();
         for (const record of mrrHistory) {
             await supabase.from('mrr_history').upsert(record);
         }
-        console.log(`   ✅ ${mrrHistory.length} months of MRR data\n`);
+        console.info(`   ✅ ${mrrHistory.length} months of MRR data\n`);
 
         // 4. Seed usage events
-        console.log('4️⃣ Seeding usage events...');
+        console.info('4️⃣ Seeding usage events...');
         const events = generateUsageEvents(DEMO_TENANT.id);
         // Batch insert in chunks of 100
         for (let i = 0; i < events.length; i += 100) {
             await supabase.from('usage_events').insert(events.slice(i, i + 100));
         }
-        console.log(`   ✅ ${events.length} usage events\n`);
+        console.info(`   ✅ ${events.length} usage events\n`);
 
         // 5. Seed subscriptions
-        console.log('5️⃣ Seeding subscriptions...');
+        console.info('5️⃣ Seeding subscriptions...');
         const subscriptions = generateSubscriptions();
         for (const sub of subscriptions) {
             await supabase.from('subscriptions').upsert(sub);
         }
-        console.log(`   ✅ ${subscriptions.length} subscriptions\n`);
+        console.info(`   ✅ ${subscriptions.length} subscriptions\n`);
 
-        console.log('🎉 Demo data seeded successfully!\n');
-        console.log('📊 Summary:');
-        console.log(`   - 1 demo tenant`);
-        console.log(`   - ${TEAM_MEMBERS.length} team members`);
-        console.log(`   - ${mrrHistory.length} months of MRR history`);
-        console.log(`   - ${events.length} usage events`);
-        console.log(`   - ${subscriptions.length} subscriptions`);
-        console.log('\n🚀 Ready for VC demo!');
+        console.info('🎉 Demo data seeded successfully!\n');
+        console.info('📊 Summary:');
+        console.info(`   - 1 demo tenant`);
+        console.info(`   - ${TEAM_MEMBERS.length} team members`);
+        console.info(`   - ${mrrHistory.length} months of MRR history`);
+        console.info(`   - ${events.length} usage events`);
+        console.info(`   - ${subscriptions.length} subscriptions`);
+        console.info('\n🚀 Ready for VC demo!');
 
     } catch (error) {
         console.error('❌ Error seeding data:', error);
