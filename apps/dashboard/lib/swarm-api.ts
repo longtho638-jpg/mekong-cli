@@ -8,9 +8,9 @@ export interface AgentMessage {
   sender: string
   recipient: string
   type: 'task' | 'result' | 'query' | 'response' | 'handoff' | 'error'
-  content: any
+  content: unknown
   context_id?: string
-  metadata: Record<string, any>
+  metadata: Record<string, unknown>
 }
 
 export interface SwarmDispatchResponse {

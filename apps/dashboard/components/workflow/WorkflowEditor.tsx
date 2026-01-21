@@ -19,7 +19,14 @@ import 'reactflow/dist/style.css'
 import { Card } from '@agencyos/ui'
 
 // Custom Node Types
-const TriggerNode = ({ data }: any) => (
+interface NodeData {
+  label: string
+  type?: string
+  details?: string
+  [key: string]: unknown
+}
+
+const TriggerNode = ({ data }: { data: NodeData }) => (
   <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-blue-500">
     <div className="font-bold text-sm text-blue-600 mb-1">TRIGGER</div>
     <div className="font-bold">{data.label}</div>
@@ -28,7 +35,7 @@ const TriggerNode = ({ data }: any) => (
   </div>
 )
 
-const ActionNode = ({ data }: any) => (
+const ActionNode = ({ data }: { data: NodeData }) => (
   <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-green-500 min-w-[150px]">
     <Handle type="target" position={Position.Top} className="w-3 h-3 bg-green-500" />
     <div className="font-bold text-sm text-green-600 mb-1">ACTION</div>
