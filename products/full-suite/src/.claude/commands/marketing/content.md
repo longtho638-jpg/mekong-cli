@@ -11,7 +11,8 @@ description: Generate marketing content with AI
 // turbo
 
 ```bash
-python3 scripts/vibeos/marketing_engine.py --generate blog
+# Use MCP tool: marketing/content_pipeline
+mekong content create --topic "AI for agencies"
 ```
 
 ## Content Types
@@ -26,9 +27,8 @@ python3 scripts/vibeos/marketing_engine.py --generate blog
 ## Example
 
 ```bash
-python3 scripts/vibeos/marketing_engine.py --generate blog \
-  --topic "5 ways AI boosts agency productivity" \
-  --tone professional
+# Use MCP tool: marketing/content_pipeline
+mekong content create --topic "5 ways AI boosts agency productivity"
 ```
 
 ## 🏯 Binh Pháp

@@ -23,11 +23,11 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 try:
-    from packages.antigravity.core.revenue_engine import Currency, RevenueEngine
+    from antigravity.core.revenue_engine import Currency, RevenueEngine
 except ImportError:
     # Fallback for dev environment without package install
     sys.path.append(
-        os.path.join(os.path.dirname(__file__), "../packages/antigravity/core")
+        os.path.join(os.path.dirname(__file__), "../antigravity/core")
     )
     try:
         from revenue_engine import Currency, RevenueEngine

@@ -4,6 +4,15 @@
 
 ---
 
+## [2.1.0-beta] - 2026-01-21
+
+### Enterprise Hardening & Tech Debt
+- **Security Verification**: Added `verify_security.py` to audit Privacy Hooks, Data Diet, and RBAC patterns.
+- **Stress Testing**: Implemented `stress_test_swarm.py` for high-concurrency simulation of agent activity.
+- **Tech Debt**: Removed 10+ stale imports referencing `packages/antigravity` across tests and legacy scripts.
+- **CLI Consolidation**: Refactored `mekong_cli.py` to use modular MCP handlers directly, eliminating legacy shims.
+- **Documentation**: Updated all `.claude/commands/` to use the unified `mekong` CLI and MCP tools.
+
 ## [2.0.0-beta] - 2026-01-20
 
 ### Specialization & Vertical Engines

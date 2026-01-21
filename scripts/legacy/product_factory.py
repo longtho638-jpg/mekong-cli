@@ -38,7 +38,7 @@ PRODUCT_SPECS = {
         "price": 2700,  # $27
         "source": ["apps/auth-starter"]
         if Path("apps/auth-starter").exists()
-        else ["packages/antigravity"],
+        else ["antigravity/mcp_servers/security_server"],
         "description": "Production-ready authentication with Supabase",
     },
     "ai-skills-pack": {
@@ -66,7 +66,7 @@ PRODUCT_SPECS = {
     "agencyos-core": {
         "name": "AgencyOS Core License",
         "price": 250000,  # $2,500 - Enterprise
-        "source": ["packages/antigravity", "scripts", ".agent"],
+        "source": ["antigravity", "scripts", ".agent"],
         "description": "Complete Venture Operating System source code",
         "private": True,
     },
@@ -84,7 +84,7 @@ PRODUCT_SPECS = {
     "quota-engine": {
         "name": "AI Quota Monitor",
         "price": 2700,  # $27
-        "source": ["packages/antigravity/core/quota_engine.py"],
+        "source": ["antigravity/mcp_servers/quota_server/engine.py"],
         "description": "Real-time AI model quota monitoring with alerts",
     },
     "report-generator": {

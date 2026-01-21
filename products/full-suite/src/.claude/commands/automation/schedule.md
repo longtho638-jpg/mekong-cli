@@ -18,7 +18,8 @@ crontab -l | grep mekong
 
 ```bash
 # Daily at 9am
-echo "0 9 * * * python3 ~/mekong-cli/scripts/vibeos/workflow_engine.py" | crontab -
+# Use MCP tool: workflow/execute_workflow via mekong CLI
+echo "0 9 * * * mekong automation run daily-tasks" | crontab -
 ```
 
 ## 🏯 Binh Pháp

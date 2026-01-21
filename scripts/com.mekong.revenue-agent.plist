@@ -8,8 +8,9 @@
     <key>ProgramArguments</key>
     <array>
         <string>/Users/macbookprom1/mekong-cli/.venv/bin/python3</string>
-        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/revenue_agent.py</string>
-        <string>--cycle</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/mekong_cli.py</string>
+        <string>revenue</string>
+        <string>run</string>
     </array>
     
     <key>WorkingDirectory</key>

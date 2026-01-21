@@ -17,7 +17,8 @@ ls .agent/workflows/
 ## Run Workflow
 
 ```bash
-python3 scripts/vibeos/workflow_engine.py --run "daily-tasks"
+# Use MCP tool: workflow/execute_workflow
+mekong automation run "daily-tasks"
 ```
 
 ## Popular Workflows

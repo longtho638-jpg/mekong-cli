@@ -33,28 +33,29 @@ cd mekong-cli
 
 1.  **Khởi tạo ý tưởng:**
     ```bash
-    python3 main.py scaffold "Tôi muốn làm nền tảng học trực tuyến (LMS)"
+    mekong strategy brainstorm "Tôi muốn làm nền tảng học trực tuyến (LMS)"
     ```
 
 2.  **Quản lý Vận Hành (Ops):**
     ```bash
-    python3 main.py ops watch      # Giám sát hệ thống
-    python3 main.py ops quota      # Kiểm tra hạn mức AI
+    mekong status                  # Giám sát hệ thống (Commander)
+    mekong check                   # Kiểm tra bảo mật (Security Armor)
+    mekong recover --auto          # Tự động khôi phục hệ thống
     ```
 
 3.  **Kinh Doanh & Doanh Thu:**
     ```bash
-    python3 main.py outreach add "Client Name" "email@example.com"
-    python3 main.py sales proposal-create ghost_cto "email@example.com"
-    python3 main.py finance invoice-create "Client Name" 5000 "Ghost CTO"
+    mekong leads add 10            # Thêm khách hàng tiềm năng
+    mekong client onboard --name "Client Name"
+    mekong revenue run             # Chạy chu trình doanh thu
     ```
 
 4.  **Marketing & Content:**
     ```bash
-    python3 main.py content generate tweet agencyos
+    mekong content create --topic "AI Agency"
     ```
 
-👉 **Xem hướng dẫn chi tiết:** `python3 main.py --help` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
+👉 **Xem hướng dẫn chi tiết:** `mekong --help` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
 
 ---
 

@@ -30,8 +30,8 @@ python3 -m ruff check . --quiet 2>/dev/null && echo "✅ Ruff: 0 errors" || echo
 // turbo
 
 ```bash
-cd /Users/macbookprom1/mekong-cli
-python3 scripts/vibeos/security_armor.py --dry-run
+# Use MCP tool: security/run_security_gates
+mekong check --dry-run
 ```
 
 ### Step 1: Run Validation

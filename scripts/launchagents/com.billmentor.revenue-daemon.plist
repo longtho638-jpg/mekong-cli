@@ -8,8 +8,9 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/solo_revenue_daemon.py</string>
-        <string>run</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/mekong_cli.py</string>
+        <string>revenue</string>
+        <string>daemon</string>
     </array>
     
     <key>WorkingDirectory</key>

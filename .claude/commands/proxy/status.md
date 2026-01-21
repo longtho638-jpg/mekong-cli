@@ -37,7 +37,8 @@ The Commander Engine includes proxy status:
 // turbo
 
 ```bash
-python3 scripts/vibeos/commander_engine.py --status | grep -A2 "PROXY"
+# Use MCP tool: commander/get_dashboard
+mekong status | grep -A2 "PROXY"
 ```
 
 ## Troubleshooting

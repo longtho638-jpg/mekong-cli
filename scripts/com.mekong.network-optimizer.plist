@@ -8,8 +8,10 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/network_optimizer.py</string>
-        <string>optimize</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/mekong_cli.py</string>
+        <string>automation</string>
+        <string>run</string>
+        <string>network-optimizer</string>
     </array>
     
     <key>WorkingDirectory</key>

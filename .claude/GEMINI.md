@@ -33,8 +33,8 @@
 
 ### Reference Knowledge:
 
-- `scripts/vibeos/workflow_engine.py` - Workflow automation
-- `packages/antigravity/core/quota_engine.py` - API quota management
+- `antigravity/mcp_servers/workflow_server/engine.py` - Workflow automation
+- `antigravity/mcp_servers/quota_server/engine.py` - API quota management
 - `~/.gemini/antigravity/knowledge/` - Accumulated intelligence
 
 ---
