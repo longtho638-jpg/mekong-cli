@@ -46,7 +46,7 @@ const requiredEnvVars = {
 };
 
 function validateEnvironment(envFile = ".env.production") {
-  console.log(`🔍 Validating ${envFile}...`);
+  console.info(`🔍 Validating ${envFile}...`);
 
   if (!fs.existsSync(envFile)) {
     console.error(`❌ ${envFile} not found`);
@@ -91,20 +91,20 @@ function validateEnvironment(envFile = ".env.production") {
     }
 
     if (value) {
-      console.log(`✅ ${key}: Valid`);
+      console.info(`✅ ${key}: Valid`);
     }
   });
 
   // Show warnings
   if (warnings.length > 0) {
-    console.log("\n⚠️  Optional variables missing:");
-    warnings.forEach((warning) => console.log(warning));
+    console.warn("\n⚠️  Optional variables missing:");
+    warnings.forEach((warning) => console.warn(warning));
   }
 
   if (isValid) {
-    console.log(`\n✅ ${envFile} validation passed`);
+    console.info(`\n✅ ${envFile} validation passed`);
   } else {
-    console.log(`\n❌ ${envFile} validation failed`);
+    console.error(`\n❌ ${envFile} validation failed`);
   }
 
   return isValid;
@@ -115,16 +115,16 @@ function main() {
   const isValid = validateEnvironment(envFile);
 
   if (!isValid) {
-    console.log("\n📋 Environment setup guide:");
-    console.log(
+    console.info("\n📋 Environment setup guide:");
+    console.info(
       "1. Copy template: cp .env.production.template .env.production",
     );
-    console.log("2. Fill in required values");
-    console.log("3. Run validation again");
+    console.info("2. Fill in required values");
+    console.info("3. Run validation again");
     process.exit(1);
   }
 
-  console.log("\n🚀 Environment ready for deployment!");
+  console.info("\n🚀 Environment ready for deployment!");
 }
 
 if (require.main === module) {

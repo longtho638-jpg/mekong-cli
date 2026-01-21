@@ -17,8 +17,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const TENANT_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 
 async function seed() {
-    console.log('🌱 Seeding AgencyOS demo data...');
-    console.log('📍 URL:', supabaseUrl);
+    console.info('🌱 Seeding AgencyOS demo data...');
+    console.info('📍 URL:', supabaseUrl);
 
     // 1. Create demo tenant
     const { error: tenantError } = await supabase
@@ -33,8 +33,8 @@ async function seed() {
             settings: { currency: 'USD', timezone: 'Asia/Ho_Chi_Minh' }
         }, { onConflict: 'slug' });
 
-    if (tenantError) console.log('⚠️ Tenant:', tenantError.message);
-    else console.log('✅ Tenant created');
+    if (tenantError) console.error('⚠️ Tenant:', tenantError.message);
+    else console.info('✅ Tenant created');
 
     // 2. Seed accounts
     const accounts = [
@@ -48,8 +48,8 @@ async function seed() {
     ];
 
     const { error: accError } = await supabase.from('accounts').upsert(accounts, { onConflict: 'tenant_id,code' });
-    if (accError) console.log('⚠️ Accounts:', accError.message);
-    else console.log('✅ Accounts seeded (7 records)');
+    if (accError) console.error('⚠️ Accounts:', accError.message);
+    else console.info('✅ Accounts seeded (7 records)');
 
     // 3. Seed usage events
     const events = [
@@ -61,10 +61,10 @@ async function seed() {
     ];
 
     const { error: evtError } = await supabase.from('usage_events').insert(events);
-    if (evtError) console.log('⚠️ Events:', evtError.message);
-    else console.log('✅ Usage events seeded (5 records)');
+    if (evtError) console.error('⚠️ Events:', evtError.message);
+    else console.info('✅ Usage events seeded (5 records)');
 
-    console.log('\n🎉 Seed complete!');
+    console.info('\n🎉 Seed complete!');
 }
 
 seed().catch(console.error);
