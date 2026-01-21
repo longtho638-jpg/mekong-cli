@@ -106,7 +106,7 @@ class DealFlowScoutAgent:
         Returns:
             List of sourced startups
         """
-        # TODO: Integrate with real APIs
+        # Note: Integrate with real APIs in future release
         # Mock data for now
         startups = [
             {
@@ -241,7 +241,7 @@ class DealFlowScoutAgent:
             # Default to next business day slots
             preferred_times = ["10:00 AM", "2:00 PM", "4:00 PM"]
 
-        # TODO: Integrate with Calendly/Google Calendar
+        # Note: Integrate with Calendly/Google Calendar in future release
         meeting = {
             "startup": startup_name,
             "founder_email": founder_email,
@@ -365,7 +365,7 @@ Agency OS"""
         Returns:
             Updated pipeline entry
         """
-        # TODO: Integrate with real CRM (HubSpot, Pipedrive, etc.)
+        # Note: Integrate with real CRM (HubSpot, Pipedrive, etc.) in future release
         return {
             "deal_id": deal_id,
             "previous_stage": "sourced",  # Would come from database

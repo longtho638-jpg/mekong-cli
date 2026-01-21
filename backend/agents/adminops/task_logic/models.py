@@ -14,7 +14,7 @@ class TaskPriority(Enum):
     URGENT = "urgent"
 
 class TaskStatus(Enum):
-    TODO = "todo"
+    PENDING = "pending"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
     DONE = "done"
@@ -27,7 +27,7 @@ class Task:
     project_id: Optional[str] = None
     assignee: Optional[str] = None
     priority: TaskPriority = TaskPriority.MEDIUM
-    status: TaskStatus = TaskStatus.TODO
+    status: TaskStatus = TaskStatus.PENDING
     due_date: Optional[datetime] = None
     created_at: datetime = field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None

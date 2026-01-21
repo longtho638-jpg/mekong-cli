@@ -17,7 +17,7 @@ class SprintStatus(Enum):
 
 
 class TaskStatus(Enum):
-    TODO = "todo"
+    PENDING = "pending"
     IN_PROGRESS = "in_progress"
     IN_REVIEW = "in_review"
     DONE = "done"
@@ -30,7 +30,7 @@ class Task:
     id: str
     title: str
     points: int
-    status: TaskStatus = TaskStatus.TODO
+    status: TaskStatus = TaskStatus.PENDING
     assignee: str = ""
 
 

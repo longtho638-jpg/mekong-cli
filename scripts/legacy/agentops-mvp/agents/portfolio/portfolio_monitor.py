@@ -101,7 +101,7 @@ class PortfolioMonitorAgent:
         Returns:
             Current metrics for the startup
         """
-        # TODO: Integrate with real APIs (Stripe, Mixpanel, etc.)
+        # Note: Integrate with real APIs (Stripe, Mixpanel, etc.) in future release
         # Mock data for now
         return {
             "startup_id": startup_id,

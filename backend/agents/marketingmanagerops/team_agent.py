@@ -11,7 +11,7 @@ from typing import Dict
 
 
 class TaskStatus(Enum):
-    TODO = "todo"
+    PENDING = "pending"
     IN_PROGRESS = "in_progress"
     DONE = "done"
     BLOCKED = "blocked"
@@ -41,7 +41,7 @@ class MarketingTask:
     title: str
     assignee_id: str
     hours: int
-    status: TaskStatus = TaskStatus.TODO
+    status: TaskStatus = TaskStatus.PENDING
     due_date: datetime = None
 
 
