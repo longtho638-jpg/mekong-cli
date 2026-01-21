@@ -3,7 +3,8 @@ from typing import Dict
 from .models import ContractTemplate
 
 # Contract Templates Definitions
-# TODO: Load these from a dynamic config or database in the future.
+# NOTE: Templates are currently hardcoded but could be loaded from a
+# dynamic config (JSON/YAML) or database in future iterations.
 TEMPLATES: Dict[str, ContractTemplate] = {
     "ghost_cto": ContractTemplate(
         key="ghost_cto",
