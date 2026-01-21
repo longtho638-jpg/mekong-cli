@@ -52,25 +52,38 @@ class ConnectionManager:
         self._connection_count = 0
         self._heartbeat_task = None
 
-    async def connect(self, websocket: WebSocket) -> str:
+    async def connect(self, websocket: WebSocket, token: str) -> str:
         """Accept new WebSocket connection and return client ID."""
-        await websocket.accept()
-        self._connection_count += 1
-        client_id = f"client_{self._connection_count}_{datetime.now().strftime('%H%M%S')}"
-        self.active_connections[client_id] = websocket
+        try:
+            # Verify token
+            # Note: We need to inject credentials_exception, creating one here for simplicity
+            credentials_exception = HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            user_data = verify_token(token, credentials_exception)
 
-        # Send welcome message
-        await self.send_personal_message(
-            client_id,
-            {
-                "type": EventType.CONNECTED,
-                "client_id": client_id,
-                "message": "Connected to AntigravityKit WebSocket",
-                "timestamp": datetime.now().isoformat(),
-            },
-        )
+            await websocket.accept()
+            self._connection_count += 1
+            client_id = f"{user_data.username}_{self._connection_count}_{datetime.now().strftime('%H%M%S')}"
+            self.active_connections[client_id] = websocket
 
-        return client_id
+            # Send welcome message
+            await self.send_personal_message(
+                client_id,
+                {
+                    "type": EventType.CONNECTED,
+                    "client_id": client_id,
+                    "message": f"Connected as {user_data.username}",
+                    "timestamp": datetime.now().isoformat(),
+                },
+            )
+
+            return client_id
+        except Exception as e:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            raise e
 
     def disconnect(self, client_id: str):
         """Remove client from active connections."""

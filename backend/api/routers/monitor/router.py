@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import subprocess
 import json
 import asyncio
@@ -19,7 +19,7 @@ class Anomaly(BaseModel):
     type: str
     message: str
     severity: str
-    recovery_action: str | None
+    recovery_action: Optional[str] = None
 
 class DashboardResponse(BaseModel):
     timestamp: str
