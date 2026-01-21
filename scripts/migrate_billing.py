@@ -6,27 +6,63 @@ Migrates legacy billing data from `organizations` to the unified `subscriptions`
 Ensures consistency across Newsletter SaaS and Agency Dashboard.
 
 Usage:
-    python3 scripts/migrate_billing.py
+    python3 scripts/migrate_billing.py [--dry-run]
 """
 
 import os
 import sys
+import argparse
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 # Ensure we can import from core
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.infrastructure.database import get_db
+from supabase import create_client, Client
 
-def migrate_billing():
-    """Execute billing migration."""
-    db = get_db()
+def get_db_client() -> Optional[Client]:
+    """
+    Get Supabase client with fallback to explicit env vars.
+    This is useful when core.config doesn't pick up the service key.
+    """
+    # 1. Try core.infrastructure.database first
+    try:
+        from core.infrastructure.database import get_db
+        db = get_db()
+        if db:
+            return db
+    except ImportError:
+        pass
+
+    # 2. Fallback to manual connection using SUPABASE_SERVICE_KEY
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
+
+    if url and key:
+        print(f"🔌 Connecting with fallback env vars (Key length: {len(key)})")
+        try:
+            return create_client(url, key)
+        except Exception as e:
+            print(f"❌ Fallback connection failed: {e}")
+            return None
+
+    return None
+
+def migrate_billing(dry_run: bool = False):
+    """
+    Execute billing migration.
+
+    Args:
+        dry_run: If True, only simulate changes without writing to DB.
+    """
+    db = get_db_client()
     if not db:
-        print("❌ Database connection failed. Check your .env file.")
+        print("❌ Database connection failed. Check your .env file for SUPABASE_URL and SUPABASE_SERVICE_KEY.")
         return
 
     print(f"🚀 Starting Billing Migration at {datetime.now().isoformat()}")
+    if dry_run:
+        print("⚠️  DRY RUN MODE: No changes will be written to the database.")
 
     # 1. Fetch all organizations with plans or subscriptions
     try:
@@ -39,7 +75,6 @@ def migrate_billing():
         return
 
     migrated_count = 0
-    skipped_count = 0
     errors = []
 
     for org in organizations:
@@ -51,12 +86,8 @@ def migrate_billing():
             paypal_email = org.get("paypal_payer_email")
             updated_at = org.get("updated_at", datetime.now().isoformat())
 
-            # Skip if basic free user with no history (optional optimization)
-            # But we might want to track free users in subscriptions too for consistency
-            # Let's migrate everyone to ensure 'subscriptions' is the SSOT (Single Source of Truth)
-
             # Normalize plan name
-            plan_upper = plan.upper()
+            plan_upper = plan.upper() if plan else "FREE"
             if plan_upper == "AGENCY": plan_upper = "PRO" # Example mapping if needed, or keep AGENCY
 
             # Valid plans from constraint: 'FREE', 'STARTER', 'PRO', 'AGENCY', 'FRANCHISE', 'ENTERPRISE'
@@ -86,6 +117,11 @@ def migrate_billing():
                 "current_period_end": (datetime.now() + timedelta(days=30)).isoformat() if status == "active" and plan_upper != "FREE" else None
             }
 
+            if dry_run:
+                print(f"   [DRY-RUN] Would process: {org_id} -> {plan_upper} ({status})")
+                migrated_count += 1
+                continue
+
             # Check if subscription already exists
             existing = db.table("subscriptions").select("id").eq("tenant_id", org_id).execute()
 
@@ -104,20 +140,6 @@ def migrate_billing():
             print(f"❌ Error processing org {org.get('id')}: {e}")
             errors.append(org.get('id'))
 
-    # 2. Phase 2: Agency Dashboard (if separate 'agencies' table exists)
-    # Check if 'agencies' table exists and migrate
-    try:
-        agencies_resp = db.table("agencies").select("*").execute()
-        agencies = agencies_resp.data
-        if agencies:
-            print(f"\n📋 Found {len(agencies)} agencies (Dashboard) to scan.")
-            for ag in agencies:
-                # Similar logic for agencies table if it has billing info
-                pass
-    except:
-        # agencies table might not exist or be accessible
-        pass
-
     print("\n" + "="*50)
     print("🏁 Migration Completed")
     print(f"✅ Processed: {migrated_count}")
@@ -125,4 +147,8 @@ def migrate_billing():
     print("="*50)
 
 if __name__ == "__main__":
-    migrate_billing()
+    parser = argparse.ArgumentParser(description='Migrate billing data to subscriptions table')
+    parser.add_argument('--dry-run', action='store_true', help='Simulate migration without writing to DB')
+    args = parser.parse_args()
+
+    migrate_billing(dry_run=args.dry_run)
