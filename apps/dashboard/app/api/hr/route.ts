@@ -5,7 +5,7 @@
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { HRService } from '@/lib/hr'
+import { HRService, EmployeeStatus } from '@/lib/hr'
 import { logger } from '@/lib/utils/logger'
 
 export const dynamic = 'force-dynamic'
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'employees':
         const filters = {
-          status: searchParams.get('status') as any,
+          status: searchParams.get('status') as EmployeeStatus | undefined,
           department: searchParams.get('department') || undefined,
         }
         const employees = await service.listEmployees(tenantId, filters)

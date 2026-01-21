@@ -47,7 +47,7 @@ export function useSwarmSocket() {
     }
   }
 
-  const sendMessage = (msg: any) => {
+  const sendMessage = (msg: unknown) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(msg))
     }

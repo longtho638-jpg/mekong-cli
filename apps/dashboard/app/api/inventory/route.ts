@@ -5,7 +5,7 @@
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { InventoryService } from '@/lib/inventory'
+import { InventoryService, AssetType, AssetStatus } from '@/lib/inventory'
 import { logger } from '@/lib/utils/logger'
 
 export const dynamic = 'force-dynamic'
@@ -34,8 +34,8 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'list':
         const filters = {
-          type: searchParams.get('type') as any,
-          status: searchParams.get('status') as any,
+          type: searchParams.get('type') as AssetType | undefined,
+          status: searchParams.get('status') as AssetStatus | undefined,
           assignedTo: searchParams.get('assignedTo') || undefined,
           expiringWithinDays: searchParams.get('expiring')
             ? parseInt(searchParams.get('expiring')!)
