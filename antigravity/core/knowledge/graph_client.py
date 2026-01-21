@@ -1,3 +1,5 @@
+import os
+import re
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 import json
@@ -27,26 +29,41 @@ class GraphClient:
     """
     Client for interacting with the Knowledge Graph (FalkorDB).
     """
-    def __init__(self, host: str = "localhost", port: int = 6379):
-        self.driver = FalkorDB(host=host, port=port)
+    def __init__(self, host: Optional[str] = None, port: Optional[int] = None):
+        self.host = host or os.getenv("GRAPH_HOST", "localhost")
+        self.port = port if port is not None else int(os.getenv("GRAPH_PORT", "6379"))
+        self.driver = FalkorDB(host=self.host, port=self.port)
         self.graph = self.driver.select_graph("agencyos")
+
+    def _sanitize_identifier(self, identifier: str) -> str:
+        """Sanitize Cypher identifiers (labels, relationship types)."""
+        if not re.match(r"^[a-zA-Z0-9_]+$", identifier):
+            raise ValueError(f"Invalid identifier: {identifier}")
+        return identifier
 
     def add_node(self, node: KnowledgeNode):
         """Add a node to the graph."""
+        label = self._sanitize_identifier(node.label)
         query = f"""
-        MERGE (n:{node.label} {{name: '{node.name}'}})
+        MERGE (n:{label} {{name: $name}})
         SET n += $props
         """
-        self.graph.query(query, {"props": node.properties})
+        self.graph.query(query, {"name": node.name, "props": node.properties})
 
     def add_edge(self, edge: KnowledgeEdge):
         """Add an edge between two nodes."""
+        relation = self._sanitize_identifier(edge.relation)
         query = f"""
-        MATCH (a {{name: '{edge.source_name}'}}), (b {{name: '{edge.target_name}'}})
-        MERGE (a)-[r:{edge.relation}]->(b)
+        MATCH (a), (b)
+        WHERE a.name = $source AND b.name = $target
+        MERGE (a)-[r:{relation}]->(b)
         SET r += $props
         """
-        self.graph.query(query, {"props": edge.properties})
+        self.graph.query(query, {
+            "source": edge.source_name,
+            "target": edge.target_name,
+            "props": edge.properties
+        })
 
     def query(self, cypher_query: str, params: Optional[Dict[str, Any]] = None):
         """Execute a raw Cypher query."""
@@ -55,10 +72,10 @@ class GraphClient:
     def get_context(self, concept_name: str) -> List[Dict[str, Any]]:
         """Retrieve related context for a concept."""
         query = f"""
-        MATCH (n {{name: '{concept_name}'}})-[r]-(m)
+        MATCH (n {{name: $name}})-[r]-(m)
         RETURN n, r, m
         LIMIT 20
         """
-        result = self.graph.query(query)
+        result = self.graph.query(query, {"name": concept_name})
         # Simplified result parsing would go here
         return result.result_set
