@@ -1,0 +1,50 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - generic [ref=e8]: Agency OS
+      - navigation [ref=e9]:
+        - link "Mission Control" [ref=e10] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e11]
+          - generic [ref=e16]: Mission Control
+        - link "Revenue Engine" [ref=e17] [cursor=pointer]:
+          - /url: /dashboard/revenue
+          - img [ref=e18]
+          - generic [ref=e21]: Revenue Engine
+        - link "Client Magnet" [ref=e22] [cursor=pointer]:
+          - /url: /dashboard/crm
+          - img [ref=e23]
+          - generic [ref=e28]: Client Magnet
+        - link "Content Factory" [ref=e29] [cursor=pointer]:
+          - /url: /dashboard/content
+          - img [ref=e30]
+          - generic [ref=e35]: Content Factory
+        - link "Strategy (Binh Pháp)" [ref=e36] [cursor=pointer]:
+          - /url: /dashboard/strategy
+          - img [ref=e37]
+          - generic [ref=e41]: Strategy (Binh Pháp)
+        - link "Settings" [ref=e42] [cursor=pointer]:
+          - /url: /dashboard/settings
+          - img [ref=e43]
+          - generic [ref=e46]: Settings
+      - generic [ref=e49]:
+        - generic [ref=e51]: VC
+        - generic [ref=e52]:
+          - paragraph [ref=e53]: Readiness Score
+          - paragraph [ref=e54]: 83/100
+    - main [ref=e57]:
+      - generic [ref=e58]:
+        - heading "Dashboard" [level=1] [ref=e59]
+        - button "⚡ Binh Phap Mode" [ref=e61]
+      - generic [ref=e66]:
+        - heading "404" [level=1] [ref=e67]
+        - heading "This page could not be found." [level=2] [ref=e69]
+  - button "Open Next.js Dev Tools" [ref=e75] [cursor=pointer]:
+    - img [ref=e76]
+  - alert [ref=e79]
+```
