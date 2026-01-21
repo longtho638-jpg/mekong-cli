@@ -7,11 +7,10 @@
  * Uses the Provider pattern to switch between implementations.
  */
 
-import { useState } from 'react'
 import BraintreeCheckout from './BraintreeCheckout'
 import PayPalCheckout from './PayPalCheckout'
 import { StripeCheckout } from './StripeCheckout'
-import { PaymentGateway } from '@/lib/billing/gateways'
+import type { PaymentGateway } from '@/lib/billing/gateways'
 
 export interface UnifiedCheckoutProps {
   gateway: PaymentGateway | 'braintree' | 'paypal'
@@ -22,7 +21,7 @@ export interface UnifiedCheckoutProps {
   tenantId?: string // Required for Stripe/Gateways
   returnUrl?: string // Required for Stripe/Gateways
   cancelUrl?: string // Required for Stripe/Gateways
-  onSuccess?: (result: any) => void
+  onSuccess?: (result: unknown) => void
   onError?: (error: string) => void
   className?: string
 }

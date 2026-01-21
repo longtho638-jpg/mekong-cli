@@ -14,6 +14,10 @@ import sys
 import argparse
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Ensure we can import from core
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
