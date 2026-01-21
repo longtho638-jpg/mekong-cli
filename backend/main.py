@@ -22,11 +22,13 @@ from backend.api.routers import (
     workflow,
     agents_creator,
     swarm,
+    audit,
 )
 from backend.api.routers import (
     router as hybrid_router,
 )
 from backend.routes.agentops import router as agentops_router
+from backend.api.auth.router import router as auth_router
 
 # Initialize FastAPI
 app = FastAPI(
@@ -54,6 +56,8 @@ app.include_router(mekong_commands.router)
 app.include_router(monitor.router.router)
 app.include_router(workflow.router.router)
 app.include_router(agents_creator.router.router)
+app.include_router(audit.router)
+app.include_router(auth_router)
 
 @app.get("/")
 async def root():
