@@ -25,6 +25,7 @@ from backend.api.routers import (
     audit,
     paypal_webhooks,
     stripe_webhooks,
+    gumroad_webhooks,
 )
 from backend.api.routers import (
     router as hybrid_router,
@@ -61,6 +62,7 @@ app.include_router(agents_creator.router.router)
 app.include_router(audit.router)
 app.include_router(paypal_webhooks.router)
 app.include_router(stripe_webhooks.router)
+app.include_router(gumroad_webhooks.router)
 app.include_router(auth_router)
 
 @app.get("/")
