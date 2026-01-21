@@ -101,12 +101,12 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have tr
 - ✅ Specialized Swarm Patterns (Dev, Growth)
 - ✅ Swarm Visualization UI
 
-### Phase 13: Knowledge Graph Integration (PLANNED)
-**Status:** 📅 Planned
+### Phase 13: Knowledge Graph Integration (IN PROGRESS)
+**Status:** 🏗️ Development
 **Progress:** 0%
 
 **Features:**
-- 📋 Graph Database (Neo4j/FalkorDB)
+- 📋 Graph Database (FalkorDB)
 - 📋 Context Memory
 - 📋 Knowledge Ingestion
 - 📋 Semantic Search

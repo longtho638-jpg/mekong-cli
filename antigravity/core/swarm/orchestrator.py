@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from ..knowledge.graph_client import GraphClient
 from .agent import BaseSwarmAgent
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
@@ -13,6 +14,7 @@ class SwarmOrchestrator:
 
     def __init__(self):
         self.bus = MessageBus()
+        self.graph = GraphClient() # Initialize Graph Connection
         self.agents: Dict[str, BaseSwarmAgent] = {}
 
     def register_agent(self, agent: BaseSwarmAgent):
