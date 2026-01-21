@@ -1,3 +1,65 @@
+## [2.5.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.4...v2.5.0-beta.5) (2026-01-20)
+
+
+### 🚀 Features
+
+* **skills:** add cook skill for task orchestration ([458b32f](https://github.com/claudekit/claudekit-engineer/commit/458b32f1d6742bfbee300b431b47241a88e793c6))
+* **skills:** add gkg skill for semantic code analysis ([b3c2767](https://github.com/claudekit/claudekit-engineer/commit/b3c2767fcd49e392c7bb9af2a0d248c54ce067cc))
+* **skills:** add scout skill for codebase file discovery ([18e0274](https://github.com/claudekit/claudekit-engineer/commit/18e0274e68a1104c98672631146077ef47dd0f7a))
+* **web-testing:** add Playwright test automation scripts ([e56728a](https://github.com/claudekit/claudekit-engineer/commit/e56728ac157ee7444f44a20937f453bdae0eb92c))
+
+
+### 📚 Documentation
+
+* **commands:** update docs commands with improved instructions ([bc29733](https://github.com/claudekit/claudekit-engineer/commit/bc2973301e10ae15d5152aad6a369ec33eae42b7))
+* **mcp:** update Gemini CLI integration reference ([654f03c](https://github.com/claudekit/claudekit-engineer/commit/654f03cd66f0511ef861ff8b307922319dc13ae9))
+* **skill-creator:** add quality criteria reference documentation ([b448fa3](https://github.com/claudekit/claudekit-engineer/commit/b448fa39cb9421ae397cd9484039fd63d87a982f))
+* **skills:** add frontend-design workflow references ([64af261](https://github.com/claudekit/claudekit-engineer/commit/64af26179e0a03ba7db893014c318a161c82e225))
+* **skills:** update skill-creator with improved guidelines ([c06a3c8](https://github.com/claudekit/claudekit-engineer/commit/c06a3c8d520c343ed7211404c79f9c366b48a2fa))
+* **web-testing:** add comprehensive testing framework references and guidelines ([d356cbb](https://github.com/claudekit/claudekit-engineer/commit/d356cbb89f2788fac43eebbe1b1988c6c7de521a))
+
+
+### ♻️ Code Refactoring
+
+* **agents:** remove deprecated scout agent definitions ([e07a855](https://github.com/claudekit/claudekit-engineer/commit/e07a855ddff4d32ae2070d13739f3a8acad024cc))
+* **commands:** archive deprecated commands to commands-archived ([a7fec39](https://github.com/claudekit/claudekit-engineer/commit/a7fec391576ea7446053094b52f89495544556a2))
+* **skills:** rename brainstorming to brainstorm ([7ef3c20](https://github.com/claudekit/claudekit-engineer/commit/7ef3c205f7002291d459008b586e9f9b34e1a994))
+
+## [2.5.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.3...v2.5.0-beta.4) (2026-01-19)
+
+
+### 🚀 Features
+
+* **worktree:** add --worktree-root flag for Claude-driven decisions ([003cd43](https://github.com/claudekit/claudekit-engineer/commit/003cd4350293941b03bc6d12787f1170d02471d2))
+
+
+### 🐞 Bug Fixes
+
+* **worktree:** add validation, safety limits, and tests for robustness ([cb05c3f](https://github.com/claudekit/claudekit-engineer/commit/cb05c3fef595556615ff3056e3bba18d11b57466))
+* **worktree:** consistent location via superproject detection ([cadb65a](https://github.com/claudekit/claudekit-engineer/commit/cadb65a8b32d80a0415c65680a5af447ce038991)), closes [#345](https://github.com/claudekit/claudekit-engineer/issues/345)
+
+
+### 📚 Documentation
+
+* **worktree:** restore detailed dependency install examples ([eeeba94](https://github.com/claudekit/claudekit-engineer/commit/eeeba9405850eff95589ecdff14cda42a6976817))
+
+
+### ✅ Tests
+
+* **worktree:** add comprehensive edge case and user scenario tests ([e52dd54](https://github.com/claudekit/claudekit-engineer/commit/e52dd54bb91f807342a47c8043eef6b55a555e7c))
+
+## [2.5.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.2...v2.5.0-beta.3) (2026-01-19)
+
+
+### 🚀 Features
+
+* **mcp:** add MCP manager agent and CLI integration support ([5bf9a9d](https://github.com/claudekit/claudekit-engineer/commit/5bf9a9de040b2fab608e5d4aaf91f663e54130ee))
+
+
+### 📚 Documentation
+
+* **web-testing:** add comprehensive testing references and guidelines ([a45da0a](https://github.com/claudekit/claudekit-engineer/commit/a45da0a6512f1331d2855166e7b50960a84f9bc2))
+
 ## [2.5.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.1...v2.5.0-beta.2) (2026-01-18)
 
 
