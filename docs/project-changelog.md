@@ -7,6 +7,8 @@
 ## [2.4.0-beta] - 2026-01-21
 
 ### PayPal Migration & Backend Unification (Phase 1)
+- **Environment Configuration**: Updated `.env.example`, `apps/dashboard/.env.example`, and created `backend/.env.example` with full PayPal and Supabase variable sets.
+- **Production Readiness**: Hardened `vercel.json` across all apps (`dashboard`, `web`, `docs`, `mekong-docs`) with MD3-compliant security headers and optimized rewrites.
 - **PayPal SDK**: Created `core/finance/paypal_sdk/subscriptions.py` to handle full subscription lifecycle (create, get, cancel, suspend/resume).
 - **Unified Payment Service**: Refactored `backend/services/payment_service.py` to consolidate PayPal, Stripe, and Gumroad logic. Added subscription mapping and license generation triggers.
 - **Webhook Handlers**: Consolidated webhook processing to eliminate logic duplication and ensure reliable license delivery.
