@@ -20,15 +20,18 @@ from typing import Optional
 from supabase import Client, create_client
 
 try:
-    from .config import get_settings
-except (ImportError, ValueError):
-    # Fallback for direct execution
+    from core.config import get_settings
+except ImportError:
     try:
-        from config import get_settings
-    except ImportError:
+        from .config import get_settings
+    except (ImportError, ValueError):
+        # Fallback for direct execution
+        try:
+            from config import get_settings
+        except ImportError:
 
-        def get_settings():
-            return None
+            def get_settings():
+                return None
 
 
 # Configure logging
