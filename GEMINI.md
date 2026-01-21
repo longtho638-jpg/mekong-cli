@@ -76,6 +76,92 @@
 
 > **Lý do:** Anh không phải lúc nào cũng ngồi tại máy, cần auto-push để CLI không bị stuck.
 
+### 🔗 /Command Prefix Rule (BẮT BUỘC):
+
+> **TẤT CẢ rules và tasks PHẢI có /command prefix để ánh xạ triệt để sức mạnh CLI**
+
+#### Core Commands (System)
+
+| /Command | Mục đích                            | Mode          |
+| -------- | ----------------------------------- | ------------- |
+| `/plan`  | Planning, strategy analysis         | PLANNING      |
+| `/code`  | Code execution, implementation      | EXECUTION     |
+| `/ship`  | Commit + Push + Deploy              | DEPLOY        |
+| `/test`  | Run test suite                      | VERIFICATION  |
+| `/help`  | Show all commands                   | DOCUMENTATION |
+| `/build` | Feature code gen, tests, CI, deploy | EXECUTION     |
+
+#### Development Workflows (Dev)
+
+| /Command                   | Mục đích                     | Mode          |
+| -------------------------- | ---------------------------- | ------------- |
+| `/add-feature`             | Add new features to AgencyOS | EXECUTION     |
+| `/bug-fixing`              | Debug and fix bugs           | EXECUTION     |
+| `/refactoring-code`        | Refactor code                | EXECUTION     |
+| `/feature-development`     | Develop new features         | EXECUTION     |
+| `/starting-new-project`    | Bootstrap new project        | PLANNING      |
+| `/maintaining-old-project` | Maintain legacy projects     | EXECUTION     |
+| `/documentation`           | Create/maintain docs         | DOCUMENTATION |
+| `/validate-before-commit`  | Pre-commit validation        | VERIFICATION  |
+| `/full-stack-workflow`     | Full-stack dev (Binh Pháp)   | EXECUTION     |
+| `/deploy-project`          | Deploy to production         | DEPLOY        |
+| `/gemini`                  | Gemini API setup             | EXECUTION     |
+| `/jules-cleanup`           | Auto tech debt cleanup       | EXECUTION     |
+| `/safe-commands`           | Setup command allowlist      | CONFIGURATION |
+
+#### Business & Sales Workflows (Biz)
+
+| /Command             | Mục đích                 | Mode      |
+| -------------------- | ------------------------ | --------- |
+| `/money`             | Revenue generation       | EXECUTION |
+| `/client`            | Client onboarding        | EXECUTION |
+| `/content`           | Content production       | EXECUTION |
+| `/sales-pipeline`    | Sales pipeline setup     | PLANNING  |
+| `/proposal-to-close` | Generate proposals       | EXECUTION |
+| `/client-onboarding` | Onboard clients          | EXECUTION |
+| `/pricing-strategy`  | Set pricing strategy     | PLANNING  |
+| `/retention-plays`   | Churn prevention         | EXECUTION |
+| `/customer-success`  | Customer success program | PLANNING  |
+| `/finance-reporting` | P&L tracking             | REPORTING |
+| `/auto-publish`      | Auto-publish to Gumroad  | DEPLOY    |
+| `/autopilot`         | 1000% automated revenue  | EXECUTION |
+
+#### Strategy & Analysis Workflows (Strategy)
+
+| /Command                     | Mục đích                   | Mode         |
+| ---------------------------- | -------------------------- | ------------ |
+| `/binh-phap-analysis`        | Sun Tzu strategic analysis | PLANNING     |
+| `/binh-phap-customer-funnel` | Customer-centric strategy  | PLANNING     |
+| `/win`                       | WIN-WIN-WIN validation     | VERIFICATION |
+| `/vc-readiness`              | Prepare for VC fundraising | PLANNING     |
+| `/mvp-launch`                | Launch MVP                 | EXECUTION    |
+| `/brand-system`              | Brand guidelines           | PLANNING     |
+
+#### Content & Marketing Workflows (Marketing)
+
+| /Command            | Mục đích         | Mode      |
+| ------------------- | ---------------- | --------- |
+| `/content-calendar` | Content planning | PLANNING  |
+| `/video-workflow`   | Video production | EXECUTION |
+
+#### Operations Workflows (Ops)
+
+| /Command            | Mục đích                       | Mode          |
+| ------------------- | ------------------------------ | ------------- |
+| `/hr-hiring`        | Build/scale team               | PLANNING      |
+| `/legal-contracts`  | Legal docs (MSA, NDA, SOW)     | DOCUMENTATION |
+| `/quota-auto`       | Auto quota monitoring          | CONFIGURATION |
+| `/agencyos-unified` | Unified AgencyOS workflow      | EXECUTION     |
+| `/bridge-easy`      | AntiBridge setup wizard (Việt) | CONFIGURATION |
+| `/cf-easy`          | Cloudflare setup wizard (Việt) | CONFIGURATION |
+
+**Quy tắc BẮT BUỘC:**
+
+1. ✅ Mọi câu lệnh gửi CLI PHẢI bắt đầu bằng `/command`
+2. ✅ Agent tự động map /command → .agent/workflows/
+3. ✅ Mọi rules mới PHẢI có /command tương ứng
+4. ❌ KHÔNG gửi lệnh CLI mà thiếu /command prefix
+
 ### Cách tắt Auto-Accept:
 
 Chỉ cần nói bằng ngôn ngữ tự nhiên:

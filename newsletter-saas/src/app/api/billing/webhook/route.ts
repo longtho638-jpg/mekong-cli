@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     const body = JSON.parse(bodyText);
     const eventType = body.event_type;
 
-    console.log(`[PayPal Webhook ${eventId}] Received event: ${eventType}`);
+    console.info(`[PayPal Webhook ${eventId}] Received event: ${eventType}`);
 
     // SECURITY: Verify webhook signature
     const webhookHeaders = extractPayPalWebhookHeaders(request.headers);
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[PayPal Webhook ${eventId}] Signature verified successfully`);
+    console.info(`[PayPal Webhook ${eventId}] Signature verified successfully`);
 
     // Initialize Supabase admin client
     const supabase = createClient(
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
         insertError.code === "23505" ||
         insertError.message?.includes("duplicate")
       ) {
-        console.log(
+        console.info(
           `[PayPal Webhook ${eventId}] Event already processed (idempotent): ${body.id}`,
         );
         return NextResponse.json({ received: true, duplicate: true });
@@ -163,13 +163,13 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(
+        console.warn(
           `[PayPal Webhook ${eventId}] Unhandled event: ${eventType}`,
         );
     }
 
     const duration = Date.now() - startTime;
-    console.log(
+    console.info(
       `[PayPal Webhook ${eventId}] Processed successfully in ${duration}ms`,
     );
 
@@ -231,7 +231,7 @@ async function handlePaymentCaptured(
   const redactedEmail = payerEmail
     ? payerEmail.replace(/(.{2}).*@/, "$1***@")
     : "unknown";
-  console.log(
+  console.info(
     `[PayPal Webhook ${eventId}] Payment captured: ${captureId.slice(0, 8)}... - [AMOUNT_REDACTED] from ${redactedEmail}`,
   );
 
@@ -266,7 +266,7 @@ async function handlePaymentFailed(
   eventId: string,
 ) {
   const failedOrderId = body.resource?.id;
-  console.log(
+  console.warn(
     `[PayPal Webhook ${eventId}] Payment ${eventType}: ${failedOrderId}`,
   );
 
@@ -283,7 +283,7 @@ async function handleSubscriptionCancelled(
   eventId: string,
 ) {
   const subscriptionId = body.resource?.id;
-  console.log(
+  console.info(
     `[PayPal Webhook ${eventId}] Subscription cancelled: ${subscriptionId}`,
   );
 
@@ -316,7 +316,7 @@ async function handleSubscriptionActivated(
   const subscriptionId = body.resource?.id;
   const planId = body.resource?.plan_id;
 
-  console.log(
+  console.info(
     `[PayPal Webhook ${eventId}] Subscription activated: ${subscriptionId}`,
   );
 
