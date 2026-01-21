@@ -91,15 +91,25 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have tr
 - ✅ CI/CD Deployment Pipeline
 - ✅ Production Documentation
 
-### Phase 12: Advanced AI Features (IN PROGRESS)
-**Status:** 🏗️ Development
+### Phase 12: Advanced AI Features (COMPLETE)
+**Status:** ✅ Complete | **Completion:** v2.5.0-beta
+**Progress:** 100%
+
+**Features:**
+- ✅ Swarm Protocol (Inter-agent communication)
+- ✅ Swarm Manager (Dynamic routing)
+- ✅ Specialized Swarm Patterns (Dev, Growth)
+- ✅ Swarm Visualization UI
+
+### Phase 13: Knowledge Graph Integration (PLANNED)
+**Status:** 📅 Planned
 **Progress:** 0%
 
 **Features:**
-- 📋 Swarm Protocol (Inter-agent communication)
-- 📋 Swarm Manager (Dynamic routing)
-- 📋 Specialized Swarm Patterns (Dev, Growth)
-- 📋 Swarm Visualization UI
+- 📋 Graph Database (Neo4j/FalkorDB)
+- 📋 Context Memory
+- 📋 Knowledge Ingestion
+- 📋 Semantic Search
 
 ---
 
