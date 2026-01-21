@@ -1,24 +1,14 @@
 /**
  * Real-time MRR API Route
- * Fetches live MRR from Stripe subscriptions
+ * Fetches live MRR from unified subscriptions table (Stripe & PayPal)
  */
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import Stripe from 'stripe'
+import { createClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/utils/logger'
 
 export const dynamic = 'force-dynamic'
-
-// Lazy Stripe initialization
-function getStripe(): Stripe {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY not configured')
-  }
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-12-15.clover',
-  })
-}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MRR CALCULATION
@@ -43,54 +33,39 @@ interface MRRMetrics {
   }[]
 }
 
-async function calculateMRR(): Promise<MRRMetrics> {
-  const stripe = getStripe()
+// Prices mapping for MRR calculation
+const PLAN_PRICES: Record<string, number> = {
+  FREE: 0,
+  PRO: 49,
+  ENTERPRISE: 199,
+}
 
-  // Get all active subscriptions
-  const subscriptions = await stripe.subscriptions.list({
-    status: 'active',
-    limit: 100,
-    expand: ['data.items.data.price'],
-  })
+async function calculateMRR(): Promise<MRRMetrics> {
+  const supabase = await createClient()
+
+  // Get all active subscriptions from unified table
+  const { data: subscriptions, error } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('status', 'active')
+
+  if (error) {
+    throw new Error(`Failed to fetch subscriptions: ${error.message}`)
+  }
 
   let totalMRR = 0
   const planBreakdown: Record<string, { count: number; mrr: number }> = {}
 
-  for (const sub of subscriptions.data) {
-    for (const item of sub.items.data) {
-      const price = item.price
-      let monthlyAmount = 0
+  for (const sub of (subscriptions || [])) {
+    const monthlyAmount = PLAN_PRICES[sub.plan.toUpperCase()] || 0
+    totalMRR += monthlyAmount
 
-      if (price.type === 'recurring' && price.unit_amount) {
-        const amount = price.unit_amount / 100
-
-        // Convert to monthly
-        switch (price.recurring?.interval) {
-          case 'month':
-            monthlyAmount = amount
-            break
-          case 'year':
-            monthlyAmount = amount / 12
-            break
-          case 'week':
-            monthlyAmount = amount * 4.33
-            break
-          case 'day':
-            monthlyAmount = amount * 30
-            break
-        }
-      }
-
-      totalMRR += monthlyAmount
-
-      // Track by plan
-      const planName = price.nickname || price.id
-      if (!planBreakdown[planName]) {
-        planBreakdown[planName] = { count: 0, mrr: 0 }
-      }
-      planBreakdown[planName].count++
-      planBreakdown[planName].mrr += monthlyAmount
+    const planName = sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1).toLowerCase()
+    if (!planBreakdown[planName]) {
+      planBreakdown[planName] = { count: 0, mrr: 0 }
     }
+    planBreakdown[planName].count++
+    planBreakdown[planName].mrr += monthlyAmount
   }
 
   // Get new subscriptions this month
@@ -98,63 +73,32 @@ async function calculateMRR(): Promise<MRRMetrics> {
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
 
-  const newSubs = await stripe.subscriptions.list({
-    status: 'active',
-    created: { gte: Math.floor(startOfMonth.getTime() / 1000) },
-    limit: 100,
-  })
+  const { data: newSubs } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('status', 'active')
+    .gte('created_at', startOfMonth.toISOString())
 
   let newMRR = 0
-  for (const sub of newSubs.data) {
-    for (const item of sub.items.data) {
-      if (item.price.unit_amount) {
-        const amount = item.price.unit_amount / 100
-        if (item.price.recurring?.interval === 'year') {
-          newMRR += amount / 12
-        } else {
-          newMRR += amount
-        }
-      }
-    }
+  for (const sub of (newSubs || [])) {
+    newMRR += PLAN_PRICES[sub.plan.toUpperCase()] || 0
   }
 
   // Get canceled subscriptions this month
-  const canceledSubs = await stripe.subscriptions.list({
-    status: 'canceled',
-    created: { gte: Math.floor(startOfMonth.getTime() / 1000) },
-    limit: 100,
-  })
+  const { data: canceledSubs } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('status', 'canceled')
+    .gte('updated_at', startOfMonth.toISOString())
 
   let churnedMRR = 0
-  for (const sub of canceledSubs.data) {
-    for (const item of sub.items.data) {
-      if (item.price.unit_amount) {
-        const amount = item.price.unit_amount / 100
-        if (item.price.recurring?.interval === 'year') {
-          churnedMRR += amount / 12
-        } else {
-          churnedMRR += amount
-        }
-      }
-    }
+  for (const sub of (canceledSubs || [])) {
+    churnedMRR += PLAN_PRICES[sub.plan.toUpperCase()] || 0
   }
 
   // Calculate growth (last 6 months - simplified)
   const growth: { month: string; mrr: number }[] = []
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const currentMonth = new Date().getMonth()
 
   for (let i = 5; i >= 0; i--) {
@@ -170,13 +114,13 @@ async function calculateMRR(): Promise<MRRMetrics> {
   return {
     mrr: Math.round(totalMRR * 100) / 100,
     arr: Math.round(totalMRR * 12 * 100) / 100,
-    activeSubscriptions: subscriptions.data.length,
+    activeSubscriptions: (subscriptions || []).length,
     newMRR: Math.round(newMRR * 100) / 100,
     churnedMRR: Math.round(churnedMRR * 100) / 100,
     netNewMRR: Math.round((newMRR - churnedMRR) * 100) / 100,
     averageRevenuePerUser:
-      subscriptions.data.length > 0
-        ? Math.round((totalMRR / subscriptions.data.length) * 100) / 100
+      (subscriptions || []).length > 0
+        ? Math.round((totalMRR / (subscriptions || []).length) * 100) / 100
         : 0,
     breakdown: Object.entries(planBreakdown).map(([plan, data]) => ({
       plan,

@@ -23,6 +23,8 @@ from backend.api.routers import (
     agents_creator,
     swarm,
     audit,
+    paypal_webhooks,
+    stripe_webhooks,
 )
 from backend.api.routers import (
     router as hybrid_router,
@@ -57,6 +59,8 @@ app.include_router(monitor.router.router)
 app.include_router(workflow.router.router)
 app.include_router(agents_creator.router.router)
 app.include_router(audit.router)
+app.include_router(paypal_webhooks.router)
+app.include_router(stripe_webhooks.router)
 app.include_router(auth_router)
 
 @app.get("/")

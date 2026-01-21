@@ -21,6 +21,8 @@ export interface Subscription {
   tenantId: string
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
+  paypalSubscriptionId: string | null
+  paypalOrderId: string | null
   plan: PricingTier
   status: SubscriptionStatus
   currentPeriodStart: Date
@@ -47,17 +49,19 @@ export interface UsageLimits {
 
 /** Raw subscription row from database */
 interface SubscriptionRow {
-  id: string
-  tenant_id: string
-  stripe_customer_id: string | null
-  stripe_subscription_id: string | null
-  plan: string
-  status: string
-  current_period_start: string
-  current_period_end: string
-  cancel_at_period_end?: boolean
-  created_at: string
-  updated_at: string
+  id: string;
+  tenant_id: string;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  paypal_subscription_id: string | null;
+  paypal_order_id: string | null;
+  plan: string;
+  status: string;
+  current_period_start: string;
+  current_period_end: string;
+  cancel_at_period_end?: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -327,6 +331,8 @@ export class SubscriptionManager {
       tenantId: data.tenant_id,
       stripeCustomerId: data.stripe_customer_id,
       stripeSubscriptionId: data.stripe_subscription_id,
+      paypalSubscriptionId: data.paypal_subscription_id,
+      paypalOrderId: data.paypal_order_id,
       plan: data.plan as PricingTier,
       status: data.status as SubscriptionStatus,
       currentPeriodStart: new Date(data.current_period_start),

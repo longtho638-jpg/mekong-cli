@@ -66,21 +66,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const prices = PAYPAL_PRICES[planKey];
+    const prices = PAYPAL_PRICES[plan as keyof typeof PAYPAL_PRICES];
     const amount = billing === "yearly" ? prices.yearly : prices.monthly;
     const period = billing === "yearly" ? "year" : "month";
 
     // Demo mode if PayPal not configured
     if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
       // Update org with demo subscription
-      await supabase
+      const { data: orgData } = await supabase
         .from("organizations")
         .update({
           plan: plan,
           paypal_order_id: `demo_order_${Date.now()}`,
           updated_at: new Date().toISOString(),
         })
-        .eq("owner_id", user.id);
+        .eq("owner_id", user.id)
+        .select("id")
+        .single();
+
+      if (orgData) {
+        // Sync to unified subscriptions table
+        await supabase.from("subscriptions").upsert({
+          tenant_id: orgData.id,
+          plan: plan.toUpperCase(),
+          status: "active",
+          paypal_order_id: `demo_order_${Date.now()}`,
+          updated_at: new Date().toISOString(),
+        });
+      }
 
       return securityHeaders(
         NextResponse.json({
@@ -142,14 +155,35 @@ export async function GET(request: NextRequest) {
 
     const { data: org } = await supabase
       .from("organizations")
-      .select("plan, paypal_order_id")
+      .select("id, plan, paypal_order_id")
       .eq("owner_id", user.id)
       .single();
 
+    if (org) {
+      // Check unified subscriptions table first
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("plan, status, paypal_order_id, stripe_subscription_id")
+        .eq("tenant_id", org.id)
+        .single();
+
+      if (sub && sub.status === "active") {
+        return securityHeaders(
+          NextResponse.json({
+            plan: sub.plan.toLowerCase(),
+            has_subscription: !!(sub.paypal_order_id || sub.stripe_subscription_id),
+            source: "unified",
+          }),
+        );
+      }
+    }
+
+    // Fallback to legacy organization data
     return securityHeaders(
       NextResponse.json({
         plan: org?.plan || "free",
         has_subscription: !!org?.paypal_order_id,
+        source: "legacy",
       }),
     );
   } catch (error) {

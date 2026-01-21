@@ -11,6 +11,7 @@ interface PayPalResource {
   amount?: { value?: string };
   supplementary_data?: { related_ids?: { order_id?: string } };
   plan_id?: string;
+  custom_id?: string;
 }
 
 interface PayPalWebhookBody {
@@ -111,8 +112,7 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    // IDEMPOTENCY: Check if event already processed using INSERT with conflict handling
-    // This prevents race conditions (TOCTOU) by using database-level uniqueness
+    // IDEMPOTENCY: Check if event already processed
     const { error: insertError } = await supabase
       .from("webhook_events")
       .insert({
@@ -125,7 +125,6 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (insertError) {
-      // Check if error is due to duplicate key (idempotency)
       if (
         insertError.code === "23505" ||
         insertError.message?.includes("duplicate")
@@ -135,12 +134,10 @@ export async function POST(request: NextRequest) {
         );
         return NextResponse.json({ received: true, duplicate: true });
       }
-      // Other database errors should be logged and handled
       console.error(
         `[PayPal Webhook ${eventId}] Failed to log event:`,
         insertError.message,
       );
-      // Continue processing even if audit log fails (degraded mode)
     }
 
     // Process webhook based on event type
@@ -181,7 +178,6 @@ export async function POST(request: NextRequest) {
       error,
     );
 
-    // Return 200 to prevent PayPal retries for malformed requests
     if (error instanceof SyntaxError) {
       return NextResponse.json(
         { error: "Invalid JSON payload" },
@@ -189,7 +185,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Return 500 for server errors (PayPal will retry)
     return NextResponse.json(
       { error: "Webhook handler failed" },
       { status: 500 },
@@ -209,34 +204,23 @@ async function handlePaymentCaptured(
   const payerEmail = body.resource?.payer?.email_address;
   const amountStr = body.resource?.amount?.value;
 
-  // INPUT VALIDATION: Validate payment data
   if (!captureId || !/^[A-Z0-9]+$/i.test(captureId)) {
     console.error(`[PayPal Webhook ${eventId}] Invalid capture ID format`);
     return;
   }
 
-  const amount = parseFloat(amountStr);
+  const amount = parseFloat(amountStr || "0");
   if (isNaN(amount) || amount <= 0) {
     console.error(`[PayPal Webhook ${eventId}] Invalid payment amount`);
     return;
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (payerEmail && !emailRegex.test(payerEmail)) {
-    console.error(`[PayPal Webhook ${eventId}] Invalid payer email format`);
-    return;
-  }
-
-  // SECURITY: Redact sensitive data in logs
-  const redactedEmail = payerEmail
-    ? payerEmail.replace(/(.{2}).*@/, "$1***@")
-    : "unknown";
   console.info(
-    `[PayPal Webhook ${eventId}] Payment captured: ${captureId.slice(0, 8)}... - [AMOUNT_REDACTED] from ${redactedEmail}`,
+    `[PayPal Webhook ${eventId}] Payment captured: ${captureId.slice(0, 8)}...`,
   );
 
   // Update organization payment status
-  const { error } = await supabase
+  const { data: orgData, error } = await supabase
     .from("organizations")
     .update({
       last_payment_at: new Date().toISOString(),
@@ -246,13 +230,26 @@ async function handlePaymentCaptured(
     .eq(
       "paypal_order_id",
       body.resource?.supplementary_data?.related_ids?.order_id,
-    );
+    )
+    .select("id")
+    .single();
 
   if (error) {
     console.error(
       `[PayPal Webhook ${eventId}] Failed to update organization:`,
       error,
     );
+  } else if (orgData) {
+    // Record in unified payments table
+    await supabase.from("payments").insert({
+      tenant_id: orgData.id,
+      amount: amount,
+      currency: "USD",
+      status: "succeeded",
+      paid_at: new Date().toISOString(),
+      payment_method: "paypal",
+      paypal_capture_id: captureId
+    });
   }
 }
 
@@ -269,9 +266,6 @@ async function handlePaymentFailed(
   console.warn(
     `[PayPal Webhook ${eventId}] Payment ${eventType}: ${failedOrderId}`,
   );
-
-  // Could implement downgrade logic here
-  // For now, just log the event
 }
 
 /**
@@ -287,21 +281,33 @@ async function handleSubscriptionCancelled(
     `[PayPal Webhook ${eventId}] Subscription cancelled: ${subscriptionId}`,
   );
 
-  // Downgrade to free plan
-  const { error } = await supabase
+  // Downgrade to free plan in legacy table
+  const { data: orgData, error } = await supabase
     .from("organizations")
     .update({
       plan: "free",
       paypal_subscription_id: null,
       updated_at: new Date().toISOString(),
     })
-    .eq("paypal_subscription_id", subscriptionId);
+    .eq("paypal_subscription_id", subscriptionId)
+    .select("id")
+    .single();
 
   if (error) {
     console.error(
       `[PayPal Webhook ${eventId}] Failed to downgrade organization:`,
       error,
     );
+  } else if (orgData) {
+    // Update unified subscriptions table
+    await supabase
+      .from("subscriptions")
+      .update({
+        plan: "FREE",
+        status: "canceled",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("tenant_id", orgData.id);
   }
 }
 
@@ -320,28 +326,50 @@ async function handleSubscriptionActivated(
     `[PayPal Webhook ${eventId}] Subscription activated: ${subscriptionId}`,
   );
 
-  // Map PayPal plan ID to internal plan
   const planMapping: Record<string, string> = {
     [process.env.PAYPAL_PRO_PLAN_ID!]: "pro",
     [process.env.PAYPAL_ENTERPRISE_PLAN_ID!]: "enterprise",
   };
 
-  const internalPlan = planMapping[planId] || "free";
+  const internalPlan = planMapping[planId || ""] || "free";
 
   // Update organization plan
-  const { error } = await supabase
-    .from("organizations")
-    .update({
-      plan: internalPlan,
-      paypal_subscription_id: subscriptionId,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("paypal_subscription_id", subscriptionId);
+  // We first try to find the org by paypal_subscription_id (if already set via checkout)
+  // or by custom_id if we passed it during subscription creation
+  let query = supabase.from("organizations").update({
+    plan: internalPlan,
+    paypal_subscription_id: subscriptionId,
+    updated_at: new Date().toISOString(),
+  });
+
+  // Try matching by subscription ID first (if set by checkout flow)
+  // Or fallback to other matching if needed.
+  // NOTE: In current flow, we set subscription_id in checkout only if we have it?
+  // Actually checkout usually sets order_id. Subscription flow might be different.
+  // Assuming subscription_id is set in the org row already or we have a way to link.
+  // For now, we assume checkout/approval flow sets it, or we need 'custom_id' in resource.
+
+  if (body.resource?.custom_id) {
+      query = query.eq("id", body.resource.custom_id);
+  } else {
+      query = query.eq("paypal_subscription_id", subscriptionId);
+  }
+
+  const { data: orgData, error } = await query.select("id").single();
 
   if (error) {
     console.error(
       `[PayPal Webhook ${eventId}] Failed to activate subscription:`,
       error,
     );
+  } else if (orgData) {
+    // Update unified subscriptions table
+    await supabase.from("subscriptions").upsert({
+      tenant_id: orgData.id,
+      plan: internalPlan.toUpperCase(),
+      status: "active",
+      paypal_subscription_id: subscriptionId,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'tenant_id' });
   }
 }

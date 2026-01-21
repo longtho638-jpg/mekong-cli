@@ -68,14 +68,24 @@ export async function POST(request: Request) {
           .single()
 
         if (agency) {
+          const tier = getSubscriptionTier(event.data.product_id);
           await supabase
             .from('agencies')
             .update({
               subscription_status: event.data.status,
-              subscription_tier: getSubscriptionTier(event.data.product_id),
+              subscription_tier: tier,
               updated_at: new Date().toISOString(),
             })
             .eq('id', agency.id)
+
+          // Sync to unified subscriptions table
+          await supabase.from('subscriptions').upsert({
+            tenant_id: agency.id,
+            plan: tier.toUpperCase(),
+            status: event.data.status,
+            stripe_customer_id: event.data.customer_id, // Polar uses this field in this codebase
+            updated_at: new Date().toISOString(),
+          });
         }
         break
 

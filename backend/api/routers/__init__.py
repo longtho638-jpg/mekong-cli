@@ -21,6 +21,8 @@ from . import (
     agents_creator,
     swarm,
     audit,
+    paypal_webhooks,
+    stripe_webhooks,
 )
 
 __all__ = [
@@ -40,4 +42,6 @@ __all__ = [
     "agents_creator",
     "swarm",
     "audit",
+    "paypal_webhooks",
+    "stripe_webhooks",
 ]

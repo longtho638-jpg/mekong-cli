@@ -19,45 +19,45 @@ function getSupabase() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
 }
 
+// Prices mapping for MRR calculation
+const PLAN_PRICES: Record<string, number> = {
+  FREE: 0,
+  PRO: 49,
+  ENTERPRISE: 199,
+}
+
 export async function GET() {
   try {
-    // Get Stripe metrics if configured
-    let stripeMetrics = null
-    if (process.env.STRIPE_SECRET_KEY) {
-      try {
-        stripeMetrics = await calculateMRRMetrics()
-      } catch (e) {
-        // Stripe not configured, using database fallback
-      }
+    const supabase = getSupabase()
+
+    // Get all active subscriptions from unified table
+    const { data: subscriptions, error: subError } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('status', 'active')
+
+    if (subError) {
+      logger.error('Failed to fetch subscriptions', subError)
     }
 
-    // Get database metrics (graceful fallback if Supabase not configured)
-    let subscriptions: { plan: string; status: string }[] = []
-    try {
-      const supabase = getSupabase()
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('status', 'active')
-      if (!error && data) {
-        subscriptions = data
-      }
-    } catch (e) {
-      // Supabase not configured, using mock fallback
-    }
+    const activeSubs = subscriptions || []
 
-    // Calculate from database
+    // Calculate from database (Source of Truth)
     let dbMRR = 0
     let proCount = 0
     let enterpriseCount = 0
+    let freeCount = 0
 
-    for (const sub of subscriptions) {
-      if (sub.plan === 'PRO') {
-        dbMRR += 49
+    for (const sub of activeSubs) {
+      const plan = sub.plan.toUpperCase()
+      if (plan === 'PRO') {
+        dbMRR += PLAN_PRICES.PRO
         proCount++
-      } else if (sub.plan === 'ENTERPRISE') {
-        dbMRR += 199
+      } else if (plan === 'ENTERPRISE') {
+        dbMRR += PLAN_PRICES.ENTERPRISE
         enterpriseCount++
+      } else {
+        freeCount++
       }
     }
 
@@ -67,7 +67,7 @@ export async function GET() {
       { month: '2025-10', mrr: 2100, customers: 28 },
       { month: '2025-11', mrr: 3500, customers: 45 },
       { month: '2025-12', mrr: 5200, customers: 72 },
-      { month: '2026-01', mrr: dbMRR || 7800, customers: (subscriptions?.length || 0) + 95 },
+      { month: '2026-01', mrr: dbMRR || 7800, customers: activeSubs.length + 95 },
     ]
 
     // Calculate growth metrics
@@ -77,17 +77,17 @@ export async function GET() {
 
     const response = {
       // Current metrics
-      mrr: stripeMetrics?.mrr || dbMRR || currentMRR,
-      arr: (stripeMetrics?.mrr || dbMRR || currentMRR) * 12,
+      mrr: dbMRR || currentMRR,
+      arr: (dbMRR || currentMRR) * 12,
 
       // Customer metrics
-      totalCustomers: stripeMetrics?.totalCustomers || (subscriptions?.length || 0) + 95,
-      paidCustomers: stripeMetrics?.paidCustomers || proCount + enterpriseCount,
-      freeCustomers: (subscriptions?.length || 0) - proCount - enterpriseCount + 80,
+      totalCustomers: activeSubs.length + 95,
+      paidCustomers: proCount + enterpriseCount,
+      freeCustomers: freeCount + 80,
 
       // Plan breakdown
       planBreakdown: {
-        free: (subscriptions?.length || 0) - proCount - enterpriseCount + 80,
+        free: freeCount + 80,
         pro: proCount || 45,
         enterprise: enterpriseCount || 12,
       },
@@ -95,9 +95,7 @@ export async function GET() {
       // Health metrics
       churnRate: 4.2,
       netRevenueRetention: 115,
-      averageRevenue: (
-        (stripeMetrics?.mrr || currentMRR) / (proCount + enterpriseCount || 57)
-      ).toFixed(2),
+      averageRevenue: (currentMRR / (proCount + enterpriseCount || 57)).toFixed(2),
       ltv: 2400,
       cac: 180,
       ltvCacRatio: 13.3,
