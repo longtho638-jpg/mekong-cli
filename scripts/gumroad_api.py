@@ -126,6 +126,37 @@ def api_put(endpoint: str, access_token: str, data: dict) -> dict:
         return {"success": False, "message": f"HTTP {resp.status_code}: {resp.text[:200]}"}
 
 
+def _update_local_json_id(local_id: str, gumroad_id: str):
+    """Update a product's gumroad_id in the local JSON file."""
+    if not PRODUCTS_FILE.exists():
+        print("   ⚠️ Could not update local JSON: File not found")
+        return
+
+    try:
+        with open(PRODUCTS_FILE, "r") as f:
+            data = json.load(f)
+
+        updated = False
+        for p in data.get("products", []):
+            if p.get("id") == local_id:
+                p["gumroad_id"] = gumroad_id
+                # Remove action if it was create
+                if p.get("action") == "create":
+                    p.pop("action", None)
+                updated = True
+                break
+
+        if updated:
+            with open(PRODUCTS_FILE, "w") as f:
+                json.dump(data, f, indent=2)
+            print(f"   💾 Updated local JSON for {local_id}")
+        else:
+            print(f"   ⚠️ Could not find product {local_id} in local JSON to update")
+
+    except Exception as e:
+        print(f"   ⚠️ Error updating local JSON: {e}")
+
+
 # ============================================================
 # COMMAND: list - List products from Gumroad
 # ============================================================
@@ -260,7 +291,11 @@ def process_product_api(
         if result.get("success"):
             new_id = result.get("product", {}).get("id")
             print(f"   ✅ Created! New ID: {new_id}")
-            # TODO: Update JSON with new gumroad_id
+
+            # Update local JSON with new gumroad_id
+            if not dry_run and new_id:
+                _update_local_json_id(product.get("id"), new_id)
+
             return True
         else:
             print(f"   ❌ Create failed: {result.get('message', 'Unknown')}")
