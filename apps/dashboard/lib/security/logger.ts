@@ -198,15 +198,33 @@ class SecurityLogger {
     const emoji = this.getEmojiForLevel(entry.level)
     const prefix = `[${entry.level.toUpperCase()}]${emoji}`
     const eventTag = entry.event ? `[${entry.event.toUpperCase()}]` : ''
-
-    // eslint-disable-next-line no-console
-    console.log(`${prefix} ${eventTag} ${entry.message}`, {
+    const message = `${prefix} ${eventTag} ${entry.message}`
+    const data = {
       id: entry.id,
       timestamp: entry.timestamp,
       userId: entry.userId,
       ipAddress: entry.ipAddress,
       ...entry.context,
-    })
+    }
+
+    // eslint-disable-next-line no-console
+    switch (entry.level) {
+      case 'debug':
+        console.debug(message, data)
+        break
+      case 'info':
+        console.info(message, data)
+        break
+      case 'warn':
+        console.warn(message, data)
+        break
+      case 'error':
+      case 'critical':
+        console.error(message, data)
+        break
+      default:
+        console.info(message, data)
+    }
   }
 
   private getEmojiForLevel(level: string): string {
