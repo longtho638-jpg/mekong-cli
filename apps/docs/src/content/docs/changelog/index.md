@@ -82,7 +82,7 @@ Recent changes, updates, and release notes for AgencyOS.
 - Database: PostgreSQL, MongoDB, MySQL, Redis
 - Cloud: AWS, GCP, Azure, Cloudflare Workers
 - Authentication: Better Auth, OAuth2, JWT
-- Payment: Stripe, Shopify, Polar, SePay
+- Payment: Stripe, Shopify, PayPal, SePay
 
 ## Recent Changes
 

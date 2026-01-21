@@ -119,7 +119,7 @@ Complete full-stack workflow:
 
 How to add external integrations:
 
-- Payment gateways (Stripe, Polar, SePay)
+- Payment gateways (Stripe, PayPal, SePay)
 - Authentication providers (OAuth2)
 - Cloud services (AWS S3, GCP)
 - Email services

@@ -160,7 +160,7 @@ debugger ─→ developer ─→ tester
 /git:commit-push   → Commit + push
 /git:pr            → Create pull request
 
-/integrate:polar   → Polar.sh integration
+/integrate:paypal   → PayPal.sh integration
 /integrate:sepay   → SePay integration
 /mcp:*             → MCP tool management
 ```

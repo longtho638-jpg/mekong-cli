@@ -23,33 +23,19 @@ export async function POST() {
 
         const { data: org } = await supabase
             .from('organizations')
-            .select('polar_customer_id')
+            .select('stripe_customer_id, paypal_subscription_id')
             .eq('id', membership.organization_id)
             .single()
 
-        if (!org?.polar_customer_id) {
-            return NextResponse.json({ error: 'No subscription found' }, { status: 404 })
+        // Handle Stripe Portal if available
+        if (org?.stripe_customer_id) {
+            // Implementation for Stripe portal would go here
+            // For now, redirect to settings
         }
-
-        // Demo mode
-        if (!process.env.POLAR_ACCESS_TOKEN || org.polar_customer_id.startsWith('demo_')) {
-            return NextResponse.json({
-                portal_url: '/dashboard/settings?tab=billing',
-                demo: true,
-                message: 'Demo mode - no customer portal available',
-            })
-        }
-
-        // Production: Create Polar customer portal session
-        const { Polar } = await import('@polar-sh/sdk')
-        const polar = new Polar({ accessToken: process.env.POLAR_ACCESS_TOKEN })
-
-        const session = await polar.customerSessions.create({
-            customerId: org.polar_customer_id,
-        })
 
         return NextResponse.json({
-            portal_url: session.customerPortalUrl,
+            portal_url: '/dashboard/settings?tab=billing',
+            message: 'Redirecting to billing settings',
         })
     } catch (error) {
         console.error('Error creating portal session:', error)

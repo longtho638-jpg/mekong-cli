@@ -185,7 +185,7 @@ Chạy test suite và tạo báo cáo. Không tự động sửa.
 ### Tích Hợp
 
 ```bash
-/integrate polar  # Tích hợp Polar API
+/integrate paypal  # Tích hợp PayPal API
 /integrate sepay  # Tích hợp thanh toán SePay
 ```
 

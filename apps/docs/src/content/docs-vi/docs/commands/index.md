@@ -77,7 +77,7 @@ AgencyOS provides a comprehensive set of slash commands to accelerate your devel
 
 ### Integrations
 
-- **[/integrate:polar](/docs/commands/integrate/polar)** - Integrate Polar.sh payments
+- **[/integrate:paypal](/docs/commands/integrate/paypal)** - Integrate PayPal.sh payments
 - **[/integrate:sepay](/docs/commands/integrate/sepay)** - Integrate SePay.vn payments (Vietnam)
 
 ### Journaling

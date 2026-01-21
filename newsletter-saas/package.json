@@ -12,7 +12,6 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@polar-sh/sdk": "^0.42.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
     "next": "16.1.1",

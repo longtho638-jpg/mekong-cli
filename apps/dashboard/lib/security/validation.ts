@@ -28,14 +28,15 @@ export const commonSchemas = {
   // Email validation
   email: z
     .string()
-    .email('Invalid email format')
-    .transform(val => val.toLowerCase().trim()),
+    .transform(val => val.toLowerCase().trim())
+    .pipe(z.string().email('Invalid email format')),
 
   // URL validation
   url: z
     .string()
-    .url('Invalid URL format')
-    .transform(val => DOMPurify.sanitize(val.trim())),
+    .transform(val => val.trim())
+    .pipe(z.string().url('Invalid URL format'))
+    .transform(val => DOMPurify.sanitize(val)),
 
   // Password validation
   password: z
@@ -77,13 +78,15 @@ export const commonSchemas = {
   page: z
     .string()
     .regex(/^\d+$/, 'Invalid page number')
+    .catch('1')
     .transform(Number)
-    .pipe(z.number().min(1).max(1000).default(1)),
+    .transform(val => Math.min(1000, Math.max(1, val))),
   limit: z
     .string()
     .regex(/^\d+$/, 'Invalid limit')
+    .catch('20')
     .transform(Number)
-    .pipe(z.number().min(1).max(100).default(20)),
+    .transform(val => Math.min(100, Math.max(1, val))),
 
   // Sort
   sortBy: z.string().optional(),
@@ -144,13 +147,39 @@ class SecurityValidator {
 
   // Command injection patterns
   private static readonly CMD_PATTERNS = [
-    /[;&|`$(){}[\]]/,
+    /[;&|`$]/,
     /\b(rm|mv|cp|cat|ls|ps|kill|chmod|chown)\s/i,
     /\b(curl|wget|nc|netcat)\s/i,
   ]
 
   // Path traversal patterns
   private static readonly PATH_TRAVERSAL = [/\.\.[\/\\]/, /[\/\\]\.\.[\/\\]/, /\%2e\%2e[\/\\]/i]
+
+  static async validateValue(value: unknown): Promise<boolean> {
+    if (typeof value === 'string') {
+      const sqlSafe = await this.validateSqlInjection(value)
+      const xssSafe = await this.validateXss(value)
+      const cmdSafe = await this.validateCommandInjection(value)
+      const pathSafe = await this.validatePathTraversal(value)
+      return sqlSafe && xssSafe && cmdSafe && pathSafe
+    }
+
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (!(await this.validateValue(item))) return false
+      }
+      return true
+    }
+
+    if (value !== null && typeof value === 'object') {
+      for (const val of Object.values(value)) {
+        if (!(await this.validateValue(val))) return false
+      }
+      return true
+    }
+
+    return true
+  }
 
   static async validateSqlInjection(value: string): Promise<boolean> {
     for (const pattern of this.SQL_PATTERNS) {
@@ -321,20 +350,13 @@ export function createValidationMiddleware(config: ValidationConfig) {
 
       // Security validations
       if (config.sanitizeInput !== false) {
-        const allValues = JSON.stringify({
+        const isSafe = await SecurityValidator.validateValue({
           body: validatedData.body,
           query: validatedData.query,
           params: validatedData.params,
         })
 
-        // Run security validations in parallel
-        const [sqlSafe, xssSafe, cmdSafe] = await Promise.all([
-          SecurityValidator.validateSqlInjection(allValues),
-          SecurityValidator.validateXss(allValues),
-          SecurityValidator.validateCommandInjection(allValues),
-        ])
-
-        if (!sqlSafe || !xssSafe || !cmdSafe) {
+        if (!isSafe) {
           return {
             success: false,
             error: NextResponseClass.json({ error: 'Invalid input detected' }, { status: 400 }),

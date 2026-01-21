@@ -185,7 +185,7 @@ Runs test suite and generates report. No automatic fixes.
 ### Integration
 
 ```bash
-/integrate:polar  # Integrate Polar API
+/integrate:paypal  # Integrate PayPal API
 /integrate:sepay  # Integrate SePay payment
 ```
 

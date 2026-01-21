@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@paypal/agent-toolkit':
         specifier: ^1.8.0
-        version: 1.8.0(hono@4.11.4)(react@19.2.3)
+        version: 1.8.0(hono@4.11.4)(react@18.3.1)
     devDependencies:
       husky:
         specifier: ^9.1.7
@@ -30,12 +30,12 @@ importers:
       '@material/web':
         specifier: ^2.4.1
         version: 2.4.1
+      '@paypal/react-paypal-js':
+        specifier: ^8.9.2
+        version: 8.9.2(react-dom@19.2.1)(react@19.2.1)
       '@playwright/test':
         specifier: ^1.57.0
         version: 1.57.0
-      '@polar-sh/sdk':
-        specifier: ^0.41.5
-        version: 0.41.5
       '@supabase/ssr':
         specifier: ^0.8.0
         version: 0.8.0(@supabase/supabase-js@2.90.1)
@@ -66,6 +66,9 @@ importers:
       next-intl:
         specifier: ^4.6.1
         version: 4.7.0(next@16.0.10)(react@19.2.1)(typescript@5.9.3)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.1)(react@19.2.1)
       react:
         specifier: 19.2.1
         version: 19.2.1
@@ -169,9 +172,6 @@ importers:
       '@astrojs/vercel':
         specifier: ^9.0.4
         version: 9.0.4(astro@5.16.11)(react@18.3.1)
-      '@polar-sh/sdk':
-        specifier: ^0.42.1
-        version: 0.42.2
       '@radix-ui/react-collapsible':
         specifier: ^1.1.2
         version: 1.1.12(@types/react-dom@18.3.7)(@types/react@18.3.27)(react-dom@18.3.1)(react@18.3.1)
@@ -248,9 +248,9 @@ importers:
 
   apps/web:
     dependencies:
-      '@polar-sh/sdk':
-        specifier: ^0.41.5
-        version: 0.41.5
+      '@paypal/react-paypal-js':
+        specifier: ^8.9.2
+        version: 8.9.2(react-dom@19.2.1)(react@19.2.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -484,7 +484,7 @@ packages:
       json-schema: 0.4.0
     dev: false
 
-  /@ai-sdk/react@1.2.12(react@19.2.3)(zod@3.25.76):
+  /@ai-sdk/react@1.2.12(react@18.3.1)(zod@3.25.76):
     resolution: {integrity: sha512-jK1IZZ22evPZoQW3vlkZ7wvjYGYF+tRBKXtrcolduIkQ/m/sOAVcVeVDUDvh1T91xCnWCdUGCPZg2avZ90mv3g==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -496,8 +496,8 @@ packages:
     dependencies:
       '@ai-sdk/provider-utils': 2.2.8(zod@3.25.76)
       '@ai-sdk/ui-utils': 1.2.11(zod@3.25.76)
-      react: 19.2.3
-      swr: 2.3.8(react@19.2.3)
+      react: 18.3.1
+      swr: 2.3.8(react@18.3.1)
       throttleit: 2.1.0
       zod: 3.25.76
     dev: false
@@ -3121,7 +3121,7 @@ packages:
       '@parcel/watcher-win32-x64': 2.5.4
     dev: false
 
-  /@paypal/agent-toolkit@1.8.0(hono@4.11.4)(react@19.2.3):
+  /@paypal/agent-toolkit@1.8.0(hono@4.11.4)(react@18.3.1):
     resolution: {integrity: sha512-3SK5zI7v1y9tDiokwrAfzhuzJ+nbBcwtoX3XN//wmwtfqAaKzvpAcTOXJspIJO6z2Uzww0pWFvIfSjf7TBPXRg==}
     dependencies:
       os: 0.1.2
@@ -3129,7 +3129,7 @@ packages:
       '@langchain/core': 0.3.6(openai@4.86.1)
       '@modelcontextprotocol/sdk': 1.25.2(hono@4.11.4)(zod@3.25.76)
       '@paypal/paypal-server-sdk': 1.1.0(debug@4.4.3)
-      ai: 4.3.19(react@19.2.3)(zod@3.25.76)
+      ai: 4.3.19(react@18.3.1)(zod@3.25.76)
       axios: 1.13.2(debug@4.4.3)
       debug: 4.4.3
       fast-json-patch: 3.1.1
@@ -3146,6 +3146,12 @@ packages:
       - ws
     dev: false
 
+  /@paypal/paypal-js@9.2.0:
+    resolution: {integrity: sha512-bYud4/ibSSLsUspruhTrCxuznVY0O23XWwdbI6Wcf45c+1tpYW8BijHJ1/YoWYxslTvJODKHZ8UZWIVkI1pe3g==}
+    dependencies:
+      promise-polyfill: 8.3.0
+    dev: false
+
   /@paypal/paypal-server-sdk@1.1.0(debug@4.4.3):
     resolution: {integrity: sha512-MaJQmSVpQb5nEeZWZDTtGRxeaHj6O51G9Olmm3zQ5E4XNgR4emAI08CKC2ZPhBldVoxAoBVjLyvKjGV5lC1n2Q==}
     engines: {node: '>=14.17.0'}
@@ -3158,6 +3164,24 @@ packages:
     transitivePeerDependencies:
       - debug
       - supports-color
+    dev: false
+
+  /@paypal/react-paypal-js@8.9.2(react-dom@19.2.1)(react@19.2.1):
+    resolution: {integrity: sha512-z1GoA7KAkhFCSmpIsRxe9aseXRvfOMgF6vCJ2Mym0VOSYJm8bZSC3Ui4SjONnglfV8S4P8djpe5QB7FtKsDXrQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+    dependencies:
+      '@paypal/paypal-js': 9.2.0
+      '@paypal/sdk-constants': 1.0.157
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+    dev: false
+
+  /@paypal/sdk-constants@1.0.157:
+    resolution: {integrity: sha512-BjxWT9rK6dM1AOffSpvHYY47/8BY775jgEYYiwH6eL4YaqU5Epcw7zOtwQ8L4UaEn4FCAjZ2EWxaS83dCN7SpA==}
+    dependencies:
+      hi-base32: 0.5.1
     dev: false
 
   /@pkgjs/parseargs@0.11.0:
@@ -3178,20 +3202,6 @@ packages:
     hasBin: true
     dependencies:
       playwright: 1.57.0
-    dev: false
-
-  /@polar-sh/sdk@0.41.5:
-    resolution: {integrity: sha512-E+VoVV+WvebZKmj+KZ/fj1byBZbG7J8hHyzYD9kktvAToigPM19sywo2tFCHeb44aWGCVACMOP8r31e6je7dxA==}
-    dependencies:
-      standardwebhooks: 1.0.0
-      zod: 3.25.76
-    dev: false
-
-  /@polar-sh/sdk@0.42.2:
-    resolution: {integrity: sha512-dmm/ySQZQfFbeO8x/1sgcFdkgYOXAc/Sgu0nHj4hhHxrEVbI2axvm4jV/SCpCbm0MvoY+bsbHFP8n8MUaQaCgQ==}
-    dependencies:
-      standardwebhooks: 1.0.0
-      zod: 3.25.76
     dev: false
 
   /@polka/url@1.0.0-next.29:
@@ -6027,7 +6037,7 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@4.3.19(react@19.2.3)(zod@3.25.76):
+  /ai@4.3.19(react@18.3.1)(zod@3.25.76):
     resolution: {integrity: sha512-dIE2bfNpqHN3r6IINp9znguYdhIOheKW2LDigAMrgt/upT3B8eBGPSCblENvaZGoq+hxaN9fSMzjWpbqloP+7Q==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -6039,11 +6049,11 @@ packages:
     dependencies:
       '@ai-sdk/provider': 1.1.3
       '@ai-sdk/provider-utils': 2.2.8(zod@3.25.76)
-      '@ai-sdk/react': 1.2.12(react@19.2.3)(zod@3.25.76)
+      '@ai-sdk/react': 1.2.12(react@18.3.1)(zod@3.25.76)
       '@ai-sdk/ui-utils': 1.2.11(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
       jsondiffpatch: 0.6.0
-      react: 19.2.3
+      react: 18.3.1
       zod: 3.25.76
     dev: false
 
@@ -8988,6 +8998,10 @@ packages:
       hermes-estree: 0.25.1
     dev: true
 
+  /hi-base32@0.5.1:
+    resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==}
+    dev: false
+
   /hono@4.11.4:
     resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
@@ -11462,6 +11476,16 @@ packages:
       - '@swc/helpers'
     dev: false
 
+  /next-themes@0.4.6(react-dom@19.2.1)(react@19.2.1):
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    dependencies:
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+    dev: false
+
   /next@16.0.10(@babel/core@7.28.6)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1)(react@19.2.1):
     resolution: {integrity: sha512-RtWh5PUgI+vxlV3HdR+IfWA1UUHu0+Ram/JBO4vWB54cVPentCD0e+lxyAYEsDTqGGMg7qpjhKh6dc6aW7W/sA==}
     engines: {node: '>=20.9.0'}
@@ -12209,6 +12233,10 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
+  /promise-polyfill@8.3.0:
+    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
+    dev: false
+
   /prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
@@ -12415,11 +12443,6 @@ packages:
   /react@19.2.1:
     resolution: {integrity: sha512-DGrYcCWK7tvYMnWh79yrPHt+vdx9tY+1gPZa7nJQtO/p8bLTDaHp4dzwEhQB7pZ4Xe3ok4XKuEPrVuc+wlpkmw==}
     engines: {node: '>=0.10.0'}
-
-  /react@19.2.3:
-    resolution: {integrity: sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==}
-    engines: {node: '>=0.10.0'}
-    dev: false
 
   /reactflow@11.11.4(@types/react@19.2.8)(react-dom@19.2.1)(react@19.2.1):
     resolution: {integrity: sha512-70FOtJkUWH3BAOsN+LU9lCrKoKbtOPnz2uq0CV2PLdNSwxTXOhCbsZr50GmZ+Rtw3jx8Uv7/vBFtCGixLfd4Og==}
@@ -13520,6 +13543,16 @@ packages:
       uuid: 10.0.0
     dev: false
 
+  /swr@2.3.8(react@18.3.1):
+    resolution: {integrity: sha512-gaCPRVoMq8WGDcWj9p4YWzCMPHzE0WNl6W8ADIx9c3JBEIdMkJGMzW+uzXvxHMltwcYACr9jP+32H8/hgwMR7w==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      dequal: 2.0.3
+      react: 18.3.1
+      use-sync-external-store: 1.6.0(react@18.3.1)
+    dev: false
+
   /swr@2.3.8(react@19.2.1):
     resolution: {integrity: sha512-gaCPRVoMq8WGDcWj9p4YWzCMPHzE0WNl6W8ADIx9c3JBEIdMkJGMzW+uzXvxHMltwcYACr9jP+32H8/hgwMR7w==}
     peerDependencies:
@@ -13528,16 +13561,6 @@ packages:
       dequal: 2.0.3
       react: 19.2.1
       use-sync-external-store: 1.6.0(react@19.2.1)
-    dev: false
-
-  /swr@2.3.8(react@19.2.3):
-    resolution: {integrity: sha512-gaCPRVoMq8WGDcWj9p4YWzCMPHzE0WNl6W8ADIx9c3JBEIdMkJGMzW+uzXvxHMltwcYACr9jP+32H8/hgwMR7w==}
-    peerDependencies:
-      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    dependencies:
-      dequal: 2.0.3
-      react: 19.2.3
-      use-sync-external-store: 1.6.0(react@19.2.3)
     dev: false
 
   /symbol-tree@3.2.4:
@@ -14381,20 +14404,20 @@ packages:
       tslib: 2.8.1
     dev: false
 
+  /use-sync-external-store@1.6.0(react@18.3.1):
+    resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 18.3.1
+    dev: false
+
   /use-sync-external-store@1.6.0(react@19.2.1):
     resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
       react: 19.2.1
-    dev: false
-
-  /use-sync-external-store@1.6.0(react@19.2.3):
-    resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    dependencies:
-      react: 19.2.3
     dev: false
 
   /util-deprecate@1.0.2:

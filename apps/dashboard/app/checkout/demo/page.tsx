@@ -80,8 +80,11 @@ export default function CheckoutDemoPage() {
             <PayPalCheckout
               amount={selectedProduct.price}
               description={selectedProduct.name}
-              onSuccess={(txn: { orderId: string; status: string; amount: string }) => {
-                setLastTransaction({ id: txn.orderId, message: `Paid $${txn.amount}` })
+              onSuccess={(txn) => {
+                setLastTransaction({
+                  id: txn.orderId || txn.subscriptionId || 'unknown',
+                  message: `Paid $${txn.amount || selectedProduct.price}`
+                })
               }}
               onError={() => {
                 // Error is displayed in PayPalCheckout component

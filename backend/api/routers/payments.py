@@ -12,18 +12,18 @@ from pydantic import BaseModel
 
 from backend.services.payment_service import PaymentService
 
-router = APIRouter(prefix="/payments", tags=["Payments"])
+router = APIRouter(prefix="/api/v1/payments", tags=["Payments"])
 service = PaymentService()
 
 
 # --- Request Models ---
 
 class CreateOrderRequest(BaseModel):
-    amount: float
+    amount: Optional[float] = None
     currency: str = "USD"
     description: Optional[str] = None
     provider: Literal["paypal", "stripe"] = "paypal"
-    # Stripe specific
+    # Stripe/PayPal Subscription specific
     price_id: Optional[str] = None
     success_url: Optional[str] = None
     cancel_url: Optional[str] = None
@@ -34,6 +34,14 @@ class CreateOrderRequest(BaseModel):
 class CaptureRequest(BaseModel):
     order_id: str
     provider: Literal["paypal", "stripe"] = "paypal"
+
+
+class CreateSubscriptionRequest(BaseModel):
+    plan_id: str
+    tenant_id: Optional[str] = None
+    customer_email: Optional[str] = None
+    return_url: Optional[str] = None
+    cancel_url: Optional[str] = None
 
 
 # --- Generic Endpoints ---
@@ -79,6 +87,43 @@ def capture_paypal_order(request: CaptureRequest):
         return result
     except Exception as e:
          raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/paypal/create-subscription")
+def create_paypal_subscription(request: CreateSubscriptionRequest):
+    """Create a PayPal subscription."""
+    try:
+        result = service.create_checkout_session(
+            provider="paypal",
+            amount=0, # Amount determined by plan
+            price_id=request.plan_id,
+            success_url=request.return_url,
+            cancel_url=request.cancel_url,
+            customer_email=request.customer_email,
+            tenant_id=request.tenant_id,
+            mode="subscription"
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/paypal/subscription/{subscription_id}")
+def get_paypal_subscription(subscription_id: str):
+    """Get PayPal subscription details."""
+    try:
+        return service.get_subscription(provider="paypal", subscription_id=subscription_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/paypal/subscription/{subscription_id}/cancel")
+def cancel_paypal_subscription(subscription_id: str, reason: Optional[str] = None):
+    """Cancel a PayPal subscription."""
+    try:
+        return service.cancel_subscription(provider="paypal", subscription_id=subscription_id, reason=reason)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # --- Stripe Specific Endpoints ---
 

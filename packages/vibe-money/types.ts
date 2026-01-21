@@ -35,7 +35,7 @@ export interface Invoice {
     status: 'draft' | 'sent' | 'paid' | 'overdue' | 'void';
     dueDate: Date;
     paidAt?: Date;
-    polarId?: string;
+    paypalSubscriptionId?: string;
 }
 
 export interface InvoiceItem {

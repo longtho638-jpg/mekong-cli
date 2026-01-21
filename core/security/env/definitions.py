@@ -48,10 +48,28 @@ def load_default_definitions(manager: SecureEnvironmentManager):
         description="Braintree environment (sandbox/production)"
     ))
 
+    # PayPal
+    manager.register(EnvironmentVariable(
+        name="PAYPAL_CLIENT_ID", var_type=VariableType.API_KEY,
+        required=False, is_secret=True, description="PayPal Client ID"
+    ))
+    manager.register(EnvironmentVariable(
+        name="PAYPAL_CLIENT_SECRET", var_type=VariableType.API_KEY,
+        required=False, is_secret=True, description="PayPal Client Secret"
+    ))
+    manager.register(EnvironmentVariable(
+        name="PAYPAL_WEBHOOK_ID", var_type=VariableType.STRING,
+        required=False, is_secret=True, description="PayPal Webhook ID"
+    ))
+    manager.register(EnvironmentVariable(
+        name="PAYPAL_MODE", var_type=VariableType.STRING,
+        required=False, default="sandbox", validation_pattern=r"^(sandbox|live)$",
+        description="PayPal mode (sandbox/live)"
+    ))
+
     # Others
     others = [
         ("GUMROAD_ACCESS_TOKEN", "Gumroad API access token"),
-        ("POLAR_ACCESS_TOKEN", "Polar API access token"),
         ("TWITTER_BEARER_TOKEN", "Twitter API bearer token"),
         ("TWITTER_API_KEY", "Twitter API key"),
         ("TWITTER_API_SECRET", "Twitter API secret"),

@@ -344,18 +344,18 @@ export function run(input) {
 }
 ```
 
-## Polaris UI
+## PayPalis UI
 
 ### Install
 
 ```bash
-npm install @shopify/polaris
+npm install @shopify/paypalis
 ```
 
 ### Use Components
 
 ```javascript
-import {Page, Card, Button} from '@shopify/polaris';
+import {Page, Card, Button} from '@shopify/paypalis';
 
 function Dashboard() {
   return (
@@ -483,7 +483,7 @@ mutation {
 
 - [Shopify Dev Docs](https://shopify.dev)
 - [GraphQL Admin API](https://shopify.dev/api/admin-graphql)
-- [Polaris](https://polaris.shopify.com)
+- [PayPalis](https://paypalis.shopify.com)
 - [CLI Reference](https://shopify.dev/docs/api/shopify-cli)
 
 ## Next Steps

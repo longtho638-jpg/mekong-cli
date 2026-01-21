@@ -805,7 +805,7 @@ npm run dev
 
 ## Related Commands
 
-- [/integrate:polar](/docs/commands/integrate/polar) - International payments
+- [/integrate:paypal](/docs/commands/integrate/paypal) - International payments
 - [/cook](/docs/commands/core/cook) - Implement custom features
 - [/test](/docs/commands/core/test) - Run test suite
 

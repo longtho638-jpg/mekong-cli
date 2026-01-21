@@ -91,26 +91,26 @@ Invokes **tester** agent to:
 ### Fix Skill After Usage Errors
 
 ```bash
-/skill:fix-logs .claude/skills/polar.md
+/skill:fix-logs .claude/skills/paypal.md
 ```
 
 **logs.txt content:**
 ```
-[2025-10-30 10:23:45] ERROR: Polar skill - webhook signature verification failed
-User asked: "How do I verify Polar webhooks?"
-Skill response: Used generic webhook verification, not Polar-specific
+[2025-10-30 10:23:45] ERROR: PayPal skill - webhook signature verification failed
+User asked: "How do I verify PayPal webhooks?"
+Skill response: Used generic webhook verification, not PayPal-specific
 
-[2025-10-30 10:28:12] ERROR: Polar skill - incorrect SDK import
-User asked: "How to import Polar SDK?"
-Skill suggested: import { Polar } from 'polar-sh'
-Actual import: import { Polar } from '@polar-sh/sdk'
+[2025-10-30 10:28:12] ERROR: PayPal skill - incorrect SDK import
+User asked: "How to import PayPal SDK?"
+Skill suggested: import { PayPal } from 'paypal-sh'
+Actual import: import { PayPal } from '@paypal-sh/sdk'
 
-[2025-10-30 10:35:33] ERROR: Polar skill - missing subscription cancellation example
+[2025-10-30 10:35:33] ERROR: PayPal skill - missing subscription cancellation example
 User asked: "How to cancel subscription?"
 Skill response: Generic answer, no code example
 
-[2025-10-30 10:42:18] ERROR: Polar skill - webhook events incomplete
-User asked: "What webhook events does Polar send?"
+[2025-10-30 10:42:18] ERROR: PayPal skill - webhook events incomplete
+User asked: "What webhook events does PayPal send?"
 Skill missing: subscription.canceled, payment.refunded events
 ```
 
@@ -123,12 +123,12 @@ Agent: debugger
 Reading logs.txt...
 
 Errors found: 4
-Skill: polar.md
+Skill: paypal.md
 
 Error categorization:
 
 1. INCORRECT EXAMPLE - Webhook verification (Line 156)
-   Issue: Generic example, not Polar-specific
+   Issue: Generic example, not PayPal-specific
    Impact: Users get non-working code
    Severity: High
 
@@ -151,7 +151,7 @@ Phase 2: Skill Diagnosis (30 seconds)
 ---
 Agent: debugger
 
-Analyzing .claude/skills/polar.md...
+Analyzing .claude/skills/paypal.md...
 
 Current state:
 - 3,124 words
@@ -172,7 +172,7 @@ const isValid = verifyWebhookSignature(
 
 Should be:
 ```typescript
-const isValid = polar.webhooks.verify(
+const isValid = paypal.webhooks.verify(
   req.body,
   signature,
   POLAR_WEBHOOK_SECRET
@@ -182,12 +182,12 @@ const isValid = polar.webhooks.verify(
 Issue 2: Line 45
 Current:
 ```typescript
-import { Polar } from 'polar-sh';
+import { PayPal } from 'paypal-sh';
 ```
 
 Should be:
 ```typescript
-import { Polar } from '@polar-sh/sdk';
+import { PayPal } from '@paypal-sh/sdk';
 ```
 
 Issue 3: Section 4
@@ -206,7 +206,7 @@ Fix plan created:
 
 1. Update webhook verification (Line 156)
    - Replace generic code
-   - Add Polar-specific example
+   - Add PayPal-specific example
    - Include error handling
 
 2. Fix SDK import (Line 45)
@@ -249,14 +249,14 @@ const isValid = verifyWebhookSignature(
 
 After:
 ```typescript
-import { Polar } from '@polar-sh/sdk';
+import { PayPal } from '@paypal-sh/sdk';
 
-const polar = new Polar(process.env.POLAR_SECRET_KEY);
+const paypal = new PayPal(process.env.POLAR_SECRET_KEY);
 
 // Verify webhook signature
-const isValid = polar.webhooks.verify(
+const isValid = paypal.webhooks.verify(
   req.body,
-  req.headers['polar-signature'] as string,
+  req.headers['paypal-signature'] as string,
   process.env.POLAR_WEBHOOK_SECRET
 );
 
@@ -269,17 +269,17 @@ Fix 2: SDK Import ✓
 ---
 Before:
 ```typescript
-import { Polar } from 'polar-sh';
+import { PayPal } from 'paypal-sh';
 ```
 
 After:
 ```typescript
 // Install SDK
-// npm install @polar-sh/sdk
+// npm install @paypal-sh/sdk
 
-import { Polar } from '@polar-sh/sdk';
+import { PayPal } from '@paypal-sh/sdk';
 
-const polar = new Polar(process.env.POLAR_SECRET_KEY);
+const paypal = new PayPal(process.env.POLAR_SECRET_KEY);
 ```
 
 Fix 3: Subscription Cancellation Added ✓
@@ -290,7 +290,7 @@ New section added to "Subscription Management":
 
 ```typescript
 // Cancel at end of current period (recommended)
-await polar.subscriptions.cancel(subscriptionId, {
+await paypal.subscriptions.cancel(subscriptionId, {
   cancelAtPeriodEnd: true
 });
 
@@ -298,7 +298,7 @@ await polar.subscriptions.cancel(subscriptionId, {
 // No refund issued
 
 // Cancel immediately (rare, usually for refunds)
-await polar.subscriptions.cancel(subscriptionId, {
+await paypal.subscriptions.cancel(subscriptionId, {
   cancelAtPeriodEnd: false
 });
 
@@ -374,7 +374,7 @@ Validating fixes...
 
 Issue 1: Webhook verification ✅
 - Code syntax valid
-- Polar SDK method correct
+- PayPal SDK method correct
 - Error handling included
 - Example complete
 
@@ -412,7 +412,7 @@ Lines changed: 87
 Quality improvement: 9.2 → 9.8
 
 Files updated:
-✓ .claude/skills/polar.md
+✓ .claude/skills/paypal.md
 
 Next steps:
 1. Test skill with original questions
@@ -495,7 +495,7 @@ Analyzing logs.txt...
 
 Errors found: 12
 Skills affected: 4
-- polar.md (4 errors)
+- paypal.md (4 errors)
 - mongodb.md (3 errors)
 - cloudflare-workers.md (3 errors)
 - nextjs.md (2 errors)
@@ -504,7 +504,7 @@ Processing each skill...
 
 Phase 2-5: Fix Each Skill
 ---
-Fixing polar.md... ✓ (3 min 50 sec)
+Fixing paypal.md... ✓ (3 min 50 sec)
 Fixing mongodb.md... ✓ (2 min 15 sec)
 Fixing cloudflare-workers.md... ✓ (3 min 05 sec)
 Fixing nextjs.md... ✓ (1 min 30 sec)
@@ -684,11 +684,11 @@ When errors occur, log them well:
 
 ```
 ✅ Good log entry:
-[2025-10-30 10:23:45] ERROR: Polar skill - webhook verification
-User asked: "How do I verify Polar webhooks?"
+[2025-10-30 10:23:45] ERROR: PayPal skill - webhook verification
+User asked: "How do I verify PayPal webhooks?"
 Skill response: Used verifyWebhookSignature() function
-Issue: Function doesn't exist in Polar SDK
-Expected: Should use polar.webhooks.verify()
+Issue: Function doesn't exist in PayPal SDK
+Expected: Should use paypal.webhooks.verify()
 
 ❌ Poor log entry:
 Webhook verification wrong
@@ -698,10 +698,10 @@ Webhook verification wrong
 
 ```bash
 # 1. Fix skill
-/skill:fix-logs .claude/skills/polar.md
+/skill:fix-logs .claude/skills/paypal.md
 
 # 2. Test with original question
-/ask [how do I verify Polar webhooks]
+/ask [how do I verify PayPal webhooks]
 
 # 3. Verify response correct
 

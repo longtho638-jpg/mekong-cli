@@ -93,7 +93,7 @@ Development and technical automation:
 - **Design**: `/design:good`, `/design:fast`, `/design:3d`, `/design:video`, `/design:screenshot`
 - **Documentation**: `/docs:init`, `/docs:update`, `/docs:summarize`
 - **Version Control**: `/git:cm`, `/git:commit`, `/git:commit-push`, `/git:pr`
-- **Integration**: `/integrate:polar`, `/integrate:sepay`, `/mcp:*`
+- **Integration**: `/integrate:paypal`, `/integrate:sepay`, `/mcp:*`
 
 **Interactive Patterns**:
 Each command guides you with **5-9 contextual questions** before execution:

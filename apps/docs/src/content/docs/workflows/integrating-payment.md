@@ -16,12 +16,12 @@ Learn how to integrate payment processing with AgencyOS - from one-time payments
 **Goal**: Implement secure payment processing with provider integration
 **Time**: 25-50 minutes (vs 5-10 hours manually)
 **Agents Used**: planner, researcher, tester, code-reviewer
-**Commands**: /integrate:polar, /integrate:sepay, /cook, /test
+**Commands**: /integrate:paypal, /integrate:sepay, /cook, /test
 
 ## Prerequisites
 
 - Existing application with user accounts
-- Payment provider account (Stripe, Polar, etc.)
+- Payment provider account (Stripe, PayPal, etc.)
 - SSL certificate (required for payments)
 - Business/tax information configured
 
@@ -30,7 +30,7 @@ Learn how to integrate payment processing with AgencyOS - from one-time payments
 | Provider | Best For | Features | Setup Time |
 |----------|----------|----------|------------|
 | Stripe | Global, feature-rich | Cards, wallets, subscriptions | 20-30 min |
-| Polar | Creator economy | Subscriptions, products | 15-25 min |
+| PayPal | Creator economy | Subscriptions, products | 15-25 min |
 | PayPal | Global recognition | Cards, PayPal balance | 20-30 min |
 | SePay | Vietnam market | Bank transfer, e-wallets | 15-20 min |
 | Square | In-person + online | POS integration | 25-35 min |
@@ -46,7 +46,7 @@ Select provider based on your needs:
 /plan [integrate Stripe for subscription billing]
 
 # For creator platforms
-/integrate:polar
+/integrate:paypal
 
 # For Vietnamese market
 /integrate:sepay
@@ -312,18 +312,18 @@ const verifyWebhook = (req) => {
 ✅ Multiple payment methods added
 ```
 
-### Step 7: Implement Polar (for Creators)
+### Step 7: Implement PayPal (for Creators)
 
 ```bash
-/integrate:polar
+/integrate:paypal
 ```
 
 **Implementation**:
 ```
-[1/6] Polar setup...
-  ✓ Installed Polar SDK
-  ✓ Created Polar configuration
-  ✓ Connected to Polar API
+[1/6] PayPal setup...
+  ✓ Installed PayPal SDK
+  ✓ Created PayPal configuration
+  ✓ Connected to PayPal API
 
 [2/6] Product management...
   ✓ Digital products
@@ -332,7 +332,7 @@ const verifyWebhook = (req) => {
   ✓ Tiered pricing
 
 [3/6] Checkout flow...
-  ✓ Polar Checkout integration
+  ✓ PayPal Checkout integration
   ✓ Embedded checkout option
   ✓ Custom success pages
 
@@ -348,12 +348,12 @@ const verifyWebhook = (req) => {
   ✓ Update payment method
 
 [6/6] Testing...
-  ✓ Polar integration tests (18 tests)
+  ✓ PayPal integration tests (18 tests)
 
-✅ Polar integration complete
+✅ PayPal integration complete
 
 Configuration (.env):
-POLAR_ACCESS_TOKEN=polar_...
+POLAR_ACCESS_TOKEN=paypal_...
 POLAR_WEBHOOK_SECRET=whsec_...
 ```
 
@@ -716,14 +716,14 @@ Before production:
 - [Adding a New Feature](/docs/workflows/adding-feature) - Feature development
 
 ### Related Commands
-- [/integrate:polar](/docs/commands/integrate/polar) - Polar integration
+- [/integrate:paypal](/docs/commands/integrate/paypal) - PayPal integration
 - [/integrate:sepay](/docs/commands/integrate/sepay) - SePay integration
 - [/cook](/docs/commands/core/cook) - Custom features
 - [/test](/docs/commands/core/test) - Test suite
 
 ### Further Reading
 - [Stripe Documentation](https://stripe.com/docs)
-- [Polar Documentation](https://docs.polar.sh)
+- [PayPal Documentation](https://docs.paypal.sh)
 - [PCI DSS Compliance](https://www.pcisecuritystandards.org/)
 - [SCA Regulations](https://stripe.com/guides/strong-customer-authentication)
 

@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (storedToken) {
       try {
         // Basic JWT decode to get username/role (in production use a library or verify endpoint)
-        const payload = JSON.parse(atob(storedToken.split('.')[1]))
+        const payload = JSON.parse(window.atob(storedToken.split('.')[1]))
         setUser({ username: payload.sub, role: payload.role })
         setToken(storedToken)
       } catch (e) {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('agencyos_token', newToken)
     setToken(newToken)
     try {
-      const payload = JSON.parse(atob(newToken.split('.')[1]))
+      const payload = JSON.parse(window.atob(newToken.split('.')[1]))
       setUser({ username: payload.sub, role: payload.role })
       router.push('/dashboard')
     } catch (e) {
