@@ -21,9 +21,10 @@ function CheckoutForm() {
 
   const selectedPrice = prices[tier as keyof typeof prices] || prices.pro;
 
-  const handlePaymentSuccess = (details: { subscriptionID?: string; id?: string }) => {
+  const handlePaymentSuccess = (details: unknown) => {
+    const data = details as { subscriptionID?: string; id?: string };
     // Determine ID based on flow
-    const id = details.subscriptionID || details.id || "CONFIRMED";
+    const id = data.subscriptionID || data.id || "CONFIRMED";
     setPaymentSuccess(id);
   };
 
