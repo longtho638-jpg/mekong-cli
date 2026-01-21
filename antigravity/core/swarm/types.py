@@ -6,9 +6,11 @@ Enums and dataclasses for swarm components.
 """
 
 import time
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
-from typing import Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 
 class AgentRole(Enum):
@@ -90,6 +92,40 @@ class SwarmMetrics:
     throughput_per_minute: float = 0.0
 
 
+class MessageType(Enum):
+    TASK = "task"
+    RESULT = "result"
+    QUERY = "query"
+    RESPONSE = "response"
+    HANDOFF = "handoff"
+    ERROR = "error"
+
+
+@dataclass
+class AgentMessage:
+    """Standard message for inter-agent communication."""
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    sender: str = "system"
+    recipient: str = "all"  # or specific agent ID
+    type: MessageType = MessageType.TASK
+    content: Any = None
+    context_id: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "timestamp": self.timestamp,
+            "sender": self.sender,
+            "recipient": self.recipient,
+            "type": self.type.value,
+            "content": self.content,
+            "context_id": self.context_id,
+            "metadata": self.metadata
+        }
+
+
 __all__ = [
     "AgentRole",
     "TaskPriority",
@@ -97,4 +133,6 @@ __all__ = [
     "SwarmTask",
     "SwarmAgent",
     "SwarmMetrics",
+    "MessageType",
+    "AgentMessage",
 ]
