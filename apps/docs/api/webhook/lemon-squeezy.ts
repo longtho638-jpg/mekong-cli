@@ -43,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const event = req.body;
         const eventName = event.meta.event_name;
 
-        console.log(`Processing Lemon Squeezy event: ${eventName}`);
+        console.info(`Processing Lemon Squeezy event: ${eventName}`);
 
         // Handle order_created event
         if (eventName === 'order_created') {
@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             // If no referral code, skip
             if (!referralCode) {
-                console.log('No referral code found, skipping affiliate tracking');
+                console.info('No referral code found, skipping affiliate tracking');
                 return res.status(200).json({ success: true, message: 'No referral code' });
             }
 
@@ -97,7 +97,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 return res.status(500).json({ error: 'Failed to record conversion' });
             }
 
-            console.log(`Recorded conversion for affiliate ${affiliate.email}: $${commissionAmount}`);
+            console.info(`Recorded conversion for affiliate ${affiliate.email}: $${commissionAmount}`);
 
             return res.status(200).json({
                 success: true,

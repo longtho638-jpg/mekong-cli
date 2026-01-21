@@ -57,7 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // In production, store in Supabase:
         // const { error } = await supabase.from('licenses').insert(license);
 
-        console.log('Generated license:', { email, plan, licenseKey });
+        console.info('Generated license:', { email, plan, licenseKey });
 
         return res.status(200).json({
             success: true,

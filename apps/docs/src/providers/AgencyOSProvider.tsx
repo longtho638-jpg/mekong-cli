@@ -75,7 +75,7 @@ export const AgencyOSProvider: React.FC<AgencyOSProviderProps> = ({
             }
             return [...prev, agent];
         });
-        console.log(`[AgencyOS] Agent registered: ${agent.name}`);
+        console.info(`[AgencyOS] Agent registered: ${agent.name}`);
     }, []);
 
     const updateAgent = useCallback((id: string, updates: Partial<Agent>) => {
