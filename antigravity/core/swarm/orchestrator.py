@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from backend.api.security.audit import audit_logger
 from ..knowledge.graph_client import GraphClient
 from .agent import BaseSwarmAgent
 from .bus import MessageBus
@@ -21,6 +22,13 @@ class SwarmOrchestrator:
         """Register an agent to the swarm."""
         self.agents[agent.id] = agent
         print(f"🐝 Swarm: Agent '{agent.name}' ({agent.id}) joined.")
+        audit_logger.log_event(
+            event_type="SWARM",
+            user="system",
+            action="AGENT_REGISTER",
+            resource=agent.id,
+            details={"name": agent.name}
+        )
 
     def broadcast(self, content: Any):
         """Send a message to all agents."""
@@ -31,6 +39,13 @@ class SwarmOrchestrator:
             content=content,
         )
         self.bus.publish(msg)
+        audit_logger.log_event(
+            event_type="SWARM",
+            user="orchestrator",
+            action="BROADCAST",
+            resource="all",
+            details={"content": str(content)[:100]}
+        )
 
     def dispatch(self, agent_id: str, content: Any):
         """Send a task to a specific agent."""
@@ -45,3 +60,10 @@ class SwarmOrchestrator:
             content=content,
         )
         self.bus.publish(msg)
+        audit_logger.log_event(
+            event_type="SWARM",
+            user="orchestrator",
+            action="DISPATCH",
+            resource=agent_id,
+            details={"content": str(content)[:100]}
+        )

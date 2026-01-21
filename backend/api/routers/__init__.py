@@ -6,6 +6,7 @@ Tất cả routers cho backend API.
 
 from . import (
     agents,
+    campaigns,
     commands,
     crm,
     franchise,
@@ -18,10 +19,13 @@ from . import (
     monitor,
     workflow,
     agents_creator,
+    swarm,
+    audit,
 )
 
 __all__ = [
     "agents",
+    "campaigns",
     "commands",
     "crm",
     "franchise",
@@ -34,4 +38,6 @@ __all__ = [
     "monitor",
     "workflow",
     "agents_creator",
+    "swarm",
+    "audit",
 ]
