@@ -34,11 +34,6 @@ class MessageBus:
             for callback in self._subscribers[message.recipient]:
                 self._safe_execute(callback, message)
 
-        # Notify 'all' channel
-        if "all" in self._subscribers and message.recipient != "all":
-            for callback in self._subscribers["all"]:
-                self._safe_execute(callback, message)
-
         # Broadcast to WebSockets if manager is present
         if self.websocket_manager:
             self._safe_execute(self._broadcast_ws, message)
