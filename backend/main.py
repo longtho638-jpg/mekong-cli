@@ -21,6 +21,7 @@ from backend.api.routers import (
     monitor,
     workflow,
     agents_creator,
+    swarm,
 )
 from backend.api.routers import (
     router as hybrid_router,

@@ -14,8 +14,6 @@ Modules:
 - coordinator: Main swarm coordinator
 """
 
-from .coordinator import AgentSwarm
-from .messaging import TaskQueue
 from .types import (
     AgentRole,
     SwarmAgent,
@@ -23,20 +21,23 @@ from .types import (
     SwarmTask,
     TaskPriority,
     TaskStatus,
+    AgentMessage,
+    MessageType
 )
-from .workers import WorkerPool
+from .bus import MessageBus
+from .agent import BaseSwarmAgent
+from .orchestrator import SwarmOrchestrator
 
 __all__ = [
-    # Core coordinator
-    "AgentSwarm",
-    # Types
     "AgentRole",
     "TaskPriority",
     "TaskStatus",
     "SwarmTask",
     "SwarmAgent",
     "SwarmMetrics",
-    # Internal components (for advanced usage)
-    "TaskQueue",
-    "WorkerPool",
+    "AgentMessage",
+    "MessageType",
+    "MessageBus",
+    "BaseSwarmAgent",
+    "SwarmOrchestrator"
 ]
