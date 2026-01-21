@@ -4,7 +4,7 @@ Create immersive interactive 3D designs with Three.js.
 
 ## Prerequisites
 - Activate `ui-ux-pro-max` skill first
-- Activate `threejs` skill for WebGL expertise
+- Activate `threejs` skill for 3D and WebGL expertise
 - Have `ai-multimodal` skill ready for asset generation
 
 ## Initial Research
