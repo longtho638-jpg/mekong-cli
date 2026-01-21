@@ -4,7 +4,7 @@
 
 import { logger } from '@/lib/utils/logger'
 
-const AGENTOPS_API = 'http://localhost:8000'
+const AGENTOPS_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export interface Win3Metrics {
   anh_win: {
