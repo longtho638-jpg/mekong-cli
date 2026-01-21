@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-console.log('🤖 Jules: Starting Auto-Cleanup Protocol v2...');
+console.info('🤖 Jules: Starting Auto-Cleanup Protocol v2...');
 
 // 2. Suppress remaining errors with comments
 const files = execSync('find . -name "*.ts" -o -name "*.tsx"')
@@ -45,8 +45,8 @@ files.forEach(file => {
     // Hard override for legacy files
     if (modified) {
         fs.writeFileSync(file, content);
-        console.log(`Pilling ${file}`);
+        console.info(`Pilling ${file}`);
     }
 });
 
-console.log('✨ Jules: Cleanup complete.');
+console.info('✨ Jules: Cleanup complete.');
