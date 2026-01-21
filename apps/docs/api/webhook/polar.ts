@@ -59,7 +59,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw error;
     }
 
-    console.log(`Processing Polar event: ${event.type}`);
+    console.info(`Processing Polar event: ${event.type}`);
 
     // Handle checkout.created
     if (event.type === "checkout.created") {
@@ -131,12 +131,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               p_description: `Commission: ${planStr} plan sale`,
               p_reference_id: order.id,
             });
-            console.log(
+            console.info(
               `🎯 TÍCH SẢN: Awarded ${commissionAmount} AGC to affiliate ${affiliateCode}`,
             );
           }
 
-          console.log(
+          console.info(
             `Recorded affiliate conversion: ${commissionAmount} AGC for ${affiliateCode}`,
           );
         }
@@ -161,7 +161,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               }),
             },
           );
-          console.log(`📧 Welcome email sent to ${customerEmail}`);
+          console.info(`📧 Welcome email sent to ${customerEmail}`);
         } catch (emailError) {
           console.error("Failed to send welcome email:", emailError);
         }
@@ -172,16 +172,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           p_name: customerName,
           p_order_id: order.id,
         });
-        console.log(`📧 Onboarding sequence queued for ${customerEmail}`);
+        console.info(`📧 Onboarding sequence queued for ${customerEmail}`);
       }
 
-      console.log(`Order processed: ${order.id}, License: ${licenseKey}`);
+      console.info(`Order processed: ${order.id}, License: ${licenseKey}`);
       return res.status(200).json({ received: true, licenseKey });
     }
 
     // Handle subscription.created
     if (event.type === "subscription.created") {
-      console.log("Subscription created:", event.data.id);
+      console.info("Subscription created:", event.data.id);
       return res.status(200).json({ received: true });
     }
 

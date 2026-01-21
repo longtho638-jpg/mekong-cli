@@ -67,7 +67,7 @@ export function useAgentOS(options: UseAgentOSOptions): UseAgentOSReturn {
             progress: 0,
             mode: 'planning',
         }));
-        console.log(`[AgentOS:${agentName}] Task started: ${taskName}`);
+        console.info(`[AgentOS:${agentName}] Task started: ${taskName}`);
     }, [agentName]);
 
     const updateStatus = useCallback((status: string) => {
@@ -89,7 +89,7 @@ export function useAgentOS(options: UseAgentOSOptions): UseAgentOSReturn {
             ...prev,
             mode,
         }));
-        console.log(`[AgentOS:${agentName}] Mode changed: ${mode}`);
+        console.info(`[AgentOS:${agentName}] Mode changed: ${mode}`);
     }, [agentName]);
 
     const addArtifact = useCallback((artifact: Omit<AgentArtifact, 'createdAt'>) => {
@@ -102,7 +102,7 @@ export function useAgentOS(options: UseAgentOSOptions): UseAgentOSReturn {
             artifacts: [...prev.artifacts, newArtifact],
         }));
         onArtifactCreated?.(newArtifact);
-        console.log(`[AgentOS:${agentName}] Artifact created: ${artifact.type}`);
+        console.info(`[AgentOS:${agentName}] Artifact created: ${artifact.type}`);
     }, [agentName, onArtifactCreated]);
 
     const completeTask = useCallback(() => {
@@ -112,7 +112,7 @@ export function useAgentOS(options: UseAgentOSOptions): UseAgentOSReturn {
             taskStatus: 'Completed',
             progress: 100,
         }));
-        console.log(`[AgentOS:${agentName}] Task completed: ${state.taskName}`);
+        console.info(`[AgentOS:${agentName}] Task completed: ${state.taskName}`);
     }, [agentName, state.taskName]);
 
     const reset = useCallback(() => {

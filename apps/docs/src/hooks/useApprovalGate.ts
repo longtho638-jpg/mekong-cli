@@ -51,7 +51,7 @@ export function useApprovalGate(options: UseApprovalGateOptions = {}): UseApprov
                 };
                 setPendingRequest(request);
                 setResolver(() => resolve);
-                console.log(`[AgencyOS:ApprovalGate] Requesting approval: ${action}`);
+                console.info(`[AgencyOS:ApprovalGate] Requesting approval: ${action}`);
             });
         },
         []
@@ -69,7 +69,7 @@ export function useApprovalGate(options: UseApprovalGateOptions = {}): UseApprov
             resolver(true);
             setResolver(null);
             onApprove?.(approved);
-            console.log(`[AgencyOS:ApprovalGate] Approved: ${approved.action}`);
+            console.info(`[AgencyOS:ApprovalGate] Approved: ${approved.action}`);
         }
     }, [pendingRequest, resolver, onApprove]);
 
@@ -85,7 +85,7 @@ export function useApprovalGate(options: UseApprovalGateOptions = {}): UseApprov
             resolver(false);
             setResolver(null);
             onReject?.(rejected);
-            console.log(`[AgencyOS:ApprovalGate] Rejected: ${rejected.action}`);
+            console.info(`[AgencyOS:ApprovalGate] Rejected: ${rejected.action}`);
         }
     }, [pendingRequest, resolver, onReject]);
 
