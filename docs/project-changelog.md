@@ -4,6 +4,14 @@
 
 ---
 
+## [2.3.0-beta] - 2026-01-21
+
+### Testing & Quality Gates (Phase 10)
+- **Frontend Testing**: Configured Jest + React Testing Library for `apps/dashboard`. Added unit tests for health cards and workflow editor.
+- **E2E Infrastructure**: Set up Playwright for end-to-end testing of critical flows (Agent Creator, Workflow Builder).
+- **Quality Gates**: Implemented strict `pre-push` hooks using Husky to enforce build success and test passing before pushing.
+- **Backend Coverage**: Integrated Pytest with MCP handlers.
+
 ## [2.2.0-beta] - 2026-01-21
 
 ### UI/UX Expansion (Phase 9)
