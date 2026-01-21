@@ -64,6 +64,18 @@
 | Deploy to production                     | ❌ ASK      |
 | Install system packages (`brew install`) | ❌ ASK      |
 
+### 🎮 CLI Control Intervention Rule (NEW):
+
+| Loại lệnh                         | Auto-Accept |
+| --------------------------------- | ----------- |
+| Gửi lệnh điều khiển CLI           | ✅ YES      |
+| `send_command_input` (non-delete) | ✅ YES      |
+| Ctrl+C / Interrupt CLI            | ✅ YES      |
+| Monitor/Check status              | ✅ YES      |
+| Delete commands trong CLI         | ❌ ASK      |
+
+> **Lý do:** Anh không phải lúc nào cũng ngồi tại máy, cần auto-push để CLI không bị stuck.
+
 ### Cách tắt Auto-Accept:
 
 Chỉ cần nói bằng ngôn ngữ tự nhiên:
