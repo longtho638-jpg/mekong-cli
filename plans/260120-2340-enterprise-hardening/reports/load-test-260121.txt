@@ -1,0 +1,17 @@
+🔥 Starting Swarm Stress Test
+   Agents: 50
+   Duration: 10s
+========================================
+📊 Load: 75.0 req/s | Errors: 0 | System Errors: 1
+📊 Load: 80.7 req/s | Errors: 0 | System Errors: 1
+📊 Load: 89.0 req/s | Errors: 0 | System Errors: 1
+📊 Load: 92.5 req/s | Errors: 0 | System Errors: 1
+
+========================================
+🏁 Stress Test Results
+   Total Requests: 931
+   Total Errors:   0
+   Avg Latency:    211.88ms
+   Throughput:     92.2 req/s
+
+✅ SUCCESS: System withstood the swarm

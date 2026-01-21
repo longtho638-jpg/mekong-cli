@@ -26,7 +26,8 @@ curl -s http://localhost:8000/dashboard/summary | jq
 ## Export Report
 
 ```bash
-python3 scripts/vibeos/revenue_agent.py --report weekly
+# Use MCP tool: revenue/get_report
+mekong report
 ```
 
 ## 🏯 Binh Pháp

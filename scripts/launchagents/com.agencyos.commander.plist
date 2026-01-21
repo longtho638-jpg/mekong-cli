@@ -8,8 +8,8 @@
     <key>ProgramArguments</key>
     <array>
         <string>/usr/bin/python3</string>
-        <string>/Users/macbookprom1/mekong-cli/scripts/vibeos/commander_engine.py</string>
-        <string>--status</string>
+        <string>/Users/macbookprom1/mekong-cli/scripts/mekong_cli.py</string>
+        <string>status</string>
     </array>
     
     <key>StartInterval</key>

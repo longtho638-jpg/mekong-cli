@@ -11,13 +11,8 @@ description: Run React component audit with best practices
 // turbo
 
 ```bash
-# Audit dashboard components
-python3 scripts/vibeos/security_armor.py
-
-# Full security armor check
-python3 scripts/vibeos/security_armor.py --ruff
-python3 scripts/vibeos/security_armor.py --typescript
-python3 scripts/vibeos/security_armor.py --pytest
+# Use MCP tool: security/run_security_gates
+mekong check
 ```
 
 ## React Best Practices Checks

@@ -11,7 +11,8 @@ description: Generate weekly/monthly reports
 // turbo
 
 ```bash
-python3 scripts/vibeos/revenue_agent.py --report weekly
+# Use MCP tool: revenue/get_report
+mekong report
 ```
 
 ## Report Types

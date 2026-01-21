@@ -328,7 +328,7 @@ class CommanderHandler:
             "vercel": "Run: vercel --prod (redeploy)",
             "supabase": "Check: supabase status",
             "github": "Check: gh run view <id> --log-failed",
-            "jules": "Run: python3 scripts/vibeos/jules_runner.py --reset",
+            "jules": "Run: mekong automation run jules-reset",
         }
         return actions.get(system, "Manual investigation required")
 

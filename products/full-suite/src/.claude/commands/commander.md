@@ -11,7 +11,8 @@ description: Run infrastructure health check across all systems
 // turbo
 
 ```bash
-python3 scripts/vibeos/commander_engine.py --status
+# Use MCP tool: commander/get_dashboard
+mekong status
 ```
 
 ## Watch Mode (Real-time)
@@ -19,7 +20,8 @@ python3 scripts/vibeos/commander_engine.py --status
 // turbo
 
 ```bash
-python3 scripts/vibeos/commander_engine.py --watch --interval 30
+# Use MCP tool: commander/get_dashboard
+mekong status --watch
 ```
 
 ## Test Individual Systems
@@ -27,17 +29,18 @@ python3 scripts/vibeos/commander_engine.py --watch --interval 30
 // turbo
 
 ```bash
+# Use MCP tool: commander/check_system
 # Test Vercel only
-python3 scripts/vibeos/commander_engine.py --test-vercel
+mekong status --system vercel
 
 # Test GitHub CI only
-python3 scripts/vibeos/commander_engine.py --test-github
+mekong status --system github
 
 # Test Supabase only
-python3 scripts/vibeos/commander_engine.py --test-supabase
+mekong status --system supabase
 
 # Test Jules only
-python3 scripts/vibeos/commander_engine.py --test-jules
+mekong status --system jules
 ```
 
 ## Status Icons

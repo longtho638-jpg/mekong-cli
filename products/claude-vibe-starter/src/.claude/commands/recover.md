@@ -11,7 +11,8 @@ description: Auto-recover failed systems with one command
 // turbo
 
 ```bash
-python3 scripts/vibeos/auto_recovery.py --auto
+# Use MCP tool: recovery/auto_recover
+mekong recover --auto
 ```
 
 ## Proxy Only
@@ -19,13 +20,15 @@ python3 scripts/vibeos/auto_recovery.py --auto
 // turbo
 
 ```bash
-python3 scripts/vibeos/auto_recovery.py --proxy
+# Use MCP tool: recovery/recover_system
+mekong recover --system proxy
 ```
 
 ## Daemon Mode (5-min intervals)
 
 ```bash
-python3 scripts/vibeos/auto_recovery.py --daemon
+# Use MCP tool: recovery/auto_recover via mekong CLI
+mekong recover --daemon
 ```
 
 ## What It Does

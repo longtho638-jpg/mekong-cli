@@ -41,11 +41,7 @@ def monitor_quota_cmd(
     try:
         from antigravity.core.quota import QuotaEngine
     except ImportError:
-        try:
-            sys.path.insert(0, str(Path(__file__).parents[3]))
-            from packages.antigravity.core.quota import QuotaEngine
-        except ImportError:
-            QuotaEngine = None
+        QuotaEngine = None
 
     if not QuotaEngine:
         console.print("[red]❌ QuotaEngine not found.[/red]")

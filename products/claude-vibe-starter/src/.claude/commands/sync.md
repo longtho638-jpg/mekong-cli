@@ -11,7 +11,8 @@ description: Check FE-BE API synchronization status
 // turbo
 
 ```bash
-python3 scripts/vibeos/fe_be_sync.py
+# Use MCP tool: sync/check_sync
+mekong check-sync
 ```
 
 ## What It Shows
