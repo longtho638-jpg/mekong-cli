@@ -1,6 +1,12 @@
 /**
  * 🟣 Saturn - VIBE Agents Types
  */
+export interface BaseAgent {
+    name: string;
+    description: string;
+    execute(input: AgentInput): Promise<AgentResult>;
+}
+
 export type AgentPhase = 'plan' | 'code' | 'ship';
 
 export interface AgentDefinition {
