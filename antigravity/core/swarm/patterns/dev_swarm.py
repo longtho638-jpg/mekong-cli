@@ -1,6 +1,7 @@
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 
+
 class ArchitectAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
@@ -10,6 +11,7 @@ class ArchitectAgent(BaseSwarmAgent):
             plan = f"Plan for {message.content}"
             self.send("coder", {"plan": plan, "original_task": message.content})
 
+
 class CoderAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
@@ -18,6 +20,7 @@ class CoderAgent(BaseSwarmAgent):
             # Simulate coding
             code = "def solution(): pass"
             self.send("reviewer", {"code": code})
+
 
 class ReviewerAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):

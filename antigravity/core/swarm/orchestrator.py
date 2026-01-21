@@ -1,14 +1,16 @@
-from typing import Dict, List, Any
-import asyncio
+from typing import Any, Dict
+
+from .agent import BaseSwarmAgent
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
-from .agent import BaseSwarmAgent
+
 
 class SwarmOrchestrator:
     """
     The Hive Mind.
     Manages the lifecycle of the swarm and routes high-level intents.
     """
+
     def __init__(self):
         self.bus = MessageBus()
         self.agents: Dict[str, BaseSwarmAgent] = {}
@@ -24,7 +26,7 @@ class SwarmOrchestrator:
             sender="orchestrator",
             recipient="all",
             type=MessageType.TASK,
-            content=content
+            content=content,
         )
         self.bus.publish(msg)
 
@@ -38,6 +40,6 @@ class SwarmOrchestrator:
             sender="orchestrator",
             recipient=agent_id,
             type=MessageType.TASK,
-            content=content
+            content=content,
         )
         self.bus.publish(msg)

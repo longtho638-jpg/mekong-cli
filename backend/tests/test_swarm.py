@@ -28,8 +28,8 @@ def test_broadcast():
     agent2 = TestAgent("agent2", "A2", bus)
 
     msg = AgentMessage(sender="system", recipient="all", content="Broadcast")
-    bus.publish(msg) # Bus logic needs to handle 'all'
+    bus.publish(msg)
 
-    # Note: Our simple bus implementation checks "all" subscription
-    # BaseSwarmAgent subscribes to "broadcast"?
-    # Let's check bus.py logic for 'all'.
+    assert len(agent1.received) == 1
+    assert len(agent2.received) == 1
+    assert agent1.received[0].content == "Broadcast"
