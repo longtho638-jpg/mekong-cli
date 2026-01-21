@@ -12,8 +12,8 @@ class SwarmOrchestrator:
     Manages the lifecycle of the swarm and routes high-level intents.
     """
 
-    def __init__(self):
-        self.bus = MessageBus()
+    def __init__(self, websocket_manager: Any = None):
+        self.bus = MessageBus(websocket_manager=websocket_manager)
         self.graph = GraphClient() # Initialize Graph Connection
         self.agents: Dict[str, BaseSwarmAgent] = {}
 
