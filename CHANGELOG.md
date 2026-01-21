@@ -1,3 +1,25 @@
+## [2.5.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.5...v2.5.0-beta.6) (2026-01-21)
+
+
+### 🚀 Features
+
+* **ai-artist:** add data assets and prompt generation scripts ([3f958b0](https://github.com/claudekit/claudekit-engineer/commit/3f958b0dcc5fd116af317c0a0bcb36e689ed37c2))
+* **threejs:** add data processing and search capabilities for Three.js API documentation ([91c2d9d](https://github.com/claudekit/claudekit-engineer/commit/91c2d9dec1b143be2d524fdaa716597a60b6ce13))
+
+
+### 🐞 Bug Fixes
+
+* **skills:** typo in 3d ref of `frontend-design` skill ([2382b00](https://github.com/claudekit/claudekit-engineer/commit/2382b004beec1ad104e284568b9734a4b8db19ab))
+
+
+### 📚 Documentation
+
+* add cpg marketing 2026 infographics ([fc250b7](https://github.com/claudekit/claudekit-engineer/commit/fc250b7135e4a81c4a85af25a2b61876977c09f0))
+* **ai-artist:** add comprehensive nano banana prompts and skill documentation ([9d05673](https://github.com/claudekit/claudekit-engineer/commit/9d056739f5527712458a3b5f96432369f6745489))
+* **skills:** add remotion skill with comprehensive references ([c5106b3](https://github.com/claudekit/claudekit-engineer/commit/c5106b34710ecb350e4539676df2fd62b7ef717a))
+* **threejs:** add references for fundamentals, materials, shaders, and geometry ([c67cc55](https://github.com/claudekit/claudekit-engineer/commit/c67cc55720686c7bd3bec0c03df9bb8686d273dd))
+* **threejs:** update skill documentation with enhanced examples and API reference ([bd5ccdd](https://github.com/claudekit/claudekit-engineer/commit/bd5ccddbb90e6e88d0e7befa25a44d0140bad70f))
+
 ## [2.5.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.4...v2.5.0-beta.5) (2026-01-20)
 
 
