@@ -23,6 +23,7 @@ from . import (
     audit,
     paypal_webhooks,
     stripe_webhooks,
+    gumroad_webhooks,
 )
 
 __all__ = [
@@ -44,4 +45,5 @@ __all__ = [
     "audit",
     "paypal_webhooks",
     "stripe_webhooks",
+    "gumroad_webhooks",
 ]

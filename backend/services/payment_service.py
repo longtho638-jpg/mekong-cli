@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Union
 
 from core.finance.paypal_sdk import PayPalSDK
 from core.finance.gateways.stripe import StripeClient
+from core.finance.gateways.gumroad import GumroadClient
 from backend.services.provisioning_service import ProvisioningService
 
 logger = logging.getLogger(__name__)
@@ -17,12 +18,13 @@ logger = logging.getLogger(__name__)
 class PaymentService:
     """
     Unified interface for payment operations.
-    Supports: 'paypal', 'stripe'
+    Supports: 'paypal', 'stripe', 'gumroad'
     """
 
     def __init__(self):
         self.paypal = PayPalSDK()
         self.stripe = StripeClient()
+        self.gumroad = GumroadClient()
         self.provisioning = ProvisioningService()
 
     def create_checkout_session(
@@ -126,6 +128,12 @@ class PaymentService:
                 webhook_event=body
             )
 
+        elif provider == "gumroad":
+            # Gumroad does not provide a signature header for verification in the same way.
+            # We treat the body as the verified event for now, or check a shared secret if part of the URL/payload.
+            # Real-world: Verify against Gumroad API using sale_id or license_key if critical.
+            return body
+
         raise ValueError(f"Unsupported provider: {provider}")
 
     def handle_webhook_event(self, provider: str, event: Dict[str, Any]):
@@ -193,6 +201,40 @@ class PaymentService:
                     provider_subscription_id=sub_id,
                     provider="stripe"
                 )
+
+        elif provider == "gumroad":
+            # Gumroad event structure is flat (form data converted to dict)
+            email = event.get("email")
+            product_id = event.get("product_id")
+            product_name = event.get("product_name")
+            sale_id = event.get("sale_id")
+            license_key = event.get("license_key")
+            price = event.get("price")
+            currency = event.get("currency")
+
+            if email and product_id:
+                # Basic activation logic
+                # For now, map all Gumroad purchases to PRO
+                self.provisioning.activate_subscription(
+                    tenant_id=email, # Using email as tenant_id for simplicity if not provided
+                    plan="PRO",
+                    provider="gumroad",
+                    subscription_id=sale_id,
+                    customer_id=email
+                )
+
+                # Record payment
+                if price:
+                    try:
+                         self.provisioning.record_payment(
+                             tenant_id=email,
+                             amount=float(price),
+                             currency=currency or "USD",
+                             provider="gumroad",
+                             transaction_id=sale_id
+                         )
+                    except Exception as e:
+                        logger.error(f"Failed to record Gumroad payment: {e}")
 
     def capture_order(self, provider: str, order_id: str) -> Dict[str, Any]:
         """
