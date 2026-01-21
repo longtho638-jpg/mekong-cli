@@ -1,4 +1,4 @@
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs', (entry) => entry.data.published);
@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   }));
 }
 
-export async function GET({ props }: { props: { doc: any } }) {
+export async function GET({ props }: { props: { doc: CollectionEntry<'docs'> } }) {
   const { doc } = props;
 
   const markdown = `---
