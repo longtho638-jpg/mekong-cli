@@ -1,11 +1,11 @@
 # AgencyOS Engine - Project Roadmap
 
 **Last Updated:** 2026-01-21
-**Current Version:** v2.4.0-beta
+**Current Version:** v5.0.0
 **Repository:** https://github.com/longtho638-jpg/mekong-cli
 
 ## Executive Summary
-AgencyOS Engine is an AI-powered development orchestration framework. We have transitioned from the modularization-focused v0.2.0 to the "Nuclear-Weaponized" v2.0.0-beta, integrating the full Antigravity suite, specialized vertical engines, and a unified Model Context Protocol (MCP) layer.
+AgencyOS Engine is an AI-powered development orchestration framework. We have successfully deployed **AgencyOS v5**, a production-ready Agency Operating System with integrated revenue engines, multi-tenancy, and automated CI/CD.
 
 ---
 
@@ -111,14 +111,25 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have tr
 - 📋 Knowledge Ingestion
 - 📋 Semantic Search
 
-### Phase 14: Payment Infrastructure Unification (IN PROGRESS)
-**Status:** 🏗️ Development
-**Progress:** 40%
+### Phase 14: Payment Infrastructure Unification (COMPLETE)
+**Status:** ✅ Complete | **Completion:** v5.0.0
+**Progress:** 100%
 
 **Features:**
 - ✅ Phase 1: Backend Unification (PayPal SDK Subscriptions, Unified Service)
-- 📋 Phase 2: Frontend Migration (PayPal Smart Buttons, Dashboard Integration)
-- 📋 Phase 3: Technical Debt Elimination (Polar Removal)
+- ✅ Phase 2: Frontend Migration (PayPal Smart Buttons, Dashboard Integration)
+- ✅ Phase 3: Technical Debt Elimination (Polar Removal)
+
+### Phase 15: AgencyOS v5 Go-Live (COMPLETE)
+**Status:** ✅ Complete | **Completion:** v5.0.0
+**Progress:** 100%
+
+**Features:**
+- ✅ Dashboard Polish (Revenue Overview, Dark Mode, Quick Actions)
+- ✅ Onboarding Wizard & Help Center
+- ✅ CI/CD Hardening (Production Workflows, Pre-deploy Checks)
+- ✅ Revenue Automation Engine (MRR, Churn Alerts)
+- ✅ Database Schema Audit & Production Readiness
 
 ---
 
