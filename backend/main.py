@@ -18,6 +18,9 @@ from backend.api.routers import (
     campaigns,
     mekong_commands,
     vibes,
+    monitor,
+    workflow,
+    agents_creator,
 )
 from backend.api.routers import (
     router as hybrid_router,
@@ -47,6 +50,9 @@ app.include_router(agents.router)
 app.include_router(hybrid_router.router)
 app.include_router(vibes.router)
 app.include_router(mekong_commands.router)
+app.include_router(monitor.router.router)
+app.include_router(workflow.router.router)
+app.include_router(agents_creator.router.router)
 
 @app.get("/")
 async def root():

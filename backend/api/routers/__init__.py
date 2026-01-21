@@ -15,6 +15,9 @@ from . import (
     scheduler,
     vibes,
     vietnam,
+    monitor,
+    workflow,
+    agents_creator,
 )
 
 __all__ = [
@@ -28,4 +31,7 @@ __all__ = [
     "scheduler",
     "vibes",
     "vietnam",
+    "monitor",
+    "workflow",
+    "agents_creator",
 ]

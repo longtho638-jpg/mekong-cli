@@ -4,6 +4,15 @@
 
 ---
 
+## [2.2.0-beta] - 2026-01-21
+
+### UI/UX Expansion (Phase 9)
+- **Real-time Monitoring**: New dashboard at `/dashboard/monitor` visualizing system health, quota, and anomalies.
+- **Visual Workflow Builder**: n8n-style editor at `/dashboard/workflow` using React Flow and AgencyOS API.
+- **Agent Creator**: Custom agent builder at `/dashboard/agents/new` with skill selection and role definition.
+- **UI Library**: Enhanced `@agencyos/ui` with new form components (`Input`, `Select`, `Checkbox`, `Textarea`).
+- **Backend API**: Added new routers for `monitor`, `workflow`, and `agents-creator` to the FastAPI backend.
+
 ## [2.1.0-beta] - 2026-01-21
 
 ### Enterprise Hardening & Tech Debt
