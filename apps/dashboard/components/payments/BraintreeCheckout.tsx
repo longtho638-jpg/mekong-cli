@@ -8,7 +8,7 @@
  * Usage:
  * <BraintreeCheckout
  *   amount="47.00"
- *   onSuccess={(txn) => console.log('Paid:', txn)}
+ *   onSuccess={(txn) => console.info('Paid:', txn)}
  *   onError={(err) => console.error(err)}
  * />
  */

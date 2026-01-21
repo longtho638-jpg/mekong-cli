@@ -9,7 +9,7 @@
  * <PayPalCheckout
  *   amount="47.00"
  *   description="AgencyOS Pro"
- *   onSuccess={(txn) => console.log('Paid:', txn)}
+ *   onSuccess={(txn) => console.info('Paid:', txn)}
  *   onError={(err) => console.error(err)}
  * />
  */
