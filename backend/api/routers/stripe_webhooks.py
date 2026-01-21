@@ -1,0 +1,57 @@
+"""
+🔔 Stripe Webhooks Handler
+==========================
+Uses Unified Payment Service for verification and processing.
+"""
+
+import os
+from typing import Optional
+
+from fastapi import APIRouter, Header, HTTPException, Request
+
+from backend.services.payment_service import PaymentService
+
+router = APIRouter(prefix="/webhooks/stripe", tags=["Stripe Webhooks"])
+
+# Initialize Unified Service
+payment_service = PaymentService()
+
+@router.post("/")
+async def handle_webhook(
+    request: Request,
+    stripe_signature: Optional[str] = Header(None, alias="Stripe-Signature"),
+):
+    """
+    Unified Stripe webhook handler.
+    """
+    body_bytes = await request.body()
+    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+    if not webhook_secret:
+        print("⚠️ STRIPE_WEBHOOK_SECRET not set. Skipping verification.")
+        # In strict mode, we should fail.
+
+    if not stripe_signature:
+         raise HTTPException(status_code=400, detail="Missing Stripe-Signature header")
+
+    try:
+        # Verify
+        event = payment_service.verify_webhook(
+            provider="stripe",
+            headers={"stripe-signature": stripe_signature},
+            body=body_bytes,
+            webhook_secret=webhook_secret
+        )
+    except Exception as e:
+        print(f"❌ Stripe Verification Failed: {e}")
+        raise HTTPException(status_code=400, detail=f"Verification error: {str(e)}")
+
+    print(f"📨 STRIPE EVENT: {event.get('type')}")
+
+    # Process
+    try:
+        payment_service.handle_webhook_event(provider="stripe", event=event)
+        return {"status": "processed", "event": event.get("type")}
+    except Exception as e:
+        print(f"❌ Stripe Processing Error: {e}")
+        return {"status": "error", "message": str(e)}

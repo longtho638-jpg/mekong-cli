@@ -44,7 +44,22 @@ export function useAgency() {
                 throw fetchError;
             }
 
-            setAgency(data as Agency);
+            const agencyData = data as Agency;
+
+            // 🔄 Unified Billing Sync: Check subscriptions table for source of truth
+            const { data: subData } = await supabase
+                .from('subscriptions')
+                .select('plan, status')
+                .eq('tenant_id', agencyData.id)
+                .single();
+
+            if (subData) {
+                // Override legacy fields with unified billing data
+                agencyData.subscription_tier = subData.plan.toLowerCase() as any;
+                agencyData.subscription_status = subData.status as any;
+            }
+
+            setAgency(agencyData);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to fetch agency');
         } finally {

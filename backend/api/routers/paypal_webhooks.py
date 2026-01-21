@@ -1,25 +1,22 @@
 """
-🔔 PayPal Webhooks Handler - Full Integration
-==============================================
-Handles all PayPal webhook events with signature verification.
-Uses backend.services.webhook_handlers for business logic.
+🔔 PayPal Webhooks Handler
+==========================
+Uses Unified Payment Service for verification and processing.
 """
 
 import json
 import os
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
-from backend.core.paypal_sdk import PayPalSDK
 from fastapi import APIRouter, Header, HTTPException, Request
 
-from backend.services.webhook_handlers import EVENT_HANDLERS_MAP
+from backend.services.payment_service import PaymentService
 
 router = APIRouter(prefix="/webhooks/paypal", tags=["PayPal Webhooks"])
 
-# Initialize SDK for verification
-sdk = PayPalSDK()
+# Initialize Unified Service
+payment_service = PaymentService()
 
 
 @router.post("/")
@@ -32,80 +29,66 @@ async def handle_webhook(
     paypal_transmission_sig: Optional[str] = Header(None, alias="PAYPAL-TRANSMISSION-SIG"),
 ):
     """
-    Main PayPal webhook handler.
+    Unified PayPal webhook handler.
     """
-    # Get raw body
-    body = await request.body()
+    # Get raw body for verification
+    body_bytes = await request.body()
 
-    # Parse event
     try:
-        event_data = json.loads(body)
+        # Parse for event type logging
+        event_data = json.loads(body_bytes)
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON")
 
     event_type = event_data.get("event_type", "UNKNOWN")
-    event_id = event_data.get("id", "N/A")
-    resource = event_data.get("resource", {})
+    print(f"📨 PAYPAL EVENT: {event_type}")
 
-    print(f"\n{'=' * 60}")
-    print("📨 PAYPAL WEBHOOK RECEIVED")
-    print(f"   Event: {event_type}")
-    print(f"   ID: {event_id}")
-    print(f"   Time: {datetime.now().isoformat()}")
-    print(f"{'=' * 60}")
+    # Prepare headers for verification
+    headers = {
+        "paypal-transmission-id": paypal_transmission_id,
+        "paypal-transmission-time": paypal_transmission_time,
+        "paypal-cert-url": paypal_cert_url,
+        "paypal-auth-algo": paypal_auth_algo,
+        "paypal-transmission-sig": paypal_transmission_sig,
+    }
 
-    # Verify signature
+    # Verify Signature via PaymentService
     webhook_id = os.environ.get("PAYPAL_WEBHOOK_ID")
-    if webhook_id and paypal_transmission_id:
-        try:
-            # Use the new SDK for verification
-            # The SDK verify_signature expects the whole event object
-            verify_response = sdk.webhooks.verify_signature(
-                transmission_id=paypal_transmission_id,
-                transmission_time=paypal_transmission_time or "",
-                cert_url=paypal_cert_url or "",
-                auth_algo=paypal_auth_algo or "",
-                transmission_sig=paypal_transmission_sig or "",
-                webhook_id=webhook_id,
-                webhook_event=event_data,
+    if not webhook_id:
+        print("⚠️ PAYPAL_WEBHOOK_ID not set. Skipping verification (Dev Mode?)")
+        # In production, this should likely be strict
+
+    try:
+        if webhook_id:
+            # Note: The PaymentService.verify_webhook handles the logic.
+            # It wraps the SDK call.
+            verify_response = payment_service.verify_webhook(
+                provider="paypal",
+                headers=headers,
+                body=event_data, # SDK expects dict
+                webhook_secret=webhook_id
             )
 
-            # Check verification result
-            if verify_response and verify_response.get("verification_status") == "SUCCESS":
-                print("✅ Signature Verified")
-            else:
-                print("❌ Webhook signature verification failed!")
+            if verify_response.get("verification_status") != "SUCCESS":
+                print("❌ Signature Verification Failed")
                 raise HTTPException(status_code=401, detail="Invalid signature")
-        except Exception as e:
-            print(f"⚠️ Verification error: {e}")
-            # raise HTTPException(status_code=401, detail="Signature verification error")
-    else:
-        print("⚠️ Signature verification skipped (no webhook_id configured)")
 
-    # Route to appropriate handler
-    handler = EVENT_HANDLERS_MAP.get(event_type)
+            print("✅ Signature Verified")
 
-    if handler:
-        result = handler(resource)
-        print(f"✅ Handler result: {result}")
-    else:
-        print(f"ℹ️ No handler for event type: {event_type}")
-        result = {"action": "unhandled", "event_type": event_type}
+    except Exception as e:
+        print(f"⚠️ Verification Error: {e}")
+        # Fail open or closed depending on security posture.
+        # Usually fail closed (raise 401).
+        raise HTTPException(status_code=401, detail=f"Verification error: {str(e)}")
 
-    # Log to file for debugging
-    log_file = Path("logs/paypal_webhooks.jsonl")
-    log_file.parent.mkdir(exist_ok=True)
-
-    with open(log_file, "a") as f:
-        log_entry = {
-            "timestamp": datetime.now().isoformat(),
-            "event_type": event_type,
-            "event_id": event_id,
-            "result": result,
-        }
-        f.write(json.dumps(log_entry) + "\n")
-
-    return {"status": "received", "event_type": event_type, "result": result}
+    # Process Event via PaymentService
+    try:
+        payment_service.handle_webhook_event(provider="paypal", event=event_data)
+        return {"status": "processed", "event": event_type}
+    except Exception as e:
+        print(f"❌ Processing Error: {e}")
+        # Return 200 to acknowledge receipt but log error, otherwise PayPal retries indefinitely
+        return {"status": "error", "message": str(e)}
 
 
 @router.get("/status")
@@ -113,8 +96,6 @@ async def webhook_status():
     """Check webhook handler status."""
     return {
         "status": "active",
-        "webhook_id_configured": bool(os.environ.get("PAYPAL_WEBHOOK_ID")),
-        "mode": sdk.mode,
-        "supported_events": list(EVENT_HANDLERS_MAP.keys()),
-        "total_handlers": len(EVENT_HANDLERS_MAP),
+        "provider": "paypal",
+        "unified_service": True
     }

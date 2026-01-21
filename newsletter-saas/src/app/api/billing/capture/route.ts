@@ -50,7 +50,8 @@ export async function GET(request: NextRequest) {
     const planKey = (plan ||
       org?.paypal_pending_plan ||
       "starter") as keyof typeof PLAN_LIMITS;
-    await supabase
+
+    const { data: updatedOrg } = await supabase
       .from("organizations")
       .update({
         plan: planKey,
@@ -62,7 +63,31 @@ export async function GET(request: NextRequest) {
         email_limit: PLAN_LIMITS[planKey]?.emails_per_month || 20000,
         updated_at: new Date().toISOString(),
       })
-      .eq("owner_id", user.id);
+      .eq("owner_id", user.id)
+      .select("id")
+      .single();
+
+    if (updatedOrg) {
+      // Sync to unified subscriptions table
+      await supabase.from("subscriptions").upsert({
+        tenant_id: updatedOrg.id,
+        plan: planKey.toUpperCase() === "STARTER" ? "FREE" : planKey.toUpperCase(),
+        status: "active",
+        paypal_order_id: capture.transactionId,
+        paypal_payer_email: capture.payerEmail,
+        updated_at: new Date().toISOString(),
+      });
+
+      // Record in unified payments table
+      await supabase.from("payments").insert({
+        tenant_id: updatedOrg.id,
+        amount: capture.amount,
+        currency: "USD",
+        status: "succeeded",
+        paid_at: new Date().toISOString(),
+        payment_method: "paypal",
+      });
+    }
 
     // Redirect to success page
     return NextResponse.redirect(
