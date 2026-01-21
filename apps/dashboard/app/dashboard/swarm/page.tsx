@@ -2,27 +2,33 @@
 
 import { useState, useEffect } from 'react'
 import { dispatchSwarmTask, getSwarmHistory, AgentMessage } from '@/lib/swarm-api'
+import { useSwarmSocket } from '@/lib/hooks/useSwarmSocket'
 import SwarmVisualizer from '@/components/swarm/SwarmVisualizer'
 import { Button, Card, CardHeader, CardTitle, CardContent, Input, Select } from '@agencyos/ui'
 import { Play, RefreshCw, Zap } from 'lucide-react'
 
 export default function SwarmPage() {
-  const [messages, setMessages] = useState<AgentMessage[]>([])
+  const [historyMessages, setHistoryMessages] = useState<AgentMessage[]>([])
   const [task, setTask] = useState('')
   const [swarmType, setSwarmType] = useState<'dev' | 'growth'>('dev')
   const [loading, setLoading] = useState(false)
-  const [polling, setPolling] = useState(false)
 
-  const fetchHistory = async () => {
-    const history = await getSwarmHistory()
-    setMessages(history)
-  }
+  // Real-time updates
+  const { messages: liveMessages, status: wsStatus } = useSwarmSocket()
+
+  // Combine history and live messages, deduplicating by ID
+  const allMessages = [...historyMessages, ...liveMessages].reduce((acc, current) => {
+    const x = acc.find(item => item.id === current.id);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, [] as AgentMessage[]);
 
   useEffect(() => {
-    fetchHistory()
-    const interval = setInterval(fetchHistory, 2000) // Poll every 2s for live updates
-    setPolling(true)
-    return () => clearInterval(interval)
+    // Initial fetch only
+    getSwarmHistory().then(setHistoryMessages)
   }, [])
 
   const handleDispatch = async (e: React.FormEvent) => {
@@ -33,7 +39,6 @@ export default function SwarmPage() {
     await dispatchSwarmTask(task, swarmType)
     setTask('')
     setLoading(false)
-    // History will update via polling
   }
 
   return (
@@ -44,8 +49,8 @@ export default function SwarmPage() {
           Swarm Intelligence
         </h1>
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <RefreshCw className={`w-4 h-4 ${polling ? 'animate-spin' : ''}`} />
-          {polling ? 'Live Sync' : 'Connecting...'}
+          <div className={`w-2 h-2 rounded-full ${wsStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
+          {wsStatus === 'connected' ? 'Live Connected' : 'Connecting...'}
         </div>
       </div>
 
@@ -119,7 +124,7 @@ export default function SwarmPage() {
               <CardTitle>Hive Mind Activity</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 min-h-[500px]">
-              <SwarmVisualizer messages={messages} />
+              <SwarmVisualizer messages={allMessages} />
             </CardContent>
           </Card>
         </div>
