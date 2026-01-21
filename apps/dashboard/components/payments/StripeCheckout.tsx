@@ -7,7 +7,7 @@
  */
 
 import { useState } from 'react'
-import { createPayment, PaymentRequest } from '@/lib/billing/gateways'
+import { createPayment, type PaymentRequest } from '@/lib/billing/gateways'
 
 interface StripeCheckoutProps {
   amount: number
@@ -17,7 +17,7 @@ interface StripeCheckoutProps {
   tenantId: string
   returnUrl: string
   cancelUrl: string
-  onSuccess?: (result: any) => void
+  onSuccess?: (result: unknown) => void
   onError?: (error: string) => void
   className?: string
 }
