@@ -22,7 +22,7 @@ def load_revenue():
     return {
         "last_updated": None,
         "total": 0,
-        "platforms": {"gumroad": 0, "polar": 0, "consulting": 0},
+        "platforms": {"gumroad": 0, "paypal": 0, "consulting": 0},
         "history": [],
     }
 

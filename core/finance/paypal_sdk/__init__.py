@@ -7,8 +7,10 @@ from typing import Dict, Optional
 import requests
 
 # Import sub-modules
+from .catalog import Catalog
 from .orders import Orders
 from .payments import Payments
+from .subscriptions import Subscriptions
 from .webhooks import Webhooks
 
 
@@ -52,6 +54,8 @@ class PayPalSDK:
         # Initialize modules
         self.orders = Orders(self)
         self.payments = Payments(self)
+        self.catalog = Catalog(self)
+        self.subscriptions = Subscriptions(self)
         self.webhooks = Webhooks(self)
 
     def _get_token(self) -> Optional[str]:

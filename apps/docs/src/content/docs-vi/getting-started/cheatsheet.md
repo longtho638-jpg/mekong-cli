@@ -143,8 +143,8 @@ mk new --kit engineer --dir /đường/dẫn/đến/dự/án
 ### Tích Hợp
 
 ```bash
-# Tích hợp Polar API
-/integrate:polar
+# Tích hợp PayPal API
+/integrate:paypal
 
 # Tích hợp thanh toán SePay
 /integrate:sepay

@@ -28,3 +28,9 @@ export interface GrowthMetrics {
 export interface WebVitals {
   lcp?: number; fid?: number; cls?: number; fcp?: number; ttfb?: number;
 }
+
+export interface ShareContent {
+  title: string;
+  text?: string;
+  url?: string;
+}

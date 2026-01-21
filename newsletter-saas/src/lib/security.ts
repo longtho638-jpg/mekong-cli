@@ -123,7 +123,7 @@ export function securityHeaders(response: NextResponse): NextResponse {
       "style-src 'self' 'unsafe-inline'; " +
       "img-src 'self' data: https:; " +
       "font-src 'self'; " +
-      "connect-src 'self' https://api.paypal.com https://api.polar.sh;",
+      "connect-src 'self' https://api.paypal.com ",
   );
 
   // Referrer Policy

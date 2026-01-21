@@ -7,9 +7,9 @@ import { TIER_CONFIG } from './constants';
 export function validateWinWinWin(deal: Deal): WinCheck {
     const tier = TIER_CONFIG[deal.tier];
     return {
-        ownerWin: `Equity ${tier.equityMin}-${tier.equityMax}%`,
-        agencyWin: 'Knowledge + Infrastructure',
-        clientWin: 'Strategy + Network',
+        ownerWin: `Equity ${tier.equityMin}-${tier.equityMax}% + Retainer $${tier.retainerMin}/mo`,
+        agencyWin: 'Deal flow + Knowledge + Infrastructure',
+        clientWin: 'Protection + Strategy + Network access',
         aligned: deal.value >= tier.retainerMin,
     };
 }

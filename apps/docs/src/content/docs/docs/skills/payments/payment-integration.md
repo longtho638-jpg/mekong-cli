@@ -1,6 +1,6 @@
 ---
 title: Payment Integration
-description: Implement payment processing with SePay (Vietnamese payments) and Polar (global SaaS monetization)
+description: Implement payment processing with SePay (Vietnamese payments) and PayPal (global SaaS monetization)
 section: docs
 category: skills
 order: 1
@@ -20,7 +20,7 @@ Execute: https://agencyos.network/docs/skills/payments/payment-integration
 
 
 
-Implement payment processing with SePay (Vietnamese market) and Polar (global SaaS monetization).
+Implement payment processing with SePay (Vietnamese market) and PayPal (global SaaS monetization).
 
 ## When to Use
 
@@ -43,7 +43,7 @@ Implement payment processing with SePay (Vietnamese market) and Polar (global Sa
 - Local payment methods
 - Direct bank account monitoring
 
-### Choose Polar for:
+### Choose PayPal for:
 
 - Global SaaS products
 - Subscription lifecycle management
@@ -54,7 +54,7 @@ Implement payment processing with SePay (Vietnamese market) and Polar (global Sa
 
 ## Key Capabilities
 
-| Feature | SePay | Polar |
+| Feature | SePay | PayPal |
 |---------|-------|-------|
 | Payment methods | QR, bank transfer, cards | Cards, subscriptions, usage-based |
 | Bank monitoring | Webhooks for 44+ VN banks | N/A |
@@ -79,7 +79,7 @@ Implement VietQR payment flow with bank transfer monitoring.
 Build subscription system with automated license delivery.
 
 ```
-"Use Polar to create subscription product with 3 tiers. Implement checkout flow and webhook handler that auto-generates license keys on successful subscription."
+"Use PayPal to create subscription product with 3 tiers. Implement checkout flow and webhook handler that auto-generates license keys on successful subscription."
 ```
 
 ### Usage-Based Billing
@@ -87,7 +87,7 @@ Build subscription system with automated license delivery.
 Implement metered billing for API usage or credits.
 
 ```
-"Set up Polar usage-based pricing that tracks API calls per month. Configure webhooks to monitor usage and automatically upgrade/downgrade subscriptions."
+"Set up PayPal usage-based pricing that tracks API calls per month. Configure webhooks to monitor usage and automatically upgrade/downgrade subscriptions."
 ```
 
 ### Automated GitHub Access
@@ -95,7 +95,7 @@ Implement metered billing for API usage or credits.
 Deliver private repository access on payment.
 
 ```
-"Use Polar's GitHub benefit to automatically grant repository access when customer subscribes. Remove access on subscription cancellation."
+"Use PayPal's GitHub benefit to automatically grant repository access when customer subscribes. Remove access on subscription cancellation."
 ```
 
 ## Implementation Workflow
@@ -108,15 +108,15 @@ Deliver private repository access on payment.
 4. Use `scripts/sepay-webhook-verify.js` for webhook verification
 5. Load `references/sepay/best-practices.md` for production
 
-### Polar Quick Start
+### PayPal Quick Start
 
-1. Load `references/polar/overview.md` for auth and concepts
-2. Load `references/polar/products.md` for product setup
-3. Load `references/polar/checkouts.md` for payment flows
-4. Load `references/polar/webhooks.md` for event handling
-5. Load `references/polar/benefits.md` for automated delivery
-6. Use `scripts/polar-webhook-verify.js` for webhook verification
-7. Load `references/polar/best-practices.md` for production
+1. Load `references/paypal/overview.md` for auth and concepts
+2. Load `references/paypal/products.md` for product setup
+3. Load `references/paypal/checkouts.md` for payment flows
+4. Load `references/paypal/webhooks.md` for event handling
+5. Load `references/paypal/benefits.md` for automated delivery
+6. Use `scripts/paypal-webhook-verify.js` for webhook verification
+7. Load `references/paypal/best-practices.md` for production
 
 ## Pro Tips
 
@@ -125,8 +125,8 @@ Deliver private repository access on payment.
 - Load references progressively - only what you need for current step
 - Use provided scripts for webhook verification boilerplate
 - For SePay: Monitor rate limits (2 calls/second)
-- For Polar: Leverage MoR benefits to avoid tax compliance complexity
-- **Not activating?** Say: "Use payment-integration skill to integrate Polar checkout"
+- For PayPal: Leverage MoR benefits to avoid tax compliance complexity
+- **Not activating?** Say: "Use payment-integration skill to integrate PayPal checkout"
 
 ## Related Skills
 
@@ -137,4 +137,4 @@ Deliver private repository access on payment.
 
 ## Key Takeaway
 
- Use SePay for Vietnamese market (VietQR, bank transfers, 44+ banks) and Polar for global SaaS (subscriptions, usage billing, automated benefits with tax compliance).
+ Use SePay for Vietnamese market (VietQR, bank transfers, 44+ banks) and PayPal for global SaaS (subscriptions, usage billing, automated benefits with tax compliance).

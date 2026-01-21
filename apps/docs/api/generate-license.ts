@@ -20,12 +20,10 @@ function generateLicenseKey(): string {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    // Only allow POST with authorization
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Check for API key authorization
     const apiKey = req.headers['x-api-key'] || req.headers['authorization'];
     const expectedKey = process.env.INTERNAL_API_KEY;
 
@@ -40,22 +38,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ error: 'Email is required' });
         }
 
-        // Generate unique license key
         const licenseKey = generateLicenseKey();
 
-        // Create license record
         const license = {
             license_key: licenseKey,
             email,
             plan: plan || 'pro',
             status: 'active',
-            polar_order_id: order_id || null,
+            paypal_order_id: order_id || null,
             created_at: new Date().toISOString(),
-            expires_at: null // Lifetime
+            expires_at: null 
         };
-
-        // In production, store in Supabase:
-        // const { error } = await supabase.from('licenses').insert(license);
 
         console.info('Generated license:', { email, plan, licenseKey });
 

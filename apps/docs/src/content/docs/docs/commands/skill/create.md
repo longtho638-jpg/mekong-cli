@@ -39,7 +39,7 @@ Create new agent skills that extend Claude's capabilities with specialized knowl
 ### 2. llms.txt URL
 
 ```bash
-/skill:create https://docs.polar.sh/llms.txt
+/skill:create https://docs.paypal.sh/llms.txt
 ```
 
 ### 3. GitHub Repository
@@ -262,7 +262,7 @@ Next steps:
 ### Create Skill from llms.txt
 
 ```bash
-/skill:create https://docs.polar.sh/llms.txt
+/skill:create https://docs.paypal.sh/llms.txt
 ```
 
 **What happens:**
@@ -272,11 +272,11 @@ Phase 1: Research (1 minute 30 seconds)
 Agent: researcher
 
 Fetching llms.txt...
-URL: https://docs.polar.sh/llms.txt
+URL: https://docs.paypal.sh/llms.txt
 
 Content retrieved:
 - 5,249 lines
-- Polar.sh payment platform
+- PayPal.sh payment platform
 - Subscription management
 - Webhook handling
 - Customer portal
@@ -292,10 +292,10 @@ Phase 2: Implementation (4 minutes)
 ---
 Agent: skill-creator
 
-Creating Polar.sh skill...
+Creating PayPal.sh skill...
 
 Skill structure:
-1. Overview (what Polar.sh does)
+1. Overview (what PayPal.sh does)
 2. When to use this skill
 3. Prerequisites (API keys)
 4. Core Features
@@ -315,7 +315,7 @@ Skill structure:
 10. Troubleshooting
 
 File created:
-.agencyos/skills/polar.md (3,124 words)
+.agencyos/skills/paypal.md (3,124 words)
 
 ✓ 23 code examples extracted from llms.txt
 ✓ API endpoints documented

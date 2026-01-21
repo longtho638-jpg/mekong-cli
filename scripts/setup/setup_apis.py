@@ -47,17 +47,24 @@ To get your API token:
     return {"GUMROAD_ACCESS_TOKEN": token} if token else {}
 
 
-def setup_polar():
-    print_header("❄️ POLAR.SH SETUP")
-    print_step(1, "Create Polar Account", "https://polar.sh/signup")
+def setup_paypal():
+    print_header("💳 PAYPAL SETUP")
+    print_step(1, "Create PayPal Developer App", "https://developer.paypal.com/dashboard/applications")
     print(f"""
-Polar.sh is a modern Gumroad alternative:
+PayPal is the primary payment provider:
 1. Sign up with {EMAIL}
-2. Go to Settings > Developers > Personal Access Tokens
-3. Create token with 'read' scope
+2. Create a "REST API App"
+3. Copy Client ID and Secret
 """)
-    token = input("Polar Access Token (or Enter to skip): ").strip()
-    return {"POLAR_ACCESS_TOKEN": token} if token else {}
+    client_id = input("PayPal Client ID: ").strip()
+    secret = input("PayPal Secret: ").strip()
+    webhook_id = input("PayPal Webhook ID (optional): ").strip()
+    
+    creds = {}
+    if client_id: creds["PAYPAL_CLIENT_ID"] = client_id
+    if secret: creds["PAYPAL_CLIENT_SECRET"] = secret
+    if webhook_id: creds["PAYPAL_WEBHOOK_ID"] = webhook_id
+    return creds
 
 
 def setup_twitter():
@@ -131,8 +138,8 @@ def main():
     creds = setup_gumroad()
     all_creds.update(creds)
 
-    # Polar
-    creds = setup_polar()
+    # PayPal (Replacing Polar)
+    creds = setup_paypal()
     all_creds.update(creds)
 
     # Discord

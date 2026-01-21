@@ -476,7 +476,7 @@ Friendly error handling:
 - Material Design (Google)
 - Human Interface Guidelines (Apple)
 - Fluent Design (Microsoft)
-- Polaris (Shopify)
+- PayPalis (Shopify)
 - Carbon (IBM)
 - Ant Design (Alibaba)
 

@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Outfit } from 'next/font/google'
 import ClientLayout from '@/components/ClientLayout'
+import { AuthProvider } from '@/lib/auth-context'
 
 const outfit = Outfit({
     subsets: ['latin'],
@@ -25,7 +26,9 @@ export default function RootLayout({
                 {/* Removed JetBrains Mono manual link in favor of next/font */}
             </head>
             <body>
-                <ClientLayout>{children}</ClientLayout>
+                <AuthProvider>
+                    <ClientLayout>{children}</ClientLayout>
+                </AuthProvider>
             </body>
         </html>
     )

@@ -116,7 +116,7 @@ mekong init
 - **Backend**: Node.js, Python, Go, Rust, PostgreSQL, MongoDB
 - **Cloud**: AWS, GCP, Azure, Cloudflare Workers, Docker
 - **Auth**: Better Auth, OAuth2, JWT, session management
-- **Payment**: Stripe, Shopify, Polar, SePay
+- **Payment**: Stripe, Shopify, PayPal, SePay
 
 ### Q: How do skills work?
 **A:** Skills automatically activate based on your project:

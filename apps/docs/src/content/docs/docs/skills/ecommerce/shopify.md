@@ -1,6 +1,6 @@
 ---
 title: Shopify Skill
-description: Build Shopify apps, extensions, and themes using GraphQL/REST APIs, Shopify CLI, and Polaris UI
+description: Build Shopify apps, extensions, and themes using GraphQL/REST APIs, Shopify CLI, and PayPalis UI
 section: docs
 category: skills/ecommerce
 order: 23
@@ -37,7 +37,7 @@ Build production-ready Shopify apps, checkout extensions, admin integrations, an
 | **App Development** | Shopify CLI, OAuth | Multi-store functionality, merchant tools |
 | **GraphQL Admin API** | GraphQL | Product/order/customer management |
 | **Checkout Extensions** | React, UI Extensions | Custom checkout fields, validation |
-| **Admin Extensions** | React, Polaris | Dashboard widgets, bulk actions |
+| **Admin Extensions** | React, PayPalis | Dashboard widgets, bulk actions |
 | **Theme Development** | Liquid, Sections | Custom storefront design |
 | **Webhooks** | HMAC Verification | Real-time event handling |
 | **Shopify Functions** | JavaScript | Custom discounts, payments, shipping |
@@ -67,7 +67,7 @@ alerts via email, and auto-creates purchase orders. PostgreSQL backend."
 **Who**: Store owner needing custom reports
 ```
 "Use shopify skill to add admin extension showing top products this month,
-revenue by category, and customer lifetime value charts with Polaris."
+revenue by category, and customer lifetime value charts with PayPalis."
 ```
 
 ### Product Sync Integration

@@ -50,16 +50,19 @@ export default function BraintreeCheckout({
     script.src =
       "https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js";
     script.async = true;
-    script.onload = initializeBraintree;
+    script.onload = () => {
+      void initializeBraintree();
+    };
     script.onerror = () => setError("Failed to load payment processor");
     document.body.appendChild(script);
 
     return () => {
       // Cleanup
       if (dropinInstance.current) {
-        dropinInstance.current.teardown();
+        void dropinInstance.current.teardown();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initializeBraintree = async () => {
@@ -150,7 +153,7 @@ export default function BraintreeCheckout({
       if (result.success) {
         onSuccess(result.transaction_id);
       }
-    } catch (err) {
+    } catch {
       onError("Mock payment failed");
     } finally {
       setProcessing(false);

@@ -7,9 +7,9 @@ No browser needed.
 
 Usage:
     python3 scripts/api_hub.py gumroad list
-    python3 scripts/api_hub.py gumroad publish <product_dir>
+    python3 scripts/api_hub.py gumroad sales
     python3 scripts/api_hub.py twitter post
-    python3 scripts/api_hub.py polar balance
+    python3 scripts/api_hub.py paypal status
     python3 scripts/api_hub.py webhook test
 """
 
@@ -78,32 +78,27 @@ class GumroadAPI:
         print(f"\n💰 Sales: {len(sales)} | Total: ${total:.2f}\n")
 
 
-# ============ POLAR ============
+# ============ PAYPAL ============
 
 
-class PolarAPI:
-    BASE = "https://api.polar.sh/v1"
-
+class PayPalAPI:
     def __init__(self):
         load_env()
-        self.token = os.environ.get("POLAR_ACCESS_TOKEN")
+        self.client_id = os.environ.get("PAYPAL_CLIENT_ID")
+        self.secret = os.environ.get("PAYPAL_CLIENT_SECRET")
+        self.mode = os.environ.get("PAYPAL_MODE", "sandbox")
+        self.base_url = "https://api-m.paypal.com" if self.mode == "live" else "https://api-m.sandbox.paypal.com"
 
-    def get_balance(self):
-        """Get account balance."""
-        if not self.token:
-            print("❌ POLAR_ACCESS_TOKEN not set")
+    def get_status(self):
+        """Check PayPal API status."""
+        if not self.client_id:
+            print("❌ PAYPAL_CLIENT_ID not set")
             return
 
-        headers = {"Authorization": f"Bearer {self.token}"}
-        r = requests.get(f"{self.BASE}/accounts", headers=headers)
-
-        if r.status_code != 200:
-            print(f"❌ Error: {r.status_code}")
-            return
-
-        print("\n💰 POLAR BALANCE")
+        print("\n💳 PAYPAL STATUS")
         print("=" * 50)
-        print(json.dumps(r.json(), indent=2)[:500])
+        print(f"  Mode: {self.mode}")
+        print(f"  Client ID: {self.client_id[:10]}...")
         print("=" * 50 + "\n")
 
 
@@ -127,12 +122,6 @@ class WebhookClient:
 
     def send_notification(self, title, message):
         """Send notification to all configured webhooks."""
-        {
-            "title": title,
-            "message": message,
-            "timestamp": datetime.now().isoformat(),
-        }
-
         if self.discord_url:
             requests.post(self.discord_url, json={"content": f"**{title}**\n{message}"})
             print("✅ Discord notified")
@@ -151,7 +140,7 @@ def main():
 Usage:
     python3 scripts/api_hub.py gumroad list
     python3 scripts/api_hub.py gumroad sales
-    python3 scripts/api_hub.py polar balance
+    python3 scripts/api_hub.py paypal status
     python3 scripts/api_hub.py webhook test "Hello!"
     python3 scripts/api_hub.py status
         """)
@@ -169,12 +158,12 @@ Usage:
         else:
             print("Usage: gumroad [list|sales]")
 
-    elif cmd == "polar":
-        api = PolarAPI()
-        if subcmd == "balance":
-            api.get_balance()
+    elif cmd == "paypal":
+        api = PayPalAPI()
+        if subcmd == "status":
+            api.get_status()
         else:
-            print("Usage: polar [balance]")
+            print("Usage: paypal [status]")
 
     elif cmd == "webhook":
         wh = WebhookClient()
@@ -191,7 +180,6 @@ Usage:
         apis = {
             "Gumroad": bool(os.environ.get("GUMROAD_ACCESS_TOKEN")),
             "PayPal": bool(os.environ.get("PAYPAL_CLIENT_ID")),
-            "Polar": bool(os.environ.get("POLAR_ACCESS_TOKEN")),
             "Twitter": bool(os.environ.get("TWITTER_API_KEY")),
             "Discord": bool(os.environ.get("DISCORD_WEBHOOK_URL")),
         }

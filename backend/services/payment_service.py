@@ -6,12 +6,16 @@ Handles checkout creation, subscription management, and webhook verification.
 """
 
 import logging
+import json
 from typing import Dict, Any, Optional, Union
+from datetime import datetime
 
 from core.finance.paypal_sdk import PayPalSDK
 from core.finance.gateways.stripe import StripeClient
 from core.finance.gateways.gumroad import GumroadClient
+from core.licensing.logic.engine import LicenseGenerator
 from backend.services.provisioning_service import ProvisioningService
+from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +30,8 @@ class PaymentService:
         self.stripe = StripeClient()
         self.gumroad = GumroadClient()
         self.provisioning = ProvisioningService()
+        self.licensing = LicenseGenerator()
+        self.db = get_db()
 
     def create_checkout_session(
         self,
@@ -58,25 +64,25 @@ class PaymentService:
             )
 
         elif provider == "paypal":
-            # For PayPal, we typically create an Order
-            # Note: PayPal 'subscription' flow is often client-side JS initiated for Smart Buttons,
-            # but we can create an order for one-time or setup token for subscriptions.
-            # Here we wrap the Order creation for simplicity in this unification.
-
-            # If it's a subscription, we might return the Plan ID for the frontend to use
             if mode == "subscription":
-                return {
-                    "provider": "paypal",
-                    "flow": "subscription",
-                    "plan_id": price_id,
-                    "mode": mode
-                }
+                if not price_id:
+                    raise ValueError("PayPal Plan ID (price_id) is required for subscriptions")
 
-            # One-time payment
+                return self.paypal.subscriptions.create(
+                    plan_id=price_id,
+                    custom_id=tenant_id or customer_email,
+                    return_url=success_url,
+                    cancel_url=cancel_url
+                )
+
+            # One-time payment (Order)
             return self.paypal.orders.create(
                 amount=amount,
                 currency=currency,
-                description=f"Payment for tenant {tenant_id}"
+                description=f"Payment for {tenant_id or customer_email or 'User'}",
+                custom_id=tenant_id or customer_email,
+                return_url=success_url,
+                cancel_url=cancel_url
             )
 
         else:
@@ -100,16 +106,7 @@ class PaymentService:
             )
 
         elif provider == "paypal":
-            # PayPal verification requires a specific set of headers and the full body dict
-            # We assume 'body' passed here is the parsed JSON dict for PayPal SDK verify_signature
-            # OR raw bytes if we parse it inside. The SDK currently takes dict.
-
-            # Ensure we have the headers
             if not isinstance(body, dict):
-                # If body is bytes/str, we should ideally verify against that,
-                # but the current Python SDK implementation takes a dict event.
-                # This is a known divergence in Python SDKs.
-                import json
                 try:
                     if isinstance(body, bytes):
                         body = json.loads(body.decode())
@@ -129,18 +126,15 @@ class PaymentService:
             )
 
         elif provider == "gumroad":
-            # Gumroad does not provide a signature header for verification in the same way.
-            # We treat the body as the verified event for now, or check a shared secret if part of the URL/payload.
-            # Real-world: Verify against Gumroad API using sale_id or license_key if critical.
             return body
 
         raise ValueError(f"Unsupported provider: {provider}")
 
     def handle_webhook_event(self, provider: str, event: Dict[str, Any]):
         """
-        Route verified event to ProvisioningService.
+        Route verified event to ProvisioningService and Licensing.
         """
-        logger.info(f"Processing {provider} event: {event.get('type') or event.get('event_type')}")
+        logger.info(f"Processing {provider} event: {event.get('event_type') or event.get('type')}")
 
         if provider == "paypal":
             event_type = event.get("event_type")
@@ -149,21 +143,53 @@ class PaymentService:
             if event_type == "BILLING.SUBSCRIPTION.ACTIVATED":
                 sub_id = resource.get("id")
                 plan_id = resource.get("plan_id")
-                # Need to map PayPal Plan ID to internal plan name (e.g., PRO, ENTERPRISE)
-                # This mapping should ideally be in config/DB.
-                plan_name = "PRO" # Defaulting for now
-
-                # We need to find the tenant_id. Usually stored in 'custom_id' or we search by sub_id
-                # If custom_id is not set, we might need to rely on the email match or previous context
                 tenant_id = resource.get("custom_id")
+                email = resource.get("subscriber", {}).get("email_address")
+                
+                tier = self._map_paypal_plan_to_tier(plan_id)
 
                 if tenant_id:
                     self.provisioning.activate_subscription(
                         tenant_id=tenant_id,
-                        plan=plan_name,
+                        plan=tier,
                         provider="paypal",
                         subscription_id=sub_id
                     )
+                    
+                    self._generate_and_store_license(
+                        email=email,
+                        tier=tier,
+                        tenant_id=tenant_id,
+                        paypal_sub_id=sub_id
+                    )
+
+            elif event_type == "PAYMENT.CAPTURE.COMPLETED":
+                # Handle one-time purchase
+                capture_id = resource.get("id")
+                amount = resource.get("amount", {}).get("value")
+                currency = resource.get("amount", {}).get("currency_code")
+                
+                # Extract custom_id (tenant_id) and email
+                custom_id = resource.get("custom_id")
+                email = resource.get("payer", {}).get("email_address")
+                
+                logger.info(f"Payment capture completed: {capture_id} for {custom_id}")
+                
+                if amount and custom_id:
+                    self.provisioning.record_payment(
+                        tenant_id=custom_id,
+                        amount=float(amount),
+                        currency=currency or "USD",
+                        provider="paypal",
+                        transaction_id=capture_id
+                    )
+                    
+                    if email:
+                        self._generate_and_store_license(
+                            email=email,
+                            tier="pro", # Default tier for one-time purchases
+                            tenant_id=custom_id
+                        )
 
             elif event_type == "BILLING.SUBSCRIPTION.CANCELLED":
                 sub_id = resource.get("id")
@@ -172,27 +198,43 @@ class PaymentService:
                     provider="paypal"
                 )
 
+            elif event_type == "BILLING.SUBSCRIPTION.SUSPENDED":
+                sub_id = resource.get("id")
+                logger.warning(f"Subscription suspended: {sub_id}")
+                # We might want to update status in DB to 'suspended' if supported
+                # self.provisioning.update_status(sub_id, "suspended")
+
+            elif event_type == "PAYMENT.CAPTURE.DENIED":
+                capture_id = resource.get("id")
+                logger.error(f"Payment denied: {capture_id}")
+
+            elif event_type == "CHECKOUT.ORDER.APPROVED":
+                order_id = resource.get("id")
+                logger.info(f"Order approved by buyer: {order_id}")
+
         elif provider == "stripe":
             event_type = event.get("type")
             data = event.get("data", {}).get("object", {})
 
             if event_type == "checkout.session.completed":
-                # Initial subscription setup
                 tenant_id = data.get("metadata", {}).get("tenantId")
                 sub_id = data.get("subscription")
                 customer_id = data.get("customer")
+                email = data.get("customer_details", {}).get("email")
 
                 if tenant_id and sub_id:
-                     # Retrieve sub details to get the plan
-                     sub = self.stripe.get_subscription(sub_id)
-                     # Map price ID to plan
-                     # For now, we activate as PRO if successful
                      self.provisioning.activate_subscription(
                          tenant_id=tenant_id,
                          plan="PRO",
                          provider="stripe",
                          subscription_id=sub_id,
                          customer_id=customer_id
+                     )
+                     
+                     self._generate_and_store_license(
+                         email=email,
+                         tier="pro",
+                         tenant_id=tenant_id
                      )
 
             elif event_type == "customer.subscription.deleted":
@@ -202,54 +244,92 @@ class PaymentService:
                     provider="stripe"
                 )
 
-        elif provider == "gumroad":
-            # Gumroad event structure is flat (form data converted to dict)
-            email = event.get("email")
-            product_id = event.get("product_id")
-            product_name = event.get("product_name")
-            sale_id = event.get("sale_id")
-            license_key = event.get("license_key")
-            price = event.get("price")
-            currency = event.get("currency")
+    def _map_paypal_plan_to_tier(self, plan_id: str) -> str:
+        """Map PayPal Plan IDs to internal tiers."""
+        mapping = {
+            "P-7DA230130F8006938NFYLZDA": "starter",
+            "P-95T479827M227991CNFYLZDI": "pro",
+            "P-0KK81193UG062012VNFYLZDI": "franchise",
+            "P-92J98622GM186390LNFYLZDQ": "enterprise"
+        }
+        return mapping.get(plan_id, "pro")
 
-            if email and product_id:
-                # Basic activation logic
-                # For now, map all Gumroad purchases to PRO
-                self.provisioning.activate_subscription(
-                    tenant_id=email, # Using email as tenant_id for simplicity if not provided
-                    plan="PRO",
-                    provider="gumroad",
-                    subscription_id=sale_id,
-                    customer_id=email
-                )
+    def _generate_and_store_license(
+        self, 
+        email: str, 
+        tier: str, 
+        tenant_id: str, 
+        paypal_sub_id: str = None,
+        format: str = "agencyos"
+    ):
+        """Generate a license key and store it in Supabase."""
+        if not email or not self.db:
+            return
 
-                # Record payment
-                if price:
-                    try:
-                         self.provisioning.record_payment(
-                             tenant_id=email,
-                             amount=float(price),
-                             currency=currency or "USD",
-                             provider="gumroad",
-                             transaction_id=sale_id
-                         )
-                    except Exception as e:
-                        logger.error(f"Failed to record Gumroad payment: {e}")
+        try:
+            license_key = self.licensing.generate(
+                format=format,
+                tier=tier,
+                email=email
+            )
+            
+            license_data = {
+                "license_key": license_key,
+                "email": email,
+                "plan": tier,
+                "status": "active",
+                "metadata": {"tenant_id": tenant_id}
+            }
+            
+            if paypal_sub_id:
+                license_data["metadata"]["paypal_subscription_id"] = paypal_sub_id
+
+            # Use upsert to avoid duplicates if webhook retries
+            self.db.table("licenses").upsert(license_data, on_conflict="license_key").execute()
+            logger.info(f"Generated and stored license {license_key} for {email}")
+            
+        except Exception as e:
+            logger.error(f"Failed to generate/store license: {e}")
 
     def capture_order(self, provider: str, order_id: str) -> Dict[str, Any]:
-        """
-        Capture a payment order (PayPal).
-        """
+        """Capture a payment order."""
         if provider == "paypal":
             return self.paypal.orders.capture(order_id)
         else:
             raise ValueError(f"Capture not supported for provider: {provider}")
 
     def get_order(self, provider: str, order_id: str) -> Dict[str, Any]:
-        """
-        Get order details.
-        """
+        """Get order details."""
         if provider == "paypal":
             return self.paypal.orders.get(order_id)
         else:
             raise ValueError(f"Get order not supported for provider: {provider}")
+
+    def cancel_subscription(self, provider: str, subscription_id: str, reason: str = None) -> Dict[str, Any]:
+        """Cancel a subscription."""
+        if provider == "paypal":
+            return self.paypal.subscriptions.cancel(subscription_id, reason or "Canceled by user")
+        elif provider == "stripe":
+            # Delegate to StripeClient if implemented, or implement directly
+            raise NotImplementedError("Stripe cancellation not yet implemented in unified service")
+        else:
+            raise ValueError(f"Provider {provider} not supported for cancellation")
+
+    def refund_payment(self, provider: str, payment_id: str, amount: float = None) -> Dict[str, Any]:
+        """Refund a payment."""
+        if provider == "paypal":
+            # payment_id is capture_id for PayPal
+            return self.paypal.payments.refund_capture(payment_id, amount)
+        elif provider == "stripe":
+             raise NotImplementedError("Stripe refund not yet implemented in unified service")
+        else:
+            raise ValueError(f"Provider {provider} not supported for refund")
+
+    def get_subscription(self, provider: str, subscription_id: str) -> Dict[str, Any]:
+        """Get subscription details."""
+        if provider == "paypal":
+            return self.paypal.subscriptions.get(subscription_id)
+        elif provider == "stripe":
+             raise NotImplementedError("Stripe subscription retrieval not yet implemented in unified service")
+        else:
+             raise ValueError(f"Provider {provider} not supported for get_subscription")

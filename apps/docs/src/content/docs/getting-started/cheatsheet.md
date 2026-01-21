@@ -178,7 +178,7 @@ claude
 /git:pr                     # Create pull request
 
 # Integration
-/integrate:polar            # Polar.sh
+/integrate:paypal            # PayPal.sh
 /integrate:sepay            # SePay payment
 /mcp:*                      # MCP tools
 ```
@@ -294,8 +294,8 @@ python main.py init --kit engineer --dir /path/to/project
 ### Integration
 
 ```bash
-# Integrate Polar API
-/integrate:polar
+# Integrate PayPal API
+/integrate:paypal
 
 # Integrate SePay payment
 /integrate:sepay

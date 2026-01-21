@@ -15,23 +15,6 @@ const requiredEnvVars = {
     description: "Supabase anonymous key",
   },
 
-  // Polar
-  POLAR_ACCESS_TOKEN: {
-    required: true,
-    pattern: /^pol_[a-zA-Z0-9]+$/,
-    description: "Polar access token",
-  },
-  POLAR_PRO_PRODUCT_ID: {
-    required: true,
-    pattern: /^[a-zA-Z0-9_-]+$/,
-    description: "Polar Pro product ID",
-  },
-  POLAR_ENTERPRISE_PRODUCT_ID: {
-    required: true,
-    pattern: /^[a-zA-Z0-9_-]+$/,
-    description: "Polar Enterprise product ID",
-  },
-
   // Optional but recommended
   REDIS_URL: {
     required: false,

@@ -18,22 +18,27 @@ import { useState, useEffect, useCallback } from 'react'
 
 // Types
 interface Transaction {
-  orderId: string
+  orderId?: string
+  subscriptionId?: string
   status: string
-  amount: string
+  amount?: string
 }
 
 interface PayPalCheckoutProps {
-  amount: string
+  amount?: string
+  planId?: string
+  mode?: 'payment' | 'subscription'
   description?: string
   currency?: string
+  customerEmail?: string
+  tenantId?: string
   onSuccess?: (transaction: Transaction) => void
   onError?: (error: string) => void
   className?: string
 }
 
 // API URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
 
 // PayPal SDK v6 URL
 const PAYPAL_SDK_URL =
@@ -43,8 +48,12 @@ const PAYPAL_SDK_URL =
 
 export function PayPalCheckout({
   amount,
+  planId,
+  mode = 'payment',
   description = 'Payment',
   currency = 'USD',
+  customerEmail,
+  tenantId,
   onSuccess,
   onError,
   className = '',
@@ -89,9 +98,11 @@ export function PayPalCheckout({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount,
+        amount: parseFloat(amount || '0'),
         currency,
         description,
+        customer_email: customerEmail,
+        tenant_id: tenantId,
       }),
     })
 
@@ -101,14 +112,35 @@ export function PayPalCheckout({
 
     const data = await response.json()
     return data.orderId
-  }, [amount, currency, description])
+  }, [amount, currency, description, customerEmail, tenantId])
+
+  // Create PayPal subscription via backend
+  const createSubscription = useCallback(async () => {
+    const response = await fetch(`${API_URL}/payments/paypal/create-subscription`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan_id: planId,
+        tenant_id: tenantId,
+        customer_email: customerEmail,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to create subscription')
+    }
+
+    const data = await response.json()
+    // PayPal returns the subscription details directly
+    return data
+  }, [planId, tenantId, customerEmail])
 
   // Capture order after approval
   const captureOrder = useCallback(async (orderId: string) => {
     const response = await fetch(`${API_URL}/payments/paypal/capture-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId }),
+      body: JSON.stringify({ order_id: orderId }),
     })
 
     if (!response.ok) {
@@ -124,7 +156,25 @@ export function PayPalCheckout({
     setError(null)
 
     try {
-      // Create order
+      if (mode === 'subscription') {
+        const result = await createSubscription()
+
+        // Find approval URL
+        const approvalUrl = result.links?.find((l: any) => l.rel === 'approve')?.href
+        if (approvalUrl) {
+          window.location.href = approvalUrl
+        } else {
+          // If no redirect needed (already active or mock)
+          setSuccess(true)
+          onSuccess?.({
+            subscriptionId: result.id,
+            status: result.status,
+          })
+        }
+        return
+      }
+
+      // Create order (one-time)
       const orderId = await createOrder()
 
       // For demo/mock mode - simulate approval
@@ -153,7 +203,7 @@ export function PayPalCheckout({
     } finally {
       setProcessing(false)
     }
-  }, [amount, createOrder, captureOrder, onSuccess, onError])
+  }, [amount, mode, createOrder, createSubscription, captureOrder, onSuccess, onError])
 
   // Success State
   if (success) {
@@ -163,7 +213,9 @@ export function PayPalCheckout({
       >
         <div className="text-4xl mb-4">✅</div>
         <h3 className="text-xl font-bold text-green-400 mb-2">Thanh Toán Thành Công!</h3>
-        <p className="text-green-300/80">Cảm ơn bạn đã thanh toán ${amount}</p>
+        <p className="text-green-300/80">
+          {mode === 'subscription' ? 'Đăng ký của bạn đã được kích hoạt.' : `Cảm ơn bạn đã thanh toán ${amount}`}
+        </p>
       </div>
     )
   }
@@ -172,9 +224,11 @@ export function PayPalCheckout({
     <div className={`rounded-xl border border-white/10 bg-white/5 p-6 ${className}`}>
       {/* Header */}
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-white mb-1">💳 Thanh Toán PayPal</h3>
+        <h3 className="text-xl font-bold text-white mb-1">
+          {mode === 'subscription' ? '💳 Đăng Ký PayPal' : '💳 Thanh Toán PayPal'}
+        </h3>
         <p className="text-white/60 text-sm">
-          {description} - ${amount} {currency}
+          {description} {amount ? `- $${amount} ${currency}` : ''}
         </p>
       </div>
 

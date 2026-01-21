@@ -4,6 +4,14 @@
 
 ---
 
+## [2.4.0-beta] - 2026-01-21
+
+### PayPal Migration & Backend Unification (Phase 1)
+- **PayPal SDK**: Created `core/finance/paypal_sdk/subscriptions.py` to handle full subscription lifecycle (create, get, cancel, suspend/resume).
+- **Unified Payment Service**: Refactored `backend/services/payment_service.py` to consolidate PayPal, Stripe, and Gumroad logic. Added subscription mapping and license generation triggers.
+- **Webhook Handlers**: Consolidated webhook processing to eliminate logic duplication and ensure reliable license delivery.
+- **Plan Synchronization**: Added `scripts/setup/sync_paypal_plans.py` for automated PayPal Product and Plan management.
+
 ## [2.3.0-beta] - 2026-01-21
 
 ### Testing & Quality Gates (Phase 10)

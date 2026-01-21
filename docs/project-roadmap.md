@@ -1,7 +1,7 @@
 # AgencyOS Engine - Project Roadmap
 
-**Last Updated:** 2026-01-20
-**Current Version:** v2.0.0-beta
+**Last Updated:** 2026-01-21
+**Current Version:** v2.4.0-beta
 **Repository:** https://github.com/longtho638-jpg/mekong-cli
 
 ## Executive Summary
@@ -110,6 +110,15 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have tr
 - 📋 Context Memory
 - 📋 Knowledge Ingestion
 - 📋 Semantic Search
+
+### Phase 14: Payment Infrastructure Unification (IN PROGRESS)
+**Status:** 🏗️ Development
+**Progress:** 40%
+
+**Features:**
+- ✅ Phase 1: Backend Unification (PayPal SDK Subscriptions, Unified Service)
+- 📋 Phase 2: Frontend Migration (PayPal Smart Buttons, Dashboard Integration)
+- 📋 Phase 3: Technical Debt Elimination (Polar Removal)
 
 ---
 

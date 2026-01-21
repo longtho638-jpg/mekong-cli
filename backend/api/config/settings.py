@@ -67,7 +67,6 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = Field(default=60 * 24 * 8, description="JWT expiration (8 days)")
 
     # Optional webhook secrets
-    polar_webhook_secret: str = Field(default="", description="Polar webhook secret")
     gumroad_webhook_secret: str = Field(default="", description="Gumroad webhook secret")
 
     # ========================================

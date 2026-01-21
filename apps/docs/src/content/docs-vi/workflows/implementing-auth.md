@@ -654,7 +654,7 @@ Before production deployment:
 - [/fix:fast](/docs/commands/fix/fast) - Quick fixes
 
 ### Integration Guides
-- [/integrate:polar](/docs/commands/integrate/polar) - Polar payments
+- [/integrate:paypal](/docs/commands/integrate/paypal) - PayPal payments
 - [Better Auth Skill](/docs/skills) - Better Auth framework
 
 ### Further Reading
