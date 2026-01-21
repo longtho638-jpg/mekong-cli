@@ -87,7 +87,9 @@ export const POST: APIRoute = async ({ request }) => {
             });
         }
 
-        // 4. TODO: Check Polar.sh discounts (when configured)
+        // 4. Future Integration: Check Polar.sh discounts
+        // This requires the Polar SDK to be initialized and a method to validate discount codes against the Polar API.
+        // Once configured, implement logic to validate against Polar discounts.
         // const polarResponse = await checkPolarDiscount(upperCode);
         // if (polarResponse?.valid) return polarResponse;
 
