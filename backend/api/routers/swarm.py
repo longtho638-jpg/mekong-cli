@@ -1,10 +1,13 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import Dict, Any
 
-from antigravity.core.swarm.orchestrator import SwarmOrchestrator
 from antigravity.core.swarm.bus import MessageBus
-from antigravity.core.swarm.patterns.dev_swarm import ArchitectAgent, CoderAgent, ReviewerAgent
+from antigravity.core.swarm.orchestrator import SwarmOrchestrator
+from antigravity.core.swarm.patterns.dev_swarm import (
+    ArchitectAgent,
+    CoderAgent,
+    ReviewerAgent,
+)
 
 router = APIRouter(prefix="/swarm", tags=["swarm"])
 
@@ -17,9 +20,11 @@ swarm.register_agent(ArchitectAgent("architect", "Architect", bus))
 swarm.register_agent(CoderAgent("coder", "Coder", bus))
 swarm.register_agent(ReviewerAgent("reviewer", "Reviewer", bus))
 
+
 class TaskRequest(BaseModel):
     content: str
     swarm_type: str = "dev"  # dev or growth
+
 
 @router.post("/dispatch")
 async def dispatch_task(request: TaskRequest):
@@ -30,6 +35,7 @@ async def dispatch_task(request: TaskRequest):
     else:
         # Load growth swarm on demand or error
         return {"status": "error", "message": "Unknown swarm type"}
+
 
 @router.get("/history")
 async def get_history():
