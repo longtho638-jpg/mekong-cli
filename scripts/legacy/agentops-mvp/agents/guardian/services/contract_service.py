@@ -22,7 +22,7 @@ class ContractService:
     
     def parse_contract_text(self, document_text: str) -> Dict[str, Any]:
         """Parse contract text and extract key terms"""
-        # TODO: Use LLM to extract terms from document
+        # Note: Use LLM to extract terms from document in future release
         # Mock extraction for now
         terms = {
             "valuation_pre_money": 10000000,
