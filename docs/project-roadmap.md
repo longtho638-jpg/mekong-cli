@@ -1,7 +1,7 @@
 # AgencyOS Engine - Project Roadmap
 
-**Last Updated:** 2026-01-22
-**Current Version:** v5.0.0
+**Last Updated:** 2026-01-23
+**Current Version:** v5.1.1
 **Repository:** https://github.com/longtho638-jpg/mekong-cli
 
 ## Executive Summary
@@ -143,15 +143,47 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have su
 - ✅ **Monolithic Decompression**: Split 1,800+ line `agencyos.astro` into 14 modular components.
 - ✅ **TypeScript Stability**: Resolved type errors across navigation and state providers.
 
-### Phase 17: Post-Launch Growth & Feedback Loop (PENDING)
-**Status:** ⏳ Pending
+### Phase 17: Post-Launch Growth & Feedback Loop (IN-PROGRESS)
+**Status:** 🏗️ In-Progress
+**Progress:** 70%
+
+**Features:**
+- ✅ **Customer Success Onboarding**: Implemented 3-part email sequence (Day 0, 3, 7) for activation and retention.
+- ✅ **Community Engagement Automation**: Deployed skeleton bots for Discord/Twitter and community playbook.
+- ✅ **Unified Tracking API**: Implemented `/api/track` for A/B tests and engagement monitoring.
+- ✅ **Feedback Collection**: Launched `FeedbackWidget` and `/api/feedback` endpoint.
+- ✅ **A/B Testing Infrastructure**: Server-side variant assignment and client-side exposure tracking.
+- 🔄 **Infrastructure Scaling**: [Implementation Plan Created](../../plans/260122-2000-infrastructure-scaling/plan.md).
+
+### Phase 18: Performance & Observability (PLANNED)
+**Status:** 📋 Planned
 **Progress:** 0%
 
 **Features:**
-- 🔄 **Real-world Monitoring**: Track user engagement and conversion rates.
-- 🔄 **Feedback Collection**: Launch automated feedback bot.
-- 🔄 **A/B Testing**: Pricing and Hero section split testing.
-- 🔄 **Infrastructure Scaling**: Fine-tune Kubernetes HPA settings.
+- 🔄 **Agent Benchmarking Engine**: Automated latency and success rate tracking for all 24+ agents.
+- 🔄 **Cost Observability Dashboard**: Integration with `quota_engine.py` for per-agent token cost analysis.
+- 🔄 **Bottleneck Identification**: Automated tracing of complex multi-agent workflows (Sequential/Parallel).
+- 🔄 **Self-Optimization Loop**: AI-driven prompt tuning based on performance metrics.
+
+### Phase 19: Enterprise Readiness & Security (PLANNED)
+**Status:** 📋 Planned
+**Progress:** 0%
+
+**Features:**
+- 🔄 **Granular RBAC**: Role-Based Access Control for Dashboard and CLI operations.
+- 🔄 **Immutable Audit Logs**: Tamper-proof logging of all agent-driven codebase modifications.
+- 🔄 **Advanced Secret Management**: Integration with Vault/Doppler for production credential rotation.
+- 🔄 **SLA Monitoring**: Real-time tracking of system uptime and agent response reliability.
+
+### Phase 20: Intelligent Content & SEO Engine (PLANNED)
+**Status:** 📋 Planned
+**Progress:** 0%
+
+**Features:**
+- 🔄 **Autonomous SEO Auditor**: Real-time analysis of documentation for keyword gaps and meta-tag optimization.
+- 🔄 **Dynamic Content Generator**: Agent-driven blog and LinkedIn post creation based on codebase updates.
+- 🔄 **Cross-Channel Distribution**: Automated sharing of feature launches and wins to Discord, Twitter, and LinkedIn.
+- 🔄 **Visual Asset Generation**: Automated creation of social media thumbnails and documentation diagrams.
 
 ---
 
