@@ -30,6 +30,12 @@ supabase>=2.0.0
 # AI SDKs
 google-genai>=0.3.0
 
+# Knowledge Graph
+redis>=5.0.0
+falkordb>=1.0.0
+tree-sitter>=0.20.0
+sentence-transformers>=2.2.2
+
 # Testing (optional)
 # pytest>=7.0.0
 # pytest-cov>=4.0.0

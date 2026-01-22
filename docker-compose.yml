@@ -43,6 +43,22 @@ services:
     depends_on:
       - api
 
+  # Knowledge Graph (FalkorDB)
+  # Persistent contextual memory for agents
+  knowledge_graph:
+    image: falkordb/falkordb:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/falkordb:/data
+    environment:
+      - FALKORDB_ARGS=--load-module /usr/lib/redis/modules/falkordb.so
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Next.js Landing (Optional)
   # web:
   #   build:
