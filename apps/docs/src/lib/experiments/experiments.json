@@ -1,0 +1,25 @@
+{
+  "experiments": [
+    {
+      "id": "hero_headline_test",
+      "name": "Hero Headline Test",
+      "description": "Testing different value propositions in the hero section",
+      "variants": [
+        { "id": "control", "weight": 50 },
+        { "id": "aggressive", "weight": 25 },
+        { "id": "minimal", "weight": 25 }
+      ],
+      "active": true
+    },
+    {
+      "id": "pricing_layout_test",
+      "name": "Pricing Layout Test",
+      "description": "Testing featured card position",
+      "variants": [
+        { "id": "control", "weight": 50 },
+        { "id": "featured_first", "weight": 50 }
+      ],
+      "active": false
+    }
+  ]
+}
