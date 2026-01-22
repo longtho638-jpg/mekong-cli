@@ -154,6 +154,7 @@ const navIcons = {
 
     // Helper function to close sidebar
     function closeSidebar() {
+      if (!sidebar || !backdrop) return;
       sidebar.classList.remove('open');
       backdrop.classList.remove('visible');
       document.body.style.overflow = '';
@@ -161,6 +162,7 @@ const navIcons = {
 
     // Helper function to open sidebar
     function openSidebar() {
+      if (!sidebar || !backdrop) return;
       sidebar.classList.add('open');
       backdrop.classList.add('visible');
       document.body.style.overflow = 'hidden';
@@ -168,6 +170,7 @@ const navIcons = {
 
     // Toggle sidebar on button click
     function handleToggle() {
+      if (!sidebar) return;
       const isOpen = sidebar.classList.contains('open');
       if (isOpen) {
         closeSidebar();
@@ -183,7 +186,7 @@ const navIcons = {
 
     // Close sidebar on Escape key
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
         closeSidebar();
       }
     }
@@ -207,8 +210,8 @@ const navIcons = {
 
     // Cleanup function for event listeners
     function cleanup() {
-      menuToggle.removeEventListener('click', handleToggle);
-      backdrop.removeEventListener('click', handleBackdropClick);
+      if (menuToggle) menuToggle.removeEventListener('click', handleToggle);
+      if (backdrop) backdrop.removeEventListener('click', handleBackdropClick);
       document.removeEventListener('keydown', handleEscape);
       mediaQuery.removeEventListener('change', handleMediaChange);
     }

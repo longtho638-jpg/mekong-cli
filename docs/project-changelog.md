@@ -4,6 +4,16 @@
 
 ---
 
+## [5.1.0] - 2026-01-22
+
+### UI/UX Upgrade for AgencyOS Docs
+- **Refactoring**: Successfully decomposed the monolithic `agencyos.astro` (1,816 lines) into 14 specialized components in `src/components/landing/`, drastically improving maintainability.
+- **Visuals**: Enhanced Hero section with premium effects and added 3D tilt interaction to pricing cards.
+- **Social Proof**: Integrated `Testimonials.astro` into the pricing flow.
+- **Interactive**: Added a functional Terminal Demo to the commands showcase page.
+- **Security**: Hardened checkout process with trust badges and verified security fixes.
+- **Stability**: Fixed TypeScript errors in `DocsNav.astro`, `SidebarNav.astro`, `AgencyOSProvider.tsx`, and `affiliate/index.astro`.
+
 ## [2.6.0-beta] - 2026-01-22
 
 ### Knowledge Graph Integration (Phase 13)

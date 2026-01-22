@@ -1,5 +1,7 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import Hero from '../components/Hero.astro';
+import Testimonials from '../components/Testimonials.astro';
 
 const title = 'AgencyOS Pricing - Simple Plans, Massive Value';
 const description = 'All plans include 125+ AI commands. Pick what fits your agency. 7-day free trial.';
@@ -7,15 +9,10 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 
 <LandingLayout title={title} description={description}>
 
-<!-- Hero -->
-<div class="text-center py-12">
-  <h1 class="text-4xl font-bold mb-4 text-[var(--color-text-primary)]">
-    Simple pricing. Massive value.
-  </h1>
-  <p class="text-lg text-[var(--color-text-muted)]">
-    All plans include 125+ AI commands. Pick what fits your agency.
-  </p>
-</div>
+<Hero
+  title="Simple pricing. Massive value."
+  description="All plans include 125+ AI commands. Pick what fits your agency."
+/>
 
 <!-- Promo Code Input -->
 <section class="py-4 mb-8">
@@ -243,6 +240,8 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
   </div>
 </section>
 
+<Testimonials />
+
 <!-- FAQ -->
 <section id="faq" class="py-12">
   <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">Frequently Asked Questions</h2>
@@ -423,99 +422,23 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 
 <style>
   /* ===================== WOW PRICING ANIMATIONS ===================== */
-  /* 3D Tilt Card Effect */
-  .tilt-card {
-    transform-style: preserve-3d;
-    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
-    will-change: transform;
-    position: relative;
-    overflow: hidden;
-    animation: card-entrance 0.6s ease-out both;
-  }
-
   .tilt-card:nth-child(1) { animation-delay: 0.1s; }
   .tilt-card:nth-child(2) { animation-delay: 0.2s; }
   .tilt-card:nth-child(3) { animation-delay: 0.3s; }
 
-  @keyframes card-entrance {
-    from {
-      opacity: 0;
-      transform: translateY(40px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .tilt-card:hover {
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.3),
-      0 0 60px rgba(34, 197, 94, 0.15);
-  }
-
-  /* Mouse-follow gradient */
-  .tilt-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(
-      800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(34, 197, 94, 0.1),
-      transparent 40%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .tilt-card:hover::before {
-    opacity: 1;
-  }
-
-  /* Shine sweep effect on hover */
-  .tilt-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
-    transition: 0.5s;
-    pointer-events: none;
-    z-index: 3;
-  }
-
-  .tilt-card:hover::after {
-    left: 100%;
-  }
-
-  .tilt-card > * {
-    position: relative;
-    z-index: 2;
-  }
-
   /* Pro card special glow */
   .tilt-card.pro-card {
-    animation: card-entrance 0.6s ease-out both, pro-glow 3s ease-in-out infinite;
+    animation: wow-card-entrance 0.6s ease-out both, pro-glow 3s ease-in-out infinite;
   }
 
   @keyframes pro-glow {
     0%, 100% {
-      box-shadow: 
+      box-shadow:
         0 0 20px rgba(34, 197, 94, 0.3),
         0 0 40px rgba(34, 197, 94, 0.1);
     }
     50% {
-      box-shadow: 
+      box-shadow:
         0 0 30px rgba(34, 197, 94, 0.5),
         0 0 60px rgba(34, 197, 94, 0.2);
     }
@@ -562,13 +485,7 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
   /* Price counter animation */
   .price-animate {
     display: inline-block;
-    animation: price-pop 0.4s ease-out;
-  }
-
-  @keyframes price-pop {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
+    animation: wow-pop 0.4s ease-out;
   }
 
   /* Popular badge shine */
@@ -598,46 +515,9 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 
   /* CTA button pulse on Pro */
   .pro-card .cta-btn {
-    animation: btn-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes btn-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+    animation: wow-btn-pulse 2s ease-in-out infinite;
   }
 </style>
 
-<script>
-  // 3D Tilt Card Effect
-  const tiltCards = document.querySelectorAll('.tilt-card');
-  
-  tiltCards.forEach(card => {
-    const cardEl = card as HTMLElement;
-    
-    cardEl.addEventListener('mousemove', (e: MouseEvent) => {
-      const rect = cardEl.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = (y - centerY) / 20;
-      const rotateY = (centerX - x) / 20;
-      
-      cardEl.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      
-      // Update gradient position
-      const percentX = (x / rect.width) * 100;
-      const percentY = (y / rect.height) * 100;
-      cardEl.style.setProperty('--mouse-x', `${percentX}%`);
-      cardEl.style.setProperty('--mouse-y', `${percentY}%`);
-    });
-    
-    cardEl.addEventListener('mouseleave', () => {
-      cardEl.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-    });
-  });
-</script>
 
 </LandingLayout>

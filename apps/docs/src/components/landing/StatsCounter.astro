@@ -1,0 +1,143 @@
+---
+---
+<section class="stats-counter" id="stats-section">
+  <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-number" data-target="125">0</span>
+        <span class="stat-suffix">+</span>
+        <span class="stat-label">AI Commands</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="500">0</span>
+        <span class="stat-suffix">+</span>
+        <span class="stat-label">Agencies Worldwide</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="156000">0</span>
+        <span class="stat-suffix"></span>
+        <span class="stat-label">Hours Saved/Year</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="4.9">0</span>
+        <span class="stat-suffix">/5</span>
+        <span class="stat-label">User Rating</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats-counter {
+    padding: 48px 0;
+    background: linear-gradient(180deg, transparent, rgba(34, 197, 94, 0.05));
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 24px 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .stat-item:hover {
+    border-color: #22c55e;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(34, 197, 94, 0.15);
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #22c55e;
+    display: inline;
+  }
+
+  .stat-suffix {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #22c55e;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-number {
+      font-size: 1.75rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Animate numbers when scrolled into view
+  function animateValue(element, start, end, duration) {
+    const startTime = performance.now();
+    const isFloat = end % 1 !== 0;
+
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // easeOutQuart for smooth animation
+      const eased = 1 - Math.pow(1 - progress, 4);
+      const current = start + (end - start) * eased;
+
+      if (isFloat) {
+        element.textContent = current.toFixed(1);
+      } else if (end >= 1000) {
+        element.textContent = Math.floor(current).toLocaleString();
+      } else {
+        element.textContent = Math.floor(current).toString();
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  // Intersection Observer for triggering animation
+  const statsSection = document.getElementById('stats-section');
+  let animated = false;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !animated) {
+        animated = true;
+        const numbers = document.querySelectorAll('.stat-number[data-target]');
+        numbers.forEach((el, index) => {
+          const target = parseFloat(el.getAttribute('data-target') || '0');
+          setTimeout(() => {
+            animateValue(el, 0, target, 2000);
+          }, index * 200); // Stagger animation
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  if (statsSection) {
+    observer.observe(statsSection);
+  }
+</script>

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import { getLangFromUrl, useTranslations, getLocalizedPath } from '../i18n/utils';
+import { getLangFromUrl } from '../i18n/utils';
+// import { getLangFromUrl, useTranslations, getLocalizedPath } from '../i18n/utils';
 import GettingStartedNav from './nav/GettingStartedNav.astro';
 import DocsNav from './nav/DocsNav.astro';
 import WorkflowsNav from './nav/WorkflowsNav.astro';
@@ -59,6 +60,8 @@ const sectionDocs = allDocs.filter(doc => doc.data.section === section);
     // Apply saved collapse state
     document.querySelectorAll('[data-collapsible]').forEach(section => {
       const key = section.getAttribute('data-category');
+      if (!key) return;
+
       const isCollapsed = state[key] ?? true; // Default collapsed
 
       const button = section.querySelector('button');
@@ -77,7 +80,11 @@ const sectionDocs = allDocs.filter(doc => doc.data.section === section);
     document.querySelectorAll('[data-collapsible] button').forEach(button => {
       button.addEventListener('click', (e) => {
         const section = button.closest('[data-collapsible]');
+        if (!section) return;
+
         const key = section.getAttribute('data-category');
+        if (!key) return;
+
         const items = section.querySelector('.nav-items');
 
         const isCollapsed = section.classList.toggle('collapsed');

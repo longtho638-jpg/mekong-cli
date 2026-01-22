@@ -1150,7 +1150,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
   document.querySelectorAll('.priority-item').forEach(item => {
     item.addEventListener('click', () => {
       item.classList.toggle('done');
-      const text = item.querySelector('.priority-text');
+      const text = item.querySelector('.priority-text') as HTMLElement;
       if (item.classList.contains('done') && text) {
         text.style.textDecoration = 'line-through';
         text.style.opacity = '0.5';

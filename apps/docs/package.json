@@ -22,6 +22,7 @@
     "@supabase/supabase-js": "^2.89.0",
     "astro": "^5.14.6",
     "astro-pagefind": "^1.8.5",
+    "lucide-react": "^0.562.0",
     "openai": "^4.75.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

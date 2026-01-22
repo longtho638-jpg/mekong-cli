@@ -1,19 +1,24 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import Hero from '../components/Hero.astro';
 
 const title = 'Money Workflows - AgencyOS';
 const description = '3 proven workflows to make money with AgencyOS: Affiliate, Code-to-Content, and Consulting.';
 ---
 
 <LandingLayout title={title} description={description}>
-  <section class="workflows-hero">
-    <h1>💰 Money-Making Workflows</h1>
-    <p>Step-by-step paths to revenue</p>
-  </section>
+  <Hero
+    badge={{
+      icon: '💰',
+      text: 'Revenue Blueprints'
+    }}
+    title="Money-Making Workflows"
+    description="Step-by-step paths to revenue with AgencyOS."
+  />
 
   <!-- Workflow 1: Affiliate -->
-  <section class="workflow-section">
-    <div class="workflow-card affiliate">
+  <section class="workflow-section reveal">
+    <div class="workflow-card affiliate tilt-card">
       <div class="workflow-header">
         <span class="workflow-number">01</span>
         <div>
@@ -62,8 +67,8 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
   </section>
 
   <!-- Workflow 2: Code-to-Content -->
-  <section class="workflow-section">
-    <div class="workflow-card code-content">
+  <section class="workflow-section reveal">
+    <div class="workflow-card code-content tilt-card">
       <div class="workflow-header">
         <span class="workflow-number">02</span>
         <div>
@@ -112,8 +117,8 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
   </section>
 
   <!-- Workflow 3: Consulting -->
-  <section class="workflow-section">
-    <div class="workflow-card consulting">
+  <section class="workflow-section reveal">
+    <div class="workflow-card consulting tilt-card">
       <div class="workflow-header">
         <span class="workflow-number">03</span>
         <div>
@@ -177,40 +182,6 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
 </LandingLayout>
 
 <style>
-  /* ===================== HERO WOW ===================== */
-  .workflows-hero {
-    text-align: center;
-    padding: 64px 24px 32px;
-    animation: hero-entrance 0.8s ease-out;
-  }
-
-  @keyframes hero-entrance {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .workflows-hero h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #22c55e, #eab308, #22c55e);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    animation: title-shine 4s linear infinite;
-  }
-
-  @keyframes title-shine {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-  }
-
-  .workflows-hero p {
-    font-size: 1.25rem;
-    color: var(--color-text-muted);
-  }
-
   .workflow-section {
     max-width: 900px;
     margin: 0 auto;
@@ -224,7 +195,7 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
     border-radius: 16px;
     padding: 32px;
     transition: all 0.3s ease;
-    animation: card-entrance 0.6s ease-out both;
+    animation: wow-card-entrance 0.6s ease-out both;
   }
 
   .workflow-section:nth-child(2) .workflow-card { animation-delay: 0.3s; }

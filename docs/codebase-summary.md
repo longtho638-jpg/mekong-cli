@@ -53,6 +53,10 @@ AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architectur
 
 *   **CLI**: Built with **Typer**. Entry: `main.py` -> `cli/entrypoint.py`
 *   **Backend**: Built with **FastAPI**. Entry: `backend/main.py`
+*   **Documentation (`apps/docs`)**: Built with **Astro**.
+    *   **Modular Landing Page**: Decomposed from monolithic `agencyos.astro` into 14 components in `src/components/landing/` (e.g., `Hero`, `PricingSection`, `FeaturesSection`, `BinhPhapRoadmap`).
+    *   **Interactive Demos**: Terminal emulator for command showcase.
+    *   **Design System**: Tailwind CSS with MD3-inspired tokens.
 
 ### Key Workflows
 

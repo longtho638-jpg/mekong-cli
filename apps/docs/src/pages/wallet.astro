@@ -700,9 +700,11 @@ const description = 'Manage your AG Credits - earn from referrals, transfer to o
           // Easing: ease-out quad
           const easedProgress = 1 - (1 - progress) * (1 - progress);
           const currentValue = startValue + (targetValue - startValue) * easedProgress;
-          
-          element.textContent = currentValue.toFixed(2) + suffix;
-          
+
+          if (element) {
+            element.textContent = currentValue.toFixed(2) + suffix;
+          }
+
           if (progress < 1) {
             requestAnimationFrame(update);
           }

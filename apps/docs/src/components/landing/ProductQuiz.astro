@@ -1,0 +1,302 @@
+---
+---
+<section class="py-16" id="product-quiz">
+  <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <h2 class="text-3xl font-bold text-center mb-4">
+          🧭 Which Product Fits You?
+        </h2>
+        <p class="text-center text-[var(--color-text-muted)] mb-8">
+          Answer 1 question. Get your personalized recommendation.
+        </p>
+      </div>
+
+      <div class="quiz-questions" id="quiz-questions">
+        <div class="quiz-question">
+          <p class="question-text">What's your biggest challenge right now?</p>
+          <div class="quiz-options">
+            <button class="quiz-option" data-result="free" onclick="showResult('free')">
+              <span class="option-icon">🌱</span>
+              <span class="option-text">I'm just starting and want to learn</span>
+            </button>
+            <button class="quiz-option" data-result="starter" onclick="showResult('starter')">
+              <span class="option-icon">⚡</span>
+              <span class="option-text">I need to automate repetitive tasks</span>
+            </button>
+            <button class="quiz-option" data-result="pro" onclick="showResult('pro')">
+              <span class="option-icon">🚀</span>
+              <span class="option-text">I want to scale with my team</span>
+            </button>
+            <button class="quiz-option" data-result="franchise" onclick="showResult('franchise')">
+              <span class="option-icon">🏆</span>
+              <span class="option-text">I want to white-label and resell</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Results -->
+      <div class="quiz-result hidden" id="result-free">
+        <div class="result-card free-result">
+          <div class="result-emoji">🆓</div>
+          <h3 class="result-title">Start FREE</h3>
+          <p class="result-desc">Perfect for learning! Get started with our free resources:</p>
+          <div class="result-products">
+            <a href="/docs" class="result-product">📚 Documentation</a>
+            <a href="/binh-phap" class="result-product">🏯 Binh Pháp</a>
+            <a href="/workflows" class="result-product">📋 Workflows</a>
+          </div>
+          <a href="/docs/getting-started" class="result-cta">Start Learning →</a>
+        </div>
+      </div>
+
+      <div class="quiz-result hidden" id="result-starter">
+        <div class="result-card starter-result">
+          <div class="result-emoji">⭐</div>
+          <h3 class="result-title">Starter Plan - $29/mo</h3>
+          <p class="result-desc">Automate your agency with 125+ AI commands:</p>
+          <div class="result-products">
+            <a href="/commands" class="result-product">🤖 125+ Commands</a>
+            <a href="/marketing" class="result-product">🔥 Marketing AI</a>
+            <a href="/sales" class="result-product">💼 Sales AI</a>
+          </div>
+          <a href="/pricing" class="result-cta">Get Starter →</a>
+        </div>
+      </div>
+
+      <div class="quiz-result hidden" id="result-pro">
+        <div class="result-card pro-result">
+          <div class="result-emoji">🚀</div>
+          <h3 class="result-title">Pro Plan - $99/mo</h3>
+          <p class="result-desc">Scale with your team and API access:</p>
+          <div class="result-products">
+            <a href="/pricing" class="result-product">👥 5 Team Seats</a>
+            <a href="/api" class="result-product">🔌 API Access</a>
+            <a href="/dashboard" class="result-product">📊 Dashboard</a>
+          </div>
+          <a href="/pricing" class="result-cta">Get Pro →</a>
+        </div>
+      </div>
+
+      <div class="quiz-result hidden" id="result-franchise">
+        <div class="result-card franchise-result">
+          <div class="result-emoji">🏆</div>
+          <h3 class="result-title">Franchise - $299/mo</h3>
+          <p class="result-desc">White-label AgencyOS and resell to clients:</p>
+          <div class="result-products">
+            <a href="/franchise" class="result-product">🏷️ White-label</a>
+            <a href="/franchise" class="result-product">💰 85% Revenue</a>
+            <a href="/franchise" class="result-product">🌐 Custom Domain</a>
+          </div>
+          <a href="/franchise" class="result-cta">Get Franchise →</a>
+        </div>
+      </div>
+
+      <button class="quiz-restart hidden" id="quiz-restart" onclick="restartQuiz()">
+        ← Try Again
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quiz-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .quiz-question {
+    text-align: center;
+  }
+
+  .question-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+  }
+
+  .quiz-options {
+    display: grid;
+    gap: 12px;
+  }
+
+  .quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+
+  .quiz-option:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .option-icon {
+    font-size: 1.5rem;
+  }
+
+  .option-text {
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .quiz-result {
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card {
+    padding: 32px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid;
+  }
+
+  .free-result {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.02));
+    border-color: #22c55e;
+  }
+
+  .starter-result {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
+    border-color: #3b82f6;
+  }
+
+  .pro-result {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.02));
+    border-color: #a855f7;
+  }
+
+  .franchise-result {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.02));
+    border-color: #f59e0b;
+  }
+
+  .result-emoji {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+
+  .result-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .result-desc {
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+  }
+
+  .result-products {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .result-product {
+    padding: 8px 16px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .result-product:hover {
+    border-color: var(--color-accent-green);
+    color: var(--color-text-primary);
+  }
+
+  .result-cta {
+    display: inline-flex;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  }
+
+  .result-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  .quiz-restart {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .quiz-restart:hover {
+    border-color: var(--color-text-muted);
+    color: var(--color-text-primary);
+  }
+</style>
+
+<script is:inline>
+  // Quiz Functions
+  function showResult(type) {
+    // Hide questions
+    document.getElementById('quiz-questions').classList.add('hidden');
+
+    // Hide all results first
+    document.querySelectorAll('.quiz-result').forEach(el => {
+      el.classList.add('hidden');
+    });
+
+    // Show selected result
+    document.getElementById('result-' + type).classList.remove('hidden');
+
+    // Show restart button
+    document.getElementById('quiz-restart').classList.remove('hidden');
+  }
+
+  function restartQuiz() {
+    // Show questions
+    document.getElementById('quiz-questions').classList.remove('hidden');
+
+    // Hide all results
+    document.querySelectorAll('.quiz-result').forEach(el => {
+      el.classList.add('hidden');
+    });
+
+    // Hide restart button
+    document.getElementById('quiz-restart').classList.add('hidden');
+  }
+</script>
