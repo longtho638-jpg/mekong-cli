@@ -1,3 +1,10 @@
+## [2.5.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.6...v2.5.0-beta.7) (2026-01-22)
+
+
+### 🚀 Features
+
+* **beads:** integrate beads as core workflow component ([#208](https://github.com/claudekit/claudekit-engineer/issues/208)) ([0c7c9c3](https://github.com/claudekit/claudekit-engineer/commit/0c7c9c31c2547710dafec3b7a2f70652525f461a)), closes [#176](https://github.com/claudekit/claudekit-engineer/issues/176)
+
 ## [2.5.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.5...v2.5.0-beta.6) (2026-01-21)
 
 
