@@ -1,5 +1,5 @@
 import experimentsConfig from './experiments.json';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 export interface Variant {
   id: string;
@@ -29,6 +29,7 @@ export function getActiveExperiments(): Experiment[] {
 
 export function isBot(userAgent: string): boolean {
   if (!userAgent) return false;
+  // @ts-ignore: UAParser constructor type mismatch
   const ua = new UAParser(userAgent);
   const deviceType = ua.getDevice().type;
   // Basic bot detection logic

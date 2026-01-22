@@ -1,8 +1,15 @@
 ---
-  // A/B Testing Variant
-  const experiment = Astro.locals?.experiments?.pricing_layout_test || 'control';
+interface Props {
+  experiment?: {
+    id: string;
+    variant?: string;
+  };
+}
+
+const { experiment } = Astro.props;
+const variant = experiment?.variant || 'control';
 ---
-<section class="py-12 bg-[var(--color-bg-tertiary)]/30 border-y border-[var(--color-border)]">
+<section class="py-12 bg-[var(--color-bg-tertiary)]/30 border-y border-[var(--color-border)]" data-exp-id={experiment?.id} data-exp-variant={variant}>
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 id="pricing" class="text-3xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
       Simple Pricing. Massive Value.
@@ -10,7 +17,7 @@
     <p class="text-center text-[var(--color-text-muted)] mb-12">All plans include 125+ AI commands</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-      {experiment === 'featured_first' ? (
+      {variant === 'featured_first' ? (
         <>
           <!-- Pro (First) -->
           <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-green)] relative">

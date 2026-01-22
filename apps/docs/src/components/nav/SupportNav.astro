@@ -11,7 +11,7 @@ const { docs, currentPath } = Astro.props;
 const currentLocale = getLangFromUrl(Astro.url);
 
 // Group by category
-const grouped = docs.reduce((acc, doc) => {
+const grouped = docs.reduce((acc: Record<string, any[]>, doc: any) => {
   const cat = doc.data.category || 'uncategorized';
   if (!acc[cat]) acc[cat] = [];
   acc[cat].push(doc);
@@ -20,11 +20,11 @@ const grouped = docs.reduce((acc, doc) => {
 
 // Sort within groups
 Object.keys(grouped).forEach(key => {
-  grouped[key].sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+  grouped[key].sort((a: any, b: any) => (a.data.order || 999) - (b.data.order || 999));
 });
 
 // Category metadata
-const categories = {
+const categories: Record<string, { title: string; collapsible: boolean }> = {
   'troubleshooting': { title: 'Troubleshooting', collapsible: false },
   'uncategorized': { title: 'Support', collapsible: false },
 };
@@ -54,7 +54,7 @@ const categories = {
         </div>
 
         <ul class="nav-items">
-          {categoryDocs.map(doc => {
+          {categoryDocs.map((doc: any) => {
             const href = getDocPath(doc.slug, currentLocale);
             const isActive = currentPath === href;
 

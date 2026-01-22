@@ -90,7 +90,7 @@ const frontmatter = content?.data || {
 
   // Prevent any scroll attempts during page load
   let isLoading = true;
-  const preventScroll = (e: Event) => {
+  const preventScroll = (_e: Event) => {
     if (isLoading) {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;

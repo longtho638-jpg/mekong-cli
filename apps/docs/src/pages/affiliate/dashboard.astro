@@ -743,8 +743,9 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
   function copyLink() {
     const input = document.getElementById('refLink') as HTMLInputElement;
     input.select();
+    // @ts-ignore
     document.execCommand('copy');
-    
+
     const btn = document.querySelector('.copy-btn');
     if (btn) {
       btn.textContent = '✅ Copied!';
@@ -753,6 +754,10 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
       }, 2000);
     }
   }
+
+  // Make copyLink available globally
+  // @ts-ignore
+  window.copyLink = copyLink;
 
   // Initialize - try to use demo user
   (async () => {

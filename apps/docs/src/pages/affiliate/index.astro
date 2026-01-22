@@ -662,45 +662,47 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const target = parseInt(entry.target.dataset.target);
-        animateNumber(entry.target, target);
-        observer.unobserve(entry.target);
+        const targetElement = entry.target as HTMLElement;
+        const target = parseInt(targetElement.dataset.target || '0');
+        animateNumber(targetElement, target);
+        observer.unobserve(targetElement);
       }
     });
   });
   
   statNumbers.forEach(num => observer.observe(num));
   
-  function animateNumber(el, target) {
+  function animateNumber(el: HTMLElement, target: number) {
     let current = 0;
     const step = target / 50;
     const timer = setInterval(() => {
       current += step;
       if (current >= target) {
-        el.textContent = target;
+        el.textContent = target.toString();
         clearInterval(timer);
       } else {
-        el.textContent = Math.floor(current);
+        el.textContent = Math.floor(current).toString();
       }
     }, 30);
   }
 
   // Earnings calculator
-  const slider = document.getElementById('referrals');
+  const slider = document.getElementById('referrals') as HTMLInputElement | null;
   const countEl = document.getElementById('referral-count');
   const monthlyEl = document.getElementById('monthly-earn');
   const yearlyEl = document.getElementById('yearly-earn');
   const lifetimeEl = document.getElementById('lifetime-earn');
 
   slider?.addEventListener('input', () => {
+    if (!slider) return;
     const refs = parseInt(slider.value);
     const monthly = refs * 39.60;
     const yearly = monthly * 12;
     const lifetime = yearly * 3;
-    
-    countEl.textContent = refs;
-    monthlyEl.textContent = '$' + monthly.toFixed(0);
-    yearlyEl.textContent = '$' + yearly.toLocaleString();
-    lifetimeEl.textContent = '$' + lifetime.toLocaleString();
+
+    if (countEl) countEl.textContent = refs.toString();
+    if (monthlyEl) monthlyEl.textContent = '$' + monthly.toFixed(0);
+    if (yearlyEl) yearlyEl.textContent = '$' + yearly.toLocaleString();
+    if (lifetimeEl) lifetimeEl.textContent = '$' + lifetime.toLocaleString();
   });
 </script>

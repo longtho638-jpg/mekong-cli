@@ -1,0 +1,31 @@
+title: "❓ Q&A: Help & Support"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👋 Welcome to AgencyOS Q&A!
+
+        Before asking, please check:
+        - [Documentation](https://docs.agencyos.network)
+        - [Existing Discussions](https://github.com/agency-os/mekong-cli/discussions)
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What is your question?"
+      description: "Describe the issue or question you have."
+      placeholder: "How do I configure the PayPal webhook integration?"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: "Category"
+      options:
+        - "Setup & Installation"
+        - "Billing & Revenue"
+        - "Agents & AI"
+        - "General Strategy"
+    validations:
+      required: true

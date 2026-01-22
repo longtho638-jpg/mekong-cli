@@ -21,6 +21,10 @@ interface Props {
   };
   align?: 'center' | 'left';
   showBackground?: boolean;
+  experiment?: {
+    id: string;
+    variant?: string;
+  };
 }
 
 const {
@@ -32,10 +36,28 @@ const {
   secondaryCta,
   align = 'center',
   showBackground = true,
+  experiment,
 } = Astro.props;
+
+// A/B Test Variant Logic
+let displayTitle = title;
+let displayDescription = description;
+let displayTypewriter = typewriter;
+
+if (experiment?.id === 'hero_headline_test') {
+  if (experiment.variant === 'aggressive') {
+    displayTitle = 'Stop Trading Time for Money. Scale with AI.';
+    displayDescription = 'The ultimate AI operating system for modern agency founders. 125+ commands to automate your growth, ops, and delivery.';
+    displayTypewriter = undefined;
+  } else if (experiment.variant === 'minimal') {
+    displayTitle = 'AgencyOS: Your Digital Army';
+    displayDescription = 'Simple. Powerful. Automated. The only command-line interface you need to run a 7-figure agency solo.';
+    displayTypewriter = undefined;
+  }
+}
 ---
 
-<div class={`relative overflow-hidden pt-16 pb-10 lg:pt-24 lg:pb-16 ${align === 'center' ? 'text-center' : 'text-left'}`}>
+<div class={`relative overflow-hidden pt-16 pb-10 lg:pt-24 lg:pb-16 ${align === 'center' ? 'text-center' : 'text-left'}`} data-exp-id={experiment?.id} data-exp-variant={experiment?.variant}>
   {showBackground && (
     <div class="hero-bg-effects">
       <div class="gradient-orb orb-1"></div>
@@ -55,34 +77,34 @@ const {
       )}
 
       <h1 class="text-4xl font-bold tracking-tight sm:text-6xl mb-6 text-[var(--color-text-primary)] reveal">
-        {typewriter ? (
+        {displayTypewriter ? (
           <>
-            <span class="static-text">{typewriter.staticPrefix} </span>
+            <span class="static-text">{displayTypewriter.staticPrefix} </span>
             <span class="typewriter-container">
               <span class="typewriter-text" id="hero-typewriter"></span>
               <span class="cursor">|</span>
             </span>
-            <span class="static-text"> {typewriter.staticSuffix}</span>
+            <span class="static-text"> {displayTypewriter.staticSuffix}</span>
           </>
         ) : (
-          title
+          displayTitle
         )}
       </h1>
 
-      {description && (
+      {displayDescription && (
         <p class="mt-4 text-xl leading-relaxed text-[var(--color-text-secondary)] mb-10 reveal-delay-1">
-          {description}
+          {displayDescription}
         </p>
       )}
 
       <div class={`flex flex-col sm:flex-row gap-4 ${align === 'center' ? 'justify-center' : 'justify-start'} items-center mb-10 reveal-delay-2`}>
         {primaryCta && (
-          <a href={primaryCta.link} class="magnetic-btn inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:brightness-110 transition-all duration-200 shadow-green hover:shadow-lg">
+          <a href={primaryCta.link} class="magnetic-btn cta-primary inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:brightness-110 transition-all duration-200 shadow-green hover:shadow-lg" data-goal="hero_primary_click">
             {primaryCta.text}
           </a>
         )}
         {secondaryCta && (
-          <a href={secondaryCta.link} class="magnetic-btn inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-secondary)] transition-all duration-200">
+          <a href={secondaryCta.link} class="magnetic-btn cta-secondary inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-secondary)] transition-all duration-200" data-goal="hero_secondary_click">
             {secondaryCta.text}
           </a>
         )}
