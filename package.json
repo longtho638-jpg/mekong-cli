@@ -13,6 +13,7 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "prettier": "^3.8.0",
+    "puppeteer": "^24.35.0",
     "turbo": "^1.10.0"
   },
   "packageManager": "pnpm@8.15.0",
