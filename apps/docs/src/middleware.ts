@@ -1,4 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
+import { getExperimentAssignments } from './lib/experiments/utils';
 
 // URL redirect mapping for old paths → new paths
 const exactRedirects: Record<string, string> = {
@@ -34,8 +35,47 @@ const exactRedirects: Record<string, string> = {
 };
 
 export const onRequest = defineMiddleware((context, next) => {
-  const { url, redirect } = context;
+  const { url, redirect, request, cookies, locals } = context;
   const pathname = url.pathname;
+
+  // A/B Testing Logic
+  const allCookies: Record<string, string> = {};
+  // @ts-ignore
+  if (typeof cookies.getAll === 'function') {
+    // @ts-ignore
+    cookies.getAll().forEach(c => { allCookies[c.name] = c.value });
+  } else {
+    // Fallback for older Astro versions or if cookie object structure differs
+    const cookieHeader = request.headers.get('cookie') || '';
+    cookieHeader.split(';').forEach(c => {
+        const [key, value] = c.trim().split('=');
+        if (key && value) allCookies[key] = value;
+    });
+  }
+
+  const userAgent = request.headers.get('user-agent') || '';
+  const assignments = getExperimentAssignments(allCookies, userAgent);
+
+  // Store in locals for components to access
+  // @ts-ignore
+  locals.experiments = {};
+
+  assignments.forEach(assignment => {
+    // @ts-ignore
+    locals.experiments[assignment.experimentId] = assignment.variantId;
+
+    // Set sticky cookie if not present or different
+    const cookieName = `exp_${assignment.experimentId}`;
+    if (allCookies[cookieName] !== assignment.variantId) {
+      cookies.set(cookieName, assignment.variantId, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        httpOnly: false, // Allow client-side access for analytics
+        sameSite: 'lax',
+        secure: import.meta.env.PROD
+      });
+    }
+  });
 
   // Check exact matches first
   const exactMatch = exactRedirects[pathname];

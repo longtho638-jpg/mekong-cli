@@ -107,6 +107,18 @@ export const AgencyOSProvider: React.FC<AgencyOSProviderProps> = ({
         console.info(`[AgencyOS] Agent registered: ${agent.name}`);
     }, []);
 
+    const updateAgent = useCallback((id: string, updates: Partial<Agent>) => {
+        setAgents(prev =>
+            prev.map(agent =>
+                agent.id === id ? { ...agent, ...updates } : agent
+            )
+        );
+    }, []);
+
+    const removeAgent = useCallback((id: string) => {
+        setAgents(prev => prev.filter(agent => agent.id !== id));
+    }, []);
+
     const value: AgencyOSContextValue = {
         agents,
         registerAgent,
