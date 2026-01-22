@@ -6,11 +6,12 @@ This directory contains hooks for Claude Code sessions.
 
 | Hook | Location | Description |
 |------|----------|-------------|
+| **Session Init** | `session-init.cjs` | Session startup - config, detection, beads ready work |
+| **Session End** | `session-end.cjs` | Stop hook - auto-syncs beads task state |
+| **Subagent Init** | `subagent-init.cjs` | Injects context to subagents |
 | **Notifications** | `notifications/` | Multi-provider notification system (Telegram, Discord, Slack) |
 | **Scout Block** | `scout-block.cjs` | Blocks heavy directories (node_modules, .git, etc.) |
 | **Privacy Block** | `privacy-block.cjs` | Prevents access to sensitive files |
-| **Modularization** | `modularization-hook.js` | Suggests code modularization for large files |
-| **Session Init** | `session-init.cjs` | Session startup initialization |
 | **Dev Rules** | `dev-rules-reminder.cjs` | Development rules injection |
 
 ## Notifications
@@ -140,6 +141,46 @@ notifications/
     ├── telegram.cjs     # Telegram Bot API
     ├── discord.cjs      # Discord webhooks with embeds
     └── slack.cjs        # Slack Block Kit format
+```
+
+## Session End Hook (Beads Sync)
+
+Stop hook that auto-syncs beads task state when session completes.
+
+**Behavior:**
+- Detects if beads is available and initialized
+- Runs `bd sync` automatically at session end
+- Warns on sync failures (non-blocking)
+- Controlled via `config.beads.autoSync` (default: true)
+
+**Setup:**
+Add to your `.claude/settings.json`:
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/session-end.cjs"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Disable via config:**
+```json
+// .ck.json
+{
+  "beads": {
+    "autoSync": false
+  }
+}
 ```
 
 ## Scout Block Hook

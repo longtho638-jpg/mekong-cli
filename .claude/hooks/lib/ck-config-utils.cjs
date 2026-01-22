@@ -59,6 +59,16 @@ const DEFAULT_CONFIG = {
       useGemini: true  // Toggle Gemini CLI usage in research skill
     }
   },
+  beads: {
+    enabled: false,         // true | 'auto' | false (default: OFF - true opt-in)
+    syncPlans: true,        // Create epic when plan created
+    autoFileDiscovered: true, // Auto-file discovered work
+    autoSync: true,         // Auto-sync at session end
+    routing: {
+      beadsThreshold: 5,    // Steps/files threshold for beads
+      multiFileAlways: true // Always use beads for multi-file
+    }
+  },
   assertions: []
 };
 
@@ -494,6 +504,8 @@ function loadConfig(options = {}) {
     result.codingLevel = merged.codingLevel ?? -1;
     // Skills configuration
     result.skills = merged.skills || DEFAULT_CONFIG.skills;
+    // Beads configuration
+    result.beads = merged.beads || DEFAULT_CONFIG.beads;
 
     return sanitizeConfig(result, projectRoot);
   } catch (e) {
@@ -510,7 +522,8 @@ function getDefaultConfig(includeProject = true, includeAssertions = true, inclu
     paths: { ...DEFAULT_CONFIG.paths },
     docs: { ...DEFAULT_CONFIG.docs },
     codingLevel: -1,  // Default: disabled (no injection, saves tokens)
-    skills: { ...DEFAULT_CONFIG.skills }
+    skills: { ...DEFAULT_CONFIG.skills },
+    beads: { ...DEFAULT_CONFIG.beads }
   };
   if (includeLocale) {
     result.locale = { ...DEFAULT_CONFIG.locale };

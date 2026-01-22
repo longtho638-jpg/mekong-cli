@@ -145,6 +145,7 @@ claudekit-engineer/
    - Identifies package manager (pnpm/npm/yarn)
    - Detects framework (Next/React/etc)
    - Writes 25+ environment variables for context cascade
+   - Detects beads availability (if installed)
 
 2. **dev-rules-reminder.cjs** - Development Context Injection
    - Injects dev rules & context on every prompt
@@ -156,6 +157,7 @@ claudekit-engineer/
    - Injects compact context (~200 tokens) when spawning subagents
    - Minimizes token overhead during delegation
    - Enables efficient agent-to-agent communication
+   - Injects beads context when beads detected
 
 4. **scout-block.cjs** - Cross-Platform Performance Optimization
    - Blocks access to heavy directories (node_modules, .git, __pycache__, dist/, build/)
@@ -164,6 +166,19 @@ claudekit-engineer/
    - Windows (PowerShell): scout-block.ps1
    - Automatic platform detection via `process.platform`
    - Improves AI response time and token efficiency
+
+**Hook Library** (`.claude/hooks/lib/`):
+- **beads-utils.cjs** - Beads CLI wrapper functions
+  - `detectBeadsProject()`, `createEpic()`, `createSubtask()`
+  - `fileDiscoveredWork()`, `addDependency()`, `getReadyWork()`
+  - `closeIssue()`, `syncBeads()`, `isValidIssueId()`
+- **ck-config-utils.cjs** - Config loading and merging
+- **project-detector.cjs** - Project type detection
+- **context-builder.cjs** - Context generation utilities
+- **scout-checker.cjs** - Directory scanning helpers
+- **privacy-checker.cjs** - Sensitive file detection
+- **colors.cjs** - Terminal color utilities
+- **config-counter.cjs** - Configuration counting
 
 **Hook Features:**
 - Fail-Safe: All hooks exit 0 (non-blocking) - graceful degradation

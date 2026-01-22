@@ -82,6 +82,43 @@ Detect multiple features from natural language:
 → Mode: auto ("trust me" keyword)
 ```
 
+## Beads Routing
+
+After mode detection, decide task tracking system:
+
+**Check:** `CK_BEADS_AVAILABLE=1`?
+- **No:** Use TodoWrite always
+- **Yes:** Apply smart routing heuristics
+
+### Use beads when:
+- Plan has `beads_epic` in frontmatter
+- Task involves ≥5 implementation steps (conservative threshold)
+- Task modifies 3+ files
+- Task has explicit blocking dependencies
+- User mentions: "epic", "multi-session", "tracked", "persist"
+- Input is path to existing beads-tracked plan
+
+### Use TodoWrite when:
+- Quick fix or hotfix (<5 steps)
+- Single file change
+- Research-only session (no implementation)
+- User says: "quick", "simple", "don't track", "untracked"
+- Beads unavailable
+
+**Decision latency:** <10ms (simple heuristics, no external calls)
+
+**Example routing:**
+```
+"/cook implement user auth system"
+→ Multiple files, 10+ steps → beads
+
+"/cook fix typo in README"
+→ Single file, 1 step → TodoWrite
+
+"/cook quick patch for login validation"
+→ "quick" keyword → TodoWrite
+```
+
 ## Conflict Resolution
 
 When multiple signals detected, priority order:

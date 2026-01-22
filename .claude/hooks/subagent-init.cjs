@@ -140,6 +140,17 @@ async function main() {
     // Trust verification (if enabled)
     lines.push(...buildTrustVerification(config));
 
+    // Beads task tracking context (only if enabled in config AND available)
+    const beadsEnabled = config.beads?.enabled === true || config.beads?.enabled === 'auto';
+    if (beadsEnabled && process.env.CK_BEADS_AVAILABLE === '1') {
+      lines.push(``);
+      lines.push(`## Beads Task Tracking`);
+      lines.push(`- Status: Available (v${process.env.CK_BEADS_VERSION || 'unknown'})`);
+      lines.push(`- Initialized: ${process.env.CK_BEADS_INITIALIZED === '1' ? 'Yes' : 'No'}`);
+      lines.push(`- Rule: Report discovered work to main agent; don't file directly`);
+      lines.push(`- Use \$CK_BEADS_AVAILABLE env var to check (don't call bd CLI)`);
+    }
+
     // Agent-specific context (if configured)
     const agentContext = getAgentContext(agentType, config);
     if (agentContext) {
