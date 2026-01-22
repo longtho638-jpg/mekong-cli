@@ -4,6 +4,15 @@
 
 ---
 
+## [2.6.0-beta] - 2026-01-22
+
+### Knowledge Graph Integration (Phase 13)
+- **Infrastructure**: Integrated FalkorDB into the core ecosystem for persistent long-term memory.
+- **Client**: Developed `GraphClient` with Cypher injection protection and sanitized identifier handling.
+- **Ingestion**: Automated AST parsing for Python codebase, mapping inheritance and dependency relationships.
+- **Memory**: Agents now possess `query_memory` capabilities, enabling persistent context across sessions.
+- **Validation**: 100% test pass rate on knowledge modules with security verification for attack vectors.
+
 ## [2.4.0-beta] - 2026-01-21
 
 ### PayPal Migration & Backend Unification (Phase 1)
