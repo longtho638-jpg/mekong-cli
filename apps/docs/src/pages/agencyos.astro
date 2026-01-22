@@ -19,6 +19,8 @@ import BackgroundEffects from '../components/landing/BackgroundEffects.astro';
 
 const title = 'AgencyOS - Run Your Entire Agency with AI';
 const description = '125+ AI commands for marketing, sales, affiliate, and finance. The one-person agency operating system.';
+
+const { experiments } = Astro.locals;
 ---
 
 <LandingLayout title={title} description={description}>
@@ -42,6 +44,10 @@ const description = '125+ AI commands for marketing, sales, affiliate, and finan
     text: 'Watch Demo →',
     link: '#how-it-works'
   }}
+  experiment={{
+    id: 'hero_headline_test',
+    variant: experiments?.hero_headline_test
+  }}
 >
   <p slot="footer" class="text-sm text-[var(--color-text-muted)] mb-10">
     Join 500+ agencies worldwide • 4.9/5 rating • 30-day guarantee
@@ -57,7 +63,12 @@ const description = '125+ AI commands for marketing, sales, affiliate, and finan
 <ProductQuiz />
 <FeaturesSection />
 <HowItWorks />
-<PricingSection />
+<PricingSection
+  experiment={{
+    id: 'pricing_layout_test',
+    variant: experiments?.pricing_layout_test
+  }}
+/>
 <TestimonialsGrid />
 <Testimonials />
 <NewsletterSignup />

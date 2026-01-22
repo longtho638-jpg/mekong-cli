@@ -26,7 +26,7 @@ interface Props {
   };
 }
 
-export default function CopyForLLMs({ pageContent, pageUrl, pageSlug, frontmatter }: Props) {
+export default function CopyForLLMs({ pageContent, pageUrl, frontmatter }: Props) {
   const [copied, setCopied] = useState(false);
 
   const getPrompt = () => {

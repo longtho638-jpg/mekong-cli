@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/wow-components.css';
+import { FeedbackWidget } from '../components/FeedbackWidget';
 
 export interface Props {
   title?: string;
@@ -355,6 +356,49 @@ const {
     </div>
 
     <!-- Experiment Tracker -->
+    <script>
+      import { trackingClient } from '../lib/tracking/client';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // 1. Track Experiment Exposures
+        const experiments = document.querySelectorAll('[data-exp-id]');
+        const trackedExposures = new Set();
+
+        const trackExposures = () => {
+          experiments.forEach(el => {
+            const expId = el.getAttribute('data-exp-id');
+            const variantId = el.getAttribute('data-exp-variant');
+
+            if (expId && variantId && !trackedExposures.has(expId)) {
+              // Check if element is visible or just track on load if it's high enough
+              // For simplicity, we track on load for now
+              trackingClient.trackExposure(expId, variantId);
+              trackedExposures.add(expId);
+            }
+          });
+        };
+
+        // 2. Track Conversion Goals (Clicks)
+        document.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          const goalEl = target.closest('[data-goal]');
+
+          if (goalEl) {
+            const goalId = goalEl.getAttribute('data-goal');
+            if (goalId) {
+              trackingClient.trackConversion(goalId, {
+                text: goalEl.textContent?.trim(),
+                id: goalEl.id,
+                className: goalEl.className
+              });
+            }
+          }
+        });
+
+        // Initial track
+        trackExposures();
+      });
+    </script>
     <slot name="experiment-tracker" />
 
     <!-- Keyboard Shortcuts Modal -->
@@ -416,6 +460,9 @@ const {
       </div>
       <button class="proof-close" id="proof-close">×</button>
     </div>
+
+    <!-- Feedback Widget -->
+    <FeedbackWidget client:load />
 
     <!-- Floating Promo Badge -->
     <div class="promo-badge" id="promo-badge">

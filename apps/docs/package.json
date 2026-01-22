@@ -9,7 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
     "@astrojs/mdx": "^4.3.7",
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.0.0",
@@ -36,6 +35,7 @@
     "ua-parser-js": "^2.0.7"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
     "@vercel/node": "^5.5.16",
