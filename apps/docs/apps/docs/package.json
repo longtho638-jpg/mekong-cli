@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "ua-parser-js": "^2.0.8"
+  },
+  "devDependencies": {
+    "@types/ua-parser-js": "^0.7.39"
+  }
+}
