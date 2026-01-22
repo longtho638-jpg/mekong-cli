@@ -4,7 +4,18 @@
 
 ---
 
+## [5.1.1] - 2026-01-23
+
+### Fixed
+- **Build Stability**: Fixed a critical build failure in `mekong-docs` caused by an incorrect default import of `ua-parser-js`. Migrated to named imports to comply with ESM requirements in Astro v5.
+
 ## [5.1.0] - 2026-01-22
+
+### Growth & Feedback Infrastructure
+- **Unified Tracking API**: Implemented a polymorphic `/api/track` endpoint in Astro to handle A/B test exposures, conversion goals, and engagement metrics.
+- **Feedback Collection**: Launched a React-based `FeedbackWidget` and server-side `/api/feedback` endpoint for direct user insights.
+- **A/B Testing**: Integrated server-side variant assignment into `middleware.ts` with sticky cookie persistence and native support in `Hero` and `PricingSection`.
+- **Auto-Instrumentation**: Updated `LandingLayout.astro` to automatically capture experiment data and CTA clicks without additional code.
 
 ### UI/UX Upgrade for AgencyOS Docs
 - **Refactoring**: Successfully decomposed the monolithic `agencyos.astro` (1,816 lines) into 14 specialized components in `src/components/landing/`, drastically improving maintainability.
@@ -24,6 +35,9 @@
 ### Marketing & Growth
 - **Launch Kit**: Generated multi-channel promotional content (Twitter thread, LinkedIn post) in `marketing/launch_v5.md`.
 - **Product Alignment**: Synchronized `products/gumroad_products.json` with Binh Pháp strategic copy.
+- **Customer Success**: Implemented 3-part automated onboarding email sequence (Day 0, 3, 7) in `marketing/emails/onboarding_sequence.md` focused on activation and Pro-plan upsells.
+- **Community Automation**: Deployed `discord_bot_skeleton.py` and `twitter_engagement_skeleton.py` for automated outreach.
+- **Governance**: Established `community_playbook.md` and Discord/GitHub discussion templates for structured scaling.
 
 ## [2.6.0-beta] - 2026-01-22
 
