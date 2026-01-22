@@ -5,7 +5,7 @@
  * managing global agent state and communication.
  */
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
 // Types
 export interface Agent {
@@ -67,29 +67,6 @@ export const AgencyOSProvider: React.FC<AgencyOSProviderProps> = ({
     const [isProcessing, setProcessing] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    const registerAgent = useCallback((agent: Agent) => {
-        setAgents(prev => {
-            // Don't add duplicates
-            if (prev.some(a => a.id === agent.id)) {
-                return prev;
-            }
-            return [...prev, agent];
-        });
-        console.info(`[AgencyOS] Agent registered: ${agent.name}`);
-    }, []);
-
-    const updateAgent = useCallback((id: string, updates: Partial<Agent>) => {
-        setAgents(prev =>
-            prev.map(agent =>
-                agent.id === id ? { ...agent, ...updates } : agent
-            )
-        );
-    }, []);
-
-    const removeAgent = useCallback((id: string) => {
-        setAgents(prev => prev.filter(agent => agent.id !== id));
-    }, []);
-
     const addNotification = useCallback(
         (message: string, type: 'info' | 'success' | 'warning' | 'error') => {
             const notification: Notification = {
@@ -101,17 +78,33 @@ export const AgencyOSProvider: React.FC<AgencyOSProviderProps> = ({
             setNotifications(prev => [...prev, notification]);
 
             // Auto-remove after 5 seconds
-            setTimeout(() => {
+            const timerId = setTimeout(() => {
                 setNotifications(prev =>
                     prev.filter(n => n.id !== notification.id)
                 );
             }, 5000);
+
+            return () => clearTimeout(timerId);
         },
         []
     );
 
     const clearNotifications = useCallback(() => {
         setNotifications([]);
+    }, []);
+
+    const registerAgent = useCallback((agent: Agent) => {
+        setAgents(prev => {
+            // Update existing if found, otherwise add new
+            const existingIndex = prev.findIndex(a => a.id === agent.id);
+            if (existingIndex >= 0) {
+                const newAgents = [...prev];
+                newAgents[existingIndex] = { ...prev[existingIndex], ...agent };
+                return newAgents;
+            }
+            return [...prev, agent];
+        });
+        console.info(`[AgencyOS] Agent registered: ${agent.name}`);
     }, []);
 
     const value: AgencyOSContextValue = {

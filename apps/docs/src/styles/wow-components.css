@@ -57,15 +57,31 @@
     }
 }
 
-/* Title gradient shine */
-@keyframes wow-title-shine {
-    0% {
-        background-position: 0% center;
-    }
+/* Animated Gradient Text */
+.gradient-animate {
+    background: linear-gradient(
+      90deg,
+      #22c55e,
+      #06b6d4,
+      #a855f7,
+      #22c55e
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: wow-gradient-shift 3s ease infinite;
+}
 
-    100% {
-        background-position: 200% center;
-    }
+@keyframes wow-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Hover pause */
+.gradient-animate:hover {
+    animation-play-state: paused;
 }
 
 /* Multi-color shine */
@@ -193,6 +209,55 @@
     }
 }
 
+/* ===================== REVEAL ON SCROLL ===================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-left.revealed,
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delay classes */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
 /* ===================== HERO COMPONENTS ===================== */
 
 .wow-hero {
@@ -226,6 +291,71 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: wow-rainbow-shine 5s linear infinite;
+}
+
+/* ===================== TILT CARD EFFECTS ===================== */
+
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.tilt-card:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(34, 197, 94, 0.15);
+}
+
+/* Mouse-follow gradient */
+.tilt-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(34, 197, 94, 0.1),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tilt-card:hover::before {
+  opacity: 1;
+}
+
+/* Shine sweep effect on hover */
+.tilt-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: 0.5s;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.tilt-card:hover::after {
+  left: 100%;
+}
+
+.tilt-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* ===================== CARD COMPONENTS ===================== */

@@ -1,0 +1,238 @@
+---
+---
+<section class="py-16" id="binh-phap-roadmap">
+  <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <div class="binh-phap-hero">
+      <h2 class="text-4xl font-bold text-center mb-4">
+        <span class="binh-phap-emoji">🏯</span> The $1M Agency Roadmap
+      </h2>
+      <p class="text-center text-[var(--color-text-muted)] mb-8 max-w-2xl mx-auto">
+        Based on Sun Tzu's Art of War. 13 strategic chapters to scale your agency.
+      </p>
+
+      <div class="roadmap-visual">
+        <div class="roadmap-path">
+          <div class="roadmap-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <div class="step-chapter">Kế Hoạch</div>
+              <div class="step-desc">Strategic Planning</div>
+            </div>
+          </div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <div class="step-chapter">Mưu Công</div>
+              <div class="step-desc">Win Without Fighting</div>
+            </div>
+          </div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-step">
+            <div class="step-number">7</div>
+            <div class="step-content">
+              <div class="step-chapter">Quân Tranh</div>
+              <div class="step-desc">Speed Sprint</div>
+            </div>
+          </div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-step final-step">
+            <div class="step-number">💰</div>
+            <div class="step-content">
+              <div class="step-chapter">$1M ARR</div>
+              <div class="step-desc">60 clients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="revenue-breakdown">
+        <div class="revenue-item">
+          <span class="revenue-label">Bootstrap Path (70%)</span>
+          <span class="revenue-value">42 clients × $1.5K/mo = $756K</span>
+        </div>
+        <div class="revenue-item">
+          <span class="revenue-label">VC-Ready Path (30%)</span>
+          <span class="revenue-value">18 clients + equity = $244K</span>
+        </div>
+        <div class="revenue-total">
+          <span class="revenue-label">Total Potential</span>
+          <span class="revenue-value">$1M ARR 🎯</span>
+        </div>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/binh-phap" class="binh-phap-cta">
+          Explore 13 Chapters →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .binh-phap-hero {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(6, 182, 212, 0.05));
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 48px;
+  }
+
+  .binh-phap-emoji {
+    animation: float 3s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .roadmap-visual {
+    margin: 40px 0;
+    overflow-x: auto;
+    padding: 16px 0;
+  }
+
+  .roadmap-path {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-width: fit-content;
+  }
+
+  .roadmap-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    min-width: 120px;
+    transition: all 0.3s ease;
+  }
+
+  .roadmap-step:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent-green);
+  }
+
+  .step-number {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    margin-bottom: 12px;
+  }
+
+  .final-step .step-number {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    font-size: 1.25rem;
+    width: 48px;
+    height: 48px;
+  }
+
+  .step-chapter {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .roadmap-arrow {
+    font-size: 1.5rem;
+    color: var(--color-accent-green);
+    font-weight: 700;
+  }
+
+  .revenue-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .revenue-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  .revenue-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(6, 182, 212, 0.15));
+    border: 2px solid #22c55e;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  .revenue-label {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .revenue-value {
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .revenue-total .revenue-value {
+    color: #22c55e;
+    font-size: 1rem;
+  }
+
+  .binh-phap-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  }
+
+  .binh-phap-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .roadmap-path {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .roadmap-arrow {
+      transform: rotate(90deg);
+    }
+
+    .binh-phap-hero {
+      padding: 24px;
+    }
+  }
+</style>

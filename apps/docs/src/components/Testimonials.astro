@@ -1,0 +1,238 @@
+---
+---
+<section class="testimonials-section py-16 overflow-hidden border-y border-[var(--color-border)] bg-[var(--color-bg-tertiary)]/30">
+  <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
+      💬 Loved by Agency Owners
+    </h2>
+    <p class="text-center text-[var(--color-text-muted)] mb-12">
+      See what 500+ agencies say about AgencyOS
+    </p>
+  </div>
+
+  <div class="testimonials-track-wrapper">
+    <div class="testimonials-track">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"AgencyOS replaced 3 employees for me. ROI was insane within the first week."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #06b6d4);">M</div>
+          <div class="info">
+            <span class="name">Michael Chen</span>
+            <span class="role">Growth Matrix Agency</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"125 commands means I never run out of ways to automate. Best investment this year."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">S</div>
+          <div class="info">
+            <span class="name">Sarah Williams</span>
+            <span class="role">Digital First Co</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"/proposal command alone saved me 10+ hours per week on client work."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">J</div>
+          <div class="info">
+            <span class="name">James Rodriguez</span>
+            <span class="role">JR Creative Studio</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 4 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"The Binh Pháp strategy framework is pure gold. Win-without-fighting approach works."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">L</div>
+          <div class="info">
+            <span class="name">Lisa Nguyen</span>
+            <span class="role">Scale Partners</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 5 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"From solo founder to 6-figure agency in 6 months. AgencyOS is my secret weapon."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #10b981, #34d399);">D</div>
+          <div class="info">
+            <span class="name">David Park</span>
+            <span class="role">Momentum Labs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 6 -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"The franchise model is brilliant. Now earning passive income from my agency network."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #f472b6, #a855f7);">A</div>
+          <div class="info">
+            <span class="name">Anna Thompson</span>
+            <span class="role">Agency Empire</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Duplicate for infinite scroll -->
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"AgencyOS replaced 3 employees for me. ROI was insane within the first week."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #06b6d4);">M</div>
+          <div class="info">
+            <span class="name">Michael Chen</span>
+            <span class="role">Growth Matrix Agency</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="quote">"125 commands means I never run out of ways to automate. Best investment this year."</p>
+        <div class="author">
+          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">S</div>
+          <div class="info">
+            <span class="name">Sarah Williams</span>
+            <span class="role">Digital First Co</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="testimonials-fade-left"></div>
+  <div class="testimonials-fade-right"></div>
+</section>
+
+<style>
+  .testimonials-section {
+    position: relative;
+  }
+
+  .testimonials-track-wrapper {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .testimonials-track {
+    display: flex;
+    gap: 24px;
+    animation: scroll 30s linear infinite;
+    width: max-content;
+  }
+
+  .testimonials-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .testimonial-card {
+    flex-shrink: 0;
+    width: 320px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .testimonial-card:hover {
+    border-color: #22c55e;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(34, 197, 94, 0.1);
+  }
+
+  .stars {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .quote {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    font-style: italic;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+  }
+
+  .role {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .testimonials-fade-left,
+  .testimonials-fade-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .testimonials-fade-left {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg-primary), transparent);
+  }
+
+  .testimonials-fade-right {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg-primary), transparent);
+  }
+
+  @media (max-width: 768px) {
+    .testimonial-card {
+      width: 280px;
+    }
+  }
+</style>

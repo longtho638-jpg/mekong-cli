@@ -20,13 +20,12 @@ export interface Props {
   locale?: Locale;
   slug?: string;
   headings?: Heading[];
+  content?: any;
 }
 
-const { title, description, locale = 'en', slug = '', headings = [] } = Astro.props;
+const { title, description, locale = 'en', slug = '', headings = [], content } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-// Get the content data for CopyForLLMs
-const content = Astro.props.content;
 const frontmatter = content?.data || {
   title: title || '',
   description: description || '',

@@ -1,17 +1,25 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import Hero from '../components/Hero.astro';
 
 const title = 'All Commands - AgencyOS';
 const description = '125+ AI commands for developers, marketers, sales, finance, and founders. Find the exact command you need.';
 ---
 
 <LandingLayout title={title} description={description}>
-  <section class="commands-hero">
-    <h1>📋 85+ Commands</h1>
-    <p>Gõ command nào để làm việc đó?</p>
-    
-    <!-- Search Bar -->
-    <div class="search-container">
+  <Hero
+    badge={{
+      icon: '⌨️',
+      text: 'Terminal-First Agency'
+    }}
+    title="125+ AI Commands"
+    description="The complete index of every command in the AgencyOS ecosystem."
+  />
+
+  <section class="search-section py-8">
+    <div class="mx-auto max-w-4xl px-4">
+      <!-- Search Bar -->
+      <div class="search-container">
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input 
@@ -23,10 +31,10 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
         <span class="search-clear" id="search-clear">✕</span>
       </div>
       <div class="search-stats">
-        <span id="results-count">85</span> commands found
+        <span id="results-count">125</span> commands found
       </div>
     </div>
-    
+
     <!-- Category Filter -->
     <div class="category-filter">
       <button class="filter-btn active" data-category="all">All</button>
@@ -39,8 +47,8 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
   </section>
 
   <!-- Tôi muốn Index -->
-  <section class="want-index">
-    <h2>🎯 "Tôi muốn..." Index</h2>
+  <section class="want-index reveal">
+    <h2 class="text-2xl font-bold mb-6">🎯 "Tôi muốn..." Index</h2>
     <div class="want-table">
       <table>
         <thead>
@@ -71,10 +79,10 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
   </section>
 
   <!-- Tech Commands -->
-  <section class="commands-category">
+  <section class="commands-category reveal">
     <div class="category-header">
       <span class="icon">🧑‍💻</span>
-      <h2>Tech Commands (55)</h2>
+      <h2>Tech Commands (75)</h2>
       <span class="badge">AgencyOS AI Engine</span>
     </div>
 
@@ -207,46 +215,6 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
 </LandingLayout>
 
 <style>
-  /* ===================== HERO WOW ===================== */
-  .commands-hero {
-    text-align: center;
-    padding: 64px 24px 32px;
-    animation: hero-entrance 0.8s ease-out;
-  }
-
-  @keyframes hero-entrance {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .commands-hero h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #22c55e, #06b6d4, #8b5cf6, #22c55e);
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    animation: title-shine 5s linear infinite;
-  }
-
-  @keyframes title-shine {
-    0% { background-position: 0% center; }
-    100% { background-position: 300% center; }
-  }
-
-  .commands-hero p {
-    font-size: 1.25rem;
-    color: var(--color-text-muted);
-    animation: fade-up 0.6s ease-out 0.2s both;
-  }
-
-  @keyframes fade-up {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   /* ===================== WANT TABLE WOW ===================== */
   .want-index {
     max-width: 900px;

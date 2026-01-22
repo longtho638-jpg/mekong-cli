@@ -99,6 +99,28 @@ const API_BASE = "https://api.mekong.agency/api/v1"; // Update with production A
     text-decoration: none;
     margin-top: 8px;
   }
+
+  .trust-badges {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .badge-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .badge-item .icon {
+    font-size: 1.2rem;
+  }
 </style>
 
 <script define:vars={{ PAYPAL_PLANS, API_BASE }}>

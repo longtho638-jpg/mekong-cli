@@ -1,0 +1,332 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  badge?: {
+    icon: string;
+    text: string;
+  };
+  typewriter?: {
+    staticPrefix: string;
+    words: string[];
+    staticSuffix: string;
+  };
+  primaryCta?: {
+    text: string;
+    link: string;
+  };
+  secondaryCta?: {
+    text: string;
+    link: string;
+  };
+  align?: 'center' | 'left';
+  showBackground?: boolean;
+}
+
+const {
+  title,
+  description,
+  badge,
+  typewriter,
+  primaryCta,
+  secondaryCta,
+  align = 'center',
+  showBackground = true,
+} = Astro.props;
+---
+
+<div class={`relative overflow-hidden pt-16 pb-10 lg:pt-24 lg:pb-16 ${align === 'center' ? 'text-center' : 'text-left'}`}>
+  {showBackground && (
+    <div class="hero-bg-effects">
+      <div class="gradient-orb orb-1"></div>
+      <div class="gradient-orb orb-2"></div>
+      <div class="gradient-orb orb-3"></div>
+      <div class="grid-pattern"></div>
+    </div>
+  )}
+
+  <div class="relative mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <div class={`mx-auto ${align === 'center' ? 'max-w-3xl' : 'max-w-4xl'}`}>
+      {badge && (
+        <div class="target-badge mb-6 reveal-scale">
+          <span class="badge-icon">{badge.icon}</span>
+          <span class="badge-text">{badge.text}</span>
+        </div>
+      )}
+
+      <h1 class="text-4xl font-bold tracking-tight sm:text-6xl mb-6 text-[var(--color-text-primary)] reveal">
+        {typewriter ? (
+          <>
+            <span class="static-text">{typewriter.staticPrefix} </span>
+            <span class="typewriter-container">
+              <span class="typewriter-text" id="hero-typewriter"></span>
+              <span class="cursor">|</span>
+            </span>
+            <span class="static-text"> {typewriter.staticSuffix}</span>
+          </>
+        ) : (
+          title
+        )}
+      </h1>
+
+      {description && (
+        <p class="mt-4 text-xl leading-relaxed text-[var(--color-text-secondary)] mb-10 reveal-delay-1">
+          {description}
+        </p>
+      )}
+
+      <div class={`flex flex-col sm:flex-row gap-4 ${align === 'center' ? 'justify-center' : 'justify-start'} items-center mb-10 reveal-delay-2`}>
+        {primaryCta && (
+          <a href={primaryCta.link} class="magnetic-btn inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:brightness-110 transition-all duration-200 shadow-green hover:shadow-lg">
+            {primaryCta.text}
+          </a>
+        )}
+        {secondaryCta && (
+          <a href={secondaryCta.link} class="magnetic-btn inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-secondary)] transition-all duration-200">
+            {secondaryCta.text}
+          </a>
+        )}
+      </div>
+
+      <slot name="footer" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero-bg-effects {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #22c55e 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    animation: float-1 8s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+    animation: float-2 10s ease-in-out infinite;
+  }
+
+  .orb-3 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float-3 12s ease-in-out infinite;
+  }
+
+  @keyframes float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-30px, 30px) scale(1.1); }
+    66% { transform: translate(20px, -20px) scale(0.9); }
+  }
+
+  @keyframes float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, -40px) scale(1.15); }
+  }
+
+  @keyframes float-3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+  }
+
+  .grid-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .typewriter-text {
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cursor {
+    display: inline-block;
+    color: #22c55e;
+    animation: blink 1s infinite;
+    font-weight: 400;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .target-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(6, 182, 212, 0.15));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 24px;
+    animation: badge-pulse 3s ease-in-out infinite;
+  }
+
+  .badge-icon { font-size: 1.2rem; }
+  .badge-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #22c55e;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  .magnetic-btn {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+  }
+
+  /* Shimmer effect for primary button */
+  .magnetic-btn.bg-\[var\(--color-accent-green\)\]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: transform 0.6s;
+    transform: skewX(-15deg);
+  }
+
+  .magnetic-btn.bg-\[var\(--color-accent-green\)\]:hover::after {
+    animation: shimmer 1s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(100%) skewX(-15deg); }
+  }
+
+  /* Animations from LandingLayout/agencyos.astro */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+
+<script is:inline define:vars={{ words: typewriter?.words || [] }}>
+  if (words.length > 0) {
+    const typewriterEl = document.getElementById('hero-typewriter');
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeWriter() {
+      if (!typewriterEl) return;
+
+      const currentPhrase = words[phraseIndex];
+
+      if (isDeleting) {
+        typewriterEl.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typewriterEl.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let delay = isDeleting ? 50 : 100;
+
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        delay = 2000; // Pause at end
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % words.length;
+        delay = 500; // Pause before next word
+      }
+
+      setTimeout(typeWriter, delay);
+    }
+
+    typeWriter();
+  }
+
+  // Reveal on Scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .reveal-scale').forEach(el => observer.observe(el));
+
+  // Magnetic Buttons
+  document.querySelectorAll('.magnetic-btn').forEach(btn => {
+    const btnEl = btn;
+    btnEl.addEventListener('mousemove', (e) => {
+      const rect = btnEl.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const strength = 4;
+      btnEl.style.transform = `translate(${x / strength}px, ${y / strength}px)`;
+    });
+
+    btnEl.addEventListener('mouseleave', () => {
+      btnEl.style.transform = 'translate(0, 0)';
+    });
+  });
+</script>

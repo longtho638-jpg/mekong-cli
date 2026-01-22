@@ -589,45 +589,47 @@ const description = 'Your account is ready. Get your license key and start autom
     
     function animate() {
       if (frame > maxFrames && particles.length === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
       }
-      
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.05; // gravity
-        p.vx *= 0.99; // air resistance
-        p.life++;
-        
-        const progress = p.life / p.maxLife;
-        const alpha = 1 - progress;
-        
-        if (alpha <= 0) {
-          particles.splice(i, 1);
-          return;
-        }
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (1 - progress * 0.5), 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = alpha;
-        ctx.fill();
-        
-        // Trail effect
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2);
-        ctx.strokeStyle = p.color;
-        ctx.globalAlpha = alpha * 0.5;
-        ctx.lineWidth = p.size * 0.5;
-        ctx.stroke();
-      });
-      
-      ctx.globalAlpha = 1;
+
+      if (ctx) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.05; // gravity
+          p.vx *= 0.99; // air resistance
+          p.life++;
+
+          const progress = p.life / p.maxLife;
+          const alpha = 1 - progress;
+
+          if (alpha <= 0) {
+            particles.splice(i, 1);
+            return;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * (1 - progress * 0.5), 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = alpha;
+          ctx.fill();
+
+          // Trail effect
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = alpha * 0.5;
+          ctx.lineWidth = p.size * 0.5;
+          ctx.stroke();
+        });
+
+        ctx.globalAlpha = 1;
+      }
       frame++;
       requestAnimationFrame(animate);
     }

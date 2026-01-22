@@ -425,20 +425,92 @@ const {
     </div>
 
     <script>
+      // Theme initialization
       const theme = localStorage.getItem('theme') || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
-      
+
       // Mobile menu toggle
       document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('mobile-menu-btn');
         const nav = document.getElementById('mobile-nav');
-        
+
         if (btn && nav) {
           btn.addEventListener('click', () => {
             nav.classList.toggle('open');
             btn.classList.toggle('open');
           });
         }
+
+        // Reveal on Scroll with Intersection Observer
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => {
+          revealObserver.observe(el);
+        });
+
+        // Magnetic Button Effect
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+
+        magneticBtns.forEach(btn => {
+          const btnEl = btn as HTMLElement;
+
+          btnEl.addEventListener('mousemove', (e: MouseEvent) => {
+            const rect = btnEl.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            // Magnetic pull strength (lower = stronger pull)
+            const strength = 4;
+
+            btnEl.style.transform = `translate(${x / strength}px, ${y / strength}px)`;
+          });
+
+          btnEl.addEventListener('mouseleave', () => {
+            btnEl.style.transform = 'translate(0, 0)';
+          });
+        });
+
+        // 3D Tilt Card Effect
+        const tiltCards = document.querySelectorAll('.tilt-card');
+
+        tiltCards.forEach(card => {
+          const cardEl = card as HTMLElement;
+
+          cardEl.addEventListener('mousemove', (e: MouseEvent) => {
+            const rect = cardEl.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+
+            cardEl.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+            // Update gradient position
+            const percentX = (x / rect.width) * 100;
+            const percentY = (y / rect.height) * 100;
+            cardEl.style.setProperty('--mouse-x', `${percentX}%`);
+            cardEl.style.setProperty('--mouse-y', `${percentY}%`);
+          });
+
+          cardEl.addEventListener('mouseleave', () => {
+            cardEl.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+          });
+        });
       });
     </script>
   </body>

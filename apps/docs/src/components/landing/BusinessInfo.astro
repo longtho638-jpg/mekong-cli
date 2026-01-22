@@ -1,0 +1,93 @@
+---
+---
+<section class="py-16 bg-[var(--color-bg-tertiary)]/30 border-y border-[var(--color-border)]" id="company">
+  <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
+    <div class="business-info-grid">
+      <div class="business-card">
+        <div class="business-icon">🏯</div>
+        <h3 class="business-title">AgencyOS Network</h3>
+        <p class="business-desc">The AI-powered operating system for one-person agencies. Built by founders, for founders.</p>
+      </div>
+      <div class="business-card">
+        <div class="business-icon">🎯</div>
+        <h3 class="business-title">Our Mission</h3>
+        <p class="business-desc">"Họ WIN → Mình WIN" — When our clients succeed, we succeed. Win-Win-Win is our core.</p>
+      </div>
+      <div class="business-card">
+        <div class="business-icon">🌏</div>
+        <h3 class="business-title">Global Reach</h3>
+        <p class="business-desc">500+ agencies worldwide. Bilingual EN/VN support. Based in Vietnam, serving globally.</p>
+      </div>
+      <div class="business-card">
+        <div class="business-icon">📧</div>
+        <h3 class="business-title">Get in Touch</h3>
+        <p class="business-desc">
+          <a href="mailto:hello@agencyos.network" class="business-link">hello@agencyos.network</a>
+          <br/>
+          <a href="/contact" class="business-link">Contact Form →</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .business-info-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .business-info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .business-info-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .business-card {
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .business-card:hover {
+    border-color: var(--color-accent-green);
+    transform: translateY(-4px);
+  }
+
+  .business-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .business-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+  }
+
+  .business-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .business-link {
+    color: #22c55e;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .business-link:hover {
+    text-decoration: underline;
+  }
+</style>

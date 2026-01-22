@@ -1,17 +1,24 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import Hero from '../components/Hero.astro';
 
 const title = '13 Binh Pháp - AgencyOS';
 const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic chapters mapped to AI commands.';
 ---
 
 <LandingLayout title={title} description={description}>
-  <section class="binh-phap-hero">
-    <span class="hero-icon">🏯</span>
-    <h1>13 Binh Pháp</h1>
-    <p class="tagline">"Bất chiến nhi khuất nhân chi binh" - Win Without Fighting</p>
-    <p class="subtitle">Sun Tzu's Art of War × AI-Powered Commands</p>
-  </section>
+  <Hero
+    badge={{
+      icon: '🏯',
+      text: 'Sun Tzu for Agency Founders'
+    }}
+    title="13 Binh Pháp"
+    description="The supreme art of war is to subdue the enemy without fighting. 13 strategic clusters mapped to AI commands."
+  >
+    <p slot="footer" class="text-xl italic text-[var(--color-text-muted)] opacity-80 mb-10 reveal">
+      "Bất chiến nhi khuất nhân chi binh" — Win Without Fighting
+    </p>
+  </Hero>
 
   <section class="chapters-grid">
     
@@ -212,72 +219,6 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
 </LandingLayout>
 
 <style>
-  /* ===================== HERO WOW ===================== */
-  .binh-phap-hero {
-    text-align: center;
-    padding: 64px 24px 32px;
-    animation: hero-entrance 0.8s ease-out;
-  }
-
-  @keyframes hero-entrance {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero-icon {
-    font-size: 4rem;
-    display: block;
-    margin-bottom: 16px;
-    animation: icon-float 3s ease-in-out infinite, fire-glow 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.5));
-  }
-
-  @keyframes icon-float {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50% { transform: translateY(-10px) rotate(3deg); }
-  }
-
-  @keyframes fire-glow {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.5)) drop-shadow(0 0 40px rgba(249, 115, 22, 0.3)); }
-    50% { filter: drop-shadow(0 0 35px rgba(234, 179, 8, 0.8)) drop-shadow(0 0 60px rgba(249, 115, 22, 0.5)); }
-  }
-
-  .binh-phap-hero h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #eab308, #f97316, #ef4444, #eab308);
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    animation: title-shine 4s linear infinite;
-  }
-
-  @keyframes title-shine {
-    0% { background-position: 0% center; }
-    100% { background-position: 300% center; }
-  }
-
-  .tagline {
-    font-size: 1.25rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-    margin-bottom: 8px;
-    animation: fade-up 0.6s ease-out 0.2s both;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-    color: var(--color-text-muted);
-    animation: fade-up 0.6s ease-out 0.3s both;
-  }
-
-  @keyframes fade-up {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   /* ===================== CHAPTERS GRID WOW ===================== */
   .chapters-grid {
     max-width: 1200px;
@@ -296,7 +237,7 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
     display: flex;
     gap: 16px;
     transition: all 0.3s ease;
-    animation: card-entrance 0.5s ease-out both;
+    animation: wow-card-entrance 0.5s ease-out both;
     position: relative;
     overflow: hidden;
   }
@@ -315,11 +256,6 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
   .chapter-card:nth-child(11) { animation-delay: 0.6s; }
   .chapter-card:nth-child(12) { animation-delay: 0.65s; }
   .chapter-card:nth-child(13) { animation-delay: 0.7s; }
-
-  @keyframes card-entrance {
-    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
 
   .chapter-card:hover {
     transform: translateY(-4px);
@@ -356,7 +292,7 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
   .chapter-card.danger {
     border-color: #ef4444;
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent);
-    animation: card-entrance 0.5s ease-out 0.6s both, danger-pulse 3s ease-in-out infinite 1s;
+    animation: wow-card-entrance 0.5s ease-out 0.6s both, danger-pulse 3s ease-in-out infinite 1s;
   }
   @keyframes danger-pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
@@ -366,7 +302,7 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
   .chapter-card.fire {
     border-color: #f97316;
     background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), transparent);
-    animation: card-entrance 0.5s ease-out 0.65s both, fire-flicker 0.5s ease-in-out infinite;
+    animation: wow-card-entrance 0.5s ease-out 0.65s both, fire-flicker 0.5s ease-in-out infinite;
   }
   @keyframes fire-flicker {
     0%, 100% { box-shadow: 0 0 15px 2px rgba(249, 115, 22, 0.2); }
@@ -406,13 +342,13 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
 
   .chapter-card.highlight .chapter-number { color: #22c55e; }
   .chapter-card.highlight:hover .chapter-number { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
-  
+
   .chapter-card.danger .chapter-number { color: #ef4444; }
   .chapter-card.danger:hover .chapter-number { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-  
+
   .chapter-card.fire .chapter-number { color: #f97316; }
   .chapter-card.fire:hover .chapter-number { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
-  
+
   .chapter-card.intel .chapter-number { color: #8b5cf6; }
   .chapter-card.intel:hover .chapter-number { box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
 
@@ -455,13 +391,13 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
 
   .chapter-card.highlight .commands code { color: #22c55e; }
   .chapter-card.highlight .commands code:hover { background: rgba(34, 197, 94, 0.15); box-shadow: 0 3px 10px rgba(34, 197, 94, 0.2); }
-  
+
   .chapter-card.danger .commands code { color: #ef4444; }
   .chapter-card.danger .commands code:hover { background: rgba(239, 68, 68, 0.15); box-shadow: 0 3px 10px rgba(239, 68, 68, 0.2); }
-  
+
   .chapter-card.fire .commands code { color: #f97316; }
   .chapter-card.fire .commands code:hover { background: rgba(249, 115, 22, 0.15); box-shadow: 0 3px 10px rgba(249, 115, 22, 0.2); }
-  
+
   .chapter-card.intel .commands code { color: #8b5cf6; }
   .chapter-card.intel .commands code:hover { background: rgba(139, 92, 246, 0.15); box-shadow: 0 3px 10px rgba(139, 92, 246, 0.2); }
 
@@ -471,7 +407,6 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
     margin: 48px auto;
     padding: 24px;
     text-align: center;
-    animation: fade-up 0.6s ease-out 1s both;
   }
 
   .wisdom-section h2 {
@@ -522,7 +457,6 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
     padding: 64px 24px;
     background: linear-gradient(180deg, transparent, rgba(234, 179, 8, 0.05));
     border-top: 1px solid var(--color-border);
-    animation: fade-up 0.6s ease-out 1.2s both;
   }
 
   .cta-section h2 {
@@ -557,7 +491,6 @@ const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic cha
 
   /* ===================== RESPONSIVE ===================== */
   @media (max-width: 768px) {
-    .binh-phap-hero h1 { font-size: 2rem; }
     .chapters-grid { grid-template-columns: 1fr; }
   }
 </style>

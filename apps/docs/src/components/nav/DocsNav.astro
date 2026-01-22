@@ -16,15 +16,23 @@ const capitalize = (str: string) => {
 };
 
 // Build nested structure
+interface HierarchyNode {
+  title: string;
+  items: any[];
+  subcategories: Record<string, HierarchyNode>;
+  path: string;
+  collapsed: boolean;
+}
+
 const buildHierarchy = (docs: any[]) => {
-  const root = {};
+  const root: Record<string, HierarchyNode> = {};
 
   docs.forEach(doc => {
     const categoryPath = doc.data.category || 'uncategorized';
     const parts = categoryPath.split('/');
-    
+
     let currentLevel = root;
-    
+
     parts.forEach((part, index) => {
       if (!currentLevel[part]) {
         currentLevel[part] = {
@@ -35,7 +43,7 @@ const buildHierarchy = (docs: any[]) => {
           collapsed: true // Default collapsed
         };
       }
-      
+
       if (index === parts.length - 1) {
         currentLevel[part].items.push(doc);
       } else {
