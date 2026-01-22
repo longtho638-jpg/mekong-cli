@@ -64,8 +64,13 @@ mekong-docs is Astro v5-based static documentation site for Mekong Marketing eco
 │   │   ├── BaseLayout.astro     # HTML shell (meta, fonts, theme)
 │   │   └── DocsLayout.astro     # 3-column: sidebar | content | AI panel
 │   ├── lib/                     # Utilities
+│   │   ├── experiments/         # A/B testing logic & config
+│   │   ├── tracking/            # Unified tracking client
 │   │   └── openrouter.ts        # OpenRouter API client (future)
 │   ├── pages/                   # File-based routing
+│   │   ├── api/                 # API endpoints
+│   │   │   ├── track.ts         # Unified tracking endpoint
+│   │   │   └── ...
 │   │   ├── index.astro          # Homepage
 │   │   ├── docs/[...slug].astro # English doc pages
 │   │   └── vi/docs/[...slug].astro # Vietnamese doc pages
