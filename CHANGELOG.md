@@ -1,3 +1,10 @@
+## [2.5.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.9...v2.5.0-beta.10) (2026-01-23)
+
+
+### 🚀 Features
+
+* **skills:** add agent-browser skill for AI-optimized browser automation ([429a2e7](https://github.com/claudekit/claudekit-engineer/commit/429a2e79bd99bc739898f2457cca9b5d22662247))
+
 ## [2.5.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.8...v2.5.0-beta.9) (2026-01-23)
 
 
