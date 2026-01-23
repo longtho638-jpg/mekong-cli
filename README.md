@@ -1,82 +1,97 @@
-# 🏯 AgencyOS - Antigravity IDE
+# 🏯 AgencyOS - The One-Person Agency Operating System
 
 > **"Không đánh mà thắng" - Win Without Fighting**
 > The first AI-Native IDE for Solopreneurs & Agencies.
 
-[![AgencyOS](https://img.shields.io/badge/Agency-OS-emerald)](https://agencyos.network)
-[![Architecture](https://img.shields.io/badge/Architecture-Clean-blue)](docs/architecture/top-tier-repos.md)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-22c55e)](https://agencyos.network)
+[![Version](https://img.shields.io/badge/Version-5.1.1-blue)](https://github.com/longtho638-jpg/mekong-cli/releases)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Docs](https://img.shields.io/badge/Documentation-AgencyOS-purple)](https://docs.agencyos.network)
 
-## 🌟 Giới Thiệu (Introduction)
+## 🌟 Introduction
 
-AgencyOS không chỉ là một CLI tool, nó là một **Hệ Điều Hành** (Operating System) giúp bạn biến ý tưởng thành phần mềm, và phần mềm thành doanh thu.
+AgencyOS is not just a CLI tool; it's a complete **Operating System** designed to turn your agency into a scalable, automated empire.
 
-Được xây dựng trên triết lý **Binh Pháp**, AgencyOS cung cấp:
-1.  **Kiến Trúc Sư (Architect):** Tự động thiết kế structure chuẩn (Clean Arch/DDD).
-2.  **Quản Lý (Kanban):** Theo dõi tiến độ task.
-3.  **Doanh Thu (Revenue):** CRM, Invoice, Proposal tích hợp sẵn.
+Built on the **Binh Pháp (Art of War)** philosophy, AgencyOS provides:
+
+1.  **AI Workforce:** 24+ specialized agents (Planner, Coder, Marketer, Strategist).
+2.  **Revenue Engine:** Integrated billing, subscriptions (PayPal), and affiliate management.
+3.  **Growth Infrastructure:** A/B testing, unified tracking, and automated onboarding.
 
 ---
 
-## 🚀 Bắt Đầu Ngay (Quick Start)
+## 🚀 Quick Start
 
-Dành cho người mới (Non-tech friendly):
+### 1. Installation
 
-### 1. Cài đặt
 ```bash
-git clone https://github.com/your-repo/mekong-cli.git
+git clone https://github.com/longtho638-jpg/mekong-cli.git
 cd mekong-cli
-# Setup Kanban (Optional but recommended)
-./scripts/setup_vibe_kanban.sh
+pnpm install
 ```
 
-### 2. Vibe Coding Flow (Quy Trình Chuẩn)
+### 2. Configure Environment
 
-1.  **Khởi tạo ý tưởng:**
-    ```bash
-    mekong strategy brainstorm "Tôi muốn làm nền tảng học trực tuyến (LMS)"
-    ```
+Copy the example environment file and update with your credentials:
 
-2.  **Quản lý Vận Hành (Ops):**
-    ```bash
-    mekong status                  # Giám sát hệ thống (Commander)
-    mekong check                   # Kiểm tra bảo mật (Security Armor)
-    mekong recover --auto          # Tự động khôi phục hệ thống
-    ```
+```bash
+cp .env.example .env
+```
 
-3.  **Kinh Doanh & Doanh Thu:**
-    ```bash
-    mekong leads add 10            # Thêm khách hàng tiềm năng
-    mekong client onboard --name "Client Name"
-    mekong revenue run             # Chạy chu trình doanh thu
-    ```
+### 3. Launch the Agency
 
-4.  **Marketing & Content:**
-    ```bash
-    mekong content create --topic "AI Agency"
-    ```
+```bash
+# Start the full stack (Dashboard + Docs + API)
+pnpm dev
+```
 
-👉 **Xem hướng dẫn chi tiết:** `mekong --help` hoặc đọc [docs/VIBE_CODING_MANUAL.md](docs/VIBE_CODING_MANUAL.md)
+Visit your dashboard at `http://localhost:3000`.
 
 ---
 
-## 📂 Cấu Trúc Dự Án
+## ⚡ Core Capabilities
+
+### 🧠 Strategic Intelligence
+*   `/binh-phap`: Generate a 13-chapter growth strategy tailored to your niche.
+*   `/audit`: Perform a deep analysis of your codebase or business model.
+
+### 🛠️ Development Automation
+*   `/code`: Describe a feature, and the AI swarm plans, implements, tests, and documents it.
+*   `/fix`: Auto-diagnose and resolve bugs across your stack.
+
+### 💰 Revenue Operations
+*   `/invoice`: Generate and send professional invoices instantly.
+*   `/affiliate`: Manage your affiliate program and payouts.
+
+### 📣 Marketing & Growth
+*   `/marketing`: Generate social posts, blog articles, and email sequences.
+*   `/ab-test`: Run split tests on your landing pages to optimize conversion.
+
+---
+
+## 📂 Project Structure
 
 ```
 mekong-cli/
-├── antigravity/        # Core Modules
-├── apps/               # Frontend (Next.js Dashboard)
-├── cli/                # Command Line Interface
-├── core/               # Business Logic (CRM, Finance...)
-│   ├── modules/        # Modular Architecture
-│   └── infrastructure/ # DB & Cache
-└── docs/               # Documentation
+├── antigravity/        # Core AI Agent Framework
+├── apps/
+│   ├── dashboard/      # Agency Command Center (Next.js)
+│   ├── docs/           # Documentation Site (Astro)
+│   └── web/            # Main Landing Page
+├── backend/            # Python API & Agent Logic
+├── cli/                # Command Line Interface Entry Point
+├── core/               # Shared Business Logic
+└── packages/           # Shared UI & Utilities
 ```
 
-## 🧠 Tài Nguyên (Resources)
+## 🤝 Contributing
 
-*   [Kiến Trúc Chuẩn (Top Tier Repos)](docs/architecture/top-tier-repos.md)
-*   [Vibe Coding Manual](docs/VIBE_CODING_MANUAL.md)
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Built with ❤️ by Mekong AI.*
+*Built with ❤️ by the AgencyOS Team.*
