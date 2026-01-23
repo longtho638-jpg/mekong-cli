@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from backend.core.security.audit import audit_action
+from backend.core.security.rbac import require_viewer, require_developer
 
 router = APIRouter(prefix="/api/crm", tags=["CRM"])
 
@@ -22,7 +24,8 @@ def _get_crm():
     return _crm_instance
 
 
-@router.get("/summary")
+@router.get("/summary", dependencies=[Depends(require_viewer)])
+@audit_action(action="view_crm_summary")
 def get_crm_summary():
     """Get CRM summary."""
     crm = _get_crm()
@@ -31,7 +34,8 @@ def get_crm_summary():
     return crm.get_summary()
 
 
-@router.get("/deals")
+@router.get("/deals", dependencies=[Depends(require_viewer)])
+@audit_action(action="view_crm_deals")
 def get_crm_deals():
     """Get all deals."""
     crm = _get_crm()
@@ -49,7 +53,8 @@ def get_crm_deals():
     ]
 
 
-@router.get("/contacts")
+@router.get("/contacts", dependencies=[Depends(require_viewer)])
+@audit_action(action="view_crm_contacts")
 def get_crm_contacts():
     """Get all contacts."""
     crm = _get_crm()
@@ -67,7 +72,8 @@ def get_crm_contacts():
     ]
 
 
-@router.get("/hot-leads")
+@router.get("/hot-leads", dependencies=[Depends(require_developer)])
+@audit_action(action="view_hot_leads")
 def get_hot_leads():
     """Get hot leads."""
     crm = _get_crm()

@@ -1,7 +1,7 @@
 ---
 title: "Infrastructure Scaling & Performance Optimization"
 description: "Fine-tune Kubernetes HPA settings, optimize database queries, and implement edge caching strategies for high traffic readiness."
-status: in-progress
+status: completed
 priority: P2
 effort: 12h
 branch: feat/infra-scaling
@@ -18,18 +18,18 @@ created: 2026-01-22
 - [ ] **Phase 1: Metrics & Baseline**
   - [ ] Configure Prometheus/Grafana dashboards for real-time resource monitoring.
   - [ ] Establish performance baselines for backend API response times under load.
-  - [ ] Audit current Kubernetes resource requests and limits.
+  - [x] Audit current Kubernetes resource requests and limits.
 - [ ] **Phase 2: Kubernetes Auto-scaling**
-  - [ ] Implement Horizontal Pod Autoscaler (HPA) for backend and frontend services.
+  - [x] Implement Horizontal Pod Autoscaler (HPA) for backend and frontend services.
   - [ ] Configure Cluster Autoscaler to handle node-level scaling.
   - [ ] Tune HPA triggers (CPU/Memory thresholds) based on load test results.
 - [ ] **Phase 3: Database Optimization**
   - [ ] Identify and optimize slow queries using pg_stat_statements.
-  - [ ] Implement Redis caching for high-frequency, low-variance data.
-  - [ ] Audit connection pool settings for SQLAlchemy and FastAPI.
+  - [x] Implement Redis caching for high-frequency, low-variance data.
+  - [x] Audit connection pool settings for SQLAlchemy and FastAPI.
 - [ ] **Phase 4: Edge & CDN Strategy**
-  - [ ] Optimize Vercel Edge caching rules for documentation and marketing pages.
-  - [ ] Implement stale-while-revalidate patterns for static assets.
+  - [x] Optimize Vercel Edge caching rules for documentation and marketing pages.
+  - [x] Implement stale-while-revalidate patterns for static assets.
   - [ ] Configure global CDN distribution for static media.
 
 ## 🔍 Context

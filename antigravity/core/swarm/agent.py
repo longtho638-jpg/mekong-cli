@@ -1,5 +1,6 @@
 from typing import Any
 
+from antigravity.core.telemetry import agent_telemetry
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
 
@@ -17,6 +18,7 @@ class BaseSwarmAgent:
         self.bus.subscribe(self.id, self.on_message)
         self.bus.subscribe("all", self.on_message)
 
+    @agent_telemetry(operation="swarm_on_message")
     def on_message(self, message: AgentMessage):
         """Handle incoming message."""
         # Override this
@@ -31,6 +33,7 @@ class BaseSwarmAgent:
         )
         self.bus.publish(msg)
 
+    @agent_telemetry(operation="swarm_process")
     async def process(self, task: Any) -> Any:
         """Main processing logic."""
         raise NotImplementedError

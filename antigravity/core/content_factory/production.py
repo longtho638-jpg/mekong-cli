@@ -41,3 +41,23 @@ class ContentProducer:
 
         logger.debug(f"Content piece drafted: {piece.title}")
         return piece
+
+    def generate_from_changelog(self, changelog_entry: str, target_platform: ContentType = ContentType.FACEBOOK) -> ContentPiece:
+        """
+        Translates technical changelog entries into engaging social media content.
+        """
+        title = f"New Update: {changelog_entry.splitlines()[0] if changelog_entry else 'System Update'}"
+
+        body_parts = [
+            f"🚀 NEW UPDATE: {title} 🚀\n\n",
+            "We've been busy building! Here is what's new in AgencyOS:\n",
+            f"{changelog_entry}\n\n",
+            "Stay ahead of the curve with AI-native orchestration. #AgencyOS #BuildingInPublic #AI"
+        ]
+
+        return ContentPiece(
+            title=title,
+            body="".join(body_parts),
+            content_type=target_platform,
+            virality_score=75
+        )
