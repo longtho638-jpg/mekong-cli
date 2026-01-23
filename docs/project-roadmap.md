@@ -145,7 +145,7 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have su
 
 ### Phase 17: Post-Launch Growth & Feedback Loop (IN-PROGRESS)
 **Status:** 🏗️ In-Progress
-**Progress:** 75%
+**Progress:** 80%
 
 **Features:**
 - ✅ **Customer Success Onboarding**: Implemented 3-part email sequence (Day 0, 3, 7) for activation and retention.
@@ -154,6 +154,7 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have su
 - ✅ **Feedback Collection**: Launched `FeedbackWidget` and `/api/feedback` endpoint.
 - ✅ **A/B Testing Infrastructure**: Server-side variant assignment and client-side exposure tracking.
 - ✅ **UI Branding Sync**: Corrected `agencyos.astro` metadata for unified product positioning.
+- ✅ **Documentation Cleanup**: Archived legacy reports and consolidated root directory structure.
 - 🔄 **Infrastructure Scaling**: [Implementation Plan Created](../../plans/260122-2000-infrastructure-scaling/plan.md).
 
 ### Phase 18: Performance & Observability (PLANNED)

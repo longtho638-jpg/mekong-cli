@@ -10,6 +10,10 @@
 - **Build Stability**: Fixed a critical build failure in `mekong-docs` caused by an incorrect default import of `ua-parser-js`. Migrated to named imports to comply with ESM requirements in Astro v5.
 - **Branding Sync**: Updated `agencyos.astro` title to "AgencyOS - The AI Operating System for Modern Agencies" to maintain consistency across the marketing site and local codebase.
 
+### Changed
+- **Documentation Archival**: Moved legacy reports (`AGENTS.md`, `ARCHITECTURE.md`, `GEMINI.md`, etc.) from the root and `reports/` folder to `docs/archive/reports/` to declutter the repository.
+- **Git Configuration**: Updated `.gitignore` to exclude the root `reports/` directory from version control.
+
 ## [5.1.0] - 2026-01-22
 
 ### Growth & Feedback Infrastructure
