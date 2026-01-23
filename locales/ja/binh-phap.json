@@ -1,0 +1,105 @@
+{
+  "binh_phap": {
+    "title": "孫子兵法 13篇",
+    "subtitle": "エージェンシー創業者のための孫子",
+    "description": "最高の戦争の術は、戦わずして敵を屈服させること。13の戦略クラスターをAIコマンドにマッピング。",
+    "tagline": "戦わずして勝つ",
+    "quote_original": "不戦而屈人之兵",
+    "short_term": "短期：SaaSアフィリエイト収益",
+    "long_term": "長期：ローカルクライアントのブランド構築",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "計篇",
+        "purpose": "戦略策定",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "作戦篇",
+        "purpose": "運用",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "謀攻篇",
+        "purpose": "軽い成長",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "形篇",
+        "purpose": "優位性を守る",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "勢篇",
+        "purpose": "トレンドを掴む",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "虚実篇",
+        "purpose": "希釈を防ぐ",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "軍争篇",
+        "purpose": "速く出荷",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "九変篇",
+        "purpose": "ピボット",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "行軍篇",
+        "purpose": "実行",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "地形篇",
+        "purpose": "市場拡大",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "九地篇",
+        "purpose": "危機管理",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "火攻篇",
+        "purpose": "バイラルマーケティング",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "用間篇",
+        "purpose": "情報収集",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
+    },
+    "wisdom": {
+      "quote1_original": "百戦百勝は善の善なる者に非ざるなり",
+      "quote1_translation": "百戦百勝は最善ではない",
+      "quote2_original": "戦わずして人の兵を屈するは善の善なる者なり",
+      "quote2_translation": "戦わずして勝つことこそ最善"
+    },
+    "cta": {
+      "title": "古代の知恵を現代ビジネスに適用",
+      "button": "すべてのコマンドを見る →"
+    }
+  }
+}

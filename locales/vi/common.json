@@ -1,63 +1,161 @@
 {
-    "app": {
-        "name": "Agency OS",
-        "tagline": "Hệ điều hành dành cho Agency một người",
-        "description": "Xây dựng, mở rộng và nhượng quyền agency toàn cầu"
+  "app": {
+    "name": "Agency OS",
+    "tagline": "Hệ điều hành dành cho Agency một người",
+    "description": "Xây dựng, mở rộng và nhượng quyền agency toàn cầu"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "marketing": "Tiếp thị",
+    "sales": "Bán hàng",
+    "analytics": "Phân tích",
+    "settings": "Cài đặt"
+  },
+  "commands": {
+    "market_analysis": "Phân tích thị trường",
+    "customer_profile": "Hồ sơ khách hàng",
+    "sales_strategy": "Chiến lược bán hàng",
+    "marketing_plan": "Kế hoạch tiếp thị",
+    "business_plan": "Kế hoạch kinh doanh",
+    "brand_identity": "Nhận diện thương hiệu",
+    "content_marketing": "Nội dung tiếp thị",
+    "social_media": "Mạng xã hội",
+    "messaging": "Thông điệp",
+    "market_research": "Nghiên cứu thị trường",
+    "pr_strategy": "Chiến lược PR",
+    "growth_strategy": "Chiến lược tăng trưởng",
+    "sales_funnel": "Phễu bán hàng"
+  },
+  "common": {
+    "welcome": "Chào mừng đến với Agency OS",
+    "start": "Bắt đầu",
+    "continue": "Tiếp tục",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "loading": "Đang tải...",
+    "success": "Thành công!",
+    "error": "Đã xảy ra lỗi",
+    "confirm": "Bạn có chắc không?"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "signup": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "forgot_password": "Quên mật khẩu?"
+  },
+  "franchise": {
+    "title": "Cổng nhượng quyền",
+    "territories": "Lãnh thổ của bạn",
+    "revenue": "Doanh thu",
+    "clients": "Khách hàng",
+    "commission": "Tỷ lệ hoa hồng"
+  },
+  "binh_phap": {
+    "title": "13 Binh Pháp",
+    "subtitle": "Binh Pháp Tôn Tử cho Nhà Sáng Lập Agency",
+    "description": "Nghệ thuật chiến tranh tối cao là khuất phục kẻ thù mà không cần chiến đấu. 13 thiên chiến lược ánh xạ tới lệnh AI.",
+    "tagline": "Không đánh mà thắng",
+    "quote_original": "Bất chiến nhi khuất nhân chi binh",
+    "short_term": "Ngắn hạn: Thu nhập Affiliate SaaS",
+    "long_term": "Dài hạn: Xây dựng thương hiệu với khách hàng local",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "Kế Hoạch",
+        "purpose": "Lập chiến lược",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "Tác Chiến",
+        "purpose": "Vận hành",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "Mưu Công",
+        "purpose": "Tăng trưởng nhẹ",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "Hình Thế",
+        "purpose": "Bảo vệ lợi thế",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "Thế Trận",
+        "purpose": "Bắt trend",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "Hư Thực",
+        "purpose": "Chống pha loãng",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "Quân Tranh",
+        "purpose": "Ship nhanh",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "Cửu Biến",
+        "purpose": "Pivot",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "Hành Quân",
+        "purpose": "Thực thi",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "Địa Hình",
+        "purpose": "Mở rộng thị trường",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "Cửu Địa",
+        "purpose": "Xử lý khủng hoảng",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "Hỏa Công",
+        "purpose": "Viral marketing",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "Dụng Gián",
+        "purpose": "Thu thập intel",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
     },
-    "nav": {
-        "home": "Trang chủ",
-        "dashboard": "Bảng điều khiển",
-        "marketing": "Tiếp thị",
-        "sales": "Bán hàng",
-        "analytics": "Phân tích",
-        "settings": "Cài đặt"
+    "wisdom": {
+      "quote1_original": "Bách chiến bách thắng, phi thiện chi thiện giả dã",
+      "quote1_translation": "Trăm trận trăm thắng không phải hay nhất",
+      "quote2_original": "Bất chiến nhi khuất nhân chi binh, thiện chi thiện giả dã",
+      "quote2_translation": "Không đánh mà thắng mới là hay nhất"
     },
-    "commands": {
-        "market_analysis": "Phân tích thị trường",
-        "customer_profile": "Hồ sơ khách hàng",
-        "sales_strategy": "Chiến lược bán hàng",
-        "marketing_plan": "Kế hoạch tiếp thị",
-        "business_plan": "Kế hoạch kinh doanh",
-        "brand_identity": "Nhận diện thương hiệu",
-        "content_marketing": "Nội dung tiếp thị",
-        "social_media": "Mạng xã hội",
-        "messaging": "Thông điệp",
-        "market_research": "Nghiên cứu thị trường",
-        "pr_strategy": "Chiến lược PR",
-        "growth_strategy": "Chiến lược tăng trưởng",
-        "sales_funnel": "Phễu bán hàng"
-    },
-    "common": {
-        "welcome": "Chào mừng đến với Agency OS",
-        "start": "Bắt đầu",
-        "continue": "Tiếp tục",
-        "save": "Lưu",
-        "cancel": "Hủy",
-        "delete": "Xóa",
-        "edit": "Sửa",
-        "loading": "Đang tải...",
-        "success": "Thành công!",
-        "error": "Đã xảy ra lỗi",
-        "confirm": "Bạn có chắc không?"
-    },
-    "auth": {
-        "login": "Đăng nhập",
-        "logout": "Đăng xuất",
-        "signup": "Đăng ký",
-        "email": "Email",
-        "password": "Mật khẩu",
-        "forgot_password": "Quên mật khẩu?"
-    },
-    "franchise": {
-        "title": "Cổng nhượng quyền",
-        "territories": "Lãnh thổ của bạn",
-        "revenue": "Doanh thu",
-        "clients": "Khách hàng",
-        "commission": "Tỷ lệ hoa hồng"
-    },
-    "binh_phap": {
-        "tagline": "Không đánh mà thắng",
-        "short_term": "Ngắn hạn: Thu nhập Affiliate SaaS",
-        "long_term": "Dài hạn: Xây dựng thương hiệu với khách hàng local"
+    "cta": {
+      "title": "Áp dụng trí tuệ cổ nhân vào kinh doanh hiện đại",
+      "button": "Xem tất cả lệnh →"
     }
+  }
 }
