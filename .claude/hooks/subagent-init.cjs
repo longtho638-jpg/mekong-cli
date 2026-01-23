@@ -19,7 +19,8 @@ const {
   getGitRoot,
   resolvePlanPath,
   getReportsPath,
-  normalizePath
+  normalizePath,
+  extractTaskListId
 } = require('./lib/ck-config-utils.cjs');
 
 /**
@@ -84,6 +85,9 @@ async function main() {
     const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths, baseDir);
     const activePlan = resolved.resolvedBy === 'session' ? resolved.path : '';
     const suggestedPlan = resolved.resolvedBy === 'branch' ? resolved.path : '';
+
+    // Extract task list ID for Claude Code Tasks coordination (shared helper, DRY)
+    const taskListId = extractTaskListId(resolved);
     const plansPath = path.join(baseDir, normalizePath(config.paths?.plans) || 'plans');
     const docsPath = path.join(baseDir, normalizePath(config.paths?.docs) || 'docs');
     const thinkingLanguage = config.locale?.thinkingLanguage || '';
@@ -103,6 +107,9 @@ async function main() {
     lines.push(`## Context`);
     if (activePlan) {
       lines.push(`- Plan: ${activePlan}`);
+      if (taskListId) {
+        lines.push(`- Task List: ${taskListId} (shared with session)`);
+      }
     } else if (suggestedPlan) {
       lines.push(`- Plan: none | Suggested: ${suggestedPlan}`);
     } else {

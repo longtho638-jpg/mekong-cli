@@ -736,6 +736,22 @@ function getGitRoot(cwd = null) {
   return execSafe('git rev-parse --show-toplevel', { cwd: cwd || undefined });
 }
 
+/**
+ * Extract task list ID from plan resolution for Claude Code Tasks coordination
+ * Only returns ID for session-resolved plans (explicitly active, not branch-suggested)
+ *
+ * Cross-platform: path.basename() handles both Unix/Windows separators
+ *
+ * @param {{ path: string|null, resolvedBy: 'session'|'branch'|null }} resolved - Plan resolution result
+ * @returns {string|null} Task list ID (plan directory name) or null
+ */
+function extractTaskListId(resolved) {
+  if (!resolved || resolved.resolvedBy !== 'session' || !resolved.path) {
+    return null;
+  }
+  return path.basename(resolved.path);
+}
+
 module.exports = {
   CONFIG_PATH,
   LOCAL_CONFIG_PATH,
@@ -765,5 +781,6 @@ module.exports = {
   validateNamingPattern,
   resolveNamingPattern,
   getGitBranch,
-  getGitRoot
+  getGitRoot,
+  extractTaskListId
 };

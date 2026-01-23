@@ -7,7 +7,7 @@ All modes share core steps with mode-specific variations.
 1. Parse input with `intent-detection.md` rules
 2. Log detected mode: `✓ Step 0: Mode [X] - [reason]`
 3. If mode=code: detect plan path, set active plan
-4. Initialize TodoWrite with workflow steps
+4. Use TaskCreate to create workflow step tasks (with dependencies if complex)
 
 **Output:** `✓ Step 0: Mode [interactive|auto|fast|parallel|no-test|code] - [detection reason]`
 
@@ -111,6 +111,6 @@ code:        0 → skip → skip → 3 → 4 → 5(user) → 6
 ## Critical Rules
 
 - Never skip steps without mode justification
-- Mark TodoWrite tasks as complete immediately
-- One task in_progress at a time
+- Use TaskUpdate to mark tasks complete immediately
+- One task in_progress at a time (enforce via TaskList check)
 - All step outputs follow format: `✓ Step [N]: [status] - [metrics]`
