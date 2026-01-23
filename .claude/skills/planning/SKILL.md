@@ -58,6 +58,14 @@ Load: `references/output-standards.md`
 - Provide multiple options with trade-offs when appropriate
 - Fully respect the `./docs/development-rules.md` file.
 
+## Task Integration (Optional)
+
+When session has `CLAUDE_CODE_TASK_LIST_ID` set (active plan):
+- Use TaskCreate to create tasks for each phase with clear subjects
+- Set dependencies: Phase N+1 `blockedBy` Phase N
+- Subagents coordinate via shared task list automatically
+- Use TaskUpdate to mark progress (in_progress → completed)
+
 ### Important
 DO NOT create plans or reports in USER directory.
 ALWAYS create plans or reports in CURRENT WORKING PROJECT DIRECTORY.

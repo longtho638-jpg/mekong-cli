@@ -110,6 +110,17 @@ After validation completes, provide summary:
 - Any items flagged for plan revision
 - Recommendation: proceed to implementation or revise plan first
 
+## Next Steps (MANDATORY)
+
+**IMPORTANT:** After providing the validation summary, you MUST remind the user:
+
+> **Best Practice:** Run `/clear` before implementing to start with fresh context.
+> Then run `/code {plan-path}` to begin implementation.
+>
+> Fresh context helps Claude focus solely on implementation without planning context pollution, improving plan adherence.
+
+This reminder is **NON-NEGOTIABLE** - always output it at the end of validation.
+
 ## Important Notes
 
 **IMPORTANT:** Only ask questions about genuine decision points - don't manufacture artificial choices.

@@ -34,6 +34,9 @@ const betaConfig = {
       {
         preset: 'conventionalcommits',
         releaseRules: [
+          { type: 'feat', release: 'minor' },
+          { type: 'fix', release: 'patch' },
+          { type: 'perf', release: 'patch' },
           { type: 'docs', scope: 'README', release: 'patch' },
           { type: 'refactor', release: 'patch' },
           { type: 'style', release: 'patch' }
@@ -106,6 +109,9 @@ const productionConfig = {
       {
         preset: 'conventionalcommits',
         releaseRules: [
+          { type: 'feat', release: 'minor' },
+          { type: 'fix', release: 'patch' },
+          { type: 'perf', release: 'patch' },
           { type: 'docs', scope: 'README', release: 'patch' },
           { type: 'refactor', release: 'patch' },
           { type: 'style', release: 'patch' }

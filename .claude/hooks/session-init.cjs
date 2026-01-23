@@ -19,7 +19,8 @@ const {
   writeSessionState,
   resolvePlanPath,
   getReportsPath,
-  resolveNamingPattern
+  resolveNamingPattern,
+  extractTaskListId
 } = require('./lib/ck-config-utils.cjs');
 
 // Import shared project detection logic
@@ -76,6 +77,9 @@ async function main() {
     // Reports path only uses active plans, not suggested ones
     const reportsPath = getReportsPath(resolved.path, resolved.resolvedBy, config.plan, config.paths);
 
+    // Extract task list ID for Claude Code Tasks coordination (shared helper)
+    const taskListId = extractTaskListId(resolved);
+
     // Collect static environment info (computed once per session)
     const staticEnv = {
       nodeVersion: process.version,
@@ -113,6 +117,12 @@ async function main() {
       // Plan resolution
       writeEnv(envFile, 'CK_ACTIVE_PLAN', resolved.resolvedBy === 'session' ? resolved.path : '');
       writeEnv(envFile, 'CK_SUGGESTED_PLAN', resolved.resolvedBy === 'branch' ? resolved.path : '');
+
+      // Claude Code Tasks integration - enables multi-session/subagent coordination
+      // Task list ID = plan directory name (shared across all sessions working on same plan)
+      if (taskListId) {
+        writeEnv(envFile, 'CLAUDE_CODE_TASK_LIST_ID', taskListId);
+      }
 
       // Paths - use absolute paths based on CWD for subdirectory workflow support (Issue #327)
       writeEnv(envFile, 'CK_GIT_ROOT', staticEnv.gitRoot || '');

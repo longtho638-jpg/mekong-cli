@@ -9,7 +9,8 @@ Execute MCP operations via **Gemini CLI** to preserve context budget.
 1. **Execute task via Gemini CLI** (using stdin pipe for MCP support):
    ```bash
    # IMPORTANT: Use stdin piping, NOT -p flag (deprecated, skips MCP init)
-   echo "$ARGUMENTS. Return JSON only per GEMINI.md instructions." | gemini -y -m gemini-2.5-flash
+   # Read model from .claude/.ck.json: gemini.model (default: gemini-3.0-flash)
+   echo "$ARGUMENTS. Return JSON only per GEMINI.md instructions." | gemini -y -m <gemini.model>
    ```
 
 2. **Fallback to mcp-manager subagent** (if Gemini CLI unavailable):
@@ -30,5 +31,8 @@ Execute MCP operations via **Gemini CLI** to preserve context budget.
 
 ```bash
 # BROKEN - deprecated -p flag skips MCP server connections!
-gemini -y -m gemini-2.5-flash -p "..."
+gemini -y -m <gemini.model> -p "..."
+
+# ALSO BROKEN - --model flag with -p
+gemini -y -p "..." --model gemini-3.0-flash
 ```
