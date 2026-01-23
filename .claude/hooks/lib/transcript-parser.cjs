@@ -92,10 +92,27 @@ function processEntry(entry, toolMap, agentMap, latestTodos, result) {
           endTime: null
         });
       } else if (block.name === 'TodoWrite') {
-        // Replace todo array
+        // Legacy: Replace todo array (deprecated, kept for backwards compatibility)
         if (block.input?.todos && Array.isArray(block.input.todos)) {
           latestTodos.length = 0;
           latestTodos.push(...block.input.todos);
+        }
+      } else if (block.name === 'TaskCreate') {
+        // Native Task API: Add new task
+        if (block.input?.subject) {
+          latestTodos.push({
+            content: block.input.subject,
+            status: 'pending',
+            activeForm: block.input.activeForm || null
+          });
+        }
+      } else if (block.name === 'TaskUpdate') {
+        // Native Task API: Update existing task status
+        if (block.input?.taskId && block.input?.status) {
+          const task = latestTodos.find(t => t.id === block.input.taskId);
+          if (task) {
+            task.status = block.input.status;
+          }
         }
       } else {
         // Regular tool
