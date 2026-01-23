@@ -1,0 +1,105 @@
+{
+  "binh_phap": {
+    "title": "손자병법 13편",
+    "subtitle": "에이전시 창업자를 위한 손자",
+    "description": "최고의 전쟁 기술은 싸우지 않고 적을 굴복시키는 것. 13개 전략 클러스터를 AI 명령어에 매핑.",
+    "tagline": "싸우지 않고 이기다",
+    "quote_original": "不戰而屈人之兵",
+    "short_term": "단기: SaaS 제휴 수익",
+    "long_term": "장기: 로컬 클라이언트 브랜드 구축",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "계편",
+        "purpose": "전략 수립",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "작전편",
+        "purpose": "운영",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "모공편",
+        "purpose": "가벼운 성장",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "형편",
+        "purpose": "우위 방어",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "세편",
+        "purpose": "트렌드 포착",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "허실편",
+        "purpose": "희석 방지",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "군쟁편",
+        "purpose": "빠른 출시",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "구변편",
+        "purpose": "피벗",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "행군편",
+        "purpose": "실행",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "지형편",
+        "purpose": "시장 확장",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "구지편",
+        "purpose": "위기 관리",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "화공편",
+        "purpose": "바이럴 마케팅",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "용간편",
+        "purpose": "정보 수집",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
+    },
+    "wisdom": {
+      "quote1_original": "백전백승이 최선이 아니다",
+      "quote1_translation": "백 번 싸워 백 번 이기는 것이 최선이 아니다",
+      "quote2_original": "싸우지 않고 적을 굴복시키는 것이 최선이다",
+      "quote2_translation": "싸우지 않고 이기는 것이 최고의 승리"
+    },
+    "cta": {
+      "title": "고대의 지혜를 현대 비즈니스에 적용",
+      "button": "모든 명령어 보기 →"
+    }
+  }
+}

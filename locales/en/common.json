@@ -1,63 +1,161 @@
 {
-    "app": {
-        "name": "Agency OS",
-        "tagline": "The One-Person Unicorn Operating System",
-        "description": "Build, scale, and franchise your agency globally"
+  "app": {
+    "name": "Agency OS",
+    "tagline": "The One-Person Unicorn Operating System",
+    "description": "Build, scale, and franchise your agency globally"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "marketing": "Marketing",
+    "sales": "Sales",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "commands": {
+    "market_analysis": "Market Analysis",
+    "customer_profile": "Customer Profile",
+    "sales_strategy": "Sales Strategy",
+    "marketing_plan": "Marketing Plan",
+    "business_plan": "Business Plan",
+    "brand_identity": "Brand Identity",
+    "content_marketing": "Content Marketing",
+    "social_media": "Social Media",
+    "messaging": "Messaging",
+    "market_research": "Market Research",
+    "pr_strategy": "PR Strategy",
+    "growth_strategy": "Growth Strategy",
+    "sales_funnel": "Sales Funnel"
+  },
+  "common": {
+    "welcome": "Welcome to Agency OS",
+    "start": "Get Started",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "success": "Success!",
+    "error": "An error occurred",
+    "confirm": "Are you sure?"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password?"
+  },
+  "franchise": {
+    "title": "Franchise Portal",
+    "territories": "Your Territories",
+    "revenue": "Revenue",
+    "clients": "Clients",
+    "commission": "Commission Rate"
+  },
+  "binh_phap": {
+    "title": "13 Binh Pháp",
+    "subtitle": "Sun Tzu for Agency Founders",
+    "description": "The supreme art of war is to subdue the enemy without fighting. 13 strategic clusters mapped to AI commands.",
+    "tagline": "Win Without Fighting",
+    "quote_original": "Bất chiến nhi khuất nhân chi binh",
+    "short_term": "Short-term: SaaS Affiliate Revenue",
+    "long_term": "Long-term: Local Client Brand Building",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "Planning",
+        "purpose": "Strategy formulation",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "Operations",
+        "purpose": "Execute operations",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "Strategic Attack",
+        "purpose": "Light growth",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "Position",
+        "purpose": "Defend advantage",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "Momentum",
+        "purpose": "Catch trends",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "Strength & Weakness",
+        "purpose": "Protect equity",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "Military Maneuvers",
+        "purpose": "Ship fast",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "Nine Variations",
+        "purpose": "Pivot",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "March",
+        "purpose": "Execute",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "Terrain",
+        "purpose": "Expand market",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "Nine Grounds",
+        "purpose": "Crisis management",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "Fire Attack",
+        "purpose": "Viral marketing",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "Intelligence",
+        "purpose": "Gather intel",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
     },
-    "nav": {
-        "home": "Home",
-        "dashboard": "Dashboard",
-        "marketing": "Marketing",
-        "sales": "Sales",
-        "analytics": "Analytics",
-        "settings": "Settings"
+    "wisdom": {
+      "quote1_original": "Bách chiến bách thắng, phi thiện chi thiện giả dã",
+      "quote1_translation": "Winning 100 battles out of 100 is not ultimate excellence",
+      "quote2_original": "Bất chiến nhi khuất nhân chi binh, thiện chi thiện giả dã",
+      "quote2_translation": "Subduing the enemy without fighting is ultimate excellence"
     },
-    "commands": {
-        "market_analysis": "Market Analysis",
-        "customer_profile": "Customer Profile",
-        "sales_strategy": "Sales Strategy",
-        "marketing_plan": "Marketing Plan",
-        "business_plan": "Business Plan",
-        "brand_identity": "Brand Identity",
-        "content_marketing": "Content Marketing",
-        "social_media": "Social Media",
-        "messaging": "Messaging",
-        "market_research": "Market Research",
-        "pr_strategy": "PR Strategy",
-        "growth_strategy": "Growth Strategy",
-        "sales_funnel": "Sales Funnel"
-    },
-    "common": {
-        "welcome": "Welcome to Agency OS",
-        "start": "Get Started",
-        "continue": "Continue",
-        "save": "Save",
-        "cancel": "Cancel",
-        "delete": "Delete",
-        "edit": "Edit",
-        "loading": "Loading...",
-        "success": "Success!",
-        "error": "An error occurred",
-        "confirm": "Are you sure?"
-    },
-    "auth": {
-        "login": "Log In",
-        "logout": "Log Out",
-        "signup": "Sign Up",
-        "email": "Email",
-        "password": "Password",
-        "forgot_password": "Forgot Password?"
-    },
-    "franchise": {
-        "title": "Franchise Portal",
-        "territories": "Your Territories",
-        "revenue": "Revenue",
-        "clients": "Clients",
-        "commission": "Commission Rate"
-    },
-    "binh_phap": {
-        "tagline": "Win Without Fighting",
-        "short_term": "Short-term: SaaS Affiliate Revenue",
-        "long_term": "Long-term: Local Client Brand Building"
+    "cta": {
+      "title": "Apply ancient wisdom to modern business",
+      "button": "View All Commands →"
     }
+  }
 }

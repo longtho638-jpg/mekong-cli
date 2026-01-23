@@ -1,0 +1,172 @@
+---
+/**
+ * BinhPhapChapter - Reusable i18n-aware chapter card component
+ * Usage:
+ * <BinhPhapChapter 
+ *   number={1} 
+ *   chinese="始計" 
+ *   name="Kế Hoạch" 
+ *   purpose="Lập chiến lược" 
+ *   commands={["/plan", "/binh-phap"]} 
+ *   style="highlight"
+ * />
+ */
+
+interface Props {
+  number: number;
+  chinese: string;
+  name: string;
+  purpose: string;
+  commands: string[];
+  style?: 'default' | 'highlight' | 'danger' | 'fire' | 'intel';
+}
+
+const { number, chinese, name, purpose, commands, style = 'default' } = Astro.props;
+
+const styleClasses: Record<string, string> = {
+  default: '',
+  highlight: 'highlight',
+  danger: 'danger',
+  fire: 'fire',
+  intel: 'intel'
+};
+---
+
+<div class={`chapter-card ${styleClasses[style]}`}>
+  <div class="chapter-number">{number}</div>
+  <div class="chapter-content">
+    <h3>{chinese} {name}</h3>
+    <p class="chapter-purpose">{purpose}</p>
+    <div class="commands">
+      {commands.map((cmd) => (
+        <code>{cmd}</code>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .chapter-card {
+    background: var(--color-bg-secondary, #1a1a2e);
+    border: 1px solid var(--color-border, #333);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-card:hover {
+    transform: translateY(-4px);
+    border-color: #eab308;
+    box-shadow: 0 8px 25px rgba(234, 179, 8, 0.15);
+  }
+
+  /* Shine sweep on hover */
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.08), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+
+  .chapter-card:hover::before {
+    left: 100%;
+  }
+
+  /* Special styles */
+  .chapter-card.highlight {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), transparent);
+  }
+  .chapter-card.highlight:hover {
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.2);
+  }
+
+  .chapter-card.danger {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent);
+  }
+
+  .chapter-card.fire {
+    border-color: #f97316;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), transparent);
+  }
+
+  .chapter-card.intel {
+    border-color: #8b5cf6;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), transparent);
+  }
+
+  .chapter-number {
+    width: 40px;
+    height: 40px;
+    background: var(--color-bg-tertiary, #252540);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #eab308;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .chapter-card:hover .chapter-number {
+    transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+  }
+
+  .chapter-card.highlight .chapter-number { color: #22c55e; }
+  .chapter-card.danger .chapter-number { color: #ef4444; }
+  .chapter-card.fire .chapter-number { color: #f97316; }
+  .chapter-card.intel .chapter-number { color: #8b5cf6; }
+
+  .chapter-content h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-primary, #fff);
+    margin: 0 0 4px 0;
+  }
+
+  .chapter-purpose {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #888);
+    margin: 0 0 12px 0;
+  }
+
+  .commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .commands code {
+    background: var(--color-bg-tertiary, #252540);
+    color: #eab308;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .commands code:hover {
+    background: rgba(234, 179, 8, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(234, 179, 8, 0.2);
+  }
+
+  .chapter-card.highlight .commands code { color: #22c55e; }
+  .chapter-card.danger .commands code { color: #ef4444; }
+  .chapter-card.fire .commands code { color: #f97316; }
+  .chapter-card.intel .commands code { color: #8b5cf6; }
+</style>
