@@ -1,3 +1,10 @@
+## [2.5.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.7...v2.5.0-beta.8) (2026-01-23)
+
+
+### 🚀 Features
+
+* integrate native Claude Code Tasks API ([#362](https://github.com/claudekit/claudekit-engineer/issues/362)) ([215adb1](https://github.com/claudekit/claudekit-engineer/commit/215adb12b777b611cc9b680579e590edf8e7a8cf))
+
 ## [2.5.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.6...v2.5.0-beta.7) (2026-01-22)
 
 
