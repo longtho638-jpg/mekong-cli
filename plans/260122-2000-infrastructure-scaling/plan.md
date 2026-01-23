@@ -1,7 +1,7 @@
 ---
 title: "Infrastructure Scaling & Performance Optimization"
 description: "Fine-tune Kubernetes HPA settings, optimize database queries, and implement edge caching strategies for high traffic readiness."
-status: pending
+status: in-progress
 priority: P2
 effort: 12h
 branch: feat/infra-scaling
