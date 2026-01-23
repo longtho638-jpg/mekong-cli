@@ -6,14 +6,23 @@ Provides non-invasive, localized usage tracking for Agency OS.
 No data leaves the local machine.
 """
 
+import functools
 import logging
+import time
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from .pricing import estimate_cost
 from .telemetry_exporters import load_events, print_dashboard, save_events
+
+# Try to import DB for persistent metrics
+try:
+    from core.infrastructure.database import get_db
+except ImportError:
+    get_db = lambda: None
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +52,7 @@ class Telemetry:
         self.enabled = True
 
         self.events = load_events(self.event_file)
+        self.db = get_db()
 
     def track(
         self,
@@ -52,7 +62,7 @@ class Telemetry:
         status: str = "success",
         metadata: Optional[Dict[str, Any]] = None,
     ) -> Event:
-        """Records an operational event to the telemetry buffer."""
+        """Records an operational event to the telemetry buffer and Supabase."""
         if not self.enabled:
             return None
 
@@ -74,6 +84,26 @@ class Telemetry:
         )
 
         self.events.append(event)
+
+        # 1. Persistent Storage (Supabase) if it's an agent metric
+        if self.db and category == "agent":
+            try:
+                metric_data = {
+                    "agent_id": safe_meta.get("agent_id", action),
+                    "agent_role": safe_meta.get("agent_role"),
+                    "operation": action,
+                    "status": status,
+                    "execution_time_ms": duration_ms or 0.0,
+                    "input_tokens": safe_meta.get("input_tokens", 0),
+                    "output_tokens": safe_meta.get("output_tokens", 0),
+                    "error_message": safe_meta.get("error"),
+                    "context_id": safe_meta.get("context_id"),
+                    "metadata": safe_meta
+                }
+                # Background push (simplified - in a real scenario we'd use a thread/queue)
+                self.db.table("agent_metrics").insert(metric_data).execute()
+            except Exception as e:
+                logger.debug(f"Failed to push telemetry to Supabase: {e}")
 
         # Maintain buffer size
         if len(self.events) > self.max_events:
@@ -112,6 +142,58 @@ class Telemetry:
     def print_dashboard(self, days: int = 7):
         """Visualizes telemetry insights in the terminal."""
         print_dashboard(self.get_summary(days))
+
+
+def agent_telemetry(operation: Optional[str] = None):
+    """
+    Decorator for Antigravity agents to track performance automatically.
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            start_time = time.perf_counter()
+            op_name = operation or func.__name__
+
+            # Extract agent info if possible
+            agent_id = "unknown"
+            agent_role = None
+            if args and hasattr(args[0], "id"):
+                agent_id = args[0].id
+            if args and hasattr(args[0], "role"):
+                agent_role = str(args[0].role)
+
+            try:
+                result = func(*args, **kwargs)
+                duration = (time.perf_counter() - start_time) * 1000
+
+                # Extract token info if result is a dict with usage data
+                metadata = {
+                    "agent_id": agent_id,
+                    "agent_role": agent_role,
+                }
+                if isinstance(result, dict) and "usage" in result:
+                    usage = result["usage"]
+                    input_tokens = usage.get("input_tokens", 0)
+                    output_tokens = usage.get("output_tokens", 0)
+                    model_id = usage.get("model", "unknown")
+
+                    metadata["input_tokens"] = input_tokens
+                    metadata["output_tokens"] = output_tokens
+                    metadata["model_id"] = model_id
+                    metadata["estimated_cost_usd"] = estimate_cost(model_id, input_tokens, output_tokens)
+
+                track_event("agent", op_name, duration_ms=duration, status="success", metadata=metadata)
+                return result
+            except Exception as e:
+                duration = (time.perf_counter() - start_time) * 1000
+                track_event("agent", op_name, duration_ms=duration, status="failed", metadata={
+                    "agent_id": agent_id,
+                    "agent_role": agent_role,
+                    "error": str(e)
+                })
+                raise e
+        return wrapper
+    return decorator
 
 
 # Global Singleton

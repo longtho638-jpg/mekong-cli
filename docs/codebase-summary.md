@@ -1,5 +1,5 @@
 # Codebase Summary
-> Updated: January 22, 2026
+> Updated: January 23, 2026
 
 ## Architecture Overview
 
@@ -14,21 +14,32 @@ AgencyOS uses a **Domain-Driven Design (DDD)** approach with modular architectur
 | **mcp_orchestrator** | MCP Lifecycle Manager | `mcp_orchestrator.py` |
 | **ab_testing** | A/B Testing Engine | `engine.py`, `analysis.py`, `reporting.py`, `time_utils.py` |
 | **agent_orchestrator** | Agent Coordination | `engine.py`, `analytics.py`, `reporting.py` |
-| **agent_swarm** | Multi-Agent Systems | `engine.py`, `registry.py`, `task_manager.py`, `shortcuts.py` |
+| **agent_swarm** | Multi-Agent Systems | `engine.py`, `registry.py`, `task_manager.py`, `shortcuts.py`, `agent.py` |
 | **algorithm** | Algorithm Framework | `core.py`, `confidence.py`, `strategies.py` |
 | **cashflow_engine** | Cash Flow Management | `engine.py`, `analytics.py`, `dashboard.py`, `persistence.py` |
 | **client_magnet** | Lead Generation | `engine.py`, `analytics.py`, `persistence.py`, `scoring.py` |
 | **code_guardian** | Code Quality | `guardian.py`, `monitor.py`, `rollback.py`, `scanner.py` |
-| **content_factory** | Content Generation | `engine.py`, `ideation.py`, `production.py`, `scheduling.py` |
+| **content_factory** | Content Generation | `engine.py`, `ideation.py`, `production.py`, `scheduling.py`, `distribution.py` |
 | **ml/models** | ML Models | `base.py`, `classifiers.py`, `regressors.py`, `utils.py`, `config.py` |
 | **moat_engine** | Competitive Moat | `engine.py`, `dashboard.py`, `definitions.py`, `persistence.py`, `strategy.py` |
 | **money_maker** | Revenue Generation | `engine.py`, `governance.py`, `qualification.py`, `quoting.py` |
 | **proposal_generator** | Proposal Creation | `engine.py`, `analytics.py`, `builder.py`, `persistence.py` |
 | **revenue/ai** | Revenue AI | `engine.py`, `forecasting.py`, `goals.py`, `reporting.py` |
+| **telemetry** | Agent Observability | `telemetry.py`, `pricing.py`, `telemetry_exporters.py` |
 | **mixins** | Reusable Behaviors | StatsMixin, PersistenceMixin |
 | **patterns** | Shared Patterns | singleton_factory, BasePersistence |
 | **types** | Type Definitions | TypedDict, Protocol definitions |
 | **rules** | Rule Expansion (v2) | `00-core/`, `01-strategy/`, `02-development/`, `03-operations/` |
+
+### Security & Governance (`backend/core/security/`)
+
+| Module | Purpose |
+| :--- | :--- |
+| **rbac.py** | Hierarchical Role-Based Access Control enforcement |
+| **audit.py** | Immutable, append-only audit logging service |
+| **secrets.py** | Advanced secret management abstraction (Doppler/Vault) |
+| **sanitizer.py** | Data Diet enforcement and PII redaction |
+| **sla.py** | Real-time SLA tracking and compliance monitoring |
 
 ### Infrastructure (`antigravity/infrastructure/`)
 

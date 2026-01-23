@@ -21,7 +21,7 @@ from backend.api.config.settings import settings
 # Import routers (only those not refactored yet)
 from backend.api.middleware.metrics import setup_metrics
 
-# Import middleware for multi-tenant, rate limiting, metrics, and validation
+# Import middleware for multi-tenant, rate limiting, metrics, validation, and security
 from backend.api.middleware.multitenant import (
     MultiTenantMiddleware,
     setup_tenant_routes,
@@ -31,6 +31,7 @@ from backend.api.middleware.rate_limiting import (
     setup_rate_limiting,
 )
 from backend.api.middleware.validation import ValidationMiddleware
+from backend.api.middleware.security import SecurityMiddleware
 from backend.api.routers import code as code_router
 from backend.api.routers import (
     crm,
@@ -68,6 +69,9 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
+
+# Add Security Middleware (Phase 19: Enterprise Security)
+app.add_middleware(SecurityMiddleware)
 
 # Add validation middleware (REFACTORED: New security layer)
 if settings.enable_validation:

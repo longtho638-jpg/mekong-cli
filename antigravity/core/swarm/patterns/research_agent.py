@@ -1,5 +1,6 @@
 from typing import Any, List, Optional
 
+from antigravity.core.telemetry import agent_telemetry
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 from ...rag.vector_client import VectorClient
@@ -21,6 +22,7 @@ class ResearchAgent(BaseSwarmAgent):
             results = self.search(message.content)
             self.send(message.sender, results, MessageType.RESPONSE)
 
+    @agent_telemetry(operation="research_search")
     def search(self, query: str) -> List[str]:
         """Perform semantic search."""
         if not self.vector_client or not self.embedding_service:

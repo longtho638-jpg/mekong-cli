@@ -17,8 +17,9 @@ from ..multitenant import get_current_tenant
 
 logger = logging.getLogger(__name__)
 
-# Initialize rate limiter with memory backend
-limiter = Limiter(key_func=get_remote_address)
+# Initialize rate limiter with Redis backend if in production, else memory
+storage_uri = settings.redis_url if settings.is_production else "memory://"
+limiter = Limiter(key_func=get_remote_address, storage_uri=storage_uri)
 
 def get_plan_limits():
     """Get rate limits from config."""

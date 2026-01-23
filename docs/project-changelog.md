@@ -4,6 +4,32 @@
 
 ---
 
+## [5.2.0] - 2026-01-23
+
+### Performance, Security & Growth Unification
+- **Agent Benchmarking Engine**: Launched a full-stack observability layer for the Antigravity swarm, tracking latency, token usage, and real-time USD costs per invocation.
+- **Enterprise Governance**: Deployed granular RBAC, immutable audit trails, and advanced secret management with managed provider support (Doppler/Vault).
+- **Intelligent Marketing**: Implemented an autonomous SEO auditor and a Code-to-Content pipeline that automatically generates social media and blog updates from git activity.
+- **Infrastructure Scaling**: Stabilized production with Kubernetes HPA (up to 10 replicas) and aggressive Redis-native caching.
+- **Growth & Feedback**: Finalized the real-world monitoring loop with a unified tracking API and automated community feedback bots.
+
+## [5.1.3] - 2026-01-23
+
+### Enterprise Security & Governance
+- **Granular RBAC**: Implemented hierarchy-aware Role-Based Access Control in `backend/core/security/rbac.py`. Supports Owner, Admin, Developer, Viewer, and Agent roles with FastAPI dependency enforcement.
+- **Immutable Audit Trails**: Launched append-only audit logging service in `backend/core/security/audit.py` integrated with Supabase RLS. Tracks actor, action, resource, and status for all sensitive operations.
+- **Security Middleware**: Integrated `SecurityMiddleware` into the unified API to automatically identify users from JWTs and record audit logs for all mutating requests (POST/PUT/DELETE).
+- **Advanced Secret Management**: Created `SecretManager` abstraction in `backend/core/security/secrets.py` with support for Doppler and standard environment fallbacks.
+- **Data Diet Sanitizer**: Implemented automated output sanitization in `backend/core/security/sanitizer.py` to prevent PII or credential leakage in system logs and agent responses.
+- **Audited Routers**: Applied RBAC and Audit decorators to CRM and Franchise API endpoints.
+
+## [5.1.2] - 2026-01-23
+
+### Infrastructure & Performance
+- **Kubernetes Auto-scaling**: Implemented Horizontal Pod Autoscalers (HPA) for `mekong-backend` and `mekong-frontend` in `k8s/backend-hpa.yaml` and `k8s/frontend-hpa.yaml`. Configured dynamic scaling from 2 to 10 replicas based on CPU and Memory utilization.
+- **Edge Caching Optimization**: Updated `apps/docs/vercel.json` with aggressive caching headers for static assets (`_astro`, `fonts`, `images`) and implemented `stale-while-revalidate` patterns to improve documentation performance.
+- **Observability Audit**: Verified Prometheus-compatible metrics stack in `antigravity/core/observability/stack.py` for real-time performance tracking.
+
 ## [5.1.1] - 2026-01-23
 
 ### Fixed

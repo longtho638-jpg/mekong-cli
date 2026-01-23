@@ -1,7 +1,7 @@
 ---
 title: "Real-world Monitoring & Feedback Collection"
 description: "Implement user engagement tracking and automated feedback collection for AgencyOS v5."
-status: in-progress
+status: completed
 priority: P1
 effort: 8h
 branch: feat/monitoring-feedback
@@ -15,20 +15,20 @@ created: 2026-01-22
 
 ## 📋 Execution Tasks
 
-- [ ] **Phase 1: Monitoring Infrastructure**
-  - [ ] Implement engagement tracking in `apps/docs` (clicks, time-on-page, sequence progress).
-  - [ ] Integrate tracking with the `/api/track` endpoint (to be shared with A/B testing).
-  - [ ] Set up server-side logging for API usage and conversion events.
-- [ ] **Phase 2: Feedback Collection Bot**
-  - [ ] Implement `scripts/feedback_bot.py` for Discord/Twitter.
-  - [ ] Create `/api/feedback` endpoint to receive user submissions.
-  - [ ] Set up automated feedback triggers (e.g., after 7 days of usage).
-- [ ] **Phase 3: Analytics Dashboard**
-  - [ ] Create a lightweight dashboard (or extend current one) to visualize feedback and metrics.
-  - [ ] Implement sentiment analysis for collected feedback.
+- [x] **Phase 1: Monitoring Infrastructure**
+  - [x] Implement engagement tracking in `apps/docs` (clicks, time-on-page, sequence progress).
+  - [x] Integrate tracking with the `/api/track` endpoint (to be shared with A/B testing).
+  - [x] Set up server-side logging for API usage and conversion events.
+- [x] **Phase 2: Feedback Collection Bot**
+  - [x] Implement `scripts/feedback_bot.py` for Discord/Twitter.
+  - [x] Create `/api/feedback` endpoint to receive user submissions.
+  - [x] Set up automated feedback triggers (e.g., after 7 days of usage).
+- [x] **Phase 3: Analytics Dashboard**
+  - [x] Create a lightweight dashboard (or extend current one) to visualize feedback and metrics.
+  - [x] Implement sentiment analysis for collected feedback.
 - [ ] **Phase 4: Optimization Loop**
-  - [ ] Define triggers for A/B test adjustments based on monitoring data.
-  - [ ] Document feedback-driven roadmap updates.
+  - [x] Define triggers for A/B test adjustments based on monitoring data.
+  - [x] Document feedback-driven roadmap updates.
 
 ## 🔍 Context
 

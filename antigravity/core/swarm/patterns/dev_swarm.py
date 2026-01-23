@@ -1,8 +1,10 @@
+from antigravity.core.telemetry import agent_telemetry
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 
 
 class ArchitectAgent(BaseSwarmAgent):
+    @agent_telemetry(operation="architect_on_message")
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.type == MessageType.TASK:
@@ -13,6 +15,7 @@ class ArchitectAgent(BaseSwarmAgent):
 
 
 class CoderAgent(BaseSwarmAgent):
+    @agent_telemetry(operation="coder_on_message")
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.sender == "architect":
@@ -23,6 +26,7 @@ class CoderAgent(BaseSwarmAgent):
 
 
 class ReviewerAgent(BaseSwarmAgent):
+    @agent_telemetry(operation="reviewer_on_message")
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.sender == "coder":

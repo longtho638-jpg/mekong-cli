@@ -1,7 +1,7 @@
 ---
 title: "A/B Testing Infrastructure Implementation"
 description: "Lightweight, performance-first A/B testing mechanism for AgencyOS documentation site using Astro middleware and cookie-based variant assignment."
-status: pending
+status: completed
 priority: P1
 effort: 6h
 branch: feat/ab-testing-infra
@@ -15,20 +15,20 @@ created: 2026-01-22
 
 ## 📋 Execution Tasks
 
-- [ ] **Phase 1: Research & Discovery**
+- [x] **Phase 1: Research & Discovery**
   - [x] Analyze existing Astro architecture and middleware.
   - [x] Identify target components and current tracking status.
-- [ ] **Phase 2: Infrastructure Setup**
-  - [ ] Define `experiments.json` configuration structure.
-  - [ ] Implement variant assignment logic in `src/middleware.ts`.
-  - [ ] Add TypeScript definitions for experiments and Astro.locals.
-- [ ] **Phase 3: Component Modification**
-  - [ ] Update `Hero.astro` to render based on variant input.
-  - [ ] Update `PricingSection.astro` to support A/B test variants.
-- [ ] **Phase 4: Tracking & Verification**
-  - [ ] Implement `/api/track` endpoint for experiment exposure and conversion events.
-  - [ ] Add client-side tracking for CTA clicks in variants.
-  - [ ] Verify zero Cumulative Layout Shift (CLS) using server-side assignment.
+- [x] **Phase 2: Infrastructure Setup**
+  - [x] Define `experiments.json` configuration structure.
+  - [x] Implement variant assignment logic in `src/middleware.ts`.
+  - [x] Add TypeScript definitions for experiments and Astro.locals.
+- [x] **Phase 3: Component Modification**
+  - [x] Update `Hero.astro` to render based on variant input.
+  - [x] Update `PricingSection.astro` to support A/B test variants.
+- [x] **Phase 4: Tracking & Verification**
+  - [x] Implement `/api/track` endpoint for experiment exposure and conversion events.
+  - [x] Add client-side tracking for CTA clicks in variants.
+  - [x] Verify zero Cumulative Layout Shift (CLS) using server-side assignment.
 
 ## 🔍 Context
 

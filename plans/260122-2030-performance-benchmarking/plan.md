@@ -1,7 +1,7 @@
 ---
 title: "Agent Performance Benchmarking & Optimization"
 description: "Implement a comprehensive benchmarking engine to track agent latency, success rates, and token costs for the Antigravity swarm."
-status: pending
+status: completed
 priority: P2
 effort: 16h
 branch: feat/agent-benchmarking
@@ -15,17 +15,17 @@ created: 2026-01-22
 
 ## 📋 Execution Tasks
 
-- [ ] **Phase 1: Instrumentation & Data Collection**
-  - [ ] Implement a standardized `TelemetryWrapper` for all 24+ Antigravity agents.
-  - [ ] Capture key metrics: `execution_time`, `input_tokens`, `output_tokens`, `success_status`, `retry_count`.
-  - [ ] Log metrics to a persistent storage layer (Supabase `agent_metrics` table).
+- [x] **Phase 1: Instrumentation & Data Collection**
+  - [x] Implement a standardized `TelemetryWrapper` for all 24+ Antigravity agents.
+  - [x] Capture key metrics: `execution_time`, `input_tokens`, `output_tokens`, `success_status`, `retry_count`.
+  - [x] Log metrics to a persistent storage layer (Supabase `agent_metrics` table).
 - [ ] **Phase 2: Benchmarking Engine**
-  - [ ] Create a standalone CLI tool `/benchmark` to run standardized test suites across agents.
+  - [x] Create a standalone CLI tool `/benchmark` to run standardized test suites across agents.
   - [ ] Define "Golden Datasets" for each agent role (Planning, Implementation, Review).
   - [ ] Implement automated regression testing for agent performance.
 - [ ] **Phase 3: Cost Observability**
-  - [ ] Integrate with `quota_engine.py` to provide real-time ROI analysis per agent invocation.
-  - [ ] Generate daily cost reports grouped by agent type and task category.
+  - [x] Integrate with `quota_engine.py` to provide real-time ROI analysis per agent invocation.
+  - [x] Generate daily cost reports grouped by agent type and task category.
 - [ ] **Phase 4: Optimization & Prompt Tuning**
   - [ ] Identify high-latency/high-cost bottlenecks in sequential workflows.
   - [ ] Implement automated prompt versioning and A/B testing for agent instructions.

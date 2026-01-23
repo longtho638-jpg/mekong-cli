@@ -12,6 +12,7 @@ from antigravity.core.algorithm.validation import validate_win3_logic
 from antigravity.core.chains import Chain
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.types import HookContextDict, OrchestratorStatsDict
+from antigravity.core.telemetry import agent_telemetry
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -42,6 +43,7 @@ class AgentOrchestrator(StatsMixin):
         self.delegator = OrchestratorDelegator(verbose=verbose, reporting=self.reporting)
         self.monitor = OrchestratorMonitor(analytics=self.analytics)
 
+    @agent_telemetry(operation="orchestrator_run")
     def run(
         self, suite: str, subcommand: str, context: Optional[HookContextDict] = None
     ) -> ChainResult:

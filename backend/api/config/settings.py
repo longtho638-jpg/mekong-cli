@@ -93,6 +93,10 @@ class Settings(BaseSettings):
         default="sqlite:///./agencyos.db",
         description="Database connection URL"
     )
+    db_pool_size: int = Field(default=5, description="DB connection pool size")
+    db_max_overflow: int = Field(default=10, description="DB connection max overflow")
+    db_pool_recycle: int = Field(default=3600, description="DB connection pool recycle (seconds)")
+
     redis_url: str = Field(
         default="redis://localhost:6379",
         description="Redis connection URL"

@@ -52,6 +52,12 @@ class ContentFactory(StatsMixin):
         self.content_archive.append(piece)
         return piece
 
+    def generate_social_update(self, changelog: str) -> ContentPiece:
+        """Generates a social media update from technical changes."""
+        piece = self.producer.generate_from_changelog(changelog)
+        self.content_archive.append(piece)
+        return piece
+
     def write_article(self, topic: str) -> str:
         """Writes a full article on a given topic."""
         idea = ContentIdea(
