@@ -14,7 +14,7 @@ Yêu cầu: Python 3.9+, Node.js 18+.
 
 ```bash
 # 1. Clone kho vũ khí
-git clone https://github.com/your-repo/mekong-cli.git
+git clone https://github.com/longtho638-jpg/mekong-cli.git
 cd mekong-cli
 
 # 2. Cài đặt dependencies (Vũ khí)
