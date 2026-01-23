@@ -1,3 +1,15 @@
+## [2.5.0-beta.9](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.8...v2.5.0-beta.9) (2026-01-23)
+
+
+### 🚀 Features
+
+* **chrome-devtools:** add authentication and cookie management features ([4206332](https://github.com/claudekit/claudekit-engineer/commit/420633266f0b352d0ceacd322b9476d7d87c9efb))
+
+
+### ♻️ Code Refactoring
+
+* **agents:** simplify git-manager agent prompt ([e3c6da3](https://github.com/claudekit/claudekit-engineer/commit/e3c6da3c7788e905738d9ff538b37b273f395309))
+
 ## [2.5.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.7...v2.5.0-beta.8) (2026-01-23)
 
 
