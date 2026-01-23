@@ -534,44 +534,7 @@ User sees sorted/filtered plan grid
 - Timestamp tracking for plan modifications
 - Security-validated path traversal
 
-#### 6.4 Beads Integration (Optional)
-
-**Purpose**: Persistent task and epic tracking alongside AI workflow planning
-
-**Activation**:
-- User runs `bd init` in project directory
-- Session start hook detects `.beads/` directory
-- Sets environment variables: CK_BEADS_AVAILABLE, CK_BEADS_INITIALIZED
-
-**Integration Points**:
-- **Session Hooks** (`session-init.cjs`): Beads detection and capability detection
-- **Plan Creation** (`/plan` command): Automatically creates parent epic for implementation phases
-- **Workflow Routing** (`/cook` command): Smart routing - delegates complex multi-file tasks to beads
-- **Discovered Work** (subagent workflow): Files discovered work as child issues under parent epic
-- **Subagent Init** (`subagent-init.cjs`): Injects beads context for agent awareness
-
-**Configuration** (`.ck.json`):
-```json
-{
-  "beads": {
-    "enabled": true,
-    "autoCreateEpic": true,
-    "autoLinkPhases": true
-  }
-}
-```
-
-**CLI Wrapper** (`.claude/hooks/lib/beads-utils.cjs`):
-- `detectBeadsProject()` - Check if beads available
-- `createEpic()` - Create parent epic with metadata
-- `createSubtask()` - Create subtask with parent linkage
-- `fileDiscoveredWork()` - File discovered work as new issue
-- `addDependency()` - Link issues with dependency types
-- `getReadyWork()` - Query ready-to-work issues
-- `closeIssue()` - Mark issue completed
-- `syncBeads()` - Sync beads database
-
-#### 6.5 External Service Integration
+#### 6.4 External Service Integration
 
 **GitHub**:
 - Actions (CI/CD automation)

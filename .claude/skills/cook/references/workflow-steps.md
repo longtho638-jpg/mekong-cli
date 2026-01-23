@@ -55,39 +55,6 @@ All modes share core steps with mode-specific variations.
 - Respect file ownership boundaries
 - Wait for parallel group before next
 
-### Discovered Work (beads projects)
-
-When `CK_BEADS_AVAILABLE=1` and you discover issues during implementation:
-
-**What to file:**
-- Bugs in existing code
-- Missing edge cases
-- Technical debt
-- Security concerns
-- Performance issues
-
-**How to file immediately:**
-```bash
-# 1. Create the discovered work item
-bd create "{brief description}" -t {bug|task|doc} -p {0-2}
-
-# 2. Link to current task (capture discovery context)
-bd dep add {new-id} {current-id} --type discovered-from
-
-# 3. Continue main implementation (don't block)
-```
-
-**Priority guide:**
-- P0: Critical security/data loss bugs
-- P1: High-impact bugs, blocking issues
-- P2: Medium bugs, tech debt (default for discovered work)
-
-**Don't:**
-- Add to mental queue (will be forgotten)
-- Wait until end of session
-- Create separate TODO.md files
-- File trivial issues (typos, minor style)
-
 **Output:** `✓ Step 3: Implemented [N] files - [X/Y] tasks complete`
 
 ## Step 4: Testing (skip if no-test mode)
@@ -124,24 +91,11 @@ bd dep add {new-id} {current-id} --type discovered-from
 1. `project-manager` + `docs-manager` subagents in parallel
 2. Onboarding check (API keys, env vars)
 3. Auto-commit via `git-manager` subagent
-4. **Beads sync** (if `CK_BEADS_AVAILABLE=1`)
-
-### Beads Sync (automatic)
-
-If beads available, run automatically:
-```bash
-bd sync  # Persist task state to git
-```
-
-**Error handling:**
-- If sync fails: log warning, continue finalization
-- Don't block session end on beads errors
-- Silent skip if beads not available
 
 **Auto mode:** Continue to next phase automatically
 **Others:** Ask user before next phase
 
-**Output:** `✓ Step 6: Finalized - Status updated - Committed - Beads synced`
+**Output:** `✓ Step 6: Finalized - Status updated - Committed`
 
 ## Mode-Specific Flow Summary
 

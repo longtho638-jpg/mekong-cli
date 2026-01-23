@@ -36,12 +36,6 @@ const {
   execSafe
 } = require('./lib/project-detector.cjs');
 
-// Import beads utilities
-const {
-  detectBeadsProject,
-  getReadyWork
-} = require('./lib/beads-utils.cjs');
-
 /**
  * Main hook execution
  */
@@ -60,9 +54,6 @@ async function main() {
       pm: detectPackageManager(config.project?.packageManager),
       framework: detectFramework(config.project?.framework)
     };
-
-    // Detect beads project status
-    const beadsStatus = detectBeadsProject(process.cwd());
 
     // Resolve plan - now returns { path, resolvedBy }
     const resolved = resolvePlanPath(null, config);
@@ -165,11 +156,6 @@ async function main() {
       const codingLevel = config.codingLevel ?? 5;
       writeEnv(envFile, 'CK_CODING_LEVEL', codingLevel);
       writeEnv(envFile, 'CK_CODING_LEVEL_STYLE', getCodingLevelStyleName(codingLevel));
-
-      // Beads detection and config
-      writeEnv(envFile, 'CK_BEADS_AVAILABLE', beadsStatus.available ? '1' : '');
-      writeEnv(envFile, 'CK_BEADS_VERSION', beadsStatus.version || '');
-      writeEnv(envFile, 'CK_BEADS_INITIALIZED', beadsStatus.initialized ? '1' : '');
     }
 
     console.log(`Session ${source}. ${buildContextOutput(config, detections, resolved, staticEnv.gitRoot)}`);
@@ -203,28 +189,6 @@ async function main() {
       config.assertions.forEach((assertion, i) => {
         console.log(`  ${i + 1}. ${assertion}`);
       });
-    }
-
-    // Beads status output - only if explicitly enabled in config
-    // Default: beads features are OFF unless user sets config.beads.enabled = true or "auto"
-    const beadsEnabled = config.beads?.enabled === true || config.beads?.enabled === 'auto';
-
-    if (beadsEnabled) {
-      if (beadsStatus.initialized && !beadsStatus.available) {
-        // Broken state: .beads/ exists but bd CLI not found
-        console.log(`\n⚠️ beads (.beads/) found but 'bd' CLI unavailable.`);
-        console.log(`   Install: npm install -g @beads/bd`);
-      } else if (beadsStatus.available && beadsStatus.initialized) {
-        // Fully working: show ready work
-        const readyResult = getReadyWork(3);
-        if (readyResult.success && Array.isArray(readyResult.issues) && readyResult.issues.length > 0) {
-          console.log(`\nReady work (beads):`);
-          readyResult.issues.forEach(issue => {
-            console.log(`  ${issue.id}: ${issue.title || issue.description || 'No title'}`);
-          });
-        }
-      }
-      // Removed: discoverability hint - true opt-in means no unsolicited output
     }
 
     process.exit(0);

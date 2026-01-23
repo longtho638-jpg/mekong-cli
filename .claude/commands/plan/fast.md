@@ -28,25 +28,6 @@ Use `planner` subagent to:
 4. Gathers all information and create an implementation plan of this task.
 5. Ask user to review the plan.
 
-## Beads Epic Sync (if available)
-
-If `CK_BEADS_AVAILABLE=1` and config `beads.syncPlans=true`:
-
-1. Create epic: `bd create "{plan title}" -t epic --json`
-2. For each phase-XX-*.md file, create subtask:
-   - `bd create "Phase {N}: {phase title}" -t task --json`
-   - `bd dep add {subtask-id} {epic-id} --type parent-child`
-3. Update plan.md frontmatter: add `beads_epic: bd-xxxxx`
-4. Output summary:
-   ```
-   Beads: Created epic bd-xxxxx with {N} subtasks
-   - Phase 1: bd-aaaa
-   - Phase 2: bd-bbbb
-   ...
-   ```
-
-Skip silently if beads unavailable or bd commands fail.
-
 ## Context Reminder (MANDATORY)
 
 **IMPORTANT:** After plan creation, you MUST remind the user:

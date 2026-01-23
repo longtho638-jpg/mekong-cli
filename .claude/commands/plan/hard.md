@@ -30,25 +30,6 @@ Check the `## Plan Context` section in the injected context:
 5. Main agent gathers all research and scout report filepaths, and pass them to `planner` subagent with the prompt to create an implementation plan of this task.
 6. Main agent receives the implementation plan from `planner` subagent, and ask user to review the plan
 
-## Beads Epic Sync (if available)
-
-If `CK_BEADS_AVAILABLE=1` and config `beads.syncPlans=true`:
-
-1. Create epic: `bd create "{plan title}" -t epic --json`
-2. For each phase-XX-*.md file, create subtask:
-   - `bd create "Phase {N}: {phase title}" -t task --json`
-   - `bd dep add {subtask-id} {epic-id} --type parent-child`
-3. Update plan.md frontmatter: add `beads_epic: bd-xxxxx`
-4. Output summary:
-   ```
-   Beads: Created epic bd-xxxxx with {N} subtasks
-   - Phase 1: bd-aaaa
-   - Phase 2: bd-bbbb
-   ...
-   ```
-
-Skip silently if beads unavailable or bd commands fail.
-
 ## Post-Plan Validation (Optional)
 
 After plan creation, offer validation interview to confirm decisions before implementation.
