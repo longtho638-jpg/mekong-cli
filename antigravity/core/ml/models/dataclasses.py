@@ -5,8 +5,8 @@ ML Models - Data Classes.
 Result dataclasses for ML operations.
 """
 
-from dataclasses import dataclass
-from typing import Any, Dict, List
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -19,7 +19,7 @@ class MLOptimizationResult:
     viral_multiplier: float
     strategy_used: str
     optimization_features: List[str]
-    quantum_fingerprint: str = None
+    quantum_fingerprint: Optional[str] = None
     training_data_points: int = 0
 
 
@@ -48,6 +48,6 @@ class ConversionPredictor:
     model: Any = None
     scaler: Any = None
     accuracy: float = 0.0
-    prediction_intervals: List[float] = None  # Confidence intervals
+    prediction_intervals: Optional[List[float]] = None  # Confidence intervals
     last_trained: float = 0.0
-    ensemble_models: List[Any] = None  # For ensemble methods
+    ensemble_models: Optional[List[Any]] = None  # For ensemble methods

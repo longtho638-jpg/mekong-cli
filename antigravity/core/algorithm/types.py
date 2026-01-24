@@ -78,7 +78,7 @@ class ConversionData:
 class EnhancedPricingContext:
     """Enhanced pricing context with ML features."""
 
-    def __init__(self, base_price: float, features: Dict[str, Any] = None):
+    def __init__(self, base_price: float, features: Optional[Dict[str, Any]] = None):
         self.base_price = base_price
         self.features = features or {}
         self.ml_features = self._extract_ml_features()
