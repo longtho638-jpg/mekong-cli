@@ -57,7 +57,20 @@ const { execSync } = require('child_process');
       fs.mkdirSync(claudeDir, { recursive: true });
     }
 
+    // Read existing metadata to preserve fields like 'deletions'
+    let existingMetadata = {};
+    if (fs.existsSync(metadataPath)) {
+      try {
+        existingMetadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+      } catch (parseErr) {
+        console.warn('⚠️ Could not parse existing metadata.json, starting fresh');
+      }
+    }
+
     const metadata = {
+      // Preserve existing deletions array if present
+      ...(existingMetadata.deletions && { deletions: existingMetadata.deletions }),
+      // Generated fields (always update these)
       version: packageJson.version,
       name: packageJson.name,
       description: packageJson.description,
