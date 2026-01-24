@@ -1,268 +1,73 @@
-# Kanban Workflow - Unified
+---
+description: Unified Kanban and Vibe Workflow Management
+---
 
-**Version:** 2.0 (Consolidated)
-**Last Updated:** 2026-01-19
-**Status:** Active
+# 📊 Kanban Workflow
 
 > **Binh Pháp:** "Tri bỉ tri kỷ" - Know tasks, know priorities
 
----
+## ⚙️ Core Engine
+- **Implementation**: `antigravity/core/vibe_workflow.py`
+- **Data Store**: `antigravity/core/kanban/` (JSON store)
+- **Sync Engine**: `antigravity/core/sync_engine.py` (assumed)
 
-## 🎯 Overview
+## 🚀 Trigger Commands
 
-This workflow defines how to manage Kanban boards in AgencyOS, including both CLI operations and agent interaction protocols.
+- `mekong kanban` - Show board
+- `mekong kanban add "Task"` - Add task
+- `mekong kanban move <id> <status>` - Move task
+- `mekong plan` - Generate tasks from high-level goal
 
----
+## 🔄 Workflow Steps
 
-## 📊 CLI Operations
-
-### Trigger Commands
-
-```bash
-agencyos kanban                    # View board
-agencyos kanban add "Task title"   # Add task
-agencyos kanban move TASK-123 done # Move task
-agencyos kanban delete TASK-123    # Remove task
-```
-
-### Board Display
-
-```
-┌─────────────┬─────────────┬─────────────┐
-│   TODO      │ IN PROGRESS │    DONE     │
-├─────────────┼─────────────┼─────────────┤
-│ [ ] Task 1  │ [/] Task 3  │ [x] Task 5  │
-│ [ ] Task 2  │             │ [x] Task 6  │
-└─────────────┴─────────────┴─────────────┘
-```
-
-### Supported Actions
-
-| Command  | Action          | Example                              |
-| -------- | --------------- | ------------------------------------ |
-| `add`    | Create new task | `kanban add "Fix login bug"`         |
-| `move`   | Move to column  | `kanban move TASK-123 in_progress`   |
-| `done`   | Mark complete   | `kanban done TASK-123`               |
-| `delete` | Remove task     | `kanban delete TASK-123`             |
-| `list`   | Filter tasks    | `kanban list --status todo`          |
-
-### Storage & Sync
-
-Auto-saves changes to:
-- `.mekong/kanban.json` (local storage)
-- External vibe-kanban (if configured)
-- Syncs with `task.md` artifacts
-- Links to GitHub issues (optional)
-
----
-
-## 🤖 Agent Interaction Protocol
-
-### The Golden Rule (Đạo)
-
-**Agents must never hold state in memory.**
-All tasks, progress, and blockers must be reflected on the Kanban board immediately.
-
-### Standard Operating Procedure (SOP)
-
-#### A. Picking a Task
-
-1. **List**: Call `kanban.py list {"status": "todo"}`
-2. **Filter**: Find tasks assigned to `self.agent_name` or `unassigned`
-3. **Claim**: Call `kanban.py update {"id": "TASK-XXX", "status": "in_progress", "agent": "self.agent_name"}`
-
-#### B. Executing
-
-1. Perform the work (Code, Write, Research)
-2. **Log**: Append notes to the task if blocked or partially complete
-3. **Update**: Reflect progress on the board continuously
-
-#### C. Completion
-
-1. **Review**: If the task requires approval, move to `review`
-2. **Done**: Call `kanban.py update {"id": "TASK-XXX", "status": "done"}`
-
-### Tool Definition (for System Prompt)
-
-```json
-{
-  "name": "manage_kanban",
-  "description": "Interact with the project Kanban board to track tasks.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "action": {
-        "type": "string",
-        "enum": ["create", "update", "list"]
-      },
-      "params": {
-        "type": "object",
-        "description": "Parameters for the action (title, id, status, etc.)"
-      }
-    },
-    "required": ["action", "params"]
-  }
-}
-```
-
-### Agent Workflow Example
+### 1. 📥 Ingestion & Planning
+The `VibeWorkflow` engine decomposes goals into tasks.
 
 ```python
-# Agent picks a task
-tasks = kanban.list({"status": "todo", "agent": None})
-task = tasks[0]
-
-# Claim the task
-kanban.update({
-    "id": task["id"],
-    "status": "in_progress",
-    "agent": "fullstack-developer"
-})
-
-# Do the work
-implement_feature()
-
-# Mark complete
-kanban.update({
-    "id": task["id"],
-    "status": "done",
-    "notes": "Implemented feature X with tests"
-})
+# antigravity/core/vibe_workflow.py
+def decompose_goal(goal_description):
+    # 1. Analyze goal with Planner agent
+    # 2. Break down into Epics/Stories/Tasks
+    # 3. Create JSON entries in .mekong/kanban.json
 ```
 
----
+### 2. 📋 Board Management
+Manages task states: `todo` → `in_progress` → `review` → `done`.
 
-## 🔄 Task States
+**State Protocol:**
+- **Agents MUST** update state immediately upon starting/finishing.
+- **Single Source of Truth**: `.mekong/kanban.json` (or CLEO integration).
 
-- `todo` - Not yet started
-- `in_progress` - Currently being worked on
-- `review` - Awaiting approval
-- `blocked` - Waiting on external dependency
-- `done` - Completed
+### 3. 🤖 Agent Coordination
+Agents interact with the board via the `manage_kanban` tool.
 
----
+1. **Pick**: Agent queries `todo` tasks.
+2. **Claim**: Agent updates task `agent_id` to itself.
+3. **Execute**: Agent performs work.
+4. **Complete**: Agent moves task to `done`.
 
-## 📁 Integration Points
+### 4. 🔄 Synchronization
+Syncs local state with external tools (GitHub Issues, Linear, Vibe Kanban).
 
-### With Task Artifacts
-
-Kanban tasks can reference `task.md` files in the codebase:
-```json
-{
-  "id": "TASK-123",
-  "title": "Implement login",
-  "artifact": "plans/260119-login-feature/task.md"
-}
-```
-
-### With GitHub Issues
-
-Optional GitHub issue linking:
-```json
-{
-  "id": "TASK-123",
-  "github_issue": "https://github.com/org/repo/issues/456"
-}
-```
-
-### With Vibe Kanban
-
-Export to external vibe-kanban board:
 ```bash
-agencyos kanban export --to vibe-kanban
+# Auto-sync on change
+mekong kanban sync --target vibe-kanban
 ```
 
----
+## 🛠 Configuration
 
-## 🛠️ Configuration
-
-### `.mekong/kanban.json` Schema
-
-```json
-{
-  "tasks": [
-    {
-      "id": "TASK-001",
-      "title": "Task title",
-      "status": "todo",
-      "agent": null,
-      "created_at": "2026-01-19T10:00:00Z",
-      "updated_at": "2026-01-19T10:00:00Z",
-      "notes": "",
-      "priority": "P1",
-      "tags": ["feature", "backend"]
-    }
-  ]
-}
-```
-
-### External Board Sync
-
-Configure in `.mekong/config.json`:
 ```json
 {
   "kanban": {
-    "sync_enabled": true,
-    "external_board": "vibe-kanban",
-    "sync_interval": 300
+    "storage": "local",
+    "sync_target": "none",
+    "columns": ["todo", "in_progress", "review", "done"],
+    "auto_archive_days": 7
   }
 }
 ```
 
----
-
-## ✅ Best Practices
-
-1. **Single Source of Truth**: Always update the Kanban board, never rely on memory
-2. **Atomic Updates**: Update task status immediately after state changes
-3. **Clear Titles**: Use descriptive task titles (e.g., "Fix login timeout bug" not "Fix bug")
-4. **Proper Assignment**: Claim tasks before working to avoid conflicts
-5. **Notes for Blockers**: If blocked, document the blocker in task notes
-6. **Regular Cleanup**: Archive or delete completed tasks periodically
-
----
-
-## 🔍 Troubleshooting
-
-### Task Not Updating
-```bash
-# Check kanban.json exists
-ls -la .mekong/kanban.json
-
-# Verify JSON is valid
-cat .mekong/kanban.json | jq .
-
-# Check file permissions
-chmod 644 .mekong/kanban.json
-```
-
-### Sync Issues
-```bash
-# Force sync with external board
-agencyos kanban sync --force
-
-# Check sync configuration
-cat .mekong/config.json | jq .kanban
-```
-
-### Agent Conflicts
-```bash
-# List tasks in progress
-agencyos kanban list --status in_progress
-
-# Reassign stuck task
-agencyos kanban update TASK-123 --agent null
-```
-
----
-
-## 📚 Related Documentation
-
-- [Primary Workflow](primary-workflow.md)
-- [Agent Coordination](../rules/orchestration-protocol.md)
-- [Task Management](../commands/tasks/)
-
----
-
-_Generated by Binh Pháp Framework | AgencyOS v3.0_
-_Consolidated from kanban-workflow.md + kanban-agent-flow.md_
+## 🔗 Related Components
+- `antigravity/core/kanban/` - Storage logic
+- `cli/commands/kanban.py` - CLI entry point
+- `cleo` - CLI Task Manager (primary backend if enabled)

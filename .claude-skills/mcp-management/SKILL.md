@@ -1,14 +1,17 @@
-# Mcp Management
+# MCP Management
 
 ## Description
-Skill for mcp management operations.
-
-## When to Use
-Use when working with mcp management related tasks.
+Manage Model Context Protocol (MCP) servers and tools.
 
 ## Implementation
-Located in implementation.py or scripts/ directory.
+- **Core Logic**: `antigravity/core/mcp_manager.py`
+- **Orchestrator**: `antigravity/core/mcp_orchestrator.py`
+
+## Capabilities
+- **Discover**: Find available tools from registered servers
+- **Call**: Execute tools via standard protocol
+- **Manage**: Add/Remove/Update MCP server configurations
 
 ## Dependencies
-Check requirements.txt for Python dependencies.
-Check package.json for Node.js dependencies.
+- `mcp` (Python package)
+- `.claude/mcp.json` (Configuration)
