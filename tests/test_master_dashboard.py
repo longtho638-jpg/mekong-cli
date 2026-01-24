@@ -10,7 +10,7 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from antigravity.core.master_dashboard import MasterDashboard
+from antigravity.core.dashboard import MasterDashboard
 
 
 class TestMasterDashboard:

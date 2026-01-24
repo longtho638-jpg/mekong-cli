@@ -1,5 +1,5 @@
-from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import AgentRole, TaskPriority
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,8 +9,8 @@ class TestAgentSwarm:
     @pytest.fixture
     def swarm(self):
         # We patch ThreadPoolExecutor to avoid starting real threads
-        with patch('antigravity.core.agent_swarm.engine.ThreadPoolExecutor'), \
-             patch('antigravity.core.agent_swarm.engine.TaskExecutor'):
+        with patch('antigravity.core.swarm.engine.ThreadPoolExecutor'), \
+             patch('antigravity.core.swarm.engine.TaskExecutor'):
             return AgentSwarm()
 
     def test_swarm_initialization(self, swarm):

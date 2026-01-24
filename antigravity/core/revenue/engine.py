@@ -143,8 +143,17 @@ class RevenueEngine(BaseEngine):
         return self.forecaster.forecast_growth(self.get_mrr(), months)
 
     def _collect_stats(self) -> RevenueStatsDict:
-        """Provides high-level performance metrics for the engine."""
-        return {
+        """
+        Provides high-level performance metrics for the engine.
+        Cached for 60 seconds to reduce calculation overhead.
+        """
+        # Simple caching mechanism (could be replaced by functools.lru_cache or redis)
+        now = datetime.now()
+        if hasattr(self, "_cached_stats") and hasattr(self, "_cache_time"):
+            if (now - self._cache_time).total_seconds() < 60:
+                return self._cached_stats
+
+        stats = {
             "volume": {
                 "total_invoices": len(self.invoices),
                 "paid_count": len([i for i in self.invoices if i.status == InvoiceStatus.PAID]),
@@ -157,6 +166,10 @@ class RevenueEngine(BaseEngine):
             },
             "goals": self.get_goal_summary(),
         }
+
+        self._cached_stats = stats
+        self._cache_time = now
+        return stats
 
     # ============================================
     # $1M 2026 GOAL TRACKING

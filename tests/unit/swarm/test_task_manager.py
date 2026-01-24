@@ -1,7 +1,7 @@
 import threading
 import time
-from antigravity.core.agent_swarm.enums import TaskPriority, TaskStatus
-from antigravity.core.agent_swarm.task_manager import TaskManager
+from antigravity.core.swarm.enums import TaskPriority, TaskStatus
+from antigravity.core.swarm.task_manager import TaskManager
 
 import pytest
 

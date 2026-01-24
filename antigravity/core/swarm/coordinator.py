@@ -100,9 +100,7 @@ class AgentSwarm:
         self.metrics.busy_agents += 1
 
         # Execute in worker pool
-        self._worker_pool.execute_task(
-            task, agent, self._on_task_complete, self.metrics
-        )
+        self._worker_pool.execute_task(task, agent, self._on_task_complete, self.metrics)
 
         logger.info(f"Task {task.name} assigned to {agent.name}")
 
@@ -151,9 +149,7 @@ class AgentSwarm:
 
     def get_status(self) -> SwarmStatusDict:
         """Get swarm status."""
-        return build_status_dict(
-            self._running, self._worker_pool, self._task_queue, self.metrics
-        )
+        return build_status_dict(self._running, self._worker_pool, self._task_queue, self.metrics)
 
     # Expose internal components for advanced usage
     @property
@@ -172,4 +168,7 @@ class AgentSwarm:
         return self._task_queue.queue
 
 
-__all__ = ["AgentSwarm"]
+# Alias for backward compatibility
+SwarmCoordinator = AgentSwarm
+
+__all__ = ["AgentSwarm", "SwarmCoordinator"]

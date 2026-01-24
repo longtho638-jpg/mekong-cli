@@ -2,16 +2,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-from services.payment_service import PaymentService
 
-from main import app
+from backend.main import app
+from backend.services.payment_service import PaymentService
 
 client = TestClient(app)
 
 
 @pytest.fixture
 def mock_payment_service():
-    with patch("api.routers.gumroad_webhooks.payment_service") as mock:
+    with patch("backend.api.routers.gumroad_webhooks.payment_service") as mock:
         yield mock
 
 

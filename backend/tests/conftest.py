@@ -3,6 +3,14 @@ Pytest Configuration for Backend Tests
 Agency OS v2.0 - WIN-WIN-WIN Testing
 """
 
+import sys
+from pathlib import Path
+
+# Ensure backend package is importable from root
+root_dir = Path(__file__).parent.parent.parent  # mekong-cli root
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
 import asyncio
 from typing import Generator
 from unittest.mock import AsyncMock

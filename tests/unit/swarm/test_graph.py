@@ -1,7 +1,7 @@
 import time
-from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.enums import TaskStatus
-from antigravity.core.agent_swarm.graph import GraphExecutor, GraphNode, GraphWorkflow
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import TaskStatus
+from antigravity.core.swarm.graph import GraphExecutor, GraphNode, GraphWorkflow
 
 import pytest
 

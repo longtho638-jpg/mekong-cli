@@ -1,8 +1,8 @@
 
 import time
-from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority, TaskStatus
-from antigravity.core.agent_swarm.models import SwarmAgent, SwarmTask
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import AgentRole, TaskPriority, TaskStatus
+from antigravity.core.swarm.models import SwarmAgent, SwarmTask
 
 import pytest
 

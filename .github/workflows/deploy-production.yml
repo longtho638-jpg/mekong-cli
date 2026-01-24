@@ -22,8 +22,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -51,8 +51,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install Vercel CLI
         run: pnpm add -g vercel
@@ -69,7 +69,8 @@ jobs:
   notify:
     needs: [validate, deploy]
     runs-on: ubuntu-latest
-    if: always()
+    # Only notify if Slack webhook is configured
+    if: always() && secrets.SLACK_WEBHOOK_URL != ''
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
