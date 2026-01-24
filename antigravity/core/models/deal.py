@@ -17,12 +17,41 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from ..config import DealTier, get_tier_pricing
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class DealFinancialsDict(TypedDict):
+    mrr: float
+    equity: float
+    success_fee: float
+
+
+class DealMilestonesDict(TypedDict):
+    funding: float
+    valuation: float
+
+
+class DealTimestampsDict(TypedDict):
+    created: str
+    closed: Optional[str]
+
+
+class DealDict(TypedDict):
+    """Dictionary representation of a startup deal"""
+    id: Optional[int]
+    startup_name: str
+    founder: str
+    tier: str
+    stage: str
+    financials: DealFinancialsDict
+    milestones: DealMilestonesDict
+    aggregate_value: float
+    timestamps: DealTimestampsDict
 
 
 class DealStage(Enum):
@@ -103,7 +132,7 @@ class StartupDeal:
         """Returns True if the deal is currently moving through the pipeline."""
         return self.stage not in [DealStage.CLOSED_WON, DealStage.CLOSED_LOST]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> DealDict:
         """Provides a serializable representation for APIs and storage."""
         return {
             "id": self.id,

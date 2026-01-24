@@ -7,7 +7,7 @@ AI-Driven Revenue Optimization orchestrator.
 
 import logging
 import threading
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from ..models import (
     ChurnPrediction,
@@ -22,6 +22,17 @@ from .price_optimizer import PriceOptimizer
 from .upsell_detector import UpsellDetector
 
 logger = logging.getLogger(__name__)
+
+
+class RevenueAIStatusDict(TypedDict):
+    """Status summary of the AI revenue engine"""
+    total_customers: int
+    mrr: float
+    arr: float
+    customers_at_risk: int
+    churn_predictions: int
+    upsell_opportunities: int
+    auto_actions_enabled: bool
 
 
 class RevenueAI:
@@ -110,7 +121,7 @@ class RevenueAI:
 
         return metrics
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> RevenueAIStatusDict:
         """Get RevenueAI status."""
         metrics = self.calculate_metrics()
 

@@ -18,12 +18,26 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict
 
 from ..errors import WinWinWinError
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class WinPillarsDict(TypedDict):
+    owner: str
+    agency: str
+    client: str
+
+
+class WinCheckDict(TypedDict):
+    """Dictionary representation of a WIN-WIN-WIN check"""
+    status: str
+    pillars: WinPillarsDict
+    timestamp: str
+    failing_party: Optional[str]
 
 
 class WinType(Enum):
@@ -82,7 +96,7 @@ class WinCheck:
             return "client"
         return None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> WinCheckDict:
         """Provides a serializable representation for deal records."""
         return {
             "status": "aligned" if self.is_aligned else "misaligned",

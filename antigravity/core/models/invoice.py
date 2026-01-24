@@ -16,10 +16,37 @@ Binh Pháp: 💰 Tài (Wealth) - Securing the harvest.
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict
 
 # Standard 2026 Rate
 VND_RATE = 25000.0
+
+
+class InvoiceDatesDict(TypedDict):
+    due: str
+    paid: Optional[str]
+    created: str
+
+
+class InvoiceDict(TypedDict):
+    """Dictionary representation of an invoice"""
+    id: Optional[int]
+    client: str
+    amount: float
+    currency: str
+    status: str
+    dates: InvoiceDatesDict
+    amount_vnd: int
+
+
+class ForecastDict(TypedDict):
+    """Dictionary representation of a forecast"""
+    month: str
+    projected: float
+    actual: float
+    confidence: float
+    variance: float
+    variance_pct: float
 
 
 class InvoiceStatus(Enum):
@@ -63,7 +90,7 @@ class Invoice:
             return False
         return datetime.now() > self.due_date
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> InvoiceDict:
         """Provides a serializable representation."""
         return {
             "id": self.id,
@@ -103,7 +130,7 @@ class Forecast:
             return 0.0
         return (self.get_variance() / self.projected) * 100
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> ForecastDict:
         """Provides a serializable representation."""
         return {
             "month": self.month,

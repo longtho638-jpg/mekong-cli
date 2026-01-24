@@ -4,16 +4,32 @@ Checkpoint Serializer - Logic for gathering and applying system state.
 import logging
 import os
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional, TypedDict
 
 logger = logging.getLogger(__name__)
+
+
+class StateMetadataDict(TypedDict):
+    created_at: str
+    os: str
+
+
+class SystemStateDict(TypedDict, total=False):
+    """Full system state checkpoint"""
+    metadata: StateMetadataDict
+    moat: Dict[str, Any]
+    cashflow: Dict[str, Any]
+    memory: Dict[str, Any]
+
 
 class CheckpointSerializer:
     """Handles serialization and deserialization of system state."""
 
-    def gather_system_state(self) -> Dict[str, Any]:
+    def gather_system_state(self) -> SystemStateDict:
         """Orchestrates data gathering from all Agency OS modules."""
-        state = {"metadata": {"created_at": datetime.now().isoformat(), "os": os.name}}
+        state: SystemStateDict = {
+            "metadata": {"created_at": datetime.now().isoformat(), "os": os.name}
+        }
 
         # 1. Moat Engine State
         try:
@@ -40,7 +56,7 @@ class CheckpointSerializer:
 
         return state
 
-    def apply_state(self, data: Dict[str, Any]):
+    def apply_state(self, data: SystemStateDict):
         """Logic to inject restored data back into running engines."""
         logger.debug(f"Restoring {len(data)} system domains...")
         # In production, this would dispatch state to various engines

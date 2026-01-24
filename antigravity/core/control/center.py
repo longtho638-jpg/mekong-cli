@@ -5,13 +5,21 @@ Unifies feature flags, circuit breakers, and rate limiting into a single control
 
 import logging
 import threading
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, TypedDict
 
 from .circuit_breaker import CircuitBreaker, CircuitState
 from .feature_flags import FeatureFlag, FeatureFlagManager
 from .rate_governor import RateGovernor
 
 logger = logging.getLogger(__name__)
+
+
+class ControlCenterStatusDict(TypedDict):
+    """Status dictionary for ControlCenter."""
+
+    flags: Dict[str, Any]
+    breakers: Dict[str, Any]
+    governors: Dict[str, Any]
 
 
 class ControlCenter:
@@ -45,7 +53,7 @@ class ControlCenter:
                     name=name,
                     enabled=enabled,
                     rollout_percentage=rollout,
-                    metadata={"description": desc}
+                    metadata={"description": desc},
                 )
 
     # ==========================================
@@ -111,7 +119,7 @@ class ControlCenter:
     # Status & Telemetry
     # ==========================================
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> ControlCenterStatusDict:
         """Get control center status."""
         flags_map = self.flag_manager.list_flags()
 
@@ -120,10 +128,7 @@ class ControlCenter:
                 name: {"enabled": f.enabled, "rollout": f.rollout_percentage}
                 for name, f in flags_map.items()
             },
-            "breakers": {
-                name: b.get_stats()
-                for name, b in self.breakers.items()
-            },
+            "breakers": {name: b.get_stats() for name, b in self.breakers.items()},
             "governors": {
                 name: {"count": g.current_count, "limit": g.max_requests}
                 for name, g in self.governors.items()

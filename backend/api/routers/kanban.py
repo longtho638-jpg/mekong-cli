@@ -1,8 +1,33 @@
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, Body, Depends, HTTPException
+
+
+class KanbanBoardRow(TypedDict, total=False):
+    id: str
+    title: str
+    description: Optional[str]
+    created_at: str
+    updated_at: str
+
+
+class KanbanTaskRow(TypedDict, total=False):
+    id: str
+    board_id: str
+    title: str
+    description: Optional[str]
+    status: str
+    priority: str
+    assignee_id: Optional[str]
+    tags: List[str]
+    due_date: Optional[str]
+    created_at: str
+    updated_at: str
+    order: float
+    metadata: Dict[str, Any]
+
 
 from backend.api.schemas.kanban import (
     CreateCardRequest,
@@ -26,7 +51,7 @@ DEFAULT_COLUMNS = [
     {"id": "done", "title": "Done", "status": TaskStatus.DONE, "order": 3},
 ]
 
-def _get_board_from_db(board_data: Dict[str, Any], tasks_data: List[Dict[str, Any]]) -> KanbanBoard:
+def _get_board_from_db(board_data: KanbanBoardRow, tasks_data: List[KanbanTaskRow]) -> KanbanBoard:
     """Helper to construct Board object from DB rows."""
     columns = []
 

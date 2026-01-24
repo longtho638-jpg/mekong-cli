@@ -1,12 +1,25 @@
 """
 Revenue forecasting logic.
 """
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict, Union
+
+
+class ForecastResultDict(TypedDict):
+    """Result of a revenue forecast calculation"""
+    period_days: int
+    current_mrr: float
+    forecasted_mrr: float
+    forecasted_arr: float
+    growth_rate: float
+    target_1m: int
+    gap_to_1m: float
+    months_to_1m: Union[float, str]
+    on_track: bool
 
 
 def forecast_revenue_logic(
     period_days: int = 30, current_mrr: float = 0, growth_rate: float = 0.1
-) -> Dict[str, Any]:
+) -> ForecastResultDict:
     """
     Forecast revenue for given period.
     """
