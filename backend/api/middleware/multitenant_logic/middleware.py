@@ -3,11 +3,13 @@ Multitenant Middleware Class.
 """
 import logging
 from typing import Callable
-from fastapi import Request, Response, HTTPException
+
+from fastapi import HTTPException, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from .resolver import resolve_tenant_id
+
 from .context import set_tenant_id
 from .models import TENANT_STORE
+from .resolver import resolve_tenant_id
 
 logger = logging.getLogger(__name__)
 

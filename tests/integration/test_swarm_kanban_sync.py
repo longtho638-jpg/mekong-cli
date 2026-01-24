@@ -1,8 +1,11 @@
-import pytest
 import time
 from antigravity.core.agent_swarm.engine import AgentSwarm
 from antigravity.core.agent_swarm.enums import TaskStatus
-from antigravity.core.kanban.board_manager import BoardManager, TaskStatus as KanbanStatus
+from antigravity.core.kanban.board_manager import BoardManager
+from antigravity.core.kanban.board_manager import TaskStatus as KanbanStatus
+
+import pytest
+
 
 def test_swarm_kanban_sync():
     # 1. Initialize Swarm and Board Manager
@@ -12,7 +15,7 @@ def test_swarm_kanban_sync():
     # Ensure default board exists
     board = board_manager.get_board("default")
     assert board is not None
-    initial_card_count = sum(len(col.cards) for col in board.columns)
+    sum(len(col.cards) for col in board.columns)
 
     # 2. Register a simple agent
     def simple_handler(payload):

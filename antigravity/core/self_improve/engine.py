@@ -4,7 +4,7 @@ Self-Improvement Engine Logic.
 import logging
 import threading
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .error_learning import (
     create_error_improvement_suggestion,
@@ -22,6 +22,15 @@ from .types import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class SelfImproveStatusDict(TypedDict):
+    """Status information for the self-improvement engine"""
+    total_learnings: int
+    total_suggestions: int
+    applied_improvements: int
+    profiles_tracked: int
+    error_patterns: int
 
 
 class SelfImproveEngine:
@@ -149,7 +158,7 @@ class SelfImproveEngine:
         thread.start()
         logger.info("Optimization loop started")
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> SelfImproveStatusDict:
         """Get engine status."""
         return {
             "total_learnings": len(self.learnings),

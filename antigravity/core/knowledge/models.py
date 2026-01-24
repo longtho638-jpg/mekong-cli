@@ -1,10 +1,12 @@
 """
 Knowledge Models: Pydantic definitions for Graph Nodes and Edges.
 """
-from typing import Dict, Any, Optional, List
-from enum import Enum
-from pydantic import BaseModel, Field
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
 
 class NodeType(str, Enum):
     FILE = "File"

@@ -1,6 +1,7 @@
 import os
-import tweepy
 import random
+
+import tweepy
 
 # AgencyOS Twitter Engagement Bot Skeleton
 # Handles: Auto-reply to mentions, Scheduled engagement tweets
@@ -28,7 +29,7 @@ def generate_engagement_tweet():
 
 def run_engagement_loop():
     """Main loop for engagement (Mock)."""
-    api = get_twitter_api()
+    get_twitter_api()
     tweet = generate_engagement_tweet()
     print(f"[MOCK] Posting tweet: {tweet}")
     # api.update_status(tweet)

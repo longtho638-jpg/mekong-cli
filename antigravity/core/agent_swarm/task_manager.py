@@ -7,10 +7,10 @@ import time
 import uuid
 from typing import Dict, List, Optional
 
-from .enums import TaskPriority, TaskStatus
-from .models import SwarmTask
 from ..kanban.board_manager import BoardManager
 from ..kanban.board_manager import TaskPriority as KanbanPriority
+from .enums import TaskPriority, TaskStatus
+from .models import SwarmTask
 
 logger = logging.getLogger(__name__)
 

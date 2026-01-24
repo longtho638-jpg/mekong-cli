@@ -4,6 +4,7 @@ Tenant models and store.
 import os
 from typing import Any, Dict, Optional
 
+
 class TenantContext:
     """Tenant context data."""
 

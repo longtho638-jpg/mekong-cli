@@ -25,10 +25,18 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class LayerSummaryDict(TypedDict):
+    """Summarized status of a stack layer"""
+    id: str
+    provider: str
+    status: str
+    health: str
 
 
 class StackLayer(Enum):
@@ -106,7 +114,7 @@ class InfrastructureStack:
             self.layers[layer].last_check = datetime.now()
             logger.info(f"Infrastructure: {layer.value} updated to {status}")
 
-    def get_layer_summary(self) -> List[Dict[str, Any]]:
+    def get_layer_summary(self) -> List[LayerSummaryDict]:
         """Returns a flat list of layer status for dashboards."""
         return [
             {

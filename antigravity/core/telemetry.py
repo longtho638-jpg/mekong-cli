@@ -22,7 +22,8 @@ from .telemetry_exporters import load_events, print_dashboard, save_events
 try:
     from core.infrastructure.database import get_db
 except ImportError:
-    get_db = lambda: None
+    def get_db():
+        return None
 
 logger = logging.getLogger(__name__)
 

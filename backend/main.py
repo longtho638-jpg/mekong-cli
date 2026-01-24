@@ -12,28 +12,28 @@ from fastapi.middleware.cors import CORSMiddleware
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
 from backend.api.routers import (
     agents,
-    campaigns,
-    mekong_commands,
-    vibes,
-    monitor,
-    workflow,
     agents_creator,
-    swarm,
     audit,
+    campaigns,
+    gumroad_webhooks,
+    mekong_commands,
+    monitor,
+    ops,
+    payments,
     paypal_webhooks,
     stripe_webhooks,
-    gumroad_webhooks,
-    payments,
-    ops,
+    swarm,
+    vibes,
+    workflow,
 )
 from backend.api.routers import (
     router as hybrid_router,
 )
 from backend.routes.agentops import router as agentops_router
-from backend.api.auth.router import router as auth_router
 from backend.websocket.routes import router as ws_router
 
 # Initialize FastAPI

@@ -1,11 +1,13 @@
-import pytest
-from unittest.mock import MagicMock, patch
-from antigravity.core.knowledge.graph_client import GraphClient, KnowledgeNode, KnowledgeEdge
-from antigravity.core.knowledge.schema import IngestionSchema
+import ast
+from antigravity.core.knowledge.graph_client import GraphClient, KnowledgeEdge, KnowledgeNode
 from antigravity.core.knowledge.ingestor import CodeIngestor
 from antigravity.core.knowledge.rag import KnowledgeRetriever
-import ast
+from antigravity.core.knowledge.schema import IngestionSchema
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 class TestGraphClient:
     @patch("antigravity.core.knowledge.graph_client.FalkorDB")

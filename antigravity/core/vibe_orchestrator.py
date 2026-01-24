@@ -18,13 +18,31 @@ import concurrent.futures
 import logging
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
 
 from .base import BaseEngine
 from .models.orchestrator import AgentTask, AgentType, ChainResult
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class OrchestrationStats(TypedDict):
+    """Orchestration health and volume metrics"""
+    active_blueprints: List[str]
+    total_completed: int
+
+
+class AgentStats(TypedDict):
+    """Agent health and capabilities metrics"""
+    handlers_online: int
+    types_supported: List[str]
+
+
+class VIBEOrchestratorStats(TypedDict):
+    """Complete stats response for VIBE Orchestrator"""
+    orchestration: OrchestrationStats
+    agents: AgentStats
 
 
 class VIBEOrchestrator(BaseEngine):
@@ -162,7 +180,7 @@ class VIBEOrchestrator(BaseEngine):
         task = self.create_task(agent, prompt)
         return self._process_single_task(task)
 
-    def _collect_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> VIBEOrchestratorStats:
         """Orchestration health and volume metrics."""
         return {
             "orchestration": {

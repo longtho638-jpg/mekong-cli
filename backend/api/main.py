@@ -30,17 +30,17 @@ from backend.api.middleware.rate_limiting import (
     setup_rate_limit_routes,
     setup_rate_limiting,
 )
-from backend.api.middleware.validation import ValidationMiddleware
 from backend.api.middleware.security import SecurityMiddleware
+from backend.api.middleware.validation import ValidationMiddleware
 from backend.api.routers import code as code_router
 from backend.api.routers import (
     crm,
     franchise,
     i18n,
-    scheduler,
-    vietnam,
     kanban,
     ops,
+    scheduler,
+    vietnam,
 )
 from backend.api.routers import dashboard as dashboard_router
 from backend.api.routers import webhooks as webhooks_router

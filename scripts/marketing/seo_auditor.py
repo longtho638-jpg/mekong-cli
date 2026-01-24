@@ -11,9 +11,11 @@ Crawls the documentation directory and identifies SEO gaps:
 
 import os
 import re
-import yaml
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
+import yaml
+
 
 class SEOAuditor:
     def __init__(self, docs_path: str = "apps/docs/src/content/docs"):

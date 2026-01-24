@@ -11,22 +11,22 @@ Usage:
     python3 scripts/stress_test_swarm.py --agents 50 --duration 10
 """
 
+import argparse
 import asyncio
 import random
-import time
 import sys
-import argparse
-from pathlib import Path
+import time
 from dataclasses import dataclass
+from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import MCP handlers directly for simulation
 try:
-    from antigravity.mcp_servers.quota_server.handlers import QuotaHandler
-    from antigravity.mcp_servers.network_server.handlers import NetworkHandler
     from antigravity.mcp_servers.commander_server.handlers import CommanderHandler
+    from antigravity.mcp_servers.network_server.handlers import NetworkHandler
+    from antigravity.mcp_servers.quota_server.handlers import QuotaHandler
 except ImportError as e:
     print(f"Error importing handlers: {e}")
     sys.exit(1)
@@ -54,7 +54,7 @@ class SwarmSimulator:
             try:
                 # 1. Check Quota
                 # Simulate checking quota for a model
-                model = random.choice(["claude-3-5-sonnet", "gemini-1.5-pro", "gpt-4o"])
+                random.choice(["claude-3-5-sonnet", "gemini-1.5-pro", "gpt-4o"])
                 # We don't have a direct "check_quota" method exposed in handler for single check easily
                 # without full request mock, but we can call get_status
                 await asyncio.to_thread(self.quota_handler.get_status)
@@ -69,7 +69,7 @@ class SwarmSimulator:
                 self.stats.requests += 1
                 self.stats.latency_sum += (time.time() - start)
 
-            except Exception as e:
+            except Exception:
                 self.stats.errors += 1
                 # print(f"Agent {agent_id} error: {e}")
 
@@ -91,7 +91,7 @@ class SwarmSimulator:
 
     async def run(self):
         """Run the swarm."""
-        print(f"🔥 Starting Swarm Stress Test")
+        print("🔥 Starting Swarm Stress Test")
         print(f"   Agents: {self.agent_count}")
         print(f"   Duration: {self.duration}s")
         print("=" * 40)

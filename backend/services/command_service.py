@@ -2,16 +2,32 @@
 Command Service - Business logic for Mekong commands
 """
 
-from typing import Any, Dict
+import logging
+from typing import Dict, List, TypedDict
 
 from backend.models.command import CommandRequest, CommandResponse
+
+logger = logging.getLogger(__name__)
+
+
+class CommandInfo(TypedDict):
+    """Metadata for a Mekong command"""
+    section: str
+    output_format: str
+
+
+class CommandListResponse(TypedDict):
+    """Response structure for listing commands"""
+    commands: List[str]
+    total: int
+    categories: Dict[str, List[str]]
 
 
 class CommandService:
     """Service for managing Mekong command operations"""
 
     def __init__(self):
-        self.commands = {
+        self.commands: Dict[str, CommandInfo] = {
             "khach-hang": {"section": "§1 Customer Profile", "output_format": "buyer_personas"},
             "ke-hoach-kinh-doanh": {
                 "section": "§2 Business Plan",
@@ -51,7 +67,10 @@ class CommandService:
 
     async def execute_command(self, command_name: str, request: CommandRequest) -> CommandResponse:
         """Execute a specific Mekong command"""
+        logger.info(f"Executing Mekong command: {command_name}")
+
         if command_name not in self.commands:
+            logger.error(f"Unknown command attempted: {command_name}")
             raise ValueError(f"Unknown command: {command_name}")
 
         command_info = self.commands[command_name]
@@ -64,7 +83,7 @@ class CommandService:
             output_format=command_info["output_format"],
         )
 
-    async def get_commands_list(self) -> Dict[str, Any]:
+    async def get_commands_list(self) -> CommandListResponse:
         """Get list of all available commands"""
         return {
             "commands": list(self.commands.keys()),

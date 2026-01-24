@@ -5,15 +5,16 @@ Provides a tamper-proof record of all sensitive operations performed by users or
 Integrates with Supabase RLS for persistence and immutability.
 """
 
+import asyncio
 import functools
+import inspect
 import logging
 import time
-import asyncio
-import inspect
 from datetime import datetime
 from typing import Any, Dict, Optional
 
 from fastapi import Request
+
 from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)

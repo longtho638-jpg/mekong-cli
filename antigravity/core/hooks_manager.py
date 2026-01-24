@@ -15,9 +15,6 @@ Usage:
 """
 
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional, Union
-
 from antigravity.core.hook_executor import execute_hook, run_win3_gate
 from antigravity.core.hook_registry import (
     HOOKS,
@@ -27,6 +24,8 @@ from antigravity.core.hook_registry import (
     get_triggers_for_suite,
 )
 from antigravity.core.types import DealContextDict, HookContextDict, HookResultDict, Win3ResultDict
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -84,22 +83,22 @@ class HooksManager:
 
     def print_hooks_status(self):
         """Print detailed hooks status."""
-        print("\n[HOOKS STATUS]")
-        print("=" * 50)
+        logger.info("[HOOKS STATUS]")
+        logger.info("=" * 50)
 
         total_hooks = sum(len(h) for h in HOOKS.values())
-        print(f"   Total Hooks: {total_hooks}")
-        print(f"   Enabled: {'Yes' if self.enabled else 'No'}")
-        print()
+        logger.info(f"   Total Hooks: {total_hooks}")
+        logger.info(f"   Enabled: {'Yes' if self.enabled else 'No'}")
+        logger.info("")
 
-        print("[HOOKS BY TRIGGER]:")
+        logger.info("[HOOKS BY TRIGGER]:")
         for trigger, hooks in HOOKS.items():
-            print(f"   {trigger}:")
+            logger.info(f"   {trigger}:")
             for h in hooks:
                 status = "[Blocking]" if h.blocking else "[Info]"
-                print(f"      - {h.name:<20} {status}")
+                logger.info(f"      - {h.name:<20} {status}")
 
-        print("=" * 50)
+        logger.info("=" * 50)
 
 
 def validate_deal(deal: Dict) -> bool:

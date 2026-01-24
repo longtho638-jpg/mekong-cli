@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
-from .utils import create_access_token, verify_password, get_password_hash, Token
 from datetime import timedelta
 from typing import Dict
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+
+from .utils import Token, create_access_token, get_password_hash, verify_password
 
 router = APIRouter(tags=["auth"])
 

@@ -1,7 +1,9 @@
-import pytest
-from unittest.mock import MagicMock, patch
 from antigravity.core.agent_swarm.engine import AgentSwarm
 from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 class TestAgentSwarm:
     @pytest.fixture
@@ -21,7 +23,8 @@ class TestAgentSwarm:
 
     def test_register_agent_delegation(self, swarm):
         swarm.coordinator.register_agent = MagicMock(return_value="agent_1")
-        handler = lambda x: x
+        def handler(x):
+            return x
         
         res = swarm.register_agent("Test", handler, AgentRole.WORKER, ["test"])
         

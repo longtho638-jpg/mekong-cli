@@ -5,9 +5,35 @@ Enforces PCI-DSS and KYC/AML protocols.
 """
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 logger = logging.getLogger(__name__)
+
+
+class FintechDataHandlingConfig(TypedDict, total=False):
+    card_tokenization: bool
+
+
+class FintechTransactionConfig(TypedDict, total=False):
+    idempotency_keys: bool
+
+
+class FintechFraudConfig(TypedDict, total=False):
+    velocity_checks: bool
+
+
+class FintechSystemConfig(TypedDict, total=False):
+    data_handling: FintechDataHandlingConfig
+    transactions: FintechTransactionConfig
+    fraud_detection: FintechFraudConfig
+
+
+class KycValidationResponse(TypedDict):
+    success: bool
+    tier: str
+    checks: Dict[str, bool]
+    timestamp: str
+
 
 @dataclass
 class SecurityAudit:
@@ -15,6 +41,7 @@ class SecurityAudit:
     severity: str
     passed: bool
     remediation: str
+
 
 class FintechEngine:
     """Specialized engine for Fintech clients."""
@@ -26,7 +53,7 @@ class FintechEngine:
             "tier3": ["id_verification", "liveness_check", "proof_of_address", "source_of_funds"]
         }
 
-    def audit_security(self, system_config: Dict[str, Any]) -> List[SecurityAudit]:
+    def audit_security(self, system_config: FintechSystemConfig) -> List[SecurityAudit]:
         """Run PCI-DSS and security audit."""
         audits = []
 
@@ -56,7 +83,7 @@ class FintechEngine:
 
         return audits
 
-    def validate_kyc_process(self, user_data: Dict[str, Any], tier: str = "tier1") -> Dict[str, Any]:
+    def validate_kyc_process(self, user_data: Dict[str, Any], tier: str = "tier1") -> KycValidationResponse:
         """Simulate KYC validation process."""
         required_checks = self.kyc_levels.get(tier, [])
         results = {}

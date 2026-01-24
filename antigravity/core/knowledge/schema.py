@@ -1,5 +1,7 @@
-from typing import List, Dict, Any
-from .graph_client import KnowledgeNode, KnowledgeEdge
+from typing import Any, Dict, List
+
+from .graph_client import KnowledgeEdge, KnowledgeNode
+
 
 class IngestionSchema:
     """

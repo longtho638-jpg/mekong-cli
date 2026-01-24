@@ -7,7 +7,13 @@ Please import from core.licensing.logic instead.
 """
 import warnings
 
-from .logic import LicenseFormat, LicenseGenerator, LicenseTier, generate_license_key, license_generator
+from .logic import (
+    LicenseFormat,
+    LicenseGenerator,
+    LicenseTier,
+    generate_license_key,
+    license_generator,
+)
 
 # Issue a deprecation warning
 warnings.warn(

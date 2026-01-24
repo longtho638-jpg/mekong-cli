@@ -1,7 +1,10 @@
-from fastapi import Depends, HTTPException, status
 from typing import List
+
+from fastapi import Depends, HTTPException, status
+
 from backend.api.auth.dependencies import get_current_user
 from backend.api.auth.utils import TokenData
+
 
 class RoleChecker:
     """

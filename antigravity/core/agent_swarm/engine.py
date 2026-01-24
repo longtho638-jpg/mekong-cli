@@ -1,9 +1,10 @@
 """
 Agent Swarm Engine.
 """
+
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, List, Optional
+from typing import Any, Callable, List, Optional
 
 from .coordinator import SwarmCoordinator
 from .enums import AgentRole, TaskPriority
@@ -13,6 +14,7 @@ from .state import SwarmState
 from .task_manager import TaskManager
 
 logger = logging.getLogger(__name__)
+
 
 class AgentSwarm:
     """
@@ -58,9 +60,9 @@ class AgentSwarm:
     def register_agent(
         self,
         name: str,
-        handler: Callable,
+        handler: Callable[[Any], Any],
         role: AgentRole = AgentRole.WORKER,
-        specialties: List[str] = None,
+        specialties: Optional[List[str]] = None,
     ) -> str:
         """Register an agent with the swarm."""
         return self.coordinator.register_agent(name, handler, role, specialties)
@@ -68,7 +70,7 @@ class AgentSwarm:
     def submit_task(
         self,
         name: str,
-        payload: object,
+        payload: Any,
         priority: TaskPriority = TaskPriority.NORMAL,
         timeout_seconds: int = 300,
     ) -> str:
@@ -85,14 +87,14 @@ class AgentSwarm:
         self.notify_update()
         return task_id
 
-    def start(self):
+    def start(self) -> None:
         """Start the swarm."""
         self.state.running = True
         self._task_executor.try_assign_tasks()
         self.notify_update()
         logger.info("Swarm started")
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop the swarm."""
         self.state.running = False
         self._executor.shutdown(wait=True)
@@ -100,8 +102,8 @@ class AgentSwarm:
         logger.info("Swarm stopped")
 
     def get_task_result(
-        self, task_id: str, wait: bool = True, timeout: float = None
-    ) -> object:
+        self, task_id: str, wait: bool = True, timeout: Optional[float] = None
+    ) -> Any:
         """Get task result."""
         return self.task_manager.get_task_result(task_id, wait, timeout)
 

@@ -169,6 +169,7 @@ export function PulseIndicator({ color = '#22c55e', size = 8 }: PulseIndicatorPr
                 animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             }}
         >
+            {/* @ts-ignore */}
             <style jsx>{`
                 @keyframes pulse {
                     0%, 100% {

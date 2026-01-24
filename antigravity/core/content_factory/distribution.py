@@ -6,9 +6,10 @@ Discord, and internal newsletters. Includes an approval gate logic.
 """
 
 import logging
-from enum import Enum
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
 
 class ChannelType(str, Enum):
     TWITTER = "twitter"

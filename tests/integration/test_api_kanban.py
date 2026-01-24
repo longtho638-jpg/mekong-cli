@@ -1,13 +1,14 @@
-import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch
 import sys
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 
 # Mock imports if needed (similar to other integration tests)
 from backend.api.main import app
-from backend.core.security.rbac import require_viewer, require_editor
-from backend.api.schemas.kanban import TaskStatus, TaskPriority
+from backend.api.schemas.kanban import TaskPriority, TaskStatus
+from backend.core.security.rbac import require_editor, require_viewer
 
 # Override authentication dependencies
 app.dependency_overrides[require_viewer] = lambda: MagicMock(role="viewer")
@@ -108,7 +109,7 @@ def test_kanban_flow(mock_db):
     # It calls table("kanban_boards").select("id").limit(1) if default
     # or creates directly if ID provided.
 
-    response = client.post(f"/api/kanban/boards/new-board/cards", json=card_data)
+    response = client.post("/api/kanban/boards/new-board/cards", json=card_data)
     assert response.status_code == 200
     card = response.json()
     assert card["title"] == "Implement Login"
@@ -117,11 +118,11 @@ def test_kanban_flow(mock_db):
     update_data = {
         "status": "in_progress"
     }
-    response = client.put(f"/api/kanban/cards/card-1", json=update_data)
+    response = client.put("/api/kanban/cards/card-1", json=update_data)
     assert response.status_code == 200
     updated_card = response.json()
     assert updated_card["status"] == "in_progress"
 
     # 5. Delete card
-    response = client.delete(f"/api/kanban/cards/card-1")
+    response = client.delete("/api/kanban/cards/card-1")
     assert response.status_code == 200

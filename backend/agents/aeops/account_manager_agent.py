@@ -3,11 +3,14 @@ Account Manager Agent - Client Relationships & Growth
 Manages account portfolio and relationship health.
 """
 
+import logging
 import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
+
+logger = logging.getLogger(__name__)
 
 
 class AccountTier(Enum):
@@ -144,16 +147,16 @@ class AccountManagerAgent:
             if a.health in [AccountHealth.AT_RISK, AccountHealth.CRITICAL]
         ]
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> Dict[str, Union[int, float]]:
         """Get portfolio statistics"""
         accounts = list(self.accounts.values())
 
         return {
             "total_accounts": len(accounts),
-            "total_arr": sum(a.arr for a in accounts),
+            "total_arr": float(sum(a.arr for a in accounts)),
             "healthy": len([a for a in accounts if a.health == AccountHealth.HEALTHY]),
             "at_risk": len([a for a in accounts if a.health == AccountHealth.AT_RISK]),
-            "upsell_pipeline": sum(a.upsell_potential for a in accounts),
+            "upsell_pipeline": float(sum(a.upsell_potential for a in accounts)),
             "renewals_90_days": len(self.get_renewals_due(90)),
         }
 

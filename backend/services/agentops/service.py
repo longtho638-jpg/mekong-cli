@@ -2,13 +2,25 @@
 AgentOps Service - Business logic for AgentOps operations (Facade)
 """
 
-from typing import Any, Dict
+from typing import Any, Dict, List, TypedDict
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
 
 from .executor import OpsExecutor
 from .registry import OpsRegistry
-from .reporting import OpsReporting
+from .reporting import BinhPhapChaptersResponse, DepartmentSummary, OpsReporting
+
+
+class OpsStatusResponse(TypedDict):
+    ops: Dict[str, Any]
+    available_actions: List[str]
+
+
+class HealthCheckResponse(TypedDict):
+    status: str
+    total_ops: int
+    healthy_ops: int
+    message: str
 
 
 class AgentOpsService:
@@ -27,7 +39,7 @@ class AgentOpsService:
         """List all AgentOps modules organized by category"""
         return await self.reporting.list_all_ops()
 
-    async def get_ops_status(self, category: str) -> Dict[str, Any]:
+    async def get_ops_status(self, category: str) -> OpsStatusResponse:
         """Get status of specific AgentOps category"""
         ops_registry = self.registry.get_registry()
         if category not in ops_registry:
@@ -43,7 +55,7 @@ class AgentOpsService:
         """Execute an AgentOps action"""
         return await self.executor.execute_ops(request)
 
-    async def get_health_check(self) -> Dict[str, Any]:
+    async def get_health_check(self) -> HealthCheckResponse:
         """Get health check for AgentOps system"""
         ops_registry = self.registry.get_registry()
         healthy_count = sum(
@@ -57,10 +69,10 @@ class AgentOpsService:
             "message": f"AgentOps: {healthy_count}/{len(ops_registry)} ready",
         }
 
-    async def get_categories_summary(self) -> Dict[str, Any]:
+    async def get_categories_summary(self) -> DepartmentSummary:
         """Get summary by department category"""
         return await self.reporting.get_categories_summary()
 
-    async def get_binh_phap_chapters(self) -> Dict[str, Any]:
+    async def get_binh_phap_chapters(self) -> BinhPhapChaptersResponse:
         """Get Binh Pháp 13 Chapters integrated with AgentOps"""
         return await self.reporting.get_binh_phap_chapters()

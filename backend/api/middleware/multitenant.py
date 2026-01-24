@@ -6,14 +6,15 @@ This file is now a proxy for the modularized version in ./multitenant_logic/
 Please import from backend.api.middleware.multitenant_logic instead.
 """
 import warnings
+
 from .multitenant_logic import (
+    TENANT_STORE,
     MultiTenantMiddleware,
+    TenantContext,
     get_current_tenant,
     get_tenant_id,
     set_tenant_id,
     setup_tenant_routes,
-    TENANT_STORE,
-    TenantContext
 )
 
 # Issue a deprecation warning

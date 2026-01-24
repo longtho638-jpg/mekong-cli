@@ -1,7 +1,32 @@
 """
 AgentOps Reporting - Logic for listing and summaries
 """
-from typing import Any, Dict
+from typing import Any, Dict, List, TypedDict
+
+
+class OpsCategorySummary(TypedDict):
+    count: int
+    ready: int
+
+
+class DepartmentSummary(TypedDict):
+    departments: Dict[str, OpsCategorySummary]
+    total: int
+    all_ready: bool
+    dna: str
+
+
+class BinhPhapChapter(TypedDict):
+    ch: int
+    name: str
+    vi: str
+    ops: str
+
+
+class BinhPhapChaptersResponse(TypedDict):
+    chapters: List[BinhPhapChapter]
+    total: int
+    dna: str
 
 
 class OpsReporting:
@@ -53,9 +78,9 @@ class OpsReporting:
             "status": "all_ready",
         }
 
-    async def get_categories_summary(self) -> Dict[str, Any]:
+    async def get_categories_summary(self) -> DepartmentSummary:
         """Get summary by department category"""
-        summary = {
+        summary: Dict[str, OpsCategorySummary] = {
             "Sales": {"count": 8, "ready": 8},
             "Marketing": {"count": 20, "ready": 20},
             "Creative": {"count": 3, "ready": 3},
@@ -75,9 +100,9 @@ class OpsReporting:
             "dna": "agencyos.network",
         }
 
-    async def get_binh_phap_chapters(self) -> Dict[str, Any]:
+    async def get_binh_phap_chapters(self) -> BinhPhapChaptersResponse:
         """Get Binh Pháp 13 Chapters integrated with AgentOps"""
-        chapters = [
+        chapters: List[BinhPhapChapter] = [
             {"ch": 1, "name": "Kế Hoạch", "vi": "Planning", "ops": "strategy"},
             {"ch": 2, "name": "Tác Chiến", "vi": "Resources", "ops": "finops"},
             {"ch": 3, "name": "Mưu Công", "vi": "Strategy", "ops": "bdmops"},

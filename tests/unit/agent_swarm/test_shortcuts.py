@@ -1,7 +1,9 @@
-import pytest
-from unittest.mock import MagicMock, patch
 from antigravity.core.agent_swarm import shortcuts
 from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 class TestShortcuts:
     def setup_method(self):
@@ -26,7 +28,8 @@ class TestShortcuts:
     def test_register_agent_shortcut(self, mock_get_swarm):
         mock_instance = MagicMock()
         mock_get_swarm.return_value = mock_instance
-        handler = lambda x: x
+        def handler(x):
+            return x
         
         shortcuts.register_agent("Test", handler, AgentRole.SPECIALIST)
         mock_instance.register_agent.assert_called_once_with("Test", handler, AgentRole.SPECIALIST)

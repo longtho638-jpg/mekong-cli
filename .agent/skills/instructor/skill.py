@@ -1,9 +1,11 @@
 import os
 import sys
 from typing import List
-from pydantic import BaseModel, Field
+
 import instructor
 from google import genai
+from pydantic import BaseModel, Field
+
 
 # Define Pydantic models for structured output
 class UserInfo(BaseModel):

@@ -1,14 +1,20 @@
-from fastapi import APIRouter, HTTPException, Depends, Body
-from typing import List, Dict, Any, Optional
-from backend.api.schemas.kanban import (
-    KanbanBoard, KanbanColumn, KanbanCard,
-    CreateCardRequest, UpdateCardRequest,
-    TaskStatus, TaskPriority
-)
-from backend.core.security.rbac import require_viewer, require_editor
-from core.infrastructure.database import get_db
 import uuid
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, Body, Depends, HTTPException
+
+from backend.api.schemas.kanban import (
+    CreateCardRequest,
+    KanbanBoard,
+    KanbanCard,
+    KanbanColumn,
+    TaskPriority,
+    TaskStatus,
+    UpdateCardRequest,
+)
+from backend.core.security.rbac import require_editor, require_viewer
+from core.infrastructure.database import get_db
 
 router = APIRouter(prefix="/api/kanban", tags=["Kanban"])
 
@@ -253,7 +259,7 @@ async def delete_card(card_id: str):
     if not db:
         raise HTTPException(status_code=503, detail="Database not available")
 
-    res = db.table("tasks").delete().eq("id", card_id).execute()
+    db.table("tasks").delete().eq("id", card_id).execute()
     # Supabase delete returns rows if succesful?
 
     return {"status": "success", "message": "Card deleted"}

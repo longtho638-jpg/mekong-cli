@@ -1,8 +1,10 @@
-import pytest
-import time
 import threading
-from antigravity.core.agent_swarm.task_manager import TaskManager
+import time
 from antigravity.core.agent_swarm.enums import TaskPriority, TaskStatus
+from antigravity.core.agent_swarm.task_manager import TaskManager
+
+import pytest
+
 
 class TestTaskManager:
     @pytest.fixture

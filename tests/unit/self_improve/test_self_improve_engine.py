@@ -1,8 +1,10 @@
-import pytest
 import os
-from unittest.mock import MagicMock, patch
 from antigravity.core.self_improve.engine import SelfImproveEngine
 from antigravity.core.self_improve.types import ImprovementType, LearningEntry, LearningSource
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 @pytest.fixture
 def engine():
@@ -72,7 +74,7 @@ def test_apply_suggestion(mock_apply, engine):
     mock_apply.assert_called_once_with(engine.suggestions, suggestion_id)
 
 def test_persistence_call(engine):
-    with patch("antigravity.core.self_improve.engine.save_learnings") as mock_save:
+    with patch("antigravity.core.self_improve.engine.save_learnings"):
         # We don't run the loop in background because it's hard to test
         # but we can manually trigger parts if needed or just trust the loop calls it.
         # For unit test, let's verify save_learnings is available.

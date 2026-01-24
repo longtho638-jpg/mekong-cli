@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import sys
+
 import aiohttp
 
 # Configure logging
@@ -16,8 +17,9 @@ headers = {
     "Authorization": f"Bearer {TOKEN}",
     "X-Goog-User-Project": PROJECT_ID,
     "Content-Type": "application/json",
-    "Accept": "text/event-stream"
+    "Accept": "text/event-stream",
 }
+
 
 async def verify_stitch():
     print(f"🔌 Connecting to Stitch MCP at {STITCH_URL}...")
@@ -46,21 +48,21 @@ async def verify_stitch():
             queue = asyncio.Queue()
 
             async def reader_task():
+                nonlocal current_event, current_data
                 try:
                     async for line in response.content:
-                        line = line.decode('utf-8').strip()
+                        line = line.decode("utf-8").strip()
                         if not line:
                             if current_event and current_data:
                                 # Process event
                                 full_data = "\n".join(current_data)
                                 await queue.put((current_event, full_data))
                                 # Reset
-                                current_event = None
                                 current_data = []
                             continue
 
                         if line.startswith("event:"):
-                            current_event = line[6:].strip()
+                            line[6:].strip()
                         elif line.startswith("data:"):
                             current_data.append(line[5:].strip())
                 except Exception as e:
@@ -84,6 +86,7 @@ async def verify_stitch():
 
                             # Construct base domain
                             from urllib.parse import urlparse
+
                             parsed = urlparse(STITCH_URL)
                             base_domain = f"{parsed.scheme}://{parsed.netloc}"
                             post_url = base_domain + post_endpoint
@@ -105,8 +108,8 @@ async def verify_stitch():
                     "params": {
                         "protocolVersion": "2024-11-05",
                         "capabilities": {},
-                        "clientInfo": {"name": "antigravity-verifier", "version": "1.0"}
-                    }
+                        "clientInfo": {"name": "antigravity-verifier", "version": "1.0"},
+                    },
                 }
 
                 # Send POST
@@ -126,31 +129,32 @@ async def verify_stitch():
                             print("✅ Initialized received!")
 
                             # Send notifications initialized
-                            await session.post(post_url, json={
-                                "jsonrpc": "2.0",
-                                "method": "notifications/initialized"
-                            })
+                            await session.post(
+                                post_url,
+                                json={"jsonrpc": "2.0", "method": "notifications/initialized"},
+                            )
 
                             # List Tools
                             print("🛠 Listing tools...")
-                            await session.post(post_url, json={
-                                "jsonrpc": "2.0",
-                                "id": 2,
-                                "method": "tools/list"
-                            })
+                            await session.post(
+                                post_url, json={"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+                            )
 
                         elif msg.get("id") == 2:
                             print("\n🔧 Available Tools:")
                             result = msg.get("result", {})
                             tools = result.get("tools", [])
                             for tool in tools:
-                                print(f"   - {tool['name']}: {tool.get('description', 'No desc')[:50]}...")
-                            return # Success
+                                print(
+                                    f"   - {tool['name']}: {tool.get('description', 'No desc')[:50]}..."
+                                )
+                            return  # Success
 
             except asyncio.TimeoutError:
                 print("❌ Timeout waiting for events")
             finally:
                 reader.cancel()
+
 
 if __name__ == "__main__":
     asyncio.run(verify_stitch())

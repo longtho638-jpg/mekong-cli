@@ -9,11 +9,12 @@ Usage:
     python3 scripts/migrate_billing.py [--dry-run]
 """
 
+import argparse
 import os
 import sys
-import argparse
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -22,7 +23,8 @@ load_dotenv()
 # Ensure we can import from core
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from supabase import create_client, Client
+from supabase import Client, create_client
+
 
 def get_db_client() -> Optional[Client]:
     """

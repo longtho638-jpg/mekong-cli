@@ -3,10 +3,13 @@ Positioning Agent - Product Positioning & Messaging
 Manages product positioning, value props, and differentiation.
 """
 
+import logging
 import random
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Union
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -130,7 +133,7 @@ class PositioningAgent:
         self.positionings[pos_id].competitors.append(competitor)
         return self.positionings[pos_id]
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> Dict[str, Union[int, float]]:
         """Get positioning statistics"""
         positionings = list(self.positionings.values())
 
@@ -141,7 +144,7 @@ class PositioningAgent:
             "avg_benefits": sum(len(p.value_prop.benefits) for p in positionings)
             / len(positionings)
             if positionings
-            else 0,
+            else 0.0,
         }
 
 

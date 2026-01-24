@@ -1,9 +1,11 @@
-import pytest
-from unittest.mock import MagicMock
-from antigravity.core.rag.vector_client import VectorClient
 from antigravity.core.rag.embedding import EmbeddingService
+from antigravity.core.rag.vector_client import VectorClient
 from antigravity.core.swarm.patterns.research_agent import ResearchAgent
 from antigravity.core.swarm.types import AgentMessage, MessageType
+from unittest.mock import MagicMock
+
+import pytest
+
 
 class TestRAG:
     def test_embedding_service(self):

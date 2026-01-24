@@ -1,9 +1,11 @@
-import pytest
 import time
-from unittest.mock import MagicMock, patch
+from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority, TaskStatus
 from antigravity.core.agent_swarm.executor import TaskExecutor
-from antigravity.core.agent_swarm.enums import AgentRole, TaskStatus, TaskPriority
 from antigravity.core.agent_swarm.models import SwarmAgent, SwarmTask
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 class TestTaskExecutor:
     @pytest.fixture
@@ -51,7 +53,7 @@ class TestTaskExecutor:
         
         assert task.status == TaskStatus.ASSIGNED
         assert task.assigned_agent == "a1"
-        assert agent.is_busy == True
+        assert agent.is_busy
         mock_swarm.task_manager.remove_task_from_queue.assert_called_once_with("t1")
         mock_swarm._executor.submit.assert_called_once()
 
@@ -71,7 +73,7 @@ class TestTaskExecutor:
         assert task.status == TaskStatus.COMPLETED
         assert task.result == "OK"
         assert agent.tasks_completed == 1
-        assert agent.is_busy == False
+        assert not agent.is_busy
 
     def test_execute_task_failure(self, executor, mock_swarm):
         handler = MagicMock(side_effect=ValueError("Boom"))
@@ -88,4 +90,4 @@ class TestTaskExecutor:
         assert task.status == TaskStatus.FAILED
         assert "Boom" in task.error
         assert agent.tasks_failed == 1
-        assert agent.is_busy == False
+        assert not agent.is_busy

@@ -3,9 +3,27 @@ Router Service - Business logic for hybrid routing
 """
 
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, List, TypedDict
 
 from backend.models.router import RouterRequest, RouterResponse
+
+
+class RoutingStrategyConfig(TypedDict):
+    provider: str
+    model: str
+    cost: float
+
+
+class RoutingStats(TypedDict):
+    total_routes: int
+    cost_savings: float
+    avg_response_time: float
+
+
+class RouterStatsResponse(TypedDict):
+    stats: RoutingStats
+    strategy: Dict[str, str]
+    target_savings: str
 
 
 class TaskType(str, Enum):
@@ -83,7 +101,7 @@ class RouterService:
             task_analysis={"type": task_type.value, "complexity": complexity.value},
         )
 
-    async def get_routing_stats(self) -> Dict[str, Any]:
+    async def get_routing_stats(self) -> RouterStatsResponse:
         """Get routing statistics and configuration"""
         return {
             "stats": {"total_routes": 1250, "cost_savings": 68.5, "avg_response_time": 1.2},
@@ -122,7 +140,7 @@ class RouterService:
         return task_type, complexity
 
     def _generate_reason(
-        self, task_type: TaskType, complexity: Complexity, config: Dict[str, Any]
+        self, task_type: TaskType, complexity: Complexity, config: RoutingStrategyConfig
     ) -> str:
         """Generate routing reason"""
         reasons = {

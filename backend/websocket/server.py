@@ -15,7 +15,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict
 
-from fastapi import WebSocket
+from fastapi import HTTPException, WebSocket, status
+
+from backend.api.utils.deps import verify_token
 
 
 class EventType(str, Enum):
@@ -67,7 +69,9 @@ class ConnectionManager:
 
             await websocket.accept()
             self._connection_count += 1
-            client_id = f"{user_data.username}_{self._connection_count}_{datetime.now().strftime('%H%M%S')}"
+            client_id = (
+                f"{user_data.username}_{self._connection_count}_{datetime.now().strftime('%H%M%S')}"
+            )
             self.active_connections[client_id] = websocket
 
             # Send welcome message

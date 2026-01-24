@@ -1,11 +1,11 @@
 import logging
+from antigravity.core.telemetry import agent_telemetry
 from typing import Any, List, Optional
 
-from antigravity.core.telemetry import agent_telemetry
+from ...rag.embedding import EmbeddingService
+from ...rag.vector_client import VectorClient
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
-from ...rag.vector_client import VectorClient
-from ...rag.embedding import EmbeddingService
 
 logger = logging.getLogger(__name__)
 

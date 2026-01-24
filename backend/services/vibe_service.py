@@ -2,9 +2,31 @@
 Vibe Service - Business logic for vibe operations
 """
 
-from typing import Any, Dict
+import logging
+from typing import Dict, List, Optional, TypedDict
 
 from backend.models.vibe import VibeRequest, VibeResponse
+
+logger = logging.getLogger(__name__)
+
+
+class VibeConfig(TypedDict):
+    """Configuration for a specific vibe"""
+    tone: str
+    style: str
+    local_words: List[str]
+
+
+class VibeListResponse(TypedDict):
+    """Response structure for listing vibes"""
+    vibes: List[str]
+    current: str
+
+
+class VibePromptResponse(TypedDict):
+    """Response structure for vibe prompts"""
+    vibe: str
+    system_prompt: str
 
 
 class VibeService:
@@ -25,13 +47,14 @@ class VibeService:
         ]
         self.current_vibe = "neutral"
 
-    async def get_available_vibes(self) -> Dict[str, Any]:
+    async def get_available_vibes(self) -> VibeListResponse:
         """Get list of available vibes"""
         return {"vibes": self.available_vibes, "current": self.current_vibe}
 
     async def set_vibe(self, request: VibeRequest) -> VibeResponse:
         """Set vibe based on region or location"""
         if request.location:
+            logger.info(f"Detecting vibe for location: {request.location}")
             # Auto-detect from location (simulated)
             detected_vibe = self._detect_vibe_from_location(request.location)
             config = self._generate_config(detected_vibe)
@@ -42,14 +65,16 @@ class VibeService:
 
         # Set by region ID
         if request.region not in self.available_vibes:
+            logger.error(f"Unknown vibe requested: {request.region}")
             raise ValueError(f"Unknown vibe: {request.region}")
 
+        logger.info(f"Setting vibe to: {request.region}")
         self.current_vibe = request.region
         config = self._generate_config(request.region)
 
         return VibeResponse(vibe=request.region, config=config)
 
-    async def get_vibe_prompt(self, context: str = "") -> Dict[str, Any]:
+    async def get_vibe_prompt(self, context: str = "") -> VibePromptResponse:
         """Get system prompt for current vibe"""
         prompt = self._generate_system_prompt(context)
 
@@ -70,9 +95,9 @@ class VibeService:
         else:
             return "neutral"
 
-    def _generate_config(self, vibe: str) -> Dict[str, Any]:
+    def _generate_config(self, vibe: str) -> VibeConfig:
         """Generate configuration for a vibe"""
-        configs = {
+        configs: Dict[str, VibeConfig] = {
             "saigon": {
                 "tone": "energetic",
                 "style": "modern",

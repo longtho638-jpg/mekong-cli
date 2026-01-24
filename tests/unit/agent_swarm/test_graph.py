@@ -1,8 +1,10 @@
-import pytest
 import time
 from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.graph import GraphExecutor, GraphWorkflow, GraphNode
 from antigravity.core.agent_swarm.enums import TaskStatus
+from antigravity.core.agent_swarm.graph import GraphExecutor, GraphNode, GraphWorkflow
+
+import pytest
+
 
 def test_graph_execution():
     # 1. Setup Swarm

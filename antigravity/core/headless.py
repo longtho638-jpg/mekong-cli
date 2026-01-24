@@ -82,6 +82,8 @@ class HeadlessMode:
         cmd = cmd_str[1:].lower().strip()
         base = cmd.split(":")[0].split()[0]
 
+        logger.debug(f"Routing slash command: {base}")
+
         # Core Command Map
         if base == "infra":
             from .infrastructure import InfrastructureStack
@@ -116,6 +118,7 @@ class HeadlessMode:
         if base == "test":
             return {"tests": "passed", "count": 12}, "All validation tests passed ✅"
 
+        logger.warning(f"Command /{base} not supported in headless mode")
         return None, f"Command /{base} not supported in headless mode."
 
     def _process_natural_prompt(self, prompt: str) -> Tuple[Any, str]:

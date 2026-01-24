@@ -13,8 +13,8 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from antigravity.mcp_servers.quota_server.engine import QuotaEngine
-from antigravity.mcp_servers.quota_server.models import QuotaModel, QuotaPool
 from antigravity.mcp_servers.quota_server.enums import StatusFormat, ThresholdLevel
+from antigravity.mcp_servers.quota_server.models import QuotaModel, QuotaPool
 
 
 class TestQuotaModel:

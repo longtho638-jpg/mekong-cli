@@ -2,8 +2,10 @@
 Semantic Search & RAG: Vector embedding and retrieval for Knowledge Graph.
 """
 from typing import List, Optional
-from loguru import logger
+
 import numpy as np
+from loguru import logger
+
 from .client import graph_client
 from .models import KnowledgeNode
 

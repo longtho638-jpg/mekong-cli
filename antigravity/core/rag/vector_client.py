@@ -1,8 +1,9 @@
+import logging
 import os
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 import chromadb
 from chromadb.config import Settings
-import logging
 
 logger = logging.getLogger(__name__)
 

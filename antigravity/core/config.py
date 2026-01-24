@@ -15,7 +15,7 @@ Binh Pháp: 📋 Pháp (Process) - Maintaining order through standards.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Tuple, TypedDict, Union
 
 # ============================================================
 # 💸 EXCHANGE RATES (2026 Projections)
@@ -59,7 +59,16 @@ class DealTier(Enum):
     TUONG_QUAN = "tuong_quan"  # Tier 3: Venture Studio / Co-Founder
 
 
-TIER_PRICING: Dict[DealTier, Dict[str, Any]] = {
+class TierPricingDict(TypedDict):
+    """Structure for tier pricing configuration."""
+    label: str
+    retainer_usd: int
+    equity_range: Tuple[float, float]
+    success_fee_percent: float
+    description: str
+
+
+TIER_PRICING: Dict[DealTier, TierPricingDict] = {
     DealTier.WARRIOR: {
         "label": "WARRIOR (Startups)",
         "retainer_usd": 2000,
@@ -127,7 +136,7 @@ AI_PROXY_TIMEOUT = 30
 # ============================================================
 
 
-def get_tier_pricing(tier: Union[DealTier, str]) -> Dict[str, Any]:
+def get_tier_pricing(tier: Union[DealTier, str]) -> TierPricingDict:
     """Retrieves commercial terms for a specific deal tier."""
     if isinstance(tier, str):
         try:

@@ -1,15 +1,19 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException
-from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
-
-from antigravity.core.swarm.bus import MessageBus
-# Import Swarm v2 components
-from antigravity.core.agent_swarm.shortcuts import get_swarm, submit_task as submit_v2_task
 from antigravity.core.agent_swarm.enums import TaskPriority
 
-# Use the robust server implementation instead of the deleted manager
-from backend.websocket.server import manager as ws_manager, emit_swarm_update
+# Import Swarm v2 components
+from antigravity.core.agent_swarm.shortcuts import get_swarm
+from antigravity.core.agent_swarm.shortcuts import submit_task as submit_v2_task
+from antigravity.core.swarm.bus import MessageBus
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
+from pydantic import BaseModel
+
 from backend.api.security.rbac import require_operator, require_viewer
+from backend.websocket.server import emit_swarm_update
+
+# Use the robust server implementation instead of the deleted manager
+from backend.websocket.server import manager as ws_manager
 
 router = APIRouter(prefix="/swarm", tags=["swarm"])
 

@@ -1,7 +1,9 @@
-import pytest
 import asyncio
-from unittest.mock import MagicMock, patch
 from antigravity.mcp_servers.marketing_server.handlers import MarketingHandler
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 
 @pytest.mark.asyncio
 async def test_audit_seo():

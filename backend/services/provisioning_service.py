@@ -7,11 +7,20 @@ Syncs state between the unified `subscriptions` table and legacy `organizations`
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Optional, Any
+from typing import Any, Dict, Optional, TypedDict
 
 from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
+
+
+class ProvisioningResponse(TypedDict, total=False):
+    """Standard response from provisioning operations"""
+    success: bool
+    tenant_id: str
+    plan: str
+    error: str
+
 
 class ProvisioningService:
     """
@@ -34,7 +43,7 @@ class ProvisioningService:
         subscription_id: str,
         customer_id: str = None,
         period_end: datetime = None
-    ) -> Dict[str, Any]:
+    ) -> ProvisioningResponse:
         """
         Activates a subscription for a tenant.
         Upserts into `subscriptions` and syncs to `organizations`.
@@ -98,7 +107,7 @@ class ProvisioningService:
 
         return {"success": True, "tenant_id": tenant_id, "plan": plan}
 
-    def cancel_subscription(self, provider_subscription_id: str, provider: str) -> Dict[str, Any]:
+    def cancel_subscription(self, provider_subscription_id: str, provider: str) -> ProvisioningResponse:
         """
         Downgrades a tenant to FREE upon cancellation.
         """
@@ -151,7 +160,7 @@ class ProvisioningService:
         provider: str,
         transaction_id: str,
         invoice_id: str = None
-    ) -> Dict[str, Any]:
+    ) -> ProvisioningResponse:
         """
         Records a payment in the `payments` table and updates `last_payment_at` in organizations.
         """

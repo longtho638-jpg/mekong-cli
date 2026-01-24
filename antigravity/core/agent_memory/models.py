@@ -3,7 +3,10 @@ Agent Memory Models.
 """
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Set
+from typing import Dict, List, Set, Union
+
+# Define possible values for memory context
+ContextValue = Union[str, int, float, bool, list, dict, None]
 
 
 @dataclass
@@ -11,7 +14,7 @@ class Memory:
     """A single record of an agent's execution experience."""
 
     agent: str
-    context: Dict[str, Any]
+    context: Dict[str, ContextValue]
     outcome: str
     success: bool
     timestamp: datetime = field(default_factory=datetime.now)

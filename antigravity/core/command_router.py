@@ -66,18 +66,17 @@ class CommandRouter:
         """Get route for a command."""
         return self.routes.get(command)
 
-    def resolve_args(self, route: Route, cli_args: List[str]) -> Dict[str, Any]:
+    def resolve_args(self, route: Route, cli_args: List[str]) -> Dict[str, str]:
         """Resolve CLI arguments to tool arguments."""
         if not route.args_map or not cli_args:
             return {}
 
-        tool_args = {}
+        tool_args: Dict[str, str] = {}
         # Simple positional mapping for now
         # In a real implementation, this would be more sophisticated
-        list(route.args_map.keys())
         # The values in args_map are the keys expected by the tool
         tool_arg_names = list(route.args_map.values())
-        
+
         for i, arg in enumerate(cli_args):
             if i < len(tool_arg_names):
                 tool_args[tool_arg_names[i]] = arg

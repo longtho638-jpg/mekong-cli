@@ -6,10 +6,10 @@ Automates the collection and summarization of user feedback from Discord and Twi
 Bridges community insights directly into the AgencyOS roadmap.
 """
 
-import logging
 import asyncio
+import logging
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')

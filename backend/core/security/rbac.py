@@ -6,11 +6,13 @@ Defines system roles and provides dependencies for FastAPI permission enforcemen
 
 from enum import Enum
 from typing import List, Optional
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 # Import verification logic from existing auth module
-from backend.api.auth.utils import verify_token, TokenData
+from backend.api.auth.utils import TokenData, verify_token
+
 
 class Role(str, Enum):
     OWNER = "owner"

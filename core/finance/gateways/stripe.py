@@ -4,9 +4,9 @@ Stripe Gateway Implementation
 Python implementation of Stripe integration matching the TypeScript version.
 """
 
-import os
 import logging
-from typing import Dict, List, Optional, Any
+import os
+from typing import Any, Dict, List, Optional
 
 try:
     import stripe

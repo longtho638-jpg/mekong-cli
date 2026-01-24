@@ -9,14 +9,15 @@ Usage:
     python scripts/setup/sync_paypal_plans.py
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from core.finance.paypal_sdk import PayPalSDK
+
 
 def sync_plans():
     print("🔄 Syncing PayPal Products and Plans...")

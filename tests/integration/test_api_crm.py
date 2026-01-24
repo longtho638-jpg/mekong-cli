@@ -1,12 +1,13 @@
-import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch
 import sys
 import types
+from unittest.mock import MagicMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 
 from backend.api.main import app
 from backend.api.routers import crm
-from backend.core.security.rbac import require_viewer, require_developer
+from backend.core.security.rbac import require_developer, require_viewer
 
 # Override authentication dependencies for testing
 app.dependency_overrides[require_viewer] = lambda: MagicMock(role="viewer")
