@@ -16,7 +16,7 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from typing_extensions import TypedDict
 
@@ -67,6 +67,10 @@ class RevenueEngine(BaseEngine):
         self.forecaster = RevenueForecasting()
         self.goal_tracker = GoalTracker()
         self.reporter = RevenueReporting()
+
+        # Cache attributes for _collect_stats
+        self._cached_stats: Optional[Dict[str, object]] = None
+        self._cache_time: Optional[datetime] = None
 
     def create_invoice(
         self, client_name: str, amount: float, currency: str = "USD", notes: str = ""

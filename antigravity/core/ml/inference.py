@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 # Optional sklearn imports with fallback
 SKLEARN_AVAILABLE = False
-PolynomialFeatures = None
-cross_val_score = None
+PolynomialFeatures = None  # type: ignore
+cross_val_score = None  # type: ignore
 
 try:
     from sklearn.model_selection import cross_val_score
