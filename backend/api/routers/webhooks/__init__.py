@@ -8,15 +8,31 @@ from .processor import process_purchase
 
 router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 
-# In-memory store (shared state)
+# In-memory stores (shared state)
 _customers = {}
 _purchases = []
+_affiliates = {}  # TASK J: Affiliate tracking store
+
 
 @router.post("/gumroad")
 async def gumroad_webhook(request: Request, background_tasks: BackgroundTasks):
     try:
         form_data = await request.form()
         data = dict(form_data)
+
+        # Extract custom_fields if present (Gumroad sends as form fields)
+        custom_fields = {}
+        if "custom_fields" in data:
+            # Gumroad sends custom fields as JSON string or separate fields
+            import json
+            try:
+                custom_fields = json.loads(data.get("custom_fields", "{}"))
+            except (json.JSONDecodeError, TypeError):
+                # Fallback: check for individual custom field keys
+                for key in data:
+                    if key.startswith("custom_"):
+                        custom_fields[key.replace("custom_", "")] = data[key]
+
         purchase = GumroadPurchase(
             email=data.get("email", ""),
             product_id=data.get("product_id", ""),
@@ -26,15 +42,46 @@ async def gumroad_webhook(request: Request, background_tasks: BackgroundTasks):
             sale_id=data.get("sale_id", ""),
             license_key=data.get("license_key"),
             purchaser_id=data.get("purchaser_id"),
+            custom_fields=custom_fields if custom_fields else None,
         )
-        background_tasks.add_task(process_purchase, purchase, _customers, _purchases)
+        background_tasks.add_task(
+            process_purchase, purchase, _customers, _purchases, _affiliates
+        )
         return {"status": "success", "message": "Purchase received"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @router.get("/customers")
 async def list_customers():
     return {"count": len(_customers), "customers": list(_customers.values())}
+
+
+@router.get("/affiliates")
+async def list_affiliates():
+    """List all affiliates and their stats."""
+    return {
+        "count": len(_affiliates),
+        "affiliates": [
+            {
+                "code": aff["code"],
+                "total_referrals": aff["total_referrals"],
+                "total_sales": aff["total_sales"],
+                "total_commission_pending": aff["total_commission_pending"],
+                "total_commission_paid": aff["total_commission_paid"],
+            }
+            for aff in _affiliates.values()
+        ]
+    }
+
+
+@router.get("/affiliates/{affiliate_code}")
+async def get_affiliate_details(affiliate_code: str):
+    """Get detailed affiliate information including all referrals."""
+    if affiliate_code not in _affiliates:
+        raise HTTPException(status_code=404, detail="Affiliate not found")
+    return _affiliates[affiliate_code]
+
 
 @router.post("/license/validate")
 async def validate_license(license_key: str, email: str):

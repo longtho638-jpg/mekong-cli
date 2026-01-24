@@ -41,6 +41,9 @@ from backend.api.routers import (
     dashboard as dashboard_router,
 )
 from backend.api.routers import (
+    license as license_router,  # License verification
+)
+from backend.api.routers import (
     ops as ops_router,  # Refactored
 )
 from backend.api.routers import (
@@ -101,6 +104,7 @@ app.include_router(ops_router.router)
 app.include_router(crm.router)
 app.include_router(kanban.router)
 app.include_router(dashboard_router.router)
+app.include_router(license_router.router)
 
 # Utility & Integration
 app.include_router(i18n.router)
