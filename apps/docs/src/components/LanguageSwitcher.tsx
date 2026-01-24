@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { SUPPORTED_LOCALES as LOCALES, Locale } from '@agencyos/i18n/types';
+import { SUPPORTED_LOCALES as LOCALES } from '@agencyos/i18n';
+import type { Locale } from '@agencyos/i18n';
 import { getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 const LOCALE_LABELS: Record<Locale, string> = {

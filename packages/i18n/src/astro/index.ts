@@ -1,1 +1,1 @@
-export * from './utils';
+export { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from './utils.js';

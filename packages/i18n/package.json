@@ -1,24 +1,35 @@
 {
   "name": "@agencyos/i18n",
   "version": "0.1.0",
+  "type": "module",
   "description": "Shared i18n package for Antigravity/Mekong CLI",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
       "import": "./dist/hooks/index.js",
-      "require": "./dist/hooks/index.js",
-      "types": "./dist/hooks/index.d.ts"
+      "require": "./dist/hooks/index.js"
     },
     "./astro": {
+      "types": "./dist/astro/index.d.ts",
       "import": "./dist/astro/index.js",
-      "require": "./dist/astro/index.js",
-      "types": "./dist/astro/index.d.ts"
+      "require": "./dist/astro/index.js"
+    },
+    "./locales": {
+      "types": "./dist/locales/index.d.ts",
+      "import": "./dist/locales/index.js",
+      "require": "./dist/locales/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js",
+      "require": "./dist/types.js"
     }
   },
   "scripts": {
