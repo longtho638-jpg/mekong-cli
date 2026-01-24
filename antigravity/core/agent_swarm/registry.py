@@ -4,7 +4,7 @@ Agent Registry Module.
 import logging
 import threading
 import uuid
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from .enums import AgentRole
 from .models import SwarmAgent
@@ -22,9 +22,9 @@ class AgentRegistry:
     def register(
         self,
         name: str,
-        handler: Callable,
+        handler: Callable[[Any], Any],
         role: AgentRole = AgentRole.WORKER,
-        specialties: List[str] = None,
+        specialties: Optional[List[str]] = None,
     ) -> str:
         """Register an agent."""
         agent_id = f"agent_{uuid.uuid4().hex[:8]}"

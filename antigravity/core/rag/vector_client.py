@@ -1,11 +1,22 @@
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 import chromadb
 from chromadb.config import Settings
 
 logger = logging.getLogger(__name__)
+
+
+class VectorQueryResponse(TypedDict):
+    """Response from a vector store query"""
+    ids: List[List[str]]
+    distances: Optional[List[List[float]]]
+    metadatas: Optional[List[List[Dict[str, Any]]]]
+    documents: Optional[List[List[str]]]
+    uris: Optional[List[List[str]]]
+    data: Optional[List[List[Any]]]
+
 
 class VectorClient:
     """

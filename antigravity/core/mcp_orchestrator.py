@@ -10,7 +10,7 @@ import os
 import subprocess
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict, Union
 from urllib.parse import urlparse
 
 import aiohttp
@@ -19,9 +19,34 @@ from .registry.mcp_catalog import mcp_catalog
 
 logger = logging.getLogger(__name__)
 
+
+class MCPToolDefinition(TypedDict):
+    """MCP tool metadata"""
+    name: str
+    description: str
+    inputSchema: Dict[str, Any]
+
+
+class MCPCallResult(TypedDict, total=False):
+    """Result of an MCP tool call"""
+    success: bool
+    result: Any
+    error: str
+
+
+class MCPServerConfig(TypedDict, total=False):
+    """Configuration for an MCP server"""
+    type: str  # stdio, sse
+    command: str
+    args: List[str]
+    env: Dict[str, str]
+    url: str
+    headers: Dict[str, str]
+
+
 class BaseMCPProcess(ABC):
     """Abstract base class for MCP server processes."""
-    def __init__(self, name: str, config: Dict[str, Any]):
+    def __init__(self, name: str, config: Union[MCPServerConfig, Dict[str, Any]]):
         self.name = name
         self.config = config
         self.last_used = time.time()
@@ -32,31 +57,32 @@ class BaseMCPProcess(ABC):
         pass
 
     @abstractmethod
-    async def start(self):
+    async def start(self) -> None:
         pass
 
     @abstractmethod
-    async def stop(self):
+    async def stop(self) -> None:
         pass
 
     @abstractmethod
-    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> MCPCallResult:
         pass
 
     @abstractmethod
-    async def list_tools(self) -> List[Dict[str, Any]]:
+    async def list_tools(self) -> List[MCPToolDefinition]:
         pass
+
 
 class StdioMCPProcess(BaseMCPProcess):
     """Manages a single MCP server process using Stdio transport."""
-    def __init__(self, name: str, config: Dict[str, Any]):
+    def __init__(self, name: str, config: Union[MCPServerConfig, Dict[str, Any]]):
         super().__init__(name, config)
         self.process: Optional[subprocess.Popen] = None
 
     def is_alive(self) -> bool:
         return self.process is not None and self.process.poll() is None
 
-    async def start(self):
+    async def start(self) -> None:
         """Starts the MCP server process."""
         if self.is_alive():
             return
@@ -83,7 +109,7 @@ class StdioMCPProcess(BaseMCPProcess):
         )
         self.last_used = time.time()
 
-    async def stop(self):
+    async def stop(self) -> None:
         """Stops the MCP server process."""
         if self.process:
             logger.info(f"🛑 Stopping MCP Server: {self.name}")
@@ -122,7 +148,7 @@ class StdioMCPProcess(BaseMCPProcess):
             logger.error(f"❌ Error sending request to {self.name}: {e}")
             raise
 
-    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> MCPCallResult:
         """Calls a tool using the stdio MCP protocol."""
         self.last_used = time.time()
         try:
@@ -138,7 +164,7 @@ class StdioMCPProcess(BaseMCPProcess):
             logger.error(f"Exception during call_tool {tool_name} on {self.name}: {e}")
             return {"success": False, "error": str(e)}
 
-    async def list_tools(self) -> List[Dict[str, Any]]:
+    async def list_tools(self) -> List[MCPToolDefinition]:
         try:
             response = await self._send_request("tools/list")
             return response.get("result", {}).get("tools", [])
@@ -146,9 +172,10 @@ class StdioMCPProcess(BaseMCPProcess):
             logger.error(f"Failed to list tools for {self.name}: {e}")
             return []
 
+
 class SSEMCPProcess(BaseMCPProcess):
     """Manages an MCP server connection using SSE transport."""
-    def __init__(self, name: str, config: Dict[str, Any]):
+    def __init__(self, name: str, config: Union[MCPServerConfig, Dict[str, Any]]):
         super().__init__(name, config)
         self.session: Optional[aiohttp.ClientSession] = None
         self.post_url: Optional[str] = None
@@ -159,7 +186,7 @@ class SSEMCPProcess(BaseMCPProcess):
     def is_alive(self) -> bool:
         return self._connected and self.session is not None and not self.session.closed
 
-    async def start(self):
+    async def start(self) -> None:
         """Starts the SSE connection."""
         if self.is_alive():
             return
@@ -183,7 +210,7 @@ class SSEMCPProcess(BaseMCPProcess):
         if self.post_url and not self._initialized:
             await self._initialize()
 
-    async def _initialize(self):
+    async def _initialize(self) -> None:
         """Sends JSON-RPC initialize request."""
         try:
             request = {
@@ -207,7 +234,7 @@ class SSEMCPProcess(BaseMCPProcess):
         except Exception as e:
             logger.error(f"Failed to initialize {self.name}: {e}")
 
-    async def _connect_sse(self, url: str):
+    async def _connect_sse(self, url: str) -> None:
         try:
             async with self.session.get(url) as response:
                 if response.status != 200:
@@ -220,8 +247,8 @@ class SSEMCPProcess(BaseMCPProcess):
                 current_data = []
 
                 async for line in response.content:
-                    line = line.decode('utf-8').strip()
-                    if not line:
+                    line_str = line.decode('utf-8').strip()
+                    if not line_str:
                         if current_event == "endpoint" and current_data:
                             endpoint = "\n".join(current_data)
                             self._resolve_endpoint(url, endpoint)
@@ -229,16 +256,16 @@ class SSEMCPProcess(BaseMCPProcess):
                         current_data = []
                         continue
 
-                    if line.startswith("event:"):
-                        current_event = line[6:].strip()
-                    elif line.startswith("data:"):
-                        current_data.append(line[5:].strip())
+                    if line_str.startswith("event:"):
+                        current_event = line_str[6:].strip()
+                    elif line_str.startswith("data:"):
+                        current_data.append(line_str[5:].strip())
 
         except Exception as e:
             logger.error(f"SSE Error for {self.name}: {e}")
             self._connected = False
 
-    def _resolve_endpoint(self, base_url: str, endpoint: str):
+    def _resolve_endpoint(self, base_url: str, endpoint: str) -> None:
         if endpoint.startswith("http"):
             self.post_url = endpoint
         elif endpoint.startswith("/"):
@@ -252,7 +279,7 @@ class SSEMCPProcess(BaseMCPProcess):
             self.post_url = f"{base_url}/{endpoint}" if not base_url.endswith("/") else f"{base_url}{endpoint}"
         logger.info(f"✅ Resolved MCP endpoint for {self.name}: {self.post_url}")
 
-    async def stop(self):
+    async def stop(self) -> None:
         """Stops the MCP server connection."""
         logger.info(f"🛑 Stopping MCP Server (SSE): {self.name}")
         if self.sse_task:
@@ -263,7 +290,7 @@ class SSEMCPProcess(BaseMCPProcess):
         self.session = None
         self._initialized = False
 
-    async def _send_request(self, method: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _send_request(self, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         self.last_used = time.time()
         if not self.is_alive():
             await self.start()
@@ -284,7 +311,7 @@ class SSEMCPProcess(BaseMCPProcess):
                  raise Exception(f"HTTP {resp.status}: {text}")
             return await resp.json()
 
-    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> MCPCallResult:
         try:
             response = await self._send_request("tools/call", {
                 "name": tool_name,
@@ -297,13 +324,14 @@ class SSEMCPProcess(BaseMCPProcess):
             logger.error(f"Error calling tool {tool_name} on {self.name}: {e}")
             return {"success": False, "error": str(e)}
 
-    async def list_tools(self) -> List[Dict[str, Any]]:
+    async def list_tools(self) -> List[MCPToolDefinition]:
         try:
             response = await self._send_request("tools/list")
             return response.get("result", {}).get("tools", [])
         except Exception as e:
             logger.error(f"Failed to list tools for {self.name}: {e}")
             return []
+
 
 class MCPOrchestrator:
     """
@@ -314,7 +342,7 @@ class MCPOrchestrator:
         self.processes: Dict[str, BaseMCPProcess] = {}
         self.ttl = ttl_seconds
         self.max_concurrent = max_concurrent
-        self._monitor_task = None
+        self._monitor_task: Optional[asyncio.Task] = None
 
     async def get_process(self, server_name: str) -> Optional[BaseMCPProcess]:
         """Retrieves or creates a process for the given server."""
@@ -346,7 +374,7 @@ class MCPOrchestrator:
 
         return proc
 
-    async def probe_server(self, server_name: str) -> List[Dict[str, Any]]:
+    async def probe_server(self, server_name: str) -> List[MCPToolDefinition]:
         """Starts a server briefly to list its tools."""
         proc = await self.get_process(server_name)
         if not proc:
@@ -360,7 +388,7 @@ class MCPOrchestrator:
             logger.error(f"Failed to probe server {server_name}: {e}")
             return []
 
-    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    async def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> MCPCallResult:
         """Resolves tool to server and executes it."""
         tool_info = mcp_catalog.find_tool(tool_name)
         if not tool_info:
@@ -373,26 +401,19 @@ class MCPOrchestrator:
 
         return await proc.call_tool(tool_name, arguments)
 
-    async def cleanup_idle(self):
+    async def cleanup_idle(self) -> None:
         """Reaps processes that have been idle past the TTL."""
         now = time.time()
-        to_remove = []
-        for name, proc in self.processes.items():
+        for _, proc in self.processes.items():
             if proc.is_alive() and (now - proc.last_used) > self.ttl:
                 await proc.stop()
-                to_remove.append(name)
 
-        # We don't remove from dict, just stop them.
-        # But if we wanted to clear memory we could:
-        # for name in to_remove:
-        #    del self.processes[name]
-
-    def start_monitoring(self):
+    def start_monitoring(self) -> None:
         """Starts the background TTL monitor."""
         if self._monitor_task is None:
             self._monitor_task = asyncio.create_task(self._monitor_loop())
 
-    async def _monitor_loop(self):
+    async def _monitor_loop(self) -> None:
         while True:
             await asyncio.sleep(60) # Check every minute
             await self.cleanup_idle()

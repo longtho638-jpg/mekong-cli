@@ -10,9 +10,9 @@ import logging
 from antigravity.core.base import BaseEngine
 from antigravity.core.patterns import singleton_factory
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
-from .analytics import PipelineAnalytics, PipelineAnalysis
+from .analytics import PipelineAnalysis, PipelineAnalytics
 from .models import Client, Lead, LeadSource, LeadStatus
 from .persistence import ClientMagnetPersistence
 from .scoring import LeadScorer

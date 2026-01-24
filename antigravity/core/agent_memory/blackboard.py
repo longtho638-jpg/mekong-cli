@@ -5,7 +5,7 @@ Allows agents to read and write shared context during complex task execution.
 import logging
 import threading
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 logger = logging.getLogger(__name__)
 

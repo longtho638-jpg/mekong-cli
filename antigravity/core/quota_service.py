@@ -7,10 +7,9 @@ token usage based on the current economic status.
 """
 
 import logging
+from antigravity.mcp_servers.quota_server.engine import QuotaEngine
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict
-
-from antigravity.mcp_servers.quota_server.engine import QuotaEngine
 
 logger = logging.getLogger(__name__)
 

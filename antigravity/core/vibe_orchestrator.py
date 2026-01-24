@@ -18,7 +18,7 @@ import concurrent.futures
 import logging
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
+from typing import Any, Callable, Dict, List, Optional, TypedDict, Union
 
 from .base import BaseEngine
 from .models.orchestrator import AgentTask, AgentType, ChainResult

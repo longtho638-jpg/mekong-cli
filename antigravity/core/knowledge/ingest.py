@@ -5,7 +5,7 @@ Uses AST for Python parsing.
 import ast
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from loguru import logger
 
@@ -90,7 +90,7 @@ class CodeIngestor:
             type=EdgeType.DEFINES
         ))
 
-    def _handle_import(self, node: Any, file_id: str) -> None:
+    def _handle_import(self, node: Union[ast.Import, ast.ImportFrom], file_id: str) -> None:
         """Create Edge for Imports"""
         # Simplification: linking to Module nodes (which might not exist yet)
         pass

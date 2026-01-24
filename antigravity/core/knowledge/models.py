@@ -3,9 +3,26 @@ Knowledge Models: Pydantic definitions for Graph Nodes and Edges.
 """
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from pydantic import BaseModel, Field
+
+
+class NodeDict(TypedDict, total=False):
+    """Dictionary representation of a knowledge node"""
+    id: str
+    name: str
+    type: str
+    content: str
+    created_at: str
+    updated_at: str
+
+
+class EdgeDict(TypedDict, total=False):
+    """Dictionary representation of a knowledge edge"""
+    source: str
+    target: str
+    weight: float
 
 
 class NodeType(str, Enum):
@@ -35,17 +52,19 @@ class KnowledgeNode(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> NodeDict:
         """Convert to dictionary for batch ingestion"""
-        return {
+        result: NodeDict = {
             "id": self.id,
             "name": self.name,
             "type": self.type.value,
             "content": self.content or "",
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            **self.metadata
         }
+        if self.metadata:
+            result.update(self.metadata)  # type: ignore
+        return result
 
 class KnowledgeEdge(BaseModel):
     """Represents a relationship between nodes"""
@@ -55,11 +74,13 @@ class KnowledgeEdge(BaseModel):
     weight: float = 1.0
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> EdgeDict:
         """Convert to dictionary for batch ingestion"""
-        return {
+        result: EdgeDict = {
             "source": self.source_id,
             "target": self.target_id,
             "weight": self.weight,
-            **self.metadata
         }
+        if self.metadata:
+            result.update(self.metadata)  # type: ignore
+        return result

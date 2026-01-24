@@ -8,7 +8,7 @@ import time
 from typing import TYPE_CHECKING, Any, Optional
 
 from .enums import AgentRole, TaskStatus
-from .models import SwarmAgent, SwarmMetrics
+from .models import SwarmAgent, SwarmMetrics, SwarmTask
 
 if TYPE_CHECKING:
     from .engine import AgentSwarm
@@ -112,21 +112,23 @@ class TaskExecutor:
         finally:
             self._finalize_execution(agent)
 
-    def _handle_success(self, task: object, agent: SwarmAgent, result: Any) -> None:
+    def _handle_success(self, task: SwarmTask, agent: SwarmAgent, result: Any) -> None:
         """Handle successful task completion."""
-        # Note: task is a SwarmTask but avoid circular import if necessary
-        # Assuming task has the required attributes
-        task.status = TaskStatus.COMPLETED  # type: ignore
-        task.result = result  # type: ignore
-        task.completed_at = time.time()  # type: ignore
+        task.status = TaskStatus.COMPLETED
+        task.result = result
+        task.completed_at = time.time()
 
-        execution_time = task.completed_at - task.started_at  # type: ignore
-        self.swarm._task_times.append(execution_time)
+        if task.started_at is not None:
+            execution_time = task.completed_at - task.started_at
+            self.swarm._task_times.append(execution_time)
 
-        agent.tasks_completed += 1
-        agent.avg_execution_time = (
-            agent.avg_execution_time * (agent.tasks_completed - 1) + execution_time
-        ) / agent.tasks_completed
+            agent.tasks_completed += 1
+            agent.avg_execution_time = (
+                agent.avg_execution_time * (agent.tasks_completed - 1) + execution_time
+            ) / agent.tasks_completed
+        else:
+            execution_time = 0.0
+            agent.tasks_completed += 1
 
         with self.swarm._lock:
             self.swarm.metrics.completed_tasks += 1
@@ -134,18 +136,18 @@ class TaskExecutor:
         # Sync to Kanban
         try:
             if self.swarm.task_manager.board_manager:
-                self.swarm.task_manager.board_manager.sync_task_status(task.id, "COMPLETED")  # type: ignore
+                self.swarm.task_manager.board_manager.sync_task_status(task.id, "COMPLETED")
         except Exception as e:
             logger.warning(f"Failed to sync Kanban status (COMPLETED): {e}")
 
         self.swarm.notify_update()
-        logger.info(f"Task {task.name} completed in {execution_time:.2f}s")  # type: ignore
+        logger.info(f"Task {task.name} completed in {execution_time:.2f}s")
 
-    def _handle_failure(self, task: object, agent: SwarmAgent, error: Exception) -> None:
+    def _handle_failure(self, task: SwarmTask, agent: SwarmAgent, error: Exception) -> None:
         """Handle task failure."""
-        task.status = TaskStatus.FAILED  # type: ignore
-        task.error = str(error)  # type: ignore
-        task.completed_at = time.time()  # type: ignore
+        task.status = TaskStatus.FAILED
+        task.error = str(error)
+        task.completed_at = time.time()
 
         agent.tasks_failed += 1
 
@@ -155,12 +157,12 @@ class TaskExecutor:
         # Sync to Kanban
         try:
             if self.swarm.task_manager.board_manager:
-                self.swarm.task_manager.board_manager.sync_task_status(task.id, "FAILED")  # type: ignore
+                self.swarm.task_manager.board_manager.sync_task_status(task.id, "FAILED")
         except Exception as e:
             logger.warning(f"Failed to sync Kanban status (FAILED): {e}")
 
         self.swarm.notify_update()
-        logger.error(f"Task {task.name} failed: {error}")  # type: ignore
+        logger.error(f"Task {task.name} failed: {error}")
 
     def _finalize_execution(self, agent: SwarmAgent):
         """Finalize execution and try to assign more tasks."""

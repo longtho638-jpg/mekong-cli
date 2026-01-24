@@ -7,22 +7,19 @@ Provides a common interface for engines that need to persist state to disk.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
+T = TypeVar("T", bound=Dict[str, Any])
 
-class BasePersistence:
+
+class BasePersistence(Generic[T]):
     """
     Base class for JSON-based persistence.
 
     Provides save/load operations for engine state using JSON files.
     Automatically creates storage directories if they don't exist.
-
-    Example:
-        class MyEnginePersistence(BasePersistence):
-            def __init__(self, data_dir: Path):
-                super().__init__(data_dir, "my_engine.json")
     """
 
     def __init__(self, storage_path: Path, filename: str = "data.json"):
@@ -30,7 +27,7 @@ class BasePersistence:
         self.filepath = self.storage_path / filename
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-    def save(self, data: Dict[str, Any]) -> None:
+    def save(self, data: T) -> None:
         """Persists data to JSON file."""
         try:
             with open(self.filepath, "w", encoding="utf-8") as f:
@@ -40,13 +37,13 @@ class BasePersistence:
             logger.error(f"Failed to save to {self.filepath}: {e}")
             raise
 
-    def load(self) -> Dict[str, Any]:
+    def load(self) -> T:
         """Loads data from JSON file, returns empty dict if not found."""
         if not self.filepath.exists():
-            return {}
+            return {}  # type: ignore
         try:
             with open(self.filepath, encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.warning(f"Failed to load from {self.filepath}: {e}")
-            return {}
+            return {}  # type: ignore

@@ -18,10 +18,19 @@ Binh Pháp: 🏰 Pháp (Process) - Correcting errors systematically.
 """
 
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, TypedDict, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class ErrorDict(TypedDict):
+    """Serializable error representation"""
+    error: bool
+    code: str
+    message: str
+    status_code: int
+    details: Dict[str, Any]
 
 
 class AntigravityError(Exception):
@@ -49,7 +58,7 @@ class AntigravityError(Exception):
 
         super().__init__(self.message)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> ErrorDict:
         """Serializable representation for API and agent context."""
         return {
             "error": True,
