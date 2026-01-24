@@ -1,9 +1,10 @@
 ---
 // src/components/nav/SupportNav.astro
 import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  docs: any[];
+  docs: CollectionEntry<'docs'>[];
   currentPath: string;
 }
 
@@ -11,7 +12,7 @@ const { docs, currentPath } = Astro.props;
 const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Group by category
-const grouped = docs.reduce((acc: Record<string, any[]>, doc: any) => {
+const grouped = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]>, doc) => {
   const cat = doc.data.category || 'uncategorized';
   if (!acc[cat]) acc[cat] = [];
   acc[cat].push(doc);
@@ -20,7 +21,7 @@ const grouped = docs.reduce((acc: Record<string, any[]>, doc: any) => {
 
 // Sort within groups
 Object.keys(grouped).forEach(key => {
-  grouped[key].sort((a: any, b: any) => (a.data.order || 999) - (b.data.order || 999));
+  grouped[key].sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
 });
 
 // Category metadata
@@ -54,7 +55,7 @@ const categories: Record<string, { title: string; collapsible: boolean }> = {
         </div>
 
         <ul class="nav-items">
-          {categoryDocs.map((doc: any) => {
+          {categoryDocs.map((doc) => {
             const normalizedSlug = doc.slug.startsWith('docs/') ? doc.slug.slice(5) : doc.slug;
             const href = getRelativeLocaleUrl(currentLocale, `/docs/${normalizedSlug}`);
             const isActive = currentPath === href || currentPath === href + '/';

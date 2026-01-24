@@ -1,9 +1,10 @@
 ---
 // src/components/nav/ChangelogNav.astro
 import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  docs: any[];
+  docs: CollectionEntry<'docs'>[];
   currentPath: string;
 }
 

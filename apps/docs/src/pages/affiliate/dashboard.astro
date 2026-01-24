@@ -720,7 +720,7 @@ const pageData = (locales[locale] as any).affiliate_dashboard;
   }
 
   // Render stats with animation
-  function renderStats(data: any) {
+  function renderStats(data: Record<string, unknown>) {
     const stats = data.stats;
     const rank = data.rank;
     

@@ -1,9 +1,10 @@
 ---
 // src/components/nav/DocsNav.astro
 import { getLangFromUrl, getDocPath } from '../../i18n/utils';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  docs: any[];
+  docs: CollectionEntry<'docs'>[];
   currentPath: string;
 }
 
@@ -18,13 +19,13 @@ const capitalize = (str: string) => {
 // Build nested structure
 interface HierarchyNode {
   title: string;
-  items: any[];
+  items: CollectionEntry<'docs'>[];
   subcategories: Record<string, HierarchyNode>;
   path: string;
   collapsed: boolean;
 }
 
-const buildHierarchy = (docs: any[]) => {
+const buildHierarchy = (docs: CollectionEntry<'docs'>[]) => {
   const root: Record<string, HierarchyNode> = {};
 
   docs.forEach(doc => {
@@ -64,7 +65,7 @@ const hierarchy = buildHierarchy(docs);
 // Actually, for sidebar, usually 2-3 levels max. Let's iterate.
 
 // Sort items
-const sortItems = (items: any[]) => {
+const sortItems = (items: CollectionEntry<'docs'>[]) => {
   return items.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
 };
 

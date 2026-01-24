@@ -5,8 +5,8 @@ import { locales } from '@agencyos/i18n/locales';
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 
-const testimonials = (locales[locale] as any).landing.testimonials;
-const items = Object.values(testimonials.items);
+const testimonials = (locales[locale] as Record<string, unknown>).landing.testimonials;
+const items = Object.values(testimonials.items) as Array<{name: string; role: string; quote: string}>;
 ---
 <section class="testimonials-section py-16 overflow-hidden border-y border-[var(--color-border)] bg-[var(--color-bg-tertiary)]/30">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
@@ -20,7 +20,7 @@ const items = Object.values(testimonials.items);
 
   <div class="testimonials-track-wrapper">
     <div class="testimonials-track">
-      {items.map((item: any, index) => (
+      {items.map((item, index) => (
         <div class="testimonial-card">
           <div class="stars">⭐⭐⭐⭐⭐</div>
           <p class="quote">"{item.quote}"</p>
@@ -42,7 +42,7 @@ const items = Object.values(testimonials.items);
       ))}
 
       {/* Duplicate for infinite scroll */}
-      {items.map((item: any, index) => (
+      {items.map((item, index) => (
         <div class="testimonial-card">
           <div class="stars">⭐⭐⭐⭐⭐</div>
           <p class="quote">"{item.quote}"</p>
