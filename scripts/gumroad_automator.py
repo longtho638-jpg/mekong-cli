@@ -460,7 +460,8 @@ def main():
         print("\n📦 Available Products:")
         print("─" * 50)
         for p in products:
-            status = "🔄 UPDATE" if p.get("gumroad_id") else "🆕 CREATE"
+            gid = p.get("gumroad_id", "")
+            status = "🔄 UPDATE" if gid and gid != "TBD" else "🆕 CREATE"
             price = p.get("price", 0) / 100
             print(f"  {status} {p['id']}: ${price}")
         return
