@@ -1,3 +1,10 @@
+## [2.6.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.5...v2.6.0-beta.6) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **deletions:** add verified deprecated commands and skills ([cc28253](https://github.com/claudekit/claudekit-engineer/commit/cc28253b5ba788736854893efb9ad9d3ec6674e5))
+
 ## [2.6.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.4...v2.6.0-beta.5) (2026-01-24)
 
 
