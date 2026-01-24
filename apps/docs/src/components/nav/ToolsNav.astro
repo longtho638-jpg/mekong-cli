@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, getDocPath } from '../../i18n/utils';
+import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 interface Props {
   docs: any[];
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { docs, currentPath } = Astro.props;
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Sort items
 const sortItems = (items: any[]) => {
@@ -22,8 +22,9 @@ const sortedDocs = sortItems(docs.filter(doc => !doc.slug.endsWith('index') && d
   <div class="nav-section">
     <div class="nav-items">
       {sortedDocs.map(doc => {
-        const href = getDocPath(doc.slug, currentLocale);
-        const isActive = currentPath === href;
+        const normalizedSlug = doc.slug.startsWith('docs/') ? doc.slug.slice(5) : doc.slug;
+        const href = getRelativeLocaleUrl(currentLocale, `/docs/${normalizedSlug}`);
+        const isActive = currentPath === href || currentPath === href + '/';
         return (
           <a href={href} class:list={['nav-link', { active: isActive }]}>
             <span>{doc.data.title}</span>

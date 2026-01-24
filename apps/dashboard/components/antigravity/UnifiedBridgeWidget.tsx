@@ -13,8 +13,7 @@ import {
   Zap,
   Loader2,
 } from 'lucide-react'
-import { fetchBridgeStatus, refreshBridgeStatus } from '@/lib/api/bridge-api'
-import type { BridgeStatus, RateLimitStatus, UsageStats } from '@/lib/api/bridge-api'
+import { fetchBridgeStatus, refreshBridgeStatus, type BridgeStatus, type RateLimitStatus, type UsageStats } from '@/lib/api/bridge-api'
 import { BridgeErrorBoundary } from './BridgeErrorBoundary'
 
 /**
@@ -225,7 +224,7 @@ interface BridgeCardProps {
   color: 'purple' | 'green' | 'blue'
 }
 
-function BridgeCard({ name, icon, status, usage, color }: BridgeCardProps) {
+function BridgeCard({ name, icon, status, usage: _usage, color }: BridgeCardProps) {
   const colorClasses = {
     purple: 'from-purple-500/20 to-pink-500/20 border-purple-500/30',
     green: 'from-green-500/20 to-emerald-500/20 border-green-500/30',

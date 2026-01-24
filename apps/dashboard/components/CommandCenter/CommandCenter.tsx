@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Terminal, RefreshCw, Sparkles, GitBranch, Cpu, Zap, Play, Rocket } from 'lucide-react'
-import { CommandButton, CommandAction } from './CommandButton'
-import { AgentStatusGrid, AgentStatus } from './AgentStatusGrid'
+import { CommandButton, type CommandAction } from './CommandButton'
+import { AgentStatusGrid, type AgentStatus } from './AgentStatusGrid'
 import { LiveLogs } from './LiveLogs'
 
 /**

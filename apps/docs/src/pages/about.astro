@@ -1,86 +1,91 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'About AgencyOS - Our Mission';
-const description = 'Learn about the team behind AgencyOS and our mission to empower solo agencies with AI.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('about_page.title');
+const description = t('about_page.description');
+
+const pageData = (locales[locale] as any).about_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="about-page">
     <div class="about-container">
-      
+
       <!-- Hero -->
       <div class="about-hero">
         <span class="about-emoji">🏯</span>
-        <h1 class="about-title">About AgencyOS</h1>
+        <h1 class="about-title">{pageData.hero.title}</h1>
         <p class="about-subtitle">
-          Empowering solo agencies with AI superpowers.
+          {pageData.hero.subtitle}
         </p>
       </div>
 
       <!-- Mission -->
       <div class="about-section">
-        <h2>🎯 Our Mission</h2>
+        <h2>🎯 {pageData.mission.title}</h2>
         <p class="mission-text">
-          We believe running an agency shouldn't require a team of 20. With the right AI tools, 
-          one person can deliver the value of an entire department. AgencyOS is built to make 
-          that possible.
+          {pageData.mission.text}
         </p>
       </div>
 
-      <!-- Process (Directus Tinh Hoa) -->
+      <!-- Process -->
       <div class="about-section">
-        <h2>⚙️ Our Process</h2>
-        <p class="section-intro">Refined over hundreds of projects</p>
+        <h2>⚙️ {pageData.process.title}</h2>
+        <p class="section-intro">{pageData.process.subtitle}</p>
         <div class="process-timeline">
           <div class="process-step">
             <div class="step-number">1</div>
             <div class="step-content">
-              <h3>Discovery</h3>
-              <p>Deep-dive into your brand, goals, target audience, and competitive landscape.</p>
+              <h3>{pageData.process.steps.discovery.title}</h3>
+              <p>{pageData.process.steps.discovery.desc}</p>
             </div>
           </div>
           <div class="process-step">
             <div class="step-number">2</div>
             <div class="step-content">
-              <h3>Strategy</h3>
-              <p>AI-powered analysis and creative ideation. We map out the blueprint for success.</p>
+              <h3>{pageData.process.steps.strategy.title}</h3>
+              <p>{pageData.process.steps.strategy.desc}</p>
             </div>
           </div>
           <div class="process-step">
             <div class="step-number">3</div>
             <div class="step-content">
-              <h3>Build</h3>
-              <p>Our AI commands take over. From content to code, we ship at 10x speed.</p>
+              <h3>{pageData.process.steps.build.title}</h3>
+              <p>{pageData.process.steps.build.desc}</p>
             </div>
           </div>
           <div class="process-step">
             <div class="step-number">4</div>
             <div class="step-content">
-              <h3>Test</h3>
-              <p>Rigorous quality checks. We ensure everything is exceptional before launch.</p>
+              <h3>{pageData.process.steps.test.title}</h3>
+              <p>{pageData.process.steps.test.desc}</p>
             </div>
           </div>
           <div class="process-step">
             <div class="step-number">5</div>
             <div class="step-content">
-              <h3>Launch & Iterate</h3>
-              <p>Go live! Then we gather feedback and continuously improve with AI insights.</p>
+              <h3>{pageData.process.steps.launch.title}</h3>
+              <p>{pageData.process.steps.launch.desc}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Team (Directus Tinh Hoa) -->
+      <!-- Team -->
       <div class="about-section">
-        <h2>👥 Our Team</h2>
-        <p class="section-intro">We've got the best developers and strategists around</p>
+        <h2>👥 {pageData.team.title}</h2>
+        <p class="section-intro">{pageData.team.subtitle}</p>
         <div class="team-grid">
           <div class="team-card">
             <div class="team-avatar">🧑‍💻</div>
-            <h3>Long Minh</h3>
-            <p class="team-role">Founder & CEO</p>
-            <p class="team-bio">10+ years building digital products. Obsessed with AI automation.</p>
+            <h3>{pageData.team.members.long.name}</h3>
+            <p class="team-role">{pageData.team.members.long.role}</p>
+            <p class="team-bio">{pageData.team.members.long.bio}</p>
             <div class="team-social">
               <a href="#" class="social-link">𝕏</a>
               <a href="#" class="social-link">in</a>
@@ -88,9 +93,9 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
           </div>
           <div class="team-card">
             <div class="team-avatar">🤖</div>
-            <h3>AI Agent</h3>
-            <p class="team-role">Lead Developer</p>
-            <p class="team-bio">Never sleeps. Ships code 24/7. Knows 125+ commands.</p>
+            <h3>{pageData.team.members.agent.name}</h3>
+            <p class="team-role">{pageData.team.members.agent.role}</p>
+            <p class="team-bio">{pageData.team.members.agent.bio}</p>
             <div class="team-social">
               <a href="#" class="social-link">🧠</a>
               <a href="#" class="social-link">⚡</a>
@@ -98,9 +103,9 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
           </div>
           <div class="team-card">
             <div class="team-avatar">🎨</div>
-            <h3>Design AI</h3>
-            <p class="team-role">Creative Director</p>
-            <p class="team-bio">Creates stunning visuals. Masters WOW animations.</p>
+            <h3>{pageData.team.members.design.name}</h3>
+            <p class="team-role">{pageData.team.members.design.role}</p>
+            <p class="team-bio">{pageData.team.members.design.bio}</p>
             <div class="team-social">
               <a href="#" class="social-link">🎯</a>
               <a href="#" class="social-link">✨</a>
@@ -108,9 +113,9 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
           </div>
           <div class="team-card">
             <div class="team-avatar">📊</div>
-            <h3>Strategy AI</h3>
-            <p class="team-role">Growth Hacker</p>
-            <p class="team-bio">Applies Binh Phap to business. Wins without fighting.</p>
+            <h3>{pageData.team.members.strategy.name}</h3>
+            <p class="team-role">{pageData.team.members.strategy.role}</p>
+            <p class="team-bio">{pageData.team.members.strategy.bio}</p>
             <div class="team-social">
               <a href="#" class="social-link">🏯</a>
               <a href="#" class="social-link">📈</a>
@@ -119,10 +124,10 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
         </div>
       </div>
 
-      <!-- Tech Stack (Directus Tinh Hoa) -->
+      <!-- Tech Stack -->
       <div class="about-section">
-        <h2>🛠️ Tech Stack</h2>
-        <p class="section-intro">As solid as you'll find</p>
+        <h2>🛠️ {pageData.tech_stack.title}</h2>
+        <p class="section-intro">{pageData.tech_stack.subtitle}</p>
         <div class="tech-grid">
           <div class="tech-item">
             <span class="tech-icon">⚡</span>
@@ -153,27 +158,27 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
 
       <!-- Story -->
       <div class="about-section">
-        <h2>📖 The Story</h2>
+        <h2>📖 {pageData.story.title}</h2>
         <div class="story-grid">
           <div class="story-item">
             <div class="story-year">2023</div>
             <div class="story-content">
-              <h3>The Struggle</h3>
-              <p>Burned out from managing clients, creating content, and handling admin. There had to be a better way.</p>
+              <h3>{pageData.story.items['2023'].title}</h3>
+              <p>{pageData.story.items['2023'].desc}</p>
             </div>
           </div>
           <div class="story-item">
             <div class="story-year">2024</div>
             <div class="story-content">
-              <h3>The Breakthrough</h3>
-              <p>Discovered that AI could handle 80% of agency work. Built the first 10 commands.</p>
+              <h3>{pageData.story.items['2024'].title}</h3>
+              <p>{pageData.story.items['2024'].desc}</p>
             </div>
           </div>
           <div class="story-item">
             <div class="story-year">2025</div>
             <div class="story-content">
-              <h3>AgencyOS Launch</h3>
-              <p>125+ commands. 500+ agencies. One mission: automate everything.</p>
+              <h3>{pageData.story.items['2025'].title}</h3>
+              <p>{pageData.story.items['2025'].desc}</p>
             </div>
           </div>
         </div>
@@ -181,37 +186,37 @@ const description = 'Learn about the team behind AgencyOS and our mission to emp
 
       <!-- Values -->
       <div class="about-section">
-        <h2>💎 Our Values</h2>
+        <h2>💎 {pageData.values.title}</h2>
         <div class="values-grid">
           <div class="value-card">
             <div class="value-icon">⚡</div>
-            <h3>Speed Over Perfection</h3>
-            <p>Ship fast, iterate faster. Done is better than perfect.</p>
+            <h3>{pageData.values.items.speed.title}</h3>
+            <p>{pageData.values.items.speed.desc}</p>
           </div>
           <div class="value-card">
             <div class="value-icon">🎯</div>
-            <h3>Results Over Hours</h3>
-            <p>We measure outcomes, not time spent. Work smart, not hard.</p>
+            <h3>{pageData.values.items.results.title}</h3>
+            <p>{pageData.values.items.results.desc}</p>
           </div>
           <div class="value-card">
             <div class="value-icon">🤝</div>
-            <h3>Win-Win-Win</h3>
-            <p>Every decision must benefit you, us, and your clients.</p>
+            <h3>{pageData.values.items.win3.title}</h3>
+            <p>{pageData.values.items.win3.desc}</p>
           </div>
           <div class="value-card">
             <div class="value-icon">🔓</div>
-            <h3>Open by Default</h3>
-            <p>Transparent pricing, honest marketing, no hidden gotchas.</p>
+            <h3>{pageData.values.items.open.title}</h3>
+            <p>{pageData.values.items.open.desc}</p>
           </div>
         </div>
       </div>
 
       <!-- CTA -->
       <div class="about-cta">
-        <h2>Ready to automate your agency?</h2>
+        <h2>{pageData.cta.title}</h2>
         <div class="cta-buttons">
-          <a href="/pricing" class="btn-primary">Start Free Trial</a>
-          <a href="/contact" class="btn-secondary">Contact Us</a>
+          <a href={getRelativeLocaleUrl(locale, '/pricing')} class="btn-primary">{pageData.cta.primary}</a>
+          <a href={getRelativeLocaleUrl(locale, '/contact')} class="btn-secondary">{pageData.cta.secondary}</a>
         </div>
       </div>
 

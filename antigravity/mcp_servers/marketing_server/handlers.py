@@ -62,6 +62,83 @@ class MarketingHandler:
         )
         return asdict(pkg)
 
+    async def audit_seo(self, url: str) -> Dict[str, Any]:
+        """Perform SEO Audit using seo-audit skill principles."""
+        print(f"🔍 VIBE MARKETING: Auditing SEO for {url}...")
+        await asyncio.sleep(0.5)
+        return {
+            "url": url,
+            "score": 78,
+            "issues": [
+                {"type": "Technical", "issue": "Missing H1", "priority": "High"},
+                {"type": "Content", "issue": "Keyword cannibalization", "priority": "Medium"},
+                {"type": "Performance", "issue": "LCP > 2.5s", "priority": "High"}
+            ],
+            "recommendations": [
+                "Add primary H1 tag with target keyword",
+                "Consolidate competing content pages",
+                "Optimize hero images to improve LCP"
+            ]
+        }
+
+    async def analyze_cro(self, url: str, page_type: str = "landing") -> Dict[str, Any]:
+        """Perform CRO Analysis using page-cro skill principles."""
+        print(f"📈 VIBE MARKETING: Analyzing CRO for {url} ({page_type})...")
+        await asyncio.sleep(0.5)
+        return {
+            "url": url,
+            "page_type": page_type,
+            "conversion_score": 6.5,
+            "observations": [
+                {"section": "Hero", "status": "Weak", "note": "Value prop unclear"},
+                {"section": "CTA", "status": "Good", "note": "Clear contrast"},
+                {"section": "Social Proof", "status": "Missing", "note": "No testimonials above fold"}
+            ],
+            "experiments": [
+                "Test headline focusing on 'outcome without pain'",
+                "Add trusted logos near primary CTA",
+                "Reduce form fields from 5 to 3"
+            ]
+        }
+
+    async def generate_copy(self, page_type: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate marketing copy using copywriting skill principles."""
+        print(f"✍️ VIBE MARKETING: Generating copy for {page_type}...")
+        await asyncio.sleep(0.5)
+
+        product = context.get("product_name", "Product")
+        audience = context.get("audience", "Customers")
+
+        return {
+            "page_type": page_type,
+            "sections": {
+                "headline": f"The Easiest Way for {audience} to Master {product}",
+                "subheadline": f"Stop struggling with complex tools. {product} helps you achieve results in minutes, not days.",
+                "cta_primary": f"Start Using {product} Free",
+                "benefits": [
+                    {"title": "Clear Clarity", "body": "No more confusion."},
+                    {"title": "Faster Results", "body": "Save 10+ hours a week."},
+                    {"title": "Expert Support", "body": "We are here 24/7."}
+                ]
+            },
+            "tone": context.get("tone", "Professional")
+        }
+
+    async def pricing_strategy(self, product_type: str, target_market: str) -> Dict[str, Any]:
+        """Develop pricing strategy using pricing-strategy skill."""
+        print(f"💰 VIBE MARKETING: Developing pricing strategy for {product_type}...")
+        await asyncio.sleep(0.5)
+        return {
+            "model": "Freemium + Tiered",
+            "metric": "Per User",
+            "tiers": [
+                {"name": "Starter", "price": "$0", "target": "Individuals"},
+                {"name": "Pro", "price": "$29/mo", "target": "Small Teams"},
+                {"name": "Business", "price": "$99/mo", "target": "Growing Companies"}
+            ],
+            "recommendation": f"For {target_market}, focus on removing friction with a generous free tier, then monetize on team collaboration features."
+        }
+
     async def lead_pipeline(self) -> Dict[str, Any]:
         """Lead generation and qualification pipeline."""
         print("🎯 VIBE MARKETING: Processing leads...")

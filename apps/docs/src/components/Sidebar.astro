@@ -1,21 +1,24 @@
 ---
 import SidebarNav from './SidebarNav.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 
 <aside class="sidebar" data-pagefind-ignore>
   <div class="sidebar-header">
-    <a href="/" class="logo">
+    <a href={getRelativeLocaleUrl(locale, '/')} class="logo">
       <span class="logo-icon">🏯</span>
-      <span class="logo-text">AgencyOS</span>
+      <span class="logo-text">{t('app.name')}</span>
     </a>
-    
-    <button class="icon-button theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+
+    <button class="icon-button theme-toggle" onclick="window.toggleTheme()" aria-label={t('theme.toggle')} title={t('theme.toggle')}>
       <svg
         width="16"
         height="16"
@@ -70,7 +73,7 @@ const { currentPath } = Astro.props;
         <circle cx="11" cy="11" r="8"></circle>
         <path d="m21 21-4.3-4.3"></path>
       </svg>
-      <span class="search-placeholder">Search...</span>
+      <span class="search-placeholder">{t('search.placeholder')}</span>
       <kbd class="search-kbd">⌘K</kbd>
     </button>
 
@@ -86,7 +89,7 @@ const { currentPath } = Astro.props;
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        <span>Complete Docs (1.3MB)</span>
+        <span>{t('landing.nav.docs_desc')} (1.3MB)</span>
       </a>
     </div>
   </div>

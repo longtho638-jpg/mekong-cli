@@ -11,6 +11,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "claude-mem": "^3.9.16",
     "husky": "^9.1.7",
     "prettier": "^3.8.0",
     "puppeteer": "^24.35.0",
@@ -21,6 +22,20 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@paypal/agent-toolkit": "^1.8.0"
+    "@ai-sdk/google": "^3.0.13",
+    "@modelcontextprotocol/server-github": "^2025.4.8",
+    "@paypal/agent-toolkit": "^1.8.0",
+    "ai": "^5.0.52",
+    "zod": "^3.23.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "@langchain/core": "^0.3.80",
+      "undici": ">=5.28.5",
+      "jsondiffpatch": ">=0.7.2",
+      "lodash": ">=4.17.23",
+      "diff": ">=4.0.4",
+      "ai": "^5.0.52"
+    }
   }
 }

@@ -255,8 +255,8 @@ export function getDayNames(locale: SupportedLocale, format: 'short' | 'long' = 
 
     // Rotate if first day is Monday
     if (config.firstDayOfWeek === 1) {
-        const sunday = days.shift()!;
-        days.push(sunday);
+        const sunday = days.shift();
+        if (sunday) days.push(sunday);
     }
 
     return days;

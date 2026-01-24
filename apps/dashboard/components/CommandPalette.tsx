@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Command, Search, X, Zap, Play } from 'lucide-react'
+import { Command, Zap, Play } from 'lucide-react'
 import { logger } from '@/lib/utils/logger'
 
 // 135 Commands Data with Binh Pháp alignment
@@ -183,7 +183,7 @@ export default function CommandPalette({ isOpen, onClose, onExecute }: CommandPa
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Flatten all commands for search
-  const allCommands = Object.entries(COMMAND_SUITES).flatMap(([key, suite]) =>
+  const allCommands = Object.entries(COMMAND_SUITES).flatMap(([_key, suite]) =>
     suite.commands.map(cmd => ({
       ...cmd,
       suite: suite.name,

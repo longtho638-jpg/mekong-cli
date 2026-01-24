@@ -3,8 +3,7 @@
  * Fetches live MRR from unified subscriptions table (Stripe & PayPal)
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/utils/logger'
 
@@ -135,7 +134,7 @@ async function calculateMRR(): Promise<MRRMetrics> {
 // GET /api/billing/mrr
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const metrics = await calculateMRR()
 

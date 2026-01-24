@@ -1,6 +1,6 @@
 ---
 // src/components/nav/GettingStartedNav.astro
-import { getLangFromUrl, getDocPath } from '../../i18n/utils';
+import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 interface Props {
   docs: any[];
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { docs, currentPath } = Astro.props;
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Sort by order
 const sortedDocs = docs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
@@ -17,8 +17,9 @@ const sortedDocs = docs.sort((a, b) => (a.data.order || 999) - (b.data.order || 
 <div class="nav-section">
   <ul class="nav-items">
     {sortedDocs.map(doc => {
-      const href = getDocPath(doc.slug, currentLocale);
-      const isActive = currentPath === href;
+      const normalizedSlug = doc.slug.startsWith('docs/') ? doc.slug.slice(5) : doc.slug;
+      const href = getRelativeLocaleUrl(currentLocale, `/docs/${normalizedSlug}`);
+      const isActive = currentPath === href || currentPath === href + '/';
 
       return (
         <li>

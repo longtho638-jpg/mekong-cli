@@ -1,60 +1,30 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Changelog - AgencyOS';
-const description = 'See what is new in AgencyOS. Latest updates, features, and improvements.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
-const releases = [
-  {
-    version: "2.0.0",
-    date: "December 20, 2024",
-    tag: "Latest",
-    changes: [
-      { type: "new", text: "125+ AI commands now available" },
-      { type: "new", text: "Affiliate Hub with 50+ programs" },
-      { type: "new", text: "Franchise management system" },
-      { type: "improved", text: "Faster command execution (2x)" },
-      { type: "improved", text: "New dark theme UI" }
-    ]
-  },
-  {
-    version: "1.5.0",
-    date: "November 15, 2024",
-    tag: "",
-    changes: [
-      { type: "new", text: "Video script generator" },
-      { type: "new", text: "Email sequence builder" },
-      { type: "improved", text: "Better error handling" },
-      { type: "fixed", text: "API rate limiting issues" }
-    ]
-  },
-  {
-    version: "1.0.0",
-    date: "October 1, 2024",
-    tag: "",
-    changes: [
-      { type: "new", text: "Initial release" },
-      { type: "new", text: "20 core commands" },
-      { type: "new", text: "Marketing automation" },
-      { type: "new", text: "Sales pipeline tools" }
-    ]
-  }
-];
+const title = t('changelog_page.title');
+const description = t('changelog_page.description');
+
+const pageData = (locales[locale] as any).changelog_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="changelog-page">
     <div class="changelog-container">
-      
+
       <div class="changelog-header">
-        <h1 class="changelog-title">Changelog</h1>
+        <h1 class="changelog-title">{pageData.hero.title}</h1>
         <p class="changelog-subtitle">
-          See what's new in AgencyOS.
+          {pageData.hero.subtitle}
         </p>
       </div>
 
       <div class="releases">
-        {releases.map((release) => (
+        {pageData.releases.map((release: any) => (
           <div class="release">
             <div class="release-header">
               <div class="version-info">
@@ -63,12 +33,12 @@ const releases = [
               </div>
               <span class="date">{release.date}</span>
             </div>
-            
+
             <ul class="changes">
-              {release.changes.map(change => (
-                <li class={`change ${change.type}`}>
-                  <span class="change-type">{change.type}</span>
-                  {change.text}
+              {release.changes.map((change: [string, string]) => (
+                <li class={`change ${change[0]}`}>
+                  <span class="change-type">{pageData.types[change[0]]}</span>
+                  {change[1]}
                 </li>
               ))}
             </ul>
@@ -77,8 +47,8 @@ const releases = [
       </div>
 
       <div class="subscribe-cta">
-        <p>Subscribe to get notified about new releases</p>
-        <a href="/contact" class="btn-primary">Get Updates</a>
+        <p>{pageData.cta.title}</p>
+        <a href={getRelativeLocaleUrl(locale, '/contact')} class="btn-primary">{pageData.cta.button}</a>
       </div>
 
     </div>

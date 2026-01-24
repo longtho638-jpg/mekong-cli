@@ -1,14 +1,18 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
 
-const title = 'Try AgencyOS - Interactive Demo';
-const description = 'Try AgencyOS commands in your browser. See the power of 125+ AI commands instantly.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('demo_page.title');
+const description = t('demo_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="demo-hero">
-    <h1>🖥️ Try Before You Buy</h1>
-    <p>Type a command below and see the magic happen</p>
+    <h1>{t('demo_page.hero.title')}</h1>
+    <p>{t('demo_page.hero.subtitle')}</p>
   </section>
 
   <section class="terminal-section">
@@ -19,34 +23,40 @@ const description = 'Try AgencyOS commands in your browser. See the power of 125
           <span class="btn-minimize"></span>
           <span class="btn-maximize"></span>
         </div>
-        <span class="terminal-title">AgencyOS Terminal</span>
+        <span class="terminal-title">{t('demo_page.terminal.title')}</span>
       </div>
-      
+
       <div class="terminal-body" id="terminal-body">
         <div class="terminal-welcome">
           <pre class="ascii-art">
-    _                           ___  ____  
-   / \   __ _  ___ _ __   ___ _|_ _|/ ___| 
-  / _ \ / _` |/ _ \ '_ \ / __| | | \___ \ 
+    _                           ___  ____
+   / \   __ _  ___ _ __   ___ _|_ _|/ ___|
+  / _ \ / _` |/ _ \ '_ \ / __| | | \___ \
  / ___ \ (_| |  __/ | | | (__ | |  ___) |
-/_/   \_\__, |\___|_| |_|\___|___|_|____/ 
-        |___/                             
+/_/   \_\__, |\___|_| |_|\___|___|_|____/
+        |___/
           </pre>
-          <p class="welcome-text">Welcome to AgencyOS! Type a command or click a suggestion below.</p>
-          <p class="version-text">v2.0.0 • 125+ commands available</p>
+          <p class="welcome-text">{t('demo_page.terminal.welcome')}</p>
+          <p class="version-text">{t('demo_page.terminal.version')}</p>
         </div>
-        
+
         <div class="terminal-output" id="terminal-output"></div>
-        
+
         <div class="terminal-input-line">
           <span class="prompt">$</span>
-          <input type="text" id="terminal-input" placeholder="Type a command..." autocomplete="off" autofocus />
+          <input
+            type="text"
+            id="terminal-input"
+            placeholder={t('demo_page.terminal.input_placeholder')}
+            autocomplete="off"
+            autofocus
+          />
         </div>
       </div>
     </div>
-    
+
     <div class="suggestions">
-      <p>Try these commands:</p>
+      <p>{t('demo_page.terminal.suggestions')}</p>
       <div class="suggestion-buttons">
         <button class="suggestion-btn" data-cmd="/marketing-plan">/marketing-plan</button>
         <button class="suggestion-btn" data-cmd="/proposal">/proposal</button>
@@ -59,13 +69,21 @@ const description = 'Try AgencyOS commands in your browser. See the power of 125
   </section>
 
   <section class="cta-section">
-    <h2>Ready to automate your agency?</h2>
-    <p>Get full access to all 125+ commands</p>
+    <h2>{t('demo_page.cta.title')}</h2>
+    <p>{t('demo_page.cta.subtitle')}</p>
     <div class="cta-buttons">
-      <a href="/signup?plan=pro" class="btn-primary">Start Free Trial →</a>
-      <a href="/pricing" class="btn-secondary">View Pricing</a>
+      <a href="/signup?plan=pro" class="btn-primary">{t('demo_page.cta.primary')}</a>
+      <a href="/pricing" class="btn-secondary">{t('demo_page.cta.secondary')}</a>
     </div>
   </section>
+
+  <div id="terminal-i18n"
+    data-processing={t('demo_page.terminal.processing')}
+    data-not-found={t('demo_page.terminal.not_found')}
+    data-limited={t('demo_page.terminal.limited_info')}
+    data-full-access={t('demo_page.terminal.full_access_info')}
+    data-try-prompt={t('demo_page.terminal.try_prompt')}
+  ></div>
 </LandingLayout>
 
 <style>
@@ -556,13 +574,14 @@ const description = 'Try AgencyOS commands in your browser. See the power of 125
   }
 
   async function executeCommand(cmd: string) {
+    const i18n = document.getElementById('terminal-i18n')?.dataset;
     // Show command
     addOutputLine(`$ ${cmd}`, 'command');
-    
+
     // Show loading
     const loadingLine = document.createElement('div');
     loadingLine.className = 'output-line info';
-    loadingLine.innerHTML = '<span class="spinner"></span>Processing...';
+    loadingLine.innerHTML = `<span class="spinner"></span>${i18n?.processing || 'Processing...'}`;
     terminalOutput?.appendChild(loadingLine);
     scrollToBottom();
 
@@ -571,9 +590,14 @@ const description = 'Try AgencyOS commands in your browser. See the power of 125
     loadingLine.remove();
 
     // Get output
-    const output = commandOutputs[cmd.toLowerCase()] || defaultOutput;
+    const output = commandOutputs[cmd.toLowerCase()] || [
+      i18n?.notFound || '⚠️ Command not found in demo.\n',
+      i18n?.limited || '💡 This is a demo with limited commands.',
+      i18n?.fullAccess || '   Full access includes 125+ commands!\n',
+      i18n?.tryPrompt || '🚀 Try: /help, /marketing-plan, /proposal, /invoice'
+    ];
     await typeOutput(output);
-    
+
     // Add empty line
     addOutputLine('', 'info');
   }

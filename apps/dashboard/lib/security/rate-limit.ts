@@ -3,8 +3,7 @@
  * Persistent rate limiting for production environments
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import Redis from 'ioredis'
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -64,7 +63,7 @@ function getRedisClient(): Redis {
       tls: process.env.NODE_ENV === 'production' ? {} : undefined,
     })
 
-    redisClient.on('error', error => {
+    redisClient.on('error', _error => {
       // Error logged via security logger in operations
     })
 

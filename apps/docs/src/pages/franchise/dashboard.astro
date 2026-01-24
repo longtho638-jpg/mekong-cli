@@ -1,35 +1,41 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Franchise Dashboard - AgencyOS';
-const description = 'Manage your franchise territories and revenue.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('franchise_dashboard.title');
+const description = t('franchise_dashboard.description');
+
+const pageData = (locales[locale] as any).franchise_dashboard;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="franchise-section">
     <div class="franchise-header">
-      <h1>🌍 Franchise Dashboard</h1>
-      <p class="subtitle">Manage your territories & track revenue</p>
+      <h1>{pageData.hero.title}</h1>
+      <p class="subtitle">{pageData.hero.subtitle}</p>
     </div>
 
     <!-- Loading -->
     <div class="loading-state" id="loading-state">
       <div class="spinner"></div>
-      <p>Loading franchise data...</p>
+      <p>{pageData.loading}</p>
     </div>
 
     <!-- Not a Franchisee -->
     <div class="not-franchisee hidden" id="not-franchisee">
       <span class="icon">🏯</span>
-      <h2>Become a Franchisee</h2>
-      <p>Join our global network and grow your agency business.</p>
+      <h2>{pageData.apply.title}</h2>
+      <p>{pageData.apply.desc}</p>
       <div class="benefits">
-        <div class="benefit">✅ Exclusive territory rights</div>
-        <div class="benefit">✅ 70% revenue share</div>
-        <div class="benefit">✅ Full platform access</div>
-        <div class="benefit">✅ Marketing support</div>
+        {pageData.apply.benefits.map((benefit: string) => (
+          <div class="benefit">✅ {benefit}</div>
+        ))}
       </div>
-      <a href="/pricing?plan=franchise" class="btn-primary">Apply Now →</a>
+      <a href="/pricing?plan=franchise" class="btn-primary">{pageData.apply.cta}</a>
     </div>
 
     <!-- Franchise Dashboard -->
@@ -37,25 +43,25 @@ const description = 'Manage your franchise territories and revenue.';
       <!-- Status Card -->
       <div class="dash-card status-card">
         <div class="card-header">
-          <h2>🎫 Franchise Status</h2>
+          <h2>{pageData.status.title}</h2>
           <span class="status-badge" id="status-badge">ACTIVE</span>
         </div>
         <div class="status-grid">
           <div class="stat">
             <span class="stat-value" id="territories-count">0</span>
-            <span class="stat-label">Territories</span>
+            <span class="stat-label">{pageData.status.territories}</span>
           </div>
           <div class="stat">
             <span class="stat-value" id="clients-count">0</span>
-            <span class="stat-label">Clients</span>
+            <span class="stat-label">{pageData.status.clients}</span>
           </div>
           <div class="stat">
-            <span class="stat-value" id="revenue-share">70%</span>
-            <span class="stat-label">Revenue Share</span>
+            <span class="stat-value" id="revenue-share">{pageData.status.share}</span>
+            <span class="stat-label">70%</span>
           </div>
           <div class="stat">
             <span class="stat-value" id="monthly-fee">$299</span>
-            <span class="stat-label">Platform Fee</span>
+            <span class="stat-label">{pageData.status.fee}</span>
           </div>
         </div>
       </div>
@@ -63,24 +69,24 @@ const description = 'Manage your franchise territories and revenue.';
       <!-- Revenue Card -->
       <div class="dash-card revenue-card">
         <div class="card-header">
-          <h2>💰 This Month's Revenue</h2>
+          <h2>{pageData.revenue.title}</h2>
         </div>
         <div class="revenue-breakdown">
           <div class="revenue-item">
-            <span class="label">Local Services</span>
+            <span class="label">{pageData.revenue.local}</span>
             <span class="value" id="local-revenue">$0</span>
           </div>
           <div class="revenue-item">
-            <span class="label">SaaS Reselling</span>
+            <span class="label">{pageData.revenue.saas}</span>
             <span class="value" id="saas-revenue">$0</span>
           </div>
           <div class="revenue-divider"></div>
           <div class="revenue-item total">
-            <span class="label">Total Revenue</span>
+            <span class="label">{pageData.revenue.total}</span>
             <span class="value" id="total-revenue">$0</span>
           </div>
           <div class="revenue-item your-share">
-            <span class="label">Your Share (70%)</span>
+            <span class="label">{pageData.revenue.your_share}</span>
             <span class="value highlight" id="your-share">$0</span>
           </div>
         </div>
@@ -89,45 +95,27 @@ const description = 'Manage your franchise territories and revenue.';
       <!-- Territories -->
       <div class="dash-card territories-card">
         <div class="card-header">
-          <h2>📍 Your Territories</h2>
-          <button class="btn-secondary" id="claim-btn">+ Claim Territory</button>
+          <h2>{pageData.territories.title}</h2>
+          <button class="btn-secondary" id="claim-btn">{pageData.territories.claim}</button>
         </div>
         <div class="territories-list" id="territories-list">
-          <div class="empty-state">No territories claimed yet.</div>
+          <div class="empty-state">{pageData.territories.empty}</div>
         </div>
       </div>
 
       <!-- Onboarding -->
       <div class="dash-card onboarding-card" id="onboarding-card">
         <div class="card-header">
-          <h2>📋 Onboarding Progress</h2>
-          <span class="progress-badge" id="onboarding-progress">0/6</span>
+          <h2>{pageData.onboarding.title}</h2>
+          <span class="progress-badge" id="onboarding-progress">0/{pageData.onboarding.steps.length}</span>
         </div>
         <div class="onboarding-steps" id="onboarding-steps">
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Complete profile</span>
-          </div>
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Claim first territory</span>
-          </div>
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Setup payment method</span>
-          </div>
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Complete training</span>
-          </div>
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Get first client</span>
-          </div>
-          <div class="step">
-            <span class="step-check">⬜</span>
-            <span>Submit first revenue</span>
-          </div>
+          {pageData.onboarding.steps.map((step: string) => (
+            <div class="step">
+              <span class="step-check">⬜</span>
+              <span>{step}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -137,13 +125,13 @@ const description = 'Manage your franchise territories and revenue.';
       <div class="modal-backdrop" id="modal-backdrop"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <h2>🗺️ Claim Territory</h2>
+          <h2>{pageData.modal.title}</h2>
           <button class="close-btn" id="close-modal">✕</button>
         </div>
         <div class="modal-body">
           <div class="filter-row">
             <select id="country-filter">
-              <option value="">All Countries</option>
+              <option value="">{pageData.modal.all_countries}</option>
               <option value="Vietnam">Vietnam</option>
               <option value="Thailand">Thailand</option>
               <option value="Singapore">Singapore</option>
@@ -153,12 +141,16 @@ const description = 'Manage your franchise territories and revenue.';
             </select>
           </div>
           <div class="available-territories" id="available-territories">
-            <div class="loading">Loading territories...</div>
+            <div class="loading">{pageData.modal.loading}</div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <div id="franchise-i18n"
+    data-claim-flow={pageData.modal.claim_flow}
+  ></div>
 </LandingLayout>
 
 <style>

@@ -109,19 +109,7 @@ export function BraintreeCheckout({
     setError(null)
 
     try {
-      // Get payment method nonce từ Drop-in
-      const braintree = (
-        window as unknown as {
-          braintree: {
-            dropin: {
-              create: (options: {
-                authorization: string
-                container: string
-              }) => Promise<{ requestPaymentMethod: () => Promise<{ nonce: string }> }>
-            }
-          }
-        }
-      ).braintree
+      // Initialize Drop-in
       const container = document.querySelector('#dropin-container')
 
       if (!container) {

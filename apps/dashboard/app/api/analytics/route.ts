@@ -4,8 +4,7 @@
  * Real-time usage data from Supabase
  */
 
-import type { NextRequest} from 'next/server';
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
@@ -85,7 +84,7 @@ export async function GET(request: NextRequest) {
             period: { days, startDate: startDate.toISOString() },
             timestamp: new Date().toISOString(),
         });
-    } catch (error: unknown) {
+    } catch {
         // Return mock data if Supabase fails
         return NextResponse.json({
             success: true,
@@ -138,8 +137,8 @@ export async function POST(request: NextRequest) {
         if (error) throw error;
 
         return NextResponse.json({ success: true, data });
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
+    } catch {
+        const message = 'Unknown error';
         return NextResponse.json(
             { success: false, error: message },
             { status: 500 }

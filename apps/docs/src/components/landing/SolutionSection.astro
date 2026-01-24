@@ -1,32 +1,26 @@
 ---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+// Get points array from raw locales data
+const points = (locales[locale] as any).landing.agencyos.hero.solution.points;
 ---
 <section class="py-12">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 id="the-solution" class="gradient-animate text-3xl font-bold text-center mb-8">
-      What if AI could run your agency?
+      {t('landing.agencyos.hero.solution.title')}
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-        <span class="text-green-500 text-xl">✅</span>
-        <span class="text-[var(--color-text-secondary)]">125+ AI commands handle everything</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-        <span class="text-green-500 text-xl">✅</span>
-        <span class="text-[var(--color-text-secondary)]">Marketing content in seconds</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-        <span class="text-green-500 text-xl">✅</span>
-        <span class="text-[var(--color-text-secondary)]">Sales proposals that close</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-        <span class="text-green-500 text-xl">✅</span>
-        <span class="text-[var(--color-text-secondary)]">Built-in affiliate income</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-        <span class="text-green-500 text-xl">✅</span>
-        <span class="text-[var(--color-text-secondary)]">Scale without hiring</span>
-      </div>
+      {points.map((point: string) => (
+        <div class="flex items-start gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+          <span class="text-green-500 text-xl">✅</span>
+          <span class="text-[var(--color-text-secondary)]">{point}</span>
+        </div>
+      ))}
     </div>
   </div>
 </section>

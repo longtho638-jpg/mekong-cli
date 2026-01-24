@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, Target, ArrowUpRight, DollarSign, Activity } from 'lucide-react'
+import { Users, Target, ArrowUpRight, DollarSign, Activity } from 'lucide-react'
 import { CommandCenter, StatusLine } from '@/components/CommandCenter'
 import { UnifiedBridgeWidget } from '@/components/antigravity'
 import { AgencyCard } from '@/components/ui/agency-card'

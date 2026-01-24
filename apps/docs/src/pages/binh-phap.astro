@@ -1,220 +1,71 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
 import Hero from '../components/Hero.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = '13 Binh Pháp - AgencyOS';
-const description = 'Sun Tzu\'s Art of War applied to business. 13 strategic chapters mapped to AI commands.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('binh_phap.title') + ' - ' + t('app.name');
+const description = t('binh_phap.description');
+
+// Get chapters as an array for easier mapping
+const chaptersData = (locales[locale] as any).binh_phap.chapters;
+const chapters = Object.entries(chaptersData).map(([id, data]: [string, any]) => ({
+  id,
+  ...data
+}));
 ---
 
 <LandingLayout title={title} description={description}>
   <Hero
     badge={{
       icon: '🏯',
-      text: 'Sun Tzu for Agency Founders'
+      text: t('binh_phap.subtitle')
     }}
-    title="13 Binh Pháp"
-    description="The supreme art of war is to subdue the enemy without fighting. 13 strategic clusters mapped to AI commands."
+    title={t('binh_phap.title')}
+    description={t('binh_phap.description')}
   >
     <p slot="footer" class="text-xl italic text-[var(--color-text-muted)] opacity-80 mb-10 reveal">
-      "Bất chiến nhi khuất nhân chi binh" — Win Without Fighting
+      "{t('binh_phap.quote_original')}" — {t('binh_phap.tagline')}
     </p>
   </Hero>
 
   <section class="chapters-grid">
-    
-    <!-- Chapter 1 -->
-    <div class="chapter-card">
-      <div class="chapter-number">1</div>
-      <div class="chapter-content">
-        <h3>始計 Kế Hoạch</h3>
-        <p class="chapter-purpose">Lập chiến lược</p>
-        <div class="commands">
-          <code>/plan</code>
-          <code>/binh-phap</code>
-          <code>/okr</code>
+    {chapters.map((chapter) => (
+      <div class={`chapter-card ${chapter.style || ''} ${chapter.highlight ? 'highlight' : ''}`}>
+        <div class="chapter-number">{chapter.id}</div>
+        <div class="chapter-content">
+          <h3>{chapter.chinese} {chapter.name}</h3>
+          <p class="chapter-purpose">{chapter.purpose}</p>
+          <div class="commands">
+            {chapter.commands.map((cmd: string) => (
+              <code>{cmd}</code>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Chapter 2 -->
-    <div class="chapter-card">
-      <div class="chapter-number">2</div>
-      <div class="chapter-content">
-        <h3>作戰 Tác Chiến</h3>
-        <p class="chapter-purpose">Vận hành</p>
-        <div class="commands">
-          <code>/ops</code>
-          <code>/billing</code>
-          <code>/reporting</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 3 -->
-    <div class="chapter-card">
-      <div class="chapter-number">3</div>
-      <div class="chapter-content">
-        <h3>謀攻 Mưu Công</h3>
-        <p class="chapter-purpose">Tăng trưởng nhẹ</p>
-        <div class="commands">
-          <code>/affiliate</code>
-          <code>/growth</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 4 -->
-    <div class="chapter-card">
-      <div class="chapter-number">4</div>
-      <div class="chapter-content">
-        <h3>形勢 Hình Thế</h3>
-        <p class="chapter-purpose">Bảo vệ lợi thế</p>
-        <div class="commands">
-          <code>/moat</code>
-          <code>/audit</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 5 -->
-    <div class="chapter-card">
-      <div class="chapter-number">5</div>
-      <div class="chapter-content">
-        <h3>勢 Thế Trận</h3>
-        <p class="chapter-purpose">Bắt trend</p>
-        <div class="commands">
-          <code>/trend</code>
-          <code>/scout-keo</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 6 -->
-    <div class="chapter-card">
-      <div class="chapter-number">6</div>
-      <div class="chapter-content">
-        <h3>虛實 Hư Thực</h3>
-        <p class="chapter-purpose">Chống pha loãng</p>
-        <div class="commands">
-          <code>/equity</code>
-          <code>/cap-table</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 7 -->
-    <div class="chapter-card highlight">
-      <div class="chapter-number">7</div>
-      <div class="chapter-content">
-        <h3>軍爭 Quân Tranh</h3>
-        <p class="chapter-purpose">Ship nhanh</p>
-        <div class="commands">
-          <code>/sprint</code>
-          <code>/ship</code>
-          <code>/code</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 8 -->
-    <div class="chapter-card">
-      <div class="chapter-number">8</div>
-      <div class="chapter-content">
-        <h3>九變 Cửu Biến</h3>
-        <p class="chapter-purpose">Pivot</p>
-        <div class="commands">
-          <code>/pivot</code>
-          <code>/experiment</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 9 -->
-    <div class="chapter-card">
-      <div class="chapter-number">9</div>
-      <div class="chapter-content">
-        <h3>行軍 Hành Quân</h3>
-        <p class="chapter-purpose">Thực thi</p>
-        <div class="commands">
-          <code>/kpi</code>
-          <code>/standup</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 10 -->
-    <div class="chapter-card">
-      <div class="chapter-number">10</div>
-      <div class="chapter-content">
-        <h3>地形 Địa Hình</h3>
-        <p class="chapter-purpose">Mở rộng thị trường</p>
-        <div class="commands">
-          <code>/market</code>
-          <code>/launch</code>
-          <code>/sales</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 11 -->
-    <div class="chapter-card danger">
-      <div class="chapter-number">11</div>
-      <div class="chapter-content">
-        <h3>九地 Cửu Địa</h3>
-        <p class="chapter-purpose">Xử lý khủng hoảng</p>
-        <div class="commands">
-          <code>/crisis</code>
-          <code>/survival</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 12 -->
-    <div class="chapter-card fire">
-      <div class="chapter-number">12</div>
-      <div class="chapter-content">
-        <h3>火攻 Hỏa Công</h3>
-        <p class="chapter-purpose">Viral marketing</p>
-        <div class="commands">
-          <code>/viral</code>
-          <code>/video</code>
-          <code>/marketing</code>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chapter 13 -->
-    <div class="chapter-card intel">
-      <div class="chapter-number">13</div>
-      <div class="chapter-content">
-        <h3>用間 Dụng Gián</h3>
-        <p class="chapter-purpose">Thu thập intel</p>
-        <div class="commands">
-          <code>/intel</code>
-          <code>/fundraise</code>
-        </div>
-      </div>
-    </div>
-
+    ))}
   </section>
 
   <section class="wisdom-section">
-    <h2>🎯 Core Wisdom</h2>
+    <h2>🎯 {t('common.wisdom')}</h2>
     <div class="wisdom-grid">
       <div class="wisdom-card">
-        <blockquote>"Bách chiến bách thắng, phi thiện chi thiện giả dã"</blockquote>
-        <p>Trăm trận trăm thắng không phải hay nhất</p>
+        <blockquote>"{t('binh_phap.wisdom.quote1_original')}"</blockquote>
+        <p>{t('binh_phap.wisdom.quote1_translation')}</p>
       </div>
       <div class="wisdom-card">
-        <blockquote>"Bất chiến nhi khuất nhân chi binh, thiện chi thiện giả dã"</blockquote>
-        <p>Không đánh mà thắng mới là hay nhất</p>
+        <blockquote>"{t('binh_phap.wisdom.quote2_original')}"</blockquote>
+        <p>{t('binh_phap.wisdom.quote2_translation')}</p>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Apply ancient wisdom to modern business</h2>
-    <a href="/commands" class="btn-primary">View All Commands →</a>
+    <h2>{t('binh_phap.cta.title')}</h2>
+    <a href={getRelativeLocaleUrl(locale, '/commands')} class="btn-primary">{t('binh_phap.cta.button')}</a>
   </section>
 </LandingLayout>
 

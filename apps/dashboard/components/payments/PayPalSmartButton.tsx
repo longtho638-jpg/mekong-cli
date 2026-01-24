@@ -11,8 +11,8 @@ interface PayPalSmartButtonProps {
   customerEmail?: string;
   tenantId?: string;
   mode?: "payment" | "subscription";
-  onSuccess?: (details: any) => void;
-  onError?: (err: any) => void;
+  onSuccess?: (details: unknown) => void;
+  onError?: (err: unknown) => void;
   apiBaseUrl?: string; // Allow overriding API base
 }
 
@@ -58,14 +58,15 @@ export default function PayPalSmartButton({
       if (!response.ok) throw new Error(data.detail || "Failed to create order");
 
       return data.orderId; // Return order ID from backend
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
       onError?.(err);
       throw err;
     }
   };
 
-  const createSubscription = async (_data: any, actions: any) => {
+  const createSubscription = async (_data: Record<string, unknown>, actions: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
@@ -92,14 +93,15 @@ export default function PayPalSmartButton({
             custom_id: tenantId,
           });
 
-    } catch (err: any) {
-        setError(err.message);
+    } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An error occurred";
+        setError(errorMessage);
         onError?.(err);
         throw err;
     }
   };
 
-  const onApprove = async (data: any, actions: any) => {
+  const onApprove = async (data: Record<string, any>, _actions: unknown) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
@@ -123,8 +125,9 @@ export default function PayPalSmartButton({
         if (!response.ok) throw new Error(details.detail || "Failed to capture payment");
 
         onSuccess?.(details);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "An error occurred";
+        setError(errorMessage);
         onError?.(err);
       }
     }

@@ -139,11 +139,11 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
           // Call callbacks
           onMessage?.(message)
           onEvent?.(message.type, message.data)
-        } catch (e) {
-          logger.error('Failed to parse WebSocket message', e)
+        } catch {
+          logger.error('Failed to parse WebSocket message')
         }
       }
-    } catch (e) {
+    } catch {
       setConnectionState('error')
       setError('Failed to create WebSocket connection')
     }

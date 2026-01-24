@@ -1,7 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { MD3Surface } from '@/components/md3-dna/MD3Surface';
 import { MD3Text } from '@/components/md3-dna/MD3Text';
 

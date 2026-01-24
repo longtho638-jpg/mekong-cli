@@ -3,8 +3,7 @@
  * RESTful endpoints for Chart of Accounts, Journal Entries, Reports
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { AccountingService } from '@/lib/accounting'
 import { logger } from '@/lib/utils/logger'
 
@@ -33,31 +32,36 @@ export async function GET(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'chart':
+      case 'chart': {
         const accounts = await service.getChartOfAccounts(tenantId)
         return NextResponse.json({
           success: true,
           data: accounts,
           count: accounts.length,
         })
+      }
 
-      case 'trial-balance':
+      case 'trial-balance': {
         const trialBalance = await service.getTrialBalance(tenantId, new Date())
         return NextResponse.json({
           success: true,
           data: trialBalance,
         })
+      }
 
-      case 'pnl':
-        const fromDate = searchParams.get('from')
-          ? new Date(searchParams.get('from')!)
+      case 'pnl': {
+        const fromParam = searchParams.get('from')
+        const fromDate = fromParam
+          ? new Date(fromParam)
           : new Date(new Date().getFullYear(), 0, 1)
-        const toDate = searchParams.get('to') ? new Date(searchParams.get('to')!) : new Date()
+        const toParam = searchParams.get('to')
+        const toDate = toParam ? new Date(toParam) : new Date()
         const pnl = await service.getProfitAndLoss(tenantId, fromDate, toDate)
         return NextResponse.json({
           success: true,
           data: pnl,
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
@@ -84,21 +88,23 @@ export async function POST(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'initialize':
+      case 'initialize': {
         await service.initializeChartOfAccounts(tenantId)
         return NextResponse.json({
           success: true,
           message: 'Chart of accounts initialized',
         })
+      }
 
-      case 'create-account':
+      case 'create-account': {
         const account = await service.createAccount(tenantId, data.account)
         return NextResponse.json({
           success: true,
           data: account,
         })
+      }
 
-      case 'create-journal':
+      case 'create-journal': {
         const journal = await service.createJournalEntry(
           tenantId,
           {
@@ -113,13 +119,15 @@ export async function POST(request: NextRequest) {
           success: true,
           data: journal,
         })
+      }
 
-      case 'post-journal':
+      case 'post-journal': {
         await service.postJournalEntry(tenantId, data.journalId)
         return NextResponse.json({
           success: true,
           message: 'Journal entry posted',
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })

@@ -226,7 +226,7 @@ export function useAnalytics() {
             trafficSources,
             monthlyTrends,
         };
-    }, [clients, invoices, projects, invoiceStats, projectStats]);
+    }, [clients, invoices, projects, invoiceStats, projectStats, loading]);
 
     return {
         analytics,

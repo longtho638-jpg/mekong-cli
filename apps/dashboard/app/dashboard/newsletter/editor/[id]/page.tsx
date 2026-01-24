@@ -8,7 +8,7 @@ interface EditorProps {
 }
 
 export default function EditorPage({ params }: EditorProps) {
-    const { id } = use(params);
+    use(params);
     const router = useRouter();
 
     const [subject, setSubject] = useState("🚀 AI Trends in 2025: What You Need to Know");

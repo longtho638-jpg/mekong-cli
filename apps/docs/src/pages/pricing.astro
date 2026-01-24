@@ -2,37 +2,50 @@
 import LandingLayout from '../layouts/LandingLayout.astro';
 import Hero from '../components/Hero.astro';
 import Testimonials from '../components/Testimonials.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
 
-const title = 'AgencyOS Pricing - Simple Plans, Massive Value';
-const description = 'All plans include 125+ AI commands. Pick what fits your agency. 7-day free trial.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('pricing.title');
+const description = t('pricing.description');
 ---
 
 <LandingLayout title={title} description={description}>
 
 <Hero
-  title="Simple pricing. Massive value."
-  description="All plans include 125+ AI commands. Pick what fits your agency."
+  title={t('pricing.title')}
+  description={t('pricing.description')}
 />
 
 <!-- Promo Code Input -->
 <section class="py-4 mb-8">
   <div class="max-w-md mx-auto">
-    <div id="promo-box" class="p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+    <div
+      id="promo-box"
+      class="p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]"
+      data-err-empty={t('pricing.promo.error')}
+      data-err-invalid={t('pricing.promo.invalid')}
+      data-err-failed={t('pricing.promo.failed')}
+      data-success-free={t('pricing.promo.success_free')}
+      data-success-discount={t('pricing.promo.success_discount')}
+      data-label-apply={t('pricing.promo.button')}
+    >
       <label class="block text-sm font-medium mb-2 text-[var(--color-text-primary)]">
-        🎟️ Have a promo code?
+        {t('pricing.promo.label')}
       </label>
       <div class="flex gap-2">
-        <input 
-          type="text" 
-          id="promo-input" 
-          placeholder="Enter code (e.g. AGENCYOS-XXXX)"
+        <input
+          type="text"
+          id="promo-input"
+          placeholder={t('pricing.promo.placeholder')}
           class="flex-1 px-4 py-2 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-green)]"
         />
-        <button 
+        <button
           id="apply-promo-btn"
           class="px-6 py-2 bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all"
         >
-          Apply
+          {t('pricing.promo.button')}
         </button>
       </div>
       <div id="promo-result" class="mt-3 hidden">
@@ -48,41 +61,25 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 <!-- Pricing Cards -->
 <section id="pricing-plans" class="py-8">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-    
+
     <!-- Starter -->
     <div class="tilt-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--color-accent-green)] transition-all">
-      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Starter</h3>
-      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]">
-        $29<span class="text-lg font-normal text-[var(--color-text-muted)]">/month</span>
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.plans.starter.name')}</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]" data-price="29">
+        {t('pricing.plans.starter.price')}<span class="text-lg font-normal text-[var(--color-text-muted)]">{t('pricing.plans.starter.period')}</span>
       </div>
-      <p class="text-sm text-[var(--color-text-muted)] mb-6">Perfect for solo operators</p>
-      
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">{t('pricing.plans.starter.description')}</p>
+
       <a href="/signup?plan=starter" class="block w-full py-3 text-center bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-all mb-6">
-        Start Free Trial
+        {t('pricing.plans.starter.button')}
       </a>
-      
+
       <ul class="space-y-3 text-sm">
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> 125+ AI commands
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Marketing automation
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Sales proposals
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Affiliate tracking
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Finance dashboard
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Community support
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Monthly updates
-        </li>
+        {(t('pricing.plans.starter.features') as unknown as string[]).map((feature: string) => (
+          <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+            <span class="text-green-500">✓</span> {feature}
+          </li>
+        ))}
       </ul>
     </div>
 
@@ -90,77 +87,45 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
     <div class="tilt-card pro-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-green)] relative transform scale-105 shadow-xl">
       <div class="pricing-particles"></div>
       <div class="popular-badge absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 text-white text-sm font-semibold rounded-full">
-        ✨ MOST POPULAR
+        {t('pricing.plans.pro.popular')}
       </div>
-      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Pro</h3>
-      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)] price-animate">
-        $99<span class="text-lg font-normal text-[var(--color-text-muted)]">/month</span>
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.plans.pro.name')}</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)] price-animate" data-price="99">
+        {t('pricing.plans.pro.price')}<span class="text-lg font-normal text-[var(--color-text-muted)]">{t('pricing.plans.pro.period')}</span>
       </div>
-      <p class="text-sm text-[var(--color-text-muted)] mb-6">For serious agency builders</p>
-      
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">{t('pricing.plans.pro.description')}</p>
+
       <a href="/signup?plan=pro" class="cta-btn block w-full py-3 text-center bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all mb-6">
-        Start Free Trial →
+        {t('pricing.plans.pro.button')}
       </a>
-      
+
       <ul class="space-y-3 text-sm">
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Everything in Starter
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Priority support (24h)
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> 5 team seats
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Advanced analytics
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Custom branding
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> API access
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> 1-on-1 onboarding call
-        </li>
+        {(t('pricing.plans.pro.features') as unknown as string[]).map((feature: string) => (
+          <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+            <span class="text-green-500">✓</span> {feature}
+          </li>
+        ))}
       </ul>
     </div>
 
     <!-- Franchise -->
     <div class="tilt-card p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--color-accent-purple)] transition-all">
-      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">Franchise</h3>
-      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]">
-        $299<span class="text-lg font-normal text-[var(--color-text-muted)]">/month</span>
+      <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.plans.franchise.name')}</h3>
+      <div class="text-4xl font-bold mb-2 text-[var(--color-text-primary)]" data-price="299">
+        {t('pricing.plans.franchise.price')}<span class="text-lg font-normal text-[var(--color-text-muted)]">{t('pricing.plans.franchise.period')}</span>
       </div>
-      <p class="text-sm text-[var(--color-text-muted)] mb-6">White-label & resell</p>
-      
+      <p class="text-sm text-[var(--color-text-muted)] mb-6">{t('pricing.plans.franchise.description')}</p>
+
       <a href="mailto:franchise@agencyos.network" class="block w-full py-3 text-center bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-all mb-6">
-        Contact Sales
+        {t('pricing.plans.franchise.button')}
       </a>
-      
+
       <ul class="space-y-3 text-sm">
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Everything in Pro
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> White-label rights
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Custom domain
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Unlimited seats
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Revenue share (85%)
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Franchise support
-        </li>
-        <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
-          <span class="text-green-500">✓</span> Quarterly strategy calls
-        </li>
+        {(t('pricing.plans.franchise.features') as unknown as string[]).map((feature: string) => (
+          <li class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+            <span class="text-green-500">✓</span> {feature}
+          </li>
+        ))}
       </ul>
     </div>
   </div>
@@ -169,71 +134,71 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 <!-- Annual Savings -->
 <section class="py-8 text-center">
   <div class="inline-block p-6 rounded-xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
-    <p class="text-lg font-semibold text-[var(--color-text-primary)] mb-2">💰 Save 20% with annual billing</p>
+    <p class="text-lg font-semibold text-[var(--color-text-primary)] mb-2">{t('pricing.annual_savings')}</p>
     <div class="flex gap-8 justify-center text-sm text-[var(--color-text-muted)]">
-      <span>Starter: $279/year</span>
-      <span>Pro: $949/year</span>
-      <span>Franchise: $2,869/year</span>
+      <span>{t('pricing.annual_starter')}</span>
+      <span>{t('pricing.annual_pro')}</span>
+      <span>{t('pricing.annual_franchise')}</span>
     </div>
   </div>
 </section>
 
 <!-- Feature Comparison -->
 <section id="compare-features" class="py-12">
-  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">Compare Features</h2>
-  
+  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">{t('pricing.comparison.title')}</h2>
+
   <div class="overflow-x-auto">
     <table class="w-full max-w-4xl mx-auto text-sm">
       <thead>
         <tr class="border-b border-[var(--color-border)]">
-          <th class="py-4 px-4 text-left text-[var(--color-text-primary)]">Feature</th>
-          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Starter</th>
-          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Pro</th>
-          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">Franchise</th>
+          <th class="py-4 px-4 text-left text-[var(--color-text-primary)]">{t('pricing.comparison.feature')}</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">{t('pricing.plans.starter.name')}</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">{t('pricing.plans.pro.name')}</th>
+          <th class="py-4 px-4 text-center text-[var(--color-text-primary)]">{t('pricing.plans.franchise.name')}</th>
         </tr>
       </thead>
       <tbody class="text-[var(--color-text-secondary)]">
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">AI Commands</td>
+          <td class="py-3 px-4">{t('pricing.comparison.commands')}</td>
           <td class="py-3 px-4 text-center">125+</td>
           <td class="py-3 px-4 text-center">125+</td>
           <td class="py-3 px-4 text-center">125+</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">Team Seats</td>
+          <td class="py-3 px-4">{t('pricing.comparison.seats')}</td>
           <td class="py-3 px-4 text-center">1</td>
           <td class="py-3 px-4 text-center">5</td>
           <td class="py-3 px-4 text-center">Unlimited</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">Support</td>
-          <td class="py-3 px-4 text-center">Community</td>
-          <td class="py-3 px-4 text-center">Priority (24h)</td>
-          <td class="py-3 px-4 text-center">Dedicated</td>
+          <td class="py-3 px-4">{t('pricing.comparison.support')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.starter_support')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.pro_support')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.franchise_support')}</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">Custom Branding</td>
+          <td class="py-3 px-4">{t('pricing.comparison.branding')}</td>
           <td class="py-3 px-4 text-center">❌</td>
           <td class="py-3 px-4 text-center">✅</td>
           <td class="py-3 px-4 text-center">✅</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">White-label</td>
+          <td class="py-3 px-4">{t('pricing.comparison.whitelabel')}</td>
           <td class="py-3 px-4 text-center">❌</td>
           <td class="py-3 px-4 text-center">❌</td>
           <td class="py-3 px-4 text-center">✅</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">API Access</td>
+          <td class="py-3 px-4">{t('pricing.comparison.api')}</td>
           <td class="py-3 px-4 text-center">❌</td>
           <td class="py-3 px-4 text-center">✅</td>
           <td class="py-3 px-4 text-center">✅</td>
         </tr>
         <tr class="border-b border-[var(--color-border)]">
-          <td class="py-3 px-4">Onboarding</td>
-          <td class="py-3 px-4 text-center">Docs</td>
-          <td class="py-3 px-4 text-center">1-on-1 call</td>
-          <td class="py-3 px-4 text-center">Full setup</td>
+          <td class="py-3 px-4">{t('pricing.comparison.onboarding')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.starter_onboarding')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.pro_onboarding')}</td>
+          <td class="py-3 px-4 text-center">{t('pricing.comparison.franchise_onboarding')}</td>
         </tr>
       </tbody>
     </table>
@@ -244,27 +209,27 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 
 <!-- FAQ -->
 <section id="faq" class="py-12">
-  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">Frequently Asked Questions</h2>
-  
+  <h2 class="text-2xl font-bold text-center mb-8 text-[var(--color-text-primary)]">{t('pricing.faq.title')}</h2>
+
   <div class="max-w-2xl mx-auto space-y-6">
     <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Can I switch plans?</h3>
-      <p class="text-sm text-[var(--color-text-muted)]">Yes! Upgrade or downgrade anytime. Changes take effect on your next billing cycle.</p>
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.faq.switch.q')}</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">{t('pricing.faq.switch.a')}</p>
     </div>
-    
+
     <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Is there a free trial?</h3>
-      <p class="text-sm text-[var(--color-text-muted)]">Yes! 7-day free trial on all plans. Your card is charged after the trial ends - cancel anytime before to avoid charges.</p>
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.faq.trial.q')}</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">{t('pricing.faq.trial.a')}</p>
     </div>
-    
+
     <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">What payment methods do you accept?</h3>
-      <p class="text-sm text-[var(--color-text-muted)]">Credit/Debit cards, PayPal, and Crypto (USDT/USDC). All payments secured by Polar.sh.</p>
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.faq.methods.q')}</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">{t('pricing.faq.methods.a')}</p>
     </div>
-    
+
     <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
-      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Can I get a refund?</h3>
-      <p class="text-sm text-[var(--color-text-muted)]">30-day money-back guarantee. No questions asked.</p>
+      <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.faq.refund.q')}</h3>
+      <p class="text-sm text-[var(--color-text-muted)]">{t('pricing.faq.refund.a')}</p>
     </div>
   </div>
 </section>
@@ -273,20 +238,20 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 <section class="py-12 text-center">
   <div class="inline-block p-8 rounded-2xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
     <div class="text-4xl mb-4">🛡️</div>
-    <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">30-Day Money-Back Guarantee</h3>
-    <p class="text-[var(--color-text-muted)]">Not satisfied? Get a full refund within 30 days. No questions asked.</p>
+    <h3 class="text-xl font-semibold mb-2 text-[var(--color-text-primary)]">{t('pricing.guarantee.title')}</h3>
+    <p class="text-[var(--color-text-muted)]">{t('pricing.guarantee.description')}</p>
   </div>
 </section>
 
 <!-- Final CTA -->
 <section class="py-12 text-center">
-  <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-primary)]">Ready to automate your agency?</h2>
+  <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-primary)]">{t('pricing.final_cta.title')}</h2>
   <div class="flex gap-4 justify-center">
     <a href="/signup?plan=pro" class="px-8 py-3 bg-[var(--color-accent-green)] text-white rounded-lg font-medium hover:brightness-110 transition-all">
-      Start Free Trial
+      {t('pricing.final_cta.button_trial')}
     </a>
     <a href="mailto:hello@agencyos.network" class="px-8 py-3 border border-[var(--color-accent-green)] text-[var(--color-accent-green)] rounded-lg font-medium hover:bg-[var(--color-accent-green)]/10 transition-all">
-      Book a Demo
+      {t('pricing.final_cta.button_demo')}
     </a>
   </div>
 </section>
@@ -308,9 +273,10 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
 
   applyBtn?.addEventListener('click', async () => {
     const code = promoInput?.value.trim().toUpperCase();
-    
+    const messages = promoBox?.dataset;
+
     if (!code) {
-      showError('Please enter a promo code');
+      showError(messages?.errEmpty || 'Please enter a promo code');
       return;
     }
 
@@ -341,31 +307,34 @@ const description = 'All plans include 125+ AI commands. Pick what fits your age
           source: result.source
         }));
       } else {
-        showError(result.error || 'Invalid promo code');
+        showError(result.error || messages?.errInvalid || 'Invalid promo code');
       }
     } catch (error) {
       console.error('Promo validation error:', error);
-      showError('Failed to validate code');
+      showError(messages?.errFailed || 'Failed to validate code');
     } finally {
       // Reset button
       if (applyBtn) {
         (applyBtn as HTMLButtonElement).disabled = false;
-        applyBtn.textContent = 'Apply';
+        applyBtn.textContent = messages?.labelApply || 'Apply';
       }
     }
   });
 
   function showSuccess(discount: number, name?: string) {
+    const messages = promoBox?.dataset;
     if (promoResult && promoMessage && promoBox) {
       promoResult.classList.remove('hidden');
       promoMessage.classList.remove('text-red-500');
       promoMessage.classList.add('text-green-500');
-      
+
       if (discount === 100) {
-        promoMessage.textContent = `🎉 FREE ACCESS! ${name || '100% discount'} applied!`;
+        const msg = messages?.successFree || '🎉 FREE ACCESS! {name} applied!';
+        promoMessage.textContent = msg.replace('{name}', name || '100% discount');
         promoBox.classList.add('border-green-500');
       } else {
-        promoMessage.textContent = `${name || discount + '% discount'} applied!`;
+        const msg = messages?.successDiscount || '{name} applied!';
+        promoMessage.textContent = msg.replace('{name}', name || discount + '% discount');
         promoBox.classList.add('border-green-500');
       }
     }

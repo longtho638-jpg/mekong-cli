@@ -3,7 +3,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import type { JournalEntry, JournalLine, JournalEntryRow, JournalLineRow } from './accounting-types'
+import type { JournalEntry, JournalLine } from './accounting-types'
 import { LedgerService } from './ledger-service'
 
 export class JournalService {
@@ -12,8 +12,8 @@ export class JournalService {
 
   constructor() {
     this.supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.SUPABASE_SERVICE_KEY || ''
     )
     this.ledgerService = new LedgerService()
   }

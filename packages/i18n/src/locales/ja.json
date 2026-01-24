@@ -1,0 +1,63 @@
+{
+    "app": {
+        "name": "Agency OS",
+        "tagline": "一人ユニコーン・オペレーティングシステム",
+        "description": "エージェンシーをグローバルに構築、拡大、フランチャイズ化"
+    },
+    "nav": {
+        "home": "ホーム",
+        "dashboard": "ダッシュボード",
+        "marketing": "マーケティング",
+        "sales": "セールス",
+        "analytics": "分析",
+        "settings": "設定"
+    },
+    "commands": {
+        "market_analysis": "市場分析",
+        "customer_profile": "顧客プロファイル",
+        "sales_strategy": "営業戦略",
+        "marketing_plan": "マーケティング計画",
+        "business_plan": "ビジネスプラン",
+        "brand_identity": "ブランドアイデンティティ",
+        "content_marketing": "コンテンツマーケティング",
+        "social_media": "ソーシャルメディア",
+        "messaging": "メッセージング",
+        "market_research": "市場調査",
+        "pr_strategy": "PR戦略",
+        "growth_strategy": "成長戦略",
+        "sales_funnel": "セールスファネル"
+    },
+    "common": {
+        "welcome": "Agency OSへようこそ",
+        "start": "始める",
+        "continue": "続ける",
+        "save": "保存",
+        "cancel": "キャンセル",
+        "delete": "削除",
+        "edit": "編集",
+        "loading": "読み込み中...",
+        "success": "成功！",
+        "error": "エラーが発生しました",
+        "confirm": "よろしいですか？"
+    },
+    "auth": {
+        "login": "ログイン",
+        "logout": "ログアウト",
+        "signup": "サインアップ",
+        "email": "メール",
+        "password": "パスワード",
+        "forgot_password": "パスワードを忘れた？"
+    },
+    "franchise": {
+        "title": "フランチャイズポータル",
+        "territories": "あなたのテリトリー",
+        "revenue": "収益",
+        "clients": "クライアント",
+        "commission": "コミッション率"
+    },
+    "binh_phap": {
+        "tagline": "不戦而勝 - 戦わずして勝つ",
+        "short_term": "短期: SaaSアフィリエイト収益",
+        "long_term": "長期: ローカルクライアントのブランド構築"
+    }
+}

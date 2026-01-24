@@ -3,8 +3,7 @@
  * Standardized secure error responses with proper HTTP status codes
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 import { securityLogger } from './logger'
 
@@ -12,7 +11,7 @@ import { securityLogger } from './logger'
 // 📊 ERROR TYPES & SCHEMAS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const ErrorCodeEnum = z.enum([
+export const ErrorCodeEnum = z.enum([
   // Client errors (4xx)
   'BAD_REQUEST',
   'UNAUTHORIZED',
@@ -49,7 +48,7 @@ const ErrorCodeEnum = z.enum([
 ])
 export type ErrorCode = z.infer<typeof ErrorCodeEnum>
 
-const ErrorCategoryEnum = z.enum(['CLIENT', 'SERVER', 'SECURITY', 'BUSINESS', 'EXTERNAL'])
+export const ErrorCategoryEnum = z.enum(['CLIENT', 'SERVER', 'SECURITY', 'BUSINESS', 'EXTERNAL'])
 export type ErrorCategory = z.infer<typeof ErrorCategoryEnum>
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -289,8 +288,16 @@ class ErrorHandler {
     }
 
     if (error.category === 'SECURITY') {
+      // Map error codes to security events where possible
+      let event: 'system_error' | 'authentication_failure' | 'authorization_failure' | 'rate_limit_exceeded' | 'suspicious_activity' = 'system_error'
+
+      if (error.code === 'AUTHENTICATION_FAILED') event = 'authentication_failure'
+      else if (error.code === 'AUTHORIZATION_FAILED' || error.code === 'FORBIDDEN') event = 'authorization_failure'
+      else if (error.code === 'RATE_LIMITED') event = 'rate_limit_exceeded'
+      else if (error.code === 'SECURITY_VIOLATION') event = 'suspicious_activity'
+
       await securityLogger.security(
-        'system_error' as any,
+        event,
         `${error.category}: ${error.userMessage}`,
         logData
       )
@@ -347,21 +354,20 @@ class ErrorHandler {
 
   static fromDatabaseError(error: unknown, operation: string): DatabaseError {
     const errorObj = error as { message?: string; code?: string }
-    const sanitizedError = {
+    const _sanitizedError = {
       operation,
       message: errorObj.message?.substring(0, 100) || 'Unknown database error',
       code: errorObj.code,
     }
 
-    return new DatabaseError(`Database ${operation} failed`, sanitizedError)
+    return new DatabaseError(`Database ${operation} failed`, _sanitizedError)
   }
 
   static fromExternalServiceError(
     service: string,
-    error: unknown,
+    _error: unknown,
     operation: string
   ): ExternalServiceError {
-    const errorObj = error as { status?: number; message?: string }
     return new ExternalServiceError(service, `${service} ${operation} failed`)
   }
 

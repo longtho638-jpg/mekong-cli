@@ -7,11 +7,18 @@ Please import from backend.api.utils.validation_logic instead.
 import warnings
 
 from .validation_logic import (
+    sanitize_filename,
+    sanitize_html,
+    sanitize_sql,
+    sanitize_user_input,
     validate_amount,
     validate_email,
     validate_items_match_total,
+    validate_json_depth,
     validate_phone,
     validate_required_string,
+    validate_string_length,
+    validate_url,
 )
 
 # Issue a deprecation warning
@@ -27,5 +34,12 @@ __all__ = [
     'validate_phone',
     'validate_required_string',
     'validate_amount',
-    'validate_items_match_total'
+    'validate_items_match_total',
+    'sanitize_filename',
+    'sanitize_html',
+    'sanitize_sql',
+    'sanitize_user_input',
+    'validate_json_depth',
+    'validate_string_length',
+    'validate_url',
 ]

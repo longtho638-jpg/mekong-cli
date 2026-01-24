@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { LOCALES, LOCALE_LABELS, type Locale } from '../i18n/locales';
-import { getLocalizedPath } from '../i18n/utils';
+import { SUPPORTED_LOCALES as LOCALES, Locale } from '@agencyos/i18n/types';
+import { getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+
+const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'English',
+  vi: 'Tiếng Việt',
+  ja: '日本語',
+  ko: '한국어',
+  th: 'ไทย',
+  id: 'Bahasa Indonesia'
+};
 
 interface LanguageSwitcherProps {
   currentLocale: Locale;
@@ -16,7 +25,7 @@ export default function LanguageSwitcher({ currentLocale, currentPath }: Languag
     if (typeof window !== 'undefined') {
       // Load saved language preference
       const savedLocale = localStorage.getItem('preferred-locale') as Locale;
-      if (savedLocale && LOCALES.includes(savedLocale)) {
+      if (savedLocale && (LOCALES as string[]).includes(savedLocale)) {
         setLocale(savedLocale);
       }
     }
@@ -29,14 +38,23 @@ export default function LanguageSwitcher({ currentLocale, currentPath }: Languag
     if (typeof window !== 'undefined') {
       localStorage.setItem('preferred-locale', newLocale);
 
-      // Get the current slug without locale prefix - with validation
-      const slug = currentPath
-        .replace(/^\/(en|vi)/, '')
-        .replace(/^\/docs\//, '')
-        .replace(/[^a-z0-9\-\/]/gi, ''); // Sanitize slug
+      // Get the current slug without locale prefix
+      // Example paths: /docs/intro, /vi/docs/intro, /pricing, /vi/pricing
+      let slug = currentPath;
 
-      // Generate new localized path
-      const newPath = getLocalizedPath(`/docs/${slug}`, newLocale);
+      // Remove leading slash for processing
+      if (slug.startsWith('/')) slug = slug.slice(1);
+
+      // Split into parts
+      const parts = slug.split('/');
+
+      // If first part is a supported locale, remove it
+      if ((LOCALES as string[]).includes(parts[0])) {
+        parts.shift();
+      }
+
+      const cleanSlug = parts.join('/');
+      const newPath = getRelativeLocaleUrl(newLocale, `/${cleanSlug}`);
 
       // Navigate to the new path
       window.location.href = newPath;

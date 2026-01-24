@@ -16,7 +16,7 @@ export interface UsageEvent {
     userId: string;
     eventType: EventType;
     eventName: string;
-    properties?: Record<string, any>;
+    properties?: Record<string, unknown>;
     sessionId?: string;
     pageUrl?: string;
     referrer?: string;
@@ -78,8 +78,8 @@ export class UsageAnalytics {
 
     constructor() {
         this.supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_KEY!
+            process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+            process.env.SUPABASE_SERVICE_KEY || ''
         );
     }
 
@@ -122,7 +122,7 @@ export class UsageAnalytics {
         tenantId: string,
         userId: string,
         featureName: string,
-        properties?: Record<string, any>
+        properties?: Record<string, unknown>
     ): Promise<void> {
         await this.trackEvent({
             tenantId,
@@ -191,10 +191,12 @@ export class UsageAnalytics {
 
         const featureMap = new Map<string, Set<string>>();
         (features || []).forEach(f => {
+            if (!f.event_name) return;
             if (!featureMap.has(f.event_name)) {
                 featureMap.set(f.event_name, new Set());
             }
-            featureMap.get(f.event_name)!.add(f.user_id);
+            const users = featureMap.get(f.event_name);
+            if (users) users.add(f.user_id);
         });
 
         const topFeatures: FeatureUsage[] = Array.from(featureMap.entries())
@@ -221,7 +223,8 @@ export class UsageAnalytics {
             if (!pageMap.has(p.page_url)) {
                 pageMap.set(p.page_url, new Set());
             }
-            pageMap.get(p.page_url)!.add(p.user_id);
+            const users = pageMap.get(p.page_url);
+            if (users) users.add(p.user_id);
         });
 
         const topPages: PageUsage[] = Array.from(pageMap.entries())

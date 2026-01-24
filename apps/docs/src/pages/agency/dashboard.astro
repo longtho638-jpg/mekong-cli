@@ -1,24 +1,31 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Agency Command Center';
-const description = 'Real-time agency metrics, system health monitoring, and quick actions';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('agency_dashboard.title');
+const description = t('agency_dashboard.description');
+
+const pageData = (locales[locale] as any).agency_dashboard;
 ---
 
 <LandingLayout title={title} description={description}>
   <div class="command-center">
-    
+
     <!-- Ultra Header -->
     <header class="center-header">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="center-title">🏯 AGENCY COMMAND CENTER</h1>
-          <p class="center-subtitle">MILESTONE 100 • "Không đánh mà thắng"</p>
+          <h1 class="center-title">{pageData.header.title}</h1>
+          <p class="center-subtitle">{pageData.header.subtitle}</p>
         </div>
         <div class="header-right">
           <div class="pulse-indicator" id="pulse-indicator">
             <span class="pulse-dot"></span>
-            <span class="pulse-text">💚 THRIVING</span>
+            <span class="pulse-text">💚 {pageData.header.status_thriving}</span>
           </div>
           <div class="live-time" id="live-time"></div>
         </div>
@@ -30,7 +37,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card revenue">
         <div class="metric-icon">💰</div>
         <div class="metric-body">
-          <div class="metric-label">Revenue MTD</div>
+          <div class="metric-label">{pageData.metrics.revenue}</div>
           <div class="metric-value" id="revenue-value">$0</div>
           <div class="metric-trend positive">↑ 12%</div>
         </div>
@@ -39,7 +46,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card clients">
         <div class="metric-icon">👥</div>
         <div class="metric-body">
-          <div class="metric-label">Active Clients</div>
+          <div class="metric-label">{pageData.metrics.clients}</div>
           <div class="metric-value" id="clients-value">0</div>
           <div class="metric-trend positive">↑ 2</div>
         </div>
@@ -48,7 +55,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card margin">
         <div class="metric-icon">📈</div>
         <div class="metric-body">
-          <div class="metric-label">Profit Margin</div>
+          <div class="metric-label">{pageData.metrics.margin}</div>
           <div class="metric-value" id="margin-value">0%</div>
           <div class="metric-trend positive">↑ 5%</div>
         </div>
@@ -57,7 +64,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card utilization">
         <div class="metric-icon">⚙️</div>
         <div class="metric-body">
-          <div class="metric-label">Utilization</div>
+          <div class="metric-label">{pageData.metrics.utilization}</div>
           <div class="metric-value" id="util-value">0%</div>
           <div class="metric-trend neutral">→ 0%</div>
         </div>
@@ -66,7 +73,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card nps">
         <div class="metric-icon">❤️</div>
         <div class="metric-body">
-          <div class="metric-label">NPS Score</div>
+          <div class="metric-label">{pageData.metrics.nps}</div>
           <div class="metric-value" id="nps-value">0</div>
           <div class="metric-trend positive">↑ 5</div>
         </div>
@@ -75,7 +82,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <div class="metric-card pipeline">
         <div class="metric-icon">🎯</div>
         <div class="metric-body">
-          <div class="metric-label">Pipeline</div>
+          <div class="metric-label">{pageData.metrics.pipeline}</div>
           <div class="metric-value" id="pipeline-value">$0</div>
           <div class="metric-trend positive">↑ 18%</div>
         </div>
@@ -84,12 +91,12 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
 
     <!-- Main Grid -->
     <div class="center-grid">
-      
+
       <!-- Left: System Health -->
       <section class="panel system-panel">
         <div class="panel-header">
-          <h2>🔧 System Status</h2>
-          <span class="status-badge all-operational">All Systems Operational</span>
+          <h2>{pageData.system.title}</h2>
+          <span class="status-badge all-operational">{pageData.system.all_operational}</span>
         </div>
         <div class="systems-grid">
           <div class="system-item operational" data-system="crm">
@@ -122,32 +129,32 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <!-- Right Top: Quick Actions -->
       <section class="panel actions-panel">
         <div class="panel-header">
-          <h2>🚀 Quick Actions</h2>
+          <h2>{pageData.actions.title}</h2>
         </div>
         <div class="actions-grid">
           <button class="action-btn" data-action="proposal" data-url="/docs/commands/sales/proposal">
             <span class="action-icon">📝</span>
-            <span class="action-label">New Proposal</span>
+            <span class="action-label">{pageData.actions.proposal}</span>
           </button>
           <button class="action-btn" data-action="invoice" data-url="/docs/commands/finance/invoice">
             <span class="action-icon">💳</span>
-            <span class="action-label">Create Invoice</span>
+            <span class="action-label">{pageData.actions.invoice}</span>
           </button>
           <button class="action-btn" data-action="meeting" data-url="/docs/commands/agency/timeline">
             <span class="action-icon">📅</span>
-            <span class="action-label">Schedule Meeting</span>
+            <span class="action-label">{pageData.actions.meeting}</span>
           </button>
           <button class="action-btn" data-action="client" data-url="/docs/commands/agency/client">
             <span class="action-icon">👤</span>
-            <span class="action-label">Add Client</span>
+            <span class="action-label">{pageData.actions.client}</span>
           </button>
           <button class="action-btn" data-action="report" data-url="/docs/commands/agency/report">
             <span class="action-icon">📊</span>
-            <span class="action-label">Run Report</span>
+            <span class="action-label">{pageData.actions.report}</span>
           </button>
           <button class="action-btn" data-action="campaign" data-url="/docs/commands/marketing/email">
             <span class="action-icon">📧</span>
-            <span class="action-label">Send Campaign</span>
+            <span class="action-label">{pageData.actions.campaign}</span>
           </button>
         </div>
       </section>
@@ -155,7 +162,7 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <!-- Right Bottom: Today's Priorities -->
       <section class="panel priorities-panel">
         <div class="panel-header">
-          <h2>📋 Today's Priorities</h2>
+          <h2>{pageData.priorities.title}</h2>
         </div>
         <div class="priorities-list">
           <div class="priority-item urgent">
@@ -182,8 +189,8 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
     <!-- 🏯 135 Commands Quick Access (NEW) -->
     <section class="panel commands-panel">
       <div class="panel-header">
-        <h2>🏯 135 ZERO-EFFORT Commands</h2>
-        <a href="/agentops-architecture" class="nav-link">View All →</a>
+        <h2>{pageData.commands.title}</h2>
+        <a href="/agentops-architecture" class="nav-link">{pageData.commands.view_all}</a>
       </div>
       <div class="command-suites">
         <div class="suite-chip" data-suite="marketing">
@@ -233,9 +240,9 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
         </div>
       </div>
       <div class="command-cta">
-        <span class="cta-hint">Press</span>
+        <span class="cta-hint">{pageData.commands.palette_hint.split('{kbd}')[0]}</span>
         <kbd>⌘K</kbd>
-        <span class="cta-hint">to open Command Palette</span>
+        <span class="cta-hint">{pageData.commands.palette_hint.split('{kbd}')[1]}</span>
       </div>
     </section>
 
@@ -276,22 +283,22 @@ const description = 'Real-time agency metrics, system health monitoring, and qui
       <a href="/agentops-architecture" class="nav-card">
         <span class="nav-icon">🤖</span>
         <div class="nav-content">
-          <span class="nav-title">AgentOps Architecture</span>
-          <span class="nav-desc">18 Agents × 135 Commands</span>
+          <span class="nav-title">{pageData.footer_nav.agentops.title}</span>
+          <span class="nav-desc">{pageData.footer_nav.agentops.desc}</span>
         </div>
       </a>
       <a href="/client/dashboard" class="nav-card">
         <span class="nav-icon">👥</span>
         <div class="nav-content">
-          <span class="nav-title">Client Dashboard</span>
-          <span class="nav-desc">Client-facing portal</span>
+          <span class="nav-title">{pageData.footer_nav.client_dash.title}</span>
+          <span class="nav-desc">{pageData.footer_nav.client_dash.desc}</span>
         </div>
       </a>
       <a href="/docs/commands" class="nav-card">
         <span class="nav-icon">📚</span>
         <div class="nav-content">
-          <span class="nav-title">Command Docs</span>
-          <span class="nav-desc">176 documentation pages</span>
+          <span class="nav-title">{pageData.footer_nav.command_docs.title}</span>
+          <span class="nav-desc">{pageData.footer_nav.command_docs.desc}</span>
         </div>
       </a>
     </nav>

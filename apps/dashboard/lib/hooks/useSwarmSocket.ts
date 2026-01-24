@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { AgentMessage } from '@/lib/swarm-api'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import type { AgentMessage } from '@/lib/swarm-api'
 import { logger } from '@/lib/utils/logger'
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/swarm/ws'
@@ -9,16 +9,7 @@ export function useSwarmSocket() {
   const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected')
   const socketRef = useRef<WebSocket | null>(null)
 
-  useEffect(() => {
-    connect()
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close()
-      }
-    }
-  }, [])
-
-  const connect = () => {
+  const connect = useCallback(() => {
     setStatus('connecting')
     const ws = new WebSocket(WS_URL)
     socketRef.current = ws
@@ -45,7 +36,16 @@ export function useSwarmSocket() {
         logger.error('WebSocket message parsing error', error)
       }
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    connect()
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close()
+      }
+    }
+  }, [connect])
 
   const sendMessage = (msg: unknown) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {

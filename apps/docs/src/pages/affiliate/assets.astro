@@ -1,8 +1,15 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Marketing Assets | Affiliate Portal';
-const description = 'Download banners, email templates, and social media assets to promote AgencyOS.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('affiliate_assets.title');
+const description = t('affiliate_assets.description');
+
+const pageData = (locales[locale] as any).affiliate_assets;
 
 const banners = [
   { size: '300x250', name: 'Medium Rectangle' },
@@ -23,16 +30,16 @@ const emails = [
 <LandingLayout title={title} description={description}>
   <div class="assets-container">
     <header class="page-header">
-      <a href="/affiliate/dashboard" class="back-link">← Back to Dashboard</a>
-      <h1>🎨 Marketing Assets</h1>
-      <p>Professional materials to promote AgencyOS</p>
+      <a href="/affiliate/dashboard" class="back-link">{pageData.header.back}</a>
+      <h1>{pageData.header.title}</h1>
+      <p>{pageData.header.subtitle}</p>
     </header>
 
     <!-- Banner Section -->
     <section class="asset-section">
       <div class="section-header">
-        <h2>📱 Banners</h2>
-        <span class="count">{banners.length} sizes</span>
+        <h2>{pageData.banners.title}</h2>
+        <span class="count">{pageData.banners.count.replace('{count}', banners.length)}</span>
       </div>
       <div class="banners-grid">
         {banners.map(banner => (
@@ -48,7 +55,7 @@ const emails = [
               <div class="banner-size">{banner.size}px</div>
             </div>
             <button class="download-btn">
-              ⬇️ Download
+              {pageData.banners.download}
             </button>
           </div>
         ))}
@@ -58,8 +65,8 @@ const emails = [
     <!-- Email Templates -->
     <section class="asset-section">
       <div class="section-header">
-        <h2>📧 Email Swipes</h2>
-        <span class="count">{emails.length} templates</span>
+        <h2>{pageData.emails.title}</h2>
+        <span class="count">{pageData.emails.count.replace('{count}', emails.length)}</span>
       </div>
       <div class="emails-grid">
         {emails.map((email, i) => (
@@ -69,7 +76,7 @@ const emails = [
               <div class="email-name">{email.name}</div>
               <div class="email-preview">{email.desc}</div>
             </div>
-            <button class="copy-btn">📋 Copy</button>
+            <button class="copy-btn">{pageData.emails.copy}</button>
           </div>
         ))}
       </div>
@@ -78,8 +85,8 @@ const emails = [
     <!-- Social Media Templates -->
     <section class="asset-section">
       <div class="section-header">
-        <h2>📱 Social Media</h2>
-        <span class="count">Ready to use</span>
+        <h2>{pageData.social.title}</h2>
+        <span class="count">{pageData.social.count}</span>
       </div>
       <div class="social-grid">
         <div class="social-card twitter">
@@ -93,9 +100,9 @@ const emails = [
 Here's my honest review 👇
 
 [YOUR LINK]</pre>
-          <button class="copy-btn">📋 Copy Thread</button>
+          <button class="copy-btn">{pageData.social.copy_thread}</button>
         </div>
-        
+
         <div class="social-card tiktok">
           <div class="platform">🎬 TikTok/Reels Script</div>
           <pre class="social-content">"POV: You run an agency but have zero employees"
@@ -107,7 +114,7 @@ Here's my honest review 👇
 *Cut to dashboard*
 
 "Link in bio"</pre>
-          <button class="copy-btn">📋 Copy Script</button>
+          <button class="copy-btn">{pageData.social.copy_script}</button>
         </div>
 
         <div class="social-card linkedin">
@@ -129,7 +136,7 @@ The tool? AgencyOS.
 Worth checking out if you're a solo operator.
 
 #solopreneur #aitools #agency</pre>
-          <button class="copy-btn">📋 Copy Post</button>
+          <button class="copy-btn">{pageData.social.copy_post}</button>
         </div>
       </div>
     </section>
@@ -137,24 +144,24 @@ Worth checking out if you're a solo operator.
     <!-- Video Assets -->
     <section class="asset-section">
       <div class="section-header">
-        <h2>🎬 Video Promos</h2>
-        <span class="count">Coming soon</span>
+        <h2>{pageData.video.title}</h2>
+        <span class="count">{pageData.video.count}</span>
       </div>
       <div class="coming-soon">
         <span class="icon">🎬</span>
-        <p>Professional video promos coming soon!</p>
-        <p class="hint">15s, 30s, and 60s versions</p>
+        <p>{pageData.video.empty}</p>
+        <p class="hint">{pageData.video.hint}</p>
       </div>
     </section>
 
     <!-- Brand Guidelines -->
     <section class="asset-section">
       <div class="section-header">
-        <h2>📐 Brand Guidelines</h2>
+        <h2>{pageData.brand.title}</h2>
       </div>
       <div class="brand-grid">
         <div class="brand-card">
-          <h3>Colors</h3>
+          <h3>{pageData.brand.colors}</h3>
           <div class="color-swatches">
             <div class="swatch" style="background: #10b981;">
               <span>#10b981</span>
@@ -168,12 +175,12 @@ Worth checking out if you're a solo operator.
           </div>
         </div>
         <div class="brand-card">
-          <h3>Logo</h3>
+          <h3>{pageData.brand.logo}</h3>
           <div class="logo-preview">🏯 AgencyOS</div>
-          <p class="hint">Always use the castle emoji</p>
+          <p class="hint">{pageData.brand.logo_hint}</p>
         </div>
         <div class="brand-card">
-          <h3>Tagline</h3>
+          <h3>{pageData.brand.tagline}</h3>
           <div class="tagline">"125+ AI Commands. Zero Employees."</div>
         </div>
       </div>

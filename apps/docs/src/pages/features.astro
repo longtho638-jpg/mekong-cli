@@ -1,236 +1,61 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Features - AgencyOS';
-const description = '85+ AI-powered commands to automate your entire agency. Marketing, sales, operations, finance.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('features_page.title');
+const description = t('features_page.description');
+
+// Get categories for mapping
+const categoriesData = (locales[locale] as any).features_page.categories;
+const categories = [
+  { id: 'marketing', icon: '📢' },
+  { id: 'sales', icon: '💰' },
+  { id: 'ops', icon: '⚙️' },
+  { id: 'finance', icon: '📊' },
+  { id: 'strategy', icon: '🏯' },
+  { id: 'agents', icon: '🤖' }
+].map(cat => ({
+  ...cat,
+  ...categoriesData[cat.id]
+}));
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="features-hero">
-    <h1>85+ Commands.<br/>One Platform.</h1>
-    <p>Everything you need to run a solo agency with AI.</p>
+    <h1 set:html={t('features_page.hero.title')}></h1>
+    <p>{t('features_page.hero.subtitle')}</p>
   </section>
 
   <section class="features-categories">
-    
-    <!-- Marketing -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">📢</span>
-        <h2>Marketing</h2>
-        <span class="command-count">15 commands</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card">
-          <code>/ke-hoach-tiep-thi</code>
-          <p>Create marketing plans</p>
+    {categories.map((category) => (
+      <div class="category">
+        <div class="category-header">
+          <span class="category-icon">{category.icon}</span>
+          <h2>{category.title}</h2>
+          <span class="command-count">{category.count}</span>
         </div>
-        <div class="command-card">
-          <code>/noi-dung-tiep-thi</code>
-          <p>Generate content</p>
-        </div>
-        <div class="command-card">
-          <code>/y-tuong-social-media</code>
-          <p>Social media ideas</p>
-        </div>
-        <div class="command-card">
-          <code>/ke-hoach-pr</code>
-          <p>PR campaigns</p>
-        </div>
-        <div class="command-card">
-          <code>/thong-diep-tiep-thi</code>
-          <p>Marketing messaging</p>
-        </div>
-        <div class="command-card">
-          <code>/phan-tich-doi-thu</code>
-          <p>Competitor analysis</p>
+        <div class="commands-grid">
+          {Object.entries(category.commands).map(([_, cmdInfo]: [string, any]) => (
+            <div class={`command-card ${category.id === 'agents' ? 'agent' : ''}`}>
+              <code>{cmdInfo[0]}</code>
+              <p>{cmdInfo[1]}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-
-    <!-- Sales -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">💰</span>
-        <h2>Sales</h2>
-        <span class="command-count">12 commands</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card">
-          <code>/chien-luoc-ban-hang</code>
-          <p>Sales strategies</p>
-        </div>
-        <div class="command-card">
-          <code>/pheu-ban-hang</code>
-          <p>Sales funnels</p>
-        </div>
-        <div class="command-card">
-          <code>/khach-hang</code>
-          <p>Customer profiles</p>
-        </div>
-        <div class="command-card">
-          <code>/tao-bao-gia</code>
-          <p>Generate quotes</p>
-        </div>
-        <div class="command-card">
-          <code>/theo-doi-lead</code>
-          <p>Lead tracking</p>
-        </div>
-        <div class="command-card">
-          <code>/email-ban-hang</code>
-          <p>Sales emails</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Operations -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">⚙️</span>
-        <h2>Operations</h2>
-        <span class="command-count">18 commands</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card">
-          <code>/quan-ly-du-an</code>
-          <p>Project management</p>
-        </div>
-        <div class="command-card">
-          <code>/tao-workflow</code>
-          <p>Workflow automation</p>
-        </div>
-        <div class="command-card">
-          <code>/bao-cao-tien-do</code>
-          <p>Progress reports</p>
-        </div>
-        <div class="command-card">
-          <code>/quan-ly-doi</code>
-          <p>Team management</p>
-        </div>
-        <div class="command-card">
-          <code>/hop-dong</code>
-          <p>Contract creation</p>
-        </div>
-        <div class="command-card">
-          <code>/lich-hen</code>
-          <p>Scheduling</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Finance -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">📊</span>
-        <h2>Finance</h2>
-        <span class="command-count">10 commands</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card">
-          <code>/bao-cao-tai-chinh</code>
-          <p>Financial reports</p>
-        </div>
-        <div class="command-card">
-          <code>/hoa-don</code>
-          <p>Invoice generation</p>
-        </div>
-        <div class="command-card">
-          <code>/theo-doi-chi-phi</code>
-          <p>Expense tracking</p>
-        </div>
-        <div class="command-card">
-          <code>/du-bao-doanh-thu</code>
-          <p>Revenue forecasting</p>
-        </div>
-        <div class="command-card">
-          <code>/phan-tich-loi-nhuan</code>
-          <p>Profit analysis</p>
-        </div>
-        <div class="command-card">
-          <code>/ngan-sach</code>
-          <p>Budgeting</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Strategy -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">🏯</span>
-        <h2>Binh Pháp Strategy</h2>
-        <span class="command-count">13 commands</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card">
-          <code>/ke-hoach</code>
-          <p>Strategic planning</p>
-        </div>
-        <div class="command-card">
-          <code>/muu-cong</code>
-          <p>Win-without-fighting</p>
-        </div>
-        <div class="command-card">
-          <code>/hinh-the</code>
-          <p>Positioning audit</p>
-        </div>
-        <div class="command-card">
-          <code>/cuu-bien</code>
-          <p>Pivot strategy</p>
-        </div>
-        <div class="command-card">
-          <code>/hoa-cong</code>
-          <p>Market disruption</p>
-        </div>
-        <div class="command-card">
-          <code>/dung-gian</code>
-          <p>Intelligence gathering</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI Agents -->
-    <div class="category">
-      <div class="category-header">
-        <span class="category-icon">🤖</span>
-        <h2>17 AI Agents</h2>
-        <span class="command-count">Specialized assistants</span>
-      </div>
-      <div class="commands-grid">
-        <div class="command-card agent">
-          <code>Scout Agent</code>
-          <p>Market research</p>
-        </div>
-        <div class="command-card agent">
-          <code>Editor Agent</code>
-          <p>Content creation</p>
-        </div>
-        <div class="command-card agent">
-          <code>Director Agent</code>
-          <p>Video production</p>
-        </div>
-        <div class="command-card agent">
-          <code>Community Agent</code>
-          <p>Social distribution</p>
-        </div>
-        <div class="command-card agent">
-          <code>Sales Agent</code>
-          <p>Lead conversion</p>
-        </div>
-        <div class="command-card agent">
-          <code>Finance Agent</code>
-          <p>Financial tracking</p>
-        </div>
-      </div>
-    </div>
-
+    ))}
   </section>
 
   <section class="features-cta">
-    <h2>Ready to Automate Your Agency?</h2>
-    <p>Start with 125+ commands today.</p>
+    <h2>{t('features_page.cta.title')}</h2>
+    <p>{t('features_page.cta.subtitle')}</p>
     <div class="cta-buttons">
-      <a href="/pricing" class="btn-primary">View Pricing</a>
-      <a href="/docs/getting-started/installation" class="btn-secondary">Get Started</a>
+      <a href="/pricing" class="btn-primary">{t('features_page.cta.primary')}</a>
+      <a href="/docs/getting-started/installation" class="btn-secondary">{t('features_page.cta.secondary')}</a>
     </div>
   </section>
 </LandingLayout>

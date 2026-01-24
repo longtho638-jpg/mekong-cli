@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# 🧠 CC CLI Smart Router Wrapper
+# Auto-selects optimal model based on task complexity
+#
+# Usage:
+#   ccs "task description"           # Auto-select model
+#   ccs --debug "task description"   # Show model selection
+#
+# Based on opus_quota_strategy.md Binh Pháp analysis
+#
+
+set -e
+
+ROUTER="/Users/macbookprom1/mekong-cli/.claude-skills/model-routing/router.py"
+DEBUG=false
+
+# Parse args
+if [[ "$1" == "--debug" ]]; then
+    DEBUG=true
+    shift
+fi
+
+TASK="$*"
+
+if [[ -z "$TASK" ]]; then
+    echo "Usage: ccs [--debug] \"task description\""
+    echo ""
+    python3 "$ROUTER" --status
+    exit 0
+fi
+
+# Get recommended model
+RESULT=$(python3 "$ROUTER" "$TASK" 2>&1)
+MODEL_ID=$(echo "$RESULT" | grep "CC CLI ID:" | awk '{print $NF}')
+
+if [[ -z "$MODEL_ID" ]]; then
+    MODEL_ID="gemini-3-flash[1m]"
+fi
+
+if [[ "$DEBUG" == true ]]; then
+    echo "🧠 Smart Router Analysis:"
+    echo "$RESULT"
+    echo ""
+    echo "🚀 Executing with model: $MODEL_ID"
+    echo "---"
+fi
+
+# Execute CC CLI with selected model
+exec claude --model "$MODEL_ID" "$TASK"

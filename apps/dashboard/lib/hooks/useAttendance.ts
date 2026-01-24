@@ -87,7 +87,8 @@ export function useAttendance() {
         setRecords(prev => prev.map(r => {
             if (r.employeeId !== employeeId || r.date !== today) return r;
 
-            const checkIn = new Date(r.checkIn!);
+            if (!r.checkIn) return r;
+            const checkIn = new Date(r.checkIn);
             const workHours = (now.getTime() - checkIn.getTime()) / (1000 * 60 * 60);
             const overtime = Math.max(0, workHours - 8);
 

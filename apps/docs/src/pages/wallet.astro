@@ -1,34 +1,41 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'AG Wallet - AgencyOS';
-const description = 'Manage your AG Credits - earn from referrals, transfer to others, or spend on SaaS products.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('wallet_page.title');
+const description = t('wallet_page.description');
+
+const pageData = (locales[locale] as any).wallet_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <!-- Hero -->
   <section class="wallet-hero">
-    <h1>💰 AG Wallet</h1>
-    <p>Your internal credit system - Earn, Transfer, Spend</p>
+    <h1>{pageData.hero.title}</h1>
+    <p>{pageData.hero.subtitle}</p>
   </section>
 
   <!-- Balance Card -->
   <section class="wallet-section">
     <div class="balance-card">
       <div class="balance-header">
-        <span class="balance-label">Available Balance</span>
-        <span class="rank-badge" id="rank-badge">🥉 Chiến Binh</span>
+        <span class="balance-label">{pageData.balance.available}</span>
+        <span class="rank-badge" id="rank-badge">🥉 {pageData.ranks.chien_binh}</span>
       </div>
       <div class="balance-amount" id="balance">0.00 AGC</div>
-      <div class="balance-usd" id="balance-usd">≈ $0.00 USD</div>
-      
+      <div class="balance-usd" id="balance-usd">{pageData.balance.usd_approx.replace('{amount}', '0.00')}</div>
+
       <div class="balance-stats">
         <div class="stat">
-          <span class="stat-label">Lifetime Earned</span>
+          <span class="stat-label">{pageData.balance.lifetime_earned}</span>
           <span class="stat-value" id="lifetime-earned">0 AGC</span>
         </div>
         <div class="stat">
-          <span class="stat-label">Lifetime Spent</span>
+          <span class="stat-label">{pageData.balance.lifetime_spent}</span>
           <span class="stat-value" id="lifetime-spent">0 AGC</span>
         </div>
       </div>
@@ -38,11 +45,11 @@ const description = 'Manage your AG Credits - earn from referrals, transfer to o
     <div class="action-buttons">
       <button class="btn-action" id="btn-transfer">
         <span class="btn-icon">↗️</span>
-        Transfer
+        {pageData.actions.transfer}
       </button>
       <button class="btn-action btn-primary" id="btn-redeem">
         <span class="btn-icon">🛒</span>
-        Buy SaaS
+        {pageData.actions.buy_saas}
       </button>
     </div>
   </section>
@@ -51,23 +58,23 @@ const description = 'Manage your AG Credits - earn from referrals, transfer to o
   <div class="modal" id="transfer-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>↗️ Transfer AGC</h3>
+        <h3>{pageData.transfer_modal.title}</h3>
         <button class="modal-close" id="close-transfer">&times;</button>
       </div>
       <form id="transfer-form">
         <div class="form-group">
-          <label>Recipient Email</label>
-          <input type="email" id="transfer-email" placeholder="user@example.com" required />
+          <label>{pageData.transfer_modal.recipient_label}</label>
+          <input type="email" id="transfer-email" placeholder={pageData.transfer_modal.recipient_placeholder} required />
         </div>
         <div class="form-group">
-          <label>Amount (AGC)</label>
-          <input type="number" id="transfer-amount" min="1" step="0.01" placeholder="10.00" required />
+          <label>{pageData.transfer_modal.amount_label}</label>
+          <input type="number" id="transfer-amount" min="1" step="0.01" placeholder={pageData.transfer_modal.amount_placeholder} required />
         </div>
         <div class="form-group">
-          <label>Note (Optional)</label>
-          <input type="text" id="transfer-note" placeholder="Thanks for the help!" />
+          <label>{pageData.transfer_modal.note_label}</label>
+          <input type="text" id="transfer-note" placeholder={pageData.transfer_modal.note_placeholder} />
         </div>
-        <button type="submit" class="btn-primary full-width">Send Transfer</button>
+        <button type="submit" class="btn-primary full-width">{pageData.transfer_modal.submit}</button>
       </form>
     </div>
   </div>
@@ -76,27 +83,27 @@ const description = 'Manage your AG Credits - earn from referrals, transfer to o
   <div class="modal" id="redeem-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>🛒 Buy with AGC</h3>
+        <h3>{pageData.redeem_modal.title}</h3>
         <button class="modal-close" id="close-redeem">&times;</button>
       </div>
       <div class="product-grid">
         <div class="product-card" data-product="starter_monthly">
-          <h4>Starter</h4>
+          <h4>{pageData.redeem_modal.plans.starter}</h4>
           <div class="product-price">29 AGC</div>
-          <p>1 month access</p>
-          <button class="btn-buy">Buy Now</button>
+          <p>{pageData.redeem_modal.plans.duration}</p>
+          <button class="btn-buy">{pageData.redeem_modal.plans.buy_now}</button>
         </div>
         <div class="product-card featured" data-product="pro_monthly">
-          <h4>Pro</h4>
+          <h4>{pageData.redeem_modal.plans.pro}</h4>
           <div class="product-price">99 AGC</div>
-          <p>1 month access</p>
-          <button class="btn-buy">Buy Now</button>
+          <p>{pageData.redeem_modal.plans.duration}</p>
+          <button class="btn-buy">{pageData.redeem_modal.plans.buy_now}</button>
         </div>
         <div class="product-card" data-product="franchise_monthly">
-          <h4>Franchise</h4>
+          <h4>{pageData.redeem_modal.plans.franchise}</h4>
           <div class="product-price">299 AGC</div>
-          <p>1 month access</p>
-          <button class="btn-buy">Buy Now</button>
+          <p>{pageData.redeem_modal.plans.duration}</p>
+          <button class="btn-buy">{pageData.redeem_modal.plans.buy_now}</button>
         </div>
       </div>
     </div>
@@ -104,41 +111,52 @@ const description = 'Manage your AG Credits - earn from referrals, transfer to o
 
   <!-- Transaction History -->
   <section class="history-section">
-    <h2>📜 Transaction History</h2>
+    <h2>{pageData.history.title}</h2>
     <div class="history-list" id="history-list">
-      <div class="loading">Loading...</div>
+      <div class="loading">{pageData.history.loading}</div>
     </div>
   </section>
 
   <!-- Rank Progress -->
   <section class="rank-section">
-    <h2>🎖️ Rank Progress</h2>
+    <h2>{pageData.ranks.title}</h2>
     <div class="rank-progress">
       <div class="rank-item active">
         <span class="rank-emoji">🥉</span>
-        <span class="rank-name">Chiến Binh</span>
-        <span class="rank-threshold">0+ AGC</span>
+        <span class="rank-name">{pageData.ranks.chien_binh}</span>
+        <span class="rank-threshold">{pageData.ranks.threshold.replace('{amount}', '0')}</span>
       </div>
       <div class="rank-item">
         <span class="rank-emoji">🥈</span>
-        <span class="rank-name">Tướng Quân</span>
-        <span class="rank-threshold">500+ AGC</span>
-        <span class="rank-perk">+5% bonus</span>
+        <span class="rank-name">{pageData.ranks.tuong_quan}</span>
+        <span class="rank-threshold">{pageData.ranks.threshold.replace('{amount}', '500')}</span>
+        <span class="rank-perk">{pageData.ranks.bonus.replace('{percent}', '5')}</span>
       </div>
       <div class="rank-item">
         <span class="rank-emoji">🥇</span>
-        <span class="rank-name">Thống Soái</span>
-        <span class="rank-threshold">2000+ AGC</span>
-        <span class="rank-perk">+10% bonus</span>
+        <span class="rank-name">{pageData.ranks.thong_soai}</span>
+        <span class="rank-threshold">{pageData.ranks.threshold.replace('{amount}', '2000')}</span>
+        <span class="rank-perk">{pageData.ranks.bonus.replace('{percent}', '10')}</span>
       </div>
       <div class="rank-item">
         <span class="rank-emoji">👑</span>
-        <span class="rank-name">Nguyên Soái</span>
-        <span class="rank-threshold">10000+ AGC</span>
-        <span class="rank-perk">+15% bonus</span>
+        <span class="rank-name">{pageData.ranks.nguyen_soai}</span>
+        <span class="rank-threshold">{pageData.ranks.threshold.replace('{amount}', '10000')}</span>
+        <span class="rank-perk">{pageData.ranks.bonus.replace('{percent}', '15')}</span>
       </div>
     </div>
   </section>
+
+  <div id="wallet-i18n"
+    data-no-transactions={pageData.history.no_transactions}
+    data-usd-approx={pageData.balance.usd_approx}
+    data-ranks={JSON.stringify({
+      chien_binh: { emoji: '🥉', name: pageData.ranks.chien_binh },
+      tuong_quan: { emoji: '🥈', name: pageData.ranks.tuong_quan },
+      thong_soai: { emoji: '🥇', name: pageData.ranks.thong_soai },
+      nguyen_soai: { emoji: '👑', name: pageData.ranks.nguyen_soai }
+    })}
+  ></div>
 </LandingLayout>
 
 <style>

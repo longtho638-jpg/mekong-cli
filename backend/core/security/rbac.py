@@ -76,5 +76,6 @@ class RoleChecker:
 require_owner = RoleChecker([Role.OWNER])
 require_admin = RoleChecker([Role.OWNER, Role.ADMIN])
 require_developer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER])
+require_editor = require_developer
 require_viewer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER, Role.VIEWER])
 require_agent = RoleChecker([Role.OWNER, Role.AGENT])

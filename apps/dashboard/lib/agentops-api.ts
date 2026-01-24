@@ -141,7 +141,7 @@ export async function reviewTermSheet(data: {
   equity_percentage?: number
   anti_dilution?: string
   participation?: boolean
-}): Promise<any> {
+}): Promise<unknown> {
   try {
     const response = await fetch(`${AGENTOPS_API}/guardian/review`, {
       method: 'POST',
@@ -163,7 +163,7 @@ export async function scoreStartup(data: {
   stage?: string
   mrr?: number
   growth?: number
-}): Promise<any> {
+}): Promise<unknown> {
   try {
     const response = await fetch(`${AGENTOPS_API}/dealflow/score`, {
       method: 'POST',

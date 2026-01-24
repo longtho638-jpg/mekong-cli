@@ -18,5 +18,6 @@ The actual implementation has been moved to antigravity.core.revenue package.
 """
 
 from antigravity.core.revenue import RevenueEngine
+from antigravity.core.config import Currency
 
-__all__ = ["RevenueEngine"]
+__all__ = ["RevenueEngine", "Currency"]

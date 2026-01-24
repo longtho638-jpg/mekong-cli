@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 interface HyperTextProps {
     text: string;
@@ -17,12 +17,12 @@ export function HyperText({ text, duration = 800, className = '', animateOnHover
     const iterations = useRef(0);
     const [isHovered, setIsHovered] = useState(false);
 
-    const triggerAnimation = () => {
+    const triggerAnimation = useCallback(() => {
         iterations.current = 0;
-        clearInterval(intervalRef.current!);
+        if (intervalRef.current) clearInterval(intervalRef.current);
 
         intervalRef.current = setInterval(() => {
-            setDisplayText((prev) =>
+            setDisplayText((_) =>
                 text
                     .split('')
                     .map((char, index) => {
@@ -35,17 +35,19 @@ export function HyperText({ text, duration = 800, className = '', animateOnHover
             );
 
             if (iterations.current >= text.length) {
-                clearInterval(intervalRef.current!);
+                if (intervalRef.current) clearInterval(intervalRef.current);
             }
 
             iterations.current += 1 / 3; // Adjust speed here
         }, duration / (text.length * 2));
-    };
+    }, [text, duration]);
 
     useEffect(() => {
         triggerAnimation();
-        return () => clearInterval(intervalRef.current!);
-    }, [text]);
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, [text, triggerAnimation]);
 
     const handleMouseEnter = () => {
         if (animateOnHover && !isHovered) {

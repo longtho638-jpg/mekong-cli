@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-import { getAlternateUrls } from '../i18n/utils';
-import type { Locale } from '../i18n/locales';
+import { getLocaleFromUrl } from '@agencyos/i18n/astro';
+import type { Locale } from '@agencyos/i18n/types';
 
 export interface Props {
   title?: string;
@@ -13,12 +13,11 @@ export interface Props {
 const {
   title = 'AgencyOS Documentation',
   description = 'Official documentation for AgencyOS CLI',
-  locale = 'en',
+  locale: propLocale,
   slug = '',
 } = Astro.props;
 
-// Generate alternate URLs for hreflang tags
-const alternates = slug ? getAlternateUrls(slug) : [];
+const locale = propLocale || getLocaleFromUrl(Astro.url);
 ---
 
 <!DOCTYPE html>

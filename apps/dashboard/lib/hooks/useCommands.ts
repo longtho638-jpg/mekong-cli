@@ -2,8 +2,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { generateVideoScript, generateSocialPost, cmdTiepThi, cmdBanHang, cmdYTuongSocialMedia } from '@/lib/api/mekong';
-import type { CommandResponse } from '@/lib/api/mekong';
+import { generateVideoScript, generateSocialPost, cmdTiepThi, cmdBanHang, cmdYTuongSocialMedia, type CommandResponse } from '@/lib/api/mekong';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 🎬 USE COMMANDS HOOK - Connect pages to backend commands

@@ -44,7 +44,7 @@ export function Sheet({ open = false, onOpenChange, children }: SheetProps) {
   );
 }
 
-export function SheetTrigger({ children, asChild, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }) {
+export function SheetTrigger({ children, asChild: _asChild, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }) {
   const { onOpenChange } = useSheetContext();
 
   return (

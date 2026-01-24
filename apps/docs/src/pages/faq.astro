@@ -1,118 +1,50 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'FAQ - AgencyOS';
-const description = 'Frequently asked questions about AgencyOS, pricing, and getting started.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
-const faqs = [
-  {
-    category: "Getting Started",
-    icon: "🚀",
-    questions: [
-      {
-        q: "What is AgencyOS?",
-        a: "AgencyOS is an AI-powered operating system for solo agencies. It includes 125+ commands to automate marketing, sales, affiliate management, and finance tasks."
-      },
-      {
-        q: "How do I install AgencyOS?",
-        a: "After purchase, you get access to a private GitHub repository. Clone it locally and open in your IDE. Run the setup script and you're ready to go."
-      },
-      {
-        q: "Do I need coding experience?",
-        a: "No! AgencyOS is designed for non-technical users. Just type natural language commands like /marketing/social or /sales/proposal and the AI handles the rest."
-      }
-    ]
-  },
-  {
-    category: "Pricing & Plans",
-    icon: "💰",
-    questions: [
-      {
-        q: "What's included in the free trial?",
-        a: "The 7-day free trial includes all Starter tier features: 20 AI commands, basic marketing automation, and community support."
-      },
-      {
-        q: "Can I upgrade or downgrade anytime?",
-        a: "Yes! You can switch plans at any time. Upgrades are prorated, and downgrades take effect at the next billing cycle."
-      },
-      {
-        q: "Is there a refund policy?",
-        a: "Absolutely. We offer a 30-day money-back guarantee. If you're not satisfied, email us and we'll refund you, no questions asked."
-      }
-    ]
-  },
-  {
-    category: "Features & Commands",
-    icon: "⌨️",
-    questions: [
-      {
-        q: "How many commands are available?",
-        a: "AgencyOS includes 125+ commands across marketing, sales, affiliate, finance, and content creation. New commands are added monthly."
-      },
-      {
-        q: "Can I create custom commands?",
-        a: "Yes! Pro and Franchise tiers include the ability to create and save custom command templates."
-      },
-      {
-        q: "Does it integrate with my existing tools?",
-        a: "AgencyOS works with popular tools like Notion, Google Workspace, Slack, and more through our MCP (Model Context Protocol) integrations."
-      }
-    ]
-  },
-  {
-    category: "Support & Community",
-    icon: "🆘",
-    questions: [
-      {
-        q: "How do I get support?",
-        a: "Starter users get community support via Discord. Pro users get priority email support. Franchise users get dedicated 1:1 onboarding calls."
-      },
-      {
-        q: "Is there a community?",
-        a: "Yes! Join our Discord community with 500+ agency owners sharing tips, templates, and wins."
-      },
-      {
-        q: "Are there tutorials or documentation?",
-        a: "We have comprehensive documentation, video tutorials, and a blog with tips and best practices."
-      }
-    ]
-  }
-];
+const title = t('faq_page.title');
+const description = t('faq_page.description');
+
+const faqs = (locales[locale] as any).faq_page.categories;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="faq-page">
     <div class="faq-container">
-      
+
       <!-- Hero -->
       <div class="faq-hero">
         <div class="hero-icon">❓</div>
-        <h1 class="faq-title">Frequently Asked Questions</h1>
+        <h1 class="faq-title">{t('faq_page.hero.title')}</h1>
         <p class="faq-subtitle">
-          Got questions? We've got answers.
+          {t('faq_page.hero.subtitle')}
         </p>
       </div>
 
       <!-- Search -->
       <div class="search-wrapper">
-        <input 
-          type="text" 
-          id="faq-search" 
-          class="search-input" 
-          placeholder="🔍 Search questions..."
+        <input
+          type="text"
+          id="faq-search"
+          class="search-input"
+          placeholder={t('faq_page.search.placeholder')}
         />
       </div>
 
       <!-- FAQ Categories -->
       <div class="faq-content">
-        {faqs.map((category, catIndex) => (
+        {faqs.map((category: any, catIndex: number) => (
           <div class="faq-category" style={`--cat-delay: ${catIndex}`}>
             <div class="category-header">
               <span class="category-icon">{category.icon}</span>
-              <h2 class="category-title">{category.category}</h2>
+              <h2 class="category-title">{category.title}</h2>
             </div>
             <div class="questions-list">
-              {category.questions.map((item, qIndex) => (
+              {category.questions.map((item: any, qIndex: number) => (
                 <details class="faq-item" style={`--q-delay: ${catIndex * 3 + qIndex}`}>
                   <summary class="faq-question">
                     <span class="question-text">{item.q}</span>
@@ -129,16 +61,16 @@ const faqs = [
       <!-- No Results -->
       <div class="no-results" id="no-results">
         <span class="no-results-icon">🔍</span>
-        <p>No questions found. Try a different search.</p>
+        <p>{t('faq_page.no_results')}</p>
       </div>
 
       <!-- CTA -->
       <div class="faq-cta">
-        <h2>Still have questions?</h2>
-        <p>We're here to help. Reach out to our team.</p>
+        <h2>{t('faq_page.cta.title')}</h2>
+        <p>{t('faq_page.cta.subtitle')}</p>
         <div class="cta-buttons">
-          <a href="mailto:hello@agencyos.network" class="btn-primary">Contact Support</a>
-          <a href="https://discord.gg/agencyos" class="btn-secondary" target="_blank">Join Discord</a>
+          <a href="mailto:hello@agencyos.network" class="btn-primary">{t('faq_page.cta.support')}</a>
+          <a href="https://discord.gg/agencyos" class="btn-secondary" target="_blank">{t('faq_page.cta.discord')}</a>
         </div>
       </div>
 

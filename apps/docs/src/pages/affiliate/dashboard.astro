@@ -1,8 +1,15 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Affiliate Dashboard | AgencyOS';
-const description = 'Track your affiliate earnings, clicks, and conversions in real-time.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('affiliate_dashboard.title');
+const description = t('affiliate_dashboard.description');
+
+const pageData = (locales[locale] as any).affiliate_dashboard;
 ---
 
 <LandingLayout title={title} description={description}>
@@ -10,13 +17,13 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
     <!-- Header -->
     <header class="dashboard-header">
       <div class="header-left">
-        <h1>🏯 Affiliate Dashboard</h1>
-        <p class="subtitle">Welcome back, Affiliate</p>
+        <h1>{pageData.header.title}</h1>
+        <p class="subtitle">{pageData.header.welcome}</p>
       </div>
       <div class="header-right">
         <div class="quick-link-copy">
           <input type="text" id="refLink" value="https://agencyos.network?ref=YOUR_ID" readonly>
-          <button class="copy-btn" onclick="copyLink()">📋 Copy</button>
+          <button class="copy-btn" onclick="copyLink()">{pageData.header.copy_btn}</button>
         </div>
       </div>
     </header>
@@ -27,7 +34,7 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <div class="stat-icon">💰</div>
         <div class="stat-content">
           <div class="stat-value" id="earnings-value">$0.00</div>
-          <div class="stat-label">This Month</div>
+          <div class="stat-label">{pageData.stats.earnings}</div>
         </div>
         <div class="stat-trend up">+0%</div>
       </div>
@@ -35,7 +42,7 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <div class="stat-icon">👆</div>
         <div class="stat-content">
           <div class="stat-value" id="clicks-value">0</div>
-          <div class="stat-label">Clicks</div>
+          <div class="stat-label">{pageData.stats.clicks}</div>
         </div>
         <div class="stat-trend">-</div>
       </div>
@@ -43,7 +50,7 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <div class="stat-icon">✅</div>
         <div class="stat-content">
           <div class="stat-value" id="conversions-value">0</div>
-          <div class="stat-label">Conversions</div>
+          <div class="stat-label">{pageData.stats.conversions}</div>
         </div>
         <div class="stat-trend">-</div>
       </div>
@@ -51,7 +58,7 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <div class="stat-icon">📊</div>
         <div class="stat-content">
           <div class="stat-value" id="rate-value">0%</div>
-          <div class="stat-label">Conversion Rate</div>
+          <div class="stat-label">{pageData.stats.rate}</div>
         </div>
         <div class="stat-trend">-</div>
       </div>
@@ -64,18 +71,18 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <!-- Earnings Chart -->
         <section class="chart-card">
           <div class="card-header">
-            <h2>📈 Earnings (Last 30 Days)</h2>
+            <h2>{pageData.earnings_chart.title}</h2>
             <select class="period-select">
-              <option>Last 7 days</option>
-              <option selected>Last 30 days</option>
-              <option>Last 90 days</option>
+              <option value="7d">{pageData.earnings_chart.periods['7d']}</option>
+              <option value="30d" selected>{pageData.earnings_chart.periods['30d']}</option>
+              <option value="90d">{pageData.earnings_chart.periods['90d']}</option>
             </select>
           </div>
           <div class="chart-placeholder">
             <div class="empty-chart">
               <span class="icon">📊</span>
-              <p>No earnings data yet</p>
-              <p class="hint">Share your link to start earning!</p>
+              <p>{pageData.earnings_chart.empty}</p>
+              <p class="hint">{pageData.earnings_chart.hint}</p>
             </div>
           </div>
         </section>
@@ -83,13 +90,13 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <!-- Recent Activity -->
         <section class="activity-card">
           <div class="card-header">
-            <h2>🕐 Recent Activity</h2>
+            <h2>{pageData.activity.title}</h2>
           </div>
           <div class="activity-list">
             <div class="empty-state">
               <span class="icon">📭</span>
-              <p>No activity yet</p>
-              <p class="hint">Your clicks and conversions will appear here</p>
+              <p>{pageData.activity.empty}</p>
+              <p class="hint">{pageData.activity.hint}</p>
             </div>
           </div>
         </section>
@@ -100,39 +107,39 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <!-- Your Rank -->
         <section class="rank-card">
           <div class="card-header">
-            <h2>🏆 Your Rank</h2>
+            <h2>{pageData.rank.title}</h2>
           </div>
           <div class="rank-content">
             <div class="rank-number" id="rank-display">#-</div>
-            <div class="rank-label" id="rank-label">Not ranked yet</div>
-            <div class="rank-hint">Make your first sale to get ranked!</div>
+            <div class="rank-label" id="rank-label">{pageData.rank.not_ranked}</div>
+            <div class="rank-hint">{pageData.rank.hint}</div>
           </div>
         </section>
 
         <!-- Achievements -->
         <section class="achievements-card">
           <div class="card-header">
-            <h2>🎖️ Achievements</h2>
+            <h2>{pageData.achievements.title}</h2>
           </div>
           <div class="achievements-grid">
             <div class="achievement locked">
               <div class="badge">🌟</div>
-              <div class="name">First Blood</div>
+              <div class="name">{pageData.achievements.list.first_blood}</div>
               <div class="progress">0/1 sale</div>
             </div>
             <div class="achievement locked">
               <div class="badge">🔥</div>
-              <div class="name">Rising Star</div>
+              <div class="name">{pageData.achievements.list.rising_star}</div>
               <div class="progress">0/5 sales</div>
             </div>
             <div class="achievement locked">
               <div class="badge">💎</div>
-              <div class="name">Diamond</div>
+              <div class="name">{pageData.achievements.list.diamond}</div>
               <div class="progress">0/25 sales</div>
             </div>
             <div class="achievement locked">
               <div class="badge">👑</div>
-              <div class="name">King</div>
+              <div class="name">{pageData.achievements.list.king}</div>
               <div class="progress">0/100 sales</div>
             </div>
           </div>
@@ -141,20 +148,20 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <!-- Quick Links -->
         <section class="quick-actions">
           <div class="card-header">
-            <h2>⚡ Quick Actions</h2>
+            <h2>{pageData.actions.title}</h2>
           </div>
           <div class="action-grid">
             <a href="/affiliate/links" class="action-btn">
-              🔗 Generate Links
+              {pageData.actions.links}
             </a>
             <a href="/affiliate/assets" class="action-btn">
-              🎨 Marketing Assets
+              {pageData.actions.assets}
             </a>
             <a href="/affiliate/leaderboard" class="action-btn">
-              🏆 Leaderboard
+              {pageData.actions.leaderboard}
             </a>
             <a href="/affiliate/payouts" class="action-btn">
-              💳 Payouts
+              {pageData.actions.payouts}
             </a>
           </div>
         </section>
@@ -162,7 +169,7 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
         <!-- Payout Info -->
         <section class="payout-info">
           <div class="card-header">
-            <h2>💳 Next Payout</h2>
+            <h2>{pageData.payout.title}</h2>
           </div>
           <div class="payout-content">
             <div class="payout-amount" id="payout-value">$0.00</div>
@@ -170,11 +177,13 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
               <div class="progress-bar">
                 <div class="progress-fill" style="width: 0%"></div>
               </div>
-              <div class="threshold-text">$0 / $50 threshold</div>
+              <div class="threshold-text" data-template={pageData.payout.threshold}>
+                {pageData.payout.threshold.replace('{current}', '$0').replace('{target}', '$50')}
+              </div>
             </div>
             <div class="payout-method">
-              <span>Payment method: </span>
-              <a href="#">Set up PayPal/Wise</a>
+              <span>{pageData.payout.method} </span>
+              <a href="#">{pageData.payout.setup}</a>
             </div>
           </div>
         </section>
@@ -183,26 +192,26 @@ const description = 'Track your affiliate earnings, clicks, and conversions in r
 
     <!-- Bottom Section: Getting Started -->
     <section class="getting-started">
-      <h2>🚀 Getting Started</h2>
+      <h2>{pageData.getting_started.title}</h2>
       <div class="steps-row">
         <div class="step done">
           <div class="step-check">✅</div>
-          <div class="step-text">Create account</div>
+          <div class="step-text">{pageData.getting_started.steps[0]}</div>
         </div>
         <div class="step-arrow">→</div>
         <div class="step pending">
           <div class="step-check">⭕</div>
-          <div class="step-text">Copy your link</div>
+          <div class="step-text">{pageData.getting_started.steps[1]}</div>
         </div>
         <div class="step-arrow">→</div>
         <div class="step pending">
           <div class="step-check">⭕</div>
-          <div class="step-text">Share on social</div>
+          <div class="step-text">{pageData.getting_started.steps[2]}</div>
         </div>
         <div class="step-arrow">→</div>
         <div class="step pending">
           <div class="step-check">⭕</div>
-          <div class="step-text">Earn commission!</div>
+          <div class="step-text">{pageData.getting_started.steps[3]}</div>
         </div>
       </div>
     </section>

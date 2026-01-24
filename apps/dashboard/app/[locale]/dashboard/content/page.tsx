@@ -3,7 +3,7 @@
 import React from 'react'
 import { AgencyCard } from '@/components/ui/agency-card'
 import { AgencyButton } from '@/components/ui/agency-button'
-import { PenTool, Twitter, Instagram, Linkedin, Video, Sparkles } from 'lucide-react'
+import { Twitter, Instagram, Linkedin, Video, Sparkles } from 'lucide-react'
 
 export default function ContentPage() {
     return (

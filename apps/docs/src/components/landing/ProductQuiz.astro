@@ -1,36 +1,43 @@
 ---
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const quizData = (locales[locale] as any).landing.agencyos.hero.quiz;
 ---
 <section class="py-16" id="product-quiz">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <div class="quiz-container">
       <div class="quiz-header">
         <h2 class="text-3xl font-bold text-center mb-4">
-          🧭 Which Product Fits You?
+          {quizData.title}
         </h2>
         <p class="text-center text-[var(--color-text-muted)] mb-8">
-          Answer 1 question. Get your personalized recommendation.
+          {quizData.subtitle}
         </p>
       </div>
 
       <div class="quiz-questions" id="quiz-questions">
         <div class="quiz-question">
-          <p class="question-text">What's your biggest challenge right now?</p>
+          <p class="question-text">{quizData.question}</p>
           <div class="quiz-options">
             <button class="quiz-option" data-result="free" onclick="showResult('free')">
               <span class="option-icon">🌱</span>
-              <span class="option-text">I'm just starting and want to learn</span>
+              <span class="option-text">{quizData.options.free}</span>
             </button>
             <button class="quiz-option" data-result="starter" onclick="showResult('starter')">
               <span class="option-icon">⚡</span>
-              <span class="option-text">I need to automate repetitive tasks</span>
+              <span class="option-text">{quizData.options.starter}</span>
             </button>
             <button class="quiz-option" data-result="pro" onclick="showResult('pro')">
               <span class="option-icon">🚀</span>
-              <span class="option-text">I want to scale with my team</span>
+              <span class="option-text">{quizData.options.pro}</span>
             </button>
             <button class="quiz-option" data-result="franchise" onclick="showResult('franchise')">
               <span class="option-icon">🏆</span>
-              <span class="option-text">I want to white-label and resell</span>
+              <span class="option-text">{quizData.options.franchise}</span>
             </button>
           </div>
         </div>
@@ -40,61 +47,61 @@
       <div class="quiz-result hidden" id="result-free">
         <div class="result-card free-result">
           <div class="result-emoji">🆓</div>
-          <h3 class="result-title">Start FREE</h3>
-          <p class="result-desc">Perfect for learning! Get started with our free resources:</p>
+          <h3 class="result-title">{quizData.results.free.title}</h3>
+          <p class="result-desc">{quizData.results.free.desc}</p>
           <div class="result-products">
-            <a href="/docs" class="result-product">📚 Documentation</a>
-            <a href="/binh-phap" class="result-product">🏯 Binh Pháp</a>
-            <a href="/workflows" class="result-product">📋 Workflows</a>
+            <a href={getRelativeLocaleUrl(locale, '/docs')} class="result-product">📚 {t('nav.docs')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/binh-phap')} class="result-product">🏯 {t('binh_phap.title')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/workflows')} class="result-product">📋 {t('nav.workflows')}</a>
           </div>
-          <a href="/docs/getting-started" class="result-cta">Start Learning →</a>
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started')} class="result-cta">{quizData.results.free.cta}</a>
         </div>
       </div>
 
       <div class="quiz-result hidden" id="result-starter">
         <div class="result-card starter-result">
           <div class="result-emoji">⭐</div>
-          <h3 class="result-title">Starter Plan - $29/mo</h3>
-          <p class="result-desc">Automate your agency with 125+ AI commands:</p>
+          <h3 class="result-title">{quizData.results.starter.title.replace('{price}', '$29/mo')}</h3>
+          <p class="result-desc">{quizData.results.starter.desc}</p>
           <div class="result-products">
-            <a href="/commands" class="result-product">🤖 125+ Commands</a>
-            <a href="/marketing" class="result-product">🔥 Marketing AI</a>
-            <a href="/sales" class="result-product">💼 Sales AI</a>
+            <a href={getRelativeLocaleUrl(locale, '/commands')} class="result-product">🤖 125+ {t('nav.commands')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/marketing')} class="result-product">🔥 Marketing AI</a>
+            <a href={getRelativeLocaleUrl(locale, '/sales')} class="result-product">💼 Sales AI</a>
           </div>
-          <a href="/pricing" class="result-cta">Get Starter →</a>
+          <a href={getRelativeLocaleUrl(locale, '/pricing')} class="result-cta">{quizData.results.starter.cta}</a>
         </div>
       </div>
 
       <div class="quiz-result hidden" id="result-pro">
         <div class="result-card pro-result">
           <div class="result-emoji">🚀</div>
-          <h3 class="result-title">Pro Plan - $99/mo</h3>
-          <p class="result-desc">Scale with your team and API access:</p>
+          <h3 class="result-title">{quizData.results.pro.title.replace('{price}', '$99/mo')}</h3>
+          <p class="result-desc">{quizData.results.pro.desc}</p>
           <div class="result-products">
-            <a href="/pricing" class="result-product">👥 5 Team Seats</a>
-            <a href="/api" class="result-product">🔌 API Access</a>
-            <a href="/dashboard" class="result-product">📊 Dashboard</a>
+            <a href={getRelativeLocaleUrl(locale, '/pricing')} class="result-product">👥 5 Team Seats</a>
+            <a href={getRelativeLocaleUrl(locale, '/api')} class="result-product">🔌 API Access</a>
+            <a href={getRelativeLocaleUrl(locale, '/dashboard')} class="result-product">📊 {t('nav.dashboard')}</a>
           </div>
-          <a href="/pricing" class="result-cta">Get Pro →</a>
+          <a href={getRelativeLocaleUrl(locale, '/pricing')} class="result-cta">{quizData.results.pro.cta}</a>
         </div>
       </div>
 
       <div class="quiz-result hidden" id="result-franchise">
         <div class="result-card franchise-result">
           <div class="result-emoji">🏆</div>
-          <h3 class="result-title">Franchise - $299/mo</h3>
-          <p class="result-desc">White-label AgencyOS and resell to clients:</p>
+          <h3 class="result-title">{quizData.results.franchise.title.replace('{price}', '$299/mo')}</h3>
+          <p class="result-desc">{quizData.results.franchise.desc}</p>
           <div class="result-products">
-            <a href="/franchise" class="result-product">🏷️ White-label</a>
-            <a href="/franchise" class="result-product">💰 85% Revenue</a>
-            <a href="/franchise" class="result-product">🌐 Custom Domain</a>
+            <a href={getRelativeLocaleUrl(locale, '/franchise')} class="result-product">🏷️ White-label</a>
+            <a href={getRelativeLocaleUrl(locale, '/franchise')} class="result-product">💰 85% Revenue</a>
+            <a href={getRelativeLocaleUrl(locale, '/franchise')} class="result-product">🌐 Custom Domain</a>
           </div>
-          <a href="/franchise" class="result-cta">Get Franchise →</a>
+          <a href={getRelativeLocaleUrl(locale, '/franchise')} class="result-cta">{quizData.results.franchise.cta}</a>
         </div>
       </div>
 
       <button class="quiz-restart hidden" id="quiz-restart" onclick="restartQuiz()">
-        ← Try Again
+        {quizData.restart}
       </button>
     </div>
   </div>

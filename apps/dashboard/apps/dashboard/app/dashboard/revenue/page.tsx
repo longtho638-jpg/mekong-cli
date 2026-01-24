@@ -12,7 +12,7 @@ import {
     AreaChart,
     Area
 } from 'recharts'
-import { Download, AlertTriangle, TrendingUp, TrendingDown, DollarSign } from 'lucide-react'
+import { Download, AlertTriangle, TrendingDown, DollarSign } from 'lucide-react'
 import { AgencyCard } from '@/components/ui/agency-card'
 import { MD3Button } from '@/components/md3/MD3Button'
 import { StatusLine } from '@/components/CommandCenter'

@@ -9,7 +9,7 @@ export interface AuditLog {
   action: string
   resource: string
   status: string
-  details: Record<string, any>
+  details: Record<string, unknown>
 }
 
 export async function getAuditLogs(token: string): Promise<AuditLog[]> {

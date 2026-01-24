@@ -1,19 +1,23 @@
 ---
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 <section class="py-12 bg-gradient-to-r from-[var(--color-accent-green)]/5 to-[var(--color-accent-cyan)]/5 border-y border-[var(--color-border)]">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-2xl font-bold mb-2 text-[var(--color-text-primary)]">
-      📧 Get Weekly Agency Growth Tips
+      📧 {t('landing.agencyos.hero.newsletter_signup.title')}
     </h2>
     <p class="text-[var(--color-text-muted)] mb-6">
-      Join 1,000+ solo agency owners. No spam, unsubscribe anytime.
+      {t('landing.agencyos.hero.newsletter_signup.subtitle')}
     </p>
 
     <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" action="https://agencyos.network/api/subscribe" method="POST">
       <input
         type="email"
         name="email"
-        placeholder="your@email.com"
+        placeholder={t('landing.agencyos.hero.newsletter_signup.placeholder')}
         required
         class="flex-1 px-4 py-3 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-green)]"
       />
@@ -21,12 +25,14 @@
         type="submit"
         class="px-6 py-3 bg-[var(--color-accent-green)] text-white font-semibold rounded-lg hover:brightness-110 transition-all"
       >
-        Subscribe
+        {t('landing.agencyos.hero.newsletter_signup.button')}
       </button>
     </form>
 
     <p class="text-xs text-[var(--color-text-muted)] mt-4">
-      🔒 We respect your privacy. Read our <a href="/privacy" class="text-[var(--color-accent-green)] hover:underline">Privacy Policy</a>.
+      {t('landing.agencyos.hero.newsletter_signup.privacy').split('{link}')[0]}
+      <a href={getRelativeLocaleUrl(locale, '/privacy')} class="text-[var(--color-accent-green)] hover:underline">{t('landing.nav.privacy') || 'Privacy Policy'}</a>
+      {t('landing.agencyos.hero.newsletter_signup.privacy').split('{link}')[1]}
     </p>
   </div>
 </section>

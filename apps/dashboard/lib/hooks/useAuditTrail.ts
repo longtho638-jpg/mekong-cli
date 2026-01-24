@@ -42,7 +42,7 @@ export interface AuditFilters {
 
 export function useAuditTrail() {
   const [entries, setEntries] = useState<AuditEntry[]>(getDemoAuditEntries())
-  const [loading, setLoading] = useState(false)
+  const loading = false
 
   // Log an action
   const log = useCallback(

@@ -3,8 +3,7 @@
  * Comprehensive input sanitization and validation rules
  */
 
-import type { NextRequest, NextResponse } from 'next/server'
-import { NextResponse as NextResponseClass } from 'next/server'
+import { NextResponse as NextResponseClass, type NextRequest, type NextResponse } from 'next/server'
 import { z } from 'zod'
 import DOMPurify from 'isomorphic-dompurify'
 import { securityLogger } from './logger'
@@ -57,7 +56,7 @@ export const commonSchemas = {
   // Phone number validation
   phone: z
     .string()
-    .regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone format')
+    .regex(/^\+?[\d\s-()]+$/, 'Invalid phone format')
     .min(10, 'Phone number too short')
     .max(20, 'Phone number too long'),
 
@@ -116,7 +115,7 @@ export const commonSchemas = {
   mimeType: z
     .string()
     .regex(
-      /^[a-zA-Z0-9][a-zA-Z0-9!#$&\-\^_]*\/[a-zA-Z0-9][a-zA-Z0-9!#$&\-\^_.]*$/,
+      /^[a-zA-Z0-9][a-zA-Z0-9!#$&\-_]*\/[a-zA-Z0-9][a-zA-Z0-9!#$&\-_. ]*$/,
       'Invalid MIME type'
     ),
 }
@@ -132,7 +131,7 @@ class SecurityValidator {
     /(--|\*\/|\/\*)/,
     /(\bOR\b.*=.*\bOR\b)/i,
     /(\bAND\b.*=.*\bAND\b)/i,
-    /(\'|\"|`).*\1.*\1/,
+    /('|'|`).*\1.*\1/,
   ]
 
   // XSS patterns
@@ -153,15 +152,17 @@ class SecurityValidator {
   ]
 
   // Path traversal patterns
-  private static readonly PATH_TRAVERSAL = [/\.\.[\/\\]/, /[\/\\]\.\.[\/\\]/, /\%2e\%2e[\/\\]/i]
+  private static readonly PATH_TRAVERSAL = [/\.\.[/\\]/, /[/\\]\.\.[/\\]/, /%2e%2e[/\\]/i]
 
   static async validateValue(value: unknown): Promise<boolean> {
     if (typeof value === 'string') {
-      const sqlSafe = await this.validateSqlInjection(value)
-      const xssSafe = await this.validateXss(value)
-      const cmdSafe = await this.validateCommandInjection(value)
-      const pathSafe = await this.validatePathTraversal(value)
-      return sqlSafe && xssSafe && cmdSafe && pathSafe
+      const results = await Promise.all([
+        this.validateSqlInjection(value),
+        this.validateXss(value),
+        this.validateCommandInjection(value),
+        this.validatePathTraversal(value)
+      ]);
+      return results.every(res => res === true);
     }
 
     if (Array.isArray(value)) {
@@ -315,7 +316,7 @@ export function createValidationMiddleware(config: ValidationConfig) {
       if (config.body && ['POST', 'PUT', 'PATCH'].includes(request.method)) {
         try {
           body = await request.json()
-        } catch (error) {
+        } catch {
           return {
             success: false,
             error: NextResponseClass.json(

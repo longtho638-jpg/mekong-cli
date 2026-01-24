@@ -164,7 +164,9 @@ export function useQAReview() {
     // Summary stats
     const summary: QASummary = useMemo(() => {
         const approved = reviews.filter(r => r.status === 'approved');
-        const ratings = approved.filter(r => r.rating).map(r => r.rating!);
+        const ratings = approved
+            .map(r => r.rating)
+            .filter((r): r is number => typeof r === 'number');
         const avgRating = ratings.length > 0
             ? ratings.reduce((a, b) => a + b, 0) / ratings.length
             : 0;

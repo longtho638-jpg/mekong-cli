@@ -3,6 +3,13 @@
 // Clean, flat list design with breadcrumbs above title
 ---
 
+---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+---
+
 <div
   id="search-modal"
   class="search-modal"
@@ -10,8 +17,18 @@
   aria-modal="true"
   aria-labelledby="search-title"
   hidden
+  data-i18n-type-to-search={t('search.type_to_search')}
+  data-i18n-searching={t('search.searching')}
+  data-i18n-unavailable={t('search.unavailable')}
+  data-i18n-enable-instruction={t('search.enable_instruction')}
+  data-i18n-no-results={t('search.no_results')}
+  data-i18n-try-different={t('search.try_different')}
+  data-i18n-result={t('search.result')}
+  data-i18n-results={t('search.results')}
+  data-i18n-failed={t('search.failed')}
+  data-i18n-try-again={t('search.try_again')}
 >
-  <h2 id="search-title" class="sr-only">Search documentation</h2>
+  <h2 id="search-title" class="sr-only">{t('header.search')}</h2>
   <div class="search-backdrop"></div>
   <div class="search-container">
     <div class="search-wrapper">
@@ -26,13 +43,13 @@
             type="text"
             id="search-input"
             class="search-input"
-            placeholder="Search documentation..."
+            placeholder={t('search.placeholder')}
             autocomplete="off"
             aria-autocomplete="list"
             aria-controls="search-results"
           />
           <kbd class="search-kbd">ESC</kbd>
-          <button class="search-close-btn" aria-label="Close search" onclick="window.closeSearch()">
+          <button class="search-close-btn" aria-label={t('search.close')} onclick="window.closeSearch()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
@@ -43,7 +60,7 @@
       <!-- Search Results -->
       <div id="search-results" class="search-results" role="listbox" aria-live="polite">
         <div class="search-placeholder">
-          <p>Type to search documentation...</p>
+          <p>{t('search.type_to_search')}</p>
         </div>
       </div>
 
@@ -51,9 +68,9 @@
       <div class="search-footer">
         <div class="search-meta" id="search-meta"></div>
         <div class="search-hints">
-          <span class="hint"><kbd>↵</kbd> select</span>
-          <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
-          <span class="hint"><kbd>esc</kbd> close</span>
+          <span class="hint"><kbd>↵</kbd> {t('search.select')}</span>
+          <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> {t('search.navigate')}</span>
+          <span class="hint"><kbd>esc</kbd> {t('search.close')}</span>
         </div>
       </div>
     </div>

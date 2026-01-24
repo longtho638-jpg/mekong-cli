@@ -1,45 +1,49 @@
 ---
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 <section class="py-16 bg-[var(--color-bg-tertiary)]/30 border-y border-[var(--color-border)]" id="products">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
-      🏯 All Products
+      {t('landing.agencyos.hero.products.title')}
     </h2>
-    <p class="text-center text-[var(--color-text-muted)] mb-12">Choose your path to agency success</p>
+    <p class="text-center text-[var(--color-text-muted)] mb-12">{t('landing.agencyos.hero.products.subtitle')}</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
       <!-- FREE Column -->
       <div class="products-column">
-        <div class="column-header free-header">🆓 FREE</div>
-        <a href="/docs" class="product-card">
+        <div class="column-header free-header">🆓 {t('landing.agencyos.hero.products.free_label')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/docs')} class="product-card">
           <span class="product-icon">📚</span>
           <div class="product-info">
-            <div class="product-name">Documentation</div>
-            <div class="product-desc">310+ IDE-executable pages</div>
+            <div class="product-name">{t('nav.docs')}</div>
+            <div class="product-desc">{t('landing.nav.docs_desc')}</div>
           </div>
           <span class="product-badge free-badge">FREE</span>
         </a>
-        <a href="/docs/getting-started" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/docs/getting-started')} class="product-card">
           <span class="product-icon">🛠️</span>
           <div class="product-info">
             <div class="product-name">Mekong-CLI</div>
-            <div class="product-desc">Open source, 125+ commands</div>
+            <div class="product-desc">{t('landing.nav.mekong_cli_desc')}</div>
           </div>
           <span class="product-badge free-badge">FREE</span>
         </a>
-        <a href="/binh-phap" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/binh-phap')} class="product-card">
           <span class="product-icon">🏯</span>
           <div class="product-info">
-            <div class="product-name">Binh Pháp</div>
-            <div class="product-desc">13 chapters strategy</div>
+            <div class="product-name">{t('binh_phap.title')}</div>
+            <div class="product-desc">{t('landing.nav.binh_phap_desc')}</div>
           </div>
           <span class="product-badge free-badge">FREE</span>
         </a>
-        <a href="/workflows" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/workflows')} class="product-card">
           <span class="product-icon">📋</span>
           <div class="product-info">
-            <div class="product-name">Workflows</div>
-            <div class="product-desc">27 workflow guides</div>
+            <div class="product-name">{t('nav.workflows')}</div>
+            <div class="product-desc">{t('landing.nav.workflows_desc')}</div>
           </div>
           <span class="product-badge free-badge">FREE</span>
         </a>
@@ -47,69 +51,69 @@
 
       <!-- PAID Column -->
       <div class="products-column">
-        <div class="column-header paid-header">💰 PAID PLANS</div>
-        <a href="/pricing" class="product-card featured-card">
+        <div class="column-header paid-header">💰 {t('landing.agencyos.hero.products.paid_label')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')} class="product-card featured-card">
           <span class="product-icon">⭐</span>
           <div class="product-info">
-            <div class="product-name">Starter</div>
-            <div class="product-desc">Perfect for solo operators</div>
+            <div class="product-name">{t('pricing.plans.starter.name')}</div>
+            <div class="product-desc">{t('pricing.plans.starter.description')}</div>
           </div>
-          <span class="product-badge paid-badge">$29/mo</span>
+          <span class="product-badge paid-badge">{t('pricing.plans.starter.price')}{t('landing.agencyos.hero.products.mo')}</span>
         </a>
-        <a href="/pricing" class="product-card popular-card">
-          <span class="popular-tag">POPULAR</span>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')} class="product-card popular-card">
+          <span class="popular-tag">{t('landing.agencyos.hero.products.popular')}</span>
           <span class="product-icon">🚀</span>
           <div class="product-info">
-            <div class="product-name">Pro</div>
-            <div class="product-desc">Teams + API access</div>
+            <div class="product-name">{t('pricing.plans.pro.name')}</div>
+            <div class="product-desc">{t('pricing.plans.pro.description')}</div>
           </div>
-          <span class="product-badge paid-badge">$99/mo</span>
+          <span class="product-badge paid-badge">{t('pricing.plans.pro.price')}{t('landing.agencyos.hero.products.mo')}</span>
         </a>
-        <a href="/franchise" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/franchise')} class="product-card">
           <span class="product-icon">🏆</span>
           <div class="product-info">
-            <div class="product-name">Franchise</div>
-            <div class="product-desc">White-label & resell</div>
+            <div class="product-name">{t('pricing.plans.franchise.name')}</div>
+            <div class="product-desc">{t('pricing.plans.franchise.description')}</div>
           </div>
-          <span class="product-badge franchise-badge">$299/mo</span>
+          <span class="product-badge franchise-badge">{t('pricing.plans.franchise.price')}{t('landing.agencyos.hero.products.mo')}</span>
         </a>
       </div>
 
       <!-- FEATURES Column -->
       <div class="products-column">
-        <div class="column-header features-header">✨ FEATURES</div>
-        <a href="/newsletter" class="product-card">
+        <div class="column-header features-header">✨ {t('landing.agencyos.hero.products.features_label')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/newsletter')} class="product-card">
           <span class="product-icon">📧</span>
           <div class="product-info">
-            <div class="product-name">Newsletter Hub</div>
-            <div class="product-desc">Email marketing automation</div>
+            <div class="product-name">{t('landing.nav.newsletter_hub')}</div>
+            <div class="product-desc">{t('landing.nav.newsletter_hub_desc')}</div>
           </div>
         </a>
-        <a href="/affiliate" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/affiliate')} class="product-card">
           <span class="product-icon">🎯</span>
           <div class="product-info">
-            <div class="product-name">Affiliate Program</div>
-            <div class="product-desc">Earn commissions</div>
+            <div class="product-name">{t('landing.nav.affiliate')}</div>
+            <div class="product-desc">{t('landing.nav.affiliate_desc')}</div>
           </div>
         </a>
-        <a href="/marketplace" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/marketplace')} class="product-card">
           <span class="product-icon">🏪</span>
           <div class="product-info">
-            <div class="product-name">Marketplace</div>
-            <div class="product-desc">Templates & tools</div>
+            <div class="product-name">{t('landing.nav.marketplace')}</div>
+            <div class="product-desc">{t('landing.nav.marketplace_desc')}</div>
           </div>
         </a>
-        <a href="/wallet" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/wallet')} class="product-card">
           <span class="product-icon">💳</span>
           <div class="product-info">
-            <div class="product-name">Wallet</div>
-            <div class="product-desc">Payments & earnings</div>
+            <div class="product-name">{t('landing.nav.wallet')}</div>
+            <div class="product-desc">{t('landing.nav.wallet_desc')}</div>
           </div>
         </a>
-        <a href="/gamification" class="product-card">
+        <a href={getRelativeLocaleUrl(locale, '/gamification')} class="product-card">
           <span class="product-icon">🎮</span>
           <div class="product-info">
-            <div class="product-name">Gamification</div>
+            <div class="product-name">{t('landing.footer.gamification')}</div>
             <div class="product-desc">Rewards & badges</div>
           </div>
         </a>

@@ -28,11 +28,10 @@ def test_service_imports():
         print("✅ Analytics Service imported")
 
         print("✅ All services imported successfully!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Service import failed: {e}\n")
-        return False
+        assert False, f"Service import failed: {e}"
 
 
 def test_repository_imports():
@@ -50,11 +49,10 @@ def test_repository_imports():
         print("✅ Analytics Repository imported")
 
         print("✅ All repositories imported successfully!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Repository import failed: {e}\n")
-        return False
+        assert False, f"Repository import failed: {e}"
 
 
 def test_presenter_imports():
@@ -69,11 +67,10 @@ def test_presenter_imports():
         print("✅ Analytics Presenter imported")
 
         print("✅ All presenters imported successfully!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Presenter import failed: {e}\n")
-        return False
+        assert False, f"Presenter import failed: {e}"
 
 
 def test_basic_functionality():
@@ -82,31 +79,26 @@ def test_basic_functionality():
 
     try:
         # Test AI Wingman Service
-        from services.ai_wingman_service import AgencyOwnerProfile
-
+        from core.services.ai_wingman_service import AgencyOwnerProfile
         owner = AgencyOwnerProfile(name="Test Owner", agency_name="Test Agency")
-
         print(f"✅ Created owner profile: {owner.agency_name}")
 
         # Test Client Portal Service
-        from services.client_portal_service import ClientPortalService
-
+        from core.services.client_portal_service import ClientPortalService
         portal_service = ClientPortalService("Test Agency")
         stats = portal_service.get_stats()
         print(f"✅ Client portal stats: {stats['total_clients']} clients")
 
         # Test Analytics Engine
-        from services.analytics_service import AnalyticsCalculationEngine
-
+        from core.services.analytics_service import AnalyticsCalculationEngine
         AnalyticsCalculationEngine()
         print("✅ Analytics engine created")
 
         print("✅ Basic functionality tests passed!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Basic functionality test failed: {e}\n")
-        return False
+        assert False, f"Basic functionality test failed: {e}"
 
 
 def main():

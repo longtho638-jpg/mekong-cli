@@ -15,14 +15,14 @@ export type ActionType = 'send_email' | 'send_notification' | 'update_field' | '
 
 export interface WorkflowTrigger {
     type: TriggerType;
-    conditions?: Record<string, any>;
+    conditions?: Record<string, unknown>;
     schedule?: string; // cron expression
 }
 
 export interface WorkflowAction {
     id: string;
     type: ActionType;
-    config: Record<string, any>;
+    config: Record<string, unknown>;
     order: number;
 }
 

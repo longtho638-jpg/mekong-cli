@@ -106,6 +106,32 @@ class AIWingman:
             self.repository.save_stats(self.service.stats)
         return notif
 
+    def generate_proposal(
+        self,
+        client_name: str,
+        project_name: str,
+        project_description: str,
+        services: List[str],
+        setup_fee: float,
+        monthly_fee: float,
+    ) -> str:
+        """
+        Tạo draft proposal cho client.
+        """
+        proposal = f"PROPOSAL FOR {client_name}\n"
+        proposal += f"Project: {project_name}\n"
+        proposal += f"Description: {project_description}\n"
+        proposal += f"Services: {', '.join(services)}\n"
+        proposal += f"Setup Fee: ${setup_fee}\n"
+        proposal += f"Monthly Fee: ${monthly_fee}\n"
+
+        self.service.update_stats("proposals_sent", 1)
+
+        if hasattr(self, 'repository'):
+            self.repository.save_stats(self.service.stats)
+
+        return proposal
+
     def get_daily_summary(self) -> Dict[str, Any]:
         today = datetime.now().date()
         today_notifs = [n for n in self.service.notifications if n.timestamp.date() == today]

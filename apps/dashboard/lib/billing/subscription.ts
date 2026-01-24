@@ -4,12 +4,12 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import type { PricingTier } from './stripe'
 import {
   PRICING_TIERS,
   createCheckoutSession,
   cancelSubscription,
   updateSubscription,
+  type PricingTier
 } from './stripe'
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -73,8 +73,8 @@ export class SubscriptionManager {
 
   constructor() {
     this.supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.SUPABASE_SERVICE_KEY || ''
     )
   }
 

@@ -1,30 +1,35 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const meta = {
-  title: "Newsletter Dashboard - Mekong Mail | AgencyOS",
-  description: "Manage all your client newsletters from one powerful dashboard. AI-powered writing, analytics, and cross-promotion built-in."
-};
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('newsletter_dashboard.title');
+const description = t('newsletter_dashboard.description');
+
+const pageData = (locales[locale] as any).newsletter_dashboard;
 ---
 
-<BaseLayout title={meta.title} description={meta.description}>
+<BaseLayout title={title} description={description}>
   <div class="min-h-screen bg-[#0a0a0f] text-white">
     <!-- Header -->
     <header class="border-b border-white/10 px-6 py-4">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <a href="/newsletter" class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            📧 Mekong Mail
+          <a href={getRelativeLocaleUrl(locale, '/newsletter')} class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            {pageData.header.title}
           </a>
           <span class="text-gray-500">|</span>
-          <span class="text-gray-400">Newsletter Hub</span>
+          <span class="text-gray-400">{pageData.header.subtitle}</span>
         </div>
         <div class="flex items-center gap-4">
-          <a href="/dashboard" class="text-gray-400 hover:text-white transition-colors">
-            ← Back to AgencyOS
+          <a href={getRelativeLocaleUrl(locale, '/dashboard')} class="text-gray-400 hover:text-white transition-colors">
+            {pageData.header.back}
           </a>
           <button class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-all">
-            + New Newsletter
+            {pageData.header.new}
           </button>
         </div>
       </div>
@@ -36,28 +41,28 @@ const meta = {
         <div class="bg-white/5 rounded-xl p-4 border border-white/10">
           <div class="flex items-center gap-2 text-gray-400 mb-2">
             <span>👥</span>
-            <span class="text-sm">Total Subscribers</span>
+            <span class="text-sm">{pageData.stats.subscribers}</span>
           </div>
           <div class="text-2xl font-bold">4,203</div>
         </div>
         <div class="bg-white/5 rounded-xl p-4 border border-white/10">
           <div class="flex items-center gap-2 text-gray-400 mb-2">
             <span>📊</span>
-            <span class="text-sm">Avg Open Rate</span>
+            <span class="text-sm">{pageData.stats.open_rate}</span>
           </div>
           <div class="text-2xl font-bold">54%</div>
         </div>
         <div class="bg-white/5 rounded-xl p-4 border border-white/10">
           <div class="flex items-center gap-2 text-gray-400 mb-2">
             <span>📧</span>
-            <span class="text-sm">Newsletters</span>
+            <span class="text-sm">{pageData.stats.newsletters}</span>
           </div>
           <div class="text-2xl font-bold">3</div>
         </div>
         <div class="bg-white/5 rounded-xl p-4 border border-white/10">
           <div class="flex items-center gap-2 text-gray-400 mb-2">
             <span>✉️</span>
-            <span class="text-sm">Sent This Month</span>
+            <span class="text-sm">{pageData.stats.sent}</span>
           </div>
           <div class="text-2xl font-bold">12</div>
         </div>
@@ -66,37 +71,37 @@ const meta = {
       <!-- Quick Actions -->
       <div class="flex gap-4 mb-8">
         <button class="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all">
-          <span>🤖</span> AI Write
+          <span>🤖</span> {pageData.actions.ai_write}
         </button>
         <button class="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all">
-          <span>📊</span> Analytics
+          <span>📊</span> {pageData.actions.analytics}
         </button>
         <button class="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all">
-          <span>⚙️</span> Settings
+          <span>⚙️</span> {pageData.actions.settings}
         </button>
       </div>
 
       <!-- Newsletters Grid -->
       <div class="mb-6">
-        <h2 class="text-xl font-semibold mb-4">Your Newsletters</h2>
+        <h2 class="text-xl font-semibold mb-4">{pageData.list.title}</h2>
         <div class="grid md:grid-cols-3 gap-4">
           <!-- Newsletter 1 -->
           <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-semibold text-lg">Tech Weekly</h3>
-              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● Live</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● {pageData.list.live}</span>
             </div>
             <p class="text-gray-500 text-sm mb-4">Client: TechCo</p>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-400">👥 1,247 subs</span>
-              <span class="text-indigo-400">📊 52% open</span>
+              <span class="text-gray-400">👥 1,247 {pageData.list.subs}</span>
+              <span class="text-indigo-400">📊 52% {pageData.list.open}</span>
             </div>
             <div class="mt-4 pt-4 border-t border-white/5 flex gap-2">
               <button class="flex-1 py-2 bg-indigo-500/20 rounded-lg text-indigo-400 text-sm hover:bg-indigo-500/30 transition-all">
-                Edit
+                {pageData.list.edit}
               </button>
               <button class="flex-1 py-2 bg-white/5 rounded-lg text-gray-400 text-sm hover:bg-white/10 transition-all">
-                Send
+                {pageData.list.send}
               </button>
             </div>
           </div>
@@ -105,19 +110,19 @@ const meta = {
           <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-semibold text-lg">Design Digest</h3>
-              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● Live</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● {pageData.list.live}</span>
             </div>
             <p class="text-gray-500 text-sm mb-4">Client: DesignHub</p>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-400">👥 856 subs</span>
-              <span class="text-indigo-400">📊 48% open</span>
+              <span class="text-gray-400">👥 856 {pageData.list.subs}</span>
+              <span class="text-indigo-400">📊 48% {pageData.list.open}</span>
             </div>
             <div class="mt-4 pt-4 border-t border-white/5 flex gap-2">
               <button class="flex-1 py-2 bg-indigo-500/20 rounded-lg text-indigo-400 text-sm hover:bg-indigo-500/30 transition-all">
-                Edit
+                {pageData.list.edit}
               </button>
               <button class="flex-1 py-2 bg-white/5 rounded-lg text-gray-400 text-sm hover:bg-white/10 transition-all">
-                Send
+                {pageData.list.send}
               </button>
             </div>
           </div>
@@ -126,19 +131,19 @@ const meta = {
           <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-semibold text-lg">AI Insights</h3>
-              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● Live</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">● {pageData.list.live}</span>
             </div>
             <p class="text-gray-500 text-sm mb-4">Client: AI Corp</p>
             <div class="flex justify-between text-sm">
-              <span class="text-gray-400">👥 2,100 subs</span>
-              <span class="text-indigo-400">📊 61% open</span>
+              <span class="text-gray-400">👥 2,100 {pageData.list.subs}</span>
+              <span class="text-indigo-400">📊 61% {pageData.list.open}</span>
             </div>
             <div class="mt-4 pt-4 border-t border-white/5 flex gap-2">
               <button class="flex-1 py-2 bg-indigo-500/20 rounded-lg text-indigo-400 text-sm hover:bg-indigo-500/30 transition-all">
-                Edit
+                {pageData.list.edit}
               </button>
               <button class="flex-1 py-2 bg-white/5 rounded-lg text-gray-400 text-sm hover:bg-white/10 transition-all">
-                Send
+                {pageData.list.send}
               </button>
             </div>
           </div>
@@ -146,19 +151,19 @@ const meta = {
           <!-- Add New Newsletter Card -->
           <div class="bg-white/5 rounded-xl p-6 border border-dashed border-white/20 flex flex-col items-center justify-center min-h-[200px] hover:border-indigo-500/50 transition-all cursor-pointer">
             <div class="text-4xl mb-3">+</div>
-            <span class="text-gray-400">Create Newsletter</span>
+            <span class="text-gray-400">{pageData.list.create}</span>
           </div>
         </div>
       </div>
 
       <!-- Recent Activity -->
       <div>
-        <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+        <h2 class="text-xl font-semibold mb-4">{pageData.activity.title}</h2>
         <div class="bg-white/5 rounded-xl border border-white/10 divide-y divide-white/5">
           <div class="flex items-center gap-4 px-4 py-3">
             <span class="text-xl">✉️</span>
             <div class="flex-1">
-              <span class="text-gray-300">Newsletter sent</span>
+              <span class="text-gray-300">{pageData.activity.sent}</span>
               <span class="text-gray-500 mx-2">•</span>
               <span class="text-indigo-400">Tech Weekly</span>
             </div>
@@ -167,7 +172,7 @@ const meta = {
           <div class="flex items-center gap-4 px-4 py-3">
             <span class="text-xl">👤</span>
             <div class="flex-1">
-              <span class="text-gray-300">New subscriber</span>
+              <span class="text-gray-300">{pageData.activity.new_sub}</span>
               <span class="text-gray-500 mx-2">•</span>
               <span class="text-indigo-400">Design Digest</span>
             </div>
@@ -176,7 +181,7 @@ const meta = {
           <div class="flex items-center gap-4 px-4 py-3">
             <span class="text-xl">💾</span>
             <div class="flex-1">
-              <span class="text-gray-300">Draft saved</span>
+              <span class="text-gray-300">{pageData.activity.draft}</span>
               <span class="text-gray-500 mx-2">•</span>
               <span class="text-indigo-400">AI Insights</span>
             </div>

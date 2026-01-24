@@ -1,0 +1,2296 @@
+{
+  "app": {
+    "name": "Agency OS",
+    "tagline": "Hệ điều hành dành cho Agency một người",
+    "description": "Xây dựng, mở rộng và nhượng quyền agency toàn cầu"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "marketing": "Tiếp thị",
+    "sales": "Bán hàng",
+    "analytics": "Phân tích",
+    "settings": "Cài đặt",
+    "getting-started": "Bắt Đầu",
+    "docs": "Tài Liệu",
+    "workflows": "Quy Trình",
+    "tools": "Công Cụ",
+    "changelog": "Lịch Sử",
+    "support": "Hỗ Trợ",
+    "core-concepts": "Khái Niệm Cơ Bản",
+    "agents": "Agents",
+    "commands": "Lệnh",
+    "skills": "Kỹ Năng",
+    "use-cases": "Trường Hợp Sử Dụng",
+    "cheatsheet": "Cheatsheet",
+    "troubleshooting": "Khắc Phục Sự Cố",
+    "cli": "CLI"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm tài liệu...",
+    "type_to_search": "Nhập để tìm kiếm tài liệu...",
+    "select": "chọn",
+    "navigate": "điều hướng",
+    "close": "đóng",
+    "searching": "Đang tìm kiếm...",
+    "unavailable": "Tìm kiếm không khả dụng",
+    "enable_instruction": "Chạy <code>bun run build</code> để bật tìm kiếm",
+    "no_results": "Không có kết quả cho",
+    "try_different": "Hãy thử các từ khóa khác",
+    "result": "kết quả",
+    "results": "kết quả",
+    "failed": "Tìm kiếm thất bại",
+    "try_again": "Vui lòng thử lại"
+  },
+  "theme": {
+    "toggle": "Đổi chủ đề"
+  },
+  "language": {
+    "switch": "Đổi ngôn ngữ"
+  },
+  "header": {
+    "search": "Tìm kiếm"
+  },
+  "footer": {
+    "copyright": "© 2026 AgencyOS. Mọi quyền được bảo lưu."
+  },
+  "toc": {
+    "title": "Trong trang này"
+  },
+  "commands": {
+    "market_analysis": "Phân tích thị trường",
+    "customer_profile": "Hồ sơ khách hàng",
+    "sales_strategy": "Chiến lược bán hàng",
+    "marketing_plan": "Kế hoạch tiếp thị",
+    "business_plan": "Kế hoạch kinh doanh",
+    "brand_identity": "Nhận diện thương hiệu",
+    "content_marketing": "Nội dung tiếp thị",
+    "social_media": "Mạng xã hội",
+    "messaging": "Thông điệp",
+    "market_research": "Nghiên cứu thị trường",
+    "pr_strategy": "Chiến lược PR",
+    "growth_strategy": "Chiến lược tăng trưởng",
+    "sales_funnel": "Phễu bán hàng"
+  },
+  "common": {
+    "welcome": "Chào mừng đến với Agency OS",
+    "start": "Bắt đầu",
+    "continue": "Tiếp tục",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "loading": "Đang tải...",
+    "success": "Thành công!",
+    "error": "Đã xảy ra lỗi",
+    "confirm": "Bạn có chắc không?",
+    "wisdom": "Trí tuệ cốt lõi"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "signup": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "forgot_password": "Quên mật khẩu?"
+  },
+  "franchise": {
+    "title": "Cổng nhượng quyền",
+    "territories": "Lãnh thổ của bạn",
+    "revenue": "Doanh thu",
+    "clients": "Khách hàng",
+    "commission": "Tỷ lệ hoa hồng"
+  },
+  "binh_phap": {
+    "title": "13 Binh Pháp",
+    "subtitle": "Binh Pháp Tôn Tử cho Nhà Sáng Lập Agency",
+    "description": "Nghệ thuật chiến tranh tối cao là khuất phục kẻ thù mà không cần chiến đấu. 13 thiên chiến lược ánh xạ tới lệnh AI.",
+    "tagline": "Không đánh mà thắng",
+    "quote_original": "Bất chiến nhi khuất nhân chi binh",
+    "short_term": "Ngắn hạn: Thu nhập Affiliate SaaS",
+    "long_term": "Dài hạn: Xây dựng thương hiệu với khách hàng local",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "Kế Hoạch",
+        "purpose": "Lập chiến lược",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "Tác Chiến",
+        "purpose": "Vận hành",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "Mưu Công",
+        "purpose": "Tăng trưởng nhẹ",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "Hình Thế",
+        "purpose": "Bảo vệ lợi thế",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "Thế Trận",
+        "purpose": "Bắt trend",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "Hư Thực",
+        "purpose": "Chống pha loãng",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "Quân Tranh",
+        "purpose": "Ship nhanh",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "Cửu Biến",
+        "purpose": "Pivot",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "Hành Quân",
+        "purpose": "Thực thi",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "Địa Hình",
+        "purpose": "Mở rộng thị trường",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "Cửu Địa",
+        "purpose": "Xử lý khủng hoảng",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "Hỏa Công",
+        "purpose": "Viral marketing",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "Dụng Gián",
+        "purpose": "Thu thập intel",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
+    },
+    "wisdom": {
+      "quote1_original": "Bách chiến bách thắng, phi thiện chi thiện giả dã",
+      "quote1_translation": "Trăm trận trăm thắng không phải hay nhất",
+      "quote2_original": "Bất chiến nhi khuất nhân chi binh, thiện chi thiện giả dã",
+      "quote2_translation": "Không đánh mà thắng mới là hay nhất"
+    },
+    "cta": {
+      "title": "Áp dụng trí tuệ cổ nhân vào kinh doanh hiện đại",
+      "button": "Xem tất cả lệnh →"
+    }
+  },
+  "landing": {
+    "agencyos": {
+      "title": "AgencyOS - Hệ điều hành AI cho Agency hiện đại",
+      "description": "125+ lệnh AI cho marketing, sales, affiliate và tài chính. Hệ điều hành agency một người.",
+      "hero": {
+        "title": "Hệ điều hành AI cho Agency hiện đại",
+        "description": "125+ lệnh. Không nhân viên. Quy mô vô hạn.",
+        "badge": "Dành cho nhà sáng lập Agency kỹ thuật",
+        "primary_cta": "Dùng thử miễn phí",
+        "secondary_cta": "Xem Demo →",
+        "footer": "Tham gia cùng 500+ agency toàn cầu • Đánh giá 4.9/5 • Đảm bảo 30 ngày",
+        "problem": {
+          "title": "Vận hành agency thật sự rất mệt mỏi.",
+          "points": [
+            "80% thời gian dành cho việc admin, không phải khách hàng",
+            "Tuyển dụng tốn kém và không ổn định",
+            "Mở rộng đồng nghĩa với hỗn loạn",
+            "Luôn chậm tiến độ sản xuất nội dung",
+            "Bản đề xuất mất hàng giờ để hoàn thành"
+          ]
+        },
+        "roadmap": {
+          "title": "Lộ Trình $1M Agency",
+          "subtitle": "Dựa trên Binh Pháp Tôn Tử. 13 chương chiến lược để mở rộng agency.",
+          "steps": {
+            "planning": {
+              "title": "Kế Hoạch",
+              "desc": "Lập kế hoạch chiến lược"
+            },
+            "attack": {
+              "title": "Mưu Công",
+              "desc": "Thắng không cần đánh"
+            },
+            "maneuvers": {
+              "title": "Quân Tranh",
+              "desc": "Sprint tốc độ"
+            },
+            "final": {
+              "title": "$1M ARR",
+              "desc": "60 khách hàng"
+            }
+          },
+          "revenue": {
+            "bootstrap": "Lộ trình Bootstrap (70%)",
+            "bootstrap_calc": "42 KH × $1.5K/tháng = $756K",
+            "vc": "Lộ trình VC-Ready (30%)",
+            "vc_calc": "18 KH + cổ phần = $244K",
+            "total": "Tiềm năng tổng thể",
+            "total_calc": "$1M ARR 🎯"
+          },
+          "cta": "Khám phá 13 Chương →"
+        },
+        "solution": {
+          "title": "Nếu AI có thể vận hành agency của bạn thì sao?",
+          "points": [
+            "125+ lệnh AI xử lý mọi thứ",
+            "Nội dung tiếp thị trong vài giây",
+            "Bản đề xuất bán hàng tự chốt",
+            "Thu nhập affiliate tích hợp sẵn",
+            "Mở rộng không cần tuyển dụng"
+          ]
+        },
+        "business_info": {
+          "network_title": "AgencyOS Network",
+          "network_desc": "Hệ điều hành AI cho agency một người. Xây dựng bởi founder, cho founder.",
+          "mission_title": "Sứ mệnh của chúng tôi",
+          "mission_desc": "\"Họ WIN → Mình WIN\" — Khi khách hàng thành công, chúng tôi thành công. Win-Win-Win là cốt lõi.",
+          "reach_title": "Phạm vi toàn cầu",
+          "reach_desc": "500+ agency trên toàn thế giới. Hỗ trợ song ngữ EN/VN. Đặt tại Việt Nam, phục vụ toàn cầu.",
+          "contact_title": "Liên hệ",
+          "contact_form": "Form liên hệ →"
+        },
+        "products": {
+          "title": "Tất Cả Sản Phẩm",
+          "subtitle": "Chọn lộ trình thành công của bạn",
+          "free_label": "MIỄN PHÍ",
+          "paid_label": "GÓI TRẢ PHÍ",
+          "features_label": "TÍNH NĂNG",
+          "popular": "PHỔ BIẾN",
+          "mo": "/tháng"
+        }
+      }
+    },
+    "banner": {
+      "text": "Ưu đãi Sớm: GIẢM 50% gói Pro",
+      "ends_in": "Kết thúc sau:",
+      "cta": "Nhận ngay →"
+    },
+    "nav": {
+      "home": "Trang chủ",
+      "products": "Sản phẩm",
+      "pricing": "Bảng giá",
+      "demo": "Demo",
+      "docs": "Tài liệu",
+      "blog": "Blog",
+      "get_started": "Bắt đầu",
+      "free": "MIỄN PHÍ",
+      "paid": "TRẢ PHÍ",
+      "features": "Tính năng",
+      "docs_desc": "310+ trang hướng dẫn thực thi",
+      "mekong_cli_desc": "125+ lệnh tích hợp",
+      "binh_phap_desc": "13 thiên chiến lược Agency",
+      "workflows_desc": "27 hướng dẫn quy trình",
+      "newsletter_hub": "Newsletter Hub",
+      "newsletter_hub_desc": "Tiếp thị qua Email",
+      "affiliate": "Affiliate",
+      "affiliate_desc": "Kiếm hoa hồng",
+      "marketplace": "Marketplace",
+      "marketplace_desc": "Template & công cụ",
+      "wallet": "Ví",
+      "wallet_desc": "Thanh toán & thu nhập",
+      "starter_desc": "Solo founder",
+      "pro_desc": "Teams + API",
+      "franchise_desc": "White-label"
+    },
+    "footer": {
+      "tagline": "Hệ điều hành AI dành cho Agency một người.",
+      "products": "Sản phẩm",
+      "features": "Tính năng",
+      "resources": "Tài nguyên",
+      "company": "Công ty",
+      "rights": "Mọi quyền được bảo lưu.",
+      "motto": "Họ WIN → Mình WIN → All WIN",
+      "quick_start": "Bắt đầu nhanh",
+      "demo": "Demo",
+      "roi_calculator": "Tính ROI",
+      "blog": "Blog",
+      "changelog": "Lịch sử",
+      "about_us": "Về chúng tôi",
+      "case_studies": "Case Studies",
+      "contact": "Liên hệ",
+      "faq": "Hỏi đáp",
+      "terms": "Điều khoản",
+      "privacy": "Bảo mật",
+      "gamification": "Gamification"
+    },
+    "widgets": {
+      "back_to_top": "Về đầu trang",
+      "quick_help": "Hỗ trợ nhanh",
+      "quick_commands": "Lệnh nhanh",
+      "start_trial": "Dùng thử miễn phí",
+      "keyboard_shortcuts": {
+        "title": "Phím tắt",
+        "navigation": "Điều hướng",
+        "actions": "Hành động",
+        "go_home": "Về Trang chủ",
+        "go_pricing": "Đến Bảng giá",
+        "go_demo": "Đến Demo",
+        "go_commands": "Đến danh sách Lệnh",
+        "focus_search": "Tìm kiếm",
+        "show_shortcuts": "Hiện phím tắt",
+        "close": "ESC",
+        "close_desc": "Nhấn ESC để đóng"
+      },
+      "quick_commands_desc": {
+        "help": "Xem tất cả 85+ lệnh",
+        "demo": "Thử demo tương tác",
+        "roi": "Tính toán tiết kiệm",
+        "compare": "So với đối thủ",
+        "pricing": "Xem các gói giá"
+      },
+      "social_proof": {
+        "signed_up": "Vừa có người đăng ký",
+        "just_now": "vừa xong",
+        "minutes_ago": "{n} phút trước",
+        "from": "từ",
+        "action": {
+          "started_trial": "đã bắt đầu dùng thử Pro",
+          "upgraded": "đã nâng cấp lên Pro",
+          "joined": "đã tham gia AgencyOS",
+          "started_franchise": "đã bắt đầu Franchise",
+          "purchased": "đã mua gói Pro",
+          "activated": "đã kích hoạt bản quyền",
+          "purchased_starter": "đã mua gói Starter"
+        }
+      },
+      "features": {
+        "title": "Mọi thứ Agency của bạn cần",
+        "marketing": {
+          "title": "Tiếp thị",
+          "command": "/marketing/social",
+          "desc": "Tạo 30 bài đăng trong 30 phút. Facebook, TikTok, X, LinkedIn."
+        },
+        "sales": {
+          "title": "Bán hàng",
+          "command": "/sales/proposal",
+          "desc": "Bản đề xuất được hỗ trợ bởi AI giúp chốt khách hàng. Tăng tỷ lệ chốt lên gấp 3 lần."
+        },
+        "affiliate": {
+          "title": "Affiliate",
+          "command": "/affiliate/scout",
+          "desc": "50+ chương trình thân thiện với PayPal. Thu nhập thụ động tự động."
+        },
+        "finance": {
+          "title": "Tài chính",
+          "command": "/finance",
+          "desc": "Theo dõi mọi thứ tự động. Doanh thu, chi phí, runway."
+        },
+        "strategy": {
+          "title": "Chiến lược",
+          "command": "/binh-phap",
+          "desc": "Binh pháp Tôn Tử cho kinh doanh. 13 thiên chiến lược."
+        },
+        "video": {
+          "title": "Video",
+          "command": "/video/script",
+          "desc": "Tạo kịch bản cho YouTube, TikTok, Reels trong vài giây."
+        }
+      },
+      "how_it_works": {
+        "title": "Cách thức hoạt động",
+        "step1": {
+          "title": "Nhận quyền truy cập",
+          "desc": "Đăng ký qua Polar.sh. Giao hàng tức thì."
+        },
+        "step2": {
+          "title": "Mở trong IDE",
+          "desc": "Hoạt động với mọi IDE. Chỉ cần clone và mở."
+        },
+        "step3": {
+          "title": "Chạy lệnh",
+          "desc": "Gõ /help để xem 125+ lệnh. Chọn một cái."
+        },
+        "step4": {
+          "title": "Tạo lợi nhuận",
+          "desc": "Nội dung được tạo. Hợp đồng được chốt. Tiền về túi."
+        }
+      },
+      "marketplace_page": {
+    "title": "Marketplace - AgencyOS",
+    "description": "Kỹ năng, template, agent và quy trình cho agency của bạn.",
+    "hero": {
+      "title": "🏪 Marketplace",
+      "subtitle": "Kỹ năng, template, agent và quy trình để tăng tốc agency của bạn"
+    },
+    "stats": {
+      "products": "Sản phẩm",
+      "downloads": "Lượt tải",
+      "creators": "Nhà sáng tạo"
+    },
+    "filters": {
+      "all": "Tất cả",
+      "skill": "⚡ Kỹ năng",
+      "template": "📋 Template",
+      "agent": "🤖 Agent",
+      "workflow": "🔄 Quy trình",
+      "sort": {
+        "popular": "Phổ biến nhất",
+        "newest": "Mới nhất",
+        "rating": "Đánh giá cao nhất",
+        "price_low": "Giá: Thấp đến Cao",
+        "price_high": "Giá: Cao đến Thấp"
+      }
+    },
+    "product": {
+      "badges": {
+        "skill": "KỸ NĂNG",
+        "template": "TEMPLATE",
+        "agent": "AGENT",
+        "workflow": "QUY TRÌNH",
+        "free": "MIỄN PHÍ"
+      },
+      "downloads": "lượt tải",
+      "add_to_cart": "Thêm vào giỏ",
+      "get_free": "Nhận miễn phí",
+      "free": "MIỄN PHÍ"
+    },
+    "products": {
+      "seo_audit": {
+        "title": "Kỹ năng SEO Audit",
+        "desc": "Tự động hóa kiểm tra SEO toàn diện cho mọi website"
+      },
+      "invoice": {
+        "title": "Trình tạo hóa đơn",
+        "desc": "Tạo hóa đơn chuyên nghiệp trong vài giây"
+      },
+      "proposal": {
+        "title": "Bộ Template Đề xuất",
+        "desc": "10 mẫu đề xuất bán hàng chuyên nghiệp"
+      },
+      "social_agent": {
+        "title": "Quản lý Mạng xã hội",
+        "desc": "Agent AI quản lý và vận hành mạng xã hội"
+      },
+      "onboarding": {
+        "title": "Quy trình Onboarding",
+        "desc": "Tự động hóa hoàn toàn quy trình nhận khách hàng mới"
+      },
+      "content_calendar": {
+        "title": "Lịch Nội dung",
+        "desc": "Tạo lịch nội dung tự động bằng AI"
+      }
+    },
+    "creator_cta": {
+      "title": "🎨 Trở thành Nhà sáng tạo",
+      "desc": "Xây dựng và bán kỹ năng, template và agent. Nhận 70% doanh thu.",
+      "button": "Gửi sản phẩm của bạn →"
+    },
+    "alerts": {
+      "added_free": "✅ \"{name}\" đã được thêm vào thư viện của bạn!\n\nBạn có thể truy cập từ bảng điều khiển.",
+      "added_cart": "🛒 \"{name}\" đã được thêm vào giỏ hàng!\n\nGiá: {price}\n\nTrang thanh toán sắp ra mắt."
+    }
+  },
+  "newsletter_signup": {
+        "title": "Nhận mẹo phát triển Agency hàng tuần",
+        "subtitle": "Tham gia cùng 1,000+ chủ agency solo. Không spam, hủy đăng ký bất cứ lúc nào.",
+        "placeholder": "email@cua-ban.com",
+        "button": "Đăng ký",
+        "privacy": "Chúng tôi tôn trọng quyền riêng tư của bạn. Đọc {link}."
+      },
+      "quiz": {
+        "title": "🧭 Sản phẩm nào phù hợp với bạn?",
+        "subtitle": "Trả lời 1 câu hỏi. Nhận đề xuất cá nhân hóa của bạn.",
+        "question": "Thách thức lớn nhất của bạn lúc này là gì?",
+        "options": {
+          "free": "Tôi mới bắt đầu và muốn học hỏi",
+          "starter": "Tôi cần tự động hóa các tác vụ lặp đi lặp lại",
+          "pro": "Tôi muốn mở rộng quy mô cùng đội ngũ",
+          "franchise": "Tôi muốn nhượng quyền và bán lại"
+        },
+        "results": {
+          "free": {
+            "title": "Bắt đầu MIỄN PHÍ",
+            "desc": "Hoàn hảo để học hỏi! Bắt đầu với các tài nguyên miễn phí của chúng tôi:",
+            "cta": "Bắt đầu học ngay →"
+          },
+          "starter": {
+            "title": "Gói Starter - {price}",
+            "desc": "Tự động hóa agency của bạn với 125+ lệnh AI:",
+            "cta": "Nhận gói Starter →"
+          },
+          "pro": {
+            "title": "Gói Pro - {price}",
+            "desc": "Mở rộng quy mô với đội ngũ và truy cập API:",
+            "cta": "Nhận gói Pro →"
+          },
+          "franchise": {
+            "title": "Nhượng quyền - {price}",
+            "desc": "Nhượng quyền AgencyOS và bán lại cho khách hàng:",
+            "cta": "Nhận nhượng quyền →"
+          }
+        },
+        "restart": "← Thử lại"
+      }
+    }
+  },
+  "about_page": {
+    "title": "Về AgencyOS - Sứ mệnh của chúng tôi",
+    "description": "Tìm hiểu về đội ngũ đứng sau AgencyOS và sứ mệnh trao quyền cho các agency solo bằng AI.",
+    "hero": {
+      "title": "Về AgencyOS",
+      "subtitle": "Trao quyền siêu năng lực AI cho các agency một người."
+    },
+    "mission": {
+      "title": "Sứ mệnh của chúng tôi",
+      "text": "Chúng tôi tin rằng việc vận hành một agency không nhất thiết phải cần một đội ngũ 20 người. Với các công cụ AI phù hợp, một người có thể mang lại giá trị của cả một phòng ban. AgencyOS được xây dựng để biến điều đó thành hiện thực."
+    },
+    "process": {
+      "title": "Quy trình của chúng tôi",
+      "subtitle": "Được tinh chỉnh qua hàng trăm dự án",
+      "steps": {
+        "discovery": {
+          "title": "Khám phá",
+          "desc": "Tìm hiểu sâu về thương hiệu, mục tiêu, đối tượng khách hàng và bối cảnh cạnh tranh của bạn."
+        },
+        "strategy": {
+          "title": "Chiến lược",
+          "desc": "Phân tích và sáng tạo ý tưởng bằng AI. Chúng tôi lập ra bản kế hoạch chi tiết để thành công."
+        },
+        "build": {
+          "title": "Xây dựng",
+          "desc": "Các lệnh AI của chúng tôi tiếp quản. Từ nội dung đến code, chúng tôi bàn giao với tốc độ gấp 10 lần."
+        },
+        "test": {
+          "title": "Kiểm thử",
+          "desc": "Kiểm tra chất lượng nghiêm ngặt. Chúng tôi đảm bảo mọi thứ đều xuất sắc trước khi ra mắt."
+        },
+        "launch": {
+          "title": "Ra mắt & Cải tiến",
+          "desc": "Go live! Sau đó chúng tôi thu thập phản hồi và liên tục cải thiện với thông tin chi tiết từ AI."
+        }
+      }
+    },
+    "team": {
+      "title": "Đội ngũ của chúng tôi",
+      "subtitle": "Chúng tôi có những lập trình viên và nhà chiến lược giỏi nhất",
+      "members": {
+        "long": {
+          "name": "Long Minh",
+          "role": "Founder & CEO",
+          "bio": "10+ năm kinh nghiệm xây dựng sản phẩm số. Đam mê tự động hóa AI."
+        },
+        "agent": {
+          "name": "AI Agent",
+          "role": "Lập trình viên chính",
+          "bio": "Không bao giờ ngủ. Code 24/7. Thông thạo 125+ lệnh."
+        },
+        "design": {
+          "name": "Design AI",
+          "role": "Giám đốc sáng tạo",
+          "bio": "Tạo ra hình ảnh tuyệt đẹp. Bậc thầy về hiệu ứng WOW."
+        },
+        "strategy": {
+          "name": "Strategy AI",
+          "role": "Growth Hacker",
+          "bio": "Áp dụng Binh pháp vào kinh doanh. Không đánh mà thắng."
+        }
+      }
+    },
+    "tech_stack": {
+      "title": "Công nghệ sử dụng",
+      "subtitle": "Nền tảng vững chắc nhất"
+    },
+    "story": {
+      "title": "Câu chuyện",
+      "items": {
+        "2023": {
+          "title": "Giai đoạn khó khăn",
+          "desc": "Kiệt sức vì quản lý khách hàng, tạo nội dung và xử lý việc admin. Phải có một cách tốt hơn."
+        },
+        "2024": {
+          "title": "Bước đột phá",
+          "desc": "Khám phá ra AI có thể xử lý 80% công việc của agency. Xây dựng 10 lệnh đầu tiên."
+        },
+        "2025": {
+          "title": "Ra mắt AgencyOS",
+          "desc": "125+ lệnh. 500+ agency. Một sứ mệnh: tự động hóa mọi thứ."
+        }
+      }
+    },
+    "values": {
+      "title": "Giá trị cốt lõi",
+      "items": {
+        "speed": {
+          "title": "Tốc độ hơn Hoàn hảo",
+          "desc": "Làm nhanh, cải tiến nhanh hơn. Hoàn thành tốt hơn là hoàn hảo."
+        },
+        "results": {
+          "title": "Kết quả hơn Thời gian",
+          "desc": "Chúng tôi đo lường kết quả, không phải thời gian bỏ ra. Làm việc thông minh, không chỉ làm việc chăm chỉ."
+        },
+        "win3": {
+          "title": "Win-Win-Win",
+          "desc": "Mọi quyết định phải có lợi cho bạn, cho chúng tôi và cho khách hàng của bạn."
+        },
+        "open": {
+          "title": "Mặc định công khai",
+          "desc": "Giá cả minh bạch, marketing trung thực, không có chiêu trò ẩn giấu."
+        }
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng tự động hóa agency của bạn?",
+      "primary": "Dùng thử miễn phí",
+      "secondary": "Liên hệ với chúng tôi"
+    }
+  },
+  "blog_page": {
+    "title": "Blog AgencyOS - Mẹo & Thông tin chuyên sâu",
+    "description": "Mẹo tự động hóa agency, quy trình AI và thông tin kinh doanh giúp bạn mở rộng quy mô.",
+    "hero": {
+      "title": "Blog",
+      "subtitle": "Mẹo, hướng dẫn và thông tin chuyên sâu giúp bạn tự động hóa agency của mình."
+    },
+    "featured_title": "Nổi bật",
+    "all_posts_title": "Tất cả bài viết",
+    "read_more": "đọc →",
+    "newsletter": {
+      "title": "Đăng ký nhận bản tin",
+      "subtitle": "Nhận mẹo hàng tuần về tự động hóa agency, quy trình AI và tăng trưởng kinh doanh.",
+      "placeholder": "email@cua-ban.com",
+      "button": "Đăng ký"
+    },
+    "posts": {
+      "team_ai": {
+        "title": "Cách tôi thay thế đội ngũ bằng AI (Và tăng gấp ba lợi nhuận)",
+        "excerpt": "Câu chuyện về cách một chủ agency vượt qua kiệt sức đến đột phá bằng tự động hóa AI.",
+        "category": "Case Study"
+      },
+      "commands_85": {
+        "title": "125+ Lệnh AI mà mọi chủ Agency nên biết",
+        "excerpt": "Hướng dẫn toàn diện về các lệnh AgencyOS mạnh mẽ nhất cho marketing, bán hàng và nội dung.",
+        "category": "Hướng dẫn"
+      },
+      "affiliate_playbook": {
+        "title": "Cẩm nang Affiliate: Thu nhập thụ động $5K/tháng",
+        "excerpt": "Hướng dẫn từng bước để xây dựng dòng thu nhập thụ động với các chương trình affiliate hỗ trợ PayPal.",
+        "category": "Cẩm nang"
+      },
+      "freelancer_to_owner": {
+        "title": "Từ Freelancer thành Chủ Agency trong 90 ngày",
+        "excerpt": "Khung làm việc chính xác để chuyển đổi từ freelancer tự do sang vận hành một agency một người có lợi nhuận.",
+        "category": "Chiến lược"
+      },
+      "video_scripts": {
+        "title": "Kịch bản video AI chuyển đổi: Hướng dẫn mẫu",
+        "excerpt": "Các mẫu kịch bản sao chép-dán để tạo nội dung YouTube, TikTok và Reels thu hút tương tác.",
+        "category": "Template"
+      },
+      "win3_framework": {
+        "title": "Khung Win-Win-Win cho sự tăng trưởng của Agency",
+        "excerpt": "Cách cấu trúc các thỏa thuận mang lại lợi ích cho bạn, khách hàng và đối tác của bạn cùng một lúc.",
+        "category": "Triết lý"
+      }
+    }
+  },
+  "case_studies_page": {
+    "title": "Case Studies - AgencyOS",
+    "description": "Câu chuyện thành công thực tế từ các agency solo sử dụng AgencyOS. Xem kết quả doanh thu thực tế.",
+    "hero": {
+      "title": "📈 Câu chuyện thành công",
+      "subtitle": "Kết quả thực tế từ các agency solo thực tế"
+    },
+    "featured": "Nổi bật",
+    "before": "Trước",
+    "after": "Sau",
+    "growth": "Tăng trưởng",
+    "roi": "ROI",
+    "commands_used": "Các lệnh đã dùng:",
+    "cases": {
+      "sarah": {
+        "name": "Sarah K.",
+        "role": "Marketing Agency",
+        "quote": "Tôi đã thay thế toàn bộ đội ngũ của mình bằng AgencyOS. Không đùa đâu. Lợi nhuận của tôi đã tăng gấp ba sau 3 tháng.",
+        "timeline": "90 ngày để tăng 5 lần doanh thu",
+        "metrics": ["$3K/tháng", "$15K/tháng", "5x"]
+      },
+      "mike": {
+        "name": "Mike T.",
+        "role": "Freelancer → Agency",
+        "quote": "Từ freelancer trở thành chủ agency. AgencyOS là lợi thế không công bằng mà tôi cần.",
+        "timeline": "6 tháng để xây dựng agency 6 con số",
+        "metrics": ["$2K/tháng", "$12K/tháng", "6x"]
+      },
+      "trung": {
+        "name": "Trung V.",
+        "role": "Startup Consultant",
+        "quote": "Chiến lược Binh Pháp đã thay đổi cách tôi suy nghĩ về cạnh tranh. Thật sự thiên tài.",
+        "timeline": "Tăng gấp 4 lần dòng deal trong 60 ngày",
+        "metrics": ["2", "8", "4x"]
+      },
+      "alex": {
+        "name": "Alex P.",
+        "role": "Affiliate Network",
+        "quote": "99 đô la tốt nhất tôi từng chi tiêu. Mô hình Franchise đang in tiền cho tôi.",
+        "timeline": "Thu nhập thụ động sau 30 ngày",
+        "metrics": ["$0", "$2.5K", "25x"]
+      }
+    },
+    "summary": {
+      "title": "📊 Kết quả tổng hợp",
+      "revenue": "Tổng doanh thu hàng tháng",
+      "growth": "Tăng trưởng trung bình",
+      "days": "Ngày để có kết quả",
+      "saved": "Giờ tiết kiệm/Tuần"
+    },
+    "cta": {
+      "title": "Sẵn sàng trở thành câu chuyện thành công tiếp theo của chúng tôi?",
+      "button": "Bắt đầu hành trình của bạn →"
+    }
+  },
+  "changelog_page": {
+    "title": "Lịch sử cập nhật - AgencyOS",
+    "description": "Xem những gì mới trong AgencyOS. Các bản cập nhật, tính năng và cải tiến mới nhất.",
+    "hero": {
+      "title": "Lịch sử cập nhật",
+      "subtitle": "Xem những gì mới trong AgencyOS."
+    },
+    "types": {
+      "new": "mới",
+      "improved": "cải tiến",
+      "fixed": "đã sửa"
+    },
+    "releases": [
+      {
+        "version": "2.0.0",
+        "date": "20 tháng 12, 2024",
+        "tag": "Mới nhất",
+        "changes": [
+          ["new", "Hơn 125 lệnh AI hiện đã sẵn sàng"],
+          ["new", "Affiliate Hub với hơn 50 chương trình"],
+          ["new", "Hệ thống quản lý nhượng quyền (Franchise)"],
+          ["improved", "Thực thi lệnh nhanh hơn (gấp 2 lần)"],
+          ["improved", "Giao diện chủ đề tối mới"]
+        ]
+      },
+      {
+        "version": "1.5.0",
+        "date": "15 tháng 11, 2024",
+        "tag": "",
+        "changes": [
+          ["new", "Trình tạo kịch bản video"],
+          ["new", "Trình xây dựng chuỗi email"],
+          ["improved", "Xử lý lỗi tốt hơn"],
+          ["fixed", "Sửa lỗi giới hạn tốc độ API"]
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "date": "01 tháng 10, 2024",
+        "tag": "",
+        "changes": [
+          ["new", "Phát hành phiên bản đầu tiên"],
+          ["new", "20 lệnh cốt lõi"],
+          ["new", "Tự động hóa marketing"],
+          ["new", "Công cụ phễu bán hàng"]
+        ]
+      }
+    ],
+    "cta": {
+      "title": "Đăng ký để nhận thông báo về các bản phát hành mới",
+      "button": "Nhận cập nhật"
+    }
+  },
+  "checkout_page": {
+    "title": "Thanh toán - AgencyOS",
+    "description": "Hoàn tất đăng ký AgencyOS của bạn.",
+    "loading": {
+      "title": "Đang chuẩn bị thanh toán...",
+      "subtitle": "Đang chuyển hướng đến trang thanh toán PayPal an toàn..."
+    },
+    "error": {
+      "title": "Đã xảy ra lỗi",
+      "subtitle": "Không thể xử lý thanh toán.",
+      "button": "← Quay lại Bảng giá",
+      "paypal_missing": "Không tìm thấy liên kết phê duyệt PayPal.",
+      "paypal_failed": "Không thể khởi tạo thanh toán PayPal.",
+      "network_error": "Lỗi mạng khi kết nối với cổng thanh toán."
+    }
+  },
+  "commands_page": {
+    "title": "Tất cả Lệnh - AgencyOS",
+    "description": "125+ lệnh AI cho lập trình viên, marketer, sale, tài chính và founder. Tìm chính xác lệnh bạn cần.",
+    "hero": {
+      "badge": "Agency Ưu Tiên Terminal",
+      "title": "125+ Lệnh AI",
+      "description": "Chỉ mục đầy đủ của mọi lệnh trong hệ sinh thái AgencyOS."
+    },
+    "search": {
+      "placeholder": "Tìm kiếm lệnh... (VD: marketing, invoice, fix)",
+      "found": "lệnh được tìm thấy"
+    },
+    "categories": {
+      "all": "Tất cả",
+      "tech": "Công nghệ",
+      "marketing": "Marketing",
+      "sales": "Bán hàng",
+      "finance": "Tài chính",
+      "strategy": "Chiến lược"
+    },
+    "i_want": {
+      "title": "🎯 Chỉ mục \"Tôi muốn...\"",
+      "header_want": "Tôi muốn...",
+      "header_command": "Lệnh",
+      "header_result": "Kết quả",
+      "items": {
+        "affiliate": ["Kiếm tiền affiliate", "Danh sách 50+ chương trình"],
+        "facebook": ["Viết post Facebook", "Post sẵn sàng đăng"],
+        "tiktok": ["Làm video TikTok", "Video 9:16 ready"],
+        "customers": ["Tìm khách hàng", "Danh sách leads qualified"],
+        "proposal": ["Viết proposal", "PDF proposal đẹp"],
+        "invoice": ["Xuất hóa đơn", "Hóa đơn chuyên nghiệp"],
+        "bug": ["Fix bug nhanh", "Bug fixed trong 5 phút"],
+        "code": ["Code feature mới", "Code production-ready"],
+        "brainstorm": ["Brainstorm ý tưởng", "10+ ý tưởng sáng tạo"],
+        "competitor": ["Phân tích đối thủ", "Báo cáo chi tiết"],
+        "runway": ["Tính runway", "Còn X tháng cash"],
+        "strategy": ["Lên chiến lược", "13 thiên binh pháp aligned"],
+        "ship": ["Ship sản phẩm", "Đã deploy + thông báo"],
+        "review": ["Review codebase", "Báo cáo chất lượng"]
+      }
+    },
+    "tech_header": "Lệnh Công Nghệ (75)",
+    "business_header": "Lệnh Kinh Doanh (30+)",
+    "engine_badge": "AgencyOS AI Engine",
+    "new_badge": "AgencyOS MỚI",
+    "cta": {
+      "title": "Sẵn sàng dùng thử?",
+      "button": "Cài đặt AgencyOS →"
+    }
+  },
+  "compare_page": {
+    "title": "Tại sao chọn AgencyOS? - So sánh với các giải pháp khác",
+    "description": "Xem lý do tại sao 500+ agency chọn AgencyOS thay vì các công cụ truyền thống. So sánh chi tiết.",
+    "hero": {
+      "title": "⚔️ Tại sao chọn AgencyOS?",
+      "subtitle": "Xem cách chúng tôi vượt trội so với các giải pháp thay thế"
+    },
+    "table": {
+      "headers": ["Tính năng", "🏯 AgencyOS", "Thuê nhân sự", "Công cụ đơn lẻ", "AI khác"],
+      "rows": {
+        "cost": ["💰 Chi phí/Tháng", "$99", "$15,000+", "$500+", "$200+"],
+        "setup": ["⏱️ Thời gian thiết lập", "5 phút", "3+ tháng", "2+ tuần", "1+ tuần"],
+        "commands": ["🔧 Số lượng lệnh", "125+", "N/A", "5-10", "20-30"],
+        "marketing": ["📣 Marketing", "✅", "✅", "❌", "⚠️"],
+        "sales": ["💼 Bán hàng", "✅", "✅", "❌", "⚠️"],
+        "finance": ["💵 Tài chính", "✅", "✅", "❌", "❌"],
+        "code": ["🧑‍💻 Lập trình", "✅", "✅", "❌", "✅"],
+        "video": ["🎥 Tạo video", "✅", "✅", "❌", "❌"],
+        "strategy": ["🏯 Chiến lược Binh Pháp", "✅", "❌", "❌", "❌"],
+        "franchise": ["🌐 Mô hình Nhượng quyền", "✅", "❌", "❌", "❌"],
+        "availability": ["🔄 Sẵn sàng 24/7", "✅", "❌", "✅", "✅"],
+        "total": ["🏆 Giá trị tốt nhất?", "🥇 ĐÚNG", "Quá đắt", "Quá hạn chế", "Thiếu tính năng"]
+      }
+    },
+    "bottom_line": {
+      "title": "💰 Kết luận cuối cùng",
+      "hiring": "Thuê 3 người:",
+      "agencyos": "AgencyOS Pro:",
+      "savings": "Tiết kiệm của bạn:",
+      "cta": "Tính toán ROI của bạn →"
+    },
+    "cta": {
+      "title": "Sẵn sàng chuyển đổi?",
+      "subtitle": "Tham gia cùng 500+ agency đã đưa ra lựa chọn thông minh",
+      "primary": "Dùng thử miễn phí →",
+      "secondary": "Thử bản Demo trước"
+    }
+  },
+  "contact_page": {
+    "title": "Liên hệ AgencyOS - Kết nối với chúng tôi",
+    "description": "Bạn có câu hỏi? Chúng tôi luôn sẵn lòng lắng nghe. Liên hệ với đội ngũ AgencyOS.",
+    "hero": {
+      "title": "Kết nối với chúng tôi",
+      "subtitle": "Bạn có câu hỏi? Chúng tôi luôn sẵn lòng lắng nghe."
+    },
+    "form": {
+      "title": "Gửi tin nhắn",
+      "name": "Họ tên",
+      "name_placeholder": "Tên của bạn",
+      "email": "Email",
+      "email_placeholder": "ban@vi-du.com",
+      "subject": "Chủ đề",
+      "subject_placeholder": "Chọn một chủ đề...",
+      "subjects": {
+        "sales": "Câu hỏi về Bán hàng",
+        "support": "Hỗ trợ Kỹ thuật",
+        "partnership": "Hợp tác",
+        "franchise": "Quan tâm Nhượng quyền",
+        "other": "Khác"
+      },
+      "message": "Tin nhắn",
+      "message_placeholder": "Chúng tôi có thể giúp gì cho bạn?",
+      "submit": "Gửi tin nhắn"
+    },
+    "info": {
+      "title": "Các cách khác để liên hệ",
+      "email": "Email",
+      "discord": "Discord",
+      "discord_link": "Tham gia cộng đồng",
+      "twitter": "Twitter/X",
+      "docs": "Tài liệu",
+      "docs_link": "Đọc tài liệu",
+      "faq_prompt": "Bạn đang tìm câu trả lời?",
+      "faq_button": "Kiểm tra FAQ của chúng tôi →"
+    }
+  },
+  "dashboard_page": {
+    "title": "Bảng điều khiển - AgencyOS",
+    "description": "Trung tâm điều khiển AgencyOS của bạn.",
+    "loading": "Đang tải bảng điều khiển...",
+    "auth_required": {
+      "title": "Yêu cầu quyền truy cập",
+      "subtitle": "Vui lòng đăng ký hoặc đăng nhập để truy cập bảng điều khiển.",
+      "primary": "Dùng thử miễn phí",
+      "secondary": "Xem các gói giá"
+    },
+    "header": {
+      "welcome": "Chào mừng trở lại, {name}! 👋",
+      "default_name": "Chủ Agency"
+    },
+    "stats": {
+      "commands": "Lệnh AI",
+      "trial_left": "Số ngày dùng thử còn lại",
+      "status": "Trạng thái tài khoản",
+      "active": "Đang hoạt động"
+    },
+    "sections": {
+      "get_started": "🏯 Bắt đầu",
+      "guides": {
+        "title": "Hướng dẫn bắt đầu nhanh",
+        "desc": "Thiết lập CLI trong 5 phút"
+      },
+      "demo": {
+        "title": "Dùng thử lệnh",
+        "desc": "Demo terminal tương tác"
+      },
+      "catalog": {
+        "title": "Danh mục lệnh",
+        "desc": "Khám phá 125+ lệnh AI"
+      },
+      "support": {
+        "title": "Hỗ trợ",
+        "desc": "Chúng tôi luôn sẵn sàng"
+      }
+    },
+    "install": {
+      "title": "🔧 Cài đặt AgencyOS CLI",
+      "copy": "Sao chép",
+      "note": "Yêu cầu Python 3.8+. Xem {link}."
+    }
+  },
+  "demo_page": {
+    "title": "Dùng thử AgencyOS - Demo Tương Tác",
+    "description": "Thử nghiệm các lệnh AgencyOS ngay trong trình duyệt. Trải nghiệm sức mạnh của 125+ lệnh AI ngay lập tức.",
+    "hero": {
+      "title": "🖥️ Dùng Thử Trước Khi Mua",
+      "subtitle": "Nhập lệnh bên dưới để thấy điều kỳ diệu xảy ra"
+    },
+    "terminal": {
+      "title": "Terminal AgencyOS",
+      "welcome": "Chào mừng đến với AgencyOS! Nhập lệnh hoặc chọn gợi ý bên dưới.",
+      "version": "v2.0.0 • 125+ lệnh có sẵn",
+      "input_placeholder": "Nhập lệnh...",
+      "processing": "Đang xử lý...",
+      "suggestions": "Thử các lệnh sau:",
+      "not_found": "⚠️ Lệnh không có trong bản demo.",
+      "limited_info": "💡 Đây là bản demo giới hạn lệnh.",
+      "full_access_info": "   Bản đầy đủ bao gồm 125+ lệnh!",
+      "try_prompt": "🚀 Thử: /help, /marketing-plan, /proposal, /invoice"
+    },
+    "cta": {
+      "title": "Sẵn sàng tự động hóa agency của bạn?",
+      "subtitle": "Truy cập toàn bộ 125+ lệnh AI",
+      "primary": "Dùng Thử Miễn Phí →",
+      "secondary": "Xem Bảng Giá"
+    }
+  },
+  "wallet_page": {
+    "title": "Ví AG - AgencyOS",
+    "description": "Quản lý AG Credit của bạn - kiếm tiền từ giới thiệu, chuyển khoản cho người khác hoặc chi tiêu cho các sản phẩm SaaS.",
+    "hero": {
+      "title": "💰 Ví AG",
+      "subtitle": "Hệ thống tín dụng nội bộ của bạn - Kiếm tiền, Chuyển khoản, Chi tiêu"
+    },
+    "balance": {
+      "available": "Số dư hiện có",
+      "usd_approx": "≈ {amount} USD",
+      "lifetime_earned": "Tổng đã kiếm",
+      "lifetime_spent": "Tổng đã chi"
+    },
+    "actions": {
+      "transfer": "Chuyển khoản",
+      "buy_saas": "Mua SaaS"
+    },
+    "transfer_modal": {
+      "title": "↗️ Chuyển khoản AGC",
+      "recipient_label": "Email người nhận",
+      "recipient_placeholder": "user@example.com",
+      "amount_label": "Số lượng (AGC)",
+      "amount_placeholder": "10.00",
+      "note_label": "Ghi chú (Tùy chọn)",
+      "note_placeholder": "Cảm ơn vì đã giúp đỡ!",
+      "submit": "Gửi chuyển khoản"
+    },
+    "redeem_modal": {
+      "title": "🛒 Mua bằng AGC",
+      "plans": {
+        "starter": "Starter",
+        "pro": "Pro",
+        "franchise": "Franchise",
+        "duration": "1 tháng truy cập",
+        "buy_now": "Mua ngay"
+      }
+    },
+    "history": {
+      "title": "📜 Lịch sử giao dịch",
+      "loading": "Đang tải...",
+      "no_transactions": "Chưa có giao dịch nào"
+    },
+    "ranks": {
+      "title": "🎖️ Tiến trình cấp bậc",
+      "chien_binh": "Chiến Binh",
+      "tuong_quan": "Tướng Quân",
+      "thong_soai": "Thống Soái",
+      "nguyen_soai": "Nguyên Soái",
+      "threshold": "{amount}+ AGC",
+      "bonus": "+{percent}% bonus"
+    }
+  },
+  "workflows_page": {
+    "title": "Quy trình Kiếm tiền - AgencyOS",
+    "description": "3 quy trình đã được chứng minh để kiếm tiền với AgencyOS: Affiliate, Code-to-Content và Tư vấn.",
+    "hero": {
+      "badge": "Bản thiết kế doanh thu",
+      "title": "Quy trình tạo ra tiền",
+      "description": "Các con đường từng bước dẫn đến doanh thu với AgencyOS."
+    },
+    "workflows": {
+      "affiliate": {
+        "title": "Affiliate-as-SaaS",
+        "income": "Thu nhập thụ động: $500-2,000/tháng",
+        "steps_label": "Các bước:",
+        "flow": {
+          "step1": ["Tìm chương trình", "/affiliate/scout"],
+          "step2": ["PayPal-friendly", "Chọn 5 chương trình"],
+          "step3": ["Viết 30 bài đăng", "/marketing/social"],
+          "step4": ["Lên lịch & đăng", "Đăng hàng ngày x30"],
+          "result": ["Thụ động hàng tháng", "💰 $500-2,000"]
+        },
+        "steps_list": [
+          "/affiliate/scout → Tìm các chương trình hỗ trợ PayPal",
+          "/marketing/social facebook → Viết 30 bài đăng",
+          "Lên lịch đăng bài → Đăng 1 bài/ngày",
+          "Theo dõi → Hoa hồng về tài khoản"
+        ]
+      },
+      "code_to_content": {
+        "title": "Code-to-Content",
+        "income": "Thu nhập chủ động: AdSense + Tài trợ",
+        "steps_label": "Các bước:",
+        "flow": {
+          "step1": ["Xây dựng tính năng", "/code"],
+          "step2": ["Tạo kịch bản", "/video/script"],
+          "step3": ["Xuất video", "/video"],
+          "step4": ["Tải lên đa nền tảng", "YouTube + TikTok"],
+          "result": ["AdSense + Tài trợ", "💰 $$$"]
+        },
+        "steps_list": [
+          "/code → Xây dựng tính năng mới",
+          "/video/script → Chuyển đổi code thành kịch bản",
+          "/video → Xuất video với lồng tiếng",
+          "Tải lên đa nền tảng → $$$"
+        ]
+      },
+      "consulting": {
+        "title": "Quy trình Tư vấn",
+        "income": "Giá trị cao: $5,000-50,000/hợp đồng",
+        "steps_label": "Các bước:",
+        "flow": {
+          "step1": ["Tìm khách hàng", "/sales/lead"],
+          "step2": ["Phân tích thị trường", "/intel/competitor"],
+          "step3": ["Tạo đề xuất", "/sales/proposal"],
+          "step4": ["Chốt hợp đồng", "/sales/close"],
+          "step5": ["Nhận thanh toán", "/finance/invoice"],
+          "result": ["Mỗi hợp đồng", "💰 $5-50K"]
+        },
+        "steps_list": [
+          "/sales/lead → Tìm khách hàng tiềm năng",
+          "/intel/competitor → Phân tích đối thủ cạnh tranh",
+          "/sales/proposal → Tự động tạo bản đề xuất",
+          "/sales/close → Kịch bản chốt hợp đồng",
+          "/finance/invoice → Xuất hóa đơn"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu kiếm tiền?",
+      "primary": "Chọn con đường của bạn →",
+      "secondary": "Xem tất cả các lệnh"
+    }
+  },
+  "quickstart_page": {
+    "title": "Bắt đầu nhanh - AgencyOS",
+    "description": "Chọn con đường của bạn: Lập trình viên, Marketing, Bán hàng, Tài chính hoặc Nhà sáng lập. Mỗi con đường đều có các lệnh tạo ra thu nhập.",
+    "hero": {
+      "title": "🚀 Bắt đầu nhanh",
+      "subtitle": "\"Tôi muốn kiếm tiền ngay!\" - Đây là cách:"
+    },
+    "personas": {
+      "developer": {
+        "title": "Lập trình viên",
+        "tag": "Code → Tiền mặt",
+        "money_flow": "Code → Video Demo → YouTube → Link Affiliate → $$$"
+      },
+      "marketing": {
+        "title": "Marketing",
+        "tag": "Nội dung → Tiền mặt",
+        "money_flow": "Nội dung → Mạng xã hội → Lưu lượng truy cập → Affiliate → $$$"
+      },
+      "sales": {
+        "title": "Bán hàng",
+        "tag": "Lead → Tiền mặt",
+        "money_flow": "Lead → Đề xuất → Chốt đơn → Hóa đơn → $$$"
+      },
+      "finance": {
+        "title": "Tài chính",
+        "tag": "Tối ưu → Tiết kiệm",
+        "money_flow": "Tối ưu → Giảm lãng phí → Tăng lợi nhuận → $$$"
+      },
+      "founder": {
+        "title": "Nhà sáng lập",
+        "tag": "Chiến lược → Mở rộng",
+        "money_flow": "Chiến lược → Gọi vốn → Mở rộng → Thoát vốn → $$$"
+      }
+    },
+    "common": {
+      "money_flow_label": "💰 Dòng tiền:",
+      "get_started": "Bắt đầu ngay →"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu?",
+      "subtitle": "Chọn con đường của bạn và bắt đầu kiếm tiền với AI.",
+      "button": "Xem tất cả 85+ Lệnh →"
+    }
+  },
+  "features_page": {
+    "title": "Tính năng - AgencyOS",
+    "description": "125+ lệnh hỗ trợ bởi AI để tự động hóa toàn bộ agency của bạn. Marketing, bán hàng, vận hành, tài chính.",
+    "hero": {
+      "title": "125+ Lệnh.<br/>Một Nền Tảng.",
+      "subtitle": "Mọi thứ bạn cần để vận hành một solo agency với AI."
+    },
+    "categories": {
+      "marketing": {
+        "title": "Marketing",
+        "count": "15 lệnh",
+        "commands": {
+          "plan": ["/ke-hoach-tiep-thi", "Lập kế hoạch marketing"],
+          "content": ["/noi-dung-tiep-thi", "Tạo nội dung"],
+          "social": ["/y-tuong-social-media", "Ý tưởng mạng xã hội"],
+          "pr": ["/ke-hoach-pr", "Chiến dịch PR"],
+          "message": ["/thong-diep-tiep-thi", "Thông điệp marketing"],
+          "competitor": ["/phan-tich-doi-thu", "Phân tích đối thủ"]
+        }
+      },
+      "sales": {
+        "title": "Bán hàng",
+        "count": "12 lệnh",
+        "commands": {
+          "strategy": ["/chien-luoc-ban-hang", "Chiến lược bán hàng"],
+          "funnel": ["/pheu-ban-hang", "Phễu bán hàng"],
+          "customer": ["/khach-hang", "Hồ sơ khách hàng"],
+          "quote": ["/tao-bao-gia", "Tạo báo giá"],
+          "lead": ["/theo-doi-lead", "Theo dõi khách hàng"],
+          "email": ["/email-ban-hang", "Email bán hàng"]
+        }
+      },
+      "ops": {
+        "title": "Vận hành",
+        "count": "18 lệnh",
+        "commands": {
+          "project": ["/quan-ly-du-an", "Quản lý dự án"],
+          "workflow": ["/tao-workflow", "Tự động hóa quy trình"],
+          "report": ["/bao-cao-tien-do", "Báo cáo tiến độ"],
+          "team": ["/quan-ly-doi", "Quản lý đội ngũ"],
+          "contract": ["/hop-dong", "Tạo hợp đồng"],
+          "schedule": ["/lich-hen", "Lên lịch hẹn"]
+        }
+      },
+      "finance": {
+        "title": "Tài chính",
+        "count": "10 lệnh",
+        "commands": {
+          "report": ["/bao-cao-tai-chinh", "Báo cáo tài chính"],
+          "invoice": ["/hoa-don", "Tạo hóa đơn"],
+          "expense": ["/theo-doi-chi-phi", "Theo dõi chi phí"],
+          "forecast": ["/du-bao-doanh-thu", "Dự báo doanh thu"],
+          "profit": ["/phan-tich-loi-nhuan", "Phân tích lợi nhuận"],
+          "budget": ["/ngan-sach", "Quản lý ngân sách"]
+        }
+      },
+      "strategy": {
+        "title": "Binh Pháp Strategy",
+        "count": "13 lệnh",
+        "commands": {
+          "plan": ["/ke-hoach", "Lập kế hoạch chiến lược"],
+          "attack": ["/muu-cong", "Thắng không cần đánh"],
+          "position": ["/hinh-the", "Kiểm tra vị thế"],
+          "pivot": ["/cuu-bien", "Chiến lược xoay trục"],
+          "disruption": ["/hoa-cong", "Đột phá thị trường"],
+          "intel": ["/dung-gian", "Thu thập tình báo"]
+        }
+      },
+      "agents": {
+        "title": "17 AI Agents",
+        "count": "Trợ lý chuyên dụng",
+        "commands": {
+          "scout": ["Scout Agent", "Nghiên cứu thị trường"],
+          "editor": ["Editor Agent", "Tạo nội dung"],
+          "director": ["Director Agent", "Sản xuất video"],
+          "community": ["Community Agent", "Phân phối mạng xã hội"],
+          "sales": ["Sales Agent", "Chuyển đổi lead"],
+          "finance": ["Finance Agent", "Theo dõi tài chính"]
+        }
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng tự động hóa Agency của bạn?",
+      "subtitle": "Bắt đầu với 125+ lệnh ngay hôm nay.",
+      "primary": "Xem bảng giá",
+      "secondary": "Bắt đầu ngay"
+    }
+  },
+  "roi_page": {
+    "title": "Công cụ tính ROI - AgencyOS",
+    "description": "Tính toán lượng thời gian và tiền bạc AgencyOS có thể tiết kiệm cho agency của bạn.",
+    "hero": {
+      "title": "💰 Tính toán ROI của bạn",
+      "subtitle": "Xem AgencyOS có thể tiết kiệm cho agency của bạn bao nhiêu thời gian và tiền bạc"
+    },
+    "calculator": {
+      "your_agency": "📊 Agency của bạn",
+      "revenue_label": "Doanh thu hàng tháng ($)",
+      "team_size_label": "Quy mô đội ngũ",
+      "admin_hours_label": "Giờ admin/Tuần (mỗi người)",
+      "hourly_rate_label": "Mức lương giờ trung bình ($)",
+      "with_agencyos": "🚀 Với AgencyOS",
+      "annual_savings": "Tiết kiệm hàng năm",
+      "hours_saved": "Giờ tiết kiệm/Năm",
+      "roi": "ROI",
+      "payback_period": "Thời gian hoàn vốn",
+      "cost_vs_savings": "Chi phí vs Tiết kiệm AgencyOS",
+      "cta": "Bắt đầu tiết kiệm ngay →",
+      "person": "người",
+      "people": "người",
+      "hours": "giờ",
+      "hr": "giờ",
+      "days": "ngày",
+      "months": "tháng"
+    },
+    "breakdown": {
+      "title": "📋 Phân tích tiết kiệm",
+      "marketing": "Marketing",
+      "marketing_tasks": "Nội dung, SEO, Social, Email",
+      "sales": "Bán hàng",
+      "sales_tasks": "Đề xuất, CRM, Chăm sóc khách",
+      "finance": "Tài chính",
+      "finance_tasks": "Hóa đơn, Báo cáo, Ngân sách",
+      "ops": "Vận hành",
+      "ops_tasks": "Quy trình, SOP, Họp hành",
+      "strategy": "Chiến lược",
+      "strategy_tasks": "Nghiên cứu, Đối thủ, OKRs"
+    },
+    "final_cta": {
+      "title": "Sẵn sàng để X10 Agency của bạn?",
+      "subtitle": "Tham gia cùng 100+ agency đang tiết kiệm hàng ngàn đô với AgencyOS",
+      "primary": "Dùng thử miễn phí →",
+      "secondary": "Xem bảng giá"
+    }
+  },
+  "privacy_page": {
+    "title": "Chính sách Bảo mật - AgencyOS",
+    "description": "Chính sách bảo mật của AgencyOS. Cách chúng tôi xử lý dữ liệu của bạn.",
+    "hero": {
+      "title": "Chính sách Bảo mật",
+      "last_updated": "Cập nhật lần cuối: 22 tháng 12, 2024"
+    },
+    "sections": {
+      "collection": {
+        "title": "1. Thông tin Chúng tôi Thu thập",
+        "intro": "Chúng tôi thu thập thông tin bạn cung cấp trực tiếp:",
+        "items": [
+          "Dữ liệu tài khoản: Email, tên khi bạn đăng ký",
+          "Dữ liệu thanh toán: Được xử lý an toàn qua Stripe/PayPal",
+          "Dữ liệu sử dụng: Các lệnh đã dùng, tính năng đã truy cập"
+        ]
+      },
+      "usage": {
+        "title": "2. Cách Chúng tôi Sử dụng Thông tin",
+        "items": [
+          "Cung cấp và cải thiện dịch vụ AgencyOS",
+          "Gửi các bản cập nhật sản phẩm quan trọng",
+          "Xử lý thanh toán và ngăn ngừa gian lận",
+          "Phản hồi các yêu cầu hỗ trợ"
+        ]
+      },
+      "security": {
+        "title": "3. Bảo mật Dữ liệu",
+        "intro": "Chúng tôi sử dụng các biện pháp bảo mật tiêu chuẩn ngành:",
+        "items": [
+          "Mã hóa SSL/TLS cho tất cả các lần truyền dữ liệu",
+          "Hạ tầng đám mây an toàn (Vercel, Supabase)",
+          "Không lưu trữ chi tiết thẻ thanh toán"
+        ]
+      },
+      "third_party": {
+        "title": "4. Dịch vụ Bên thứ ba",
+        "intro": "Chúng tôi sử dụng các dịch vụ tin cậy sau:",
+        "items": [
+          "Stripe/PayPal: Xử lý thanh toán",
+          "Vercel: Lưu trữ web",
+          "Supabase: Cơ sở dữ liệu",
+          "Plausible: Phân tích ẩn danh bảo vệ quyền riêng tư"
+        ]
+      },
+      "rights": {
+        "title": "5. Quyền của Bạn",
+        "items": [
+          "Truy cập dữ liệu cá nhân của bạn",
+          "Yêu cầu xóa dữ liệu",
+          "Xuất dữ liệu của bạn",
+          "Từ chối nhận email marketing"
+        ]
+      },
+      "cookies": {
+        "title": "6. Cookies",
+        "intro": "Chúng tôi sử dụng lượng cookie tối thiểu cho:",
+        "items": [
+          "Quản lý phiên đăng nhập (bắt buộc)",
+          "Lưu trữ tùy chọn (tùy chọn)"
+        ],
+        "outro": "Không có cookie theo dõi của bên thứ ba."
+      },
+      "contact": {
+        "title": "7. Liên hệ",
+        "intro": "Câu hỏi về quyền riêng tư? Liên hệ với chúng tôi:",
+        "email": "Email: privacy@agencyos.network"
+      }
+    },
+    "footer": {
+      "terms": "Điều khoản Dịch vụ →"
+    }
+  },
+  "terms_page": {
+    "title": "Điều khoản Dịch vụ - AgencyOS",
+    "description": "Điều khoản dịch vụ của AgencyOS. Các điều khoản và điều kiện sử dụng.",
+    "hero": {
+      "title": "Điều khoản Dịch vụ",
+      "last_updated": "Cập nhật lần cuối: 22 tháng 12, 2024"
+    },
+    "sections": {
+      "acceptance": {
+        "title": "1. Chấp nhận các Điều khoản",
+        "text": "Bằng cách sử dụng AgencyOS, bạn đồng ý với các điều khoản này. Nếu bạn không đồng ý, vui lòng không sử dụng dịch vụ của chúng tôi."
+      },
+      "description": {
+        "title": "2. Mô tả Dịch vụ",
+        "intro": "AgencyOS cung cấp:",
+        "items": [
+          "Công cụ tự động hóa agency hỗ trợ bởi AI",
+          "125+ lệnh cho marketing, bán hàng và vận hành",
+          "Tài liệu hướng dẫn và tài nguyên hỗ trợ"
+        ]
+      },
+      "accounts": {
+        "title": "3. Tài khoản Người dùng",
+        "items": [
+          "Bạn phải cung cấp thông tin chính xác",
+          "Giữ an toàn thông tin đăng nhập của bạn",
+          "Bạn chịu trách nhiệm cho các hoạt động của tài khoản",
+          "Một tài khoản cho mỗi người/agency"
+        ]
+      },
+      "pricing": {
+        "title": "4. Giá cả & Thanh toán",
+        "items": [
+          "Starter: $29/tháng",
+          "Pro: $99/tháng",
+          "Franchise: $299/tháng",
+          "Cam kết hoàn tiền trong 30 ngày",
+          "Giá có thể thay đổi sau khi thông báo trước 30 ngày"
+        ]
+      },
+      "use": {
+        "title": "5. Sử dụng Hợp lệ",
+        "intro": "Bạn đồng ý KHÔNG:",
+        "items": [
+          "Sử dụng cho các hoạt động bất hợp pháp",
+          "Chia sẻ thông tin đăng nhập tài khoản",
+          "Kỹ thuật đảo ngược phần mềm của chúng tôi",
+          "Bán lại mà không có giấy phép Franchise",
+          "Lạm dụng giới hạn API"
+        ]
+      },
+      "ip": {
+        "title": "6. Sở hữu Trí tuệ",
+        "items": [
+          "AgencyOS sở hữu toàn bộ IP của sản phẩm",
+          "Bạn sở hữu nội dung do bạn tạo ra",
+          "Bạn cấp cho chúng tôi giấy phép để cải thiện dịch vụ"
+        ]
+      },
+      "refunds": {
+        "title": "7. Hoàn tiền",
+        "items": [
+          "Cam kết hoàn tiền 30 ngày cho mọi gói",
+          "Hoàn tiền không cần lý do",
+          "Email support@agencyos.network"
+        ]
+      },
+      "termination": {
+        "title": "8. Chấm dứt",
+        "intro": "Chúng tôi có thể đình chỉ hoặc chấm dứt các tài khoản:",
+        "items": [
+          "Vi phạm các điều khoản này",
+          "Tham gia vào hoạt động gian lận",
+          "Không thanh toán cho dịch vụ"
+        ]
+      },
+      "disclaimer": {
+        "title": "9. Miễn trừ trách nhiệm",
+        "text": "AgencyOS được cung cấp \"nguyên trạng\". Chúng tôi không đảm bảo kết quả kinh doanh cụ thể. Kết quả đầu ra của AI nên được con người xem xét lại."
+      },
+      "liability": {
+        "title": "10. Giới hạn Trách nhiệm",
+        "text": "Trách nhiệm của chúng tôi giới hạn trong số tiền bạn đã thanh toán trong 12 tháng qua. Chúng tôi không chịu trách nhiệm cho các thiệt hại gián tiếp."
+      },
+      "contact": {
+        "title": "11. Liên hệ",
+        "intro": "Câu hỏi về điều khoản?",
+        "email": "Email: legal@agencyos.network"
+      }
+    },
+    "footer": {
+      "privacy": "Chính sách Bảo mật →"
+    }
+  },
+  "pricing": {
+    "title": "Bảng giá đơn giản. Giá trị khổng lồ.",
+    "description": "Tất cả gói đều có 125+ lệnh AI. Chọn gói phù hợp với agency của bạn.",
+    "promo": {
+      "label": "🎟️ Bạn có mã giảm giá?",
+      "placeholder": "Nhập mã (VD: AGENCYOS-XXXX)",
+      "button": "Áp dụng",
+      "error": "Vui lòng nhập mã giảm giá",
+      "invalid": "Mã giảm giá không hợp lệ",
+      "failed": "Không thể xác thực mã",
+      "success_free": "🎉 MIỄN PHÍ! {name} đã áp dụng!",
+      "success_discount": "{name} đã áp dụng!"
+    },
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "price": "$29",
+        "period": "/tháng",
+        "description": "Hoàn hảo cho solo founder",
+        "button": "Dùng Thử Miễn Phí",
+        "features": [
+          "125+ lệnh AI",
+          "Tự động hóa marketing",
+          "Proposal sales",
+          "Theo dõi affiliate",
+          "Dashboard tài chính",
+          "Hỗ trợ cộng đồng",
+          "Cập nhật hàng tháng"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$99",
+        "period": "/tháng",
+        "description": "Cho agency chuyên nghiệp",
+        "button": "Dùng Thử Miễn Phí →",
+        "popular": "✨ PHỔ BIẾN NHẤT",
+        "features": [
+          "Tất cả tính năng Starter",
+          "Hỗ trợ ưu tiên (24h)",
+          "5 tài khoản team",
+          "Phân tích nâng cao",
+          "Tùy chỉnh thương hiệu",
+          "Truy cập API",
+          "Onboarding 1-1"
+        ]
+      },
+      "franchise": {
+        "name": "Franchise",
+        "price": "$299",
+        "period": "/tháng",
+        "description": "White-label & bán lại",
+        "button": "Liên Hệ Sales",
+        "features": [
+          "Tất cả tính năng Pro",
+          "Quyền white-label",
+          "Domain riêng",
+          "Không giới hạn tài khoản",
+          "Chia sẻ doanh thu (85%)",
+          "Hỗ trợ franchise",
+          "Họp chiến lược quý"
+        ]
+      }
+    },
+    "annual_savings": "💰 Tiết kiệm 20% với thanh toán năm",
+    "annual_starter": "Starter: $279/năm",
+    "annual_pro": "Pro: $949/năm",
+    "annual_franchise": "Franchise: $2,869/năm",
+    "comparison": {
+      "title": "So Sánh Tính Năng",
+      "feature": "Tính Năng",
+      "support": "Hỗ Trợ",
+      "branding": "Tùy Chỉnh Thương Hiệu",
+      "whitelabel": "White-label",
+      "api": "Truy Cập API",
+      "onboarding": "Onboarding",
+      "seats": "Tài khoản Team",
+      "commands": "Lệnh AI",
+      "starter_support": "Cộng đồng",
+      "pro_support": "Ưu tiên (24h)",
+      "franchise_support": "Chuyên dụng",
+      "starter_onboarding": "Tài liệu",
+      "pro_onboarding": "Họp 1-1",
+      "franchise_onboarding": "Setup đầy đủ"
+    },
+    "faq": {
+      "title": "Câu Hỏi Thường Gặp",
+      "switch": {
+        "q": "Tôi có thể đổi gói không?",
+        "a": "Có! Nâng cấp hoặc hạ cấp bất cứ lúc nào. Thay đổi có hiệu lực vào kỳ thanh toán tiếp theo."
+      },
+      "trial": {
+        "q": "Có dùng thử miễn phí không?",
+        "a": "Có! 7 ngày dùng thử miễn phí tất cả gói. Thẻ sẽ bị tính phí sau khi hết thời gian dùng thử - hủy bất cứ lúc nào trước đó."
+      },
+      "methods": {
+        "q": "Chấp nhận phương thức thanh toán nào?",
+        "a": "Thẻ tín dụng/ghi nợ, PayPal, và Crypto (USDT/USDC). Tất cả thanh toán được bảo mật bởi Polar.sh."
+      },
+      "refund": {
+        "q": "Có được hoàn tiền không?",
+        "a": "Đảm bảo hoàn tiền 30 ngày. Không hỏi lý do."
+      }
+    },
+    "guarantee": {
+      "title": "Đảm Bảo Hoàn Tiền 30 Ngày",
+      "description": "Không hài lòng? Hoàn tiền đầy đủ trong 30 ngày. Không hỏi lý do."
+    },
+    "faq_page": {
+      "title": "Hỏi đáp - AgencyOS",
+      "description": "Các câu hỏi thường gặp về AgencyOS, bảng giá và cách bắt đầu.",
+      "hero": {
+        "title": "Các câu hỏi thường gặp",
+        "subtitle": "Bạn có câu hỏi? Chúng tôi có câu trả lời."
+      },
+      "search": {
+        "placeholder": "🔍 Tìm kiếm câu hỏi..."
+      },
+      "no_results": "Không tìm thấy câu hỏi nào. Hãy thử tìm kiếm khác.",
+      "cta": {
+        "title": "Bạn vẫn còn thắc mắc?",
+        "subtitle": "Chúng tôi luôn sẵn sàng hỗ trợ. Hãy liên hệ với đội ngũ của chúng tôi.",
+        "support": "Liên hệ hỗ trợ",
+        "discord": "Tham gia Discord"
+      },
+      "categories": [
+        {
+          "id": "getting_started",
+          "title": "Bắt đầu",
+          "icon": "🚀",
+          "questions": [
+            {
+              "q": "AgencyOS là gì?",
+              "a": "AgencyOS là hệ điều hành hỗ trợ bởi AI cho các agency một người. Nó bao gồm 125+ lệnh để tự động hóa các tác vụ marketing, bán hàng, quản lý affiliate và tài chính."
+            },
+            {
+              "q": "Làm cách nào để cài đặt AgencyOS?",
+              "a": "Sau khi mua, bạn sẽ nhận được quyền truy cập vào kho lưu trữ GitHub riêng tư. Hãy clone nó về máy và mở trong IDE của bạn. Chạy script thiết lập và bạn đã sẵn sàng."
+            },
+            {
+              "q": "Tôi có cần kinh nghiệm lập trình không?",
+              "a": "Không! AgencyOS được thiết kế cho người dùng không chuyên về kỹ thuật. Chỉ cần nhập các lệnh bằng ngôn ngữ tự nhiên như /marketing/social hoặc /sales/proposal và AI sẽ xử lý phần còn lại."
+            }
+          ]
+        },
+        {
+          "id": "pricing",
+          "title": "Giá cả & Gói dịch vụ",
+          "icon": "💰",
+          "questions": [
+            {
+              "q": "Bản dùng thử miễn phí bao gồm những gì?",
+              "a": "Bản dùng thử miễn phí 7 ngày bao gồm tất cả các tính năng của gói Starter: 20 lệnh AI, tự động hóa marketing cơ bản và hỗ trợ cộng đồng."
+            },
+            {
+              "q": "Tôi có thể nâng cấp hoặc hạ cấp gói bất cứ lúc nào không?",
+              "a": "Có! Bạn có thể chuyển đổi gói bất cứ lúc nào. Việc nâng cấp sẽ được tính phí theo tỷ lệ, và việc hạ cấp sẽ có hiệu lực vào kỳ thanh toán tiếp theo."
+            },
+            {
+              "q": "Có chính sách hoàn tiền không?",
+              "a": "Hoàn toàn có. Chúng tôi cung cấp cam kết hoàn tiền trong 30 ngày. Nếu bạn không hài lòng, hãy gửi email cho chúng tôi và chúng tôi sẽ hoàn tiền cho bạn, không cần giải thích."
+            }
+          ]
+        },
+        {
+          "id": "features",
+          "title": "Tính năng & Lệnh",
+          "icon": "⌨️",
+          "questions": [
+            {
+              "q": "Có bao nhiêu lệnh có sẵn?",
+              "a": "AgencyOS bao gồm 125+ lệnh về marketing, bán hàng, affiliate, tài chính và tạo nội dung. Các lệnh mới được bổ sung hàng tháng."
+            },
+            {
+              "q": "Tôi có thể tạo lệnh tùy chỉnh không?",
+              "a": "Có! Các gói Pro và Franchise bao gồm khả năng tạo và lưu các template lệnh tùy chỉnh."
+            },
+            {
+              "q": "Nó có tích hợp với các công cụ hiện có của tôi không?",
+              "a": "AgencyOS hoạt động với các công cụ phổ biến như Notion, Google Workspace, Slack và nhiều công cụ khác thông qua các tích hợp MCP (Model Context Protocol) của chúng tôi."
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "title": "Hỗ trợ & Cộng đồng",
+          "icon": "🆘",
+          "questions": [
+            {
+              "q": "Làm thế nào để tôi nhận được hỗ trợ?",
+              "a": "Người dùng Starter nhận hỗ trợ cộng đồng qua Discord. Người dùng Pro nhận hỗ trợ ưu tiên qua email. Người dùng Franchise nhận các cuộc gọi hướng dẫn 1:1 chuyên dụng."
+            },
+            {
+              "q": "Có cộng đồng không?",
+              "a": "Có! Hãy tham gia cộng đồng Discord của chúng tôi với hơn 500 chủ agency chia sẻ mẹo, template và thành công."
+            },
+            {
+              "q": "Có hướng dẫn hoặc tài liệu không?",
+              "a": "Chúng tôi có tài liệu hướng dẫn toàn diện, video hướng dẫn và một blog với các mẹo và thực hành tốt nhất."
+            }
+          ]
+        }
+      ]
+    },
+    "final_cta": {
+      "title": "Sẵn sàng tự động hóa agency của bạn?",
+      "subtitle": "Bắt đầu miễn phí. Hủy bất cứ lúc nào. Thắng mãi mãi.",
+      "button_trial": "Dùng Thử Miễn Phí",
+      "button_demo": "Đặt Lịch Demo"
+    },
+    "license_page": {
+      "title": "Quản Lý Giấy Phép",
+      "description": "Xem và quản lý giấy phép AgencyOS của bạn",
+      "hero": {
+        "title": "KIỂM SOÁT GIẤY PHÉP",
+        "status_active": "ĐANG HOẠT ĐỘNG",
+        "status_no_license": "Không có giấy phép"
+      },
+      "display": {
+        "label": "MÃ GIẤY PHÉP CỦA BẠN",
+        "loading": "Đang tải...",
+        "copy": "Sao chép mã"
+      },
+      "details": {
+        "email": "Email đã đăng ký",
+        "plan": "Gói hiện tại",
+        "activated": "Kích hoạt vào",
+        "status": "Trạng thái giấy phép",
+        "lifetime": "MIỄN PHÍ TRỌN ĐỜI 🎉"
+      },
+      "cli": {
+        "title": "CÀI ĐẶT CLI",
+        "clone": "1. Clone",
+        "setup": "2. Cài đặt",
+        "run": "3. Chạy"
+      },
+      "ide": {
+        "title": "MỞ TRONG IDE",
+        "vscode": "VS Code",
+        "cursor": "Cursor",
+        "antigravity": "Google Antigravity"
+      },
+      "actions": {
+        "docs": "Đọc Tài Liệu",
+        "quickstart": "Bắt Đầu Nhanh"
+      },
+      "support": {
+        "footer": "Cần hỗ trợ? Liên hệ {link}",
+        "contact": "support@agencyos.network"
+      },
+      "alerts": {
+        "copied": "Đã sao chép mã giấy phép!",
+        "cmd_copied": "Đã sao chép lệnh!",
+        "success": "Thành công!",
+        "copy_error": "Lỗi khi sao chép"
+      }
+    },
+    "affiliate_page": {
+      "title": "Chương Trình Cộng Tác Viên",
+      "description": "Tham gia chương trình cộng tác viên AgencyOS và kiếm hoa hồng định kỳ",
+      "hero": {
+        "badge": "KIẾM 40% ĐỊNH KỲ",
+        "title": "Chương Trình <span class=\"gradient-text\">Cộng Tác Viên</span>",
+        "subtitle": "Giúp các agency khác tự động hóa công việc của họ và nhận thanh toán hàng tháng.",
+        "starter": "Starter",
+        "pro": "Pro",
+        "enterprise": "Enterprise",
+        "you_earn": "Bạn nhận được",
+        "primary_cta": "Mở Bảng Điều Khiển",
+        "secondary_cta": "Cách thức hoạt động"
+      },
+      "stats": {
+        "commission": "Hoa hồng",
+        "cookie": "Thời gian Cookie",
+        "payouts": "Thời gian thanh toán",
+        "recurring": "Định kỳ"
+      },
+      "how_it_works": {
+        "title": "Cách thức hoạt động",
+        "step1": {
+          "title": "Đăng ký",
+          "desc": "Nhận liên kết giới thiệu duy nhất của bạn trong vài giây."
+        },
+        "step2": {
+          "title": "Chia sẻ",
+          "desc": "Đăng trên X, LinkedIn hoặc gửi cho mạng lưới agency của bạn."
+        },
+        "step3": {
+          "title": "Chuyển đổi",
+          "desc": "Theo dõi lượt nhấp và chuyển đổi của bạn trong thời gian thực."
+        },
+        "step4": {
+          "title": "Nhận thanh toán",
+          "desc": "Nhận thanh toán hàng tháng qua phương thức ưa thích của bạn."
+        }
+      },
+      "calculator": {
+        "title": "Máy tính thu nhập",
+        "label": "Số lượng giới thiệu gói Pro",
+        "monthly": "Thu nhập hàng tháng",
+        "yearly": "Thu nhập hàng năm",
+        "lifetime": "Ước tính tổng cộng 3 năm"
+      },
+      "what_you_get": {
+        "title": "Những gì bạn nhận được",
+        "dashboard": {
+          "title": "Bảng điều khiển thời gian thực",
+          "desc": "Theo dõi mọi lượt nhấp, chuyển đổi và thanh toán trực tiếp."
+        },
+        "assets": {
+          "title": "Tài liệu Marketing",
+          "desc": "Bannner, nội dung và bài đăng mạng xã hội có sẵn."
+        },
+        "links": {
+          "title": "Deep Linking",
+          "desc": "Liên kết đến bất kỳ trang nào trên trang web của chúng tôi với ID giới thiệu của bạn."
+        },
+        "leaderboard": {
+          "title": "Bảng xếp hạng",
+          "desc": "Cạnh tranh với các cộng tác viên khác để nhận thêm tiền thưởng."
+        },
+        "payouts": {
+          "title": "Thanh toán linh hoạt",
+          "desc": "Nhận thanh toán qua PayPal, Stripe hoặc Chuyển khoản ngân hàng."
+        },
+        "bonuses": {
+          "title": "Thưởng hiệu suất",
+          "desc": "Phần thưởng thêm khi đạt các cột mốc giới thiệu."
+        }
+      },
+      "bonuses": {
+        "title": "Thưởng cột mốc",
+        "first_blood": {
+          "title": "FIRST BLOOD",
+          "req": "Đơn hàng đầu tiên",
+          "reward": "+$50 Thưởng"
+        },
+        "rising_star": {
+          "title": "RISING STAR",
+          "req": "10 Đơn hàng",
+          "reward": "+$250 Thưởng"
+        },
+        "diamond": {
+          "title": "DIAMOND",
+          "req": "50 Đơn hàng",
+          "reward": "+$1,500 Thưởng"
+        },
+        "king": {
+          "title": "AFFILIATE KING",
+          "req": "100 Đơn hàng",
+          "reward": "+$5,000 Thưởng"
+        }
+      },
+      "cta": {
+        "title": "Sẵn sàng bắt đầu?",
+        "subtitle": "Tham gia mạng lưới cộng tác viên của chúng tôi và bắt đầu kiếm tiền ngay hôm nay.",
+        "button": "Tham Gia Ngay →"
+      }
+    },
+    "affiliate_dashboard": {
+      "title": "Bảng điều khiển cộng tác viên | AgencyOS",
+      "description": "Theo dõi thu nhập, lượt nhấp và chuyển đổi cộng tác viên của bạn trong thời gian thực.",
+      "header": {
+        "title": "🏯 Bảng điều khiển cộng tác viên",
+        "welcome": "Chào mừng trở lại, Cộng tác viên",
+        "copy_btn": "📋 Sao chép"
+      },
+      "stats": {
+        "earnings": "Tháng này",
+        "clicks": "Lượt nhấp",
+        "conversions": "Chuyển đổi",
+        "rate": "Tỷ lệ chuyển đổi"
+      },
+      "earnings_chart": {
+        "title": "📈 Thu nhập (30 ngày qua)",
+        "periods": {
+          "7d": "7 ngày qua",
+          "30d": "30 ngày qua",
+          "90d": "90 ngày qua"
+        },
+        "empty": "Chưa có dữ liệu thu nhập",
+        "hint": "Chia sẻ liên kết của bạn để bắt đầu kiếm tiền!"
+      },
+      "activity": {
+        "title": "🕐 Hoạt động gần đây",
+        "empty": "Chưa có hoạt động",
+        "hint": "Lượt nhấp và chuyển đổi của bạn sẽ xuất hiện ở đây"
+      },
+      "rank": {
+        "title": "🏆 Thứ hạng của bạn",
+        "not_ranked": "Chưa có thứ hạng",
+        "hint": "Thực hiện đơn hàng đầu tiên để có thứ hạng!"
+      },
+      "achievements": {
+        "title": "🎖️ Thành tựu",
+        "list": {
+          "first_blood": "First Blood",
+          "rising_star": "Rising Star",
+          "diamond": "Diamond",
+          "king": "King"
+        }
+      },
+      "actions": {
+        "title": "⚡ Hành động nhanh",
+        "links": "🔗 Tạo liên kết",
+        "assets": "🎨 Tài liệu Marketing",
+        "leaderboard": "🏆 Bảng xếp hạng",
+        "payouts": "💳 Thanh toán"
+      },
+      "payout": {
+        "title": "💳 Thanh toán tiếp theo",
+        "threshold": "Ngưỡng {current} / {target}",
+        "method": "Phương thức thanh toán:",
+        "setup": "Thiết lập PayPal/Wise"
+      },
+      "getting_started": {
+        "title": "🚀 Bắt đầu",
+        "steps": [
+          "Tạo tài khoản",
+          "Sao chép liên kết",
+          "Chia sẻ mạng xã hội",
+          "Kiếm hoa hồng!"
+        ]
+      }
+    },
+    "agency_dashboard": {
+      "title": "Trung tâm điều hành Agency",
+      "description": "Chỉ số agency thời gian thực, giám sát sức khỏe hệ thống và hành động nhanh",
+      "header": {
+        "title": "🏯 TRUNG TÂM ĐIỀU HÀNH AGENCY",
+        "subtitle": "MILESTONE 100 • \"Không đánh mà thắng\"",
+        "status_thriving": "ĐANG PHÁT TRIỂN"
+      },
+      "metrics": {
+        "revenue": "Doanh thu MTD",
+        "clients": "Khách hàng đang hoạt động",
+        "margin": "Biên lợi nhuận",
+        "utilization": "Tỷ lệ sử dụng",
+        "nps": "Điểm NPS",
+        "pipeline": "Pipeline"
+      },
+      "system": {
+        "title": "🔧 Trạng thái hệ thống",
+        "all_operational": "Tất cả hệ thống hoạt động bình thường"
+      },
+      "actions": {
+        "title": "🚀 Hành động nhanh",
+        "proposal": "Đề xuất mới",
+        "invoice": "Tạo hóa đơn",
+        "meeting": "Đặt lịch họp",
+        "client": "Thêm khách hàng",
+        "report": "Chạy báo cáo",
+        "campaign": "Gửi chiến dịch"
+      },
+      "priorities": {
+        "title": "📋 Ưu tiên hôm nay"
+      },
+      "commands": {
+        "title": "🏯 135 lệnh KHÔNG TỐN SỨC",
+        "view_all": "Xem tất cả →",
+        "palette_hint": "Nhấn {kbd} để mở Bảng lệnh"
+      },
+      "footer_nav": {
+        "agentops": {
+          "title": "Kiến trúc AgentOps",
+          "desc": "18 Agent × 135 Lệnh"
+        },
+        "client_dash": {
+          "title": "Bảng điều khiển khách hàng",
+          "desc": "Cổng thông tin cho khách hàng"
+        },
+        "command_docs": {
+          "title": "Tài liệu lệnh",
+          "desc": "176 trang tài liệu"
+        }
+      }
+    },
+    "agentops_page": {
+      "title": "Kiến trúc AgentOps",
+      "description": "Mạng lưới thần kinh của AgencyOS - 18 Hub & 135 Lệnh nguyên tử",
+      "hero": {
+        "badge": "ĐIỀU PHỐI LƯỢNG TỬ",
+        "title": "18 <span class=\"gradient-text\">Hub</span> chuyên biệt",
+        "subtitle": "Một mạng lưới phi tập trung gồm các AI agent làm việc hài hòa tuyệt đối."
+      },
+      "stats": {
+        "hubs": "Tổng số Hub",
+        "commands": "Lệnh nguyên tử",
+        "uptime": "Thời gian hoạt động",
+        "latency": "Độ trễ trung bình"
+      }
+    },
+    "usage_page": {
+      "title": "Bảng điều khiển sử dụng - AgencyOS",
+      "description": "Theo dõi việc sử dụng API và giới hạn đăng ký của bạn.",
+      "hero": {
+        "title": "📊 Bảng điều khiển sử dụng",
+        "subtitle": "Theo dõi đăng ký và sử dụng API của bạn"
+      },
+      "loading": "Đang tải dữ liệu sử dụng...",
+      "no_sub": {
+        "title": "Không có đăng ký hoạt động",
+        "desc": "Đăng ký để theo dõi mức sử dụng và mở khóa thêm tính năng.",
+        "cta": "Xem Bảng Giá →"
+      },
+      "subscription": {
+        "title": "🎫 Đăng ký",
+        "status": "Trạng thái",
+        "license": "Giấy phép",
+        "expires": "Hết hạn",
+        "active": "Đang hoạt động"
+      },
+      "meters": {
+        "api": "Cuộc gọi API",
+        "commands": "Lệnh",
+        "remaining": "(còn {amount})"
+      },
+      "features": {
+        "title": "🎁 Tính năng của bạn",
+        "api": "Truy cập API",
+        "whitelabel": "White-Label",
+        "team": "{count} Thành viên nhóm",
+        "team_plural": "{count} Thành viên nhóm",
+        "unlimited_team": "Nhóm không giới hạn",
+        "priority": "Hỗ trợ ưu tiên"
+      },
+      "upgrade": {
+        "title": "🚀 Bạn muốn nhiều hơn?",
+        "desc": "Nâng cấp để mở khóa giới hạn cao hơn và các tính năng cao cấp.",
+        "cta": "Nâng Cấp Gói →"
+      }
+    },
+    "admin_revenue_page": {
+      "title": "Bảng điều khiển doanh thu - AgencyOS Admin",
+      "description": "Theo dõi tiến trình hướng tới mục tiêu doanh thu 1 triệu đô la.",
+      "hero": {
+        "title": "💰 Bảng điều khiển doanh thu",
+        "subtitle": "Theo dõi tiến trình đạt mục tiêu 1 triệu đô la (2026)"
+      },
+      "goal": {
+        "title": "🎯 Mục tiêu doanh thu 2026",
+        "ytd": "Doanh thu YTD",
+        "avg": "Trung bình tháng",
+        "left": "Số tháng còn lại",
+        "req": "Cần thiết mỗi tháng"
+      },
+      "streams": {
+        "saas": "Đăng ký SaaS",
+        "franchise": "Mạng lưới nhượng quyền",
+        "marketplace": "Chợ ứng dụng",
+        "services": "Dịch vụ & Tư vấn",
+        "affiliate": "Thanh toán cộng tác viên",
+        "net": "Doanh thu thuần"
+      },
+      "details": {
+        "starter": "Starter ($29/tháng)",
+        "pro": "Pro ($99/tháng)",
+        "enterprise": "Enterprise ($2K/tháng)",
+        "platform_fees": "Phí nền tảng",
+        "revenue_share": "Chia sẻ doanh thu (30%)",
+        "active_franchisees": "Đại lý hoạt động",
+        "platform_take": "Phần chiết khấu (30%)",
+        "total_sales": "Tổng doanh số",
+        "active_creators": "Nhà sáng tạo hoạt động",
+        "projects_completed": "Dự án hoàn thành",
+        "avg_value": "Giá trị dự án trung bình",
+        "active_clients": "Khách hàng hoạt động",
+        "total_conversions": "Tổng chuyển đổi",
+        "active_affiliates": "Cộng tác viên hoạt động",
+        "avg_commission": "Hoa hồng trung bình",
+        "gross": "Tổng doanh thu",
+        "payouts": "- Thanh toán",
+        "net_calc": "= Thuần"
+      },
+      "chart": {
+        "title": "📊 Doanh thu hàng tháng (2026)",
+        "target": "Mục tiêu: $83,333/tháng"
+      },
+      "status": {
+        "on_track": "Đúng tiến độ:",
+        "yes": "✅ Có",
+        "behind": "⚠️ Chậm"
+      }
+    },
+    "franchise_dashboard": {
+      "title": "Bảng điều khiển nhượng quyền - AgencyOS",
+      "description": "Quản lý các vùng lãnh thổ nhượng quyền và doanh thu của bạn.",
+      "hero": {
+        "title": "🌍 Bảng điều khiển nhượng quyền",
+        "subtitle": "Quản lý vùng lãnh thổ & theo dõi doanh thu"
+      },
+      "loading": "Đang tải dữ liệu nhượng quyền...",
+      "apply": {
+        "title": "Trở thành đối tác nhượng quyền",
+        "desc": "Tham gia mạng lưới toàn cầu của chúng tôi và phát triển kinh doanh agency của bạn.",
+        "cta": "Đăng ký ngay →",
+        "benefits": [
+          "Quyền lãnh thổ độc quyền",
+          "Chia sẻ doanh thu 70%",
+          "Truy cập toàn bộ nền tảng",
+          "Hỗ trợ Marketing"
+        ]
+      },
+      "status": {
+        "title": "🎫 Trạng thái nhượng quyền",
+        "territories": "Vùng lãnh thổ",
+        "clients": "Khách hàng",
+        "share": "Chia sẻ doanh thu",
+        "fee": "Phí nền tảng"
+      },
+      "revenue": {
+        "title": "💰 Doanh thu tháng này",
+        "local": "Dịch vụ địa phương",
+        "saas": "Bán lại SaaS",
+        "total": "Tổng doanh thu",
+        "your_share": "Phần của bạn (70%)"
+      },
+      "territories": {
+        "title": "📍 Vùng lãnh thổ của bạn",
+        "claim": "+ Đăng ký vùng lãnh thổ",
+        "empty": "Chưa có vùng lãnh thổ nào được đăng ký."
+      },
+      "onboarding": {
+        "title": "📋 Tiến trình hội nhập",
+        "steps": [
+          "Hoàn thành hồ sơ",
+          "Đăng ký vùng đầu tiên",
+          "Thiết lập thanh toán",
+          "Hoàn thành đào tạo",
+          "Có khách hàng đầu tiên",
+          "Gửi doanh thu đầu tiên"
+        ]
+      },
+      "modal": {
+        "title": "🗺️ Đăng ký vùng lãnh thổ",
+        "all_countries": "Tất cả quốc gia",
+        "loading": "Đang tải vùng lãnh thổ...",
+        "claim_flow": "Quy trình đăng ký vùng lãnh thổ sắp ra mắt!"
+      }
+    },
+    "newsletter_dashboard": {
+      "title": "Bảng điều khiển Bản tin - Mekong Mail | AgencyOS",
+      "description": "Quản lý tất cả các bản tin khách hàng từ một bảng điều khiển duy nhất. Tích hợp viết AI, phân tích và quảng bá chéo.",
+      "header": {
+        "title": "📧 Mekong Mail",
+        "subtitle": "Trung tâm Bản tin",
+        "back": "← Quay lại AgencyOS",
+        "new": "+ Bản tin mới"
+      },
+      "stats": {
+        "subscribers": "Tổng người đăng ký",
+        "open_rate": "Tỷ lệ mở TB",
+        "newsletters": "Bản tin",
+        "sent": "Đã gửi tháng này"
+      },
+      "actions": {
+        "ai_write": "AI viết",
+        "analytics": "Phân tích",
+        "settings": "Cài đặt"
+      },
+      "list": {
+        "title": "Bản tin của bạn",
+        "create": "Tạo bản tin",
+        "live": "Đang chạy",
+        "subs": "người theo dõi",
+        "open": "mở",
+        "edit": "Sửa",
+        "send": "Gửi"
+      },
+      "activity": {
+        "title": "Hoạt động gần đây",
+        "sent": "Bản tin đã gửi",
+        "new_sub": "Người đăng ký mới",
+        "draft": "Đã lưu bản nháp"
+      }
+    },
+    "client_dashboard": {
+      "title": "Client Portal - Dự Án & Tiến Độ",
+      "description": "Theo dõi dự án, nhiệm vụ, hóa đơn và giao tiếp với agency của bạn",
+      "auth": {
+        "title": "Client Portal",
+        "subtitle": "Nhập mã truy cập của bạn",
+        "label": "Mã Portal",
+        "placeholder": "Nhập 12-ký tự access code",
+        "button": "Truy Cập Portal →",
+        "hint": "Không có mã? Liên hệ agency của bạn để nhận access code."
+      },
+      "header": {
+        "welcome": "Chào mừng",
+        "member_since": "Thành viên từ {date}",
+        "logout": "Đăng xuất"
+      },
+      "stats": {
+        "projects": "Dự Án Đang Chạy",
+        "tasks": "Nhiệm Vụ Hoàn Thành",
+        "paid": "Đã Thanh Toán",
+        "messages": "Tin Nhắn Mới"
+      },
+      "sections": {
+        "projects": "Dự Án Của Bạn",
+        "tasks": "Nhiệm Vụ Gần Đây",
+        "invoices": "Hóa Đơn",
+        "messages": "Tin Nhắn"
+      },
+      "empty": {
+        "projects": "Không có dự án nào",
+        "tasks": "Không có nhiệm vụ nào",
+        "invoices": "Không có hóa đơn nào",
+        "messages": "Không có tin nhắn mới"
+      },
+      "project": {
+        "completed": "nhiệm vụ hoàn thành"
+      }
+    },
+    "affiliate_assets": {
+      "title": "Tài liệu Marketing | Cổng Cộng Tác Viên",
+      "description": "Tải xuống biểu ngữ, mẫu email và tài liệu mạng xã hội để quảng bá AgencyOS.",
+      "header": {
+        "back": "← Quay lại Bảng điều khiển",
+        "title": "🎨 Tài liệu Marketing",
+        "subtitle": "Tài liệu chuyên nghiệp để quảng bá AgencyOS"
+      },
+      "banners": {
+        "title": "📱 Biểu ngữ",
+        "count": "{count} kích thước",
+        "download": "⬇️ Tải xuống"
+      },
+      "emails": {
+        "title": "📧 Mẫu Email",
+        "count": "{count} mẫu",
+        "copy": "📋 Sao chép"
+      },
+      "social": {
+        "title": "📱 Mạng xã hội",
+        "count": "Sẵn sàng sử dụng",
+        "copy_thread": "📋 Sao chép Thread",
+        "copy_script": "📋 Sao chép Kịch bản",
+        "copy_post": "📋 Sao chép Bài viết"
+      },
+      "video": {
+        "title": "🎬 Video quảng cáo",
+        "count": "Sắp ra mắt",
+        "empty": "Video quảng cáo chuyên nghiệp sắp ra mắt!",
+        "hint": "Phiên bản 15 giây, 30 giây và 60 giây"
+      },
+      "brand": {
+        "title": "📐 Quy chuẩn thương hiệu",
+        "colors": "Màu sắc",
+        "logo": "Logo",
+        "logo_hint": "Luôn sử dụng emoji lâu đài",
+        "tagline": "Tagline"
+      }
+    },
+    "affiliate_leaderboard": {
+      "title": "Bảng xếp hạng cộng tác viên | AgencyOS",
+      "description": "Xem những người kiếm tiền hàng đầu và cạnh tranh để nhận tiền thưởng hàng tháng.",
+      "header": {
+        "back": "← Quay lại Bảng điều khiển",
+        "title": "🏆 Bảng xếp hạng",
+        "subtitle": "{date} • Những người xuất sắc nhất sẽ nhận được phần thưởng!"
+      },
+      "prizes": {
+        "title": "🎁 Giải thưởng hàng tháng",
+        "first": "🥇 Giải Nhất",
+        "second": "🥈 Giải Nhì",
+        "third": "🥉 Giải Ba",
+        "bonus": "Thưởng tiền mặt"
+      },
+      "podium": {
+        "sales": "đơn hàng",
+        "earnings": "thu nhập"
+      },
+      "table": {
+        "title": "📊 Xếp hạng đầy đủ",
+        "rank": "Hạng",
+        "affiliate": "Cộng tác viên",
+        "badge": "Huy hiệu",
+        "sales": "Đơn hàng",
+        "earnings": "Thu nhập"
+      },
+      "position": {
+        "title": "Vị trí hiện tại của bạn",
+        "not_ranked": "Chưa có hạng",
+        "hint": "Thực hiện đơn hàng đầu tiên để xuất hiện trên bảng xếp hạng!",
+        "button": "Xem bảng điều khiển"
+      },
+      "badges": {
+        "title": "🎖️ Huy hiệu thành tựu"
+      }
+    }
+  }
+}

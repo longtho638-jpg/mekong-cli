@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { DollarSign, Users, TrendingUp, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { DollarSign, Users, TrendingUp, Activity, ArrowUpRight, ArrowDownRight, type LucideIcon } from 'lucide-react'
 import { AgencyCard } from '@/components/ui/agency-card'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -11,7 +11,7 @@ interface RevenueMetric {
     value: string
     change: string
     trend: 'up' | 'down' | 'neutral'
-    icon: any
+    icon: LucideIcon
     color: string
 }
 

@@ -5,7 +5,7 @@ const AGENTOPS_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 export interface WorkflowNode {
   id: string
   type: string
-  config: Record<string, any>
+  config: Record<string, unknown>
   next_nodes: string[]
   position: { x: number; y: number }
   data?: { label: string } // For React Flow
@@ -15,7 +15,7 @@ export interface Workflow {
   id: string
   name: string
   trigger: string
-  trigger_config: Record<string, any>
+  trigger_config: Record<string, unknown>
   nodes: WorkflowNode[]
   active: boolean
 }
@@ -38,7 +38,7 @@ export async function listWorkflows(): Promise<WorkflowSummary[]> {
   }
 }
 
-export async function saveWorkflow(workflow: Workflow): Promise<any> {
+export async function saveWorkflow(workflow: Workflow): Promise<unknown> {
   try {
     const response = await fetch(`${AGENTOPS_API}/workflow/${workflow.id}/save`, {
       method: 'POST',
@@ -53,7 +53,7 @@ export async function saveWorkflow(workflow: Workflow): Promise<any> {
   }
 }
 
-export async function executeWorkflow(id: string): Promise<any> {
+export async function executeWorkflow(id: string): Promise<unknown> {
   try {
     const response = await fetch(`${AGENTOPS_API}/workflow/${id}/execute`, {
       method: 'POST',

@@ -3,9 +3,8 @@
  * RESTful endpoints for Assets, Movements, Licenses
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { InventoryService, AssetType, AssetStatus } from '@/lib/inventory'
+import { NextResponse, type NextRequest } from 'next/server'
+import { InventoryService, type AssetType, type AssetStatus } from '@/lib/inventory'
 import { logger } from '@/lib/utils/logger'
 
 export const dynamic = 'force-dynamic'
@@ -32,13 +31,13 @@ export async function GET(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'list':
+      case 'list': {
         const filters = {
           type: searchParams.get('type') as AssetType | undefined,
           status: searchParams.get('status') as AssetStatus | undefined,
           assignedTo: searchParams.get('assignedTo') || undefined,
           expiringWithinDays: searchParams.get('expiring')
-            ? parseInt(searchParams.get('expiring')!)
+            ? parseInt(searchParams.get('expiring') || '0')
             : undefined,
         }
         const assets = await service.listAssets(tenantId, filters)
@@ -47,8 +46,9 @@ export async function GET(request: NextRequest) {
           data: assets,
           count: assets.length,
         })
+      }
 
-      case 'get':
+      case 'get': {
         if (!assetId) {
           return NextResponse.json({ error: 'assetId required' }, { status: 400 })
         }
@@ -57,8 +57,9 @@ export async function GET(request: NextRequest) {
           success: true,
           data: asset,
         })
+      }
 
-      case 'history':
+      case 'history': {
         if (!assetId) {
           return NextResponse.json({ error: 'assetId required' }, { status: 400 })
         }
@@ -67,21 +68,24 @@ export async function GET(request: NextRequest) {
           success: true,
           data: history,
         })
+      }
 
-      case 'summary':
+      case 'summary': {
         const summary = await service.getAssetSummary(tenantId)
         return NextResponse.json({
           success: true,
           data: summary,
         })
+      }
 
-      case 'licenses':
+      case 'licenses': {
         const licenses = await service.listLicenses(tenantId)
         return NextResponse.json({
           success: true,
           data: licenses,
           count: licenses.length,
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
@@ -108,28 +112,31 @@ export async function POST(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'create':
+      case 'create': {
         const asset = await service.createAsset(tenantId, data.asset)
         return NextResponse.json({
           success: true,
           data: asset,
         })
+      }
 
-      case 'update':
+      case 'update': {
         const updated = await service.updateAsset(tenantId, data.assetId, data.updates)
         return NextResponse.json({
           success: true,
           data: updated,
         })
+      }
 
-      case 'delete':
+      case 'delete': {
         await service.deleteAsset(tenantId, data.assetId)
         return NextResponse.json({
           success: true,
           message: 'Asset deleted',
         })
+      }
 
-      case 'move':
+      case 'move': {
         const movement = await service.recordMovement(
           tenantId,
           data.assetId,
@@ -145,8 +152,9 @@ export async function POST(request: NextRequest) {
           success: true,
           data: movement,
         })
+      }
 
-      case 'create-license':
+      case 'create-license': {
         const license = await service.createLicense(tenantId, {
           ...data.license,
           purchaseDate: new Date(data.license.purchaseDate),
@@ -156,6 +164,7 @@ export async function POST(request: NextRequest) {
           success: true,
           data: license,
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })

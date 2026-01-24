@@ -55,8 +55,8 @@ export function useAgency() {
 
             if (subData) {
                 // Override legacy fields with unified billing data
-                agencyData.subscription_tier = subData.plan.toLowerCase() as any;
-                agencyData.subscription_status = subData.status as any;
+                agencyData.subscription_tier = subData.plan.toLowerCase() as 'free' | 'pro' | 'enterprise';
+                agencyData.subscription_status = subData.status as 'active' | 'cancelled' | 'past_due';
             }
 
             setAgency(agencyData);

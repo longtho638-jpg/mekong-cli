@@ -100,7 +100,7 @@ export function useAssetRegistry(options: UseAssetRegistryOptions = {}) {
       )
 
       setAssets(mapped)
-    } catch (error) {
+    } catch {
       // Return demo data if table doesn't exist
       setAssets(getDemoAssets())
     } finally {

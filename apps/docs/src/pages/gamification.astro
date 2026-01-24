@@ -1,51 +1,48 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Gamification - AgencyOS';
-const description = 'Level up while you earn. XP system, achievement badges, and rewards for using AgencyOS.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('gamification_page.title');
+const description = t('gamification_page.description');
+
+const xpData = (locales[locale] as any).gamification_page.xp;
+const badgesData = (locales[locale] as any).gamification_page.badges;
+const levelsData = (locales[locale] as any).gamification_page.levels;
+const comingSoonData = (locales[locale] as any).gamification_page.coming_soon;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="gaming-hero">
-    <h1>🎮 Level Up While You Earn</h1>
-    <p>Gamification that actually makes you money</p>
+    <h1>{t('gamification_page.hero.title')}</h1>
+    <p>{t('gamification_page.hero.subtitle')}</p>
   </section>
 
   <!-- XP System -->
   <section class="xp-section">
-    <h2>⚡ XP System</h2>
-    <p class="section-desc">Earn XP for every action. Level up to unlock premium features.</p>
-    
+    <h2>{xpData.title}</h2>
+    <p class="section-desc">{xpData.subtitle}</p>
+
     <div class="xp-table">
       <table>
         <thead>
           <tr>
-            <th>Action</th>
-            <th>XP</th>
-            <th>Ví dụ</th>
+            {xpData.headers.map((header: string) => (
+              <th>{header}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>🔧 Gõ command</td>
-            <td><span class="xp-badge">+50</span></td>
-            <td>Mỗi lần dùng /command</td>
-          </tr>
-          <tr>
-            <td>✅ Hoàn thành workflow</td>
-            <td><span class="xp-badge">+200</span></td>
-            <td>Finish Affiliate Workflow</td>
-          </tr>
-          <tr>
-            <td>💰 Kiếm được tiền</td>
-            <td><span class="xp-badge gold">+500</span></td>
-            <td>First affiliate payout</td>
-          </tr>
-          <tr>
-            <td>🚀 Launch sản phẩm</td>
-            <td><span class="xp-badge gold">+1000</span></td>
-            <td>Ship feature mới</td>
-          </tr>
+          {Object.entries(xpData.items).map(([key, item]: [string, any]) => (
+            <tr>
+              <td>{item[0]}</td>
+              <td><span class={`xp-badge ${key === 'money' || key === 'launch' ? 'gold' : ''}`}>{item[1]}</span></td>
+              <td>{item[2]}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -53,108 +50,69 @@ const description = 'Level up while you earn. XP system, achievement badges, and
 
   <!-- Achievement Badges -->
   <section class="badges-section">
-    <h2>🏆 Achievement Badges</h2>
-    <p class="section-desc">Collect badges as you progress. Show off your achievements!</p>
-    
+    <h2>{badgesData.title}</h2>
+    <p class="section-desc">{badgesData.subtitle}</p>
+
     <div class="badges-grid">
-      <div class="badge-card">
-        <span class="badge-icon">🔰</span>
-        <h3>First Timer</h3>
-        <p>Dùng command đầu tiên</p>
-        <span class="badge-reward">+100 XP</span>
-      </div>
-      
-      <div class="badge-card gold">
-        <span class="badge-icon">💸</span>
-        <h3>Money Maker</h3>
-        <p>Kiếm $100 đầu tiên</p>
-        <span class="badge-reward">+500 XP</span>
-      </div>
-      
-      <div class="badge-card">
-        <span class="badge-icon">🚀</span>
-        <h3>Shipper</h3>
-        <p>Launch 3 sản phẩm</p>
-        <span class="badge-reward">+1000 XP</span>
-      </div>
-      
-      <div class="badge-card legendary">
-        <span class="badge-icon">👑</span>
-        <h3>Master</h3>
-        <p>Đạt Level 10</p>
-        <span class="badge-reward">Unlock Premium</span>
-      </div>
-      
-      <div class="badge-card">
-        <span class="badge-icon">📣</span>
-        <h3>Influencer</h3>
-        <p>10K followers</p>
-        <span class="badge-reward">+2000 XP</span>
-      </div>
-      
-      <div class="badge-card">
-        <span class="badge-icon">🏯</span>
-        <h3>Strategist</h3>
-        <p>Complete 13 Binh Pháp</p>
-        <span class="badge-reward">+5000 XP</span>
-      </div>
+      {Object.entries(badgesData.items).map(([key, badge]: [string, any]) => (
+        <div class={`badge-card ${key === 'money_maker' ? 'gold' : ''} ${key === 'master' ? 'legendary' : ''}`}>
+          <span class="badge-icon">
+            {key === 'first_timer' && '🔰'}
+            {key === 'money_maker' && '💸'}
+            {key === 'shipper' && '🚀'}
+            {key === 'master' && '👑'}
+            {key === 'influencer' && '📣'}
+            {key === 'strategist' && '🏯'}
+          </span>
+          <h3>{badge.title}</h3>
+          <p>{badge.desc}</p>
+          <span class="badge-reward">{badge.reward}</span>
+        </div>
+      ))}
     </div>
   </section>
 
   <!-- Level Progression -->
   <section class="levels-section">
-    <h2>📊 Level Progression</h2>
-    
+    <h2>{levelsData.title}</h2>
+
     <div class="levels-list">
-      <div class="level-item">
-        <span class="level-number">1-3</span>
-        <span class="level-title">Beginner</span>
-        <span class="level-perk">Basic commands unlocked</span>
-      </div>
-      <div class="level-item">
-        <span class="level-number">4-6</span>
-        <span class="level-title">Intermediate</span>
-        <span class="level-perk">Advanced workflows</span>
-      </div>
-      <div class="level-item">
-        <span class="level-number">7-9</span>
-        <span class="level-title">Advanced</span>
-        <span class="level-perk">Priority support</span>
-      </div>
-      <div class="level-item legendary">
-        <span class="level-number">10+</span>
-        <span class="level-title">Master</span>
-        <span class="level-perk">All premium features FREE</span>
-      </div>
+      {Object.entries(levelsData.items).map(([key, level]: [string, any]) => (
+        <div class={`level-item ${key === 'master' ? 'legendary' : ''}`}>
+          <span class="level-number">{level.level}</span>
+          <span class="level-title">{level.title}</span>
+          <span class="level-perk">{level.perk}</span>
+        </div>
+      ))}
     </div>
   </section>
 
   <!-- Coming Soon -->
   <section class="coming-soon">
-    <h2>🔮 Coming Soon</h2>
+    <h2>{comingSoonData.title}</h2>
     <div class="coming-grid">
       <div class="coming-card">
         <span>🏆</span>
-        <p>Leaderboards</p>
+        <p>{comingSoonData.items.leaderboards}</p>
       </div>
       <div class="coming-card">
         <span>🎁</span>
-        <p>Weekly Rewards</p>
+        <p>{comingSoonData.items.rewards}</p>
       </div>
       <div class="coming-card">
         <span>🤝</span>
-        <p>Team Challenges</p>
+        <p>{comingSoonData.items.challenges}</p>
       </div>
       <div class="coming-card">
         <span>💎</span>
-        <p>NFT Badges</p>
+        <p>{comingSoonData.items.nft}</p>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to level up?</h2>
-    <a href="/docs/getting-started/installation" class="btn-primary">Start Earning XP →</a>
+    <h2>{t('gamification_page.cta.title')}</h2>
+    <a href="/docs/getting-started/installation" class="btn-primary">{t('gamification_page.cta.button')}</a>
   </section>
 </LandingLayout>
 

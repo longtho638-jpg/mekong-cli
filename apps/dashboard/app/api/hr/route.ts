@@ -3,9 +3,8 @@
  * RESTful endpoints for Employees, Payroll, Leave Management
  */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { HRService, EmployeeStatus } from '@/lib/hr'
+import { NextResponse, type NextRequest } from 'next/server'
+import { HRService, type EmployeeStatus } from '@/lib/hr'
 import { logger } from '@/lib/utils/logger'
 
 export const dynamic = 'force-dynamic'
@@ -32,7 +31,7 @@ export async function GET(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'employees':
+      case 'employees': {
         const filters = {
           status: searchParams.get('status') as EmployeeStatus | undefined,
           department: searchParams.get('department') || undefined,
@@ -43,8 +42,9 @@ export async function GET(request: NextRequest) {
           data: employees,
           count: employees.length,
         })
+      }
 
-      case 'employee':
+      case 'employee': {
         if (!employeeId) {
           return NextResponse.json({ error: 'employeeId required' }, { status: 400 })
         }
@@ -53,8 +53,9 @@ export async function GET(request: NextRequest) {
           success: true,
           data: employee,
         })
+      }
 
-      case 'payroll':
+      case 'payroll': {
         const runId = searchParams.get('runId')
         if (!runId) {
           return NextResponse.json({ error: 'runId required' }, { status: 400 })
@@ -64,8 +65,9 @@ export async function GET(request: NextRequest) {
           success: true,
           data: payroll,
         })
+      }
 
-      case 'leave-balance':
+      case 'leave-balance': {
         if (!employeeId) {
           return NextResponse.json({ error: 'employeeId required' }, { status: 400 })
         }
@@ -74,8 +76,9 @@ export async function GET(request: NextRequest) {
           success: true,
           data: balance,
         })
+      }
 
-      case 'calculate-payroll':
+      case 'calculate-payroll': {
         const salary = parseFloat(searchParams.get('salary') || '0')
         const country = searchParams.get('country') || 'VN'
         const calculation = service.calculatePayroll(salary, country)
@@ -83,6 +86,7 @@ export async function GET(request: NextRequest) {
           success: true,
           data: calculation,
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
@@ -109,7 +113,7 @@ export async function POST(request: NextRequest) {
     const service = getService()
 
     switch (action) {
-      case 'create-employee':
+      case 'create-employee': {
         const employee = await service.createEmployee(tenantId, {
           ...data.employee,
           hireDate: new Date(data.employee.hireDate),
@@ -119,29 +123,33 @@ export async function POST(request: NextRequest) {
           success: true,
           data: employee,
         })
+      }
 
-      case 'update-employee':
+      case 'update-employee': {
         const updated = await service.updateEmployee(tenantId, data.employeeId, data.updates)
         return NextResponse.json({
           success: true,
           data: updated,
         })
+      }
 
-      case 'run-payroll':
+      case 'run-payroll': {
         const payrollRun = await service.createPayrollRun(tenantId, data.period, data.userId)
         return NextResponse.json({
           success: true,
           data: payrollRun,
         })
+      }
 
-      case 'process-payroll':
+      case 'process-payroll': {
         await service.processPayroll(tenantId, data.runId)
         return NextResponse.json({
           success: true,
           message: 'Payroll processed',
         })
+      }
 
-      case 'request-leave':
+      case 'request-leave': {
         const leave = await service.requestLeave(tenantId, {
           employeeId: data.employeeId,
           leaveType: data.leaveType,
@@ -153,13 +161,15 @@ export async function POST(request: NextRequest) {
           success: true,
           data: leave,
         })
+      }
 
-      case 'approve-leave':
+      case 'approve-leave': {
         await service.approveLeave(tenantId, data.leaveId, data.approverId)
         return NextResponse.json({
           success: true,
           message: 'Leave approved',
         })
+      }
 
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 })

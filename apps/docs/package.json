@@ -4,11 +4,12 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev 2>&1 | tee logs.txt",
-    "build": "astro build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@agencyos/i18n": "workspace:^",
     "@astrojs/mdx": "^4.3.7",
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.0.0",

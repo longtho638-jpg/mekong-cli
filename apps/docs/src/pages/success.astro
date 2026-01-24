@@ -1,85 +1,96 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Welcome to AgencyOS!';
-const description = 'Your account is ready. Get your license key and start automating your agency.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('success_page.title');
+const description = t('success_page.description');
+
+const pageData = (locales[locale] as any).success_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <!-- Fireworks Canvas -->
   <canvas id="fireworks-canvas"></canvas>
-  
+
   <section class="success-section">
     <div class="success-card">
-      
+
       <div class="success-icon">🎉</div>
-      
-      <h1>Welcome to AgencyOS!</h1>
-      
+
+      <h1>{pageData.hero.title}</h1>
+
       <div class="welcome-message" id="welcome-message">
-        <p>Your account has been created successfully.</p>
+        <p>{pageData.hero.message}</p>
       </div>
 
       <!-- License Key Section -->
       <div class="license-section" id="license-section">
-        <h3>🔑 Your License Key</h3>
+        <h3>{pageData.license.title}</h3>
         <div class="license-box">
           <code id="license-key">AGENCYOS-XXXX-XXXX-XXXX</code>
-          <button id="copy-license" class="btn-copy" title="Copy license key">📋</button>
+          <button id="copy-license" class="btn-copy" title={pageData.license.copy_title}>📋</button>
         </div>
-        <p class="license-note">Keep this key safe. You'll need it to activate your CLI.</p>
+        <p class="license-note">{pageData.license.note}</p>
       </div>
 
       <!-- Account Info -->
       <div class="account-info" id="account-info">
         <div class="info-row">
-          <span class="label">Email:</span>
+          <span class="label">{pageData.account.email}</span>
           <span class="value" id="user-email">-</span>
         </div>
         <div class="info-row">
-          <span class="label">Plan:</span>
+          <span class="label">{pageData.account.plan}</span>
           <span class="value" id="user-plan">Pro</span>
         </div>
         <div class="info-row" id="discount-info" style="display: none;">
-          <span class="label">Status:</span>
-          <span class="value text-green" id="user-discount">LIFETIME FREE</span>
+          <span class="label">{pageData.account.status}</span>
+          <span class="value text-green" id="user-discount">{pageData.account.lifetime_free}</span>
         </div>
       </div>
 
       <!-- Installation Steps -->
       <div class="install-steps">
-        <h3>🚀 Quick Setup (1 minute)</h3>
-        
+        <h3>{pageData.setup.title}</h3>
+
         <div class="step featured">
           <div class="step-number">1</div>
           <div class="step-content">
-            <strong>Open in your IDE (1-click clone)</strong>
-            <p class="step-desc">Click a button below. It will automatically clone the project and open it:</p>
+            <strong>{pageData.setup.step1.title}</strong>
+            <p class="step-desc">{pageData.setup.step1.desc}</p>
             <div class="ide-buttons">
               <a href="vscode://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-btn" title="Open in VS Code">
-                <span>💻 VS Code</span>
+                <span>{pageData.setup.step1.vscode}</span>
               </a>
               <a href="cursor://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-btn" title="Open in Cursor">
-                <span>🖱️ Cursor</span>
+                <span>{pageData.setup.step1.cursor}</span>
               </a>
               <a href="https://antigravity.google/?repo=longtho638-jpg/agencyos-starter" class="ide-btn antigravity" title="Open in Antigravity (Recommended)">
-                <span>🚀 Antigravity</span>
+                <span>{pageData.setup.step1.antigravity}</span>
               </a>
             </div>
-            <p class="step-note">Don't have an IDE? <a href="https://code.visualstudio.com/download" target="_blank">Download VS Code</a> (free)</p>
+            <p class="step-note">
+              {pageData.setup.step1.no_ide.split('{link}')[0]}
+              <a href="https://code.visualstudio.com/download" target="_blank">{pageData.setup.step1.download}</a>
+              {pageData.setup.step1.no_ide.split('{link}')[1]}
+            </p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <strong>Run in IDE terminal</strong>
-            <p class="step-desc">Press <kbd>Ctrl</kbd>+<kbd>`</kbd> to open terminal, then paste:</p>
+            <strong>{pageData.setup.step2.title}</strong>
+            <p class="step-desc">{pageData.setup.step2.desc}</p>
             <div class="code-block">
               <code>/help</code>
               <button class="btn-copy-small" data-copy="/help">📋</button>
             </div>
-            <p class="step-note">That's it! Start using 125+ AI commands 🎉</p>
+            <p class="step-note">{pageData.setup.step2.note}</p>
           </div>
         </div>
 
@@ -87,7 +98,7 @@ const description = 'Your account is ready. Get your license key and start autom
 
       <!-- IDE Compatibility -->
       <div class="ide-compatibility">
-        <h4>✅ Compatible with:</h4>
+        <h4>{pageData.compatibility}</h4>
         <div class="ide-logos">
           <span class="ide-logo">VS Code</span>
           <span class="ide-logo">Cursor</span>
@@ -99,25 +110,41 @@ const description = 'Your account is ready. Get your license key and start autom
 
       <!-- CTA Buttons -->
       <div class="cta-buttons">
-        <a href="/docs/getting-started/installation" class="btn-primary">
-          📖 Full Documentation →
+        <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="btn-primary">
+          {pageData.cta.docs}
         </a>
-        <a href="/quickstart" class="btn-secondary">
-          🎯 Quick Start Guide
+        <a href={getRelativeLocaleUrl(locale, '/quickstart')} class="btn-secondary">
+          {pageData.cta.guide}
         </a>
       </div>
 
       <!-- Email Sent Notice -->
       <div class="email-notice" id="email-notice">
-        <p>📧 We've also sent these instructions to your email.</p>
+        <p>{pageData.email_notice}</p>
       </div>
 
       <div class="support-note">
-        <p>Need help? <a href="mailto:support@agencyos.network">support@agencyos.network</a> | <a href="/license">Manage License</a></p>
+        <p>
+          {pageData.support_note.split('{email}')[0]}
+          <a href="mailto:support@agencyos.network">support@agencyos.network</a>
+          {pageData.support_note.split('{email}')[1].split('{link}')[0]}
+          <a href={getRelativeLocaleUrl(locale, '/license')}>{pageData.manage_license}</a>
+          {pageData.support_note.split('{link}')[1]}
+        </p>
       </div>
 
     </div>
   </section>
+
+  <div id="success-i18n"
+    data-copied={pageData.copied}
+    data-license-copied={pageData.license_copied}
+    data-command-copied={pageData.command_copied}
+    data-free-welcome={pageData.free_welcome}
+    data-free-lifetime={pageData.free_lifetime}
+    data-lifetime-free-badge={pageData.account.lifetime_free}
+  ></div>
+</LandingLayout>
 </LandingLayout>
 
 <style>

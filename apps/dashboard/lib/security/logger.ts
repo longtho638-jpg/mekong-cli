@@ -207,12 +207,14 @@ class SecurityLogger {
       ...entry.context,
     }
 
-    // eslint-disable-next-line no-console
+     
     switch (entry.level) {
       case 'debug':
+        // eslint-disable-next-line no-console
         console.debug(message, data)
         break
       case 'info':
+        // eslint-disable-next-line no-console
         console.info(message, data)
         break
       case 'warn':
@@ -223,6 +225,7 @@ class SecurityLogger {
         console.error(message, data)
         break
       default:
+        // eslint-disable-next-line no-console
         console.info(message, data)
     }
   }
@@ -241,8 +244,9 @@ class SecurityLogger {
   private async writeToFile(entry: LogEntry): Promise<void> {
     // In production, this would write to structured log files
     // For now, we'll simulate file logging
-    const _logLine = JSON.stringify(entry) + '\n'
+    void entry
     // Implementation would go here
+    return Promise.resolve();
   }
 
   private async writeToRemote(entry: LogEntry): Promise<void> {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { MD3Card } from '../md3/MD3Card'
 import { MD3Button } from '../md3/MD3Button'
 import { MD3Text } from '../md3-dna/MD3Text'
@@ -31,13 +31,7 @@ export function SubscriptionManager({
   const [isUpgrading, setIsUpgrading] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
 
-  useEffect(() => {
-    if (subscriptionId) {
-      fetchSubscription(subscriptionId)
-    }
-  }, [subscriptionId])
-
-  const fetchSubscription = async (id: string) => {
+  const fetchSubscription = useCallback(async (id: string) => {
     try {
       setLoading(true)
       const res = await fetch(`${apiBaseUrl}/payments/paypal/subscription/${id}`)
@@ -60,7 +54,13 @@ export function SubscriptionManager({
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiBaseUrl])
+
+  useEffect(() => {
+    if (subscriptionId) {
+      fetchSubscription(subscriptionId)
+    }
+  }, [subscriptionId, fetchSubscription])
 
   const handleCancel = async () => {
     if (!subscription || !window.confirm('Are you sure you want to cancel your subscription? This action cannot be undone.')) return

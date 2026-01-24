@@ -1,34 +1,38 @@
 ---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 <section class="py-12">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 id="how-it-works" class="text-3xl font-bold text-center mb-12 text-[var(--color-text-primary)]">
-      How It Works
+      {t('landing.agencyos.hero.how_it_works.title')}
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
       <div class="text-center">
         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-green)] flex items-center justify-center text-2xl font-bold text-white">1</div>
-        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Get Access</h3>
-        <p class="text-sm text-[var(--color-text-muted)]">Sign up via Polar.sh. Instant delivery.</p>
+        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('landing.agencyos.hero.how_it_works.step1.title')}</h3>
+        <p class="text-sm text-[var(--color-text-muted)]">{t('landing.agencyos.hero.how_it_works.step1.desc')}</p>
       </div>
 
       <div class="text-center">
         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-blue)] flex items-center justify-center text-2xl font-bold text-white">2</div>
-        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Open in IDE</h3>
-        <p class="text-sm text-[var(--color-text-muted)]">Works with any IDE. Just clone and open.</p>
+        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('landing.agencyos.hero.how_it_works.step2.title')}</h3>
+        <p class="text-sm text-[var(--color-text-muted)]">{t('landing.agencyos.hero.how_it_works.step2.desc')}</p>
       </div>
 
       <div class="text-center">
         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-purple)] flex items-center justify-center text-2xl font-bold text-white">3</div>
-        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Run Commands</h3>
-        <p class="text-sm text-[var(--color-text-muted)]">Type /help to see 125+ commands. Pick one.</p>
+        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('landing.agencyos.hero.how_it_works.step3.title')}</h3>
+        <p class="text-sm text-[var(--color-text-muted)]">{t('landing.agencyos.hero.how_it_works.step3.desc')}</p>
       </div>
 
       <div class="text-center">
         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-cyan)] flex items-center justify-center text-2xl font-bold text-white">4</div>
-        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">Profit</h3>
-        <p class="text-sm text-[var(--color-text-muted)]">Content created. Deals closed. Money made.</p>
+        <h3 class="font-semibold mb-2 text-[var(--color-text-primary)]">{t('landing.agencyos.hero.how_it_works.step4.title')}</h3>
+        <p class="text-sm text-[var(--color-text-muted)]">{t('landing.agencyos.hero.how_it_works.step4.desc')}</p>
       </div>
     </div>
   </div>

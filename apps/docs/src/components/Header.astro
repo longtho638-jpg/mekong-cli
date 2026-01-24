@@ -1,9 +1,8 @@
 ---
 import LanguageSwitcher from './LanguageSwitcher';
-import { getLangFromUrl, getLocalizedPath, useTranslations } from '../i18n/utils';
-import type { Locale } from '../i18n/locales';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = getLocaleFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
 const t = useTranslations(currentLocale);
 
@@ -52,12 +51,10 @@ const navIcons = {
         </svg>
       </button>
 
-
-
       <nav class="nav">
         <a
-          href="/agencyos"
-          class:list={['nav-link', { active: currentPath === '/agencyos' || currentPath === '/agencyos/' }]}
+          href={getRelativeLocaleUrl(currentLocale, '/agencyos')}
+          class:list={['nav-link', { active: currentPath.endsWith('/agencyos') || currentPath.endsWith('/agencyos/') }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -66,14 +63,14 @@ const navIcons = {
           <span>AgencyOS</span>
         </a>
         <a
-          href="/pricing"
-          class:list={['nav-link', { active: currentPath === '/pricing' || currentPath === '/pricing/' }]}
+          href={getRelativeLocaleUrl(currentLocale, '/pricing')}
+          class:list={['nav-link', { active: currentPath.endsWith('/pricing') || currentPath.endsWith('/pricing/') }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="1" x2="12" y2="23"/>
             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
           </svg>
-          <span>Pricing</span>
+          <span>{t('landing.nav.pricing')}</span>
         </a>
         <a
           href="/dashboard"
@@ -85,45 +82,45 @@ const navIcons = {
             <rect x="14" y="14" width="7" height="7"/>
             <rect x="3" y="14" width="7" height="7"/>
           </svg>
-          <span>Dashboard</span>
+          <span>{t('nav.dashboard')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/getting-started/introduction', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/getting-started/introduction')}
           class:list={['nav-link', { active: currentSection === 'getting-started' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['getting-started']} />
           <span>{t('nav.getting-started')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/agents', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/agents')}
           class:list={['nav-link', { active: currentSection === 'docs' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['docs']} />
           <span>{t('nav.docs')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/workflows/new-project', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/workflows/new-project')}
           class:list={['nav-link', { active: currentSection === 'workflows' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['workflows']} />
           <span>{t('nav.workflows')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/tools', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/tools')}
           class:list={['nav-link', { active: currentSection === 'tools' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['tools']} />
           <span>{t('nav.tools')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/changelog', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/changelog')}
           class:list={['nav-link', { active: currentSection === 'changelog' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['changelog']} />
           <span>{t('nav.changelog')}</span>
         </a>
         <a
-          href={getLocalizedPath('/docs/support/troubleshooting', currentLocale)}
+          href={getRelativeLocaleUrl(currentLocale, '/docs/support/troubleshooting')}
           class:list={['nav-link', { active: currentSection === 'support' }]}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={navIcons['support']} />

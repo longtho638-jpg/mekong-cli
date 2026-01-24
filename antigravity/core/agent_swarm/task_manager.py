@@ -9,6 +9,8 @@ from typing import Dict, List, Optional
 
 from .enums import TaskPriority, TaskStatus
 from .models import SwarmTask
+from ..kanban.board_manager import BoardManager
+from ..kanban.board_manager import TaskPriority as KanbanPriority
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ class TaskManager:
         self.tasks: Dict[str, SwarmTask] = {}
         self.task_queue: List[str] = []
         self._lock = threading.Lock()
+        self.board_manager = BoardManager()
 
     def submit_task(
         self,
@@ -42,6 +45,26 @@ class TaskManager:
         with self._lock:
             self.tasks[task_id] = task
             self._insert_by_priority(task_id, priority)
+
+        # Create Kanban Card
+        try:
+            k_priority = KanbanPriority.MEDIUM
+            if priority == TaskPriority.CRITICAL:
+                k_priority = KanbanPriority.CRITICAL
+            elif priority == TaskPriority.HIGH:
+                k_priority = KanbanPriority.HIGH
+            elif priority == TaskPriority.LOW or priority == TaskPriority.BACKGROUND:
+                k_priority = KanbanPriority.LOW
+
+            self.board_manager.create_card(
+                board_id="default",
+                title=name,
+                priority=k_priority,
+                description=str(payload)[:200] if payload else None,
+                swarm_task_id=task_id
+            )
+        except Exception as e:
+            logger.warning(f"Failed to create Kanban card for task {task_id}: {e}")
 
         logger.info(f"📋 Task submitted: {name} (priority: {priority.value})")
         return task_id

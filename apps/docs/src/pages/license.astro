@@ -1,70 +1,77 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'License Management - AgencyOS';
-const description = 'View and manage your AgencyOS license key.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('license_page.title');
+const description = t('license_page.description');
+
+const pageData = (locales[locale] as any).license_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="license-page">
     <div class="license-card">
-      
-      <h1>🔑 License Management</h1>
-      
+
+      <h1>{pageData.hero.title}</h1>
+
       <div class="license-status" id="license-status">
         <div class="status-badge active" id="status-badge">
           <span class="status-dot"></span>
-          <span>Active</span>
+          <span>{pageData.hero.status_active}</span>
         </div>
       </div>
 
       <!-- License Key Display -->
       <div class="license-display">
-        <label>Your License Key</label>
+        <label>{pageData.display.label}</label>
         <div class="key-box">
-          <code id="license-key">Loading...</code>
-          <button id="copy-btn" class="btn-copy">📋 Copy</button>
+          <code id="license-key">{pageData.display.loading}</code>
+          <button id="copy-btn" class="btn-copy">{pageData.display.copy}</button>
         </div>
       </div>
 
       <!-- License Details -->
       <div class="license-details">
         <div class="detail-row">
-          <span class="label">Email:</span>
+          <span class="label">{pageData.details.email}</span>
           <span class="value" id="user-email">-</span>
         </div>
         <div class="detail-row">
-          <span class="label">Plan:</span>
+          <span class="label">{pageData.details.plan}</span>
           <span class="value" id="user-plan">Pro</span>
         </div>
         <div class="detail-row">
-          <span class="label">Activated:</span>
+          <span class="label">{pageData.details.activated}</span>
           <span class="value" id="activated-date">-</span>
         </div>
         <div class="detail-row">
-          <span class="label">Status:</span>
-          <span class="value text-green" id="license-type">Lifetime Access</span>
+          <span class="label">{pageData.details.status}</span>
+          <span class="value text-green" id="license-type">{pageData.details.lifetime}</span>
         </div>
       </div>
 
       <!-- CLI Installation -->
       <div class="cli-section">
-        <h3>📦 CLI Installation</h3>
-        
+        <h3>{pageData.cli.title}</h3>
+
         <div class="code-row">
-          <span class="step-label">Clone:</span>
+          <span class="step-label">{pageData.cli.clone}</span>
           <code>git clone https://github.com/longtho638-jpg/agencyos-starter.git</code>
           <button class="btn-copy-sm" data-copy="git clone https://github.com/longtho638-jpg/agencyos-starter.git">📋</button>
         </div>
-        
+
         <div class="code-row">
-          <span class="step-label">Setup:</span>
+          <span class="step-label">{pageData.cli.setup}</span>
           <code>cd agencyos-starter && pip install -r requirements.txt</code>
           <button class="btn-copy-sm" data-copy="cd agencyos-starter && pip install -r requirements.txt">📋</button>
         </div>
-        
+
         <div class="code-row">
-          <span class="step-label">Run:</span>
+          <span class="step-label">{pageData.cli.run}</span>
           <code>python -m core.help</code>
           <button class="btn-copy-sm" data-copy="python -m core.help">📋</button>
         </div>
@@ -72,32 +79,40 @@ const description = 'View and manage your AgencyOS license key.';
 
       <!-- IDE Links -->
       <div class="ide-section">
-        <h3>🖥️ Open in IDE</h3>
+        <h3>{pageData.ide.title}</h3>
         <div class="ide-grid">
           <a href="vscode://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-link">
-            VS Code
+            {pageData.ide.vscode}
           </a>
           <a href="cursor://vscode.git/clone?url=https://github.com/longtho638-jpg/agencyos-starter" class="ide-link">
-            Cursor
+            {pageData.ide.cursor}
           </a>
           <a href="https://antigravity.google/?repo=longtho638-jpg/agencyos-starter" class="ide-link featured">
-            🚀 Antigravity
+            {pageData.ide.antigravity}
           </a>
         </div>
       </div>
 
       <!-- Actions -->
       <div class="action-buttons">
-        <a href="/docs/getting-started/installation" class="btn-primary">📖 Documentation</a>
-        <a href="/quickstart" class="btn-secondary">🎯 Quick Start</a>
+        <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="btn-primary">{pageData.actions.docs}</a>
+        <a href={getRelativeLocaleUrl(locale, '/quickstart')} class="btn-secondary">{pageData.actions.quickstart}</a>
       </div>
 
       <div class="support-footer">
-        <p>Issues with your license? <a href="mailto:support@agencyos.network">Contact Support</a></p>
+        <p>{pageData.support.footer.split('{link}')[0]}<a href="mailto:support@agencyos.network">{pageData.support.contact}</a>{pageData.support.footer.split('{link}')[1]}</p>
       </div>
 
     </div>
   </section>
+
+  <div id="license-i18n"
+    data-copied={pageData.alerts.copied}
+    data-cmd-copied={pageData.alerts.cmd_copied}
+    data-success={pageData.alerts.success}
+    data-no-license={pageData.hero.status_no_license}
+    data-lifetime-free={pageData.details.lifetime}
+  ></div>
 </LandingLayout>
 
 <style>

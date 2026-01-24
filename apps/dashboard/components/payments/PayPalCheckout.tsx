@@ -62,7 +62,7 @@ export function PayPalCheckout({
   const [error, setError] = useState<string | null>(null)
   const [processing, setProcessing] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [sdkReady, setSdkReady] = useState(false)
+  const [, setSdkReady] = useState(false)
 
   // Load PayPal SDK v6
   useEffect(() => {
@@ -160,7 +160,7 @@ export function PayPalCheckout({
         const result = await createSubscription()
 
         // Find approval URL
-        const approvalUrl = result.links?.find((l: any) => l.rel === 'approve')?.href
+        const approvalUrl = result.links?.find((l: { rel: string; href: string }) => l.rel === 'approve')?.href
         if (approvalUrl) {
           window.location.href = approvalUrl
         } else {

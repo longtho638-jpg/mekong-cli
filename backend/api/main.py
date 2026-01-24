@@ -39,6 +39,7 @@ from backend.api.routers import (
     i18n,
     scheduler,
     vietnam,
+    kanban,
 )
 from backend.api.routers import dashboard as dashboard_router
 from backend.api.routers import webhooks as webhooks_router
@@ -94,6 +95,7 @@ app.include_router(vietnam.router)
 app.include_router(crm.router)
 app.include_router(scheduler.router)
 app.include_router(franchise.router)
+app.include_router(kanban.router)
 app.include_router(hybrid_router)
 app.include_router(antigravity.router)  # 🚀 AntigravityKit API
 app.include_router(code_router.router)  # 🔌 OpenCode Integration

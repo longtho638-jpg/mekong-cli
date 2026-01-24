@@ -6,7 +6,7 @@ export interface SystemStatus {
   status: 'healthy' | 'warning' | 'error' | 'unknown'
   message: string
   last_check: string
-  details: Record<string, any>
+  details: Record<string, unknown>
 }
 
 export interface Anomaly {

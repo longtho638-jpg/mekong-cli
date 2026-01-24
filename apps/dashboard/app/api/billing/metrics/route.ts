@@ -5,7 +5,6 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { calculateMRRMetrics } from '@/lib/billing/stripe'
 import { logger } from '@/lib/utils/logger'
 
 // Force dynamic to skip build-time static generation

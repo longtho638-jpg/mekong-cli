@@ -1,19 +1,43 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
 import Hero from '../components/Hero.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'All Commands - AgencyOS';
-const description = '125+ AI commands for developers, marketers, sales, finance, and founders. Find the exact command you need.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('commands_page.title');
+const description = t('commands_page.description');
+
+// Get "I want" items for mapping
+const iWantItems = (locales[locale] as any).commands_page.i_want.items;
+const iWantEntries = [
+  { id: 'affiliate', cmd: '/affiliate' },
+  { id: 'facebook', cmd: '/marketing/social' },
+  { id: 'tiktok', cmd: '/video' },
+  { id: 'customers', cmd: '/sales/lead' },
+  { id: 'proposal', cmd: '/sales/proposal' },
+  { id: 'invoice', cmd: '/finance/invoice' },
+  { id: 'bug', cmd: '/fix/fast' },
+  { id: 'code', cmd: '/code' },
+  { id: 'brainstorm', cmd: '/brainstorm' },
+  { id: 'competitor', cmd: '/intel/competitor' },
+  { id: 'runway', cmd: '/finance/runway' },
+  { id: 'strategy', cmd: '/binh-phap' },
+  { id: 'ship', cmd: '/ship' },
+  { id: 'review', cmd: '/review/codebase' }
+];
 ---
 
 <LandingLayout title={title} description={description}>
   <Hero
     badge={{
       icon: '⌨️',
-      text: 'Terminal-First Agency'
+      text: t('commands_page.hero.badge')
     }}
-    title="125+ AI Commands"
-    description="The complete index of every command in the AgencyOS ecosystem."
+    title={t('commands_page.hero.title')}
+    description={t('commands_page.hero.description')}
   />
 
   <section class="search-section py-8">
@@ -22,57 +46,50 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
       <div class="search-container">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input 
-          type="text" 
-          id="command-search" 
-          placeholder="Search commands... (e.g. marketing, invoice, fix)" 
+        <input
+          type="text"
+          id="command-search"
+          placeholder={t('commands_page.search.placeholder')}
           autocomplete="off"
         />
         <span class="search-clear" id="search-clear">✕</span>
       </div>
       <div class="search-stats">
-        <span id="results-count">125</span> commands found
+        <span id="results-count">125</span> {t('commands_page.search.found')}
       </div>
     </div>
 
     <!-- Category Filter -->
     <div class="category-filter">
-      <button class="filter-btn active" data-category="all">All</button>
-      <button class="filter-btn" data-category="tech">🧑‍💻 Tech</button>
-      <button class="filter-btn" data-category="marketing">📣 Marketing</button>
-      <button class="filter-btn" data-category="sales">💼 Sales</button>
-      <button class="filter-btn" data-category="finance">💰 Finance</button>
-      <button class="filter-btn" data-category="strategy">🎯 Strategy</button>
+      <button class="filter-btn active" data-category="all">{t('commands_page.categories.all')}</button>
+      <button class="filter-btn" data-category="tech">🧑‍💻 {t('commands_page.categories.tech')}</button>
+      <button class="filter-btn" data-category="marketing">📣 {t('commands_page.categories.marketing')}</button>
+      <button class="filter-btn" data-category="sales">💼 {t('commands_page.categories.sales')}</button>
+      <button class="filter-btn" data-category="finance">💰 {t('commands_page.categories.finance')}</button>
+      <button class="filter-btn" data-category="strategy">🎯 {t('commands_page.categories.strategy')}</button>
     </div>
   </section>
 
   <!-- Tôi muốn Index -->
   <section class="want-index reveal">
-    <h2 class="text-2xl font-bold mb-6">🎯 "Tôi muốn..." Index</h2>
+    <h2 class="text-2xl font-bold mb-6">{t('commands_page.i_want.title')}</h2>
     <div class="want-table">
       <table>
         <thead>
           <tr>
-            <th>Tôi muốn...</th>
-            <th>Command</th>
-            <th>Kết quả</th>
+            <th>{t('commands_page.i_want.header_want')}</th>
+            <th>{t('commands_page.i_want.header_command')}</th>
+            <th>{t('commands_page.i_want.header_result')}</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>Kiếm tiền affiliate</strong></td><td><code>/affiliate</code></td><td>Danh sách 50+ programs</td></tr>
-          <tr><td><strong>Viết post Facebook</strong></td><td><code>/marketing/social</code></td><td>Post sẵn sàng đăng</td></tr>
-          <tr><td><strong>Làm video TikTok</strong></td><td><code>/video</code></td><td>Video 9:16 ready</td></tr>
-          <tr><td><strong>Tìm khách hàng</strong></td><td><code>/sales/lead</code></td><td>List leads qualified</td></tr>
-          <tr><td><strong>Viết proposal</strong></td><td><code>/sales/proposal</code></td><td>PDF proposal đẹp</td></tr>
-          <tr><td><strong>Xuất hóa đơn</strong></td><td><code>/finance/invoice</code></td><td>Invoice chuyên nghiệp</td></tr>
-          <tr><td><strong>Fix bug nhanh</strong></td><td><code>/fix/fast</code></td><td>Bug fixed trong 5 phút</td></tr>
-          <tr><td><strong>Code feature mới</strong></td><td><code>/code</code></td><td>Code production-ready</td></tr>
-          <tr><td><strong>Brainstorm ý tưởng</strong></td><td><code>/brainstorm</code></td><td>10+ ideas sáng tạo</td></tr>
-          <tr><td><strong>Phân tích đối thủ</strong></td><td><code>/intel/competitor</code></td><td>Report chi tiết</td></tr>
-          <tr><td><strong>Tính runway</strong></td><td><code>/finance/runway</code></td><td>Còn X tháng cash</td></tr>
-          <tr><td><strong>Lên chiến lược</strong></td><td><code>/binh-phap</code></td><td>13 clusters aligned</td></tr>
-          <tr><td><strong>Ship sản phẩm</strong></td><td><code>/ship</code></td><td>Deployed + notified</td></tr>
-          <tr><td><strong>Review codebase</strong></td><td><code>/review/codebase</code></td><td>Quality report</td></tr>
+          {iWantEntries.map(entry => (
+            <tr>
+              <td><strong>{iWantItems[entry.id][0]}</strong></td>
+              <td><code>{entry.cmd}</code></td>
+              <td>{iWantItems[entry.id][1]}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -82,54 +99,54 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
   <section class="commands-category reveal">
     <div class="category-header">
       <span class="icon">🧑‍💻</span>
-      <h2>Tech Commands (75)</h2>
-      <span class="badge">AgencyOS AI Engine</span>
+      <h2>{t('commands_page.tech_header')}</h2>
+      <span class="badge">{t('commands_page.engine_badge')}</span>
     </div>
 
     <div class="command-group">
-      <h3>Code</h3>
+      <h3>{t('commands_page.groups.code')}</h3>
       <div class="commands-row">
         <code>/code</code><code>/code/auto</code><code>/code/parallel</code><code>/code/no-test</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Fix</h3>
+      <h3>{t('commands_page.groups.fix')}</h3>
       <div class="commands-row">
         <code>/fix</code><code>/fix/fast</code><code>/fix/hard</code><code>/fix/ui</code><code>/fix/types</code><code>/fix/ci</code><code>/fix/logs</code><code>/fix/test</code><code>/fix/parallel</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Design</h3>
+      <h3>{t('commands_page.groups.design')}</h3>
       <div class="commands-row">
         <code>/design</code><code>/design/fast</code><code>/design/good</code><code>/design/3d</code><code>/design/screenshot</code><code>/design/video</code><code>/design/describe</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Docs</h3>
+      <h3>{t('commands_page.groups.docs')}</h3>
       <div class="commands-row">
         <code>/docs</code><code>/docs/init</code><code>/docs/update</code><code>/docs/summarize</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Git</h3>
+      <h3>{t('commands_page.groups.git')}</h3>
       <div class="commands-row">
         <code>/git/cm</code><code>/git/pr</code><code>/git/merge</code><code>/git/cp</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Plan</h3>
+      <h3>{t('commands_page.groups.plan')}</h3>
       <div class="commands-row">
         <code>/plan</code><code>/plan/fast</code><code>/plan/hard</code><code>/plan/parallel</code><code>/plan/ci</code><code>/plan/cro</code><code>/plan/two</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Others</h3>
+      <h3>{t('commands_page.groups.others')}</h3>
       <div class="commands-row">
         <code>/test</code><code>/debug</code><code>/scout</code><code>/scout/ext</code><code>/bootstrap</code><code>/cook</code><code>/ask</code><code>/brainstorm</code><code>/journal</code><code>/help</code><code>/status</code><code>/review/codebase</code>
       </div>
@@ -140,68 +157,68 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
   <section class="commands-category business">
     <div class="category-header">
       <span class="icon">💼</span>
-      <h2>Business Commands (30+)</h2>
-      <span class="badge new">AgencyOS NEW</span>
+      <h2>{t('commands_page.business_header')}</h2>
+      <span class="badge new">{t('commands_page.new_badge')}</span>
     </div>
 
     <div class="command-group">
-      <h3>Marketing</h3>
+      <h3>{t('commands_page.groups.marketing')}</h3>
       <div class="commands-row">
         <code>/marketing</code><code>/marketing/social</code><code>/marketing/email</code><code>/marketing/ads</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Sales</h3>
+      <h3>{t('commands_page.groups.sales')}</h3>
       <div class="commands-row">
         <code>/sales</code><code>/sales/lead</code><code>/sales/proposal</code><code>/sales/close</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Finance</h3>
+      <h3>{t('commands_page.groups.finance')}</h3>
       <div class="commands-row">
         <code>/finance</code><code>/finance/invoice</code><code>/finance/expense</code><code>/finance/runway</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Operations</h3>
+      <h3>{t('commands_page.groups.operations')}</h3>
       <div class="commands-row">
         <code>/ops</code><code>/ops/billing</code><code>/ops/reporting</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Affiliate</h3>
+      <h3>{t('commands_page.groups.affiliate')}</h3>
       <div class="commands-row">
         <code>/affiliate</code><code>/affiliate/scout</code><code>/affiliate/compare</code><code>/affiliate/signup</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Video</h3>
+      <h3>{t('commands_page.groups.video')}</h3>
       <div class="commands-row">
         <code>/video</code><code>/video/script</code><code>/video/voiceover</code><code>/video/edit</code><code>/video/publish</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Strategy (Binh Pháp)</h3>
+      <h3>{t('commands_page.groups.strategy')}</h3>
       <div class="commands-row">
         <code>/binh-phap</code><code>/okr</code><code>/kpi</code><code>/sprint</code><code>/ship</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Intel</h3>
+      <h3>{t('commands_page.groups.intel')}</h3>
       <div class="commands-row">
         <code>/intel</code><code>/intel/vc</code><code>/intel/competitor</code><code>/fundraise</code>
       </div>
     </div>
 
     <div class="command-group">
-      <h3>Risk & Crisis</h3>
+      <h3>{t('commands_page.groups.risk')}</h3>
       <div class="commands-row">
         <code>/equity</code><code>/cap-table</code><code>/moat</code><code>/audit</code><code>/crisis</code><code>/survival</code><code>/pivot</code>
       </div>
@@ -209,8 +226,8 @@ const description = '125+ AI commands for developers, marketers, sales, finance,
   </section>
 
   <section class="cta-section">
-    <h2>Ready to try?</h2>
-    <a href="/docs/getting-started/installation" class="btn-primary">Install AgencyOS →</a>
+    <h2>{t('commands_page.cta.title')}</h2>
+    <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="btn-primary">{t('commands_page.cta.button')}</a>
   </section>
 </LandingLayout>
 
