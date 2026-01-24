@@ -21,7 +21,7 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "TID"]  # TID = flake8-tidy-imports
-ignore = ["E501", "E741", "E722", "F401", "E402", "E701", "E702"]  # E402: imports, E701/E702: one-liners
+ignore = ["E501", "E741", "E722", "F401", "E402", "E701", "E702", "TID252"]  # TID252: relative imports ok
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 # 🏯 BINH PHÁP: Prevent Pydantic 2.x compatibility issues
@@ -29,6 +29,7 @@ ignore = ["E501", "E741", "E722", "F401", "E402", "E701", "E702"]  # E402: impor
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "E402"]  # Intentional re-exports
+"antigravity/core/types/_compat.py" = ["TID251"]  # 🏯 The compat layer itself needs typing.TypedDict
 "cli/entrypoint.py" = ["E402"]  # Imports after app setup
 "backend/api/routers/webhooks.py" = ["E402"]
 "antigravity/core/ab_testing_engine.py" = ["F401"]  # Optional deps
