@@ -1,9 +1,9 @@
+from antigravity.core.swarm.bus import MessageBus
 from antigravity.core.swarm.enums import TaskPriority
 
 # Import Swarm v2 components
 from antigravity.core.swarm.shortcuts import get_swarm
 from antigravity.core.swarm.shortcuts import submit_task as submit_v2_task
-from antigravity.core.swarm.bus import MessageBus
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect

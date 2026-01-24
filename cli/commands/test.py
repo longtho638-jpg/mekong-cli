@@ -6,10 +6,10 @@ CLI commands for testing, security scanning, and code review.
 Powered by antigravity.core.code_guardian.CodeGuardian.
 """
 
+from antigravity.core.code_guardian import CodeGuardian, get_guardian
+
 import typer
 from rich.console import Console
-
-from antigravity.core.code_guardian import CodeGuardian, get_guardian
 
 console = Console()
 test_app = typer.Typer(help="🧪 Testing & Quality Assurance")
@@ -24,15 +24,17 @@ def run_tests(
     console.print(f"[bold blue]🧪 Running tests in {path}...[/bold blue]")
 
     # Delegate to CodeGuardian to run secure tests
-    guardian = get_guardian()
+    _guardian = get_guardian()
     # guardian.run_tests(path) - Conceptual
 
     import pytest
+
     args = [path, "-v"]
     if watch:
         try:
             import pytest_watch
-            args = [path] # ptw handles args differently
+
+            args = [path]  # ptw handles args differently
             # This would run ptw
         except ImportError:
             console.print("[yellow]pytest-watch not installed. Running once.[/yellow]")
@@ -52,7 +54,7 @@ def security_audit(
     """🛡️ Run security audit (Secret scanning, vulnerabilities)."""
     console.print(f"[bold blue]🛡️ Auditing {path}...[/bold blue]")
 
-    guardian = get_guardian()
+    _guardian = get_guardian()
     # Scan code
     # violations = guardian.scan(path)
 
