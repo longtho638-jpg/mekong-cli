@@ -40,7 +40,7 @@ COMMAND_REGISTRY: Dict[str, SuiteMetadataDict] = {
                 "agent": "money-maker",
             },
             "invoice": {
-                "module": "antigravity.core.revenue_engine",
+                "module": "antigravity.core.revenue.engine",
                 "class": "RevenueEngine",
                 "method": "create_invoice",
                 "agent": "revenue-engine",
@@ -160,12 +160,12 @@ COMMAND_REGISTRY: Dict[str, SuiteMetadataDict] = {
         "description": "System operations and quota management.",
         "subcommands": {
             "quota": {
-                "module": "antigravity.core.ops_engine",
+                "module": "antigravity.core.ops.engine",
                 "class": "OpsEngine",
                 "method": "get_quota_status",
             },
             "health": {
-                "module": "antigravity.core.ops_engine",
+                "module": "antigravity.core.ops.engine",
                 "class": "OpsEngine",
                 "method": "check_health",
             },

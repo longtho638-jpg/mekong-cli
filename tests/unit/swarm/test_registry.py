@@ -1,5 +1,5 @@
-from antigravity.core.agent_swarm.enums import AgentRole
-from antigravity.core.agent_swarm.registry import AgentRegistry
+from antigravity.core.swarm.enums import AgentRole
+from antigravity.core.swarm.registry import AgentRegistry
 
 import pytest
 

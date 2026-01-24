@@ -1,6 +1,6 @@
 import time
-from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.enums import TaskStatus
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import TaskStatus
 from antigravity.core.kanban.board_manager import BoardManager
 from antigravity.core.kanban.board_manager import TaskStatus as KanbanStatus
 

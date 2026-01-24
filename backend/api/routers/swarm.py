@@ -1,8 +1,8 @@
-from antigravity.core.agent_swarm.enums import TaskPriority
+from antigravity.core.swarm.enums import TaskPriority
 
 # Import Swarm v2 components
-from antigravity.core.agent_swarm.shortcuts import get_swarm
-from antigravity.core.agent_swarm.shortcuts import submit_task as submit_v2_task
+from antigravity.core.swarm.shortcuts import get_swarm
+from antigravity.core.swarm.shortcuts import submit_task as submit_v2_task
 from antigravity.core.swarm.bus import MessageBus
 from typing import Any, Dict, List, Optional
 

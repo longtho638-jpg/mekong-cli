@@ -25,8 +25,8 @@ from typing import Any, Dict
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from antigravity.core.agent_swarm.engine import AgentSwarm
-from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import AgentRole, TaskPriority
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
