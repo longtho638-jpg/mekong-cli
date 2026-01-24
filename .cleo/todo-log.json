@@ -1,0 +1,25 @@
+{
+  "$schema": "./schemas/log.schema.json",
+  "version": "2.4.0",
+  "project": "mekong-cli",
+  "_meta": {
+    "schemaVersion": "2.4.0",
+    "totalEntries": 1,
+    "firstEntry": "2026-01-24T03:22:47Z",
+    "lastEntry": "2026-01-24T03:22:47Z",
+    "entriesPruned": 0
+  },
+  "entries": [
+    {
+      "id": "log_72cf84a9c6b2",
+      "timestamp": "2026-01-24T03:22:47Z",
+      "sessionId": null,
+      "action": "system_initialized",
+      "actor": "system",
+      "taskId": null,
+      "before": null,
+      "after": null,
+      "details": "CLEO system initialized for project: mekong-cli"
+    }
+  ]
+}
