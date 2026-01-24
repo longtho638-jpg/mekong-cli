@@ -1,3 +1,10 @@
+## [2.6.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.6...v2.6.0-beta.7) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **deletions:** add skills/brainstorming/** (renamed to brainstorm) ([39c4522](https://github.com/claudekit/claudekit-engineer/commit/39c45225f0eb2b3b3090e410caafd81dc8f73b4e))
+
 ## [2.6.0-beta.6](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.5...v2.6.0-beta.6) (2026-01-24)
 
 
