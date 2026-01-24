@@ -77,7 +77,7 @@ class ObservabilityStack:
         self.metrics.increment("gumroad_purchases")
         self.metrics.increment("revenue_daily", amount)
 
-    def get_dashboard_data(self) -> Dict[str, Any]:
+    def get_dashboard_data(self) -> ObservabilityDashboardDict:
         """Get data for dashboard."""
         return {
             "metrics": self.metrics.get_all(),

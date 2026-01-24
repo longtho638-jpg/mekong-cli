@@ -3,13 +3,26 @@ Alert Manager.
 """
 import logging
 from datetime import datetime
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, TypedDict
 
 from .collector import MetricsCollector
 from .enums import AlertSeverity
 from .models import Alert, AlertEvent
 
 logger = logging.getLogger(__name__)
+
+
+class AlertStatusItemDict(TypedDict):
+    fired: bool
+    severity: str
+    threshold: float
+    last_fired: Optional[str]
+
+
+class AlertManagerStatusDict(TypedDict):
+    """Summary of all alert statuses"""
+    alerts: Dict[str, AlertStatusItemDict]
+    history_count: int
 
 
 class AlertManager:
@@ -122,7 +135,7 @@ class AlertManager:
         """Register alert callback."""
         self.callbacks.append(callback)
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> AlertManagerStatusDict:
         """Get alert manager status."""
         return {
             "alerts": {
