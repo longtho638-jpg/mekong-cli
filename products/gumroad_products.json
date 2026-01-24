@@ -146,6 +146,25 @@
         "scale"
       ],
       "description": "👑 **The Gold Standard for Enterprise Agency Excellence!**\n\n**\"Build to Exit.\" (Xây dựng để Thoái vốn.)**\n\nScale beyond boundaries. AgencyOS Enterprise is designed for high-growth firms, franchise networks, and multi-team organizations.\n\n### 🚀 Enterprise-Only Features:\n- ⚪ **White-Labeling**: Remove our branding, add yours. Fully customizable.\n- 👥 **Multi-Team Governance**: Granular permissions and team-specific dashboards.\n- 🌐 **Custom Domain Engine**: Deploy client portals to any domain automatically.\n- 📞 **1:1 Onboarding**: Dedicated strategist to help you set up your ecosystem.\n- 🛠️ **Source Code Access**: Full control over every line of code.\n\n### 💰 Maximize Valuation (Moat & Asset):\nBuilt to make your agency 'exit-ready' with structured data, clean audits, and scalable IP.\n\n**The ultimate choice for serious founders. Priority 24/7 Support included.**"
+    },
+    {
+      "id": "bizplan-generator",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🚀 Agentic BizPlan Generator - Zero→IPO Framework (24 SKILL Templates)",
+      "price": 29700,
+      "thumbnail": "bizplan-generator-cover.png",
+      "tags": [
+        "business plan",
+        "startup",
+        "ipo",
+        "agentic",
+        "ai",
+        "strategy",
+        "vietnam",
+        "sea"
+      ],
+      "description": "🚀 **Generate VC-Ready Business Plans in Minutes, Not Weeks!**\n\n**\"Từ Zero đến IPO với AI.\" (From Zero to IPO with AI.)**\n\nThe Agentic BizPlan Generator is a professional-grade CLI tool that transforms your business idea into a comprehensive, investor-ready business plan using 24 battle-tested SKILL templates.\n\n### 📋 What You Get:\n- 🧠 **24 SKILL Templates**: From Business Model to IPO Readiness\n- 🤖 **AI-Powered Generation**: Gemini integration for intelligent content\n- 📊 **9-Section Framework**: Complete Zero→IPO structure\n- 🏯 **Binh Pháp Aligned**: Strategic thinking built-in\n- 💼 **VC-Ready Output**: Professional markdown format\n\n### 🎯 Perfect For:\n- Startup founders preparing for fundraising\n- Agency owners planning scale-up\n- Consultants helping clients with strategy\n- Anyone targeting VN/SEA markets\n\n### 🛠️ Technical Features:\n- Python CLI with simple commands\n- Template-based + AI generation modes\n- Exports to Markdown/PDF\n- Integrates with AgencyOS ecosystem\n\n### 🏯 Binh Pháp Methodology:\nBuilt on Sun Tzu's Art of War principles for strategic business planning.\n\n**Instant Download. Lifetime Updates. Commercial License.**"
     }
   ]
 }
