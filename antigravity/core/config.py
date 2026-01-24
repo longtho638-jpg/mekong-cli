@@ -63,6 +63,7 @@ class DealTier(Enum):
 
 class TierPricingDict(TypedDict):
     """Structure for tier pricing configuration."""
+
     label: str
     retainer_usd: int
     equity_range: Tuple[float, float]
@@ -124,7 +125,7 @@ WORKFLOW_STEPS: List[str] = [
 # ============================================================
 
 # Model Routing (Quota Engine defaults)
-DEFAULT_MODEL = "gemini-3-flash"
+DEFAULT_MODEL = "gemini-3-pro-high"
 PREMIUM_MODEL = "gemini-3-pro-high"
 
 # Proxy Configuration

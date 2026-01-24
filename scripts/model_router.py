@@ -12,19 +12,25 @@ from typing import Dict, List, Literal
 
 # Model definitions matching Antigravity Proxy capabilities
 ModelType = Literal[
-    "gemini-2.5-flash-lite",
-    "gemini-3-flash",
-    "gemini-3-pro-high",
-    "claude-opus-4-5-thinking"
+    "gemini-2.5-flash-lite", "gemini-3-flash", "gemini-3-pro-high", "claude-opus-4-5-thinking"
 ]
 
 # Task complexity mapping
 TASK_COMPLEXITY: Dict[str, List[str]] = {
-    "critical": ["security", "architecture", "payment", "billing", "authentication", "audit", "production"],
+    "critical": [
+        "security",
+        "architecture",
+        "payment",
+        "billing",
+        "authentication",
+        "audit",
+        "production",
+    ],
     "high": ["debugging", "refactoring", "multi-file", "complex", "analysis", "optimize"],
     "medium": ["feature", "component", "api", "test", "update", "verify"],
     "low": ["lint", "format", "docs", "simple", "read", "typo", "check"],
 }
+
 
 def detect_task_complexity(task_description: str) -> str:
     """Detect task complexity from description."""
@@ -35,6 +41,7 @@ def detect_task_complexity(task_description: str) -> str:
             return complexity
 
     return "medium"  # Default
+
 
 def select_model(
     task_description: str,
@@ -61,13 +68,14 @@ def select_model(
     elif complexity == "low":
         return "gemini-2.5-flash-lite"
     else:
-        return "gemini-3-flash"
+        return "gemini-3-pro-high"
+
 
 # CLI interface
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python model_router.py <task_description> [retry_count] [source]")
-        print("gemini-3-flash") # Default fallback output
+        print("gemini-3-pro-high")  # Default fallback output
         sys.exit(0)
 
     task = sys.argv[1]

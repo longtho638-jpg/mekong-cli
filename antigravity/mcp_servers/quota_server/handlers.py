@@ -2,6 +2,7 @@
 Handlers for the Quota MCP Server.
 Wraps the restored QuotaEngine logic.
 """
+
 import logging
 from typing import Any, Dict
 
@@ -9,6 +10,7 @@ from .engine import QuotaEngine
 
 # Setup logging
 logger = logging.getLogger(__name__)
+
 
 class QuotaHandler:
     """
@@ -46,12 +48,14 @@ class QuotaHandler:
         gemini_models = [m for m in models if "gemini" in m.get("name", "").lower()]
         if gemini_models:
             # Sort by remaining percent descending
-            best = sorted(gemini_models, key=lambda x: x.get("remaining_percent", 0), reverse=True)[0]
-            return best.get("id", "gemini-3-flash") # Return ID, not name
+            best = sorted(gemini_models, key=lambda x: x.get("remaining_percent", 0), reverse=True)[
+                0
+            ]
+            return best.get("id", "gemini-3-pro-high")  # Return ID, not name
 
         # Fallback to any model with most quota
         if models:
             best = sorted(models, key=lambda x: x.get("remaining_percent", 0), reverse=True)[0]
-            return best.get("id", "gemini-3-flash")
+            return best.get("id", "gemini-3-pro-high")
 
-        return "gemini-3-flash" # Default fallback
+        return "gemini-3-pro-high"  # Default fallback
