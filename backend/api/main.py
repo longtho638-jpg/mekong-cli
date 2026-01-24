@@ -58,6 +58,9 @@ from backend.api.routers import (
 from backend.api.routers import (
     webhooks as webhooks_router,
 )
+from backend.api.routers import (
+    health as health_router,  # Health check & monitoring
+)
 from backend.api.routers.router import router as hybrid_router
 from backend.websocket.routes import router as websocket_router
 
@@ -111,6 +114,7 @@ app.include_router(license_router.router)
 app.include_router(team_router.router)
 
 # Utility & Integration
+app.include_router(health_router.router)  # Health check & monitoring (first for priority)
 app.include_router(i18n.router)
 app.include_router(vietnam.router)
 app.include_router(scheduler.router)
@@ -138,21 +142,6 @@ def root():
         "docs": "/docs",
         "status": "operational",
         "environment": settings.environment,
-    }
-
-
-@app.get("/health")
-def health():
-    """Health check endpoint."""
-    return {
-        "status": "healthy",
-        "modules": {
-            "swarm": "active",
-            "revenue": "active",
-            "ops": "active",
-            "crm": "loaded",
-        },
-        "architecture": "modular_v2",
     }
 
 
