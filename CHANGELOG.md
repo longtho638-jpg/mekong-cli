@@ -1,3 +1,10 @@
+## [2.5.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.10...v2.5.0-beta.11) (2026-01-24)
+
+
+### 🚀 Features
+
+* **metadata:** add deletions array for archived commands cleanup ([5125bd5](https://github.com/claudekit/claudekit-engineer/commit/5125bd5262228268d4fab3be33020f8b116a22a4))
+
 ## [2.5.0-beta.10](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.9...v2.5.0-beta.10) (2026-01-23)
 
 
