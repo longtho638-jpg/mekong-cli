@@ -17,6 +17,7 @@ Modules:
 from .agent import BaseSwarmAgent
 from .bus import MessageBus
 from .orchestrator import SwarmOrchestrator
+from .shortcuts import get_swarm, reset_swarm
 from .types import (
     AgentMessage,
     AgentRole,
@@ -39,5 +40,7 @@ __all__ = [
     "MessageType",
     "MessageBus",
     "BaseSwarmAgent",
-    "SwarmOrchestrator"
+    "SwarmOrchestrator",
+    "get_swarm",
+    "reset_swarm",
 ]
