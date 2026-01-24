@@ -16,10 +16,31 @@ Binh Pháp: 🛠️ Khí (Tools) - Organizing the workshop.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class PlanDict(TypedDict):
+    """Dictionary representation of an implementation plan"""
+    title: str
+    description: str
+    status: str
+    priority: str
+    effort: str
+    branch: Optional[str]
+    tags: List[str]
+    created: str
+    phases: List[str]
+
+
+class TodoDict(TypedDict):
+    """Dictionary representation of a todo item"""
+    id: str
+    text: str
+    completed: bool
+    created_at: str
 
 
 @dataclass
@@ -41,7 +62,7 @@ class Plan:
     created: datetime = field(default_factory=datetime.now)
     phases: List[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> PlanDict:
         """Serializable representation."""
         return {
             "title": self.title,
@@ -98,7 +119,7 @@ class TodoItem:
         box = "[x]" if self.completed else "[ ]"
         return f"- {box} {self.text}"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> TodoDict:
         """Serializable representation."""
         return {
             "id": self.id,

@@ -19,7 +19,7 @@ import logging
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple, TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -38,6 +38,16 @@ class PullRequest:
     url: str
     created_at: datetime
     raw_data: Dict[str, Any] = field(default_factory=dict)
+
+
+class PRMergeReportDict(TypedDict):
+    """Report of PR merge operations"""
+
+    total: int
+    merged: List[int]
+    eligible: List[int]
+    skipped: List[Dict[str, Any]]
+    errors: List[int]
 
 
 class PRManager:
@@ -148,10 +158,16 @@ class PRManager:
             logger.error(f"Critical error during merge of PR #{pr_number}: {e}")
             return False
 
-    def check_and_merge_all(self, dry_run: bool = False) -> Dict[str, Any]:
+    def check_and_merge_all(self, dry_run: bool = False) -> PRMergeReportDict:
         """Bulk operation to process and integrate all eligible changes."""
         prs = self.get_open_prs()
-        report = {"total": len(prs), "merged": [], "eligible": [], "skipped": [], "errors": []}
+        report: PRMergeReportDict = {
+            "total": len(prs),
+            "merged": [],
+            "eligible": [],
+            "skipped": [],
+            "errors": [],
+        }
 
         for pr in prs:
             eligible, reason = self.can_auto_merge(pr)

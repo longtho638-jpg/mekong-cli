@@ -1,10 +1,28 @@
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/workflow", tags=["workflow"])
+
+
+class WorkflowNodeDict(TypedDict):
+    id: str
+    type: str
+    config: Dict[str, Any]
+    next_nodes: List[str]
+    position: Dict[str, float]
+
+
+class WorkflowDict(TypedDict):
+    id: str
+    name: str
+    trigger: str
+    trigger_config: Dict[str, Any]
+    nodes: List[WorkflowNodeDict]
+    active: bool
+
 
 class WorkflowNode(BaseModel):
     id: str
@@ -12,6 +30,7 @@ class WorkflowNode(BaseModel):
     config: Dict[str, Any]
     next_nodes: List[str]
     position: Dict[str, float]  # For UI coordinates
+
 
 class Workflow(BaseModel):
     id: str
@@ -21,15 +40,17 @@ class Workflow(BaseModel):
     nodes: List[WorkflowNode]
     active: bool
 
+
 class WorkflowListResponse(BaseModel):
     workflows: List[Workflow]
 
-@router.get("/list", response_model=List[Dict[str, Any]])
+
+@router.get("/list", response_model=List[WorkflowDict])
 async def list_workflows():
     """List all workflows."""
     from antigravity.mcp_servers.workflow_server.handlers import WorkflowEngineHandler
     handler = WorkflowEngineHandler()
-    return handler.list_workflows()
+    return handler.list_workflows()  # type: ignore
 
 @router.post("/create")
 async def create_workflow(name: str, trigger_type: str):

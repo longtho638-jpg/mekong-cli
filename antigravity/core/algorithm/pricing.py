@@ -2,9 +2,20 @@
 Pricing logic for Antigravity Algorithm.
 """
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .types import PricingContext, PricingStrategy
+
+
+class PricingResultDict(TypedDict):
+    """Result of a dynamic price calculation"""
+    price: float
+    original: float
+    discount_percent: float
+    strategy: str
+    breakdown: List[str]
+    calculated_at: str
+
 
 # Pricing table
 PRICING_TABLE = {
@@ -17,9 +28,9 @@ PRICING_TABLE = {
 
 def calculate_price_logic(
     base_price: float,
-    context: PricingContext = None,
+    context: Optional[PricingContext] = None,
     strategy: PricingStrategy = PricingStrategy.VIRAL_COEFFICIENT,
-) -> Dict[str, Any]:
+) -> PricingResultDict:
     """
     Calculate dynamic price based on context and strategy.
 

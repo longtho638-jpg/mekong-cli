@@ -5,8 +5,8 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional, TypedDict
 
-from .forecasting import forecast_revenue_logic
-from .pricing import PRICING_TABLE, calculate_price_logic
+from .forecasting import ForecastResultDict, forecast_revenue_logic
+from .pricing import PRICING_TABLE, PricingResultDict, calculate_price_logic
 from .scoring import BANT_THRESHOLDS, score_lead_logic
 from .types import LeadData, LeadScore, PricingContext, PricingStrategy, WinResult
 from .validation import validate_win3_logic
@@ -42,7 +42,7 @@ class AntigravityAlgorithm:
         base_price: float,
         context: PricingContext = None,
         strategy: PricingStrategy = PricingStrategy.VIRAL_COEFFICIENT,
-    ) -> Dict[str, Any]:
+    ) -> PricingResultDict:
         """Delegate to pricing logic."""
         self._record_activity()
         return calculate_price_logic(base_price, context, strategy)
@@ -60,7 +60,7 @@ class AntigravityAlgorithm:
 
     def forecast_revenue(
         self, period_days: int = 30, current_mrr: float = 0, growth_rate: float = 0.1
-    ) -> Dict[str, Any]:
+    ) -> ForecastResultDict:
         """Delegate to forecasting logic."""
         return forecast_revenue_logic(period_days, current_mrr, growth_rate)
 
@@ -91,7 +91,7 @@ def get_algorithm() -> AntigravityAlgorithm:
 
 
 # Convenience functions
-def calculate_price(base_price: float, context: PricingContext = None) -> Dict[str, Any]:
+def calculate_price(base_price: float, context: PricingContext = None) -> PricingResultDict:
     """Calculate price using global algorithm."""
     return _algorithm.calculate_price(base_price, context)
 
@@ -106,6 +106,6 @@ def validate_win3(action: str, anh: str, agency: str, startup: str) -> WinResult
     return _algorithm.validate_win3(action, anh, agency, startup)
 
 
-def forecast_revenue(period_days: int = 30, current_mrr: float = 0) -> Dict[str, Any]:
+def forecast_revenue(period_days: int = 30, current_mrr: float = 0) -> ForecastResultDict:
     """Forecast revenue using global algorithm."""
     return _algorithm.forecast_revenue(period_days, current_mrr)

@@ -3,9 +3,37 @@ Registry MCP Catalog - Bridging MCP tools into the unified registry.
 """
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
+
+
+class MCPToolDict(TypedDict):
+    """MCP tool definition record"""
+    name: str
+    description: str
+    inputSchema: Dict[str, Any]
+
+
+class MCPServerMetadataDict(TypedDict, total=False):
+    """Metadata about an MCP server status"""
+    probed: bool
+    last_probed: str
+
+
+class MCPCatalogDataDict(TypedDict):
+    """Structure of the mcp-catalog.json file"""
+    tools: Dict[str, List[MCPToolDict]]
+    servers: Dict[str, Dict[str, Any]]
+    metadata: Dict[str, MCPServerMetadataDict]
+
+
+class MCPToolLookupResult(TypedDict):
+    """Result of finding a specific tool"""
+    server: str
+    tool: MCPToolDict
+
 
 CATALOG_PATH = Path(".claude/mcp-catalog.json")
+
 
 class MCPToolCatalog:
     """
@@ -13,12 +41,12 @@ class MCPToolCatalog:
     Includes server configuration for lazy-loading.
     """
     def __init__(self):
-        self.data: Dict[str, Any] = self._load_catalog()
+        self.data: MCPCatalogDataDict = self._load_catalog()
         self.tools = self.data.get("tools", {})
         self.servers = self.data.get("servers", {})
         self.metadata = self.data.get("metadata", {})
 
-    def _load_catalog(self) -> Dict[str, Any]:
+    def _load_catalog(self) -> MCPCatalogDataDict:
         if not CATALOG_PATH.exists():
             return {"tools": {}, "servers": {}, "metadata": {}}
         try:
@@ -35,7 +63,7 @@ class MCPToolCatalog:
         }
         CATALOG_PATH.write_text(json.dumps(self.data, indent=2))
 
-    def register_server(self, server_name: str, config: Dict[str, Any], tools_list: Optional[List[Dict[str, Any]]] = None):
+    def register_server(self, server_name: str, config: Dict[str, Any], tools_list: Optional[List[MCPToolDict]] = None):
         """Registers a server and its tools. If tools_list is None, marks as unprobed."""
         self.servers[server_name] = config
 
@@ -56,7 +84,7 @@ class MCPToolCatalog:
             if not meta.get("probed", False)
         ]
 
-    def mark_probed(self, server_name: str, tools_list: List[Dict[str, Any]]):
+    def mark_probed(self, server_name: str, tools_list: List[MCPToolDict]):
         """Updates a server with its discovered tools."""
         if server_name in self.servers:
             self.tools[server_name] = tools_list
@@ -67,7 +95,7 @@ class MCPToolCatalog:
         """Returns the execution config for a server."""
         return self.servers.get(server_name)
 
-    def find_tool(self, tool_name: str) -> Optional[Dict[str, Any]]:
+    def find_tool(self, tool_name: str) -> Optional[MCPToolLookupResult]:
         """Finds a tool by name across all servers."""
         for server_name, tools in self.tools.items():
             for tool in tools:
@@ -78,9 +106,9 @@ class MCPToolCatalog:
                     }
         return None
 
-    def search_tools(self, query: str) -> List[Dict[str, Any]]:
+    def search_tools(self, query: str) -> List[MCPToolLookupResult]:
         """Simple keyword search for tools."""
-        results = []
+        results: List[MCPToolLookupResult] = []
         query = query.lower()
         for server_name, tools in self.tools.items():
             for tool in tools:

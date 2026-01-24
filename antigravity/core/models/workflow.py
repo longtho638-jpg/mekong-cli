@@ -19,10 +19,38 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class TaskPerformanceDict(TypedDict):
+    created: str
+    done: Optional[str]
+    duration_min: float
+
+
+class TaskDict(TypedDict):
+    """Dictionary representation of a build task"""
+    id: str
+    name: str
+    status: str
+    phase: str
+    performance: TaskPerformanceDict
+
+
+class CodeReviewGatesDict(TypedDict):
+    critical: List[str]
+    warnings: List[str]
+
+
+class CodeReviewDict(TypedDict):
+    """Dictionary representation of a code review result"""
+    passed: bool
+    score: int
+    gates: CodeReviewGatesDict
+    suggestions: List[str]
 
 
 class WorkflowStep(Enum):
@@ -86,7 +114,7 @@ class Task:
             return (self.completed_at - self.created_at).total_seconds() / 60
         return 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> TaskDict:
         """Provides a serializable representation."""
         return {
             "id": self.id,
@@ -132,7 +160,7 @@ class CodeReviewResult:
         self.score = max(0, self.score - 1)
         logger.warning(f"Review warning: {warning}")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> CodeReviewDict:
         """Provides a serializable representation."""
         return {
             "passed": self.passed,
