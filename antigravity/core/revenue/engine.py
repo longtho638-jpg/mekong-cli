@@ -16,17 +16,36 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from ..base import BaseEngine
 from ..config import EXCHANGE_RATES, Currency
 from ..models.invoice import Forecast, Invoice, InvoiceStatus
 from .forecasting import RevenueForecasting
-from .goals import GoalTracker
+from .goals import GoalSummaryDict, GoalTracker
 from .reporting import RevenueReporting
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class RevenueVolumeDict(TypedDict):
+    total_invoices: int
+    paid_count: int
+
+
+class RevenueFinancialsDict(TypedDict):
+    total_revenue_usd: float
+    mrr: float
+    arr: float
+    outstanding: float
+
+
+class RevenueStatsDict(TypedDict):
+    """Complete revenue performance metrics"""
+    volume: RevenueVolumeDict
+    financials: RevenueFinancialsDict
+    goals: Dict[str, Any]
 
 
 class RevenueEngine(BaseEngine):
@@ -121,7 +140,7 @@ class RevenueEngine(BaseEngine):
         """Projects future revenue based on current MRR and default growth rates."""
         return self.forecaster.forecast_growth(self.get_mrr(), months)
 
-    def _collect_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> RevenueStatsDict:
         """Provides high-level performance metrics for the engine."""
         return {
             "volume": {
@@ -141,7 +160,7 @@ class RevenueEngine(BaseEngine):
     # $1M 2026 GOAL TRACKING
     # ============================================
 
-    def get_goal_summary(self) -> Dict[str, Any]:
+    def get_goal_summary(self) -> GoalSummaryDict:
         """Aggregates all metrics relevant to the $1M ARR target."""
         return self.goal_tracker.get_goal_summary(self.get_arr())
 

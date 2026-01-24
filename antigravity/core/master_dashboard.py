@@ -17,7 +17,7 @@ Binh Pháp: 🏯 Thống (Unity) - Commanding the entire field from one center.
 
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List, TypedDict
 
 from .cashflow_engine import get_cashflow_engine
 from .infrastructure import InfrastructureStack
@@ -27,6 +27,41 @@ from .unified_dashboard import AgenticDashboard
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class AgenticLayerDict(TypedDict):
+    agents_active: int
+    success_rate: float
+
+
+class RetentionLayerDict(TypedDict):
+    moat_strength: int
+    loyalty_tier: str
+    switching_cost_usd: float
+
+
+class RevenueLayerDict(TypedDict):
+    arr: float
+    progress: float
+
+
+class InfraLayerDict(TypedDict):
+    health: int
+    layers_online: int
+
+
+class MasterLayersDict(TypedDict):
+    agentic: AgenticLayerDict
+    retention: RetentionLayerDict
+    revenue: RevenueLayerDict
+    infra: InfraLayerDict
+
+
+class MasterSummaryDict(TypedDict):
+    """Unified system summary"""
+    timestamp: str
+    score: int
+    layers: MasterLayersDict
 
 
 class MasterDashboard:
@@ -60,7 +95,7 @@ class MasterDashboard:
 
         return int(composite)
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> MasterSummaryDict:
         """Collects a flat dictionary of key indicators for programmatic use."""
         a_stats = self.agentic.get_stats()
         m_stats = self.moat_engine.calculate_switching_cost()

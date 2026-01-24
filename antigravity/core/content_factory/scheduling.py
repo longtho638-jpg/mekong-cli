@@ -2,17 +2,27 @@
 Content Scheduling Logic.
 """
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from .models import ContentIdea
+
+
+class ScheduledPostDict(TypedDict):
+    """Data for a scheduled content post"""
+    id: int
+    date: str
+    time: str
+    title: str
+    type: str
+    virality: str
 
 
 class ContentScheduler:
     """Generates posting schedules."""
 
-    def create_schedule(self, ideas: List[ContentIdea], days: int = 7) -> List[Dict[str, Any]]:
+    def create_schedule(self, ideas: List[ContentIdea], days: int = 7) -> List[ScheduledPostDict]:
         """Generates a scheduled posting timeline from a list of ideas."""
-        calendar = []
+        calendar: List[ScheduledPostDict] = []
         start_date = datetime.now()
 
         # We assume the caller ensures enough ideas exist, or we just schedule what we have

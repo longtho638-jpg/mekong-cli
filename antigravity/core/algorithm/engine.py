@@ -3,7 +3,7 @@ The central engine for Antigravity Algorithm.
 """
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .forecasting import forecast_revenue_logic
 from .pricing import PRICING_TABLE, calculate_price_logic
@@ -12,6 +12,14 @@ from .types import LeadData, LeadScore, PricingContext, PricingStrategy, WinResu
 from .validation import validate_win3_logic
 
 logger = logging.getLogger(__name__)
+
+
+class AlgorithmAnalyticsDict(TypedDict):
+    """Analytics for algorithm usage"""
+    calculations_count: int
+    last_calculation: Optional[str]
+    pricing_products: List[str]
+    bant_thresholds: Dict[str, int]
 
 
 class AntigravityAlgorithm:
@@ -61,7 +69,7 @@ class AntigravityAlgorithm:
         self.calculations_count += 1
         self.last_calculation = datetime.now()
 
-    def get_analytics(self) -> Dict[str, Any]:
+    def get_analytics(self) -> AlgorithmAnalyticsDict:
         """Get algorithm usage analytics."""
         return {
             "calculations_count": self.calculations_count,

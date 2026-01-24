@@ -10,7 +10,7 @@ specialized templates and regional tones.
 import logging
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .ideation import ContentIdeator
 from .models import ContentIdea, ContentPiece, ContentType
@@ -19,6 +19,21 @@ from .scheduling import ContentScheduler
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class ContentInventoryDict(TypedDict):
+    total_ideas: int
+    drafts_completed: int
+
+
+class ContentQualityDict(TypedDict):
+    avg_virality: float
+
+
+class ContentFactoryStatsDict(TypedDict):
+    """Production performance summary"""
+    inventory: ContentInventoryDict
+    quality: ContentQualityDict
 
 
 class ContentFactory(StatsMixin):
@@ -77,7 +92,7 @@ class ContentFactory(StatsMixin):
 
         return self.scheduler.create_schedule(self.ideas, days)
 
-    def _collect_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> ContentFactoryStatsDict:
         """Summarizes production performance."""
         return {
             "inventory": {
@@ -87,7 +102,7 @@ class ContentFactory(StatsMixin):
             "quality": {
                 "avg_virality": sum(i.virality_score for i in self.ideas) / len(self.ideas)
                 if self.ideas
-                else 0
+                else 0.0
             },
         }
 

@@ -8,7 +8,7 @@ Auto-rollback on critical issues.
 
 import logging
 import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TypedDict
 
 from .models import (
     PerformanceAnomaly,
@@ -20,6 +20,17 @@ from .rollback import RollbackManager
 from .scanner import SecurityScanner
 
 logger = logging.getLogger(__name__)
+
+
+class CodeGuardianStatusDict(TypedDict):
+    """Detailed status of the security guardian"""
+    active_threats: int
+    total_threats: int
+    anomalies_detected: int
+    rollback_points: int
+    blocked_patterns: int
+    metrics_monitored: int
+    threat_summary: Dict[str, int]
 
 
 class CodeGuardian:
@@ -96,7 +107,7 @@ class CodeGuardian:
         """Get detected threats."""
         return self.scanner.get_threats(level)
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> CodeGuardianStatusDict:
         """Get guardian status."""
         # Aggregate status from components
         threats = self.scanner.get_threats()

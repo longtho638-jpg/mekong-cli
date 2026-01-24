@@ -7,12 +7,41 @@ Core logic for managing agency identity, voice, and service catalog.
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from .models import PricingTier, Service, Tone
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class AgencyIdentityDict(TypedDict):
+    name: str
+    niche: str
+    location: str
+    tagline: str
+    voice: str
+
+
+class AgencyConfigDict(TypedDict):
+    tone: str
+    tier: str
+    capabilities: List[str]
+
+
+class AgencyServiceDict(TypedDict):
+    name: str
+    price_usd: float
+    price_vnd: int
+    duration: int
+
+
+class AgencyDNADict(TypedDict):
+    """Full serialized representation of Agency DNA"""
+    identity: AgencyIdentityDict
+    configuration: AgencyConfigDict
+    services: List[AgencyServiceDict]
+    contact: Dict[str, str]
 
 
 @dataclass
@@ -84,7 +113,7 @@ class AgencyDNA:
 
         return f"Elite {self.niche} Experts | {self.location}"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> AgencyDNADict:
         """Serializable dictionary for frontend and agent injection."""
         return {
             "identity": {

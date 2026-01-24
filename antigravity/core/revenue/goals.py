@@ -2,15 +2,24 @@
 Revenue Goal Tracking Logic.
 """
 import math
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 from ..config import ARR_TARGET_2026, DEFAULT_GROWTH_RATE
+
+
+class GoalSummaryDict(TypedDict):
+    """Detailed progress toward revenue goals"""
+    current_arr: float
+    target_arr: int
+    progress_percent: float
+    gap_usd: float
+    months_to_goal: int
 
 
 class GoalTracker:
     """Tracks progress toward revenue milestones."""
 
-    def get_goal_summary(self, current_arr: float) -> Dict[str, Any]:
+    def get_goal_summary(self, current_arr: float) -> GoalSummaryDict:
         """Aggregates all metrics relevant to the $1M ARR target."""
         progress = min((current_arr / ARR_TARGET_2026) * 100, 100)
         gap = max(ARR_TARGET_2026 - current_arr, 0)

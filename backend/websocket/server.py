@@ -17,7 +17,7 @@ from typing import Dict
 
 from fastapi import HTTPException, WebSocket, status
 
-from backend.api.utils.deps import verify_token
+from backend.api.auth.utils import verify_token
 
 
 class EventType(str, Enum):
