@@ -1,14 +1,17 @@
 # Research
 
 ## Description
-Skill for research operations.
-
-## When to Use
-Use when working with research related tasks.
+Deep codebase exploration and knowledge retrieval using the Scout engine.
 
 ## Implementation
-Located in implementation.py or scripts/ directory.
+- **Core Logic**: `antigravity/core/scout/engine.py`
+- **Knowledge Graph**: `antigravity/core/knowledge_graph.py`
+
+## Capabilities
+- **Scout**: Scan files for patterns (TODOs, FIXMEs, security issues)
+- **Map**: Generate dependency graphs
+- **Query**: Ask semantic questions about the codebase
 
 ## Dependencies
-Check requirements.txt for Python dependencies.
-Check package.json for Node.js dependencies.
+- `ripgrep` (via `grep` tool)
+- `tree_sitter` (for AST parsing)

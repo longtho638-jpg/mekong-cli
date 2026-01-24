@@ -1,14 +1,17 @@
 # Antibridge
 
 ## Description
-Skill for antibridge operations.
-
-## When to Use
-Use when working with antibridge related tasks.
+Bridge between CLI and Mobile/External agents. Allows control of the AntiBridge infrastructure.
 
 ## Implementation
-Located in implementation.py or scripts/ directory.
+- **Core Logic**: `antigravity/core/control.py` (and `antigravity/core/headless.py`)
+- **CLI Command**: `mekong antibridge`
+
+## Capabilities
+- Connect to mobile agent network
+- Send commands to headless instances
+- Receive status updates from remote nodes
 
 ## Dependencies
-Check requirements.txt for Python dependencies.
-Check package.json for Node.js dependencies.
+- `websockets`
+- `fastapi` (for receiving webhooks)

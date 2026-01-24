@@ -1,7 +1,6 @@
 <!-- CLEO:START -->
 @.cleo/templates/AGENT-INJECTION.md
 <!-- CLEO:END -->
-
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
