@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# 🏯 AgencyOS CLI Wrapper - Convenience script for release management
+# Usage: cc release <command> [args...]
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON="${PYTHON:-python3}"
+
+# Forward all arguments to cc_release.py
+exec "$PYTHON" "$SCRIPT_DIR/cc_release.py" "$@"
