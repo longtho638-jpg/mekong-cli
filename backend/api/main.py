@@ -17,28 +17,40 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 # REFACTORED: Use new centralized config
 from backend.api.config.settings import settings
+from backend.api.middleware.metrics import setup_metrics
 
 # Import middleware
 from backend.api.middleware.multitenant import MultiTenantMiddleware, setup_tenant_routes
 from backend.api.middleware.rate_limiting import setup_rate_limit_routes, setup_rate_limiting
 from backend.api.middleware.security import SecurityMiddleware
 from backend.api.middleware.validation import ValidationMiddleware
-from backend.api.middleware.metrics import setup_metrics
 
 # Import Routers
 from backend.api.routers import (
     code as code_router,
+)
+from backend.api.routers import (
     crm,
     franchise,
     i18n,
     kanban,
     scheduler,
     vietnam,
-    webhooks as webhooks_router,
+)
+from backend.api.routers import (
     dashboard as dashboard_router,
+)
+from backend.api.routers import (
+    ops as ops_router,  # Refactored
+)
+from backend.api.routers import (
+    revenue as revenue_router,  # New
+)
+from backend.api.routers import (
     swarm as swarm_router,  # Refactored
-    ops as ops_router,      # Refactored
-    revenue as revenue_router, # New
+)
+from backend.api.routers import (
+    webhooks as webhooks_router,
 )
 from backend.api.routers.router import router as hybrid_router
 from backend.websocket.routes import router as websocket_router

@@ -78,5 +78,21 @@
       }
     ],
     "notes": ""
+  },
+  "INV-202601-A49F": {
+    "id": "INV-202601-A49F",
+    "client_id": "CLI-594F0097",
+    "project_id": null,
+    "amount": 2500.0,
+    "status": "draft",
+    "due_date": "2026-02-23T19:39:20.894233",
+    "paid_date": null,
+    "items": [
+      {
+        "name": "Phase 1",
+        "amount": 2500.0
+      }
+    ],
+    "notes": ""
   }
 }

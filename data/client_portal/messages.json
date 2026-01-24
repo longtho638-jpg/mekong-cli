@@ -39,5 +39,15 @@
       "timestamp": "2026-01-23T14:00:39.390951",
       "read": false
     }
+  ],
+  "CLI-594F0097": [
+    {
+      "id": "MSG-23c57de4",
+      "client_id": "CLI-594F0097",
+      "sender": "agency",
+      "content": "Your project is ready for review!",
+      "timestamp": "2026-01-24T19:39:20.894632",
+      "read": false
+    }
   ]
 }
