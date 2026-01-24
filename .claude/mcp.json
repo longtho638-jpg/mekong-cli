@@ -32,6 +32,10 @@
         "--data-dir",
         "/Users/macbookprom1/.claude-mem/chroma"
       ]
+    },
+    "n8n-mcp": {
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"]
     }
   }
 }
