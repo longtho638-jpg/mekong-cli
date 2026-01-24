@@ -1,3 +1,3 @@
-export * from './context';
-export * from './use-translation';
-export * from './use-locale';
+export * from './context.js';
+export * from './use-translation.js';
+export * from './use-locale.js';

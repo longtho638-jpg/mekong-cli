@@ -1,7 +1,8 @@
 ---
 import '../styles/global.css';
-import { getLocaleFromUrl } from '@agencyos/i18n/astro';
-import type { Locale } from '@agencyos/i18n/types';
+import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { SUPPORTED_LOCALES } from '@agencyos/i18n';
+import type { Locale } from '@agencyos/i18n';
 
 export interface Props {
   title?: string;
@@ -18,6 +19,20 @@ const {
 } = Astro.props;
 
 const locale = propLocale || getLocaleFromUrl(Astro.url);
+
+// Calculate alternates
+let path = Astro.url.pathname;
+if (locale !== 'en') {
+  const prefix = `/${locale}`;
+  if (path.startsWith(prefix)) {
+    path = path.slice(prefix.length) || '/';
+  }
+}
+
+const alternates = SUPPORTED_LOCALES.map(l => ({
+  lang: l,
+  url: new URL(getRelativeLocaleUrl(l, path), 'https://agencyos.network').toString()
+}));
 ---
 
 <!DOCTYPE html>

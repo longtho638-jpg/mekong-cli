@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Locale, DEFAULT_LOCALE } from '../types';
-import { locales } from '../locales';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { Locale, DEFAULT_LOCALE } from '../types.js';
+import { locales } from '../locales/index.js';
 
 interface I18nContextType {
   locale: Locale;

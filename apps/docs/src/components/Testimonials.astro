@@ -1,119 +1,67 @@
 ---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const testimonials = (locales[locale] as any).landing.testimonials;
+const items = Object.values(testimonials.items);
 ---
 <section class="testimonials-section py-16 overflow-hidden border-y border-[var(--color-border)] bg-[var(--color-bg-tertiary)]/30">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
-      💬 Loved by Agency Owners
+      {testimonials.title}
     </h2>
     <p class="text-center text-[var(--color-text-muted)] mb-12">
-      See what 500+ agencies say about AgencyOS
+      {testimonials.subtitle}
     </p>
   </div>
 
   <div class="testimonials-track-wrapper">
     <div class="testimonials-track">
-      <!-- Testimonial 1 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"AgencyOS replaced 3 employees for me. ROI was insane within the first week."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #06b6d4);">M</div>
-          <div class="info">
-            <span class="name">Michael Chen</span>
-            <span class="role">Growth Matrix Agency</span>
+      {items.map((item: any, index) => (
+        <div class="testimonial-card">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <p class="quote">"{item.quote}"</p>
+          <div class="author">
+            <div class="avatar" style={`background: linear-gradient(135deg, ${
+              index === 0 ? '#22c55e, #06b6d4' :
+              index === 1 ? '#8b5cf6, #ec4899' :
+              index === 2 ? '#f59e0b, #ef4444' :
+              index === 3 ? '#06b6d4, #3b82f6' :
+              index === 4 ? '#10b981, #34d399' :
+              '#f472b6, #a855f7'
+            });`}>{item.name.charAt(0)}</div>
+            <div class="info">
+              <span class="name">{item.name}</span>
+              <span class="role">{item.role}</span>
+            </div>
           </div>
         </div>
-      </div>
+      ))}
 
-      <!-- Testimonial 2 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"125 commands means I never run out of ways to automate. Best investment this year."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">S</div>
-          <div class="info">
-            <span class="name">Sarah Williams</span>
-            <span class="role">Digital First Co</span>
+      {/* Duplicate for infinite scroll */}
+      {items.map((item: any, index) => (
+        <div class="testimonial-card">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <p class="quote">"{item.quote}"</p>
+          <div class="author">
+            <div class="avatar" style={`background: linear-gradient(135deg, ${
+              index === 0 ? '#22c55e, #06b6d4' :
+              index === 1 ? '#8b5cf6, #ec4899' :
+              index === 2 ? '#f59e0b, #ef4444' :
+              index === 3 ? '#06b6d4, #3b82f6' :
+              index === 4 ? '#10b981, #34d399' :
+              '#f472b6, #a855f7'
+            });`}>{item.name.charAt(0)}</div>
+            <div class="info">
+              <span class="name">{item.name}</span>
+              <span class="role">{item.role}</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Testimonial 3 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"/proposal command alone saved me 10+ hours per week on client work."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">J</div>
-          <div class="info">
-            <span class="name">James Rodriguez</span>
-            <span class="role">JR Creative Studio</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 4 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"The Binh Pháp strategy framework is pure gold. Win-without-fighting approach works."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">L</div>
-          <div class="info">
-            <span class="name">Lisa Nguyen</span>
-            <span class="role">Scale Partners</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 5 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"From solo founder to 6-figure agency in 6 months. AgencyOS is my secret weapon."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #10b981, #34d399);">D</div>
-          <div class="info">
-            <span class="name">David Park</span>
-            <span class="role">Momentum Labs</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 6 -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"The franchise model is brilliant. Now earning passive income from my agency network."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #f472b6, #a855f7);">A</div>
-          <div class="info">
-            <span class="name">Anna Thompson</span>
-            <span class="role">Agency Empire</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Duplicate for infinite scroll -->
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"AgencyOS replaced 3 employees for me. ROI was insane within the first week."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #06b6d4);">M</div>
-          <div class="info">
-            <span class="name">Michael Chen</span>
-            <span class="role">Growth Matrix Agency</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p class="quote">"125 commands means I never run out of ways to automate. Best investment this year."</p>
-        <div class="author">
-          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">S</div>
-          <div class="info">
-            <span class="name">Sarah Williams</span>
-            <span class="role">Digital First Co</span>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   </div>
 

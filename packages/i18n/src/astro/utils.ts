@@ -1,5 +1,5 @@
-import { Locale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../types';
-import { locales } from '../locales';
+import { Locale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../types.js';
+import { locales } from '../locales/index.js';
 
 /**
  * Get the current locale from the URL path.
