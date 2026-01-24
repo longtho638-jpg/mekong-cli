@@ -25,6 +25,7 @@ from backend.api.routers import (
     ops,
     payments,
     paypal_webhooks,
+    revenue,
     stripe_webhooks,
     swarm,
     vibes,
@@ -67,6 +68,7 @@ app.include_router(paypal_webhooks.router)
 app.include_router(stripe_webhooks.router)
 app.include_router(gumroad_webhooks.router)
 app.include_router(payments.router)
+app.include_router(revenue.router)
 app.include_router(ops.router)
 app.include_router(swarm.router)
 app.include_router(ws_router)

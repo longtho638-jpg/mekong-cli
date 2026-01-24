@@ -53,6 +53,9 @@ from backend.api.routers import (
     swarm as swarm_router,  # Refactored
 )
 from backend.api.routers import (
+    team as team_router,  # Team management
+)
+from backend.api.routers import (
     webhooks as webhooks_router,
 )
 from backend.api.routers.router import router as hybrid_router
@@ -105,6 +108,7 @@ app.include_router(crm.router)
 app.include_router(kanban.router)
 app.include_router(dashboard_router.router)
 app.include_router(license_router.router)
+app.include_router(team_router.router)
 
 # Utility & Integration
 app.include_router(i18n.router)
