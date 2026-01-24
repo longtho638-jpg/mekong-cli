@@ -126,7 +126,7 @@ class VIBEWorkflow(BaseEngine):
 
     def ship_changes(self, commit_msg: str) -> Dict[str, object]:
         """Integrates changes into the main repository branch."""
-        report = {"success": False, "git": False, "docs": False}
+        report: Dict[str, object] = {"success": False, "git": False, "docs": False}
 
         if not self.review_result or not self.review_result.passed:
             logger.error("Shipment aborted: Code review not passed.")
@@ -150,7 +150,7 @@ class VIBEWorkflow(BaseEngine):
 
         return report
 
-    def _collect_stats(self) -> VIBEWorkflowStatsDict:
+    def _collect_stats(self) -> Dict[str, object]:
         """Aggregates workflow telemetry."""
         return {
             "current_step": self.current_step.name,
