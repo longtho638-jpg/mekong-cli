@@ -86,7 +86,7 @@ jobs:
 
       # Turbo handles cache internally if configured, but here we just run it
       - name: Build (Docs)
-        run: pnpm --filter mekong-docs build
+        run: pnpm turbo build --filter=mekong-docs
 
       - name: Lint (Turbo)
         run: pnpm lint
