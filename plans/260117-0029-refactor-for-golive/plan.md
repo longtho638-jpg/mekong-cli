@@ -30,8 +30,8 @@ The existing plan covers:
 
 **ADD NEW PHASES for:**
 - [x] Phase 6: .claude Infrastructure Refactoring (workflows, skills, commands, hooks)
-- [ ] Phase 7: CLI Tooling Optimization (antigravity/cli/*, command organization)
-- Phase 8: Core Business Logic (antigravity/core/*, modular architecture)
+- [x] Phase 7: CLI Tooling Optimization (antigravity/cli/*, command organization)
+- [ ] Phase 8: Core Business Logic (antigravity/core/*, modular architecture)
 - Phase 9: Backend API Layer (backend/api/*, router patterns)
 - Phase 10: Testing & Quality Gates (E2E, unit, integration, security)
 
