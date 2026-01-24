@@ -1,7 +1,7 @@
 ---
 title: Advanced Workflow Orchestration
 description: Implementing Vibe Kanban, Multi-Agent Swarm v2, and Autonomous Ops.
-status: in-progress
+status: completed
 priority: P1
 effort: Large
 branch: main

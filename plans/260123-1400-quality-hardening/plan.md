@@ -1,7 +1,7 @@
 ---
 title: Quality Hardening & Resilience
 description: Increasing test coverage, hardening dependencies, and implementing chaos testing for AgencyOS Engine.
-status: in-progress
+status: completed
 priority: P1
 effort: Large
 branch: main
