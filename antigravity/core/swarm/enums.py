@@ -1,7 +1,7 @@
 """
 Agent Swarm Enums.
 """
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 class AgentRole(Enum):
@@ -14,7 +14,7 @@ class AgentRole(Enum):
     GUARDIAN = "guardian"
 
 
-class TaskPriority(Enum):
+class TaskPriority(IntEnum):
     """Task priority levels."""
 
     CRITICAL = 1

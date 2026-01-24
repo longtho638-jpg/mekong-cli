@@ -44,8 +44,10 @@ class TestSwarmCoordinator:
         t2 = SwarmTask(id="t2", name="T2", payload={}, completed_at=time.time() - 20)
         t3 = SwarmTask(id="t3", name="T3", payload={}, completed_at=time.time() - 70) # Over 60s ago
         
-        mock_swarm.task_manager.tasks = {"t1": t1, "t2": t2, "t3": t3}
-        
+        mock_swarm.task_manager.get_pending_count.return_value = 5
+        # Mock get_all_tasks for calculate_throughput
+        mock_swarm.task_manager.get_all_tasks.return_value = {"t1": t1, "t2": t2, "t3": t3}
+
         metrics = coordinator.get_metrics()
         
         assert metrics.avg_task_time == 2.0
