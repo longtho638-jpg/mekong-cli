@@ -4,14 +4,22 @@ Suggestion Management Logic.
 Handles filtering, sorting, and applying improvement suggestions.
 """
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .types import ImprovementSuggestion, ImprovementType
 
 
+class OptimizationHistoryEntryDict(TypedDict):
+    """Entry in optimization history log"""
+    id: str
+    type: str
+    target: str
+    applied_at: float
+
+
 def get_filtered_suggestions(
     suggestions_map: Dict[str, ImprovementSuggestion],
-    type_filter: ImprovementType = None,
+    type_filter: Optional[ImprovementType] = None,
     min_confidence: float = 0.0,
 ) -> List[ImprovementSuggestion]:
     """
@@ -38,7 +46,7 @@ def get_filtered_suggestions(
 def apply_suggestion_logic(
     suggestions_map: Dict[str, ImprovementSuggestion],
     suggestion_id: str,
-) -> Optional[Dict[str, Any]]:
+) -> Optional[OptimizationHistoryEntryDict]:
     """
     Apply a suggestion and return optimization history entry.
 
