@@ -7,6 +7,7 @@ Powered by antigravity.core.revenue.RevenueEngine.
 """
 
 from antigravity.core.revenue.engine import RevenueEngine
+from cli.logging import log_cli_command
 
 import typer
 from rich.console import Console
@@ -17,6 +18,7 @@ revenue_app = typer.Typer(help="💰 Manage Revenue & Financials")
 
 
 @revenue_app.command("dashboard")
+@log_cli_command(command="revenue dashboard", resource="revenue")
 def show_dashboard():
     """📊 Show the Revenue Dashboard (MRR, ARR, Goals)."""
     engine = RevenueEngine()

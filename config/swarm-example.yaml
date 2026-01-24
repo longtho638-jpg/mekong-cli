@@ -1,0 +1,62 @@
+# Example Swarm Configuration
+# Deploy with: python scripts/cc_agent.py swarm deploy config/swarm-example.yaml
+
+agents:
+  # Content creation swarm
+  - type: content
+    count: 2
+    metadata:
+      role: blog_writer
+      specialties:
+        - technical_writing
+        - seo_optimization
+      max_concurrent_tasks: 3
+
+  # Sales automation swarm
+  - type: sales
+    count: 1
+    metadata:
+      role: lead_qualifier
+      specialties:
+        - email_outreach
+        - crm_updates
+      max_concurrent_tasks: 5
+
+  # Customer support swarm
+  - type: support
+    count: 2
+    metadata:
+      role: ticket_responder
+      specialties:
+        - technical_support
+        - billing_issues
+      response_time_sla: 120  # seconds
+
+  # Marketing agents
+  - type: marketer
+    count: 1
+    metadata:
+      role: social_media_manager
+      platforms:
+        - twitter
+        - linkedin
+      posting_schedule: hourly
+
+  # Development agents
+  - type: developer
+    count: 1
+    metadata:
+      role: code_reviewer
+      languages:
+        - python
+        - typescript
+      review_depth: comprehensive
+
+# Swarm-level configuration
+swarm_config:
+  max_workers: 10
+  enable_metrics: true
+  health_check_interval: 60  # seconds
+  task_timeout: 300  # seconds
+  retry_failed_tasks: true
+  max_retries: 3
