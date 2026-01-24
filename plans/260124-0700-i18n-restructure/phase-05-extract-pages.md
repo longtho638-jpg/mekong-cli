@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority**: P2
-- **Status**: pending
+- **Status**: completed
 - **Description**: Apply the new i18n architecture to the most critical pages of the documentation site, replacing hardcoded strings with calls to the translation utilities.
 
 ## Key Insights
@@ -39,10 +39,10 @@
 4. **Cleanup**: Remove redundant hardcoded files in `apps/docs/src/pages/vi/` if they can now be generated from the main templates.
 
 ## Todo List
-- [ ] Internationalize `index.astro`
-- [ ] Internationalize `pricing.astro`
-- [ ] Internationalize `commands.astro`
-- [ ] Verify routing between languages works as expected.
+- [x] Internationalize `index.astro`
+- [x] Internationalize `pricing.astro`
+- [x] Internationalize `commands.astro`
+- [x] Verify routing between languages works as expected.
 
 ## Success Criteria
 - [ ] Browsing to `/vi/pricing` shows the same layout as `/pricing` but with Vietnamese text.

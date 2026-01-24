@@ -7,7 +7,7 @@
 
 ## Overview
 - **Priority**: P1
-- **Status**: pending
+- **Status**: completed
 - **Description**: Centralize all translation JSON files into the `packages/i18n` package to ensure a single source of truth for content.
 
 ## Key Insights
@@ -35,10 +35,10 @@
 4. **Create Index**: Implement `locales/index.ts` to export a `locales` object for easy access.
 
 ## Todo List
-- [ ] Move/Copy existing locales to `packages/i18n/src/locales/`
-- [ ] Create `th.json` and `id.json` placeholders
-- [ ] Create `packages/i18n/src/locales/index.ts`
-- [ ] Verify all JSON files are valid and readable.
+- [x] Move/Copy existing locales to `packages/i18n/src/locales/`
+- [x] Create `th.json` and `id.json` placeholders
+- [x] Create `packages/i18n/src/locales/index.ts`
+- [x] Verify all JSON files are valid and readable.
 
 ## Success Criteria
 - [ ] All 6 languages have corresponding JSON files in the shared package.

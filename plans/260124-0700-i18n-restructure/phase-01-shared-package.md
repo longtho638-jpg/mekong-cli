@@ -29,10 +29,10 @@
 3. **Setup Entry Point**: Create `src/index.ts` to export locales and hooks.
 
 ## Todo List
-- [ ] Update `packages/i18n/package.json`
-- [ ] Create `packages/i18n/src/types.ts`
-- [ ] Create `packages/i18n/src/index.ts`
-- [ ] Verify build with `npm run build` in package directory.
+- [x] Update `packages/i18n/package.json`
+- [x] Create `packages/i18n/src/types.ts`
+- [x] Create `packages/i18n/src/index.ts`
+- [x] Verify build with `npm run build` in package directory.
 
 ## Success Criteria
 - [ ] Package compiles without errors.
