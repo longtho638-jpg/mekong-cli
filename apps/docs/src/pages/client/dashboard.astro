@@ -497,14 +497,14 @@ const portalCode = urlParams.get('code') || '';
       }
       
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('API Error:', error);
       throw error;
     }
   }
 
   // Render dashboard with real data
-  function renderDashboard(data: any) {
+  function renderDashboard(data: Record<string, unknown>) {
     // Update header
     document.getElementById('client-name')!.textContent = `Chào mừng, ${data.client.name}`;
     document.getElementById('company-name')!.textContent = data.client.company;
@@ -521,7 +521,7 @@ const portalCode = urlParams.get('code') || '';
     if (data.projects.length === 0) {
       projectsList.innerHTML = '<div class="empty-state">Không có dự án nào</div>';
     } else {
-      projectsList.innerHTML = data.projects.map((p: any) => `
+      projectsList.innerHTML = data.projects.map((p: Record<string, unknown>) => `
         <div class="project-item">
           <div class="project-header">
             <strong>${p.name}</strong>
@@ -543,7 +543,7 @@ const portalCode = urlParams.get('code') || '';
     if (data.tasks.length === 0) {
       tasksList.innerHTML = '<div class="empty-state">Không có nhiệm vụ nào</div>';
     } else {
-      tasksList.innerHTML = data.tasks.map((t: any) => `
+      tasksList.innerHTML = data.tasks.map((t: Record<string, unknown>) => `
         <div class="task-item">
           <span class="task-icon">${t.status === 'done' ? '✅' : '⏳'}</span>
           <span class="task-name">${t.title}</span>
@@ -557,7 +557,7 @@ const portalCode = urlParams.get('code') || '';
     if (data.invoices.length === 0) {
       invoicesList.innerHTML = '<div class="empty-state">Không có hóa đơn nào</div>';
     } else {
-      invoicesList.innerHTML = data.invoices.map((inv: any) => `
+      invoicesList.innerHTML = data.invoices.map((inv: Record<string, unknown>) => `
         <div class="invoice-item">
           <div class="invoice-id">${inv.invoice_number}</div>
           <div class="invoice-amount">$${parseFloat(inv.amount).toLocaleString()}</div>
@@ -572,7 +572,7 @@ const portalCode = urlParams.get('code') || '';
       if (data.messages.recent.length === 0) {
         messagesList.innerHTML = '<div class="empty-state">Không có tin nhắn mới</div>';
       } else {
-        messagesList.innerHTML = data.messages.recent.map((m: any) => `
+        messagesList.innerHTML = data.messages.recent.map((m: Record<string, unknown>) => `
           <div class="message-item ${m.read ? '' : 'unread'}">
             <span class="message-sender">${m.sender === 'agency' ? '🏢' : '👤'}</span>
             <span class="message-content">${m.content.substring(0, 50)}...</span>
@@ -602,7 +602,7 @@ const portalCode = urlParams.get('code') || '';
       // Save code for session
       sessionStorage.setItem('portal_code', code);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       showError(error.message || 'Không thể kết nối API');
     }
   });
@@ -630,7 +630,7 @@ const portalCode = urlParams.get('code') || '';
         renderDashboard(data);
         
         sessionStorage.setItem('portal_code', urlCode);
-      } catch (error: any) {
+      } catch (error: unknown) {
         showError(error.message || 'Portal code không hợp lệ');
       }
     })();

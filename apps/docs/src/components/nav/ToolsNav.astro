@@ -1,8 +1,9 @@
 ---
 import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  docs: any[];
+  docs: CollectionEntry<'docs'>[];
   currentPath: string;
 }
 
@@ -10,7 +11,7 @@ const { docs, currentPath } = Astro.props;
 const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Sort items
-const sortItems = (items: any[]) => {
+const sortItems = (items: CollectionEntry<'docs'>[]) => {
   return items.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
 };
 
