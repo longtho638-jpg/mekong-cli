@@ -237,6 +237,31 @@ def generate_yaml_frontmatter(data: dict) -> str:
     return "\n".join(lines)
 
 
+def backup_opencode_dir(opencode_dir: Path) -> Optional[Path]:
+    """Create backup of .opencode directory before overwriting.
+
+    Args:
+        opencode_dir: Path to .opencode directory
+
+    Returns:
+        Path to backup directory if created, None otherwise
+    """
+    if not opencode_dir.exists():
+        return None
+
+    backup_dir = opencode_dir.parent / ".opencode.backup"
+
+    # Remove old backup if exists
+    if backup_dir.exists():
+        shutil.rmtree(backup_dir)
+
+    # Create new backup
+    shutil.copytree(opencode_dir, backup_dir)
+    print(f"  Backed up .opencode to {backup_dir}")
+
+    return backup_dir
+
+
 def generate_agents_md(project_root: Path) -> str:
     """Generate AGENTS.md content from project context."""
     readme_path = project_root / "README.md"
@@ -649,6 +674,10 @@ def main():
     print(f"Project root: {project_root}")
     print(f"OpenCode dir: {opencode_dir}")
     print()
+
+    # Backup existing .opencode directory if --force is used
+    if args.force and not args.dry_run:
+        backup_opencode_dir(opencode_dir)
 
     # Create directories
     dirs_to_create = [

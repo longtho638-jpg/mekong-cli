@@ -57,7 +57,7 @@ const { execSync } = require('child_process');
       fs.mkdirSync(claudeDir, { recursive: true });
     }
 
-    // Read existing metadata to preserve fields like 'deletions'
+    // Read existing metadata to preserve ALL custom fields
     let existingMetadata = {};
     if (fs.existsSync(metadataPath)) {
       try {
@@ -68,9 +68,9 @@ const { execSync } = require('child_process');
     }
 
     const metadata = {
-      // Preserve existing deletions array if present
-      ...(existingMetadata.deletions && { deletions: existingMetadata.deletions }),
-      // Generated fields (always update these)
+      // Preserve ALL existing fields first
+      ...existingMetadata,
+      // Generated fields override existing (always update these)
       version: packageJson.version,
       name: packageJson.name,
       description: packageJson.description,
