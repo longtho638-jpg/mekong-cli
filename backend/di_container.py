@@ -17,6 +17,7 @@ from backend.services import (
     CommandService,
     RouterService,
     VibeService,
+    OpsService,
 )
 
 
@@ -36,6 +37,7 @@ class DIContainer:
         self._services["vibe"] = VibeService()
         self._services["router"] = RouterService()
         self._services["agentops"] = AgentOpsService()
+        self._services["ops"] = OpsService()
 
     def _initialize_controllers(self):
         """Initialize all controllers with service dependencies"""

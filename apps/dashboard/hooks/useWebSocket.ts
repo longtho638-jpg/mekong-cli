@@ -18,6 +18,7 @@ export type WSEventType =
   | 'franchise_added'
   | 'vc_score_updated'
   | 'moat_updated'
+  | 'swarm_update'
   | 'data_refresh'
   | 'heartbeat'
   | 'pong'
@@ -218,6 +219,7 @@ export function useAntigravityRealtime(options?: {
   onLeadAdded?: (data: Record<string, unknown> | undefined) => void
   onInvoicePaid?: (data: Record<string, unknown> | undefined) => void
   onVCScoreUpdated?: (data: Record<string, unknown> | undefined) => void
+  onSwarmUpdate?: (data: Record<string, unknown> | undefined) => void
   onDataRefresh?: () => void
 }) {
   const wsUrl =
@@ -237,6 +239,9 @@ export function useAntigravityRealtime(options?: {
           break
         case 'vc_score_updated':
           options?.onVCScoreUpdated?.(data)
+          break
+        case 'swarm_update':
+          options?.onSwarmUpdate?.(data)
           break
         case 'data_refresh':
           options?.onDataRefresh?.()

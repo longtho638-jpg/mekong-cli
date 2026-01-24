@@ -1,54 +1,53 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import useSWR, { mutate } from 'swr';
 import { MD3Card } from '@/components/ui/MD3Card';
-import { Check, X, ShieldAlert, Clock } from 'lucide-react';
-
-interface ApprovalRequest {
-  id: string;
-  action_name: string;
-  requester: string;
-  payload: any;
-  created_at: number;
-  status: 'pending' | 'approved' | 'rejected';
-}
-
-// Mock data
-const MOCK_APPROVALS: ApprovalRequest[] = [
-  {
-    id: 'req_1',
-    action_name: 'deploy_production',
-    requester: 'CI/CD Bot',
-    payload: { version: 'v5.4.0', commit: 'a1b2c3d' },
-    created_at: Date.now() - 1000 * 60 * 15, // 15 mins ago
-    status: 'pending'
-  },
-  {
-    id: 'req_2',
-    action_name: 'database_migration',
-    requester: 'DevOps Agent',
-    payload: { migration: '20260123_kanban_tables' },
-    created_at: Date.now() - 1000 * 60 * 60, // 1 hour ago
-    status: 'pending'
-  }
-];
+import { Check, X, ShieldAlert, Clock, Loader2 } from 'lucide-react';
+import { getApprovals, approveRequest, rejectRequest, ApprovalRequest } from '@/lib/ops-api';
 
 export const ApprovalQueue: React.FC = () => {
-  const [approvals, setApprovals] = useState<ApprovalRequest[]>(MOCK_APPROVALS);
+  const { data: approvals, error, isLoading } = useSWR('ops-approvals', getApprovals, {
+    refreshInterval: 10000 // Refresh every 10s
+  });
 
-  const handleApprove = (id: string) => {
-    // API call would go here
-    setApprovals(prev => prev.filter(req => req.id !== id));
-    alert(`Approved request ${id}`);
+  const handleApprove = async (id: string) => {
+    const success = await approveRequest(id, 'Admin');
+    if (success) {
+      mutate('ops-approvals');
+    } else {
+      alert('Failed to approve request');
+    }
   };
 
-  const handleReject = (id: string) => {
-    // API call would go here
-    setApprovals(prev => prev.filter(req => req.id !== id));
-    alert(`Rejected request ${id}`);
+  const handleReject = async (id: string) => {
+    const success = await rejectRequest(id, 'Admin');
+    if (success) {
+      mutate('ops-approvals');
+    } else {
+      alert('Failed to reject request');
+    }
   };
 
-  if (approvals.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="animate-spin text-[var(--md-sys-color-primary)]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-lg">
+        Failed to load approval queue.
+      </div>
+    );
+  }
+
+  const displayApprovals = approvals || [];
+
+  if (displayApprovals.length === 0) {
     return (
       <div className="text-center p-8 bg-[var(--md-sys-color-surface-container-low)] rounded-xl border border-dashed border-[var(--md-sys-color-outline)]">
         <CheckCircleIcon className="mx-auto h-12 w-12 text-[var(--md-sys-color-primary)] opacity-50 mb-2" />
@@ -59,7 +58,7 @@ export const ApprovalQueue: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {approvals.map((req) => (
+      {displayApprovals.map((req) => (
         <MD3Card key={req.id} className="p-0 overflow-hidden">
           <div className="p-4 border-b border-[var(--md-sys-color-outline-variant)] flex items-center justify-between bg-[var(--md-sys-color-surface-container)]">
              <div className="flex items-center gap-2">

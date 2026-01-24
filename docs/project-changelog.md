@@ -4,6 +4,14 @@
 
 ---
 
+## [5.6.0] - 2026-01-24
+
+### Vibe Kanban & Swarm UI Polish
+- **Kanban Persistence**: Integrated `kanban.py` router with Supabase `kanban_boards` and `tasks` tables, enabling persistent task management across sessions.
+- **Kanban UI Polish**: Enhanced `KanbanBoard.tsx` with MD3 elevation, `framer-motion` layout transitions, and advanced filtering by priority/assignee.
+- **Swarm Visualization**: Launched `SwarmVisualizer.tsx` utilizing React Flow to provide a real-time, read-only graph view of the Agent Swarm's execution state and task distribution.
+- **Ops Dashboard**: Deployed `OpsStatus.tsx` and `ApprovalQueue.tsx` for real-time infrastructure health monitoring and human-in-the-loop approval management.
+
 ## [5.5.0] - 2026-01-24
 
 ### i18n Unified Architecture

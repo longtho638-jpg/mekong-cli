@@ -1,31 +1,37 @@
 'use client';
 
 import React from 'react';
+import useSWR from 'swr';
 import { MD3Card } from '@/components/ui/MD3Card';
-import { Activity, Server, AlertCircle, CheckCircle } from 'lucide-react';
-
-interface ServiceHealth {
-  name: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  last_check: number;
-  message?: string;
-}
-
-// Mock data for MVP
-const MOCK_SERVICES: ServiceHealth[] = [
-  { name: 'Database', status: 'healthy', last_check: Date.now() },
-  { name: 'Swarm Engine', status: 'healthy', last_check: Date.now() },
-  { name: 'Payment Gateway', status: 'degraded', last_check: Date.now(), message: 'High latency' },
-  { name: 'Email Service', status: 'healthy', last_check: Date.now() },
-];
+import { Activity, Server, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { getOpsStatus, ServiceHealth } from '@/lib/ops-api';
 
 export const OpsStatus: React.FC = () => {
-  // In a real app, useSWR to fetch from /api/ops/status
-  const services = MOCK_SERVICES;
+  const { data: services, error, isLoading } = useSWR('ops-status', getOpsStatus, {
+    refreshInterval: 5000 // Refresh every 5s
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="animate-spin text-[var(--md-sys-color-primary)]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-lg">
+        Failed to load operations status.
+      </div>
+    );
+  }
+
+  const displayServices = services || [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {services.map((service) => (
+      {displayServices.map((service) => (
         <MD3Card key={service.name} className="p-4">
           <div className="flex items-start justify-between">
             <div>
