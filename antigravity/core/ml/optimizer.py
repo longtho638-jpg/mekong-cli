@@ -1,9 +1,11 @@
 """ML Optimizer - Main orchestration class for AI-powered pricing optimization."""
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .analytics import (
+    MLAnalyticsReport,
+    MLMetricsDict,
     create_default_metrics,
     generate_analytics_report,
     update_metrics,
@@ -29,6 +31,8 @@ from .scoring import (
     calculate_viral_multiplier,
 )
 from .training import (
+    MarketConditionsDict,
+    VariantConfigDict,
     analyze_market_conditions,
     calculate_immediate_reward,
     create_ab_test,
@@ -36,6 +40,14 @@ from .training import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class PricingStateDict(TypedDict):
+    """Internal state passed to the pricing agent"""
+    base_price: float
+    features: Dict[str, Any]
+    historical_performance: Dict[str, float]
+    market_conditions: MarketConditionsDict
 
 
 class MLOptimizer:
@@ -83,7 +95,7 @@ class MLOptimizer:
         logger.info("Advanced ML models initialized")
 
     def calculate_ai_optimized_price(
-        self, base_price: float, features: Dict[str, Any], context: Dict[str, Any] = None
+        self, base_price: float, features: Dict[str, Any], context: Optional[Dict[str, Any]] = None
     ) -> MLOptimizationResult:
         """
         Calculate AI-optimized price using autonomous agents.
@@ -103,7 +115,7 @@ class MLOptimizer:
 
         # Get AI agent decision
         pricing_agent = self.ai_agents["pricing_agent"]
-        state = {
+        state: PricingStateDict = {
             "base_price": base_price,
             "features": features,
             "historical_performance": get_recent_performance(self.training_data),
@@ -149,7 +161,7 @@ class MLOptimizer:
         test_id: str,
         name: str,
         control_price: float,
-        variant_configs: Dict[str, Dict[str, Any]],
+        variant_configs: Dict[str, VariantConfigDict],
         duration_days: int = 7,
     ):
         """
@@ -179,7 +191,7 @@ class MLOptimizer:
             self.game_changing_metrics, feature, value
         )
 
-    def get_game_changing_analytics(self) -> Dict[str, Any]:
+    def get_game_changing_analytics(self) -> MLAnalyticsReport:
         """
         Get comprehensive game-changing analytics.
 

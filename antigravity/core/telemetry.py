@@ -13,7 +13,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 from .pricing import estimate_cost
 from .telemetry_exporters import load_events, print_dashboard, save_events
@@ -22,8 +22,10 @@ from .telemetry_exporters import load_events, print_dashboard, save_events
 try:
     from core.infrastructure.database import get_db
 except ImportError:
+
     def get_db():
         return None
+
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,17 @@ class Event:
     duration_ms: Optional[float] = None
     status: str = "success"
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+class TelemetrySummaryDict(TypedDict, total=False):
+    """Aggregated telemetry summary"""
+
+    status: str
+    period: str
+    volume: Dict[str, Union[int, float]]
+    velocity: Dict[str, float]
+    top_categories: Dict[str, int]
+    top_actions: Dict[str, int]
 
 
 class Telemetry:
@@ -99,7 +112,7 @@ class Telemetry:
                     "output_tokens": safe_meta.get("output_tokens", 0),
                     "error_message": safe_meta.get("error"),
                     "context_id": safe_meta.get("context_id"),
-                    "metadata": safe_meta
+                    "metadata": safe_meta,
                 }
                 # Background push (simplified - in a real scenario we'd use a thread/queue)
                 self.db.table("agent_metrics").insert(metric_data).execute()
@@ -113,7 +126,7 @@ class Telemetry:
         save_events(self.events, self.event_file)
         return event
 
-    def get_summary(self, days: int = 7) -> Dict[str, Any]:
+    def get_summary(self, days: int = 7) -> TelemetrySummaryDict:
         """Aggregates recent data into a strategic summary."""
         cutoff = datetime.now() - timedelta(days=days)
         recent = [e for e in self.events if e.timestamp > cutoff]
@@ -149,6 +162,7 @@ def agent_telemetry(operation: Optional[str] = None):
     """
     Decorator for Antigravity agents to track performance automatically.
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -181,19 +195,27 @@ def agent_telemetry(operation: Optional[str] = None):
                     metadata["input_tokens"] = input_tokens
                     metadata["output_tokens"] = output_tokens
                     metadata["model_id"] = model_id
-                    metadata["estimated_cost_usd"] = estimate_cost(model_id, input_tokens, output_tokens)
+                    metadata["estimated_cost_usd"] = estimate_cost(
+                        model_id, input_tokens, output_tokens
+                    )
 
-                track_event("agent", op_name, duration_ms=duration, status="success", metadata=metadata)
+                track_event(
+                    "agent", op_name, duration_ms=duration, status="success", metadata=metadata
+                )
                 return result
             except Exception as e:
                 duration = (time.perf_counter() - start_time) * 1000
-                track_event("agent", op_name, duration_ms=duration, status="failed", metadata={
-                    "agent_id": agent_id,
-                    "agent_role": agent_role,
-                    "error": str(e)
-                })
+                track_event(
+                    "agent",
+                    op_name,
+                    duration_ms=duration,
+                    status="failed",
+                    metadata={"agent_id": agent_id, "agent_role": agent_role, "error": str(e)},
+                )
                 raise e
+
         return wrapper
+
     return decorator
 
 

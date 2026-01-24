@@ -18,10 +18,20 @@ import argparse
 import json
 import logging
 import sys
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple, TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class HeadlessResult(TypedDict):
+    """Standardized result for headless execution"""
+    status: str
+    instruction: str
+    data: Any
+    message: str
+    error: Optional[str]
+    output: Optional[str]
 
 
 class HeadlessMode:
@@ -41,16 +51,17 @@ class HeadlessMode:
         if fmt.lower() in ["text", "json"]:
             self.output_format = fmt.lower()
 
-    def execute(self, instruction: str) -> Dict[str, Any]:
+    def execute(self, instruction: str) -> HeadlessResult:
         """
         Processes a single instruction and returns a standardized result.
         """
-        result = {
+        result: HeadlessResult = {
             "status": "success",
             "instruction": instruction,
             "data": None,
             "message": "",
             "error": None,
+            "output": None,
         }
 
         try:

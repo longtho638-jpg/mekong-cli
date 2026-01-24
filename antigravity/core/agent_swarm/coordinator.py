@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import time
 from antigravity.core.types import SwarmStatusDict
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
 from .enums import AgentRole, TaskPriority
 from .models import SwarmMetrics
@@ -27,9 +27,9 @@ class SwarmCoordinator:
     def register_agent(
         self,
         name: str,
-        handler: Callable,
+        handler: Callable[[Any], Any],
         role: AgentRole = AgentRole.WORKER,
-        specialties: List[str] = None,
+        specialties: Optional[List[str]] = None,
     ) -> str:
         """Register an agent with the swarm."""
         agent_id = self.swarm.registry.register(name, handler, role, specialties)
@@ -65,7 +65,9 @@ class SwarmCoordinator:
                 "busy": a.is_busy,
                 "completed": a.tasks_completed,
                 "failed": a.tasks_failed,
-                "success_rate": a.tasks_completed / (a.tasks_completed + a.tasks_failed) if (a.tasks_completed + a.tasks_failed) > 0 else 1.0
+                "success_rate": a.tasks_completed / (a.tasks_completed + a.tasks_failed)
+                if (a.tasks_completed + a.tasks_failed) > 0
+                else 1.0,
             }
             for a in self.swarm.registry.agents.values()
         }
@@ -85,7 +87,9 @@ class SwarmCoordinator:
             },
         }
 
-    def find_best_agent(self, specialty: Optional[str] = None, role: Optional[AgentRole] = None) -> Optional[str]:
+    def find_best_agent(
+        self, specialty: Optional[str] = None, role: Optional[AgentRole] = None
+    ) -> Optional[str]:
         """
         Finds the best available agent based on performance metrics (success rate and speed).
         """
@@ -107,7 +111,11 @@ class SwarmCoordinator:
             return None
 
         def agent_score(agent):
-            success_rate = agent.tasks_completed / (agent.tasks_completed + agent.tasks_failed) if (agent.tasks_completed + agent.tasks_failed) > 0 else 1.0
+            success_rate = (
+                agent.tasks_completed / (agent.tasks_completed + agent.tasks_failed)
+                if (agent.tasks_completed + agent.tasks_failed) > 0
+                else 1.0
+            )
             # Higher success rate is better, fewer failures is better
             return success_rate
 

@@ -11,13 +11,27 @@ Contains:
 
 import logging
 import time
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 import numpy as np
 
 from .models import ABTestAdvanced
 
 logger = logging.getLogger(__name__)
+
+
+# Type aliases
+class MarketConditionsDict(TypedDict, total=False):
+    market_trend: str
+    competition_level: str
+    economic_indicator: str
+
+
+class VariantConfigDict(TypedDict, total=False):
+    price_multiplier: float
+    strategy: str
+    features: Dict[str, Any]
+
 
 # Optional sklearn import with fallback
 try:
@@ -93,13 +107,11 @@ def get_recent_performance(training_data: list) -> Dict[str, float]:
     recent_data = training_data[-100:]
     return {
         "avg_conversion": np.mean([d.get("conversion", 0) for d in recent_data]),
-        "avg_viral_multiplier": np.mean(
-            [d.get("viral_multiplier", 1.0) for d in recent_data]
-        ),
+        "avg_viral_multiplier": np.mean([d.get("viral_multiplier", 1.0) for d in recent_data]),
     }
 
 
-def analyze_market_conditions() -> Dict[str, Any]:
+def analyze_market_conditions() -> MarketConditionsDict:
     """
     Analyze current market conditions.
 
@@ -142,7 +154,7 @@ def create_ab_test(
     test_id: str,
     name: str,
     control_price: float,
-    variant_configs: Dict[str, Dict[str, Any]],
+    variant_configs: Dict[str, VariantConfigDict],
     duration_days: int = 7,
 ) -> ABTestAdvanced:
     """

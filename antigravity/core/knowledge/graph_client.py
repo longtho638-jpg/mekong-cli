@@ -3,11 +3,20 @@ import logging
 import os
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from falkordb import FalkorDB
 
 logger = logging.getLogger(__name__)
+
+
+class KnowledgeContextDict(TypedDict):
+    """Context record from graph query"""
+    # Specific fields depend on the Cypher RETURN statement
+    # but usually contain nodes and relationships
+    node_n: Any
+    rel_r: Any
+    node_m: Any
 
 
 @dataclass
@@ -79,13 +88,13 @@ class GraphClient:
             "props": edge.properties
         })
 
-    def query(self, cypher_query: str, params: Optional[Dict[str, Any]] = None):
+    def query(self, cypher_query: str, params: Optional[Dict[str, Any]] = None) -> Any:
         """Execute a raw Cypher query."""
         if not self.graph:
             return None
         return self.graph.query(cypher_query, params or {})
 
-    def get_context(self, concept_name: str) -> List[Dict[str, Any]]:
+    def get_context(self, concept_name: str) -> List[KnowledgeContextDict]:
         """Retrieve related context for a concept."""
         if not self.graph:
             return []
@@ -96,4 +105,4 @@ class GraphClient:
         """
         result = self.graph.query(query, {"name": concept_name})
         # Simplified result parsing would go here
-        return result.result_set
+        return result.result_set  # type: ignore

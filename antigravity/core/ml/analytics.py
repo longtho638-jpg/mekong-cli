@@ -6,13 +6,33 @@ Handles analytics and metrics tracking for ML optimization.
 """
 
 import time
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 from .models import GameChangingFeature
 from .scoring import calculate_performance_score
 
 
-def create_default_metrics() -> Dict[str, Any]:
+class MLMetricsDict(TypedDict):
+    """Game-changing metrics for ML optimization"""
+    viral_multiplier_achieved: float
+    quantum_optimizations: int
+    ai_agent_decisions: int
+    blockchain_transactions: int
+    total_ml_predictions: int
+    confidence_improvements: float
+
+
+class MLAnalyticsReport(TypedDict):
+    """Comprehensive analytics report"""
+    timestamp: float
+    game_changing_features: MLMetricsDict
+    models_loaded: Dict[str, str]
+    ai_agents_active: int
+    quantum_states: int
+    performance_score: float
+
+
+def create_default_metrics() -> MLMetricsDict:
     """
     Create default game-changing metrics dictionary.
 
@@ -25,15 +45,15 @@ def create_default_metrics() -> Dict[str, Any]:
         "ai_agent_decisions": 0,
         "blockchain_transactions": 0,
         "total_ml_predictions": 0,
-        "confidence_improvements": 0,
+        "confidence_improvements": 0.0,
     }
 
 
 def update_metrics(
-    metrics: Dict[str, Any],
+    metrics: MLMetricsDict,
     feature: GameChangingFeature,
     value: float
-) -> Dict[str, Any]:
+) -> MLMetricsDict:
     """
     Update game-changing metrics based on feature type.
 
@@ -61,11 +81,11 @@ def update_metrics(
 
 
 def generate_analytics_report(
-    metrics: Dict[str, Any],
+    metrics: MLMetricsDict,
     models: Dict[str, Any],
     ai_agents: Dict[str, Any],
     quantum_states: Dict[str, Any]
-) -> Dict[str, Any]:
+) -> MLAnalyticsReport:
     """
     Generate comprehensive game-changing analytics report.
 

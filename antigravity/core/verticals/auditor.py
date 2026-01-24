@@ -4,9 +4,9 @@ Vertical Auditor
 Centralized compliance and security auditor for all verticals.
 """
 import logging
-from typing import Any, Dict, List, Union, TypedDict
+from typing import Any, Dict, List, TypedDict, Union
 
-from .fintech import FintechEngine, SecurityAudit, FintechSystemConfig
+from .fintech import FintechEngine, FintechSystemConfig, SecurityAudit
 from .healthcare import ComplianceCheck, HealthcareEngine, HealthcareSystemConfig
 from .saas import SaasEngine, SaasUsageMetrics
 
