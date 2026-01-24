@@ -5,6 +5,7 @@ Gumroad Webhook processing logic.
 import logging
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from backend.api.config.settings import settings
 from backend.services.email_service import send_purchase_email
@@ -74,7 +75,7 @@ async def send_welcome_email(customer: dict):
     logger.info(f"   Portal: {portal_url}")
 
 
-def extract_affiliate_code(purchase: GumroadPurchase) -> str | None:
+def extract_affiliate_code(purchase: GumroadPurchase) -> Optional[str]:
     """
     Extract affiliate code from purchase data.
     Checks custom_fields first, then falls back to URL params if available.
@@ -150,7 +151,7 @@ async def process_purchase(
     purchase: GumroadPurchase,
     customers_store: dict,
     purchases_list: list,
-    affiliates_store: dict | None = None
+    affiliates_store: Optional[dict] = None
 ):
     """Process Gumroad purchase and create platform account."""
     logger.info(f"💰 Processing purchase: {purchase.email} bought {purchase.product_name}")
