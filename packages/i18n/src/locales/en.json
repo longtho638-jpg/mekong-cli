@@ -1,0 +1,2501 @@
+{
+  "app": {
+    "name": "Agency OS",
+    "tagline": "The One-Person Unicorn Operating System",
+    "description": "Build, scale, and franchise your agency globally"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "marketing": "Marketing",
+    "sales": "Sales",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "getting-started": "Getting Started",
+    "docs": "Docs",
+    "workflows": "Workflows",
+    "tools": "Tools",
+    "changelog": "Changelog",
+    "support": "Support",
+    "core-concepts": "Core Concepts",
+    "agents": "Agents",
+    "commands": "Commands",
+    "skills": "Skills",
+    "use-cases": "Use Cases",
+    "cheatsheet": "Cheatsheet",
+    "troubleshooting": "Troubleshooting",
+    "cli": "CLI"
+  },
+  "search": {
+    "placeholder": "Search documentation...",
+    "type_to_search": "Type to search documentation...",
+    "select": "select",
+    "navigate": "navigate",
+    "close": "close",
+    "searching": "Searching...",
+    "unavailable": "Search unavailable",
+    "enable_instruction": "Run <code>bun run build</code> to enable search",
+    "no_results": "No results for",
+    "try_different": "Try different keywords",
+    "result": "result",
+    "results": "results",
+    "failed": "Search failed",
+    "try_again": "Please try again"
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  },
+  "language": {
+    "switch": "Switch language"
+  },
+  "header": {
+    "search": "Search"
+  },
+  "footer": {
+    "copyright": "© 2026 AgencyOS. All rights reserved."
+  },
+  "toc": {
+    "title": "On this page"
+  },
+  "commands": {
+    "market_analysis": "Market Analysis",
+    "customer_profile": "Customer Profile",
+    "sales_strategy": "Sales Strategy",
+    "marketing_plan": "Marketing Plan",
+    "business_plan": "Business Plan",
+    "brand_identity": "Brand Identity",
+    "content_marketing": "Content Marketing",
+    "social_media": "Social Media",
+    "messaging": "Messaging",
+    "market_research": "Market Research",
+    "pr_strategy": "PR Strategy",
+    "growth_strategy": "Growth Strategy",
+    "sales_funnel": "Sales Funnel"
+  },
+  "common": {
+    "welcome": "Welcome to Agency OS",
+    "start": "Get Started",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "success": "Success!",
+    "error": "An error occurred",
+    "confirm": "Are you sure?",
+    "wisdom": "Core Wisdom"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password?"
+  },
+  "franchise": {
+    "title": "Franchise Portal",
+    "territories": "Your Territories",
+    "revenue": "Revenue",
+    "clients": "Clients",
+    "commission": "Commission Rate"
+  },
+  "binh_phap": {
+    "title": "13 Binh Pháp",
+    "subtitle": "Sun Tzu for Agency Founders",
+    "description": "The supreme art of war is to subdue the enemy without fighting. 13 strategic clusters mapped to AI commands.",
+    "tagline": "Win Without Fighting",
+    "quote_original": "Bất chiến nhi khuất nhân chi binh",
+    "short_term": "Short-term: SaaS Affiliate Revenue",
+    "long_term": "Long-term: Local Client Brand Building",
+    "chapters": {
+      "1": {
+        "chinese": "始計",
+        "name": "Planning",
+        "purpose": "Strategy formulation",
+        "commands": ["/plan", "/binh-phap", "/okr"]
+      },
+      "2": {
+        "chinese": "作戰",
+        "name": "Operations",
+        "purpose": "Execute operations",
+        "commands": ["/ops", "/billing", "/reporting"]
+      },
+      "3": {
+        "chinese": "謀攻",
+        "name": "Strategic Attack",
+        "purpose": "Light growth",
+        "commands": ["/affiliate", "/growth"]
+      },
+      "4": {
+        "chinese": "形勢",
+        "name": "Position",
+        "purpose": "Defend advantage",
+        "commands": ["/moat", "/audit"]
+      },
+      "5": {
+        "chinese": "勢",
+        "name": "Momentum",
+        "purpose": "Catch trends",
+        "commands": ["/trend", "/scout-keo"]
+      },
+      "6": {
+        "chinese": "虛實",
+        "name": "Strength & Weakness",
+        "purpose": "Protect equity",
+        "commands": ["/equity", "/cap-table"]
+      },
+      "7": {
+        "chinese": "軍爭",
+        "name": "Military Maneuvers",
+        "purpose": "Ship fast",
+        "commands": ["/sprint", "/ship", "/code"],
+        "highlight": true
+      },
+      "8": {
+        "chinese": "九變",
+        "name": "Nine Variations",
+        "purpose": "Pivot",
+        "commands": ["/pivot", "/experiment"]
+      },
+      "9": {
+        "chinese": "行軍",
+        "name": "March",
+        "purpose": "Execute",
+        "commands": ["/kpi", "/standup"]
+      },
+      "10": {
+        "chinese": "地形",
+        "name": "Terrain",
+        "purpose": "Expand market",
+        "commands": ["/market", "/launch", "/sales"]
+      },
+      "11": {
+        "chinese": "九地",
+        "name": "Nine Grounds",
+        "purpose": "Crisis management",
+        "commands": ["/crisis", "/survival"],
+        "style": "danger"
+      },
+      "12": {
+        "chinese": "火攻",
+        "name": "Fire Attack",
+        "purpose": "Viral marketing",
+        "commands": ["/viral", "/video", "/marketing"],
+        "style": "fire"
+      },
+      "13": {
+        "chinese": "用間",
+        "name": "Intelligence",
+        "purpose": "Gather intel",
+        "commands": ["/intel", "/fundraise"],
+        "style": "intel"
+      }
+    },
+    "wisdom": {
+      "quote1_original": "Bách chiến bách thắng, phi thiện chi thiện giả dã",
+      "quote1_translation": "Winning 100 battles out of 100 is not ultimate excellence",
+      "quote2_original": "Bất chiến nhi khuất nhân chi binh, thiện chi thiện giả dã",
+      "quote2_translation": "Subduing the enemy without fighting is ultimate excellence"
+    },
+    "cta": {
+      "title": "Apply ancient wisdom to modern business",
+      "button": "View All Commands →"
+    }
+  },
+  "landing": {
+    "agencyos": {
+      "title": "AgencyOS - The AI Operating System for Modern Agencies",
+      "description": "125+ AI commands for marketing, sales, affiliate, and finance. The one-person agency operating system.",
+      "hero": {
+        "title": "The AI Operating System for Modern Agencies",
+        "description": "125+ commands. Zero employees. Infinite scale.",
+        "badge": "For Technical Agency Founders",
+        "primary_cta": "Start Free Trial",
+        "secondary_cta": "Watch Demo →",
+        "footer": "Join 500+ agencies worldwide • 4.9/5 rating • 30-day guarantee",
+        "problem": {
+          "title": "Running an agency is exhausting.",
+          "points": [
+            "80% of time goes to admin, not clients",
+            "Hiring is expensive and unpredictable",
+            "Scaling means more chaos, not profit",
+            "Always behind on content creation",
+            "Proposals take hours, not minutes"
+          ]
+        },
+        "roadmap": {
+        "title": "The $1M Agency Roadmap",
+        "subtitle": "Based on Sun Tzu's Art of War. 13 strategic chapters to scale your agency.",
+        "steps": {
+          "planning": {
+            "title": "Planning",
+            "desc": "Strategic Planning"
+          },
+          "attack": {
+            "title": "Strategic Attack",
+            "desc": "Win Without Fighting"
+          },
+          "maneuvers": {
+            "title": "Military Maneuvers",
+            "desc": "Speed Sprint"
+          },
+          "final": {
+            "title": "$1M ARR",
+            "desc": "60 clients"
+          }
+        },
+        "revenue": {
+          "bootstrap": "Bootstrap Path (70%)",
+          "bootstrap_calc": "42 clients × $1.5K/mo = $756K",
+          "vc": "VC-Ready Path (30%)",
+          "vc_calc": "18 clients + equity = $244K",
+          "total": "Total Potential",
+          "total_calc": "$1M ARR 🎯"
+        },
+        "cta": "Explore 13 Chapters →"
+      },
+      "solution": {
+          "title": "What if AI could run your agency?",
+          "points": [
+            "125+ AI commands handle everything",
+            "Marketing content in seconds",
+            "Sales proposals that close",
+            "Built-in affiliate income",
+            "Scale without hiring"
+          ]
+        },
+        "business_info": {
+          "network_title": "AgencyOS Network",
+          "network_desc": "The AI-powered operating system for one-person agencies. Built by founders, for founders.",
+          "mission_title": "Our Mission",
+          "mission_desc": "\"Họ WIN → Mình WIN\" — When our clients succeed, we succeed. Win-Win-Win is our core.",
+          "reach_title": "Global Reach",
+          "reach_desc": "500+ agencies worldwide. Bilingual EN/VN support. Based in Vietnam, serving globally.",
+          "contact_title": "Get in Touch",
+          "contact_form": "Contact Form →"
+        },
+        "products": {
+          "title": "All Products",
+          "subtitle": "Choose your path to agency success",
+          "free_label": "FREE",
+          "paid_label": "PAID PLANS",
+          "features_label": "FEATURES",
+          "popular": "POPULAR",
+          "mo": "/mo"
+        }
+      }
+    },
+    "banner": {
+      "text": "Early Bird Special: 50% OFF Pro Plan",
+      "ends_in": "Ends in:",
+      "cta": "Claim Now →"
+    },
+    "nav": {
+      "home": "Home",
+      "products": "Products",
+      "pricing": "Pricing",
+      "demo": "Demo",
+      "docs": "Docs",
+      "blog": "Blog",
+      "get_started": "Get Started",
+      "free": "FREE",
+      "paid": "PAID",
+      "features": "Features",
+      "docs_desc": "310+ IDE-executable pages",
+      "mekong_cli_desc": "125+ commands",
+      "binh_phap_desc": "13 chapters strategy",
+      "workflows_desc": "27 workflow guides",
+      "newsletter_hub": "Newsletter Hub",
+      "newsletter_hub_desc": "Email marketing",
+      "affiliate": "Affiliate",
+      "affiliate_desc": "Earn commissions",
+      "marketplace": "Marketplace",
+      "marketplace_desc": "Templates & tools",
+      "wallet": "Wallet",
+      "wallet_desc": "Payments & earnings",
+      "starter_desc": "Solo operator",
+      "pro_desc": "Teams + API",
+      "franchise_desc": "White-label"
+    },
+    "footer": {
+      "tagline": "The AI-powered operating system for one-person agencies.",
+      "products": "Products",
+      "features": "Features",
+      "resources": "Resources",
+      "company": "Company",
+      "rights": "All rights reserved.",
+      "motto": "Họ WIN → Mình WIN → All WIN",
+      "quick_start": "Quick Start",
+      "demo": "Demo",
+      "roi_calculator": "ROI Calculator",
+      "blog": "Blog",
+      "changelog": "Changelog",
+      "about_us": "About Us",
+      "case_studies": "Case Studies",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "gamification": "Gamification"
+    },
+    "stats": {
+      "ai_commands": "AI Commands",
+      "agencies": "Agencies Worldwide",
+      "hours_saved": "Hours Saved/Year",
+      "rating": "User Rating"
+    },
+    "widgets": {
+      "back_to_top": "Back to top",
+      "quick_help": "Quick Help",
+      "quick_commands": "Quick Commands",
+      "start_trial": "Start Free Trial",
+      "keyboard_shortcuts": {
+        "title": "Keyboard Shortcuts",
+        "navigation": "Navigation",
+        "actions": "Actions",
+        "go_home": "Go to Home",
+        "go_pricing": "Go to Pricing",
+        "go_demo": "Go to Demo",
+        "go_commands": "Go to Commands",
+        "focus_search": "Focus Search",
+        "show_shortcuts": "Show Shortcuts",
+        "close": "ESC"
+      },
+      "quick_commands_desc": {
+        "help": "View all 85+ commands",
+        "demo": "Try interactive demo",
+        "roi": "Calculate your savings",
+        "compare": "See vs competitors",
+        "pricing": "View pricing plans"
+      },
+      "social_proof": {
+        "signed_up": "Someone just signed up",
+        "just_now": "just now",
+        "minutes_ago": "{n} minutes ago",
+        "from": "from",
+        "action": {
+          "started_trial": "started Pro trial",
+          "upgraded": "upgraded to Pro",
+          "joined": "joined AgencyOS",
+          "started_franchise": "started Franchise",
+          "purchased": "purchased Pro",
+          "activated": "activated license",
+          "purchased_starter": "purchased Starter"
+        }
+      },
+      "promo_badge": {
+        "discount": "-20% OFF",
+        "code_prefix": "🎄"
+      },
+      "features": {
+        "title": "Everything Your Agency Needs",
+        "marketing": {
+          "title": "Marketing",
+          "command": "/marketing/social",
+          "desc": "Create 30 posts in 30 minutes. Facebook, TikTok, X, LinkedIn."
+        },
+        "sales": {
+          "title": "Sales",
+          "command": "/sales/proposal",
+          "desc": "AI-powered proposals that win clients. 3x higher close rates."
+        },
+        "affiliate": {
+          "title": "Affiliate",
+          "command": "/affiliate/scout",
+          "desc": "50+ PayPal-friendly programs. Passive income on autopilot."
+        },
+        "finance": {
+          "title": "Finance",
+          "command": "/finance",
+          "desc": "Track everything automatically. Revenue, expenses, runway."
+        },
+        "strategy": {
+          "title": "Strategy",
+          "command": "/binh-phap",
+          "desc": "Sun Tzu's Art of War for business. 13 strategic clusters."
+        },
+        "video": {
+          "title": "Video",
+          "command": "/video/script",
+          "desc": "Generate scripts for YouTube, TikTok, Reels in seconds."
+        }
+      },
+      "how_it_works": {
+        "title": "How It Works",
+        "step1": {
+          "title": "Get Access",
+          "desc": "Sign up via Polar.sh. Instant delivery."
+        },
+        "step2": {
+          "title": "Open in IDE",
+          "desc": "Works with any IDE. Just clone and open."
+        },
+        "step3": {
+          "title": "Run Commands",
+          "desc": "Type /help to see 125+ commands. Pick one."
+        },
+        "step4": {
+          "title": "Profit",
+          "desc": "Content created. Deals closed. Money made."
+        }
+      },
+      "marketplace_page": {
+    "title": "Marketplace - AgencyOS",
+    "description": "Skills, templates, agents, and workflows for your agency.",
+    "hero": {
+      "title": "🏪 Marketplace",
+      "subtitle": "Skills, templates, agents, and workflows to supercharge your agency"
+    },
+    "stats": {
+      "products": "Products",
+      "downloads": "Downloads",
+      "creators": "Creators"
+    },
+    "filters": {
+      "all": "All",
+      "skill": "⚡ Skills",
+      "template": "📋 Templates",
+      "agent": "🤖 Agents",
+      "workflow": "🔄 Workflows",
+      "sort": {
+        "popular": "Most Popular",
+        "newest": "Newest",
+        "rating": "Highest Rated",
+        "price_low": "Price: Low to High",
+        "price_high": "Price: High to Low"
+      }
+    },
+    "product": {
+      "badges": {
+        "skill": "SKILL",
+        "template": "TEMPLATE",
+        "agent": "AGENT",
+        "workflow": "WORKFLOW",
+        "free": "FREE"
+      },
+      "downloads": "downloads",
+      "add_to_cart": "Add to Cart",
+      "get_free": "Get Free",
+      "free": "FREE"
+    },
+    "products": {
+      "seo_audit": {
+        "title": "SEO Audit Skill",
+        "desc": "Complete SEO audit automation for any website"
+      },
+      "invoice": {
+        "title": "Invoice Generator",
+        "desc": "Generate professional invoices in seconds"
+      },
+      "proposal": {
+        "title": "Proposal Template Pack",
+        "desc": "10 professional proposal templates"
+      },
+      "social_agent": {
+        "title": "Social Media Manager",
+        "desc": "AI agent for social media management"
+      },
+      "onboarding": {
+        "title": "Client Onboarding Flow",
+        "desc": "Complete client onboarding automation"
+      },
+      "content_calendar": {
+        "title": "Content Calendar",
+        "desc": "AI-powered content calendar generation"
+      }
+    },
+    "creator_cta": {
+      "title": "🎨 Become a Creator",
+      "desc": "Build and sell skills, templates, and agents. Earn 70% of every sale.",
+      "button": "Submit Your Product →"
+    },
+    "alerts": {
+      "added_free": "✅ \"{name}\" added to your library!\n\nYou can access it from your dashboard.",
+      "added_cart": "🛒 \"{name}\" added to cart!\n\nPrice: {price}\n\nCheckout coming soon."
+    }
+  },
+  "newsletter_signup": {
+        "title": "Get Weekly Agency Growth Tips",
+        "subtitle": "Join 1,000+ solo agency owners. No spam, unsubscribe anytime.",
+        "placeholder": "your@email.com",
+        "button": "Subscribe",
+        "privacy": "We respect your privacy. Read our {link}."
+      },
+      "quiz": {
+        "title": "🧭 Which Product Fits You?",
+        "subtitle": "Answer 1 question. Get your personalized recommendation.",
+        "question": "What's your biggest challenge right now?",
+        "options": {
+          "free": "I'm just starting and want to learn",
+          "starter": "I need to automate repetitive tasks",
+          "pro": "I want to scale with my team",
+          "franchise": "I want to white-label and resell"
+        },
+        "results": {
+          "free": {
+            "title": "Start FREE",
+            "desc": "Perfect for learning! Get started with our free resources:",
+            "cta": "Start Learning →"
+          },
+          "starter": {
+            "title": "Starter Plan - {price}",
+            "desc": "Automate your agency with 125+ AI commands:",
+            "cta": "Get Starter →"
+          },
+          "pro": {
+            "title": "Pro Plan - {price}",
+            "desc": "Scale with your team and API access:",
+            "cta": "Get Pro →"
+          },
+          "franchise": {
+            "title": "Franchise - {price}",
+            "desc": "White-label AgencyOS and resell to clients:",
+            "cta": "Get Franchise →"
+          }
+        },
+        "restart": "← Try Again"
+      }
+    }
+  },
+  "about_page": {
+    "title": "About AgencyOS - Our Mission",
+    "description": "Learn about the team behind AgencyOS and our mission to empower solo agencies with AI.",
+    "hero": {
+      "title": "About AgencyOS",
+      "subtitle": "Empowering solo agencies with AI superpowers."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "text": "We believe running an agency shouldn't require a team of 20. With the right AI tools, one person can deliver the value of an entire department. AgencyOS is built to make that possible."
+    },
+    "process": {
+      "title": "Our Process",
+      "subtitle": "Refined over hundreds of projects",
+      "steps": {
+        "discovery": {
+          "title": "Discovery",
+          "desc": "Deep-dive into your brand, goals, target audience, and competitive landscape."
+        },
+        "strategy": {
+          "title": "Strategy",
+          "desc": "AI-powered analysis and creative ideation. We map out the blueprint for success."
+        },
+        "build": {
+          "title": "Build",
+          "desc": "Our AI commands take over. From content to code, we ship at 10x speed."
+        },
+        "test": {
+          "title": "Test",
+          "desc": "Rigorous quality checks. We ensure everything is exceptional before launch."
+        },
+        "launch": {
+          "title": "Launch & Iterate",
+          "desc": "Go live! Then we gather feedback and continuously improve with AI insights."
+        }
+      }
+    },
+    "team": {
+      "title": "Our Team",
+      "subtitle": "We've got the best developers and strategists around",
+      "members": {
+        "long": {
+          "name": "Long Minh",
+          "role": "Founder & CEO",
+          "bio": "10+ years building digital products. Obsessed with AI automation."
+        },
+        "agent": {
+          "name": "AI Agent",
+          "role": "Lead Developer",
+          "bio": "Never sleeps. Ships code 24/7. Knows 125+ commands."
+        },
+        "design": {
+          "name": "Design AI",
+          "role": "Creative Director",
+          "bio": "Creates stunning visuals. Masters WOW animations."
+        },
+        "strategy": {
+          "name": "Strategy AI",
+          "role": "Growth Hacker",
+          "bio": "Applies Binh Phap to business. Wins without fighting."
+        }
+      }
+    },
+    "tech_stack": {
+      "title": "Tech Stack",
+      "subtitle": "As solid as you'll find"
+    },
+    "story": {
+      "title": "The Story",
+      "items": {
+        "2023": {
+          "title": "The Struggle",
+          "desc": "Burned out from managing clients, creating content, and handling admin. There had to be a better way."
+        },
+        "2024": {
+          "title": "The Breakthrough",
+          "desc": "Discovered that AI could handle 80% of agency work. Built the first 10 commands."
+        },
+        "2025": {
+          "title": "AgencyOS Launch",
+          "desc": "125+ commands. 500+ agencies. One mission: automate everything."
+        }
+      }
+    },
+    "values": {
+      "title": "Our Values",
+      "items": {
+        "speed": {
+          "title": "Speed Over Perfection",
+          "desc": "Ship fast, iterate faster. Done is better than perfect."
+        },
+        "results": {
+          "title": "Results Over Hours",
+          "desc": "We measure outcomes, not time spent. Work smart, not hard."
+        },
+        "win3": {
+          "title": "Win-Win-Win",
+          "desc": "Every decision must benefit you, us, and your clients."
+        },
+        "open": {
+          "title": "Open by Default",
+          "desc": "Transparent pricing, honest marketing, no hidden gotchas."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to automate your agency?",
+      "primary": "Start Free Trial",
+      "secondary": "Contact Us"
+    }
+  },
+  "signup_page": {
+    "title": "Start Free Trial - AgencyOS",
+    "description": "Enter your email to start your 7-day free trial of AgencyOS.",
+    "hero": {
+      "title": "🚀 Start Your Free Trial",
+      "subtitle": "Enter your email to get started. 7-day free trial, cancel anytime."
+    },
+    "form": {
+      "email_label": "Email Address *",
+      "email_placeholder": "your@email.com",
+      "name_label": "Full Name *",
+      "name_placeholder": "John Doe",
+      "promo_label": "Promo Code (Optional)",
+      "promo_placeholder": "AGENCYOS-XXXX-XXXX",
+      "apply_button": "Apply",
+      "discount": "Discount",
+      "total": "Total",
+      "submit_button": "Start 7-Day Free Trial →",
+      "terms_prefix": "By signing up, you agree to our",
+      "terms_link": "Terms of Service",
+      "and": "and",
+      "privacy_link": "Privacy Policy",
+      "promo_applied": "✅ Applied: {value}% off!",
+      "promo_invalid": "❌ Invalid promo code"
+    },
+    "benefits": {
+      "title": "What you get:",
+      "items": [
+        "125+ AI commands",
+        "7-day free trial",
+        "Cancel anytime",
+        "30-day money-back guarantee"
+      ]
+    }
+  },
+  "changelog_page": {
+    "title": "Changelog - AgencyOS",
+    "description": "See what is new in AgencyOS. Latest updates, features, and improvements.",
+    "hero": {
+      "title": "Changelog",
+      "subtitle": "See what's new in AgencyOS."
+    },
+    "types": {
+      "new": "new",
+      "improved": "improved",
+      "fixed": "fixed"
+    },
+    "releases": [
+      {
+        "version": "2.0.0",
+        "date": "December 20, 2024",
+        "tag": "Latest",
+        "changes": [
+          ["new", "125+ AI commands now available"],
+          ["new", "Affiliate Hub with 50+ programs"],
+          ["new", "Franchise management system"],
+          ["improved", "Faster command execution (2x)"],
+          ["improved", "New dark theme UI"]
+        ]
+      },
+      {
+        "version": "1.5.0",
+        "date": "November 15, 2024",
+        "tag": "",
+        "changes": [
+          ["new", "Video script generator"],
+          ["new", "Email sequence builder"],
+          ["improved", "Better error handling"],
+          ["fixed", "API rate limiting issues"]
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "date": "October 1, 2024",
+        "tag": "",
+        "changes": [
+          ["new", "Initial release"],
+          ["new", "20 core commands"],
+          ["new", "Marketing automation"],
+          ["new", "Sales pipeline tools"]
+        ]
+      }
+    ],
+    "cta": {
+      "title": "Subscribe to get notified about new releases",
+      "button": "Get Updates"
+    }
+  },
+  "case_studies_page": {
+    "title": "Case Studies - AgencyOS",
+    "description": "Real success stories from solo agencies using AgencyOS. See actual revenue results.",
+    "hero": {
+      "title": "📈 Success Stories",
+      "subtitle": "Real results from real solo agencies"
+    },
+    "featured": "Featured",
+    "before": "Before",
+    "after": "After",
+    "growth": "Growth",
+    "roi": "ROI",
+    "commands_used": "Commands Used:",
+    "cases": {
+      "sarah": {
+        "name": "Sarah K.",
+        "role": "Marketing Agency",
+        "quote": "I replaced my entire team with AgencyOS. Not joking. My profit tripled in 3 months.",
+        "timeline": "90 days to 5x revenue",
+        "metrics": ["$3K/mo", "$15K/mo", "5x"]
+      },
+      "mike": {
+        "name": "Mike T.",
+        "role": "Freelancer → Agency",
+        "quote": "From freelancer to agency owner. AgencyOS is the unfair advantage I needed.",
+        "timeline": "6 months to 6-figure agency",
+        "metrics": ["$2K/mo", "$12K/mo", "6x"]
+      },
+      "trung": {
+        "name": "Trung V.",
+        "role": "Startup Consultant",
+        "quote": "Binh Pháp strategy changed how I think about competition. Pure genius.",
+        "timeline": "4x deal flow in 60 days",
+        "metrics": ["2", "8", "4x"]
+      },
+      "alex": {
+        "name": "Alex P.",
+        "role": "Affiliate Network",
+        "quote": "Best $99 I ever spent. Franchise model is printing money for me.",
+        "timeline": "Passive income in 30 days",
+        "metrics": ["$0", "$2.5K", "25x"]
+      }
+    },
+    "summary": {
+      "title": "📊 Aggregate Results",
+      "revenue": "Monthly Revenue Combined",
+      "growth": "Average Growth",
+      "days": "Days to Results",
+      "saved": "Hours Saved/Week"
+    },
+    "cta": {
+      "title": "Ready to be our next success story?",
+      "button": "Start Your Journey →"
+    }
+  },
+  "checkout_page": {
+    "title": "Checkout - AgencyOS",
+    "description": "Complete your AgencyOS subscription.",
+    "loading": {
+      "title": "Preparing Checkout...",
+      "subtitle": "Redirecting to secure PayPal payment..."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "subtitle": "Unable to process checkout.",
+      "button": "← Back to Pricing",
+      "paypal_missing": "PayPal approval link not found.",
+      "paypal_failed": "Failed to initiate PayPal checkout.",
+      "network_error": "Network error connecting to payment gateway."
+    }
+  },
+  "commands_page": {
+    "title": "All Commands - AgencyOS",
+    "description": "125+ AI commands for developers, marketers, sales, finance, and founders. Find the exact command you need.",
+    "hero": {
+      "badge": "Terminal-First Agency",
+      "title": "125+ AI Commands",
+      "description": "The complete index of every command in the AgencyOS ecosystem."
+    },
+    "search": {
+      "placeholder": "Search commands... (e.g. marketing, invoice, fix)",
+      "found": "commands found"
+    },
+    "categories": {
+      "all": "All",
+      "tech": "Tech",
+      "marketing": "Marketing",
+      "sales": "Sales",
+      "finance": "Finance",
+      "strategy": "Strategy"
+    },
+    "i_want": {
+      "title": "🎯 \"I want to...\" Index",
+      "header_want": "I want to...",
+      "header_command": "Command",
+      "header_result": "Result",
+      "items": {
+        "affiliate": ["Earn affiliate money", "List of 50+ programs"],
+        "facebook": ["Write Facebook post", "Post ready to publish"],
+        "tiktok": ["Make TikTok video", "Video 9:16 ready"],
+        "customers": ["Find customers", "List qualified leads"],
+        "proposal": ["Write proposal", "Beautiful PDF proposal"],
+        "invoice": ["Issue invoice", "Professional invoice"],
+        "bug": ["Fast bug fix", "Bug fixed in 5 minutes"],
+        "code": ["Code new feature", "Production-ready code"],
+        "brainstorm": ["Brainstorm ideas", "10+ creative ideas"],
+        "competitor": ["Analyze competitor", "Detailed report"],
+        "runway": ["Calculate runway", "X months of cash left"],
+        "strategy": ["Set strategy", "13 clusters aligned"],
+        "ship": ["Ship product", "Deployed + notified"],
+        "review": ["Review codebase", "Quality report"]
+      }
+    },
+    "tech_header": "Tech Commands (75)",
+    "business_header": "Business Commands (30+)",
+    "groups": {
+      "code": "Code",
+      "fix": "Fix",
+      "design": "Design",
+      "docs": "Docs",
+      "git": "Git",
+      "plan": "Plan",
+      "others": "Others",
+      "marketing": "Marketing",
+      "sales": "Sales",
+      "finance": "Finance",
+      "operations": "Operations",
+      "affiliate": "Affiliate",
+      "video": "Video",
+      "strategy": "Strategy (Binh Pháp)",
+      "intel": "Intel",
+      "risk": "Risk & Crisis"
+    },
+    "engine_badge": "AgencyOS AI Engine",
+    "new_badge": "AgencyOS NEW",
+    "cta": {
+      "title": "Ready to try?",
+      "button": "Install AgencyOS →"
+    }
+  },
+  "blog_page": {
+    "title": "AgencyOS Blog - Tips & Insights",
+    "description": "Agency automation tips, AI workflows, and business insights to help you scale.",
+    "hero": {
+      "title": "Blog",
+      "subtitle": "Tips, tutorials, and insights to help you automate your agency."
+    },
+    "featured_title": "Featured",
+    "all_posts_title": "All Posts",
+    "read_more": "read →",
+    "newsletter": {
+      "title": "Subscribe to the Newsletter",
+      "subtitle": "Get weekly tips on agency automation, AI workflows, and business growth.",
+      "placeholder": "your@email.com",
+      "button": "Subscribe"
+    },
+    "posts": {
+      "team_ai": {
+        "title": "How I Replaced My Team with AI (And Tripled Profits)",
+        "excerpt": "The story of how one agency owner went from burnout to breakthrough using AI automation.",
+        "category": "Case Study"
+      },
+      "commands_85": {
+        "title": "125+ AI Commands Every Agency Owner Should Know",
+        "excerpt": "A comprehensive guide to the most powerful AgencyOS commands for marketing, sales, and content.",
+        "category": "Tutorial"
+      },
+      "affiliate_playbook": {
+        "title": "The Affiliate Playbook: $5K/Month Passive Income",
+        "excerpt": "Step-by-step guide to building a passive income stream with PayPal-friendly affiliate programs.",
+        "category": "Guide"
+      },
+      "freelancer_to_owner": {
+        "title": "From Freelancer to Agency Owner in 90 Days",
+        "excerpt": "The exact framework to transition from solo freelancer to running a profitable one-person agency.",
+        "category": "Strategy"
+      },
+      "video_scripts": {
+        "title": "AI Video Scripts That Convert: A Template Guide",
+        "excerpt": "Copy-paste templates for creating YouTube, TikTok, and Reels content that drives engagement.",
+        "category": "Template"
+      },
+      "win3_framework": {
+        "title": "The Win-Win-Win Framework for Agency Growth",
+        "excerpt": "How to structure deals that benefit you, your clients, and your partners simultaneously.",
+        "category": "Philosophy"
+      }
+    }
+  },
+  "compare_page": {
+    "title": "Why AgencyOS? - Compare With Alternatives",
+    "description": "See why 500+ agencies choose AgencyOS over traditional tools. Side-by-side comparison.",
+    "hero": {
+      "title": "⚔️ Why AgencyOS?",
+      "subtitle": "See how we stack up against the alternatives"
+    },
+    "table": {
+      "headers": ["Feature", "🏯 AgencyOS", "Hiring Team", "Point Tools", "Other AI"],
+      "rows": {
+        "cost": ["💰 Cost/Month", "$99", "$15,000+", "$500+", "$200+"],
+        "setup": ["⏱️ Setup Time", "5 minutes", "3+ months", "2+ weeks", "1+ week"],
+        "commands": ["🔧 Commands", "125+", "N/A", "5-10", "20-30"],
+        "marketing": ["📣 Marketing", "✅", "✅", "❌", "⚠️"],
+        "sales": ["💼 Sales", "✅", "✅", "❌", "⚠️"],
+        "finance": ["💵 Finance", "✅", "✅", "❌", "❌"],
+        "code": ["🧑‍💻 Code/Dev", "✅", "✅", "❌", "✅"],
+        "video": ["🎥 Video Creation", "✅", "✅", "❌", "❌"],
+        "strategy": ["🏯 Binh Pháp Strategy", "✅", "❌", "❌", "❌"],
+        "franchise": ["🌐 Franchise Model", "✅", "❌", "❌", "❌"],
+        "availability": ["🔄 24/7 Availability", "✅", "❌", "✅", "✅"],
+        "total": ["🏆 Best Value?", "🥇 YES", "Too expensive", "Too limited", "Missing features"]
+      }
+    },
+    "bottom_line": {
+      "title": "💰 The Bottom Line",
+      "hiring": "Hiring 3 people:",
+      "agencyos": "AgencyOS Pro:",
+      "savings": "Your Savings:",
+      "cta": "Calculate Your ROI →"
+    },
+    "cta": {
+      "title": "Ready to switch?",
+      "subtitle": "Join 500+ agencies who made the smart choice",
+      "primary": "Start Free Trial →",
+      "secondary": "Try Demo First"
+    }
+  },
+  "contact_page": {
+    "title": "Contact AgencyOS - Get in Touch",
+    "description": "Have questions? We would love to hear from you. Contact the AgencyOS team.",
+    "hero": {
+      "title": "Get in Touch",
+      "subtitle": "Have a question? We'd love to hear from you."
+    },
+    "form": {
+      "title": "Send a Message",
+      "name": "Name",
+      "name_placeholder": "Your name",
+      "email": "Email",
+      "email_placeholder": "you@example.com",
+      "subject": "Subject",
+      "subject_placeholder": "Select a topic...",
+      "subjects": {
+        "sales": "Sales Inquiry",
+        "support": "Technical Support",
+        "partnership": "Partnership",
+        "franchise": "Franchise Interest",
+        "other": "Other"
+      },
+      "message": "Message",
+      "message_placeholder": "How can we help?",
+      "submit": "Send Message"
+    },
+    "info": {
+      "title": "Other Ways to Reach Us",
+      "email": "Email",
+      "discord": "Discord",
+      "discord_link": "Join our community",
+      "twitter": "Twitter/X",
+      "docs": "Documentation",
+      "docs_link": "Read the docs",
+      "faq_prompt": "Looking for answers?",
+      "faq_button": "Check our FAQ →"
+    }
+  },
+  "dashboard_page": {
+    "title": "Dashboard - AgencyOS",
+    "description": "Your AgencyOS command center.",
+    "loading": "Loading your dashboard...",
+    "auth_required": {
+      "title": "Access Required",
+      "subtitle": "Please sign up or log in to access your dashboard.",
+      "primary": "Start Free Trial",
+      "secondary": "View Plans"
+    },
+    "header": {
+      "welcome": "Welcome back, {name}! 👋",
+      "default_name": "Agency Owner"
+    },
+    "stats": {
+      "commands": "AI Commands",
+      "trial_left": "Trial Days Left",
+      "status": "Account Status",
+      "active": "Active"
+    },
+    "sections": {
+      "get_started": "🏯 Get Started",
+      "guides": {
+        "title": "Quick Start Guide",
+        "desc": "Set up CLI in 5 minutes"
+      },
+      "demo": {
+        "title": "Try Commands",
+        "desc": "Interactive terminal demo"
+      },
+      "catalog": {
+        "title": "Command Catalog",
+        "desc": "Browse 125+ AI commands"
+      },
+      "support": {
+        "title": "Get Support",
+        "desc": "We're here to help"
+      }
+    },
+    "install": {
+      "title": "🔧 Install AgencyOS CLI",
+      "copy": "Copy",
+      "note": "Requires Python 3.8+. See {link}."
+    }
+  },
+  "demo_page": {
+    "title": "Try AgencyOS - Interactive Demo",
+    "description": "Try AgencyOS commands in your browser. See the power of 125+ AI commands instantly.",
+    "hero": {
+      "title": "🖥️ Try Before You Buy",
+      "subtitle": "Type a command below and see the magic happen"
+    },
+    "terminal": {
+      "title": "AgencyOS Terminal",
+      "welcome": "Welcome to AgencyOS! Type a command or click a suggestion below.",
+      "version": "v2.0.0 • 125+ commands available",
+      "input_placeholder": "Type a command...",
+      "processing": "Processing...",
+      "suggestions": "Try these commands:",
+      "not_found": "⚠️ Command not found in demo.",
+      "limited_info": "💡 This is a demo with limited commands.",
+      "full_access_info": "   Full access includes 125+ commands!",
+      "try_prompt": "🚀 Try: /help, /marketing-plan, /proposal, /invoice"
+    },
+    "cta": {
+      "title": "Ready to automate your agency?",
+      "subtitle": "Get full access to all 125+ commands",
+      "primary": "Start Free Trial →",
+      "secondary": "View Pricing"
+    }
+  },
+  "wallet_page": {
+    "title": "AG Wallet - AgencyOS",
+    "description": "Manage your AG Credits - earn from referrals, transfer to others, or spend on SaaS products.",
+    "hero": {
+      "title": "💰 AG Wallet",
+      "subtitle": "Your internal credit system - Earn, Transfer, Spend"
+    },
+    "balance": {
+      "available": "Available Balance",
+      "usd_approx": "≈ {amount} USD",
+      "lifetime_earned": "Lifetime Earned",
+      "lifetime_spent": "Lifetime Spent"
+    },
+    "actions": {
+      "transfer": "Transfer",
+      "buy_saas": "Buy SaaS"
+    },
+    "transfer_modal": {
+      "title": "↗️ Transfer AGC",
+      "recipient_label": "Recipient Email",
+      "recipient_placeholder": "user@example.com",
+      "amount_label": "Amount (AGC)",
+      "amount_placeholder": "10.00",
+      "note_label": "Note (Optional)",
+      "note_placeholder": "Thanks for the help!",
+      "submit": "Send Transfer"
+    },
+    "redeem_modal": {
+      "title": "🛒 Buy with AGC",
+      "plans": {
+        "starter": "Starter",
+        "pro": "Pro",
+        "franchise": "Franchise",
+        "duration": "1 month access",
+        "buy_now": "Buy Now"
+      }
+    },
+    "history": {
+      "title": "📜 Transaction History",
+      "loading": "Loading...",
+      "no_transactions": "No transactions yet"
+    },
+    "ranks": {
+      "title": "🎖️ Rank Progress",
+      "chien_binh": "Warrior",
+      "tuong_quan": "General",
+      "thong_soai": "Commander",
+      "nguyen_soai": "Grand Marshal",
+      "threshold": "{amount}+ AGC",
+      "bonus": "+{percent}% bonus"
+    }
+  },
+  "workflows_page": {
+    "title": "Money Workflows - AgencyOS",
+    "description": "3 proven workflows to make money with AgencyOS: Affiliate, Code-to-Content, and Consulting.",
+    "hero": {
+      "badge": "Revenue Blueprints",
+      "title": "Money-Making Workflows",
+      "description": "Step-by-step paths to revenue with AgencyOS."
+    },
+    "workflows": {
+      "affiliate": {
+        "title": "Affiliate-as-SaaS",
+        "income": "Passive Income: $500-2,000/month",
+        "steps_label": "Steps:",
+        "flow": {
+          "step1": ["Find programs", "/affiliate/scout"],
+          "step2": ["PayPal-friendly", "Select 5 programs"],
+          "step3": ["Write 30 posts", "/marketing/social"],
+          "step4": ["Schedule & post", "Post daily x30"],
+          "result": ["Monthly passive", "💰 $500-2,000"]
+        },
+        "steps_list": [
+          "/affiliate/scout → Find PayPal-friendly programs",
+          "/marketing/social facebook → Write 30 posts",
+          "Schedule posts → Post 1 post/day",
+          "Track → Commission to account"
+        ]
+      },
+      "code_to_content": {
+        "title": "Code-to-Content",
+        "income": "Active Income: AdSense + Sponsors",
+        "steps_label": "Steps:",
+        "flow": {
+          "step1": ["Build feature", "/code"],
+          "step2": ["Create script", "/video/script"],
+          "step3": ["Render video", "/video"],
+          "step4": ["Upload multi-platform", "YouTube + TikTok"],
+          "result": ["AdSense + Sponsors", "💰 $$$"]
+        },
+        "steps_list": [
+          "/code → Build new feature",
+          "/video/script → Convert code to script",
+          "/video → Render with voiceover",
+          "Upload multi-platform → $$$"
+        ]
+      },
+      "consulting": {
+        "title": "Consulting Deal Flow",
+        "income": "High-Ticket: $5,000-50,000/deal",
+        "steps_label": "Steps:",
+        "flow": {
+          "step1": ["Find leads", "/sales/lead"],
+          "step2": ["Analyze market", "/intel/competitor"],
+          "step3": ["Create proposal", "/sales/proposal"],
+          "step4": ["Close deal", "/sales/close"],
+          "step5": ["Get paid", "/finance/invoice"],
+          "result": ["Per deal", "💰 $5-50K"]
+        },
+        "steps_list": [
+          "/sales/lead → Find potential clients",
+          "/intel/competitor → Analyze competitors",
+          "/sales/proposal → Automated proposal creation",
+          "/sales/close → Deal closing script",
+          "/finance/invoice → Issue invoice"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Ready to start earning?",
+      "primary": "Pick Your Path →",
+      "secondary": "View All Commands"
+    }
+  },
+  "quickstart_page": {
+    "title": "Quick Start - AgencyOS",
+    "description": "Choose your path: Developer, Marketing, Sales, Finance, or Founder. Each with money-making commands.",
+    "hero": {
+      "title": "🚀 Quick Start",
+      "subtitle": "\"I want to make money now!\" - Here is how:"
+    },
+    "personas": {
+      "developer": {
+        "title": "Developer",
+        "tag": "Code → Cash",
+        "money_flow": "Code → Demo Video → YouTube → Affiliate Links → $$$"
+      },
+      "marketing": {
+        "title": "Marketing",
+        "tag": "Content → Cash",
+        "money_flow": "Content → Social → Traffic → Affiliate → $$$"
+      },
+      "sales": {
+        "title": "Sales",
+        "tag": "Lead → Cash",
+        "money_flow": "Lead → Proposal → Close → Invoice → $$$"
+      },
+      "finance": {
+        "title": "Finance",
+        "tag": "Optimize → Save",
+        "money_flow": "Optimize → Reduce Waste → More Profit → $$$"
+      },
+      "founder": {
+        "title": "Founder",
+        "tag": "Strategy → Scale",
+        "money_flow": "Strategy → Fundraise → Scale → Exit → $$$"
+      }
+    },
+    "common": {
+      "money_flow_label": "💰 Money Flow:",
+      "get_started": "Get Started →"
+    },
+    "cta": {
+      "title": "Ready to Start?",
+      "subtitle": "Pick your path and start making money with AI.",
+      "button": "View All 85+ Commands →"
+    }
+  },
+  "features_page": {
+    "title": "Features - AgencyOS",
+    "description": "125+ AI-powered commands to automate your entire agency. Marketing, sales, operations, finance.",
+    "hero": {
+      "title": "125+ Commands.<br/>One Platform.",
+      "subtitle": "Everything you need to run a solo agency with AI."
+    },
+    "categories": {
+      "marketing": {
+        "title": "Marketing",
+        "count": "15 commands",
+        "commands": {
+          "plan": ["/ke-hoach-tiep-thi", "Create marketing plans"],
+          "content": ["/noi-dung-tiep-thi", "Generate content"],
+          "social": ["/y-tuong-social-media", "Social media ideas"],
+          "pr": ["/ke-hoach-pr", "PR campaigns"],
+          "message": ["/thong-diep-tiep-thi", "Marketing messaging"],
+          "competitor": ["/phan-tich-doi-thu", "Competitor analysis"]
+        }
+      },
+      "sales": {
+        "title": "Sales",
+        "count": "12 commands",
+        "commands": {
+          "strategy": ["/chien-luoc-ban-hang", "Sales strategies"],
+          "funnel": ["/pheu-ban-hang", "Sales funnels"],
+          "customer": ["/khach-hang", "Customer profiles"],
+          "quote": ["/tao-bao-gia", "Generate quotes"],
+          "lead": ["/theo-doi-lead", "Lead tracking"],
+          "email": ["/email-ban-hang", "Sales emails"]
+        }
+      },
+      "ops": {
+        "title": "Operations",
+        "count": "18 commands",
+        "commands": {
+          "project": ["/quan-ly-du-an", "Project management"],
+          "workflow": ["/tao-workflow", "Workflow automation"],
+          "report": ["/bao-cao-tien-do", "Progress reports"],
+          "team": ["/quan-ly-doi", "Team management"],
+          "contract": ["/hop-dong", "Contract creation"],
+          "schedule": ["/lich-hen", "Scheduling"]
+        }
+      },
+      "finance": {
+        "title": "Finance",
+        "count": "10 commands",
+        "commands": {
+          "report": ["/bao-cao-tai-chinh", "Financial reports"],
+          "invoice": ["/hoa-don", "Invoice generation"],
+          "expense": ["/theo-doi-chi-phi", "Expense tracking"],
+          "forecast": ["/du-bao-doanh-thu", "Revenue forecasting"],
+          "profit": ["/phan-tich-loi-nhuan", "Profit analysis"],
+          "budget": ["/ngan-sach", "Budgeting"]
+        }
+      },
+      "strategy": {
+        "title": "Binh Pháp Strategy",
+        "count": "13 commands",
+        "commands": {
+          "plan": ["/ke-hoach", "Strategic planning"],
+          "attack": ["/muu-cong", "Win-without-fighting"],
+          "position": ["/hinh-the", "Positioning audit"],
+          "pivot": ["/cuu-bien", "Pivot strategy"],
+          "disruption": ["/hoa-cong", "Market disruption"],
+          "intel": ["/dung-gian", "Intelligence gathering"]
+        }
+      },
+      "agents": {
+        "title": "17 AI Agents",
+        "count": "Specialized assistants",
+        "commands": {
+          "scout": ["Scout Agent", "Market research"],
+          "editor": ["Editor Agent", "Content creation"],
+          "director": ["Director Agent", "Video production"],
+          "community": ["Community Agent", "Social distribution"],
+          "sales": ["Sales Agent", "Lead conversion"],
+          "finance": ["Finance Agent", "Financial tracking"]
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Automate Your Agency?",
+      "subtitle": "Start with 125+ commands today.",
+      "primary": "View Pricing",
+      "secondary": "Get Started"
+    }
+  },
+  "gamification_page": {
+    "title": "Gamification - AgencyOS",
+    "description": "Level up while you earn. XP system, achievement badges, and rewards for using AgencyOS.",
+    "hero": {
+      "title": "🎮 Level Up While You Earn",
+      "subtitle": "Gamification that actually makes you money"
+    },
+    "xp": {
+      "title": "⚡ XP System",
+      "subtitle": "Earn XP for every action. Level up to unlock premium features.",
+      "headers": ["Action", "XP", "Example"],
+      "items": {
+        "command": ["🔧 Type command", "+50", "Every time you use /command"],
+        "workflow": ["✅ Complete workflow", "+200", "Finish Affiliate Workflow"],
+        "money": ["💰 Earn money", "+500", "First affiliate payout"],
+        "launch": ["🚀 Launch product", "+1000", "Ship new feature"]
+      }
+    },
+    "badges": {
+      "title": "🏆 Achievement Badges",
+      "subtitle": "Collect badges as you progress. Show off your achievements!",
+      "items": {
+        "first_timer": {
+          "title": "First Timer",
+          "desc": "Use your first command",
+          "reward": "+100 XP"
+        },
+        "money_maker": {
+          "title": "Money Maker",
+          "desc": "Earn your first $100",
+          "reward": "+500 XP"
+        },
+        "shipper": {
+          "title": "Shipper",
+          "desc": "Launch 3 products",
+          "reward": "+1000 XP"
+        },
+        "master": {
+          "title": "Master",
+          "desc": "Reach Level 10",
+          "reward": "Unlock Premium"
+        },
+        "influencer": {
+          "title": "Influencer",
+          "desc": "10K followers",
+          "reward": "+2000 XP"
+        },
+        "strategist": {
+          "title": "Strategist",
+          "desc": "Complete 13 Binh Pháp",
+          "reward": "+5000 XP"
+        }
+      }
+    },
+    "levels": {
+      "title": "📊 Level Progression",
+      "items": {
+        "beginner": {
+          "level": "1-3",
+          "title": "Beginner",
+          "perk": "Basic commands unlocked"
+        },
+        "intermediate": {
+          "level": "4-6",
+          "title": "Intermediate",
+          "perk": "Advanced workflows"
+        },
+        "advanced": {
+          "level": "7-9",
+          "title": "Advanced",
+          "perk": "Priority support"
+        },
+        "master": {
+          "level": "10+",
+          "title": "Master",
+          "perk": "All premium features FREE"
+        }
+      }
+    },
+    "coming_soon": {
+      "title": "🔮 Coming Soon",
+      "items": {
+        "leaderboards": "Leaderboards",
+        "rewards": "Weekly Rewards",
+        "challenges": "Team Challenges",
+        "nft": "NFT Badges"
+      }
+    },
+    "cta": {
+      "title": "Ready to level up?",
+      "button": "Start Earning XP →"
+    }
+  },
+  "roi_page": {
+    "title": "ROI Calculator - AgencyOS",
+    "description": "Calculate how much time and money AgencyOS can save your agency.",
+    "hero": {
+      "title": "💰 Calculate Your ROI",
+      "subtitle": "See how much AgencyOS can save your agency in time and money"
+    },
+    "calculator": {
+      "your_agency": "📊 Your Agency",
+      "revenue_label": "Monthly Revenue ($)",
+      "team_size_label": "Team Size",
+      "admin_hours_label": "Hours on Admin/Week (per person)",
+      "hourly_rate_label": "Average Hourly Rate ($)",
+      "with_agencyos": "🚀 With AgencyOS",
+      "annual_savings": "Annual Savings",
+      "hours_saved": "Hours Saved/Year",
+      "roi": "ROI",
+      "payback_period": "Payback Period",
+      "cost_vs_savings": "AgencyOS Cost vs Savings",
+      "cta": "Start Saving Now →",
+      "person": "person",
+      "people": "people",
+      "hours": "hours",
+      "hr": "hr",
+      "days": "days",
+      "months": "months"
+    },
+    "breakdown": {
+      "title": "📋 Savings Breakdown",
+      "marketing": "Marketing",
+      "marketing_tasks": "Content, SEO, Social, Email",
+      "sales": "Sales",
+      "sales_tasks": "Proposals, CRM, Follow-ups",
+      "finance": "Finance",
+      "finance_tasks": "Invoicing, Reports, Budgets",
+      "ops": "Operations",
+      "ops_tasks": "SOPs, Workflows, Meetings",
+      "strategy": "Strategy",
+      "strategy_tasks": "Research, Competitive, OKRs"
+    },
+    "final_cta": {
+      "title": "Ready to 10x Your Agency?",
+      "subtitle": "Join 100+ agencies already saving thousands with AgencyOS",
+      "primary": "Start Free Trial →",
+      "secondary": "View Pricing"
+    }
+  },
+  "privacy_page": {
+    "title": "Privacy Policy - AgencyOS",
+    "description": "Privacy policy for AgencyOS. How we handle your data.",
+    "hero": {
+      "title": "Privacy Policy",
+      "last_updated": "Last updated: December 22, 2024"
+    },
+    "sections": {
+      "collection": {
+        "title": "1. Information We Collect",
+        "intro": "We collect information you provide directly:",
+        "items": [
+          "Account data: Email, name when you sign up",
+          "Payment data: Processed securely via Stripe/PayPal",
+          "Usage data: Commands used, features accessed"
+        ]
+      },
+      "usage": {
+        "title": "2. How We Use Your Information",
+        "items": [
+          "Provide and improve AgencyOS services",
+          "Send important product updates",
+          "Process payments and prevent fraud",
+          "Respond to support requests"
+        ]
+      },
+      "security": {
+        "title": "3. Data Security",
+        "intro": "We use industry-standard security measures:",
+        "items": [
+          "SSL/TLS encryption for all data transfers",
+          "Secure cloud infrastructure (Vercel, Supabase)",
+          "No storage of payment card details"
+        ]
+      },
+      "third_party": {
+        "title": "4. Third-Party Services",
+        "intro": "We use these trusted services:",
+        "items": [
+          "Stripe/PayPal: Payment processing",
+          "Vercel: Hosting",
+          "Supabase: Database",
+          "Plausible: Privacy-friendly analytics"
+        ]
+      },
+      "rights": {
+        "title": "5. Your Rights",
+        "items": [
+          "Access your personal data",
+          "Request data deletion",
+          "Export your data",
+          "Opt out of marketing emails"
+        ]
+      },
+      "cookies": {
+        "title": "6. Cookies",
+        "intro": "We use minimal cookies for:",
+        "items": [
+          "Session management (required)",
+          "Preference storage (optional)"
+        ],
+        "outro": "No third-party tracking cookies."
+      },
+      "contact": {
+        "title": "7. Contact",
+        "intro": "Questions about privacy? Contact us:",
+        "email": "Email: privacy@agencyos.network"
+      }
+    },
+    "footer": {
+      "terms": "Terms of Service →"
+    }
+  },
+  "success_page": {
+    "title": "Welcome to AgencyOS!",
+    "description": "Your account is ready. Get your license key and start automating your agency.",
+    "hero": {
+      "title": "Welcome to AgencyOS!",
+      "message": "Your account has been created successfully."
+    },
+    "license": {
+      "title": "🔑 Your License Key",
+      "copy_title": "Copy license key",
+      "note": "Keep this key safe. You'll need it to activate your CLI."
+    },
+    "account": {
+      "email": "Email:",
+      "plan": "Plan:",
+      "status": "Status:",
+      "lifetime_free": "LIFETIME FREE 🎉",
+      "off": "% OFF"
+    },
+    "setup": {
+      "title": "🚀 Quick Setup (1 minute)",
+      "step1": {
+        "title": "Open in your IDE (1-click clone)",
+        "desc": "Click a button below. It will automatically clone the project and open it:",
+        "vscode": "💻 VS Code",
+        "cursor": "🖱️ Cursor",
+        "antigravity": "🚀 Antigravity",
+        "no_ide": "Don't have an IDE? {link} (free)",
+        "download": "Download VS Code"
+      },
+      "step2": {
+        "title": "Run in IDE terminal",
+        "desc": "Press <kbd>Ctrl</kbd>+<kbd>`</kbd> to open terminal, then paste:",
+        "note": "That's it! Start using 125+ AI commands 🎉"
+      }
+    },
+    "compatibility": "✅ Compatible with:",
+    "cta": {
+      "docs": "📖 Full Documentation →",
+      "guide": "🎯 Quick Start Guide"
+    },
+    "email_notice": "📧 We've also sent these instructions to your email.",
+    "support_note": "Need help? {email} | {link}",
+    "manage_license": "Manage License",
+    "copied": "Copied!",
+    "license_copied": "License key copied!",
+    "command_copied": "Command copied!",
+    "free_welcome": "🎉 <strong>You're one of the first 100!</strong>",
+    "free_lifetime": "Enjoy lifetime access to AgencyOS - completely FREE!"
+  },
+  "terms_page": {
+    "title": "Terms of Service - AgencyOS",
+    "description": "Terms of service for AgencyOS. Usage terms and conditions.",
+    "hero": {
+      "title": "Terms of Service",
+      "last_updated": "Last updated: December 22, 2024"
+    },
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "text": "By using AgencyOS, you agree to these terms. If you don't agree, don't use our services."
+      },
+      "description": {
+        "title": "2. Service Description",
+        "intro": "AgencyOS provides:",
+        "items": [
+          "AI-powered agency automation tools",
+          "125+ commands for marketing, sales, and operations",
+          "Documentation and support resources"
+        ]
+      },
+      "accounts": {
+        "title": "3. User Accounts",
+        "items": [
+          "You must provide accurate information",
+          "Keep your credentials secure",
+          "You're responsible for account activity",
+          "One account per person/agency"
+        ]
+      },
+      "pricing": {
+        "title": "4. Pricing & Payments",
+        "items": [
+          "Starter: $29/month",
+          "Pro: $99/month",
+          "Franchise: $299/month",
+          "30-day money-back guarantee",
+          "Prices may change with 30 days notice"
+        ]
+      },
+      "use": {
+        "title": "5. Acceptable Use",
+        "intro": "You agree NOT to:",
+        "items": [
+          "Use for illegal activities",
+          "Share account credentials",
+          "Reverse engineer our software",
+          "Resell without Franchise license",
+          "Abuse API rate limits"
+        ]
+      },
+      "ip": {
+        "title": "6. Intellectual Property",
+        "items": [
+          "AgencyOS owns all product IP",
+          "You own your generated content",
+          "You grant us license to improve services"
+        ]
+      },
+      "refunds": {
+        "title": "7. Refunds",
+        "items": [
+          "30-day money-back guarantee on all plans",
+          "No questions asked refunds",
+          "Email support@agencyos.network"
+        ]
+      },
+      "termination": {
+        "title": "8. Termination",
+        "intro": "We may suspend or terminate accounts that:",
+        "items": [
+          "Violate these terms",
+          "Engage in fraudulent activity",
+          "Fail to pay for services"
+        ]
+      },
+      "disclaimer": {
+        "title": "9. Disclaimer",
+        "text": "AgencyOS is provided \"as is\". We don't guarantee specific business results. AI outputs should be reviewed by humans."
+      },
+      "liability": {
+        "title": "10. Limitation of Liability",
+        "text": "Our liability is limited to the amount you paid in the last 12 months. We're not liable for indirect damages."
+      },
+      "contact": {
+        "title": "11. Contact",
+        "intro": "Questions about terms?",
+        "email": "Email: legal@agencyos.network"
+      }
+    },
+    "footer": {
+      "privacy": "Privacy Policy →"
+    }
+  },
+  "pricing": {
+    "title": "Simple pricing. Massive value.",
+    "description": "All plans include 125+ AI commands. Pick what fits your agency.",
+    "promo": {
+      "label": "🎟️ Have a promo code?",
+      "placeholder": "Enter code (e.g. AGENCYOS-XXXX)",
+      "button": "Apply",
+      "error": "Please enter a promo code",
+      "invalid": "Invalid promo code",
+      "failed": "Failed to validate code",
+      "success_free": "🎉 FREE ACCESS! {name} applied!",
+      "success_discount": "{name} applied!"
+    },
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "price": "$29",
+        "period": "/month",
+        "description": "Perfect for solo operators",
+        "button": "Start Free Trial",
+        "features": [
+          "125+ AI commands",
+          "Marketing automation",
+          "Sales proposals",
+          "Affiliate tracking",
+          "Finance dashboard",
+          "Community support",
+          "Monthly updates"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$99",
+        "period": "/month",
+        "description": "For serious agency builders",
+        "button": "Start Free Trial →",
+        "popular": "✨ MOST POPULAR",
+        "features": [
+          "Everything in Starter",
+          "Priority support (24h)",
+          "5 team seats",
+          "Advanced analytics",
+          "Custom branding",
+          "API access",
+          "1-on-1 onboarding call"
+        ]
+      },
+      "franchise": {
+        "name": "Franchise",
+        "price": "$299",
+        "period": "/month",
+        "description": "White-label & resell",
+        "button": "Contact Sales",
+        "features": [
+          "Everything in Pro",
+          "White-label rights",
+          "Custom domain",
+          "Unlimited seats",
+          "Revenue share (85%)",
+          "Franchise support",
+          "Quarterly strategy calls"
+        ]
+      }
+    },
+    "annual_savings": "💰 Save 20% with annual billing",
+    "annual_starter": "Starter: $279/year",
+    "annual_pro": "Pro: $949/year",
+    "annual_franchise": "Franchise: $2,869/year",
+    "comparison": {
+      "title": "Compare Features",
+      "feature": "Feature",
+      "support": "Support",
+      "branding": "Custom Branding",
+      "whitelabel": "White-label",
+      "api": "API Access",
+      "onboarding": "Onboarding",
+      "seats": "Team Seats",
+      "commands": "AI Commands",
+      "starter_support": "Community",
+      "pro_support": "Priority (24h)",
+      "franchise_support": "Dedicated",
+      "starter_onboarding": "Docs",
+      "pro_onboarding": "1-on-1 call",
+      "franchise_onboarding": "Full setup"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "switch": {
+        "q": "Can I switch plans?",
+        "a": "Yes! Upgrade or downgrade anytime. Changes take effect on your next billing cycle."
+      },
+      "trial": {
+        "q": "Is there a free trial?",
+        "a": "Yes! 7-day free trial on all plans. Your card is charged after the trial ends - cancel anytime before to avoid charges."
+      },
+      "methods": {
+        "q": "What payment methods do you accept?",
+        "a": "Credit/Debit cards, PayPal, and Crypto (USDT/USDC). All payments secured by Polar.sh."
+      },
+      "refund": {
+        "q": "Can I get a refund?",
+        "a": "30-day money-back guarantee. No questions asked."
+      }
+    },
+    "guarantee": {
+      "title": "30-Day Money-Back Guarantee",
+      "description": "Not satisfied? Get a full refund within 30 days. No questions asked."
+    },
+    "faq_page": {
+      "title": "FAQ - AgencyOS",
+      "description": "Frequently asked questions about AgencyOS, pricing, and getting started.",
+      "hero": {
+        "title": "Frequently Asked Questions",
+        "subtitle": "Got questions? We've got answers."
+      },
+      "search": {
+        "placeholder": "🔍 Search questions..."
+      },
+      "no_results": "No questions found. Try a different search.",
+      "cta": {
+        "title": "Still have questions?",
+        "subtitle": "We're here to help. Reach out to our team.",
+        "support": "Contact Support",
+        "discord": "Join Discord"
+      },
+      "categories": [
+        {
+          "id": "getting_started",
+          "title": "Getting Started",
+          "icon": "🚀",
+          "questions": [
+            {
+              "q": "What is AgencyOS?",
+              "a": "AgencyOS is an AI-powered operating system for solo agencies. It includes 125+ commands to automate marketing, sales, affiliate management, and finance tasks."
+            },
+            {
+              "q": "How do I install AgencyOS?",
+              "a": "After purchase, you get access to a private GitHub repository. Clone it locally and open in your IDE. Run the setup script and you're ready to go."
+            },
+            {
+              "q": "Do I need coding experience?",
+              "a": "No! AgencyOS is designed for non-technical users. Just type natural language commands like /marketing/social or /sales/proposal and the AI handles the rest."
+            }
+          ]
+        },
+        {
+          "id": "pricing",
+          "title": "Pricing & Plans",
+          "icon": "💰",
+          "questions": [
+            {
+              "q": "What's included in the free trial?",
+              "a": "The 7-day free trial includes all Starter tier features: 20 AI commands, basic marketing automation, and community support."
+            },
+            {
+              "q": "Can I upgrade or downgrade anytime?",
+              "a": "Yes! You can switch plans at any time. Upgrades are prorated, and downgrades take effect at the next billing cycle."
+            },
+            {
+              "q": "Is there a refund policy?",
+              "a": "Absolutely. We offer a 30-day money-back guarantee. If you're not satisfied, email us and we'll refund you, no questions asked."
+            }
+          ]
+        },
+        {
+          "id": "features",
+          "title": "Features & Commands",
+          "icon": "⌨️",
+          "questions": [
+            {
+              "q": "How many commands are available?",
+              "a": "AgencyOS includes 125+ commands across marketing, sales, affiliate, finance, and content creation. New commands are added monthly."
+            },
+            {
+              "q": "Can I create custom commands?",
+              "a": "Yes! Pro and Franchise tiers include the ability to create and save custom command templates."
+            },
+            {
+              "q": "Does it integrate with my existing tools?",
+              "a": "AgencyOS works with popular tools like Notion, Google Workspace, Slack, and more through our MCP (Model Context Protocol) integrations."
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "title": "Support & Community",
+          "icon": "🆘",
+          "questions": [
+            {
+              "q": "How do I get support?",
+              "a": "Starter users get community support via Discord. Pro users get priority email support. Franchise users get dedicated 1:1 onboarding calls."
+            },
+            {
+              "q": "Is there a community?",
+              "a": "Yes! Join our Discord community with 500+ agency owners sharing tips, templates, and wins."
+            },
+            {
+              "q": "Are there tutorials or documentation?",
+              "a": "We have comprehensive documentation, video tutorials, and a blog with tips and best practices."
+            }
+          ]
+        }
+      ]
+    },
+    "final_cta": {
+      "title": "Ready to automate your agency?",
+      "subtitle": "Start free. Cancel anytime. Win forever.",
+      "button_trial": "Start Free Trial",
+      "button_demo": "Book a Demo"
+    },
+    "license_page": {
+      "title": "License Management",
+      "description": "View and manage your AgencyOS license",
+      "hero": {
+        "title": "LICENSE CONTROL",
+        "status_active": "ACTIVE",
+        "status_no_license": "No License"
+      },
+      "display": {
+        "label": "YOUR LICENSE KEY",
+        "loading": "Loading...",
+        "copy": "Copy Key"
+      },
+      "details": {
+        "email": "Registered Email",
+        "plan": "Current Plan",
+        "activated": "Activated On",
+        "status": "License Status",
+        "lifetime": "LIFETIME FREE 🎉"
+      },
+      "cli": {
+        "title": "CLI INSTALLATION",
+        "clone": "1. Clone",
+        "setup": "2. Setup",
+        "run": "3. Run"
+      },
+      "ide": {
+        "title": "OPEN IN IDE",
+        "vscode": "VS Code",
+        "cursor": "Cursor",
+        "antigravity": "Google Antigravity"
+      },
+      "actions": {
+        "docs": "Read Docs",
+        "quickstart": "Quickstart"
+      },
+      "support": {
+        "footer": "Need help? Contact {link}",
+        "contact": "support@agencyos.network"
+      },
+      "alerts": {
+        "copied": "License key copied!",
+        "cmd_copied": "Command copied!",
+        "success": "Success!",
+        "copy_error": "Failed to copy"
+      }
+    },
+    "affiliate_page": {
+      "title": "Affiliate Program",
+      "description": "Join the AgencyOS affiliate program and earn recurring commissions",
+      "hero": {
+        "badge": "EARN 40% RECURRING",
+        "title": "The <span class=\"gradient-text\">Affiliate</span> Program",
+        "subtitle": "Help other agencies automate their work and get paid every single month.",
+        "starter": "Starter",
+        "pro": "Pro",
+        "enterprise": "Enterprise",
+        "you_earn": "You earn",
+        "primary_cta": "Open Dashboard",
+        "secondary_cta": "How it works"
+      },
+      "stats": {
+        "commission": "Commission",
+        "cookie": "Cookie Duration",
+        "payouts": "Payout Delay",
+        "recurring": "Recurring"
+      },
+      "how_it_works": {
+        "title": "How it works",
+        "step1": {
+          "title": "Sign Up",
+          "desc": "Get your unique referral link in seconds."
+        },
+        "step2": {
+          "title": "Share",
+          "desc": "Post on X, LinkedIn, or send to your agency network."
+        },
+        "step3": {
+          "title": "Convert",
+          "desc": "Track your clicks and conversions in real-time."
+        },
+        "step4": {
+          "title": "Get Paid",
+          "desc": "Receive payouts every month via your preferred method."
+        }
+      },
+      "calculator": {
+        "title": "Earnings Calculator",
+        "label": "Number of Pro Referrals",
+        "monthly": "Monthly Income",
+        "yearly": "Yearly Income",
+        "lifetime": "Estimated 3-Year Total"
+      },
+      "what_you_get": {
+        "title": "What You Get",
+        "dashboard": {
+          "title": "Real-time Dashboard",
+          "desc": "Track every click, conversion, and payout live."
+        },
+        "assets": {
+          "title": "Marketing Assets",
+          "desc": "Ready-to-use banners, copy, and social media posts."
+        },
+        "links": {
+          "title": "Deep Linking",
+          "desc": "Link to any page on our site with your referral ID."
+        },
+        "leaderboard": {
+          "title": "Leaderboard",
+          "desc": "Compete with other affiliates for extra bonuses."
+        },
+        "payouts": {
+          "title": "Flexible Payouts",
+          "desc": "Get paid via PayPal, Stripe, or Bank Transfer."
+        },
+        "bonuses": {
+          "title": "Performance Bonuses",
+          "desc": "Extra rewards for hitting referral milestones."
+        }
+      },
+      "bonuses": {
+        "title": "Milestone Bonuses",
+        "first_blood": {
+          "title": "FIRST BLOOD",
+          "req": "1st Sale",
+          "reward": "+$50 Bonus"
+        },
+        "rising_star": {
+          "title": "RISING STAR",
+          "req": "10 Sales",
+          "reward": "+$250 Bonus"
+        },
+        "diamond": {
+          "title": "DIAMOND",
+          "req": "50 Sales",
+          "reward": "+$1,500 Bonus"
+        },
+        "king": {
+          "title": "AFFILIATE KING",
+          "req": "100 Sales",
+          "reward": "+$5,000 Bonus"
+        }
+      },
+      "cta": {
+        "title": "Ready to start?",
+        "subtitle": "Join our affiliate network and start earning today.",
+        "button": "Join Now →"
+      }
+    },
+    "affiliate_dashboard": {
+      "title": "Affiliate Dashboard | AgencyOS",
+      "description": "Track your affiliate earnings, clicks, and conversions in real-time.",
+      "header": {
+        "title": "🏯 Affiliate Dashboard",
+        "welcome": "Welcome back, Affiliate",
+        "copy_btn": "📋 Copy"
+      },
+      "stats": {
+        "earnings": "This Month",
+        "clicks": "Clicks",
+        "conversions": "Conversions",
+        "rate": "Conversion Rate"
+      },
+      "earnings_chart": {
+        "title": "📈 Earnings (Last 30 Days)",
+        "periods": {
+          "7d": "Last 7 days",
+          "30d": "Last 30 days",
+          "90d": "Last 90 days"
+        },
+        "empty": "No earnings data yet",
+        "hint": "Share your link to start earning!"
+      },
+      "activity": {
+        "title": "🕐 Recent Activity",
+        "empty": "No activity yet",
+        "hint": "Your clicks and conversions will appear here"
+      },
+      "rank": {
+        "title": "🏆 Your Rank",
+        "not_ranked": "Not ranked yet",
+        "hint": "Make your first sale to get ranked!"
+      },
+      "achievements": {
+        "title": "🎖️ Achievements",
+        "list": {
+          "first_blood": "First Blood",
+          "rising_star": "Rising Star",
+          "diamond": "Diamond",
+          "king": "King"
+        }
+      },
+      "actions": {
+        "title": "⚡ Quick Actions",
+        "links": "🔗 Generate Links",
+        "assets": "🎨 Marketing Assets",
+        "leaderboard": "🏆 Leaderboard",
+        "payouts": "💳 Payouts"
+      },
+      "payout": {
+        "title": "💳 Next Payout",
+        "threshold": "{current} / {target} threshold",
+        "method": "Payment method:",
+        "setup": "Set up PayPal/Wise"
+      },
+      "getting_started": {
+        "title": "🚀 Getting Started",
+        "steps": [
+          "Create account",
+          "Copy your link",
+          "Share on social",
+          "Earn commission!"
+        ]
+      }
+    },
+    "agency_dashboard": {
+      "title": "Agency Command Center",
+      "description": "Real-time agency metrics, system health monitoring, and quick actions",
+      "header": {
+        "title": "🏯 AGENCY COMMAND CENTER",
+        "subtitle": "MILESTONE 100 • \"Không đánh mà thắng\"",
+        "status_thriving": "THRIVING"
+      },
+      "metrics": {
+        "revenue": "Revenue MTD",
+        "clients": "Active Clients",
+        "margin": "Profit Margin",
+        "utilization": "Utilization",
+        "nps": "NPS Score",
+        "pipeline": "Pipeline"
+      },
+      "system": {
+        "title": "🔧 System Status",
+        "all_operational": "All Systems Operational"
+      },
+      "actions": {
+        "title": "🚀 Quick Actions",
+        "proposal": "New Proposal",
+        "invoice": "Create Invoice",
+        "meeting": "Schedule Meeting",
+        "client": "Add Client",
+        "report": "Run Report",
+        "campaign": "Send Campaign"
+      },
+      "priorities": {
+        "title": "📋 Today's Priorities"
+      },
+      "commands": {
+        "title": "🏯 135 ZERO-EFFORT Commands",
+        "view_all": "View All →",
+        "palette_hint": "Press {kbd} to open Command Palette"
+      },
+      "footer_nav": {
+        "agentops": {
+          "title": "AgentOps Architecture",
+          "desc": "18 Agents × 135 Commands"
+        },
+        "client_dash": {
+          "title": "Client Dashboard",
+          "desc": "Client-facing portal"
+        },
+        "command_docs": {
+          "title": "Command Docs",
+          "desc": "176 documentation pages"
+        }
+      }
+    },
+    "agentops_page": {
+      "title": "AgentOps Architecture",
+      "description": "The neural network of AgencyOS - 18 Hubs & 135 Atomic Commands",
+      "hero": {
+        "badge": "QUANTUM ORCHESTRATION",
+        "title": "18 Specialized <span class=\"gradient-text\">Hubs</span>",
+        "subtitle": "A decentralized network of AI agents working in perfect harmony."
+      },
+      "stats": {
+        "hubs": "Total Hubs",
+        "commands": "Atomic Commands",
+        "uptime": "Core Uptime",
+        "latency": "Avg Latency"
+      }
+    },
+    "usage_page": {
+      "title": "Usage Dashboard - AgencyOS",
+      "description": "Monitor your API usage and subscription limits.",
+      "hero": {
+        "title": "📊 Usage Dashboard",
+        "subtitle": "Monitor your subscription and API usage"
+      },
+      "loading": "Loading usage data...",
+      "no_sub": {
+        "title": "No Active Subscription",
+        "desc": "Subscribe to track your usage and unlock more features.",
+        "cta": "View Pricing →"
+      },
+      "subscription": {
+        "title": "🎫 Subscription",
+        "status": "Status",
+        "license": "License",
+        "expires": "Expires",
+        "active": "Active"
+      },
+      "meters": {
+        "api": "API Calls",
+        "commands": "Commands",
+        "remaining": "({amount} remaining)"
+      },
+      "features": {
+        "title": "🎁 Your Features",
+        "api": "API Access",
+        "whitelabel": "White-Label",
+        "team": "{count} Team Member",
+        "team_plural": "{count} Team Members",
+        "unlimited_team": "Unlimited Team",
+        "priority": "Priority Support"
+      },
+      "upgrade": {
+        "title": "🚀 Want more?",
+        "desc": "Upgrade to unlock higher limits and premium features.",
+        "cta": "Upgrade Plan →"
+      }
+    },
+    "admin_revenue_page": {
+      "title": "Revenue Dashboard - AgencyOS Admin",
+      "description": "Track progress toward $1M revenue goal.",
+      "hero": {
+        "title": "💰 Revenue Dashboard",
+        "subtitle": "Track progress toward $1M goal (2026)"
+      },
+      "goal": {
+        "title": "🎯 2026 Revenue Goal",
+        "ytd": "YTD Revenue",
+        "avg": "Monthly Avg",
+        "left": "Months Left",
+        "req": "Required/Month"
+      },
+      "streams": {
+        "saas": "SaaS Subscriptions",
+        "franchise": "Franchise Network",
+        "marketplace": "Marketplace",
+        "services": "Services & Consulting",
+        "affiliate": "Affiliate Payouts",
+        "net": "Net Revenue"
+      },
+      "details": {
+        "starter": "Starter ($29/mo)",
+        "pro": "Pro ($99/mo)",
+        "enterprise": "Enterprise ($2K/mo)",
+        "platform_fees": "Platform Fees",
+        "revenue_share": "Revenue Share (30%)",
+        "active_franchisees": "Active Franchisees",
+        "platform_take": "Platform Take (30%)",
+        "total_sales": "Total Sales",
+        "active_creators": "Active Creators",
+        "projects_completed": "Projects Completed",
+        "avg_value": "Avg Project Value",
+        "active_clients": "Active Clients",
+        "total_conversions": "Total Conversions",
+        "active_affiliates": "Active Affiliates",
+        "avg_commission": "Avg Commission",
+        "gross": "Gross Revenue",
+        "payouts": "- Payouts",
+        "net_calc": "= Net"
+      },
+      "chart": {
+        "title": "📊 Monthly Revenue (2026)",
+        "target": "Target: $83,333/mo"
+      },
+      "status": {
+        "on_track": "On track:",
+        "yes": "✅ Yes",
+        "behind": "⚠️ Behind"
+      }
+    },
+    "franchise_dashboard": {
+      "title": "Franchise Dashboard - AgencyOS",
+      "description": "Manage your franchise territories and revenue.",
+      "hero": {
+        "title": "🌍 Franchise Dashboard",
+        "subtitle": "Manage your territories & track revenue"
+      },
+      "loading": "Loading franchise data...",
+      "apply": {
+        "title": "Become a Franchisee",
+        "desc": "Join our global network and grow your agency business.",
+        "cta": "Apply Now →",
+        "benefits": [
+          "Exclusive territory rights",
+          "70% revenue share",
+          "Full platform access",
+          "Marketing support"
+        ]
+      },
+      "status": {
+        "title": "🎫 Franchise Status",
+        "territories": "Territories",
+        "clients": "Clients",
+        "share": "Revenue Share",
+        "fee": "Platform Fee"
+      },
+      "revenue": {
+        "title": "💰 This Month's Revenue",
+        "local": "Local Services",
+        "saas": "SaaS Reselling",
+        "total": "Total Revenue",
+        "your_share": "Your Share (70%)"
+      },
+      "territories": {
+        "title": "📍 Your Territories",
+        "claim": "+ Claim Territory",
+        "empty": "No territories claimed yet."
+      },
+      "onboarding": {
+        "title": "📋 Onboarding Progress",
+        "steps": [
+          "Complete profile",
+          "Claim first territory",
+          "Setup payment method",
+          "Complete training",
+          "Get first client",
+          "Submit first revenue"
+        ]
+      },
+      "modal": {
+        "title": "🗺️ Claim Territory",
+        "all_countries": "All Countries",
+        "loading": "Loading territories...",
+        "claim_flow": "Territory claim flow coming soon!"
+      }
+    },
+    "newsletter_dashboard": {
+      "title": "Newsletter Dashboard - Mekong Mail | AgencyOS",
+      "description": "Manage all your client newsletters from one powerful dashboard. AI-powered writing, analytics, and cross-promotion built-in.",
+      "header": {
+        "title": "📧 Mekong Mail",
+        "subtitle": "Newsletter Hub",
+        "back": "← Back to AgencyOS",
+        "new": "+ New Newsletter"
+      },
+      "stats": {
+        "subscribers": "Total Subscribers",
+        "open_rate": "Avg Open Rate",
+        "newsletters": "Newsletters",
+        "sent": "Sent This Month"
+      },
+      "actions": {
+        "ai_write": "AI Write",
+        "analytics": "Analytics",
+        "settings": "Settings"
+      },
+      "list": {
+        "title": "Your Newsletters",
+        "create": "Create Newsletter",
+        "live": "Live",
+        "subs": "subs",
+        "open": "open",
+        "edit": "Edit",
+        "send": "Send"
+      },
+      "activity": {
+        "title": "Recent Activity",
+        "sent": "Newsletter sent",
+        "new_sub": "New subscriber",
+        "draft": "Draft saved"
+      }
+    },
+    "client_dashboard": {
+      "title": "Client Portal - Projects & Progress",
+      "description": "Track your projects, tasks, invoices and communication with your agency",
+      "auth": {
+        "title": "Client Portal",
+        "subtitle": "Enter your access code",
+        "label": "Portal Code",
+        "placeholder": "Enter 12-character access code",
+        "button": "Access Portal →",
+        "hint": "No code? Contact your agency to get an access code."
+      },
+      "header": {
+        "welcome": "Welcome",
+        "member_since": "Member since {date}",
+        "logout": "Logout"
+      },
+      "stats": {
+        "projects": "Active Projects",
+        "tasks": "Tasks Completed",
+        "paid": "Total Paid",
+        "messages": "Unread Messages"
+      },
+      "sections": {
+        "projects": "Your Projects",
+        "tasks": "Recent Tasks",
+        "invoices": "Invoices",
+        "messages": "Messages"
+      },
+      "empty": {
+        "projects": "No projects found",
+        "tasks": "No tasks found",
+        "invoices": "No invoices found",
+        "messages": "No new messages"
+      },
+      "project": {
+        "completed": "tasks completed"
+      }
+    },
+    "affiliate_assets": {
+      "title": "Marketing Assets | Affiliate Portal",
+      "description": "Download banners, email templates, and social media assets to promote AgencyOS.",
+      "header": {
+        "back": "← Back to Dashboard",
+        "title": "🎨 Marketing Assets",
+        "subtitle": "Professional materials to promote AgencyOS"
+      },
+      "banners": {
+        "title": "📱 Banners",
+        "count": "{count} sizes",
+        "download": "⬇️ Download"
+      },
+      "emails": {
+        "title": "📧 Email Swipes",
+        "count": "{count} templates",
+        "copy": "📋 Copy"
+      },
+      "social": {
+        "title": "📱 Social Media",
+        "count": "Ready to use",
+        "copy_thread": "📋 Copy Thread",
+        "copy_script": "📋 Copy Script",
+        "copy_post": "📋 Copy Post"
+      },
+      "video": {
+        "title": "🎬 Video Promos",
+        "count": "Coming soon",
+        "empty": "Professional video promos coming soon!",
+        "hint": "15s, 30s, and 60s versions"
+      },
+      "brand": {
+        "title": "📐 Brand Guidelines",
+        "colors": "Colors",
+        "logo": "Logo",
+        "logo_hint": "Always use the castle emoji",
+        "tagline": "Tagline"
+      }
+    },
+    "affiliate_leaderboard": {
+      "title": "Affiliate Leaderboard | AgencyOS",
+      "description": "See top affiliate earners and compete for monthly bonuses.",
+      "header": {
+        "back": "← Back to Dashboard",
+        "title": "🏆 Affiliate Leaderboard",
+        "subtitle": "{date} • Top performers earn bonus rewards!"
+      },
+      "prizes": {
+        "title": "🎁 Monthly Prizes",
+        "first": "🥇 1st Place",
+        "second": "🥈 2nd Place",
+        "third": "🥉 3rd Place",
+        "bonus": "Cash Bonus"
+      },
+      "podium": {
+        "sales": "sales",
+        "earnings": "earnings"
+      },
+      "table": {
+        "title": "📊 Full Rankings",
+        "rank": "Rank",
+        "affiliate": "Affiliate",
+        "badge": "Badge",
+        "sales": "Sales",
+        "earnings": "Earnings"
+      },
+      "position": {
+        "title": "Your Current Position",
+        "not_ranked": "Not ranked yet",
+        "hint": "Make your first sale to appear on the leaderboard!",
+        "button": "View Dashboard"
+      },
+      "badges": {
+        "title": "🎖️ Achievement Badges"
+      }
+    }
+  }
+}

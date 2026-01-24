@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import type { MotionValue } from "framer-motion";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, type MotionValue } from "framer-motion";
 
 export const ContainerScroll = ({
     children,

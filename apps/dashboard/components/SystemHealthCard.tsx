@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@agencyos/ui'
-import { SystemStatus } from '@/lib/monitor-api'
+import type { SystemStatus } from '@/lib/monitor-api'
 import { CheckCircle, AlertTriangle, XCircle, HelpCircle } from 'lucide-react'
 
 interface SystemHealthCardProps {

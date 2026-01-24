@@ -1,17 +1,17 @@
  
 import { useState, useEffect, useCallback } from 'react'
 import { logger } from '@/lib/utils/logger'
-import type {
-  AllModules,
-  AgencyDNA,
-  ClientMagnetStats,
-  RevenueEngineStats,
-  ContentFactoryStats,
-  FranchiseStats,
-  VCMetrics,
-  DataMoatStats,
+import {
+  antigravityAPI,
+  type AllModules,
+  type AgencyDNA,
+  type ClientMagnetStats,
+  type RevenueEngineStats,
+  type ContentFactoryStats,
+  type FranchiseStats,
+  type VCMetrics,
+  type DataMoatStats,
 } from '../lib/api/antigravity'
-import { antigravityAPI } from '../lib/api/antigravity'
 
 interface UseAntigravityReturn {
   modules: AllModules | null

@@ -1,102 +1,106 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = 'Contact AgencyOS - Get in Touch';
-const description = 'Have questions? We would love to hear from you. Contact the AgencyOS team.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('contact_page.title');
+const description = t('contact_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="contact-page">
     <div class="contact-container">
-      
+
       <!-- Header -->
       <div class="contact-header">
-        <h1 class="contact-title">Get in Touch</h1>
+        <h1 class="contact-title">{t('contact_page.hero.title')}</h1>
         <p class="contact-subtitle">
-          Have a question? We'd love to hear from you.
+          {t('contact_page.hero.subtitle')}
         </p>
       </div>
 
       <div class="contact-grid">
-        
+
         <!-- Contact Form -->
         <div class="contact-form-card">
-          <h2 class="form-title">Send a Message</h2>
-          
+          <h2 class="form-title">{t('contact_page.form.title')}</h2>
+
           <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
             <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" required placeholder="Your name" />
+              <label for="name">{t('contact_page.form.name')}</label>
+              <input type="text" id="name" name="name" required placeholder={t('contact_page.form.name_placeholder')} />
             </div>
-            
+
             <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" required placeholder="you@example.com" />
+              <label for="email">{t('contact_page.form.email')}</label>
+              <input type="email" id="email" name="email" required placeholder={t('contact_page.form.email_placeholder')} />
             </div>
-            
+
             <div class="form-group">
-              <label for="subject">Subject</label>
+              <label for="subject">{t('contact_page.form.subject')}</label>
               <select id="subject" name="subject" required>
-                <option value="">Select a topic...</option>
-                <option value="sales">Sales Inquiry</option>
-                <option value="support">Technical Support</option>
-                <option value="partnership">Partnership</option>
-                <option value="franchise">Franchise Interest</option>
-                <option value="other">Other</option>
+                <option value="">{t('contact_page.form.subject_placeholder')}</option>
+                <option value="sales">{t('contact_page.form.subjects.sales')}</option>
+                <option value="support">{t('contact_page.form.subjects.support')}</option>
+                <option value="partnership">{t('contact_page.form.subjects.partnership')}</option>
+                <option value="franchise">{t('contact_page.form.subjects.franchise')}</option>
+                <option value="other">{t('contact_page.form.subjects.other')}</option>
               </select>
             </div>
-            
+
             <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" required rows="5" placeholder="How can we help?"></textarea>
+              <label for="message">{t('contact_page.form.message')}</label>
+              <textarea id="message" name="message" required rows="5" placeholder={t('contact_page.form.message_placeholder')}></textarea>
             </div>
-            
-            <button type="submit" class="submit-btn">Send Message</button>
+
+            <button type="submit" class="submit-btn">{t('contact_page.form.submit')}</button>
           </form>
         </div>
 
         <!-- Contact Info -->
         <div class="contact-info-card">
-          <h2 class="info-title">Other Ways to Reach Us</h2>
-          
+          <h2 class="info-title">{t('contact_page.info.title')}</h2>
+
           <div class="info-items">
             <div class="info-item">
               <div class="info-icon">📧</div>
               <div class="info-content">
-                <h3>Email</h3>
+                <h3>{t('contact_page.info.email')}</h3>
                 <a href="mailto:hello@agencyos.network">hello@agencyos.network</a>
               </div>
             </div>
-            
+
             <div class="info-item">
               <div class="info-icon">💬</div>
               <div class="info-content">
-                <h3>Discord</h3>
-                <a href="https://discord.gg/agencyos" target="_blank">Join our community</a>
+                <h3>{t('contact_page.info.discord')}</h3>
+                <a href="https://discord.gg/agencyos" target="_blank">{t('contact_page.info.discord_link')}</a>
               </div>
             </div>
-            
+
             <div class="info-item">
               <div class="info-icon">🐦</div>
               <div class="info-content">
-                <h3>Twitter/X</h3>
+                <h3>{t('contact_page.info.twitter')}</h3>
                 <a href="https://x.com/agencyos" target="_blank">@agencyos</a>
               </div>
             </div>
-            
+
             <div class="info-item">
               <div class="info-icon">📚</div>
               <div class="info-content">
-                <h3>Documentation</h3>
-                <a href="/docs/getting-started/introduction">Read the docs</a>
+                <h3>{t('contact_page.info.docs')}</h3>
+                <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/introduction')}>{t('contact_page.info.docs_link')}</a>
               </div>
             </div>
           </div>
 
           <!-- FAQ Link -->
           <div class="faq-link">
-            <p>Looking for answers?</p>
-            <a href="/pricing#faq" class="faq-btn">Check our FAQ →</a>
+            <p>{t('contact_page.info.faq_prompt')}</p>
+            <a href={getRelativeLocaleUrl(locale, '/pricing#faq')} class="faq-btn">{t('contact_page.info.faq_button')}</a>
           </div>
         </div>
 

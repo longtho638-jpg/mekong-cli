@@ -8,11 +8,11 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/session-init.cjs"
+            "command": "/Users/macbookprom1/.claude-mem/hooks/session-start.js",
+            "timeout": 180
           }
         ]
       }
@@ -33,7 +33,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/dev-rules-reminder.cjs"
+            "command": "/Users/macbookprom1/.claude-mem/hooks/user-prompt-submit.js",
+            "timeout": 60
           }
         ]
       }
@@ -51,6 +52,29 @@
             "command": "node .claude/hooks/privacy-block.cjs"
           }
         ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/macbookprom1/.claude-mem/hooks/stop.js",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/macbookprom1/.claude-mem/hooks/post-tool-use.js",
+            "timeout": 180
+          }
+        ],
+        "matcher": "*"
       }
     ]
   }

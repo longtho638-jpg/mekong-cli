@@ -1,24 +1,28 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = 'ROI Calculator - AgencyOS';
-const description = 'Calculate how much time and money AgencyOS can save your agency.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('roi_page.title');
+const description = t('roi_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="roi-hero">
-    <h1>💰 Calculate Your ROI</h1>
-    <p>See how much AgencyOS can save your agency in time and money</p>
+    <h1>{t('roi_page.hero.title')}</h1>
+    <p>{t('roi_page.hero.subtitle')}</p>
   </section>
 
   <section class="calculator-section">
     <div class="calculator-card">
-      
+
       <div class="inputs-panel">
-        <h3>📊 Your Agency</h3>
-        
+        <h3>{t('roi_page.calculator.your_agency')}</h3>
+
         <div class="input-group">
-          <label for="revenue">Monthly Revenue ($)</label>
+          <label for="revenue">{t('roi_page.calculator.revenue_label')}</label>
           <input type="range" id="revenue" min="5000" max="500000" value="50000" step="5000" />
           <div class="range-display">
             <span>$5K</span>
@@ -28,43 +32,43 @@ const description = 'Calculate how much time and money AgencyOS can save your ag
         </div>
 
         <div class="input-group">
-          <label for="team-size">Team Size</label>
+          <label for="team-size">{t('roi_page.calculator.team_size_label')}</label>
           <input type="range" id="team-size" min="1" max="50" value="5" />
           <div class="range-display">
             <span>1</span>
-            <span class="value" id="team-value">5 people</span>
+            <span class="value" id="team-value">5 {t('roi_page.calculator.people')}</span>
             <span>50</span>
           </div>
         </div>
 
         <div class="input-group">
-          <label for="admin-hours">Hours on Admin/Week (per person)</label>
+          <label for="admin-hours">{t('roi_page.calculator.admin_hours_label')}</label>
           <input type="range" id="admin-hours" min="5" max="40" value="15" />
           <div class="range-display">
             <span>5h</span>
-            <span class="value" id="hours-value">15 hours</span>
+            <span class="value" id="hours-value">15 {t('roi_page.calculator.hours')}</span>
             <span>40h</span>
           </div>
         </div>
 
         <div class="input-group">
-          <label for="hourly-rate">Average Hourly Rate ($)</label>
+          <label for="hourly-rate">{t('roi_page.calculator.hourly_rate_label')}</label>
           <input type="range" id="hourly-rate" min="25" max="500" value="100" step="25" />
           <div class="range-display">
             <span>$25</span>
-            <span class="value" id="rate-value">$100/hr</span>
+            <span class="value" id="rate-value">$100/{t('roi_page.calculator.hr')}</span>
             <span>$500</span>
           </div>
         </div>
       </div>
 
       <div class="results-panel">
-        <h3>🚀 With AgencyOS</h3>
-        
+        <h3>{t('roi_page.calculator.with_agencyos')}</h3>
+
         <div class="result-card savings">
           <div class="result-icon">💵</div>
           <div class="result-content">
-            <span class="result-label">Annual Savings</span>
+            <span class="result-label">{t('roi_page.calculator.annual_savings')}</span>
             <span class="result-value" id="annual-savings">$156,000</span>
           </div>
         </div>
@@ -72,7 +76,7 @@ const description = 'Calculate how much time and money AgencyOS can save your ag
         <div class="result-card time">
           <div class="result-icon">⏰</div>
           <div class="result-content">
-            <span class="result-label">Hours Saved/Year</span>
+            <span class="result-label">{t('roi_page.calculator.hours_saved')}</span>
             <span class="result-value" id="hours-saved">1,560 hrs</span>
           </div>
         </div>
@@ -80,7 +84,7 @@ const description = 'Calculate how much time and money AgencyOS can save your ag
         <div class="result-card roi">
           <div class="result-icon">📈</div>
           <div class="result-content">
-            <span class="result-label">ROI</span>
+            <span class="result-label">{t('roi_page.calculator.roi')}</span>
             <span class="result-value highlight" id="roi-percent">13,200%</span>
           </div>
         </div>
@@ -88,21 +92,21 @@ const description = 'Calculate how much time and money AgencyOS can save your ag
         <div class="result-card payback">
           <div class="result-icon">🎯</div>
           <div class="result-content">
-            <span class="result-label">Payback Period</span>
-            <span class="result-value" id="payback-days">3 days</span>
+            <span class="result-label">{t('roi_page.calculator.payback_period')}</span>
+            <span class="result-value" id="payback-days">3 {t('roi_page.calculator.days')}</span>
           </div>
         </div>
 
         <div class="comparison-bar">
-          <div class="bar-label">AgencyOS Cost vs Savings</div>
+          <div class="bar-label">{t('roi_page.calculator.cost_vs_savings')}</div>
           <div class="bar-visual">
             <div class="bar-cost" id="bar-cost">$1,188</div>
             <div class="bar-savings" id="bar-savings">$156,000</div>
           </div>
         </div>
 
-        <a href="/signup?plan=pro" class="btn-primary">
-          Start Saving Now →
+        <a href={getRelativeLocaleUrl(locale, '/signup?plan=pro')} class="btn-primary">
+          {t('roi_page.calculator.cta')}
         </a>
       </div>
 
@@ -110,54 +114,63 @@ const description = 'Calculate how much time and money AgencyOS can save your ag
   </section>
 
   <section class="breakdown-section">
-    <h2>📋 Savings Breakdown</h2>
-    
+    <h2>{t('roi_page.breakdown.title')}</h2>
+
     <div class="breakdown-grid">
       <div class="breakdown-card">
         <span class="category-icon">📣</span>
-        <h4>Marketing</h4>
+        <h4>{t('roi_page.breakdown.marketing')}</h4>
         <p class="saved" id="marketing-saved">$31,200/yr</p>
-        <p class="tasks">Content, SEO, Social, Email</p>
+        <p class="tasks">{t('roi_page.breakdown.marketing_tasks')}</p>
       </div>
-      
+
       <div class="breakdown-card">
         <span class="category-icon">💼</span>
-        <h4>Sales</h4>
+        <h4>{t('roi_page.breakdown.sales')}</h4>
         <p class="saved" id="sales-saved">$31,200/yr</p>
-        <p class="tasks">Proposals, CRM, Follow-ups</p>
+        <p class="tasks">{t('roi_page.breakdown.sales_tasks')}</p>
       </div>
-      
+
       <div class="breakdown-card">
         <span class="category-icon">📊</span>
-        <h4>Finance</h4>
+        <h4>{t('roi_page.breakdown.finance')}</h4>
         <p class="saved" id="finance-saved">$31,200/yr</p>
-        <p class="tasks">Invoicing, Reports, Budgets</p>
+        <p class="tasks">{t('roi_page.breakdown.finance_tasks')}</p>
       </div>
-      
+
       <div class="breakdown-card">
         <span class="category-icon">⚙️</span>
-        <h4>Operations</h4>
+        <h4>{t('roi_page.breakdown.ops')}</h4>
         <p class="saved" id="ops-saved">$31,200/yr</p>
-        <p class="tasks">SOPs, Workflows, Meetings</p>
+        <p class="tasks">{t('roi_page.breakdown.ops_tasks')}</p>
       </div>
-      
+
       <div class="breakdown-card">
         <span class="category-icon">🎯</span>
-        <h4>Strategy</h4>
+        <h4>{t('roi_page.breakdown.strategy')}</h4>
         <p class="saved" id="strategy-saved">$31,200/yr</p>
-        <p class="tasks">Research, Competitive, OKRs</p>
+        <p class="tasks">{t('roi_page.breakdown.strategy_tasks')}</p>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to 10x Your Agency?</h2>
-    <p>Join 100+ agencies already saving thousands with AgencyOS</p>
+    <h2>{t('roi_page.final_cta.title')}</h2>
+    <p>{t('roi_page.final_cta.subtitle')}</p>
     <div class="cta-buttons">
-      <a href="/signup?plan=pro" class="btn-primary">Start Free Trial →</a>
-      <a href="/pricing" class="btn-secondary">View Pricing</a>
+      <a href={getRelativeLocaleUrl(locale, '/signup?plan=pro')} class="btn-primary">{t('roi_page.final_cta.primary')}</a>
+      <a href={getRelativeLocaleUrl(locale, '/pricing')} class="btn-secondary">{t('roi_page.final_cta.secondary')}</a>
     </div>
   </section>
+
+  <div id="roi-i18n"
+    data-person={t('roi_page.calculator.person')}
+    data-people={t('roi_page.calculator.people')}
+    data-hours={t('roi_page.calculator.hours')}
+    data-hr={t('roi_page.calculator.hr')}
+    data-days={t('roi_page.calculator.days')}
+    data-months={t('roi_page.calculator.months')}
+  ></div>
 </LandingLayout>
 
 <style>

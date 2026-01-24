@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "Agency OS",
+    "tagline": "The One-Person Unicorn Operating System",
+    "description": "Build, scale, and franchise your agency globally"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "marketing": "Marketing",
+    "sales": "Sales",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "commands": {
+    "market_analysis": "Market Analysis",
+    "customer_profile": "Customer Profile",
+    "sales_strategy": "Sales Strategy",
+    "marketing_plan": "Marketing Plan",
+    "business_plan": "Business Plan",
+    "brand_identity": "Brand Identity",
+    "content_marketing": "Content Marketing",
+    "social_media": "Social Media",
+    "messaging": "Messaging",
+    "market_research": "Market Research",
+    "pr_strategy": "PR Strategy",
+    "growth_strategy": "Growth Strategy",
+    "sales_funnel": "Sales Funnel"
+  },
+  "common": {
+    "welcome": "Welcome to Agency OS",
+    "start": "Get Started",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "success": "Success!",
+    "error": "An error occurred",
+    "confirm": "Are you sure?"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password?"
+  },
+  "franchise": {
+    "title": "Franchise Portal",
+    "territories": "Your Territories",
+    "revenue": "Revenue",
+    "clients": "Clients",
+    "commission": "Commission Rate"
+  },
+  "binh_phap": {
+    "tagline": "Win Without Fighting",
+    "short_term": "Short-term: SaaS Affiliate Revenue",
+    "long_term": "Long-term: Local Client Brand Building"
+  }
+}

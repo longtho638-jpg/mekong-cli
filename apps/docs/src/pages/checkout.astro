@@ -1,41 +1,41 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
 
-const title = 'Checkout - AgencyOS';
-const description = 'Complete your AgencyOS subscription.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
-// PayPal Plan Mapping
-const PAYPAL_PLANS = {
-  starter: 'P-7DA230130F8006938NFYLZDA',
-  pro: 'P-95T479827M227991CNFYLZDI',
-  franchise: 'P-0KK81193UG062012VNFYLZDI',
-  enterprise: 'P-92J98622GM186390LNFYLZDQ'
-};
-
-const API_BASE = "https://api.mekong.agency/api/v1"; // Update with production API
+const title = t('checkout_page.title');
+const description = t('checkout_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="checkout-section">
     <div class="checkout-card">
-      
+
       <!-- Loading State -->
       <div class="loading-state" id="loading-state">
         <div class="spinner"></div>
-        <h2>Preparing Checkout...</h2>
-        <p>Redirecting to secure PayPal payment...</p>
+        <h2>{t('checkout_page.loading.title')}</h2>
+        <p>{t('checkout_page.loading.subtitle')}</p>
       </div>
 
       <!-- Error State -->
       <div class="error-state hidden" id="error-state">
         <span class="error-icon">⚠️</span>
-        <h2>Something went wrong</h2>
-        <p id="error-message">Unable to process checkout.</p>
-        <a href="/pricing" class="btn-primary">← Back to Pricing</a>
+        <h2>{t('checkout_page.error.title')}</h2>
+        <p id="error-message">{t('checkout_page.error.subtitle')}</p>
+        <a href="/pricing" class="btn-primary">{t('checkout_page.error.button')}</a>
       </div>
 
     </div>
   </section>
+
+  <div id="checkout-i18n"
+    data-paypal-missing={t('checkout_page.error.paypal_missing')}
+    data-paypal-failed={t('checkout_page.error.paypal_failed')}
+    data-network-error={t('checkout_page.error.network_error')}
+  ></div>
 </LandingLayout>
 
 <style>

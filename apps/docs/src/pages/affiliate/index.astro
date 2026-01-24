@@ -1,42 +1,49 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Become an Affiliate | AgencyOS';
-const description = 'Earn 40% recurring commission promoting AgencyOS. Get banners, email templates, and real-time tracking.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('affiliate_page.title');
+const description = t('affiliate_page.description');
+
+const pageData = (locales[locale] as any).affiliate_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <!-- Hero Section -->
   <section class="affiliate-hero">
     <div class="container">
-      <div class="badge">💰 AFFILIATE PROGRAM</div>
-      <h1>Earn <span class="gradient-text">40% Recurring</span> Commission</h1>
-      <p class="subtitle">Promote AgencyOS and earn up to $79/month per referral. Forever.</p>
-      
+      <div class="badge">{pageData.hero.badge}</div>
+      <h1 set:html={pageData.hero.title}></h1>
+      <p class="subtitle">{pageData.hero.subtitle}</p>
+
       <div class="earnings-preview">
         <div class="earning-card">
-          <div class="plan">Starter Referral</div>
+          <div class="plan">{pageData.hero.starter}</div>
           <div class="price">$29/mo</div>
-          <div class="commission">You earn <strong>$11.60/mo</strong></div>
+          <div class="commission">{pageData.hero.you_earn} <strong>$11.60/mo</strong></div>
         </div>
         <div class="earning-card featured">
-          <div class="plan">Pro Referral</div>
+          <div class="plan">{pageData.hero.pro}</div>
           <div class="price">$99/mo</div>
-          <div class="commission">You earn <strong>$39.60/mo</strong></div>
+          <div class="commission">{pageData.hero.you_earn} <strong>$39.60/mo</strong></div>
         </div>
         <div class="earning-card">
-          <div class="plan">Enterprise Referral</div>
+          <div class="plan">{pageData.hero.enterprise}</div>
           <div class="price">$299/mo</div>
-          <div class="commission">You earn <strong>$89.70/mo</strong></div>
+          <div class="commission">{pageData.hero.you_earn} <strong>$89.70/mo</strong></div>
         </div>
       </div>
 
       <div class="cta-buttons">
-        <a href="/affiliate/dashboard" class="btn-primary">
-          🚀 Join Affiliate Program
+        <a href={getRelativeLocaleUrl(locale, '/affiliate/dashboard')} class="btn-primary">
+          {pageData.hero.primary_cta}
         </a>
         <a href="#how-it-works" class="btn-secondary">
-          How It Works
+          {pageData.hero.secondary_cta}
         </a>
       </div>
     </div>
@@ -48,19 +55,19 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-number" data-target="40">0</div>
-          <div class="stat-label">% Commission</div>
+          <div class="stat-label">{pageData.stats.commission}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" data-target="60">0</div>
-          <div class="stat-label">Day Cookie</div>
+          <div class="stat-label">{pageData.stats.cookie}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" data-target="48">0</div>
-          <div class="stat-label">Hour Payouts</div>
+          <div class="stat-label">{pageData.stats.payouts}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number">∞</div>
-          <div class="stat-label">Recurring Forever</div>
+          <div class="stat-label">{pageData.stats.recurring}</div>
         </div>
       </div>
     </div>
@@ -69,27 +76,27 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   <!-- How It Works -->
   <section id="how-it-works" class="how-it-works">
     <div class="container">
-      <h2>How It Works</h2>
+      <h2>{pageData.how_it_works.title}</h2>
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h3>Sign Up Free</h3>
-          <p>Create your affiliate account in 30 seconds. No fees, no commitments.</p>
+          <h3>{pageData.how_it_works.step1.title}</h3>
+          <p>{pageData.how_it_works.step1.desc}</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
-          <h3>Get Your Link</h3>
-          <p>Receive your unique referral link with 60-day cookie tracking.</p>
+          <h3>{pageData.how_it_works.step2.title}</h3>
+          <p>{pageData.how_it_works.step2.desc}</p>
         </div>
         <div class="step-card">
           <div class="step-number">3</div>
-          <h3>Share & Earn</h3>
-          <p>Promote with our banners, emails, and videos. Track everything in real-time.</p>
+          <h3>{pageData.how_it_works.step3.title}</h3>
+          <p>{pageData.how_it_works.step3.desc}</p>
         </div>
         <div class="step-card">
           <div class="step-number">4</div>
-          <h3>Get Paid</h3>
-          <p>Receive PayPal or Wise payouts monthly. $50 minimum threshold.</p>
+          <h3>{pageData.how_it_works.step4.title}</h3>
+          <p>{pageData.how_it_works.step4.desc}</p>
         </div>
       </div>
     </div>
@@ -98,24 +105,24 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   <!-- Earnings Calculator -->
   <section class="earnings-calc">
     <div class="container">
-      <h2>💰 Earnings Calculator</h2>
+      <h2>{pageData.calculator.title}</h2>
       <div class="calc-card">
         <div class="calc-input">
-          <label>Monthly Referrals (Pro Plan)</label>
+          <label>{pageData.calculator.label}</label>
           <input type="range" id="referrals" min="1" max="50" value="10">
           <span class="range-value" id="referral-count">10</span>
         </div>
         <div class="calc-result">
           <div class="result-item">
-            <span class="label">Monthly Commission</span>
+            <span class="label">{pageData.calculator.monthly}</span>
             <span class="value" id="monthly-earn">$396</span>
           </div>
           <div class="result-item">
-            <span class="label">Yearly Commission</span>
+            <span class="label">{pageData.calculator.yearly}</span>
             <span class="value" id="yearly-earn">$4,752</span>
           </div>
           <div class="result-item featured">
-            <span class="label">Lifetime Value (3 years avg)</span>
+            <span class="label">{pageData.calculator.lifetime}</span>
             <span class="value" id="lifetime-earn">$14,256</span>
           </div>
         </div>
@@ -126,37 +133,37 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   <!-- What You Get -->
   <section class="what-you-get">
     <div class="container">
-      <h2>What You Get</h2>
+      <h2>{pageData.what_you_get.title}</h2>
       <div class="features-grid">
         <div class="feature-card">
           <div class="icon">📊</div>
-          <h3>Real-Time Dashboard</h3>
-          <p>Track clicks, conversions, and earnings live.</p>
+          <h3>{pageData.what_you_get.dashboard.title}</h3>
+          <p>{pageData.what_you_get.dashboard.desc}</p>
         </div>
         <div class="feature-card">
           <div class="icon">🎨</div>
-          <h3>Marketing Assets</h3>
-          <p>Professional banners, emails, and social templates.</p>
+          <h3>{pageData.what_you_get.assets.title}</h3>
+          <p>{pageData.what_you_get.assets.desc}</p>
         </div>
         <div class="feature-card">
           <div class="icon">🔗</div>
-          <h3>Custom Links</h3>
-          <p>Create branded links for different campaigns.</p>
+          <h3>{pageData.what_you_get.links.title}</h3>
+          <p>{pageData.what_you_get.links.desc}</p>
         </div>
         <div class="feature-card">
           <div class="icon">🏆</div>
-          <h3>Leaderboard</h3>
-          <p>Compete for monthly bonuses up to $500.</p>
+          <h3>{pageData.what_you_get.leaderboard.title}</h3>
+          <p>{pageData.what_you_get.leaderboard.desc}</p>
         </div>
         <div class="feature-card">
           <div class="icon">💳</div>
-          <h3>Fast Payouts</h3>
-          <p>PayPal or Wise within 48 hours.</p>
+          <h3>{pageData.what_you_get.payouts.title}</h3>
+          <p>{pageData.what_you_get.payouts.desc}</p>
         </div>
         <div class="feature-card">
           <div class="icon">🎁</div>
-          <h3>Milestone Bonuses</h3>
-          <p>Extra $25-$1000 for reaching goals.</p>
+          <h3>{pageData.what_you_get.bonuses.title}</h3>
+          <p>{pageData.what_you_get.bonuses.desc}</p>
         </div>
       </div>
     </div>
@@ -165,27 +172,27 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   <!-- Bonuses -->
   <section class="bonuses">
     <div class="container">
-      <h2>🏆 Achievement Bonuses</h2>
+      <h2>{pageData.bonuses.title}</h2>
       <div class="bonus-grid">
         <div class="bonus-card">
-          <div class="badge bronze">🌟 First Blood</div>
-          <div class="requirement">1 Sale</div>
-          <div class="reward">+$25 Bonus</div>
+          <div class="badge bronze">{pageData.bonuses.first_blood.title}</div>
+          <div class="requirement">{pageData.bonuses.first_blood.req}</div>
+          <div class="reward">{pageData.bonuses.first_blood.reward}</div>
         </div>
         <div class="bonus-card">
-          <div class="badge silver">🔥 Rising Star</div>
-          <div class="requirement">5 Sales</div>
-          <div class="reward">+$50 Bonus</div>
+          <div class="badge silver">{pageData.bonuses.rising_star.title}</div>
+          <div class="requirement">{pageData.bonuses.rising_star.req}</div>
+          <div class="reward">{pageData.bonuses.rising_star.reward}</div>
         </div>
         <div class="bonus-card">
-          <div class="badge gold">💎 Diamond</div>
-          <div class="requirement">25 Sales</div>
-          <div class="reward">+$250 Bonus</div>
+          <div class="badge gold">{pageData.bonuses.diamond.title}</div>
+          <div class="requirement">{pageData.bonuses.diamond.req}</div>
+          <div class="reward">{pageData.bonuses.diamond.reward}</div>
         </div>
         <div class="bonus-card">
-          <div class="badge platinum">👑 King</div>
-          <div class="requirement">100 Sales</div>
-          <div class="reward">+$1,000 Bonus</div>
+          <div class="badge platinum">{pageData.bonuses.king.title}</div>
+          <div class="requirement">{pageData.bonuses.king.req}</div>
+          <div class="reward">{pageData.bonuses.king.reward}</div>
         </div>
       </div>
     </div>
@@ -194,10 +201,10 @@ const description = 'Earn 40% recurring commission promoting AgencyOS. Get banne
   <!-- CTA -->
   <section class="final-cta">
     <div class="container">
-      <h2>Ready to Start Earning?</h2>
-      <p>Join 100+ affiliates already earning with AgencyOS</p>
-      <a href="/affiliate/dashboard" class="btn-primary btn-large">
-        🚀 Join Now – It's Free
+      <h2>{pageData.cta.title}</h2>
+      <p>{pageData.cta.subtitle}</p>
+      <a href={getRelativeLocaleUrl(locale, '/affiliate/dashboard')} class="btn-primary btn-large">
+        {pageData.cta.button}
       </a>
     </div>
   </section>

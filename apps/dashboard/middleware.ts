@@ -32,6 +32,7 @@ export const config = {
         // - api routes
         // - _next (Next.js internals)
         // - static files
-        '/((?!api|_next|.*\\..*).*)'
+        // - checkout (excluded from locale)
+        '/((?!api|_next|checkout|.*\\..*).*)'
     ],
 };

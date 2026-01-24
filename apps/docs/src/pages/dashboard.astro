@@ -1,39 +1,43 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = 'Dashboard - AgencyOS';
-const description = 'Your AgencyOS command center.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('dashboard_page.title');
+const description = t('dashboard_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="dashboard-section">
-    
+
     <!-- Loading State -->
     <div class="loading-state" id="loading-state">
       <div class="spinner"></div>
-      <p>Loading your dashboard...</p>
+      <p>{t('dashboard_page.loading')}</p>
     </div>
 
     <!-- Not Authenticated -->
     <div class="auth-required hidden" id="auth-required">
       <div class="auth-card">
         <span class="lock-icon">🔒</span>
-        <h2>Access Required</h2>
-        <p>Please sign up or log in to access your dashboard.</p>
+        <h2>{t('dashboard_page.auth_required.title')}</h2>
+        <p>{t('dashboard_page.auth_required.subtitle')}</p>
         <div class="auth-actions">
-          <a href="/signup?plan=starter" class="btn-primary">Start Free Trial</a>
-          <a href="/pricing" class="btn-secondary">View Plans</a>
+          <a href={getRelativeLocaleUrl(locale, '/signup?plan=starter')} class="btn-primary">{t('dashboard_page.auth_required.primary')}</a>
+          <a href={getRelativeLocaleUrl(locale, '/pricing')} class="btn-secondary">{t('dashboard_page.auth_required.secondary')}</a>
         </div>
       </div>
     </div>
 
     <!-- Dashboard Content -->
     <div class="dashboard-content hidden" id="dashboard-content">
-      
+
       <!-- Welcome Header -->
       <div class="dashboard-header">
         <div class="welcome-section">
-          <h1>Welcome back, <span id="user-name">Agency Owner</span>! 👋</h1>
+          <h1>{t('dashboard_page.header.welcome').replace('{name}', '<span id="user-name">' + t('dashboard_page.header.default_name') + '</span>')}</h1>
           <p class="user-email" id="user-email"></p>
         </div>
         <div class="plan-badge" id="plan-badge">
@@ -48,53 +52,53 @@ const description = 'Your AgencyOS command center.';
           <div class="stat-icon">🤖</div>
           <div class="stat-info">
             <div class="stat-value">125+</div>
-            <div class="stat-label">AI Commands</div>
+            <div class="stat-label">{t('dashboard_page.stats.commands')}</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">📊</div>
           <div class="stat-info">
             <div class="stat-value" id="trial-days">7</div>
-            <div class="stat-label">Trial Days Left</div>
+            <div class="stat-label">{t('dashboard_page.stats.trial_left')}</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🚀</div>
           <div class="stat-info">
-            <div class="stat-value">Active</div>
-            <div class="stat-label">Account Status</div>
+            <div class="stat-value">{t('dashboard_page.stats.active')}</div>
+            <div class="stat-label">{t('dashboard_page.stats.status')}</div>
           </div>
         </div>
       </div>
 
       <!-- Quick Actions -->
       <div class="actions-section">
-        <h2>🏯 Get Started</h2>
+        <h2>{t('dashboard_page.sections.get_started')}</h2>
         <div class="actions-grid">
-          
-          <a href="/docs/getting-started/quick-start" class="action-card">
+
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="action-card">
             <div class="action-icon">📖</div>
             <div class="action-content">
-              <h3>Quick Start Guide</h3>
-              <p>Set up CLI in 5 minutes</p>
+              <h3>{t('dashboard_page.sections.guides.title')}</h3>
+              <p>{t('dashboard_page.sections.guides.desc')}</p>
             </div>
             <span class="arrow">→</span>
           </a>
 
-          <a href="/demo" class="action-card">
+          <a href={getRelativeLocaleUrl(locale, '/demo')} class="action-card">
             <div class="action-icon">💻</div>
             <div class="action-content">
-              <h3>Try Commands</h3>
-              <p>Interactive terminal demo</p>
+              <h3>{t('dashboard_page.sections.demo.title')}</h3>
+              <p>{t('dashboard_page.sections.demo.desc')}</p>
             </div>
             <span class="arrow">→</span>
           </a>
 
-          <a href="/commands" class="action-card">
+          <a href={getRelativeLocaleUrl(locale, '/commands')} class="action-card">
             <div class="action-icon">📋</div>
             <div class="action-content">
-              <h3>Command Catalog</h3>
-              <p>Browse 125+ AI commands</p>
+              <h3>{t('dashboard_page.sections.catalog.title')}</h3>
+              <p>{t('dashboard_page.sections.catalog.desc')}</p>
             </div>
             <span class="arrow">→</span>
           </a>
@@ -102,8 +106,8 @@ const description = 'Your AgencyOS command center.';
           <a href="mailto:support@agencyos.network" class="action-card">
             <div class="action-icon">💬</div>
             <div class="action-content">
-              <h3>Get Support</h3>
-              <p>We're here to help</p>
+              <h3>{t('dashboard_page.sections.support.title')}</h3>
+              <p>{t('dashboard_page.sections.support.desc')}</p>
             </div>
             <span class="arrow">→</span>
           </a>
@@ -113,16 +117,24 @@ const description = 'Your AgencyOS command center.';
 
       <!-- CLI Setup Box -->
       <div class="setup-box">
-        <h3>🔧 Install AgencyOS CLI</h3>
+        <h3>{t('dashboard_page.install.title')}</h3>
         <div class="code-block">
           <code>pip install mekong-cli</code>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install mekong-cli')">Copy</button>
+          <button class="copy-btn" data-cmd="pip install mekong-cli">{t('dashboard_page.install.copy')}</button>
         </div>
-        <p class="setup-note">Requires Python 3.8+. See <a href="/docs/getting-started/installation">full installation guide</a>.</p>
+        <p class="setup-note">
+          {t('dashboard_page.install.note').split('{link}')[0]}
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')}>{t('nav.getting-started')}</a>
+          {t('dashboard_page.install.note').split('{link}')[1]}
+        </p>
       </div>
 
     </div>
   </section>
+
+  <div id="dashboard-i18n"
+    data-welcome-template={t('dashboard_page.header.welcome')}
+  ></div>
 </LandingLayout>
 
 <style>

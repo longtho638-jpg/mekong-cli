@@ -1,8 +1,15 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Client Portal - Dự Án & Tiến Độ';
-const description = 'Theo dõi dự án, nhiệm vụ, hóa đơn và giao tiếp với agency của bạn';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('client_dashboard.title');
+const description = t('client_dashboard.description');
+
+const pageData = (locales[locale] as any).client_dashboard;
 
 // Extract portal code from URL params
 const urlParams = new URL(Astro.request.url).searchParams;
@@ -13,45 +20,45 @@ const portalCode = urlParams.get('code') || '';
   <!-- Login Screen (if no code) -->
   <div id="auth-screen" class="auth-container" style={portalCode ? 'display:none' : ''}>
     <div class="auth-card">
-      <h1>🏯 Client Portal</h1>
-      <p class="subtitle">Nhập mã truy cập của bạn</p>
-      
+      <h1>{pageData.auth.title}</h1>
+      <p class="subtitle">{pageData.auth.subtitle}</p>
+
       <form id="auth-form" class="auth-form">
         <div class="form-group">
-          <label for="portal-code">Portal Code</label>
-          <input 
-            type="text" 
-            id="portal-code" 
-            placeholder="Nhập 12-ký tự access code"
+          <label for="portal-code">{pageData.auth.label}</label>
+          <input
+            type="text"
+            id="portal-code"
+            placeholder={pageData.auth.placeholder}
             maxlength="12"
             required
           />
         </div>
-        
+
         <button type="submit" class="btn-primary">
-          Truy Cập Portal →
+          {pageData.auth.button}
         </button>
       </form>
-      
-      <p class="hint">Không có mã? Liên hệ agency của bạn để nhận access code.</p>
+
+      <p class="hint">{pageData.auth.hint}</p>
     </div>
   </div>
 
   <!-- Dashboard (after login) -->
   <div id="dashboard" class="dashboard-container" style={!portalCode ? 'display:none' : ''}>
-    
+
     <!-- Header -->
     <header class="dashboard-header">
       <div class="header-left">
-        <h1 id="client-name">Chào mừng, Client</h1>
+        <h1 id="client-name">{pageData.header.welcome}, Client</h1>
         <p class="company-name" id="company-name">Company Name</p>
       </div>
       <div class="header-right">
         <div class="member-badge">
           <span class="icon">👤</span>
-          <span id="member-since">Member since Dec 2025</span>
+          <span id="member-since" data-template={pageData.header.member_since}>{pageData.header.member_since.replace('{date}', 'Dec 2025')}</span>
         </div>
-        <button id="logout-btn" class="btn-secondary">Đăng xuất</button>
+        <button id="logout-btn" class="btn-secondary">{pageData.header.logout}</button>
       </div>
     </header>
 
@@ -61,42 +68,42 @@ const portalCode = urlParams.get('code') || '';
         <div class="stat-icon">📁</div>
         <div class="stat-content">
           <div class="stat-value" id="projects-count">0</div>
-          <div class="stat-label">Dự Án Đang Chạy</div>
+          <div class="stat-label">{pageData.stats.projects}</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">✅</div>
         <div class="stat-content">
           <div class="stat-value" id="tasks-done">0</div>
-          <div class="stat-label">Nhiệm Vụ Hoàn Thành</div>
+          <div class="stat-label">{pageData.stats.tasks}</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">💰</div>
         <div class="stat-content">
           <div class="stat-value" id="total-paid">$0</div>
-          <div class="stat-label">Đã Thanh Toán</div>
+          <div class="stat-label">{pageData.stats.paid}</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">📧</div>
         <div class="stat-content">
           <div class="stat-value" id="messages-unread">0</div>
-          <div class="stat-label">Tin Nhắn Mới</div>
+          <div class="stat-label">{pageData.stats.messages}</div>
         </div>
       </div>
     </section>
 
     <!-- Main Content Grid -->
     <div class="main-grid">
-      
+
       <!-- Left Column -->
       <div class="left-column">
-        
+
         <!-- Active Projects -->
         <section class="card projects-card">
           <div class="card-header">
-            <h2>📁 Dự Án Của Bạn</h2>
+            <h2>{pageData.sections.projects}</h2>
           </div>
           <div id="projects-list" class="projects-list">
             <!-- Projects will load here -->
@@ -106,7 +113,7 @@ const portalCode = urlParams.get('code') || '';
         <!-- Tasks -->
         <section class="card tasks-card">
           <div class="card-header">
-            <h2>✅ Nhiệm Vụ Gần Đây</h2>
+            <h2>{pageData.sections.tasks}</h2>
           </div>
           <div id="tasks-list" class="tasks-list">
             <!-- Tasks will load here -->
@@ -117,11 +124,11 @@ const portalCode = urlParams.get('code') || '';
 
       <!-- Right Column -->
       <div class="right-column">
-        
+
         <!-- Invoices -->
         <section class="card invoices-card">
           <div class="card-header">
-            <h2>💳 Hóa Đơn</h2>
+            <h2>{pageData.sections.invoices}</h2>
           </div>
           <div id="invoices-list" class="invoices-list">
             <!-- Invoices will load here -->
@@ -131,7 +138,7 @@ const portalCode = urlParams.get('code') || '';
         <!-- Messages -->
         <section class="card messages-card">
           <div class="card-header">
-            <h2>📧 Tin Nhắn</h2>
+            <h2>{pageData.sections.messages}</h2>
           </div>
           <div id="messages-list" class="messages-list">
             <!-- Messages will load here -->
@@ -143,6 +150,16 @@ const portalCode = urlParams.get('code') || '';
     </div>
 
   </div>
+
+  <div id="client-i18n"
+    data-welcome={pageData.header.welcome}
+    data-member-since-template={pageData.header.member_since}
+    data-empty-projects={pageData.empty.projects}
+    data-empty-tasks={pageData.empty.tasks}
+    data-empty-invoices={pageData.empty.invoices}
+    data-empty-messages={pageData.empty.messages}
+    data-completed-template={pageData.project.completed}
+  ></div>
 </LandingLayout>
 
 <style>

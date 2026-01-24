@@ -50,7 +50,7 @@ export function PaymentCheckout({
 }: UnifiedCheckoutProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [subDetails, setSubDetails] = useState<any>(null)
+  const [subDetails, setSubDetails] = useState<{ status?: string; plan_id?: string } | null>(null)
 
   // Fetch subscription details if in management mode
   useEffect(() => {
@@ -156,7 +156,17 @@ export function PaymentCheckout({
             customerEmail={customerEmail}
             tenantId={tenantId}
             onSuccess={onSuccess}
-            onError={onError}
+            onError={(err: unknown) => {
+              if (onError) {
+                if (err instanceof Error) {
+                  onError(err.message);
+                } else if (typeof err === 'string') {
+                  onError(err);
+                } else {
+                  onError('An unknown error occurred');
+                }
+              }
+            }}
             apiBaseUrl={API_URL}
           />
         )

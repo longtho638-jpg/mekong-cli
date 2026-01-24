@@ -64,7 +64,7 @@ export function useUsageAnalytics(
       } else {
         setError(data.error)
       }
-    } catch (err) {
+    } catch {
       setError('Failed to fetch analytics')
     } finally {
       setLoading(false)
@@ -96,8 +96,8 @@ export function useUsageAnalytics(
             page,
           }),
         })
-      } catch (err) {
-        logger.error('Failed to track page view', err)
+      } catch {
+        logger.error('Failed to track page view')
       }
     },
     [tenantId]
@@ -118,8 +118,8 @@ export function useUsageAnalytics(
             metadata: { feature },
           }),
         })
-      } catch (err) {
-        logger.error('Failed to track feature use', err)
+      } catch {
+        logger.error('Failed to track feature use')
       }
     },
     [tenantId]

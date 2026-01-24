@@ -1,51 +1,58 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Case Studies - AgencyOS';
-const description = 'Real success stories from solo agencies using AgencyOS. See actual revenue results.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('case_studies_page.title');
+const description = t('case_studies_page.description');
+
+const pageData = (locales[locale] as any).case_studies_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="cases-hero">
-    <h1>📈 Success Stories</h1>
-    <p>Real results from real solo agencies</p>
+    <h1>{pageData.hero.title}</h1>
+    <p>{pageData.hero.subtitle}</p>
   </section>
 
   <section class="cases-grid">
-    
+
     <!-- Case Study 1 -->
     <div class="case-card">
-      <div class="case-badge">⭐ Featured</div>
+      <div class="case-badge">⭐ {pageData.featured}</div>
       <div class="case-header">
         <span class="avatar">S</span>
         <div>
-          <h3>Sarah K.</h3>
-          <span class="role">Marketing Agency</span>
+          <h3>{pageData.cases.sarah.name}</h3>
+          <span class="role">{pageData.cases.sarah.role}</span>
         </div>
       </div>
-      
+
       <div class="case-metrics">
         <div class="metric">
-          <span class="label">Before</span>
-          <span class="value red">$3K/mo</span>
+          <span class="label">{pageData.before}</span>
+          <span class="value red">{pageData.cases.sarah.metrics[0]}</span>
         </div>
         <div class="arrow">→</div>
         <div class="metric">
-          <span class="label">After</span>
-          <span class="value green">$15K/mo</span>
+          <span class="label">{pageData.after}</span>
+          <span class="value green">{pageData.cases.sarah.metrics[1]}</span>
         </div>
         <div class="metric highlight">
-          <span class="label">Growth</span>
-          <span class="value">5x</span>
+          <span class="label">{pageData.growth}</span>
+          <span class="value">{pageData.cases.sarah.metrics[2]}</span>
         </div>
       </div>
 
       <blockquote>
-        "I replaced my entire team with AgencyOS. Not joking. My profit tripled in 3 months."
+        "{pageData.cases.sarah.quote}"
       </blockquote>
 
       <div class="case-details">
-        <h4>Commands Used:</h4>
+        <h4>{pageData.commands_used}</h4>
         <div class="tags">
           <code>/marketing/social</code>
           <code>/sales/proposal</code>
@@ -54,7 +61,7 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       </div>
 
       <div class="case-timeline">
-        <span>🗓️ 90 days to 5x revenue</span>
+        <span>🗓️ {pageData.cases.sarah.timeline}</span>
       </div>
     </div>
 
@@ -63,33 +70,33 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       <div class="case-header">
         <span class="avatar blue">M</span>
         <div>
-          <h3>Mike T.</h3>
-          <span class="role">Freelancer → Agency</span>
+          <h3>{pageData.cases.mike.name}</h3>
+          <span class="role">{pageData.cases.mike.role}</span>
         </div>
       </div>
-      
+
       <div class="case-metrics">
         <div class="metric">
-          <span class="label">Before</span>
-          <span class="value red">$2K/mo</span>
+          <span class="label">{pageData.before}</span>
+          <span class="value red">{pageData.cases.mike.metrics[0]}</span>
         </div>
         <div class="arrow">→</div>
         <div class="metric">
-          <span class="label">After</span>
-          <span class="value green">$12K/mo</span>
+          <span class="label">{pageData.after}</span>
+          <span class="value green">{pageData.cases.mike.metrics[1]}</span>
         </div>
         <div class="metric highlight">
-          <span class="label">Growth</span>
-          <span class="value">6x</span>
+          <span class="label">{pageData.growth}</span>
+          <span class="value">{pageData.cases.mike.metrics[2]}</span>
         </div>
       </div>
 
       <blockquote>
-        "From freelancer to agency owner. AgencyOS is the unfair advantage I needed."
+        "{pageData.cases.mike.quote}"
       </blockquote>
 
       <div class="case-details">
-        <h4>Commands Used:</h4>
+        <h4>{pageData.commands_used}</h4>
         <div class="tags">
           <code>/sales/lead</code>
           <code>/sales/close</code>
@@ -98,7 +105,7 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       </div>
 
       <div class="case-timeline">
-        <span>🗓️ 6 months to 6-figure agency</span>
+        <span>🗓️ {pageData.cases.mike.timeline}</span>
       </div>
     </div>
 
@@ -107,33 +114,33 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       <div class="case-header">
         <span class="avatar purple">T</span>
         <div>
-          <h3>Trung V.</h3>
-          <span class="role">Startup Consultant</span>
+          <h3>{pageData.cases.trung.name}</h3>
+          <span class="role">{pageData.cases.trung.role}</span>
         </div>
       </div>
-      
+
       <div class="case-metrics">
         <div class="metric">
-          <span class="label">Deals/Month</span>
-          <span class="value red">2</span>
+          <span class="label">{pageData.before}</span>
+          <span class="value red">{pageData.cases.trung.metrics[0]}</span>
         </div>
         <div class="arrow">→</div>
         <div class="metric">
-          <span class="label">After</span>
-          <span class="value green">8</span>
+          <span class="label">{pageData.after}</span>
+          <span class="value green">{pageData.cases.trung.metrics[1]}</span>
         </div>
         <div class="metric highlight">
-          <span class="label">Growth</span>
-          <span class="value">4x</span>
+          <span class="label">{pageData.growth}</span>
+          <span class="value">{pageData.cases.trung.metrics[2]}</span>
         </div>
       </div>
 
       <blockquote>
-        "Binh Pháp strategy changed how I think about competition. Pure genius."
+        "{pageData.cases.trung.quote}"
       </blockquote>
 
       <div class="case-details">
-        <h4>Commands Used:</h4>
+        <h4>{pageData.commands_used}</h4>
         <div class="tags">
           <code>/binh-phap</code>
           <code>/intel/competitor</code>
@@ -142,7 +149,7 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       </div>
 
       <div class="case-timeline">
-        <span>🗓️ 4x deal flow in 60 days</span>
+        <span>🗓️ {pageData.cases.trung.timeline}</span>
       </div>
     </div>
 
@@ -151,33 +158,33 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       <div class="case-header">
         <span class="avatar gold">A</span>
         <div>
-          <h3>Alex P.</h3>
-          <span class="role">Affiliate Network</span>
+          <h3>{pageData.cases.alex.name}</h3>
+          <span class="role">{pageData.cases.alex.role}</span>
         </div>
       </div>
-      
+
       <div class="case-metrics">
         <div class="metric">
-          <span class="label">Monthly Passive</span>
-          <span class="value red">$0</span>
+          <span class="label">{pageData.before}</span>
+          <span class="value red">{pageData.cases.alex.metrics[0]}</span>
         </div>
         <div class="arrow">→</div>
         <div class="metric">
-          <span class="label">After</span>
-          <span class="value green">$2.5K</span>
+          <span class="label">{pageData.after}</span>
+          <span class="value green">{pageData.cases.alex.metrics[1]}</span>
         </div>
         <div class="metric highlight">
-          <span class="label">ROI</span>
-          <span class="value">25x</span>
+          <span class="label">{pageData.roi}</span>
+          <span class="value">{pageData.cases.alex.metrics[2]}</span>
         </div>
       </div>
 
       <blockquote>
-        "Best $99 I ever spent. Franchise model is printing money for me."
+        "{pageData.cases.alex.quote}"
       </blockquote>
 
       <div class="case-details">
-        <h4>Commands Used:</h4>
+        <h4>{pageData.commands_used}</h4>
         <div class="tags">
           <code>/affiliate/scout</code>
           <code>/marketing/social</code>
@@ -186,37 +193,37 @@ const description = 'Real success stories from solo agencies using AgencyOS. See
       </div>
 
       <div class="case-timeline">
-        <span>🗓️ Passive income in 30 days</span>
+        <span>🗓️ {pageData.cases.alex.timeline}</span>
       </div>
     </div>
 
   </section>
 
   <section class="summary-section">
-    <h2>📊 Aggregate Results</h2>
+    <h2>{pageData.summary.title}</h2>
     <div class="summary-grid">
       <div class="summary-card">
         <span class="big-number">$40K+</span>
-        <span class="label">Monthly Revenue Combined</span>
+        <span class="label">{pageData.summary.revenue}</span>
       </div>
       <div class="summary-card">
         <span class="big-number">5x</span>
-        <span class="label">Average Growth</span>
+        <span class="label">{pageData.summary.growth}</span>
       </div>
       <div class="summary-card">
         <span class="big-number">60</span>
-        <span class="label">Days to Results</span>
+        <span class="label">{pageData.summary.days}</span>
       </div>
       <div class="summary-card">
         <span class="big-number">15+</span>
-        <span class="label">Hours Saved/Week</span>
+        <span class="label">{pageData.summary.saved}</span>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to be our next success story?</h2>
-    <a href="/quickstart" class="btn-primary">Start Your Journey →</a>
+    <h2>{pageData.cta.title}</h2>
+    <a href={getRelativeLocaleUrl(locale, '/quickstart')} class="btn-primary">{pageData.cta.button}</a>
   </section>
 </LandingLayout>
 

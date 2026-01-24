@@ -36,7 +36,7 @@ export interface PaymentRequest {
     tenantId: string;
     returnUrl: string;
     cancelUrl: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export interface PaymentResult {

@@ -86,9 +86,8 @@ const demoAnalytics: AnalyticsData = {
 }
 
 export default function AnalyticsPage() {
-  const [data, setData] = useState<AnalyticsData>(demoAnalytics)
+  const [data] = useState<AnalyticsData>(demoAnalytics)
   const [period, setPeriod] = useState('30d')
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     // In production, fetch from API

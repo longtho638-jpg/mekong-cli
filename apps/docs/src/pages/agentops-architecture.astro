@@ -1,137 +1,83 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'AgentOps - AI Agent Architecture';
-const description = '18 specialized AI agents, 135 ZERO-EFFORT commands, 11 business suites. Binh Pháp × Antigravity powered.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
-// Agent data
-const agents = [
-  { name: 'Brainstormer', icon: '💡', desc: 'Idea generation & creative thinking', color: '#f59e0b' },
-  { name: 'Code Reviewer', icon: '🔍', desc: 'PR analysis & code quality', color: '#8b5cf6' },
-  { name: 'Copywriter', icon: '✍️', desc: 'Marketing content & copy', color: '#ec4899' },
-  { name: 'DB Admin', icon: '🗄️', desc: 'Database operations', color: '#06b6d4' },
-  { name: 'Debugger', icon: '🐛', desc: 'Error resolution', color: '#ef4444' },
-  { name: 'Docs Manager', icon: '📚', desc: 'Documentation system', color: '#22c55e' },
-  { name: 'Fullstack Dev', icon: '💻', desc: 'Code generation', color: '#3b82f6' },
-  { name: 'Git Manager', icon: '🔀', desc: 'Version control', color: '#a855f7' },
-  { name: 'MCP Manager', icon: '🔧', desc: 'Tool integration', color: '#14b8a6' },
-  { name: 'Planner', icon: '📋', desc: 'Strategy & planning', color: '#f97316' },
-  { name: 'Project Manager', icon: '📊', desc: 'Task tracking', color: '#0ea5e9' },
-  { name: 'Researcher', icon: '🔬', desc: 'Data gathering', color: '#84cc16' },
-  { name: 'Scout (Internal)', icon: '🔎', desc: 'Code analysis', color: '#6366f1' },
-  { name: 'Scout (External)', icon: '🌐', desc: 'Market intel', color: '#10b981' },
-  { name: 'Tester', icon: '🧪', desc: 'QA automation', color: '#d946ef' },
-  { name: 'UI/UX Designer', icon: '🎨', desc: 'Design system', color: '#f43f5e' },
-  { name: 'Journal Writer', icon: '📝', desc: 'Documentation', color: '#eab308' },
-];
+const title = t('agentops_page.title');
+const description = t('agentops_page.description');
 
-// Business suites - 11 total with Binh Pháp × Antigravity
+const pageData = (locales[locale] as any).agentops_page;
+
+// Agent data mapped from locales
+const agents = Object.entries(pageData.agents_section.list).map(([key, info]: [string, any]) => {
+  const icons: Record<string, string> = {
+    brainstormer: '💡', code_reviewer: '🔍', copywriter: '✍️', db_admin: '🗄️',
+    debugger: '🐛', docs_manager: '📚', fullstack_dev: '💻', git_manager: '📦',
+    mcp_manager: '🔧', planner: '📋', project_manager: '📊', researcher: '🔬',
+    scout_internal: '🔎', scout_external: '🌐', tester: '🧪', ui_ux: '🎨', journal: '📝'
+  };
+  const colors: Record<string, string> = {
+    brainstormer: '#f59e0b', code_reviewer: '#8b5cf6', copywriter: '#ec4899', db_admin: '#06b6d4',
+    debugger: '#ef4444', docs_manager: '#22c55e', fullstack_dev: '#3b82f6', git_manager: '#a855f7',
+    mcp_manager: '#14b8a6', planner: '#f97316', project_manager: '#0ea5e9', researcher: '#84cc16',
+    scout_internal: '#6366f1', scout_external: '#10b981', tester: '#d946ef', ui_ux: '#f43f5e', journal: '#eab308'
+  };
+  return {
+    name: info[0],
+    icon: icons[key] || '🤖',
+    desc: info[1],
+    color: colors[key] || '#22c55e'
+  };
+});
+
+// Business suites mapped from locales
 const suites = [
-  { 
-    name: 'Marketing', 
-    icon: '🔥', 
-    binh_phap: '謀攻篇 Mưu Công',
-    color: '#ef4444',
-    commands: ['/ke-hoach-tiep-thi', '/seo', '/pr', '/content', '/social', '/ads', '/branding', '/email']
-  },
-  { 
-    name: 'Sales', 
-    icon: '🛒', 
-    binh_phap: '作戰篇 Tác Chiến',
-    color: '#3b82f6',
-    commands: ['/khach-hang', '/crm', '/leadgen', '/pipeline', '/proposal', '/pricing', '/demo', '/close']
-  },
-  { 
-    name: 'Finance', 
-    icon: '💰', 
-    binh_phap: '計篇 Kế',
-    color: '#22c55e',
-    commands: ['/bao-cao-tai-chinh', '/ngan-sach', '/invoice', '/cashflow', '/tax', '/forecast', '/expense', '/revenue']
-  },
-  { 
-    name: 'Development', 
-    icon: '⚡', 
-    binh_phap: '九變篇 Cửu Biến',
-    color: '#8b5cf6',
-    commands: ['/refactor', '/migrate', '/api', '/component', '/optimize', '/security', '/deploy:prod', '/rollback']
-  },
-  { 
-    name: 'Testing', 
-    icon: '🧪', 
-    binh_phap: '虛實篇 Hư Thực',
-    color: '#d946ef',
-    commands: ['/test:unit', '/test:e2e', '/coverage', '/lint', '/format', '/typecheck', '/audit', '/benchmark']
-  },
-  { 
-    name: 'Git', 
-    icon: '📦', 
-    binh_phap: '行軍篇 Hành Quân',
-    color: '#6366f1',
-    commands: ['/git:branch', '/git:merge', '/git:rebase', '/git:squash', '/git:tag', '/git:stash', '/git:cherry', '/git:bisect']
-  },
-  { 
-    name: 'Strategy', 
-    icon: '🎯', 
-    binh_phap: '計篇 Kế',
-    color: '#f59e0b',
-    commands: ['/swot', '/competitor', '/market', '/persona', '/roadmap', '/kpi', '/retro', '/quarterly']
-  },
-  { 
-    name: 'Agency', 
-    icon: '🏢', 
-    binh_phap: '始計篇 Thủy Kế',
-    color: '#06b6d4',
-    commands: ['/client', '/project', '/scope', '/estimate', '/timeline', '/handoff', '/feedback', '/report']
-  },
-  { 
-    name: 'Vietnamese', 
-    icon: '🇻🇳', 
-    binh_phap: '地形篇 Địa Hình',
-    color: '#dc2626',
-    commands: ['/phan-tich', '/bao-cao', '/du-an', '/nhan-su', '/hop-dong', '/lich-trinh', '/muc-tieu', '/danh-gia']
-  },
-  { 
-    name: 'Sync', 
-    icon: '🔄', 
-    binh_phap: '用間篇 Dụng Gián',
-    color: '#10b981',
-    commands: ['/sync-agent', '/sync-rules', '/sync-tasks', '/sync-browser', '/sync-mcp', '/sync-artifacts', '/sync-editor', '/sync-all']
-  },
-  { 
-    name: 'Docs', 
-    icon: '📚', 
-    binh_phap: '法篇 Pháp',
-    color: '#84cc16',
-    commands: ['/docs:api', '/docs:readme', '/docs:changelog', '/docs:onboard', '/docs:arch', '/docs:deploy']
-  },
-];
+  { id: 'marketing', icon: '🔥', color: '#ef4444', commands: ['/ke-hoach-tiep-thi', '/seo', '/pr', '/content', '/social', '/ads', '/branding', '/email'] },
+  { id: 'sales', icon: '🛒', color: '#3b82f6', commands: ['/khach-hang', '/crm', '/leadgen', '/pipeline', '/proposal', '/pricing', '/demo', '/close'] },
+  { id: 'finance', icon: '💰', color: '#22c55e', commands: ['/bao-cao-tai-chinh', '/ngan-sach', '/invoice', '/cashflow', '/tax', '/forecast', '/expense', '/revenue'] },
+  { id: 'development', icon: '⚡', color: '#8b5cf6', commands: ['/refactor', '/migrate', '/api', '/component', '/optimize', '/security', '/deploy:prod', '/rollback'] },
+  { id: 'testing', icon: '🧪', color: '#d946ef', commands: ['/test:unit', '/test:e2e', '/coverage', '/lint', '/format', '/typecheck', '/audit', '/benchmark'] },
+  { id: 'git', icon: '📦', color: '#6366f1', commands: ['/git:branch', '/git:merge', '/git:rebase', '/git:squash', '/git:tag', '/git:stash', '/git:cherry', '/git:bisect'] },
+  { id: 'strategy', icon: '🎯', color: '#f59e0b', commands: ['/swot', '/competitor', '/market', '/persona', '/roadmap', '/kpi', '/retro', '/quarterly'] },
+  { id: 'agency', icon: '🏢', color: '#06b6d4', commands: ['/client', '/project', '/scope', '/estimate', '/timeline', '/handoff', '/feedback', '/report'] },
+  { id: 'vietnamese', icon: '🇻🇳', color: '#dc2626', commands: ['/phan-tich', '/bao-cao', '/du-an', '/nhan-su', '/hop-dong', '/lich-trinh', '/muc-tieu', '/danh-gia'] },
+  { id: 'sync', icon: '🔄', color: '#10b981', commands: ['/sync-agent', '/sync-rules', '/sync-tasks', '/sync-browser', '/sync-mcp', '/sync-artifacts', '/sync-editor', '/sync-all'] },
+  { id: 'docs', icon: '📚', color: '#84cc16', commands: ['/docs:api', '/docs:readme', '/docs:changelog', '/docs:onboard', '/docs:arch', '/docs:deploy'] },
+].map(suite => ({
+  ...suite,
+  name: pageData.suites_section[suite.id][0],
+  binh_phap: pageData.suites_section[suite.id][1]
+}));
 
 // WIN3 metrics
 const win3 = [
-  { label: 'ANH WIN', value: 92, desc: 'Deal flow + Portfolio', color: '#22c55e' },
-  { label: 'AGENCY WIN', value: 88, desc: 'Revenue automation', color: '#3b82f6' },
-  { label: 'STARTUP WIN', value: 85, desc: 'Resource protection', color: '#8b5cf6' },
+  { label: pageData.win3_section.anh[0], value: 92, desc: pageData.win3_section.anh[1], color: '#22c55e' },
+  { label: pageData.win3_section.agency[0], value: 88, desc: pageData.win3_section.agency[1], color: '#3b82f6' },
+  { label: pageData.win3_section.startup[0], value: 85, desc: pageData.win3_section.startup[1], color: '#8b5cf6' },
 ];
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="agentops-page">
     <div class="container">
-      
+
       <!-- Hero -->
       <div class="hero">
         <div class="hero-icon">🤖</div>
-        <h1 class="hero-title">AgentOps</h1>
-        <p class="hero-subtitle">18 Specialized AI Agents • 135 ZERO-EFFORT Commands • 11 Business Suites</p>
-        <p class="hero-desc">The intelligent nervous system powering your agency automation</p>
+        <h1 class="hero-title">{pageData.hero.title}</h1>
+        <p class="hero-subtitle">{pageData.hero.subtitle}</p>
+        <p class="hero-desc">{pageData.hero.description}</p>
       </div>
 
       <!-- Architecture Diagram -->
       <div class="architecture-section">
-        <h2 class="section-title">🏗️ System Architecture</h2>
+        <h2 class="section-title">{pageData.architecture.title}</h2>
         <div class="arch-diagram">
           <div class="arch-layer frontend">
-            <div class="layer-label">Frontend</div>
+            <div class="layer-label">{pageData.architecture.frontend}</div>
             <div class="layer-items">
               <span class="arch-item" style="--delay: 0">Dashboard</span>
               <span class="arch-item" style="--delay: 1">Docs Portal</span>
@@ -140,7 +86,7 @@ const win3 = [
           </div>
           <div class="arch-arrow">↓</div>
           <div class="arch-layer backend">
-            <div class="layer-label">Backend</div>
+            <div class="layer-label">{pageData.architecture.backend}</div>
             <div class="layer-items">
               <span class="arch-item" style="--delay: 3">FastAPI :8000</span>
               <span class="arch-item" style="--delay: 4">LangChain</span>
@@ -149,7 +95,7 @@ const win3 = [
           </div>
           <div class="arch-arrow">↓</div>
           <div class="arch-layer agents-layer">
-            <div class="layer-label">17 Agents</div>
+            <div class="layer-label">{pageData.architecture.agents}</div>
             <div class="layer-items">
               <span class="arch-item" style="--delay: 6">Scout</span>
               <span class="arch-item" style="--delay: 7">Planner</span>
@@ -159,7 +105,7 @@ const win3 = [
           </div>
           <div class="arch-arrow">↓</div>
           <div class="arch-layer data">
-            <div class="layer-label">Data Layer</div>
+            <div class="layer-label">{pageData.architecture.data}</div>
             <div class="layer-items">
               <span class="arch-item" style="--delay: 10">Supabase</span>
               <span class="arch-item" style="--delay: 11">PostgreSQL</span>
@@ -171,7 +117,7 @@ const win3 = [
 
       <!-- Agents Grid -->
       <div class="agents-section">
-        <h2 class="section-title">🤖 17 Specialized Agents</h2>
+        <h2 class="section-title">{pageData.agents_section.title}</h2>
         <div class="agents-grid">
           {agents.map((agent, i) => (
             <div class="agent-card" style={`--agent-color: ${agent.color}; --delay: ${i}`}>
@@ -180,7 +126,7 @@ const win3 = [
               <p class="agent-desc">{agent.desc}</p>
               <div class="agent-status">
                 <span class="status-dot"></span>
-                Active
+                {pageData.agents_section.status}
               </div>
             </div>
           ))}
@@ -189,7 +135,7 @@ const win3 = [
 
       <!-- Business Suites -->
       <div class="suites-section">
-        <h2 class="section-title">📦 11 Business Suites × Binh Pháp</h2>
+        <h2 class="section-title">{pageData.suites_section.title}</h2>
         <div class="suites-grid">
           {suites.map((suite, i) => (
             <div class="suite-card" style={`--suite-color: ${suite.color}; --delay: ${i}`}>
@@ -212,7 +158,7 @@ const win3 = [
 
       <!-- WIN3 Metrics -->
       <div class="win3-section">
-        <h2 class="section-title">🎯 WIN³ Alignment</h2>
+        <h2 class="section-title">{pageData.win3_section.title}</h2>
         <div class="win3-grid">
           {win3.map((metric, i) => (
             <div class="win3-card" style={`--win-color: ${metric.color}; --delay: ${i}`}>
@@ -226,20 +172,20 @@ const win3 = [
           ))}
         </div>
         <div class="win3-total">
-          <span>Overall Alignment:</span>
+          <span>{pageData.win3_section.total}</span>
           <strong>88%</strong>
         </div>
       </div>
 
       <!-- Interactive Demo -->
       <div class="demo-section">
-        <h2 class="section-title">💬 Interactive Command Pattern</h2>
+        <h2 class="section-title">{pageData.demo_section.title}</h2>
         <div class="terminal">
           <div class="terminal-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
             <span class="dot green"></span>
-            <span class="terminal-title">AgentOps Terminal</span>
+            <span class="terminal-title">{pageData.demo_section.terminal_title}</span>
           </div>
           <div class="terminal-body">
             <div class="terminal-line input">
@@ -269,10 +215,10 @@ const win3 = [
 
       <!-- CTA -->
       <div class="cta-section">
-        <h2>Ready to unleash AI agents?</h2>
+        <h2>{pageData.cta.title}</h2>
         <div class="cta-buttons">
-          <a href="/docs/agents" class="btn-primary">Explore Agents</a>
-          <a href="/pricing" class="btn-secondary">Get Started</a>
+          <a href="/docs/agents" class="btn-primary">{pageData.cta.primary}</a>
+          <a href="/pricing" class="btn-secondary">{pageData.cta.secondary}</a>
         </div>
       </div>
 

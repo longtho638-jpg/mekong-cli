@@ -1,0 +1,74 @@
+{
+  "revenue_calculations": [
+    {
+      "description": "Basic Profit Calculation",
+      "input": {
+        "monthly_revenue": 10000,
+        "monthly_expenses": 5000
+      },
+      "expected": {
+        "net_profit": 5000,
+        "margin": 0.5
+      }
+    },
+    {
+      "description": "Zero Expenses",
+      "input": {
+        "monthly_revenue": 10000,
+        "monthly_expenses": 0
+      },
+      "expected": {
+        "net_profit": 10000,
+        "margin": 1.0
+      }
+    },
+    {
+      "description": "Loss Scenario",
+      "input": {
+        "monthly_revenue": 5000,
+        "monthly_expenses": 10000
+      },
+      "expected": {
+        "net_profit": -5000,
+        "margin": -1.0
+      }
+    }
+  ],
+  "lead_scoring": [
+    {
+      "description": "High Value Tech Lead",
+      "input": {
+        "company_size": 200,
+        "budget": 50000,
+        "industry": "technology",
+        "role": "CTO"
+      },
+      "expected_range": {
+        "min": 80,
+        "max": 100
+      }
+    },
+    {
+      "description": "Low Budget Lead",
+      "input": {
+        "company_size": 10,
+        "budget": 1000,
+        "industry": "retail",
+        "role": "Manager"
+      },
+      "expected_range": {
+        "min": 0,
+        "max": 50
+      }
+    }
+  ],
+  "content_virality": [
+    {
+      "description": "High Virality Keywords",
+      "input": {
+        "content": "Secret to 10x growth without ads revealed"
+      },
+      "expected_keywords": ["growth", "secret", "ads"]
+    }
+  ]
+}

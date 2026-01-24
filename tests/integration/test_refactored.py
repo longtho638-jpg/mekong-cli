@@ -17,7 +17,7 @@ def test_ai_wingman():
     print("🤖 Testing AI Wingman Refactored...")
 
     try:
-        from core.ai_wingman_refactored import AgencyOwnerProfile, AIWingman, WingmanMode
+        from core.agents.wingman import AgencyOwnerProfile, AIWingman, WingmanMode
 
         # Create owner profile
         owner = AgencyOwnerProfile(
@@ -56,11 +56,10 @@ def test_ai_wingman():
         print(f"✅ Daily summary: {summary['total_notifications']} notifications")
 
         print("✅ AI Wingman refactored working correctly!\n")
-        return True
 
     except Exception as e:
         print(f"❌ AI Wingman test failed: {e}\n")
-        return False
+        assert False, f"AI Wingman test failed: {e}"
 
 
 def test_client_portal():
@@ -68,7 +67,7 @@ def test_client_portal():
     print("👥 Testing Client Portal Refactored...")
 
     try:
-        from core.client_portal_refactored import ClientPortal
+        from core.portal.client_portal import ClientPortal
 
         # Initialize portal
         portal = ClientPortal("Test Agency")
@@ -119,11 +118,10 @@ def test_client_portal():
         print(f"✅ Client summary formatted: {len(summary)} characters")
 
         print("✅ Client Portal refactored working correctly!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Client Portal test failed: {e}\n")
-        return False
+        assert False, f"Client Portal test failed: {e}"
 
 
 def test_analytics():
@@ -131,7 +129,8 @@ def test_analytics():
     print("📊 Testing Analytics Refactored...")
 
     try:
-        from core.analytics_refactored import AnalyticsDashboard, MetricPeriod
+        from core.analytics.dashboard import AnalyticsDashboard
+        from core.services.analytics.models import MetricPeriod
 
         # Initialize dashboard
         dashboard = AnalyticsDashboard("Test Agency", demo_mode=True)
@@ -157,11 +156,10 @@ def test_analytics():
         print(f"✅ Dashboard formatted: {len(dashboard_text)} characters")
 
         print("✅ Analytics refactored working correctly!\n")
-        return True
 
     except Exception as e:
         print(f"❌ Analytics test failed: {e}\n")
-        return False
+        assert False, f"Analytics test failed: {e}"
 
 
 def main():

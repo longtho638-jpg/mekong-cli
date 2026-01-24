@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAuditLogs, AuditLog } from '@/lib/audit-api'
+import { getAuditLogs, type AuditLog } from '@/lib/audit-api'
 import { useAuth } from '@/lib/auth-context'
 import { Card, CardHeader, CardTitle, CardContent } from '@agencyos/ui'
 import { ShieldCheck, User } from 'lucide-react'

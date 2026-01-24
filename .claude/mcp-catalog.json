@@ -682,6 +682,24 @@
         "-m",
         "antigravity.mcp_servers.ui_server"
       ]
+    },
+    "stitch": {
+      "type": "sse",
+      "url": "https://stitch.googleapis.com/mcp/v1",
+      "headers": {
+        "Authorization": "Bearer ya29.a0AUMWg_Ir7qEph_z6HOwE_NXOI5uHxBt67WNAECuX9a4JdxYO33vZX25wW7rkPsqa0LCbB7LqyDogXhG6Q7VuXD_GAafxBRDYDTOKUFI2cVa0l6RRAS_CLVkDq13q_gVIHxdYXGDWhzNYoFydSqawDeBU3ZKerzezI0XdLrHnAQHJ_5fFxPxAtJ-Mraz0NnwBVvDVLzEX9d_RAgaCgYKAZUSARQSFQHGX2Mi7fYRH09lDp975qRg6o-AiA0213",
+        "X-Goog-User-Project": "agencyos-483308"
+      }
+    },
+    "claude-mem": {
+      "command": "uvx",
+      "args": [
+        "chroma-mcp",
+        "--client-type",
+        "persistent",
+        "--data-dir",
+        "/Users/macbookprom1/.claude-mem/chroma"
+      ]
     }
   },
   "metadata": {
@@ -745,6 +763,12 @@
     },
     "ui": {
       "probed": true
+    },
+    "stitch": {
+      "probed": false
+    },
+    "claude-mem": {
+      "probed": false
     }
   }
 }

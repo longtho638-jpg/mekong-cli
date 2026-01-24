@@ -1,5 +1,4 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { logger } from '@/lib/utils/logger'
 
 // POST /api/ai/write - Generate newsletter content with AI

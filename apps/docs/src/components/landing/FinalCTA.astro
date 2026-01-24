@@ -1,20 +1,24 @@
 ---
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 <section class="py-16">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8 text-center">
     <h2 id="get-started" class="text-3xl font-bold mb-4 text-[var(--color-text-primary)]">
-      Ready to automate your agency?
+      {t('landing.agencyos.hero.final_cta.title')}
     </h2>
     <p class="text-lg text-[var(--color-text-muted)] mb-8">
-      Start free. Cancel anytime. Win forever.
+      {t('landing.agencyos.hero.final_cta.subtitle')}
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <a href="/docs/getting-started/installation" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:brightness-110 transition-all duration-200 shadow-green hover:shadow-lg transform hover:-translate-y-0.5">
-        Start Free Trial
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:brightness-110 transition-all duration-200 shadow-green hover:shadow-lg transform hover:-translate-y-0.5">
+        {t('landing.agencyos.hero.final_cta.button_trial')}
       </a>
       <a href="mailto:hello@agencyos.network" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-[var(--color-accent-green)] bg-transparent border border-[var(--color-accent-green)] rounded-[var(--radius-md)] hover:bg-[var(--color-accent-green)]/10 transition-all duration-200">
-        Book a Demo
+        {t('landing.agencyos.hero.final_cta.button_demo')}
       </a>
     </div>
   </div>

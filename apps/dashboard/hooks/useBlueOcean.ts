@@ -2,17 +2,15 @@
 'use client';
 
 import useSWR from 'swr';
-import type {
-    GuildStatus,
-    GuildNetwork,
-    Blacklist,
-    PricingBenchmarks
-} from '@/lib/api/blue-ocean';
 import {
     fetchGuildStatus,
     fetchGuildNetwork,
     fetchBlacklist,
-    fetchPricingBenchmarks
+    fetchPricingBenchmarks,
+    type GuildStatus,
+    type GuildNetwork,
+    type Blacklist,
+    type PricingBenchmarks
 } from '@/lib/api/blue-ocean';
 
 // SWR fetcher wrapper

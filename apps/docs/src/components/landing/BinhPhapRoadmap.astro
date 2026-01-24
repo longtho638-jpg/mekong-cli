@@ -1,13 +1,20 @@
 ---
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const roadmap = (locales[locale] as any).landing.agencyos.hero.roadmap;
 ---
 <section class="py-16" id="binh-phap-roadmap">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <div class="binh-phap-hero">
       <h2 class="text-4xl font-bold text-center mb-4">
-        <span class="binh-phap-emoji">🏯</span> The $1M Agency Roadmap
+        <span class="binh-phap-emoji">🏯</span> {roadmap.title}
       </h2>
       <p class="text-center text-[var(--color-text-muted)] mb-8 max-w-2xl mx-auto">
-        Based on Sun Tzu's Art of War. 13 strategic chapters to scale your agency.
+        {roadmap.subtitle}
       </p>
 
       <div class="roadmap-visual">
@@ -15,32 +22,32 @@
           <div class="roadmap-step">
             <div class="step-number">1</div>
             <div class="step-content">
-              <div class="step-chapter">Kế Hoạch</div>
-              <div class="step-desc">Strategic Planning</div>
+              <div class="step-chapter">{roadmap.steps.planning.title}</div>
+              <div class="step-desc">{roadmap.steps.planning.desc}</div>
             </div>
           </div>
           <div class="roadmap-arrow">→</div>
           <div class="roadmap-step">
             <div class="step-number">3</div>
             <div class="step-content">
-              <div class="step-chapter">Mưu Công</div>
-              <div class="step-desc">Win Without Fighting</div>
+              <div class="step-chapter">{roadmap.steps.attack.title}</div>
+              <div class="step-desc">{roadmap.steps.attack.desc}</div>
             </div>
           </div>
           <div class="roadmap-arrow">→</div>
           <div class="roadmap-step">
             <div class="step-number">7</div>
             <div class="step-content">
-              <div class="step-chapter">Quân Tranh</div>
-              <div class="step-desc">Speed Sprint</div>
+              <div class="step-chapter">{roadmap.steps.maneuvers.title}</div>
+              <div class="step-desc">{roadmap.steps.maneuvers.desc}</div>
             </div>
           </div>
           <div class="roadmap-arrow">→</div>
           <div class="roadmap-step final-step">
             <div class="step-number">💰</div>
             <div class="step-content">
-              <div class="step-chapter">$1M ARR</div>
-              <div class="step-desc">60 clients</div>
+              <div class="step-chapter">{roadmap.steps.final.title}</div>
+              <div class="step-desc">{roadmap.steps.final.desc}</div>
             </div>
           </div>
         </div>
@@ -48,22 +55,22 @@
 
       <div class="revenue-breakdown">
         <div class="revenue-item">
-          <span class="revenue-label">Bootstrap Path (70%)</span>
-          <span class="revenue-value">42 clients × $1.5K/mo = $756K</span>
+          <span class="revenue-label">{roadmap.revenue.bootstrap}</span>
+          <span class="revenue-value">{roadmap.revenue.bootstrap_calc}</span>
         </div>
         <div class="revenue-item">
-          <span class="revenue-label">VC-Ready Path (30%)</span>
-          <span class="revenue-value">18 clients + equity = $244K</span>
+          <span class="revenue-label">{roadmap.revenue.vc}</span>
+          <span class="revenue-value">{roadmap.revenue.vc_calc}</span>
         </div>
         <div class="revenue-total">
-          <span class="revenue-label">Total Potential</span>
-          <span class="revenue-value">$1M ARR 🎯</span>
+          <span class="revenue-label">{roadmap.revenue.total}</span>
+          <span class="revenue-value">{roadmap.revenue.total_calc}</span>
         </div>
       </div>
 
       <div class="text-center mt-8">
-        <a href="/binh-phap" class="binh-phap-cta">
-          Explore 13 Chapters →
+        <a href={getRelativeLocaleUrl(locale, '/binh-phap')} class="binh-phap-cta">
+          {roadmap.cta}
         </a>
       </div>
     </div>

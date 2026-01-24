@@ -1,29 +1,36 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Usage Dashboard - AgencyOS';
-const description = 'Monitor your API usage and subscription limits.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('usage_page.title');
+const description = t('usage_page.description');
+
+const pageData = (locales[locale] as any).usage_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="usage-section">
     <div class="usage-header">
-      <h1>📊 Usage Dashboard</h1>
-      <p class="subtitle">Monitor your subscription and API usage</p>
+      <h1>{pageData.hero.title}</h1>
+      <p class="subtitle">{pageData.hero.subtitle}</p>
     </div>
 
     <!-- Loading State -->
     <div class="usage-card loading-state" id="loading-state">
       <div class="spinner"></div>
-      <p>Loading usage data...</p>
+      <p>{pageData.loading}</p>
     </div>
 
     <!-- No Subscription State -->
     <div class="usage-card no-sub-state hidden" id="no-sub-state">
       <span class="icon">🔒</span>
-      <h2>No Active Subscription</h2>
-      <p>Subscribe to track your usage and unlock more features.</p>
-      <a href="/pricing" class="btn-primary">View Pricing →</a>
+      <h2>{pageData.no_sub.title}</h2>
+      <p>{pageData.no_sub.desc}</p>
+      <a href="/pricing" class="btn-primary">{pageData.no_sub.cta}</a>
     </div>
 
     <!-- Usage Dashboard -->
@@ -31,20 +38,20 @@ const description = 'Monitor your API usage and subscription limits.';
       <!-- Subscription Info -->
       <div class="usage-card subscription-info">
         <div class="card-header">
-          <h2>🎫 Subscription</h2>
+          <h2>{pageData.subscription.title}</h2>
           <span class="tier-badge" id="tier-badge">PRO</span>
         </div>
         <div class="info-grid">
           <div class="info-item">
-            <span class="label">Status</span>
-            <span class="value status-active" id="sub-status">Active</span>
+            <span class="label">{pageData.subscription.status}</span>
+            <span class="value status-active" id="sub-status">{pageData.subscription.active}</span>
           </div>
           <div class="info-item">
-            <span class="label">License</span>
+            <span class="label">{pageData.subscription.license}</span>
             <span class="value mono" id="license-key">AGOS-XXXX-XXXX</span>
           </div>
           <div class="info-item">
-            <span class="label">Expires</span>
+            <span class="label">{pageData.subscription.expires}</span>
             <span class="value" id="expires-at">Dec 31, 2026</span>
           </div>
         </div>
@@ -55,63 +62,69 @@ const description = 'Monitor your API usage and subscription limits.';
         <div class="usage-card meter-card">
           <div class="meter-header">
             <span class="meter-icon">📡</span>
-            <h3>API Calls</h3>
+            <h3>{pageData.meters.api}</h3>
           </div>
           <div class="meter-bar">
             <div class="meter-fill" id="api-meter" style="width: 0%"></div>
           </div>
           <div class="meter-stats">
             <span id="api-used">0</span> / <span id="api-limit">1,000</span>
-            <span class="remaining">(<span id="api-remaining">1,000</span> remaining)</span>
+            <span class="remaining">{pageData.meters.remaining.replace('{amount}', '<span id="api-remaining">1,000</span>')}</span>
           </div>
         </div>
 
         <div class="usage-card meter-card">
           <div class="meter-header">
             <span class="meter-icon">⚡</span>
-            <h3>Commands</h3>
+            <h3>{pageData.meters.commands}</h3>
           </div>
           <div class="meter-bar">
             <div class="meter-fill" id="cmd-meter" style="width: 0%"></div>
           </div>
           <div class="meter-stats">
             <span id="cmd-used">0</span> / <span id="cmd-limit">50</span>
-            <span class="remaining">(<span id="cmd-remaining">50</span> remaining)</span>
+            <span class="remaining">{pageData.meters.remaining.replace('{amount}', '<span id="cmd-remaining">50</span>')}</span>
           </div>
         </div>
       </div>
 
       <!-- Features -->
       <div class="usage-card features-card">
-        <h3>🎁 Your Features</h3>
+        <h3>{pageData.features.title}</h3>
         <div class="features-grid">
           <div class="feature-item" id="feat-api">
             <span class="feature-icon">❌</span>
-            <span>API Access</span>
+            <span>{pageData.features.api}</span>
           </div>
           <div class="feature-item" id="feat-whitelabel">
             <span class="feature-icon">❌</span>
-            <span>White-Label</span>
+            <span>{pageData.features.whitelabel}</span>
           </div>
           <div class="feature-item" id="feat-team">
             <span class="feature-icon">👤</span>
-            <span id="team-limit">1 Team Member</span>
+            <span id="team-limit" data-template={pageData.features.team} data-template-plural={pageData.features.team_plural} data-template-unlimited={pageData.features.unlimited_team}>1 Team Member</span>
           </div>
           <div class="feature-item" id="feat-priority">
             <span class="feature-icon">❌</span>
-            <span>Priority Support</span>
+            <span>{pageData.features.priority}</span>
           </div>
         </div>
       </div>
 
       <!-- Upgrade CTA -->
       <div class="upgrade-cta" id="upgrade-cta">
-        <h3>🚀 Want more?</h3>
-        <p>Upgrade to unlock higher limits and premium features.</p>
-        <a href="/pricing" class="btn-primary">Upgrade Plan →</a>
+        <h3>{pageData.upgrade.title}</h3>
+        <p>{pageData.upgrade.desc}</p>
+        <a href="/pricing" class="btn-primary">{pageData.upgrade.cta}</a>
       </div>
     </div>
   </section>
+
+  <div id="usage-i18n"
+    data-loading={pageData.loading}
+    data-active={pageData.subscription.active}
+    data-remaining-template={pageData.meters.remaining}
+  ></div>
 </LandingLayout>
 
 <style>

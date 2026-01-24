@@ -58,6 +58,53 @@ class MarketingMCPServer:
                         }
                     }
                 }
+            },
+            {
+                "name": "audit_seo",
+                "description": "Perform an SEO audit on a URL",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "URL to audit"}
+                    },
+                    "required": ["url"]
+                }
+            },
+            {
+                "name": "analyze_cro",
+                "description": "Analyze page for Conversion Rate Optimization",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "URL to analyze"},
+                        "page_type": {"type": "string", "description": "Type of page (landing, pricing, etc.)", "default": "landing"}
+                    },
+                    "required": ["url"]
+                }
+            },
+            {
+                "name": "generate_copy",
+                "description": "Generate marketing copy for a specific page type",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "page_type": {"type": "string", "description": "Type of page"},
+                        "context": {"type": "object", "description": "Context about product and audience"}
+                    },
+                    "required": ["page_type"]
+                }
+            },
+            {
+                "name": "pricing_strategy",
+                "description": "Develop a pricing strategy",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "product_type": {"type": "string", "description": "Type of product (SaaS, etc.)"},
+                        "target_market": {"type": "string", "description": "Target audience (SMB, Enterprise)"}
+                    },
+                    "required": ["product_type", "target_market"]
+                }
             }
         ]
 
@@ -137,6 +184,25 @@ class MarketingMCPServer:
         elif name == "generate_ideas":
             count = args.get("count", 3)
             return asyncio.run(self.handler.generate_ideas(count))
+
+        elif name == "audit_seo":
+            url = args.get("url")
+            return asyncio.run(self.handler.audit_seo(url))
+
+        elif name == "analyze_cro":
+            url = args.get("url")
+            page_type = args.get("page_type", "landing")
+            return asyncio.run(self.handler.analyze_cro(url, page_type))
+
+        elif name == "generate_copy":
+            page_type = args.get("page_type")
+            context = args.get("context", {})
+            return asyncio.run(self.handler.generate_copy(page_type, context))
+
+        elif name == "pricing_strategy":
+            product_type = args.get("product_type")
+            target_market = args.get("target_market")
+            return asyncio.run(self.handler.pricing_strategy(product_type, target_market))
 
         else:
             raise ValueError(f"Unknown tool: {name}")

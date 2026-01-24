@@ -11,6 +11,12 @@ export interface AgentDefinition {
   model: string
 }
 
+export interface CreateAgentResponse {
+  success: boolean
+  agent_id?: string
+  message?: string
+}
+
 export async function getAvailableSkills(): Promise<string[]> {
   try {
     const response = await fetch(`${AGENTOPS_API}/agents-creator/skills`)
@@ -22,7 +28,7 @@ export async function getAvailableSkills(): Promise<string[]> {
   }
 }
 
-export async function createAgent(agent: AgentDefinition): Promise<any> {
+export async function createAgent(agent: AgentDefinition): Promise<CreateAgentResponse | null> {
   try {
     const response = await fetch(`${AGENTOPS_API}/agents-creator/create`, {
       method: 'POST',

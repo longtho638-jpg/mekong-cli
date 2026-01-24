@@ -1,271 +1,82 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Why AgencyOS? - Compare With Alternatives';
-const description = 'See why 500+ agencies choose AgencyOS over traditional tools. Side-by-side comparison.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('compare_page.title');
+const description = t('compare_page.description');
+
+const pageData = (locales[locale] as any).compare_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="compare-hero">
-    <h1>⚔️ Why AgencyOS?</h1>
-    <p>See how we stack up against the alternatives</p>
+    <h1>{pageData.hero.title}</h1>
+    <p>{pageData.hero.subtitle}</p>
   </section>
 
   <section class="comparison-section">
     <div class="comparison-table">
       <div class="table-header">
-        <div class="feature-col">Feature</div>
-        <div class="us-col highlight">🏯 AgencyOS</div>
-        <div class="other-col">Hiring Team</div>
-        <div class="other-col">Point Tools</div>
-        <div class="other-col">Other AI</div>
+        <div class="feature-col">{pageData.table.headers[0]}</div>
+        <div class="us-col highlight">{pageData.table.headers[1]}</div>
+        <div class="other-col">{pageData.table.headers[2]}</div>
+        <div class="other-col">{pageData.table.headers[3]}</div>
+        <div class="other-col">{pageData.table.headers[4]}</div>
       </div>
 
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">💰 Cost/Month</span>
+      {Object.entries(pageData.table.rows).map(([key, row]: [string, any]) => (
+        <div class={`table-row ${key === 'total' ? 'total' : ''}`}>
+          <div class="feature-col">
+            <span class="feature-name">{row[0]}</span>
+          </div>
+          <div class="us-col highlight">
+            <span class={key === 'total' ? 'winner' : 'value green'}>{row[1]}</span>
+          </div>
+          <div class="other-col">
+            <span class={`value ${key === 'total' ? 'muted' : row[2] === '❌' ? 'red' : 'yellow'}`}>{row[2]}</span>
+          </div>
+          <div class="other-col">
+            <span class={`value ${key === 'total' ? 'muted' : row[3] === '❌' ? 'red' : 'yellow'}`}>{row[3]}</span>
+          </div>
+          <div class="other-col">
+            <span class={`value ${key === 'total' ? 'muted' : row[4] === '❌' ? 'red' : 'yellow'}`}>{row[4]}</span>
+          </div>
         </div>
-        <div class="us-col highlight">
-          <span class="value green">$99</span>
-        </div>
-        <div class="other-col">
-          <span class="value red">$15,000+</span>
-        </div>
-        <div class="other-col">
-          <span class="value red">$500+</span>
-        </div>
-        <div class="other-col">
-          <span class="value yellow">$200+</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">⏱️ Setup Time</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="value green">5 minutes</span>
-        </div>
-        <div class="other-col">
-          <span class="value red">3+ months</span>
-        </div>
-        <div class="other-col">
-          <span class="value yellow">2+ weeks</span>
-        </div>
-        <div class="other-col">
-          <span class="value yellow">1+ week</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🔧 Commands</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="value green">125+</span>
-        </div>
-        <div class="other-col">
-          <span class="value muted">N/A</span>
-        </div>
-        <div class="other-col">
-          <span class="value muted">5-10</span>
-        </div>
-        <div class="other-col">
-          <span class="value yellow">20-30</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">📣 Marketing</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="partial">⚠️</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">💼 Sales</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="partial">⚠️</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">💵 Finance</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🧑‍💻 Code/Dev</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🎥 Video Creation</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🏯 Binh Pháp Strategy</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🌐 Franchise Model</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="feature-col">
-          <span class="feature-name">🔄 24/7 Availability</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="x">❌</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-        <div class="other-col">
-          <span class="check">✅</span>
-        </div>
-      </div>
-
-      <div class="table-row total">
-        <div class="feature-col">
-          <span class="feature-name">🏆 Best Value?</span>
-        </div>
-        <div class="us-col highlight">
-          <span class="winner">🥇 YES</span>
-        </div>
-        <div class="other-col">
-          <span class="value muted">Too expensive</span>
-        </div>
-        <div class="other-col">
-          <span class="value muted">Too limited</span>
-        </div>
-        <div class="other-col">
-          <span class="value muted">Missing features</span>
-        </div>
-      </div>
+      ))}
     </div>
   </section>
 
   <section class="bottom-line">
     <div class="savings-card">
-      <h2>💰 The Bottom Line</h2>
+      <h2>{pageData.bottom_line.title}</h2>
       <div class="math">
         <div class="cost-row">
-          <span>Hiring 3 people:</span>
+          <span>{pageData.bottom_line.hiring}</span>
           <span class="red">$180,000/year</span>
         </div>
         <div class="cost-row">
-          <span>AgencyOS Pro:</span>
+          <span>{pageData.bottom_line.agencyos}</span>
           <span class="green">$1,188/year</span>
         </div>
         <div class="savings-row">
-          <span>Your Savings:</span>
+          <span>{pageData.bottom_line.savings}</span>
           <span class="mega-green">$178,812/year</span>
         </div>
       </div>
-      <a href="/roi-calculator" class="btn-secondary">Calculate Your ROI →</a>
+      <a href={getRelativeLocaleUrl(locale, '/roi-calculator')} class="btn-secondary">{pageData.bottom_line.cta}</a>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to switch?</h2>
-    <p>Join 500+ agencies who made the smart choice</p>
+    <h2>{pageData.cta.title}</h2>
+    <p>{pageData.cta.subtitle}</p>
     <div class="cta-buttons">
-      <a href="/signup?plan=pro" class="btn-primary">Start Free Trial →</a>
-      <a href="/demo" class="btn-secondary">Try Demo First</a>
+      <a href={getRelativeLocaleUrl(locale, '/signup?plan=pro')} class="btn-primary">{pageData.cta.primary}</a>
+      <a href={getRelativeLocaleUrl(locale, '/demo')} class="btn-secondary">{pageData.cta.secondary}</a>
     </div>
   </section>
 </LandingLayout>

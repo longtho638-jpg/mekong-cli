@@ -11,8 +11,10 @@ typer>=0.9.0
 rich>=13.0.0
 
 # HTTP & API
-requests>=2.31.0
-httpx>=0.24.0
+requests>=2.32.3
+httpx>=0.27.0
+urllib3>=2.6.0
+aiohttp>=3.9.0
 
 # Utilities
 python-dotenv>=1.0.0
@@ -29,6 +31,7 @@ supabase>=2.0.0
 
 # AI SDKs
 google-genai>=0.3.0
+dspy-ai>=2.0.0
 
 # Knowledge Graph
 redis>=5.0.0

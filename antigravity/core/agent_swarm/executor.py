@@ -92,6 +92,12 @@ class TaskExecutor:
         task.status = TaskStatus.RUNNING
         task.started_at = time.time()
 
+        # Sync to Kanban
+        try:
+            self.swarm.task_manager.board_manager.sync_task_status(task.id, "RUNNING")
+        except Exception as e:
+            logger.warning(f"Failed to sync Kanban status (RUNNING): {e}")
+
         try:
             result = agent.handler(task.payload)
             self._handle_success(task, agent, result)
@@ -117,6 +123,12 @@ class TaskExecutor:
         with self.swarm._lock:
             self.swarm.metrics.completed_tasks += 1
 
+        # Sync to Kanban
+        try:
+            self.swarm.task_manager.board_manager.sync_task_status(task.id, "COMPLETED")
+        except Exception as e:
+            logger.warning(f"Failed to sync Kanban status (COMPLETED): {e}")
+
         logger.info(f"Task {task.name} completed in {execution_time:.2f}s")
 
     def _handle_failure(self, task, agent: SwarmAgent, error: Exception):
@@ -129,6 +141,12 @@ class TaskExecutor:
 
         with self.swarm._lock:
             self.swarm.metrics.failed_tasks += 1
+
+        # Sync to Kanban
+        try:
+            self.swarm.task_manager.board_manager.sync_task_status(task.id, "FAILED")
+        except Exception as e:
+            logger.warning(f"Failed to sync Kanban status (FAILED): {e}")
 
         logger.error(f"Task {task.name} failed: {error}")
 

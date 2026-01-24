@@ -1,7 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 
@@ -71,13 +70,15 @@ const shapeMap: Record<ShapeSize, { corner: string; padding: string }> = {
     },
 };
 
-// M3 Spring transition
+// M3 Spring transition (keep for future use if needed, commented out to avoid lint warning)
+/*
 const m3Transition = {
     type: "spring",
     stiffness: 400,
     damping: 30,
     mass: 1
 } as const;
+*/
 
 export function MD3Surface({
     shape = 'large',

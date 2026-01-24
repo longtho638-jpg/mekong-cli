@@ -1,97 +1,99 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Terms of Service - AgencyOS';
-const description = 'Terms of service for AgencyOS. Usage terms and conditions.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('terms_page.title');
+const description = t('terms_page.description');
+
+const pageData = (locales[locale] as any).terms_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="legal-page">
     <div class="legal-container">
-      
+
       <div class="legal-header">
-        <h1>Terms of Service</h1>
-        <p class="last-updated">Last updated: December 22, 2024</p>
+        <h1>{pageData.hero.title}</h1>
+        <p class="last-updated">{pageData.hero.last_updated}</p>
       </div>
 
       <div class="legal-content">
-        
-        <h2>1. Acceptance of Terms</h2>
-        <p>By using AgencyOS, you agree to these terms. If you don't agree, don't use our services.</p>
 
-        <h2>2. Service Description</h2>
-        <p>AgencyOS provides:</p>
+        <h2>{pageData.sections.acceptance.title}</h2>
+        <p>{pageData.sections.acceptance.text}</p>
+
+        <h2>{pageData.sections.description.title}</h2>
+        <p>{pageData.sections.description.intro}</p>
         <ul>
-          <li>AI-powered agency automation tools</li>
-          <li>85+ commands for marketing, sales, and operations</li>
-          <li>Documentation and support resources</li>
+          {pageData.sections.description.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>3. User Accounts</h2>
+        <h2>{pageData.sections.accounts.title}</h2>
         <ul>
-          <li>You must provide accurate information</li>
-          <li>Keep your credentials secure</li>
-          <li>You're responsible for account activity</li>
-          <li>One account per person/agency</li>
+          {pageData.sections.accounts.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>4. Pricing & Payments</h2>
+        <h2>{pageData.sections.pricing.title}</h2>
         <ul>
-          <li><strong>Starter:</strong> $29/month</li>
-          <li><strong>Pro:</strong> $99/month</li>
-          <li><strong>Franchise:</strong> $299/month</li>
-          <li>30-day money-back guarantee</li>
-          <li>Prices may change with 30 days notice</li>
+          {pageData.sections.pricing.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>5. Acceptable Use</h2>
-        <p>You agree NOT to:</p>
+        <h2>{pageData.sections.use.title}</h2>
+        <p>{pageData.sections.use.intro}</p>
         <ul>
-          <li>Use for illegal activities</li>
-          <li>Share account credentials</li>
-          <li>Reverse engineer our software</li>
-          <li>Resell without Franchise license</li>
-          <li>Abuse API rate limits</li>
+          {pageData.sections.use.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>6. Intellectual Property</h2>
+        <h2>{pageData.sections.ip.title}</h2>
         <ul>
-          <li>AgencyOS owns all product IP</li>
-          <li>You own your generated content</li>
-          <li>You grant us license to improve services</li>
+          {pageData.sections.ip.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>7. Refunds</h2>
+        <h2>{pageData.sections.refunds.title}</h2>
         <ul>
-          <li>30-day money-back guarantee on all plans</li>
-          <li>No questions asked refunds</li>
-          <li>Email <a href="mailto:support@agencyos.network">support@agencyos.network</a></li>
+          {pageData.sections.refunds.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>8. Termination</h2>
-        <p>We may suspend or terminate accounts that:</p>
+        <h2>{pageData.sections.termination.title}</h2>
+        <p>{pageData.sections.termination.intro}</p>
         <ul>
-          <li>Violate these terms</li>
-          <li>Engage in fraudulent activity</li>
-          <li>Fail to pay for services</li>
+          {pageData.sections.termination.items.map((item: string) => (
+            <li>{item}</li>
+          ))}
         </ul>
 
-        <h2>9. Disclaimer</h2>
-        <p>AgencyOS is provided "as is". We don't guarantee specific business results. AI outputs should be reviewed by humans.</p>
+        <h2>{pageData.sections.disclaimer.title}</h2>
+        <p>{pageData.sections.disclaimer.text}</p>
 
-        <h2>10. Limitation of Liability</h2>
-        <p>Our liability is limited to the amount you paid in the last 12 months. We're not liable for indirect damages.</p>
+        <h2>{pageData.sections.liability.title}</h2>
+        <p>{pageData.sections.liability.text}</p>
 
-        <h2>11. Contact</h2>
-        <p>Questions about terms?</p>
+        <h2>{pageData.sections.contact.title}</h2>
+        <p>{pageData.sections.contact.intro}</p>
         <ul>
-          <li>Email: <a href="mailto:legal@agencyos.network">legal@agencyos.network</a></li>
+          <li>{pageData.sections.contact.email}</li>
         </ul>
 
       </div>
 
       <div class="legal-footer">
-        <a href="/privacy">Privacy Policy →</a>
+        <a href={getRelativeLocaleUrl(locale, '/privacy')}>{pageData.footer.privacy}</a>
       </div>
 
     </div>

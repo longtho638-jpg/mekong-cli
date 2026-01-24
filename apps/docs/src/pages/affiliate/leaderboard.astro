@@ -1,8 +1,15 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Affiliate Leaderboard | AgencyOS';
-const description = 'See top affiliate earners and compete for monthly bonuses.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('affiliate_leaderboard.title');
+const description = t('affiliate_leaderboard.description');
+
+const pageData = (locales[locale] as any).affiliate_leaderboard;
 
 // Sample leaderboard data
 const topAffiliates = [
@@ -22,29 +29,29 @@ const topAffiliates = [
 <LandingLayout title={title} description={description}>
   <div class="leaderboard-container">
     <header class="page-header">
-      <a href="/affiliate/dashboard" class="back-link">← Back to Dashboard</a>
-      <h1>🏆 Affiliate Leaderboard</h1>
-      <p>December 2024 • Top performers earn bonus rewards!</p>
+      <a href="/affiliate/dashboard" class="back-link">{pageData.header.back}</a>
+      <h1>{pageData.header.title}</h1>
+      <p>{pageData.header.subtitle.replace('{date}', 'December 2024')}</p>
     </header>
 
     <!-- Monthly Prizes -->
     <section class="prizes-section">
-      <h2>🎁 Monthly Prizes</h2>
+      <h2>{pageData.prizes.title}</h2>
       <div class="prizes-grid">
         <div class="prize-card gold">
-          <div class="prize-rank">🥇 1st Place</div>
+          <div class="prize-rank">{pageData.prizes.first}</div>
           <div class="prize-amount">$500</div>
-          <div class="prize-label">Cash Bonus</div>
+          <div class="prize-label">{pageData.prizes.bonus}</div>
         </div>
         <div class="prize-card silver">
-          <div class="prize-rank">🥈 2nd Place</div>
+          <div class="prize-rank">{pageData.prizes.second}</div>
           <div class="prize-amount">$200</div>
-          <div class="prize-label">Cash Bonus</div>
+          <div class="prize-label">{pageData.prizes.bonus}</div>
         </div>
         <div class="prize-card bronze">
-          <div class="prize-rank">🥉 3rd Place</div>
+          <div class="prize-rank">{pageData.prizes.third}</div>
           <div class="prize-amount">$100</div>
-          <div class="prize-label">Cash Bonus</div>
+          <div class="prize-label">{pageData.prizes.bonus}</div>
         </div>
       </div>
     </section>
@@ -55,7 +62,7 @@ const topAffiliates = [
         <div class="podium-place second">
           <div class="avatar">🥈</div>
           <div class="name">{topAffiliates[1].name}</div>
-          <div class="sales">{topAffiliates[1].sales} sales</div>
+          <div class="sales">{topAffiliates[1].sales} {pageData.podium.sales}</div>
           <div class="earnings">{topAffiliates[1].earnings}</div>
           <div class="podium-stand">2</div>
         </div>
@@ -63,14 +70,14 @@ const topAffiliates = [
           <div class="crown">👑</div>
           <div class="avatar gold">🥇</div>
           <div class="name">{topAffiliates[0].name}</div>
-          <div class="sales">{topAffiliates[0].sales} sales</div>
+          <div class="sales">{topAffiliates[0].sales} {pageData.podium.sales}</div>
           <div class="earnings">{topAffiliates[0].earnings}</div>
           <div class="podium-stand tall">1</div>
         </div>
         <div class="podium-place third">
           <div class="avatar">🥉</div>
           <div class="name">{topAffiliates[2].name}</div>
-          <div class="sales">{topAffiliates[2].sales} sales</div>
+          <div class="sales">{topAffiliates[2].sales} {pageData.podium.sales}</div>
           <div class="earnings">{topAffiliates[2].earnings}</div>
           <div class="podium-stand">3</div>
         </div>
@@ -79,15 +86,15 @@ const topAffiliates = [
 
     <!-- Full Leaderboard -->
     <section class="leaderboard-table">
-      <h2>📊 Full Rankings</h2>
+      <h2>{pageData.table.title}</h2>
       <table>
         <thead>
           <tr>
-            <th>Rank</th>
-            <th>Affiliate</th>
-            <th>Badge</th>
-            <th>Sales</th>
-            <th>Earnings</th>
+            <th>{pageData.table.rank}</th>
+            <th>{pageData.table.affiliate}</th>
+            <th>{pageData.table.badge}</th>
+            <th>{pageData.table.sales}</th>
+            <th>{pageData.table.earnings}</th>
           </tr>
         </thead>
         <tbody>
@@ -117,17 +124,17 @@ const topAffiliates = [
       <div class="position-card">
         <div class="position-icon">📍</div>
         <div class="position-content">
-          <div class="position-title">Your Current Position</div>
-          <div class="position-rank">#- (Not ranked yet)</div>
-          <div class="position-hint">Make your first sale to appear on the leaderboard!</div>
+          <div class="position-title">{pageData.position.title}</div>
+          <div class="position-rank">#- ({pageData.position.not_ranked})</div>
+          <div class="position-hint">{pageData.position.hint}</div>
         </div>
-        <a href="/affiliate/dashboard" class="btn-primary">View Dashboard</a>
+        <a href="/affiliate/dashboard" class="btn-primary">{pageData.position.button}</a>
       </div>
     </section>
 
     <!-- Achievement Badges -->
     <section class="badges-section">
-      <h2>🎖️ Achievement Badges</h2>
+      <h2>{pageData.badges.title}</h2>
       <div class="badges-grid">
         <div class="badge-card">
           <div class="badge-icon">🌟</div>

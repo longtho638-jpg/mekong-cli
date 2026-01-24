@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { AgencyCard } from '@/components/ui/agency-card'
-import { Users, Mail, Phone, Calendar, MoreVertical } from 'lucide-react'
+import { Mail, Calendar, MoreVertical } from 'lucide-react'
 
 export default function CRMPage() {
     return (

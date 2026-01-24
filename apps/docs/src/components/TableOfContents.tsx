@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@agencyos/i18n/hooks';
 
 interface Heading {
   depth: number;
@@ -12,6 +13,7 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ headings }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   // Filter to only h2/h3 headings
   const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
@@ -75,7 +77,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <aside className="table-of-contents" aria-label="Table of contents">
       <nav className="toc-nav">
-        <h2 className="toc-title">On this page</h2>
+        <h2 className="toc-title">{t('toc.title')}</h2>
         <ul className="toc-list">
           {tocHeadings.map((heading) => (
             <li

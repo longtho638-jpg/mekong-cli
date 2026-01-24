@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { getLangFromUrl } from '../i18n/utils';
-// import { getLangFromUrl, useTranslations, getLocalizedPath } from '../i18n/utils';
+import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 import GettingStartedNav from './nav/GettingStartedNav.astro';
 import DocsNav from './nav/DocsNav.astro';
 import WorkflowsNav from './nav/WorkflowsNav.astro';
@@ -14,7 +13,7 @@ interface Props {
 }
 
 const { currentPath } = Astro.props;
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Detect section from URL
 // Detect section from URL

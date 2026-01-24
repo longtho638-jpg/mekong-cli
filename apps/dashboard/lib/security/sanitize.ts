@@ -38,7 +38,7 @@ const SQL_INJECTION_PATTERNS = [
   /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|EXEC|UNION|DECLARE)\b)/gi,
   /(-{2}|;|\*|\/\*|\*\/)/g,
   /(\bOR\b|\bAND\b)[\s]*[\d\w'"][\s]*(=|LIKE)/gi,
-  /(\'|\"|;|--)/g,
+  /('|";|--)/g,
 ]
 
 export function detectSqlInjection(input: string): boolean {
@@ -138,6 +138,7 @@ export function sanitizeInput(input: string, options: SanitizeOptions = {}): str
   result = escapeHtml(result)
 
   // Remove control characters
+  /* eslint-disable-next-line no-control-regex */
   result = result.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
 
   // Handle newlines

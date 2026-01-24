@@ -1,4 +1,8 @@
 ---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 <section class="stats-counter" id="stats-section">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
@@ -6,22 +10,22 @@
       <div class="stat-item">
         <span class="stat-number" data-target="125">0</span>
         <span class="stat-suffix">+</span>
-        <span class="stat-label">AI Commands</span>
+        <span class="stat-label">{t('landing.stats.ai_commands')}</span>
       </div>
       <div class="stat-item">
         <span class="stat-number" data-target="500">0</span>
         <span class="stat-suffix">+</span>
-        <span class="stat-label">Agencies Worldwide</span>
+        <span class="stat-label">{t('landing.stats.agencies')}</span>
       </div>
       <div class="stat-item">
         <span class="stat-number" data-target="156000">0</span>
         <span class="stat-suffix"></span>
-        <span class="stat-label">Hours Saved/Year</span>
+        <span class="stat-label">{t('landing.stats.hours_saved')}</span>
       </div>
       <div class="stat-item">
         <span class="stat-number" data-target="4.9">0</span>
         <span class="stat-suffix">/5</span>
-        <span class="stat-label">User Rating</span>
+        <span class="stat-label">{t('landing.stats.rating')}</span>
       </div>
     </div>
   </div>

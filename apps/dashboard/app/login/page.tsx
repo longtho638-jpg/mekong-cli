@@ -33,7 +33,7 @@ export default function LoginPage() {
 
       const data = await response.json()
       login(data.access_token)
-    } catch (err) {
+    } catch {
       setError('Login failed. Please check your credentials.')
     } finally {
       setLoading(false)

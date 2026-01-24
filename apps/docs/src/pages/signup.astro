@@ -1,19 +1,26 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Start Free Trial - AgencyOS';
-const description = 'Enter your email to start your 7-day free trial of AgencyOS.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('signup_page.title');
+const description = t('signup_page.description');
+
+const pageData = (locales[locale] as any).signup_page;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="signup-hero">
-    <h1>🚀 Start Your Free Trial</h1>
-    <p>Enter your email to get started. 7-day free trial, cancel anytime.</p>
+    <h1>{pageData.hero.title}</h1>
+    <p>{pageData.hero.subtitle}</p>
   </section>
 
   <section class="signup-section">
     <div class="signup-card">
-      
+
       <div class="plan-selected" id="plan-badge">
         <span class="plan-icon">⭐</span>
         <span class="plan-name">Pro Plan</span>
@@ -21,85 +28,90 @@ const description = 'Enter your email to start your 7-day free trial of AgencyOS
       </div>
 
       <form id="signup-form" class="signup-form">
-        
+
         <div class="form-group">
-          <label for="email">Email Address *</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            placeholder="your@email.com" 
+          <label for="email">{pageData.form.email_label}</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder={pageData.form.email_placeholder}
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="name">Full Name *</label>
-          <input 
-            type="text" 
-            id="name" 
-            name="name" 
-            placeholder="John Doe"
+          <label for="name">{pageData.form.name_label}</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder={pageData.form.name_placeholder}
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="promo">Promo Code (Optional)</label>
+          <label for="promo">{pageData.form.promo_label}</label>
           <div class="promo-input-group">
-            <input 
-              type="text" 
-              id="promo" 
-              name="promo" 
-              placeholder="AGENCYOS-XXXX-XXXX"
+            <input
+              type="text"
+              id="promo"
+              name="promo"
+              placeholder={pageData.form.promo_placeholder}
             />
-            <button type="button" id="apply-promo" class="btn-apply">Apply</button>
+            <button type="button" id="apply-promo" class="btn-apply">{pageData.form.apply_button}</button>
           </div>
           <div id="promo-status" class="promo-status"></div>
         </div>
 
         <div class="price-summary" id="price-summary">
           <div class="summary-row">
-            <span>Pro Plan (Monthly)</span>
+            <span id="plan-summary-label">Pro Plan (Monthly)</span>
             <span id="original-price">$99.00</span>
           </div>
           <div class="summary-row discount hidden" id="discount-row">
-            <span>Discount</span>
+            <span>{pageData.form.discount}</span>
             <span id="discount-amount" class="text-green">-$0.00</span>
           </div>
           <div class="summary-row total">
-            <span>Total</span>
+            <span>{pageData.form.total}</span>
             <span id="total-price">$99.00</span>
           </div>
         </div>
 
         <button type="submit" class="btn-primary" id="submit-btn">
-          Start 7-Day Free Trial →
+          {pageData.form.submit_button}
         </button>
 
         <p class="terms-text">
-          By signing up, you agree to our 
-          <a href="/terms">Terms of Service</a> and 
-          <a href="/privacy">Privacy Policy</a>.
+          {pageData.form.terms_prefix}
+          <a href={getRelativeLocaleUrl(locale, '/terms')}>{pageData.form.terms_link}</a> {pageData.form.and}
+          <a href={getRelativeLocaleUrl(locale, '/privacy')}>{pageData.form.privacy_link}</a>.
         </p>
 
       </form>
 
       <div class="benefits-list">
-        <h4>What you get:</h4>
+        <h4>{pageData.benefits.title}</h4>
         <ul>
-          <li>✅ 125+ AI commands</li>
-          <li>✅ 7-day free trial</li>
-          <li>✅ Cancel anytime</li>
-          <li>✅ 30-day money-back guarantee</li>
+          {pageData.benefits.items.map((item: string) => (
+            <li>✅ {item}</li>
+          ))}
         </ul>
       </div>
 
     </div>
-    
+
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
   </section>
+
+  <div id="signup-i18n"
+    data-promo-applied={pageData.form.promo_applied}
+    data-promo-invalid={pageData.form.promo_invalid}
+    data-checkout-url={getRelativeLocaleUrl(locale, '/checkout')}
+  ></div>
 </LandingLayout>
 
 <style>

@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { AgencyCard } from "@/components/ui/agency-card"
 
 export function DashboardSkeleton() {
   return (

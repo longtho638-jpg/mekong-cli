@@ -23,9 +23,10 @@ class NotificationType(Enum):
 class AgencyOwnerProfile:
     name: str
     agency_name: str
-    niche: str
-    location: str
+    niche: str = "Digital Marketing"
+    location: str = "Remote"
     tone: str = "professional"
+    services: List[str] = field(default_factory=lambda: ["SEO", "Content", "PPC"])
 
 @dataclass
 class Notification:

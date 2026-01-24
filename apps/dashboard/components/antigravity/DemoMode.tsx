@@ -172,7 +172,6 @@ export function DemoMode() {
                 {demoSteps.map((step, index) => {
                     const isCompleted = completedSteps.includes(step.id);
                     const isCurrent = currentStep === index && isRunning;
-                    const isPending = index > currentStep;
 
                     return (
                         <div

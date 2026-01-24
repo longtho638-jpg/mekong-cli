@@ -97,9 +97,11 @@ export function useChartOfAccounts() {
     accounts.forEach(acc => {
       if (acc.parentId) {
         const parent = map.get(acc.parentId)
-        if (parent) parent.children?.push(map.get(acc.id)!)
+        const current = map.get(acc.id)
+        if (parent && current) parent.children?.push(current)
       } else {
-        roots.push(map.get(acc.id)!)
+        const current = map.get(acc.id)
+        if (current) roots.push(current)
       }
     })
 

@@ -2,20 +2,24 @@
 import '../styles/global.css';
 import '../styles/wow-components.css';
 import { FeedbackWidget } from '../components/FeedbackWidget';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 export interface Props {
   title?: string;
   description?: string;
 }
 
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
 const {
-  title = 'AgencyOS - The One-Person Agency Operating System',
-  description = '85+ AI commands to run your entire agency. Marketing, sales, affiliate, finance - all automated.',
+  title = t('app.name') + ' - ' + t('app.tagline'),
+  description = t('app.description'),
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang={locale} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,13 +62,13 @@ const {
       <div class="banner-content">
         <span class="fire-icon">🔥</span>
         <span class="banner-text">
-          <strong>Early Bird Special:</strong> 50% OFF Pro Plan
+          <strong>{t('landing.banner.text').split(':')[0]}:</strong> {t('landing.banner.text').split(':')[1]}
         </span>
         <span class="countdown-timer">
-          <span class="timer-label">Ends in:</span>
+          <span class="timer-label">{t('landing.banner.ends_in')}</span>
           <span class="timer" id="countdown-timer">00:00:00</span>
         </span>
-        <a href="/pricing" class="banner-cta">Claim Now →</a>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')} class="banner-cta">{t('landing.banner.cta')}</a>
       </div>
       <button class="banner-close" id="banner-close" aria-label="Close">✕</button>
     </div>
@@ -75,7 +79,7 @@ const {
     </div>
 
     <!-- Back to Top Button -->
-    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <button class="back-to-top" id="back-to-top" aria-label={t('landing.widgets.back_to_top')}>
       <span>↑</span>
     </button>
 
@@ -85,115 +89,115 @@ const {
     <!-- Simple Header -->
     <header class="landing-header">
       <div class="header-container">
-        <a href="/" class="logo animated-logo">
+        <a href={getRelativeLocaleUrl(locale, '/')} class="logo animated-logo">
           <span class="logo-icon">🏯</span>
-          <span class="logo-text">AgencyOS</span>
+          <span class="logo-text">{t('app.name')}</span>
         </a>
         
         <nav class="landing-nav">
-          <a href="/agencyos">Home</a>
-          
+          <a href={getRelativeLocaleUrl(locale, '/agencyos')}>{t('landing.nav.home')}</a>
+
           <!-- Products Mega Dropdown -->
           <div class="nav-dropdown">
-            <button class="nav-dropdown-trigger">Products <span class="dropdown-arrow">▾</span></button>
+            <button class="nav-dropdown-trigger">{t('landing.nav.products')} <span class="dropdown-arrow">▾</span></button>
             <div class="mega-dropdown">
               <div class="mega-col">
-                <div class="mega-title">🆓 FREE</div>
-                <a href="/docs" class="mega-item">
+                <div class="mega-title">🆓 {t('landing.nav.free')}</div>
+                <a href={getRelativeLocaleUrl(locale, '/docs')} class="mega-item">
                   <span class="mega-icon">📚</span>
                   <div>
-                    <div class="mega-item-title">Documentation</div>
-                    <div class="mega-item-desc">310+ IDE-executable pages</div>
+                    <div class="mega-item-title">{t('nav.docs')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.docs_desc')}</div>
                   </div>
                 </a>
-                <a href="/docs/getting-started" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/docs/getting-started')} class="mega-item">
                   <span class="mega-icon">🛠️</span>
                   <div>
                     <div class="mega-item-title">Mekong-CLI</div>
-                    <div class="mega-item-desc">Open source, 125+ commands</div>
+                    <div class="mega-item-desc">{t('landing.nav.mekong_cli_desc')}</div>
                   </div>
                 </a>
-                <a href="/binh-phap" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/binh-phap')} class="mega-item">
                   <span class="mega-icon">🏯</span>
                   <div>
-                    <div class="mega-item-title">Binh Pháp</div>
-                    <div class="mega-item-desc">13 chapters strategy</div>
+                    <div class="mega-item-title">{t('binh_phap.title')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.binh_phap_desc')}</div>
                   </div>
                 </a>
-                <a href="/workflows" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/workflows')} class="mega-item">
                   <span class="mega-icon">📋</span>
                   <div>
-                    <div class="mega-item-title">Workflows</div>
-                    <div class="mega-item-desc">27 workflow guides</div>
+                    <div class="mega-item-title">{t('nav.workflows')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.workflows_desc')}</div>
                   </div>
                 </a>
               </div>
               <div class="mega-col">
-                <div class="mega-title">💰 PAID</div>
-                <a href="/pricing" class="mega-item">
+                <div class="mega-title">💰 {t('landing.nav.paid')}</div>
+                <a href={getRelativeLocaleUrl(locale, '/pricing')} class="mega-item">
                   <span class="mega-icon">⭐</span>
                   <div>
-                    <div class="mega-item-title">Starter</div>
-                    <div class="mega-item-desc">$29/mo - Solo operators</div>
+                    <div class="mega-item-title">{t('pricing.plans.starter.name')}</div>
+                    <div class="mega-item-desc">{t('pricing.plans.starter.price')}{t('pricing.plans.starter.period')} - {t('landing.nav.starter_desc')}</div>
                   </div>
                 </a>
-                <a href="/pricing" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/pricing')} class="mega-item">
                   <span class="mega-icon">🚀</span>
                   <div>
-                    <div class="mega-item-title">Pro</div>
-                    <div class="mega-item-desc">$99/mo - Teams + API</div>
+                    <div class="mega-item-title">{t('pricing.plans.pro.name')}</div>
+                    <div class="mega-item-desc">{t('pricing.plans.pro.price')}{t('pricing.plans.pro.period')} - {t('landing.nav.pro_desc')}</div>
                   </div>
                 </a>
-                <a href="/franchise" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/franchise')} class="mega-item">
                   <span class="mega-icon">🏆</span>
                   <div>
-                    <div class="mega-item-title">Franchise</div>
-                    <div class="mega-item-desc">$299/mo - White-label</div>
+                    <div class="mega-item-title">{t('pricing.plans.franchise.name')}</div>
+                    <div class="mega-item-desc">{t('pricing.plans.franchise.price')}{t('pricing.plans.franchise.period')} - {t('landing.nav.franchise_desc')}</div>
                   </div>
                 </a>
               </div>
               <div class="mega-col">
-                <div class="mega-title">✨ Features</div>
-                <a href="/newsletter" class="mega-item">
+                <div class="mega-title">✨ {t('landing.nav.features')}</div>
+                <a href={getRelativeLocaleUrl(locale, '/newsletter')} class="mega-item">
                   <span class="mega-icon">📧</span>
                   <div>
-                    <div class="mega-item-title">Newsletter Hub</div>
-                    <div class="mega-item-desc">Email marketing</div>
+                    <div class="mega-item-title">{t('landing.nav.newsletter_hub')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.newsletter_hub_desc')}</div>
                   </div>
                 </a>
-                <a href="/affiliate" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/affiliate')} class="mega-item">
                   <span class="mega-icon">🎯</span>
                   <div>
-                    <div class="mega-item-title">Affiliate</div>
-                    <div class="mega-item-desc">Earn commissions</div>
+                    <div class="mega-item-title">{t('landing.nav.affiliate')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.affiliate_desc')}</div>
                   </div>
                 </a>
-                <a href="/marketplace" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/marketplace')} class="mega-item">
                   <span class="mega-icon">🏪</span>
                   <div>
-                    <div class="mega-item-title">Marketplace</div>
-                    <div class="mega-item-desc">Templates & tools</div>
+                    <div class="mega-item-title">{t('landing.nav.marketplace')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.marketplace_desc')}</div>
                   </div>
                 </a>
-                <a href="/wallet" class="mega-item">
+                <a href={getRelativeLocaleUrl(locale, '/wallet')} class="mega-item">
                   <span class="mega-icon">💳</span>
                   <div>
-                    <div class="mega-item-title">Wallet</div>
-                    <div class="mega-item-desc">Payments & earnings</div>
+                    <div class="mega-item-title">{t('landing.nav.wallet')}</div>
+                    <div class="mega-item-desc">{t('landing.nav.wallet_desc')}</div>
                   </div>
                 </a>
               </div>
             </div>
           </div>
-          
-          <a href="/pricing">Pricing</a>
-          <a href="/demo">🖥️ Demo</a>
-          <a href="/docs/getting-started/introduction">Docs</a>
-          <a href="/blog">Blog</a>
+
+          <a href={getRelativeLocaleUrl(locale, '/pricing')}>{t('landing.nav.pricing')}</a>
+          <a href={getRelativeLocaleUrl(locale, '/demo')}>🖥️ {t('landing.nav.demo')}</a>
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/introduction')}>{t('landing.nav.docs')}</a>
+          <a href={getRelativeLocaleUrl(locale, '/blog')}>{t('landing.nav.blog')}</a>
         </nav>
-        
+
         <div class="header-actions">
-          <a href="/docs/getting-started/installation" class="btn-primary">Get Started</a>
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="btn-primary">{t('landing.nav.get_started')}</a>
           
           <!-- Mobile Menu Button -->
           <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
@@ -207,20 +211,20 @@ const {
       </div>
       
       <div class="mobile-nav" id="mobile-nav">
-        <a href="/agencyos">Home</a>
-        <div class="mobile-section-title">🆓 FREE</div>
-        <a href="/docs">📚 Documentation</a>
-        <a href="/binh-phap">🏯 Binh Pháp</a>
-        <a href="/workflows">📋 Workflows</a>
-        <div class="mobile-section-title">💰 PAID</div>
-        <a href="/pricing">⭐ Starter $29</a>
-        <a href="/pricing">🚀 Pro $99</a>
-        <a href="/franchise">🏆 Franchise $299</a>
-        <div class="mobile-section-title">✨ Features</div>
-        <a href="/newsletter">📧 Newsletter</a>
-        <a href="/affiliate">🎯 Affiliate</a>
-        <a href="/marketplace">🏪 Marketplace</a>
-        <a href="/docs/getting-started/installation" class="mobile-cta">Get Started</a>
+        <a href={getRelativeLocaleUrl(locale, '/agencyos')}>{t('landing.nav.home')}</a>
+        <div class="mobile-section-title">🆓 {t('landing.nav.free')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/docs')}>📚 {t('nav.docs')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/binh-phap')}>🏯 {t('binh_phap.title')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/workflows')}>📋 {t('nav.workflows')}</a>
+        <div class="mobile-section-title">💰 {t('landing.nav.paid')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')}>⭐ {t('pricing.plans.starter.name')} {t('pricing.plans.starter.price')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')}>🚀 {t('pricing.plans.pro.name')} {t('pricing.plans.pro.price')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/franchise')}>🏆 {t('pricing.plans.franchise.name')} {t('pricing.plans.franchise.price')}</a>
+        <div class="mobile-section-title">✨ {t('landing.nav.features')}</div>
+        <a href={getRelativeLocaleUrl(locale, '/newsletter')}>📧 {t('landing.nav.newsletter_hub')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/affiliate')}>🎯 {t('landing.nav.affiliate')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/marketplace')}>🏪 {t('landing.nav.marketplace')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="mobile-cta">{t('landing.nav.get_started')}</a>
       </div>
     </header>
 
@@ -234,84 +238,84 @@ const {
       <div class="footer-mega">
         <!-- Brand Column -->
         <div class="footer-brand-col">
-          <a href="/" class="footer-logo">
+          <a href={getRelativeLocaleUrl(locale, '/')} class="footer-logo">
             <span class="logo-icon">🏯</span>
-            <span class="logo-text">AgencyOS</span>
+            <span class="logo-text">{t('app.name')}</span>
           </a>
-          <p class="footer-tagline">The AI-powered operating system for one-person agencies.</p>
+          <p class="footer-tagline">{t('landing.footer.tagline')}</p>
           <div class="footer-social">
             <a href="https://twitter.com/agencyos" aria-label="Twitter">𝕏</a>
             <a href="https://github.com/agencyos" aria-label="GitHub">⌘</a>
             <a href="https://discord.gg/agencyos" aria-label="Discord">💬</a>
           </div>
         </div>
-        
+
         <!-- Products Column -->
         <div class="footer-col">
-          <h4 class="footer-title">Products</h4>
+          <h4 class="footer-title">{t('landing.footer.products')}</h4>
           <div class="footer-col-split">
             <div class="footer-links">
-              <span class="footer-label">FREE</span>
-              <a href="/docs">📚 Documentation</a>
-              <a href="/binh-phap">🏯 Binh Pháp</a>
-              <a href="/workflows">📋 Workflows</a>
+              <span class="footer-label">{t('landing.nav.free')}</span>
+              <a href={getRelativeLocaleUrl(locale, '/docs')}>📚 {t('nav.docs')}</a>
+              <a href={getRelativeLocaleUrl(locale, '/binh-phap')}>🏯 {t('binh_phap.title')}</a>
+              <a href={getRelativeLocaleUrl(locale, '/workflows')}>📋 {t('nav.workflows')}</a>
             </div>
             <div class="footer-links">
-              <span class="footer-label">PAID</span>
-              <a href="/pricing">⭐ Starter $29</a>
-              <a href="/pricing">🚀 Pro $99</a>
-              <a href="/franchise">🏆 Franchise $299</a>
+              <span class="footer-label">{t('landing.nav.paid')}</span>
+              <a href={getRelativeLocaleUrl(locale, '/pricing')}>⭐ {t('pricing.plans.starter.name')} {t('pricing.plans.starter.price')}</a>
+              <a href={getRelativeLocaleUrl(locale, '/pricing')}>🚀 {t('pricing.plans.pro.name')} {t('pricing.plans.pro.price')}</a>
+              <a href={getRelativeLocaleUrl(locale, '/franchise')}>🏆 {t('pricing.plans.franchise.name')} {t('pricing.plans.franchise.price')}</a>
             </div>
           </div>
         </div>
-        
+
         <!-- Features Column -->
         <div class="footer-col">
-          <h4 class="footer-title">Features</h4>
+          <h4 class="footer-title">{t('landing.footer.features')}</h4>
           <div class="footer-links">
-            <a href="/newsletter">📧 Newsletter Hub</a>
-            <a href="/affiliate">🎯 Affiliate Program</a>
-            <a href="/marketplace">🏪 Marketplace</a>
-            <a href="/wallet">💳 Wallet</a>
-            <a href="/gamification">🎮 Gamification</a>
-            <a href="/dashboard">📊 Dashboard</a>
+            <a href={getRelativeLocaleUrl(locale, '/newsletter')}>📧 {t('landing.nav.newsletter_hub')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/affiliate')}>🎯 {t('landing.nav.affiliate')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/marketplace')}>🏪 {t('landing.nav.marketplace')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/wallet')}>💳 {t('landing.nav.wallet')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/gamification')}>🎮 {t('landing.footer.gamification')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/dashboard')}>📊 {t('nav.dashboard')}</a>
           </div>
         </div>
-        
+
         <!-- Resources Column -->
         <div class="footer-col">
-          <h4 class="footer-title">Resources</h4>
+          <h4 class="footer-title">{t('landing.footer.resources')}</h4>
           <div class="footer-links">
-            <a href="/docs/getting-started">🚀 Quick Start</a>
-            <a href="/commands">⌨️ Commands</a>
-            <a href="/demo">🎬 Demo</a>
-            <a href="/roi-calculator">💰 ROI Calculator</a>
-            <a href="/blog">📝 Blog</a>
-            <a href="/changelog">📋 Changelog</a>
+            <a href={getRelativeLocaleUrl(locale, '/docs/getting-started')}>🚀 {t('landing.footer.quick_start')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/commands')}>⌨️ {t('nav.commands')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/demo')}>🎬 {t('landing.footer.demo')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/roi-calculator')}>💰 {t('landing.footer.roi_calculator')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/blog')}>📝 {t('landing.footer.blog')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/changelog')}>📋 {t('landing.footer.changelog')}</a>
           </div>
         </div>
-        
+
         <!-- Company Column -->
         <div class="footer-col">
-          <h4 class="footer-title">Company</h4>
+          <h4 class="footer-title">{t('landing.footer.company')}</h4>
           <div class="footer-links">
-            <a href="/about">ℹ️ About Us</a>
-            <a href="/case-studies">📈 Case Studies</a>
-            <a href="/contact">✉️ Contact</a>
-            <a href="/faq">❓ FAQ</a>
-            <a href="/terms">📜 Terms</a>
-            <a href="/privacy">🔒 Privacy</a>
+            <a href={getRelativeLocaleUrl(locale, '/about')}>ℹ️ {t('landing.footer.about_us')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/case-studies')}>📈 {t('landing.footer.case_studies')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/contact')}>✉️ {t('landing.footer.contact')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/faq')}>❓ {t('landing.footer.faq')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/terms')}>📜 {t('landing.footer.terms')}</a>
+            <a href={getRelativeLocaleUrl(locale, '/privacy')}>🔒 {t('landing.footer.privacy')}</a>
           </div>
         </div>
       </div>
-      
+
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-copy">
-          © 2026 AgencyOS Network. All rights reserved.
+          {t('footer.copyright')}
         </div>
         <div class="footer-motto">
-          🏯 "Họ WIN → Mình WIN → All WIN"
+          🏯 {t('landing.footer.motto')}
         </div>
       </div>
     </footer>
@@ -325,32 +329,32 @@ const {
 
       <div class="help-popup" id="help-popup">
         <div class="popup-header">
-          <span>⚡ Quick Commands</span>
+          <span>⚡ {t('landing.widgets.quick_commands')}</span>
         </div>
         <div class="popup-content">
-          <a href="/commands" class="cmd-item">
+          <a href={getRelativeLocaleUrl(locale, '/commands')} class="cmd-item">
             <code>/help</code>
-            <span>View all 85+ commands</span>
+            <span>{t('landing.widgets.quick_commands_desc.help')}</span>
           </a>
-          <a href="/demo" class="cmd-item">
+          <a href={getRelativeLocaleUrl(locale, '/demo')} class="cmd-item">
             <code>/demo</code>
-            <span>Try interactive demo</span>
+            <span>{t('landing.widgets.quick_commands_desc.demo')}</span>
           </a>
-          <a href="/roi-calculator" class="cmd-item">
+          <a href={getRelativeLocaleUrl(locale, '/roi-calculator')} class="cmd-item">
             <code>/roi</code>
-            <span>Calculate your savings</span>
+            <span>{t('landing.widgets.quick_commands_desc.roi')}</span>
           </a>
-          <a href="/compare" class="cmd-item">
+          <a href={getRelativeLocaleUrl(locale, '/compare')} class="cmd-item">
             <code>/compare</code>
-            <span>See vs competitors</span>
+            <span>{t('landing.widgets.quick_commands_desc.compare')}</span>
           </a>
-          <a href="/pricing" class="cmd-item">
+          <a href={getRelativeLocaleUrl(locale, '/pricing')} class="cmd-item">
             <code>/pricing</code>
-            <span>View pricing plans</span>
+            <span>{t('landing.widgets.quick_commands_desc.pricing')}</span>
           </a>
         </div>
         <div class="popup-footer">
-          <a href="/docs/getting-started/installation" class="start-btn">🚀 Start Free Trial</a>
+          <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/installation')} class="start-btn">🚀 {t('landing.widgets.start_trial')}</a>
         </div>
       </div>
     </div>
@@ -406,47 +410,47 @@ const {
       <div class="shortcuts-overlay" id="shortcuts-overlay"></div>
       <div class="shortcuts-content">
         <div class="shortcuts-header">
-          <h3>⌨️ Keyboard Shortcuts</h3>
-          <button class="shortcuts-close" id="shortcuts-close">ESC</button>
+          <h3>{t('landing.widgets.keyboard_shortcuts.title')}</h3>
+          <button class="shortcuts-close" id="shortcuts-close">{t('landing.widgets.keyboard_shortcuts.close')}</button>
         </div>
         <div class="shortcuts-body">
           <div class="shortcut-section">
-            <h4>Navigation</h4>
+            <h4>{t('landing.widgets.keyboard_shortcuts.navigation')}</h4>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>G</kbd> then <kbd>H</kbd></span>
-              <span class="shortcut-desc">Go to Home</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.go_home')}</span>
             </div>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>G</kbd> then <kbd>P</kbd></span>
-              <span class="shortcut-desc">Go to Pricing</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.go_pricing')}</span>
             </div>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>G</kbd> then <kbd>D</kbd></span>
-              <span class="shortcut-desc">Go to Demo</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.go_demo')}</span>
             </div>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>G</kbd> then <kbd>C</kbd></span>
-              <span class="shortcut-desc">Go to Commands</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.go_commands')}</span>
             </div>
           </div>
           <div class="shortcut-section">
-            <h4>Actions</h4>
+            <h4>{t('landing.widgets.keyboard_shortcuts.actions')}</h4>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>/</kbd></span>
-              <span class="shortcut-desc">Focus Search</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.focus_search')}</span>
             </div>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>⌘</kbd> <kbd>K</kbd></span>
-              <span class="shortcut-desc">Quick Commands</span>
+              <span class="shortcut-desc">{t('landing.widgets.quick_help')}</span>
             </div>
             <div class="shortcut-row">
               <span class="shortcut-keys"><kbd>?</kbd></span>
-              <span class="shortcut-desc">Show Shortcuts</span>
+              <span class="shortcut-desc">{t('landing.widgets.keyboard_shortcuts.show_shortcuts')}</span>
             </div>
           </div>
         </div>
         <div class="shortcuts-footer">
-          Press <kbd>ESC</kbd> to close
+          {t('landing.widgets.keyboard_shortcuts.close_desc') || 'Press ESC to close'}
         </div>
       </div>
     </div>
@@ -455,8 +459,8 @@ const {
     <div class="social-proof" id="social-proof">
       <div class="proof-avatar" id="proof-avatar">👤</div>
       <div class="proof-content">
-        <p class="proof-text" id="proof-text">Someone just signed up</p>
-        <p class="proof-time" id="proof-time">2 minutes ago</p>
+        <p class="proof-text" id="proof-text">{t('landing.widgets.social_proof.signed_up')}</p>
+        <p class="proof-time" id="proof-time">{t('landing.widgets.social_proof.just_now')}</p>
       </div>
       <button class="proof-close" id="proof-close">×</button>
     </div>
@@ -468,8 +472,8 @@ const {
     <div class="promo-badge" id="promo-badge">
       <div class="promo-badge-content">
         <span class="promo-pulse"></span>
-        <span class="promo-text">🎄 LAUNCH20</span>
-        <span class="promo-discount">-20% OFF</span>
+        <span class="promo-text">{t('landing.widgets.promo_badge.code_prefix')} LAUNCH20</span>
+        <span class="promo-discount">{t('landing.widgets.promo_badge.discount')}</span>
       </div>
       <button class="promo-close" id="promo-close">×</button>
     </div>
@@ -1710,11 +1714,12 @@ const {
       gPressed = true;
       setTimeout(() => { gPressed = false; }, 1000);
     } else if (gPressed) {
+      const root = document.documentElement.lang === 'en' ? '' : `/${document.documentElement.lang}`;
       switch (e.key.toLowerCase()) {
-        case 'h': window.location.href = '/agencyos'; break;
-        case 'p': window.location.href = '/pricing'; break;
-        case 'd': window.location.href = '/demo'; break;
-        case 'c': window.location.href = '/commands'; break;
+        case 'h': window.location.href = root + '/agencyos'; break;
+        case 'p': window.location.href = root + '/pricing'; break;
+        case 'd': window.location.href = root + '/demo'; break;
+        case 'c': window.location.href = root + '/commands'; break;
       }
       gPressed = false;
     }

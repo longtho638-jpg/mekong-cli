@@ -1,30 +1,31 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = '404 - Page Not Found | AgencyOS';
-const description = 'The page you are looking for does not exist.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('error_404.title');
+const description = t('error_404.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="error-page">
     <div class="error-content">
       <div class="error-icon">🏯</div>
-      <h1 class="error-code">404</h1>
-      <h2 class="error-title">Page Not Found</h2>
-      <p class="error-message">
-        The page you're looking for has wandered off into the mist.
-        <br />
-        Let's get you back on track.
+      <h1 class="error-code">{t('error_404.code')}</h1>
+      <h2 class="error-title">{t('error_404.page_title')}</h2>
+      <p class="error-message" set:html={t('error_404.message')}>
       </p>
-      
+
       <div class="error-actions">
-        <a href="/agencyos" class="btn-primary">Go Home</a>
-        <a href="/pricing" class="btn-secondary">View Pricing</a>
-        <a href="/docs/getting-started/introduction" class="btn-secondary">Read Docs</a>
+        <a href={getRelativeLocaleUrl(locale, '/agencyos')} class="btn-primary">{t('error_404.go_home')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/pricing')} class="btn-secondary">{t('error_404.view_pricing')}</a>
+        <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/introduction')} class="btn-secondary">{t('error_404.read_docs')}</a>
       </div>
-      
+
       <div class="error-commands">
-        <p class="commands-title">Or try these commands:</p>
+        <p class="commands-title">{t('error_404.try_commands')}</p>
         <code>/marketing/social</code>
         <code>/sales/proposal</code>
         <code>/affiliate/scout</code>

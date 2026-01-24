@@ -1,6 +1,6 @@
 ---
 // src/components/nav/SupportNav.astro
-import { getLangFromUrl, getDocPath } from '../../i18n/utils';
+import { getLocaleFromUrl, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
 interface Props {
   docs: any[];
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { docs, currentPath } = Astro.props;
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = getLocaleFromUrl(Astro.url);
 
 // Group by category
 const grouped = docs.reduce((acc: Record<string, any[]>, doc: any) => {
@@ -55,8 +55,9 @@ const categories: Record<string, { title: string; collapsible: boolean }> = {
 
         <ul class="nav-items">
           {categoryDocs.map((doc: any) => {
-            const href = getDocPath(doc.slug, currentLocale);
-            const isActive = currentPath === href;
+            const normalizedSlug = doc.slug.startsWith('docs/') ? doc.slug.slice(5) : doc.slug;
+            const href = getRelativeLocaleUrl(currentLocale, `/docs/${normalizedSlug}`);
+            const isActive = currentPath === href || currentPath === href + '/';
 
             return (
               <li>

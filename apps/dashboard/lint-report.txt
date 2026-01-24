@@ -1,0 +1,165 @@
+
+> mekong-dashboard@1.0.0 lint /Users/macbookprom1/mekong-cli/apps/dashboard
+> eslint . --max-warnings 250
+
+(node:24716) ESLintIgnoreWarning: The ".eslintignore" file is no longer supported. Switch to using the "ignores" property in "eslint.config.js": https://eslint.org/docs/latest/use/configure/migration-guide#ignoring-files
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/app/api/accounting/route.ts
+  54:22  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  56:58  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/app/api/inventory/route.ts
+  40:24  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/dashboard/RevenueOverview.tsx
+  14:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/payments/PayPalCheckout.tsx
+  163:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/payments/PayPalSmartButton.tsx
+   14:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   15:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   61:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   95:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/payments/PaymentCheckout.tsx
+  53:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/payments/SubscriptionManager.tsx
+  38:6  warning  React Hook useEffect has a missing dependency: 'fetchSubscription'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/ui/3d-card.tsx
+  118:8  warning  React Hook useEffect has a missing dependency: 'handleAnimations'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/ui/HyperText.tsx
+  22:23  warning  Forbidden non-null assertion                                                                                         @typescript-eslint/no-non-null-assertion
+  38:31  warning  Forbidden non-null assertion                                                                                         @typescript-eslint/no-non-null-assertion
+  47:36  warning  Forbidden non-null assertion                                                                                         @typescript-eslint/no-non-null-assertion
+  48:8   warning  React Hook useEffect has a missing dependency: 'triggerAnimation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/components/ui/background-beams-with-collision.tsx
+  160:8  warning  React Hook useEffect has a missing dependency: 'parentRef'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/accounting/journal-service.ts
+  15:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  16:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/accounting/ledger-service.ts
+  18:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  19:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/accounting/reports-service.ts
+  17:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  18:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/agent-creator-api.ts
+  25:68  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/agentops-api.ts
+  144:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  166:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/analytics/cohort.ts
+  73:13  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  74:13  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/analytics/metrics.ts
+   99:13  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  100:13  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/analytics/usage.ts
+   19:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:13  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+   82:13  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  125:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  197:13  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  224:13  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/audit-api.ts
+  12:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/billing/gateways.ts
+  39:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/billing/subscription.ts
+  76:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  77:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useAgency.ts
+  58:78  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  59:68  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useAnalytics.ts
+  229:8  warning  React Hook useMemo has a missing dependency: 'loading'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useAttendance.ts
+  90:38  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useChartOfAccounts.ts
+  100:43  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  102:20  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useQAReview.ts
+  167:65  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useSwarmSocket.ts
+  19:6  warning  React Hook useEffect has a missing dependency: 'connect'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hooks/useWorkflows.ts
+  18:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/hr/hr.ts
+  147:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  148:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/i18n/locale-utils.ts
+  258:24  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/inventory/inventory.ts
+  129:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  130:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/monitor-api.ts
+  9:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/security/__tests__/validation.test.ts
+  284:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  305:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  326:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/security/compliance.ts
+  319:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  320:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/security/error-handler.ts
+  292:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/security/logger.ts
+  213:9  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  216:9  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  226:9  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/tenant/isolation.ts
+  77:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  78:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/tenant/white-label.ts
+  68:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  69:7  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/Users/macbookprom1/mekong-cli/apps/dashboard/lib/workflow-api.ts
+   8:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  41:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 78 problems (0 errors, 78 warnings)
+

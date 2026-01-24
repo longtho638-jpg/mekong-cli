@@ -16,9 +16,13 @@ import Testimonials from '../components/Testimonials.astro';
 import NewsletterSignup from '../components/landing/NewsletterSignup.astro';
 import FinalCTA from '../components/landing/FinalCTA.astro';
 import BackgroundEffects from '../components/landing/BackgroundEffects.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = 'AgencyOS - The AI Operating System for Modern Agencies';
-const description = '125+ AI commands for marketing, sales, affiliate, and finance. The one-person agency operating system.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('landing.agencyos.title');
+const description = t('landing.agencyos.description');
 
 const { experiments } = Astro.locals;
 ---
@@ -26,18 +30,18 @@ const { experiments } = Astro.locals;
 <LandingLayout title={title} description={description}>
 
 <Hero
-  title="The AI Operating System for Modern Agencies"
-  description="125+ commands. Zero employees. Infinite scale."
+  title={t('landing.agencyos.hero.title')}
+  description={t('landing.agencyos.hero.description')}
   badge={{
     icon: '🧑‍💻',
-    text: 'For Technical Agency Founders'
+    text: t('landing.agencyos.hero.badge')
   }}
   primaryCta={{
-    text: 'Start Free Trial',
-    link: '/docs/getting-started/installation'
+    text: t('landing.agencyos.hero.primary_cta'),
+    link: getRelativeLocaleUrl(locale, '/docs/getting-started/installation')
   }}
   secondaryCta={{
-    text: 'Watch Demo →',
+    text: t('landing.agencyos.hero.secondary_cta'),
     link: '#how-it-works'
   }}
   experiment={{
@@ -46,7 +50,7 @@ const { experiments } = Astro.locals;
   }}
 >
   <p slot="footer" class="text-sm text-[var(--color-text-muted)] mb-10">
-    Join 500+ agencies worldwide • 4.9/5 rating • 30-day guarantee
+    {t('landing.agencyos.hero.footer')}
   </p>
 </Hero>
 

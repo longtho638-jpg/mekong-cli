@@ -1,0 +1,133 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/macbookprom1/mekong-cli
+configfile: pyproject.toml
+plugins: asyncio-1.2.0, anyio-4.11.0, cov-7.0.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 467 items / 1 error
+
+==================================== ERRORS ====================================
+___________ ERROR collecting tests/unit/self_improve/test_engine.py ____________
+import file mismatch:
+imported module 'test_engine' has this __file__ attribute:
+  /Users/macbookprom1/mekong-cli/tests/unit/agent_swarm/test_engine.py
+which is not the same as the test file we want to collect:
+  /Users/macbookprom1/mekong-cli/tests/unit/self_improve/test_engine.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+=============================== warnings summary ===============================
+backend/api/utils/__init__.py:14
+  /Users/macbookprom1/mekong-cli/backend/api/utils/__init__.py:14: DeprecationWarning: backend.api.utils.validators is deprecated. Use backend.api.utils.validation_logic instead.
+    from .validators import (
+
+backend/api/main.py:22
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:22: DeprecationWarning: backend.api.middleware.metrics is deprecated. Use backend.api.middleware.metrics_logic instead.
+    from backend.api.middleware.metrics import setup_metrics
+
+backend/api/main.py:25
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:25: DeprecationWarning: backend.api.middleware.multitenant is deprecated. Use backend.api.middleware.multitenant_logic instead.
+    from backend.api.middleware.multitenant import (
+
+backend/api/main.py:29
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:29: DeprecationWarning: backend.api.middleware.rate_limiting is deprecated. Use backend.api.middleware.rate_limit instead.
+    from backend.api.middleware.rate_limiting import (
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, data: TableMetadataV1) -> TableMetadataV1:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+backend/api/schemas/vibe.py:39
+  /Users/macbookprom1/mekong-cli/backend/api/schemas/vibe.py:39: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class VibeResponse(BaseModel):
+
+core/licensing/__init__.py:4
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:4: DeprecationWarning: core.licensing.generator is deprecated. Use core.licensing.logic instead.
+    from .generator import LicenseGenerator, generate_license_key, license_generator
+
+core/licensing/__init__.py:5
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:5: DeprecationWarning: core.licensing.validator is deprecated. Use core.licensing.validation instead.
+    from .validator import LicenseTier, LicenseValidator
+
+backend/agents/__init__.py:6
+  /Users/macbookprom1/mekong-cli/backend/agents/__init__.py:6: DeprecationWarning: backend.agents.community is deprecated. Use backend.agents.community_logic package instead.
+    from .community import CommunityAgent, Platform, ScheduledPost
+
+backend/routes/antigravity/demo.py:11
+  /Users/macbookprom1/mekong-cli/backend/routes/antigravity/demo.py:11: DeprecationWarning: antigravity.vc.metrics is deprecated. Use antigravity.vc.metrics_logic package instead.
+    from antigravity.vc.metrics import FundingStage, VCMetrics
+
+antigravity/core/ab_testing/models.py:30
+  /Users/macbookprom1/mekong-cli/antigravity/core/ab_testing/models.py:30: PytestCollectionWarning: cannot collect test class 'TestResult' because it has a __new__ constructor (from: tests/test_ab_testing.py)
+    class TestResult(Enum):
+
+../Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20: DeprecationWarning: 
+  Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
+  (to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
+  but was not found to be installed on your system.
+  If this would cause problems for you,
+  please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+          
+    import pandas as pd
+
+antigravity/infrastructure/distributed_queue/queue_manager.py:10
+  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/distributed_queue/queue_manager.py:10: DeprecationWarning: antigravity.infrastructure.distributed_queue.backends.redis_backend is deprecated. Use antigravity.infrastructure.distributed_queue.backends.redis instead.
+    from .backends.redis_backend import RedisBackend
+
+antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32
+  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32: DeprecationWarning: antigravity.infrastructure.opentelemetry.tracing_agent is deprecated. Use antigravity.infrastructure.opentelemetry.agent_logic instead.
+    from ..tracing_agent import TracingAgent
+
+antigravity/core/registry/__init__.py:24
+  /Users/macbookprom1/mekong-cli/antigravity/core/registry/__init__.py:24: DeprecationWarning: antigravity.core.registry.commands is deprecated. Use antigravity.core.registry.store instead.
+    from .commands import COMMAND_REGISTRY, SHORTCUTS
+
+tests/test_vibe_kanban_bridge.py:5
+  /Users/macbookprom1/mekong-cli/tests/test_vibe_kanban_bridge.py:5: DeprecationWarning: antigravity.vibe_kanban_bridge is deprecated. Use antigravity.bridge package instead.
+    from antigravity.vibe_kanban_bridge import AgentOrchestrator, VibeBoardClient
+
+backend/tests/test_swarm.py:6
+  /Users/macbookprom1/mekong-cli/backend/tests/test_swarm.py:6: PytestCollectionWarning: cannot collect test class 'TestAgent' because it has a __init__ constructor (from: backend/tests/test_swarm.py)
+    class TestAgent(BaseSwarmAgent):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/unit/self_improve/test_engine.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+======================== 26 warnings, 1 error in 40.84s ========================

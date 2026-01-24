@@ -1,0 +1,956 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/macbookprom1/mekong-cli
+configfile: pyproject.toml
+plugins: asyncio-1.2.0, anyio-4.11.0, cov-7.0.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 472 items
+
+tests/integration/test_api_crm.py::test_get_crm_summary_success PASSED   [  0%]
+tests/integration/test_api_crm.py::test_get_crm_deals PASSED             [  0%]
+tests/integration/test_api_crm.py::test_get_crm_contacts PASSED          [  0%]
+tests/integration/test_api_crm.py::test_get_crm_unavailable PASSED       [  0%]
+tests/integration/test_api_franchise.py::test_get_franchise_stats PASSED [  1%]
+tests/integration/test_api_franchise.py::test_get_hq_revenue PASSED      [  1%]
+tests/integration/test_api_franchise.py::test_get_territories PASSED     [  1%]
+tests/integration/test_api_franchise.py::test_get_franchisees PASSED     [  1%]
+tests/integration/test_api_franchise.py::test_franchise_unavailable PASSED [  1%]
+tests/integration/test_api_kanban.py::test_kanban_flow PASSED            [  2%]
+tests/integration/test_api_monitor.py::test_get_monitor_status_success PASSED [  2%]
+tests/integration/test_api_monitor.py::test_get_monitor_status_with_anomalies PASSED [  2%]
+tests/integration/test_api_monitor.py::test_get_monitor_status_error PASSED [  2%]
+tests/integration/test_refactored.py::test_ai_wingman PASSED             [  2%]
+tests/integration/test_refactored.py::test_client_portal PASSED          [  3%]
+tests/integration/test_refactored.py::test_analytics PASSED              [  3%]
+tests/integration/test_services.py::test_service_imports PASSED          [  3%]
+tests/integration/test_services.py::test_repository_imports PASSED       [  3%]
+tests/integration/test_services.py::test_presenter_imports PASSED        [  4%]
+tests/integration/test_services.py::test_basic_functionality PASSED      [  4%]
+tests/integration/test_swarm_kanban_sync.py::test_swarm_kanban_sync PASSED [  4%]
+tests/regression/test_golden_agents.py::TestRevenueCalculations::test_basic_profit_calculation PASSED [  4%]
+tests/regression/test_golden_agents.py::TestRevenueCalculations::test_zero_expenses PASSED [  4%]
+tests/regression/test_golden_agents.py::TestRevenueCalculations::test_loss_scenario PASSED [  5%]
+tests/regression/test_golden_agents.py::TestLeadScoring::test_high_value_tech_lead PASSED [  5%]
+tests/regression/test_golden_agents.py::TestLeadScoring::test_low_budget_lead PASSED [  5%]
+tests/regression/test_golden_agents.py::TestContentVirality::test_high_virality_keywords PASSED [  5%]
+tests/test_ab_testing.py::TestModuleImports::test_legacy_import_path PASSED [  5%]
+tests/test_ab_testing.py::TestModuleImports::test_modular_import_path PASSED [  6%]
+tests/test_ab_testing.py::TestModuleImports::test_import_paths_resolve_to_same_objects PASSED [  6%]
+tests/test_ab_testing.py::TestEnums::test_test_result_enum_values PASSED [  6%]
+tests/test_ab_testing.py::TestEnums::test_allocation_strategy_enum_values PASSED [  6%]
+tests/test_ab_testing.py::TestModels::test_ab_variant_creation PASSED    [  6%]
+tests/test_ab_testing.py::TestModels::test_statistical_test_creation PASSED [  7%]
+tests/test_ab_testing.py::TestABTestEngine::test_engine_initialization PASSED [  7%]
+tests/test_ab_testing.py::TestABTestEngine::test_create_multivariate_test PASSED [  7%]
+tests/test_ab_testing.py::TestABTestEngine::test_update_test_metrics_conversion PASSED [  7%]
+tests/test_ab_testing.py::TestABTestEngine::test_update_test_metrics_no_conversion PASSED [  8%]
+tests/test_ab_testing.py::TestABTestEngine::test_update_nonexistent_test_no_error PASSED [  8%]
+tests/test_ab_testing.py::TestABTestEngine::test_get_test_analytics_active_test PASSED [  8%]
+tests/test_ab_testing.py::TestABTestEngine::test_get_test_analytics_not_found PASSED [  8%]
+tests/test_ab_testing.py::TestABTestEngine::test_get_active_tests_summary PASSED [  8%]
+tests/test_ab_testing.py::TestConvenienceFunctions::test_create_multivariate_test_function PASSED [  9%]
+tests/test_ab_testing.py::TestConvenienceFunctions::test_update_test_metrics_function PASSED [  9%]
+tests/test_ab_testing.py::TestConvenienceFunctions::test_get_test_analytics_function PASSED [  9%]
+tests/test_ab_testing.py::TestConvenienceFunctions::test_get_active_tests_summary_function PASSED [  9%]
+tests/test_ab_testing.py::TestIntegration::test_complete_ab_test_workflow PASSED [  9%]
+tests/test_ab_testing.py::TestIntegration::test_multiple_concurrent_tests PASSED [ 10%]
+tests/test_agency_dna.py::TestAgencyDNA::test_service_initialization PASSED [ 10%]
+tests/test_agency_dna.py::TestAgencyDNA::test_agency_dna_tagline PASSED  [ 10%]
+tests/test_agency_dna.py::TestAgencyDNA::test_add_service PASSED         [ 10%]
+tests/test_agency_dna.py::TestAgencyDNA::test_to_dict PASSED             [ 11%]
+tests/test_agent_chains.py::TestAgentChains::test_inventory_structure PASSED [ 11%]
+tests/test_agent_chains.py::TestAgentChains::test_chains_structure PASSED [ 11%]
+tests/test_agent_chains.py::TestAgentChains::test_get_chain PASSED       [ 11%]
+tests/test_agent_chains.py::TestAgentChains::test_get_chain_summary PASSED [ 11%]
+tests/test_agent_crews.py::TestAgentCrews::test_crew_definitions PASSED  [ 12%]
+tests/test_agent_crews.py::TestAgentCrews::test_get_crew PASSED          [ 12%]
+tests/test_agent_crews.py::TestAgentCrews::test_get_crew_summary PASSED  [ 12%]
+tests/test_agent_crews.py::TestAgentCrews::test_run_crew_simulation PASSED [ 12%]
+tests/test_agent_memory.py::TestAgentMemory::test_remember_and_recall PASSED [ 12%]
+tests/test_agent_memory.py::TestAgentMemory::test_pattern_learning PASSED [ 13%]
+tests/test_agent_memory.py::TestAgentMemory::test_persistence PASSED     [ 13%]
+tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_run_valid_chain PASSED [ 13%]
+tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_run_invalid_chain PASSED [ 13%]
+tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_orchestrator_stats PASSED [ 13%]
+tests/test_agent_swarm.py::test_agent_registration PASSED                [ 14%]
+tests/test_agent_swarm.py::test_task_submission PASSED                   [ 14%]
+tests/test_agent_swarm.py::test_task_execution PASSED                    [ 14%]
+tests/test_agent_swarm.py::test_priority_scheduling PASSED               [ 14%]
+tests/test_algorithm_core.py::test_initialization PASSED                 [ 15%]
+tests/test_algorithm_core.py::test_calculate_optimized_price_defaults PASSED [ 15%]
+tests/test_algorithm_core.py::test_calculate_traditional_viral PASSED    [ 15%]
+tests/test_algorithm_core.py::test_calculate_penetration_pricing PASSED  [ 15%]
+tests/test_algorithm_core.py::test_track_conversion PASSED               [ 15%]
+tests/test_algorithm_core.py::test_analytics_integration PASSED          [ 16%]
+tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_set_goal_and_planning PASSED [ 16%]
+tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_execute_simulation PASSED [ 16%]
+tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_status_tracking PASSED [ 16%]
+tests/test_base.py::TestBase::test_base_model_serialization PASSED       [ 16%]
+tests/test_base.py::TestBase::test_base_engine_storage PASSED            [ 17%]
+tests/test_cashflow_engine.py::TestCashflowEngine::test_add_revenue PASSED [ 17%]
+tests/test_cashflow_engine.py::TestCashflowEngine::test_currency_conversion PASSED [ 17%]
+tests/test_cashflow_engine.py::TestCashflowEngine::test_required_growth PASSED [ 17%]
+tests/test_checkpointing.py::TestCheckpointing::test_save_and_list PASSED [ 18%]
+tests/test_checkpointing.py::TestCheckpointing::test_restore PASSED      [ 18%]
+tests/test_checkpointing.py::TestCheckpointing::test_delete PASSED       [ 18%]
+tests/test_checkpointing.py::TestCheckpointing::test_persistence PASSED  [ 18%]
+tests/test_client_magnet.py::TestClientMagnet::test_add_lead PASSED      [ 18%]
+tests/test_client_magnet.py::TestClientMagnet::test_qualify_lead PASSED  [ 19%]
+tests/test_client_magnet.py::TestClientMagnet::test_convert_client PASSED [ 19%]
+tests/test_client_magnet.py::TestClientMagnet::test_pipeline_stats PASSED [ 19%]
+tests/test_code_guardian.py::test_security_scanning PASSED               [ 19%]
+tests/test_code_guardian.py::test_performance_monitoring PASSED          [ 19%]
+tests/test_code_guardian.py::test_rollback_points PASSED                 [ 20%]
+tests/test_code_guardian.py::test_guarded_decorator PASSED               [ 20%]
+tests/test_coding_level.py::TestCodingLevel::test_levels_configuration PASSED [ 20%]
+tests/test_coding_level.py::TestCodingLevel::test_set_get_level PASSED   [ 20%]
+tests/test_coding_level.py::TestCodingLevel::test_invalid_level PASSED   [ 20%]
+tests/test_coding_level.py::TestCodingLevel::test_get_level_prompt PASSED [ 21%]
+tests/test_coding_level.py::TestCodingLevel::test_load_level_style PASSED [ 21%]
+tests/test_config.py::TestConfig::test_currency_enums PASSED             [ 21%]
+tests/test_config.py::TestConfig::test_pricing_tiers PASSED              [ 21%]
+tests/test_config.py::TestConfig::test_conversion_helpers PASSED         [ 22%]
+tests/test_content_factory.py::TestContentFactory::test_generate_ideas PASSED [ 22%]
+tests/test_content_factory.py::TestContentFactory::test_create_post PASSED [ 22%]
+tests/test_content_factory.py::TestContentFactory::test_calendar_generation PASSED [ 22%]
+tests/test_contract_gen.py::test_contract_template_model PASSED          [ 22%]
+tests/test_contract_gen.py::test_generate_markdown_content PASSED        [ 23%]
+tests/test_contract_gen.py::test_loader PASSED                           [ 23%]
+tests/test_core_modules.py::TestCRM::test_crm_initialization PASSED      [ 23%]
+tests/test_core_modules.py::TestCRM::test_crm_add_contact PASSED         [ 23%]
+tests/test_core_modules.py::TestCRM::test_crm_get_hot_leads PASSED       [ 23%]
+tests/test_core_modules.py::TestCRM::test_crm_forecast_revenue PASSED    [ 24%]
+tests/test_core_modules.py::TestCRM::test_crm_get_summary PASSED         [ 24%]
+tests/test_core_modules.py::TestCRMPresenter::test_format_pipeline_text PASSED [ 24%]
+tests/test_core_modules.py::TestAnalytics::test_analytics_initialization PASSED [ 24%]
+tests/test_data_moat.py::TestDataMoat::test_record_success PASSED        [ 25%]
+tests/test_data_moat.py::TestDataMoat::test_add_insight PASSED           [ 25%]
+tests/test_data_moat.py::TestDataMoat::test_get_best_practices PASSED    [ 25%]
+tests/test_data_moat.py::TestDataMoat::test_get_moat_strength PASSED     [ 25%]
+tests/test_distributed_queue.py::test_job_defaults PASSED                [ 25%]
+tests/test_distributed_queue.py::test_job_serialization PASSED           [ 26%]
+tests/test_distributed_queue.py::test_memory_submit_and_get PASSED       [ 26%]
+tests/test_distributed_queue.py::test_memory_priority PASSED             [ 26%]
+tests/test_distributed_queue.py::test_memory_completion PASSED           [ 26%]
+tests/test_distributed_queue.py::test_manager_fallback PASSED            [ 26%]
+tests/test_distributed_queue.py::test_manager_no_fallback PASSED         [ 27%]
+tests/test_distributed_queue.py::test_manager_flow PASSED                [ 27%]
+tests/test_distributed_queue.py::test_manager_retry_flow PASSED          [ 27%]
+tests/test_distributed_queue.py::test_facade_methods PASSED              [ 27%]
+tests/test_distributed_queue.py::test_facade_legacy_completion PASSED    [ 27%]
+tests/test_errors.py::TestErrors::test_base_error PASSED                 [ 28%]
+tests/test_errors.py::TestErrors::test_validation_error PASSED           [ 28%]
+tests/test_errors.py::TestErrors::test_win3_error PASSED                 [ 28%]
+tests/test_ez_pr.py::TestEzPR::test_help_command PASSED                  [ 28%]
+tests/test_ez_pr.py::TestEzPR::test_check_empty PASSED                   [ 29%]
+tests/test_ez_pr.py::TestEzPR::test_check_with_prs PASSED                [ 29%]
+tests/test_franchise_manager.py::TestFranchiseManager::test_add_franchisee PASSED [ 29%]
+tests/test_franchise_manager.py::TestFranchiseManager::test_record_revenue PASSED [ 29%]
+tests/test_franchise_manager.py::TestFranchiseManager::test_get_network_stats PASSED [ 29%]
+tests/test_headless.py::TestHeadless::test_prompt_execution PASSED       [ 30%]
+tests/test_headless.py::TestHeadless::test_slash_command_routing PASSED  [ 30%]
+tests/test_headless.py::TestHeadless::test_json_output_format PASSED     [ 30%]
+tests/test_hooks_manager.py::TestHooksManager::test_hook_structure PASSED [ 30%]
+tests/test_hooks_manager.py::TestHooksManager::test_hooks_for_suite PASSED [ 30%]
+tests/test_hooks_manager.py::TestHooksManager::test_privacy_block PASSED [ 31%]
+tests/test_hooks_manager.py::TestHooksManager::test_win3_gate PASSED     [ 31%]
+tests/test_infrastructure.py::TestInfrastructure::test_stack_initialization PASSED [ 31%]
+tests/test_infrastructure.py::TestInfrastructure::test_health_score PASSED [ 31%]
+tests/test_infrastructure.py::TestInfrastructure::test_layer_update PASSED [ 31%]
+tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_dry_run PASSED [ 32%]
+tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_success PASSED [ 32%]
+tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_unknown PASSED [ 32%]
+tests/test_jules_integration.py::TestJulesIntegration::test_run_weekly_tasks_monday PASSED [ 32%]
+tests/test_jules_runner.py::TestJulesRunner::test_task_registry PASSED   [ 33%]
+tests/test_jules_runner.py::TestJulesRunner::test_run_task_dry PASSED    [ 33%]
+tests/test_jules_runner.py::TestJulesRunner::test_invalid_task PASSED    [ 33%]
+tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_tier_progression PASSED [ 33%]
+tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_savings_calculation PASSED [ 33%]
+tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_next_tier_info PASSED [ 34%]
+tests/test_master_dashboard.py::TestMasterDashboard::test_summary_aggregation PASSED [ 34%]
+tests/test_master_dashboard.py::TestMasterDashboard::test_platform_score PASSED [ 34%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_main_class_import PASSED [ 34%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_global_instance_import PASSED [ 34%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_convenience_functions_import PASSED [ 35%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_dataclasses_import PASSED [ 35%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_availability_flags_import PASSED [ 35%]
+tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_direct_ml_module_import PASSED [ 35%]
+tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_instantiation_succeeds PASSED [ 36%]
+tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_models_attribute PASSED [ 36%]
+tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_game_changing_metrics PASSED [ 36%]
+tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_core_methods PASSED [ 36%]
+tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_calculate_ai_optimized_price_returns_result PASSED [ 36%]
+tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_optimal_price_is_positive PASSED [ 37%]
+tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_confidence_score_in_valid_range PASSED [ 37%]
+tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_strategy_used_is_string PASSED [ 37%]
+tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_optimization_features_is_list PASSED [ 37%]
+tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_global_instance_is_mloptimizer PASSED [ 37%]
+tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_get_game_changing_analytics_returns_dict PASSED [ 38%]
+tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_analytics_has_required_keys PASSED [ 38%]
+tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_convenience_function_calculate_price PASSED [ 38%]
+tests/test_ml_optimizer.py::TestMLOptimizerMissingDependencies::test_works_without_sklearn PASSED [ 38%]
+tests/test_ml_optimizer.py::TestMLOptimizerMissingDependencies::test_fallback_strategy_when_no_ml PASSED [ 38%]
+tests/test_ml_optimizer.py::TestMLOptimizerEnums::test_pricing_mode_values PASSED [ 39%]
+tests/test_ml_optimizer.py::TestMLOptimizerEnums::test_game_changing_feature_values PASSED [ 39%]
+tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_game_changing_metrics_viral PASSED [ 39%]
+tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_game_changing_metrics_quantum PASSED [ 39%]
+tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_increments_total_predictions PASSED [ 40%]
+tests/test_moat_engine.py::test_initialization PASSED                    [ 40%]
+tests/test_moat_engine.py::test_add_data_point PASSED                    [ 40%]
+tests/test_moat_engine.py::test_record_learning PASSED                   [ 40%]
+tests/test_moat_engine.py::test_add_workflow PASSED                      [ 40%]
+tests/test_moat_engine.py::test_calculate_switching_cost PASSED          [ 41%]
+tests/test_moat_engine.py::test_persistence PASSED                       [ 41%]
+tests/test_moat_engine.py::test_global_instance PASSED                   [ 41%]
+tests/test_money_maker.py::TestMoneyMaker::test_generate_quote PASSED    [ 41%]
+tests/test_money_maker.py::TestMoneyMaker::test_validate_win3 PASSED     [ 41%]
+tests/test_money_maker.py::TestMoneyMaker::test_auto_qualify PASSED      [ 42%]
+tests/test_opentelemetry.py::TestTracerConfig::test_default_values PASSED [ 42%]
+tests/test_opentelemetry.py::TestTracerConfig::test_custom_values PASSED [ 42%]
+tests/test_opentelemetry.py::TestExporterConfig::test_required_endpoint PASSED [ 42%]
+tests/test_opentelemetry.py::TestExporterConfig::test_custom_headers PASSED [ 43%]
+tests/test_opentelemetry.py::TestAgentConfig::test_agent_config_creation PASSED [ 43%]
+tests/test_opentelemetry.py::TestTraceId::test_auto_generated_trace_id PASSED [ 43%]
+tests/test_opentelemetry.py::TestTraceId::test_with_parent_id PASSED     [ 43%]
+tests/test_opentelemetry.py::TestTraceId::test_to_dict PASSED            [ 43%]
+tests/test_opentelemetry.py::TestTraceId::test_str_representation PASSED [ 44%]
+tests/test_opentelemetry.py::TestSpanKind::test_span_kinds PASSED        [ 44%]
+tests/test_opentelemetry.py::TestSpanStatus::test_span_statuses PASSED   [ 44%]
+tests/test_opentelemetry.py::TestEvent::test_event_creation PASSED       [ 44%]
+tests/test_opentelemetry.py::TestEvent::test_event_with_attributes PASSED [ 44%]
+tests/test_opentelemetry.py::TestEvent::test_event_to_dict PASSED        [ 45%]
+tests/test_opentelemetry.py::TestMetric::test_metric_creation PASSED     [ 45%]
+tests/test_opentelemetry.py::TestMetric::test_metric_to_dict PASSED      [ 45%]
+tests/test_opentelemetry.py::TestSpan::test_span_creation PASSED         [ 45%]
+tests/test_opentelemetry.py::TestSpan::test_span_start PASSED            [ 45%]
+tests/test_opentelemetry.py::TestSpan::test_span_finish PASSED           [ 46%]
+tests/test_opentelemetry.py::TestSpan::test_span_finish_with_error PASSED [ 46%]
+tests/test_opentelemetry.py::TestSpan::test_span_add_event PASSED        [ 46%]
+tests/test_opentelemetry.py::TestSpan::test_span_add_tag PASSED          [ 46%]
+tests/test_opentelemetry.py::TestSpan::test_span_add_attribute PASSED    [ 47%]
+tests/test_opentelemetry.py::TestSpan::test_span_set_parent PASSED       [ 47%]
+tests/test_opentelemetry.py::TestSpan::test_span_get_duration PASSED     [ 47%]
+tests/test_opentelemetry.py::TestSpan::test_span_to_dict PASSED          [ 47%]
+tests/test_opentelemetry.py::TestTracingAgent::test_agent_creation PASSED [ 47%]
+tests/test_opentelemetry.py::TestTracingAgent::test_is_critical_operation PASSED [ 48%]
+tests/test_opentelemetry.py::TestTracingAgent::test_is_supported_operation PASSED [ 48%]
+tests/test_opentelemetry.py::TestTracingAgent::test_record_operation PASSED [ 48%]
+tests/test_opentelemetry.py::TestTracingAgent::test_register_and_unregister_span PASSED [ 48%]
+tests/test_opentelemetry.py::TestTracingAgent::test_get_health_status PASSED [ 48%]
+tests/test_opentelemetry.py::TestTracingAgent::test_activate_deactivate PASSED [ 49%]
+tests/test_opentelemetry.py::TestTracingAgent::test_shutdown PASSED      [ 49%]
+tests/test_opentelemetry.py::TestTracingAgent::test_to_dict PASSED       [ 49%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_tracer_initialization_without_background_processors PASSED [ 49%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_tracer_custom_endpoints PASSED [ 50%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_create_span PASSED [ 50%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_create_span_with_parent PASSED [ 50%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_trace_request PASSED [ 50%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_trace_ai_operation PASSED [ 50%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_finish_span PASSED [ 51%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_create_tracing_agent PASSED [ 51%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_register_tracing_agent PASSED [ 51%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_register_tracing_agent_requires_name PASSED [ 51%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_get_tracing_analytics PASSED [ 51%]
+tests/test_opentelemetry.py::TestDistributedTracer::test_shutdown PASSED [ 52%]
+tests/test_opentelemetry.py::TestSpanProcessor::test_processor_initialization PASSED [ 52%]
+tests/test_opentelemetry.py::TestSpanProcessor::test_process_spans PASSED [ 52%]
+tests/test_opentelemetry.py::TestSpanProcessor::test_processor_start_stop PASSED [ 52%]
+tests/test_opentelemetry.py::TestMetricsProcessor::test_processor_initialization PASSED [ 52%]
+tests/test_opentelemetry.py::TestMetricsProcessor::test_process_metrics PASSED [ 53%]
+tests/test_opentelemetry.py::TestExportLoopProcessor::test_processor_initialization PASSED [ 53%]
+tests/test_opentelemetry.py::TestExportLoopProcessor::test_process_with_mock_callback PASSED [ 53%]
+tests/test_opentelemetry.py::TestPerformanceAnalyzer::test_analyzer_initialization PASSED [ 53%]
+tests/test_opentelemetry.py::TestPerformanceAnalyzer::test_analyze_with_agents PASSED [ 54%]
+tests/test_opentelemetry.py::TestOTLPExporter::test_exporter_initialization PASSED [ 54%]
+tests/test_opentelemetry.py::TestOTLPExporter::test_export_spans_success PASSED [ 54%]
+tests/test_opentelemetry.py::TestOTLPExporter::test_export_spans_failure PASSED [ 54%]
+tests/test_opentelemetry.py::TestOTLPExporter::test_export_empty_spans PASSED [ 54%]
+tests/test_opentelemetry.py::TestOTLPExporter::test_export_metrics_success PASSED [ 55%]
+tests/test_opentelemetry.py::TestJaegerExporter::test_exporter_initialization PASSED [ 55%]
+tests/test_opentelemetry.py::TestJaegerExporter::test_export_spans_success PASSED [ 55%]
+tests/test_opentelemetry.py::TestJaegerExporter::test_convert_tags PASSED [ 55%]
+tests/test_opentelemetry.py::TestJaegerExporter::test_export_metrics_noop PASSED [ 55%]
+tests/test_opentelemetry.py::TestExportProcessor::test_processor_initialization PASSED [ 56%]
+tests/test_opentelemetry.py::TestExportProcessor::test_add_span PASSED   [ 56%]
+tests/test_opentelemetry.py::TestExportProcessor::test_process_export_batch PASSED [ 56%]
+tests/test_opentelemetry.py::TestExportProcessor::test_shutdown PASSED   [ 56%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_distributed_tracer_global_instance PASSED [ 56%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_create_span_function PASSED [ 57%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_trace_request_function PASSED [ 57%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_trace_ai_operation_function PASSED [ 57%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_get_tracing_analytics_function PASSED [ 57%]
+tests/test_opentelemetry.py::TestBackwardCompatibility::test_register_tracing_agent_function PASSED [ 58%]
+tests/test_persistence.py::TestPersistence::test_json_store_operations PASSED [ 58%]
+tests/test_persistence.py::TestPersistence::test_serialization_helpers PASSED [ 58%]
+tests/test_persistence.py::TestPersistence::test_atomic_write_recovery PASSED [ 58%]
+tests/test_pr_manager.py::TestPRManager::test_can_auto_merge_logic PASSED [ 58%]
+tests/test_pr_manager.py::TestPRManager::test_get_open_prs_mock PASSED   [ 59%]
+tests/test_proposal_generator.py::TestProposalGenerator::test_generate_proposal PASSED [ 59%]
+tests/test_proposal_generator.py::TestProposalGenerator::test_quick_proposal PASSED [ 59%]
+tests/test_proposal_generator.py::TestProposalGenerator::test_save_proposal PASSED [ 59%]
+tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_normal PASSED [ 59%]
+tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_warning PASSED [ 60%]
+tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_critical PASSED [ 60%]
+tests/test_quota_engine.py::TestQuotaModel::test_countdown_format_hours PASSED [ 60%]
+tests/test_quota_engine.py::TestQuotaModel::test_countdown_format_minutes_only PASSED [ 60%]
+tests/test_quota_engine.py::TestQuotaModel::test_countdown_ready PASSED  [ 61%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_rocket PASSED [ 61%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_dot PASSED [ 61%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_dot_percent PASSED [ 61%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_percent PASSED [ 61%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_name_percent PASSED [ 62%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_format_full PASSED [ 62%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_emoji_warning PASSED [ 62%]
+tests/test_quota_engine.py::TestQuotaModel::test_status_emoji_critical PASSED [ 62%]
+tests/test_quota_engine.py::TestQuotaPool::test_aggregate_remaining PASSED [ 62%]
+tests/test_quota_engine.py::TestQuotaPool::test_lowest_model PASSED      [ 63%]
+tests/test_quota_engine.py::TestQuotaPool::test_empty_pool PASSED        [ 63%]
+tests/test_quota_engine.py::TestQuotaEngine::test_initialization PASSED  [ 63%]
+tests/test_quota_engine.py::TestQuotaEngine::test_custom_thresholds PASSED [ 63%]
+tests/test_quota_engine.py::TestQuotaEngine::test_get_local_quota_returns_mock PASSED [ 63%]
+tests/test_quota_engine.py::TestQuotaEngine::test_get_current_status_structure PASSED [ 64%]
+tests/test_quota_engine.py::TestQuotaEngine::test_alerts_detection PASSED [ 64%]
+tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_full PASSED [ 64%]
+tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_compact PASSED [ 64%]
+tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_json PASSED [ 65%]
+tests/test_quota_engine.py::TestIntegration::test_full_quota_check_workflow PASSED [ 65%]
+tests/test_registry.py::TestRegistry::test_registry_structure PASSED     [ 65%]
+tests/test_registry.py::TestRegistry::test_get_command_module PASSED     [ 65%]
+tests/test_registry.py::TestRegistry::test_resolve_shortcut PASSED       [ 65%]
+tests/test_revenue_engine.py::TestRevenueEngine::test_invoice_lifecycle PASSED [ 66%]
+tests/test_revenue_engine.py::TestRevenueEngine::test_arr_calculation PASSED [ 66%]
+tests/test_revenue_engine.py::TestRevenueEngine::test_goal_tracking PASSED [ 66%]
+tests/test_rules_loader.py::TestRulesLoader::test_rule_mapping_structure PASSED [ 66%]
+tests/test_rules_loader.py::TestRulesLoader::test_get_rules_for_agent PASSED [ 66%]
+tests/test_rules_loader.py::TestRulesLoader::test_get_rules_for_unknown_agent PASSED [ 67%]
+tests/test_rules_loader.py::TestRulesLoader::test_load_rules_content PASSED [ 67%]
+tests/test_sales_pipeline.py::TestSalesPipeline::test_deal_lifecycle PASSED [ 67%]
+tests/test_sales_pipeline.py::TestSalesPipeline::test_pipeline_stats PASSED [ 67%]
+tests/test_skill_loader.py::TestSkillLoader::test_skill_mapping_structure PASSED [ 68%]
+tests/test_skill_loader.py::TestSkillLoader::test_get_skills_for_agent PASSED [ 68%]
+tests/test_skill_loader.py::TestSkillLoader::test_load_skills_content PASSED [ 68%]
+tests/test_telemetry.py::TestTelemetry::test_track_event PASSED          [ 68%]
+tests/test_telemetry.py::TestTelemetry::test_usage_stats PASSED          [ 68%]
+tests/test_telemetry.py::TestTelemetry::test_persistence PASSED          [ 69%]
+tests/test_unified_dashboard.py::TestUnifiedDashboard::test_get_stats PASSED [ 69%]
+tests/test_unified_dashboard.py::TestUnifiedDashboard::test_integration_score PASSED [ 69%]
+tests/test_vc_metrics.py::TestVCMetrics::test_initialization PASSED      [ 69%]
+tests/test_vc_metrics.py::TestVCMetrics::test_ltv_cac_ratio PASSED       [ 69%]
+tests/test_vc_metrics.py::TestVCMetrics::test_rule_of_40 PASSED          [ 70%]
+tests/test_vc_metrics.py::TestVCMetrics::test_readiness_score PASSED     [ 70%]
+tests/test_vc_metrics.py::TestVCMetrics::test_stage_recommendation PASSED [ 70%]
+tests/test_vibe_ide.py::TestVIBEIDE::test_create_plan PASSED             [ 70%]
+tests/test_vibe_ide.py::TestVIBEIDE::test_todo_management PASSED         [ 70%]
+tests/test_vibe_ide.py::TestVIBEIDE::test_list_plans PASSED              [ 71%]
+tests/test_vibe_kanban_bridge.py::test_create_task PASSED                [ 71%]
+tests/test_vibe_kanban_bridge.py::test_list_tasks PASSED                 [ 71%]
+tests/test_vibe_kanban_bridge.py::test_orchestrator_workload PASSED      [ 71%]
+tests/test_vibe_kanban_bridge.py::test_missing_token_raises_error PASSED [ 72%]
+tests/test_vibe_kanban_bridge.py::test_empty_token_raises_error PASSED   [ 72%]
+tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_task_creation PASSED [ 72%]
+tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_sequential_execution PASSED [ 72%]
+tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_agent_registration PASSED [ 72%]
+tests/test_vibe_workflow.py::TestVIBEWorkflow::test_plan_detection PASSED [ 73%]
+tests/test_vibe_workflow.py::TestVIBEWorkflow::test_analyze_plan PASSED  [ 73%]
+tests/test_vibe_workflow.py::TestVIBEWorkflow::test_task_management PASSED [ 73%]
+tests/test_vibe_workflow.py::TestVIBEWorkflow::test_stats_aggregation PASSED [ 73%]
+tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_register_agent PASSED [ 73%]
+tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_get_metrics PASSED [ 74%]
+tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_get_status PASSED [ 74%]
+tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_find_best_agent PASSED [ 74%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_swarm_initialization PASSED [ 74%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_register_agent_delegation PASSED [ 75%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_submit_task_delegation PASSED [ 75%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_start_stop PASSED [ 75%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_task_result_delegation PASSED [ 75%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_metrics_delegation PASSED [ 75%]
+tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_status_delegation PASSED [ 76%]
+tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_find_best_task_worker PASSED [ 76%]
+tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_find_best_task_specialist PASSED [ 76%]
+tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_assign_task PASSED [ 76%]
+tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_execute_task_success PASSED [ 76%]
+tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_execute_task_failure PASSED [ 77%]
+tests/unit/agent_swarm/test_graph.py::test_graph_execution PASSED        [ 77%]
+tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_register_agent PASSED [ 77%]
+tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_agent PASSED [ 77%]
+tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_all_agents PASSED [ 77%]
+tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_available_agents PASSED [ 78%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_get_swarm_singleton PASSED [ 78%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_reset_swarm PASSED [ 78%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_register_agent_shortcut PASSED [ 78%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_submit_task_shortcut PASSED [ 79%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_get_task_result_shortcut PASSED [ 79%]
+tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_start_stop_shortcuts PASSED [ 79%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_submit_task PASSED [ 79%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_priority_queueing PASSED [ 79%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_next_task PASSED [ 80%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_pop_next_task PASSED [ 80%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_remove_task_from_queue PASSED [ 80%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_task_result_wait PASSED [ 80%]
+tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_task_result_timeout PASSED [ 80%]
+tests/unit/ops/test_approval_gate.py::test_approval_flow PASSED          [ 81%]
+tests/unit/ops/test_approval_gate.py::test_rejection_flow PASSED         [ 81%]
+tests/unit/self_improve/test_self_improve_engine.py::test_learn_from_error PASSED [ 81%]
+tests/unit/self_improve/test_self_improve_engine.py::test_profile_function PASSED [ 81%]
+tests/unit/self_improve/test_self_improve_engine.py::test_get_status PASSED [ 81%]
+tests/unit/self_improve/test_self_improve_engine.py::test_apply_suggestion PASSED [ 82%]
+tests/unit/self_improve/test_self_improve_engine.py::test_persistence_call PASSED [ 82%]
+backend/tests/test_audit_api.py::test_audit_log_endpoint_protected PASSED [ 82%]
+backend/tests/test_audit_api.py::test_audit_log_access_denied_for_user PASSED [ 82%]
+backend/tests/test_audit_api.py::test_audit_log_access_allowed_for_admin PASSED [ 83%]
+backend/tests/test_editor.py::TestContentDraft::test_content_draft_creation PASSED [ 83%]
+backend/tests/test_editor.py::TestEditorAgent::test_agent_init PASSED    [ 83%]
+backend/tests/test_editor.py::TestEditorAgent::test_create_post_returns_draft PASSED [ 83%]
+backend/tests/test_editor.py::TestEditorAgent::test_create_post_blog_platform PASSED [ 83%]
+backend/tests/test_editor.py::TestEditorAgent::test_batch_create_multiple_posts PASSED [ 84%]
+backend/tests/test_editor.py::TestEditorWinWinWin::test_content_benefits_all_parties PASSED [ 84%]
+backend/tests/test_gumroad_webhooks.py::test_gumroad_webhook_success PASSED [ 84%]
+backend/tests/test_gumroad_webhooks.py::test_gumroad_webhook_failure PASSED [ 84%]
+backend/tests/test_knowledge.py::TestGraphClient::test_add_node PASSED   [ 84%]
+backend/tests/test_knowledge.py::TestGraphClient::test_schema_generation PASSED [ 85%]
+backend/tests/test_knowledge.py::TestGraphClient::test_function_node PASSED [ 85%]
+backend/tests/test_knowledge.py::TestGraphClient::test_edge_creation PASSED [ 85%]
+backend/tests/test_knowledge.py::TestCodeIngestor::test_ingest_function PASSED [ 85%]
+backend/tests/test_knowledge.py::TestCodeIngestor::test_ingest_file PASSED [ 86%]
+backend/tests/test_knowledge.py::TestKnowledgeRetriever::test_generate_embedding PASSED [ 86%]
+backend/tests/test_knowledge.py::TestKnowledgeRetriever::test_search PASSED [ 86%]
+backend/tests/test_knowledge.py::TestCodeIngestorBatch::test_sync_to_graph PASSED [ 86%]
+backend/tests/test_rag.py::TestRAG::test_embedding_service PASSED        [ 86%]
+backend/tests/test_rag.py::TestRAG::test_vector_client PASSED            [ 87%]
+backend/tests/test_rag.py::TestRAG::test_research_agent PASSED           [ 87%]
+backend/tests/test_realtime.py::test_message_bus_websocket_broadcast PASSED [ 87%]
+backend/tests/test_scout.py::TestTrendItem::test_trend_item_creation PASSED [ 87%]
+backend/tests/test_scout.py::TestTrendItem::test_trend_item_with_url PASSED [ 87%]
+backend/tests/test_scout.py::TestIntelBrief::test_intel_brief_creation PASSED [ 88%]
+backend/tests/test_scout.py::TestScoutAgent::test_agent_init PASSED      [ 88%]
+backend/tests/test_scout.py::TestScoutAgent::test_get_trending PASSED    [ 88%]
+backend/tests/test_scout.py::TestScoutAgent::test_get_trending_max PASSED [ 88%]
+backend/tests/test_scout.py::TestScoutAgent::test_research_returns_intel_brief PASSED [ 88%]
+backend/tests/test_scout.py::TestScoutAgent::test_research_has_trends PASSED [ 89%]
+backend/tests/test_scout.py::TestScoutAgent::test_research_has_content_angles PASSED [ 89%]
+backend/tests/test_scout.py::TestScoutAgent::test_generate_ideas PASSED  [ 89%]
+backend/tests/test_scout.py::TestScoutAgent::test_generate_ideas_unknown_pillar PASSED [ 89%]
+backend/tests/test_scout.py::TestScoutAgentWinWinWin::test_research_provides_actionable_intelligence PASSED [ 90%]
+backend/tests/test_sdrops.py::TestLeadQualifierAgent::test_agent_initialization PASSED [ 90%]
+backend/tests/test_sdrops.py::TestLeadQualifierAgent::test_add_lead_creates_lead PASSED [ 90%]
+backend/tests/test_sdrops.py::TestLeadQualifierAgent::test_score_bant_returns_score PASSED [ 90%]
+backend/tests/test_sdrops.py::TestLeadQualifierAgent::test_qualification_status_assignment PASSED [ 90%]
+backend/tests/test_sdrops.py::TestMeetingBookerAgent::test_agent_initialization PASSED [ 91%]
+backend/tests/test_sdrops.py::TestMeetingBookerAgent::test_book_returns_meeting PASSED [ 91%]
+backend/tests/test_sdrops.py::TestMeetingBookerAgent::test_meeting_has_required_fields PASSED [ 91%]
+backend/tests/test_sdrops.py::TestSDROpsWinWinWin::test_sdr_pipeline_benefits_all PASSED [ 91%]
+backend/tests/test_swarm.py::test_message_bus PASSED                     [ 91%]
+backend/tests/test_swarm.py::test_broadcast PASSED                       [ 92%]
+backend/tests/test_viral_algorithm.py::TestAntigravityAlgorithm::test_algorithm_creation PASSED [ 92%]
+backend/tests/test_viral_algorithm.py::TestAntigravityAlgorithm::test_calculate_price_returns_dict PASSED [ 92%]
+backend/tests/test_viral_algorithm.py::TestAntigravityAlgorithm::test_forecast_revenue_returns_dict PASSED [ 92%]
+backend/tests/test_viral_algorithm.py::TestConvenienceFunctions::test_get_algorithm_returns_instance PASSED [ 93%]
+backend/tests/test_viral_algorithm.py::TestConvenienceFunctions::test_get_algorithm_singleton PASSED [ 93%]
+backend/tests/test_viral_algorithm.py::TestAlgorithmMetrics::test_pricing_tiers PASSED [ 93%]
+backend/tests/test_viral_algorithm.py::TestAlgorithmMetrics::test_win3_logic_concept PASSED [ 93%]
+backend/tests/test_viral_algorithm.py::TestAlgorithmMetrics::test_bant_scoring_concept PASSED [ 93%]
+backend/tests/test_viral_algorithm.py::TestAlgorithmMetrics::test_revenue_target PASSED [ 94%]
+backend/tests/test_viral_queue.py::TestQueueConcepts::test_priority_ordering PASSED [ 94%]
+backend/tests/test_viral_queue.py::TestQueueConcepts::test_sla_concept PASSED [ 94%]
+backend/tests/test_viral_queue.py::TestQueueConcepts::test_dead_letter_concept PASSED [ 94%]
+backend/tests/test_viral_queue.py::TestQueueMetrics::test_jobs_per_hour_calculation PASSED [ 94%]
+backend/tests/test_viral_queue.py::TestQueueMetrics::test_error_rate_calculation PASSED [ 95%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_start_trace PASSED [ 95%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_start_child_span PASSED [ 95%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_end_span PASSED [ 95%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_slow_span_tracking PASSED [ 95%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_error_span_tracking PASSED [ 96%]
+backend/tests/test_viral_tracing_advanced.py::TestDistributedTracer::test_get_current_trace_id PASSED [ 96%]
+backend/tests/test_viral_tracing_advanced.py::TestTraceDecorator::test_trace_function_success PASSED [ 96%]
+backend/tests/test_viral_tracing_advanced.py::TestTraceDecorator::test_trace_function_error PASSED [ 96%]
+backend/tests/test_viral_tracing_advanced.py::TestTraceDecorator::test_trace_function_uses_name PASSED [ 97%]
+backend/tests/test_viral_tracing_advanced.py::TestConvenienceFunctions::test_start_trace_function PASSED [ 97%]
+backend/tests/test_viral_tracing_advanced.py::TestConvenienceFunctions::test_start_span_function PASSED [ 97%]
+backend/tests/test_viral_tracing_advanced.py::TestConvenienceFunctions::test_get_trace_id_function PASSED [ 97%]
+backend/tests/test_viral_tracing_core.py::TestSpan::test_span_creation PASSED [ 97%]
+backend/tests/test_viral_tracing_core.py::TestSpan::test_span_add_event PASSED [ 98%]
+backend/tests/test_viral_tracing_core.py::TestSpan::test_span_set_attribute PASSED [ 98%]
+backend/tests/test_viral_tracing_core.py::TestSpan::test_span_duration PASSED [ 98%]
+backend/tests/test_viral_tracing_core.py::TestSpan::test_span_to_dict PASSED [ 98%]
+backend/tests/test_viral_tracing_core.py::TestTrace::test_trace_creation PASSED [ 98%]
+backend/tests/test_viral_tracing_core.py::TestTrace::test_add_span_to_trace PASSED [ 99%]
+backend/tests/test_viral_tracing_core.py::TestTrace::test_get_root_span PASSED [ 99%]
+backend/tests/test_viral_tracing_core.py::TestExporters::test_in_memory_exporter PASSED [ 99%]
+backend/tests/test_viral_tracing_core.py::TestExporters::test_in_memory_exporter_max_spans PASSED [ 99%]
+backend/tests/test_viral_tracing_core.py::TestExporters::test_in_memory_filter_by_trace_id PASSED [100%]
+
+=============================== warnings summary ===============================
+backend/api/utils/__init__.py:14
+  /Users/macbookprom1/mekong-cli/backend/api/utils/__init__.py:14: DeprecationWarning: backend.api.utils.validators is deprecated. Use backend.api.utils.validation_logic instead.
+    from .validators import (
+
+backend/api/main.py:22
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:22: DeprecationWarning: backend.api.middleware.metrics is deprecated. Use backend.api.middleware.metrics_logic instead.
+    from backend.api.middleware.metrics import setup_metrics
+
+backend/api/main.py:25
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:25: DeprecationWarning: backend.api.middleware.multitenant is deprecated. Use backend.api.middleware.multitenant_logic instead.
+    from backend.api.middleware.multitenant import (
+
+backend/api/main.py:29
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:29: DeprecationWarning: backend.api.middleware.rate_limiting is deprecated. Use backend.api.middleware.rate_limit instead.
+    from backend.api.middleware.rate_limiting import (
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:366: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, data: TableMetadataV1) -> TableMetadataV1:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:495: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:499: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:503: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:507: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:539: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:543: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:547: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/pyiceberg/table/metadata.py:551: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+backend/api/schemas/vibe.py:39
+  /Users/macbookprom1/mekong-cli/backend/api/schemas/vibe.py:39: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class VibeResponse(BaseModel):
+
+core/licensing/__init__.py:4
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:4: DeprecationWarning: core.licensing.generator is deprecated. Use core.licensing.logic instead.
+    from .generator import LicenseGenerator, generate_license_key, license_generator
+
+core/licensing/__init__.py:5
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:5: DeprecationWarning: core.licensing.validator is deprecated. Use core.licensing.validation instead.
+    from .validator import LicenseTier, LicenseValidator
+
+backend/agents/__init__.py:6
+  /Users/macbookprom1/mekong-cli/backend/agents/__init__.py:6: DeprecationWarning: backend.agents.community is deprecated. Use backend.agents.community_logic package instead.
+    from .community import CommunityAgent, Platform, ScheduledPost
+
+backend/routes/antigravity/demo.py:11
+  /Users/macbookprom1/mekong-cli/backend/routes/antigravity/demo.py:11: DeprecationWarning: antigravity.vc.metrics is deprecated. Use antigravity.vc.metrics_logic package instead.
+    from antigravity.vc.metrics import FundingStage, VCMetrics
+
+antigravity/core/ab_testing/models.py:30
+  /Users/macbookprom1/mekong-cli/antigravity/core/ab_testing/models.py:30: PytestCollectionWarning: cannot collect test class 'TestResult' because it has a __new__ constructor (from: tests/test_ab_testing.py)
+    class TestResult(Enum):
+
+../Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20: DeprecationWarning: 
+  Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
+  (to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
+  but was not found to be installed on your system.
+  If this would cause problems for you,
+  please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+          
+    import pandas as pd
+
+antigravity/infrastructure/distributed_queue/queue_manager.py:10
+  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/distributed_queue/queue_manager.py:10: DeprecationWarning: antigravity.infrastructure.distributed_queue.backends.redis_backend is deprecated. Use antigravity.infrastructure.distributed_queue.backends.redis instead.
+    from .backends.redis_backend import RedisBackend
+
+antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32
+  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32: DeprecationWarning: antigravity.infrastructure.opentelemetry.tracing_agent is deprecated. Use antigravity.infrastructure.opentelemetry.agent_logic instead.
+    from ..tracing_agent import TracingAgent
+
+antigravity/core/registry/__init__.py:24
+  /Users/macbookprom1/mekong-cli/antigravity/core/registry/__init__.py:24: DeprecationWarning: antigravity.core.registry.commands is deprecated. Use antigravity.core.registry.store instead.
+    from .commands import COMMAND_REGISTRY, SHORTCUTS
+
+tests/test_vibe_kanban_bridge.py:5
+  /Users/macbookprom1/mekong-cli/tests/test_vibe_kanban_bridge.py:5: DeprecationWarning: antigravity.vibe_kanban_bridge is deprecated. Use antigravity.bridge package instead.
+    from antigravity.vibe_kanban_bridge import AgentOrchestrator, VibeBoardClient
+
+backend/tests/test_swarm.py:6
+  /Users/macbookprom1/mekong-cli/backend/tests/test_swarm.py:6: PytestCollectionWarning: cannot collect test class 'TestAgent' because it has a __init__ constructor (from: backend/tests/test_swarm.py)
+    class TestAgent(BaseSwarmAgent):
+
+tests/integration/test_refactored.py::test_ai_wingman
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_ai_wingman returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_refactored.py::test_client_portal
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_client_portal returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_refactored.py::test_analytics
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_analytics returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_services.py::test_service_imports
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_service_imports returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_services.py::test_repository_imports
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_repository_imports returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_services.py::test_presenter_imports
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_presenter_imports returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/integration/test_services.py::test_basic_functionality
+  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_basic_functionality returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.9.6-final-0 ________________
+
+Name                                                     Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------
+antigravity/core/__init__.py                                19      2    89%   77-79
+antigravity/core/ab_testing/__init__.py                     16      0   100%
+antigravity/core/ab_testing/analysis.py                     84     68    19%   21-22, 36, 44-75, 81-86, 90-126, 132-145, 151-159
+antigravity/core/ab_testing/engine.py                       66     15    77%   84, 95-101, 105-117, 125-126
+antigravity/core/ab_testing/experiments.py                  60     34    43%   37, 92-104, 108-138
+antigravity/core/ab_testing/lifecycle.py                    27     20    26%   15, 19-29, 35-57
+antigravity/core/ab_testing/models.py                       56      3    95%   21-24
+antigravity/core/ab_testing/reporting.py                    27     13    52%   20-35
+antigravity/core/ab_testing/time_utils.py                   15      3    80%   25, 32-33
+antigravity/core/ab_testing/traffic.py                      39     15    62%   39-50, 56-63, 68, 74
+antigravity/core/ab_testing_engine.py                        2      0   100%
+antigravity/core/agency_dna.py                               2      2     0%   14-22
+antigravity/core/agency_dna/__init__.py                      3      0   100%
+antigravity/core/agency_dna/engine.py                       40      5    88%   83, 117-120
+antigravity/core/agency_dna/models.py                       23      0   100%
+antigravity/core/agent_chains.py                             2      2     0%   17-34
+antigravity/core/agent_chains/__init__.py                   36     11    69%   46-47, 50-51, 62-63, 66-67, 80-86
+antigravity/core/agent_chains/engine.py                     50     15    70%   37, 83, 101-102, 107, 112-113, 123-127, 137-139
+antigravity/core/agent_chains/inventory.py                   5      0   100%
+antigravity/core/agent_chains/models.py                     12      0   100%
+antigravity/core/agent_crews.py                              2      2     0%   20-33
+antigravity/core/agent_crews/__init__.py                     4      0   100%
+antigravity/core/agent_crews/engine.py                      44     11    75%   27, 34, 55, 101-110
+antigravity/core/agent_crews/models.py                      35      0   100%
+antigravity/core/agent_crews/registry.py                     3      0   100%
+antigravity/core/agent_memory.py                             2      2     0%   20-22
+antigravity/core/agent_memory/__init__.py                    3      0   100%
+antigravity/core/agent_memory/backends/json_backend.py      21      6    71%   17-19, 27-29
+antigravity/core/agent_memory/blackboard.py                 56     29    48%   22-31, 35-37, 41-44, 66-67, 71-73, 82-87, 91-92
+antigravity/core/agent_memory/compression.py                 5      0   100%
+antigravity/core/agent_memory/models.py                     19      0   100%
+antigravity/core/agent_memory/retrieval.py                  16      3    81%   29-31
+antigravity/core/agent_memory/storage.py                    28      6    79%   60-62, 79-81
+antigravity/core/agent_memory/system.py                     67      5    93%   66, 106-110, 148
+antigravity/core/agent_orchestrator.py                       2      2     0%   21-29
+antigravity/core/agent_orchestrator/__init__.py              3      0   100%
+antigravity/core/agent_orchestrator/analytics.py            12      0   100%
+antigravity/core/agent_orchestrator/delegator.py            52     23    56%   29, 36, 48, 55-59, 64, 79-102
+antigravity/core/agent_orchestrator/engine.py              102     32    69%   79-84, 98, 112-115, 119, 127-128, 133-135, 146, 155-174, 189-190
+antigravity/core/agent_orchestrator/models.py               27      0   100%
+antigravity/core/agent_orchestrator/monitor.py              10      0   100%
+antigravity/core/agent_orchestrator/reporting.py            30     21    30%   15-18, 22, 26, 30-34, 38-51
+antigravity/core/agent_swarm.py                              2      2     0%   9-25
+antigravity/core/agent_swarm/__init__.py                     5      0   100%
+antigravity/core/agent_swarm/coordinator.py                 45      1    98%   107
+antigravity/core/agent_swarm/engine.py                      59      2    97%   43, 47
+antigravity/core/agent_swarm/enums.py                       20      0   100%
+antigravity/core/agent_swarm/executor.py                    93     11    88%   52, 61, 67, 89-90, 98-99, 129-130, 148-149
+antigravity/core/agent_swarm/graph.py                       83      8    90%   47, 86-91, 97
+antigravity/core/agent_swarm/models.py                      40      0   100%
+antigravity/core/agent_swarm/registry.py                    27      0   100%
+antigravity/core/agent_swarm/shortcuts.py                   20      0   100%
+antigravity/core/agent_swarm/state.py                        9      0   100%
+antigravity/core/agent_swarm/task_manager.py                74      3    96%   66-67, 119
+antigravity/core/algorithm/__init__.py                      15      5    67%   78, 83, 88, 93, 98
+antigravity/core/algorithm/ab_testing.py                    74     59    20%   28-45, 58-72, 76, 80-128, 140-144, 148-153, 157-189, 193
+antigravity/core/algorithm/analytics.py                     29      4    86%   46-47, 67-68
+antigravity/core/algorithm/base.py                          58     58     0%   12-179
+antigravity/core/algorithm/confidence.py                    29      6    79%   29-32, 45, 47, 51
+antigravity/core/algorithm/core.py                          59     13    78%   61-80, 87, 94-95, 150, 163, 166
+antigravity/core/algorithm/engine.py                        41      8    80%   44-45, 51, 66, 88, 93, 98, 103
+antigravity/core/algorithm/forecasting.py                    8      0   100%
+antigravity/core/algorithm/ml_engine/__init__.py             2      0   100%
+antigravity/core/algorithm/ml_engine/core.py                21      2    90%   27, 35
+antigravity/core/algorithm/ml_engine/inference.py           45      7    84%   16-17, 28, 42, 67-69
+antigravity/core/algorithm/ml_engine/model_registry.py      27      2    93%   17-18
+antigravity/core/algorithm/ml_engine/persistence.py         56     37    34%   24-50, 57, 61-62, 65-69, 75-100
+antigravity/core/algorithm/ml_engine/training.py            47     31    34%   18-19, 31-51, 55-70, 74-81
+antigravity/core/algorithm/pricing.py                       27     12    56%   35-36, 41-44, 48-55
+antigravity/core/algorithm/scoring.py                       16     12    25%   24-46
+antigravity/core/algorithm/strategies.py                    22      3    86%   28, 37, 45
+antigravity/core/algorithm/types.py                         88      0   100%
+antigravity/core/algorithm/utils.py                         11      0   100%
+antigravity/core/algorithm/validation.py                    23      6    74%   25, 30, 35, 44-46
+antigravity/core/algorithm_enhanced.py                       2      2     0%   15-32
+antigravity/core/autonomous_mode.py                        103     42    59%   52-53, 58-62, 85-86, 88-89, 93-95, 105-106, 112-113, 118, 125-128, 139-142, 145-148, 151, 154, 159-164, 189-191
+antigravity/core/autonomous_models.py                       26      0   100%
+antigravity/core/base.py                                    88     21    76%   61, 66, 84-85, 96, 123, 135, 137, 146-148, 154, 158-160, 164, 168-172
+antigravity/core/cashflow_engine.py                          2      2     0%   21-29
+antigravity/core/cashflow_engine/__init__.py                 3      0   100%
+antigravity/core/cashflow_engine/analytics.py               40      5    88%   38, 70, 74, 77, 80
+antigravity/core/cashflow_engine/dashboard.py               32     27    16%   39-42, 52-85
+antigravity/core/cashflow_engine/engine.py                  54      6    89%   45, 59-62, 116
+antigravity/core/cashflow_engine/models.py                  35      2    94%   59, 64
+antigravity/core/cashflow_engine/persistence.py             27     10    63%   43-44, 51-71
+antigravity/core/chains/__init__.py                          3      0   100%
+antigravity/core/chains/loader.py                           78     24    69%   82, 98-99, 106-107, 127-129, 133-136, 171, 183-192, 196-198
+antigravity/core/chains/validator.py                        67     56    16%   30-31, 43-72, 85-113, 127-152
+antigravity/core/checkpoint/__init__.py                      3      0   100%
+antigravity/core/checkpoint/manager.py                      62     17    73%   59-61, 85, 89-101, 106-107
+antigravity/core/checkpoint/models.py                       10      0   100%
+antigravity/core/checkpoint/serializer.py                   28      5    82%   21, 30-31, 38-39
+antigravity/core/checkpoint/storage.py                      43     12    72%   42-59, 90-91
+antigravity/core/client_magnet.py                            2      2     0%   21-30
+antigravity/core/client_magnet/__init__.py                   4      0   100%
+antigravity/core/client_magnet/analytics.py                 11      0   100%
+antigravity/core/client_magnet/engine.py                    65     18    72%   54-57, 74, 100, 104-105, 119-139
+antigravity/core/client_magnet/models.py                    46      0   100%
+antigravity/core/client_magnet/persistence.py               47      6    87%   28-29, 100-101, 125-126
+antigravity/core/client_magnet/scoring.py                   17      3    82%   20, 22, 24
+antigravity/core/code_guardian.py                            2      2     0%   14-28
+antigravity/core/code_guardian/__init__.py                   3      0   100%
+antigravity/core/code_guardian/guardian.py                  73     18    75%   62, 72-81, 89, 93, 97, 102-104, 138, 143, 148, 170-172
+antigravity/core/code_guardian/models.py                    44      0   100%
+antigravity/core/code_guardian/monitor.py                   34      5    85%   32, 59-60, 64-65
+antigravity/core/code_guardian/rollback.py                  47     11    77%   34-35, 52, 63-64, 73-76, 80-81
+antigravity/core/code_guardian/scanner.py                   56     19    66%   71-75, 81-83, 87-88, 92-95, 99-103
+antigravity/core/coding_level.py                            54     25    54%   55, 59, 77, 81, 90-93, 98-108, 113-120
+antigravity/core/coding_levels.py                           20      0   100%
+antigravity/core/command_router.py                          24     24     0%   5-85
+antigravity/core/config.py                                  38      8    79%   133-136, 148, 153-155
+antigravity/core/content_factory.py                          2      2     0%   21-31
+antigravity/core/content_factory/__init__.py                 4      0   100%
+antigravity/core/content_factory/distribution.py            25     25     0%   8-56
+antigravity/core/content_factory/engine.py                  43      7    84%   57-59, 63-70, 82
+antigravity/core/content_factory/ideation.py                20      0   100%
+antigravity/core/content_factory/models.py                  39      1    97%   49
+antigravity/core/content_factory/production.py              19      3    84%   49-58
+antigravity/core/content_factory/scheduling.py              13      0   100%
+antigravity/core/control.py                                  2      2     0%   14-29
+antigravity/core/control/__init__.py                         8      8     0%   9-29
+antigravity/core/control/analytics/__init__.py               3      3     0%   8-11
+antigravity/core/control/analytics/collectors.py            18     18     0%   1-36
+antigravity/core/control/analytics/exporters.py             40     40     0%   1-60
+antigravity/core/control/analytics/metrics.py               38     38     0%   1-52
+antigravity/core/control/analytics/models.py                18     18     0%   5-38
+antigravity/core/control/analytics/tracker.py               51     51     0%   3-88
+antigravity/core/control/center.py                          80     80     0%   6-189
+antigravity/core/control/circuit_breaker.py                 79     79     0%   12-179
+antigravity/core/control/circuit_metrics.py                 53     53     0%   8-143
+antigravity/core/control/circuit_states.py                   7      7     0%   8-22
+antigravity/core/control/enhanced.py                         9      9     0%   8-19
+antigravity/core/control/feature_flags.py                   58     58     0%   12-154
+antigravity/core/control/flag_evaluation.py                 18     18     0%   8-54
+antigravity/core/control/helpers.py                          9      9     0%   9-54
+antigravity/core/control/orchestration/__init__.py           0      0   100%
+antigravity/core/control/orchestration/orchestrator.py      47     47     0%   1-117
+antigravity/core/control/rate_governor.py                   25     25     0%   8-43
+antigravity/core/control/redis_client.py                    72     72     0%   12-160
+antigravity/core/control_enhanced.py                         2      2     0%   11-24
+antigravity/core/errors.py                                  35      4    89%   71, 85, 113, 125
+antigravity/core/ez_pr.py                                   65     30    54%   40, 45-49, 72-83, 87-97, 101-112, 135, 140, 145
+antigravity/core/finance/__init__.py                         3      0   100%
+antigravity/core/finance/security.py                        36     21    42%   31-41, 58, 65, 70-71, 88-106
+antigravity/core/finance/validators.py                     106     59    44%   15-23, 44-51, 57-65, 71-79, 100-106, 112-121, 143-148, 153-177
+antigravity/core/headless.py                                77     39    49%   41-42, 72-76, 92-119, 126, 129, 139-141, 146-161, 165
+antigravity/core/hook_executor.py                           49     12    76%   69, 101-107, 117-122
+antigravity/core/hook_registry.py                           17      0   100%
+antigravity/core/hooks_manager.py                           47     26    45%   51-64, 83-98, 103-104
+antigravity/core/infrastructure.py                          71     23    68%   105, 123-160, 183-189
+antigravity/core/jules_runner.py                            78     41    47%   99-107, 122-123, 128-139, 144-153, 158-178, 182
+antigravity/core/kanban/__init__.py                          1      0   100%
+antigravity/core/kanban/board_manager.py                   125     16    87%   91, 94-105, 112, 124-125, 131, 136, 151, 154, 166, 181, 186-189
+antigravity/core/knowledge/__init__.py                       7      0   100%
+antigravity/core/knowledge/ast_rules.py                     24     17    29%   15-16, 21-27, 32-33, 38-43
+antigravity/core/knowledge/client.py                        43     15    65%   33-34, 43-52, 56-61
+antigravity/core/knowledge/entity_extractor.py              59     44    25%   24, 28-43, 49-86, 90, 107-110, 126-155
+antigravity/core/knowledge/graph.py                         67     48    28%   39-49, 61-82, 95-118, 132, 136, 140, 154-158, 167-168, 176-178
+antigravity/core/knowledge/graph_client.py                  57     17    70%   17-18, 46, 52, 62-71, 79-81, 85-94
+antigravity/core/knowledge/ingest.py                        74     42    43%   21-24, 28-52, 56-66, 74-84, 93, 98-99, 123-126, 129-139, 143-144, 148-149
+antigravity/core/knowledge/ingestor.py                      37      8    78%   18-23, 40-41
+antigravity/core/knowledge/manifest_generator.py            27     21    22%   58-93, 96
+antigravity/core/knowledge/models.py                        37      1    97%   58
+antigravity/core/knowledge/operations.py                    18     10    44%   31-34, 39, 44, 49, 55-57
+antigravity/core/knowledge/rag.py                           49     17    65%   14-16, 24-26, 36, 40-42, 52, 67, 74-81
+antigravity/core/knowledge/rules.py                         94     27    71%   33-34, 43-44, 58, 65-66, 72-74, 103, 107, 111, 124-128, 132-140
+antigravity/core/knowledge/schema.py                        15      0   100%
+antigravity/core/knowledge/search_engine.py                 86     64    26%   42-46, 51-61, 65-95, 99, 103-108, 117-120, 124-149, 153-164
+antigravity/core/knowledge/search_indexing.py               27     21    22%   24-39, 56-63, 82-95
+antigravity/core/knowledge/types.py                         40      0   100%
+antigravity/core/knowledge_graph.py                          2      2     0%   17-32
+antigravity/core/loyalty_rewards.py                         73     24    67%   82-83, 96-98, 102-128
+antigravity/core/loyalty_tiers.py                           24      1    96%   111
+antigravity/core/master_dashboard.py                        65     34    48%   94-153, 159-160, 165
+antigravity/core/mcp_manager.py                             82     82     0%   14-171
+antigravity/core/mcp_orchestrator.py                       120    120     0%   5-198
+antigravity/core/mixins/__init__.py                          2      0   100%
+antigravity/core/mixins/stats.py                            10      0   100%
+antigravity/core/ml/__init__.py                             16      2    88%   66, 73
+antigravity/core/ml/analytics.py                            20      2    90%   54-55
+antigravity/core/ml/inference.py                            72     46    36%   31-32, 51, 57-59, 68-72, 91-178
+antigravity/core/ml/models/__init__.py                       6      0   100%
+antigravity/core/ml/models/dataclasses.py                   34      0   100%
+antigravity/core/ml/models/enums.py                         12      0   100%
+antigravity/core/ml/models/factories.py                     48     16    67%   22-23, 28, 36-37, 42-67, 73, 110-113, 125
+antigravity/core/ml/models/pricing_agent.py                 18      2    89%   34, 53
+antigravity/core/ml/models/quantum.py                       24     14    42%   28-45, 56-62
+antigravity/core/ml/optimizer.py                            56      9    84%   63, 67, 72, 100, 120, 122, 125-126, 168
+antigravity/core/ml/scoring.py                              21      2    90%   35, 37
+antigravity/core/ml/training.py                             43     18    58%   27-29, 71-77, 93-94, 130, 132, 134, 138, 161-170
+antigravity/core/ml_optimizer.py                             2      0   100%
+antigravity/core/moat_engine.py                              2      2     0%   21-23
+antigravity/core/moat_engine/__init__.py                     3      0   100%
+antigravity/core/moat_engine/dashboard.py                   21     16    24%   21-38
+antigravity/core/moat_engine/definitions.py                  4      0   100%
+antigravity/core/moat_engine/engine.py                      52      3    94%   92-94
+antigravity/core/moat_engine/models.py                      11      0   100%
+antigravity/core/moat_engine/persistence.py                 26      4    85%   26-27, 39-40
+antigravity/core/moat_engine/strategy.py                    37      7    81%   33-38, 66, 68
+antigravity/core/models/__init__.py                          7      0   100%
+antigravity/core/models/deal.py                             51      2    96%   96, 108
+antigravity/core/models/ide.py                              38      6    84%   46, 89-90, 98-99, 103
+antigravity/core/models/invoice.py                          46     12    74%   56-58, 62-64, 68, 98, 102-104, 108
+antigravity/core/models/orchestrator.py                     70     11    84%   87-89, 93-95, 99, 131-132, 137, 145
+antigravity/core/models/win_check.py                        54     31    43%   57-66, 70-73, 77-83, 87, 100-109
+antigravity/core/models/workflow.py                         65     15    77%   79-81, 85-87, 91, 121, 125-127, 131-133, 137
+antigravity/core/money_maker.py                              2      2     0%   20-29
+antigravity/core/money_maker/__init__.py                     3      0   100%
+antigravity/core/money_maker/engine.py                      27      1    96%   88
+antigravity/core/money_maker/governance.py                  19      4    79%   30-31, 40-41
+antigravity/core/money_maker/models.py                      30      0   100%
+antigravity/core/money_maker/qualification.py               24     10    58%   33-38, 55-60
+antigravity/core/money_maker/quoting.py                     45     11    76%   55, 64-65, 75, 108-120
+antigravity/core/observability.py                            2      2     0%   14-30
+antigravity/core/observability/__init__.py                  15     15     0%   4-30
+antigravity/core/observability/alerts.py                    46     46     0%   4-127
+antigravity/core/observability/collector.py                 35     35     0%   4-77
+antigravity/core/observability/enums.py                     10     10     0%   4-21
+antigravity/core/observability/models.py                    31     31     0%   4-49
+antigravity/core/observability/stack.py                     54     54     0%   4-99
+antigravity/core/ops/approval_gate.py                       69     11    84%   64-65, 68-69, 80-84, 90, 93, 103
+antigravity/core/ops_engine.py                              11     11     0%   8-33
+antigravity/core/patterns/__init__.py                        3      0   100%
+antigravity/core/patterns/persistence.py                    27     18    33%   29-31, 35-41, 45-52
+antigravity/core/patterns/singleton.py                      11      0   100%
+antigravity/core/persistence.py                             80     30    62%   70-74, 82, 86-91, 106-109, 120-128, 139-141, 146, 151
+antigravity/core/pr_manager.py                              93     46    51%   80-81, 92, 112-117, 131, 137-149, 153-168, 172-173, 181-194
+antigravity/core/pricing.py                                  9      5    44%   24-29, 33
+antigravity/core/proposal_generator.py                       2      2     0%   21-27
+antigravity/core/proposal_generator/__init__.py              4      0   100%
+antigravity/core/proposal_generator/analytics.py             5      1    80%   14
+antigravity/core/proposal_generator/builder.py              33      4    88%   28-30, 51
+antigravity/core/proposal_generator/engine.py               31      2    94%   42, 70
+antigravity/core/proposal_generator/models.py               13      0   100%
+antigravity/core/proposal_generator/persistence.py          13      0   100%
+antigravity/core/proposal_generator/templates.py             1      0   100%
+antigravity/core/quota_service.py                           24     24     0%   9-55
+antigravity/core/rag/embedding.py                           19      8    58%   4-5, 15-16, 21, 26-28
+antigravity/core/rag/vector_client.py                       27     10    63%   16, 24-27, 36-39, 45-47
+antigravity/core/registry/__init__.py                        3      0   100%
+antigravity/core/registry/api.py                            26     21    19%   12-36
+antigravity/core/registry/commands.py                        3      0   100%
+antigravity/core/registry/discovery.py                      43     23    47%   17-21, 27, 34-36, 40, 45, 53-84, 91
+antigravity/core/registry/mcp_catalog.py                    54     28    48%   23, 26-27, 30-36, 40-50, 54, 61-64, 68, 75, 83-92
+antigravity/core/registry/metadata.py                       27     15    44%   13-14, 18, 23-38, 46-49
+antigravity/core/registry/store.py                          12      7    42%   163-170, 174-183
+antigravity/core/revenue/__init__.py                        16      6    62%   31-33, 39, 44, 49
+antigravity/core/revenue/ai/__init__.py                      6      0   100%
+antigravity/core/revenue/ai/churn_predictor.py              72     61    15%   25, 29, 40-100, 104-113, 119-137
+antigravity/core/revenue/ai/engine.py                       55     37    33%   42-58, 62-64, 68-77, 81-90, 99, 103-111, 115-117
+antigravity/core/revenue/ai/metrics_calculator.py           11      6    45%   23-37
+antigravity/core/revenue/ai/price_optimizer.py              18     12    33%   26-46
+antigravity/core/revenue/ai/upsell_detector.py              39     28    28%   33-54, 60-76, 82-92, 98-107
+antigravity/core/revenue/engine.py                          54      7    87%   86-87, 91, 114, 122, 126, 150
+antigravity/core/revenue/forecasting.py                     13      7    46%   16-25
+antigravity/core/revenue/goals.py                           14      2    86%   29, 31
+antigravity/core/revenue/models.py                          63      0   100%
+antigravity/core/revenue/reporting.py                       18     15    17%   12-34
+antigravity/core/revenue_ai.py                               2      2     0%   9-24
+antigravity/core/revenue_engine.py                           3      0   100%
+antigravity/core/rules_loader.py                            49     18    63%   21-23, 29, 55-56, 73-85
+antigravity/core/sales_pipeline.py                          71     20    72%   46-49, 68, 86, 132-149
+antigravity/core/scout/__init__.py                           2      2     0%   6-8
+antigravity/core/scout/engine.py                           113    113     0%   8-271
+antigravity/core/self_improve.py                             2      2     0%   14-25
+antigravity/core/self_improve/__init__.py                    5      0   100%
+antigravity/core/self_improve/decorators.py                 21     17    19%   13-34
+antigravity/core/self_improve/engine.py                     83     17    80%   119, 130-150, 170-172
+antigravity/core/self_improve/error_learning.py             27      1    96%   120
+antigravity/core/self_improve/persistence.py                34     18    47%   29-47, 84-86
+antigravity/core/self_improve/profiling.py                  19      2    89%   46-47
+antigravity/core/self_improve/suggestions.py                15      5    67%   53-61
+antigravity/core/self_improve/types.py                      48      0   100%
+antigravity/core/skill_loader.py                            58     36    38%   102, 117-142, 157-168, 173-181
+antigravity/core/swarm/__init__.py                           5      0   100%
+antigravity/core/swarm/agent.py                             20      1    95%   39
+antigravity/core/swarm/bus.py                               44     10    77%   56-62, 67, 70-71, 74
+antigravity/core/swarm/coordination.py                       8      8     0%   8-35
+antigravity/core/swarm/coordinator.py                       97     97     0%   6-175
+antigravity/core/swarm/messaging.py                         45     45     0%   10-104
+antigravity/core/swarm/orchestrator.py                      26      9    65%   35-42, 52-63
+antigravity/core/swarm/patterns/dev_swarm.py                26     14    46%   9-14, 20-25, 31-35
+antigravity/core/swarm/patterns/research_agent.py           25      1    96%   29
+antigravity/core/swarm/types.py                             81      0   100%
+antigravity/core/swarm/workers.py                           73     73     0%   10-169
+antigravity/core/telemetry.py                              107     25    77%   24-25, 67, 74, 90-106, 110, 121, 144, 163, 175-183, 187-194
+antigravity/core/telemetry_exporters.py                     40     19    52%   35-36, 59-60, 66-88
+antigravity/core/tracing.py                                  2      2     0%   14-32
+antigravity/core/tracing/__init__.py                        15      1    93%   23
+antigravity/core/tracing/core.py                            81      5    94%   99, 137-138, 150, 163
+antigravity/core/tracing/decorators.py                      22      0   100%
+antigravity/core/tracing/enums.py                           11      0   100%
+antigravity/core/tracing/exporters.py                       29      4    86%   22, 29-31
+antigravity/core/tracing/models.py                          59      6    90%   56-58, 110, 115-116
+antigravity/core/types/__init__.py                           8      0   100%
+antigravity/core/types/config.py                            11      0   100%
+antigravity/core/types/generics.py                           6      0   100%
+antigravity/core/types/hooks.py                             22      0   100%
+antigravity/core/types/pipeline.py                          18      0   100%
+antigravity/core/types/protocols.py                          9      0   100%
+antigravity/core/types/responses.py                         87      0   100%
+antigravity/core/types/stats.py                            101      0   100%
+antigravity/core/unified_dashboard.py                       62     28    55%   99-145, 151-152
+antigravity/core/verticals/__init__.py                       7      7     0%   6-14
+antigravity/core/verticals/auditor.py                       29     29     0%   6-59
+antigravity/core/verticals/fintech.py                       35     35     0%   6-72
+antigravity/core/verticals/healthcare.py                    32     32     0%   6-75
+antigravity/core/verticals/saas.py                          35     35     0%   6-69
+antigravity/core/vibe_ide.py                                85     12    86%   103, 118-119, 131-134, 144, 150-151, 172, 176
+antigravity/core/vibe_orchestrator.py                       80     26    68%   67, 96-98, 116-117, 124-141, 145-158, 167
+antigravity/core/vibe_workflow.py                           80     35    56%   66, 80, 88, 94-114, 120-123, 129-151
+antigravity/core/workflow_steps.py                          60     29    52%   32-36, 39-40, 46, 49, 68, 94-96, 110-133
+--------------------------------------------------------------------------------------
+TOTAL                                                    10605   4304    59%
+================= 472 passed, 33 warnings in 63.81s (0:01:03) ==================

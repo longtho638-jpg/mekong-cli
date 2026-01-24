@@ -41,5 +41,41 @@
     "tasks": [],
     "budget": 5000.0,
     "spent": 0.0
+  },
+  "PRJ-A5D6EEF1": {
+    "id": "PRJ-A5D6EEF1",
+    "client_id": "CLI-C0958DFF",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-23T13:58:51.251240",
+    "end_date": "2026-02-20T13:58:51.251241",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
+  },
+  "PRJ-509C067F": {
+    "id": "PRJ-509C067F",
+    "client_id": "CLI-70A5942D",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-23T13:59:52.543473",
+    "end_date": "2026-02-20T13:59:52.543473",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
+  },
+  "PRJ-6EC2FCCD": {
+    "id": "PRJ-6EC2FCCD",
+    "client_id": "CLI-E625296B",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-23T14:00:39.390309",
+    "end_date": "2026-02-20T14:00:39.390310",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
   }
 }

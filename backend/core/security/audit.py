@@ -8,6 +8,8 @@ Integrates with Supabase RLS for persistence and immutability.
 import functools
 import logging
 import time
+import asyncio
+import inspect
 from datetime import datetime
 from typing import Any, Dict, Optional
 
@@ -103,7 +105,11 @@ def audit_action(action: str, resource_template: Optional[str] = None):
                         pass
 
                 try:
-                    result = await func(*args, **kwargs)
+                    if inspect.iscoroutinefunction(func):
+                        result = await func(*args, **kwargs)
+                    else:
+                        result = func(*args, **kwargs)
+
                     await audit_logger.log(
                         actor_id=actor_id,
                         actor_type=actor_type,

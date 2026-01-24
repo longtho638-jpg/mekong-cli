@@ -1,19 +1,27 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
 import Hero from '../components/Hero.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Money Workflows - AgencyOS';
-const description = '3 proven workflows to make money with AgencyOS: Affiliate, Code-to-Content, and Consulting.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('workflows_page.title');
+const description = t('workflows_page.description');
+
+// Get workflows data
+const workflows = (locales[locale] as any).workflows_page.workflows;
 ---
 
 <LandingLayout title={title} description={description}>
   <Hero
     badge={{
       icon: '💰',
-      text: 'Revenue Blueprints'
+      text: t('workflows_page.hero.badge')
     }}
-    title="Money-Making Workflows"
-    description="Step-by-step paths to revenue with AgencyOS."
+    title={t('workflows_page.hero.title')}
+    description={t('workflows_page.hero.description')}
   />
 
   <!-- Workflow 1: Affiliate -->
@@ -22,45 +30,44 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
       <div class="workflow-header">
         <span class="workflow-number">01</span>
         <div>
-          <h2>Affiliate-as-SaaS</h2>
-          <span class="income-badge">Passive Income: $500-2,000/month</span>
+          <h2>{workflows.affiliate.title}</h2>
+          <span class="income-badge">{workflows.affiliate.income}</span>
         </div>
       </div>
 
       <div class="workflow-flow">
         <div class="flow-step">
-          <code>/affiliate/scout</code>
-          <span>Tìm programs</span>
+          <code>{workflows.affiliate.flow.step1[1]}</code>
+          <span>{workflows.affiliate.flow.step1[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>Chọn 5 programs</code>
-          <span>PayPal-friendly</span>
+          <code>{workflows.affiliate.flow.step2[1]}</code>
+          <span>{workflows.affiliate.flow.step2[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/marketing/social</code>
-          <span>Viết 30 posts</span>
+          <code>{workflows.affiliate.flow.step3[1]}</code>
+          <span>{workflows.affiliate.flow.step3[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>Post daily x30</code>
-          <span>Schedule & post</span>
+          <code>{workflows.affiliate.flow.step4[1]}</code>
+          <span>{workflows.affiliate.flow.step4[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step result">
-          <span class="money">💰 $500-2,000</span>
-          <span>Monthly passive</span>
+          <span class="money">{workflows.affiliate.flow.result[1]}</span>
+          <span>{workflows.affiliate.flow.result[0]}</span>
         </div>
       </div>
 
       <div class="workflow-steps">
-        <h3>Steps:</h3>
+        <h3>{workflows.affiliate.steps_label}</h3>
         <ol>
-          <li><code>/affiliate/scout</code> → Tìm programs PayPal-friendly</li>
-          <li><code>/marketing/social facebook</code> → Viết 30 posts</li>
-          <li>Schedule posts → Đăng 1 post/ngày</li>
-          <li>Track → Hoa hồng về account</li>
+          {workflows.affiliate.steps_list.map((step: string) => (
+            <li><code>{step.split(' → ')[0]}</code> → {step.split(' → ')[1]}</li>
+          ))}
         </ol>
       </div>
     </div>
@@ -72,45 +79,44 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
       <div class="workflow-header">
         <span class="workflow-number">02</span>
         <div>
-          <h2>Code-to-Content</h2>
-          <span class="income-badge">Active Income: AdSense + Sponsors</span>
+          <h2>{workflows.code_to_content.title}</h2>
+          <span class="income-badge">{workflows.code_to_content.income}</span>
         </div>
       </div>
 
       <div class="workflow-flow">
         <div class="flow-step">
-          <code>/code</code>
-          <span>Build feature</span>
+          <code>{workflows.code_to_content.flow.step1[1]}</code>
+          <span>{workflows.code_to_content.flow.step1[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/video/script</code>
-          <span>Create script</span>
+          <code>{workflows.code_to_content.flow.step2[1]}</code>
+          <span>{workflows.code_to_content.flow.step2[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/video</code>
-          <span>Render video</span>
+          <code>{workflows.code_to_content.flow.step3[1]}</code>
+          <span>{workflows.code_to_content.flow.step3[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>YouTube + TikTok</code>
-          <span>Upload multi-platform</span>
+          <code>{workflows.code_to_content.flow.step4[1]}</code>
+          <span>{workflows.code_to_content.flow.step4[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step result">
-          <span class="money">💰 $$$</span>
-          <span>AdSense + Sponsors</span>
+          <span class="money">{workflows.code_to_content.flow.result[1]}</span>
+          <span>{workflows.code_to_content.flow.result[0]}</span>
         </div>
       </div>
 
       <div class="workflow-steps">
-        <h3>Steps:</h3>
+        <h3>{workflows.code_to_content.steps_label}</h3>
         <ol>
-          <li><code>/code</code> → Build feature mới</li>
-          <li><code>/video/script</code> → Convert code thành script</li>
-          <li><code>/video</code> → Render với voiceover</li>
-          <li>Upload đa platform → $$$</li>
+          {workflows.code_to_content.steps_list.map((step: string) => (
+            <li><code>{step.split(' → ')[0]}</code> → {step.split(' → ')[1]}</li>
+          ))}
         </ol>
       </div>
     </div>
@@ -122,61 +128,59 @@ const description = '3 proven workflows to make money with AgencyOS: Affiliate, 
       <div class="workflow-header">
         <span class="workflow-number">03</span>
         <div>
-          <h2>Consulting Deal Flow</h2>
-          <span class="income-badge">High-Ticket: $5,000-50,000/deal</span>
+          <h2>{workflows.consulting.title}</h2>
+          <span class="income-badge">{workflows.consulting.income}</span>
         </div>
       </div>
 
       <div class="workflow-flow">
         <div class="flow-step">
-          <code>/sales/lead</code>
-          <span>Find leads</span>
+          <code>{workflows.consulting.flow.step1[1]}</code>
+          <span>{workflows.consulting.flow.step1[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/intel/competitor</code>
-          <span>Analyze market</span>
+          <code>{workflows.consulting.flow.step2[1]}</code>
+          <span>{workflows.consulting.flow.step2[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/sales/proposal</code>
-          <span>Create proposal</span>
+          <code>{workflows.consulting.flow.step3[1]}</code>
+          <span>{workflows.consulting.flow.step3[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/sales/close</code>
-          <span>Close deal</span>
+          <code>{workflows.consulting.flow.step4[1]}</code>
+          <span>{workflows.consulting.flow.step4[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">
-          <code>/finance/invoice</code>
-          <span>Get paid</span>
+          <code>{workflows.consulting.flow.step5[1]}</code>
+          <span>{workflows.consulting.flow.step5[0]}</span>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-step result">
-          <span class="money">💰 $5-50K</span>
-          <span>Per deal</span>
+          <span class="money">{workflows.consulting.flow.result[1]}</span>
+          <span>{workflows.consulting.flow.result[0]}</span>
         </div>
       </div>
 
       <div class="workflow-steps">
-        <h3>Steps:</h3>
+        <h3>{workflows.consulting.steps_label}</h3>
         <ol>
-          <li><code>/sales/lead</code> → Tìm khách tiềm năng</li>
-          <li><code>/intel/competitor</code> → Phân tích đối thủ</li>
-          <li><code>/sales/proposal</code> → Viết proposal tự động</li>
-          <li><code>/sales/close</code> → Script closing deal</li>
-          <li><code>/finance/invoice</code> → Xuất hóa đơn</li>
+          {workflows.consulting.steps_list.map((step: string) => (
+            <li><code>{step.split(' → ')[0]}</code> → {step.split(' → ')[1]}</li>
+          ))}
         </ol>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to start earning?</h2>
+    <h2>{t('workflows_page.cta.title')}</h2>
     <div class="cta-buttons">
-      <a href="/quickstart" class="btn-primary">Pick Your Path →</a>
-      <a href="/commands" class="btn-secondary">View All Commands</a>
+      <a href={getRelativeLocaleUrl(locale, '/quickstart')} class="btn-primary">{t('workflows_page.cta.primary')}</a>
+      <a href={getRelativeLocaleUrl(locale, '/commands')} class="btn-secondary">{t('workflows_page.cta.secondary')}</a>
     </div>
   </section>
 </LandingLayout>

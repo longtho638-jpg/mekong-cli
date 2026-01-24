@@ -2,21 +2,20 @@
 
 import { useState, useCallback } from 'react'
 import ReactFlow, {
-  Node,
-  Edge,
   Controls,
   Background,
   applyNodeChanges,
   applyEdgeChanges,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
   addEdge,
   Handle,
-  Position
+  Position,
+  type Node,
+  type Edge,
+  type OnNodesChange,
+  type OnEdgesChange,
+  type OnConnect
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import { Card } from '@agencyos/ui'
 
 // Custom Node Types
 interface NodeData {
@@ -56,7 +55,7 @@ interface WorkflowEditorProps {
   onSave?: (nodes: Node[], edges: Edge[]) => void
 }
 
-export default function WorkflowEditor({ initialNodes = [], initialEdges = [], onSave }: WorkflowEditorProps) {
+export default function WorkflowEditor({ initialNodes = [], initialEdges = [], onSave: _onSave }: WorkflowEditorProps) {
   const [nodes, setNodes] = useState<Node[]>(initialNodes)
   const [edges, setEdges] = useState<Edge[]>(initialEdges)
 

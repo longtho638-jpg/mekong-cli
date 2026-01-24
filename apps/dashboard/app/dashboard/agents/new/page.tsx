@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { getAvailableSkills, createAgent, AgentDefinition } from '@/lib/agent-creator-api'
-import { Button, Card, CardHeader, CardTitle, CardContent, Input, Textarea, Select, Checkbox } from '@agencyos/ui'
+import { getAvailableSkills, createAgent, type AgentDefinition } from '@/lib/agent-creator-api'
+import { Button, Card, CardHeader, CardTitle, CardContent, Input, Textarea } from '@agencyos/ui'
 import { useRouter } from 'next/navigation'
 
 export default function NewAgentPage() {

@@ -1,25 +1,31 @@
 ---
 import LandingLayout from '../../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
 
-const title = 'Revenue Dashboard - AgencyOS Admin';
-const description = 'Track progress toward $1M revenue goal.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('admin_revenue_page.title');
+const description = t('admin_revenue_page.description');
+
+const pageData = (locales[locale] as any).admin_revenue_page;
 
 // Revenue targets for 2026
 const REVENUE_TARGET = 1000000;
-// const MONTHLY_TARGET = REVENUE_TARGET / 12;
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="revenue-section">
     <div class="revenue-header">
-      <h1>💰 Revenue Dashboard</h1>
-      <p class="subtitle">Track progress toward $1M goal (2026)</p>
+      <h1>{pageData.hero.title}</h1>
+      <p class="subtitle">{pageData.hero.subtitle}</p>
     </div>
 
     <!-- Main Goal Tracker -->
     <div class="goal-card">
       <div class="goal-header">
-        <h2>🎯 2026 Revenue Goal</h2>
+        <h2>{pageData.goal.title}</h2>
         <span class="goal-amount">$1,000,000</span>
       </div>
       <div class="mega-progress">
@@ -35,19 +41,19 @@ const REVENUE_TARGET = 1000000;
       <div class="goal-stats">
         <div class="goal-stat">
           <span class="stat-value" id="ytd-revenue">$0</span>
-          <span class="stat-label">YTD Revenue</span>
+          <span class="stat-label">{pageData.goal.ytd}</span>
         </div>
         <div class="goal-stat">
           <span class="stat-value" id="monthly-avg">$0</span>
-          <span class="stat-label">Monthly Avg</span>
+          <span class="stat-label">{pageData.goal.avg}</span>
         </div>
         <div class="goal-stat">
           <span class="stat-value" id="months-left">12</span>
-          <span class="stat-label">Months Left</span>
+          <span class="stat-label">{pageData.goal.left}</span>
         </div>
         <div class="goal-stat">
           <span class="stat-value" id="required-monthly">$83,333</span>
-          <span class="stat-label">Required/Month</span>
+          <span class="stat-label">{pageData.goal.req}</span>
         </div>
       </div>
     </div>
@@ -58,20 +64,20 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card">
         <div class="stream-header">
           <span class="stream-icon">💳</span>
-          <h3>SaaS Subscriptions</h3>
+          <h3>{pageData.streams.saas}</h3>
         </div>
         <div class="stream-amount" id="saas-revenue">$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Starter ($29/mo)</span>
+            <span>{pageData.details.starter}</span>
             <span id="starter-count">0 users</span>
           </div>
           <div class="breakdown-item">
-            <span>Pro ($99/mo)</span>
+            <span>{pageData.details.pro}</span>
             <span id="pro-count">0 users</span>
           </div>
           <div class="breakdown-item">
-            <span>Enterprise ($2K/mo)</span>
+            <span>{pageData.details.enterprise}</span>
             <span id="enterprise-count">0 users</span>
           </div>
         </div>
@@ -84,20 +90,20 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card">
         <div class="stream-header">
           <span class="stream-icon">🌍</span>
-          <h3>Franchise Network</h3>
+          <h3>{pageData.streams.franchise}</h3>
         </div>
         <div class="stream-amount" id="franchise-revenue">$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Platform Fees</span>
+            <span>{pageData.details.platform_fees}</span>
             <span id="platform-fees">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>Revenue Share (30%)</span>
+            <span>{pageData.details.revenue_share}</span>
             <span id="hq-share">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>Active Franchisees</span>
+            <span>{pageData.details.active_franchisees}</span>
             <span id="franchisee-count">0</span>
           </div>
         </div>
@@ -110,20 +116,20 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card">
         <div class="stream-header">
           <span class="stream-icon">🏪</span>
-          <h3>Marketplace</h3>
+          <h3>{pageData.streams.marketplace}</h3>
         </div>
         <div class="stream-amount" id="marketplace-revenue">$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Platform Take (30%)</span>
+            <span>{pageData.details.platform_take}</span>
             <span id="marketplace-take">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>Total Sales</span>
+            <span>{pageData.details.total_sales}</span>
             <span id="total-sales">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>Active Creators</span>
+            <span>{pageData.details.active_creators}</span>
             <span id="creator-count">0</span>
           </div>
         </div>
@@ -136,20 +142,20 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card">
         <div class="stream-header">
           <span class="stream-icon">🛠️</span>
-          <h3>Services & Consulting</h3>
+          <h3>{pageData.streams.services}</h3>
         </div>
         <div class="stream-amount" id="services-revenue">$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Projects Completed</span>
+            <span>{pageData.details.projects_completed}</span>
             <span id="projects-count">0</span>
           </div>
           <div class="breakdown-item">
-            <span>Avg Project Value</span>
+            <span>{pageData.details.avg_value}</span>
             <span id="avg-project">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>Active Clients</span>
+            <span>{pageData.details.active_clients}</span>
             <span id="clients-count">0</span>
           </div>
         </div>
@@ -162,20 +168,20 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card">
         <div class="stream-header">
           <span class="stream-icon">🤝</span>
-          <h3>Affiliate Payouts</h3>
+          <h3>{pageData.streams.affiliate}</h3>
         </div>
         <div class="stream-amount negative" id="affiliate-payouts">-$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Total Conversions</span>
+            <span>{pageData.details.total_conversions}</span>
             <span id="conversions-count">0</span>
           </div>
           <div class="breakdown-item">
-            <span>Active Affiliates</span>
+            <span>{pageData.details.active_affiliates}</span>
             <span id="affiliate-count">0</span>
           </div>
           <div class="breakdown-item">
-            <span>Avg Commission</span>
+            <span>{pageData.details.avg_commission}</span>
             <span id="avg-commission">40%</span>
           </div>
         </div>
@@ -188,32 +194,32 @@ const REVENUE_TARGET = 1000000;
       <div class="stream-card highlight">
         <div class="stream-header">
           <span class="stream-icon">📈</span>
-          <h3>Net Revenue</h3>
+          <h3>{pageData.streams.net}</h3>
         </div>
         <div class="stream-amount large" id="net-revenue">$0</div>
         <div class="stream-breakdown">
           <div class="breakdown-item">
-            <span>Gross Revenue</span>
+            <span>{pageData.details.gross}</span>
             <span id="gross-revenue">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>- Payouts</span>
+            <span>{pageData.details.payouts}</span>
             <span id="total-payouts">$0</span>
           </div>
           <div class="breakdown-item">
-            <span>= Net</span>
+            <span>{pageData.details.net_calc}</span>
             <span id="net-calc">$0</span>
           </div>
         </div>
         <div class="stream-target success">
-          On track: <span id="on-track">calculating...</span>
+          {pageData.status.on_track} <span id="on-track">calculating...</span>
         </div>
       </div>
     </div>
 
     <!-- Monthly Chart -->
     <div class="chart-card">
-      <h3>📊 Monthly Revenue (2026)</h3>
+      <h3>{pageData.chart.title}</h3>
       <div class="chart-container">
         <div class="chart-bars" id="monthly-chart">
           <div class="chart-bar" data-month="Jan"><div class="bar-fill" style="height: 0%"></div><span>Jan</span></div>
@@ -230,11 +236,16 @@ const REVENUE_TARGET = 1000000;
           <div class="chart-bar" data-month="Dec"><div class="bar-fill" style="height: 0%"></div><span>Dec</span></div>
         </div>
         <div class="chart-target-line">
-          <span>Target: $83,333/mo</span>
+          <span>{pageData.chart.target}</span>
         </div>
       </div>
     </div>
   </section>
+
+  <div id="revenue-i18n"
+    data-yes={pageData.status.yes}
+    data-behind={pageData.status.behind}
+  ></div>
 </LandingLayout>
 
 <style>

@@ -1,24 +1,28 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
+import { getLocaleFromUrl, useTranslations, getRelativeLocaleUrl } from '@agencyos/i18n/astro';
 
-const title = 'Quick Start - AgencyOS';
-const description = 'Choose your path: Developer, Marketing, Sales, Finance, or Founder. Each with money-making commands.';
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const title = t('quickstart_page.title');
+const description = t('quickstart_page.description');
 ---
 
 <LandingLayout title={title} description={description}>
   <section class="quickstart-hero">
-    <h1>🚀 Quick Start</h1>
-    <p class="tagline">"Tôi muốn kiếm tiền ngay!" - Đây là cách:</p>
+    <h1>{t('quickstart_page.hero.title')}</h1>
+    <p class="tagline">{t('quickstart_page.hero.subtitle')}</p>
   </section>
 
   <section class="personas-grid">
-    
+
     <!-- Developer -->
     <div class="persona-card developer">
       <div class="persona-header">
         <span class="persona-icon">🧑‍💻</span>
-        <h2>Developer</h2>
-        <span class="money-tag">Code → Cash</span>
+        <h2>{t('quickstart_page.personas.developer.title')}</h2>
+        <span class="money-tag">{t('quickstart_page.personas.developer.tag')}</span>
       </div>
       <div class="commands-list">
         <code>/code</code>
@@ -28,18 +32,18 @@ const description = 'Choose your path: Developer, Marketing, Sales, Finance, or 
         <code>/affiliate</code>
       </div>
       <div class="money-flow">
-        <p>💰 <strong>Money Flow:</strong></p>
-        <p>Code → Demo Video → YouTube → Affiliate Links → <span class="money">$$$</span></p>
+        <p><strong>{t('quickstart_page.common.money_flow_label')}</strong></p>
+        <p>{t('quickstart_page.personas.developer.money_flow').replace('$$$', '')}<span class="money">$$$</span></p>
       </div>
-      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="btn-start">{t('quickstart_page.common.get_started')}</a>
     </div>
 
     <!-- Marketing -->
     <div class="persona-card marketing">
       <div class="persona-header">
         <span class="persona-icon">📣</span>
-        <h2>Marketing</h2>
-        <span class="money-tag">Content → Cash</span>
+        <h2>{t('quickstart_page.personas.marketing.title')}</h2>
+        <span class="money-tag">{t('quickstart_page.personas.marketing.tag')}</span>
       </div>
       <div class="commands-list">
         <code>/marketing/social</code>
@@ -49,18 +53,18 @@ const description = 'Choose your path: Developer, Marketing, Sales, Finance, or 
         <code>/affiliate/scout</code>
       </div>
       <div class="money-flow">
-        <p>💰 <strong>Money Flow:</strong></p>
-        <p>Content → Social → Traffic → Affiliate → <span class="money">$$$</span></p>
+        <p><strong>{t('quickstart_page.common.money_flow_label')}</strong></p>
+        <p>{t('quickstart_page.personas.marketing.money_flow').replace('$$$', '')}<span class="money">$$$</span></p>
       </div>
-      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="btn-start">{t('quickstart_page.common.get_started')}</a>
     </div>
 
     <!-- Sales -->
     <div class="persona-card sales">
       <div class="persona-header">
         <span class="persona-icon">💼</span>
-        <h2>Sales</h2>
-        <span class="money-tag">Lead → Cash</span>
+        <h2>{t('quickstart_page.personas.sales.title')}</h2>
+        <span class="money-tag">{t('quickstart_page.personas.sales.tag')}</span>
       </div>
       <div class="commands-list">
         <code>/sales/lead</code>
@@ -70,18 +74,18 @@ const description = 'Choose your path: Developer, Marketing, Sales, Finance, or 
         <code>/finance/invoice</code>
       </div>
       <div class="money-flow">
-        <p>💰 <strong>Money Flow:</strong></p>
-        <p>Lead → Proposal → Close → Invoice → <span class="money">$$$</span></p>
+        <p><strong>{t('quickstart_page.common.money_flow_label')}</strong></p>
+        <p>{t('quickstart_page.personas.sales.money_flow').replace('$$$', '')}<span class="money">$$$</span></p>
       </div>
-      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="btn-start">{t('quickstart_page.common.get_started')}</a>
     </div>
 
     <!-- Finance -->
     <div class="persona-card finance">
       <div class="persona-header">
         <span class="persona-icon">📊</span>
-        <h2>Finance</h2>
-        <span class="money-tag">Optimize → Save</span>
+        <h2>{t('quickstart_page.personas.finance.title')}</h2>
+        <span class="money-tag">{t('quickstart_page.personas.finance.tag')}</span>
       </div>
       <div class="commands-list">
         <code>/finance</code>
@@ -91,18 +95,18 @@ const description = 'Choose your path: Developer, Marketing, Sales, Finance, or 
         <code>/ops/reporting</code>
       </div>
       <div class="money-flow">
-        <p>💰 <strong>Money Flow:</strong></p>
-        <p>Optimize → Reduce Waste → More Profit → <span class="money">$$$</span></p>
+        <p><strong>{t('quickstart_page.common.money_flow_label')}</strong></p>
+        <p>{t('quickstart_page.personas.finance.money_flow').replace('$$$', '')}<span class="money">$$$</span></p>
       </div>
-      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="btn-start">{t('quickstart_page.common.get_started')}</a>
     </div>
 
     <!-- Founder -->
     <div class="persona-card founder">
       <div class="persona-header">
         <span class="persona-icon">👑</span>
-        <h2>Founder</h2>
-        <span class="money-tag">Strategy → Scale</span>
+        <h2>{t('quickstart_page.personas.founder.title')}</h2>
+        <span class="money-tag">{t('quickstart_page.personas.founder.tag')}</span>
       </div>
       <div class="commands-list">
         <code>/binh-phap</code>
@@ -112,18 +116,18 @@ const description = 'Choose your path: Developer, Marketing, Sales, Finance, or 
         <code>/equity</code>
       </div>
       <div class="money-flow">
-        <p>💰 <strong>Money Flow:</strong></p>
-        <p>Strategy → Fundraise → Scale → Exit → <span class="money">$$$</span></p>
+        <p><strong>{t('quickstart_page.common.money_flow_label')}</strong></p>
+        <p>{t('quickstart_page.personas.founder.money_flow').replace('$$$', '')}<span class="money">$$$</span></p>
       </div>
-      <a href="/docs/getting-started/quick-start" class="btn-start">Get Started →</a>
+      <a href={getRelativeLocaleUrl(locale, '/docs/getting-started/quick-start')} class="btn-start">{t('quickstart_page.common.get_started')}</a>
     </div>
 
   </section>
 
   <section class="cta-section">
-    <h2>Ready to Start?</h2>
-    <p>Pick your path and start making money with AI.</p>
-    <a href="/commands" class="btn-primary">View All 85+ Commands →</a>
+    <h2>{t('quickstart_page.cta.title')}</h2>
+    <p>{t('quickstart_page.cta.subtitle')}</p>
+    <a href={getRelativeLocaleUrl(locale, '/commands')} class="btn-primary">{t('quickstart_page.cta.button')}</a>
   </section>
 </LandingLayout>
 

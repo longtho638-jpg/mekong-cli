@@ -1,32 +1,26 @@
 ---
+import { getLocaleFromUrl, useTranslations } from '@agencyos/i18n/astro';
+import { locales } from '@agencyos/i18n/locales';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+// Get points array from raw locales data
+const points = (locales[locale] as any).landing.agencyos.hero.problem.points;
 ---
 <section class="py-12 bg-[var(--color-bg-tertiary)]/30 border-y border-[var(--color-border)]">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
     <h2 id="the-problem" class="gradient-animate text-3xl font-bold text-center mb-8">
-      Running an agency is exhausting.
+      {t('landing.agencyos.hero.problem.title')}
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-        <span class="text-red-500 text-xl">❌</span>
-        <span class="text-[var(--color-text-secondary)]">80% of time goes to admin, not clients</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-        <span class="text-red-500 text-xl">❌</span>
-        <span class="text-[var(--color-text-secondary)]">Hiring is expensive and unpredictable</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-        <span class="text-red-500 text-xl">❌</span>
-        <span class="text-[var(--color-text-secondary)]">Scaling means more chaos, not profit</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-        <span class="text-red-500 text-xl">❌</span>
-        <span class="text-[var(--color-text-secondary)]">Always behind on content creation</span>
-      </div>
-      <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-        <span class="text-red-500 text-xl">❌</span>
-        <span class="text-[var(--color-text-secondary)]">Proposals take hours, not minutes</span>
-      </div>
+      {points.map((point: string) => (
+        <div class="flex items-start gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+          <span class="text-red-500 text-xl">❌</span>
+          <span class="text-[var(--color-text-secondary)]">{point}</span>
+        </div>
+      ))}
     </div>
   </div>
 </section>

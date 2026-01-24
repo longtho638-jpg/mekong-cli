@@ -79,4 +79,6 @@ const CardContent = React.forwardRef<
 ));
 CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardTitle, CardContent, cardVariants };
+export { Card, CardHeader, CardTitle, CardContent };
+// eslint-disable-next-line react-refresh/only-export-components
+export { cardVariants };

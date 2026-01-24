@@ -345,6 +345,7 @@ class CommanderHandler:
         statuses_json = {}
         for k, v in statuses.items():
             statuses_json[k] = {
+                "name": v.name,
                 "status": v.status.value,
                 "message": v.message,
                 "last_check": v.last_check,
