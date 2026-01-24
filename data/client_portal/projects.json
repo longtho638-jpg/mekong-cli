@@ -113,5 +113,17 @@
     "tasks": [],
     "budget": 5000.0,
     "spent": 0.0
+  },
+  "PRJ-85E59F41": {
+    "id": "PRJ-85E59F41",
+    "client_id": "CLI-E2750083",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-25T06:33:00.362653",
+    "end_date": "2026-02-22T06:33:00.362662",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
   }
 }

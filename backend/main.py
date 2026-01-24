@@ -14,7 +14,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
-from backend.middleware import RateLimitMiddleware
+from backend.middleware import (
+    RateLimitMiddleware,
+    PerformanceMonitoringMiddleware,
+    get_metrics_summary,
+)
 from backend.api.routers import (
     agents,
     agents_creator,
@@ -44,6 +48,9 @@ app = FastAPI(
     description="🌊 Deploy Your Agency in 15 Minutes - Backend API with Clean Architecture",
     version=settings.api_version,
 )
+
+# Add performance monitoring middleware (before rate limiting for accurate timing)
+app.add_middleware(PerformanceMonitoringMiddleware)
 
 # Add rate limiting middleware (before CORS)
 app.add_middleware(RateLimitMiddleware)
@@ -102,6 +109,11 @@ async def health():
             "controllers": "active",
         },
     }
+
+@app.get("/metrics")
+async def metrics():
+    """Performance metrics for dashboard"""
+    return get_metrics_summary()
 
 if __name__ == "__main__":
     import uvicorn
