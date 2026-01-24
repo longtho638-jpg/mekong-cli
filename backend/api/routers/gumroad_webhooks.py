@@ -2,12 +2,14 @@
 🔔 Gumroad Webhooks Handler
 ===========================
 Uses Unified Payment Service for verification and processing.
+Includes HMAC-SHA256 signature verification for security.
 """
 
 import logging
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 
+from backend.middleware.webhook_auth import verify_gumroad_webhook
 from backend.services.payment_service import PaymentService
 
 logger = logging.getLogger(__name__)
@@ -18,34 +20,35 @@ router = APIRouter(prefix="/webhooks/gumroad", tags=["Gumroad Webhooks"])
 payment_service = PaymentService()
 
 @router.post("/")
-async def handle_webhook(request: Request, background_tasks: BackgroundTasks):
+async def handle_webhook(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    verified_body: bytes = Depends(verify_gumroad_webhook)
+):
     """
-    Unified Gumroad webhook handler.
+    Unified Gumroad webhook handler with signature verification.
+
     Gumroad sends data as application/x-www-form-urlencoded.
+    Signature is verified via HMAC-SHA256 before processing.
+
+    Security:
+    - X-Gumroad-Signature header required
+    - HMAC-SHA256 signature verification
+    - All verification attempts logged
+    - Invalid signatures rejected with 401
     """
     try:
         # Gumroad sends form data
         form_data = await request.form()
         event_data = dict(form_data)
 
-        # Verify (Basic check via Service)
-        # Note: Gumroad doesn't have a signature header like Stripe
-        verified_event = payment_service.verify_webhook(
-            provider="gumroad",
-            headers={},
-            body=event_data
-        )
-
-        logger.info(f"📨 GUMROAD EVENT: Purchase of {verified_event.get('product_name')}")
+        logger.info(f"📨 GUMROAD EVENT: Purchase of {event_data.get('product_name')}")
 
         # Process Event via PaymentService
-        # Run in background if it takes time, but PaymentService is currently sync-ish for DB ops.
-        # We can wrap it if needed, but for consistency with other routers we call it directly
-        # or use background_tasks if we want to add email sending later.
+        # Signature already verified by dependency
+        payment_service.handle_webhook_event(provider="gumroad", event=event_data)
 
-        payment_service.handle_webhook_event(provider="gumroad", event=verified_event)
-
-        return {"status": "processed"}
+        return {"status": "processed", "verified": True}
 
     except Exception as e:
         logger.error(f"❌ Gumroad Processing Error: {e}")
