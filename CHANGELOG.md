@@ -1,3 +1,10 @@
+## [2.6.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.3...v2.6.0-beta.4) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **release:** prevent data loss in release scripts ([58f17ab](https://github.com/claudekit/claudekit-engineer/commit/58f17ab3afbdd66d22e27a062992af54bc72d85c))
+
 ## [2.6.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.2...v2.6.0-beta.3) (2026-01-24)
 
 
