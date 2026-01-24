@@ -13,13 +13,14 @@ import argparse
 import asyncio
 import json
 import logging
+
+# Add project root to path
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Add project root to path
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from antigravity.core.agent_orchestrator.engine import execute_chain
@@ -99,7 +100,7 @@ async def main():
     all_reports = []
 
     print("\n" + "="*50)
-    print(f"🔥 ANTIGRAVITY AGENT BENCHMARK")
+    print("🔥 ANTIGRAVITY AGENT BENCHMARK")
     print(f"   Started at: {datetime.now().isoformat()}")
     print("="*50)
 

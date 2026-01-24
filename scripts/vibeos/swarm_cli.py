@@ -4,9 +4,9 @@ Swarm CLI Shim
 ==============
 Direct interface to the Swarm Intelligence system.
 """
-import sys
 import argparse
 import asyncio
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from antigravity.core.swarm.orchestrator import SwarmOrchestrator
 from antigravity.core.swarm.patterns.dev_swarm import ArchitectAgent, CoderAgent, ReviewerAgent
+
 
 async def run_swarm(task: str, swarm_type: str = "dev"):
     print(f"🐝 Starting {swarm_type} swarm for task: {task}")
@@ -33,7 +34,9 @@ async def run_swarm(task: str, swarm_type: str = "dev"):
     elif swarm_type == "growth":
         # Import growth agents only if needed
         from antigravity.core.swarm.patterns.growth_swarm import (
-            StrategistAgent, ContentCreatorAgent, SocialManagerAgent
+            ContentCreatorAgent,
+            SocialManagerAgent,
+            StrategistAgent,
         )
         swarm.register_agent(StrategistAgent("strategist", "Strategist", bus))
         swarm.register_agent(ContentCreatorAgent("creator", "Creator", bus))

@@ -1,6 +1,8 @@
 import os
 import sys
+
 from interpreter import interpreter
+
 
 def run_interpreter_task(task: str) -> str:
     """

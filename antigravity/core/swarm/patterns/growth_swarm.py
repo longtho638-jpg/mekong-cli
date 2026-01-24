@@ -1,5 +1,6 @@
 import logging
 from antigravity.core.telemetry import agent_telemetry
+
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 

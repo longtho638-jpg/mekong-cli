@@ -5,9 +5,15 @@ Manages Multi-tenancy and Subscription Lifecycles.
 """
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 logger = logging.getLogger(__name__)
+
+
+class SaasUsageMetrics(TypedDict, total=False):
+    logins_per_week: int
+    feature_utilization: float
+
 
 @dataclass
 class TenantConfig:
@@ -55,7 +61,7 @@ class SaasEngine:
         due = charge - credit
         return round(due, 2)
 
-    def check_churn_risk(self, usage_metrics: Dict[str, Any]) -> str:
+    def check_churn_risk(self, usage_metrics: SaasUsageMetrics) -> str:
         """Analyze churn risk based on SaaS metrics."""
         login_freq = usage_metrics.get("logins_per_week", 0)
         feature_util = usage_metrics.get("feature_utilization", 0.0)

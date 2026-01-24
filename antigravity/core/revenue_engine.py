@@ -17,7 +17,7 @@ NOTE: This is a facade for backward compatibility.
 The actual implementation has been moved to antigravity.core.revenue package.
 """
 
-from antigravity.core.revenue import RevenueEngine
 from antigravity.core.config import Currency
+from antigravity.core.revenue import RevenueEngine
 
 __all__ = ["RevenueEngine", "Currency"]

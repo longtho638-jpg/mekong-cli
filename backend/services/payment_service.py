@@ -5,19 +5,28 @@ Abstracts payment providers (PayPal, Stripe) into a single interface.
 Handles checkout creation, subscription management, and webhook verification.
 """
 
-import logging
 import json
-from typing import Dict, Any, Optional, Union
+import logging
 from datetime import datetime
+from typing import Any, Dict, Optional, Union, TypedDict
 
-from core.finance.paypal_sdk import PayPalSDK
-from core.finance.gateways.stripe import StripeClient
+from backend.services.provisioning_service import ProvisioningService, ProvisioningResponse
 from core.finance.gateways.gumroad import GumroadClient
-from core.licensing.logic.engine import LicenseGenerator
-from backend.services.provisioning_service import ProvisioningService
+from core.finance.gateways.stripe import StripeClient
+from core.finance.paypal_sdk import PayPalSDK
 from core.infrastructure.database import get_db
+from core.licensing.logic.engine import LicenseGenerator
 
 logger = logging.getLogger(__name__)
+
+
+class CheckoutSessionResponse(TypedDict, total=False):
+    """Response from creating a checkout session"""
+    id: str
+    url: str
+    status: str
+    error: str
+
 
 class PaymentService:
     """
@@ -38,13 +47,13 @@ class PaymentService:
         provider: str,
         amount: float,
         currency: str = "USD",
-        price_id: str = None, # Stripe Price ID or PayPal Plan ID
-        success_url: str = None,
-        cancel_url: str = None,
-        customer_email: str = None,
-        tenant_id: str = None,
+        price_id: Optional[str] = None, # Stripe Price ID or PayPal Plan ID
+        success_url: Optional[str] = None,
+        cancel_url: Optional[str] = None,
+        customer_email: Optional[str] = None,
+        tenant_id: Optional[str] = None,
         mode: str = "subscription"
-    ) -> Dict[str, Any]:
+    ) -> CheckoutSessionResponse:
         """
         Initiate a checkout session.
         """
@@ -92,8 +101,8 @@ class PaymentService:
         self,
         provider: str,
         headers: Dict[str, str],
-        body: Union[bytes, str, Dict],
-        webhook_secret: str = None
+        body: Union[bytes, str, Dict[str, Any]],
+        webhook_secret: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Verify webhook authenticity.
@@ -112,7 +121,7 @@ class PaymentService:
                         body = json.loads(body.decode())
                     elif isinstance(body, str):
                         body = json.loads(body)
-                except:
+                except Exception:
                     raise ValueError("Invalid PayPal webhook body")
 
             return self.paypal.webhooks.verify_signature(
@@ -126,11 +135,12 @@ class PaymentService:
             )
 
         elif provider == "gumroad":
-            return body
+            # body is already a dict in gumroad case usually
+            return body if isinstance(body, dict) else {}
 
         raise ValueError(f"Unsupported provider: {provider}")
 
-    def handle_webhook_event(self, provider: str, event: Dict[str, Any]):
+    def handle_webhook_event(self, provider: str, event: Dict[str, Any]) -> None:
         """
         Route verified event to ProvisioningService and Licensing.
         """
@@ -293,6 +303,7 @@ class PaymentService:
 
     def capture_order(self, provider: str, order_id: str) -> Dict[str, Any]:
         """Capture a payment order."""
+        logger.info(f"Capturing {provider} order: {order_id}")
         if provider == "paypal":
             return self.paypal.orders.capture(order_id)
         else:
@@ -300,6 +311,7 @@ class PaymentService:
 
     def get_order(self, provider: str, order_id: str) -> Dict[str, Any]:
         """Get order details."""
+        logger.info(f"Retrieving {provider} order: {order_id}")
         if provider == "paypal":
             return self.paypal.orders.get(order_id)
         else:

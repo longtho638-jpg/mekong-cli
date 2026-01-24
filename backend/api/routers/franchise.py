@@ -1,8 +1,9 @@
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
+
 from backend.core.security.audit import audit_action
-from backend.core.security.rbac import require_viewer, require_admin
+from backend.core.security.rbac import require_admin, require_viewer
 
 router = APIRouter(prefix="/api/franchise", tags=["Franchise"])
 

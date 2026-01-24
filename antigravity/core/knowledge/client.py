@@ -2,9 +2,11 @@
 GraphClient: Singleton manager for FalkorDB connections.
 """
 import os
-from typing import Optional, Any, List, Dict
+from typing import Any, Dict, List, Optional
+
 from falkordb import FalkorDB
 from loguru import logger
+
 
 class GraphClient:
     _instance: Optional['GraphClient'] = None

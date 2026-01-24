@@ -59,7 +59,7 @@ export function DataItem({ children, borderColor, delay = 0 }: DataItemProps) {
                 padding: '16px'
             }}
         >
-            {children}
+            <>{children}</>
         </motion.div>
     )
 }

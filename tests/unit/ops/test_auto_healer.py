@@ -1,7 +1,9 @@
-import pytest
 import time
-from unittest.mock import MagicMock
 from antigravity.core.ops.auto_healer import AutoHealer, HealthStatus
+from unittest.mock import MagicMock
+
+import pytest
+
 
 def test_auto_healer_registration():
     healer = AutoHealer()

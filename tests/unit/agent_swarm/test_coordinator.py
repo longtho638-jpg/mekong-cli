@@ -1,10 +1,12 @@
-import pytest
 import time
-from unittest.mock import MagicMock
 from antigravity.core.agent_swarm.coordinator import SwarmCoordinator
-from antigravity.core.agent_swarm.state import SwarmState
 from antigravity.core.agent_swarm.enums import AgentRole, TaskPriority, TaskStatus
 from antigravity.core.agent_swarm.models import SwarmTask
+from antigravity.core.agent_swarm.state import SwarmState
+from unittest.mock import MagicMock
+
+import pytest
+
 
 class TestSwarmCoordinator:
     @pytest.fixture
@@ -24,7 +26,8 @@ class TestSwarmCoordinator:
 
     def test_register_agent(self, coordinator, mock_swarm, state):
         mock_swarm.registry.register.return_value = "agent_1"
-        handler = lambda x: x
+        def handler(x):
+            return x
         
         agent_id = coordinator.register_agent("TestAgent", handler, AgentRole.WORKER, ["test"])
         
@@ -63,7 +66,7 @@ class TestSwarmCoordinator:
         
         status = coordinator.get_status()
         
-        assert status["running"] == False
+        assert not status["running"]
         assert "a1" in status["agents"]
         assert status["agents"]["a1"]["name"] == "Agent1"
         assert status["agents"]["a1"]["success_rate"] == 1.0

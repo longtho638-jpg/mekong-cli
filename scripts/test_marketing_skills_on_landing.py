@@ -2,6 +2,7 @@ import asyncio
 import json
 from antigravity.mcp_servers.marketing_server.handlers import MarketingHandler
 
+
 async def test_skills():
     handler = MarketingHandler()
 

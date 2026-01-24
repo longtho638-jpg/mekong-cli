@@ -1,7 +1,7 @@
 import logging
+from antigravity.core.telemetry import agent_telemetry
 from typing import Any
 
-from antigravity.core.telemetry import agent_telemetry
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
 

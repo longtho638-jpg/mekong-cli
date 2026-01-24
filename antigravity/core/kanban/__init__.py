@@ -1,1 +1,1 @@
-from .board_manager import BoardManager, TaskStatus, TaskPriority
+from .board_manager import BoardManager, TaskPriority, TaskStatus

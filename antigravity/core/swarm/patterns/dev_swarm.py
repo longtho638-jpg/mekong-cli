@@ -1,5 +1,6 @@
 import logging
 from antigravity.core.telemetry import agent_telemetry
+
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 
@@ -33,6 +34,6 @@ class ReviewerAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.sender == "coder":
-            logger.info(f"🔍 [Reviewer] Reviewing code...")
+            logger.info("🔍 [Reviewer] Reviewing code...")
             # Simulate review
             self.send("orchestrator", "Code Approved", MessageType.RESULT)

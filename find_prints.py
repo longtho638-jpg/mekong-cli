@@ -1,33 +1,41 @@
 import os
 import re
 
+
 def find_prints_not_in_main(root_dir):
     results = []
-    # Match print( exactly, ensuring it's not part of another word like 'sprint'
-    # and not at the beginning of a word like 'blueprint'
-    print_regex = re.compile(r'(?<![a-zA-Z0-9_])print\s*\(')
+    # Match print( exactly as a whole word
+    print_regex = re.compile(r'\bprint\s*\(')
 
     for root, _, files in os.walk(root_dir):
         for file in files:
             if file.endswith('.py'):
                 filepath = os.path.join(root, file)
                 try:
-                    with open(filepath, 'r') as f:
+                    with open(filepath, 'r', encoding='utf-8') as f:
                         lines = f.readlines()
 
                     in_main = False
                     for i, line in enumerate(lines):
-                        # Detect main block
+                        # Detect if we entered the main block
                         if 'if __name__ == "__main__":' in line or "if __name__ == '__main__':" in line:
                             in_main = True
 
                         if print_regex.search(line) and not in_main:
+                            # Skip comments
                             stripped = line.strip()
                             if stripped.startswith('#'):
                                 continue
 
-                            # Skip UI methods
+                            # Double check with finditer to ensure it's not part of another word
+                            # (though \b should handle it, let's be safe)
+                            matches = list(print_regex.finditer(line))
+                            if not matches:
+                                continue
+
+                            # Heuristic to skip methods meant for CLI display
                             is_ui_method = False
+                            # Look back 20 lines for def
                             for j in range(i, max(-1, i-20), -1):
                                 if 'def ' in lines[j] and any(x in lines[j] for x in ['print_', 'show_', 'format_', 'report', 'dashboard', 'banner']):
                                     is_ui_method = True

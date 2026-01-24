@@ -113,7 +113,7 @@ export function SheetContent({
             >
               <X size={20} />
             </button>
-            {children}
+            <>{children}</>
           </motion.div>
         </>
       )}

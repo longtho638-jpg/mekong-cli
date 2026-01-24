@@ -11,10 +11,11 @@ Strategy:
 4. If exists, skip (preserve .claude/agents as the "active" configuration).
 """
 
+import glob
 import os
 import shutil
-import glob
 from pathlib import Path
+
 
 def sync_agents():
     source_root = Path(".agent/subagents")
@@ -60,7 +61,7 @@ def sync_agents():
             skipped_count += 1
 
     print("-" * 40)
-    print(f"Sync Complete.")
+    print("Sync Complete.")
     print(f"New agents synced: {synced_count}")
     print(f"Existing agents skipped: {skipped_count}")
     print(f"Total agents in {dest_root}: {len(list(dest_root.glob('*.md')))}")

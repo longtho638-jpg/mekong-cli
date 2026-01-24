@@ -4,22 +4,30 @@ Handles Directed Acyclic Graph (DAG) execution for complex agent workflows.
 """
 import logging
 import uuid
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Any, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, List, Optional, Set, Union, TypedDict
 
-from .models import SwarmTask
-from .enums import TaskStatus, TaskPriority
 from .engine import AgentSwarm
+from .enums import TaskPriority, TaskStatus
+from .models import SwarmTask
 
 logger = logging.getLogger(__name__)
+
+
+class NodePayload(TypedDict, total=False):
+    """Structured payload for graph nodes"""
+    use_output_from: str
+    input_data: Any
+    params: Dict[str, Any]
+
 
 @dataclass
 class GraphNode:
     """A node in the execution graph."""
     id: str
     task_name: str
-    payload: Any
+    payload: Union[NodePayload, Dict[str, Any], Any]
     agent_role: str = "worker" # Preferred role
     dependencies: List[str] = field(default_factory=list) # IDs of nodes that must complete first
     priority: TaskPriority = TaskPriority.NORMAL

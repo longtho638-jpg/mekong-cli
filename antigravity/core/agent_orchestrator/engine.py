@@ -11,8 +11,8 @@ from antigravity.core.agent_chains import get_chain, get_chain_obj
 from antigravity.core.algorithm.validation import validate_win3_logic
 from antigravity.core.chains import Chain
 from antigravity.core.mixins import StatsMixin
-from antigravity.core.types import HookContextDict, OrchestratorStatsDict
 from antigravity.core.telemetry import agent_telemetry
+from antigravity.core.types import HookContextDict, OrchestratorStatsDict
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -147,7 +147,7 @@ class AgentOrchestrator(StatsMixin):
 
         return result
 
-    def _evaluate_condition(self, condition: str, context: Optional[Dict[str, Any]]) -> bool:
+    def _evaluate_condition(self, condition: str, context: Optional[HookContextDict]) -> bool:
         """
         Evaluates a condition string against the blackboard and context.
         Simple evaluation: checks for presence of a key or simple comparison.
@@ -155,17 +155,20 @@ class AgentOrchestrator(StatsMixin):
         from antigravity.core.agent_memory.blackboard import blackboard
 
         # Merge context and blackboard for evaluation
-        eval_data = blackboard.get_namespace("global")
+        # Type safety: blackboard.get_namespace returns a dict
+        eval_data: Dict[str, Any] = blackboard.get_namespace("global")
         if context:
-            eval_data.update(context)
+            eval_data.update(context)  # type: ignore
 
         try:
             # Simple expression evaluation (limited subset for security)
             # In a real system, we'd use a safe evaluator or AST parsing.
             # For now, we'll check for "key" or "key == value"
             if " == " in condition:
-                k, v = condition.split(" == ")
-                return str(eval_data.get(k.strip())) == v.strip().strip("'").strip('"')
+                parts = condition.split(" == ")
+                if len(parts) == 2:
+                    k, v = parts
+                    return str(eval_data.get(k.strip())) == v.strip().strip("'").strip('"')
 
             # Default to checking if key exists and is truthy
             return bool(eval_data.get(condition.strip()))
@@ -184,7 +187,7 @@ class AgentOrchestrator(StatsMixin):
         return self.monitor.get_session_stats(self.history)
 
 # Quick Access Function
-def execute_chain(suite: str, subcommand: str, context: Optional[Dict] = None) -> ChainResult:
+def execute_chain(suite: str, subcommand: str, context: Optional[HookContextDict] = None) -> ChainResult:
     """Convenience wrapper for one-off chain execution."""
     orchestrator = AgentOrchestrator()
     return orchestrator.run(suite, subcommand, context)

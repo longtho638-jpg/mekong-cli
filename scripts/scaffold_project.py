@@ -3,16 +3,17 @@
 Scaffold Project Script
 Uses Antigravity Architect Service to generate project blueprints.
 """
-import sys
-import os
 import argparse
+import os
+import sys
 from typing import Optional
 
 # Add project root to path
 sys.path.append(os.getcwd())
 
-from core.modules.architect.services import ArchitectService
 from core.modules.architect.entities import ArchitectureType
+from core.modules.architect.services import ArchitectService
+
 
 def main():
     parser = argparse.ArgumentParser(description="Scaffold a new project or module.")
@@ -43,7 +44,7 @@ def main():
     print("="*60)
     print(f"\n🧠 Reasoning: {profile.reasoning}")
     print(f"\n📂 Folder Structure:\n{blueprint.folder_structure}")
-    print(f"\n📏 Core Rules:")
+    print("\n📏 Core Rules:")
     for rule in blueprint.core_rules:
         print(f"  - {rule}")
 

@@ -1,6 +1,8 @@
-import pytest
-from antigravity.core.agent_swarm.registry import AgentRegistry
 from antigravity.core.agent_swarm.enums import AgentRole
+from antigravity.core.agent_swarm.registry import AgentRegistry
+
+import pytest
+
 
 class TestAgentRegistry:
     @pytest.fixture

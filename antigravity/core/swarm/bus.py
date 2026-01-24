@@ -1,8 +1,7 @@
 import asyncio
 import logging
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
-from typing import Callable, Dict, List, Optional, Any
 from .types import AgentMessage
 
 logger = logging.getLogger(__name__)

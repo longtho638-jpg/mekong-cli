@@ -14,19 +14,19 @@ Modules:
 - coordinator: Main swarm coordinator
 """
 
+from .agent import BaseSwarmAgent
+from .bus import MessageBus
+from .orchestrator import SwarmOrchestrator
 from .types import (
+    AgentMessage,
     AgentRole,
+    MessageType,
     SwarmAgent,
     SwarmMetrics,
     SwarmTask,
     TaskPriority,
     TaskStatus,
-    AgentMessage,
-    MessageType
 )
-from .bus import MessageBus
-from .agent import BaseSwarmAgent
-from .orchestrator import SwarmOrchestrator
 
 __all__ = [
     "AgentRole",

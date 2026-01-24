@@ -2,9 +2,12 @@
 Tenant management routes and utility functions.
 """
 import os
+
 from fastapi import FastAPI, HTTPException, Request
-from .models import TENANT_STORE
+
 from .context import get_tenant_id
+from .models import TENANT_STORE
+
 
 def get_current_tenant(request: Request):
     """Get current tenant from request state or context."""

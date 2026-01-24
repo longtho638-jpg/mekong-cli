@@ -84,7 +84,7 @@ class EzPR:
 
     def _merge_all(self) -> str:
         """Execution of automated merge for all eligible PRs."""
-        print("🍭 Bắt đầu gộp các thay đổi... Vui lòng đợi trong giây lát.")
+        logger.info("🍭 Bắt đầu gộp các thay đổi... Vui lòng đợi trong giây lát.")
         report = self.manager.check_and_merge_all(dry_run=False)
 
         merged = report.get("merged", [])

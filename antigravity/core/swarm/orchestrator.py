@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict
 
 from backend.api.security.audit import audit_logger
+
 from ..knowledge.graph_client import GraphClient
 from .agent import BaseSwarmAgent
 from .bus import MessageBus

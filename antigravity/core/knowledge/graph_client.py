@@ -1,9 +1,10 @@
+import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
-import json
+from typing import Any, Dict, List, Optional
+
 from falkordb import FalkorDB
 
 logger = logging.getLogger(__name__)
@@ -88,8 +89,8 @@ class GraphClient:
         """Retrieve related context for a concept."""
         if not self.graph:
             return []
-        query = f"""
-        MATCH (n {{name: $name}})-[r]-(m)
+        query = """
+        MATCH (n {name: $name})-[r]-(m)
         RETURN n, r, m
         LIMIT 20
         """

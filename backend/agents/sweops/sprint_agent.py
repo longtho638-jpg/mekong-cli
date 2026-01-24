@@ -3,11 +3,14 @@ Sprint Agent - Sprint Planning & Velocity Tracking
 Manages sprints, backlog, and team velocity.
 """
 
+import logging
 import random
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
+
+logger = logging.getLogger(__name__)
 
 
 class SprintStatus(Enum):
@@ -144,7 +147,7 @@ class SprintAgent:
 
         return sprint
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> Dict[str, Union[int, float]]:
         """Get sprint statistics"""
         sprints = list(self.sprints.values())
         completed = [s for s in sprints if s.status == SprintStatus.COMPLETED]
@@ -152,7 +155,7 @@ class SprintAgent:
         return {
             "total_sprints": len(sprints),
             "active": len([s for s in sprints if s.status == SprintStatus.ACTIVE]),
-            "avg_velocity": sum(s.velocity for s in completed) / len(completed) if completed else 0,
+            "avg_velocity": sum(s.velocity for s in completed) / len(completed) if completed else 0.0,
             "total_points": sum(s.committed_points for s in sprints),
             "completed_points": sum(s.completed_points for s in sprints),
         }

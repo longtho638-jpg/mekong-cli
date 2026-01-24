@@ -10,15 +10,38 @@ import logging
 from antigravity.core.base import BaseEngine
 from antigravity.core.patterns import singleton_factory
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, TypedDict
 
-from .analytics import PipelineAnalytics
+from .analytics import PipelineAnalytics, PipelineAnalysis
 from .models import Client, Lead, LeadSource, LeadStatus
 from .persistence import ClientMagnetPersistence
 from .scoring import LeadScorer
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class ClientMagnetStats(TypedDict):
+    """Aggregated engine performance metrics"""
+    total_leads: int
+    total_clients: int
+    pipeline_value: float
+    weighted_pipeline: float
+    conversion_rate: float
+
+
+class LeadDataDict(TypedDict):
+    """Data representation of a lead"""
+    name: str
+    company: str
+    email: str
+    score: int
+    status: str
+
+
+class LeadsResponse(TypedDict):
+    """Response structure for processed leads"""
+    all: List[LeadDataDict]
 
 
 class ClientMagnet(BaseEngine):
@@ -91,7 +114,7 @@ class ClientMagnet(BaseEngine):
         logger.info(f"🎊 DEAL WON: Converted {lead.name} to Client")
         return client
 
-    def get_pipeline_summary(self) -> Dict[str, Any]:
+    def get_pipeline_summary(self) -> PipelineAnalysis:
         """Calculates current financial health of the sales pipeline."""
         return self.analytics.analyze(self.leads)
 
@@ -99,7 +122,7 @@ class ClientMagnet(BaseEngine):
         """Efficiency metric: WON vs total closed deals."""
         return self.analytics.calculate_conversion_rate(self.leads)
 
-    def _collect_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> ClientMagnetStats:
         """Aggregated engine performance for master dashboard."""
         summary = self.get_pipeline_summary()
         return {
@@ -110,7 +133,7 @@ class ClientMagnet(BaseEngine):
             "conversion_rate": summary["metrics"]["conversion_rate"],
         }
 
-    def process_leads(self) -> Dict[str, List[Dict[str, Any]]]:
+    def process_leads(self) -> LeadsResponse:
         """
         Simulates the processing of leads from various sources.
         In a real implementation, this would connect to external APIs.
@@ -122,7 +145,7 @@ class ClientMagnet(BaseEngine):
             self.add_lead("Legacy Biz", "Old Co", "info@oldco.com", "555-0103", "cold_email")
 
         # Convert to dict representation
-        leads_data = []
+        leads_data: List[LeadDataDict] = []
         for lead in self.leads:
             # Calculate score if not present
             if not hasattr(lead, 'score') or lead.score is None:

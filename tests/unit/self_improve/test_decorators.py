@@ -1,7 +1,9 @@
-import pytest
 import time
 from antigravity.core.self_improve.decorators import self_improving
 from antigravity.core.self_improve.engine import get_self_improve_engine
+
+import pytest
+
 
 def test_self_improving_decorator_success():
     engine = get_self_improve_engine()

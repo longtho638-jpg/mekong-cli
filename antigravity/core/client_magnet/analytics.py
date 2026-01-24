@@ -1,15 +1,32 @@
 """
 Sales pipeline analytics.
 """
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from .models import Lead, LeadStatus
+
+
+class PipelineFinancials(TypedDict):
+    raw_value: float
+    weighted_value: float
+
+
+class PipelineMetrics(TypedDict):
+    total_active: int
+    conversion_rate: float
+    avg_lead_score: float
+
+
+class PipelineAnalysis(TypedDict):
+    financials: PipelineFinancials
+    metrics: PipelineMetrics
+    stages: Dict[str, int]
 
 
 class PipelineAnalytics:
     """Calculator for pipeline health and metrics."""
 
-    def analyze(self, leads: List[Lead]) -> Dict[str, Any]:
+    def analyze(self, leads: List[Lead]) -> PipelineAnalysis:
         """Calculates current financial health of the sales pipeline."""
         # Pipeline excludes final states (WON/LOST)
         active_leads = [

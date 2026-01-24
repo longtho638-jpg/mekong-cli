@@ -1,9 +1,11 @@
-import pytest
 import json
 import os
 import tempfile
 from antigravity.core.self_improve.persistence import load_learnings, save_learnings
 from antigravity.core.self_improve.types import LearningEntry, LearningSource
+
+import pytest
+
 
 @pytest.fixture
 def temp_learnings_file():

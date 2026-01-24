@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List, Dict, Any
-from backend.api.security.rbac import require_admin
-from backend.api.security.audit import audit_logger
 import json
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from backend.api.security.audit import audit_logger
+from backend.api.security.rbac import require_admin
 
 router = APIRouter(prefix="/audit", tags=["audit"])
 

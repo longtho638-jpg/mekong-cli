@@ -8,11 +8,46 @@ token usage based on the current economic status.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from antigravity.mcp_servers.quota_server.engine import QuotaEngine
 
 logger = logging.getLogger(__name__)
+
+
+class ModelQuotaDict(TypedDict):
+    """Specific model quota data"""
+    id: str
+    name: str
+    remaining_percent: float
+    threshold_level: str
+    countdown: str
+    reset_time: str
+    status_emoji: str
+    status_full: str
+    pool_id: Optional[str]
+    capabilities: List[str]
+    context_window: Optional[int]
+
+
+class QuotaPoolDict(TypedDict):
+    """Quota pool data"""
+    id: str
+    name: str
+    aggregate_remaining: float
+    model_count: int
+    lowest_model: Optional[str]
+
+
+class QuotaStatusResponse(TypedDict):
+    """Full quota status response"""
+    models: List[ModelQuotaDict]
+    pools: Dict[str, QuotaPoolDict]
+    ungrouped: List[ModelQuotaDict]
+    alerts: Dict[str, List[str]]
+    status_bar: str
+    last_fetch: Optional[str]
+
 
 class QuotaService:
     """
@@ -20,11 +55,11 @@ class QuotaService:
     """
     def __init__(self):
         self.engine = QuotaEngine()
-    
-    def get_status(self) -> Dict[str, Any]:
+
+    def get_status(self) -> QuotaStatusResponse:
         """Returns the current quota status across all pools."""
-        return self.engine.get_current_status()
-    
+        return self.engine.get_current_status()  # type: ignore
+
     def get_cli_report(self) -> str:
         """Returns a formatted CLI report of the quota status."""
         return self.engine.format_cli_output(format_type="full")

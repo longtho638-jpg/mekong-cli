@@ -1,8 +1,9 @@
+import ast
 import logging
 import os
-import ast
 from pathlib import Path
 from typing import List
+
 from .graph_client import GraphClient
 from .schema import IngestionSchema
 

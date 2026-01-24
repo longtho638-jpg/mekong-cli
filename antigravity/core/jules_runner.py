@@ -133,7 +133,8 @@ def check_jules_status():
             text=True,
             timeout=60,
         )
-        print(result.stdout)
+        if result.stdout:
+            print(result.stdout)
     except Exception as e:
         logger.error(f"❌ Lỗi khi kiểm tra: {e}")
 

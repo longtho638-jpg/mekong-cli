@@ -1,7 +1,9 @@
-import pytest
+from antigravity.core.swarm.agent import BaseSwarmAgent
 from antigravity.core.swarm.bus import MessageBus
 from antigravity.core.swarm.types import AgentMessage, MessageType
-from antigravity.core.swarm.agent import BaseSwarmAgent
+
+import pytest
+
 
 class TestAgent(BaseSwarmAgent):
     def __init__(self, agent_id, name, bus):

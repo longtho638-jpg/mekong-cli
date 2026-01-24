@@ -4,11 +4,14 @@ Uses AST for Python parsing.
 """
 import ast
 import os
-from typing import List, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List
+
 from loguru import logger
-from .models import KnowledgeNode, KnowledgeEdge, NodeType, EdgeType
+
 from .client import graph_client
+from .models import EdgeType, KnowledgeEdge, KnowledgeNode, NodeType
+
 
 class CodeIngestor:
     def __init__(self, root_dir: str = "."):

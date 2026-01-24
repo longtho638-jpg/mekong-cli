@@ -1,9 +1,11 @@
 import os
 import sys
 from typing import List, Optional
-from llama_index.core import VectorStoreIndex, Document, Settings
-from llama_index.llms.gemini import Gemini
+
+from llama_index.core import Document, Settings, VectorStoreIndex
 from llama_index.embeddings.gemini import GeminiEmbedding
+from llama_index.llms.gemini import Gemini
+
 
 def setup_llama_index():
     """

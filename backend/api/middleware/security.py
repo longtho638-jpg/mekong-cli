@@ -5,11 +5,12 @@ Handles user identification, RBAC context population, and automated request audi
 """
 
 import logging
+
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from backend.api.auth.utils import verify_token, TokenData
+from backend.api.auth.utils import TokenData, verify_token
 from backend.core.security.audit import audit_logger
 
 logger = logging.getLogger(__name__)

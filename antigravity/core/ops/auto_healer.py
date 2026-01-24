@@ -4,9 +4,9 @@ Handles self-healing and automated recovery actions.
 """
 import logging
 import time
-from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

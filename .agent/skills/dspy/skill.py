@@ -1,6 +1,8 @@
-import dspy
 import os
 from typing import Optional
+
+import dspy
+
 
 class GenerateAnswer(dspy.Signature):
     """Answer a question with short factoid answer."""

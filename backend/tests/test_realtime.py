@@ -1,9 +1,11 @@
-import pytest
-from unittest.mock import AsyncMock, MagicMock
 from antigravity.core.swarm.bus import MessageBus
 from antigravity.core.swarm.types import AgentMessage, MessageType
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 from backend.websocket.server import ConnectionManager
+
 
 @pytest.mark.asyncio
 async def test_message_bus_websocket_broadcast():

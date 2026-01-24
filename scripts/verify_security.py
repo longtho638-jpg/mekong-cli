@@ -8,9 +8,9 @@ Verifies:
 3. RBAC Implementation checks
 """
 
-import sys
 import os
 import re
+import sys
 from pathlib import Path
 
 # Add project root to path

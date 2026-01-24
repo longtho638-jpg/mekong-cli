@@ -3,11 +3,11 @@ Approval Gate Middleware.
 Implements Human-in-the-Loop 2.0 gates for critical actions.
 """
 import logging
-import uuid
 import time
-from typing import Dict, List, Optional, Callable, Any
+import uuid
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

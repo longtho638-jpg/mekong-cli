@@ -11,7 +11,10 @@ from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
+
+# Type alias for context values
+ContextValue = Union[str, int, float, bool, list, dict, None]
 
 from .models import Memory, Pattern
 from .storage import load_memories, save_memories
@@ -41,7 +44,7 @@ class AgentMemory(StatsMixin):
     def remember(
         self,
         agent: str,
-        context: Dict[str, Any],
+        context: Dict[str, ContextValue],
         outcome: str,
         success: bool = True,
         patterns: Optional[List[str]] = None,
@@ -147,7 +150,7 @@ class AgentMemory(StatsMixin):
                 for pattern_str in memory.patterns:
                     self._update_pattern(memory.agent, pattern_str, memory.success)
 
-    def _collect_stats(self) -> Dict[str, Any]:
+    def _collect_stats(self) -> Dict[str, Union[int, float]]:
         """Calculates global memory usage and health statistics."""
         return {
             "total_records": len(self.memories),

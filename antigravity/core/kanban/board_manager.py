@@ -1,16 +1,15 @@
-from typing import Dict, List, Optional
-from datetime import datetime
-import uuid
 import logging
+import uuid
 
 # We need basic models. Ideally these should be shared or defined here.
 # To avoid circular imports with backend schemas, let's define core models here
 # or use dictionaries/dataclasses.
 # For now, let's use the same structure as the schemas but as plain classes/dataclasses
 # and let the API convert them.
-
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

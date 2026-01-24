@@ -3,8 +3,8 @@
 Shim for Solo Revenue Daemon.
 Imports logic from antigravity.mcp_servers.solo_revenue_server.handlers
 """
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Ensure project root is in path
@@ -19,6 +19,7 @@ except ImportError as e:
 
 import asyncio
 import json
+
 
 async def main():
     daemon = SoloRevenueHandler()

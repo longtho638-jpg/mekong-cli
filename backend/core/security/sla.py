@@ -8,7 +8,8 @@ SLA targets (e.g., 99.9% uptime, < 5s agent response).
 import logging
 import time
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)

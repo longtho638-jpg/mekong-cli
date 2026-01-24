@@ -131,9 +131,11 @@ class StdioMCPProcess(BaseMCPProcess):
                 "arguments": arguments
             })
             if "error" in response:
+                logger.error(f"Tool call error from {self.name}.{tool_name}: {response['error']}")
                 return {"success": False, "error": response["error"]}
             return {"success": True, "result": response.get("result")}
         except Exception as e:
+            logger.error(f"Exception during call_tool {tool_name} on {self.name}: {e}")
             return {"success": False, "error": str(e)}
 
     async def list_tools(self) -> List[Dict[str, Any]]:

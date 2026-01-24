@@ -1,7 +1,8 @@
+import asyncio
+from typing import Any, Dict, List, Optional
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any, List, Optional
-import asyncio
 
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
@@ -42,7 +43,13 @@ async def save_workflow(workflow_id: str, workflow: Workflow):
     """Save a workflow definition."""
     # Convert Pydantic model to dict/dataclass expected by handler
     # Note: Handler expects Workflow dataclass, we might need adapter
-    from antigravity.mcp_servers.workflow_server.handlers import WorkflowEngineHandler, Workflow as HandlerWorkflow, WorkflowNode as HandlerNode, TriggerType, ActionType
+    from antigravity.mcp_servers.workflow_server.handlers import (
+        ActionType,
+        TriggerType,
+        WorkflowEngineHandler,
+    )
+    from antigravity.mcp_servers.workflow_server.handlers import Workflow as HandlerWorkflow
+    from antigravity.mcp_servers.workflow_server.handlers import WorkflowNode as HandlerNode
 
     handler = WorkflowEngineHandler()
 

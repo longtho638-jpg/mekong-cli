@@ -5,9 +5,35 @@ Enforces HIPAA compliance and telehealth standards.
 """
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 logger = logging.getLogger(__name__)
+
+
+class HealthcareEncryptionConfig(TypedDict, total=False):
+    at_rest: bool
+    in_transit: bool
+
+
+class HealthcareAuthConfig(TypedDict, total=False):
+    mfa_enabled: bool
+    audit_logging: bool
+
+
+class HealthcareFeaturesConfig(TypedDict, total=False):
+    telehealth: bool
+
+
+class HealthcareTelehealthConfig(TypedDict, total=False):
+    latency_ms: int
+
+
+class HealthcareSystemConfig(TypedDict, total=False):
+    encryption: HealthcareEncryptionConfig
+    authentication: HealthcareAuthConfig
+    features: HealthcareFeaturesConfig
+    telehealth_config: HealthcareTelehealthConfig
+
 
 @dataclass
 class ComplianceCheck:
@@ -15,6 +41,7 @@ class ComplianceCheck:
     name: str
     passed: bool
     details: str
+
 
 class HealthcareEngine:
     """Specialized engine for Healthcare clients."""
@@ -27,7 +54,7 @@ class HealthcareEngine:
             "baa_signed"
         ]
 
-    def audit_compliance(self, system_config: Dict[str, Any]) -> List[ComplianceCheck]:
+    def audit_compliance(self, system_config: HealthcareSystemConfig) -> List[ComplianceCheck]:
         """Run HIPAA compliance audit on system configuration."""
         checks = []
 

@@ -1,8 +1,9 @@
-from fastapi.testclient import TestClient
-from backend.main import app
-from backend.api.auth.utils import create_access_token, get_password_hash
-from backend.api.auth.router import fake_users_db
 import pytest
+from fastapi.testclient import TestClient
+
+from backend.api.auth.router import fake_users_db
+from backend.api.auth.utils import create_access_token, get_password_hash
+from backend.main import app
 
 client = TestClient(app)
 
@@ -30,5 +31,5 @@ def test_login_failure():
 @pytest.mark.skip(reason="Requires running redis/falkordb service")
 def test_websocket_auth_failure():
     with pytest.raises(Exception): # WebSocketDisconnect or similar
-        with client.websocket_connect("/swarm/ws") as websocket:
+        with client.websocket_connect("/swarm/ws"):
             pass

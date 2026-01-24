@@ -8,7 +8,7 @@ Caller → Antigravity Proxy (http://localhost:8080) [Enforces Quotas]
 """
 
 import sys
-from typing import Literal, Dict, List
+from typing import Dict, List, Literal
 
 # Model definitions matching Antigravity Proxy capabilities
 ModelType = Literal[

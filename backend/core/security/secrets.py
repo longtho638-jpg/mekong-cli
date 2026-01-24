@@ -5,9 +5,10 @@ Provides an abstraction layer for retrieving secrets from managed providers
 (Doppler, HashiCorp Vault, AWS Secrets Manager) or falling back to environment variables.
 """
 
-import os
 import logging
-from typing import Optional, Dict, Any
+import os
+from typing import Any, Dict, Optional
+
 from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
