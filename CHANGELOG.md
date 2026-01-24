@@ -1,3 +1,10 @@
+## [2.6.0-beta.5](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.4...v2.6.0-beta.5) (2026-01-24)
+
+
+### ♻️ Code Refactoring
+
+* **deletions:** use glob patterns instead of explicit paths ([6a8407a](https://github.com/claudekit/claudekit-engineer/commit/6a8407a491c644b66d067b85fda3c04ff69932e5))
+
 ## [2.6.0-beta.4](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.3...v2.6.0-beta.4) (2026-01-24)
 
 
