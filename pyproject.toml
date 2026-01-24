@@ -57,3 +57,10 @@ exclude = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+asyncio_mode = "auto"
+markers = [
+    "unit: Unit tests (fast, no external deps)",
+    "integration: Integration tests (may need mocks)",
+    "slow: Tests that are slow to run",
+    "asyncio: Asyncio tests"
+]
