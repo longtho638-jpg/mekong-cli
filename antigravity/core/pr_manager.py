@@ -19,7 +19,9 @@ import logging
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Set, Tuple, TypedDict
+from typing import Any, Dict, List, Set, Tuple
+
+from typing_extensions import TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)

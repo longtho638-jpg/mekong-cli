@@ -4,7 +4,9 @@ Handles experiment creation, variant assignment, and results analysis.
 """
 import math
 import time
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .types import ABTestConfig, ABTestVariant, ConversionData
 

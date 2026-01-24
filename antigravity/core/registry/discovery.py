@@ -1,7 +1,9 @@
 """
 Registry Discovery - Command resolution and normalization.
 """
-from typing import Any, Dict, List, Optional, Tuple, TypedDict
+from typing import Any, Dict, List, Optional, Tuple
+
+from typing_extensions import TypedDict
 
 from .mcp_catalog import MCPToolLookupResult, mcp_catalog
 from .store import COMMAND_REGISTRY, SHORTCUTS, SubcommandMetadataDict

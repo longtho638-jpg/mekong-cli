@@ -1,10 +1,11 @@
 import asyncio
 import json
 import subprocess
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter
 from pydantic import BaseModel
+from typing_extensions import TypedDict
 
 router = APIRouter(prefix="/monitor", tags=["monitor"])
 

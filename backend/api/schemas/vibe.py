@@ -10,9 +10,10 @@ Consolidates:
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
+from typing_extensions import TypedDict
 
 
 class VibeConfigDict(TypedDict):

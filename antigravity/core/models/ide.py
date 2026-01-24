@@ -16,7 +16,9 @@ Binh Pháp: 🛠️ Khí (Tools) - Organizing the workshop.
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)

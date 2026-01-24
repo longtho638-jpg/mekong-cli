@@ -16,7 +16,9 @@ Binh Phap: Cuu Bien (Variations) - Adapting to the situation.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .agent_crews import CrewStatus, run_crew
 from .agent_memory import get_agent_memory

@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException
+from typing_extensions import TypedDict
 
 
 class KanbanBoardRow(TypedDict, total=False):

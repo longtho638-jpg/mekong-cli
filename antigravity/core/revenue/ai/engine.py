@@ -7,7 +7,9 @@ AI-Driven Revenue Optimization orchestrator.
 
 import logging
 import threading
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from ..models import (
     ChurnPrediction,

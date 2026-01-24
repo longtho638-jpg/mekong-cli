@@ -10,7 +10,9 @@ import logging
 from antigravity.core.base import BaseEngine
 from antigravity.core.patterns import singleton_factory
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict, Union
 
 from .analytics import PipelineAnalysis, PipelineAnalytics
 from .models import Client, Lead, LeadSource, LeadStatus

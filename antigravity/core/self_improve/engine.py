@@ -4,7 +4,9 @@ Self-Improvement Engine Logic.
 import logging
 import threading
 import time
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .error_learning import (
     create_error_improvement_suggestion,

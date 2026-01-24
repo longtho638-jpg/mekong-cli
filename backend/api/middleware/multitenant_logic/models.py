@@ -2,7 +2,9 @@
 Tenant models and store.
 """
 import os
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 
 class TenantSettingsDict(TypedDict, total=False):

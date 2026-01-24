@@ -14,7 +14,9 @@ import os
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Literal
+
+from typing_extensions import TypedDict
 
 # Paths
 QUOTA_TRACKER_PATH = Path.home() / ".gemini" / "quota_tracker.json"

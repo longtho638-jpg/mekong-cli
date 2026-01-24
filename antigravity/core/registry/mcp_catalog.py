@@ -3,7 +3,9 @@ Registry MCP Catalog - Bridging MCP tools into the unified registry.
 """
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 
 class MCPToolDict(TypedDict):

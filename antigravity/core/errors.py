@@ -18,7 +18,9 @@ Binh Pháp: 🏰 Pháp (Process) - Correcting errors systematically.
 """
 
 import logging
-from typing import Any, Dict, Optional, TypedDict, Union
+from typing import Any, Dict, Optional
+
+from typing_extensions import TypedDict, Union
 
 # Configure logging
 logger = logging.getLogger(__name__)

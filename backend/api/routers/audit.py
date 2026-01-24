@@ -1,7 +1,8 @@
 import json
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from typing_extensions import TypedDict
 
 from backend.api.security.audit import audit_logger
 from backend.api.security.rbac import require_admin

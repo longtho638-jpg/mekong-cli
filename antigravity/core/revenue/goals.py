@@ -2,7 +2,9 @@
 Revenue Goal Tracking Logic.
 """
 import math
-from typing import Any, Dict, TypedDict
+from typing import Any, Dict
+
+from typing_extensions import TypedDict
 
 from ..config import ARR_TARGET_2026, DEFAULT_GROWTH_RATE
 

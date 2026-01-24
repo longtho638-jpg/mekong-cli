@@ -5,7 +5,9 @@ Manages Multi-tenancy and Subscription Lifecycles.
 """
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

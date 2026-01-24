@@ -8,7 +8,9 @@ Handles checkout creation, subscription management, and webhook verification.
 import json
 import logging
 from datetime import datetime
-from typing import Any, Dict, Optional, TypedDict, Union
+from typing import Any, Dict, Optional
+
+from typing_extensions import TypedDict, Union
 
 from backend.services.provisioning_service import ProvisioningResponse, ProvisioningService
 from core.finance.gateways.gumroad import GumroadClient

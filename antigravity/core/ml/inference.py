@@ -8,7 +8,7 @@ Contains:
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import numpy as np
 
@@ -33,7 +33,7 @@ except ImportError:
 
 
 def predict_conversion_rate_ml(
-    price: float, features: Dict[str, Any], models: dict
+    price: float, features: Dict[str, Any], models: Dict[str, Any]
 ) -> float:
     """
     Predict conversion rate using ML models.
@@ -48,7 +48,7 @@ def predict_conversion_rate_ml(
     """
     if not ML_AVAILABLE or "neural_pricing" not in models:
         # Simple heuristic fallback
-        return 0.05 + 0.1 * features.get("demand_factor", 1.0)
+        return 0.05 + 0.1 * float(features.get("demand_factor", 1.0))
 
     feature_vector = extract_enhanced_features(price, features)
 
@@ -73,7 +73,10 @@ def predict_conversion_rate_ml(
 
 
 def calculate_statistical_optimization(
-    base_price: float, features: Dict[str, Any], models: dict, training_data: list
+    base_price: float,
+    features: Dict[str, Any],
+    models: Dict[str, Any],
+    training_data: List[Dict[str, Any]],
 ) -> MLOptimizationResult:
     """
     Fallback statistical optimization when AI models unavailable.
@@ -130,7 +133,9 @@ def calculate_statistical_optimization(
                 scores = cross_val_score(models["ensemble"], X_cv, y_cv, cv=5, scoring="r2")
             else:
                 # Not enough samples for CV, use default score
-                logger.debug(f"Skipping CV: only {len(training_data)} samples (need {min_samples_for_cv})")
+                logger.debug(
+                    f"Skipping CV: only {len(training_data)} samples (need {min_samples_for_cv})"
+                )
                 scores = np.array([0.5])  # Default moderate confidence
 
             # Fit on full dataset

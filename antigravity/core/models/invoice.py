@@ -16,7 +16,9 @@ Binh Pháp: 💰 Tài (Wealth) - Securing the harvest.
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, Optional
+
+from typing_extensions import TypedDict
 
 # Standard 2026 Rate
 VND_RATE = 25000.0

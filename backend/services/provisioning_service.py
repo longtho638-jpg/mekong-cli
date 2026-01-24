@@ -7,7 +7,9 @@ Syncs state between the unified `subscriptions` table and legacy `organizations`
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, Optional
+
+from typing_extensions import TypedDict
 
 from core.infrastructure.database import get_db
 

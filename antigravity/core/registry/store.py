@@ -1,7 +1,9 @@
 """
 Command Registry Store - Data Definitions.
 """
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 
 class SubcommandMetadataDict(TypedDict, total=False):

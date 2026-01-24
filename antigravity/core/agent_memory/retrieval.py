@@ -2,7 +2,9 @@
 Memory Retrieval Logic
 """
 from datetime import datetime
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 
 class MemoryDataDict(TypedDict):

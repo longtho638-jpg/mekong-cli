@@ -1,7 +1,9 @@
 """
 AgentOps Service Facade.
 """
-from typing import Any, Dict, TypedDict
+from typing import Any, Dict
+
+from typing_extensions import TypedDict
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
 

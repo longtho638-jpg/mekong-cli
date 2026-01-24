@@ -1,7 +1,9 @@
 """ML Optimizer - Main orchestration class for AI-powered pricing optimization."""
 
 import logging
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .analytics import (
     MLAnalyticsReport,

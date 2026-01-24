@@ -5,7 +5,9 @@ Unifies feature flags, circuit breakers, and rate limiting into a single control
 
 import logging
 import threading
-from typing import Any, Callable, Dict, Optional, TypedDict
+from typing import Any, Callable, Dict, Optional
+
+from typing_extensions import TypedDict
 
 from .circuit_breaker import CircuitBreaker, CircuitState
 from .feature_flags import FeatureFlag, FeatureFlagManager

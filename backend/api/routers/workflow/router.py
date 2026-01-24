@@ -1,8 +1,9 @@
 import asyncio
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing_extensions import TypedDict
 
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 

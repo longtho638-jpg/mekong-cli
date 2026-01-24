@@ -1,7 +1,9 @@
 """
 AgentOps Reporting - Logic for listing and summaries
 """
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 
 class OpsCategorySummary(TypedDict):

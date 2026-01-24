@@ -2,7 +2,9 @@
 AgentOps Service - Business logic for AgentOps operations (Facade)
 """
 
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
 

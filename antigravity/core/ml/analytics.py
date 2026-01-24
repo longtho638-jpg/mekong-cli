@@ -6,7 +6,9 @@ Handles analytics and metrics tracking for ML optimization.
 """
 
 import time
-from typing import Any, Dict, TypedDict
+from typing import Any, Dict
+
+from typing_extensions import TypedDict
 
 from .models import GameChangingFeature
 from .scoring import calculate_performance_score

@@ -15,7 +15,9 @@ Binh Pháp: 📋 Pháp (Process) - Maintaining order through standards.
 """
 
 from enum import Enum
-from typing import Dict, List, Tuple, TypedDict, Union
+from typing import Dict, List, Tuple
+
+from typing_extensions import TypedDict, Union
 
 # ============================================================
 # 💸 EXCHANGE RATES (2026 Projections)
