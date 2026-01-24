@@ -2,14 +2,14 @@
 🔔 Stripe Webhooks Handler
 ==========================
 Uses Unified Payment Service for verification and processing.
+Includes Stripe SDK signature verification for security.
 """
 
 import logging
-import os
-from typing import Optional
 
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from backend.middleware.webhook_auth import verify_stripe_webhook
 from backend.services.payment_service import PaymentService
 
 logger = logging.getLogger(__name__)
@@ -22,39 +22,31 @@ payment_service = PaymentService()
 @router.post("/")
 async def handle_webhook(
     request: Request,
-    stripe_signature: Optional[str] = Header(None, alias="Stripe-Signature"),
+    event: dict = Depends(verify_stripe_webhook)
 ):
     """
-    Unified Stripe webhook handler.
+    Unified Stripe webhook handler with signature verification.
+
+    Security:
+    - Stripe-Signature header required
+    - Signature verified using Stripe SDK
+    - Timestamp validation prevents replay attacks
+    - All verification attempts logged
+    - Invalid signatures rejected with 401
     """
-    body_bytes = await request.body()
-    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
-
-    if not webhook_secret:
-        logger.warning("⚠️ STRIPE_WEBHOOK_SECRET not set. Skipping verification.")
-        # In strict mode, we should fail.
-
-    if not stripe_signature:
-         raise HTTPException(status_code=400, detail="Missing Stripe-Signature header")
-
-    try:
-        # Verify
-        event = payment_service.verify_webhook(
-            provider="stripe",
-            headers={"stripe-signature": stripe_signature},
-            body=body_bytes,
-            webhook_secret=webhook_secret
-        )
-    except Exception as e:
-        logger.error(f"❌ Stripe Verification Failed: {e}")
-        raise HTTPException(status_code=400, detail=f"Verification error: {str(e)}")
-
     logger.info(f"📨 STRIPE EVENT: {event.get('type')}")
 
-    # Process
+    # Process event (signature already verified by dependency)
     try:
         payment_service.handle_webhook_event(provider="stripe", event=event)
-        return {"status": "processed", "event": event.get("type")}
+        return {
+            "status": "processed",
+            "event": event.get("type"),
+            "verified": True
+        }
     except Exception as e:
         logger.error(f"❌ Stripe Processing Error: {e}")
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(
+            status_code=500,
+            detail=f"Processing error: {str(e)}"
+        )
