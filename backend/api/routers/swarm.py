@@ -1,35 +1,32 @@
-from antigravity.core.swarm.bus import MessageBus
-from antigravity.core.swarm.enums import TaskPriority
-
-# Import Swarm v2 components
-from antigravity.core.swarm.shortcuts import get_swarm
-from antigravity.core.swarm.shortcuts import submit_task as submit_v2_task
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
+from antigravity.core.swarm.engine import AgentSwarm
+from antigravity.core.swarm.enums import TaskPriority
+from antigravity.core.swarm.shortcuts import get_swarm
+from antigravity.core.swarm.shortcuts import submit_task as submit_v2_task
 from backend.api.security.rbac import require_operator, require_viewer
-from backend.websocket.server import emit_swarm_update
-
-# Use the robust server implementation instead of the deleted manager
 from backend.websocket.server import manager as ws_manager
 
 router = APIRouter(prefix="/swarm", tags=["swarm"])
 
 
-class SwarmAgentStatusDict(TypedDict):
+# --- Schemas ---
+
+class SwarmAgentStatus(BaseModel):
     id: str
     name: str
     role: str
     is_busy: bool
     tasks_completed: int
     tasks_failed: int
-    specialties: List[str]
+    specialties: Optional[List[str]] = None
 
 
-class SwarmMetricsDict(TypedDict):
+class SwarmMetrics(BaseModel):
     total_tasks: int
     completed_tasks: int
     failed_tasks: int
@@ -38,107 +35,127 @@ class SwarmMetricsDict(TypedDict):
     pending_tasks: int
 
 
-class SwarmStatusResponse(TypedDict):
+class SwarmStatusResponse(BaseModel):
     running: bool
-    agents: List[SwarmAgentStatusDict]
-    metrics: SwarmMetricsDict
+    agents: List[SwarmAgentStatus]
+    metrics: SwarmMetrics
 
 
-class SwarmTaskDict(TypedDict):
+class SwarmTaskResponse(BaseModel):
     id: str
     name: str
     status: str
-    priority: str
-    assigned_agent: Optional[str]
+    priority: int
+    assigned_agent: Optional[str] = None
     created_at: float
-    completed_at: Optional[float]
+    completed_at: Optional[float] = None
 
 
-class TaskRequest(BaseModel):
-    content: str
-    swarm_type: str = "dev"  # dev or growth
-
-class V2TaskRequest(BaseModel):
+class TaskSubmitRequest(BaseModel):
     name: str
     payload: Dict[str, Any]
-    priority: str = "NORMAL"
+    priority: str = Field(default="NORMAL", description="CRITICAL, HIGH, NORMAL, LOW, BACKGROUND")
 
-@router.post("/dispatch", dependencies=[Depends(require_operator)])
-async def dispatch_task(request: TaskRequest):
-    """Dispatch a task to the legacy swarm."""
-    # ... legacy implementation ...
-    return {"status": "deprecated", "message": "Use /swarm/v2/dispatch"}
 
-# --- Swarm V2 Endpoints ---
+class TaskSubmitResponse(BaseModel):
+    status: str
+    task_id: str
 
-@router.get("/v2/status", response_model=SwarmStatusResponse, dependencies=[Depends(require_viewer)])
-async def get_swarm_status() -> SwarmStatusResponse:
-    """Get current status of Swarm v2 (Agents, Metrics)."""
-    swarm = get_swarm()
 
-    # Collect Agent Status
-    agents: List[SwarmAgentStatusDict] = []
-    for agent_id, agent in swarm.registry.agents.items():
-        agents.append({
-            "id": agent.id,
-            "name": agent.name,
-            "role": agent.role.value,
-            "is_busy": agent.is_busy,
-            "tasks_completed": agent.tasks_completed,
-            "tasks_failed": agent.tasks_failed,
-            "specialties": agent.specialties
-        })
+# --- Dependency ---
 
-    # Metrics
-    metrics: SwarmMetricsDict = {
-        "total_tasks": swarm.metrics.total_tasks,
-        "completed_tasks": swarm.metrics.completed_tasks,
-        "failed_tasks": swarm.metrics.failed_tasks,
-        "busy_agents": swarm.metrics.busy_agents,
-        "idle_agents": swarm.metrics.idle_agents,
-        "pending_tasks": swarm.task_manager.get_pending_count()
-    }
+def get_swarm_instance() -> AgentSwarm:
+    return get_swarm()
 
-    return {
-        "running": swarm.state.running,
-        "agents": agents,
-        "metrics": metrics
-    }
 
-@router.post("/v2/dispatch", dependencies=[Depends(require_operator)])
-async def dispatch_v2_task(request: V2TaskRequest):
-    """Submit a task to Swarm v2."""
+# --- Endpoints ---
+
+@router.get("/status", response_model=SwarmStatusResponse, dependencies=[Depends(require_viewer)])
+async def get_swarm_status(swarm: AgentSwarm = Depends(get_swarm_instance)) -> SwarmStatusResponse:
+    """
+    Get current status of Swarm (Agents, Metrics).
+    """
+    # Helper to convert dict to Pydantic model if needed,
+    # but swarm.get_status() returns a dict that matches the schema structure mostly.
+    # We might need to map it explicitly to ensure type safety.
+
+    status_dict = swarm.get_status()
+
+    # Map agents dict to list
+    agents_list = []
+    for agent_id, agent_data in status_dict["agents"].items():
+        # Agent data from get_status is a dict
+        agents_list.append(SwarmAgentStatus(
+            id=agent_id,
+            name=agent_data["name"],
+            role=agent_data["role"],
+            is_busy=agent_data["busy"],
+            tasks_completed=agent_data["completed"],
+            tasks_failed=agent_data["failed"],
+            # specialties might not be in the simple get_status dict,
+            # let's check registry if needed, but for now we use what's available
+            specialties=None
+        ))
+
+    metrics = SwarmMetrics(
+        total_tasks=status_dict["metrics"]["total_tasks"],
+        completed_tasks=status_dict["metrics"]["completed_tasks"],
+        failed_tasks=status_dict["metrics"]["failed_tasks"],
+        busy_agents=status_dict["metrics"]["busy_agents"],
+        idle_agents=status_dict["metrics"]["total_agents"] - status_dict["metrics"]["busy_agents"], # Approximate
+        pending_tasks=status_dict["pending_tasks"]
+    )
+
+    return SwarmStatusResponse(
+        running=status_dict["running"],
+        agents=agents_list,
+        metrics=metrics
+    )
+
+
+@router.post("/dispatch", response_model=TaskSubmitResponse, dependencies=[Depends(require_operator)])
+async def dispatch_task(request: TaskSubmitRequest) -> TaskSubmitResponse:
+    """
+    Submit a task to the Swarm.
+    """
     try:
-        priority = TaskPriority[request.priority.upper()]
+        priority_enum = TaskPriority[request.priority.upper()]
     except KeyError:
-        priority = TaskPriority.NORMAL
+        priority_enum = TaskPriority.NORMAL
 
     task_id = submit_v2_task(
         name=request.name,
         payload=request.payload,
-        priority=priority
+        priority=priority_enum
     )
-    return {"status": "submitted", "task_id": task_id}
 
-@router.get("/v2/tasks", response_model=List[SwarmTaskDict], dependencies=[Depends(require_viewer)])
-async def list_v2_tasks() -> List[SwarmTaskDict]:
-    """List active tasks in Swarm v2."""
-    swarm = get_swarm()
-    tasks: List[SwarmTaskDict] = []
-    # In a real app, we might filter or paginate.
-    # Accessing .tasks directly for MVP.
-    with swarm.task_manager._lock:
-        for t in swarm.task_manager.tasks.values():
-            tasks.append({
-                "id": t.id,
-                "name": t.name,
-                "status": t.status.value,
-                "priority": t.priority.value,
-                "assigned_agent": t.assigned_agent,
-                "created_at": t.created_at,
-                "completed_at": t.completed_at
-            })
-    return tasks
+    return TaskSubmitResponse(status="submitted", task_id=task_id)
+
+
+@router.get("/tasks", response_model=List[SwarmTaskResponse], dependencies=[Depends(require_viewer)])
+async def list_tasks(swarm: AgentSwarm = Depends(get_swarm_instance)) -> List[SwarmTaskResponse]:
+    """
+    List active tasks in the Swarm.
+    """
+    # Accessing internal task manager safely
+    tasks_data = swarm.task_manager.get_all_tasks()
+
+    response_list = []
+    for t in tasks_data.values():
+        response_list.append(SwarmTaskResponse(
+            id=t.id,
+            name=t.name,
+            status=t.status.value,
+            priority=t.priority.value,
+            assigned_agent=t.assigned_agent,
+            created_at=t.created_at,
+            completed_at=t.completed_at
+        ))
+
+    # Sort by created_at desc
+    response_list.sort(key=lambda x: x.created_at, reverse=True)
+    return response_list
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, token: str = "anonymous"):
