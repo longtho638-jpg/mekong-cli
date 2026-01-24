@@ -36,6 +36,8 @@ interface MD3SurfaceProps {
     onClick?: () => void;
     /** Custom padding override (use sparingly) */
     padding?: string;
+    /** Custom style override */
+    style?: React.CSSProperties;
 }
 
 // Shape → CSS variable mapping
@@ -89,6 +91,7 @@ export function MD3Surface({
     children,
     onClick,
     padding,
+    style,
 }: MD3SurfaceProps) {
     const shapeConfig = shapeMap[shape];
 
@@ -97,6 +100,7 @@ export function MD3Surface({
         borderRadius: shapeConfig.corner,
         padding: padding || shapeConfig.padding,
         boxShadow: elevation > 0 ? `var(--md-sys-elevation-level${elevation})` : undefined,
+        ...style,
     };
 
     const hoverVariants = interactive ? {

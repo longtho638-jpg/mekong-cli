@@ -13,7 +13,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import useSWR from 'swr';
 import { MD3Card } from '@/components/ui/MD3Card';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Zap, ZapOff } from 'lucide-react';
+import { useAntigravityRealtime } from '@/hooks/useWebSocket';
 
 // API Types
 interface SwarmAgent {
@@ -54,8 +55,19 @@ interface SwarmTask {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const SwarmVisualizer: React.FC = () => {
-  const { data: status, error: statusError, mutate: mutateStatus } = useSWR<SwarmStatus>('/api/swarm/v2/status', fetcher, { refreshInterval: 2000 });
-  const { data: tasks, error: tasksError, mutate: mutateTasks } = useSWR<SwarmTask[]>('/api/swarm/v2/tasks', fetcher, { refreshInterval: 2000 });
+  const { data: status, error: statusError, mutate: mutateStatus } = useSWR<SwarmStatus>('/api/swarm/v2/status', fetcher, { refreshInterval: 5000 });
+  const { data: tasks, error: tasksError, mutate: mutateTasks } = useSWR<SwarmTask[]>('/api/swarm/v2/tasks', fetcher, { refreshInterval: 5000 });
+
+  const { isConnected } = useAntigravityRealtime({
+    onSwarmUpdate: () => {
+      mutateStatus();
+      mutateTasks();
+    },
+    onDataRefresh: () => {
+      mutateStatus();
+      mutateTasks();
+    }
+  });
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -181,7 +193,15 @@ export const SwarmVisualizer: React.FC = () => {
 
   return (
     <MD3Card className="h-[600px] w-full flex flex-col relative overflow-hidden">
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
+      <div className="absolute top-4 right-4 z-10 flex gap-2 items-center">
+        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold shadow-sm ${
+          isConnected
+            ? 'bg-green-100 text-green-700 border border-green-200'
+            : 'bg-red-100 text-red-700 border border-red-200'
+        }`}>
+          {isConnected ? <Zap size={10} /> : <ZapOff size={10} />}
+          {isConnected ? 'LIVE' : 'POLLING'}
+        </div>
         <button
           onClick={handleRefresh}
           className="p-2 bg-[var(--md-sys-color-surface-container-high)] rounded-full hover:bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-on-surface)] shadow-sm"

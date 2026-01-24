@@ -8,10 +8,26 @@ from antigravity.core.agent_swarm.shortcuts import get_swarm, submit_task as sub
 from antigravity.core.agent_swarm.enums import TaskPriority
 
 # Use the robust server implementation instead of the deleted manager
-from backend.websocket.server import manager as ws_manager
+from backend.websocket.server import manager as ws_manager, emit_swarm_update
 from backend.api.security.rbac import require_operator, require_viewer
 
 router = APIRouter(prefix="/swarm", tags=["swarm"])
+
+# --- Swarm V2 Real-time Bridge ---
+
+def notify_swarm_realtime():
+    """Callback for swarm engine to trigger WebSocket broadcast."""
+    import asyncio
+    try:
+        loop = asyncio.get_running_loop()
+        if loop.is_running():
+            loop.create_task(emit_swarm_update())
+    except RuntimeError:
+        # No running event loop
+        pass
+
+# Register the bridge callback
+get_swarm().add_update_callback(notify_swarm_realtime)
 
 # ... (Legacy V1 Swarm Code can remain for now if needed, or be replaced) ...
 # For now, we'll keep V1 imports but focus on adding V2 endpoints

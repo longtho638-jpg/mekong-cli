@@ -27,12 +27,14 @@ from backend.api.routers import (
     stripe_webhooks,
     gumroad_webhooks,
     payments,
+    ops,
 )
 from backend.api.routers import (
     router as hybrid_router,
 )
 from backend.routes.agentops import router as agentops_router
 from backend.api.auth.router import router as auth_router
+from backend.websocket.routes import router as ws_router
 
 # Initialize FastAPI
 app = FastAPI(
@@ -65,6 +67,9 @@ app.include_router(paypal_webhooks.router)
 app.include_router(stripe_webhooks.router)
 app.include_router(gumroad_webhooks.router)
 app.include_router(payments.router)
+app.include_router(ops.router)
+app.include_router(swarm.router)
+app.include_router(ws_router)
 app.include_router(auth_router)
 
 @app.get("/")

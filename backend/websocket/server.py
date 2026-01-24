@@ -32,6 +32,7 @@ class EventType(str, Enum):
     FRANCHISE_ADDED = "franchise_added"
     VC_SCORE_UPDATED = "vc_score_updated"
     MOAT_UPDATED = "moat_updated"
+    SWARM_UPDATE = "swarm_update"
     DATA_REFRESH = "data_refresh"
     HEARTBEAT = "heartbeat"
 
@@ -173,6 +174,11 @@ async def emit_invoice_paid(invoice_data: dict):
 async def emit_vc_score_updated(score_data: dict):
     """Emit when VC score is updated."""
     await manager.broadcast_event(EventType.VC_SCORE_UPDATED, score_data)
+
+
+async def emit_swarm_update(swarm_data: dict = None):
+    """Emit when swarm status or tasks change."""
+    await manager.broadcast_event(EventType.SWARM_UPDATE, swarm_data)
 
 
 async def emit_data_refresh():

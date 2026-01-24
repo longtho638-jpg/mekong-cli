@@ -78,6 +78,7 @@ class TaskExecutor:
         # Execute in thread pool
         self.swarm._executor.submit(self._execute_task, task_id, agent.id)
 
+        self.swarm.notify_update()
         logger.info(f"Task {task.name} assigned to {agent.name}")
 
     def _execute_task(self, task_id: str, agent_id: str):
@@ -97,6 +98,8 @@ class TaskExecutor:
             self.swarm.task_manager.board_manager.sync_task_status(task.id, "RUNNING")
         except Exception as e:
             logger.warning(f"Failed to sync Kanban status (RUNNING): {e}")
+
+        self.swarm.notify_update()
 
         try:
             result = agent.handler(task.payload)
@@ -129,6 +132,7 @@ class TaskExecutor:
         except Exception as e:
             logger.warning(f"Failed to sync Kanban status (COMPLETED): {e}")
 
+        self.swarm.notify_update()
         logger.info(f"Task {task.name} completed in {execution_time:.2f}s")
 
     def _handle_failure(self, task, agent: SwarmAgent, error: Exception):
@@ -148,6 +152,7 @@ class TaskExecutor:
         except Exception as e:
             logger.warning(f"Failed to sync Kanban status (FAILED): {e}")
 
+        self.swarm.notify_update()
         logger.error(f"Task {task.name} failed: {error}")
 
     def _finalize_execution(self, agent: SwarmAgent):

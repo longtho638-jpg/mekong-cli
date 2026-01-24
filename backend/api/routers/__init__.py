@@ -25,6 +25,7 @@ from . import (
     stripe_webhooks,
     gumroad_webhooks,
     kanban,
+    ops,
 )
 
 __all__ = [
@@ -48,4 +49,5 @@ __all__ = [
     "stripe_webhooks",
     "gumroad_webhooks",
     "kanban",
+    "ops",
 ]

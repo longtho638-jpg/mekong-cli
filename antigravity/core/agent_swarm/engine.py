@@ -22,6 +22,7 @@ class AgentSwarm:
     def __init__(self, max_workers: int = 10, enable_metrics: bool = True):
         self.max_workers = max_workers
         self.enable_metrics = enable_metrics
+        self._update_callbacks: List[Callable] = []
 
         # Components
         self.registry = AgentRegistry()
@@ -81,18 +82,21 @@ class AgentSwarm:
         if self.state.running:
             self._task_executor.try_assign_tasks()
 
+        self.notify_update()
         return task_id
 
     def start(self):
         """Start the swarm."""
         self.state.running = True
         self._task_executor.try_assign_tasks()
+        self.notify_update()
         logger.info("Swarm started")
 
     def stop(self):
         """Stop the swarm."""
         self.state.running = False
         self._executor.shutdown(wait=True)
+        self.notify_update()
         logger.info("Swarm stopped")
 
     def get_task_result(
@@ -108,3 +112,15 @@ class AgentSwarm:
     def get_status(self):
         """Get swarm status."""
         return self.coordinator.get_status()
+
+    def add_update_callback(self, callback: Callable):
+        """Add a callback to be called when swarm state changes."""
+        self._update_callbacks.append(callback)
+
+    def notify_update(self):
+        """Notify all callbacks of an update."""
+        for callback in self._update_callbacks:
+            try:
+                callback()
+            except Exception as e:
+                logger.error(f"Error in swarm update callback: {e}")

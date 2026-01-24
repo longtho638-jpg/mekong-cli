@@ -30,6 +30,8 @@ interface MD3CardProps {
     onClick?: () => void;
     /** Additional className */
     className?: string;
+    /** Custom style override */
+    style?: React.CSSProperties;
     /** Children content (alternative to supportingText) */
     children?: ReactNode;
 }
@@ -43,6 +45,7 @@ export function MD3Card({
     interactive = true,
     onClick,
     className,
+    style,
     children,
 }: MD3CardProps) {
     return (
@@ -52,6 +55,7 @@ export function MD3Card({
             interactive={interactive}
             onClick={onClick}
             className={className}
+            style={style}
         >
             {/* Header */}
             {(headline || subhead) && (
