@@ -3,25 +3,54 @@ BizPlan Generator Module
 
 Generates comprehensive business plans using the Agentic Business Plan 2026 framework.
 Reads SKILL files from .agencyos/Documents/ and generates markdown output.
+
+LICENSE TIERS:
+- free/community: Template-based generation only (generate_bizplan)
+- pro/enterprise: AI-powered generation (generate_with_ai)
 """
 
 import json
 import os
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
-from dataclasses import dataclass, field
+
+# License tier requirements for features
+FEATURE_TIERS: Dict[str, List[str]] = {
+    "template_generation": ["free", "starter", "pro", "franchise", "enterprise"],
+    "ai_generation": ["pro", "franchise", "enterprise"],  # Paid feature
+    "export_pdf": ["franchise", "enterprise"],
+    "custom_branding": ["enterprise"],
+}
 
 # Optional AI imports
 try:
     import google.generativeai as genai
+
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
 
 
+def check_license_tier(required_feature: str, user_tier: str = "free") -> bool:
+    """
+    Check if user's license tier allows access to a feature.
+
+    Args:
+        required_feature: Feature to check (e.g., 'ai_generation')
+        user_tier: User's license tier (e.g., 'pro')
+
+    Returns:
+        True if access allowed, False otherwise.
+    """
+    allowed_tiers = FEATURE_TIERS.get(required_feature, [])
+    return user_tier.lower() in allowed_tiers
+
+
 @dataclass
 class SkillTemplate:
     """Represents a SKILL template loaded from JSON."""
+
     id: str
     title: str
     description: str
@@ -44,13 +73,14 @@ class SkillTemplate:
             processing_pipeline=data.get("processing_pipeline", []),
             output_spec=data.get("output_spec", {}),
             input_spec=data.get("input_spec", {}),
-            constraints=data.get("constraints", {})
+            constraints=data.get("constraints", {}),
         )
 
 
 @dataclass
 class MasterFramework:
     """Represents the MASTER framework structure."""
+
     title: str
     version: str
     purpose: Dict
@@ -67,7 +97,7 @@ class MasterFramework:
             purpose=data.get("purpose", {}),
             core_principles=data.get("core_principles", {}),
             frame_2026=data.get("frame_2026", {}),
-            glossary=data.get("glossary", [])
+            glossary=data.get("glossary", []),
         )
 
 
@@ -106,13 +136,13 @@ class BizPlanGenerator:
         # Load MASTER framework
         master_files = [
             "00_MASTER-Agentic-BizPlan-OS.json",
-            "00_MASTER-Agentic-BizPlan-OS (1).json"
+            "00_MASTER-Agentic-BizPlan-OS (1).json",
         ]
 
         for master_file in master_files:
             master_path = self.documents_path / master_file
             if master_path.exists():
-                with open(master_path, 'r', encoding='utf-8') as f:
+                with open(master_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     self.master_framework = MasterFramework.from_json(data)
                 break
@@ -124,7 +154,7 @@ class BizPlanGenerator:
         for json_file in self.documents_path.glob("*.json"):
             if "SKILL" in json_file.name:
                 try:
-                    with open(json_file, 'r', encoding='utf-8') as f:
+                    with open(json_file, "r", encoding="utf-8") as f:
                         data = json.load(f)
                         skill = SkillTemplate.from_json(data)
                         self.skill_templates[skill.id] = skill
@@ -172,18 +202,18 @@ class BizPlanGenerator:
 
 ## About This Framework
 
-{self.master_framework.purpose.get('long', '')}
+{self.master_framework.purpose.get("long", "")}
 
 ### Core Principles
 
 #### Tri-Layer Approach
-{self.master_framework.core_principles.get('tri_layer', {}).get('description', '')}
+{self.master_framework.core_principles.get("tri_layer", {}).get("description", "")}
 
 **The Three Layers:**
 {self._format_layers()}
 
 #### Stage Model
-{self.master_framework.core_principles.get('stage_model', {}).get('description', '')}
+{self.master_framework.core_principles.get("stage_model", {}).get("description", "")}
 
 **Stages:**
 {self._format_stages()}
@@ -193,7 +223,7 @@ class BizPlanGenerator:
 
     def _format_layers(self) -> str:
         """Format the tri-layer structure."""
-        layers = self.master_framework.core_principles.get('tri_layer', {}).get('layers', [])
+        layers = self.master_framework.core_principles.get("tri_layer", {}).get("layers", [])
         output = []
         for layer in layers:
             output.append(f"- **{layer.get('label', '')}**: {layer.get('focus', '')}")
@@ -201,7 +231,7 @@ class BizPlanGenerator:
 
     def _format_stages(self) -> str:
         """Format the stage model."""
-        stages = self.master_framework.core_principles.get('stage_model', {}).get('stages', [])
+        stages = self.master_framework.core_principles.get("stage_model", {}).get("stages", [])
         output = []
         for stage in stages:
             output.append(f"- **{stage.get('name', '')}**: {stage.get('typical_signals', [''])[0]}")
@@ -218,7 +248,6 @@ class BizPlanGenerator:
         Returns:
             Markdown-formatted section.
         """
-        section_id = section.get("id", "")
         title = section.get("title", "")
         tags = section.get("tags", [])
         content_spec = section.get("content_spec", {})
@@ -240,7 +269,9 @@ class BizPlanGenerator:
                 output.append("")
 
         # Add placeholder for actual content
-        output.append(f"**📝 TODO:** Fill in details for {title} based on: {business_idea[:100]}...")
+        output.append(
+            f"**📝 TODO:** Fill in details for {title} based on: {business_idea[:100]}..."
+        )
         output.append("")
 
         return "\n".join(output)
@@ -283,7 +314,8 @@ class BizPlanGenerator:
         self,
         business_idea: str,
         model: str = "gemini",
-        api_key: Optional[str] = None
+        api_key: Optional[str] = None,
+        license_tier: str = "free",
     ) -> str:
         """
         Generate a business plan using AI to fill in content based on SKILL templates.
@@ -291,10 +323,13 @@ class BizPlanGenerator:
         This method uses Google's Gemini API to intelligently generate business plan
         sections based on the business idea and SKILL template requirements.
 
+        REQUIRES: pro, franchise, or enterprise license tier.
+
         Args:
             business_idea: Description of the business idea/concept.
             model: AI model to use ('gemini' supported). Defaults to 'gemini'.
             api_key: Google API key. If None, reads from GOOGLE_API_KEY env var.
+            license_tier: User's license tier. Must be 'pro' or higher.
 
         Returns:
             Markdown-formatted business plan with AI-generated content.
@@ -302,7 +337,16 @@ class BizPlanGenerator:
         Raises:
             RuntimeError: If AI model is not available or API key is missing.
             ValueError: If unsupported model is specified.
+            PermissionError: If license tier is insufficient.
         """
+        # LICENSE CHECK - AI generation requires Pro or higher
+        if not check_license_tier("ai_generation", license_tier):
+            raise PermissionError(
+                f"🔒 AI generation requires Pro license or higher. "
+                f"Your tier: '{license_tier}'. "
+                f"Upgrade at: https://billmentor.gumroad.com/l/bizplan-generator"
+            )
+
         if model != "gemini":
             raise ValueError(f"Unsupported model: {model}. Only 'gemini' is supported.")
 
@@ -339,11 +383,7 @@ class BizPlanGenerator:
         if "sections" in self.master_framework.frame_2026:
             for section in self.master_framework.frame_2026["sections"]:
                 sections.append(
-                    self._generate_section_with_ai(
-                        section,
-                        business_idea,
-                        gemini_model
-                    )
+                    self._generate_section_with_ai(section, business_idea, gemini_model)
                 )
 
         # Footer with glossary (static)
@@ -351,12 +391,7 @@ class BizPlanGenerator:
 
         return "\n\n".join(sections)
 
-    def _generate_section_with_ai(
-        self,
-        section: Dict,
-        business_idea: str,
-        model
-    ) -> str:
+    def _generate_section_with_ai(self, section: Dict, business_idea: str, model) -> str:
         """
         Generate a single section using AI.
 
@@ -368,7 +403,6 @@ class BizPlanGenerator:
         Returns:
             Markdown-formatted section with AI-generated content.
         """
-        section_id = section.get("id", "")
         title = section.get("title", "")
         tags = section.get("tags", [])
         content_spec = section.get("content_spec", {})
@@ -391,13 +425,15 @@ class BizPlanGenerator:
                 for item in content_spec[layer]:
                     prompt_parts.append(f"- {item}")
 
-        prompt_parts.extend([
-            "",
-            "Generate comprehensive, professional content that addresses all requirements.",
-            "Use bullet points, subheadings, and clear structure.",
-            "Be specific and actionable. Avoid generic advice.",
-            "Output should be in markdown format, ready to insert into the plan."
-        ])
+        prompt_parts.extend(
+            [
+                "",
+                "Generate comprehensive, professional content that addresses all requirements.",
+                "Use bullet points, subheadings, and clear structure.",
+                "Be specific and actionable. Avoid generic advice.",
+                "Output should be in markdown format, ready to insert into the plan.",
+            ]
+        )
 
         prompt = "\n".join(prompt_parts)
 
@@ -406,8 +442,10 @@ class BizPlanGenerator:
             response = model.generate_content(prompt)
             ai_content = response.text.strip()
         except Exception as e:
-            ai_content = f"**⚠️ AI Generation Failed:** {str(e)}\n\n" \
-                        f"**📝 TODO:** Manually fill in {title} section."
+            ai_content = (
+                f"**⚠️ AI Generation Failed:** {str(e)}\n\n"
+                f"**📝 TODO:** Manually fill in {title} section."
+            )
 
         # Add layer headers for structure
         for layer in ["business", "agentic", "governance"]:
