@@ -13,9 +13,10 @@ import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from core.infrastructure.database import get_db
 from fastapi import Request
 from typing_extensions import TypedDict
+
+from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
