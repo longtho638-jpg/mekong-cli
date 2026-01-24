@@ -1,11 +1,24 @@
 """
 Tracing Core Engine.
 """
+
 import logging
 import threading
 import uuid
 from contextvars import ContextVar
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict, Union
+
+
+class TracingMetricsDict(TypedDict, total=False):
+    """Tracing metrics dictionary type."""
+
+    traces_created: int
+    spans_created: int
+    avg_duration_ms: float
+    slow_spans: int
+    error_spans: int
+    active_traces: int
+
 
 from .enums import SpanKind, SpanStatus
 from .exporters import InMemoryExporter, SpanExporter
@@ -158,9 +171,12 @@ class DistributedTracer:
         """Get recent spans."""
         return self.memory_exporter.get_spans()[-limit:]
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> TracingMetricsDict:
         """Get tracing metrics."""
-        return {**self.metrics, "active_traces": len(self.traces)}
+        return {
+            **self.metrics,  # type: ignore
+            "active_traces": len(self.traces),
+        }
 
 
 # Global tracer instance

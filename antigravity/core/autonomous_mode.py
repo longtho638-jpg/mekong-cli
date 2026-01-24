@@ -16,7 +16,7 @@ Binh Phap: Cuu Bien (Variations) - Adapting to the situation.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .agent_crews import CrewStatus, run_crew
 from .agent_memory import get_agent_memory
@@ -25,6 +25,25 @@ from .autonomous_models import AutonomousStatus, ExecutionPlan, Task
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+class MissionStateDict(TypedDict):
+    goal: Optional[str]
+    status: str
+    phases_total: int
+    phases_done: int
+
+
+class TimelineEventDict(TypedDict):
+    id: int
+    name: str
+    status: str
+
+
+class MissionReportDict(TypedDict):
+    """Detailed summary of mission state"""
+    mission: MissionStateDict
+    timeline: List[TimelineEventDict]
 
 
 class AutonomousOrchestrator:
@@ -166,7 +185,7 @@ class AutonomousOrchestrator:
 
         return mission_success
 
-    def get_mission_report(self) -> Dict[str, Any]:
+    def get_mission_report(self) -> MissionReportDict:
         """Provides a detailed summary of the mission's current state."""
         return {
             "mission": {

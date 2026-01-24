@@ -43,12 +43,12 @@ class VectorClient:
             embeddings=embeddings
         )
 
-    def query(self, query_texts: List[str], n_results: int = 5) -> Dict[str, Any]:
+    def query(self, query_texts: List[str], n_results: int = 5) -> VectorQueryResponse:
         """Query the vector store."""
         if not self.collection:
-            return {"ids": [], "distances": [], "metadatas": [], "documents": []}
+            return {"ids": [], "distances": [], "metadatas": [], "documents": []}  # type: ignore
 
-        return self.collection.query(
+        return self.collection.query(  # type: ignore
             query_texts=query_texts,
             n_results=n_results
         )

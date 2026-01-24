@@ -9,11 +9,36 @@ Replaces hardcoded Python chain definitions with data-driven config.
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 import yaml
 
 logger = logging.getLogger(__name__)
+
+
+class AgentStepDict(TypedDict, total=False):
+    """Dictionary representation of an agent step in YAML"""
+    agent: str
+    action: str
+    description: str
+    optional: bool
+    id: str
+    parallel: List["AgentStepDict"]
+    condition: str
+    next_step: str
+
+
+class ChainDict(TypedDict):
+    """Dictionary representation of a chain in YAML"""
+    name: str
+    description: str
+    agents: List[AgentStepDict]
+    metadata: Optional[Dict[str, Any]]
+
+
+class ChainConfigDict(TypedDict):
+    """Full chains.yaml structure"""
+    chains: List[ChainDict]
 
 
 @dataclass
@@ -75,7 +100,7 @@ class ChainLoader:
         self._load_config()
         logger.info(f"ChainLoader initialized from {config_path}")
 
-    def _parse_agent_step(self, step_def: Dict[str, Any]) -> AgentStep:
+    def _parse_agent_step(self, step_def: AgentStepDict) -> AgentStep:
         """Recursively parses an agent step definition."""
         parallel_steps = None
         if "parallel" in step_def:

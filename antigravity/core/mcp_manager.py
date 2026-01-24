@@ -17,7 +17,14 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
+
+
+class MCPConfigDict(TypedDict, total=False):
+    """MCP configuration dictionary type."""
+
+    mcpServers: Dict[str, Any]
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,9 +58,9 @@ class MCPManager:
         else:
             self.config_path = PROJECT_MCP_CONFIG  # Default to creating local
 
-        self.config: Dict[str, Any] = self._load_config()
+        self.config: MCPConfigDict = self._load_config()
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> MCPConfigDict:
         """Load MCP configuration from disk."""
         if not self.config_path.exists():
             # If checking for example file
@@ -89,6 +96,7 @@ class MCPManager:
 
         # Update Tool Catalog (Lazy probe - in real scenario we would connect and list tools)
         from .registry.mcp_catalog import mcp_catalog
+
         # For now, we register the server config without tools to mark it as unprobed.
         mcp_catalog.register_server(name, server_entry, None)
 
