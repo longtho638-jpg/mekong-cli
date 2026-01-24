@@ -1,5 +1,9 @@
 {
   "deletions": [
+    "agents/copywriter.md",
+    "agents/database-admin.md",
+    "agents/scout.md",
+    "agents/scout-external.md",
     "commands/brainstorm.md",
     "commands/code/**",
     "commands/code.md",
