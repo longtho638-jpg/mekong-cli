@@ -1,0 +1,225 @@
+{
+  "id": "14_SKILL-GTM-Experiments-and-Bullseye",
+  "version": "1.0.0",
+  "title": "Skill – Go-To-Market Experiments, Bullseye & Growth Loops",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế chiến lược Go-To-Market (GTM) theo style Bullseye, chạy thử nghiệm có kiểm soát, gắn với AARRR & Lean Analytics để tìm channel-fit và growth loop bền vững cho Zero → IPO.",
+  "intended_use": {
+    "primary": [
+      "Thiết kế khung GTM cho giai đoạn Zero → Seed → Series A với các kênh ưu tiên rõ ràng.",
+      "Xây Bullseye: brainstorm 19 kênh, chọn short list, rồi ưu tiên 2–3 kênh để test sâu.",
+      "Xây bảng GTM experiments: giả thuyết, thiết kế thử nghiệm, sample size, tiêu chí thành công/thất bại.",
+      "Liên kết GTM với AARRR & Lean Analytics: mỗi experiment bám theo 1–2 chỉ số trọng tâm.",
+      "Định nghĩa growth loops cơ bản (viral/referral, content, paid, product, partnership…)."
+    ],
+    "works_best_when": [
+      "Đã có định nghĩa khách hàng mục tiêu & persona (06).",
+      "Đã có định hướng brand & offer (07, 09, 10, 11).",
+      "Đã có sales process high-level (13) để tránh mismatch marketing–sales."
+    ],
+    "not_for": [
+      "Chi tiết media buying cấp campaign/adset (cái đó 10 xử lý).",
+      "Dự phóng financial phức tạp – chuyển cho 05 & master."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json",
+      "09_SKILL-Website-and-Landing-Narrative.json",
+      "10_SKILL-Performance-Ads-and-Intro-Creatives.json",
+      "11_SKILL-Adventorial-and-Longform-Storytelling.json",
+      "12_SKILL-Email-and-Lifecycle-Sequences.json",
+      "13_SKILL-Sales-Process-and-Channels.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả ngắn về sản phẩm/dịch vụ/nền tảng & thị trường mục tiêu."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'zero_to_one', 'seed', 'series_a', 'growth', 'pre_ipo'."
+      },
+      "target_customers_summary": {
+        "type": "string",
+        "required": false,
+        "description": "Tóm tắt nhóm khách hàng chính (nếu chưa có 06 thì user có thể mô tả nhanh ở đây)."
+      },
+      "core_metric_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Chỉ số trọng tâm hiện tại theo Lean Analytics/AARRR: vd 'activation_rate', 'LTV_CAC', 'M2_retention', 'lead_to_win', 'ttfw_first_100_users'."
+      },
+      "budget_or_capacity_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Mức nguồn lực tương đối: 'rất hạn chế', 'vừa', 'dồi dào' để gợi ý cường độ thử nghiệm."
+      }
+    },
+    "assumptions": [
+      "Nếu không có stage, model suy luận từ idea_or_offer & context trong 00/01 (đánh dấu [GIẢ ĐỊNH]).",
+      "Nếu không có core_metric_focus, mặc định theo Lean Analytics/AARRR phù hợp stage (đánh dấu [GIẢ ĐỊNH])."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "bullseye_channels_brainstorm": {
+        "description": "Brainstorm đầy đủ các kênh có thể dùng (Bullseye outer ring).",
+        "fields": [
+          "channel_categories",
+          "channel_ideas_list",
+          "initial_fit_notes"
+        ]
+      },
+      "bullseye_shortlist": {
+        "description": "Shortlist 3–5 kênh để test sâu (middle ring & inner ring).",
+        "fields": [
+          "shortlisted_channels",
+          "reason_for_priority",
+          "stage_alignment_notes"
+        ]
+      },
+      "gtm_experiment_backlog": {
+        "description": "Backlog các thử nghiệm GTM priority cao.",
+        "structure": {
+          "fields_per_experiment": [
+            "experiment_id",
+            "channel",
+            "hypothesis",
+            "success_metric",
+            "target_value_or_threshold",
+            "time_window",
+            "estimated_cost_or_effort",
+            "risk_level",
+            "status"
+          ]
+        }
+      },
+      "experiment_design_details": {
+        "description": "Thiết kế chi tiết cho 3–7 experiment ưu tiên.",
+        "structure": {
+          "fields_per_experiment": [
+            "experiment_id",
+            "step_by_step_plan",
+            "audience_or_segment",
+            "creative_or_offer_brief",
+            "tracking_setup_notes",
+            "failure_modes_and_safeguards"
+          ]
+        }
+      },
+      "growth_loops_and_learning": {
+        "description": "Đề xuất growth loops tiềm năng & cách học từ experiments.",
+        "fields": [
+          "candidate_growth_loops",
+          "loop_components",
+          "data_to_monitor",
+          "next_iteration_rules"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_define_stage_and_core_metric",
+      "label": "Xác định stage & chỉ số trọng tâm",
+      "goal": "Đảm bảo GTM bám đúng giai đoạn và không đo sai thứ.",
+      "actions": [
+        "Tóm tắt idea_or_offer & stage (nếu có).",
+        "Nếu stage thiếu, suy luận & đánh dấu [GIẢ ĐỊNH].",
+        "Chọn core_metric_focus theo Lean Analytics/AARRR phù hợp stage (ttfw, activation, retention, revenue, referral…).",
+        "Ghi rõ lý do chọn core_metric_focus."
+      ]
+    },
+    {
+      "step_id": "02_brainstorm_bullseye_channels",
+      "label": "Brainstorm kênh GTM (Bullseye outer ring)",
+      "goal": "Tránh bị kẹt trong 1–2 kênh quen thuộc, nhưng vẫn có cấu trúc.",
+      "actions": [
+        "Liệt kê channel_categories: paid, content, community, offline, partnership, sales-led, product-led…",
+        "Sinh channel_ideas_list (10–20 kênh) với mô tả ngắn mỗi kênh.",
+        "Đánh giá initial_fit_notes: high/medium/low với idea + stage + budget_or_capacity_hint."
+      ]
+    },
+    {
+      "step_id": "03_select_bullseye_shortlist",
+      "label": "Chọn shortlist kênh ưu tiên",
+      "goal": "Chốt 3–5 kênh để test thay vì tản mạn.",
+      "actions": [
+        "Chọn 3–5 shortlisted_channels dựa trên fit + cost + time-to-signal.",
+        "Viết reason_for_priority cho từng kênh.",
+        "Đánh dấu stage_alignment_notes: Zero/Seed/Series A/Pre-IPO."
+      ]
+    },
+    {
+      "step_id": "04_build_gtm_experiment_backlog",
+      "label": "Xây backlog thử nghiệm",
+      "goal": "Biến shortlist thành backlog rõ ràng có thể ưu tiên & thực thi.",
+      "actions": [
+        "Cho mỗi kênh trong shortlist: thiết kế 1–3 experiment_id với hypothesis rõ ràng.",
+        "Gắn success_metric & target_value_or_threshold bám core_metric_focus.",
+        "Ước lượng time_window, cost/effort & risk_level (đánh dấu [GIẢ ĐỊNH] nếu phỏng đoán).",
+        "Đặt status ban đầu = 'planned'."
+      ]
+    },
+    {
+      "step_id": "05_detail_priority_experiments",
+      "label": "Thiết kế chi tiết các thử nghiệm ưu tiên",
+      "goal": "Đủ chi tiết để marketing/growth team triển khai.",
+      "actions": [
+        "Chọn 3–7 experiment_id quan trọng nhất (impact cao, time-to-signal ngắn).",
+        "Cho mỗi experiment: viết step_by_step_plan (các bước cụ thể).",
+        "Gán audience_or_segment rõ (persona nào, khu vực nào, nguồn traffic nào).",
+        "Tóm tắt creative_or_offer_brief để sync với 08/09/10/11.",
+        "Ghi tracking_setup_notes (event cần gắn, funnel cần theo dõi).",
+        "Lên failure_modes_and_safeguards để tránh đốt tiền ngu (budget cap, timebox, kill switch)."
+      ]
+    },
+    {
+      "step_id": "06_define_growth_loops_and_learning",
+      "label": "Đề xuất growth loops & vòng học hỏi",
+      "goal": "Không chỉ chạy campaign rời rạc, mà xây vòng lặp tăng trưởng.",
+      "actions": [
+        "Từ các kênh & experiment, đề xuất candidate_growth_loops (referral/content/product/partner…).",
+        "Mô tả loop_components: trigger → action → reward → expansion/sharing.",
+        "Xác định data_to_monitor cho mỗi loop (số invite, share rate, k-factor, retention by loop…).",
+        "Đề xuất next_iteration_rules: khi nào scale, khi nào pivot, khi nào kill channel."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi đến phần 'Growth Plan', 'Fastest Way to First 100 Customers', 'Bullseye Framework' trong Business Plan.",
+      "Khi user hỏi: 'Test kênh nào trước?', 'Làm sao để ra 100 khách đầu/1,000 khách đầu hợp lý?'"
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả bullseye_channels_brainstorm + bullseye_shortlist để user duyệt hướng & kênh.",
+      "Bước 2: Khi user OK, trả gtm_experiment_backlog + experiment_design_details.",
+      "Bước 3: Cuối cùng trả growth_loops_and_learning để user/đội growth thấy bức tranh dài hạn."
+    ]
+  },
+  "constraints": {
+    "respect_budget": "Luôn cân nhắc budget_or_capacity_hint; không đề xuất chiến dịch vượt quá khả năng stage Zero/Seed.",
+    "no_magic_growth": "Không hứa hẹn '10x qua 30 ngày'; mọi con số là [GIẢ ĐỊNH] trừ khi user cung cấp dữ liệu.",
+    "regional_fit": "Ưu tiên ví dụ và kênh phù hợp VN/SEA (Zalo, TikTok, Shopee, cộng đồng local…) khi thích hợp.",
+    "language": "Tiếng Việt là chính, có thể dùng thuật ngữ GTM/growth tiếng Anh khi cần."
+  }
+}

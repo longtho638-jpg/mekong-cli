@@ -1,0 +1,239 @@
+{
+  "id": "18_SKILL-Talent-and-Org-Design-OS",
+  "version": "1.0.0",
+  "title": "Skill – Talent, Team & Org Design Operating System",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế đội ngũ, cấu trúc tổ chức, văn hoá & lộ trình tuyển dụng cho startup từ Zero → IPO, phù hợp bối cảnh VN/SEA và các mô hình có Agentic/AI layer.",
+  "intended_use": {
+    "primary": [
+      "Chuẩn hóa phần Team, Organization, People & Culture trong Business Plan 2026 – Agentic Zero→IPO.",
+      "Thiết kế cấu trúc tổ chức theo stage (Zero, Seed, Series A/B, Pre-IPO).",
+      "Xác định các vai trò & năng lực cốt lõi (founders, product, growth, tech/data, ops, finance, compliance...).",
+      "Xây lộ trình tuyển dụng 12–24 tháng & ưu tiên critical hires.",
+      "Đề xuất nguyên tắc văn hoá, incentives & governance phù hợp với mô hình Agentic/AI."
+    ],
+    "works_best_when": [
+      "Đã có mô tả business model & GTM cơ bản (05, 09, 10, 14).",
+      "User cung cấp ít nhất hiện trạng team hoặc founder profile sơ bộ.",
+      "Có ý định xây mô hình có khả năng scale (VN/SEA) chứ không chỉ lifestyle business."
+    ],
+    "not_for": [
+      "Soạn full handbook HR, quy chế lao động chi tiết – chỉ ở mức khung & ưu tiên.",
+      "Giải quyết tranh chấp lao động hoặc tư vấn pháp lý HR cụ thể."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "09_SKILL-Growth-Engine-and-GTM-Design.json",
+      "11_SKILL-Operations-and-Execution-OS.json",
+      "15_SKILL-AARRR-and-Lean-Analytics.json",
+      "17_SKILL-Risk-Downside-and-Scenario-OS.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả business & mô hình vận hành chính (product, service, platform…)."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'idea', 'pre_seed', 'seed', 'series_a', 'series_b_plus', 'pre_ipo'. Nếu không có, model suy luận & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "geo_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Khu vực chính: 'VN', 'SEA', 'APAC', 'global' – ảnh hưởng đến thiết kế tổ chức & tuyển dụng."
+      },
+      "has_agentic_layer": {
+        "type": "boolean",
+        "required": false,
+        "description": "Cho biết có Agentic/AI layer hay không để chèn thêm vai trò AI, data & automation."
+      },
+      "current_team_snapshot": {
+        "type": "string",
+        "required": false,
+        "description": "Hiện trạng team: số lượng, vai trò chính, fulltime/parttime, outsource, advisor (nếu có). Nếu không có, model coi như 'founder solo/nhóm nhỏ' & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "founder_profiles": {
+        "type": "string",
+        "required": false,
+        "description": "Tóm tắt background founder (tech, biz, finance, ops…), điểm mạnh & lỗ hổng cơ bản."
+      },
+      "hiring_constraints": {
+        "type": "string",
+        "required": false,
+        "description": "Giới hạn: budget, location, remote/on-site, timeline, mức độ cạnh tranh talent."
+      },
+      "target_time_horizon_years": {
+        "type": "number",
+        "required": false,
+        "description": "Khung 2–4 năm để thiết kế org roadmap (mặc định 3 năm nếu thiếu)."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu stage, model suy luận stage dựa trên idea_or_offer & current_team_snapshot, đánh dấu [GIẢ ĐỊNH].",
+      "Nếu thiếu current_team_snapshot, giả định team rất nhỏ (1–3 người) & đánh dấu [GIẢ ĐỊNH].",
+      "Nếu thiếu target_time_horizon_years, dùng 3 năm & đánh dấu [GIẢ ĐỊNH]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "org_diagnosis": {
+        "description": "Chẩn đoán nhanh về team & tổ chức hiện tại.",
+        "fields": [
+          "inferred_stage",
+          "time_horizon_used",
+          "summary_current_team",
+          "key_strengths",
+          "key_gaps_and_risks"
+        ]
+      },
+      "critical_roles_and_capabilities": {
+        "description": "Danh sách năng lực & vai trò cốt lõi phải có để business sống sót & scale.",
+        "fields": [
+          "mission_critical_capabilities",
+          "founder_must_own_vs_can_delegate",
+          "core_roles_by_function",
+          "agentic_related_roles"
+        ]
+      },
+      "org_design_options": {
+        "description": "Một vài phương án thiết kế tổ chức theo stage & nguồn lực.",
+        "fields": [
+          "zero_to_one_org_pattern",
+          "seed_to_series_a_org_pattern",
+          "scale_up_org_pattern",
+          "outsourcing_and_partnering_options"
+        ]
+      },
+      "hiring_roadmap": {
+        "description": "Lộ trình tuyển dụng & ưu tiên theo giai đoạn.",
+        "fields": [
+          "12_month_hiring_plan",
+          "24_36_month_hiring_direction",
+          "priority_hires_and_timing",
+          "bootstrap_vs_raise_tradeoffs"
+        ]
+      },
+      "culture_and_incentive_design": {
+        "description": "Nguyên tắc văn hoá & hệ thống incentives để giữ & kích hoạt talent.",
+        "fields": [
+          "culture_principles",
+          "working_model_and_rituals",
+          "compensation_and_equity_basics",
+          "agentic_culture_considerations"
+        ]
+      },
+      "governance_and_leadership": {
+        "description": "Khung lãnh đạo & governance cơ bản cho từng stage.",
+        "fields": [
+          "founder_roles_and_raci",
+          "leadership_cadence_and_forums",
+          "board_and_advisors_usage",
+          "succession_and_scaling_leadership"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_org_diagnosis",
+      "label": "Chẩn đoán tổ chức & stage",
+      "goal": "Hiểu nhanh team đang ở đâu & phù hợp stage nào.",
+      "actions": [
+        "Đọc idea_or_offer, stage (nếu có), current_team_snapshot, founder_profiles.",
+        "Suy luận inferred_stage nếu thiếu & đánh dấu [GIẢ ĐỊNH].",
+        "Tóm tắt summary_current_team (size, chức năng, kiểu hợp tác).",
+        "Nêu key_strengths & key_gaps_and_risks liên quan đến việc thực thi chiến lược."
+      ]
+    },
+    {
+      "step_id": "02_map_critical_capabilities",
+      "label": "Xác định năng lực & vai trò cốt lõi",
+      "goal": "Biết startup cần giỏi cái gì & ai sẽ làm.",
+      "actions": [
+        "Dựa vào business model & GTM để liệt kê mission_critical_capabilities.",
+        "Phân loại founder_must_own_vs_can_delegate: năng lực nào founder nên giữ trực tiếp ở giai đoạn này.",
+        "Chia core_roles_by_function: product, engineering, data, growth, ops, CS, finance, legal/compliance, people.",
+        "Nếu has_agentic_layer = true: thêm agentic_related_roles & phạm vi trách nhiệm."
+      ]
+    },
+    {
+      "step_id": "03_design_org_patterns",
+      "label": "Thiết kế các pattern tổ chức",
+      "goal": "Đưa ra 2–3 pattern tổ chức phù hợp với stage & constraints.",
+      "actions": [
+        "Mô tả zero_to_one_org_pattern: team rất gọn, nhiều mũ, focus vào learning & build.",
+        "Mô tả seed_to_series_a_org_pattern: bắt đầu tách rõ product/tech/growth/ops.",
+        "Mô tả scale_up_org_pattern: layer management, function head, chuyên môn hoá.",
+        "Gợi ý outsourcing_and_partnering_options: agency, freelancer, BPO, partner chiến lược."
+      ]
+    },
+    {
+      "step_id": "04_build_hiring_roadmap",
+      "label": "Xây lộ trình tuyển dụng",
+      "goal": "Biết trong 12–24–36 tháng cần thêm ai & ưu tiên thế nào.",
+      "actions": [
+        "Từ org_diagnosis & critical_capabilities, tạo 12_month_hiring_plan (dạng sóng: now/next/later).",
+        "Định hướng 24_36_month_hiring_direction cho scale (không cần chi tiết chức danh nhỏ).",
+        "Chỉ rõ priority_hires_and_timing & lý do (risk gì giảm, cơ hội gì unlock).",
+        "Nhấn mạnh bootstrap_vs_raise_tradeoffs: tự nuôi vs raise để tuyển nhanh."
+      ]
+    },
+    {
+      "step_id": "05_design_culture_and_incentives",
+      "label": "Thiết kế văn hoá & incentives",
+      "goal": "Không chỉ tuyển được người mà còn giữ được & khiến họ bung sức.",
+      "actions": [
+        "Đề xuất 3–7 culture_principles liên quan trực tiếp tới mô hình kinh doanh (vd: compliance-first nếu fintech).",
+        "Mô tả working_model_and_rituals: lịch sync, async, review tuần/tháng/quý.",
+        "Đề xuất compensation_and_equity_basics cho core team theo stage (ý niệm, không bịa % cụ thể nếu thiếu data).",
+        "Nếu has_agentic_layer = true: nêu agentic_culture_considerations – dùng AI để nâng lực, không thay thế trách nhiệm."
+      ]
+    },
+    {
+      "step_id": "06_link_governance_and_leadership",
+      "label": "Lãnh đạo & governance theo stage",
+      "goal": "Đảm bảo team không chỉ là nhóm người mà là tổ chức có nhịp lãnh đạo rõ ràng.",
+      "actions": [
+        "Phác thảo founder_roles_and_raci: ai quyết product, ai quyết finance, ai cuối cùng chịu KPI nào.",
+        "Đề xuất leadership_cadence_and_forums: weekly exec, monthly metrics, quarterly strategy review.",
+        "Gợi ý board_and_advisors_usage: những profile advisor nên có (sector, pháp lý, capital, tech).",
+        "Nhắc tới succession_and_scaling_leadership cho giai đoạn sau (series B+ / pre-IPO)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi Business Plan đến phần Team, Organization, People & Culture.",
+      "Khi user hỏi: 'cần tuyển ai trước', 'đội hình Zero → Series A nên trông như thế nào', 'tổ chức kiểu gì để chuẩn bị scale/IPO'."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả org_diagnosis + critical_roles_and_capabilities để user hiểu khoảng cách hiện tại.",
+      "Bước 2: Sau khi user đồng ý, trả org_design_options + hiring_roadmap.",
+      "Bước 3: Cuối cùng thêm culture_and_incentive_design + governance_and_leadership để đưa vào business plan & nội bộ."
+    ]
+  },
+  "constraints": {
+    "realism_over_idealism": "Ưu tiên thiết kế org thực tế theo nguồn lực, tránh vẽ mơ về 'dream team' không khả thi.",
+    "no_exact_equity_numbers_without_data": "Không bịa % cổ phần / mức lương cụ thể nếu user không cung cấp, chỉ mô tả khung & trade-off.",
+    "regional_context": "Khi geo_focus là VN/SEA, lưu ý cạnh tranh nhân sự, chênh lệch thị trường lương, ưu tiên nhân sự local vs expat.",
+    "language": "Tiếng Việt, có thể xen thuật ngữ org design/talent tiếng Anh khi giúp ngắn gọn & chính xác."
+  }
+}

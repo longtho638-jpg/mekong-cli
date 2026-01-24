@@ -1,0 +1,304 @@
+{
+  "file_name": "02_SKILL-Agentic-Mapping-and-Design.json",
+  "version": "1.0.0",
+  "language": "vi",
+  "title": "SKILL – Agentic Mapping and Design for Business Plan 2026",
+  "purpose": {
+    "short": "Thiết kế và map Agentic Operating System lên business theo khung 2026.",
+    "long": "Skill này định nghĩa cách phân tích một business (đã được chuẩn hóa theo khung Business Plan 2026 – Agentic Zero→IPO) và thiết kế lớp Agentic Operating System tương ứng. Nó giúp LLM xác định các function kinh doanh chính, đề xuất các agent phù hợp, định nghĩa input/output/KPI, và mô tả guardrails về policy, governance, monitoring để dùng được cả nội bộ lẫn trong bối cảnh chuẩn bị IPO."
+  },
+  "dependencies": {
+    "master_frame_file": "00_MASTER-Agentic-BizPlan-OS.json",
+    "refactor_skill_file": "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+    "expected_prior_outputs": [
+      "diagnostic_summary",
+      "plan_2026_markdown",
+      "mapping_table",
+      "optional_agentic_inputs"
+    ]
+  },
+  "expected_inputs": {
+    "from_master_frame": [
+      "Định nghĩa các section có lớp [Agentic], đặc biệt: 2_market_customer, 3_product_agentic_os, 4_business_model_unit_econ, 5_growth_engine, 6_ops_risk_compliance, 7_financial_plan_ipo, 8_brand_story_psychology."
+    ],
+    "from_refactor_skill": [
+      "Bản plan_2026_markdown mô tả đầy đủ business.",
+      "Bảng mapping_table để biết section nào mạnh/yếu.",
+      "optional_agentic_inputs: các đoạn có dấu hiệu AI/automation trong tài liệu gốc."
+    ],
+    "from_user_optional": [
+      "Mức độ sẵn sàng chấp nhận tự động hóa (risk appetite).",
+      "Giới hạn pháp lý/đạo đức riêng (nếu có).",
+      "Hệ thống đã có: CRM, ERP, ticketing, data warehouse, v.v."
+    ],
+    "llm_requirements": [
+      "Luôn ưu tiên dùng dữ liệu thật từ business trước khi gợi ý generic.",
+      "Không thiết kế agent có quyền đưa ra các quyết định bị pháp luật yêu cầu phải do con người thực hiện (ví dụ: phê duyệt tín dụng trong một số bối cảnh, quyết định y khoa, v.v.).",
+      "Mọi đề xuất đều phải đi kèm guardrails tối thiểu: policy, monitoring, human-in-the-loop."
+    ]
+  },
+  "core_concepts": {
+    "agentic_os": {
+      "description": "Agentic Operating System là tập hợp các agent (AI/LLM + workflow) được sắp xếp theo chức năng business, vận hành trên nền tảng dữ liệu và policy thống nhất.",
+      "key_properties": [
+        "Function-aligned: mỗi agent gắn với một function cụ thể (marketing, sales, ops, risk, finance,…).",
+        "Policy-driven: mọi hành động quan trọng đều bị ràng buộc bởi policy-as-code.",
+        "Observable: có logging, metrics, alert, replay/debug.",
+        "Human-aware: luôn biết khi nào cần xin ý kiến/phê duyệt từ con người.",
+        "Change-safe: có môi trường test/sandbox trước khi rollout."
+      ]
+    },
+    "agent_definition_schema": {
+      "description": "Mẫu chuẩn để định nghĩa một agent.",
+      "fields": [
+        "agent_name",
+        "business_function",
+        "primary_objectives",
+        "inputs",
+        "tools_and_systems",
+        "core_actions",
+        "outputs",
+        "success_kpis",
+        "risk_and_failure_modes",
+        "human_in_the_loop_points",
+        "policy_and_constraints"
+      ]
+    },
+    "function_taxonomy": {
+      "description": "Danh mục các function thường gặp để LLM dễ map.",
+      "functions": [
+        "Market & Research",
+        "Marketing & Growth",
+        "Sales & Revenue",
+        "Customer Success & Support",
+        "Product & UX",
+        "Operations & Logistics",
+        "Risk, Fraud & Compliance",
+        "Finance & FP&A",
+        "HR & Talent",
+        "Data & Analytics",
+        "IT & Infra / DevOps"
+      ]
+    }
+  },
+  "main_outputs": {
+    "agent_inventory": {
+      "id": "agent_inventory",
+      "description": "Danh sách high-level các agent đề xuất cho business.",
+      "item_schema": {
+        "agent_name": "Tên ngắn gọn, dễ hiểu (ví dụ: 'Marketing Experiment Agent').",
+        "business_function": "Function chính (ví dụ: 'Marketing & Growth').",
+        "stage_relevance": "Stage nào ưu tiên (Zero, PMF, Scale-Up, Pre-IPO).",
+        "priority": "Mức ưu tiên triển khai: HIGH / MEDIUM / LOW.",
+        "summary_role": "Mô tả 1–2 câu về nhiệm vụ chính.",
+        "notes": "Ghi chú rủi ro hoặc yêu cầu đặc biệt (nếu có)."
+      }
+    },
+    "agent_design_table": {
+      "id": "agent_design_table",
+      "description": "Bảng chi tiết định nghĩa từng agent theo schema chuẩn.",
+      "columns": [
+        "agent_name",
+        "business_function",
+        "primary_objectives",
+        "inputs",
+        "tools_and_systems",
+        "core_actions",
+        "outputs",
+        "success_kpis",
+        "risk_and_failure_modes",
+        "human_in_the_loop_points",
+        "policy_and_constraints"
+      ],
+      "column_semantics": {
+        "agent_name": "Tên agent.",
+        "business_function": "Function mà agent phục vụ (theo function_taxonomy).",
+        "primary_objectives": "3–5 mục tiêu cụ thể (ví dụ: giảm CAC, tăng conversion, giảm thời gian xử lý ticket,…).",
+        "inputs": "Nguồn dữ liệu & tín hiệu mà agent cần (CRM, logs, events, email, call transcripts,…).",
+        "tools_and_systems": "Hệ thống mà agent tương tác (CRM, helpdesk, BI, API nội bộ,…).",
+        "core_actions": "Những hành động chính agent được phép làm (gợi ý, tạo draft, tạo task, bật cảnh báo,…).",
+        "outputs": "Artefact và kết quả cụ thể (báo cáo, đề xuất, ticket, email nháp,…).",
+        "success_kpis": "Chỉ số đo thành công (ví dụ: % ticket giải quyết trong 24h, uplift CTR, tỉ lệ phát hiện bất thường đúng,…).",
+        "risk_and_failure_modes": "Những kiểu sai sót có thể xảy ra (false positive/negative, bias, spam user,…).",
+        "human_in_the_loop_points": "Danh sách điểm cần con người phê duyệt, review, hoặc có quyền override.",
+        "policy_and_constraints": "Rule/giới hạn: không được làm gì, giới hạn ngân sách, giới hạn quyền truy cập data,…."
+      }
+    },
+    "policy_and_guardrails": {
+      "id": "policy_and_guardrails",
+      "description": "Tóm tắt bộ nguyên tắc vận hành agent cho toàn hệ thống.",
+      "recommended_sections": [
+        "Scope: Agent được dùng ở đâu, không dùng ở đâu.",
+        "Data Access: Agent được phép đọc dữ liệu gì, không được đọc gì.",
+        "Action Limits: Agent được phép tự động thực hiện những hành động nào; những hành động nào cần human-approval.",
+        "Change Management: Cách test & rollout thay đổi logic agent.",
+        "Logging & Audit: Những gì phải được log lại để kiểm tra sau.",
+        "Incident Handling: Khi agent gây lỗi hoặc có hành vi bất thường, quy trình xử lý là gì."
+      ]
+    },
+    "monitoring_and_kpis": {
+      "id": "monitoring_and_kpis",
+      "description": "Đề xuất bộ chỉ số & dashboard tối thiểu để giám sát Agentic OS.",
+      "content": [
+        "Agent-level KPIs: mỗi agent có 3–5 KPI chính.",
+        "System-level KPIs: tổng số đề xuất, tỉ lệ chấp nhận, tỉ lệ rollback/override.",
+        "Risk-level KPIs: số cảnh báo giả, số sự cố liên quan đến agent.",
+        "Governance KPIs: % trường hợp có log đầy đủ, thời gian xử lý incident,…"
+      ]
+    },
+    "integration_notes": {
+      "id": "integration_notes",
+      "description": "Gợi ý tích hợp kỹ thuật ở mức high-level (cho dev/sol architect).",
+      "content": [
+        "Nguồn sự kiện trung tâm (event bus / message queue / webhook).",
+        "Cách agent subscribe và emit events.",
+        "Nguyên tắc tối thiểu về bảo mật (auth, rate limit, masking data)."
+      ]
+    }
+  },
+  "design_process": {
+    "high_level_steps": [
+      "1) Đọc plan_2026 để hiểu chức năng kinh doanh cốt lõi.",
+      "2) Xác định những function có tiềm năng Agentic cao.",
+      "3) Thiết kế agent_inventory (danh sách agent ưu tiên).",
+      "4) Đi sâu định nghĩa chi tiết cho từng agent (agent_design_table).",
+      "5) Xây dựng policy & guardrails chung, sau đó map từng agent vào.",
+      "6) Đề xuất bộ monitoring & KPIs.",
+      "7) Ghi chú integration_notes ở mức gợi ý (không đi xuống code)."
+    ],
+    "detailed_steps": [
+      {
+        "step": 1,
+        "name": "Understand Core Business Functions",
+        "actions": [
+          "Đọc nhanh plan_2026_markdown để nắm rõ: sản phẩm, khách hàng, growth engine, vận hành, risk & tài chính.",
+          "Map các đoạn mô tả function rõ ràng (marketing, sales, ops, risk, finance, support,…) theo function_taxonomy.",
+          "Ghi lại 3–7 function quan trọng nhất ảnh hưởng tới thành công của business."
+        ],
+        "llm_notes": [
+          "Không cần lặp lại toàn bộ nội dung plan_2026; chỉ cần trích yếu tố liên quan đến design agent.",
+          "Nếu business còn rất nhỏ, ưu tiên function trực tiếp ảnh hưởng doanh thu & trải nghiệm khách hàng."
+        ]
+      },
+      {
+        "step": 2,
+        "name": "Identify Agentic Opportunities",
+        "actions": [
+          "Dựa trên mỗi function, xác định những quy trình lặp đi lặp lại, tốn thời gian, dễ mô tả bằng rule hoặc pattern.",
+          "Đặc biệt chú ý các quy trình: phân tích dữ liệu, tạo nội dung, tạo báo cáo, gợi ý hành động, giám sát bất thường.",
+          "Loại bỏ hoặc đánh dấu thận trọng các quy trình mà pháp luật hoặc đạo đức yêu cầu con người quyết định cuối (vd: chẩn đoán y khoa, quyết định từ chối dịch vụ ở nhóm nhạy cảm,…)."
+        ],
+        "llm_notes": [
+          "Không đề xuất agent thay thế hoàn toàn con người ở các khâu pháp lý nhạy cảm.",
+          "Có thể đề xuất agent làm co-pilot: phân tích, gợi ý, soạn nháp, nhưng vẫn cần human-approval."
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Draft Agent Inventory",
+        "actions": [
+          "Tạo một danh sách candidate agents với các field: agent_name, business_function, stage_relevance, priority, summary_role.",
+          "Ưu tiên 3–5 agent quan trọng nhất cho stage hiện tại của doanh nghiệp.",
+          "Nếu business ở Zero/PMF: tập trung vào research, growth, product discovery.",
+          "Nếu business ở Scale/Pre-IPO: thêm agent cho risk, ops, finance, compliance."
+        ],
+        "llm_notes": [
+          "Giữ số lượng agent ở mức hợp lý; quá nhiều agent sẽ khó triển khai & giám sát.",
+          "Có thể gộp nhiều nhiệm vụ nhỏ vào một agent nếu cùng function & data source."
+        ]
+      },
+      {
+        "step": 4,
+        "name": "Define Each Agent in Detail",
+        "actions": [
+          "Đối với từng agent trong inventory (ít nhất là agent ưu tiên HIGH/MEDIUM), điền đầy đủ các cột trong agent_design_table.",
+          "Xác định rõ inputs & outputs để sau này dễ map sang hệ thống kỹ thuật.",
+          "Thiết kế human_in_the_loop_points rõ ràng: khi nào agent chỉ gợi ý, khi nào agent được phép hành động (và trong giới hạn nào)."
+        ],
+        "llm_notes": [
+          "Cố gắng nêu ví dụ cụ thể cho core_actions, nhưng không phụ thuộc vào công nghệ duy nhất (không lock-in provider).",
+          "Khi nghi ngờ, chọn phương án an toàn: yêu cầu human-approval."
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Establish Policy & Guardrails",
+        "actions": [
+          "Dựa trên danh sách agent và risk profile của business, viết phần policy_and_guardrails theo các mục: Scope, Data Access, Action Limits, Change Management, Logging & Audit, Incident Handling.",
+          "Nhấn mạnh các nguyên tắc: không vượt quá quyền hạn, bảo vệ dữ liệu nhạy cảm, và luôn có khả năng rollback.",
+          "Nếu business chuẩn bị IPO, bổ sung liên hệ tới yêu cầu治理 (governance) & compliance của thị trường vốn."
+        ],
+        "llm_notes": [
+          "Policy phải đủ cụ thể để dùng làm cơ sở thiết kế hệ thống, nhưng không cần xuống level code.",
+          "Tránh generic kiểu 'cần cẩn thận'; phải nêu rõ ví dụ: 'Agent không được gửi email ra ngoài domain mà không có human-approval'."
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Propose Monitoring & KPIs",
+        "actions": [
+          "Gắn 3–5 success_kpis cho mỗi agent (tối thiểu 2).",
+          "Đề xuất 3–5 KPIs ở cấp hệ thống: adoption, hiệu quả, rủi ro, governance.",
+          "Nếu phù hợp, đề xuất một dashboard logic: các nhóm widget cần có (theo agent/function)."
+        ],
+        "llm_notes": [
+          "KPI nên đo cả chất lượng lẫn rủi ro (ví dụ: tỉ lệ cảnh báo sai, tỉ lệ override).",
+          "Tránh chỉ tập trung vào volume mà bỏ qua error/risk."
+        ]
+      },
+      {
+        "step": 7,
+        "name": "Integration Notes (High-Level)",
+        "actions": [
+          "Tóm tắt 3–5 gợi ý tích hợp kỹ thuật: hệ thống event, nơi lưu log, cách agent tương tác với CRM/BI,…",
+          "Không buộc vào stack cụ thể (trừ khi user đã nêu rõ, ví dụ: Firebase, GCP, AWS,…).",
+          "Chỉ dừng ở level kiến trúc logic: luồng dữ liệu chính, chứ không sinh code."
+        ],
+        "llm_notes": [
+          "Giữ tính trung lập công nghệ, ưu tiên pattern phổ biến (event-driven, API-first,…).",
+          "Nhắc lại nguyên tắc bảo mật tối thiểu: auth, rate limiting, logging."
+        ]
+      }
+    ]
+  },
+  "rag_usage_guidelines": {
+    "retrieval_granularity": [
+      "Khi câu hỏi về 'định nghĩa agent' → dùng core_concepts.agent_definition_schema.",
+      "Khi câu hỏi về 'thiết kế Agentic OS' → dùng core_concepts.agentic_os và design_process.",
+      "Khi câu hỏi về 'output cho agent design' → dùng main_outputs.agent_inventory và main_outputs.agent_design_table.",
+      "Khi câu hỏi về 'guardrails/policy' → dùng main_outputs.policy_and_guardrails và design_process.detailed_steps[5]."
+    ],
+    "example_queries": [
+      {
+        "query": "Hãy đề xuất một danh sách agent cho business này.",
+        "hint_sections": [
+          "core_concepts.function_taxonomy",
+          "main_outputs.agent_inventory",
+          "design_process.detailed_steps[1]",
+          "design_process.detailed_steps[3]"
+        ]
+      },
+      {
+        "query": "Định nghĩa chi tiết cho agent Marketing cần gồm những gì?",
+        "hint_sections": [
+          "core_concepts.agent_definition_schema",
+          "main_outputs.agent_design_table"
+        ]
+      },
+      {
+        "query": "Cần những policy gì để vận hành Agentic OS an toàn?",
+        "hint_sections": [
+          "main_outputs.policy_and_guardrails",
+          "design_process.detailed_steps[5]"
+        ]
+      },
+      {
+        "query": "Làm sao gắn KPI & monitoring cho các agent?",
+        "hint_sections": [
+          "main_outputs.monitoring_and_kpis",
+          "design_process.detailed_steps[6]"
+        ]
+      }
+    ]
+  }
+}

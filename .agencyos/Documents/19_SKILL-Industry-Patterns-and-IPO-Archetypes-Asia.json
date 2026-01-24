@@ -1,0 +1,199 @@
+{
+  "id": "19_SKILL-Industry-Patterns-and-IPO-Archetypes-Asia",
+  "version": "1.0.0",
+  "title": "Skill – Industry Patterns & IPO Archetypes (VN/SEA)",
+  "type": "skill",
+  "description": "Kỹ năng nhận diện pattern ngành, mô hình tăng trưởng & archetype IPO phổ biến tại VN/SEA, dùng để hiệu chỉnh Business Plan & Zero→IPO roadmap theo bối cảnh ngành cụ thể.",
+  "intended_use": {
+    "primary": [
+      "Map nhanh idea business vào nhóm ngành & mô hình phổ biến tại VN/SEA.",
+      "So khớp với các archetype doanh nghiệp có khả năng IPO (hoặc M&A lớn) trong khu vực.",
+      "Gợi ý điều chỉnh Business Plan 2026 để phù hợp hơn với norm ngành & kỳ vọng thị trường vốn.",
+      "Tạo bối cảnh cho unit economics, growth, risk & governance theo từng ngành."
+    ],
+    "works_best_when": [
+      "User mô tả tương đối rõ sản phẩm/dịch vụ, khách hàng & cách kiếm tiền (revenue model).",
+      "Đã có sơ bộ phần Business Model (05), Growth (09) & Financial/IPO (13, 16, 17)."
+    ],
+    "not_for": [
+      "Dự báo giá cổ phiếu, timing IPO cụ thể hoặc tư vấn giao dịch chứng khoán.",
+      "Phân tích pháp lý chi tiết từng ngành – chỉ ở mức pattern & checklist câu hỏi."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "09_SKILL-Growth-Engine-and-GTM-Design.json",
+      "13_SKILL-IPO-Readiness-Scorecard-VN-SEA.json",
+      "16_SKILL-Financial-Model-and-Scenario-Planning.json",
+      "17_SKILL-Risk-Downside-and-Scenario-OS.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả business/idea: sản phẩm/dịch vụ chính, khách hàng mục tiêu & cách tạo doanh thu."
+      },
+      "geo_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Khu vực ưu tiên: 'VN', 'SEA', 'APAC', 'global' – dùng để ưu tiên archetype phù hợp."
+      },
+      "business_model_summary": {
+        "type": "string",
+        "required": false,
+        "description": "Tóm tắt mô hình kinh doanh: B2B/B2C/B2B2C, subscription vs transactional, marketplace vs SaaS, v.v."
+      },
+      "target_outcome": {
+        "type": "string",
+        "required": false,
+        "description": "Định hướng exit chính: 'IPO', 'M&A', 'cash-cow/private', 'chưa rõ'. Nếu thiếu, model giả định 'IPO hoặc M&A lớn' & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'idea', 'pre_seed', 'seed', 'series_a', 'series_b_plus', 'pre_ipo'."
+      }
+    },
+    "assumptions": [
+      "Nếu business_model_summary trống, model suy luận B2B/B2C & pattern cơ bản từ idea_or_offer, đánh dấu [GIẢ ĐỊNH].",
+      "Nếu target_outcome trống, giả định tham vọng IPO/M&A & đánh dấu [GIẢ ĐỊNH]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "industry_classification": {
+        "description": "Phân loại ngành & model cơ bản.",
+        "fields": [
+          "primary_industry_cluster",
+          "secondary_industry_tags",
+          "go_to_market_archetype",
+          "notes_on_regulation_intensity"
+        ]
+      },
+      "ipo_archetype_mapping": {
+        "description": "Gán vào 1–3 archetype IPO/M&A thường gặp trong khu vực.",
+        "fields": [
+          "candidate_archetypes",
+          "fit_explanation",
+          "misfit_explanation",
+          "implications_for_plan"
+        ]
+      },
+      "unit_economics_and_growth_norms": {
+        "description": "Chuẩn tham chiếu về unit economics & growth cho ngành.",
+        "fields": [
+          "typical_kpis",
+          "rough_benchmarks_commentary",
+          "capital_intensity_typology",
+          "scaling_bottlenecks_pattern"
+        ]
+      },
+      "regulatory_and_governance_considerations": {
+        "description": "Các lưu ý pháp lý & governance theo ngành (ở level pattern).",
+        "fields": [
+          "regulatory_hotspots_list",
+          "suggested_professional_advisors",
+          "governance_expectations_for_ipo",
+          "notes_for_vn_sea_context"
+        ]
+      },
+      "plan_adjustment_recommendations": {
+        "description": "Gợi ý điều chỉnh Business Plan 2026 theo pattern ngành.",
+        "fields": [
+          "key_gaps_vs_archetype",
+          "recommended_plan_shifts",
+          "risk_items_to_elevate",
+          "ipo_storyline_angle_suggestions"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_classify_industry",
+      "label": "Phân loại ngành & mô hình",
+      "goal": "Gắn idea vào 1–2 cụm ngành + model chính để tham chiếu pattern.",
+      "actions": [
+        "Đọc idea_or_offer & business_model_summary (nếu có).",
+        "Xác định primary_industry_cluster & secondary_industry_tags, đánh dấu [GIẢ ĐỊNH] nếu suy luận.",
+        "Suy ra go_to_market_archetype & notes_on_regulation_intensity (low/medium/high)."
+      ]
+    },
+    {
+      "step_id": "02_map_ipo_archetypes",
+      "label": "Map sang archetype IPO/M&A khu vực",
+      "goal": "Xác định 1–3 archetype gần nhất & hệ quả.",
+      "actions": [
+        "Dựa trên industry cluster & geo_focus, chọn candidate_archetypes có liên quan (mức khái niệm).",
+        "Giải thích fit_explanation: vì sao business giống archetype đó.",
+        "Giải thích misfit_explanation: điểm khác biệt có thể thành rủi ro hoặc lợi thế.",
+        "Tóm tắt implications_for_plan: cần chỉnh gì trong Vision/Model/Growth/IPO section."
+      ]
+    },
+    {
+      "step_id": "03_describe_unit_econ_and_growth_norms",
+      "label": "Mô tả norm về unit economics & growth",
+      "goal": "Tạo khung kỳ vọng đúng về tài chính & growth cho ngành.",
+      "actions": [
+        "Liệt kê typical_kpis mà ngành thường bị soi (ví dụ SaaS: ARR, churn, NRR; Fintech: take rate, risk cost…).",
+        "Viết rough_benchmarks_commentary theo kiểu định tính (vd: 'nhà đầu tư thường kỳ vọng gross margin cao', không bịa số cụ thể).",
+        "Xác định capital_intensity_typology: asset-light, asset-heavy, working-capital-heavy…",
+        "Mô tả scaling_bottlenecks_pattern – nút thắt chủ yếu khi scale (regulation, ops, supply, talent…)."
+      ]
+    },
+    {
+      "step_id": "04_reg_and_governance_lens",
+      "label": "Lăng kính pháp lý & governance theo ngành",
+      "goal": "Đặt risk & governance trong ngữ cảnh ngành.",
+      "actions": [
+        "Liệt kê regulatory_hotspots_list: nhóm luật, giấy phép, chuẩn compliance cần chú ý (ở mức khái quát).",
+        "Đề xuất suggested_professional_advisors nên có trong 2–3 năm tới.",
+        "Nêu governance_expectations_for_ipo cho ngành: mức độ internal control, audit, board, reporting.",
+        "Ghi lại notes_for_vn_sea_context – sự khác biệt đáng kể giữa VN & các thị trường khác (nếu có)."
+      ]
+    },
+    {
+      "step_id": "05_adjust_plan",
+      "label": "Đề xuất chỉnh Business Plan theo pattern",
+      "goal": "Kết nối mọi thứ quay về Business Plan 2026 – Agentic Zero→IPO.",
+      "actions": [
+        "Xác định key_gaps_vs_archetype giữa plan hiện tại & archetype mong muốn.",
+        "Đề xuất recommended_plan_shifts cho Vision, Model, GTM, Product, Capital Strategy.",
+        "Chỉ ra risk_items_to_elevate để đưa rõ vào risk & scenario section.",
+        "Gợi ý ipo_storyline_angle_suggestions – 2–3 hướng kể chuyện chính phù hợp kỳ vọng thị trường vốn."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Ngay sau khi có bản Business Model & GTM sơ bộ, trước khi khoá phần Financial/IPO.",
+      "Khi user hỏi: 'mô hình này có giống case IPO nào ở VN/SEA không', 'nhà đầu tư sẽ soi gì với ngành này'.",
+      "Khi cần tinh chỉnh plan cho phù hợp chuẩn ngành trong data room / pitch deck."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả industry_classification + ipo_archetype_mapping (dạng tóm tắt, dễ hiểu).",
+      "Bước 2: Sau khi user đồng ý, gửi unit_economics_and_growth_norms + regulatory_and_governance_considerations.",
+      "Bước 3: Cuối cùng là plan_adjustment_recommendations để user decide có chỉnh plan hay giữ khác biệt như một chiến lược."
+    ]
+  },
+  "constraints": {
+    "no_specific_public_company_comparables": "Không nêu tên/ticker công ty cụ thể trừ khi user yêu cầu & cung cấp ví dụ; giữ ở mức archetype/nhóm.",
+    "no_fake_benchmarks": "Không bịa số benchmark; chỉ mô tả xu hướng & kỳ vọng tương đối.",
+    "region_awareness": "Ưu tiên VN/SEA context; tránh áp đặt chuẩn US/EU nếu không giải thích khác biệt.",
+    "language": "Tiếng Việt, xen một số thuật ngữ growth/capital market tiếng Anh khi giúp dễ hiểu & ngắn gọn."
+  }
+}

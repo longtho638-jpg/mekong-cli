@@ -1,0 +1,203 @@
+{
+  "id": "13_SKILL-Sales-Process-and-Channels",
+  "version": "1.0.0",
+  "title": "Skill – Sales Process & Channels (Online / Offline / B2B / B2C)",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế quy trình sales end-to-end và lựa chọn kênh bán hàng phù hợp với mô hình kinh doanh (B2B/B2C/community/platform), đảm bảo gắn chặt với marketing, lifecycle và mục tiêu Zero→IPO.",
+  "intended_use": {
+    "primary": [
+      "Thiết kế sales process high-level từ lead → qualified → proposal → close → post-sale.",
+      "Chọn và kết hợp các sales channel (direct sales, partner, online self-serve, marketplace…).",
+      "Tạo playbook cơ bản cho đội sales (script chính, objection handling, qualification checklist).",
+      "Định nghĩa handoff giữa marketing → sales → success để tránh đứt gãy hành trình khách hàng."
+    ],
+    "works_best_when": [
+      "Đã có business model / unit economics (05) và customer journey cơ bản.",
+      "Đã có hiểu biết về persona, pain points, decision makers (06)."
+    ],
+    "not_for": [
+      "Thiết kế chi tiết CRM pipeline trong tool cụ thể (HubSpot, Salesforce…).",
+      "Viết hợp đồng pháp lý – cần luật sư/skill riêng."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json",
+      "09_SKILL-Website-and-Landing-Narrative.json",
+      "10_SKILL-Performance-Ads-and-Intro-Creatives.json",
+      "12_SKILL-Email-and-Lifecycle-Sequences.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Sản phẩm/dịch vụ/chương trình hoặc nền tảng cần thiết kế sales process."
+      },
+      "go_to_market_type": {
+        "type": "string",
+        "required": false,
+        "description": "Kiểu GTM chính: 'B2B_high_touch', 'B2B_product_led', 'B2C_direct', 'B2C_via_distributors', 'marketplace', 'community-led', v.v."
+      },
+      "average_price_point_or_plan": {
+        "type": "string",
+        "required": false,
+        "description": "Khoảng giá / plan chính (vd: 10–50 USD/tháng, 5k–20k USD/contract…)."
+      },
+      "sales_team_stage": {
+        "type": "string",
+        "required": false,
+        "description": "Trạng thái đội sales: 'founder_led', 'small_team', 'scaling_team', 'no_sales_team_yet'."
+      },
+      "target_regions": {
+        "type": "string",
+        "required": false,
+        "description": "Khu vực mục tiêu: 'VN_only', 'SEA', 'global', hoặc mô tả cụ thể."
+      }
+    },
+    "assumptions": [
+      "Nếu không có go_to_market_type, model sẽ suy luận từ idea_or_offer và 05_SKILL (đánh dấu [GIẢ ĐỊNH]).",
+      "Nếu sales_team_stage là 'no_sales_team_yet', tối ưu cho founder-led sales & self-serve nếu phù hợp."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "sales_strategy_overview": {
+        "description": "Tổng quan chiến lược bán hàng.",
+        "fields": [
+          "primary_gtm_model",
+          "deal_archetypes",
+          "decision_makers_and_influencers",
+          "sales_cycle_length_estimate",
+          "role_of_marketing_vs_sales_vs_product"
+        ]
+      },
+      "sales_channels_matrix": {
+        "description": "Ma trận các kênh bán hàng & vai trò từng kênh.",
+        "fields": [
+          "channels",
+          "channel_roles",
+          "channel_strengths",
+          "channel_risks",
+          "priority_by_stage"
+        ]
+      },
+      "sales_process_flow": {
+        "description": "Quy trình sales end-to-end (pipeline high-level).",
+        "fields": [
+          "stages",
+          "stage_definitions",
+          "entry_exit_criteria",
+          "owner_roles",
+          "handoff_points"
+        ]
+      },
+      "playbook_elements": {
+        "description": "Các thành phần playbook cơ bản cho đội sales/founder.",
+        "fields": [
+          "qualification_framework",
+          "discovery_call_outline",
+          "core_objections_and_responses",
+          "demo_or_pitch_flow_outline",
+          "followup_cadence_guidelines"
+        ]
+      },
+      "agentic_sales_ideas": {
+        "description": "Ý tưởng gắn Agentic layer vào quy trình sales.",
+        "fields": [
+          "agent_assist_use_cases",
+          "automated_playbooks_candidates",
+          "data_to_capture_for_future_optimization"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_infer_gtm_and_sales_context",
+      "label": "Hiểu bối cảnh GTM & sales",
+      "goal": "Xác định kiểu bán hàng chính và vai trò của sales/marketing/product.",
+      "actions": [
+        "Tóm tắt idea_or_offer và phân loại sơ bộ B2B/B2C/community/platform.",
+        "Suy luận go_to_market_type nếu chưa có (đánh dấu [GIẢ ĐỊNH]).",
+        "Xác định ballpark sales_cycle_length_estimate từ price point & ngành (có [GIẢ ĐỊNH] nếu cần).",
+        "Điền sales_strategy_overview (primary_gtm_model, deal_archetypes, decision_makers_and_influencers)."
+      ]
+    },
+    {
+      "step_id": "02_design_sales_channels_matrix",
+      "label": "Thiết kế ma trận kênh bán hàng",
+      "goal": "Chọn đúng vài kênh then chốt, không tản mạn.",
+      "actions": [
+        "Liệt kê các kênh tiềm năng: direct outbound, inbound demo, content-led, self-serve, partners, affiliates, marketplace, offline events…",
+        "Đánh giá channel_strengths & channel_risks cho từng kênh.",
+        "Gán priority_by_stage cho Zero, Seed, Series A, Pre-IPO.",
+        "Khuyến nghị 2–3 kênh ưu tiên cho giai đoạn hiện tại, tránh over-extend."
+      ]
+    },
+    {
+      "step_id": "03_define_sales_process_flow",
+      "label": "Định nghĩa sales process",
+      "goal": "Có pipeline rõ ràng để align team & đo lường.",
+      "actions": [
+        "Đề xuất các stages high-level phù hợp với GTM (lead→MQL→SQL→discovery→proposal→negotiation→won/lost cho B2B; hoặc đơn giản hơn cho B2C).",
+        "Viết stage_definitions ngắn gọn, rõ ràng, có thể đưa thẳng vào CRM.",
+        "Định nghĩa entry_exit_criteria từng stage (vd: 'SQL nếu đã qualify budget + authority + problem').",
+        "Gán owner_roles (founder, AE, SDR, CSM…) và handoff_points rõ ràng."
+      ]
+    },
+    {
+      "step_id": "04_build_playbook_elements",
+      "label": "Xây playbook cơ bản",
+      "goal": "Cho đội sales/founder một bộ khung để gọi/nhắn cho đỡ bối rối.",
+      "actions": [
+        "Chọn qualification_framework phù hợp (BANT/MEDDIC rút gọn hoặc custom theo ngành).",
+        "Tạo discovery_call_outline: list câu hỏi mở, câu hỏi đào sâu pain, câu hỏi về decision process.",
+        "Liệt kê core_objections_and_responses dựa trên 06_SKILL & 05_SKILL.",
+        "Tạo demo_or_pitch_flow_outline (intro → context → demo → proof → next steps).",
+        "Đề xuất followup_cadence_guidelines (số lần follow-up, khoảng cách ngày, kênh: email/call/LinkedIn…)."
+      ]
+    },
+    {
+      "step_id": "05_propose_agentic_sales_layer",
+      "label": "Gợi ý Agentic layer cho sales",
+      "goal": "Cài 'sales co-pilot' từ đầu để scale về sau.",
+      "actions": [
+        "Đề xuất agent_assist_use_cases: chuẩn bị brief trước cuộc gọi, gợi ý câu hỏi, tóm tắt sau call, draft follow-up.",
+        "Liệt kê automated_playbooks_candidates: sequences tự động dựa trên hành vi (mở email, xem pricing, bỏ giỏ…).",
+        "Xác định data_to_capture_for_future_optimization (win/loss reasons, deal size, industry, channel…)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi user hỏi: 'Bán cái này bằng kênh nào là hợp lý?' hoặc 'Thiết kế giúp anh quy trình sales/founder-led sales.'",
+      "Sau khi đã có brand/offer cơ bản và customer journey high-level."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả sales_strategy_overview + sales_channels_matrix để user duyệt hướng.",
+      "Bước 2: Khi user OK, trả sales_process_flow + playbook_elements.",
+      "Bước 3: Cuối cùng gợi ý agentic_sales_ideas để chuẩn bị nền tảng co-pilot cho sales."
+    ]
+  },
+  "constraints": {
+    "no_unrealistic_promises": "Không hứa tỉ lệ chốt deal phi thực tế; luôn đánh dấu [GIẢ ĐỊNH] với tỉ lệ/chu kỳ phỏng đoán.",
+    "respect_regional_context": "Với VN/SEA, lưu ý văn hoá đàm phán, kênh offline, Zalo/WhatsApp/WeChat khi phù hợp.",
+    "language": "Tiếng Việt là chính, vẫn có thể xen thuật ngữ sales/GTM tiếng Anh phổ biến."
+  }
+}

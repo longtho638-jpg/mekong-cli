@@ -1,0 +1,245 @@
+{
+  "file_name": "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+  "version": "1.0.0",
+  "language": "vi",
+  "title": "SKILL – Refactor Old Business Plan to 2026 Agentic Zero→IPO Frame",
+  "purpose": {
+    "short": "Chuyển hoá kế hoạch kinh doanh cũ sang khung 'Business Plan 2026 – Agentic Zero→IPO'.",
+    "long": "Skill này định nghĩa quy trình chi tiết để đọc một kế hoạch kinh doanh cũ (PDF/DOCX/text), trích xuất thông tin quan trọng, map sang khung chuẩn 'Business Plan 2026 – Agentic Zero→IPO' và tạo ra bộ artefact mới: tóm tắt chẩn đoán, bản kế hoạch 2026 dạng markdown, bảng mapping cũ→mới, và nếu cần, dữ liệu đầu vào cho các skill Agentic/IPO khác."
+  },
+  "dependencies": {
+    "master_frame_file": "00_MASTER-Agentic-BizPlan-OS.json",
+    "master_sections_ref": [
+      "0_meta_stage",
+      "1_vision_mission_story",
+      "2_market_customer",
+      "3_product_agentic_os",
+      "4_business_model_unit_econ",
+      "5_growth_engine",
+      "6_ops_risk_compliance",
+      "7_financial_plan_ipo",
+      "8_brand_story_psychology"
+    ]
+  },
+  "expected_inputs": {
+    "raw_documents": [
+      "File PDF kế hoạch kinh doanh cũ (scan hoặc text-based).",
+      "File DOC/DOCX, Google Docs export, hoặc text thuần dán vào.",
+      "Các phụ lục: pitch deck cũ, one-pager, nội dung web mô tả business."
+    ],
+    "meta_from_user_optional": [
+      "Stage dự kiến (Zero / Seed / Series A / B / Pre-IPO).",
+      "Ngành & thị trường chính (ví dụ: SaaS Edtech Việt Nam, Fintech SEA).",
+      "Mức độ dùng AI/Agent hiện tại (nếu user biết)."
+    ],
+    "llm_requirements": [
+      "LLM phải cố gắng tự suy ra stage & meta từ tài liệu; chỉ hỏi user khi thật sự cần.",
+      "Phân biệt rõ nội dung trích từ tài liệu gốc và phần suy luận/đề xuất."
+    ]
+  },
+  "main_outputs": {
+    "diagnostic_summary": {
+      "id": "diagnostic_summary",
+      "description": "Tóm tắt chẩn đoán 1–2 trang về business hiện tại.",
+      "recommended_structure": [
+        "1) Overview: sản phẩm/dịch vụ, ngành, thị trường.",
+        "2) Business model: cách kiếm tiền, nhóm khách chính.",
+        "3) Stage & traction: giai đoạn phát triển, số liệu nếu có.",
+        "4) Strengths: 3–5 điểm mạnh chính.",
+        "5) Weaknesses / gaps: 3–5 điểm yếu hoặc thiếu sót lớn.",
+        "6) Agentic & tech: hiện có dùng AI/Agent không, ở mức nào.",
+        "7) IPO/scale notes: bất kỳ dấu hiệu nào liên quan đến kế hoạch mở rộng hoặc niêm yết."
+      ]
+    },
+    "plan_2026_markdown": {
+      "id": "plan_2026_markdown",
+      "description": "Bản kế hoạch 'Business Plan 2026 – Agentic Zero→IPO' dạng markdown, theo khung master.",
+      "section_order": [
+        "0. Meta & Stage",
+        "1. Vision, Mission & Zero→IPO Story",
+        "2. Market & Customer [Business / Agentic / Governance]",
+        "3. Product & Agentic Operating System",
+        "4. Business Model & Unit Economics",
+        "5. Growth Engine (AARRR + Growth Agents)",
+        "6. Operations, Risk & Compliance",
+        "7. Financial Plan & IPO Roadmap",
+        "8. Brand, Story & Psychology (nếu liên quan)"
+      ],
+      "filling_rules": [
+        "Ưu tiên dùng nguyên văn hoặc paraphrase trung thực từ tài liệu cũ khi nội dung đã rõ.",
+        "Khi suy luận hoặc đề xuất thêm, phải ghi rõ là 'Đề xuất' hoặc 'Giả định'.",
+        "Nếu thiếu dữ liệu, thêm placeholder dạng: '[TODO – thiếu: mô tả thị trường chi tiết]' để người dùng biết chỗ cần bổ sung.",
+        "Không bịa số liệu tài chính, khách hàng, tăng trưởng… nếu tài liệu không cung cấp."
+      ],
+      "tri_layer_annotation": "Khi hợp lý, có thể chèn các tag [Business], [Agentic], [Governance] trong ngoặc vuông để làm rõ lớp nội dung."
+    },
+    "mapping_table": {
+      "id": "mapping_table",
+      "description": "Bảng map nội dung cũ → vị trí mới trong khung 2026.",
+      "columns": [
+        "source_snippet_or_section",
+        "source_location",
+        "target_section_id",
+        "target_section_title",
+        "quality_tag",
+        "notes"
+      ],
+      "column_semantics": {
+        "source_snippet_or_section": "Đoạn tóm tắt nội dung gốc (không cần quote dài, chỉ cần diễn đạt súc tích).",
+        "source_location": "Thông tin vị trí trong tài liệu cũ (vd: 'Trang 5 – Mục 2.1', hoặc 'Slide 7').",
+        "target_section_id": "ID section theo master frame (vd: '4_business_model_unit_econ').",
+        "target_section_title": "Tiêu đề section tương ứng.",
+        "quality_tag": "Đánh giá sơ bộ: 'OK', 'WEAK', 'MISSING_PARTIAL', 'MISMATCH'.",
+        "notes": "Giải thích ngắn: tại sao gán vào section đó, thiếu gì, cần bổ sung gì."
+      }
+    },
+    "optional_agentic_inputs": {
+      "id": "optional_agentic_inputs",
+      "description": "Nếu tài liệu cũ có đề cập AI/Agent, chuẩn bị thêm dữ liệu để skill Agentic_Mapping sử dụng.",
+      "structure": [
+        "Danh sách đoạn văn hoặc phần mô tả có liên quan đến AI, automation, agents.",
+        "Gợi ý sơ bộ: function nào có thể gắn agent (marketing, sales, ops, risk,…)."
+      ]
+    }
+  },
+  "refactor_process": {
+    "high_level_steps": [
+      "1) Ingest & pre-read: Đọc tài liệu cũ để nắm bức tranh tổng thể.",
+      "2) Extract & cluster: Trích xuất các đoạn quan trọng và gom nhóm theo chủ đề (product, market, model, ops, finance,...).",
+      "3) Stage detection: Ước lượng giai đoạn Zero→PMF→Scale→Pre-IPO/IPO.",
+      "4) Map to master frame: Gán từng cụm nội dung vào section trong 'frame_2026'.",
+      "5) Compose outputs: Viết tóm tắt chẩn đoán, plan 2026 markdown, bảng mapping.",
+      "6) Tag gaps: Xác định section chưa có đủ thông tin, đánh nhãn và ghi chú."
+    ],
+    "detailed_steps": [
+      {
+        "step": 1,
+        "name": "Ingest & Pre-read",
+        "actions": [
+          "Đọc toàn văn tài liệu một lượt (skimming) để nắm sơ bộ: business là gì, đang ở giai đoạn nào.",
+          "Ghi lại vài bullet tóm tắt cực ngắn (không phải output chính, chỉ để internal reasoning)."
+        ],
+        "llm_notes": [
+          "Không cần output chi tiết giai đoạn này cho user, trừ khi được hỏi.",
+          "Tránh trích dẫn quá dài; tập trung hiểu cấu trúc & nội dung chính."
+        ]
+      },
+      {
+        "step": 2,
+        "name": "Extract & Cluster",
+        "actions": [
+          "Xác định các đoạn liên quan đến: sản phẩm/dịch vụ, khách hàng, thị trường, mô hình doanh thu, chi phí, vận hành, rủi ro, tài chính, AI/Agent (nếu có).",
+          "Gom nhóm các đoạn theo chủ đề để dễ map sang master frame.",
+          "Bỏ qua các đoạn lặp lại hoặc quá marketing nếu không mang thêm thông tin."
+        ],
+        "llm_notes": [
+          "Có thể tạo một bảng tạm (chunk → chủ đề) để hỗ trợ suy luận tiếp.",
+          "Nếu tài liệu rất lộn xộn, ưu tiên tìm các mục tiêu đề, heading, bullet list."
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Stage Detection (Zero→IPO)",
+        "actions": [
+          "Dựa trên thông tin về doanh thu, số khách hàng, số vòng gọi vốn, cấu trúc tổ chức… để ước lượng stage.",
+          "Map stage vào một trong 4 stage đã định nghĩa trong master file: zero_psf, pmf_early_scale, scale_up, pre_ipo_ipo."
+        ],
+        "llm_notes": [
+          "Nếu thiếu thông tin, có thể đưa ra 1–2 khả năng và giải thích ngắn (ví dụ: 'Có vẻ là PMF/Early Scale vì đã có khách trả tiền, nhưng chưa có nhiều số liệu growth.').",
+          "Không cần quá chính xác tuyệt đối; mục tiêu là đủ tốt để quyết định section nào nên ưu tiên chi tiết."
+        ]
+      },
+      {
+        "step": 4,
+        "name": "Map to Master Frame",
+        "actions": [
+          "Lấy danh sách section từ master frame (00_MASTER) và lần lượt xem phần nào trong tài liệu cũ có thể map vào.",
+          "Mỗi đoạn nội dung cũ có thể map vào 1 hoặc nhiều section (nếu phù hợp); ưu tiên map rõ ràng, tránh trùng lặp không cần thiết.",
+          "Đối với mỗi map, gán thêm quality_tag: OK / WEAK / MISSING_PARTIAL / MISMATCH."
+        ],
+        "llm_notes": [
+          "Nếu không tìm thấy nội dung phù hợp trong tài liệu cũ cho một section, đánh dấu section đó là 'missing' và ghi chú trong Gap.",
+          "Mapping này sẽ dùng để sinh bảng mapping_table cho user."
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Compose Outputs",
+        "actions": [
+          "Viết 'diagnostic_summary' dựa trên hiểu biết từ các bước trước.",
+          "Sinh 'plan_2026_markdown' theo section_order, sử dụng nội dung cũ + đề xuất mới + TODO placeholders.",
+          "Tạo 'mapping_table' với các cột đã định nghĩa: source_snippet_or_section, source_location, target_section_id, target_section_title, quality_tag, notes."
+        ],
+        "llm_notes": [
+          "Giữ văn phong rõ ràng, technical, tránh sáo rỗng.",
+          "Luôn đánh dấu rõ chỗ nào là đề xuất mới hoặc giả định.",
+          "Không tự ý 'làm đẹp' số liệu hoặc thay đổi facts từ bản gốc."
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Tag Gaps & Handover",
+        "actions": [
+          "Tổng hợp danh sách section còn thiếu hoặc yếu, dựa trên quality_tag trong mapping_table.",
+          "Viết 1 phần ngắn trong output (hoặc một mục riêng) nêu rõ: các khoảng trống chính và gợi ý thông tin cần bổ sung.",
+          "Chuẩn bị optional_agentic_inputs nếu phát hiện nội dung liên quan đến AI/Agent trong tài liệu."
+        ],
+        "llm_notes": [
+          "Phần Gap này là cầu nối để skill 'Agentic-Mapping-and-Design' và 'Gap-Report-and-Roadmap' sử dụng sau.",
+          "Không cần sinh full roadmap ở đây; chỉ cần liệt kê chỗ thiếu."
+        ]
+      }
+    ]
+  },
+  "quality_tags": {
+    "values": [
+      "OK",
+      "WEAK",
+      "MISSING_PARTIAL",
+      "MISMATCH"
+    ],
+    "definitions": {
+      "OK": "Nội dung cũ đủ tốt để dùng trực tiếp hoặc chỉ cần chỉnh nhẹ.",
+      "WEAK": "Nội dung tồn tại nhưng mơ hồ, thiếu số liệu hoặc thiếu chiều sâu; nên cải thiện.",
+      "MISSING_PARTIAL": "Chỉ có một phần ý hoặc dữ liệu, chưa đủ để hoàn thiện section.",
+      "MISMATCH": "Nội dung được map tạm thời nhưng thực ra không phù hợp; cần xem lại hoặc bỏ."
+    }
+  },
+  "rag_usage_guidelines": {
+    "retrieval_granularity": [
+      "Khi câu hỏi liên quan đến quy trình refactor, truy xuất 'refactor_process.detailed_steps'.",
+      "Khi câu hỏi về định dạng output, truy xuất 'main_outputs'.",
+      "Khi câu hỏi về cách đánh giá chất lượng mapping, truy xuất 'quality_tags'.",
+      "Khi câu hỏi về mối quan hệ với khung tổng, truy xuất 'dependencies' và 'dependencies.master_sections_ref'."
+    ],
+    "example_queries": [
+      {
+        "query": "Làm sao để chuyển 1 bản kế hoạch cũ sang khung 2026?",
+        "hint_sections": [
+          "refactor_process.high_level_steps",
+          "refactor_process.detailed_steps"
+        ]
+      },
+      {
+        "query": "Bảng mapping cũ→mới cần những cột nào?",
+        "hint_sections": [
+          "main_outputs.mapping_table.columns",
+          "main_outputs.mapping_table.column_semantics"
+        ]
+      },
+      {
+        "query": "Khi nào đánh tag WEAK hay MISSING_PARTIAL?",
+        "hint_sections": [
+          "quality_tags.definitions"
+        ]
+      },
+      {
+        "query": "Output cuối cùng cho user gồm những phần gì?",
+        "hint_sections": [
+          "main_outputs",
+          "refactor_process.detailed_steps[4]"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "file_name": "04_SKILL-Gap-Report-and-Roadmap.json",
+  "version": "1.0.0",
+  "language": "vi",
+  "title": "SKILL – Gap Report & Roadmap for Business Plan 2026 – Agentic Zero→IPO",
+  "purpose": {
+    "short": "Tổng hợp khoảng trống (gap) và xây dựng lộ trình hành động 6–12–24 tháng dựa trên Business Plan 2026, Agentic OS và IPO readiness.",
+    "long": "Skill này dùng để đọc các artefact đã chuẩn hóa (Business Plan 2026 – Agentic Zero→IPO, Agentic design, IPO readiness) và sinh ra một Gap Report có hệ thống, kèm theo Roadmap hành động 6–12–24 tháng. Mục tiêu: giúp team biết rõ mình đang thiếu gì so với khung 2026/Agentic/IPO, ưu tiên việc nào làm trước và ai nên chịu trách nhiệm."
+  },
+  "dependencies": {
+    "master_frame_file": "00_MASTER-Agentic-BizPlan-OS.json",
+    "refactor_skill_file": "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+    "agentic_skill_file": "02_SKILL-Agentic-Mapping-and-Design.json",
+    "ipo_skill_file": "03_SKILL-SEA-VN-IPO-Readiness.json",
+    "expected_prior_outputs": [
+      "diagnostic_summary",
+      "plan_2026_markdown",
+      "mapping_table",
+      "optional_agentic_inputs",
+      "agent_inventory (nếu có)",
+      "agent_design_table (nếu có)",
+      "ipo_readiness_scorecard (nếu có)",
+      "dimension_deepdives (nếu có)"
+    ]
+  },
+  "expected_inputs": {
+    "from_artifacts": [
+      "Toàn bộ plan_2026_markdown (đã điền đầy đủ/placeholder).",
+      "mapping_table với quality_tag (OK, WEAK, MISSING_PARTIAL, MISMATCH).",
+      "Thông tin về Agentic OS (agent_inventory, agent_design_table).",
+      "IPO readiness scorecard và dimension_deepdives (nếu đã chạy skill 03)."
+    ],
+    "from_user_optional": [
+      "Time horizon ưu tiên (nếu khác 6–12–24 tháng).",
+      "Giới hạn nguồn lực (nhân sự, vốn) để tinh chỉnh mức độ tham vọng.",
+      "Các ưu tiên chiến lược riêng (vd: ưu tiên IPO tại VN, hay ưu tiên mở rộng SEA trước)."
+    ],
+    "llm_requirements": [
+      "Không tạo roadmap 'ảo' không khả thi; phải cân nhắc stage hiện tại và level nguồn lực ngầm hiểu từ plan.",
+      "Phải phân biệt rõ: gap về nội dung kế hoạch (chưa viết) vs gap thực tế trong business (chưa làm).",
+      "Khi thiếu dữ liệu để đánh giá một gap cụ thể, ghi rõ 'thiếu dữ liệu' thay vì đoán."
+    ]
+  },
+  "core_concepts": {
+    "gap_types": {
+      "description": "Phân loại các loại gap để dễ xử lý.",
+      "types": [
+        {
+          "id": "content_gap",
+          "name": "Content Gap (Kế hoạch thiếu nội dung)",
+          "examples": [
+            "Section trong plan_2026 chỉ có placeholder '[TODO]'.",
+            "Thiếu mô tả thị trường chi tiết.",
+            "Thiếu logic financial model."
+          ]
+        },
+        {
+          "id": "capability_gap",
+          "name": "Capability Gap (Thiếu năng lực/hệ thống)",
+          "examples": [
+            "Chưa có hệ thống CRM nhưng growth strategy phụ thuộc nhiều vào sales pipeline.",
+            "Chưa có data warehouse nhưng muốn dùng Agentic cho phân tích nâng cao."
+          ]
+        },
+        {
+          "id": "governance_gap",
+          "name": "Governance/IPO Gap",
+          "examples": [
+            "Chưa có board/committee phù hợp.",
+            "Chưa có BCTC kiểm toán.",
+            "Chưa có chính sách risk & compliance rõ."
+          ]
+        },
+        {
+          "id": "agentic_gap",
+          "name": "Agentic Design/Control Gap",
+          "examples": [
+            "Có ý định dùng agent nhưng chưa define KPI/policy.",
+            "Chưa có logging/audit cho các hành động agent."
+          ]
+        }
+      ]
+    },
+    "priority_model": {
+      "description": "Khung ưu tiên gap dựa trên Impact, Urgency, Effort và Dependency.",
+      "dimensions": [
+        {
+          "name": "Impact",
+          "scale": "LOW / MEDIUM / HIGH",
+          "meaning": "Nếu xử lý gap này tốt, mức độ cải thiện đối với mục tiêu (scale/IPO/risk) là bao nhiêu."
+        },
+        {
+          "name": "Urgency",
+          "scale": "LOW / MEDIUM / HIGH",
+          "meaning": "Gap này cần được xử lý sớm thế nào (ví dụ: regulatory deadline, timeline IPO)."
+        },
+        {
+          "name": "Effort",
+          "scale": "LOW / MEDIUM / HIGH",
+          "meaning": "Mức độ khó/nguồn lực cần để xử lý (thời gian, tiền, độ phức tạp)."
+        },
+        {
+          "name": "Dependency",
+          "scale": "NONE / BLOCKER / ENABLER",
+          "meaning": "Gap này có chặn các việc khác không (BLOCKER), hay giải quyết nó sẽ mở khóa nhiều việc (ENABLER)."
+        }
+      ],
+      "simple_rule": "Ưu tiên cao nhất: Impact HIGH + Urgency HIGH + (Dependency = BLOCKER hoặc ENABLER)."
+    },
+    "time_horizons": {
+      "description": "Khung thời gian mặc định cho roadmap.",
+      "buckets": [
+        {
+          "id": "T0_6",
+          "label": "0–6 tháng",
+          "typical_focus": [
+            "Quick wins & blocker critical.",
+            "Sửa các gap dễ, tác động cao.",
+            "Đặt nền tảng governance cơ bản."
+          ]
+        },
+        {
+          "id": "T6_12",
+          "label": "6–12 tháng",
+          "typical_focus": [
+            "Xây năng lực mới (capability building).",
+            "Đầu tư hạ tầng data/tech/agentic.",
+            "Chuẩn hóa quy trình & tài liệu."
+          ]
+        },
+        {
+          "id": "T12_24",
+          "label": "12–24 tháng",
+          "typical_focus": [
+            "Chuẩn bị giai đoạn Pre-IPO/IPO.",
+            "Tối ưu hóa governance, risk, compliance.",
+            "Đưa hệ Agentic lên mức core OS có kiểm soát."
+          ]
+        }
+      ],
+      "note": "Nếu user có timeline khác (vd: 3–9–18 tháng), LLM có thể map tương đương."
+    }
+  },
+  "main_outputs": {
+    "gap_matrix": {
+      "id": "gap_matrix",
+      "description": "Danh sách các gap chính, gắn với section khung 2026 và loại gap.",
+      "columns": [
+        "gap_id",
+        "source_section_id",
+        "source_section_title",
+        "gap_type",
+        "description",
+        "impact",
+        "urgency",
+        "effort",
+        "dependency",
+        "recommended_owner_role",
+        "suggested_time_horizon"
+      ],
+      "column_semantics": {
+        "gap_id": "ID ngắn (vd: GAP-001).",
+        "source_section_id": "ID section theo master frame (vd: '4_business_model_unit_econ').",
+        "source_section_title": "Tiêu đề section tương ứng.",
+        "gap_type": "Một trong các loại gap: content_gap / capability_gap / governance_gap / agentic_gap.",
+        "description": "Mô tả ngắn gọn, cụ thể về gap.",
+        "impact": "LOW / MEDIUM / HIGH.",
+        "urgency": "LOW / MEDIUM / HIGH.",
+        "effort": "LOW / MEDIUM / HIGH (ước lượng tương đối).",
+        "dependency": "NONE / BLOCKER / ENABLER.",
+        "recommended_owner_role": "Role nên chịu trách nhiệm chính (vd: CEO, COO, CPO, CFO, CTO, CISO, Head of Data,…).",
+        "suggested_time_horizon": "T0_6 / T6_12 / T12_24 (có thể map từ time_horizons)."
+      }
+    },
+    "roadmap": {
+      "id": "roadmap",
+      "description": "Lộ trình 6–12–24 tháng gom nhóm theo time horizon và theme.",
+      "structure": [
+        {
+          "field": "time_bucket_id",
+          "description": "T0_6 / T6_12 / T12_24."
+        },
+        {
+          "field": "time_bucket_label",
+          "description": "Nhãn hiển thị (0–6 tháng, 6–12 tháng, 12–24 tháng)."
+        },
+        {
+          "field": "themes",
+          "description": "Nhóm việc theo chủ đề (vd: 'Governance & Board', 'Finance & Reporting', 'Agentic OS', 'Risk & Compliance')."
+        },
+        {
+          "field": "items",
+          "description": "Danh sách các hành động cụ thể cho mỗi theme, liên kết về gap_id nếu có."
+        }
+      ],
+      "item_schema": {
+        "action_id": "ID hành động (vd: ACT-01).",
+        "related_gap_ids": "Danh sách gap_id liên quan.",
+        "title": "Tên ngắn gọn hành động.",
+        "description": "Mô tả ngắn những gì cần làm.",
+        "owner_role": "Role chính phụ trách.",
+        "dependencies_note": "Ghi chú phụ thuộc (nếu cần làm gì trước).",
+        "success_criteria": "Cách biết hành động này đã hoàn thành/tốt."
+      }
+    },
+    "quick_wins": {
+      "id": "quick_wins",
+      "description": "Danh sách 3–10 quick win có thể làm trong 0–6 tháng.",
+      "selection_rules": [
+        "Effort LOW hoặc MEDIUM.",
+        "Impact MEDIUM hoặc HIGH.",
+        "Không phụ thuộc quá nhiều vào gap khác."
+      ]
+    },
+    "strategic_initiatives": {
+      "id": "strategic_initiatives",
+      "description": "Các cụm sáng kiến lớn 12–24 tháng, thường cross-functional.",
+      "item_schema": {
+        "initiative_id": "ID (vd: SI-01).",
+        "title": "Tên sáng kiến (vd: 'Thiết lập hệ thống Financial Reporting chuẩn IPO').",
+        "linked_gap_ids": "Danh sách gap_id liên quan.",
+        "summary": "Mô tả tổng quan.",
+        "time_horizon": "T6_12 hoặc T12_24.",
+        "sponsors": "Role lãnh đạo bảo trợ (vd: CEO + CFO)."
+      }
+    },
+    "risk_if_not_addressed": {
+      "id": "risk_if_not_addressed",
+      "description": "Mô tả rủi ro nếu bỏ qua các gap lớn.",
+      "content": [
+        "Danh sách ngắn các rủi ro: mất cơ hội IPO, định giá thấp, bị từ chối niêm yết, rủi ro pháp lý, rủi ro vận hành,…",
+        "Có thể grouping theo: Financial, Governance, Market/Brand, Tech/Agentic."
+      ]
+    }
+  },
+  "gap_and_roadmap_process": {
+    "high_level_steps": [
+      "1) Thu hồi thông tin gap từ mapping_table, Agentic design, IPO scorecard.",
+      "2) Chuẩn hóa gap theo các loại (content, capability, governance, agentic).",
+      "3) Gán priority (Impact, Urgency, Effort, Dependency).",
+      "4) Xây dựng gap_matrix có cấu trúc.",
+      "5) Gom gap thành roadmap 0–6–12–24 tháng.",
+      "6) Chọn quick wins & strategic initiatives.",
+      "7) Mô tả rủi ro nếu không xử lý."
+    ],
+    "detailed_steps": [
+      {
+        "step": 1,
+        "name": "Collect Raw Gaps",
+        "actions": [
+          "Từ mapping_table: mọi dòng có quality_tag != 'OK' đều là ứng viên gap.",
+          "Từ Agentic design: mọi agent chưa có policy/KPI/guardrails rõ là potential agentic_gap.",
+          "Từ IPO scorecard: dimension nào RED/YELLOW là nguồn governance_gap hoặc capability_gap."
+        ],
+        "llm_notes": [
+          "Không cần đưa toàn bộ gap nhỏ vào output; tập trung vào gap material (quan trọng đối với scale/IPO).",
+          "Có thể nhóm nhiều gap nhỏ cùng theme thành một gap lớn."
+        ]
+      },
+      {
+        "step": 2,
+        "name": "Normalize and Type Each Gap",
+        "actions": [
+          "Gộp gap trùng/chồng lên nhau; viết lại description để rõ ràng và action-oriented.",
+          "Gán gap_type: content_gap / capability_gap / governance_gap / agentic_gap.",
+          "Liên kết mỗi gap với source_section_id & source_section_title từ master frame."
+        ],
+        "llm_notes": [
+          "Mỗi gap nên có mô tả cụ thể, tránh chung chung như 'thiếu chiến lược'.",
+          "Nếu một gap chạm nhiều section, chọn section chính và ghi chú phần còn lại trong description."
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Assign Priority Signals",
+        "actions": [
+          "Đánh giá Impact, Urgency, Effort, Dependency cho từng gap dựa trên plan & stage hiện tại.",
+          "Dùng priority_model.simple_rule để phân biệt gap critical vs nice-to-have.",
+          "Gợi ý recommended_owner_role cho mỗi gap (dựa theo nội dung)."
+        ],
+        "llm_notes": [
+          "Nếu business ở stage sớm (Zero/PMF), ít nhấn mạnh governance_gap quá xa (IPO), tập trung hơn vào capability_gap và business core.",
+          "Nếu business đã Pre-IPO, các governance_gap và financial_gap trở nên rất urgent."
+        ]
+      },
+      {
+        "step": 4,
+        "name": "Build Gap Matrix",
+        "actions": [
+          "Tổng hợp toàn bộ gap đã normalized vào gap_matrix theo schema.",
+          "Sắp xếp theo mức độ ưu tiên (Impact & Urgency & Dependency).",
+          "Chuẩn bị để dùng gap_id cho roadmap."
+        ],
+        "llm_notes": [
+          "Có thể giới hạn số gap trong matrix (vd: 15–30) để tránh quá rối.",
+          "Các gap rất nhỏ có thể gộp vào phần mô tả trong các gap lớn."
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Derive Roadmap by Time Horizon",
+        "actions": [
+          "Map từng gap vào một suggested_time_horizon (T0_6 / T6_12 / T12_24).",
+          "Cho mỗi time bucket, nhóm gap thành 3–6 theme rõ ràng.",
+          "Sinh danh sách action (roadmap.items) gắn với các gap_id, bảo đảm logic: xử lý blocker trước."
+        ],
+        "llm_notes": [
+          "0–6 tháng: tránh nhồi quá nhiều việc nặng; tập trung quick wins & critical blocker.",
+          "12–24 tháng: có thể gom các việc dài hơi vào strategic_initiatives."
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Select Quick Wins & Strategic Initiatives",
+        "actions": [
+          "Chọn các gap có Impact MEDIUM/HIGH, Effort LOW/MEDIUM, Dependency không phải BLOCKER → đưa vào quick_wins.",
+          "Nhóm các gap lớn, cross-functional (thường Effort HIGH) thành strategic_initiatives ở horizon 6–24 tháng."
+        ],
+        "llm_notes": [
+          "Quick wins giúp team thấy kết quả sớm; nên ghi rõ 'vì sao là quick win'.",
+          "Strategic initiatives nên ít nhưng đủ 'to', tránh danh sách quá dài."
+        ]
+      },
+      {
+        "step": 7,
+        "name": "Articulate Risk If Not Addressed",
+        "actions": [
+          "Dựa trên các gap critical, liệt kê 3–7 rủi ro lớn nếu không xử lý.",
+          "Map từng rủi ro với nhóm: Financial, Governance, Market/Brand, Tech/Agentic.",
+          "Nhấn mạnh rủi ro liên quan đến IPO (nếu doanh nghiệp nhắm tới IPO)."
+        ],
+        "llm_notes": [
+          "Mục này không để dọa, mà để giúp ưu tiên; dùng ngôn ngữ trung lập, rõ ràng.",
+          "Không cần ước lượng định lượng chi tiết nếu tài liệu không có; có thể mô tả định tính."
+        ]
+      }
+    ]
+  },
+  "rag_usage_guidelines": {
+    "retrieval_granularity": [
+      "Khi câu hỏi về 'gap là gì, phân loại thế nào' → dùng core_concepts.gap_types.",
+      "Khi câu hỏi về 'cách ưu tiên gap' → dùng core_concepts.priority_model.",
+      "Khi câu hỏi về 'output Gap Matrix' → dùng main_outputs.gap_matrix.",
+      "Khi câu hỏi về 'lộ trình 6–12–24 tháng' → dùng main_outputs.roadmap và core_concepts.time_horizons.",
+      "Khi câu hỏi về quick wins hoặc strategic initiatives → dùng main_outputs.quick_wins và main_outputs.strategic_initiatives."
+    ],
+    "example_queries": [
+      {
+        "query": "Hãy làm gap report và roadmap 6–12–24 tháng từ bộ artefact này.",
+        "hint_sections": [
+          "gap_and_roadmap_process.high_level_steps",
+          "main_outputs.gap_matrix",
+          "main_outputs.roadmap",
+          "main_outputs.quick_wins",
+          "main_outputs.strategic_initiatives"
+        ]
+      },
+      {
+        "query": "Gap Matrix cần những cột gì và dùng để làm gì?",
+        "hint_sections": [
+          "main_outputs.gap_matrix.columns",
+          "main_outputs.gap_matrix.column_semantics"
+        ]
+      },
+      {
+        "query": "Làm thế nào chọn quick wins cho 6 tháng tới?",
+        "hint_sections": [
+          "main_outputs.quick_wins.selection_rules",
+          "core_concepts.priority_model"
+        ]
+      },
+      {
+        "query": "Nếu không xử lý gap, rủi ro gì có thể xảy ra?",
+        "hint_sections": [
+          "main_outputs.risk_if_not_addressed"
+        ]
+      }
+    ]
+  }
+}

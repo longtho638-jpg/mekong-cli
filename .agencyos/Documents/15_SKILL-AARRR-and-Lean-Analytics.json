@@ -1,0 +1,220 @@
+{
+  "id": "15_SKILL-AARRR-and-Lean-Analytics",
+  "version": "1.0.0",
+  "title": "Skill – AARRR Funnel & Lean Analytics Stages OS",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế hệ thống chỉ số (metrics OS) theo AARRR & Lean Analytics cho Zero → IPO, giúp chọn đúng North Star, chỉ số đầu vào (input metrics) và guardrail theo từng giai đoạn, tránh đo lan man.",
+  "intended_use": {
+    "primary": [
+      "Xác định Lean Analytics stage hiện tại (Empathy → Stickiness → Virality → Revenue → Scale).",
+      "Thiết kế AARRR funnel chuẩn cho mô hình kinh doanh (SaaS, marketplace, ecom, app, fintech, B2B service…).",
+      "Chọn North Star Metric & bộ chỉ số phụ trợ theo từng stage.",
+      "Định nghĩa bộ KPIs theo block Business Plan 2026: Growth, Product, Sales, Marketing, Finance, Operations.",
+      "Xây blueprint dashboard: nhóm metrics, tần suất review, chủ sở hữu (metric owner)."
+    ],
+    "works_best_when": [
+      "Đã có mô tả basic về model & target khách (06, 05).",
+      "Đã phác thảo GTM & sales (13, 14)."
+    ],
+    "not_for": [
+      "Lập báo cáo tài chính chi tiết GAAP/IFRS – cần skill tài chính chuyên sâu.",
+      "Xử lý dữ liệu thật từ BI tool – đây là skill thiết kế khung, không phải ETL."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "13_SKILL-Sales-Process-and-Channels.json",
+      "14_SKILL-GTM-Experiments-and-Bullseye.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả ngắn về sản phẩm/dịch vụ/nền tảng & cách kiếm tiền."
+      },
+      "model_type_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý loại hình: 'b2b_saas', 'b2c_subscription', 'marketplace', 'ecommerce', 'consumer_app', 'fintech', 'education', 'crypto_agentic', v.v."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'idea/zero_to_one', 'seed', 'series_a', 'growth', 'pre_ipo'. Nếu không có, model suy luận & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "current_focus_question": {
+        "type": "string",
+        "required": false,
+        "description": "Câu hỏi hiện tại founder/team đang đau đầu: vd 'làm sao có 100 khách đầu', 'retention thấp', 'CAC cao', 'MRR không tăng', v.v."
+      },
+      "known_metrics_snapshot": {
+        "type": "string",
+        "required": false,
+        "description": "Tóm tắt các chỉ số hiện có (nếu có): DAU/MAU, MRR, churn, CAC, conversion rate, M1/M2 retention… dưới dạng text."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu stage hoặc model_type_hint, model sẽ suy luận dựa vào idea_or_offer (gắn [GIẢ ĐỊNH]).",
+      "Nếu không có known_metrics_snapshot, coi như đang thiết kế hệ metrics từ số 0."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "stage_and_focus_diagnosis": {
+        "description": "Chẩn đoán Lean Analytics stage & câu hỏi trọng tâm.",
+        "fields": [
+          "lean_stage",
+          "stage_reasoning",
+          "core_focus_question",
+          "recommended_core_metric_focus"
+        ]
+      },
+      "aarrR_funnel_definition": {
+        "description": "Định nghĩa AARRR funnel cho business.",
+        "fields": [
+          "funnel_variant",
+          "stage_definitions",
+          "example_events_or_signals"
+        ]
+      },
+      "metrics_framework": {
+        "description": "Khung metrics OS tổng thể.",
+        "fields": [
+          "north_star_metric_candidates",
+          "selected_north_star_metric",
+          "input_metrics_by_stage",
+          "guardrail_metrics",
+          "financial_kpis_summary"
+        ]
+      },
+      "business_block_kpis": {
+        "description": "Mapping metrics theo block trong Business Plan 2026.",
+        "fields": [
+          "growth_kpis",
+          "product_kpis",
+          "marketing_kpis",
+          "sales_kpis",
+          "finance_kpis",
+          "operations_kpis"
+        ]
+      },
+      "dashboard_blueprint_and_rituals": {
+        "description": "Blueprint dashboard & nhịp review.",
+        "fields": [
+          "dashboard_sections",
+          "update_frequency",
+          "metric_owners",
+          "review_rituals"
+        ]
+      },
+      "agentic_instrumentation_ideas": {
+        "description": "Gợi ý cài Agentic để track & ra quyết định từ metrics.",
+        "fields": [
+          "auto_metrics_collection_candidates",
+          "alerting_and_anomaly_ideas",
+          "agentic_decision_helpers"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_infer_stage_and_model_type",
+      "label": "Suy luận giai đoạn & loại hình business",
+      "goal": "Đặt business vào đúng ngăn trước khi chọn metrics.",
+      "actions": [
+        "Đọc idea_or_offer & model_type_hint (nếu có).",
+        "Suy luận model_type nếu thiếu & đánh dấu [GIẢ ĐỊNH].",
+        "Xem stage (nếu thiếu thì suy luận từ ngữ như 'first 100 customers', 'IPO', v.v. và đánh dấu [GIẢ ĐỊNH]).",
+        "Mapping sang Lean Analytics stage (Empathy/Stickiness/Virality/Revenue/Scale) & giải thích stage_reasoning.",
+        "Kết hợp current_focus_question (nếu có) để chốt core_focus_question."
+      ]
+    },
+    {
+      "step_id": "02_define_aarrR_funnel",
+      "label": "Thiết kế AARRR funnel",
+      "goal": "Có một funnel rõ ràng bám theo hành vi khách, không phải funnel generic.",
+      "actions": [
+        "Chọn funnel_variant phù hợp: chuẩn AARRR hoặc biến thể (ví dụ AAR(R)R cho B2B high-touch).",
+        "Định nghĩa stage_definitions chi tiết cho Acquisition/Activation/Retention/Revenue/Referral theo case.",
+        "Đề xuất example_events_or_signals cho từng stage (tập trung vào events có thể track được)."
+      ]
+    },
+    {
+      "step_id": "03_select_north_star_and_supporting_metrics",
+      "label": "Chọn North Star & bộ metrics hỗ trợ",
+      "goal": "Tránh đo quá nhiều nhưng vẫn không bỏ sót thứ quan trọng.",
+      "actions": [
+        "Đề xuất 2–4 north_star_metric_candidates dựa trên model_type & lean_stage.",
+        "Chọn selected_north_star_metric (nếu thiếu dữ liệu, cho 1–2 lựa chọn & giải thích trade-off).",
+        "Thiết kế input_metrics_by_stage cho từng AARRR stage (2–4 metrics/stage là tối đa).",
+        "Liệt kê guardrail_metrics để tránh tối ưu 1 metric làm hỏng metric khác (vd doanh thu tăng nhưng churn & refund tăng mạnh).",
+        "Tóm tắt financial_kpis_summary ở level khung, không bịa số cụ thể."
+      ]
+    },
+    {
+      "step_id": "04_map_metrics_to_business_blocks",
+      "label": "Mapping metrics sang từng block Business Plan",
+      "goal": "Đảm bảo mỗi phần của Business Plan có vài KPIs rõ ràng.",
+      "actions": [
+        "Từ metrics_framework, gán metrics vào growth_kpis/product_kpis/marketing_kpis/sales_kpis/finance_kpis/operations_kpis.",
+        "Ưu tiên đơn giản: mỗi block 3–7 metrics cốt lõi, không hơn.",
+        "Đánh dấu [TODO] cho metrics cần data cụ thể hoặc cần quyết định từ founder."
+      ]
+    },
+    {
+      "step_id": "05_define_dashboard_and_rituals",
+      "label": "Thiết kế dashboard & nhịp review",
+      "goal": "Metrics không chỉ để ngắm mà để ra quyết định định kỳ.",
+      "actions": [
+        "Đề xuất dashboard_sections: ví dụ 'Executive Overview', 'Acquisition', 'Product/Engagement', 'Revenue & Margin', 'Ops & Risk'.",
+        "Gán update_frequency cho mỗi section (daily/weekly/monthly/quarterly).",
+        "Đề xuất metric_owners (role-level: CEO, Head of Growth, CPO, CFO, Ops lead…).",
+        "Thiết kế review_rituals: ví dụ 'Weekly Growth Standup', 'Monthly Board-style Review', 'Quarterly Strategy Reset'."
+      ]
+    },
+    {
+      "step_id": "06_propose_agentic_instrumentation",
+      "label": "Gợi ý Agentic layer cho metrics OS",
+      "goal": "Cài một lớp 'metrics co-pilot' để theo dõi & gợi ý hành động.",
+      "actions": [
+        "Liệt kê auto_metrics_collection_candidates: log event tự động, ETL tối thiểu từ sản phẩm/CRM/ad platforms.",
+        "Đề xuất alerting_and_anomaly_ideas: alerts khi CAC vọt, retention rơi, conversion tụt, NPS giảm…",
+        "Mô tả agentic_decision_helpers: agent gợi ý test mới, re-allocate budget, cảnh báo khi gần vi phạm guardrail (như burn rate, churn)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi đến phần 'Metrics that Matter (KPIs)', 'Lean Analytics Stages', 'AARRR (Pirate Metrics)' trong Business Plan.",
+      "Khi user hỏi: 'Nên đo gì?', 'North Star của mô hình này là gì?', 'Làm sao xây dashboard chuẩn?'"
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả stage_and_focus_diagnosis + aarrR_funnel_definition để user thấy mình đang ở stage nào & funnel ra sao.",
+      "Bước 2: Khi user OK, trả metrics_framework + business_block_kpis.",
+      "Bước 3: Cuối cùng trả dashboard_blueprint_and_rituals + agentic_instrumentation_ideas để chuẩn bị triển khai thực tế."
+    ]
+  },
+  "constraints": {
+    "no_fake_numbers": "Không bịa số liệu (MRR, growth rate, churn…) nếu user không cung cấp; chỉ nói ở mức khung & đánh dấu [GIẢ ĐỊNH] khi cần ví dụ.",
+    "keep_it_minimal": "Ưu tiên ít metrics nhưng chất lượng, đủ để hành động, không nhồi danh sách vô tận.",
+    "regional_context": "Với VN/SEA, có thể nhắc thêm metrics phù hợp (COD rate, cancellation rate, GMV vs thực thu, kênh local như Zalo/TikTok).",
+    "language": "Tiếng Việt là chính, có thể dùng thuật ngữ analytics/AARRR tiếng Anh khi cần."
+  }
+}
