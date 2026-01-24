@@ -119,8 +119,8 @@ class JSONStore:
             return obj.isoformat()
         if isinstance(obj, Enum):
             return obj.value
-        if is_dataclass(obj):
-            return asdict(obj)
+        if is_dataclass(obj) and not isinstance(obj, type):
+            return asdict(obj)  # type: ignore[call-overload]
         if hasattr(obj, "to_dict"):
             return obj.to_dict()
         if hasattr(obj, "__dict__"):

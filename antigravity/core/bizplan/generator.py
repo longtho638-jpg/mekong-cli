@@ -192,6 +192,9 @@ class BizPlanGenerator:
 
     def _generate_header(self, business_idea: str) -> str:
         """Generate the markdown header."""
+        if self.master_framework is None:
+            raise RuntimeError("MASTER framework not loaded")
+
         return f"""# {self.master_framework.title}
 
 **Version:** {self.master_framework.version}
@@ -223,6 +226,9 @@ class BizPlanGenerator:
 
     def _format_layers(self) -> str:
         """Format the tri-layer structure."""
+        if self.master_framework is None:
+            raise RuntimeError("MASTER framework not loaded")
+
         layers = self.master_framework.core_principles.get("tri_layer", {}).get("layers", [])
         output = []
         for layer in layers:
@@ -231,6 +237,9 @@ class BizPlanGenerator:
 
     def _format_stages(self) -> str:
         """Format the stage model."""
+        if self.master_framework is None:
+            raise RuntimeError("MASTER framework not loaded")
+
         stages = self.master_framework.core_principles.get("stage_model", {}).get("stages", [])
         output = []
         for stage in stages:
@@ -278,6 +287,9 @@ class BizPlanGenerator:
 
     def _generate_glossary(self) -> str:
         """Generate the glossary section."""
+        if self.master_framework is None:
+            raise RuntimeError("MASTER framework not loaded")
+
         output = ["## Glossary", ""]
 
         for term in self.master_framework.glossary:

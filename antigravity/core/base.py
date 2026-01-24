@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional, Type, TypeVar, Union
+from typing import Any, cast, Dict, Optional, Type, TypeVar, Union
 
 from .mixins import StatsMixin
 
@@ -49,7 +49,7 @@ class BaseModel:
         """Deep serialization of the model into a dictionary."""
         data = asdict(self)
         # Type conversion for JSON compatibility
-        return self._serialize_nested(data)
+        return cast(Dict[str, object], self._serialize_nested(data))
 
     def _serialize_nested(self, obj: object) -> object:
         """Helper to handle nested objects and datetimes during serialization."""
@@ -89,7 +89,7 @@ class BaseModel:
         valid_fields = {f.name for f in field_names(cls)}
         filtered_data = {k: v for k, v in data_copy.items() if k in valid_fields}
 
-        return cls(**filtered_data)
+        return cls(**filtered_data)  # type: ignore[arg-type]
 
     def mark_updated(self) -> None:
         """Updates the internal modification timestamp."""

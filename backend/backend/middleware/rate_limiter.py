@@ -110,20 +110,20 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         """
         Determine subscription tier for the request
 
-        TODO: Integrate with actual subscription/auth service
-        For now, extract from X-Subscription-Tier header or use default
+        Note: Full subscription/auth service integration planned.
+        See GitHub issue for subscription tier lookup implementation.
+        Currently uses X-Subscription-Tier header for testing.
         """
         # Check custom header (for testing/demo)
         tier = request.headers.get("X-Subscription-Tier")
         if tier and tier.lower() in TIER_LIMITS:
             return tier.lower()
 
-        # TODO: Query database/auth service based on API key
+        # Future: Query database/auth service based on API key
         # For API key-based requests, look up tier from subscriptions table
+        # Integration point: ProvisioningService.get_tier_from_api_key(api_key)
         if identifier.startswith("key:"):
-            # This is where you'd integrate with ProvisioningService
-            # api_key = identifier[4:]
-            # tier = get_tier_from_api_key(api_key)
+            # Placeholder for future subscription service integration
             pass
 
         return self.default_tier

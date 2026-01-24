@@ -7,7 +7,7 @@ Provides a common interface for engines that need to persist state to disk.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Generic, TypeVar
+from typing import Any, cast, Dict, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -40,10 +40,10 @@ class BasePersistence(Generic[T]):
     def load(self) -> T:
         """Loads data from JSON file, returns empty dict if not found."""
         if not self.filepath.exists():
-            return {}  # type: ignore
+            return cast(T, {})
         try:
             with open(self.filepath, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(T, json.load(f))
         except Exception as e:
             logger.warning(f"Failed to load from {self.filepath}: {e}")
-            return {}  # type: ignore
+            return cast(T, {})

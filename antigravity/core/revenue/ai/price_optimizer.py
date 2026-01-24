@@ -6,7 +6,7 @@ Dynamic pricing optimization.
 """
 
 import logging
-from typing import Dict
+from typing import Dict, Optional
 
 from ..models import PricingRecommendation
 
@@ -20,7 +20,7 @@ class PriceOptimizer:
         self,
         product_id: str,
         current_price: float,
-        demand_data: Dict[str, float] = None,
+        demand_data: Optional[Dict[str, float]] = None,
     ) -> PricingRecommendation:
         """Optimize pricing using demand data."""
         demand_data = demand_data or {}

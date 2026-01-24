@@ -36,13 +36,14 @@ def calculate_viral_multiplier(features: Dict[str, Any]) -> float:
     elif 6 <= current_hour <= 9:  # Morning viral hours
         time_multiplier = 1.2
 
-    return (
+    result: float = (
         base_viral
         * social_share_factor
         * referral_potential
         * content_virality
         * time_multiplier
     )
+    return result
 
 
 def calculate_performance_score(game_changing_metrics: dict) -> float:
@@ -63,7 +64,8 @@ def calculate_performance_score(game_changing_metrics: dict) -> float:
 
     confidence_bonus = min(game_changing_metrics["confidence_improvements"] * 100, 50)
 
-    return (
+    result: float = (
         min(base_score + viral_score + quantum_score + ai_score + confidence_bonus, 1000.0)
         / 10.0
     )
+    return result

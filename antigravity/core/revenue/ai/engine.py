@@ -106,7 +106,7 @@ class RevenueAI:
         self,
         product_id: str,
         current_price: float,
-        demand_data: Dict[str, float] = None,
+        demand_data: Optional[Dict[str, float]] = None,
     ) -> PricingRecommendation:
         """Optimize pricing using demand data."""
         return self._price_optimizer.optimize(product_id, current_price, demand_data)

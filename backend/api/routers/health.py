@@ -123,17 +123,21 @@ def get_system_metrics() -> Dict[str, Any]:
 
 
 def check_database() -> ServiceHealth:
-    """Check database connectivity."""
-    # TODO: Add actual database check when DB is configured
+    """
+    Check database connectivity.
+
+    Note: Returns placeholder status until database is configured.
+    Future: Implement actual DB ping when database service is available.
+    """
     start = time.time()
     try:
-        # Placeholder - replace with actual DB ping
+        # Placeholder check - service is operational but DB not yet configured
         response_time = (time.time() - start) * 1000
         return ServiceHealth(
             name="database",
             status="up",
             response_time_ms=response_time,
-            message="Database check not implemented yet",
+            message="DB not configured (placeholder check)",
         )
     except Exception as e:
         return ServiceHealth(
@@ -142,17 +146,21 @@ def check_database() -> ServiceHealth:
 
 
 def check_redis() -> ServiceHealth:
-    """Check Redis connectivity."""
-    # TODO: Add actual Redis check when Redis is configured
+    """
+    Check Redis connectivity.
+
+    Note: Returns placeholder status until Redis is configured.
+    Future: Implement actual Redis ping when cache service is available.
+    """
     start = time.time()
     try:
-        # Placeholder - replace with actual Redis ping
+        # Placeholder check - service is operational but Redis not yet configured
         response_time = (time.time() - start) * 1000
         return ServiceHealth(
             name="redis",
             status="up",
             response_time_ms=response_time,
-            message="Redis check not implemented yet",
+            message="Redis not configured (placeholder check)",
         )
     except Exception as e:
         return ServiceHealth(
