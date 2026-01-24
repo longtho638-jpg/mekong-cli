@@ -70,5 +70,29 @@
     "notes": "",
     "monthly_retainer": 2000.0,
     "total_spent": 0.0
+  },
+  "CLI-4B418696": {
+    "id": "CLI-4B418696",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "company": "Test Corp",
+    "status": "active",
+    "created_at": "2026-01-25T06:17:03.193011",
+    "portal_code": "C07FCCC59600",
+    "notes": "",
+    "monthly_retainer": 2000.0,
+    "total_spent": 0.0
+  },
+  "CLI-0AF11847": {
+    "id": "CLI-0AF11847",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "company": "Test Corp",
+    "status": "active",
+    "created_at": "2026-01-25T06:19:55.763058",
+    "portal_code": "AA7C01ECC7ED",
+    "notes": "",
+    "monthly_retainer": 2000.0,
+    "total_spent": 0.0
   }
 }

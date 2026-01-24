@@ -277,7 +277,8 @@ class TwoFactorService:
         for _ in range(count):
             # Generate 8-character alphanumeric code
             # Format: XXXX-XXXX (easier to read and type)
-            code = secrets.token_urlsafe(6)[:8].upper()
+            # Use token_hex for purely alphanumeric output (0-9, A-F)
+            code = secrets.token_hex(4).upper()  # 4 bytes = 8 hex chars
             formatted_code = f"{code[:4]}-{code[4:]}"
             codes.append(formatted_code)
 

@@ -94,5 +94,37 @@
       }
     ],
     "notes": ""
+  },
+  "INV-202601-33D6": {
+    "id": "INV-202601-33D6",
+    "client_id": "CLI-4B418696",
+    "project_id": null,
+    "amount": 2500.0,
+    "status": "draft",
+    "due_date": "2026-02-24T06:17:03.194437",
+    "paid_date": null,
+    "items": [
+      {
+        "name": "Phase 1",
+        "amount": 2500.0
+      }
+    ],
+    "notes": ""
+  },
+  "INV-202601-5B8A": {
+    "id": "INV-202601-5B8A",
+    "client_id": "CLI-0AF11847",
+    "project_id": null,
+    "amount": 2500.0,
+    "status": "draft",
+    "due_date": "2026-02-24T06:19:55.764651",
+    "paid_date": null,
+    "items": [
+      {
+        "name": "Phase 1",
+        "amount": 2500.0
+      }
+    ],
+    "notes": ""
   }
 }
