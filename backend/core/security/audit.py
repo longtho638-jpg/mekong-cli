@@ -13,7 +13,7 @@ import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from backend.database.supabase import get_db
+from core.infrastructure.database import get_db
 from fastapi import Request
 from typing_extensions import TypedDict
 
