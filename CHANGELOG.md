@@ -1,3 +1,10 @@
+## [2.6.0-beta.8](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.7...v2.6.0-beta.8) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **deletions:** add removed agents (copywriter, database-admin, scout, scout-external) ([e0a3e9b](https://github.com/claudekit/claudekit-engineer/commit/e0a3e9bcf49a7b0b9751d291a6ae5ccbf0cf7585))
+
 ## [2.6.0-beta.7](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.6...v2.6.0-beta.7) (2026-01-24)
 
 
