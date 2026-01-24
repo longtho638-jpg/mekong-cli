@@ -1,3 +1,10 @@
+## [2.6.0-beta.3](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.2...v2.6.0-beta.3) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **metadata:** restore deletions array lost during rebase conflict ([1a25b83](https://github.com/claudekit/claudekit-engineer/commit/1a25b83d0688123f1701ff1c08ad602730218a96))
+
 ## [2.6.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.1...v2.6.0-beta.2) (2026-01-24)
 
 
