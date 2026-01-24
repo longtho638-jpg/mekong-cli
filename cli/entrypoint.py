@@ -6,8 +6,10 @@ Optimized for startup performance with lazy loading.
 """
 
 import sys
+
 import typer
 from rich.console import Console
+
 from core.constants import APP_NAME
 
 # Initialize Console

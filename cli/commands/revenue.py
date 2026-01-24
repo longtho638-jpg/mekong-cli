@@ -6,11 +6,11 @@ CLI commands for managing agency revenue, invoices, and financial forecasting.
 Powered by antigravity.core.revenue.RevenueEngine.
 """
 
+from antigravity.core.revenue.engine import RevenueEngine
+
 import typer
 from rich.console import Console
 from rich.table import Table
-
-from antigravity.core.revenue.engine import RevenueEngine
 
 console = Console()
 revenue_app = typer.Typer(help="💰 Manage Revenue & Financials")

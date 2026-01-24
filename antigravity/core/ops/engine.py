@@ -4,7 +4,6 @@ Ops Engine
 Operations and System Management logic.
 """
 import logging
-
 from antigravity.core.quota_service import quota_service
 
 logger = logging.getLogger(__name__)

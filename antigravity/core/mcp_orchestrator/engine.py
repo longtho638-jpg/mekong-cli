@@ -6,9 +6,8 @@ Central management logic for MCP processes, TTL monitoring, and tool routing.
 import asyncio
 import logging
 import time
-from typing import Any, Dict, List, Optional
-
 from antigravity.core.registry.mcp_catalog import mcp_catalog
+from typing import Any, Dict, List, Optional
 
 from .process import BaseMCPProcess, SSEMCPProcess, StdioMCPProcess
 from .types import MCPCallResult, MCPToolDefinition

@@ -6,10 +6,10 @@ CLI commands for planning and orchestrating AI agents.
 Powered by antigravity.core.vibe_orchestrator.VIBEOrchestrator.
 """
 
+from antigravity.core.vibe_orchestrator import VIBEOrchestrator
+
 import typer
 from rich.console import Console
-
-from antigravity.core.vibe_orchestrator import VIBEOrchestrator
 
 console = Console()
 plan_app = typer.Typer(help="📜 Planning & Orchestration")
