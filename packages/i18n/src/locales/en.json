@@ -114,82 +114,126 @@
         "chinese": "始計",
         "name": "Planning",
         "purpose": "Strategy formulation",
-        "commands": ["/plan", "/binh-phap", "/okr"]
+        "commands": [
+          "/plan",
+          "/binh-phap",
+          "/okr"
+        ]
       },
       "2": {
         "chinese": "作戰",
         "name": "Operations",
         "purpose": "Execute operations",
-        "commands": ["/ops", "/billing", "/reporting"]
+        "commands": [
+          "/ops",
+          "/billing",
+          "/reporting"
+        ]
       },
       "3": {
         "chinese": "謀攻",
         "name": "Strategic Attack",
         "purpose": "Light growth",
-        "commands": ["/affiliate", "/growth"]
+        "commands": [
+          "/affiliate",
+          "/growth"
+        ]
       },
       "4": {
         "chinese": "形勢",
         "name": "Position",
         "purpose": "Defend advantage",
-        "commands": ["/moat", "/audit"]
+        "commands": [
+          "/moat",
+          "/audit"
+        ]
       },
       "5": {
         "chinese": "勢",
         "name": "Momentum",
         "purpose": "Catch trends",
-        "commands": ["/trend", "/scout-keo"]
+        "commands": [
+          "/trend",
+          "/scout-keo"
+        ]
       },
       "6": {
         "chinese": "虛實",
         "name": "Strength & Weakness",
         "purpose": "Protect equity",
-        "commands": ["/equity", "/cap-table"]
+        "commands": [
+          "/equity",
+          "/cap-table"
+        ]
       },
       "7": {
         "chinese": "軍爭",
         "name": "Military Maneuvers",
         "purpose": "Ship fast",
-        "commands": ["/sprint", "/ship", "/code"],
+        "commands": [
+          "/sprint",
+          "/ship",
+          "/code"
+        ],
         "highlight": true
       },
       "8": {
         "chinese": "九變",
         "name": "Nine Variations",
         "purpose": "Pivot",
-        "commands": ["/pivot", "/experiment"]
+        "commands": [
+          "/pivot",
+          "/experiment"
+        ]
       },
       "9": {
         "chinese": "行軍",
         "name": "March",
         "purpose": "Execute",
-        "commands": ["/kpi", "/standup"]
+        "commands": [
+          "/kpi",
+          "/standup"
+        ]
       },
       "10": {
         "chinese": "地形",
         "name": "Terrain",
         "purpose": "Expand market",
-        "commands": ["/market", "/launch", "/sales"]
+        "commands": [
+          "/market",
+          "/launch",
+          "/sales"
+        ]
       },
       "11": {
         "chinese": "九地",
         "name": "Nine Grounds",
         "purpose": "Crisis management",
-        "commands": ["/crisis", "/survival"],
+        "commands": [
+          "/crisis",
+          "/survival"
+        ],
         "style": "danger"
       },
       "12": {
         "chinese": "火攻",
         "name": "Fire Attack",
         "purpose": "Viral marketing",
-        "commands": ["/viral", "/video", "/marketing"],
+        "commands": [
+          "/viral",
+          "/video",
+          "/marketing"
+        ],
         "style": "fire"
       },
       "13": {
         "chinese": "用間",
         "name": "Intelligence",
         "purpose": "Gather intel",
-        "commands": ["/intel", "/fundraise"],
+        "commands": [
+          "/intel",
+          "/fundraise"
+        ],
         "style": "intel"
       }
     },
@@ -205,6 +249,80 @@
     }
   },
   "landing": {
+    "testimonials": {
+      "title": "💬 Loved by Agency Owners",
+      "subtitle": "See what 500+ agencies say about AgencyOS",
+      "items": {
+        "michael": {
+          "name": "Michael Chen",
+          "role": "Growth Matrix Agency",
+          "quote": "AgencyOS replaced 3 employees for me. ROI was insane within the first week."
+        },
+        "sarah": {
+          "name": "Sarah Williams",
+          "role": "Digital First Co",
+          "quote": "125 commands means I never run out of ways to automate. Best investment this year."
+        },
+        "james": {
+          "name": "James Rodriguez",
+          "role": "JR Creative Studio",
+          "quote": "/proposal command alone saved me 10+ hours per week on client work."
+        },
+        "lisa": {
+          "name": "Lisa Nguyen",
+          "role": "Scale Partners",
+          "quote": "The Binh Pháp strategy framework is pure gold. Win-without-fighting approach works."
+        },
+        "david": {
+          "name": "David Park",
+          "role": "Momentum Labs",
+          "quote": "From solo founder to 6-figure agency in 6 months. AgencyOS is my secret weapon."
+        },
+        "anna": {
+          "name": "Anna Thompson",
+          "role": "Agency Empire",
+          "quote": "The franchise model is brilliant. Now earning passive income from my agency network."
+        }
+      }
+    },
+    "testimonials_grid": {
+      "title": "What Agencies Say",
+      "subtitle": "Real results from real solo agencies",
+      "video_title": "Video Testimonials Coming Soon",
+      "video_subtitle": "Real agency owners sharing their AgencyOS journey",
+      "items": {
+        "sarah": {
+          "name": "Sarah K.",
+          "role": "Marketing Agency",
+          "quote": "I replaced my entire team with AgencyOS. Not joking. My profit tripled in 3 months."
+        },
+        "mike": {
+          "name": "Mike T.",
+          "role": "Freelancer → Agency",
+          "quote": "From $3K to $15K/month in 90 days. AgencyOS is the unfair advantage I needed."
+        },
+        "david": {
+          "name": "David L.",
+          "role": "Content Creator",
+          "quote": "The affiliate feature alone pays for itself. 10x ROI in month one."
+        },
+        "lisa": {
+          "name": "Lisa N.",
+          "role": "Design Agency",
+          "quote": "Saved 20+ hours per week. Now I focus on clients, not admin work."
+        },
+        "trung": {
+          "name": "Trung V.",
+          "role": "Startup Consultant",
+          "quote": "Binh Pháp strategy changed how I think about competition. Pure genius."
+        },
+        "alex": {
+          "name": "Alex P.",
+          "role": "Agency Network",
+          "quote": "Best $99 I ever spent. Franchise model is printing money for me."
+        }
+      }
+    },
     "agencyos": {
       "title": "AgencyOS - The AI Operating System for Modern Agencies",
       "description": "125+ AI commands for marketing, sales, affiliate, and finance. The one-person agency operating system.",
@@ -226,37 +344,37 @@
           ]
         },
         "roadmap": {
-        "title": "The $1M Agency Roadmap",
-        "subtitle": "Based on Sun Tzu's Art of War. 13 strategic chapters to scale your agency.",
-        "steps": {
-          "planning": {
-            "title": "Planning",
-            "desc": "Strategic Planning"
+          "title": "The $1M Agency Roadmap",
+          "subtitle": "Based on Sun Tzu's Art of War. 13 strategic chapters to scale your agency.",
+          "steps": {
+            "planning": {
+              "title": "Planning",
+              "desc": "Strategic Planning"
+            },
+            "attack": {
+              "title": "Strategic Attack",
+              "desc": "Win Without Fighting"
+            },
+            "maneuvers": {
+              "title": "Military Maneuvers",
+              "desc": "Speed Sprint"
+            },
+            "final": {
+              "title": "$1M ARR",
+              "desc": "60 clients"
+            }
           },
-          "attack": {
-            "title": "Strategic Attack",
-            "desc": "Win Without Fighting"
+          "revenue": {
+            "bootstrap": "Bootstrap Path (70%)",
+            "bootstrap_calc": "42 clients × $1.5K/mo = $756K",
+            "vc": "VC-Ready Path (30%)",
+            "vc_calc": "18 clients + equity = $244K",
+            "total": "Total Potential",
+            "total_calc": "$1M ARR 🎯"
           },
-          "maneuvers": {
-            "title": "Military Maneuvers",
-            "desc": "Speed Sprint"
-          },
-          "final": {
-            "title": "$1M ARR",
-            "desc": "60 clients"
-          }
+          "cta": "Explore 13 Chapters →"
         },
-        "revenue": {
-          "bootstrap": "Bootstrap Path (70%)",
-          "bootstrap_calc": "42 clients × $1.5K/mo = $756K",
-          "vc": "VC-Ready Path (30%)",
-          "vc_calc": "18 clients + equity = $244K",
-          "total": "Total Potential",
-          "total_calc": "$1M ARR 🎯"
-        },
-        "cta": "Explore 13 Chapters →"
-      },
-      "solution": {
+        "solution": {
           "title": "What if AI could run your agency?",
           "points": [
             "125+ AI commands handle everything",
@@ -442,81 +560,81 @@
         }
       },
       "marketplace_page": {
-    "title": "Marketplace - AgencyOS",
-    "description": "Skills, templates, agents, and workflows for your agency.",
-    "hero": {
-      "title": "🏪 Marketplace",
-      "subtitle": "Skills, templates, agents, and workflows to supercharge your agency"
-    },
-    "stats": {
-      "products": "Products",
-      "downloads": "Downloads",
-      "creators": "Creators"
-    },
-    "filters": {
-      "all": "All",
-      "skill": "⚡ Skills",
-      "template": "📋 Templates",
-      "agent": "🤖 Agents",
-      "workflow": "🔄 Workflows",
-      "sort": {
-        "popular": "Most Popular",
-        "newest": "Newest",
-        "rating": "Highest Rated",
-        "price_low": "Price: Low to High",
-        "price_high": "Price: High to Low"
-      }
-    },
-    "product": {
-      "badges": {
-        "skill": "SKILL",
-        "template": "TEMPLATE",
-        "agent": "AGENT",
-        "workflow": "WORKFLOW",
-        "free": "FREE"
+        "title": "Marketplace - AgencyOS",
+        "description": "Skills, templates, agents, and workflows for your agency.",
+        "hero": {
+          "title": "🏪 Marketplace",
+          "subtitle": "Skills, templates, agents, and workflows to supercharge your agency"
+        },
+        "stats": {
+          "products": "Products",
+          "downloads": "Downloads",
+          "creators": "Creators"
+        },
+        "filters": {
+          "all": "All",
+          "skill": "⚡ Skills",
+          "template": "📋 Templates",
+          "agent": "🤖 Agents",
+          "workflow": "🔄 Workflows",
+          "sort": {
+            "popular": "Most Popular",
+            "newest": "Newest",
+            "rating": "Highest Rated",
+            "price_low": "Price: Low to High",
+            "price_high": "Price: High to Low"
+          }
+        },
+        "product": {
+          "badges": {
+            "skill": "SKILL",
+            "template": "TEMPLATE",
+            "agent": "AGENT",
+            "workflow": "WORKFLOW",
+            "free": "FREE"
+          },
+          "downloads": "downloads",
+          "add_to_cart": "Add to Cart",
+          "get_free": "Get Free",
+          "free": "FREE"
+        },
+        "products": {
+          "seo_audit": {
+            "title": "SEO Audit Skill",
+            "desc": "Complete SEO audit automation for any website"
+          },
+          "invoice": {
+            "title": "Invoice Generator",
+            "desc": "Generate professional invoices in seconds"
+          },
+          "proposal": {
+            "title": "Proposal Template Pack",
+            "desc": "10 professional proposal templates"
+          },
+          "social_agent": {
+            "title": "Social Media Manager",
+            "desc": "AI agent for social media management"
+          },
+          "onboarding": {
+            "title": "Client Onboarding Flow",
+            "desc": "Complete client onboarding automation"
+          },
+          "content_calendar": {
+            "title": "Content Calendar",
+            "desc": "AI-powered content calendar generation"
+          }
+        },
+        "creator_cta": {
+          "title": "🎨 Become a Creator",
+          "desc": "Build and sell skills, templates, and agents. Earn 70% of every sale.",
+          "button": "Submit Your Product →"
+        },
+        "alerts": {
+          "added_free": "✅ \"{name}\" added to your library!\n\nYou can access it from your dashboard.",
+          "added_cart": "🛒 \"{name}\" added to cart!\n\nPrice: {price}\n\nCheckout coming soon."
+        }
       },
-      "downloads": "downloads",
-      "add_to_cart": "Add to Cart",
-      "get_free": "Get Free",
-      "free": "FREE"
-    },
-    "products": {
-      "seo_audit": {
-        "title": "SEO Audit Skill",
-        "desc": "Complete SEO audit automation for any website"
-      },
-      "invoice": {
-        "title": "Invoice Generator",
-        "desc": "Generate professional invoices in seconds"
-      },
-      "proposal": {
-        "title": "Proposal Template Pack",
-        "desc": "10 professional proposal templates"
-      },
-      "social_agent": {
-        "title": "Social Media Manager",
-        "desc": "AI agent for social media management"
-      },
-      "onboarding": {
-        "title": "Client Onboarding Flow",
-        "desc": "Complete client onboarding automation"
-      },
-      "content_calendar": {
-        "title": "Content Calendar",
-        "desc": "AI-powered content calendar generation"
-      }
-    },
-    "creator_cta": {
-      "title": "🎨 Become a Creator",
-      "desc": "Build and sell skills, templates, and agents. Earn 70% of every sale.",
-      "button": "Submit Your Product →"
-    },
-    "alerts": {
-      "added_free": "✅ \"{name}\" added to your library!\n\nYou can access it from your dashboard.",
-      "added_cart": "🛒 \"{name}\" added to cart!\n\nPrice: {price}\n\nCheckout coming soon."
-    }
-  },
-  "newsletter_signup": {
+      "newsletter_signup": {
         "title": "Get Weekly Agency Growth Tips",
         "subtitle": "Join 1,000+ solo agency owners. No spam, unsubscribe anytime.",
         "placeholder": "your@email.com",
@@ -723,11 +841,26 @@
         "date": "December 20, 2024",
         "tag": "Latest",
         "changes": [
-          ["new", "125+ AI commands now available"],
-          ["new", "Affiliate Hub with 50+ programs"],
-          ["new", "Franchise management system"],
-          ["improved", "Faster command execution (2x)"],
-          ["improved", "New dark theme UI"]
+          [
+            "new",
+            "125+ AI commands now available"
+          ],
+          [
+            "new",
+            "Affiliate Hub with 50+ programs"
+          ],
+          [
+            "new",
+            "Franchise management system"
+          ],
+          [
+            "improved",
+            "Faster command execution (2x)"
+          ],
+          [
+            "improved",
+            "New dark theme UI"
+          ]
         ]
       },
       {
@@ -735,10 +868,22 @@
         "date": "November 15, 2024",
         "tag": "",
         "changes": [
-          ["new", "Video script generator"],
-          ["new", "Email sequence builder"],
-          ["improved", "Better error handling"],
-          ["fixed", "API rate limiting issues"]
+          [
+            "new",
+            "Video script generator"
+          ],
+          [
+            "new",
+            "Email sequence builder"
+          ],
+          [
+            "improved",
+            "Better error handling"
+          ],
+          [
+            "fixed",
+            "API rate limiting issues"
+          ]
         ]
       },
       {
@@ -746,10 +891,22 @@
         "date": "October 1, 2024",
         "tag": "",
         "changes": [
-          ["new", "Initial release"],
-          ["new", "20 core commands"],
-          ["new", "Marketing automation"],
-          ["new", "Sales pipeline tools"]
+          [
+            "new",
+            "Initial release"
+          ],
+          [
+            "new",
+            "20 core commands"
+          ],
+          [
+            "new",
+            "Marketing automation"
+          ],
+          [
+            "new",
+            "Sales pipeline tools"
+          ]
         ]
       }
     ],
@@ -777,28 +934,44 @@
         "role": "Marketing Agency",
         "quote": "I replaced my entire team with AgencyOS. Not joking. My profit tripled in 3 months.",
         "timeline": "90 days to 5x revenue",
-        "metrics": ["$3K/mo", "$15K/mo", "5x"]
+        "metrics": [
+          "$3K/mo",
+          "$15K/mo",
+          "5x"
+        ]
       },
       "mike": {
         "name": "Mike T.",
         "role": "Freelancer → Agency",
         "quote": "From freelancer to agency owner. AgencyOS is the unfair advantage I needed.",
         "timeline": "6 months to 6-figure agency",
-        "metrics": ["$2K/mo", "$12K/mo", "6x"]
+        "metrics": [
+          "$2K/mo",
+          "$12K/mo",
+          "6x"
+        ]
       },
       "trung": {
         "name": "Trung V.",
         "role": "Startup Consultant",
         "quote": "Binh Pháp strategy changed how I think about competition. Pure genius.",
         "timeline": "4x deal flow in 60 days",
-        "metrics": ["2", "8", "4x"]
+        "metrics": [
+          "2",
+          "8",
+          "4x"
+        ]
       },
       "alex": {
         "name": "Alex P.",
         "role": "Affiliate Network",
         "quote": "Best $99 I ever spent. Franchise model is printing money for me.",
         "timeline": "Passive income in 30 days",
-        "metrics": ["$0", "$2.5K", "25x"]
+        "metrics": [
+          "$0",
+          "$2.5K",
+          "25x"
+        ]
       }
     },
     "summary": {
@@ -855,20 +1028,62 @@
       "header_command": "Command",
       "header_result": "Result",
       "items": {
-        "affiliate": ["Earn affiliate money", "List of 50+ programs"],
-        "facebook": ["Write Facebook post", "Post ready to publish"],
-        "tiktok": ["Make TikTok video", "Video 9:16 ready"],
-        "customers": ["Find customers", "List qualified leads"],
-        "proposal": ["Write proposal", "Beautiful PDF proposal"],
-        "invoice": ["Issue invoice", "Professional invoice"],
-        "bug": ["Fast bug fix", "Bug fixed in 5 minutes"],
-        "code": ["Code new feature", "Production-ready code"],
-        "brainstorm": ["Brainstorm ideas", "10+ creative ideas"],
-        "competitor": ["Analyze competitor", "Detailed report"],
-        "runway": ["Calculate runway", "X months of cash left"],
-        "strategy": ["Set strategy", "13 clusters aligned"],
-        "ship": ["Ship product", "Deployed + notified"],
-        "review": ["Review codebase", "Quality report"]
+        "affiliate": [
+          "Earn affiliate money",
+          "List of 50+ programs"
+        ],
+        "facebook": [
+          "Write Facebook post",
+          "Post ready to publish"
+        ],
+        "tiktok": [
+          "Make TikTok video",
+          "Video 9:16 ready"
+        ],
+        "customers": [
+          "Find customers",
+          "List qualified leads"
+        ],
+        "proposal": [
+          "Write proposal",
+          "Beautiful PDF proposal"
+        ],
+        "invoice": [
+          "Issue invoice",
+          "Professional invoice"
+        ],
+        "bug": [
+          "Fast bug fix",
+          "Bug fixed in 5 minutes"
+        ],
+        "code": [
+          "Code new feature",
+          "Production-ready code"
+        ],
+        "brainstorm": [
+          "Brainstorm ideas",
+          "10+ creative ideas"
+        ],
+        "competitor": [
+          "Analyze competitor",
+          "Detailed report"
+        ],
+        "runway": [
+          "Calculate runway",
+          "X months of cash left"
+        ],
+        "strategy": [
+          "Set strategy",
+          "13 clusters aligned"
+        ],
+        "ship": [
+          "Ship product",
+          "Deployed + notified"
+        ],
+        "review": [
+          "Review codebase",
+          "Quality report"
+        ]
       }
     },
     "tech_header": "Tech Commands (75)",
@@ -955,20 +1170,98 @@
       "subtitle": "See how we stack up against the alternatives"
     },
     "table": {
-      "headers": ["Feature", "🏯 AgencyOS", "Hiring Team", "Point Tools", "Other AI"],
+      "headers": [
+        "Feature",
+        "🏯 AgencyOS",
+        "Hiring Team",
+        "Point Tools",
+        "Other AI"
+      ],
       "rows": {
-        "cost": ["💰 Cost/Month", "$99", "$15,000+", "$500+", "$200+"],
-        "setup": ["⏱️ Setup Time", "5 minutes", "3+ months", "2+ weeks", "1+ week"],
-        "commands": ["🔧 Commands", "125+", "N/A", "5-10", "20-30"],
-        "marketing": ["📣 Marketing", "✅", "✅", "❌", "⚠️"],
-        "sales": ["💼 Sales", "✅", "✅", "❌", "⚠️"],
-        "finance": ["💵 Finance", "✅", "✅", "❌", "❌"],
-        "code": ["🧑‍💻 Code/Dev", "✅", "✅", "❌", "✅"],
-        "video": ["🎥 Video Creation", "✅", "✅", "❌", "❌"],
-        "strategy": ["🏯 Binh Pháp Strategy", "✅", "❌", "❌", "❌"],
-        "franchise": ["🌐 Franchise Model", "✅", "❌", "❌", "❌"],
-        "availability": ["🔄 24/7 Availability", "✅", "❌", "✅", "✅"],
-        "total": ["🏆 Best Value?", "🥇 YES", "Too expensive", "Too limited", "Missing features"]
+        "cost": [
+          "💰 Cost/Month",
+          "$99",
+          "$15,000+",
+          "$500+",
+          "$200+"
+        ],
+        "setup": [
+          "⏱️ Setup Time",
+          "5 minutes",
+          "3+ months",
+          "2+ weeks",
+          "1+ week"
+        ],
+        "commands": [
+          "🔧 Commands",
+          "125+",
+          "N/A",
+          "5-10",
+          "20-30"
+        ],
+        "marketing": [
+          "📣 Marketing",
+          "✅",
+          "✅",
+          "❌",
+          "⚠️"
+        ],
+        "sales": [
+          "💼 Sales",
+          "✅",
+          "✅",
+          "❌",
+          "⚠️"
+        ],
+        "finance": [
+          "💵 Finance",
+          "✅",
+          "✅",
+          "❌",
+          "❌"
+        ],
+        "code": [
+          "🧑‍💻 Code/Dev",
+          "✅",
+          "✅",
+          "❌",
+          "✅"
+        ],
+        "video": [
+          "🎥 Video Creation",
+          "✅",
+          "✅",
+          "❌",
+          "❌"
+        ],
+        "strategy": [
+          "🏯 Binh Pháp Strategy",
+          "✅",
+          "❌",
+          "❌",
+          "❌"
+        ],
+        "franchise": [
+          "🌐 Franchise Model",
+          "✅",
+          "❌",
+          "❌",
+          "❌"
+        ],
+        "availability": [
+          "🔄 24/7 Availability",
+          "✅",
+          "❌",
+          "✅",
+          "✅"
+        ],
+        "total": [
+          "🏆 Best Value?",
+          "🥇 YES",
+          "Too expensive",
+          "Too limited",
+          "Missing features"
+        ]
       }
     },
     "bottom_line": {
@@ -1160,11 +1453,26 @@
         "income": "Passive Income: $500-2,000/month",
         "steps_label": "Steps:",
         "flow": {
-          "step1": ["Find programs", "/affiliate/scout"],
-          "step2": ["PayPal-friendly", "Select 5 programs"],
-          "step3": ["Write 30 posts", "/marketing/social"],
-          "step4": ["Schedule & post", "Post daily x30"],
-          "result": ["Monthly passive", "💰 $500-2,000"]
+          "step1": [
+            "Find programs",
+            "/affiliate/scout"
+          ],
+          "step2": [
+            "PayPal-friendly",
+            "Select 5 programs"
+          ],
+          "step3": [
+            "Write 30 posts",
+            "/marketing/social"
+          ],
+          "step4": [
+            "Schedule & post",
+            "Post daily x30"
+          ],
+          "result": [
+            "Monthly passive",
+            "💰 $500-2,000"
+          ]
         },
         "steps_list": [
           "/affiliate/scout → Find PayPal-friendly programs",
@@ -1178,11 +1486,26 @@
         "income": "Active Income: AdSense + Sponsors",
         "steps_label": "Steps:",
         "flow": {
-          "step1": ["Build feature", "/code"],
-          "step2": ["Create script", "/video/script"],
-          "step3": ["Render video", "/video"],
-          "step4": ["Upload multi-platform", "YouTube + TikTok"],
-          "result": ["AdSense + Sponsors", "💰 $$$"]
+          "step1": [
+            "Build feature",
+            "/code"
+          ],
+          "step2": [
+            "Create script",
+            "/video/script"
+          ],
+          "step3": [
+            "Render video",
+            "/video"
+          ],
+          "step4": [
+            "Upload multi-platform",
+            "YouTube + TikTok"
+          ],
+          "result": [
+            "AdSense + Sponsors",
+            "💰 $$$"
+          ]
         },
         "steps_list": [
           "/code → Build new feature",
@@ -1196,12 +1519,30 @@
         "income": "High-Ticket: $5,000-50,000/deal",
         "steps_label": "Steps:",
         "flow": {
-          "step1": ["Find leads", "/sales/lead"],
-          "step2": ["Analyze market", "/intel/competitor"],
-          "step3": ["Create proposal", "/sales/proposal"],
-          "step4": ["Close deal", "/sales/close"],
-          "step5": ["Get paid", "/finance/invoice"],
-          "result": ["Per deal", "💰 $5-50K"]
+          "step1": [
+            "Find leads",
+            "/sales/lead"
+          ],
+          "step2": [
+            "Analyze market",
+            "/intel/competitor"
+          ],
+          "step3": [
+            "Create proposal",
+            "/sales/proposal"
+          ],
+          "step4": [
+            "Close deal",
+            "/sales/close"
+          ],
+          "step5": [
+            "Get paid",
+            "/finance/invoice"
+          ],
+          "result": [
+            "Per deal",
+            "💰 $5-50K"
+          ]
         },
         "steps_list": [
           "/sales/lead → Find potential clients",
@@ -1274,72 +1615,180 @@
         "title": "Marketing",
         "count": "15 commands",
         "commands": {
-          "plan": ["/ke-hoach-tiep-thi", "Create marketing plans"],
-          "content": ["/noi-dung-tiep-thi", "Generate content"],
-          "social": ["/y-tuong-social-media", "Social media ideas"],
-          "pr": ["/ke-hoach-pr", "PR campaigns"],
-          "message": ["/thong-diep-tiep-thi", "Marketing messaging"],
-          "competitor": ["/phan-tich-doi-thu", "Competitor analysis"]
+          "plan": [
+            "/ke-hoach-tiep-thi",
+            "Create marketing plans"
+          ],
+          "content": [
+            "/noi-dung-tiep-thi",
+            "Generate content"
+          ],
+          "social": [
+            "/y-tuong-social-media",
+            "Social media ideas"
+          ],
+          "pr": [
+            "/ke-hoach-pr",
+            "PR campaigns"
+          ],
+          "message": [
+            "/thong-diep-tiep-thi",
+            "Marketing messaging"
+          ],
+          "competitor": [
+            "/phan-tich-doi-thu",
+            "Competitor analysis"
+          ]
         }
       },
       "sales": {
         "title": "Sales",
         "count": "12 commands",
         "commands": {
-          "strategy": ["/chien-luoc-ban-hang", "Sales strategies"],
-          "funnel": ["/pheu-ban-hang", "Sales funnels"],
-          "customer": ["/khach-hang", "Customer profiles"],
-          "quote": ["/tao-bao-gia", "Generate quotes"],
-          "lead": ["/theo-doi-lead", "Lead tracking"],
-          "email": ["/email-ban-hang", "Sales emails"]
+          "strategy": [
+            "/chien-luoc-ban-hang",
+            "Sales strategies"
+          ],
+          "funnel": [
+            "/pheu-ban-hang",
+            "Sales funnels"
+          ],
+          "customer": [
+            "/khach-hang",
+            "Customer profiles"
+          ],
+          "quote": [
+            "/tao-bao-gia",
+            "Generate quotes"
+          ],
+          "lead": [
+            "/theo-doi-lead",
+            "Lead tracking"
+          ],
+          "email": [
+            "/email-ban-hang",
+            "Sales emails"
+          ]
         }
       },
       "ops": {
         "title": "Operations",
         "count": "18 commands",
         "commands": {
-          "project": ["/quan-ly-du-an", "Project management"],
-          "workflow": ["/tao-workflow", "Workflow automation"],
-          "report": ["/bao-cao-tien-do", "Progress reports"],
-          "team": ["/quan-ly-doi", "Team management"],
-          "contract": ["/hop-dong", "Contract creation"],
-          "schedule": ["/lich-hen", "Scheduling"]
+          "project": [
+            "/quan-ly-du-an",
+            "Project management"
+          ],
+          "workflow": [
+            "/tao-workflow",
+            "Workflow automation"
+          ],
+          "report": [
+            "/bao-cao-tien-do",
+            "Progress reports"
+          ],
+          "team": [
+            "/quan-ly-doi",
+            "Team management"
+          ],
+          "contract": [
+            "/hop-dong",
+            "Contract creation"
+          ],
+          "schedule": [
+            "/lich-hen",
+            "Scheduling"
+          ]
         }
       },
       "finance": {
         "title": "Finance",
         "count": "10 commands",
         "commands": {
-          "report": ["/bao-cao-tai-chinh", "Financial reports"],
-          "invoice": ["/hoa-don", "Invoice generation"],
-          "expense": ["/theo-doi-chi-phi", "Expense tracking"],
-          "forecast": ["/du-bao-doanh-thu", "Revenue forecasting"],
-          "profit": ["/phan-tich-loi-nhuan", "Profit analysis"],
-          "budget": ["/ngan-sach", "Budgeting"]
+          "report": [
+            "/bao-cao-tai-chinh",
+            "Financial reports"
+          ],
+          "invoice": [
+            "/hoa-don",
+            "Invoice generation"
+          ],
+          "expense": [
+            "/theo-doi-chi-phi",
+            "Expense tracking"
+          ],
+          "forecast": [
+            "/du-bao-doanh-thu",
+            "Revenue forecasting"
+          ],
+          "profit": [
+            "/phan-tich-loi-nhuan",
+            "Profit analysis"
+          ],
+          "budget": [
+            "/ngan-sach",
+            "Budgeting"
+          ]
         }
       },
       "strategy": {
         "title": "Binh Pháp Strategy",
         "count": "13 commands",
         "commands": {
-          "plan": ["/ke-hoach", "Strategic planning"],
-          "attack": ["/muu-cong", "Win-without-fighting"],
-          "position": ["/hinh-the", "Positioning audit"],
-          "pivot": ["/cuu-bien", "Pivot strategy"],
-          "disruption": ["/hoa-cong", "Market disruption"],
-          "intel": ["/dung-gian", "Intelligence gathering"]
+          "plan": [
+            "/ke-hoach",
+            "Strategic planning"
+          ],
+          "attack": [
+            "/muu-cong",
+            "Win-without-fighting"
+          ],
+          "position": [
+            "/hinh-the",
+            "Positioning audit"
+          ],
+          "pivot": [
+            "/cuu-bien",
+            "Pivot strategy"
+          ],
+          "disruption": [
+            "/hoa-cong",
+            "Market disruption"
+          ],
+          "intel": [
+            "/dung-gian",
+            "Intelligence gathering"
+          ]
         }
       },
       "agents": {
         "title": "17 AI Agents",
         "count": "Specialized assistants",
         "commands": {
-          "scout": ["Scout Agent", "Market research"],
-          "editor": ["Editor Agent", "Content creation"],
-          "director": ["Director Agent", "Video production"],
-          "community": ["Community Agent", "Social distribution"],
-          "sales": ["Sales Agent", "Lead conversion"],
-          "finance": ["Finance Agent", "Financial tracking"]
+          "scout": [
+            "Scout Agent",
+            "Market research"
+          ],
+          "editor": [
+            "Editor Agent",
+            "Content creation"
+          ],
+          "director": [
+            "Director Agent",
+            "Video production"
+          ],
+          "community": [
+            "Community Agent",
+            "Social distribution"
+          ],
+          "sales": [
+            "Sales Agent",
+            "Lead conversion"
+          ],
+          "finance": [
+            "Finance Agent",
+            "Financial tracking"
+          ]
         }
       }
     },
@@ -1360,12 +1809,32 @@
     "xp": {
       "title": "⚡ XP System",
       "subtitle": "Earn XP for every action. Level up to unlock premium features.",
-      "headers": ["Action", "XP", "Example"],
+      "headers": [
+        "Action",
+        "XP",
+        "Example"
+      ],
       "items": {
-        "command": ["🔧 Type command", "+50", "Every time you use /command"],
-        "workflow": ["✅ Complete workflow", "+200", "Finish Affiliate Workflow"],
-        "money": ["💰 Earn money", "+500", "First affiliate payout"],
-        "launch": ["🚀 Launch product", "+1000", "Ship new feature"]
+        "command": [
+          "🔧 Type command",
+          "+50",
+          "Every time you use /command"
+        ],
+        "workflow": [
+          "✅ Complete workflow",
+          "+200",
+          "Finish Affiliate Workflow"
+        ],
+        "money": [
+          "💰 Earn money",
+          "+500",
+          "First affiliate payout"
+        ],
+        "launch": [
+          "🚀 Launch product",
+          "+1000",
+          "Ship new feature"
+        ]
       }
     },
     "badges": {

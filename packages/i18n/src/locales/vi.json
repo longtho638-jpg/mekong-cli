@@ -18,11 +18,11 @@
     "changelog": "Lịch Sử",
     "support": "Hỗ Trợ",
     "core-concepts": "Khái Niệm Cơ Bản",
-    "agents": "Agents",
+    "agents": "Trợ lý AI",
     "commands": "Lệnh",
     "skills": "Kỹ Năng",
     "use-cases": "Trường Hợp Sử Dụng",
-    "cheatsheet": "Cheatsheet",
+    "cheatsheet": "Tra cứu nhanh",
     "troubleshooting": "Khắc Phục Sự Cố",
     "cli": "CLI"
   },
@@ -112,8 +112,8 @@
     "chapters": {
       "1": {
         "chinese": "始計",
-        "name": "Kế Hoạch",
-        "purpose": "Lập chiến lược",
+        "name": "Kế hoạch",
+        "purpose": "Xây dựng chiến lược",
         "commands": [
           "/plan",
           "/binh-phap",
@@ -122,8 +122,8 @@
       },
       "2": {
         "chinese": "作戰",
-        "name": "Tác Chiến",
-        "purpose": "Vận hành",
+        "name": "Tác chiến",
+        "purpose": "Thực thi vận hành",
         "commands": [
           "/ops",
           "/billing",
@@ -132,7 +132,7 @@
       },
       "3": {
         "chinese": "謀攻",
-        "name": "Mưu Công",
+        "name": "Mưu công",
         "purpose": "Tăng trưởng nhẹ",
         "commands": [
           "/affiliate",
@@ -141,7 +141,7 @@
       },
       "4": {
         "chinese": "形勢",
-        "name": "Hình Thế",
+        "name": "Hình thế",
         "purpose": "Bảo vệ lợi thế",
         "commands": [
           "/moat",
@@ -150,8 +150,8 @@
       },
       "5": {
         "chinese": "勢",
-        "name": "Thế Trận",
-        "purpose": "Bắt trend",
+        "name": "Thế",
+        "purpose": "Nắm bắt xu hướng",
         "commands": [
           "/trend",
           "/scout-keo"
@@ -159,8 +159,8 @@
       },
       "6": {
         "chinese": "虛實",
-        "name": "Hư Thực",
-        "purpose": "Chống pha loãng",
+        "name": "Hư thực",
+        "purpose": "Bảo vệ vốn chủ sở hữu",
         "commands": [
           "/equity",
           "/cap-table"
@@ -168,7 +168,7 @@
       },
       "7": {
         "chinese": "軍爭",
-        "name": "Quân Tranh",
+        "name": "Quân tranh",
         "purpose": "Ship nhanh",
         "commands": [
           "/sprint",
@@ -179,8 +179,8 @@
       },
       "8": {
         "chinese": "九變",
-        "name": "Cửu Biến",
-        "purpose": "Pivot",
+        "name": "Cửu biến",
+        "purpose": "Xoay trục",
         "commands": [
           "/pivot",
           "/experiment"
@@ -188,7 +188,7 @@
       },
       "9": {
         "chinese": "行軍",
-        "name": "Hành Quân",
+        "name": "Hành quân",
         "purpose": "Thực thi",
         "commands": [
           "/kpi",
@@ -197,8 +197,8 @@
       },
       "10": {
         "chinese": "地形",
-        "name": "Địa Hình",
-        "purpose": "Mở rộng thị trường",
+        "name": "Địa hình",
+        "purpose": "Phân khúc thị trường",
         "commands": [
           "/market",
           "/launch",
@@ -207,8 +207,8 @@
       },
       "11": {
         "chinese": "九地",
-        "name": "Cửu Địa",
-        "purpose": "Xử lý khủng hoảng",
+        "name": "Cửu địa",
+        "purpose": "Quản lý khủng hoảng",
         "commands": [
           "/crisis",
           "/survival"
@@ -217,8 +217,8 @@
       },
       "12": {
         "chinese": "火攻",
-        "name": "Hỏa Công",
-        "purpose": "Viral marketing",
+        "name": "Hỏa công",
+        "purpose": "Tiếp thị lan truyền",
         "commands": [
           "/viral",
           "/video",
@@ -228,8 +228,8 @@
       },
       "13": {
         "chinese": "用間",
-        "name": "Dụng Gián",
-        "purpose": "Thu thập intel",
+        "name": "Dụng gián",
+        "purpose": "Tình báo thị trường",
         "commands": [
           "/intel",
           "/fundraise"
@@ -249,6 +249,80 @@
     }
   },
   "landing": {
+    "testimonials": {
+      "title": "💬 Được các chủ Agency yêu thích",
+      "subtitle": "Xem 500+ agency nói gì về AgencyOS",
+      "items": {
+        "michael": {
+          "name": "Michael Chen",
+          "role": "Agency Ma Trận Tăng Trưởng",
+          "quote": "AgencyOS đã thay thế 3 nhân viên cho tôi. ROI thật điên rồ ngay trong tuần đầu tiên."
+        },
+        "sarah": {
+          "name": "Sarah Williams",
+          "role": "Digital First Co",
+          "quote": "125 lệnh nghĩa là tôi không bao giờ thiếu cách để tự động hóa. Khoản đầu tư tốt nhất năm nay."
+        },
+        "james": {
+          "name": "James Rodriguez",
+          "role": "JR Creative Studio",
+          "quote": "Chỉ riêng lệnh /proposal đã tiết kiệm cho tôi hơn 10 giờ mỗi tuần làm việc với khách hàng."
+        },
+        "lisa": {
+          "name": "Lisa Nguyen",
+          "role": "Đối Tác Mở Rộng",
+          "quote": "Khung chiến lược Binh Pháp thực sự là vàng ròng. Cách tiếp cận không đánh mà thắng rất hiệu quả."
+        },
+        "david": {
+          "name": "David Park",
+          "role": "Momentum Labs",
+          "quote": "Từ nhà sáng lập đơn độc đến agency 6 con số trong 6 tháng. AgencyOS là vũ khí bí mật của tôi."
+        },
+        "anna": {
+          "name": "Anna Thompson",
+          "role": "Đế Chế Agency",
+          "quote": "Mô hình nhượng quyền thật rực rỡ. Bây giờ tôi đang kiếm thu nhập thụ động từ mạng lưới agency của mình."
+        }
+      }
+    },
+    "testimonials_grid": {
+      "title": "Agency nói gì",
+      "subtitle": "Kết quả thực tế từ các agency solo thực tế",
+      "video_title": "Video Cảm Nhận Sắp Ra Mắt",
+      "video_subtitle": "Các chủ agency thực chia sẻ hành trình AgencyOS của họ",
+      "items": {
+        "sarah": {
+          "name": "Sarah K.",
+          "role": "Agency Tiếp thị",
+          "quote": "Tôi đã thay thế toàn bộ đội ngũ của mình bằng AgencyOS. Không đùa đâu. Lợi nhuận của tôi đã tăng gấp ba sau 3 tháng."
+        },
+        "mike": {
+          "name": "Mike T.",
+          "role": "Freelancer → Chủ Agency",
+          "quote": "Từ $3K đến $15K/tháng trong 90 ngày. AgencyOS là lợi thế không công bằng mà tôi cần."
+        },
+        "david": {
+          "name": "David L.",
+          "role": "Nhà sáng tạo nội dung",
+          "quote": "Chỉ riêng tính năng affiliate đã tự trả tiền cho nó. ROI gấp 10 lần trong tháng đầu tiên."
+        },
+        "lisa": {
+          "name": "Lisa N.",
+          "role": "Agency Thiết Kế",
+          "quote": "Tiết kiệm hơn 20 giờ mỗi tuần. Bây giờ tôi tập trung vào khách hàng, không phải công việc quản trị."
+        },
+        "trung": {
+          "name": "Trung V.",
+          "role": "Cố vấn Khởi nghiệp",
+          "quote": "Chiến lược Binh Pháp đã thay đổi cách tôi suy nghĩ về cạnh tranh. Thật sự thiên tài."
+        },
+        "alex": {
+          "name": "Alex P.",
+          "role": "Mạng lưới Affiliate",
+          "quote": "99 đô la tốt nhất tôi từng chi tiêu. Mô hình Franchise đang in tiền cho tôi."
+        }
+      }
+    },
     "stats": {
       "ai_commands": "Lệnh AI",
       "agencies": "Agency toàn cầu",
@@ -312,7 +386,7 @@
           "desc": "Bản đề xuất được hỗ trợ bởi AI giúp chốt khách hàng. Tăng tỷ lệ chốt lên gấp 3 lần."
         },
         "affiliate": {
-          "title": "Affiliate",
+          "title": "Tiếp thị liên kết",
           "command": "/affiliate/scout",
           "desc": "50+ chương trình thân thiện với PayPal. Thu nhập thụ động tự động."
         },
@@ -352,10 +426,10 @@
         }
       },
       "marketplace_page": {
-        "title": "Marketplace - AgencyOS",
+        "title": "Chợ ứng dụng - AgencyOS",
         "description": "Kỹ năng, template, agent và quy trình cho agency của bạn.",
         "hero": {
-          "title": "🏪 Marketplace",
+          "title": "🏪 Chợ ứng dụng",
           "subtitle": "Kỹ năng, template, agent và quy trình để tăng tốc agency của bạn"
         },
         "stats": {
@@ -530,7 +604,7 @@
           ]
         },
         "business_info": {
-          "network_title": "AgencyOS Network",
+          "network_title": "Mạng lưới AgencyOS",
           "network_desc": "Hệ điều hành AI cho agency một người. Xây dựng bởi founder, cho founder.",
           "mission_title": "Sứ mệnh của chúng tôi",
           "mission_desc": "\"Họ WIN → Mình WIN\" — Khi khách hàng thành công, chúng tôi thành công. Win-Win-Win là cốt lõi.",
@@ -559,7 +633,7 @@
       "home": "Trang chủ",
       "products": "Sản phẩm",
       "pricing": "Bảng giá",
-      "demo": "Demo",
+      "demo": "Bản Demo",
       "docs": "Tài liệu",
       "blog": "Blog",
       "get_started": "Bắt đầu",
@@ -570,17 +644,17 @@
       "mekong_cli_desc": "125+ lệnh tích hợp",
       "binh_phap_desc": "13 thiên chiến lược Agency",
       "workflows_desc": "27 hướng dẫn quy trình",
-      "newsletter_hub": "Newsletter Hub",
+      "newsletter_hub": "Trung tâm Bản tin",
       "newsletter_hub_desc": "Tiếp thị qua Email",
-      "affiliate": "Affiliate",
+      "affiliate": "Tiếp thị liên kết",
       "affiliate_desc": "Kiếm hoa hồng",
-      "marketplace": "Marketplace",
+      "marketplace": "Chợ ứng dụng",
       "marketplace_desc": "Template & công cụ",
       "wallet": "Ví",
       "wallet_desc": "Thanh toán & thu nhập",
       "starter_desc": "Solo founder",
-      "pro_desc": "Teams + API",
-      "franchise_desc": "White-label"
+      "pro_desc": "Nhóm + API",
+      "franchise_desc": "Nhãn trắng"
     },
     "footer": {
       "tagline": "Hệ điều hành AI dành cho Agency một người.",
@@ -589,19 +663,19 @@
       "resources": "Tài nguyên",
       "company": "Công ty",
       "rights": "Mọi quyền được bảo lưu.",
-      "motto": "Họ WIN → Mình WIN → All WIN",
+      "motto": "Họ WIN → Mình WIN → Tất cả WIN",
       "quick_start": "Bắt đầu nhanh",
-      "demo": "Demo",
+      "demo": "Bản Demo",
       "roi_calculator": "Tính ROI",
       "blog": "Blog",
       "changelog": "Lịch sử",
       "about_us": "Về chúng tôi",
-      "case_studies": "Case Studies",
+      "case_studies": "Câu chuyện thành công",
       "contact": "Liên hệ",
       "faq": "Hỏi đáp",
       "terms": "Điều khoản",
       "privacy": "Bảo mật",
-      "gamification": "Gamification"
+      "gamification": "Trò chơi hóa"
     }
   },
   "about_page": {
@@ -647,7 +721,7 @@
       "members": {
         "long": {
           "name": "Long Minh",
-          "role": "Founder & CEO",
+          "role": "Nhà sáng lập & CEO",
           "bio": "10+ năm kinh nghiệm xây dựng sản phẩm số. Đam mê tự động hóa AI."
         },
         "agent": {
@@ -656,13 +730,13 @@
           "bio": "Không bao giờ ngủ. Code 24/7. Thông thạo 125+ lệnh."
         },
         "design": {
-          "name": "Design AI",
+          "name": "AI Thiết kế",
           "role": "Giám đốc sáng tạo",
           "bio": "Tạo ra hình ảnh tuyệt đẹp. Bậc thầy về hiệu ứng WOW."
         },
         "strategy": {
-          "name": "Strategy AI",
-          "role": "Growth Hacker",
+          "name": "AI Chiến lược",
+          "role": "Chuyên gia tăng trưởng",
           "bio": "Áp dụng Binh pháp vào kinh doanh. Không đánh mà thắng."
         }
       }
@@ -735,7 +809,7 @@
       "team_ai": {
         "title": "Cách tôi thay thế đội ngũ bằng AI (Và tăng gấp ba lợi nhuận)",
         "excerpt": "Câu chuyện về cách một chủ agency vượt qua kiệt sức đến đột phá bằng tự động hóa AI.",
-        "category": "Case Study"
+        "category": "Nghiên cứu điển hình"
       },
       "commands_85": {
         "title": "125+ Lệnh AI mà mọi chủ Agency nên biết",
@@ -755,7 +829,7 @@
       "video_scripts": {
         "title": "Kịch bản video AI chuyển đổi: Hướng dẫn mẫu",
         "excerpt": "Các mẫu kịch bản sao chép-dán để tạo nội dung YouTube, TikTok và Reels thu hút tương tác.",
-        "category": "Template"
+        "category": "Mẫu"
       },
       "win3_framework": {
         "title": "Khung Win-Win-Win cho sự tăng trưởng của Agency",
@@ -765,7 +839,7 @@
     }
   },
   "case_studies_page": {
-    "title": "Case Studies - AgencyOS",
+    "title": "Câu chuyện thành công - AgencyOS",
     "description": "Câu chuyện thành công thực tế từ các agency solo sử dụng AgencyOS. Xem kết quả doanh thu thực tế.",
     "hero": {
       "title": "📈 Câu chuyện thành công",
@@ -780,7 +854,7 @@
     "cases": {
       "sarah": {
         "name": "Sarah K.",
-        "role": "Marketing Agency",
+        "role": "Agency Tiếp thị",
         "quote": "Tôi đã thay thế toàn bộ đội ngũ của mình bằng AgencyOS. Không đùa đâu. Lợi nhuận của tôi đã tăng gấp ba sau 3 tháng.",
         "timeline": "90 ngày để tăng 5 lần doanh thu",
         "metrics": [
@@ -791,7 +865,7 @@
       },
       "mike": {
         "name": "Mike T.",
-        "role": "Freelancer → Agency",
+        "role": "Freelancer → Chủ Agency",
         "quote": "Từ freelancer trở thành chủ agency. AgencyOS là lợi thế không công bằng mà tôi cần.",
         "timeline": "6 tháng để xây dựng agency 6 con số",
         "metrics": [
@@ -802,7 +876,7 @@
       },
       "trung": {
         "name": "Trung V.",
-        "role": "Startup Consultant",
+        "role": "Cố vấn Khởi nghiệp",
         "quote": "Chiến lược Binh Pháp đã thay đổi cách tôi suy nghĩ về cạnh tranh. Thật sự thiên tài.",
         "timeline": "Tăng gấp 4 lần dòng deal trong 60 ngày",
         "metrics": [
@@ -813,7 +887,7 @@
       },
       "alex": {
         "name": "Alex P.",
-        "role": "Affiliate Network",
+        "role": "Mạng lưới Affiliate",
         "quote": "99 đô la tốt nhất tôi từng chi tiêu. Mô hình Franchise đang in tiền cho tôi.",
         "timeline": "Thu nhập thụ động sau 30 ngày",
         "metrics": [
@@ -945,7 +1019,7 @@
   },
   "commands_page": {
     "groups": {
-      "code": "Code",
+      "code": "Lập trình",
       "fix": "Sửa lỗi",
       "design": "Thiết kế",
       "docs": "Tài liệu",
@@ -956,7 +1030,7 @@
       "sales": "Bán hàng",
       "finance": "Tài chính",
       "operations": "Vận hành",
-      "affiliate": "Affiliate",
+      "affiliate": "Tiếp thị liên kết",
       "video": "Video",
       "strategy": "Chiến lược (Binh Pháp)",
       "intel": "Tình báo",
@@ -976,7 +1050,7 @@
     "categories": {
       "all": "Tất cả",
       "tech": "Công nghệ",
-      "marketing": "Marketing",
+      "marketing": "Tiếp thị",
       "sales": "Bán hàng",
       "finance": "Tài chính",
       "strategy": "Chiến lược"
@@ -1299,7 +1373,7 @@
     "transfer_modal": {
       "title": "↗️ Chuyển khoản AGC",
       "recipient_label": "Email người nhận",
-      "recipient_placeholder": "user@example.com",
+      "recipient_placeholder": "nguoi-dung@vidu.com",
       "amount_label": "Số lượng (AGC)",
       "amount_placeholder": "10.00",
       "note_label": "Ghi chú (Tùy chọn)",
@@ -1328,7 +1402,7 @@
       "thong_soai": "Thống Soái",
       "nguyen_soai": "Nguyên Soái",
       "threshold": "{amount}+ AGC",
-      "bonus": "+{percent}% bonus"
+      "bonus": "+{percent}% thưởng"
     }
   },
   "workflows_page": {
@@ -1341,7 +1415,7 @@
     },
     "workflows": {
       "affiliate": {
-        "title": "Affiliate-as-SaaS",
+        "title": "Affiliate-như-SaaS",
         "income": "Thu nhập thụ động: $500-2,000/tháng",
         "steps_label": "Các bước:",
         "flow": {
@@ -1374,7 +1448,7 @@
         ]
       },
       "code_to_content": {
-        "title": "Code-to-Content",
+        "title": "Code-thành-Content",
         "income": "Thu nhập chủ động: AdSense + Tài trợ",
         "steps_label": "Các bước:",
         "flow": {
@@ -1465,7 +1539,7 @@
         "money_flow": "Code → Video Demo → YouTube → Link Affiliate → $$$"
       },
       "marketing": {
-        "title": "Marketing",
+        "title": "Tiếp thị",
         "tag": "Nội dung → Tiền mặt",
         "money_flow": "Nội dung → Mạng xã hội → Lưu lượng truy cập → Affiliate → $$$"
       },
@@ -1504,7 +1578,7 @@
     },
     "categories": {
       "marketing": {
-        "title": "Marketing",
+        "title": "Tiếp thị",
         "count": "15 lệnh",
         "commands": {
           "plan": [
@@ -1624,7 +1698,7 @@
         }
       },
       "strategy": {
-        "title": "Binh Pháp Strategy",
+        "title": "Chiến lược Binh Pháp",
         "count": "13 lệnh",
         "commands": {
           "plan": [
@@ -1654,7 +1728,7 @@
         }
       },
       "agents": {
-        "title": "17 AI Agents",
+        "title": "17 Trợ lý AI",
         "count": "Trợ lý chuyên dụng",
         "commands": {
           "scout": [
@@ -1720,7 +1794,7 @@
     },
     "breakdown": {
       "title": "📋 Phân tích tiết kiệm",
-      "marketing": "Marketing",
+      "marketing": "Tiếp thị",
       "marketing_tasks": "Nội dung, SEO, Social, Email",
       "sales": "Bán hàng",
       "sales_tasks": "Đề xuất, CRM, Chăm sóc khách",
@@ -1793,7 +1867,7 @@
         ]
       },
       "cookies": {
-        "title": "6. Cookies",
+        "title": "6. Cookie",
         "intro": "Chúng tôi sử dụng lượng cookie tối thiểu cho:",
         "items": [
           "Quản lý phiên đăng nhập (bắt buộc)",
@@ -1978,9 +2052,9 @@
       "feature": "Tính Năng",
       "support": "Hỗ Trợ",
       "branding": "Tùy Chỉnh Thương Hiệu",
-      "whitelabel": "White-label",
+      "whitelabel": "Nhãn trắng",
       "api": "Truy Cập API",
-      "onboarding": "Onboarding",
+      "onboarding": "Hội nhập",
       "seats": "Tài khoản Team",
       "commands": "Lệnh AI",
       "starter_support": "Cộng đồng",
@@ -2219,7 +2293,7 @@
           "desc": "Bannner, nội dung và bài đăng mạng xã hội có sẵn."
         },
         "links": {
-          "title": "Deep Linking",
+          "title": "Liên kết sâu",
           "desc": "Liên kết đến bất kỳ trang nào trên trang web của chúng tôi với ID giới thiệu của bạn."
         },
         "leaderboard": {
@@ -2238,12 +2312,12 @@
       "bonuses": {
         "title": "Thưởng cột mốc",
         "first_blood": {
-          "title": "FIRST BLOOD",
+          "title": "CHIẾN CÔNG ĐẦU",
           "req": "Đơn hàng đầu tiên",
           "reward": "+$50 Thưởng"
         },
         "rising_star": {
-          "title": "RISING STAR",
+          "title": "NGÔI SAO MỚI",
           "req": "10 Đơn hàng",
           "reward": "+$250 Thưởng"
         },
@@ -2253,7 +2327,7 @@
           "reward": "+$1,500 Thưởng"
         },
         "king": {
-          "title": "AFFILIATE KING",
+          "title": "VUA AFFILIATE",
           "req": "100 Đơn hàng",
           "reward": "+$5,000 Thưởng"
         }
@@ -2301,10 +2375,10 @@
       "achievements": {
         "title": "🎖️ Thành tựu",
         "list": {
-          "first_blood": "First Blood",
-          "rising_star": "Rising Star",
-          "diamond": "Diamond",
-          "king": "King"
+          "first_blood": "Chiến công đầu",
+          "rising_star": "Ngôi sao mới",
+          "diamond": "Kim cương",
+          "king": "Vua"
         }
       },
       "actions": {
@@ -2344,7 +2418,7 @@
         "margin": "Biên lợi nhuận",
         "utilization": "Tỷ lệ sử dụng",
         "nps": "Điểm NPS",
-        "pipeline": "Pipeline"
+        "pipeline": "Đường ống (Pipeline)"
       },
       "system": {
         "title": "🔧 Trạng thái hệ thống",
@@ -2585,7 +2659,7 @@
       "title": "Client Portal - Dự Án & Tiến Độ",
       "description": "Theo dõi dự án, nhiệm vụ, hóa đơn và giao tiếp với agency của bạn",
       "auth": {
-        "title": "Client Portal",
+        "title": "Cổng Khách Hàng",
         "subtitle": "Nhập mã truy cập của bạn",
         "label": "Mã Portal",
         "placeholder": "Nhập 12-ký tự access code",
@@ -2655,7 +2729,7 @@
         "colors": "Màu sắc",
         "logo": "Logo",
         "logo_hint": "Luôn sử dụng emoji lâu đài",
-        "tagline": "Tagline"
+        "tagline": "Khẩu hiệu"
       }
     },
     "affiliate_leaderboard": {
@@ -2732,7 +2806,7 @@
     }
   },
   "gamification_page": {
-    "title": "Gamification - AgencyOS",
+    "title": "Trò chơi hóa - AgencyOS",
     "description": "Thăng cấp khi bạn kiếm tiền. Hệ thống XP, huy hiệu thành tích và phần thưởng khi sử dụng AgencyOS.",
     "hero": {
       "title": "🎮 Thăng cấp & Kiếm tiền",
