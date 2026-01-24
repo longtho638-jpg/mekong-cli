@@ -216,6 +216,11 @@ export default defineConfig({
       wrap: true,
     },
   },
+  vite: {
+    ssr: {
+      noExternal: ['@agencyos/i18n'],
+    },
+  },
   output: 'server', // Server mode for dynamic API routes with query params
   adapter: (await import('@astrojs/vercel')).default({
     webAnalytics: { enabled: true }
