@@ -48,5 +48,11 @@ numpy>=1.21.0
 # Monitoring & Metrics
 prometheus_client>=0.17.0
 
+# Rate Limiting
+slowapi>=0.1.9
+
+# JWT Auth
+python-jose>=3.3.0
+
 # Type compatibility (Pydantic 2.x on Python < 3.12)
 typing_extensions>=4.0.0
