@@ -359,6 +359,9 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@agencyos/shared':
+        specifier: workspace:*
+        version: link:../shared
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -381,6 +384,8 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+
+  packages/shared: {}
 
   packages/ui:
     dependencies:
@@ -433,6 +438,9 @@ importers:
 
   packages/vibe:
     dependencies:
+      '@agencyos/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@agencyos/vibe-agents':
         specifier: workspace:*
         version: link:../vibe-agents
