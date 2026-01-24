@@ -36,12 +36,16 @@ jobs:
 
       - name: Verify CLI Entry Point
         run: mekong --help
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Lint (Ruff)
         run: ruff check .
 
       - name: Test (Pytest)
         run: pytest tests/
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
   # ------------------------------------------------------------------
   # JOB 2: FRONTEND (Next.js / Monorepo)
