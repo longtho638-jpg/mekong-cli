@@ -11,8 +11,12 @@ Usage:
 
     hooks = HooksManager()
     if not hooks.run_pre_hooks("revenue", context):
-        print("Aborted by hook")
+        logger.warning("Aborted by hook")
 """
+
+import logging
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 from antigravity.core.hook_executor import execute_hook, run_win3_gate
 from antigravity.core.hook_registry import (
@@ -23,8 +27,8 @@ from antigravity.core.hook_registry import (
     get_triggers_for_suite,
 )
 from antigravity.core.types import DealContextDict, HookContextDict, HookResultDict, Win3ResultDict
-from pathlib import Path
-from typing import Dict, List, Optional, Union
+
+logger = logging.getLogger(__name__)
 
 
 class HooksManager:
@@ -57,8 +61,8 @@ class HooksManager:
                 self.results.append(result)
 
                 if hook.blocking and not result["passed"]:
-                    print(f"[BLOCKED] Hook blocked execution: {hook.name}")
-                    print(f"   Reason: {result.get('output', 'Unknown error')}")
+                    logger.warning(f"[BLOCKED] Hook blocked execution: {hook.name}")
+                    logger.warning(f"   Reason: {result.get('output', 'Unknown error')}")
                     return False
 
         return True

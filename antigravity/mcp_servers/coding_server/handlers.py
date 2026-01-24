@@ -1,9 +1,12 @@
 import asyncio
+import logging
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -35,7 +38,7 @@ class CodingHandler:
 
     async def build(self, feature: str) -> Dict[str, Any]:
         """Full build pipeline for a feature."""
-        print(f"🏯 VIBE CODING: Building '{feature}'...")
+        logger.info(f"🏯 VIBE CODING: Building '{feature}'...")
 
         # Step 1: Analyze with Binh Pháp
         analysis = await self._analyze(feature)
@@ -52,7 +55,7 @@ class CodingHandler:
         await self._lint()
 
         # Step 5: If tests pass, prepare for deploy
-        if test_result.get("passed", 0) == test_result.get("total", 0):
+        if test_result.get("passed", 0) == test_result.get("total", 0) and test_result.get("total", 0) > 0:
             res = BuildResult(
                 success=True,
                 files_created=code_result.get("files", 0),
@@ -71,14 +74,14 @@ class CodingHandler:
 
     async def ship(self, message: str = "") -> Dict[str, Any]:
         """Ship current changes: Test -> Commit -> Push -> Deploy"""
-        print("🚀 VIBE CODING: Shipping...")
+        logger.info("🚀 VIBE CODING: Shipping...")
 
         # Step 1: Lint
         await self._lint()
 
         # Step 2: Test
         test_result = await self._run_tests()
-        if test_result.get("passed", 0) != test_result.get("total", 0):
+        if test_result.get("passed", 0) != test_result.get("total", 0) or test_result.get("total", 0) == 0:
             res = BuildResult(
                 success=False,
                 tests_passed=test_result.get("passed", 0),
@@ -104,19 +107,19 @@ class CodingHandler:
 
     async def _analyze(self, feature: str) -> dict:
         """Run Binh Pháp analysis on feature."""
-        print(f"   📊 Analyzing: {feature}")
+        logger.info(f"   📊 Analyzing: {feature}")
         # Would call: PYTHONPATH=. python3 cli/main.py binh-phap "$FEATURE"
         return {"score": 8, "alignment": "high"}
 
     async def _generate_code(self, feature: str) -> dict:
         """Generate code for feature."""
-        print(f"   💻 Generating code for: {feature}")
+        logger.info(f"   💻 Generating code for: {feature}")
         # Would call: PYTHONPATH=. python3 cli/main.py cook "$FEATURE"
         return {"files": 3, "lines": 150}
 
     async def _run_tests(self) -> dict:
         """Run pytest suite."""
-        print("   🧪 Running tests...")
+        logger.info("   🧪 Running tests...")
         try:
             # We use a dummy check for now as we don't want to run actual pytest in this mocked environment
             # unless we know we are in a proper test environment
@@ -140,12 +143,12 @@ class CodingHandler:
             # else:
             #     return {"passed": 0, "total": 168}
         except Exception as e:
-            print(f"   ⚠️ Test error: {e}")
+            logger.error(f"   ⚠️ Test error: {e}")
             return {"passed": 0, "total": 0}
 
     async def _lint(self) -> bool:
         """Run ruff linter."""
-        print("   🔍 Linting...")
+        logger.info("   🔍 Linting...")
         try:
             subprocess.run(
                 ["python3", "-m", "ruff", "check", ".", "--fix"],
@@ -154,13 +157,14 @@ class CodingHandler:
                 timeout=60,
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"   ⚠️ Lint error: {e}")
             return False
 
     async def _commit(self, message: str) -> str:
         """Create git commit."""
         msg = message or "🏯 VibeOS ship"
-        print(f"   📝 Committing: {msg}")
+        logger.info(f"   📝 Committing: {msg}")
         try:
             # Simulating commit for safety
             return "simulated_sha_12345"
@@ -174,12 +178,13 @@ class CodingHandler:
             #     ["git", "rev-parse", "HEAD"], cwd=self.project_root, capture_output=True, text=True
             # )
             # return result.stdout.strip()
-        except Exception:
+        except Exception as e:
+            logger.error(f"   ⚠️ Commit error: {e}")
             return "unknown"
 
     async def _push(self) -> bool:
         """Push to remote."""
-        print("   📤 Pushing to origin/main...")
+        logger.info("   📤 Pushing to origin/main...")
         try:
             # Simulating push
             return True
@@ -192,5 +197,6 @@ class CodingHandler:
             #     timeout=60,
             # )
             # return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"   ⚠️ Push error: {e}")
             return False

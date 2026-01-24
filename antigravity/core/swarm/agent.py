@@ -1,8 +1,11 @@
+import logging
 from typing import Any
 
 from antigravity.core.telemetry import agent_telemetry
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
+
+logger = logging.getLogger(__name__)
 
 
 class BaseSwarmAgent:
@@ -22,7 +25,7 @@ class BaseSwarmAgent:
     def on_message(self, message: AgentMessage):
         """Handle incoming message."""
         # Override this
-        print(f"[{self.name}] Received: {message.type.value} from {message.sender}")
+        logger.debug(f"[{self.name}] Received: {message.type.value} from {message.sender}")
 
     def send(
         self, recipient: str, content: Any, msg_type: MessageType = MessageType.TASK

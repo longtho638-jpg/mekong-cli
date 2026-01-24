@@ -5,6 +5,7 @@ Uses Unified Payment Service for verification and processing.
 """
 
 import json
+import logging
 import os
 from datetime import datetime
 from typing import Optional
@@ -12,6 +13,8 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException, Request
 
 from backend.services.payment_service import PaymentService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/webhooks/paypal", tags=["PayPal Webhooks"])
 
@@ -41,7 +44,7 @@ async def handle_webhook(
         raise HTTPException(status_code=400, detail="Invalid JSON")
 
     event_type = event_data.get("event_type", "UNKNOWN")
-    print(f"📨 PAYPAL EVENT: {event_type}")
+    logger.info(f"📨 PAYPAL EVENT: {event_type}")
 
     # Prepare headers for verification
     headers = {
@@ -55,7 +58,7 @@ async def handle_webhook(
     # Verify Signature via PaymentService
     webhook_id = os.environ.get("PAYPAL_WEBHOOK_ID")
     if not webhook_id:
-        print("⚠️ PAYPAL_WEBHOOK_ID not set. Skipping verification (Dev Mode?)")
+        logger.warning("⚠️ PAYPAL_WEBHOOK_ID not set. Skipping verification (Dev Mode?)")
         # In production, this should likely be strict
 
     try:
@@ -70,13 +73,13 @@ async def handle_webhook(
             )
 
             if verify_response.get("verification_status") != "SUCCESS":
-                print("❌ Signature Verification Failed")
+                logger.error("❌ Signature Verification Failed")
                 raise HTTPException(status_code=401, detail="Invalid signature")
 
-            print("✅ Signature Verified")
+            logger.info("✅ Signature Verified")
 
     except Exception as e:
-        print(f"⚠️ Verification Error: {e}")
+        logger.error(f"⚠️ Verification Error: {e}")
         # Fail open or closed depending on security posture.
         # Usually fail closed (raise 401).
         raise HTTPException(status_code=401, detail=f"Verification error: {str(e)}")
@@ -86,7 +89,7 @@ async def handle_webhook(
         payment_service.handle_webhook_event(provider="paypal", event=event_data)
         return {"status": "processed", "event": event_type}
     except Exception as e:
-        print(f"❌ Processing Error: {e}")
+        logger.error(f"❌ Processing Error: {e}")
         # Return 200 to acknowledge receipt but log error, otherwise PayPal retries indefinitely
         return {"status": "error", "message": str(e)}
 

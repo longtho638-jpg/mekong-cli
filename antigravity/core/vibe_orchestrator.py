@@ -104,7 +104,7 @@ class VIBEOrchestrator(BaseEngine):
         start_dt = datetime.now()
         result = ChainResult(success=True)
 
-        print(f"⛓️  Executing Sequential Chain ({len(tasks)} tasks)...")
+        logger.info(f"⛓️  Executing Sequential Chain ({len(tasks)} tasks)...")
 
         for task in tasks:
             self._process_single_task(task)
@@ -124,7 +124,7 @@ class VIBEOrchestrator(BaseEngine):
         start_dt = datetime.now()
         result = ChainResult(success=True)
 
-        print(f"🚀 Spawning Parallel Execution ({len(tasks)} tasks)...")
+        logger.info(f"🚀 Spawning Parallel Execution ({len(tasks)} tasks)...")
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {executor.submit(self._process_single_task, t): t for t in tasks}

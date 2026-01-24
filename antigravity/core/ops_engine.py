@@ -27,8 +27,8 @@ class OpsEngine:
         Checks the health of core services (MCP servers, registry, etc.)
         """
         # Future implementation
-        print("✅ System Health: GREEN")
-        print("   - Registry: OK")
-        print("   - MCP Orchestrator: OK")
-        print("   - Agent Swarm: OK")
+        logger.info("✅ System Health: GREEN")
+        logger.info("   - Registry: OK")
+        logger.info("   - MCP Orchestrator: OK")
+        logger.info("   - Agent Swarm: OK")
 

@@ -3,9 +3,13 @@ MCP Server Entry Point.
 """
 import asyncio
 import json
+import logging
 from dataclasses import asdict
 
 from .server import AntigravityMCPServer
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 # Try to import MCP SDK
 try:
@@ -19,8 +23,8 @@ except ImportError:
 async def main():
     """Run the Antigravity MCP Server."""
     if not HAS_MCP_SDK:
-        print("❌ Cannot start server: MCP SDK not installed")
-        print("   Run: pip install mcp")
+        logger.error("❌ Cannot start server: MCP SDK not installed")
+        logger.error("   Run: pip install mcp")
         return
 
     server = Server("antigravity")
@@ -42,9 +46,10 @@ async def main():
         result = await antigravity.handle_tool(name, arguments)
         return [TextContent(type="text", text=json.dumps(asdict(result), indent=2))]
 
-    print("🏯 Starting Antigravity MCP Server...")
+    logger.info("🏯 Starting Antigravity MCP Server...")
     async with stdio_server() as (read_stream, write_stream):
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
     asyncio.run(main())

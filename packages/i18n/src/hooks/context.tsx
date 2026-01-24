@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Locale, DEFAULT_LOCALE } from '../types.js';
+import { Locale, DEFAULT_LOCALE, TranslationKeys } from '../types.js';
 import { locales } from '../locales/index.js';
 
 interface I18nContextType {
@@ -25,7 +25,7 @@ export function I18nProvider({
 
   const t = useCallback((key: string): string => {
     const keys = key.split('.');
-    let result: any = locales[locale];
+    let result: TranslationKeys | string | undefined = locales[locale] as TranslationKeys;
 
     for (const k of keys) {
       if (result && typeof result === 'object' && k in result) {

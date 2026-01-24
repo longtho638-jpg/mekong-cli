@@ -91,7 +91,7 @@ class VIBEWorkflow(BaseEngine):
 
     def run_verification_suite(self, command: str = "python3 -m pytest") -> Dict[str, object]:
         """Executes the test suite and captures results for the quality gate."""
-        print(f"[TEST] Running verification: `{command}`...")
+        logger.info(f"[TEST] Running verification: `{command}`...")
         try:
             result = subprocess.run(command.split(), capture_output=True, text=True, timeout=300)
 

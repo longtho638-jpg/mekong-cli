@@ -5,10 +5,13 @@ Logic for Network Optimizer MCP.
 """
 
 import asyncio
+import logging
 import re
 import subprocess
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -42,6 +45,7 @@ class NetworkHandler:
 
     async def get_status(self) -> Dict[str, Any]:
         """Get current network status."""
+        logger.info("Fetching network status...")
         warp_connected = False
         warp_mode = "unknown"
         endpoint = None
@@ -56,8 +60,8 @@ class NetworkHandler:
             )
             stdout, _ = await asyncio.wait_for(result.communicate(), timeout=5)
             warp_connected = "Connected" in stdout.decode()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"WARP status check failed: {e}")
 
         # Get WARP mode and settings
         try:
@@ -74,8 +78,8 @@ class NetworkHandler:
 
             endpoint_match = re.search(r"Override WARP endpoint:\s*(\S+)", output)
             endpoint = endpoint_match.group(1) if endpoint_match else None
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"WARP settings check failed: {e}")
 
         # Get Cloudflare colo
         try:
@@ -87,8 +91,8 @@ class NetworkHandler:
             stdout, _ = await asyncio.wait_for(result.communicate(), timeout=5)
             colo_match = re.search(r"colo=(\w+)", stdout.decode())
             colo = colo_match.group(1) if colo_match else "unknown"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Cloudflare trace failed: {e}")
 
         # Get latency
         latency_ms = await self._measure_latency(self.TEST_TARGETS[0])
@@ -115,12 +119,13 @@ class NetworkHandler:
             match = re.search(r"min/avg/max/\w+ = [\d.]+/([\d.]+)/", stdout.decode())
             if match:
                 return float(match.group(1))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Latency measurement failed for {host}: {e}")
         return None
 
     async def enable_doh(self) -> bool:
         """Enable WARP+DoH mode for optimized DNS."""
+        logger.info("Enabling WARP+DoH...")
         try:
             result = await asyncio.create_subprocess_exec(
                 "warp-cli", "mode", "warp+doh",
@@ -129,11 +134,13 @@ class NetworkHandler:
             )
             stdout, _ = await asyncio.wait_for(result.communicate(), timeout=10)
             return "Success" in stdout.decode()
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to enable DoH: {e}")
             return False
 
     async def set_endpoint(self, endpoint: str) -> bool:
         """Set WARP tunnel endpoint."""
+        logger.info(f"Setting WARP endpoint to {endpoint}...")
         try:
             result = await asyncio.create_subprocess_exec(
                 "warp-cli", "tunnel", "endpoint", "set", endpoint,
@@ -142,11 +149,13 @@ class NetworkHandler:
             )
             await asyncio.wait_for(result.communicate(), timeout=10)
             return result.returncode == 0
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to set WARP endpoint: {e}")
             return False
 
     async def optimize(self) -> Dict[str, Any]:
         """Auto-optimize network settings."""
+        logger.info("Starting network optimization...")
         results = {
             "doh_enabled": False,
             "best_endpoint": None,
@@ -161,7 +170,7 @@ class NetworkHandler:
 
         # Step 2: Test endpoints
         initial_status = await self.get_status()
-        initial_latency = initial_status.get("latency_ms") or 999
+        initial_latency = initial_status.get("latency_ms") or 999.0
         initial_endpoint = initial_status.get("endpoint")
 
         best_latency = initial_latency
@@ -187,5 +196,6 @@ class NetworkHandler:
         if initial_latency > 0 and best_latency > 0 and best_latency < initial_latency:
             improvement = ((initial_latency - best_latency) / initial_latency) * 100
             results["latency_improvement"] = f"{improvement:.1f}%"
+            logger.info(f"Network optimized. Latency improvement: {results['latency_improvement']}")
 
         return results

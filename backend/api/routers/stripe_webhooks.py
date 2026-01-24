@@ -4,12 +4,15 @@
 Uses Unified Payment Service for verification and processing.
 """
 
+import logging
 import os
 from typing import Optional
 
 from fastapi import APIRouter, Header, HTTPException, Request
 
 from backend.services.payment_service import PaymentService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/webhooks/stripe", tags=["Stripe Webhooks"])
 
@@ -28,7 +31,7 @@ async def handle_webhook(
     webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
     if not webhook_secret:
-        print("⚠️ STRIPE_WEBHOOK_SECRET not set. Skipping verification.")
+        logger.warning("⚠️ STRIPE_WEBHOOK_SECRET not set. Skipping verification.")
         # In strict mode, we should fail.
 
     if not stripe_signature:
@@ -43,15 +46,15 @@ async def handle_webhook(
             webhook_secret=webhook_secret
         )
     except Exception as e:
-        print(f"❌ Stripe Verification Failed: {e}")
+        logger.error(f"❌ Stripe Verification Failed: {e}")
         raise HTTPException(status_code=400, detail=f"Verification error: {str(e)}")
 
-    print(f"📨 STRIPE EVENT: {event.get('type')}")
+    logger.info(f"📨 STRIPE EVENT: {event.get('type')}")
 
     # Process
     try:
         payment_service.handle_webhook_event(provider="stripe", event=event)
         return {"status": "processed", "event": event.get("type")}
     except Exception as e:
-        print(f"❌ Stripe Processing Error: {e}")
+        logger.error(f"❌ Stripe Processing Error: {e}")
         return {"status": "error", "message": str(e)}

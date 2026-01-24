@@ -94,11 +94,11 @@ class StdioMCPProcess(BaseMCPProcess):
                 self.process.kill()
             self.process = None
 
-    async def _send_request(self, method: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def _send_request(self, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         if not self.is_alive():
             await self.start()
 
-        request = {
+        request: Dict[str, Any] = {
             "jsonrpc": "2.0",
             "id": int(time.time() * 1000),
             "method": method,
@@ -106,15 +106,18 @@ class StdioMCPProcess(BaseMCPProcess):
         }
 
         try:
-            self.process.stdin.write(json.dumps(request) + "\n")
-            self.process.stdin.flush()
+            if self.process and self.process.stdin:
+                self.process.stdin.write(json.dumps(request) + "\n")
+                self.process.stdin.flush()
 
-            # Read response (assuming one line per JSON-RPC message)
-            line = self.process.stdout.readline()
-            if not line:
-                raise Exception(f"MCP Server {self.name} closed stdout unexpectedly")
+                # Read response (assuming one line per JSON-RPC message)
+                line = self.process.stdout.readline() if self.process.stdout else None
+                if not line:
+                    raise Exception(f"MCP Server {self.name} closed stdout unexpectedly")
 
-            return json.loads(line)
+                return json.loads(line)
+            else:
+                raise Exception(f"MCP Server {self.name} process or stdin not available")
         except Exception as e:
             logger.error(f"❌ Error sending request to {self.name}: {e}")
             raise

@@ -1,4 +1,8 @@
+import logging
 from typing import List
+
+logger = logging.getLogger(__name__)
+
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError:
@@ -13,7 +17,7 @@ class EmbeddingService:
             self.model = SentenceTransformer(model_name)
         else:
             self.model = None
-            print("⚠️ sentence-transformers not installed. Embeddings disabled.")
+            logger.warning("⚠️ sentence-transformers not installed. Embeddings disabled.")
 
     def embed_text(self, text: str) -> List[float]:
         """Generate embedding for a single string."""

@@ -68,20 +68,19 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
 
     mission = JULES_MISSIONS[mission_id]
 
-    print(f"\n🤖 KHỞI TẠO NHIỆM VỤ JULES: {mission['label']}")
-    print(f"   Mô tả    : {mission['description']}")
-    print(f"   Lịch trình: {mission['schedule']}")
+    logger.info(f"🤖 KHỞI TẠO NHIỆM VỤ JULES: {mission['label']}")
+    logger.info(f"   Mô tả    : {mission['description']}")
+    logger.info(f"   Lịch trình: {mission['schedule']}")
 
     # Building the CLI command for Jules
     cmd = f'gemini -p "/jules {mission["prompt"]}"'
 
     if dry_run:
-        print("\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:")
-        print(f"   $ {cmd}")
+        logger.info(f"\n   [CHẾ ĐỘ THỬ NGHIỆM] Lệnh sẽ chạy:\n   $ {cmd}")
         return True
 
     try:
-        print("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
+        logger.info("\n   🚀 Đang gửi yêu cầu cho Jules... Vui lòng đợi.")
         # Timeout is long because Jules might take time to initialize the task
         # Security: Use argument list to prevent command injection
         result = subprocess.run(
@@ -92,15 +91,15 @@ def trigger_jules_mission(mission_id: str, dry_run: bool = False) -> bool:
         )
 
         if result.returncode == 0:
-            print("   ✅ Gửi nhiệm vụ thành công!")
-            print("   📋 Theo dõi tiến độ tại: https://jules.google.com")
+            logger.info("   ✅ Gửi nhiệm vụ thành công!")
+            logger.info("   📋 Theo dõi tiến độ tại: https://jules.google.com")
             return True
         else:
-            print(f"   ❌ Lỗi hệ thống: {result.stderr}")
+            logger.error(f"   ❌ Lỗi hệ thống: {result.stderr}")
             return False
 
     except subprocess.TimeoutExpired:
-        print("   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
+        logger.warning("   ⏱️ Đã gửi nhiệm vụ (đang chạy ngầm trong hệ thống Jules)")
         return True
     except Exception:
         logger.exception("Critical failure in Jules Runner")
@@ -116,16 +115,16 @@ def run_scheduled_maintenance(dry_run: bool = False):
     mission = schedule_map.get(day_en)
 
     if mission:
-        print(f"📅 Hôm nay là {day_en}. Bắt đầu bảo trì định kỳ...")
+        logger.info(f"📅 Hôm nay là {day_en}. Bắt đầu bảo trì định kỳ...")
         return trigger_jules_mission(mission, dry_run)
 
-    print(f"📅 Hôm nay ({day_en}) không có lịch bảo trì định kỳ.")
+    logger.info(f"📅 Hôm nay ({day_en}) không có lịch bảo trì định kỳ.")
     return True
 
 
 def check_jules_status():
     """Queries the current status of all Jules tasks."""
-    print("🔍 Đang kiểm tra trạng thái nhiệm vụ...")
+    logger.info("🔍 Đang kiểm tra trạng thái nhiệm vụ...")
     try:
         # Security: Use argument list to prevent command injection
         result = subprocess.run(
@@ -136,7 +135,7 @@ def check_jules_status():
         )
         print(result.stdout)
     except Exception as e:
-        print(f"❌ Lỗi khi kiểm tra: {e}")
+        logger.error(f"❌ Lỗi khi kiểm tra: {e}")
 
 
 def list_mission_catalog():

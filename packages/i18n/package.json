@@ -41,6 +41,7 @@
     "i18n:validate": "tsx scripts/validate.ts"
   },
   "dependencies": {
+    "@agencyos/shared": "workspace:*",
     "react": "^18.2.0"
   },
   "devDependencies": {

@@ -6,10 +6,13 @@ Loads and applies rules from .claude/rules to appropriate agents.
 Ensures compliance with AgencyOS governance and coding standards.
 """
 
+import logging
 from pathlib import Path
 from typing import Dict, List
 
 from .knowledge.rules import rule_registry
+
+logger = logging.getLogger(__name__)
 
 # Base path for rules
 RULES_BASE_DIR = Path(".claude/rules")
@@ -21,10 +24,10 @@ class RuleMappingProxy(dict):
         if key in rule_registry.rules:
             return rule_registry.rules[key].get("agents", ["*"])
         return super().__getitem__(key)
-    
+
     def items(self):
         return [(name, meta.get("agents", ["*"])) for name, meta in rule_registry.rules.items()]
-    
+
     def __len__(self):
         return len(rule_registry.rules)
 
@@ -53,7 +56,7 @@ def load_rules_for_agent(agent: str, base_path: Path = RULES_BASE_DIR) -> Dict[s
             try:
                 loaded[rule] = rule_path.read_text(encoding="utf-8")
             except Exception as e:
-                print(f"⚠️ Failed to read rule {rule}: {e}")
+                logger.error(f"⚠️ Failed to read rule {rule}: {e}")
 
     return loaded
 

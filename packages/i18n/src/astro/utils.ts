@@ -1,4 +1,4 @@
-import { Locale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../types.js';
+import { Locale, DEFAULT_LOCALE, SUPPORTED_LOCALES, TranslationKeys } from '../types.js';
 import { locales } from '../locales/index.js';
 
 /**
@@ -20,7 +20,7 @@ export function getLocaleFromUrl(url: URL): Locale {
 export function useTranslations(locale: Locale) {
   return function t(key: string): string {
     const keys = key.split('.');
-    let result: any = locales[locale];
+    let result: TranslationKeys | string | undefined = locales[locale] as TranslationKeys;
 
     for (const k of keys) {
       if (result && typeof result === 'object' && k in result) {

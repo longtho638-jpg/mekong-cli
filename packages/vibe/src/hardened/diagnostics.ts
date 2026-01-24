@@ -23,9 +23,18 @@ export interface EnvCheck {
     isPlaceholder: boolean;
 }
 
+interface ImportMetaEnv {
+    [key: string]: string | boolean | undefined;
+}
+
+interface ImportMetaWithEnv extends ImportMeta {
+    env: ImportMetaEnv;
+}
+
 export function validateEnv(requiredKeys: string[]): EnvCheck[] {
     return requiredKeys.map(key => {
-        const value = (import.meta as any).env?.[key] as string | undefined;
+        const env = (import.meta as unknown as ImportMetaWithEnv).env;
+        const value = env?.[key] as string | undefined;
         return { key, required: true, present: !!value, isPlaceholder: value?.includes('placeholder') || value?.includes('xxx') || false };
     });
 }
