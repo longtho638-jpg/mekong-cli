@@ -32,10 +32,10 @@
 3. **Add CLI Commands**: Add `i18n:extract` and `i18n:validate` to the shared package.
 
 ## Todo List
-- [ ] Implement `extract.ts`
-- [ ] Implement `validate.ts`
-- [ ] Add scripts to `packages/i18n/package.json`
-- [ ] Run validation against existing consolidated locales.
+- [x] Implement `extract.ts`
+- [x] Implement `validate.ts`
+- [x] Add scripts to `packages/i18n/package.json`
+- [x] Run validation against existing consolidated locales.
 
 ## Success Criteria
 - [ ] `npm run i18n:validate` correctly identifies missing keys.

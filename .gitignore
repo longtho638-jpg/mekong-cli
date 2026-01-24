@@ -39,6 +39,7 @@ secrets.json
 backend.log
 proxy.log
 *.output
+*.tsbuildinfo
 
 # Archives
 reports/

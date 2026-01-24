@@ -4,6 +4,15 @@
 
 ---
 
+## [5.5.0] - 2026-01-24
+
+### i18n Unified Architecture
+- **Shared Package**: Launched `@agencyos/i18n` as the single source of truth for all translation logic, types, and hooks across the monorepo.
+- **Locale Consolidation**: Centralized all locale files (JSON) into `packages/i18n/src/locales/`, eliminating duplication between `apps/docs` and `apps/dashboard`.
+- **Unified Utilities**: Implemented shared `useTranslation` (React) and `getLocaleFromUrl` (Astro) hooks to ensure consistent behavior across SSG and SSR apps.
+- **Automation Pipeline**: Added `i18n:extract` and `i18n:validate` scripts to automatically sync keys and prevent missing translations.
+- **Docs Integration**: Fully migrated `mekong-docs` to use the new shared i18n package, resolving Vite bundling issues and improving build stability.
+
 ## [5.2.0] - 2026-01-23
 
 ### Performance, Security & Growth Unification

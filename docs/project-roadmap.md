@@ -213,13 +213,24 @@ AgencyOS Engine is an AI-powered development orchestration framework. We have su
 - ✅ **Human-in-the-Loop 2.0**: Advanced approval gates for critical infrastructure changes.
 
 ### Phase 23: Vibe Kanban & Swarm UI Polish (PLANNED)
-**Status:** 📋 Planned | **Completion:** v5.5.0
+**Status:** 📋 Planned | **Completion:** v5.6.0
 **Progress:** 0%
 
 **Features:**
 - 🔄 **Kanban Drag-and-Drop Polish**: Enhanced animations and touch support.
 - 🔄 **Swarm Visualization**: Real-time graph view of executing swarms.
 - 🔄 **Ops Dashboard**: UI for Auto-healer status and Approval Gates.
+
+### Phase 24: i18n Unified Architecture (COMPLETE)
+**Status:** ✅ Complete | **Completion:** v5.5.0
+**Progress:** 100%
+
+**Features:**
+- ✅ **Shared i18n Package**: Created `@agencyos/i18n` for cross-ecosystem reuse.
+- ✅ **Locale Consolidation**: Centralized 6 languages (EN, VI, JA, KO, TH, ID).
+- ✅ **Vietnamese 100% Coverage**: Fully translated Docs and Dashboard.
+- ✅ **Automation Scripts**: extraction and validation tools for translation keys.
+- ✅ **Framework Adapters**: Optimized utilities for React and Astro.
 
 ---
 

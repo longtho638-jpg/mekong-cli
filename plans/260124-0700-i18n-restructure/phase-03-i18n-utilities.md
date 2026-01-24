@@ -38,11 +38,11 @@
 3. **Export Utilities**: Ensure all utilities are exported via the package main entry point or sub-path exports.
 
 ## Todo List
-- [ ] Create `useTranslation` hook
-- [ ] Create `useLocale` hook
-- [ ] Create `I18nProvider` component
-- [ ] Implement Astro URL and translation helpers
-- [ ] Test utilities in a sample component
+- [x] Create `useTranslation` hook
+- [x] Create `useLocale` hook
+- [x] Create `I18nProvider` component
+- [x] Implement Astro URL and translation helpers
+- [x] Test utilities in a sample component
 
 ## Success Criteria
 - [ ] React components can translate strings using `t('key')`.
