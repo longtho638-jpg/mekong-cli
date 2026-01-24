@@ -1,12 +1,12 @@
 """
 Ops API Router - Handles system operations, health monitoring and approvals.
 """
+from antigravity.core.ops import OpsEngine
 from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel
 
-from antigravity.core.ops import OpsEngine
 from backend.api.security.rbac import require_admin, require_operator
 
 router = APIRouter(prefix="/ops", tags=["ops"])
@@ -54,7 +54,7 @@ async def get_quota(engine: OpsEngine = Depends(get_ops_engine)):
     # engine.get_quota_status() prints. We need data.
     # Ideally OpsEngine delegates to quota_service
     from antigravity.core.quota_service import quota_service
-    status = quota_service.get_status() # Assuming this exists or similar
+    _ = quota_service.get_status() # Assuming this exists or similar
 
     # Mocking for now as QuotaService might return text
     return QuotaStatus(total_usage=150.0, limit=1000.0, reset_in=3600.0)
