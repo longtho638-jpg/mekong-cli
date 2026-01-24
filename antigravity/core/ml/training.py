@@ -85,7 +85,8 @@ def create_polynomial_features(feature_vector: np.ndarray, degree: int = 2) -> n
     """
     if SKLEARN_AVAILABLE:
         poly_features = PolynomialFeatures(degree=degree, include_bias=False)
-        return poly_features.fit_transform(feature_vector.reshape(1, -1))
+        result: np.ndarray = poly_features.fit_transform(feature_vector.reshape(1, -1))
+        return result
     else:
         # Fallback: simple quadratic features (x, x^2)
         x = feature_vector.reshape(1, -1)

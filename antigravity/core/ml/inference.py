@@ -20,9 +20,6 @@ logger = logging.getLogger(__name__)
 
 # Optional sklearn imports with fallback
 SKLEARN_AVAILABLE = False
-PolynomialFeatures = None  # type: ignore
-cross_val_score = None  # type: ignore
-
 try:
     from sklearn.model_selection import cross_val_score
     from sklearn.preprocessing import PolynomialFeatures
@@ -30,6 +27,8 @@ try:
     SKLEARN_AVAILABLE = True
 except ImportError:
     logger.warning("sklearn not available for inference, using fallbacks")
+    PolynomialFeatures = None  # type: ignore
+    cross_val_score = None  # type: ignore
 
 
 def predict_conversion_rate_ml(
@@ -91,7 +90,7 @@ def calculate_statistical_optimization(
         MLOptimizationResult with optimization details
     """
     # If sklearn not available, return simple fallback
-    if not SKLEARN_AVAILABLE:
+    if not SKLEARN_AVAILABLE or PolynomialFeatures is None:
         return MLOptimizationResult(
             optimal_price=base_price,
             confidence_score=0.5,
@@ -117,7 +116,7 @@ def calculate_statistical_optimization(
 
             # Cross-validation for robustness (requires at least 10 samples)
             min_samples_for_cv = 10
-            if len(training_data) >= min_samples_for_cv:
+            if len(training_data) >= min_samples_for_cv and cross_val_score is not None:
                 # Build dataset from training data for CV
                 X_train_list = [X]
                 y_train_list = [y[0]]

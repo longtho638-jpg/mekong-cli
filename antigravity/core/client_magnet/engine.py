@@ -124,7 +124,7 @@ class ClientMagnet(BaseEngine):
         """Efficiency metric: WON vs total closed deals."""
         return self.analytics.calculate_conversion_rate(self.leads)
 
-    def _collect_stats(self) -> ClientMagnetStats:
+    def _collect_stats(self) -> Dict[str, object]:
         """Aggregated engine performance for master dashboard."""
         summary = self.get_pipeline_summary()
         return {

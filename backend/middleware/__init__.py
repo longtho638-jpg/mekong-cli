@@ -4,6 +4,7 @@ Backend Middleware Package
 Security and request processing middleware.
 """
 
+from backend.middleware.rate_limiter import RateLimitMiddleware
 from backend.middleware.webhook_auth import (
     WebhookAuthError,
     gumroad_webhook_auth_middleware,
@@ -17,6 +18,8 @@ from backend.middleware.webhook_auth import (
 )
 
 __all__ = [
+    # Middleware classes
+    "RateLimitMiddleware",
     # Exceptions
     "WebhookAuthError",
     # Middleware functions

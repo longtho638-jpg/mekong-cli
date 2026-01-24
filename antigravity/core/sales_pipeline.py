@@ -108,7 +108,7 @@ class SalesPipeline(BaseEngine):
             },
         }
 
-    def _collect_stats(self) -> PipelineStatsDict:
+    def _collect_stats(self) -> Dict[str, object]:
         """Engine-standard performance statistics."""
         breakdown = self.get_pipeline_breakdown()
         return {

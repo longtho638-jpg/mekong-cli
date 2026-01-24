@@ -116,5 +116,5 @@ def generate_analytics_report(
         },
         "ai_agents_active": len(ai_agents),
         "quantum_states": len(quantum_states),
-        "performance_score": calculate_performance_score(metrics),
+        "performance_score": calculate_performance_score(metrics),  # type: ignore[arg-type]
     }

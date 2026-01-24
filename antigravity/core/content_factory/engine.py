@@ -92,9 +92,10 @@ class ContentFactory(StatsMixin):
         if len(self.ideas) < days:
             self.generate_ideas(days - len(self.ideas) + 5)
 
-        return self.scheduler.create_schedule(self.ideas, days)
+        result = self.scheduler.create_schedule(self.ideas, days)
+        return result  # type: ignore[return-value]
 
-    def _collect_stats(self) -> ContentFactoryStatsDict:
+    def _collect_stats(self) -> Dict[str, object]:
         """Summarizes production performance."""
         return {
             "inventory": {

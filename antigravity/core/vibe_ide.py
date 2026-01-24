@@ -118,7 +118,7 @@ class VIBEIDE(BaseEngine):
             except Exception as e:
                 logger.warning(f"Failed to index plan {plan_file}: {e}")
 
-        return sorted(found_plans, key=lambda p: p["modified"], reverse=True)
+        return sorted(found_plans, key=lambda p: p.get("modified", ""), reverse=True)  # type: ignore[return-value, arg-type]
 
     def _extract_title(self, path: Path) -> str:
         """Helper to find the title in Markdown frontmatter or header."""
@@ -171,7 +171,7 @@ class VIBEIDE(BaseEngine):
                 return True
         return False
 
-    def _collect_stats(self) -> IDEStatsDict:
+    def _collect_stats(self) -> Dict[str, object]:
         """Telemetry for the IDE engine."""
         return {
             "workspace": {
