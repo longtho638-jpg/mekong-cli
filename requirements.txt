@@ -56,3 +56,5 @@ python-jose>=3.3.0
 
 # Type compatibility (Pydantic 2.x on Python < 3.12)
 typing_extensions>=4.0.0
+passlib>=1.7.4
+bcrypt>=4.0.0
