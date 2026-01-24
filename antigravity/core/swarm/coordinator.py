@@ -1,174 +1,127 @@
 """
-Swarm Coordinator - Multi-Agent Parallel Execution.
-Central coordinator distributing work across agents with load balancing.
+Swarm Coordinator - Agent Registration and Status Management.
 """
+from __future__ import annotations
 
 import logging
-import threading
 import time
-from antigravity.core.types import SwarmStatusDict
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
-from .coordination import build_status_dict, calculate_throughput
-from .messaging import TaskQueue
-from .types import AgentRole, SwarmMetrics, TaskPriority, TaskStatus
-from .workers import WorkerPool
+from antigravity.core.types import SwarmStatusDict
+
+from .enums import AgentRole
+from .models import SwarmMetrics
+from .state import SwarmState
+
+if TYPE_CHECKING:
+    from .engine import AgentSwarm
 
 logger = logging.getLogger(__name__)
 
 
-class AgentSwarm:
-    """Multi-Agent Swarm with parallel execution, load balancing, and fault tolerance."""
+class SwarmCoordinator:
+    """
+    Coordinates agent registration and status reporting for the swarm.
+    """
 
-    def __init__(self, max_workers: int = 10, enable_metrics: bool = True) -> None:
-        self.max_workers = max_workers
-        self.enable_metrics = enable_metrics
-
-        self._task_queue = TaskQueue()
-        self._worker_pool = WorkerPool(max_workers=max_workers)
-
-        self._lock = threading.Lock()
-        self._running = False
-        self.metrics = SwarmMetrics()
-
-        logger.info(f"AgentSwarm initialized with {max_workers} workers")
+    def __init__(self, swarm: "AgentSwarm", state: SwarmState):
+        self.swarm = swarm
+        self.state = state
 
     def register_agent(
         self,
         name: str,
-        handler: Callable,
+        handler: Callable[[Any], Any],
         role: AgentRole = AgentRole.WORKER,
         specialties: Optional[List[str]] = None,
     ) -> str:
         """Register an agent with the swarm."""
-        agent_id = self._worker_pool.register(name, handler, role, specialties)
+        agent_id = self.swarm.registry.register(name, handler, role, specialties)
 
-        with self._lock:
-            self.metrics.total_agents += 1
-            self.metrics.idle_agents += 1
+        with self.state.lock:
+            self.state.metrics.total_agents += 1
+            self.state.metrics.idle_agents += 1
 
         return agent_id
 
-    def submit_task(
-        self,
-        name: str,
-        payload: object,
-        priority: TaskPriority = TaskPriority.NORMAL,
-        timeout_seconds: int = 300,
-    ) -> str:
-        """Submit a task to the swarm."""
-        task_id = self._task_queue.submit(name, payload, priority, timeout_seconds)
-
-        with self._lock:
-            self.metrics.total_tasks += 1
-
-        if self._running:
-            self._try_assign_tasks()
-
-        return task_id
-
-    def _try_assign_tasks(self) -> None:
-        """Try to assign pending tasks to available agents."""
-        with self._lock:
-            available_agents = self._worker_pool.get_available_workers()
-
-            for agent in available_agents:
-                if self._task_queue.is_empty():
-                    break
-
-                # Find best task for this agent
-                for task_id in self._task_queue.iter_queue():
-                    task = self._task_queue.get_task(task_id)
-                    if task and self._worker_pool.find_best_agent(task, [agent]):
-                        self._assign_task(task_id, agent.id)
-                        break
-
-    def _assign_task(self, task_id: str, agent_id: str) -> None:
-        """Assign task to agent."""
-        task = self._task_queue.get_task(task_id)
-        agent = self._worker_pool.agents.get(agent_id)
-
-        if not task or not agent:
-            return
-
-        task.status = TaskStatus.ASSIGNED
-        task.assigned_agent = agent_id
-        self._worker_pool.mark_busy(agent_id)
-
-        self._task_queue.remove(task_id)
-        self.metrics.idle_agents -= 1
-        self.metrics.busy_agents += 1
-
-        # Execute in worker pool
-        self._worker_pool.execute_task(task, agent, self._on_task_complete, self.metrics)
-
-        logger.info(f"Task {task.name} assigned to {agent.name}")
-
-    def _on_task_complete(self) -> None:
-        """Callback when task completes."""
-        with self._lock:
-            self.metrics.busy_agents -= 1
-            self.metrics.idle_agents += 1
-
-        self._try_assign_tasks()
-
-    def start(self) -> None:
-        """Start the swarm."""
-        self._running = True
-        self._try_assign_tasks()
-        logger.info("Swarm started")
-
-    def stop(self) -> None:
-        """Stop the swarm."""
-        self._running = False
-        self._worker_pool.shutdown(wait=True)
-        logger.info("Swarm stopped")
-
-    def get_task_result(
-        self, task_id: str, wait: bool = True, timeout: Optional[float] = None
-    ) -> Optional[Any]:
-        """Get task result."""
-        task = self._task_queue.get_task(task_id)
-        if not task:
-            return None
-
-        if wait:
-            start = time.time()
-            while task.status not in [TaskStatus.COMPLETED, TaskStatus.FAILED]:
-                if timeout and (time.time() - start) > timeout:
-                    return None
-                time.sleep(0.1)
-
-        return task.result if task.status == TaskStatus.COMPLETED else None
-
     def get_metrics(self) -> SwarmMetrics:
         """Get swarm metrics."""
-        self.metrics.avg_task_time = self._worker_pool.get_avg_task_time()
-        self.metrics.throughput_per_minute = calculate_throughput(self._task_queue)
-        return self.metrics
+        from .coordination import calculate_throughput
+
+        if self.state.task_times:
+            self.state.metrics.avg_task_time = sum(self.state.task_times) / len(
+                self.state.task_times
+            )
+
+        # Calculate throughput (tasks completed in last minute)
+        self.state.metrics.throughput_per_minute = calculate_throughput(
+            self.swarm.task_manager
+        )
+
+        return self.state.metrics
 
     def get_status(self) -> SwarmStatusDict:
         """Get swarm status."""
-        return build_status_dict(self._running, self._worker_pool, self._task_queue, self.metrics)
+        agents_status = {
+            a.id: {
+                "name": a.name,
+                "role": a.role.value,
+                "busy": a.is_busy,
+                "completed": a.tasks_completed,
+                "failed": a.tasks_failed,
+                "success_rate": a.tasks_completed / (a.tasks_completed + a.tasks_failed)
+                if (a.tasks_completed + a.tasks_failed) > 0
+                else 1.0,
+            }
+            for a in self.swarm.registry.agents.values()
+        }
 
-    # Expose internal components for advanced usage
-    @property
-    def tasks(self) -> Dict[str, object]:
-        """Access to tasks dict for backward compatibility."""
-        return self._task_queue.tasks
+        metrics = self.get_metrics()
 
-    @property
-    def agents(self) -> Dict[str, object]:
-        """Access to agents dict for backward compatibility."""
-        return self._worker_pool.agents
+        return {
+            "running": self.state.running,
+            "agents": agents_status,
+            "pending_tasks": self.swarm.task_manager.get_pending_count(),
+            "metrics": {
+                "total_agents": metrics.total_agents,
+                "busy_agents": metrics.busy_agents,
+                "completed_tasks": metrics.completed_tasks,
+                "failed_tasks": metrics.failed_tasks,
+                "avg_task_time": metrics.avg_task_time,
+            },
+        }
 
-    @property
-    def task_queue(self) -> List[str]:
-        """Access to task queue for backward compatibility."""
-        return self._task_queue.queue
+    def find_best_agent(
+        self, specialty: Optional[str] = None, role: Optional[AgentRole] = None
+    ) -> Optional[str]:
+        """
+        Finds the best available agent based on performance metrics (success rate and speed).
+        """
+        eligible_agents = list(self.swarm.registry.agents.values())
 
+        if specialty:
+            eligible_agents = [a for a in eligible_agents if specialty in (a.specialties or [])]
 
-# Alias for backward compatibility
-SwarmCoordinator = AgentSwarm
+        if role:
+            eligible_agents = [a for a in eligible_agents if a.role == role]
 
-__all__ = ["AgentSwarm", "SwarmCoordinator"]
+        # Filter for non-busy agents first
+        available_agents = [a for a in eligible_agents if not a.is_busy]
+
+        # If all busy, we still might need to queue, but for routing we want the 'best'
+        target_list = available_agents if available_agents else eligible_agents
+
+        if not target_list:
+            return None
+
+        def agent_score(agent):
+            success_rate = (
+                agent.tasks_completed / (agent.tasks_completed + agent.tasks_failed)
+                if (agent.tasks_completed + agent.tasks_failed) > 0
+                else 1.0
+            )
+            # Higher success rate is better, fewer failures is better
+            return success_rate
+
+        best_agent = max(target_list, key=agent_score)
+        return best_agent.id

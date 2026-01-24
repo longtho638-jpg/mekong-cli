@@ -45,6 +45,7 @@ class TaskManager:
         with self._lock:
             self.tasks[task_id] = task
             self._insert_by_priority(task_id, priority)
+            logger.debug(f"Queue after insert: {self.task_queue}")
 
         # Create Kanban Card
         try:
@@ -109,6 +110,11 @@ class TaskManager:
         """Get number of pending tasks."""
         with self._lock:
             return len(self.task_queue)
+
+    def get_all_tasks(self) -> Dict[str, SwarmTask]:
+        """Get all tasks."""
+        with self._lock:
+            return self.tasks.copy()
 
     def get_task_result(
         self, task_id: str, wait: bool = True, timeout: float = None
