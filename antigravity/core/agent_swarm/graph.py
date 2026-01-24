@@ -6,7 +6,9 @@ import logging
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, TypedDict, Union
+from typing import Any, Callable, Dict, List, Optional, Set
+
+from typing_extensions import TypedDict, Union
 
 from .engine import AgentSwarm
 from .enums import TaskPriority, TaskStatus

@@ -2,7 +2,9 @@
 Pricing logic for Antigravity Algorithm.
 """
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .types import PricingContext, PricingStrategy
 

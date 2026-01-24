@@ -3,7 +3,9 @@ Command Service - Business logic for Mekong commands
 """
 
 import logging
-from typing import Dict, List, TypedDict
+from typing import Dict, List
+
+from typing_extensions import TypedDict
 
 from backend.models.command import CommandRequest, CommandResponse
 

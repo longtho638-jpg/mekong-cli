@@ -1,16 +1,27 @@
 """
 Observability Stack.
 """
+
 import logging
 import threading
 import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from .alerts import AlertManager
+from typing_extensions import TypedDict
+
+from .alerts import AlertManager, AlertManagerStatusDict
 from .collector import MetricsCollector
 
 logger = logging.getLogger(__name__)
+
+
+class ObservabilityDashboardDict(TypedDict):
+    """Dashboard data structure."""
+
+    metrics: Dict[str, Any]
+    alerts: AlertManagerStatusDict
+    updated_at: str
 
 
 class ObservabilityStack:

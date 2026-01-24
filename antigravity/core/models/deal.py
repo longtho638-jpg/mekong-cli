@@ -17,7 +17,9 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from ..config import DealTier, get_tier_pricing
 

@@ -9,9 +9,10 @@ Replaces hardcoded Python chain definitions with data-driven config.
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 import yaml
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

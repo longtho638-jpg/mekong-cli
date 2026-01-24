@@ -18,7 +18,9 @@ import argparse
 import json
 import logging
 import sys
-from typing import Any, Dict, Optional, Tuple, TypedDict
+from typing import Any, Dict, Optional, Tuple
+
+from typing_extensions import TypedDict
 
 # Configure logging
 logger = logging.getLogger(__name__)

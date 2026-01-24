@@ -9,11 +9,14 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 
 class ServiceTier(Enum):
     """Client engagement levels based on strategic depth."""
+
     WARRIOR = "warrior"  # Tier 1: Pre-Seed/Seed
     GENERAL = "general"  # Tier 2: Series A
     TUONG_QUAN = "tuong_quan"  # Tier 3: Venture Studio / Co-Founder
@@ -39,16 +42,31 @@ BINH_PHAP_SERVICES = {
 TIER_PROFILES = {
     ServiceTier.WARRIOR: {"retainer_usd": 2000, "equity_range": (5.0, 8.0), "success_fee_pct": 2.0},
     ServiceTier.GENERAL: {"retainer_usd": 5000, "equity_range": (3.0, 5.0), "success_fee_pct": 1.5},
-    ServiceTier.TUONG_QUAN: {"retainer_usd": 0, "equity_range": (15.0, 30.0), "success_fee_pct": 0.0},
+    ServiceTier.TUONG_QUAN: {
+        "retainer_usd": 0,
+        "equity_range": (15.0, 30.0),
+        "success_fee_pct": 0.0,
+    },
 }
+
+
+class BinhPhapServiceEntry(TypedDict):
+    """Single service entry in the Binh Phap catalog"""
+
+    name: str
+    label: str
+    price: int
+    recurring: Optional[bool]
+    quarterly: Optional[bool]
 
 
 @dataclass
 class Quote:
     """A detailed financial proposal for a client."""
+
     id: int
     client_name: str
-    services: List[Dict[str, Any]]
+    services: List[BinhPhapServiceEntry]
     tier: ServiceTier
     one_time_total: Decimal
     monthly_retainer: Decimal
@@ -62,6 +80,7 @@ class Quote:
 @dataclass
 class Win3Result:
     """Outcome of the Hiến Pháp WIN-WIN-WIN alignment check."""
+
     is_valid: bool
     score: int  # 0-100
     details: Dict[str, str]

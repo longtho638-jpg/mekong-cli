@@ -4,7 +4,9 @@ Agent Service - Business logic for agent operations
 
 import logging
 from datetime import datetime
-from typing import Dict, List, TypedDict
+from typing import Dict, List
+
+from typing_extensions import TypedDict
 
 from backend.models.agent import AgentResponse, AgentTask
 from core.agent_orchestrator import get_orchestrator

@@ -6,7 +6,9 @@ Helper functions for algorithm analytics and data building.
 """
 
 import time
-from typing import TYPE_CHECKING, Any, Dict, List, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, List
+
+from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
     from .ab_testing import ABTestEngine

@@ -1,9 +1,12 @@
 """
 Alert Manager.
 """
+
 import logging
 from datetime import datetime
-from typing import Any, Callable, Dict, List, TypedDict
+from typing import Any, Callable, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .collector import MetricsCollector
 from .enums import AlertSeverity
@@ -21,6 +24,7 @@ class AlertStatusItemDict(TypedDict):
 
 class AlertManagerStatusDict(TypedDict):
     """Summary of all alert statuses"""
+
     alerts: Dict[str, AlertStatusItemDict]
     history_count: int
 

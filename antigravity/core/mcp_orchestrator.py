@@ -10,10 +10,11 @@ import os
 import subprocess
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 import aiohttp
+from typing_extensions import TypedDict, Union
 
 from .registry.mcp_catalog import mcp_catalog
 

@@ -16,7 +16,9 @@ Binh Pháp: 💂 Tướng (Leadership) - Managing the numbers that drive the mar
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 from ..base import BaseEngine
 from ..config import EXCHANGE_RATES, Currency

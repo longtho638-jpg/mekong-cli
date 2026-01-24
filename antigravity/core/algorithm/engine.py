@@ -3,7 +3,9 @@ The central engine for Antigravity Algorithm.
 """
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .forecasting import ForecastResultDict, forecast_revenue_logic
 from .pricing import PRICING_TABLE, PricingResultDict, calculate_price_logic

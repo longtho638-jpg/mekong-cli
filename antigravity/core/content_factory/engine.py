@@ -10,7 +10,9 @@ specialized templates and regional tones.
 import logging
 from antigravity.core.mixins import StatsMixin
 from antigravity.core.patterns import singleton_factory
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .ideation import ContentIdeator
 from .models import ContentIdea, ContentPiece, ContentType

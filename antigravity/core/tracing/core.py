@@ -6,7 +6,9 @@ import logging
 import threading
 import uuid
 from contextvars import ContextVar
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict, Union
 
 
 class TracingMetricsDict(TypedDict, total=False):

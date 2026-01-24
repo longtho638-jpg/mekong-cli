@@ -15,10 +15,11 @@ Endpoints:
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from typing_extensions import TypedDict
 
 router = APIRouter(prefix="/api/code", tags=["code", "opencode"])
 

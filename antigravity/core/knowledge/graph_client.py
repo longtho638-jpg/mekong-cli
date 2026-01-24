@@ -3,9 +3,10 @@ import logging
 import os
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from falkordb import FalkorDB
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

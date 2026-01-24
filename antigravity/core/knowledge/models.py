@@ -3,9 +3,10 @@ Knowledge Models: Pydantic definitions for Graph Nodes and Edges.
 """
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
+from typing_extensions import TypedDict
 
 
 class NodeDict(TypedDict, total=False):

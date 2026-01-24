@@ -11,10 +11,11 @@ import inspect
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, Optional
 
 from backend.database.supabase import get_db
 from fastapi import Request
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

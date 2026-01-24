@@ -5,7 +5,9 @@ Enforces HIPAA compliance and telehealth standards.
 """
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

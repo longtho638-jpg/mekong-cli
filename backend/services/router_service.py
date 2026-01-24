@@ -3,7 +3,9 @@ Router Service - Business logic for hybrid routing
 """
 
 from enum import Enum
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List
+
+from typing_extensions import TypedDict
 
 from backend.models.router import RouterRequest, RouterResponse
 

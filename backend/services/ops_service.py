@@ -5,7 +5,9 @@ Ops Service - Business logic for system operations, health monitoring and approv
 import logging
 from antigravity.core.ops.approval_gate import ApprovalGate, ApprovalRequest
 from antigravity.core.ops.auto_healer import AutoHealer, HealthStatus
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 

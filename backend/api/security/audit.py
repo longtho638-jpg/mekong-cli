@@ -2,7 +2,9 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, Optional
+
+from typing_extensions import TypedDict
 
 
 class StructuredAuditLogDict(TypedDict):

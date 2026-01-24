@@ -8,7 +8,9 @@ Auto-rollback on critical issues.
 
 import logging
 import time
-from typing import Any, Callable, Dict, List, Optional, TypedDict
+from typing import Any, Callable, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .models import (
     PerformanceAnomaly,

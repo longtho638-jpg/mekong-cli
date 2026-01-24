@@ -4,10 +4,11 @@ from antigravity.core.agent_swarm.enums import TaskPriority
 from antigravity.core.agent_swarm.shortcuts import get_swarm
 from antigravity.core.agent_swarm.shortcuts import submit_task as submit_v2_task
 from antigravity.core.swarm.bus import MessageBus
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
+from typing_extensions import TypedDict
 
 from backend.api.security.rbac import require_operator, require_viewer
 from backend.websocket.server import emit_swarm_update

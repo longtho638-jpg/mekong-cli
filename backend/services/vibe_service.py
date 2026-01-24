@@ -3,7 +3,9 @@ Vibe Service - Business logic for vibe operations
 """
 
 import logging
-from typing import Dict, List, Optional, TypedDict
+from typing import Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from backend.models.vibe import VibeRequest, VibeResponse
 

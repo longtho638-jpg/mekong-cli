@@ -8,7 +8,9 @@ Logic for managing and executing multi-agent crews.
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional
+
+from typing_extensions import TypedDict
 
 from .models import Crew, CrewResult, CrewStatus
 from .registry import CREWS
