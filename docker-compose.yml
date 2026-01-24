@@ -1,70 +1,158 @@
-# 🏯 Agency OS - Docker Compose
+# 🏯 Mekong-CLI - Docker Compose
 # ==============================
-# Local development with hot reload
-# "Dễ như ăn kẹo!" - docker-compose up
-
-version: '3.8'
+# Local development environment
+# "Deploy Your Agency in 15 Minutes!"
 
 services:
-  # Python Backend API
-  api:
-    build: .
+  # ===================================
+  # 1. FastAPI Backend (Port 8000)
+  # ===================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mekong-app
     ports:
       - "8000:8000"
     volumes:
+      # Hot reload for development
       - ./antigravity:/app/antigravity
       - ./backend:/app/backend
+      - ./core:/app/core
+      - ./cli:/app/cli
+      - ./scripts:/app/scripts
     environment:
+      # Load from .env file
       - PORT=8000
       - ENVIRONMENT=development
       - PYTHONPATH=/app
+
+      # Database connection
+      - DATABASE_URL=postgresql://mekong:mekong_dev_pass@postgres:5432/mekong_db
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mekong_db
+      - POSTGRES_USER=mekong
+      - POSTGRES_PASSWORD=mekong_dev_pass
+
+      # Redis connection
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    env_file:
+      - .env
     command: uvicorn backend.api.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
+    networks:
+      - mekong-network
 
-  # Next.js Dashboard
-  dashboard:
-    build:
-      context: ./apps/dashboard
-      dockerfile: Dockerfile
+  # ===================================
+  # 2. PostgreSQL 15 (Port 5432)
+  # ===================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: mekong-postgres
     ports:
-      - "3000:3000"
+      - "5432:5432"
     volumes:
-      - ./apps/dashboard:/app
-      - /app/node_modules
-      - /app/.next
+      # Persistent database storage
+      - postgres_data:/var/lib/postgresql/data
+      # Init scripts (optional)
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
-      - NODE_ENV=development
-      - NEXT_TELEMETRY_DISABLED=1
-    command: npm run dev
-    depends_on:
-      - api
+      - POSTGRES_DB=mekong_db
+      - POSTGRES_USER=mekong
+      - POSTGRES_PASSWORD=mekong_dev_pass
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mekong -d mekong_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mekong-network
 
-  # Knowledge Graph (FalkorDB)
-  # Persistent contextual memory for agents
-  knowledge_graph:
-    image: falkordb/falkordb:latest
+  # ===================================
+  # 3. Redis 7 (Port 6379)
+  # ===================================
+  redis:
+    image: redis:7-alpine
+    container_name: mekong-redis
     ports:
       - "6379:6379"
     volumes:
-      - ./data/falkordb:/data
-    environment:
-      - FALKORDB_ARGS=--load-module /usr/lib/redis/modules/falkordb.so
+      # Persistent Redis data
+      - redis_data:/data
+      # Custom config (optional)
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 5s
+    networks:
+      - mekong-network
 
-  # Next.js Landing (Optional)
-  # web:
-  #   build:
-  #     context: ./apps/web
-  #   ports:
-  #     - "3001:3000"
-  #   depends_on:
-  #     - api
+  # ===================================
+  # 4. Documentation Site (Port 3000)
+  # ===================================
+  docs:
+    build:
+      context: ./mekong-docs
+      dockerfile: Dockerfile
+    container_name: mekong-docs
+    ports:
+      - "3000:3000"
+    volumes:
+      # Hot reload for documentation
+      - ./mekong-docs:/app
+      - ./docs:/app/docs
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      - API_URL=http://app:8000
+    command: npm run dev
+    depends_on:
+      - app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - mekong-network
 
+# ===================================
+# Volumes (Persistent Storage)
+# ===================================
+volumes:
+  postgres_data:
+    driver: local
+    name: mekong_postgres_data
+  redis_data:
+    driver: local
+    name: mekong_redis_data
+
+# ===================================
+# Network Configuration
+# ===================================
+networks:
+  mekong-network:
+    driver: bridge
+    name: mekong_network
