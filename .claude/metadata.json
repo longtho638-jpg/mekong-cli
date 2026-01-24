@@ -1,5 +1,6 @@
 {
   "deletions": [
+    "commands/brainstorm.md",
     "commands/code/**",
     "commands/code.md",
     "commands/content/**",
@@ -7,10 +8,14 @@
     "commands/cook.md",
     "commands/design/**",
     "commands/fix/**",
+    "commands/git/**",
+    "commands/integrate/**",
     "commands/scout/**",
     "commands/scout.md",
     "commands/skill/**",
+    "skills/_archive/**",
     "skills/aesthetic/**",
+    "skills/beads/**",
     "skills/claude-code/**",
     "skills/frontend-design-pro/**"
   ],
