@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -8,10 +8,18 @@ from backend.api.security.rbac import require_admin
 
 router = APIRouter(prefix="/audit", tags=["audit"])
 
-@router.get("/logs", dependencies=[Depends(require_admin)])
-async def get_audit_logs() -> List[Dict[str, Any]]:
+
+class AuditLogEntry(TypedDict):
+    event: str
+    user: str
+    timestamp: str
+    details: Dict[str, Any]
+
+
+@router.get("/logs", response_model=List[AuditLogEntry], dependencies=[Depends(require_admin)])
+async def get_audit_logs() -> List[AuditLogEntry]:
     """Retrieve audit logs (Mock implementation reading from file)."""
-    logs = []
+    logs: List[AuditLogEntry] = []
     log_file = audit_logger.log_dir / "audit.log"
     if log_file.exists():
         try:
@@ -23,7 +31,7 @@ async def get_audit_logs() -> List[Dict[str, Any]]:
                     try:
                         json_part = line.split(" - INFO - ")[1]
                         logs.append(json.loads(json_part))
-                    except IndexError:
+                    except (IndexError, json.JSONDecodeError):
                         pass
         except Exception:
             pass

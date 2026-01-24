@@ -15,12 +15,66 @@ Endpoints:
 """
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/api/code", tags=["code", "opencode"])
+
+
+class CodeStatusDict(TypedDict):
+    name: str
+    version: str
+    capabilities: List[str]
+    mcp_server: str
+    opencode_compatible: bool
+
+
+class CodeToolDict(TypedDict):
+    name: str
+    description: str
+    category: str
+
+
+class CodeToolsListDict(TypedDict):
+    tools: List[CodeToolDict]
+    count: int
+
+
+class CodeExecutionResultDict(TypedDict):
+    action: str
+    target: Optional[str]
+    params: Optional[Dict[str, Any]]
+    executed: bool
+    output: str
+
+
+class CodeAnalysisHealthDict(TypedDict):
+    test_coverage: int
+    lint_score: int
+    complexity: str
+
+
+class CodeAnalysisStatsDict(TypedDict):
+    files: int
+    directories: int
+    lines_of_code: int
+    languages: List[str]
+
+
+class CodeAnalysisDict(TypedDict):
+    path: str
+    depth: int
+    stats: CodeAnalysisStatsDict
+    health: CodeAnalysisHealthDict
+
+
+class CodeSuggestionDict(TypedDict):
+    type: str
+    suggestion: str
+    context_length: int
+    ai_model: str
 
 
 # Request/Response Models
@@ -74,15 +128,16 @@ async def health_check() -> Dict[str, str]:
 @router.get("/status")
 async def get_status() -> CodeResponse:
     """Get code API status and capabilities."""
+    data: CodeStatusDict = {
+        "name": "Antigravity Code API",
+        "version": "1.0.0",
+        "capabilities": ["execute", "analyze", "suggest", "mcp_tools"],
+        "mcp_server": "antigravity",
+        "opencode_compatible": True,
+    }
     return CodeResponse(
         success=True,
-        data={
-            "name": "Antigravity Code API",
-            "version": "1.0.0",
-            "capabilities": ["execute", "analyze", "suggest", "mcp_tools"],
-            "mcp_server": "antigravity",
-            "opencode_compatible": True,
-        },
+        data=data,
         message="Code API operational",
     )
 
@@ -90,7 +145,7 @@ async def get_status() -> CodeResponse:
 @router.get("/tools")
 async def list_tools() -> CodeResponse:
     """List available MCP tools for OpenCode."""
-    tools = [
+    tools: List[CodeToolDict] = [
         {
             "name": "antigravity_status",
             "description": "Get Antigravity system status",
@@ -124,9 +179,10 @@ async def list_tools() -> CodeResponse:
         },
     ]
 
+    data: CodeToolsListDict = {"tools": tools, "count": len(tools)}
     return CodeResponse(
         success=True,
-        data={"tools": tools, "count": len(tools)},
+        data=data,
         message="MCP tools listed",
     )
 
@@ -141,7 +197,7 @@ async def execute_action(request: ExecuteRequest) -> CodeResponse:
         raise HTTPException(status_code=400, detail=f"Invalid action. Valid: {valid_actions}")
 
     # Simulate action execution
-    result = {
+    result: CodeExecutionResultDict = {
         "action": request.action,
         "target": request.target,
         "params": request.params,
@@ -157,7 +213,7 @@ async def analyze_codebase(request: AnalyzeRequest) -> CodeResponse:
     """Analyze codebase structure."""
 
     # Simulate analysis
-    analysis = {
+    analysis: CodeAnalysisDict = {
         "path": request.path,
         "depth": request.depth,
         "stats": {
@@ -185,13 +241,15 @@ async def get_suggestions(request: SuggestRequest) -> CodeResponse:
 
     suggestion = suggestion_types.get(request.type, "Review the code for potential improvements.")
 
+    data: CodeSuggestionDict = {
+        "type": request.type,
+        "suggestion": suggestion,
+        "context_length": len(request.context),
+        "ai_model": "antigravity-advisor",
+    }
+
     return CodeResponse(
         success=True,
-        data={
-            "type": request.type,
-            "suggestion": suggestion,
-            "context_length": len(request.context),
-            "ai_model": "antigravity-advisor",
-        },
+        data=data,
         message=f"Generated {request.type} suggestions",
     )

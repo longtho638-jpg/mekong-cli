@@ -4,7 +4,7 @@ from antigravity.core.agent_swarm.enums import TaskPriority
 from antigravity.core.agent_swarm.shortcuts import get_swarm
 from antigravity.core.agent_swarm.shortcuts import submit_task as submit_v2_task
 from antigravity.core.swarm.bus import MessageBus
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
@@ -17,24 +17,41 @@ from backend.websocket.server import manager as ws_manager
 
 router = APIRouter(prefix="/swarm", tags=["swarm"])
 
-# --- Swarm V2 Real-time Bridge ---
 
-def notify_swarm_realtime():
-    """Callback for swarm engine to trigger WebSocket broadcast."""
-    import asyncio
-    try:
-        loop = asyncio.get_running_loop()
-        if loop.is_running():
-            loop.create_task(emit_swarm_update())
-    except RuntimeError:
-        # No running event loop
-        pass
+class SwarmAgentStatusDict(TypedDict):
+    id: str
+    name: str
+    role: str
+    is_busy: bool
+    tasks_completed: int
+    tasks_failed: int
+    specialties: List[str]
 
-# Register the bridge callback
-get_swarm().add_update_callback(notify_swarm_realtime)
 
-# ... (Legacy V1 Swarm Code can remain for now if needed, or be replaced) ...
-# For now, we'll keep V1 imports but focus on adding V2 endpoints
+class SwarmMetricsDict(TypedDict):
+    total_tasks: int
+    completed_tasks: int
+    failed_tasks: int
+    busy_agents: int
+    idle_agents: int
+    pending_tasks: int
+
+
+class SwarmStatusResponse(TypedDict):
+    running: bool
+    agents: List[SwarmAgentStatusDict]
+    metrics: SwarmMetricsDict
+
+
+class SwarmTaskDict(TypedDict):
+    id: str
+    name: str
+    status: str
+    priority: str
+    assigned_agent: Optional[str]
+    created_at: float
+    completed_at: Optional[float]
+
 
 class TaskRequest(BaseModel):
     content: str
@@ -53,13 +70,13 @@ async def dispatch_task(request: TaskRequest):
 
 # --- Swarm V2 Endpoints ---
 
-@router.get("/v2/status", dependencies=[Depends(require_viewer)])
-async def get_swarm_status():
+@router.get("/v2/status", response_model=SwarmStatusResponse, dependencies=[Depends(require_viewer)])
+async def get_swarm_status() -> SwarmStatusResponse:
     """Get current status of Swarm v2 (Agents, Metrics)."""
     swarm = get_swarm()
 
     # Collect Agent Status
-    agents = []
+    agents: List[SwarmAgentStatusDict] = []
     for agent_id, agent in swarm.registry.agents.items():
         agents.append({
             "id": agent.id,
@@ -72,7 +89,7 @@ async def get_swarm_status():
         })
 
     # Metrics
-    metrics = {
+    metrics: SwarmMetricsDict = {
         "total_tasks": swarm.metrics.total_tasks,
         "completed_tasks": swarm.metrics.completed_tasks,
         "failed_tasks": swarm.metrics.failed_tasks,
@@ -102,11 +119,11 @@ async def dispatch_v2_task(request: V2TaskRequest):
     )
     return {"status": "submitted", "task_id": task_id}
 
-@router.get("/v2/tasks", dependencies=[Depends(require_viewer)])
-async def list_v2_tasks():
+@router.get("/v2/tasks", response_model=List[SwarmTaskDict], dependencies=[Depends(require_viewer)])
+async def list_v2_tasks() -> List[SwarmTaskDict]:
     """List active tasks in Swarm v2."""
     swarm = get_swarm()
-    tasks = []
+    tasks: List[SwarmTaskDict] = []
     # In a real app, we might filter or paginate.
     # Accessing .tasks directly for MVP.
     with swarm.task_manager._lock:

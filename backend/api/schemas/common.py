@@ -5,7 +5,7 @@ Common API Schemas
 Shared schemas used across multiple endpoints.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -23,7 +23,7 @@ class SuccessResponse(BaseModel):
 
     success: bool = Field(default=True, description="Operation success status")
     message: Optional[str] = Field(default=None, description="Success message")
-    data: Optional[Dict[str, Any]] = Field(default=None, description="Response data")
+    data: Optional[Union[Dict[str, Any], Any]] = Field(default=None, description="Response data")
 
 
 class HealthResponse(BaseModel):

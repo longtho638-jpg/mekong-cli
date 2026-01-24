@@ -2,12 +2,13 @@
 AgentOps Controller - HTTP handlers for AgentOps operations
 """
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from fastapi import HTTPException
 
 from backend.models.agentops import OpsExecuteRequest, OpsExecuteResponse
 from backend.services.agentops import AgentOpsService
+from backend.services.agentops.reporting import BinhPhapChaptersResponse, DepartmentSummary
 
 
 class AgentOpsController:
@@ -48,7 +49,7 @@ class AgentOpsController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to execute ops: {str(e)}")
 
-    async def get_categories_summary(self) -> Dict[str, Any]:
+    async def get_categories_summary(self) -> DepartmentSummary:
         """Get summary by department category"""
         try:
             return await self.agentops_service.get_categories_summary()
@@ -57,7 +58,7 @@ class AgentOpsController:
                 status_code=500, detail=f"Failed to get categories summary: {str(e)}"
             )
 
-    async def get_binh_phap_chapters(self) -> Dict[str, Any]:
+    async def get_binh_phap_chapters(self) -> BinhPhapChaptersResponse:
         """Get Binh Pháp 13 Chapters integrated with AgentOps"""
         try:
             return await self.agentops_service.get_binh_phap_chapters()

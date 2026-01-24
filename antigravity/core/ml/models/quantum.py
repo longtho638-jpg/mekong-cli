@@ -7,9 +7,19 @@ Quantum-inspired optimization algorithm for pricing.
 
 import hashlib
 from collections import defaultdict
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 import numpy as np
+
+
+class QuantumOptimizationResult(TypedDict):
+    """Result from quantum optimization."""
+
+    optimal_price: float
+    quantum_fingerprint: str
+    improvement_over_classical: float
+    quantum_states: int
+    strategy: str
 
 
 class QuantumOptimizer:
@@ -19,7 +29,7 @@ class QuantumOptimizer:
         self.quantum_states = defaultdict(list)
         self.entanglement_pairs = []
 
-    def optimize_price(self, features: Dict[str, float]) -> Dict[str, Any]:
+    def optimize_price(self, features: Dict[str, float]) -> QuantumOptimizationResult:
         """
         Quantum-inspired price optimization.
 
@@ -40,13 +50,12 @@ class QuantumOptimizer:
 
         # Quantum optimization (interference pattern)
         interference_pattern = np.random.random(len(quantum_prices))
-        quantum_optimal = np.mean(quantum_prices + interference_pattern)
+        quantum_optimal = float(np.mean(quantum_prices + interference_pattern))
 
         return {
             "optimal_price": quantum_optimal,
             "quantum_fingerprint": self._generate_quantum_fingerprint(features),
-            "improvement_over_classical": (quantum_optimal - classical_optimal)
-            / classical_optimal,
+            "improvement_over_classical": (quantum_optimal - classical_optimal) / classical_optimal,
             "quantum_states": len(quantum_prices),
             "strategy": "quantum_inspired",
         }
@@ -56,7 +65,5 @@ class QuantumOptimizer:
         feature_vector = np.array(list(features.values()))
         quantum_hash = np.fft.fft(feature_vector)
 
-        fingerprint_data = (
-            f"{feature_vector.tobytes().hex()}{quantum_hash.real.tobytes().hex()}"
-        )
+        fingerprint_data = f"{feature_vector.tobytes().hex()}{quantum_hash.real.tobytes().hex()}"
         return hashlib.sha256(fingerprint_data.encode()).hexdigest()[:16]

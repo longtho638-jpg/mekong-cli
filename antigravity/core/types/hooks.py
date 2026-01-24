@@ -2,7 +2,9 @@
 Hook TypedDicts - Typed dictionaries for hooks system.
 """
 
-from typing import Dict, Optional, TypedDict
+from typing import Dict, Optional
+
+from ._compat import TypedDict
 
 
 class Win3ScoreDict(TypedDict):

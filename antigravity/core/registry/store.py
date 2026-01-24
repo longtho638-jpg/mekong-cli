@@ -1,13 +1,30 @@
 """
 Command Registry Store - Data Definitions.
 """
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, TypedDict
+
+
+class SubcommandMetadataDict(TypedDict, total=False):
+    """Metadata for a single subcommand"""
+    module: str
+    class_: str  # Using class_ because class is a keyword
+    method: str
+    agent: str
+
+
+class SuiteMetadataDict(TypedDict):
+    """Metadata for a command suite"""
+    suite: str
+    emoji: str
+    description: str
+    subcommands: Dict[str, SubcommandMetadataDict]
+
 
 # ============================================================
 # COMMAND REGISTRY DEFINITION
 # ============================================================
 
-COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
+COMMAND_REGISTRY: Dict[str, SuiteMetadataDict] = {
     # Revenue Suite: Money and Deals
     "revenue": {
         "suite": "revenue",

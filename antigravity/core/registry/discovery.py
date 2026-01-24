@@ -1,13 +1,25 @@
 """
 Registry Discovery - Command resolution and normalization.
 """
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
-from .mcp_catalog import mcp_catalog
-from .store import COMMAND_REGISTRY, SHORTCUTS
+from .mcp_catalog import MCPToolLookupResult, mcp_catalog
+from .store import COMMAND_REGISTRY, SHORTCUTS, SubcommandMetadataDict
 
 
-def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optional[Dict[str, Any]]]:
+class SearchResultItemDict(TypedDict):
+    type: str
+    name: str
+    description: str
+
+
+class SearchCapabilitiesResponse(TypedDict):
+    """Aggregated search results for platform capabilities"""
+    local: List[SearchResultItemDict]
+    mcp: List[MCPToolLookupResult]
+
+
+def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optional[SubcommandMetadataDict]]:
     """
     Normalizes command input. Supports shortcuts, 'suite:sub' format, or 'mcp:tool'.
     Returns: (suite, subcommand, metadata)
@@ -17,7 +29,9 @@ def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optio
         tool_name = cmd_input.split(":", 1)[1]
         tool_info = mcp_catalog.find_tool(tool_name)
         if tool_info:
-            return "mcp", tool_name, tool_info
+            # Map tool info to a metadata compatible format
+            meta: SubcommandMetadataDict = {"agent": "mcp-developer"}
+            return "mcp", tool_name, meta
         return "mcp", tool_name, None
 
     # 2. Check if it's a direct shortcut
@@ -42,15 +56,17 @@ def resolve_command(cmd_input: str) -> Tuple[Optional[str], Optional[str], Optio
     # 5. Fallback: Search MCP catalog if not found in local registry
     tool_info = mcp_catalog.find_tool(cmd_input)
     if tool_info:
-        return "mcp", cmd_input, tool_info
+        meta: SubcommandMetadataDict = {"agent": "mcp-developer"}
+        return "mcp", cmd_input, meta
 
     return None, None, None
 
-def search_capabilities(query: str) -> Dict[str, Any]:
+
+def search_capabilities(query: str) -> SearchCapabilitiesResponse:
     """
     Search for capabilities across both local registry and MCP tools.
     """
-    results = {
+    results: SearchCapabilitiesResponse = {
         "local": [],
         "mcp": []
     }
@@ -83,7 +99,8 @@ def search_capabilities(query: str) -> Dict[str, Any]:
 
     return results
 
-def _get_local_meta(suite: str, sub: str) -> Optional[Dict[str, Any]]:
+
+def _get_local_meta(suite: str, sub: str) -> Optional[SubcommandMetadataDict]:
     """Helper to get metadata from COMMAND_REGISTRY."""
     suite_data = COMMAND_REGISTRY.get(suite.lower())
     if suite_data:

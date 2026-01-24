@@ -2,10 +2,35 @@
 Memory Retrieval Logic
 """
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 
-def parse_memories(data: Dict[str, Any], Memory_class) -> List[Any]:
+class MemoryDataDict(TypedDict):
+    """Raw memory record from storage"""
+    agent: str
+    context: Dict[str, Any]
+    outcome: str
+    success: bool
+    timestamp: str
+    patterns: List[str]
+    tags: List[str]
+
+
+class PatternDataDict(TypedDict):
+    """Raw pattern record from storage"""
+    pattern: str
+    success_rate: float
+    occurrences: int
+    last_seen: str
+
+
+class MemoryStoreDataDict(TypedDict):
+    """Full raw data structure from storage"""
+    memories: List[MemoryDataDict]
+    patterns: Dict[str, List[PatternDataDict]]
+
+
+def parse_memories(data: MemoryStoreDataDict, Memory_class) -> List[Any]:
     """Parses raw data into Memory objects."""
     memories = []
     for m in data.get("memories", []):
@@ -21,9 +46,10 @@ def parse_memories(data: Dict[str, Any], Memory_class) -> List[Any]:
         memories.append(memory)
     return memories
 
-def parse_patterns(data: Dict[str, Any], Pattern_class) -> Dict[str, List[Any]]:
+
+def parse_patterns(data: MemoryStoreDataDict, Pattern_class) -> Dict[str, List[Any]]:
     """Parses raw data into Pattern objects."""
-    patterns = {}
+    patterns: Dict[str, List[Any]] = {}
     saved_patterns = data.get("patterns", {})
     for agent, p_list in saved_patterns.items():
         patterns[agent] = []

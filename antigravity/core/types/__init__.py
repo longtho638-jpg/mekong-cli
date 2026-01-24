@@ -4,8 +4,12 @@ Type Definitions for Antigravity Core
 
 Centralized type definitions to eliminate Any types across the codebase.
 Provides TypedDicts for complex return values and Protocols for shared interfaces.
+
+🏯 IMPORTANT: Import TypedDict from here, NOT from typing!
+   This ensures Pydantic 2.x compatibility on Python < 3.12.
 """
 
+from ._compat import TypedDict
 from .config import (
     TierPricingDict,
     VariantConfigDict,

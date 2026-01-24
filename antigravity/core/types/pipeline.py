@@ -2,7 +2,7 @@
 Pipeline TypedDicts - Typed dictionaries for sales pipeline data.
 """
 
-from typing import TypedDict
+from ._compat import TypedDict
 
 
 class FunnelDict(TypedDict):

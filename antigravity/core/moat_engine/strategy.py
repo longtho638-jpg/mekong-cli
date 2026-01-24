@@ -1,9 +1,17 @@
 """
 🏰 Moat Strategy Logic
 """
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 from .models import Moat
+
+
+class SwitchingCostDict(TypedDict):
+    """Estimate of the cost to leave the platform"""
+    hours: int
+    days: float
+    financial_usd: int
+    verdict: str
 
 
 class MoatStrategy:
@@ -41,7 +49,7 @@ class MoatStrategy:
         """Calculates the weighted average strength of all 5 moats."""
         return sum(m.strength for m in moats.values()) // 5
 
-    def calculate_switching_cost(self, moats: Dict[str, Moat]) -> Dict[str, Any]:
+    def calculate_switching_cost(self, moats: Dict[str, Moat]) -> SwitchingCostDict:
         """Estimates the time and financial impact of leaving the Agency OS."""
 
         # Heuristic Time Impact (Hours)

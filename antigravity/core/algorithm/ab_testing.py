@@ -4,9 +4,49 @@ Handles experiment creation, variant assignment, and results analysis.
 """
 import math
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from .types import ABTestConfig, ABTestVariant, ConversionData
+
+
+class VariantPerformanceDict(TypedDict):
+    """Performance metrics for a single variant"""
+    conversions: int
+    conversion_rate: float
+    revenue_per_conversion: float
+
+
+class SignificanceDict(TypedDict, total=False):
+    """Statistical significance details"""
+    significant: bool
+    p_value: float
+    z_score: float
+    confidence_level: float
+    reason: str
+
+
+class ABTestAnalysisDict(TypedDict, total=False):
+    """Full analysis of an A/B test"""
+    test_id: str
+    test_name: str
+    duration_days: float
+    total_conversions: int
+    variant_performance: Dict[str, VariantPerformanceDict]
+    recommended_winner: str
+    statistical_significance: SignificanceDict
+    error: str
+
+
+class ABTestCreateResponse(TypedDict):
+    """Response when creating an A/B test"""
+    test_id: str
+    name: str
+    variants: Dict[str, float]
+    traffic_split: Dict[str, float]
+    duration_days: int
+    status: str
+    start_time: float
+    end_time: Optional[float]
 
 
 class ABTestEngine:

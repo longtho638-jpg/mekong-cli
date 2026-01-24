@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 from backend.models.command import CommandRequest
 from backend.models.router import RouterRequest, RouterResponse
-from backend.services.router_service import RouterService
+from backend.services.router_service import RouterService, RouterStatsResponse
 
 
 class RouterController:
@@ -27,7 +27,7 @@ class RouterController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to route task: {str(e)}")
 
-    async def get_routing_stats(self) -> Dict[str, Any]:
+    async def get_routing_stats(self) -> RouterStatsResponse:
         """Get routing statistics"""
         try:
             return await self.router_service.get_routing_stats()
