@@ -20,8 +20,12 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = ["E", "F", "I", "TID"]  # TID = flake8-tidy-imports
 ignore = ["E501", "E741", "E722", "F401", "E402", "E701", "E702"]  # E402: imports, E701/E702: one-liners
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# 🏯 BINH PHÁP: Prevent Pydantic 2.x compatibility issues
+"typing.TypedDict".msg = "Use 'from typing_extensions import TypedDict' for Pydantic 2.x compatibility on Python < 3.12"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "E402"]  # Intentional re-exports
