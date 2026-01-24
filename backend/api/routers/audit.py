@@ -10,10 +10,13 @@ from backend.api.security.rbac import require_admin
 router = APIRouter(prefix="/audit", tags=["audit"])
 
 
-class AuditLogEntry(TypedDict):
-    event: str
+class AuditLogEntry(TypedDict, total=False):
+    event_type: str
     user: str
     timestamp: str
+    action: str
+    resource: str
+    status: str
     details: Dict[str, Any]
 
 
@@ -37,4 +40,4 @@ async def get_audit_logs() -> List[AuditLogEntry]:
         except Exception:
             pass
 
-    return list(reversed(logs)) # Newest first
+    return list(reversed(logs))  # Newest first
