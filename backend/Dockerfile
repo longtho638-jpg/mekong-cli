@@ -34,7 +34,6 @@ COPY backend ./backend
 COPY antigravity ./antigravity
 COPY scripts ./scripts
 COPY .claude ./.claude
-COPY README.md .
 
 # Create non-root user
 RUN useradd -m mekong && chown -R mekong:mekong /app
