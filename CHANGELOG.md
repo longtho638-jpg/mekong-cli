@@ -1,3 +1,16 @@
+## [2.6.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0...v2.6.0-beta.1) (2026-01-24)
+
+
+### 🚀 Features
+
+* **metadata:** add deletions array for archived commands cleanup ([5125bd5](https://github.com/claudekit/claudekit-engineer/commit/5125bd5262228268d4fab3be33020f8b116a22a4))
+* **skills:** add agent-browser skill for AI-optimized browser automation ([429a2e7](https://github.com/claudekit/claudekit-engineer/commit/429a2e79bd99bc739898f2457cca9b5d22662247))
+
+
+### 👷 CI
+
+* add auto-sync workflow to merge main back to dev after releases ([658d09a](https://github.com/claudekit/claudekit-engineer/commit/658d09aee5f5ff4924210fa7b83d2f88a91184bb))
+
 ## [2.5.0-beta.11](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0-beta.10...v2.5.0-beta.11) (2026-01-24)
 
 
