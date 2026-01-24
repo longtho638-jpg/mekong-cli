@@ -1,22 +1,26 @@
-'use client';
+'use client'
 
-import React from 'react';
-import useSWR from 'swr';
-import { MD3Card } from '@/components/ui/MD3Card';
-import { Activity, Server, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { getOpsStatus, ServiceHealth } from '@/lib/ops-api';
+import React from 'react'
+import useSWR from 'swr'
+import { MD3Card } from '@/components/ui/MD3Card'
+import { Activity, Server, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { getOpsStatus, type ServiceHealth } from '@/lib/ops-api'
 
 export const OpsStatus: React.FC = () => {
-  const { data: services, error, isLoading } = useSWR('ops-status', getOpsStatus, {
-    refreshInterval: 5000 // Refresh every 5s
-  });
+  const {
+    data: services,
+    error,
+    isLoading,
+  } = useSWR('ops-status', getOpsStatus, {
+    refreshInterval: 5000, // Refresh every 5s
+  })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="animate-spin text-[var(--md-sys-color-primary)]" />
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -24,14 +28,14 @@ export const OpsStatus: React.FC = () => {
       <div className="p-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-lg">
         Failed to load operations status.
       </div>
-    );
+    )
   }
 
-  const displayServices = services || [];
+  const displayServices = services || []
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {displayServices.map((service) => (
+      {displayServices.map(service => (
         <MD3Card key={service.name} className="p-4">
           <div className="flex items-start justify-between">
             <div>
@@ -58,18 +62,18 @@ export const OpsStatus: React.FC = () => {
         </MD3Card>
       ))}
     </div>
-  );
-};
+  )
+}
 
 const StatusIcon = ({ status }: { status: ServiceHealth['status'] }) => {
   switch (status) {
     case 'healthy':
-      return <CheckCircle size={18} className="text-green-500" />;
+      return <CheckCircle size={18} className="text-green-500" />
     case 'degraded':
-      return <AlertCircle size={18} className="text-yellow-500" />;
+      return <AlertCircle size={18} className="text-yellow-500" />
     case 'unhealthy':
-      return <AlertCircle size={18} className="text-red-500" />;
+      return <AlertCircle size={18} className="text-red-500" />
     default:
-      return <Server size={18} className="text-gray-500" />;
+      return <Server size={18} className="text-gray-500" />
   }
-};
+}

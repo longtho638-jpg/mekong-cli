@@ -12,11 +12,14 @@ Usage:
 """
 
 import json
+import logging
 import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 # Default MCP config locations
 PROJECT_MCP_CONFIG = Path(".claude/mcp.json")  # Project local
@@ -62,14 +65,14 @@ class MCPManager:
         try:
             return json.loads(self.config_path.read_text())
         except Exception as e:
-            print(f"⚠️ Error loading MCP config: {e}")
+            logger.error(f"⚠️ Error loading MCP config: {e}")
             return {"mcpServers": {}}
 
     def _save_config(self):
         """Save MCP configuration to disk."""
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
         self.config_path.write_text(json.dumps(self.config, indent=2))
-        print(f"✅ MCP config updated: {self.config_path}")
+        logger.info(f"✅ MCP config updated: {self.config_path}")
 
     def add_server(self, name: str, config: MCPServerConfig):
         """Add or update an MCP server configuration."""
@@ -104,7 +107,7 @@ class MCPManager:
         )
 
         self.add_server("supabase", server_config)
-        print(f"🎉 Supabase MCP installed! (Project: {project_ref})")
+        logger.info(f"🎉 Supabase MCP installed! (Project: {project_ref})")
 
     def install_from_url(self, url: str):
         """
@@ -115,14 +118,14 @@ class MCPManager:
         install_dir = Path(".claude/servers") / repo_name
 
         if install_dir.exists():
-            print(f"⚠️ Server directory exists: {install_dir}")
+            logger.warning(f"⚠️ Server directory exists: {install_dir}")
         else:
-            print(f"⬇️ Cloning {url}...")
+            logger.info(f"⬇️ Cloning {url}...")
             subprocess.run(["git", "clone", url, str(install_dir)], check=True)
 
         # Detect project type
         if (install_dir / "package.json").exists():
-            print("📦 Detected Node.js project. Installing dependencies...")
+            logger.info("📦 Detected Node.js project. Installing dependencies...")
             subprocess.run(["npm", "install"], cwd=install_dir, check=True)
             subprocess.run(["npm", "run", "build"], cwd=install_dir, check=False)  # Try build
 
@@ -143,7 +146,7 @@ class MCPManager:
         elif (install_dir / "pyproject.toml").exists() or (
             install_dir / "requirements.txt"
         ).exists():
-            print("🐍 Detected Python project. Setting up venv...")
+            logger.info("🐍 Detected Python project. Setting up venv...")
             subprocess.run([sys.executable, "-m", "venv", ".venv"], cwd=install_dir, check=True)
 
             pip_cmd = str(install_dir / ".venv/bin/pip")
@@ -160,11 +163,11 @@ class MCPManager:
             args = ["main.py"]  # Placeholder
 
         else:
-            print("❌ Could not detect project type (Node/Python). Manual setup required.")
+            logger.error("❌ Could not detect project type (Node/Python). Manual setup required.")
             return
 
         self.add_server(repo_name, MCPServerConfig(command=cmd, args=args))
-        print(f"✅ Installed {repo_name} from source.")
+        logger.info(f"✅ Installed {repo_name} from source.")
 
 
 # Global instance

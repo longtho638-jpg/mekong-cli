@@ -1,6 +1,9 @@
+import logging
 from antigravity.core.telemetry import agent_telemetry
 from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
+
+logger = logging.getLogger(__name__)
 
 
 class StrategistAgent(BaseSwarmAgent):
@@ -8,7 +11,7 @@ class StrategistAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.type == MessageType.TASK:
-            print(f"🧠 [Strategist] Analyzing market for: {message.content}")
+            logger.info(f"🧠 [Strategist] Analyzing market for: {message.content}")
             strategy = "Viral Tweet Campaign"
             self.send("creator", strategy)
 
@@ -18,7 +21,7 @@ class ContentCreatorAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.sender == "strategist":
-            print(f"✍️ [Creator] Writing content for: {message.content}")
+            logger.info(f"✍️ [Creator] Writing content for: {message.content}")
             content = "Exciting news! #AI"
             self.send("social", content)
 
@@ -28,5 +31,5 @@ class SocialManagerAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.sender == "creator":
-            print(f"📢 [Social] Posting: {message.content}")
+            logger.info(f"📢 [Social] Posting: {message.content}")
             self.send("orchestrator", "Campaign Launched", MessageType.RESULT)

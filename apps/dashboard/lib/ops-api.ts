@@ -3,19 +3,19 @@ import { logger } from '@/lib/utils/logger'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export interface ServiceHealth {
-  name: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  last_check: number;
-  message?: string;
+  name: string
+  status: 'healthy' | 'degraded' | 'unhealthy'
+  last_check: number
+  message?: string
 }
 
 export interface ApprovalRequest {
-  id: string;
-  action_name: string;
-  requester: string;
-  payload: any;
-  created_at: number;
-  status: 'pending' | 'approved' | 'rejected';
+  id: string
+  action_name: string
+  requester: string
+  payload: Record<string, unknown>
+  created_at: number
+  status: 'pending' | 'approved' | 'rejected'
 }
 
 export async function getOpsStatus(): Promise<ServiceHealth[]> {
@@ -45,7 +45,7 @@ export async function approveRequest(requestId: string, approver: string): Promi
     const response = await fetch(`${API_URL}/ops/approvals/${requestId}/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ approver })
+      body: JSON.stringify({ approver }),
     })
     return response.ok
   } catch (error) {
@@ -54,12 +54,16 @@ export async function approveRequest(requestId: string, approver: string): Promi
   }
 }
 
-export async function rejectRequest(requestId: string, approver: string, reason?: string): Promise<boolean> {
+export async function rejectRequest(
+  requestId: string,
+  approver: string,
+  reason?: string
+): Promise<boolean> {
   try {
     const response = await fetch(`${API_URL}/ops/approvals/${requestId}/reject`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ approver, reason })
+      body: JSON.stringify({ approver, reason }),
     })
     return response.ok
   } catch (error) {

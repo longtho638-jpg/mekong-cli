@@ -49,17 +49,17 @@ class AutonomousOrchestrator:
         self.status = AutonomousStatus.PLANNING
 
         if self.verbose:
-            print(f"\n[MISSION OBJECTIVE]: {goal}")
-            print("=" * 60)
+            logger.info(f"\n[MISSION OBJECTIVE]: {goal}")
+            logger.info("=" * 60)
 
         self.plan = ExecutionPlan(goal=goal, tasks=self._analyze_goal(goal))
 
         if self.verbose:
-            print(f"[STRATEGIC PLAN] ({len(self.plan.tasks)} phases):")
+            logger.info(f"[STRATEGIC PLAN] ({len(self.plan.tasks)} phases):")
             for task in self.plan.tasks:
                 origin = f"Crew: {task.crew}" if task.crew else f"Chain: {task.chain}"
-                print(f"   {task.id}. {task.name:<25} | {origin}")
-            print()
+                logger.info(f"   {task.id}. {task.name:<25} | {origin}")
+            logger.info("")
 
     def _analyze_goal(self, goal: str) -> List[Task]:
         """Decomposes a goal into specialized tasks using heuristics."""
@@ -109,13 +109,13 @@ class AutonomousOrchestrator:
         mission_success = True
 
         if self.verbose:
-            print("[INITIATING AUTONOMOUS DEPLOYMENT]")
-            print("-" * 60)
+            logger.info("[INITIATING AUTONOMOUS DEPLOYMENT]")
+            logger.info("-" * 60)
 
         for task in self.plan.tasks:
             task.status = "executing"
             if self.verbose:
-                print(f"[Phase {task.id}]: {task.name}...")
+                logger.info(f"[Phase {task.id}]: {task.name}...")
 
             try:
                 if task.crew:
@@ -144,24 +144,25 @@ class AutonomousOrchestrator:
             if task.status == "failed":
                 mission_success = False
                 if self.verbose:
-                    print(f"   [FAILED] Phase failed: {task.error or 'Unknown error'}")
+                    logger.error(f"   [FAILED] Phase failed: {task.error or 'Unknown error'}")
                 break
 
             if self.verbose:
-                print("   [OK] Phase complete")
+                logger.info("   [OK] Phase complete")
 
             if interactive:
+                # print is acceptable here because it is interactive input
                 print(f"\n   [PAUSED] Mission objective {task.id} achieved. Proceed? (y/n)")
 
         self.status = AutonomousStatus.COMPLETED if mission_success else AutonomousStatus.FAILED
 
         if self.verbose:
-            print("\n" + "=" * 60)
+            logger.info("\n" + "=" * 60)
             status_icon = "[SUCCESS]" if mission_success else "[WARNING]"
-            print(f"{status_icon} MISSION SUMMARY")
-            print(f"   Objective : {self.goal}")
-            print(f"   Result    : {self.status.value.upper()}")
-            print("=" * 60)
+            logger.info(f"{status_icon} MISSION SUMMARY")
+            logger.info(f"   Objective : {self.goal}")
+            logger.info(f"   Result    : {self.status.value.upper()}")
+            logger.info("=" * 60)
 
         return mission_success
 

@@ -1,9 +1,12 @@
+import logging
 import os
 import ast
 from pathlib import Path
 from typing import List
 from .graph_client import GraphClient
 from .schema import IngestionSchema
+
+logger = logging.getLogger(__name__)
 
 class CodeIngestor:
     """
@@ -15,7 +18,7 @@ class CodeIngestor:
 
     def ingest_directory(self):
         """Walk directory and ingest all python files."""
-        print(f"🧠 Ingesting code from {self.root_dir}...")
+        logger.info(f"🧠 Ingesting code from {self.root_dir}...")
         for root, _, files in os.walk(self.root_dir):
             for file in files:
                 if file.endswith(".py"):
@@ -38,7 +41,7 @@ class CodeIngestor:
                 # Can expand to classes, imports, etc.
 
         except Exception as e:
-            print(f"❌ Error parsing {rel_path}: {e}")
+            logger.error(f"❌ Error parsing {rel_path}: {e}")
 
     def _ingest_function(self, node: ast.FunctionDef, file_path: str):
         """Ingest a function definition."""

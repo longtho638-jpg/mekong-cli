@@ -2,6 +2,7 @@
 Antigravity MCP Server Implementation.
 """
 
+import logging
 from typing import Any, Dict, List
 
 from .handlers import (
@@ -16,6 +17,8 @@ from .handlers import (
 from .models import MCPResponse
 from .tools import get_tools
 
+logger = logging.getLogger(__name__)
+
 # Import Antigravity modules
 try:
     from antigravity.core.agency_dna import AgencyDNA, PricingTier, Tone
@@ -29,7 +32,7 @@ try:
     HAS_ANTIGRAVITY = True
 except ImportError:
     HAS_ANTIGRAVITY = False
-    print("⚠️ Antigravity modules not available")
+    logger.warning("⚠️ Antigravity modules not available")
 
 
 class AntigravityMCPServer:

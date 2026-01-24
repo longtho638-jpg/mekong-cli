@@ -1,0 +1,8 @@
+{
+  "name": "@agencyos/shared",
+  "version": "1.0.0",
+  "description": "Shared utilities for AgencyOS",
+  "main": "index.ts",
+  "types": "index.ts",
+  "private": true
+}

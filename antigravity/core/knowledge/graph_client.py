@@ -1,9 +1,13 @@
+import logging
 import os
 import re
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 import json
 from falkordb import FalkorDB
+
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class KnowledgeNode:
@@ -36,7 +40,7 @@ class GraphClient:
             self.driver = FalkorDB(host=self.host, port=self.port)
             self.graph = self.driver.select_graph("agencyos")
         except Exception as e:
-            print(f"⚠️ Warning: Could not connect to Knowledge Graph at {self.host}:{self.port}: {e}")
+            logger.warning(f"Could not connect to Knowledge Graph at {self.host}:{self.port}: {e}")
             self.driver = None
             self.graph = None
 

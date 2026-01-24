@@ -11,11 +11,14 @@ Usage:
     prompt = get_level_prompt()
 """
 
+import logging
 from pathlib import Path
 from typing import Optional
 
 # Import level definitions from modular file
 from .coding_levels import LEVELS, STYLES_BASE_DIR, CodingLevel, Level
+
+logger = logging.getLogger(__name__)
 
 # Re-export for backward compatibility
 __all__ = [
@@ -88,7 +91,7 @@ def load_level_style(level: Optional[int] = None, base_path: Path = STYLES_BASE_
         try:
             return style_path.read_text(encoding="utf-8")
         except Exception as e:
-            print(f"Warning: Failed to read style file {style_path}: {e}")
+            logger.warning(f"Failed to read style file {style_path}: {e}")
             return ""
     return ""
 

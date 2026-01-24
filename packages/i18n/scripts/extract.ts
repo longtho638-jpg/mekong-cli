@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { globSync } from 'glob';
+import { logger } from '../src/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.join(__dirname, '../../..');
 const SEARCH_DIRS = ['apps', 'packages'];
@@ -22,13 +27,14 @@ const PATTERNS = [
 ];
 
 function extract() {
-  console.log('🏗️  Extracting hardcoded strings (Experimental)...');
-  console.log(`Root: ${ROOT_DIR}`);
+  logger.info('🏗️  Extracting hardcoded strings (Experimental)...', {
+    rootDir: ROOT_DIR
+  });
 
   const files: string[] = [];
   SEARCH_DIRS.forEach(dir => {
     const pattern = `${dir}/**/*.{ts,tsx,astro}`;
-    console.log(`Pattern: ${pattern}`);
+    logger.debug(`Scanning pattern: ${pattern}`);
     const matchedFiles = globSync(pattern, {
       cwd: ROOT_DIR,
       ignore: EXCLUDE_PATTERNS
@@ -36,7 +42,7 @@ function extract() {
     files.push(...matchedFiles);
   });
 
-  console.log(`Scanning ${files.length} files...`);
+  logger.info(`Scanning ${files.length} files...`);
 
   const results: Record<string, Set<string>> = {};
 
@@ -57,15 +63,14 @@ function extract() {
 
   let totalCount = 0;
   Object.entries(results).forEach(([file, strings]) => {
-    console.log(`\n📄 ${file}:`);
-    strings.forEach(s => {
-      console.log(`   - "${s}"`);
-      totalCount++;
+    logger.info(`📄 ${path.relative(ROOT_DIR, file)}:`, {
+      strings: Array.from(strings)
     });
+    totalCount += strings.size;
   });
 
-  console.log(`\nFound ${totalCount} potential hardcoded strings across ${Object.keys(results).length} files.`);
-  console.log('Note: This is a rough extraction and includes many false positives (imports, keys, etc).');
+  logger.info(`\nFound ${totalCount} potential hardcoded strings across ${Object.keys(results).length} files.`);
+  logger.warn('Note: This is a rough extraction and includes many false positives (imports, keys, etc).');
 }
 
 extract();

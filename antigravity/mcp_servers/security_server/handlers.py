@@ -5,12 +5,15 @@ Logic for Security Armor MCP.
 """
 
 import asyncio
+import logging
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class GateStatus(Enum):
@@ -40,7 +43,8 @@ class SecurityHandler:
 
     async def run_all_gates(self, dry_run: bool = False) -> List[Dict[str, Any]]:
         """Run all pre-deploy gates."""
-        results = []
+        logger.info("🛡️ Running all security gates...")
+        results: List[Dict[str, Any]] = []
         gates = [
             ("Ruff Lint", self.check_ruff),
             ("TypeScript", self.check_typescript),

@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from backend.api.security.audit import audit_logger
@@ -5,6 +6,8 @@ from ..knowledge.graph_client import GraphClient
 from .agent import BaseSwarmAgent
 from .bus import MessageBus
 from .types import AgentMessage, MessageType
+
+logger = logging.getLogger(__name__)
 
 
 class SwarmOrchestrator:
@@ -21,7 +24,7 @@ class SwarmOrchestrator:
     def register_agent(self, agent: BaseSwarmAgent):
         """Register an agent to the swarm."""
         self.agents[agent.id] = agent
-        print(f"🐝 Swarm: Agent '{agent.name}' ({agent.id}) joined.")
+        logger.info(f"🐝 Swarm: Agent '{agent.name}' ({agent.id}) joined.")
         audit_logger.log_event(
             event_type="SWARM",
             user="system",
@@ -50,7 +53,7 @@ class SwarmOrchestrator:
     def dispatch(self, agent_id: str, content: Any):
         """Send a task to a specific agent."""
         if agent_id not in self.agents:
-            print(f"❌ Agent {agent_id} not found")
+            logger.error(f"❌ Agent {agent_id} not found")
             return
 
         msg = AgentMessage(

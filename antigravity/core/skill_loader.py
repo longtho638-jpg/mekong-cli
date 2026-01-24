@@ -15,8 +15,11 @@ Usage:
     print_skill_matrix()
 """
 
+import logging
 from pathlib import Path
 from typing import Dict, List, Set
+
+logger = logging.getLogger(__name__)
 
 # Base path for skills
 SKILLS_BASE_DIR = Path(".claude/skills")
@@ -137,7 +140,7 @@ def load_skills_for_agent(agent: str, base_path: Path = SKILLS_BASE_DIR) -> Dict
                 # Skill folder exists but no md file?
                 pass
         except Exception as e:
-            print(f"⚠️ Failed to read skill {skill}: {e}")
+            logger.error(f"⚠️ Failed to read skill {skill}: {e}")
 
     return loaded
 

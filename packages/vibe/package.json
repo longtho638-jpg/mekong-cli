@@ -16,6 +16,7 @@
         "./revenue": "../vibe-revenue/index.ts"
     },
     "dependencies": {
+        "@agencyos/shared": "workspace:*",
         "@agencyos/vibe-ui": "workspace:*",
         "@agencyos/vibe-analytics": "workspace:*",
         "@agencyos/vibe-agents": "workspace:*",

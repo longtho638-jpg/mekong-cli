@@ -1,8 +1,11 @@
 import asyncio
+import logging
 import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -41,7 +44,7 @@ class MarketingHandler:
 
     async def content_pipeline(self, topic: str) -> Dict[str, Any]:
         """Full content production pipeline."""
-        print(f"📝 VIBE MARKETING: Creating content for '{topic}'...")
+        logger.info(f"📝 VIBE MARKETING: Creating content for '{topic}'...")
 
         # Run in parallel for speed
         article_task = self._write_article(topic)
@@ -64,7 +67,7 @@ class MarketingHandler:
 
     async def audit_seo(self, url: str) -> Dict[str, Any]:
         """Perform SEO Audit using seo-audit skill principles."""
-        print(f"🔍 VIBE MARKETING: Auditing SEO for {url}...")
+        logger.info(f"🔍 VIBE MARKETING: Auditing SEO for {url}...")
         await asyncio.sleep(0.5)
         return {
             "url": url,
@@ -83,7 +86,7 @@ class MarketingHandler:
 
     async def analyze_cro(self, url: str, page_type: str = "landing") -> Dict[str, Any]:
         """Perform CRO Analysis using page-cro skill principles."""
-        print(f"📈 VIBE MARKETING: Analyzing CRO for {url} ({page_type})...")
+        logger.info(f"📈 VIBE MARKETING: Analyzing CRO for {url} ({page_type})...")
         await asyncio.sleep(0.5)
         return {
             "url": url,
@@ -103,7 +106,7 @@ class MarketingHandler:
 
     async def generate_copy(self, page_type: str, context: Dict[str, Any]) -> Dict[str, Any]:
         """Generate marketing copy using copywriting skill principles."""
-        print(f"✍️ VIBE MARKETING: Generating copy for {page_type}...")
+        logger.info(f"✍️ VIBE MARKETING: Generating copy for {page_type}...")
         await asyncio.sleep(0.5)
 
         product = context.get("product_name", "Product")
@@ -126,7 +129,7 @@ class MarketingHandler:
 
     async def pricing_strategy(self, product_type: str, target_market: str) -> Dict[str, Any]:
         """Develop pricing strategy using pricing-strategy skill."""
-        print(f"💰 VIBE MARKETING: Developing pricing strategy for {product_type}...")
+        logger.info(f"💰 VIBE MARKETING: Developing pricing strategy for {product_type}...")
         await asyncio.sleep(0.5)
         return {
             "model": "Freemium + Tiered",
@@ -141,7 +144,7 @@ class MarketingHandler:
 
     async def lead_pipeline(self) -> Dict[str, Any]:
         """Lead generation and qualification pipeline."""
-        print("🎯 VIBE MARKETING: Processing leads...")
+        logger.info("🎯 VIBE MARKETING: Processing leads...")
 
         # Find new leads
         leads = await self._find_leads()
@@ -163,7 +166,7 @@ class MarketingHandler:
 
     async def generate_ideas(self, count: int = 3) -> List[str]:
         """Generate content ideas."""
-        print(f"💡 Generating {count} content ideas...")
+        logger.info(f"💡 Generating {count} content ideas...")
 
         try:
             from antigravity.core.content_factory import ContentFactory
@@ -179,7 +182,7 @@ class MarketingHandler:
 
     async def _write_article(self, topic: str) -> dict:
         """Write SEO-optimized article."""
-        print(f"   ✍️ Writing article: {topic}")
+        logger.debug(f"   ✍️ Writing article: {topic}")
         await asyncio.sleep(0.1)  # Simulate work
 
         try:
@@ -192,13 +195,13 @@ class MarketingHandler:
 
     async def _generate_images(self, topic: str, count: int = 3) -> List[str]:
         """Generate images for content."""
-        print(f"   🎨 Generating {count} images")
+        logger.debug(f"   🎨 Generating {count} images")
         await asyncio.sleep(0.1)
         return [f"{topic.lower().replace(' ', '-')}-{i + 1}.png" for i in range(count)]
 
     async def _create_social_posts(self, topic: str, count: int = 5) -> List[dict]:
         """Create social media post variations."""
-        print(f"   📱 Creating {count} social posts")
+        logger.debug(f"   📱 Creating {count} social posts")
         await asyncio.sleep(0.1)
 
         platforms = ["LinkedIn", "Twitter/X", "Facebook", "Instagram", "Threads"]
@@ -206,13 +209,13 @@ class MarketingHandler:
 
     async def _optimize_seo(self, article: dict) -> int:
         """Optimize article for SEO."""
-        print("   🔍 Optimizing SEO...")
+        logger.debug("   🔍 Optimizing SEO...")
         await asyncio.sleep(0.1)
         return 92  # SEO score
 
     async def _find_leads(self) -> List[dict]:
         """Find new leads."""
-        print("   🔎 Finding leads...")
+        logger.debug("   🔎 Finding leads...")
 
         try:
             from antigravity.core.client_magnet import ClientMagnet
@@ -231,5 +234,5 @@ class MarketingHandler:
 
     async def _nurture_sequence(self, hot_leads: List[dict]) -> int:
         """Send nurture emails to hot leads."""
-        print(f"   📧 Sending {len(hot_leads)} nurture emails")
+        logger.debug(f"   📧 Sending {len(hot_leads)} nurture emails")
         return len(hot_leads)

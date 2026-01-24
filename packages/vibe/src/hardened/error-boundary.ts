@@ -1,3 +1,5 @@
+import { logger } from '@agencyos/shared';
+
 /**
  * 🛡️ VIBE Hardened - Error Boundary Patterns
  */
@@ -18,8 +20,7 @@ export function createErrorState(error: Error): ErrorState {
 }
 
 export function logError(error: ErrorState): void {
-    console.error('[VIBE Error]', {
-        message: error.error?.message,
+    logger.error(`[VIBE Error] ${error.error?.message}`, {
         stack: error.errorInfo,
         timestamp: error.timestamp.toISOString(),
     });

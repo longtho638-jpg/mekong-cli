@@ -1,3 +1,4 @@
+import logging
 from typing import Any, List, Optional
 
 from antigravity.core.telemetry import agent_telemetry
@@ -5,6 +6,9 @@ from ..agent import BaseSwarmAgent
 from ..types import AgentMessage, MessageType
 from ...rag.vector_client import VectorClient
 from ...rag.embedding import EmbeddingService
+
+logger = logging.getLogger(__name__)
+
 
 class ResearchAgent(BaseSwarmAgent):
     """
@@ -18,7 +22,7 @@ class ResearchAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         super().on_message(message)
         if message.type == MessageType.QUERY:
-            print(f"🔎 [Research] Searching for: {message.content}")
+            logger.info(f"🔎 [Research] Searching for: {message.content}")
             results = self.search(message.content)
             self.send(message.sender, results, MessageType.RESPONSE)
 

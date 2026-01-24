@@ -1,10 +1,13 @@
 import asyncio
+import logging
 import random
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -71,7 +74,7 @@ class AgencyHandler:
 
     async def audit_client(self, client_name: str, vertical: str, system_config: Dict[str, Any] = None) -> Dict[str, Any]:
         """Run a vertical-specific audit for a client."""
-        print(f"🏥 VIBE AGENCY: Auditing '{client_name}' for {vertical} compliance...")
+        logger.info(f"🏥 VIBE AGENCY: Auditing '{client_name}' for {vertical} compliance...")
 
         if not self.auditor:
             return {"success": False, "error": "Vertical Auditor not available"}
@@ -88,13 +91,13 @@ class AgencyHandler:
         result = self.auditor.audit_system(vertical, system_config)
 
         status = "PASSED" if result["passed"] else "FAILED"
-        print(f"   📋 Audit Result: {status}")
+        logger.info(f"   📋 Audit Result: {status}")
 
         return result
 
     async def onboard_client(self, name: str, vertical: Optional[str] = None) -> Dict[str, Any]:
         """Full client onboarding pipeline with vertical specialization."""
-        print(f"🤝 VIBE AGENCY: Onboarding '{name}'" + (f" in {vertical}..." if vertical else "..."))
+        logger.info(f"🤝 VIBE AGENCY: Onboarding '{name}'" + (f" in {vertical}..." if vertical else "..."))
 
         # Run core tasks in parallel
         contract_task = self._generate_contract(name)
@@ -135,7 +138,7 @@ class AgencyHandler:
 
     async def validate_win(self, decision: str) -> Dict[str, Any]:
         """WIN-WIN-WIN validation for any decision."""
-        print(f"🏯 VIBE AGENCY: Validating '{decision}'...")
+        logger.info(f"🏯 VIBE AGENCY: Validating '{decision}'...")
 
         # Analyze each WIN
         owner = await self._check_owner_win(decision)
@@ -162,36 +165,36 @@ class AgencyHandler:
 
     async def outreach_pipeline(self) -> dict:
         """Run urgent outreach campaign."""
-        print("📧 VIBE AGENCY: Running outreach...")
+        logger.info("📧 VIBE AGENCY: Running outreach...")
         return {"emails_queued": 4, "status": "success"}
 
     async def _generate_contract(self, name: str) -> str:
         """Generate MSA contract for client."""
-        print(f"   📄 Generating contract for {name}")
+        logger.debug(f"   📄 Generating contract for {name}")
         slug = name.lower().replace(" ", "_")
         return f"contracts/{slug}_MSA.txt"
 
     async def _generate_invoice(self, name: str, amount: int = 5000) -> str:
         """Generate first invoice."""
-        print(f"   💰 Generating invoice: ${amount}")
+        logger.debug(f"   💰 Generating invoice: ${amount}")
         date = datetime.now().strftime("%Y%m%d")
         invoice_num = f"INV-{date}-001"
         return f"invoices/{invoice_num}.pdf"
 
     async def _setup_portal(self, name: str) -> str:
         """Setup client portal."""
-        print(f"   🌐 Setting up portal for {name}")
+        logger.debug(f"   🌐 Setting up portal for {name}")
         slug = name.lower().replace(" ", "-")
         return f"https://portal.agencyos.io/{slug}"
 
     async def _send_welcome(self, name: str) -> bool:
         """Send welcome email."""
-        print(f"   ✉️ Sending welcome email to {name}")
+        logger.debug(f"   ✉️ Sending welcome email to {name}")
         return True
 
     async def _add_to_crm(self, name: str) -> bool:
         """Add client to CRM."""
-        print(f"   📊 Adding {name} to CRM")
+        logger.debug(f"   📊 Adding {name} to CRM")
         return True
 
     async def _check_owner_win(self, decision: str) -> dict:
