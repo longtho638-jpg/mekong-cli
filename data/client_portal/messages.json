@@ -69,5 +69,15 @@
       "timestamp": "2026-01-25T06:19:55.765181",
       "read": false
     }
+  ],
+  "CLI-E2750083": [
+    {
+      "id": "MSG-39d65431",
+      "client_id": "CLI-E2750083",
+      "sender": "agency",
+      "content": "Your project is ready for review!",
+      "timestamp": "2026-01-25T06:33:00.370625",
+      "read": false
+    }
   ]
 }

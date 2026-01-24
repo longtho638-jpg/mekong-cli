@@ -94,5 +94,17 @@
     "notes": "",
     "monthly_retainer": 2000.0,
     "total_spent": 0.0
+  },
+  "CLI-E2750083": {
+    "id": "CLI-E2750083",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "company": "Test Corp",
+    "status": "active",
+    "created_at": "2026-01-25T06:33:00.356685",
+    "portal_code": "107406A3A0F1",
+    "notes": "",
+    "monthly_retainer": 2000.0,
+    "total_spent": 0.0
   }
 }

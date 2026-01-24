@@ -1912,5 +1912,71 @@
       "agent_id": "researcher",
       "agent_role": null
     }
+  },
+  {
+    "c": "agent",
+    "a": "orchestrator_run",
+    "t": "2026-01-25T06:33:02.030511",
+    "d": 70.23012500000014,
+    "s": "success",
+    "m": {
+      "agent_id": "unknown",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "orchestrator_run",
+    "t": "2026-01-25T06:33:02.046351",
+    "d": 0.17416599999897642,
+    "s": "success",
+    "m": {
+      "agent_id": "unknown",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "orchestrator_run",
+    "t": "2026-01-25T06:33:02.146556",
+    "d": 93.19612500000041,
+    "s": "success",
+    "m": {
+      "agent_id": "unknown",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "orchestrator_run",
+    "t": "2026-01-25T06:33:02.188366",
+    "d": 26.64908399999888,
+    "s": "success",
+    "m": {
+      "agent_id": "unknown",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-25T06:33:20.230592",
+    "d": 0.014166999996234608,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-25T06:33:20.236499",
+    "d": 0.2860419999990427,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
   }
 ]

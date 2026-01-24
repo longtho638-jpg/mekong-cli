@@ -16,10 +16,16 @@ from backend.middleware.webhook_auth import (
     verify_stripe_webhook,
     verify_timestamp,
 )
+from backend.middleware.performance import (
+    PerformanceMonitoringMiddleware,
+    get_metrics_summary,
+    reset_metrics,
+)
 
 __all__ = [
     # Middleware classes
     "RateLimitMiddleware",
+    "PerformanceMonitoringMiddleware",
     # Exceptions
     "WebhookAuthError",
     # Middleware functions
@@ -34,4 +40,7 @@ __all__ = [
     "verify_stripe_webhook",
     # Logging
     "log_webhook_verification",
+    # Performance monitoring
+    "get_metrics_summary",
+    "reset_metrics",
 ]
