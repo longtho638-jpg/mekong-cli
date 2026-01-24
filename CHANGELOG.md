@@ -1,3 +1,10 @@
+## [2.6.0-beta.2](https://github.com/claudekit/claudekit-engineer/compare/v2.6.0-beta.1...v2.6.0-beta.2) (2026-01-24)
+
+
+### 🐞 Bug Fixes
+
+* **release:** preserve deletions array in metadata.json during releases ([2d729e7](https://github.com/claudekit/claudekit-engineer/commit/2d729e74f5c860555fd2d24579031ba859aa5839))
+
 ## [2.6.0-beta.1](https://github.com/claudekit/claudekit-engineer/compare/v2.5.0...v2.6.0-beta.1) (2026-01-24)
 
 
