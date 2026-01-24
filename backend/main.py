@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
+from backend.middleware import RateLimitMiddleware
 from backend.api.routers import (
     agents,
     agents_creator,
@@ -43,6 +44,9 @@ app = FastAPI(
     description="🌊 Deploy Your Agency in 15 Minutes - Backend API with Clean Architecture",
     version=settings.api_version,
 )
+
+# Add rate limiting middleware (before CORS)
+app.add_middleware(RateLimitMiddleware)
 
 # CORS middleware
 app.add_middleware(
