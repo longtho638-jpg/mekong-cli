@@ -47,12 +47,17 @@ numpy>=1.21.0
 
 # Monitoring & Metrics
 prometheus_client>=0.17.0
+psutil>=5.9.0  # System metrics for health checks
 
 # Rate Limiting
 slowapi>=0.1.9
 
 # JWT Auth
 python-jose>=3.3.0
+
+# 2FA/TOTP
+pyotp>=2.9.0
+qrcode>=7.4.0
 
 # Type compatibility (Pydantic 2.x on Python < 3.12)
 typing_extensions>=4.0.0
