@@ -2,7 +2,7 @@
 Config TypedDicts - Typed dictionaries for configuration.
 """
 
-from typing import TypedDict
+from ._compat import TypedDict
 
 
 class TierPricingDict(TypedDict, total=False):

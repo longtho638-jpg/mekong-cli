@@ -2,7 +2,17 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict
+
+
+class StructuredAuditLogDict(TypedDict):
+    timestamp: str
+    event_type: str
+    user: str
+    action: str
+    resource: str
+    status: str
+    details: Dict[str, Any]
 
 
 class AuditLogger:
@@ -47,7 +57,7 @@ class AuditLogger:
             status: SUCCESS or FAILURE
             details: Additional context
         """
-        event = {
+        event: StructuredAuditLogDict = {
             "timestamp": datetime.utcnow().isoformat(),
             "event_type": event_type,
             "user": user,

@@ -1,12 +1,36 @@
 import asyncio
 import json
 import subprocess
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/monitor", tags=["monitor"])
+
+
+class SystemStatusDict(TypedDict):
+    name: str
+    status: str
+    message: str
+    last_check: str
+    details: Dict[str, Any]
+
+
+class AnomalyDict(TypedDict):
+    system: str
+    type: str
+    message: str
+    severity: str
+    recovery_action: Optional[str]
+
+
+class DashboardResponseDict(TypedDict):
+    timestamp: str
+    systems: Dict[str, SystemStatusDict]
+    anomalies: List[AnomalyDict]
+    summary: str
+
 
 class SystemStatus(BaseModel):
     name: str

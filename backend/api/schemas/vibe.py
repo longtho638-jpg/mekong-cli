@@ -10,9 +10,16 @@ Consolidates:
 """
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from pydantic import BaseModel, Field, field_validator
+
+
+class VibeConfigDict(TypedDict):
+    """Configuration for a specific vibe"""
+    tone: str
+    style: str
+    local_words: List[str]
 
 
 class VibeRequest(BaseModel):
@@ -42,7 +49,7 @@ class VibeResponse(BaseModel):
     vibe: Optional[str] = Field(default=None, description="Vibe name")
     location: Optional[str] = Field(default=None, description="Location name")
     detected_vibe: Optional[str] = Field(default=None, description="Auto-detected vibe")
-    config: Dict[str, Any] = Field(default_factory=dict, description="Vibe configuration")
+    config: VibeConfigDict = Field(..., description="Vibe configuration")
 
     class Config:
         """Pydantic config."""

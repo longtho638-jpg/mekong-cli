@@ -7,7 +7,7 @@ from typing import Any, Dict
 from fastapi import HTTPException
 
 from backend.models.command import CommandRequest, CommandResponse
-from backend.services.command_service import CommandService
+from backend.services.command_service import CommandListResponse, CommandService
 
 
 class CommandController:
@@ -25,7 +25,7 @@ class CommandController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to execute command: {str(e)}")
 
-    async def get_commands_list(self) -> Dict[str, Any]:
+    async def get_commands_list(self) -> CommandListResponse:
         """Get list of all available commands"""
         try:
             return await self.command_service.get_commands_list()

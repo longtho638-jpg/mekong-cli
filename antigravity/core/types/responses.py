@@ -2,7 +2,9 @@
 Response TypedDicts - Typed dictionaries for API responses.
 """
 
-from typing import Dict, List, Optional, TypedDict
+from typing import Dict, List, Optional
+
+from ._compat import TypedDict
 
 
 class AgentStatusDict(TypedDict):

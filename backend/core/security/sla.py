@@ -8,11 +8,34 @@ SLA targets (e.g., 99.9% uptime, < 5s agent response).
 import logging
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
+
+
+class SLAMetricsDict(TypedDict):
+    success_rate: float
+    target_uptime: float
+    avg_latency_ms: float
+    p95_latency_ms: float
+    target_latency_ms: float
+
+
+class SLAComplianceDict(TypedDict):
+    sla_met: bool
+    generated_at: str
+
+
+class SLAReportDict(TypedDict, total=False):
+    """Detailed SLA performance report"""
+    period_days: int
+    status: str
+    metrics: SLAMetricsDict
+    compliance: SLAComplianceDict
+    error: str
+
 
 class SLAMonitor:
     """
@@ -24,7 +47,7 @@ class SLAMonitor:
         self.target_latency_ms = target_latency_ms
         self.db = get_db()
 
-    async def get_agent_sla_report(self, days: int = 7) -> Dict[str, Any]:
+    async def get_agent_sla_report(self, days: int = 7) -> SLAReportDict:
         """
         Calculates SLA metrics for agents based on telemetry data.
         """
@@ -39,7 +62,7 @@ class SLAMonitor:
             data = metrics.data if metrics else []
 
             if not data:
-                return {"status": "No data", "target_uptime": self.target_uptime}
+                return {"status": "No data", "target_uptime": self.target_uptime}  # type: ignore
 
             total_requests = len(data)
             failed_requests = sum(1 for m in data if m["status"] == "failed")

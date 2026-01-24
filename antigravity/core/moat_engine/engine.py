@@ -14,7 +14,7 @@ from .dashboard import MoatDashboard
 from .definitions import get_default_moats
 from .models import Moat
 from .persistence import MoatPersistence
-from .strategy import MoatStrategy
+from .strategy import MoatStrategy, SwitchingCostDict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class MoatEngine:
         """Calculates the weighted average strength of all 5 moats."""
         return self.strategy.get_aggregate_strength(self.moats)
 
-    def calculate_switching_cost(self) -> Dict[str, Any]:
+    def calculate_switching_cost(self) -> SwitchingCostDict:
         """Estimates the time and financial impact of leaving the Agency OS."""
         return self.strategy.calculate_switching_cost(self.moats)
 

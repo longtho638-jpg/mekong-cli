@@ -2,7 +2,9 @@
 Stats TypedDicts - Typed dictionaries for statistics and metrics.
 """
 
-from typing import Dict, TypedDict
+from typing import Dict
+
+from ._compat import TypedDict
 
 
 class StatsDict(TypedDict, total=False):
@@ -187,4 +189,3 @@ class PlanListItemDict(TypedDict):
     title: str
     path: str
     modified: object  # datetime object
-

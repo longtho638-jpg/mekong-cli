@@ -3,15 +3,21 @@ Registry Metadata - Command information and agent mapping.
 """
 from typing import Any, Dict, List, Optional
 
-from .mcp_catalog import mcp_catalog
-from .store import COMMAND_REGISTRY
+from .mcp_catalog import MCPToolLookupResult, mcp_catalog
+from .store import COMMAND_REGISTRY, SubcommandMetadataDict
 
 
-def get_command_metadata(suite: str, sub: str) -> Optional[Dict[str, Any]]:
+def get_command_metadata(suite: str, sub: str) -> Optional[SubcommandMetadataDict]:
     """Retrieves all configuration data for a specific command."""
     if suite == "mcp":
         tool_info = mcp_catalog.find_tool(sub)
-        return tool_info if tool_info else None
+        if tool_info:
+            # Adapt MCP lookup result to SubcommandMetadataDict format for compatibility
+            return {
+                "agent": "mcp-developer",
+                "method": tool_info["tool"]["name"],
+            }
+        return None
 
     suite_data = COMMAND_REGISTRY.get(suite.lower())
     if not suite_data:
