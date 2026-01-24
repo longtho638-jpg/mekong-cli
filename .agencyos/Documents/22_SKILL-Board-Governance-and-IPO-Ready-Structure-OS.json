@@ -1,0 +1,200 @@
+{
+  "id": "22_SKILL-Board-Governance-and-IPO-Ready-Structure-OS",
+  "version": "1.0.0",
+  "title": "Skill – Board, Governance & IPO-Ready Structure OS",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế cấu trúc Board, governance & cơ chế giám sát phù hợp với lộ trình Zero → IPO trong bối cảnh VN/SEA, không thay thế tư vấn pháp lý nhưng giúp chuẩn hoá tư duy & checklist.",
+  "intended_use": {
+    "primary": [
+      "Tóm tắt trạng thái hiện tại về cap table, board, governance của startup/doanh nghiệp.",
+      "Đề xuất mô hình board & governance target phù hợp với stage & tham vọng IPO/M&A.",
+      "Chỉ ra các gap chính so với kỳ vọng của VC/PE/nhà đầu tư công chúng khu vực Châu Á & Việt Nam.",
+      "Sinh roadmap 12–24 tháng để nâng cấp governance ở mức 'IPO-able' (ở level khung, không vào chi tiết luật từng sàn)."
+    ],
+    "works_best_when": [
+      "Đã có Business Plan 2026 & ít nhất phác thảo lộ trình gọi vốn / exit (M&A, IPO…).",
+      "Có thông tin cơ bản về cổ đông chính, founding team, nhà đầu tư hiện tại.",
+      "Founder muốn chuẩn hoá governance để nói chuyện với quỹ, ngân hàng hoặc chuẩn bị niêm yết trong 3–7 năm."
+    ],
+    "not_for": [
+      "Tư vấn pháp lý chi tiết về niêm yết trên HOSE/HNX/SGX/Nasdaq… – cần luật sư/chuyên gia.",
+      "Thiết kế điều lệ/hợp đồng cụ thể – chỉ gợi ý cấu trúc & checklist cấp khung."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "16_SKILL-Fundraising-and-VC-Narrative.json",
+      "17_SKILL-Risk-Downside-and-Scenario-OS.json",
+      "18_SKILL-Talent-and-Org-Design-OS.json",
+      "19_SKILL-Industry-Patterns-and-IPO-Archetypes-Asia.json",
+      "20_SKILL-Data-Room-and-Investor-Materials-OS.json",
+      "21_SKILL-Agentic-Execution-and-OKR-OS.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "company_stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'seed', 'series_a', 'series_b', 'growth', 'pre_ipo', 'mature'."
+      },
+      "incorporation_jurisdiction": {
+        "type": "string",
+        "required": false,
+        "description": "Nơi đăng ký pháp nhân holding chính: 'VN', 'SG', 'HK', 'BVI', 'Delaware', 'other'."
+      },
+      "ipo_or_exit_target": {
+        "type": "string",
+        "required": false,
+        "description": "Định hướng: 'no_plan', 'M&A', 'VN_IPO', 'SEA_IPO', 'US_IPO', 'DUAL_LISTING', v.v."
+      },
+      "current_board_and_shareholders": {
+        "type": "string",
+        "required": false,
+        "description": "Mô tả tự do: số founder, investor, có hay chưa independent director, family-owned hay startup, v.v."
+      },
+      "regulated_sector": {
+        "type": "boolean",
+        "required": false,
+        "description": "Có phải ngành được quản lý chặt (fintech, banking, healthcare, edu công lập…) không?"
+      }
+    },
+    "assumptions": [
+      "Nếu company_stage trống, model suy luận từ plan & đánh dấu [GIẢ ĐỊNH].",
+      "Nếu ipo_or_exit_target trống, giả định 'M&A hoặc IPO trong 5–7 năm' cho startup & đánh dấu [GIẢ ĐỊNH].",
+      "Không bịa tỷ lệ sở hữu, chỉ mô tả ở dạng logic (founder-friendly, investor-heavy, family-controlled…)."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "governance_snapshot": {
+        "description": "Ảnh chụp governance hiện tại ở level khung.",
+        "fields": [
+          "board_structure_now",
+          "shareholder_structure_now",
+          "committee_and_policies_now",
+          "governance_strengths_and_weaknesses"
+        ]
+      },
+      "target_governance_model": {
+        "description": "Mô hình governance 'IPO-able' mục tiêu.",
+        "fields": [
+          "target_board_structure",
+          "target_committees",
+          "target_policies_and_charters",
+          "regional_best_practice_notes"
+        ]
+      },
+      "governance_gaps_and_risks": {
+        "description": "Khoảng trống & rủi ro chính giữa trạng thái hiện tại và target.",
+        "fields": [
+          "structural_gaps",
+          "process_gaps",
+          "disclosure_and_control_gaps",
+          "ipo_or_mna_risk_scenarios"
+        ]
+      },
+      "governance_upgrade_roadmap_12_24": {
+        "description": "Lộ trình 12–24 tháng nâng cấp governance.",
+        "fields": [
+          "phase_1_foundation",
+          "phase_2_professional",
+          "phase_3_ipo_ready",
+          "dependencies_and_owners"
+        ]
+      },
+      "board_and_management_alignment_notes": {
+        "description": "Ghi chú để tránh xung đột & lệch pha giữa Board – Founder – Investor.",
+        "fields": [
+          "alignment_risks",
+          "suggested_guardrails",
+          "agentic_governance_ideas"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_diagnose_current_governance",
+      "label": "Chẩn đoán governance hiện tại",
+      "goal": "Hiểu doanh nghiệp đang ở trạng thái nào về board & cổ đông.",
+      "actions": [
+        "Tóm tắt lại cấu trúc board & shareholders từ current_board_and_shareholders (nếu có) + nội dung plan.",
+        "Phân loại: founder-led, investor-led, family-owned, hybrid.",
+        "Nhận diện sớm điểm mạnh & yếu về minh bạch, tốc độ quyết định, kiểm soát rủi ro."
+      ]
+    },
+    {
+      "step_id": "02_define_target_model",
+      "label": "Định nghĩa mô hình governance mục tiêu",
+      "goal": "Thiết kế model phù hợp với stage & mục tiêu IPO/M&A trong vùng VN/SEA.",
+      "actions": [
+        "Dựa trên company_stage + ipo_or_exit_target, mô tả target_board_structure & target_committees.",
+        "Liệt kê target_policies_and_charters cần có trước khi vào DD/IPO.",
+        "Thêm regional_best_practice_notes theo pattern chung (không trích dẫn luật cụ thể)."
+      ]
+    },
+    {
+      "step_id": "03_identify_gaps_and_risks",
+      "label": "Xác định gaps & rủi ro",
+      "goal": "So sánh current vs target để ra danh sách khoảng trống quan trọng.",
+      "actions": [
+        "Xác định structural_gaps (thiếu independent, quyền lực tập trung, thiếu women/diversity nếu relevant).",
+        "Đánh dấu process_gaps (không có lịch board cố định, không lưu minutes, không có risk review…).",
+        "Nhận diện disclosure_and_control_gaps (reporting, internal control, data/AI governance).",
+        "Tóm tắt ipo_or_mna_risk_scenarios theo kiểu định tính (delay, giảm định giá, hard DD…)."
+      ]
+    },
+    {
+      "step_id": "04_build_upgrade_roadmap",
+      "label": "Lộ trình nâng cấp governance",
+      "goal": "Biến gaps thành kế hoạch 12–24 tháng.",
+      "actions": [
+        "Phase 1 (foundation): tập trung vào basic board calendar, minutes, reserved matters, simple policies.",
+        "Phase 2 (professional): thêm committees, formalize charters, nâng cấp reporting & internal control.",
+        "Phase 3 (IPO-ready): hoàn thiện cấu trúc gần chuẩn sàn, có advisory board/lawyer/banker tham gia.",
+        "Xác định dependencies_and_owners: ai lead (founder, CFO, GC, external counsel)."
+      ]
+    },
+    {
+      "step_id": "05_alignment_notes",
+      "label": "Ghi chú alignment Board–Founder–Investor",
+      "goal": "Giảm conflict, tăng signal 'governance tốt' với nhà đầu tư.",
+      "actions": [
+        "Liệt kê alignment_risks phổ biến theo bối cảnh (founder vs quỹ, family vs management…).",
+        "Đề xuất suggested_guardrails ở mức khung (information rights, board pack, voting cho các quyết định lớn…).",
+        "Thêm agentic_governance_ideas – vd: agent giúp chuẩn bị board pack, track action items, nhắc deadline."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi có bản IPO Readiness sơ bộ (skill 03) hoặc khi founder bắt đầu suy nghĩ về exit/IPO.",
+      "Khi user hỏi: 'Cần chỉnh gì về board & governance để quỹ/IPO không chê?'.",
+      "Song song với việc chuẩn bị Data Room & fundraising narrative."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Tóm tắt governance_snapshot để founder soi lại hiện trạng.",
+      "Bước 2: Trình bày target_governance_model & governance_gaps_and_risks ở dạng dễ đọc.",
+      "Bước 3: Đưa ra governance_upgrade_roadmap_12_24 & alignment_notes, hỏi user có muốn đào sâu phase 1 trước không."
+    ]
+  },
+  "constraints": {
+    "no_legal_advice": "Không diễn giải luật hay quy định sàn chứng khoán; chỉ đưa khung & best practice cấp pattern.",
+    "no_structuring_for_avoidance": "Không gợi ý cấu trúc để né thuế, né quy định, hoặc che giấu beneficial owner.",
+    "respect_confidentiality": "Nhắc user tránh chia sẻ chi tiết nhạy cảm (hợp đồng, tranh chấp nội bộ…) nếu không cần thiết.",
+    "language": "Tiếng Việt, xen kẽ thuật ngữ English khi cần (board, committee, governance, IPO-ready…)."
+  }
+}

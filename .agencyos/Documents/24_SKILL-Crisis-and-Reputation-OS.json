@@ -1,0 +1,205 @@
+{
+  "id": "24_SKILL-Crisis-and-Reputation-OS",
+  "version": "1.0.0",
+  "title": "Skill – Crisis, Reputation & Post-IPO Incident OS",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế khung quản trị khủng hoảng (crisis), truyền thông & danh tiếng (reputation) xuyên suốt hành trình Zero → IPO, phù hợp bối cảnh số, mạng xã hội & yêu cầu minh bạch của nhà đầu tư VN/SEA.",
+  "intended_use": {
+    "primary": [
+      "Giúp founder/leadership nhìn trước các kịch bản khủng hoảng chính (sản phẩm, pháp lý, data/AI, nhân sự, tài chính).",
+      "Thiết kế khung phản ứng khủng hoảng (crisis playbook) ở mức thực tế – không cần team PR lớn mới dùng được.",
+      "Kết nối giữa: vận hành nội bộ, pháp lý, investor relations, media & cộng đồng khi khủng hoảng xảy ra.",
+      "Chuẩn bị tư duy quản trị danh tiếng trước & sau IPO (hoặc M&A lớn)."
+    ],
+    "works_best_when": [
+      "Đã có Business Plan 2026 + các skill về risk (17), governance (22) & ESG (23).",
+      "Business hoạt động trong ngành có rủi ro truyền thông cao: fintech, crypto, health, edtech, consumer mass, platform…",
+      "Founder muốn xây playbook trước, chứ không đợi cháy nhà mới đi mua bình chữa cháy."
+    ],
+    "not_for": [
+      "Viết thông cáo báo chí cụ thể cho một vụ việc thật (nhất là đang tranh chấp/điều tra).",
+      "Đưa lời khuyên pháp lý, xử lý kiện tụng hay xử lý điều tra hình sự – cần luật sư & chuyên gia chuyên môn."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "09_SKILL-Product-and-Agentic-OS-Design.json",
+      "10_SKILL-Go-to-Market-and-Sales-OS.json",
+      "11_SKILL-Brand-Story-and-Psychology-OS.json",
+      "15_SKILL-AARRR-and-Lean-Analytics.json",
+      "17_SKILL-Risk-Downside-and-Scenario-OS.json",
+      "20_SKILL-Data-Room-and-Investor-Materials-OS.json",
+      "21_SKILL-Agentic-Execution-and-OKR-OS.json",
+      "22_SKILL-Board-Governance-and-IPO-Ready-Structure-OS.json",
+      "23_SKILL-ESG-and-Impact-Readiness-OS.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "key_risk_areas": {
+        "type": "string",
+        "required": false,
+        "description": "Mô tả nhanh các vùng rủi ro lớn: ví dụ 'dữ liệu khách hàng', 'regulatory', 'sản phẩm tài chính phức tạp', 'content do user tạo', 'chuỗi cung ứng phụ thuộc 1 vendor', v.v."
+      },
+      "recent_incidents_or_concerns": {
+        "type": "string",
+        "required": false,
+        "description": "Nếu đã từng có incident/khủng hoảng nhỏ, mô tả ngắn (ẩn thông tin nhạy cảm)."
+      },
+      "media_exposure_level": {
+        "type": "string",
+        "required": false,
+        "description": "Độ tiếp xúc truyền thông: 'low', 'medium', 'high', 'viral-prone'."
+      },
+      "regulatory_sensitivity": {
+        "type": "string",
+        "required": false,
+        "description": "Mức độ nhạy cảm với regulator: 'low', 'medium', 'high'."
+      },
+      "listed_or_pre_ipo_status": {
+        "type": "string",
+        "required": false,
+        "description": "Trạng thái: 'private', 'late-stage', 'pre_ipo', 'listed'."
+      }
+    },
+    "assumptions": [
+      "Nếu không có key_risk_areas, model suy luận từ business model & ngành và đánh dấu [GIẢ ĐỊNH].",
+      "Không dựng lại chi tiết incident thực tế hoặc nhắc tên cá nhân/tổ chức nếu user không mô tả rõ.",
+      "Tập trung vào playbook & pattern, không biến thành drama hay phán xét đạo đức."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "crisis_risk_map": {
+        "description": "Bản đồ các loại khủng hoảng chính mà business có thể gặp.",
+        "fields": [
+          "operational_and_product_risks",
+          "data_and_security_risks",
+          "regulatory_and_legal_risks",
+          "people_and_culture_risks",
+          "brand_and_communication_risks"
+        ]
+      },
+      "crisis_tiering_and_thresholds": {
+        "description": "Phân tầng mức độ khủng hoảng & tiêu chí escalate.",
+        "fields": [
+          "tier_definition",
+          "escalation_triggers",
+          "communication_guardrails"
+        ]
+      },
+      "crisis_playbook_core": {
+        "description": "Playbook khung cho từng loại khủng hoảng.",
+        "fields": [
+          "immediate_actions_template",
+          "72h_window_template",
+          "follow_up_and_remediation",
+          "stakeholder_communication_matrix"
+        ]
+      },
+      "reputation_and_trust_strategy": {
+        "description": "Chiến lược xây & giữ niềm tin dài hạn với khách hàng/nhà đầu tư/cộng đồng.",
+        "fields": [
+          "proactive_transparency_principles",
+          "customer_and_community_practices",
+          "investor_and_board_reporting_practices",
+          "post_crisis_learning_and_memory"
+        ]
+      },
+      "agentic_and_operational_layer": {
+        "description": "Cách dùng agent/AI để hỗ trợ phát hiện & phản ứng khủng hoảng, vẫn giữ human-in-the-loop.",
+        "fields": [
+          "monitoring_and_signal_sources",
+          "candidate_agentic_uses",
+          "human_approval_and_lock_points",
+          "link_to_other_skills"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_map_crisis_risks",
+      "label": "Bản đồ hoá các loại khủng hoảng",
+      "goal": "Không dọa, chỉ chỉ rõ: nếu scale lên, chỗ nào dễ nổ nhất.",
+      "actions": [
+        "Đọc key_risk_areas + ngành để liệt kê operational/data/regulatory/people/brand risks.",
+        "Đánh dấu những điểm trùng với Risk OS (skill 17) & Governance (22).",
+        "Ghi chú mức media_exposure_level & regulatory_sensitivity để calibrate mức độ."
+      ]
+    },
+    {
+      "step_id": "02_define_tiers_and_triggers",
+      "label": "Định nghĩa tiers & trigger khủng hoảng",
+      "goal": "Có chung ngôn ngữ nội bộ về 'khủng hoảng cấp mấy' và khi nào cần escalate.",
+      "actions": [
+        "Thiết kế tier_definition (vd: Tier 1 = incident nội bộ nhỏ, Tier 4 = national/IPO-level crisis).",
+        "Xác định escalation_triggers cho từng tier (số user bị ảnh hưởng, mức mất mát, dính regulator, v.v.).",
+        "Đặt communication_guardrails cơ bản (không blame public, không tiết lộ thông tin nhạy cảm…)."
+      ]
+    },
+    {
+      "step_id": "03_build_crisis_playbook_core",
+      "label": "Xây playbook core 0–72h+",
+      "goal": "Giúp team biết mình phải làm gì trong 0–24h, 24–72h & sau đó.",
+      "actions": [
+        "Xây immediate_actions_template: secure hệ thống, stop bleed, lập war room, log sự kiện.",
+        "Xây 72h_window_template: điều tra sơ bộ, cập nhật stakeholder, nhờ tư vấn pháp lý nếu cần.",
+        "Định nghĩa follow_up_and_remediation: post-mortem, bồi thường (nếu cần), cải tiến hệ thống.",
+        "Thiết kế stakeholder_communication_matrix (khách hàng, partner, regulator, media, nhân viên, investor…)."
+      ]
+    },
+    {
+      "step_id": "04_design_reputation_strategy",
+      "label": "Chiến lược danh tiếng & niềm tin dài hạn",
+      "goal": "Không chỉ chữa cháy, mà xây nền tảng để ít cháy hơn & phục hồi nhanh hơn.",
+      "actions": [
+        "Liệt kê proactive_transparency_principles phù hợp ngành & stage.",
+        "Đề xuất customer_and_community_practices (feedback loop, community, support).",
+        "Thiết kế investor_and_board_reporting_practices liên quan tới incidents & risk.",
+        "Đề xuất cách lưu trữ post_crisis_learning_and_memory (playbook sống, bài học)."
+      ]
+    },
+    {
+      "step_id": "05_agentic_layer_and_integration",
+      "label": "Tầng agentic & tích hợp với hệ điều hành doanh nghiệp",
+      "goal": "Cho thấy vị trí hợp lý của agent/AI trong detection & response, không để AI tự ý 'đi phát ngôn'.",
+      "actions": [
+        "Liệt kê monitoring_and_signal_sources (social, app reviews, support tickets, infra logs, NPS/churn…).",
+        "Đề xuất candidate_agentic_uses: tổng hợp tín hiệu, gợi ý ưu tiên, draft messages nội bộ, v.v.",
+        "Xác định human_approval_and_lock_points – explicit: 'AI không tự gửi thông cáo ra ngoài'.",
+        "Liên kết link_to_other_skills: Risk OS (17), Governance (22), ESG (23), Data Room (20) để bảo đảm đồng bộ."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã có Business Plan 2026 & Risk OS (17), hoặc khi user bắt đầu nghĩ tới media/IPO exposure.",
+      "Khi founder hỏi: 'Nếu ngày mai có khủng hoảng, tụi mình có biết phải làm gì không?'.",
+      "Trước khi lên chiến dịch lớn, ra mắt sản phẩm quan trọng, hoặc vào giai đoạn pre-IPO/listed."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trình bày crisis_risk_map để user thấy các vùng dễ nổ nhất.",
+      "Bước 2: Giải thích crisis_tiering_and_thresholds – thống nhất ngôn ngữ & trigger.",
+      "Bước 3: Đưa crisis_playbook_core + reputation_and_trust_strategy như 1 khung playbook dễ hiểu.",
+      "Bước 4: Gợi ý agentic_and_operational_layer và hỏi user có muốn cụ thể hoá thành SOP chi tiết không."
+    ]
+  },
+  "constraints": {
+    "no_real_case_reconstruction": "Không tái tạo chi tiết vụ việc thật có thể gây hại pháp lý hoặc cá nhân.",
+    "no_legal_or_pr_advice": "Không thay thế luật sư, chuyên gia PR/IR trong case cụ thể – chỉ cung cấp khung & pattern.",
+    "no_fear_mongering": "Không dùng ngôn từ gây hoảng loạn; tập trung vào xây năng lực & quy trình.",
+    "language": "Tiếng Việt, dùng thêm thuật ngữ English khi cần (crisis, reputation, incident, playbook…)."
+  }
+}

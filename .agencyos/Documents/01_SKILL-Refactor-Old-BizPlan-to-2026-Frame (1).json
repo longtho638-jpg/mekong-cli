@@ -1,0 +1,231 @@
+{
+  "id": "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame",
+  "version": "1.0.0",
+  "title": "Skill – Refactor Old Business Plan to Business Plan 2026: Agentic Zero→IPO",
+  "type": "skill",
+  "description": "Kỹ năng chuyên dùng để đọc các bản kế hoạch kinh doanh cũ (PDF/DOCX/text) và chuẩn hoá chúng về khung 00_MASTER-Agentic-BizPlan-OS (Business Plan 2026 – Agentic Zero→IPO). Tạo mapping rõ ràng: phần nào lấy từ tài liệu cũ, phần nào còn thiếu, phần nào cần đề xuất mới.",
+  "intended_use": {
+    "primary": [
+      "Refactor kế hoạch kinh doanh cũ sang khung 2026",
+      "Dùng làm bước nền tảng trước khi thêm Agentic layer & IPO readiness",
+      "Dùng ngay cả khi user chỉ dán text dài, chưa phải bản plan hoàn chỉnh"
+    ],
+    "not_for": [
+      "Sinh kế hoạch kinh doanh mới hoàn toàn từ IDEA (đó là nhiệm vụ kết hợp 00_MASTER + hệ skill khác).",
+      "Thay thế tư vấn pháp lý, thuế, kiểm toán."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "original_plan_text": {
+        "type": "string",
+        "required": true,
+        "description": "Toàn bộ nội dung kế hoạch cũ (hoặc phần quan trọng) sau khi user dán vào chat hoặc trích xuất từ PDF."
+      },
+      "language_hint": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "vi",
+          "en",
+          "mixed"
+        ]
+      },
+      "region_hint": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "VN",
+          "SEA",
+          "Global"
+        ]
+      },
+      "stage_hint": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "Zero",
+          "Pre-Seed",
+          "Seed",
+          "Series A",
+          "Series B/C",
+          "Pre-IPO"
+        ]
+      },
+      "industry_hint": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "SaaS B2B",
+          "Fintech",
+          "Ecommerce",
+          "Healthtech",
+          "Manufacturing",
+          "Crypto/Web3"
+        ]
+      }
+    },
+    "assumptions": [
+      "Nếu không có stage_hint, model phải suy luận mềm (soft classification) từ văn bản.",
+      "Nếu không có industry_hint, model chỉ gắn tag tạm thời như 'unspecified' và không áp playbook ngành trừ khi thật sự rõ."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "diagnostic_summary": {
+        "description": "Tóm tắt 1–2 trang về kế hoạch cũ: sản phẩm, mô hình kinh doanh, thị trường, stage, điểm mạnh/yếu.",
+        "format": "markdown"
+      },
+      "section_fill": {
+        "description": "Bộ nội dung sơ bộ cho từng section trong 00_MASTER (0–8).",
+        "structure": {
+          "per_section": {
+            "fields": {
+              "section_id": "id theo 00_MASTER (vd: 2_market_and_customer)",
+              "section_label": "label mô tả",
+              "status": "one_of: ['rich', 'partial', 'missing']",
+              "bullets": "list bullet ngắn, có marking [TỪ IDEA] / [ĐỀ XUẤT] / [TODO – THIẾU DỮ LIỆU]"
+            }
+          }
+        }
+      },
+      "mapping_table": {
+        "description": "Bảng mapping old→new khung 2026 để user & LLM khác dễ đối chiếu.",
+        "columns": [
+          "old_location",
+          "old_excerpt",
+          "new_section_id",
+          "new_section_label",
+          "quality_tag",
+          "notes"
+        ]
+      },
+      "gap_overview": {
+        "description": "Tóm tắt chỗ thiếu hụt lớn trong bản plan so với khung 2026.",
+        "fields": [
+          "top_3_gaps",
+          "risk_notes",
+          "suggested_next_blocks"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_user": "[TỪ TÀI LIỆU CŨ]",
+      "suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "missing": "[TODO – THIẾU DỮ LIỆU]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_parse_and_chunk",
+      "label": "Chuẩn hoá & chia khối văn bản",
+      "goal": "Làm sạch văn bản (header/footer, page number) và chia thành đoạn hợp lý để gán section.",
+      "actions": [
+        "Nhận original_plan_text.",
+        "Bỏ qua phần noise: số trang, header/footer lặp lại, mục lục nếu không có nội dung thực.",
+        "Chia thành đoạn dựa trên heading, subheading, hoặc khoảng cách logic."
+      ],
+      "notes": [
+        "Không cần regex phức tạp – mô tả cấp khái niệm.",
+        "Giữ nguyên ngôn ngữ gốc; chưa cần dịch."
+      ]
+    },
+    {
+      "step_id": "02_detect_meta_stage_industry",
+      "label": "Nhận diện meta, stage & ngành",
+      "goal": "Hiểu nhanh business đang ở đâu và thuộc ngành nào.",
+      "actions": [
+        "Tìm đoạn mô tả sản phẩm/dịch vụ chính.",
+        "Tìm đề cập đến khách hàng mục tiêu, quốc gia/khu vực.",
+        "Nhận diện stage: nếu có từ khoá như 'Series A', 'IPO', 'pre-revenue', 'profitable', vv.",
+        "Nhận diện ngành: fintech, ecommerce, crypto, logistics… từ từ khoá & mô tả."
+      ],
+      "outputs": [
+        "stage_inferred",
+        "industry_inferred",
+        "region_inferred",
+        "meta_summary"
+      ]
+    },
+    {
+      "step_id": "03_map_to_master_sections",
+      "label": "Gán nội dung vào các section của 00_MASTER",
+      "goal": "Mỗi đoạn văn bản được map vào 0–8 section chính của khung 2026.",
+      "actions": [
+        "Đọc định nghĩa mỗi section trong 00_MASTER-Agentic-BizPlan-OS.json.",
+        "Với mỗi đoạn, chọn section có mức tương đồng cao nhất (theo nội dung: thị trường, sản phẩm, tài chính, brand…).",
+        "Cho phép 1 đoạn map vào tối đa 2 section nếu thật sự giao thoa, nhưng ưu tiên 1 section chính."
+      ],
+      "outputs": [
+        "section_assignments (list đoạn→section_id)"
+      ]
+    },
+    {
+      "step_id": "04_summarize_per_section",
+      "label": "Tóm tắt theo từng section",
+      "goal": "Biến các đoạn đã map thành bullets ngắn, có gắn nhãn nguồn gốc.",
+      "actions": [
+        "Với mỗi section, gom các đoạn được map vào.",
+        "Tóm tắt thành 3–7 bullet tuỳ mức độ phong phú.",
+        "Mọi bullet xuất phát từ văn bản cũ phải gắn nhãn [TỪ TÀI LIỆU CŨ].",
+        "Nếu thấy logic nên bổ sung thêm để khép kín ý, có thể thêm bullet [ĐỀ XUẤT].",
+        "Nếu khung 00_MASTER yêu cầu thông tin mà văn bản không có, thêm bullet [TODO – THIẾU DỮ LIỆU]."
+      ],
+      "quality_tag_rules": [
+        "Nếu ≥70% subsection trong section có nội dung thực tế → status = 'rich'.",
+        "Nếu có 1 phần nhưng thiếu nhiều khía cạnh quan trọng → status = 'partial'.",
+        "Nếu gần như không có gì → status = 'missing'."
+      ]
+    },
+    {
+      "step_id": "05_build_mapping_table",
+      "label": "Tạo bảng mapping old→new",
+      "goal": "Cho user nhìn ngay sự dịch chuyển từ cấu trúc cũ sang khung 2026.",
+      "actions": [
+        "Mỗi đoạn hoặc nhóm đoạn trong văn bản cũ tạo thành 1 dòng.",
+        "old_location: heading/subheading hoặc đánh số giả định (vd: 'Section 2.3 Pricing').",
+        "old_excerpt: 1–2 câu tiêu biểu.",
+        "new_section_id & new_section_label: lấy từ 00_MASTER.",
+        "quality_tag: 'OK', 'WEAK', hoặc 'GAP'.",
+        "notes: highlight nếu đoạn này chứa thông tin quan trọng cho investor/IPO."
+      ]
+    },
+    {
+      "step_id": "06_gap_overview_and_next_steps",
+      "label": "Tổng hợp khoảng trống & đề xuất bước tiếp theo",
+      "goal": "Đưa ra cái nhìn ngắn gọn về chỗ thiếu và nên làm gì tiếp.",
+      "actions": [
+        "Nhìn toàn bộ section status để xác định top_3_gaps (vd: 'Unit economics mơ hồ', 'Không có IPO roadmap').",
+        "Viết đoạn ngắn về rủi ro nếu giữ nguyên các GAP này (ở mức khái niệm, không pháp lý).",
+        "Đề xuất thứ tự block nên xử lý tiếp trong Project (vd: 'Nên hoàn thiện 4_Business Model trước rồi mới sang 5_Growth')."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi user upload hoặc dán một bản plan dài và yêu cầu 'chuẩn hoá sang khung 2026'.",
+      "Khi Project cần nền tảng để tiếp tục với Agentic layer & IPO readiness.",
+      "Có thể dùng mềm ngay cả khi input chỉ là text tương đối dài, chưa đúng format plan."
+    ],
+    "how_to_present_to_user": [
+      "Luôn trả kết quả theo thứ tự: (1) diagnostic_summary, (2) section_fill (tóm tắt), (3) mapping_table (nếu không quá dài), (4) gap_overview.",
+      "Nếu mapping_table quá dài, có thể tóm gọn nhưng phải nói rõ là đã rút gọn.",
+      "Luôn nhắc user rằng: '[TỪ TÀI LIỆU CŨ]' vs '[ĐỀ XUẤT]' để tránh nhầm giữa fact và gợi ý."
+    ]
+  },
+  "constraints": {
+    "no_fabricated_numbers": "Không tự bịa số doanh thu, lợi nhuận, định giá… Nếu cần ví dụ minh hoạ phải đánh dấu [GIẢ ĐỊNH].",
+    "respect_original_intent": "Không được bóp méo logic core của bản plan cũ; chỉ sắp xếp & làm rõ.",
+    "language": "Nếu tài liệu gốc bằng tiếng Việt, ưu tiên output tiếng Việt; nếu tiếng Anh, có thể giữ tiếng Anh nhưng vẫn áp dụng marking convention."
+  }
+}

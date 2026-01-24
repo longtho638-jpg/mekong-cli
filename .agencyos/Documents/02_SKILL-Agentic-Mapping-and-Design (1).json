@@ -1,0 +1,253 @@
+{
+  "id": "02_SKILL-Agentic-Mapping-and-Design",
+  "version": "1.0.0",
+  "title": "Skill – Agentic Mapping & Operating System Design",
+  "type": "skill",
+  "description": "Kỹ năng chuyên dùng để thiết kế layer Agentic Operating System cho business: map các chức năng kinh doanh chính thành Agent, định nghĩa Input/Output/KPI/Human owner, và tạo backlog tối thiểu khả thi để triển khai theo giai đoạn.",
+  "intended_use": {
+    "primary": [
+      "Thiết kế Agentic OS từ bản Business Plan 2026 đã sơ bộ hoàn thành (từ IDEA hoặc refactor từ plan cũ).",
+      "Map Function → Agent → Input → Output → KPI → Human Owner.",
+      "Tạo backlog triển khai Agentic theo phase Zero→Seed→A→Pre-IPO."
+    ],
+    "works_best_when": [
+      "Đã có ít nhất draft cho các block 2, 3, 4, 5, 6 trong 00_MASTER (market, product, model, growth, ops).",
+      "Business có yếu tố digital/data đủ để triển khai một phần tự động hoá."
+    ],
+    "not_for": [
+      "Thiết kế chi tiết kiến trúc hệ thống production (microservices, hạ tầng, security) – chỉ mô tả khái niệm & luồng.",
+      "Thay thế team tech / data / legal khi ra quyết định high-stake."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "plan_sections": {
+        "type": "object",
+        "required": true,
+        "description": "Các section đã được tóm tắt/tạo từ 00_MASTER (ít nhất có 2,3,4,5,6).",
+        "example_keys": [
+          "2_market_and_customer",
+          "3_product_and_agentic_os",
+          "4_business_model_and_unit_economics",
+          "5_growth_engine_and_go_to_market",
+          "6_operations_risk_compliance"
+        ]
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "Zero",
+          "Pre-Seed",
+          "Seed",
+          "Series A",
+          "Series B/C",
+          "Pre-IPO"
+        ]
+      },
+      "industry": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "Fintech",
+          "SaaS B2B",
+          "Ecommerce",
+          "Healthtech",
+          "Manufacturing",
+          "Crypto/Web3"
+        ]
+      },
+      "agentic_maturity_hint": {
+        "type": "string",
+        "required": false,
+        "examples": [
+          "none",
+          "basic_automation",
+          "llm_poc",
+          "agentic_in_prod"
+        ]
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu stage, model suy luận mềm dựa trên mục tiêu, quy mô, traction trong plan.",
+      "Nếu thiếu industry, model vẫn thiết kế Agentic ở mức generic (không áp playbook ngành quá chi tiết)."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "agentic_function_map": {
+        "description": "Bảng Function → Agent → Input → Output → KPI → Human owner.",
+        "structure": {
+          "columns": [
+            "function_id",
+            "business_function",
+            "agent_name",
+            "agent_purpose",
+            "inputs",
+            "outputs",
+            "core_kpis",
+            "human_owner_role",
+            "stage_relevance"
+          ],
+          "notes": [
+            "function_id là mã ngắn: GROWTH_01, RISK_02, OPS_01…",
+            "stage_relevance nêu agent này quan trọng ở stage nào: Seed, Series A, Pre-IPO…"
+          ]
+        }
+      },
+      "agent_lifecycle_design": {
+        "description": "Thiết kế đơn giản vòng đời Agent theo stage.",
+        "fields": [
+          "zero_to_seed_focus",
+          "seed_to_series_a_focus",
+          "series_a_to_pre_ipo_focus"
+        ]
+      },
+      "agentic_backlog": {
+        "description": "Backlog tối thiểu khả thi để triển khai Agentic OS theo phase.",
+        "structure": {
+          "items": [
+            {
+              "fields": [
+                "backlog_id",
+                "title",
+                "description",
+                "related_function_id",
+                "priority",
+                "stage",
+                "effort_level",
+                "risk_note"
+              ]
+            }
+          ],
+          "priority_values": [
+            "P0_must_have",
+            "P1_soon",
+            "P2_later"
+          ],
+          "effort_levels": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ]
+        }
+      },
+      "guardrails_and_handoffs": {
+        "description": "Nguyên tắc an toàn & handoff giữa Agent và con người.",
+        "sections": [
+          "decisions_agent_can_support",
+          "decisions_agent_must_not_auto_take",
+          "human_in_the_loop_points",
+          "monitoring_and_alerts_ideas"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "safety_note": "[LƯU Ý AN TOÀN]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_identify_core_functions",
+      "label": "Nhận diện các chức năng kinh doanh cốt lõi",
+      "goal": "Từ plan, trích ra danh sách function đủ bao quát để design Agent.",
+      "actions": [
+        "Đọc các section 2,3,4,5,6 để xác định chuỗi giá trị (value chain) chính.",
+        "Gom nhóm thành 5–10 business function, ví dụ: 'Lead Acquisition', 'Onboarding', 'Pricing & Quote', 'Risk Check', 'Payout', 'Customer Support'.",
+        "Mỗi function ghi 1 câu mô tả nguồn gốc từ plan: [TỪ PLAN]…"
+      ],
+      "outputs": [
+        "core_functions_list"
+      ]
+    },
+    {
+      "step_id": "02_cluster_functions_into_domains",
+      "label": "Nhóm function vào domain Agentic",
+      "goal": "Tạo vài domain lớn: Growth, Product, Ops, Risk/Compliance, Finance.",
+      "actions": [
+        "Map mỗi function vào 1 domain chính: GROWTH / PRODUCT / OPS / RISK / FINANCE / OTHER.",
+        "Thiết lập mã function_id theo dạng DOMAIN_XX."
+      ],
+      "outputs": [
+        "functions_with_domain_tags"
+      ]
+    },
+    {
+      "step_id": "03_define_agents_for_functions",
+      "label": "Định nghĩa Agent cho từng function",
+      "goal": "Mỗi function có 0–2 Agent gợi ý, tránh overkill.",
+      "actions": [
+        "Với mỗi function, hỏi: 'LLM/agent có thể giúp gì ở đây mà vẫn an toàn?'.",
+        "Thiết kế tên agent dễ hiểu (vd: 'Growth Experiment Agent', 'KYC Screening Agent').",
+        "Mô tả agent_purpose ngắn gọn: [ĐỀ XUẤT]…",
+        "Liệt kê inputs (dạng data/log/email/form); outputs (recommendation, draft, flag, score).",
+        "Gắn core_kpis (vd: số test/tháng, tỉ lệ accept, thời gian xử lý).",
+        "Gắn human_owner_role (vd: Growth lead, Risk manager, COO…)."
+      ],
+      "constraints": [
+        "Không tạo quá 2 agent trên một function trừ khi business cực kỳ phức tạp.",
+        "Không cho agent tự động chấp nhận giao dịch high-risk (chỉ support)."
+      ]
+    },
+    {
+      "step_id": "04_stage_relevance_and_phasing",
+      "label": "Xác định mức độ phù hợp theo stage & phase triển khai",
+      "goal": "Không dồn tất cả Agent vào giai đoạn quá sớm.",
+      "actions": [
+        "Dựa trên stage hiện tại & target, gán stage_relevance cho từng agent: 'early_only', 'scale_stage', 'pre_ipo_critical'.",
+        "Thiết kế agent_lifecycle_design với 3 subsection: zero_to_seed_focus, seed_to_series_a_focus, series_a_to_pre_ipo_focus (chỉ bullet)."
+      ]
+    },
+    {
+      "step_id": "05_build_agentic_backlog",
+      "label": "Tạo backlog Agentic tối thiểu khả thi",
+      "goal": "Chuyển mapping Agent → việc cụ thể có thể giao cho team thực hiện.",
+      "actions": [
+        "Với mỗi agent quan trọng nhất (P0/P1), tạo 1–3 backlog item.",
+        "Mỗi item có: backlog_id, title, description, related_function_id, priority, stage, effort_level, risk_note.",
+        "risk_note dùng [LƯU Ý AN TOÀN] cho các chỗ cần kiểm soát đặc biệt."
+      ]
+    },
+    {
+      "step_id": "06_define_guardrails_and_handoffs",
+      "label": "Định nghĩa guardrails & handoff",
+      "goal": "Giữ Agent ở vai trò trợ lý, không phải 'CEO tự động'.",
+      "actions": [
+        "Liệt kê các quyết định agent được phép tự động hoá 100% (vd: draft nội dung, gợi ý experiment, phân loại ticket đơn giản).",
+        "Liệt kê các quyết định agent chỉ được phép đề xuất, không được auto-execute (vd: approve loan, ban tài khoản, thay đổi giá, ký hợp đồng).",
+        "Xác định human_in_the_loop_points nơi con người phải click/confirm.",
+        "Đưa ra ý tưởng monitoring & alert (vd: nếu tỉ lệ reject tăng đột biến, ping Risk manager)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã có bản tóm tắt Business Plan 2026 (dù chưa hoàn hảo).",
+      "Khi user muốn hiểu: 'Nếu thêm Agent vào thì vào đâu, làm gì, ai chịu trách nhiệm?'"
+    ],
+    "how_to_present_to_user": [
+      "Luôn trình bày theo thứ tự: (1) agentic_function_map (bảng), (2) agent_lifecycle_design, (3) agentic_backlog, (4) guardrails_and_handoffs.",
+      "Giải thích ngắn gọn 3–5 agent quan trọng nhất cho stage hiện tại, tránh spam danh sách quá dài trong 1 response.",
+      "Nhắc lại rằng Agent chỉ support; người phụ trách (Human owner) vẫn là người chịu trách nhiệm cuối."
+    ]
+  },
+  "constraints": {
+    "no_architecture_overspec": "Không lao vào chi tiết công nghệ (framework, provider) trừ khi user hỏi; giữ cấp khái niệm để phù hợp mọi stack.",
+    "respect_regulation": "Trong ngành regulated (fintech, health, crypto…), không để Agent auto-approve việc có hậu quả pháp lý.",
+    "language": "Output ưu tiên tiếng Việt, nhưng có thể dùng tên Agent tiếng Anh nếu dễ hiểu hơn."
+  }
+}

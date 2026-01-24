@@ -1,0 +1,402 @@
+{
+  "file_name": "00_MASTER-Agentic-BizPlan-OS.json",
+  "version": "1.0.0",
+  "language": "vi",
+  "title": "MASTER – Agentic Business Plan 2026 Zero→IPO (VN/SEA)",
+  "purpose": {
+    "short": "Định nghĩa khung tổng thể 'Business Plan 2026 – Agentic Zero→IPO' cho VN/SEA.",
+    "long": "Tài liệu master mô tả đầy đủ kiến trúc Business Plan 2026 cho doanh nghiệp có yếu tố Agentic, áp dụng cho các giai đoạn từ Zero đến IPO tại Việt Nam và khu vực Đông Nam Á. Đây là bản đồ tổng cho mọi skill con: chuẩn hóa kế hoạch kinh doanh cũ, thiết kế Agentic Operating System, đánh giá IPO readiness, và xây dựng Gap & Roadmap."
+  },
+  "intended_use": {
+    "for_llm": [
+      "Làm nguồn tham chiếu nền tảng khi tinh chỉnh hoặc chuẩn hóa bất kỳ bản kế hoạch kinh doanh nào.",
+      "Xác định cấu trúc chuẩn của 'Business Plan 2026 – Agentic Zero→IPO'.",
+      "Nhận diện giai đoạn Zero→PMF→Scale→Pre-IPO/IPO của doanh nghiệp.",
+      "Làm khung tham chiếu khi sinh output cho các skill khác (refactor_2026, agentic_design, ipo_readiness, gap_roadmap)."
+    ],
+    "for_rag": [
+      "Dùng để trả lời câu hỏi: 'Khung chuẩn 2026 gồm những phần nào?'",
+      "Dùng để map nội dung cũ vào section mới đúng chuẩn.",
+      "Dùng để phân loại nội dung theo [Business] / [Agentic] / [Governance].",
+      "Dùng để gợi ý thiếu sót (gap) trong một kế hoạch so với khung chuẩn."
+    ]
+  },
+  "core_principles": {
+    "tri_layer": {
+      "description": "Mọi nội dung trong khung đều được nhìn qua 3 lớp song song.",
+      "layers": [
+        {
+          "name": "Business",
+          "label": "[Business]",
+          "focus": "Chiến lược, mô hình kinh doanh, thị trường, sản phẩm, tài chính, vận hành."
+        },
+        {
+          "name": "Agentic",
+          "label": "[Agentic]",
+          "focus": "Vai trò của AI/Agent, quy trình auto, input/output của agent, KPI cho agent."
+        },
+        {
+          "name": "Governance",
+          "label": "[Governance/IPO]",
+          "focus": "Kiểm soát nội bộ, pháp lý, rủi ro, chuẩn IPO, board, audit, compliance."
+        }
+      ]
+    },
+    "stage_model": {
+      "description": "Doanh nghiệp được xem là đang nằm ở 1 trong 4 stage Zero→IPO.",
+      "stages": [
+        {
+          "id": "zero_psf",
+          "name": "Zero → Problem–Solution Fit",
+          "typical_signals": [
+            "Ý tưởng mới, chưa có khách hàng trả tiền.",
+            "Đang thử nghiệm nhiều phiên bản giải pháp, nói chuyện khách hàng nhiều hơn là build tính năng.",
+            "Chưa có mô hình tài chính rõ, chủ yếu là hypothesis."
+          ]
+        },
+        {
+          "id": "pmf_early_scale",
+          "name": "Product–Market Fit → Early Scale",
+          "typical_signals": [
+            "Đã có khách hàng trả tiền liên tục.",
+            "Một số kênh acquisition bắt đầu chứng minh hiệu quả.",
+            "Unit economics ở mức 'chấp nhận được' hoặc đang cải thiện."
+          ]
+        },
+        {
+          "id": "scale_up",
+          "name": "Scale-Up → Growth (Series B/C)",
+          "typical_signals": [
+            "Doanh thu tăng trưởng ổn định theo năm.",
+            "Có tổ chức sale/marketing/ops rõ ràng.",
+            "Bắt đầu quan tâm nhiều đến chuẩn hóa, hệ thống, risk & compliance."
+          ]
+        },
+        {
+          "id": "pre_ipo_ipo",
+          "name": "Pre-IPO → IPO",
+          "typical_signals": [
+            "3 năm BCTC kiểm toán.",
+            "Cấu trúc governance rõ, có board & committee.",
+            "Chuẩn bị hoặc đang làm hồ sơ niêm yết tại HOSE/HNX/SGX/v.v."
+          ]
+        }
+      ]
+    },
+    "agentic_maturity": {
+      "levels": [
+        {
+          "level": 0,
+          "name": "No Agentic",
+          "description": "Chỉ dùng AI ad-hoc, không có hệ thống agent."
+        },
+        {
+          "level": 1,
+          "name": "Assistant Agentic",
+          "description": "Một số quy trình hỗ trợ (research, draft, phân tích) dùng AI, nhưng không tự động hóa loop."
+        },
+        {
+          "level": 2,
+          "name": "Operational Agentic",
+          "description": "Có Agentic OS cho một số function (marketing, ops, hỗ trợ khách hàng) với KPI rõ và monitoring."
+        },
+        {
+          "level": 3,
+          "name": "Core Agentic OS",
+          "description": "Agentic là lớp vận hành cốt lõi; có policy-as-code, audit trail, multi-agent, multi-stage guardrail. Đủ để đưa vào hồ sơ IPO như một moat & hệ kiểm soát rủi ro."
+        }
+      ]
+    }
+  },
+  "frame_2026": {
+    "description": "Khung 'Business Plan 2026 – Agentic Zero→IPO' gồm 9 cụm chính, mỗi cụm có thể đánh nhãn [Business] / [Agentic] / [Governance].",
+    "sections": [
+      {
+        "id": "0_meta_stage",
+        "title": "0. Meta & Stage",
+        "tags": [
+          "Business",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Tên công ty / dự án.",
+            "Ngành, mô hình (SaaS, marketplace, fintech, edtech, v.v.).",
+            "Thị trường chính (VN, SEA, global).",
+            "Giai đoạn hiện tại: Zero, PMF, Scale, Pre-IPO/IPO."
+          ],
+          "agentic": [
+            "Agentic maturity level (0–3).",
+            "Module nào hiện có agent hỗ trợ/vận hành."
+          ],
+          "governance": [
+            "Cấu trúc pháp lý (VN OpCo, Sing HoldCo,…).",
+            "Có hay chưa BCTC kiểm toán, board, committee."
+          ]
+        }
+      },
+      {
+        "id": "1_vision_mission_story",
+        "title": "1. Vision, Mission & Zero→IPO Story",
+        "tags": [
+          "Business",
+          "Agentic"
+        ],
+        "content_spec": {
+          "business": [
+            "Mission: lý do tồn tại hiện tại (1–2 câu).",
+            "Vision: tầm nhìn 3–7 năm (sau khi scale/IPO).",
+            "Zero→IPO narrative: 3–5 đoạn mô tả hành trình từ hiện tại đến IPO."
+          ],
+          "agentic": [
+            "Vai trò của Agentic trong việc đạt mission/vision.",
+            "Ý tưởng 'Agentic OS' trong bức tranh dài hạn."
+          ],
+          "governance": [
+            "Mức độ minh bạch, trách nhiệm giải trình dự kiến khi lên sàn."
+          ]
+        }
+      },
+      {
+        "id": "2_market_customer",
+        "title": "2. Market & Customer [Business / Agentic / Governance]",
+        "tags": [
+          "Business",
+          "Agentic",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Market size: TAM, SAM, SOM (ước lượng + nguồn).",
+            "Market trends: 3–5 xu hướng lớn ảnh hưởng.",
+            "Customer segments & personas.",
+            "Jobs-to-be-done chính của khách hàng.",
+            "Pain points & dream state."
+          ],
+          "agentic": [
+            "Cách Agent hỗ trợ research thị trường (Agent-Research).",
+            "Cách Agent phân tích data khách hàng, phân khúc, hành vi (Agent-Insight)."
+          ],
+          "governance": [
+            "Quy định liên quan đến thị trường & khách hàng (data privacy, ngành nghề có điều kiện,…).",
+            "Cam kết tuân thủ (GDPR/PDPA/VN data law nếu có)."
+          ]
+        }
+      },
+      {
+        "id": "3_product_agentic_os",
+        "title": "3. Product & Agentic Operating System",
+        "tags": [
+          "Business",
+          "Agentic",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Mô tả sản phẩm/dịch vụ chính, các module.",
+            "Roadmap 12–24 tháng.",
+            "Giá trị cốt lõi sản phẩm (value drivers)."
+          ],
+          "agentic": [
+            "Mô tả Agentic Operating System.",
+            "Danh sách agent chính: Marketing, Sales, Risk, Ops, Finance, Support,…",
+            "Với mỗi agent: input, process, output, KPI.",
+            "Mối quan hệ giữa các agent (nếu có multi-agent)."
+          ],
+          "governance": [
+            "Policy-as-code: luật/điều kiện chi phối hành vi agent.",
+            "Audit log & explainability: ghi nhận quyết định nào do agent gợi ý/thực thi.",
+            "Human-in-the-loop: điểm chốt cần con người duyệt."
+          ]
+        }
+      },
+      {
+        "id": "4_business_model_unit_econ",
+        "title": "4. Business Model & Unit Economics",
+        "tags": [
+          "Business",
+          "Agentic",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Nguồn doanh thu: subscription, usage-based, commission, ads, hybrid,…",
+            "Chi phí chính: hạ tầng, nhân sự, sales & marketing, R&D,…",
+            "Unit economics: LTV, CAC, payback, gross margin, contribution margin.",
+            "Các giả định chính về tăng trưởng & biên lợi nhuận."
+          ],
+          "agentic": [
+            "Agent cho pricing/revenue ops (nếu có).",
+            "Agent cho FP&A (forecast, scenario planning).",
+            "Tác động định lượng dự kiến của Agentic đến chi phí/biên lợi nhuận."
+          ],
+          "governance": [
+            "Chuẩn mực kế toán áp dụng (VAS/IFRS,…).",
+            "Yêu cầu minh bạch tài chính trước IPO.",
+            "Kiểm soát rủi ro tài chính & báo cáo."
+          ]
+        }
+      },
+      {
+        "id": "5_growth_engine",
+        "title": "5. Growth Engine (AARRR + Growth Agents)",
+        "tags": [
+          "Business",
+          "Agentic"
+        ],
+        "content_spec": {
+          "business": [
+            "Định nghĩa các bước AARRR: Acquisition, Activation, Retention, Revenue, Referral.",
+            "KPI chính mỗi bước.",
+            "Bullseye framework: 3 kênh tăng trưởng trọng tâm.",
+            "Chiến lược growth 12–24 tháng."
+          ],
+          "agentic": [
+            "Growth Agent: quản lý backlog experiment, ưu tiên test.",
+            "Tự động A/B test (ads, landing, email, pricing).",
+            "Cách agent báo cáo kết quả & đề xuất tiếp theo."
+          ],
+          "governance": [
+            "Giới hạn ngân sách cho thử nghiệm do agent đề xuất.",
+            "Quy trình phê duyệt campaign lớn."
+          ]
+        }
+      },
+      {
+        "id": "6_ops_risk_compliance",
+        "title": "6. Operations, Risk & Compliance",
+        "tags": [
+          "Business",
+          "Agentic",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Mô tả chuỗi vận hành chính (onboarding, delivery, support, billing,…).",
+            "SLA với khách/đối tác: uptime, response time, error rate.",
+            "Bản đồ rủi ro: thị trường, pháp lý, công nghệ, vận hành, con người."
+          ],
+          "agentic": [
+            "Ops Agent: theo dõi logs, alert, tự động đề xuất hành động (reroute, degrade).",
+            "Risk Agent: fraud/credit/anomaly detection.",
+            "Compliance Agent: nhắc deadline, checklist, báo cáo."
+          ],
+          "governance": [
+            "Internal control & risk management framework.",
+            "Quy trình xử lý sự cố (incident response).",
+            "Trách nhiệm & quyền hạn của các committee (Risk, Audit,…)."
+          ]
+        }
+      },
+      {
+        "id": "7_financial_plan_ipo",
+        "title": "7. Financial Plan & IPO Roadmap",
+        "tags": [
+          "Business",
+          "Agentic",
+          "Governance"
+        ],
+        "content_spec": {
+          "business": [
+            "Projection 3–5 năm: doanh thu, lợi nhuận, cashflow.",
+            "Capital strategy: các vòng vốn dự kiến (Seed, A, B, Pre-IPO, IPO).",
+            "Use of funds: cách sử dụng vốn gọi được.",
+            "IPO roadmap: mốc thời gian, sàn dự kiến, ngân hàng tư vấn (nếu có)."
+          ],
+          "agentic": [
+            "FP&A Agent hỗ trợ update forecast hàng tháng.",
+            "Scenario Agent mô phỏng các kịch bản (bear/base/bull)."
+          ],
+          "governance": [
+            "Yêu cầu BCTC kiểm toán.",
+            "Chuẩn mực & quy định niêm yết tại VN/SEA.",
+            "Checklist IPO readiness (tóm tắt)."
+          ]
+        }
+      },
+      {
+        "id": "8_brand_story_psychology",
+        "title": "8. Brand, Story & Psychology",
+        "tags": [
+          "Business",
+          "Agentic"
+        ],
+        "content_spec": {
+          "business": [
+            "Brand position, brand promise, tone of voice.",
+            "Story: origin story, hero’s journey của khách hàng.",
+            "Ứng dụng các khung tâm lý: Reiss, Freud, Rogers,… để hiểu sâu khách hàng."
+          ],
+          "agentic": [
+            "Brand/Content Agent gợi ý content, script, thông điệp.",
+            "Giới hạn: agent chỉ gợi ý, con người chỉnh sửa & duyệt trước khi dùng công khai."
+          ],
+          "governance": [
+            "Tránh claim sai sự thật, tuân thủ luật quảng cáo & chứng khoán.",
+            "Quy trình review nội dung quan trọng."
+          ]
+        }
+      }
+    ]
+  },
+  "rag_usage_guidelines": {
+    "retrieval_granularity": [
+      "Ưu tiên chunk theo từng section (0→8) và theo từng layer [Business]/[Agentic]/[Governance].",
+      "Khi câu hỏi liên quan đến cấu trúc tổng thể, truy xuất phần 'frame_2026.sections'.",
+      "Khi câu hỏi về giai đoạn doanh nghiệp, truy xuất phần 'core_principles.stage_model'.",
+      "Khi câu hỏi về mức độ Agentic, truy xuất phần 'core_principles.agentic_maturity'."
+    ],
+    "typical_queries_and_where_to_look": [
+      {
+        "query_type": "Cấu trúc business plan 2026",
+        "look_at": [
+          "frame_2026.sections"
+        ]
+      },
+      {
+        "query_type": "Doanh nghiệp đang ở stage nào?",
+        "look_at": [
+          "core_principles.stage_model",
+          "frame_2026.sections[0].content_spec"
+        ]
+      },
+      {
+        "query_type": "Làm sao gắn Agentic vào business plan?",
+        "look_at": [
+          "core_principles.tri_layer",
+          "frame_2026.sections[2]",
+          "frame_2026.sections[3]",
+          "frame_2026.sections[5]",
+          "frame_2026.sections[6]",
+          "frame_2026.sections[7]"
+        ]
+      },
+      {
+        "query_type": "Chuẩn bị IPO cần gì trong plan?",
+        "look_at": [
+          "core_principles.stage_model",
+          "frame_2026.sections[6]",
+          "frame_2026.sections[7]"
+        ]
+      }
+    ],
+    "safety_notes": [
+      "Không suy diễn số liệu tài chính cụ thể từ khung này; đây chỉ là template khái niệm.",
+      "Khi sinh kế hoạch cụ thể cho 1 công ty, phải phân biệt dữ liệu thực từ tài liệu gốc với phần gợi ý."
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Agentic Operating System (Agentic OS)",
+      "definition": "Tập hợp các agent (AI/LLM + workflow) được tổ chức như một lớp vận hành phía sau business, có policy, logging, KPI, và human-in-the-loop."
+    },
+    {
+      "term": "Zero→IPO",
+      "definition": "Chuỗi 4 giai đoạn phát triển doanh nghiệp: Zero→Problem–Solution Fit→Product–Market Fit/Early Scale→Scale-Up→Pre-IPO/IPO."
+    },
+    {
+      "term": "Tri-layer [Business]/[Agentic]/[Governance]",
+      "definition": "Cách nhìn mọi phần của business plan qua 3 lăng kính: kinh doanh, tự động hóa bằng agent, và quản trị/pháp lý."
+    }
+  ]
+}

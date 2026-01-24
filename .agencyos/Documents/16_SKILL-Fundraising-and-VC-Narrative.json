@@ -1,0 +1,284 @@
+{
+  "id": "16_SKILL-Fundraising-and-VC-Narrative",
+  "version": "1.0.0",
+  "title": "Skill – Fundraising, VC Narrative & Investor Deck Zero → IPO",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế chiến lược gọi vốn & câu chuyện VC-ready cho startup từ Zero → Pre-IPO, bao gồm: lý do đầu tư, rủi ro, phản biện như VC, và khung slide deck (ví dụ raise 5M USD).",
+  "intended_use": {
+    "primary": [
+      "Chuẩn hóa phần 'Raising Capital' trong Business Plan 2026 – Agentic Zero→IPO.",
+      "Thiết kế narrative cho từng giai đoạn: Angel/Pre-Seed, Seed, Series A/B, Late/Pre-IPO.",
+      "Sinh bảng 'Why a VC Would Decline to Invest' vs 'Why a VC Would Want to Invest'.",
+      "Làm rõ Business Model Risks dưới góc nhìn nhà đầu tư tài chính & chiến lược.",
+      "Thiết kế bộ khung Investor Deck (slide-by-slide) cho vòng gọi vốn mục tiêu (vd 5M USD)."
+    ],
+    "works_best_when": [
+      "Đã có khung business model & unit economics (05).",
+      "Đã có growth/metrics framework (15).",
+      "Đã có ít nhất bản draft về market & GTM (02, 06, 13, 14)."
+    ],
+    "not_for": [
+      "Soạn full legal docs (term sheet, SHA, SSA) – chỉ gợi ý high level.",
+      "Đánh giá giá trị công ty (valuation) quá chi tiết – chỉ nêu khung & yếu tố ảnh hưởng."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "13_SKILL-Sales-Process-and-Channels.json",
+      "14_SKILL-GTM-Experiments-and-Bullseye.json",
+      "15_SKILL-AARRR-and-Lean-Analytics.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả mô hình kinh doanh, sản phẩm/dịch vụ & insight thị trường cốt lõi."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn gọi vốn: 'angel', 'pre_seed', 'seed', 'series_a', 'series_b_plus', 'pre_ipo'. Nếu không có, model suy luận & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "target_raise_amount_usd": {
+        "type": "number",
+        "required": false,
+        "description": "Số tiền dự kiến gọi (USD). Nếu thiếu, mặc định 5_000_000 cho ví dụ deck & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "geo_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Khu vực: 'VN', 'SEA', 'APAC', 'global', dùng để gợi ý loại quỹ & benchmark."
+      },
+      "has_agentic_layer": {
+        "type": "boolean",
+        "required": false,
+        "description": "Cho biết có Agentic/AI layer hay không để làm rõ narrative về moat & automation."
+      },
+      "known_metrics_snapshot": {
+        "type": "string",
+        "required": false,
+        "description": "Tóm tắt traction & metrics hiện tại: revenue, growth %, retention, unit economics, key logos… nếu đã có."
+      },
+      "risk_appetite_and_runway_note": {
+        "type": "string",
+        "required": false,
+        "description": "Ghi chú về runway hiện tại, burn rate, hoặc quan điểm của founder về tốc độ đốt tiền."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu stage, model suy luận dựa vào idea_or_offer & known_metrics_snapshot và đánh dấu [GIẢ ĐỊNH].",
+      "Nếu thiếu target_raise_amount_usd, dùng 5M USD như ví dụ chuẩn cho deck [GIẢ ĐỊNH]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "fundraising_diagnosis": {
+        "description": "Chẩn đoán readiness & logic gọi vốn.",
+        "fields": [
+          "inferred_stage",
+          "readiness_summary",
+          "funding_rationale",
+          "suggested_raise_range",
+          "investor_archetype_fit"
+        ]
+      },
+      "vc_invest_thesis": {
+        "description": "Narrative tại sao đây là deal đáng đầu tư.",
+        "fields": [
+          "why_now",
+          "why_market",
+          "why_this_team",
+          "why_this_product_and_agentic_layer",
+          "why_this_business_model_and_moat",
+          "exit_potential_summary"
+        ]
+      },
+      "vc_concerns_and_decline_reasons": {
+        "description": "Bảng 'Why a VC Would Decline to Invest'.",
+        "fields": [
+          "market_risks",
+          "product_and_tech_risks",
+          "execution_and_team_risks",
+          "financial_and_unit_econ_risks",
+          "regulatory_and_geo_risks",
+          "agentic_specific_risks"
+        ]
+      },
+      "why_vc_would_want_to_invest": {
+        "description": "Bảng 'Why a VC Would Want to Invest'.",
+        "fields": [
+          "compelling_strengths",
+          "unfair_advantages",
+          "traction_proofs",
+          "strategic_optionality",
+          "alignment_with_vc_fund_thesis"
+        ]
+      },
+      "business_model_risks": {
+        "description": "Phân tích rủi ro riêng của business model.",
+        "fields": [
+          "revenue_model_risks",
+          "margin_and_cost_structure_risks",
+          "scalability_constraints",
+          "concentration_risks",
+          "downside_scenarios"
+        ]
+      },
+      "use_of_funds_and_milestones": {
+        "description": "Kế hoạch sử dụng vốn & mốc kết quả.",
+        "fields": [
+          "capital_allocation_plan",
+          "12_18_month_milestones",
+          "24_36_month_milestones",
+          "kpi_targets_linked_to_round",
+          "agentic_investment_items"
+        ]
+      },
+      "investor_deck_outline": {
+        "description": "Khung slide deck để raise (vd 5M USD).",
+        "structure": {
+          "slides": [
+            "cover_and_tagline",
+            "problem_and_why_now",
+            "solution_and_product_demo",
+            "agentic_operating_system",
+            "market_size_and_opportunity",
+            "business_model_and_unit_economics",
+            "traction_and_metrics",
+            "gtm_and_growth_strategy",
+            "competition_and_moat",
+            "team_and_advisors",
+            "financial_projections_and_scenarios",
+            "fundraising_ask_and_use_of_funds",
+            "roadmap_and_exit_vision"
+          ]
+        },
+        "fields": [
+          "slide_by_slide_notes",
+          "data_or_assets_needed"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_fundraising_stage_diagnosis",
+      "label": "Chẩn đoán giai đoạn & readiness",
+      "goal": "Hiểu business đang ở đâu và có nên/đủ điều kiện gọi vòng đó không.",
+      "actions": [
+        "Đọc idea_or_offer, known_metrics_snapshot & stage (nếu có).",
+        "Suy luận inferred_stage nếu thiếu & đánh dấu [GIẢ ĐỊNH].",
+        "Tóm tắt readiness_summary: traction, team, sản phẩm, metrics, cấu trúc pháp lý (dựa trên 03 nếu có).",
+        "Đề xuất funding_rationale & suggested_raise_range (nếu cân được).",
+        "Gợi ý investor_archetype_fit phù hợp: micro VC, sector VC, strategic corp, family office, v.v."
+      ]
+    },
+    {
+      "step_id": "02_build_vc_invest_thesis",
+      "label": "Xây luận điểm đầu tư (investor thesis)",
+      "goal": "Đóng khung câu chuyện: tại sao đây là vòng đáng đầu tư.",
+      "actions": [
+        "Phác thảo why_now từ góc nhìn macro/trend/cửa sổ cơ hội.",
+        "Mô tả why_market: size, growth, cấu trúc, timing… ở level VC.",
+        "Tóm tắt why_this_team (founder-market fit, track record, unique insights).",
+        "Mô tả why_this_product_and_agentic_layer: giải quyết vấn đề gì, agentic/AI giúp scale hay bảo vệ moat thế nào.",
+        "Giải thích why_this_business_model_and_moat: revenue model, network effects, data moat, switching cost…",
+        "Định khung exit_potential_summary: M&A, strategic sale, IPO (gắn 03_SKILL-SEA-VN-IPO-Readiness nếu có)."
+      ]
+    },
+    {
+      "step_id": "03_list_vc_concerns_and_decline_reasons",
+      "label": "Liệt kê lý do VC có thể từ chối",
+      "goal": "Chủ động nhìn business bằng con mắt VC để chuẩn bị đáp án.",
+      "actions": [
+        "Phân loại market_risks: TAM, cạnh tranh, timing, regulatory macro.",
+        "Phân loại product_and_tech_risks: độ phức tạp, dependency, latency, vendor lock-in…",
+        "Phân loại execution_and_team_risks: thiếu năng lực, tập trung, hiring, scaling.",
+        "Phân loại financial_and_unit_econ_risks: burn rate, gross margin, payback, LTV/CAC.",
+        "Phân loại regulatory_and_geo_risks, nhất là với VN/SEA & ngành regulated.",
+        "Nếu has_agentic_layer = true: thêm agentic_specific_risks (overautomation, model risk, data privacy, hallucination…)."
+      ]
+    },
+    {
+      "step_id": "04_derive_why_vc_would_want_to_invest",
+      "label": "Tạo bảng lý do VC muốn đầu tư",
+      "goal": "Đối trọng bảng rủi ro bằng bảng strengths & upside.",
+      "actions": [
+        "Từ thesis & readiness, rút ra compelling_strengths (sản phẩm, thị trường, team, timing).",
+        "Liệt kê unfair_advantages: data, distribution, regulation, cộng đồng, IP, agentic stack…",
+        "Tóm tắt traction_proofs: khách hàng, tăng trưởng, logos, cohort, unit econ cải thiện (nếu có dữ liệu).",
+        "Mô tả strategic_optionality: expansion sang ngành/geo/liên minh nào.",
+        "Gợi ý alignment_with_vc_fund_thesis: vertical, stage, geo, ticket size."
+      ]
+    },
+    {
+      "step_id": "05_analyze_business_model_risks",
+      "label": "Phân tích rủi ro business model",
+      "goal": "Nhìn rõ downside để không bị blindspot khi pitch.",
+      "actions": [
+        "Mô tả revenue_model_risks: pricing power, cyclicality, dependency vào một dòng doanh thu.",
+        "Mổ xẻ margin_and_cost_structure_risks: cost of goods, infra, sales & marketing, support.",
+        "Xác định scalability_constraints: bottleneck về con người, tech, pháp lý, capital intensity.",
+        "Phân tích concentration_risks: 1–2 khách hàng lớn, 1–2 kênh, 1–2 vendor…",
+        "Tạo vài downside_scenarios quan trọng (vd tăng cạnh tranh, regulation bóp, funding winter) với note ngắn."
+      ]
+    },
+    {
+      "step_id": "06_define_use_of_funds_and_milestones",
+      "label": "Thiết kế kế hoạch dùng vốn & milestones",
+      "goal": "Tiền dùng vào đâu và sẽ mua được những mốc nào.",
+      "actions": [
+        "Phân bổ capital_allocation_plan theo %: product/tech, GTM, ops, hiring, contingency.",
+        "Xác định 12_18_month_milestones (phù hợp stage & số tiền raise).",
+        "Xác định 24_36_month_milestones nếu là round lớn hơn.",
+        "Liên kết milestones với kpi_targets_linked_to_round (MRR, GMV, retention, margin, user growth…).",
+        "Nhấn mạnh agentic_investment_items nếu Agentic là phần lõi của thesis."
+      ]
+    },
+    {
+      "step_id": "07_outline_investor_deck",
+      "label": "Khung Investor Deck",
+      "goal": "Có blueprint slide-by-slide để soạn deck hoặc gửi cho designer.",
+      "actions": [
+        "Sử dụng danh sách slides chuẩn trong investor_deck_outline.structure.",
+        "Cho mỗi slide: viết slide_by_slide_notes (1–3 ý chính).",
+        "Liệt kê data_or_assets_needed: đồ thị, số liệu, screenshot, logo khách/đối tác, roadmap, cap table high-level.",
+        "Đánh dấu [TODO] ở những chỗ bắt buộc phải bổ sung dữ liệu thật."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi đến phần 'Raising Capital', 'Why a VC Would Decline to Invest', 'Business Model Risks', 'Why a VC Would Want to Invest', 'Investor Presentation Slides' trong Business Plan.",
+      "Khi user hỏi về chiến lược gọi vốn, chuẩn bị pitch deck, hoặc muốn soi business dưới góc nhìn VC."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả fundraising_diagnosis + vc_invest_thesis để user hiểu bức tranh tổng & câu chuyện chính.",
+      "Bước 2: Sau khi user duyệt, trả vc_concerns_and_decline_reasons + why_vc_would_want_to_invest + business_model_risks.",
+      "Bước 3: Cuối cùng trả use_of_funds_and_milestones + investor_deck_outline để dùng vào deck & data room."
+    ]
+  },
+  "constraints": {
+    "no_fake_financials": "Không bịa số revenue, growth, margin, valuation; chỉ dùng ví dụ khung & luôn đánh dấu [GIẢ ĐỊNH] khi minh hoạ.",
+    "balanced_view": "Luôn đưa cả upside và downside; không chỉ hype một chiều.",
+    "regional_realism": "Narrative phải hợp logic với bối cảnh VN/SEA khi geo_focus liên quan (ticket size, loại quỹ, thời gian gọi vốn).",
+    "language": "Tiếng Việt là chính, có thể dùng thuật ngữ VC/Fundraising tiếng Anh khi cần."
+  }
+}

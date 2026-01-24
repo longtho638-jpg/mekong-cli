@@ -1,0 +1,242 @@
+{
+  "id": "04_SKILL-Gap-Report-and-Roadmap",
+  "version": "1.0.0",
+  "title": "Skill – Gap Report & Execution Roadmap",
+  "type": "skill",
+  "description": "Kỹ năng tổng hợp Gap Report và lộ trình hành động từ Business Plan 2026 – Agentic Zero→IPO và các đánh giá phụ (Agentic, IPO-readiness), giúp team biết cần làm gì 6–12–24+ tháng tới.",
+  "intended_use": {
+    "primary": [
+      "Tạo bản Gap Report có cấu trúc rõ ràng (Business / Agentic / Governance/IPO).",
+      "Ưu tiên các hạng mục theo impact vs effort vs risk.",
+      "Sinh lộ trình thực thi dạng roadmap theo thời gian (0–6m, 6–12m, 12–24m+)."
+    ],
+    "works_best_when": [
+      "Đã có Business Plan 2026 tương đối hoàn chỉnh (từ IDEA hoặc refactor).",
+      "Đã chạy ít nhất 1 trong 02_SKILL-Agentic-Mapping-and-Design hoặc 03_SKILL-SEA-VN-IPO-Readiness."
+    ],
+    "not_for": [
+      "Quản lý project chi tiết (task-level JIRA/ClickUp) – chỉ ở cấp initiative/epic.",
+      "Thay thế quyết định ưu tiên của founder/leadership; đây là khung gợi ý."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "03_SKILL-SEA-VN-IPO-Readiness.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "plan_summary": {
+        "type": "object",
+        "required": true,
+        "description": "Tóm tắt Business Plan 2026 theo 00_MASTER (các block 0–7)."
+      },
+      "agentic_outputs": {
+        "type": "object",
+        "required": false,
+        "description": "Kết quả từ 02_SKILL: agentic_function_map, agentic_backlog, guardrails_and_handoffs."
+      },
+      "ipo_outputs": {
+        "type": "object",
+        "required": false,
+        "description": "Kết quả từ 03_SKILL: ipo_readiness_scorecard, governance_and_structure_gaps, ipo_roadmap_outline."
+      },
+      "execution_horizon_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Ước lượng khung thời gian user hướng tới (vd: '18m_ipo_push', '36m_scale')."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu agentic_outputs, chỉ tạo Gap & roadmap ở lớp Business/Governance.",
+      "Nếu thiếu ipo_outputs, không nhận xét sâu về IPO, chỉ tập trung vận hành/growth."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "gap_matrix": {
+        "description": "Ma trận Gap tổng hợp theo 3 lớp: Business / Agentic / Governance/IPO.",
+        "structure": {
+          "dimensions": [
+            "business_model_and_market",
+            "product_and_experience",
+            "growth_and_distribution",
+            "operations_and_risk",
+            "agentic_operating_system",
+            "governance_and_ipo_readiness"
+          ],
+          "item_fields": [
+            "gap_id",
+            "dimension",
+            "sub_area",
+            "current_state",
+            "target_state",
+            "root_cause_hint",
+            "impact_level",
+            "urgency_level"
+          ],
+          "impact_levels": [
+            "low",
+            "medium",
+            "high",
+            "very_high"
+          ],
+          "urgency_levels": [
+            "later",
+            "soon",
+            "now"
+          ]
+        }
+      },
+      "priority_shortlist": {
+        "description": "Danh sách ngắn 5–10 priority hàng đầu nên xử lý trước.",
+        "structure": {
+          "fields_per_item": [
+            "gap_id",
+            "initiative_title",
+            "why_now",
+            "expected_outcome",
+            "owner_role_suggestion",
+            "stage_relevance",
+            "risk_if_ignored"
+          ]
+        }
+      },
+      "roadmap_timeline": {
+        "description": "Lộ trình 0–6m, 6–12m, 12–24m+ với nhóm việc theo theme.",
+        "structure": {
+          "horizons": [
+            "h0_0_6_months",
+            "h1_6_12_months",
+            "h2_12_24_months_plus"
+          ],
+          "fields_per_horizon_item": [
+            "initiative_id",
+            "related_gap_ids",
+            "title",
+            "time_bucket",
+            "theme",
+            "owner_role",
+            "dependencies_note"
+          ],
+          "themes_examples": [
+            "foundation_and_compliance",
+            "product_and_agentic_mvp",
+            "growth_and_distribution",
+            "data_and_reporting",
+            "governance_and_pre_ipo"
+          ]
+        }
+      },
+      "risk_heatmap_summary": {
+        "description": "Tóm tắt Heatmap rủi ro nếu không xử lý gap theo thời gian.",
+        "fields": [
+          "top_risk_domains",
+          "short_term_risk_notes",
+          "mid_term_risk_notes",
+          "long_term_risk_notes"
+        ]
+      },
+      "execution_principles": {
+        "description": "Một bộ nguyên tắc triển khai để không bị 'vỡ trận' khi chạy roadmap.",
+        "fields": [
+          "prioritization_rules",
+          "cadence_and_review_rituals",
+          "agentic_usage_principles",
+          "governance_and_approval_principles"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "from_other_skill": "[TỪ SKILL KHÁC]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_collect_signals",
+      "label": "Thu thập tín hiệu từ Plan & các Skill khác",
+      "goal": "Hiểu toàn cảnh để không bỏ sót gap quan trọng.",
+      "actions": [
+        "Đọc plan_summary để nắm vision, model, market, growth, ops, finance, IPO story.",
+        "Nếu có agentic_outputs: trích các điểm yếu/thiếu trong agentic_function_map & agentic_backlog.",
+        "Nếu có ipo_outputs: trích các key_gaps & low_score dimension trong ipo_readiness_scorecard.",
+        "Gắn tag nguồn cho từng tín hiệu: [TỪ PLAN] / [TỪ SKILL KHÁC]."
+      ]
+    },
+    {
+      "step_id": "02_synthesize_gap_matrix",
+      "label": "Tổng hợp thành Gap Matrix 6 chiều",
+      "goal": "Chuẩn hoá vấn đề thành language chung để team dễ nói chuyện.",
+      "actions": [
+        "Group tín hiệu theo 6 dimension: business_model_and_market, product_and_experience, growth_and_distribution, operations_and_risk, agentic_operating_system, governance_and_ipo_readiness.",
+        "Với mỗi gap, ghi: current_state, target_state (từ 00_MASTER hoặc chuẩn IPO/Agentic), root_cause_hint.",
+        "Đánh impact_level & urgency_level (heuristic) với [GIẢ ĐỊNH] nếu chưa đủ data."
+      ]
+    },
+    {
+      "step_id": "03_select_priority_shortlist",
+      "label": "Chọn danh sách ưu tiên 5–10 việc quan trọng nhất",
+      "goal": "Tránh roadmap 100 dòng không ai làm nổi.",
+      "actions": [
+        "Chọn các gap có impact_level = 'high' hoặc 'very_high' và urgency_level = 'now' hoặc 'soon'.",
+        "Merge các gap tương tự thành 1 initiative lớn nếu phù hợp.",
+        "Viết initiative_title, why_now, expected_outcome, owner_role_suggestion, stage_relevance, risk_if_ignored."
+      ]
+    },
+    {
+      "step_id": "04_build_roadmap_timeline",
+      "label": "Vẽ lộ trình theo time bucket",
+      "goal": "Gắn từng initiative vào 0–6m / 6–12m / 12–24m+.",
+      "actions": [
+        "Dựa trên execution_horizon_hint (nếu có) để điều chỉnh độ nén của roadmap.",
+        "Ánh xạ mỗi initiative vào time_bucket và theme (foundation, growth, data, governance…).",
+        "Xác định owner_role & dependencies_note (có cần hoàn thành việc gì trước?)."
+      ]
+    },
+    {
+      "step_id": "05_summarize_risk_heatmap",
+      "label": "Tóm tắt Heatmap rủi ro",
+      "goal": "Cho thấy nếu không làm thì cái gì 'nổ' trước.",
+      "actions": [
+        "Tổng hợp các risk_if_ignored từ priority_shortlist.",
+        "Nhóm vào top_risk_domains (vd: regulatory, cashflow, concentration, tech_debt, data_quality).",
+        "Viết short_term_risk_notes, mid_term_risk_notes, long_term_risk_notes dạng bullet."
+      ]
+    },
+    {
+      "step_id": "06_define_execution_principles",
+      "label": "Đặt nguyên tắc triển khai",
+      "goal": "Đảm bảo roadmap dùng được trong thực tế, không chỉ để đọc.",
+      "actions": [
+        "Đề xuất prioritization_rules (vd: luôn ưu tiên compliance/cashflow trước growth experiments).",
+        "Đề xuất cadence_and_review_rituals (vd: monthly review, quarterly reset, board check-in).",
+        "Đề xuất agentic_usage_principles: Agent dùng ở đâu để tăng tốc, ở đâu phải giữ human-in-the-loop.",
+        "Đề xuất governance_and_approval_principles cho các quyết định high-stake (fundraising, IPO, M&A…)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã hiểu tương đối rõ business & có ít nhất 1 vòng phân tích Agentic/IPO.",
+      "Khi founder/team hỏi: 'Giờ làm gì trước, 6–12–24 tháng tới?'"
+    ],
+    "how_to_present_to_user": [
+      "Trình bày theo thứ tự: (1) gap_matrix (tóm tắt, không liệt kê quá chi tiết), (2) priority_shortlist, (3) roadmap_timeline, (4) risk_heatmap_summary, (5) execution_principles.",
+      "Giữ số lượng priority_shortlist trong khoảng 5–10 mục, tránh quá nhiều.",
+      "Khuyến khích user dùng kết quả này làm input cho tool quản lý project (JIRA/ClickUp/Notion…)."
+    ]
+  },
+  "constraints": {
+    "no_fake_deadlines": "Không gán deadline ngày/tháng cụ thể nếu user không cung cấp; chỉ dùng time bucket (0–6m, …).",
+    "no_overprescriptive": "Không assume nội bộ/nguồn lực của công ty; luôn viết ở mức gợi ý, cho phép team chỉnh lại.",
+    "language": "Output ưu tiên tiếng Việt, dùng thuật ngữ tiếng Anh khi là chuẩn ngành (roadmap, governance, etc.)."
+  }
+}

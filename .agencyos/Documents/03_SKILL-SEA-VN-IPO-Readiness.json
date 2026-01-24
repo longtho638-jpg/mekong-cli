@@ -1,0 +1,322 @@
+{
+  "file_name": "03_SKILL-SEA-VN-IPO-Readiness.json",
+  "version": "1.0.0",
+  "language": "vi",
+  "title": "SKILL – SEA/VN IPO Readiness Assessment for Business Plan 2026",
+  "purpose": {
+    "short": "Đánh giá mức độ sẵn sàng IPO (VN/SEA) của một business dựa trên Business Plan 2026 – Agentic Zero→IPO.",
+    "long": "Skill này định nghĩa khung đánh giá IPO readiness cho doanh nghiệp hoạt động tại Việt Nam hoặc Đông Nam Á, dựa trên business plan đã được chuẩn hóa theo khung Business Plan 2026 – Agentic Zero→IPO. Mục tiêu là tạo ra một IPO Readiness Scorecard, phân tích chi tiết theo các chiều Governance, Financial Quality, Business & Scale, Risk & Compliance, Tech & Agentic, và liệt kê các gap lớn cần xử lý trong 12–24 tháng trước khi IPO."
+  },
+  "dependencies": {
+    "master_frame_file": "00_MASTER-Agentic-BizPlan-OS.json",
+    "refactor_skill_file": "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+    "agentic_skill_file": "02_SKILL-Agentic-Mapping-and-Design.json",
+    "expected_prior_outputs": [
+      "diagnostic_summary",
+      "plan_2026_markdown",
+      "mapping_table",
+      "agent_inventory (nếu có)",
+      "agent_design_table (nếu có)"
+    ]
+  },
+  "scope_note": {
+    "disclaimer": [
+      "Đây là khung đánh giá khái niệm/chiến lược, không thay thế tư vấn pháp lý, kiểm toán hoặc tư vấn niêm yết chuyên nghiệp.",
+      "Mọi output là gợi ý để team nội bộ chuẩn bị & làm việc với luật sư, kiểm toán, tư vấn tài chính.",
+      "Skill này tập trung vào góc nhìn 'readiness' dựa trên thông tin trong business plan, không truy cập trực tiếp vào số liệu kế toán chi tiết."
+    ]
+  },
+  "expected_inputs": {
+    "from_business_plan": [
+      "Các phần liên quan đến: cấu trúc pháp lý & sở hữu, board/ban điều hành, quy trình quản trị, tài chính 3–5 năm, chiến lược vốn, chiến lược IPO.",
+      "Thông tin về thị trường mục tiêu niêm yết (VD: HOSE/HNX tại Việt Nam, hoặc sàn trong khu vực SEA như SGX/Bursa/SET,…).",
+      "Thông tin về mức độ trưởng thành của hệ thống kế toán, kiểm soát nội bộ, quản trị rủi ro."
+    ],
+    "from_user_optional": [
+      "Quốc gia đăng ký pháp nhân chính.",
+      "Sàn niêm yết mục tiêu (nếu đã có).",
+      "Đã có BCTC kiểm toán mấy năm và theo chuẩn nào (VAS/IFRS,…).",
+      "Tình trạng hiện tại: đã làm việc với công ty chứng khoán/IB/luật sư chưa."
+    ],
+    "llm_requirements": [
+      "Không giả định doanh nghiệp đã đáp ứng chuẩn IPO nếu tài liệu không rõ.",
+      "Khi thiếu dữ liệu, thể hiện rõ 'unknown' hoặc 'chưa có thông tin' thay vì đoán.",
+      "Đánh giá dựa trên best-effort đọc hiểu từ plan_2026_markdown & tài liệu kèm theo."
+    ]
+  },
+  "core_concepts": {
+    "ipo_readiness_dimensions": {
+      "description": "Các chiều chính để đánh giá mức độ sẵn sàng IPO.",
+      "dimensions": [
+        {
+          "id": "governance",
+          "name": "Governance & Board",
+          "aspects": [
+            "Cấu trúc sở hữu & pháp lý rõ ràng.",
+            "Hội đồng quản trị, ban kiểm soát/committee phù hợp.",
+            "Quy trình ra quyết định & giám sát.",
+            "Chính sách xung đột lợi ích, minh bạch, đạo đức kinh doanh."
+          ]
+        },
+        {
+          "id": "financial_quality",
+          "name": "Financial Quality & Reporting",
+          "aspects": [
+            "BCTC được lập theo chuẩn kế toán phù hợp (VAS/IFRS/PSAK,…).",
+            "Số năm BCTC được kiểm toán, chất lượng/uy tín đơn vị kiểm toán.",
+            "Chất lượng hệ thống kế toán & kiểm soát nội bộ tài chính.",
+            "Dự báo tài chính (3–5 năm) hợp lý, có kịch bản và giả định rõ."
+          ]
+        },
+        {
+          "id": "business_model_scale",
+          "name": "Business Model, Scale & Stability",
+          "aspects": [
+            "Mô hình kinh doanh rõ ràng, dễ hiểu với nhà đầu tư công chúng.",
+            "Độ bền lợi thế cạnh tranh và khả năng mở rộng.",
+            "Tăng trưởng doanh thu, biên lợi nhuận, cấu trúc khách hàng.",
+            "Độ đa dạng nguồn thu & rủi ro tập trung."
+          ]
+        },
+        {
+          "id": "risk_compliance",
+          "name": "Risk, Compliance & Legal",
+          "aspects": [
+            "Nhận diện và quản trị rủi ro (thị trường, pháp lý, vận hành, data,…).",
+            "Tuân thủ pháp luật ngành, luật chứng khoán, luật lao động, thuế,…",
+            "Tình trạng tranh chấp, kiện tụng, cam kết bảo lãnh/vay nợ.",
+            "Chính sách & thực hành về bảo mật dữ liệu, privacy."
+          ]
+        },
+        {
+          "id": "tech_agentic",
+          "name": "Tech, Data & Agentic Controls",
+          "aspects": [
+            "Hạ tầng công nghệ đủ ổn định và bảo mật cho quy mô công ty niêm yết.",
+            "Quản trị dữ liệu: chất lượng, phân quyền, logging, backup, DR.",
+            "Mức độ kiểm soát & giải trình được với các hệ Agentic OS.",
+            "Khả năng trình bày hệ Agentic như một moat/ lợi thế, không phải 'black box' rủi ro."
+          ]
+        }
+      ]
+    },
+    "scoring_model": {
+      "description": "Thang điểm đơn giản để chấm từng dimension.",
+      "scale": [
+        {
+          "score": 0,
+          "label": "NONE / UNKNOWN",
+          "meaning": "Không có thông tin hoặc gần như không có gì ở chiều này."
+        },
+        {
+          "score": 1,
+          "label": "WEAK",
+          "meaning": "Mới ở mức rất sơ khai, chưa phù hợp kỳ vọng IPO, cần đầu tư lớn."
+        },
+        {
+          "score": 2,
+          "label": "PARTIAL",
+          "meaning": "Đã có nền tảng, nhưng còn nhiều khoảng trống/gáp quan trọng."
+        },
+        {
+          "score": 3,
+          "label": "STRONG",
+          "meaning": "Tương đối phù hợp chuẩn IPO, có thể cần tinh chỉnh nhưng không có gap quá lớn rõ ràng trong plan."
+        }
+      ],
+      "traffic_light_mapping": {
+        "RED": [
+          0,
+          1
+        ],
+        "YELLOW": [
+          2
+        ],
+        "GREEN": [
+          3
+        ]
+      }
+    },
+    "region_context": {
+      "description": "Khung khái quát cho VN/SEA (không thay thế nghiên cứu chi tiết từng sàn).",
+      "vn_general": [
+        "Các sàn phổ biến: HOSE, HNX, UPCoM.",
+        "Yêu cầu thường có: số năm hoạt động, vốn điều lệ tối thiểu, số năm có lãi (tùy sàn), BCTC kiểm toán, không có nợ thuế lớn, không vi phạm pháp luật nghiêm trọng.",
+        "Cần có bản cáo bạch đầy đủ, đơn vị tư vấn niêm yết, và chấp thuận từ cơ quan quản lý."
+      ],
+      "sea_general": [
+        "Sàn khu vực: SGX (Singapore), Bursa (Malaysia), SET (Thái Lan), IDX (Indonesia),…",
+        "Đa số yêu cầu tương tự: lịch sử tài chính, quy mô vốn, governance, disclosure.",
+        "Một số thị trường có board dành cho công ty tăng trưởng/công nghệ với điều kiện linh hoạt hơn nhưng yêu cầu governance minh bạch cao."
+      ],
+      "note": "Khi cần đánh giá chi tiết cho một sàn cụ thể, user nên bổ sung tài liệu về quy định của sàn đó để RAG kết hợp."
+    }
+  },
+  "main_outputs": {
+    "ipo_readiness_scorecard": {
+      "id": "ipo_readiness_scorecard",
+      "description": "Bảng tóm tắt điểm số readiness theo từng dimension.",
+      "columns": [
+        "dimension_id",
+        "dimension_name",
+        "score_0_to_3",
+        "traffic_light",
+        "short_comment"
+      ],
+      "column_semantics": {
+        "dimension_id": "ID dimension (governance, financial_quality, business_model_scale, risk_compliance, tech_agentic).",
+        "dimension_name": "Tên đầy đủ của dimension.",
+        "score_0_to_3": "Điểm theo thang 0–3.",
+        "traffic_light": "RED/YELLOW/GREEN tương ứng với điểm.",
+        "short_comment": "1–3 câu tóm tắt lý do cho điểm này."
+      }
+    },
+    "dimension_deepdives": {
+      "id": "dimension_deepdives",
+      "description": "Phân tích chi tiết từng dimension.",
+      "item_schema": {
+        "dimension_id": "ID dimension.",
+        "observed_strengths": "Danh sách điểm mạnh (bullet).",
+        "observed_weaknesses": "Danh sách điểm yếu/gap (bullet).",
+        "evidence_from_plan": "Trích tóm tắt các đoạn liên quan trong plan_2026 (không cần quote dài, chỉ cần paraphrase + tham chiếu section).",
+        "potential_red_flags": "Những vấn đề có thể thành 'trọng yếu' trong mắt nhà đầu tư/đơn vị quản lý.",
+        "recommended_actions_short": "3–7 hành động ưu tiên cho dimension này (high-level)."
+      }
+    },
+    "key_blockers_and_risks": {
+      "id": "key_blockers_and_risks",
+      "description": "Danh sách ngắn các blocker lớn có thể ngăn IPO hoặc làm giảm đáng kể khả năng thành công.",
+      "structure": [
+        "Top 3–7 blocker chính (có thể là pháp lý, tài chính, governance, rủi ro hoạt động, vấn đề Agentic,…).",
+        "Mỗi blocker: mô tả ngắn, tác động, cấp độ khẩn cấp (HIGH/MEDIUM/LOW)."
+      ]
+    },
+    "pre_ipo_focus_areas": {
+      "id": "pre_ipo_focus_areas",
+      "description": "Gợi ý các cụm việc 12–24 tháng trước IPO cần tập trung (không trùng hoàn toàn với skill Gap & Roadmap, mà là tóm tắt cho góc nhìn IPO).",
+      "sections": [
+        "Governance & Board setup/tuning.",
+        "Financial reporting & audit chất lượng cao.",
+        "Strengthening business model & disclosure.",
+        "Risk & compliance program (đặc biệt cho ngành regulated).",
+        "Tech & Agentic controls (logging, explainability, data governance)."
+      ]
+    }
+  },
+  "assessment_process": {
+    "high_level_steps": [
+      "1) Thu thập thông tin liên quan đến IPO từ plan_2026 và tài liệu kèm.",
+      "2) Chuẩn hóa theo 5 dimension readiness (Governance, Financial, Business & Scale, Risk & Compliance, Tech & Agentic).",
+      "3) Chấm điểm từng dimension theo thang 0–3, gắn traffic light.",
+      "4) Viết phân tích chi tiết cho từng dimension.",
+      "5) Xác định các blocker chính và vùng tập trung 12–24 tháng trước IPO."
+    ],
+    "detailed_steps": [
+      {
+        "step": 1,
+        "name": "Gather IPO-Relevant Data",
+        "actions": [
+          "Quét toàn bộ plan_2026_markdown để tìm các phần liên quan đến: pháp lý, cấu trúc công ty, board, tài chính, rủi ro, compliance, tech/agentic control.",
+          "Đọc thêm các phụ lục nếu user cung cấp (báo cáo tài chính, note về working with auditors/IB/luật sư).",
+          "Tạo một bảng tạm (internal) liệt kê thông tin tìm được theo từng dimension."
+        ],
+        "llm_notes": [
+          "Nếu không tìm thấy thông tin cho một dimension, gắn cờ 'UNKNOWN' và ghi chú trong output.",
+          "Không bịa ra các cam kết pháp lý hoặc trạng thái kiểm toán nếu tài liệu không ghi rõ."
+        ]
+      },
+      {
+        "step": 2,
+        "name": "Normalize into Dimensions",
+        "actions": [
+          "Map từng thông tin thu thập được vào một trong 5 dimension readiness.",
+          "Với mỗi dimension, tạo 2 danh sách tạm: 'strengths' và 'weaknesses/gaps'.",
+          "Nếu một thông tin ảnh hưởng nhiều dimension (ví dụ: hệ thống kế toán yếu vừa là financial_quality, vừa là risk_compliance), cho phép map nhiều dimension nhưng ghi chú rõ."
+        ],
+        "llm_notes": [
+          "Tránh trùng lặp quá nhiều trong phần output; có thể refer cross-dimension qua ghi chú.",
+          "Giữ cách diễn đạt trung lập, không tô hồng cũng không quá bi quan."
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Score Each Dimension (0–3)",
+        "actions": [
+          "Với mỗi dimension, xem xét strengths/weaknesses và chọn điểm 0–3 theo scoring_model.",
+          "Gán traffic_light tương ứng (RED/YELLOW/GREEN).",
+          "Viết 1–3 câu giải thích ngắn (short_comment) cho điểm số đó."
+        ],
+        "llm_notes": [
+          "Khi thiếu nhiều thông tin → score 0 (NONE/UNKNOWN) và traffic_light RED, ghi rõ 'thiếu dữ liệu' trong short_comment.",
+          "Nếu business còn rất sớm (Zero/PMF), có thể chấm thấp nhưng nhấn mạnh là 'chưa tới giai đoạn IPO, cần thêm thời gian phát triển'."
+        ]
+      },
+      {
+        "step": 4,
+        "name": "Write Dimension Deepdives",
+        "actions": [
+          "Cho từng dimension, điền đầy đủ item_schema của dimension_deepdives.",
+          "Liệt kê strengths/weaknesses với bullet cụ thể, gắn link/section tham chiếu đến plan_2026 (ví dụ: 'xem 6. Operations, Risk & Compliance').",
+          "Nêu rõ potential_red_flags nếu có nội dung có thể khiến nhà đầu tư hoặc cơ quan quản lý lo ngại."
+        ],
+        "llm_notes": [
+          "Không cần trích dẫn nguyên văn dài; paraphrase kèm tham chiếu là đủ.",
+          "Nếu không có red flag lớn, có thể ghi 'Không ghi nhận red flag rõ ràng trong tài liệu được cung cấp.'"
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Identify Key Blockers & Pre-IPO Focus Areas",
+        "actions": [
+          "Từ các weakness/weak dimension, chọn ra 3–7 blocker lớn nhất có thể làm chậm/đứt kế hoạch IPO.",
+          "Mô tả tác động & độ khẩn cấp từng blocker.",
+          "Tổng hợp pre_ipo_focus_areas: theo 4–5 cụm chính (governance, financial, business, risk/compliance, tech/agentic)."
+        ],
+        "llm_notes": [
+          "Blocker nên cụ thể (ví dụ: 'Chưa có BCTC kiểm toán nào' thay vì 'Tài chính chưa tốt').",
+          "Không đề xuất lộ trình chi tiết từng quý (đó là việc của skill Gap & Roadmap), chỉ cần định hướng vùng việc."
+        ]
+      }
+    ]
+  },
+  "rag_usage_guidelines": {
+    "retrieval_granularity": [
+      "Khi câu hỏi về định nghĩa IPO readiness → dùng core_concepts.ipo_readiness_dimensions.",
+      "Khi câu hỏi về cách chấm điểm → dùng core_concepts.scoring_model.",
+      "Khi câu hỏi về output của đánh giá → dùng main_outputs.ipo_readiness_scorecard và main_outputs.dimension_deepdives.",
+      "Khi câu hỏi về VN/SEA context → dùng core_concepts.region_context."
+    ],
+    "example_queries": [
+      {
+        "query": "Làm sao đánh giá mức độ sẵn sàng IPO của business này?",
+        "hint_sections": [
+          "assessment_process.high_level_steps",
+          "core_concepts.ipo_readiness_dimensions",
+          "core_concepts.scoring_model",
+          "main_outputs.ipo_readiness_scorecard"
+        ]
+      },
+      {
+        "query": "Scorecard IPO readiness cần những cột nào?",
+        "hint_sections": [
+          "main_outputs.ipo_readiness_scorecard.columns",
+          "main_outputs.ipo_readiness_scorecard.column_semantics"
+        ]
+      },
+      {
+        "query": "Các chiều quan trọng cho IPO readiness ở VN/SEA là gì?",
+        "hint_sections": [
+          "core_concepts.ipo_readiness_dimensions",
+          "core_concepts.region_context"
+        ]
+      },
+      {
+        "query": "Làm sao rút ra blocker lớn nhất cho kế hoạch IPO?",
+        "hint_sections": [
+          "main_outputs.key_blockers_and_risks",
+          "assessment_process.detailed_steps[4]"
+        ]
+      }
+    ]
+  }
+}
