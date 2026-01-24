@@ -4,9 +4,11 @@ Agent Swarm Engine.
 
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
-from .coordinator import SwarmCoordinator
+if TYPE_CHECKING:
+    from .coordinator import SwarmCoordinator
+
 from .enums import AgentRole, TaskPriority
 from .executor import TaskExecutor
 from .registry import AgentRegistry
@@ -26,11 +28,17 @@ class AgentSwarm:
         self.enable_metrics = enable_metrics
         self._update_callbacks: List[Callable] = []
 
-        # Components
+        # Use coordinator's AgentSwarm as internal implementation
+        from .coordinator import AgentSwarm as CoordinatorSwarm
+
+        self._internal_swarm = CoordinatorSwarm(
+            max_workers=max_workers, enable_metrics=enable_metrics
+        )
+
+        # Components (for backward compatibility)
         self.registry = AgentRegistry()
         self.task_manager = TaskManager()
         self.state = SwarmState()
-        self.coordinator = SwarmCoordinator(self, self.state)
 
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
         self._task_executor = TaskExecutor(self)
@@ -65,7 +73,7 @@ class AgentSwarm:
         specialties: Optional[List[str]] = None,
     ) -> str:
         """Register an agent with the swarm."""
-        return self.coordinator.register_agent(name, handler, role, specialties)
+        return self._internal_swarm.register_agent(name, handler, role, specialties)
 
     def submit_task(
         self,
@@ -109,11 +117,11 @@ class AgentSwarm:
 
     def get_metrics(self):
         """Get swarm metrics."""
-        return self.coordinator.get_metrics()
+        return self._internal_swarm.get_metrics()
 
     def get_status(self):
         """Get swarm status."""
-        return self.coordinator.get_status()
+        return self._internal_swarm.get_status()
 
     def add_update_callback(self, callback: Callable):
         """Add a callback to be called when swarm state changes."""
