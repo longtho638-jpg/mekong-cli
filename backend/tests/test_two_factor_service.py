@@ -10,10 +10,11 @@ Comprehensive test coverage for:
 """
 
 import pytest
+
 from backend.services.two_factor_service import (
+    PYOTP_AVAILABLE,
     TwoFactorService,
     get_two_factor_service,
-    PYOTP_AVAILABLE,
 )
 
 
@@ -398,8 +399,9 @@ class TestIntegrationScenarios:
     @pytest.mark.skipif(not PYOTP_AVAILABLE, reason="pyotp not installed")
     def test_real_totp_verification_flow(self):
         """Test real TOTP verification with pyotp"""
-        import pyotp
         import time
+
+        import pyotp
 
         service = TwoFactorService(mock_mode=False)
 

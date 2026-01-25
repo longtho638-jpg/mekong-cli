@@ -18,7 +18,7 @@ import json
 import os
 import sys
 import time
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from fastapi import Request
@@ -30,7 +30,6 @@ from backend.middleware.webhook_auth import (
     verify_gumroad_signature,
     verify_timestamp,
 )
-
 
 # Mock Stripe module for testing
 mock_stripe = MagicMock()

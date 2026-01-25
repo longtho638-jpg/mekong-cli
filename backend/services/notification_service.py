@@ -11,8 +11,8 @@ Features:
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
 from enum import Enum
+from typing import Dict, List, Optional
 
 
 class NotificationType(Enum):
@@ -273,7 +273,7 @@ class NotificationService:
         return self.send_notification(
             user_id=user_id,
             notification_type=NotificationType.LICENSE_EXPIRY_WARNING,
-            title=f"License Expiring Soon ⚠️",
+            title="License Expiring Soon ⚠️",
             message=f"Your {license_type} license will expire in {days_remaining} days. Renew now to avoid service interruption.",
             data={
                 "days_remaining": days_remaining,

@@ -4,7 +4,7 @@ Test script for email service
 Run this to verify email functionality works correctly
 """
 
-from email_service import send_purchase_email, EmailService
+from email_service import EmailService, send_purchase_email
 
 
 def test_mock_email():

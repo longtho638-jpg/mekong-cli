@@ -13,14 +13,16 @@ All external dependencies are mocked for test isolation.
 """
 
 import json
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime
-from fastapi.testclient import TestClient
+import os
 
 # Import the FastAPI app
 import sys
-import os
+from datetime import datetime
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+from fastapi.testclient import TestClient
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from backend.api.main import app

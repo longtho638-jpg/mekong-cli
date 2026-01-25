@@ -4,6 +4,11 @@ Backend Middleware Package
 Security and request processing middleware.
 """
 
+from backend.middleware.performance import (
+    PerformanceMonitoringMiddleware,
+    get_metrics_summary,
+    reset_metrics,
+)
 from backend.middleware.rate_limiter import RateLimitMiddleware
 from backend.middleware.webhook_auth import (
     WebhookAuthError,
@@ -15,11 +20,6 @@ from backend.middleware.webhook_auth import (
     verify_stripe_signature,
     verify_stripe_webhook,
     verify_timestamp,
-)
-from backend.middleware.performance import (
-    PerformanceMonitoringMiddleware,
-    get_metrics_summary,
-    reset_metrics,
 )
 
 __all__ = [

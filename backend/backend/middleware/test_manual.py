@@ -4,9 +4,10 @@ Manual test script for rate limiting middleware
 Demonstrates rate limiting in action for different tiers
 """
 
-import requests
 import time
 from typing import Dict
+
+import requests
 
 BASE_URL = "http://localhost:8000"
 
@@ -48,17 +49,17 @@ def test_tier(tier: str, expected_limit: int, test_name: str):
 
         except requests.exceptions.ConnectionError:
             print(f"❌ Connection failed. Is the server running on {BASE_URL}?")
-            print(f"   Start server with: cd backend && uvicorn main:app --reload")
+            print("   Start server with: cd backend && uvicorn main:app --reload")
             return
 
         time.sleep(0.1)  # Small delay between requests
 
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"   Successful: {successful}")
     print(f"   Rate Limited: {rate_limited}")
     print(f"   Expected Limit: {expected_limit}")
     if successful == expected_limit:
-        print(f"   ✅ PASS: Hit expected limit")
+        print("   ✅ PASS: Hit expected limit")
     else:
         print(f"   ⚠️  Note: Got {successful} successful requests")
 
@@ -77,7 +78,7 @@ def main():
             print(f"⚠️  Server returned status {response.status_code}\n")
     except requests.exceptions.ConnectionError:
         print("❌ Server not running!")
-        print(f"   Start with: cd backend && uvicorn main:app --reload")
+        print("   Start with: cd backend && uvicorn main:app --reload")
         return
 
     # Test different tiers

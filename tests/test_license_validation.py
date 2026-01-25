@@ -13,12 +13,12 @@ import pytest
 # Add parent to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from antigravity.core.bizplan.generator import FEATURE_TIERS, check_license_tier
 from antigravity.core.licensing.validation import (
     LICENSE_PREFIXES,
     get_tier_from_key,
     validate_license_key,
 )
-from antigravity.core.bizplan.generator import check_license_tier, FEATURE_TIERS
 
 
 class TestLicenseValidation:

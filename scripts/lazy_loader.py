@@ -14,8 +14,8 @@ Usage:
     result = np.array([1, 2, 3])  # numpy imported here
 """
 
-import sys
 import importlib
+import sys
 from typing import Any, Optional
 
 

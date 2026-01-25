@@ -32,7 +32,7 @@ print(f"✅ get_uptime(): {uptime:.2f} seconds")
 
 # Test system metrics
 metrics = health.get_system_metrics()
-print(f"✅ get_system_metrics():")
+print("✅ get_system_metrics():")
 print(f"   CPU: {metrics.get('cpu_percent', 0):.1f}%")
 print(f"   Memory: {metrics.get('memory', {}).get('percent', 0):.1f}%")
 print(f"   Disk: {metrics.get('disk', {}).get('percent', 0):.1f}%")

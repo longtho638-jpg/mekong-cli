@@ -7,11 +7,12 @@ Powered by antigravity.core.revenue.RevenueEngine.
 """
 
 from antigravity.core.revenue.engine import RevenueEngine
-from cli.logging import log_cli_command
 
 import typer
 from rich.console import Console
 from rich.table import Table
+
+from cli.logging import log_cli_command
 
 console = Console()
 revenue_app = typer.Typer(help="💰 Manage Revenue & Financials")

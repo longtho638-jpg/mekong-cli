@@ -4,7 +4,7 @@ Example usage of NotificationService
 This file demonstrates how to use the notification service.
 """
 
-from notification_service import notification_service, NotificationType
+from notification_service import NotificationType, notification_service
 
 
 def example_usage():
@@ -62,18 +62,18 @@ def example_usage():
         print(f"   - {notif.title} ({notif.notification_type.value})")
 
     # 6. Get unread count
-    print(f"\n6. Checking unread count...")
+    print("\n6. Checking unread count...")
     unread_count = notification_service.get_unread_count(user_id)
     print(f"   Unread notifications: {unread_count}")
 
     # 7. Mark one notification as read
-    print(f"\n7. Marking first notification as read...")
+    print("\n7. Marking first notification as read...")
     marked = notification_service.mark_as_read(user_id, welcome_notif.notification_id)
     print(f"   Success: {marked}")
     print(f"   Unread count now: {notification_service.get_unread_count(user_id)}")
 
     # 8. Get only unread notifications
-    print(f"\n8. Getting unread notifications...")
+    print("\n8. Getting unread notifications...")
     unread_notifications = notification_service.get_user_notifications(
         user_id,
         unread_only=True
@@ -83,13 +83,13 @@ def example_usage():
         print(f"   - {notif.title}")
 
     # 9. Mark all as read
-    print(f"\n9. Marking all notifications as read...")
+    print("\n9. Marking all notifications as read...")
     marked_count = notification_service.mark_all_as_read(user_id)
     print(f"   Marked {marked_count} notifications as read")
     print(f"   Unread count now: {notification_service.get_unread_count(user_id)}")
 
     # 10. Broadcast feature announcement
-    print(f"\n10. Broadcasting feature announcement to multiple users...")
+    print("\n10. Broadcasting feature announcement to multiple users...")
     user_ids = ["user_1", "user_2", "user_3"]
     broadcast_notifs = notification_service.broadcast_feature_announcement(
         user_ids=user_ids,
@@ -100,9 +100,9 @@ def example_usage():
     print(f"   Sent {len(broadcast_notifs)} notifications")
 
     # 11. Get notification as dict
-    print(f"\n11. Getting notification as dictionary...")
+    print("\n11. Getting notification as dictionary...")
     notif_dict = payment_notif.to_dict()
-    print(f"   Notification data:")
+    print("   Notification data:")
     for key, value in notif_dict.items():
         print(f"      {key}: {value}")
 

@@ -4,11 +4,11 @@ Performance Monitoring Middleware
 Tracks request duration, slow queries, and latency metrics for all API calls.
 """
 
-import time
 import logging
-from typing import Callable, Optional
+import time
 from collections import deque
 from datetime import datetime, timedelta
+from typing import Callable, Optional
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware

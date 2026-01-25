@@ -8,10 +8,10 @@ This is a simple "hello world" plugin that demonstrates how to:
 - Define plugin metadata
 """
 
+from antigravity.plugins.base import CCPlugin
+
 import typer
 from rich.console import Console
-
-from antigravity.plugins.base import CCPlugin
 
 console = Console()
 
@@ -92,7 +92,7 @@ class HelloPlugin(CCPlugin):
             console.print(f"Description: {self.description}")
             console.print(f"Dependencies: {', '.join(self.dependencies) or 'None'}")
             console.print(
-                f"\n[dim]This is an example plugin demonstrating the plugin architecture.[/dim]"
+                "\n[dim]This is an example plugin demonstrating the plugin architecture.[/dim]"
             )
 
     def on_startup(self) -> None:

@@ -19,10 +19,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from backend.services.audit_service import (
-    AuditService,
     AuditEventType,
+    AuditService,
     AuditSeverity,
-    get_audit_service
+    get_audit_service,
 )
 
 

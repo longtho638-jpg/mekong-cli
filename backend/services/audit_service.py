@@ -13,11 +13,11 @@ Security requirement for SOC 2, GDPR, and compliance audits.
 
 import json
 import sqlite3
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Optional, List, Dict, Any
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional
 
 
 class AuditEventType(str, Enum):

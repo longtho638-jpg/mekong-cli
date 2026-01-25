@@ -8,12 +8,12 @@ Handles sending email notifications for new purchases including:
 - Getting started instructions
 """
 
+import logging
 import os
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Optional
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -269,7 +269,7 @@ If you need assistance, contact us at support@binhphap.com
                 logger.info(f"License Key: {license_key}")
                 logger.info(f"Product: {product_name}")
                 print(f"\n{'='*60}")
-                print(f"MOCK EMAIL SENT")
+                print("MOCK EMAIL SENT")
                 print(f"{'='*60}")
                 print(f"To: {email}")
                 print(f"Subject: {msg['Subject']}")

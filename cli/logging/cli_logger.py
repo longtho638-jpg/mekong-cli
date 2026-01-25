@@ -14,14 +14,14 @@ Usage:
         pass
 """
 
-import time
 import functools
 import logging
 import os
-from typing import Optional, Callable, Any
+import time
 from datetime import datetime
+from typing import Any, Callable, Optional
 
-from backend.services.audit_service import AuditService, AuditEventType, AuditSeverity
+from backend.services.audit_service import AuditEventType, AuditService, AuditSeverity
 
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ Provides a common interface for engines that need to persist state to disk.
 import json
 import logging
 from pathlib import Path
-from typing import Any, cast, Dict, Generic, TypeVar
+from typing import Any, Dict, Generic, TypeVar, cast
 
 logger = logging.getLogger(__name__)
 

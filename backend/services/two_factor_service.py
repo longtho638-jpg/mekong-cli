@@ -11,19 +11,20 @@ Provides comprehensive 2FA/TOTP functionality including:
 Uses pyotp for TOTP implementation following RFC 6238.
 """
 
-import os
-import secrets
 import hashlib
 import logging
-from typing import Optional, List, Tuple, Dict, Any
+import os
+import secrets
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
 # Try to import pyotp, fallback to mock if not available
 try:
+    import base64
+    import io
+
     import pyotp
     import qrcode
-    import io
-    import base64
     PYOTP_AVAILABLE = True
 except ImportError:
     PYOTP_AVAILABLE = False
@@ -242,9 +243,9 @@ class TwoFactorService:
         is_valid = totp.verify(code, valid_window=valid_window)
 
         if is_valid:
-            logger.info(f"TOTP code verified successfully")
+            logger.info("TOTP code verified successfully")
         else:
-            logger.warning(f"TOTP code verification failed")
+            logger.warning("TOTP code verification failed")
 
         return is_valid
 

@@ -2,8 +2,9 @@
 Tests for Performance Monitoring Middleware
 """
 
-import pytest
 import time
+
+import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 

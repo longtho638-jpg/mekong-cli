@@ -16,7 +16,8 @@ from pydantic import BaseModel, Field
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Import license validation logic
-from antigravity.core.licensing.validation import validate_license_key, get_tier_from_key
+from antigravity.core.licensing.validation import get_tier_from_key, validate_license_key
+
 from core.licensing.logic.engine import LicenseGenerator
 
 router = APIRouter(prefix="/api/license", tags=["License Management"])

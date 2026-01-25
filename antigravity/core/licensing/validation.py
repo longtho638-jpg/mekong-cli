@@ -45,7 +45,7 @@ def validate_license_key(key: Optional[str]) -> Tuple[bool, str, str]:
             break
 
     if tier is None:
-        return False, "free", f"Invalid license key format. Expected format: BP-TIER-XXXXXXXX"
+        return False, "free", "Invalid license key format. Expected format: BP-TIER-XXXXXXXX"
 
     # For MVP, we just validate the prefix
     # In production, you'd validate the checksum against a database or signing key

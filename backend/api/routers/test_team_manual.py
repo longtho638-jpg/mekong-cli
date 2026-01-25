@@ -4,8 +4,8 @@ Simple manual test for Team API endpoints
 Run with: python3 backend/api/routers/test_team_manual.py
 """
 
-import sys
 import os
+import sys
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
@@ -59,7 +59,7 @@ def test_seat_limit(team_id):
     result = team_service.invite_member(team_id, "member3@test.com")
 
     if result['success']:
-        print(f"✗ ERROR: Should have failed (no seats available)")
+        print("✗ ERROR: Should have failed (no seats available)")
     else:
         print(f"✓ Correctly rejected: {result['message']}")
 
@@ -82,7 +82,7 @@ def test_remove_member(team_id):
     print("\n=== Testing Member Removal ===")
 
     result = team_service.remove_member(team_id, "member1@test.com")
-    print(f"✓ Removed: member1@test.com")
+    print("✓ Removed: member1@test.com")
     print(f"  Message: {result['message']}")
     print(f"  Available seats: {result['available_seats']}")
 
@@ -120,7 +120,7 @@ def test_enterprise_unlimited():
         team_service.invite_member(team_id, f"member{i}@enterprise.com")
 
     seats = team_service.check_seat_availability(team_id)
-    print(f"✓ After 5 invites:")
+    print("✓ After 5 invites:")
     print(f"  Available seats: {seats['available_seats']} (still unlimited)")
     print(f"  Has available: {seats['has_available_seats']}")
 

@@ -23,8 +23,8 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from antigravity.core.content_factory.engine import ContentFactory
 from antigravity.core.client_magnet.engine import ClientMagnet
+from antigravity.core.content_factory.engine import ContentFactory
 from antigravity.core.revenue.engine import RevenueEngine
 
 
@@ -73,7 +73,7 @@ def main():
     warm_leads = leads.get("warm", [])
     cold_leads = leads.get("cold", [])
 
-    print(f"Lead Segmentation:")
+    print("Lead Segmentation:")
     print(f"   🔥 Hot:  {len(hot_leads)} (BANT qualified)")
     print(f"   🌡️  Warm: {len(warm_leads)} (Needs nurturing)")
     print(f"   ❄️  Cold: {len(cold_leads)} (Low intent)")
@@ -105,11 +105,11 @@ def main():
     gap = goals.get("gap_usd", 1000000)
     monthly_target = gap / 12  # Calculate monthly target from gap
 
-    print(f"Revenue Dashboard:")
+    print("Revenue Dashboard:")
     print(f"   MRR:          ${mrr:,.2f}")
     print(f"   ARR:          ${arr:,.2f}")
     print(f"   Total:        ${total_revenue:,.2f}")
-    print(f"\nGoal Progress:")
+    print("\nGoal Progress:")
     print(f"   Target:       ${monthly_target:,.2f}/month")
     print(f"   Progress:     {progress:.1f}%")
     print(f"   Gap:          ${gap:,.2f}")
@@ -143,15 +143,15 @@ def main():
 
     with open(report_path, "w") as f:
         f.write(f"# Daily Revenue Report - {datetime.now().strftime('%Y-%m-%d')}\n\n")
-        f.write(f"## Metrics\n")
+        f.write("## Metrics\n")
         f.write(f"- MRR: ${mrr:,.2f}\n")
         f.write(f"- ARR: ${arr:,.2f}\n")
         f.write(f"- Progress: {progress:.1f}%\n\n")
-        f.write(f"## Lead Pipeline\n")
+        f.write("## Lead Pipeline\n")
         f.write(f"- Hot: {len(hot_leads)}\n")
         f.write(f"- Warm: {len(warm_leads)}\n")
         f.write(f"- Cold: {len(cold_leads)}\n\n")
-        f.write(f"## Content Created\n")
+        f.write("## Content Created\n")
         for i, post in enumerate(posts_created, 1):
             f.write(f"{i}. {post.title}\n")
 

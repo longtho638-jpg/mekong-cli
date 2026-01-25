@@ -14,11 +14,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
-from backend.middleware import (
-    RateLimitMiddleware,
-    PerformanceMonitoringMiddleware,
-    get_metrics_summary,
-)
 from backend.api.routers import (
     agents,
     agents_creator,
@@ -38,6 +33,11 @@ from backend.api.routers import (
 )
 from backend.api.routers import (
     router as hybrid_router,
+)
+from backend.middleware import (
+    PerformanceMonitoringMiddleware,
+    RateLimitMiddleware,
+    get_metrics_summary,
 )
 from backend.routes.agentops import router as agentops_router
 from backend.websocket.routes import router as ws_router

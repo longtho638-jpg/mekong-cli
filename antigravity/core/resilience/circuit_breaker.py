@@ -10,13 +10,13 @@ Prevents cascade failures by:
 Implementation based on Martin Fowler's Circuit Breaker pattern.
 """
 
+import logging
 import time
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Optional, Callable, Any, Dict
-from dataclasses import dataclass, field
 from threading import Lock
-import logging
+from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

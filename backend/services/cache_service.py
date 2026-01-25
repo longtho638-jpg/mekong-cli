@@ -12,8 +12,8 @@ Features:
 import json
 import logging
 from datetime import timedelta
-from typing import Any, Optional, Union
 from functools import wraps
+from typing import Any, Optional, Union
 
 try:
     import redis

@@ -5,11 +5,11 @@ Measures performance of critical paths in RevenueEngine and AgentSwarm.
 """
 import time
 import timeit
-from concurrent.futures import ThreadPoolExecutor
-
 from antigravity.core.revenue.engine import RevenueEngine
 from antigravity.core.swarm.engine import AgentSwarm
 from antigravity.core.swarm.enums import AgentRole, TaskPriority
+from concurrent.futures import ThreadPoolExecutor
+
 
 def benchmark_revenue_engine():
     print("\n💰 Benchmarking RevenueEngine...")

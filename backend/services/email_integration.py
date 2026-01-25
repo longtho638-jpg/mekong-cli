@@ -5,9 +5,10 @@ This shows how to integrate the email service into the webhook handler
 to send purchase confirmation emails automatically.
 """
 
+import logging
+
 from backend.services.email_service import send_purchase_email
 from backend.services.license_service import generate_license_key
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -6,8 +6,8 @@ This example shows how to upgrade the existing PaymentService to use
 PaymentOrchestrator for automatic failover.
 """
 
-from backend.services.payment_orchestrator import PaymentOrchestrator
 from backend.core.config.payment_config import get_payment_config
+from backend.services.payment_orchestrator import PaymentOrchestrator
 
 
 class EnhancedPaymentService:
@@ -171,10 +171,10 @@ if __name__ == "__main__":
             mode="subscription"
         )
 
-        print(f"✅ Checkout created successfully")
+        print("✅ Checkout created successfully")
         print(f"   Provider used: {result.get('provider')}")
         print(f"   Checkout URL: {result.get('url')}")
-        print(f"\n📊 Orchestrator Stats:")
+        print("\n📊 Orchestrator Stats:")
 
         stats = result.get("orchestrator_stats", {})
         print(f"   Total requests: {stats.get('total_requests')}")

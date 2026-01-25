@@ -10,9 +10,9 @@ Manages brand customization for organizations including:
 Only enterprise tier organizations can use white-label features.
 """
 
-from typing import Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, Optional
 
 
 class LicenseTier(str, Enum):

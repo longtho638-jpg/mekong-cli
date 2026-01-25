@@ -11,10 +11,10 @@ from .circuit_breaker import (
     CircuitBreaker,
     CircuitBreakerConfig,
     CircuitBreakerOpenError,
-    CircuitState,
     CircuitBreakerStats,
-    get_circuit_breaker,
+    CircuitState,
     get_all_circuit_breakers,
+    get_circuit_breaker,
     reset_all_circuit_breakers,
 )
 

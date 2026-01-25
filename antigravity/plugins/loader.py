@@ -8,12 +8,11 @@ Handles plugin dependencies, validation, and lifecycle management.
 import importlib.util
 import inspect
 import logging
+from antigravity.plugins.base import CCPlugin
 from pathlib import Path
 from typing import Optional
 
 import typer
-
-from antigravity.plugins.base import CCPlugin
 
 logger = logging.getLogger(__name__)
 

@@ -368,7 +368,7 @@ def main():
 
     print(f"{BOLD}MEKONG-CLI Performance Benchmark{RESET}")
     print("=" * 60)
-    print(f"Target: --help responds in <200ms")
+    print("Target: --help responds in <200ms")
     print(f"Python: {sys.version.split()[0]}")
     print(f"Project: {PROJECT_ROOT}")
 

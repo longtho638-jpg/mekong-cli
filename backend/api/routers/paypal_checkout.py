@@ -20,7 +20,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, EmailStr
 
-from backend.services.payment_orchestrator import PaymentOrchestrator, PaymentError
+from backend.services.payment_orchestrator import PaymentError, PaymentOrchestrator
 
 logger = logging.getLogger(__name__)
 

@@ -126,7 +126,7 @@ def demo_restore_backup(backup_path: str):
         import os
         if os.path.exists(test_db):
             os.remove(test_db)
-            print(f"\n   (Test database cleaned up)")
+            print("\n   (Test database cleaned up)")
     else:
         print(f"❌ Restore failed: {error}")
 

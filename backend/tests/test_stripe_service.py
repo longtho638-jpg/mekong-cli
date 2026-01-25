@@ -4,8 +4,10 @@ Test Suite for Stripe Payment Service
 Unit tests for StripeService functionality.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from backend.services.stripe_service import StripeService
 
 

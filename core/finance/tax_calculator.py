@@ -49,12 +49,12 @@ if __name__ == "__main__":
 
     # Test 1: Below threshold
     result1 = calculate_vn_tax(100_000_000, 200_000_000)
-    print(f"\nTest 1: 100M VND (quarter total: 300M)")
+    print("\nTest 1: 100M VND (quarter total: 300M)")
     print(f"  Rate: {result1['rate']*100}% ({result1['method']})")
 
     # Test 2: Above threshold
     result2 = calculate_vn_tax(300_000_000, 400_000_000)
-    print(f"\nTest 2: 300M VND (quarter total: 700M)")
+    print("\nTest 2: 300M VND (quarter total: 700M)")
     print(f"  Rate: {result2['rate']*100}% ({result2['method']})")
 
     print("\n" + "=" * 50)

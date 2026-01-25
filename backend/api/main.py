@@ -34,11 +34,15 @@ from backend.api.routers import (
     franchise,
     i18n,
     kanban,
+    paypal_checkout,  # PayPal payment integration
     scheduler,
     vietnam,
 )
 from backend.api.routers import (
     dashboard as dashboard_router,
+)
+from backend.api.routers import (
+    health as health_router,  # Health check & monitoring
 )
 from backend.api.routers import (
     license as license_router,  # License verification
@@ -57,12 +61,6 @@ from backend.api.routers import (
 )
 from backend.api.routers import (
     webhooks as webhooks_router,
-)
-from backend.api.routers import (
-    health as health_router,  # Health check & monitoring
-)
-from backend.api.routers import (
-    paypal_checkout,  # PayPal payment integration
 )
 from backend.api.routers.router import router as hybrid_router
 from backend.websocket.routes import router as websocket_router

@@ -8,14 +8,14 @@ Tracks:
 - Export to JSON
 """
 
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from collections import defaultdict
 import json
+from collections import defaultdict
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
-from backend.models.user import User
 from backend.models.analytics_event import AnalyticsEvent
 from backend.models.enums import SubscriptionTier
+from backend.models.user import User
 
 
 class AnalyticsService:

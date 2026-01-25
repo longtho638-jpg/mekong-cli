@@ -4,19 +4,12 @@ Tests for cache_service.py
 Tests both Redis and in-memory cache implementations.
 """
 
-import pytest
-import time
 import json
-from unittest.mock import Mock, patch, MagicMock
+import time
+from unittest.mock import MagicMock, Mock, patch
 
-from cache_service import (
-    CacheService,
-    InMemoryCache,
-    cached,
-    api_cache,
-    user_cache,
-    session_cache
-)
+import pytest
+from cache_service import CacheService, InMemoryCache, api_cache, cached, session_cache, user_cache
 
 
 class TestInMemoryCache:

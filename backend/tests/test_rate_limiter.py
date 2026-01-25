@@ -2,16 +2,17 @@
 Test Rate Limiting Middleware
 """
 
-import pytest
 import time
+
+import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
 from backend.middleware.rate_limiter import (
+    TIER_LIMITS,
     RateLimitMiddleware,
     TokenBucket,
-    TIER_LIMITS,
-    check_rate_limit
+    check_rate_limit,
 )
 
 

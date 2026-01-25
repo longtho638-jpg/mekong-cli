@@ -6,6 +6,7 @@ Demonstrates that the middleware is working correctly
 
 import asyncio
 import time
+
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 

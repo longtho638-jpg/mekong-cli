@@ -6,16 +6,18 @@ Tests all 5 commands: add, list, portal, invoice, status
 """
 
 import json
-import pytest
-from datetime import datetime, timedelta
-from pathlib import Path
-from typer.testing import CliRunner
-from unittest.mock import patch, MagicMock
 
 # Import the app
 import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+from typer.testing import CliRunner
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-from cc_client import app, generate_client_id, generate_portal_code, generate_invoice_id
+from cc_client import app, generate_client_id, generate_invoice_id, generate_portal_code
 
 runner = CliRunner()
 
