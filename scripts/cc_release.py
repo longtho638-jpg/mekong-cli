@@ -56,21 +56,19 @@ class ReleaseManager:
             "success": Colors.GREEN,
             "warning": Colors.YELLOW,
             "error": Colors.RED,
-            "header": Colors.MAGENTA
+            "header": Colors.MAGENTA,
         }
         color = colors.get(level, Colors.RESET)
         print(f"{color}{message}{Colors.RESET}")
 
-    def run_command(self, cmd: List[str], check: bool = True, capture: bool = False) -> Tuple[int, str, str]:
+    def run_command(
+        self, cmd: List[str], check: bool = True, capture: bool = False
+    ) -> Tuple[int, str, str]:
         """Execute a shell command and return result"""
         try:
             if capture:
                 result = subprocess.run(
-                    cmd,
-                    cwd=self.project_root,
-                    capture_output=True,
-                    text=True,
-                    check=check
+                    cmd, cwd=self.project_root, capture_output=True, text=True, check=check
                 )
                 return result.returncode, result.stdout.strip(), result.stderr.strip()
             else:
@@ -86,7 +84,7 @@ class ReleaseManager:
         if not self.setup_py.exists():
             return "0.0.0"
 
-        with open(self.setup_py, 'r') as f:
+        with open(self.setup_py, "r") as f:
             content = f.read()
             match = re.search(r'version\s*=\s*["\']([^"\']+)["\']', content)
             if match:
@@ -95,7 +93,7 @@ class ReleaseManager:
 
     def validate_version(self, version: str) -> bool:
         """Validate semantic version format (x.y.z)"""
-        pattern = r'^\d+\.\d+\.\d+$'
+        pattern = r"^\d+\.\d+\.\d+$"
         return bool(re.match(pattern, version))
 
     def update_version_files(self, version: str):
@@ -104,19 +102,15 @@ class ReleaseManager:
 
         # Update setup.py
         if self.setup_py.exists():
-            with open(self.setup_py, 'r') as f:
+            with open(self.setup_py, "r") as f:
                 content = f.read()
-            content = re.sub(
-                r'version\s*=\s*["\'][^"\']+["\']',
-                f'version="{version}"',
-                content
-            )
-            with open(self.setup_py, 'w') as f:
+            content = re.sub(r'version\s*=\s*["\'][^"\']+["\']', f'version="{version}"', content)
+            with open(self.setup_py, "w") as f:
                 f.write(content)
             self.log("  ✓ Updated setup.py", "success")
 
         # Update VERSION file
-        with open(self.version_file, 'w') as f:
+        with open(self.version_file, "w") as f:
             f.write(f"{version}\n")
         self.log("  ✓ Created/updated VERSION file", "success")
 
@@ -131,9 +125,7 @@ class ReleaseManager:
 
         # Get last tag
         returncode, last_tag, _ = self.run_command(
-            ["git", "describe", "--tags", "--abbrev=0"],
-            check=False,
-            capture=True
+            ["git", "describe", "--tags", "--abbrev=0"], check=False, capture=True
         )
 
         if returncode != 0:
@@ -145,7 +137,7 @@ class ReleaseManager:
         # Get commits
         _, commits, _ = self.run_command(
             ["git", "log", commit_range, "--pretty=format:%h|%s|%an|%ad", "--date=short"],
-            capture=True
+            capture=True,
         )
 
         if not commits:
@@ -198,18 +190,22 @@ class ReleaseManager:
             return
 
         if self.changelog.exists():
-            with open(self.changelog, 'r') as f:
+            with open(self.changelog, "r") as f:
                 existing_content = f.read()
         else:
-            existing_content = "# Changelog\n\nAll notable changes to AgencyOS will be documented in this file.\n"
+            existing_content = (
+                "# Changelog\n\nAll notable changes to AgencyOS will be documented in this file.\n"
+            )
 
         # Insert new entry after header
         lines = existing_content.split("\n")
         header_end = 2  # After "# Changelog" and description
 
-        new_content = "\n".join(lines[:header_end]) + "\n" + changelog_entry + "\n".join(lines[header_end:])
+        new_content = (
+            "\n".join(lines[:header_end]) + "\n" + changelog_entry + "\n".join(lines[header_end:])
+        )
 
-        with open(self.changelog, 'w') as f:
+        with open(self.changelog, "w") as f:
             f.write(new_content)
 
         self.log("  ✓ Updated CHANGELOG.md", "success")
@@ -234,20 +230,12 @@ class ReleaseManager:
 
         # Build with version tag
         self.log(f"  Building {image_name}:{version}...", "info")
-        self.run_command([
-            "docker", "build",
-            "-t", f"{image_name}:{version}",
-            "."
-        ])
+        self.run_command(["docker", "build", "-t", f"{image_name}:{version}", "."])
 
         # Tag as latest if requested
         if tag_latest:
             self.log("  Tagging as latest...", "info")
-            self.run_command([
-                "docker", "tag",
-                f"{image_name}:{version}",
-                f"{image_name}:latest"
-            ])
+            self.run_command(["docker", "tag", f"{image_name}:{version}", f"{image_name}:latest"])
 
         self.log(f"  ✅ Docker image built: {image_name}:{version}", "success")
 
@@ -259,6 +247,7 @@ class ReleaseManager:
         dist_dir = self.project_root / "dist"
         if dist_dir.exists():
             import shutil
+
             shutil.rmtree(dist_dir)
 
         # Build package
@@ -296,11 +285,7 @@ class ReleaseManager:
 
         try:
             # Use twine to upload
-            self.run_command([
-                "python", "-m", "twine", "upload",
-                *repository.split(),
-                "dist/*"
-            ])
+            self.run_command(["python", "-m", "twine", "upload", *repository.split(), "dist/*"])
             self.log(f"  ✅ Published to {'TestPyPI' if test else 'PyPI'}", "success")
         except Exception as e:
             self.log("  ⚠️  Twine not installed. Install with: pip install twine", "warning")
@@ -315,10 +300,7 @@ class ReleaseManager:
             self.log("🔒 Running production safety checks...", "info")
 
             # Check if working directory is clean
-            returncode, status, _ = self.run_command(
-                ["git", "status", "--porcelain"],
-                capture=True
-            )
+            returncode, status, _ = self.run_command(["git", "status", "--porcelain"], capture=True)
             if status:
                 self.log("  ❌ Working directory is not clean. Commit changes first.", "error")
                 sys.exit(1)
@@ -357,8 +339,7 @@ class ReleaseManager:
 
         # Get previous tag
         returncode, tags, _ = self.run_command(
-            ["git", "tag", "-l", "--sort=-version:refname"],
-            capture=True
+            ["git", "tag", "-l", "--sort=-version:refname"], capture=True
         )
 
         if returncode != 0 or not tags:
@@ -385,8 +366,8 @@ class ReleaseManager:
         # Checkout previous tag
         self.run_command(["git", "checkout", previous_tag])
 
-        # Redeploy previous version
-        version = previous_tag.lstrip("v")
+        # Redeploy previous version (version extracted for potential future use)
+        _version = previous_tag.lstrip("v")  # noqa: F841
         self.log(f"  ✅ Rolled back to {previous_tag}", "success")
         self.log("  💡 Run 'cc release deploy production' to deploy this version", "info")
 
@@ -404,7 +385,7 @@ Examples:
   cc release deploy staging            Deploy to staging
   cc release deploy production         Deploy to production
   cc release rollback                  Rollback to previous version
-        """
+        """,
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Release commands")
@@ -418,23 +399,35 @@ Examples:
     # Build command
     build_parser = subparsers.add_parser("build", help="Build Docker image and Python package")
     build_parser.add_argument("--docker-only", action="store_true", help="Build Docker image only")
-    build_parser.add_argument("--python-only", action="store_true", help="Build Python package only")
-    build_parser.add_argument("--tag-latest", action="store_true", help="Tag Docker image as latest")
+    build_parser.add_argument(
+        "--python-only", action="store_true", help="Build Python package only"
+    )
+    build_parser.add_argument(
+        "--tag-latest", action="store_true", help="Tag Docker image as latest"
+    )
 
     # Publish command
     publish_parser = subparsers.add_parser("publish", help="Publish to registries")
-    publish_parser.add_argument("--docker-only", action="store_true", help="Publish Docker image only")
+    publish_parser.add_argument(
+        "--docker-only", action="store_true", help="Publish Docker image only"
+    )
     publish_parser.add_argument("--pypi-only", action="store_true", help="Publish to PyPI only")
-    publish_parser.add_argument("--test-pypi", action="store_true", help="Publish to TestPyPI instead")
-    publish_parser.add_argument("--push-latest", action="store_true", help="Push 'latest' Docker tag")
+    publish_parser.add_argument(
+        "--test-pypi", action="store_true", help="Publish to TestPyPI instead"
+    )
+    publish_parser.add_argument(
+        "--push-latest", action="store_true", help="Push 'latest' Docker tag"
+    )
 
     # Deploy command
     deploy_parser = subparsers.add_parser("deploy", help="Deploy to environment")
-    deploy_parser.add_argument("environment", choices=["staging", "production"], help="Target environment")
+    deploy_parser.add_argument(
+        "environment", choices=["staging", "production"], help="Target environment"
+    )
     deploy_parser.add_argument("--version", help="Specific version to deploy")
 
     # Rollback command
-    rollback_parser = subparsers.add_parser("rollback", help="Rollback to previous version")
+    subparsers.add_parser("rollback", help="Rollback to previous version")
 
     args = parser.parse_args()
 
@@ -514,6 +507,7 @@ Examples:
     except Exception as e:
         manager.log(f"\n❌ Error: {e}", "error")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
