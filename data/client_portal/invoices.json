@@ -142,5 +142,21 @@
       }
     ],
     "notes": ""
+  },
+  "INV-202601-3AC7": {
+    "id": "INV-202601-3AC7",
+    "client_id": "CLI-44ACDC37",
+    "project_id": null,
+    "amount": 5000.0,
+    "status": "draft",
+    "due_date": "2026-02-09T07:09:29.449596",
+    "paid_date": null,
+    "items": [
+      {
+        "name": "Website Development Phase 1",
+        "amount": 5000.0
+      }
+    ],
+    "notes": ""
   }
 }

@@ -1,9 +1,116 @@
 #!/usr/bin/env bash
-# 🏯 AgencyOS CLI Wrapper - Convenience script for release management
-# Usage: cc release <command> [args...]
+# 🏯 AgencyOS Unified CLI - Dispatch to all CC modules
+# Usage: cc <module> <command> [args...]
+# Modules: revenue, agent, devops, client, release
+
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON="${PYTHON:-python3}"
+VERSION="0.2.0"
 
-# Forward all arguments to cc_release.py
-exec "$PYTHON" "$SCRIPT_DIR/cc_release.py" "$@"
+# Module registry
+declare -A MODULES=(
+    ["revenue"]="cc_revenue.py"
+    ["agent"]="cc_agent.py"
+    ["devops"]="cc_devops.py"
+    ["client"]="cc_client.py"
+    ["release"]="cc_release.py"
+)
+
+# Help text
+show_help() {
+    cat <<EOF
+🏯 AgencyOS Unified CLI (cc) v${VERSION}
+
+Usage:
+  cc <module> <command> [args...]
+  cc --help
+  cc --version
+
+Available Modules:
+  revenue     Revenue tracking, financial forecasting, pricing strategy
+  agent       Agent management, spawning, coordination
+  devops      DevOps operations, deployment, infrastructure
+  client      Client management, CRM, project tracking
+  release     Release management, versioning, changelog generation
+
+Examples:
+  cc revenue forecast --mrr 10000 --growth 0.15 --months 12
+  cc agent spawn --task T001 --model gemini-3-flash
+  cc devops deploy --env production --service api
+  cc client list --status active
+  cc release bump --type minor --commit
+
+Get module-specific help:
+  cc revenue --help
+  cc agent --help
+  cc devops --help
+  cc client --help
+  cc release --help
+
+Global Options:
+  --help      Show this help message
+  --version   Show version information
+
+Documentation: ./docs/
+Repository: https://github.com/binhphap/mekong-cli
+EOF
+}
+
+# Version info
+show_version() {
+    cat <<EOF
+AgencyOS Unified CLI (cc) v${VERSION}
+
+Modules:
+EOF
+    for module in "${!MODULES[@]}"; do
+        echo "  - $module (${MODULES[$module]})"
+    done | sort
+    echo ""
+    echo "Python: $($PYTHON --version 2>&1)"
+    echo "Location: $SCRIPT_DIR"
+}
+
+# Main dispatch logic
+main() {
+    # Handle global flags
+    if [[ $# -eq 0 ]] || [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
+        show_help
+        exit 0
+    fi
+
+    if [[ "${1:-}" == "--version" ]] || [[ "${1:-}" == "-v" ]]; then
+        show_version
+        exit 0
+    fi
+
+    # Get module name
+    local module="$1"
+    shift
+
+    # Validate module
+    if [[ ! -v "MODULES[$module]" ]]; then
+        echo "❌ Error: Unknown module '$module'" >&2
+        echo "" >&2
+        echo "Available modules: ${!MODULES[*]}" >&2
+        echo "Run 'cc --help' for more information." >&2
+        exit 1
+    fi
+
+    # Get module script
+    local script="${MODULES[$module]}"
+    local script_path="$SCRIPT_DIR/$script"
+
+    # Validate script exists
+    if [[ ! -f "$script_path" ]]; then
+        echo "❌ Error: Module script not found: $script_path" >&2
+        exit 1
+    fi
+
+    # Dispatch to module
+    exec "$PYTHON" "$script_path" "$@"
+}
+
+main "$@"

@@ -1,0 +1,184 @@
+name: CC CLI CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  # ------------------------------------------------------------------
+  # JOB 1: LINT - Run ruff on CC CLI scripts
+  # ------------------------------------------------------------------
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Lint CC CLI scripts
+        run: ruff check scripts/cc_*.py
+
+  # ------------------------------------------------------------------
+  # JOB 2: TEST - Run pytest on CC CLI tests
+  # ------------------------------------------------------------------
+  test:
+    name: Test (Pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio anyio httpx
+          pip install -e .
+
+      - name: Run CC CLI tests
+        run: pytest tests/test_cc_*.py -v
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+  # ------------------------------------------------------------------
+  # JOB 3: BUILD - Validate imports work
+  # ------------------------------------------------------------------
+  build:
+    name: Build Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Validate CC CLI imports
+        run: |
+          python -c "import scripts.cc_revenue; print('✓ cc_revenue imports OK')"
+          python -c "import scripts.cc_agent; print('✓ cc_agent imports OK')"
+          python -c "import scripts.cc_release; print('✓ cc_release imports OK')"
+          python -c "import scripts.cc_devops; print('✓ cc_devops imports OK')"
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Verify CLI entry point
+        run: mekong --help
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+  # ------------------------------------------------------------------
+  # JOB 4: RELEASE - Tag release on main push with version
+  # ------------------------------------------------------------------
+  release:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [lint, test, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Extract version from setup.py
+        id: version
+        run: |
+          VERSION=$(python -c "import sys; sys.path.insert(0, '.'); from setup import setup; print(setup.keywords['version']) if 'version' in setup.keywords else '0.0.0'" 2>/dev/null || grep 'version=' setup.py | head -1 | sed 's/.*version="\([^"]*\)".*/\1/')
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: v${VERSION}"
+
+      - name: Check if tag exists
+        id: tag_check
+        run: |
+          if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.version }} already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.version }} does not exist"
+          fi
+
+      - name: Create and push tag
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag -a "${{ steps.version.outputs.version }}" -m "CC CLI Release ${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: CC CLI ${{ steps.version.outputs.version }}
+          body: |
+            ## CC CLI Release ${{ steps.version.outputs.version }}
+
+            Automated release from main branch.
+
+            ### Changes
+            - See commit history for details
+
+            ### Installation
+            ```bash
+            pip install mekong-cli==${{ steps.version.outputs.version }}
+            ```
+          draft: false
+          prerelease: false
