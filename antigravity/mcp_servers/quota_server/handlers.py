@@ -1,11 +1,12 @@
 """
 Handlers for the Quota MCP Server.
-Wraps the restored QuotaEngine logic.
+Wraps the restored QuotaEngine logic with Account Fallback.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
+from .account_selector import get_account_selector
 from .engine import QuotaEngine
 
 # Setup logging
@@ -15,11 +16,12 @@ logger = logging.getLogger(__name__)
 class QuotaHandler:
     """
     Quota Engine Logic
-    Adapted for MCP usage.
+    Adapted for MCP usage with Account Fallback support.
     """
 
     def __init__(self):
         self.engine = QuotaEngine()
+        self._account_selector = get_account_selector()
 
     def get_status(self) -> Dict[str, Any]:
         """
@@ -59,3 +61,53 @@ class QuotaHandler:
             return best.get("id", "gemini-3-pro-high")
 
         return "gemini-3-pro-high"  # Default fallback
+
+    def get_account_for_model(self, model_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get the best account for a specific model with fallback support.
+
+        When one account is exhausted, automatically falls back to another.
+
+        Args:
+            model_id: Model ID to get account for
+
+        Returns:
+            Account info dict with email and quota, or None if all exhausted
+        """
+        account = self._account_selector.get_best_account(model_id)
+
+        if account:
+            return {
+                "email": account.email,
+                "remaining_percent": account.model_quotas.get(model_id, 0.0),
+                "is_fallback": False,
+            }
+
+        return None
+
+    def handle_quota_exhausted(self, current_email: str, model_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Handle quota exhausted error by finding fallback account.
+
+        Call this when API returns 500/429 quota error.
+
+        Args:
+            current_email: The exhausted account email
+            model_id: Model that needs quota
+
+        Returns:
+            Fallback account info, or None if no fallback available
+        """
+        logger.warning(f"Quota exhausted for {current_email}/{model_id}, finding fallback...")
+
+        fallback = self._account_selector.get_fallback_account(current_email, model_id)
+
+        if fallback:
+            return {
+                "email": fallback.email,
+                "remaining_percent": fallback.model_quotas.get(model_id, 0.0),
+                "is_fallback": True,
+            }
+
+        logger.error(f"No fallback available for {model_id}!")
+        return None
