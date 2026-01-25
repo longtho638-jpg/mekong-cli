@@ -39,6 +39,7 @@ class InvoiceDict(TypedDict):
     status: str
     dates: InvoiceDatesDict
     amount_vnd: int
+    service_type: str  # Vietnam Tax Strategy 2026
 
 
 class ForecastDict(TypedDict):
@@ -80,6 +81,12 @@ class Invoice:
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
 
+    # Vietnam Tax Strategy 2026 - Service Type for VAT 0% Evidence
+    service_type: str = field(
+        default="Software Subscription / Exported Software Service",
+        metadata={"description": "Service type for tax compliance - VAT 0% for exported services"}
+    )
+
     def get_amount_vnd(self) -> int:
         """Calculates value in VND based on current projected rates."""
         if self.currency.upper() == "VND":
@@ -106,6 +113,7 @@ class Invoice:
                 "created": self.created_at.isoformat(),
             },
             "amount_vnd": self.get_amount_vnd(),
+            "service_type": self.service_type,  # Vietnam Tax Strategy 2026
         }
 
 

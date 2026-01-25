@@ -74,6 +74,16 @@ class PaymentConfig(BaseModel):
     max_retries: int = Field(default=2, description="Maximum retry attempts per provider")
     timeout_seconds: int = Field(default=30, description="API request timeout")
 
+    # Vietnam Tax Strategy 2026 - Revenue Thresholds
+    revenue_threshold_soft_cap: int = Field(
+        default=450_000_000,
+        description="Soft cap threshold (450M VND) - triggers registration alert"
+    )
+    revenue_threshold_hard_cap: int = Field(
+        default=500_000_000,
+        description="Hard cap threshold (500M VND) - legal registration required"
+    )
+
     @classmethod
     def from_env(cls) -> "PaymentConfig":
         """Load payment config from environment variables"""
