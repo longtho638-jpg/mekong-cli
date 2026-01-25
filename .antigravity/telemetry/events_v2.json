@@ -1978,5 +1978,27 @@
       "agent_id": "researcher",
       "agent_role": null
     }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-25T07:41:04.552279",
+    "d": 0.012958999999312937,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-25T07:41:04.554234",
+    "d": 0.20637500000120212,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
   }
 ]
