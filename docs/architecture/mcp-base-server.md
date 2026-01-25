@@ -67,6 +67,11 @@ To create a new MCP server:
 3. **Implement** `handle_tool_call()` to execute logic.
 4. **Run** using `server.run()`.
 
+> **Detailed Documentation:**
+> - [Usage Guide](../mcp/usage-guide.md)
+> - [API Reference](../mcp/api-reference.md)
+> - [Migration Guide](../mcp/migration-guide.md)
+
 ### Example
 
 ```python

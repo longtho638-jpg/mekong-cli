@@ -77,6 +77,16 @@ npm run dev
 
 ---
 
+## 💻 Developer Resources
+
+### MCP Server Development (Antigravity Engine)
+
+- [**Architecture Overview**](/docs/architecture/mcp-base-server.md): High-level design of the BaseMCPServer.
+- [**Usage Guide**](/docs/mcp/usage-guide.md): Quick start and best practices for creating new servers.
+- [**API Reference**](/docs/mcp/api-reference.md): Detailed class and method documentation.
+- [**Migration Guide**](/docs/mcp/migration-guide.md): How to upgrade legacy servers to the new base class.
+- [**Examples**](/docs/mcp/examples/): Reference implementations (Math, Filesystem, Async).
+
 ## 🛟 Support
 
 | Channel       | Response Time |
