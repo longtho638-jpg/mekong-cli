@@ -1,6 +1,9 @@
 <!-- CLEO:START -->
+
 @.cleo/templates/AGENT-INJECTION.md
+
 <!-- CLEO:END -->
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -68,6 +71,39 @@ Mọi hoạt động của Claude Code CLI **PHẢI** tham chiếu đến 2 ngu�
 - ⚡ Eliminates 10+ file reads at session start
 - 🎯 Reduces hallucination about available capabilities
 - 🚀 Maximizes Gemini 1M context efficiency
+
+### 5. 📝 PERSISTENT TASK MEMORY (DEEP INJECTION v2.5)
+
+> **"知彼知己，百戰不殆"** - Tasks persisted, never forgotten
+
+**On EVERY session start, Agent MUST:**
+
+1. **Read `.claude/memory/tasks.md`** - Contains:
+    - Active delegated tasks
+    - Task assignments and status
+    - Progress tracking
+
+2. **Continue in-progress tasks** before accepting new work
+3. **Update task status** as work progresses
+
+**Task Delegation Protocol:**
+
+```bash
+# Delegate tasks via /delegate command
+/delegate "Fix webhook tests"
+/delegate "Add dark mode to dashboard"
+```
+
+**Memory Location:** `.claude/memory/tasks.md`
+
+**This memory persists:**
+
+- ✅ Across session resets
+- ✅ Across different agent instances
+- ✅ Across terminal sessions
+- ✅ Until explicitly marked complete
+
+**CRITICAL:** Never forget delegated tasks. Check memory on every session start.
 
 ---
 
@@ -184,12 +220,14 @@ We keep all important docs in `./docs` folder and keep updating them, structure 
 ### 1. THE BRAIN (Antigravity - Mission Control)
 
 **Role:** Strategic Commander & Architect
+
 - **Approves architecture** via `implementation_plan.md`
 - **Plans campaigns** with Binh Pháp principles
 - **Uses Artifacts** for progress reports and strategy visualization
 - **Coordinates agents** through orchestration protocols
 
 **Interaction Model:**
+
 - Claude Code CLI reports to Antigravity via structured artifacts
 - Antigravity reviews and approves before execution
 - All strategic decisions flow through Mission Control
@@ -199,6 +237,7 @@ We keep all important docs in `./docs` folder and keep updating them, structure 
 **Role:** Execution Engine & Tactical Operations
 
 **Special Weapons - cc Commands:**
+
 ```bash
 # Core Commands
 cc revenue dashboard      # 💰 Revenue & Financials
@@ -228,6 +267,7 @@ cc plan create            # 📋 Create execution plan
 ```
 
 **Golden Rule:** Use `cc` commands instead of writing custom scripts
+
 - Commands are battle-tested and integrated
 - Avoid reinventing the wheel
 - Delegate to specialized tools
@@ -235,12 +275,14 @@ cc plan create            # 📋 Create execution plan
 ### 3. SAFETY & VERIFICATION PROTOCOL
 
 **Code Changes Checklist:**
+
 1. ✅ **Always run tests** after code changes
 2. ✅ **Request Antigravity Browser Agent** for UI verification
 3. ✅ **Generate artifact reports** for Mission Control approval
 4. ✅ **Document changes** in implementation plans
 
 **Verification Flow:**
+
 ```
 Code Change → Tests Pass → Browser Verification → Artifact Report → Approval
 ```
@@ -248,31 +290,37 @@ Code Change → Tests Pass → Browser Verification → Artifact Report → Appr
 ### 4. BINH PHÁP WORKFLOW (13 Chapters Applied)
 
 #### Chapter 1: Mưu Công (Planning)
+
 - **Antigravity creates** strategic plans
 - **Claude Code reviews** technical feasibility
 - **Joint approval** before execution
 
 #### Chapter 2: Tác Chiến (Execution)
+
 - **Claude Code implements** according to plan
 - **Real-time progress** updates via artifacts
 - **Deviation alerts** to Mission Control
 
 #### Chapter 3: Mưu Công (Strategy)
+
 - **Antigravity monitors** via dashboard
 - **Adjusts tactics** based on metrics
 - **Coordinates multi-agent** operations
 
 #### Chapter 4: Hình Thế (Positioning)
+
 - **Leverage strengths:** Automation, AI, Speed
 - **Minimize weaknesses:** Manual work, repetition
 - **Maximize force multipliers:** cc commands, MCP servers
 
 #### Chapter 5: Hư Thực (Deception & Reality)
+
 - **Real capability:** 14 MCP servers, 24 agents, 44 skills
 - **Perceived capability:** One-person unicorn operation
 - **Strategic ambiguity:** Competitors underestimate automation
 
 #### Chapter 6-13: Advanced Tactics
+
 - **Quân Tranh:** Compete for strategic positions (market niches)
 - **Cửu Biến:** Adapt to changing market conditions
 - **Hành Quân:** Execute with speed and precision
@@ -284,6 +332,7 @@ Code Change → Tests Pass → Browser Verification → Artifact Report → Appr
 ### 5. INTEGRATION ARCHITECTURE
 
 **Communication Channels:**
+
 ```
 Antigravity (Brain)
     ↓ Strategic Plans
@@ -295,6 +344,7 @@ Mission Control Dashboard
 ```
 
 **Data Flow:**
+
 - Plans: `plans/*.md` (Antigravity writes, Claude Code reads)
 - Reports: Artifacts (Claude Code writes, Antigravity reads)
 - Metrics: `cc revenue dashboard` (Real-time sync)
@@ -302,6 +352,7 @@ Mission Control Dashboard
 ### 6. EMERGENCY PROTOCOLS
 
 **When Things Go Wrong:**
+
 ```bash
 cc deploy rollback        # Immediate rollback
 cc deploy health          # System diagnostics
@@ -313,6 +364,7 @@ cc deploy health          # System diagnostics
 ```
 
 **Escalation Matrix:**
+
 - 🟢 **Minor issues:** Claude Code auto-fixes
 - 🟡 **Medium issues:** Claude Code proposes, Antigravity approves
 - 🔴 **Critical issues:** Immediate Antigravity intervention
