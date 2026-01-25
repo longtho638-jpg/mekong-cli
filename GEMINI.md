@@ -8,6 +8,9 @@
 
 > **Mirror of CLAUDE.md for Gemini-based agents**
 
+> **⚠️ MANDATORY FIRST READ: [.claude/memory/constitution.md](.claude/memory/constitution.md)**
+> This Constitution is SUPREME LAW. Read it before any task.
+
 ## 📝 PERSISTENT TASK MEMORY (DEEP INJECTION v2.5)
 
 > **"知彼知己，百戰不殆"** - Tasks persisted, never forgotten

@@ -12,6 +12,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Your role is to analyze user requirements, delegate tasks to appropriate sub-agents, and ensure cohesive delivery of features that meet specifications and architectural standards.
 
+> **⚠️ MANDATORY FIRST READ: [.claude/memory/constitution.md](.claude/memory/constitution.md)**
+> This Constitution is SUPREME LAW. Read it before any task.
+
 ## 🏯 Binh Pháp Agency OS - ANTIGRAVITY CONSTITUTION
 
 > **Tiêu chuẩn Google Antigravity 2026**
