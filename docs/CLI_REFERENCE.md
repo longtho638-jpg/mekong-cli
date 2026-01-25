@@ -1,4 +1,7 @@
-# CC CLI Reference - AI Agent Self-Documentation
+# 🌊 MEKONG-CLI Command Reference - Brain & Muscle Protocol
+
+> **"Đầu óc và cơ bắp - Nghệ thuật chiến tranh số hóa"**
+> Brain (Antigravity) + Muscle (Claude Code CLI) = Invincible Agency
 
 > **AI Agent Guide**: This document enables autonomous command execution without human intervention.
 > All commands, arguments, expected outputs, and error handling patterns are documented for programmatic use.
@@ -9,7 +12,46 @@
 cc <module> <command> [options]
 ```
 
-**Available Modules**: `revenue`, `sales`, `content`, `agent`, `devops`, `client`, `release`, `analytics`, `monitor`
+**Available Modules**: `revenue`, `sales`, `deploy`, `finance`, `content`, `outreach`, `test`, `plan`, `ops`, `bridge`, `setup`, `mcp`, `strategy`
+
+**Core Architecture**:
+- **Entry Point**: `main.py` → `cli/entrypoint.py`
+- **Framework**: Typer + Rich
+- **Engine**: `antigravity.core.*` modules
+
+---
+
+## 🧠 BRAIN & MUSCLE INTEGRATION
+
+### The Protocol
+
+**BRAIN (Antigravity - Mission Control)**:
+- Strategic planning via `implementation_plan.md`
+- Approval authority for architecture decisions
+- Progress monitoring through artifacts
+- Coordination of multi-agent operations
+
+**MUSCLE (Claude Code CLI - Chief Engineer)**:
+- Tactical execution via `cc` commands
+- Real-time operational reports
+- System verification and testing
+- Deployment and infrastructure management
+
+**EYES (Browser Agent)**:
+- Visual UI verification
+- User flow testing
+- Accessibility checks
+
+### Communication Flow
+```
+Antigravity (Plans) → Claude Code CLI (Executes) → Browser Agent (Verifies) → Artifacts (Report)
+```
+
+### Safety Protocol
+1. ✅ **Code changes** → Always run tests (`cc test run`)
+2. ✅ **UI changes** → Request Browser Agent verification
+3. ✅ **Deployment** → Health checks (`cc deploy health`)
+4. ✅ **Reports** → Generate artifacts for Mission Control
 
 ---
 

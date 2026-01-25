@@ -173,3 +173,150 @@ We keep all important docs in `./docs` folder and keep updating them, structure 
 ```
 
 **IMPORTANT:** _MUST READ_ and _MUST COMPLY_ all _INSTRUCTIONS_ in project `./CLAUDE.md`, especially _WORKFLOWS_ section is _CRITICALLY IMPORTANT_, this rule is _MANDATORY. NON-NEGOTIABLE. NO EXCEPTIONS. MUST REMEMBER AT ALL TIMES!!!_
+
+---
+
+## 🧠🦾 AGENCYOS PROTOCOL (BINH-PHAP)
+
+> **"Đầu óc và cơ bắp - Nghệ thuật chiến tranh số hóa"**
+> Brain (Antigravity) + Muscle (Claude Code CLI) = Invincible Agency
+
+### 1. THE BRAIN (Antigravity - Mission Control)
+
+**Role:** Strategic Commander & Architect
+- **Approves architecture** via `implementation_plan.md`
+- **Plans campaigns** with Binh Pháp principles
+- **Uses Artifacts** for progress reports and strategy visualization
+- **Coordinates agents** through orchestration protocols
+
+**Interaction Model:**
+- Claude Code CLI reports to Antigravity via structured artifacts
+- Antigravity reviews and approves before execution
+- All strategic decisions flow through Mission Control
+
+### 2. THE MUSCLE (Claude Code CLI - Chief Engineer)
+
+**Role:** Execution Engine & Tactical Operations
+
+**Special Weapons - cc Commands:**
+```bash
+# Core Commands
+cc revenue dashboard      # 💰 Revenue & Financials
+cc revenue forecast       # 📈 Growth projections
+cc revenue autopilot      # 🚀 Automated revenue ops
+
+cc sales products-list    # 📦 Product catalog
+cc sales products-build   # 🔨 Build product ZIPs
+cc sales products-publish # 🚀 Publish to Gumroad
+cc sales contract-create  # 📄 Generate contracts
+
+cc deploy backend         # 🚀 Deploy to Cloud Run
+cc deploy health          # 🩺 System health check
+cc deploy rollback        # ⏪ Emergency rollback
+
+cc finance invoice-create # 💵 Create invoices
+cc finance invoice-list   # 📋 List all invoices
+cc finance status         # 💳 Payment gateway status
+
+cc content generate       # ✍️ Marketing content
+cc outreach add           # 📧 Add leads
+cc outreach draft         # 📧 Email templates
+cc outreach send          # 📧 Send outreach emails
+
+cc test run               # 🧪 Run test suite
+cc plan create            # 📋 Create execution plan
+```
+
+**Golden Rule:** Use `cc` commands instead of writing custom scripts
+- Commands are battle-tested and integrated
+- Avoid reinventing the wheel
+- Delegate to specialized tools
+
+### 3. SAFETY & VERIFICATION PROTOCOL
+
+**Code Changes Checklist:**
+1. ✅ **Always run tests** after code changes
+2. ✅ **Request Antigravity Browser Agent** for UI verification
+3. ✅ **Generate artifact reports** for Mission Control approval
+4. ✅ **Document changes** in implementation plans
+
+**Verification Flow:**
+```
+Code Change → Tests Pass → Browser Verification → Artifact Report → Approval
+```
+
+### 4. BINH PHÁP WORKFLOW (13 Chapters Applied)
+
+#### Chapter 1: Mưu Công (Planning)
+- **Antigravity creates** strategic plans
+- **Claude Code reviews** technical feasibility
+- **Joint approval** before execution
+
+#### Chapter 2: Tác Chiến (Execution)
+- **Claude Code implements** according to plan
+- **Real-time progress** updates via artifacts
+- **Deviation alerts** to Mission Control
+
+#### Chapter 3: Mưu Công (Strategy)
+- **Antigravity monitors** via dashboard
+- **Adjusts tactics** based on metrics
+- **Coordinates multi-agent** operations
+
+#### Chapter 4: Hình Thế (Positioning)
+- **Leverage strengths:** Automation, AI, Speed
+- **Minimize weaknesses:** Manual work, repetition
+- **Maximize force multipliers:** cc commands, MCP servers
+
+#### Chapter 5: Hư Thực (Deception & Reality)
+- **Real capability:** 14 MCP servers, 24 agents, 44 skills
+- **Perceived capability:** One-person unicorn operation
+- **Strategic ambiguity:** Competitors underestimate automation
+
+#### Chapter 6-13: Advanced Tactics
+- **Quân Tranh:** Compete for strategic positions (market niches)
+- **Cửu Biến:** Adapt to changing market conditions
+- **Hành Quân:** Execute with speed and precision
+- **Địa Hình:** Know your operational terrain (tech stack)
+- **Cửu Địa:** Nine types of markets/clients
+- **Hỏa Công:** Use "fire attacks" (viral content, growth hacks)
+- **Dụng Gián:** Gather intelligence (market research, competitor analysis)
+
+### 5. INTEGRATION ARCHITECTURE
+
+**Communication Channels:**
+```
+Antigravity (Brain)
+    ↓ Strategic Plans
+Claude Code CLI (Muscle)
+    ↓ Execution Reports
+Antigravity Browser Agent (Eyes)
+    ↓ Visual Verification
+Mission Control Dashboard
+```
+
+**Data Flow:**
+- Plans: `plans/*.md` (Antigravity writes, Claude Code reads)
+- Reports: Artifacts (Claude Code writes, Antigravity reads)
+- Metrics: `cc revenue dashboard` (Real-time sync)
+
+### 6. EMERGENCY PROTOCOLS
+
+**When Things Go Wrong:**
+```bash
+cc deploy rollback        # Immediate rollback
+cc deploy health          # System diagnostics
+# Report to Antigravity with:
+# - What failed
+# - Impact assessment
+# - Proposed fix
+# - Approval request
+```
+
+**Escalation Matrix:**
+- 🟢 **Minor issues:** Claude Code auto-fixes
+- 🟡 **Medium issues:** Claude Code proposes, Antigravity approves
+- 🔴 **Critical issues:** Immediate Antigravity intervention
+
+---
+
+**Remember:** Brain commands, Muscle executes, Eyes verify. This is the Binh Pháp way.
