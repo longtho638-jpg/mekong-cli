@@ -7,7 +7,19 @@
 
 ## Active Tasks
 
-<!-- No active tasks -->
+- [ ] **TASK-ASSETS-001**
+    - Description: Prepare AgencyOS free assets for customer sharing
+    - Assigned: Claude Code CLI + Antigravity (parallel)
+    - Status: **running**
+    - Priority: high
+    - Created: 2026-01-25T18:04:00+07:00
+    - Subtasks:
+        - [x] Read constitution.md (MANDATORY)
+        - [x] Check ClaudeKit compliance
+        - [x] Identify free shareable assets in codebase
+        - [x] Create assets catalog/README (FREE_ASSETS_CATALOG.md)
+        - [ ] Package assets for distribution
+        - [ ] Document usage instructions
 
 ---
 
