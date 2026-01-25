@@ -43,3 +43,10 @@ proxy.log
 
 # Archives
 reports/
+
+# Secrets
+.env.local
+.env
+*.env.local
+**/.env.local
+**/.env
