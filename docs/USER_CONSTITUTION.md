@@ -115,43 +115,58 @@ Before executing any task:
 - 👑 **ANH WIN**: ClaudeKit compliance = consistent quality
 - 🏢 **AGENCY WIN**: Updates auto-integrated = competitive edge
 
-## 📜 ĐIỀU 6: TERMINAL SEPARATION MANDATE (BẤT KHẢ XÂM PHẠM)
+## 📜 ĐIỀU 6: SLASH COMMAND + BYPASS MANDATE (BẤT KHẢ XÂM PHẠM)
 
-> **"Claude Code CLI chạy trong VS Code Terminal Tab, INTERACTIVE MODE"**
+> **"Giao việc cho CC CLI PHẢI dùng /command + --dangerously-skip-permissions"**
 
 **QUY TẮC BẤT KHẢ XÂM PHẠM:**
 
-1. **Antigravity (Brain)** = Runs in IDE (Cursor/VS Code)
-2. **Claude Code CLI (Muscle)** = Runs in **VS Code Terminal Tab**, INTERACTIVE MODE
+1. **PHẢI dùng /command** → ClaudeKit agents được ánh xạ
+2. **PHẢI dùng --dangerously-skip-permissions** → Bypass hỏi xác nhận
+3. **Chạy trong VS Code Terminal Tab**
 
-**ĐÚNG CÁCH chạy CC CLI (trong VS Code):**
+**ĐÚNG CÁCH chạy CC CLI:**
 
 ```bash
 # Mở VS Code Terminal tab (Ctrl+` hoặc Cmd+`)
-# Chạy claude interactive:
 cd /path/to/project
-claude  # <-- Interactive mode, prompt hiển thị trong terminal tab
 
-# Gõ task trực tiếp vào prompt CC CLI:
-> Execute plans/tasks/01_frontend_dashboard.md - Đọc file và hoàn thành
+# Chạy với bypass + slash command:
+claude --dangerously-skip-permissions /cook Frontend Dashboard
+claude --dangerously-skip-permissions /delegate "Fix webhook tests"
+claude --dangerously-skip-permissions /build API endpoints
 ```
 
 **SAI CÁCH:**
 
 ```bash
-# KHÔNG chạy với -p flag background
-claude -p "task" &  # ❌ SAI
+# ❌ SAI - Không dùng /command
+claude "Execute plans/tasks/01.md"
 
-# KHÔNG mở Terminal.app bên ngoài
-# ❌ SAI - Dùng VS Code Terminal tab
+# ❌ SAI - Không bypass, CC CLI hỏi confirm không ai trả lời
+claude /cook Frontend
+
+# ❌ SAI - Dùng -p flag background
+claude -p "task" &
 ```
 
 **User cũng làm y hệt:**
 
-- Mở VS Code/Cursor
-- Mở Terminal tab (Ctrl+`)
-- Chạy `claude` interactive
-- Gõ task vào prompt
+```bash
+# User mở VS Code Terminal tab
+cd ~/my-project
+
+# User chạy với bypass + /command
+claude --dangerously-skip-permissions /cook "My Feature"
+```
+
+**Available /commands:**
+
+- `/cook [tính năng]` - Build feature autonomously
+- `/delegate [task]` - Assign persistent task
+- `/build [feature]` - Build and deploy
+- `/ship` - Test, commit, push
+- `/plan [objective]` - Create execution plan
 
 **Default Proxy Configuration:**
 
