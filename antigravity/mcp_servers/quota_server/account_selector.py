@@ -10,7 +10,9 @@ Usage:
     account = selector.get_best_account(model_id="claude-sonnet-4-5-thinking")
 """
 
+import json
 import logging
+import os
 import random
 from dataclasses import dataclass
 from typing import Dict, List, Optional
@@ -48,25 +50,27 @@ class AccountSelector:
         self._load_accounts()
 
     def _load_accounts(self):
-        """Load accounts from config/environment."""
-        # TODO: Load from actual config file or environment
-        # For now, using mock data matching dashboard display
-        self.accounts = [
-            QuotaAccount(
-                email="minhlong.rice@gmail.com",
-                remaining_percent=100.0,
-                model_quotas={
-                    "claude-opus-4-5-thinking": 40.0,
-                    "claude-sonnet-4-5": 40.0,
-                    "claude-sonnet-4-5-thinking": 40.0,
-                    "gemini-3-pro-high": 60.0,
-                    "gemini-3-pro-low": 60.0,
-                    "gemini-3-pro-image": 100.0,
-                },
-                priority=1,  # Primary account
-            ),
-            # Add more accounts as configured
-        ]
+        """Load accounts from config file."""
+        config_path = os.path.expanduser("~/.mekong/quota_accounts.json")
+
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r') as f:
+                    data = json.load(f)
+                    self.accounts = [QuotaAccount(**acc) for acc in data.get('accounts', [])]
+                    logger.info(f"Loaded {len(self.accounts)} accounts from {config_path}")
+            except (json.JSONDecodeError, OSError) as e:
+                logger.error(f"Failed to load accounts from {config_path}: {e}")
+                self.accounts = []
+        else:
+            logger.warning(
+                f"No quota accounts config found at {config_path}. "
+                f"Server will run but account selection will fail. "
+                f"Create config file with structure: "
+                f'{{"accounts": [{{"email": "user@example.com", "remaining_percent": 100.0, '
+                f'"model_quotas": {{}}, "is_active": true, "priority": 1}}]}}'
+            )
+            self.accounts = []
 
     def get_best_account(
         self, model_id: Optional[str] = None, fallback_on_low: bool = True

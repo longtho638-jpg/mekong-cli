@@ -22,6 +22,20 @@ PAYPAL_WEBHOOK_ID=your_webhook_id
 PAYPAL_MODE=live  # or 'sandbox'
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+SECRET_KEY=your_secure_random_string_for_jwt_signing  # REQUIRED
+
+### Quota Server Configuration
+The Quota Server manages Google Cloud accounts for Gemini models. It loads credentials from a local JSON file to prevent hardcoding secrets.
+
+1. **Setup Configuration File:**
+   ```bash
+   # Copy example to the required location
+   cp ~/.mekong/quota_accounts.json.example ~/.mekong/quota_accounts.json
+   ```
+
+2. **Configure Accounts:**
+   Edit `~/.mekong/quota_accounts.json` to add your Google Cloud credentials (cookies).
+   *Note: This file contains sensitive credentials and is excluded from git.*
 ```
 
 ### Frontend (.env.production)

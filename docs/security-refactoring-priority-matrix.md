@@ -43,10 +43,10 @@ This security refactoring plan addresses critical vulnerabilities in the mekong-
 
 **Timeline: Immediate**
 
-- Remove hardcoded secrets from `.env`
-- Implement webhook signature verification
-- Secure Supabase client initialization
-- Create proper secret management
+- [x] Remove hardcoded secrets from `.env` (Implemented external config: `~/.mekong/quota_accounts.json`)
+- [ ] Implement webhook signature verification
+- [ ] Secure Supabase client initialization
+- [x] Create proper secret management (Enforced `SECRET_KEY` env var)
 
 **Owner: Security Lead**
 **Rollback Plan:** Git revert, environment variable restoration
