@@ -13,8 +13,8 @@ export async function createClient() {
   }
 
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error(
-      'Missing required Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set'
+    console.warn(
+      '⚠️  Missing required Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY should be set'
     )
   }
 

@@ -6,6 +6,11 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 const nextConfig = {
     reactStrictMode: true,
     output: 'standalone',
+    experimental: {
+        // Disable static generation for API routes during build
+        workerThreads: false,
+        cpus: 1
+    }
 };
 
 export default withNextIntl(nextConfig);

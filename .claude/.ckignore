@@ -22,3 +22,5 @@ target
 .git
 coverage
 !build
+!.next
+!dist

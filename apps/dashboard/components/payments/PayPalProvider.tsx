@@ -16,7 +16,7 @@ interface PayPalProviderProps {
 
 // PayPal initial options
 const initialOptions = {
-  'client-id': process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
+  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
   currency: 'USD',
   intent: 'capture',
   // Enable funding sources

@@ -150,12 +150,10 @@ export function PayPalCheckout({
  * PayPal Payment Card - Wrapper for billing dashboard integration
  */
 interface PayPalPaymentCardProps {
-  amount: number
-  currency?: string
-  priceId?: string
   tier: 'starter' | 'pro' | 'franchise' | 'enterprise'
   customerEmail?: string
   tenantId?: string
+  currency?: string
 }
 
 const TIER_PRICING: Record<string, { amount: number; planId: string | undefined }> = {

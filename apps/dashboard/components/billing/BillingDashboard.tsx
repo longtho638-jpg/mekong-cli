@@ -340,7 +340,7 @@ export function BillingDashboard({
       )}
 
       {/* Additional Info */}
-      <AgencyCard variant="outlined" className="p-4">
+      <AgencyCard variant="glass" className="p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-white mb-1">Subscription Management</p>
