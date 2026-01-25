@@ -437,16 +437,22 @@ async function main() {
       const usageCachePath = path.join(os.tmpdir(), 'ck-usage-limits-cache.json');
       if (fs.existsSync(usageCachePath)) {
         const cache = JSON.parse(fs.readFileSync(usageCachePath, 'utf8'));
-        const fiveHour = cache.data?.five_hour;
-        usagePercent = fiveHour?.utilization ?? null;
-        const resetAt = fiveHour?.resets_at;
-        if (resetAt) {
-          const resetTime = new Date(resetAt);
-          const remaining = Math.floor(resetTime.getTime() / 1000) - Math.floor(Date.now() / 1000);
-          if (remaining > 0 && remaining < 18000) {
-            const rh = Math.floor(remaining / 3600);
-            const rm = Math.floor((remaining % 3600) / 60);
-            sessionText = `${rh}h ${rm}m until reset`;
+
+        // Check status flag for fallback (non-OAuth scenarios)
+        if (cache.status === 'unavailable') {
+          sessionText = 'N/A';
+        } else {
+          const fiveHour = cache.data?.five_hour;
+          usagePercent = fiveHour?.utilization ?? null;
+          const resetAt = fiveHour?.resets_at;
+          if (resetAt) {
+            const resetTime = new Date(resetAt);
+            const remaining = Math.floor(resetTime.getTime() / 1000) - Math.floor(Date.now() / 1000);
+            if (remaining > 0 && remaining < 18000) {
+              const rh = Math.floor(remaining / 3600);
+              const rm = Math.floor((remaining % 3600) / 60);
+              sessionText = `${rh}h ${rm}m until reset`;
+            }
           }
         }
       }
