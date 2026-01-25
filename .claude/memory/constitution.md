@@ -114,28 +114,32 @@ Before executing any task:
 
 - 👑 **ANH WIN**: ClaudeKit compliance = consistent quality
 - 🏢 **AGENCY WIN**: Updates auto-integrated = competitive edge
-- 🚀 **CLIENT WIN**: Best practices always applied
-
----
 
 ## 📜 ĐIỀU 6: TERMINAL SEPARATION MANDATE (BẤT KHẢ XÂM PHẠM)
 
-> **"Claude Code CLI LUÔN chạy ở Terminal riêng"**
+> **"Claude Code CLI LUÔN chạy ở Terminal riêng, INTERACTIVE MODE"**
 
 **QUY TẮC BẤT KHẢ XÂM PHẠM:**
 
 1. **Antigravity (Brain)** = IDE/Editor terminal
-2. **Claude Code CLI (Muscle)** = SEPARATE dedicated terminal
+2. **Claude Code CLI (Muscle)** = SEPARATE dedicated terminal, **INTERACTIVE MODE**
 
-**Khi giao việc cho CC CLI:**
+**ĐÚNG CÁCH chạy CC CLI:**
 
 ```bash
-# ĐÚNG: Mở terminal MỚI, chạy CC CLI riêng
-# Terminal 2:
+# Terminal 2 (RIÊNG):
 cd /path/to/project
-claude --dangerously-skip-permissions -p "Task description"
+claude  # <-- Interactive mode, KHÔNG dùng -p flag
 
-# SAI: Chạy CC CLI trong cùng terminal với Antigravity
+# Sau đó gõ task trực tiếp vào prompt:
+> Execute plans/tasks/01_frontend_dashboard.md - Đọc file và hoàn thành
+```
+
+**SAI CÁCH:**
+
+```bash
+# KHÔNG chạy background với -p
+claude --dangerously-skip-permissions -p "task" &  # ❌ SAI
 ```
 
 **Default Proxy Configuration:**
@@ -144,7 +148,7 @@ claude --dangerously-skip-permissions -p "Task description"
 # Khi install proxy, mặc định luôn là:
 antigravity-claude-proxy init --port 8080 --model gemini-2.0-flash
 antigravity-claude-proxy start  # Chạy daemon background
-# CC CLI chạy ở terminal riêng, kết nối qua localhost:8080
+# CC CLI chạy ở terminal riêng, INTERACTIVE mode
 ```
 
 **Vi phạm ĐIỀU 6:** KHÔNG ĐƯỢC PHÉP - Tất cả agent phải tuân thủ
