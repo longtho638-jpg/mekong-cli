@@ -117,37 +117,47 @@ Before executing any task:
 
 ## 📜 ĐIỀU 6: TERMINAL SEPARATION MANDATE (BẤT KHẢ XÂM PHẠM)
 
-> **"Claude Code CLI LUÔN chạy ở Terminal riêng, INTERACTIVE MODE"**
+> **"Claude Code CLI chạy trong VS Code Terminal Tab, INTERACTIVE MODE"**
 
 **QUY TẮC BẤT KHẢ XÂM PHẠM:**
 
-1. **Antigravity (Brain)** = IDE/Editor terminal
-2. **Claude Code CLI (Muscle)** = SEPARATE dedicated terminal, **INTERACTIVE MODE**
+1. **Antigravity (Brain)** = Runs in IDE (Cursor/VS Code)
+2. **Claude Code CLI (Muscle)** = Runs in **VS Code Terminal Tab**, INTERACTIVE MODE
 
-**ĐÚNG CÁCH chạy CC CLI:**
+**ĐÚNG CÁCH chạy CC CLI (trong VS Code):**
 
 ```bash
-# Terminal 2 (RIÊNG):
+# Mở VS Code Terminal tab (Ctrl+` hoặc Cmd+`)
+# Chạy claude interactive:
 cd /path/to/project
-claude  # <-- Interactive mode, KHÔNG dùng -p flag
+claude  # <-- Interactive mode, prompt hiển thị trong terminal tab
 
-# Sau đó gõ task trực tiếp vào prompt:
+# Gõ task trực tiếp vào prompt CC CLI:
 > Execute plans/tasks/01_frontend_dashboard.md - Đọc file và hoàn thành
 ```
 
 **SAI CÁCH:**
 
 ```bash
-# KHÔNG chạy background với -p
-claude --dangerously-skip-permissions -p "task" &  # ❌ SAI
+# KHÔNG chạy với -p flag background
+claude -p "task" &  # ❌ SAI
+
+# KHÔNG mở Terminal.app bên ngoài
+# ❌ SAI - Dùng VS Code Terminal tab
 ```
+
+**User cũng làm y hệt:**
+
+- Mở VS Code/Cursor
+- Mở Terminal tab (Ctrl+`)
+- Chạy `claude` interactive
+- Gõ task vào prompt
 
 **Default Proxy Configuration:**
 
 ```bash
-# Khi install proxy, mặc định luôn là:
 antigravity-claude-proxy init --port 8080 --model gemini-2.0-flash
-antigravity-claude-proxy start  # Chạy daemon background
+antigravity-claude-proxy start  # Daemon background
 # CC CLI chạy ở terminal riêng, INTERACTIVE mode
 ```
 
