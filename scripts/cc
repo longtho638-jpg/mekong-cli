@@ -6,10 +6,21 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PYTHON="${PYTHON:-python3}"
-VERSION="0.2.0"
 
-# Module registry
+# Dynamic version from package.json (Single Source of Truth)
+get_version() {
+    local pkg_file="$PROJECT_ROOT/package.json"
+    if [[ -f "$pkg_file" ]]; then
+        grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$pkg_file" | head -1 | sed 's/.*"\([^"]*\)"$/\1/'
+    else
+        echo "2.0.0"  # Fallback
+    fi
+}
+VERSION=$(get_version)
+
+# Module registry (9 modules)
 declare -A MODULES=(
     ["revenue"]="cc_revenue.py"
     ["agent"]="cc_agent.py"
@@ -17,6 +28,9 @@ declare -A MODULES=(
     ["client"]="cc_client.py"
     ["release"]="cc_release.py"
     ["analytics"]="cc_analytics.py"
+    ["sales"]="cc_sales.py"
+    ["content"]="cc_content.py"
+    ["monitor"]="cc_monitor.py"
 )
 
 # Help text
@@ -36,6 +50,9 @@ Available Modules:
   client      Client management, CRM, project tracking
   release     Release management, versioning, changelog generation
   analytics   Analytics dashboard, metrics, funnel, cohort analysis
+  sales       Sales pipeline, leads, forecasting, CRM-lite
+  content     AI content generation, scheduling, publishing
+  monitor     System monitoring, health checks, alerts
 
 Examples:
   cc revenue forecast --mrr 10000 --growth 0.15 --months 12
