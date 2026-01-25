@@ -74,11 +74,29 @@ function shouldFetch(isUserPrompt = false) {
 }
 
 /**
+ * Write cache with status (available or unavailable)
+ */
+function writeCache(status, data = null) {
+	fs.writeFileSync(
+		USAGE_CACHE_FILE,
+		JSON.stringify({
+			timestamp: Date.now(),
+			status,
+			data,
+		})
+	);
+}
+
+/**
  * Fetch usage limits from Anthropic OAuth API and write to cache
+ * Always writes status to cache (available or unavailable) for statusline fallback
  */
 async function fetchAndCacheUsageLimits() {
 	const token = getClaudeCredentials();
-	if (!token) return false;
+	if (!token) {
+		writeCache("unavailable");
+		return false;
+	}
 
 	try {
 		const response = await fetch("https://api.anthropic.com/api/oauth/usage", {
@@ -92,21 +110,16 @@ async function fetchAndCacheUsageLimits() {
 			},
 		});
 
-		if (!response.ok) return false;
+		if (!response.ok) {
+			writeCache("unavailable");
+			return false;
+		}
 
 		const data = await response.json();
-
-		// Write cache
-		fs.writeFileSync(
-			USAGE_CACHE_FILE,
-			JSON.stringify({
-				timestamp: Date.now(),
-				data,
-			})
-		);
-
+		writeCache("available", data);
 		return true;
 	} catch {
+		writeCache("unavailable");
 		return false;
 	}
 }
