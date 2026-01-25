@@ -16,6 +16,7 @@ declare -A MODULES=(
     ["devops"]="cc_devops.py"
     ["client"]="cc_client.py"
     ["release"]="cc_release.py"
+    ["analytics"]="cc_analytics.py"
 )
 
 # Help text
@@ -34,6 +35,7 @@ Available Modules:
   devops      DevOps operations, deployment, infrastructure
   client      Client management, CRM, project tracking
   release     Release management, versioning, changelog generation
+  analytics   Analytics dashboard, metrics, funnel, cohort analysis
 
 Examples:
   cc revenue forecast --mrr 10000 --growth 0.15 --months 12
@@ -41,6 +43,10 @@ Examples:
   cc devops deploy --env production --service api
   cc client list --status active
   cc release bump --type minor --commit
+  cc analytics dashboard
+  cc analytics funnel
+  cc analytics cohort --months 6
+  cc analytics realtime --interval 2
 
 Get module-specific help:
   cc revenue --help
@@ -48,6 +54,7 @@ Get module-specific help:
   cc devops --help
   cc client --help
   cc release --help
+  cc analytics --help
 
 Global Options:
   --help      Show this help message
