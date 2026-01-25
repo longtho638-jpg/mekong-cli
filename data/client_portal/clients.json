@@ -106,5 +106,17 @@
     "notes": "",
     "monthly_retainer": 2000.0,
     "total_spent": 0.0
+  },
+  "CLI-44ACDC37": {
+    "id": "CLI-44ACDC37",
+    "name": "Test Client",
+    "email": "test@example.com",
+    "company": "Test LLC",
+    "status": "active",
+    "created_at": "2026-01-25T07:09:21.533873",
+    "portal_code": "5719FA79C945",
+    "notes": "",
+    "monthly_retainer": 3000.0,
+    "total_spent": 0.0
   }
 }
