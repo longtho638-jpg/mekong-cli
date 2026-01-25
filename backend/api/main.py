@@ -61,6 +61,9 @@ from backend.api.routers import (
 from backend.api.routers import (
     health as health_router,  # Health check & monitoring
 )
+from backend.api.routers import (
+    paypal_checkout,  # PayPal payment integration
+)
 from backend.api.routers.router import router as hybrid_router
 from backend.websocket.routes import router as websocket_router
 
@@ -112,6 +115,9 @@ app.include_router(kanban.router)
 app.include_router(dashboard_router.router)
 app.include_router(license_router.router)
 app.include_router(team_router.router)
+
+# Payment Integration
+app.include_router(paypal_checkout.router)
 
 # Utility & Integration
 app.include_router(health_router.router)  # Health check & monitoring (first for priority)

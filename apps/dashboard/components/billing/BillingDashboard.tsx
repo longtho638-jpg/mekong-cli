@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { AgencyCard } from '@/components/ui/agency-card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { PayPalPaymentCard } from './PayPalCheckout'
 
 /**
  * Billing Dashboard Component
@@ -328,6 +329,15 @@ export function BillingDashboard({
           </AgencyCard>
         </motion.div>
       </div>
+
+      {/* PayPal Payment Card - Show upgrade option for non-enterprise tiers */}
+      {data.subscription_tier !== 'enterprise' && (
+        <PayPalPaymentCard
+          tier={data.subscription_tier === 'free' ? 'starter' : 'pro'}
+          customerEmail={data.stripe_customer_id || undefined}
+          tenantId={data.stripe_customer_id || undefined}
+        />
+      )}
 
       {/* Additional Info */}
       <AgencyCard variant="outlined" className="p-4">
