@@ -37,8 +37,8 @@ interface PayPalCheckoutProps {
   className?: string
 }
 
-// API URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+// API URL - use Next.js API routes
+const API_URL = '/api'
 
 // PayPal SDK v6 URL
 const PAYPAL_SDK_URL =
@@ -94,15 +94,15 @@ export function PayPalCheckout({
 
   // Create PayPal order via backend
   const createOrder = useCallback(async () => {
-    const response = await fetch(`${API_URL}/payments/paypal/create-order`, {
+    const response = await fetch(`${API_URL}/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: parseFloat(amount || '0'),
         currency,
         description,
-        customer_email: customerEmail,
-        tenant_id: tenantId,
+        customerEmail,
+        tenantId,
       }),
     })
 

@@ -95,9 +95,10 @@ export default function PricingPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tier: tierId,
           amount: price,
-          billingCycle: 'yearly',
+          currency: 'USD',
+          description: `AgencyOS ${tierId.charAt(0).toUpperCase() + tierId.slice(1)} Plan`,
+          plan: tierId,
         }),
       })
 
