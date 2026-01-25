@@ -24,4 +24,14 @@ if [ -f "apps/dashboard/tsconfig.json" ]; then
     cd ../..
 fi
 
+# Critical payment tests (fast subset only)
+if [ -d "backend/tests/unit" ]; then
+    echo "   → Critical payment tests..."
+    pytest backend/tests/unit/test_payment_service.py::TestCreateCheckoutSession \
+           -x --tb=short --no-cov -q 2>/dev/null || {
+        echo "❌ Critical payment tests failed. DO NOT COMMIT."
+        exit 1
+    }
+fi
+
 echo "✅ Pre-commit passed"
