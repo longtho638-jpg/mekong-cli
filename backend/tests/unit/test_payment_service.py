@@ -217,7 +217,7 @@ class TestWebhookVerification:
             "resource": {"id": "ORDER123"}
         }
 
-        payment_service.paypal.webhooks.verify = Mock(
+        payment_service.paypal.webhooks.verify_signature = Mock(
             return_value={"verification_status": "SUCCESS"}
         )
 
@@ -244,7 +244,7 @@ class TestWebhookVerification:
         }
         event_data = {"event_type": "PAYMENT.CAPTURE.COMPLETED"}
 
-        payment_service.paypal.webhooks.verify = Mock(
+        payment_service.paypal.webhooks.verify_signature = Mock(
             return_value={"verification_status": "FAILURE"}
         )
 

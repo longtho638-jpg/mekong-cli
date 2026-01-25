@@ -27,11 +27,24 @@ fi
 # Critical payment tests (fast subset only)
 if [ -d "backend/tests/unit" ]; then
     echo "   → Critical payment tests..."
-    pytest backend/tests/unit/test_payment_service.py::TestCreateCheckoutSession \
-           -x --tb=short --no-cov -q 2>/dev/null || {
-        echo "❌ Critical payment tests failed. DO NOT COMMIT."
-        exit 1
-    }
+
+    # Determine pytest command
+    if [ -f "backend/.venv/bin/pytest" ]; then
+        PYTEST_CMD="backend/.venv/bin/pytest"
+    elif command -v pytest &> /dev/null; then
+        PYTEST_CMD="pytest"
+    else
+        echo "⚠️  pytest not found. Skipping payment tests."
+        PYTEST_CMD=""
+    fi
+
+    if [ -n "$PYTEST_CMD" ]; then
+        $PYTEST_CMD backend/tests/unit/test_payment_service.py::TestCreateCheckoutSession \
+               -x --tb=short --no-cov -q 2>/dev/null || {
+            echo "❌ Critical payment tests failed. DO NOT COMMIT."
+            exit 1
+        }
+    fi
 fi
 
 echo "✅ Pre-commit passed"

@@ -87,6 +87,9 @@ class PaymentService:
                 )
 
             # One-time payment (Order)
+            if amount <= 0:
+                raise ValueError("Amount must be positive")
+
             return self.paypal.orders.create(
                 amount=amount,
                 currency=currency,
@@ -126,12 +129,22 @@ class PaymentService:
                 except Exception:
                     raise ValueError("Invalid PayPal webhook body")
 
+            # Extract headers with case-insensitivity fallback
+            transmission_id = headers.get("paypal-transmission-id") or headers.get("PAYPAL-TRANSMISSION-ID")
+            transmission_time = headers.get("paypal-transmission-time") or headers.get("PAYPAL-TRANSMISSION-TIME")
+            cert_url = headers.get("paypal-cert-url") or headers.get("PAYPAL-CERT-URL")
+            auth_algo = headers.get("paypal-auth-algo") or headers.get("PAYPAL-AUTH-ALGO")
+            transmission_sig = headers.get("paypal-transmission-sig") or headers.get("PAYPAL-TRANSMISSION-SIG")
+
+            if not all([transmission_id, transmission_time, cert_url, auth_algo, transmission_sig]):
+                raise ValueError("Missing required PayPal webhook headers")
+
             return self.paypal.webhooks.verify_signature(
-                transmission_id=headers.get("paypal-transmission-id") or headers.get("PAYPAL-TRANSMISSION-ID"),
-                transmission_time=headers.get("paypal-transmission-time") or headers.get("PAYPAL-TRANSMISSION-TIME"),
-                cert_url=headers.get("paypal-cert-url") or headers.get("PAYPAL-CERT-URL"),
-                auth_algo=headers.get("paypal-auth-algo") or headers.get("PAYPAL-AUTH-ALGO"),
-                transmission_sig=headers.get("paypal-transmission-sig") or headers.get("PAYPAL-TRANSMISSION-SIG"),
+                transmission_id=transmission_id,
+                transmission_time=transmission_time,
+                cert_url=cert_url,
+                auth_algo=auth_algo,
+                transmission_sig=transmission_sig,
                 webhook_id=webhook_secret, # For PayPal, the "secret" is the Webhook ID
                 webhook_event=body
             )
