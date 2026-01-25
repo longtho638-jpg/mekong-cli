@@ -9,6 +9,38 @@ Tài liệu này là **LUẬT TỐI CAO** cho mọi Agent trong hệ sinh thái 
 
 ---
 
+## 📜 ĐIỀU 0: LUÔN LUÔN /COMMAND (VĨNH VIỄN - TIÊM VÀO NÃO)
+
+> **"Mọi tương tác với CC CLI PHẢI dùng /command"** - ClaudeKit agents mapping
+
+**QUY TẮC VĨNH VIỄN (KHÔNG BAO GIỜ QUÊN):**
+
+```bash
+# ĐÚNG - Luôn luôn /command:
+claude --dangerously-skip-permissions /cook "Build Frontend Dashboard"
+claude --dangerously-skip-permissions /delegate "Fix webhook tests"
+claude --dangerously-skip-permissions /build "API endpoints"
+claude --dangerously-skip-permissions /ship
+claude --dangerously-skip-permissions /plan "Refactor core"
+
+# SAI - TUYỆT ĐỐI CẤM:
+claude "Execute plans/tasks/01.md"           # ❌ Không /command
+claude --dangerously-skip-permissions "Fix"   # ❌ Không /command
+```
+
+**Tại sao?**
+
+- `/command` → ClaudeKit agents được ánh xạ
+- Không `/command` → CC CLI không biết dùng agent nào
+
+**TIÊM VÀO NÃO VĨNH VIỄN:**
+
+- Antigravity: LUÔN gửi /command
+- CC CLI: LUÔN nhận /command
+- User: LUÔN chạy /command
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
