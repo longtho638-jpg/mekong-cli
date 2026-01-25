@@ -6,13 +6,14 @@ Manages client onboarding, portal access, invoicing, and status tracking.
 
 import json
 import secrets
-import typer
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
+
+import typer
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
+from rich.table import Table
 
 app = typer.Typer(help="Client Management CLI for mekong-cli")
 console = Console()

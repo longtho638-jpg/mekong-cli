@@ -376,7 +376,7 @@ class CCAgentCLI:
 
             agent = self.spawner.spawn(agent_type, metadata)
 
-            print(f"✅ Agent spawned successfully")
+            print("✅ Agent spawned successfully")
             print(f"   ID: {agent.id}")
             print(f"   Type: {agent.type.value}")
             print(f"   Status: {agent.status.value}")
@@ -419,7 +419,7 @@ class CCAgentCLI:
             config_file = Path(args.config)
             agents = self.deployer.deploy(config_file)
 
-            print(f"✅ Swarm deployed successfully")
+            print("✅ Swarm deployed successfully")
             print(f"   Agents: {len(agents)}")
 
             for agent in agents:

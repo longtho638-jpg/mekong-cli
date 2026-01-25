@@ -152,7 +152,7 @@ def deploy_preview(
             console.print(f"[red]❌ Error: {str(e)}[/red]")
             raise typer.Exit(1)
 
-    console.print(f"\n[green]✅ Preview deployment successful![/green]")
+    console.print("\n[green]✅ Preview deployment successful![/green]")
     console.print(f"[cyan]Service URL:[/cyan] https://{service}-preview-{region}.run.app")
 
 
@@ -189,7 +189,7 @@ def deploy_production(
     Example:
         cc devops deploy production --service backend --confirm
     """
-    console.print(f"\n[bold red]⚠️  PRODUCTION DEPLOYMENT[/bold red]\n")
+    console.print("\n[bold red]⚠️  PRODUCTION DEPLOYMENT[/bold red]\n")
     console.print(f"Service: [cyan]{service}[/cyan]")
     console.print(f"Region: [cyan]{region}[/cyan]\n")
 
@@ -302,7 +302,7 @@ def deploy_production(
             console.print(f"[red]❌ Deployment failed: {e.stderr if e.stderr else str(e)}[/red]")
             raise typer.Exit(1)
 
-    console.print(f"\n[green]✅ Production deployment successful![/green]")
+    console.print("\n[green]✅ Production deployment successful![/green]")
     console.print(f"[cyan]Service URL:[/cyan] https://{service}-{region}.run.app")
     console.print(f"[cyan]Backup:[/cyan] {metadata.backup_path}")
 
@@ -336,7 +336,7 @@ def monitor_health(
     Example:
         cc devops monitor health --refresh 10
     """
-    console.print(f"\n[bold cyan]📊 Real-time Health Dashboard[/bold cyan]")
+    console.print("\n[bold cyan]📊 Real-time Health Dashboard[/bold cyan]")
     console.print(f"Refresh: {refresh}s | Press Ctrl+C to exit\n")
 
     def generate_health_table():
@@ -466,7 +466,7 @@ def backup_create(
     Example:
         cc devops backup create --verify
     """
-    console.print(f"\n[bold cyan]💾 Creating Backup[/bold cyan]\n")
+    console.print("\n[bold cyan]💾 Creating Backup[/bold cyan]\n")
 
     config = BackupConfig(
         database_path=database,
@@ -505,7 +505,7 @@ def backup_create(
     table.add_row("Verified", "✅" if metadata.verified else "❌")
 
     console.print(table)
-    console.print(f"\n[green]✅ Backup created successfully![/green]")
+    console.print("\n[green]✅ Backup created successfully![/green]")
 
 
 @backup_app.command("restore")
@@ -530,7 +530,7 @@ def backup_restore(
     Example:
         cc devops backup restore ./backups/backup_20250125_120000.json
     """
-    console.print(f"\n[bold red]⚠️  DATABASE RESTORE[/bold red]\n")
+    console.print("\n[bold red]⚠️  DATABASE RESTORE[/bold red]\n")
     console.print(f"Backup: [cyan]{backup_path}[/cyan]\n")
 
     # Safety confirmation
@@ -559,7 +559,7 @@ def backup_restore(
 
         progress.update(task, description="✅ Restore complete!")
 
-    console.print(f"\n[green]✅ Database restored successfully![/green]")
+    console.print("\n[green]✅ Database restored successfully![/green]")
 
 
 @backup_app.command("list")
@@ -572,7 +572,7 @@ def backup_list():
     Example:
         cc devops backup list
     """
-    console.print(f"\n[bold cyan]📋 Available Backups[/bold cyan]\n")
+    console.print("\n[bold cyan]📋 Available Backups[/bold cyan]\n")
 
     service = BackupService()
     backups = service.list_backups()

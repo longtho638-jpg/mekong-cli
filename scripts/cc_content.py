@@ -4,13 +4,13 @@ CC CONTENT - Content automation CLI with AI-powered features
 Content calendar, AI drafting, multi-platform publishing, and scheduling
 """
 
+import argparse
 import json
 import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
-import argparse
 
 
 class ContentDB:
@@ -344,8 +344,8 @@ def cmd_draft(args, db: ContentDB, ai: AIContentGenerator):
 
     print(f"✅ Draft saved with ID: {content_item['id']}")
     print(f"📊 Word count: {content_item['metadata']['word_count']}")
-    print(f"\nNext steps:")
-    print(f"  - Review and edit the draft")
+    print("\nNext steps:")
+    print("  - Review and edit the draft")
     print(f"  - Schedule: cc content schedule {content_item['id']} 'YYYY-MM-DD HH:MM'")
     print(f"  - Publish: cc content publish {content_item['id']} --platforms twitter,linkedin")
 
@@ -369,9 +369,9 @@ def cmd_publish(args, db: ContentDB):
         print(f"  {platform}: {status}")
 
     if all(results.values()):
-        print(f"\n🎉 Content successfully published to all platforms!")
+        print("\n🎉 Content successfully published to all platforms!")
     else:
-        print(f"\n⚠️  Some platforms failed. Check platform configuration.")
+        print("\n⚠️  Some platforms failed. Check platform configuration.")
 
 
 def cmd_schedule(args, db: ContentDB):
@@ -390,11 +390,11 @@ def cmd_schedule(args, db: ContentDB):
 
         print(f"✅ Scheduled: {content['topic']}")
         print(f"📅 Date: {scheduled_date.strftime('%Y-%m-%d %H:%M')}")
-        print(f"\nContent will be automatically published at the scheduled time.")
+        print("\nContent will be automatically published at the scheduled time.")
 
     except ValueError:
-        print(f"❌ Invalid date format. Use: YYYY-MM-DD HH:MM")
-        print(f"   Example: 2026-01-26 10:00")
+        print("❌ Invalid date format. Use: YYYY-MM-DD HH:MM")
+        print("   Example: 2026-01-26 10:00")
 
 
 def cmd_list(args, db: ContentDB):

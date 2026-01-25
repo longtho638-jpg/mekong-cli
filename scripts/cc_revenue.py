@@ -191,7 +191,7 @@ def affiliates(
         console.print("[red]Error: Status must be paid, pending, or all[/red]")
         raise typer.Exit(1)
 
-    console.print(f"\n[bold cyan]🤝 Affiliate Commission Report[/bold cyan]")
+    console.print("\n[bold cyan]🤝 Affiliate Commission Report[/bold cyan]")
     if status != "all":
         console.print(f"[dim]Filtered by: {status.upper()}[/dim]\n")
     else:
@@ -386,7 +386,7 @@ def export(
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output = f"revenue_export_{period}_{timestamp}.csv"
 
-    console.print(f"\n[bold cyan]📤 Exporting Revenue Data[/bold cyan]")
+    console.print("\n[bold cyan]📤 Exporting Revenue Data[/bold cyan]")
     console.print(f"[dim]Period: {period.title()}[/dim]")
     console.print(f"[dim]Output: {output}[/dim]\n")
 

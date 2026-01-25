@@ -25,6 +25,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+
 # ANSI color codes for terminal output
 class Colors:
     RESET = "\033[0m"
@@ -223,7 +224,7 @@ class ReleaseManager:
 
     def build_docker_image(self, version: str, tag_latest: bool = False):
         """Build Docker image"""
-        self.log(f"🐳 Building Docker image...", "info")
+        self.log("🐳 Building Docker image...", "info")
 
         if not self.dockerfile.exists():
             self.log("  ⚠️  Dockerfile not found, skipping Docker build", "warning")
@@ -241,7 +242,7 @@ class ReleaseManager:
 
         # Tag as latest if requested
         if tag_latest:
-            self.log(f"  Tagging as latest...", "info")
+            self.log("  Tagging as latest...", "info")
             self.run_command([
                 "docker", "tag",
                 f"{image_name}:{version}",
@@ -285,7 +286,7 @@ class ReleaseManager:
             self.log(f"  Pushing {image_name}:latest...", "info")
             self.run_command(["docker", "push", f"{image_name}:latest"])
 
-        self.log(f"  ✅ Docker image published", "success")
+        self.log("  ✅ Docker image published", "success")
 
     def publish_pypi_package(self, test: bool = False):
         """Publish Python package to PyPI or TestPyPI"""
@@ -302,7 +303,7 @@ class ReleaseManager:
             ])
             self.log(f"  ✅ Published to {'TestPyPI' if test else 'PyPI'}", "success")
         except Exception as e:
-            self.log(f"  ⚠️  Twine not installed. Install with: pip install twine", "warning")
+            self.log("  ⚠️  Twine not installed. Install with: pip install twine", "warning")
             self.log(f"  Error: {e}", "error")
 
     def deploy_to_environment(self, env: str, version: Optional[str] = None):
@@ -346,7 +347,7 @@ class ReleaseManager:
             self.run_command(["bash", str(deployment_script), version])
         else:
             self.log(f"  ⚠️  No deployment script found: {deployment_script}", "warning")
-            self.log(f"  💡 Create a deployment script for automated deployments", "info")
+            self.log("  💡 Create a deployment script for automated deployments", "info")
 
         self.log(f"  ✅ Deployment to {env} initiated", "success")
 
@@ -387,7 +388,7 @@ class ReleaseManager:
         # Redeploy previous version
         version = previous_tag.lstrip("v")
         self.log(f"  ✅ Rolled back to {previous_tag}", "success")
-        self.log(f"  💡 Run 'cc release deploy production' to deploy this version", "info")
+        self.log("  💡 Run 'cc release deploy production' to deploy this version", "info")
 
 
 def main():
@@ -468,11 +469,11 @@ Examples:
                 manager.create_git_tag(args.version, f"Release v{args.version}")
 
             manager.log(f"\n✅ Release v{args.version} created!", "success")
-            manager.log(f"💡 Next steps:", "info")
+            manager.log("💡 Next steps:", "info")
             manager.log(f"   1. Review changes: git show v{args.version}", "info")
-            manager.log(f"   2. Push to remote: git push && git push --tags", "info")
-            manager.log(f"   3. Build artifacts: cc release build", "info")
-            manager.log(f"   4. Publish: cc release publish", "info")
+            manager.log("   2. Push to remote: git push && git push --tags", "info")
+            manager.log("   3. Build artifacts: cc release build", "info")
+            manager.log("   4. Publish: cc release publish", "info")
 
         elif args.command == "build":
             manager.log("🔨 Building release artifacts...", "header")

@@ -4,13 +4,13 @@ CC SALES - Sales automation CLI for one-person agencies
 CRM-lite with pipeline management, lead tracking, and forecasting
 """
 
+import argparse
 import json
 import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
-import argparse
 
 
 class SalesDB:
@@ -141,7 +141,7 @@ class SalesCLI:
             print(f"  Value: ${value:,.0f}")
 
             if leads and stage_key not in ["closed-won", "closed-lost"]:
-                print(f"  Leads:")
+                print("  Leads:")
                 for lead in leads[:5]:  # Show top 5
                     days_ago = (datetime.now() - datetime.fromisoformat(lead["last_contact"])).days
                     print(f"    • {lead['name']} ({lead['company']}) - ${lead['value']:,.0f} - {days_ago}d ago")
@@ -272,7 +272,7 @@ class SalesCLI:
                  if l["stage"] not in ["closed-won", "closed-lost"]]
         pipeline_value = sum(l["value"] for l in active)
 
-        print(f"\n📊 Pipeline Status:")
+        print("\n📊 Pipeline Status:")
         print(f"   Active Leads: {len(active)}")
         print(f"   Total Value: ${pipeline_value:,.0f}")
         print()

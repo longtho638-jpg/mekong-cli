@@ -4,22 +4,22 @@ CC Analytics CLI - Production-ready analytics dashboard
 Beautiful terminal UI with Rich library
 """
 
-import sys
 import csv
-import time
 import random
+import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import click
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.live import Live
-from rich.layout import Layout
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
+from rich.console import Console
+from rich.layout import Layout
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.table import Table
 from rich.text import Text
 
 console = Console()

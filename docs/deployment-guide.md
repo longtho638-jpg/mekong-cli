@@ -1,4 +1,85 @@
-# Deployment Guide
+# AgencyOS - Deployment Guide
+
+**Version:** 5.1.1
+**Last Updated:** 2026-01-25
+
+## Prerequisites
+
+- Google Cloud account (for Cloud Run)
+- Vercel account (for frontend)
+- Supabase account (for database)
+- PayPal/Stripe accounts (for payments)
+
+## Environment Setup
+
+### Backend (.env)
+```bash
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key
+PAYPAL_CLIENT_ID=your_client_id
+PAYPAL_CLIENT_SECRET=your_secret
+PAYPAL_WEBHOOK_ID=your_webhook_id
+PAYPAL_MODE=live  # or 'sandbox'
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+### Frontend (.env.production)
+```bash
+NEXT_PUBLIC_API_URL=https://api.agencyos.network
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+## Deployment Steps
+
+### 1. Backend Deployment (Cloud Run)
+```bash
+cd /Users/macbookprom1/mekong-cli
+./deploy-production.sh
+```
+
+### 2. Frontend Deployment (Vercel)
+```bash
+# Auto-deploys on push to main branch
+git push origin main
+
+# Manual deployment:
+cd apps/dashboard
+vercel --prod
+```
+
+### 3. Configure Webhooks
+
+**PayPal Webhook URL:**
+```
+https://api.agencyos.network/api/payments/paypal/webhook
+```
+
+**Stripe Webhook URL:**
+```
+https://api.agencyos.network/api/payments/stripe/webhook
+```
+
+## Health Checks
+
+```bash
+# Backend
+curl https://api.agencyos.network/health
+
+# Frontend
+curl https://agencyos.network
+```
+
+## Rollback Procedure
+
+```bash
+# Backend
+./deploy-production.sh --rollback
+
+# Frontend
+vercel rollback
+```
 
 ## 1. Local Production (Docker Compose)
 To run the full stack locally in production mode:
