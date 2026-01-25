@@ -92,16 +92,9 @@ export const SwarmVisualizer: React.FC = () => {
       type: 'default',
       data: { label: `Swarm Orchestrator (${status.running ? 'Running' : 'Stopped'})` },
       position: { x: 400, y: 50 },
-      style: {
-        background: status.running
-          ? 'var(--md-sys-color-primary-container)'
-          : 'var(--md-sys-color-error-container)',
-        color: 'var(--md-sys-color-on-surface)',
-        border: '1px solid var(--md-sys-color-outline)',
-        borderRadius: '8px',
-        padding: '10px',
-        fontWeight: 'bold',
-      },
+      className: `border border-outline rounded-lg p-2.5 font-bold text-on-surface ${
+        status.running ? 'bg-primary-container' : 'bg-error-container'
+      }`,
     })
 
     // Agent Nodes
@@ -129,14 +122,9 @@ export const SwarmVisualizer: React.FC = () => {
           ),
         },
         position: { x, y },
-        style: {
-          background: agent.is_busy
-            ? 'var(--md-sys-color-secondary-container)'
-            : 'var(--md-sys-color-surface-container)',
-          color: 'var(--md-sys-color-on-surface)',
-          border: '1px solid var(--md-sys-color-outline)',
-          width: 180,
-        },
+        className: `border border-outline text-on-surface w-[180px] ${
+          agent.is_busy ? 'bg-secondary-container' : 'bg-surface-container'
+        }`,
       })
 
       // Edge from Hub to Agent
@@ -166,13 +154,8 @@ export const SwarmVisualizer: React.FC = () => {
           type: 'default',
           data: { label: `Task: ${task.name}` },
           position: { x: agentX, y: agentY + 150 },
-          style: {
-            background: 'var(--md-sys-color-tertiary-container)',
-            color: 'var(--md-sys-color-on-tertiary-container)',
-            border: '1px solid var(--md-sys-color-outline)',
-            fontSize: '12px',
-            width: 150,
-          },
+          className:
+            'bg-tertiary-container text-on-tertiary-container border border-outline text-xs w-[150px]',
         })
 
         newEdges.push({
@@ -201,7 +184,7 @@ export const SwarmVisualizer: React.FC = () => {
 
   if (statusError || tasksError) {
     return (
-      <div className="p-4 text-[var(--md-sys-color-error)]">
+      <div className="p-4 text-error">
         Error loading swarm data. Is the backend running?
       </div>
     )
@@ -222,34 +205,34 @@ export const SwarmVisualizer: React.FC = () => {
         </div>
         <button
           onClick={handleRefresh}
-          className="p-2 bg-[var(--md-sys-color-surface-container-high)] rounded-full hover:bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-on-surface)] shadow-sm"
+          className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest text-on-surface shadow-sm"
         >
           <RefreshCw size={16} />
         </button>
       </div>
 
       {status && (
-        <div className="absolute top-4 left-4 z-10 flex gap-4 text-xs font-mono bg-[var(--md-sys-color-surface)]/80 p-2 rounded backdrop-blur-sm border border-[var(--md-sys-color-outline-variant)]">
-          <div className="text-[var(--md-sys-color-on-surface)]">
-            <span className="font-bold text-[var(--md-sys-color-primary)]">Tasks:</span>{' '}
+        <div className="absolute top-4 left-4 z-10 flex gap-4 text-xs font-mono bg-surface/80 p-2 rounded backdrop-blur-sm border border-outline-variant">
+          <div className="text-on-surface">
+            <span className="font-bold text-primary">Tasks:</span>{' '}
             {status.metrics.total_tasks}
           </div>
-          <div className="text-[var(--md-sys-color-on-surface)]">
+          <div className="text-on-surface">
             <span className="font-bold text-green-600">Done:</span> {status.metrics.completed_tasks}
           </div>
-          <div className="text-[var(--md-sys-color-on-surface)]">
+          <div className="text-on-surface">
             <span className="font-bold text-red-600">Failed:</span> {status.metrics.failed_tasks}
           </div>
-          <div className="text-[var(--md-sys-color-on-surface)]">
+          <div className="text-on-surface">
             <span className="font-bold text-yellow-600">Busy:</span> {status.metrics.busy_agents}
           </div>
-          <div className="text-[var(--md-sys-color-on-surface)]">
+          <div className="text-on-surface">
             <span className="font-bold text-blue-600">Pending:</span> {status.metrics.pending_tasks}
           </div>
         </div>
       )}
 
-      <div className="w-full bg-[var(--md-sys-color-surface)]" style={{ height: '550px' }}>
+      <div className="w-full bg-surface" style={{ height: '550px' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -259,7 +242,7 @@ export const SwarmVisualizer: React.FC = () => {
           attributionPosition="bottom-right"
         >
           <Background color="var(--md-sys-color-outline-variant)" gap={16} />
-          <Controls className="bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface)] border-[var(--md-sys-color-outline)]" />
+          <Controls className="bg-surface-container-high text-on-surface border-outline" />
         </ReactFlow>
       </div>
     </MD3Card>

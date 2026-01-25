@@ -36,14 +36,14 @@ export const ApprovalQueue: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Loader2 className="animate-spin text-[var(--md-sys-color-primary)]" />
+        <Loader2 className="animate-spin text-primary" />
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-4 text-[var(--md-sys-color-error)] bg-[var(--md-sys-color-error-container)] rounded-lg">
+      <div className="p-4 text-error bg-error-container rounded-lg">
         Failed to load approval queue.
       </div>
     )
@@ -53,9 +53,9 @@ export const ApprovalQueue: React.FC = () => {
 
   if (displayApprovals.length === 0) {
     return (
-      <div className="text-center p-8 bg-[var(--md-sys-color-surface-container-low)] rounded-xl border border-dashed border-[var(--md-sys-color-outline)]">
-        <CheckCircle2 className="mx-auto h-12 w-12 text-[var(--md-sys-color-primary)] opacity-50 mb-2" />
-        <p className="text-[var(--md-sys-color-on-surface-variant)]">
+      <div className="text-center p-8 bg-surface-container-low rounded-xl border border-dashed border-outline">
+        <CheckCircle2 className="mx-auto h-12 w-12 text-primary opacity-50 mb-2" />
+        <p className="text-on-surface-variant">
           No pending approvals. Systems nominal.
         </p>
       </div>
@@ -66,14 +66,14 @@ export const ApprovalQueue: React.FC = () => {
     <div className="space-y-4">
       {displayApprovals.map(req => (
         <MD3Card key={req.id} className="p-0 overflow-hidden">
-          <div className="p-4 border-b border-[var(--md-sys-color-outline-variant)] flex items-center justify-between bg-[var(--md-sys-color-surface-container)]">
+          <div className="p-4 border-b border-outline-variant flex items-center justify-between bg-surface-container">
             <div className="flex items-center gap-2">
-              <ShieldAlert size={20} className="text-[var(--md-sys-color-primary)]" />
-              <span className="font-bold text-[var(--md-sys-color-on-surface)]">
+              <ShieldAlert size={20} className="text-primary" />
+              <span className="font-bold text-on-surface">
                 {req.action_name}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-[var(--md-sys-color-on-surface-variant)]">
+            <div className="flex items-center gap-1 text-xs text-on-surface-variant">
               <Clock size={14} />
               <span>{new Date(req.created_at).toLocaleTimeString()}</span>
             </div>
@@ -82,23 +82,23 @@ export const ApprovalQueue: React.FC = () => {
           <div className="p-4">
             <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
               <div>
-                <span className="text-[var(--md-sys-color-on-surface-variant)] block text-xs">
+                <span className="text-on-surface-variant block text-xs">
                   Requester
                 </span>
-                <span className="font-medium text-[var(--md-sys-color-on-surface)]">
+                <span className="font-medium text-on-surface">
                   {req.requester}
                 </span>
               </div>
               <div>
-                <span className="text-[var(--md-sys-color-on-surface-variant)] block text-xs">
+                <span className="text-on-surface-variant block text-xs">
                   ID
                 </span>
-                <span className="font-mono text-[var(--md-sys-color-on-surface)]">{req.id}</span>
+                <span className="font-mono text-on-surface">{req.id}</span>
               </div>
             </div>
 
-            <div className="bg-[var(--md-sys-color-surface-container-high)] p-3 rounded-lg mb-4">
-              <pre className="text-xs font-mono overflow-x-auto text-[var(--md-sys-color-on-surface-variant)]">
+            <div className="bg-surface-container-high p-3 rounded-lg mb-4">
+              <pre className="text-xs font-mono overflow-x-auto text-on-surface-variant">
                 {JSON.stringify(req.payload, null, 2)}
               </pre>
             </div>
@@ -106,13 +106,13 @@ export const ApprovalQueue: React.FC = () => {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => handleReject(req.id)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--md-sys-color-error)] text-[var(--md-sys-color-error)] hover:bg-[var(--md-sys-color-error-container)] transition-colors font-medium text-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-error text-error hover:bg-error-container transition-colors font-medium text-sm"
               >
                 <X size={16} /> Reject
               </button>
               <button
                 onClick={() => handleApprove(req.id)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] hover:opacity-90 transition-opacity font-medium text-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-on-primary hover:opacity-90 transition-opacity font-medium text-sm"
               >
                 <Check size={16} /> Approve
               </button>
