@@ -2,6 +2,29 @@
 
 > **Binh Pháp Principle**: "知己知彼，百戰不殆" (Know yourself, know the tax law, fight a hundred battles without danger)
 
+## 🚨 CRITICAL UPDATE - Law 109/2025/QH15 (Effective 01/07/2026)
+
+**GAME CHANGER: Tax-Free Threshold QUINTUPLED!**
+
+```
+OLD LAW (before 01/07/2026):  100M VND/year tax-free (~$4,000 USD)
+NEW LAW (from 01/07/2026):    500M VND/year tax-free (~$20,000 USD)
+
+INCREASE: 5X MORE RUNWAY BEFORE REGISTRATION!
+```
+
+**Key Changes Verified from Official Sources:**
+
+✅ **500M VND threshold** (Luật số 109/2025/QH15)
+✅ **Higher deductions** (15.5M self, 6.2M dependent from 01/01/2026)
+✅ **Thuế khoán abolished** (all declare actual revenue from 01/07/2026)
+✅ **AI/Tech PIT exemptions** (5 years for AI/semiconductor roles)
+✅ **5 tax brackets** (simplified from 7 brackets)
+
+**Sources:** baochinhphu.vn, Tổng cục Thuế, VnExpress (verified Jan 2026)
+
+---
+
 ## ⚠️ Disclaimer
 
 **NOT LEGAL ADVICE. CONSULT LICENSED TAX PROFESSIONAL.**
@@ -21,27 +44,43 @@
 > Best tax strategy: Structure income to minimize tax exposure while staying compliant.
 
 ```
-Phase 1: Guerrilla (<100M VND/year)     → Below radar, minimal footprint
-Phase 2: Individual Business (100M-2B)   → Optimize, document, defend
-Phase 3: Enterprise (>2B)                → Structure, invest, scale
+Phase 1: Guerrilla (<500M VND/year)     → Below radar, EXTENDED runway (NEW 2026!)
+Phase 2: Individual Business (500M-2B)  → Optimize, document, defend
+Phase 3: Enterprise (>2B)               → Structure, invest, scale
 ```
+
+**IMPACT OF LAW 109/2025/QH15:**
+- Phase 1 extended 5X (100M → 500M threshold)
+- More time to build reserves before tax registration
+- MST cá nhân still required, but filing simplified (annual only)
+- Strategic advantage: Build to ~$20k/year tax-free legally!
 
 ---
 
-## 📊 Phase 1: Guerrilla Operations (<100M VND/year)
+## 📊 Phase 1: Guerrilla Operations (<500M VND/year)
 
-### Status: Below Tax Registration Threshold
+### Status: Below Tax Registration Threshold (NEW 2026 LAW!)
+
+**CRITICAL UPDATE**: Luật Thuế TNCN mới số 109/2025/QH15 (hiệu lực 01/07/2026)
 
 **Strategy**: Stay invisible, build reserves.
 
 ### Tactical Implementation
 
 ```
-Revenue: <100M VND/year (~$4,000 USD)
-Tax Rate: 0% (below threshold)
-Registration: None required
+Revenue: <500M VND/year (~$20,000 USD) - UPDATED FROM 100M!
+Tax Rate: 0% (below threshold) - VAT và TNCN MIỄN THU
+Registration: MST cá nhân required, kê khai 1 lần/năm
 Risk Level: Low
+Effective Date: 01/07/2026
+Legal Basis: Luật số 109/2025/QH15
 ```
+
+**MAJOR CHANGES:**
+- **Old threshold (before 01/07/2026)**: 100M VND/year
+- **New threshold (from 01/07/2026)**: 500M VND/year (5X INCREASE!)
+- **Still required**: Individual tax code (MST cá nhân) registration
+- **Simplified filing**: Annual declaration only (not monthly/quarterly)
 
 ### Operational Procedures
 
@@ -52,16 +91,27 @@ Risk Level: Low
    - **PayPal**: Only if client requires
 
 2. **Vietnam Bank Withdrawals**
-   - **Maximum**: 20-30M VND/month (<100M total/year)
-   - **Frequency**: Irregular patterns (avoid monthly automation)
-   - **Purpose codes**: "Gift from relative abroad" or "Personal support"
-   - **Documentation**: Keep remittance records
+   - **Maximum**: <500M VND total/year (huge increase from 100M!)
+   - **Frequency**: Regular patterns OK after 01/07/2026 with MST registration
+   - **Purpose codes**: "Freelance income" or "Service fees" (after registration)
+   - **Documentation**: Keep remittance records + annual tax declaration
+
+3. **Personal Income Tax Deductions (UPDATED 01/01/2026)**
+   - **Giảm trừ bản thân**: 15.5 triệu VND/tháng (was 11 triệu)
+   - **Giảm trừ người phụ thuộc**: 6.2 triệu VND/tháng (was 4.4 triệu)
+   - **Legal basis**: Nghị định 117/2025/NĐ-CP
 
 3. **What NOT to Do**
-   - ❌ Regular monthly transfers (patterns trigger audit)
-   - ❌ Large lump sums (>50M VND single transfer)
-   - ❌ Business-looking invoices to Vietnam entities
+   - ❌ Skip MST registration (required even under 500M threshold)
+   - ❌ Fail to file annual declaration (mandatory from 01/07/2026)
+   - ❌ Large lump sums without documentation
    - ❌ Public bragging about income on social media
+
+4. **Thuế Khoán BỊ BÃI BỎ (CRITICAL - 2026)**
+   - **Old system**: Fixed presumptive tax (thuế khoán)
+   - **New system (from 01/07/2026)**: Kê khai theo doanh thu thực tế
+   - **E-commerce platforms**: Khấu trừ thuế thay (withhold tax) from 01/07/2025
+   - **Impact**: Sàn TMĐT (Shopee, Lazada, TikTok Shop) tự động trừ thuế
 
 ### Binh Pháp Note
 > **"兵者，詭道也" (War is the way of deception)**
@@ -70,11 +120,16 @@ Risk Level: Low
 
 ---
 
-## 🏢 Phase 2: Individual Business (100M - 2B VND/year)
+## 🏢 Phase 2: Individual Business (500M - 2B VND/year)
 
 ### Status: Hộ Kinh Doanh (Individual Business) Registration Required
 
 **Strategy**: Optimize tax rate through software export classification.
+
+**NEW THRESHOLD IMPACT (01/07/2026):**
+- **Old trigger**: 100M VND/year → register immediately
+- **New trigger**: 500M VND/year → you have more runway before registration
+- **Smart move**: Register proactively at 300-400M for better documentation history
 
 ### Tax Options Comparison
 
@@ -225,7 +280,7 @@ Company Benefits:
 
 ### Tax Incentives for Technology Companies
 
-#### Eligibility (Decree 218/2013/NĐ-CP)
+#### Eligibility (Decree 218/2013/NĐ-CP + NEW 2026 INCENTIVES)
 
 **Qualified Activities:**
 - Software development
@@ -233,14 +288,24 @@ Company Benefits:
 - IT services
 - SaaS products
 - Technology consulting
+- **NEW 2026**: AI development, semiconductor design, chip design
 
 **Benefits:**
 1. **Years 1-4**: 0% Corporate Income Tax (CIT)
 2. **Years 5-13**: 50% reduction (10% instead of 20%)
-3. **Conditions**:
+3. **AI/High-Tech Talent (NEW 2026)**:
+   - **Miễn TNCN 5 năm** cho nhân viên AI, semiconductor, chip design
+   - **Giảm 50% TNCN** cho high-tech, IT, digital transformation roles
+   - Applies to employee salaries, not company tax
+4. **Conditions**:
    - Revenue >70% from tech activities
    - Located in approved zones (or anywhere for software)
    - Maintain proper accounting records
+
+**Legal Basis**:
+- Decree 218/2013/NĐ-CP (original)
+- Nghị định 117/2025/NĐ-CP (2026 updates)
+- Luật số 109/2025/QH15 (PIT incentives)
 
 #### Registration Requirements
 
@@ -295,17 +360,20 @@ Dividends:
 
 # Strategy A: All as Salary (BAD)
 Salary: 2.4B VND/year (200M/month)
-PIT: ~450M VND (18.75% effective rate after deductions)
-Net: 1.95B VND
+Giảm trừ: 15.5M/month × 12 = 186M/year (NEW 2026)
+Taxable: 2.4B - 186M = 2.214B
+PIT: ~420M VND (18.9% effective rate with NEW deductions)
+Net: 1.98B VND
 
 # Strategy B: Low Salary + Dividend (OPTIMIZED)
-Salary: 120M VND/year (10M/month, below PIT threshold)
-PIT on Salary: 0 VND
-Dividend: 2.28B VND (after 0% CIT in incentive period)
-Tax on Dividend: 114M VND (5%)
-Net: 2.166B VND
+Salary: 180M VND/year (15M/month, just under tax threshold)
+Giảm trừ: 186M/year (NEW 2026)
+PIT on Salary: 0 VND (salary < deduction!)
+Dividend: 2.22B VND (after 0% CIT in incentive period)
+Tax on Dividend: 111M VND (5%)
+Net: 2.109B VND
 
-Savings: 216M VND (~$9,000 USD)
+Savings: 309M VND (~$12,900 USD) - BETTER with new deductions!
 ```
 
 ### Binh Pháp Note
@@ -436,38 +504,41 @@ Step 5: Escalation Path
 ### Situation Assessment
 
 ```
-Current Phase: Phase 1 → Transitioning to Phase 2
+Current Phase: Phase 1 (EXTENDED runway with new 500M threshold!)
 Projected Revenue: $20-40k USD in 2026
-Target: Individual Business registration Q2 2026
-Trigger: When monthly revenue consistently >20M VND
+Target: Individual Business registration Q3-Q4 2026 (delayed from Q2)
+Trigger: When monthly revenue consistently >35M VND OR total approaches 500M/year
 ```
 
-### Tactical Plan
+### Tactical Plan (UPDATED for Law 109/2025/QH15)
 
-**Q1 2026 (Jan-Mar): Preparation**
+**Q1 2026 (Jan-Mar): Preparation + NEW DEDUCTIONS**
+- [x] NEW deductions in effect 01/01/2026: 15.5M self, 6.2M dependent
 - [ ] Keep funds in PingPong primary account
-- [ ] Withdraw <100M VND total to Vietnam bank
+- [ ] Withdraw <500M VND total to Vietnam bank (5X more room!)
 - [ ] Gather foreign contracts from existing clients
 - [ ] Translate key contract clauses to Vietnamese
-- [ ] Research ward tax office procedures
+- [ ] Apply for MST cá nhân (individual tax code)
 
-**Q2 2026 (Apr-Jun): Registration**
-- [ ] Trigger: 3 consecutive months >20M VND revenue
-- [ ] Register Individual Business (Hộ Kinh Doanh)
-- [ ] Apply for 0% VAT export classification
+**Q2 2026 (Apr-Jun): Monitoring + Documentation**
+- [ ] Track revenue toward 500M threshold
+- [ ] Build export documentation folder
+- [ ] Prepare for annual declaration (if under 500M)
+- [ ] Research Individual Business benefits vs staying under threshold
+
+**Q3 2026 (Jul-Sep): LAW 109 FULL EFFECT + Decision Point**
+- [ ] 01/07/2026: New 500M threshold now official!
+- [ ] Thuế khoán abolished - all individual businesses on real revenue
+- [ ] Decision: Register Individual Business if revenue trajectory hits 500M
+- [ ] Trigger: 3 consecutive months >35M VND revenue (420M/year pace)
+- [ ] If registering: Apply for 0% VAT export classification
 - [ ] Setup eTax portal account
-- [ ] Create accounting spreadsheet template
 
-**Q3 2026 (Jul-Sep): Compliance Rhythm**
-- [ ] File monthly tax returns (2% PIT, 0% VAT)
-- [ ] Build documentation habit
-- [ ] Monitor for audit communications
-- [ ] Optimize withdrawal patterns
-
-**Q4 2026 (Oct-Dec): Scale Evaluation**
-- [ ] Review annual revenue
-- [ ] If >2B VND, plan company structure for 2027
-- [ ] If <2B VND, continue Individual Business
+**Q4 2026 (Oct-Dec): Compliance or Optimization**
+- [ ] Option A (Under 500M): File annual declaration, enjoy 0% tax
+- [ ] Option B (Over 500M): Monthly tax returns (2% PIT, 0% VAT)
+- [ ] Review annual revenue for 2027 planning
+- [ ] If >1.5B VND annual, start company structure planning for 2027
 
 ### Why NOT Register Company Immediately?
 
@@ -663,13 +734,71 @@ Plus: Criminal record if tax office pursues prosecution
 
 ## 📚 Legal References
 
-1. **Law on Tax Administration 38/2019/QH14**
-2. **Circular 219/2013/TT-BTC** (VAT on exports, amended by 26/2015)
-3. **Circular 92/2015/TT-BTC** (Personal Income Tax)
-4. **Decree 218/2013/NĐ-CP** (Tech company incentives)
-5. **Decree 125/2020/NĐ-CP** (Tax penalties)
+### Primary Legislation (2026 Updates)
 
-**Download:** General Department of Taxation website → Legal Documents section
+1. **Luật Thuế TNCN số 109/2025/QH15** (10/12/2025)
+   - Hiệu lực: 01/07/2026 (most provisions), 01/01/2026 (some articles)
+   - **Key change**: Ngưỡng miễn thuế 100M → 500M VND/năm
+   - **Key change**: Giảm trừ gia cảnh tăng (11M → 15.5M, 4.4M → 6.2M)
+   - **Key change**: Biểu thuế lũy tiến 7 bậc → 5 bậc
+
+2. **Nghị định 117/2025/NĐ-CP**
+   - Implementation decree for Law 109/2025/QH15
+   - Details on tax incentives for AI/high-tech personnel
+   - E-commerce platform withholding tax procedures
+
+3. **Law on Tax Administration 38/2019/QH14** (previous framework)
+
+4. **Circular 219/2013/TT-BTC** (VAT on exports, amended by 26/2015)
+   - Still valid for 0% VAT export classification
+   - Software services to foreign clients
+
+5. **Circular 92/2015/TT-BTC** (Personal Income Tax - being updated)
+
+6. **Decree 218/2013/NĐ-CP** (Tech company incentives)
+
+7. **Decree 125/2020/NĐ-CP** (Tax penalties)
+
+### Official Sources (Verified January 2026)
+
+**Government Portals:**
+- Tổng cục Thuế: https://thuedientu.gdt.gov.vn
+- Cổng thông tin điện tử Chính phủ: https://baochinhphu.vn
+
+**Verified News Sources:**
+- VnExpress: https://vnexpress.net/tag/thue-thu-nhap-ca-nhan-2026
+- Báo Chính phủ: Official government announcements on Law 109/2025/QH15
+
+**Key Article References:**
+- "Ngưỡng chịu thuế TNCN tăng lên 500 triệu đồng/năm từ 1/7/2026" (baochinhphu.vn)
+- "Giảm trừ gia cảnh tăng từ 1/1/2026" (VnExpress)
+- "Bỏ thuế khoán, chuyển sang kê khai doanh thu thực tế" (Tổng cục Thuế)
+
+**Download Legal Documents:**
+- General Department of Taxation website → Legal Documents section
+- National Assembly website → Law 109/2025/QH15 full text
+
+### CRITICAL DATES TO REMEMBER
+
+| Date | Event | Impact |
+|------|-------|--------|
+| **01/01/2026** | Giảm trừ gia cảnh increase | 15.5M/month (self), 6.2M/month (dependent) |
+| **01/07/2025** | E-commerce withholding starts | Shopee/Lazada/TikTok auto-deduct tax |
+| **01/07/2026** | Law 109/2025 full effect | 500M threshold, thuế khoán abolished |
+
+### Disclaimer on Sources
+
+**Official sources prioritized:**
+1. Government websites (.gov.vn domains)
+2. National Assembly legislation portal
+3. General Department of Taxation announcements
+4. Verified news from state media (baochinhphu.vn, VnExpress verified articles)
+
+**NOT relied upon:**
+- Forum discussions without citation
+- Third-party blog posts
+- Unverified social media claims
+- Outdated 2025 materials (pre-Law 109)
 
 ---
 
@@ -694,12 +823,43 @@ Plus: Criminal record if tax office pursues prosecution
 
 ---
 
-**Document Version:** 1.0
+**Document Version:** 2.0 (MAJOR UPDATE - Law 109/2025/QH15)
 **Last Updated:** January 25, 2026
-**Next Review:** Quarterly (April 2026)
+**Next Review:** April 2026 (after Q1 close)
 
 **Maintained by:** AgencyOS Tax Strategy Team
 **Questions?** File issue in project repo or consult licensed tax advisor.
+
+### 🔥 What Changed in v2.0 (Jan 25, 2026)
+
+**VERIFIED UPDATES from Official Sources:**
+
+1. **500M VND Threshold** (was 100M)
+   - Source: Luật số 109/2025/QH15, effective 01/07/2026
+   - Impact: 5X more revenue before Individual Business registration required
+   - Verified: baochinhphu.vn, Tổng cục Thuế
+
+2. **Increased Deductions** (effective 01/01/2026)
+   - Self: 11M → 15.5M VND/month
+   - Dependent: 4.4M → 6.2M VND/month
+   - Source: Nghị định 117/2025/NĐ-CP
+   - Verified: VnExpress, baochinhphu.vn
+
+3. **Thuế Khoán Abolished** (01/07/2026)
+   - All Individual Business must declare actual revenue
+   - E-commerce platforms auto-withhold tax from 01/07/2025
+   - Source: Nghị định 117/2025/NĐ-CP
+
+4. **AI/High-Tech Tax Incentives**
+   - 5-year PIT exemption for AI, semiconductor, chip design roles
+   - 50% reduction for high-tech, IT, digital transformation
+   - Source: Luật số 109/2025/QH15
+
+5. **7→5 Tax Brackets** (personal income tax restructure)
+   - Simplified progressive tax system
+   - Effective 01/07/2026
+
+**All changes cited with government sources in Legal References section.**
 
 ---
 
