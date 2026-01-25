@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from .cache import get_quota_cache
 from .connector import QuotaConnector
 from .enums import StatusFormat, ThresholdLevel
 from .formatter import QuotaFormatter
@@ -15,15 +16,17 @@ class QuotaEngine:
     """
     Main quota monitoring engine.
 
-    Refactored modular version.
+    Refactored with caching for reduced FTTH usage (Binh Pháp optimization).
 
     Supports:
     - Local process detection (reads from Antigravity client)
     - Remote API fetching (optional, requires authorization)
+    - Caching to reduce API calls
     """
 
     DEFAULT_WARNING_THRESHOLD = 30
     DEFAULT_CRITICAL_THRESHOLD = 10
+    CACHE_TTL = 120  # 2 minutes
 
     def __init__(
         self,
@@ -40,11 +43,19 @@ class QuotaEngine:
 
         # Components
         self._connector = QuotaConnector()
+        self._cache = get_quota_cache()
 
     def get_local_quota(self) -> List[QuotaModel]:
         """
         Detect quota from local Antigravity Language Server process.
+        Uses cache to reduce API calls.
         """
+        # Try cache first (reduces FTTH usage)
+        cached_models = self._cache.get("local_quota_models")
+        if cached_models is not None:
+            self._models = cached_models
+            return self._models
+
         models = []
 
         # Try to get real data
@@ -59,6 +70,10 @@ class QuotaEngine:
 
         self._models = models
         self._last_fetch = datetime.now()
+
+        # Cache the result
+        self._cache.set("local_quota_models", models, self.CACHE_TTL)
+
         return models
 
     def get_current_status(self) -> Dict[str, Any]:
