@@ -1,5 +1,44 @@
 # Changelog
 
+
+## [2.0.0] - 2026-01-25
+
+### ✨ Features
+- feat: Execute 5 Binh Pháp Tasks - Full Validation Complete ([d7b67f5d])
+- feat: CC CLI vNext Complete - Technical Debt Eliminated ([0977d87a])
+- feat: PayPal SDK Complete Setup ([aa50e615])
+- feat: Complete PayPal Payment Flow - Binh Pháp Architecture ([d5e309b8])
+- feat: Add Next.js pricing page for dashboard app ([7b74019c])
+- feat: Factory Optimization Phase 3 - Partial (before system cleanup) ([127acd28])
+- feat: Brain & Muscle Protocol - CLAUDE.md + CLI_REFERENCE.md ([5e99c616])
+- feat: Finance Ops Legal Escalation Ladder Configuration ([5f7bb310])
+- feat: PayPal LIVE Mode + Technical Debt Cleanup Complete ([d2e012b2])
+- feat: PayPal Sandbox Mode - Safe Testing Configuration ([60dd6ba4])
+- feat: Payment Gateway Abstraction - PayPal Primary Ready ([30d0ee45])
+- feat: Payment Orchestrator - PayPal Primary + Polar Backup ([5f5a3af0])
+- feat: Tab 3+4 Complete - Migration + Billing Dashboard ([3f69f9e1])
+- feat: Add 6 Agent Prompt Lists for FastSaaS production pipeline ([4f99deb9])
+
+### 🐛 Bug Fixes
+- fix: Replace CSS variable syntax with semantic Tailwind classes (108 lint warnings) ([27220f05])
+
+### 📚 Documentation
+- docs: Binh Pháp Execution Plans - 13 Task Files ([165e53d1])
+- docs: Architecture Master Plan + Terminal Execution Plan ([470b4558])
+- docs: Add comprehensive ARCHITECTURE.md for business application ([feec7e70])
+- docs: Update TAX_STRATEGY_VN_2026.md với nguồn chính thống ([2722374f])
+- docs: Add TAX_STRATEGY_VN_2026.md - Vietnam Tax Optimization ([7f45f1db])
+- docs: Add FINANCE_OPS.md - Vietnam Financial Operations Guide ([ec1c6315])
+- docs: Add SCHEMA_SYNC.md - Cross-Agent Schema Documentation ([58387195])
+- docs: Add MISSION_CONTROL.md for 4-tab parallel agent orchestration ([e36f077f])
+- docs: Add CLI_REFERENCE.md for AI Agent self-documentation ([a49c8710])
+- docs: Add CHANGELOG.md for v2.0.0 official release ([c5816367])
+
+### 🔧 Other Changes
+- 🏯 CC CLI v2.0.0 - Complete 9-module command center ([68febf20])
+- 🚨 SECURITY: Remove .env.local from git tracking ([14457aff])
+- 🎉 RELEASE v2.0.0 - DEFCON 5 - AgencyOS Production Ready ([ade14408])
+
 All notable changes to AgencyOS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
