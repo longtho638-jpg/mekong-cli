@@ -273,7 +273,8 @@ class PolarProvider(IPaymentProvider):
         # except Exception as e:
         #     raise ProviderUnavailableError(f"Polar unavailable: {e}")
 
-        raise NotImplementedError("Polar checkout not yet implemented")
+        logger.warning("Polar provider not fully implemented, falling back")
+        raise ProviderUnavailableError("Polar provider unavailable")
 
     def verify_webhook(
         self,
@@ -295,7 +296,8 @@ class PolarProvider(IPaymentProvider):
         # except Exception as e:
         #     raise PaymentError(f"Polar webhook verification failed: {e}")
 
-        raise NotImplementedError("Polar webhook verification not yet implemented")
+        logger.warning("Polar webhook verification not implemented")
+        raise PaymentError("Polar webhook verification unavailable")
 
     def cancel_subscription(
         self,
@@ -307,7 +309,8 @@ class PolarProvider(IPaymentProvider):
             raise PaymentError("Polar is not configured")
 
         # TODO: Implement Polar cancellation
-        raise NotImplementedError("Polar cancellation not yet implemented")
+        logger.warning("Polar cancellation not implemented")
+        raise PaymentError("Polar cancellation unavailable")
 
 
 class PaymentOrchestrator:

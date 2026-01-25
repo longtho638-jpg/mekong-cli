@@ -130,8 +130,9 @@ def audit_action(action: str, resource_template: Optional[str] = None):
                 if resource and "{" in resource:
                     try:
                         resource = resource.format(**kwargs)
-                    except:
-                        pass
+                    except (KeyError, ValueError) as e:
+                        logger.error(f"Audit resource formatting failed: {e}", exc_info=True)
+                        resource = resource_template  # Fallback to unformatted template
 
                 try:
                     if inspect.iscoroutinefunction(func):
