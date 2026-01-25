@@ -217,8 +217,45 @@ diff .claude/memory/constitution.md docs/USER_CONSTITUTION.md
 
 ---
 
+## 📜 ĐIỀU 9: TỰ MỞ TERMINAL ĐỂ KIỂM SOÁT (SELF-OPEN MANDATE)
+
+> **"Mày tự mở thì mày mới kiểm soát được tiến trình"**
+
+**NGUYÊN TẮC:**
+
+1. **Antigravity** TỰ mở CC CLI terminal
+2. **Monitor tiến trình** qua `.claude/memory/tasks.md`
+3. **Users** cũng tự mở terminal của họ để kiểm soát
+
+**Workflow:**
+
+```bash
+# Antigravity mở terminal và spawn CC CLI:
+osascript -e 'tell app "Terminal" to do script "cd /path/to/project && claude"'
+
+# Sau đó gửi task qua file:
+echo "Task description" > .claude/memory/current_task.txt
+
+# CC CLI đọc và execute
+# Antigravity monitor qua tasks.md
+```
+
+**Áp dụng cho:**
+
+- ✅ Antigravity = TỰ spawn terminals
+- ✅ Claude Code CLI = TỰ report progress
+- ✅ USER = TỰ mở terminal, TỰ kiểm soát
+
+**CẤM:**
+
+- ❌ Nhờ user mở hộ terminal
+- ❌ Chạy background không monitor
+- ❌ Mất kiểm soát tiến trình
+
+---
+
 **Effective Date:** 2026-01-25
-**Version:** 3.0.0 (Added ĐIỀU 8: LÀM ĐỪNG HỎI)
+**Version:** 4.0.0 (Added ĐIỀU 9: TỰ MỞ TERMINAL)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
