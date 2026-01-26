@@ -50,18 +50,38 @@ Analysis identified 3 competing paradigms:
 **File:** [phase-03-binh-phap-namespace.md](phase-03-binh-phap-namespace.md)
 **Status:** PENDING
 **Tasks:**
-- Create `claude binh-phap` namespace documentation
+- Create `docs/binh-phap-philosophy.md` documentation
 - Map 13 Chapters to CLI modules
-- Preserve Vietnamese terminology in dedicated namespace
-- Add cultural context documentation
+- Preserve Vietnamese terminology with translations
+- Add cultural context and practical workflows
+
+### Phase 4: Final Verification & QA ⏳ PENDING
+**File:** [phase-04-verification-qa.md](phase-04-verification-qa.md)
+**Status:** PENDING
+**Tasks:**
+- Verify all cross-references and links
+- Test all command examples
+- Ensure consistent formatting
+- Validate ClaudeKit compliance improvements
+
+### Phase 5: Final Polish & Deployment ⏳ PENDING
+**File:** [phase-05-polish-deployment.md](phase-05-polish-deployment.md)
+**Status:** PENDING
+**Tasks:**
+- Final copy editing and proofreading
+- Update project roadmap and changelog
+- Create migration guide for users
+- Tag release in git
 
 ## Success Criteria
 
-- [x] All commands documented in single CLI_REFERENCE.md
+- [x] All commands documented in single CLI_REFERENCE.md (Phase 1)
 - [ ] getting-started.md uses ClaudeKit standard commands (Phase 2)
 - [ ] Binh Pháp philosophy preserved in dedicated namespace (Phase 3)
-- [ ] Migration guide created for existing users (Phase 2)
-- [x] ClaudeKit compliance: 64% (7/11 criteria met after Phase 1)
+- [ ] All links verified and working (Phase 4)
+- [ ] Migration guide created for existing users (Phase 5)
+- [ ] Project roadmap and changelog updated (Phase 5)
+- [x] ClaudeKit compliance: 64% → Target 70%+ (Phase 2-5)
 
 **Phase 1 Results:**
 - ✅ Documentation Unified: Single CLI_REFERENCE.md with all commands
@@ -69,9 +89,20 @@ Analysis identified 3 competing paradigms:
 - ✅ Cross-References: Comprehensive linking between all docs
 - **Compliance improved from 43% to 64%** (+3 criteria)
 
+## Timeline
+
+- **Phase 1**: ✅ Complete (2026-01-26)
+- **Phase 2**: In Progress (2-3 hours)
+- **Phase 3**: Pending (3-4 hours)
+- **Phase 4**: Pending (1-2 hours)
+- **Phase 5**: Pending (1-2 hours)
+
+**Total Estimated Time**: 7-11 hours for Phases 2-5
+
 ## Next Steps
 
-After Phase 1:
-1. Review with team
-2. Begin Phase 2 (Command Standardization)
-3. Implement alias system for backward compatibility
+1. Execute Phase 2 (Command Standardization)
+2. Execute Phase 3 (Binh Pháp Namespace)
+3. Execute Phase 4 (Verification & QA)
+4. Execute Phase 5 (Polish & Deployment)
+5. Announce completed documentation unification

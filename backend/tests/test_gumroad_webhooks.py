@@ -9,7 +9,7 @@ from backend.services.payment_service import PaymentService
 
 # ========== Dependency Override for Authentication ==========
 
-async def mock_verify_gumroad_webhook_dependency(request: Request):
+async def mock_verify_gumroad_webhook_dependency(request: Request) -> bytes:
     """Mock dependency that bypasses signature verification for testing."""
     return b""  # Return empty bytes (signature verified)
 

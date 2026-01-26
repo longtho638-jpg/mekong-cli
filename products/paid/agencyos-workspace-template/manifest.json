@@ -1,0 +1,19 @@
+{
+  "name": "AgencyOS Workspace Template",
+  "version": "1.0.0",
+  "description": "The Nuclear Weapon for Agencies - A comprehensive workspace template integrating Binh Phap strategy, Revenue Engines, and Operational Workflows.",
+  "author": "Antigravity Team",
+  "license": "Commercial",
+  "contents": [
+    "10-STRATEGY (Brain)",
+    "20-REVENUE (Blood)",
+    "30-OPERATIONS (Muscle)",
+    "platform (Body)",
+    ".agency (Engine)"
+  ],
+  "requirements": {
+    "node": ">=18.0.0",
+    "python": ">=3.10.0"
+  },
+  "checksum": "sha256:SEE_SHA256_FILE"
+}
