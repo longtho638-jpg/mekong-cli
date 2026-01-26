@@ -1,0 +1,11 @@
+{{ title }}
+----------------------------------------
+
+{{ body }}
+
+{% if action_url %}
+Action: {{ action_url }}
+{% endif %}
+
+----------------------------------------
+Manage Preferences: {{ settings_url }}

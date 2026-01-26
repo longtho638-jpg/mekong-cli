@@ -1,0 +1,29 @@
+{
+  "name": "realtime-collaboration-kit",
+  "version": "1.0.0",
+  "description": "A production-ready kit for adding realtime collaboration to React apps",
+  "main": "frontend/index.ts",
+  "scripts": {
+    "test": "pytest",
+    "start:backend": "uvicorn backend.websocket_server:app --reload",
+    "test:frontend": "echo 'Run via your app test runner (jest/vitest)'"
+  },
+  "keywords": [
+    "realtime",
+    "collaboration",
+    "react",
+    "websocket",
+    "ot",
+    "crdt"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0"
+  }
+}

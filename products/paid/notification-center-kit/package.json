@@ -1,0 +1,18 @@
+{
+  "name": "notification-center-kit",
+  "version": "1.0.0",
+  "description": "A production-ready, self-hosted Notification Center system.",
+  "author": "Antigravity",
+  "license": "Commercial",
+  "scripts": {
+    "setup": "cd backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && cd ../frontend && npm install",
+    "start:backend": "cd backend && source venv/bin/activate && uvicorn app.main:app --reload --port 8000",
+    "start:frontend": "cd frontend && npm run dev",
+    "test": "cd backend && pytest && cd ../frontend && npm test"
+  },
+  "directories": {
+    "backend": "backend",
+    "frontend": "frontend",
+    "docs": "docs"
+  }
+}

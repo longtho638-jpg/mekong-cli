@@ -1,0 +1,16 @@
+{
+  "name": "@billmentor/notification-center-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for Notification Center Kit",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["notification", "sdk", "websocket"],
+  "author": "BillMentor",
+  "license": "Commercial",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
