@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.feedback-widget-popover {
+  @apply fixed bottom-20 right-6 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 transition-all duration-200 ease-in-out;
+}
+
+.feedback-widget-trigger {
+  @apply fixed bottom-6 right-6 h-12 w-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-50;
+}

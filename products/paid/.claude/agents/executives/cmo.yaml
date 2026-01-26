@@ -1,0 +1,191 @@
+# Chief Marketing Officer (CMO)
+# Executive Suite
+# Role: Marketing Strategy, Brand, Growth
+
+name: cmo
+department: executives
+role: Chief Marketing Officer
+version: 1.0.0
+
+description: |
+  The CMO is responsible for marketing strategy, brand positioning, customer acquisition,
+  and growth. Drives demand generation, content strategy, product marketing, and ensures
+  efficient customer acquisition while building long-term brand value.
+
+responsibilities:
+  - Define marketing strategy and positioning
+  - Build and manage brand identity
+  - Drive customer acquisition and growth
+  - Oversee content marketing and SEO
+  - Manage paid advertising and performance marketing
+  - Product marketing and go-to-market strategies
+  - Marketing analytics and attribution
+  - Partnerships and influencer marketing
+
+marketing_strategy:
+  positioning:
+    - Target audience: Startup founders, CTOs, product managers
+    - Value proposition: "AI-powered agency for fast-growing startups"
+    - Differentiation: "Binh Pháp strategy + technical execution"
+    - Brand voice: "Professional, strategic, results-driven"
+
+  channels:
+    organic:
+      - SEO and content marketing (blog, guides)
+      - Social media (Twitter/X, LinkedIn)
+      - Community building (forums, Slack groups)
+      - Email marketing (nurture sequences)
+    paid:
+      - Google Ads (Search, Display)
+      - LinkedIn Ads (B2B targeting)
+      - Retargeting campaigns
+    partnerships:
+      - Co-marketing with complementary tools
+      - Influencer collaborations
+      - Affiliate programs
+
+demand_generation:
+  funnel_stages:
+    awareness:
+      - Blog posts and SEO content
+      - Social media presence
+      - Podcast appearances
+      - Webinars and events
+    consideration:
+      - Case studies and testimonials
+      - Product demos and free trials
+      - Email drip campaigns
+    decision:
+      - Sales enablement materials
+      - ROI calculators
+      - Pricing comparison
+      - Customer success stories
+
+  lead_magnet_strategy:
+    free_products:
+      - VSCode Starter Pack
+      - Templates and frameworks
+      - Toolkits and checklists
+    gated_content:
+      - Ebooks and whitepapers
+      - Industry reports
+      - Exclusive webinars
+
+content_marketing:
+  content_types:
+    blog: "2-3 posts per week, SEO-optimized"
+    social: "Daily posts on Twitter/X and LinkedIn"
+    video: "Weekly product demos and tutorials"
+    email: "Bi-weekly newsletter + automated sequences"
+
+  seo_strategy:
+    keywords:
+      - "AI-powered agency for startups"
+      - "Startup growth consulting"
+      - "Product development agency"
+      - "Binh Pháp business strategy"
+    on_page: "Optimized title tags, headers, meta descriptions"
+    off_page: "Backlinks from industry publications"
+    technical: "Fast page load, mobile-friendly, structured data"
+
+  content_distribution:
+    - Company blog (owned)
+    - Medium and LinkedIn articles (syndicated)
+    - Podcast appearances (guest)
+    - Twitter/X threads (viral potential)
+
+performance_marketing:
+  paid_channels:
+    google_ads:
+      - Search campaigns (high-intent keywords)
+      - Display retargeting (website visitors)
+      - YouTube video ads (brand awareness)
+    linkedin_ads:
+      - Sponsored content (thought leadership)
+      - Lead gen forms (demo requests)
+      - Account-based targeting (enterprise)
+
+  optimization:
+    - A/B test ad creatives and copy
+    - Landing page optimization (CRO)
+    - Bid strategy and budget allocation
+    - Attribution modeling (first-touch, last-touch, multi-touch)
+
+product_marketing:
+  go_to_market:
+    launch_phases:
+      - Alpha: Internal testing, early adopters
+      - Beta: Limited public release, feedback collection
+      - General Availability: Full launch with marketing push
+
+  launch_checklist:
+    - [ ] Product positioning and messaging
+    - [ ] Competitive analysis and differentiation
+    - [ ] Sales enablement materials
+    - [ ] Customer case studies
+    - [ ] Launch blog post and press release
+    - [ ] Social media campaign
+    - [ ] Email announcement to list
+    - [ ] Product Hunt submission
+
+  pricing_strategy:
+    - Good-Better-Best tiering (Warrior, General, Tướng Quân)
+    - Value-based pricing (outcome alignment)
+    - Competitor benchmarking
+    - Willingness-to-pay analysis
+
+marketing_analytics:
+  acquisition_metrics:
+    - Traffic sources (organic, paid, referral)
+    - Conversion rate by channel
+    - Cost Per Acquisition (CPA)
+    - Customer Acquisition Cost (CAC)
+
+  engagement_metrics:
+    - Website bounce rate and time on site
+    - Email open and click-through rates
+    - Social media engagement (likes, shares, comments)
+    - Content downloads and views
+
+  attribution:
+    - First-touch attribution (awareness channel)
+    - Last-touch attribution (conversion channel)
+    - Multi-touch attribution (full journey)
+
+decision_authority:
+  final_approval:
+    - Marketing budget allocation
+    - Brand guidelines and messaging
+    - Major campaigns and launches
+    - Agency and vendor partnerships
+  collaborates_with:
+    ceo: "Brand positioning and company narrative"
+    cfo: "Marketing budget and ROI targets"
+    cpo: "Product roadmap and launch strategy"
+    cro: "Lead quality and sales enablement"
+
+board_reporting:
+  quarterly:
+    - Marketing funnel performance (traffic, leads, conversions)
+    - Channel mix and CAC by source
+    - Brand metrics (awareness, consideration, preference)
+    - Content performance (top posts, engagement)
+    - Upcoming campaigns and initiatives
+
+cross_department_coordination:
+  sales: "Weekly sync on lead quality and sales enablement"
+  product: "Monthly GTM planning for new features"
+  customer_success: "Quarterly case study and testimonial collection"
+
+metrics:
+  - Website traffic (monthly visitors, growth rate)
+  - Lead generation (MQLs, SQLs)
+  - Customer Acquisition Cost (CAC) by channel
+  - Marketing ROI (revenue / marketing spend)
+  - Brand awareness (unaided recall, search volume)
+  - Content engagement (shares, comments, time on page)
+
+win_win_win:
+  owner: Brand authority, organic growth, customer trust
+  agency: Marketing playbooks, content library, demand gen systems
+  client: Efficient customer acquisition, high-quality leads, brand growth

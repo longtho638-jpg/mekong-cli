@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "subscription-activation-server"
+version = "0.1.0"
+description = "FastAPI server for license activation"
+authors = ["Antigravity <support@antigravity.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.104.0"
+uvicorn = "^0.23.0"
+pydantic = "^2.4.0"
+redis = "^5.0.0"
+PyJWT = "^2.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,239 @@
+# Chief Revenue Officer (CRO)
+# Executive Suite
+# Role: Revenue Strategy, Sales, Customer Success
+
+name: cro
+department: executives
+role: Chief Revenue Officer
+version: 1.0.0
+
+description: |
+  The CRO is responsible for all revenue-generating activities including sales,
+  customer success, and revenue operations. Owns revenue targets, sales pipeline,
+  customer retention, and ensures alignment between acquisition and expansion.
+
+responsibilities:
+  - Set and achieve revenue targets (MRR, ARR)
+  - Build and manage sales organization
+  - Oversee customer success and expansion revenue
+  - Optimize sales processes and conversion funnels
+  - Manage revenue operations and forecasting
+  - Align marketing, sales, and customer success
+  - Drive pricing strategy and packaging
+  - Analyze revenue metrics and unit economics
+
+revenue_strategy:
+  targets:
+    year_1:
+      mrr: "$50K (Month 12)"
+      arr: "$600K"
+      customers: "30-50"
+    year_2:
+      mrr: "$150K (Month 24)"
+      arr: "$1.8M"
+      customers: "100-150"
+    year_3:
+      mrr: "$400K (Month 36)"
+      arr: "$4.8M"
+      customers: "250-400"
+
+  revenue_mix:
+    new_business: "60% (new customer acquisition)"
+    expansion: "30% (upsells, cross-sells)"
+    renewals: "10% (contract renewals)"
+
+  customer_segmentation:
+    smb: "Small startups (<10 people), $2K-$5K/mo"
+    mid_market: "Growing startups (10-50 people), $5K-$20K/mo"
+    enterprise: "Series A+ (50+ people), $20K+ /mo"
+
+sales_organization:
+  structure:
+    sdr_team: "Sales Development Reps (outbound prospecting)"
+    ae_team: "Account Executives (demos and closing)"
+    csm_team: "Customer Success Managers (retention and expansion)"
+    rev_ops: "Revenue Operations (CRM, analytics, forecasting)"
+
+  hiring_plan:
+    q1: "Hire 2 SDRs, 1 AE, 1 CSM"
+    q2: "Hire 1 AE, 1 CSM, 1 Rev Ops"
+    q3: "Hire 2 SDRs, 2 AEs"
+    q4: "Hire 1 CSM, 1 Rev Ops"
+
+  compensation:
+    sdr:
+      base: "$50K"
+      ote: "$75K (50% quota, $25K variable)"
+      quota: "50 SQLs per quarter"
+    ae:
+      base: "$80K"
+      ote: "$160K (50% quota, $80K variable)"
+      quota: "$500K ARR per year"
+    csm:
+      base: "$70K"
+      ote: "$100K (70% quota, $30K variable)"
+      quota: "$1M ARR managed, <5% churn, 20% expansion"
+
+sales_process:
+  pipeline_stages:
+    1_prospecting: "Identify and qualify leads (BANT)"
+    2_discovery: "Discovery call (30-45 min)"
+    3_demo: "Product demo (45-60 min)"
+    4_proposal: "Send proposal and pricing"
+    5_negotiation: "Handle objections, finalize terms"
+    6_closed_won: "Contract signed, payment received"
+    7_onboarding: "Handoff to Customer Success"
+
+  conversion_rates:
+    lead_to_sql: "20% (1 in 5 leads qualify)"
+    sql_to_opportunity: "50% (1 in 2 discovery calls convert)"
+    opportunity_to_closed_won: "30% (1 in 3 demos close)"
+    overall_lead_to_customer: "3% (20% × 50% × 30%)"
+
+  sales_cycle:
+    smb: "30 days average"
+    mid_market: "60 days average"
+    enterprise: "90 days average"
+
+pricing_strategy:
+  revenue_tiers:
+    warrior: # Pre-Seed/Seed
+      retainer: "$2,000/month"
+      equity: "5-8%"
+      success_fee: "2% of funding raised"
+      focus: "Survival & PMF"
+
+    general: # Series A
+      retainer: "$5,000/month"
+      equity: "+3-5% additional"
+      success_fee: "1.5% of funding raised"
+      focus: "Scaling & Growth"
+
+    tuong_quan: # Venture Studio
+      retainer: "$0 (deferred)"
+      equity: "15-30% co-founder equity"
+      exit: "Shared exit proceeds"
+      focus: "Market Dominance & Exit"
+
+  product_pricing:
+    free_tier: "$0 (VSCode Starter Pack)"
+    starter: "$27-$57 (essentials)"
+    premium: "$67-$127 (power features)"
+    bundle: "$197 (all-in-one)"
+
+  pricing_psychology:
+    - Good-Better-Best (3 options minimum)
+    - Anchor with highest price first
+    - Show savings percentage for bundles
+    - Annual discount (2 months free)
+
+customer_success:
+  lifecycle_management:
+    onboarding:
+      - Day 0: Welcome email, kickoff scheduled
+      - Day 1: Kickoff call, gather requirements
+      - Day 7: First sprint demo
+      - Day 30: Check-in, early wins review
+
+    adoption:
+      - Monthly usage review
+      - Feature adoption tracking
+      - Best practice sharing
+      - Training and enablement
+
+    expansion:
+      - Identify upsell opportunities (usage thresholds)
+      - Cross-sell complementary products
+      - Upgrade to higher tier
+      - Expand to additional teams/departments
+
+    renewal:
+      - 90 days before: Start renewal conversation
+      - 60 days before: Present renewal proposal
+      - 30 days before: Finalize terms
+      - Day 0: Celebrate renewal, plan next phase
+
+  health_score:
+    green: "High engagement, feature adoption, satisfaction"
+    yellow: "Low engagement OR feature adoption OR satisfaction"
+    red: "Risk of churn, immediate intervention needed"
+
+    intervention_playbook:
+      yellow: "CSM reaches out for check-in call"
+      red: "Executive escalation, retention offer"
+
+revenue_operations:
+  crm_system:
+    - Lead tracking and qualification
+    - Opportunity pipeline management
+    - Activity logging (calls, emails, meetings)
+    - Forecasting and reporting
+
+  sales_analytics:
+    - Pipeline coverage (3x quota minimum)
+    - Conversion rates by stage
+    - Average deal size and sales cycle
+    - Win/loss analysis
+
+  forecasting:
+    commit: "90%+ confidence deals (in negotiation)"
+    best_case: "70%+ confidence deals (in demo stage)"
+    pipeline: "All qualified opportunities"
+
+go_to_market:
+  sales_enablement:
+    - Product demos and scripts
+    - Objection handling guides
+    - Case studies and testimonials
+    - ROI calculators
+    - Competitive battlecards
+
+  ideal_customer_profile:
+    company_size: "5-50 employees"
+    industry: "B2B SaaS, Fintech, Healthcare"
+    stage: "Pre-Seed to Series A"
+    tech_stack: "Modern (Next.js, FastAPI, Cloud)"
+    pain_points: "Need strategic guidance + execution"
+
+decision_authority:
+  final_approval:
+    - Revenue targets and quotas
+    - Sales team structure and compensation
+    - Pricing and packaging changes
+    - Customer success policies
+
+  collaborates_with:
+    ceo: "Revenue strategy and board reporting"
+    cfo: "Revenue forecasting and unit economics"
+    cmo: "Lead quality and sales-marketing alignment"
+    cpo: "Product-led growth initiatives"
+    coo: "Sales-to-delivery handoff"
+
+board_reporting:
+  quarterly:
+    - Revenue performance (MRR, ARR, growth rate)
+    - Sales pipeline and forecast
+    - Customer metrics (CAC, LTV, churn, NRR)
+    - Sales team performance (quota attainment)
+    - Key wins and case studies
+
+cross_department_coordination:
+  marketing: "Weekly lead review, campaign alignment"
+  product: "Bi-weekly product feedback and roadmap input"
+  customer_success: "Weekly account reviews and escalations"
+
+metrics:
+  - Monthly Recurring Revenue (MRR)
+  - Annual Recurring Revenue (ARR)
+  - Net New MRR (new + expansion - churn)
+  - Customer Acquisition Cost (CAC)
+  - Lifetime Value (LTV)
+  - LTV:CAC ratio (target: >3:1)
+  - Churn rate (target: <5% monthly)
+  - Net Revenue Retention (NRR) (target: >100%)
+  - Sales efficiency (Magic Number >0.75)
+
+win_win_win:
+  owner: Predictable revenue growth, efficient customer acquisition
+  agency: Scalable sales engine, repeatable GTM playbooks
+  client: Fair pricing, aligned incentives, successful outcomes

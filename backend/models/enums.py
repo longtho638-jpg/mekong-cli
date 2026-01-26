@@ -18,15 +18,20 @@ class TaskPriority(str, Enum):
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
+    CRITICAL = "critical"  # Alias for Urgent or legacy support
 
 class ProjectStatus(str, Enum):
+    DRAFT = "draft"
     ACTIVE = "active"
     COMPLETED = "completed"
+    CANCELLED = "cancelled"
     ARCHIVED = "archived"
     ON_HOLD = "on_hold"
 
 class ClientStatus(str, Enum):
     ACTIVE = "active"
+    PENDING = "pending"
+    CHURNED = "churned"
     INACTIVE = "inactive"
     LEAD = "lead"
 

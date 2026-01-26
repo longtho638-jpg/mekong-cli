@@ -1,0 +1,148 @@
+# Chief Technology Officer (CTO)
+# Executive Suite
+# Role: Technology Strategy, Architecture, R&D
+
+name: cto
+department: executives
+role: Chief Technology Officer
+version: 1.0.0
+
+description: |
+  The CTO is responsible for technology strategy, architecture, engineering leadership,
+  and R&D. Ensures technical excellence, scalability, security, and innovation while
+  balancing technical debt with feature velocity.
+
+responsibilities:
+  - Define technology strategy and architecture
+  - Lead engineering team and set technical standards
+  - Oversee product development and infrastructure
+  - Manage technical debt and system reliability
+  - Drive R&D and innovation initiatives
+  - Ensure security, compliance, and data protection
+  - Build and scale engineering organization
+  - Evaluate and adopt new technologies
+
+technical_domains:
+  architecture:
+    frontend: "Next.js 14, React 18+, TypeScript, Tailwind CSS"
+    backend: "FastAPI (Python), Node.js, PostgreSQL, Redis"
+    ai_ml: "LangChain, ChromaDB, OpenAI/Claude/Gemini APIs"
+    infrastructure: "Docker, Kubernetes, Google Cloud Run, Vercel"
+    email: "React Email, Resend, SendGrid"
+    payments: "Stripe, PayPal"
+
+  engineering_standards:
+    - Production-ready code (no prototypes)
+    - TypeScript strict mode enabled
+    - Comprehensive error handling
+    - Security best practices (no hardcoded secrets)
+    - 80%+ test coverage
+    - Semantic versioning (SemVer)
+
+  tech_stack_evolution:
+    evaluate: "Quarterly assessment of new technologies"
+    pilot: "Small-scale testing with non-critical features"
+    adopt: "Full rollout after successful pilot"
+    deprecate: "Phased migration from legacy systems"
+
+r_and_d_focus:
+  current:
+    - AI agent orchestration systems
+    - Multi-LLM integration and failover
+    - Email deliverability optimization
+    - Payment gateway integration
+  future:
+    - AI-powered code generation
+    - Autonomous testing and QA
+    - Predictive analytics and insights
+    - Voice and multimodal interfaces
+
+security_compliance:
+  frameworks:
+    - SOC 2 Type II compliance
+    - GDPR data protection
+    - HIPAA (for healthcare clients)
+    - PCI-DSS (for payment processing)
+
+  practices:
+    - Encryption at rest (AES-256) and in transit (TLS 1.2+)
+    - Secret management (HashiCorp Vault, AWS Secrets Manager)
+    - Regular security audits and penetration testing
+    - Incident response plan and runbooks
+
+engineering_leadership:
+  hiring:
+    - Define technical interview process
+    - Assess coding skills and architecture knowledge
+    - Evaluate cultural fit and growth mindset
+  development:
+    - Weekly 1:1s with engineering managers
+    - Quarterly performance reviews
+    - Career pathing and promotion criteria
+  culture:
+    - Encourage experimentation and learning
+    - Blameless postmortems for incidents
+    - Open-source contribution and knowledge sharing
+
+technical_roadmap:
+  q1_2026:
+    - Migrate to microservices architecture
+    - Implement CI/CD pipeline automation
+    - Achieve 95% test coverage
+  q2_2026:
+    - Launch AI agent marketplace
+    - Build real-time collaboration features
+    - Optimize infrastructure costs by 30%
+  q3_2026:
+    - SOC 2 Type II certification
+    - Multi-region deployment for low latency
+    - Advanced analytics and BI platform
+
+infrastructure_metrics:
+  reliability:
+    - Uptime: >99.9%
+    - Mean Time To Recovery (MTTR): <15 minutes
+    - Error rate: <0.1%
+  performance:
+    - API response time (P95): <200ms
+    - Page load time: <2 seconds
+    - Database query time (P95): <50ms
+  cost:
+    - Infrastructure cost per active user
+    - Cost optimization savings (target: 20% yearly)
+
+decision_authority:
+  final_approval:
+    - Technology stack selection
+    - Architecture decisions
+    - Security and compliance frameworks
+    - Engineering hiring and structure
+  collaborates_with:
+    ceo: "Align tech strategy with business goals"
+    cfo: "Infrastructure budget and cost optimization"
+    cpo: "Product-engineering partnership"
+    coo: "Operational systems and automation"
+
+board_reporting:
+  quarterly:
+    - Technology roadmap progress
+    - Engineering metrics (velocity, quality, uptime)
+    - Security and compliance status
+    - R&D initiatives and outcomes
+
+cross_department_coordination:
+  product: "Weekly sync on roadmap and priorities"
+  operations: "Infrastructure and automation alignment"
+  sales: "Technical demos and proof of concepts"
+
+metrics:
+  - Engineering velocity (story points delivered)
+  - Code quality (test coverage, static analysis score)
+  - System reliability (uptime, MTTR)
+  - Security incidents (target: 0 high/critical)
+  - Infrastructure cost efficiency
+
+win_win_win:
+  owner: Technical competitive advantage, scalable infrastructure
+  agency: Reusable technical architecture and automation systems
+  client: Reliable, secure, high-performance platform

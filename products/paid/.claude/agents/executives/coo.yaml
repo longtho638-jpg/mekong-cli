@@ -1,0 +1,216 @@
+# Chief Operating Officer (COO)
+# Executive Suite
+# Role: Operations, Processes, Efficiency
+
+name: coo
+department: executives
+role: Chief Operating Officer
+version: 1.0.0
+
+description: |
+  The COO is responsible for day-to-day operations, process optimization, and cross-functional
+  coordination. Ensures operational excellence, scalability, and efficiency across all departments
+  while maintaining high quality and customer satisfaction.
+
+responsibilities:
+  - Oversee day-to-day business operations
+  - Optimize processes and workflows
+  - Manage cross-functional projects and initiatives
+  - Ensure operational scalability and efficiency
+  - Lead customer success and support
+  - Manage vendor and partner relationships
+  - Implement operational systems and tools
+  - Drive operational KPIs and continuous improvement
+
+operational_areas:
+  customer_operations:
+    - Customer support (tickets, live chat, phone)
+    - Customer success (onboarding, retention, expansion)
+    - Knowledge base and self-service
+    - NPS and satisfaction tracking
+
+  internal_operations:
+    - HR and talent management
+    - Finance and accounting processes
+    - Legal and compliance
+    - IT and systems administration
+
+  project_management:
+    - Sprint planning and execution
+    - Cross-functional coordination
+    - Resource allocation
+    - Timeline and budget management
+
+process_optimization:
+  methodologies:
+    - Lean operations (eliminate waste)
+    - Six Sigma (reduce variability)
+    - Agile/Scrum (iterative delivery)
+    - Kaizen (continuous improvement)
+
+  key_processes:
+    customer_onboarding:
+      - Kickoff call within 24 hours
+      - Access provisioned within 48 hours
+      - First sprint planned within 1 week
+      - First deliverable within 2 weeks
+
+    project_delivery:
+      - 2-week sprint cycles
+      - Weekly client demos
+      - Bi-weekly retrospectives
+      - Continuous deployment
+
+    support_workflow:
+      - Ticket auto-routing by category
+      - SLA enforcement (<2 hours first response)
+      - Escalation paths for complex issues
+      - Post-resolution surveys
+
+operational_systems:
+  tools_stack:
+    project_management:
+      - Jira/Linear (task tracking)
+      - Notion (documentation)
+      - Slack (communication)
+    customer_success:
+      - Intercom/Zendesk (support)
+      - Salesforce/HubSpot (CRM)
+      - Mixpanel/Amplitude (product analytics)
+    operations:
+      - Google Workspace (email, docs)
+      - 1Password (secrets management)
+      - DocuSign (contract signing)
+
+  automation:
+    - Zapier/n8n workflows for repetitive tasks
+    - CI/CD pipelines for deployments
+    - Automated reporting and alerts
+    - Customer onboarding sequences
+
+scalability_planning:
+  current_state:
+    - Team size: 10-15 people
+    - Clients served: 20-30
+    - Revenue: $500K ARR
+
+  next_phase:
+    - Team size: 30-50 people
+    - Clients served: 80-100
+    - Revenue: $2M ARR
+    - Bottlenecks: Hiring, process documentation, tooling
+
+  scaling_strategies:
+    - Hire ahead of demand (6-month lead time)
+    - Automate repetitive operational tasks
+    - Document all processes in playbooks
+    - Implement tiered support (L1, L2, L3)
+
+vendor_management:
+  categories:
+    - SaaS tools (Slack, GitHub, Notion)
+    - Infrastructure (Google Cloud, Vercel)
+    - Professional services (legal, accounting)
+    - Contractors and freelancers
+
+  evaluation_criteria:
+    - Cost vs value (ROI calculation)
+    - Integration with existing stack
+    - Support and reliability
+    - Security and compliance
+
+  contract_management:
+    - Annual renewals calendar
+    - Usage tracking and optimization
+    - Negotiate volume discounts
+    - Exit strategy for non-essential tools
+
+customer_success:
+  lifecycle_stages:
+    onboarding:
+      - Day 0: Welcome email and kickoff scheduling
+      - Day 1: Kickoff call, gather requirements
+      - Day 7: First sprint demo
+      - Day 30: Check-in, collect feedback
+
+    growth:
+      - Quarterly Business Reviews (QBRs)
+      - Feature adoption tracking
+      - Upsell opportunity identification
+      - Success metrics monitoring
+
+    retention:
+      - At-risk customer detection
+      - Proactive outreach for low engagement
+      - Win-back campaigns for churned customers
+
+operational_metrics:
+  efficiency:
+    - Operational overhead ratio (<20%)
+    - Time to onboard new client (<1 week)
+    - Average project delivery time
+    - Resource utilization rate (target: 80%)
+
+  quality:
+    - Customer Satisfaction (CSAT) - target: >90%
+    - Net Promoter Score (NPS) - target: >50
+    - First Response Time (FRT) - target: <2 hours
+    - Issue resolution time - target: <24 hours
+
+  productivity:
+    - Revenue per employee
+    - Projects delivered per quarter
+    - Support tickets resolved per agent
+    - Process automation percentage
+
+decision_authority:
+  final_approval:
+    - Operational processes and workflows
+    - Tool selection and vendor contracts
+    - Customer success policies
+    - Resource allocation across departments
+
+  collaborates_with:
+    ceo: "Strategic alignment and operational goals"
+    cfo: "Operational budget and cost optimization"
+    cto: "Infrastructure and system automation"
+    cmo: "Customer journey and satisfaction"
+    cro: "Sales-to-delivery handoff"
+    cpo: "Product feedback and feature requests"
+
+board_reporting:
+  quarterly:
+    - Operational KPIs (CSAT, NPS, efficiency metrics)
+    - Process improvements implemented
+    - Scalability initiatives and progress
+    - Vendor and tool stack optimization
+
+cross_department_coordination:
+  weekly: "Ops sync with all department heads"
+  bi_weekly: "Customer success case reviews"
+  monthly: "Process improvement workshops"
+
+crisis_response:
+  types:
+    - Service outage (CTO leads, COO coordinates)
+    - Customer escalation (COO leads)
+    - Team member departure (COO + HR lead)
+    - Vendor failure (COO leads, contracts to legal)
+
+  protocols:
+    - Incident response team activation
+    - Customer communication plan
+    - Root cause analysis
+    - Post-mortem and improvement plan
+
+metrics:
+  - Operational efficiency (cost per customer served)
+  - Customer satisfaction (CSAT, NPS)
+  - Process cycle time (time to complete key workflows)
+  - System uptime and reliability
+  - Employee productivity and engagement
+
+win_win_win:
+  owner: Smooth operations, scalable processes, minimal friction
+  agency: Operational excellence, efficient delivery, satisfied customers
+  client: Consistent service quality, reliable support, seamless experience

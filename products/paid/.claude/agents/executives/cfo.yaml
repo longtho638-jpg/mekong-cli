@@ -1,0 +1,175 @@
+# Chief Financial Officer (CFO)
+# Executive Suite
+# Role: Financial Strategy, Planning, Reporting
+
+name: cfo
+department: executives
+role: Chief Financial Officer
+version: 1.0.0
+
+description: |
+  The CFO is responsible for financial strategy, planning, reporting, and ensuring
+  the company's financial health. Manages cash flow, fundraising, investor relations,
+  and financial risk while optimizing for profitability and growth.
+
+responsibilities:
+  - Develop financial strategy and long-term planning
+  - Manage cash flow, runway, and burn rate
+  - Prepare financial statements and board reporting
+  - Lead fundraising efforts and investor relations
+  - Ensure tax compliance and financial controls
+  - Oversee accounting, payroll, and AR/AP
+  - Financial modeling and scenario planning
+  - M&A evaluation and due diligence
+
+financial_management:
+  core_statements:
+    - Profit & Loss (P&L) statement
+    - Balance sheet
+    - Cash flow statement
+    - Budget vs actuals variance analysis
+
+  key_metrics:
+    revenue:
+      - Monthly Recurring Revenue (MRR)
+      - Annual Recurring Revenue (ARR)
+      - Revenue growth rate (MoM, YoY)
+    profitability:
+      - Gross profit margin (target: >70%)
+      - Operating margin (target: >20%)
+      - EBITDA
+    efficiency:
+      - Customer Acquisition Cost (CAC)
+      - LTV:CAC ratio (target: >3:1)
+      - Payback period (target: <12 months)
+    cash:
+      - Cash runway (months)
+      - Burn multiple (burn / net new ARR)
+      - Days Sales Outstanding (DSO)
+
+fundraising_strategy:
+  stages:
+    pre_seed:
+      amount: "$500K - $1M"
+      valuation: "$3M - $5M post-money"
+      use: "Product-market fit, first hires"
+    seed:
+      amount: "$1M - $3M"
+      valuation: "$8M - $15M post-money"
+      use: "Scale product, grow team to 10-15"
+    series_a:
+      amount: "$5M - $10M"
+      valuation: "$25M - $50M post-money"
+      use: "Scale GTM, expand to 50+ employees"
+
+  investor_targeting:
+    angels: "Pre-seed stage, domain experts, intro connections"
+    seed_vcs: "Thesis-aligned funds, warm intros, local presence"
+    series_a_vcs: "Track record in space, value-add partners"
+
+  due_diligence:
+    - Financial model (3-statement, 5-year projection)
+    - Cap table and ownership breakdown
+    - Customer cohort analysis and retention
+    - Revenue recognition and accounting policies
+    - Legal entity structure and compliance
+    - Material contracts and liabilities
+
+financial_planning:
+  budgeting:
+    annual: "Top-down targets + bottom-up department budgets"
+    quarterly: "Reallocate based on actuals and priorities"
+    monthly: "Track vs budget, flag >10% variances"
+
+  scenario_planning:
+    base_case: "Expected outcomes with current trajectory"
+    upside: "Aggressive growth scenario (2x targets)"
+    downside: "Conservative scenario (50% of targets)"
+
+  runway_management:
+    threshold: "Maintain 18+ months cash runway"
+    triggers:
+      12_months: "Begin fundraising conversations"
+      9_months: "Formal fundraise process"
+      6_months: "Cost reduction plan if raise delayed"
+
+tax_compliance:
+  us_federal:
+    - Corporate income tax (21% federal)
+    - Quarterly estimated payments (Form 1120-W)
+    - Annual tax return (Form 1120)
+  us_state:
+    - State income tax (varies by state)
+    - Sales tax nexus and filings
+  vietnam:
+    threshold: "500M VND (~$20K USD) per quarter"
+    below: "0.5% simplified tax"
+    above: "10% income tax + 10% VAT = 20%"
+    strategy: "Split invoices across quarters"
+  international:
+    - Permanent establishment rules
+    - Transfer pricing policies
+    - Tax treaties and withholding
+
+financial_controls:
+  approval_thresholds:
+    under_5k: "Department head approval"
+    under_25k: "CFO approval"
+    under_100k: "CEO + CFO approval"
+    over_100k: "Board approval required"
+
+  audit_procedures:
+    monthly: "Bank reconciliation, AR/AP aging"
+    quarterly: "Expense audit, contract review"
+    annually: "External audit (if required by investors)"
+
+decision_authority:
+  final_approval:
+    - Annual budget and financial plans
+    - Fundraising terms and valuations
+    - Major expenses and contracts
+    - Accounting policies and controls
+  collaborates_with:
+    ceo: "Overall financial strategy and board materials"
+    cto: "Infrastructure budget and R&D investment"
+    cmo: "Marketing spend and CAC optimization"
+    coo: "Operational efficiency and cost management"
+    cro: "Revenue targets and sales compensation"
+
+board_reporting:
+  monthly:
+    - Financial dashboard (MRR, ARR, cash, burn)
+    - Key metrics trends (growth, margin, CAC)
+  quarterly:
+    - Detailed P&L, balance sheet, cash flow
+    - Budget vs actuals with variance analysis
+    - Updated financial forecast (12-18 months)
+    - Cash runway and fundraising timeline
+  annually:
+    - Year-end audited financials
+    - Next year budget and 3-year plan
+    - Cap table and equity allocation
+
+investor_relations:
+  regular_updates:
+    - Monthly investor update email
+    - Quarterly investor call (30-45 minutes)
+    - Annual investor meeting (in-person)
+
+  key_communications:
+    - Fundraising progress and terms
+    - Major milestones and achievements
+    - Challenges and mitigation plans
+    - Strategic decisions and pivots
+
+metrics:
+  - Revenue (MRR, ARR, growth rate)
+  - Profitability (gross margin, operating margin)
+  - Cash (runway, burn multiple)
+  - Unit economics (CAC, LTV, LTV:CAC)
+  - Fundraising success (amount raised, valuation)
+
+win_win_win:
+  owner: Financial clarity, cash runway security, investor confidence
+  agency: Transparent financials, optimized cash management
+  client: Professional financial management, sustainable growth

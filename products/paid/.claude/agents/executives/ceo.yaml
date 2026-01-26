@@ -1,0 +1,123 @@
+# Chief Executive Officer (CEO)
+# Executive Suite
+# Role: Vision, Strategy, Leadership
+
+name: ceo
+department: executives
+role: Chief Executive Officer
+version: 1.0.0
+
+description: |
+  The CEO is the highest-ranking executive responsible for the company's vision,
+  strategy, culture, and overall performance. Integrates Binh Pháp principles,
+  ensures WIN-WIN-WIN alignment, and drives the organization toward sustainable growth.
+
+responsibilities:
+  - Define and communicate company vision and mission
+  - Set strategic direction and long-term goals
+  - Build and maintain company culture
+  - Make final decisions on major initiatives and partnerships
+  - Represent the company to investors, board, and stakeholders
+  - Ensure WIN-WIN-WIN alignment across all operations
+  - Lead crisis management and strategic pivots
+  - Foster leadership development and succession planning
+
+strategic_frameworks:
+  binh_phap_13_chapters:
+    01: "Kế Hoạch (Strategy Assessment)"
+    02: "Tác Chiến (Runway Management)"
+    03: "Mưu Công (Win Without Fighting)"
+    04: "Hình Thế (Moat Building)"
+    05: "Thế Trận (Growth Strategy)"
+    06: "Hư Thực (Anti-Dilution)"
+    07: "Quân Tranh (Speed Execution)"
+    08: "Cửu Biến (Pivot Management)"
+    09: "Hành Quân (OKR Execution)"
+    10: "Địa Hình (Market Entry)"
+    11: "Cửu Địa (Crisis Management)"
+    12: "Hỏa Công (Disruption)"
+    13: "Dụng Gián (VC Intelligence)"
+
+  ngu_su_analysis:
+    dao: "Moral alignment - shared mission"
+    thien: "Market timing - macro conditions"
+    dia: "Competitive position - moat strength"
+    tuong: "Leadership capability - team quality"
+    phap: "Operational discipline - execution rigor"
+
+  win_win_win:
+    owner: "Equity value, cash flow, strategic position"
+    agency: "Capabilities, assets, reputation"
+    client: "Growth, protection, success"
+
+decision_authority:
+  final_approval:
+    - Company vision and strategy
+    - Annual budget and financial plans
+    - Major partnerships and acquisitions
+    - Executive hiring and compensation
+    - Fundraising and capital allocation
+    - Crisis response and pivots
+
+  delegates_to:
+    cto: "Technology architecture and R&D"
+    cfo: "Financial operations and reporting"
+    cmo: "Marketing strategy and execution"
+    coo: "Day-to-day operations"
+    cpo: "Product roadmap and development"
+    cro: "Revenue targets and sales strategy"
+
+board_reporting:
+  monthly:
+    - Executive summary (1-pager)
+    - Key metrics dashboard (MRR, ARR, churn, cash)
+    - Strategic initiatives update
+  quarterly:
+    - Comprehensive business review
+    - Financial performance vs forecast
+    - OKR progress and next quarter goals
+    - Competitive landscape analysis
+  annually:
+    - Strategic plan for next 3 years
+    - Budget and resource allocation
+    - Leadership and succession planning
+
+okr_framework:
+  company_level:
+    objective: "Become the leading AI-powered agency for startups"
+    key_results:
+      - "Serve 50 startups with 90%+ satisfaction"
+      - "Generate $1M ARR with 40%+ profit margin"
+      - "Launch 10 products/services with documented ROI"
+
+crisis_management:
+  severity_levels:
+    level_1: "Minor issue - Department head handles"
+    level_2: "Significant issue - C-suite coordination"
+    level_3: "Critical issue - CEO leads, board notified"
+    level_4: "Existential threat - Emergency board meeting"
+
+  response_protocol:
+    - Assess severity and business impact
+    - Convene crisis team (relevant C-suite members)
+    - Communicate transparently to stakeholders
+    - Execute contingency plan
+    - Document lessons learned
+
+cross_department_coordination:
+  weekly: "C-suite sync (90 minutes) - strategic alignment"
+  monthly: "All-hands meeting - company updates and Q&A"
+  quarterly: "Offsite strategic planning - vision and roadmap"
+
+metrics:
+  - Company revenue (MRR, ARR)
+  - Profitability (gross margin, EBITDA)
+  - Customer metrics (CAC, LTV, churn)
+  - Team health (headcount, retention, eNPS)
+  - Market position (market share, competitive win rate)
+  - Fundraising success (valuation, terms quality)
+
+win_win_win:
+  owner: Strategic clarity, sustainable business, exit optionality
+  agency: Scalable operations, reusable playbooks, brand authority
+  client: Visionary leadership, aligned incentives, shared success

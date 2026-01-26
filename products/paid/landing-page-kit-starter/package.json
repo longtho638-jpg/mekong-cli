@@ -1,0 +1,48 @@
+{
+  "name": "antigravity-landing-page-kit-starter",
+  "version": "1.0.0",
+  "description": "Professional landing page components with React, Next.js, Tailwind CSS, and Framer Motion",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.16",
+    "lucide-react": "^0.300.0",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "landing-page",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "framer-motion",
+    "components",
+    "starter-kit"
+  ],
+  "author": "Antigravity",
+  "license": "SEE LICENSE IN LICENSE.md"
+}

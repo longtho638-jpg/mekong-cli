@@ -23,3 +23,5 @@ class Invoice(BaseModel):
     paid_at: Optional[datetime] = None
     payment_url: Optional[str] = None
     created_at: Optional[datetime] = None
+    notes: Optional[str] = None
+    paid_date: Optional[datetime] = None  # Alias/Legacy for paid_at
