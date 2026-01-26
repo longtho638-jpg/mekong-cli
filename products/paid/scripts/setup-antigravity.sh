@@ -138,9 +138,16 @@ function install_deps() {
         done
 
     elif [[ "$OS_TYPE" == "linux" ]]; then
+        # Check for sudo
+        if [ "$EUID" -ne 0 ] && command -v sudo &> /dev/null; then
+            SUDO="sudo"
+        else
+            SUDO=""
+        fi
+
         if [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" ]]; then
             log_info "Updating apt repositories..."
-            sudo apt-get update
+            $SUDO apt-get update
 
             # Common packages
             PKGS="git nodejs npm ffmpeg jq wget tree build-essential"
@@ -151,7 +158,9 @@ function install_deps() {
             PKGS="$PKGS python3 python3-pip python3-venv"
 
             log_info "Installing packages: $PKGS"
-            sudo apt-get install -y $PKGS
+            if ! $SUDO apt-get install -y $PKGS; then
+                log_error "Failed to install packages via apt-get."
+            fi
 
         elif [[ "$DISTRO" == "centos" || "$DISTRO" == "fedora" || "$DISTRO" == "rhel" ]]; then
             log_info "Updating yum/dnf..."
@@ -161,17 +170,21 @@ function install_deps() {
                 PKG_MGR="yum"
             fi
 
-            sudo $PKG_MGR check-update
+            $SUDO $PKG_MGR check-update
 
             PKGS="git nodejs npm ffmpeg jq wget tree"
             # Python handling might vary, usually python3 is available
             PKGS="$PKGS python3 python3-pip"
 
             log_info "Installing packages using $PKG_MGR: $PKGS"
-            sudo $PKG_MGR install -y $PKGS
+            if ! $SUDO $PKG_MGR install -y $PKGS; then
+                log_error "Failed to install packages via $PKG_MGR."
+            fi
 
             # Install 'Development Tools' group if needed
-            sudo $PKG_MGR groupinstall -y "Development Tools"
+            if ! $SUDO $PKG_MGR groupinstall -y "Development Tools"; then
+                 log_warn "Failed to install Development Tools group. Some builds might fail."
+            fi
         else
              log_warn "Unsupported Linux distro for automatic dependency installation. Please install git, node, python3.11, ffmpeg, jq, wget manually."
         fi
@@ -185,7 +198,9 @@ function setup_proxy() {
         log_success "Proxy module already installed."
     else
         log_info "Installing proxy via npm..."
-        npm install -g antigravity-claude-proxy
+        if ! npm install -g antigravity-claude-proxy; then
+            log_error "Failed to install antigravity-claude-proxy via npm. Check your permissions or network."
+        fi
     fi
 
     log_info "Verifying proxy configuration..."

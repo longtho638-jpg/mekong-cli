@@ -61,6 +61,16 @@ completed: 2026-01-26
   - `requirements.txt` (Updated)
   - `reports/product-manager-260126-2150-phase-5-complete.md`
 
+### [Phase 6: Deployment Hardening](./phase-06-deployment-hardening.md)
+**Status:** ✅ Completed
+- **Goal:** Harden setup script and add Linux support.
+- **Deliverables:** Linux-compatible `setup-antigravity.sh`, Test Harness, Troubleshooting Guide.
+- **Output:**
+  - `products/paid/scripts/setup-antigravity.sh` (Updated)
+  - `products/paid/antigravity-onboarding-kit/docs/troubleshooting-guide.md`
+  - `scripts/test-antigravity-setup.sh`
+  - `products/paid/reports/deployment-test-report.md`
+
 ## Dependencies
 - `antigravity-claude-proxy` (Already exists, needs integration in setup script).
 - `mekong-cli` (Target environment).
