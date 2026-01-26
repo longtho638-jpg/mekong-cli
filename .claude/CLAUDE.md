@@ -305,7 +305,7 @@ The project follows a clear configuration hierarchy to resolve conflicts:
 
 1. `.claude/config/` (Project overrides - HIGHEST priority)
 2. `.claude/rules/` (Project defaults)
-3. `$HOME/.claude/workflows/` (Global defaults)
+3. `$HOME/.agent/workflows/` (Global defaults)
 4. Built-in defaults (LOWEST priority)
 
 See `./.claude/config/precedence.md` for detailed documentation on config resolution.

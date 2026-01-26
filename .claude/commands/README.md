@@ -218,7 +218,7 @@ Antigravity IDE → VibeOS Router → Claude Opus 4.5
 
 - Commands in `.claude/commands/`
 - Agents in `.claude/agents/`
-- Workflows in `.claude/workflows/`
+- Workflows in `.agent/workflows/`
 
 ---
 
