@@ -15,11 +15,15 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
 from backend.api.routers import (
+    accounting,
     agents,
     agents_creator,
+    analytics,
     audit,
     campaigns,
     gumroad_webhooks,
+    hr,
+    inventory,
     mekong_commands,
     monitor,
     ops,
@@ -44,9 +48,11 @@ from backend.websocket.routes import router as ws_router
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Mekong-CLI API - Refactored",
+    title="AgencyOS API",
     description="🌊 Deploy Your Agency in 15 Minutes - Backend API with Clean Architecture",
-    version=settings.api_version,
+    version="3.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 # Add performance monitoring middleware (before rate limiting for accurate timing)
@@ -65,6 +71,10 @@ app.add_middleware(
 )
 
 # Include Routers
+app.include_router(analytics.router)
+app.include_router(hr.router)
+app.include_router(accounting.router)
+app.include_router(inventory.router)
 app.include_router(campaigns.router)
 app.include_router(agentops_router)
 app.include_router(agents.router)

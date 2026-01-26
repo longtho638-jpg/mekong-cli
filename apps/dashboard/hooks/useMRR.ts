@@ -40,7 +40,6 @@ export function useMRR(autoRefresh: boolean = false, refreshInterval: number = 6
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-    const [isMock, setIsMock] = useState(false);
 
     const fetchMRR = useCallback(async () => {
         setLoading(true);
@@ -51,7 +50,6 @@ export function useMRR(autoRefresh: boolean = false, refreshInterval: number = 6
             if (data.success) {
                 setMetrics(data.data);
                 setLastUpdated(new Date(data.timestamp));
-                setIsMock(data.mock || false);
                 setError(null);
             } else {
                 setError(data.error);
@@ -89,7 +87,6 @@ export function useMRR(autoRefresh: boolean = false, refreshInterval: number = 6
         metrics,
         loading,
         error,
-        isMock,
         lastUpdated,
         growthRate: Math.round(growthRate * 10) / 10,
         churnRate: Math.round(churnRate * 10) / 10,

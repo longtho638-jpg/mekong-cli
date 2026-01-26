@@ -110,58 +110,7 @@ export function useAgentSocket(options: UseAgentSocketOptions = {}) {
     }
   }, [])
 
-  // Mock data for demo (when WebSocket not available)
-  useEffect(() => {
-    // Simulate live updates every 5 seconds
-    const mockInterval = setInterval(() => {
-      setAgents(prev =>
-        prev.map(agent => ({
-          ...agent,
-          xp: agent.xp + Math.floor(Math.random() * 10),
-          lastActive: new Date(),
-        }))
-      )
-    }, 5000)
-
-    // Initialize with mock agents
-    setAgents([
-      {
-        id: '1',
-        name: 'Scout Agent',
-        status: 'online',
-        lastActive: new Date(),
-        xp: 15420,
-        tasks: 234,
-      },
-      {
-        id: '2',
-        name: 'Guardian Agent',
-        status: 'busy',
-        lastActive: new Date(),
-        xp: 12850,
-        tasks: 189,
-      },
-      {
-        id: '3',
-        name: 'Portfolio Agent',
-        status: 'online',
-        lastActive: new Date(),
-        xp: 11200,
-        tasks: 156,
-      },
-      {
-        id: '4',
-        name: 'Revenue Agent',
-        status: 'idle',
-        lastActive: new Date(),
-        xp: 9800,
-        tasks: 123,
-      },
-    ])
-
-    return () => clearInterval(mockInterval)
-  }, [])
-
+  // Mock data removed to enforce API usage
   useEffect(() => {
     // Auto-connect on mount (optional)
     // connect()

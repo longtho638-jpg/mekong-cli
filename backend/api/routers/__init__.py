@@ -5,15 +5,19 @@ Tất cả routers cho backend API.
 """
 
 from . import (
+    accounting,
     agents,
     agents_creator,
+    analytics,
     audit,
     campaigns,
     commands,
     crm,
     franchise,
     gumroad_webhooks,
+    hr,
     i18n,
+    inventory,
     kanban,
     monitor,
     ops,
@@ -29,12 +33,16 @@ from . import (
 )
 
 __all__ = [
+    "accounting",
     "agents",
+    "analytics",
     "campaigns",
     "commands",
     "crm",
     "franchise",
+    "hr",
     "i18n",
+    "inventory",
     "payments",
     "router",
     "scheduler",

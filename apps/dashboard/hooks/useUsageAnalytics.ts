@@ -45,7 +45,6 @@ export function useUsageAnalytics(
   const [metrics, setMetrics] = useState<UsageMetrics | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isMock, setIsMock] = useState(false)
 
   const fetchAnalytics = useCallback(async () => {
     setLoading(true)
@@ -59,7 +58,6 @@ export function useUsageAnalytics(
 
       if (data.success) {
         setMetrics(data.data)
-        setIsMock(data.mock || false)
         setError(null)
       } else {
         setError(data.error)
@@ -129,7 +127,6 @@ export function useUsageAnalytics(
     metrics,
     loading,
     error,
-    isMock,
     refresh: fetchAnalytics,
     trackPageView,
     trackFeatureUse,
