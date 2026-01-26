@@ -39,6 +39,7 @@ if [ -d "backend/tests/unit" ]; then
     fi
 
     if [ -n "$PYTEST_CMD" ]; then
+        export PYTHONPATH="$PYTHONPATH:$(pwd)"
         $PYTEST_CMD backend/tests/unit/test_payment_service.py::TestCreateCheckoutSession \
                -x --tb=short --no-cov -q 2>/dev/null || {
             echo "❌ Critical payment tests failed. DO NOT COMMIT."

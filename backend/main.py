@@ -24,6 +24,8 @@ from backend.api.routers import (
     gumroad_webhooks,
     hr,
     inventory,
+    invoices,
+    kanban,
     mekong_commands,
     monitor,
     ops,
@@ -73,6 +75,7 @@ app.add_middleware(
 # Include Routers
 app.include_router(analytics.router)
 app.include_router(hr.router)
+app.include_router(invoices.router)
 app.include_router(accounting.router)
 app.include_router(inventory.router)
 app.include_router(campaigns.router)

@@ -7,14 +7,23 @@ from .agentops import OpsExecuteRequest, OpsExecuteResponse, OpsStatus
 from .command import CommandRequest, CommandResponse
 from .router import RouterRequest, RouterResponse
 from .vibe import VibeRequest, VibeResponse
-from .enums import InvoiceStatus, TaskStatus, TaskPriority
+
+# Unified Models
+from .enums import (
+    InvoiceStatus,
+    TaskStatus,
+    TaskPriority,
+    ProjectStatus,
+    ClientStatus
+)
 from .invoice import Invoice
 from .task import Task
-from .project import Project, ProjectStatus
-from .client import Client, ClientStatus
+from .project import Project
+from .client import Client
 from .agency import Agency
 
 __all__ = [
+    # Core
     "AgentTask",
     "AgentResponse",
     "CommandRequest",
@@ -26,6 +35,7 @@ __all__ = [
     "OpsStatus",
     "OpsExecuteRequest",
     "OpsExecuteResponse",
+    # Unified
     "Invoice",
     "InvoiceStatus",
     "Task",
