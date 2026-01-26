@@ -6,6 +6,8 @@ Tài liệu này sẽ giúp Anh đi từ con số 0 đến một Agency vận h�
 > 🏯 **"Công dục thiện kỳ sự, tất tiên lợi kỳ khí"**
 > (Muốn làm việc tốt, trước hết phải mài sắc công cụ)
 
+**Philosophy**: Agency OS is built on **[Binh Pháp](./binh-phap-philosophy.md)** (兵法 - Art of War) principles. Every command follows strategic wisdom from Sun Tzu, optimized for modern agencies. See the philosophy guide to understand the "why" behind each feature.
+
 ---
 
 ## 📚 Documentation Navigation
@@ -14,7 +16,8 @@ Tài liệu này sẽ giúp Anh đi từ con số 0 đến một Agency vận h�
 - **[Command Index](./command-index.md)** - Quick alphabetical and category-based command lookup
 - **This Guide** - Quick start tutorial for first-time users
 
-> **Note**: This guide uses legacy commands (`/cook`, `mekong init`) for simplicity. For production workflows, see [CLI Reference](./CLI_REFERENCE.md) for modern `cc` module commands.
+> **⚠️ Command Evolution Note**
+> This guide has been updated to use **modern `cc` module commands** (recommended for all new workflows). Legacy slash commands (`/cook`, `/quote`) and mekong commands are still supported but considered deprecated. See [Command Migration Guide](./CLI_REFERENCE.md#-command-migration-guide) for full details.
 
 ---
 
@@ -32,8 +35,17 @@ pip install -e .
 npm install -g @anthropic/mcp-server-filesystem
 
 # 3. Kích hoạt môi trường (Lên đạn)
+cc agent configure-vibe --location "Ho Chi Minh" --tone "Professional"
+```
+
+<details>
+<summary>📜 Legacy command (deprecated)</summary>
+
+```bash
 mekong setup-vibe --location "Ho Chi Minh" --tone "Professional"
 ```
+See [mekong setup-vibe documentation](./CLI_REFERENCE.md#mekong-setup-vibe---configure-environment)
+</details>
 
 ---
 
@@ -43,8 +55,17 @@ Bước đầu tiên là định hình bản sắc cho Agency của Anh.
 
 ```bash
 # Chạy lệnh khởi tạo
+cc client init "Alpha Digital"
+```
+
+<details>
+<summary>📜 Legacy command (deprecated)</summary>
+
+```bash
 mekong init "Alpha Digital"
 ```
+See [mekong init documentation](./CLI_REFERENCE.md#mekong-init---initialize-agency-dna)
+</details>
 
 Hệ thống sẽ hỏi Anh các câu hỏi chiến lược:
 - **Niche (Thị trường ngách):** Anh phục vụ ai? (VD: Spa, Bất động sản, SaaS...)
@@ -58,16 +79,25 @@ Hệ thống sẽ hỏi Anh các câu hỏi chiến lược:
 Hãy để AI Dev (Fullstack Developer) xây dựng landing page cho Anh.
 
 ```bash
-# Lệnh "Thần thánh"
-mekong run-scout "Landing page giới thiệu dịch vụ SEO cho Spa"
+# Bước 1: Research và phân tích
+cc workflow scout "Landing page giới thiệu dịch vụ SEO cho Spa"
+
+# Bước 2: Triển khai với AI
+cc agent spawn --type coder --task "Build a landing page for Spa SEO service using Next.js and Tailwind"
 ```
 
-Sau đó:
+<details>
+<summary>📜 Legacy commands (deprecated)</summary>
+
 ```bash
+# Research
+mekong run-scout "Landing page giới thiệu dịch vụ SEO cho Spa"
+
+# Implementation
 /cook "Build a landing page for Spa SEO service using Next.js and Tailwind"
 ```
-
-> **Modern equivalent**: See [/cook command documentation](./CLI_REFERENCE.md#cook---build-features-with-ai) and [mekong run-scout documentation](./CLI_REFERENCE.md#mekong-run-scout---research-and-scout) for detailed usage and modern `cc` alternatives.
+See [/cook](./CLI_REFERENCE.md#cook---build-features-with-ai) and [mekong run-scout](./CLI_REFERENCE.md#mekong-run-scout---research-and-scout) documentation
+</details>
 
 AI sẽ:
 1.  **Plan:** Lập kế hoạch 3 bước.
@@ -82,18 +112,27 @@ Khi có khách hàng tiềm năng (Lead), hãy dùng bộ công cụ "Tài" đ�
 
 ```bash
 # 1. Tạo báo giá chuẩn Binh Pháp (13 chương)
-/quote "Lotus Spa" --budget 5000
+cc sales quote "Lotus Spa" --budget 5000
 
 # 2. Kiểm tra luật Tam Thắng (WIN-WIN-WIN)
-/win3
+cc strategy validate-win
 
 # 3. Xuất Proposal (Kế sách)
-/proposal "Lotus Spa"
+cc sales proposal "Lotus Spa"
 ```
 
-> **Modern equivalent**: See [/quote](./CLI_REFERENCE.md#quote---generate-pricing-quotes), [/win3](./CLI_REFERENCE.md#win3---validate-win-win-win-alignment), and [/proposal](./CLI_REFERENCE.md#proposal---generate-client-proposals) command documentation for modern `cc sales` and `cc strategy` alternatives.
+<details>
+<summary>📜 Legacy commands (deprecated)</summary>
 
-Nếu điểm `/win3` > 70, Anh có thể tự tin gửi báo giá. Nếu thấp hơn, AI sẽ cảnh báo Anh đang chịu thiệt hoặc khách hàng chưa nhận đủ giá trị.
+```bash
+/quote "Lotus Spa" --budget 5000
+/win3
+/proposal "Lotus Spa"
+```
+See [/quote](./CLI_REFERENCE.md#quote---generate-pricing-quotes), [/win3](./CLI_REFERENCE.md#win3---validate-win-win-win-alignment), and [/proposal](./CLI_REFERENCE.md#proposal---generate-client-proposals) documentation
+</details>
+
+Nếu điểm `cc strategy validate-win` > 70, Anh có thể tự tin gửi báo giá. Nếu thấp hơn, AI sẽ cảnh báo Anh đang chịu thiệt hoặc khách hàng chưa nhận đủ giá trị.
 
 ---
 
@@ -103,10 +142,22 @@ Nếu điểm `/win3` > 70, Anh có thể tự tin gửi báo giá. Nếu thấp
 
 ```bash
 # Master Dashboard
-/antigravity
+cc analytics dashboard
+
+# Additional monitoring commands
+cc monitor status      # System health
+cc analytics kpi        # Key performance indicators
+cc revenue dashboard    # Financial metrics
 ```
 
-> **Modern equivalent**: See [/antigravity command documentation](./CLI_REFERENCE.md#antigravity---master-dashboard) for modern `cc analytics dashboard` and `cc monitor status` alternatives.
+<details>
+<summary>📜 Legacy command (deprecated)</summary>
+
+```bash
+/antigravity
+```
+See [/antigravity documentation](./CLI_REFERENCE.md#antigravity---master-dashboard)
+</details>
 
 Anh sẽ thấy:
 - **💰 Doanh thu:** Tiến độ tới $1M.
@@ -142,7 +193,7 @@ Hỗ trợ OVO, GoPay, GCash.
 A: **Có!** Toàn bộ giao diện và AI Agent đều ưu tiên Tiếng Việt ("Vietnamese First").
 
 **Q: Tôi có cần biết code không?**
-A: **Không nhất thiết.** Với lệnh `/cook`, AI sẽ code thay bạn. Tuy nhiên, biết chút ít sẽ giúp bạn "chỉ đạo" AI tốt hơn.
+A: **Không nhất thiết.** Với lệnh `cc agent spawn --type coder`, AI sẽ code thay bạn. Tuy nhiên, biết chút ít sẽ giúp bạn "chỉ đạo" AI tốt hơn.
 
 **Q: Data của tôi nằm ở đâu?**
 A: Data nằm ngay trên máy của bạn (Local First) hoặc trên Cloud riêng của bạn (Supabase). Chúng tôi không sở hữu data của bạn.
@@ -151,11 +202,20 @@ A: Data nằm ngay trên máy của bạn (Local First) hoặc trên Cloud riên
 
 ## 💡 Bí Kíp (Pro Tips)
 
-- **Gõ `/help`**: Để xem tất cả quyền năng.
+- **Gõ `cc --help`**: Để xem tất cả quyền năng và modules.
 - **Sửa `.claude/agents/*.md`**: Để dạy AI cách nói chuyện giống Anh hơn.
-- **Chạy `/jules`**: Vào cuối tuần để AI tự dọn dẹp code rác.
+- **Chạy `cc devops cleanup`**: Vào cuối tuần để AI tự dọn dẹp code rác.
 
-> **See also**: [/help command documentation](./CLI_REFERENCE.md#help---view-all-commands) and [/jules command documentation](./CLI_REFERENCE.md#jules---weekend-code-cleanup).
+<details>
+<summary>📜 Legacy commands (deprecated)</summary>
+
+- `/help` - Use `cc --help` instead
+- `/jules` - Use `cc devops cleanup` instead
+
+See [/help](./CLI_REFERENCE.md#help---view-all-commands) and [/jules](./CLI_REFERENCE.md#jules---weekend-code-cleanup) documentation
+</details>
+
+> **Pro Tip**: Explore all `cc` modules with `cc --help` to see the full power of Agency OS!
 
 Chúc Anh "Bách chiến bách thắng"! 🏯
 
@@ -175,4 +235,4 @@ Chúc Anh "Bách chiến bách thắng"! 🏯
 - DevOps Module for deployment automation
 - Analytics Module for business intelligence
 
-**Need help?** Use `cc --help` or `/help` to explore available commands.
+**Need help?** Use `cc --help` to explore available commands and modules.

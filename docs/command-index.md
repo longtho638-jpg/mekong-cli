@@ -11,6 +11,7 @@ Last Updated: 2026-01-26
 1. [Alphabetical Index](#alphabetical-index)
 2. [Category Index](#category-index)
 3. [Quick Reference by Use Case](#quick-reference-by-use-case)
+4. [Binh Pháp Strategic Index](#binh-phap-strategic-index) - Commands organized by Art of War principles
 
 ---
 
@@ -348,11 +349,78 @@ cc agent status --all
 
 ---
 
+## Binh Pháp Strategic Index
+
+Commands organized by the 13 Chapters of Sun Tzu's Art of War. See the **[Binh Pháp Philosophy Guide](./binh-phap-philosophy.md)** for detailed strategic context.
+
+### Chapter 1: Kế Hoạch (Strategic Assessment)
+- `cc strategy assess` - Strategic fit analysis
+- `cc strategy validate-win` - WIN-WIN-WIN validation
+- `cc analytics research` - Intelligence gathering
+
+### Chapter 2: Tác Chiến (Resource Management)
+- `cc revenue forecast` - Financial forecasting
+- `cc revenue burn-rate` - Runway calculation
+- `cc revenue metrics` - Financial health tracking
+
+### Chapter 3: Mưu Công (Win Without Fighting)
+- `cc sales positioning` - Market positioning
+- `cc content generate` - Thought leadership
+- `cc sales proposal` - Strategic proposals
+
+### Chapter 4: Hình Thế (Moat Building)
+- `cc analytics moat-audit` - Competitive position
+- `cc strategy gap-analysis` - Identify weaknesses
+- `cc devops build` - Proprietary tools
+
+### Chapter 5: Thế Trận (Momentum / Growth)
+- `cc content viral-score` - Virality analysis
+- `cc revenue pipeline` - Sales momentum
+- `cc content publish` - Execute campaigns
+
+### Chapter 6: Hư Thực (Deception / Opportunity)
+- `cc analytics research` - Competitor weaknesses
+- `cc sales positioning` - Exploit gaps
+- `cc strategy market-entry` - Market opportunities
+
+### Chapter 7: Quân Tranh (Speed / Execution)
+- `cc agent spawn` - Rapid team scaling
+- `cc devops deploy` - Fast deployment
+- `cc workflow sprint` - Sprint execution
+
+### Chapter 9: Hành Quân (Organization)
+- `cc agent status` - Team coordination
+- `cc monitor health` - System monitoring
+- `cc agent dashboard` - Performance tracking
+
+### Chapter 10: Địa Hình (Market Terrain)
+- `cc client research` - Market analysis
+- `cc strategy niche-analysis` - Identify opportunities
+- `cc strategy market-entry` - Entry planning
+
+### Chapter 11: Cửu Địa (Crisis Management)
+- `cc monitor alerts` - Crisis detection
+- `cc revenue emergency-plan` - Survival planning
+- `cc devops rollback` - Emergency recovery
+
+### Chapter 12: Hỏa Công (Innovation / Disruption)
+- `cc agent spawn` - AI weaponization
+- `cc devops setup-ci` - Automation
+- `cc analytics productivity` - Measure impact
+
+### Chapter 13: Dụng Gián (Intelligence)
+- `cc analytics research` - Deep research
+- `cc analytics competitors` - Competitive intelligence
+- `cc client research` - Prospect profiling
+
+---
+
 ## Navigation
 
 - **[Main CLI Reference](./CLI_REFERENCE.md)** - Complete command documentation
 - **[Getting Started Guide](./getting-started.md)** - Quick start tutorial
-- **[Migration Guide](./migration-guide.md)** - Transition from legacy to modern commands (Phase 2)
+- **[Binh Pháp Philosophy](./binh-phap-philosophy.md)** - Strategic philosophy guide
+- **[Migration Guide](./migration-guide.md)** - Transition from legacy to modern commands
 
 ---
 

@@ -19,6 +19,8 @@ cc <module> <command> [options]
 - **Framework**: Typer + Rich
 - **Engine**: `antigravity.core.*` modules
 
+**Strategic Philosophy**: Commands are designed following [Binh Pháp (Art of War) principles](./binh-phap-philosophy.md) - see philosophy guide for strategic context behind each module.
+
 ---
 
 ## 🧠 BRAIN & MUSCLE INTEGRATION
