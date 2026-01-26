@@ -1451,3 +1451,373 @@ def auto_deploy_on_merge(branch, version):
 - Exit codes are consistent across all modules
 - Error messages include actionable suggestions
 - Commands are idempotent where possible (safe to retry)
+
+---
+
+## 🔀 Quick Reference - All Entry Points
+
+Agency OS supports multiple command entry points for different workflows:
+
+| Entry Point | Primary Use | Status |
+|-------------|-------------|--------|
+| `cc <module>` | Modern module-based commands | ✅ **Primary** |
+| `/<command>` | Quick shortcuts for common tasks | 🟡 **Legacy** |
+| `mekong <command>` | Vietnamese cultural commands | 🟡 **Legacy** |
+
+**Recommendation**: Use `cc` commands for new workflows. Legacy commands are preserved for backward compatibility.
+
+---
+
+## 📜 Slash Commands (Legacy)
+
+> **Status**: Legacy shortcuts maintained for backward compatibility
+>
+> **Migration Path**: Each slash command has a modern `cc` equivalent (shown below)
+
+Slash commands provide quick access to common workflows:
+
+### `/cook` - Build Features with AI
+
+**Description**: Delegate feature implementation to AI Dev (fullstack developer agent)
+
+**Usage**:
+```bash
+/cook "Build a landing page for Spa SEO service using Next.js and Tailwind"
+/cook "Add user authentication with JWT"
+/cook "Create dashboard with revenue charts"
+```
+
+**What it does**:
+1. **Plan**: Creates implementation plan with 3-phase breakdown
+2. **Code**: Writes React/Next.js/Python code following standards
+3. **Test**: Runs automated tests and validates
+
+**Modern Equivalent**:
+```bash
+cc agent spawn --type coder --task "Build a landing page..."
+# OR
+cc workflow implement "Build a landing page..."
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `/quote` - Generate Pricing Quotes
+
+**Description**: Generate pricing quotes using Binh Pháp (13 Chapters) strategy
+
+**Usage**:
+```bash
+/quote "Lotus Spa" --budget 5000
+/quote "TechStartup" --budget 50000 --tier enterprise
+/quote "Local Business" --budget 2000 --model retainer
+```
+
+**Arguments**:
+- `client_name` (required): Client or project name
+- `--budget` (optional): Budget in USD
+- `--tier` (optional): warrior | general | tuong-quan (auto-detected if omitted)
+- `--model` (optional): retainer | project | hybrid
+
+**Output**: Generates PDF quote with:
+- Service breakdown by Binh Pháp chapters
+- WIN-WIN-WIN alignment score
+- Payment terms and milestones
+
+**Modern Equivalent**:
+```bash
+cc sales quote "Lotus Spa" --budget 5000
+cc revenue calculate-quote "Lotus Spa" --budget 5000
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `/win3` - Validate WIN-WIN-WIN Alignment
+
+**Description**: Check if a deal/strategy benefits all three parties (Owner, Agency, Client)
+
+**Usage**:
+```bash
+/win3                          # Check current proposal
+/win3 --deal "Lotus Spa"       # Check specific deal
+/win3 --strategy "Series A"    # Check funding strategy
+```
+
+**Output**:
+```
+┌───────────────────────────────────────────────────┐
+│  👑 ANH (Owner) WIN: +15% equity value            │
+│  🏢 AGENCY WIN: +$5K MRR, reusable assets        │
+│  🚀 CLIENT WIN: 3x faster GTM, anti-dilution      │
+│                                                   │
+│  ✅ Score: 85/100 - PROCEED                      │
+└───────────────────────────────────────────────────┘
+```
+
+**Scoring**:
+- **90-100**: Excellent alignment, proceed immediately
+- **70-89**: Good, minor adjustments recommended
+- **50-69**: Risky, renegotiate terms
+- **<50**: ❌ STOP - someone loses
+
+**Modern Equivalent**:
+```bash
+cc strategy validate-win --deal "Lotus Spa"
+# OR
+cc binh-phap validate-win
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `/proposal` - Generate Client Proposals
+
+**Description**: Auto-generate professional proposal documents
+
+**Usage**:
+```bash
+/proposal "Lotus Spa"
+/proposal "TechStartup" --template enterprise
+/proposal "Local Business" --format pdf
+```
+
+**Arguments**:
+- `client_name` (required): Client or project name
+- `--template` (optional): standard | enterprise | startup
+- `--format` (optional): pdf | docx | markdown
+
+**Output**: Generates proposal with:
+- Executive summary
+- Scope of work (aligned with quote)
+- Timeline and milestones
+- Team composition
+- Terms and conditions
+
+**Modern Equivalent**:
+```bash
+cc sales proposal "Lotus Spa"
+cc content generate-proposal "Lotus Spa"
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `/antigravity` - Master Dashboard
+
+**Description**: View comprehensive agency dashboard (revenue, moat, AI agents status)
+
+**Usage**:
+```bash
+/antigravity                   # Full dashboard
+/antigravity --section revenue # Specific section
+/antigravity --refresh         # Force refresh metrics
+```
+
+**Dashboard Sections**:
+1. **💰 Revenue**: MRR, ARR, progress to $1M target
+2. **🏰 Moat**: Competitive advantage strength (0-100)
+3. **🤖 AI Agents**: Status of all active agents
+4. **📊 Pipeline**: Sales pipeline health
+5. **⚡ Velocity**: Development & deployment speed
+
+**Modern Equivalent**:
+```bash
+cc analytics dashboard
+cc monitor status --comprehensive
+cc revenue dashboard
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `/help` - View All Commands
+
+**Description**: Display all available commands across all modules
+
+**Usage**:
+```bash
+/help                          # All commands
+/help revenue                  # Revenue module help
+/help --search "invoice"       # Search commands
+```
+
+**Modern Equivalent**:
+```bash
+cc --help
+cc revenue --help
+```
+
+**Deprecation Status**: ✅ Permanent (standard help command)
+
+---
+
+### `/jules` - Weekend Code Cleanup
+
+**Description**: Automated code maintenance (remove dead code, optimize, refactor)
+
+**Usage**:
+```bash
+/jules                         # Full cleanup
+/jules --quick                 # Quick scan only
+/jules --aggressive            # Deep refactoring
+```
+
+**What it does**:
+- Removes unused imports and variables
+- Optimizes database queries
+- Refactors duplicate code
+- Updates dependencies
+- Runs linting and formatting
+
+**Modern Equivalent**:
+```bash
+cc devops cleanup
+cc agent spawn --type refactoring-specialist
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+## 🏯 Mekong Commands (Binh Pháp - Cultural)
+
+> **Status**: Vietnamese cultural commands preserving Agency OS heritage
+>
+> **Philosophy**: "Binh Pháp" (兵法) - The Art of War applied to business
+
+These commands reflect Vietnamese naming and Binh Pháp strategic philosophy:
+
+### `mekong init` - Initialize Agency DNA
+
+**Description**: Bootstrap agency identity and configuration
+
+**Usage**:
+```bash
+mekong init "Alpha Digital"
+mekong init "VietStartup Agency" --niche saas --model hybrid
+```
+
+**Arguments**:
+- `agency_name` (required): Your agency name
+- `--niche` (optional): spa | real-estate | saas | ecommerce
+- `--model` (optional): retainer | project | hybrid
+- `--goal` (optional): Revenue goal (e.g., "10k/month", "1M ARR")
+
+**Interactive Questions**:
+1. **Niche (Thị trường ngách)**: Who do you serve?
+2. **Model (Mô hình)**: Retainer, Project, or Hybrid?
+3. **Goal (Mục tiêu)**: $10k/month or $1M ARR?
+
+**What it creates**:
+- `.agency/config.json` - Agency configuration
+- `.agency/dna.md` - Brand identity and values
+- `.agency/playbooks/` - Standard operating procedures
+
+**Modern Equivalent**:
+```bash
+cc client init "Alpha Digital"
+# OR
+cc agent onboard --type agency-setup
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `mekong setup-vibe` - Configure Environment
+
+**Description**: Set location and communication tone for AI agents
+
+**Usage**:
+```bash
+mekong setup-vibe --location "Ho Chi Minh" --tone "Professional"
+mekong setup-vibe --location "Singapore" --tone "Casual"
+mekong setup-vibe --location "Bangkok" --tone "Friendly"
+```
+
+**Arguments**:
+- `--location` (required): City/region for localization
+- `--tone` (required): Professional | Casual | Friendly | Technical
+
+**What it does**:
+- Configures AI agent communication style
+- Sets timezone and locale
+- Adjusts pricing recommendations for local market
+- Updates payment gateway preferences (PayOS for VN, Omise for TH, etc.)
+
+**Configuration File**: `.agency/vibe.json`
+
+**Modern Equivalent**:
+```bash
+cc agent configure-vibe --location "Ho Chi Minh" --tone "Professional"
+# OR
+cc devops set-environment --location "Ho Chi Minh"
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+### `mekong run-scout` - Research and Scout
+
+**Description**: AI-powered research and requirement analysis before implementation
+
+**Usage**:
+```bash
+mekong run-scout "Landing page giới thiệu dịch vụ SEO cho Spa"
+mekong run-scout "E-commerce platform for Vietnam market"
+mekong run-scout "CRM system for real estate agency"
+```
+
+**What it does**:
+1. **Market Research**: Analyzes competitors and market trends
+2. **Technical Analysis**: Recommends tech stack
+3. **Requirement Extraction**: Creates detailed specs
+4. **Resource Estimation**: Calculates time and budget
+
+**Output**: Creates research report in `./plans/research/scout-report-{timestamp}.md`
+
+**Workflow**:
+```bash
+# 1. Scout first
+mekong run-scout "Landing page for Spa SEO"
+
+# 2. Then implement
+/cook "Build a landing page for Spa SEO service using Next.js and Tailwind"
+```
+
+**Modern Equivalent**:
+```bash
+cc agent spawn --type researcher --task "Landing page for Spa SEO"
+# OR
+cc workflow scout "Landing page for Spa SEO"
+```
+
+**Deprecation Status**: 🟡 Maintained for backward compatibility
+
+---
+
+## 🔄 Command Migration Guide
+
+For users transitioning from legacy commands to modern `cc` modules:
+
+| Legacy Command | Modern Equivalent | Status |
+|----------------|-------------------|--------|
+| `/cook "task"` | `cc agent spawn --type coder --task "task"` | 🟡 Both work |
+| `/quote "client"` | `cc sales quote "client"` | 🟡 Both work |
+| `/win3` | `cc strategy validate-win` | 🟡 Both work |
+| `/proposal "client"` | `cc sales proposal "client"` | 🟡 Both work |
+| `/antigravity` | `cc analytics dashboard` | 🟡 Both work |
+| `/help` | `cc --help` | ✅ Both work |
+| `/jules` | `cc devops cleanup` | 🟡 Both work |
+| `mekong init "name"` | `cc client init "name"` | 🟡 Both work |
+| `mekong setup-vibe` | `cc agent configure-vibe` | 🟡 Both work |
+| `mekong run-scout` | `cc workflow scout` | 🟡 Both work |
+
+**Recommendation**: Start using `cc` commands for new workflows. Legacy commands will be maintained indefinitely for backward compatibility.

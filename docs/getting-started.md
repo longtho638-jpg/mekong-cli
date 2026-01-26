@@ -8,6 +8,16 @@ Tài liệu này sẽ giúp Anh đi từ con số 0 đến một Agency vận h�
 
 ---
 
+## 📚 Documentation Navigation
+
+- **[CLI Reference](./CLI_REFERENCE.md)** - Complete command documentation (all modules + legacy commands)
+- **[Command Index](./command-index.md)** - Quick alphabetical and category-based command lookup
+- **This Guide** - Quick start tutorial for first-time users
+
+> **Note**: This guide uses legacy commands (`/cook`, `mekong init`) for simplicity. For production workflows, see [CLI Reference](./CLI_REFERENCE.md) for modern `cc` module commands.
+
+---
+
 ## 1. Cài Đặt (Setup)
 
 Yêu cầu: Python 3.9+, Node.js 18+.
@@ -57,6 +67,8 @@ Sau đó:
 /cook "Build a landing page for Spa SEO service using Next.js and Tailwind"
 ```
 
+> **Modern equivalent**: See [/cook command documentation](./CLI_REFERENCE.md#cook---build-features-with-ai) and [mekong run-scout documentation](./CLI_REFERENCE.md#mekong-run-scout---research-and-scout) for detailed usage and modern `cc` alternatives.
+
 AI sẽ:
 1.  **Plan:** Lập kế hoạch 3 bước.
 2.  **Code:** Viết code React/Next.js.
@@ -79,6 +91,8 @@ Khi có khách hàng tiềm năng (Lead), hãy dùng bộ công cụ "Tài" đ�
 /proposal "Lotus Spa"
 ```
 
+> **Modern equivalent**: See [/quote](./CLI_REFERENCE.md#quote---generate-pricing-quotes), [/win3](./CLI_REFERENCE.md#win3---validate-win-win-win-alignment), and [/proposal](./CLI_REFERENCE.md#proposal---generate-client-proposals) command documentation for modern `cc sales` and `cc strategy` alternatives.
+
 Nếu điểm `/win3` > 70, Anh có thể tự tin gửi báo giá. Nếu thấp hơn, AI sẽ cảnh báo Anh đang chịu thiệt hoặc khách hàng chưa nhận đủ giá trị.
 
 ---
@@ -91,6 +105,8 @@ Nếu điểm `/win3` > 70, Anh có thể tự tin gửi báo giá. Nếu thấp
 # Master Dashboard
 /antigravity
 ```
+
+> **Modern equivalent**: See [/antigravity command documentation](./CLI_REFERENCE.md#antigravity---master-dashboard) for modern `cc analytics dashboard` and `cc monitor status` alternatives.
 
 Anh sẽ thấy:
 - **💰 Doanh thu:** Tiến độ tới $1M.
@@ -139,4 +155,24 @@ A: Data nằm ngay trên máy của bạn (Local First) hoặc trên Cloud riên
 - **Sửa `.claude/agents/*.md`**: Để dạy AI cách nói chuyện giống Anh hơn.
 - **Chạy `/jules`**: Vào cuối tuần để AI tự dọn dẹp code rác.
 
+> **See also**: [/help command documentation](./CLI_REFERENCE.md#help---view-all-commands) and [/jules command documentation](./CLI_REFERENCE.md#jules---weekend-code-cleanup).
+
 Chúc Anh "Bách chiến bách thắng"! 🏯
+
+---
+
+## 📖 Next Steps
+
+**Ready to go deeper?**
+
+1. **[Complete CLI Reference](./CLI_REFERENCE.md)** - Explore all 60+ commands across 9 modules
+2. **[Command Index](./command-index.md)** - Quick command lookup (alphabetical + category-based)
+3. **[Command Migration Guide](./CLI_REFERENCE.md#-command-migration-guide)** - Transition to modern `cc` commands
+
+**Advanced Topics**:
+- Revenue Module for financial automation
+- Agent Module for AI orchestration
+- DevOps Module for deployment automation
+- Analytics Module for business intelligence
+
+**Need help?** Use `cc --help` or `/help` to explore available commands.
