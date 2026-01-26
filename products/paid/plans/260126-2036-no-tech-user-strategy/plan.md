@@ -44,11 +44,21 @@ completed: 2026-01-26
 ### [Phase 4: Marketing & Distribution](./phase-04-marketing.md)
 **Status:** ✅ Completed
 - **Goal:** Create viral marketing assets and distribution mechanics.
-- **Deliverables:** Email Sequence, Gumroad Page, Viral Loop Mechanics.
+- **Deliverables:** Email Sequence, Gumroad Product Updates, Delivery Emails.
 - **Output:**
-  - `marketing/email-sequence.md`
-  - `marketing/gumroad-product-page.md`
-  - `marketing/viral-loop-mechanics.md`
+  - `products/paid/docs/marketing/upsell-emails.md`
+  - `products/paid/docs/marketing/delivery-emails.md`
+  - `products/paid/docs/marketing/pricing-tiers.md`
+  - `products/gumroad_products.json` (Updated)
+
+### [Phase 5: Interactive CLI Wizard](./phase-05-interactive-wizard.md)
+**Status:** ✅ Completed
+- **Goal:** Create an Interactive CLI Wizard (Vietnamese-first) for NO-TECH users.
+- **Deliverables:** `antigravity-wizard.py`, `README.md`, updated `requirements.txt`.
+- **Output:**
+  - `scripts/antigravity-wizard.py`
+  - `scripts/README.md`
+  - `requirements.txt` (Updated)
 
 ## Dependencies
 - `antigravity-claude-proxy` (Already exists, needs integration in setup script).
