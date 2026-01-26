@@ -1,0 +1,41 @@
+# Cloud Run Configuration for AgencyOS Backend
+# Deploy with: gcloud run deploy agencyos-backend --source .
+
+runtime: python39
+env: standard
+
+instance_class: F2
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 10
+  target_cpu_utilization: 0.6
+  target_throughput_utilization: 0.6
+  max_concurrent_requests: 80
+
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+
+env_variables:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+
+entrypoint: uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT
+
+liveness_check:
+  path: /health
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+
+readiness_check:
+  path: /health
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+vpc_access_connector:
+  name: projects/PROJECT_ID/locations/REGION/connectors/CONNECTOR_NAME

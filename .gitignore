@@ -50,3 +50,7 @@ reports/
 *.env.local
 **/.env.local
 **/.env
+
+# Large product ZIPs - store elsewhere
+products/paid/products/
+products/paid/*-secure.zip
