@@ -17,6 +17,15 @@ class Settings(BaseSettings):
     WEBHOOK_SECRET: str = "webhook-secret-key"
     MAX_RETRIES: int = 3
 
+    # Provider Secrets (for receiving webhooks)
+    STRIPE_WEBHOOK_SECRET: Optional[str] = None
+    GITHUB_WEBHOOK_SECRET: Optional[str] = None
+    GUMROAD_WEBHOOK_SECRET: Optional[str] = None
+    SHOPIFY_WEBHOOK_SECRET: Optional[str] = None
+
+    # Redis / Queue
+    REDIS_URL: str = "redis://localhost:6379/0"
+
     class Config:
         env_file = ".env"
 
