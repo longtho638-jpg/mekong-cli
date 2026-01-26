@@ -119,13 +119,15 @@ class WebhookSender:
             delivery.next_retry_at = None
 
         db.commit()
-        return success
+        return success, delivery.id, delivery.next_retry_at
 
     @staticmethod
     async def process_event(db: Session, event_type: str, payload: Dict[str, Any]):
         """
-        Find matching endpoints and send webhooks
+        Find matching endpoints and enqueue jobs
         """
+        from app.core.queue import queue_manager
+
         # 1. Log the event
         event = crud_webhook.webhook_event.create(
             db, obj_in={"event_type": event_type, "payload": payload}
@@ -134,9 +136,13 @@ class WebhookSender:
         # 2. Find matching endpoints
         endpoints = crud_webhook.webhook_endpoint.get_by_event_type(db, event_type)
 
-        # 3. Send to each endpoint
-        # In production, this should be offloaded to a background task (Celery/RQ)
-        # For this kit, we use simple async loop or BackgroundTasks
+        # 3. Enqueue job for each endpoint
+        redis = await queue_manager.get_redis()
         for endpoint in endpoints:
-            await WebhookSender.send_webhook(db, endpoint, payload, event.id)
+            await redis.enqueue_job(
+                "send_webhook_job",
+                endpoint_id=endpoint.id,
+                event_data=payload,
+                event_id=event.id
+            )
 

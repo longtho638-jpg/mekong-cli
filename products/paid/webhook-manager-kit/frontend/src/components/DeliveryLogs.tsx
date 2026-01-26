@@ -1,7 +1,8 @@
 import React from 'react';
 import { WebhookDelivery } from '../types';
-import { CheckCircle, XCircle, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
+import { webhookApi } from '../api/client';
 
 interface Props {
   deliveries: WebhookDelivery[];
@@ -10,6 +11,20 @@ interface Props {
 
 export const DeliveryLogs: React.FC<Props> = ({ deliveries, loading }) => {
   const [selectedDelivery, setSelectedDelivery] = React.useState<WebhookDelivery | null>(null);
+  const [retrying, setRetrying] = React.useState(false);
+
+  const handleRetry = async (id: number) => {
+    setRetrying(true);
+    try {
+      await webhookApi.retryDelivery(id);
+      alert('Retry scheduled successfully');
+    } catch (error) {
+      console.error('Failed to retry', error);
+      alert('Failed to schedule retry');
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   if (loading && deliveries.length === 0) {
     return <div className="p-4 text-center text-gray-500">Loading logs...</div>;

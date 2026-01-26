@@ -30,6 +30,18 @@ export const webhookApi = {
     const response = await apiClient.get(`/webhooks/${endpointId}/deliveries`);
     return response.data;
   },
+  getEvents: async () => {
+    const response = await apiClient.get('/events/');
+    return response.data;
+  },
+  getEvent: async (id: number) => {
+    const response = await apiClient.get(`/events/${id}`);
+    return response.data;
+  },
+  retryDelivery: async (deliveryId: number) => {
+    const response = await apiClient.post(`/deliveries/${deliveryId}/retry`);
+    return response.data;
+  },
   triggerEvent: async (eventType: string, payload: any) => {
     const response = await apiClient.post('/events/trigger', {
       event_type: eventType,

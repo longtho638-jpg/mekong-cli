@@ -3,9 +3,12 @@ import { useWebhooks, useDeliveries } from './hooks/useWebhooks';
 import { EndpointList } from './components/EndpointList';
 import { EndpointForm } from './components/EndpointForm';
 import { DeliveryLogs } from './components/DeliveryLogs';
+import { EventList } from './components/EventList';
 import { WebhookEndpoint } from './types';
 import { webhookApi } from './api/client';
-import { LayoutDashboard, Zap, RefreshCw } from 'lucide-react';
+import { LayoutDashboard, Zap, RefreshCw, Radio, Activity } from 'lucide-react';
+
+type ViewMode = 'endpoints' | 'events';
 
 function App() {
   const { endpoints, loading: endpointsLoading, createEndpoint, deleteEndpoint } = useWebhooks();
@@ -14,6 +17,7 @@ function App() {
   const { deliveries, loading: deliveriesLoading } = useDeliveries(selectedEndpoint?.id || null);
   const [triggering, setTriggering] = useState(false);
   const [retrying, setRetrying] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('endpoints');
 
   const handleCreate = async (data: any) => {
     await createEndpoint(data);
@@ -62,6 +66,30 @@ function App() {
                 <LayoutDashboard className="h-8 w-8 text-indigo-600" />
                 <span className="ml-2 text-xl font-bold text-gray-900">Webhook Manager</span>
               </div>
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <button
+                  onClick={() => setViewMode('endpoints')}
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    viewMode === 'endpoints'
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                >
+                  <Radio className="w-4 h-4 mr-2" />
+                  Endpoints
+                </button>
+                <button
+                  onClick={() => setViewMode('events')}
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    viewMode === 'events'
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                >
+                  <Activity className="w-4 h-4 mr-2" />
+                  Events
+                </button>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
                 <button
@@ -86,42 +114,46 @@ function App() {
       </nav>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]">
-          {/* Left Sidebar: Endpoints */}
-          <div className="w-full md:w-1/3 flex flex-col space-y-4">
-             {isAdding ? (
-                 <EndpointForm onSave={handleCreate} onCancel={() => setIsAdding(false)} />
-             ) : (
-                 <EndpointList
-                    endpoints={endpoints}
-                    onSelect={handleSelect}
-                    onDelete={deleteEndpoint}
-                    selectedId={selectedEndpoint?.id || null}
-                    onAdd={() => { setSelectedEndpoint(null); setIsAdding(true); }}
-                 />
-             )}
-          </div>
+        {viewMode === 'endpoints' ? (
+            <div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]">
+            {/* Left Sidebar: Endpoints */}
+            <div className="w-full md:w-1/3 flex flex-col space-y-4">
+                {isAdding ? (
+                    <EndpointForm onSave={handleCreate} onCancel={() => setIsAdding(false)} />
+                ) : (
+                    <EndpointList
+                        endpoints={endpoints}
+                        onSelect={handleSelect}
+                        onDelete={deleteEndpoint}
+                        selectedId={selectedEndpoint?.id || null}
+                        onAdd={() => { setSelectedEndpoint(null); setIsAdding(true); }}
+                    />
+                )}
+            </div>
 
-          {/* Right Content: Logs */}
-          <div className="w-full md:w-2/3 flex flex-col">
-            {selectedEndpoint ? (
-                <>
-                    <div className="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                        <h2 className="text-lg font-medium text-gray-900">{selectedEndpoint.description || selectedEndpoint.url}</h2>
-                        <p className="text-sm text-gray-500 truncate">{selectedEndpoint.url}</p>
-                        <div className="mt-2 text-xs font-mono bg-gray-100 p-2 rounded inline-block">
-                            Secret: {selectedEndpoint.secret}
+            {/* Right Content: Logs */}
+            <div className="w-full md:w-2/3 flex flex-col">
+                {selectedEndpoint ? (
+                    <>
+                        <div className="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                            <h2 className="text-lg font-medium text-gray-900">{selectedEndpoint.description || selectedEndpoint.url}</h2>
+                            <p className="text-sm text-gray-500 truncate">{selectedEndpoint.url}</p>
+                            <div className="mt-2 text-xs font-mono bg-gray-100 p-2 rounded inline-block">
+                                Secret: {selectedEndpoint.secret}
+                            </div>
                         </div>
+                        <DeliveryLogs deliveries={deliveries} loading={deliveriesLoading} />
+                    </>
+                ) : (
+                    <div className="flex-1 flex items-center justify-center bg-white rounded-lg border-2 border-dashed border-gray-300 text-gray-500">
+                        Select an endpoint to view logs or create a new one.
                     </div>
-                    <DeliveryLogs deliveries={deliveries} loading={deliveriesLoading} />
-                </>
-            ) : (
-                <div className="flex-1 flex items-center justify-center bg-white rounded-lg border-2 border-dashed border-gray-300 text-gray-500">
-                    Select an endpoint to view logs or create a new one.
-                </div>
-            )}
-          </div>
-        </div>
+                )}
+            </div>
+            </div>
+        ) : (
+            <EventList />
+        )}
       </main>
     </div>
   );

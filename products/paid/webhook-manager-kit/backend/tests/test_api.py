@@ -6,6 +6,7 @@ from app.db.init_db import init_db
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.base_class import Base
+from unittest.mock import AsyncMock, patch
 
 # Setup test DB
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -38,6 +39,13 @@ def override_get_db(db_session):
     yield
     app.dependency_overrides = {}
 
+@pytest.fixture
+def mock_queue():
+    with patch("app.core.queue.queue_manager.get_redis", new_callable=AsyncMock) as mock_get:
+        mock_redis = AsyncMock()
+        mock_get.return_value = mock_redis
+        yield mock_redis
+
 @pytest.mark.asyncio
 async def test_create_endpoint(override_get_db):
     transport = ASGITransport(app=app)
@@ -53,7 +61,7 @@ async def test_create_endpoint(override_get_db):
     assert "secret" in data
 
 @pytest.mark.asyncio
-async def test_trigger_event(override_get_db):
+async def test_trigger_event(override_get_db, mock_queue):
     transport = ASGITransport(app=app)
     # First create an endpoint
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
@@ -70,3 +78,9 @@ async def test_trigger_event(override_get_db):
         })
     assert response.status_code == 202
     assert response.json()["message"] == "Event received and processing started"
+
+    # Verify job was enqueued
+    mock_queue.enqueue_job.assert_called_once()
+    args, kwargs = mock_queue.enqueue_job.call_args
+    assert args[0] == "send_webhook_job"
+    assert kwargs["event_data"] == {"order_id": 123}
