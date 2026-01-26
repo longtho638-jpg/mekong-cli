@@ -1,8 +1,25 @@
 {
   "version": "1.0",
-  "updated": "2026-01-24",
+  "updated": "2026-01-26",
   "store_url": "https://billmentor.gumroad.com",
   "products": [
+    {
+      "id": "antigravity-onboarding-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🚀 Antigravity Onboarding Kit - No-Tech to Commander in 15 Mins",
+      "price": 4700,
+      "thumbnail": "antigravity-onboarding-kit-cover.png",
+      "tags": [
+        "onboarding",
+        "setup",
+        "productivity",
+        "no-code",
+        "agencyos",
+        "automation"
+      ],
+      "description": "🚀 **Transform from 'No-Tech' to 'Commander' in 15 Minutes.**\n\n**\"Victory before Combat.\"**\n\nStruggling to set up your dev environment? Overwhelmed by terminal commands? The **Antigravity Onboarding Kit** is the \"Bootloader\" for your AgencyOS journey.\n\n### 📦 What's Inside (Operation Iron Man):\n- 📘 **Command Center Manual**: The strategic guide to hardware, network, and mindset.\n- ⚡ **1-Click Setup Script**: Automatically installs Node, Python, VSCode, and extensions.\n- 🎓 **Video Academy**: \"Commanding the AI Legion\" - Learn to lead agents, not write code.\n- 🛡️ **Antigravity Proxy Config**: Instant low-latency connection to AI models.\n\n### 🎯 Results:\n- **Setup Time**: < 15 mins (vs 4 hours)\n- **Confidence**: 100% (No more \"I am a bad coder\")\n\n**The prerequisite for AgencyOS Pro. Start here.**"
+    },
     {
       "id": "vscode-starter-pack",
       "gumroad_id": "cxcpz",
@@ -79,19 +96,127 @@
       "id": "auth-starter-supabase",
       "gumroad_id": "vlrvh",
       "action": "update",
-      "title": "🔐 Auth Starter Supabase - Next.js 15 + Enterprise OAuth Complete",
-      "price": 4700,
+      "title": "🔐 Auth Starter Supabase - Next.js 14+ Authentication (Email/Password + Protected Routes)",
+      "price": 2700,
       "thumbnail": "auth-starter-cover.png",
       "tags": [
         "nextjs",
         "supabase",
         "authentication",
-        "oauth",
         "react",
         "typescript",
+        "saas",
+        "starter kit"
+      ],
+      "description": "🔐 **The Last Authentication Template You'll Ever Need!**\n\n**Price: $27 (Launch Special)**\n\nBuilt for Next.js 14+ (App Router) and Supabase, this starter kit handles the most complex part of your app so you can focus on building features.\n\n### ✨ Key Features:\n- ✅ **Email/Password Flow**: Login, Signup, Forgot/Reset Password.\n- 🛡️ **Middleware Protection**: Secure routes at the edge (Server + Client).\n- 🔄 **Session Management**: Auto-refresh hooks (`useAuth`, `useSession`).\n- 🎨 **Production UI**: Tailwind CSS, Dark Mode, Loading States.\n- 🔒 **Type-Safe**: 100% TypeScript with Zod validation patterns.\n\n### 📦 What's Inside:\n- **Components**: Pre-built forms and route guards.\n- **Hooks**: Custom hooks for user state.\n- **Lib**: Supabase client/server utilities.\n- **Examples**: Basic and Protected implementations.\n\n**Save 20+ hours of setup time. Production-ready immediately.**"
+    },
+    {
+      "id": "social-auth-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🔐 Social Auth Kit - Production-Ready OAuth (Google/GitHub/Discord) + React Hooks",
+      "price": 2700,
+      "thumbnail": "social-auth-kit-cover.png",
+      "tags": [
+        "oauth",
+        "authentication",
+        "react",
+        "fastapi",
+        "python",
+        "security",
         "saas"
       ],
-      "description": "🔐 **The Last Authentication Template You'll Ever Need!**\n\nBuilt for Next.js 15 and Supabase, this starter kit handles the most complex part of your app so you can focus on building features.\n\n### ✨ High-Performance Features:\n- 🔑 **Multi-Provider OAuth**: Google, GitHub, and Discord support.\n- 🛡️ **Middleware Protection**: Secure routes at the edge for zero latency.\n- 👤 **Unified User Profile**: Profile management, avatars, and settings.\n- 🎨 **MD3 Design System**: Beautiful, responsive forms in dark mode.\n- 📧 **Enterprise Email Flow**: Password reset, magic links, and verification.\n\n### 🏯 Security Moat (Hình Thế):\nA solid auth layer is your first line of defense. Pre-configured for enterprise standards.\n\n**Compatible with Server Components and the new App Router. Lifetime Updates.**"
+      "description": "🔐 **Drop-in Authentication Microservice for Modern SaaS.**\n\n**\"Authentication is hard. We made it easy.\"**\n\nStop wasting weeks building OAuth flows, handling refresh tokens, and securing cookies. The Social Auth Kit is a production-ready microservice that handles it all.\n\n### 🚀 Features:\n- ✅ **Multi-Provider**: Google, GitHub, Discord ready.\n- 🛡️ **Bank-Grade Security**: HttpOnly Cookies, JWT Access Tokens, CSRF protection.\n- ⚛️ **Frontend Kit**: `useAuth` hook and UI components for React.\n- 🐳 **Dockerized**: Deploy in 5 minutes with one command.\n- 📝 **Type-Safe**: Full Python (Pydantic) and TypeScript definitions.\n\n### 📦 What's Inside:\n- **Backend Microservice**: FastAPI + Async SQLAlchemy.\n- **Frontend Library**: Hooks, Context, and Components.\n- **Documentation**: Integration, Deployment, and API guides.\n\n**Save 40+ hours of dev time. Secure by design.**"
+    },
+    {
+      "id": "landing-page-kit",
+      "gumroad_id": "zdqlc",
+      "action": "update",
+      "title": "🚀 Landing Page Kit STARTER - High-Conversion React Components (Tailwind + Framer)",
+      "price": 3700,
+      "thumbnail": "landing-page-kit-cover.png",
+      "tags": [
+        "landing page",
+        "react",
+        "tailwind",
+        "components",
+        "template",
+        "saas",
+        "conversion"
+      ],
+      "description": "🚀 **Build your next SaaS landing page in minutes, not days.**\n\nStop wasting time rebuilding Hero, Pricing, and Feature sections. The **Landing Page Kit STARTER** gives you production-ready, highly-converting components built with the modern stack you love.\n\n### 🛠 Tech Stack:\n- **React 18+** (Server Components Ready)\n- **TypeScript** (Fully typed)\n- **Tailwind CSS** (Easy styling)\n- **Framer Motion** (Smooth animations)\n\n### 📦 What's Inside?\n- ✅ **Hero Section**: With 3D Scroll Animation\n- ✅ **Features Grid**: Bento-style layout with Spotlight effect\n- ✅ **Pricing Tables**: Clean, comparison-ready tiers\n- ✅ **CTA Blocks**: High-conversion prompts\n- ✅ **2 Full Templates**: SaaS Classic & Product Launch\n\n**Designed for Conversion. Dark Mode Native. Accessible.**"
+    },
+    {
+      "id": "feedback-widget-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "📸 Feedback Widget Kit - Screenshot & Bug Reporting (React + FastAPI)",
+      "price": 3700,
+      "thumbnail": "feedback-widget-kit-cover.png",
+      "tags": [
+        "react",
+        "widget",
+        "fastapi",
+        "feedback",
+        "screenshot",
+        "saas",
+        "bug-reporting"
+      ],
+      "description": "📸 **The Missing Feedback Widget for your SaaS.**\n\n**\"A picture is worth a 1000 bug reports.\"**\n\nCollect user feedback with context. The **Feedback Widget Kit** lets users draw on their screen, capture screenshots, and report bugs without leaving your app.\n\n### 🚀 Features:\n- 📸 **Screenshot Capture**: Built-in `html2canvas` integration.\n- 🎨 **Headless & Customizable**: Styled with Tailwind, easy to override.\n- 🚀 **FastAPI Backend**: Handle uploads, storage (S3/Local), and notifications.\n- 📊 **Admin Dashboard**: View feedback, resolve issues, and export data.\n- 📱 **Mobile Ready**: Works perfectly on all devices.\n\n### 📦 What's Inside:\n- **React Widget**: Drop-in component (`<FeedbackWidget />`).\n- **Backend API**: Python FastAPI service with SQLite/Postgres.\n- **Dashboard**: React Admin UI to manage reports.\n\n**Stop guessing what users mean. See it with your own eyes.**"
+    },
+    {
+      "id": "api-rate-limiter-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🛡️ API Rate Limiter Kit - Distributed Redis Rate Limiting (FastAPI + React)",
+      "price": 3700,
+      "thumbnail": "api-rate-limiter-kit-cover.png",
+      "tags": [
+        "fastapi",
+        "redis",
+        "rate-limiting",
+        "security",
+        "middleware",
+        "saas",
+        "dashboard"
+      ],
+      "description": "🛡️ **Protect Your API from Abuse with Distributed Rate Limiting.**\n\n**\"Traffic control for your specialized AI agents.\"**\n\nA production-ready, distributed rate limiting solution for FastAPI applications using Redis. Includes a dashboard to manage rules dynamically without restarting your server.\n\n### 🚀 Features:\n- 🛡️ **Dual Strategy**: Fixed Window & Sliding Window algorithms supported.\n- 🚀 **Distributed**: Redis-backed for scalability across multiple workers.\n- ⚙️ **Dynamic Config**: Hot-reload rules via Admin Dashboard.\n- 📊 **Monitoring**: Real-time status checks and rule management.\n- 🔌 **Drop-in**: Easy middleware integration for any FastAPI app.\n\n### 📦 What's Inside:\n- **Backend Core**: Lua scripts, dependency injection, and middleware.\n- **Admin Dashboard**: React UI to view and configure limits.\n- **Docker Ready**: Complete `docker-compose` setup.\n\n**Secure your infrastructure. Control your costs.**"
+    },
+    {
+      "id": "changelog-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "📢 Changelog Kit - Markdown Updates & RSS Feed (FastAPI + React)",
+      "price": 2700,
+      "thumbnail": "changelog-kit-cover.png",
+      "tags": [
+        "changelog",
+        "markdown",
+        "rss",
+        "widget",
+        "react",
+        "fastapi",
+        "saas"
+      ],
+      "description": "📢 **Keep Your Users in the Loop with a Beautiful Changelog.**\n\n**\"Ship features, tell the world.\"**\n\nA lightweight, drop-in solution to manage and display product updates. Write updates in Markdown, and the kit generates a beautiful timeline page, an RSS feed, and an embeddable widget.\n\n### 🚀 Features:\n- 📝 **Markdown Driven**: Manage updates as simple `.md` files with frontmatter.\n- 📡 **RSS/Atom Feeds**: Automatically generated XML feeds for subscribers.\n- 🔔 **React Widget**: An embeddable \"What's New\" bell icon and popover.\n- 🎨 **Beautiful UI**: Full-page timeline view styled with Tailwind CSS.\n- 🐳 **Docker Ready**: One-command deployment.\n\n### 📦 What's Inside:\n- **Backend**: FastAPI service for parsing and feeds.\n- **Frontend**: React components for Page and Widget.\n- **Integration**: Simple API for fetching latest updates.\n\n**Build trust with transparency. Keep users engaged.**"
+    },
+    {
+      "id": "session-recording-kit",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🎥 Session Recording Kit - Self-Hosted Session Replay (FastAPI + React + rrweb)",
+      "price": 6700,
+      "thumbnail": "session-recording-kit-cover.png",
+      "tags": [
+        "session-replay",
+        "rrweb",
+        "react",
+        "fastapi",
+        "analytics",
+        "ux",
+        "self-hosted"
+      ],
+      "description": "🎥 **See Exactly How Users Experience Your App.**\n\n**\"Stop guessing. Watch the tape.\"**\n\nA self-hosted, pixel-perfect session replay system. Record every click, scroll, and interaction. Replay sessions to reproduce bugs and understand user behavior without sharing data with third parties.\n\n### 🚀 Features:\n- 🎥 **Pixel-Perfect Replay**: Powered by `rrweb` for high-fidelity DOM reconstruction.\n- 🔒 **Self-Hosted Privacy**: You own the data. No third-party trackers.\n- ⚡ **Lightweight SDK**: <15KB gzipped, zero dependencies (except rrweb).\n- 🚀 **High Performance**: Chunked ingestion for smooth recording of long sessions.\n- 📊 **Admin Dashboard**: Filter sessions by user, duration, and date.\n\n### 📦 What's Inside:\n- **Backend**: FastAPI service with chunked event storage (SQLite/Postgres).\n- **Frontend**: React Dashboard with integrated Player.\n- **SDK**: TypeScript client for recording.\n\n**Understand your users. Fix bugs faster.**"
     },
     {
       "id": "vietnamese-agency-kit",
@@ -127,7 +252,7 @@
         "crm",
         "templates"
       ],
-      "description": "🏢 **Run Your Entire Agency Like a Fortune 500 Company!**\n\n**\"Vận hành như một Đế chế.\" (Operate like an Empire.)**\n\nAgencyOS Pro is the definitive operating system for modern AI agencies. It combines performance, strategy, and automation into a single, unified codebase acting as your **Central Brain** (`.claude/memory`).\n\n### 💎 The Ultimate Bundle ($1,200+ Value):\n- 🚀 **Full Template Suite**: All Starters (FastAPI, Next.js, VSCode, VIBE).\n- 📈 **Revenue Dashboard**: Real-time financial tracking and MRR metrics.\n- 🤝 **Client CRM**: Advanced pipeline management with automated follow-ups.\n- 🧠 **AI Extensions**: Custom agents for content, sales, and coding.\n\n### 🏯 Strategy First (Binh Pháp Tôn Tử):\nIncludes the full Binh Pháp Venture Studio playbook for scaling to $1M ARR with zero technical debt.\n\n**Instant Access. Commercial License. Priority Performance.**"
+      "description": "🏢 **Run Your Entire Agency Like a Fortune 500 Company!**\n\n**\"Vận hành như một Đế chế.\" (Operate like an Empire.)**\n\nAgencyOS Pro is the definitive operating system for modern AI agencies. It combines performance, strategy, and automation into a single, unified codebase acting as your **Central Brain** (`.claude/memory`).\n\n### 💎 The Ultimate Bundle ($1,200+ Value):\n- 🚀 **Full Template Suite**: All Starters (FastAPI, Next.js, VSCode, VIBE).\n- 🎁 **Bonus**: **Antigravity Onboarding Kit** (Setup & Training) included ($47 value).\n- 📈 **Revenue Dashboard**: Real-time financial tracking and MRR metrics.\n- 🤝 **Client CRM**: Advanced pipeline management with automated follow-ups.\n- 🧠 **AI Extensions**: Custom agents for content, sales, and coding.\n\n### 🏯 Strategy First (Binh Pháp Tôn Tử):\nIncludes the full Binh Pháp Venture Studio playbook for scaling to $1M ARR with zero technical debt.\n\n**Instant Access. Commercial License. Priority Performance.**"
     },
     {
       "id": "agencyos-enterprise",
@@ -145,7 +270,26 @@
         "dashboard",
         "scale"
       ],
-      "description": "👑 **The Gold Standard for Enterprise Agency Excellence!**\n\n**\"Build to Exit.\" (Xây dựng để Thoái vốn.)**\n\nScale beyond boundaries. AgencyOS Enterprise is designed for high-growth firms, franchise networks, and multi-team organizations.\n\n### 🚀 Enterprise-Only Features:\n- ⚪ **White-Labeling**: Remove our branding, add yours. Fully customizable.\n- 👥 **Multi-Team Governance**: Granular permissions and team-specific dashboards.\n- 🌐 **Custom Domain Engine**: Deploy client portals to any domain automatically.\n- 📞 **1:1 Onboarding**: Dedicated strategist to help you set up your ecosystem.\n- 🛠️ **Source Code Access**: Full control over every line of code.\n\n### 💰 Maximize Valuation (Moat & Asset):\nBuilt to make your agency 'exit-ready' with structured data, clean audits, and scalable IP.\n\n**The ultimate choice for serious founders. Priority 24/7 Support included.**"
+      "description": "👑 **The Gold Standard for Enterprise Agency Excellence!**\n\n**\"Build to Exit.\" (Xây dựng để Thoái vốn.)**\n\nScale beyond boundaries. AgencyOS Enterprise is designed for high-growth firms, franchise networks, and multi-team organizations.\n\n### 🚀 Enterprise-Only Features:\n- ⚪ **White-Labeling**: Remove our branding, add yours. Fully customizable.\n- 👥 **Multi-Team Governance**: Granular permissions and team-specific dashboards.\n- 🎁 **Bonus**: **Antigravity Onboarding Kit** (Setup & Training) included ($47 value).\n- 🌐 **Custom Domain Engine**: Deploy client portals to any domain automatically.\n- 📞 **1:1 Onboarding**: Dedicated strategist to help you set up your ecosystem.\n- 🛠️ **Source Code Access**: Full control over every line of code.\n\n### 💰 Maximize Valuation (Moat & Asset):\nBuilt to make your agency 'exit-ready' with structured data, clean audits, and scalable IP.\n\n**The ultimate choice for serious founders. Priority 24/7 Support included.**"
+    },
+    {
+      "id": "agencyos-workspace-template",
+      "gumroad_id": "TBD",
+      "action": "create",
+      "title": "🏯 AgencyOS Workspace Template - Complete Agency Setup (5-Min Deploy)",
+      "price": 9700,
+      "thumbnail": "agencyos-workspace-template-cover.png",
+      "tags": [
+        "workspace",
+        "agency",
+        "template",
+        "binh pháp",
+        "automation",
+        "agents",
+        "workflows",
+        "starter kit"
+      ],
+      "description": "🏯 **Transform Your Agency Operations in 5 Minutes!**\n\n**\"Mọi thứ Anh đưa → Antigravity biến thành VŨ KHÍ HẠT NHÂN\" (Everything You Give → Antigravity Turns into NUCLEAR WEAPON)**\n\nThe AgencyOS Workspace Template is the ultimate \"weaponized\" starter kit that combines the strategic wisdom of Binh Pháp with battle-tested operational workflows.\n\n### 🚀 What's Inside (The \"Minh Long\" Model):\n- 🧠 **10-STRATEGY (Brain)**: Binh Pháp 13 Chapters + WIN-WIN-WIN Gate\n- 💰 **20-REVENUE (Blood)**: Sales Pipeline, Marketing Assets, Finance Ops\n- ⚡ **30-OPERATIONS (Muscle)**: Legal Contracts, Delivery Templates, HR Culture\n- 💻 **platform (Body)**: Pre-wired Next.js Dashboard + Landing Page\n- ⚙️ **.agency (Engine)**: Automated setup with config management\n\n### 🤖 The Executive Team (6 AI Agents):\n- 👑 **executive-hub**: CEO/Chairman tracking KPIs & strategy\n- 💰 **finance-hub**: CFO managing P&L, cash flow, runways\n- 📈 **sales-hub**: CRO handling pipeline, CRM, pricing\n- 🎯 **content-marketer**: CMO managing content calendar, SEO\n- 📊 **revenue-engine**: Analyst calculating MRR/ARR forecasting\n- 🏯 **binh-phap-strategist**: Grand Strategist ensuring WIN-WIN-WIN alignment\n\n### ⚡ 10 Battle-Tested Workflows:\n- Strategic Audit (Ch 1), Runway Analysis (Ch 2), Win-Win-Win Check\n- Sales Pipeline Review, Content Calendar Creation\n- Contract Drafting, Invoice Generation, Hiring & Onboarding\n- Quarterly Business Review, Crisis Management (Ch 11)\n\n### 🎯 5-Minute Setup Automation:\n- Interactive `setup.sh` script personalizes everything\n- Automatic placeholder replacement ({{AGENCY_NAME}})\n- Config generation for branding (Tailwind, Dashboard)\n- Dependency installation automation\n- Meta-docs cleanup for clean delivery\n\n### 📦 Professional Packaging:\n- ZIP file with SHA256 checksum\n- Full documentation (SETUP.md + README.md)\n- Pre-filled examples using AgencyOS defaults\n- Brand kit with placeholder logos\n\n### 🏯 Strategic Alignment (Binh Pháp):\nBuilt on Sun Tzu's Art of War principles - every workflow enforces the WIN-WIN-WIN gate to ensure Owner, Agency, and Client all benefit.\n\n**Deploy in <5 minutes. Commercial license. Lifetime updates.**"
     },
     {
       "id": "bizplan-generator",
