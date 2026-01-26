@@ -3,8 +3,24 @@ Pytest Configuration for Backend Tests
 Agency OS v2.0 - WIN-WIN-WIN Testing
 """
 
+import os
 import sys
 from pathlib import Path
+
+# ========== CRITICAL: Set environment variables BEFORE any backend imports ==========
+# These must be set at module level (not in fixture) because backend modules check them at import time
+
+# Required for auth module (checked in backend/api/auth/utils.py at import)
+os.environ.setdefault("SECRET_KEY", "test-secret-key-for-testing-only-do-not-use-in-production")
+os.environ.setdefault("ALGORITHM", "HS256")
+os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+
+# Payment webhooks (prevents import errors in webhook routes)
+os.environ.setdefault("GUMROAD_WEBHOOK_SECRET", "test-gumroad-webhook-secret-for-testing")
+os.environ.setdefault("STRIPE_WEBHOOK_SECRET", "test-stripe-webhook-secret-for-testing")
+
+# Database (if needed)
+os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 
 # Ensure backend package is importable from root
 root_dir = Path(__file__).parent.parent.parent  # mekong-cli root
