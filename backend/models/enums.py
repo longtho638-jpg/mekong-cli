@@ -18,7 +18,6 @@ class TaskPriority(str, Enum):
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
-    CRITICAL = "critical"  # Alias for Urgent or legacy support
 
 class ProjectStatus(str, Enum):
     DRAFT = "draft"

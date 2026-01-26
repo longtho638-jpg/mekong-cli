@@ -5,11 +5,13 @@
 /* Do not modify it by hand - just update the pydantic models and then re-run the script
 */
 
-export type ClientStatus = "active" | "pending" | "churned";
+export type ClientStatus = "active" | "pending" | "churned" | "inactive" | "lead";
 export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled";
-export type ProjectStatus = "draft" | "active" | "completed" | "cancelled";
+export type ProjectStatus = "draft" | "active" | "completed" | "cancelled" | "archived" | "on_hold";
 export type TaskStatus = "todo" | "in_progress" | "review" | "done";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
+export type TaskStatus1 = "todo" | "in_progress" | "review" | "done";
+export type TaskPriority1 = "low" | "medium" | "high" | "urgent";
 
 export interface Agency {
   id: string;
@@ -127,12 +129,24 @@ export interface Invoice {
   id: string;
   invoice_number: string;
   amount: number;
-  tax: number;
+  tax?: number;
   total: number;
   currency: string;
   status: InvoiceStatus;
   service_type?: string | null;
   stripe_invoice_id?: string | null;
+  client_name?: string | null;
+  deal_id?: string | null;
+  items?: {
+    [k: string]: unknown;
+  }[];
+  payment_method?: string | null;
+  due_date?: string | null;
+  paid_at?: string | null;
+  payment_url?: string | null;
+  created_at?: string | null;
+  notes?: string | null;
+  paid_date?: string | null;
 }
 /**
  * Request to execute an AgentOps action
@@ -256,12 +270,26 @@ export interface RouterResponse {
   };
 }
 export interface Task {
+  /**
+   * UUID
+   */
   id: string;
+  title?: string;
+  description?: string | null;
   project_id?: string | null;
-  status: TaskStatus;
-  priority: TaskPriority;
-  order: number;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  order?: number;
   agent_assigned?: string | null;
+  assignee_id?: string | null;
+  tags?: string[];
+  due_date?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  completed_at?: string | null;
+  metadata?: {
+    [k: string]: unknown;
+  };
 }
 /**
  * Request to set vibe
@@ -302,8 +330,8 @@ export interface VibeResponse {
 export interface CreateCardRequest {
   title: string;
   description?: string | null;
-  status?: TaskStatus | null;
-  priority?: TaskPriority | null;
+  status?: TaskStatus1 | null;
+  priority?: TaskPriority1 | null;
   assignee_id?: string | null;
   tags?: string[] | null;
   due_date?: string | null;
@@ -319,7 +347,7 @@ export interface KanbanBoard {
 export interface KanbanColumn {
   id: string;
   title: string;
-  status: TaskStatus;
+  status: TaskStatus1;
   order: number;
   cards: KanbanCard[];
 }
@@ -327,8 +355,8 @@ export interface KanbanCard {
   id: string;
   title: string;
   description?: string | null;
-  status: TaskStatus;
-  priority: TaskPriority;
+  status: TaskStatus1;
+  priority: TaskPriority1;
   assignee_id?: string | null;
   tags?: string[];
   due_date?: string | null;
@@ -342,8 +370,8 @@ export interface KanbanCard {
 export interface UpdateCardRequest {
   title?: string | null;
   description?: string | null;
-  status?: TaskStatus | null;
-  priority?: TaskPriority | null;
+  status?: TaskStatus1 | null;
+  priority?: TaskPriority1 | null;
   assignee_id?: string | null;
   tags?: string[] | null;
   due_date?: string | null;

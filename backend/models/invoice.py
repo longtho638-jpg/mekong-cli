@@ -25,3 +25,35 @@ class Invoice(BaseModel):
     created_at: Optional[datetime] = None
     notes: Optional[str] = None
     paid_date: Optional[datetime] = None  # Alias/Legacy for paid_at
+
+    def get_amount_vnd(self) -> int:
+        """Calculates value in VND based on current projected rates."""
+        VND_RATE = 25000.0
+        if self.currency.upper() == "VND":
+            return int(self.amount)
+        return int(self.amount * VND_RATE)
+
+    def is_overdue(self) -> bool:
+        """Returns True if current time exceeds due date without payment."""
+        if self.status == InvoiceStatus.PAID:
+            return False
+        if self.due_date:
+            return datetime.now() > self.due_date
+        return False
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Provides a serializable representation (Legacy Support)."""
+        return {
+            "id": self.id,
+            "client": self.client_name or "",
+            "amount": self.amount,
+            "currency": self.currency,
+            "status": self.status.value,
+            "dates": {
+                "due": self.due_date.isoformat() if self.due_date else None,
+                "paid": self.paid_at.isoformat() if self.paid_at else None,
+                "created": self.created_at.isoformat() if self.created_at else None,
+            },
+            "amount_vnd": self.get_amount_vnd(),
+            "service_type": self.service_type or "",
+        }
