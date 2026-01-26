@@ -1,3 +1,5 @@
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
+export type ProjectStatus = 'draft' | 'active' | 'completed' | 'cancelled' | 'archived' | 'on_hold'
+export type ClientStatus = 'active' | 'pending' | 'churned' | 'inactive' | 'lead'
