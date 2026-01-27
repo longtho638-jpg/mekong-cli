@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Quick Start Guide</title>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                text-align: center;
+                padding: 20px 0;
+                border-bottom: 2px solid #6366f1;
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: bold;
+                color: #6366f1;
+            }
+            .content {
+                padding: 30px 0;
+            }
+            .cta {
+                display: inline-block;
+                background: #6366f1;
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 600;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+                color: #666;
+                font-size: 14px;
+                border-top: 1px solid #eee;
+            }
+            h1 {
+                color: #1a1a1a;
+            }
+            .step {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 15px 0;
+                border-left: 4px solid #6366f1;
+            }
+            code {
+                background: #e5e7eb;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">🏯 Antigravity</div>
+        </div>
+
+        <div class="content">
+            <h1>Quick Start: Get running in 10 minutes ⚡</h1>
+
+            <p>Hi {{customer_name}},</p>
+
+            <p>
+                Ready to implement <strong>{{product_name}}</strong>? Here's the
+                fastest path:
+            </p>
+
+            <div class="step">
+                <strong>Step 1: Install dependencies</strong>
+                <pre><code>npm install</code></pre>
+            </div>
+
+            <div class="step">
+                <strong>Step 2: Copy the components</strong>
+                <p>Copy from <code>src/components/</code> to your project.</p>
+            </div>
+
+            <div class="step">
+                <strong>Step 3: Configure environment</strong>
+                <p>
+                    Copy <code>.env.example</code> to
+                    <code>.env.local</code> and fill in your keys.
+                </p>
+            </div>
+
+            <div class="step">
+                <strong>Step 4: Import and use</strong>
+                <pre><code>import { Component } from './components'</code></pre>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px">
+                <a href="{{docs_url}}" class="cta">Read Full Documentation</a>
+            </p>
+
+            <p>
+                <strong>Pro tip:</strong> Check the
+                <code>examples/</code> folder for real-world usage patterns.
+            </p>
+
+            <p>
+                Tomorrow, I'll share my favorite advanced features you might
+                have missed.
+            </p>
+
+            <p>Happy coding,<br /><strong>Long Tho</strong></p>
+        </div>
+
+        <div class="footer">
+            <p>🏯 Antigravity • Ship faster, earn more</p>
+            <p><a href="{{unsubscribe_url}}">Unsubscribe</a></p>
+        </div>
+    </body>
+</html>

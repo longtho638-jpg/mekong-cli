@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Welcome to Antigravity</title>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                text-align: center;
+                padding: 20px 0;
+                border-bottom: 2px solid #6366f1;
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: bold;
+                color: #6366f1;
+            }
+            .content {
+                padding: 30px 0;
+            }
+            .cta {
+                display: inline-block;
+                background: #6366f1;
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 600;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+                color: #666;
+                font-size: 14px;
+                border-top: 1px solid #eee;
+            }
+            h1 {
+                color: #1a1a1a;
+            }
+            .highlight {
+                background: #f0f0ff;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 15px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">🏯 Antigravity</div>
+        </div>
+
+        <div class="content">
+            <h1>Welcome! Your download is ready 🎉</h1>
+
+            <p>Hi {{customer_name}},</p>
+
+            <p>Thank you for purchasing <strong>{{product_name}}</strong>!</p>
+
+            <p>Your download link is ready:</p>
+
+            <p style="text-align: center">
+                <a href="{{download_url}}" class="cta">Download Now</a>
+            </p>
+
+            <div class="highlight">
+                <strong>Quick Start:</strong>
+                <ol>
+                    <li>Unzip the downloaded file</li>
+                    <li>Run <code>npm install</code></li>
+                    <li>Follow the README.md guide</li>
+                </ol>
+            </div>
+
+            <p>In the next few days, I'll send you:</p>
+            <ul>
+                <li>📖 Quick start guide with best practices</li>
+                <li>💡 Tips to get the most from your kit</li>
+                <li>🔥 Exclusive offers on related products</li>
+            </ul>
+
+            <p>Need help? Just reply to this email.</p>
+
+            <p>
+                Ship fast,<br /><strong>Long Tho</strong><br />Founder,
+                Antigravity
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>🏯 Antigravity • Ship faster, earn more</p>
+            <p><a href="{{unsubscribe_url}}">Unsubscribe</a></p>
+        </div>
+    </body>
+</html>

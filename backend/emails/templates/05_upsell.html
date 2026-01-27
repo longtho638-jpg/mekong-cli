@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Exclusive: Complete Your Stack</title>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                text-align: center;
+                padding: 20px 0;
+                border-bottom: 2px solid #6366f1;
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: bold;
+                color: #6366f1;
+            }
+            .content {
+                padding: 30px 0;
+            }
+            .cta {
+                display: inline-block;
+                background: #10b981;
+                color: white;
+                padding: 15px 30px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 18px;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+                color: #666;
+                font-size: 14px;
+                border-top: 1px solid #eee;
+            }
+            h1 {
+                color: #1a1a1a;
+            }
+            .offer-box {
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                color: white;
+                padding: 30px;
+                border-radius: 12px;
+                text-align: center;
+                margin: 20px 0;
+            }
+            .price {
+                font-size: 48px;
+                font-weight: bold;
+            }
+            .original {
+                text-decoration: line-through;
+                opacity: 0.7;
+                font-size: 24px;
+            }
+            .product-list {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .badge {
+                background: #ef4444;
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">🏯 Antigravity</div>
+        </div>
+
+        <div class="content">
+            <h1>🎁 Exclusive Offer: Complete Your Stack</h1>
+
+            <p>Hi {{customer_name}},</p>
+
+            <p>
+                You've already seen the value of {{product_name}}. What if you
+                had <strong>the complete toolkit</strong> to ship any feature?
+            </p>
+
+            <div class="offer-box">
+                <span class="badge">CUSTOMER EXCLUSIVE</span>
+                <h2 style="margin: 15px 0">Antigravity Complete Bundle</h2>
+                <div class="original">$312</div>
+                <div class="price">$197</div>
+                <p style="opacity: 0.9">Save 37% • All 6 kits included</p>
+            </div>
+
+            <div class="product-list">
+                <strong>What's included:</strong>
+                <ul>
+                    <li>✅ User Preferences Kit ($47)</li>
+                    <li>✅ Webhook Manager Kit ($57)</li>
+                    <li>✅ Database Migration Kit ($47)</li>
+                    <li>✅ API Rate Limiter Kit ($37)</li>
+                    <li>✅ File Upload Kit ($47)</li>
+                    <li>✅ Full-Text Search Kit ($77)</li>
+                    <li>🎁 <strong>BONUS:</strong> Priority Discord access</li>
+                    <li>🎁 <strong>BONUS:</strong> Future updates free</li>
+                </ul>
+            </div>
+
+            <p style="text-align: center">
+                <a href="{{bundle_url}}" class="cta">Get Bundle for $197 →</a>
+            </p>
+
+            <p style="text-align: center; color: #ef4444; font-weight: bold">
+                ⏰ Offer expires in 48 hours
+            </p>
+
+            <p>
+                This is a one-time offer for existing customers only. After 48
+                hours, the bundle returns to full price.
+            </p>
+
+            <p>Questions? Reply anytime.</p>
+
+            <p>
+                To your success,<br /><strong>Long Tho</strong><br />Founder,
+                Antigravity
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>🏯 Antigravity • Ship faster, earn more</p>
+            <p><a href="{{unsubscribe_url}}">Unsubscribe</a></p>
+        </div>
+    </body>
+</html>
