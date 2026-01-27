@@ -31,7 +31,7 @@ class Notification(Base):
         }
 
 class UserNotificationPreferences(Base):
-    __tablename__ = "user_preferences"
+    __tablename__ = "user_notification_preferences"
 
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
@@ -84,3 +84,29 @@ class NotificationDelivery(Base):
     provider_message_id = Column(Text, nullable=True)
     error_message = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class NotificationTemplate(Base):
+    __tablename__ = "notification_templates"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    name = Column(String(100), nullable=False, unique=True)
+    type = Column(String(50), nullable=False)  # email, push, sms, in_app
+    subject = Column(String(255), nullable=True)
+    content = Column(Text, nullable=False)  # Jinja2 template content
+    description = Column(Text, nullable=True)
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "name": self.name,
+            "type": self.type,
+            "subject": self.subject,
+            "content": self.content,
+            "description": self.description,
+            "active": self.active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }

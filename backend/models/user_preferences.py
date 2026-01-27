@@ -1,8 +1,11 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, func
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+from sqlalchemy import Column, DateTime, String, func
+
 from backend.db.base import Base
+
 
 # --- SQLAlchemy Model ---
 class UserPreferencesDB(Base):

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ invoice_id }}</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .button { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+        .footer { text-align: center; font-size: 12px; color: #888; margin-top: 20px; }
+        .amount { font-size: 24px; font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Invoice Receipt</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ user_name }},</p>
+            <p>Thank you for your business. Here is a receipt for your recent payment.</p>
+            <p><strong>Invoice ID:</strong> #{{ invoice_id }}</p>
+            <p><strong>Amount Paid:</strong> <span class="amount">{{ currency }} {{ amount }}</span></p>
+            <p><strong>Date:</strong> {{ date }}</p>
+            <p style="text-align: center;">
+                <a href="{{ invoice_url }}" class="button">View Invoice</a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>&copy; {{ current_year }} {{ project_name }}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

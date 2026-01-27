@@ -1,0 +1,53 @@
+# Notification System Configuration
+# Default templates and routing rules
+
+defaults:
+  from_email: "noreply@binhphap.com"
+  from_name: "Agency OS"
+  reply_to: "support@binhphap.com"
+
+channels:
+  email:
+    enabled: true
+    priority: 1
+    provider: "smtp" # or resend, sendgrid
+  push:
+    enabled: true
+    priority: 2
+    provider: "webpush" # or fcm
+  sms:
+    enabled: false
+    priority: 3
+    provider: "twilio"
+
+templates:
+  welcome_email:
+    subject: "Welcome to {{ project_name }}! 🚀"
+    type: "email"
+    path: "emails/welcome.html"
+
+  password_reset:
+    subject: "Reset your password"
+    type: "email"
+    path: "emails/password_reset.html"
+
+  invoice_created:
+    subject: "New Invoice #{{ invoice_number }}"
+    type: "email"
+    path: "emails/invoice.html"
+
+  security_alert:
+    subject: "🚨 Security Alert: {{ alert_type }}"
+    type: "email"
+    path: "emails/security_alert.html"
+    priority: "high"
+
+  system_notification:
+    subject: "{{ title }}"
+    type: "in_app"
+    priority: "medium"
+
+rate_limits:
+  email: "10/minute"
+  push: "100/minute"
+  sms: "1/minute"

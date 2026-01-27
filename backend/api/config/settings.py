@@ -105,6 +105,14 @@ class Settings(BaseSettings):
     email_mock_mode: bool = Field(default=False, description="Mock email sending")
 
     # ========================================
+    # Notification Configuration
+    # ========================================
+    vapid_private_key: str = Field(default="", description="VAPID Private Key for WebPush")
+    vapid_public_key: str = Field(default="", description="VAPID Public Key for WebPush")
+    vapid_claims_email: str = Field(default="mailto:admin@agencyos.network", description="VAPID Claims Email")
+    fcm_credentials_path: Optional[str] = Field(default=None, description="Path to FCM service account JSON")
+
+    # ========================================
     # Database Configuration
     # ========================================
     database_url: str = Field(

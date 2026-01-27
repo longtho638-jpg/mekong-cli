@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Security Alert</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #fff3cd; padding: 20px; text-align: center; border-bottom: 3px solid #ffc107; }
+        .content { padding: 20px; }
+        .footer { text-align: center; font-size: 12px; color: #888; margin-top: 20px; }
+        .details { background: #f8f9fa; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Alert</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ user_name }},</p>
+            <p>We detected a new login to your account.</p>
+            <div class="details">
+                <p><strong>Device:</strong> {{ device_name }}</p>
+                <p><strong>Location:</strong> {{ location }}</p>
+                <p><strong>Time:</strong> {{ time }}</p>
+                <p><strong>IP Address:</strong> {{ ip_address }}</p>
+            </div>
+            <p>If this was you, you can ignore this email.</p>
+            <p><strong>If you do not recognize this activity, please change your password immediately.</strong></p>
+        </div>
+        <div class="footer">
+            <p>&copy; {{ current_year }} {{ project_name }}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

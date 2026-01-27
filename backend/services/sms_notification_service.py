@@ -1,7 +1,8 @@
-import os
-import boto3
 import logging
+import os
 from typing import Optional
+
+import boto3
 
 logger = logging.getLogger(__name__)
 

@@ -17,6 +17,7 @@ from backend.services.email_providers import (
     SendGridProvider,
     SMTPProvider,
 )
+from backend.services.template_service import template_service
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class EmailService:
 
     def __init__(self):
         self.provider: Optional[EmailProvider] = None
+        self.template_service = template_service
         self._initialize_provider()
 
     def _initialize_provider(self):
@@ -81,22 +83,6 @@ class EmailService:
     ) -> Dict[str, Any]:
         """
         Send an email using the configured provider.
-
-        Args:
-            to_email: Recipient email
-            subject: Email subject
-            html_content: HTML body
-            text_content: Plain text body (optional)
-            from_email: Sender email (defaults to settings)
-            from_name: Sender name (defaults to settings)
-            cc: CC recipients
-            bcc: BCC recipients
-            reply_to: Reply-To address
-            attachments: List of attachments
-            metadata: Custom metadata/tags
-
-        Returns:
-            Dict containing status and provider response
         """
         if settings.email_mock_mode or not self.provider:
             logger.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
@@ -123,20 +109,46 @@ class EmailService:
             # In production, we might want to queue this for retry or fallback
             raise
 
+    async def send_template_email(
+        self,
+        to_email: str,
+        subject: str,
+        template_name: str,
+        template_context: Dict[str, Any],
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Send an email using a Jinja2 template.
+        """
+        try:
+            html_content = await self.template_service.render_template(template_name, template_context)
+            # Optional: Generate text version from HTML or separate template
+
+            return await self.send_email(
+                to_email=to_email,
+                subject=subject,
+                html_content=html_content,
+                **kwargs
+            )
+        except Exception as e:
+            logger.error(f"Failed to render/send template email {template_name}: {e}")
+            raise
+
     # --- Legacy Support / Helper Methods ---
 
-    async def send_welcome_email(self, email: str, name: str):
+    async def send_welcome_email(self, email: str, name: str, verify_url: str = "#"):
         """Send standard welcome email."""
         subject = f"Welcome to {settings.project_name}!"
-        # TODO: Use template service
-        html = f"<h1>Welcome {name}!</h1><p>Thanks for joining.</p>"
-        text = f"Welcome {name}!\nThanks for joining."
 
-        return await self.send_email(
+        return await self.send_template_email(
             to_email=email,
             subject=subject,
-            html_content=html,
-            text_content=text
+            template_name="emails/welcome.html",
+            template_context={
+                "user_name": name,
+                "action_url": verify_url,
+                "unsubscribe_url": "#" # TODO: Real unsubscribe link
+            }
         )
 
     async def send_purchase_email(self, email: str, license_key: str, product_name: str) -> bool:
@@ -185,10 +197,7 @@ class EmailService:
             return False
 
 # Global instance
-_email_service: Optional[EmailService] = None
+email_service = EmailService()
 
-def get_email_service() -> EmailService:
-    global _email_service
-    if _email_service is None:
-        _email_service = EmailService()
-    return _email_service
+def get_email_service():
+    return email_service
