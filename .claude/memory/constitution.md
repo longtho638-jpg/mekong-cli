@@ -300,6 +300,56 @@ on_complete:
 
 ---
 
+## 🚨 ĐIỀU 23: PLAYWRIGHT MCP BROWSER INTEGRATION
+
+> **Browser automation cho CC CLI - KHÔNG DÙNG BROWSER TOOL GIẢ**
+
+### 🔴 INSTALLATION:
+
+```bash
+# Microsoft Official Playwright MCP:
+claude mcp add playwright npx @playwright/mcp@latest
+
+# Alternative (executeautomation):
+claude mcp add playwright-alt npx @executeautomation/playwright-mcp-server
+```
+
+### 🔴 USAGE IN CC CLI:
+
+```yaml
+browser_tasks:
+    - Navigate to URL
+    - Fill forms
+    - Click elements
+    - Take screenshots
+    - Extract data from pages
+    - E2E testing
+
+when_to_use:
+    - Gumroad product updates
+    - Website testing
+    - Form automation
+    - Screenshot verification
+```
+
+### 🔴 CONFIG LOCATION:
+
+```bash
+# Project config (preferred):
+~/.claude.json → mcpServers.playwright
+
+# Verify installed:
+claude mcp list
+```
+
+### 🔴 LƯU Ý:
+
+- **Microsoft official** `@playwright/mcp@latest` là recommended
+- Đã cài cho project `mekong-cli` ngày 2026-01-27
+- Dùng cho browser tasks thay vì CC CLI built-in browser
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
