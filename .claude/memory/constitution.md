@@ -112,6 +112,65 @@ IPO-001: Create production Docker build
 
 ---
 
+## 🚨 ĐIỀU 20: TỰ ĐỘNG DỌN RAM/CHIP (RESOURCE MANAGEMENT)
+
+> **Chương 8 Cửu Biến: Thích ứng với tài nguyên máy**
+
+### 🔴 NGƯỠNG CẢNH BÁO:
+
+| Resource | Green | Yellow | Red (Action)    |
+| -------- | ----- | ------ | --------------- |
+| Load Avg | < 8   | 8-15   | > 15 → Cleanup  |
+| RAM Free | > 2GB | 1-2GB  | < 1GB → Cleanup |
+| CPU Idle | > 20% | 10-20% | < 10% → Cleanup |
+
+### 🔴 QUY TRÌNH CLEANUP:
+
+```bash
+# 1. Check resources (mỗi 30 phút HOẶC khi vượt ngưỡng)
+top -l 1 -n 0 | grep -E "Load|CPU|PhysMem"
+
+# 2. Nếu Load > 15 HOẶC RAM Free < 1GB HOẶC CPU Idle < 10%:
+sudo purge                    # Clear disk cache
+killall -HUP mDNSResponder    # Reset DNS cache
+
+# 3. Nếu vẫn quá tải (Load > 20):
+# Kill oldest CC CLI processes (LIFO)
+ps aux | grep "claude.*dangerously" | sort -k10 -r | head -3 | awk '{print $2}' | xargs kill
+
+# 4. Recommend batch size based on Mac specs:
+# M1 8GB  → 2 CC CLI max
+# M1 16GB → 3 CC CLI max
+# M1 Pro/Max 32GB+ → 5 CC CLI max
+```
+
+### 🔴 BINH PHÁP DECISION FRAMEWORK:
+
+```yaml
+resource_decision:
+    if_tasks_near_completion:
+        # Chương 8 Cửu Biến: Don't interrupt momentum
+        action: "Option B - Let finish"
+        reason: "Tasks 80%+ complete = sunk cost"
+
+    if_tasks_just_started:
+        # Chương 7 Quân Tranh: Speed matters
+        action: "Option A - Kill and batch"
+        reason: "Better resource efficiency"
+
+    always_apply:
+        - "Cleanup RAM every 30 minutes"
+        - "Cleanup when threshold exceeded"
+        - "Never ask user - decide with Binh Pháp"
+```
+
+### 🔴 ANTIGRAVITY TỰ QUYẾT:
+
+**KHÔNG HỎI USER về resource decisions.**
+**ÁP DỤNG Binh Pháp Chương 8 (Cửu Biến) để tự quyết định.**
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
