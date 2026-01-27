@@ -53,6 +53,63 @@ Khi chạy command trong terminal:
 
 ---
 
+## 🚨🚨🚨 ĐIỀU 19: CC CLI CHỈ HOẠT ĐỘNG TRONG VS CODE TERMINAL 🚨🚨🚨
+
+> ⚠️⚠️⚠️ **CRITICAL - ANTIGRAVITY KHÔNG THỂ CHẠY CC CLI** ⚠️⚠️⚠️
+
+### 🔴 SỰ THẬT:
+
+1. **CC CLI là INTERACTIVE** - cần VS Code terminal để tương tác
+2. **Antigravity run_command KHÔNG HOẠT ĐỘNG** với CC CLI interactive mode
+3. **Khi /delegate hỏi "What task?"** → cần GÕ input, không phải chạy command mới
+
+### 🔴 QUY TRÌNH ĐÚNG:
+
+```
+ANTIGRAVITY:
+├── 1. Tạo danh sách commands cần chạy
+├── 2. Đưa cho USER dạng copy-paste
+├── 3. USER paste vào VS Code terminal
+├── 4. USER nhấn ENTER
+├── 5. Nếu CC CLI hỏi → USER gõ task description
+└── 6. Antigravity MONITOR kết quả sau khi xong
+```
+
+### 🔴 VÍ DỤ ĐÚNG:
+
+```markdown
+## Commands for USER to paste in VS Code Terminal:
+
+### Terminal 1:
+
+cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
+
+# Khi CC CLI hỏi "What task?", gõ:
+
+IPO-001: Create production Docker build
+
+### Terminal 2:
+
+cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
+
+# Khi CC CLI hỏi "What task?", gõ:
+
+IPO-002: Audit database migrations
+```
+
+### 🔴 SAI PHẠM CỦA ANTIGRAVITY (2026-01-27):
+
+- ❌ Chạy `run_command` với CC CLI → processes chờ input mãi
+- ❌ Không hiểu CC CLI là interactive
+- ❌ Tạo 10+ zombie processes không hoạt động
+
+### 🔴 SỬA LỖI VĨNH VIỄN:
+
+**Antigravity KHÔNG BAO GIỜ chạy CC CLI bằng run_command.**
+**Antigravity CHỈ tạo commands để USER paste trong VS Code.**
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
