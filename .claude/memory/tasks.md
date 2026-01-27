@@ -2304,3 +2304,231 @@ _Update timestamp: 2026-01-27T10:29:02+0700_
     - Status: PENDING
     - Context: /Users/macbookprom1/mekong-cli
 
+- [ ] **TASK-6c39a7d3** ⏰ PENDING
+    - Description: IPO-039-Jobs: Background job scheduler với cron triggers, retries. Ch.9 行軍
+    - Scope: Enterprise-grade background job processing system with cron scheduling, retry logic, priority queues, job monitoring, and failure recovery
+    - Deliverables:
+        - **Job Scheduler Core**:
+            - backend/services/job_scheduler.py (APScheduler integration with PostgreSQL backend)
+            - backend/services/job_queue.py (Redis-backed priority queue with worker pool)
+            - backend/services/job_executor.py (Job execution engine with timeout handling)
+        - **Job Types**:
+            - backend/jobs/recurring_jobs.py (Cron-based recurring jobs)
+            - backend/jobs/one_time_jobs.py (Delayed execution, run-once jobs)
+            - backend/jobs/webhook_delivery_job.py (Async webhook delivery with retries)
+            - backend/jobs/metered_billing_job.py (Hourly usage aggregation)
+            - backend/jobs/cleanup_job.py (Daily cleanup of old data)
+        - **Retry & Failure Handling**:
+            - backend/services/retry_service.py (Exponential backoff with jitter)
+            - backend/services/dead_letter_queue.py (Failed jobs storage and replay)
+        - **Job Monitoring**:
+            - backend/api/routers/jobs.py (Job management API - list, trigger, cancel)
+            - backend/services/job_analytics.py (Success rate, latency, failure analysis)
+        - **Database**:
+            - backend/database/migrations/20260127_015_job_scheduler.sql (Jobs, job_runs, job_failures tables)
+        - **Frontend**:
+            - apps/dashboard/app/jobs/schedule/page.tsx (Cron job scheduler UI)
+            - apps/dashboard/app/jobs/history/page.tsx (Job execution history with filters)
+            - apps/dashboard/app/jobs/failed/page.tsx (Failed jobs with retry controls)
+        - **Configuration**:
+            - config/job-scheduler-config.yaml (Job definitions, retry policies, concurrency limits)
+        - **Workers**:
+            - workers/job_worker.py (Background worker process with graceful shutdown)
+        - **CLI Commands**:
+            - scripts/jobs/trigger-job.sh (Manually trigger job by name)
+            - scripts/jobs/retry-failed.sh (Bulk retry failed jobs)
+            - scripts/jobs/job-status.sh (Check job scheduler health)
+    - Binh Pháp Ch.9 行軍 (Marching - Logistics & Supply Lines):
+        - **Cron Scheduling**: Flexible cron expressions (every 5 min, daily at 2am, monthly on 1st, etc.)
+        - **Priority Queues**: Critical > High > Normal > Low (ensure important jobs execute first)
+        - **Worker Pool**: Configurable concurrency (1-100 workers based on load)
+        - **Job Chaining**: Sequential job execution (Job A completes → trigger Job B)
+        - **Job Dependencies**: Wait for prerequisite jobs before execution
+        - **Timeout Handling**: Kill jobs exceeding max execution time (prevent hung workers)
+        - **Retry Logic**: Exponential backoff (30s, 1m, 5m, 15m, 1h, 6h, 24h)
+        - **Dead Letter Queue**: Store jobs after max retries (manual intervention required)
+        - **Job Locking**: Distributed locks to prevent duplicate execution (Redis SETNX)
+        - **Graceful Shutdown**: Finish current jobs before worker termination (SIGTERM handling)
+        - **Job Metrics**: Track execution time, success rate, retry count per job type
+        - **Heartbeat Monitoring**: Detect stuck workers (no heartbeat for 5 min → restart)
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Reliable background processing, automated operations, reduced manual work
+        - 🏢 **Agency WIN**: Reusable job infrastructure, proven scheduling patterns, operational excellence
+        - 🚀 **Startup WIN**: Scalable async processing, automated billing/cleanup, system reliability
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-873f7b37** 📋 PENDING
+    - Description: IPO-040-Logging: Centralized logging với Loki/Seq. Ch.13 用間
+    - Scope: Enterprise-grade centralized logging infrastructure with Loki/Seq integration, structured logging, log aggregation, and intelligent log analysis
+    - Deliverables:
+        - **Logging Infrastructure**:
+            - backend/services/logging_service.py (Structured logging with context injection)
+            - backend/core/log_config.py (Logging configuration with levels, formats, handlers)
+        - **Loki Integration**:
+            - backend/services/loki_service.py (Loki client for log shipping)
+            - backend/middleware/logging_middleware.py (Request/response logging)
+        - **Seq Integration** (Alternative):
+            - backend/services/seq_service.py (Seq client with structured events)
+        - **Log Enrichment**:
+            - backend/services/log_enricher.py (Add user_id, request_id, tenant_id to logs)
+            - backend/services/error_tracker.py (Error aggregation and alerting)
+        - **Log Retention**:
+            - backend/services/log_retention.py (Automated log cleanup based on policies)
+        - **API Endpoints**:
+            - backend/api/routers/logs.py (Query logs API with filters)
+        - **Database**:
+            - backend/database/migrations/20260127_016_logging_metadata.sql (Log metadata, error summaries)
+        - **Frontend**:
+            - apps/dashboard/app/logs/viewer/page.tsx (Log viewer with search, filters, tail mode)
+            - apps/dashboard/app/logs/errors/page.tsx (Error dashboard with stack traces)
+            - apps/dashboard/app/logs/analytics/page.tsx (Log analytics - top errors, slowest requests)
+        - **Configuration**:
+            - config/logging-config.yaml (Log levels per module, retention policies, shipping targets)
+        - **Docker Compose**:
+            - docker-compose.logging.yml (Loki + Grafana stack for local dev)
+        - **Workers**:
+            - workers/log_aggregator.py (Aggregate logs for analytics)
+        - **CLI Commands**:
+            - scripts/logs/tail-logs.sh (Tail logs in real-time)
+            - scripts/logs/search-logs.sh (Search logs by query)
+            - scripts/logs/export-logs.sh (Export logs to JSON/CSV)
+    - Binh Pháp Ch.13 用間 (Using Spies - Intelligence Gathering):
+        - **Structured Logging**: JSON logs with consistent schema (easy parsing, querying)
+        - **Context Injection**: Auto-inject request_id, user_id, tenant_id, trace_id to all logs
+        - **Log Levels**: DEBUG, INFO, WARNING, ERROR, CRITICAL (configurable per module)
+        - **Correlation IDs**: Trace requests across microservices (distributed tracing)
+        - **Log Shipping**: Real-time streaming to Loki/Seq (sub-second latency)
+        - **Log Retention**: Short-term (7 days hot), Long-term (90 days cold), Archive (1 year)
+        - **Log Sampling**: Sample verbose logs at 1% to reduce volume (configurable)
+        - **Error Aggregation**: Group similar errors (same stack trace, message pattern)
+        - **Alert Rules**: Alert on specific log patterns (ERROR rate > 10/min, critical errors)
+        - **Log Anonymization**: Mask PII (emails, IPs, credit cards) before shipping
+        - **Query Language**: LogQL (Loki) or SQL-like (Seq) for advanced filtering
+        - **Performance**: Async log shipping (non-blocking), buffered writes (batch 100 logs)
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Full system observability, fast incident resolution, proactive monitoring
+        - 🏢 **Agency WIN**: Reusable logging infrastructure, proven observability patterns, operational excellence
+        - 🚀 **Startup WIN**: Debug production issues in minutes, compliance-ready (audit logs), scalable log storage
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-f7aa321f** 🏥 PENDING
+    - Description: IPO-041-Healthcheck: Health check endpoints và liveness probes. Ch.10 地形
+    - Scope: Enterprise-grade health check infrastructure with liveness/readiness probes, dependency health monitoring, and automated incident detection
+    - Deliverables:
+        - **Health Check Core**:
+            - backend/services/health_check_service.py (Health check orchestrator)
+            - backend/core/health_config.py (Health check configuration)
+        - **Health Checks**:
+            - backend/health_checks/database_check.py (PostgreSQL connection test)
+            - backend/health_checks/redis_check.py (Redis connection test)
+            - backend/health_checks/stripe_check.py (Stripe API connectivity)
+            - backend/health_checks/s3_check.py (S3 bucket access test)
+            - backend/health_checks/webhook_check.py (Webhook delivery test)
+        - **Probe Endpoints**:
+            - backend/api/routers/health.py (Health check API endpoints)
+                - GET /health (Overall health status)
+                - GET /health/live (Liveness probe - process alive)
+                - GET /health/ready (Readiness probe - ready to serve traffic)
+                - GET /health/startup (Startup probe - initialization complete)
+                - GET /health/dependencies (Individual dependency status)
+        - **Monitoring Integration**:
+            - backend/services/health_monitor.py (Periodic health checks with alerting)
+        - **Database**:
+            - backend/database/migrations/20260127_017_health_checks.sql (Health check history, incidents)
+        - **Frontend**:
+            - apps/dashboard/app/health/status/page.tsx (System health dashboard)
+            - apps/dashboard/app/health/dependencies/page.tsx (Dependency health matrix)
+            - apps/dashboard/app/health/incidents/page.tsx (Health incident timeline)
+        - **Configuration**:
+            - config/health-config.yaml (Health check intervals, timeout thresholds, dependencies)
+        - **Docker/K8s**:
+            - Dockerfile (HEALTHCHECK instruction)
+            - k8s/deployment.yaml (livenessProbe, readinessProbe, startupProbe)
+        - **CLI Commands**:
+            - scripts/health/check-all.sh (Run all health checks manually)
+            - scripts/health/check-dependency.sh (Check specific dependency)
+    - Binh Pháp Ch.10 地形 (Terrain - Know Your Ground):
+        - **Liveness Probe**: Is the process alive? (HTTP 200 on /health/live)
+        - **Readiness Probe**: Can it serve traffic? (Dependencies healthy, not overloaded)
+        - **Startup Probe**: Has initialization finished? (DB migrations, cache warming)
+        - **Dependency Checks**: Test each critical dependency (DB, Redis, Stripe, S3)
+        - **Timeout Strategy**: Fast fail (2s timeout), prevent cascade failures
+        - **Graceful Degradation**: Mark service "degraded" if non-critical deps fail
+        - **Circuit Breaker**: Stop checking failed deps for 60s (prevent thundering herd)
+        - **Health Score**: Aggregate health (100% = all healthy, 0% = critical failure)
+        - **Incident Detection**: Alert if health drops below 80% for 5 minutes
+        - **Auto-Recovery**: Restart service if liveness fails 3 times (K8s restart policy)
+        - **Shallow vs Deep**: Shallow (fast, /health/live), Deep (slow, /health/dependencies)
+        - **Response Format**: JSON with status, checks, timestamp, version
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Proactive incident detection, auto-recovery, reduced downtime
+        - 🏢 **Agency WIN**: Reusable health check infrastructure, production-ready patterns, operational excellence
+        - 🚀 **Startup WIN**: High availability (99.9%+ uptime), fast incident response, K8s-ready
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-847a6289** 🚀 PENDING
+    - Description: IPO-042-CI-CD: GitHub Actions pipeline với staging/production. Ch.3 謀攻
+    - Scope: Enterprise-grade CI/CD pipeline with GitHub Actions, automated testing, staging/production deployments, rollback capability
+    - Deliverables:
+        - **GitHub Actions Workflows**:
+            - .github/workflows/ci.yml (Continuous Integration - test, lint, build)
+            - .github/workflows/cd-staging.yml (Deploy to staging on main branch)
+            - .github/workflows/cd-production.yml (Deploy to production on release tags)
+            - .github/workflows/rollback.yml (Rollback to previous version)
+            - .github/workflows/security-scan.yml (SAST, dependency scanning)
+        - **Build & Test**:
+            - Docker multi-stage builds (optimize image size)
+            - Parallel test execution (unit, integration, e2e)
+            - Test coverage reporting (Codecov/Coveralls)
+            - Linting & formatting checks (ESLint, Prettier, Black, Flake8)
+        - **Deployment Strategy**:
+            - Staging: Auto-deploy on main branch push
+            - Production: Manual approval + release tag (v1.2.3)
+            - Blue-green deployment to minimize downtime
+            - Database migrations before deployment
+        - **Environment Management**:
+            - GitHub Secrets for credentials (STRIPE_KEY, DB_PASSWORD)
+            - Environment-specific configs (staging.env, production.env)
+            - Secrets rotation workflow
+        - **Notifications**:
+            - Slack/Discord notifications on deploy success/failure
+            - GitHub status checks (block merge if tests fail)
+        - **Monitoring**:
+            - Deployment metrics (duration, success rate)
+            - Post-deployment health checks
+            - Automatic rollback on health check failure
+        - **Documentation**:
+            - docs/ci-cd-guide.md (Pipeline architecture, deployment process)
+            - docs/rollback-playbook.md (Emergency rollback procedures)
+        - **Scripts**:
+            - scripts/ci/run-tests.sh (Local test runner matching CI)
+            - scripts/ci/build-docker.sh (Build Docker image locally)
+            - scripts/ci/deploy-staging.sh (Manual staging deploy)
+            - scripts/ci/deploy-production.sh (Manual production deploy)
+    - Binh Pháp Ch.3 謀攻 (Attack by Stratagem - Win Without Fighting):
+        - **Automated Testing**: Catch bugs before production (不戰而勝)
+        - **Staging Environment**: Test in production-like env (知己知彼)
+        - **Manual Approval**: Human gate for production (慎重決策)
+        - **Blue-Green Deploy**: Zero downtime deployment (奇正並用)
+        - **Rollback Strategy**: Fast recovery from failures (進退自如)
+        - **Security Scanning**: Prevent vulnerabilities (防患未然)
+        - **Parallel Execution**: Reduce pipeline time (速戰速決)
+        - **Caching**: Cache dependencies (npm, pip) to speed up builds (60% faster)
+        - **Matrix Testing**: Test across Node 18/20, Python 3.11/3.12
+        - **Artifact Management**: Store build artifacts for 30 days
+        - **Deployment Gates**: Health check + smoke tests before production
+        - **Canary Releases**: Deploy to 10% of servers first, monitor, then 100%
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Automated deployments, reduced human error, faster time-to-market
+        - 🏢 **Agency WIN**: Reusable CI/CD infrastructure, proven DevOps patterns, scalable deployments
+        - 🚀 **Startup WIN**: Ship features daily, zero-downtime deploys, instant rollback capability
+    - Agent: devops-engineer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
