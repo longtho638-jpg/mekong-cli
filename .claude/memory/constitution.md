@@ -53,62 +53,51 @@ Khi chạy command trong terminal:
 
 ---
 
-## 🚨🚨🚨 ĐIỀU 19: CC CLI CHỈ HOẠT ĐỘNG TRONG VS CODE TERMINAL 🚨🚨🚨
+## 🚨🚨🚨 ĐIỀU 19: ANTIGRAVITY TỰ TRỊ CC CLI (AUTONOMOUS EXECUTION) 🚨🚨🚨
 
-> ⚠️⚠️⚠️ **CRITICAL - ANTIGRAVITY KHÔNG THỂ CHẠY CC CLI** ⚠️⚠️⚠️
+> ⚠️⚠️⚠️ **CRITICAL - ANTIGRAVITY CHẠY TỰ ĐỘNG** ⚠️⚠️⚠️
 
-### 🔴 SỰ THẬT:
+### 🔴 SỰ THẬT MỚI (2026-01-27):
 
-1. **CC CLI là INTERACTIVE** - cần VS Code terminal để tương tác
-2. **Antigravity run_command KHÔNG HOẠT ĐỘNG** với CC CLI interactive mode
-3. **Khi /delegate hỏi "What task?"** → cần GÕ input, không phải chạy command mới
+1. **Echo pipe hoạt động** - `echo "task" | claude --dangerously-skip-permissions`
+2. **Antigravity run_command HOẠT ĐỘNG** với echo pipe method
+3. **KHÔNG cần USER paste** - Antigravity tự chạy tất cả
 
-### 🔴 QUY TRÌNH ĐÚNG:
+### 🔴 QUY TRÌNH ĐÚNG (TỰ TRỊ):
 
 ```
-ANTIGRAVITY:
-├── 1. Tạo danh sách commands cần chạy
-├── 2. Đưa cho USER dạng copy-paste
-├── 3. USER paste vào VS Code terminal
-├── 4. USER nhấn ENTER
-├── 5. Nếu CC CLI hỏi → USER gõ task description
-└── 6. Antigravity MONITOR kết quả sau khi xong
+ANTIGRAVITY (AUTONOMOUS):
+├── 1. Tạo danh sách tasks cần delegate
+├── 2. Chạy trực tiếp bằng echo pipe
+│       echo "/delegate TASK" | claude --dangerously-skip-permissions
+├── 3. KHÔNG HỎI USER - tự chạy
+├── 4. Monitor tiến độ qua command_status
+└── 5. Update task.md khi complete
 ```
 
-### 🔴 VÍ DỤ ĐÚNG:
-
-**Syntax cho echo pipe (Antigravity auto-run):**
+### 🔴 VÍ DỤ ĐÚNG (AUTONOMOUS):
 
 ```bash
-# ✅ ĐÚNG - dùng /delegate trong echo:
+# ✅ ĐÚNG - Antigravity auto-run:
 echo "/delegate IPO-001: Create production Docker build" | claude --dangerously-skip-permissions
 
-# ❌ SAI - không có /command:
-echo "IPO-001: Create production Docker build" | claude --dangerously-skip-permissions
+# ✅ ĐÚNG - Factory line sequential:
+for task in IPO-001 IPO-002 IPO-003; do
+  echo "/delegate $task: Task description" | claude --dangerously-skip-permissions
+done
 ```
 
-**Nếu CC CLI hỏi "What task?" (interactive mode):**
+### 🔴 SAI PHẠM NẾU:
 
-```markdown
-### Terminal 1:
+- ❌ Đưa commands cho USER để paste
+- ❌ Hỏi USER "có muốn chạy không?"
+- ❌ Chờ USER approval giữa tasks
+- ❌ Không monitor qua command_status
 
-cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
+### 🔴 LIÊN KẾT:
 
-# Khi CC CLI hỏi "What task?", gõ:
-
-IPO-001: Create production Docker build
-```
-
-### 🔴 SAI PHẠM CỦA ANTIGRAVITY (2026-01-27):
-
-- ❌ Chạy `run_command` với CC CLI → processes chờ input mãi
-- ❌ Không hiểu CC CLI là interactive
-- ❌ Tạo 10+ zombie processes không hoạt động
-
-### 🔴 SỬA LỖI VĨNH VIỄN:
-
-**Antigravity KHÔNG BAO GIỜ chạy CC CLI bằng run_command.**
-**Antigravity CHỈ tạo commands để USER paste trong VS Code.**
+- **ĐIỀU 22**: CC CLI Execution Pattern (Factory Line)
+- **ĐIỀU 28**: Persist Plan Execution (không hỏi lại)
 
 ---
 
