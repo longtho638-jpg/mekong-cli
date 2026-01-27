@@ -414,6 +414,71 @@ strategy:
 
 ---
 
+## 🚨 ĐIỀU 25: STITCH MCP DESIGN-TO-CODE INTEGRATION
+
+> **Stitch = Figma → Code | Remote MCP Server từ Google**
+
+### 🔴 OVERVIEW:
+
+```yaml
+stitch_mcp:
+    type: "Remote MCP Server (Google)"
+    purpose: "Bridge Figma designs → AI-generated code"
+    features:
+        - Interpret Figma designs
+        - Retrieve UI component code
+        - Generate new screens from design
+        - Maintain design-code consistency
+```
+
+### 🔴 COMPATIBLE WITH:
+
+- ✅ Claude Code CLI
+- ✅ Antigravity
+- ✅ Cursor
+- ✅ Gemini CLI
+
+### 🔴 WORKFLOW:
+
+```yaml
+design_to_production:
+    step_1:
+        tool: "Stitch MCP"
+        action: "Figma design → UI code"
+
+    step_2:
+        tool: "CC CLI"
+        action: "Implement features + logic"
+
+    step_3:
+        tool: "Playwright MCP"
+        action: "E2E testing"
+
+    step_4:
+        tool: "Jules"
+        action: "Tech debt cleanup"
+```
+
+### 🔴 INSTALLATION:
+
+```bash
+# When Stitch MCP URL is available:
+claude mcp add stitch --url <stitch-mcp-url>
+
+# Or via Gemini CLI integration
+```
+
+### 🔴 KHÔNG XUNG ĐỘT:
+
+| Tool       | Role           | Mode       |
+| ---------- | -------------- | ---------- |
+| Stitch     | Design → Code  | Remote MCP |
+| Playwright | Browser tests  | Local MCP  |
+| CC CLI     | Task execution | Echo pipe  |
+| Jules      | Tech debt      | Async PRs  |
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
