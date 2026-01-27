@@ -958,8 +958,120 @@ always_on_factory:
 
 ---
 
+## 🚨 ĐIỀU 33: TỰ ĐỘNG BẬT CC CLI (AUTO CC CLI STARTUP)
+
+> **Antigravity PHẢI tự bật CC CLI với bypass flag | Chương 5: Binh Thế - Thế trận sẵn sàng**
+
+### 🔴 QUY TẮC TUYỆT ĐỐI (CHI TIẾT - AGENT KHÁC ĐỌC KỸ):
+
+```yaml
+auto_cc_cli_startup:
+    # BƯỚC 1: Kiểm tra CC CLI đang chạy chưa
+    check_running: |
+        pgrep -f "claude" 
+        # Nếu có PID → CC CLI đang chạy
+        # Nếu không → phải start mới
+
+    # BƯỚC 2: Start CC CLI với bypass flag
+    start_command: |
+        cd ~/mekong-cli && source .venv/bin/activate && claude --dangerously-skip-permissions
+        # ⚠️ PHẢI có --dangerously-skip-permissions để auto-approve
+        # ⚠️ PHẢI chạy qua run_command tool, WaitMsBeforeAsync=3000
+
+    # BƯỚC 3: Gửi command vào CC CLI
+    send_command_pattern: |
+        # Dùng send_command_input tool với CommandId từ run_command
+        send_command_input(
+            CommandId="xxx",  # ID từ run_command output
+            Input="/delegate task description here\n",  # PHẢI có \n cuối
+            WaitMs=5000
+        )
+
+    # BƯỚC 4: Monitor CC CLI output
+    monitor_pattern: |
+        command_status(CommandId="xxx", WaitDurationSeconds=60)
+        # Lặp lại cho đến khi CC CLI done
+```
+
+### 🔴 SEQUENCE DIAGRAM (AGENT KHÁC PHẢI FOLLOW):
+
+```
+[Antigravity]                    [Terminal]                 [CC CLI]
+     |                               |                          |
+     |--run_command(claude)--------->|                          |
+     |<--CommandId returned----------|                          |
+     |                               |--claude started--------->|
+     |                               |                          |
+     |--send_command_input---------->|--/delegate task--------->|
+     |                               |                          |
+     |--command_status-------------->|<--progress output--------|
+     |--command_status-------------->|<--progress output--------|
+     |                               |<--task complete----------|
+     |<--DONE------------------------|                          |
+```
+
+### 🔴 EXAMPLE CODE (COPY CHÍNH XÁC):
+
+```python
+# 1. Start CC CLI
+run_command(
+    CommandLine="cd ~/mekong-cli && source .venv/bin/activate && claude --dangerously-skip-permissions",
+    Cwd="/Users/macbookprom1/mekong-cli",
+    WaitMsBeforeAsync=5000,
+    SafeToAutoRun=False  # User phải approve lần đầu
+)
+# Output: CommandId = "abc-123"
+
+# 2. Wait for CC CLI to start
+command_status(CommandId="abc-123", WaitDurationSeconds=10)
+
+# 3. Send task to CC CLI
+send_command_input(
+    CommandId="abc-123",
+    Input="/delegate IPO-010-Payment: Complete Stripe production.\n",
+    WaitMs=5000
+)
+
+# 4. Monitor until done
+while not done:
+    command_status(CommandId="abc-123", WaitDurationSeconds=60)
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Chạy `echo` commands thay vì CC CLI
+- ❌ Không dùng `--dangerously-skip-permissions`
+- ❌ Không dùng `send_command_input` để gửi commands
+- ❌ Quên `\n` ở cuối Input
+- ❌ Không monitor bằng `command_status`
+- ❌ Agent khác không đọc ĐIỀU này → làm sai
+
+### 🔴 TÌNH HUỐNG XỬ LÝ:
+
+```yaml
+situations:
+    cc_cli_not_running:
+        action: "run_command(claude --dangerously-skip-permissions)"
+
+    cc_cli_running_need_command:
+        action: "send_command_input(Input='/delegate...\n')"
+
+    cc_cli_stuck:
+        action: "send_command_input(Terminate=true), start lại"
+
+    quota_exhausted:
+        action: "Đợi 45 phút hoặc switch model"
+```
+
+### 🏯 BINH PHÁP:
+
+> **Chương 5 兵勢: 奇正相生如環之無端**
+> "Kỳ chính tương sinh như vòng tròn" = CC CLI luôn sẵn sàng = Thế trận vô tận
+
+---
+
 **Effective Date:** 2026-01-27
-**Version:** 5.18.1 (Fixed ĐIỀU 32: No Echo Spam in Terminal)
+**Version:** 5.19.0 (Added ĐIỀU 33: TỰ ĐỘNG BẬT CC CLI - Detailed Rules)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
