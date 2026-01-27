@@ -537,6 +537,53 @@ claude mcp add chrome-devtools npx @anthropic-ai/chrome-devtools-mcp
 
 ---
 
+## 🚨 ĐIỀU 27: PENCIL.DEV MCP (BINH PHÁP CHƯƠNG 1)
+
+> **Pencil = In-IDE Design Canvas | 就地取材 (Use Local Resources)**
+
+### 🔴 BINH PHÁP ÁNH XẠ - CHƯƠNG 1: KẾ THIÊN:
+
+```yaml
+binh_phap_chapter_1:
+    name: "Kế Thiên (Strategic Calculations)"
+
+    pencil_mcp:
+        role: "Thảo hoạch (Planning canvas)"
+        tactical: "就地取材 - Use local resources"
+        strategy: "Sketch trong IDE = không rời vị trí"
+        advantage: "Bi-directional: Design ↔ Code"
+```
+
+### 🔴 CAPABILITIES:
+
+```yaml
+pencil_mcp:
+    type: "Agent-driven MCP canvas"
+    url: "pencil.dev"
+
+    features:
+        - Real-time canvas in VS Code/Cursor
+        - Generate HTML/CSS from sketches
+        - Visualize interaction logic
+        - Connect to other MCP sources
+
+    vs_stitch:
+        stitch: "External Figma → Code"
+        pencil: "In-IDE sketching → Code"
+```
+
+### 🔴 MCP ARSENAL COMPLETE:
+
+| #   | Tool       | Role       | Binh Pháp        |
+| --- | ---------- | ---------- | ---------------- |
+| 1   | Playwright | UI tests   | 攻城 (Attack)    |
+| 2   | DevTools   | Debug/Perf | 偵察 (Recon)     |
+| 3   | Stitch     | Figma→Code | 借刀 (Borrowed)  |
+| 4   | Pencil     | IDE Canvas | 就地 (Local)     |
+| 5   | Jules      | Tech debt  | 後勤 (Logistics) |
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
