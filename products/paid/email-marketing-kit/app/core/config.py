@@ -21,6 +21,15 @@ class Settings(BaseSettings):
 
     # Email
     DEFAULT_FROM_EMAIL: str = "noreply@example.com"
+    RESEND_API_KEY: Optional[str] = None
+    SENDGRID_API_KEY: Optional[str] = None
+    AWS_ACCESS_KEY_ID: Optional[str] = None
+    AWS_SECRET_ACCESS_KEY: Optional[str] = None
+    AWS_REGION: str = "us-east-1"
+    SMTP_HOSTNAME: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 

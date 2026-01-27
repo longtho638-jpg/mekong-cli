@@ -1,0 +1,21 @@
+{
+  "name": "agencyos-workspace-template",
+  "version": "1.0.0",
+  "description": "The Operating System for Small Agencies. Standardized folder structure, AI agents, and workflow templates.",
+  "author": "Antigravity Venture Studio",
+  "license": "Commercial",
+  "compatible_claude_version": "3.5",
+  "requires": [
+    "antigravity-onboarding-kit"
+  ],
+  "structure_version": "2026.1",
+  "contents": [
+    "00_Strategy_Center",
+    "01_Product_Factory",
+    "02_Marketing_Engine",
+    "03_Sales_Hub",
+    "04_Finance_Ops",
+    ".antigravity",
+    ".agent"
+  ]
+}

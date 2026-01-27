@@ -55,4 +55,29 @@ export const jobService = {
     const response = await api.delete('/jobs/failed');
     return response.data;
   },
+
+  listJobs: async (limit: number = 10, offset: number = 0, status?: string): Promise<Job[]> => {
+    const params: any = { limit, offset };
+    if (status) params.status = status;
+    const response = await api.get<Job[]>('/jobs', { params });
+    return response.data;
+  },
+
+  scheduleJob: async (taskName: string, cron: string, payload: Record<string, any> = {}): Promise<{ job_id: string; status: string }> => {
+    const response = await api.post('/schedule', {
+      task_name: taskName,
+      cron,
+      payload,
+    });
+    return response.data;
+  },
+
+  listScheduledJobs: async (): Promise<any[]> => {
+    const response = await api.get('/schedule');
+    return response.data;
+  },
+
+  unscheduleJob: async (jobId: string): Promise<void> => {
+    await api.delete(`/schedule/${jobId}`);
+  },
 };

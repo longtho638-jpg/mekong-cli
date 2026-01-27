@@ -3,6 +3,8 @@
 -- Multi-tenant billing with SEA currency support
 -- ═══════════════════════════════════════════════════════════════════════════════
 
+BEGIN;
+
 -- ─────────────────────────────────────────────────────────────────────────────────
 -- SUBSCRIPTIONS TABLE
 -- ─────────────────────────────────────────────────────────────────────────────────
@@ -44,44 +46,62 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
 -- INVOICES TABLE
 -- ─────────────────────────────────────────────────────────────────────────────────
 
-CREATE TABLE IF NOT EXISTS invoices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    subscription_id UUID REFERENCES subscriptions(id),
-    
-    -- Stripe Reference
-    stripe_invoice_id TEXT UNIQUE,
-    
-    -- Invoice Details
-    invoice_number TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN (
-        'draft', 'open', 'paid', 'void', 'uncollectible'
-    )),
-    
-    -- Amounts
-    subtotal DECIMAL(12, 2) NOT NULL,
-    tax DECIMAL(12, 2) DEFAULT 0,
-    total DECIMAL(12, 2) NOT NULL,
-    currency TEXT NOT NULL DEFAULT 'USD',
-    
-    -- Tax Details
-    tax_rate DECIMAL(5, 4) DEFAULT 0,
-    tax_name TEXT,
-    
-    -- Dates
-    invoice_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    due_date TIMESTAMPTZ,
-    paid_at TIMESTAMPTZ,
-    
-    -- PDF Storage
-    pdf_url TEXT,
-    
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- Handle migration from AgencyOS v2.0 (agencies) to v2.1 (tenants)
+DO $$
+BEGIN
+    -- If table exists but tenant_id missing (v2.0 schema)
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'invoices') AND
+       NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'invoices' AND column_name = 'tenant_id') THEN
 
-CREATE INDEX IF NOT EXISTS idx_invoices_tenant ON invoices(tenant_id);
-CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
+        ALTER TABLE invoices ADD COLUMN tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE;
+        ALTER TABLE invoices ADD COLUMN subscription_id UUID REFERENCES subscriptions(id);
+        ALTER TABLE invoices ADD COLUMN stripe_invoice_id TEXT UNIQUE;
+        ALTER TABLE invoices ADD COLUMN subtotal DECIMAL(12, 2);
+        -- Update existing columns to match new schema if needed or map them
+        -- (Assuming we start with nulls for new columns)
+
+    ELSIF NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'invoices') THEN
+        -- Create table if it doesn't exist
+        CREATE TABLE invoices (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+            subscription_id UUID REFERENCES subscriptions(id),
+
+            -- Stripe Reference
+            stripe_invoice_id TEXT UNIQUE,
+
+            -- Invoice Details
+            invoice_number TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN (
+                'draft', 'open', 'paid', 'void', 'uncollectible'
+            )),
+
+            -- Amounts
+            subtotal DECIMAL(12, 2) NOT NULL,
+            tax DECIMAL(12, 2) DEFAULT 0,
+            total DECIMAL(12, 2) NOT NULL,
+            currency TEXT NOT NULL DEFAULT 'USD',
+
+            -- Tax Details
+            tax_rate DECIMAL(5, 4) DEFAULT 0,
+            tax_name TEXT,
+
+            -- Dates
+            invoice_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            due_date TIMESTAMPTZ,
+            paid_at TIMESTAMPTZ,
+
+            -- PDF Storage
+            pdf_url TEXT,
+
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        CREATE INDEX idx_invoices_tenant ON invoices(tenant_id);
+        CREATE INDEX idx_invoices_status ON invoices(status);
+    END IF;
+END $$;
 
 -- ─────────────────────────────────────────────────────────────────────────────────
 -- PAYMENTS TABLE
@@ -191,3 +211,4 @@ CREATE TRIGGER invoices_updated_at
 
 -- This would be populated by actual sign-ups
 -- INSERT INTO subscriptions (tenant_id, plan, status) VALUES ...
+COMMIT;

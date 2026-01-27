@@ -1,6 +1,8 @@
 -- Accounting Schema for AgencyOS
 -- ERPNext Parity: Chart of Accounts, Journal Entries, Ledgers
 
+BEGIN;
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- ACCOUNTS (Chart of Accounts)
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -173,3 +175,4 @@ SELECT
 FROM accounts a
 WHERE a.type IN ('income', 'expense')
 AND a.is_group = false;
+COMMIT;

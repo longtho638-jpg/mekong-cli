@@ -4,6 +4,8 @@
 -- Created: 2026-01-03
 -- ============================================
 
+BEGIN;
+
 -- ============================================
 -- TEAM MEMBERS TABLE
 -- Links users to agencies with roles
@@ -166,3 +168,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_agency_created
   AFTER INSERT ON public.agencies
   FOR EACH ROW EXECUTE FUNCTION create_agency_owner();
+COMMIT;

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # --- Infrastructure ---
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mongo:
+    image: mongo:6-alpine
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Backend Services ---
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MONGO_URL=mongodb://mongo:27017
+      - QUEUE_BACKEND=redis
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+
+  worker:
+    build: ./backend
+    command: python app/worker.py
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MONGO_URL=mongodb://mongo:27017
+      - QUEUE_BACKEND=redis
+    depends_on:
+      - backend
+      - redis
+      - mongo
+    volumes:
+      - ./backend:/app
+
+  scheduler:
+    build: ./backend
+    command: python jobs.py scheduler
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MONGO_URL=mongodb://mongo:27017
+      - QUEUE_BACKEND=redis
+    depends_on:
+      - backend
+      - redis
+      - mongo
+    volumes:
+      - ./backend:/app
+
+  # --- Frontend ---
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80" # Mapping 80 inside container to 5173 on host for consistency with dev
+    depends_on:
+      - backend
+
+volumes:
+  redis_data:
+  mongo_data:

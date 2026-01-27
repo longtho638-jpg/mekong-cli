@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Create kanban_boards table
 CREATE TABLE IF NOT EXISTS public.kanban_boards (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -33,3 +35,4 @@ ADD COLUMN IF NOT EXISTS "order" FLOAT DEFAULT 0.0;
 
 -- Create index for ordering
 CREATE INDEX IF NOT EXISTS idx_tasks_board_order ON public.tasks(board_id, "order");
+COMMIT;

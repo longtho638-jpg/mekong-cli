@@ -1,0 +1,17 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore user-specific data (privacy)
+*.log
+*.tmp
+.env
+.env.local
+node_modules/
+.idea/
+.vscode/
+
+# Ignore sensitive agency data (when users use this)
+# Users should manage their own git, but we provide defaults
+03_Sales_Hub/Contracts/Signed/
+04_Finance_Ops/Invoices/Sent/

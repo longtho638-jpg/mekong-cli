@@ -12,6 +12,18 @@ from fastapi.middleware.cors import CORSMiddleware
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Initialize Sentry for error tracking and performance monitoring
+from backend.core.sentry_config import init_sentry
+from backend.core.logging import setup_logging
+
+# Setup structured logging first
+setup_logging(os.getenv("LOG_LEVEL", "INFO"))
+
+init_sentry(
+    traces_sample_rate=0.1,  # Sample 10% of transactions in production
+    profiles_sample_rate=0.1,  # Profile 10% of transactions
+)
+
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
 from backend.api.routers import (
@@ -26,6 +38,7 @@ from backend.api.routers import (
     inventory,
     invoices,
     kanban,
+    license_production,
     mekong_commands,
     monitor,
     ops,
@@ -36,6 +49,7 @@ from backend.api.routers import (
     swarm,
     vibes,
     workflow,
+    affiliates, # Added
 )
 from backend.api.routers import (
     router as hybrid_router,
@@ -43,6 +57,7 @@ from backend.api.routers import (
 from backend.middleware import (
     PerformanceMonitoringMiddleware,
     RateLimitMiddleware,
+    LicenseValidatorMiddleware,
     get_metrics_summary,
 )
 from backend.routes.agentops import router as agentops_router
@@ -61,7 +76,13 @@ app = FastAPI(
 app.add_middleware(PerformanceMonitoringMiddleware)
 
 # Add rate limiting middleware (before CORS)
-app.add_middleware(RateLimitMiddleware)
+app.add_middleware(
+    RateLimitMiddleware,
+    redis_url=settings.redis_url
+)
+
+# License Validation Middleware (Non-blocking by default, logs usage)
+app.add_middleware(LicenseValidatorMiddleware)
 
 # CORS middleware
 app.add_middleware(
@@ -73,6 +94,7 @@ app.add_middleware(
 )
 
 # Include Routers
+app.include_router(license_production.router)
 app.include_router(analytics.router)
 app.include_router(hr.router)
 app.include_router(invoices.router)
@@ -93,6 +115,7 @@ app.include_router(stripe_webhooks.router)
 app.include_router(gumroad_webhooks.router)
 app.include_router(payments.router)
 app.include_router(revenue.router)
+app.include_router(affiliates.router) # Added
 app.include_router(ops.router)
 app.include_router(swarm.router)
 app.include_router(ws_router)

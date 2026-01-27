@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { jobService, Stats } from '../services/api';
 import { StatsCard } from './StatsCard';
 import { AddJobForm } from './AddJobForm';
-import { Activity, CheckCircle, AlertOctagon, Clock, RefreshCw, Trash2 } from 'lucide-react';
+import { JobList } from './JobList';
+import { JobScheduler } from './JobScheduler';
+import { Activity, AlertOctagon, Clock, RefreshCw, Trash2 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<Stats>({ pending: 0, processing: 0, failed: 0, total_jobs: 0 });
-  const [loading, setLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const fetchStats = async () => {
     try {
@@ -15,9 +17,12 @@ export const Dashboard: React.FC = () => {
       setStats(data);
     } catch (error) {
       console.error("Failed to fetch stats", error);
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const triggerRefresh = () => {
+    fetchStats();
+    setRefreshTrigger(prev => prev + 1);
   };
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export const Dashboard: React.FC = () => {
   const handleClearFailed = async () => {
     if (confirm("Are you sure you want to clear all failed jobs?")) {
       await jobService.clearFailedJobs();
-      fetchStats();
+      triggerRefresh();
     }
   };
 
@@ -54,7 +59,7 @@ export const Dashboard: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={fetchStats}
+            onClick={triggerRefresh}
             className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -71,11 +76,12 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1">
-          <AddJobForm onJobAdded={fetchStats} />
-        </div>
+        {/* Left Column: Actions & Forms */}
+        <div className="lg:col-span-1 space-y-6">
+          <AddJobForm onJobAdded={triggerRefresh} />
 
-        <div className="lg:col-span-2">
+          <JobScheduler />
+
           <div className="bg-white shadow sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
               <h3 className="text-lg leading-6 font-medium text-gray-900">System Actions</h3>
@@ -91,11 +97,13 @@ export const Dashboard: React.FC = () => {
                   Clear Failed Jobs
                 </button>
               </div>
-              <p className="mt-4 text-sm text-gray-500">
-                More controls (pause queue, retry all) can be added here.
-              </p>
             </div>
           </div>
+        </div>
+
+        {/* Right Column: Job List */}
+        <div className="lg:col-span-2">
+          <JobList key={refreshTrigger} onRetry={triggerRefresh} />
         </div>
       </div>
     </div>

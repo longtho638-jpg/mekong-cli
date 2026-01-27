@@ -1,0 +1,13 @@
+FROM debian:latest
+
+# Install basic tools
+RUN apt-get update && apt-get install -y curl sudo
+
+WORKDIR /app
+
+# Copy the script
+COPY scripts/setup-antigravity.sh .
+RUN chmod +x setup-antigravity.sh
+
+# Run it
+CMD ["./setup-antigravity.sh"]

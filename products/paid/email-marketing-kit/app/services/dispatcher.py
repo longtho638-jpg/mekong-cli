@@ -11,6 +11,8 @@ from app.models.subscriber import Subscriber
 from app.services.template import template_service
 from app.core.database import AsyncSessionLocal
 
+from app.services.segmentation import segmentation_service
+
 class CampaignDispatcher:
     def __init__(self):
         self.settings = get_settings()
@@ -35,12 +37,14 @@ class CampaignDispatcher:
             db.add(campaign)
             await db.commit()
 
-            # Fetch subscribers (Logic: All active subscribers for now, or use list relationship)
-            # In a real app, this needs pagination/chunking for large lists
-            # For Kit MVP, we just fetch all
-            stmt = select(Subscriber).where(Subscriber.status == "active")
-            result = await db.execute(stmt)
-            subscribers = result.scalars().all()
+            # Fetch subscribers based on segment rules
+            if campaign.segment_rules:
+                subscribers = await segmentation_service.get_subscribers(db, campaign.segment_rules, limit=10000)
+            else:
+                # Default to all active if no rules
+                stmt = select(Subscriber).where(Subscriber.status == "active")
+                result = await db.execute(stmt)
+                subscribers = result.scalars().all()
 
             await self.connect()
 

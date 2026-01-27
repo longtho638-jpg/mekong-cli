@@ -1,0 +1,3930 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AgencyOS API",
+    "description": "\ud83c\udf0a Deploy Your Agency in 15 Minutes - Backend API with Clean Architecture",
+    "version": "3.0.0"
+  },
+  "paths": {
+    "/api/v1/analytics/usage": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Usage Analytics",
+        "description": "Get usage analytics data",
+        "operationId": "get_usage_analytics_api_v1_analytics_usage_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Usage Analytics Api V1 Analytics Usage Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hr/employees": {
+      "get": {
+        "tags": [
+          "hr"
+        ],
+        "summary": "List Employees",
+        "description": "List all employees",
+        "operationId": "list_employees_api_v1_hr_employees_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Employee"
+                  },
+                  "type": "array",
+                  "title": "Response List Employees Api V1 Hr Employees Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "hr"
+        ],
+        "summary": "Create Employee",
+        "description": "Create new employee",
+        "operationId": "create_employee_api_v1_hr_employees_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoices/{invoice_id}": {
+      "get": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "Get Invoice",
+        "description": "Get invoice by ID",
+        "operationId": "get_invoice_api_v1_invoices__invoice_id__get",
+        "parameters": [
+          {
+            "name": "invoice_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Invoice Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoice"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoices/": {
+      "get": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "List Invoices",
+        "description": "List all invoices",
+        "operationId": "list_invoices_api_v1_invoices__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Invoice"
+                  },
+                  "type": "array",
+                  "title": "Response List Invoices Api V1 Invoices  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounting/ledger": {
+      "get": {
+        "tags": [
+          "accounting"
+        ],
+        "summary": "Get Ledger",
+        "description": "Get accounting ledger",
+        "operationId": "get_ledger_api_v1_accounting_ledger_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LedgerEntry"
+                  },
+                  "type": "array",
+                  "title": "Response Get Ledger Api V1 Accounting Ledger Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounting/transactions": {
+      "post": {
+        "tags": [
+          "accounting"
+        ],
+        "summary": "Create Transaction",
+        "description": "Create accounting transaction",
+        "operationId": "create_transaction_api_v1_accounting_transactions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Transaction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/products": {
+      "get": {
+        "tags": [
+          "inventory"
+        ],
+        "summary": "List Products",
+        "description": "List inventory products",
+        "operationId": "list_products_api_v1_inventory_products_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  },
+                  "type": "array",
+                  "title": "Response List Products Api V1 Inventory Products Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "inventory"
+        ],
+        "summary": "Create Product",
+        "description": "Add product to inventory",
+        "operationId": "create_product_api_v1_inventory_products_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/": {
+      "get": {
+        "tags": [
+          "campaigns"
+        ],
+        "summary": "List Campaigns",
+        "description": "List active marketing campaigns.",
+        "operationId": "list_campaigns_campaigns__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/": {
+      "get": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "List All Ops",
+        "description": "\ud83d\udcca List all AgentOps modules via AgentOpsController\nReturns status of all 50 ops aligned with agencyos.network",
+        "operationId": "list_all_ops_api_agentops__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/health": {
+      "get": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "Health Check",
+        "description": "\ud83c\udfe5 Health check for AgentOps system via AgentOpsController",
+        "operationId": "health_check_api_agentops_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/{category}": {
+      "get": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "Get Ops Status",
+        "description": "\ud83d\udcc8 Get status of specific AgentOps category via AgentOpsController",
+        "operationId": "get_ops_status_api_agentops__category__get",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/execute": {
+      "post": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "Execute Ops",
+        "description": "\u26a1 Execute an AgentOps action via AgentOpsController",
+        "operationId": "execute_ops_api_agentops_execute_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpsExecuteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/categories/summary": {
+      "get": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "Get Categories Summary",
+        "description": "\ud83d\udcca Summary by department category via AgentOpsController",
+        "operationId": "get_categories_summary_api_agentops_categories_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agentops/binh-phap/chapters": {
+      "get": {
+        "tags": [
+          "AgentOps"
+        ],
+        "summary": "Get Binh Phap Chapters",
+        "description": "\ud83c\udfef Binh Ph\u00e1p 13 Chapters - Strategic Layer via AgentOpsController\nIntegrated within AgentOps DNA",
+        "operationId": "get_binh_phap_chapters_api_agentops_binh_phap_chapters_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Get Agents",
+        "description": "List all available agents and their status",
+        "operationId": "get_agents_api_agents_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/run": {
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Run Agent",
+        "description": "Run a specific agent with a task",
+        "operationId": "run_agent_api_agents_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentTask"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/router/stats": {
+      "get": {
+        "tags": [
+          "Hybrid Router"
+        ],
+        "summary": "Get Router Stats",
+        "description": "Get Hybrid Router statistics",
+        "operationId": "get_router_stats_api_router_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/router/route": {
+      "post": {
+        "tags": [
+          "Hybrid Router"
+        ],
+        "summary": "Route Task",
+        "description": "Route a task to optimal AI provider",
+        "operationId": "route_task_api_router_route_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vibes": {
+      "get": {
+        "tags": [
+          "Vibe Tuner"
+        ],
+        "summary": "Get Vibes",
+        "description": "List all available vibes",
+        "operationId": "get_vibes_api_vibes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vibes/set": {
+      "post": {
+        "tags": [
+          "Vibe Tuner"
+        ],
+        "summary": "Set Vibe",
+        "description": "Set active vibe by region or location",
+        "operationId": "set_vibe_api_vibes_set_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VibeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vibes/prompt": {
+      "get": {
+        "tags": [
+          "Vibe Tuner"
+        ],
+        "summary": "Get Vibe Prompt",
+        "description": "Get system prompt for current vibe",
+        "operationId": "get_vibe_prompt_api_vibes_prompt_get",
+        "parameters": [
+          {
+            "name": "context",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Context"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/khach-hang": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Khach Hang",
+        "description": "\u00a71 Customer Profile via CommandController",
+        "operationId": "cmd_khach_hang_api_commands_khach_hang_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/ke-hoach-kinh-doanh": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Ke Hoach Kinh Doanh",
+        "description": "\u00a72 Business Plan via CommandController",
+        "operationId": "cmd_ke_hoach_kinh_doanh_api_commands_ke_hoach_kinh_doanh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/nghien-cuu-thi-truong": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Nghien Cuu Thi Truong",
+        "description": "\u00a73 Market Research via CommandController",
+        "operationId": "cmd_nghien_cuu_thi_truong_api_commands_nghien_cuu_thi_truong_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/nhan-dien-thuong-hieu": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Nhan Dien Thuong Hieu",
+        "description": "\u00a74 Brand Identity via CommandController",
+        "operationId": "cmd_nhan_dien_thuong_hieu_api_commands_nhan_dien_thuong_hieu_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/thong-diep-tiep-thi": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Thong Diep Tiep Thi",
+        "description": "\u00a75 Marketing Message via CommandController",
+        "operationId": "cmd_thong_diep_tiep_thi_api_commands_thong_diep_tiep_thi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/ke-hoach-tiep-thi": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Ke Hoach Tiep Thi",
+        "description": "\u00a76 Marketing Plan via CommandController",
+        "operationId": "cmd_ke_hoach_tiep_thi_api_commands_ke_hoach_tiep_thi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/noi-dung-tiep-thi": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Noi Dung Tiep Thi",
+        "description": "\u00a77 Marketing Content via CommandController",
+        "operationId": "cmd_noi_dung_tiep_thi_api_commands_noi_dung_tiep_thi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/y-tuong-social-media": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Y Tuong Social Media",
+        "description": "\u00a78 Social Media Content via CommandController",
+        "operationId": "cmd_y_tuong_social_media_api_commands_y_tuong_social_media_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/chien-luoc-ban-hang": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Chien Luoc Ban Hang",
+        "description": "\u00a79 Sales Strategy via CommandController",
+        "operationId": "cmd_chien_luoc_ban_hang_api_commands_chien_luoc_ban_hang_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/ke-hoach-pr": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Ke Hoach Pr",
+        "description": "\u00a710 PR Plan via CommandController",
+        "operationId": "cmd_ke_hoach_pr_api_commands_ke_hoach_pr_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/ke-hoach-tang-truong": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Ke Hoach Tang Truong",
+        "description": "\u00a711 Growth Plan via CommandController",
+        "operationId": "cmd_ke_hoach_tang_truong_api_commands_ke_hoach_tang_truong_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/nong-san": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Nong San",
+        "description": "Local Market via CommandController",
+        "operationId": "cmd_nong_san_api_commands_nong_san_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/ban-hang": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Ban Hang",
+        "description": "Sales Ops via CommandController",
+        "operationId": "cmd_ban_hang_api_commands_ban_hang_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commands/tiep-thi": {
+      "post": {
+        "tags": [
+          "Mekong Commands"
+        ],
+        "summary": "Cmd Tiep Thi",
+        "description": "Marketing Ops via CommandController",
+        "operationId": "cmd_tiep_thi_api_commands_tiep_thi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__models__command__CommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/status": {
+      "get": {
+        "tags": [
+          "monitor"
+        ],
+        "summary": "Get Status",
+        "description": "Get real-time system status from Commander Engine.",
+        "operationId": "get_status_monitor_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow/list": {
+      "get": {
+        "tags": [
+          "workflow"
+        ],
+        "summary": "List Workflows",
+        "description": "List all workflows.",
+        "operationId": "list_workflows_workflow_list_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowDict"
+                  },
+                  "type": "array",
+                  "title": "Response List Workflows Workflow List Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow/create": {
+      "post": {
+        "tags": [
+          "workflow"
+        ],
+        "summary": "Create Workflow",
+        "description": "Create a new workflow.",
+        "operationId": "create_workflow_workflow_create_post",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "trigger_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Trigger Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow/{workflow_id}/save": {
+      "post": {
+        "tags": [
+          "workflow"
+        ],
+        "summary": "Save Workflow",
+        "description": "Save a workflow definition.",
+        "operationId": "save_workflow_workflow__workflow_id__save_post",
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workflow Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workflow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflow/{workflow_id}/execute": {
+      "post": {
+        "tags": [
+          "workflow"
+        ],
+        "summary": "Execute Workflow",
+        "description": "Execute a workflow manually.",
+        "operationId": "execute_workflow_workflow__workflow_id__execute_post",
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workflow Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents-creator/skills": {
+      "get": {
+        "tags": [
+          "agents-creator"
+        ],
+        "summary": "List Available Skills",
+        "description": "List available skills from catalog.",
+        "operationId": "list_available_skills_agents_creator_skills_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents-creator/create": {
+      "post": {
+        "tags": [
+          "agents-creator"
+        ],
+        "summary": "Create Agent",
+        "description": "Create a new custom agent.",
+        "operationId": "create_agent_agents_creator_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit/logs": {
+      "get": {
+        "tags": [
+          "audit"
+        ],
+        "summary": "Get Audit Logs",
+        "description": "Retrieve audit logs (Mock implementation reading from file).",
+        "operationId": "get_audit_logs_audit_logs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLogEntry"
+                  },
+                  "type": "array",
+                  "title": "Response Get Audit Logs Audit Logs Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/webhooks/paypal/": {
+      "post": {
+        "tags": [
+          "PayPal Webhooks"
+        ],
+        "summary": "Handle Webhook",
+        "description": "Unified PayPal webhook handler.",
+        "operationId": "handle_webhook_webhooks_paypal__post",
+        "parameters": [
+          {
+            "name": "PAYPAL-TRANSMISSION-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paypal-Transmission-Id"
+            }
+          },
+          {
+            "name": "PAYPAL-TRANSMISSION-TIME",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paypal-Transmission-Time"
+            }
+          },
+          {
+            "name": "PAYPAL-CERT-URL",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paypal-Cert-Url"
+            }
+          },
+          {
+            "name": "PAYPAL-AUTH-ALGO",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paypal-Auth-Algo"
+            }
+          },
+          {
+            "name": "PAYPAL-TRANSMISSION-SIG",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paypal-Transmission-Sig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/paypal/status": {
+      "get": {
+        "tags": [
+          "PayPal Webhooks"
+        ],
+        "summary": "Webhook Status",
+        "description": "Check webhook handler status.",
+        "operationId": "webhook_status_webhooks_paypal_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/stripe/": {
+      "post": {
+        "tags": [
+          "Stripe Webhooks"
+        ],
+        "summary": "Handle Webhook",
+        "description": "Unified Stripe webhook handler with signature verification.\n\nSecurity:\n- Stripe-Signature header required\n- Signature verified using Stripe SDK\n- Timestamp validation prevents replay attacks\n- All verification attempts logged\n- Invalid signatures rejected with 401",
+        "operationId": "handle_webhook_webhooks_stripe__post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/gumroad/": {
+      "post": {
+        "tags": [
+          "Gumroad Webhooks"
+        ],
+        "summary": "Handle Webhook",
+        "description": "Unified Gumroad webhook handler with signature verification.\n\nGumroad sends data as application/x-www-form-urlencoded.\nSignature is verified via HMAC-SHA256 before processing.\n\nSecurity:\n- X-Gumroad-Signature header required\n- HMAC-SHA256 signature verification\n- All verification attempts logged\n- Invalid signatures rejected with 401",
+        "operationId": "handle_webhook_webhooks_gumroad__post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/status": {
+      "get": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Get Payment Status",
+        "description": "Get payment status or service status",
+        "operationId": "get_payment_status_api_v1_payments_status_get",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Payment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Payment Status Api V1 Payments Status Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/paypal/create-order": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Create Paypal Order",
+        "description": "Create a PayPal order.",
+        "operationId": "create_paypal_order_api_v1_payments_paypal_create_order_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/paypal/capture-order": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Capture Paypal Order",
+        "description": "Capture PayPal order",
+        "operationId": "capture_paypal_order_api_v1_payments_paypal_capture_order_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_capture_paypal_order_api_v1_payments_paypal_capture_order_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Capture Paypal Order Api V1 Payments Paypal Capture Order Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/paypal/create-subscription": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Create Paypal Subscription",
+        "description": "Create a PayPal subscription.",
+        "operationId": "create_paypal_subscription_api_v1_payments_paypal_create_subscription_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubscriptionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/paypal/subscription/{subscription_id}": {
+      "get": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Get Paypal Subscription",
+        "description": "Get PayPal subscription details.",
+        "operationId": "get_paypal_subscription_api_v1_payments_paypal_subscription__subscription_id__get",
+        "parameters": [
+          {
+            "name": "subscription_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Subscription Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/paypal/subscription/{subscription_id}/cancel": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Cancel Paypal Subscription",
+        "description": "Cancel a PayPal subscription.",
+        "operationId": "cancel_paypal_subscription_api_v1_payments_paypal_subscription__subscription_id__cancel_post",
+        "parameters": [
+          {
+            "name": "subscription_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Subscription Id"
+            }
+          },
+          {
+            "name": "reason",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reason"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/stripe/create-checkout": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Create Stripe Checkout",
+        "description": "Create a Stripe Checkout Session.",
+        "operationId": "create_stripe_checkout_api_v1_payments_stripe_create_checkout_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revenue/dashboard": {
+      "get": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Get Revenue Dashboard",
+        "description": "Get high-level revenue metrics.",
+        "operationId": "get_revenue_dashboard_revenue_dashboard_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueStats"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/revenue/sync": {
+      "post": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Sync Revenue",
+        "description": "Trigger synchronization with payment providers.",
+        "operationId": "sync_revenue_revenue_sync_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/revenue/summary": {
+      "get": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Get Revenue Summary",
+        "description": "GET /api/revenue/summary - Overall revenue metrics.",
+        "operationId": "get_revenue_summary_revenue_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revenue/by-product": {
+      "get": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Get Revenue By Product",
+        "description": "GET /api/revenue/by-product - Revenue breakdown by product.",
+        "operationId": "get_revenue_by_product_revenue_by_product_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revenue/by-period": {
+      "get": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Get Revenue By Period",
+        "description": "GET /api/revenue/by-period?period=daily|weekly|monthly - Time-series revenue data.",
+        "operationId": "get_revenue_by_period_revenue_by_period_get",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "monthly",
+              "title": "Period"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revenue/affiliates": {
+      "get": {
+        "tags": [
+          "revenue"
+        ],
+        "summary": "Get Revenue Affiliates",
+        "description": "GET /api/revenue/affiliates - Affiliate commission summary.",
+        "operationId": "get_revenue_affiliates_revenue_affiliates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ops/status": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Get Ops Status",
+        "description": "Get health status of all monitored services.",
+        "operationId": "get_ops_status_ops_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceHealth"
+                  },
+                  "type": "array",
+                  "title": "Response Get Ops Status Ops Status Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/ops/quota": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Get Quota",
+        "description": "Get current quota usage.",
+        "operationId": "get_quota_ops_quota_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuotaStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/swarm/status": {
+      "get": {
+        "tags": [
+          "swarm"
+        ],
+        "summary": "Get Swarm Status",
+        "description": "Get current status of Swarm (Agents, Metrics).",
+        "operationId": "get_swarm_status_swarm_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwarmStatusResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/swarm/dispatch": {
+      "post": {
+        "tags": [
+          "swarm"
+        ],
+        "summary": "Dispatch Task",
+        "description": "Submit a task to the Swarm.",
+        "operationId": "dispatch_task_swarm_dispatch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskSubmitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/swarm/tasks": {
+      "get": {
+        "tags": [
+          "swarm"
+        ],
+        "summary": "List Tasks",
+        "description": "List active tasks in the Swarm.",
+        "operationId": "list_tasks_swarm_tasks_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SwarmTaskResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Tasks Swarm Tasks Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/ws/status": {
+      "get": {
+        "tags": [
+          "websocket"
+        ],
+        "summary": "Get Websocket Status",
+        "description": "Get WebSocket server status and active connections.",
+        "operationId": "get_websocket_status_ws_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Websocket Status Ws Status Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/broadcast": {
+      "post": {
+        "tags": [
+          "websocket"
+        ],
+        "summary": "Broadcast Message",
+        "description": "Broadcast a message to all connected clients.\n\nBody:\n{\n    \"type\": \"custom_event\",\n    \"data\": {...}\n}",
+        "operationId": "broadcast_message_ws_broadcast_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "title": "Message"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Broadcast Message Ws Broadcast Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/trigger/{event_type}": {
+      "post": {
+        "tags": [
+          "websocket"
+        ],
+        "summary": "Trigger Event",
+        "description": "Trigger a specific event type for testing.\n\nAvailable events:\n- lead_added\n- invoice_paid\n- vc_score_updated\n- data_refresh",
+        "operationId": "trigger_event_ws_trigger__event_type__post",
+        "parameters": [
+          {
+            "name": "event_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Type"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "title": "Data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Trigger Event Ws Trigger  Event Type  Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login For Access Token",
+        "operationId": "login_for_access_token_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_for_access_token_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "Health check",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "Detailed health check",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Metrics",
+        "description": "Performance metrics for dashboard",
+        "operationId": "metrics_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentDefinition": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "tools": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tools"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "default": "gemini-1.5-pro"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "role",
+          "description",
+          "skills",
+          "tools"
+        ],
+        "title": "AgentDefinition"
+      },
+      "AgentTask": {
+        "properties": {
+          "agent_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Agent Name",
+            "description": "Agent name"
+          },
+          "task": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Task",
+            "description": "Task description"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority",
+            "description": "Task priority",
+            "default": "normal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_name",
+          "task"
+        ],
+        "title": "AgentTask",
+        "description": "Task for an agent."
+      },
+      "Anomaly": {
+        "properties": {
+          "system": {
+            "type": "string",
+            "title": "System"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          },
+          "recovery_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recovery Action"
+          }
+        },
+        "type": "object",
+        "required": [
+          "system",
+          "type",
+          "message",
+          "severity"
+        ],
+        "title": "Anomaly"
+      },
+      "AuditLogEntry": {
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "user": {
+            "type": "string",
+            "title": "User"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "resource": {
+            "type": "string",
+            "title": "Resource"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "title": "AuditLogEntry"
+      },
+      "Body_capture_paypal_order_api_v1_payments_paypal_capture_order_post": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id"
+        ],
+        "title": "Body_capture_paypal_order_api_v1_payments_paypal_capture_order_post"
+      },
+      "Body_login_for_access_token_token_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_for_access_token_token_post"
+      },
+      "CommandRequest": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Prompt",
+            "description": "Command prompt"
+          },
+          "vibe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vibe",
+            "description": "Vibe setting",
+            "default": "neutral"
+          },
+          "override_provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Provider",
+            "description": "Override AI provider"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "title": "CommandRequest",
+        "description": "Base request for command execution."
+      },
+      "CreateOrderRequest": {
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "default": "USD"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "paypal",
+              "stripe"
+            ],
+            "title": "Provider",
+            "default": "paypal"
+          },
+          "price_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Id"
+          },
+          "success_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Success Url"
+          },
+          "cancel_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancel Url"
+          },
+          "customer_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Email"
+          },
+          "tenant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant Id"
+          }
+        },
+        "type": "object",
+        "title": "CreateOrderRequest"
+      },
+      "CreateSubscriptionRequest": {
+        "properties": {
+          "plan_id": {
+            "type": "string",
+            "title": "Plan Id"
+          },
+          "tenant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant Id"
+          },
+          "customer_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Email"
+          },
+          "return_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Return Url"
+          },
+          "cancel_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancel Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plan_id"
+        ],
+        "title": "CreateSubscriptionRequest"
+      },
+      "DashboardResponse": {
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "systems": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SystemStatus"
+            },
+            "type": "object",
+            "title": "Systems"
+          },
+          "anomalies": {
+            "items": {
+              "$ref": "#/components/schemas/Anomaly"
+            },
+            "type": "array",
+            "title": "Anomalies"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "timestamp",
+          "systems",
+          "anomalies",
+          "summary"
+        ],
+        "title": "DashboardResponse"
+      },
+      "Employee": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "department": {
+            "type": "string",
+            "title": "Department"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "department"
+        ],
+        "title": "Employee"
+      },
+      "Financials": {
+        "properties": {
+          "total_revenue_usd": {
+            "type": "number",
+            "title": "Total Revenue Usd"
+          },
+          "mrr": {
+            "type": "number",
+            "title": "Mrr"
+          },
+          "arr": {
+            "type": "number",
+            "title": "Arr"
+          },
+          "outstanding": {
+            "type": "number",
+            "title": "Outstanding"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_revenue_usd",
+          "mrr",
+          "arr",
+          "outstanding"
+        ],
+        "title": "Financials"
+      },
+      "GoalSummary": {
+        "properties": {
+          "monthly_target": {
+            "type": "number",
+            "title": "Monthly Target"
+          },
+          "progress_percent": {
+            "type": "number",
+            "title": "Progress Percent"
+          },
+          "gap_usd": {
+            "type": "number",
+            "title": "Gap Usd"
+          }
+        },
+        "type": "object",
+        "required": [
+          "monthly_target",
+          "progress_percent",
+          "gap_usd"
+        ],
+        "title": "GoalSummary"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Invoice": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "UUID"
+          },
+          "invoice_number": {
+            "type": "string",
+            "title": "Invoice Number"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "tax": {
+            "type": "number",
+            "title": "Tax"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvoiceStatus"
+          },
+          "service_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Type"
+          },
+          "stripe_invoice_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stripe Invoice Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "invoice_number",
+          "amount",
+          "tax",
+          "total",
+          "currency",
+          "status"
+        ],
+        "title": "Invoice"
+      },
+      "InvoiceStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "sent",
+          "paid",
+          "overdue",
+          "cancelled"
+        ],
+        "title": "InvoiceStatus"
+      },
+      "LedgerEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "date",
+          "amount",
+          "description"
+        ],
+        "title": "LedgerEntry"
+      },
+      "OpsExecuteRequest": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "Target category"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action",
+            "description": "Action to execute"
+          },
+          "params": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Params",
+            "description": "Action parameters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "action"
+        ],
+        "title": "OpsExecuteRequest",
+        "description": "Request to execute an AgentOps action"
+      },
+      "Product": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "quantity",
+          "price"
+        ],
+        "title": "Product"
+      },
+      "QuotaStatus": {
+        "properties": {
+          "total_usage": {
+            "type": "number",
+            "title": "Total Usage"
+          },
+          "limit": {
+            "type": "number",
+            "title": "Limit"
+          },
+          "reset_in": {
+            "type": "number",
+            "title": "Reset In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_usage",
+          "limit",
+          "reset_in"
+        ],
+        "title": "QuotaStatus"
+      },
+      "RevenueStats": {
+        "properties": {
+          "volume": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Volume"
+          },
+          "financials": {
+            "$ref": "#/components/schemas/Financials"
+          },
+          "goals": {
+            "$ref": "#/components/schemas/GoalSummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "volume",
+          "financials",
+          "goals"
+        ],
+        "title": "RevenueStats"
+      },
+      "ServiceHealth": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "last_check": {
+            "type": "number",
+            "title": "Last Check"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "last_check"
+        ],
+        "title": "ServiceHealth"
+      },
+      "SwarmAgentStatus": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "is_busy": {
+            "type": "boolean",
+            "title": "Is Busy"
+          },
+          "tasks_completed": {
+            "type": "integer",
+            "title": "Tasks Completed"
+          },
+          "tasks_failed": {
+            "type": "integer",
+            "title": "Tasks Failed"
+          },
+          "specialties": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Specialties"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "role",
+          "is_busy",
+          "tasks_completed",
+          "tasks_failed"
+        ],
+        "title": "SwarmAgentStatus"
+      },
+      "SwarmMetrics": {
+        "properties": {
+          "total_tasks": {
+            "type": "integer",
+            "title": "Total Tasks"
+          },
+          "completed_tasks": {
+            "type": "integer",
+            "title": "Completed Tasks"
+          },
+          "failed_tasks": {
+            "type": "integer",
+            "title": "Failed Tasks"
+          },
+          "busy_agents": {
+            "type": "integer",
+            "title": "Busy Agents"
+          },
+          "idle_agents": {
+            "type": "integer",
+            "title": "Idle Agents"
+          },
+          "pending_tasks": {
+            "type": "integer",
+            "title": "Pending Tasks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_tasks",
+          "completed_tasks",
+          "failed_tasks",
+          "busy_agents",
+          "idle_agents",
+          "pending_tasks"
+        ],
+        "title": "SwarmMetrics"
+      },
+      "SwarmStatusResponse": {
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "agents": {
+            "items": {
+              "$ref": "#/components/schemas/SwarmAgentStatus"
+            },
+            "type": "array",
+            "title": "Agents"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/SwarmMetrics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "running",
+          "agents",
+          "metrics"
+        ],
+        "title": "SwarmStatusResponse"
+      },
+      "SwarmTaskResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "assigned_agent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned Agent"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "priority",
+          "created_at"
+        ],
+        "title": "SwarmTaskResponse"
+      },
+      "SystemStatus": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "last_check": {
+            "type": "string",
+            "title": "Last Check"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "message",
+          "last_check",
+          "details"
+        ],
+        "title": "SystemStatus"
+      },
+      "TaskSubmitRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority",
+            "description": "CRITICAL, HIGH, NORMAL, LOW, BACKGROUND",
+            "default": "NORMAL"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "payload"
+        ],
+        "title": "TaskSubmitRequest"
+      },
+      "TaskSubmitResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "task_id"
+        ],
+        "title": "TaskSubmitResponse"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "title": "Token"
+      },
+      "Transaction": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "amount",
+          "type",
+          "status"
+        ],
+        "title": "Transaction"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VibeRequest": {
+        "properties": {
+          "region": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Region",
+            "description": "Region identifier"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location",
+            "description": "Location name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region"
+        ],
+        "title": "VibeRequest",
+        "description": "Request to configure vibe settings."
+      },
+      "Workflow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "trigger": {
+            "type": "string",
+            "title": "Trigger"
+          },
+          "trigger_config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Trigger Config"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/WorkflowNode"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "trigger",
+          "trigger_config",
+          "nodes",
+          "active"
+        ],
+        "title": "Workflow"
+      },
+      "WorkflowDict": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "trigger": {
+            "type": "string",
+            "title": "Trigger"
+          },
+          "trigger_config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Trigger Config"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/WorkflowNodeDict"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "trigger",
+          "trigger_config",
+          "nodes",
+          "active"
+        ],
+        "title": "WorkflowDict"
+      },
+      "WorkflowNode": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Config"
+          },
+          "next_nodes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Next Nodes"
+          },
+          "position": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Position"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "config",
+          "next_nodes",
+          "position"
+        ],
+        "title": "WorkflowNode"
+      },
+      "WorkflowNodeDict": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Config"
+          },
+          "next_nodes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Next Nodes"
+          },
+          "position": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Position"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "config",
+          "next_nodes",
+          "position"
+        ],
+        "title": "WorkflowNodeDict"
+      },
+      "backend__models__command__CommandRequest": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "description": "Command prompt"
+          },
+          "vibe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vibe",
+            "description": "Vibe setting",
+            "default": "neutral"
+          },
+          "override_provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Provider",
+            "description": "Override AI provider"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "title": "CommandRequest",
+        "description": "Base request for command execution"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "token"
+          }
+        }
+      }
+    }
+  }
+}

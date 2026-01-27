@@ -1,0 +1,42 @@
+{
+    "FastAPI Route": {
+        "prefix": "froute",
+        "body": [
+            "@router.${1:get}(\"/${2:path}\", response_model=${3:ResponseModel})",
+            "async def ${4:route_name}(",
+            "    ${5:db}: AsyncSession = Depends(get_db)",
+            ") -> ${3:ResponseModel}:",
+            "    \"\"\"",
+            "    ${6:Route description}",
+            "    \"\"\"",
+            "    return ${7:result}"
+        ],
+        "description": "Create a FastAPI route handler"
+    },
+    "Pydantic Model": {
+        "prefix": "pmodel",
+        "body": [
+            "class ${1:ModelName}(BaseModel):",
+            "    \"\"\"",
+            "    ${2:Model description}",
+            "    \"\"\"",
+            "    ${3:field}: ${4:str} = Field(..., description=\"${5:Field description}\")",
+            "",
+            "    model_config = ConfigDict(from_attributes=True)"
+        ],
+        "description": "Create a Pydantic model with ConfigDict"
+    },
+    "SQLAlchemy Model": {
+        "prefix": "smodel",
+        "body": [
+            "class ${1:ModelName}(Base):",
+            "    __tablename__ = \"${2:table_name}\"",
+            "",
+            "    id: Mapped[int] = mapped_column(primary_key=True)",
+            "    ${3:column_name}: Mapped[str] = mapped_column(String(${4:255}))",
+            "    created_at: Mapped[datetime] = mapped_column(default=func.now())",
+            "    updated_at: Mapped[datetime] = mapped_column(default=func.now(), onupdate=func.now())"
+        ],
+        "description": "Create a SQLAlchemy 2.0 Mapped Model"
+    }
+}

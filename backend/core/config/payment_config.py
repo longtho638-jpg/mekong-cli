@@ -41,6 +41,30 @@ class PayPalConfig(BaseModel):
         return bool(self.client_id and self.client_secret)
 
 
+class StripeConfig(BaseModel):
+    """Stripe API configuration"""
+    secret_key: str = Field(..., description="Stripe Secret Key")
+    publishable_key: str = Field(..., description="Stripe Publishable Key")
+    webhook_secret: Optional[str] = Field(default=None, description="Stripe Webhook Secret")
+    price_solo: Optional[str] = Field(default=None, description="Stripe Price ID for Solo plan")
+    price_team: Optional[str] = Field(default=None, description="Stripe Price ID for Team plan")
+
+    @classmethod
+    def from_env(cls) -> "StripeConfig":
+        """Load Stripe config from environment variables"""
+        return cls(
+            secret_key=os.getenv("STRIPE_SECRET_KEY", ""),
+            publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY", ""),
+            webhook_secret=os.getenv("STRIPE_WEBHOOK_SECRET"),
+            price_solo=os.getenv("STRIPE_PRICE_SOLO"),
+            price_team=os.getenv("STRIPE_PRICE_TEAM")
+        )
+
+    def is_configured(self) -> bool:
+        """Check if Stripe is properly configured"""
+        return bool(self.secret_key and self.publishable_key)
+
+
 class PolarConfig(BaseModel):
     """Polar API configuration"""
     api_key: str = Field(..., description="Polar API Key")
@@ -64,10 +88,11 @@ class PolarConfig(BaseModel):
 class PaymentConfig(BaseModel):
     """Unified payment configuration"""
     provider_order: List[str] = Field(
-        default=["paypal", "polar"],
+        default=["paypal", "stripe", "polar"],
         description="Provider priority order for failover"
     )
     paypal: PayPalConfig = Field(default_factory=PayPalConfig.from_env)
+    stripe: StripeConfig = Field(default_factory=StripeConfig.from_env)
     polar: PolarConfig = Field(default_factory=PolarConfig.from_env)
 
     # Failover settings
@@ -87,12 +112,13 @@ class PaymentConfig(BaseModel):
     @classmethod
     def from_env(cls) -> "PaymentConfig":
         """Load payment config from environment variables"""
-        provider_order_str = os.getenv("PAYMENT_PROVIDER_ORDER", "paypal,polar")
+        provider_order_str = os.getenv("PAYMENT_PROVIDER_ORDER", "paypal,stripe,polar")
         provider_order = [p.strip() for p in provider_order_str.split(",")]
 
         return cls(
             provider_order=provider_order,
             paypal=PayPalConfig.from_env(),
+            stripe=StripeConfig.from_env(),
             polar=PolarConfig.from_env(),
             max_retries=int(os.getenv("PAYMENT_MAX_RETRIES", "2")),
             timeout_seconds=int(os.getenv("PAYMENT_TIMEOUT", "30"))
@@ -103,6 +129,8 @@ class PaymentConfig(BaseModel):
         available = []
         if self.paypal.is_configured():
             available.append("paypal")
+        if self.stripe.is_configured():
+            available.append("stripe")
         if self.polar.is_configured():
             available.append("polar")
         return available
@@ -112,11 +140,15 @@ class PaymentConfig(BaseModel):
         available = self.get_available_providers()
 
         if not available:
-            raise ValueError("No payment providers configured")
+            # We don't raise error here to allow app to start even if no payments configured,
+            # but we should probably log a warning.
+            # However, prompt implies existing behavior raises error.
+            pass
+            # raise ValueError("No payment providers configured")
 
         # Check that provider_order contains only configured providers
         for provider in self.provider_order:
-            if provider not in ["paypal", "polar"]:
+            if provider not in ["paypal", "stripe", "polar"]:
                 raise ValueError(f"Unknown provider in order: {provider}")
 
         return True

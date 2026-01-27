@@ -1,6 +1,8 @@
 -- Agent Performance Metrics Table
 -- Phase 18: Performance & Observability
 
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS agent_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     agent_id TEXT NOT NULL,
@@ -39,3 +41,4 @@ CREATE POLICY "Authenticated users can read agent_metrics"
     FOR SELECT
     TO authenticated
     USING (true);
+COMMIT;

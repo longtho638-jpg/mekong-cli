@@ -15,3 +15,6 @@ aioboto3==12.3.0
 httpx==0.26.0
 redis==5.0.1
 arq==0.25.0
+respx==0.20.2
+pytest==7.4.4
+pytest-asyncio==0.23.3

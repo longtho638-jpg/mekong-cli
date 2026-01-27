@@ -44,3 +44,14 @@ export function formatCompact(value: number): string {
     maximumFractionDigits: 1,
   }).format(value)
 }
+
+/**
+ * Format a date string or timestamp
+ */
+export function formatDate(date: string | number | Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(new Date(date))
+}

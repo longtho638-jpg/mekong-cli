@@ -1,6 +1,8 @@
 -- Inventory & Asset Schema for AgencyOS
 -- ERPNext Parity: Asset Registry, Stock Ledger, License Tracking
 
+BEGIN;
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- ASSETS
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -154,3 +156,4 @@ FROM licenses l
 WHERE l.status = 'active'
 AND l.expiry_date IS NOT NULL
 AND l.expiry_date <= (CURRENT_DATE + INTERVAL '30 days');
+COMMIT;

@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "database-migration-kit"
+version = "1.0.0"
+description = "Production-ready database migration management system"
+readme = "README.md"
+authors = [
+    {name = "Antigravity Team", email = "team@antigravity.dev"},
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "typer[all]>=0.9.0",
+    "sqlalchemy>=2.0.0",
+    "rich>=13.0.0",
+    "pydantic>=2.0.0",
+    "alembic>=1.13.0",  # We leverage alembic for the heavy lifting of diffs if needed, or implement lightweight
+    "python-dotenv>=1.0.0",
+    "sqlparse>=0.4.4",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg2-binary"]
+mysql = ["mysqlclient"]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black",
+    "isort",
+    "mypy"
+]
+
+[project.scripts]
+dmk = "migration_kit.main:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

@@ -23,6 +23,7 @@ python-multipart>=0.0.6
 
 # Payments
 braintree>=4.0.0
+stripe>=7.0.0
 
 # Configuration
 pydantic-settings>=2.0.0
@@ -50,6 +51,7 @@ numpy>=1.21.0
 prometheus_client>=0.17.0
 psutil>=5.9.0  # System metrics for health checks
 speedtest-cli>=2.1.3 # Network speed testing
+sentry-sdk[fastapi]>=1.40.0  # Error tracking and performance monitoring
 
 # CLI UI
 rich>=13.0.0

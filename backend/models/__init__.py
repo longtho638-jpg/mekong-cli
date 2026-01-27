@@ -46,4 +46,12 @@ __all__ = [
     "Client",
     "ClientStatus",
     "Agency",
+    # Affiliate
+    "Affiliate",
+    "AffiliateLink",
+    "Conversion",
+    "Payout",
+    "AffiliateStatus",
+    "PayoutStatus",
+    "ConversionStatus",
 ]

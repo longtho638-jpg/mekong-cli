@@ -779,11 +779,55 @@ execution_model:
 - ✅ Execute plan đến task cuối cùng
 - ✅ Side tasks → parallel processing
 - ✅ Update task.md continuously
-- ✅ Notify user ONLY when ALL DONE---
+- ✅ Notify user ONLY when ALL DONE
+
+---
+
+## 🚨 ĐIỀU 29: CẤM NGƯNG NGANG (NO PREMATURE STOP)
+
+> **Còn CC CLI chạy → KHÔNG ĐƯỢC NGƯNG | Chương 9: Hành Quân**
+
+### 🔴 QUY TẮC TUYỆT ĐỐI:
+
+```yaml
+no_premature_stop:
+    rule: "Khi còn CC CLI instance đang chạy → CẤM notify_user"
+    reason: "notify_user ends task, user cannot continue without new prompt"
+
+    check_before_notify: 1. "Kiểm tra tất cả command_status"
+        2. "Đảm bảo ALL DONE, không còn RUNNING"
+        3. "Chỉ notify khi 100% complete"
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Nói "em tiếp tục monitor" rồi gọi notify_user
+- ❌ Ngưng giữa chừng khi còn CC CLI running
+- ❌ Không kiểm tra command_status trước khi notify
+
+### 🔴 ĐÚNG CÁCH:
+
+```yaml
+correct_flow:
+    while cc_cli_running:
+        - command_status check
+        - send_command_input nếu cần
+        - update task.md
+        - KHÔNG notify_user
+
+    when all_complete:
+        - notify_user với summary
+```
+
+### 🏯 BINH PHÁP:
+
+> **Chương 9 Hành Quân: 軍無輜重則亡**
+> "Quân mà không có hậu cần thì thua" = Không giám sát đến cùng thì thất bại
+
+---
 
 **Effective Date:** 2026-01-27
-**Version:** 5.15.0 (Reorganized ĐIỀU sequential 0→28)
+**Version:** 5.16.0 (Added ĐIỀU 29: CẤM NGƯNG NGANG)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
-

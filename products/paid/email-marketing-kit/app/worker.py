@@ -5,6 +5,7 @@ from app.providers.base import EmailMessage
 from app.providers.smtp import SMTPProvider
 from app.providers.ses import SESProvider
 from app.providers.sendgrid import SendGridProvider
+from app.providers.resend import ResendProvider
 from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -13,8 +14,10 @@ logger = logging.getLogger(__name__)
 def get_provider():
     settings = get_settings()
     # Logic to choose provider based on settings or DB config
-    # For MVP, checking Env Vars
-    if getattr(settings, "SENDGRID_API_KEY", None):
+    # Priority: Resend > SendGrid > SES > SMTP
+    if getattr(settings, "RESEND_API_KEY", None):
+        return ResendProvider(api_key=settings.RESEND_API_KEY)
+    elif getattr(settings, "SENDGRID_API_KEY", None):
         return SendGridProvider(api_key=settings.SENDGRID_API_KEY)
     elif getattr(settings, "AWS_ACCESS_KEY_ID", None):
         return SESProvider(

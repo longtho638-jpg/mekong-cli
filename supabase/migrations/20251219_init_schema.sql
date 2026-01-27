@@ -2,6 +2,8 @@
 -- Version: 2.0.0
 -- Created: 2025-12-19
 
+BEGIN;
+
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -118,7 +120,10 @@ CREATE POLICY "Users can update own projects" ON public.projects
 -- ============================================
 -- INVOICES TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS public.invoices (
+-- Ensure we start fresh for v2.0 schema (UUIDs)
+DROP TABLE IF EXISTS public.invoices CASCADE;
+
+CREATE TABLE public.invoices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   agency_id UUID REFERENCES public.agencies(id) ON DELETE CASCADE,
   client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
@@ -253,3 +258,4 @@ CREATE TRIGGER update_invoices_updated_at
 CREATE TRIGGER update_tasks_updated_at
   BEFORE UPDATE ON public.tasks
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+COMMIT;

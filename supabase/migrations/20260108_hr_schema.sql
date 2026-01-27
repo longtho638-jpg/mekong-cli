@@ -1,6 +1,8 @@
 -- HR & Payroll Schema for AgencyOS
 -- ERPNext Parity: Employee Management, Payroll, Leave Management
 
+BEGIN;
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- EMPLOYEES
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -190,3 +192,4 @@ LEFT JOIN leave_requests lr ON e.id = lr.employee_id
     AND lr.status = 'approved' 
     AND EXTRACT(YEAR FROM lr.start_date) = EXTRACT(YEAR FROM CURRENT_DATE)
 GROUP BY e.tenant_id, e.id, e.first_name, e.last_name;
+COMMIT;

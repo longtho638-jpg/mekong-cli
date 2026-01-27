@@ -138,6 +138,34 @@ services:
     networks:
       - mekong-network
 
+  # ===================================
+  # 5. Prometheus (Metrics)
+  # ===================================
+  prometheus:
+    image: prom/prometheus
+    container_name: mekong-prometheus
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - mekong-network
+
+  # ===================================
+  # 6. Grafana (Dashboards)
+  # ===================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: mekong-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - mekong-network
+
 # ===================================
 # Volumes (Persistent Storage)
 # ===================================
@@ -148,6 +176,9 @@ volumes:
   redis_data:
     driver: local
     name: mekong_redis_data
+  grafana_data:
+    driver: local
+    name: mekong_grafana_data
 
 # ===================================
 # Network Configuration

@@ -1,0 +1,15 @@
+{
+  "name": "antigravity-full-stack-saas",
+  "version": "1.0.0",
+  "description": "Example orchestrating all services",
+  "scripts": {
+    "install:all": "cd ../../products/social-auth-kit && npm install && cd ../agencyos-workspace && npm install && cd ../user-preferences-kit && npm install",
+    "dev": "concurrently \"npm:dev:auth\" \"npm:dev:prefs\" \"npm:dev:web\" --kill-others",
+    "dev:auth": "cd ../../products/social-auth-kit && npm run dev",
+    "dev:prefs": "cd ../../products/user-preferences-kit && npm run dev",
+    "dev:web": "cd ../../products/agencyos-workspace && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "objectID": "1",
+    "name": "MacBook Pro M1",
+    "brand": "Apple",
+    "category": "Laptops",
+    "description": "Apple M1 chip with 8-core CPU and 8-core GPU. 13.3-inch Retina display.",
+    "price": 1299,
+    "image": "https://example.com/mbp.jpg",
+    "popularity": 99
+  },
+  {
+    "objectID": "2",
+    "name": "Dell XPS 13",
+    "brand": "Dell",
+    "category": "Laptops",
+    "description": "13.4-inch FHD+ InfinityEdge Non-Touch Anti-Glare 500-Nit Display",
+    "price": 999,
+    "image": "https://example.com/xps.jpg",
+    "popularity": 85
+  },
+  {
+    "objectID": "3",
+    "name": "iPhone 13",
+    "brand": "Apple",
+    "category": "Smartphones",
+    "description": "A15 Bionic chip. Super Retina XDR display.",
+    "price": 799,
+    "image": "https://example.com/iphone.jpg",
+    "popularity": 100
+  },
+  {
+    "objectID": "4",
+    "name": "Sony WH-1000XM4",
+    "brand": "Sony",
+    "category": "Audio",
+    "description": "Industry-leading noise canceling with Dual Noise Sensor technology",
+    "price": 348,
+    "image": "https://example.com/sony.jpg",
+    "popularity": 90
+  },
+  {
+    "objectID": "5",
+    "name": "Kindle Paperwhite",
+    "brand": "Amazon",
+    "category": "Tablets",
+    "description": "Now with a 6.8” display and thinner borders, adjustable warm light, up to 10 weeks of battery life",
+    "price": 139,
+    "image": "https://example.com/kindle.jpg",
+    "popularity": 70
+  }
+]

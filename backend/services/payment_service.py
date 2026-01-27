@@ -337,8 +337,7 @@ class PaymentService:
         if provider == "paypal":
             return self.paypal.subscriptions.cancel(subscription_id, reason or "Canceled by user")
         elif provider == "stripe":
-            # Delegate to StripeClient if implemented, or implement directly
-            raise NotImplementedError("Stripe cancellation not yet implemented in unified service")
+            return self.stripe.cancel_subscription(subscription_id)
         else:
             raise ValueError(f"Provider {provider} not supported for cancellation")
 
@@ -357,6 +356,6 @@ class PaymentService:
         if provider == "paypal":
             return self.paypal.subscriptions.get(subscription_id)
         elif provider == "stripe":
-             raise NotImplementedError("Stripe subscription retrieval not yet implemented in unified service")
+            return self.stripe.get_subscription(subscription_id)
         else:
              raise ValueError(f"Provider {provider} not supported for get_subscription")

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Shared Database for all services
+  postgres:
+    image: postgres:15-alpine
+    container_name: antigravity-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: antigravity
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Shared Redis for Rate Limiter / Queues
+  redis:
+    image: redis:7-alpine
+    container_name: antigravity-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # --- Product Placeholders (Uncomment to run via Docker) ---
+
+  # agencyos:
+  #   build: ../products/agencyos-workspace
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/antigravity
+  #   depends_on:
+  #     - postgres
+
+  # social-auth:
+  #   build: ../products/social-auth-kit
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/antigravity
+  #   depends_on:
+  #     - postgres
+
+volumes:
+  postgres_data:
+  redis_data:

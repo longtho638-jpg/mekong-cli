@@ -1,0 +1,19 @@
+{
+  "updated_at": "2026-01-27 10:00:00",
+  "tools": {
+    "cleo": "N/A",
+    "claude-code-cli": "",
+    "claude-flow": "",
+    "opencode": "1.1.25",
+    "claudekit": "N/A",
+    "task-master-ai": "0.42.0",
+    "n8n-mcp": "2.33.5",
+    "antigravity-proxy": "2.2.2"
+  },
+  "locations": {
+    "cleo": "~/.cleo",
+    "opencode": "~/.opencode",
+    "claude-flow": "~/.claude-flow",
+    "antigravity-tools": "~/.antigravity_tools"
+  }
+}

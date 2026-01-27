@@ -3,6 +3,8 @@
 -- Usage tracking, cohorts, and business metrics
 -- ═══════════════════════════════════════════════════════════════════════════════
 
+BEGIN;
+
 -- ─────────────────────────────────────────────────────────────────────────────────
 -- USAGE EVENTS TABLE (Core tracking)
 -- ─────────────────────────────────────────────────────────────────────────────────
@@ -283,3 +285,4 @@ BEGIN
         total_events = EXCLUDED.total_events;
 END;
 $$ LANGUAGE plpgsql;
+COMMIT;

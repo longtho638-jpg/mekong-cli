@@ -1,9 +1,9 @@
 import pytest
 import fakeredis
-from app.services.queue import QueueService
-from app.core.config import settings
+from app.services.queue import get_queue_service
 from fastapi.testclient import TestClient
-from app.main import app
+# Import app inside fixture or after patching if possible, but TestClient needs it.
+# We will use dependency injection overrides or monkeypatching.
 
 @pytest.fixture
 def mock_redis():
@@ -13,12 +13,22 @@ def mock_redis():
 
 @pytest.fixture
 def queue_service(mock_redis, monkeypatch):
-    # Monkeypatch the redis connection in QueueService
-    monkeypatch.setattr("app.services.queue.redis.from_url", lambda url, decode_responses: mock_redis)
-    return QueueService()
+    # Clear cache to force recreation of QueueService with mocked redis
+    get_queue_service.cache_clear()
+
+    # Patch where RedisQueue imports redis
+    monkeypatch.setattr("app.services.redis_queue.redis.from_url", lambda url, decode_responses=True: mock_redis)
+
+    return get_queue_service()
 
 @pytest.fixture
 def client(mock_redis, monkeypatch):
-    # Monkeypatch for API tests
-    monkeypatch.setattr("app.services.queue.redis.from_url", lambda url, decode_responses: mock_redis)
+    # Clear cache
+    get_queue_service.cache_clear()
+
+    # Patch redis
+    monkeypatch.setattr("app.services.redis_queue.redis.from_url", lambda url, decode_responses=True: mock_redis)
+
+    # Import app here to avoid early config loading issues if any
+    from app.main import app
     return TestClient(app)

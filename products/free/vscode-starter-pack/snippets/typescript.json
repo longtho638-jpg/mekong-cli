@@ -1,0 +1,40 @@
+{
+    "React Arrow Function Component": {
+        "prefix": "rafc",
+        "body": [
+            "import React from 'react';",
+            "",
+            "interface ${1:ComponentName}Props {",
+            "  ${2:children?: React.ReactNode;}",
+            "}",
+            "",
+            "export const ${1:ComponentName} = ({ ${2:children} }: ${1:ComponentName}Props) => {",
+            "  return (",
+            "    <div className=\"${3:container}\">",
+            "      ${2:children}",
+            "    </div>",
+            "  );",
+            "};"
+        ],
+        "description": "Create a React Arrow Function Component with TypeScript interface"
+    },
+    "useState Hook": {
+        "prefix": "ust",
+        "body": [
+            "const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState<${2:type}>(${3:initialValue});"
+        ],
+        "description": "React useState Hook"
+    },
+    "useEffect Hook": {
+        "prefix": "uef",
+        "body": [
+            "useEffect(() => {",
+            "  ${1:effect}",
+            "  return () => {",
+            "    ${2:cleanup}",
+            "  };",
+            "}, [${3:dependencies}]);"
+        ],
+        "description": "React useEffect Hook"
+    }
+}

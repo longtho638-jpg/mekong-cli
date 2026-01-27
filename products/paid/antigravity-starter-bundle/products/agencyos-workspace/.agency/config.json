@@ -1,0 +1,19 @@
+{
+  "agency": {
+    "name": "{{AGENCY_NAME}}",
+    "founder": "{{FOUNDER_NAME}}",
+    "niche": "General Agency",
+    "established": "2026",
+    "currency": "USD",
+    "timezone": "UTC"
+  },
+  "branding": {
+    "primaryColor": "#0F172A",
+    "secondaryColor": "#3B82F6",
+    "font": "Inter"
+  },
+  "pricing": {
+    "strategy_audit": 5000,
+    "hourly_rate": 150
+  }
+}

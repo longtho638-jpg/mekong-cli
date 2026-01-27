@@ -10,7 +10,7 @@ Binh Pháp: "Dùng Cầu" - Bridge Configuration
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -87,6 +87,22 @@ class Settings(BaseSettings):
         return v
 
     # ========================================
+    # Email Configuration
+    # ========================================
+    email_provider: str = Field(default="smtp", description="Email provider (smtp/resend/sendgrid)")
+    resend_api_key: str = Field(default="", description="Resend API Key")
+    sendgrid_api_key: str = Field(default="", description="SendGrid API Key")
+    default_from_email: str = Field(default="noreply@binhphap.com", description="Default sender email")
+    default_from_name: str = Field(default="AgencyOS", description="Default sender name")
+
+    # SMTP Settings (Keep existing)
+    smtp_host: str = Field(default="smtp.gmail.com", description="SMTP Host")
+    smtp_port: int = Field(default=587, description="SMTP Port")
+    smtp_user: str = Field(default="", description="SMTP User")
+    smtp_password: str = Field(default="", description="SMTP Password")
+    email_mock_mode: bool = Field(default=False, description="Mock email sending")
+
+    # ========================================
     # Database Configuration
     # ========================================
     database_url: str = Field(
@@ -148,6 +164,12 @@ class Settings(BaseSettings):
     enable_rate_limiting: bool = Field(default=True, description="Enable rate limiting")
     enable_multitenant: bool = Field(default=True, description="Enable multi-tenancy")
     enable_validation: bool = Field(default=True, description="Enable input validation")
+
+    # ========================================
+    # Rate Limiting Configuration
+    # ========================================
+    rate_limit_bypass_key: Optional[str] = Field(default=None, description="Key to bypass rate limits")
+    rate_limit_whitelist_ips: List[str] = Field(default_factory=list, description="Whitelisted IPs for rate limiting")
 
     # ========================================
     # Input Validation Limits

@@ -68,9 +68,7 @@ async def create_campaign(
         scheduled_at=campaign_in.scheduled_at,
         body_html=body_html,
         body_text=body_text,
-        # In a real app, we would store the target lists in a many-to-many
-        # or a JSON field to know who to send to when the worker picks it up.
-        # For this Kit MVP, let's assume we handle list association later or add a field.
+        segment_rules=campaign_in.segment_rules,
     )
 
     db.add(db_obj)

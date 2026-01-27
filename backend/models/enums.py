@@ -34,3 +34,19 @@ class ClientStatus(str, Enum):
     INACTIVE = "inactive"
     LEAD = "lead"
 
+class AffiliateStatus(str, Enum):
+    ACTIVE = "active"
+    SUSPENDED = "suspended"
+    PENDING = "pending"
+
+class PayoutStatus(str, Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    PAID = "paid"
+    FAILED = "failed"
+
+class ConversionStatus(str, Enum):
+    PENDING = "pending"
+    PAID = "paid"
+    REFUNDED = "refunded"
+

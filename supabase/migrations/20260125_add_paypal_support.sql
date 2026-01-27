@@ -3,6 +3,8 @@
 -- Add PayPal fields to existing billing schema
 -- ═══════════════════════════════════════════════════════════════════════════════
 
+BEGIN;
+
 -- Add PayPal fields to subscriptions table
 ALTER TABLE subscriptions
     ADD COLUMN IF NOT EXISTS paypal_subscription_id TEXT,
@@ -65,3 +67,4 @@ COMMENT ON COLUMN subscriptions.paypal_subscription_id IS 'PayPal subscription I
 COMMENT ON COLUMN subscriptions.paypal_plan_id IS 'PayPal plan/product ID';
 COMMENT ON COLUMN payments.payment_provider IS 'Payment provider used for this transaction';
 COMMENT ON COLUMN payments.paypal_order_id IS 'PayPal order ID for one-time payments';
+COMMIT;

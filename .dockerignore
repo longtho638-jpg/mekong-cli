@@ -1,4 +1,13 @@
-# Files to ignore in Docker build
+# ============================================================================
+# Docker Ignore - Optimized for Backend Build
+# ============================================================================
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Python artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -26,39 +35,61 @@ wheels/
 env/
 venv/
 ENV/
+backend/.venv/
 
-# IDE
+# IDE settings
 .idea/
 .vscode/
+.claude/
+.claude-skills/
+.agent/
+.cleo/
 *.swp
 *.swo
 
-# Git
-.git/
-.gitignore
-
-# Frontend (separate deployment)
+# Frontend (Excluded from Backend build)
 frontend/
+apps/
 node_modules/
+package.json
+pnpm-lock.yaml
+yarn.lock
 
 # Documentation
 docs/
+plans/
 *.md
-!requirements.txt
+!README.md
 
-# Tests
+# Testing & Coverage
 tests/
 pytest.ini
 .pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
-# Local config
-.env.local
-.env.*.local
-
-# Logs
+# Logs & Temp
 *.log
 logs/
-
-# Temp files
 tmp/
 temp/
+
+# Database (Local)
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Docker artifacts
+docker-compose*.yml
+Dockerfile*
+!backend/Dockerfile
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Other Products
+products/

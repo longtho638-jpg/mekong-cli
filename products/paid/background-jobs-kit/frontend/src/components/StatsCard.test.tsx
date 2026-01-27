@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { StatsCard } from './StatsCard';
 import { Activity } from 'lucide-react';
-import React from 'react';
 
 describe('StatsCard', () => {
   it('renders title and value', () => {

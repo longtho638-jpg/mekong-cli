@@ -1,0 +1,49 @@
+{
+    "VIBE Plan Template": {
+        "prefix": "vibe-plan",
+        "body": [
+            "# Plan: ${1:Feature Name}",
+            "",
+            "## Context",
+            "- **Goal**: ${2:Goal description}",
+            "- **Related**: ${3:Links to docs/issues}",
+            "",
+            "## Phases",
+            "",
+            "### Phase 1: Setup",
+            "- [ ] Task 1",
+            "- [ ] Task 2",
+            "",
+            "### Phase 2: Implementation",
+            "- [ ] Task 3",
+            "- [ ] Task 4",
+            "",
+            "## WIN-WIN-WIN Analysis",
+            "- **Owner WIN**: ${4}",
+            "- **Agency WIN**: ${5}",
+            "- **Client WIN**: ${6}"
+        ],
+        "description": "Create a VIBE development plan"
+    },
+    "VIBE Report Template": {
+        "prefix": "vibe-report",
+        "body": [
+            "# Report: ${1:Task Name}",
+            "",
+            "## Summary",
+            "${2:Brief summary of work completed}",
+            "",
+            "## Changes",
+            "- Modified: `path/to/file`",
+            "- Created: `path/to/new/file`",
+            "",
+            "## Tests",
+            "- [ ] Unit tests passed",
+            "- [ ] Integration tests passed",
+            "",
+            "## Unresolved Questions",
+            "- ${3:None}"
+        ],
+        "description": "Create a VIBE progress report"
+    }
+}

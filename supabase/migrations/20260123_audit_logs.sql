@@ -1,7 +1,9 @@
 -- Immutable Audit Logs Table
 -- Phase 19: Enterprise Readiness & Security Hardening
 
-CREATE TABLE IF NOT EXISTS audit_logs (
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS system_audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     actor_id TEXT NOT NULL,         -- User ID or Agent ID
     actor_type TEXT NOT NULL,       -- 'user' or 'agent'
@@ -15,25 +17,25 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 );
 
 -- Indices for security monitoring
-CREATE INDEX IF NOT EXISTS idx_audit_logs_actor_id ON audit_logs(actor_id);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_status ON audit_logs(status);
+CREATE INDEX IF NOT EXISTS idx_system_audit_logs_actor_id ON system_audit_logs(actor_id);
+CREATE INDEX IF NOT EXISTS idx_system_audit_logs_action ON system_audit_logs(action);
+CREATE INDEX IF NOT EXISTS idx_system_audit_logs_created_at ON system_audit_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_system_audit_logs_status ON system_audit_logs(status);
 
 -- Enable Row Level Security (RLS)
-ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE system_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- 🛡️ IMMUTABILITY: No one, not even owners, can DELETE or UPDATE audit logs via the API.
 -- Only INSERT and SELECT are permitted.
 
 CREATE POLICY "Audit logs are append-only (Insert)"
-    ON audit_logs
+    ON system_audit_logs
     FOR INSERT
     TO authenticated, service_role
     WITH CHECK (true);
 
 CREATE POLICY "Owners and Admins can read all audit logs"
-    ON audit_logs
+    ON system_audit_logs
     FOR SELECT
     TO authenticated
     USING (
@@ -41,7 +43,8 @@ CREATE POLICY "Owners and Admins can read all audit logs"
     );
 
 CREATE POLICY "Service role can read all audit logs"
-    ON audit_logs
+    ON system_audit_logs
     FOR SELECT
     TO service_role
     USING (true);
+COMMIT;
