@@ -171,6 +171,70 @@ resource_decision:
 
 ---
 
+## 🚨 ĐIỀU 21: GIÁM SÁT LIÊN TỤC (CONTINUOUS MONITORING)
+
+> **Chương 9 Hành Quân: Không rời trận địa cho đến khi hoàn thành**
+
+### 🔴 QUY TẮC VĨNH VIỄN:
+
+**Antigravity KHÔNG ĐƯỢC TẮT khi còn CC CLI đang chạy.**
+
+### 🔴 QUY TRÌNH GIÁM SÁT:
+
+```yaml
+monitoring_loop:
+    interval: "2 phút"
+    actions:
+        - Check CC CLI status: ps aux | grep "claude" | wc -l
+        - Check progress: command_status của các background commands
+        - Check resources: top -l 1 | grep Load
+
+    on_task_complete:
+        - Update task.md với ✅
+        - Launch next batch (theo ĐIỀU 20 limit)
+        - Thông báo user nếu có lỗi
+
+    on_all_complete:
+        - Git commit + push results
+        - Update walkthrough.md
+        - Thông báo user với tóm tắt
+```
+
+### 🔴 AUTO-BATCH ADVANCEMENT:
+
+```bash
+# Khi Batch N hoàn thành:
+1. Kiểm tra CC CLI processes = 0
+2. Update task.md: [x] completed tasks
+3. Launch Batch N+1 với 3 tasks (M1 16GB limit)
+4. Tiếp tục monitoring loop
+
+# Commands mẫu:
+echo "/delegate NEXT_TASK" | claude --dangerously-skip-permissions
+```
+
+### 🔴 ĐIỀU KIỆN DỪNG:
+
+```yaml
+stop_conditions:
+  - Tất cả tasks hoàn thành
+  - User request stop
+  - Critical error (3 failures in a row)
+
+never_stop_for:
+  - "Đợi user response"
+  - "Session timeout" (tự restart)
+  - "Single task failure" (skip, log, continue)
+```
+
+### 🔴 SAI PHẠM NẾU:
+
+- ❌ Notify user và chờ đợi khi có thể tự quyết
+- ❌ Dừng giám sát trước khi all tasks complete
+- ❌ Không auto-advance batches
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
