@@ -54,3 +54,4 @@ reports/
 # Large product ZIPs - store elsewhere
 products/paid/products/
 products/paid/*-secure.zip
+backend/.venv/
