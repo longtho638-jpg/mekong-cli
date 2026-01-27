@@ -48,6 +48,9 @@ from backend.api.routers import (
     license as license_router,  # License verification
 )
 from backend.api.routers import (
+    stripe_production, # Production Stripe Integration
+)
+from backend.api.routers import (
     ops as ops_router,  # Refactored
 )
 from backend.api.routers import (
@@ -116,6 +119,7 @@ app.include_router(team_router.router)
 
 # Payment Integration
 app.include_router(paypal_checkout.router)
+app.include_router(stripe_production.router)
 
 # Utility & Integration
 app.include_router(health_router.router)  # Health check & monitoring (first for priority)

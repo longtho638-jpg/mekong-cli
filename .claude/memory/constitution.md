@@ -1116,8 +1116,66 @@ send_command_input(Input="/delegate task\n")
 
 ---
 
+## 🚨 ĐIỀU 35: GIÁM SÁT REALTIME (CONTINUOUS MONITORING)
+
+> **Antigravity CẤM DỪNG khi CC CLI đang chạy, PHẢI giám sát và ra lệnh tiếp | Chương 8: Cửu Biến - Biến hóa liên tục**
+
+### 🔴 QUY TẮC TUYỆT ĐỐI:
+
+```yaml
+continuous_monitoring:
+    rule: "Antigravity PHẢI giám sát CC CLI và ra lệnh tiếp theo liên tục"
+
+    forbidden:
+        - "notify_user khi CC CLI đang chạy"
+        - "Dừng để chờ user response"
+        - "Không theo dõi CC CLI output"
+
+    required_loop: |
+        while cc_cli_running:
+            1. command_status() → đọc output
+            2. Phân tích CC CLI báo cáo gì
+            3. send_command_input() → ra lệnh tiếp theo
+            4. Lặp lại cho đến khi TẤT CẢ tasks done
+
+    command_chaining: |
+        Task 1 done → send Task 2
+        Task 2 done → send Task 3
+        ...
+        All done → notify_user
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Dừng giữa chừng để notify user
+- ❌ Không đọc CC CLI output
+- ❌ Không ra lệnh tiếp theo khi CC CLI ready
+- ❌ Để CC CLI idle không có task
+- ❌ CHỜ user response thay vì auto-continue
+
+### 🔴 ĐÚNG CÁCH:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ ANTIGRAVITY REALTIME LOOP (CẤM DỪNG)                        │
+├─────────────────────────────────────────────────────────────┤
+│ 1. command_status() → CC CLI output                         │
+│ 2. Parse: Task done? Ready for next?                        │
+│ 3. send_command_input("/delegate Task N\n")                 │
+│ 4. GOTO 1 (loop cho đến hết queue)                          │
+│ 5. CHỈ notify_user khi ALL DONE                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 🏯 BINH PHÁP:
+
+> **Chương 8 九變: 將通於九變之地利者，知用兵矣**
+> "Tướng thông 9 biến mới biết dùng binh" = Giám sát liên tục, biến hóa theo tình huống
+
+---
+
 **Effective Date:** 2026-01-27
-**Version:** 5.20.0 (Added ĐIỀU 34: CẤM KÊU USER PASTE)
+**Version:** 5.21.0 (Added ĐIỀU 35: GIÁM SÁT REALTIME - Continuous Monitoring)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
