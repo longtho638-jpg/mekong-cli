@@ -77,9 +77,19 @@ ANTIGRAVITY:
 
 ### 🔴 VÍ DỤ ĐÚNG:
 
-```markdown
-## Commands for USER to paste in VS Code Terminal:
+**Syntax cho echo pipe (Antigravity auto-run):**
 
+```bash
+# ✅ ĐÚNG - dùng /delegate trong echo:
+echo "/delegate IPO-001: Create production Docker build" | claude --dangerously-skip-permissions
+
+# ❌ SAI - không có /command:
+echo "IPO-001: Create production Docker build" | claude --dangerously-skip-permissions
+```
+
+**Nếu CC CLI hỏi "What task?" (interactive mode):**
+
+```markdown
 ### Terminal 1:
 
 cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
@@ -87,14 +97,6 @@ cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
 # Khi CC CLI hỏi "What task?", gõ:
 
 IPO-001: Create production Docker build
-
-### Terminal 2:
-
-cd ~/mekong-cli && claude --dangerously-skip-permissions /delegate
-
-# Khi CC CLI hỏi "What task?", gõ:
-
-IPO-002: Audit database migrations
 ```
 
 ### 🔴 SAI PHẠM CỦA ANTIGRAVITY (2026-01-27):
