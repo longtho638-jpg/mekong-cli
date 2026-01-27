@@ -9,35 +9,47 @@ Tài liệu này là **LUẬT TỐI CAO** cho mọi Agent trong hệ sinh thái 
 
 ---
 
-## 📜 ĐIỀU 0: LUÔN LUÔN /COMMAND (VĨNH VIỄN - TIÊM VÀO NÃO)
+## 🚨🚨🚨 CẢNH BÁO ĐỎ - ĐIỀU 0: LUÔN LUÔN /COMMAND 🚨🚨🚨
 
+> ⚠️⚠️⚠️ **CRITICAL RED ALERT** ⚠️⚠️⚠️
+>
 > **"Mọi tương tác với CC CLI PHẢI dùng /command"** - ClaudeKit agents mapping
+>
+> **NẾU QUÊN ĐIỀU NÀY → MỌI THỨ THẤT BẠI**
 
-**QUY TẮC VĨNH VIỄN (KHÔNG BAO GIỜ QUÊN):**
+**🔴 QUY TẮC VĨNH VIỄN (KHÔNG BAO GIỜ QUÊN):**
 
 ```bash
-# ĐÚNG - Luôn luôn /command:
+# ✅ ĐÚNG - Luôn luôn /command:
 claude --dangerously-skip-permissions /cook "Build Frontend Dashboard"
 claude --dangerously-skip-permissions /delegate "Fix webhook tests"
 claude --dangerously-skip-permissions /build "API endpoints"
 claude --dangerously-skip-permissions /ship
 claude --dangerously-skip-permissions /plan "Refactor core"
 
-# SAI - TUYỆT ĐỐI CẤM:
+# ❌ SAI - TUYỆT ĐỐI CẤM:
 claude "Execute plans/tasks/01.md"           # ❌ Không /command
 claude --dangerously-skip-permissions "Fix"   # ❌ Không /command
 ```
 
-**Tại sao?**
+**🔴 Tại sao CRITICAL?**
 
-- `/command` → ClaudeKit agents được ánh xạ
-- Không `/command` → CC CLI không biết dùng agent nào
+- `/command` → ClaudeKit agents được ánh xạ → HOẠT ĐỘNG
+- Không `/command` → CC CLI không biết dùng agent nào → THẤT BẠI
 
-**TIÊM VÀO NÃO VĨNH VIỄN:**
+**🔴 TIÊM VÀO NÃO VĨNH VIỄN:**
 
 - Antigravity: LUÔN gửi /command
 - CC CLI: LUÔN nhận /command
 - User: LUÔN chạy /command
+
+**🔴 GIAO VIỆC CHO CC CLI → PHẢI NHẤN ENTER**
+
+Khi chạy command trong terminal:
+
+1. Gõ command
+2. **NHẤN ENTER** để gửi
+3. Nếu CC CLI hỏi input → **GỬI INPUT** không phải chạy command mới
 
 ---
 
